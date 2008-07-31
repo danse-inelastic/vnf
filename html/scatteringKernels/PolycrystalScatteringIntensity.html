@@ -1,0 +1,93 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Untitled Document</title>
+<script src="../SpryAssets/SpryValidationTextField.js" type="text/javascript"></script>
+<link href="../SpryAssets/SpryValidationTextField.css" rel="stylesheet" type="text/css" />
+</head>
+
+<body>
+<h1>Polycrystal Scattering Intensity Settings</h1>
+<p>&nbsp;</p>
+<form action="" method="post" enctype="multipart/form-data" name="form1" id="form1">
+  <label>Type of Scattering
+  <select name="select" id="select">
+    <option>Incoherent</option>
+    <option>Coherent</option>
+  </select>
+  </label>
+  <p>
+    <label>Dynamics Run
+    <input type="file" name="fileField" id="fileField" />
+    </label>
+  </p>
+  <p>Q Values
+    <label>
+    <input name="textfield" type="text" id="textfield" value="-3.0" />
+    </label>
+    to 
+    <label>
+    <input name="textfield2" type="text" id="textfield2" value="10" />
+    </label>
+    incremented by 
+    <label>
+    <input name="textfield3" type="text" id="textfield3" value="0.1" />
+    </label>
+  </p>
+  <p>Q Shell Width 
+    <label>
+    <input name="textfield4" type="text" id="textfield4" value="1.0" />
+    </label>
+  </p>
+  <p><span id="sprytextfield1">
+    <label>Vectors per shell
+    <input name="text1" type="text" id="text1" value="50" />
+    </label>
+  <span class="textfieldRequiredMsg">A value is required.</span></span></p>
+  <p><span id="sprytextfield2">
+  <label></label>
+  </span> <span id="sprytextfield3"><span class="textfieldRequiredMsg">A value is required.</span></span>
+    <label>Units of Q
+    <select name="select2" id="select2">
+      <option>1/Ang</option>
+      <option>1/nm</option>
+    </select>
+    </label>
+  </p>
+  <p><span id="sprytextfield4">
+    <label>Fourier Transform Window (% Trajectory Length)
+    <input name="text3" type="text" id="text3" value="10" />
+    </label>
+  <span class="textfieldRequiredMsg">A value is required.</span></span></p>
+  <p>
+    <label>Number of Frequency Points
+    <input name="text2" type="text" id="text2" value="1000" />
+    </label>
+    <span class="textfieldRequiredMsg">A value is required.</span></p>
+  <table width="158" border="0" align="center">
+    <tr>
+      <td width="45"><label for="next"></label>
+          <input type="submit" name="next" id="next" value="Back" />
+      </td>
+      <td width="44"><input type="submit" name="next2" id="next2" value="Next" /></td>
+      <td width="55"><label>
+        <input type="button" name="cancel" id="cancel" value="Cancel" />
+        </label>
+      </td>
+    </tr>
+  </table>
+  <a href="../SampleAssembly/step6-KernelBuilder-newkernel3.html">Next</a>
+<p>&nbsp;</p>
+  <p>&nbsp;</p>
+</form>
+<p>&nbsp;</p>
+<script type="text/javascript">
+<!--
+var sprytextfield1 = new Spry.Widget.ValidationTextField("sprytextfield1");
+var sprytextfield3 = new Spry.Widget.ValidationTextField("sprytextfield3");
+var sprytextfield4 = new Spry.Widget.ValidationTextField("sprytextfield4");
+//-->
+</script>
+</body>
+</html>

@@ -1,0 +1,231 @@
+# -*- Python -*-
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                   Jiao Lin
+#                      California Institute of Technology
+#                        (C) 2007  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+from vnf.components.Form import Form as base, InputProcessingError
+from vnf.components.Actor import action_link, actionRequireAuthentication
+
+
+class Form( base ):
+
+    class Inventory( base.Inventory ):
+        import pyre.inventory
+        
+        id = pyre.inventory.str('id')
+
+        ncount = pyre.inventory.str(name = 'ncount', default = 1e6 )
+        ncount.meta['label'] = 'Number of neutrons'
+        ncount.meta['tip'] = (
+            'Please input the number of neutrons to be generated ',
+            'by the neutron source',
+            )
+        ncount.meta['tiponerror'] = (
+            'You must enter the number of neutrons as a postive',
+            'number: eg. 10000, 1e8',
+            )
+        
+        jobName = pyre.inventory.str(name = 'jobName', default = 1e6 )
+        jobName.meta['label'] = 'Name of job'
+        jobName.meta['tip'] = (
+            'Please assign a name for this computation',
+            )
+        
+        server = pyre.inventory.str( 'server', default = 'serverid' )
+        server.meta['label'] = 'Computation server'
+        server.meta['tip'] = (
+            'Please choose the server on which the computation will be run',
+            )
+        
+        numprocessors = pyre.inventory.str( 'numprocessors', default = 1 )
+        numprocessors.meta['label'] = 'Number of processors'
+        numprocessors.meta['tip'] = (
+            'Please input number of processors you will need to run',
+            'the computation',
+            )
+        numprocessors.meta['tiponerror'] = (
+            'You must enter number of processors as a positive integer',
+            )
+
+        pass # end of Inventory
+
+
+    def legend(self):
+        'return a legend string'
+        return 'Experiment submission'
+
+
+    def expand(self, form, errors = None):
+        '''expand an existing form with fields from this component'''
+
+        director = self.director
+        experiment = director.clerk.getNeutronExperiment(
+            self.inventory.id)
+
+        prefix = formactor_action_prefix
+        id_field = form.hidden(
+            name = '%s.id' % prefix,
+            value = self.inventory.id )
+
+        if errors:
+            p = form.paragraph( cls = 'error' )
+            p.text = [
+                'The form you filled out contained some errors.',
+                'Please look through the values you have entered',
+                'and correct any mistakes.',
+                ]
+
+        p = form.paragraph()
+        p.text = [
+            'You have done the main steps for setting up your virtual',
+            'neutron experiment: select your instrument, and prepare',
+            'your sample. There are a few more things to configure here.',
+            ]
+
+        property = 'ncount'
+        value = experiment.ncount
+        meta = getattr( self.Inventory, property ).meta
+        field = form.text(
+            id = 'edit_%s' % property,
+            name='%s.%s' % (prefix, property),
+            label = meta['label'],
+            value = value)
+        field.help = ' '.join( meta['tip'] )
+        if errors and property in errors:
+            field.error = ' '.join( meta['tiponerror'] )
+
+        p = form.paragraph()
+        p.text = [
+            'To get your experiment started, you need to select the',
+            'computing resource on which your virtual experiment will',
+            'be performed.',
+            ]
+
+        #get job
+        job_id = experiment.job_id
+        if empty_id(job_id):
+            #create new job
+            from vnf.components.Job import new_job
+            job = new_job(director)
+            
+            # attach to experiment
+            experiment.job_id = job.id
+            # update to db
+            director.clerk.updateRecord( experiment )
+        else:
+            job = director.clerk.getJob( job_id )
+            pass # endif
+        record = job
+            
+        property = 'jobName'
+        meta = getattr( self.Inventory, property ).meta
+        value = record.jobName or 'job for experiment "%s"' % experiment.short_description
+        field = form.text(
+            id = 'jobName',
+            name = '%s.jobName' % prefix,
+            label = meta['label'],
+            value = value )
+        field.help = ' '.join( meta['tip'] )
+
+        director = self.director
+        servers = director.clerk.getServers()
+        entries = [ (server.id, server.server) for server in servers ]
+        ids = [ id for id, server in entries ]
+
+        selected_server = record.server
+        if selected_server not in ids: selected_server = entries[0][0]
+        
+        property = 'server'
+        meta = getattr( self.Inventory, property ).meta
+        selector = form.selector(
+            id = 'server_selector',
+            name = '%s.server' % prefix,
+            entries = entries,
+            label = meta['label'],
+            selected = selected_server,
+            )
+        selector.help = ' '.join( meta['tip'] )
+
+        property = 'numprocessors'
+        meta = getattr( self.Inventory, property ).meta
+        field = form.text(
+            id = 'numprocessors',
+            name = '%s.numprocessors' % prefix,
+            label = meta['label'],
+            value = record.numprocessors,
+            )
+        field.help = ' '.join( meta['tip'] )
+        if errors and property in errors:
+            field.error = ' '.join( meta['tip'] )
+        
+        return
+
+
+    def processUserInputs(self):
+        'process user inputs and save them to db'
+
+        errors = []
+        
+        numprocessors = self.inventory.numprocessors
+        try: numprocessors = int(numprocessors)
+        except: errors.append( 'numprocessors' )
+
+        if numprocessors <0: errors.append( 'numprocessors' )
+
+        ncount = self.inventory.ncount
+        try: ncount = long(float(ncount))
+        except: errors.append( 'ncount' )
+
+        if len(errors):
+            raise InputProcessingError, errors
+        
+        jobName = self.inventory.jobName
+        server = self.inventory.server
+
+        director = self.director
+        experiment = director.clerk.getNeutronExperiment( self.inventory.id )
+        job = director.clerk.getJob( experiment.job_id )
+        
+        job.jobName = jobName
+        job.server = server
+        job.numprocessors = numprocessors
+        director.clerk.updateRecord( job )
+
+        experiment.ncount = ncount
+        director.clerk.updateRecord( experiment )
+        return
+
+
+    def __init__(self, name = None):
+        if name is None:
+            name = 'experiment_submission'
+
+        base.__init__(self, name)
+
+        return
+    
+    pass # end of Form
+
+
+
+from vnf.components.misc import empty_id
+
+formactor_action_prefix = 'actor.form-received' # assumed actor is a form actor
+
+
+def form(): return Form()
+
+
+# version
+__id__ = "$Id$"
+
+# End of file 

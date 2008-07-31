@@ -1,0 +1,105 @@
+# -*- Python -*-
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                   Jiao Lin
+#                      California Institute of Technology
+#                        (C) 2007  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+from vnf.components.Form import Form as base
+from vnf.components.PyHtmlTable import PyHtmlTable
+from vnf.components.Actor import actionRequireAuthentication, action_link
+from vnf.components.DBObjectForm import formactor_action_prefix
+
+class Form( base ):
+
+    class Inventory( base.Inventory ):
+
+        import pyre.inventory as inv
+
+
+        
+    parameters = ['name'] # parameters to edit in the form
+
+    DBTable = '' # db table class name
+
+
+    def  expand(self, form, errors = None, properties = None):
+        '''expand an existing form with fields from this component'''
+        
+        # get default values from the inventory if new or from the previous
+        # record if old
+        if self.inventory.id == '':
+            configuration = self.inventory
+        else:
+            configuration = self.getRecord()
+            
+        prefix = formactor_action_prefix
+          
+        p = form.paragraph()
+        p.text=['Input the shape parameters for a plate sample']  
+        height = form.text(id='height', name='%s.height' % prefix, label='Height')        
+        width = form.text(id='width', name='%s.width' % prefix, label='Width')   
+        thickness = form.text(id='thickness', name='%s.thickness' % prefix, label='Thickness')  
+          
+    def processUserInputs(self, commit = True):   
+        '''process user inputs and save them to db
+        commit: if true, commit to database record. 
+        '''
+
+        # prepare a record to accept user inputs
+        if self.inventory.id == '':
+            record = self.createRecord()
+        else:
+            record = self.getRecord()
+
+        # transfer user inputs to db record
+        for prop in self.parameters:
+            setattr(
+                record, prop,
+                self.inventory.getTraitValue( prop ) )
+
+        # commit if requested
+        if commit:
+            director = self.director
+            if empty_id(record.id):
+                #if record is new, create a new db record
+                id = new_id( director )
+                record.id = id
+                director.clerk.newRecord( record )
+            else:
+                #otherwise, update the record
+                director.clerk.updateRecord( record )
+            pass # endif
+        return record
+
+
+    def getRecord(self):
+        'get DB record'
+        id = self.inventory.id
+        director = self.director
+        clerk = director.clerk
+        return clerk.getRecordByID( self.DBTable, id )
+
+
+    def createRecord(self):
+        type = self.DBTable
+        module = __import__( 'vnf.dom.%s' % type, {}, {}, [''] )
+        table = getattr( module, type )
+        record = table()
+        return record
+    
+
+def form(): return Form( 'input_material' )
+
+
+# version
+__id__ = "$Id$"
+
+# End of file 

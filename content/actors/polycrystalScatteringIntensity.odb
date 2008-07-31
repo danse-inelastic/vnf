@@ -1,0 +1,13 @@
+
+from vnf.components.PolycrystalScatteringIntensity import PolycrystalScatteringIntensity
+
+def actor():
+    return PolycrystalScatteringIntensity()
+
+
+
+# version
+__id__ = "$Id: Login.py,v 1.1.1.1 2006-11-27 00:09:47 aivazis Exp $"
+
+# End of file 
+

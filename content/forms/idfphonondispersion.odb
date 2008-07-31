@@ -1,0 +1,49 @@
+# -*- Python -*-
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                   Jiao Lin
+#                      California Institute of Technology
+#                        (C) 2007  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+
+from vnf.components.DBObjectForm import DBObjectForm as base
+
+
+class IDFPhononDispersion(base):
+
+
+    class Inventory(base.Inventory):
+
+        import pyre.inventory
+        origin = pyre.inventory.str( 'origin' )
+        short_description = pyre.inventory.str( 'short_description' )
+        pass # end of Inventory
+
+
+    parameters = [ 'origin', 'short_description' ]
+    DBTable = 'IDFPhononDispersion'
+
+
+    def __init__(self, name = None):
+        if name is None:
+            name = 'idfphonondispersion'
+
+        base.__init__(self, name)
+
+        return
+
+
+
+def form(): return IDFPhononDispersion()
+
+# version
+__id__ = "$Id$"
+
+# End of file 

@@ -1,0 +1,88 @@
+# -*- Python -*-
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                   Jiao Lin
+#                      California Institute of Technology
+#                        (C) 2007  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+from vnf.components.Form import Form as base
+from vnf.components.Actor import action_link, actionRequireAuthentication
+
+
+class Form( base ):
+
+    class Inventory( base.Inventory ):
+        import pyre.inventory
+        instrument_id = pyre.inventory.str( 'instrument_id' )
+        pass # end of Inventory
+
+
+    def legend(self):
+        'return a legend string'
+        instrument_id = self.inventory.instrument_id
+        instrument = self.director.clerk.getInstrument( instrument_id )
+        return 'Configure instrument %r' % instrument.short_description 
+
+
+    def expand(self, form):
+        '''expand an existing form with fields from this component'''
+
+        instrument_id = self.inventory.instrument_id
+        director = self.director
+        instrument = director.clerk.getInstrument( instrument_id )
+
+        p = form.paragraph()
+        p.text = [
+            '%r instrument is a %s' % (
+            instrument.short_description, instrument.category),
+            ]
+
+        prefix = formactor_action_prefix
+
+        instrument_id_field = form.hidden(
+            name = '%s.instrument_id' % prefix,
+            value = self.inventory.instrument_id )
+        return
+
+
+    def processUserInputs(self):
+        'process user inputs and save them to db'
+
+        director = self.director
+        clerk = director.clerk
+
+        #get the selected instrument
+        instrument = clerk.getInstrument( self.inventory.instrument_id )
+        return
+
+
+    def __init__(self, name = None):
+        if name is None:
+            name = 'configureneutroninstrument'
+
+        base.__init__(self, name)
+
+        return
+    
+    pass # end of Form
+
+
+
+
+formactor_action_prefix = 'actor.form-received' # assumed actor is a form actor
+
+
+def form(): return Form()
+
+
+# version
+__id__ = "$Id$"
+
+# End of file 

@@ -1,0 +1,54 @@
+# -*- Python -*-
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                   Jiao Lin
+#                      California Institute of Technology
+#                        (C) 2007  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+# This component is just for testing purpose.
+# Please read ../actors/testformactor.odb
+
+
+from vnf.components.Form import Form as base
+
+
+class Test( base ):
+
+    class Inventory( base.Inventory ):
+
+        import pyre.inventory
+
+        parameter1 = pyre.inventory.str( 'parameter1', default = 'hello' )
+
+        pass # end of Inventory
+
+
+    def __init__(self, name, *args ):
+        base.__init__(self, name)
+        return
+
+    def processUserInputs(self):
+        parameter1 = self.inventory.parameter1
+        print parameter1
+        return 
+
+    pass # end of Test
+
+
+
+def form(*args):
+    return Test( 'testform', *args ) 
+
+
+
+# version
+__id__ = "$Id$"
+
+# End of file 

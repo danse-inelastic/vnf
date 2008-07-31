@@ -1,0 +1,207 @@
+# -*- Python -*-
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                   Jiao Lin
+#                      California Institute of Technology
+#                        (C) 2007  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+from vnf.components.Form import Form as base, InputProcessingError
+from vnf.components.Actor import action_link, actionRequireAuthentication
+
+
+class Form( base ):
+
+    class Inventory( base.Inventory ):
+        import pyre.inventory
+        experiment_id = pyre.inventory.str( 'experiment_id' )
+        scatterer_id = pyre.inventory.str( 'scatterer_id' )
+        pass # end of Inventory
+
+
+    def legend(self):
+        'return a legend string'
+        return 'Select sample for your experiment'
+
+
+    def expand(self, form, errors = None):
+        '''expand an existing form with fields from this component'''
+
+        experiment_id = self.inventory.experiment_id
+        director = self.director
+        experiment = director.clerk.getNeutronExperiment( experiment_id )
+
+        #get sample assembly
+        sampleassembly_id = experiment.sampleassembly_id
+        if empty_id( sampleassembly_id ):
+            # need to create a new sample assembly
+            from vnf.dom.SampleAssembly import SampleAssembly
+            sampleassembly = director.clerk.new_ownedobject( SampleAssembly )
+            # attach to experiment
+            experiment.sampleassembly_id = sampleassembly.id
+            director.clerk.updateRecord( experiment )
+        else:
+            sampleassembly = director.clerk.getSampleAssembly(
+                sampleassembly_id )
+            pass # endif
+
+        #get sample
+        scatterers = director.clerk.getConfiguredScatterers( sampleassembly.id )
+        samples = filter(
+            lambda scatterer: scatterer.label == 'sample',
+            scatterers )
+
+        #check samples
+        if len(samples)>1:
+            raise RuntimeError, "invalid sample assembly %s: more than 1 samples" % (sampleassembly.short_description)
+        #no sample
+        if len(samples) == 0:
+            #need to create a sample
+            from vnf.dom.ConfiguredScatterer import ConfiguredScatterer
+            configured = director.clerk.new_ownedobject( ConfiguredScatterer )
+            
+            #link to the sample assembly
+            from vnf.dom.SampleAssembly import SampleAssembly
+            table = SampleAssembly.Scatterers
+            reference = director.clerk.new_dbobject( table )
+            reference.localkey = sampleassembly.id
+            reference.remotekey = configured.id
+            reference.label = 'sample'
+            director.clerk.updateRecord( reference )
+
+            sample = configured
+        else:
+            sample = samples[0]
+            pass #endif
+
+        configured_scatterer = sample
+        current_scatterer_id = configured_scatterer.scatterer_id
+        
+        prefix = formactor_action_prefix
+
+        experiment_id_field = form.hidden(
+            name = '%s.experiment_id' % prefix,
+            value = experiment_id )
+
+        if errors:
+            p = form.paragraph( cls = 'error' )
+            p.text = [
+                'The form you filled out contained some errors.',
+                'Please look through the values you have entered',
+                'and correct any mistakes.',
+                ]
+        p = form.paragraph()
+        p.text = [
+            'Sample is the heart of your experiment. By placing',
+            'your sample in the neutron beam of a neutron instrument,',
+            'you can study, for example, phonons or mangons',
+            'in your sample.',
+            ]
+
+        p = form.paragraph()
+        p.text = [
+            'As a start, you could select from a bunch of basic samples here:',
+            ]
+
+        # find all basic sample templates
+        from vnf.dom.Scatterer import Scatterer
+        scatterers = director.clerk.db.fetchall(
+            Scatterer, where = "template='True' and basic='True'" )
+        entries = [ (scatterer.id, scatterer.short_description)
+                    for scatterer in scatterers ]
+        
+        selector = form.selector(
+            id = 'scatterer_selector',
+            name = '%s.scatterer_id' % prefix,
+            entries = entries,
+            label = 'Select sample',
+            selected = current_scatterer_id,
+            )
+        
+        p = form.paragraph()
+        action = actionRequireAuthentication(
+            actor = 'neutronexperimentwizard', sentry = director.sentry,
+            label = 'select a sample from your own sample library',
+            routine = 'select_sample_from_sample_library',
+            id = self.inventory.experiment_id,
+            )
+        link = action_link( action, director.cgihome )
+        p.text = [
+            'Or you could %s.' % link,
+            ]
+
+        p = form.paragraph()
+        action = actionRequireAuthentication(
+            actor = 'neutronexperimentwizard', sentry = director.sentry,
+            label = 'create a new sample and save it to your sample library',
+            routine = 'create_new_sample',
+            id = self.inventory.experiment_id,
+            )
+        link = action_link( action, director.cgihome )
+        p.text = [
+            'Also you could %s.' % link,
+            ]
+        return
+
+
+    def processUserInputs(self):
+        'process user inputs and save them to db'
+
+        director = self.director
+        clerk = director.clerk
+
+        #get the selected experiment
+        experiment = clerk.getNeutronExperiment(
+            self.inventory.experiment_id )
+        #sample assembly
+        sampleassembly = clerk.getSampleAssembly(
+            experiment.sampleassembly_id)
+        #scatterers in sample assembly
+        configured_scatterers = clerk.getConfiguredScatterers(
+            experiment.sampleassembly_id )
+        #samples
+        samples = filter(
+            lambda configured: configured.label == 'sample',
+            configured_scatterers)
+        assert len(samples)==1, 'there should be only 1 sample in sample assembly %r' % sampleassembly.short_description
+        sample = samples[0]
+
+        # set to user chosen scatterer template
+        sample.scatterer_id = self.inventory.scatterer_id
+        # set name
+        scatterer = director.clerk.getScatterer( sample.scatterer_id )
+        sample.short_description = scatterer.short_description
+        
+        clerk.updateRecord( sample )
+        return
+
+
+    def __init__(self, name = None):
+        if name is None:
+            name = 'sample_preparation'
+
+        base.__init__(self, name)
+
+        return
+    
+    pass # end of Form
+
+
+
+formactor_action_prefix = 'actor.form-received' # assumed actor is a form actor
+from vnf.components.misc import empty_id
+
+
+def form(): return Form()
+
+
+# version
+__id__ = "$Id$"
+
+# End of file 

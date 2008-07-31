@@ -1,0 +1,135 @@
+# -*- Python -*-
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                   Jiao Lin
+#                      California Institute of Technology
+#                        (C) 2007  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+from vnf.components.Form import Form as base
+from vnf.components.Actor import action_link, actionRequireAuthentication
+
+
+class Form( base ):
+
+    class Inventory( base.Inventory ):
+        import pyre.inventory
+        experiment_id = pyre.inventory.str( 'experiment_id' )
+        instrument_id = pyre.inventory.str( 'instrument_id' )
+        pass # end of Inventory
+
+
+    def legend(self):
+        'return a legend string'
+        return 'Select a neutron instrument'
+
+
+    def expand(self, form):
+        '''expand an existing form with fields from this component'''
+
+        experiment_id = self.inventory.experiment_id
+        
+        director = self.director
+        experiment = director.clerk.getNeutronExperiment( experiment_id )
+        configuredinstrument_id = experiment.instrument_id
+        if configuredinstrument_id in ['None', None, '']:
+            # need to create a configured_instrument record
+            from vnf.dom.ConfiguredInstrument import ConfiguredInstrument
+            ci = director.clerk.new_ownedobject( ConfiguredInstrument )
+            # and connect this to the experiment
+            configuredinstrument_id = experiment.instrument_id = ci.id
+            director.clerk.updateRecord( experiment )
+            pass # end if
+
+        # get the configure_instrument record
+        configured_instrument = director.clerk.getConfiguredInstrument(
+            configuredinstrument_id)
+        current_instrument_id = configured_instrument.instrument_id
+
+        p = form.paragraph()
+        p.text = [
+            'A neutron experiment requires a neutron instrument.',
+            'The following is a list of neutron instruments supported',
+            'by this virtual neutron facility.',
+            'Please select one for your experiment.',
+            ]
+
+        prefix = formactor_action_prefix
+
+        experiment_id_field = form.hidden(
+            name = '%s.experiment_id' % prefix,
+            value = self.inventory.experiment_id )
+        instruments = director.clerk.indexInstruments()
+        instruments = instruments.itervalues()
+        instrument_templates = filter(
+            lambda instrument: instrument.template,
+            instruments )
+        
+        entries = [
+            (instrument.id,
+             '%s (%s)' % (instrument.short_description, instrument.category)
+             )
+            for instrument in instrument_templates ]
+        
+        import opal.content
+        selector = form.selector(
+            id = 'instrument_selector',
+            name = '%s.instrument_id' % prefix,
+            entries = entries,
+            label = 'Instrument',
+            selected = current_instrument_id,
+            )
+        return
+
+
+    def processUserInputs(self):
+        'process user inputs and save them to db'
+
+        director = self.director
+        clerk = director.clerk
+
+        experiment_id = self.inventory.experiment_id
+        experiment = director.clerk.getNeutronExperiment( experiment_id )
+
+        configuredinstrument_id = experiment.instrument_id
+        
+        # get the configure_instrument record
+        configured_instrument = director.clerk.getConfiguredInstrument(
+            configuredinstrument_id)
+        
+        configured_instrument.instrument_id = self.inventory.instrument_id
+        director.clerk.updateRecord( configured_instrument )
+
+        director.clerk.updateRecord( experiment )
+        return
+
+
+    def __init__(self, name = None):
+        if name is None:
+            name = 'selectneutroninstrument'
+
+        base.__init__(self, name)
+
+        return
+    
+    pass # end of Form
+
+
+
+
+formactor_action_prefix = 'actor.form-received' # assumed actor is a form actor
+
+
+def form(): return Form()
+
+
+# version
+__id__ = "$Id$"
+
+# End of file 

@@ -1,0 +1,149 @@
+#!/usr/bin/env python
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                  Jiao Lin
+#                     California Institute of Technology
+#                       (C) 2007  All Rights Reserved
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+from vnf.components.Form import Form as base
+
+from vnf.components.DBObjectForm import formactor_action_prefix
+
+
+class Form(base):
+
+
+    class Inventory(base.Inventory):
+
+        import pyre.inventory
+
+        id = pyre.inventory.str( 'id', default = '' )
+
+        jobName = pyre.inventory.str(name = 'jobName', default = 1e6 )
+        jobName.meta['label'] = 'Name of job'
+        jobName.meta['tip'] = (
+            'Please assign a name for this job',
+            )
+        
+        server = pyre.inventory.str( 'server', default = 'serverid' )
+        server.meta['label'] = 'Computation server'
+        server.meta['tip'] = (
+            'Please choose the server on which the job will be run',
+            )
+        
+        numprocessors = pyre.inventory.str( 'numprocessors', default = 1 )
+        numprocessors.meta['label'] = 'Number of processors'
+        numprocessors.meta['tip'] = (
+            'Please input the number of processors',
+            )
+
+
+    DBTable = 'Job'
+
+
+    def __init__(self, name = None):
+        if name is None:
+            name = 'job'
+
+        base.__init__(self, name)
+
+        return
+
+
+    def legend(self):
+        'return a legend string'
+        record = self.getRecord()
+        return 'Job %s:' % record.id
+
+
+    def expand(self, form):
+        '''expand an existing form with fields from this component'''
+        
+        record = self.getRecord()
+        
+        prefix = formactor_action_prefix        
+
+        # properties of a job
+
+        id_field = form.hidden(
+            name = '%s.id' % prefix, value = record.id)
+
+        property = 'jobName'
+        meta = getattr( self.Inventory, property ).meta
+        field = form.text(
+            id = 'jobName',
+            name = '%s.jobName' % prefix,
+            label = meta['label'],
+            value = record.jobName )
+        field.help = ' '.join( meta['tip'] )
+
+        director = self.director
+        servers = director.clerk.getServers()
+        entries = [ (server.id, server.server) for server in servers ]
+        ids = [ id for id, server in entries ]
+
+        selected_server = record.server
+        if selected_server not in ids: selected_server = entries[0][0]
+        
+        property = 'server'
+        meta = getattr( self.Inventory, property ).meta
+        selector = form.selector(
+            id = 'server_selector',
+            name = '%s.server' % prefix,
+            entries = entries,
+            label = meta['label'],
+            selected = selected_server,
+            )
+        selector.help = meta['tip']
+
+        property = 'numprocessors'
+        meta = getattr( self.Inventory, property ).meta
+        field = form.text(
+            id = 'numprocessors',
+            name = '%s.numprocessors' % prefix,
+            label = meta['label'],
+            value = record.numprocessors,
+            )
+        field.help = meta['tip']
+
+        return form
+
+
+    def processUserInputs(self):
+        jobName = self.inventory.jobName
+        server = self.inventory.server
+        numprocessors = self.inventory.numprocessors
+        
+        record = self.getRecord()
+
+        record.jobName = jobName
+        record.server = server
+        record.numprocessors = numprocessors
+
+        director = self.director
+        director.clerk.updateRecord( record )
+        
+        return record
+
+
+    def getRecord(self):
+        'get DB record'
+        id = self.inventory.id
+        director = self.director
+        clerk = director.clerk
+        return clerk.getRecordByID( self.DBTable, id )
+
+
+
+def form(): return Form()
+
+
+# version
+__id__ = "$Id$"
+
+# End of file 

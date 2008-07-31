@@ -1,0 +1,72 @@
+# -*- Python -*-
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                   Jiao Lin
+#                      California Institute of Technology
+#                        (C) 2007  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+
+from vnf.components.DBObjectForm import DBObjectForm as base
+
+
+class IQEMonitor(base):
+
+
+    class Inventory(base.Inventory):
+
+        import pyre.inventory
+        Emin = pyre.inventory.float( name = 'Emin' )
+        Emax = pyre.inventory.float( name = 'Emax' )
+        nE = pyre.inventory.int( name = 'nE' )
+
+        Qmin = pyre.inventory.float( name = 'Qmin' )
+        Qmax = pyre.inventory.float( name = 'Qmax' )
+        nQ = pyre.inventory.int( name = 'nQ' )
+    
+        max_angle_in_plane = pyre.inventory.float( name = 'max_angle_in_plane' )
+        min_angle_in_plane = pyre.inventory.float( name = 'min_angle_in_plane' )
+        max_angle_out_of_plane = pyre.inventory.float( name = 'max_angle_out_of_plane' )
+        min_angle_out_of_plane = pyre.inventory.float( name = 'min_angle_out_of_plane' )
+
+        pass # end of Inventory
+
+
+    parameters = [
+        'Emin',
+        'Emax', 
+        'nE',
+        'Qmin', 
+        'Qmax',
+        'nQ',
+        'max_angle_in_plane',
+        'min_angle_in_plane',
+        'max_angle_out_of_plane',
+        'min_angle_out_of_plane', 
+        ]
+
+    DBTable = 'IQEMonitor'
+
+
+    def __init__(self, name = None):
+        if name is None:
+            name = 'iqemonitor'
+
+        base.__init__(self, name)
+
+        return
+
+
+
+def form(): return IQEMonitor()
+
+# version
+__id__ = "$Id$"
+
+# End of file 

@@ -1,0 +1,122 @@
+# -*- Python -*-
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                   Jiao Lin
+#                      California Institute of Technology
+#                        (C) 2007  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+
+from vnf.components.DBObjectForm import DBObjectForm as base, formactor_action_prefix
+
+
+class Instrument(base):
+
+    class Inventory(base.Inventory):
+
+        import pyre.inventory
+
+        componentsequence = pyre.inventory.list( 'componentsequence' )
+
+        import vnf.inventory
+        geometer = vnf.inventory.geometer( 'geometer' )
+
+        pass # end of Inventory
+
+
+    parameters = ['componentsequence']
+    DBTable = 'Instrument'
+
+
+    def __init__(self, name = None):
+        if name is None:
+            name = 'instrument'
+
+        base.__init__(self, name)
+
+        return
+
+
+    def expand(self, form):
+        '''expand an existing form with fields from this component'''
+
+        base.expand( self, form )
+
+        clerk = self.director.clerk
+        record = self.getRecord()
+
+        #
+        prefix = formactor_action_prefix
+        
+        # geometer fields
+        instrument = clerk.getHierarchy( record )
+        geometer = instrument.geometer
+        for component in instrument.componentsequence:
+            record = geometer[ component ]
+            reference, position, orientation = \
+                       record.reference_label, record.position, record.orientation
+
+            name = '%s.geometer.%s' % (prefix, component, )
+            value = '%s, %s, %s' % (position, orientation, reference or '')
+            
+            field = form.text(
+                id = component,
+                name = name,
+                label = component,
+                value =  value )
+
+            continue
+            
+        #p = form.paragraph()
+        #p.text = [
+        #    ]
+        return
+
+
+    def processUserInputs(self):
+        
+        base.processUserInputs( self )
+        
+        clerk = self.director.clerk
+        record = self.getRecord()
+
+        geometer = self.inventory.geometer
+        registry = geometer.registry
+
+        geometer_records = clerk.getInstrumentGeometer( record )
+        for component, value in registry:
+
+            value = eval(value)
+
+            if len(value) == 3:
+                position, orientation, reference = value
+            elif len(value) == 2:
+                position, orientation = value
+                reference = ''
+            else:
+                raise ValueError, value
+            
+            record = geometer_records[ component ]
+            record.position = position
+            record.orientation = orientation
+            record.reference_label = reference
+
+            clerk.updateRecord( record )
+
+            continue
+        
+        return
+
+
+def form(): return Instrument()
+
+# version
+__id__ = "$Id$"
+
+# End of file 

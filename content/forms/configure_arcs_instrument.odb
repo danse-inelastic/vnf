@@ -1,0 +1,206 @@
+# -*- Python -*-
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                   Jiao Lin
+#                      California Institute of Technology
+#                        (C) 2007  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+from vnf.components.Form import Form as base, InputProcessingError
+from vnf.components.Actor import action_link, actionRequireAuthentication
+
+
+instrument_name = 'ARCS'
+
+class Form( base ):
+
+    class Inventory( base.Inventory ):
+        import pyre.inventory
+        id = pyre.inventory.str( 'id' )
+        id.meta['tip'] = 'id of configured-instrument record'
+        
+        Ei = pyre.inventory.str( 'Ei', default = 70 )
+        Ei.meta['tiponerror'] = 'Please input the neutron energy incident on the sample as a float number in the range of (0, 200). The unit is meV.'
+        Ei.meta['label'] = 'Incident neutron energy'
+        Ei.meta['tip'] = [
+            'Normal operation of ARCS requires',
+            'setting incident energy by tuning the Fermi chopper.',
+            'For this virtual ARCS instrument, you can set',
+            'the incident neutron energy by directly input',
+            'it in the following text box.',
+            'This energy should be chosen a bit larger than the',
+            'energies of excitations of interest. unit: meV.',
+            #'Typical values for incident neutron energy',
+            #'for, for example, a phonon measurement are 60~100 meV.',
+            ]
+
+        Eiresolution = pyre.inventory.str( 'Eiresolution', default = 0.03)
+        Eiresolution.meta['tiponerror'] = 'Please input the desired energy resolution (deltaEi/Ei) as a float number in the range of (0.02, 0.06).'
+        Eiresolution.meta['label'] = 'Energy resolution'
+        Eiresolution.meta['tip'] = [
+            'You can also change the energy resolution of incident',
+            'neutron beam by tuning the Fermi chopper.',
+            'Please input your desired energy resolution.',
+            ]
+
+        tofmin = pyre.inventory.str('tofmin', default=0.)
+        tofmin.meta['tiponerror'] = 'Please input the lower end of tof window as a positive float number. The unit is microsecond.'
+
+        tofmax = pyre.inventory.str('tofmax', default=16666.)
+        tofmax.meta['tiponerror'] = 'Please input the upper end of tof window as a positive float number. The unit is microsecond.'
+
+        tofresolution = pyre.inventory.str( 'tofresolution', default = 0.1)
+        tofresolution.meta['tiponerror'] = 'Please input the resolution of tof axis as a positive float number. The unit is microsecond.'
+        
+        pass # end of Inventory
+
+
+    def legend(self):
+        'return a legend string'
+        return 'Configure %s instrument' % instrument_name
+
+
+    def expand(self, form, errors = None, advanced = False):
+        '''expand an existing form with fields from this component'''
+
+        director = self.director
+        instrument = director.clerk.getInstrument( instrument_name )
+        id = self.inventory.id
+        configured_instrument = director.clerk.getConfiguredInstrument(id)
+        assert configured_instrument.instrument_id == instrument_name
+        
+        configuration_id = configured_instrument.configuration_id
+        if configuration_id in [None, 'None', '']:
+            #need to create a new configuration
+            configuration = director.clerk.newInstrumentConfiguration(
+                instrument_name )
+            #attach the configuration to the configured_instrument
+            configured_instrument.configuration_id = configuration.id
+            director.clerk.updateRecord( configured_instrument )
+        else:
+            configuration = director.clerk.getInstrumentConfiguration(
+                instrument_name, configuration_id )
+
+        prefix = formactor_action_prefix
+
+        id_field = form.hidden(
+            name = '%s.id' % prefix,
+            value = self.inventory.id )
+
+        if errors:
+            p = form.paragraph( cls = 'error' )
+            p.text = [
+                'The form you filled out contained some errors.',
+                'Please look through the values you have entered',
+                'and correct any mistakes.',
+                ]
+        p = form.paragraph()
+        p.text = [
+            '%s is a %s.' % (
+            instrument_name, instrument.category),
+            
+            'Such instruments can be used to measure',
+            'excitations such as phonons and magnons.',
+            ]
+
+        props = ['Ei', 'Eiresolution']
+
+        for property in props:
+            meta = getattr( self.Inventory, property ).meta
+            value = getattr( configuration, property )
+            field = form.text(
+                id = 'edit_%s' % property,
+                name='%s.%s' % (prefix, property),
+                label = meta['label'],
+                value = value)
+            field.help = ' '.join( meta['tip'] )
+            if errors and property in errors:
+                field.error = meta['tiponerror']
+                pass # end if
+            continue
+
+        if advanced:
+            p = form.paragraph()
+            p.text = [
+                'The ARCS instrument is a TOF instrument.',
+                'The neutrons are caught by He3 tubes.',
+                'For any neutron event caught, the ID of the pixel',
+                'and the tof bin number are recorded.',
+                'There is a tof window in which events are recorded.',
+                'By default, all events from tof=0 (when neutrons',
+                'just leave moderator) to tof=1/frequency (just',
+                'before the next neutro pulse. frequency is the',
+                'frequency of the neutron pulse) are recorded.',
+                'ARCS tof resolution is 100 nanoseconds.',
+                'In advanced mode, you can change these parameters.',
+            ]
+            ### need more implementations here for advanced options ###
+
+        return
+
+
+    def processUserInputs(self):
+        'process user inputs and save them to db'
+
+        director = self.director
+        clerk = director.clerk
+
+        #get the selected instrument
+        configured_instrument = clerk.getConfiguredInstrument(
+            self.inventory.id)
+        assert configured_instrument.instrument_id == instrument_name
+        #get configuration
+        configuration = clerk.getInstrumentConfiguration(
+            instrument_name, configured_instrument.configuration_id )
+
+        errors = []
+        
+        Ei = self.inventory.Ei
+        try: Ei = float(Ei)
+        except:  errors.append('Ei')
+        if Ei < 0 or Ei > 200.: errors.append( 'Ei' )
+
+        Eiresolution = self.inventory.Eiresolution
+        try: Eiresolution = float(Eiresolution)
+        except: errors.append('Eiresolution')
+        if Eiresolution < 0.02 or Eiresolution > 0.06:
+            errors.append( 'Eiresolution' )
+            pass # endif
+        
+        if len(errors): raise InputProcessingError, errors
+
+        props = ['Ei', 'Eiresolution']
+        for prop in props:
+            setattr(configuration, prop, eval(prop) )
+            continue
+        clerk.updateRecord( configuration )
+        return
+
+
+    def __init__(self, name = None):
+        if name is None:
+            name = 'configure_arcs_instrument'
+
+        base.__init__(self, name)
+
+        return
+    
+    pass # end of Form
+
+
+
+formactor_action_prefix = 'actor.form-received' # assumed actor is a form actor
+
+def form(): return Form()
+
+
+# version
+__id__ = "$Id$"
+
+# End of file 

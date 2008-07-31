@@ -1,0 +1,159 @@
+# -*- Python -*-
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                   Jiao Lin
+#                      California Institute of Technology
+#                        (C) 2007  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+from vnf.components.Form import Form as base, InputProcessingError
+from vnf.components.Actor import action_link, actionRequireAuthentication
+
+
+class Form( base ):
+
+    class Inventory( base.Inventory ):
+        import pyre.inventory
+        instrument_id = pyre.inventory.str( 'instrument_id' )
+        Ei = pyre.inventory.str( 'Ei', default = 70 )
+        Ei.meta['tiponerror'] = 'Please input the neutron energy incident on the sample as a float number in the range of (0, 200). The unit is meV.'
+
+        tofmin = pyre.inventory.str('tofmin', default=0.)
+        tofmin.meta['tiponerror'] = 'Please input the lower end of tof window as a positive float number. The unit is microsecond.'
+
+        tofmax = pyre.inventory.str('tofmax', default=16666.)
+        tofmax.meta['tiponerror'] = 'Please input the upper end of tof window as a positive float number. The unit is microsecond.'
+
+        tofresolution = pyre.inventory.str( 'tofresolution', default = 0.1)
+        tofresolution.meta['tiponerror'] = 'Please input the resolution of tof axis as a positive float number. The unit is microsecond.'
+        
+        pass # end of Inventory
+
+
+    def legend(self):
+        'return a legend string'
+        instrument_id = self.inventory.instrument_id
+        instrument = self.director.clerk.getInstrument( instrument_id )
+        return 'Configure neutron instrument %r' % (
+            instrument.short_description,)
+
+
+    def expand(self, form, errors = None, advanced = False):
+        '''expand an existing form with fields from this component'''
+
+        instrument_id = self.inventory.instrument_id
+        director = self.director
+        instrument = director.clerk.getInstrument( instrument_id )
+        instrument = director.clerk.getHierarchy( instrument )
+        components = instrument.components
+
+        prefix = formactor_action_prefix
+
+        instrument_id_field = form.hidden(
+            name = '%s.instrument_id' % prefix,
+            value = self.inventory.instrument_id )
+
+        if errors:
+            p = form.paragraph( cls = 'error' )
+            p.text = [
+                'The form you filled out contained some errors.',
+                'Please look through the values you have entered',
+                'and correct any mistakes.',
+                ]
+        p = form.paragraph()
+        p.text = [
+            '%r instrument is a %s.' % (
+            instrument.short_description, instrument.category),
+            'Such instruments can be used to measure interesting',
+            'excitations such as phonons and magnons.',
+            'In doing so, we need to set the neutron',
+            'incident energy by tuning the Fermi chopper.',
+            'For this virtual ARCS instrument, you can set',
+            'the incident neutron energy by directly input',
+            'it in the following text box.',
+            'Typical values for incident neutron energy',
+            'for, for example, a phonon measurement are 60~100 meV.',
+            ]
+        property = 'Ei'
+        value = instrument.source.realcomponent.energy
+        field = form.text(
+            id = property,
+            name='%s.%s' % (prefix, property),
+            label= 'Incident neutron energy',
+            value = value)
+        if errors and property in errors:
+            field.error = getattr(
+                self.Inventory, property).meta['tiponerror']
+            pass # end if
+
+        if advanced:
+            p = form.paragraph()
+            p.text = [
+                'The ARCS instrument is a TOF instrument.',
+                'The neutrons are caught by He3 tubes.',
+                'For any neutron event caught, the ID of the pixel',
+                'and the tof bin number are recorded.',
+                'There is a tof window in which events are recorded.',
+                'By default, all events from tof=0 (when neutrons',
+                'just leave moderator) to tof=1/frequency (just',
+                'before the next neutro pulse. frequency is the',
+                'frequency of the neutron pulse) are recorded.',
+                'ARCS tof resolution is 100 nanoseconds.',
+                'In advanced mode, you can change these parameters.',
+            ]
+
+        return
+
+
+    def processUserInputs(self):
+        'process user inputs and save them to db'
+
+        director = self.director
+        clerk = director.clerk
+
+        #get the selected instrument
+        instrument = clerk.getInstrument( self.inventory.instrument_id )
+        instrument = clerk.getHierarchy( instrument )
+
+        errors = []
+        
+        Ei = self.inventory.Ei
+        try: Ei = float(Ei)
+        except:  errors.append('Ei')
+        if Ei < 0 or Ei > 200.: errors.append( 'Ei' )
+        
+        if len(errors): raise InputProcessingError, errors
+
+        source = instrument.source.realcomponent
+        source.energy = Ei
+        clerk.updateRecord( source )
+        return
+
+
+    def __init__(self, name = None):
+        if name is None:
+            name = 'configure_arcs_simple_instrument'
+
+        base.__init__(self, name)
+
+        return
+    
+    pass # end of Form
+
+
+
+formactor_action_prefix = 'actor.form-received' # assumed actor is a form actor
+
+def form(): return Form()
+
+
+# version
+__id__ = "$Id$"
+
+# End of file 

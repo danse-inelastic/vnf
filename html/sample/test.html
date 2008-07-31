@@ -1,0 +1,34 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html><head>
+<meta content="text/html; charset=ISO-8859-1" http-equiv="content-type"><title>test</title>
+
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript">
+$(document).ready(function()
+{
+//hide the all of the element with class msg_body
+$(".msg_body").hide();
+//toggle the componenet with class msg_body
+$(".msg_head").click(function()
+{
+$(this).next(".msg_body").slideToggle(600);
+});
+});
+</script>
+</head><body>
+Select a sample shape:<br>
+<br>
+Plate<input onselect="changePanel" name="button" label="Plate" value="plate" type="radio">
+&nbsp; &nbsp; &nbsp;Cylinder<input onselect="cylinderPanel" name="same" value="cylinder" type="radio"><br>
+<br>
+<div class="msg_list">
+<div class="msg_body">orem ipsum dolor sit amet,
+consectetuer adipiscing elit orem ipsum
+dolor sit amet, consectetuer adipiscing elit
+</div>
+<div class="msg_body">
+orem ipsum dolor sit amet, consectetuer adipiscing elit orem ipsum
+dolor sit amet, consectetuer adipiscing elit
+</div>
+</div>
+</body></html>

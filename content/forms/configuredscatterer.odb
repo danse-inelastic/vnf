@@ -1,0 +1,50 @@
+# -*- Python -*-
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                   Jiao Lin
+#                      California Institute of Technology
+#                        (C) 2007  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+
+from vnf.components.Form import Form as base
+
+
+class Form(base):
+
+
+    class Inventory(base.Inventory):
+
+        import pyre.inventory
+
+        pass # end of Inventory
+
+
+    def expand(self, form): return
+
+    def legend(self): return 'Configured scatterer'
+
+    def processUserInputs(self): return
+
+    def __init__(self, name = None):
+        if name is None:
+            name = 'configuredscatterer'
+
+        base.__init__(self, name)
+
+        return
+
+
+
+def form(): return Form()
+
+# version
+__id__ = "$Id$"
+
+# End of file 

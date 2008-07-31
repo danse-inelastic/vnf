@@ -1,0 +1,54 @@
+# -*- Python -*-
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                   Jiao Lin
+#                      California Institute of Technology
+#                        (C) 2007  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+# This component is just for testing purpose. try the following commands:
+# $ ./main.sh -actor=testformactor -actor.form-received=testform --actor.form-received.parameter1=hi
+# $ ./main.sh -actor=testformactor -actor.form-received=testform --help-components --actor.help-components
+
+
+from vnf.components.FormActor import FormActor as base
+
+
+class Test( base ):
+
+    class Inventory( base.Inventory ):
+
+        import pyre.inventory
+
+        pass # end of Inventory
+
+
+    def __init__(self, name = 'testformactor'):
+        base.__init__(self, name)
+        return
+
+
+    def default(self, director):
+        form_received = self.form_received
+        form_received.processUserInputs()
+        return
+
+    pass # end of Test
+
+
+
+def actor():
+    return Test( ) 
+
+
+
+# version
+__id__ = "$Id$"
+
+# End of file 

@@ -1,0 +1,54 @@
+# -*- Python -*-
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                      California Institute of Technology
+#                        (C) 2007  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+from vnf.components.Form import Form as base
+from vnf.components.PyHtmlTable import PyHtmlTable
+from vnf.components.Actor import actionRequireAuthentication, action_link
+from vnf.components.DBObjectForm import formactor_action_prefix
+
+class Form( base ):
+
+    class Inventory( base.Inventory ):
+
+        import pyre.inventory as inv
+        id = inv.str( 'id', default = '' )
+        id.meta['tip'] = 'Scattering kernel calculation id'
+        
+        short_description = inv.str('short_description', default = '' )
+        short_description.meta['tip'] = 'A short description'    
+
+    def expand(self, form):
+        prefix = formactor_action_prefix
+        p = form.paragraph()
+        p.text = ['''The Local orbital DFT kernel generator uses the Fireball
+        local orbital DFT code to simulate large systems (~1000 atoms) from 
+        first principles.  Future engines will include Gamess and NWChem.''',
+        '<a href="/java/Fireball.jnlp">Launch Fireball</a><br>']
+    
+    def getRecord(self):
+        'get DB record'
+        return self.director.clerk.getRecordByID( self.DBTable, self.inventory.id )
+    
+def build_run( experiment, path ):
+    from vnf.components.NeutronExperimentSimulationRunBuilder import Builder
+    return Builder(path).render(experiment)
+
+
+
+def form(): return Form( 'abInitioHarmonic' )
+
+
+# version
+__id__ = "$Id$"
+
+# End of file 

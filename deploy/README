@@ -1,0 +1,12 @@
+Perhaps the best way to do this is to copy only the explicitly CGI material into this directory and then search a third user's dv directory 
+for pyre components.  The third user will be cgiGuy.
+
+Instead of executing a quick shell script, environment variables for paths should be set another way, perhaps give cgiGuy control over all the
+apache files (dangerous) or tinker with apache's environment variables (better idea).
+
+For now, however, it would be best to search both Jiao's and Brandon's stuff (during testing phase) and copy 
+content,
+config,
+sampleassemblies,
+etc.
+directly to the /usr/lib/cgi-bin. The contents of the html/ directory are copied to /var/www/apache2-default/

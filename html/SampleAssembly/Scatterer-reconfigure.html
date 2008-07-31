@@ -1,0 +1,73 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>Sample Assembly-New Scatterer</title>
+</head>
+
+<body>
+<h1>Sample Assembly Builder</h1>
+<h2> Scatterer</h2>
+<table width="80%" border="0" align="center">
+  <tr>
+    <td height="201"><form id="form1" name="form1" method="post" action="">
+      <p>
+        <label>Name
+        <input name="name" type="text" id="name" value="fcc-Ni-plate" />
+</label>
+</p>
+      <p>
+        <label>Shape
+          <select name="shape" size="1" id="shape">
+          <option value="1">Cylinder</option>
+          <option value="2" selected="selected">Plate</option>
+          </select>
+        </label>
+      </p>
+      <p>
+        <label></label>
+        <label>Position
+          <input name="position" type="text" id="position" value="0,0,0" />
+          </label>
+        </p>
+      <p>
+        <label>Orientation
+          <input name="orientation" type="text" id="orientation" value="0,0,0" />
+        </label>
+      </p>
+      <label></label><p><label>Phase
+          <select name="phase" id="phase">
+          <option value="1" selected="selected">Polycrystal</option>
+          <option value="0">Single Crystal</option>
+        </select>
+        </label><label></label>
+      </p>
+      </form></td>
+  </tr>
+</table>
+<h3>Polycrystal Details</h3>
+<table width="80%" border="0" align="center">
+  <tr>
+    <td><form id="form2" name="form2" method="post" action="">
+      <label>Chemical Formula
+        <input name="chemical_formula" type="text" id="chemical_formula" value="Ni" />
+        </label>
+      <p>
+        <label>Crystal Structure
+        <select name="crystal_structure" id="crystal_structure">
+          <option value="1">Crystal Builder</option>
+          <option>xyz file</option>
+        </select>
+        </label>
+      </p>
+    </form>
+    </td>
+  </tr>
+</table>
+<p>&nbsp;</p>
+<p><a href="fccNi-kernel-configure.html">Next</a></p>
+<p><a href="step8-SampleAssembly-newscatterer2.html">Cancel</a> </p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+</body>
+</html>
