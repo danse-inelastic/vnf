@@ -4,5 +4,4 @@ export PYTHONPATH=$EXPORT_ROOT/modules:$PYTHONPATH
 export PATH=$EXPORT_ROOT/bin:$PATH
 export LD_LIBRARY_PATH=$EXPORT_ROOT/lib:$LD_LIBRARY_PATH
 
-export PYTHONPATH=/Users/linjiao/dv/danse/vnf2:$PYTHONPATH
-cd /Users/linjiao/dv/danse/vnf2/cgi && /usr/local/bin/python main.py $@
+cd $EXPORT_ROOT/vnf/cgi && /usr/local/bin/python main.py $@

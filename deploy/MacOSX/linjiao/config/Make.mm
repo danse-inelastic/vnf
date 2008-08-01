@@ -11,23 +11,35 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 PROJECT = vnf
-PACKAGE = bin
+PACKAGE = config
 
 #--------------------------------------------------------------------------
 #
 
-all: tidy
+all: export-config-files
+	BLD_ACTION="all" $(MM) recurse
+
+tidy::
+	BLD_ACTION="tidy" $(MM) recurse
+
+clean::
+	BLD_ACTION="clean" $(MM) recurse
+
+distclean::
+	BLD_ACTION="distclean" $(MM) recurse
 
 
-daemons: tidy
-	@echo "Launching journald (the journal daemon)"
-	./journald.py
-	sleep 1
-	@echo "Launching ipad (the authentication daemon)"
-	./ipad.py
-	sleep 1
-	@echo "Launching idd (the unique identifier daemon)"
-	./idd.py
+EXPORT_DATAFILES = \
+	main.pml \
+
+CP_F = cp -f
+EXPORT_DATA_PATH = $(EXPORT_ROOT)/$(PROJECT)/$(PACKAGE)
+
+export-config-files:: 
+	mkdir -p $(EXPORT_DATA_PATH); \
+	for x in $(EXPORT_DATAFILES); do { \
+	  $(CP_F) $$x $(EXPORT_DATA_PATH)/ ; \
+        } done
 
 
 # version

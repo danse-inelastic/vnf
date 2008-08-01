@@ -19,10 +19,10 @@
 
   <component name='main'>
     <property name='debug'>1</property>
-    <property name='home'>http://vnf.http.server/vnf/</property>
-    <property name='cgi-home'>http://vnf.http.server/cgi-bin/vnf/main.sh</property>
-    <property name='imagepath'>/vnf/images</property>
-    <property name='javascriptpath'>/vnf/javascripts</property>
+    <property name='home'>http://localhost/~linjiao/vnf2/</property>
+    <property name='cgi-home'>http://localhost/~linjiao/cgi-bin/vnf2/main.sh</property>
+    <property name='imagepath'>/~linjiao/vnf2/images</property>
+    <property name='javascriptpath'>/~linjiao/vnf2/javascripts</property>
   </component>
 
 </inventory>
