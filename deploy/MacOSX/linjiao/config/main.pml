@@ -20,7 +20,7 @@
   <component name='main'>
     <property name='debug'>1</property>
     <property name='home'>http://localhost/~linjiao/vnf2/</property>
-    <property name='cgi-home'>http://localhost/~linjiao/cgi-bin/vnf2/main.sh</property>
+    <property name='cgi-home'>http://localhost/~linjiao/cgi-bin/vnf2/main.cgi</property>
     <property name='imagepath'>/~linjiao/vnf2/images</property>
     <property name='javascriptpath'>/~linjiao/vnf2/javascripts</property>
   </component>
