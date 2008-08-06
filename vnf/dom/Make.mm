@@ -70,6 +70,7 @@ EXPORT_PYTHON_MODULES = \
 	Table.py \
 	User.py \
 	VirtualObject.py \
+	_referenceset.py \
 
 
 

@@ -1,10 +1,10 @@
-# -*- Python -*-
+#!/usr/bin/env python
 #
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
-#                                   Jiao Lin
+#                                  Jiao Lin
 #                      California Institute of Technology
-#                        (C) 2007  All Rights Reserved
+#                        (C) 2008  All Rights Reserved
 #
 # {LicenseText}
 #
@@ -12,22 +12,53 @@
 #
 
 
+'''
+ReferenceSet
+
+Model a 1-M relation.
+
+Useful to describe parent-children relationship.
+'''
+
+
+class ReferenceSet(object):
+
+
+    def __init__(self, name, tableRegistry):
+        self.name = name
+        self.tableRegistry = tableRegistry
+        return
+
+
+    def __get__(self, instance, cls = None):
+        if not isinstance( instance, Table ):
+            raise RuntimeError, "%s is not a db record"
+
+        table = instance.__class__
+
+        try:
+            table.id
+        except AttributeError:
+            msg = "Table %s does not have a 'id' column. Cannot get reference set" % (
+                table, )
+            raise RuntimeError, msg
+
+        id = instance.id
+        return referenceset( self.name, id, table, self.tableRegistry )
+
+
+    def __set__(self, *args, **kwds):
+        msg = """Reference set is not setable by syntax
+    container.references = new_references
+To update references, use the methods of references. use help to find out:
+    help( container.references )
+"""
+        raise RuntimeError, msg
+
+
+
 from Table import Table
-
-
-class ReferenceSet(Table):
-
-
-    import pyre.db
-    
-    # columns
-    id = pyre.db.varchar( name = 'id', length = 100 )
-    id.constraints = 'PRIMARY KEY'
-    
-    localkey = pyre.db.varchar( name = 'localkey', length = 100 )
-    remotekey = pyre.db.varchar( name = 'remotekey', length = 100 )
-
-    pass # end of ReferenceSet
+from _referenceset import referenceset
 
 
 # version
