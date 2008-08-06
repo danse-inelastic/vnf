@@ -24,9 +24,8 @@ Useful to describe parent-children relationship.
 class ReferenceSet(object):
 
 
-    def __init__(self, name, tableRegistry):
+    def __init__(self, name):
         self.name = name
-        self.tableRegistry = tableRegistry
         return
 
 
@@ -44,7 +43,7 @@ class ReferenceSet(object):
             raise RuntimeError, msg
 
         id = instance.id
-        return referenceset( self.name, id, table, self.tableRegistry )
+        return referenceset( self.name, id, table )
 
 
     def __set__(self, *args, **kwds):

@@ -31,10 +31,6 @@ class User(Table):
     password.meta['tip'] = "the user's password"
 
     
-import pyre.db
-tableRegistry = pyre.db.tableRegistry()
-
-
 class Group(Table):
 
     name = "groups"
@@ -45,10 +41,12 @@ class Group(Table):
     id.constraints = "PRIMARY KEY"
 
     import vnf.dom
-    users = vnf.dom.referenceSet( name = 'users', tableRegistry = tableRegistry )
+    users = vnf.dom.referenceSet( name = 'users' )
 
 
+from vnf.dom.registry import tableRegistry
 tableRegistry.register( User )
+tableRegistry.register( Group )
 
 
 def idgenerator():
@@ -125,11 +123,24 @@ class DbApp(Script):
         group = Group()
 
         users = group.users
-        print users
-        print users.dereference( self.db )
+        print 'referenceset instance: %s' % users
+        print 'users: %s' % (users.dereference( self.db ), )
 
+        print '> add one user' 
         users.add( [user1], self.db )
-        print users.dereference( self.db )
+        print '  users: %s' % (users.dereference( self.db ), )
+
+        print '> delete one use'
+        users.delete( user1, self.db )
+        print '  users: %s' % (users.dereference( self.db ), )
+
+        print '> add two users'
+        users.add( [user1, user2], self.db )
+        print '  users: %s' % (users.dereference( self.db ), )
+
+        print '> remove all users'
+        users.clear( self.db )
+        print '  users: %s' % (users.dereference( self.db ), )
         return
 
 

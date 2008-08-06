@@ -12,39 +12,35 @@
 #
 
 
+
+from registry import tableRegistry
+
+
 idgenerator = None  # unique id generator
 
 class referenceset:
 
-    separator = '###'
 
-    def __init__(self, name, id, table, tableRegistry):
+    def __init__(self, name, id, table):
         '''
-        name: name of this reference set
         table, id: identify the parent record
         '''
         self.name = name
         self.table = table
         self.id = id
-        self.tableRegistry = tableRegistry
         return
 
 
-    def key(self):
-        tokens = [ self.name, self.table.name, self.id ]
-        return self.separator.join( tokens )
-    
-    
     def dereference(self, db):
         records = self._get_referencetable_records( db )
-        references = [ record.remotekey for record in records ]
-        return [ self._dereference( r, db ) for r in references ]
+        references = [ record.element for record in records ]
+        return [ r.dereference( db ) for r in references ]
 
 
     def clear(self, db):
         records = self._get_referencetable_records( db )
         for record in records:
-            db.deleteRow( _ReferenceTable, where = 'id="%s"' % record.id )
+            db.deleteRow( _ReferenceTable, where = "id='%s'" % record.id )
             continue
         return
 
@@ -52,28 +48,36 @@ class referenceset:
     def delete(self, record, db):
         # here, the record is a db record that this reference set
         # refers to.
-        where = 'localkey="%s" and remotekey="%s"' % (
-            self.key(), self._remotekey(record))
+        # The record itself is not removed. it should be manually removed if necessary.
+        temp = _ReferenceTable()
+        temp.container = self._container_ref()
+        temp.element = self._element_ref( record )
+        where = "containerlabel='%s' and container='%s' and element='%s'" % (
+            self.name, temp.container, temp.element)
         db.deleteRow( _ReferenceTable, where = where)
         return
     
 
     def add(self, references, db):
-        localkey = self.key()
+        container_ref = self._container_ref()
         for reference in references:
-            remotekey = self._remotekey( reference )
+            element_ref = self._element_ref( reference )
             row = _ReferenceTable()
             row.id = self._id()
-            row.localkey = localkey
-            row.remotekey = remotekey
+            row.containerlabel = self.name
+            row.container = container_ref
+            row.element = element_ref
             db.insertRow( row )
             continue
         return
 
 
-    def _remotekey(self, record):
-        tokens = [ record.__class__.name, record.id ]
-        return self.separator.join( tokens )
+    def _container_ref(self):
+        return self.table, self.id
+    
+    
+    def _element_ref(self, record):
+        return record.__class__, record.id
 
 
     def _id(self):
@@ -84,26 +88,17 @@ class referenceset:
         return generator()
     
 
-    def _dereference(self, reference_str, db):
-        table, id = self._decode_reference( reference_str )
-        return _dereference( id, table, db )
-    
-
-    def _decode_reference(self, reference):
-        tablename, id = reference.split( self.separator )
-        table = self.tableRegistry.get( tablename )
-        return table, id
-
-
     def _get_referencetable_records(self, db):
-        localkey = self.key()
-        return db.fetchall( _ReferenceTable, where = "localkey='%s'" % localkey )
+        container_ref = self._container_ref()
+        temp = _ReferenceTable()
+        temp.container = container_ref
+        
+        containerlabel = self.name
+        where = "containerlabel='%s' and container='%s'" % (
+            containerlabel, temp.container ) 
+        return db.fetchall( _ReferenceTable, where = where )
 
 
-
-def _dereference(id, table, db):
-    return reference(id, table).dereference( db )
-from pyre.db._reference import reference
 
 
 from Table import Table
@@ -116,9 +111,13 @@ class _ReferenceTable(Table):
     # columns
     id = pyre.db.varchar( name = 'id', length = 100 )
     id.constraints = 'PRIMARY KEY'
-    
-    localkey = pyre.db.varchar( name = 'localkey', length = 100 )
-    remotekey = pyre.db.varchar( name = 'remotekey', length = 100 )
+
+    containerlabel = pyre.db.varchar( name = 'containerlabel', length = 100 )
+    elementlabel = pyre.db.varchar( name = "elementlabel", length = 100 )
+
+    container = pyre.db.versatileReference( name = 'container', tableRegistry = tableRegistry )
+    element = pyre.db.versatileReference( name = 'element', tableRegistry = tableRegistry )
+
 
 
 
