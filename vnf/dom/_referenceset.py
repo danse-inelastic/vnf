@@ -42,6 +42,7 @@ class referenceset:
         return ret
 
 
+
     def clear(self, db):
         records = self._get_referencetable_records( db )
         for record in records:

@@ -29,7 +29,7 @@ class NeutronExperiment(base):
 
     sampleassembly = pyre.db.reference( name = 'sampleassembly', table = SampleAssembly )
 
-    sampleenvironment = pyre.db.varchar( name = 'sampleenvironment', table = SampleEnvironment )
+    sampleenvironment = pyre.db.reference( name = 'sampleenvironment', table = SampleEnvironment )
 
     ncount = pyre.db.real( name = 'ncount', default = 1e6)
 

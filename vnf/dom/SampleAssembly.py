@@ -24,6 +24,7 @@ class SampleAssembly(OwnedObject):
     status = pyre.db.varchar( name = 'status', default = 'new', length = 16 )
     template = pyre.db.boolean( name = 'template', default = False)
 
+    import vnf.dom
     scatterers = vnf.dom.referenceSet( name = 'scatterers' )
 
     pass # end of SampleAssembly

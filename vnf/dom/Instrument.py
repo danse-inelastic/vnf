@@ -12,18 +12,16 @@
 #
 
 
+
 from OwnedObject import OwnedObject
-
-
 class Instrument(OwnedObject):
     
     name = "instruments"
     
-    import pyre.db
-
-    from registry import tableRegistry
-    components = pyre.db.referenceSet( name = 'components' )
+    import vnf.dom
+    components = vnf.dom.referenceSet( name = 'components' )
     
+    import pyre.db
     componentsequence = pyre.db.varcharArray(
         name = 'componentsequence', length = 128, default = [] )
 

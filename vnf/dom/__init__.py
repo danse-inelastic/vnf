@@ -34,6 +34,11 @@ def geometer(**kwds):
     return Geometer(**kwds)
 
 
+def alltables():
+    from _all_tables import tables
+    return tables
+
+
 # version
 __id__ = "$Id$"
 

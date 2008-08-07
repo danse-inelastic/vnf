@@ -33,7 +33,6 @@ EXPORT_PYTHON_MODULES = \
 	AbInitio.py \
 	ARCSconfiguration.py \
 	Block.py \
-	Component.py \
 	ConfiguredInstrument.py \
 	ConfiguredScatterer.py \
 	Crystal.py \
@@ -49,6 +48,7 @@ EXPORT_PYTHON_MODULES = \
 	Job.py \
 	MatterBase.py \
 	MonochromaticSource.py \
+	NeutronComponent.py \
 	NeutronExperiment.py \
 	OwnedObject.py \
 	PhononDispersion.py \
@@ -69,6 +69,7 @@ EXPORT_PYTHON_MODULES = \
 	User.py \
 	idgenerator.py \
 	registry.py \
+	_all_tables.py \
 	_hidden_tables.py \
 	_referenceset.py \
 	__init__.py \
