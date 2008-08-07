@@ -12,13 +12,9 @@
 #
 
 
-from VirtualObject import VirtualObject
-class Shape(VirtualObject):
+from OwnedObject import OwnedObject as base
+class Shape(base):
 
-    name = 'shapes'
-
-    import pyre.db
-    
     pass # end of Shape
 
 

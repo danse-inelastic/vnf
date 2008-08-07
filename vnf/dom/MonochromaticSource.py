@@ -12,8 +12,8 @@
 #
 
 
-from OwnedObject import OwnedObject
-class MonochromaticSource(OwnedObject):
+from NeutronComponent import NeutronComponent as base
+class MonochromaticSource(base):
 
     name = 'monochromaticsources'
 

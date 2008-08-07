@@ -23,7 +23,7 @@ class OwnedObject(DbObject):
     date = pyre.db.date( name='date' )
     date.meta['tip'] = 'date of creation'
 
-    pass # end of Shape
+    pass # end of OwnedObject
 
 
 # version

@@ -12,6 +12,8 @@
 #
 
 
+from Server import Server
+
 from Table import Table
 class Job(Table):
 
@@ -26,8 +28,7 @@ class Job(Table):
     jobName = pyre.db.varchar(name='jobName', length = 128)
     jobName.meta['tip'] = 'computational job name'
 
-    server = pyre.db.varchar( name='server', length = 128)
-    server.meta['tip'] = 'which server job is running on'
+    server = pyre.db.reference( name='server', table = Server)
 
     timeCompletion = pyre.db.timestamp(name='timeCompletion')
     timeCompletion.meta['tip'] = 'time left to completion'

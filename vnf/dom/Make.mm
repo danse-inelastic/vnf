@@ -47,7 +47,6 @@ EXPORT_PYTHON_MODULES = \
 	Instrument.py \
 	IQEMonitor.py \
 	Job.py \
-	Matter.py \
 	MatterBase.py \
 	MonochromaticSource.py \
 	NeutronExperiment.py \
@@ -55,7 +54,7 @@ EXPORT_PYTHON_MODULES = \
 	PhononDispersion.py \
 	PolyCrystal.py \
 	PolyXtalCoherentPhononScatteringKernel.py \
-	PositionOrientationRegistry.py \
+	_geometer.py \
 	ReferenceSet.py \
 	Sample.py \
 	SampleAssembly.py \
@@ -64,14 +63,13 @@ EXPORT_PYTHON_MODULES = \
 	ScatteringKernel.py \
 	Server.py \
 	Shape.py \
-	ShapeBase.py \
 	SimulationResult.py \
 	SingleCrystal.py \
 	Table.py \
 	User.py \
-	VirtualObject.py \
 	idgenerator.py \
 	registry.py \
+	_hidden_tables.py \
 	_referenceset.py \
 	__init__.py \
 

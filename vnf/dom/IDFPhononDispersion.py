@@ -12,8 +12,8 @@
 #
 
 
-from OwnedObject import OwnedObject
-class IDFPhononDispersion(OwnedObject):
+from PhononDispersion import PhononDispersion as base
+class IDFPhononDispersion(base):
 
     name = 'idfphonondispersions'
 

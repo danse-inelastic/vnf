@@ -11,8 +11,8 @@
 #
 
 
-from OwnedObject import OwnedObject
-class GulpScatteringKernel(OwnedObject):
+from ScatteringKernel import ScatteringKernel as base
+class GulpScatteringKernel(base):
 
     name = 'gulpscatteringkernels'
     

@@ -12,6 +12,12 @@
 #
 
 
+from Instrument import Instrument
+from SampleAssembly import SampleAssembly
+from SampleEnvironment import SampleEnvironment
+from Job import Job
+
+
 from OwnedObject import OwnedObject as base
 class NeutronExperiment(base):
 
@@ -19,24 +25,22 @@ class NeutronExperiment(base):
 
     import pyre.db
 
-    instrument_id = pyre.db.varchar( name = 'instrument_id', length = 100, default = '' )
-    instrument_id.meta['tip'] = 'reference id in the configuredinstrument table'
+    instrument = pyre.db.reference( name = 'instrument', table = Instrument )
 
-    sampleassembly_id = pyre.db.varchar( name = 'sampleassembly_id', length = 100, default = '' )
-    sampleassembly_id.meta['tip'] = 'reference id in the sample assembly table'
+    sampleassembly = pyre.db.reference( name = 'sampleassembly', table = SampleAssembly )
 
-    sampleenvironment_id = pyre.db.varchar(
-        name = 'sampleenvironment_id', length = 100)
+    sampleenvironment = pyre.db.varchar( name = 'sampleenvironment', table = SampleEnvironment )
 
     ncount = pyre.db.real( name = 'ncount', default = 1e6)
 
     constructed = pyre.db.varchar( name = 'constructed', length = 4, default = '' )
 
-    job_id = pyre.db.varchar( name = 'job_id', length = 100, default = '' )
+    job = pyre.db.reference( name = 'job', table = Job )
 
     status = pyre.db.varchar( name = 'status', length = 16, default = '' )
 
     expected_results = pyre.db.varcharArray( name = 'expected_results', length = 128 )
+    
 
 # version
 __id__ = "$Id$"

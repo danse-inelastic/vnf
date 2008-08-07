@@ -20,32 +20,20 @@ class Instrument(OwnedObject):
     name = "instruments"
     
     import pyre.db
-    
-    from ReferenceSet import ReferenceSet
-    class Components( ReferenceSet ):
-        
-        name = 'componentsininstrument'
 
-        import pyre.db
-        label = pyre.db.varchar( name = 'label', length = 128 )
-        
-        pass
+    from registry import tableRegistry
+    components = pyre.db.referenceSet( name = 'components' )
     
     componentsequence = pyre.db.varcharArray(
         name = 'componentsequence', length = 128, default = [] )
 
     category = pyre.db.varchar( name = 'category', length = 64 )
 
-    template = pyre.db.boolean( name = 'template', default = False )
-
-    from PositionOrientationRegistry import PositionOrientationRegistry
-    class Geometer( PositionOrientationRegistry ):
-
-        name = 'instrumentgeometer'
-
-        pass # end of Geometer
+    import vnf.dom
+    geometer = vnf.dom.geometer()
     
     pass # end of Instrument
+
 
 
 # version

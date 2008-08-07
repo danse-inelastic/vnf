@@ -12,14 +12,12 @@
 #
 
 
-from VirtualObject import VirtualObject
-class Matter(VirtualObject):
-
-    name = 'matter'
+from DbObject import DbObject as base
+class NeutronComponent(base):
 
     import pyre.db
-    
-    pass # end of Matter
+
+    pass # end of Scatterer
 
 
 # version

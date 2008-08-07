@@ -12,15 +12,17 @@
 #
 
 
-from OwnedObject import OwnedObject
-class PolyXtalCoherentPhononScatteringKernel(OwnedObject):
+from registry import tableRegistry
+
+from ScatteringKernel import ScatteringKernel as base
+class PolyXtalCoherentPhononScatteringKernel(base):
 
     name = 'polyxtalcoherentphononscatteringkernels'
     
     import pyre.db
 
-    dispersion_id = pyre.db.varchar( name = 'dispersion_id', length = 100 )
-    dispersion_id.meta['tip'] = 'reference id in the dispersion table'
+    dispersion = pyre.db.versatileReference(
+        name = 'dispersion_id', tableRegistry = tableRegistry )
     
     max_energy_transfer = pyre.db.real( name = 'max_energy_transfer', default = 55. )
 

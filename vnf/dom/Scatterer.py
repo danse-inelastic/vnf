@@ -18,22 +18,16 @@ class Scatterer(base):
 
     import pyre.db
 
-    matter_id = pyre.db.varchar( name = 'matter_id', length = 100)
-    matter_id.meta['tip'] = 'matter_id'
-    
-    shape_id = pyre.db.varchar( name = 'shape_id', length = 100)
-    shape_id.meta['tip'] = 'shape_id'
+    matter = pyre.db.versatileReference( name = 'matter', tableRegistry = tableRegistry)
+    shape = pyre.db.versatileReference( name = 'shape', tableRegistry = tableRegistry)
 
-    template = pyre.db.boolean( name = 'template', default = False)
     basic = pyre.db.boolean( name = 'basic', default = False)
     basic.meta['tip'] = (
         'Is this scatterer basic? basic scatterers are presented to novice users'
         )
 
-    from ReferenceSet import ReferenceSet
-    class Kernels( ReferenceSet ):
-        name = 'kernelsforscatterer'
-        pass
+    import vnf.dom
+    kernels = vnf.dom.referenceSet( name = 'kernels' )
 
     pass # end of Scatterer
 

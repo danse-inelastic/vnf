@@ -12,13 +12,9 @@
 #
 
 
-from VirtualObject import VirtualObject
-class PhononDispersion(VirtualObject):
+from OwnedObject import OwnedObject as base
+class PhononDispersion(base):
 
-    name = 'phonondispersions'
-
-    import pyre.db
-    
     pass # end of Dispersion
 
 

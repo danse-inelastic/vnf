@@ -45,7 +45,7 @@ To update geometer, use the methods of geometer. use help to find out:
         raise RuntimeError, msg
 
 
-from PositionOrientationRegistry import registry
+from _geometer import registry
 from Table import Table
 
 

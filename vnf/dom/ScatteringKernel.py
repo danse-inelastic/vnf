@@ -12,13 +12,9 @@
 #
 
 
-from VirtualObject import VirtualObject
-class ScatteringKernel(VirtualObject):
+from OwnedObject import OwnedObject as base
+class ScatteringKernel(base):
 
-    name = 'scatteringkernels'
-
-    import pyre.db
-    
     pass # end of Scatterer
 
 

@@ -16,6 +16,8 @@
 from registry import tableRegistry
 
 
+# a handler to handle database requests about a referenceset for
+# a particular container
 class referenceset:
 
 
@@ -103,6 +105,7 @@ class referenceset:
 
 
 
+# The table that stores referenceset
 from Table import Table
 class _ReferenceTable(Table):
 

@@ -24,6 +24,9 @@ Useful to describe parent-children relationship.
 class ReferenceSet(object):
 
 
+    # This is just a descriptor.
+
+
     def __init__(self, name):
         self.name = name
         return

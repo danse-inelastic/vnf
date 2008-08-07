@@ -24,7 +24,7 @@ class DbObject(Table):
     short_description = pyre.db.varchar(name='short_description', length = 128)
     short_description.meta['tip'] = 'short_description'
 
-    pass # end of Shape
+    pass # end of DbObject
 
 
 # version

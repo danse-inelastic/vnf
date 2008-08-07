@@ -12,6 +12,9 @@
 #
 
 
+from registry import tableRegistry
+
+
 from DbObject import DbObject
 class SimulationResult(DbObject):
 
@@ -21,10 +24,8 @@ class SimulationResult(DbObject):
     name = 'simulationresults'
 
     import pyre.db
-
-    simulation_type = pyre.db.varchar( name = 'simulation_type', default = 'NeutronExperiment', length = 128 )
-    simulation_id = pyre.db.varchar( name = 'simulation_id', length = 100 )
-
+    
+    simulation = pyre.db.versatileReference( name = 'simulation', tableRegistry = tableRegistry )
     label = pyre.db.varchar( name = 'label', length = 128 )
 
     pass # end of Block

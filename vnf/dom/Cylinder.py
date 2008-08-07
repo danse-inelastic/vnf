@@ -12,8 +12,8 @@
 #
 
 
-from DbObject import DbObject
-class Cylinder(DbObject):
+from Shape import Shape as base
+class Cylinder(base):
 
     name = 'cylinders'
 

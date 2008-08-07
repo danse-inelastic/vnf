@@ -12,8 +12,8 @@
 #
 
 
-from DbObject import DbObject
-class Block(DbObject):
+from Shape import Shape as base
+class Block(base):
 
     name = 'blocks'
 

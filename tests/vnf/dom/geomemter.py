@@ -88,10 +88,8 @@ class DbApp(Script):
         self.db.autocommit(True)
 
         tables = [ Component, Composite ]
-        from vnf.dom.PositionOrientationRegistry import PositionOrientationRegistry
-        tables.append( PositionOrientationRegistry )
-        from vnf.dom._referenceset import _ReferenceTable
-        tables.append( _ReferenceTable )
+        from vnf.dom._hidden_tables import tables as _tables
+        tables += _tables()
         
         if self.inventory.wipe:
             for t in tables: self.dropTable( t )

@@ -23,8 +23,14 @@ class SampleAssembly(OwnedObject):
 
     status = pyre.db.varchar( name = 'status', default = 'new', length = 16 )
     template = pyre.db.boolean( name = 'template', default = False)
-
-    scatterers = vnf.dom.referenceSet( name = 'scatterers' )
+    
+    from ReferenceSet import ReferenceSet
+    class Scatterers( ReferenceSet ):
+        name = 'scatterersinsampleassembly'
+        import pyre.db
+        label = pyre.db.varchar( name = 'label', default = 'sample', length = 16)
+        label.meta['tip'] = 'label: sample/sample_holder/furnace'
+        pass
 
     pass # end of SampleAssembly
 
