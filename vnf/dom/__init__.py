@@ -18,9 +18,9 @@ def create_referenceset_table(db):
     return
 
 
-def set_referencesettable_idgenerator( generator ):
-    import _referenceset 
-    _referenceset.idgenerator = generator
+def set_idgenerator( generator ):
+    import idgenerator
+    idgenerator.generator = generator
     return
 
 
@@ -29,6 +29,9 @@ def referenceSet(**kwds):
     return ReferenceSet(**kwds)
 
 
+def geometer(**kwds):
+    from Geometer import Geometer
+    return Geometer(**kwds)
 
 
 # version

@@ -16,8 +16,6 @@
 from registry import tableRegistry
 
 
-idgenerator = None  # unique id generator
-
 class referenceset:
 
 
@@ -33,8 +31,13 @@ class referenceset:
 
     def dereference(self, db):
         records = self._get_referencetable_records( db )
-        references = [ record.element for record in records ]
-        return [ r.dereference( db ) for r in references ]
+        ret = []
+        for record in records:
+            key = record.elementlabel
+            value = record.element.dereference( db )
+            ret.append( (key, value) )
+            continue
+        return ret
 
 
     def clear(self, db):
@@ -58,17 +61,16 @@ class referenceset:
         return
     
 
-    def add(self, references, db):
+    def add(self, record, db, name = ''):
         container_ref = self._container_ref()
-        for reference in references:
-            element_ref = self._element_ref( reference )
-            row = _ReferenceTable()
-            row.id = self._id()
-            row.containerlabel = self.name
-            row.container = container_ref
-            row.element = element_ref
-            db.insertRow( row )
-            continue
+        element_ref = self._element_ref( record )
+        row = _ReferenceTable()
+        row.id = self._id()
+        row.containerlabel = self.name
+        row.container = container_ref
+        row.element = element_ref
+        row.elementlabel = name
+        db.insertRow( row )
         return
 
 
@@ -81,7 +83,7 @@ class referenceset:
 
 
     def _id(self):
-        generator = idgenerator
+        from idgenerator import generator 
         if generator is None:
             msg = "id generator has not been set. please use pyre.db.set_referencesettable_idgenerator to set id generator"
             raise RuntimeError, msg

@@ -30,7 +30,6 @@ all: export
 # export
 
 EXPORT_PYTHON_MODULES = \
-	__init__.py \
 	AbInitio.py \
 	ARCSconfiguration.py \
 	Block.py \
@@ -42,6 +41,7 @@ EXPORT_PYTHON_MODULES = \
 	DbObject.py \
 	DetectorSystem_fromXML.py \
 	Disordered.py \
+	Geometer.py \
 	GulpScatteringKernel.py \
 	IDFPhononDispersion.py \
 	Instrument.py \
@@ -70,7 +70,10 @@ EXPORT_PYTHON_MODULES = \
 	Table.py \
 	User.py \
 	VirtualObject.py \
+	idgenerator.py \
+	registry.py \
 	_referenceset.py \
+	__init__.py \
 
 
 

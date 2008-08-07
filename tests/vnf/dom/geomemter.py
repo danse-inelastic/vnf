@@ -14,26 +14,24 @@
 
 from pyre.db.Table import Table
 
-class User(Table):
+class Component(Table):
     
-    name = "users"
+    name = "components"
     
     import pyre.db
     
     id = pyre.db.varchar(name="id", length=30)
-    id.meta['tip'] = "the user's id"
+    id.meta['tip'] = "the component's id"
     id.constraints = "PRIMARY KEY"
 
-    username = pyre.db.varchar(name='username', length=30)
-    username.meta['tip'] = "the user's name"
+    componentname = pyre.db.varchar(name='componentname', length=30)
+    componentname.meta['tip'] = "the component's name"
     
-    password = pyre.db.varchar(name="password", length=30)
-    password.meta['tip'] = "the user's password"
 
     
-class Group(Table):
+class Composite(Table):
 
-    name = "groups"
+    name = "composites"
 
     import pyre.db
 
@@ -41,12 +39,15 @@ class Group(Table):
     id.constraints = "PRIMARY KEY"
 
     import vnf.dom
-    users = vnf.dom.referenceSet( name = 'users' )
+    components = vnf.dom.referenceSet( name = 'components' )
+
+    geometer = vnf.dom.geometer( )
+
 
 
 from vnf.dom.registry import tableRegistry
-tableRegistry.register( User )
-tableRegistry.register( Group )
+tableRegistry.register( Component )
+tableRegistry.register( Composite )
 
 
 def idgenerator():
@@ -86,7 +87,9 @@ class DbApp(Script):
 
         self.db.autocommit(True)
 
-        tables = [ User, Group ]
+        tables = [ Component, Composite ]
+        from vnf.dom.PositionOrientationRegistry import PositionOrientationRegistry
+        tables.append( PositionOrientationRegistry )
         from vnf.dom._referenceset import _ReferenceTable
         tables.append( _ReferenceTable )
         
@@ -101,47 +104,40 @@ class DbApp(Script):
         #except:
         #    pass
         
-        # create user records
-        user1 = User()
-        user1.id = '0'
-        user1.username = "aivazis"
-        user1.password = "mga4demo"
+        # create component records
+        component1 = Component()
+        component1.id = '0'
+        component1.componentname = "moderator"
 
-        user2 = User()
-        user2.id = '1'
-        user2.username = 'demo'
-        user2.password = 'demo'
+        component2 = Component()
+        component2.id = '1'
+        component2.componentname = 't0chopper'
 
         # store them in the database
-        for record in [user1, user2]: self.save(record)
+        for record in [component1, component2]: self.save(record)
 
         # now extract all records and print them
-        self.retrieve(User)
+        self.retrieve(Component)
 
         
-        # create a group record
-        group = Group()
+        # create a composite record
+        composite = Composite()
 
-        users = group.users
-        print 'referenceset instance: %s' % users
-        print 'users: %s' % (users.dereference( self.db ), )
+        components = composite.components
+        print 'referenceset instance: %s' % components
 
-        print '> add one user' 
-        users.add( user1, self.db )
-        print '  users: %s' % (users.dereference( self.db ), )
+        print '> add two components'
+        components.add( component1, self.db, name = 'moderator' )
+        components.add( component2, self.db, name = 't0chopper' )
+        print '  components: %s' % (components.dereference( self.db ), )
 
-        print '> delete one use'
-        users.delete( user1, self.db )
-        print '  users: %s' % (users.dereference( self.db ), )
+        print 'register position and orientation of components'
+        geometer = composite.geometer
+        geometer.register( 'moderator', (0,0,0), (0,0,0), self.db )
+        geometer.register( 't0chopper', (0,0,1), (0,0,0), self.db )
 
-        print '> add two users'
-        users.add( user1, self.db )
-        users.add( user2, self.db )
-        print '  users: %s' % (users.dereference( self.db ), )
-
-        print '> remove all users'
-        users.clear( self.db )
-        print '  users: %s' % (users.dereference( self.db ), )
+        reg = geometer.dereference( self.db )
+        print [ (k, v.position, v.orientation) for k,v in reg.iteritems() ]
         return
 
 
@@ -180,7 +176,7 @@ class DbApp(Script):
 
 
     def createTable(self, table):
-        # create the user table
+        # create the component table
         print " -- creating table %r" % table.name
         try:
             self.db.createTable(table)
@@ -194,7 +190,6 @@ class DbApp(Script):
 
 
     def dropTable(self, table):
-        # drop the user table
         print " -- dropping table %r" % table.name
         try:
             self.db.dropTable(table)
