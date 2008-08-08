@@ -64,7 +64,17 @@ class Clerk(Component):
         '''create and index of all scatterers
         that meet the specified criteria'''
         from vnf.dom.ScatteringKernel import ScatteringKernel
-        return self._index( ScatteringKernel, where )
+        from vnf.dom import subclassesOf
+        tables = subclassesOf( ScatteringKernel )
+
+        ret = {}
+        for table in tables:
+            temp = self._index( table, where )
+            for id, record in temp.iteritems():
+                ret[ (id, table) ] = record
+                continue
+            continue
+        return ret
 
     def indexServers(self, where = None):
         '''create and index of all servers

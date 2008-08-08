@@ -41,7 +41,7 @@ class Sample(Actor):
 
         # retrieve id:record dictionary from db
         clerk = director.clerk
-        scatterers = clerk.indexScatterers(where='template=True').values()
+        scatterers = clerk.indexScatterers().values()
         scatterers = [ clerk.getHierarchy(scatterer) for scatterer in scatterers]
         samples = scatterers
             

@@ -11,6 +11,8 @@
 #
 
 
+from registry import tableRegistry
+
 from DbObject import DbObject as base
 class Scatterer(base):
 

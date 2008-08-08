@@ -23,8 +23,8 @@ class Server(Table):
     id.constraints = 'PRIMARY KEY'
     id.meta['tip'] = "the unique id"
 
-    server = pyre.db.varchar(name='server', length = 128)
-    server.meta['tip'] = 'name of server'
+    hostname = pyre.db.varchar(name='hostname', length = 128)
+    hostname.meta['tip'] = 'hostname of server'
 
     location = pyre.db.varchar( name='location', length = 128)
     location.meta['tip'] = 'location of server'
@@ -42,6 +42,21 @@ class Server(Table):
     scheduler.meta['tip'] = 'scheduler to use on the server'
 
 
+def initialization_records():
+    def server(id, hostname, location, groupAccess, username, workdir, scheduler):
+        r = Server()
+        r.id = id
+        r.hostname = hostname
+        r.location = location
+        r.groupAccess = groupAccess
+        r.username = username
+        r.workdir = workdir
+        r.scheduler = scheduler
+        return r
+    return [
+        server( 'server0', '127.0.0.1', 'local',
+                'local users', 'vnf', '/home/vnf/jobs', 'torque' ),
+        ]
 
 # version
 __id__ = "$Id$"

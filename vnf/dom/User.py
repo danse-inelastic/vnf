@@ -33,6 +33,17 @@ class User(Table):
     pass # end of User
 
 
+def initialization_records():
+    def user(name, pw, fullname):
+        r = User()
+        r.username = name
+        r.password = pw
+        r.fullname = fullname
+        return r
+    return [ user( 'demo', 'demo', 'demo user' ),
+             ]
+
+
 # version
 __id__ = "$Id$"
 

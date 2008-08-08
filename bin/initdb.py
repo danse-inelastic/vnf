@@ -44,7 +44,7 @@ class DbApp(Script):
         for table in tables:
             self.createTable( table )
             self.enablewww( table )
-        
+            self.initTable( table )
         return
 
 
@@ -78,8 +78,18 @@ class DbApp(Script):
         name = table.name
         cmd = 'GRANT ALL ON %s TO %s' % (name, self.wwwusername)
         c = self.db.cursor()
-        print cmd
+        #print cmd
         c.execute( cmd )
+        return
+
+
+    def initTable(self, table):
+        module = table.__module__
+        m = __import__( module, {}, {}, [''] )
+        records = m.__dict__.get( 'initialization_records' )
+        if records is None: return
+        records = records()
+        for r in records: self.db.insertRow( r )
         return
 
 

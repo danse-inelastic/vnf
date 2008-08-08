@@ -13,7 +13,14 @@ shapes = [
 
 
 sample = [
+    'Scatterer',
     'Sample',
+    'SampleAssembly',
+    ]
+
+
+experiment = [
+    'NeutronExperiment',
     ]
 
 
@@ -27,6 +34,7 @@ other = [
 tablemodules = instrument \
          + shapes \
          + sample \
+         + experiment \
          + other
 
 tables = []
@@ -36,3 +44,10 @@ for t in tablemodules:
     continue
 
 
+def children( base ):
+    'find child tables of given base'
+    r = []
+    for table in tables:
+        if issubclass( table, base ): r.append( table )
+        continue
+    return r

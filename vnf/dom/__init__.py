@@ -39,6 +39,11 @@ def alltables():
     return tables
 
 
+def subclassesOf( base ):
+    from _all_tables import children
+    return children( base )
+
+
 # version
 __id__ = "$Id$"
 

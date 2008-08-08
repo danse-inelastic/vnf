@@ -1,0 +1,8 @@
+To backup
+
+pg_dump   <dbname>  >   <outfile>
+
+
+To restore from a backup
+
+psql   <dbname>   <   <infile>
