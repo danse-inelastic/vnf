@@ -4,7 +4,7 @@
 #
 #                                   Jiao Lin
 #                      California Institute of Technology
-#                        (C) 2007  All Rights Reserved
+#                        (C) 2008  All Rights Reserved
 #
 # {LicenseText}
 #
@@ -12,21 +12,14 @@
 #
 
 
-from OwnedObject import OwnedObject
+from NeutronComponent import NeutronComponent as base
+class SampleComponent(base):
 
+    name = 'samplecomponents'
 
-class SampleAssembly(OwnedObject):
-
-    name = "sampleassemblies"
-    
     import pyre.db
 
-    status = pyre.db.varchar( name = 'status', default = 'new', length = 16 )
-
-    import vnf.dom
-    scatterers = vnf.dom.referenceSet( name = 'scatterers' )
-
-    pass # end of SampleAssembly
+    pass # end of SampleComponent
 
 
 # version

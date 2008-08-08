@@ -42,7 +42,7 @@ class Server(Table):
     scheduler.meta['tip'] = 'scheduler to use on the server'
 
 
-def initialization_records():
+def inittable(db):
     def server(id, hostname, location, groupAccess, username, workdir, scheduler):
         r = Server()
         r.id = id
@@ -53,10 +53,12 @@ def initialization_records():
         r.workdir = workdir
         r.scheduler = scheduler
         return r
-    return [
+    records = [
         server( 'server0', '127.0.0.1', 'local',
                 'local users', 'vnf', '/home/vnf/jobs', 'torque' ),
         ]
+    for r in records: db.insertRow( r )
+    return
 
 # version
 __id__ = "$Id$"

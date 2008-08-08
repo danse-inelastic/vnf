@@ -12,8 +12,8 @@
 #
 
 
-from OwnedObject import OwnedObject
-class IQEMonitor(OwnedObject):
+from NeutronComponent import NeutronComponent as base
+class IQEMonitor(base):
 
     name = 'iqemonitors'
 

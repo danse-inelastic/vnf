@@ -33,6 +33,49 @@ class Instrument(OwnedObject):
     pass # end of Instrument
 
 
+def inittable(db):
+    def add(id, short_description, category, creator, date, components):
+        r = Instrument()
+        r.id = id
+        r.short_description = short_description
+        r.category = category
+        r.creator = creator
+        r.date = date
+        components_proxy = r.components
+        geometer_proxy = r.geometer
+        componentsequence = r.componentsequence
+
+        for name, type, (position, orientation, reference) in components:
+            component = type( )
+            component.id = new_id()
+            db.insertRow( component )
+            components_proxy.add( component, db, name )
+            geometer_proxy.register( name, position, orientation, db, reference )
+            componentsequence.append( name )
+            continue
+
+        db.insertRow( r )
+        return 
+
+    from MonochromaticSource import MonochromaticSource
+    from IQEMonitor import IQEMonitor
+    from SampleComponent import SampleComponent
+    
+    add( new_id(), 'simplified ARCS',
+         'direct-geometry time-of-flight chopper spectrometer',
+         'vnf', '08/09/2008',
+         [  ('source', MonochromaticSource, ( (0,0,0), (0,0,0), '' ) ),
+            ('sample', SampleComponent, ( (0,0,0), (0,0,0), '' ) ),
+            ('detector', IQEMonitor, ( (0,0,0), (0,0,0), '' ) ),
+            ]
+         )
+    return
+
+
+def new_id():
+    from idgenerator import generator
+    return generator()
+
 
 # version
 __id__ = "$Id$"

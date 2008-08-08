@@ -88,7 +88,7 @@ class referenceset:
     def _id(self):
         from idgenerator import generator 
         if generator is None:
-            msg = "id generator has not been set. please use pyre.db.set_referencesettable_idgenerator to set id generator"
+            msg = "id generator has not been set. please use vnf.dom.set_idgenerator to set id generator"
             raise RuntimeError, msg
         return generator()
     

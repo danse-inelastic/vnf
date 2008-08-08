@@ -54,10 +54,10 @@ EXPORT_PYTHON_MODULES = \
 	PhononDispersion.py \
 	PolyCrystal.py \
 	PolyXtalCoherentPhononScatteringKernel.py \
-	_geometer.py \
 	ReferenceSet.py \
 	Sample.py \
 	SampleAssembly.py \
+	SampleComponent.py \
 	SampleEnvironment.py \
 	Scatterer.py \
 	ScatteringKernel.py \
@@ -70,6 +70,7 @@ EXPORT_PYTHON_MODULES = \
 	idgenerator.py \
 	registry.py \
 	_all_tables.py \
+	_geometer.py \
 	_hidden_tables.py \
 	_referenceset.py \
 	__init__.py \

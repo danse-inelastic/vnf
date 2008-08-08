@@ -33,15 +33,19 @@ class User(Table):
     pass # end of User
 
 
-def initialization_records():
+def inittable(db):
     def user(name, pw, fullname):
         r = User()
         r.username = name
         r.password = pw
         r.fullname = fullname
         return r
-    return [ user( 'demo', 'demo', 'demo user' ),
-             ]
+    records = [
+        user( 'demo', 'demo', 'demo user' ),
+        ]
+    for r in records: db.insertRow( r )
+    return
+
 
 
 # version

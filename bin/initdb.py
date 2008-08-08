@@ -31,6 +31,10 @@ class DbApp(Script):
         wwwusername = pyre.inventory.str( 'wwwusername', default = '_www')
         wwwusername.meta['tip'] = 'user name of the apache server'
         
+        import pyre.idd
+        idd = pyre.inventory.facility('idd-session', factory=pyre.idd.session, args=['idd-session'])
+        idd.meta['tip'] = "access to the token server"
+
 
     def main(self, *args, **kwds):
         print "database:", self.inventory.db
@@ -44,6 +48,8 @@ class DbApp(Script):
         for table in tables:
             self.createTable( table )
             self.enablewww( table )
+
+        for table in tables:
             self.initTable( table )
         return
 
@@ -86,10 +92,9 @@ class DbApp(Script):
     def initTable(self, table):
         module = table.__module__
         m = __import__( module, {}, {}, [''] )
-        records = m.__dict__.get( 'initialization_records' )
-        if records is None: return
-        records = records()
-        for r in records: self.db.insertRow( r )
+        inittable = m.__dict__.get( 'inittable' )
+        if inittable is None: return
+        inittable( self.db )
         return
 
 
@@ -108,8 +113,17 @@ class DbApp(Script):
         self.db = pyre.db.connect(dbname, wrapper = dbengine)
 
         self.wwwusername = self.inventory.wwwusername
+        self.idd = self.inventory.idd
+
+        def guid(): return '%s' % self.idd.token().locator
+        import vnf.dom
+        vnf.dom.set_idgenerator( guid )
         return
 
+
+    def _getPrivateDepositoryLocations(self):
+        return ['../config']
+    
 
 def main():
     app = DbApp()
