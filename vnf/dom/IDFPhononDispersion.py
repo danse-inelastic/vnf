@@ -25,6 +25,22 @@ class IDFPhononDispersion(base):
     pass # end of IDFPhononDispersion
 
 
+
+def inittable(db):
+    def disp( id, origin ):
+        r = IDFPhononDispersion()
+        r.id = id
+        r.origin = origin
+        return r
+
+    records = [
+        disp( 'idf-phonon-dispersion-fccNi-0', 'bvk' ),
+        ]
+    
+    for r in records: db.insertRow( r )
+    return
+
+
 # version
 __id__ = "$Id$"
 

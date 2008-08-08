@@ -26,6 +26,22 @@ class Block(base):
     pass # end of Block
 
 
+def inittable(db):
+    from idgenerator import generator
+    def block( id, width, height, thickness ):
+        b = Block()
+        b.width = width
+        b.height = height
+        b.thickness = thickness
+        return b
+    
+    blocks = [
+        block( 'plate0', 0.05, 0.1, 0.002 ),
+        ]
+    for b in blocks: db.insertRow( b )
+    return
+
+
 # version
 __id__ = "$Id$"
 

@@ -31,6 +31,28 @@ class PolyXtalCoherentPhononScatteringKernel(base):
     pass # end of PolyXtalCoherentPhononScatteringKernel
 
 
+def inittable(db):
+    def k( id, dispersion, max_energy_transfer, max_momentum_transfer):
+        r = PolyXtalCoherentPhononScatteringKernel()
+        r.id = id
+        r.dispersion = dispersion
+        r.max_energy_transfer = max_energy_transfer
+        r.max_momentum_transfer = max_momentum_transfer
+        return r
+
+    from IDFPhononDispersion import IDFPhononDispersion
+    records = [
+        k( 'polyxtalcoherentphononscatteringkernel-fccNi-0',
+           (IDFPhononDispersion, 'idf-phonon-dispersion-fccNi-0'),
+           55.,
+           12.5,
+           ),
+        ]
+
+    for r in records: db.insertRow( r )
+    return
+
+
 # version
 __id__ = "$Id$"
 

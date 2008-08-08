@@ -82,6 +82,11 @@ class referenceset:
     
     
     def _element_ref(self, record):
+        if isinstance(record, tuple):
+            table, id = record
+            assert issubclass(table, Table)
+            return record
+        assert isinstance( record, Table )
         return record.__class__, record.id
 
 

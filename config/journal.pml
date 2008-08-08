@@ -18,7 +18,9 @@
 
   <component name='journal'>
 
+    <!--
     <facility name='device'>remote</facility>
+    -->
 
     <component name='info'>
       <property name='idd'>on</property>

@@ -7,6 +7,24 @@ name it "vnf", and link it to an appropriate directory here.
 For example, to deploy it in Jiao's account on a Mac OS X machine, do the following
 
  $ cd ~/Sites/cgi-bin
- $ ln -s ~/dv/danse/VNET/vnf/trunk/deploy/MacOSX/linjiao/cgi-bin vnf2
+ $ ln -s ~/dv/danse/VNET/vnf/trunk/deploy/MacOSX/linjiao/cgi-bin vnf
 
  
+Go to the root directory of vnf, and run mm
+ 
+ $ cd ..../VNET/vnf/trunk
+ $ mm
+ $ cd deploy/...
+ $ mm
+
+Start services
+
+ $ cd $EXPORT_ROOT/bin
+ $ ./journald.py
+ $ ./idd.py
+ $ ./ipad.py
+
+
+Initialized database
+ $ cd $EXPORT_ROOT/bin
+ $ ./initdb.sh

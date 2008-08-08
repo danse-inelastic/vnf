@@ -13,6 +13,11 @@ shapes = [
     ]
 
 
+materials = [
+    'PolyCrystal',
+    ]
+
+
 sample = [
     'Scatterer',
     'Sample',
@@ -25,6 +30,12 @@ experiment = [
     ]
 
 
+kernels = [
+    'IDFPhononDispersion',
+    'PolyXtalCoherentPhononScatteringKernel',
+    ]
+
+
 other = [
     'User',
     'Server',
@@ -34,6 +45,7 @@ other = [
 
 tablemodules = instrument \
          + shapes \
+         + materials \
          + sample \
          + experiment \
          + other

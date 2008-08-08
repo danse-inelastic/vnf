@@ -85,6 +85,7 @@ class DbApp(Script):
         cmd = 'GRANT ALL ON %s TO %s' % (name, self.wwwusername)
         c = self.db.cursor()
         #print cmd
+        print " -- Grant user %r access to table %r" % (self.wwwusername, name)
         c.execute( cmd )
         return
 
@@ -94,6 +95,7 @@ class DbApp(Script):
         m = __import__( module, {}, {}, [''] )
         inittable = m.__dict__.get( 'inittable' )
         if inittable is None: return
+        print " -- Inialize table %r" % table.name
         inittable( self.db )
         return
 
@@ -126,6 +128,8 @@ class DbApp(Script):
     
 
 def main():
+    import journal
+    journal.debug('db').activate()
     app = DbApp()
     return app.run()
 
