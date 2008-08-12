@@ -66,8 +66,6 @@ def inittable(db):
     
     add( 'ARCS_simple', 'Virtual ARCS',
          '''ARCS is a wide Angular-Range, direct-geometry, time-of-flight Chopper Spectrometer at the Spallation Neutron Source. It is optimized to provide a high neutron flux at the sample, and a large solid angle of detector coverage.
-
-ARCS will advance the science of dynamical processes in materials. It is designed to measure excitations in materials and condensed matter having energies from a few meV to several hundred meV, with an efficiency better than any existing high-energy chopper spectrometer. Research topics include: (i) studies of vibrational excitations and their relationship to phase diagrams and equations of state of materials, including materials with correlated electrons, and (ii) studies of spin correlations in magnets, superconductors, and materials close to metal-insulator transitions.
 ''',
          'ins',
          'vnf', '08/09/2008',

@@ -40,6 +40,11 @@ class DocumentMill(ActionLinkRenderer, base):
         return self.accordionMill.render( accordion )
 
 
+    def onImage(self, image):
+        path = os.path.join( self._imageStore(), image.path )
+        return [ '<img src="%s" />' % path ]
+    
+
     def onSlidableGallery(self, gallery):
         configurations = self.configurations
         home = configurations['home']
@@ -55,6 +60,7 @@ class DocumentMill(ActionLinkRenderer, base):
 
         for image, action in gallery.images:
             href = action_href( action, cgihome )
+            image = os.path.join( self._imageStore(), image )
             htmlcode.append(
                 '<li><a href="%s"><img src="%s" /></a></li>' % (href,image)
                 )
@@ -78,10 +84,17 @@ class DocumentMill(ActionLinkRenderer, base):
         codes = csscode + includes + ['<script>']  + jscode + ['</script>'] + htmlcode
         return codes
 
+
+    def _imageStore(self):
+        home = self.configurations['home']
+        return os.path.join( home, 'images' )
+
     pass # end of DocumentMill
 
 
+import os
 from vnf.weaver import action_href
+
 
 # version
 __id__ = "$Id$"

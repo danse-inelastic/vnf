@@ -32,7 +32,7 @@ all: export
 EXPORT_PYTHON_MODULES = \
 	Action.py \
 	ActionRequireAuthentication.py \
-	Make.mm \
+	Image.py \
 	Page.py \
 	SlidableGallery.py \
 	TreeView.py \

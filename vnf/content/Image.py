@@ -10,14 +10,14 @@
 #
 
 
-class SlidableGallery:
+class Image:
 
-    def __init__(self, images):
-        self.images = images
+    def __init__(self, path):
+        self.path = path
         return
 
     def identify(self, visitor):
-        return visitor.onSlidableGallery(self)
+        return visitor.onImage(self)
 
 
 # version

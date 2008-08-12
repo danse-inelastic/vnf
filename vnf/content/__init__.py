@@ -30,6 +30,14 @@ def actionRequireAuthentication(*args, **kwds):
     return ActionRequireAuthentication( *args, **kwds )
 
 
+def image(*args,**kwds):
+    from Image import Image
+    return Image(*args,**kwds)
+
+def slidableGallery(*args, **kwds):
+    from SlidableGallery import SlidableGallery
+    return SlidableGallery( *args, **kwds )
+
 def treeview(*args, **kwds ):
     from TreeView import TreeView
     return TreeView(*args, **kwds )

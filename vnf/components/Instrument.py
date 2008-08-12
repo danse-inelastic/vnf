@@ -11,6 +11,9 @@
 
 
 from Actor import Actor, action_link, action, actionRequireAuthentication, AuthenticationError
+import os
+import vnf.content
+
 
 from FormActor import FormActor as base
 
@@ -49,17 +52,22 @@ class Instrument(base):
         
         main = page._body._content._main
 
-        clerk = director.clerk
-        id = self.inventory.id
-        instrument = clerk.getInstrument( id )
+        instrument = self._getinstrument( director )
 
-        long_description = instrument.long_description
-        
         # populate the main column
         document = main.document(title= instrument.short_description)
-        document.description = long_description
         document.byline = 'byline?'
 
+        long_description = instrument.long_description
+        for paragraph in long_description.split( '\n' ):
+            p = document.paragraph()
+            p.text = [ paragraph ]
+            continue
+
+        # put up a graph
+        schematic = os.path.join( self._imageStore( instrument ), 'schematic.png' )
+        schematic = vnf.content.image( schematic )
+        document.contents.append( schematic )
         return page
 
 
@@ -83,8 +91,7 @@ class Instrument(base):
 
         # images
         images = [
-            (os.path.join( director.home, 'images', 'instruments',
-                           i.id, 'middle-size-icon.png'),
+            (os.path.join( 'instruments', i.id, 'middle-size-icon.png'),
              actionRequireAuthentication(
                  actor = 'instrument',
                  sentry = director.sentry,
@@ -96,8 +103,7 @@ class Instrument(base):
 
 
         # a gallery of instruments
-        from vnf.content.SlidableGallery import SlidableGallery
-        gallery  = SlidableGallery( images )
+        gallery  = vnf.content.slidableGallery( images )
         document.contents.append( gallery )
         
         return page
@@ -203,6 +209,10 @@ class Instrument(base):
         return clerk.getInstrument( id )
 
 
+    def _imageStore(self, instrument):
+        return os.path.join( 'instruments', instrument.id )
+
+
     def _configure(self):
         base._configure(self)
         self.id = self.inventory.id
@@ -214,9 +224,6 @@ class Instrument(base):
 
 
     pass # end of Instrument
-
-
-import os
 
 
 def _sortByCategory( instruments ):
