@@ -42,9 +42,10 @@ class DocumentMill(ActionLinkRenderer, base):
 
     def onSlidableGallery(self, gallery):
         configurations = self.configurations
+        home = configurations['home']
+        cgihome = configurations['cgihome']
         
         csscode = []
-        home = configurations['home']
         csscode.append( '<link rel="stylesheet" type="text/css" href="%s/css/slidableGallery/slidableGallery.css" />' % home )
 
         htmlcode = []
@@ -52,8 +53,11 @@ class DocumentMill(ActionLinkRenderer, base):
         htmlcode.append( '<div id="%s">' % gid )
         htmlcode.append( '<ul>' )
 
-        for image in gallery.images:
-            htmlcode.append( '<li><img src="%s" /></li>' % image )
+        for image, action in gallery.images:
+            href = action_href( action, cgihome )
+            htmlcode.append(
+                '<li><a href="%s"><img src="%s" /></a></li>' % (href,image)
+                )
             continue
         
         htmlcode.append( '</ul>' )
@@ -76,6 +80,8 @@ class DocumentMill(ActionLinkRenderer, base):
 
     pass # end of DocumentMill
 
+
+from vnf.weaver import action_href
 
 # version
 __id__ = "$Id$"

@@ -40,6 +40,29 @@ class Instrument(base):
         return self.listall( director )
 
 
+    def show(self, director):
+        '''show info of an instrument'''
+        try:
+            page = director.retrieveSecurePage( 'instrument' )
+        except AuthenticationError, err:
+            return err.page
+        
+        main = page._body._content._main
+
+        clerk = director.clerk
+        id = self.inventory.id
+        instrument = clerk.getInstrument( id )
+
+        long_description = instrument.long_description
+        
+        # populate the main column
+        document = main.document(title= instrument.short_description)
+        document.description = long_description
+        document.byline = 'byline?'
+
+        return page
+
+
     def listall(self, director):
         try:
             page = director.retrieveSecurePage( 'instrument' )
@@ -59,14 +82,23 @@ class Instrument(base):
         _sortByCategory(instruments)
 
         # images
-        images = [ os.path.join( director.home, 'images', 'instruments',
-                                 i.id, 'middle-size-icon.png')
-                   for i in instruments ]
-        
+        images = [
+            (os.path.join( director.home, 'images', 'instruments',
+                           i.id, 'middle-size-icon.png'),
+             actionRequireAuthentication(
+                 actor = 'instrument',
+                 sentry = director.sentry,
+                 label = '', routine = 'show',
+                 arguments = { 'id': i.id }
+                 )
+             )
+            for i in instruments ]
+
+
+        # a gallery of instruments
         from vnf.content.SlidableGallery import SlidableGallery
         gallery  = SlidableGallery( images )
         document.contents.append( gallery )
-        #listinstruments( instruments.values(), document, director )
         
         return page
 
@@ -194,22 +226,6 @@ def _sortByCategory( instruments ):
         return t[x.category < y.category]
     instruments.sort( compare )
     return
-
-from wording import plural, present_be
-
-def listinstruments( instruments, document, director ):
-    p = document.paragraph()
-
-    n = len(instruments)
-
-    p.text = [ 'There %s %s instrument%s: ' %
-               (present_be(n), n, plural(n))
-                ]
-
-    from inventorylist import list
-    list( instruments, document, 'instrument', director )
-    return
-
 
 
 def build_run( instrument ):
