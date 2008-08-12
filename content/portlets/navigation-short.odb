@@ -1,0 +1,97 @@
+#!/usr/bin/env python
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                             Michael A.G. Aivazis
+#                      California Institute of Technology
+#                      (C) 1998-2005  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+from vnf.components.Actor import Actor, action_link, actionRequireAuthentication, AuthenticationError
+from vnf.weaver import action_href
+
+
+actor2menu = {
+    'greet': 'greet',
+    'neutronexperimentwizard': 'neutronexperimentwizard',
+    'neutronexperiment': 'experiments',
+    'sample': 'samples',
+    'instrument': 'instruments',
+    'logout': 'logout'
+    }
+
+def portlet(app):
+    import opal.content
+    portlet = opal.content.portlet(title="main", id="portlet-main--tree")
+
+    greet = portlet.item(description="Home")
+    greet.target = action_href(
+            actionRequireAuthentication(
+            'greet', app.sentry, 'Greet'),
+            app.cgihome)
+    greet.icon = "images/link_icon.gif"
+    greet.type = "navItem"
+    
+    neutronexperimentwizard = portlet.item(description="Start Neutron Experiment Wizard")
+    neutronexperimentwizard.target = action_href(
+            actionRequireAuthentication(
+            label = 'Start Neutron Experiment Wizard',
+            actor = 'neutronexperimentwizard',
+            routine = 'start',
+            sentry = app.sentry,
+            ),
+            app.cgihome)
+    neutronexperimentwizard.icon = "images/link_icon.gif"
+    neutronexperimentwizard.type = "navItem"
+    
+    experiments = portlet.item(description="Experiments")
+    experiments.target = action_href(
+        actionRequireAuthentication(
+        'neutronexperiment', app.sentry, 'Experiments',
+        routine = 'listall',
+        ),
+        app.cgihome)
+    experiments.icon = "images/link_icon.gif"
+    experiments.type = "navItem"
+    
+    samples = portlet.item(description="Samples")
+    samples.target = action_href(
+            actionRequireAuthentication(
+            'sample', app.sentry, 'Samples'),
+            app.cgihome)
+    samples.icon = "images/link_icon.gif"
+    samples.type = "navItem"
+    
+    instruments = portlet.item(description="Instruments")
+    instruments.target = action_href(
+            actionRequireAuthentication(
+            'instrument', app.sentry, 'Instruments'),
+            app.cgihome)
+    instruments.icon = "images/link_icon.gif"
+    instruments.type = "navItem"
+    
+    logout = portlet.item(description="Logout")
+    logout.target = action_href(
+            actionRequireAuthentication(
+            'logout', app.sentry, 'Logout'),
+            app.cgihome)
+    logout.icon = "images/link_icon.gif"
+    logout.type = "navItem"
+
+    actor = app.actor.name
+    menu = actor2menu.get( actor )
+    if menu:
+        selected_menu = eval( menu )
+        selected_menu.icon = "images/selectedlink_icon.gif"
+        selected_menu.type = 'currentNavItem' 
+    return portlet
+
+
+# version
+__id__ = "$Id: navigation.odb,v 1.1.1.1 2006-11-27 00:09:19 aivazis Exp $"
+
+# End of file 

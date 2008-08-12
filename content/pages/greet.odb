@@ -40,7 +40,7 @@ def page(app):
     right = content.rightColumn()
 
     # populate the left column
-    nav = app.retrievePortlet("navigation")
+    nav = app.retrievePortlet("navigation-short")
     if nav:
         left.add(nav)
         
