@@ -55,12 +55,13 @@ class Instrument(base):
 
         # retrieve id:record dictionary from db
         clerk = director.clerk
-        instruments = clerk.indexInstruments()
+        instruments = clerk.indexInstruments().values()
+        _sortByCategory(instruments)
 
         # images
         images = [ os.path.join( director.home, 'images', 'instruments',
                                  i.id, 'middle-size-icon.png')
-                   for i in instruments.itervalues() ]
+                   for i in instruments ]
         
         from vnf.content.SlidableGallery import SlidableGallery
         gallery  = SlidableGallery( images )
@@ -186,6 +187,14 @@ class Instrument(base):
 import os
 
 
+def _sortByCategory( instruments ):
+    t = {True:-1, False:1}
+    def compare( x, y ):
+        if x.category == y.category: return t[x.id < y.id]
+        return t[x.category < y.category]
+    instruments.sort( compare )
+    return
+
 from wording import plural, present_be
 
 def listinstruments( instruments, document, director ):
@@ -207,6 +216,14 @@ def build_run( instrument ):
     from InstrumentSimulationRunBuilder import Builder
     return Builder().render(instrument)
 
+
+
+def ul(seq):
+    # unique list
+    # not order preserving 
+    set = {} 
+    map(set.__setitem__, seq, []) 
+    return set.keys()
 
 # version
 __id__ = "$Id$"

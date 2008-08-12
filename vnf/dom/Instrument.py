@@ -62,7 +62,7 @@ def inittable(db):
     from SampleComponent import SampleComponent
     
     add( 'ARCS_simple', 'simplified ARCS',
-         'direct-geometry time-of-flight chopper spectrometer',
+         'ins',
          'vnf', '08/09/2008',
          [  ('source', MonochromaticSource, ( (0,0,0), (0,0,0), '' ) ),
             ('sample', SampleComponent, ( (0,0,0), (0,0,0), '' ) ),
@@ -70,8 +70,26 @@ def inittable(db):
             ]
          )
 
+    add( 'SEQUOIA', 'SEQUOIA. place holder',
+         'ins',
+         'vnf', '08/11/2008',
+         []
+         )
+    
     add( 'Pharos', 'Pharos. place holder',
-         'direct-geometry time-of-flight chopper spectrometer',
+         'ins',
+         'vnf', '08/11/2008',
+         []
+         )
+    
+    add( 'Powgen3', 'Powgen3. place holder',
+         'diffraction',
+         'vnf', '08/11/2008',
+         []
+         )
+    
+    add( 'VULCAN', 'VULCAN. place holder',
+         'engineering diffraction',
          'vnf', '08/11/2008',
          []
          )
