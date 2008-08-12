@@ -56,8 +56,16 @@ class Instrument(base):
         # retrieve id:record dictionary from db
         clerk = director.clerk
         instruments = clerk.indexInstruments()
+
+        # images
+        images = [ os.path.join( director.home, 'images', 'instruments',
+                                 i.id, 'middle-size-icon.png')
+                   for i in instruments.itervalues() ]
         
-        listinstruments( instruments.values(), document, director )
+        from vnf.content.SlidableGallery import SlidableGallery
+        gallery  = SlidableGallery( images )
+        document.contents.append( gallery )
+        #listinstruments( instruments.values(), document, director )
         
         return page
 
@@ -174,6 +182,8 @@ class Instrument(base):
 
     pass # end of Instrument
 
+
+import os
 
 
 from wording import plural, present_be

@@ -34,6 +34,7 @@ EXPORT_PYTHON_MODULES = \
 	ActionRequireAuthentication.py \
 	Make.mm \
 	Page.py \
+	SlidableGallery.py \
 	TreeView.py \
 	__init__.py
 

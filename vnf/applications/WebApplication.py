@@ -134,6 +134,7 @@ class WebApplication(Base):
 
         import vnf.weaver
         configurations = {
+            'home': self.home,
             'cgihome':self.cgihome,
             'imagepath':self.inventory.imagepath,
             'javascriptpath':self.inventory.javascriptpath,

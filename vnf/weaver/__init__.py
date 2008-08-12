@@ -15,6 +15,7 @@ def pageMill( configurations ):
     '''
     configurations example:
     {
+    'home': 'http://localhost',
     'cgihome': 'http://localhost/cgi-bin',
     'imagepath': '/vnf/images',
     'javascriptpath': '/vnf/javascripts',

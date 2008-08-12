@@ -61,7 +61,7 @@ def inittable(db):
     from IQEMonitor import IQEMonitor
     from SampleComponent import SampleComponent
     
-    add( new_id(), 'simplified ARCS',
+    add( 'ARCS_simple', 'simplified ARCS',
          'direct-geometry time-of-flight chopper spectrometer',
          'vnf', '08/09/2008',
          [  ('source', MonochromaticSource, ( (0,0,0), (0,0,0), '' ) ),
@@ -69,6 +69,13 @@ def inittable(db):
             ('detector', IQEMonitor, ( (0,0,0), (0,0,0), '' ) ),
             ]
          )
+
+    add( 'Pharos', 'Pharos. place holder',
+         'direct-geometry time-of-flight chopper spectrometer',
+         'vnf', '08/11/2008',
+         []
+         )
+    
     return
 
 
