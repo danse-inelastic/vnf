@@ -28,7 +28,7 @@ def pageMill( configurations ):
 def action_link(action, cgihome):
     from ActionLinkRenderer import ActionLinkRenderer
     renderer = ActionLinkRenderer( cgihome )
-    return renderer.render( action )
+    return renderer.render( action )[0]
 
 def action_href(action, cgihome):
     from ActionHrefRenderer import ActionHrefRenderer

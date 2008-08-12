@@ -68,6 +68,20 @@ class Instrument(base):
         schematic = os.path.join( self._imageStore( instrument ), 'schematic.png' )
         schematic = vnf.content.image( schematic )
         document.contents.append( schematic )
+
+        #
+        p = document.paragraph()
+        experimentplanning = actionRequireAuthentication(
+            actor = '%sexperimentwizard' % instrument.id,
+            sentry = director.sentry,
+            label = 'planning',
+            routine = 'start',
+            )
+        p.text = [
+            'Start %s for an experiment on %s' % (
+            action_link( experimentplanning, director.cgihome ), instrument.short_description ),
+            ]
+        
         return page
 
 

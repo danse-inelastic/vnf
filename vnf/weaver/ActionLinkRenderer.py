@@ -30,7 +30,7 @@ class ActionLinkRenderer:
     def on_(self, action):
         href = self.hrefer.render( action )
         label = action.label
-        return _link( label, href)
+        return [_link( label, href)]
 
     onActionRequireAuthentication = on_
     onAction = on_
