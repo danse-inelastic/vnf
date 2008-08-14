@@ -20,7 +20,7 @@ class Form( base ):
 
     class Inventory( base.Inventory ):
         import pyre.inventory
-        instrument_id = pyre.inventory.str( 'instrument_id' )
+        id = pyre.inventory.str( 'id' )
         Ei = pyre.inventory.str( 'Ei', default = 70 )
         Ei.meta['tiponerror'] = 'Please input the neutron energy incident on the sample as a float number in the range of (0, 200). The unit is meV.'
 
@@ -38,26 +38,20 @@ class Form( base ):
 
     def legend(self):
         'return a legend string'
-        instrument_id = self.inventory.instrument_id
-        instrument = self.director.clerk.getInstrument( instrument_id )
-        return 'Configure neutron instrument %r' % (
-            instrument.short_description,)
+        id = self.inventory.id
+        return 'Configure ARCS'
 
 
     def expand(self, form, errors = None, advanced = False):
         '''expand an existing form with fields from this component'''
 
-        instrument_id = self.inventory.instrument_id
         director = self.director
-        instrument = director.clerk.getInstrument( instrument_id )
-        instrument = director.clerk.getHierarchy( instrument )
-        components = instrument.components
 
         prefix = formactor_action_prefix
 
-        instrument_id_field = form.hidden(
-            name = '%s.instrument_id' % prefix,
-            value = self.inventory.instrument_id )
+        #id_field = form.hidden(
+        #    name = '%s.id' % prefix,
+        #    value = self.inventory.instrument_id )
 
         if errors:
             p = form.paragraph( cls = 'error' )
@@ -69,7 +63,7 @@ class Form( base ):
         p = form.paragraph()
         p.text = [
             '%r instrument is a %s.' % (
-            instrument.short_description, instrument.category),
+            'ARCS', 'direct-geometry tof chopper spectrometer'),
             'Such instruments can be used to measure interesting',
             'excitations such as phonons and magnons.',
             'In doing so, we need to set the neutron',
@@ -150,7 +144,9 @@ class Form( base ):
 
 formactor_action_prefix = 'actor.form-received' # assumed actor is a form actor
 
-def form(): return Form()
+def form():
+    import vnf.forms
+    return vnf.forms.configure_arcs_simple_instrument()
 
 
 # version

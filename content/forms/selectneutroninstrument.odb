@@ -37,20 +37,7 @@ class Form( base ):
         
         director = self.director
         experiment = director.clerk.getNeutronExperiment( experiment_id )
-        configuredinstrument_id = experiment.instrument_id
-        if configuredinstrument_id in ['None', None, '']:
-            # need to create a configured_instrument record
-            from vnf.dom.ConfiguredInstrument import ConfiguredInstrument
-            ci = director.clerk.new_ownedobject( ConfiguredInstrument )
-            # and connect this to the experiment
-            configuredinstrument_id = experiment.instrument_id = ci.id
-            director.clerk.updateRecord( experiment )
-            pass # end if
-
-        # get the configure_instrument record
-        configured_instrument = director.clerk.getConfiguredInstrument(
-            configuredinstrument_id)
-        current_instrument_id = configured_instrument.instrument_id
+        instrument_id = experiment.instrument.id
 
         p = form.paragraph()
         p.text = [
@@ -67,15 +54,12 @@ class Form( base ):
             value = self.inventory.experiment_id )
         instruments = director.clerk.indexInstruments()
         instruments = instruments.itervalues()
-        instrument_templates = filter(
-            lambda instrument: instrument.template,
-            instruments )
         
         entries = [
             (instrument.id,
              '%s (%s)' % (instrument.short_description, instrument.category)
              )
-            for instrument in instrument_templates ]
+            for instrument in instruments ]
         
         import opal.content
         selector = form.selector(
@@ -83,7 +67,7 @@ class Form( base ):
             name = '%s.instrument_id' % prefix,
             entries = entries,
             label = 'Instrument',
-            selected = current_instrument_id,
+            selected = instrument_id,
             )
         return
 
@@ -97,14 +81,8 @@ class Form( base ):
         experiment_id = self.inventory.experiment_id
         experiment = director.clerk.getNeutronExperiment( experiment_id )
 
-        configuredinstrument_id = experiment.instrument_id
-        
-        # get the configure_instrument record
-        configured_instrument = director.clerk.getConfiguredInstrument(
-            configuredinstrument_id)
-        
-        configured_instrument.instrument_id = self.inventory.instrument_id
-        director.clerk.updateRecord( configured_instrument )
+        instrument_id = self.inventory.instrument_id
+        experiment.instrument = instrument_id
 
         director.clerk.updateRecord( experiment )
         return

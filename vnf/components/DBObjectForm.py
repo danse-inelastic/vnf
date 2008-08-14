@@ -37,6 +37,9 @@ class DBObjectForm( base ):
     def legend(self):
         'return a legend string'
         record = self.getRecord()
+        if record is None:
+            return 'Edit %s' % self.__class__.__name__.lower()
+        
         return 'Edit %s %r' % (
             self.__class__.__name__.lower(),
             record.short_description)
@@ -45,7 +48,7 @@ class DBObjectForm( base ):
     def expand(self, form, errors = None, properties = None):
         '''expand an existing form with fields from this component'''
 
-        if self.inventory.id == '':
+        if empty_id( self.inventory.id ):
             configuration = self.inventory
         else:
             configuration = self.getRecord()
@@ -88,7 +91,7 @@ class DBObjectForm( base ):
         '''
 
         # prepare a record to accept user inputs
-        if self.inventory.id == '':
+        if empty_id(self.inventory.id):
             record = self.createRecord()
         else:
             record = self.getRecord( )
@@ -118,6 +121,7 @@ class DBObjectForm( base ):
     def getRecord(self):
         'get DB record'
         id = self.inventory.id
+        if empty_id(id): return
         director = self.director
         clerk = director.clerk
         return clerk.getRecordByID( self.DBTable, id )

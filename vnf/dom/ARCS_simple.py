@@ -12,19 +12,18 @@
 #
 
 
-def block():
-    from Block import Block
-    return Block()
+from DbObject import DbObject
 
 
-def configure_arcs_simple_instrument():
-    from ARCS_simple import ARCS_simple
-    return ARCS_simple()
+class ARCS_simple(DbObject):
+    
+    name = "ARCS_simple"
+    
+    import pyre.db
 
-
-def configureneutronscatterer( formname, mattertype, shapetype ):
-    from ConfigureNeutronScatterer import form
-    return form( formname, mattertype, shapetype )
+    Ei = pyre.db.real( name = 'Ei', default = 70 )
+    
+    pass # end of Instrument
 
 
 # version

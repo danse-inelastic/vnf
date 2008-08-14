@@ -16,6 +16,7 @@ from Instrument import Instrument
 from SampleAssembly import SampleAssembly
 from SampleEnvironment import SampleEnvironment
 from Job import Job
+from registry import tableRegistry
 
 
 from OwnedObject import OwnedObject as base
@@ -26,6 +27,8 @@ class NeutronExperiment(base):
     import pyre.db
 
     instrument = pyre.db.reference( name = 'instrument', table = Instrument )
+    instrument_configuration = pyre.db.versatileReference(
+        name = 'instrument_configuration', tableRegistry = tableRegistry)
 
     sampleassembly = pyre.db.reference( name = 'sampleassembly', table = SampleAssembly )
 
@@ -37,7 +40,7 @@ class NeutronExperiment(base):
 
     job = pyre.db.reference( name = 'job', table = Job )
 
-    status = pyre.db.varchar( name = 'status', length = 16, default = '' )
+    status = pyre.db.varchar( name = 'status', length = 32, default = '' )
 
     expected_results = pyre.db.varcharArray( name = 'expected_results', length = 128 )
     

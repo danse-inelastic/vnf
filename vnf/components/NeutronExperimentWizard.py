@@ -40,8 +40,8 @@ class NeutronExperimentWizard(base):
             #create a new experiment
             from vnf.dom.NeutronExperiment import NeutronExperiment
             experiment = director.clerk.new_ownedobject( NeutronExperiment )
-            experiment.status = 'started'
-            director.clerk.updateRecord( experiment )
+            #change status to "started"
+            director.db.updateRow( NeutronExperiment, [ ('status','started') ] )
             #need to reload the page so that id is correctly
             self.inventory.id = experiment.id
             page = director.retrieveSecurePage( 'neutronexperimentwizard' )
@@ -176,10 +176,6 @@ class NeutronExperimentWizard(base):
 
         id = self.inventory.id
         experiment = director.clerk.getNeutronExperiment( id )
-        configured_instrument_id = experiment.instrument_id
-        configured_instrument = director.clerk.getConfiguredInstrument(
-            configured_instrument_id)
-        instrument_id = configured_instrument.instrument_id
 
         main = page._body._content._main
 
@@ -190,16 +186,15 @@ class NeutronExperimentWizard(base):
         document.byline = 'byline?'
 
         formname = 'configure_%s_instrument' % (
-            instrument_id
+            experiment.instrument.id
             .lower().replace(' ','_').replace( '-', '_' ), )
 
-        #raise RuntimeError, formname
         formcomponent = self.retrieveFormToShow(formname)
         if formcomponent is None:
             formcomponent = self.retrieveFormToShow('configureneutroninstrument')
             pass # end if
 
-        formcomponent.inventory.id = configured_instrument_id
+        formcomponent.inventory.id = None
         formcomponent.director = director
         
         # create form
@@ -234,7 +229,7 @@ class NeutronExperimentWizard(base):
             return err.page
         
         try:
-            self.processFormInputs( director )
+            configuration = self.processFormInputs( director )
         except InputProcessingError, err:
             errors = err.errors
             self.form_received = None
@@ -243,19 +238,13 @@ class NeutronExperimentWizard(base):
 
         experiment = director.clerk.getNeutronExperiment(
             self.inventory.id )
-        # make sure instrument is configured
-        if empty_id( experiment.instrument_id ):
-            director.routine = 'select_instrument'
-            return self.select_instrument( director )
-        # get configured instrument
-        configured_instrument = director.clerk.getConfiguredInstrument(
-            experiment.instrument_id )
-        # make sure it has a instrument and it is configured
-        if empty_id( configured_instrument.instrument_id ) or \
-           empty_id( configured_instrument.configuration_id ):
-            director.routine = 'select_instrument'
-            return self.select_instrument( director )
-
+        old_configuration = experiment.instrument_configuration
+        if old_configuration is not None:
+            # clear the old configuration
+            old_configuration = old_configuration.dereference()
+            director.clerk.deleteRecord( old_configuration )
+        experiment.instrument_configuration = configuration
+        
         # update experiment status
         director.clerk.updateRecord( experiment )
         

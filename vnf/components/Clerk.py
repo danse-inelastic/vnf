@@ -101,7 +101,7 @@ class Clerk(Component):
             assignments.append( (column, value) )
             continue
         
-        self.db.updateRow(record, assignments, where)
+        self.db.updateRow(record.__class__, assignments, where)
         return record
 
 

@@ -31,7 +31,7 @@ all: export
 
 EXPORT_PYTHON_MODULES = \
 	AbInitio.py \
-	ARCSconfiguration.py \
+	ARCS_simple.py \
 	Block.py \
 	ConfiguredInstrument.py \
 	ConfiguredScatterer.py \

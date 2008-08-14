@@ -23,6 +23,7 @@ all: export
 # export
 
 EXPORT_PYTHON_MODULES = \
+	ARCS_simple.py \
 	DBObjectForm.py \
 	Block.py \
 	ConfigureNeutronScatterer.py \

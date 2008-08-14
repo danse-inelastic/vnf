@@ -4,6 +4,7 @@ instrument = [
     'MonochromaticSource',
     'IQEMonitor',
     'SampleComponent',
+    'ARCS_simple',
     ]
 
 
