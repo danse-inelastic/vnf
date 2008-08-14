@@ -23,6 +23,7 @@ sample = [
     'Scatterer',
     'Sample',
     'SampleAssembly',
+    'SampleEnvironment',
     ]
 
 

@@ -44,6 +44,13 @@ def subclassesOf( base ):
     return children( base )
 
 
+def register_alltables():
+    tables = alltables()
+    from registry import tableRegistry
+    for t in tables: tableRegistry.register( t )
+    return
+
+
 # version
 __id__ = "$Id$"
 

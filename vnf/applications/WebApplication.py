@@ -154,6 +154,9 @@ class WebApplication(Base):
         # initialize the accessors
         self.clerk.db = self.db
 
+        # initialize table registry
+        import vnf.dom
+        vnf.dom.register_alltables()
         return
 
 

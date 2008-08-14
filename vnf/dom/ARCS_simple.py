@@ -18,6 +18,8 @@ from DbObject import DbObject
 class ARCS_simple(DbObject):
     
     name = "ARCS_simple"
+
+    target = 'ARCS_simple' # target of configuration
     
     import pyre.db
 

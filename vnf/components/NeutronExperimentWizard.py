@@ -150,7 +150,7 @@ class NeutronExperimentWizard(base):
         # specify action
         action = actionRequireAuthentication(
             actor = 'neutronexperimentwizard', sentry = director.sentry,
-            label = '', routine = 'configure_instrument',
+            label = '', routine = 'verify_instrument_selection',
             id = self.inventory.id,
             arguments = {'form-received': formcomponent.name } )
         from vnf.weaver import action_formfields
@@ -164,6 +164,41 @@ class NeutronExperimentWizard(base):
             
 #        self._footer( document, director )
         return page
+
+
+    def verify_instrument_selection(self, director):
+        try:
+            page = director.retrieveSecurePage( 'neutronexperimentwizard' )
+        except AuthenticationError, err:
+            return err.page
+        
+        try:
+            self.processFormInputs( director )
+        except InputProcessingError, err:
+            errors = err.errors
+            self.form_received = None
+            director.routine = 'select_instrument'
+            return self.select_instrument( director, errors = errors )
+
+        experiment = director.clerk.getNeutronExperiment(
+            self.inventory.id )
+        instrument = experiment.instrument.dereference(director.db)
+
+        configuration_ref = experiment.instrument_configuration
+        if configuration_ref is not None:
+            configuration = configuration_ref.dereference(director.db)
+            configuration_target = configuration.target
+            if configuration_target != instrument.id:
+                # the current configuration is not for the selected instrument
+                # remove the current configuration
+                director.clerk.deleteRecord( configuration )
+
+                # update experiment record
+                experiment.instrument_configuration = None
+                director.clerk.updateRecord( experiment )
+        
+        director.routine = 'configure_instrument'
+        return self.configure_instrument(director)
 
 
     def configure_instrument(self, director, errors = None):
@@ -194,7 +229,11 @@ class NeutronExperimentWizard(base):
             formcomponent = self.retrieveFormToShow('configureneutroninstrument')
             pass # end if
 
-        formcomponent.inventory.id = None
+        configuration = experiment.instrument_configuration
+        if configuration is None:
+            formcomponent.inventory.id = None
+        else:
+            formcomponent.inventory.id = configuration.id
         formcomponent.director = director
         
         # create form
@@ -241,7 +280,7 @@ class NeutronExperimentWizard(base):
         old_configuration = experiment.instrument_configuration
         if old_configuration is not None:
             # clear the old configuration
-            old_configuration = old_configuration.dereference()
+            old_configuration = old_configuration.dereference( director.db )
             director.clerk.deleteRecord( old_configuration )
         experiment.instrument_configuration = configuration
         
@@ -270,11 +309,13 @@ class NeutronExperimentWizard(base):
         document.description = ''
         document.byline = 'byline?'
 
-        #sample environment
-        sampleenvironment_id = experiment.sampleenvironment_id
-
         formcomponent = self.retrieveFormToShow( 'sample_environment' )
-        formcomponent.inventory.id = sampleenvironment_id
+        
+        sampleenvironment = experiment.sampleenvironment
+        if sampleenvironment is None:
+            formcomponent.inventory.id = None
+        else:
+            formcomponent.inventory.id = sampleenvironment.id
         formcomponent.director = director
         
         # create form
@@ -319,12 +360,9 @@ class NeutronExperimentWizard(base):
 
         experiment = director.clerk.getNeutronExperiment(
             self.inventory.id)
-        if empty_id( experiment.sampleenvironment_id ):
-            experiment.sampleenvironment_id = sampleenvironment.id
-            director.clerk.updateRecord( experiment )
-        else:
-            assert experiment.sampleenvironment_id == sampleenvironment.id
-        director.clerk.updateRecord( experiment )
+        environ = experiment.sampleenvironment
+
+        assert environ is not None
 
         director.routine = 'sample_preparation'
         return self.sample_preparation( director )
