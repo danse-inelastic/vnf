@@ -38,23 +38,22 @@ class Form( base ):
         experiment = director.clerk.getNeutronExperiment( experiment_id )
 
         #get sample assembly
-        sampleassembly_id = experiment.sampleassembly_id
-        if empty_id( sampleassembly_id ):
+        sampleassembly_ref = experiment.sampleassembly
+        if sampleassembly_ref is None:
             # need to create a new sample assembly
             from vnf.dom.SampleAssembly import SampleAssembly
             sampleassembly = director.clerk.new_ownedobject( SampleAssembly )
             # attach to experiment
-            experiment.sampleassembly_id = sampleassembly.id
+            experiment.sampleassembly = sampleassembly
             director.clerk.updateRecord( experiment )
         else:
-            sampleassembly = director.clerk.getSampleAssembly(
-                sampleassembly_id )
+            sampleassembly = sampleassembly_ref.dereference(director.db)
             pass # endif
 
-        #get sample
-        scatterers = director.clerk.getConfiguredScatterers( sampleassembly.id )
+        #get scatterers
+        scatterers = sampleassembly.scatterers.dereference(director.db)
         samples = filter(
-            lambda scatterer: scatterer.label == 'sample',
+            lambda name, scatterer: name == 'sample',
             scatterers )
 
         #check samples

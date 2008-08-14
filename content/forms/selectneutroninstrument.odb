@@ -37,7 +37,11 @@ class Form( base ):
         
         director = self.director
         experiment = director.clerk.getNeutronExperiment( experiment_id )
-        instrument_id = experiment.instrument.id
+        instrument = experiment.instrument
+        if instrument:
+            instrument_id = experiment.instrument.id
+        else:
+            instrument_id = ''
 
         p = form.paragraph()
         p.text = [

@@ -358,11 +358,17 @@ class NeutronExperimentWizard(base):
             director.routine = 'sample_environment'
             return self.sample_environment( director, errors = errors )
 
+        assert sampleenvironment is not None
+        
         experiment = director.clerk.getNeutronExperiment(
             self.inventory.id)
         environ = experiment.sampleenvironment
-
-        assert environ is not None
+        # if originally the experiment has not been assigned a sample environment
+        # make assignment now
+        if environ is None:
+            experiment.sampleenvironment = sampleenvironment
+            print experiment.sampleenvironment.id
+            director.clerk.updateRecord( experiment )
 
         director.routine = 'sample_preparation'
         return self.sample_preparation( director )
