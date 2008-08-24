@@ -367,7 +367,6 @@ class NeutronExperimentWizard(base):
         # make assignment now
         if environ is None:
             experiment.sampleenvironment = sampleenvironment
-            print experiment.sampleenvironment.id
             director.clerk.updateRecord( experiment )
 
         director.routine = 'sample_preparation'
@@ -523,26 +522,24 @@ class NeutronExperimentWizard(base):
         #get experiment
         experiment = director.clerk.getNeutronExperiment(
             self.inventory.id )
-        #get sample assembly
-        sampleassembly = director.clerk.getSampleAssembly(
-            experiment.sampleassembly_id )
-        #get sample
-        configured_scatterers = director.clerk.getConfiguredScatterers(
-            experiment.sampleassembly_id )
-        samples = filter(
-            lambda configured: configured.label == 'sample',
-            configured_scatterers )
-        assert len(samples)==1, 'there should be only 1 sample in sample assembly %r' % sampleassembly.short_description
-        sample = samples[0]
 
-        #get descendennts
-        sample = director.clerk.getHierarchy( sample )
-        assert sample.scatterer is not None
+        #get sample assembly
+        sampleassembly_ref = experiment.sampleassembly
+        sampleassembly = sampleassembly_ref.dereference(director.db)
+        
+        #get sample
+        scatterers_refset = sampleassembly.scatterers
+        scatterers = scatterers_refset.dereference(director.db)
+        sample = None
+        for label, s in scatterers:
+            if label == 'sample': sample = s; break
+            continue
+        if sample is None: raise RuntimeError, "No sample in sample assembly"
 
         #In this step we obtain configuration of sample
         formname = 'configure%s%s' % (
-            sample.scatterer.matter.realmatter.__class__.__name__.lower(),
-            sample.scatterer.shape.realshape.__class__.__name__.lower(),
+            sample.matter.dereference(director.db).__class__.__name__.lower(),
+            sample.shape.dereference(director.db).__class__.__name__.lower(),
             )
         formcomponent = self.retrieveFormToShow(formname)
         formcomponent.inventory.id = sample.id
@@ -590,29 +587,16 @@ class NeutronExperimentWizard(base):
 
         experiment = director.clerk.getNeutronExperiment(
             self.inventory.id )
-        sampleassembly_id = experiment.sampleassembly_id
-        if empty_id( sampleassembly_id ):
-            raise RuntimeError, "sample assembly not set up"
+        sampleassembly = experiment.sampleassembly.dereference( director.db )
+        scatterers_refset = sampleassembly.scatterers
+        scatterers = scatterers_refset.dereference(director.db)
 
-        sampleassembly = director.clerk.getSampleAssembly( sampleassembly_id )
-        scatterers = director.clerk.getConfiguredScatterers(sampleassembly_id)
-        samples = filter(
-            lambda scatterer: scatterer.label == 'sample',
-            scatterers)
-        if len(samples) != 1:
-            raise RuntimeError, 'there should be one sample in the sample assembly'
-        sample = samples[0]
-        
-        configured_sample = sample
+        sample = None
+        for name, s in scatterers:
+            if name == 'sample': sample = s; break;
+            continue
 
-        prototype_id = configured_sample.scatterer_id
-        if empty_id(prototype_id):
-            raise RuntimeError, "sample prototype not established"
-        
-        sample_prototype = director.clerk.getScatterer(prototype_id)
-        
-        director.clerk.updateRecord( experiment )
-
+        if sample is None: raise RuntimeError, "No sample in sample assembly"
         return self.configure_scatteringkernels(director)
 
 
@@ -627,10 +611,21 @@ class NeutronExperimentWizard(base):
         document = main.document(
             title='Neutron Experiment Wizard: Scattering kernel selection')
         document.description = ''
-        document.byline = '<a href="http://danse.us">DANSE</a>'        
-        
-        formcomponent = self.retrieveFormToShow( 'scatteringkernel')
+        document.byline = '<a href="http://danse.us">DANSE</a>'
+
+        experiment = director.clerk.getNeutronExperiment( self.inventory.id )
+        sampleassembly = experiment.sampleassembly.dereference(director.db)
+        sample = _getSample( sampleassembly, director.db )
+        kernels = _getKernels( sample, director.db )
+
+        #hack
+        name, kernel = kernels[0]
+
+        kernelclass = kernel.__class__
+        formcomponent = self.retrieveFormToShow( kernelclass.__name__.lower() )
         formcomponent.director = director
+        formcomponent.inventory.id = kernel.id
+        
         # build the form 
         form = document.form(name='', action=director.cgihome)
         # specify action
@@ -646,18 +641,6 @@ class NeutronExperimentWizard(base):
         action_formfields( action, form )
         # expand the form with fields of the data object that is being edited
         formcomponent.expand( form )
-        
-        p = form.paragraph()
-        p.text = [action_link(
-        actionRequireAuthentication(
-        'neutronexperimentwizard', 
-        director.sentry,
-        label = 'Add a new scattering kernel',  
-        routine='selectkernel',
-        id=self.inventory.id),
-        director.cgihome
-        ),
-        '<br>']
         
         submit = form.control(name='submit',type="submit", value="next")
         
@@ -899,10 +882,7 @@ class NeutronExperimentWizard(base):
         self._checkstatus(director)
         assert self.allconfigured == True
         
-        #get full hierarchy
-        experiment = director.clerk.getHierarchy( experiment )
-
-        job = experiment.job
+        job = experiment.job.dereference(director.db)
         from JobDataManager import JobDataManager
         path = JobDataManager( job, director ).localpath()
 
@@ -1080,31 +1060,18 @@ class NeutronExperimentWizard(base):
             self.inventory.id )
         self.name_assigned = experiment.short_description not in [None, '']
 
-        instrument_id = experiment.instrument_id
-        if not empty_id( instrument_id ):
-            configured = director.clerk.getConfiguredInstrument(instrument_id)
-            self.instrument_configured = not empty_id( configured.instrument_id )
-            pass
+        instrument_ref = experiment.instrument
+        self.instrument_configured = not nullpointer( instrument_ref )
 
-        sampleenvironment_id = experiment.sampleenvironment_id
-        self.sample_environment_configured = not empty_id( sampleenvironment_id )
+        sampleenvironment_ref = experiment.sampleenvironment
+        self.sample_environment_configured = not nullpointer(sampleenvironment_ref)
         
-        sampleassembly_id = experiment.sampleassembly_id
-        
-        if not empty_id( sampleassembly_id ):
-            sampleassembly = director.clerk.getSampleAssembly(
-                sampleassembly_id )
+        if self.sample_environment_configured:
+            sampleassembly_ref = experiment.sampleassembly
+            sampleassembly = sampleassembly_ref.dereference(director.db)
+            sample = _getSample( sampleassembly, director.db )
             
-            scatterers = director.clerk.getConfiguredScatterers(
-                sampleassembly_id)
-            samples = filter(
-                lambda scatterer: scatterer.label == 'sample',
-                scatterers)
-            if len(samples) == 0: return
-            if len(samples) > 1: raise RuntimeError, "more than 1 sample"
-            
-            sample = samples[0]
-            self.sample_prepared = not empty_id(sample.scatterer_id)
+            self.sample_prepared = not nullpointer(sample)
             # need to test if kernel is configured
             # ...
             # probably need a canned solution here for the demo...
@@ -1114,8 +1081,8 @@ class NeutronExperimentWizard(base):
         if not self.kernel_configured: return
 
         if experiment.ncount <=0 : return
-        if empty_id(experiment.job_id): return
-        job = director.clerk.getJob( experiment.job_id )
+        if nullpointer(experiment.job): return
+        job = experiment.job.dereference(director.db)
 
         self.allconfigured = True
 
@@ -1128,8 +1095,23 @@ class NeutronExperimentWizard(base):
 
 
 
-from misc import new_id, empty_id
+def _getSample(sampleassembly, db):
+    scatterers_refset = sampleassembly.scatterers
+    scatterers = scatterers_refset.dereference(db)
+    sample = None
+    for name, s in scatterers:
+        if name == 'sample': sample = s; break
+        continue
+    return sample
 
+
+def _getKernels(scatterer, db):
+    kernels_refset = scatterer.kernels
+    kernels = kernels_refset.dereference(db)
+    return kernels
+
+
+from misc import new_id, empty_id, nullpointer
 
 # version
 __id__ = "$Id$"

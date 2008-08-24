@@ -111,18 +111,18 @@ class Form( base ):
             ]
 
         #get job
-        job_id = experiment.job_id
-        if empty_id(job_id):
+        job = experiment.job
+        if nullpointer(job):
             #create new job
             from vnf.components.Job import new_job
             job = new_job(director)
             
             # attach to experiment
-            experiment.job_id = job.id
+            experiment.job = job
             # update to db
             director.clerk.updateRecord( experiment )
         else:
-            job = director.clerk.getJob( job_id )
+            job = job.dereference(director.db)
             pass # endif
         record = job
             
@@ -138,7 +138,7 @@ class Form( base ):
 
         director = self.director
         servers = director.clerk.getServers()
-        entries = [ (server.id, server.server) for server in servers ]
+        entries = [ (server.id, server.hostname) for server in servers ]
         ids = [ id for id, server in entries ]
 
         selected_server = record.server
@@ -193,7 +193,7 @@ class Form( base ):
 
         director = self.director
         experiment = director.clerk.getNeutronExperiment( self.inventory.id )
-        job = director.clerk.getJob( experiment.job_id )
+        job = experiment.job.dereference(director.db)
         
         job.jobName = jobName
         job.server = server
@@ -217,7 +217,7 @@ class Form( base ):
 
 
 
-from vnf.components.misc import empty_id
+from vnf.components.misc import nullpointer
 
 formactor_action_prefix = 'actor.form-received' # assumed actor is a form actor
 

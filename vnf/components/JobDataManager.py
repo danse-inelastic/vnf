@@ -36,7 +36,7 @@ class JobDataManager:
     '''
 
     def __init__(self, job, director):
-        self.job = director.clerk.getHierarchy(job)
+        self.job = job
         self.director = director
         self.csaccessor = director.csaccessor
         return
@@ -45,7 +45,10 @@ class JobDataManager:
     def initlocaldir(self):
         path = self.localpath()
         if os.path.exists( path ): return
-        os.makedirs( path )
+        try:
+            os.makedirs( path )
+        except:
+            raise RuntimeError, "unable to create directory %r" % os.path.abspath(path)
         #make results directory too
         path2 = self.localresultdir()
         os.makedirs( path2 )
@@ -64,8 +67,8 @@ class JobDataManager:
                 "local directory for job %s has not been established" % (
                 self.job.id) )
         
-        server = self.job.computation_server
         director = self.director
+        server = self.job.server.dereference(director.db)
         # copy local job directory to server
         director.csaccessor.pushdir(
             path, server, server.workdir )
@@ -79,7 +82,7 @@ class JobDataManager:
         #probably not. because, for example, the wave-function
         #file could be huge.
         director = self.director
-        server = self.job.computation_server
+        server = self.job.server.dereference(director.db)
         remotedir = self.remotepath()
         localdir = self.localresultdir()
         localcopy = director.csaccessor.getfile(
@@ -89,8 +92,8 @@ class JobDataManager:
 
     def listremotejobdir(self):
         '''list files in the remote job directory'''
-        server = self.job.computation_server
         director = self.director
+        server = self.job.server.dereference(director.db)
         remotedir = self.remotepath()
         failed, output, error = director.csaccessor.execute(
             'ls', server, remotedir )
@@ -104,11 +107,12 @@ class JobDataManager:
 
     def remotepath(self):
         job = self.job
-        server = job.computation_server
+        director = self.director
+        server = job.server.dereference(director.db)
         return os.path.join(server.workdir, job.id )
 
 
-    localbasepath = 'content/jobs'
+    localbasepath = '../content/jobs'
     def localpath( self ):
         jobid = self.job.id
         jobdir = os.path.join( self.localbasepath, jobid )

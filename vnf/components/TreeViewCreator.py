@@ -16,17 +16,18 @@ debug = journal.debug( 'treeviewcreator' )
 
 
 
-def create( instrument ):
+def create( instrument, director ):
     '''given the db hierarchy of instrument, render a teeview
     '''
-    return TreeViewCreator( ).render( instrument )
+    return TreeViewCreator( director ).render( instrument )
 
 
 import vnf.content as factory
 class TreeViewCreator:
 
 
-    def __init__(self):
+    def __init__(self, director):
+        self.director = director
         return
     
 
@@ -42,7 +43,11 @@ class TreeViewCreator:
 
 
     def onNeutronExperiment(self, experiment):
-        elements = [ experiment.instrument, experiment.sampleassembly]#, experiment.job ]
+        db = self.director.db
+        elements = [
+            experiment.instrument.dereference(db),
+            experiment.sampleassembly.dereference(db),
+            ]#, experiment.job ]
         return self.onContainer( experiment, elements )
 
 
@@ -55,38 +60,38 @@ class TreeViewCreator:
         return self.onElement( job )
 
 
-    def onConfiguredInstrument(self, configured_instrument):
-        # apply instrument configuration to instrument
-        instrument = configured_instrument.instrument
-        configuration = configured_instrument.configuration
-        from InstrumentConfigurationApplyer import applyer
-        applyer(instrument).apply(configuration)
-        return self.onInstrument(instrument)
-    
-
     def onInstrument(self, instrument):
-        return self.onContainer(instrument, instrument.components )
+        db = self.director.db
+        components = instrument.components.dereference(db)
+        components = [ c for n,c in components ]
+        return self.onContainer(instrument, components )
+
+
+    def onSampleComponent(self, component):
+        return
     
 
     def onSampleAssembly(self, sampleassembly):
-        return self.onContainer(sampleassembly, sampleassembly.scatterers)
-
-
-    def onConfiguredScatterer(self, configured):
-        scatterer = configured.scatterer
-        configuration = configured.configuration
-        from ScattererConfigurationApplyer import applyer
-        applyer( scatterer ).apply( configuration )
-        return self.onScatterer( scatterer )
+        db = self.director.db
+        scatterers = [ c for n,c in sampleassembly.scatterers.dereference(db) ]
+        return self.onContainer(sampleassembly, scatterers)
 
 
     def onScatterer(self, scatterer):
-        elements = [ scatterer.matter, scatterer.shape ] + scatterer.kernels
+        db = self.director.db
+        
+        elements = [
+            scatterer.matter.dereference(db),
+            scatterer.shape.dereference(db) ]
+
+        kernels = [ k for n,k in scatterer.kernels.dereference(db) ]
+        elements += kernels
         return self.onContainer( scatterer, elements )
 
 
     def onPolyXtalCoherentPhononScatteringKernel(self, kernel):
-        elements = [ kernel.dispersion ]
+        db = self.director.db
+        elements = [ kernel.dispersion.dereference(db) ]
         return self.onContainer( kernel, elements )
 
     
@@ -101,7 +106,7 @@ class TreeViewCreator:
 
         for element in elements:
             childnode = self( element )
-            node.addChild( childnode )
+            if childnode is not None: node.addChild( childnode )
             continue
         
         return node
@@ -130,7 +135,7 @@ class TreeViewCreator:
 
 
     onDetectorSystem_fromXML = onPolyCrystal = onIDFPhononDispersion = onMonochromaticSource = onIQEMonitor = onCrystal = onBlock = onElement
-    onMatter = onPhononDispersion = onScatteringKernel = onComponent = onShape = onAbstractElement
+    #onMatter = onPhononDispersion = onScatteringKernel = onComponent = onShape = onElement
     
 
     def rootNode(self, container):
@@ -170,7 +175,7 @@ class TreeViewCreator:
 
         for prop in props:
             value = getattr( element, prop )
-
+            value = str(value).replace( '\n', '    ' )
             leaf = factory.treeview.leaf( '%s: %s' % (
                 prop, value) )
             branch.addChild( leaf )

@@ -45,8 +45,8 @@ def form( name, mattertype, shapetype ):
                 label = "neutron scatterer"
             else:
                 clerk = self.director.clerk
-                configuredscatterer = clerk.getConfiguredScatterer( id )
-                label = configuredscatterer.short_description
+                scatterer = clerk.getScatterer( id )
+                label = scatterer.short_description
             # get configuration container
             return 'Settings of %r' % label
         
@@ -56,7 +56,7 @@ def form( name, mattertype, shapetype ):
 
             director = self.director
             clerk = director.clerk
-            configured = clerk.getConfiguredScatterer( self.inventory.id )
+            scatterer = clerk.getScatterer( self.inventory.id )
             
             p = form.paragraph()
             p.text = [
@@ -69,20 +69,17 @@ def form( name, mattertype, shapetype ):
                 scattererlabel,),
                 ]
 
-            configured = clerk.getHierarchy( configured )
-            applyconfiguration( configured )
-            
             # get shape
-            realshape = configured.scatterer.shape.realshape
+            shape = scatterer.shape.dereference(director.db)
             # the shape form
-            self.inventory.id = realshape.id
+            self.inventory.id = shape.id
             self.parameters = shapeform.parameters
             shapeform.expand(self, form, errors = errors )
 
             prefix = formactor_action_prefix
             # id should be scatterer's id
             id_field = form.hidden(
-                name = '%s.id' % prefix, value = configured.id)
+                name = '%s.id' % prefix, value = scatterer.id)
 
             return
         
@@ -94,65 +91,19 @@ def form( name, mattertype, shapetype ):
             clerk = director.clerk
 
             #get the thing to be edited
-            configured = clerk.getConfiguredScatterer( self.inventory.id )
-            configured = clerk.getHierarchy( configured )
+            scatterer = clerk.getScatterer( self.inventory.id )
             
             #get shape configuration
             self.inventory.id = ''
             self.DBTable = shapetype
             shapeinput = shapeform.processUserInputs(self, commit = False)
 
-            # make sure we have a configuration
-            if configured.configuration is None:
-                #create a configuration
-                from vnf.dom.Scatterer import Scatterer
-                configuration = clerk.new_dbobject( Scatterer )
-                configuration = clerk.getHierarchy( configuration )
-                #connect to parent
-                configured.configuration_id = configuration.id
-                clerk.updateRecord( configured )
-                configured.configuration = configuration
-                pass # endif
-
-            configuration = configured.configuration
-            # is shape in the configuration?
-            if configuration.shape is None:
-                #compare inputs to old configuration
-                old = configured.scatterer.shape.realshape
-                if equal_record(old, shapeinput, shapeform.parameters):
-                    #nothing to do. no need to create shape configuration
-                    pass
-                else:
-                    #new shape
-                    shape = clerk.makeShape( shapetype )
-                    shape = clerk.getHierarchy( shape )
-                    #transfer user inputs
-                    transfer( shapeinput, shape.realshape, shapeform.parameters )
-                    #update db
-                    clerk.updateRecord( shape.realshape )
-
-                    #attach shape to configuration
-                    configuration.shape_id = shape.id
-                    clerk.updateRecord( configuration )
-                    clerk.getHierarchy(configuration)
-                    pass # endif                
-            else:
-                # there is an existing shape configuration
-                if equal_record( configured.scatterer.shape.realshape,
-                                 shapeinput, shapeform.parameters ):
-                    #this means that the user inputs equal to defaults
-                    #remove shape configuration
-                    clerk.destroyShape( configured.configuration.shape )
-                    configured.configuration.shape_id = ''
-                    clerk.updateRecord( configured.configuration )
-                    clerk.getHierarchy( configured.configuration )
-                    
-                else:
-                    #update configuration
-                    transfer( shapeinput, configured.configuration.shape.realshape,
-                              shapeform.parameters )
-                    clerk.updateRecord( configured.configuration.shape.realshape )
-
+            #transfer user inputs
+            shape = scatterer.shape.dereference( director.db )
+            transfer( shapeinput, shape, shapeform.parameters )
+                
+            #update db
+            clerk.updateRecord( shape )
             return
 
 
@@ -163,15 +114,6 @@ def form( name, mattertype, shapetype ):
         pass # end of Form
 
     return Form()
-
-
-def applyconfiguration( configuredscatterer):
-    if configuredscatterer.configuration:
-        from vnf.components.ScattererConfigurationApplyer import applyer
-        applyer( configuredscatterer.scatterer ).apply(
-            configuredscatterer.configuration )
-        pass # end if
-    return
 
 
 def transfer( src, target, props ):

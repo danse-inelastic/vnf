@@ -35,8 +35,8 @@ def inittable(db):
         r.id = id
         r.short_description = short_description
         r.status = status
-        for scatterer in scatterers:
-            r.scatterers.add( scatterer, db )
+        for name, scatterer in scatterers:
+            r.scatterers.add( scatterer, db, name = name )
             continue
         return r
 
@@ -45,7 +45,7 @@ def inittable(db):
         sa( 'polyxtal-fccNi-plate-sampleassembly-0',
             'Sample only. Polycrystalline fcc Ni plate',
             'created',
-            [ (Scatterer, 'polyxtal-fccNi-scatterer-0'),
+            [ ( 'sample', (Scatterer, 'polyxtal-fccNi-scatterer-0') ),
               ],
             ),
         ]

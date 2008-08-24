@@ -23,6 +23,10 @@ def empty_id( id ):
     return id in [None, 'None', '']
 
 
+def nullpointer( p ):
+    return p is None
+
+
 def datadir( ):
     'path where data files are saved (relative to main.py)'
     import os

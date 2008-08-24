@@ -50,38 +50,15 @@ class Form( base ):
             sampleassembly = sampleassembly_ref.dereference(director.db)
             pass # endif
 
-        #get scatterers
         scatterers = sampleassembly.scatterers.dereference(director.db)
-        samples = filter(
-            lambda name, scatterer: name == 'sample',
-            scatterers )
+        current_scatterer_id = ''
+        if len(scatterers):
+            for label, s in scatterers:
+                if label == 'sample': 
+                    current_scatterer_id = sample.id
+                    break
+                continue
 
-        #check samples
-        if len(samples)>1:
-            raise RuntimeError, "invalid sample assembly %s: more than 1 samples" % (sampleassembly.short_description)
-        #no sample
-        if len(samples) == 0:
-            #need to create a sample
-            from vnf.dom.ConfiguredScatterer import ConfiguredScatterer
-            configured = director.clerk.new_ownedobject( ConfiguredScatterer )
-            
-            #link to the sample assembly
-            from vnf.dom.SampleAssembly import SampleAssembly
-            table = SampleAssembly.Scatterers
-            reference = director.clerk.new_dbobject( table )
-            reference.localkey = sampleassembly.id
-            reference.remotekey = configured.id
-            reference.label = 'sample'
-            director.clerk.updateRecord( reference )
-
-            sample = configured
-        else:
-            sample = samples[0]
-            pass #endif
-
-        configured_scatterer = sample
-        current_scatterer_id = configured_scatterer.scatterer_id
-        
         prefix = formactor_action_prefix
 
         experiment_id_field = form.hidden(
@@ -108,10 +85,10 @@ class Form( base ):
             'As a start, you could select from a bunch of basic samples here:',
             ]
 
-        # find all basic sample templates
+        # find all existing samples
         from vnf.dom.Scatterer import Scatterer
-        scatterers = director.clerk.db.fetchall(
-            Scatterer, where = "template='True' and basic='True'" )
+        scatterers = director.clerk.db.fetchall( Scatterer, where = None )
+        print scatterers
         entries = [ (scatterer.id, scatterer.short_description)
                     for scatterer in scatterers ]
         
@@ -159,25 +136,30 @@ class Form( base ):
         experiment = clerk.getNeutronExperiment(
             self.inventory.experiment_id )
         #sample assembly
-        sampleassembly = clerk.getSampleAssembly(
-            experiment.sampleassembly_id)
-        #scatterers in sample assembly
-        configured_scatterers = clerk.getConfiguredScatterers(
-            experiment.sampleassembly_id )
-        #samples
-        samples = filter(
-            lambda configured: configured.label == 'sample',
-            configured_scatterers)
-        assert len(samples)==1, 'there should be only 1 sample in sample assembly %r' % sampleassembly.short_description
-        sample = samples[0]
-
-        # set to user chosen scatterer template
-        sample.scatterer_id = self.inventory.scatterer_id
-        # set name
-        scatterer = director.clerk.getScatterer( sample.scatterer_id )
-        sample.short_description = scatterer.short_description
+        sampleassembly_ref = experiment.sampleassembly
+        sampleassembly = sampleassembly_ref.dereference(director.db)
         
-        clerk.updateRecord( sample )
+        #scatterers in sample assembly
+        scatterers_refset = sampleassembly.scatterers
+
+        # does sample already exist?
+        scatterers = scatterers_refset.dereference( director.db )
+        oldsample = None
+        for label, s in scatterers:
+            if label == 'sample': oldsample = s; break
+            continue
+        if oldsample:
+            # if so, remove the reference from the referenceset
+            scatterers_refset.delete( oldsample, director.db )
+
+        # set to user chosen scatterer
+        scatterer_id = self.inventory.scatterer_id
+        sample = clerk.getScatterer( scatterer_id )
+        
+        #now make a copy
+        samplecopy = clerk.deepcopy( sample )
+        scatterers_refset.add( samplecopy, director.db, name = 'sample' )
+
         return
 
 

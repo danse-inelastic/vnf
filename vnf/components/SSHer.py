@@ -33,7 +33,7 @@ class SSHer(base):
 
     def pushdir( self, path, server, remotepath ):
         'push a local directory to remote server'
-        address = server.server
+        address = server.hostname
         username = server.username
         known_hosts = self.inventory.known_hosts
         private_key = self.inventory.private_key
@@ -56,7 +56,7 @@ class SSHer(base):
 
     def getfile( self, server, remotepath, localdir ):
         'retrieve file from remote server to local path'
-        address = server.server
+        address = server.hostname
         username = server.username
         known_hosts = self.inventory.known_hosts
         private_key = self.inventory.private_key
@@ -79,7 +79,7 @@ class SSHer(base):
     def execute( self, cmd, server, remotepath ):
         'execute command in the given directory of the given server'
 
-        address = server.server
+        address = server.hostname
         username = server.username
         known_hosts = self.inventory.known_hosts
         private_key = self.inventory.private_key

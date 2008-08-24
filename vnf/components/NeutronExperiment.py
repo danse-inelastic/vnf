@@ -272,9 +272,9 @@ class NeutronExperiment(base):
 
     def _add_review(self, document, director):
         experiment = director.clerk.getNeutronExperiment(self.inventory.id)
-        experiment = director.clerk.getHierarchy( experiment )
         from TreeViewCreator import create
-        view = create( experiment )
+        view = create( experiment, director )
+        #view = create( experiment.instrument.dereference(director.db), director )
         document.contents.append( view )
         return
 

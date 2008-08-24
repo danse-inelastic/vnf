@@ -18,14 +18,13 @@
 
   <component name='journal'>
 
-    <!--
     <facility name='device'>remote</facility>
-    -->
 
     <component name='info'>
       <property name='idd'>on</property>
       <property name='ipa'>on</property>
       <property name='job'>on</property>
+      <property name='db'>on</property>
       <property name='ssher'>on</property>
     </component>
 

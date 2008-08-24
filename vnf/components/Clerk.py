@@ -352,13 +352,17 @@ class DeepCopier:
 
     def onScatterer(self, scatterer):
         #first make copies of shape and matter
-        matter_copy = self._onreference( scatterer.shape )
-        shape_copy = self._onreference( scatterer.crystal )
+        matter_copy = self._onreference( scatterer.matter )
+        shape_copy = self._onreference( scatterer.shape )
         
         #now make a new record
         from vnf.dom.Scatterer import Scatterer as table
         scatterer_copy = self.clerk.new_ownedobject( table )
         
+        #copy all kernels
+        kernels = scatterer.kernels
+        self._copyReferenceSet( kernels, scatterer_copy.kernels )
+
         #copy some attrs from old record
         attrs = ['short_description']
         self._copy_attrs( scatterer, scatterer_copy, attrs )
@@ -384,6 +388,10 @@ class DeepCopier:
         return self._onRecordWithID( crystal )
 
 
+    def onPolyCrystal(self, pc):
+        return self._onRecordWithID( pc )
+
+
     def onMonochromaticSource(self, source):
         return self._onRecordWithID( source )
 
@@ -396,8 +404,12 @@ class DeepCopier:
         return self._onRecordWithID( record )
 
 
+    def onPolyXtalCoherentPhononScatteringKernel(self, kernel):
+        return self._onRecordWithID( kernel )
+
+
     def _onreference(self, reference):
-        record = reference.dereference()
+        record = reference.dereference(self.director.db)
         copy = self(record)
         newreference = reference.__class__( copy.id, copy.__class__ )
         return newreference
@@ -408,12 +420,13 @@ class DeepCopier:
         from copy import copy
         newrecord = copy( record )
         newrecord.id = new_id( self.director )
-        self.clerk.updateRecord( newrecord )
+        self.director.db.insertRow( newrecord )
         return newrecord
 
 
     def _copyReferenceSet(self, referenceset, newreferenceset):
-        elements = referenceset.dereference()
+        db = self.clerk.db
+        elements = referenceset.dereference(db)
         for name, element in elements:
             elementcopy = self(element)
             newreferenceset.add( elementcopy, db, name = name )

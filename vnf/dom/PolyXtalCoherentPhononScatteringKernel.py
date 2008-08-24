@@ -22,7 +22,7 @@ class PolyXtalCoherentPhononScatteringKernel(base):
     import pyre.db
 
     dispersion = pyre.db.versatileReference(
-        name = 'dispersion_id', tableRegistry = tableRegistry )
+        name = 'dispersion', tableRegistry = tableRegistry )
     
     max_energy_transfer = pyre.db.real( name = 'max_energy_transfer', default = 55. )
 

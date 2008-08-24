@@ -49,6 +49,7 @@ tablemodules = instrument \
          + shapes \
          + materials \
          + sample \
+         + kernels \
          + experiment \
          + other
 

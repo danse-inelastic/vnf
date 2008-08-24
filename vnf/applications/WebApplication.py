@@ -157,6 +157,12 @@ class WebApplication(Base):
         # initialize table registry
         import vnf.dom
         vnf.dom.register_alltables()
+
+        # set id generator for referenceset
+        def _id():
+            from vnf.components.misc import new_id
+            return new_id(self)
+        vnf.dom.set_idgenerator(_id)
         return
 
 

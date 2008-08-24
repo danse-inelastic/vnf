@@ -24,8 +24,12 @@ class PolyXtalCoherentPhononScatteringKernel(base):
         import pyre.inventory
         
         max_energy_transfer = pyre.inventory.float( name = 'max_energy_transfer' )
+        max_energy_transfer.meta['label'] = 'Maximumn energy transfer'
+        max_energy_transfer.meta['tip'] = 'Maximumn energy transfer allowed for kernel simulation. unit: meV'
 
         max_momentum_transfer = pyre.inventory.float( name = 'max_momentum_transfer' )
+        max_momentum_transfer.meta['label'] = 'Maximumn momentum transfer'
+        max_momentum_transfer.meta['tip'] = 'Maximumn momentum transfer allowed for kernel simulation. unit: A**-1'
 
         pass # end of Inventory
 

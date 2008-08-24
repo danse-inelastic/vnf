@@ -23,7 +23,7 @@ class Builder:
 
     def render(self, experiment):
         #copy files directory from template
-        template = 'content/jobs/SQEtemplate'
+        template = '../content/jobs/SQEtemplate'
         for item in os.listdir( template ):
             source = os.path.join( template, item )
             #skip directories
