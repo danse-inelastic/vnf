@@ -30,6 +30,7 @@ def inittable(db):
     from idgenerator import generator
     def block( id, width, height, thickness ):
         b = Block()
+        b.id = id
         b.width = width
         b.height = height
         b.thickness = thickness

@@ -30,9 +30,10 @@ class Scatterer(base):
 
 
 def inittable(db):
-    def s( id, matter, shape, kernels ):
+    def s( id, short_description, matter, shape, kernels ):
         r = Scatterer()
         r.id = id
+        r.short_description = short_description
         r.matter = matter
         r.shape = shape
         for kernel in kernels: r.kernels.add( kernel, db )
@@ -44,6 +45,7 @@ def inittable(db):
     
     records = [
         s( 'polyxtal-fccNi-scatterer-0',
+           'fcc Ni plate',
            (PolyCrystal, 'polyxtalfccNi0'),
            (Block, 'plate0'),
            [ (PolyXtalCoherentPhononScatteringKernel,
