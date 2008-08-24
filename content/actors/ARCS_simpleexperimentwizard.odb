@@ -1,0 +1,22 @@
+
+from vnf.components.NeutronExperimentWizard import NeutronExperimentWizard as base
+
+
+class Wizard(base):
+
+    def start(self, director):
+        from vnf.dom.NeutronExperiment import NeutronExperiment
+        experiment = director.clerk.new_ownedobject( NeutronExperiment )
+
+        from vnf.dom.Instrument import Instrument
+        arcs_simple = director.clerk.getInstrument( 'ARCS_simple' )
+
+        experiment.instrument = arcs_simple
+
+        director.clerk.updateRecord( experiment )
+
+        self.inventory.id = experiment.id
+        return base.start( self, director )
+
+
+def actor(): return Wizard( 'ARCS_simpleexperimentwizard' )
