@@ -577,9 +577,7 @@ def listexperiments( experiments, document, director ):
             )
         deletelink = action_link( action,  director.cgihome )
 
-        element = director.clerk.getHierarchy( element )
-        if element.instrument is None \
-               or element.instrument.instrument is None:
+        if nullpointer(element.instrument) :
             action = actionRequireAuthentication(
                 'neutronexperimentwizard', sentry = director.sentry,
                 label = 'select instrument',
@@ -589,7 +587,7 @@ def listexperiments( experiments, document, director ):
             link = action_link( action, director.cgihome )
             instrument = link
         else:
-            instrument = element.instrument.instrument
+            instrument = element.instrument.dereference( director.db )
             instrument = instrument.short_description
             pass # end if
         

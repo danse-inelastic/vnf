@@ -134,7 +134,7 @@ class TreeViewCreator:
         raise RuntimeError, "should not reach here"
 
 
-    onDetectorSystem_fromXML = onPolyCrystal = onIDFPhononDispersion = onMonochromaticSource = onIQEMonitor = onCrystal = onBlock = onElement
+    onDetectorSystem_fromXML = onPolyCrystal = onDisordered = onIDFPhononDispersion = onMonochromaticSource = onIQEMonitor = onCrystal = onBlock = onElement
     #onMatter = onPhononDispersion = onScatteringKernel = onComponent = onShape = onElement
     
 

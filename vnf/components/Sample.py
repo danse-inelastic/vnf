@@ -42,17 +42,16 @@ class Sample(Actor):
         # retrieve id:record dictionary from db
         clerk = director.clerk
         scatterers = clerk.indexScatterers().values()
-        scatterers = [ clerk.getHierarchy(scatterer) for scatterer in scatterers]
         samples = scatterers
             
         p = document.paragraph()
         import operator
         generators = [
             operator.attrgetter( 'short_description' ),
-            lambda s: s.matter.realmatter.chemical_formula,
-            lambda s: format_lattice_parameters(s.matter.realmatter),
-            lambda s: format_atoms(s.matter.realmatter),
-            lambda s: format_shape(s.shape.realshape),
+            lambda s: format_chemical_formula(s.matter, director),
+            lambda s: format_lattice_parameters(s.matter, director),
+            lambda s: format_atoms(s.matter, director),
+            lambda s: format_shape(s.shape, director),
             ]
 
         columnTitles = [
@@ -95,7 +94,16 @@ class Sample(Actor):
 
 
 
-def format_lattice_parameters(matter):
+def format_chemical_formula( matter,director ):
+    if nullpointer(matter): return "undefined"
+    matter = matter.dereference(director.db)
+    return matter.chemical_formula
+
+
+def format_lattice_parameters(matter, director):
+    if nullpointer(matter): return "undefined"
+    matter = matter.dereference(director.db)
+    
     lattice = matter.cartesian_lattice
     import numpy
     lattice = numpy.array(lattice)
@@ -103,7 +111,10 @@ def format_lattice_parameters(matter):
     return '<br>'.join( [ format_vector( vec ) for vec in lattice ] )
 
 
-def format_atoms(matter):
+def format_atoms(matter, director):
+    if nullpointer(matter): return "undefined"
+    matter = matter.dereference(director.db)
+
     coords = matter.fractional_coordinates
     import numpy
     coords = numpy.array(coords)
@@ -146,8 +157,13 @@ class ShapeFormatter:
             ]
         return '<br>'.join( texts )
 
-def format_shape( shape ):
+def format_shape( shape, director ):
+    if nullpointer(shape): return "undefined"
+    shape = shape.dereference(director.db)
     return ShapeFormatter()( shape )
+
+
+from misc import nullpointer
 
 # version
 __id__ = "$Id$"

@@ -1,0 +1,60 @@
+# -*- Python -*-
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                   Jiao Lin
+#                      California Institute of Technology
+#                        (C) 2007  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+
+from vnf.components.DBObjectForm import DBObjectForm as base
+
+
+class SANSSphereModelKernel(base):
+
+
+    class Inventory(base.Inventory):
+
+        import pyre.inventory
+        
+        scale = pyre.inventory.float( name = 'scale' )
+        scale.meta['label'] = 'Scale'
+        scale.meta['tip'] = '????'
+
+        radius = pyre.inventory.float( name = 'radius' )
+        radius.meta['label'] = 'Radius'
+        radius.meta['tip'] = 'Radius of sphere'
+
+        pass # end of Inventory
+
+
+    parameters = [
+        'radius',
+        'scale',
+        ]
+
+    DBTable = 'SANSSphereModelKernel'
+
+
+    def __init__(self, name = None):
+        if name is None:
+            name = 'sansspheremodelkernel'
+
+        base.__init__(self, name)
+
+        return
+
+
+
+def form(): return SANSSphereModelKernel()
+
+# version
+__id__ = "$Id$"
+
+# End of file 

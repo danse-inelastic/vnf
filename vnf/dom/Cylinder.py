@@ -24,6 +24,24 @@ class Cylinder(base):
     outerradius = pyre.db.real( name = 'outerradius', default = 0.002 )
 
 
+def inittable(db):
+    from idgenerator import generator
+    def cylinder( id, height, innerradius, outerradius ):
+        b = Cylinder()
+        b.id = id
+        b.height = height
+        b.innerradius = innerradius
+        b.outerradius = outerradius
+        return b
+    
+    cylinders = [
+        cylinder( 'cylinder0', 0.1, 0.0, 0.002 ),
+        ]
+    for c in cylinders: db.insertRow( c )
+    return
+
+
+
 # version
 __id__ = "$Id$"
 

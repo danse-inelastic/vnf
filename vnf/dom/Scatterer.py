@@ -40,8 +40,11 @@ def inittable(db):
         return r
 
     from PolyCrystal import PolyCrystal
+    from Disordered import Disordered
     from Block import Block
+    from Cylinder import Cylinder
     from PolyXtalCoherentPhononScatteringKernel import PolyXtalCoherentPhononScatteringKernel
+    from SANSSphereModelKernel import SANSSphereModelKernel
     
     records = [
         s( 'polyxtal-fccNi-scatterer-0',
@@ -50,6 +53,15 @@ def inittable(db):
            (Block, 'plate0'),
            [ (PolyXtalCoherentPhononScatteringKernel,
               'polyxtalcoherentphononscatteringkernel-fccNi-0'),
+             ],
+           ),
+        
+        s( 'sans-sphere-model-scatterer-0',
+           'SANS sphere model sample',
+           (Disordered, 'liquid0'),
+           (Cylinder, 'cylinder0'),
+           [ (SANSSphereModelKernel,
+              'sansspheremodelkernel-0'),
              ],
            )
         ]

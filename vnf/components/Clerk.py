@@ -392,6 +392,10 @@ class DeepCopier:
         return self._onRecordWithID( pc )
 
 
+    def onDisordered(self, d):
+        return self._onRecordWithID( d )
+
+
     def onMonochromaticSource(self, source):
         return self._onRecordWithID( source )
 
@@ -405,6 +409,10 @@ class DeepCopier:
 
 
     def onPolyXtalCoherentPhononScatteringKernel(self, kernel):
+        return self._onRecordWithID( kernel )
+
+
+    def onSANSSphereModelKernel(self, kernel):
         return self._onRecordWithID( kernel )
 
 

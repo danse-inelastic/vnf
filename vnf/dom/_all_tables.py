@@ -2,9 +2,11 @@
 instrument = [
     'Instrument',
     'MonochromaticSource',
+    'IQMonitor',
     'IQEMonitor',
     'SampleComponent',
     'ARCS_simple',
+    'SANS_NG7',
     ]
 
 
@@ -16,6 +18,8 @@ shapes = [
 
 materials = [
     'PolyCrystal',
+    'SingleCrystal',
+    'Disordered',
     ]
 
 
@@ -35,6 +39,7 @@ experiment = [
 kernels = [
     'IDFPhononDispersion',
     'PolyXtalCoherentPhononScatteringKernel',
+    'SANSSphereModelKernel',
     ]
 
 
@@ -45,13 +50,14 @@ other = [
     ]
 
 
-tablemodules = instrument \
-         + shapes \
-         + materials \
-         + sample \
-         + kernels \
-         + experiment \
-         + other
+tablemodules = \
+             shapes \
+             + materials \
+             + kernels \
+             + sample \
+             + instrument \
+             + experiment \
+             + other
 
 tables = []
 for t in tablemodules:

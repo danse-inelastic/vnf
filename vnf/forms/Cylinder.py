@@ -22,13 +22,22 @@ class Cylinder(base):
     class Inventory(base.Inventory):
 
         import pyre.inventory
-        radius = pyre.inventory.str( name = 'radius', default = 0.01 )
-        radius.meta['label'] = 'Radius'
-        radius.meta['tip'] = (
-            'The radius of the cylinder',
+        outerradius = pyre.inventory.str( name = 'outerradius', default = 0.01 )
+        outerradius.meta['label'] = 'Outer radius'
+        outerradius.meta['tip'] = (
+            'The outer radius of the cylinder',
             )
-        radius.meta['tiponerror'] = (
-            'Please enter radius as a positive number. unit: meter',
+        outerradius.meta['tiponerror'] = (
+            'Please enter outer radius as a positive number. unit: meter',
+            )
+        
+        innerradius = pyre.inventory.str( name = 'innerradius', default = 0.01 )
+        innerradius.meta['label'] = 'Inner radius'
+        innerradius.meta['tip'] = (
+            'The inner radius of the cylinder',
+            )
+        innerradius.meta['tiponerror'] = (
+            'Please enter inner radius as a positive number. unit: meter',
             )
         
         height = pyre.inventory.str( name = 'height', default = 0.1 )
@@ -42,7 +51,7 @@ class Cylinder(base):
         
 
     parameters = [#'short_description',
-        'radius', 'height',]
+        'outerradius', 'innerradius', 'height',]
     DBTable = 'Cylinder'
 
 
@@ -57,7 +66,8 @@ class Cylinder(base):
 
     def processUserInputs(self, *args, **kwds):
         errors = []
-        self._verify( 'radius', errors )
+        self._verify( 'outerradius', errors )
+        self._verify( 'innerradius', errors )
         self._verify( 'height', errors )
         if len(errors): raise InputProcessingError, errors
         return base.processUserInputs(self, *args, **kwds)

@@ -33,8 +33,6 @@ EXPORT_PYTHON_MODULES = \
 	AbInitio.py \
 	ARCS_simple.py \
 	Block.py \
-	ConfiguredInstrument.py \
-	ConfiguredScatterer.py \
 	Crystal.py \
 	Cylinder.py \
 	DbObject.py \
@@ -44,6 +42,7 @@ EXPORT_PYTHON_MODULES = \
 	GulpScatteringKernel.py \
 	IDFPhononDispersion.py \
 	Instrument.py \
+	IQMonitor.py \
 	IQEMonitor.py \
 	Job.py \
 	MatterBase.py \
@@ -55,6 +54,8 @@ EXPORT_PYTHON_MODULES = \
 	PolyCrystal.py \
 	PolyXtalCoherentPhononScatteringKernel.py \
 	ReferenceSet.py \
+	SANS_NG7.py \
+	SANSSphereModelKernel.py \
 	Sample.py \
 	SampleAssembly.py \
 	SampleComponent.py \

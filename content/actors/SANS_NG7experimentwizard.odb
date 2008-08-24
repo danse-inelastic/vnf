@@ -9,7 +9,7 @@ class Wizard(base):
         experiment = director.clerk.new_ownedobject( NeutronExperiment )
 
         from vnf.dom.Instrument import Instrument
-        instrument = director.clerk.getInstrument( 'ARCS_simple' )
+        instrument = director.clerk.getInstrument( 'SANS_NG7' )
 
         experiment.instrument = instrument
 
@@ -19,4 +19,4 @@ class Wizard(base):
         return base.start( self, director )
 
 
-def actor(): return Wizard( 'ARCS_simpleexperimentwizard' )
+def actor(): return Wizard( 'SANS_NG7experimentwizard' )

@@ -22,6 +22,11 @@ def configure_arcs_simple_instrument():
     return ARCS_simple()
 
 
+def configure_sans_ng7_instrument():
+    from SANS_NG7 import SANS_NG7
+    return SANS_NG7()
+
+
 def configureneutronscatterer( formname, mattertype, shapetype ):
     from ConfigureNeutronScatterer import form
     return form( formname, mattertype, shapetype )

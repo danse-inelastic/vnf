@@ -75,6 +75,7 @@ class Form( base ):
             'for, for example, a phonon measurement are 60~100 meV.',
             ]
         property = 'Ei'
+        
         value = instrument.source.realcomponent.energy
         field = form.text(
             id = property,

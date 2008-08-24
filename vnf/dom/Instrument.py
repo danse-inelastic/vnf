@@ -61,9 +61,9 @@ def inittable(db):
         return 
 
     from MonochromaticSource import MonochromaticSource
-    from IQEMonitor import IQEMonitor
     from SampleComponent import SampleComponent
     
+    from IQEMonitor import IQEMonitor
     add( 'ARCS_simple', 'Virtual ARCS',
          '''ARCS is a wide Angular-Range, direct-geometry, time-of-flight Chopper Spectrometer at the Spallation Neutron Source. It is optimized to provide a high neutron flux at the sample, and a large solid angle of detector coverage.
 ''',
@@ -72,6 +72,17 @@ def inittable(db):
          [  ('source', MonochromaticSource, ( (0,0,0), (0,0,0), '' ) ),
             ('sample', SampleComponent, ( (0,0,0), (0,0,0), '' ) ),
             ('detector', IQEMonitor, ( (0,0,0), (0,0,0), '' ) ),
+            ]
+         )
+
+    from IQMonitor import IQMonitor
+    add( 'SANS_NG7', 'NIST NG7',
+         '''NG7 30-m Small Angle Neutron Scattering Instrument''',
+         'sans',
+         'vnf', '08/24/2008',
+         [  ('source', MonochromaticSource, ( (0,0,0), (0,0,0), '' ) ),
+            ('sample', SampleComponent, ( (0,0,0), (0,0,0), '' ) ),
+            ('detector', IQMonitor, ( (0,0,0), (0,0,0), '' ) ),
             ]
          )
 
