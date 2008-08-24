@@ -55,7 +55,7 @@ def inittable(db):
         return r
     records = [
         server( 'server0', '127.0.0.1', 'local',
-                'local users', 'vnf', '/home/vnf/jobs', 'torque' ),
+                'local users', 'vnf', 'jobs', 'torque' ),
         ]
     for r in records: db.insertRow( r )
     return

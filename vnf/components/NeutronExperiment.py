@@ -199,12 +199,11 @@ class NeutronExperiment(base):
 
         experiment = director.clerk.getNeutronExperiment(
             self.inventory.id)
-        job_id = experiment.job_id
-        if empty_id(job_id):
+        job = experiment.job
+        if nullpointer(job):
             raise RuntimeError, "job not yet established"
         
-        job_id  = experiment.job_id
-        job = director.clerk.getJob( job_id )
+        job = job.dereference(director.db)
         
         try:
             Scheduler.schedule(job, director)
@@ -738,7 +737,7 @@ class ResultDrawer:
 import os, spawn
 import Scheduler
 
-from misc import empty_id
+from misc import empty_id, nullpointer
 
 # version
 __id__ = "$Id$"

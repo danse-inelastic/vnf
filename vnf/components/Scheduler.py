@@ -26,7 +26,7 @@ def schedule( job, director ):
     server_jobpath = manager.remotepath()
 
     # the server
-    server = job.computation_server
+    server = job.server.dereference(director.db)
 
     scheduler = schedulerfactory( server )
     scheduler = scheduler(
@@ -52,15 +52,14 @@ def check( job, director ):
     from JobDataManager import JobDataManager
     manager = JobDataManager( job, director )
 
+    server = job.server.dereference(director)
     #scheduler
-    scheduler = schedulerfactory( job.computation_server )
+    scheduler = schedulerfactory( server )
 
     #remote job path
     server_jobpath = manager.remotepath()
 
     #
-    server = job.computation_server
-    
     launch = lambda cmd: director.csaccessor.execute(
         cmd, server, server_jobpath )
 

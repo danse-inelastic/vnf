@@ -20,11 +20,18 @@ Go to the root directory of vnf, and run mm
 Start services
 
  $ cd $EXPORT_ROOT/bin
- $ ./journald.py
- $ ./idd.py
- $ ./ipad.py
+ $ ./startservices.sh
 
 
 Initialized database
  $ cd $EXPORT_ROOT/bin
  $ ./initdb.sh
+
+
+Create ssh keys so that vnf can contact computation server.
+ 1. create a directory (to store ssh-related files). 
+ 1. create a private/public key pair and put them under that directory
+ 1. create an empty knownhosts file under that directory
+ 1. make changes to ssher.pml to reflect paths to above-mentioned files 
+ 1. add public key to the computation server's accepting account's
+    .ssh/authorized_keys file

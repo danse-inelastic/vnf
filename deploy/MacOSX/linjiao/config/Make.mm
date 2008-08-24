@@ -31,6 +31,7 @@ distclean::
 
 EXPORT_DATAFILES = \
 	main.pml \
+	ssher.pml \
 
 CP_F = cp -f
 EXPORT_DATA_PATH = $(EXPORT_ROOT)/$(PROJECT)/$(PACKAGE)
