@@ -609,7 +609,7 @@ class NeutronExperimentWizard(base):
         main = page._body._content._main
         # populate the main column
         document = main.document(
-            title='Neutron Experiment Wizard: Scattering kernel selection')
+            title='Neutron Experiment Wizard: Scattering kernel configuration')
         document.description = ''
         document.byline = '<a href="http://danse.us">DANSE</a>'
 

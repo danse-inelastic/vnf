@@ -55,7 +55,7 @@ class Form( base ):
         if len(scatterers):
             for label, s in scatterers:
                 if label == 'sample': 
-                    current_scatterer_id = sample.id
+                    current_scatterer_id = s.id
                     break
                 continue
 

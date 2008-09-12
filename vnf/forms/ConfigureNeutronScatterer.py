@@ -64,13 +64,13 @@ def form( name, mattertype, shapetype ):
                 ]
             
             p = form.paragraph()
-            p.text = [
-                'You can change the dimensions of the shape of this %s' % (
-                scattererlabel,),
-                ]
-
             # get shape
             shape = scatterer.shape.dereference(director.db)
+            p.text = [
+                'Your %s is a %s.' % (scattererlabel, shape.__class__.__name__.lower()),
+                'You can change the dimensions here:',
+                ]
+
             # the shape form
             self.inventory.id = shape.id
             self.parameters = shapeform.parameters

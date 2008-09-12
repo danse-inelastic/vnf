@@ -51,6 +51,15 @@ class PolyXtalCoherentPhononScatteringKernel(base):
         return
 
 
+    def expand(self, form, errors = None, properties = None):
+        p = form.paragraph( )
+        p.text = [
+            'Kernel type: %s' % self.DBTable,
+            ]
+            
+        base.expand(self, form, errors = errors, properties = properties)
+        return
+
 
 def form(): return PolyXtalCoherentPhononScatteringKernel()
 
