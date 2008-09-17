@@ -46,6 +46,7 @@ class DbApp(Script):
         tables = alltables()
 
         for table in tables:
+            self.dropTable( table )
             self.createTable( table )
             self.enablewww( table )
 
@@ -82,7 +83,7 @@ class DbApp(Script):
 
     def enablewww(self, table):
         name = table.name
-        cmd = 'GRANT ALL ON %s TO %s' % (name, self.wwwusername)
+        cmd = 'GRANT ALL ON %s TO "%s"' % (name, self.wwwusername)
         c = self.db.cursor()
         #print cmd
         print " -- Grant user %r access to table %r" % (self.wwwusername, name)
@@ -101,7 +102,7 @@ class DbApp(Script):
 
 
     def __init__(self):
-        Script.__init__(self, 'db')
+        Script.__init__(self, 'initdb')
         self.db = None
         return
 

@@ -9,6 +9,13 @@ For example, to deploy it in Jiao's account on a Mac OS X machine, do the follow
  $ cd ~/Sites/cgi-bin
  $ ln -s ~/dv/danse/VNET/vnf/trunk/deploy/MacOSX/linjiao/cgi-bin vnf
 
+
+Make another symbolice link in (sth similar to)
+
+  /var/www
+
+name it "vnf". The target would be the "html" directory of vnf.
+
  
 Go to the root directory of vnf, and run mm
  
@@ -19,12 +26,12 @@ Go to the root directory of vnf, and run mm
 
 Start services
 
- $ cd $EXPORT_ROOT/bin
+ $ cd $EXPORT_ROOT/vnf/bin
  $ ./startservices.sh
 
 
 Initialized database
- $ cd $EXPORT_ROOT/bin
+ $ cd $EXPORT_ROOT/vnf/bin
  $ ./initdb.sh
 
 
