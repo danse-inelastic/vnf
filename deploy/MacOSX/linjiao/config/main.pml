@@ -19,6 +19,10 @@
 
   <component name='main'>
     <property name='debug'>1</property>
+<!--
+    <property name='db'>linjiao@localhost:5432:vnf</property>
+-->
+    <property name='db'>vnf:4Od&amp;Cm#@localhost:54320:vnf</property>
     <property name='home'>http://localhost/~linjiao/vnf2/</property>
     <property name='cgi-home'>http://localhost/~linjiao/cgi-bin/vnf2/main.cgi</property>
     <property name='imagepath'>/~linjiao/vnf2/images</property>
