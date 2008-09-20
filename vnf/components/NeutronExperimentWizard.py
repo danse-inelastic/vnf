@@ -371,9 +371,143 @@ class NeutronExperimentWizard(base):
 
         director.routine = 'sample_preparation'
         return self.sample_preparation( director )
-            
+
 
     def sample_preparation(self, director):
+        try:
+            page = director.retrieveSecurePage( 'neutronexperimentwizard' )
+        except AuthenticationError, err:
+            return err.page
+
+        experiment = director.clerk.getNeutronExperiment(self.inventory.id)
+        sample = _get_sample_from_experiment(experiment)
+        if sample is None:
+            return self.fresh_sample_preparation(director)
+        
+        main = page._body._content._main
+        
+        # populate the main column
+        document = main.document(
+            title='Neutron Experiment Wizard: sample preparation')
+        document.description = ''
+        document.byline = 'byline?'
+
+        p = document.paragraph()
+        action = actionRequireAuthentication(
+            actor = 'neutronexperimentwizard', sentry = director.sentry,
+            label = 'configure',
+            routine = 'configure_sample',
+            id = self.inventory.id,
+            )
+        link = action_link( action, director.cgihome )
+        p.text = [
+            'You have already created your sample.',
+            'You may want to %s this sample.' % link,
+            ]
+
+        p = document.paragraph()
+        action = actionRequireAuthentication(
+            actor = 'neutronexperimentwizard', sentry = director.sentry,
+            label = 'select',
+            routine = 'select_sample_from_examples',
+            id = self.inventory.id,
+            )
+        link = action_link( action, director.cgihome )
+        p.text = [
+             'The easisest way to start would be to',
+             '%s from a bunch of basic samples.' % link,
+            ]
+
+        #p = document.paragraph()
+        #action = actionRequireAuthentication(
+        #    actor = 'neutronexperimentwizard', sentry = director.sentry,
+        #    label = 'select a sample from your own sample library',
+        #    routine = 'select_sample_from_sample_library',
+        #    id = self.inventory.id,
+        #    )
+        #link = action_link( action, director.cgihome )
+        #p.text = [
+        #    'Or you could %s.' % link,
+        #    ]
+
+        p = document.paragraph()
+        action = actionRequireAuthentication(
+            actor = 'neutronexperimentwizard', sentry = director.sentry,
+            label = 'create a new sample from scratch',
+            routine = 'create_new_sample',
+            id = self.inventory.id,
+            )
+        link = action_link( action, director.cgihome )
+        p.text = [
+            'Also you could %s.' % link,
+            ]
+
+        return page
+
+
+    def fresh_sample_preparation(self, director):
+        try:
+            page = director.retrieveSecurePage( 'neutronexperimentwizard' )
+        except AuthenticationError, err:
+            return err.page
+
+        main = page._body._content._main
+        
+        # populate the main column
+        document = main.document(
+            title='Neutron Experiment Wizard: sample preparation')
+        document.description = ''
+        document.byline = 'byline?'
+        
+        p = document.paragraph()
+        p.text = [
+            'Sample is the heart of your experiment. By placing',
+            'your sample in the neutron beam of a neutron instrument,',
+            'you can study, for example, phonons or mangons',
+            'in your sample.',
+            ]
+
+        p = document.paragraph()
+        action = actionRequireAuthentication(
+            actor = 'neutronexperimentwizard', sentry = director.sentry,
+            label = 'select',
+            routine = 'select_sample_from_examples',
+            id = self.inventory.id,
+            )
+        link = action_link( action, director.cgihome )
+        p.text = [
+             'The easisest way to start would be to',
+             '%s from a bunch of basic samples.' % link,
+            ]
+
+        #p = document.paragraph()
+        #action = actionRequireAuthentication(
+        #    actor = 'neutronexperimentwizard', sentry = director.sentry,
+        #    label = 'select a sample from your own sample library',
+        #    routine = 'select_sample_from_sample_library',
+        #    id = self.inventory.id,
+        #    )
+        #link = action_link( action, director.cgihome )
+        #p.text = [
+        #    'Or you could %s.' % link,
+        #    ]
+
+        p = document.paragraph()
+        action = actionRequireAuthentication(
+            actor = 'neutronexperimentwizard', sentry = director.sentry,
+            label = 'create a new sample from scratch',
+            routine = 'create_new_sample',
+            id = self.inventory.id,
+            )
+        link = action_link( action, director.cgihome )
+        p.text = [
+            'Also you could %s.' % link,
+            ]
+
+        return page
+            
+
+    def select_sample_from_examples(self, director):
         try:
             page = director.retrieveSecurePage( 'neutronexperimentwizard' )
         except AuthenticationError, err:
@@ -390,13 +524,13 @@ class NeutronExperimentWizard(base):
         document.description = ''
         document.byline = 'byline?'
         
-        formcomponent = self.retrieveFormToShow( 'sample_preparation' )
+        formcomponent = self.retrieveFormToShow( 'select_sample_from_examples' )
         formcomponent.inventory.experiment_id = self.inventory.id
         formcomponent.director = director
         
         # create form
         form = document.form(
-            name='sample preparation',
+            name='select sample',
             legend= formcomponent.legend(),
             action=director.cgihome)
 
@@ -404,7 +538,7 @@ class NeutronExperimentWizard(base):
         action = actionRequireAuthentication(
             actor = 'neutronexperimentwizard', sentry = director.sentry,
             label = '',
-            routine = 'configure_sample',
+            routine = 'verify_sample_selection',
             id = self.inventory.id,
             arguments = {'form-received': formcomponent.name } )
         from vnf.weaver import action_formfields
@@ -418,6 +552,36 @@ class NeutronExperimentWizard(base):
         
 #        self._footer( document, director )
         return page
+
+
+    def verify_sample_selection(self, director):
+        try:
+            page = director.retrieveSecurePage( 'neutronexperimentwizard' )
+        except AuthenticationError, err:
+            return err.page
+        
+        scatterer_id = self.processFormInputs( director )
+
+        experiment = director.clerk.getNeutronExperiment(
+            self.inventory.id )
+
+        oldsample = _get_sample_from_experiment(experiment)
+        if oldsample:
+            # if so, remove the reference from the referenceset
+            scatterers_refset.delete( oldsample, director.db )
+
+        # the user chosen scatterer
+        sample = director.clerk.getScatterer( scatterer_id )
+        
+        #now make a copy
+        samplecopy = director.clerk.deepcopy( sample )
+
+        #and add to the sample assembly
+        scatterers_refset.add( samplecopy, director.db, name = 'sample' )
+
+        #redirect
+        director.routine = 'configure_sample'
+        return self.configure_sample(director)
 
     
 
@@ -517,23 +681,14 @@ class NeutronExperimentWizard(base):
         document.description = ''
         document.byline = 'byline?'
 
-        self.processFormInputs( director )
+        #self.processFormInputs( director )
 
         #get experiment
         experiment = director.clerk.getNeutronExperiment(
             self.inventory.id )
 
-        #get sample assembly
-        sampleassembly_ref = experiment.sampleassembly
-        sampleassembly = sampleassembly_ref.dereference(director.db)
-        
-        #get sample
-        scatterers_refset = sampleassembly.scatterers
-        scatterers = scatterers_refset.dereference(director.db)
-        sample = None
-        for label, s in scatterers:
-            if label == 'sample': sample = s; break
-            continue
+        #sample
+        sample = _get_sample_from_experiment(experiment)
         if sample is None: raise RuntimeError, "No sample in sample assembly"
 
         #In this step we obtain configuration of sample
@@ -615,8 +770,8 @@ class NeutronExperimentWizard(base):
 
         experiment = director.clerk.getNeutronExperiment( self.inventory.id )
         sampleassembly = experiment.sampleassembly.dereference(director.db)
-        sample = _getSample( sampleassembly, director.db )
-        kernels = _getKernels( sample, director.db )
+        sample = _get_sample_from_sampleassembly( sampleassembly, director.db )
+        kernels = _get_kernels_from_scatterer( sample, director.db )
 
         #hack
         name, kernel = kernels[0]
@@ -1069,7 +1224,7 @@ class NeutronExperimentWizard(base):
         if self.sample_environment_configured:
             sampleassembly_ref = experiment.sampleassembly
             sampleassembly = sampleassembly_ref.dereference(director.db)
-            sample = _getSample( sampleassembly, director.db )
+            sample = _get_sample_from_sampleassembly( sampleassembly, director.db )
             
             self.sample_prepared = not nullpointer(sample)
             # need to test if kernel is configured
@@ -1094,8 +1249,13 @@ class NeutronExperimentWizard(base):
     pass # end of NeutronExperimentWizard
 
 
+def _get_sample_from_experiment(experiment, db):
+    sampleassembly_ref = experiment.sampleassembly
+    sampleassembly = sampleassembly_ref.dereference(db)
+    return _get_sample_from_sampleassembly(sampleassembly_ref)
 
-def _getSample(sampleassembly, db):
+
+def _get_sample_from_sampleassembly(sampleassembly, db):
     scatterers_refset = sampleassembly.scatterers
     scatterers = scatterers_refset.dereference(db)
     sample = None
@@ -1105,7 +1265,7 @@ def _getSample(sampleassembly, db):
     return sample
 
 
-def _getKernels(scatterer, db):
+def _get_kernels_from_scatterer(scatterer, db):
     kernels_refset = scatterer.kernels
     kernels = kernels_refset.dereference(db)
     return kernels

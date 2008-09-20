@@ -1,0 +1,92 @@
+# -*- Python -*-
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                   Jiao Lin
+#                      California Institute of Technology
+#                        (C) 2007  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+from vnf.components.Form import Form as base, InputProcessingError
+from vnf.components.Actor import action_link, actionRequireAuthentication
+
+
+class Form( base ):
+
+    class Inventory( base.Inventory ):
+        import pyre.inventory
+        scatterer_id = pyre.inventory.str( 'scatterer_id', default = '' )
+        pass # end of Inventory
+
+
+    def legend(self):
+        'return a legend string'
+        return 'Select a sample'
+
+
+    def expand(self, form):
+        prefix = formactor_action_prefix
+
+        p = form.paragraph()
+        p.text = [
+            'Please select from the following list of sample examples:',
+            ]
+
+        scatterers = self._getExamples(self.director)
+        entries = [ (scatterer.id, scatterer.short_description)
+                    for scatterer in scatterers ]
+        
+        selector = form.selector(
+            id = 'scatterer_selector',
+            name = '%s.scatterer_id' % prefix,
+            entries = entries,
+            label = 'Select sample',
+            selected = 0,
+            )
+        
+        return
+
+
+    def processUserInputs(self):
+        'process user inputs and save them to db'
+
+        director = self.director
+        clerk = director.clerk
+
+        return self.inventory.scatterer_id
+
+
+    def _getExamples(self, director):
+        # find all existing examples
+        from vnf.dom.ScattererExample import ScattererExample
+        scattererexamples = director.clerk.db.fetchall( ScattererExample, where = None )
+        return [ ex.scatterer.dereference(director.db) for ex in scattererexamples ]
+
+
+    def __init__(self, name = None):
+        if name is None:
+            name = 'select_sample_from_examples'
+
+        base.__init__(self, name)
+        return
+    
+    pass # end of Form
+
+
+
+formactor_action_prefix = 'actor.form-received' # assumed actor is a form actor
+from vnf.components.misc import empty_id
+
+
+def form(): return Form()
+
+
+# version
+__id__ = "$Id$"
+
+# End of file 

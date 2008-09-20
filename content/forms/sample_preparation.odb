@@ -85,10 +85,10 @@ class Form( base ):
             'As a start, you could select from a bunch of basic samples here:',
             ]
 
-        # find all existing samples
-        from vnf.dom.Scatterer import Scatterer
-        scatterers = director.clerk.db.fetchall( Scatterer, where = None )
-        print scatterers
+        # find all existing examples
+        from vnf.dom.ScattererExample import ScattererExample
+        scattererexamples = director.clerk.db.fetchall( ScattererExample, where = None )
+        scatterers = [ ex.scatterer.dereference(director.db) for ex in scattererexamples ]
         entries = [ (scatterer.id, scatterer.short_description)
                     for scatterer in scatterers ]
         
