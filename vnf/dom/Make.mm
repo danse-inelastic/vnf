@@ -61,6 +61,7 @@ EXPORT_PYTHON_MODULES = \
 	SampleComponent.py \
 	SampleEnvironment.py \
 	Scatterer.py \
+	ScattererExample.py \
 	ScatteringKernel.py \
 	Server.py \
 	Shape.py \

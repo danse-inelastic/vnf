@@ -25,6 +25,7 @@ materials = [
 
 sample = [
     'Scatterer',
+    'ScattererExample',
     'Sample',
     'SampleAssembly',
     'SampleEnvironment',
