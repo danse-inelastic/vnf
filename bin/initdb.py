@@ -28,9 +28,6 @@ class DbApp(Script):
 
         dbengine = pyre.inventory.str('dbengine', default = 'psycopg2')
 
-        wwwusername = pyre.inventory.str( 'wwwusername', default = '_www')
-        wwwusername.meta['tip'] = 'user name of the apache server'
-        
         import pyre.idd
         idd = pyre.inventory.facility('idd-session', factory=pyre.idd.session, args=['idd-session'])
         idd.meta['tip'] = "access to the token server"
@@ -46,9 +43,9 @@ class DbApp(Script):
         tables = alltables()
 
         for table in tables:
-            self.dropTable( table )
+            #self.dropTable( table )
             self.createTable( table )
-            self.enablewww( table )
+            continue
 
         for table in tables:
             self.initTable( table )
@@ -81,23 +78,19 @@ class DbApp(Script):
         return
 
 
-    def enablewww(self, table):
-        name = table.name
-        cmd = 'GRANT ALL ON %s TO "%s"' % (name, self.wwwusername)
-        c = self.db.cursor()
-        #print cmd
-        print " -- Grant user %r access to table %r" % (self.wwwusername, name)
-        c.execute( cmd )
-        return
-
-
     def initTable(self, table):
         module = table.__module__
         m = __import__( module, {}, {}, [''] )
         inittable = m.__dict__.get( 'inittable' )
         if inittable is None: return
         print " -- Inialize table %r" % table.name
-        inittable( self.db )
+        try:
+            inittable( self.db )
+        except self.db.IntegrityError:
+            print "    failed; records already exist?"
+        else:
+            print "    success"
+            
         return
 
 
@@ -111,11 +104,10 @@ class DbApp(Script):
         Script._init(self)
 
         import pyre.db
-        dbname = self.inventory.db
         dbengine = self.inventory.dbengine
-        self.db = pyre.db.connect(dbname, wrapper = dbengine)
+        dbkwds = DbAddressResolver().resolve(self.inventory.db)
+        self.db = pyre.db.connect(wrapper=dbengine, **dbkwds)
 
-        self.wwwusername = self.inventory.wwwusername
         self.idd = self.inventory.idd
 
         def guid(): return '%s' % self.idd.token().locator
@@ -127,6 +119,59 @@ class DbApp(Script):
     def _getPrivateDepositoryLocations(self):
         return ['../config']
     
+
+class DbAddressResolver:
+
+    def resolve(self, address):
+        tmp = address.split('@')
+        if len(tmp)==1:
+            svr = tmp[0]
+            up = ''
+        elif len(tmp)==2:
+            up,svr = tmp
+        else:
+            raise ValueError, 'Invalid db address: %r' % address
+
+        host,port,database = self._resolve_svr(svr)
+        user, pw = self._resolve_up(up)
+        ret = {
+            'host': host,
+            'port': port,
+            'database': database,
+            'user': user,
+            }
+        if pw: ret['password'] = pw
+        return ret
+    
+
+    def _resolve_up(self, up):
+        separator = ':'
+        tmp = up.split(separator)
+        if len(tmp) == 1:
+            user = tmp[0]
+            pw = None
+        elif len(tmp) == 2:
+            user, pw = tmp
+        else:
+            raise ValueError, 'Invalid user, password: %r' % up
+        return user, pw
+    
+
+    def _resolve_svr(self, svr):
+        separator = ':'
+        
+        if svr.find(separator) == -1:
+            return 'localhost', 5432, svr
+        splits = svr.split(separator)
+        if len(splits)==2:
+            host, database = splits
+            return host, 5432, database
+        elif len(splits)==3:
+            host, port, database = splits
+            return host, port, database
+        raise ValueError, 'Invalid db svr: %r' % (svr,)
+    
+
 
 def main():
     import journal

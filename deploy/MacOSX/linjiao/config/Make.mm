@@ -30,6 +30,7 @@ distclean::
 
 
 EXPORT_DATAFILES = \
+	initdb.pml \
 	main.pml \
 	ssher.pml \
 
