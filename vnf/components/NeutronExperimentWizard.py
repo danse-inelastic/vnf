@@ -23,6 +23,8 @@ class NeutronExperimentWizard(base):
         
         id = pyre.inventory.str("id", default='')
         id.meta['tip'] = "the unique identifier of the experiment"
+
+        kernel_id = pyre.inventory.str('kernel_id', default='')
         
         ncount = pyre.inventory.str( 'ncount', default = 1e6 )
         ncount.meta['tip'] = 'number of neutrons'
@@ -380,7 +382,7 @@ class NeutronExperimentWizard(base):
             return err.page
 
         experiment = director.clerk.getNeutronExperiment(self.inventory.id)
-        sample = _get_sample_from_experiment(experiment)
+        sample = _get_sample_from_experiment(experiment, director.db)
         if sample is None:
             return self.fresh_sample_preparation(director)
         
@@ -408,41 +410,33 @@ class NeutronExperimentWizard(base):
         p = document.paragraph()
         action = actionRequireAuthentication(
             actor = 'neutronexperimentwizard', sentry = director.sentry,
-            label = 'select',
-            routine = 'select_sample_from_examples',
+            label = 'remove this sample and restart sample preparation',
+            routine = 'restart_sample_preparation',
             id = self.inventory.id,
             )
         link = action_link( action, director.cgihome )
         p.text = [
-             'The easisest way to start would be to',
-             '%s from a bunch of basic samples.' % link,
-            ]
-
-        #p = document.paragraph()
-        #action = actionRequireAuthentication(
-        #    actor = 'neutronexperimentwizard', sentry = director.sentry,
-        #    label = 'select a sample from your own sample library',
-        #    routine = 'select_sample_from_sample_library',
-        #    id = self.inventory.id,
-        #    )
-        #link = action_link( action, director.cgihome )
-        #p.text = [
-        #    'Or you could %s.' % link,
-        #    ]
-
-        p = document.paragraph()
-        action = actionRequireAuthentication(
-            actor = 'neutronexperimentwizard', sentry = director.sentry,
-            label = 'create a new sample from scratch',
-            routine = 'create_new_sample',
-            id = self.inventory.id,
-            )
-        link = action_link( action, director.cgihome )
-        p.text = [
-            'Also you could %s.' % link,
+            'Or you may want to %s?' % link
             ]
 
         return page
+
+
+    def restart_sample_preparation(self, director):
+        try:
+            page = director.retrieveSecurePage( 'neutronexperimentwizard' )
+        except AuthenticationError, err:
+            return err.page
+
+        experiment = director.clerk.getNeutronExperiment(self.inventory.id)
+        sampleassembly = _get_sampleassembly_from_experiment(experiment, director.db)
+        if not sampleassembly: raise RuntimeError
+        sample = _get_sample_from_sampleassembly(sampleassembly, director.db)
+        if not sample: raise RuntimeError
+        sampleassembly.scatterers.delete(sample, director.db)
+        
+        return self.fresh_sample_preparation(director)
+        
 
 
     def fresh_sample_preparation(self, director):
@@ -451,8 +445,17 @@ class NeutronExperimentWizard(base):
         except AuthenticationError, err:
             return err.page
 
+        # if no sample assembly, add one
+        experiment = director.clerk.getNeutronExperiment(self.inventory.id)
+        sampleassembly = _get_sampleassembly_from_experiment(experiment, director.db)
+        if not sampleassembly:
+            from vnf.dom.SampleAssembly import SampleAssembly
+            sampleassembly = director.clerk.new_ownedobject(SampleAssembly)
+            experiment.sampleassembly = sampleassembly
+            director.clerk.updateRecord(experiment)
+
+        #
         main = page._body._content._main
-        
         # populate the main column
         document = main.document(
             title='Neutron Experiment Wizard: sample preparation')
@@ -565,9 +568,14 @@ class NeutronExperimentWizard(base):
         experiment = director.clerk.getNeutronExperiment(
             self.inventory.id )
 
-        oldsample = _get_sample_from_experiment(experiment)
+        sampleassembly = _get_sampleassembly_from_experiment(experiment, director.db)
+        scatterers_refset = sampleassembly.scatterers
+
+        # check if there is an old sample
+        oldsample = _get_sample_from_sampleassembly(sampleassembly, director.db)
         if oldsample:
             # if so, remove the reference from the referenceset
+            sampleassembly = _get_sampleassembly_from_experiment(experiment, director.db)
             scatterers_refset.delete( oldsample, director.db )
 
         # the user chosen scatterer
@@ -688,7 +696,7 @@ class NeutronExperimentWizard(base):
             self.inventory.id )
 
         #sample
-        sample = _get_sample_from_experiment(experiment)
+        sample = _get_sample_from_experiment(experiment, director.db)
         if sample is None: raise RuntimeError, "No sample in sample assembly"
 
         #In this step we obtain configuration of sample
@@ -756,6 +764,107 @@ class NeutronExperimentWizard(base):
 
 
     def configure_scatteringkernels(self, director):
+        experiment = director.clerk.getNeutronExperiment( self.inventory.id )
+        sampleassembly = experiment.sampleassembly.dereference(director.db)
+        sample = _get_sample_from_sampleassembly( sampleassembly, director.db )
+        kernels = _get_kernels_from_scatterer( sample, director.db )
+
+        if len(kernels):
+            return self.present_kernels(director)
+
+        return self.nokernelsyet(director)
+
+
+    def nokernelsyet(self, director):
+        try:
+            page = director.retrieveSecurePage( 'neutronexperimentwizard' )
+        except AuthenticationError, err:
+            return err.page
+#        experiment = director.clerk.getNeutronExperiment(self.inventory.id)
+        main = page._body._content._main
+        # populate the main column
+        document = main.document(
+            title='Neutron Experiment Wizard: No kernel')
+        document.description = ''
+        document.byline = '<a href="http://danse.us">DANSE</a>'
+
+        p = document.paragraph()
+        p.text = [
+            'Scattering kernels describe scattering properties of a neutron scatterer.',
+            ]
+        
+        p = document.paragraph()
+        action = actionRequireAuthentication(          
+            actor = 'neutronexperimentwizard', 
+            sentry = director.sentry,
+            routine = 'new_kernel',
+            label = 'create',
+            id = self.inventory.id,
+            )
+        link = action_link( action, director.cgihome )
+        p.text = [
+            'No scattering kernel has been defined.',
+            'Please %s a new kernel' % link,
+            ]
+        return page
+
+
+    def present_kernels(self, director):
+        try:
+            page = director.retrieveSecurePage( 'neutronexperimentwizard' )
+        except AuthenticationError, err:
+            return err.page
+#        experiment = director.clerk.getNeutronExperiment(self.inventory.id)
+        main = page._body._content._main
+        # populate the main column
+        document = main.document(
+            title='Neutron Experiment Wizard: kernels')
+        document.description = ''
+        document.byline = '<a href="http://danse.us">DANSE</a>'
+
+        p = document.paragraph()
+        p.text = [
+            'Scattering kernels describe scattering properties of a neutron scatterer.',
+            'Following is a list of existing scattering kernels:',
+            ]
+
+        experiment = director.clerk.getNeutronExperiment( self.inventory.id )
+        sampleassembly = experiment.sampleassembly.dereference(director.db)
+        sample = _get_sample_from_sampleassembly( sampleassembly, director.db )
+        kernels = _get_kernels_from_scatterer( sample, director.db )
+
+        for label,kernel in kernels:
+            p = document.paragraph()
+            action = actionRequireAuthentication(          
+                actor = 'neutronexperimentwizard', 
+                sentry = director.sentry,
+                routine = 'edit_kernel',
+                label = 'edit',
+                id = self.inventory.id,
+                kernel_id = kernel.id,
+                )
+            edit_link = action_link( action, director.cgihome )
+
+            action = actionRequireAuthentication(          
+                actor = 'neutronexperimentwizard', 
+                sentry = director.sentry,
+                routine = 'delete_kernel',
+                label = 'delete',
+                id = self.inventory.id,
+                kernel_id = kernel.id,
+                )
+            delete_link = action_link( action, director.cgihome )
+            p.text = [
+                'Kernel %s: (%s), (%s)' % (
+                _describe_kernel(kernel), edit_link, delete_link,
+                ),
+                ]
+            continue
+        
+        return page
+    
+
+    def configure_scatteringkernels1(self, director):
         try:
             page = director.retrieveSecurePage( 'neutronexperimentwizard' )
         except AuthenticationError, err:
@@ -801,7 +910,7 @@ class NeutronExperimentWizard(base):
         
         #self.processFormInputs(director)
         self._footer( form, director )
-        return page  
+        return page
 
 
     def selectkernel(self, director):
@@ -1223,14 +1332,17 @@ class NeutronExperimentWizard(base):
         
         if self.sample_environment_configured:
             sampleassembly_ref = experiment.sampleassembly
-            sampleassembly = sampleassembly_ref.dereference(director.db)
-            sample = _get_sample_from_sampleassembly( sampleassembly, director.db )
+            if not sampleassembly_ref:
+                self.sample_prepared = self.kernel_configured = False
+            else:
+                sampleassembly = sampleassembly_ref.dereference(director.db)
+                sample = _get_sample_from_sampleassembly( sampleassembly, director.db )
             
-            self.sample_prepared = not nullpointer(sample)
-            # need to test if kernel is configured
-            # ...
-            # probably need a canned solution here for the demo...
-            self.kernel_configured = True
+                self.sample_prepared = not nullpointer(sample)
+                # need to test if kernel is configured
+                # ...
+                # probably need a canned solution here for the demo...
+                self.kernel_configured = True
             pass
 
         if not self.kernel_configured: return
@@ -1250,9 +1362,9 @@ class NeutronExperimentWizard(base):
 
 
 def _get_sample_from_experiment(experiment, db):
-    sampleassembly_ref = experiment.sampleassembly
-    sampleassembly = sampleassembly_ref.dereference(db)
-    return _get_sample_from_sampleassembly(sampleassembly_ref)
+    sampleassembly = _get_sampleassembly_from_experiment(experiment, db)
+    if not sampleassembly: return
+    return _get_sample_from_sampleassembly(sampleassembly, db)
 
 
 def _get_sample_from_sampleassembly(sampleassembly, db):
@@ -1265,10 +1377,20 @@ def _get_sample_from_sampleassembly(sampleassembly, db):
     return sample
 
 
+def _get_sampleassembly_from_experiment(experiment, db):
+    sampleassembly_ref = experiment.sampleassembly
+    if not sampleassembly_ref: return
+    return sampleassembly_ref.dereference(db)
+
+
 def _get_kernels_from_scatterer(scatterer, db):
     kernels_refset = scatterer.kernels
     kernels = kernels_refset.dereference(db)
     return kernels
+
+
+def _describe_kernel(kernel):
+    return '%s: %s' % (kernel.__class__.__name__, kernel.id)
 
 
 from misc import new_id, empty_id, nullpointer
