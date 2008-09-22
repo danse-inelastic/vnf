@@ -25,6 +25,7 @@ class NeutronExperimentWizard(base):
         id.meta['tip'] = "the unique identifier of the experiment"
 
         kernel_id = pyre.inventory.str('kernel_id', default='')
+        kernel_type = pyre.inventory.str('kernel_type', default='')
         
         ncount = pyre.inventory.str( 'ncount', default = 1e6 )
         ncount.meta['tip'] = 'number of neutrons'
@@ -842,6 +843,7 @@ class NeutronExperimentWizard(base):
                 label = 'edit',
                 id = self.inventory.id,
                 kernel_id = kernel.id,
+                kernel_type = kernel.__class__.__name__,
                 )
             edit_link = action_link( action, director.cgihome )
 
@@ -852,6 +854,7 @@ class NeutronExperimentWizard(base):
                 label = 'delete',
                 id = self.inventory.id,
                 kernel_id = kernel.id,
+                kernel_type = kernel.__class__.__name__,
                 )
             delete_link = action_link( action, director.cgihome )
             p.text = [
@@ -860,16 +863,42 @@ class NeutronExperimentWizard(base):
                 ),
                 ]
             continue
-        
+
+        p = document.paragraph()
+        action = actionRequireAuthentication(          
+            actor = 'neutronexperimentwizard', 
+            sentry = director.sentry,
+            routine = 'add_kernel',
+            label = 'add',
+            id = self.inventory.id,
+            )
+        link = action_link( action, director.cgihome )
+        p.text = [
+            'You can also %s a new kernel.' % link,
+            ]
+
+        p = document.paragraph()
+        action = actionRequireAuthentication(          
+            actor = 'neutronexperimentwizard', 
+            sentry = director.sentry,
+            routine = 'submit_experiment',
+            label = 'submit',
+            id = self.inventory.id,
+            )
+        link = action_link( action, director.cgihome )
+        p.text = [
+            'If you are done with kernel configurations, you can %s your experiment.'
+            % link,
+            ]
         return page
     
 
-    def configure_scatteringkernels1(self, director):
+    def edit_kernel(self, director, errors = None):
         try:
             page = director.retrieveSecurePage( 'neutronexperimentwizard' )
         except AuthenticationError, err:
             return err.page
-#        experiment = director.clerk.getNeutronExperiment(self.inventory.id)
+
         main = page._body._content._main
         # populate the main column
         document = main.document(
@@ -878,12 +907,16 @@ class NeutronExperimentWizard(base):
         document.byline = '<a href="http://danse.us">DANSE</a>'
 
         experiment = director.clerk.getNeutronExperiment( self.inventory.id )
-        sampleassembly = experiment.sampleassembly.dereference(director.db)
-        sample = _get_sample_from_sampleassembly( sampleassembly, director.db )
+        sample = _get_sample_from_experiment( experiment, director.db )
+        if not sample: raise RuntimeError
         kernels = _get_kernels_from_scatterer( sample, director.db )
 
-        #hack
-        name, kernel = kernels[0]
+        kernel = None
+        for label, k in kernels:
+            if k.id == self.inventory.kernel_id: kernel = k; break
+            continue
+
+        if not kernel: raise RuntimeError
 
         kernelclass = kernel.__class__
         formcomponent = self.retrieveFormToShow( kernelclass.__name__.lower() )
@@ -896,21 +929,58 @@ class NeutronExperimentWizard(base):
         action = actionRequireAuthentication(          
             actor = 'neutronexperimentwizard', 
             sentry = director.sentry,
-            routine = 'submit_experiment',
+            routine = 'verify_kernel_configuration',
             label = '',
             id=self.inventory.id,
+            kernel_id = self.inventory.kernel_id,
+            kernel_type = self.inventory.kernel_type,
             arguments = {'form-received': formcomponent.name },
             )
         from vnf.weaver import action_formfields
         action_formfields( action, form )
         # expand the form with fields of the data object that is being edited
-        formcomponent.expand( form )
+        formcomponent.expand( form, errors = errors )
         
         submit = form.control(name='submit',type="submit", value="next")
         
         #self.processFormInputs(director)
         self._footer( form, director )
         return page
+
+
+    def verify_kernel_configuration(self, director):
+        try:
+            page = director.retrieveSecurePage( 'neutronexperimentwizard' )
+        except AuthenticationError, err:
+            return err.page
+        
+        try:
+            self.processFormInputs( director )
+        except InputProcessingError, err:
+            errors = err.errors
+            self.form_received = None
+            director.routine = 'edit_kernel'
+            return self.edit_kernel( director, errors = errors )
+        
+        return self.configure_scatteringkernels(director)
+
+
+    def delete_kernel(self, director):
+        try:
+            page = director.retrieveSecurePage( 'neutronexperimentwizard' )
+        except AuthenticationError, err:
+            return err.page
+
+        experiment = director.clerk.getNeutronExperiment(self.inventory.id)
+        sample = _get_sample_from_experiment(experiment, director.db)
+        if not sample: raise RuntimeError
+
+        kernels_refset = sample.kernels
+
+        table, id = self.inventory.kernel_type, self.inventory.kernel_id
+        kernel = director.clerk.getRecordByID(table,id)
+        kernels_refset.delete( kernel, director.db )
+        return self.present_kernels(director)
 
 
     def selectkernel(self, director):
