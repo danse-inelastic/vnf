@@ -764,6 +764,62 @@ class NeutronExperimentWizard(base):
         return self.configure_scatteringkernels(director)
 
 
+    def material_simulation(self, director):
+        try:
+            page = director.retrieveSecurePage( 'neutronexperimentwizard' )
+        except AuthenticationError, err:
+            return err.page
+
+        main = page._body._content._main
+        # populate the main column
+        document = main.document(
+            title='Neutron Experiment Wizard: material simulation and modelling')
+        document.description = ''
+        document.byline = 'byline?'
+
+        p = document.paragraph()
+        p.text = [
+            'The purpose of material simulation or modeling is to obtain',
+            'a systematic understanding of material properties (which)',
+            'sometimes including scattering properties.',
+            ]
+
+        experiment = director.clerk.getNeutronExperiment(self.inventory.id)
+        sample = _get_sample_from_experiment(experiment, director.db)
+        
+        simresults = director.clerk.findSimResults(sample)
+
+        p = document.paragraph()
+        if len(simresults):
+            p.text = [
+                'The following is a list of simulation or modeling results',
+                'for your sample:',
+                ]
+            for r in simresults:
+                p1 = document.paragraph()
+                p1.text = [
+                    '%s' % r,
+                    ]
+        else:
+            p.text = [
+                'No simulation has been done for your sample yet.'
+                ]
+            action = actionRequireAuthentication(        
+                actor = 'materialsimulationwizard', 
+                sentry = director.sentry,
+                routine = 'start',
+                label = 'the material simulation/modeling wizard',
+                id = sample.matter.id,
+                type = sample.matter.table.__name__,
+                )
+            link = action_link( action, director.cgihome )
+            p.text = [
+                'You can use %s to perform your material simulation and then' % link,
+                'come back here',
+                ]
+        return page
+
+
     def configure_scatteringkernels(self, director):
         experiment = director.clerk.getNeutronExperiment( self.inventory.id )
         sampleassembly = experiment.sampleassembly.dereference(director.db)
@@ -944,7 +1000,7 @@ class NeutronExperimentWizard(base):
         submit = form.control(name='submit',type="submit", value="next")
         
         #self.processFormInputs(director)
-        self._footer( form, director )
+        #self._footer( form, director )
         return page
 
 
@@ -980,7 +1036,112 @@ class NeutronExperimentWizard(base):
         table, id = self.inventory.kernel_type, self.inventory.kernel_id
         kernel = director.clerk.getRecordByID(table,id)
         kernels_refset.delete( kernel, director.db )
-        return self.present_kernels(director)
+        return self.configure_scatteringkernels(director)
+
+
+    def new_kernel(self, director):
+        try:
+            page = director.retrieveSecurePage( 'neutronexperimentwizard' )
+        except AuthenticationError, err:
+            return err.page
+
+        #
+        main = page._body._content._main
+        # populate the main column
+        document = main.document(
+            title='Neutron Experiment Wizard: new kernel')
+        document.description = ''
+        document.byline = 'byline?'
+        
+        p = document.paragraph()
+        p.text = [
+            'Scattering kernel describes the physics of neutron scattering',
+            'of a neutron scatterer.',
+            ]
+
+        p = document.paragraph()
+        action = actionRequireAuthentication(
+            actor = 'neutronexperimentwizard', sentry = director.sentry,
+            label = 'select',
+            routine = 'add_kernel_from_examples',
+            id = self.inventory.id,
+            )
+        link = action_link( action, director.cgihome )
+        p.text = [
+             'The easisest way to start would be to',
+             '%s from a bunch of basic samples.' % link,
+            ]
+
+        p = document.paragraph()
+        action = actionRequireAuthentication(
+            actor = 'neutronexperimentwizard', sentry = director.sentry,
+            label = 'create a new kernel from scratch',
+            routine = 'add_new_kernel_from_scratch',
+            id = self.inventory.id,
+            )
+        link = action_link( action, director.cgihome )
+        p.text = [
+            'Also you could %s.' % link,
+            ] 
+        return page
+
+
+    def add_new_kernel_from_scratch(self, director):
+        try:
+            page = director.retrieveSecurePage( 'neutronexperimentwizard' )
+        except AuthenticationError, err:
+            return err.page
+
+        #
+        main = page._body._content._main
+        # populate the main column
+        document = main.document(
+            title='Neutron Experiment Wizard: add new kernel')
+        document.description = ''
+        document.byline = 'byline?'
+
+        formcomponent = self.retrieveFormToShow( 'selectkerneltype' )
+        formcomponent.director = director
+        
+        # create form
+        form = document.form(
+            name='selectkerneltype',
+            legend= formcomponent.legend(),
+            action=director.cgihome)
+
+        # specify action
+        action = actionRequireAuthentication(
+            actor = 'neutronexperimentwizard', sentry = director.sentry,
+            label = '', routine = 'verify_kerneltype_selection',
+            id = self.inventory.id,
+            arguments = {'form-received': formcomponent.name } )
+        from vnf.weaver import action_formfields
+        action_formfields( action, form )
+
+        # expand the form with fields of the data object that is being edited
+        formcomponent.expand( form )
+
+        # run button
+        submit = form.control(name="submit", type="submit", value="OK")
+        
+        self._footer( document, director )
+        return page
+
+
+    def verify_kerneltype_selection(self, director):
+        try:
+            page = director.retrieveSecurePage( 'neutronexperimentwizard' )
+        except AuthenticationError, err:
+            return err.page
+
+        typename = self.processFormInputs(director)
+        exec 'from vnf.dom.%s import %s as table' % (typename, typename)
+        kernel = director.clerk.new_ownedobject(table)
+
+        experiment = director.clerk.getNeutronExperiment(self.inventory.id)
+        sample = _get_sample_from_experiment(experiment, director.db)
+        sample.kernels
+        return page
 
 
     def selectkernel(self, director):

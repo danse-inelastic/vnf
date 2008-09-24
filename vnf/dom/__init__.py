@@ -39,6 +39,12 @@ def alltables():
     return tables
 
 
+def kerneltables():
+    all = alltables()
+    from ScatteringKernel import ScatteringKernel
+    return filter( lambda t: issubclass(t, ScatteringKernel), all )
+
+
 def subclassesOf( base ):
     from _all_tables import children
     return children( base )

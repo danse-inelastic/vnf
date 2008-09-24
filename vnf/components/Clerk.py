@@ -22,6 +22,10 @@ class Clerk(Component):
         return
 
 
+    def findSimResults(self, sample):
+        return []
+
+
     def indexUsers(self, where=None):
         """create an index of all users that meet the specified criteria"""
         from vnf.dom.User import User

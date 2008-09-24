@@ -38,9 +38,13 @@ experiment = [
 
 
 kernels = [
-    'IDFPhononDispersion',
     'PolyXtalCoherentPhononScatteringKernel',
     'SANSSphereModelKernel',
+    ]
+
+
+kernel_related = [
+    'IDFPhononDispersion',
     ]
 
 
@@ -55,6 +59,7 @@ tablemodules = \
              shapes \
              + materials \
              + kernels \
+             + kernel_related \
              + sample \
              + instrument \
              + experiment \

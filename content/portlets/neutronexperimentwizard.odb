@@ -2,14 +2,13 @@
 #
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
-#                             Michael A.G. Aivazis
-#                      California Institute of Technology
-#                      (C) 1998-2005  All Rights Reserved
-#
-# {LicenseText}
+#                                  Jiao Lin
+#                     California Institute of Technology
+#                       (C) 2007  All Rights Reserved
 #
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
+
 
 from vnf.components.Actor import Actor, action_link, actionRequireAuthentication, AuthenticationError
 from vnf.weaver import action_href
@@ -24,7 +23,7 @@ routine2menu = {
     'select_sample_from_sample_library': 'sample',
     'create_new_sample': 'sample',
     'sample_environment': 'sample_environment',
-    'configure_scatteringkernels': 'kernel_origin',
+    'configure_scatteringkernels': 'montecarlo_scatteringkernel',
 #    'gulp_dynamics': 'gulp_dynamics',
     'submit_experiment': 'submit_experiment',
     #'experiment_parameters': 'experiment_parameters',
@@ -76,16 +75,26 @@ def portlet(app):
     sample.target = action_href(action, app.cgihome)
     sample.icon = "images/link_icon.gif"
     sample.type = "navItem"
-    
-    kernel_origin = portlet.item(description="Scattering kernel")
+
+    material_simulation = portlet.item(description="Material simulation or modelling")
+    action = actionRequireAuthentication(
+        actor = 'neutronexperimentwizard', sentry = app.sentry,
+        routine = 'material_simulation',
+        id = app.actor.inventory.id,
+        )
+    material_simulation.target = action_href(action, app.cgihome)
+    material_simulation.icon = "images/link_icon.gif"
+    material_simulation.type = "navItem"
+
+    montecarlo_scatteringkernel = portlet.item(description="Monte Carlo Scattering Kernel")
     action = actionRequireAuthentication(
         actor = 'neutronexperimentwizard', sentry = app.sentry,
         routine = 'configure_scatteringkernels',
         id = app.actor.inventory.id,
         )
-    kernel_origin.target = action_href(action, app.cgihome)
-    kernel_origin.icon = "images/link_icon.gif"
-    kernel_origin.type = "navItem"
+    montecarlo_scatteringkernel.target = action_href(action, app.cgihome)
+    montecarlo_scatteringkernel.icon = "images/link_icon.gif"
+    montecarlo_scatteringkernel.type = "navItem"
         
     #experiment_parameters = portlet.item(description="Experiment parameters")
     #action = actionRequireAuthentication(

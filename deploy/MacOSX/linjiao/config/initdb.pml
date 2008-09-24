@@ -18,7 +18,10 @@
 <inventory>
 
   <component name='initdb'>
+<!--
     <property name='db'>vnf:4Od&amp;Cm#@localhost:54320:vnf</property>
+-->
+    <property name='db'>linjiao:9u6dl$>2@localhost:5432:vnf</property>
   </component>
 
 </inventory>
