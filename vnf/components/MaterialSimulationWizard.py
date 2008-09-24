@@ -79,25 +79,13 @@ class MaterialSimulationWizard(base):
         type = self.processFormInputs(director)
         type = type.replace(' ', '_').lower()
         routine = 'configure%s'%type
-        handler = self.__dict__.get(routine)
-        if handler is None:
-            director.inventory.routine = routine
-            return director.retrievePage('nyi')
-        return handler(director)
+        return self.redirect(director, type, routine)
 
 
     def __init__(self, name=None):
         if name is None:
             name = "materialsimulationwizard"
         super(MaterialSimulationWizard, self).__init__(name)
-        self.started \
-                     = self.name_assigned \
-                     = self.instrument_configured \
-                     = self.sample_environment_configured \
-                     = self.sample_prepared \
-                     = self.kernel_configured \
-                     = self.allconfigured \
-                     = False
         return
 
 
