@@ -36,10 +36,10 @@ def portlet(app):
     greet.icon = "images/link_icon.gif"
     greet.type = "navItem"
     
-    neutronexperimentwizard = portlet.item(description="Start Neutron Experiment Wizard")
+    neutronexperimentwizard = portlet.item(description="Neutron Experiment Wizard")
     neutronexperimentwizard.target = action_href(
             actionRequireAuthentication(
-            label = 'Start Neutron Experiment Wizard',
+            label = 'Neutron Experiment Wizard',
             actor = 'neutronexperimentwizard',
             routine = 'start',
             sentry = app.sentry,
@@ -47,6 +47,18 @@ def portlet(app):
             app.cgihome)
     neutronexperimentwizard.icon = "images/link_icon.gif"
     neutronexperimentwizard.type = "navItem"
+    
+    materialsimulationwizard = portlet.item(description="Material Simulation Wizard")
+    materialsimulationwizard.target = action_href(
+            actionRequireAuthentication(
+            label = 'Material Simulation Wizard',
+            actor = 'materialsimulationwizard',
+            routine = 'start',
+            sentry = app.sentry,
+            ),
+            app.cgihome)
+    materialsimulationwizard.icon = "images/link_icon.gif"
+    materialsimulationwizard.type = "navItem"
     
     experiments = portlet.item(description="Experiments")
     experiments.target = action_href(

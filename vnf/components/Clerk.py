@@ -115,6 +115,11 @@ class Clerk(Component):
         return self._getRecordByID( Table, id )
 
 
+    def getBvK(self, id):
+        from vnf.dom.BvK import BvK
+        return self._getRecordByID(BvK, id)
+
+
     def getCrystal(self, id):
         '''retrieve crystal of given id'''
         from vnf.dom.Crystal import Crystal

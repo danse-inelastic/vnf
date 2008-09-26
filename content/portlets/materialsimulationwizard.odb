@@ -22,23 +22,31 @@ def portlet(app):
         title="Material simulation",
         id="portlet-materialsimulationwizard-tree")
 
-    start = portlet.item(description="Start")
+    material = portlet.item(description="Material")
     action = actionRequireAuthentication(
         actor = 'materialsimulationwizard', sentry = app.sentry,
-        routine = 'start',
+        routine = 'selectmaterial',
         id = app.actor.inventory.id,
-        type = app.actor.inventory.type,
         )
-    start.target = action_href(action, app.cgihome)
-    start.icon = "images/link_icon.gif"
-    start.type = "navItem"
+    material.target = action_href(action, app.cgihome)
+    material.icon = "images/link_icon.gif"
+    material.type = "navItem"
+
+    simulation = portlet.item(description="Simulation")
+    action = actionRequireAuthentication(
+        actor = 'materialsimulationwizard', sentry = app.sentry,
+        routine = 'selectsimulationtype',
+        id = app.actor.inventory.id,
+        )
+    simulation.target = action_href(action, app.cgihome)
+    simulation.icon = "images/link_icon.gif"
+    simulation.type = "navItem"
 
     submit_simulation = portlet.item(description="Submit")
     action = actionRequireAuthentication(
         actor = 'materialsimulationwizard', sentry = app.sentry,
         routine = 'submit_simulation',
         id = app.actor.inventory.id,
-        type = app.actor.inventory.type,
         )
     submit_simulation.target = action_href(action, app.cgihome)
     submit_simulation.icon = "images/link_icon.gif"
@@ -49,7 +57,6 @@ def portlet(app):
         actor = 'materialsimulationwizard', sentry = app.sentry,
         routine = 'save_simulation',
         id = app.actor.inventory.id,
-        type = app.actor.inventory.type,
         )
     save_simulation.target = action_href(action, app.cgihome)
     save_simulation.icon = "images/link_icon.gif"
@@ -60,7 +67,6 @@ def portlet(app):
         actor = 'materialsimulationwizard',
         routine = 'cancel',
         id = app.actor.inventory.id,
-        type = app.actor.inventory.type,
         sentry = app.sentry)
     cancel.target = action_href(action, app.cgihome)
     cancel.icon = "images/link_icon.gif"

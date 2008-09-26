@@ -809,8 +809,8 @@ class NeutronExperimentWizard(base):
                 sentry = director.sentry,
                 routine = 'start',
                 label = 'the material simulation/modeling wizard',
-                id = sample.matter.id,
-                type = sample.matter.table.__name__,
+                matterid = sample.matter.id,
+                mattertype = sample.matter.table.__name__,
                 )
             link = action_link( action, director.cgihome )
             p.text = [

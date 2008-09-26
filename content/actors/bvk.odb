@@ -24,17 +24,68 @@ class BvK(base):
         pass # end of Inventory
 
 
-    def configurebvk(self, director):
+    def configurebvk(self, director, matter = None):
         try:
             page = director.retrieveSecurePage( 'materialsimulationwizard' )
         except AuthenticationError, err:
             return err.page
+
+        if not matter:
+            mattertype = self.inventory.mattertype
+            matterid = self.inventory.matterid
+            matter = director.clerk.getRecordByID(mattertype, matterid)
+            
+        main = page._body._content._main
+        # populate the main column
+        document = main.document(
+            title='BvK model')
+        document.description = ''
+        document.byline = 'byline?'
+
+        p = document.paragraph()
+        p.text = [
+            'In BvK, solids are modeled as masses on springs.',
+            'Phonon density of states and phonon dispersions can',
+            'be calculated from diagonalizing the dynamic matrix',
+            'constructed from force constants.',
+            ]
+
+        if not issimplematter(matter):
+            page = director.retrievePage('nyi')
+            main = page._body._content._main
+            document = main.document(
+                title = 'bvk not implemented for material %s' % matter.chemical_formula)
+            return page
+
+        raise '%s' % __name__
+        id = self.inventory.id
+        if empty_id(id):
+            from vnf.dom.BvK import BvK
+            bvk = director.clerk.new_dbobject(BvK)
+            id = bvk.id
+        else:
+            bvk = director.clerk.getBvK(id)
+            pass
+
+        bvk.matter = matter
+        director.clerk.updateRecord(bvk)
         
         return page
 
 
     pass # end of BvK
 
+
+simpleelementarymatters = [
+    'Al',
+    'Fe',
+    'Ni',
+    ]
+def issimplematter(matter):
+    return matter.chemical_formula in simpleelementarymatters
+
+
+from vnf.components.misc import empty_id
 
 def actor():
     return BvK('bvk')

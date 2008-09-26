@@ -24,12 +24,33 @@ class MaterialSimulationWizard(base):
         id = pyre.inventory.str("id", default='')
         id.meta['tip'] = "the unique identifier of the experiment"
 
-        type = pyre.inventory.str('type')
+        matterid = pyre.inventory.str('matterid')
+        mattertype = pyre.inventory.str('mattertype')
 
         pass # end of Inventory
 
 
     def start(self, director):
+        return self.selectmaterial(director)
+    
+
+    def selectmaterial(self, director):
+        try:
+            page = director.retrieveSecurePage( 'materialsimulationwizard' )
+        except AuthenticationError, err:
+            return err.page
+
+        main = page._body._content._main
+
+        # populate the main column
+        document = main.document(title='Material Simulation/Modeling Wizard: start')
+        document.description = ''
+        document.byline = 'byline?'
+
+        return page
+    
+
+    def selectsimulationtype(self, director):
         try:
             page = director.retrieveSecurePage( 'materialsimulationwizard' )
         except AuthenticationError, err:
@@ -57,6 +78,8 @@ class MaterialSimulationWizard(base):
             actor = 'materialsimulationwizard', sentry = director.sentry,
             label = '', routine = 'verify_materialsimulationtype_selection',
             id = self.inventory.id,
+            matterid = self.inventory.matterid,
+            mattertype = self.inventory.mattertype,
             arguments = {'form-received': formcomponent.name } )
         from vnf.weaver import action_formfields
         action_formfields( action, form )
@@ -79,7 +102,12 @@ class MaterialSimulationWizard(base):
         type = self.processFormInputs(director)
         type = type.replace(' ', '_').lower()
         routine = 'configure%s'%type
-        return self.redirect(director, type, routine)
+
+        mattertype = self.inventory.mattertype
+        matterid = self.inventory.matterid
+        matter = director.clerk.getRecordByID(mattertype, matterid)
+        
+        return self.redirect(director, type, routine, matter = matter)
 
 
     def __init__(self, name=None):
