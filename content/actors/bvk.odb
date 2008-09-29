@@ -26,7 +26,7 @@ class BvK(base):
         pass # end of Inventory
 
 
-    def configurebvk(self, director, matter=None):
+    def configure_simulation(self, director, matter=None):
         try:
             page = director.retrieveSecurePage( 'materialsimulationwizard-2' )
         except AuthenticationError, err:
@@ -42,16 +42,20 @@ class BvK(base):
             bvk = director.clerk.getBvKComputation(id)
             pass
 
-        return self.configure_bvkmodel(director, matter=matter)
+        if matter:
+            bvk.matter = matter
+            director.clerk.updateRecord(bvk)
+
+        return self.configure_bvkmodel(director)
 
 
-    def configure_bvkmodel(self, director, matter=None):
+    def configure_bvkmodel(self, director):
         try:
             page = director.retrieveSecurePage( 'materialsimulationwizard-2' )
         except AuthenticationError, err:
             return err.page
 
-        if not matter: matter = self._matter(director)
+        matter = self._matter(director)
 
         # find existing models
         models = findModels(matter, director.db)
@@ -373,10 +377,11 @@ class BvK(base):
 
 
     def _matter(self, director):
-        mattertype = self.inventory.mattertype
-        matterid = self.inventory.matterid
-        return director.clerk.getRecordByID(mattertype, matterid)
-
+        id = self.inventory.id
+        bvk = director.clerk.getBvKComputation(id)
+        matter = bvk.matter.dereference(director.db)
+        return matter
+    
 
     pass # end of BvK
 

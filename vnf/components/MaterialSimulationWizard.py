@@ -139,13 +139,17 @@ class MaterialSimulationWizard(base):
 
         type = self.processFormInputs(director)
         type = type.replace(' ', '_').lower()
-        routine = 'configure%s'%type
+        routine = 'configure_simulation'
 
         mattertype = self.inventory.mattertype
         matterid = self.inventory.matterid
         matter = director.clerk.getRecordByID(mattertype, matterid)
         
         return self.redirect(director, type, routine, matter = matter)
+
+
+    def configure_simulation(self, director):
+        raise NotImplementedError
 
 
     def __init__(self, name=None):

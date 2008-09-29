@@ -24,8 +24,8 @@ def portlet(app):
 
     simulation = portlet.item(description="Simulation")
     action = actionRequireAuthentication(
-        actor = 'materialsimulationwizard', sentry = app.sentry,
-        routine = 'selectsimulationtype',
+        actor = app.actor.name, sentry = app.sentry,
+        routine = 'configure_simulation',
         id = app.actor.inventory.id,
         )
     simulation.target = action_href(action, app.cgihome)
@@ -34,7 +34,7 @@ def portlet(app):
 
     submit_simulation = portlet.item(description="Submit")
     action = actionRequireAuthentication(
-        actor = 'materialsimulationwizard', sentry = app.sentry,
+        actor = app.actor.name, sentry = app.sentry,
         routine = 'submit_simulation',
         id = app.actor.inventory.id,
         )
@@ -44,7 +44,7 @@ def portlet(app):
 
     save_simulation = portlet.item(description="Save for later submission")
     action = actionRequireAuthentication(
-        actor = 'materialsimulationwizard', sentry = app.sentry,
+        actor = app.actor.name, sentry = app.sentry,
         routine = 'save_simulation',
         id = app.actor.inventory.id,
         )
@@ -54,7 +54,7 @@ def portlet(app):
     
     cancel = portlet.item(description="Cancel")
     action = actionRequireAuthentication(
-        actor = 'materialsimulationwizard',
+        actor = app.actor.name,
         routine = 'cancel',
         id = app.actor.inventory.id,
         sentry = app.sentry)
