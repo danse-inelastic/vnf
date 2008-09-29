@@ -45,6 +45,12 @@ def kerneltables():
     return filter( lambda t: issubclass(t, ScatteringKernel), all )
 
 
+def mattertables():
+    all = alltables()
+    from MatterBase import MatterBase
+    return filter( lambda t: issubclass(t, MatterBase), all )
+
+
 def subclassesOf( base ):
     from _all_tables import children
     return children( base )

@@ -34,7 +34,7 @@ class PolyXtalCoherentPhononScatteringKernel(base):
         max_momentum_transfer = pyre.inventory.str( name = 'max_momentum_transfer' )
         max_momentum_transfer.meta['label'] = 'Maximumn momentum transfer'
         max_momentum_transfer.meta['tip'] = 'Maximumn momentum transfer allowed for kernel simulation. unit: A**-1'
-        max_energy_transfer.meta['tiponerror'] = (
+        max_momentum_transfer.meta['tiponerror'] = (
             'Please enter a positive real number for max momentum transfer.',
             'Unit: inverse angstrom',
             )

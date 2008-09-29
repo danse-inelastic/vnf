@@ -115,9 +115,14 @@ class Clerk(Component):
         return self._getRecordByID( Table, id )
 
 
-    def getBvK(self, id):
-        from vnf.dom.BvK import BvK
-        return self._getRecordByID(BvK, id)
+    def getBvKComputation(self, id):
+        from vnf.dom.BvKComputation import BvKComputation
+        return self._getRecordByID(BvKComputation, id)
+
+
+    def getBvKModel(self, id):
+        from vnf.dom.BvKModel import BvKModel
+        return self._getRecordByID(BvKModel, id)
 
 
     def getCrystal(self, id):

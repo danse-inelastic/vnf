@@ -45,6 +45,8 @@ kernels = [
 
 kernel_related = [
     'IDFPhononDispersion',
+    'BvKModel',
+    'BvKComputation',
     ]
 
 

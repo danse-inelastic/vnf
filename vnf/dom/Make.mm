@@ -33,7 +33,8 @@ EXPORT_PYTHON_MODULES = \
 	AbInitio.py \
 	ARCS_simple.py \
 	Block.py \
-	BvK.py \
+	BvKModel.py \
+	BvKComputation.py \
 	Crystal.py \
 	Cylinder.py \
 	DbObject.py \
