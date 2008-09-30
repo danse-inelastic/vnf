@@ -31,7 +31,7 @@ class WebApplication(Base):
         import pyre.inventory
 
         # properties
-        db = pyre.inventory.str(name='db', default='vnf')
+        db = pyre.inventory.str(name='db', default='vnf:4Od&Cm#@localhost:54320:vnf')
         db.meta['tip'] = "the name of the database"
 
         dbwrapper = pyre.inventory.str(name='dbwrapper', default='psycopg')
@@ -168,7 +168,7 @@ class WebApplication(Base):
 
 
     def _getPrivateDepositoryLocations(self):
-        return ['../content', '../config']
+        return ['.','../content', '../config']
 
 
 

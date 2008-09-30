@@ -44,9 +44,8 @@ if __name__ == '__main__':
         
     import os
     user = os.environ.get('USER') or 'webserver'
-    if user is 'jbk':
+    if ('jbk' in user):
         os.system('firefox /home/jbk/DANSE/vnf/cgi/test.html')
-        
     
 
 # version
