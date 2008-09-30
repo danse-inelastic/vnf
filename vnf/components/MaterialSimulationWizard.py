@@ -85,7 +85,8 @@ class MaterialSimulationWizard(base):
         self.inventory.matterid = matterid
         self.inventory.mattertype = mattertype
         
-        return self.selectsimulationtype(director)
+        #return self.selectsimulationtype(director)
+        return self.selectkernel(director)
 
 
     def selectsimulationtype(self, director):
@@ -146,6 +147,166 @@ class MaterialSimulationWizard(base):
         matter = director.clerk.getRecordByID(mattertype, matterid)
         
         return self.redirect(director, type, routine, matter = matter)
+
+    def selectkernel(self, director):
+        try:
+            page = director.retrieveSecurePage( 'materialsimulationwizard' )
+        except AuthenticationError, err:
+            return err.page
+#        experiment = director.clerk.getNeutronExperiment(self.inventory.id)
+        main = page._body._content._main
+        # populate the main column
+        document = main.document(
+            title='Kernel model selection')
+        document.description = ''
+        document.byline = '<a href="http://danse.us">DANSE</a>'        
+        
+        formcomponent = self.retrieveFormToShow( 'selectkernel')
+        formcomponent.director = director
+        # build the form 
+        form = document.form(name='', action=director.cgihome)
+        # specify action
+        action = actionRequireAuthentication(          
+            actor = 'materialsimulationwizard', 
+            sentry = director.sentry,
+            routine = 'onSelect',
+            id=self.inventory.id,
+            arguments = {'form-received': formcomponent.name },
+            )
+        from vnf.weaver import action_formfields
+        action_formfields( action, form )
+        # expand the form with fields of the data object that is being edited
+        formcomponent.expand( form )
+        submit = form.control(name='submit',type="submit", value="next")
+        #self.processFormInputs(director)
+        self._footer( form, director )
+        return page    
+    
+    def onSelect(self, director):
+        selected = self.processFormInputs(director)
+        method = getattr(self, selected )
+        return method( director )
+
+    def gulp(self, director):
+        try:
+            page = director.retrieveSecurePage( 'materialsimulationwizard' )
+        except AuthenticationError, err:
+            return err.page
+        
+        main = page._body._content._main
+        document = main.document(title='Classical atomistics kernel' )
+        document.byline = '<a href="http://danse.us">DANSE</a>'    
+        
+        formcomponent = self.retrieveFormToShow( 'gulp')
+        formcomponent.director = director
+        # build the form form
+        form = document.form(name='', action=director.cgihome)
+        # specify action
+        action = actionRequireAuthentication(          
+            actor = 'materialsimulationwizard', 
+            sentry = director.sentry,
+            routine = 'kernel_generator',
+            id=self.inventory.id,
+            arguments = {'form-received': formcomponent.name },
+            )
+        from vnf.weaver import action_formfields
+        action_formfields( action, form )
+        # expand the form with fields of the data object that is being edited
+        formcomponent.expand( form )
+        next = form.control(name='submit',type="submit", value="next")
+#        self._footer( document, director )
+        return page 
+   
+    def localOrbitalHarmonic(self, director):
+        try:
+            page = director.retrieveSecurePage( 'materialsimulationwizard' )
+        except AuthenticationError, err:
+            return err.page
+        
+        main = page._body._content._main
+        document = main.document(title='Local orbital DFT energies, harmonic dynamics kernel' )
+        document.byline = '<a href="http://danse.us">DANSE</a>'    
+        
+        formcomponent = self.retrieveFormToShow( 'abInitioHarmonic')
+        formcomponent.director = director
+        # build the form form
+        form = document.form(name='', action=director.cgihome)
+        # specify action
+        action = actionRequireAuthentication(          
+            actor = 'materialsimulationwizard', 
+            sentry = director.sentry,
+            routine = 'kernel_generator',
+            id=self.inventory.id,
+            arguments = {'form-received': formcomponent.name },
+            )
+        from vnf.weaver import action_formfields
+        action_formfields( action, form )
+        # expand the form with fields of the data object that is being edited
+        formcomponent.expand( form )
+        next = form.control(name='submit',type="submit", value="next")
+#        self._footer( document, director )
+        return page 
+    
+    def planeWaveHarmonic(self, director):
+        try:
+            page = director.retrieveSecurePage( 'materialsimulationwizard' )
+        except AuthenticationError, err:
+            return err.page
+        
+        main = page._body._content._main
+        document = main.document(title='Plane wave DFT energies, harmonic dynamics kernel' )
+        document.byline = '<a href="http://danse.us">DANSE</a>'    
+        
+        formcomponent = self.retrieveFormToShow( 'abInitioHarmonic')
+        formcomponent.director = director
+        # build the form form
+        form = document.form(name='', action=director.cgihome)
+        # specify action
+        action = actionRequireAuthentication(          
+            actor = 'materialsimulationwizard', 
+            sentry = director.sentry,
+            routine = 'kernel_generator',
+            id=self.inventory.id,
+            arguments = {'form-received': formcomponent.name },
+            )
+        from vnf.weaver import action_formfields
+        action_formfields( action, form )
+        # expand the form with fields of the data object that is being edited
+        formcomponent.expand( form )
+        next = form.control(name='submit',type="submit", value="next")
+#        self._footer( document, director )
+        return page 
+    
+    def kernel_generator(self, director):
+        try:
+            page = director.retrieveSecurePage( 'materialsimulationwizard' )
+        except AuthenticationError, err:
+            return err.page
+        
+        main = page._body._content._main
+        document = main.document(title='Kernel Generator' )
+        document.byline = '<a href="http://danse.us">DANSE</a>'        
+        
+        formcomponent = self.retrieveFormToShow( 'inelasticScatteringIntensity')
+        formcomponent.director = director
+        # build the form form
+        form = document.form(name='', action=director.cgihome)
+        # specify action
+        action = actionRequireAuthentication(          
+            actor = 'materialsimulationwizard', 
+            sentry = director.sentry,
+            routine = 'submit_experiment',
+            label = '',
+            id = self.inventory.id,
+            arguments = {'form-received': formcomponent.name },
+            )
+        from vnf.weaver import action_formfields
+        action_formfields( action, form )
+        # expand the form with fields of the data object that is being edited
+        formcomponent.expand( form )
+        next = form.control(name='submit',type="submit", value="next")
+#        self._footer( document, director )
+        return page     
 
 
     def configure_simulation(self, director):

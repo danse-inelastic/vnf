@@ -61,26 +61,27 @@ class Form( base ):
         id_field = form.hidden(
             name = '%s.id' % prefix, value = configuration.id)
         
-        p = form.paragraph()
-        p.text = ['''Input the sample name''']
+#        p = form.paragraph()
+#        p.text = ['''Input the sample name''']
         
         self.name = form.text(id='name', name='name', label='Sample Name')
-        self.name.help = 'An identifying name for this sample.'
+        #self.name.help = 'An identifying name for this sample.'
         
         
         p = form.paragraph()
-        p.text = ['''Import the sample from an online database ...''']
+        p.text = ['''Import the sample from the Crystallography Open Database''']
         p = form.paragraph()
-        p.text = ['''<a href="/java/cod2.jnlp">Launch the Crystallography Open Database</a>''']        
+        p.text = ['''<a href="/java/cod2.jnlp">Future Image of COD</a>''']        
         
         p = form.paragraph()
-        p.text = ['''... or input lattice parameters a b c, and a list of atomic 
-positions in xyz format such as<br> 
-Fe   0.0 0.0 0.0<br>
-Fe   0.0 0.5 0.5<br>
-Fe   0.5 0.5 0.0<br>
-...<br>
-''']        
+        p.text = ['''Input lattice parameters manually'''] 
+#        p.text = ['''Input lattice parameters a b c, and a list of atomic 
+#positions in xyz format such as<br> 
+#Fe   0.0 0.0 0.0<br>
+#Fe   0.0 0.5 0.5<br>
+#Fe   0.5 0.5 0.0<br>
+#...<br>
+#''']        
         box = form.box()
 #        self.ax = box.text(id='ax', name='%s.ax' % prefix, label='a: (x)', 
 #                      value = getattr( configuration, ax ))        

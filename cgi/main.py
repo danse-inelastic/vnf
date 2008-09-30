@@ -41,6 +41,12 @@ if __name__ == '__main__':
         user = os.environ.get('USER') or 'webserver'
         out = open( '/tmp/vnf-error-%s.log' % user, 'w' )
         out.write( traceback.format_exc() )
+        
+    import os
+    user = os.environ.get('USER') or 'webserver'
+    if user is 'jbk':
+        os.system('firefox /home/jbk/DANSE/vnf/cgi/test.html')
+        
     
 
 # version

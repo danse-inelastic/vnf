@@ -24,7 +24,7 @@ class Form( base ):
         import pyre.inventory as inv
         id = pyre.inventory.str( 'id', default = '' )
         short_description = pyre.inventory.str('short_description', default = '' )
-        short_description.meta['tip'] = 'A short description'
+        #short_description.meta['tip'] = 'A short description'
         
         ax = inv.float('ax',default=1.0)
         ay = inv.float('ay',default=0.0)
@@ -61,15 +61,15 @@ class Form( base ):
         id_field = form.hidden(
             name = '%s.id' % prefix, value = configuration.id)
         
-        p = form.paragraph()
-        p.text = ['''Input the sample name''']
+        #p = form.paragraph()
+        #p.text = ['''Input the sample name''']
         
         self.name = form.text(id='name', name='name', label='Sample Name')
-        self.name.help = 'An identifying name for this sample.'
+        #self.name.help = 'An identifying name for this sample.'
         
         
         p = form.paragraph()
-        p.text = ['''Import the sample from an online database ...''']
+        p.text = ['''Import the sample from the Crystallography Open Database''']
         p = form.paragraph()
         p.text = ['''<a href="/java/cod2.jnlp">Launch the Crystallography Open Database</a>''']        
         
@@ -123,7 +123,7 @@ Fe   0.5 0.5 0.0<br>
         p.text=['or input the shape parameters for a cylindrical sample.']
         height = form.text(id='height', name='%s.height' % prefix, label='Height')        
         innerRadius = form.text(id='innerradius', name='%s.innerradius' % prefix, label='innerRadius',
-                                value = getattr( configuration, cy ))) 
+                                value = getattr( configuration, cy ))
         outerRadius = form.text(id='outerradius', name='%s.outerradius' % prefix, label='outerRadius')  
           
     def processUserInputs(self, commit = True):   

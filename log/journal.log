@@ -1959,3 +1959,98 @@
  >> /Users/linjiao/dv/tools/pythia-0.8/modules/pyre/ipa/IPAService.py:141:onTimeout
  -- ipa(info)
  -- unexpired tickets: 0
+ ** MARK: opened by 12226 on Tue Sep 30 11:51:07 2008
+ >> /home/jbk/dv/tools/pythia-0.8/modules/pyre/services/Service.py:36:serve
+ -- idd(info)
+ -- idd(IDDService).serve
+ --     port: 50007
+ --     timeout: 600.0 seconds
+ --     entering selector watch...
+ >> /home/jbk/dv/tools/pythia-0.8/modules/pyre/services/Service.py:36:serve
+ -- ipa(info)
+ -- ipa(IPAService).serve
+ --     port: 50008
+ --     timeout: 600.0 seconds
+ --     entering selector watch...
+ >> /home/jbk/dv/tools/pythia-0.8/modules/pyre/idd/IDDService.py:72:onTimeout
+ -- idd(info)
+ -- thump
+ >> /home/jbk/dv/tools/pythia-0.8/modules/pyre/ipa/IPAService.py:127:onTimeout
+ -- ipa(info)
+ -- thump
+ >> /home/jbk/dv/tools/pythia-0.8/modules/pyre/ipa/IPAService.py:141:onTimeout
+ -- ipa(info)
+ -- unexpired tickets: 0
+ ** MARK: opened by 12590 on Tue Sep 30 12:05:28 2008
+ >> /home/jbk/dv/tools/pythia-0.8/modules/pyre/services/Service.py:36:serve
+ -- idd(info)
+ -- idd(IDDService).serve
+ --     port: 50002
+ --     timeout: 600.0 seconds
+ --     entering selector watch...
+ >> /home/jbk/dv/tools/pythia-0.8/modules/pyre/services/Service.py:36:serve
+ -- ipa(info)
+ -- ipa(IPAService).serve
+ --     port: 50001
+ --     timeout: 600.0 seconds
+ --     entering selector watch...
+ >> /home/jbk/dv/tools/pythia-0.8/modules/pyre/idd/IDDService.py:72:onTimeout
+ -- idd(info)
+ -- thump
+ >> /home/jbk/dv/tools/pythia-0.8/modules/pyre/ipa/IPAService.py:127:onTimeout
+ -- ipa(info)
+ -- thump
+ >> /home/jbk/dv/tools/pythia-0.8/modules/pyre/ipa/IPAService.py:141:onTimeout
+ -- ipa(info)
+ -- unexpired tickets: 0
+ >> /home/jbk/dv/tools/pythia-0.8/modules/pyre/idd/IDDService.py:72:onTimeout
+ -- idd(info)
+ -- thump
+ >> /home/jbk/dv/tools/pythia-0.8/modules/pyre/ipa/IPAService.py:127:onTimeout
+ -- ipa(info)
+ -- thump
+ >> /home/jbk/dv/tools/pythia-0.8/modules/pyre/ipa/IPAService.py:141:onTimeout
+ -- ipa(info)
+ -- unexpired tickets: 0
+ >> /home/jbk/dv/tools/pythia-0.8/modules/pyre/idd/IDDService.py:72:onTimeout
+ -- idd(info)
+ -- thump
+ >> /home/jbk/dv/tools/pythia-0.8/modules/pyre/idd/IDDService.py:72:onTimeout
+ -- idd(info)
+ -- thump
+ >> /home/jbk/dv/tools/pythia-0.8/modules/pyre/ipa/IPAService.py:127:onTimeout
+ -- ipa(info)
+ -- thump
+ >> /home/jbk/dv/tools/pythia-0.8/modules/pyre/ipa/IPAService.py:141:onTimeout
+ -- ipa(info)
+ -- unexpired tickets: 0
+ >> /home/jbk/dv/tools/pythia-0.8/modules/pyre/idd/IDDService.py:72:onTimeout
+ -- idd(info)
+ -- thump
+ >> /home/jbk/dv/tools/pythia-0.8/modules/pyre/ipa/IPAService.py:127:onTimeout
+ -- ipa(info)
+ -- thump
+ >> /home/jbk/dv/tools/pythia-0.8/modules/pyre/ipa/IPAService.py:141:onTimeout
+ -- ipa(info)
+ -- unexpired tickets: 0
+ >> /home/jbk/dv/tools/pythia-0.8/modules/pyre/idd/IDDService.py:72:onTimeout
+ -- idd(info)
+ -- thump
+ >> /home/jbk/dv/tools/pythia-0.8/modules/pyre/ipa/IPAService.py:127:onTimeout
+ -- ipa(info)
+ -- thump
+ >> /home/jbk/dv/tools/pythia-0.8/modules/pyre/ipa/IPAService.py:141:onTimeout
+ -- ipa(info)
+ -- unexpired tickets: 0
+ >> /home/jbk/dv/tools/pythia-0.8/modules/pyre/idd/IDDService.py:72:onTimeout
+ -- idd(info)
+ -- thump
+ >> /home/jbk/dv/tools/pythia-0.8/modules/pyre/ipa/IPAService.py:127:onTimeout
+ -- ipa(info)
+ -- thump
+ >> /home/jbk/dv/tools/pythia-0.8/modules/pyre/ipa/IPAService.py:141:onTimeout
+ -- ipa(info)
+ -- unexpired tickets: 0
+ >> /home/jbk/dv/tools/pythia-0.8/modules/pyre/idd/IDDService.py:72:onTimeout
+ -- idd(info)
+ -- thump
