@@ -30,7 +30,7 @@ Start services
  $ ./startservices.sh
 
 
-Initialized database
+Initialized database (one must run this script as the owner of the database)
  $ cd $EXPORT_ROOT/vnf/bin
  $ ./initdb.sh
 

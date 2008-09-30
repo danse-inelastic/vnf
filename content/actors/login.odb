@@ -15,7 +15,7 @@
 from opal.components.Login import Login as base
 class Login(base):
     def _init(self):
-        self._debug.log( 'hello here' )
+        self._debug.log( 'login page loading' )
         base._init(self)
 
 def actor():

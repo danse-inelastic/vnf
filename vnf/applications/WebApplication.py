@@ -58,8 +58,8 @@ class WebApplication(Base):
         debug = pyre.inventory.bool(name="debug", default=True)
         debug.meta['tip'] = "suppress some html output for debugging purposes"
 
-        imagepath = pyre.inventory.str(name='imagepath', default = '/vnfBK/images' )
-        javascriptpath = pyre.inventory.str(name='javascriptpath', default = '/vnfBK/javascripts' )
+        imagepath = pyre.inventory.str(name='imagepath', default = '/vnf/images' )
+        javascriptpath = pyre.inventory.str(name='javascriptpath', default = '/vnf/javascripts' )
         javapath = pyre.inventory.str(name='javapath', default = '/java' )
 
 
