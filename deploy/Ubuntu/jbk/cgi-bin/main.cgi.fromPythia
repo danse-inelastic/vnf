@@ -4,7 +4,8 @@
 #releaser=/home/jbk/DANSE/buildInelast/pyre
 #EXPORT_ROOT=$releaser/EXPORT
 #python equivalent: 
-EXPORT_ROOT='/home/jbk/DANSE'
+releaser=/home/jbk/DANSE/buildInelast/pyre
+EXPORT_ROOT=releaser+'/EXPORT'
 
 # original code that sets environment variables:
 #root=/home/jbk/DANSE/buildInelast/pyre/EXPORT
@@ -18,8 +19,8 @@ EXPORT_ROOT='/home/jbk/DANSE'
 #source $EXPORT_ROOT/bin/envs.sh
 # python equivalent:
 import os
-pythiaInstallation='/home/jbk/dv/tools/pythia-0.8'
-deps=root+'/deps'
+root='/home/jbk/DANSE/buildInelast/pyre/EXPORT'
+deps='root+'/deps'
 os.environ['PYRE_DIR'] = root
 os.environ['PATH'] = root + '/bin:' + deps + '/bin:' + os.environ['PATH']
 os.environ['LD_LIBRARY_PATH'] = root + '/lib:' + deps + '/lib:' + os.environ['LD_LIBRARY_PATH']
@@ -27,8 +28,7 @@ os.environ['DYLD_LIBRARY_PATH'] = root + '/lib:' + deps + '/lib:' + os.environ['
 os.environ['PYTHONPATH'] = root + '/modules:' + deps + '/python:' + os.environ['PYTHONPATH']
 # note: notice we do not use the 'deployed' version of vnf that has been
 # copied to the pyre dv which is linked to buildInelast.  Rather, we
-# use the source version by setting the paths directly to that.  And we set paths to pyre and vnf 
-# in the eclipse project rather than here so all the above is commented out. 
+# use the source version by setting the paths directly to that
 
 #original code
 #cd $EXPORT_ROOT/vnf/cgi && python main.py $@

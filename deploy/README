@@ -10,7 +10,7 @@ For example, to deploy it in Jiao's account on a Mac OS X machine, do the follow
  $ ln -s ~/dv/danse/VNET/vnf/trunk/deploy/MacOSX/linjiao/cgi-bin vnf
 
 
-Make another symbolice link in (sth similar to)
+Make another symbolic link in (sth similar to)
 
   /var/www
 

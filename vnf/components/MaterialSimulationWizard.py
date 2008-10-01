@@ -30,6 +30,9 @@ class MaterialSimulationWizard(base):
         pass # end of Inventory
 
 
+    def default(self, director):
+        return self.start(director)
+
     def start(self, director):
         return self.selectmaterial(director)
     

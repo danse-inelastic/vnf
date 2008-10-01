@@ -17,7 +17,7 @@ Content-type: text/html
 <html>
 <head>
 <base href='http://trueblue.caltech.edu/vnf/'/>
-<title>Virtual Neutron Facility</title>
+<title>Virtual Neutron Facility: Material Simulation/Modeling Wizard</title>
 <style media='all' rel='stylesheet'>@import url(css/visual.css);</style>
 <style media='all' rel='stylesheet'>@import url(css/visual-color.css);</style>
 <style media='all' rel='stylesheet'>@import url(css/structural.css);</style>
@@ -31,7 +31,7 @@ Content-type: text/html
 <div id="body-wrapper">
 <!-- ** section page-header ** -->
 <div id='page-header'>
-<div id="page-logo"><a href="http://trueblue.caltech.edu/cgi-bin/vnf/main.cgi?actor=nyi&sentry.username=demo&sentry.ticket=">Home</a></div>
+<div id="page-logo"><a href="http://trueblue.caltech.edu/cgi-bin/vnf/main.cgi?actor=greet&sentry.username=demo&sentry.ticket=demoa8e72c2e099fb01f27f8eac4f2ecaada">Home</a></div>
 <p id="page-personaltools">&nbsp;</p>
 </div>
 <!-- ** end of section page-header ** -->
@@ -42,6 +42,48 @@ Content-type: text/html
       <td id="page-columnLeft">
 <!-- ** section  ** -->
 <div>
+<div class="visualPadding">
+<div class='portlet' id='portlet-materialsimulationwizard-tree'>
+    <h5>Material simulation</h5>
+    <div class="portletBody">
+<div class='portletContent'>
+<a class="navItem" title=""
+  href="http://trueblue.caltech.edu/cgi-bin/vnf/main.cgi?routine=selectmaterial&sentry.ticket=demoa8e72c2e099fb01f27f8eac4f2ecaada&sentry.username=demo&actor=materialsimulationwizard&materialsimulationwizard.id=">
+<img class="navItemIcon" height="16" width="16" src="images/link_icon.gif" />
+<span class="navItemText">Material</span>
+</a>
+</div>
+<div class='portletContent'>
+<a class="navItem" title=""
+  href="http://trueblue.caltech.edu/cgi-bin/vnf/main.cgi?routine=selectsimulationtype&sentry.ticket=demoa8e72c2e099fb01f27f8eac4f2ecaada&sentry.username=demo&actor=materialsimulationwizard&materialsimulationwizard.id=">
+<img class="navItemIcon" height="16" width="16" src="images/link_icon.gif" />
+<span class="navItemText">Simulation</span>
+</a>
+</div>
+<div class='portletContent'>
+<a class="navItem" title=""
+  href="http://trueblue.caltech.edu/cgi-bin/vnf/main.cgi?routine=submit_simulation&sentry.ticket=demoa8e72c2e099fb01f27f8eac4f2ecaada&sentry.username=demo&actor=materialsimulationwizard&materialsimulationwizard.id=">
+<img class="navItemIcon" height="16" width="16" src="images/link_icon.gif" />
+<span class="navItemText">Submit</span>
+</a>
+</div>
+<div class='portletContent'>
+<a class="navItem" title=""
+  href="http://trueblue.caltech.edu/cgi-bin/vnf/main.cgi?routine=save_simulation&sentry.ticket=demoa8e72c2e099fb01f27f8eac4f2ecaada&sentry.username=demo&actor=materialsimulationwizard&materialsimulationwizard.id=">
+<img class="navItemIcon" height="16" width="16" src="images/link_icon.gif" />
+<span class="navItemText">Save for later submission</span>
+</a>
+</div>
+<div class='portletContent'>
+<a class="navItem" title=""
+  href="http://trueblue.caltech.edu/cgi-bin/vnf/main.cgi?routine=cancel&sentry.ticket=demoa8e72c2e099fb01f27f8eac4f2ecaada&sentry.username=demo&actor=materialsimulationwizard&materialsimulationwizard.id=">
+<img class="navItemIcon" height="16" width="16" src="images/link_icon.gif" />
+<span class="navItemText">Cancel</span>
+</a>
+</div>
+    </div>
+</div>
+</div>
 </div>
 <!-- ** end of section  ** -->
       </td>
@@ -50,26 +92,45 @@ Content-type: text/html
 <!-- ** section  ** -->
 <div class='document-main'>
 <div>
-<h1>Under construction...</h1>
+<h1>Material Simulation/Modeling Wizard: select material</h1>
 <div class="documentDescription">
 
 </div>
+<form action='http://trueblue.caltech.edu/cgi-bin/vnf/main.cgi' method='post' name='selectmaterial'>
+<fieldset><legend>Select material</legend>
+<input type='hidden' name='materialsimulationwizard.id' value=''/>
+<input type='hidden' name='actor' value='materialsimulationwizard'/>
+<input type='hidden' name='materialsimulationwizard.form-received' value='selectmaterial'/>
+<input type='hidden' name='sentry.username' value='demo'/>
+<input type='hidden' name='routine' value='verify_material_selection'/>
+<input type='hidden' name='sentry.ticket' value='demoa8e72c2e099fb01f27f8eac4f2ecaada'/>
 <p>
-Not implemented yet: actor=materialsimulationwizard, routine=None
+Select from following list of materials
 </p>
+<div class='formfield'>
+<div>
+<label for="material_selector">Material</label>
+</div>
+<select name='actor.form-received.selected' id='material_selector'>
+  <option selected value="PolyCrystal###polyxtalfccNi0">: PolyCrystal
+  <option  value="PolyCrystal###3YZWEJ">: PolyCrystal
+  <option  value="PolyCrystal###4B5TNW">: PolyCrystal
+  <option  value="PolyCrystal###3RWVI">: PolyCrystal
+  <option  value="Disordered###liquid0">: Disordered
+</select>
+</div>
+<div class='formControls'>
+<input class="context" name="actor.form-received.submit" type="submit" value="Continue"/>
+</div>
+</fieldset>
+</form>
 <div class="documentByline">
-
+byline?
 </div>
 </div>
 </div>
 <!-- ** end of section  ** -->
         </div>
-      </td>
-      <td id="page-columnRight">
-<!-- ** section  ** -->
-<div>
-</div>
-<!-- ** end of section  ** -->
       </td>
     </tr>
   </tbody>
