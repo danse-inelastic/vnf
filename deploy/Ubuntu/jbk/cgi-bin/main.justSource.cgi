@@ -1,18 +1,4 @@
 #!/usr/bin/env python
-import os
-
-def assignOrPrepend(paths, environVariable):
-	try:
-		assert os
-		if os.environ.has_key(environVariable):
-			os.environ[environVariable] = paths + os.environ[environVariable]
-		else:
-			os.environ[environVariable] = paths
-	except:
-		print '''Error--os has not been imported. os is needed to access a common set of   
-		environment variables.  assignOrPrepend() may not work.'''
-		#exit()
-
 
 #Strategy: to make real-time debugging of source code possible and also
 # the ability to 'fall back' on older, pythia-installed portions of 
@@ -23,9 +9,7 @@ def assignOrPrepend(paths, environVariable):
 #releaser=/home/jbk/DANSE/buildInelast/pyre
 #EXPORT_ROOT=$releaser/EXPORT
 #python equivalent: 
-releaser=/home/jbk/DANSE/buildInelast/pyre
-EXPORT_ROOT=releaser+'/EXPORT'
-exportSource='/home/jbk/DANSE'
+EXPORT_ROOT='/home/jbk/DANSE'
 
 # original code that sets environment variables:
 #root=/home/jbk/DANSE/buildInelast/pyre/EXPORT
@@ -38,21 +22,11 @@ exportSource='/home/jbk/DANSE'
 #export PYTHONPATH=$root/modules:$deps/python:$PYTHONPATH
 #source $EXPORT_ROOT/bin/envs.sh
 # python equivalent:
-root='/home/jbk/DANSE/buildInelast/pyre/EXPORT'
-deps='root+'/deps'
-os.environ['PYRE_DIR'] = root
-os.environ['PATH'] = root + '/bin:' + deps + '/bin:' + os.environ['PATH']
-os.environ['LD_LIBRARY_PATH'] = root + '/lib:' + deps + '/lib:' + os.environ['LD_LIBRARY_PATH']
-os.environ['DYLD_LIBRARY_PATH'] = root + '/lib:' + deps + '/lib:' + os.environ['DYLD_LIBRARY_PATH']
-os.environ['PYTHONPATH'] = root + '/modules:' + deps + '/python:' + os.environ['PYTHONPATH']
-
-
-
+import os
 pythiaInstallation='/home/jbk/dv/tools/pythia-0.8'
 deps=pythiaInstallation+'/deps'
 os.environ['PYRE_DIR'] = pythiaInstallation
 os.environ['PATH'] = pythiaInstallation + '/bin:' + deps + '/bin:' + os.environ['PATH']
-assignOrPrepend
 if os.environ.has_key('LD_LIBRARY_PATH'):
 	os.environ['LD_LIBRARY_PATH'] = pythiaInstallation + '/lib:' + deps + '/lib:' + os.environ['LD_LIBRARY_PATH']
 else:
