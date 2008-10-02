@@ -5,7 +5,7 @@ def assignOrPrepend(paths, environVariable):
 	try:
 		assert os
 		if os.environ.has_key(environVariable):
-			os.environ[environVariable] = paths + os.environ[environVariable]
+			os.environ[environVariable] = paths + os.pathsep + os.environ[environVariable]
 		else:
 			os.environ[environVariable] = paths
 	except:
@@ -23,9 +23,10 @@ def assignOrPrepend(paths, environVariable):
 #releaser=/home/jbk/DANSE/buildInelast/pyre
 #EXPORT_ROOT=$releaser/EXPORT
 #python equivalent: 
-releaser=/home/jbk/DANSE/buildInelast/pyre
+releaser='/home/jbk/DANSE/buildInelast/pyre'
 EXPORT_ROOT=releaser+'/EXPORT'
 exportSource='/home/jbk/DANSE'
+
 
 # original code that sets environment variables:
 #root=/home/jbk/DANSE/buildInelast/pyre/EXPORT
@@ -37,41 +38,30 @@ exportSource='/home/jbk/DANSE'
 #export DYLD_LIBRARY_PATH=$root/lib:$deps/lib:$DYLD_LIBRARY_PATH
 #export PYTHONPATH=$root/modules:$deps/python:$PYTHONPATH
 #source $EXPORT_ROOT/bin/envs.sh
-# python equivalent:
+#
+# in accord with strategy, we first set the 'releaser' paths
 root='/home/jbk/DANSE/buildInelast/pyre/EXPORT'
-deps='root+'/deps'
+deps=root+'/deps'
 os.environ['PYRE_DIR'] = root
-os.environ['PATH'] = root + '/bin:' + deps + '/bin:' + os.environ['PATH']
+assignOrPrepend(root + '/bin:' + deps + '/bin', 'PATH')
+assignOrPrepend(root + '/lib:' + deps + '/lib', 'LD_LIBRARY_PATH')
+assignOrPrepend(root + '/lib:' + deps + '/lib', 'DYLD_LIBRARY_PATH')
+assignOrPrepend(root + '/modules:' + deps + '/python', 'PYTHONPATH')
+
 os.environ['LD_LIBRARY_PATH'] = root + '/lib:' + deps + '/lib:' + os.environ['LD_LIBRARY_PATH']
 os.environ['DYLD_LIBRARY_PATH'] = root + '/lib:' + deps + '/lib:' + os.environ['DYLD_LIBRARY_PATH']
 os.environ['PYTHONPATH'] = root + '/modules:' + deps + '/python:' + os.environ['PYTHONPATH']
+#
+#
+# and then prepend the 'source' paths (to access those preferably and fall back on releaser)
+#assignOrPrepend(root + '/bin:' + deps + '/bin', 'PATH')
+#assignOrPrepend(exportSource + '/modules:' + deps + '/python', 'PYTHONPATH')
 
-
-
-pythiaInstallation='/home/jbk/dv/tools/pythia-0.8'
-deps=pythiaInstallation+'/deps'
-os.environ['PYRE_DIR'] = pythiaInstallation
-os.environ['PATH'] = pythiaInstallation + '/bin:' + deps + '/bin:' + os.environ['PATH']
-assignOrPrepend
-if os.environ.has_key('LD_LIBRARY_PATH'):
-	os.environ['LD_LIBRARY_PATH'] = pythiaInstallation + '/lib:' + deps + '/lib:' + os.environ['LD_LIBRARY_PATH']
-else:
-	os.environ['LD_LIBRARY_PATH'] = pythiaInstallation + '/lib:' + deps + '/lib'
-if os.environ.has_key('DYLD_LIBRARY_PATH'):
-	os.environ['DYLD_LIBRARY_PATH'] = pythiaInstallation + '/lib:' + deps + '/lib:' + os.environ['DYLD_LIBRARY_PATH']
-else:
-	os.environ['DYLD_LIBRARY_PATH'] = pythiaInstallation + '/lib:' + deps + '/lib'
-if os.environ.has_key('PYTHONPATH'):
-	os.environ['PYTHONPATH'] = pythiaInstallation + '/modules:' + deps + '/python:' + os.environ['PYTHONPATH']
-else:
-	os.environ['DYLD_LIBRARY_PATH'] = pythiaInstallation + '/modules:' + deps + '/python:'
-# note: notice we do not use the 'deployed' version of vnf that has been
-# copied to the pyre dv which is linked to buildInelast.  Rather, we
-# use the source version by setting the paths directly to that.  And we set paths to pyre and vnf 
-# in the eclipse project rather than here so all the above is commented out. 
 
 #original code
 #cd $EXPORT_ROOT/vnf/cgi && python main.py $@
+#
+# note we still change directory to the 'releaser' cgi directory to access the config folder there
 os.chdir(EXPORT_ROOT+'/vnf/cgi')
 from main import main
 if __name__ == '__main__':
@@ -80,12 +70,10 @@ if __name__ == '__main__':
         main()
     except:
         import traceback
-        import os
         user = os.environ.get('USER') or 'webserver'
         out = open( '/tmp/vnf-error-%s.log' % user, 'w' )
         out.write( traceback.format_exc() )
         
-    import os
     user = os.environ.get('USER') or 'webserver'
     if ('jbk' in user):
         os.system('firefox /home/jbk/DANSE/vnf/html/test.html')

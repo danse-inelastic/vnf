@@ -14,7 +14,8 @@
 <inventory>
 
   <component name='main'>
-    <property name='actor'>materialsimulationwizard</property>   
+    <property name='actor'>materialsimulationwizard</property> 
+    <property name='routine'>selectSimulationType</property>  
     <property name="home">http://trueblue.caltech.edu/vnf/</property>
     <property name="cgi-home">http://trueblue.caltech.edu/cgi-bin/vnf/main.cgi</property>
     <component name='sentry'>

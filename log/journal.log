@@ -4965,3 +4965,93 @@
  >> /home/jbk/dv/tools/pythia-0.8/modules/pyre/idd/IDDService.py:72:onTimeout
  -- idd(info)
  -- thump
+ >> /home/jbk/dv/tools/pythia-0.8/modules/pyre/ipa/IPAService.py:127:onTimeout
+ -- ipa(info)
+ -- thump
+ >> /home/jbk/dv/tools/pythia-0.8/modules/pyre/ipa/IPAService.py:133:onTimeout
+ -- ipa(info)
+ -- ticket 'demo8c77f8ae0fa2fa4baa21ee9ce0f292dc': 8517701.16783 seconds until expiration
+ >> /home/jbk/dv/tools/pythia-0.8/modules/pyre/ipa/IPAService.py:133:onTimeout
+ -- ipa(info)
+ -- ticket 'demoa8e72c2e099fb01f27f8eac4f2ecaada': 8560197.82276 seconds until expiration
+ >> /home/jbk/dv/tools/pythia-0.8/modules/pyre/ipa/IPAService.py:141:onTimeout
+ -- ipa(info)
+ -- unexpired tickets: 2
+ >> /home/jbk/dv/tools/pythia-0.8/modules/pyre/idd/IDDService.py:72:onTimeout
+ -- idd(info)
+ -- thump
+ >> /home/jbk/dv/tools/pythia-0.8/modules/pyre/ipa/IPAService.py:127:onTimeout
+ -- ipa(info)
+ -- thump
+ >> /home/jbk/dv/tools/pythia-0.8/modules/pyre/ipa/IPAService.py:133:onTimeout
+ -- ipa(info)
+ -- ticket 'demo8c77f8ae0fa2fa4baa21ee9ce0f292dc': 8517101.14734 seconds until expiration
+ >> /home/jbk/dv/tools/pythia-0.8/modules/pyre/ipa/IPAService.py:133:onTimeout
+ -- ipa(info)
+ -- ticket 'demoa8e72c2e099fb01f27f8eac4f2ecaada': 8559597.80227 seconds until expiration
+ >> /home/jbk/dv/tools/pythia-0.8/modules/pyre/ipa/IPAService.py:141:onTimeout
+ -- ipa(info)
+ -- unexpired tickets: 2
+ >> /home/jbk/dv/tools/pythia-0.8/modules/pyre/idd/IDDService.py:72:onTimeout
+ -- idd(info)
+ -- thump
+ >> /home/jbk/dv/tools/pythia-0.8/modules/pyre/ipa/IPAService.py:127:onTimeout
+ -- ipa(info)
+ -- thump
+ >> /home/jbk/dv/tools/pythia-0.8/modules/pyre/ipa/IPAService.py:133:onTimeout
+ -- ipa(info)
+ -- ticket 'demo8c77f8ae0fa2fa4baa21ee9ce0f292dc': 8516501.13105 seconds until expiration
+ >> /home/jbk/dv/tools/pythia-0.8/modules/pyre/ipa/IPAService.py:133:onTimeout
+ -- ipa(info)
+ -- ticket 'demoa8e72c2e099fb01f27f8eac4f2ecaada': 8558997.78597 seconds until expiration
+ >> /home/jbk/dv/tools/pythia-0.8/modules/pyre/ipa/IPAService.py:141:onTimeout
+ -- ipa(info)
+ -- unexpired tickets: 2
+ >> /home/jbk/dv/tools/pythia-0.8/modules/pyre/idd/IDDService.py:72:onTimeout
+ -- idd(info)
+ -- thump
+ >> /home/jbk/dv/tools/pythia-0.8/modules/pyre/ipa/IPAService.py:127:onTimeout
+ -- ipa(info)
+ -- thump
+ >> /home/jbk/dv/tools/pythia-0.8/modules/pyre/ipa/IPAService.py:133:onTimeout
+ -- ipa(info)
+ -- ticket 'demo8c77f8ae0fa2fa4baa21ee9ce0f292dc': 8515901.11125 seconds until expiration
+ >> /home/jbk/dv/tools/pythia-0.8/modules/pyre/ipa/IPAService.py:133:onTimeout
+ -- ipa(info)
+ -- ticket 'demoa8e72c2e099fb01f27f8eac4f2ecaada': 8558397.76618 seconds until expiration
+ >> /home/jbk/dv/tools/pythia-0.8/modules/pyre/ipa/IPAService.py:141:onTimeout
+ -- ipa(info)
+ -- unexpired tickets: 2
+ >> /home/jbk/dv/tools/pythia-0.8/modules/pyre/idd/IDDService.py:72:onTimeout
+ -- idd(info)
+ -- thump
+ >> /home/jbk/dv/tools/pythia-0.8/modules/pyre/ipa/IPAService.py:127:onTimeout
+ -- ipa(info)
+ -- thump
+ >> /home/jbk/dv/tools/pythia-0.8/modules/pyre/ipa/IPAService.py:133:onTimeout
+ -- ipa(info)
+ -- ticket 'demo8c77f8ae0fa2fa4baa21ee9ce0f292dc': 8515301.09534 seconds until expiration
+ >> /home/jbk/dv/tools/pythia-0.8/modules/pyre/ipa/IPAService.py:133:onTimeout
+ -- ipa(info)
+ -- ticket 'demoa8e72c2e099fb01f27f8eac4f2ecaada': 8557797.75026 seconds until expiration
+ >> /home/jbk/dv/tools/pythia-0.8/modules/pyre/ipa/IPAService.py:141:onTimeout
+ -- ipa(info)
+ -- unexpired tickets: 2
+ >> /home/jbk/dv/tools/pythia-0.8/modules/pyre/idd/IDDService.py:72:onTimeout
+ -- idd(info)
+ -- thump
+ >> /home/jbk/dv/tools/pythia-0.8/modules/pyre/ipa/IPAService.py:127:onTimeout
+ -- ipa(info)
+ -- thump
+ >> /home/jbk/dv/tools/pythia-0.8/modules/pyre/ipa/IPAService.py:133:onTimeout
+ -- ipa(info)
+ -- ticket 'demo8c77f8ae0fa2fa4baa21ee9ce0f292dc': 8514701.07935 seconds until expiration
+ >> /home/jbk/dv/tools/pythia-0.8/modules/pyre/ipa/IPAService.py:133:onTimeout
+ -- ipa(info)
+ -- ticket 'demoa8e72c2e099fb01f27f8eac4f2ecaada': 8557197.73427 seconds until expiration
+ >> /home/jbk/dv/tools/pythia-0.8/modules/pyre/ipa/IPAService.py:141:onTimeout
+ -- ipa(info)
+ -- unexpired tickets: 2
+ >> /home/jbk/dv/tools/pythia-0.8/modules/pyre/idd/IDDService.py:72:onTimeout
+ -- idd(info)
+ -- thump

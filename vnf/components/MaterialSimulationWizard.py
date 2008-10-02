@@ -89,7 +89,7 @@ class MaterialSimulationWizard(base):
         self.inventory.mattertype = mattertype
         
         #return self.selectsimulationtype(director)
-        return self.selectkernel(director)
+        return self.selectSimulationType(director)
 
 
     def selectsimulationtype(self, director):
@@ -151,7 +151,7 @@ class MaterialSimulationWizard(base):
         
         return self.redirect(director, type, routine, matter = matter)
 
-    def selectkernel(self, director):
+    def selectSimulationType(self, director):
         try:
             page = director.retrieveSecurePage( 'materialsimulationwizard' )
         except AuthenticationError, err:
@@ -164,7 +164,7 @@ class MaterialSimulationWizard(base):
         document.description = ''
         document.byline = '<a href="http://danse.us">DANSE</a>'        
         
-        formcomponent = self.retrieveFormToShow( 'selectkernel')
+        formcomponent = self.retrieveFormToShow( 'selectSimulationType')
         formcomponent.director = director
         # build the form 
         form = document.form(name='', action=director.cgihome)
