@@ -4,9 +4,6 @@ Content-type: text/html
 <!--
  ! ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  !
- !                             Michael A.G. Aivazis
- !                      California Institute of Technology
- !                      (C) 1998-2005  All Rights Reserved
  !
  ! {LicenseText}
  !
@@ -15,7 +12,7 @@ Content-type: text/html
 <html>
 <head>
 <base href='http://trueblue.caltech.edu/vnf/'/>
-<title>Please login</title>
+<title>Authentication error</title>
 <style media='all' rel='stylesheet'>@import url(css/visual.css);</style>
 <style media='all' rel='stylesheet'>@import url(css/visual-color.css);</style>
 <style media='all' rel='stylesheet'>@import url(css/structural.css);</style>
@@ -29,7 +26,7 @@ Content-type: text/html
 <div id="body-wrapper">
 <!-- ** section page-header ** -->
 <div id='page-header'>
-<div id="page-logo"><a href="http://trueblue.caltech.edu/cgi-bin/vnf/main.cgi?actor=logout">Home</a></div>
+<div id="page-logo"><a href="http://trueblue.caltech.edu/cgi-bin/vnf/main.cgi?actor=login">Home</a></div>
 <p id="page-personaltools">&nbsp;</p>
 </div>
 <!-- ** end of section page-header ** -->
@@ -42,36 +39,23 @@ Content-type: text/html
 <!-- ** section  ** -->
 <div class='document-main'>
 <div>
-<h1>login</h1>
+<h1>Authentication error</h1>
 <div class="documentDescription">
-You have successfully logged out.
+You have made 1 unsuccessful attempt to log in.
 </div>
-<form action='http://trueblue.caltech.edu/cgi-bin/vnf/main.cgi' method='post' name='login'>
-<fieldset><legend>Account details</legend>
-<input type='hidden' name='actor' value='greet'/>
-<input type='hidden' name='sentry.attempts' value='0'/>
-<div class='formfield'>
-<div>
-<label for="username">Username</label>
-</div>
-<div class="formfieldHelp">Usernames are case sensitive; make sure your caps lock key is not enabled.</div>
-<input type='text' name='sentry.username' value='' id='username'/>
-</div>
-<div class='formfield'>
-<div>
-<label for="password">Password</label>
-</div>
-<div class="formfieldHelp">Passwords are also case sensitive. If you have forgotten your password, you may be able to <a href="http://trueblue.caltech.edu/cgi-bin/vnf/main.cgi?actor=retrieve-password">retrieve</a> it.</div>
-<input type='password' name='sentry.passwd' value='' id='password'/>
-</div>
-<div class='formControls'>
-<input class="context" name="submit" type="submit" value="login"/>
-</div>
-<p>
-When you are done, please logout or exit your browser
+<p class='error'>
+There seems to be a problem granting you access to this web site.
+Please check your username and password and
+<a href="http://trueblue.caltech.edu/cgi-bin/vnf/main.cgi?actor=login&sentry.attempts=1">try again</a>.
 </p>
-</fieldset>
-</form>
+<p>
+If you have forgotten your password, it may be possible to
+<a href="http://trueblue.caltech.edu/cgi-bin/vnf/main.cgi?actor=retrieve-password">retrieve</a> it.
+</p>
+<p>
+If you are sure that you are entering the correct username and password,
+please fill out a <a href="http://trueblue.caltech.edu/cgi-bin/vnf/main.cgi?actor=alert">problem report</a>.
+</p>
 <div class="documentByline">
 
 </div>
@@ -103,5 +87,7 @@ powered by opal
 
 <!-- version-->
 <!-- $Id$-->
+
+<!-- Generated automatically by PageMill on Thu Oct  2 21:40:58 2008-->
 
 <!-- End of file -->

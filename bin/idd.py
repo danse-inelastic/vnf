@@ -12,7 +12,7 @@
 #
 
 
-def main():
+def main(depositoryLocation='../config'):
 
 
     from pyre.idd.Daemon import Daemon
@@ -22,7 +22,7 @@ def main():
 
 
         def _getPrivateDepositoryLocations(self):
-            return ['../config']
+            return [depositoryLocation]
 
 
     app = IDDdApp()
@@ -32,7 +32,11 @@ def main():
 # main
 if __name__ == '__main__':
     # invoke the application shell
-    main()
+    import sys
+    if sys.argv[1]:
+        main(sys.argv[1])
+    else:
+        main()
 
 
 # version
