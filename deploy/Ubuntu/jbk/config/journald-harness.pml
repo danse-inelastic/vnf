@@ -11,24 +11,29 @@
 ! ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 -->
 
+
 <!DOCTYPE inventory>
 
 <inventory>
 
-    <component name="ipa-session">
-        <property name="marshaller">ipa-pickler</property>
-        <property name="host">131.215.30.140</property>
-        <property name="port">50005</property>
+  <component name='journald-harness'>
+    <property name='home'>../config</property>
 
-        <component name="ipa-pickler">
-            <property name="key">elsj94fhv6p3qkxn</property>
+    <component name='journal'>
+        <property name='device'>file</property>
+
+        <component name='file'>
+          <property name='name'>../log/journal.log</property>
         </component>
 
     </component>
 
+  </component>
+
 </inventory>
 
+
 <!-- version-->
-<!-- $Id$-->
+<!-- $Id: journald-harness.pml,v 1.1.1.1 2006-11-27 00:09:15 aivazis Exp $-->
 
 <!-- End of file -->

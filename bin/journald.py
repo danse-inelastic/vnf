@@ -40,7 +40,7 @@ def main(depositoryLocation='../config'):
 if __name__ == '__main__':
     # invoke the application shell
     import sys
-    if sys.argv[1]:
+    if len(sys.argv)>1:
         main(sys.argv[1])
     else:
         main()

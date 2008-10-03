@@ -2,6 +2,7 @@
 <!--
 ! ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
+!
 !                             Michael A.G. Aivazis
 !                      California Institute of Technology
 !                      (C) 1998-2005  All Rights Reserved
@@ -11,24 +12,20 @@
 ! ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 -->
 
+
 <!DOCTYPE inventory>
 
 <inventory>
 
-    <component name="ipa-session">
-        <property name="marshaller">ipa-pickler</property>
-        <property name="host">131.215.30.140</property>
-        <property name="port">50005</property>
-
-        <component name="ipa-pickler">
-            <property name="key">elsj94fhv6p3qkxn</property>
-        </component>
-
-    </component>
+  <component name='demo'>
+    <property name='home'>http://localhost/vnf/</property>
+    <property name='cgi-home'>http://localhost/cgi-bin/vnf/demo.py</property>
+  </component>
 
 </inventory>
 
+
 <!-- version-->
-<!-- $Id$-->
+<!-- $Id: demo.pml,v 1.1.1.1 2006-11-27 00:09:14 aivazis Exp $-->
 
 <!-- End of file -->
