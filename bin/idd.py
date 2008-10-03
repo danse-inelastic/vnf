@@ -22,6 +22,7 @@ def main(depositoryLocation='../config'):
 
 
         def _getPrivateDepositoryLocations(self):
+            print 'using '+depositoryLocation+' as a depository'
             return [depositoryLocation]
 
 
