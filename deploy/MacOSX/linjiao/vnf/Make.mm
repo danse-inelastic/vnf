@@ -46,8 +46,6 @@ distclean::
 # export
 
 EXPORT_PYTHON_MODULES = \
-	DbAddressResolver.py \
-	__init__.py
 
 
 export:: export-python-modules

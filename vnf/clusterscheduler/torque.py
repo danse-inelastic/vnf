@@ -19,6 +19,10 @@ debug = journal.debug( 'torque' )
 
 class Scheduler:
 
+
+    outfilename = 'STDOUT.log'
+    errfilename = 'STDERR.log'
+
     
     def __init__(self, launcher, prefix = None, outputstr_maxlen = 2048):
         self.prefix = prefix
@@ -28,7 +32,8 @@ class Scheduler:
     
     
     def submit( self, cmd ):
-        cmds = [ r'echo \"%s\" | qsub' % (cmd,) ]
+        cmds = [ r'echo \"%s\" | qsub  -o %s -e %s' % (
+            cmd,self.outfilename,self.errfilename) ]
         failed, output, error = self._launch( cmds )
         if failed:
             if error.find( 'check pbs_server daemon' ) != -1:
@@ -40,10 +45,7 @@ class Scheduler:
         return output
     
 
-    def status( self, job ):
-        
-        jobid = job.id_incomputingserver
-        
+    def status( self, jobid ):
         cmds = [ 'qstat -f %s' % (jobid,) ]
         failed, output, error  = self._launch( cmds )
         if failed:
@@ -67,9 +69,11 @@ class Scheduler:
 
         errorpath = d['Error_Path']
         dummy, errorfilename = os.path.split(errorpath)
+        assert errorfilename == self.errfilename
 
         outputpath = d['Output_Path']
         dummy, outputfilename = os.path.split(outputpath)
+        assert outputfilename = self.outfilename
 
         state = d['job_state']
         import time
@@ -96,9 +100,8 @@ class Scheduler:
         return ret
 
 
-    def statusByTracejob( self, job ):
+    def statusByTracejob( self, jobid ):
 
-        jobid = job.id_incomputingserver
         d = {}
         
         tag = 'Exit_status'
@@ -113,7 +116,7 @@ class Scheduler:
         d[ 'timeCompletion' ] = ' '.join( words[0:2] )
 
         output, error = self._readoutputerror(
-            job.outputfilename, job.errorfilename )
+            self.outfilename, self.errfilename )
 
         d.update( {
             'output': output,

@@ -2,9 +2,9 @@
 #
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
-#                             Michael A.G. Aivazis
+#                                 Jiao Lin
 #                      California Institute of Technology
-#                      (C) 1998-2005  All Rights Reserved
+#                      (C) 2007-2008  All Rights Reserved
 #
 # {LicenseText}
 #
@@ -13,11 +13,152 @@
 
 
 
-from vnf.components.Job import Job
+from vnf.components.FormActor import FormActor as base, action, action_link, InputProcessingError
+
+class Actor(base):
+    
+    class Inventory(base.Inventory):
+
+        import pyre.inventory
+        id = pyre.inventory.str( 'id', default = '')
+        id.meta['tip'] = 'id of reduction session'
+
+
+    def default(self, director):
+        return self.listall( director )
+
+
+    def listall(self, director):
+        page = director.retrievePage( 'job' )
+        main = page._body._content._main
+        document = main.document(title='Jobs')
+
+        from vnf.dom.Job import Job
+        jobs = director.db.fetchall( Job )
+
+        for job in jobs:
+            p = document.paragraph()
+            link = action_link(
+                action(actor = 'job',
+                       routine = 'view',
+                       label = job.short_description,
+                       id = job.id,
+                       ),
+                director.cgihome
+                )
+            desc = _desribe(job)
+            p.text = [
+                '%s: %s' % (link, desc),
+                ]
+            continue
+        
+        return page
+
+
+    def view_jobwaitingforsubmission(self, director):
+        id = self.inventory.id
+        job = director.clerk.getJob(id)
+        
+        page = director.retrievePage( 'job' )
+        main = page._body._content._main
+        document = main.document(
+            title='Job #%s' % id
+            )
+
+        p = document.paragraph()
+        link = action_link(
+            action(actor = 'job',
+                   routine = 'submit',
+                   label = 'here',
+                   id = id,
+                   ),
+            director.cgihome
+            )
+        p.text = [
+            'This job has not been submitted.',
+            'You can submit this job by clicking %s.' % link,
+            ]
+        return page
+
+
+    def submit(self, director):
+        id = self.inventory.id
+        job = director.clerk.getJob(id)
+        # submit
+        submitJob(job, director)
+        return self.view( director, id = id )
+        
+        
+    def view(self, director, id = None):
+        if id is None: id = self.inventory.id
+        page = director.retrievePage( 'job' )
+
+        job = director.clerk.getJob(id)
+        if job.state == 'created':
+            self.inventory.id = id
+            return self.view_jobwaitingforsubmission(director)
+        
+        from vnf.components.Job import check
+        check(job, director)
+
+        main = page._body._content._main
+        document = main.document(
+            title='Job #%s' % id
+            )
+        document.description = (
+            'Job status'
+            )
+
+        props = job.getColumnNames()
+        lines = ['%s=%s' % (prop, getattr(job, prop) ) for prop in props]
+        for line in lines:
+            p = document.paragraph()
+            p.text = [line]
+            continue
+
+        document.paragraph()
+
+        p = document.paragraph()
+        computation = job.computation
+        link = action_link(
+            action(actor = 'reduction',
+                   routine = 'view',
+                   label = 'here',
+                   id = computation.id,
+                   type = computation.table.__name__,
+                   ),
+            director.cgihome
+            )
+        p.text = ["To see what this job is about, please click %s" % link]
+        
+        p = document.paragraph()
+        link = action_link(
+            action(actor = 'job',
+                   routine = 'view',
+                   label = 'Refresh',
+                   id = job.id,
+                   ),
+            director.cgihome
+            )
+        p.text = [link]
+        
+        return page
+        
+
+
+def submitJob(job, director):
+    from vnf.components.Job import submit
+    return submit(job, director)
+
+
+def _desribe(job):
+    return 'id=%s, owner=%s, server=%s, processors=%s, state=%s, start@%s, completed@%s' % (
+        job.id, job.creator, job.server.short_description, job.numprocessors,
+        job.state, job.time_start, job.time_completion,
+        )
 
 def actor():
-    return Job()
-
+    return Actor('job')
 
 
 # version

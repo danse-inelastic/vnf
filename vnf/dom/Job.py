@@ -12,29 +12,23 @@
 #
 
 
+from registry import tableRegistry
 from Server import Server
 
-from Table import Table
-class Job(Table):
+from OwnedObject import OwnedObject as base
+class Job(base):
 
     name = 'jobs'
 
     import pyre.db
     
-    id = pyre.db.varchar(name="id", length=100)
-    id.constraints = 'PRIMARY KEY'
-    id.meta['tip'] = "the unique id"
-
-    jobName = pyre.db.varchar(name='jobName', length = 128)
-    jobName.meta['tip'] = 'computational job name'
-
     server = pyre.db.reference( name='server', table = Server)
 
-    timeCompletion = pyre.db.timestamp(name='timeCompletion')
-    timeCompletion.meta['tip'] = 'time left to completion'
+    time_completion = pyre.db.timestamp(name='time_completion')
+    time_completion.meta['tip'] = 'time left to completion'
     
-    timeStart = pyre.db.timestamp(name='timeStart')
-    timeStart.meta['tip'] = 'the time the job started'
+    time_start = pyre.db.timestamp(name='time_start')
+    time_start.meta['tip'] = 'the time the job started'
     
     numprocessors = pyre.db.integer(name='numprocessors', default = 1)
     numprocessors.meta['tip'] = 'the number of processors this job uses'
@@ -42,11 +36,8 @@ class Job(Table):
     id_incomputingserver = pyre.db.varchar(name="id_incomputingserver", length=100)
     id_incomputingserver.meta['tip'] = "the id of this job when submitted to the computing server. this is given by the computing server."
 
-    owner = pyre.db.varchar( name = 'owner', length = 30 )
-    owner.meta['tip'] = 'the owner of this job'
-
-    status = pyre.db.varchar( name = 'status', length = 16 )
-    # status:
+    state = pyre.db.varchar( name = 'state', length = 16 )
+    # state:
     #   - created: just created. has not been submitted
     #   - submitted
     #   - running
@@ -63,8 +54,9 @@ class Job(Table):
     
     exit_code = pyre.db.integer(name = 'exit_code', default = -1)
 
-#    reference = pyre.db.varchar(name='reference', length = 100 )
-#    reference.meta['tip'] = 'reference id in the table of the given type'
+    computation = pyre.db.versatileReference(
+        name = 'computation', tableRegistry = tableRegistry)
+    computation.meta['tip'] = 'The compuation that this job is about'
 
 
 # version

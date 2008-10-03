@@ -35,10 +35,10 @@ class JobDataManager:
     that result and store it in this local result directory.
     '''
 
-    def __init__(self, job, director):
+    def __init__(self, job, db, csaccessor = None):
         self.job = job
-        self.director = director
-        self.csaccessor = director.csaccessor
+        self.db = db
+        self.csaccessor = csaccessor
         return
 
 
@@ -56,6 +56,8 @@ class JobDataManager:
 
 
     def initremotedir(self):
+        csaccessor = self.csaccessor
+        if csaccessor is None: raise RuntimeError('need csaccessor to do things.')
         #remote job directory is initd by copying local job dir
         
         #localpath
@@ -66,36 +68,44 @@ class JobDataManager:
             raise RuntimeError, (
                 "local directory for job %s has not been established" % (
                 self.job.id) )
-        
-        director = self.director
-        server = self.job.server.dereference(director.db)
+
+        db = self.db
+        server = self.job.server.dereference(db)
         # copy local job directory to server
-        director.csaccessor.pushdir(
+        csaccessor.pushdir(
             path, server, server.workdir )
         return
     
 
     def makelocalcopy(self, filename):
         '''make a local copy of a data file from the remote machine'''
+
+        csaccessor = self.csaccessor
+        if csaccessor is None: raise RuntimeError('need csaccessor to do things.')
+        
         #retieve file from computation server
         #should we also retrieve all files from computation server?
         #probably not. because, for example, the wave-function
         #file could be huge.
-        director = self.director
-        server = self.job.server.dereference(director.db)
+        db = director.db
+        server = self.job.server.dereference(db)
         remotedir = self.remotepath()
         localdir = self.localresultdir()
-        localcopy = director.csaccessor.getfile(
+        localcopy = csaccessor.getfile(
             server, os.path.join(remotedir, filename), localdir)
         return localcopy
 
 
     def listremotejobdir(self):
         '''list files in the remote job directory'''
-        director = self.director
-        server = self.job.server.dereference(director.db)
+
+        csaccessor = self.csaccessor
+        if csaccessor is None: raise RuntimeError('need csaccessor to do things.')
+
+        db = self.db
+        server = self.job.server.dereference(db)
         remotedir = self.remotepath()
-        failed, output, error = director.csaccessor.execute(
+        failed, output, error = csaccessor.execute(
             'ls', server, remotedir )
         if failed:
             raise RuntimeError, 'unable to list directory %s in server %s' % (
@@ -107,8 +117,8 @@ class JobDataManager:
 
     def remotepath(self):
         job = self.job
-        director = self.director
-        server = job.server.dereference(director.db)
+        db = self.db
+        server = job.server.dereference(db)
         return os.path.join(server.workdir, job.id )
 
 

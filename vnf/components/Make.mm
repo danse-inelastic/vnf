@@ -37,6 +37,7 @@ EXPORT_PYTHON_MODULES = \
 	InstrumentConfigurationApplyer.py \
 	InstrumentSimulationAppBuilder.py \
 	Job.py \
+	JobBuilder.py \
 	JobDataManager.py \
 	MaterialSimulationWizard.py \
 	McstasSampleBuilder.py \

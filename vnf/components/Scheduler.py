@@ -19,7 +19,7 @@ info = journal.info( 'scheduler' )
 
 def schedule( job, director ):
     from JobDataManager import JobDataManager
-    manager = JobDataManager( job, director )
+    manager = JobDataManager( job, director.db, director.csaccessor )
 
     # copy local job directory to server
     manager.initremotedir( )
@@ -47,16 +47,16 @@ def schedule( job, director ):
 def check( job, director ):
     "check status of a job"
 
-    if job.status == 'finished': return job
+    if job.status in ['finished', 'failed', 'terminated']:
+        return job
 
-    from JobDataManager import JobDataManager
-    manager = JobDataManager( job, director )
-
-    server = job.server.dereference(director)
     #scheduler
+    server = job.server.dereference(director.db)
     scheduler = schedulerfactory( server )
 
     #remote job path
+    from JobDataManager import JobDataManager
+    manager = JobDataManager(job, director.db)
     server_jobpath = manager.remotepath()
 
     #
@@ -79,6 +79,7 @@ def check( job, director ):
 
 def schedulerfactory( server ):
     'obtain scheduler factory'
+    #right now, scheduler info is saved in db record of the server
     scheduler = server.scheduler
     if scheduler in [ None, '', 'None' ]:
         raise RuntimeError, "scheduler not specified"

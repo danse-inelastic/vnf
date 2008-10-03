@@ -67,16 +67,14 @@ def inittable(db):
         r.scheduler = scheduler
         return r
 
-    # the initialization of this table really depends on deployment
-    # so let us leave it empty
     records = [
-    #    server(
-    #    'server000', 'default server',
-    #    'localhost', '54321',
-    #    'vnf', 'jobs', 
-    #    'group access???',
-    #    'torque',
-    #    ),
+        server(
+        'server000', 'default server',
+        'localhost', '54321',
+        'linjiao', 'jobs', 
+        'group access???',
+        'torque',
+        ),
         ]
     for r in records: db.insertRow( r )
     return

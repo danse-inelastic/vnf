@@ -14,7 +14,8 @@ PROJECT = vnf
 PACKAGE = deploy
 
 RECURSE_DIRS = \
-    config \
+	config \
+	vnf \
 
 #--------------------------------------------------------------------------
 #

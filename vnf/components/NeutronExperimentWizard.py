@@ -761,7 +761,7 @@ class NeutronExperimentWizard(base):
             continue
 
         if sample is None: raise RuntimeError, "No sample in sample assembly"
-        return self.configure_scatteringkernels(director)
+        return self.material_simulation(director)
 
 
     def material_simulation(self, director):
@@ -854,7 +854,7 @@ class NeutronExperimentWizard(base):
         action = actionRequireAuthentication(          
             actor = 'neutronexperimentwizard', 
             sentry = director.sentry,
-            routine = 'new_kernel',
+            routine = 'add_new_kernel_from_scratch',
             label = 'create',
             id = self.inventory.id,
             )
@@ -924,7 +924,7 @@ class NeutronExperimentWizard(base):
         action = actionRequireAuthentication(          
             actor = 'neutronexperimentwizard', 
             sentry = director.sentry,
-            routine = 'add_kernel',
+            routine = 'add_new_kernel_from_scratch',
             label = 'add',
             id = self.inventory.id,
             )
@@ -1087,6 +1087,58 @@ class NeutronExperimentWizard(base):
 
 
     def add_new_kernel_from_scratch(self, director):
+        return self.select_kernel_type(director)
+        return self.select_material_simulation_result(director)
+
+
+    def select_material_simulation_result(self, director):
+        try:
+            page = director.retrieveSecurePage( 'neutronexperimentwizard' )
+        except AuthenticationError, err:
+            return err.page
+
+        experiment = director.clerk.getNeutronExperiment(self.inventory.id)
+        sample = _get_sample_from_experiment(experiment)
+        material = sample.matter
+        
+        #
+        main = page._body._content._main
+        # populate the main column
+        document = main.document(
+            title='Neutron Experiment Wizard: add new kernel')
+        document.description = ''
+        document.byline = 'byline?'
+
+        formcomponent = self.retrieveFormToShow( 'selectmaterialsimulationresult' )
+        formcomponent.director = director
+        formcomponent.inventory.material_type = material.table.__name__
+        formcomponent.inventory.material_id = material.id
+        
+        # create form
+        form = document.form(
+            name='selectmaterialsimulationresult',
+            legend= formcomponent.legend(),
+            action=director.cgihome)
+
+        # specify action
+        action = actionRequireAuthentication(
+            actor = 'neutronexperimentwizard', sentry = director.sentry,
+            label = '', routine = 'verify_materialsimulationresult_selection',
+            id = self.inventory.id,
+            arguments = {'form-received': formcomponent.name } )
+        from vnf.weaver import action_formfields
+        action_formfields( action, form )
+
+        # expand the form with fields of the data object that is being edited
+        formcomponent.expand( form )
+
+        # run button
+        submit = form.control(name="submit", type="submit", value="OK")
+        
+        return page
+    
+
+    def select_kernel_type(self, director):
         try:
             page = director.retrieveSecurePage( 'neutronexperimentwizard' )
         except AuthenticationError, err:
@@ -1124,7 +1176,7 @@ class NeutronExperimentWizard(base):
         # run button
         submit = form.control(name="submit", type="submit", value="OK")
         
-        self._footer( document, director )
+        #self._footer( document, director )
         return page
 
 

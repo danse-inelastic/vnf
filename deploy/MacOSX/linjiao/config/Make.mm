@@ -33,6 +33,7 @@ EXPORT_DATAFILES = \
 	initdb.pml \
 	main.pml \
 	ssher.pml \
+	testjobsubmission.pml \
 
 CP_F = cp -f
 EXPORT_DATA_PATH = $(EXPORT_ROOT)/$(PROJECT)/$(PACKAGE)

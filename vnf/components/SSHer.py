@@ -33,13 +33,13 @@ class SSHer(base):
 
     def pushdir( self, path, server, remotepath ):
         'push a local directory to remote server'
-        address = server.hostname
+        address = server.address
+        port = server.port
         username = server.username
         known_hosts = self.inventory.known_hosts
         private_key = self.inventory.private_key
         
-        cmd = "scp -o 'StrictHostKeyChecking=no' -o 'UserKnownHostsFile=%s' -i %s -r %s %s@%s:%s" % (
-            known_hosts, private_key, path, username, address, remotepath )
+        cmd = "scp -o 'StrictHostKeyChecking=no' -o 'UserKnownHostsFile=%s' -i %s -P %s -r %s %s@%s:%s" % (known_hosts, private_key, port, path, username, address, remotepath )
         #cmd = "scp -o 'UserKnownHostsFile=%s' -i %s -r %s %s@%s:%s" % (
         #    known_hosts, private_key, path, username, address, remotepath )
         self._info.log( 'execute: %s' % cmd )
@@ -56,13 +56,14 @@ class SSHer(base):
 
     def getfile( self, server, remotepath, localdir ):
         'retrieve file from remote server to local path'
-        address = server.hostname
+        address = server.address
+        port = server.port
         username = server.username
         known_hosts = self.inventory.known_hosts
         private_key = self.inventory.private_key
         
-        cmd = "scp -o 'StrictHostKeyChecking=no' -o 'UserKnownHostsFile=%s' -i %s %s@%s:%s %s" % (
-            known_hosts, private_key, username, address, remotepath, localdir)
+        cmd = "scp -o 'StrictHostKeyChecking=no' -o 'UserKnownHostsFile=%s' -i %s -P %s %s@%s:%s %s" % (
+            known_hosts, private_key, port, username, address, remotepath, localdir)
         self._info.log( 'execute: %s' % cmd )
 
         env = {}
@@ -79,14 +80,15 @@ class SSHer(base):
     def execute( self, cmd, server, remotepath ):
         'execute command in the given directory of the given server'
 
-        address = server.hostname
+        address = server.address
+        port = server.port
         username = server.username
         known_hosts = self.inventory.known_hosts
         private_key = self.inventory.private_key
 
         cmd = 'cd %s && %s' % (remotepath, cmd)
         
-        cmd = 'ssh -o "StrictHostKeyChecking=no" -o "UserKnownHostsFile=%s" -i %s %s@%s "%s"' % (known_hosts, private_key, username, address, cmd)
+        cmd = 'ssh -o "StrictHostKeyChecking=no" -o "UserKnownHostsFile=%s" -i %s -p %s %s@%s "%s"' % (known_hosts, private_key, port, username, address, cmd)
         #cmd = 'ssh -o "UserKnownHostsFile=%s" -i %s %s@%s "%s"' % (known_hosts, private_key, username, address, cmd)
 
         self._info.log( 'execute: %s' % cmd )
