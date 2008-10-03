@@ -25,7 +25,7 @@ def assignOrPrepend(paths, environVariable):
 #python equivalent: 
 releaser='/home/jbk/DANSE/buildInelast/pyre'
 EXPORT_ROOT=releaser+'/EXPORT'
-exportSource='/home/jbk/DANSE'
+exportSource='/home/jbk/DANSE/vnf'
 
 
 # original code that sets environment variables:
@@ -48,21 +48,18 @@ assignOrPrepend(root + '/lib:' + deps + '/lib', 'LD_LIBRARY_PATH')
 assignOrPrepend(root + '/lib:' + deps + '/lib', 'DYLD_LIBRARY_PATH')
 assignOrPrepend(root + '/modules:' + deps + '/python', 'PYTHONPATH')
 
-os.environ['LD_LIBRARY_PATH'] = root + '/lib:' + deps + '/lib:' + os.environ['LD_LIBRARY_PATH']
-os.environ['DYLD_LIBRARY_PATH'] = root + '/lib:' + deps + '/lib:' + os.environ['DYLD_LIBRARY_PATH']
-os.environ['PYTHONPATH'] = root + '/modules:' + deps + '/python:' + os.environ['PYTHONPATH']
 #
 #
 # and then prepend the 'source' paths (to access those preferably and fall back on releaser)
 #assignOrPrepend(root + '/bin:' + deps + '/bin', 'PATH')
-#assignOrPrepend(exportSource + '/modules:' + deps + '/python', 'PYTHONPATH')
+assignOrPrepend(exportSource,'PYTHONPATH')
 
 
 #original code
 #cd $EXPORT_ROOT/vnf/cgi && python main.py $@
 #
 # note we still change directory to the 'releaser' cgi directory to access the config folder there
-os.chdir(EXPORT_ROOT+'/vnf/cgi')
+#os.chdir(EXPORT_ROOT+'/vnf/cgi')
 from main import main
 if __name__ == '__main__':
     # invoke the application shell
@@ -74,6 +71,7 @@ if __name__ == '__main__':
         out = open( '/tmp/vnf-error-%s.log' % user, 'w' )
         out.write( traceback.format_exc() )
         
-    user = os.environ.get('USER') or 'webserver'
-    if ('jbk' in user):
-        os.system('firefox /home/jbk/DANSE/vnf/html/test.html')
+    os.system('firefox /home/jbk/DANSE/vnf/html/test.html')
+    #user = os.environ.get('USER') or 'webserver'
+    #if ('jbk' in user):
+    #    os.system('firefox /home/jbk/DANSE/vnf/html/test.html')
