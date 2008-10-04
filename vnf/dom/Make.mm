@@ -35,6 +35,7 @@ EXPORT_PYTHON_MODULES = \
 	Block.py \
 	BvKModel.py \
 	BvKComputation.py \
+	Computation.py \
 	Crystal.py \
 	Cylinder.py \
 	DbObject.py \

@@ -15,7 +15,7 @@
 from registry import tableRegistry
 from BvKModel import BvKModel
 
-from OwnedObject import OwnedObject as base
+from Computation import Computation as base
 
 class BvKComputation(base):
 
@@ -29,9 +29,6 @@ class BvKComputation(base):
     dE = pyre.db.real(name='dE', default = 0.5) # unit meV
     Qs = pyre.db.versatileReference(name='Qs', tableRegistry = tableRegistry)
 
-    import vnf.dom
-    results = vnf.dom.referenceSet(name='results')
-    
 
 # version
 __id__ = "$Id$"
