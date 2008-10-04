@@ -12,6 +12,22 @@
 #
 
 
+'''
+This is a wrapper of torque commands.
+
+It is done by firing the commands and then parse the outputs.
+It is not a good implementation strategy because output formats
+could be changed constantly.
+Better way to do this is to use python bindings of torque.
+See several candidates at this moment, all without enoughh documentation:
+
+http://www-unix.mcs.anl.gov/openpbs/patches/pbs_python/README.txt
+https://subtrac.sara.nl/oss/pbs_python
+http://code.google.com/p/py-pbs/
+'''
+
+
+
 import journal
 debug = journal.debug( 'torque' )
 
@@ -42,7 +58,7 @@ class Scheduler:
             msg = "error in executing cmds %s. output: %s, error: %s" % (
                 cmds, output, error )
             raise RuntimeError, msg
-        return output
+        return output.strip()
     
 
     def status( self, jobid ):
@@ -50,14 +66,14 @@ class Scheduler:
         failed, output, error  = self._launch( cmds )
         if failed:
             if error.find( 'Unknown Job Id' ) != -1:
-                return self.statusByTracejob( job )
+                return self.statusByTracejob( jobid )
             msg = "error in executing cmds %s. output: %s, error: %s" % (
                 cmds, output, error )
             raise RuntimeError, msg
         
         lines = output.split( '\n' )
         lines = lines[1:] # first line removed
-        if len(lines) == 0: return self.statusByTracejob( job )
+        if len(lines) == 0: return self.statusByTracejob( jobid )
         d = {}
         for line in lines:
             try:
@@ -73,7 +89,7 @@ class Scheduler:
 
         outputpath = d['Output_Path']
         dummy, outputfilename = os.path.split(outputpath)
-        assert outputfilename = self.outfilename
+        assert outputfilename == self.outfilename
 
         state = d['job_state']
         import time
@@ -82,16 +98,16 @@ class Scheduler:
         ret = {
             'remote_outputfilename': outputfilename,
             'remote_errorfilename': errorfilename,
-            'status': _state( state ),
-            'timeStart': start_time,
+            'state': _state( state ),
+            'time_start': start_time,
             }
 
-        if ret['status'] == 'finished':
+        if ret['state'] == 'finished':
             output, error = self._readoutputerror(
                 outputfilename, errorfilename )
             ret.update(
                 { 'exit_code': d['exit_status'],
-                  'timeCompletion': d['etime'],
+                  'time_completion': d['etime'],
                   'output': output,
                   'error': error,
                   } )
@@ -113,7 +129,7 @@ class Scheduler:
 
         tag = 'job was terminated'
         words = self._tracejob_search( jobid, tag )
-        d[ 'timeCompletion' ] = ' '.join( words[0:2] )
+        d[ 'time_completion' ] = ' '.join( words[0:2] )
 
         output, error = self._readoutputerror(
             self.outfilename, self.errfilename )
@@ -143,6 +159,7 @@ class Scheduler:
 
 
     def _tracejob_search(self, jobid, tag):
+        jobid = jobid.strip()
         cmds = [ 'tracejob %s | grep %r' % (jobid, tag) ]
         
         failed, output, error = self._launch( cmds )
