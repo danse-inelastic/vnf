@@ -61,7 +61,7 @@ class Actor(base):
         return page
 
 
-    def edit(self, director, errors=None):
+    def edit(self, director, errors=None, id=None):
         try:
             page = director.retrieveSecurePage( 'job' )
         except AuthenticationError, err:
@@ -71,13 +71,14 @@ class Actor(base):
 
         job = self.processFormInputs( director )
         if job is None: # input is not from form
-            job = director.clerk.getJob( self.inventory.id )
-            pass # endif
+            if id is None: id = self.inventory.id
+            job = director.clerk.getJob( id )
+        else: id = job.id
         
         document = main.document( title = 'Job editor' )
 
         formcomponent = self.retrieveFormToShow( 'job' )
-        formcomponent.inventory.id = job.id
+        formcomponent.inventory.id = id
         formcomponent.director = director
 
         form = document.form(
@@ -89,7 +90,9 @@ class Actor(base):
         action = actionRequireAuthentication(
             actor = 'job', sentry = director.sentry,
             label = '', routine = 'verify',
-            arguments = {'form-received': formcomponent.name } )
+            id = id,
+            arguments = {'form-received': formcomponent.name },
+            )
         from vnf.weaver import action_formfields
         action_formfields( action, form )
 
@@ -119,18 +122,18 @@ class Actor(base):
 
 
 
-    def view(self, director):
+    def view(self, director, id = None):
         try:
             page = director.retrieveSecurePage( 'job' )
         except AuthenticationError, err:
             return err.page
-        
-        id = self.inventory.id
+
+        if id is None: id = self.inventory.id
         job = director.clerk.getJob( id )
 
         # if job has not been submitted, present the submission form
         if job.state == 'created':
-            return self.edit(director)
+            return self.edit(director, id = id)
 
         #
         assert job.creator == director.sentry.username
@@ -193,6 +196,9 @@ class Actor(base):
         if id is None: id = self.inventory.id
         job = director.clerk.getJob(id)
 
+        if job.state != 'started':
+            return self.already_submitted(director)
+
         try:
             schedule(job, director)
         except Exception, err:
@@ -220,11 +226,49 @@ class Actor(base):
             job.id, server.short_description, ),
             ]
             
+        # refresh link
         p = document.paragraph()
+        link = action_link(
+            actionRequireAuthentication
+            ( actor = 'job',
+              sentry = director.sentry,
+              routine = 'view',
+              label = 'here',
+              id = id,
+              ),
+            director.cgihome
+            )
         p.text = [
-            'You can click "Jobs" link on the left menu to see all of your jobs',
+            'To see the status of this job, please click %s' % link,
             ]
             
+        return page
+
+
+    def already_submitted(self, director):
+        try:
+            page = director.retrieveSecurePage( 'job' )
+        except AuthenticationError, err:
+            return err.page
+
+        job = director.clerk.getJob(self.inventory.id)
+        main = page._body._content._main
+        document = main.document( title = 'Job already submitted: %s' % job.id )
+        
+        p = document.paragraph()
+        link = action_link(
+            actionRequireAuthentication
+            ( actor = 'job',
+              sentry = director.sentry,
+              routine = 'view',
+              label = 'here',
+              id = self.inventory.id,
+              ),
+            director.cgihome
+            )
+        p.text = [
+            'This job has already been submitted. To view its status, please click %s' % link
+            ]
         return page
 
 

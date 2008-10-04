@@ -79,15 +79,18 @@ class Form(base):
             id = 'short_description',
             name = '%s.short_description' % prefix,
             label = meta['label'],
-            value = record.short_description )
+            value = record.short_description or \
+            'job for %s' % _describe_computation
+            (record.computation.dereference(self.director.db))
+            )
         field.help = ' '.join( meta['tip'] )
 
         director = self.director
         servers = director.clerk.getServers()
-        entries = [ (server.id, server.server) for server in servers ]
+        entries = [ (server.id, server.short_description) for server in servers ]
         ids = [ id for id, server in entries ]
 
-        selected_server = record.server
+        selected_server = record.server.id
         if selected_server not in ids: selected_server = entries[0][0]
         
         property = 'server'
@@ -138,6 +141,10 @@ class Form(base):
         clerk = director.clerk
         return clerk.getRecordByID( self.DBTable, id )
 
+
+
+def _describe_computation(computation):
+    return '%s %s' % (computation.__class__.__name__, computation.id)
 
 
 def form(): return Form()

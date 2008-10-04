@@ -26,7 +26,7 @@ def new_job( director ):
     director.clerk.newRecord( job )
 
     job.creator = director.sentry.username
-    job.status = 'created'
+    job.state = 'created'
     job.exit_code = -1
     import time
     job.time_start = job.time_completion = time.ctime()

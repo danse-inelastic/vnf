@@ -342,7 +342,7 @@ class BvK(base):
         computation = director.clerk.getBvKComputation(id)
         job = computation.job
 
-        if not job:
+        if not job or not job.id:
             # create a new job
             from vnf.components.Job import new_job
             job = new_job(director)
@@ -361,7 +361,7 @@ class BvK(base):
         
         # redirect to job submission page
         actor = 'job'
-        routine = 'submit'
+        routine = 'view'
         return self.redirect(director, actor, routine, id = job.id)
 
 
