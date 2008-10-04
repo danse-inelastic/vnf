@@ -21,6 +21,7 @@
     <property name='debug'>1</property>
     <property name='home'>http://vnf.http.server/vnf/</property>
     <property name='cgi-home'>http://vnf.http.server/cgi-bin/vnf/main.sh</property>
+    <property name='db'>vnf:4Od&amp;Cm#@localhost:54320:vnf</property>
     <property name='imagepath'>/vnf/images</property>
     <property name='javascriptpath'>/vnf/javascripts</property>
   </component>

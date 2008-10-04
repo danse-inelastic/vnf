@@ -13,7 +13,7 @@
 from Actor import Actor, action_link, actionRequireAuthentication, AuthenticationError
 
 
-class ExcitationSlicer(Actor):
+class Plotter(Actor):
 
     class Inventory(Actor.Inventory):
 
@@ -24,7 +24,7 @@ class ExcitationSlicer(Actor):
 
     def default(self, director):
         try:
-            page = director.retrieveSecurePage( 'excitationSlicer' )
+            page = director.retrieveSecurePage( 'plotter' )
         except AuthenticationError, error:
             return error.page
 
