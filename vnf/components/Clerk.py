@@ -220,11 +220,6 @@ class Clerk(Component):
         return
     
 
-    def newJob(self, job):
-        self.db.insertRow(job)
-        return
-
-
     def new_ownedobject(self, table):
         '''create a new record for the given table.
 

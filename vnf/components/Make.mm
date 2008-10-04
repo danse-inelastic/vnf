@@ -14,6 +14,14 @@ PROJECT = vnf
 PACKAGE = components
 
 
+BUILD_DIRS = \
+	job_builders \
+
+OTHER_DIRS = \
+
+RECURSE_DIRS = $(BUILD_DIRS) $(OTHER_DIRS)
+
+
 #--------------------------------------------------------------------------
 #
 
@@ -37,7 +45,6 @@ EXPORT_PYTHON_MODULES = \
 	InstrumentConfigurationApplyer.py \
 	InstrumentSimulationAppBuilder.py \
 	Job.py \
-	JobBuilder.py \
 	JobDataManager.py \
 	MaterialSimulationWizard.py \
 	McstasSampleBuilder.py \
@@ -73,6 +80,8 @@ EXPORT_PYTHON_MODULES = \
 
 
 export:: export-package-python-modules
+	BLD_ACTION="export" $(MM) recurse
+
 
 # version
 # $Id: Make.mm,v 1.1.1.1 2006-11-27 00:09:19 aivazis Exp $

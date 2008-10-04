@@ -13,7 +13,7 @@
 
 
 
-from vnf.components.FormActor import FormActor as base, action, action_link, InputProcessingError
+from vnf.components.FormActor import FormActor as base, action, actionRequireAuthentication, action_link, InputProcessingError, AuthenticationError
 
 class Actor(base):
     
@@ -29,7 +29,11 @@ class Actor(base):
 
 
     def listall(self, director):
-        page = director.retrievePage( 'job' )
+        try:
+            page = director.retrieveSecurePage( 'job' )
+        except AuthenticationError, err:
+            return err.page
+
         main = page._body._content._main
         document = main.document(title='Jobs')
 
@@ -39,11 +43,13 @@ class Actor(base):
         for job in jobs:
             p = document.paragraph()
             link = action_link(
-                action(actor = 'job',
-                       routine = 'view',
-                       label = job.short_description,
-                       id = job.id,
-                       ),
+                actionRequireAuthentication(
+                sentry = director.sentry,
+                actor = 'job',
+                routine = 'view',
+                label = job.short_description or job.id,
+                id = job.id,
+                ),
                 director.cgihome
                 )
             desc = _desribe(job)
@@ -55,107 +61,182 @@ class Actor(base):
         return page
 
 
-    def view_jobwaitingforsubmission(self, director):
-        id = self.inventory.id
-        job = director.clerk.getJob(id)
+    def edit(self, director, errors=None):
+        try:
+            page = director.retrieveSecurePage( 'job' )
+        except AuthenticationError, err:
+            return err.page
         
-        page = director.retrievePage( 'job' )
         main = page._body._content._main
-        document = main.document(
-            title='Job #%s' % id
-            )
 
-        p = document.paragraph()
-        link = action_link(
-            action(actor = 'job',
-                   routine = 'submit',
-                   label = 'here',
-                   id = id,
-                   ),
-            director.cgihome
-            )
-        p.text = [
-            'This job has not been submitted.',
-            'You can submit this job by clicking %s.' % link,
-            ]
+        job = self.processFormInputs( director )
+        if job is None: # input is not from form
+            job = director.clerk.getJob( self.inventory.id )
+            pass # endif
+        
+        document = main.document( title = 'Job editor' )
+
+        formcomponent = self.retrieveFormToShow( 'job' )
+        formcomponent.inventory.id = job.id
+        formcomponent.director = director
+
+        form = document.form(
+            name='job',
+            legend = formcomponent.legend(),
+            action=director.cgihome)
+
+        # specify action
+        action = actionRequireAuthentication(
+            actor = 'job', sentry = director.sentry,
+            label = '', routine = 'verify',
+            arguments = {'form-received': formcomponent.name } )
+        from vnf.weaver import action_formfields
+        action_formfields( action, form )
+
+        # expand the form with fields of the data object that is being edited
+        formcomponent.expand(form, errors=errors)
+
+        submit = form.control(name="submit", type="submit", value="Submit")
+        
         return page
 
 
-    def submit(self, director):
+    def verify(self, director):
+        try:
+            page = director.retrieveSecurePage( 'neutronexperimentwizard' )
+        except AuthenticationError, err:
+            return err.page
+        
+        try:
+            self.processFormInputs( director )
+        except InputProcessingError, err:
+            errors = err.errors
+            self.form_received = None
+            director.routine = 'edit'
+            return self.edit( director, errors = errors )
+
+        return self.submit(director)
+
+
+
+    def view(self, director):
+        try:
+            page = director.retrieveSecurePage( 'job' )
+        except AuthenticationError, err:
+            return err.page
+        
         id = self.inventory.id
-        job = director.clerk.getJob(id)
-        # submit
-        submitJob(job, director)
-        return self.view( director, id = id )
-        
-        
-    def view(self, director, id = None):
-        if id is None: id = self.inventory.id
-        page = director.retrievePage( 'job' )
+        job = director.clerk.getJob( id )
 
-        job = director.clerk.getJob(id)
+        # if job has not been submitted, present the submission form
         if job.state == 'created':
-            self.inventory.id = id
-            return self.view_jobwaitingforsubmission(director)
-        
-        from vnf.components.Job import check
-        check(job, director)
+            return self.edit(director)
 
+        #
+        assert job.creator == director.sentry.username
+
+        # update job status
+        state = check( job, director )
+
+        # prepare page
         main = page._body._content._main
-        document = main.document(
-            title='Job #%s' % id
-            )
-        document.description = (
-            'Job status'
-            )
+        document = main.document( title = 'Job # %s: %s' % (
+            job.id, job.state ) )
 
-        props = job.getColumnNames()
-        lines = ['%s=%s' % (prop, getattr(job, prop) ) for prop in props]
+        # put up all info about the job
+        record = job
+        props = record.getColumnNames()
+        lines = ['%s=%s' % (prop, getattr(record, prop) ) for prop in props]
         for line in lines:
             p = document.paragraph()
             p.text = [line]
             continue
 
-        document.paragraph()
-
+        # link to computation
         p = document.paragraph()
-        computation = job.computation
+        computation_ptr = job.computation
         link = action_link(
-            action(actor = 'reduction',
-                   routine = 'view',
-                   label = 'here',
-                   id = computation.id,
-                   type = computation.table.__name__,
-                   ),
+            actionRequireAuthentication
+            ( actor = computation_ptr.table.__name__.lower(),
+              sentry = director.sentry,
+              routine = 'view',
+              label = 'here',
+              id = computation_ptr.id,
+              ),
             director.cgihome
             )
         p.text = ["To see what this job is about, please click %s" % link]
         
+        # refresh link
         p = document.paragraph()
         link = action_link(
-            action(actor = 'job',
-                   routine = 'view',
-                   label = 'Refresh',
-                   id = job.id,
-                   ),
+            actionRequireAuthentication
+            ( actor = 'job',
+              sentry = director.sentry,
+              routine = 'view',
+              label = 'Refresh',
+              id = id,
+              ),
             director.cgihome
             )
         p.text = [link]
-        
+
         return page
+
+
+    def submit(self, director, id = None):
+        try:
+            page = director.retrieveSecurePage( 'job' )
+        except AuthenticationError, err:
+            return err.page
+
+        if id is None: id = self.inventory.id
+        job = director.clerk.getJob(id)
+
+        try:
+            schedule(job, director)
+        except Exception, err:
+            import traceback
+            self._debug.log( traceback.format_exc() )
+            main = page._body._content._main
+            document = main.document( title = 'Job not submitted' )
+            p = document.paragraph()
+            server = job.server.dereference(director.db)
+            p.text = [
+                'Failed to submit job %s to %s' % (
+                job.id, server.short_description, ),
+                ]
+            return page
+
+        # check state of job
+        check( job, director )
         
+        main = page._body._content._main
+        document = main.document( title = 'Job submitted' )
+        p = document.paragraph()
+        server = job.server.dereference(director.db)
+        p.text = [
+            'Job #%s has been submitted to %s' % (
+            job.id, server.short_description, ),
+            ]
+            
+        p = document.paragraph()
+        p.text = [
+            'You can click "Jobs" link on the left menu to see all of your jobs',
+            ]
+            
+        return page
 
 
-def submitJob(job, director):
-    from vnf.components.Job import submit
-    return submit(job, director)
 
+from vnf.components.Job import schedule, check
 
 def _desribe(job):
     return 'id=%s, owner=%s, server=%s, processors=%s, state=%s, start@%s, completed@%s' % (
-        job.id, job.creator, job.server.short_description, job.numprocessors,
+        job.id, job.creator, job.server.id, job.numprocessors,
         job.state, job.time_start, job.time_completion,
         )
+
 
 def actor():
     return Actor('job')

@@ -24,10 +24,10 @@ class Form(base):
 
         id = pyre.inventory.str( 'id', default = '' )
 
-        jobName = pyre.inventory.str(name = 'jobName', default = 1e6 )
-        jobName.meta['label'] = 'Name of job'
-        jobName.meta['tip'] = (
-            'Please assign a name for this job',
+        short_description = pyre.inventory.str(name = 'short_description', default = 1e6 )
+        short_description.meta['label'] = 'Job description'
+        short_description.meta['tip'] = (
+            'Please give a short description for this job',
             )
         
         server = pyre.inventory.str( 'server', default = 'serverid' )
@@ -61,7 +61,7 @@ class Form(base):
         return 'Job %s:' % record.id
 
 
-    def expand(self, form):
+    def expand(self, form, errors=None):
         '''expand an existing form with fields from this component'''
         
         record = self.getRecord()
@@ -73,13 +73,13 @@ class Form(base):
         id_field = form.hidden(
             name = '%s.id' % prefix, value = record.id)
 
-        property = 'jobName'
+        property = 'short_description'
         meta = getattr( self.Inventory, property ).meta
         field = form.text(
-            id = 'jobName',
-            name = '%s.jobName' % prefix,
+            id = 'short_description',
+            name = '%s.short_description' % prefix,
             label = meta['label'],
-            value = record.jobName )
+            value = record.short_description )
         field.help = ' '.join( meta['tip'] )
 
         director = self.director
@@ -115,13 +115,13 @@ class Form(base):
 
 
     def processUserInputs(self):
-        jobName = self.inventory.jobName
+        short_description = self.inventory.short_description
         server = self.inventory.server
         numprocessors = self.inventory.numprocessors
         
         record = self.getRecord()
 
-        record.jobName = jobName
+        record.short_description = short_description
         record.server = server
         record.numprocessors = numprocessors
 

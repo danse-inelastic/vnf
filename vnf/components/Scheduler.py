@@ -28,17 +28,23 @@ def schedule( job, director ):
     # the server
     server = job.server.dereference(director.db)
 
+    # the scheduler 
     scheduler = schedulerfactory( server )
     scheduler = scheduler(
         lambda cmd: director.csaccessor.execute( cmd, server, server_jobpath ),
         prefix = 'source ~/.vnf' )
-    
+
+    # submit job through scheduler
     id1 = scheduler.submit( 'cd %s && sh run.sh' % server_jobpath )
+
+    # write id to the remote directory
+    director.csaccessor.execute( 'echo "%s" > jobid' % id1, server, server_jobpath )
+
+    # update job db record
     job.id_incomputingserver = id1
-
+    job.state = 'submitted'
     import time
-    job.timestart = time.ctime()
-
+    job.time_start = time.ctime()
     director.clerk.updateRecord( job )
     
     return
@@ -47,7 +53,7 @@ def schedule( job, director ):
 def check( job, director ):
     "check status of a job"
 
-    if job.status in ['finished', 'failed', 'terminated']:
+    if job.state in ['finished', 'failed', 'terminated']:
         return job
 
     #scheduler
@@ -67,7 +73,7 @@ def check( job, director ):
         launch,
         prefix = 'source ~/.vnf' )
 
-    jobstatus = scheduler.status( job )
+    jobstatus = scheduler.status( job.id_incomputingserver )
 
     for k,v in jobstatus.iteritems():
         setattr(job, k, v)

@@ -36,4 +36,4 @@ bonds=[
                                   0.000,  0.000,  0.018 ],
 ]
 
-#System.write(cell,atoms,sites,bonds,"cubic")
+System.write(cell,atoms,sites,bonds,"cubic")

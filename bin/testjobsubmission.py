@@ -101,13 +101,10 @@ class TestApp(base):
 
 
 
-from vnf.components.JobBuilder import JobBuilder
+from vnf.components.job_builders.JobBuilder import JobBuilder
 class DummyJobBuilder(JobBuilder):
 
     def render(self, computation = None):
-        import os
-        #create directory
-        if not os.path.exists(self.path): os.makedirs(self.path)
         #create run.sh
         path = os.path.join(self.path, self.shscriptname)
         cmd = 'ls -al'
