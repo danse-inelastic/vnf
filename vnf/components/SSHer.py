@@ -38,10 +38,24 @@ class SSHer(base):
         username = server.username
         known_hosts = self.inventory.known_hosts
         private_key = self.inventory.private_key
+
+        pieces = [
+            'scp',
+            "-o 'StrictHostKeyChecking=no'",
+            "-o 'UserKnownHostsFile=%s'" % known_hosts,
+            '-P %s' % port,
+            ]
         
-        cmd = "scp -o 'StrictHostKeyChecking=no' -o 'UserKnownHostsFile=%s' -i %s -P %s -r %s %s@%s:%s" % (known_hosts, private_key, port, path, username, address, remotepath )
-        #cmd = "scp -o 'UserKnownHostsFile=%s' -i %s -r %s %s@%s:%s" % (
-        #    known_hosts, private_key, path, username, address, remotepath )
+        if private_key:
+            pieces.append( "-i %s" % private_key )
+            
+        pieces += [
+            '-r %s' % path,
+            '%s@%s:%s' % (username, address, remotepath),
+            ]
+
+        cmd = ' '.join(pieces)
+        
         self._info.log( 'execute: %s' % cmd )
 
         env = {
@@ -62,8 +76,22 @@ class SSHer(base):
         known_hosts = self.inventory.known_hosts
         private_key = self.inventory.private_key
         
-        cmd = "scp -o 'StrictHostKeyChecking=no' -o 'UserKnownHostsFile=%s' -i %s -P %s %s@%s:%s %s" % (
-            known_hosts, private_key, port, username, address, remotepath, localdir)
+        pieces = [
+            'scp',
+            "-o 'StrictHostKeyChecking=no'",
+            "-o 'UserKnownHostsFile=%s'" % known_hosts,
+            '-P %s' % port,
+            ]
+        
+        if private_key:
+            pieces.append( "-i %s" % private_key )
+            
+        pieces += [
+            '%s@%s:%s' % (username, address, remotepath),
+            '%s' % localdir,
+            ]
+
+        cmd = ' '.join(pieces)
         self._info.log( 'execute: %s' % cmd )
 
         env = {}
@@ -86,10 +114,24 @@ class SSHer(base):
         known_hosts = self.inventory.known_hosts
         private_key = self.inventory.private_key
 
-        cmd = 'cd %s && %s' % (remotepath, cmd)
+        rmtcmd = 'cd %s && %s' % (remotepath, cmd)
         
-        cmd = 'ssh -o "StrictHostKeyChecking=no" -o "UserKnownHostsFile=%s" -i %s -p %s %s@%s "%s"' % (known_hosts, private_key, port, username, address, cmd)
-        #cmd = 'ssh -o "UserKnownHostsFile=%s" -i %s %s@%s "%s"' % (known_hosts, private_key, username, address, cmd)
+        pieces = [
+            'ssh',
+            "-o 'StrictHostKeyChecking=no'",
+            "-o 'UserKnownHostsFile=%s'" % known_hosts,
+            '-p %s' % port,
+            ]
+        
+        if private_key:
+            pieces.append( "-i %s" % private_key )
+            
+        pieces += [
+            '%s@%s' % (username, address),
+            '"%s"' % rmtcmd,
+            ]
+
+        cmd = ' '.join(pieces)
 
         self._info.log( 'execute: %s' % cmd )
         env = {

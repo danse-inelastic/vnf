@@ -137,6 +137,7 @@ class Scheduler:
         d.update( {
             'output': output,
             'error': error,
+            'state': 'terminated',
             } )
             
         return d

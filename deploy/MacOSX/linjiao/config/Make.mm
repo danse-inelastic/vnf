@@ -31,6 +31,7 @@ distclean::
 
 EXPORT_DATAFILES = \
 	initdb.pml \
+	jsu.pml \
 	main.pml \
 	ssher.pml \
 	testjobsubmission.pml \

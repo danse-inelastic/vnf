@@ -43,6 +43,7 @@ class Job(base):
     #   - running
     #   - onhold
     #   - finished
+    #   - terminated
 
     remote_outputfilename = pyre.db.varchar(
         name = 'remote_outputfilename', length = 512 )

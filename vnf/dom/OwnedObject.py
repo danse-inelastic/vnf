@@ -12,13 +12,14 @@
 #
 
 
+from User import User
+
 from DbObject import DbObject
 class OwnedObject(DbObject):
 
     import pyre.db
 
-    creator = pyre.db.varchar(name='creator', length = 32)
-    creator.meta['tip'] = 'creator name'
+    creator = pyre.db.reference(name='creator', table = User)
 
     date = pyre.db.date( name='date' )
     date.meta['tip'] = 'date of creation'

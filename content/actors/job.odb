@@ -136,7 +136,7 @@ class Actor(base):
             return self.edit(director, id = id)
 
         #
-        assert job.creator == director.sentry.username
+        assert job.creator.id == director.sentry.username
 
         # update job status
         state = check( job, director )
@@ -196,7 +196,7 @@ class Actor(base):
         if id is None: id = self.inventory.id
         job = director.clerk.getJob(id)
 
-        if job.state != 'started':
+        if job.state not in ['created']:
             return self.already_submitted(director)
 
         try:
@@ -215,7 +215,7 @@ class Actor(base):
             return page
 
         # check state of job
-        check( job, director )
+        #check( job, director )
         
         main = page._body._content._main
         document = main.document( title = 'Job submitted' )
