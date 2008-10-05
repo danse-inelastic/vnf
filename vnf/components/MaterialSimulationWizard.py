@@ -151,7 +151,7 @@ class MaterialSimulationWizard(base):
         
         return self.redirect(director, type, routine, matter = matter)
 
-    def selectSimulationType(self, director):
+    def selectSimulationEngine(self, director):
         try:
             page = director.retrieveSecurePage( 'materialsimulationwizard' )
         except AuthenticationError, err:
@@ -164,7 +164,7 @@ class MaterialSimulationWizard(base):
         document.description = ''
         document.byline = '<a href="http://danse.us">DANSE</a>'        
         
-        formcomponent = self.retrieveFormToShow( 'selectSimulationType')
+        formcomponent = self.retrieveFormToShow( 'selectSimulationEngine')
         formcomponent.director = director
         # build the form 
         form = document.form(name='', action=director.cgihome)
@@ -182,7 +182,6 @@ class MaterialSimulationWizard(base):
         formcomponent.expand( form )
         submit = form.control(name='submit',type="submit", value="next")
         #self.processFormInputs(director)
-        self._footer( form, director )
         return page    
     
     def onSelect(self, director):
@@ -217,7 +216,6 @@ class MaterialSimulationWizard(base):
         # expand the form with fields of the data object that is being edited
         formcomponent.expand( form )
         next = form.control(name='submit',type="submit", value="next")
-#        self._footer( document, director )
         return page 
    
     def localOrbitalHarmonic(self, director):
@@ -247,7 +245,6 @@ class MaterialSimulationWizard(base):
         # expand the form with fields of the data object that is being edited
         formcomponent.expand( form )
         next = form.control(name='submit',type="submit", value="next")
-#        self._footer( document, director )
         return page 
     
     def planeWaveHarmonic(self, director):
@@ -277,7 +274,6 @@ class MaterialSimulationWizard(base):
         # expand the form with fields of the data object that is being edited
         formcomponent.expand( form )
         next = form.control(name='submit',type="submit", value="next")
-#        self._footer( document, director )
         return page 
     
     def kernel_generator(self, director):
@@ -308,7 +304,6 @@ class MaterialSimulationWizard(base):
         # expand the form with fields of the data object that is being edited
         formcomponent.expand( form )
         next = form.control(name='submit',type="submit", value="next")
-#        self._footer( document, director )
         return page     
 
 

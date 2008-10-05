@@ -24,7 +24,7 @@ class Plotter(Actor):
 
     def default(self, director):
         try:
-            page = director.retrieveSecurePage( 'plotter' )
+            page = director.retrieveSecurePage('plotter')
         except AuthenticationError, error:
             return error.page
 
@@ -34,41 +34,23 @@ class Plotter(Actor):
         username = director.sentry.username
         userrecord = director.clerk.getUser( username )
         fullname = userrecord.fullname
-        title = 'Welcome to the Virtual Neutron Facility, %s!' % (
-            fullname,),
+        title = 'Plotter',
         document = main.document(title=title)
         
-        p = form.paragraph()
-        p.text = ['''<a href="/java/cod2.jnlp">Future Image of COD</a>''']  
-        
         p = document.paragraph()
-        action = actionRequireAuthentication(
-            actor = 'neutronexperiment', sentry = director.sentry,
-            label = 'run virtual neutron experiments', routine = 'default',
-            )
-        link = action_link( action, director.cgihome )
-        p.text = [
-            'In this web service facility, you can %s. ' % link,
-            'In a virtual neutron experiment, ',
-            'virtual neutrons are generated from a virtual neutron moderator,',
-            'guided by virtual neutron guides,',
-            'scattered by a virtual sample and sample environment,',
-            'and intercepted by detectors.',
-            ]
-
-
+        p.text = ['Here is the applet:',
+                  '<applet code="/java/Plotter.class" archive="/java/visad.jar" width="600" height="600"></applet>']  
+        
 
         return page
 
 
     def __init__(self, name=None):
         if name is None:
-            name = "greet"
-        super(Greeter, self).__init__(name)
+            name = "plotter"
+        super(Actor, self).__init__(name)
         return
 
-
-    pass # end of Greeter
 
 
 # version
