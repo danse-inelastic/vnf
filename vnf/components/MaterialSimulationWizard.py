@@ -88,8 +88,7 @@ class MaterialSimulationWizard(base):
         self.inventory.matterid = matterid
         self.inventory.mattertype = mattertype
         
-        #return self.selectsimulationtype(director)
-        return self.selectSimulationType(director)
+        return self.selectsimulationtype(director)
 
 
     def selectsimulationtype(self, director):

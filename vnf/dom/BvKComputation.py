@@ -15,7 +15,7 @@
 from registry import tableRegistry
 from BvKModel import BvKModel
 
-from Computation import Computation as base
+from MaterialModeling import MaterialModeling as base
 
 class BvKComputation(base):
 

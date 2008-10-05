@@ -48,6 +48,8 @@ EXPORT_PYTHON_MODULES = \
 	IQMonitor.py \
 	IQEMonitor.py \
 	Job.py \
+	MaterialModeling.py \
+	MaterialSimulation.py \
 	MatterBase.py \
 	MonochromaticSource.py \
 	NeutronComponent.py \

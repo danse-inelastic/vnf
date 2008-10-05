@@ -51,6 +51,24 @@ def mattertables():
     return filter( lambda t: issubclass(t, MatterBase), all )
 
 
+def computationtables():
+    all = alltables()
+    from Computation import Computation as base
+    return filter( lambda t: issubclass(t, base), all )
+
+
+def materialsimulationtables():
+    all = alltables()
+    from MaterialSimulation import MaterialSimulation as base
+    return filter( lambda t: issubclass(t, base), all )
+
+
+def materialmodelingtables():
+    all = alltables()
+    from MaterialModeling import MaterialModeling as base
+    return filter( lambda t: issubclass(t, base), all )
+
+
 def subclassesOf( base ):
     from _all_tables import children
     return children( base )

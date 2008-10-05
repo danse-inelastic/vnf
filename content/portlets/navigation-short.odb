@@ -30,35 +30,43 @@ def portlet(app):
 
     greet = portlet.item(description="Home")
     greet.target = action_href(
-            actionRequireAuthentication(
-            'greet', app.sentry, 'Greet'),
-            app.cgihome)
+        actionRequireAuthentication(
+        'greet', app.sentry, 'Greet'),
+        app.cgihome)
     greet.icon = "images/link_icon.gif"
     greet.type = "navItem"
     
-    neutronexperimentwizard = portlet.item(description="Neutron Experiment Wizard")
-    neutronexperimentwizard.target = action_href(
-            actionRequireAuthentication(
-            label = 'Neutron Experiment Wizard',
-            actor = 'neutronexperimentwizard',
-            routine = 'start',
-            sentry = app.sentry,
-            ),
-            app.cgihome)
-    neutronexperimentwizard.icon = "images/link_icon.gif"
-    neutronexperimentwizard.type = "navItem"
+##     neutronexperimentwizard = portlet.item(description="Neutron Experiment Wizard")
+##     neutronexperimentwizard.target = action_href(
+##             actionRequireAuthentication(
+##             label = 'Neutron Experiment Wizard',
+##             actor = 'neutronexperimentwizard',
+##             routine = 'start',
+##             sentry = app.sentry,
+##             ),
+##             app.cgihome)
+##     neutronexperimentwizard.icon = "images/link_icon.gif"
+##     neutronexperimentwizard.type = "navItem"
     
-    materialsimulationwizard = portlet.item(description="Material Simulation Wizard")
-    materialsimulationwizard.target = action_href(
+##     materialsimulationwizard = portlet.item(description="Material Simulation Wizard")
+##     materialsimulationwizard.target = action_href(
+##             actionRequireAuthentication(
+##             label = 'Material Simulation Wizard',
+##             actor = 'materialsimulationwizard',
+##             routine = 'start',
+##             sentry = app.sentry,
+##             ),
+##             app.cgihome)
+##     materialsimulationwizard.icon = "images/link_icon.gif"
+##     materialsimulationwizard.type = "navItem"
+    
+    jobs = portlet.item(description="Jobs")
+    jobs.target = action_href(
             actionRequireAuthentication(
-            label = 'Material Simulation Wizard',
-            actor = 'materialsimulationwizard',
-            routine = 'start',
-            sentry = app.sentry,
-            ),
+            'job', app.sentry, 'Jobs'),
             app.cgihome)
-    materialsimulationwizard.icon = "images/link_icon.gif"
-    materialsimulationwizard.type = "navItem"
+    jobs.icon = "images/link_icon.gif"
+    jobs.type = "navItem"
     
     experiments = portlet.item(description="Experiments")
     experiments.target = action_href(
@@ -70,27 +78,35 @@ def portlet(app):
     experiments.icon = "images/link_icon.gif"
     experiments.type = "navItem"
     
+    materialsimulations = portlet.item(description="Material Simulation/Modeling")
+    materialsimulations.target = action_href(
+        actionRequireAuthentication(
+        'materialsimulation', app.sentry, 'Material Simulation/Modeling'),
+        app.cgihome)
+    materialsimulations.icon = "images/link_icon.gif"
+    materialsimulations.type = "navItem"
+    
     samples = portlet.item(description="Samples")
     samples.target = action_href(
-            actionRequireAuthentication(
-            'sample', app.sentry, 'Samples'),
-            app.cgihome)
+        actionRequireAuthentication(
+        'sample', app.sentry, 'Samples'),
+        app.cgihome)
     samples.icon = "images/link_icon.gif"
     samples.type = "navItem"
     
     instruments = portlet.item(description="Instruments")
     instruments.target = action_href(
-            actionRequireAuthentication(
-            'instrument', app.sentry, 'Instruments'),
-            app.cgihome)
+        actionRequireAuthentication(
+        'instrument', app.sentry, 'Instruments'),
+        app.cgihome)
     instruments.icon = "images/link_icon.gif"
     instruments.type = "navItem"
     
     logout = portlet.item(description="Logout")
     logout.target = action_href(
-            actionRequireAuthentication(
-            'logout', app.sentry, 'Logout'),
-            app.cgihome)
+        actionRequireAuthentication(
+        'logout', app.sentry, 'Logout'),
+        app.cgihome)
     logout.icon = "images/link_icon.gif"
     logout.type = "navItem"
 

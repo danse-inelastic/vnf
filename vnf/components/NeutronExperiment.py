@@ -545,10 +545,11 @@ class NeutronExperiment(base):
 from wording import plural, present_be
 
 def listexperiments( experiments, document, director ):
-    p = document.paragraph()
 
     n = len(experiments)
-
+    if not n: return
+    
+    p = document.paragraph()
     p.text = [ 'Here is a list of experiments you have planned or run:' ]
 
 
