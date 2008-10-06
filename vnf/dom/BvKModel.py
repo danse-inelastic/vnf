@@ -37,7 +37,7 @@ def inittable(db):
     from PolyCrystal import PolyCrystal
     bvks = [
         bvk( 'fccNi', '', '09/26/2008', (PolyCrystal, 'polyxtalfccNi0'),
-             "Max Kresch's bvk model for fcc Ni") 
+             "A bvk model for fcc Ni") 
         ]
     for b in bvks: db.insertRow( b )
     return
