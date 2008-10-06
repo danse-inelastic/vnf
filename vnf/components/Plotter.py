@@ -38,8 +38,11 @@ class Plotter(Actor):
         document = main.document(title=title)
         
         p = document.paragraph()
-        p.text = ['Here is the applet:',
-                  '<applet code="/java/Plotter.class" archive="/java/visad.jar" width="600" height="600"></applet>']  
+        p.text = ['Here is the applet:<br>',
+                  '''<applet code="http://trueblue.caltech.edu/java/PlotterApplet.class" 
+                  archive="http://trueblue.caltech.edu/java/visad.jar" width="600" height="600"></applet><br>''',
+                  'Here is <a href="/java/sqeViewer3.jnlp">webstart</a><br>']#,
+                  #'<a href="/java/PlotterAll.jnlp">Simple Plot</a>']  
         
 
         return page
