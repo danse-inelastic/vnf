@@ -34,6 +34,10 @@ def main():
 if __name__ == '__main__':
     # invoke the application shell
     try:
+        import journal,os
+        debug = journal.debug('main' )
+        debug.log(os.environ['PATH'] )
+        debug.log(os.environ['PYTHONPATH'] )
         main()
     except:
         import traceback

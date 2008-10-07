@@ -64,7 +64,6 @@ from main import main
 if __name__ == '__main__':
     # invoke the application shell
     try:
-    	print os.environ['PYTHONPATH']
         main()
     except:
         import traceback
