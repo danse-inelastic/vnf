@@ -1,3 +1,3 @@
-NOTE: the cgi and content directories here are links to the same-named 
-directories under the main vnf directory (top-level directory).  To set up vnf 
+NOTE: the content directory is a link to the same-named 
+directory under the main vnf directory (top-level directory).  To set up vnf 
 using Brandon's configuration simply go to jbk/bin and ./startservices.sh.
