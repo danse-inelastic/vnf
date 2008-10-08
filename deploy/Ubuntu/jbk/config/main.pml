@@ -18,7 +18,7 @@
     <property name='routine'>selectsimulationtype</property>  
     <property name='db'>vnf:4Od&amp;Cm#@localhost:54320:vnf</property>
     <property name="home">http://trueblue.caltech.edu/vnf/</property>
-    <property name="cgi-home">http://trueblue.caltech.edu/cgi-bin/vnf/main.cgi</property>
+    <property name="cgi-home">http://trueblue.caltech.edu/cgi-bin/vnf/main.py</property>
     <component name='sentry'>
     	<property name='username'>demo</property>
     	<property name='passwd'>demo</property>
