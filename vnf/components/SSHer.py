@@ -29,6 +29,15 @@ class SSHer(base):
     def __init__(self, *args, **kwds):
         base.__init__(self, *args, **kwds)
         return
+
+
+    def copyfile(self, server1, path1, server2, path2):
+        'copy recursively from server1 to server2'
+        if not _localhost(server1.address) and not _localhost(server2.address):
+            return self._copyfile_rr(server1, path1, server2, path2)
+        if _localhost(server1.address): self._copyfile_lr(path1, server2, path2)
+        if _localhost(server2.address): self.getfile(server1, path1, os.path.split(path2)[0] or '.')
+        return
     
 
     def pushdir( self, path, server, remotepath ):
@@ -42,9 +51,13 @@ class SSHer(base):
         pieces = [
             'scp',
             "-o 'StrictHostKeyChecking=no'",
-            "-o 'UserKnownHostsFile=%s'" % known_hosts,
-            '-P %s' % port,
             ]
+
+        if port:
+            pieces.append( '-P %s' % port )
+
+        if known_hosts:
+            pieces.append( "-o 'UserKnownHostsFile=%s'" % known_hosts )
         
         if private_key:
             pieces.append( "-i %s" % private_key )
@@ -58,9 +71,7 @@ class SSHer(base):
         
         self._info.log( 'execute: %s' % cmd )
 
-        env = {
-            }
-        failed, output, error = spawn( cmd, env = env )
+        failed, output, error = spawn( cmd )
         if failed:
             msg = '%r failed: %s' % (
                 cmd, error )
@@ -79,14 +90,19 @@ class SSHer(base):
         pieces = [
             'scp',
             "-o 'StrictHostKeyChecking=no'",
-            "-o 'UserKnownHostsFile=%s'" % known_hosts,
-            '-P %s' % port,
             ]
+        
+        if port:
+            pieces.append( '-P %s' % port )
+
+        if known_hosts:
+            pieces.append( "-o 'UserKnownHostsFile=%s'" % known_hosts )
         
         if private_key:
             pieces.append( "-i %s" % private_key )
             
         pieces += [
+            '-r',
             '%s@%s:%s' % (username, address, remotepath),
             '%s' % localdir,
             ]
@@ -94,8 +110,7 @@ class SSHer(base):
         cmd = ' '.join(pieces)
         self._info.log( 'execute: %s' % cmd )
 
-        env = {}
-        failed, output, error = spawn( cmd, env = env )
+        failed, output, error = spawn( cmd )
         if failed:
             msg = '%r failed: %s' % (
                 cmd, error )
@@ -119,10 +134,14 @@ class SSHer(base):
         pieces = [
             'ssh',
             "-o 'StrictHostKeyChecking=no'",
-            "-o 'UserKnownHostsFile=%s'" % known_hosts,
-            '-p %s' % port,
             ]
         
+        if port:
+            pieces.append( '-P %s' % port )
+
+        if known_hosts:
+            pieces.append( "-o 'UserKnownHostsFile=%s'" % known_hosts )
+
         if private_key:
             pieces.append( "-i %s" % private_key )
             
@@ -134,13 +153,73 @@ class SSHer(base):
         cmd = ' '.join(pieces)
 
         self._info.log( 'execute: %s' % cmd )
-        env = {
-            }
-        failed, output, error = spawn( cmd, env = env )
+        failed, output, error = spawn( cmd )
         return failed, output, error
 
 
+    def _copyfile_rr(self, server1, path1, server2, path2):
+        address2 = server2.address
+        port2 = server2.port
+        username2 = server2.username
+
+        pieces = [
+            'scp',
+            '-P %s' % port2,
+            '-r %s' % path1,
+            '%s@%s:%s' % (username2, address2, path2),
+            ]
+
+        cmd = ' '.join(pieces)
+        
+        self.execute(cmd, server1, '')
+        return
+    
+
+    def _copyfile_lr( self, path, server, remotepath ):
+        'push a local file to remote server'
+        address = server.address
+        port = server.port
+        username = server.username
+        known_hosts = self.inventory.known_hosts
+        private_key = self.inventory.private_key
+
+        pieces = [
+            'scp',
+            "-o 'StrictHostKeyChecking=no'",
+            ]
+        
+        if port:
+            pieces.append( '-P %s' % port )
+
+        if known_hosts:
+            pieces.append( "-o 'UserKnownHostsFile=%s'" % known_hosts )
+
+        if private_key:
+            pieces.append( "-i %s" % private_key )
+
+        pieces += [
+            path,
+            '%s@%s:%s' % (username, address, remotepath),
+            ]
+
+        cmd = ' '.join(pieces)
+        
+        self._info.log( 'execute: %s' % cmd )
+
+        failed, output, error = spawn( cmd )
+        if failed:
+            msg = '%r failed: %s' % (
+                cmd, error )
+            raise RemoteAccessError, msg
+        return
+
+
     pass # end of SSHer
+
+
+
+def _localhost(address):
+    return not address or address in ['localhost', '127.0.0.1']
 
 
 import os

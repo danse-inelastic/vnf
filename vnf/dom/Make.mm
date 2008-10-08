@@ -36,6 +36,7 @@ EXPORT_PYTHON_MODULES = \
 	BvKModel.py \
 	BvKComputation.py \
 	Computation.py \
+	ComputationResult.py \
 	Crystal.py \
 	Cylinder.py \
 	DbObject.py \
@@ -56,6 +57,7 @@ EXPORT_PYTHON_MODULES = \
 	NeutronExperiment.py \
 	OwnedObject.py \
 	PhononDispersion.py \
+	PhononDOS.py \
 	PolyCrystal.py \
 	PolyXtalCoherentPhononScatteringKernel.py \
 	ReferenceSet.py \

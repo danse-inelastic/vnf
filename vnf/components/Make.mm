@@ -34,6 +34,7 @@ EXPORT_PYTHON_MODULES = \
 	__init__.py \
 	Actor.py \
 	ARCSConfigurationApplyer.py \
+	BvK.py \
 	Clerk.py \
 	CSAccessor.py \
 	DBObjectForm.py \
