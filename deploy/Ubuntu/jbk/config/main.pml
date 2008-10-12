@@ -15,7 +15,7 @@
 
   <component name='main'>
     <property name='actor'>materialsimulationwizard</property> 
-    <property name='routine'>selectsimulationtype</property>  
+    <property name='routine'>selectSimulationEngine</property>  
     <property name='db'>vnf:4Od&amp;Cm#@localhost:54320:vnf</property>
     <property name="home">http://trueblue.caltech.edu/vnf/</property>
     <property name="cgi-home">http://trueblue.caltech.edu/cgi-bin/vnf/main.py</property>

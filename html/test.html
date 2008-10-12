@@ -29,7 +29,7 @@ Content-type: text/html
 <div id="body-wrapper">
 <!-- ** section page-header ** -->
 <div id='page-header'>
-<div id="page-logo"><a href="http://trueblue.caltech.edu/cgi-bin/vnf/main.py?actor=greet&sentry.username=demo&sentry.ticket=demo2faea4c82b7acf7e2ea01f8ca2099fed">Home</a></div>
+<div id="page-logo"><a href="http://trueblue.caltech.edu/cgi-bin/vnf/main.py?actor=greet&sentry.username=demo&sentry.ticket=demo84f2f2ccaa8ee17b9e02e2c09aafaf7d">Home</a></div>
 <p id="page-personaltools">&nbsp;</p>
 </div>
 <!-- ** end of section page-header ** -->
@@ -46,35 +46,35 @@ Content-type: text/html
     <div class="portletBody">
 <div class='portletContent'>
 <a class="navItem" title=""
-  href="http://trueblue.caltech.edu/cgi-bin/vnf/main.py?routine=selectmaterial&sentry.ticket=demo2faea4c82b7acf7e2ea01f8ca2099fed&sentry.username=demo&actor=materialsimulationwizard&materialsimulationwizard.id=">
+  href="http://trueblue.caltech.edu/cgi-bin/vnf/main.py?routine=selectmaterial&sentry.ticket=demo84f2f2ccaa8ee17b9e02e2c09aafaf7d&sentry.username=demo&actor=materialsimulationwizard&materialsimulationwizard.id=">
 <img class="navItemIcon" height="16" width="16" src="images/link_icon.gif" />
 <span class="navItemText">Material</span>
 </a>
 </div>
 <div class='portletContent'>
 <a class="navItem" title=""
-  href="http://trueblue.caltech.edu/cgi-bin/vnf/main.py?routine=selectsimulationtype&sentry.ticket=demo2faea4c82b7acf7e2ea01f8ca2099fed&sentry.username=demo&actor=materialsimulationwizard&materialsimulationwizard.id=">
+  href="http://trueblue.caltech.edu/cgi-bin/vnf/main.py?routine=selectsimulationtype&sentry.ticket=demo84f2f2ccaa8ee17b9e02e2c09aafaf7d&sentry.username=demo&actor=materialsimulationwizard&materialsimulationwizard.id=">
 <img class="navItemIcon" height="16" width="16" src="images/link_icon.gif" />
 <span class="navItemText">Simulation</span>
 </a>
 </div>
 <div class='portletContent'>
 <a class="navItem" title=""
-  href="http://trueblue.caltech.edu/cgi-bin/vnf/main.py?routine=submit_simulation&sentry.ticket=demo2faea4c82b7acf7e2ea01f8ca2099fed&sentry.username=demo&actor=materialsimulationwizard&materialsimulationwizard.id=">
+  href="http://trueblue.caltech.edu/cgi-bin/vnf/main.py?routine=submit_simulation&sentry.ticket=demo84f2f2ccaa8ee17b9e02e2c09aafaf7d&sentry.username=demo&actor=materialsimulationwizard&materialsimulationwizard.id=">
 <img class="navItemIcon" height="16" width="16" src="images/link_icon.gif" />
 <span class="navItemText">Submit</span>
 </a>
 </div>
 <div class='portletContent'>
 <a class="navItem" title=""
-  href="http://trueblue.caltech.edu/cgi-bin/vnf/main.py?routine=save_simulation&sentry.ticket=demo2faea4c82b7acf7e2ea01f8ca2099fed&sentry.username=demo&actor=materialsimulationwizard&materialsimulationwizard.id=">
+  href="http://trueblue.caltech.edu/cgi-bin/vnf/main.py?routine=save_simulation&sentry.ticket=demo84f2f2ccaa8ee17b9e02e2c09aafaf7d&sentry.username=demo&actor=materialsimulationwizard&materialsimulationwizard.id=">
 <img class="navItemIcon" height="16" width="16" src="images/link_icon.gif" />
 <span class="navItemText">Save for later submission</span>
 </a>
 </div>
 <div class='portletContent'>
 <a class="navItem" title=""
-  href="http://trueblue.caltech.edu/cgi-bin/vnf/main.py?routine=cancel&sentry.ticket=demo2faea4c82b7acf7e2ea01f8ca2099fed&sentry.username=demo&actor=materialsimulationwizard&materialsimulationwizard.id=">
+  href="http://trueblue.caltech.edu/cgi-bin/vnf/main.py?routine=cancel&sentry.ticket=demo84f2f2ccaa8ee17b9e02e2c09aafaf7d&sentry.username=demo&actor=materialsimulationwizard&materialsimulationwizard.id=">
 <img class="navItemIcon" height="16" width="16" src="images/link_icon.gif" />
 <span class="navItemText">Cancel</span>
 </a>
@@ -90,41 +90,58 @@ Content-type: text/html
 <!-- ** section  ** -->
 <div class='document-main'>
 <div>
-<h1>Material Simulation/Modeling Wizard: start</h1>
+<h1>Kernel model selection</h1>
 <div class="documentDescription">
 
 </div>
-<form action='http://trueblue.caltech.edu/cgi-bin/vnf/main.py' method='post' name='selectmaterialsimulationtype'>
-<fieldset><legend>Select material simulation/modeling type</legend>
-<input type='hidden' name='materialsimulationwizard.matterid' value=''/>
+<form action='http://trueblue.caltech.edu/cgi-bin/vnf/main.py' method='post' name=''>
+
 <input type='hidden' name='materialsimulationwizard.id' value=''/>
-<input type='hidden' name='materialsimulationwizard.mattertype' value=''/>
 <input type='hidden' name='actor' value='materialsimulationwizard'/>
-<input type='hidden' name='materialsimulationwizard.form-received' value='selectmaterialsimulationtype'/>
+<input type='hidden' name='materialsimulationwizard.form-received' value='selectSimulationEngine'/>
 <input type='hidden' name='sentry.username' value='demo'/>
-<input type='hidden' name='routine' value='verify_materialsimulationtype_selection'/>
-<input type='hidden' name='sentry.ticket' value='demo2faea4c82b7acf7e2ea01f8ca2099fed'/>
+<input type='hidden' name='routine' value='onSelect'/>
+<input type='hidden' name='sentry.ticket' value='demo84f2f2ccaa8ee17b9e02e2c09aafaf7d'/>
 <p>
-Following material simulation/modeling are supported
+To begin the creation of a scattering kernel, select an energetics/dynamics engine or a set of phonon dispersions.
 </p>
 <div class='formfield'>
 <div>
-<label for="materialsimulationtype_selector">Material simulation/modeling</label>
+<label for="radio2">Gulp</label>
 </div>
-<select name='actor.form-received.type' id='materialsimulationtype_selector'>
-  <option selected value="Ab inito">Ab inito
-  <option  value="Molecular Dynamics">Molecular Dynamics
-  <option  value="BvK">BvK
-  <option  value="SANS models">SANS models
-</select>
+<input type='radio' name='actor.form-received.kernel' value='gulp' id='radio2'/>
+</div>
+<div class='formfield'>
+<div>
+<label for="radio3">Mmtk newton's equations</label>
+</div>
+<input type='radio' name='actor.form-received.kernel' value='mmtk' id='radio3'/>
+</div>
+<div class='formfield'>
+<div>
+<label for="radio3.5">Local orbital DFT, phon harmonic motion, </label>
+</div>
+<input type='radio' name='actor.form-received.kernel' value='fireball' id='radio3.5'/>
+</div>
+<div class='formfield'>
+<div>
+<label for="radio4">Plane wave energies, phon harmonic motion</label>
+</div>
+<input type='radio' name='actor.form-received.kernel' value='abInitioHarmonic' id='radio4'/>
+</div>
+<div class='formfield'>
+<div>
+<label for="radio6">Phonon Dispersions</label>
+</div>
+<input type='radio' name='actor.form-received.kernel' value='phononDispersions' id='radio6'/>
 </div>
 <div class='formControls'>
-<input class="context" name="actor.form-received.submit" type="submit" value="Continue"/>
+<input class="context" name="submit" type="submit" value="next"/>
 </div>
-</fieldset>
+
 </form>
 <div class="documentByline">
-byline?
+<a href="http://danse.us">DANSE</a>
 </div>
 </div>
 </div>
