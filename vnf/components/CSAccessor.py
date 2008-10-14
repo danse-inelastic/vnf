@@ -21,7 +21,7 @@ class CSAccessor(Component):
         pass # end of Inventory
     
 
-    def pushdir( self, path, server ):
+    def pushdir( self, path, server, remotepath ):
         'push a local directory to remote server'
         raise NotImplementedError 
 
@@ -37,6 +37,17 @@ class CSAccessor(Component):
     
 class RemoteAccessError(Exception): pass
 
+
+
+# this is just a reminder what we are asking for the interface of "Server"
+class Server:
+
+    # need following attributes:
+    #   address
+    #   username
+    #   port
+
+    pass # end of Server
 
 # version
 __id__ = "$Id$"
