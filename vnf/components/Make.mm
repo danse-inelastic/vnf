@@ -38,6 +38,7 @@ EXPORT_PYTHON_MODULES = \
 	Clerk.py \
 	CSAccessor.py \
 	DBObjectForm.py \
+	DistributedDataStorage.py \
 	Form.py \
 	FormActor.py \
 	Geometer.py \

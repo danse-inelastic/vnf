@@ -26,6 +26,11 @@ def ssher():
     return SSHer( 'ssher', 'ssher' )
 
 
+def dds():
+    from DistributedDataStorage import DistributedDataStorage
+    return DistributedDataStorage('dds', 'dds')
+
+
 # version
 __id__ = "$Id$"
 
