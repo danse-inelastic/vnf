@@ -16,12 +16,13 @@ class DDS:
 
     def __init__(self, masternode, transferfile=None,
                  readfile=None, writefile=None, makedirs=None,
-                 fileexists=None,
+                 rename=None, fileexists=None,
                  ):
         '''create a "distributed data storage"
 
         maternode: a "distributed data storage" must have a mater node
         transferfile: the facility to transfer file from one node to another
+        rename: the facility to rename a file in one node. rename(oldpath, newpath, "server.address")
         readfile: the facility to read a text file. readfile("server.address:/a/b/c")
         writefile: the facility to write a text file. writefile("server.address:/a/b/c", "contents")
         makedirs: the facility to make a directory. it should be able to make the intermediate directories automatically
@@ -34,11 +35,24 @@ class DDS:
         self._writefile = writefile
         self._makedirs = makedirs
         self._fileexists = fileexists
+        self._rename = rename
         return
 
 
     def add_node(self, node):
         self.nodes.append(node)
+        return
+
+
+    def rename(self, old, new, node=None):
+        if node is None: node = self.masternode
+        oldpath = '%s/%s' % (node.rootpath, old)
+        newpath = '%s/%s' % (node.rootpath, new)
+        d = os.path.split(new)[0]
+        self._makedirs(_url(node,d))
+        self._rename(oldpath, newpath, node.address)
+        self.forget(old, node)
+        self.remember(new, node)
         return
 
 
@@ -59,6 +73,21 @@ class DDS:
         
         self._update_availability_list(path, l)
         return
+
+
+    def forget(self, path, node=None):
+        if node is None: node = self.masternode
+        url = _url(node,path)
+        if self._fileexists(url):
+            raise RuntimeError, "url %s still exists" % url
+        
+        l = self._read_availability_list(path)
+        s = _str(node)
+        if s in l: del l[l.index(s)]
+        
+        self._update_availability_list(path, l)
+        return
+        
 
 
     def is_available(self, path, node=None):
@@ -148,15 +177,15 @@ def _node(s):
 import os
 
 
-def test(masternode, node1, transferfile, readfile, writefile, makedirs, fileexists):
+def test(masternode, node1, transferfile, readfile, writefile, makedirs, rename, fileexists):
     import os, shutil
     
     import os
     dds = DDS(
         masternode, transferfile=transferfile,
         readfile=readfile, writefile=writefile, makedirs=makedirs,
-        fileexists=fileexists)
-    shutil.rmtree(masternode.rootpath)
+        rename=rename, fileexists=fileexists)
+    if os.path.exists(masternode.rootpath): shutil.rmtree(masternode.rootpath)
     try:
         dds.remember('file1')
     except RuntimeError:
@@ -171,7 +200,7 @@ def test(masternode, node1, transferfile, readfile, writefile, makedirs, fileexi
     dds.remember('file1')
 
     dds.add_node(node1)
-    shutil.rmtree(node1.rootpath)
+    if os.path.exists(node1.rootpath): shutil.rmtree(node1.rootpath)
     dds.make_available('file1', node1)
     assert os.path.exists(os.path.join(node1.rootpath,'file1'))
     assert dds.is_available('file1', node1)
@@ -181,6 +210,10 @@ def test(masternode, node1, transferfile, readfile, writefile, makedirs, fileexi
     dds.make_available('file2')
     assert os.path.exists(os.path.join(masternode.rootpath,'file2'))
     assert dds.is_available('file2', masternode)
+
+    dds.rename('file2', 'file3')
+    assert not dds.is_available('file2')
+    assert dds.is_available('file3')
     return
 
 
@@ -205,7 +238,12 @@ def test1():
         if os.path.exists(path): return
         os.makedirs(path)
         return
-    test(masternode, node1, transferfile, readfile, writefile, makedirs, os.path.exists)
+
+    def rename(path1, path2, dummy):
+        os.rename(path1, path2)
+        return
+    
+    test(masternode, node1, transferfile, readfile, writefile, makedirs, rename, os.path.exists)
     return
 
 
@@ -240,11 +278,19 @@ def test2():
         os.makedirs(path)
         return
 
+    def rename(path1, path2, host):
+        cmd = 'ssh %s mv %s %s' % (host, path1, path2)
+        print 'executing %s...' % cmd
+        code = os.system(cmd)
+        print 'returned %s' % code
+        if code: raise RuntimeError
+        return
+
     def fileexists(path):
         path = path.split(':')[1]
         return os.path.exists(path)
     
-    test(masternode, node1, transferfile, readfile, writefile, makedirs, fileexists)
+    test(masternode, node1, transferfile, readfile, writefile, makedirs, rename, fileexists)
     return
 
 

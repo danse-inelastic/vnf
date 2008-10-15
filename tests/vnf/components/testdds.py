@@ -48,8 +48,24 @@ class TestApp(base):
 
         if not os.path.exists(dataroot): os.makedirs(dataroot)
         open(os.path.join(dataroot,'file1'), 'w').write('hello')
-        dds.remember('file1')
-        dds.make_available('file1', s1)
+        dds._remember('file1')
+        dds._make_available('file1', s1)
+
+        from vnf.dom.Job import Job
+        j = Job()
+        j.id = 'job000'
+
+        jobdir = os.path.join(tmpdir, 'jobs', j.id)
+        if not os.path.exists(jobdir): os.makedirs(jobdir)
+        open(os.path.join(jobdir, 'calculated'), 'w').write('3.14')
+        dds.remember(j, 'calculated', server=s1)
+
+        from vnf.dom.DummyDataObject import DummyDataObject
+        d = DummyDataObject()
+        d.id = 'ddo000'
+        dds.move(j, 'calculated', d, 'calculated', server=s1)
+
+        dds.make_available(d)
         return
 
 

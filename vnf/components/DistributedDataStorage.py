@@ -26,14 +26,43 @@ class DistributedDataStorage(base):
         node = _node(server)
         self.dds.add_node(node)
         return
+
+
+    def remember(self, dbrecord, filename, server=None):
+        path = self._path(dbrecord, filename)
+        return self._remember(path, server=server)
+
+
+    def move(self, dbrecord1, filename1, dbrecord2, filename2, server=None):
+        path1 = self._path(dbrecord1, filename1)
+        path2 = self._path(dbrecord2, filename2)
+        return self._rename(path1, path2, server=server)
+
+
+    def make_available(self, dbrecord, files=None, server=None):
+        if files is None: files = _default_files(dbrecord)
+        for f in files:
+            p = self._path(dbrecord, f)
+            self._make_available(p, server=server)
+            continue
+        return
+
+
+    def _path(self, dbrecord, filename):
+        return os.path.join(dbrecord.name, dbrecord.id, filename)
     
 
-    def remember(self, path, server=None):
+    def _rename(self, path1, path2, server=None):
+        node = _node(server)
+        return self.dds.rename(path1, path2, node=node)
+
+
+    def _remember(self, path, server=None):
         node = _node(server)
         return self.dds.remember(path, node=node)
 
 
-    def make_available(self, path, server=None):
+    def _make_available(self, path, server=None):
         node = _node(server)
         return self.dds.make_available(path, node=node)
 
@@ -43,7 +72,7 @@ class DistributedDataStorage(base):
         self.dataroot = self.inventory.dataroot
         return
     
-
+    
     def _init(self):
         base._init(self)
 
@@ -83,6 +112,18 @@ class DistributedDataStorage(base):
             csaccessor.execute(server, cmd, '')
             return
 
+        def rename(path1, path2, surl):
+            server = _decodesurl(surl)
+            if _islocal(server):
+                try:
+                    return os.rename(path1, path2)
+                except Exception, e:
+                    msg = 'Unable to rename path %r to %r: %s' % (path1, path2, e)
+                    raise RuntimeError, msg
+            cmd = 'mv %s %s' % (path1, path2)
+            csaccessor.execute(server, cmd, '')
+            return
+
         def fileexists(url):
             server, path = _decodeurl(url)
             if _islocal(server):
@@ -107,11 +148,22 @@ class DistributedDataStorage(base):
             masternode=masternode,
             transferfile=transferfile,
             readfile=readfile, writefile=writefile, makedirs=makedirs,
-            fileexists=fileexists)
+            rename=rename, fileexists=fileexists,
+            )
 
         return
 
     pass # end of DistributedDataStorage
+
+
+import os
+
+
+def _default_files(dbrecord):
+    try:
+        return dbrecord.datafiles
+    except AttributeError:
+        return []
 
 
 def _islocal(server):
@@ -130,6 +182,11 @@ def _node(server):
 def _decodeurl(url):
     #url: username@address(port):path
     s, path = url.split(':')
+    s = _decodesurl(s)
+    return s, path
+
+def _decodesurl(s):
+    #url: username@address(port)
     if s.find('(')!=-1:
         a,p = s.split('(')
         p = p.strip()
@@ -149,8 +206,7 @@ def _decodeurl(url):
     s.username = username
     s.port = p
     s.address = address
-    return s, path
-
+    return s
 
 import os
 

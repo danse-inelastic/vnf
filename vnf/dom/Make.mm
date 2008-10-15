@@ -40,6 +40,7 @@ EXPORT_PYTHON_MODULES = \
 	Crystal.py \
 	Cylinder.py \
 	DbObject.py \
+	DummyDataObject.py \
 	DetectorSystem_fromXML.py \
 	Disordered.py \
 	Geometer.py \
