@@ -13,8 +13,6 @@
 
 class JobDataManager:
 
-    relative_results_path = '__results__'
-
     '''manager of data files for a job
 
     For each job, there is a local directory where the job is
@@ -29,15 +27,12 @@ class JobDataManager:
     Computations will be done in the computation server, and
     results of computations will be saved there.
 
-    In the local directory for this job, there should be
-    a directory %relative_results_path%. Whenever a request for computation
-    result is received, this data manager should try to fetch
-    that result and store it in this local result directory.
     '''
 
-    def __init__(self, job, db, csaccessor = None):
+    def __init__(self, job, db, csaccessor = None, dds=None):
         self.job = job
         self.db = db
+        self.dds = dds
         self.csaccessor = csaccessor
         return
 
@@ -49,9 +44,6 @@ class JobDataManager:
             os.makedirs( path )
         except:
             raise RuntimeError, "unable to create directory %r" % os.path.abspath(path)
-        #make results directory too
-        path2 = self.localresultdir()
-        os.makedirs( path2 )
         return path
 
 
@@ -72,29 +64,17 @@ class JobDataManager:
         db = self.db
         server = self.job.server.dereference(db)
         # copy local job directory to server
-        csaccessor.pushdir(
-            path, server, server.workdir )
+        files = self.listlocaljobdir()
+        files = filter( lambda f: not f.startswith(self.dds.dds.prefix_remember), files )
+        self.dds.make_available(self.job, files, server=server)
+        #csaccessor.pushdir(
+        #    path, server, self.remotepath() )
         return
+
+
+    def listlocaljobdir(self):
+        return os.listdir(self.localpath())
     
-
-    def makelocalcopy(self, filename):
-        '''make a local copy of a data file from the remote machine'''
-
-        csaccessor = self.csaccessor
-        if csaccessor is None: raise RuntimeError('need csaccessor to do things.')
-        
-        #retieve file from computation server
-        #should we also retrieve all files from computation server?
-        #probably not. because, for example, the wave-function
-        #file could be huge.
-        db = director.db
-        server = self.job.server.dereference(db)
-        remotedir = self.remotepath()
-        localdir = self.localresultdir()
-        localcopy = csaccessor.getfile(
-            server, os.path.join(remotedir, filename), localdir)
-        return localcopy
-
 
     def listremotejobdir(self):
         '''list files in the remote job directory'''
@@ -116,21 +96,14 @@ class JobDataManager:
 
 
     def remotepath(self):
-        job = self.job
         db = self.db
+        job = self.job
         server = job.server.dereference(db)
-        return os.path.join(server.workdir, job.id )
+        return self.dds.abspath(self.job, server=server)
 
 
-    localbasepath = '../content/jobs'
-    def localpath( self ):
-        jobid = self.job.id
-        jobdir = os.path.join( self.localbasepath, jobid )
-        return jobdir
-
-
-    def localresultdir(self):
-        return os.path.join(self.localpath(), self.relative_results_path)
+    def localpath(self):
+        return self.dds.abspath(self.job)
 
 
 import os

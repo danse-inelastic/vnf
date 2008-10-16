@@ -51,6 +51,9 @@ class WebApplication(Base):
         clerk = pyre.inventory.facility(name="clerk", factory=vnf.components.clerk)
         clerk.meta['tip'] = "the component that retrieves data from the various database tables"
 
+        dds = pyre.inventory.facility(name="dds", factory=vnf.components.dds)
+        dds.meta['tip'] = "the component manages data files"
+
         scribe = pyre.inventory.facility(name="scribe", factory=vnf.components.scribe)
         scribe.meta['tip'] = "the component responsible for rendering the generated reports"
 
@@ -130,6 +133,8 @@ class WebApplication(Base):
         self.idd = self.inventory.idd
         self.clerk = self.inventory.clerk
         self.clerk.director = self
+        self.dds = self.inventory.dds
+        self.dds.director = self
         self.scribe = self.inventory.scribe
         self.debug = self.inventory.debug
         self.csaccessor = self.inventory.csaccessor

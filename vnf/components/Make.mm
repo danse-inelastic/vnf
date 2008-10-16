@@ -15,6 +15,7 @@ PACKAGE = components
 
 
 BUILD_DIRS = \
+	computation_result_retrievers \
 	job_builders \
 
 OTHER_DIRS = \
@@ -36,6 +37,7 @@ EXPORT_PYTHON_MODULES = \
 	ARCSConfigurationApplyer.py \
 	BvK.py \
 	Clerk.py \
+	Computation.py \
 	CSAccessor.py \
 	DBObjectForm.py \
 	DistributedDataStorage.py \

@@ -16,13 +16,14 @@ class DDS:
 
     def __init__(self, masternode, transferfile=None,
                  readfile=None, writefile=None, makedirs=None,
-                 rename=None, fileexists=None,
+                 rename=None, symlink=None, fileexists=None,
                  ):
         '''create a "distributed data storage"
 
         maternode: a "distributed data storage" must have a mater node
         transferfile: the facility to transfer file from one node to another
         rename: the facility to rename a file in one node. rename(oldpath, newpath, "server.address")
+        symlink: the facility to create a symbolic link to a file in one node. symlink(oldpath, newpath, "server.address")
         readfile: the facility to read a text file. readfile("server.address:/a/b/c")
         writefile: the facility to write a text file. writefile("server.address:/a/b/c", "contents")
         makedirs: the facility to make a directory. it should be able to make the intermediate directories automatically
@@ -36,12 +37,18 @@ class DDS:
         self._makedirs = makedirs
         self._fileexists = fileexists
         self._rename = rename
+        self._symlink = symlink
         return
 
 
     def add_node(self, node):
         self.nodes.append(node)
         return
+
+
+    def abspath(self, path, node=None):
+        if node is None: node = self.masternode
+        return os.path.join(node.rootpath, path)
 
 
     def rename(self, old, new, node=None):
@@ -52,6 +59,17 @@ class DDS:
         self._makedirs(_url(node,d))
         self._rename(oldpath, newpath, node.address)
         self.forget(old, node)
+        self.remember(new, node)
+        return
+
+
+    def symlink(self, old, new, node=None):
+        if node is None: node = self.masternode
+        oldpath = '%s/%s' % (node.rootpath, old)
+        newpath = '%s/%s' % (node.rootpath, new)
+        d = os.path.split(new)[0]
+        self._makedirs(_url(node,d))
+        self._symlink(oldpath, newpath, node.address)
         self.remember(new, node)
         return
 
@@ -94,7 +112,13 @@ class DDS:
         if node is None: node = self.masternode
 
         l = self._read_availability_list(path)
-        return _str(node) in l
+        if _str(node) in l: return True
+
+        ret = self._fileexists(_url(node, path))
+        if ret:
+            l.append(_str(node))
+            self._update_availability_list(path,l)
+        return ret
 
 
     def make_available(self, path, node=None):
@@ -119,6 +143,7 @@ class DDS:
         if expired:
             l1 = filter(lambda n: n not in expired, l)
             self._update_availability_list(path, l1)
+        if ret is None: raise RuntimeError, "no node has the path %r" % path
         return _node(ret)
 
 
@@ -141,9 +166,12 @@ class DDS:
         return self._writefile(p, '\n'.join(list))
 
     ext_remember='__dds_nodelist'
+    prefix_remember='.__dds_nodelist'
     def _availability_list_path(self, path):
         masternode = self.masternode
-        url = _url(masternode,  '%s.%s' % (path, self.ext_remember))
+        d, p = os.path.split(path)
+        newpath = os.path.join(d, '%s.%s.%s' % (self.prefix_remember, p, self.ext_remember))
+        url = _url(masternode, newpath)
         return url
     
     pass # end of DDS
@@ -177,14 +205,14 @@ def _node(s):
 import os
 
 
-def test(masternode, node1, transferfile, readfile, writefile, makedirs, rename, fileexists):
+def test(masternode, node1, transferfile, readfile, writefile, makedirs, rename, symlink, fileexists):
     import os, shutil
     
     import os
     dds = DDS(
         masternode, transferfile=transferfile,
         readfile=readfile, writefile=writefile, makedirs=makedirs,
-        rename=rename, fileexists=fileexists)
+        rename=rename, symlink=symlink, fileexists=fileexists)
     if os.path.exists(masternode.rootpath): shutil.rmtree(masternode.rootpath)
     try:
         dds.remember('file1')
@@ -214,13 +242,17 @@ def test(masternode, node1, transferfile, readfile, writefile, makedirs, rename,
     dds.rename('file2', 'file3')
     assert not dds.is_available('file2')
     assert dds.is_available('file3')
+
+    dds.symlink('file3', 'file4')
+    assert dds.is_available('file4')
     return
 
 
 def test1():
+    import os
     from Node import Node
-    masternode = Node( '', 'masternode' )
-    node1 = Node( '', 'node1' )
+    masternode = Node( '', os.path.abspath('masternode') )
+    node1 = Node( '', os.path.abspath('node1') )
     
     import os, shutil
     def transferfile(path1, path2):
@@ -242,8 +274,12 @@ def test1():
     def rename(path1, path2, dummy):
         os.rename(path1, path2)
         return
+
+    def symlink(path1, path2, dummy):
+        os.symlink(path1, path2)
+        return
     
-    test(masternode, node1, transferfile, readfile, writefile, makedirs, rename, os.path.exists)
+    test(masternode, node1, transferfile, readfile, writefile, makedirs, rename, symlink, os.path.exists)
     return
 
 
@@ -286,11 +322,19 @@ def test2():
         if code: raise RuntimeError
         return
 
+    def symlink(path1, path2, host):
+        cmd = 'ssh %s ln -s %s %s' % (host, path1, path2)
+        print 'executing %s...' % cmd
+        code = os.system(cmd)
+        print 'returned %s' % code
+        if code: raise RuntimeError
+        return
+
     def fileexists(path):
         path = path.split(':')[1]
         return os.path.exists(path)
     
-    test(masternode, node1, transferfile, readfile, writefile, makedirs, rename, fileexists)
+    test(masternode, node1, transferfile, readfile, writefile, makedirs, rename, symlink, fileexists)
     return
 
 

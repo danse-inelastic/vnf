@@ -29,32 +29,55 @@ class DistributedDataStorage(base):
 
 
     def remember(self, dbrecord, filename, server=None):
-        path = self._path(dbrecord, filename)
+        path = self.path(dbrecord, filename)
         return self._remember(path, server=server)
 
 
     def move(self, dbrecord1, filename1, dbrecord2, filename2, server=None):
-        path1 = self._path(dbrecord1, filename1)
-        path2 = self._path(dbrecord2, filename2)
+        path1 = self.path(dbrecord1, filename1)
+        path2 = self.path(dbrecord2, filename2)
         return self._rename(path1, path2, server=server)
+
+
+    def symlink(self, dbrecord1, filename1, dbrecord2, filename2, server=None):
+        path1 = self.path(dbrecord1, filename1)
+        path2 = self.path(dbrecord2, filename2)
+        return self._symlink(path1, path2, server=server)
 
 
     def make_available(self, dbrecord, files=None, server=None):
         if files is None: files = _default_files(dbrecord)
         for f in files:
-            p = self._path(dbrecord, f)
+            p = self.path(dbrecord, f)
             self._make_available(p, server=server)
             continue
         return
 
 
-    def _path(self, dbrecord, filename):
-        return os.path.join(dbrecord.name, dbrecord.id, filename)
+    def is_available(self, dbrecord, filename, server=None):
+        p = self.path(dbrecord, filename)
+        return self._is_available(p, server=server)
+
+
+    def path(self, dbrecord, filename=None):
+        d = os.path.join(dbrecord.name, dbrecord.id)
+        if filename: return os.path.join(d, filename)
+        return d
+
+
+    def abspath(self, dbrecord, filename=None, server=None):
+        node = _node(server)
+        return self.dds.abspath(self.path(dbrecord, filename), node)
     
 
     def _rename(self, path1, path2, server=None):
         node = _node(server)
         return self.dds.rename(path1, path2, node=node)
+
+
+    def _symlink(self, path1, path2, server=None):
+        node = _node(server)
+        return self.dds.symlink(path1, path2, node=node)
 
 
     def _remember(self, path, server=None):
@@ -65,6 +88,11 @@ class DistributedDataStorage(base):
     def _make_available(self, path, server=None):
         node = _node(server)
         return self.dds.make_available(path, node=node)
+
+
+    def _is_available(self, path, server=None):
+        node = _node(server)
+        return self.dds.is_available(path, node=node)
 
 
     def _configure(self):
@@ -109,7 +137,7 @@ class DistributedDataStorage(base):
                 if os.path.exists(path): return
                 return os.makedirs(path)
             cmd = 'mkdir -p %s' % path
-            csaccessor.execute(server, cmd, '')
+            csaccessor.execute(cmd, server, '')
             return
 
         def rename(path1, path2, surl):
@@ -121,15 +149,29 @@ class DistributedDataStorage(base):
                     msg = 'Unable to rename path %r to %r: %s' % (path1, path2, e)
                     raise RuntimeError, msg
             cmd = 'mv %s %s' % (path1, path2)
-            csaccessor.execute(server, cmd, '')
+            csaccessor.execute(cmd, server, '')
+            return
+
+        def symlink(path1, path2, surl):
+            server = _decodesurl(surl)
+            if _islocal(server):
+                try:
+                    return os.symlink(path1, path2)
+                except Exception, e:
+                    msg = 'Unable to symlink path %r to %r: %s' % (path1, path2, e)
+                    raise RuntimeError, msg
+            cmd = 'ln -s %s %s' % (path1, path2)
+            csaccessor.execute(cmd, server, '')
             return
 
         def fileexists(url):
             server, path = _decodeurl(url)
+            self._debug.log('server=%r,path=%r'%(_surl(server),path))
             if _islocal(server):
                 return os.path.exists(path)
             cmd = 'ls %s' % path
-            failed, out, err = csaccessor.execute(server, cmd, '')
+            self._debug.log('cmd=%r'%cmd)
+            failed, out, err = csaccessor.execute(cmd, server, '')
             return not failed
             
             
@@ -143,12 +185,12 @@ class DistributedDataStorage(base):
             csaccessor.copyfile(server1, path1, server2, path2)
             return
             
-        
+        self.masternode = masternode
         self.dds = dds(
             masternode=masternode,
             transferfile=transferfile,
             readfile=readfile, writefile=writefile, makedirs=makedirs,
-            rename=rename, fileexists=fileexists,
+            rename=rename, symlink=symlink, fileexists=fileexists,
             )
 
         return
@@ -207,6 +249,9 @@ def _decodesurl(s):
     s.port = p
     s.address = address
     return s
+
+def _surl(server):
+    return '%s@%s(%s)' % (server.username, server.address, server.port)
 
 import os
 

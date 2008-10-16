@@ -160,11 +160,12 @@ class Actor(base):
         computation_ptr = job.computation
         link = action_link(
             actionRequireAuthentication
-            ( actor = computation_ptr.table.__name__.lower(),
+            ( actor = 'computation',
               sentry = director.sentry,
               routine = 'view',
               label = 'here',
               id = computation_ptr.id,
+              type = computation_ptr.table.__name__,
               ),
             director.cgihome
             )

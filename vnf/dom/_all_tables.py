@@ -47,6 +47,7 @@ kernel_related = [
     'IDFPhononDispersion',
     'BvKModel',
     'BvKComputation',
+    'PhononDOS',
     ]
 
 

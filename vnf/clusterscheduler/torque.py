@@ -83,13 +83,15 @@ class Scheduler:
             d[ k.strip() ] = v.strip()
             continue
 
-        errorpath = d['Error_Path']
-        dummy, errorfilename = os.path.split(errorpath)
-        assert errorfilename == self.errfilename
+        #errorpath = d['Error_Path']
+        #dummy, errorfilename = os.path.split(errorpath)
+        #assert errorfilename == self.errfilename, '%r != %r' % (errorfilename, self.errfilename)
+        errorfilename = self.errfilename
 
-        outputpath = d['Output_Path']
-        dummy, outputfilename = os.path.split(outputpath)
-        assert outputfilename == self.outfilename
+        #outputpath = d['Output_Path']
+        #dummy, outputfilename = os.path.split(outputpath)
+        #assert outputfilename == self.outfilename, '%r != %r' % (outputfilename, self.outfilename)
+        outputfilename = self.outfilename
 
         state = d['job_state']
         import time

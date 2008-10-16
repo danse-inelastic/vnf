@@ -19,8 +19,8 @@ class Renderer(base):
     systempy = 'system.py'
 
     def render(self, model):
-        self._make_systempy(model)
-        return
+        path = self._make_systempy(model)
+        return [self.systempy]
     
     
     def _make_systempy(self, model):
@@ -32,7 +32,7 @@ class Renderer(base):
         path = self._path( self.systempy )
 
         open(path, 'w').write('\n'.join(content))
-        return
+        return path
     
     
     def _read_system(self, model):

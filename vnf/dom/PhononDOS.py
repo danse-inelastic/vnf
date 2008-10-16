@@ -12,22 +12,14 @@
 #
 
 
-from Job import Job
+from OwnedObject import OwnedObject
+from ComputationResult import ComputationResult 
+class PhononDOS(ComputationResult, OwnedObject):
 
-
-from OwnedObject import OwnedObject as base
-class Computation(base):
-
-    # base class for all computations (including simulations)
-
-    import vnf.dom
-    results = vnf.dom.referenceSet(name='results')
-
-    import pyre.db
-    job = pyre.db.reference(name='job', table = Job)
-
-    results_retrieved = pyre.db.boolean(name='results_retrieved')
+    name = 'phonondoses'
     
+    pass # end of PhononDOS
+
 
 # version
 __id__ = "$Id$"

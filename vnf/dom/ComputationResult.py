@@ -12,22 +12,17 @@
 #
 
 
-from Job import Job
+from registry import tableRegistry
 
 
-from OwnedObject import OwnedObject as base
-class Computation(base):
-
-    # base class for all computations (including simulations)
-
-    import vnf.dom
-    results = vnf.dom.referenceSet(name='results')
+from Table import Table
+class ComputationResult(Table):
 
     import pyre.db
-    job = pyre.db.reference(name='job', table = Job)
-
-    results_retrieved = pyre.db.boolean(name='results_retrieved')
+    origin = pyre.db.versatileReference(name='origin', tableRegistry=tableRegistry)
     
+    pass # end of PhononDOS
+
 
 # version
 __id__ = "$Id$"

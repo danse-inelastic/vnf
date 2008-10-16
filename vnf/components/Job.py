@@ -41,6 +41,10 @@ def new_job( director ):
     return job
 
 
+def isdone(job):
+    return job.state in ['finished', 'cancelled', 'terminated']
+
+
 from misc import new_id as new_jobid
 
 

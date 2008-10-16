@@ -24,6 +24,21 @@ class Actor(base):
         type = pyre.inventory.str( 'type', default = '')
 
 
+    def view(self, director):
+        try:
+            page = director.retrieveSecurePage( 'computation' )
+        except AuthenticationError, err:
+            return err.page
+
+        type = self.inventory.type
+        id = self.inventory.id
+
+        # redirect 
+        actor = type.lower()
+        routine = 'view'
+        return self.redirect(director, actor, routine, id = id)
+
+
 def actor():
     return Actor('computation')
 

@@ -18,6 +18,9 @@ class Node:
         self.address = address
         self.rootpath = rootpath
         return
+
+    def __str__(self):
+        return '%s:%s' % (self.address, self.rootpath)
     
     pass # end of DataStorage
 

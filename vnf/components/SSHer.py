@@ -33,10 +33,13 @@ class SSHer(base):
 
     def copyfile(self, server1, path1, server2, path2):
         'copy recursively from server1 to server2'
-        if not _localhost(server1.address) and not _localhost(server2.address):
+        if not _localhost(server1) and not _localhost(server2):
             return self._copyfile_rr(server1, path1, server2, path2)
-        if _localhost(server1.address): self._copyfile_lr(path1, server2, path2)
-        if _localhost(server2.address): self.getfile(server1, path1, os.path.split(path2)[0] or '.')
+        if _localhost(server1) and _localhost(server2):
+            import shutil
+            shutil.copy(path1, path2)
+        if _localhost(server1): self._copyfile_lr(path1, server2, path2)
+        if _localhost(server2): self.getfile(server1, path1, os.path.split(path2)[0] or '.')
         return
     
 
@@ -137,7 +140,7 @@ class SSHer(base):
             ]
         
         if port:
-            pieces.append( '-P %s' % port )
+            pieces.append( '-p %s' % port )
 
         if known_hosts:
             pieces.append( "-o 'UserKnownHostsFile=%s'" % known_hosts )
@@ -218,8 +221,10 @@ class SSHer(base):
 
 
 
-def _localhost(address):
-    return not address or address in ['localhost', '127.0.0.1']
+def _localhost(server):
+    address = server.address
+    port = server.port
+    return (port in [None, 22, '22']) and (address in [None, 'localhost', '127.0.0.1'])
 
 
 import os

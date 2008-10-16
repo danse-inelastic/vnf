@@ -162,7 +162,7 @@ class BvK(base):
 
         p = document.paragraph()
         p.text = [
-            'In BvK model, atoms in a solid are modeled as balls',
+            'In BvK model, solid are modeled as atoms',
             'on springs.',
             'The important things to specify in a bvk model are',
             'two pieces: the atomic structure (crystal structure)',
@@ -340,9 +340,9 @@ class BvK(base):
         # job
         id = self.inventory.id
         computation = director.clerk.getBvKComputation(id)
-        job = computation.job
+        jobref = computation.job
 
-        if not job or not job.id:
+        if not jobref or not jobref.id:
             # create a new job
             from vnf.components.Job import new_job
             job = new_job(director)
@@ -351,13 +351,15 @@ class BvK(base):
             
             computation.job = job
             director.clerk.updateRecord(computation)
-
+        else:
+            job = jobref.dereference(director.db)
+            
         # files for the job
-        from vnf.components.Job import data_manager
-        jobpath = data_manager(job, director.db).localpath()
+        jobpath = director.dds.abspath(job)
         from vnf.components.job_builders.BvKDOSJobBuilder import Builder
         builder = Builder(jobpath)
-        builder.render(computation, director.db)
+        files = builder.render(computation, director.db)
+        for f in files: director.dds.remember(job, f)
         
         # redirect to job submission page
         actor = 'job'
@@ -406,30 +408,7 @@ class BvK(base):
     pass # end of BvK
 
 
-def getSystem(model):
-    from vnf.components.misc import datadir
-    import os
-    path = os.path.join(datadir(), model.name, model.id, 'system.py')
-    return open(path).read()
-
-
-def findModels(matter, db):
-    from vnf.dom.BvKModel import BvKModel
-    b = BvKModel()
-    b.matter = matter
-    v = b._getFormattedColumnValue('matter')
-    return db.fetchall(BvKModel, where="matter='%s'" % v)
-
-
-simpleelementarymatters = [
-    'Al',
-    'Fe',
-    'Ni',
-    ]
-def issimplematter(matter):
-    return matter.chemical_formula in simpleelementarymatters
-
-
+from vnf.components.BvK import getSystem, findModels, issimplematter
 from vnf.components.misc import empty_id
 
 def actor():

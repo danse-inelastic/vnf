@@ -26,9 +26,9 @@ class Builder(base):
 
     def render(self, computation, db=None):
         model = computation.model.dereference(db)
-        self._render_model(model)
-        self._make_script(computation)
-        return
+        files = self._render_model(model)
+        files.append( self._make_script(computation) )
+        return files
 
 
     def _make_script(self, bvkcomputation):
@@ -39,12 +39,11 @@ class Builder(base):
             ]
         path = self._path(self.shscriptname)
         open(path, 'w').write('\n'.join(cmds))
-        return
+        return self.shscriptname
     
     
     def _render_model(self, model):
-        self.modelbuilder.render(model)
-        return
+        return self.modelbuilder.render(model)
 
     pass # end of JobBuilder
 
