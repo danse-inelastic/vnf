@@ -23,9 +23,11 @@ all: export
 # export
 
 EXPORT_PYTHON_MODULES = \
-    configurationSaver.py \
-    WebApplication.py \
-    __init__.py
+	configurationSaver.py \
+	LaunchDetached.py \
+	SubmitJob.py \
+	WebApplication.py \
+	__init__.py
 
 
 export:: export-package-python-modules

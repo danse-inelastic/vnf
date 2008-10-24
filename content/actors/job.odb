@@ -201,7 +201,7 @@ class Actor(base):
             return self.already_submitted(director)
 
         try:
-            schedule(job, director)
+            submit(job, director, debug=1)
         except Exception, err:
             import traceback
             self._debug.log( traceback.format_exc() )
@@ -274,7 +274,7 @@ class Actor(base):
 
 
 
-from vnf.components.Job import schedule, check
+from vnf.components.Job import submit, check
 
 def _desribe(job):
     return 'id=%s, owner=%s, server=%s, processors=%s, state=%s, start@%s, completed@%s' % (

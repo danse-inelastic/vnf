@@ -24,9 +24,9 @@ class Builder(base):
         return
     
 
-    def render(self, computation, db=None):
+    def render(self, computation, db=None, dds=None):
         model = computation.model.dereference(db)
-        files = self._render_model(model)
+        files = self._render_model(model, dds=dds)
         files.append( self._make_script(computation) )
         return files
 
@@ -42,8 +42,8 @@ class Builder(base):
         return self.shscriptname
     
     
-    def _render_model(self, model):
-        return self.modelbuilder.render(model)
+    def _render_model(self, model, dds=None):
+        return self.modelbuilder.render(model, dds=dds)
 
     pass # end of JobBuilder
 

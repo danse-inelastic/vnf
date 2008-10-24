@@ -18,16 +18,16 @@ class Renderer(base):
 
     systempy = 'system.py'
 
-    def render(self, model):
-        path = self._make_systempy(model)
+    def render(self, model, dds=None):
+        path = self._make_systempy(model, dds=dds)
         return [self.systempy]
     
     
-    def _make_systempy(self, model):
+    def _make_systempy(self, model, dds=None):
         content = [
             'from bvk.input_generators.system import System',
             ]
-        content += self._read_system(model)
+        content += self._read_system(model, dds=dds)
         
         path = self._path( self.systempy )
 
@@ -35,9 +35,8 @@ class Renderer(base):
         return path
     
     
-    def _read_system(self, model):
-        from vnf.components.misc import datadir
-        systempy = os.path.join(datadir(), model.name, model.id, self.systempy)
+    def _read_system(self, model, dds=None):
+        systempy = dds.abspath(model, self.systempy)
         return open(systempy).readlines()
     
     pass # end of JobBuilder

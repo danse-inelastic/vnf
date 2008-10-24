@@ -25,12 +25,18 @@ class Launch(Application, Stager):
         #logfile = pyre.inventory.str('logfile', default = '')
         
 
-    def main(self):
+    def main(self, *args, **kwds):
         #self.configureJournal(self.logfile)
         cmd = self.inventory.cmd
-        
+        self._debug.log( 'cmd=%r' % cmd )
+        #print cmd
+        from vnf.utils.spawn import spawn
         import os
-        os.system(cmd)
+        ret, out, err = spawn(cmd, env=os.environ)
+        if ret:
+            self._debug.log( 'out: %s' % out )
+            self._debug.log( 'err: %s' % err )
+            raise RuntimeError, '%r failed' % (cmd,)
         return
 
 

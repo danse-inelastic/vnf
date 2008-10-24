@@ -147,7 +147,7 @@ class Actor(base):
             'by defining the atomic structure and force constants.',
             ]
 
-        system = getSystem(model)
+        system = getSystem(model, director)
         
         form = document.form(name='', legend= '', action='')
         ta = form.textarea(

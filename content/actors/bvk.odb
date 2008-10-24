@@ -171,7 +171,7 @@ class BvK(base):
             'by defining the atomic structure and force constants.',
             ]
 
-        system = getSystem(model)
+        system = getSystem(model, director)
         
         form = document.form(
             name='', legend= '', action='')
@@ -328,10 +328,10 @@ class BvK(base):
             director.routine = 'configure_dos_computation'
             return self.configure_dos_computation( director, errors = errors )
 
-        return self.create_dos_computation_job(director)
+        return self.create_job(director)
 
 
-    def create_dos_computation_job(self, director):
+    def create_job(self, director):
         try:
             page = director.retrieveSecurePage( 'materialsimulationwizard-2' )
         except AuthenticationError, err:
@@ -354,6 +354,13 @@ class BvK(base):
         else:
             job = jobref.dereference(director.db)
             
+        # redirect to job submission page
+        actor = 'job'
+        routine = 'view'
+        return self.redirect(director, actor, routine, id = job.id)
+
+
+    def ___(self):
         # files for the job
         jobpath = director.dds.abspath(job)
         from vnf.components.job_builders.BvKDOSJobBuilder import Builder
@@ -361,12 +368,7 @@ class BvK(base):
         files = builder.render(computation, director.db)
         for f in files: director.dds.remember(job, f)
         
-        # redirect to job submission page
-        actor = 'job'
-        routine = 'view'
-        return self.redirect(director, actor, routine, id = job.id)
-
-
+        
     def ___(self, director):
         p = document.paragraph()
         p.text = [

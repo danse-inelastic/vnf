@@ -21,7 +21,7 @@ class Builder(base):
 
     def render(self, computation, db=None, dds=None):
         type = computation.type
-        return handler(type)(self.path)(computation, db=db, dss=dss)
+        return handler(type)(self.path).render(computation, db=db, dds=dds)
 
 
 def handler(type):
