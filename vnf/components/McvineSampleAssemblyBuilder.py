@@ -21,7 +21,7 @@ class Builder:
         return
     
 
-    def render(self, sampleassembly):
+    def render(self, sampleassembly, filedb=None):
         
         # the sample assembly xml
         from SampleAssemblyXMLBuilder import Builder
@@ -40,7 +40,7 @@ class Builder:
         # other data files
         from McvineSampleAssemblyDatafilesCollector import Collector
         collector = Collector(self.path)
-        collector.render( sampleassembly )
+        collector.render(sampleassembly, filedb = filedb)
 
         # odb file for the sample assembly
         options = self._build_odb( )

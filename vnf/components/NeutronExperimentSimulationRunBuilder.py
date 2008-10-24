@@ -22,7 +22,8 @@ class Builder:
         return
     
 
-    def render(self, experiment):
+    def render(self, experiment, filedb=None):
+        self._filedb = filedb
         return self.dispatch(experiment)
 
 
@@ -67,7 +68,7 @@ class Builder:
 
     def onConfiguredInstrument(self, instrument):
         from InstrumentSimulationAppBuilder import Builder
-        return Builder( self.path ).render( instrument )
+        return Builder(self.path).render(instrument, filedb = self._filedb)
 
 
     def onSampleAssembly(self, sampleassembly):
@@ -76,7 +77,7 @@ class Builder:
         else:
             from McstasSampleBuilder import Builder
             pass
-        return Builder(self.path).render( sampleassembly )
+        return Builder(self.path).render(sampleassembly, filedb = self._filedb)
 
 
     def _createfiles( self, files):

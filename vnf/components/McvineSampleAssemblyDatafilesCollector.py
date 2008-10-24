@@ -21,8 +21,10 @@ class Collector:
         return
     
 
-    def render(self, sampleassembly):
+    def render(self, sampleassembly, filedb=None):
+        self._filedb = filedb
         self.dispatch(sampleassembly)
+        self._filedb = None
         return
     
 
@@ -103,14 +105,7 @@ class Collector:
 
 
     def _datadir(self, obj):
-        from misc import datadir
-        datadir = os.path.abspath( datadir() )
-        path = os.path.join(
-            datadir,
-            obj.__class__.__name__.lower(),
-            obj.id,
-            )
-        return path
+        return self._filedb.abspath(obj)
 
 
     def _create_xyzfile(self, crystal):

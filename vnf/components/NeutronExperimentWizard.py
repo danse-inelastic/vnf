@@ -1440,7 +1440,7 @@ class NeutronExperimentWizard(base):
             from NeutronExperimentSimulationRunBuilder_demo import Builder
         else:
             from NeutronExperimentSimulationRunBuilder import Builder
-        Builder(path).render(experiment)
+        Builder(path).render(experiment, filedb=director.dss)
 
         experiment.status = 'constructed'
         director.clerk.updateRecord( experiment )

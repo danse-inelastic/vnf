@@ -19,12 +19,15 @@ class Builder:
         return
     
 
-    def render(self, instrument):
+    def render(self, instrument, filedb=None):
+        self._filedb = filedb
+        
         self.appscript = []
         self.cmdline_opts = {}
         self.indent_level = 0
         self.dispatch( instrument )
-        
+
+        self._filedb = None
         return self.appscript, self.cmdline_opts
 
 
@@ -229,14 +232,8 @@ class Builder:
 
 
     def _datadir(self, obj):
-        from misc import datadir
-        datadir = os.path.abspath( datadir() )
-        path = os.path.join(
-            datadir,
-            obj.__class__.__name__.lower(),
-            obj.id,
-            )
-        return path
+        filedb = self._filedb
+        return filedb.abspath(obj)
 
 
     pass # end of Builder
