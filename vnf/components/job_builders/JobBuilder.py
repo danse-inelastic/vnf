@@ -12,6 +12,20 @@
 #
 
 
+
+'''
+a job is something that can be delivered to computation server and be launched.
+
+It needs to contain:
+
+  - a bash script to be launched on the computation server
+  - all necessary files that are needed for the bash script to run, such as
+    * configuration files
+    * data files
+
+'''
+
+
 class JobBuilder(object):
 
     shscriptname = 'run.sh'

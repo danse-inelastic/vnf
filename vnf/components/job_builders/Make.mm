@@ -30,6 +30,7 @@ all: export
 # export
 
 EXPORT_PYTHON_MODULES = \
+	BvKComputation.py \
 	BvKDOSJobBuilder.py \
 	BvKModelRenderer.py \
 	JobBuilder.py \

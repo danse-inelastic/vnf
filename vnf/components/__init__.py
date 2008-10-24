@@ -31,6 +31,12 @@ def dds():
     return DistributedDataStorage('dds', 'dds')
 
 
+def buildjob(*args, **kwds):
+    from JobBuilder import JobBuilder
+    builder = JobBuilder()
+    return builder(*args, **kwds)
+
+
 # version
 __id__ = "$Id$"
 

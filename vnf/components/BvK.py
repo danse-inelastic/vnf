@@ -13,10 +13,8 @@
 
 
 
-def getSystem(model):
-    from vnf.components.misc import datadir
-    import os
-    path = os.path.join(datadir(), model.name, model.id, 'system.py')
+def getSystem(model, director):
+    path = director.dds.abspath(model, 'system.py')
     return open(path).read()
 
 

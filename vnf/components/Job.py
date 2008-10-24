@@ -13,6 +13,12 @@
 from Scheduler import schedule, check
 
 
+def submit(job, director):
+    from vnf.utils import launch_detached
+    launch_detached('submitjob.py --id=%s' % job.id)
+    return
+
+
 def data_manager( job, director ):
     from JobDataManager import JobDataManager
     return JobDataManager(job, director)
