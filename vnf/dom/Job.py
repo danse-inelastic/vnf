@@ -40,6 +40,7 @@ class Job(base):
     # state:
     #   - created: just created. has not been submitted
     #   - submitted
+    #   - submitting
     #   - running
     #   - onhold
     #   - finished

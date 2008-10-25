@@ -26,8 +26,13 @@ class Computation(base):
     import pyre.db
     job = pyre.db.reference(name='job', table = Job)
 
-    results_retrieved = pyre.db.boolean(name='results_retrieved')
-    
+    results_state = pyre.db.varchar(name='results_state', length=16, default='')
+    #  - retrieved
+    #  - retrieving
+    #  - retrieval failed
+    #  - partially retrieved
+    #  - (empty)   means nothing done
+
 
 # version
 __id__ = "$Id$"

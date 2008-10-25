@@ -37,6 +37,12 @@ def buildjob(*args, **kwds):
     return builder(*args, **kwds)
 
 
+def retrieveresults(*args, **kwds):
+    from ComputationResultsRetriever import ComputationResultsRetriever
+    retriever = ComputationResultsRetriever()
+    return retriever(*args, **kwds)
+
+
 # version
 __id__ = "$Id$"
 

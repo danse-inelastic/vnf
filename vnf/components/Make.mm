@@ -38,6 +38,7 @@ EXPORT_PYTHON_MODULES = \
 	BvK.py \
 	Clerk.py \
 	Computation.py \
+	ComputationResultsRetriever.py \
 	CSAccessor.py \
 	DBObjectForm.py \
 	DistributedDataStorage.py \

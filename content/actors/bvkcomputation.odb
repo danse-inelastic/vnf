@@ -48,18 +48,19 @@ class Actor(base):
 
         modeldoc = document.document(title='The BvK model')
         model = computation.model.dereference(director.db)
-        self._view_model(model, modeldoc)
+        self._view_model(model, modeldoc, director=director)
 
         compdoc = document.document(title='The computation')
         type = computation.type
         method = '_view_%s' % type
+
         handler = getattr(self, method)
         handler(computation, compdoc)
 
         job = computation.job.dereference(director.db)
         if isdone(job):
-            if not computation.results_retrieved:
-                retrieve_computation_results(computation, director)
+            if not computation.results_state:
+                retrieve_computation_results(computation, director, debug=1)
                 
             resdoc = document.document(title='Results')
             p = resdoc.paragraph()
@@ -137,7 +138,7 @@ class Actor(base):
         return
 
 
-    def _view_model(self, model, document):
+    def _view_model(self, model, document, director=None):
         p = document.paragraph()
         p.text = [
             'The important things to a bvk model are:',

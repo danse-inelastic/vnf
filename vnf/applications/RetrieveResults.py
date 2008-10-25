@@ -12,16 +12,17 @@
 
 from pyre.applications.Script import Script as base
 
-class SubmitJob(base):
-
+class RetrieveResults(base):
+    
     class Inventory(base.Inventory):
-
+        
         import pyre.inventory
         id = pyre.inventory.str('id')
-
+        type = pyre.inventory.str('type')
+        
         db = pyre.inventory.str(name='db', default='vnf')
         db.meta['tip'] = "the name of the database"
-
+        
         dbwrapper = pyre.inventory.str(name='dbwrapper', default='psycopg')
         dbwrapper.meta['tip'] = "the python package that provides access to the database back end"
 
@@ -44,36 +45,32 @@ class SubmitJob(base):
 
     def main(self):
         id = self.id
-        job = self.clerk.getJob(id)
-        state = job.state
-        if state not in ['created']:
-            raise RuntimeError, "Job %s not suitable for submission: %s" % (id, state)
-        job.state = 'submitting'
-        self.clerk.updateRecord(job)
+        type = self.type
+        computation = self.clerk.getRecordByID(type, id)
+        if computation.results_state:
+            self._debug.log('computation %s: %s' % (id, computation.results_state))
+            return
         
-        computation = job.computation
-        if not computation:
-            raise RuntimeError, 'computation is not specified for Job: %s' % (id,)
-        self.prepare(job)
-        self.schedule(job)
+        try:
+            self.retrieve(computation)
+        except Exception, e:
+            self._debug.log('retrieval failed. %s: %s' % (e.__class__.__name__, e))
+            d = self.dds.abspath(computation)
+            import os
+            if not os.path.exists(d): os.makedirs(d)
+            f = self.dds.abspath(computation, 'results_retrieval_error')
+            open(f, 'w').write('%s: %s' % (e.__class__.__name__, e))
+            computation.results_state = 'retrieval failed'
+            self.clerk.updateRecord(computation)
         return
 
 
-    def prepare(self, job):
-        jobpath = self.dds.abspath(job)
-        computation = job.computation.dereference(self.db)
-        from vnf.components import buildjob
-        files = buildjob(computation, db=self.db, dds=self.dds, path=jobpath)
-        for f in files: self.dds.remember(job, f)
-        return
+    def retrieve(self, computation):
+        from vnf.components import retrieveresults
+        return retrieveresults(components, self)
 
 
-    def schedule(self, job):
-        from vnf.components.Scheduler import schedule
-        return schedule(job, self)
-
-
-    def __init__(self, name='submitjob'):
+    def __init__(self, name='retrieveresults'):
         base.__init__(self, name)
         return
 
@@ -81,6 +78,7 @@ class SubmitJob(base):
     def _configure(self):
         base._configure(self)
         self.id = self.inventory.id
+        self.type = self.inventory.type
 
         self.idd = self.inventory.idd
         self.clerk = self.inventory.clerk

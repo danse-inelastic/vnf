@@ -18,7 +18,6 @@ class Retriever(base):
 
     def retrieve(self):
         computation = self.computation
-        if computation.results_retrieved: return
         type = computation.type
         handler = getattr(self, '_on%s'%type)
         return handler()
@@ -47,6 +46,9 @@ class Retriever(base):
             if not self._is_result_recorded(t, result_records):
                 # if not, record it
                 self._record_result(job, 'DOS', t, 'data.idf')
+
+        computation.results_state = 'retrieved'
+        self.director.clerk.updateRecord(computation)
         return
 
 
