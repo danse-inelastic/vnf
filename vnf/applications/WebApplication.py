@@ -175,7 +175,7 @@ class WebApplication(Base):
 
 
     def _getPrivateDepositoryLocations(self):
-        return ['../content', '../config']
+        return ['../content/base', '../config']
 
 
 from vnf.DbAddressResolver import DbAddressResolver

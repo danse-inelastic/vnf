@@ -22,8 +22,13 @@ from opal.components.Actor import Actor as base
 class Actor(base):
 
     def redirect(self, director, actor, routine, *args, **kwds):
-        actor = director.retrieveActor( actor )
-        director.configureComponent( actor )
+        actor_name = actor
+        actor = director.retrieveActor( actor_name )
+        if actor is None:
+            class _: pass
+            actor = _(); actor.name = actor_name
+        else:        
+            director.configureComponent( actor )
         director.inventory.actor = director.actor = actor
         
         director.inventory.routine = director.routine = routine
