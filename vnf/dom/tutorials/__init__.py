@@ -1,10 +1,10 @@
-#!/usr/bin/env python
+# -*- Python -*-
 #
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
-#                             Michael A.G. Aivazis
+#                                   Jiao Lin
 #                      California Institute of Technology
-#                      (C) 1998-2005  All Rights Reserved
+#                        (C) 2008  All Rights Reserved
 #
 # {LicenseText}
 #
@@ -12,14 +12,12 @@
 #
 
 
-extensions = [
-    'ins',
-    'sans',
-    'tutorials',
-    ]
+def alltables():
+    from _all_tables import tables
+    return tables()
 
 
 # version
-__id__ = "$Id: __init__.py,v 1.1.1.1 2006-11-27 00:09:19 aivazis Exp $"
+__id__ = "$Id$"
 
 # End of file 
