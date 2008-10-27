@@ -63,6 +63,7 @@ class Form(base):
 
     def expand(self, form, errors=None):
         '''expand an existing form with fields from this component'''
+        director = self.director
         
         record = self.getRecord()
         
@@ -85,7 +86,6 @@ class Form(base):
             )
         field.help = ' '.join( meta['tip'] )
 
-        director = self.director
         servers = director.clerk.getServers()
         entries = [ (server.id, server.short_description) for server in servers ]
         ids = [ id for id, server in entries ]

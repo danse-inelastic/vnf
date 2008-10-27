@@ -38,7 +38,7 @@ class Actor(base):
         document = main.document(title='Jobs')
 
         from vnf.dom.Job import Job
-        jobs = director.clerk.db.fetchall( Job )
+        jobs = director.clerk.db.fetchall(Job, where="creator='%s'" % director.sentry.username)
 
         for job in jobs:
             p = document.paragraph()
@@ -132,8 +132,10 @@ class Actor(base):
         job = director.clerk.getJob( id )
 
         # if job has not been submitted, present the submission form
-        if job.state == 'created':
+        if job.state in ['created']:
             return self.edit(director, id = id)
+        if job.state in ['submissionfailed']:
+            return self.view_failed_submission(director, id=id)
 
         #
         assert job.creator.id == director.sentry.username
@@ -197,8 +199,11 @@ class Actor(base):
         if id is None: id = self.inventory.id
         job = director.clerk.getJob(id)
 
-        if job.state not in ['created']:
+        if job.state in ['submitted', 'running', 'onhold',
+                         'finished', 'terminated', 'cancelled']:
             return self.already_submitted(director)
+        if job.state in ['submitting']:
+            return self.in_submission(director)
 
         try:
             submit(job, director, debug=1)
@@ -219,11 +224,11 @@ class Actor(base):
         #check( job, director )
         
         main = page._body._content._main
-        document = main.document( title = 'Job submitted' )
+        document = main.document( title = 'Job in submission' )
         p = document.paragraph()
         server = director.clerk.dereference(job.server)
         p.text = [
-            'Job #%s has been submitted to %s' % (
+            'Job #%s is being submitted to %s' % (
             job.id, server.short_description, ),
             ]
             
@@ -269,6 +274,72 @@ class Actor(base):
             )
         p.text = [
             'This job has already been submitted. To view its status, please click %s' % link
+            ]
+        return page
+
+
+    def in_submission(self, director):
+        try:
+            page = director.retrieveSecurePage( 'job' )
+        except AuthenticationError, err:
+            return err.page
+
+        job = director.clerk.getJob(self.inventory.id)
+        main = page._body._content._main
+        document = main.document( title = 'Job is being submmitted: %s' % job.id )
+        
+        p = document.paragraph()
+        link = action_link(
+            actionRequireAuthentication
+            ( actor = 'job',
+              sentry = director.sentry,
+              routine = 'view',
+              label = 'here',
+              id = self.inventory.id,
+              ),
+            director.cgihome
+            )
+        p.text = [
+            'This job is being submitted. To view its status, please click %s' % link
+            ]
+        return page
+
+
+    def view_failed_submission(self, director, id=None):
+        try:
+            page = director.retrieveSecurePage( 'job' )
+        except AuthenticationError, err:
+            return err.page
+
+        if id is None: id = self.inventory.id
+        job = director.clerk.getJob(id)
+        
+        main = page._body._content._main
+        document = main.document( title = 'Job %s: submission failed' % job.id )
+        
+        p = document.paragraph()
+        p.text = [
+            'This job was not submitted successfully. ',
+            ]
+
+        #p = document.paragraph()
+        #p.text = ['The error was:']
+        #p = document.paragraph()
+        #p.text = [job.error]
+
+        p = document.paragraph()
+        link = action_link(
+            actionRequireAuthentication
+            ( actor = 'job',
+              sentry = director.sentry,
+              routine = 'edit',
+              label = 'resubmit',
+              id = id,
+              ),
+            director.cgihome
+            )
+        p.text = [
+            'If you are sure the error was fixed, please %s' % link
             ]
         return page
 

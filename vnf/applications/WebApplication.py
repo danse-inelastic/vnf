@@ -160,8 +160,16 @@ class WebApplication(Base):
 
 
     def _getPrivateDepositoryLocations(self):
-        return ['../content/base', '../config']
-
+        from os.path import join
+        root = '..'
+        base = join(root, 'content/base')
+        config = join(root, 'config')
+        
+        from vnf import extensions
+        exts = [join(root, 'content', e) for e in extensions]
+        
+        return [base]+exts+[config]
+        
 
 import journal
 journal.debug('curator').activate()

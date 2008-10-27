@@ -1,0 +1,423 @@
+#!/usr/bin/env python
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                  Jiao Lin
+#                     California Institute of Technology
+#                       (C) 2008  All Rights Reserved
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+from vnf.components.MaterialSimulationWizard import \
+     actionRequireAuthentication, action_link, AuthenticationError, InputProcessingError
+
+from vnf.components.MaterialSimulationWizard import MaterialSimulationWizard as base
+
+class BvK(base):
+    
+    
+    class Inventory(base.Inventory):
+        
+        import pyre.inventory
+
+        model_id = pyre.inventory.str('model_id')
+        
+        pass # end of Inventory
+
+
+    def configure_simulation(self, director, matter=None):
+        try:
+            page = director.retrieveSecurePage( 'materialsimulationwizard-2' )
+        except AuthenticationError, err:
+            return err.page
+
+        # make a new BvKComputation record if necessary
+        id = self.inventory.id
+        if empty_id(id):
+            from vnf.dom.BvKComputation import BvKComputation
+            bvk = director.clerk.newDbObject(BvKComputation)
+            self.inventory.id = id = bvk.id
+        else:
+            bvk = director.clerk.getBvKComputation(id)
+            pass
+
+        if matter:
+            bvk.matter = matter
+            director.clerk.updateRecord(bvk)
+
+        return self.configure_bvkmodel(director)
+
+
+    def configure_bvkmodel(self, director):
+        try:
+            page = director.retrieveSecurePage( 'materialsimulationwizard-2' )
+        except AuthenticationError, err:
+            return err.page
+
+        matter = self._matter(director)
+
+        # find existing models
+        models = findModels(matter, director.clerk.db)
+
+        if len(models):
+            return self.select_from_existingmodels(director, models = models)
+
+        return self.create_new_model(director, matter = matter)
+
+
+    def select_from_existingmodels(self, director, models = None):
+        if models is None or len(models)==0:
+            raise RuntimeError
+        
+        try:
+            page = director.retrieveSecurePage( 'materialsimulationwizard-2' )
+        except AuthenticationError, err:
+            return err.page
+
+        main = page._body._content._main
+        # populate the main column
+        document = main.document(
+            title='BvK model')
+        document.description = ''
+        document.byline = 'byline?'
+
+        p = document.paragraph()
+        p.text = [
+            'In BvK, solids are modeled as masses on springs.',
+            'Phonon density of states and phonon dispersions can',
+            'be calculated from diagonalizing the dynamic matrix',
+            'constructed from force constants.',
+            ]
+
+        p = document.paragraph()
+        p.text = [
+            'Following are existing bvk models for the material you',
+            'are studying.',
+            'You can simply use one of them.',
+            ]
+
+        formcomponent = self.retrieveFormToShow( 'selectbvkmodel' )
+        formcomponent.director = director
+        
+        # build the form 
+        form = document.form(name='', action=director.cgihome)
+        # specify action
+        action = actionRequireAuthentication(          
+            actor = 'bvk', 
+            sentry = director.sentry,
+            routine = 'verify_model_selection',
+            label = '',
+            id=self.inventory.id,
+            arguments = {'form-received': formcomponent.name },
+            )
+        from vnf.weaver import action_formfields
+        action_formfields(action, form)
+        # expand the form with fields of the data object that is being edited
+        formcomponent.expand(form, models = models)
+        
+        submit = form.control(name='submit',type="submit", value="next")
+
+        p = document.paragraph()
+        action = actionRequireAuthentication(
+            actor = 'bvk', sentry = director.sentry,
+            label = 'starting from scratch',
+            routine = 'create_new_model',
+            id = self.inventory.id,
+            )
+        link = action_link( action, director.cgihome )
+        p.text = [
+            'You can also creating your own bvk model by %s.' % link,
+            ]
+        
+        return page
+
+
+    def verify_model_selection(self, director):
+        try:
+            page = director.retrieveSecurePage( 'materialsimulationwizard-2' )
+        except AuthenticationError, err:
+            return err.page
+        
+        model_id = self.processFormInputs(director)
+        model = director.clerk.getBvKModel(model_id)
+
+        return self.reuse_model_or_model_as_template(director, model)
+
+
+    def reuse_model_or_model_as_template(self, director, model=None):
+        if model is None: raise NotImplementedError
+
+        try:
+            page = director.retrieveSecurePage( 'materialsimulationwizard-2' )
+        except AuthenticationError, err:
+            return err.page
+
+        main = page._body._content._main
+        # populate the main column
+        document = main.document(
+            title='BvK model')
+        document.description = ''
+        document.byline = 'byline?'
+
+        p = document.paragraph()
+        p.text = [
+            'In BvK model, solid are modeled as atoms',
+            'on springs.',
+            'The important things to specify in a bvk model are',
+            'two pieces: the atomic structure (crystal structure)',
+            'and the force constants.',
+            'The following piece of python code defines a bvk "system"',
+            'by defining the atomic structure and force constants.',
+            ]
+
+        system = getSystem(model, director)
+        
+        form = document.form(
+            name='', legend= '', action='')
+        ta = form.textarea(
+            id = '', name = '', label = 'BvK System',
+            default = system,
+            rows = 20)
+
+        p = document.paragraph()
+        # 
+        action = actionRequireAuthentication(
+            actor = 'bvk', sentry = director.sentry,
+            label = 'use this model to start a bvk computation',
+            routine = 'use_model',
+            id = self.inventory.id,
+            model_id = model.id,
+            )
+        use_link = action_link( action, director.cgihome )
+        # 
+        action = actionRequireAuthentication(
+            actor = 'bvk', sentry = director.sentry,
+            label = 'create a new model by using this model as template',
+            routine = 'new_model_from_template',
+            id = self.inventory.id,
+            model_id = model.id,
+            )
+        as_template_link = action_link( action, director.cgihome )
+        p.text = [
+            'You can either %s, or %s' % (
+            use_link, as_template_link),
+            ]
+        return page
+
+
+    def use_model(self, director):
+        try:
+            page = director.retrieveSecurePage( 'materialsimulationwizard-2' )
+        except AuthenticationError, err:
+            return err.page
+
+        # use the specified model
+        model = director.clerk.getBvKModel(self.inventory.model_id)
+        computation = director.clerk.getBvKComputation(self.inventory.id)
+        computation.model = model
+        director.clerk.updateRecord(computation)
+
+        return self.select_computation_type(director)
+
+
+    def select_computation_type(self, director):
+        try:
+            page = director.retrieveSecurePage( 'materialsimulationwizard-2' )
+        except AuthenticationError, err:
+            return err.page
+        
+        main = page._body._content._main
+        # populate the main column
+        document = main.document(
+            title='BvK model')
+        document.description = ''
+        document.byline = 'byline?'
+
+        formcomponent = self.retrieveFormToShow( 'selectbvkcomputationtype' )
+        formcomponent.director = director
+        
+        # build the form 
+        form = document.form(name='', action=director.cgihome)
+        # specify action
+        action = actionRequireAuthentication(          
+            actor = 'bvk', 
+            sentry = director.sentry,
+            routine = 'verify_computationtype_selection',
+            label = '',
+            id=self.inventory.id,
+            arguments = {'form-received': formcomponent.name },
+            )
+        from vnf.weaver import action_formfields
+        action_formfields(action, form)
+        # expand the form with fields of the data object that is being edited
+        formcomponent.expand(form)
+        
+        submit = form.control(name='submit',type="submit", value="next")
+
+        return page
+
+
+    def verify_computationtype_selection(self, director):
+        try:
+            page = director.retrieveSecurePage( 'materialsimulationwizard-2' )
+        except AuthenticationError, err:
+            return err.page
+
+        type = self.processFormInputs(director)
+
+        #
+        computation = director.clerk.getBvKComputation(self.inventory.id)
+        computation.type = type
+        director.clerk.updateRecord(computation)
+
+        handler = 'configure_%s_computation' % type
+        handler = getattr(self, handler)
+        return handler(director)
+
+
+    def configure_dos_computation(self, director, errors=None):
+        try:
+            page = director.retrieveSecurePage( 'materialsimulationwizard-2' )
+        except AuthenticationError, err:
+            return err.page
+
+        main = page._body._content._main
+        # populate the main column
+        document = main.document(
+            title='BvK model')
+        document.description = ''
+        document.byline = 'byline?'
+
+        formcomponent = self.retrieveFormToShow( 'bvkdoscomputation' )
+        formcomponent.director = director
+        formcomponent.inventory.id = self.inventory.id
+        
+        # build the form 
+        form = document.form(name='', action=director.cgihome)
+        # specify action
+        action = actionRequireAuthentication( 
+            actor = 'bvk', 
+            sentry = director.sentry,
+            routine = 'verify_dos_computation_configuration',
+            label = '',
+            id=self.inventory.id,
+            arguments = {'form-received': formcomponent.name },
+            )
+        from vnf.weaver import action_formfields
+        action_formfields(action, form)
+        # expand the form with fields of the data object that is being edited
+        formcomponent.expand(form, errors=errors)
+        
+        submit = form.control(name='submit',type="submit", value="next")
+        
+        return page
+
+
+    def verify_dos_computation_configuration(self, director):
+        try:
+            page = director.retrieveSecurePage( 'materialsimulationwizard-2' )
+        except AuthenticationError, err:
+            return err.page
+        
+        try:
+            self.processFormInputs(director)
+        except InputProcessingError, err:
+            errors = err.errors
+            self.form_received = None
+            director.routine = 'configure_dos_computation'
+            return self.configure_dos_computation( director, errors = errors )
+
+        return self.create_job(director)
+
+
+    def create_job(self, director):
+        try:
+            page = director.retrieveSecurePage( 'materialsimulationwizard-2' )
+        except AuthenticationError, err:
+            return err.page
+
+        # job
+        id = self.inventory.id
+        computation = director.clerk.getBvKComputation(id)
+        jobref = computation.job
+
+        if not jobref or not jobref.id:
+            # create a new job
+            from vnf.components.Job import new_job
+            job = new_job(director)
+            job.computation = computation
+            director.clerk.updateRecord(job)
+            
+            computation.job = job
+            director.clerk.updateRecord(computation)
+        else:
+            job = director.clerk.dereference(jobref)
+            
+        # redirect to job submission page
+        actor = 'job'
+        routine = 'view'
+        return self.redirect(director, actor, routine, id = job.id)
+
+
+    def ___(self):
+        # files for the job
+        jobpath = director.dds.abspath(job)
+        from vnf.components.job_builders.BvKDOSJobBuilder import Builder
+        builder = Builder(jobpath)
+        files = builder.render(computation, director.clerk.db)
+        for f in files: director.dds.remember(job, f)
+        
+        
+    def ___(self, director):
+        p = document.paragraph()
+        p.text = [
+            'In BvK, solids are modeled as masses on springs.',
+            'Phonon density of states and phonon dispersions can',
+            'be calculated from diagonalizing the dynamic matrix',
+            'constructed from force constants.',
+            ]
+
+        if not issimplematter(matter):
+            page = director.retrievePage('nyi')
+            main = page._body._content._main
+            document = main.document(
+                title = 'bvk not implemented for material %s' % matter.chemical_formula)
+            return page
+
+        id = self.inventory.id
+        if empty_id(id):
+            from vnf.dom.BvK import BvK
+            bvk = director.clerk.newDbObject(BvK)
+            id = bvk.id
+        else:
+            bvk = director.clerk.getBvK(id)
+            pass
+
+        bvk.matter = matter
+        director.clerk.updateRecord(bvk)
+        
+        return page
+
+
+    def _matter(self, director):
+        id = self.inventory.id
+        bvk = director.clerk.getBvKComputation(id)
+        matter = director.clerk.dereference(bvk.matter)
+        return matter
+    
+
+    pass # end of BvK
+
+
+from vnf.components.BvK import getSystem, findModels, issimplematter
+from vnf.components.misc import empty_id
+
+def actor():
+    return BvK('bvk')
+
+
+# version
+__id__ = "$Id$"
+
+# End of file 

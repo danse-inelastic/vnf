@@ -40,16 +40,25 @@ class SubmitJob(base):
         id = self.id
         job = self.clerk.getJob(id)
         state = job.state
-        if state not in ['created']:
+        if state not in ['created', 'submissionfailed']:
             raise RuntimeError, "Job %s not suitable for submission: %s" % (id, state)
         job.state = 'submitting'
         self.clerk.updateRecord(job)
+
+        try:
+            computation = job.computation
+            if not computation:
+                raise RuntimeError, 'computation is not specified for Job: %s' % (id,)
         
-        computation = job.computation
-        if not computation:
-            raise RuntimeError, 'computation is not specified for Job: %s' % (id,)
-        self.prepare(job)
-        self.schedule(job)
+            self.prepare(job)
+            self.schedule(job)
+        except Exception, e:
+            job.state = 'submissionfailed'
+            errmsg = '%s: %s' % (e.__class__.__name__, e)
+            job.error = errmsg
+            self.clerk.updateRecord(job)
+            self._debug.log('submission of Job %s failed. %s' % (
+                id, errmsg) )
         return
 
 

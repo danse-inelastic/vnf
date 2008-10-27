@@ -12,7 +12,7 @@
 #
 
 
-extensions = ['ins', 'sans']
+from vnf import extensions
 
 
 def clerk():    

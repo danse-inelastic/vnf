@@ -143,7 +143,6 @@ class MaterialSimulationWizard(base):
         type = self.processFormInputs(director)
         type = type.replace(' ', '_').lower()
         routine = 'configure_simulation'
-        routine = 'onSelect'
 
         mattertype = self.inventory.mattertype
         matterid = self.inventory.matterid

@@ -41,6 +41,7 @@ class Job(base):
     #   - created: just created. has not been submitted
     #   - submitted
     #   - submitting
+    #   - submissionfailed
     #   - running
     #   - onhold
     #   - finished
