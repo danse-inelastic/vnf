@@ -2,11 +2,7 @@
 instrument = [
     'Instrument',
     'MonochromaticSource',
-    'IQMonitor',
-    'IQEMonitor',
     'SampleComponent',
-    'ARCS_simple',
-    'SANS_NG7',
     ]
 
 
@@ -38,16 +34,10 @@ experiment = [
 
 
 kernels = [
-    'PolyXtalCoherentPhononScatteringKernel',
-    'SANSSphereModelKernel',
     ]
 
 
 kernel_related = [
-    'IDFPhononDispersion',
-    'BvKModel',
-    'BvKComputation',
-    'PhononDOS',
     ]
 
 
@@ -77,6 +67,18 @@ for t in tablemodules:
 
 from _hidden_tables import tables as _hidden_tables
 tables += _hidden_tables()
+
+
+
+# tables in extensions
+from vnf import extensions
+def _get_ext_tables(ext):
+    exec 'from vnf.dom.%s import alltables' % ext
+    return alltables()
+exttableslist = [_get_ext_tables(ext) for ext in extensions]
+for exttables in exttableslist:
+    tables += exttables
+
 
 
 def children( base ):

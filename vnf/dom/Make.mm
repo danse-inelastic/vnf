@@ -16,6 +16,8 @@ PACKAGE = dom
 
 
 BUILD_DIRS = \
+	ins \
+	sans \
 
 OTHER_DIRS = \
 
@@ -30,11 +32,7 @@ all: export
 # export
 
 EXPORT_PYTHON_MODULES = \
-	AbInitio.py \
-	ARCS_simple.py \
 	Block.py \
-	BvKModel.py \
-	BvKComputation.py \
 	Computation.py \
 	ComputationResult.py \
 	Crystal.py \
@@ -44,11 +42,7 @@ EXPORT_PYTHON_MODULES = \
 	DetectorSystem_fromXML.py \
 	Disordered.py \
 	Geometer.py \
-	GulpScatteringKernel.py \
-	IDFPhononDispersion.py \
 	Instrument.py \
-	IQMonitor.py \
-	IQEMonitor.py \
 	Job.py \
 	MaterialModeling.py \
 	MaterialSimulation.py \
@@ -57,13 +51,8 @@ EXPORT_PYTHON_MODULES = \
 	NeutronComponent.py \
 	NeutronExperiment.py \
 	OwnedObject.py \
-	PhononDispersion.py \
-	PhononDOS.py \
 	PolyCrystal.py \
-	PolyXtalCoherentPhononScatteringKernel.py \
 	ReferenceSet.py \
-	SANS_NG7.py \
-	SANSSphereModelKernel.py \
 	Sample.py \
 	SampleAssembly.py \
 	SampleComponent.py \
@@ -73,7 +62,6 @@ EXPORT_PYTHON_MODULES = \
 	ScatteringKernel.py \
 	Server.py \
 	Shape.py \
-	SimulationResult.py \
 	SingleCrystal.py \
 	Table.py \
 	User.py \

@@ -11,7 +11,7 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 PROJECT = vnf
-PACKAGE = components/ins
+PACKAGE = dom/sans
 
 
 BUILD_DIRS = \
@@ -30,9 +30,9 @@ all: export
 # export
 
 EXPORT_PYTHON_MODULES = \
-	BvK.py \
-	Clerk.py \
 	__init__.py \
+	_all_tables.py \
+	registry.py \
 
 
 export:: export-package-python-modules

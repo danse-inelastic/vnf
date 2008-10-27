@@ -138,9 +138,8 @@ class Clerk(Component):
 
 
     def getRecordByID(self, tablename, id):
-        exec 'from vnf.dom.%s import %s as Table' % (tablename, tablename) \
-             in locals()
-        return self._getRecordByID( Table, id )
+        Table = self._getTable(tablename)
+        return self._getRecordByID(Table, id)
 
 
     def getCrystal(self, id):
@@ -288,6 +287,15 @@ class Clerk(Component):
     def dereference(self, pointer):
         '''dereference a "pointer"'''
         return pointer.dereference(self.db)
+
+
+    def _getTable(self, tablename):
+        from vnf.dom.registry import tableRegistry as registry
+        try: return registry.get(tablename)
+        except KeyError:
+            # backward compatibility
+            candidate = tablename.lower() + 's'
+            return registry.get(candidate)
 
 
     def _index(self, table, where = None):

@@ -35,7 +35,7 @@ class BvK(base):
         # make a new BvKComputation record if necessary
         id = self.inventory.id
         if empty_id(id):
-            from vnf.dom.BvKComputation import BvKComputation
+            from vnf.dom.ins.BvKComputation import BvKComputation
             bvk = director.clerk.newDbObject(BvKComputation)
             self.inventory.id = id = bvk.id
         else:
@@ -387,7 +387,7 @@ class BvK(base):
 
         id = self.inventory.id
         if empty_id(id):
-            from vnf.dom.BvK import BvK
+            from vnf.dom.ins.BvK import BvK
             bvk = director.clerk.newDbObject(BvK)
             id = bvk.id
         else:
@@ -410,7 +410,7 @@ class BvK(base):
     pass # end of BvK
 
 
-from vnf.components.BvK import getSystem, findModels, issimplematter
+from vnf.components.ins.BvK import getSystem, findModels, issimplematter
 from vnf.components.misc import empty_id
 
 def actor():
