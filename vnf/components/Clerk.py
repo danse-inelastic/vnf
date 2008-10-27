@@ -12,18 +12,46 @@
 #
 
 
+
+def findClerks(extensions):
+    s = 'from vnf.components.%s.Clerk import Clerk'
+    def _(ext):
+        exec s % ext in locals()
+        return Clerk        
+    return [ _(ext) for ext in extensions ]
+
+
+def findDeepCopiers(extensions):
+    s = 'from vnf.components.%s.Clerk import DeepCopier'
+    def _(ext):
+        exec s % ext in locals()
+        return DeepCopier
+    return [ _(ext) for ext in extensions ]
+
+
+
 from pyre.components.Component import Component
 
 class Clerk(Component):
 
 
+    class Inventory(Component.Inventory):
+
+        import pyre.inventory
+        
+        # properties
+        db = pyre.inventory.str(name='db', default='vnf')
+        db.meta['tip'] = "the name of the database"
+
+        dbwrapper = pyre.inventory.str(name='dbwrapper', default='psycopg')
+        dbwrapper.meta['tip'] = "the python package that provides access to the database back end"
+
+        
+
+
     def __init__(self, *args, **kwds):
         Component.__init__(self, *args, **kwds)
         return
-
-
-    def findSimResults(self, sample):
-        return []
 
 
     def indexUsers(self, where=None):
@@ -115,16 +143,6 @@ class Clerk(Component):
         return self._getRecordByID( Table, id )
 
 
-    def getBvKComputation(self, id):
-        from vnf.dom.BvKComputation import BvKComputation
-        return self._getRecordByID(BvKComputation, id)
-
-
-    def getBvKModel(self, id):
-        from vnf.dom.BvKModel import BvKModel
-        return self._getRecordByID(BvKModel, id)
-
-
     def getCrystal(self, id):
         '''retrieve crystal of given id'''
         from vnf.dom.Crystal import Crystal
@@ -163,14 +181,6 @@ class Clerk(Component):
 #        from vnf.dom.ScatteringKernel2 import ScatteringKernel2
 #        return self._getAll( ScatteringKernel2, where )
 
-
-    def getSimulationResults(self, record):
-        from vnf.dom.SimulationResult import SimulationResult as table
-        simulation = table.simulation = record
-        where = "simulation='%s'" % simulation
-        records = self.db.fetchall(table, where = where)
-        return records
-    
 
     def getUser(self, username):
         '''retrieve user of given username'''
@@ -220,7 +230,7 @@ class Clerk(Component):
         return
     
 
-    def new_ownedobject(self, table):
+    def newOwnedObject(self, table):
         '''create a new record for the given table.
 
         The given table is assumed to have following fields:
@@ -242,7 +252,7 @@ class Clerk(Component):
 
 
 
-    def new_dbobject(self, table):
+    def newDbObject(self, table):
         '''create a new record for the given table.
 
         The given table is assumed to have following fields:
@@ -275,6 +285,11 @@ class Clerk(Component):
         return record
 
 
+    def dereference(self, pointer):
+        '''dereference a "pointer"'''
+        return pointer.dereference(self.db)
+
+
     def _index(self, table, where = None):
         index = {}
         all = self.db.fetchall(table, where=where)
@@ -299,9 +314,68 @@ class Clerk(Component):
 
     def _init(self):
         Component._init(self)
-        self.deepcopy = DeepCopier( self )
+
+        # connect to the database
+        import pyre.db
+        dbkwds = DbAddressResolver().resolve(self.inventory.db)
+        self.db = pyre.db.connect(wrapper=self.inventory.dbwrapper, **dbkwds)
+
+        self.deepcopy = self.DeepCopier( self )
         return
 
+
+
+class DbAddressResolver:
+    
+    def resolve(self, address):
+        tmp = address.split('@')
+        if len(tmp)==1:
+            svr = tmp[0]
+            up = ''
+        elif len(tmp)==2:
+            up,svr = tmp
+        else:
+            raise ValueError, 'Invalid db address: %r' % address
+
+        host,port,database = self._resolve_svr(svr)
+        user, pw = self._resolve_up(up)
+        ret = {
+            'host': host,
+            'port': port,
+            'database': database,
+            'user': user,
+            }
+        if pw: ret['password'] = pw
+        return ret
+    
+
+    def _resolve_up(self, up):
+        separator = ':'
+        tmp = up.split(separator)
+        if len(tmp) == 1:
+            user = tmp[0]
+            pw = None
+        elif len(tmp) == 2:
+            user, pw = tmp
+        else:
+            raise ValueError, 'Invalid user, password: %r' % up
+        return user, pw
+    
+
+    def _resolve_svr(self, svr):
+        separator = ':'
+        
+        if svr.find(separator) == -1:
+            return 'localhost', 5432, svr
+        splits = svr.split(separator)
+        if len(splits)==2:
+            host, database = splits
+            return host, 5432, database
+        elif len(splits)==3:
+            host, port, database = splits
+            return host, port, database
+        raise ValueError, 'Invalid db svr: %r' % (svr,)
+    
 
 
 class DeepCopier:
@@ -409,24 +483,12 @@ class DeepCopier:
         return self._onRecordWithID( source )
 
 
-    def onIQEMonitor(self, iqem):
-        return self._onRecordWithID( iqem )
-
-
     def onDetectorSystem_fromXML(self, record):
         return self._onRecordWithID( record )
 
 
-    def onPolyXtalCoherentPhononScatteringKernel(self, kernel):
-        return self._onRecordWithID( kernel )
-
-
-    def onSANSSphereModelKernel(self, kernel):
-        return self._onRecordWithID( kernel )
-
-
     def _onreference(self, reference):
-        record = reference.dereference(self.director.db)
+        record = reference.dereference(self.clerk.db)
         copy = self(record)
         newreference = reference.__class__( copy.id, copy.__class__ )
         return newreference
@@ -437,7 +499,7 @@ class DeepCopier:
         from copy import copy
         newrecord = copy( record )
         newrecord.id = new_id( self.director )
-        self.director.db.insertRow( newrecord )
+        self.clerk.db.insertRow( newrecord )
         return newrecord
 
 

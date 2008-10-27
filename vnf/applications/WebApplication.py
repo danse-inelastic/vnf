@@ -32,13 +32,6 @@ class WebApplication(Base):
         import opal.inventory
         import pyre.inventory
 
-        # properties
-        db = pyre.inventory.str(name='db', default='vnf')
-        db.meta['tip'] = "the name of the database"
-
-        dbwrapper = pyre.inventory.str(name='dbwrapper', default='psycopg')
-        dbwrapper.meta['tip'] = "the python package that provides access to the database back end"
-
         # components
         actor = opal.inventory.actor(default="login")
         actor.meta['tip'] = "the component that defines the application behavior"
@@ -154,14 +147,6 @@ class WebApplication(Base):
     def _init(self):
         super(WebApplication, self)._init()
 
-        # connect to the database
-        import pyre.db
-        dbkwds = DbAddressResolver().resolve(self.inventory.db)
-        self.db = pyre.db.connect(wrapper=self.inventory.dbwrapper, **dbkwds)
-
-        # initialize the accessors
-        self.clerk.db = self.db
-
         # initialize table registry
         import vnf.dom
         vnf.dom.register_alltables()
@@ -177,8 +162,6 @@ class WebApplication(Base):
     def _getPrivateDepositoryLocations(self):
         return ['../content/base', '../config']
 
-
-from vnf.DbAddressResolver import DbAddressResolver
 
 import journal
 journal.debug('curator').activate()

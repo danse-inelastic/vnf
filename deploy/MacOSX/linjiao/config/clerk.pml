@@ -17,8 +17,9 @@
 
 <inventory>
 
-  <component name='initdb'>
-    <property name='db'>vnf@localhost:5432:vnf</property>
+  <component name='clerk'>
+    <property name='db'>linjiao:9u6dl$>2@localhost:5432:vnf</property>
+    <property name='dbwrapper'>psycopg2</property>
   </component>
 
 </inventory>

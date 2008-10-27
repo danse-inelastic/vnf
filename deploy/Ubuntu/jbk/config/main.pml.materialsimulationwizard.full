@@ -33,10 +33,8 @@
         <property name="help-components">False</property>
         <property name="routine">None</property>
         <facility name="clerk">clerk</facility>
-        <property name="db">vnf:4Od&Cm#@localhost:54320:vnf</property>
         <property name="typos">relaxed</property>
         <property name="cgi-home">http://trueblue.caltech.edu/cgi-bin/vnf/main.cgi</property>
-        <property name="dbwrapper">psycopg</property>
         <facility name="sentry">sentry</facility>
         <property name="javapath">/java</property>
         <property name="debug">True</property>

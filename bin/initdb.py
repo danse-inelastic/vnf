@@ -23,10 +23,9 @@ class DbApp(Script):
 
         import pyre.inventory
 
-        db = pyre.inventory.str('db', default='vnf')
-        db.meta['tip'] = 'the database to connect to'
-
-        dbengine = pyre.inventory.str('dbengine', default = 'psycopg2')
+        import vnf.components
+        clerk = pyre.inventory.facility(name="clerk", factory=vnf.components.clerk)
+        clerk.meta['tip'] = "the component that retrieves data from the various database tables"
 
         import pyre.idd
         idd = pyre.inventory.facility('idd-session', factory=pyre.idd.session, args=['idd-session'])
@@ -34,8 +33,6 @@ class DbApp(Script):
 
 
     def main(self, *args, **kwds):
-        print "database:", self.inventory.db
-        print "database manager:", self.db
 
         self.db.autocommit(True)
 
@@ -100,13 +97,17 @@ class DbApp(Script):
         return
 
 
+    def _configure(self):
+        Script._configure(self)
+        self.clerk = self.inventory.clerk
+        self.clerk.director = self
+        return
+
+
     def _init(self):
         Script._init(self)
 
-        import pyre.db
-        dbengine = self.inventory.dbengine
-        dbkwds = DbAddressResolver().resolve(self.inventory.db)
-        self.db = pyre.db.connect(wrapper=dbengine, **dbkwds)
+        self.db = self.clerk.db
 
         self.idd = self.inventory.idd
 

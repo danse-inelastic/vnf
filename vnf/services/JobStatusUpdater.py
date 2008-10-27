@@ -22,13 +22,6 @@ class JobStatusUpdater(TCPService):
 
         import pyre.inventory
 
-        # properties
-        db = pyre.inventory.str(name='db', default='vnf')
-        db.meta['tip'] = "the name of the database"
-
-        dbwrapper = pyre.inventory.str(name='dbwrapper', default='psycopg')
-        dbwrapper.meta['tip'] = "the python package that provides access to the database back end"
-
         import vnf.components
         clerk = pyre.inventory.facility(name="clerk", factory=vnf.components.clerk)
         clerk.meta['tip'] = "the component that retrieves data from the various database tables"
@@ -100,14 +93,6 @@ class JobStatusUpdater(TCPService):
     def _init(self):
         TCPService._init(self)
         
-        # connect to the database
-        import pyre.db
-        from vnf.DbAddressResolver import DbAddressResolver
-        dbkwds = DbAddressResolver().resolve(self.inventory.db)
-        self.db = pyre.db.connect(wrapper=self.inventory.dbwrapper, **dbkwds)
-
-        self.clerk.db = self.db
-
         # initialize table registry
         import vnf.dom
         vnf.dom.register_alltables()
@@ -135,7 +120,7 @@ class JobStatusUpdater(TCPService):
         from vnf.dom.Job import Job
         for jid in just_completed:
             print jid
-            job = self.db.fetchall(Job, where="id='%s'" % jid)[0]
+            job = self.clerk.db.fetchall(Job, where="id='%s'" % jid)[0]
             self._alert_user(job)
             continue
 
@@ -161,7 +146,7 @@ class JobStatusUpdater(TCPService):
 
 
     def _alert_user(self, job):
-        user = job.creator.dereference(self.db)
+        user = self.clerk.dereference(job.creator)
         email = user.email
         title = 'Your vnf job %s is now %s.' % (job.id, job.state)
         content = [
@@ -204,7 +189,7 @@ class JobStatusUpdater(TCPService):
             ]
         all = []
         for state in uncompleted_states:
-            all += self.db.fetchall(Job, where = "state='%s'" % state)
+            all += self.clerk.db.fetchall(Job, where = "state='%s'" % state)
             continue
         return [j.id for j in all]
 

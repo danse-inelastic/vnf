@@ -96,13 +96,13 @@ class Sample(Actor):
 
 def format_chemical_formula( matter,director ):
     if nullpointer(matter): return "undefined"
-    matter = matter.dereference(director.db)
+    matter = director.clerk.dereference(matter)
     return matter.chemical_formula
 
 
 def format_lattice_parameters(matter, director):
     if nullpointer(matter): return "undefined"
-    matter = matter.dereference(director.db)
+    matter = director.clerk.dereference(matter)
     
     lattice = matter.cartesian_lattice
     import numpy
@@ -113,7 +113,7 @@ def format_lattice_parameters(matter, director):
 
 def format_atoms(matter, director):
     if nullpointer(matter): return "undefined"
-    matter = matter.dereference(director.db)
+    matter = director.clerk.dereference(matter)
 
     coords = matter.fractional_coordinates
     import numpy
@@ -159,7 +159,7 @@ class ShapeFormatter:
 
 def format_shape( shape, director ):
     if nullpointer(shape): return "undefined"
-    shape = shape.dereference(director.db)
+    shape = director.clerk.dereference(shape)
     return ShapeFormatter()( shape )
 
 

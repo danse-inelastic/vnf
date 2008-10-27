@@ -3,10 +3,6 @@
 ! ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
 !
-!                             Michael A.G. Aivazis
-!                      California Institute of Technology
-!                      (C) 1998-2005  All Rights Reserved
-!
 ! {LicenseText}
 !
 ! ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -17,7 +13,8 @@
 
 <inventory>
 
-  <component name='submitjob'>
+  <component name='clerk'>
+    <property name='db'>vnf:4Od&amp;Cm#@localhost:54320:vnf</property>
   </component>
 
 </inventory>
@@ -25,5 +22,7 @@
 
 <!-- version-->
 <!-- $Id$-->
+
+<!-- Generated automatically by XMLMill on Fri Apr  4 10:17:11 2008-->
 
 <!-- End of file -->

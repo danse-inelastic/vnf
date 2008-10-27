@@ -55,7 +55,7 @@ class Actor(base):
             'To start, you can plan a new computation by following %s.' % link,
             ]
 
-        simulations = getallsimulations(director.db)
+        simulations = getallsimulations(director.clerk.db)
         if len(simulations):
             p = document.paragraph()
             p.text = [

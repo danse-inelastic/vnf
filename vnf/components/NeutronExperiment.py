@@ -203,7 +203,7 @@ class NeutronExperiment(base):
         if nullpointer(job):
             raise RuntimeError, "job not yet established"
         
-        job = job.dereference(director.db)
+        job = director.clerk.dereference(job)
         
         try:
             Scheduler.schedule(job, director)
@@ -273,7 +273,7 @@ class NeutronExperiment(base):
         experiment = director.clerk.getNeutronExperiment(self.inventory.id)
         from TreeViewCreator import create
         view = create( experiment, director )
-        #view = create( experiment.instrument.dereference(director.db), director )
+        #view = create( experiment.instrument.dereference(director.clerk.db), director )
         document.contents.append( view )
         return
 
@@ -588,7 +588,7 @@ def listexperiments( experiments, document, director ):
             link = action_link( action, director.cgihome )
             instrument = link
         else:
-            instrument = element.instrument.dereference( director.db )
+            instrument = director.clerk.dereference(element.instrument)
             instrument = instrument.short_description
             pass # end if
         
@@ -701,7 +701,7 @@ class ResultDrawer:
             src = result
             #simulationresults record
             from vnf.dom.SimulationResult import SimulationResult
-            result_record = director.clerk.new_dbobject(SimulationResult)
+            result_record = director.clerk.newDbObject(SimulationResult)
             result_record.label = result
             result_record.simulation_type = 'NeutronExperiment'
             result_record.simulation_id = experiment.id

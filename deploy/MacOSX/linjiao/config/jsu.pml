@@ -20,7 +20,6 @@
 
     <property name='port'>50111</property>
     <property name='timeout'>5*second</property>
-    <property name='db'>linjiao:9u6dl$>2@localhost:5432:vnf</property>
 
   </component>
 

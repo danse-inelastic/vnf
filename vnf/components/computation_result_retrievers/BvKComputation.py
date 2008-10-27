@@ -26,7 +26,7 @@ class Retriever(base):
     def _ondos(self):
         director = self.director
         computation = self.computation
-        job = computation.job.dereference(director.db)
+        job = director.clerk.dereference(computation.job)
 
         expected_results = [
             'DOS',
@@ -34,7 +34,7 @@ class Retriever(base):
         self._check_job_results_sanity(job=job, expected_results=expected_results)
 
         result_records_ref = computation.results
-        result_records = result_records_ref.dereference(director.db)
+        result_records = director.clerk.dereference(result_records_ref)
 
         # save results
         from vnf.dom.PhononDOS import PhononDOS

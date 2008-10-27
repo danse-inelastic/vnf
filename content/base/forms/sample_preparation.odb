@@ -42,15 +42,15 @@ class Form( base ):
         if sampleassembly_ref is None:
             # need to create a new sample assembly
             from vnf.dom.SampleAssembly import SampleAssembly
-            sampleassembly = director.clerk.new_ownedobject( SampleAssembly )
+            sampleassembly = director.clerk.newOwnedObject( SampleAssembly )
             # attach to experiment
             experiment.sampleassembly = sampleassembly
             director.clerk.updateRecord( experiment )
         else:
-            sampleassembly = sampleassembly_ref.dereference(director.db)
+            sampleassembly = director.clerk.dereference(sampleassembly_ref)
             pass # endif
 
-        scatterers = sampleassembly.scatterers.dereference(director.db)
+        scatterers = director.clerk.dereference(sampleassembly.scatterers)
         current_scatterer_id = ''
         if len(scatterers):
             for label, s in scatterers:
@@ -88,7 +88,7 @@ class Form( base ):
         # find all existing examples
         from vnf.dom.ScattererExample import ScattererExample
         scattererexamples = director.clerk.db.fetchall( ScattererExample, where = None )
-        scatterers = [ ex.scatterer.dereference(director.db) for ex in scattererexamples ]
+        scatterers = [ director.clerk.dereference(ex.scatterer) for ex in scattererexamples ]
         entries = [ (scatterer.id, scatterer.short_description)
                     for scatterer in scatterers ]
         
@@ -137,20 +137,20 @@ class Form( base ):
             self.inventory.experiment_id )
         #sample assembly
         sampleassembly_ref = experiment.sampleassembly
-        sampleassembly = sampleassembly_ref.dereference(director.db)
+        sampleassembly = director.clerk.dereference(sampleassembly_ref)
         
         #scatterers in sample assembly
         scatterers_refset = sampleassembly.scatterers
 
         # does sample already exist?
-        scatterers = scatterers_refset.dereference( director.db )
+        scatterers = director.clerk.dereference(scatterers_refset)
         oldsample = None
         for label, s in scatterers:
             if label == 'sample': oldsample = s; break
             continue
         if oldsample:
             # if so, remove the reference from the referenceset
-            scatterers_refset.delete( oldsample, director.db )
+            scatterers_refset.delete( oldsample, director.clerk.db )
 
         # set to user chosen scatterer
         scatterer_id = self.inventory.scatterer_id
@@ -158,7 +158,7 @@ class Form( base ):
         
         #now make a copy
         samplecopy = clerk.deepcopy( sample )
-        scatterers_refset.add( samplecopy, director.db, name = 'sample' )
+        scatterers_refset.add( samplecopy, director.clerk.db, name = 'sample' )
 
         return
 

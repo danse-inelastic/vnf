@@ -65,7 +65,7 @@ def form( name, mattertype, shapetype ):
             
             p = form.paragraph()
             # get shape
-            shape = scatterer.shape.dereference(director.db)
+            shape = scatterer.shape.dereference(director.clerk.db)
             p.text = [
                 'Your %s is a %s.' % (scattererlabel, shape.__class__.__name__.lower()),
                 'You can change the dimensions here:',
@@ -99,7 +99,7 @@ def form( name, mattertype, shapetype ):
             shapeinput = shapeform.processUserInputs(self, commit = False)
 
             #transfer user inputs
-            shape = scatterer.shape.dereference( director.db )
+            shape = scatterer.shape.dereference( director.clerk.db )
             transfer( shapeinput, shape, shapeform.parameters )
                 
             #update db

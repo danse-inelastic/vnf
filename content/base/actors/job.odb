@@ -38,7 +38,7 @@ class Actor(base):
         document = main.document(title='Jobs')
 
         from vnf.dom.Job import Job
-        jobs = director.db.fetchall( Job )
+        jobs = director.clerk.db.fetchall( Job )
 
         for job in jobs:
             p = document.paragraph()
@@ -208,7 +208,7 @@ class Actor(base):
             main = page._body._content._main
             document = main.document( title = 'Job not submitted' )
             p = document.paragraph()
-            server = job.server.dereference(director.db)
+            server = director.clerk.dereference(job.server)
             p.text = [
                 'Failed to submit job %s to %s' % (
                 job.id, server.short_description, ),
@@ -221,7 +221,7 @@ class Actor(base):
         main = page._body._content._main
         document = main.document( title = 'Job submitted' )
         p = document.paragraph()
-        server = job.server.dereference(director.db)
+        server = director.clerk.dereference(job.server)
         p.text = [
             'Job #%s has been submitted to %s' % (
             job.id, server.short_description, ),

@@ -17,6 +17,9 @@ PACKAGE = components
 BUILD_DIRS = \
 	computation_result_retrievers \
 	job_builders \
+	ins \
+	sans \
+
 
 OTHER_DIRS = \
 
@@ -32,7 +35,6 @@ all: export
 # export
 
 EXPORT_PYTHON_MODULES = \
-	__init__.py \
 	Actor.py \
 	ARCSConfigurationApplyer.py \
 	BvK.py \
@@ -83,6 +85,8 @@ EXPORT_PYTHON_MODULES = \
 	spawn.py \
 	twodarr.py \
 	wording.py \
+	_extend_class.py \
+	__init__.py \
 
 
 export:: export-package-python-modules

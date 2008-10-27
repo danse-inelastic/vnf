@@ -19,14 +19,14 @@ info = journal.info( 'scheduler' )
 
 def schedule( job, director ):
     from JobDataManager import JobDataManager
-    manager = JobDataManager( job, director.db, director.csaccessor, director.dds )
+    manager = JobDataManager( job, director.clerk.db, director.csaccessor, director.dds )
 
     # copy local job directory to server
     manager.initremotedir( )
     server_jobpath = manager.remotepath()
 
     # the server
-    server = job.server.dereference(director.db)
+    server = job.server.dereference(director.clerk.db)
 
     # the scheduler 
     scheduler = schedulerfactory( server )
@@ -57,12 +57,12 @@ def check( job, director ):
         return job
 
     #scheduler
-    server = job.server.dereference(director.db)
+    server = director.clerk.dereference(job.server)
     scheduler = schedulerfactory( server )
 
     #remote job path
     from JobDataManager import JobDataManager
-    manager = JobDataManager(job, director.db, dds=director.dds)
+    manager = JobDataManager(job, director.clerk.db, dds=director.dds)
     server_jobpath = manager.remotepath()
 
     #

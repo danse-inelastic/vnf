@@ -19,12 +19,6 @@ class SubmitJob(base):
         import pyre.inventory
         id = pyre.inventory.str('id')
 
-        db = pyre.inventory.str(name='db', default='vnf')
-        db.meta['tip'] = "the name of the database"
-
-        dbwrapper = pyre.inventory.str(name='dbwrapper', default='psycopg')
-        dbwrapper.meta['tip'] = "the python package that provides access to the database back end"
-
         import pyre.idd
         idd = pyre.inventory.facility('idd-session', factory=pyre.idd.session, args=['idd-session'])
         idd.meta['tip'] = "access to the token server"
@@ -61,9 +55,9 @@ class SubmitJob(base):
 
     def prepare(self, job):
         jobpath = self.dds.abspath(job)
-        computation = job.computation.dereference(self.db)
+        computation = self.clerk.dereference(job.computation)
         from vnf.components import buildjob
-        files = buildjob(computation, db=self.db, dds=self.dds, path=jobpath)
+        files = buildjob(computation, db=self.clerk.db, dds=self.dds, path=jobpath)
         for f in files: self.dds.remember(job, f)
         return
 
@@ -94,14 +88,6 @@ class SubmitJob(base):
     def _init(self):
         base._init(self)
 
-        # connect to the database
-        import pyre.db
-        dbkwds = DbAddressResolver().resolve(self.inventory.db)
-        self.db = pyre.db.connect(wrapper=self.inventory.dbwrapper, **dbkwds)
-
-        # initialize the accessors
-        self.clerk.db = self.db
-
         # initialize table registry
         import vnf.dom
         vnf.dom.register_alltables()
@@ -117,9 +103,6 @@ class SubmitJob(base):
     def _getPrivateDepositoryLocations(self):
         return ['../content', '../config']
     
-
-from vnf.DbAddressResolver import DbAddressResolver
-
 
 # version
 __id__ = "$Id$"

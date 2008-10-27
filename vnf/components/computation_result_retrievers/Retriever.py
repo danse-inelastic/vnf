@@ -13,7 +13,7 @@
 
 
 def all_results_exist(results, job, director):
-    server = job.server.dereference(director.db)
+    server = director.clerk.dereference(job.server)
     for r in results:
         if not director.dds.is_available(job, r, server): return False
         continue
@@ -37,11 +37,11 @@ class Retriever:
     def _record_result(self, job,filenameinjobdir, recordtype,newfilename):
         #create a new record to save the result
         director = self.director
-        record = director.clerk.new_ownedobject(recordtype)
+        record = director.clerk.newOwnedObject(recordtype)
 
         #make symbolic link from the result db record's data directory
         #to the job directory
-        server = job.server.dereference(director.db)
+        server = director.clerk.dereference(job.server)
         director.dds.symlink(job,filenameinjobdir, record,newfilename, server)
 
         # the result record should know where it comes from
@@ -49,7 +49,7 @@ class Retriever:
         director.clerk.updateRecord(record)
 
         # add the result to the result list
-        self.computation.results.add(record, director.db, name=record.name)
+        self.computation.results.add(record, director.clerk.db, name=record.name)
         return
 
 

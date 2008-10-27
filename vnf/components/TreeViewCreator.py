@@ -43,7 +43,7 @@ class TreeViewCreator:
 
 
     def onNeutronExperiment(self, experiment):
-        db = self.director.db
+        db = self.director.clerk.db
         elements = [
             experiment.instrument.dereference(db),
             experiment.sampleassembly.dereference(db),
@@ -61,7 +61,7 @@ class TreeViewCreator:
 
 
     def onInstrument(self, instrument):
-        db = self.director.db
+        db = self.director.clerk.db
         components = instrument.components.dereference(db)
         components = [ c for n,c in components ]
         return self.onContainer(instrument, components )
@@ -72,13 +72,13 @@ class TreeViewCreator:
     
 
     def onSampleAssembly(self, sampleassembly):
-        db = self.director.db
+        db = self.director.clerk.db
         scatterers = [ c for n,c in sampleassembly.scatterers.dereference(db) ]
         return self.onContainer(sampleassembly, scatterers)
 
 
     def onScatterer(self, scatterer):
-        db = self.director.db
+        db = self.director.clerk.db
         
         elements = [
             scatterer.matter.dereference(db),
@@ -90,7 +90,7 @@ class TreeViewCreator:
 
 
     def onPolyXtalCoherentPhononScatteringKernel(self, kernel):
-        db = self.director.db
+        db = self.director.clerk.db
         elements = [ kernel.dispersion.dereference(db) ]
         return self.onContainer( kernel, elements )
 

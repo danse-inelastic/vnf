@@ -17,15 +17,14 @@
 
 <inventory>
 
-  <component name='ssher'>
-    <property name='known_hosts'>/Users/linjiao/vnfssh/known_hosts.www</property>
-    <property name='private_key'>/Users/linjiao/vnfssh/id_rsa.www</property>
+  <component name='clerk'>
+    <property name='db'>vnf:4Od&amp;Cm#@localhost:5432:vnf</property>
   </component>
 
 </inventory>
 
 
 <!-- version-->
-<!-- $Id: main.pml,v 1.1.1.1 2006-11-27 00:09:15 aivazis Exp $-->
+<!-- $Id$-->
 
 <!-- End of file -->

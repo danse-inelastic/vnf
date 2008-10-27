@@ -20,12 +20,6 @@ class RetrieveResults(base):
         id = pyre.inventory.str('id')
         type = pyre.inventory.str('type')
         
-        db = pyre.inventory.str(name='db', default='vnf')
-        db.meta['tip'] = "the name of the database"
-        
-        dbwrapper = pyre.inventory.str(name='dbwrapper', default='psycopg')
-        dbwrapper.meta['tip'] = "the python package that provides access to the database back end"
-
         import pyre.idd
         idd = pyre.inventory.facility('idd-session', factory=pyre.idd.session, args=['idd-session'])
         idd.meta['tip'] = "access to the token server"
@@ -92,14 +86,6 @@ class RetrieveResults(base):
     def _init(self):
         base._init(self)
 
-        # connect to the database
-        import pyre.db
-        dbkwds = DbAddressResolver().resolve(self.inventory.db)
-        self.db = pyre.db.connect(wrapper=self.inventory.dbwrapper, **dbkwds)
-
-        # initialize the accessors
-        self.clerk.db = self.db
-
         # initialize table registry
         import vnf.dom
         vnf.dom.register_alltables()
@@ -115,8 +101,6 @@ class RetrieveResults(base):
     def _getPrivateDepositoryLocations(self):
         return ['../content', '../config']
     
-
-from vnf.DbAddressResolver import DbAddressResolver
 
 
 # version

@@ -18,7 +18,6 @@
 <inventory>
 
   <component name='initdb'>
-    <property name='db'>vnf:4Od&amp;Cm#@localhost:5432:vnf</property>
   </component>
 
 </inventory>

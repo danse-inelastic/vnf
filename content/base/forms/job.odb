@@ -81,7 +81,7 @@ class Form(base):
             label = meta['label'],
             value = record.short_description or \
             'job for %s' % _describe_computation
-            (record.computation.dereference(self.director.db))
+            (director.clerk.dereference(record.computation))
             )
         field.help = ' '.join( meta['tip'] )
 

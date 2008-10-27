@@ -65,7 +65,7 @@ class Form( base ):
         # find all existing examples
         from vnf.dom.ScattererExample import ScattererExample
         scattererexamples = director.clerk.db.fetchall( ScattererExample, where = None )
-        return [ ex.scatterer.dereference(director.db) for ex in scattererexamples ]
+        return [ director.clerk.dereference(ex.scatterer) for ex in scattererexamples ]
 
 
     def __init__(self, name = None):
