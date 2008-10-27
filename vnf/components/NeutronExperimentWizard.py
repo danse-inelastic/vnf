@@ -49,7 +49,7 @@ class NeutronExperimentWizard(base):
             self.inventory.id = experiment.id
             page = director.retrieveSecurePage( 'neutronexperimentwizard' )
             pass
-        
+
         main = page._body._content._main
 
         # populate the main column
