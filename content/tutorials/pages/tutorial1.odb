@@ -17,7 +17,7 @@ def page(app):
     import vnf.content
 
     # create the page
-    page = vnf.content.page(name='greet', title="Virtual Neutron Facility", root=app.home)
+    page = vnf.content.page(name='tutorial1', title="Virtual Neutron Facility", root=app.home)
     
     # build the body
     body = page.body()
@@ -44,9 +44,6 @@ def page(app):
     if nav:
         left.add(nav)
         
-    # populate the right column
-    news = right.portlet(title="News")
-
     # build the footer
     footer = body.pageFooter()
     from opal.content.Paragraph import Paragraph

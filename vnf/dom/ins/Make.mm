@@ -30,10 +30,15 @@ all: export
 # export
 
 EXPORT_PYTHON_MODULES = \
-	BvKModel.py \
 	BvKComputation.py \
+	BvKModel.py \
+	IDFPhononDispersion.py \
 	MaterialModeling.py \
 	OwnedObject.py \
+	PhononDispersion.py \
+	PolyCrystal.py \
+	PolyXtalCoherentPhononScatteringKernel.py \
+	ScatteringKernel.py \
 	__init__.py \
 	_all_tables.py \
 	registry.py \

@@ -11,7 +11,7 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 PROJECT = vnf
-PACKAGE = dom/tutorials
+PACKAGE = components/tutorials
 
 
 BUILD_DIRS = \
@@ -30,13 +30,8 @@ all: export
 # export
 
 EXPORT_PYTHON_MODULES = \
-	MaterialModeling.py \
-	OwnedObject.py \
-	SimpleIQComputation.py \
-	SinIQModel.py \
+	Clerk.py \
 	__init__.py \
-	_all_tables.py \
-	registry.py \
 
 
 export:: export-package-python-modules

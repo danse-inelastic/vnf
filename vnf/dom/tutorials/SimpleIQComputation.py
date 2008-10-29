@@ -21,9 +21,10 @@ class SimpleIQComputation(base):
     name = 'simpleiqcomputations'
 
     import pyre.db
-    model = pyre.db.versatile_reference(name='model', tableRegistry=tableRegistry)
+    model = pyre.db.versatileReference(name='model', tableRegistry=tableRegistry)
     Qmin = pyre.db.real(name='Qmin', default=0)
     Qmax = pyre.db.real(name='Qmax', default=10)
+    dQ = pyre.db.real(name='dQ', default=10)
 
 
 # version

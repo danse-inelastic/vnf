@@ -43,8 +43,8 @@ def inittable(db):
     from Disordered import Disordered
     from Block import Block
     from Cylinder import Cylinder
-    from PolyXtalCoherentPhononScatteringKernel import PolyXtalCoherentPhononScatteringKernel
-    from SANSSphereModelKernel import SANSSphereModelKernel
+    from ins.PolyXtalCoherentPhononScatteringKernel import PolyXtalCoherentPhononScatteringKernel
+    from sans.SANSSphereModelKernel import SANSSphereModelKernel
     
     records = [
         s( 'polyxtal-fccNi-scatterer-0',

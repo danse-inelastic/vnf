@@ -121,8 +121,6 @@ class DbApp(Script):
         return ['../config']
     
 
-from vnf.DbAddressResolver import DbAddressResolver
-
 
 def main():
     import journal

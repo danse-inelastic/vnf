@@ -18,6 +18,7 @@ PACKAGE = dom
 BUILD_DIRS = \
 	ins \
 	sans \
+	tutorials \
 
 OTHER_DIRS = \
 
@@ -43,6 +44,8 @@ EXPORT_PYTHON_MODULES = \
 	Disordered.py \
 	Geometer.py \
 	Instrument.py \
+	IQEMonitor.py \
+	IQMonitor.py \
 	Job.py \
 	MaterialModeling.py \
 	MaterialSimulation.py \

@@ -19,6 +19,7 @@ BUILD_DIRS = \
 	job_builders \
 	ins \
 	sans \
+	tutorials \
 
 
 OTHER_DIRS = \

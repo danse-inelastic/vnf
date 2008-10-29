@@ -138,6 +138,7 @@ class DBObjectForm( base ):
 
 
 def _combine(text):
+    if text is None: return ''
     if isinstance(text, str): return text
     if isinstance(text, list) or isinstance(text, tuple):
         return ' '.join( text )

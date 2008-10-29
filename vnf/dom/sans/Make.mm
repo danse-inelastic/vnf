@@ -30,6 +30,8 @@ all: export
 # export
 
 EXPORT_PYTHON_MODULES = \
+	SANSSphereModelKernel.py \
+	ScatteringKernel.py \
 	__init__.py \
 	_all_tables.py \
 	registry.py \
