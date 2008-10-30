@@ -35,6 +35,7 @@ EXPORT_PYTHON_MODULES = \
 	Image.py \
 	Page.py \
 	SlidableGallery.py \
+	Table.py \
 	TreeView.py \
 	__init__.py
 

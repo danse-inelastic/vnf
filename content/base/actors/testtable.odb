@@ -1,0 +1,63 @@
+# -*- Python -*-
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                   Jiao Lin
+#                      California Institute of Technology
+#                        (C) 2008  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+from vnf.components.Actor import Actor as base
+
+
+class Test( base ):
+
+    class Inventory( base.Inventory ):
+
+        import pyre.inventory
+
+        pass # end of Inventory
+
+
+    def __init__(self, name = 'testtable'):
+        base.__init__(self, name)
+        return
+
+
+    def default(self, director):
+        page = director.retrievePage( 'greet' )
+        main = page._body._content._main
+        document = main.document(title = 'table test')
+
+        from vnf.content.Table import Table, ColumnDescriptor
+
+        cols = [
+            ColumnDescriptor( 'col1', 'Title', 'text' ),
+            ColumnDescriptor( 'col2', 'Date', 'date',
+                              valid_range = [ '01/01/1977', '01/01/2008' ] ),
+            ]
+        table = Table( cols )
+        table.addRow( 'abc', '06/06/2006' )
+        table.addRow( 'hi', '05/05/2005' )
+        
+        document.contents.append(table)
+        return page
+
+    pass # end of Test
+
+
+
+def actor():
+    return Test( ) 
+
+
+
+# version
+__id__ = "$Id$"
+
+# End of file 

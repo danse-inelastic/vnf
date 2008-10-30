@@ -132,7 +132,6 @@ class WebApplication(Base):
         self.debug = self.inventory.debug
         self.csaccessor = self.inventory.csaccessor
 
-        import vnf.weaver
         configurations = {
             'home': self.home,
             'cgihome':self.cgihome,
@@ -140,7 +139,8 @@ class WebApplication(Base):
             'javascriptpath':self.inventory.javascriptpath,
             'javapath':self.inventory.javapath,
             }
-        self.pageMill = vnf.weaver.pageMill( configurations )
+        import vnf.weaver
+        vnf.weaver.extend_weaver(self.pageMill, configurations )
         return
 
 

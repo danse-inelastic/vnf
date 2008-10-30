@@ -37,6 +37,7 @@ EXPORT_PYTHON_MODULES = \
 	DocumentMill.py \
 	DocumentMillExtensions.py \
 	StructuralMill.py \
+	TableMill.py \
 	TreeViewMill.py \
 	__init__.py \
 

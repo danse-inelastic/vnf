@@ -16,8 +16,14 @@ class Extension1:
 
     def onTreeView(self, treeview):
         from TreeViewMill import TreeViewMill
-        self.treeviewmill = TreeViewMill(self.configurations)
-        return self.treeviewmill.render( treeview )
+        mill = TreeViewMill(self.configurations)
+        return mill.render(treeview)
+
+
+    def onTable(self, table):
+        from TableMill import TableMill
+        mill = TableMill(self.configurations)
+        return mill.render(table)
 
 
     def onImage(self, image):
