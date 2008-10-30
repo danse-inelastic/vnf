@@ -37,8 +37,6 @@ all: export
 
 EXPORT_PYTHON_MODULES = \
 	Actor.py \
-	ARCSConfigurationApplyer.py \
-	BvK.py \
 	Clerk.py \
 	Computation.py \
 	ComputationResultsRetriever.py \
@@ -55,6 +53,7 @@ EXPORT_PYTHON_MODULES = \
 	Job.py \
 	JobBuilder.py \
 	JobDataManager.py \
+	Login.py \
 	MaterialSimulationWizard.py \
 	McstasSampleBuilder.py \
 	McvineSampleAssemblyDatafilesCollector.py \
@@ -64,16 +63,13 @@ EXPORT_PYTHON_MODULES = \
 	NeutronExperimentWizard.py \
 	NeutronExperimentSimulationRunBuilder.py \
 	NeutronExperimentSimulationRunBuilder_demo.py \
-	PyHtmlTable.py \
 	Sample.py \
 	SampleAssembly.py \
 	SampleAssemblyXMLBuilder.py \
-	SampleInput.py \
 	SamplePreparation.py \
 	Scatterer.py \
 	ScattererConfigurationApplyer.py \
 	ScatteringKernel.py \
-	ScatteringKernelInput.py \
 	Scheduler.py \
 	Scribe.py \
 	Server.py \
@@ -84,7 +80,6 @@ EXPORT_PYTHON_MODULES = \
 	inventorylist.py \
 	misc.py \
 	spawn.py \
-	twodarr.py \
 	wording.py \
 	_extend_class.py \
 	__init__.py \
