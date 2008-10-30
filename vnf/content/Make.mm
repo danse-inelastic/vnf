@@ -34,6 +34,7 @@ EXPORT_PYTHON_MODULES = \
 	ActionRequireAuthentication.py \
 	Image.py \
 	Page.py \
+	SheetView.py \
 	SlidableGallery.py \
 	Table.py \
 	TreeView.py \

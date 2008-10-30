@@ -238,8 +238,8 @@
   
   //  money
   $.fn.establish_cell_from_data.handle_money = function( cell, value ) {
-    html = '<span class="moneyCurrencySymbol">$ </span>';
-    html += '<span class="moneyAmount">' + value + '</span>';
+    html = '<span class="moneyCurrencySymbol">$</span>';
+    html += '<span class="moneyAmount">' + value.toFixed(2) + '</span>';
     cell.css( 'text-align', 'right' );
     cell.html( html );
   };
