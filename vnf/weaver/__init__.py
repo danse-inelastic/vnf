@@ -11,20 +11,6 @@
 
 
 
-def pageMill( configurations ):
-    '''
-    configurations example:
-    {
-    'home': 'http://localhost',
-    'cgihome': 'http://localhost/cgi-bin',
-    'imagepath': '/vnf/images',
-    'javascriptpath': '/vnf/javascripts',
-    }
-    '''
-    from PageMill import PageMill
-    return PageMill( configurations )
-
-
 def action_link(action, cgihome):
     from ActionLinkRenderer import ActionLinkRenderer
     renderer = ActionLinkRenderer( cgihome )
@@ -39,6 +25,17 @@ def action_formfields( action, form ):
     from ActionMill_forForm import ActionMill_forForm
     renderer = ActionMill_forForm( form )
     return renderer.render( action )
+
+
+def extend_weaver(weaver, configurations):
+    weaver.bodyMill.structuralMill = structuralMill(
+        weaver.bodyMill.tagger, configurations)
+    return
+
+
+def structuralMill(tagger, configuration):
+    from StructuralMill import StructuralMill
+    return StructuralMill(tagger, configuration)
 
 
 # version

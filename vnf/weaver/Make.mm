@@ -34,12 +34,9 @@ EXPORT_PYTHON_MODULES = \
 	ActionLinkRenderer.py \
 	ActionHrefRenderer.py \
 	ActionMill_forForm.py \
-	BodyMill.py \
 	DocumentMill.py \
-	HeadMill.py \
-	PageMill.py \
+	DocumentMillExtensions.py \
 	StructuralMill.py \
-	TagMill.py \
 	TreeViewMill.py \
 	__init__.py \
 
