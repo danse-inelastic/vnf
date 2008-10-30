@@ -1,5 +1,7 @@
 
 instrument = [
+    'IQEMonitor',
+    'IQMonitor',
     'Instrument',
     'MonochromaticSource',
     'SampleComponent',

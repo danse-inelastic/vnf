@@ -15,6 +15,7 @@ PACKAGE = vnf
 
 RECURSE_DIRS = \
     vnf \
+    dds \
 
 EXPORT_DATADIRS = \
     bin \

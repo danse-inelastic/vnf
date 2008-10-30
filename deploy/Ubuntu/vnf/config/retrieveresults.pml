@@ -17,8 +17,7 @@
 
 <inventory>
 
-  <component name='clerk'>
-    <property name='db'>linjiao:4Od&amp;Cm#@localhost:5432:vnf</property>
+  <component name='retrieveresults'>
   </component>
 
 </inventory>
