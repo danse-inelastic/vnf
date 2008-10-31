@@ -1,0 +1,28 @@
+#!/usr/bin/env python
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                             Michael A.G. Aivazis
+#                      California Institute of Technology
+#                      (C) 1998-2005  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+from vnf.components.Actor import Actor as base
+class Actor(base):
+
+    def default(self, director):
+        return director.retrievePage('nyi')
+
+def actor():
+    return Actor('nyi')
+
+
+# version
+__id__ = "$Id: error.odb,v 1.1.1.1 2006-11-27 00:09:15 aivazis Exp $"
+
+# End of file 

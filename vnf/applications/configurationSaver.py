@@ -28,7 +28,8 @@ def retrieveConfiguration(inventory, registry):
         component = fac.__get__(inventory)
         if isinstance(component, Journal): continue
         if component is None:
-            raise RuntimeError, "Unable to retrieve component for facility %s" % fac.name
+            # raise RuntimeError, "Unable to retrieve component for facility %s" % fac.name
+            continue
         retrieveConfiguration(component.inventory, node)
         continue
     

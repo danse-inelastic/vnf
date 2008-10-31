@@ -33,7 +33,7 @@ class WebApplication(Base):
         import pyre.inventory
 
         # components
-        actor = opal.inventory.actor(default="login")
+        actor = opal.inventory.actor(default='nyi')
         actor.meta['tip'] = "the component that defines the application behavior"
 
         import pyre.idd
@@ -67,6 +67,7 @@ class WebApplication(Base):
             from os import environ
             user = environ.get('USER') or 'webserver'
             toPml(self, '/tmp/main-debug-%s.pml' % user)
+
         super(WebApplication, self).main(*args, **kwds)
         return
 
@@ -172,7 +173,7 @@ class WebApplication(Base):
         
 
 import journal
-journal.debug('curator').activate()
+journal.error('pyre.inventory').deactivate()
 
 # version
 __id__ = "$Id: WebApplication.py,v 1.3 2007-08-30 16:46:08 aivazis Exp $"
