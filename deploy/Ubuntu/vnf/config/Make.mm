@@ -30,12 +30,14 @@ distclean::
 
 
 EXPORT_DATAFILES = \
+	clerk.pml \
 	initdb.pml \
 	jsu.pml \
 	jsu-ssher.pml \
 	main.pml \
+	retrieveresults.pml \
 	ssher.pml \
-	testjobsubmission.pml \
+	submitjob.pml \
 
 CP_F = cp -f
 EXPORT_DATA_PATH = $(EXPORT_ROOT)/$(PROJECT)/$(PACKAGE)
