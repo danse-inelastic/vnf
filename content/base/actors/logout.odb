@@ -13,7 +13,7 @@
 
 
 def actor():
-    from opal.components.Logout import Logout
+    from vnf.components.Logout import Logout
     return Logout()
 
 

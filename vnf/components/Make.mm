@@ -54,6 +54,7 @@ EXPORT_PYTHON_MODULES = \
 	JobBuilder.py \
 	JobDataManager.py \
 	Login.py \
+	Logout.py \
 	MaterialSimulationWizard.py \
 	McstasSampleBuilder.py \
 	McvineSampleAssemblyDatafilesCollector.py \
