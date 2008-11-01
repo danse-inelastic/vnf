@@ -36,6 +36,11 @@ def scribe():
     return Scribe( 'scribe', 'scribe' )
 
 
+def usersFromDB():
+    from UsersFromDB import UsersFromDB
+    return UsersFromDB('usersFromDB')
+
+
 def ssher():
     from SSHer import SSHer
     return SSHer( 'ssher', 'ssher' )

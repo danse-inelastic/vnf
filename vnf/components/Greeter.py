@@ -33,8 +33,9 @@ class Greeter(Actor):
         username = director.sentry.username
         userrecord = director.clerk.getUser( username )
         fullname = userrecord.fullname
+        firstname = fullname.split(' ')[0]
         title = 'Welcome to the Virtual Neutron Facility, %s!' % (
-            fullname,),
+            firstname,),
         document = main.document(title=title)
         
         p = document.paragraph()

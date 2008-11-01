@@ -77,6 +77,7 @@ EXPORT_PYTHON_MODULES = \
 	SSHer.py \
 	SupportingCalcs.py \
 	TreeViewCreator.py \
+	UsersFromDB.py \
 	inventorylist.py \
 	misc.py \
 	spawn.py \
