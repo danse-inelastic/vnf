@@ -31,6 +31,8 @@ class DbApp(Script):
         idd = pyre.inventory.facility('idd-session', factory=pyre.idd.session, args=['idd-session'])
         idd.meta['tip'] = "access to the token server"
 
+        wwwuser = pyre.inventory.str(name='wwwuser', default='')
+
 
     def main(self, *args, **kwds):
 
@@ -40,12 +42,14 @@ class DbApp(Script):
         tables = alltables()
 
         for table in tables:
-            #self.dropTable( table )
+            self.dropTable( table )
             self.createTable( table )
+            if self.wwwuser: self.enableWWWUser( table )
             continue
 
         for table in tables:
             self.initTable( table )
+
         return
 
 
@@ -91,6 +95,14 @@ class DbApp(Script):
         return
 
 
+    def enableWWWUser(self, table):
+        print " -- Enable www user %r for table %r" % (self.wwwuser, table.name)
+        sql = 'grant all on table "%s" to "%s"' % (table.name, self.wwwuser)
+        c = self.db.cursor()
+        c.execute(sql)
+        return
+
+
     def __init__(self):
         Script.__init__(self, 'initdb')
         self.db = None
@@ -101,6 +113,7 @@ class DbApp(Script):
         Script._configure(self)
         self.clerk = self.inventory.clerk
         self.clerk.director = self
+        self.wwwuser = self.inventory.wwwuser
         return
 
 

@@ -18,7 +18,7 @@
 <inventory>
 
   <component name='clerk'>
-    <property name='db'>linjiao:9u6dl$>2@localhost:5432:vnf</property>
+    <property name='db'>vnf</property>
     <property name='dbwrapper'>psycopg2</property>
   </component>
 

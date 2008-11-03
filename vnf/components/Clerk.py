@@ -348,11 +348,11 @@ class DbAddressResolver:
         host,port,database = self._resolve_svr(svr)
         user, pw = self._resolve_up(up)
         ret = {
-            'host': host,
-            'port': port,
             'database': database,
-            'user': user,
             }
+        if host: ret['host'] = host
+        if port: ret['port'] = port
+        if user: ret['user'] = user
         if pw: ret['password'] = pw
         return ret
     
@@ -362,6 +362,7 @@ class DbAddressResolver:
         tmp = up.split(separator)
         if len(tmp) == 1:
             user = tmp[0]
+            if user == '': user = None
             pw = None
         elif len(tmp) == 2:
             user, pw = tmp
@@ -374,10 +375,12 @@ class DbAddressResolver:
         separator = ':'
         
         if svr.find(separator) == -1:
-            return 'localhost', 5432, svr
+            # unix socket
+            return None, None, svr
         splits = svr.split(separator)
         if len(splits)==2:
             host, database = splits
+            # default port: 5432
             return host, 5432, database
         elif len(splits)==3:
             host, port, database = splits

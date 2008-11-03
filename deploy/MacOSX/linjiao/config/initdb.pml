@@ -18,6 +18,7 @@
 <inventory>
 
   <component name='initdb'>
+    <property name='wwwuser'>_www</property>
   </component>
 
 </inventory>
