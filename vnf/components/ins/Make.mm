@@ -15,6 +15,7 @@ PACKAGE = components/ins
 
 
 BUILD_DIRS = \
+	job_builders \
 
 OTHER_DIRS = \
 

@@ -11,7 +11,7 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 PROJECT = vnf
-PACKAGE = components/job_builders
+PACKAGE = components/ins/job_builders
 
 
 BUILD_DIRS = \
@@ -30,6 +30,9 @@ all: export
 # export
 
 EXPORT_PYTHON_MODULES = \
+	BvKComputation.py \
+	BvKDOSJobBuilder.py \
+	BvKModelRenderer.py \
 	JobBuilder.py \
 	__init__.py \
 

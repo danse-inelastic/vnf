@@ -30,9 +30,10 @@ class SubmitJob(base):
         dds = pyre.inventory.facility(name="dds", factory=vnf.components.dds)
         dds.meta['tip'] = "the component manages data files"
 
-        csaccessor = pyre.inventory.facility( name='csaccessor', factory = vnf.components.ssher)
+        csaccessor = pyre.inventory.facility(name='csaccessor', factory = vnf.components.ssher)
         csaccessor.meta['tip'] = 'computing server accessor'
 
+        debug = pyre.inventory.bool(name='debug', default=False)
         pass # end of Inventory
         
 
@@ -57,8 +58,12 @@ class SubmitJob(base):
             errmsg = '%s: %s' % (e.__class__.__name__, e)
             job.error = errmsg
             self.clerk.updateRecord(job)
+            
             self._debug.log('submission of Job %s failed. %s' % (
                 id, errmsg) )
+
+            if self.debug: raise
+            
         return
 
 
@@ -84,6 +89,8 @@ class SubmitJob(base):
     def _configure(self):
         base._configure(self)
         self.id = self.inventory.id
+
+        self.debug = self.inventory.debug
 
         self.idd = self.inventory.idd
         self.clerk = self.inventory.clerk

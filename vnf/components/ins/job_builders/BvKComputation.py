@@ -15,6 +15,8 @@
 from JobBuilder import JobBuilder as base
 class Builder(base):
 
+    from vnf.dom.ins.BvKComputation import BvKComputation as Computation
+
     def __init__(self, path):
         self.path = path
         return
