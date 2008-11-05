@@ -2,21 +2,20 @@
 #
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
-#                               Michael A.G. Aivazis
+#                                  Jiao Lin
 #                        California Institute of Technology
-#                        (C) 1998-2005  All Rights Reserved
+#                          (C) 2008  All Rights Reserved
 #
 # <LicenseText>
 #
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+
 PROJECT = vnf
-PACKAGE = components/ins
+PACKAGE = components/ins/computation_result_retrievers
 
 
 BUILD_DIRS = \
-	computation_result_retrievers \
-	job_builders \
 
 OTHER_DIRS = \
 
@@ -32,8 +31,8 @@ all: export
 # export
 
 EXPORT_PYTHON_MODULES = \
-	BvK.py \
-	Clerk.py \
+	BvKComputation.py \
+	Retriever.py \
 	__init__.py \
 
 

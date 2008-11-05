@@ -16,6 +16,9 @@ from Retriever import Retriever as base
 
 class Retriever(base):
 
+
+    from vnf.dom.ins.BvKComputation import BvKComputation as Computation
+
     def retrieve(self):
         computation = self.computation
         type = computation.type

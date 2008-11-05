@@ -159,7 +159,7 @@ class Actor(base):
         return
 
 
-from vnf.components.BvK import getSystem
+from vnf.components.ins.BvK import getSystem
 from vnf.components.Job import isdone
 from vnf.components.Computation import retrieve_results as retrieve_computation_results
 

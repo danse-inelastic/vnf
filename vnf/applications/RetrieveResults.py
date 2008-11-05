@@ -34,6 +34,8 @@ class RetrieveResults(base):
         csaccessor = pyre.inventory.facility( name='csaccessor', factory = vnf.components.ssher)
         csaccessor.meta['tip'] = 'computing server accessor'
 
+        debug = pyre.inventory.bool(name='debug', default=False)
+
         pass # end of Inventory
         
 
@@ -41,14 +43,13 @@ class RetrieveResults(base):
         id = self.id
         type = self.type
         computation = self.clerk.getRecordByID(type, id)
-        if computation.results_state:
-            self._debug.log('computation %s: %s' % (id, computation.results_state))
-            return
-        
+
         try:
             self.retrieve(computation)
         except Exception, e:
             self._debug.log('retrieval failed. %s: %s' % (e.__class__.__name__, e))
+            import traceback
+            self._debug.log(traceback.format_exc())
             d = self.dds.abspath(computation)
             import os
             if not os.path.exists(d): os.makedirs(d)
@@ -56,12 +57,14 @@ class RetrieveResults(base):
             open(f, 'w').write('%s: %s' % (e.__class__.__name__, e))
             computation.results_state = 'retrieval failed'
             self.clerk.updateRecord(computation)
+
+            if self.debug: raise
         return
 
 
     def retrieve(self, computation):
         from vnf.components import retrieveresults
-        return retrieveresults(components, self)
+        return retrieveresults(computation, self)
 
 
     def __init__(self, name='retrieveresults'):
@@ -73,6 +76,8 @@ class RetrieveResults(base):
         base._configure(self)
         self.id = self.inventory.id
         self.type = self.inventory.type
+
+        self.debug = self.inventory.debug
 
         self.idd = self.inventory.idd
         self.clerk = self.inventory.clerk
