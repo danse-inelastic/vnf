@@ -11,12 +11,10 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 PROJECT = vnf
-PACKAGE = components/<new extension>
+PACKAGE = components/<extension>/job_builders
 
 
 BUILD_DIRS = \
-	job_builders \
-	computation_result_retrievers \
 
 OTHER_DIRS = \
 
@@ -32,7 +30,7 @@ all: export
 # export
 
 EXPORT_PYTHON_MODULES = \
-	Clerk.py \
+	JobBuilder.py \
 	__init__.py \
 
 
