@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jnlp spec="1.0+" codebase="http://trueblue.caltech.edu/vnf/java">
+    <information>
+        <title>DansePlotter</title>
+        <vendor>Danse</vendor>
+        <homepage href="http://danse.us" />
+        <description></description>
+    </information>
+    <offline-allowed/>
+    <security>
+    	<all-permissions/>
+    </security>
+    <resources>
+        <j2se version="1.5+" java-vm-args="-Xmx512m"/>
+        <jar href="DansePlotter.jar"/>
+        <jar href="visad.jar" />
+        <jar href="VFSJFileChooser-0.0.3.jar" />
+        <!--<extension name="visad" href="visad.jnlp"/>-->
+    </resources>
+    <application-desc main-class="vnf.DansePlotter" />
+</jnlp>
