@@ -33,13 +33,19 @@ class DbApp(Script):
 
         wwwuser = pyre.inventory.str(name='wwwuser', default='')
 
+        tables = pyre.inventory.list(name='tables', default=[])
+
 
     def main(self, *args, **kwds):
 
         self.db.autocommit(True)
 
-        from vnf.dom import alltables
-        tables = alltables()
+        tables = self.tables
+        if not tables:
+            from vnf.dom import alltables
+            tables = alltables()
+        else:
+            tables = [self.clerk._getTable(t) for t in tables]
 
         for table in tables:
             self.dropTable( table )
@@ -114,6 +120,7 @@ class DbApp(Script):
         self.clerk = self.inventory.clerk
         self.clerk.director = self
         self.wwwuser = self.inventory.wwwuser
+        self.tables = self.inventory.tables
         return
 
 
@@ -121,9 +128,13 @@ class DbApp(Script):
         Script._init(self)
 
         self.db = self.clerk.db
-
         self.idd = self.inventory.idd
 
+        # initialize table registry
+        import vnf.dom
+        vnf.dom.register_alltables()
+
+        # id generator
         def guid(): return '%s' % self.idd.token().locator
         import vnf.dom
         vnf.dom.set_idgenerator( guid )
