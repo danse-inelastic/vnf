@@ -331,6 +331,61 @@ class BvK(base):
         return self.create_job(director)
 
 
+    def configure_disp_computation(self, director, errors=None):
+        try:
+            page = director.retrieveSecurePage( 'materialsimulationwizard-2' )
+        except AuthenticationError, err:
+            return err.page
+
+        main = page._body._content._main
+        # populate the main column
+        document = main.document(
+            title='BvK model')
+        document.description = ''
+        document.byline = 'byline?'
+
+        formcomponent = self.retrieveFormToShow( 'bvkdispcomputation' )
+        formcomponent.director = director
+        formcomponent.inventory.id = self.inventory.id
+        
+        # build the form 
+        form = document.form(name='', action=director.cgihome)
+        # specify action
+        action = actionRequireAuthentication( 
+            actor = 'bvk', 
+            sentry = director.sentry,
+            routine = 'verify_disp_computation_configuration',
+            label = '',
+            id=self.inventory.id,
+            arguments = {'form-received': formcomponent.name },
+            )
+        from vnf.weaver import action_formfields
+        action_formfields(action, form)
+        # expand the form with fields of the data object that is being edited
+        formcomponent.expand(form, errors=errors)
+        
+        submit = form.control(name='submit',type="submit", value="next")
+        
+        return page
+
+
+    def verify_disp_computation_configuration(self, director):
+        try:
+            page = director.retrieveSecurePage( 'materialsimulationwizard-2' )
+        except AuthenticationError, err:
+            return err.page
+        
+        try:
+            self.processFormInputs(director)
+        except InputProcessingError, err:
+            errors = err.errors
+            self.form_received = None
+            director.routine = 'configure_disp_computation'
+            return self.configure_disp_computation( director, errors = errors )
+
+        return self.create_job(director)
+
+
     def create_job(self, director):
         try:
             page = director.retrieveSecurePage( 'materialsimulationwizard-2' )
@@ -360,15 +415,6 @@ class BvK(base):
         return self.redirect(director, actor, routine, id = job.id)
 
 
-    def ___(self):
-        # files for the job
-        jobpath = director.dds.abspath(job)
-        from vnf.components.job_builders.BvKDOSJobBuilder import Builder
-        builder = Builder(jobpath)
-        files = builder.render(computation, director.clerk.db)
-        for f in files: director.dds.remember(job, f)
-        
-        
     def ___(self, director):
         p = document.paragraph()
         p.text = [

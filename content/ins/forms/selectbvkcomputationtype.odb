@@ -19,7 +19,7 @@ from vnf.components.Actor import action_link, actionRequireAuthentication
 choices = [
     ('dos', 'Phonon Density of States'),
     ('directional', 'Phonon dispersion on a special direction'),
-    ('grid', 'Full phonon dispersion on a grid (can be used in virtual neutron experiment)'),
+    ('disp', 'Full phonon dispersion on a grid (can be used in virtual neutron experiment)'),
     ]
 
 

@@ -1,0 +1,86 @@
+# -*- Python -*-
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                   Jiao Lin
+#                      California Institute of Technology
+#                        (C) 2007  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+
+from vnf.components.DBObjectForm import DBObjectForm as base, InputProcessingError
+
+
+class BvKDispersionComputation(base):
+
+
+    class Inventory(base.Inventory):
+
+        import pyre.inventory
+        
+        N1 = pyre.inventory.str( name = 'N1' )
+        N1.meta['label'] = 'N1'
+        N1.meta['tip'] = 'Number of sampling points (in one dimension)'
+        N1.meta['tiponerror'] = (
+            'Please enter an integer for N1.',
+            'Typical value is 10.',
+            )
+
+        pass # end of Inventory
+
+
+    parameters = [
+        'N1',
+        ]
+
+    DBTable = 'BvKComputation'
+
+
+    def __init__(self, name = None):
+        if name is None:
+            name = 'bvkdispcomputation'
+
+        base.__init__(self, name)
+
+        return
+
+
+    def expand(self, form, errors = None, properties = None):
+        p = form.paragraph()
+        p.text = [
+            'To compute phonon dispersion from BvK model, ',
+            'you are required to provide some additional information.',
+            'Please fill out the following form:',
+            ]
+        base.expand(self, form, errors = errors, properties = properties)
+        return
+
+
+    def processUserInputs(self, *args, **kwds):
+        errors = []
+        self._verifyN1( errors )
+        if len(errors): raise InputProcessingError, errors
+        return base.processUserInputs(self, *args, **kwds)
+
+
+    def _verifyN1(self, errors):
+        prop = 'N1'
+        value = self.inventory.N1
+        try:
+            value = int(value)
+            if value < 0: errors.append( prop )
+        except:  errors.append(prop)
+        return
+
+
+def form(): return BvKDispersionComputation()
+
+# version
+__id__ = "$Id$"
+
+# End of file 
