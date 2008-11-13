@@ -31,6 +31,7 @@ all: export
 
 EXPORT_PYTHON_MODULES = \
 	BvKComputation.py \
+	BvKDispersionJobBuilder.py \
 	BvKDOSJobBuilder.py \
 	BvKModelRenderer.py \
 	JobBuilder.py \

@@ -28,7 +28,9 @@ class Builder(base):
 
 def handler(type):
     from BvKDOSJobBuilder import Builder as DOS
+    from BvKDispersionJobBuilder import Builder as Dispersion
     d = {'dos': DOS,
+         'disp': Dispersion
          }
     return d[type.lower()]
 
