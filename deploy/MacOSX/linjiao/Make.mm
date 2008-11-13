@@ -14,13 +14,24 @@ PROJECT = vnf
 PACKAGE = deploy
 
 RECURSE_DIRS = \
-	config \
-	vnf \
+    vnf \
+    dds \
+
+EXPORT_DATADIRS = \
+    bin \
+    cgi \
+    config \
+    content \
+    html \
+    log \
+
+
+OTHERS = \
 
 #--------------------------------------------------------------------------
 #
 
-all: 
+all: export-package-data
 	BLD_ACTION="all" $(MM) recurse
 
 tidy::
@@ -33,6 +44,17 @@ distclean::
 	BLD_ACTION="distclean" $(MM) recurse
 
 
+
+RSYNC_A = rsync -a
+EXPORT_DATA_PATH = $(EXPORT_ROOT)/$(PROJECT)
+
+export-package-data:: #$(EXPORT_DATADIRS)
+	mkdir -p $(EXPORT_DATA_PATH); \
+	for x in $(EXPORT_DATADIRS); do { \
+            if [ -d $$x ]; then { \
+	        $(RSYNC_A) $$x $(EXPORT_DATA_PATH)/ ; \
+            } fi; \
+        } done
 
 
 # version
