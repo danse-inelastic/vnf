@@ -9,6 +9,7 @@ def tables():
 
 
     kernel_related = [
+        'PhononDOS',
         'BvKComputation',
         'BvKModel',
         ]

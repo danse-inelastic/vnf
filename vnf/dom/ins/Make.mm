@@ -36,6 +36,7 @@ EXPORT_PYTHON_MODULES = \
 	MaterialModeling.py \
 	OwnedObject.py \
 	PhononDispersion.py \
+	PhononDOS.py \
 	PolyCrystal.py \
 	PolyXtalCoherentPhononScatteringKernel.py \
 	ScatteringKernel.py \

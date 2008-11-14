@@ -59,7 +59,7 @@ class Actor(base):
 
         job = director.clerk.dereference(computation.job)
         if isdone(job):
-            if not computation.results_state:
+            if not computation.results_state or computation.results_state == 'retrieval failed':
                 retrieve_computation_results(computation, director, debug=0)
                 
             resdoc = document.document(title='Results')
@@ -85,11 +85,19 @@ class Actor(base):
 
         id = self.inventory.id
         computation = director.clerk.getBvKComputation(id)
-        
+
         main = page._body._content._main
         # populate the main column
         document = main.document(title='BvK computation %s: results' % id)
 
+        if computation.results_state in ['retrieving']:
+            p = document.paragraph()
+            p.text = [
+                'I am still retrieving computation results,',
+                'please check back in a few minutes....',
+                ]
+            return page
+        
         type = computation.type
         method = '_view_%s_results' % type
         handler = getattr(self, method)

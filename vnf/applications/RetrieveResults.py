@@ -51,10 +51,13 @@ class RetrieveResults(base):
             import traceback
             self._debug.log(traceback.format_exc())
             d = self.dds.abspath(computation)
-            import os
-            if not os.path.exists(d): os.makedirs(d)
-            f = self.dds.abspath(computation, 'results_retrieval_error')
-            open(f, 'w').write('%s: %s' % (e.__class__.__name__, e))
+            try:
+                import os
+                if not os.path.exists(d): os.makedirs(d)
+                f = self.dds.abspath(computation, 'results_retrieval_error')
+                open(f, 'w').write('%s: %s' % (e.__class__.__name__, e))
+            except:
+                self._debug.log('failed to save error message: %s' % traceback.format_exc())
             computation.results_state = 'retrieval failed'
             self.clerk.updateRecord(computation)
 
