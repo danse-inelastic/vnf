@@ -37,7 +37,7 @@ class Retriever:
     def _record_result(self, job,filenameinjobdir, recordtype,newfilename):
         #create a new record to save the result
         director = self.director
-        record = director.clerk.newOwnedObject(recordtype)
+        record = director.clerk.newOwnedObject(recordtype, owner = job.creator)
 
         #make symbolic link from the result db record's data directory
         #to the job directory

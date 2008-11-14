@@ -40,7 +40,7 @@ class Retriever(base):
         result_records = director.clerk.dereference(result_records_ref)
 
         # save results
-        from vnf.dom.PhononDOS import PhononDOS
+        from vnf.dom.ins.PhononDOS import PhononDOS
         expecetd_result_types = [
             PhononDOS,
             ]

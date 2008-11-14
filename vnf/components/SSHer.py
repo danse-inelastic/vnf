@@ -157,6 +157,10 @@ class SSHer(base):
 
         self._info.log( 'execute: %s' % cmd )
         failed, output, error = spawn( cmd )
+        if failed:
+            msg = '%r failed: %s' % (
+                cmd, error )
+            raise RemoteAccessError, msg
         return failed, output, error
 
 

@@ -229,7 +229,7 @@ class Clerk(Component):
         return
     
 
-    def newOwnedObject(self, table):
+    def newOwnedObject(self, table, owner = None):
         '''create a new record for the given table.
 
         The given table is assumed to have following fields:
@@ -237,14 +237,16 @@ class Clerk(Component):
           - creator
           - date
         '''
+        
         director = self.director
-        
-        record = table()
-        
         id = new_id( director )
+
+        record = table()
         record.id = id
 
-        record.creator = director.sentry.username
+        if not owner: 
+            owner = director.sentry.username
+        record.creator = owner
         
         self.newRecord( record )
         return record
