@@ -33,6 +33,7 @@ Start services
 Initialized database (one must run this script as the owner of the database)
  $ cd $EXPORT_ROOT/vnf/bin
  $ ./initdb.sh
+ 
 
 
 Create ssh keys so that vnf can contact computation server.
@@ -42,3 +43,14 @@ Create ssh keys so that vnf can contact computation server.
  1. make changes to ssher.pml to reflect paths to above-mentioned files 
  1. add public key to the computation server's accepting account's
     .ssh/authorized_keys file
+
+Another way to do the above is map the db port to one's localhost to vnf by issuing the following:
+
+ $ ssh -L 50022:octopod:22 jbrkeith@login.cacr.caltech.edu
+ $ ssh -L 54321:localhost:54320 -p 50022 jbrkeith@localhost
+
+
+
+
+
+ssh -L 54320:localhost:5432 vnf@vnf.caltech.edu
