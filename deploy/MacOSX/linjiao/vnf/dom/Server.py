@@ -70,7 +70,7 @@ def inittable(db):
     records = [
         server(
         'server000', 'default server (octopod)',
-        'localhost', '54321',
+        'localhost', '50022',
         'linjiao', '/home/linjiao/vnfjobs', 
         'group access???',
         'torque',

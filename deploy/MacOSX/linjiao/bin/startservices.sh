@@ -4,4 +4,4 @@
 #./jsud.py
 
 echo You will also need to make following ssh tunnels
-echo  ssh -L 54321:octopod:22 login.cacr.caltech.edu
+echo  ssh -L 50022:octopod:22 login.cacr.caltech.edu
