@@ -58,7 +58,7 @@ class WebApplication(Base):
 
         imagepath = pyre.inventory.str(name='imagepath', default = '/vnf/images' )
         javascriptpath = pyre.inventory.str(name='javascriptpath', default = '/vnf/javascripts' )
-        javapath = pyre.inventory.str(name='javapath', default = '/java' )
+        javapath = pyre.inventory.str(name='javapath', default = '/vnf/java' )
 
 
     def main(self, *args, **kwds):

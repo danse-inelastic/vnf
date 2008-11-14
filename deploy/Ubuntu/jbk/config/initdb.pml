@@ -18,7 +18,7 @@
 <inventory>
 
   <component name='initdb'>
-    <property name='wwwusername'>www-data</property>
+  <property name='db'>vnf@localhost:5432:vnf</property>
   </component>
 
 </inventory>
