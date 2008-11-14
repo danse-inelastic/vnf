@@ -88,6 +88,7 @@ class SubmitJob(base):
 
     def _configure(self):
         base._configure(self)
+        self._info.log('start _configure')
         self.id = self.inventory.id
 
         self.debug = self.inventory.debug
@@ -98,6 +99,7 @@ class SubmitJob(base):
         self.dds = self.inventory.dds
         self.dds.director = self
         self.csaccessor = self.inventory.csaccessor
+        self._info.log('end _configure')
         return
 
 

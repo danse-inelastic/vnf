@@ -32,6 +32,7 @@ class Launch(Application, Stager):
         #print cmd
         from vnf.utils.spawn import spawn
         import os
+        self._debug.log( 'curdir=%r' % os.path.abspath(os.curdir))
         ret, out, err = spawn(cmd, env=os.environ)
         if ret:
             self._debug.log( 'out: %s' % out )

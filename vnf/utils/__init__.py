@@ -16,7 +16,8 @@ bindir='../bin'
 
 def launch_detached(cmd, home='.', debug=False):
     import os
-    exe = os.path.join(bindir, 'launch-detached.py')
+    exe = os.path.abspath(os.path.join(bindir, 'launch-detached.py'))
+    home = os.path.abspath(home)
     c = ['%s -cmd="%s" -home=%s' % (exe, cmd, home)]
 
     if debug: c.append('debug')

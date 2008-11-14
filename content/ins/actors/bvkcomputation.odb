@@ -60,7 +60,7 @@ class Actor(base):
         job = director.clerk.dereference(computation.job)
         if isdone(job):
             if not computation.results_state:
-                retrieve_computation_results(computation, director, debug=1)
+                retrieve_computation_results(computation, director, debug=0)
                 
             resdoc = document.document(title='Results')
             p = resdoc.paragraph()

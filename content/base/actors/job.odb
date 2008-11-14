@@ -136,6 +136,8 @@ class Actor(base):
             return self.edit(director, id = id)
         if job.state in ['submissionfailed']:
             return self.view_failed_submission(director, id=id)
+        if job.state in ['submitting']:
+            return self.in_submission(director, id=id)
 
         #
         assert job.creator.id == director.sentry.username
@@ -206,7 +208,7 @@ class Actor(base):
             return self.in_submission(director)
 
         try:
-            submit(job, director, debug=1)
+            submit(job, director, debug=0)
         except Exception, err:
             import traceback
             self._debug.log( traceback.format_exc() )
@@ -278,13 +280,15 @@ class Actor(base):
         return page
 
 
-    def in_submission(self, director):
+    def in_submission(self, director, id=None):
         try:
             page = director.retrieveSecurePage( 'job' )
         except AuthenticationError, err:
             return err.page
 
-        job = director.clerk.getJob(self.inventory.id)
+        if id is None: id = self.inventory.id
+
+        job = director.clerk.getJob(id)
         main = page._body._content._main
         document = main.document( title = 'Job is being submmitted: %s' % job.id )
         
@@ -295,12 +299,12 @@ class Actor(base):
               sentry = director.sentry,
               routine = 'view',
               label = 'here',
-              id = self.inventory.id,
+              id = id,
               ),
             director.cgihome
             )
         p.text = [
-            'This job is being submitted. To view its status, please click %s' % link
+            'This job is being submitted. To check its status, please click %s' % link
             ]
         return page
 
