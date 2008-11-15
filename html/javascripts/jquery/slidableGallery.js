@@ -1,1 +1,0 @@
-../../../../inelastic/web/js/slidableGallery/trunk/js/slidableGallery.js
