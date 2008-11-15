@@ -43,7 +43,8 @@ class Retriever(base):
             # for each result, check if it already was recorded as a result
             if not self._is_result_saved(job, filename):
                 # if not, save it
-                self._save_result(job, filename, table, newfilename)
+                result_holder = self._make_result_holder(job, table)
+                self._save_result(job, filename, result_holder, newfilename)
 
         computation.results_state = 'retrieved'
         self.director.clerk.updateRecord(computation)
@@ -51,10 +52,35 @@ class Retriever(base):
 
 
     def _ondirectional(self):
-        return
+        raise NotImplementedError
 
 
-    def _ongrid(self):
+    def _ondisp(self):
+        director = self.director
+        computation = self.computation
+        job = director.clerk.dereference(computation.job)
+
+        expected_files = [
+            #'DOS',
+            'Omega2',
+            'Polarizations',
+            'WeightedQ',
+            ]
+        self._check_job_results_sanity(job=job, expected_results=expected_files)
+
+        #create the result holder
+        from vnf.dom.ins.PhononDispersion import PhononDispersion
+        dispersion = self._make_result_holder(job, PhononDispersion)
+        
+        # save results
+        for filename in expected_files:
+            # for each result, check if it already was recorded as a result
+            if not self._is_result_saved(job, filename):
+                # if not, save it
+                self._save_result(job, filename, dispersion, filename)
+
+        computation.results_state = 'retrieved'
+        self.director.clerk.updateRecord(computation)
         return
     
 

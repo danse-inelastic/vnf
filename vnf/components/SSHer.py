@@ -165,16 +165,26 @@ class SSHer(base):
 
 
     def _copyfile_rr(self, server1, path1, server2, path2):
-        address2 = server2.address
-        port2 = server2.port
-        username2 = server2.username
+        if server1 == server2:
+            pieces = [
+                'cp -r',
+                path1,
+                path2,
+                ]
+        elif _tunneled_remote_host(server1) or _tunneled_remote_host(server2):
+            raise NotImplementedError, 'server1: %s, server2: %s' % (server1, server2)
+        else:
+            address2 = server2.address
+            port2 = server2.port
+            username2 = server2.username
 
-        pieces = [
-            'scp',
-            '-P %s' % port2,
-            '-r %s' % path1,
-            '%s@%s:%s' % (username2, address2, path2),
-            ]
+            pieces = [
+                'scp',
+                '-P %s' % port2,
+                '-r %s' % path1,
+                '%s@%s:%s' % (username2, address2, path2),
+                ]
+            
 
         cmd = ' '.join(pieces)
         
@@ -224,11 +234,21 @@ class SSHer(base):
     pass # end of SSHer
 
 
-
+_localhost_aliases = [
+    None, 'localhost', '127.0.0.1',
+    ]
+_localport_aliases = [
+    None, 22, '22',
+    ]
 def _localhost(server):
     address = server.address
     port = server.port
-    return (port in [None, 22, '22']) and (address in [None, 'localhost', '127.0.0.1'])
+    return (port in _localport_aliases) and (address in _localhost_aliases)
+def _tunneled_remote_host(server):
+    address = server.address
+    if address not in _localhost_aliases: return False
+    port = server.port
+    return port not in _localport_aliases
 
 
 import os

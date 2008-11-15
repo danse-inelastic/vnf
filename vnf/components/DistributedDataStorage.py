@@ -254,7 +254,16 @@ def _decodesurl(s):
     else:
         username,address = a.split('@')
 
-    class Server: pass
+    class Server:
+        username = ''
+        port = ''
+        address = ''
+        def __str__(self):
+            return _surl(self)
+        def __eq__(self, rhs):
+            return self.username == rhs.username \
+                   and self.port == rhs.port \
+                   and self.address == rhs.address
     s = Server()
     s.username = username
     s.port = p
