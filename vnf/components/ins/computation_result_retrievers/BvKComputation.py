@@ -31,24 +31,19 @@ class Retriever(base):
         computation = self.computation
         job = director.clerk.dereference(computation.job)
 
+        from vnf.dom.ins.PhononDOS import PhononDOS
         expected_results = [
-            'DOS',
+            ('DOS', (PhononDOS, 'data.idf')),
             ]
-        self._check_job_results_sanity(job=job, expected_results=expected_results)
-
-        result_records_ref = computation.results
-        result_records = director.clerk.dereference(result_records_ref)
+        filenames = [filename for filename, dummy in expected_results]
+        self._check_job_results_sanity(job=job, expected_results=filenames)
 
         # save results
-        from vnf.dom.ins.PhononDOS import PhononDOS
-        expecetd_result_types = [
-            PhononDOS,
-            ]
-        for t in expecetd_result_types:
+        for filename, (table, newfilename) in expected_results:
             # for each result, check if it already was recorded as a result
-            if not self._is_result_recorded(t, result_records):
-                # if not, record it
-                self._record_result(job, 'DOS', t, 'data.idf')
+            if not self._is_result_saved(job, filename):
+                # if not, save it
+                self._save_result(job, filename, table, newfilename)
 
         computation.results_state = 'retrieved'
         self.director.clerk.updateRecord(computation)
