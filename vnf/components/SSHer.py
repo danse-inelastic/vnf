@@ -123,7 +123,7 @@ class SSHer(base):
         return os.path.join( localdir, filename )
 
 
-    def execute( self, cmd, server, remotepath ):
+    def execute( self, cmd, server, remotepath, suppressException = False ):
         'execute command in the given directory of the given server'
 
         address = server.address
@@ -157,7 +157,7 @@ class SSHer(base):
 
         self._info.log( 'execute: %s' % cmd )
         failed, output, error = spawn( cmd )
-        if failed:
+        if failed and not suppressException:
             msg = '%r failed: %s' % (
                 cmd, error )
             raise RemoteAccessError, msg

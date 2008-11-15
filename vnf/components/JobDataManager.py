@@ -11,6 +11,10 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
+import journal
+debug = journal.debug('job')
+
+
 class JobDataManager:
 
     '''manager of data files for a job
@@ -64,8 +68,13 @@ class JobDataManager:
         db = self.db
         server = self.job.server.dereference(db)
         # copy local job directory to server
+        # 1. create the directory
+        cmd = 'mkdir -p %s' % self.remotepath()
+        csaccessor.execute(cmd, server, '/')
+        # 2. copy files
         files = self.listlocaljobdir()
-        files = filter( lambda f: not f.startswith(self.dds.dds.prefix_remember), files )
+        files = filter(lambda f: not f.startswith(self.dds.dds.prefix_remember), files)
+        debug.log('copying files %s ...' % (files,))
         self.dds.make_available(self.job, files, server=server)
         #csaccessor.pushdir(
         #    path, server, self.remotepath() )
