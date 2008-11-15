@@ -35,7 +35,7 @@ class Extension1:
         home = self.configurations['home']
         return os.path.join( home, 'images' )
 
-'''
+
     def onSlidableGallery(self, gallery):
         configurations = self.configurations
         home = configurations['home']
@@ -74,7 +74,12 @@ class Extension1:
         
         codes = csscode + includes + ['<script>']  + jscode + ['</script>'] + htmlcode
         return codes
-'''
+
+
+
+from vnf.weaver import action_href
+import os
+
 
 extensions = [
     ActionLinkRenderer,
