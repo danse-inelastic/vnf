@@ -63,15 +63,29 @@ class DDS:
         return
 
 
-    def symlink(self, old, new, node=None):
+    def copy(self, old, new, node=None):
         if node is None: node = self.masternode
         oldpath = '%s/%s' % (node.rootpath, old)
         newpath = '%s/%s' % (node.rootpath, new)
         d = os.path.split(new)[0]
         self._makedirs(_url(node,d))
-        self._symlink(oldpath, newpath, node.address)
+
+        self._transferfile(_url(node,old), _url(node,new))
+        
         self.remember(new, node)
         return
+
+
+# it looks a bad idea to have symlink because it is hard to maintain across nodes
+##     def symlink(self, old, new, node=None):
+##         if node is None: node = self.masternode
+##         oldpath = '%s/%s' % (node.rootpath, old)
+##         newpath = '%s/%s' % (node.rootpath, new)
+##         d = os.path.split(new)[0]
+##         self._makedirs(_url(node,d))
+##         self._symlink(oldpath, newpath, node.address)
+##         self.remember(new, node)
+##         return
 
 
     def remember(self, path, node=None):

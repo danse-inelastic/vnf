@@ -39,6 +39,12 @@ class DistributedDataStorage(base):
         return self._rename(path1, path2, server=server)
 
 
+    def copy(self, dbrecord1, filename1, dbrecord2, filename2, server=None):
+        path1 = self.path(dbrecord1, filename1)
+        path2 = self.path(dbrecord2, filename2)
+        return self._copy(path1, path2, server=server)
+
+
     def symlink(self, dbrecord1, filename1, dbrecord2, filename2, server=None):
         path1 = self.path(dbrecord1, filename1)
         path2 = self.path(dbrecord2, filename2)
@@ -73,6 +79,11 @@ class DistributedDataStorage(base):
     def _rename(self, path1, path2, server=None):
         node = _node(server)
         return self.dds.rename(path1, path2, node=node)
+
+
+    def _copy(self, path1, path2, server=None):
+        node = _node(server)
+        return self.dds.copy(path1, path2, node=node)
 
 
     def _symlink(self, path1, path2, server=None):
@@ -171,7 +182,7 @@ class DistributedDataStorage(base):
                 return os.path.exists(path)
             cmd = 'ls %s' % path
             self._debug.log('cmd=%r'%cmd)
-            failed, out, err = csaccessor.execute(cmd, server, '')
+            failed, out, err = csaccessor.execute(cmd, server, '', suppressException=True)
             return not failed
             
             
