@@ -107,14 +107,26 @@ class Actor(base):
 
 
     def _view_dos_results(self, computation, document):
+        p = document.paragraph()
+        p.text = [
+            'Under construction...',
+            ]
         return
 
 
-    def _view_grid_results(self, computation, document):
+    def _view_disp_results(self, computation, document):
+        p = document.paragraph()
+        p.text = [
+            'Under construction...',
+            ]
         return
 
 
     def _view_directional_results(self, computation, document):
+        p = document.paragraph()
+        p.text = [
+            'Under construction...',
+            ]
         return
 
 
@@ -138,11 +150,19 @@ class Actor(base):
         return
 
 
-    def _view_grid(self, computation, document):
+    def _view_disp(self, computation, document):
+        p = document.paragraph()
+        p.text = [
+            'Under construction...',
+            ]
         return
 
 
     def _view_directional(self, computation, document):
+        p = document.paragraph()
+        p.text = [
+            'Under construction...',
+            ]
         return
 
 
