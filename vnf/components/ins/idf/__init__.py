@@ -11,19 +11,6 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
-
-from OwnedObject import OwnedObject
-class PhononDOS(OwnedObject):
-
-    name = 'phonondoses'
-
-    datafiles = [
-        'data.idf',
-        ]
-    
-    pass # end of PhononDOS
-
-
 # version
 __id__ = "$Id$"
 

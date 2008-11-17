@@ -234,7 +234,13 @@ def _node(server):
 
 def _decodeurl(url):
     #url: username@address(port):path
-    s, path = url.split(':')
+    splits = url.split(':')
+    if len(splits)==1:
+        s, path = '', url
+    elif len(splits)==2:
+        s, path = splits
+    else:
+        raise ValueError, url
     s = _decodesurl(s)
     return s, path
 
@@ -253,6 +259,8 @@ def _decodesurl(s):
         username = ''; address = a
     else:
         username,address = a.split('@')
+
+    if address == '': address = 'localhost'
 
     class Server:
         username = ''

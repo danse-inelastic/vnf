@@ -11,13 +11,10 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 PROJECT = vnf
-PACKAGE = components/ins
+PACKAGE = components/ins/idf
 
 
 BUILD_DIRS = \
-	computation_result_retrievers \
-	job_builders \
-	idf \
 
 OTHER_DIRS = \
 
@@ -33,8 +30,7 @@ all: export
 # export
 
 EXPORT_PYTHON_MODULES = \
-	BvK.py \
-	Clerk.py \
+	DOS.py \
 	__init__.py \
 
 
