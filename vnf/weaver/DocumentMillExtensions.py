@@ -10,8 +10,6 @@
 #
 
 
-from ActionLinkRenderer import ActionLinkRenderer
-
 class Extension1:
 
     def onTreeView(self, treeview):
@@ -81,8 +79,13 @@ from vnf.weaver import action_href
 import os
 
 
+
+from ActionLinkRenderer import ActionLinkRenderer
+from Plot_2DMill import Plot_2DMill
+
 extensions = [
     ActionLinkRenderer,
+    Plot_2DMill,
     Extension1,
     ]
 

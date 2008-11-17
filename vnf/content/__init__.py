@@ -38,6 +38,10 @@ def slidableGallery(*args, **kwds):
     from SlidableGallery import SlidableGallery
     return SlidableGallery( *args, **kwds )
 
+def plot_2d(*args, **kwds):
+    from Plot_2D import Plot_2D
+    return Plot_2D(*args, **kwds)
+
 def treeview(*args, **kwds ):
     from TreeView import TreeView
     return TreeView(*args, **kwds )

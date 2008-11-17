@@ -36,6 +36,7 @@ EXPORT_PYTHON_MODULES = \
 	ActionMill_forForm.py \
 	DocumentMill.py \
 	DocumentMillExtensions.py \
+	Plot_2DMill.py \
 	StructuralMill.py \
 	TableMill.py \
 	TreeViewMill.py \
