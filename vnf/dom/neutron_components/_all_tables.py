@@ -2,11 +2,24 @@ thispackage = 'vnf.dom.neutron_components'
 
 def tables():
     tablenames = [
+	'MonochromaticSource',
+	'SNSModerator',
+	'ChanneledGuide',
+	'T0Chopper',
+	'FermiChopper',
+	'SampleComponent',
+	'QEMonitor',
+	'QMonitor',
+	'TofMonitor',
+	'DetectorSystem_fromXML',
+        'NeutronRecorder',
         ]
     
     tables = [
-        getattr(_import('%s.%s' % (thispackage, name)), name)
-        for name in tablenames ]
+        getattr(_import('%s.%s' % (thispackage, name)),
+                name)
+        for name in tablenames
+        ]
               
     return tables
 

@@ -41,18 +41,14 @@ EXPORT_PYTHON_MODULES = \
 	Cylinder.py \
 	DbObject.py \
 	DummyDataObject.py \
-	DetectorSystem_fromXML.py \
 	Disordered.py \
 	Geometer.py \
 	Instrument.py \
 	InstrumentConfiguration.py \
-	IQEMonitor.py \
-	IQMonitor.py \
 	Job.py \
 	MaterialModeling.py \
 	MaterialSimulation.py \
 	MatterBase.py \
-	MonochromaticSource.py \
 	NeutronComponent.py \
 	NeutronExperiment.py \
 	OwnedObject.py \
@@ -60,7 +56,6 @@ EXPORT_PYTHON_MODULES = \
 	ReferenceSet.py \
 	Sample.py \
 	SampleAssembly.py \
-	SampleComponent.py \
 	SampleEnvironment.py \
 	Scatterer.py \
 	ScattererExample.py \

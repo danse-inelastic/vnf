@@ -8,12 +8,8 @@ external_dom_extensions = []
 
 
 instrument = [
-    'IQEMonitor',
-    'IQMonitor',
     'Instrument',
     'InstrumentConfiguration',
-    'MonochromaticSource',
-    'SampleComponent',
     ]
 
 

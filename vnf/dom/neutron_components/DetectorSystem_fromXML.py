@@ -12,8 +12,8 @@
 #
 
 
-from OwnedObject import OwnedObject
-class DetectorSystem_fromXML(OwnedObject):
+from NeutronComponent import NeutronComponent as base
+class DetectorSystem_fromXML(base):
 
     name = 'detectorsystem_fromxmls'
 

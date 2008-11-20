@@ -30,6 +30,18 @@ all: export
 # export
 
 EXPORT_PYTHON_MODULES = \
+	NeutronComponent.py \
+	MonochromaticSource.py \
+	SNSModerator.py \
+	ChanneledGuide.py \
+	T0Chopper.py \
+	FermiChopper.py \
+	SampleComponent.py \
+	QEMonitor.py \
+	QMonitor.py \
+	TofMonitor.py \
+	DetectorSystem_fromXML.py \
+	NeutronRecorder.py \
 	__init__.py \
 	_all_tables.py \
 	registry.py \
