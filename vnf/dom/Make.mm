@@ -19,6 +19,7 @@ BUILD_DIRS = \
 	ins \
 	sans \
 	tutorials \
+	neutron_components \
 
 OTHER_DIRS = \
 
@@ -44,6 +45,7 @@ EXPORT_PYTHON_MODULES = \
 	Disordered.py \
 	Geometer.py \
 	Instrument.py \
+	InstrumentConfiguration.py \
 	IQEMonitor.py \
 	IQMonitor.py \
 	Job.py \

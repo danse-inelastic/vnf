@@ -36,7 +36,7 @@ def geometer(**kwds):
 
 def alltables():
     from _all_tables import tables
-    return tables
+    return tables()
 
 
 def kerneltables():
