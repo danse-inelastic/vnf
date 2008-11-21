@@ -11,20 +11,15 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 PROJECT = vnf
-PACKAGE = dom
-
+PACKAGE = dom/instruments
 
 
 BUILD_DIRS = \
-	ins \
-	sans \
-	tutorials \
-	instruments \
-	neutron_components \
 
 OTHER_DIRS = \
 
 RECURSE_DIRS = $(BUILD_DIRS) $(OTHER_DIRS)
+
 
 #--------------------------------------------------------------------------
 #
@@ -35,49 +30,19 @@ all: export
 # export
 
 EXPORT_PYTHON_MODULES = \
-	Block.py \
-	Computation.py \
-	ComputationResult.py \
-	Crystal.py \
-	Cylinder.py \
-	DbObject.py \
-	DummyDataObject.py \
-	Disordered.py \
-	Geometer.py \
-	Instrument.py \
-	InstrumentConfiguration.py \
-	Job.py \
-	MaterialModeling.py \
-	MaterialSimulation.py \
-	MatterBase.py \
-	NeutronComponent.py \
-	NeutronExperiment.py \
-	OwnedObject.py \
-	PolyCrystal.py \
-	ReferenceSet.py \
-	Sample.py \
-	SampleAssembly.py \
-	SampleEnvironment.py \
-	Scatterer.py \
-	ScattererExample.py \
-	ScatteringKernel.py \
-	Server.py \
-	Shape.py \
-	SingleCrystal.py \
-	Table.py \
-	User.py \
-	idgenerator.py \
-	registry.py \
-	_all_tables.py \
-	_geometer.py \
-	_hidden_tables.py \
-	_referenceset.py \
+	ARCS_beam.py \
+	Pharos.py \
+	Powgen3.py \
+	SANS_NG7.py \
+	SEQUOIA.py \
+	VULCAN.py \
 	__init__.py \
-
+	_utils.py \
 
 
 export:: export-package-python-modules
 	BLD_ACTION="export" $(MM) recurse
+
 
 # version
 # $Id: Make.mm,v 1.1.1.1 2006-11-27 00:09:19 aivazis Exp $

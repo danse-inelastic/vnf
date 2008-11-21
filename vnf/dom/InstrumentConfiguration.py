@@ -22,8 +22,9 @@ class InstrumentConfiguration(OwnedObject):
     
     import pyre.db
     import vnf.dom
-    
-    instrument = pyre.db.reference(name='instrument', table=Instrument)
+
+    # the instrument for which this configuration is about
+    target = pyre.db.reference(name='target', table=Instrument)
 
     components = vnf.dom.referenceSet(name='components')
     

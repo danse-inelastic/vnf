@@ -36,6 +36,8 @@ class Instrument(OwnedObject):
 
 
 def inittable(db):
+    from instruments import initall
+    return initall(db)
     def add(id, short_description, long_description, category, creator, date, components):
         r = Instrument()
         r.id = id
