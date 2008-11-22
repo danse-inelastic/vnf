@@ -20,7 +20,6 @@ class Form( base ):
 
     class Inventory( base.Inventory ):
         import pyre.inventory
-        experiment_id = pyre.inventory.str( 'experiment_id' )
         instrument_id = pyre.inventory.str( 'instrument_id' )
         pass # end of Inventory
 
@@ -30,22 +29,16 @@ class Form( base ):
         return 'Select a neutron instrument'
 
 
-    def expand(self, form):
+    def expand(self, form, instrument_id = None):
         '''expand an existing form with fields from this component'''
 
-        experiment_id = self.inventory.experiment_id
+        if instrument_id is None:
+            instrument_id = self.inventory.instrument_id
         
         director = self.director
-        experiment = director.clerk.getNeutronExperiment( experiment_id )
-        instrument = experiment.instrument
-        if instrument:
-            instrument_id = experiment.instrument.id
-        else:
-            instrument_id = ''
 
         p = form.paragraph()
         p.text = [
-            'A neutron experiment requires a neutron instrument.',
             'The following is a list of neutron instruments supported',
             'by this virtual neutron facility.',
             'Please select one for your experiment.',
@@ -53,9 +46,6 @@ class Form( base ):
 
         prefix = formactor_action_prefix
 
-        experiment_id_field = form.hidden(
-            name = '%s.experiment_id' % prefix,
-            value = self.inventory.experiment_id )
         instruments = director.clerk.indexInstruments()
         instruments = instruments.itervalues()
         
@@ -82,14 +72,8 @@ class Form( base ):
         director = self.director
         clerk = director.clerk
 
-        experiment_id = self.inventory.experiment_id
-        experiment = director.clerk.getNeutronExperiment( experiment_id )
-
         instrument_id = self.inventory.instrument_id
-        experiment.instrument = instrument_id
-
-        director.clerk.updateRecord( experiment )
-        return
+        return instrument_id
 
 
     def __init__(self, name = None):

@@ -20,23 +20,29 @@ class Form( base ):
 
     class Inventory( base.Inventory ):
         import pyre.inventory
-        instrument_id = pyre.inventory.str( 'instrument_id' )
+        type = pyre.inventory.str('type')
+        id = pyre.inventory.str('id')
         pass # end of Inventory
 
 
     def legend(self):
         'return a legend string'
-        instrument_id = self.inventory.instrument_id
-        instrument = self.director.clerk.getInstrument( instrument_id )
+        id = self.inventory.id
+        type = self.inventory.type
+        configuration = self.director.clerk.getRecordByID(type, id)
+        instrument = self.director.clerk.dereference(configuration.target)
         return 'Configure instrument %r' % instrument.short_description 
 
 
     def expand(self, form):
         '''expand an existing form with fields from this component'''
-
-        instrument_id = self.inventory.instrument_id
         director = self.director
-        instrument = director.clerk.getInstrument( instrument_id )
+        
+        id = self.inventory.id
+        type = self.inventory.type
+        configuration = director.clerk.getRecordByID(type, id)
+
+        instrument = director.clerk.dereference(configuration.target)
 
         p = form.paragraph()
         p.text = [
@@ -46,9 +52,10 @@ class Form( base ):
 
         prefix = formactor_action_prefix
 
-        instrument_id_field = form.hidden(
-            name = '%s.instrument_id' % prefix,
-            value = self.inventory.instrument_id )
+        id_field = form.hidden(
+            name = '%s.id' % prefix, value = self.inventory.id)
+        type_field = form.hidden(
+            name = '%s.type' % prefix, value = self.inventory.type)
         return
 
 

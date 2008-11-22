@@ -121,27 +121,6 @@ class Clerk(Component):
         return self._index( NeutronExperiment, where )
 
 
-    def updateRecord(self, record):
-        id = record.id
-        where = "id='%s'" % id
-        
-        assignments = []
-        
-        for column in record.getColumnNames():
-            value = getattr( record, column )
-            #value = _tostr( value )
-            assignments.append( (column, value) )
-            continue
-        
-        self.db.updateRow(record.__class__, assignments, where)
-        return record
-
-
-    def getRecordByID(self, tablename, id):
-        Table = self._getTable(tablename)
-        return self._getRecordByID(Table, id)
-
-
     def getCrystal(self, id):
         '''retrieve crystal of given id'''
         from vnf.dom.Crystal import Crystal
@@ -223,11 +202,69 @@ class Clerk(Component):
         return self._getRecordByID( SampleEnvironment, id )
 
 
-    def deleteRecord(self, record):
-        table = record.__class__
-        self.db.deleteRow( table, where="id='%s'" % record.id )
-        return
+    def newInstrumentConfiguration(self, instrument):
+        tablename = '%sconfiguration' % instrument.id
+        try: table = self._getTable(tablename)
+        except: table = self._getTable('instrumentconfigurations')
+
+        # new configuration
+        configuration = self.newOwnedObject(table)
+
+        # set target
+        configuration.target = instrument
+        self.updateRecord(configuration)
+
+        # copy the default configuration (the components)
+        default = self.dereference(instrument.components)
+        # to the configuration
+        components = configuration.components
+        for name, component in default:
+            copy = self.duplicateRecord(component)
+            components.add(copy, self.db, name=name)
+            continue
+
+        return configuration
+
+
+    def duplicateRecord(self, record):
+        save_id = record.id
+
+        #new id
+        director = self.director
+        id = new_id(director)
+
+        #give the record a new id
+        record.id = id
+
+        #save the new record
+        new = self.newRecord(record)
+
+        #restore
+        record.id = save_id
+
+        return self._getRecordByID(record.__class__, id)
     
+
+    def updateRecord(self, record):
+        id = record.id
+        where = "id='%s'" % id
+        
+        assignments = []
+        
+        for column in record.getColumnNames():
+            value = getattr( record, column )
+            #value = _tostr( value )
+            assignments.append( (column, value) )
+            continue
+        
+        self.db.updateRow(record.__class__, assignments, where)
+        return record
+
+
+    def getRecordByID(self, tablename, id):
+        Table = self._getTable(tablename)
+        return self._getRecordByID(Table, id)
+
 
     def newOwnedObject(self, table, owner = None):
         '''create a new record for the given table.
@@ -250,7 +287,6 @@ class Clerk(Component):
         
         self.newRecord( record )
         return record
-
 
 
     def newDbObject(self, table):
@@ -284,6 +320,12 @@ class Clerk(Component):
             self._debug.log( 'failed to insert record: %s' % s)
             raise
         return record
+
+
+    def deleteRecord(self, record):
+        table = record.__class__
+        self.db.deleteRow( table, where="id='%s'" % record.id )
+        return
 
 
     def dereference(self, pointer):

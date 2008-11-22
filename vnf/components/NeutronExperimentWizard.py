@@ -141,7 +141,6 @@ class NeutronExperimentWizard(base):
         document.byline = 'byline?'
 
         formcomponent = self.retrieveFormToShow( 'selectneutroninstrument' )
-        formcomponent.inventory.experiment_id = self.inventory.id
         formcomponent.director = director
         
         # create form
@@ -160,7 +159,10 @@ class NeutronExperimentWizard(base):
         action_formfields( action, form )
 
         # expand the form with fields of the data object that is being edited
-        formcomponent.expand( form )
+        instrument = experiment.instrument
+        if instrument: instrument_id = instrument.id
+        else: instrument_id = None
+        formcomponent.expand( form, instrument_id = instrument_id )
 
         # run button
         submit = form.control(name="submit", type="submit", value="Continue")
@@ -176,7 +178,7 @@ class NeutronExperimentWizard(base):
             return err.page
         
         try:
-            self.processFormInputs( director )
+            instrument_id = self.processFormInputs( director )
         except InputProcessingError, err:
             errors = err.errors
             self.form_received = None
@@ -185,21 +187,35 @@ class NeutronExperimentWizard(base):
 
         experiment = director.clerk.getNeutronExperiment(
             self.inventory.id )
-        instrument = director.clerk.dereference(experiment.instrument)
+        experiment.instrument = instrument_id
+        director.clerk.updateRecord(experiment)
 
+        # the instruemnt
+        instrument = director.clerk.dereference(experiment.instrument)
+        
+        # make sure instrument configuration is good
         configuration_ref = experiment.instrument_configuration
-        if configuration_ref is not None:
+        if configuration_ref:
+            # if there is an old configuration, make sure
+            # that configuration is for the same instrument
             configuration = director.clerk.dereference(configuration_ref)
             configuration_target = configuration.target
-            if configuration_target != instrument.id:
+            if configuration_target.id != instrument.id:
                 # the current configuration is not for the selected instrument
                 # remove the current configuration
-                director.clerk.deleteRecord( configuration )
-
+                director.clerk.deleteRecord(configuration)
+                
                 # update experiment record
                 experiment.instrument_configuration = None
-                director.clerk.updateRecord( experiment )
-        
+                director.clerk.updateRecord(experiment)
+                configuration_ref = None
+
+        # if there is no configuration, create one
+        if not configuration_ref:
+            configuration = director.clerk.newInstrumentConfiguration(instrument)
+            experiment.instrument_configuration = configuration
+            director.clerk.updateRecord(experiment)
+
         director.routine = 'configure_instrument'
         return self.configure_instrument(director)
 
@@ -209,8 +225,6 @@ class NeutronExperimentWizard(base):
             page = director.retrieveSecurePage( 'neutronexperimentwizard' )
         except AuthenticationError, err:
             return err.page
-
-        self.processFormInputs( director )
 
         id = self.inventory.id
         experiment = director.clerk.getNeutronExperiment( id )
@@ -229,13 +243,13 @@ class NeutronExperimentWizard(base):
 
         formcomponent = self.retrieveFormToShow(formname)
         if formcomponent is None:
-            formcomponent = self.retrieveFormToShow('configureneutroninstrument')
-            pass # end if
+            return self.configure_neutron_components(director)
 
         configuration = experiment.instrument_configuration
         if configuration is None:
-            formcomponent.inventory.id = None
+            raise RuntimeError, "instrument configuration not initd: experiment %s" % id
         else:
+            formcomponent.inventory.type = configuration.table
             formcomponent.inventory.id = configuration.id
         formcomponent.director = director
         
@@ -292,6 +306,68 @@ class NeutronExperimentWizard(base):
         
         director.routine = 'sample_environment'
         return self.sample_environment(director)
+
+
+    def configure_neutron_components(self, director):
+        try:
+            page = director.retrieveSecurePage( 'neutronexperimentwizard' )
+        except AuthenticationError, err:
+            return err.page
+
+        id = self.inventory.id
+        if not id: raise RuntimeError, "id not specified"
+
+        # get neutron components
+        experiment = director.clerk.getNeutronExperiment(id)
+        instrument = director.clerk.dereference(experiment.instrument)
+        instrument_configuration = director.clerk.dereference(
+            experiment.instrument_configuration)
+        components = director.clerk.dereference(instrument_configuration.components)
+
+        main = page._body._content._main
+        # populate the main column
+        document = main.document(
+            title='Neutron Experiment Wizard: configuration of instrument %s' % instrument.short_description)
+        document.description = ''
+        document.byline = 'byline?'
+
+        # create a dummy form
+        form = document.form(
+            name='configure instrument components',
+            legend= 'Components of instrument',
+            action=director.cgihome)
+
+        # specify action
+        action = actionRequireAuthentication(
+            actor = 'neutronexperimentwizard', sentry = director.sentry,
+            label = '',
+            routine = 'sample_environment',
+            id = self.inventory.id,
+            )
+        from vnf.weaver import action_formfields
+        action_formfields( action, form )
+
+        # present the component list
+        for name, component in components:
+            p = form.paragraph()
+            action = actionRequireAuthentication(
+                actor = 'neutronexperimentwizard', sentry = director.sentry,
+                label = 'edit',
+                routine = 'edit_neutron_component',
+                id = self.inventory.id,
+                )
+            editlink = action_link( action, director.cgihome )
+            p.text = [
+                '%s: (%s)' % (
+                name,
+                editlink,
+                )
+                ]
+            continue
+        
+        # run button
+        submit = form.control(name="submit", type="submit", value="Continue")
+        return page
         
 
     def sample_environment(self, director, errors = None):
@@ -1619,7 +1695,7 @@ class NeutronExperimentWizard(base):
                 self.sample_prepared = self.kernel_configured = False
             else:
                 sampleassembly = director.clerk.dereference(sampleassembly_ref)
-                sample = _get_sample_from_sampleassembly( sampleassembly, director.clerk.db )
+                sample = _get_sample_from_sampleassembly(sampleassembly, director.clerk.db)
             
                 self.sample_prepared = not nullpointer(sample)
                 # need to test if kernel is configured
@@ -1642,6 +1718,7 @@ class NeutronExperimentWizard(base):
 
 
     pass # end of NeutronExperimentWizard
+
 
 
 def _get_sample_from_experiment(experiment, db):
