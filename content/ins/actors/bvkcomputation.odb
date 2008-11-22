@@ -109,8 +109,11 @@ class Actor(base):
     def _view_dos_results(self, computation, document, director):
         results = computation.results.dereference(director.clerk.db)
 
+        # bad implementation ...
+        # should have a visitor like pattern to do "viewing" depending on
+        # the type of the result and put views together...
         dos = results[0][1]
-
+        
         x,y = _readdos(dos, director)
         
         import vnf.content
@@ -120,8 +123,8 @@ class Actor(base):
         
         document.contents.append( plot )
         return
-
-
+    
+    
     def _view_disp_results(self, computation, document, director):
         p = document.paragraph()
         p.text = [
