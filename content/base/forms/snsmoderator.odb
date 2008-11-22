@@ -1,0 +1,110 @@
+# -*- Python -*-
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                   Jiao Lin
+#                      California Institute of Technology
+#                        (C) 2007  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+
+from vnf.forms.DBObjectForm import DBObjectForm as base, InputProcessingError
+
+
+class SNSModerator(base):
+
+
+    class Inventory(base.Inventory):
+
+        import pyre.inventory
+        width = pyre.inventory.str(name='width', default=0.1)
+        width.meta['label'] = 'Width'
+        width.meta['tiponerror'] = (
+            'Please enter a postive number for moderator with. Unit: meter.',
+            )
+        
+        height = pyre.inventory.str(name='height', default=0.1)
+        height.meta['label'] = 'Height'
+        height.meta['tiponerror'] = (
+            'Please enter a postive number for moderator height. Unit: meter.',
+            )
+        
+        dist = pyre.inventory.str(name='dist', default=2.5)
+        dist.meta['label'] = 'Distance to focusing rectangle'
+        dist.meta['tiponerror'] = (
+            'Please enter a postive number. Unit: meter.',
+            )
+        
+        xw = pyre.inventory.str(name='xw', default=0.1)
+        xw.meta['label'] = 'Width of focusing rectangle'
+        xw.meta['tiponerror'] = (
+            'Please enter a postive number. Unit: meter.',
+            )
+        
+        yh = pyre.inventory.str(name='yh', default=0.1)
+        yh.meta['label'] = 'Height of focusing rectangle'
+        yh.meta['tiponerror'] = (
+            'Please enter a postive number. Unit: meter.',
+            )
+        
+        Emin = pyre.inventory.str(name='Emin', default=0)
+        Emin.meta['label'] = 'Minimum of energy window'
+        Emin.meta['tiponerror'] = (
+            'Please enter a postive number. Unit: meV',
+            )
+        
+        Emax = pyre.inventory.str(name='Emax', default=100)
+        Emax.meta['label'] = 'Maximum of energy window'
+        Emax.meta['tiponerror'] = (
+            'Please enter a postive number. Unit: meV',
+            )
+        
+        
+        
+    parameters = [#'short_description',
+        'width', 'height', 'dist', 'xw', 'yh', 'Emin', 'Emax']
+    
+    DBTable = 'snsmoderators'
+
+
+    def __init__(self, name = None):
+        if name is None:
+            name = 'snsmoderator'
+
+        base.__init__(self, name)
+        return
+
+
+    def processUserInputs(self, *args, **kwds):
+
+        errors = filter(
+            lambda param: bad(getattr(self.inventory, param)),
+            self.parameters)
+        
+        if len(errors): raise InputProcessingError, errors
+        
+        return base.processUserInputs(self, *args, **kwds)
+
+
+
+def bad(value):
+    try:
+        value = float(value)
+        if value <= 0: return True
+    except:
+        return True
+    return False
+
+
+def form(): return SNSModerator()
+
+
+# version
+__id__ = "$Id$"
+
+# End of file 

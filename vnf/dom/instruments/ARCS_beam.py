@@ -58,6 +58,7 @@ from vnf.dom.neutron_components.FermiChopper import FermiChopper
 
 def moderator():
     c = SNSModerator()
+    c.short_description = 'Moderator for ARCS'
     c.id = new_id()
     c.width=0.1
     c.height=0.12
@@ -71,6 +72,7 @@ def moderator():
 
 def core_ves():
     c = ChanneledGuide()
+    c.short_description = 'Core vessel insert'
     c.id = new_id()
     c.w1=0.094285
     c.h1=0.11323
@@ -92,6 +94,7 @@ def core_ves():
 
 def shutter_guide():
     c = ChanneledGuide()
+    c.short_description = 'shutter guide'
     c.id = new_id()
     c.w1=0.074930
     c.h1=.094040
@@ -113,6 +116,7 @@ def shutter_guide():
 
 def guide_1_1_1():
     c = ChanneledGuide()
+    c.short_description = 'guide 1_1_1'
     c.id = new_id()
     c.w1=0.07088
     c.h1=0.08688
@@ -134,6 +138,7 @@ def guide_1_1_1():
 
 def guide_1_1_2():
     c = ChanneledGuide()
+    c.short_description = 'guide 1_1_2'
     c.id = new_id()
     c.w1=0.07019
     c.h1=0.08573
@@ -155,6 +160,7 @@ def guide_1_1_2():
 
 def guide_1_1_3():
     c = ChanneledGuide()
+    c.short_description = 'guide 1_1_3'
     c.id = new_id()
     c.w1=0.06947
     c.h1=0.08454
@@ -176,6 +182,7 @@ def guide_1_1_3():
 
 def guide_1_2_1():
     c = ChanneledGuide()
+    c.short_description = 'guide 1_2_1'
     c.id = new_id()
     c.w1=0.06871
     c.h1=0.08329
@@ -197,6 +204,7 @@ def guide_1_2_1():
 
 def guide_1_2_2():
     c = ChanneledGuide()
+    c.short_description = 'guide 1_2_2'
     c.id = new_id()
     c.w1=0.06792
     c.h1=0.08197
@@ -218,6 +226,7 @@ def guide_1_2_2():
 
 def guide_1_2_3():
     c = ChanneledGuide()
+    c.short_description = 'guide 1_2_3'
     c.id = new_id()
     c.w1=0.06710
     c.h1=0.08060
@@ -239,6 +248,7 @@ def guide_1_2_3():
 
 def guide_1_3_1():
     c = ChanneledGuide()
+    c.short_description = 'guide 1_3_1'
     c.id = new_id()
     c.w1=0.06624
     c.h1=0.07917
@@ -260,6 +270,7 @@ def guide_1_3_1():
 
 def guide_1_3_2():
     c = ChanneledGuide()
+    c.short_description = 'guide 1_3_2'
     c.id = new_id()
     c.w1=0.06534
     c.h1=0.07766
@@ -281,6 +292,7 @@ def guide_1_3_2():
 
 def guide_1_3_3():
     c = ChanneledGuide()
+    c.short_description = 'guide 1_3_3'
     c.id = new_id()
     c.w1=0.06440
     c.h1=0.07609
@@ -302,6 +314,7 @@ def guide_1_3_3():
 
 def t0_chopp():
     c = T0Chopper()
+    c.short_description = 'T0 chopper'
     c.id = new_id()
     c.len=0.474
     c.w1=0.08
@@ -316,6 +329,7 @@ def t0_chopp():
 
 def guide_2_1():
     c = ChanneledGuide()
+    c.short_description = 'guide 2_1'
     c.id = new_id()
     c.w1=0.06136
     c.h1=0.07094
@@ -337,6 +351,7 @@ def guide_2_1():
 
 def guide_2_2():
     c = ChanneledGuide()
+    c.short_description = 'guide 2_2'
     c.id = new_id()
     c.w1=0.06044
     c.h1=0.06936
@@ -358,6 +373,7 @@ def guide_2_2():
 
 def guide_2_3():
     c = ChanneledGuide()
+    c.short_description = 'guide 2_3'
     c.id = new_id()
     c.w1=0.05948
     c.h1=0.06771
@@ -379,6 +395,7 @@ def guide_2_3():
 
 def guide_2_4():
     c = ChanneledGuide()
+    c.short_description = 'guide 2_4'
     c.id = new_id()
     c.w1=0.05848
     c.h1=0.06598
@@ -400,6 +417,7 @@ def guide_2_4():
 
 def guide_2_5():
     c = ChanneledGuide()
+    c.short_description = 'guide 2_5'
     c.id = new_id()
     c.w1=0.05745
     c.h1=0.06417
@@ -422,6 +440,7 @@ def guide_2_5():
 
 def fermi_chopp():
     c = FermiChopper()
+    c.short_description = 'Fermi chopper'
     c.id = new_id()
     c.len=0.10
     c.w=0.06
@@ -438,6 +457,7 @@ def fermi_chopp():
 
 def tofmonitor1():
     c = TofMonitor()
+    c.short_description = 'Monitor #1'
     c.id = new_id()
     c.xmin=-0.035
     c.xmax=0.035
@@ -451,6 +471,7 @@ def tofmonitor1():
 
 def guide_3():
     c = ChanneledGuide()
+    c.short_description = 'guide 3'
     c.id = new_id()
     c.w1=0.05536
     c.h1=0.06046
@@ -472,6 +493,7 @@ def guide_3():
 
 def guide_4_1():
     c = ChanneledGuide()
+    c.short_description = 'guide 4_1'
     c.id = new_id()
     c.w1=0.05468
     c.h1=0.05924
@@ -493,6 +515,7 @@ def guide_4_1():
 
 def guide_4_2():
     c = ChanneledGuide()
+    c.short_description = 'guide 4_2'
     c.id = new_id()
     c.w1=0.05331
     c.h1=0.05674
@@ -514,6 +537,7 @@ def guide_4_2():
 
 def guide_5():
     c = ChanneledGuide()
+    c.short_description = 'guide 5'
     c.id = new_id()
     c.w1=0.05186
     c.h1=0.05405
@@ -536,6 +560,7 @@ def guide_5():
 
 def neutron_recorder():
     c = NeutronRecorder()
+    c.short_description = 'neutron recorder at sample position of ARCS'
     c.id = new_id()
     return c
 

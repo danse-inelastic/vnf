@@ -29,6 +29,9 @@ class NeutronExperimentWizard(base):
         
         ncount = pyre.inventory.str( 'ncount', default = 1e6 )
         ncount.meta['tip'] = 'number of neutrons'
+
+        # the element to edit. a tuple of tablename, id
+        editee = pyre.inventory.str('editee', default='')
         
         pass # end of Inventory
 
@@ -355,6 +358,7 @@ class NeutronExperimentWizard(base):
                 label = 'edit',
                 routine = 'edit_neutron_component',
                 id = self.inventory.id,
+                editee = '%s,%s' % (component.name, component.id)
                 )
             editlink = action_link( action, director.cgihome )
             p.text = [
@@ -368,6 +372,70 @@ class NeutronExperimentWizard(base):
         # run button
         submit = form.control(name="submit", type="submit", value="Continue")
         return page
+
+
+    def edit_neutron_component(self, director, errors=None):
+        try:
+            page = director.retrieveSecurePage( 'neutronexperimentwizard' )
+        except AuthenticationError, err:
+            return err.page
+
+        editee = self.inventory.editee
+        tablename, id = editee.split(',')
+        component = director.clerk.getRecordByID(tablename, id)
+        typename = component.__class__.__name__
+
+        main = page._body._content._main
+        # populate the main column
+        document = main.document(
+            title='Neutron Experiment Wizard: %s %s' % (
+            typename, component.id))
+        document.description = ''
+        document.byline = 'byline?'
+
+        formcomponent = self.retrieveFormToShow(typename.lower())
+        formcomponent.inventory.id = component.id
+        formcomponent.director = director
+        
+        # create form
+        form = document.form(
+            name=typename,
+            legend= formcomponent.legend(),
+            action=director.cgihome)
+
+        # specify action
+        action = actionRequireAuthentication(
+            actor = 'neutronexperimentwizard', sentry = director.sentry,
+            label = '', routine = 'verify_neutron_component_configuration',
+            id = self.inventory.id,
+            editee = editee,
+            arguments = {'form-received': formcomponent.name } )
+        from vnf.weaver import action_formfields
+        action_formfields( action, form )
+
+        # expand the form with fields of the data object that is being edited
+        formcomponent.expand(form, errors=errors)
+
+        # run button
+        submit = form.control(name="actor.form-received.submit", type="submit", value="Continue")
+        return page
+
+
+    def verify_neutron_component_configuration(self, director):
+        try:
+            page = director.retrieveSecurePage( 'neutronexperimentwizard' )
+        except AuthenticationError, err:
+            return err.page
+        
+        try:
+            self.processFormInputs( director )
+        except InputProcessingError, err:
+            errors = err.errors
+            self.form_received = None
+            director.routine = 'edit_neutron_component'
+            return self.edit_neutron_component( director, errors = errors )
+
+        return self.configure_neutron_components(director)
         
 
     def sample_environment(self, director, errors = None):
