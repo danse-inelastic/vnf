@@ -47,6 +47,6 @@ Create ssh keys so that vnf can contact computation server.
 Another way to do the above is map the db port to one's localhost by issuing the following:
 
  $ ssh -L 50022:octopod:22 jbrkeith@login.cacr.caltech.edu
- $ ssh -L 54321:localhost:54320 -p 50022 jbrkeith@localhost
+ $ ssh -L 54321:localhost:5432 -p 50022 jbrkeith@localhost
 
 

@@ -17,6 +17,8 @@
   	<property name='actor'>greet</property>
     <property name="home">http://trueblue.caltech.edu/vnf/</property>
     <property name="cgi-home">http://trueblue.caltech.edu/cgi-bin/vnf/main.cgi</property>
+    <property name='imagepath'>/vnf/images</property>
+    <property name='javascriptpath'>/vnf/javascripts</property>
 <!--    <component name='sentry'>
     	<property name='username'>demo</property>
     	<property name='passwd'>demo</property>

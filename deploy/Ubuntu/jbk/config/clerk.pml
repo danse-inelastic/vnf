@@ -14,7 +14,7 @@
 <inventory>
 
   <component name='clerk'>
-    <property name='db'>linjiao:4Od&amp;Cm#@localhost:54320:vnf</property>
+    <property name='db'>jbrkeith:jbk_postgres@localhost:5432:vnf</property>
   </component>
 
 </inventory>
