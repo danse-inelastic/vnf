@@ -38,7 +38,7 @@ def assignOrPrepend(paths, environVariable):
 #releaser=/home/jbk/DANSE/buildInelast/pyre
 #EXPORT_ROOT=$releaser/EXPORT
 #python equivalent: 
-releaser='/home/jbk/DANSE/buildInelast/pyre'
+
 EXPORT_ROOT='/home/jbk/dv/tools/pythia-0.8'
 exportSource='/home/jbk/DANSE/vnf'
 
@@ -55,11 +55,11 @@ exportSource='/home/jbk/DANSE/vnf'
 #source $EXPORT_ROOT/bin/envs.sh
 #
 # in accord with strategy, we first set the 'releaser' paths
-os.environ['PYRE_DIR'] = root
+#os.environ['PYRE_DIR'] = root
 assignOrPrepend(EXPORT_ROOT + '/bin', 'PATH')
 assignOrPrepend(EXPORT_ROOT + '/lib', 'LD_LIBRARY_PATH')
-assignOrPrepend(EXPORT_ROOT + '/lib', 'DYLD_LIBRARY_PATH')
-assignOrPrepend(root + '/modules:' + deps + '/python', 'PYTHONPATH')
+#assignOrPrepend(EXPORT_ROOT + '/lib', 'DYLD_LIBRARY_PATH')
+assignOrPrepend(EXPORT_ROOT + '/modules', 'PYTHONPATH')
 
 #
 #
@@ -98,7 +98,7 @@ if __name__ == '__main__':
         out.write( traceback.format_exc() )
     
     import time
-    time.sleep(2)
+    time.sleep(1)
     os.system('firefox /home/jbk/DANSE/vnf/html/test.html')
 
 # version
