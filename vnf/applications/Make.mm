@@ -25,6 +25,7 @@ all: export
 EXPORT_PYTHON_MODULES = \
 	configurationSaver.py \
 	LaunchDetached.py \
+	MigrateTable.py \
 	RetrieveResults.py \
 	SubmitJob.py \
 	WebApplication.py \
