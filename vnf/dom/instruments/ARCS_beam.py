@@ -459,10 +459,10 @@ def tofmonitor1():
     c = TofMonitor()
     c.short_description = 'Monitor #1'
     c.id = new_id()
-    c.xmin=-0.035
-    c.xmax=0.035
-    c.ymin=-0.035
-    c.ymax=0.035
+    c.x_min=-0.035
+    c.x_max=0.035
+    c.y_min=-0.035
+    c.y_max=0.035
     c.tmin=tplotmin
     c.tmax=tplotmax
     c.nchan=100
