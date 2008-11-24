@@ -54,6 +54,7 @@ EXPORT_DATA_PATH = $(EXPORT_ROOT)/$(PROJECT)/$(PACKAGE)
 
 export-config-files:: 
 	mkdir -p $(EXPORT_DATA_PATH); \
+	$(CP_F) main.trueblue.pml $(EXPORT_DATA_PATH)/main.pml
 	for x in $(EXPORT_DATAFILES); do { \
 	  $(CP_F) $$x $(EXPORT_DATA_PATH)/ ; \
         } done

@@ -1727,7 +1727,7 @@ class NeutronExperimentWizard(base):
 
 
     def _retrievePage(self, director):
-        id = self.inventory.id
+        id = self.getExperimentID(director)
         experiment = director.clerk.getNeutronExperiment(id)
         instrument = director.clerk.dereference(experiment.instrument)
         if _instrument_without_sample(instrument, director.clerk.db):
