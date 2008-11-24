@@ -30,10 +30,25 @@ distclean::
 
 
 EXPORT_DATAFILES = \
-	initdb.pml \
-	main.pml \
-	ssher.pml \
 	clerk.pml \
+	idd-config.pml \
+	idd-harness.pml \
+	idd-pickler.odb \
+	idd.pml \
+	idd-session.pml \
+	initdb.pml \
+	ipa-harness.pml \
+	ipa-pickler.odb \
+	ipa.pml \
+	ipa-session.pml \
+	journald-harness.pml \
+	journal.pml \
+	main.pml \
+	remote.pml \
+	ssher.pml \
+	userdb.md5 \
+	weaver.pml \
+	
 
 CP_F = cp -f
 EXPORT_DATA_PATH = $(EXPORT_ROOT)/$(PROJECT)/$(PACKAGE)
