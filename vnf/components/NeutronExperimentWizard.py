@@ -47,6 +47,8 @@ class NeutronExperimentWizard(base):
             from vnf.dom.NeutronExperiment import NeutronExperiment
             experiment = director.clerk.newOwnedObject( NeutronExperiment )
             #change status to "started"
+            experiment.instrument = 'TestInstrument'
+            director.clerk.updateRecord(experiment)
             director.clerk.db.updateRow( NeutronExperiment, [ ('status','started') ] )
             #need to reload the page so that id is correctly
             self.inventory.id = experiment.id
@@ -1720,6 +1722,16 @@ class NeutronExperimentWizard(base):
 
 
     def _retrievePage(self, director):
+#<<<<<<< .mine
+#        id = self.getExperimentID(director)
+#        experiment = director.clerk.getNeutronExperiment(id)
+#        instrument = director.clerk.dereference(experiment.instrument)
+#        experiment.sampleassembly = 'polyxtal-fccNi-plate-sampleassembly-0'
+#        director.clerk.updateRecord(experiment)
+#        if _instrument_without_sample(instrument, director.clerk.db):
+#            page = 'neutronexperimentwizard-nosample'
+#        else: page = 'neutronexperimentwizard'
+#=======
         page = 'neutronexperimentwizard'
 
         id = self.inventory.id
