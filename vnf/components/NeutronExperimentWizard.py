@@ -920,10 +920,14 @@ class NeutronExperimentWizard(base):
         except AuthenticationError, err:
             return err.page
 
+        #get experiment
+        experiment_id = self.inventory.id
+        experiment = director.clerk.getNeutronExperiment( experiment_id )
+
         main = page._body._content._main
         # populate the main column
         document = main.document(
-            title='Neutron Experiment Wizard: material simulation and modelling')
+            title='Neutron Experiment Wizard: material simulation and modeling')
         document.description = ''
         document.byline = 'byline?'
 
@@ -934,7 +938,6 @@ class NeutronExperimentWizard(base):
             'sometimes including scattering properties.',
             ]
 
-        experiment = director.clerk.getNeutronExperiment(self.inventory.id)
         sample = _get_sample_from_experiment(experiment, director.clerk.db)
         
         simresults = director.clerk.findSimResults(sample)

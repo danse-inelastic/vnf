@@ -15,7 +15,7 @@
 
   <component name='main'>
     <property name='actor'>neutronexperimentwizard</property>
-    <property name='routine'>sample_environment</property>   
+    <property name='actor'>sample_environment</property>   
     <component name='sentry'>
     	<property name='username'>demo</property>
     	<property name='passwd'>demo</property>

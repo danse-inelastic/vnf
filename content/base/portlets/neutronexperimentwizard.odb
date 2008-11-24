@@ -76,7 +76,7 @@ def portlet(app):
     sample.icon = "images/link_icon.gif"
     sample.type = "navItem"
 
-    material_simulation = portlet.item(description="Material simulation or modelling")
+    material_simulation = portlet.item(description="Material simulation or modeling")
     action = actionRequireAuthentication(
         actor = 'neutronexperimentwizard', sentry = app.sentry,
         routine = 'material_simulation',
