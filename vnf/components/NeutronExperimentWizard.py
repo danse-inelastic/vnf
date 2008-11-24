@@ -923,7 +923,7 @@ class NeutronExperimentWizard(base):
         main = page._body._content._main
         # populate the main column
         document = main.document(
-            title='Neutron Experiment Wizard: material simulation and modelling')
+            title='Neutron Experiment Wizard: material simulation and modeling')
         document.description = ''
         document.byline = 'byline?'
 
