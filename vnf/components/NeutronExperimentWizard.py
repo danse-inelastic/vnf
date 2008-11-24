@@ -225,7 +225,7 @@ class NeutronExperimentWizard(base):
 
     def configure_instrument(self, director, errors = None):
         try:
-            page = director.retrieveSecurePage( 'neutronexperimentwizard' )
+            page = self._retrievePage(director)
         except AuthenticationError, err:
             return err.page
 
@@ -283,7 +283,7 @@ class NeutronExperimentWizard(base):
     
     def verify_instrument_configuration(self, director):
         try:
-            page = director.retrieveSecurePage( 'neutronexperimentwizard' )
+            page = self._retrievePage(director)
         except AuthenticationError, err:
             return err.page
         
@@ -306,14 +306,18 @@ class NeutronExperimentWizard(base):
         
         # update experiment status
         director.clerk.updateRecord( experiment )
-        
-        director.routine = 'sample_environment'
-        return self.sample_environment(director)
+
+        instrument = director.clerk.dereference(experiment.instrument)
+        if _instrument_without_sample(instrument, director.clerk.db):
+            routine = 'submit_experiment'
+        else: routine = 'sample_environment'
+        director.routine = routine
+        return getattr(self, routine)(director)
 
 
     def configure_neutron_components(self, director):
         try:
-            page = director.retrieveSecurePage( 'neutronexperimentwizard' )
+            page = self._retrievePage(director)
         except AuthenticationError, err:
             return err.page
 
@@ -341,10 +345,12 @@ class NeutronExperimentWizard(base):
             action=director.cgihome)
 
         # specify action
+        if _instrument_without_sample(instrument, director.clerk.db): routine = 'submit_experiment'
+        else: routine = 'sample_environment'
         action = actionRequireAuthentication(
             actor = 'neutronexperimentwizard', sentry = director.sentry,
             label = '',
-            routine = 'sample_environment',
+            routine = routine,
             id = self.inventory.id,
             )
         from vnf.weaver import action_formfields
@@ -376,7 +382,7 @@ class NeutronExperimentWizard(base):
 
     def edit_neutron_component(self, director, errors=None):
         try:
-            page = director.retrieveSecurePage( 'neutronexperimentwizard' )
+            page = self._retrievePage(director)
         except AuthenticationError, err:
             return err.page
 
@@ -423,7 +429,7 @@ class NeutronExperimentWizard(base):
 
     def verify_neutron_component_configuration(self, director):
         try:
-            page = director.retrieveSecurePage( 'neutronexperimentwizard' )
+            page = self._retrievePage(director)
         except AuthenticationError, err:
             return err.page
         
@@ -440,7 +446,7 @@ class NeutronExperimentWizard(base):
 
     def sample_environment(self, director, errors = None):
         try:
-            page = director.retrieveSecurePage( 'neutronexperimentwizard' )
+            page = self._retrievePage(director)
         except AuthenticationError, err:
             return err.page
                 
@@ -493,7 +499,7 @@ class NeutronExperimentWizard(base):
 
     def verify_sample_environment(self, director):
         try:
-            page = director.retrieveSecurePage( 'neutronexperimentwizard' )
+            page = self._retrievePage(director)
         except AuthenticationError, err:
             return err.page
         
@@ -522,7 +528,7 @@ class NeutronExperimentWizard(base):
 
     def sample_preparation(self, director):
         try:
-            page = director.retrieveSecurePage( 'neutronexperimentwizard' )
+            page = self._retrievePage(director)
         except AuthenticationError, err:
             return err.page
 
@@ -569,7 +575,7 @@ class NeutronExperimentWizard(base):
 
     def restart_sample_preparation(self, director):
         try:
-            page = director.retrieveSecurePage( 'neutronexperimentwizard' )
+            page = self._retrievePage(director)
         except AuthenticationError, err:
             return err.page
 
@@ -586,7 +592,7 @@ class NeutronExperimentWizard(base):
 
     def fresh_sample_preparation(self, director):
         try:
-            page = director.retrieveSecurePage( 'neutronexperimentwizard' )
+            page = self._retrievePage(director)
         except AuthenticationError, err:
             return err.page
 
@@ -657,7 +663,7 @@ class NeutronExperimentWizard(base):
 
     def select_sample_from_examples(self, director):
         try:
-            page = director.retrieveSecurePage( 'neutronexperimentwizard' )
+            page = self._retrievePage(director)
         except AuthenticationError, err:
             return err.page
 
@@ -704,7 +710,7 @@ class NeutronExperimentWizard(base):
 
     def verify_sample_selection(self, director):
         try:
-            page = director.retrieveSecurePage( 'neutronexperimentwizard' )
+            page = self._retrievePage(director)
         except AuthenticationError, err:
             return err.page
         
@@ -740,7 +746,7 @@ class NeutronExperimentWizard(base):
 
     def select_sample_from_sample_library(self, director):
         try:
-            page = director.retrieveSecurePage( 'neutronexperimentwizard' )
+            page = self._retrievePage(director)
         except AuthenticationError, err:
             return err.page
 #        experiment = director.clerk.getNeutronExperiment(self.inventory.id)
@@ -788,7 +794,7 @@ class NeutronExperimentWizard(base):
 
     def input_material(self, director):
         try:
-            page = director.retrieveSecurePage( 'neutronexperimentwizard' )
+            page = self._retrievePage(director)
         except AuthenticationError, err:
             return err.page
 #        experiment = director.clerk.getNeutronExperiment(self.inventory.id)
@@ -824,7 +830,7 @@ class NeutronExperimentWizard(base):
 
     def configure_sample(self, director, errors = None):
         try:
-            page = director.retrieveSecurePage( 'neutronexperimentwizard' )
+            page = self._retrievePage(director)
         except AuthenticationError, err:
             return err.page        
         main = page._body._content._main
@@ -881,7 +887,7 @@ class NeutronExperimentWizard(base):
 
     def verify_sample_configuration(self, director):
         try:
-            page = director.retrieveSecurePage( 'neutronexperimentwizard' )
+            page = self._retrievePage(director)
         except AuthenticationError, err:
             return err.page
 
@@ -910,7 +916,7 @@ class NeutronExperimentWizard(base):
 
     def material_simulation(self, director):
         try:
-            page = director.retrieveSecurePage( 'neutronexperimentwizard' )
+            page = self._retrievePage(director)
         except AuthenticationError, err:
             return err.page
 
@@ -978,7 +984,7 @@ class NeutronExperimentWizard(base):
 
     def nokernelsyet(self, director):
         try:
-            page = director.retrieveSecurePage( 'neutronexperimentwizard' )
+            page = self._retrievePage(director)
         except AuthenticationError, err:
             return err.page
 #        experiment = director.clerk.getNeutronExperiment(self.inventory.id)
@@ -1012,7 +1018,7 @@ class NeutronExperimentWizard(base):
 
     def present_kernels(self, director):
         try:
-            page = director.retrieveSecurePage( 'neutronexperimentwizard' )
+            page = self._retrievePage(director)
         except AuthenticationError, err:
             return err.page
 #        experiment = director.clerk.getNeutronExperiment(self.inventory.id)
@@ -1095,7 +1101,7 @@ class NeutronExperimentWizard(base):
 
     def edit_kernel(self, director, errors = None):
         try:
-            page = director.retrieveSecurePage( 'neutronexperimentwizard' )
+            page = self._retrievePage(director)
         except AuthenticationError, err:
             return err.page
 
@@ -1150,7 +1156,7 @@ class NeutronExperimentWizard(base):
 
     def verify_kernel_configuration(self, director):
         try:
-            page = director.retrieveSecurePage( 'neutronexperimentwizard' )
+            page = self._retrievePage(director)
         except AuthenticationError, err:
             return err.page
         
@@ -1167,7 +1173,7 @@ class NeutronExperimentWizard(base):
 
     def delete_kernel(self, director):
         try:
-            page = director.retrieveSecurePage( 'neutronexperimentwizard' )
+            page = self._retrievePage(director)
         except AuthenticationError, err:
             return err.page
 
@@ -1185,7 +1191,7 @@ class NeutronExperimentWizard(base):
 
     def new_kernel(self, director):
         try:
-            page = director.retrieveSecurePage( 'neutronexperimentwizard' )
+            page = self._retrievePage(director)
         except AuthenticationError, err:
             return err.page
 
@@ -1237,7 +1243,7 @@ class NeutronExperimentWizard(base):
 
     def select_material_simulation_result(self, director):
         try:
-            page = director.retrieveSecurePage( 'neutronexperimentwizard' )
+            page = self._retrievePage(director)
         except AuthenticationError, err:
             return err.page
 
@@ -1284,7 +1290,7 @@ class NeutronExperimentWizard(base):
 
     def select_kernel_type(self, director):
         try:
-            page = director.retrieveSecurePage( 'neutronexperimentwizard' )
+            page = self._retrievePage(director)
         except AuthenticationError, err:
             return err.page
 
@@ -1326,7 +1332,7 @@ class NeutronExperimentWizard(base):
 
     def verify_kerneltype_selection(self, director):
         try:
-            page = director.retrieveSecurePage( 'neutronexperimentwizard' )
+            page = self._retrievePage(director)
         except AuthenticationError, err:
             return err.page
 
@@ -1342,7 +1348,7 @@ class NeutronExperimentWizard(base):
 
     def selectkernel(self, director):
         try:
-            page = director.retrieveSecurePage( 'neutronexperimentwizard' )
+            page = self._retrievePage(director)
         except AuthenticationError, err:
             return err.page
 #        experiment = director.clerk.getNeutronExperiment(self.inventory.id)
@@ -1381,7 +1387,7 @@ class NeutronExperimentWizard(base):
 
     def gulp(self, director):
         try:
-            page = director.retrieveSecurePage( 'neutronexperimentwizard' )
+            page = self._retrievePage(director)
         except AuthenticationError, err:
             return err.page
         
@@ -1411,7 +1417,7 @@ class NeutronExperimentWizard(base):
    
     def localOrbitalHarmonic(self, director):
         try:
-            page = director.retrieveSecurePage( 'neutronexperimentwizard' )
+            page = self._retrievePage(director)
         except AuthenticationError, err:
             return err.page
         
@@ -1441,7 +1447,7 @@ class NeutronExperimentWizard(base):
     
     def planeWaveHarmonic(self, director):
         try:
-            page = director.retrieveSecurePage( 'neutronexperimentwizard' )
+            page = self._retrievePage(director)
         except AuthenticationError, err:
             return err.page
         
@@ -1471,7 +1477,7 @@ class NeutronExperimentWizard(base):
     
     def kernel_generator(self, director):
         try:
-            page = director.retrieveSecurePage( 'neutronexperimentwizard' )
+            page = self._retrievePage(director)
         except AuthenticationError, err:
             return err.page
         
@@ -1503,14 +1509,15 @@ class NeutronExperimentWizard(base):
 
     def submit_experiment(self, director, errors = None):
         try:
-            page = director.retrieveSecurePage( 'neutronexperimentwizard' )
+            page = self._retrievePage(director)
         except AuthenticationError, err:
             return err.page
 
         self._checkstatus( director )
-        if not self.instrument_configured or not self.name_assigned or \
-               not self.sample_environment_configured or \
-               not self.sample_prepared or not self.kernel_configured:
+        if not self.allconfigured:
+##                (not self.instrument_configured or not self.name_assigned or \
+##                 not self.sample_environment_configured or \
+##                 not self.sample_prepared or not self.kernel_configured):
             return self._showstatus( director )
         
         main = page._body._content._main
@@ -1554,7 +1561,7 @@ class NeutronExperimentWizard(base):
 
     def verify_experiment_submission(self, director):
         try:
-            page = director.retrieveSecurePage( 'neutronexperimentwizard' )
+            page = self._retrievePage(director)
         except AuthenticationError, err:
             return err.page
         
@@ -1572,7 +1579,26 @@ class NeutronExperimentWizard(base):
         #make sure experiment is configured all the way
         self._checkstatus(director)
         assert self.allconfigured == True
-        
+
+        # make sure there is a job attached to experiment
+        experiment = director.clerk.getNeutronExperiment(self.inventory.id)
+        jobref = experiment.job
+        if not jobref:
+            #create new job
+            from vnf.components.Job import new_job
+            job = new_job(director)
+        else:
+            job = director.clerk.dereference(jobref)
+            
+        # establish connections between experiment and job
+        job.computation = experiment; director.clerk.updateRecord(job)
+        experiment.job = job; director.clerk.updateRecord( experiment )
+            
+        # redirect to job submission page
+        actor = 'job'
+        routine = 'view'
+        return self.redirect(director, actor, routine, id = experiment.job.id)
+        ## --------- obsolete -------
         job = director.clerk.dereference(experiment.job)
         from JobDataManager import JobDataManager
         path = JobDataManager( job, director ).localpath()
@@ -1590,11 +1616,12 @@ class NeutronExperimentWizard(base):
         director.clerk.updateRecord( experiment )
         
         return self.showExperimentStatus(director)
+        ## --------- obsolete -------
 
 
     def showExperimentStatus(self,director):
         try:
-            page = director.retrieveSecurePage( 'neutronexperimentwizard' )
+            page = self._retrievePage(director)
         except AuthenticationError, err:
             return err.page        
 
@@ -1610,7 +1637,7 @@ class NeutronExperimentWizard(base):
     def verify_experiment_submission1(self, director):
         # just to show the back button
         try:
-            page = director.retrieveSecurePage( 'neutronexperimentwizard' )
+            page = self._retrievePage(director)
         except AuthenticationError, err:
             return err.page        
 
@@ -1622,7 +1649,7 @@ class NeutronExperimentWizard(base):
 
     def save_experiment(self, director):
         try:
-            page = director.retrieveSecurePage( 'neutronexperimentwizard' )
+            page = self._retrievePage(director)
         except AuthenticationError, err:
             return err.page        
         #nothing need to be done.
@@ -1637,7 +1664,7 @@ class NeutronExperimentWizard(base):
 
     def cancel(self, director):
         try:
-            page = director.retrieveSecurePage( 'neutronexperimentwizard' )
+            page = self._retrievePage(director)
         except AuthenticationError, err:
             return err.page        
 
@@ -1691,10 +1718,20 @@ class NeutronExperimentWizard(base):
             ]
         return
 
+
+    def _retrievePage(self, director):
+        id = self.inventory.id
+        experiment = director.clerk.getNeutronExperiment(id)
+        instrument = director.clerk.dereference(experiment.instrument)
+        if _instrument_without_sample(instrument, director.clerk.db):
+            page = 'neutronexperimentwizard-nosample'
+        else: page = 'neutronexperimentwizard'
+        return director.retrieveSecurePage(page)
+
     
     def _showstatus(self, director):
         try:
-            page = director.retrieveSecurePage( 'neutronexperimentwizard' )
+            page = self._retrievePage(director)
         except AuthenticationError, err:
             return err.page
         
@@ -1754,6 +1791,11 @@ class NeutronExperimentWizard(base):
         instrument_ref = experiment.instrument
         self.instrument_configured = not nullpointer( instrument_ref )
 
+        instrument = director.clerk.dereference(instrument_ref)
+        if _instrument_without_sample(instrument, director.clerk.db):
+            self.allconfigured = True
+            return
+
         sampleenvironment_ref = experiment.sampleenvironment
         self.sample_environment_configured = not nullpointer(sampleenvironment_ref)
         
@@ -1787,6 +1829,14 @@ class NeutronExperimentWizard(base):
 
     pass # end of NeutronExperimentWizard
 
+
+def _instrument_without_sample(instrument, db):
+    from vnf.dom.neutron_components.SampleComponent import SampleComponent
+    components = instrument.components.dereference(db)
+    for name, component in components:
+        if isinstance(component, SampleComponent): return False
+        continue
+    return True
 
 
 def _get_sample_from_experiment(experiment, db):
