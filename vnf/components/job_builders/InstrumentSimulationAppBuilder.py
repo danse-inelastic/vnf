@@ -124,6 +124,154 @@ class Builder:
         return
 
 
+    def onSNSModerator(self, component):
+        kwds = {
+            'name': component.label,
+            'category': 'sources',
+            'type': 'SNS_source',
+            'supplier': 'mcstas2',
+            }
+        self.onNeutronComponent(**kwds)
+
+        opts = {}
+
+        # map database record parameter names to parameters used in monte carlo components
+        parameters = [
+            'width',
+            'height',
+            'dist',
+            'xw',
+            'yh',
+            'Emin',
+            'Emax',
+            ]
+
+        for param in parameters:
+            opts[ '%s.%s' %  (component.label,param) ] = getattr(component, param)
+            continue
+        
+        self.cmdline_opts.update( opts )
+        return
+
+
+    def onChanneledGuide(self, component):
+        kwds = {
+            'name': component.label,
+            'category': 'optics',
+            'type': 'Guide_channeled',
+            'supplier': 'mcstas2',
+            }
+        self.onNeutronComponent(**kwds)
+
+        opts = {}
+
+        # map database record parameter names to parameters used in monte carlo components
+        parameters = [
+            'w1', 'h1',
+            'w2', 'h2',
+            'l',
+            'R0',
+            'mx', 'my',
+            'Qcx', 'Qcy',
+            'alphax', 'alphay',
+            'W',
+            'k',
+            'd',
+            ]
+
+        for param in parameters:
+            opts[ '%s.%s' %  (component.label,param) ] = getattr(component, param)
+            continue
+        
+        self.cmdline_opts.update( opts )
+        return
+
+
+    def onT0Chopper(self, component):
+        kwds = {
+            'name': component.label,
+            'category': 'optics',
+            'type': 'Vertical_T0',
+            'supplier': 'mcstas2',
+            }
+        self.onNeutronComponent(**kwds)
+
+        opts = {}
+
+        # map database record parameter names to parameters used in monte carlo components
+        parameters = [
+            'w1', 'w2',
+            'len',
+            'ymin', 'ymax',
+            'nu',
+            'delta',
+            'tc'
+            ]
+
+        for param in parameters:
+            opts[ '%s.%s' %  (component.label,param) ] = getattr(component, param)
+            continue
+        
+        self.cmdline_opts.update( opts )
+        return
+
+
+    def onFermiChopper(self, component):
+        kwds = {
+            'name': component.label,
+            'category': 'optics',
+            'type': 'Fermi_chop2',
+            'supplier': 'mcstas2',
+            }
+        self.onNeutronComponent(**kwds)
+
+        opts = {}
+
+        # map database record parameter names to parameters used in monte carlo components
+        parameters = [
+            'w',
+            'len',
+            'ymin', 'ymax',
+            'nu',
+            'delta',
+            'tc',
+            'nchans',
+            'bw',
+            'blader',
+            ]
+
+        for param in parameters:
+            opts[ '%s.%s' %  (component.label,param) ] = getattr(component, param)
+            continue
+        
+        self.cmdline_opts.update( opts )
+        return
+
+
+    def onNeutronRecorder(self, component):
+        kwds = {
+            'name': component.label,
+            'category': 'monitors',
+            'type': 'NeutronRecorder',
+            'supplier': 'mcni',
+            }
+        self.onNeutronComponent(**kwds)
+
+        opts = {}
+
+        # map database record parameter names to parameters used in monte carlo components
+        parameters = [
+            'packetsize',
+            ]
+
+        for param in parameters:
+            opts[ '%s.%s' %  (component.label,param) ] = getattr(component, param)
+            continue
+        
+        self.cmdline_opts.update( opts )
+        return
+
+
     def onSample(self):
         self._write(
             "sample = facility( 'sample', default = 'sample' )"
