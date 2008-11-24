@@ -353,7 +353,6 @@ class NeutronExperiment(base):
             ]
 
         experiment = director.clerk.getNeutronExperiment(self.inventory.id)
-        experiment = director.clerk.getHierarchy( experiment )
         p = document.paragraph(cls = 'error'  )
         p.text = [ experiment.job.error ]
 
@@ -372,7 +371,6 @@ class NeutronExperiment(base):
 
     def _view_submitted(self, document, director):
         experiment = director.clerk.getNeutronExperiment(self.inventory.id)
-        experiment = director.clerk.getHierarchy( experiment )
 
         #refresh script
         p = document.paragraph()
@@ -443,19 +441,19 @@ class NeutronExperiment(base):
 
     def _view_finished(self, document, director):
         experiment = director.clerk.getNeutronExperiment(self.inventory.id)
-        experiment = director.clerk.getHierarchy( experiment )
 
         panel = document.form(
             name='null',
             legend= 'Summary',
             action='')
-            
+
+        job = experiment.job.dereference(director.db)
         p = panel.paragraph()
         p.text = [
             'Experiment %r was started %s on server %r, using %s nodes.' % (
-            experiment.short_description, experiment.job.timeStart,
-            experiment.job.computation_server.short_description,
-            experiment.job.numprocessors,
+            experiment.short_description, job.timeStart,
+            job.computation_server.short_description,
+            job.numprocessors,
             ),
             ]
         p.text += [
@@ -466,14 +464,14 @@ class NeutronExperiment(base):
         self._add_results( document, director )
 
         #update status
-        if experiment.job.status == 'finished': experiment.status = 'finished'
+        if job.status == 'finished': experiment.status = 'finished'
         director.clerk.updateRecord( experiment )
         return
 
 
     def _add_results(self, document, director):
         experiment = director.clerk.getNeutronExperiment( self.inventory.id )
-
+        
         # data path
         job_id = experiment.job_id
         job = director.clerk.getJob( job_id )

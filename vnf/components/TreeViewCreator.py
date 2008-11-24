@@ -46,8 +46,10 @@ class TreeViewCreator:
         db = self.director.clerk.db
         elements = [
             experiment.instrument.dereference(db),
-            experiment.sampleassembly.dereference(db),
-            ]#, experiment.job ]
+            ]
+        if experiment.sampleassembly:
+            elements.append(experiment.sampleassembly.dereference(db))
+        #, experiment.job ]
         return self.onContainer( experiment, elements )
 
 
@@ -134,7 +136,7 @@ class TreeViewCreator:
         raise RuntimeError, "should not reach here"
 
 
-    onDetectorSystem_fromXML = onPolyCrystal = onDisordered = onIDFPhononDispersion = onSANSSphereModelKernel = onMonochromaticSource = onIQEMonitor = onIQMonitor = onCrystal = onBlock = onCylinder = onElement
+    onTofMonitor = onDetectorSystem_fromXML = onPolyCrystal = onDisordered = onIDFPhononDispersion = onSANSSphereModelKernel = onMonochromaticSource = onIQEMonitor = onIQMonitor = onCrystal = onBlock = onCylinder = onElement
     #onMatter = onPhononDispersion = onScatteringKernel = onComponent = onShape = onElement
     
 

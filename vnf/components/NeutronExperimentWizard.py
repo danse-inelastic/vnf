@@ -35,9 +35,14 @@ class NeutronExperimentWizard(base):
         
         pass # end of Inventory
 
-    def getExperimentID(self, director):
+
+    def start(self, director):
+        try:
+            page = self._retrievePage(director)
+        except AuthenticationError, err:
+            return err.page
+
         if self.inventory.id == '':
-            # TODO: this method makes the page get loaded twice--seems kind of inefficient
             #create a new experiment
             from vnf.dom.NeutronExperiment import NeutronExperiment
             experiment = director.clerk.newOwnedObject( NeutronExperiment )
@@ -45,17 +50,8 @@ class NeutronExperimentWizard(base):
             director.clerk.db.updateRow( NeutronExperiment, [ ('status','started') ] )
             #need to reload the page so that id is correctly
             self.inventory.id = experiment.id
-            page = director.retrieveSecurePage( 'neutronexperimentwizard' )
-        return self.inventory.id
-            
-
-    def start(self, director):
-        try:
-            page = director.retrieveSecurePage( 'neutronexperimentwizard' )
-        except AuthenticationError, err:
-            return err.page
-
-        self.getExperimentID(director)
+            page = self._retrievePage(director)
+            pass
 
         main = page._body._content._main
 
@@ -113,7 +109,7 @@ class NeutronExperimentWizard(base):
 
     def verify_experiment_name(self, director):
         try:
-            page = director.retrieveSecurePage( 'neutronexperimentwizard' )
+            page = self._retrievePage(director)
         except AuthenticationError, err:
             return err.page
 
@@ -132,7 +128,7 @@ class NeutronExperimentWizard(base):
 
     def select_instrument(self, director):
         try:
-            page = director.retrieveSecurePage( 'neutronexperimentwizard' )
+            page = self._retrievePage(director)
         except AuthenticationError, err:
             return err.page
 
@@ -180,7 +176,7 @@ class NeutronExperimentWizard(base):
 
     def verify_instrument_selection(self, director):
         try:
-            page = director.retrieveSecurePage( 'neutronexperimentwizard' )
+            page = self._retrievePage(director)
         except AuthenticationError, err:
             return err.page
         
@@ -455,7 +451,7 @@ class NeutronExperimentWizard(base):
             return err.page
                 
         #get experiment
-        experiment_id = self.getExperimentID(director)
+        experiment_id = self.inventory.id
         experiment = director.clerk.getNeutronExperiment( experiment_id )
 
         main = page._body._content._main
@@ -924,14 +920,10 @@ class NeutronExperimentWizard(base):
         except AuthenticationError, err:
             return err.page
 
-        #get experiment
-        experiment_id = self.getExperimentID(director)
-        experiment = director.clerk.getNeutronExperiment( experiment_id )
-
         main = page._body._content._main
         # populate the main column
         document = main.document(
-            title='Neutron Experiment Wizard: material simulation and modeling')
+            title='Neutron Experiment Wizard: material simulation and modelling')
         document.description = ''
         document.byline = 'byline?'
 
@@ -942,6 +934,7 @@ class NeutronExperimentWizard(base):
             'sometimes including scattering properties.',
             ]
 
+        experiment = director.clerk.getNeutronExperiment(self.inventory.id)
         sample = _get_sample_from_experiment(experiment, director.clerk.db)
         
         simresults = director.clerk.findSimResults(sample)
@@ -1526,7 +1519,7 @@ class NeutronExperimentWizard(base):
 ##                 not self.sample_environment_configured or \
 ##                 not self.sample_prepared or not self.kernel_configured):
             return self._showstatus( director )
-        
+
         main = page._body._content._main
         # populate the main column
         document = main.document(title='Neutron Experiment Wizard: submit')
@@ -1727,12 +1720,16 @@ class NeutronExperimentWizard(base):
 
 
     def _retrievePage(self, director):
-        id = self.getExperimentID(director)
-        experiment = director.clerk.getNeutronExperiment(id)
-        instrument = director.clerk.dereference(experiment.instrument)
-        if _instrument_without_sample(instrument, director.clerk.db):
-            page = 'neutronexperimentwizard-nosample'
-        else: page = 'neutronexperimentwizard'
+        page = 'neutronexperimentwizard'
+
+        id = self.inventory.id
+        if id:
+            experiment = director.clerk.getNeutronExperiment(id)
+            iref = experiment.instrument
+            if iref:
+                instrument = director.clerk.dereference(iref)
+                if _instrument_without_sample(instrument, director.clerk.db):
+                    page = 'neutronexperimentwizard-nosample'
         return director.retrieveSecurePage(page)
 
     
@@ -1801,6 +1798,9 @@ class NeutronExperimentWizard(base):
         instrument = director.clerk.dereference(instrument_ref)
         if _instrument_without_sample(instrument, director.clerk.db):
             self.allconfigured = True
+            if experiment.status in ['started', 'partially configured']:
+                experiment.status = 'constructed'
+                director.clerk.updateRecord(experiment)
             return
 
         sampleenvironment_ref = experiment.sampleenvironment
@@ -1823,14 +1823,14 @@ class NeutronExperimentWizard(base):
 
         if not self.kernel_configured: return
 
-        if experiment.ncount <=0 : return
-        if nullpointer(experiment.job): return
-        job = director.clerk.dereference(experiment.job)
+        #if experiment.ncount <=0 : return
+        #if nullpointer(experiment.job): return
+        #job = director.clerk.dereference(experiment.job)
 
         self.allconfigured = True
-
-        # the last is to check if all files for this experiment
-        # are generated
+        if experiment.status in ['started', 'partially configured']:
+            experiment.status = 'constructed'
+            director.clerk.updateRecord(experiment)
         return        
 
 

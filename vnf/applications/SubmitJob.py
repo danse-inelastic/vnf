@@ -58,9 +58,10 @@ class SubmitJob(base):
             errmsg = '%s: %s' % (e.__class__.__name__, e)
             job.error = errmsg
             self.clerk.updateRecord(job)
-            
+
+            import traceback
             self._debug.log('submission of Job %s failed. %s' % (
-                id, errmsg) )
+                id, traceback.format_exc()) )
 
             if self.debug: raise
             

@@ -48,28 +48,18 @@ EXPORT_PYTHON_MODULES = \
 	Geometer.py \
 	Greeter.py \
 	Instrument.py \
-	InstrumentConfigurationApplyer.py \
-	InstrumentSimulationAppBuilder.py \
 	Job.py \
 	JobBuilder.py \
 	JobDataManager.py \
 	Login.py \
 	Logout.py \
 	MaterialSimulationWizard.py \
-	McstasSampleBuilder.py \
-	McvineSampleAssemblyDatafilesCollector.py \
-	McvineSampleAssemblyBuilder.py \
-	McvineScattererXMLBuilder.py \
 	NeutronExperiment.py \
 	NeutronExperimentWizard.py \
-	NeutronExperimentSimulationRunBuilder.py \
-	NeutronExperimentSimulationRunBuilder_demo.py \
 	Sample.py \
 	SampleAssembly.py \
-	SampleAssemblyXMLBuilder.py \
 	SamplePreparation.py \
 	Scatterer.py \
-	ScattererConfigurationApplyer.py \
 	ScatteringKernel.py \
 	Scheduler.py \
 	Scribe.py \

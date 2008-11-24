@@ -10,11 +10,15 @@
 #
 
 
-class Builder:
+import journal
+debug = journal.debug('jobbuilder')
+
+from JobBuilder import JobBuilder as base
+
+class Builder(base):
 
 
     pyscriptname = 'simapp.py'
-    shscriptname = 'run.sh'
 
 
     def __init__(self, path):
@@ -22,8 +26,9 @@ class Builder:
         return
     
 
-    def render(self, experiment, filedb=None):
-        self._filedb = filedb
+    def render(self, experiment, db=None, dds=None):
+        self.db = db
+        self.dds = dds
         return self.dispatch(experiment)
 
 
@@ -34,7 +39,7 @@ class Builder:
 
 
     def onNeutronExperiment(self, experiment):
-        configured_instrument = experiment.instrument
+        configured_instrument = experiment.instrument_configuration.dereference(self.db)
         pyscriptconents, options = self.dispatch( configured_instrument )
 
         sampleassembly = experiment.sampleassembly
@@ -62,13 +67,14 @@ class Builder:
         files = [ (pyscriptname, pyscriptconents),
                   (shscriptname, [command] ),
                   ]
-        self._createfiles( files )
-        return
+        self._createdatadir()
+        self._createfiles(files)
+        return [shscriptname, pyscriptname]
 
 
-    def onConfiguredInstrument(self, instrument):
+    def onInstrumentConfiguration(self, configuration):
         from InstrumentSimulationAppBuilder import Builder
-        return Builder(self.path).render(instrument, filedb = self._filedb)
+        return Builder(self.path).render(configuration, db = self.db, dds = self.dds)
 
 
     def onSampleAssembly(self, sampleassembly):
@@ -77,7 +83,16 @@ class Builder:
         else:
             from McstasSampleBuilder import Builder
             pass
-        return Builder(self.path).render(sampleassembly, filedb = self._filedb)
+        return Builder(self.path).render(sampleassembly, db = self.db, dds = self.dds)
+
+
+    def _createdatadir(self):
+        import os
+        try:
+            os.makedirs(self.path)
+        except OSError, msg:
+            debug.log('failed to make path %r: %s' % (self.path, msg))
+        return
 
 
     def _createfiles( self, files):
@@ -85,7 +100,7 @@ class Builder:
 
         import os
         for filename, filecontents in files:
-            filepath = os.path.join( path, filename )
+            filepath = self._path(filename)
             open( filepath, 'w' ).write( '\n'.join( filecontents ) )
             continue
         return

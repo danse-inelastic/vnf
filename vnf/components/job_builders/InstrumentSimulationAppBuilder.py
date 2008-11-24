@@ -19,15 +19,16 @@ class Builder:
         return
     
 
-    def render(self, instrument, filedb=None):
-        self._filedb = filedb
+    def render(self, instrument, db=None, dds=None):
+        self.db = db
+        self.dds = dds
         
         self.appscript = []
         self.cmdline_opts = {}
         self.indent_level = 0
         self.dispatch( instrument )
 
-        self._filedb = None
+        self.db = self.dds = None
         return self.appscript, self.cmdline_opts
 
 
@@ -37,20 +38,11 @@ class Builder:
         return f( something )
 
 
-    def applyConfiguration( self, configuration, instrument ):
-        from InstrumentConfigurationApplyer import applyer
-        applyer( instrument ).apply( configuration )
-        return
-
-
-    def onConfiguredInstrument(self, configured):
-        instrument = configured.instrument
-        configuration = configured.configuration
-        self.applyConfiguration( configuration, instrument )
-        return self.dispatch( instrument )
-
-
-    def onInstrument(self, instrument):
+    def onInstrumentConfiguration(self, configuration):
+        
+        components = configuration.components.dereference(self.db)
+        instrument = configuration.target.dereference(self.db)
+        
         self._write( 'import mccomponents.pyre_support' )
         self._write( 'from mcni.pyre_support.Instrument import Instrument as base' )
         self._write( 'class Instrument(base):' )
@@ -64,7 +56,8 @@ class Builder:
         self._write( 'import pyre.inventory' )
         self._write( 'from mcni.pyre_support import facility, componentfactory as component')
         
-        for component in instrument.components:
+        for name, component in components:
+            component.label = name
             self.dispatch( component )
             continue
 
@@ -85,7 +78,7 @@ class Builder:
 
         self.cmdline_opts[ 'sequence' ] = sequence
 
-        geometer = instrument.geometer
+        geometer = instrument.geometer.dereference(self.db)
         for component in sequence:
             
             record = geometer[ component ]
@@ -108,7 +101,7 @@ class Builder:
 
         self._write( 'if __name__ == "__main__":' )
         self._indent()
-        self._write( 'app = Instrument( %r )' % instrument.short_description )
+        self._write( 'app = Instrument( "Instr%s" )' % instrument.id )
         self._write( 'app.run()' )
         self._outdent()
         self._write( '' )
@@ -124,7 +117,7 @@ class Builder:
             }
         self.onNeutronComponent( **kwds )
 
-        from mcni.utils import e2v
+        from _utils import e2v
         v = e2v( source.energy )
         self.Ei = source.energy
         self.cmdline_opts[ '%s.velocity' % source.label ] = (0,0,v) 
@@ -138,7 +131,7 @@ class Builder:
         return
 
 
-    def onIQEMonitor(self, m):
+    def onQEMonitor(self, m):
         kwds = {
             'name': m.label,
             'category': 'monitors',
@@ -166,6 +159,37 @@ class Builder:
         return
 
 
+    def onTofMonitor(self, m):
+        kwds = {
+            'name': m.label,
+            'category': 'monitors',
+            'type': 'TOF_monitor2',
+            'supplier': 'mcstas2',
+            }
+        self.onNeutronComponent( **kwds )
+
+        opts = {}
+
+        # map database record parameter names to parameters used in monte carlo components
+        parameters = [
+            ('tmin', 'tmin'),
+            ('tmax', 'tmax'),
+            ('nchan', 'nchan'),
+            ('x_min', 'xmin'),
+            ('x_max', 'xmax'),
+            ('y_min', 'ymin'),
+            ('y_max', 'ymax'),
+            ]
+
+        for recordparam, mcparam in parameters:
+            opts[ '%s.%s' %  (m.label,mcparam) ] = getattr(m, recordparam)
+            continue
+        
+        self.cmdline_opts.update( opts )
+        return
+
+
+    ### need further work here ###
     def onDetectorSystem_fromXML(self, ds):
         # first we need to get the detector system xml file
         xmlfile_source = os.path.join(
@@ -199,12 +223,7 @@ class Builder:
         return
     detectorsystem_xmlfile = 'detectorsystem.xml'
     detectorsystem_output_eventfile = 'detectorsystem-events.dat'
-    
-
-    def onComponent(self, component):
-        realcomponent = component.realcomponent
-        realcomponent.label = component.label
-        return self.dispatch( realcomponent )
+    ### need further work here ###
     
 
     def onNeutronComponent(self, **kwds):
@@ -224,16 +243,18 @@ class Builder:
         return
 
 
+    ### need further work here ###
     def _link(self, linked, link):
         cmd = 'ln -s %s %s' % (linked, link )
         from spawn import spawn
         spawn( cmd )
         return
+    ### need further work here ###
 
 
     def _datadir(self, obj):
-        filedb = self._filedb
-        return filedb.abspath(obj)
+        dds = self.dds
+        return dds.abspath(obj)
 
 
     pass # end of Builder

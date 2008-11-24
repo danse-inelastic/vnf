@@ -30,8 +30,18 @@ all: export
 # export
 
 EXPORT_PYTHON_MODULES = \
+	InstrumentConfigurationApplyer.py \
+	InstrumentSimulationAppBuilder.py \
 	JobBuilder.py \
+	McstasSampleBuilder.py \
+	McvineSampleAssemblyBuilder.py \
+	McvineSampleAssemblyDatafilesCollector.py \
+	McvineScattererXMLBuilder.py \
+	NeutronExperiment.py \
+	NeutronExperimentSimulationRunBuilder.py \
+	SampleAssemblyXMLBuilder.py \
 	__init__.py \
+	_utils.py \
 
 
 export:: export-package-python-modules

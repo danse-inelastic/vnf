@@ -30,6 +30,7 @@ all: export
 # export
 
 EXPORT_PYTHON_MODULES = \
+	Test.py \
 	ARCS_beam.py \
 	Pharos.py \
 	Powgen3.py \

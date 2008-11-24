@@ -15,7 +15,8 @@
 class JobBuilder:
 
     def __call__(self, computation, db=None, dds=None, path=None):
-        from vnf import extensions as depositories
+        from vnf import extensions
+        depositories = [None] + extensions
         Builder = findBuilder(computation.__class__, depositories)
         return Builder(path).render(computation, db=db, dds=dds)
         

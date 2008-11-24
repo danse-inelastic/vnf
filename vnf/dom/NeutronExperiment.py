@@ -41,6 +41,9 @@ class NeutronExperiment(base):
     job = pyre.db.reference( name = 'job', table = Job )
 
     status = pyre.db.varchar( name = 'status', length = 32, default = '' )
+    # started: just started to be configured
+    # partially configured: configuration not done
+    # constructed: configuration done
 
     expected_results = pyre.db.varcharArray( name = 'expected_results', length = 128 )
     
