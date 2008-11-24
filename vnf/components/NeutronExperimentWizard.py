@@ -35,14 +35,9 @@ class NeutronExperimentWizard(base):
         
         pass # end of Inventory
 
-
-    def start(self, director):
-        try:
-            page = director.retrieveSecurePage( 'neutronexperimentwizard' )
-        except AuthenticationError, err:
-            return err.page
-
+    def getExperimentID(self, director):
         if self.inventory.id == '':
+            # TODO: this method makes the page get loaded twice--seems kind of inefficient
             #create a new experiment
             from vnf.dom.NeutronExperiment import NeutronExperiment
             experiment = director.clerk.newOwnedObject( NeutronExperiment )
@@ -51,7 +46,16 @@ class NeutronExperimentWizard(base):
             #need to reload the page so that id is correctly
             self.inventory.id = experiment.id
             page = director.retrieveSecurePage( 'neutronexperimentwizard' )
-            pass
+        return self.inventory.id
+            
+
+    def start(self, director):
+        try:
+            page = director.retrieveSecurePage( 'neutronexperimentwizard' )
+        except AuthenticationError, err:
+            return err.page
+
+        self.getExperimentID(director)
 
         main = page._body._content._main
 
@@ -451,7 +455,7 @@ class NeutronExperimentWizard(base):
             return err.page
                 
         #get experiment
-        experiment_id = self.inventory.id
+        experiment_id = self.getExperimentID(director)
         experiment = director.clerk.getNeutronExperiment( experiment_id )
 
         main = page._body._content._main
@@ -921,7 +925,7 @@ class NeutronExperimentWizard(base):
             return err.page
 
         #get experiment
-        experiment_id = self.inventory.id
+        experiment_id = self.getExperimentID(director)
         experiment = director.clerk.getNeutronExperiment( experiment_id )
 
         main = page._body._content._main
