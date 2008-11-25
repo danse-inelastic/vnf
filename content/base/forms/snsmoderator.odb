@@ -15,6 +15,8 @@
 
 from vnf.forms.DBObjectForm import DBObjectForm as base, InputProcessingError
 
+formactor_action_prefix = 'actor.form-received' # assumed actor is a form actor
+
 
 class SNSModerator(base):
 
@@ -63,7 +65,8 @@ class SNSModerator(base):
         Emax.meta['tiponerror'] = (
             'Please enter a postive number. Unit: meV',
             )
-        
+
+        neutronprofile = pyre.inventory.str(name='neutronprofile')
         
         
     parameters = [#'short_description',
@@ -80,6 +83,35 @@ class SNSModerator(base):
         return
 
 
+    def expand(self, form, errors=None):
+        base.expand(self, form, errors=errors)
+
+        director = self.director
+
+        id = self.inventory.id
+        component = director.clerk.getRecordByID(self.DBTable, id)
+
+        # selector for neutron profile
+        # 1. selections
+        from vnf.dom.neutron_components.SNSModeratorMCSimulatedData import SNSModeratorMCSimulatedData as table
+        profiles = director.clerk.db.fetchall(table)
+        entries = [(p.id, '%s(%s)' % (p.instrument, p.id))
+                   for p in profiles]
+        # 2. current selection
+        selected = ''
+        if component.neutronprofile: selected = component.neutronprofile.id
+        # 3. create the selector widget
+        import opal.content
+        selector = form.selector(
+            id = 'neutronprofile_selector',
+            name = '%s.neutronprofile' % formactor_action_prefix,
+            entries = entries,
+            label = 'Neutron profile',
+            selected = selected,
+            )
+        return
+
+
     def processUserInputs(self, *args, **kwds):
 
         errors = filter(
@@ -88,7 +120,12 @@ class SNSModerator(base):
         
         if len(errors): raise InputProcessingError, errors
         
-        return base.processUserInputs(self, *args, **kwds)
+        ret = base.processUserInputs(self, *args, **kwds)
+
+        ret.neutronprofile = self.inventory.neutronprofile
+        self.director.clerk.updateRecord(ret)
+
+        return ret
 
 
 
