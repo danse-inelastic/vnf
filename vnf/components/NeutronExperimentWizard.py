@@ -1515,6 +1515,9 @@ class NeutronExperimentWizard(base):
         except AuthenticationError, err:
             return err.page
 
+        if id is None: id = self.inventory.id
+        else: self.inventory.id = id
+
         self._checkstatus( director )
         if not self.allconfigured:
 ##                (not self.instrument_configured or not self.name_assigned or \
@@ -1527,8 +1530,6 @@ class NeutronExperimentWizard(base):
         document = main.document(title='Neutron Experiment Wizard: submit')
         document.description = ''
         document.byline = 'byline?'
-
-        if id is None: id = self.inventory.id
 
         #In this step we obtain configuration of sample
         
