@@ -252,7 +252,7 @@ class Builder:
         kwds = {
             'name': component.label,
             'category': 'monitors',
-            'type': 'NeutronRecorder',
+            'type': 'NeutronToStorage',
             'supplier': 'mcni',
             }
         self.onNeutronComponent(**kwds)
