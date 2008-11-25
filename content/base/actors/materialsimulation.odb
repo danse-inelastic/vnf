@@ -59,7 +59,7 @@ class Actor(base):
         if len(simulations):
             p = document.paragraph()
             p.text = [
-                'Following are simulations/modelings you have created:',
+                'Following are simulations/models you have created:',
                 ]
             for simulation in simulations:
                 p = document.paragraph()
