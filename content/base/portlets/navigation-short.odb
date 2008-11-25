@@ -17,7 +17,7 @@ from vnf.weaver import action_href
 
 actor2menu = {
     'greet': 'greet',
-    'neutronexperimentwizard': 'neutronexperimentwizard',
+    'neutronexperimentwizard': 'experiments',
     'neutronexperiment': 'experiments',
     'sample': 'samples',
     'instrument': 'instruments',
