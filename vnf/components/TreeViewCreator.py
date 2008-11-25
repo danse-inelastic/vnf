@@ -136,7 +136,13 @@ class TreeViewCreator:
         raise RuntimeError, "should not reach here"
 
 
-    onTofMonitor = onDetectorSystem_fromXML = onPolyCrystal = onDisordered = onIDFPhononDispersion = onSANSSphereModelKernel = onMonochromaticSource = onIQEMonitor = onIQMonitor = onCrystal = onBlock = onCylinder = onElement
+    onSNSModerator = onChanneledGuide = onT0Chopper = onTofMonitor \
+                     = onFermiChopper = onNeutronRecorder \
+                     = onDetectorSystem_fromXML = onPolyCrystal \
+                     = onDisordered = onIDFPhononDispersion \
+                     = onSANSSphereModelKernel = onMonochromaticSource \
+                     = onIQEMonitor = onIQMonitor = onCrystal \
+                     = onBlock = onCylinder = onElement
     #onMatter = onPhononDispersion = onScatteringKernel = onComponent = onShape = onElement
     
 
