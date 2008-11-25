@@ -1,0 +1,54 @@
+# -*- Python -*-
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                      California Institute of Technology
+#                        (C) 2007  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+from vnf.components.Form import Form as base
+
+
+class Form( base ):
+
+    class Inventory( base.Inventory ):
+
+        import pyre.inventory as inv
+        id = inv.str( 'id', default = '' )
+        id.meta['tip'] = 'A short description'
+        
+        short_description = inv.str(
+            'short_description', default = '' )
+        short_description.meta['tip'] = 'A short description'
+
+
+    def expand(self, form):
+        prefix = formactor_action_prefix
+        
+        p = form.paragraph()
+        p.text = ['''The Gulp kernel generator uses classical forcefield
+        techniques for simulating larger systems.  Gulp contains a vast
+        number of forcefields and phonon / molecular dynamics capabilities
+        to complement neutron scattering experiments.<br>''',
+        '<a href="/java/GULP2.jnlp">Launch Gulp</a><br>']
+        return
+
+
+
+
+
+formactor_action_prefix = 'actor.form-received' # assumed actor is a form actor
+
+
+def form(): return Form( 'gulp' )
+
+
+# version
+__id__ = "$Id$"
+
+# End of file 

@@ -12,7 +12,6 @@
 
 
 from vnf.components.Form import Form as base
-from vnf.components.PyHtmlTable import PyHtmlTable
 from vnf.components.Actor import actionRequireAuthentication, action_link
 from vnf.components.DBObjectForm import formactor_action_prefix
 
@@ -38,14 +37,10 @@ class Form( base ):
     def getRecord(self):
         'get DB record'
         return self.director.clerk.getRecordByID( self.DBTable, self.inventory.id )
-    
-def build_run( experiment, path ):
-    from vnf.components.NeutronExperimentSimulationRunBuilder import Builder
-    return Builder(path).render(experiment)
 
+formactor_action_prefix = 'actor.form-received'
 
-
-def form(): return Form( 'abInitioHarmonic' )
+def form(): return Form( 'localOrbitalHarmonic' )
 
 
 # version

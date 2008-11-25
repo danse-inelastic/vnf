@@ -21,7 +21,7 @@ class Form( base ):
 
         import pyre.inventory as inv
         kernel = inv.str('kernel',default='gulp')
-        kernel.validator=inv.choice(['gulp', 'mmtk', 'localOrbitalHarmonic','planeWaveHarmonic', 'phononDispersion'])
+        kernel.validator=inv.choice(['gulp', 'mmtk', 'localOrbitalHarmonic','planeWaveHarmonic', 'sansModels'])
         kernel.meta['tip'] = 'type of kernel'
         
         kernel_id = inv.str( 'kernel_id' )
@@ -41,7 +41,7 @@ class Form( base ):
         mmtk = form.radio(id='radio3', name= name, label = "Mmtk newton's equations", value = 'mmtk')
         localOrbitalHarmonic = form.radio(id='radio3.5', name= name, label = "Local orbital DFT, phon harmonic motion, ", value = 'localOrbitalHarmonic')
         planeWaveHarmonic = form.radio(id='radio4', name=name, label = 'Plane wave energies, phon harmonic motion', value = 'planeWaveHarmonic')
-        phononDispersions = form.radio(id='radio6', name=name, label = "Phonon Dispersions", value = 'phononDispersion')
+        sansModels = form.radio(id='radio6', name=name, label = "Sans Models", value = 'sansModels')
 
     def processUserInputs(self):
         'process user input '
