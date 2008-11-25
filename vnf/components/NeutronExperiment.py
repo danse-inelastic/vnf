@@ -366,7 +366,7 @@ class NeutronExperiment(base):
             ]
         
         self._add_review( document, director )
-        if job.state in ['started']:
+        if job.state in ['created', '']:
             self._add_revision_sentence( document, director )
             self._add_run_sentence( document, director )
         else:

@@ -1585,7 +1585,8 @@ class NeutronExperimentWizard(base):
         assert self.allconfigured == True
 
         # make sure there is a job attached to experiment
-        experiment = director.clerk.getNeutronExperiment(self.inventory.id)
+        id = self.inventory.id
+        experiment = director.clerk.getNeutronExperiment(id)
         jobref = experiment.job
         if not jobref:
             #create new job
@@ -1599,9 +1600,9 @@ class NeutronExperimentWizard(base):
         experiment.job = job; director.clerk.updateRecord( experiment )
             
         # redirect to job submission page
-        actor = 'job'
+        actor = 'neutronexperiment'
         routine = 'view'
-        return self.redirect(director, actor, routine, id = experiment.job.id)
+        return self.redirect(director, actor, routine, id = id)
         ## --------- obsolete -------
         job = director.clerk.dereference(experiment.job)
         from JobDataManager import JobDataManager
