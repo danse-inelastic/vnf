@@ -35,7 +35,7 @@ def portlet(app):
     simulation = portlet.item(description="Simulation")
     action = actionRequireAuthentication(
         actor = 'materialsimulationwizard', sentry = app.sentry,
-        routine = 'selectsimulationtype',
+        routine = 'selectSimulationEngine',#'selectsimulationtype',
         id = app.actor.inventory.id,
         )
     simulation.target = action_href(action, app.cgihome)
