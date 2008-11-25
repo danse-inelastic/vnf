@@ -2,3 +2,176 @@ pydev debugger: warning: psyco not available for speedups (the debugger will sti
 pydev debugger: starting
 Content-type: text/html
 
+<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+<!--
+ ! ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ !
+ !                             Michael A.G. Aivazis
+ !                      California Institute of Technology
+ !                      (C) 1998-2005  All Rights Reserved
+ !
+ ! {LicenseText}
+ !
+ ! ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+-->
+<html>
+<head>
+<base href='http://trueblue.caltech.edu/vnf/'/>
+<title>Virtual Neutron Facility: Material Simulation/Modeling Wizard</title>
+<style media='all' rel='stylesheet'>@import url(css/visual.css);</style>
+<style media='all' rel='stylesheet'>@import url(css/visual-color.css);</style>
+<style media='all' rel='stylesheet'>@import url(css/structural.css);</style>
+<style media='all' rel='stylesheet'>@import url(css/structural-color.css);</style>
+<style media='all' rel='stylesheet'>@import url(css/classes.css);</style>
+<style media='all' rel='stylesheet'>@import url(css/classes-color.css);</style>
+<style media='all' rel='stylesheet'>@import url(css/reports.css);</style>
+<style media='all' rel='stylesheet'>@import url(css/reports-color.css);</style>
+</head>
+<body>
+<div id="body-wrapper">
+<!-- ** section page-header ** -->
+<div id='page-header'>
+<div id="page-logo"><a href="http://trueblue.caltech.edu/cgi-bin/vnf/main.cgi?actor=greet&sentry.username=demo&sentry.ticket=demo0ab7e24c28c7cdefea19f0af2a8a9e2f">Home</a></div>
+<p id="page-personaltools">&nbsp;</p>
+</div>
+<!-- ** end of section page-header ** -->
+<div class="visualClear"></div>
+<table id="page-content">
+  <tbody>
+    <tr>
+      <td id="page-columnLeft">
+<!-- ** section  ** -->
+<div>
+<div class="visualPadding">
+<div class='portlet' id='portlet-materialsimulationwizard-tree'>
+    <h5>Material simulation</h5>
+    <div class="portletBody">
+<div class='portletContent'>
+<a class="navItem" title=""
+  href="http://trueblue.caltech.edu/cgi-bin/vnf/main.cgi?routine=selectmaterial&sentry.ticket=demo0ab7e24c28c7cdefea19f0af2a8a9e2f&sentry.username=demo&actor=materialsimulationwizard&materialsimulationwizard.id=">
+<img class="navItemIcon" height="16" width="16" src="images/link_icon.gif" />
+<span class="navItemText">Material</span>
+</a>
+</div>
+<div class='portletContent'>
+<a class="navItem" title=""
+  href="http://trueblue.caltech.edu/cgi-bin/vnf/main.cgi?routine=selectsimulationtype&sentry.ticket=demo0ab7e24c28c7cdefea19f0af2a8a9e2f&sentry.username=demo&actor=materialsimulationwizard&materialsimulationwizard.id=">
+<img class="navItemIcon" height="16" width="16" src="images/link_icon.gif" />
+<span class="navItemText">Simulation</span>
+</a>
+</div>
+<div class='portletContent'>
+<a class="navItem" title=""
+  href="http://trueblue.caltech.edu/cgi-bin/vnf/main.cgi?routine=submit_simulation&sentry.ticket=demo0ab7e24c28c7cdefea19f0af2a8a9e2f&sentry.username=demo&actor=materialsimulationwizard&materialsimulationwizard.id=">
+<img class="navItemIcon" height="16" width="16" src="images/link_icon.gif" />
+<span class="navItemText">Submit</span>
+</a>
+</div>
+<div class='portletContent'>
+<a class="navItem" title=""
+  href="http://trueblue.caltech.edu/cgi-bin/vnf/main.cgi?routine=save_simulation&sentry.ticket=demo0ab7e24c28c7cdefea19f0af2a8a9e2f&sentry.username=demo&actor=materialsimulationwizard&materialsimulationwizard.id=">
+<img class="navItemIcon" height="16" width="16" src="images/link_icon.gif" />
+<span class="navItemText">Save for later submission</span>
+</a>
+</div>
+<div class='portletContent'>
+<a class="navItem" title=""
+  href="http://trueblue.caltech.edu/cgi-bin/vnf/main.cgi?routine=cancel&sentry.ticket=demo0ab7e24c28c7cdefea19f0af2a8a9e2f&sentry.username=demo&actor=materialsimulationwizard&materialsimulationwizard.id=">
+<img class="navItemIcon" height="16" width="16" src="images/link_icon.gif" />
+<span class="navItemText">Cancel</span>
+</a>
+</div>
+    </div>
+</div>
+</div>
+</div>
+<!-- ** end of section  ** -->
+      </td>
+      <td id="page-main">
+        <div class="visualPadding">
+<!-- ** section  ** -->
+<div class='document-main'>
+<div>
+<h1>Kernel model selection</h1>
+<div class="documentDescription">
+
+</div>
+<form action='http://trueblue.caltech.edu/cgi-bin/vnf/main.cgi' method='post' name=''>
+
+<input type='hidden' name='materialsimulationwizard.id' value=''/>
+<input type='hidden' name='actor' value='materialsimulationwizard'/>
+<input type='hidden' name='materialsimulationwizard.form-received' value='selectSimulationEngine'/>
+<input type='hidden' name='sentry.username' value='demo'/>
+<input type='hidden' name='routine' value='onSelect'/>
+<input type='hidden' name='sentry.ticket' value='demo0ab7e24c28c7cdefea19f0af2a8a9e2f'/>
+<p>
+To begin the creation of a scattering kernel, select an energetics/dynamics engine or a set of phonon dispersions.
+</p>
+<div class='formfield'>
+<div>
+<label for="radio2">Gulp</label>
+</div>
+<input type='radio' name='actor.form-received.kernel' value='gulp' id='radio2'/>
+</div>
+<div class='formfield'>
+<div>
+<label for="radio3">Mmtk newton's equations</label>
+</div>
+<input type='radio' name='actor.form-received.kernel' value='mmtk' id='radio3'/>
+</div>
+<div class='formfield'>
+<div>
+<label for="radio3.5">Local orbital DFT, phon harmonic motion, </label>
+</div>
+<input type='radio' name='actor.form-received.kernel' value='fireball' id='radio3.5'/>
+</div>
+<div class='formfield'>
+<div>
+<label for="radio4">Plane wave energies, phon harmonic motion</label>
+</div>
+<input type='radio' name='actor.form-received.kernel' value='abInitioHarmonic' id='radio4'/>
+</div>
+<div class='formfield'>
+<div>
+<label for="radio6">Phonon Dispersions</label>
+</div>
+<input type='radio' name='actor.form-received.kernel' value='phononDispersions' id='radio6'/>
+</div>
+<div class='formControls'>
+<input class="context" name="submit" type="submit" value="next"/>
+</div>
+
+</form>
+<div class="documentByline">
+<a href="http://danse.us">DANSE</a>
+</div>
+</div>
+</div>
+<!-- ** end of section  ** -->
+        </div>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<!-- ** section page-footer ** -->
+<div id='page-footer'>
+<p>
+Copyright (C) 2008 California Institute of Technology. All rights reserved.
+</p>
+</div>
+<!-- ** end of section page-footer ** -->
+<!-- ** section page-credits ** -->
+<div id='page-credits'>
+<p class='discreet'>
+powered by opal
+</p>
+</div>
+<!-- ** end of section page-credits ** -->
+</div>
+</body>
+</html>
+
+<!-- version-->
+<!-- $Id$-->
+
+<!-- End of file -->
