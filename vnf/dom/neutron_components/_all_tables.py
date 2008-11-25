@@ -4,6 +4,7 @@ def tables():
     tablenames = [
 	'MonochromaticSource',
 	'SNSModerator',
+        'SNSModeratorMCSimulatedData',
 	'ChanneledGuide',
 	'T0Chopper',
 	'FermiChopper',

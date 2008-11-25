@@ -33,6 +33,7 @@ EXPORT_PYTHON_MODULES = \
 	NeutronComponent.py \
 	MonochromaticSource.py \
 	SNSModerator.py \
+	SNSModeratorMCSimulatedData.py \
 	ChanneledGuide.py \
 	T0Chopper.py \
 	FermiChopper.py \
