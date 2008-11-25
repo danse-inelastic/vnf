@@ -12,6 +12,8 @@
 #
 
 
+from SNSModeratorMCSimulatedData import SNSModeratorMCSimulatedData
+
 from NeutronComponent import NeutronComponent as base
 class SNSModerator(base):
 
@@ -26,6 +28,7 @@ class SNSModerator(base):
     yh = pyre.db.real(name='yh', default=0.1)
     Emin = pyre.db.real(name='Emin', default=0)
     Emax = pyre.db.real(name='Emax', default=100)
+    neutronprofile = pyre.db.reference(name='neutronprofile', table=SNSModeratorMCSimulatedData)
 
     pass # end of SNSModerator
 

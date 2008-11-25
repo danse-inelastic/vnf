@@ -67,6 +67,7 @@ def moderator():
     c.yh=0.12
     c.Emin=Emin
     c.Emax=Emax
+    c.neutronprofile = 'sct521_bu_17_1-ARCS'
     return c
 
 
