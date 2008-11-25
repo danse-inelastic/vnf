@@ -39,9 +39,9 @@ class Form( base ):
         name = '%s.%s' % (formactor_action_prefix, 'kernel')
         gulp = form.radio( id= 'radio2', name = name, label = "Gulp", value = 'gulp')
         mmtk = form.radio(id='radio3', name= name, label = "Mmtk newton's equations", value = 'mmtk')
-        localOrbitalHarmonic = form.radio(id='radio3.5', name= name, label = "Local orbital DFT, phon harmonic motion, ", value = 'fireball')
-        planeWaveHarmonic = form.radio(id='radio4', name=name, label = 'Plane wave energies, phon harmonic motion', value = 'abInitioHarmonic')
-        phononDispersions = form.radio(id='radio6', name=name, label = "Phonon Dispersions", value = 'phononDispersions')
+        localOrbitalHarmonic = form.radio(id='radio3.5', name= name, label = "Local orbital DFT, phon harmonic motion, ", value = 'localOrbitalHarmonic')
+        planeWaveHarmonic = form.radio(id='radio4', name=name, label = 'Plane wave energies, phon harmonic motion', value = 'planeWaveHarmonic')
+        phononDispersions = form.radio(id='radio6', name=name, label = "Phonon Dispersions", value = 'phononDispersion')
 
     def processUserInputs(self):
         'process user input '
