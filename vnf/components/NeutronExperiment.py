@@ -113,24 +113,26 @@ class NeutronExperiment(base):
         return page
 
 
-    def view(self, director):
+    def view(self, director, id=None):
         try:
             page = director.retrieveSecurePage( 'neutronexperiment' )
         except AuthenticationError, err:
             return err.page
 
         # the record we are working on
-        id = self.inventory.id
+        if id is None: id = self.inventory.id
+        else: self.inventory.id = id
         experiment = director.clerk.getNeutronExperiment( id )
 
         #see if the experiment is constructed or not. if not
         #ask the wizard to do the editing.
         if experiment.status in ['started', 'partially configured']:
-            director.routine = 'submit_experiment'
-            actor = director.retrieveActor( 'neutronexperimentwizard')
-            director.configureComponent( actor )
-            actor.inventory.id = self.inventory.id
-            return actor.submit_experiment( director )
+            return self.redirect(
+                director,
+                actor='neutronexperimentwizard',
+                routine = 'submit_experiment',
+                id = id,
+                )
 
         main = page._body._content._main
         # populate the main column
@@ -295,17 +297,41 @@ class NeutronExperiment(base):
 
 
     def _add_run_sentence(self, document, director):
+        id = self.inventory.id
+        experiment = director.clerk.getNeutronExperiment(id)
+        job = experiment.job
+        
         p = document.paragraph()
         action = actionRequireAuthentication(
             label = 'here',
-            actor = 'neutronexperiment',
-            routine = 'run',
+            actor = 'job',
+            routine = 'view',
             sentry = director.sentry,
-            id = self.inventory.id)
+            id = job.id)
         link = action_link( action, director.cgihome )
         p.text = [
             'If you are done with experiment configuration,',
-            'please click %s to start this experiment.' % link,
+            'please click %s to start this experiment as a computation job.' % link,
+            ]
+        return
+
+
+    def _add_view_job_sentence(self, document, director):
+        id = self.inventory.id
+        experiment = director.clerk.getNeutronExperiment(id)
+        job = experiment.job
+        
+        p = document.paragraph()
+        action = actionRequireAuthentication(
+            label = 'here',
+            actor = 'job',
+            routine = 'view',
+            sentry = director.sentry,
+            id = job.id)
+        link = action_link( action, director.cgihome )
+        p.text = [
+            'Your experiment was already submitted as a computation job.',
+            'Click %s to see the status of the computation job.' % link,
             ]
         return
 
@@ -327,6 +353,8 @@ class NeutronExperiment(base):
 
     def _view_constructed(self, document, director):
         experiment = director.clerk.getNeutronExperiment(self.inventory.id)
+        job = director.clerk.dereference(experiment.job)
+        
         p = document.paragraph()
         p.text = [
             'Experiment %r has been constructed.' % experiment.short_description,
@@ -336,10 +364,13 @@ class NeutronExperiment(base):
             'found out in the following tree view.',
             'Please review them before you start the experiment.',
             ]
-
+        
         self._add_review( document, director )
-        self._add_revision_sentence( document, director )
-        self._add_run_sentence( document, director )
+        if job.state in ['started']:
+            self._add_revision_sentence( document, director )
+            self._add_run_sentence( document, director )
+        else:
+            self._add_view_job_sentence(document, director)
         self._add_delete_sentence( document, director )
         return
 

@@ -1509,7 +1509,7 @@ class NeutronExperimentWizard(base):
         return page     
 
 
-    def submit_experiment(self, director, errors = None):
+    def submit_experiment(self, director, errors=None, id=None):
         try:
             page = self._retrievePage(director)
         except AuthenticationError, err:
@@ -1528,10 +1528,12 @@ class NeutronExperimentWizard(base):
         document.description = ''
         document.byline = 'byline?'
 
+        if id is None: id = self.inventory.id
+
         #In this step we obtain configuration of sample
         
         formcomponent = self.retrieveFormToShow( 'experiment_submission' )
-        formcomponent.inventory.id = self.inventory.id
+        formcomponent.inventory.id = id
         formcomponent.director = director
         
         # create form
@@ -1545,7 +1547,7 @@ class NeutronExperimentWizard(base):
             actor = 'neutronexperimentwizard', sentry = director.sentry,
             label = '',
             routine = 'verify_experiment_submission',
-            id = self.inventory.id,
+            id = id,
             arguments = {'form-received': formcomponent.name } )
         from vnf.weaver import action_formfields
         action_formfields( action, form )
@@ -1676,10 +1678,8 @@ class NeutronExperimentWizard(base):
         director.clerk.deleteRecord( experiment )
 
         # go to greeter
-        actor = director.retrieveActor( 'greet')
-        director.configureComponent( actor )
-        director.actor = actor
-        return getattr(actor, 'default')( director )
+        actor = 'neutronexperiment'; routine = 'listall'
+        return self.redirect(director, actor, routine)
 
 
     def __init__(self, name=None):
@@ -1807,13 +1807,14 @@ class NeutronExperimentWizard(base):
         instrument_ref = experiment.instrument
         self.instrument_configured = not nullpointer( instrument_ref )
 
-        instrument = director.clerk.dereference(instrument_ref)
-        if _instrument_without_sample(instrument, director.clerk.db):
-            self.allconfigured = True
-            if experiment.status in ['started', 'partially configured']:
-                experiment.status = 'constructed'
-                director.clerk.updateRecord(experiment)
-            return
+        if instrument_ref:
+            instrument = director.clerk.dereference(instrument_ref)
+            if _instrument_without_sample(instrument, director.clerk.db):
+                self.allconfigured = True
+                if experiment.status in ['started', 'partially configured']:
+                    experiment.status = 'constructed'
+                    director.clerk.updateRecord(experiment)
+                return
 
         sampleenvironment_ref = experiment.sampleenvironment
         self.sample_environment_configured = not nullpointer(sampleenvironment_ref)
