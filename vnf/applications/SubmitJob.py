@@ -72,8 +72,16 @@ class SubmitJob(base):
         jobpath = self.dds.abspath(job)
         computation = self.clerk.dereference(job.computation)
         from vnf.components import buildjob
-        files = buildjob(computation, db=self.clerk.db, dds=self.dds, path=jobpath)
+        files, deps = buildjob(computation, db=self.clerk.db, dds=self.dds, path=jobpath)
         for f in files: self.dds.remember(job, f)
+        for dep in deps: self.prepare_dependency(dep, job)
+        return
+
+
+    def prepare_dependency(self, dep, job):
+        type, id = dep
+        record = self.clerk.getRecordByID(type, id)
+        self.dds.make_available(record, server=self.clerk.dereference(job.server))
         return
 
 

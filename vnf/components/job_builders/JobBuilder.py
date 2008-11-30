@@ -29,7 +29,7 @@ It needs to contain:
 class JobBuilder(object):
 
     shscriptname = 'run.sh'
-
+    dependencies_path = '__dependencies__'
 
     def __init__(self, path):
         self.path = path
@@ -40,6 +40,32 @@ class JobBuilder(object):
     def render(self, computation, db=None):
         raise NotImplementedError
 
+
+    def registerDependency(self, dependency):
+        '''register a dependency to my dependency list
+
+        A dependency is a db record. For example, a job requires a density of
+        states curve, and that curve is stored as db record DOS(id=ABCDE).
+        The data files for the db record DOS(id=ABCDE) need to be made 
+        available at the computation server.
+        '''
+        type = dependency.name
+        id = dependency.id
+        path = self._path(self.dependencies_path)
+        f = open(path, 'a')
+        entry = '%s,%s' % (type, id)
+        f.write(entry)
+        del f
+        return
+
+
+    def getDependencies(self):
+        path = self._path(self.dependencies_path)
+        if not os.path.exists(path): return []
+        f = open(path)
+        deps = f.read().split('\n')
+        return [dep.split(',') for dep in deps]
+    
 
     def _path(self, filename):
         return os.path.join(self.path, filename)

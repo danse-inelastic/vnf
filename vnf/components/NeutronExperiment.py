@@ -594,7 +594,7 @@ def listexperiments( experiments, document, director ):
         action = actionRequireAuthentication(
             actor, director.sentry,
             routine = 'view',
-            label = name,
+            label = '%s(%s)' % (element.id, name),
             id = element.id,
             )
         viewlink = action_link( action,  director.cgihome )

@@ -30,6 +30,8 @@ class InstrumentConfiguration(OwnedObject):
     
     geometer = vnf.dom.geometer()
 
+    configured = pyre.db.boolean(name='configured', default=False)
+
     pass # end of InstrumentConfiguration
 
 

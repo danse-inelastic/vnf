@@ -46,7 +46,7 @@ def portlet(app):
     start.icon = "images/link_icon.gif"
     start.type = "navItem"
 
-    instrument = portlet.item(description="Select instrument")
+    instrument = portlet.item(description="Instrument")
     action = actionRequireAuthentication(
         actor = 'neutronexperimentwizard', sentry = app.sentry,
         routine = 'select_instrument',

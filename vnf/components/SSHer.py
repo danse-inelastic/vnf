@@ -51,8 +51,14 @@ class SSHer(base):
         known_hosts = self.inventory.known_hosts
         private_key = self.inventory.private_key
 
+        # tar -czf - <sourcepath> | ssh <remotehost> "(cd <remotepath>; tar -xzf -)"
         pieces = [
-            'scp',
+            'tar',
+            '-czf',
+            '-',
+            path,
+            '|',
+            'ssh',
             "-o 'StrictHostKeyChecking=no'",
             ]
 
@@ -66,8 +72,8 @@ class SSHer(base):
             pieces.append( "-i %s" % private_key )
             
         pieces += [
-            '-r %s' % path,
-            '%s@%s:%s' % (username, address, remotepath),
+            '%s@%s' % (username, address),
+            '"(cd %s; tar -xzf -)"' % remotepath,
             ]
 
         cmd = ' '.join(pieces)

@@ -43,14 +43,15 @@ class NeutronExperimentWizard(base):
             return err.page
 
         if self.inventory.id == '':
-            #create a new experiment
+            # create a new experiment
             from vnf.dom.NeutronExperiment import NeutronExperiment
             experiment = director.clerk.newOwnedObject( NeutronExperiment )
-            #change status to "started"
-            experiment.instrument = 'TestInstrument'
+            # *** the following line is for Brandon ***
+            #   experiment.instrument = 'TestInstrument'
+            # change status to "started"
+            experiment.status = 'started'
             director.clerk.updateRecord(experiment)
-            director.clerk.db.updateRow( NeutronExperiment, [ ('status','started') ] )
-            #need to reload the page so that id is correctly
+            # need to reload the page so that id is correctly
             self.inventory.id = experiment.id
             page = self._retrievePage(director)
             pass
@@ -347,12 +348,10 @@ class NeutronExperimentWizard(base):
             action=director.cgihome)
 
         # specify action
-        if _instrument_without_sample(instrument, director.clerk.db): routine = 'submit_experiment'
-        else: routine = 'sample_environment'
         action = actionRequireAuthentication(
             actor = 'neutronexperimentwizard', sentry = director.sentry,
             label = '',
-            routine = routine,
+            routine = 'verify_neutron_components_configuration',
             id = self.inventory.id,
             )
         from vnf.weaver import action_formfields
@@ -381,6 +380,31 @@ class NeutronExperimentWizard(base):
         submit = form.control(name="submit", type="submit", value="Continue")
         return page
 
+
+    def verify_neutron_components_configuration(self, director):
+        try:
+            page = self._retrievePage(director)
+        except AuthenticationError, err:
+            return err.page
+        
+        #
+        id = self.inventory.id
+        if not id: raise RuntimeError
+        experiment = director.clerk.getNeutronExperiment(id)
+        ic_ref = experiment.instrument_configuration
+        if not ic_ref: raise RuntimeError
+
+        ic = director.clerk.dereference(ic_ref)
+        ic.configured = True
+        director.clerk.updateRecord(ic)
+        
+        # specify action
+        instrument = director.clerk.dereference(experiment.instrument)
+        if _instrument_without_sample(instrument, director.clerk.db):
+            routine = 'submit_experiment'
+        else: routine = 'sample_environment'
+        return getattr(self, routine)(director)
+    
 
     def edit_neutron_component(self, director, errors=None):
         try:
@@ -1510,13 +1534,13 @@ class NeutronExperimentWizard(base):
 
 
     def submit_experiment(self, director, errors=None, id=None):
+        if id is None: id = self.inventory.id
+        else: self.inventory.id = id
+
         try:
             page = self._retrievePage(director)
         except AuthenticationError, err:
             return err.page
-
-        if id is None: id = self.inventory.id
-        else: self.inventory.id = id
 
         self._checkstatus( director )
         if not self.allconfigured:
@@ -1578,9 +1602,6 @@ class NeutronExperimentWizard(base):
             director.routine = 'submit_experiment'
             return self.submit_experiment( director, errors = errors )
 
-        #get experiment
-        experiment = director.clerk.getNeutronExperiment(
-            self.inventory.id)
         #make sure experiment is configured all the way
         self._checkstatus(director)
         assert self.allconfigured == True
@@ -1598,8 +1619,12 @@ class NeutronExperimentWizard(base):
             
         # establish connections between experiment and job
         job.computation = experiment; director.clerk.updateRecord(job)
-        experiment.job = job; director.clerk.updateRecord( experiment )
-            
+        experiment.job = job; director.clerk.updateRecord(experiment)
+
+        # update status of experiment
+        experiment.status = 'constructed'
+        director.clerk.updateRecord(experiment)
+
         # redirect to job submission page
         actor = 'neutronexperiment'
         routine = 'view'
@@ -1752,6 +1777,10 @@ class NeutronExperimentWizard(base):
             page = self._retrievePage(director)
         except AuthenticationError, err:
             return err.page
+
+        id = self.inventory.id
+        experiment = director.clerk.getNeutronExperiment(id)
+        instrument = director.clerk.dereference(experiment.instrument)
         
         main = page._body._content._main
 
@@ -1769,19 +1798,24 @@ class NeutronExperimentWizard(base):
         d = {
             'name_assigned':  ('assign a name to this experiment',
                                'start'),
-            'instrument_configured': ('select and configure an instrument',
+            'instrument_configured': ('configure neutron instrument',
                                       'select_instrument'),
-            'sample_environment_configured': ('configure sample environment',
-                                              'sample_environment'),
-            'sample_prepared': ('prepare a sample',
-                                'sample_preparation'),
-            'kernel_configured': ('configure scattering kernel for sample',
-                                  'kernel_origin'),
             }
-        items = [ 'name_assigned', 'instrument_configured',
-                  'sample_environment_configured',
-                  'sample_prepared', 'kernel_configured',
-                  ]
+        items = [ 'name_assigned', 'instrument_configured']
+        if not _instrument_without_sample(instrument, director.clerk.db):
+            d.update( {
+                'sample_environment_configured': ('configure sample environment',
+                                                  'sample_environment'),
+                'sample_prepared': ('prepare a sample',
+                                    'sample_preparation'),
+                'kernel_configured': ('configure scattering kernel for sample',
+                                      'kernel_origin'),
+                } )
+            items+=[
+                'sample_environment_configured',
+                'sample_prepared', 'kernel_configured',
+                ]
+            
         for item in items:
             label, routine = d[item]
             if not getattr(self, item):
@@ -1807,11 +1841,16 @@ class NeutronExperimentWizard(base):
         self.name_assigned = experiment.short_description not in [None, '']
 
         instrument_ref = experiment.instrument
-        self.instrument_configured = not nullpointer( instrument_ref )
 
         if instrument_ref:
+
             instrument = director.clerk.dereference(instrument_ref)
-            if _instrument_without_sample(instrument, director.clerk.db):
+            self.instrument_configured = _instrument_configured(
+                experiment, director=director)
+            
+            if _instrument_without_sample(instrument, director.clerk.db) \
+                   and self.instrument_configured:
+                
                 self.allconfigured = True
                 if experiment.status in ['started', 'partially configured']:
                     experiment.status = 'constructed'
@@ -1850,6 +1889,13 @@ class NeutronExperimentWizard(base):
 
 
     pass # end of NeutronExperimentWizard
+
+
+def _instrument_configured(experiment, director):
+    ic_ref = experiment.instrument_configuration
+    if not ic_ref: return False
+    ic = director.clerk.dereference(ic_ref)
+    return ic.configured
 
 
 def _instrument_without_sample(instrument, db):
