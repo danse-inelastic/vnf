@@ -28,10 +28,24 @@ class DistributedDataStorage(base):
         return
 
 
-    def remember(self, dbrecord, filename, server=None):
-        path = self.path(dbrecord, filename)
-        return self._remember(path, server=server)
+    def remember(self, dbrecord, filename=None, server=None, files=list()):
+        if files and filename:
+            msg = "Both files and filename are supplied: files=%s, filename=%s" % (
+                files, filename)
+            raise ValueError, msg
+        
+        if filename:
+            files = [filename]
+        else:
+            if not files:
+                files = _default_files(dbrecord)
 
+        for f in files:
+            path = self.path(dbrecord, f)
+            self._remember(path, server=server)
+            continue
+        return
+    
 
     def move(self, dbrecord1, filename1, dbrecord2, filename2, server=None):
         path1 = self.path(dbrecord1, filename1)
