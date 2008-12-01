@@ -23,6 +23,8 @@ class SNSModeratorMCSimulatedData(Table):
     id = pyre.db.varchar(name='id', length=128, default='')
     instrument = pyre.db.varchar(name='instrument', length=32, default='')
 
+    datafiles = ['profile.dat']
+
     pass # end of SNSModerator
 
 
