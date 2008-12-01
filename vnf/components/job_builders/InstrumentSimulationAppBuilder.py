@@ -10,12 +10,13 @@
 #
 
 
-class Builder:
+from JobBuilder import JobBuilder as base
+class Builder(base):
 
 
     def __init__(self, path):
         'path: path in which data files are generated'
-        self.path = path
+        base.__init__(self, path)
         return
     
 
@@ -149,7 +150,13 @@ class Builder:
         for param in parameters:
             opts[ '%s.%s' %  (component.label,param) ] = getattr(component, param)
             continue
+
+        neutronprofile = component.neutronprofile.dereference(self.db)
+        self.registerDependency(neutronprofile)
         
+        opts[ '%s.S_filename' % component.label ] = os.path.join(
+            '..', '..', self.dds.path(neutronprofile, 'profile.dat'))
+
         self.cmdline_opts.update( opts )
         return
 
