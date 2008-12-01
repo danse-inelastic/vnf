@@ -24,7 +24,7 @@ class Form( base ):
         kernel.validator=inv.choice(['bvk','gulp', 'mmtk', 'localOrbitalHarmonic','planeWaveHarmonic', 'sansModels'])
         kernel.meta['tip'] = 'type of kernel'
         
-        kernel_id = inv.str( 'kernel_id' )
+        #kernel_id = inv.str( 'kernel_id' )
 
     def expand(self, form):
         '''expand an existing form with fields from this component'''

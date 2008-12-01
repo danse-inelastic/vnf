@@ -92,65 +92,6 @@ class MaterialSimulationWizard(base):
         return self.selectSimulationEngine(director)
 
 
-    def selectsimulationtype(self, director):
-        try:
-            page = director.retrieveSecurePage( 'materialsimulationwizard' )
-        except AuthenticationError, err:
-            return err.page
-
-        main = page._body._content._main
-
-        # populate the main column
-        document = main.document(title='Material Simulation/Modeling Wizard: start')
-        document.description = ''
-        document.byline = 'byline?'
-
-        formcomponent = self.retrieveFormToShow(
-            'selectmaterialsimulationtype' )
-        formcomponent.director = director
-        
-        # create form
-        form = document.form(
-            name='selectmaterialsimulationtype',
-            legend= formcomponent.legend(),
-            action=director.cgihome)
-
-        # specify action
-        action = actionRequireAuthentication(
-            actor = 'materialsimulationwizard', sentry = director.sentry,
-            label = '', routine = 'verify_materialsimulationtype_selection',
-            id = self.inventory.id,
-            matterid = self.inventory.matterid,
-            mattertype = self.inventory.mattertype,
-            arguments = {'form-received': formcomponent.name } )
-        from vnf.weaver import action_formfields
-        action_formfields( action, form )
-
-        # expand the form with fields of the data object that is being edited
-        formcomponent.expand( form )
-
-        # run button
-        submit = form.control(name="actor.form-received.submit", type="submit", value="Continue")
-
-        return page
-
-
-    def verify_materialsimulationtype_selection(self, director):
-        try:
-            page = director.retrieveSecurePage( 'materialsimulationwizard' )
-        except AuthenticationError, err:
-            return err.page
-
-        type = self.processFormInputs(director)
-        type = type.replace(' ', '_').lower()
-        routine = 'configure_simulation'
-
-        mattertype = self.inventory.mattertype
-        matterid = self.inventory.matterid
-        matter = director.clerk.getRecordByID(mattertype, matterid)
-        
-        return self.redirect(director, type, routine, matter = matter)
-
     def selectSimulationEngine(self, director):
         try:
             page = director.retrieveSecurePage( 'materialsimulationwizard' )
@@ -174,6 +115,8 @@ class MaterialSimulationWizard(base):
             sentry = director.sentry,
             routine = 'onSelect',
             id=self.inventory.id,
+            matterid = self.inventory.matterid,
+            mattertype = self.inventory.mattertype,
             arguments = {'form-received': formcomponent.name },
             )
         from vnf.weaver import action_formfields
@@ -184,40 +127,25 @@ class MaterialSimulationWizard(base):
         #self.processFormInputs(director)
         return page    
     
-    def onSelect(self, director):
-        selected = self.processFormInputs(director)
-        method = getattr(self, selected )
-        return method( director )
 
-    def gulp(self, director):
+    def onSelect(self, director):
         try:
             page = director.retrieveSecurePage( 'materialsimulationwizard' )
         except AuthenticationError, err:
             return err.page
+
+        type = self.processFormInputs(director)
+        type = type.replace(' ', '_').lower()
+        actor = '%swizard' % type
+        routine = 'configure_simulation'
+
+        mattertype = self.inventory.mattertype
+        matterid = self.inventory.matterid
+        matter = director.clerk.getRecordByID(mattertype, matterid)
         
-        main = page._body._content._main
-        document = main.document(title='Classical atomistics kernel' )
-        document.byline = '<a href="http://danse.us">DANSE</a>'    
-        
-        formcomponent = self.retrieveFormToShow( 'gulp')
-        formcomponent.director = director
-        # build the form form
-        form = document.form(name='', action=director.cgihome)
-        # specify action
-        action = actionRequireAuthentication(          
-            actor = 'materialsimulationwizard', 
-            sentry = director.sentry,
-            routine = 'kernel_generator',
-            id=self.inventory.id,
-            arguments = {'form-received': formcomponent.name },
-            )
-        from vnf.weaver import action_formfields
-        action_formfields( action, form )
-        # expand the form with fields of the data object that is being edited
-        formcomponent.expand( form )
-        next = form.control(name='submit',type="submit", value="next")
-        return page 
-   
+        return self.redirect(director, actor, routine, matter = matter)
+    
+
     def localOrbitalHarmonic(self, director):
         try:
             page = director.retrieveSecurePage( 'materialsimulationwizard' )

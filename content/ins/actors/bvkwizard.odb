@@ -104,7 +104,7 @@ class BvK(base):
         form = document.form(name='', action=director.cgihome)
         # specify action
         action = actionRequireAuthentication(          
-            actor = 'bvk', 
+            actor = 'bvkwizard', 
             sentry = director.sentry,
             routine = 'verify_model_selection',
             label = '',
@@ -120,7 +120,7 @@ class BvK(base):
 
         p = document.paragraph()
         action = actionRequireAuthentication(
-            actor = 'bvk', sentry = director.sentry,
+            actor = 'bvkwizard', sentry = director.sentry,
             label = 'starting from scratch',
             routine = 'create_new_model',
             id = self.inventory.id,
@@ -183,7 +183,7 @@ class BvK(base):
         p = document.paragraph()
         # 
         action = actionRequireAuthentication(
-            actor = 'bvk', sentry = director.sentry,
+            actor = 'bvkwizard', sentry = director.sentry,
             label = 'use this model to start a bvk computation',
             routine = 'use_model',
             id = self.inventory.id,
@@ -192,7 +192,7 @@ class BvK(base):
         use_link = action_link( action, director.cgihome )
         # 
         action = actionRequireAuthentication(
-            actor = 'bvk', sentry = director.sentry,
+            actor = 'bvkwizard', sentry = director.sentry,
             label = 'create a new model by using this model as template',
             routine = 'new_model_from_template',
             id = self.inventory.id,
@@ -241,7 +241,7 @@ class BvK(base):
         form = document.form(name='', action=director.cgihome)
         # specify action
         action = actionRequireAuthentication(          
-            actor = 'bvk', 
+            actor = 'bvkwizard', 
             sentry = director.sentry,
             routine = 'verify_computationtype_selection',
             label = '',
@@ -297,7 +297,7 @@ class BvK(base):
         form = document.form(name='', action=director.cgihome)
         # specify action
         action = actionRequireAuthentication( 
-            actor = 'bvk', 
+            actor = 'bvkwizard', 
             sentry = director.sentry,
             routine = 'verify_dos_computation_configuration',
             label = '',
@@ -352,7 +352,7 @@ class BvK(base):
         form = document.form(name='', action=director.cgihome)
         # specify action
         action = actionRequireAuthentication( 
-            actor = 'bvk', 
+            actor = 'bvkwizard', 
             sentry = director.sentry,
             routine = 'verify_disp_computation_configuration',
             label = '',
@@ -460,7 +460,7 @@ from vnf.components.ins.BvK import getSystem, findModels, issimplematter
 from vnf.components.misc import empty_id
 
 def actor():
-    return BvK('bvk')
+    return BvK('bvkwizard')
 
 
 # version
