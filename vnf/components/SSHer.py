@@ -44,7 +44,11 @@ class SSHer(base):
     
 
     def pushdir( self, path, server, remotepath ):
-        'push a local directory to remote server'
+        '''push a local directory to remote server
+
+    Eg:
+        pushdir('/a/b/c', server1, '/a1/b1'): directory /a/b/c will be copied to server1 and become /a1/b1/c
+        '''
         address = server.address
         port = server.port
         username = server.username
@@ -186,10 +190,11 @@ class SSHer(base):
 
             pieces = [
                 'scp',
-                '-P %s' % port2,
-                '-r %s' % path1,
-                '%s@%s:%s' % (username2, address2, path2),
                 ]
+            if port2:
+                pieces.append('-P %s' % port2)
+            pieces.append('-r %s' % path1)
+            pieces.append('%s@%s:%s' % (username2, address2, path2))
             
 
         cmd = ' '.join(pieces)

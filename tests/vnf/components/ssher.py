@@ -22,6 +22,10 @@ class Server:
         self.port = port
         self.username = username
         return
+
+
+    def __eq__(self, rhs):
+        return self.address == rhs.address and self.port == rhs.port and self.username == rhs.username
     
 
 
@@ -49,6 +53,19 @@ class App(Script):
             Server('upgrayedd.danse.us', None, 'linjiao'), '/tmp/testfile',
             Server('upgrayedd.danse.us', None, 'linjiao'), '/tmp/ssher1.py',
             )
+        ssher.copyfile(
+            Server(None, None, None), 'testfile',
+            Server('login.cacr.caltech.edu', None, 'linjiao'), '/tmp',
+            )
+        ssher.copyfile(
+            Server('login.cacr.caltech.edu', None, 'linjiao'), '/tmp/testfile',
+            Server('upgrayedd.danse.us', None, 'linjiao'), '/tmp/ssher1.py',
+            )
+        
+        ssher.pushdir( 'testdir',
+                       Server('login.cacr.caltech.edu', None, 'linjiao'),
+                       '/tmp')
+        
         return
 
 
@@ -70,6 +87,8 @@ def main():
 
 # main
 if __name__ == '__main__':
+    import journal
+    journal.info('ssher').activate()
     # invoke the application shell
     main()
 
