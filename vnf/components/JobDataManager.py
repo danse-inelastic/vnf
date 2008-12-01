@@ -71,6 +71,7 @@ class JobDataManager:
         # 1. create the directory
         cmd = 'mkdir -p %s' % self.remotepath()
         csaccessor.execute(cmd, server, '/')
+        return
         # 2. copy files
         files = self.listlocaljobdir()
         files = filter(lambda f: not f.startswith(self.dds.dds.prefix_remember), files)

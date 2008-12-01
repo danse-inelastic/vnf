@@ -52,10 +52,12 @@ class JobBuilder(object):
         type = dependency.name
         id = dependency.id
         path = self._path(self.dependencies_path)
-        f = open(path, 'a')
-        entry = '%s,%s' % (type, id)
-        f.write(entry)
-        del f
+        entry = '%s,%s\n' % (type, id)
+        lines = open(path).readlines()
+        if entry not in lines:
+            f = open(path, 'a')
+            f.write(entry)
+            del f
         return
 
 
@@ -64,7 +66,7 @@ class JobBuilder(object):
         if not os.path.exists(path): return []
         f = open(path)
         deps = f.read().split('\n')
-        return [dep.split(',') for dep in deps]
+        return [dep.split(',') for dep in deps if dep]
     
 
     def _path(self, filename):

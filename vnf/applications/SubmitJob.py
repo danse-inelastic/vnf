@@ -41,7 +41,7 @@ class SubmitJob(base):
         id = self.id
         job = self.clerk.getJob(id)
         state = job.state
-        if state not in ['created', 'submissionfailed']:
+        if not self.debug and state not in ['created', 'submissionfailed']:
             raise RuntimeError, "Job %s not suitable for submission: %s" % (id, state)
         job.state = 'submitting'
         self.clerk.updateRecord(job)
@@ -74,6 +74,12 @@ class SubmitJob(base):
         from vnf.components import buildjob
         files, deps = buildjob(computation, db=self.clerk.db, dds=self.dds, path=jobpath)
         for f in files: self.dds.remember(job, f)
+
+        # make job related files available on the server
+        server = self.clerk.dereference(job.server)
+        self.dds.make_available(job, server=server, files=files)
+
+        # make dependencies available on the server
         for dep in deps: self.prepare_dependency(dep, job)
         return
 
@@ -81,7 +87,10 @@ class SubmitJob(base):
     def prepare_dependency(self, dep, job):
         type, id = dep
         record = self.clerk.getRecordByID(type, id)
-        self.dds.make_available(record, server=self.clerk.dereference(job.server))
+        self.dds.remember(record)
+        
+        server = self.clerk.dereference(job.server)
+        self.dds.make_available(record, server=server)
         return
 
 
