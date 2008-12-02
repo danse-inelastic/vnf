@@ -16,7 +16,7 @@ from vnf.components.MaterialSimulationWizard import \
 from vnf.components.MaterialSimulationWizard import MaterialSimulationWizard as base
 
 
-class GulpWizard(base):
+class PlaneWaveHarmonicWizard(base):
     
     
     class Inventory(base.Inventory):
@@ -25,21 +25,21 @@ class GulpWizard(base):
         
 
     def configure_simulation(self, director, matter=None):
-        self.inventory.type = 'gulp'
+        self.inventory.type = 'planeWaveHarmonic'
         if matter:
             self.inventory.mattertype = matter.__class__.__name__
             self.inventory.matterid = matter.id
-
+            
         try:
             page = director.retrieveSecurePage( 'materialsimulationwizard' )
         except AuthenticationError, err:
             return err.page
         
         main = page._body._content._main
-        document = main.document(title='Classical atomistics kernel' )
+        document = main.document(title='Plane wave DFT energies, harmonic dynamics kernel' )
         document.byline = '<a href="http://danse.us">DANSE</a>'    
         
-        formcomponent = self.retrieveFormToShow( 'gulp')
+        formcomponent = self.retrieveFormToShow( 'planeWaveHarmonic')
         formcomponent.director = director
         # build the form form
         form = document.form(name='', action=director.cgihome)
@@ -48,7 +48,7 @@ class GulpWizard(base):
             actor = 'materialsimulationwizard', 
             sentry = director.sentry,
             routine = 'kernel_generator',
-            id=self.inventory.id, type='gulp',
+            id=self.inventory.id, type=self.inventory.type,
             arguments = {'form-received': formcomponent.name },
             )
         from vnf.weaver import action_formfields
@@ -56,14 +56,14 @@ class GulpWizard(base):
         # expand the form with fields of the data object that is being edited
         formcomponent.expand( form )
         next = form.control(name='submit',type="submit", value="next")
-        return page 
+        return page        
    
 
-    pass # end of GulpWizard
+    pass # end of PlaneWaveHarmonicWizard
 
 
 def actor():
-    return GulpWizard('gulpwizard')
+    return PlaneWaveHarmonicWizard('planewaveharmonicwizard')
 
 
 # version

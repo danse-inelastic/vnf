@@ -27,6 +27,11 @@ class BvK(base):
 
 
     def configure_simulation(self, director, matter=None):
+        self.inventory.type = 'bvk'
+        if matter:
+            self.inventory.mattertype = matter.__class__.__name__
+            self.inventory.matterid = matter.id
+
         try:
             page = director.retrieveSecurePage( 'materialsimulationwizard' )
         except AuthenticationError, err:
