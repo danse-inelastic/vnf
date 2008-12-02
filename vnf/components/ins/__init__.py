@@ -11,6 +11,16 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
+
+from vnf.components.MaterialSimulation import Engine
+
+def materialSimulationEngines():
+    return [
+        Engine('bvk', 'Born von Karman Lattice Dynamics', ''),
+        ]
+
+
+
 # version
 __id__ = "$Id$"
 

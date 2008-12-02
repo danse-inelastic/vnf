@@ -25,8 +25,11 @@ def portlet(app):
     material = portlet.item(description="Material")
     action = actionRequireAuthentication(
         actor = 'materialsimulationwizard', sentry = app.sentry,
-        routine = 'selectmaterial',
+        routine = 'selectMaterial',
         id = app.actor.inventory.id,
+        type = app.actor.inventory.type,
+        matterid = app.actor.inventory.matterid,
+        mattertype = app.actor.inventory.mattertype,
         )
     material.target = action_href(action, app.cgihome)
     material.icon = "images/link_icon.gif"
@@ -37,6 +40,9 @@ def portlet(app):
         actor = 'materialsimulationwizard', sentry = app.sentry,
         routine = 'selectSimulationEngine',#'selectsimulationtype',
         id = app.actor.inventory.id,
+        type = app.actor.inventory.type,
+        matterid = app.actor.inventory.matterid,
+        mattertype = app.actor.inventory.mattertype,
         )
     simulation.target = action_href(action, app.cgihome)
     simulation.icon = "images/link_icon.gif"
@@ -47,6 +53,9 @@ def portlet(app):
         actor = 'materialsimulationwizard', sentry = app.sentry,
         routine = 'submit_simulation',
         id = app.actor.inventory.id,
+        type = app.actor.inventory.type,
+        matterid = app.actor.inventory.matterid,
+        mattertype = app.actor.inventory.mattertype,
         )
     submit_simulation.target = action_href(action, app.cgihome)
     submit_simulation.icon = "images/link_icon.gif"
@@ -57,6 +66,9 @@ def portlet(app):
         actor = 'materialsimulationwizard', sentry = app.sentry,
         routine = 'save_simulation',
         id = app.actor.inventory.id,
+        type = app.actor.inventory.type,
+        matterid = app.actor.inventory.matterid,
+        mattertype = app.actor.inventory.mattertype,
         )
     save_simulation.target = action_href(action, app.cgihome)
     save_simulation.icon = "images/link_icon.gif"
@@ -64,10 +76,13 @@ def portlet(app):
     
     cancel = portlet.item(description="Cancel")
     action = actionRequireAuthentication(
-        actor = 'materialsimulationwizard',
+        actor = 'materialsimulationwizard', sentry = app.sentry,
         routine = 'cancel',
         id = app.actor.inventory.id,
-        sentry = app.sentry)
+        type = app.actor.inventory.type,
+        matterid = app.actor.inventory.matterid,
+        mattertype = app.actor.inventory.mattertype,
+        )
     cancel.target = action_href(action, app.cgihome)
     cancel.icon = "images/link_icon.gif"
     cancel.type = "navItem"

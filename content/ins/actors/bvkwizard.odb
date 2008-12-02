@@ -28,7 +28,7 @@ class BvK(base):
 
     def configure_simulation(self, director, matter=None):
         try:
-            page = director.retrieveSecurePage( 'materialsimulationwizard-2' )
+            page = director.retrieveSecurePage( 'materialsimulationwizard' )
         except AuthenticationError, err:
             return err.page
 
@@ -51,7 +51,7 @@ class BvK(base):
 
     def configure_bvkmodel(self, director):
         try:
-            page = director.retrieveSecurePage( 'materialsimulationwizard-2' )
+            page = director.retrieveSecurePage( 'materialsimulationwizard' )
         except AuthenticationError, err:
             return err.page
 
@@ -71,7 +71,7 @@ class BvK(base):
             raise RuntimeError
         
         try:
-            page = director.retrieveSecurePage( 'materialsimulationwizard-2' )
+            page = director.retrieveSecurePage( 'materialsimulationwizard' )
         except AuthenticationError, err:
             return err.page
 
@@ -108,7 +108,7 @@ class BvK(base):
             sentry = director.sentry,
             routine = 'verify_model_selection',
             label = '',
-            id=self.inventory.id,
+            id=self.inventory.id, type='bvk',
             arguments = {'form-received': formcomponent.name },
             )
         from vnf.weaver import action_formfields
@@ -123,7 +123,7 @@ class BvK(base):
             actor = 'bvkwizard', sentry = director.sentry,
             label = 'starting from scratch',
             routine = 'create_new_model',
-            id = self.inventory.id,
+            id = self.inventory.id, type='bvk',
             )
         link = action_link( action, director.cgihome )
         p.text = [
@@ -135,7 +135,7 @@ class BvK(base):
 
     def verify_model_selection(self, director):
         try:
-            page = director.retrieveSecurePage( 'materialsimulationwizard-2' )
+            page = director.retrieveSecurePage( 'materialsimulationwizard' )
         except AuthenticationError, err:
             return err.page
         
@@ -149,7 +149,7 @@ class BvK(base):
         if model is None: raise NotImplementedError
 
         try:
-            page = director.retrieveSecurePage( 'materialsimulationwizard-2' )
+            page = director.retrieveSecurePage( 'materialsimulationwizard' )
         except AuthenticationError, err:
             return err.page
 
@@ -186,7 +186,7 @@ class BvK(base):
             actor = 'bvkwizard', sentry = director.sentry,
             label = 'use this model to start a bvk computation',
             routine = 'use_model',
-            id = self.inventory.id,
+            id = self.inventory.id, type='bvk',
             model_id = model.id,
             )
         use_link = action_link( action, director.cgihome )
@@ -195,7 +195,7 @@ class BvK(base):
             actor = 'bvkwizard', sentry = director.sentry,
             label = 'create a new model by using this model as template',
             routine = 'new_model_from_template',
-            id = self.inventory.id,
+            id = self.inventory.id, type='bvk',
             model_id = model.id,
             )
         as_template_link = action_link( action, director.cgihome )
@@ -208,7 +208,7 @@ class BvK(base):
 
     def use_model(self, director):
         try:
-            page = director.retrieveSecurePage( 'materialsimulationwizard-2' )
+            page = director.retrieveSecurePage( 'materialsimulationwizard' )
         except AuthenticationError, err:
             return err.page
 
@@ -223,7 +223,7 @@ class BvK(base):
 
     def select_computation_type(self, director):
         try:
-            page = director.retrieveSecurePage( 'materialsimulationwizard-2' )
+            page = director.retrieveSecurePage( 'materialsimulationwizard' )
         except AuthenticationError, err:
             return err.page
         
@@ -245,7 +245,7 @@ class BvK(base):
             sentry = director.sentry,
             routine = 'verify_computationtype_selection',
             label = '',
-            id=self.inventory.id,
+            id=self.inventory.id, type='bvk',
             arguments = {'form-received': formcomponent.name },
             )
         from vnf.weaver import action_formfields
@@ -260,7 +260,7 @@ class BvK(base):
 
     def verify_computationtype_selection(self, director):
         try:
-            page = director.retrieveSecurePage( 'materialsimulationwizard-2' )
+            page = director.retrieveSecurePage( 'materialsimulationwizard' )
         except AuthenticationError, err:
             return err.page
 
@@ -278,7 +278,7 @@ class BvK(base):
 
     def configure_dos_computation(self, director, errors=None):
         try:
-            page = director.retrieveSecurePage( 'materialsimulationwizard-2' )
+            page = director.retrieveSecurePage( 'materialsimulationwizard' )
         except AuthenticationError, err:
             return err.page
 
@@ -301,7 +301,7 @@ class BvK(base):
             sentry = director.sentry,
             routine = 'verify_dos_computation_configuration',
             label = '',
-            id=self.inventory.id,
+            id=self.inventory.id, type='bvk',
             arguments = {'form-received': formcomponent.name },
             )
         from vnf.weaver import action_formfields
@@ -316,7 +316,7 @@ class BvK(base):
 
     def verify_dos_computation_configuration(self, director):
         try:
-            page = director.retrieveSecurePage( 'materialsimulationwizard-2' )
+            page = director.retrieveSecurePage( 'materialsimulationwizard' )
         except AuthenticationError, err:
             return err.page
         
@@ -333,7 +333,7 @@ class BvK(base):
 
     def configure_disp_computation(self, director, errors=None):
         try:
-            page = director.retrieveSecurePage( 'materialsimulationwizard-2' )
+            page = director.retrieveSecurePage( 'materialsimulationwizard' )
         except AuthenticationError, err:
             return err.page
 
@@ -356,7 +356,7 @@ class BvK(base):
             sentry = director.sentry,
             routine = 'verify_disp_computation_configuration',
             label = '',
-            id=self.inventory.id,
+            id=self.inventory.id, type='bvl',
             arguments = {'form-received': formcomponent.name },
             )
         from vnf.weaver import action_formfields
@@ -371,7 +371,7 @@ class BvK(base):
 
     def verify_disp_computation_configuration(self, director):
         try:
-            page = director.retrieveSecurePage( 'materialsimulationwizard-2' )
+            page = director.retrieveSecurePage( 'materialsimulationwizard' )
         except AuthenticationError, err:
             return err.page
         
@@ -388,7 +388,7 @@ class BvK(base):
 
     def create_job(self, director):
         try:
-            page = director.retrieveSecurePage( 'materialsimulationwizard-2' )
+            page = director.retrieveSecurePage( 'materialsimulationwizard' )
         except AuthenticationError, err:
             return err.page
 

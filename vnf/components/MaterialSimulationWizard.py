@@ -20,9 +20,11 @@ class MaterialSimulationWizard(base):
     class Inventory(base.Inventory):
         
         import pyre.inventory
+
+        type = pyre.inventory.str('type', default='gulp')
         
         id = pyre.inventory.str("id", default='')
-        id.meta['tip'] = "the unique identifier of the experiment"
+        id.meta['tip'] = "the unique identifier of the material simulation"
 
         matterid = pyre.inventory.str('matterid')
         mattertype = pyre.inventory.str('mattertype')
@@ -34,10 +36,10 @@ class MaterialSimulationWizard(base):
         return self.start(director)
 
     def start(self, director):
-        return self.selectmaterial(director)
+        return self.selectMaterial(director)
     
 
-    def selectmaterial(self, director):
+    def selectMaterial(self, director):
         try:
             page = director.retrieveSecurePage( 'materialsimulationwizard' )
         except AuthenticationError, err:
@@ -63,8 +65,8 @@ class MaterialSimulationWizard(base):
         # specify action
         action = actionRequireAuthentication(
             actor = 'materialsimulationwizard', sentry = director.sentry,
-            label = '', routine = 'verify_material_selection',
-            id = self.inventory.id,
+            label = '', routine = 'verifyMaterialSelection',
+            id = self.inventory.id, type = self.inventory.type,
             arguments = {'form-received': formcomponent.name } )
         from vnf.weaver import action_formfields
         action_formfields( action, form )
@@ -78,7 +80,7 @@ class MaterialSimulationWizard(base):
         return page
     
 
-    def verify_material_selection(self, director):
+    def verifyMaterialSelection(self, director):
         try:
             page = director.retrieveSecurePage( 'materialsimulationwizard' )
         except AuthenticationError, err:
@@ -101,12 +103,14 @@ class MaterialSimulationWizard(base):
         main = page._body._content._main
         # populate the main column
         document = main.document(
-            title='Kernel model selection')
+            title='Select material simulation engine')
         document.description = ''
         document.byline = '<a href="http://danse.us">DANSE</a>'        
-        
+
         formcomponent = self.retrieveFormToShow( 'selectSimulationEngine')
         formcomponent.director = director
+        formcomponent.inventory.type = self.inventory.type
+        
         # build the form 
         form = document.form(name='', action=director.cgihome)
         # specify action
@@ -115,6 +119,7 @@ class MaterialSimulationWizard(base):
             sentry = director.sentry,
             routine = 'onSelect',
             id=self.inventory.id,
+            type=self.inventory.type,
             matterid = self.inventory.matterid,
             mattertype = self.inventory.mattertype,
             arguments = {'form-received': formcomponent.name },
@@ -165,7 +170,7 @@ class MaterialSimulationWizard(base):
             actor = 'materialsimulationwizard', 
             sentry = director.sentry,
             routine = 'kernel_generator',
-            id=self.inventory.id,
+            id=self.inventory.id, type=self.inventory.type,
             arguments = {'form-received': formcomponent.name },
             )
         from vnf.weaver import action_formfields
@@ -194,7 +199,7 @@ class MaterialSimulationWizard(base):
             actor = 'materialsimulationwizard', 
             sentry = director.sentry,
             routine = 'kernel_generator',
-            id=self.inventory.id,
+            id=self.inventory.id, type=self.inventory.type,
             arguments = {'form-received': formcomponent.name },
             )
         from vnf.weaver import action_formfields
@@ -224,7 +229,7 @@ class MaterialSimulationWizard(base):
             sentry = director.sentry,
             routine = 'submit_experiment',
             label = '',
-            id = self.inventory.id,
+            id = self.inventory.id, type = self.inventory.type,
             arguments = {'form-received': formcomponent.name },
             )
         from vnf.weaver import action_formfields

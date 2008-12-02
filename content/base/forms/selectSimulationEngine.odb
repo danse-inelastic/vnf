@@ -14,39 +14,50 @@
 
 from vnf.components.Form import Form as base
 
+from vnf.components.MaterialSimulation import engines
+engines = engines()
+
 
 class Form( base ):
 
     class Inventory( base.Inventory ):
 
         import pyre.inventory as inv
-        kernel = inv.str('kernel',default='gulp')
-        kernel.validator=inv.choice(['bvk','gulp', 'mmtk', 'localOrbitalHarmonic','planeWaveHarmonic', 'sansModels'])
-        kernel.meta['tip'] = 'type of kernel'
+        type = inv.str('type',default='gulp')
+        type.validator=inv.choice([e.id for e in engines])
+        type.meta['tip'] = 'type of simulation engine'
         
         #kernel_id = inv.str( 'kernel_id' )
 
     def expand(self, form):
         '''expand an existing form with fields from this component'''
         p = form.paragraph()
-        p.text = ['To begin the creation of a scattering kernel, select an energetics/dynamics engine or a set of phonon dispersions.']
+        p.text = [
+            #'To begin the creation of a scattering kernel, select an energetics/dynamics engine or a set of phonon dispersions.'
+            'Following material simulation/modeling are supported',
+            ]
         prefix = formactor_action_prefix
         
-#        experiment_id_field = form.hidden(
-#            name = '%s.experiment_id' % prefix,
-#            value = self.inventory.experiment_id )
-        
-        name = '%s.%s' % (formactor_action_prefix, 'kernel')
-        bvk = form.radio( id= 'radio1', name = name, label = "Born von Karman Lattice Dynamics", value = 'bvk')
-        gulp = form.radio( id= 'radio2', name = name, label = "Gulp", value = 'gulp')
-        mmtk = form.radio(id='radio3', name= name, label = "Mmtk Newton's Equations", value = 'mmtk')
-        localOrbitalHarmonic = form.radio(id='radio3.5', name= name, label = "Local Orbital DFT Energies, Harmonic Dynamics", value = 'localOrbitalHarmonic')
-        planeWaveHarmonic = form.radio(id='radio4', name=name, label = 'Plane Wave DFT Energies, Harmonic Dynamics', value = 'planeWaveHarmonic')
-        sansModels = form.radio(id='radio6', name=name, label = "Sans Models", value = 'sansModels')
+        name = '%s.%s' % (formactor_action_prefix, 'type')
+        default = self.inventory.type
+        for engine in engines:
+            id = engine.id
+            label = engine.short_description
+            kwds = {
+                'id':'radio'+id,
+                'name':name,
+                'label':label,
+                'value':id,
+                }
+            if id == default: kwds['checked']=True
+            rb = form.radio(**kwds)
+            continue
+        return
+    
 
     def processUserInputs(self):
         'process user input '
-        return self.inventory.kernel
+        return self.inventory.type
 
 
 #formactor_action_prefix = 'actor.form-received' # assumed actor is a form actor

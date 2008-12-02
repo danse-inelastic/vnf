@@ -43,7 +43,7 @@ class GulpWizard(base):
             actor = 'materialsimulationwizard', 
             sentry = director.sentry,
             routine = 'kernel_generator',
-            id=self.inventory.id,
+            id=self.inventory.id, type='gulp',
             arguments = {'form-received': formcomponent.name },
             )
         from vnf.weaver import action_formfields

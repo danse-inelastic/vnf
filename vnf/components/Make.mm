@@ -53,6 +53,7 @@ EXPORT_PYTHON_MODULES = \
 	JobDataManager.py \
 	Login.py \
 	Logout.py \
+	MaterialSimulation.py \
 	MaterialSimulationWizard.py \
 	NeutronExperiment.py \
 	NeutronExperimentWizard.py \

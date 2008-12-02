@@ -11,6 +11,17 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
+
+
+from vnf.components.MaterialSimulation import Engine
+
+def materialSimulationEngines():
+    return [
+        Engine('sansmodels', 'Sans Models', ''),
+        ]
+
+
+
 # version
 __id__ = "$Id$"
 
