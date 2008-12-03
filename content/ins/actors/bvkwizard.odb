@@ -33,7 +33,7 @@ class BvK(base):
             self.inventory.matterid = matter.id
 
         try:
-            page = director.retrieveSecurePage( 'materialsimulationwizard' )
+            page = director.retrieveSecurePage( 'bvkwizard' )
         except AuthenticationError, err:
             return err.page
 
@@ -56,7 +56,7 @@ class BvK(base):
 
     def configure_bvkmodel(self, director):
         try:
-            page = director.retrieveSecurePage( 'materialsimulationwizard' )
+            page = director.retrieveSecurePage( 'bvkwizard' )
         except AuthenticationError, err:
             return err.page
 
@@ -76,7 +76,7 @@ class BvK(base):
             raise RuntimeError
         
         try:
-            page = director.retrieveSecurePage( 'materialsimulationwizard' )
+            page = director.retrieveSecurePage( 'bvkwizard' )
         except AuthenticationError, err:
             return err.page
 
@@ -140,7 +140,7 @@ class BvK(base):
 
     def verify_model_selection(self, director):
         try:
-            page = director.retrieveSecurePage( 'materialsimulationwizard' )
+            page = director.retrieveSecurePage( 'bvkwizard' )
         except AuthenticationError, err:
             return err.page
         
@@ -154,7 +154,7 @@ class BvK(base):
         if model is None: raise NotImplementedError
 
         try:
-            page = director.retrieveSecurePage( 'materialsimulationwizard' )
+            page = director.retrieveSecurePage( 'bvkwizard' )
         except AuthenticationError, err:
             return err.page
 
@@ -213,7 +213,7 @@ class BvK(base):
 
     def use_model(self, director):
         try:
-            page = director.retrieveSecurePage( 'materialsimulationwizard' )
+            page = director.retrieveSecurePage( 'bvkwizard' )
         except AuthenticationError, err:
             return err.page
 
@@ -228,7 +228,7 @@ class BvK(base):
 
     def select_computation_type(self, director):
         try:
-            page = director.retrieveSecurePage( 'materialsimulationwizard' )
+            page = director.retrieveSecurePage( 'bvkwizard' )
         except AuthenticationError, err:
             return err.page
         
@@ -265,7 +265,7 @@ class BvK(base):
 
     def verify_computationtype_selection(self, director):
         try:
-            page = director.retrieveSecurePage( 'materialsimulationwizard' )
+            page = director.retrieveSecurePage( 'bvkwizard' )
         except AuthenticationError, err:
             return err.page
 
@@ -283,7 +283,7 @@ class BvK(base):
 
     def configure_dos_computation(self, director, errors=None):
         try:
-            page = director.retrieveSecurePage( 'materialsimulationwizard' )
+            page = director.retrieveSecurePage( 'bvkwizard' )
         except AuthenticationError, err:
             return err.page
 
@@ -321,7 +321,7 @@ class BvK(base):
 
     def verify_dos_computation_configuration(self, director):
         try:
-            page = director.retrieveSecurePage( 'materialsimulationwizard' )
+            page = director.retrieveSecurePage( 'bvkwizard' )
         except AuthenticationError, err:
             return err.page
         
@@ -338,7 +338,7 @@ class BvK(base):
 
     def configure_disp_computation(self, director, errors=None):
         try:
-            page = director.retrieveSecurePage( 'materialsimulationwizard' )
+            page = director.retrieveSecurePage( 'bvkwizard' )
         except AuthenticationError, err:
             return err.page
 
@@ -376,7 +376,7 @@ class BvK(base):
 
     def verify_disp_computation_configuration(self, director):
         try:
-            page = director.retrieveSecurePage( 'materialsimulationwizard' )
+            page = director.retrieveSecurePage( 'bvkwizard' )
         except AuthenticationError, err:
             return err.page
         
@@ -393,7 +393,7 @@ class BvK(base):
 
     def create_job(self, director):
         try:
-            page = director.retrieveSecurePage( 'materialsimulationwizard' )
+            page = director.retrieveSecurePage( 'bvkwizard' )
         except AuthenticationError, err:
             return err.page
 
