@@ -41,6 +41,7 @@ experiment = [
 
 
 kernels = [
+    'AbInitio',
     ]
 
 
