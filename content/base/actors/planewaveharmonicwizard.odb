@@ -24,7 +24,7 @@ class PlaneWaveHarmonicWizard(base):
         import pyre.inventory
 
 
-    def configure_simulation(self, director, matter=None):
+    def configureSimulation(self, director, matter=None):
         # self assert computation type
         self.inventory.type = 'planeWaveHarmonic'
         # make sure we have a material to work on

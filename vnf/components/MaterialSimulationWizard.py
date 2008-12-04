@@ -143,7 +143,7 @@ class MaterialSimulationWizard(base):
         type = self.processFormInputs(director)
         type = type.replace(' ', '_').lower()
         actor = '%swizard' % type
-        routine = 'configure_simulation'
+        routine = 'configureSimulation'
 
         mattertype = self.inventory.mattertype
         matterid = self.inventory.matterid
@@ -184,7 +184,7 @@ class MaterialSimulationWizard(base):
     # ******* obsolete ******
 
 
-    def configure_simulation(self, director):
+    def configureSimulation(self, director):
         raise NotImplementedError
 
 

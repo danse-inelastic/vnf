@@ -24,7 +24,7 @@ class GulpWizard(base):
         import pyre.inventory
         
 
-    def configure_simulation(self, director, matter=None):
+    def configureSimulation(self, director, matter=None):
         self.inventory.type = 'gulp'
         if matter:
             self.inventory.mattertype = matter.__class__.__name__

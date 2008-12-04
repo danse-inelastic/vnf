@@ -25,7 +25,7 @@ def portlet(app):
     simulation = portlet.item(description="Simulation")
     action = actionRequireAuthentication(
         actor = app.actor.name, sentry = app.sentry,
-        routine = 'configure_simulation',
+        routine = 'configureSimulation',
         id = app.actor.inventory.id,
         type = app.actor.inventory.type,
         matterid = app.actor.inventory.matterid,
@@ -35,31 +35,31 @@ def portlet(app):
     simulation.icon = "images/link_icon.gif"
     simulation.type = "navItem"
 
-    submit_simulation = portlet.item(description="Submit")
+    submitSimulation = portlet.item(description="Submit")
     action = actionRequireAuthentication(
         actor = app.actor.name, sentry = app.sentry,
-        routine = 'submit_simulation',
+        routine = 'submitSimulation',
         id = app.actor.inventory.id,
         type = app.actor.inventory.type,
         matterid = app.actor.inventory.matterid,
         mattertype = app.actor.inventory.mattertype,
         )
-    submit_simulation.target = action_href(action, app.cgihome)
-    submit_simulation.icon = "images/link_icon.gif"
-    submit_simulation.type = "navItem"
+    submitSimulation.target = action_href(action, app.cgihome)
+    submitSimulation.icon = "images/link_icon.gif"
+    submitSimulation.type = "navItem"
 
-    save_simulation = portlet.item(description="Save for later submission")
+    saveSimulation = portlet.item(description="Save for later submission")
     action = actionRequireAuthentication(
         actor = app.actor.name, sentry = app.sentry,
-        routine = 'save_simulation',
+        routine = 'saveSimulation',
         id = app.actor.inventory.id,
         type = app.actor.inventory.type,
         matterid = app.actor.inventory.matterid,
         mattertype = app.actor.inventory.mattertype,
         )
-    save_simulation.target = action_href(action, app.cgihome)
-    save_simulation.icon = "images/link_icon.gif"
-    save_simulation.type = "navItem"
+    saveSimulation.target = action_href(action, app.cgihome)
+    saveSimulation.icon = "images/link_icon.gif"
+    saveSimulation.type = "navItem"
     
     cancel = portlet.item(description="Cancel")
     action = actionRequireAuthentication(
