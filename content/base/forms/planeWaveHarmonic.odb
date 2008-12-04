@@ -36,19 +36,28 @@ class Form( base ):
         
         kineticEnergyCutoff = inv.float('kineticEnergyCutoff', default=140.0)
         kineticEnergyCutoff.meta['tip'] = 'Kinetic energy cutoff'
+
+        #monkhorstPackMesh.meta['tip'] = 'Monkhorst pack mesh'
+        nKx = inv.int('nKx')
+        nKy = inv.int('nKy')
+        nKz = inv.int('nKz')
         
-        monkhorstPackMesh = inv.list('monkhorstPackMesh', default=[1,1,1])
-        monkhorstPackMesh.meta['tip'] = 'Monkhorst pack mesh'
-        
-        supercell = inv.list('supercell', default=[1,1,1])
-        supercell.meta['tip'] = 'Supercell for phonon calculation'
+        #supercell.meta['tip'] = 'Supercell for phonon calculation'
+        scx = inv.int('scx')
+        scy = inv.int('scy')
+        scz = inv.int('scz')
         
         displacementAmplitude = inv.float('displacementAmplitude', default=0.01)
         displacementAmplitude.meta['tip'] = 'Displacement amplitude'      
         
-        qGrid = inv.list('qGrid', default=[1,1,1])
-        qGrid.meta['tip'] = 'Q grid for phonon calculation'         
+        #qGrid.meta['tip'] = 'Q grid for phonon calculation'
+        nQx = inv.int('nQx')
+        nQy = inv.int('nQy')
+        nQz = inv.int('nQz')
 
+
+    DBTable = 'abinitio'
+        
     def expand(self, form):
         '''expand an existing form with fields from this component'''
         prefix = formactor_action_prefix
@@ -68,12 +77,13 @@ class Form( base ):
 #            tip = descriptor.meta.get('tip')
 #            if tip:
 #                field.help = tip
+        record = self.getRecord()
         
         self.short_description = form.text(
                 id = 'text0',
                 name='short_description',
-                label='Name of scattering kernel calculation',
-                value = self.inventory.short_description)
+                label='Name of this calculation',
+                value = record.short_description)
         
         p = form.paragraph()
         p.text = ['<h2>Electronic structure settings</h2>']
@@ -82,7 +92,7 @@ class Form( base ):
         choices=['vasp','abinit (not completely functional)']
         entries=enumerate(choices)
 
-        eng=str(self.inventory.engine)
+        eng=str(record.engine)
         engine = form.selector(id='selector1',
                 name = 'abInitioHarmonic.engine',
                 entries = entries,
@@ -97,31 +107,31 @@ class Form( base ):
             name = 'abInitioHarmonic.xcFunctional',
             entries = entries,
             label = 'Exchange correlation functional',
-            selected = self.inventory.xcFunctional,
+            selected = record.xcFunctional,
             )
         
         kineticEnergyCutoff = form.text(
                 id = 'text1',
                 name='%s.kineticEnergyCutoff' % prefix,
                 label='Kinetic energy cutoff (eV)',
-                value = str(self.inventory.kineticEnergyCutoff))
+                value = str(record.kineticEnergyCutoff))
         
         box = form.box()
         nKx = box.text(
-                id = 'text2',
-                name='%s.nKx' % prefix,
-                label = 'Number of k-points (a*)',
-                value = str(self.inventory.monkhorstPackMesh[0]))  
+            id = 'text2',
+            name='%s.nKx' % prefix,
+            label = 'Number of k-points (a*)',
+            value = str(record.monkhorstPackMesh[0]))  
         nKy = box.text(
-                id = 'text3',
-                name='%s.nKy' % prefix,
-                label = 'Number of k-points (b*)',
-                value = str(self.inventory.monkhorstPackMesh[1]))       
+            id = 'text3',
+            name='%s.nKy' % prefix,
+            label = 'Number of k-points (b*)',
+            value = str(record.monkhorstPackMesh[1]))       
         nKz = box.text(
-                id = 'text4',
-                name='%s.nKz' % prefix,
-                label = 'Number of k-points (c*)',
-                value = str(self.inventory.monkhorstPackMesh[2]))     
+            id = 'text4',
+            name='%s.nKz' % prefix,
+            label = 'Number of k-points (c*)',
+            value = str(record.monkhorstPackMesh[2]))     
 
         p = form.paragraph()
         p.text = ['<h2>Phonon Settings</h2>']
@@ -129,49 +139,67 @@ class Form( base ):
         box = form.box()
         supercellx = box.text(
                 id = 'text5',
-                name='%s.supercellx' % prefix,
+                name='%s.scx' % prefix,
                 label='Supercell expansion (a)',
-                value = str(self.inventory.supercell[0]))  
+                value = str(record.supercell[0]))  
         supercelly = box.text(
                 id = 'text6',
-                name='%s.supercelly' % prefix,
+                name='%s.scy' % prefix,
                 label='Supercell expansion (b)',
-                value = str(self.inventory.supercell[1]))       
+                value = str(record.supercell[1]))       
         supercellz = box.text(
                 id = 'text7',
-                name='%s.supercellz' % prefix,
+                name='%s.scz' % prefix,
                 label='Supercell expansion (c)',
-                value = str(self.inventory.supercell[2]))   
+                value = str(record.supercell[2]))   
         displacementAmplitude = form.text(
                 id = 'text8',
                 name='%s.displacementAmplitude' % prefix,
                 label='Displacement amplitude',
-                value = str(self.inventory.displacementAmplitude)) 
+                value = str(record.displacementAmplitude)) 
         box = form.box()
         Qx = box.text(
                 id = 'text9',
-                name='%s.Qx' % prefix,
+                name='%s.nQx' % prefix,
                 label='Phonon Q-points (a*)',
-                value = str(self.inventory.qGrid[0]))  
+                value = str(record.qGrid[0]))  
         Qy = box.text(
                 id = 'text10',
-                name='%s.Qy' % prefix,
+                name='%s.nQy' % prefix,
                 label='Phonon Q-points (b*)',
-                value = str(self.inventory.qGrid[1]))       
+                value = str(record.qGrid[1]))       
         Qz = box.text(
                 id = 'text11',
-                name='%s.Qz' % prefix,
+                name='%s.nQz' % prefix,
                 label='Phonon Q-points (c*)',
-                value = str(self.inventory.qGrid[2])) 
+                value = str(record.qGrid[2])) 
         
+
     def processUserInputs(self):
-        return 
+        record = self.getRecord()
+        props = [
+            'engine',
+            'xcFunctional',
+            'kineticEnergyCutoff',
+            'displacementAmplitude',
+            ]
+        for prop in props:
+            value = getattr(self.inventory, prop)
+            setattr(record, prop, value)
+            continue
+
+        record.monkhorstPackMesh = [self.inventory.nKx, self.inventory.nKy, self.inventory.nKz]
+        record.supercell = [self.inventory.scx, self.inventory.scy, self.inventory.scz]
+        record.qGrid = [self.inventory.nQx, self.inventory.nQy, self.inventory.nQz]
+        self.director.clerk.updateRecord(record)
+        return record
+    
     
     def getRecord(self):
         'get DB record'
         return self.director.clerk.getRecordByID( self.DBTable, self.inventory.id )
     
-
+    
 
 
 def form(): return Form( 'planeWaveHarmonic' )

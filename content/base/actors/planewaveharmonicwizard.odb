@@ -22,25 +22,46 @@ class PlaneWaveHarmonicWizard(base):
     class Inventory(base.Inventory):
         
         import pyre.inventory
-        
+
 
     def configure_simulation(self, director, matter=None):
+        # self assert computation type
         self.inventory.type = 'planeWaveHarmonic'
+        # make sure we have a material to work on
         if matter:
             self.inventory.mattertype = matter.__class__.__name__
             self.inventory.matterid = matter.id
-            
+        else:
+            matter = director.clerk.getRecordByID(
+                self.inventory.mattertype, self.inventory.matterid)
+
+        # prepare page frame
         try:
-            page = director.retrieveSecurePage( 'materialsimulationwizard' )
+            page = director.retrieveSecurePage( 'planewaveharmonicwizard' )
         except AuthenticationError, err:
             return err.page
         
+        # make a new computation record if necessary
+        id = self.inventory.id
+        from vnf.dom.AbInitio import AbInitio as Computation
+        if not id:
+            computation = director.clerk.newDbObject(Computation)
+            self.inventory.id = id = computation.id
+            computation.matter = matter
+            director.clerk.updateRecord(computation)
+        else:
+            computation = director.clerk._getRecordByID(Computation, id)
+            assert computation.matter.id == matter.id
+            pass
+
+
         main = page._body._content._main
         document = main.document(title='Plane wave DFT energies, harmonic dynamics kernel' )
         document.byline = '<a href="http://danse.us">DANSE</a>'    
         
         formcomponent = self.retrieveFormToShow( 'planeWaveHarmonic')
         formcomponent.director = director
+        formcomponent.inventory.id = id
         # build the form form
         form = document.form(name='', action=director.cgihome)
         # specify action

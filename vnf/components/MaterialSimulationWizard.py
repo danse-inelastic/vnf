@@ -75,7 +75,8 @@ class MaterialSimulationWizard(base):
         formcomponent.expand( form )
 
         # run button
-        submit = form.control(name="actor.form-received.submit", type="submit", value="Continue")
+        submit = form.control(
+            name="actor.form-received.submit", type="submit", value="Continue")
 
         return page
     
