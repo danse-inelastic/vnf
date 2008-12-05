@@ -22,8 +22,8 @@ class Engine:
     
 
 basic_engines = [
-    Engine('gulp', 'Gulp', ''),
-    Engine('mmtk', "Mmtk Newton's Equations", ''),
+    Engine('gulpsimulations', 'Gulp', ''),
+    Engine('mmtksimulations', "Mmtk Newton's Equations", ''),
     Engine('localOrbitalHarmonic', 'Local Orbital DFT Energies, Harmonic Dynamics', ''),
     Engine('planeWaveHarmonic','Plane Wave DFT Energies, Harmonic Dynamics',''),
     ]

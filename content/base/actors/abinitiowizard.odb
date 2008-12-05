@@ -16,31 +16,52 @@ from vnf.components.MaterialSimulationWizard import \
 from vnf.components.MaterialSimulationWizard import MaterialSimulationWizard as base
 
 
-class GulpWizard(base):
+class AbinitioWizard(base):
     
     
     class Inventory(base.Inventory):
         
         import pyre.inventory
-        
+
 
     def configureSimulation(self, director, matter=None):
-        self.inventory.type = 'gulp'
+        # self assert computation type
+        self.inventory.type = 'planeWaveHarmonic'
+        # make sure we have a material to work on
         if matter:
             self.inventory.mattertype = matter.__class__.__name__
             self.inventory.matterid = matter.id
+        else:
+            matter = director.clerk.getRecordByID(
+                self.inventory.mattertype, self.inventory.matterid)
 
+        # prepare page frame
         try:
-            page = director.retrieveSecurePage( 'materialsimulationwizard' )
+            page = director.retrieveSecurePage( 'abinitiowizard' )
         except AuthenticationError, err:
             return err.page
         
+        # make a new computation record if necessary
+        id = self.inventory.id
+        from vnf.dom.AbInitio import AbInitio as Computation
+        if not id:
+            computation = director.clerk.newDbObject(Computation)
+            self.inventory.id = id = computation.id
+            computation.matter = matter
+            director.clerk.updateRecord(computation)
+        else:
+            computation = director.clerk._getRecordByID(Computation, id)
+            assert computation.matter.id == matter.id
+            pass
+
+
         main = page._body._content._main
-        document = main.document(title='Classical atomistics kernel' )
+        document = main.document(title='Plane wave DFT energies, harmonic dynamics kernel' )
         document.byline = '<a href="http://danse.us">DANSE</a>'    
         
-        formcomponent = self.retrieveFormToShow( 'gulp')
+        formcomponent = self.retrieveFormToShow( 'planeWaveHarmonic')
         formcomponent.director = director
+        formcomponent.inventory.id = id
         # build the form form
         form = document.form(name='', action=director.cgihome)
         # specify action
@@ -48,7 +69,7 @@ class GulpWizard(base):
             actor = 'materialsimulationwizard', 
             sentry = director.sentry,
             routine = 'kernel_generator',
-            id=self.inventory.id, type='gulp',
+            id=self.inventory.id, type=self.inventory.type,
             arguments = {'form-received': formcomponent.name },
             )
         from vnf.weaver import action_formfields
@@ -56,14 +77,14 @@ class GulpWizard(base):
         # expand the form with fields of the data object that is being edited
         formcomponent.expand( form )
         next = form.control(name='submit',type="submit", value="next")
-        return page 
+        return page        
    
 
-    pass # end of GulpWizard
+    pass # end of AbinitioWizard
 
 
 def actor():
-    return GulpWizard('gulpwizard')
+    return AbinitioWizard('abinitiowizard')
 
 
 # version

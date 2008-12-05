@@ -42,6 +42,8 @@ experiment = [
 
 kernels = [
     'AbInitio',
+    'GulpSimulation',
+    'MmtkSimulation',
     ]
 
 

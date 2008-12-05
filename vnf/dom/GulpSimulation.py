@@ -11,18 +11,12 @@
 #
 
 
-from ScatteringKernel import ScatteringKernel as base
-class GulpScatteringKernel(base):
+from Computation import Computation as base
+class GulpSimulation(base):
 
-    name = 'gulpscatteringkernels'
+    name = 'gulpsimulations'
     
     import pyre.db
-
-# change input file to description (and add any other metadata necessary
-
-    inputfile = pyre.db.varcharArray( name = 'inputfile', length = 256 )
-    inputfile.meta['tip'] = 'input file to run gulp'
-
 
 
 # version

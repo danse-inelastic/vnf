@@ -30,8 +30,17 @@ class Actor(base):
             return err.page
 
         if id is None: id = self.inventory.id
+        else: self.inventory.id = id
 
         computation = director.clerk.getBvKComputation(id)
+        if not self._isConfigured(computation, director):
+            actor = director.retrieveActor('bvkcomputationwizard')
+            director.configureComponent(actor)
+            director.inventory.actor = director.actor = actor
+            director.inventory.routine = director.routine = routine = 'start'
+            actor.inventory.type = 'bvkcomputations'
+            actor.inventory.id = self.inventory.id
+            return getattr(actor, routine)(director)
 
         main = page._body._content._main
         # populate the main column
@@ -104,6 +113,12 @@ class Actor(base):
         handler(computation, document, director)
         
         return page
+
+
+    def _isConfigured(self, computation, director):
+        if not computation.model: return False
+        if not computation.type: return False
+        return True
 
 
     def _view_dos_results(self, computation, document, director):

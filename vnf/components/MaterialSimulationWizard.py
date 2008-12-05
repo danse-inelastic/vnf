@@ -21,7 +21,7 @@ class MaterialSimulationWizard(base):
         
         import pyre.inventory
 
-        type = pyre.inventory.str('type', default='gulp')
+        type = pyre.inventory.str('type', default='gulpsimulations')
         
         id = pyre.inventory.str("id", default='')
         id.meta['tip'] = "the unique identifier of the material simulation"
@@ -41,9 +41,19 @@ class MaterialSimulationWizard(base):
 
     def selectMaterial(self, director):
         try:
-            page = director.retrieveSecurePage( 'materialsimulationwizard' )
+            page = self._retrievePage(director)
         except AuthenticationError, err:
             return err.page
+
+        # find out the previously selected material
+        id = self.inventory.id
+        type = self.inventory.type
+        if id and type:
+            simulation = director.clerk.getRecordByID(type, id)
+            matter = simulation.matter
+            selected = str(matter)
+        else:
+            selected = ''
 
         main = page._body._content._main
 
@@ -55,6 +65,7 @@ class MaterialSimulationWizard(base):
         formcomponent = self.retrieveFormToShow(
             'selectmaterial' )
         formcomponent.director = director
+        formcomponent.inventory.selected = selected
         
         # create form
         form = document.form(
@@ -83,7 +94,7 @@ class MaterialSimulationWizard(base):
 
     def verifyMaterialSelection(self, director):
         try:
-            page = director.retrieveSecurePage( 'materialsimulationwizard' )
+            page = self._retrievePage(director)
         except AuthenticationError, err:
             return err.page
 
@@ -97,7 +108,7 @@ class MaterialSimulationWizard(base):
 
     def selectSimulationEngine(self, director):
         try:
-            page = director.retrieveSecurePage( 'materialsimulationwizard' )
+            page = self._retrievePage(director)
         except AuthenticationError, err:
             return err.page
 #        experiment = director.clerk.getNeutronExperiment(self.inventory.id)
@@ -136,13 +147,19 @@ class MaterialSimulationWizard(base):
 
     def onSelect(self, director):
         try:
-            page = director.retrieveSecurePage( 'materialsimulationwizard' )
+            page = self._retrievePage(director)
         except AuthenticationError, err:
             return err.page
 
         type = self.processFormInputs(director)
-        type = type.replace(' ', '_').lower()
-        actor = '%swizard' % type
+
+        # this is a bit weird. the type is the table name. but usually
+        # table name has a 's' at the end, and it is not desirable.
+        # the following code takes the table class name.
+        table = director.clerk._getTable(type)
+        table = table.__name__.lower()
+        
+        actor = '%swizard' % table
         routine = 'configureSimulation'
 
         mattertype = self.inventory.mattertype
@@ -154,7 +171,7 @@ class MaterialSimulationWizard(base):
     # ******* obsolete ******
 ##     def kernel_generator(self, director):
 ##         try:
-##             page = director.retrieveSecurePage( 'materialsimulationwizard' )
+##             page = self._retrievePage(director)
 ##         except AuthenticationError, err:
 ##             return err.page
         
@@ -188,11 +205,43 @@ class MaterialSimulationWizard(base):
         raise NotImplementedError
 
 
+    def saveSimulation(self, director):
+        try:
+            page = self._retrievePage(director)
+        except AuthenticationError, err:
+            return err.page
+
+        #nothing need to be done.
+        #just go to the simulation list
+        actor = 'materialsimulation'; routine = 'listall'
+        return self.redirect(director, actor=actor, routine=routine)
+
+
+    def cancel(self, director):
+        try:
+            page = self._retrievePage(director)
+        except AuthenticationError, err:
+            return err.page 
+
+        # remove this experiment
+        simulation = director.clerk.getRecordByID(
+            self.inventory.type, self.inventory.id)
+        director.clerk.deleteRecord(simulation)
+        
+        # redirect
+        actor = 'materialsimulation'; routine = 'listall'
+        return self.redirect(director, actor=actor, routine=routine)
+
+
     def __init__(self, name=None):
         if name is None:
             name = "materialsimulationwizard"
         super(MaterialSimulationWizard, self).__init__(name)
         return
+
+
+    def _retrievePage(self, director):
+        return director.retrieveSecurePage( 'materialsimulationwizard' )
 
 
     pass # end of MaterialSimulationWizard

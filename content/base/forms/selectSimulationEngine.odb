@@ -23,7 +23,7 @@ class Form( base ):
     class Inventory( base.Inventory ):
 
         import pyre.inventory as inv
-        type = inv.str('type',default='gulp')
+        type = inv.str('type',default=engines[0].id)
         type.validator=inv.choice([e.id for e in engines])
         type.meta['tip'] = 'type of simulation engine'
         

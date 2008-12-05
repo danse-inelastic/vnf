@@ -45,12 +45,14 @@ EXPORT_PYTHON_MODULES = \
 	DummyDataObject.py \
 	Disordered.py \
 	Geometer.py \
+	GulpSimulation.py \
 	Instrument.py \
 	InstrumentConfiguration.py \
 	Job.py \
 	MaterialModeling.py \
 	MaterialSimulation.py \
 	MatterBase.py \
+	MmtkSimulation.py \
 	NeutronComponent.py \
 	NeutronExperiment.py \
 	OwnedObject.py \

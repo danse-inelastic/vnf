@@ -2,9 +2,8 @@
 #
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
-#                                   Jiao Lin
 #                      California Institute of Technology
-#                        (C) 2008  All Rights Reserved
+#                        (C) 2007  All Rights Reserved
 #
 # {LicenseText}
 #
@@ -12,13 +11,12 @@
 #
 
 
-from vnf.components.MaterialSimulation import Engine
+from Computation import Computation as base
+class MmtkSimulation(base):
 
-def materialSimulationEngines():
-    return [
-        Engine('bvkcomputations', 'Born von Karman Lattice Dynamics', ''),
-        ]
-
+    name = 'mmtksimulations'
+    
+    import pyre.db
 
 
 # version

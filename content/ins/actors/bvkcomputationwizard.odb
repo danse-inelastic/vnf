@@ -26,14 +26,28 @@ class BvK(base):
         pass # end of Inventory
 
 
+    def verifyMaterialSelection(self, director):
+        try:
+            page = self._retrievePage(director)
+        except AuthenticationError, err:
+            return err.page
+
+        mattertype,matterid = self.processFormInputs(director)
+        self.inventory.matterid = matterid
+        self.inventory.mattertype = mattertype
+
+        matter = director.clerk.getRecordByID(mattertype, matterid)
+        return self.configureSimulation(director, matter = matter)
+
+
     def configureSimulation(self, director, matter=None):
-        self.inventory.type = 'bvk'
+        self.inventory.type = 'bvkcomputation'
         if matter:
             self.inventory.mattertype = matter.__class__.__name__
             self.inventory.matterid = matter.id
 
         try:
-            page = director.retrieveSecurePage( 'bvkwizard' )
+            page = director.retrieveSecurePage( 'bvkcomputationwizard' )
         except AuthenticationError, err:
             return err.page
 
@@ -56,7 +70,7 @@ class BvK(base):
 
     def configure_bvkmodel(self, director):
         try:
-            page = director.retrieveSecurePage( 'bvkwizard' )
+            page = director.retrieveSecurePage( 'bvkcomputationwizard' )
         except AuthenticationError, err:
             return err.page
 
@@ -76,7 +90,7 @@ class BvK(base):
             raise RuntimeError
         
         try:
-            page = director.retrieveSecurePage( 'bvkwizard' )
+            page = director.retrieveSecurePage( 'bvkcomputationwizard' )
         except AuthenticationError, err:
             return err.page
 
@@ -109,7 +123,7 @@ class BvK(base):
         form = document.form(name='', action=director.cgihome)
         # specify action
         action = actionRequireAuthentication(          
-            actor = 'bvkwizard', 
+            actor = 'bvkcomputationwizard', 
             sentry = director.sentry,
             routine = 'verify_model_selection',
             label = '',
@@ -125,7 +139,7 @@ class BvK(base):
 
         p = document.paragraph()
         action = actionRequireAuthentication(
-            actor = 'bvkwizard', sentry = director.sentry,
+            actor = 'bvkcomputationwizard', sentry = director.sentry,
             label = 'starting from scratch',
             routine = 'create_new_model',
             id = self.inventory.id, type='bvk',
@@ -140,7 +154,7 @@ class BvK(base):
 
     def verify_model_selection(self, director):
         try:
-            page = director.retrieveSecurePage( 'bvkwizard' )
+            page = director.retrieveSecurePage( 'bvkcomputationwizard' )
         except AuthenticationError, err:
             return err.page
         
@@ -154,7 +168,7 @@ class BvK(base):
         if model is None: raise NotImplementedError
 
         try:
-            page = director.retrieveSecurePage( 'bvkwizard' )
+            page = director.retrieveSecurePage( 'bvkcomputationwizard' )
         except AuthenticationError, err:
             return err.page
 
@@ -188,7 +202,7 @@ class BvK(base):
         p = document.paragraph()
         # 
         action = actionRequireAuthentication(
-            actor = 'bvkwizard', sentry = director.sentry,
+            actor = 'bvkcomputationwizard', sentry = director.sentry,
             label = 'use this model to start a bvk computation',
             routine = 'use_model',
             id = self.inventory.id, type='bvk',
@@ -197,7 +211,7 @@ class BvK(base):
         use_link = action_link( action, director.cgihome )
         # 
         action = actionRequireAuthentication(
-            actor = 'bvkwizard', sentry = director.sentry,
+            actor = 'bvkcomputationwizard', sentry = director.sentry,
             label = 'create a new model by using this model as template',
             routine = 'new_model_from_template',
             id = self.inventory.id, type='bvk',
@@ -213,7 +227,7 @@ class BvK(base):
 
     def use_model(self, director):
         try:
-            page = director.retrieveSecurePage( 'bvkwizard' )
+            page = director.retrieveSecurePage( 'bvkcomputationwizard' )
         except AuthenticationError, err:
             return err.page
 
@@ -228,7 +242,7 @@ class BvK(base):
 
     def select_computation_type(self, director):
         try:
-            page = director.retrieveSecurePage( 'bvkwizard' )
+            page = director.retrieveSecurePage( 'bvkcomputationwizard' )
         except AuthenticationError, err:
             return err.page
         
@@ -246,7 +260,7 @@ class BvK(base):
         form = document.form(name='', action=director.cgihome)
         # specify action
         action = actionRequireAuthentication(          
-            actor = 'bvkwizard', 
+            actor = 'bvkcomputationwizard', 
             sentry = director.sentry,
             routine = 'verify_computationtype_selection',
             label = '',
@@ -265,7 +279,7 @@ class BvK(base):
 
     def verify_computationtype_selection(self, director):
         try:
-            page = director.retrieveSecurePage( 'bvkwizard' )
+            page = director.retrieveSecurePage( 'bvkcomputationwizard' )
         except AuthenticationError, err:
             return err.page
 
@@ -283,7 +297,7 @@ class BvK(base):
 
     def configure_dos_computation(self, director, errors=None):
         try:
-            page = director.retrieveSecurePage( 'bvkwizard' )
+            page = director.retrieveSecurePage( 'bvkcomputationwizard' )
         except AuthenticationError, err:
             return err.page
 
@@ -302,7 +316,7 @@ class BvK(base):
         form = document.form(name='', action=director.cgihome)
         # specify action
         action = actionRequireAuthentication( 
-            actor = 'bvkwizard', 
+            actor = 'bvkcomputationwizard', 
             sentry = director.sentry,
             routine = 'verify_dos_computation_configuration',
             label = '',
@@ -321,7 +335,7 @@ class BvK(base):
 
     def verify_dos_computation_configuration(self, director):
         try:
-            page = director.retrieveSecurePage( 'bvkwizard' )
+            page = director.retrieveSecurePage( 'bvkcomputationwizard' )
         except AuthenticationError, err:
             return err.page
         
@@ -338,7 +352,7 @@ class BvK(base):
 
     def configure_disp_computation(self, director, errors=None):
         try:
-            page = director.retrieveSecurePage( 'bvkwizard' )
+            page = director.retrieveSecurePage( 'bvkcomputationwizard' )
         except AuthenticationError, err:
             return err.page
 
@@ -357,7 +371,7 @@ class BvK(base):
         form = document.form(name='', action=director.cgihome)
         # specify action
         action = actionRequireAuthentication( 
-            actor = 'bvkwizard', 
+            actor = 'bvkcomputationwizard', 
             sentry = director.sentry,
             routine = 'verify_disp_computation_configuration',
             label = '',
@@ -376,7 +390,7 @@ class BvK(base):
 
     def verify_disp_computation_configuration(self, director):
         try:
-            page = director.retrieveSecurePage( 'bvkwizard' )
+            page = director.retrieveSecurePage( 'bvkcomputationwizard' )
         except AuthenticationError, err:
             return err.page
         
@@ -393,7 +407,7 @@ class BvK(base):
 
     def create_job(self, director):
         try:
-            page = director.retrieveSecurePage( 'bvkwizard' )
+            page = director.retrieveSecurePage( 'bvkcomputationwizard' )
         except AuthenticationError, err:
             return err.page
 
@@ -456,6 +470,10 @@ class BvK(base):
         bvk = director.clerk.getBvKComputation(id)
         matter = director.clerk.dereference(bvk.matter)
         return matter
+
+
+    def _retrievePage(self, director):
+        return director.retrieveSecurePage( 'bvkcomputationwizard' ) 
     
 
     pass # end of BvK
@@ -465,7 +483,7 @@ from vnf.components.ins.BvK import getSystem, findModels, issimplematter
 from vnf.components.misc import empty_id
 
 def actor():
-    return BvK('bvkwizard')
+    return BvK('bvkcomputationwizard')
 
 
 # version

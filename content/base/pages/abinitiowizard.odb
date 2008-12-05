@@ -36,7 +36,7 @@ def page(app):
     main = content.main()
     
     # populate the left column
-    wizardportlet = app.retrievePortlet("planewaveharmonicwizard")
+    wizardportlet = app.retrievePortlet("abinitiowizard")
     left.add(wizardportlet)
 
     #nav = app.retrievePortlet("navigation")
