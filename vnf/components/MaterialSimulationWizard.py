@@ -233,6 +233,36 @@ class MaterialSimulationWizard(base):
         return self.redirect(director, actor=actor, routine=routine)
 
 
+    def createJob(self, director):
+        try:
+            page = self._retrievePage(director)
+        except AuthenticationError, err:
+            return err.page
+
+        # job
+        id = self.inventory.id
+        type = self.inventory.type
+        computation = director.clerk.getRecordByID(type, id)
+        jobref = computation.job
+
+        if not jobref or not jobref.id:
+            # create a new job
+            from vnf.components.Job import new_job
+            job = new_job(director)
+            job.computation = computation
+            director.clerk.updateRecord(job)
+            
+            computation.job = job
+            director.clerk.updateRecord(computation)
+        else:
+            job = director.clerk.dereference(jobref)
+            
+        # redirect to job submission page
+        actor = 'job'
+        routine = 'view'
+        return self.redirect(director, actor, routine, id = job.id)
+
+
     def __init__(self, name=None):
         if name is None:
             name = "materialsimulationwizard"

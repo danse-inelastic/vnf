@@ -26,7 +26,7 @@ class AbinitioWizard(base):
 
     def configureSimulation(self, director, matter=None):
         # self assert computation type
-        self.inventory.type = 'planeWaveHarmonic'
+        self.inventory.type = 'abinitio'
         # make sure we have a material to work on
         if matter:
             self.inventory.mattertype = matter.__class__.__name__
@@ -56,19 +56,19 @@ class AbinitioWizard(base):
 
 
         main = page._body._content._main
-        document = main.document(title='Plane wave DFT energies, harmonic dynamics kernel' )
+        document = main.document(title='Ab initio electronic structure simulation' )
         document.byline = '<a href="http://danse.us">DANSE</a>'    
         
-        formcomponent = self.retrieveFormToShow( 'planeWaveHarmonic')
+        formcomponent = self.retrieveFormToShow( 'abinitio')
         formcomponent.director = director
         formcomponent.inventory.id = id
         # build the form form
         form = document.form(name='', action=director.cgihome)
         # specify action
         action = actionRequireAuthentication(          
-            actor = 'materialsimulationwizard', 
+            actor = 'abinitiowizard', 
             sentry = director.sentry,
-            routine = 'kernel_generator',
+            routine = 'verifyConfiguration',
             id=self.inventory.id, type=self.inventory.type,
             arguments = {'form-received': formcomponent.name },
             )
@@ -77,8 +77,29 @@ class AbinitioWizard(base):
         # expand the form with fields of the data object that is being edited
         formcomponent.expand( form )
         next = form.control(name='submit',type="submit", value="next")
-        return page        
-   
+        return page
+
+
+    def verifyConfiguration(self, director):
+        try:
+            page = self._retrievePage(director)
+        except AuthenticationError, err:
+            return err.page
+        
+        try:
+            self.processFormInputs(director)
+        except InputProcessingError, err:
+            errors = err.errors
+            self.form_received = None
+            director.routine = 'configureSimulation'
+            return self.configureSimulation( director, errors = errors )
+
+        return self.createJob(director)
+    
+
+    def _retrievePage(self, director):
+        return director.retrieveSecurePage( 'abinitiowizard' ) 
+
 
     pass # end of AbinitioWizard
 

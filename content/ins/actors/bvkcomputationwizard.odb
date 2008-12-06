@@ -127,7 +127,7 @@ class BvK(base):
             sentry = director.sentry,
             routine = 'verify_model_selection',
             label = '',
-            id=self.inventory.id, type='bvk',
+            id=self.inventory.id, type='bvkcomputation',
             arguments = {'form-received': formcomponent.name },
             )
         from vnf.weaver import action_formfields
@@ -142,7 +142,7 @@ class BvK(base):
             actor = 'bvkcomputationwizard', sentry = director.sentry,
             label = 'starting from scratch',
             routine = 'create_new_model',
-            id = self.inventory.id, type='bvk',
+            id = self.inventory.id, type='bvkcomputation',
             )
         link = action_link( action, director.cgihome )
         p.text = [
@@ -205,7 +205,7 @@ class BvK(base):
             actor = 'bvkcomputationwizard', sentry = director.sentry,
             label = 'use this model to start a bvk computation',
             routine = 'use_model',
-            id = self.inventory.id, type='bvk',
+            id = self.inventory.id, type='bvkcomputation',
             model_id = model.id,
             )
         use_link = action_link( action, director.cgihome )
@@ -214,7 +214,7 @@ class BvK(base):
             actor = 'bvkcomputationwizard', sentry = director.sentry,
             label = 'create a new model by using this model as template',
             routine = 'new_model_from_template',
-            id = self.inventory.id, type='bvk',
+            id = self.inventory.id, type='bvkcomputation',
             model_id = model.id,
             )
         as_template_link = action_link( action, director.cgihome )
@@ -264,7 +264,7 @@ class BvK(base):
             sentry = director.sentry,
             routine = 'verify_computationtype_selection',
             label = '',
-            id=self.inventory.id, type='bvk',
+            id=self.inventory.id, type='bvkcomputation',
             arguments = {'form-received': formcomponent.name },
             )
         from vnf.weaver import action_formfields
@@ -320,7 +320,7 @@ class BvK(base):
             sentry = director.sentry,
             routine = 'verify_dos_computation_configuration',
             label = '',
-            id=self.inventory.id, type='bvk',
+            id=self.inventory.id, type='bvkcomputations',
             arguments = {'form-received': formcomponent.name },
             )
         from vnf.weaver import action_formfields
@@ -347,7 +347,7 @@ class BvK(base):
             director.routine = 'configure_dos_computation'
             return self.configure_dos_computation( director, errors = errors )
 
-        return self.create_job(director)
+        return self.createJob(director)
 
 
     def configure_disp_computation(self, director, errors=None):
@@ -375,7 +375,7 @@ class BvK(base):
             sentry = director.sentry,
             routine = 'verify_disp_computation_configuration',
             label = '',
-            id=self.inventory.id, type='bvl',
+            id=self.inventory.id, type='bvkcomputation',
             arguments = {'form-received': formcomponent.name },
             )
         from vnf.weaver import action_formfields
@@ -402,36 +402,7 @@ class BvK(base):
             director.routine = 'configure_disp_computation'
             return self.configure_disp_computation( director, errors = errors )
 
-        return self.create_job(director)
-
-
-    def create_job(self, director):
-        try:
-            page = director.retrieveSecurePage( 'bvkcomputationwizard' )
-        except AuthenticationError, err:
-            return err.page
-
-        # job
-        id = self.inventory.id
-        computation = director.clerk.getBvKComputation(id)
-        jobref = computation.job
-
-        if not jobref or not jobref.id:
-            # create a new job
-            from vnf.components.Job import new_job
-            job = new_job(director)
-            job.computation = computation
-            director.clerk.updateRecord(job)
-            
-            computation.job = job
-            director.clerk.updateRecord(computation)
-        else:
-            job = director.clerk.dereference(jobref)
-            
-        # redirect to job submission page
-        actor = 'job'
-        routine = 'view'
-        return self.redirect(director, actor, routine, id = job.id)
+        return self.createJob(director)
 
 
     def ___(self, director):
