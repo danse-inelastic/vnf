@@ -14,7 +14,7 @@
 
 from registry import tableRegistry
 
-from Computation import Computation as base
+from MaterialSimulation import MaterialSimulation as base
 
 class AbInitio(base):
 
@@ -22,8 +22,6 @@ class AbInitio(base):
 
     import pyre.db
     
-    matter = pyre.db.versatileReference(name='matter', tableRegistry=tableRegistry)
-
     engine = pyre.db.varchar(name='engine', length=64, default='vasp')
 #    engine.validator=pyre.db.choice(['vasp', 'ab init'])
     engine.meta['tip'] = 'Ab initio engine'

@@ -11,7 +11,7 @@
 #
 
 
-from Computation import Computation as base
+from MaterialSimulation import MaterialSimulation as base
 class MmtkSimulation(base):
 
     name = 'mmtksimulations'

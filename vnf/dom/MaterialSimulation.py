@@ -12,12 +12,17 @@
 #
 
 
-from Computation import Computation as base
+from registry import tableRegistry
 
+
+from Computation import Computation as base
 class MaterialSimulation(base):
 
     # base class for all material simulations
 
+    import pyre.db
+    matter = pyre.db.versatileReference(name='matter', tableRegistry=tableRegistry)
+    
     pass # end of MaterialSimulation
 
 
