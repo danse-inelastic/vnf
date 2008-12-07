@@ -1451,7 +1451,7 @@ class NeutronExperimentWizard(base):
         document = main.document(title='Local orbital DFT energies, harmonic dynamics kernel' )
         document.byline = '<a href="http://danse.us">DANSE</a>'    
         
-        formcomponent = self.retrieveFormToShow( 'abInitioHarmonic')
+        formcomponent = self.retrieveFormToShow( 'localOrbitalHarmonic')
         formcomponent.director = director
         # build the form form
         form = document.form(name='', action=director.cgihome)
