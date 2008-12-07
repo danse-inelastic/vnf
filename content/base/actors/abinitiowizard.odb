@@ -24,16 +24,19 @@ class AbinitioWizard(base):
         import pyre.inventory
 
 
-    def configureSimulation(self, director, matter=None):
+    def configureSimulation(self, director, simulation=None):
         # self assert computation type
-        self.inventory.type = 'abinitio'
-        # make sure we have a material to work on
-        if matter:
-            self.inventory.mattertype = matter.__class__.__name__
-            self.inventory.matterid = matter.id
-        else:
-            matter = director.clerk.getRecordByID(
-                self.inventory.mattertype, self.inventory.matterid)
+        type = self.inventory.type = 'abinitio'
+
+        if not simulation:
+            simulation = self._getSimulation(director)
+        if not simulation:
+            raise RuntimeError, '%s: %s' % (self.inventory.type, self.inventory.id)
+        id = self.inventory.id = simulation.id
+
+        # make sure material is defined
+        if not self._materialDefinedForSimulation(simulation, director):
+            return self._needMaterialAlert(director)
 
         # prepare page frame
         try:
@@ -41,20 +44,6 @@ class AbinitioWizard(base):
         except AuthenticationError, err:
             return err.page
         
-        # make a new computation record if necessary
-        id = self.inventory.id
-        from vnf.dom.AbInitio import AbInitio as Computation
-        if not id:
-            computation = director.clerk.newDbObject(Computation)
-            self.inventory.id = id = computation.id
-            computation.matter = matter
-            director.clerk.updateRecord(computation)
-        else:
-            computation = director.clerk._getRecordByID(Computation, id)
-            assert computation.matter.id == matter.id
-            pass
-
-
         main = page._body._content._main
         document = main.document(title='Ab initio electronic structure simulation' )
         document.byline = '<a href="http://danse.us">DANSE</a>'    
@@ -69,7 +58,7 @@ class AbinitioWizard(base):
             actor = 'abinitiowizard', 
             sentry = director.sentry,
             routine = 'verifyConfiguration',
-            id=self.inventory.id, type=self.inventory.type,
+            id=id, type=type,
             arguments = {'form-received': formcomponent.name },
             )
         from vnf.weaver import action_formfields
@@ -95,6 +84,13 @@ class AbinitioWizard(base):
             return self.configureSimulation( director, errors = errors )
 
         return self.createJob(director)
+
+
+    def _readyForSubmission(self, director):
+        if not base._readyForSubmission(self, director): return False
+        simulation = self._getSimulation(director)
+        if not simulation.short_description: return False
+        return True
     
 
     def _retrievePage(self, director):

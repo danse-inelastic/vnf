@@ -24,12 +24,17 @@ class GulpWizard(base):
         import pyre.inventory
         
 
-    def configureSimulation(self, director, matter=None):
-        self.inventory.type = 'gulpsimulations'
-        if matter:
-            self.inventory.mattertype = matter.__class__.__name__
-            self.inventory.matterid = matter.id
+    def configureSimulation(self, director, simulation=None):
+        type = self.inventory.type = 'gulpsimulations'
 
+        if not simulation:
+            simulation = self._getSimulation(director)
+        id = self.inventory.id = simulation.id
+
+        # make sure material is defined
+        if not self._materialDefinedForSimulation(simulation, director):
+            return self._needMaterialAlert(director)
+        
         try:
             page = director.retrieveSecurePage( 'materialsimulationwizard' )
         except AuthenticationError, err:
@@ -48,7 +53,7 @@ class GulpWizard(base):
             actor = 'materialsimulationwizard', 
             sentry = director.sentry,
             routine = 'kernel_generator',
-            id=self.inventory.id, type=self.inventory.type,
+            id=id, type=type,
             arguments = {'form-received': formcomponent.name },
             )
         from vnf.weaver import action_formfields

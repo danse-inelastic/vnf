@@ -102,7 +102,6 @@ class MaterialSimulationWizard(base):
         self.inventory.matterid = matterid
         self.inventory.mattertype = mattertype
         
-        #return self.selectsimulationtype(director)
         return self.selectSimulationEngine(director)
 
 
@@ -111,7 +110,12 @@ class MaterialSimulationWizard(base):
             page = self._retrievePage(director)
         except AuthenticationError, err:
             return err.page
-#        experiment = director.clerk.getNeutronExperiment(self.inventory.id)
+
+        # if simulation already created, don't need to select simulation type
+        # again. just jump to configure
+        if self.inventory.id:
+            return self.configureSimulation(director)
+        
         main = page._body._content._main
         # populate the main column
         document = main.document(
@@ -119,6 +123,15 @@ class MaterialSimulationWizard(base):
         document.description = ''
         document.byline = '<a href="http://danse.us">DANSE</a>'        
 
+        mattertype = self.inventory.mattertype
+        matterid = self.inventory.matterid
+        if not matterid or not mattertype:
+            p = document.paragraph()
+            p.text = [
+                'You have not selected the material.',
+                ]
+            return page
+            
         formcomponent = self.retrieveFormToShow( 'selectSimulationEngine')
         formcomponent.director = director
         formcomponent.inventory.type = self.inventory.type
@@ -129,7 +142,7 @@ class MaterialSimulationWizard(base):
         action = actionRequireAuthentication(          
             actor = 'materialsimulationwizard', 
             sentry = director.sentry,
-            routine = 'onSelect',
+            routine = 'verifySimulationTypeSelection',
             id=self.inventory.id,
             type=self.inventory.type,
             matterid = self.inventory.matterid,
@@ -145,13 +158,19 @@ class MaterialSimulationWizard(base):
         return page    
     
 
-    def onSelect(self, director):
+    def verifySimulationTypeSelection(self, director):
         try:
             page = self._retrievePage(director)
         except AuthenticationError, err:
             return err.page
 
-        type = self.processFormInputs(director)
+        self.inventory.type = type = self.processFormInputs(director)
+
+        # create a new simulation
+        mattertype = self.inventory.mattertype
+        matterid = self.inventory.matterid
+        matter = director.clerk.getRecordByID(mattertype, matterid)
+        simulation = self._createSimulation(director, matter=matter)
 
         # this is a bit weird. the type is the table name. but usually
         # table name has a 's' at the end, and it is not desirable.
@@ -161,12 +180,8 @@ class MaterialSimulationWizard(base):
         
         actor = '%swizard' % table
         routine = 'configureSimulation'
+        return self.redirect(director, actor, routine, simulation = simulation)
 
-        mattertype = self.inventory.mattertype
-        matterid = self.inventory.matterid
-        matter = director.clerk.getRecordByID(mattertype, matterid)
-        
-        return self.redirect(director, actor, routine, matter = matter)
     
     # ******* obsolete ******
 ##     def kernel_generator(self, director):
@@ -239,6 +254,9 @@ class MaterialSimulationWizard(base):
         except AuthenticationError, err:
             return err.page
 
+        if not self._readyForSubmission(director):
+            return self._notReadyForSubmissionAlert(director)
+
         # job
         id = self.inventory.id
         type = self.inventory.type
@@ -263,6 +281,10 @@ class MaterialSimulationWizard(base):
         return self.redirect(director, actor, routine, id = job.id)
 
 
+    def submitSimulation(self, director):
+        return self.createJob(director)
+
+
     def __init__(self, name=None):
         if name is None:
             name = "materialsimulationwizard"
@@ -270,11 +292,90 @@ class MaterialSimulationWizard(base):
         return
 
 
+    def _createSimulation(self, director, matter=None):
+        if not matter:
+            raise RuntimeError
+
+        type = self.inventory.type
+        Computation = director.clerk._getTable(type)
+        
+        computation = director.clerk.newDbObject(Computation)
+        self.inventory.id = id = computation.id
+        computation.matter = matter
+        director.clerk.updateRecord(computation)
+        return computation
+
+
+    def _readyForSubmission(self, director):
+        id = self.inventory.id
+        type = self.inventory.type
+        if not id or not type: return False
+        simulation = director.clerk.getRecordByID(type, id)
+
+        if not simulation.matter: return False
+        if not simulation.matter.id: return False
+        return True
+
+
+    def _notReadyForSubmissionAlert(self, director):
+        try:
+            page = self._retrievePage(director)
+        except AuthenticationError, err:
+            return err.page
+        main = page._body._content._main
+        document = main.document(title='Material simulation' )
+        document.byline = '<a href="http://danse.us">DANSE</a>'    
+        p = document.paragraph()
+        p.text = [
+            'Not yet ready for submission',
+            ]
+        return page
+
+
+    def _materialDefinedForSimulation(self, simulation, director):
+        return _materialDefinedForSimulation(simulation, director)
+
+
+    def _needMaterialAlert(self, director):
+        try:
+            page = director._retrievePage(director)
+        except AuthenticationError, err:
+            return err.page
+        main = page._body._content._main
+        document = main.document(title='Ab initio electronic structure simulation' )
+        document.byline = '<a href="http://danse.us">DANSE</a>'    
+        p = document.paragraph()
+        p.text = [
+            'You have not selected the material.',
+            ]
+        return page
+
+
+    def _getSimulation(self, director):
+        id = self.inventory.id
+        type = self.inventory.type
+        if not type or not id: return
+        return director.clerk.getRecordByID(type, id)
+
+
     def _retrievePage(self, director):
-        return director.retrieveSecurePage( 'materialsimulationwizard' )
+        return director.retrieveSecurePage('materialsimulationwizard')
 
 
     pass # end of MaterialSimulationWizard
+
+
+
+def _materialDefinedForSimulation(simulation, director):
+    '''check if a simulation has a valid reference to a material'''
+    matter = simulation.matter
+    if not matter.table or not matter.id: return False
+    try:
+        director.clerk.dereference(matter)
+    except:
+        return False
+    return True
+
 
 
 from misc import new_id, empty_id, nullpointer

@@ -22,6 +22,19 @@ def portlet(app):
         title="Material simulation",
         id="portlet-materialsimulationwizard-tree")
 
+    material = portlet.item(description="Material")
+    action = actionRequireAuthentication(
+        actor = app.actor.name, sentry = app.sentry,
+        routine = 'selectMaterial',
+        id = app.actor.inventory.id,
+        type = app.actor.inventory.type,
+        matterid = app.actor.inventory.matterid,
+        mattertype = app.actor.inventory.mattertype,
+        )
+    material.target = action_href(action, app.cgihome)
+    material.icon = "images/link_icon.gif"
+    material.type = "navItem"
+
     simulation = portlet.item(description="Simulation")
     action = actionRequireAuthentication(
         actor = app.actor.name, sentry = app.sentry,

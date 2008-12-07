@@ -26,44 +26,21 @@ class BvK(base):
         pass # end of Inventory
 
 
-    def verifyMaterialSelection(self, director):
-        try:
-            page = self._retrievePage(director)
-        except AuthenticationError, err:
-            return err.page
+    def configureSimulation(self, director, simulation=None):
+        type = self.inventory.type = 'bvkcomputation'
+        
+        if not simulation:
+            simulation = self._getSimulation(director)
+        id = self.inventory.id = simulation.id
 
-        mattertype,matterid = self.processFormInputs(director)
-        self.inventory.matterid = matterid
-        self.inventory.mattertype = mattertype
-
-        matter = director.clerk.getRecordByID(mattertype, matterid)
-        return self.configureSimulation(director, matter = matter)
-
-
-    def configureSimulation(self, director, matter=None):
-        self.inventory.type = 'bvkcomputation'
-        if matter:
-            self.inventory.mattertype = matter.__class__.__name__
-            self.inventory.matterid = matter.id
+        # make sure material is defined
+        if not self._materialDefinedForSimulation(simulation, director):
+            return self._needMaterialAlert(director)
 
         try:
             page = director.retrieveSecurePage( 'bvkcomputationwizard' )
         except AuthenticationError, err:
             return err.page
-
-        # make a new BvKComputation record if necessary
-        id = self.inventory.id
-        if empty_id(id):
-            from vnf.dom.ins.BvKComputation import BvKComputation
-            bvk = director.clerk.newDbObject(BvKComputation)
-            self.inventory.id = id = bvk.id
-        else:
-            bvk = director.clerk.getBvKComputation(id)
-            pass
-
-        if matter:
-            bvk.matter = matter
-            director.clerk.updateRecord(bvk)
 
         return self.configure_bvkmodel(director)
 
