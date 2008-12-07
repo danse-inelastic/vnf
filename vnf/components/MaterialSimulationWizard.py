@@ -238,10 +238,9 @@ class MaterialSimulationWizard(base):
         except AuthenticationError, err:
             return err.page 
 
-        # remove this experiment
-        simulation = director.clerk.getRecordByID(
-            self.inventory.type, self.inventory.id)
-        director.clerk.deleteRecord(simulation)
+        simulation = self._getSimulation(director)
+        # remove this simulation
+        if simulation: director.clerk.deleteRecord(simulation)
         
         # redirect
         actor = 'materialsimulation'; routine = 'listall'
