@@ -76,7 +76,7 @@ def portlet(app):
     sample.icon = "images/link_icon.gif"
     sample.type = "navItem"
 
-    material_simulation = portlet.item(description="Material simulation or modeling")
+    material_simulation = portlet.item(description="Material simulation, modeling, and theoretical scattering")
     action = actionRequireAuthentication(
         actor = 'neutronexperimentwizard', sentry = app.sentry,
         routine = 'material_simulation',
@@ -86,7 +86,7 @@ def portlet(app):
     material_simulation.icon = "images/link_icon.gif"
     material_simulation.type = "navItem"
 
-    montecarlo_scatteringkernel = portlet.item(description="Monte Carlo Scattering Kernel")
+    montecarlo_scatteringkernel = portlet.item(description="Monte Carlo scattering kernel")
     action = actionRequireAuthentication(
         actor = 'neutronexperimentwizard', sentry = app.sentry,
         routine = 'configure_scatteringkernels',

@@ -1411,126 +1411,126 @@ class NeutronExperimentWizard(base):
         method = getattr(self, selected )
         return method( director )
 
-    def gulp(self, director):
-        try:
-            page = self._retrievePage(director)
-        except AuthenticationError, err:
-            return err.page
-        
-        main = page._body._content._main
-        document = main.document(title='Classical atomistics kernel' )
-        document.byline = '<a href="http://danse.us">DANSE</a>'    
-        
-        formcomponent = self.retrieveFormToShow( 'gulp')
-        formcomponent.director = director
-        # build the form form
-        form = document.form(name='', action=director.cgihome)
-        # specify action
-        action = actionRequireAuthentication(          
-            actor = 'neutronexperimentwizard', 
-            sentry = director.sentry,
-            routine = 'kernel_generator',
-            id=self.inventory.id,
-            arguments = {'form-received': formcomponent.name },
-            )
-        from vnf.weaver import action_formfields
-        action_formfields( action, form )
-        # expand the form with fields of the data object that is being edited
-        formcomponent.expand( form )
-        next = form.control(name='submit',type="submit", value="next")
-#        self._footer( document, director )
-        return page 
-   
-    def localOrbitalHarmonic(self, director):
-        try:
-            page = self._retrievePage(director)
-        except AuthenticationError, err:
-            return err.page
-        
-        main = page._body._content._main
-        document = main.document(title='Local orbital DFT energies, harmonic dynamics kernel' )
-        document.byline = '<a href="http://danse.us">DANSE</a>'    
-        
-        formcomponent = self.retrieveFormToShow( 'localOrbitalHarmonic')
-        formcomponent.director = director
-        # build the form form
-        form = document.form(name='', action=director.cgihome)
-        # specify action
-        action = actionRequireAuthentication(          
-            actor = 'neutronexperimentwizard', 
-            sentry = director.sentry,
-            routine = 'kernel_generator',
-            id=self.inventory.id,
-            arguments = {'form-received': formcomponent.name },
-            )
-        from vnf.weaver import action_formfields
-        action_formfields( action, form )
-        # expand the form with fields of the data object that is being edited
-        formcomponent.expand( form )
-        next = form.control(name='submit',type="submit", value="next")
-#        self._footer( document, director )
-        return page 
-    
-    def planeWaveHarmonic(self, director):
-        try:
-            page = self._retrievePage(director)
-        except AuthenticationError, err:
-            return err.page
-        
-        main = page._body._content._main
-        document = main.document(title='Plane wave DFT energies, harmonic dynamics kernel' )
-        document.byline = '<a href="http://danse.us">DANSE</a>'    
-        
-        formcomponent = self.retrieveFormToShow( 'abInitioHarmonic')
-        formcomponent.director = director
-        # build the form form
-        form = document.form(name='', action=director.cgihome)
-        # specify action
-        action = actionRequireAuthentication(          
-            actor = 'neutronexperimentwizard', 
-            sentry = director.sentry,
-            routine = 'kernel_generator',
-            id=self.inventory.id,
-            arguments = {'form-received': formcomponent.name },
-            )
-        from vnf.weaver import action_formfields
-        action_formfields( action, form )
-        # expand the form with fields of the data object that is being edited
-        formcomponent.expand( form )
-        next = form.control(name='submit',type="submit", value="next")
-#        self._footer( document, director )
-        return page 
-    
-    def kernel_generator(self, director):
-        try:
-            page = self._retrievePage(director)
-        except AuthenticationError, err:
-            return err.page
-        
-        main = page._body._content._main
-        document = main.document(title='Kernel Generator' )
-        document.byline = '<a href="http://danse.us">DANSE</a>'        
-        
-        formcomponent = self.retrieveFormToShow( 'inelasticScatteringIntensity')
-        formcomponent.director = director
-        # build the form form
-        form = document.form(name='', action=director.cgihome)
-        # specify action
-        action = actionRequireAuthentication(          
-            actor = 'neutronexperimentwizard', 
-            sentry = director.sentry,
-            routine = 'submit_experiment',
-            label = '',
-            id = self.inventory.id,
-            arguments = {'form-received': formcomponent.name },
-            )
-        from vnf.weaver import action_formfields
-        action_formfields( action, form )
-        # expand the form with fields of the data object that is being edited
-        formcomponent.expand( form )
-        next = form.control(name='submit',type="submit", value="next")
-#        self._footer( document, director )
-        return page     
+#    def gulp(self, director):
+#        try:
+#            page = self._retrievePage(director)
+#        except AuthenticationError, err:
+#            return err.page
+#        
+#        main = page._body._content._main
+#        document = main.document(title='Classical atomistics kernel' )
+#        document.byline = '<a href="http://danse.us">DANSE</a>'    
+#        
+#        formcomponent = self.retrieveFormToShow( 'gulp')
+#        formcomponent.director = director
+#        # build the form form
+#        form = document.form(name='', action=director.cgihome)
+#        # specify action
+#        action = actionRequireAuthentication(          
+#            actor = 'neutronexperimentwizard', 
+#            sentry = director.sentry,
+#            routine = 'kernel_generator',
+#            id=self.inventory.id,
+#            arguments = {'form-received': formcomponent.name },
+#            )
+#        from vnf.weaver import action_formfields
+#        action_formfields( action, form )
+#        # expand the form with fields of the data object that is being edited
+#        formcomponent.expand( form )
+#        next = form.control(name='submit',type="submit", value="next")
+##        self._footer( document, director )
+#        return page 
+#   
+#    def localOrbitalHarmonic(self, director):
+#        try:
+#            page = self._retrievePage(director)
+#        except AuthenticationError, err:
+#            return err.page
+#        
+#        main = page._body._content._main
+#        document = main.document(title='Local orbital DFT energies, harmonic dynamics kernel' )
+#        document.byline = '<a href="http://danse.us">DANSE</a>'    
+#        
+#        formcomponent = self.retrieveFormToShow( 'localOrbitalHarmonic')
+#        formcomponent.director = director
+#        # build the form form
+#        form = document.form(name='', action=director.cgihome)
+#        # specify action
+#        action = actionRequireAuthentication(          
+#            actor = 'neutronexperimentwizard', 
+#            sentry = director.sentry,
+#            routine = 'kernel_generator',
+#            id=self.inventory.id,
+#            arguments = {'form-received': formcomponent.name },
+#            )
+#        from vnf.weaver import action_formfields
+#        action_formfields( action, form )
+#        # expand the form with fields of the data object that is being edited
+#        formcomponent.expand( form )
+#        next = form.control(name='submit',type="submit", value="next")
+##        self._footer( document, director )
+#        return page 
+#    
+#    def planeWaveHarmonic(self, director):
+#        try:
+#            page = self._retrievePage(director)
+#        except AuthenticationError, err:
+#            return err.page
+#        
+#        main = page._body._content._main
+#        document = main.document(title='Plane wave DFT energies, harmonic dynamics kernel' )
+#        document.byline = '<a href="http://danse.us">DANSE</a>'    
+#        
+#        formcomponent = self.retrieveFormToShow( 'abInitioHarmonic')
+#        formcomponent.director = director
+#        # build the form form
+#        form = document.form(name='', action=director.cgihome)
+#        # specify action
+#        action = actionRequireAuthentication(          
+#            actor = 'neutronexperimentwizard', 
+#            sentry = director.sentry,
+#            routine = 'kernel_generator',
+#            id=self.inventory.id,
+#            arguments = {'form-received': formcomponent.name },
+#            )
+#        from vnf.weaver import action_formfields
+#        action_formfields( action, form )
+#        # expand the form with fields of the data object that is being edited
+#        formcomponent.expand( form )
+#        next = form.control(name='submit',type="submit", value="next")
+##        self._footer( document, director )
+#        return page 
+#    
+#    def kernel_generator(self, director):
+#        try:
+#            page = self._retrievePage(director)
+#        except AuthenticationError, err:
+#            return err.page
+#        
+#        main = page._body._content._main
+#        document = main.document(title='Kernel Generator' )
+#        document.byline = '<a href="http://danse.us">DANSE</a>'        
+#        
+#        formcomponent = self.retrieveFormToShow( 'inelasticScatteringIntensity')
+#        formcomponent.director = director
+#        # build the form form
+#        form = document.form(name='', action=director.cgihome)
+#        # specify action
+#        action = actionRequireAuthentication(          
+#            actor = 'neutronexperimentwizard', 
+#            sentry = director.sentry,
+#            routine = 'submit_experiment',
+#            label = '',
+#            id = self.inventory.id,
+#            arguments = {'form-received': formcomponent.name },
+#            )
+#        from vnf.weaver import action_formfields
+#        action_formfields( action, form )
+#        # expand the form with fields of the data object that is being edited
+#        formcomponent.expand( form )
+#        next = form.control(name='submit',type="submit", value="next")
+##        self._footer( document, director )
+#        return page     
 
 
     def submit_experiment(self, director, errors=None, id=None):

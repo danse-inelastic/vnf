@@ -17,7 +17,7 @@
 
     <component name="idd">
         <property name="tid">0</property>
-        <property name="date">081206</property>
+        <property name="date">081207</property>
 
         <component name="idd-pickler">
             <property name="help-properties">False</property>

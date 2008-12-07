@@ -35,8 +35,7 @@ class Form( base ):
         techniques for simulating larger systems.  Gulp contains a vast
         number of forcefields and phonon / molecular dynamics capabilities
         to complement neutron scattering experiments.<br>''',
-        '''<a href="/java/GULP2.jnlp">
-        <img src="/images/GulpGui.png" alt="GulpUI"/></a><br>''']
+        '''<a href="/java/GULP2.jnlp"><img src="/images/GulpGui.png" alt="GulpUI"/></a><br>''']
         return
 
 
