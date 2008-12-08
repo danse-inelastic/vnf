@@ -18,7 +18,7 @@ class Builder(base):
     from vnf.dom.GulpSimulation import GulpSimulation as Computation
 
     def __init__(self, path):
-        self.path = path
+        base.__init__(self, path)
         return
 
     def render(self, computation, db=None, dds=None):
