@@ -46,6 +46,16 @@ class Plot_2DMill:
         jscode.append('''
 $(function () {
     %s;
+
+    function getYLimits() {
+        var min = Y[0], max = Y[0];
+        
+        for (var i=1; i<Y.length; i+=1) {
+            if (Y[i]<min) min = Y[i];
+            if (Y[i]>max) max = Y[i];
+        }
+        return {"min": min, "max": max}
+    }
     
     // setup plot
     function getData(x1, x2) {
@@ -68,6 +78,7 @@ $(function () {
     };
 
     var startData = getData(X[0], X[X.length-1]);
+    var ylimits = getYLimits();
     
     var plot = $.plot($("#placeholder"), startData, options);
 
@@ -77,7 +88,7 @@ $(function () {
         lines: { show: true, lineWidth: 1 },
         shadowSize: 0,
         xaxis: { ticks: 4 },
-        yaxis: { ticks: 3, min: Y[0], max: Y[Y.length-1] },
+        yaxis: { ticks: 3, min: ylimits.min, max: ylimits.max },
         grid: { color: "#999" },
         selection: { mode: "xy" }
     });
