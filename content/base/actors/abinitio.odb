@@ -47,18 +47,19 @@ class Actor(base):
         # populate the main column
         document = main.document(title='Ab initio simulation %s' % id)
 
+        job = director.clerk.dereference(computation.job)
+
         p = document.paragraph()
         p.text = [
-            '...',
+            'The computation job id for this simulation is %s' % job.id,
             ]
 
-        configurationdoc = document.document(title='The BvK model')
+        configurationdoc = document.document(title='Configuration')
         self._view_configuration(computation, configurationdoc, director=director)
 
-        job = director.clerk.dereference(computation.job)
         if isdone(job):
-            if not computation.results_state or computation.results_state == 'retrieval failed':
-                retrieve_computation_results(computation, director, debug=0)
+            #if not computation.results_state or computation.results_state == 'retrieval failed':
+            #retrieve_computation_results(computation, director, debug=0)
                 
             resdoc = document.document(title='Results')
             p = resdoc.paragraph()
@@ -88,19 +89,89 @@ class Actor(base):
         # populate the main column
         document = main.document(title='Ab initio simulation %s: results' % id)
 
-        if computation.results_state in ['retrieving']:
-            p = document.paragraph()
-            p.text = [
-                'I am still retrieving computation results,',
-                'please check back in a few minutes....',
-                ]
-            return page
+        configurationdoc = document.document(title='Configuration')
+        self._view_configuration(computation, configurationdoc, director=director)
+
+        resultsdoc = document.document(title='Results')
+        engine = computation.engine
+        handler = '_view_%s_results' % engine
+        handler = getattr(self, handler)
+        handler(computation, resultsdoc, director=director)
+        return page
+
+
+    def _view_vasp_results(self, computation, document, director=None):
+        job = director.clerk.dereference(computation.job)
+        server = director.clerk.dereference(job.server)
+        files = [
+            'DOSCAR',
+            ]
+        try:
+            director.dds.remember(job, files=files, server=server)
+        except:
+            # results not exist!!!
+            return self._alertResultsNotFound(document, director)
+        director.dds.make_available(job, files=files)
+
+        dosfile = director.dds.abspath(job, 'DOSCAR')
+        dos = _readDOSCAR(dosfile)
+        
+        p = document.paragraph()
+        p.text = [
+            'Electronic density of states:',
+            ]
+
+        import vnf.content
+        options = {}
+        plot = vnf.content.plot_2d( dos, options )
+        
+        document.contents.append( plot )
+        return
+
+
+    def _alertResultsNotFound(self, document, director):
+        p = document.paragraph()
+        p.text = [
+            'Computation results not found',
+            ]
+        return 
+        
+
+    def _view_configuration(self, computation, document, director=None):
+        engine = computation.engine
+        handler = '_view_%s_configuration' % engine
+        handler = getattr(self, handler)
+        return handler(computation, document, director=director)
+
+
+    def _view_vasp_configuration(self, computation, document, director=None):
+        p = document.paragraph()
+        p.text = [
+            'Vasp simulation %s' % computation.id,
+            ]
+
+        matter = director.clerk.dereference(computation.matter)
+        p = document.paragraph()
+        p.text = [
+            'Material: %s' % (matter.short_description,),
+            ]
 
         p = document.paragraph()
         p.text = [
-            'more here...',
+            'Kinetic energy cutoff: %s' % (computation.kineticEnergyCutoff,),
             ]
-        return page
+
+        p = document.paragraph()
+        p.text = [
+            'Exchange correlation functional: %s' % (computation.xcFunctional,),
+            ]
+
+        p = document.paragraph()
+        p.text = [
+            'Monkhorst pack messh: %s' % (computation.monkhorstPackMesh,),
+            ]
+
+        return
 
 
     def _isConfigured(self, computation, director):
@@ -108,6 +179,30 @@ class Actor(base):
         if not computation.engine: return False
         if not computation.matter: return False
         return True
+
+
+def _readDOSCAR(doscar):
+    efermi = _readEfermiFromDOSCAR(doscar)
+    #quick hack for now
+    f = open(doscar)
+    lines = f.read().split('\n')
+    E = []; I = []
+
+    for line in lines[6:]:
+        if not line: continue
+        numbers = line.split()
+        E.append(float(numbers[0])-efermi)
+        I.append(float(numbers[1]))
+        continue
+    return E, I
+
+
+def _readEfermiFromDOSCAR(doscar):
+    f = open(doscar)
+    for i in range(6): line = f.readline()
+    words = line.split()
+    assert len(words)==5
+    return float(words[3])
 
 
 from vnf.components.Job import isdone
