@@ -14,7 +14,7 @@
 from MaterialSimulation import MaterialSimulation as base
 class SqeFromMd(base):
 
-    name = 'sqefrommd'
+    name = 'sqefrommds'
     
     import pyre.db
     

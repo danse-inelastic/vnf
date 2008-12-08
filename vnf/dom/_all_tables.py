@@ -44,6 +44,7 @@ kernels = [
     'AbInitio',
     'GulpSimulation',
     'MmtkSimulation',
+    'SqeFromMd',
     ]
 
 

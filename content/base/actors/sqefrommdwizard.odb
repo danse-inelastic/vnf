@@ -13,21 +13,21 @@ class SqeFromMdWizard(base):
         
 
     def configureSimulation(self, director, matter=None):
-        self.inventory.type = 'gulpsimulations'
+        self.inventory.type = 'sqefrommds'
         if matter:
             self.inventory.mattertype = matter.__class__.__name__
             self.inventory.matterid = matter.id
 
         try:
-            page = director.retrieveSecurePage( 'materialsimulationwizard' )
+            page = director.retrieveSecurePage( 'sqefrommdwizard' )
         except AuthenticationError, err:
             return err.page
         
         main = page._body._content._main
-        document = main.document(title='Classical atomistics kernel' )       
+        document = main.document(title='Sqe generation from atom trajectories' )       
         document.byline = '<a href="http://danse.us">DANSE</a>'        
         
-        formcomponent = self.retrieveFormToShow( 'inelasticScatteringIntensity')
+        formcomponent = self.retrieveFormToShow('sqeFromMd')
         formcomponent.director = director
         # build the form form
         form = document.form(name='', action=director.cgihome)
@@ -47,3 +47,10 @@ class SqeFromMdWizard(base):
         next = form.control(name='submit',type="submit", value="next")
 #        self._footer( document, director )
         return page  
+    
+def actor():
+    return SqeFromMdWizard('sqefrommdwizard')
+
+
+# version
+__id__ = "$Id$"

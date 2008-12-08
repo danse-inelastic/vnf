@@ -68,24 +68,17 @@ class GulpWizard(base):
             page = self._retrievePage(director)
         except AuthenticationError, err:
             return err.page
-
-        self.inventory.type = type = self.processFormInputs(director)
-
-        # create a new simulation
-        mattertype = self.inventory.mattertype
-        matterid = self.inventory.matterid
-        matter = director.clerk.getRecordByID(mattertype, matterid)
-        simulation = self._createSimulation(director, matter=matter)
+        # eventually have some sort of gulp simulation verification
 
         # this is a bit weird. the type is the table name. but usually
         # table name has a 's' at the end, and it is not desirable.
         # the following code takes the table class name.
-        table = director.clerk._getTable(type)
+        table = director.clerk._getTable('sqefrommd')
         table = table.__name__.lower()
         
         actor = '%swizard' % table
         routine = 'configureSimulation'
-        return self.redirect(director, actor, routine, simulation = simulation)
+        return self.redirect(director, actor, routine)
    
 
     pass # end of GulpWizard

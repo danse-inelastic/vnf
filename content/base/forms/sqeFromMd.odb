@@ -15,14 +15,28 @@ class Form( base ):
             'short_description', default = '' )
         short_description.meta['tip'] = 'A short description'
 
+#put table of trajectories
 
     def expand(self, form):
         prefix = formactor_action_prefix
         
+        id_field = form.hidden(
+            name = '%s.id' % prefix, value = self.inventory.id)
+        record = self.getRecord()
+        
+        # drop down menu for type of scattering
+        choices=['Incoherent', 'Coherent']
+        entries=zip(choices, choices)
+
+        typeOfScattering = form.selector(id='selector1',
+            name = '%s.typeOfScattering'%prefix,
+            entries = entries,
+            label = 'Type of Scattering',
+            selected = record.xcFunctional,
+            )
+        
         p = form.paragraph()
-        p.text = ['''<h1>Polycrystal Scattering Intensity Settings</h1>
-<p>&nbsp;</p>
-<form action="" method="post" enctype="multipart/form-data" name="form1" id="form1">
+        p.text = ['''<form action="" method="post" enctype="multipart/form-data" name="form1" id="form1">
   <label>Type of Scattering
   <select name="select" id="select">
     <option>Incoherent</option>
@@ -77,7 +91,7 @@ class Form( base ):
     <input name="text2" type="text" id="text2" value="1000" />
     </label>''']
         
-        formactor_action_prefix = 'actor.form-received' # assumed actor is a form actor
+formactor_action_prefix = 'actor.form-received' # assumed actor is a form actor
 
 
 def form(): return Form( 'sqeFromMd' )
