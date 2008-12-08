@@ -75,4 +75,13 @@ class Form( base ):
   <p>
     <label>Number of Frequency Points
     <input name="text2" type="text" id="text2" value="1000" />
-    </label>
+    </label>''']
+        
+        formactor_action_prefix = 'actor.form-received' # assumed actor is a form actor
+
+
+def form(): return Form( 'sqeFromMd' )
+
+
+# version
+__id__ = "$Id$"

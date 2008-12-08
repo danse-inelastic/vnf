@@ -24,13 +24,16 @@ class Actor(base):
     def redirect(self, director, actor, routine, *args, **kwds):
         actor_name = actor
         actor = director.retrieveActor( actor_name )
+        
+        # what kind of haxor code is this if statement?!?!   Jiao?
         if actor is None:
             class _: pass
             actor = _(); actor.name = actor_name
         else:        
             director.configureComponent( actor )
+            
+        # these next few lines are extremely pythonic
         director.inventory.actor = director.actor = actor
-        
         director.inventory.routine = director.routine = routine
 
         try:

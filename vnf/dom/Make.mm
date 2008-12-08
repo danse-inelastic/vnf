@@ -67,6 +67,7 @@ EXPORT_PYTHON_MODULES = \
 	Server.py \
 	Shape.py \
 	SingleCrystal.py \
+	SqeFromMd.py \
 	Table.py \
 	User.py \
 	idgenerator.py \

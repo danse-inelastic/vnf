@@ -4,7 +4,7 @@ from vnf.components.MaterialSimulationWizard import \
 from vnf.components.MaterialSimulationWizard import MaterialSimulationWizard as base
 
 
-class MdGenSqeWizard(base):
+class SqeFromMdWizard(base):
     
     
     class Inventory(base.Inventory):
@@ -22,16 +22,9 @@ class MdGenSqeWizard(base):
             page = director.retrieveSecurePage( 'materialsimulationwizard' )
         except AuthenticationError, err:
             return err.page
-    
-    
-    def kernel_generator(self, director):
-        try:
-            page = self._retrievePage(director)
-        except AuthenticationError, err:
-            return err.page
         
         main = page._body._content._main
-        document = main.document(title='Kernel Generator' )
+        document = main.document(title='Classical atomistics kernel' )       
         document.byline = '<a href="http://danse.us">DANSE</a>'        
         
         formcomponent = self.retrieveFormToShow( 'inelasticScatteringIntensity')

@@ -63,7 +63,7 @@ class MmtkWizard(base):
 
 
 def actor():
-    return GulpWizard('mmtksimulationwizard')
+    return MmtkWizard('mmtksimulationwizard')
 
 
 # version
