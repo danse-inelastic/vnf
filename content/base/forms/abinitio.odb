@@ -182,6 +182,7 @@ class Form( base ):
     def processUserInputs(self):
         record = self.getRecord()
         props = [
+            'short_description',
             'engine',
             'xcFunctional',
             'kineticEnergyCutoff',
