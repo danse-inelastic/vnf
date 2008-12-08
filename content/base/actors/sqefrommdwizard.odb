@@ -8,13 +8,12 @@ class SqeFromMdWizard(base):
     
     
     class Inventory(base.Inventory):
-        
         import pyre.inventory
+        type = pyre.inventory.str('type', default='sqefrommds')
         
 
-    def configureSimulation(self, director, simulation=None):
+    def configureSimulation(self, director, simulation):
         self.inventory.type = 'sqefrommds'
-        
         id = self.inventory.id = simulation.id
 
         try:
@@ -48,6 +47,9 @@ class SqeFromMdWizard(base):
         return page  
     
     def createJob(self, director):
+        self.inventory.type = 'sqefrommds'
+        id = self.inventory.id
+        
         try:
             page = self._retrievePage(director)
         except AuthenticationError, err:
