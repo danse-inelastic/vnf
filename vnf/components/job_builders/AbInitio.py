@@ -62,6 +62,7 @@ from crystal.UnitCell import *
 
         cartesian_lattice = N.array(matter.cartesian_lattice)
         cartesian_lattice.shape = 3, 3
+        cartesian_lattice = _postiveVolume(cartesian_lattice)
         vs = list(cartesian_lattice)
         vs = [tuple(v) for v in vs]
         code.append('uc=UnitCell()')
@@ -105,6 +106,20 @@ open('out.stress', 'w').write( '%s' % (vc.getStress(),) )
 """
         code += output.split('\n')
         return code
+
+
+def _postiveVolume(vectors):
+    vol = _volume(vectors)
+    if vol == 0: raise RuntimeError
+    if vol > 0: return vectors
+    v0, v1, v2 = vectors
+    return v0, v2, v1
+
+
+def _volume(vectors):
+    v0, v1, v2 = vectors
+    return N.dot(v0, N.cross(v1, v2))
+
 
 import numpy as N
 
