@@ -21,6 +21,7 @@ instruments = [
     'Pharos',
     'Powgen3',
     'VULCAN',
+    'Test',
     ]
 
 
