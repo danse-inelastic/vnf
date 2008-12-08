@@ -11,29 +11,33 @@ class Form( base ):
         id = inv.str( 'id', default = '' )
         id.meta['tip'] = 'A short description'
         
-        short_description = inv.str(
-            'short_description', default = '' )
+        short_description = inv.str('short_description', default = '' )
         short_description.meta['tip'] = 'A short description'
 
-#put table of trajectories
+        
+    DBTable = 'sqefrommd'
+    
 
     def expand(self, form):
         prefix = formactor_action_prefix
         
         id_field = form.hidden(
             name = '%s.id' % prefix, value = self.inventory.id)
-        record = self.getRecord()
+        #record = self.getRecord()
+        
+        #put table of trajectories
+        
         
         # drop down menu for type of scattering
-        choices=['Incoherent', 'Coherent']
-        entries=zip(choices, choices)
-
-        typeOfScattering = form.selector(id='selector1',
-            name = '%s.typeOfScattering'%prefix,
-            entries = entries,
-            label = 'Type of Scattering',
-            selected = record.xcFunctional,
-            )
+#        choices=['Incoherent', 'Coherent']
+#        entries=zip(choices, choices)
+#
+#        typeOfScattering = form.selector(id='selector1',
+#            name = '%s.typeOfScattering'%prefix,
+#            entries = entries,
+#            label = 'Type of Scattering',
+#            selected = record.xcFunctional,
+#            )
         
         p = form.paragraph()
         p.text = ['''<form action="" method="post" enctype="multipart/form-data" name="form1" id="form1">
@@ -70,10 +74,10 @@ class Form( base ):
     <label>Vectors per shell
     <input name="text1" type="text" id="text1" value="50" />
     </label>
-  <span class="textfieldRequiredMsg">A value is required.</span></span></p>
+  </span></p>
   <p><span id="sprytextfield2">
   <label></label>
-  </span> <span id="sprytextfield3"><span class="textfieldRequiredMsg">A value is required.</span></span>
+  </span> <span id="sprytextfield3"></span>
     <label>Units of Q
     <select name="select2" id="select2">
       <option>1/Ang</option>
@@ -85,11 +89,35 @@ class Form( base ):
     <label>Fourier Transform Window (% Trajectory Length)
     <input name="text3" type="text" id="text3" value="10" />
     </label>
-  <span class="textfieldRequiredMsg">A value is required.</span></span></p>
+</span></p>
   <p>
     <label>Number of Frequency Points
     <input name="text2" type="text" id="text2" value="1000" />
     </label>''']
+        
+    def processUserInputs(self):
+        record = self.getRecord()
+        props = [
+            'engine',
+            'xcFunctional',
+            'kineticEnergyCutoff',
+            'displacementAmplitude',
+            ]
+        for prop in props:
+            value = getattr(self.inventory, prop)
+            setattr(record, prop, value)
+            continue
+
+        record.monkhorstPackMesh = [self.inventory.nKx, self.inventory.nKy, self.inventory.nKz]
+        record.supercell = [self.inventory.scx, self.inventory.scy, self.inventory.scz]
+        record.qGrid = [self.inventory.nQx, self.inventory.nQy, self.inventory.nQz]
+        self.director.clerk.updateRecord(record)
+        return record
+        
+    def getRecord(self):
+        'get DB record'
+        return self.director.clerk.getRecordByID( self.DBTable, self.inventory.id )
+
         
 formactor_action_prefix = 'actor.form-received' # assumed actor is a form actor
 

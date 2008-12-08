@@ -74,11 +74,12 @@ class GulpWizard(base):
         # table name has a 's' at the end, and it is not desirable.
         # the following code takes the table class name.
         table = director.clerk._getTable('sqefrommd')
-        table = table.__name__.lower()
         
-        actor = '%swizard' % table
+        sqefrommd = director.clerk.newOwnedObject(table)
+        
+        actor = 'sqefrommdwizard'
         routine = 'configureSimulation'
-        return self.redirect(director, actor, routine)
+        return self.redirect(director, actor, routine, simulation = sqefrommd)
    
 
     pass # end of GulpWizard
