@@ -153,7 +153,7 @@ class MaterialSimulationWizard(base):
         action_formfields( action, form )
         # expand the form with fields of the data object that is being edited
         formcomponent.expand( form )
-        submit = form.control(name='submit',type="submit", value="next")
+        submit = form.control(name='submit',type="submit", value="Continue")
         #self.processFormInputs(director)
         return page    
     

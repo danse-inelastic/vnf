@@ -36,7 +36,7 @@ class GulpWizard(base):
             return self._needMaterialAlert(director)
         
         try:
-            page = director.retrieveSecurePage( 'materialsimulationwizard' )
+            page = director.retrieveSecurePage( 'gulpsimulationwizard' )
         except AuthenticationError, err:
             return err.page
         
@@ -50,9 +50,9 @@ class GulpWizard(base):
         form = document.form(name='', action=director.cgihome)
         # specify action
         action = actionRequireAuthentication(          
-            actor = 'materialsimulationwizard', 
+            actor = 'gulpsimulationwizard', 
             sentry = director.sentry,
-            routine = 'kernel_generator',
+            routine = 'verifySimulation',
             id=id, type=type,
             arguments = {'form-received': formcomponent.name },
             )
@@ -62,6 +62,30 @@ class GulpWizard(base):
         formcomponent.expand( form )
         next = form.control(name='submit',type="submit", value="next")
         return page 
+    
+    def verifySimulation(self, director):
+        try:
+            page = self._retrievePage(director)
+        except AuthenticationError, err:
+            return err.page
+
+        self.inventory.type = type = self.processFormInputs(director)
+
+        # create a new simulation
+        mattertype = self.inventory.mattertype
+        matterid = self.inventory.matterid
+        matter = director.clerk.getRecordByID(mattertype, matterid)
+        simulation = self._createSimulation(director, matter=matter)
+
+        # this is a bit weird. the type is the table name. but usually
+        # table name has a 's' at the end, and it is not desirable.
+        # the following code takes the table class name.
+        table = director.clerk._getTable(type)
+        table = table.__name__.lower()
+        
+        actor = '%swizard' % table
+        routine = 'configureSimulation'
+        return self.redirect(director, actor, routine, simulation = simulation)
    
 
     pass # end of GulpWizard
