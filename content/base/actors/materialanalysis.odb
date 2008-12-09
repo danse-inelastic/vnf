@@ -12,8 +12,7 @@
 #
 
 '''
-This actor not only deals with material simulation, as its name suggests,
-but also deals with material modeling.
+This actor gives the user a menu for performing analysis of his simulations/models
 '''
 
 from vnf.components.FormActor import FormActor as base, action, actionRequireAuthentication, action_link, InputProcessingError, AuthenticationError
@@ -33,12 +32,12 @@ class Actor(base):
 
     def listall(self, director):
         try:
-            page = director.retrieveSecurePage( 'materialsimulation' )
+            page = director.retrieveSecurePage( 'materialanalysis' )
         except AuthenticationError, err:
             return err.page
 
         main = page._body._content._main
-        document = main.document(title='Material Simulation/Modeling')
+        document = main.document(title='Material Analysis')
 
         #
         p = document.paragraph()
@@ -105,7 +104,7 @@ def _desribe(simulation):
     
 
 def actor():
-    return Actor('materialsimulation')
+    return Actor('materialanalysis')
 
 
 # version

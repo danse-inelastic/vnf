@@ -78,10 +78,10 @@ def portlet(app):
     experiments.icon = "images/link_icon.gif"
     experiments.type = "navItem"
     
-    materialsimulations = portlet.item(description="Material Simulation/Modeling")
+    materialsimulations = portlet.item(description="Material Simulation, Modeling, and Theoretical Scattering")
     materialsimulations.target = action_href(
         actionRequireAuthentication(
-        'materialsimulation', app.sentry, 'Material Simulation/Modeling'),
+        'materialsimulation', app.sentry, 'Material Simulation, Modeling, and Theoretical Scattering'),
         app.cgihome)
     materialsimulations.icon = "images/link_icon.gif"
     materialsimulations.type = "navItem"
