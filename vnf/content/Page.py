@@ -18,7 +18,7 @@ from opal.content.Page import Page as Base
 class Page(Base):
 
 
-    def __init__(self, name, title, root):
+    def __init__(self, name, root, title=''):
         Base.__init__(self)
 
         head = self.head()

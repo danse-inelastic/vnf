@@ -36,7 +36,7 @@ class GulpWizard(base):
             return self._needMaterialAlert(director)
         
         try:
-            page = director.retrieveSecurePage( 'gulpsimulationwizard' )
+            page = director.retrieveSecurePage( 'genericMaterialSimulationWizard' )
         except AuthenticationError, err:
             return err.page
         

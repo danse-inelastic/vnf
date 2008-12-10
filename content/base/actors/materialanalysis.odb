@@ -18,7 +18,7 @@ This actor gives the user a menu for performing analysis of his simulations/mode
 from vnf.components.FormActor import FormActor as base, action, actionRequireAuthentication, action_link, InputProcessingError, AuthenticationError
 
 
-class Actor(base):
+class MaterialAnalysis(base):
     
     class Inventory(base.Inventory):
 
@@ -32,7 +32,7 @@ class Actor(base):
 
     def listall(self, director):
         try:
-            page = director.retrieveSecurePage( 'materialanalysis' )
+            page = director.retrieveSecurePage( 'generic' )
         except AuthenticationError, err:
             return err.page
 
@@ -64,7 +64,7 @@ class Actor(base):
         if len(simulations):
             p = document.paragraph()
             p.text = [
-                'Following are simulations/models you have created:',
+                'Choose a simulation/model:',
                 ]
             for simulation in simulations:
                 p = document.paragraph()
@@ -85,6 +85,20 @@ class Actor(base):
                     ]
                 continue
             
+        p = document.paragraph()
+        p.text = ['Type of analysis:']
+        
+        choices=['S(Q,E)','DOS','Diffusion coefficient','MSD']
+        entries=zip(choices,choices)
+        #eng=str(record.engine)
+        analysisTypes = form.selector(id='selector1',
+                name = '%s.analysisTypes'%prefix,
+                entries = entries,
+                label = '',
+                size=4)   
+        
+        
+            
         return page
 
 
@@ -104,7 +118,7 @@ def _desribe(simulation):
     
 
 def actor():
-    return Actor('materialanalysis')
+    return MaterialAnalysis('materialanalysis')
 
 
 # version

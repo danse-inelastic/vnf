@@ -4,6 +4,10 @@
 <pydev_project>
 <pydev_property name="org.python.pydev.PYTHON_PROJECT_VERSION">python 2.5</pydev_property>
 <pydev_pathproperty name="org.python.pydev.PROJECT_SOURCE_PATH">
-<path>/vnf</path>
+<path>/vnf/content/base/actors</path>
+<path>/vnf/content/base/forms</path>
+<path>/vnf/content/base/pages</path>
+<path>/vnf/content/base/portlets</path>
+<path>/vnf/vnf/components</path>
 </pydev_pathproperty>
 </pydev_project>
