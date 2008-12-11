@@ -12,7 +12,7 @@
 #
 
 
-from NeutronComponent import NeutronComponent as base
+from Monitor import Monitor as base
 class QEMonitor(base):
 
     name = 'qemonitors'

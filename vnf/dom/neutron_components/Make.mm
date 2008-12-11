@@ -31,6 +31,7 @@ all: export
 
 EXPORT_PYTHON_MODULES = \
 	NeutronComponent.py \
+	Monitor.py \
 	MonochromaticSource.py \
 	SNSModerator.py \
 	SNSModeratorMCSimulatedData.py \
