@@ -50,7 +50,6 @@ EXPORT_PYTHON_MODULES = \
 	Instrument.py \
 	Job.py \
 	JobBuilder.py \
-	JobDataManager.py \
 	Login.py \
 	Logout.py \
 	MaterialSimulation.py \
