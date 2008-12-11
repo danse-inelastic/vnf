@@ -12,11 +12,10 @@
 
 
 PROJECT = vnf
-PACKAGE = components/computation_result_retrievers
+PACKAGE = components/computation_result_retrievers/neutron_components
 
 
 BUILD_DIRS = \
-	neutron_components \
 
 OTHER_DIRS = \
 
@@ -32,7 +31,6 @@ all: export
 # export
 
 EXPORT_PYTHON_MODULES = \
-	Retriever.py \
 	__init__.py \
 
 
