@@ -1,0 +1,158 @@
+# -*- Python -*-
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                      California Institute of Technology
+#                        (C) 2007  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+from vnf.components.Form import Form as base
+from vnf.components.Actor import actionRequireAuthentication, action_link
+from vnf.components.DBObjectForm import formactor_action_prefix
+
+class Form( base ):
+
+    class Inventory( base.Inventory ):
+
+        import pyre.inventory as inv
+        id = inv.str( 'id', default = '' )
+        id.meta['tip'] = 'Scattering kernel calculation id'
+        
+        short_description = inv.str('short_description', default = '' )
+        short_description.meta['tip'] = 'A short description'
+        
+#        engine = inv.str('engine', default='vasp')
+#        engine.validator=inv.choice(['vasp', 'ab init'])
+#        engine.meta['tip'] = 'Ab initio engine'
+#        
+#        xcFunctional = inv.str('xcFunctional', default='PAW-PBE')
+#        xcFunctional.validator=inv.choice(['PAW-PBE', 'PAW-GGA', 'LDA'])
+#        xcFunctional.meta['tip'] = 'Exchange correlation functional'
+
+
+    #DBTable = 'abinitio'
+        
+    def expand(self, form):
+        '''expand an existing form with fields from this component'''
+        prefix = formactor_action_prefix
+
+#        id_field = form.hidden(
+#            name = '%s.id' % prefix, value = self.inventory.id)
+
+#        record = self.getRecord()
+        
+        
+        
+        #
+        p = form.paragraph()
+        action = actionRequireAuthentication(
+            label = 'create',
+            actor = 'materialsimulationwizard',
+            routine = 'start',
+            sentry = director.sentry,
+            )
+        create = action_link( action, director.cgihome )
+        action = actionRequireAuthentication(
+            label = 'analyze',
+            actor = 'materialanalysis',
+            routine = 'start',
+            sentry = director.sentry,
+            )
+        analyze = action_link( action, director.cgihome )
+        p.text = [
+            'You can %s a virtual sample using material simulations/models for use in a virtual instrument.' % create,
+            'You can also %s your sample.' % analyze,
+            ]
+
+        simulations = getallsimulations(director.clerk.db)
+        if len(simulations):
+            p = form.paragraph()
+            p.text = [
+                'Choose a simulation/model:',
+                ]
+            for simulation in simulations:
+                p = form.paragraph()
+#                link = action_link(
+#                    actionRequireAuthentication(
+#                    sentry = director.sentry,
+#                    actor = 'computation',
+#                    routine = 'view',
+#                    label = simulation.short_description or simulation.id,
+#                    id = simulation.id,
+#                    type = simulation.__class__.__name__,
+#                    ),
+#                    director.cgihome
+#                    )
+                desc = _desribe(simulation)
+                label = simulation.short_description or simulation.id
+                p.text = [
+                    '%s: %s' % (label, desc),
+                    ]
+                continue
+            
+        p = form.paragraph()
+        p.text = ['Type of analysis:']
+        
+        choices=['S(Q,E)','DOS','Diffusion coefficient','MSD']
+        entries=zip(choices,choices)
+        #eng=str(record.engine)
+        analysisTypes = form.selector(id='selector1',
+                name = '%s.analysisTypes'%prefix,
+                entries = entries,
+                label = '',
+                size=4)           
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+
+        
+
+    def processUserInputs(self):
+        #note the model and analytic method chosen and direct accordingly 
+        record = self.getRecord()
+        props = [
+            'short_description',
+            'engine',
+            'xcFunctional',
+            'kineticEnergyCutoff',
+            'displacementAmplitude',
+            ]
+        for prop in props:
+            value = getattr(self.inventory, prop)
+            setattr(record, prop, value)
+            continue
+
+        record.monkhorstPackMesh = [self.inventory.nKx, self.inventory.nKy, self.inventory.nKz]
+        record.supercell = [self.inventory.scx, self.inventory.scy, self.inventory.scz]
+        record.qGrid = [self.inventory.nQx, self.inventory.nQy, self.inventory.nQz]
+        self.director.clerk.updateRecord(record)
+        return record
+    
+    
+    def getRecord(self):
+        'get DB record'
+        return self.director.clerk.getRecordByID( self.DBTable, self.inventory.id )
+    
+    
+
+
+def form(): return Form( 'analysisMenu' )
+
+
+# version
+__id__ = "$Id$"
+
+# End of file 

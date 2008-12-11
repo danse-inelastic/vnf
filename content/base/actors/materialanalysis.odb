@@ -12,7 +12,7 @@
 #
 
 '''
-This actor gives the user a menu for performing analysis of his simulations/models
+This actor gives the user a menu for performing analysis of his simulations/models and several follow-up forms for configuring those analyses.
 '''
 
 from vnf.components.FormActor import FormActor as base, action, actionRequireAuthentication, action_link, InputProcessingError, AuthenticationError
@@ -27,10 +27,10 @@ class MaterialAnalysis(base):
 
 
     def default(self, director):
-        return self.listall( director )
+        return self.analysisMenu( director )
 
 
-    def listall(self, director):
+    def analysisMenu(self, director):
         try:
             page = director.retrieveSecurePage( 'generic' )
         except AuthenticationError, err:
@@ -38,68 +38,54 @@ class MaterialAnalysis(base):
 
         main = page._body._content._main
         document = main.document(title='Material Analysis')
+                
+        if id is None: id = self.inventory.id
+        else: self.inventory.id = id
 
-        #
-        p = document.paragraph()
-        action = actionRequireAuthentication(
-            label = 'create',
-            actor = 'materialsimulationwizard',
-            routine = 'start',
-            sentry = director.sentry,
-            )
-        create = action_link( action, director.cgihome )
-        action = actionRequireAuthentication(
-            label = 'analyze',
-            actor = 'materialanalysis',
-            routine = 'start',
-            sentry = director.sentry,
-            )
-        analyze = action_link( action, director.cgihome )
-        p.text = [
-            'You can % a virtual sample using material simulations/models for use in a virtual instrument.' % create,
-            'You can also % your sample.' % analyze,
-            ]
+#        type = self.inventory.type = 'gulpsimulations'
+#
+#        if not simulation:
+#            simulation = self._getSimulation(director)
+#        id = self.inventory.id = simulation.id
 
-        simulations = getallsimulations(director.clerk.db)
-        if len(simulations):
-            p = document.paragraph()
-            p.text = [
-                'Choose a simulation/model:',
-                ]
-            for simulation in simulations:
-                p = document.paragraph()
-                link = action_link(
-                    actionRequireAuthentication(
-                    sentry = director.sentry,
-                    actor = 'computation',
-                    routine = 'view',
-                    label = simulation.short_description or simulation.id,
-                    id = simulation.id,
-                    type = simulation.__class__.__name__,
-                    ),
-                    director.cgihome
-                    )
-                desc = _desribe(simulation)
-                p.text = [
-                    '%s: %s' % (link, desc),
-                    ]
-                continue
-            
-        p = document.paragraph()
-        p.text = ['Type of analysis:']
+        # make sure material is defined
+        if not self._materialDefinedForSimulation(simulation, director):
+            return self._needMaterialAlert(director)
         
-        choices=['S(Q,E)','DOS','Diffusion coefficient','MSD']
-        entries=zip(choices,choices)
-        #eng=str(record.engine)
-        analysisTypes = form.selector(id='selector1',
-                name = '%s.analysisTypes'%prefix,
-                entries = entries,
-                label = '',
-                size=4)   
+        try:
+            page = director.retrieveSecurePage( 'genericMaterialSimulationWizard' )
+        except AuthenticationError, err:
+            return err.page
+        
+        main = page._body._content._main
+        document = main.document(title='Classical atomistics kernel' )
+        document.byline = '<a href="http://danse.us">DANSE</a>'    
+        
+        formcomponent = self.retrieveFormToShow( 'gulp')
+        formcomponent.director = director
+        # build the form form
+        form = document.form(name='', action=director.cgihome)
+        # specify action
+        action = actionRequireAuthentication(          
+            actor = 'gulpsimulationwizard', 
+            sentry = director.sentry,
+            routine = 'verifySimulation',
+            id=id, type=type,
+            arguments = {'form-received': formcomponent.name },
+            )
+        from vnf.weaver import action_formfields
+        action_formfields( action, form )
+        # expand the form with fields of the data object that is being edited
+        formcomponent.expand( form )
+        next = form.control(name='submit',type="submit", value="next")
+        return page 
         
         
-            
-        return page
+        
+        
+        
+        
+        
 
 
 def getallsimulations(db):
