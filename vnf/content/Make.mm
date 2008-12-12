@@ -32,6 +32,7 @@ all: export
 EXPORT_PYTHON_MODULES = \
 	Action.py \
 	ActionRequireAuthentication.py \
+	AutoRefresh.py \
 	Image.py \
 	Page.py \
 	Plot_2D.py \

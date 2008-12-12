@@ -12,13 +12,20 @@
 #
 
 
+def autorefresh(**kwds):
+    from AutoRefresh import AutoRefresh
+    return AutoRefresh(**kwds)
+
+
 def page(**kwds):
     from Page import Page
     return Page(**kwds)
 
+
 def portletPage(**kwds):
     from PortletPage import PortletPage
     return PortletPage(**kwds)
+
 
 def action(*args, **kwds):
     from Action import Action
