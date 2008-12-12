@@ -14,6 +14,7 @@
 from vnf.components.Form import Form as base
 from vnf.components.Actor import actionRequireAuthentication, action_link
 from vnf.components.DBObjectForm import formactor_action_prefix
+from vnf.dom.Analysis import analysisClasses
 
 class Form( base ):
 
@@ -82,8 +83,7 @@ class Form( base ):
         '''note the model's id and analytic method chosen and return them so the
         form actor can direct to the appropriate subsequent form'''
         index = self.simulationChoices.index(self.inventory.modelChosen)
-        simulationId = self.simulationIds[index]
-        return simulationId, self.inventory.analysisType
+        return self.simulationIds[index], analysisClasses[index]
 #        record = self.getRecord()
 #        props = [
 #            'short_description',

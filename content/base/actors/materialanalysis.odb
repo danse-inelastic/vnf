@@ -15,8 +15,9 @@
 This actor gives the user a menu for performing analysis of his simulations/models and several follow-up forms for configuring those analyses.
 '''
 
-from vnf.components.FormActor import FormActor as base, action, actionRequireAuthentication, action_link, InputProcessingError, AuthenticationError
-
+from vnf.components.FormActor import FormActor as base, action, \
+actionRequireAuthentication, action_link, InputProcessingError, AuthenticationError
+from vnf.dom.Analysis import analysisClasses
 
 class MaterialAnalysis(base):
     
@@ -25,7 +26,6 @@ class MaterialAnalysis(base):
         import pyre.inventory
         id = pyre.inventory.str( 'id', default = '')
         
-    analysisMethods = ['sqe','eisf','dos','diffusionCoefficient','meanSquareDisplacement']
 
 
     def default(self, director):
@@ -72,8 +72,13 @@ class MaterialAnalysis(base):
         
     def selectAnalysis(self, director):
         '''send to the right method, or form, based on what analytic method is chosen'''
-        simulationId, analysisType = self.processFormInputs(director)
-        analysisId = director.clerk.
+        simulationId, analysisClass = self.processFormInputs(director)
+        # create a new analysis
+        exec('from vnf.dom.%s import %s' % analysisClass)
+        table = analysisClass
+        analysis = director.clerk.newOwnedObject(analysisClass)
+        self.inventory.id = experiment.id
+        analysisId = director.clerk.newOwnedObject()
         method = getattr(self, selected )
         return method( director )
     
@@ -82,11 +87,12 @@ class MaterialAnalysis(base):
             page = director.retrieveSecurePage( 'generic' )
         except AuthenticationError, err:
             return err.page
+        
+        
 
         main = page._body._content._main
         document = main.document(title='S(Q,E) calculation from atomic trajectories')
                 
-        #id = self.inventory.id
         #if id is None: id = self.inventory.id
         #else: self.inventory.id = id
 
