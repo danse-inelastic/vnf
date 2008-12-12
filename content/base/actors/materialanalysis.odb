@@ -69,8 +69,7 @@ class MaterialAnalysis(base):
         return page 
         
     def selectAnalysis(self, director):
-        '''send to the right method, or form, based on what analytic
-method is chosen'''
+        '''send to the right method, or form, based on what analytic method is chosen'''
         selected = self.processFormInputs(director)
         method = getattr(self, selected )
         return method( director )
@@ -88,7 +87,7 @@ def getallsimulations(db):
     return computations
 
 
-def _desribe(simulation):
+def _describe(simulation):
     return '%s %s' % (simulation.__class__.__name__, simulation.id)
     
 

@@ -46,26 +46,6 @@ class Form( base ):
 
 #        record = self.getRecord()
         director = self.director
-        p = form.paragraph()
-        action = actionRequireAuthentication(
-            label = 'create',
-            actor = 'materialsimulationwizard',
-            routine = 'start',
-            sentry = director.sentry,
-            )
-        create = action_link( action, director.cgihome )
-        action = actionRequireAuthentication(
-            label = 'analyze',
-            actor = 'materialanalysis',
-            routine = 'start',
-            sentry = director.sentry,
-            )
-        analyze = action_link( action, director.cgihome )
-        p.text = [
-            'You can %s a virtual sample using material simulations/models for use in a virtual instrument.' % create,
-            'You can also %s your sample.' % analyze,
-            ]
-
         simulations = getallsimulations(director.clerk.db)
         if len(simulations):
             p = form.paragraph()

@@ -52,7 +52,6 @@ class Actor(base):
         action = actionRequireAuthentication(
             label = 'analyze',
             actor = 'materialanalysis',
-            routine = 'start',
             sentry = director.sentry,
             )
         analyze = action_link( action, director.cgihome )
