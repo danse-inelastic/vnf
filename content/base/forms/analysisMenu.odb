@@ -26,16 +26,15 @@ class Form( base ):
         short_description = inv.str('short_description', default = '' )
         short_description.meta['tip'] = 'A short description'
         
-#        engine = inv.str('engine', default='vasp')
-#        engine.validator=inv.choice(['vasp', 'ab init'])
-#        engine.meta['tip'] = 'Ab initio engine'
-#        
-#        xcFunctional = inv.str('xcFunctional', default='PAW-PBE')
-#        xcFunctional.validator=inv.choice(['PAW-PBE', 'PAW-GGA', 'LDA'])
-#        xcFunctional.meta['tip'] = 'Exchange correlation functional'
+        modelChosen = inv.str('modelChosen', default='vasp')
+        modelChosen.meta['tip'] = 'Model or simulation chosen for analysis'
+        
+        analysisType = inv.str('analysisType', default='PAW-PBE')
+        analysisType.validator=inv.choice(['PAW-PBE', 'PAW-GGA', 'LDA'])
+        analysisType.meta['tip'] = 'Exchange correlation functional'
 
-
-    #DBTable = 'abinitio'
+    simulationIds=[]
+    simulationChoices=[]
         
     def expand(self, form):
         '''expand an existing form with fields from this component'''
@@ -52,46 +51,39 @@ class Form( base ):
             p.text = [
                 'Choose a simulation/model:',
                 ]
-            choices=[]
             for simulation in simulations:
                 desc = _describe(simulation)
                 label = simulation.short_description or simulation.id
-                simulationInfo = '%s: %s' % (label, desc)
-                choices.append(simulationInfo)
-        entries=zip(choices,choices)
+                self.simulationChoices.append('%s: %s' % (label, desc))
+                self.simulationIds.append(simulation.id)
+        entries=zip(self.simulationChoices,self.simulationChoices)
         models = form.selector(id='selector1',
                 name = '%s.models'%prefix,
                 entries = entries,
                 label = '',
+                selected = self.inventory.modelChosen,
                 size=10) 
             
         p = form.paragraph()
         p.text = ['Choose a type of analysis:']
         
-        choices=['S(Q,E)','DOS','Diffusion coefficient','MSD']
-        entries=zip(choices,choices)
+        analysisChoices=['S(Q,E)','EISF','DOS','Diffusion coefficient',
+                         'Mean square displacement']
+        entries=zip(analysisChoices,analysisChoices)
         #eng=str(record.engine)
         analysisTypes = form.selector(id='selector2',
                 name = '%s.analysisTypes'%prefix,
                 entries = entries,
                 label = '',
+                selected = self.inventory.analysisType,
                 size=4)           
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-
-        
 
     def processUserInputs(self):
-        '''note the model and analytic method chosen and direct accordingly''' 
+        '''note the model's id and analytic method chosen and return them so the
+        form actor can direct to the appropriate subsequent form'''
+        index = self.simulationChoices.index(self.inventory.modelChosen)
+        simulationId = self.simulationIds[index]
+        return simulationId, self.inventory.analysisType
 #        record = self.getRecord()
 #        props = [
 #            'short_description',
@@ -110,8 +102,6 @@ class Form( base ):
 #        record.qGrid = [self.inventory.nQx, self.inventory.nQy, self.inventory.nQz]
 #        self.director.clerk.updateRecord(record)
 #        return record
-        pass
-    
     
     def getRecord(self):
         'get DB record'

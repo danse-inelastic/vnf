@@ -24,6 +24,8 @@ class MaterialAnalysis(base):
 
         import pyre.inventory
         id = pyre.inventory.str( 'id', default = '')
+        
+    analysisMethods = ['sqe','eisf','dos','diffusionCoefficient','meanSquareDisplacement']
 
 
     def default(self, director):
@@ -70,25 +72,48 @@ class MaterialAnalysis(base):
         
     def selectAnalysis(self, director):
         '''send to the right method, or form, based on what analytic method is chosen'''
-        selected = self.processFormInputs(director)
+        simulationId, analysisType = self.processFormInputs(director)
+        analysisId = director.clerk.
         method = getattr(self, selected )
         return method( director )
     
-    
+    def sqe(self, director):
+        try:
+            page = director.retrieveSecurePage( 'generic' )
+        except AuthenticationError, err:
+            return err.page
 
-def getallsimulations(db):
-    from vnf.dom import materialsimulationtables, materialmodelingtables
-    tables = materialsimulationtables() + materialmodelingtables()
+        main = page._body._content._main
+        document = main.document(title='S(Q,E) calculation from atomic trajectories')
+                
+        #id = self.inventory.id
+        #if id is None: id = self.inventory.id
+        #else: self.inventory.id = id
 
-    computations = []
-    for table in tables:
-        computations += db.fetchall(table)
-        continue
-    return computations
-
-
-def _describe(simulation):
-    return '%s %s' % (simulation.__class__.__name__, simulation.id)
+#        type = self.inventory.type = 'gulpsimulations'
+#
+#        if not simulation:
+#            simulation = self._getSimulation(director)
+#        id = self.inventory.id = simulation.id  
+        
+        formcomponent = self.retrieveFormToShow( 'analysisMenu')
+        formcomponent.director = director
+        # build the form form
+        form = document.form(name='', action=director.cgihome)
+        # specify action
+        action = actionRequireAuthentication(          
+            actor = 'materialanalysis', 
+            sentry = director.sentry,
+            routine = 'selectAnalysis',
+            id=id,
+            arguments = {'form-received': formcomponent.name },
+            )
+        from vnf.weaver import action_formfields
+        action_formfields( action, form )
+        # expand the form with fields of the data object that is being edited
+        formcomponent.expand( form )
+        next = form.control(name='submit',type="submit", value="next")
+        return page 
     
 
 def actor():
