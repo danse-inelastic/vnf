@@ -57,8 +57,8 @@ class Actor(base):
             )
         analyze = action_link( action, director.cgihome )
         p.text = [
-            'You can % a virtual sample using material simulations/models for use in a virtual instrument.' % create,
-            'You can also % your sample.' % analyze,
+            'You can %s a virtual sample using material simulations/models for use in a virtual instrument.' % create,
+            'You can also %s your sample.' % analyze,
             ]
 
         simulations = getallsimulations(director.clerk.db)

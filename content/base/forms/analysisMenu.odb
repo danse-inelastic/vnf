@@ -72,33 +72,26 @@ class Form( base ):
             p.text = [
                 'Choose a simulation/model:',
                 ]
+            choices=[]
             for simulation in simulations:
-                p = form.paragraph()
-#                link = action_link(
-#                    actionRequireAuthentication(
-#                    sentry = director.sentry,
-#                    actor = 'computation',
-#                    routine = 'view',
-#                    label = simulation.short_description or simulation.id,
-#                    id = simulation.id,
-#                    type = simulation.__class__.__name__,
-#                    ),
-#                    director.cgihome
-#                    )
-                desc = _desribe(simulation)
+                desc = _describe(simulation)
                 label = simulation.short_description or simulation.id
-                p.text = [
-                    '%s: %s' % (label, desc),
-                    ]
-                continue
+                simulationInfo = '%s: %s' % (label, desc)
+                choices.append(simulationInfo)
+        entries=zip(choices,choices)
+        models = form.selector(id='selector1',
+                name = '%s.models'%prefix,
+                entries = entries,
+                label = '',
+                size=10) 
             
         p = form.paragraph()
-        p.text = ['Type of analysis:']
+        p.text = ['Choose a type of analysis:']
         
         choices=['S(Q,E)','DOS','Diffusion coefficient','MSD']
         entries=zip(choices,choices)
         #eng=str(record.engine)
-        analysisTypes = form.selector(id='selector1',
+        analysisTypes = form.selector(id='selector2',
                 name = '%s.analysisTypes'%prefix,
                 entries = entries,
                 label = '',
@@ -118,7 +111,7 @@ class Form( base ):
         
 
     def processUserInputs(self):
-#        #note the model and analytic method chosen and direct accordingly 
+        '''note the model and analytic method chosen and direct accordingly''' 
 #        record = self.getRecord()
 #        props = [
 #            'short_description',
@@ -154,7 +147,7 @@ def getallsimulations(db):
         continue
     return computations
 
-def _desribe(simulation):
+def _describe(simulation):
     return '%s %s' % (simulation.__class__.__name__, simulation.id) 
 
 
