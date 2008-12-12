@@ -34,6 +34,7 @@ EXPORT_PYTHON_MODULES = \
 	ActionLinkRenderer.py \
 	ActionHrefRenderer.py \
 	ActionMill_forForm.py \
+	AutoRefreshRenderer.py \
 	DocumentMill.py \
 	DocumentMillExtensions.py \
 	Plot_2DMill.py \

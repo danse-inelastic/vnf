@@ -82,10 +82,12 @@ import os
 
 from ActionLinkRenderer import ActionLinkRenderer
 from Plot_2DMill import Plot_2DMill
+from AutoRefreshRenderer import AutoRefreshRenderer
 
 extensions = [
     ActionLinkRenderer,
     Plot_2DMill,
+    AutoRefreshRenderer,
     Extension1,
     ]
 
