@@ -39,38 +39,26 @@ class MaterialAnalysis(base):
         main = page._body._content._main
         document = main.document(title='Material Analysis')
                 
-        if id is None: id = self.inventory.id
-        else: self.inventory.id = id
+        #id = self.inventory.id
+        #if id is None: id = self.inventory.id
+        #else: self.inventory.id = id
 
 #        type = self.inventory.type = 'gulpsimulations'
 #
 #        if not simulation:
 #            simulation = self._getSimulation(director)
-#        id = self.inventory.id = simulation.id
-
-        # make sure material is defined
-        if not self._materialDefinedForSimulation(simulation, director):
-            return self._needMaterialAlert(director)
+#        id = self.inventory.id = simulation.id  
         
-        try:
-            page = director.retrieveSecurePage( 'genericMaterialSimulationWizard' )
-        except AuthenticationError, err:
-            return err.page
-        
-        main = page._body._content._main
-        document = main.document(title='Classical atomistics kernel' )
-        document.byline = '<a href="http://danse.us">DANSE</a>'    
-        
-        formcomponent = self.retrieveFormToShow( 'gulp')
+        formcomponent = self.retrieveFormToShow( 'analysisMenu')
         formcomponent.director = director
         # build the form form
         form = document.form(name='', action=director.cgihome)
         # specify action
         action = actionRequireAuthentication(          
-            actor = 'gulpsimulationwizard', 
+            actor = 'materialanalysis', 
             sentry = director.sentry,
-            routine = 'verifySimulation',
-            id=id, type=type,
+            routine = 'selectAnalysis',
+            id=id,
             arguments = {'form-received': formcomponent.name },
             )
         from vnf.weaver import action_formfields
@@ -80,7 +68,13 @@ class MaterialAnalysis(base):
         next = form.control(name='submit',type="submit", value="next")
         return page 
         
-        
+    def selectAnalysis(self, director):
+        selected = self.processFormInputs(director)
+        method = getattr(self, selected )
+        return method( director )
+    
+    
+    
         
         
         

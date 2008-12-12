@@ -45,10 +45,7 @@ class Form( base ):
 #            name = '%s.id' % prefix, value = self.inventory.id)
 
 #        record = self.getRecord()
-        
-        
-        
-        #
+        director = self.director
         p = form.paragraph()
         action = actionRequireAuthentication(
             label = 'create',
@@ -121,32 +118,44 @@ class Form( base ):
         
 
     def processUserInputs(self):
-        #note the model and analytic method chosen and direct accordingly 
-        record = self.getRecord()
-        props = [
-            'short_description',
-            'engine',
-            'xcFunctional',
-            'kineticEnergyCutoff',
-            'displacementAmplitude',
-            ]
-        for prop in props:
-            value = getattr(self.inventory, prop)
-            setattr(record, prop, value)
-            continue
-
-        record.monkhorstPackMesh = [self.inventory.nKx, self.inventory.nKy, self.inventory.nKz]
-        record.supercell = [self.inventory.scx, self.inventory.scy, self.inventory.scz]
-        record.qGrid = [self.inventory.nQx, self.inventory.nQy, self.inventory.nQz]
-        self.director.clerk.updateRecord(record)
-        return record
+#        #note the model and analytic method chosen and direct accordingly 
+#        record = self.getRecord()
+#        props = [
+#            'short_description',
+#            'engine',
+#            'xcFunctional',
+#            'kineticEnergyCutoff',
+#            'displacementAmplitude',
+#            ]
+#        for prop in props:
+#            value = getattr(self.inventory, prop)
+#            setattr(record, prop, value)
+#            continue
+#
+#        record.monkhorstPackMesh = [self.inventory.nKx, self.inventory.nKy, self.inventory.nKz]
+#        record.supercell = [self.inventory.scx, self.inventory.scy, self.inventory.scz]
+#        record.qGrid = [self.inventory.nQx, self.inventory.nQy, self.inventory.nQz]
+#        self.director.clerk.updateRecord(record)
+#        return record
+        pass
     
     
     def getRecord(self):
         'get DB record'
         return self.director.clerk.getRecordByID( self.DBTable, self.inventory.id )
     
-    
+def getallsimulations(db):
+    from vnf.dom import materialsimulationtables, materialmodelingtables
+    tables = materialsimulationtables() + materialmodelingtables()
+
+    computations = []
+    for table in tables:
+        computations += db.fetchall(table)
+        continue
+    return computations
+
+def _desribe(simulation):
+    return '%s %s' % (simulation.__class__.__name__, simulation.id) 
 
 
 def form(): return Form( 'analysisMenu' )
