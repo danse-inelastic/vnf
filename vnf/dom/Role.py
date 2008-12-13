@@ -31,6 +31,6 @@ class Role(Table):
 
 
 # version
-__id__ = "$Id: Role.py,v 1.1.1.1 2006-11-27 01:11:25 aivazis Exp $"
+__id__ = "$Id$"
 
 # End of file 
