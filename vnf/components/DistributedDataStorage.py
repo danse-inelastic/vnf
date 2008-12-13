@@ -29,23 +29,22 @@ class DistributedDataStorage(base):
 
 
     def remember(self, dbrecord, filename=None, server=None, files=list()):
-        if files and filename:
-            msg = "Both files and filename are supplied: files=%s, filename=%s" % (
-                files, filename)
-            raise ValueError, msg
-        
-        if filename:
-            files = [filename]
-        else:
-            if not files:
-                files = _default_files(dbrecord)
-
+        files = _files(filename=filename, files=files)
         for f in files:
             path = self.path(dbrecord, f)
             self._remember(path, server=server)
             continue
         return
-    
+
+
+    def forget(self, dbrecord, filename=None, server=None, files=list()):
+        files = _files(filename=filename, files=files)
+        for f in files:
+            path = self.path(dbrecord, f)
+            self._forget(path, server=server)
+            continue
+        return
+
 
     def move(self, dbrecord1, filename1, dbrecord2, filename2, server=None):
         path1 = self.path(dbrecord1, filename1)
@@ -108,6 +107,11 @@ class DistributedDataStorage(base):
     def _remember(self, path, server=None):
         node = _node(server)
         return self.dds.remember(path, node=node)
+
+
+    def _forget(self, path, server=None):
+        node = _node(server)
+        return self.dds.forget(path, node=node)
 
 
     def _make_available(self, path, server=None):
@@ -294,6 +298,21 @@ def _decodesurl(s):
 
 def _surl(server):
     return '%s@%s(%s)' % (server.username, server.address, server.port)
+
+def _files(files=None, filename=None):
+    if files and filename:
+        msg = "Both files and filename are supplied: files=%s, filename=%s" % (
+            files, filename)
+        raise ValueError, msg
+    
+    if filename:
+        files = [filename]
+    else:
+        if not files:
+            files = _default_files(dbrecord)
+    return files
+    
+
 
 import os
 
