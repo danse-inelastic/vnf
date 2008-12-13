@@ -25,12 +25,17 @@ class Builder(base):
         self.dds = dds
         
         self.appscript = []
-        self.cmdline_opts = {}
+        from NeutronExperiment import outputdir
+        self.cmdline_opts = {
+            'output-dir': outputdir,
+            }
+        self.odbs = []
+        
         self.indent_level = 0
         self.dispatch( instrument )
 
         self.db = self.dds = None
-        return self.appscript, self.cmdline_opts
+        return self.appscript, self.cmdline_opts, self.odbs
 
 
     def dispatch(self, something):
@@ -264,7 +269,9 @@ class Builder(base):
             }
         self.onNeutronComponent(**kwds)
 
-        opts = {}
+        opts = {
+            '%s.path' % component.label: outputfilename(component),
+            }
 
         # map database record parameter names to parameters used in monte carlo components
         parameters = [
@@ -297,6 +304,7 @@ class Builder(base):
 
         opts = {
             '%s.Ei' % m.label: self.Ei,
+            '%s.filename' % m.label: outputfilename(m),
             }
 
         parameters = [
@@ -323,7 +331,27 @@ class Builder(base):
             }
         self.onNeutronComponent( **kwds )
 
-        opts = {}
+        # need a odb file to enhance the monitor
+        odbname = 'enhanced_%s' % m.label
+        odbcode = """
+def %(name)s():
+    from mcni.pyre_support import componentfactory as component
+    f = component('monitors', 'TOF_monitor2', supplier = 'mcstas2')
+    ret =  f('%(odbname)s')
+    from mcstas2.pyre_support.monitor_exts import extend
+    extend( ret )
+    return ret
+    """ % {
+            'name': m.label,
+            'odbname': odbname,
+        }
+        odbcode = odbcode.split('\n')
+        self.odbs.append( ('%s.odb' % odbname, odbcode) )
+        
+        opts = {
+            m.label: odbname,
+            '%s.filename' % odbname: outputfilename(m),
+            }
 
         # map database record parameter names to parameters used in monte carlo components
         parameters = [
@@ -337,7 +365,7 @@ class Builder(base):
             ]
 
         for recordparam, mcparam in parameters:
-            opts[ '%s.%s' %  (m.label,mcparam) ] = getattr(m, recordparam)
+            opts[ '%s.%s' %  (odbname,mcparam) ] = getattr(m, recordparam)
             continue
         
         self.cmdline_opts.update( opts )
@@ -369,7 +397,7 @@ class Builder(base):
         tofparams = '%s,%s,%s' % (
             tofmin, tofmax, (tofmax-tofmin)*1./ntofbins )
         opts = {
-            '%s.eventsdat' % ds.label: self.detectorsystem_output_eventfile,
+            '%s.eventsdat' % ds.label: outputfilename(ds),
             '%s.instrumentxml' % ds.label: self.detectorsystem_xmlfile,
             '%s.tofparams' % ds.label: tofparams,
             }
@@ -377,7 +405,6 @@ class Builder(base):
         self.cmdline_opts.update( opts )
         return
     detectorsystem_xmlfile = 'detectorsystem.xml'
-    detectorsystem_output_eventfile = 'detectorsystem-events.dat'
     ### need further work here ###
     
 
@@ -415,7 +442,34 @@ class Builder(base):
     pass # end of Builder
 
 
+
 import os
+from NeutronExperiment import outputfilename
+class _ComponentOutputfiles:
+    '''Each component generates some output files. This class
+    figures out what those output files are. This actually depends
+    on which mcvine components are used.
+    
+    Developer: Keep this class in sync with the main class here: Builder
+    '''
+
+    def __init__(self, root):
+        self.root = root
+        return
+
+    def dispath(self, component):
+        f = outputfilename(component)
+        
+        klass = component.__class__.__name__
+        if klass in [
+            'QEMonitor',
+            'TofMonitor',
+            ]:
+            f1, ext = os.path.splitext(f)
+            f = '.'.join( [f1, 'h5'] )
+        
+        return [os.path.join(self.root, f)]
+
 
 # version
 __id__ = "$Id$"

@@ -40,7 +40,7 @@ class Builder(base):
 
     def onNeutronExperiment(self, experiment):
         configured_instrument = experiment.instrument_configuration.dereference(self.db)
-        pyscriptconents, options = self.dispatch( configured_instrument )
+        pyscriptcontents, options, odbs = self.dispatch(configured_instrument)
 
         sampleassembly = experiment.sampleassembly
         if sampleassembly:
@@ -64,12 +64,13 @@ class Builder(base):
         #######################
 
         shscriptname = self.shscriptname
-        files = [ (pyscriptname, pyscriptconents),
+        files = [ (pyscriptname, pyscriptcontents),
                   (shscriptname, [command] ),
                   ]
+        files += odbs
         self._createdatadir()
         self._createfiles(files)
-        return [shscriptname, pyscriptname]
+        return [f for f,c in files]
 
 
     def onInstrumentConfiguration(self, configuration):

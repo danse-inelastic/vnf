@@ -26,6 +26,29 @@ class Builder(base):
         return Builder(self.path).render(computation, db=db, dds=dds)
 
 
+# the relative path in the job directory where mcvine simulation will
+# generate outputs
+outputdir = 'out'
+
+import os
+def outputfilename(component):
+    """output file name for the given neutron component
+    in the output directory of the job directory
+    
+    This has to be unique so that different components don't
+    write to the same output file.
+    """
+    f = '%s-%s.out' % (component.__class__.__name__, component.label)
+    return f
+
+
+def outputfiles(component):
+    '''paths of output files for the given component
+    '''
+    from InstrumentSimulationAppBuilder import _ComponentOutputfiles
+    return _ComponentOutputfiles(outputdir).dispath(component)
+
+
 # version
 __id__ = "$Id$"
 

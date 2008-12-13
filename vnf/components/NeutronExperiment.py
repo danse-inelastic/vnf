@@ -148,7 +148,7 @@ class NeutronExperiment(base):
         return page
 
 
-    def edit(self, director):
+    def _obsolete_edit(self, director):
         try:
             page, document = self._head( director )
         except AuthenticationError, error:
@@ -193,77 +193,6 @@ class NeutronExperiment(base):
         return page
 
 
-    def run(self, director):
-        try:
-            page = director.retrieveSecurePage( 'neutronexperiment' )
-        except AuthenticationError, err:
-            return err.page
-
-        experiment = director.clerk.getNeutronExperiment(
-            self.inventory.id)
-        job = experiment.job
-        if nullpointer(job):
-            raise RuntimeError, "job not yet established"
-        
-        job = director.clerk.dereference(job)
-        
-        try:
-            Scheduler.schedule(job, director)
-            experiment.status = 'submitted'
-        except Exception, err:
-            raise
-            import traceback
-            experiment.status = 'submissionfailed'
-            job.error = traceback.format_exc()
-
-        # update db
-        director.clerk.updateRecord( job )
-        director.clerk.updateRecord( experiment )
-        
-        # check status of job
-        Scheduler.check( job, director )
-
-        return self.view( director )
-
-
-    def selectinstrument(self, director):
-        try:
-            page, document = self._head( director )
-        except AuthenticationError, error:
-            return error.page
-
-        experiment = director.clerk.getNeutronExperiment(
-            self.inventory.id )
-        
-        # create form to set scatterer type
-        formcomponent = self.retrieveFormToShow( 'selectneutroninstrument' )
-        formcomponent.inventory.experiment_id = experiment.id
-        formcomponent.director = director
-        
-        # create form
-        form = document.form(
-            name='selectneutroninstrument',
-            legend= formcomponent.legend(),
-            action=director.cgihome)
-
-        # specify action
-        action = actionRequireAuthentication(
-            actor = 'neutronexperiment', sentry = director.sentry,
-            label = '', routine = 'edit',
-            arguments = { 'id': experiment.id,
-                          'form-received': formcomponent.name } )
-        from vnf.weaver import action_formfields
-        action_formfields( action, form )
-
-        # expand the form with fields of the data object that is being edited
-        formcomponent.expand( form )
-
-        # ok button
-        submit = form.control(name="submit", type="submit", value="OK")
-        
-        return page
-
-
     def __init__(self, name=None):
         if name is None:
             name = "neutronexperiment"
@@ -271,7 +200,37 @@ class NeutronExperiment(base):
         return
 
 
-    def _add_review(self, document, director):
+    def _view_constructed(self, document, director):
+        experiment = director.clerk.getNeutronExperiment(self.inventory.id)
+        job = director.clerk.dereference(experiment.job)
+        
+        p = document.paragraph()
+        p.text = [
+            'Experiment %r has been constructed.' % experiment.short_description,
+            ]
+        p.text += [
+            'Configuration details of this experiment can be',
+            'found out in the following tree view.',
+            'Please review them before you start the experiment.',
+            ]
+        
+        self._add_review_tree( document, director )
+        if job.state in ['created', '']:
+            self._add_revision_sentence( document, director )
+            self._add_run_sentence( document, director )
+        else:
+            self._add_view_job_sentence(document, director)
+        self._add_delete_sentence( document, director )
+        if job.state in ['running']:
+            self._add_experiment_output(document, director)
+        elif job.state in ['finished', 'terminated', 'cancelled']:
+            self._add_experiment_results(document, director)
+        elif job.state in ['submissionfailed']:
+            self._add_resubmit_sentence(director)
+        return
+
+
+    def _add_review_tree(self, document, director):
         experiment = director.clerk.getNeutronExperiment(self.inventory.id)
         from TreeViewCreator import create
         view = create( experiment, director )
@@ -319,7 +278,7 @@ class NeutronExperiment(base):
     def _add_view_job_sentence(self, document, director):
         id = self.inventory.id
         experiment = director.clerk.getNeutronExperiment(id)
-        job = experiment.job
+        job = director.clerk.dereference(experiment.job)
         
         p = document.paragraph()
         action = actionRequireAuthentication(
@@ -330,8 +289,9 @@ class NeutronExperiment(base):
             id = job.id)
         link = action_link( action, director.cgihome )
         p.text = [
-            'Your experiment was already submitted as a computation job.',
-            'Click %s to see the status of the computation job.' % link,
+            'Your experiment was already submitted as a computation job',
+            'and the job is %s.' % job.state,
+            'Click %s to view the computation job.' % link,
             ]
         return
 
@@ -351,31 +311,7 @@ class NeutronExperiment(base):
         return
     
 
-    def _view_constructed(self, document, director):
-        experiment = director.clerk.getNeutronExperiment(self.inventory.id)
-        job = director.clerk.dereference(experiment.job)
-        
-        p = document.paragraph()
-        p.text = [
-            'Experiment %r has been constructed.' % experiment.short_description,
-            ]
-        p.text += [
-            'Configuration details of this experiment can be',
-            'found out in the following tree view.',
-            'Please review them before you start the experiment.',
-            ]
-        
-        self._add_review( document, director )
-        if job.state in ['created', '']:
-            self._add_revision_sentence( document, director )
-            self._add_run_sentence( document, director )
-        else:
-            self._add_view_job_sentence(document, director)
-        self._add_delete_sentence( document, director )
-        return
-
-
-    def _view_submissionfailed(self, document, director):
+    def _add_resubmit_sentence(self, document, director):
         p = document.paragraph( )
         p.text = [
             'We have tried to start experiment %r for you but failed.' % experiment.short_description,
@@ -384,181 +320,145 @@ class NeutronExperiment(base):
             ]
 
         experiment = director.clerk.getNeutronExperiment(self.inventory.id)
+        job = director.clerk.dereference(experiment.job)
+        
         p = document.paragraph(cls = 'error'  )
-        p.text = [ experiment.job.error ]
+        p.text = [ job.error ]
 
         p = document.paragraph()
-        p.text += [
-            'Configuration details of this experiment can be',
-            'found out in the following tree view.',
+        action = actionRequireAuthentication(
+            label = 'resubmit',
+            actor = 'job',
+            routine = 'edit',
+            sentry = director.sentry,
+            id = job.id)
+        link = action_link( action, director.cgihome )
+        p.text = [
+            'If you are sure that the error was fixed, please %s' % link,
             ]
-
-        self._add_review( document, director )
-        self._add_revision_sentence( document, director )
-        self._add_run_sentence( document, director )
-        self._add_delete_sentence( document, director )
         return 
 
 
-    def _view_submitted(self, document, director):
+    def _add_experiment_output(self, document, director):
         experiment = director.clerk.getNeutronExperiment(self.inventory.id)
+        job = director.clerk.dereference(experiment.job)
+        server = director.clerk.dereference(job.server)
+        instrument = director.clerk.dereference(experiment.instrument)
 
         #refresh script
-        p = document.paragraph()
-        p.text = [
-            '''
-        <script>
-        <!--
+        import vnf.content
+        autorefresh = vnf.content.autorefresh(timeout=10)
+        document.contents.append(autorefresh)
 
-        /*
-        Auto Refresh Page with Time script
-        By JavaScript Kit (javascriptkit.com)
-        Over 200+ free scripts here!
-        */
-
-        //enter refresh time in "minutes:seconds" Minutes should range from 0 to inifinity. Seconds should range from 0 to 59
-        var limit="0:10"
-
-        var parselimit=limit.split(":")
-        parselimit=parselimit[0]*60+parselimit[1]*1
-
-        function beginrefresh(){
-            if (parselimit==1)
-            window.location.reload()
-            else{
-            parselimit-=1
-            curmin=Math.floor(parselimit/60)
-            cursec=parselimit%60
-            if (curmin!=0)
-            curtime=curmin+" minutes and "+cursec+" seconds left until page refresh!"
-            else
-        curtime=cursec+" seconds left until page refresh!"
-        window.status=curtime
-        setTimeout("beginrefresh()",1000)
-        }
-        }
-
-        window.onload=beginrefresh
-        //-->
-        </script>
-        ''',
-            ]
-        
+        # experimental outputs
         panel = document.form(
             name='null',
             legend= 'Summary',
             action='')
-            
-        p = panel.paragraph()
-        p.text = [
-            'Experiment %r was started %s on server %r, using %s nodes.' % (
-            experiment.short_description, experiment.job.timeStart,
-            experiment.job.computation_server.short_description,
-            experiment.job.numprocessors,
-            ),
-            ]
-        p.text += [
-            'Configuration details of this experiment can be',
-            'found out in the following tree view.',
-            ]
-        self._add_review( panel, director )
-        self._add_results( document, director )
-
-        #update status
-        if experiment.job.status == 'finished': experiment.status = 'finished'
-        director.clerk.updateRecord( experiment )
-        return
-
-
-    def _view_finished(self, document, director):
-        experiment = director.clerk.getNeutronExperiment(self.inventory.id)
-
-        panel = document.form(
-            name='null',
-            legend= 'Summary',
-            action='')
-
-        job = experiment.job.dereference(director.db)
         p = panel.paragraph()
         p.text = [
             'Experiment %r was started %s on server %r, using %s nodes.' % (
             experiment.short_description, job.timeStart,
-            job.computation_server.short_description,
+            server.short_description,
             job.numprocessors,
             ),
             ]
-        p.text += [
-            'Configuration details of this experiment can be',
-            'found out in the following tree view.',
-            ]
-        self._add_review( panel, director )
-        self._add_results( document, director )
 
-        #update status
-        if job.status == 'finished': experiment.status = 'finished'
-        director.clerk.updateRecord( experiment )
-        return
-
-
-    def _add_results(self, document, director):
-        experiment = director.clerk.getNeutronExperiment( self.inventory.id )
-        
-        # data path
-        job_id = experiment.job_id
-        job = director.clerk.getJob( job_id )
-        
-        from JobDataManager import JobDataManager
-        jobdatamanager = JobDataManager( job, director )
-        
-        path = jobdatamanager.localpath()
-        server = job.computation_server
-
-        # list entries in the job directory in the remote server
-        output_files = jobdatamanager.listremotejobdir()
-
-        document = document.form(
+        # data display
+        datadisplay = document.form(
             name='null',
             legend= 'Data',
             action='')
-        
-        # loop over expected results and see if any of them is available
-        # and post it
-        expected = experiment.expected_results
-        import os
-        for item in expected:
-            filename = item
-            if filename in output_files:
-                #f = os.path.join( path, item )
-                #retieve file from computation server
-                localcopy = jobdatamanager.makelocalcopy( filename )
-                self._post_result( localcopy, document, director )
-            continue
+
+        # loop over components and make display
+        for name, component in \
+                director.clerk.dereference(instrument.components):
+            self._display_component_output(
+                name, component, datadisplay, director)
         return
 
 
-    def _post_result(self, resultfile, document, director):
-        drawer = ResultDrawer( )
-        experiment = director.clerk.getNeutronExperiment( self.inventory.id )
-        drawer.draw( experiment, resultfile, document, director )
+    def _add_experiment_results(self, document, director):
+        # ******** needs update
+        experiment = director.clerk.getNeutronExperiment(self.inventory.id)
+        job = director.clerk.dereference(experiment.job)
+        server = director.clerk.dereference(job.server)
+        instrument = director.clerk.dereference(experiment.instrument)
+
+        panel = document.form(
+            name='null',
+            legend= 'Experiment outputs',
+            action='')
+
+        job = director.clerk.dereference(experiment.job)
+
+        # loop over components and make display
+        for name, component in \
+                director.clerk.dereference(instrument.components):
+            self._display_component_output(
+                name, component, panel, director)
+
         return
 
 
-    def _head(self, director):
-        page = director.retrieveSecurePage( 'neutronexperiment' )
-        
-        main = page._body._content._main
+    def _display_component_output(self, name, component, document, director):
+        # output file name
+        from vnf.components.job_builders.NeutronExperiment import outputfiles
+        component.label = name
+        paths = outputfiles(component)
 
-        # the record we are working on
+        # sync file from computation server
         id = self.inventory.id
-        experiment = director.clerk.getNeutronExperiment( id )
+        experiment = director.clerk.getNeutronExperiment(id)
+        job = director.clerk.dereference(experiment.job)
+        self._sync(job, paths, director)
 
-        # populate the main column
-        document = main.document(
-            title='Neutron Experiment: %s' % experiment.short_description )
-        document.description = ( '')
-        document.byline = '<a href="http://danse.us">DANSE</a>'
+        #
+        viewname = component.__class__.__name__.lower()
+        self._retrieveView(
+            viewname, director,
+            datafiles = [director.dds.abspath(job, path) for path in paths],
+            document = document,
+            )
+        return
 
-        return page, document
+    
+    def _sync(self, job, filenames, director):
+        # should check if the file in the remote job directory is newer than
+        # the local job directory
+        # current implementation does not check for that...
+        dds = director.dds
+        server = director.clerk.dereference(job.server)
+
+        for filename in filenames:
+            # if the file has not been generated, skip
+            if not dds.is_available(job, filename=filename, server=server): return
+
+            path = dds.abspath(job, filename=filename)
+            import os
+            if os.path.exists(path):
+                # remove the local copy
+                os.remove(path)
+                # let dds forget the local copy
+                dds.forget(job, filename=filename)
+                
+            # let dds know that it exists in the server
+            dds.remember(job, filename=filename, server=server)
+            # make it available locally
+            dds.make_available(job, files=[filename])
+            continue
+        
+        return
+
+
+    def _retrieveView(self, name, director, **kwds):
+        view = director.retrieveComponent(
+            name,
+            factory='view',
+            args=[kwds],
+            vault=['views/neutron_component_outputs'],
+            )
+        return view
 
 
     def _configure(self):
@@ -708,7 +608,6 @@ def view_instrument_plain(instrument, form):
         continue
     p.text.append( '</UL>' )
     return
-
 
 
 class ResultDrawer:

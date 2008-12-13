@@ -31,15 +31,11 @@ class Retriever(base):
 
 
     def dispatch(self, component):
-        handler = self._getHandler(component)
-        return handler(component)
+        from neutron_components import getHandler
+        handler = getHandler(component)
+        if handler:
+            return handler(component)
 
-
-    def _getHandler(self, component):
-        type = component.__class__.__name__
-        module = 'neutron_components.%s' % type
-        module = __import__(module, {}, {}, [''])
-        return module.retrieve
     
 
 # version

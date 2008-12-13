@@ -1629,25 +1629,6 @@ class NeutronExperimentWizard(base):
         actor = 'neutronexperiment'
         routine = 'view'
         return self.redirect(director, actor, routine, id = id)
-        ## --------- obsolete -------
-        job = director.clerk.dereference(experiment.job)
-        from JobDataManager import JobDataManager
-        path = JobDataManager( job, director ).localpath()
-
-        username = director.sentry.username
-        if username in ['demo']:
-            #demo user can not really run simulation#
-            #but they can see a demo
-            from NeutronExperimentSimulationRunBuilder_demo import Builder
-        else:
-            from NeutronExperimentSimulationRunBuilder import Builder
-        Builder(path).render(experiment, filedb=director.dss)
-
-        experiment.status = 'constructed'
-        director.clerk.updateRecord( experiment )
-        
-        return self.showExperimentStatus(director)
-        ## --------- obsolete -------
 
 
     def showExperimentStatus(self,director):
