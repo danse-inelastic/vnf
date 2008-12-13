@@ -17,7 +17,6 @@ This actor gives the user a menu for performing analysis of his simulations/mode
 
 from vnf.components.FormActor import FormActor as base, action, \
 actionRequireAuthentication, action_link, InputProcessingError, AuthenticationError
-from vnf.dom.Analysis import analysisClasses
 
 class MaterialAnalysis(base):
     
@@ -26,7 +25,10 @@ class MaterialAnalysis(base):
         import pyre.inventory
         id = pyre.inventory.str( 'id', default = '')
         
-
+        analysisType = pyre.inventory.str('analysisType', default = 'sqe')
+        analysisType.validator = pyre.inventory.choice(['sqe', 'eisf', 'dos',
+            'diffusionCoefficient', 'meanSquareDisplacement'])
+        analysisType.meta['tip'] = 'type of analysis and method to call in this class'
 
     def default(self, director):
         return self.analysisMenu( director )
@@ -40,16 +42,6 @@ class MaterialAnalysis(base):
 
         main = page._body._content._main
         document = main.document(title='Material Analysis')
-                
-        #id = self.inventory.id
-        #if id is None: id = self.inventory.id
-        #else: self.inventory.id = id
-
-#        type = self.inventory.type = 'gulpsimulations'
-#
-#        if not simulation:
-#            simulation = self._getSimulation(director)
-#        id = self.inventory.id = simulation.id  
         
         formcomponent = self.retrieveFormToShow( 'analysisMenu')
         formcomponent.director = director
@@ -73,13 +65,10 @@ class MaterialAnalysis(base):
     def selectAnalysis(self, director):
         '''send to the right method, or form, based on what analytic method is chosen'''
         simulationId, analysisClass = self.processFormInputs(director)
-        # create a new analysis
-        exec('from vnf.dom.%s import %s' % analysisClass)
-        table = analysisClass
-        analysis = director.clerk.newOwnedObject(analysisClass)
-        self.inventory.id = experiment.id
-        analysisId = director.clerk.newOwnedObject()
-        method = getattr(self, selected )
+        # create a new analysis, complete with id
+        #exec('from vnf.dom.%s import %s' % (analysisClass,analysisClass))
+        #analysis = director.clerk.newOwnedObject(analysisClass)
+        method = getattr(self, classToMethod(analysisClass) )
         return method( director )
     
     def sqe(self, director):
@@ -87,22 +76,9 @@ class MaterialAnalysis(base):
             page = director.retrieveSecurePage( 'generic' )
         except AuthenticationError, err:
             return err.page
-        
-        
-
         main = page._body._content._main
         document = main.document(title='S(Q,E) calculation from atomic trajectories')
-                
-        #if id is None: id = self.inventory.id
-        #else: self.inventory.id = id
-
-#        type = self.inventory.type = 'gulpsimulations'
-#
-#        if not simulation:
-#            simulation = self._getSimulation(director)
-#        id = self.inventory.id = simulation.id  
-        
-        formcomponent = self.retrieveFormToShow( 'analysisMenu')
+        formcomponent = self.retrieveFormToShow( 'sqe')
         formcomponent.director = director
         # build the form form
         form = document.form(name='', action=director.cgihome)
@@ -120,6 +96,35 @@ class MaterialAnalysis(base):
         formcomponent.expand( form )
         next = form.control(name='submit',type="submit", value="next")
         return page 
+    
+    def diffusionCoefficient(self, director):
+        try:
+            page = director.retrieveSecurePage( 'generic' )
+        except AuthenticationError, err:
+            return err.page
+        main = page._body._content._main
+        document = main.document(title='Diffusion coefficient from atomic trajectories')
+        formcomponent = self.retrieveFormToShow( 'diffusionCoefficient')
+        formcomponent.director = director
+        # build the form form
+        form = document.form(name='', action=director.cgihome)
+        # specify action
+        action = actionRequireAuthentication(          
+            actor = 'materialanalysis', 
+            sentry = director.sentry,
+            routine = 'selectAnalysis',
+            id=id,
+            arguments = {'form-received': formcomponent.name },
+            )
+        from vnf.weaver import action_formfields
+        action_formfields( action, form )
+        # expand the form with fields of the data object that is being edited
+        formcomponent.expand( form )
+        next = form.control(name='submit',type="submit", value="next")
+        return page 
+    
+def classToMethod(className):
+    return className[0].lower()+className[1:]
     
 
 def actor():

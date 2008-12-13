@@ -29,10 +29,6 @@ class Form( base ):
         
         modelChosen = inv.str('modelChosen', default='vasp')
         modelChosen.meta['tip'] = 'Model or simulation chosen for analysis'
-        
-        analysisType = inv.str('analysisType', default='PAW-PBE')
-        analysisType.validator=inv.choice(['PAW-PBE', 'PAW-GGA', 'LDA'])
-        analysisType.meta['tip'] = 'Exchange correlation functional'
 
     simulationIds=[]
     simulationChoices=[]
@@ -41,10 +37,6 @@ class Form( base ):
         '''expand an existing form with fields from this component'''
         prefix = formactor_action_prefix
 
-#        id_field = form.hidden(
-#            name = '%s.id' % prefix, value = self.inventory.id)
-
-#        record = self.getRecord()
         director = self.director
         simulations = getallsimulations(director.clerk.db)
         if len(simulations):
@@ -71,7 +63,6 @@ class Form( base ):
         analysisChoices=['S(Q,E)','EISF','DOS','Diffusion coefficient',
                          'Mean square displacement']
         entries=zip(analysisChoices,analysisChoices)
-        #eng=str(record.engine)
         analysisTypes = form.selector(id='selector2',
                 name = '%s.analysisTypes'%prefix,
                 entries = entries,
@@ -84,24 +75,6 @@ class Form( base ):
         form actor can direct to the appropriate subsequent form'''
         index = self.simulationChoices.index(self.inventory.modelChosen)
         return self.simulationIds[index], analysisClasses[index]
-#        record = self.getRecord()
-#        props = [
-#            'short_description',
-#            'engine',
-#            'xcFunctional',
-#            'kineticEnergyCutoff',
-#            'displacementAmplitude',
-#            ]
-#        for prop in props:
-#            value = getattr(self.inventory, prop)
-#            setattr(record, prop, value)
-#            continue
-#
-#        record.monkhorstPackMesh = [self.inventory.nKx, self.inventory.nKy, self.inventory.nKz]
-#        record.supercell = [self.inventory.scx, self.inventory.scy, self.inventory.scz]
-#        record.qGrid = [self.inventory.nQx, self.inventory.nQy, self.inventory.nQz]
-#        self.director.clerk.updateRecord(record)
-#        return record
     
     def getRecord(self):
         'get DB record'
