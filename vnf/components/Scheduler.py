@@ -19,7 +19,6 @@ info = journal.info( 'scheduler' )
 
 def schedule( job, director ):
     # copy local job directory to server
-    #manager.initremotedir( )
     server = director.clerk.dereference(job.server)
     server_jobpath = director.dds.abspath(job, server=server)
 
