@@ -1,3 +1,12 @@
 NOTE: the content directory is a link to the same-named 
 directory under the main vnf directory (top-level directory).  To set up vnf 
 using Brandon's configuration simply go to jbk/bin and ./startservices.sh.
+
+
+here are some job building notes:
+
+(03:28:44 AM) Jiao Lin: hi brandon, in case you want to work on job submission, you will need to have a "job builder" and a "computation result retriever". We probably should work on one "job builder" first so that you can see a live, working example.
+(03:29:58 AM) Jiao Lin: This is a good example: http://danse.us/trac/VNET/browser/vnf/trunk/vnf/components/ins/job_builders/BvKComputation.py
+(03:30:41 AM) Jiao Lin: another one is this: http://danse.us/trac/VNET/browser/vnf/trunk/vnf/components/job_builders/NeutronExperiment.py
+(03:32:01 AM) Jiao Lin: Say, for example, you have a computation that is described by table "Vasp". You will need to have a Vasp.py in one of the job_builders directories.
+(03:33:01 AM) Jiao Lin: In that Vasp.py, you will need to implement a class "Builder". And it should have a method _init_ and a method "render".
