@@ -22,17 +22,17 @@ class Builder(base):
         return
 
     def render(self, computation, db=None, dds=None):
+        
+        
+        
+        path = self._path(self.shscriptname)
+        open(path, 'w').write('\n'.join(cmds))
+        
         type = computation.type
         return handler(type)(self.path).render(computation, db=db, dds=dds)
 
 
-def handler(type):
-    from BvKDOSJobBuilder import Builder as DOS
-    from BvKDispersionJobBuilder import Builder as Dispersion
-    d = {'dos': DOS,
-         'disp': Dispersion
-         }
-    return d[type.lower()]
+
 
 
 # version
