@@ -142,6 +142,8 @@ class WebApplication(Base):
             }
         import vnf.weaver
         vnf.weaver.extend_weaver(self.pageMill, configurations )
+
+        if not self.debug: suppressWarnings()
         return
 
 
@@ -172,8 +174,18 @@ class WebApplication(Base):
         return [base]+exts+[config]
         
 
-import journal
-journal.error('pyre.inventory').deactivate()
+
+def suppressWarnings():
+    import journal
+    journal.error('pyre.inventory').deactivate()
+    
+    import warnings
+    categories_to_ignore = [
+        DeprecationWarning,
+        ]
+    for category in categories_to_ignore:
+        warnings.filterwarnings('ignore', category=category)
+    return
 
 # version
 __id__ = "$Id: WebApplication.py,v 1.3 2007-08-30 16:46:08 aivazis Exp $"
