@@ -17,10 +17,10 @@ def newInstrument(db, id, short_description, long_description, category, creator
 
     components_proxy = r.components
     geometer_proxy = r.geometer
-    componentsequence = r.componentsequence
-        
+    componentsequence = r.componentsequence = []
+    
     for componentinfo in componentinfos:
-
+        
         name = componentinfo.name
         component = componentinfo.component
         pinfo = componentinfo.positionalinfo
@@ -36,7 +36,7 @@ def newInstrument(db, id, short_description, long_description, category, creator
 
         componentsequence.append( name )
         continue
-    
+
     db.insertRow( r )
     return r
     
