@@ -441,9 +441,13 @@ class NeutronExperiment(base):
                 os.remove(path)
                 # let dds forget the local copy
                 dds.forget(job, filename=filename)
-                
+
+            # check if it exists in the server
+            if not dds.is_availabe(job, filename=filename, server=server):
+                # if not, skip
+                continue
             # let dds know that it exists in the server
-            dds.remember(job, filename=filename, server=server)
+            #dds.remember(job, filename=filename, server=server)
             # make it available locally
             dds.make_available(job, files=[filename])
             continue
