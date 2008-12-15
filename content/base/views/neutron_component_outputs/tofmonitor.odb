@@ -11,6 +11,14 @@ def _view(datafiles=None, document=None):
     # try:
     from histogram.hdf import load
     f = datafiles[0]
+
+    # check if the file exists
+    if not os.path.exists(f):
+        # if not, just say so
+        p = document.paragraph()
+        p.text = 'File %s does not exist.' % f
+        return
+    
     h = load(f, 'I(tof)')
     x = h.tof; y = h.I
     p = document.paragraph()
