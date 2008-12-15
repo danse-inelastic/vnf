@@ -302,6 +302,23 @@ class Builder(base):
             }
         self.onNeutronComponent( **kwds )
 
+        # need a odb file to enhance the monitor
+        odbname = 'enhanced_%s' % m.label
+        odbcode = """
+def %(name)s():
+    from mcni.pyre_support import componentfactory as component
+    f = component('monitors', 'IQE_monitor', supplier = 'mcstas2')
+    ret =  f('%(odbname)s')
+    from mcstas2.pyre_support.monitor_exts import extend
+    extend( ret )
+    return ret
+    """ % {
+            'name': m.label,
+            'odbname': odbname,
+        }
+        odbcode = odbcode.split('\n')
+        self.odbs.append( ('%s.odb' % odbname, odbcode) )
+        
         opts = {
             '%s.Ei' % m.label: self.Ei,
             '%s.filename' % m.label: outputfilename(m),
