@@ -13,6 +13,7 @@ def _view(datafiles=None, document=None):
     f = datafiles[0]
 
     # check if the file exists
+    import os
     if not os.path.exists(f):
         # if not, just say so
         p = document.paragraph()

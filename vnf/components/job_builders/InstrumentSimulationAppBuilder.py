@@ -28,6 +28,7 @@ class Builder(base):
         from NeutronExperiment import outputdir
         self.cmdline_opts = {
             'output-dir': outputdir,
+            'overwrite-datafiles': True,
             }
         self.odbs = []
         

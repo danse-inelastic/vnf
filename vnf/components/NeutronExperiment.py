@@ -443,7 +443,7 @@ class NeutronExperiment(base):
                 dds.forget(job, filename=filename)
 
             # check if it exists in the server
-            if not dds.is_availabe(job, filename=filename, server=server):
+            if not dds.is_available(job, filename=filename, server=server):
                 # if not, skip
                 continue
             # let dds know that it exists in the server
