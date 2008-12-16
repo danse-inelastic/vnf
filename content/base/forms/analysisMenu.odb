@@ -14,7 +14,7 @@
 from vnf.components.Form import Form as base
 from vnf.components.Actor import actionRequireAuthentication, action_link
 from vnf.components.DBObjectForm import formactor_action_prefix
-from vnf.dom.Analysis import analysisClasses
+from vnf.dom.ins.Analysis import analysisClasses
 
 class Form( base ):
 

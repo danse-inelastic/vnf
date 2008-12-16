@@ -35,6 +35,7 @@ EXPORT_PYTHON_MODULES = \
 	BvKDOSJobBuilder.py \
 	BvKModelRenderer.py \
 	JobBuilder.py \
+	VacfComputation.py \
 	__init__.py \
 
 

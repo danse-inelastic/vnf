@@ -14,11 +14,11 @@
 
 from registry import tableRegistry
 
-from Computation import Computation as base
+from Analysis import Analysis as base
 
-class VacfComputation(base):
+class VelocityAutocorrelation(base):
 
-    name = 'vacfcomputations'
+    name = 'velocityautocorrelations'
 
     import pyre.db
     # the trajectory name can be either a  file name or an id

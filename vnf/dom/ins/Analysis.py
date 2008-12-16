@@ -15,7 +15,7 @@
 from registry import tableRegistry
 
 analysisClasses = ['Sqe','Eisf','Dos','DiffusionCoefficient',
-                       'MeanSquareDisplacement']
+                       'MeanSquareDisplacement','VelocityAutocorrelation']
 
 from Computation import Computation as base
 class Analysis(base):

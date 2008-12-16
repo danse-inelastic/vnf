@@ -15,15 +15,15 @@
 from JobBuilder import JobBuilder as base
 class Builder(base):
 
-    from vnf.dom.ins.VacfComputation import VacfComputation as Computation
+    from vnf.dom.ins.VelocityAutocorrelation import VelocityAutocorrelation as Computation
 
     def __init__(self, path):
         self.path = path
         return
 
     def render(self, computation, db=None, dds=None):
-        
-        
+        from kernelGenerator.trajectory.nMoldynDerived.misc import saveText
+        saveText
         
         path = self._path(self.shscriptname)
         open(path, 'w').write('\n'.join(cmds))

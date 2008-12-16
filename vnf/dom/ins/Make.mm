@@ -30,6 +30,7 @@ all: export
 # export
 
 EXPORT_PYTHON_MODULES = \
+	Analysis.py \
 	BvKComputation.py \
 	BvKModel.py \
 	IDFPhononDispersion.py \
@@ -40,7 +41,7 @@ EXPORT_PYTHON_MODULES = \
 	PolyCrystal.py \
 	PolyXtalCoherentPhononScatteringKernel.py \
 	ScatteringKernel.py \
-	VacfComputation.py \
+	VelocityAutocorrelation.py \
 	__init__.py \
 	_all_tables.py \
 	registry.py \
