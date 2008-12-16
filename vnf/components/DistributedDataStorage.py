@@ -29,7 +29,7 @@ class DistributedDataStorage(base):
 
 
     def remember(self, dbrecord, filename=None, server=None, files=list()):
-        files = _files(filename=filename, files=files)
+        files = _files(dbrecord, filename=filename, files=files)
         for f in files:
             path = self.path(dbrecord, f)
             self._remember(path, server=server)
@@ -38,7 +38,7 @@ class DistributedDataStorage(base):
 
 
     def forget(self, dbrecord, filename=None, server=None, files=list()):
-        files = _files(filename=filename, files=files)
+        files = _files(dbrecord, filename=filename, files=files)
         for f in files:
             path = self.path(dbrecord, f)
             self._forget(path, server=server)
@@ -299,7 +299,7 @@ def _decodesurl(s):
 def _surl(server):
     return '%s@%s(%s)' % (server.username, server.address, server.port)
 
-def _files(files=None, filename=None):
+def _files(dbrecord, files=None, filename=None):
     if files and filename:
         msg = "Both files and filename are supplied: files=%s, filename=%s" % (
             files, filename)
