@@ -9,6 +9,8 @@ For example, to deploy it in Jiao's account on a Mac OS X machine, do the follow
  $ cd ~/Sites/cgi-bin
  $ ln -s ~/dv/danse/VNET/vnf/trunk/deploy/MacOSX/linjiao/cgi-bin vnf
 
+ensure main.cgi is executable and readable
+
 
 Make another symbolic link in (sth similar to)
 

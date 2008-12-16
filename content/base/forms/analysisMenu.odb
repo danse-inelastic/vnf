@@ -18,6 +18,11 @@ from vnf.dom.Analysis import analysisClasses
 
 class Form( base ):
 
+    analysisChoices=['S(Q,E)','EISF','DOS','Diffusion coefficient',
+                         'Mean square displacement','Velocity Autocorrelation Function']
+    simulationIds=[]
+    simulationChoices=[]
+
     class Inventory( base.Inventory ):
 
         import pyre.inventory as inv
@@ -29,9 +34,9 @@ class Form( base ):
         
         modelChosen = inv.str('modelChosen', default='vasp')
         modelChosen.meta['tip'] = 'Model or simulation chosen for analysis'
-
-    simulationIds=[]
-    simulationChoices=[]
+        
+        analysisType = inv.str('analysisType', default='S(Q,E)')
+        analysisType.meta['tip'] = 'type of analysis'
         
     def expand(self, form):
         '''expand an existing form with fields from this component'''
@@ -59,22 +64,20 @@ class Form( base ):
             
         p = form.paragraph()
         p.text = ['Choose a type of analysis:']
-        
-        analysisChoices=['S(Q,E)','EISF','DOS','Diffusion coefficient',
-                         'Mean square displacement']
-        entries=zip(analysisChoices,analysisChoices)
+        entries=zip(self.analysisChoices, self.analysisChoices)
         analysisTypes = form.selector(id='selector2',
                 name = '%s.analysisTypes'%prefix,
                 entries = entries,
                 label = '',
                 selected = self.inventory.analysisType,
-                size=4)           
+                size=5)           
 
     def processUserInputs(self):
         '''note the model's id and analytic method chosen and return them so the
         form actor can direct to the appropriate subsequent form'''
-        index = self.simulationChoices.index(self.inventory.modelChosen)
-        return self.simulationIds[index], analysisClasses[index]
+        simulationIndex = self.simulationChoices.index(self.inventory.modelChosen)
+        analysisIndex = self.analysisChoices.index(self.inventory.analysisType)
+        return self.simulationIds[simulationIndex], analysisClasses[analysisIndex]
     
     def getRecord(self):
         'get DB record'
