@@ -248,7 +248,6 @@ class Builder(base):
             'nu',
             'delta',
             'tc',
-            'nchans',
             'bw',
             'blader',
             ]
@@ -256,6 +255,8 @@ class Builder(base):
         for param in parameters:
             opts[ '%s.%s' %  (component.label,param) ] = getattr(component, param)
             continue
+
+        opts[ '%s.nchan' % (component.label,)] = component.nchans
         
         self.cmdline_opts.update( opts )
         return
