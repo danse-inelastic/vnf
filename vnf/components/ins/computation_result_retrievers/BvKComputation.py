@@ -79,11 +79,60 @@ class Retriever(base):
                 # if not, save it
                 self._save_result(job, filename, dispersion, filename)
 
+        # make file 'Qgridinfo'
+        self._makeQgridinfo(dispersion)
+
         computation.results_state = 'retrieved'
         self.director.clerk.updateRecord(computation)
         return
+
+
+    def _makeQgridinfo(self, dispersion):
+        #
+        director = self.director
+        computation = self.computation
+
+        # reciprocal lattice
+        matter = director.clerk.dereference(computation.matter)
+        lattice = _lattice(matter.cartesian_lattice)
+        b1, b2, b3 = _reciprocal(lattice)
+        contents = []
+        contents.append('b1=%s' % (tuple(b1),))
+        contents.append('b2=%s' % (tuple(b2),))
+        contents.append('b3=%s' % (tuple(b3),))
+
+        # grid sizes
+        N1 = computation.N1
+        contents.append('n1=n2=n3=%d' % N1)
+
+        filename = 'Qgridinfo'
+        dir = director.dds.abspath(dispersion)
+        import os
+        if not os.path.exists(dir): os.makedirs(dir)
+        f = director.dds.abspath(dispersion, filename)
+        open(f, 'w').write('\n'.join(contents))
+        # remember
+        director.dds.remember(dispersion, filename=filename)
+        return
     
 
+import numpy as N
+def _lattice(array):
+    a = N.array(array)
+    a.shape = 3, 3
+    return a
+    
+def _reciprocal(lattice):
+    v = _volume(lattice)
+    a1, a2, a3 = lattice
+    b1 = N.cross(a2,a3)/v
+    b2 = N.cross(a3,a1)/v
+    b3 = N.cross(a1,a2)/v
+    return b1, b2, b3
+
+def _volume(vectors):
+    v0, v1, v2 = vectors
+    return N.dot(v0, N.cross(v1, v2))
 
 # version
 __id__ = "$Id$"
