@@ -12,7 +12,8 @@
 #
 
 
-from Monitor import Monitor as base
+#from Monitor import Monitor as base
+from NeutronComponent import NeutronComponent as base
 class NeutronRecorder(base):
 
     name = 'neutronrecorders'
