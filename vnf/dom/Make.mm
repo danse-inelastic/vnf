@@ -36,6 +36,7 @@ all: export
 
 EXPORT_PYTHON_MODULES = \
 	AbInitio.py \
+	Analysis.py \
 	Block.py \
 	Computation.py \
 	ComputationResult.py \
