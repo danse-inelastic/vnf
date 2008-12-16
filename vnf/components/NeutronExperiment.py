@@ -223,10 +223,11 @@ class NeutronExperiment(base):
         self._add_delete_sentence( document, director )
         if job.state in ['running']:
             self._add_experiment_output(document, director)
+            Scheduler.check(job, director)
         elif job.state in ['finished', 'terminated', 'cancelled']:
             self._add_experiment_results(document, director)
         elif job.state in ['submissionfailed']:
-            self._add_resubmit_sentence(director)
+            self._add_resubmit_sentence(document, director)
         return
 
 
@@ -312,6 +313,8 @@ class NeutronExperiment(base):
     
 
     def _add_resubmit_sentence(self, document, director):
+        experiment = director.clerk.getNeutronExperiment(self.inventory.id)
+        
         p = document.paragraph( )
         p.text = [
             'We have tried to start experiment %r for you but failed.' % experiment.short_description,
@@ -319,7 +322,6 @@ class NeutronExperiment(base):
             'The error message returned from computation server is:',
             ]
 
-        experiment = director.clerk.getNeutronExperiment(self.inventory.id)
         job = director.clerk.dereference(experiment.job)
         
         p = document.paragraph(cls = 'error'  )
@@ -358,7 +360,7 @@ class NeutronExperiment(base):
         p = panel.paragraph()
         p.text = [
             'Experiment %r was started %s on server %r, using %s nodes.' % (
-            experiment.short_description, job.timeStart,
+            experiment.short_description, job.time_start,
             server.short_description,
             job.numprocessors,
             ),
@@ -371,8 +373,13 @@ class NeutronExperiment(base):
             action='')
 
         # loop over components and make display
+        from vnf.dom.neutron_components.Monitor import Monitor
         for name, component in \
                 director.clerk.dereference(instrument.components):
+
+            # skip non monitors
+            if not isinstance(component, Monitor): continue
+            
             self._display_component_output(
                 name, component, datadisplay, director)
         return
@@ -393,8 +400,13 @@ class NeutronExperiment(base):
         job = director.clerk.dereference(experiment.job)
 
         # loop over components and make display
+        from vnf.dom.neutron_components.Monitor import Monitor
         for name, component in \
                 director.clerk.dereference(instrument.components):
+            
+            # skip non monitors
+            if not isinstance(component, Monitor): continue
+            
             self._display_component_output(
                 name, component, panel, director)
 
