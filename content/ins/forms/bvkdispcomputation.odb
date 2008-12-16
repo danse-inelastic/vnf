@@ -31,11 +31,20 @@ class BvKDispersionComputation(base):
             'Typical value is 10.',
             )
 
+        dE = pyre.inventory.str( name = 'dE' )
+        dE.meta['label'] = 'Step size in energy axis'
+        dE.meta['tip'] = 'Step size in frequency axis for computing density of states. unit: THz'
+        dE.meta['tiponerror'] = (
+            'Please enter a positive real number.',
+            'Typical value is 0.1. Unit: THz',
+            )
+
         pass # end of Inventory
 
 
     parameters = [
         'N1',
+        'dE',
         ]
 
     DBTable = 'BvKComputation'
@@ -63,19 +72,28 @@ class BvKDispersionComputation(base):
 
     def processUserInputs(self, *args, **kwds):
         errors = []
-        self._verifyN1( errors )
+        
+        if not isPositiveInteger(self.inventory.N1): errors.append('N1')
+        if not isPositiveFloat(self.inventory.dE): errors.append('dE')
+        
         if len(errors): raise InputProcessingError, errors
         return base.processUserInputs(self, *args, **kwds)
 
 
-    def _verifyN1(self, errors):
-        prop = 'N1'
-        value = self.inventory.N1
-        try:
-            value = int(value)
-            if value < 0: errors.append( prop )
-        except:  errors.append(prop)
-        return
+def isPositiveInteger(value):
+    try:
+        value = int(value)
+    except:
+        return False
+    return value > 0
+
+
+def isPositiveFloat(value):
+    try:
+        value = float(value)
+    except:
+        return False
+    return value > 0
 
 
 def form(): return BvKDispersionComputation()

@@ -128,7 +128,11 @@ class Actor(base):
         # should have a visitor like pattern to do "viewing" depending on
         # the type of the result and put views together...
         dos = results[0][1]
-        
+
+        # make the dos object available locally
+        director.dds.make_available(dos)
+        # read the dos
+        path = director.dds.abspath(dos, 'data.idf')
         x,y = _readdos(dos, director)
         
         import vnf.content
@@ -141,6 +145,25 @@ class Actor(base):
     
     
     def _view_disp_results(self, computation, document, director):
+        results = computation.results.dereference(director.clerk.db)
+
+        # bad implementation ...
+        # should have a visitor like pattern to do "viewing" depending on
+        # the type of the result and put views together...
+        dispersion = results[0][1]
+        
+        # make the DOS of the dispersion object available locally
+        director.dds.make_available(dispersion, files=['DOS'])
+        # read the dos
+        path = director.dds.abspath(dispersion, filename='DOS')
+        x,y = _readdos(path)
+        
+        import vnf.content
+        data = x,y
+        options = {}
+        plot = vnf.content.plot_2d( data, options )
+        
+        document.contents.append( plot )
         p = document.paragraph()
         p.text = [
             'Under construction...',
@@ -215,16 +238,13 @@ class Actor(base):
 
 
 
-
-def _readdos(dos, director):
-    director.dds.make_available(dos)
-    path = director.dds.abspath(dos, 'data.idf')
+def _readdos(path):
     import os
     path = os.path.abspath(path)
     from vnf.components.ins.idf import DOS
     read = DOS.read(path)
     (filetype, version, comment), E, I = read
-    return E,I    
+    return E,I
 
 
 from vnf.components.ins.BvK import getSystem

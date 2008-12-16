@@ -33,9 +33,10 @@ class Builder(base):
 
     def _make_script(self, bvkcomputation):
         N1 = bvkcomputation.N1
+        dE = bvkcomputation.dE
         cmds = [
             'source ~/.bvk',
-            'bvkdisp.py -N %s %s' % (N1, self.modelbuilder.systempy),
+            'bvkdisp.py -d %s -N %s %s' % (dE, N1, self.modelbuilder.systempy),
             ]
         path = self._path(self.shscriptname)
         open(path, 'w').write('\n'.join(cmds))

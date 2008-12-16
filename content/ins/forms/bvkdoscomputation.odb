@@ -24,11 +24,11 @@ class BvKDOSComputation(base):
         import pyre.inventory
         
         dE = pyre.inventory.str( name = 'dE' )
-        dE.meta['label'] = 'Step size in energy axis'
-        dE.meta['tip'] = 'Step size in energy axis for computing density of states. unit: meV'
+        dE.meta['label'] = 'Step size in frequency axis'
+        dE.meta['tip'] = 'Step size in frequency axis for computing density of states. unit: THz'
         dE.meta['tiponerror'] = (
-            'Please enter a positive real number for dE.',
-            'Typical value is 0.5. Unit: meV',
+            'Please enter a positive real number',
+            'Typical value is 0.1. Unit: THz',
             )
 
         pass # end of Inventory

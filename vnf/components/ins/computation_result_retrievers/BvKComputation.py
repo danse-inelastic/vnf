@@ -61,7 +61,7 @@ class Retriever(base):
         job = director.clerk.dereference(computation.job)
 
         expected_files = [
-            #'DOS',
+            'DOS',
             'Omega2',
             'Polarizations',
             'WeightedQ',
