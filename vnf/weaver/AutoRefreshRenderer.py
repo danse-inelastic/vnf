@@ -26,7 +26,7 @@ class AutoRefreshRenderer:
         htmlcode = []
         includes = []
         jscode = []
-        jscode += ('''
+        jscode += '''
         <!--
 
         /*
@@ -35,9 +35,9 @@ class AutoRefreshRenderer:
         Over 200+ free scripts here!
         */
 
-        //enter refresh time in "minutes:seconds" Minutes should range from 0 to inifinity. Seconds should range from 0 to 59
-        var limit="%s"
-
+        //enter refresh time in "minutes:seconds" Minutes should range from 0 to inifinity. Seconds should range from 0 to 59'''.split('\n')
+        jscode.append('       var limit="%s"' % limitstr)
+        jscode += '''
         var parselimit=limit.split(":")
         parselimit=parselimit[0]*60+parselimit[1]*1
 
@@ -59,7 +59,7 @@ class AutoRefreshRenderer:
 
         window.onload=beginrefresh
         //-->
-        ''' % limitstr).split('\n')
+        '''.split('\n')
         
         codes = csscode + includes + ['<script>']  + jscode + ['</script>'] + htmlcode
         return codes
@@ -74,6 +74,9 @@ class AutoRefreshRenderer:
 
     pass 
     
+
+import os
+
 
 # version
 __id__ = "$Id$"
