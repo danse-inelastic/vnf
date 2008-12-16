@@ -62,6 +62,9 @@ class Job(base):
         name = 'computation', tableRegistry = tableRegistry)
     computation.meta['tip'] = 'The compuation that this job is about'
 
+    import vnf.dom
+    dependencies = vnf.dom.referenceSet(name='dependencies')
+
 
 # version
 __id__ = "$Id$"

@@ -85,12 +85,9 @@ class SubmitJob(base):
 
 
     def prepare_dependency(self, dep, job):
-        type, id = dep
-        record = self.clerk.getRecordByID(type, id)
-        self.dds.remember(record)
-        
+        self.dds.remember(dep)
         server = self.clerk.dereference(job.server)
-        self.dds.make_available(record, server=server)
+        self.dds.make_available(dep, server=server)
         return
 
 

@@ -29,15 +29,21 @@ It needs to contain:
 class JobBuilder(object):
 
     shscriptname = 'run.sh'
-    dependencies_path = '__dependencies__'
 
     def __init__(self, path):
         self.path = path
         self._init_rootdir()
         return
+
+
+    def build(self, computation, db=None, dds=None):
+        self.computation = computation
+        self.db = db
+        self.dds = dds
+        return self.render(computation, db=db, dds=dds)
     
 
-    def render(self, computation, db=None):
+    def render(self, computation, db=None, dds=None):
         raise NotImplementedError
 
 
@@ -49,24 +55,24 @@ class JobBuilder(object):
         The data files for the db record DOS(id=ABCDE) need to be made 
         available at the computation server.
         '''
-        type = dependency.name
-        id = dependency.id
-        path = self._path(self.dependencies_path)
-        entry = '%s,%s\n' % (type, id)
-        lines = open(path).readlines()
-        if entry not in lines:
-            f = open(path, 'a')
-            f.write(entry)
-            del f
+        db = self.db
+
+        computation = self.computation
+        job = computation.job.dereference(db)
+        dependencies = job.dependencies
+
+        dependencies.add(dependency, db=db)
         return
 
 
     def getDependencies(self):
-        path = self._path(self.dependencies_path)
-        if not os.path.exists(path): return []
-        f = open(path)
-        deps = f.read().split('\n')
-        return [dep.split(',') for dep in deps if dep]
+        db = self.db
+        
+        computation = self.computation
+        job = computation.job.dereference(db)
+        dependencies = job.dependencies
+        
+        return [value for key, value in dependencies.dereference(db)]
     
 
     def _path(self, filename):

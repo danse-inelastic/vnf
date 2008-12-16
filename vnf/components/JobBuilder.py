@@ -19,7 +19,7 @@ class JobBuilder:
         depositories = [None] + extensions
         Builder = findBuilder(computation.__class__, depositories)
         builder = Builder(path)
-        files = builder.render(computation, db=db, dds=dds)
+        files = builder.build(computation, db=db, dds=dds)
         deps = builder.getDependencies()
         return files, deps
         

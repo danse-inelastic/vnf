@@ -27,6 +27,7 @@ class Builder(base):
     
 
     def render(self, experiment, db=None, dds=None):
+        self.experiment = experiment
         self.db = db
         self.dds = dds
         return self.dispatch(experiment)
@@ -75,7 +76,9 @@ class Builder(base):
 
     def onInstrumentConfiguration(self, configuration):
         from InstrumentSimulationAppBuilder import Builder
-        return Builder(self.path).render(configuration, db = self.db, dds = self.dds)
+        builder = Builder(self.path)
+        builder.computation = self.experiment
+        return builder.render(configuration, db = self.db, dds = self.dds)
 
 
     def onSampleAssembly(self, sampleassembly):
