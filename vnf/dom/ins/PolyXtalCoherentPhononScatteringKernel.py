@@ -12,6 +12,8 @@
 #
 
 
+from PhononDispersion import PhononDispersion
+
 from registry import tableRegistry
 
 from ScatteringKernel import ScatteringKernel as base
@@ -21,18 +23,17 @@ class PolyXtalCoherentPhononScatteringKernel(base):
     
     import pyre.db
 
-    dispersion = pyre.db.versatileReference(
-        name = 'dispersion', tableRegistry = tableRegistry )
+    dispersion = pyre.db.reference(name = 'dispersion', table = PhononDispersion)
     
-    max_energy_transfer = pyre.db.real( name = 'max_energy_transfer', default = 55. )
+    max_energy_transfer = pyre.db.real(name = 'max_energy_transfer', default = 55.)
 
-    max_momentum_transfer = pyre.db.real( name = 'max_momentum_transfer', default = 12.5 )
+    max_momentum_transfer = pyre.db.real(name = 'max_momentum_transfer', default = 12.5)
 
     pass # end of PolyXtalCoherentPhononScatteringKernel
 
 
 def inittable(db):
-    def k( id, dispersion, max_energy_transfer, max_momentum_transfer):
+    def k(id, dispersion, max_energy_transfer, max_momentum_transfer):
         r = PolyXtalCoherentPhononScatteringKernel()
         r.id = id
         r.dispersion = dispersion
@@ -40,16 +41,16 @@ def inittable(db):
         r.max_momentum_transfer = max_momentum_transfer
         return r
 
-    from IDFPhononDispersion import IDFPhononDispersion
+    from PhononDispersion import PhononDispersion
     records = [
-        k( 'polyxtalcoherentphononscatteringkernel-fccNi-0',
-           (IDFPhononDispersion, 'idf-phonon-dispersion-fccNi-0'),
-           55.,
-           12.5,
-           ),
+        k('polyxtalcoherentphononscatteringkernel-fccNi-0',
+          'phonon-dispersion-fccNi-0',
+          55.,
+          12.5,
+          ),
         ]
 
-    for r in records: db.insertRow( r )
+    for r in records: db.insertRow(r)
     return
 
 

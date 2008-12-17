@@ -12,12 +12,27 @@
 #
 
 
-from OwnedObject import OwnedObject as base
-class PhononDispersion(base):
+from OwnedObject import OwnedObject as base1
+from ComputationResult import ComputationResult as base2
+class PhononDispersion(base1, base2):
 
     name = 'phonondispersions'
     
     pass # end of Dispersion
+
+
+def inittable(db):
+    def new(id):
+        r = PhononDispersion()
+        r.id = id
+        return r
+
+    records = [
+        new('phonon-dispersion-fccNi-0'),
+        ]
+
+    for r in records: db.insertRow(r)
+    return
 
 
 # version

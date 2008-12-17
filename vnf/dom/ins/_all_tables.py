@@ -5,6 +5,7 @@ def tables():
 
 
     kernels = [
+        'PolyXtalCoherentPhononScatteringKernel',
         ]
 
 

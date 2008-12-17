@@ -33,7 +33,7 @@ EXPORT_PYTHON_MODULES = \
 	Analysis.py \
 	BvKComputation.py \
 	BvKModel.py \
-	IDFPhononDispersion.py \
+	ComputationResult.py \
 	MaterialModeling.py \
 	OwnedObject.py \
 	PhononDispersion.py \
