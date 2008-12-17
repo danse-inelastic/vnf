@@ -48,7 +48,9 @@ class Builder(base):
         configured_instrument = experiment.instrument_configuration.dereference(self.db)
         self.dispatch(configured_instrument)
 
-        sampleassembly = experiment.sampleassembly.dereference(self.db)
+        sampleassembly = experiment.sampleassembly
+        if sampleassembly:
+            sampleassembly = sampleassembly.dereference(self.db)
         if sampleassembly:
             self.dispatch( sampleassembly )
         
