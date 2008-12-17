@@ -32,6 +32,7 @@ all: export
 EXPORT_PYTHON_MODULES = \
 	Test.py \
 	ARCS_beam.py \
+	IdealPowderINS.py \
 	Pharos.py \
 	Powgen3.py \
 	SANS_NG7.py \

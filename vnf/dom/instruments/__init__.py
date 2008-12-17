@@ -16,6 +16,7 @@ thispackage = 'vnf.dom.instruments'
 
 instruments = [
     'ARCS_beam',
+    'IdealPowderINS',
     'SANS_NG7',
     'SEQUOIA',
     'Pharos',
