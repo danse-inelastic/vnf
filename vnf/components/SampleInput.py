@@ -28,7 +28,7 @@ class SampleInput(FormActor):
         
     def inputMaterial(self, director):
         try:
-            page = director.retrievePage( 'sampleInput' )
+            page = director.retrievePage( 'generic' )
         except AuthenticationError, err:
             return err.page
 #        experiment = director.clerk.getNeutronExperiment(self.inventory.id)
@@ -62,7 +62,7 @@ class SampleInput(FormActor):
     
     def selectShape(self, director):
         try:
-            page = director.retrieveSecurePage( 'sampleInput' )
+            page = director.retrieveSecurePage( 'generic' )
         except AuthenticationError, err:
             return err.page
 #        experiment = director.clerk.getNeutronExperiment(self.inventory.id)
@@ -101,7 +101,7 @@ class SampleInput(FormActor):
         
     def inputPlate(self, director):
         try:
-            page = director.retrieveSecurePage( 'sampleInput' )
+            page = director.retrieveSecurePage( 'generic' )
         except AuthenticationError, err:
             return err.page
 #        experiment = director.clerk.getNeutronExperiment(self.inventory.id)
