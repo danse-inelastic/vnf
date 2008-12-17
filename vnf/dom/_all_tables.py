@@ -72,17 +72,20 @@ tablemodules = \
 
 def tables():
     # tables in this package
-    #   normal tables
+
     tables = []
+
+    #   hidden tables
+    from _hidden_tables import tables as _hidden_tables
+    tables += _hidden_tables()
+    
+    #   normal tables
     for t in tablemodules:
         m = '%s.%s' % (main_dom, t)
         module = _import(m)
         table = getattr(module, t)
         tables.append( table )
         continue
-    #   hidden tables
-    from _hidden_tables import tables as _hidden_tables
-    tables += _hidden_tables()
 
     # other dom packages in standard places
     domexts = []
