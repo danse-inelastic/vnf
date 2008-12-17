@@ -70,9 +70,9 @@ class Builder(base):
 
         sequence = instrument.componentsequence
         
-        if 'sample' in sequence:
-            self.onSample( )
-            pass # end if
+        #if 'sample' in sequence:
+        #    self.onSample( )
+        #    pass # end if
 
         self._outdent()
 
@@ -288,7 +288,7 @@ class Builder(base):
         return
 
 
-    def onSample(self):
+    def onSampleComponent(self, component):
         self._write(
             "sample = facility( 'sample', default = 'sample' )"
             )
@@ -322,8 +322,9 @@ def %(name)s():
         self.odbs.append( ('%s.odb' % odbname, odbcode) )
         
         opts = {
-            '%s.Ei' % m.label: self.Ei,
-            '%s.filename' % m.label: outputfilename(m),
+            m.label: odbname,
+            '%s.Ei' % odbname: self.Ei,
+            '%s.filename' % odbname: outputfilename(m),
             }
 
         parameters = [
@@ -334,7 +335,7 @@ def %(name)s():
             ]
 
         for param in parameters:
-            opts[ '%s.%s' %  (m.label,param) ] = getattr(m, param)
+            opts[ '%s.%s' %  (odbname,param) ] = getattr(m, param)
             continue
         
         self.cmdline_opts.update( opts )

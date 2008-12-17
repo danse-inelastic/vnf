@@ -358,7 +358,13 @@ class NeutronExperimentWizard(base):
         action_formfields( action, form )
 
         # present the component list
+        from vnf.dom.neutron_components.SampleComponent import SampleComponent
         for name, component in components:
+            
+            # if it is sample place holder, skip
+            if isinstance(component, SampleComponent): continue
+
+            #
             p = form.paragraph()
             action = actionRequireAuthentication(
                 actor = 'neutronexperimentwizard', sentry = director.sentry,
@@ -937,7 +943,11 @@ class NeutronExperimentWizard(base):
             continue
 
         if sample is None: raise RuntimeError, "No sample in sample assembly"
-        return self.material_simulation(director)
+
+        if not _hasKernel(sample, director.clerk.db):
+            return self.material_simulation(director)
+        
+        return self.submit_experiment(director)
 
 
     def material_simulation(self, director):
@@ -1914,6 +1924,11 @@ def _get_kernels_from_scatterer(scatterer, db):
     kernels_refset = scatterer.kernels
     kernels = kernels_refset.dereference(db)
     return kernels
+
+
+def _hasKernel(sample, db):
+    kernels = _get_kernels_from_scatterer(sample, db)
+    return len(kernels)
 
 
 def _describe_kernel(kernel):

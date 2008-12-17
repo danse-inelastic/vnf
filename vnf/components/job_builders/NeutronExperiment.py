@@ -17,10 +17,6 @@ class Builder(base):
 
     from vnf.dom.NeutronExperiment import NeutronExperiment as Computation
 
-    def __init__(self, path):
-        self.path = path
-        return
-
     def render(self, computation, db=None, dds=None):
         from NeutronExperimentSimulationRunBuilder import Builder
         return Builder(self.path).render(computation, db=db, dds=dds)

@@ -11,9 +11,10 @@
 
 
 from pyre.weaver.mills.XMLMill import XMLMill
+from JobBuilder import JobBuilder
 
 
-class Builder(XMLMill):
+class Builder(JobBuilder, XMLMill):
 
 
     def __init__(self, path):
@@ -22,19 +23,33 @@ class Builder(XMLMill):
         '''
         self.path = path
         XMLMill.__init__(self)
+        
+        self.filenames = []
+        self.dependencies = []
         return
     
 
-    def render(self, scatterer):
+    def render(self, scatterer, db=None, dds=None):
+        self.db = db
+        self.dds = dds
+        
         self.dispatch(scatterer)
+
+        del self.db, self.dds
+        
         contents = self._rep
 
         name = scatterer.short_description.replace( ' ', '_' )
+        filename = '%s-scatterer.xml' % name 
         import os
-        filename = os.path.join( self.path, '%s-scatterer.xml' % name )
-
-        open( filename, 'w').write( '\n'.join( contents ) )
+        filepath = os.path.join(self.path, filename)
+        open( filepath, 'w').write( '\n'.join( contents ) )
+        self.filenames.append(filename)
         return
+
+
+    def getDependencies(self): return self.dependencies
+    def getFilenames(self): return self.filenames
     
 
     def dispatch(self, something):
@@ -43,16 +58,8 @@ class Builder(XMLMill):
         return f( something )
 
 
-    def onConfiguredScatterer(self, configured ):
-        prototype = configured.scatterer
-        configuration = configured.configuration
-        from ScattererConfigurationApplyer import applyer
-        applyer( prototype ).apply( configuration )
-        return self.dispatch( prototype )
-
-
     def onScatterer(self, scatterer):
-        matter = scatterer.matter.realmatter
+        matter = scatterer.matter.dereference(self.db)
         mattertype = matter.__class__.__name__
         handler = 'on%sScatterer' % mattertype
         return getattr(self, handler)( scatterer )
@@ -70,7 +77,7 @@ class Builder(XMLMill):
         self._write( '<homogeneous_scatterer %s>' % attribs_str( attrs ) )
         self._indent()
         
-        for kernel in scatterer.kernels:
+        for name, kernel in scatterer.kernels.dereference(self.db):
             self.dispatch( kernel )
             continue
 
@@ -79,16 +86,9 @@ class Builder(XMLMill):
         return
 
 
-    def onScatteringKernel(self, kernel):
-        realscatteringkernel = kernel.realscatteringkernel
-        self.dispatch( realscatteringkernel )
-        return
-
-
     def onPolyXtalCoherentPhononScatteringKernel(self, kernel):
         attrs = {
-            #'Ei': kernel.Ei,
-            'Ei': '60*meV',
+            'Ei': '%s*meV' % kernel.Ei,
             'max-omega': '%s*meV' % kernel.max_energy_transfer,
             'max-Q': '%s*angstrom**-1' % kernel.max_momentum_transfer,
             'nMCsteps_to_calc_RARV': 10000,
@@ -98,7 +98,7 @@ class Builder(XMLMill):
                      attribs_str( attrs ) )
 
         self._indent()
-        dispersion = kernel.dispersion
+        dispersion = kernel.dispersion.dereference(self.db)
         self.dispatch( dispersion )
         self._outdent()
 
@@ -107,13 +107,13 @@ class Builder(XMLMill):
 
 
     def onPhononDispersion(self, dispersion):
-        realphonondispersion = dispersion.realphonondispersion
-        self.dispatch( realphonondispersion )
-        return
-    
+        self.dependencies.append(dispersion)
 
-    def onIDFPhononDispersion(self, dispersion):
-        self._write( '<LinearlyInterpolatedDispersion idf-data-path="%s"/>' % dispersion.id )
+        # this is done by assuming the <table>/<id> directory structure for data storage
+        # should be replaced later
+        import os
+        relpath = os.path.join( '..', '..', self.dds.path(dispersion))
+        self._write( '<LinearlyInterpolatedDispersion idf-data-path="%s"/>' % relpath )
         return
 
 

@@ -36,7 +36,6 @@ EXPORT_PYTHON_MODULES = \
 	JobBuilder.py \
 	McstasSampleBuilder.py \
 	McvineSampleAssemblyBuilder.py \
-	McvineSampleAssemblyDatafilesCollector.py \
 	McvineScattererXMLBuilder.py \
 	NeutronExperiment.py \
 	NeutronExperimentSimulationRunBuilder.py \

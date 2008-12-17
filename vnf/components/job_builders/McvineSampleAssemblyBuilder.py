@@ -21,31 +21,40 @@ class Builder:
         return
     
 
-    def render(self, sampleassembly, filedb=None):
+    def render(self, sampleassembly, db=None, dds=None):
+        self.db = db; self.dds = dds
+
+        self.dependencies = []
+        self.filenames = []
         
         # the sample assembly xml
         from SampleAssemblyXMLBuilder import Builder
-        import os
-        filename = os.path.join( self.path, self.sampleassemblyxmlfilename )
-        Builder(filename).render(sampleassembly)
+        filename = self.sampleassemblyxmlfilename
+        filepath = self._path(filename)
+        builder = Builder(filepath)
+        builder.render(sampleassembly, db=db, dds=dds)
+        self.filenames.append(filename)
+        self.filenames += builder.getFilenames()
+        del builder
 
         # xml files for scatterers
         from McvineScattererXMLBuilder import Builder
         builder = Builder(self.path)
-        scatterers = sampleassembly.scatterers
-        for scatterer in scatterers:
-            builder.render( scatterer )
+        scatterers = sampleassembly.scatterers.dereference(db)
+        for name, scatterer in scatterers:
+            builder.render(scatterer, db=db, dds=dds)
             continue
-
-        # other data files
-        from McvineSampleAssemblyDatafilesCollector import Collector
-        collector = Collector(self.path)
-        collector.render(sampleassembly, filedb = filedb)
+        self.dependencies += builder.getDependencies()
+        self.filenames += builder.getFilenames()
 
         # odb file for the sample assembly
-        options = self._build_odb( )
-        
-        return options
+        self.options = self._build_odb( )
+        return
+
+
+    def getOptions(self): return self.options
+    def getDependencies(self): return self.dependencies
+    def getFilenames(self): return self.filenames
 
 
     def _build_odb(self):
@@ -58,19 +67,23 @@ class Builder:
             "def sample(): return componentfactory('samples', 'SampleAssemblyFromXml' )('sampleassembly')",
             ]
         
-        path = self.path
         filename = 'sampleassembly.odb'
-        import os
-        filepath = os.path.join( path, filename )
+        filepath = self._path(filename)
         open( filepath, 'w').write( '\n'.join( contents ) )
+        self.filenames.append(filename)
         
         options = {}
         options[ 'sample' ] = 'sampleassembly'
         options[ 'sampleassembly.xml' ] = self.sampleassemblyxmlfilename
-        
+
         return options
 
 
+    def _path(self, filename):
+        import os
+        return os.path.join(self.path, filename)
+
+    
     pass # Builder
 
 

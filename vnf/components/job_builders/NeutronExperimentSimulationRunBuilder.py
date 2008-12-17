@@ -27,9 +27,14 @@ class Builder(base):
     
 
     def render(self, experiment, db=None, dds=None):
-        self.experiment = experiment
+        self.computation = self.experiment = experiment
         self.db = db
         self.dds = dds
+        
+        self.dependencies = []
+        self.filenames = []
+        self.pyscriptcontents = []
+        self.options = {}
         return self.dispatch(experiment)
 
 
@@ -41,23 +46,23 @@ class Builder(base):
 
     def onNeutronExperiment(self, experiment):
         configured_instrument = experiment.instrument_configuration.dereference(self.db)
-        pyscriptcontents, options, odbs = self.dispatch(configured_instrument)
+        self.dispatch(configured_instrument)
 
-        sampleassembly = experiment.sampleassembly
+        sampleassembly = experiment.sampleassembly.dereference(self.db)
         if sampleassembly:
-            options1 = self.dispatch( sampleassembly )
-            options.update( options1 )
-            pass
+            self.dispatch( sampleassembly )
         
         parameters = [ 'ncount' ]
         for parameter in parameters:
-            options[ parameter ] = getattr(experiment, parameter )
+            self.options[ parameter ] = getattr(experiment, parameter )
             continue
 
         pyscriptname = self.pyscriptname
+
+        #construct command line
         command = '. ~/.mcvine && python %s %s' % (pyscriptname, ' '.join(
-            ['--%s="%s"' % (item, options.get(item))
-             for item in options ] ) )
+            ['--%s="%s"' % (item, self.options.get(item))
+             for item in self.options ] ) )
 
         #######################
         # this is only for debuggiing purpose:
@@ -65,20 +70,29 @@ class Builder(base):
         #######################
 
         shscriptname = self.shscriptname
-        files = [ (pyscriptname, pyscriptcontents),
+        files = [ (pyscriptname, self.pyscriptcontents),
                   (shscriptname, [command] ),
                   ]
-        files += odbs
-        self._createdatadir()
         self._createfiles(files)
-        return [f for f,c in files]
+        self.filenames += [pyscriptname, shscriptname]
+
+        # register dependencies
+        for dep in self.dependencies: self.registerDependency(dep)
+        
+        return self.filenames
 
 
     def onInstrumentConfiguration(self, configuration):
         from InstrumentSimulationAppBuilder import Builder
         builder = Builder(self.path)
         builder.computation = self.experiment
-        return builder.render(configuration, db = self.db, dds = self.dds)
+        pyscriptcontents, options, odbs = builder.render(configuration, db = self.db, dds = self.dds)
+        self.pyscriptcontents += pyscriptcontents
+        self.options.update(options)
+        for odb, content in odbs:
+            self._createfile(odb, content)
+        self.filenames += [odb for odb, c in odbs]
+        return
 
 
     def onSampleAssembly(self, sampleassembly):
@@ -87,26 +101,23 @@ class Builder(base):
         else:
             from McstasSampleBuilder import Builder
             pass
-        return Builder(self.path).render(sampleassembly, db = self.db, dds = self.dds)
-
-
-    def _createdatadir(self):
-        import os
-        try:
-            os.makedirs(self.path)
-        except OSError, msg:
-            debug.log('failed to make path %r: %s' % (self.path, msg))
+        builder = Builder(self.path)
+        builder.render(sampleassembly, db = self.db, dds = self.dds)
+        self.dependencies += builder.getDependencies()
+        self.filenames += builder.getFilenames()
+        self.options.update(builder.getOptions())
         return
 
 
     def _createfiles( self, files):
-        path = self.path
-
-        import os
         for filename, filecontents in files:
-            filepath = self._path(filename)
-            open( filepath, 'w' ).write( '\n'.join( filecontents ) )
-            continue
+            self._createfile(filename, filecontents)
+        return
+
+
+    def _createfile(self, filename, contents):
+        filepath = self._path(filename)
+        open( filepath, 'w' ).write( '\n'.join( contents ) )
         return
 
     
