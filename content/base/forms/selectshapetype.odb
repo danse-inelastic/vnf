@@ -29,11 +29,9 @@ class Form( base ):
         shape = pyre.inventory.int( 'shape' )
         pass # end of Inventory
 
-
     def legend(self):
         'return a legend string'
         return 'Select shape type'
-
 
     def expand(self, form):
         '''expand an existing form with fields from this component'''

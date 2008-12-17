@@ -57,7 +57,7 @@ class SampleInput(FormActor):
         # expand the form with fields of the data object that is being edited
         formcomponent.expand( form )
         submit = form.control(name='submit',type="submit", value="next")
-        #self.processFormInputs(director)
+        self.processFormInputs(director)
         return page  
     
     def selectShape(self, director):
@@ -130,7 +130,7 @@ class SampleInput(FormActor):
         # expand the form with fields of the data object that is being edited
         formcomponent.expand( form )
         submit = form.control(name='submit',type="submit", value="submit")
-        #self.processFormInputs(director)
+        self.processFormInputs(director)
         return page
     
     def inputCylinder(self, director):
@@ -164,7 +164,7 @@ class SampleInput(FormActor):
         # expand the form with fields of the data object that is being edited
         formcomponent.expand( form )
         submit = form.control(name='submit',type="submit", value="submit")
-        #self.processFormInputs(director)
+        self.processFormInputs(director)
         return page
 
 
