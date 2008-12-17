@@ -31,9 +31,11 @@ class Form( base ):
         p = form.paragraph()
         p.text=['Select sample shape']
         name = '%s.%s' % (formactor_action_prefix, 'sampleShape')
-        box=form.box()
-        plate=box.radio(id='radio1',name=name, label = "Plate", value = 'plate')       
-        cylinder=box.radio(id='radio2',name=name, label = "Cylinder", value = 'cylinder') 
+#        box=form.box()
+#        plate=box.radio(id='radio1',name=name, label = "Plate", value = 'plate')       
+#        cylinder=box.radio(id='radio2',name=name, label = "Cylinder", value = 'cylinder') 
+        plate=form.radio(id='radio1',name=name, label = "Plate", value = 'plate')       
+        cylinder=form.radio(id='radio2',name=name, label = "Cylinder", value = 'cylinder') 
         
         
         p = form.paragraph()
@@ -42,7 +44,7 @@ class Form( base ):
 
     def processUserInputs(self):
         'process user input '
-        return routines[self.inventory.sampleShape]
+        return self.routines[self.inventory.sampleShape]
 
 
 #formactor_action_prefix = 'actor.form-received' # assumed actor is a form actor
