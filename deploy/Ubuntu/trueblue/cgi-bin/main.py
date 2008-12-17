@@ -87,12 +87,15 @@ def main():
 
 # main
 if __name__ == '__main__':
-
+    import os
+#    try:
+#        os.system('rm -f /home/jbk/DANSE/vnf/html/test.html')
+#    except:
+#        pass
     try:
         main()
     except:
         import traceback
-        import os
         user = os.environ.get('USER') or 'webserver'
         out = open( '/tmp/vnf-error-%s.log' % user, 'w' )
         out.write( traceback.format_exc() )

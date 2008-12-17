@@ -175,6 +175,7 @@ class Form( base ):
         record = table()
         return record
     
+formactor_action_prefix = 'actor.form-received' # assumed actor is a form actor
 
 def form(): return Form( 'inputMaterial' )
 

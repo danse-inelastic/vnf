@@ -14,10 +14,8 @@
 <inventory>
 
   <component name='main'>
-    <property name='actor'>materialanalysis</property> 
-    <property name='routine'>default</property>  
-    <property name="home">http://trueblue.caltech.edu/vnf/</property>
-    <property name="cgi-home">http://trueblue.caltech.edu/cgi-bin/vnf/main.cgi</property>
+    <property name='actor'>sampleInput</property>
+    <property name='routine'>inputMaterial</property>   
     <component name='sentry'>
     	<property name='username'>demo</property>
     	<property name='passwd'>demo</property>
