@@ -35,10 +35,10 @@ class Form( base ):
         
         # get default values from the inventory if new or from the previous
         # record if old
-        if self.inventory.id == '':
-            configuration = self.inventory
-        else:
-            configuration = self.getRecord()
+#        if self.inventory.id == '':
+#            configuration = self.inventory
+#        else:
+#            configuration = self.getRecord()
             
         prefix = formactor_action_prefix
           
