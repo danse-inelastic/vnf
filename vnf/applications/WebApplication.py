@@ -165,13 +165,12 @@ class WebApplication(Base):
     def _getPrivateDepositoryLocations(self):
         from os.path import join
         root = '..'
-        base = join(root, 'content/base')
+        content = join(root, 'content')
         config = join(root, 'config')
         
-        from vnf import extensions
-        exts = [join(root, 'content', e) for e in extensions]
-        
-        return [base]+exts+[config]
+        from vnf.depositories import depositories
+
+        return depositories(content)+[config]
         
 
 
