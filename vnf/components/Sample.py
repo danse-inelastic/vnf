@@ -41,8 +41,7 @@ class Sample(Actor):
 
         # retrieve id:record dictionary from db
         clerk = director.clerk
-        scatterers = clerk.indexScatterers().values()
-        samples = scatterers
+        samples = clerk.indexSamples().values()
             
         p = document.paragraph()
         import operator

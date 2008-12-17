@@ -60,20 +60,17 @@ class Form( base ):
         id_field = form.hidden(
             name = '%s.id' % prefix, value = configuration.id)
         
-#        p = form.paragraph()
-#        p.text = ['''Input the sample name''']
-        
         self.name = form.text(id='name', name='name', label='Sample Name')
         #self.name.help = 'An identifying name for this sample.'
         
         
         p = form.paragraph()
-        p.text = ['''Import the sample from the Crystallography Open Database''']
+        p.text = ['''Import the sample from a database:''']
         p = form.paragraph()
         p.text = ['''<a href="java/cod2.jnlp"><img src="images/CodPicture.gif" alt="CodUI"/></a>''']        
         
         p = form.paragraph()
-        p.text = ['''Input lattice parameters manually'''] 
+        p.text = ['''or input material parameters manually (for a liquid or disordered material enter a large box):'''] 
 #        p.text = ['''Input lattice parameters a b c, and a list of atomic 
 #positions in xyz format such as<br> 
 #Fe   0.0 0.0 0.0<br>
@@ -143,7 +140,6 @@ class Form( base ):
         else:
             record = self.getRecord()
 
-        
 
         # transfer user inputs to db record
         for prop in self.parameters:

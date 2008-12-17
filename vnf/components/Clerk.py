@@ -85,6 +85,12 @@ class Clerk(Component):
         that meet the specified criteria"""
         from vnf.dom.SampleAssembly import SampleAssembly
         return self._index( SampleAssembly, where )
+    
+    def indexSamples(self, where = None):
+        '''create and index of all samples
+        that meet the specified criteria'''
+        from vnf.dom.Sample import Sample
+        return self._index( Sample, where )
 
     def indexScatterers(self, where = None):
         '''create and index of all scatterers
