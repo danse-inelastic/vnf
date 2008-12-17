@@ -17,6 +17,13 @@ from ComputationResult import ComputationResult as base2
 class PhononDispersion(base1, base2):
 
     name = 'phonondispersions'
+
+    datafiles = [
+        'DOS',
+        'Omega2',
+        'Polarizations',
+        'Qgridinfo',
+        ]
     
     pass # end of Dispersion
 

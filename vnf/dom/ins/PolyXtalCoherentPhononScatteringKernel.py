@@ -24,6 +24,8 @@ class PolyXtalCoherentPhononScatteringKernel(base):
     import pyre.db
 
     dispersion = pyre.db.reference(name = 'dispersion', table = PhononDispersion)
+
+    Ei = pyre.db.real(name = 'Ei', default = 70)
     
     max_energy_transfer = pyre.db.real(name = 'max_energy_transfer', default = 55.)
 
@@ -33,9 +35,10 @@ class PolyXtalCoherentPhononScatteringKernel(base):
 
 
 def inittable(db):
-    def k(id, dispersion, max_energy_transfer, max_momentum_transfer):
+    def k(id, dispersion, Ei, max_energy_transfer, max_momentum_transfer):
         r = PolyXtalCoherentPhononScatteringKernel()
         r.id = id
+        r.Ei = Ei
         r.dispersion = dispersion
         r.max_energy_transfer = max_energy_transfer
         r.max_momentum_transfer = max_momentum_transfer
@@ -45,6 +48,7 @@ def inittable(db):
     records = [
         k('polyxtalcoherentphononscatteringkernel-fccNi-0',
           'phonon-dispersion-fccNi-0',
+          70.,
           55.,
           12.5,
           ),
