@@ -456,7 +456,7 @@ class DeepCopier:
     def onSampleAssembly(self, sa):
         # a new container. empty
         from vnf.dom.SampleAssembly import SampleAssembly
-        sa_copy = self.clerk.new_ownedobject( SampleAssembly )
+        sa_copy = self.clerk.newOwnedObject( SampleAssembly )
         
         #first copy all scatterers
         scatterers = sa.scatterers
@@ -474,7 +474,7 @@ class DeepCopier:
     def onInstrument(self, instrument):
         # a new container. empty
         from vnf.dom.Instrument import Instrument
-        instrument_copy = self.clerk.new_ownedobject( Instrument )
+        instrument_copy = self.clerk.newOwnedObject( Instrument )
 
         #first copy all components
         components = sa.components
@@ -501,7 +501,7 @@ class DeepCopier:
         
         #now make a new record
         from vnf.dom.Scatterer import Scatterer as table
-        scatterer_copy = self.clerk.new_ownedobject( table )
+        scatterer_copy = self.clerk.newOwnedObject( table )
         
         #copy all kernels
         kernels = scatterer.kernels
@@ -516,7 +516,7 @@ class DeepCopier:
         scatterer_copy.matter = matter_copy
 
         #update record to db
-        self.clerk.updateRecord( scatterer_copy )
+        self.clerk.updateRecord(scatterer_copy)
         return scatterer_copy
 
 
