@@ -22,6 +22,7 @@ class Form( base ):
     class Inventory( base.Inventory ):
 
         import pyre.inventory as inv
+        id = inv.str( 'id', default = '' )
 
 
     parameters = ['name'] # parameters to edit in the form
@@ -44,8 +45,8 @@ class Form( base ):
         p = form.paragraph()
         p.text=['Input the shape parameters for an annular, cylindrical sample.']
         height = form.text(id='height', name='%s.height' % prefix, label='Height')        
-        innerRadius = form.text(id='innerradius', name='%s.innerradius' % prefix, label='Inner radius',
-                                value = getattr( configuration, )) 
+        innerRadius = form.text(id='innerradius', name='%s.innerradius' % prefix, label='Inner radius')#,
+        #                        value = getattr( configuration, )) 
         outerRadius = form.text(id='outerradius', name='%s.outerradius' % prefix, label='Outer radius')  
           
     def processUserInputs(self, commit = True):   

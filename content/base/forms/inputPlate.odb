@@ -22,6 +22,7 @@ class Form( base ):
     class Inventory( base.Inventory ):
 
         import pyre.inventory as inv
+        id = inv.str( 'id', default = '' )
 
 
         

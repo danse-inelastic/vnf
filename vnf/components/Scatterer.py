@@ -28,8 +28,6 @@ class Scatterer(base):
         
         pass # end of Inventory
 
-
-
     def default(self, director):
         return self.listall( director )
 

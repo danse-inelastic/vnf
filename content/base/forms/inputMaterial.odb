@@ -22,7 +22,9 @@ class Form( base ):
     class Inventory( base.Inventory ):
 
         import pyre.inventory as inv
+        
         id = inv.str( 'id', default = '' )
+        
         short_description = inv.str('short_description', default = '' )
         short_description.meta['tip'] = 'A short description'
         
@@ -37,9 +39,6 @@ class Form( base ):
         cx = inv.float('cx',default=0.0)
         cy = inv.float('cy',default=0.0)
         cz = inv.float('cz',default=1.0)
-        
-        
-
         
     parameters = ['name'] # parameters to edit in the form
 
@@ -71,7 +70,7 @@ class Form( base ):
         p = form.paragraph()
         p.text = ['''Import the sample from the Crystallography Open Database''']
         p = form.paragraph()
-        p.text = ['''<a href="/java/cod2.jnlp">Future Image of COD</a>''']        
+        p.text = ['''<a href="java/cod2.jnlp"><img src="images/CodPicture.gif" alt="CodUI"/></a>''']        
         
         p = form.paragraph()
         p.text = ['''Input lattice parameters manually'''] 

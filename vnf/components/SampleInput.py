@@ -135,7 +135,7 @@ class SampleInput(FormActor):
     
     def inputCylinder(self, director):
         try:
-            page = director.retrieveSecurePage( 'sampleInput' )
+            page = director.retrieveSecurePage( 'generic' )
         except AuthenticationError, err:
             return err.page
 #        experiment = director.clerk.getNeutronExperiment(self.inventory.id)
