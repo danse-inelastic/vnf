@@ -24,7 +24,6 @@ class Builder(base):
         files = []
         files += self._make_script(computation)
         
-        del self.dds, self.db
         return files
     
 
