@@ -11,13 +11,10 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
-
-from registry import tableRegistry
-
 analysisClasses = ['Sqe','Eisf','Dos','DiffusionCoefficient',
                        'MeanSquareDisplacement','VelocityAutocorrelation']
 
-from Computation import Computation as base
+from vnf.dom.Computation import Computation as base
 class Analysis(base):
 
     # future base class for all analysis computations

@@ -59,6 +59,7 @@ EXPORT_PYTHON_MODULES = \
 	Sample.py \
 	SampleAssembly.py \
 	SamplePreparation.py \
+	SampleInput.py \
 	Scatterer.py \
 	ScatteringKernel.py \
 	Scheduler.py \
