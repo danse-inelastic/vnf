@@ -56,7 +56,7 @@ class Actor(base):
             )
         analyze = action_link( action, director.cgihome )
         p.text = [
-            'You can %s a virtual sample using material simulations/models for use in a virtual instrument.' % create,
+            'You can %s a simulation/model or scattering kernel for use in a virtual instrument.' % create,
             'You can also %s your sample.' % analyze,
             ]
 

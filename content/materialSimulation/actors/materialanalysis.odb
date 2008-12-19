@@ -27,7 +27,7 @@ class MaterialAnalysis(base):
         
         analysisType = pyre.inventory.str('analysisType', default = 'sqe')
         analysisType.validator = pyre.inventory.choice(['sqe', 'eisf', 'dos',
-            'diffusionCoefficient', 'meanSquareDisplacement'])
+            'diffusionCoefficient', 'meanSquareDisplacement', 'velocityAutocorrelation'])
         analysisType.meta['tip'] = 'type of analysis and method to call in this class'
 
     def default(self, director):
@@ -122,6 +122,74 @@ class MaterialAnalysis(base):
         formcomponent.expand( form )
         next = form.control(name='submit',type="submit", value="next")
         return page 
+    
+    def velocityAutocorrelation(self, director):
+        try:
+            page = director.retrieveSecurePage( 'generic' )
+        except AuthenticationError, err:
+            return err.page
+        main = page._body._content._main
+        document = main.document(title='Velocity autocorrelation from atomic trajectories')
+        formcomponent = self.retrieveFormToShow( 'velocityAutocorrelation')
+        formcomponent.director = director
+        # build the form form
+        form = document.form(name='', action=director.cgihome)
+        # specify action
+        action = actionRequireAuthentication(          
+            actor = 'materialanalysis', 
+            sentry = director.sentry,
+            routine = 'createJob',
+            label = '',
+            id = self.inventory.id,
+            arguments = {'form-received': formcomponent.name },
+            )
+        from vnf.weaver import action_formfields
+        action_formfields( action, form )
+        # expand the form with fields of the data object that is being edited
+        formcomponent.expand( form )
+        next = form.control(name='submit',type="submit", value="next")
+#        self._footer( document, director )
+        return page 
+    
+    
+    
+    def createJob(self, director):
+        self.inventory.type = 'sqefrommds'
+        id = self.inventory.id
+        
+        try:
+            page = self._retrievePage(director)
+        except AuthenticationError, err:
+            return err.page
+
+        if not self._readyForSubmission(director):
+            return self._notReadyForSubmissionAlert(director)
+
+        # job
+        id = self.inventory.id
+        type = self.inventory.type
+        computation = director.clerk.getRecordByID(type, id)
+        jobref = computation.job
+
+        if not jobref or not jobref.id:
+            # create a new job
+            from vnf.components.Job import new_job
+            job = new_job(director)
+            job.computation = computation
+            director.clerk.updateRecord(job)
+            
+            computation.job = job
+            director.clerk.updateRecord(computation)
+        else:
+            job = director.clerk.dereference(jobref)
+            
+        # redirect to job submission page
+        actor = 'job'
+        routine = 'view'
+        return self.redirect(director, actor, routine, id = job.id)
+    
+    def _readyForSubmission(self, director):
+        return True 
     
 def classToMethod(className):
     return className[0].lower()+className[1:]
