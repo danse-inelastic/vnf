@@ -26,10 +26,6 @@ class Form( base ):
         short_description = inv.str('short_description', default = '' )
         short_description.meta['tip'] = 'A short description'
         
-        engine = inv.str('engine', default='vasp')
-        engine.validator=inv.choice(['vasp', 'ab init'])
-        engine.meta['tip'] = 'Ab initio engine'
-        
         trajectoryName = inv.str('trajectoryName', default='')
         units = inv.str('units', default='nm')
         weights = inv.str('weights', default='mass')

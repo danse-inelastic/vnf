@@ -30,19 +30,15 @@ class Form( base ):
         
         listOfAtoms = inv.list('List_of_Atoms')
         
-        ax = inv.float('ax',default=1.0)
-        ay = inv.float('ay',default=0.0)
-        az = inv.float('az',default=0.0)
-        bx = inv.float('bx',default=0.0)
-        by = inv.float('by',default=1.0)
-        bz = inv.float('bz',default=0.0)
-        cx = inv.float('cx',default=0.0)
-        cy = inv.float('cy',default=0.0)
-        cz = inv.float('cz',default=1.0)
-        
-    parameters = ['name'] # parameters to edit in the form
-
-    DBTable = '' # db table class name
+        ax = inv.float('ax',default = 1.0)
+        ay = inv.float('ay',default = 0.0)
+        az = inv.float('az',default = 0.0)
+        bx = inv.float('bx',default = 0.0)
+        by = inv.float('by',default = 1.0)
+        bz = inv.float('bz',default = 0.0)
+        cx = inv.float('cx',default = 0.0)
+        cy = inv.float('cy',default = 0.0)
+        cz = inv.float('cz',default = 1.0)
 
 
     def  expand(self, form, errors = None, properties = None):
@@ -50,20 +46,20 @@ class Form( base ):
         
         # get default values from the inventory if new or from the previous
         # record if old
-        if self.inventory.id == '':
-            configuration = self.inventory
-        else:
-            configuration = self.getRecord()
+#        if self.inventory.id == '':
+#            configuration = self.inventory
+#        else:
+#            configuration = self.getRecord()
+            
+            
             
         prefix = formactor_action_prefix
         
-        id_field = form.hidden(
-            name = '%s.id' % prefix, value = configuration.id)
+#        id_field = form.hidden(
+#            name = '%s.id' % prefix, value = configuration.id)
         
-        self.name = form.text(id='name', name='name', label='Sample Name')
-        #self.name.help = 'An identifying name for this sample.'
-        
-        
+        self.sampleDescription = form.text(id='text1', name='%s.sampleDescription'%prefix, label='sampleDescription')
+
         p = form.paragraph()
         p.text = ['''Import the sample from a database:''']
         p = form.paragraph()
@@ -78,27 +74,10 @@ class Form( base ):
 #Fe   0.5 0.5 0.0<br>
 #...<br>
 #''']        
+
         box = form.box()
-#        self.ax = box.text(id='ax', name='%s.ax' % prefix, label='a: (x)', 
-#                      value = getattr( configuration, ax ))        
-#        self.ay = box.text(id='ay', name='%s.ay' % prefix, label='(y)', 
-#                      value = getattr( configuration, ay ))   
-#        self.az = box.text(id='az', name='%s.az' % prefix, label='(z)', 
-#                      value = getattr( configuration, az ))  
-#        box = form.box()
-#        self.bx = box.text(id='bx', name='%s.bx' % prefix, label='b: (x)', 
-#                      value = getattr( configuration, bx ))        
-#        self.by = box.text(id='by', name='%s.by' % prefix, label='(y)', 
-#                      value = getattr( configuration, by ))   
-#        self.bz = box.text(id='bz', name='%s.bz' % prefix, label='(z)', 
-#                      value = getattr( configuration, bz ))  
-#        box = form.box()
-#        self.cx = box.text(id='cx', name='%s.cx' % prefix, label='c: (x)', 
-#                      value = getattr( configuration, cx ))        
-#        self.cy = box.text(id='cy', name='%s.cy' % prefix, label='(y)', 
-#                      value = getattr( configuration, cy ))   
-#        self.cz = box.text(id='cz', name='%s.cz' % prefix, label='(z)', 
-#                      value = getattr( configuration, cz )) 
+#        self.typeOfMaterial = box.text(id='typeOfMaterial', name='%s.typeOfMaterial' % prefix, label='Type of Material:', 
+#                      value = configuration.ax)
         self.ax = box.text(id='ax', name='%s.ax' % prefix, label='a: (x)', 
                       value = configuration.ax)        
         self.ay = box.text(id='ay', name='%s.ay' % prefix, label='(y)', 
@@ -120,52 +99,91 @@ class Form( base ):
         self.cz = box.text(id='cz', name='%s.cz' % prefix, label='(z)', 
                       value = configuration.cz)  
         self.listOfAtoms=form.textarea(id='listOfAtoms', name='%s.listOfAtoms' % prefix, 
-                                  label='List of atoms (i.e. H  0.0  0.0  0.5)',rows=20)
+                                  label='List of atoms (i.e. H  0.0  0.0  0.5)', rows=20)
           
     def processUserInputs(self, commit = True):   
-        '''process user inputs and save them to db
+        '''process user inputs for material and save them to db
         commit: if true, commit to database record. 
         '''
+        record = self.getRecord()
+        props = [
+            'short_description',
+            'ax',
+            'ay',
+            'az',
+            'bx',
+            'by',
+            'bz',
+            'cx',
+            'cy',
+            'cz',
+            'listOfAtoms'
+            ]
+        for prop in props:
+            value = getattr(self.inventory, prop)
+            setattr(record, prop, value)
+            continue
 
-        # prepare a scatterer record 
-        if self.inventory.id == '':
-            record = self.createRecord()
-        else:
-            record = self.getRecord()
-        setattr(record, prop, self.inventory.getTraitValue( prop ) )
-            
-        # prepare a materials record 
-        if self.inventory.id == '':
-            record = self.createRecord()
-        else:
-            record = self.getRecord()
+        record.monkhorstPackMesh = [self.inventory.nKx, self.inventory.nKy, self.inventory.nKz]
+        record.supercell = [self.inventory.scx, self.inventory.scy, self.inventory.scz]
+        record.qGrid = [self.inventory.nQx, self.inventory.nQy, self.inventory.nQz]
+        self.director.clerk.updateRecord(record)
 
-
-        # transfer user inputs to db record
-        for prop in self.parameters:
-            setattr(record, prop, self.inventory.getTraitValue( prop ) )
-
-        # commit if requested
-        if commit:
-            director = self.director
-            if empty_id(record.id):
-                #if record is new, create a new db record
-                id = new_id( director )
-                record.id = id
-                director.clerk.newRecord( record )
-            else:
-                #otherwise, update the record
-                director.clerk.updateRecord( record )
-            pass # endif
+#        # prepare a matter record 
+#        if self.inventory.id == '':
+#            record = self.createRecord()
+#        else:
+#            record = self.getRecord()
+#        setattr(record, prop, self.inventory.getTraitValue( prop ) )
+#            
+#        # prepare a materials record 
+#        if self.inventory.id == '':
+#            record = self.createRecord()
+#        else:
+#            record = self.getRecord()
+#
+#        # transfer user inputs to db record
+#        for prop in self.parameters:
+#            setattr(record, prop, self.inventory.getTraitValue( prop ) )
+#
+#        # commit if requested
+#        if commit:
+#            director = self.director
+#            if empty_id(record.id):
+#                #if record is new, create a new db record
+#                id = new_id( director )
+#                record.id = id
+#                director.clerk.newRecord( record )
+#            else:
+#                #otherwise, update the record
+#                director.clerk.updateRecord( record )
+#            pass # endif
         return record
-
 
     def getRecord(self):
         'get DB record'
-        id = self.inventory.id
-        director = self.director
-        clerk = director.clerk
-        return clerk.getRecordByID( self.DBTable, id )
+        # in this case the names of the types of materials match the names of the DBTables
+        return self.director.clerk.getRecordByID( typeOfMaterial, self.inventory.id )
+
+#    def getRecord(self):
+#        'get DB record'
+#            
+#        
+#        id = self.inventory.id
+#        director = self.director
+#        clerk = director.clerk
+#        return clerk.getRecordByID( self.DBTable, id )
+
+    def _createMatter(self, director)
+
+        type = self.inventory.type
+        Computation = director.clerk._getTable(type)
+        
+        computation = director.clerk.newDbObject(Computation)
+        self.inventory.id = id = computation.id
+        computation.matter = matter
+        director.clerk.updateRecord(computation)
+        return computation
 
 
     def createRecord(self):

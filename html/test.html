@@ -2,3 +2,282 @@ pydev debugger: warning: psyco not available for speedups (the debugger will sti
 pydev debugger: starting
 Content-type: text/html
 
+<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+<!--
+ ! ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ !
+ !                             Michael A.G. Aivazis
+ !                      California Institute of Technology
+ !                      (C) 1998-2005  All Rights Reserved
+ !
+ ! {LicenseText}
+ !
+ ! ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+-->
+<html>
+<head>
+<base href=''/>
+<title>Virtual Neutron Facility</title>
+<style media='all' rel='stylesheet'>@import url(css/visual.css);</style>
+<style media='all' rel='stylesheet'>@import url(css/visual-color.css);</style>
+<style media='all' rel='stylesheet'>@import url(css/structural.css);</style>
+<style media='all' rel='stylesheet'>@import url(css/structural-color.css);</style>
+<style media='all' rel='stylesheet'>@import url(css/classes.css);</style>
+<style media='all' rel='stylesheet'>@import url(css/classes-color.css);</style>
+<style media='all' rel='stylesheet'>@import url(css/reports.css);</style>
+<style media='all' rel='stylesheet'>@import url(css/reports-color.css);</style>
+</head>
+<body>
+<div id="body-wrapper">
+<!-- ** section page-header ** -->
+<div id='page-header'>
+<div id="page-logo"><a href="?actor=greet&sentry.username=demo&sentry.ticket=demo1a4ae2778a28c2dfe0fcefaeb9f92a0c">Home</a></div>
+<p id="page-personaltools">&nbsp;</p>
+</div>
+<!-- ** end of section page-header ** -->
+<div class="visualClear"></div>
+<table id="page-content">
+  <tbody>
+    <tr>
+      <td id="page-columnLeft">
+<!-- ** section  ** -->
+<div>
+<div class="visualPadding">
+<div class='portlet' id='portlet-main--tree'>
+    <h5>main</h5>
+    <div class="portletBody">
+<div class='portletContent'>
+<a class="navItem" title=""
+  href="?sentry.ticket=demo1a4ae2778a28c2dfe0fcefaeb9f92a0c&sentry.username=demo&actor=greet">
+<img class="navItemIcon" height="16" width="16" src="images/link_icon.gif" />
+<span class="navItemText">Home</span>
+</a>
+</div>
+<div class='portletContent'>
+<a class="navItem" title=""
+  href="?sentry.ticket=demo1a4ae2778a28c2dfe0fcefaeb9f92a0c&sentry.username=demo&actor=job">
+<img class="navItemIcon" height="16" width="16" src="images/link_icon.gif" />
+<span class="navItemText">Jobs</span>
+</a>
+</div>
+<div class='portletContent'>
+<a class="navItem" title=""
+  href="?sentry.ticket=demo1a4ae2778a28c2dfe0fcefaeb9f92a0c&sentry.username=demo&actor=neutronexperiment&routine=listall">
+<img class="navItemIcon" height="16" width="16" src="images/link_icon.gif" />
+<span class="navItemText">Experiments</span>
+</a>
+</div>
+<div class='portletContent'>
+<a class="navItem" title=""
+  href="?sentry.ticket=demo1a4ae2778a28c2dfe0fcefaeb9f92a0c&sentry.username=demo&actor=materialsimulation">
+<img class="navItemIcon" height="16" width="16" src="images/link_icon.gif" />
+<span class="navItemText">Material Simulation, Modeling, and Theoretical Scattering</span>
+</a>
+</div>
+<div class='portletContent'>
+<a class="navItem" title=""
+  href="?sentry.ticket=demo1a4ae2778a28c2dfe0fcefaeb9f92a0c&sentry.username=demo&actor=sample">
+<img class="navItemIcon" height="16" width="16" src="images/link_icon.gif" />
+<span class="navItemText">Samples</span>
+</a>
+</div>
+<div class='portletContent'>
+<a class="navItem" title=""
+  href="?sentry.ticket=demo1a4ae2778a28c2dfe0fcefaeb9f92a0c&sentry.username=demo&actor=instrument">
+<img class="navItemIcon" height="16" width="16" src="images/link_icon.gif" />
+<span class="navItemText">Instruments</span>
+</a>
+</div>
+<div class='portletContent'>
+<a class="navItem" title=""
+  href="?sentry.ticket=demo1a4ae2778a28c2dfe0fcefaeb9f92a0c&sentry.username=demo&actor=logout">
+<img class="navItemIcon" height="16" width="16" src="images/link_icon.gif" />
+<span class="navItemText">Logout</span>
+</a>
+</div>
+    </div>
+</div>
+</div>
+</div>
+<!-- ** end of section  ** -->
+      </td>
+      <td id="page-main">
+        <div class="visualPadding">
+<!-- ** section  ** -->
+<div class='document-main'>
+<div>
+<h1>Sample input</h1>
+<div class="documentDescription">
+
+</div>
+<form action='' method='post' name=''>
+
+<input type='hidden' name='sampleInput.id' value='None'/>
+<input type='hidden' name='actor' value='sampleInput'/>
+<input type='hidden' name='sampleInput.form-received' value='inputMaterial'/>
+<input type='hidden' name='sentry.username' value='demo'/>
+<input type='hidden' name='routine' value='storeAndVerifyInput'/>
+<input type='hidden' name='sentry.ticket' value='demo1a4ae2778a28c2dfe0fcefaeb9f92a0c'/>
+<input type='hidden' name='actor.form-received.id' value=''/>
+<div class='formfield'>
+<div>
+<label for="name">Sample Name</label>
+</div>
+<input type='text' name='name' value='' id='name'/>
+</div>
+<p>
+Import the sample from a database:
+</p>
+<p>
+<a href="java/cod2.jnlp"><img src="images/CodPicture.gif" alt="CodUI"/></a>
+</p>
+<p>
+or input material parameters manually (for a liquid or disordered material enter a large box):
+</p>
+<div>
+<div>
+</div>
+<table class='formfield'>
+<tr>
+<td class="controlBoxEntry">
+<div class='formfield'>
+<div>
+<label for="ax">a: (x)</label>
+</div>
+<input type='text' name='actor.form-received.ax' value='1.0' id='ax'/>
+</div>
+</td>
+<td class="controlBoxEntry">
+<div class='formfield'>
+<div>
+<label for="ay">(y)</label>
+</div>
+<input type='text' name='actor.form-received.ay' value='0.0' id='ay'/>
+</div>
+</td>
+<td class="controlBoxEntry">
+<div class='formfield'>
+<div>
+<label for="az">(z)</label>
+</div>
+<input type='text' name='actor.form-received.az' value='0.0' id='az'/>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div>
+<div>
+</div>
+<table class='formfield'>
+<tr>
+<td class="controlBoxEntry">
+<div class='formfield'>
+<div>
+<label for="bx">b: (x)</label>
+</div>
+<input type='text' name='actor.form-received.bx' value='0.0' id='bx'/>
+</div>
+</td>
+<td class="controlBoxEntry">
+<div class='formfield'>
+<div>
+<label for="by">(y)</label>
+</div>
+<input type='text' name='actor.form-received.by' value='1.0' id='by'/>
+</div>
+</td>
+<td class="controlBoxEntry">
+<div class='formfield'>
+<div>
+<label for="bz">(z)</label>
+</div>
+<input type='text' name='actor.form-received.bz' value='0.0' id='bz'/>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div>
+<div>
+</div>
+<table class='formfield'>
+<tr>
+<td class="controlBoxEntry">
+<div class='formfield'>
+<div>
+<label for="cx">c: (x)</label>
+</div>
+<input type='text' name='actor.form-received.cx' value='0.0' id='cx'/>
+</div>
+</td>
+<td class="controlBoxEntry">
+<div class='formfield'>
+<div>
+<label for="cy">(y)</label>
+</div>
+<input type='text' name='actor.form-received.cy' value='0.0' id='cy'/>
+</div>
+</td>
+<td class="controlBoxEntry">
+<div class='formfield'>
+<div>
+<label for="cz">(z)</label>
+</div>
+<input type='text' name='actor.form-received.cz' value='1.0' id='cz'/>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class='formfield'>
+<div>
+<label for="listOfAtoms">List of atoms (i.e. H  0.0  0.0  0.5)</label>
+</div>
+<textarea rows='20' name='actor.form-received.listOfAtoms' id='listOfAtoms'>
+</textarea>
+</div>
+<div class='formControls'>
+<input class="context" name="submit" type="submit" value="next"/>
+</div>
+
+</form>
+<div class="documentByline">
+<a href="http://danse.us">DANSE</a>
+</div>
+</div>
+</div>
+<!-- ** end of section  ** -->
+        </div>
+      </td>
+      <td id="page-columnRight">
+<!-- ** section  ** -->
+<div>
+</div>
+<!-- ** end of section  ** -->
+      </td>
+    </tr>
+  </tbody>
+</table>
+<!-- ** section page-footer ** -->
+<div id='page-footer'>
+<p>
+Copyright (C) 2008 California Institute of Technology. All rights reserved.
+</p>
+</div>
+<!-- ** end of section page-footer ** -->
+<!-- ** section page-credits ** -->
+<div id='page-credits'>
+<p class='discreet'>
+powered by opal
+</p>
+</div>
+<!-- ** end of section page-credits ** -->
+</div>
+</body>
+</html>
+
+<!-- version-->
+<!-- $Id$-->
+
+<!-- End of file -->
