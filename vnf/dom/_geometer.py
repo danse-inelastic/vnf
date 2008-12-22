@@ -104,13 +104,13 @@ class PositionOrientationRegistry(Table):
     import pyre.db
     
     # columns
-    id = pyre.db.varchar( name = 'id', length = 100 )
+    id = pyre.db.varchar( name = 'id', length = 64 )
     id.constraints = 'PRIMARY KEY'
     
     container = pyre.db.versatileReference(
         name = 'container', tableRegistry = tableRegistry)
     
-    element_label = pyre.db.varchar( name = 'element_label', length = 100 )
+    element_label = pyre.db.varchar( name = 'element_label', length = 64 )
     
     position = pyre.db.doubleArray(
         name = 'position',  default = [0.,0.,0.] )
@@ -118,7 +118,7 @@ class PositionOrientationRegistry(Table):
         name = 'orientation', default = [0.,0.,0.] )
     
     reference_label = pyre.db.varchar(
-        name = 'reference_label', length = 100, default = '')
+        name = 'reference_label', length = 64, default = '')
     
     pass # end of PositionOrientationRegistry
 

@@ -44,6 +44,9 @@ class referenceset:
 
 
     def clear(self, db):
+        '''clear all references to my elements.
+        The elements themselves are not removed. You will need to remove them manually.
+        '''
         records = self._get_referencetable_records( db )
         for record in records:
             db.deleteRow( _ReferenceTable, where = "id='%s'" % record.id )
@@ -120,11 +123,11 @@ class _ReferenceTable(Table):
     import pyre.db
     
     # columns
-    id = pyre.db.varchar( name = 'id', length = 100 )
+    id = pyre.db.varchar( name = 'id', length = 64 )
     id.constraints = 'PRIMARY KEY'
 
-    containerlabel = pyre.db.varchar( name = 'containerlabel', length = 100 )
-    elementlabel = pyre.db.varchar( name = "elementlabel", length = 100 )
+    containerlabel = pyre.db.varchar( name = 'containerlabel', length = 64 )
+    elementlabel = pyre.db.varchar( name = "elementlabel", length = 64 )
 
     container = pyre.db.versatileReference( name = 'container', tableRegistry = tableRegistry )
     element = pyre.db.versatileReference( name = 'element', tableRegistry = tableRegistry )
