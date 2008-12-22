@@ -328,15 +328,17 @@ class Clerk(Component):
         return record
 
 
-    def deleteRecord(self, record):
-        table = record.__class__
-        self.db.deleteRow( table, where="id='%s'" % record.id )
-        return
+    def deleteRecord(self, record, recursive=False):
+        return self.referenceManager.deleteRecord(record, recursive=recursive)
 
 
     def dereference(self, pointer):
         '''dereference a "pointer"'''
         return pointer.dereference(self.db)
+
+
+    def _referred(self, record):
+        return self.referenceManager.referred(record)
 
 
     def _getTable(self, tablename):
@@ -379,6 +381,9 @@ class Clerk(Component):
         self.db = pyre.db.connect(wrapper=self.inventory.dbwrapper, **dbkwds)
 
         self.deepcopy = self.DeepCopier( self )
+
+        from vnf.dom.ReferenceManager import ReferenceManager
+        self.referenceManager = ReferenceManager(self.db)
         return
 
 

@@ -58,6 +58,7 @@ EXPORT_PYTHON_MODULES = \
 	NeutronExperiment.py \
 	OwnedObject.py \
 	PolyCrystal.py \
+	ReferenceManager.py \
 	ReferenceSet.py \
 	Sample.py \
 	SampleAssembly.py \
@@ -78,6 +79,7 @@ EXPORT_PYTHON_MODULES = \
 	_hidden_tables.py \
 	_referenceset.py \
 	__init__.py \
+	check.py \
 
 
 
