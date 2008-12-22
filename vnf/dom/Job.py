@@ -33,7 +33,7 @@ class Job(base):
     numprocessors = pyre.db.integer(name='numprocessors', default = 1)
     numprocessors.meta['tip'] = 'the number of processors this job uses'
 
-    id_incomputingserver = pyre.db.varchar(name="id_incomputingserver", length=100)
+    id_incomputingserver = pyre.db.varchar(name="id_incomputingserver", length=64)
     id_incomputingserver.meta['tip'] = "the id of this job when submitted to the computing server. this is given by the computing server."
 
     state = pyre.db.varchar( name = 'state', length = 16 )

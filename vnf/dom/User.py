@@ -21,11 +21,11 @@ class User(base):
     
     import pyre.db
     
-    id = pyre.db.varchar(name="id", length=100)
+    id = pyre.db.varchar(name="id", length=64)
     id.constraints = 'PRIMARY KEY'
     id.meta['tip'] = "the unique id"
 
-    username = pyre.db.varchar(name="username", length=30)
+    username = pyre.db.varchar(name="username", length=64)
     username.meta['tip'] = "the user's name"
     #username.constraints = "PRIMARY KEY"
     
