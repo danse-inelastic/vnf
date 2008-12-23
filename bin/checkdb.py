@@ -12,14 +12,13 @@
 #
 
 
-## Initialize vnf db to have necessary tables. This will remove all
-## existing tables, so be careful!
+## Check if the db has the necessary tables for vnf to run
 
 
 from pyre.applications.Script import Script
 
 
-class DbApp(Script):
+class App(Script):
 
 
     class Inventory(Script.Inventory):
@@ -33,8 +32,6 @@ class DbApp(Script):
         import pyre.idd
         idd = pyre.inventory.facility('idd-session', factory=pyre.idd.session, args=['idd-session'])
         idd.meta['tip'] = "access to the token server"
-
-        wwwuser = pyre.inventory.str(name='wwwuser', default='')
 
         tables = pyre.inventory.list(name='tables', default=[])
 
@@ -50,70 +47,16 @@ class DbApp(Script):
         else:
             tables = [self.clerk._getTable(t) for t in tables]
 
+        from vnf.dom.check import issane
         for table in tables:
-            self.dropTable( table )
-            self.createTable( table )
-            if self.wwwuser: self.enableWWWUser( table )
+            print '* checking', table.name
+            if not issane(table, self.db): print ' '*4, '*** error'
             continue
-
-        for table in tables:
-            self.initTable( table )
-
-        return
-
-
-    def createTable(self, table):
-        # create the component table
-        print " -- creating table %r" % table.name
-        try:
-            self.db.createTable(table)
-        except self.db.ProgrammingError, msg:
-            print "    failed; table exists?"
-            print msg
-        else:
-            print "    success"
-
-        return
-
-
-    def dropTable(self, table):
-        print " -- dropping table %r" % table.name
-        try:
-            self.db.dropTable(table)
-        except self.db.ProgrammingError:
-            print "    failed; table doesn't exist?"
-        else:
-            print "    success"
-
-        return
-
-
-    def initTable(self, table):
-        module = table.__module__
-        m = __import__( module, {}, {}, [''] )
-        inittable = m.__dict__.get( 'inittable' )
-        if inittable is None: return
-        print " -- Inialize table %r" % table.name
-        try:
-            inittable( self.db )
-        except self.db.IntegrityError:
-            print "    failed; records already exist?"
-        else:
-            print "    success"
-            
-        return
-
-
-    def enableWWWUser(self, table):
-        print " -- Enable www user %r for table %r" % (self.wwwuser, table.name)
-        sql = 'grant all on table "%s" to "%s"' % (table.name, self.wwwuser)
-        c = self.db.cursor()
-        c.execute(sql)
         return
 
 
     def __init__(self):
-        Script.__init__(self, 'initdb')
+        Script.__init__(self, 'checkdb')
         self.db = None
         return
 
@@ -122,7 +65,6 @@ class DbApp(Script):
         Script._configure(self)
         self.clerk = self.inventory.clerk
         self.clerk.director = self
-        self.wwwuser = self.inventory.wwwuser
         self.tables = self.inventory.tables
         return
 
@@ -151,8 +93,9 @@ class DbApp(Script):
 
 def main():
     import journal
-    journal.debug('db').activate()
-    app = DbApp()
+    #journal.debug('db').activate()
+    journal.info('vnf.dom.check').activate()
+    app = App()
     return app.run()
 
 
