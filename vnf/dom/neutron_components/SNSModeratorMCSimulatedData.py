@@ -42,6 +42,12 @@ def inittable(db):
     return
 
 
+def initids():
+    return [
+        'sct521_bu_17_1-ARCS',
+        ]
+
+
 # version
 __id__ = "$Id$"
 

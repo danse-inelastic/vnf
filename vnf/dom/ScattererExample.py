@@ -51,6 +51,12 @@ def inittable(db):
     return
 
 
+def initids():
+    return [
+        'polyxtal-fccNi-scatterer: example 0',
+        'sans-sphere-model-scatterer: example 1',
+        ]
+
 # version
 __id__ = "$Id$"
 

@@ -81,6 +81,10 @@ def inittable(db):
     for r in records: db.insertRow( r )
     return
 
+
+def initids():
+    return []
+
 # version
 __id__ = "$Id$"
 

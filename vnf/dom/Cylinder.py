@@ -41,6 +41,10 @@ def inittable(db):
     return
 
 
+def initids():
+    return [
+        'cylinder0',
+        ]
 
 # version
 __id__ = "$Id$"

@@ -46,6 +46,12 @@ def inittable(db):
     return
 
 
+def initids():
+    return [
+        'polyxtalfccNi0',
+        ]
+
+
 # version
 __id__ = "$Id$"
 

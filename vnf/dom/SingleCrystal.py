@@ -46,6 +46,12 @@ def inittable(db):
     return
 
 
+def initids():
+    return [
+        'silicon_diamond',
+        ]
+
+
 # version
 __id__ = "$Id$"
 

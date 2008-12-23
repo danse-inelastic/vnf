@@ -42,6 +42,12 @@ def inittable(db):
     return
 
 
+def initids():
+    return [
+        'phonon-dispersion-fccNi-0',
+        ]
+
+
 # version
 __id__ = "$Id$"
 

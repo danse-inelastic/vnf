@@ -58,6 +58,12 @@ def inittable(db):
     return
 
 
+def initids():
+    return [
+        'polyxtalcoherentphononscatteringkernel-fccNi-0',
+        ]
+
+
 # version
 __id__ = "$Id$"
 

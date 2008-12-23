@@ -54,6 +54,11 @@ def inittable(db):
     return
 
 
+def initids():
+    return [
+        'polyxtal-fccNi-plate-sampleassembly-0',
+        ]
+
 
 # version
 __id__ = "$Id$"

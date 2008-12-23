@@ -70,6 +70,14 @@ def inittable(db):
     return
 
 
+def initids():
+    'ids of records initialized by inittable()'
+    return [
+        'polyxtal-fccNi-scatterer-0',
+        'sans-sphere-model-scatterer-0',
+        ]
+
+
 # version
 __id__ = "$Id$"
 

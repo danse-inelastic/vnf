@@ -43,6 +43,11 @@ def inittable(db):
     return
 
 
+def initids():
+    return [
+        'plate0',
+        ]
+
 # version
 __id__ = "$Id$"
 

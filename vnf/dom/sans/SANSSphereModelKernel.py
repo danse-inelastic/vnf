@@ -45,6 +45,12 @@ def inittable(db):
     return
 
 
+def initids():
+    return [
+        'sansspheremodelkernel-0',
+        ]
+
+
 # version
 __id__ = "$Id$"
 

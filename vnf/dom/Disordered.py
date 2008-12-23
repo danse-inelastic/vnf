@@ -45,6 +45,11 @@ def inittable(db):
     return
 
 
+def initids():
+    return [
+        'liquid0',
+        ]
+
 
 # version
 __id__ = "$Id$"

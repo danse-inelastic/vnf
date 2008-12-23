@@ -61,6 +61,16 @@ def inittable(db):
     return
 
 
+def initids():
+    return [
+        '__method__',
+        'demo',
+        'linjiao',
+        'jbrkeith',
+        'aivazis',
+        'btf',
+        'mmckerns',
+        ]
 
 # version
 __id__ = "$Id$"
