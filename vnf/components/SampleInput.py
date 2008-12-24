@@ -78,7 +78,7 @@ class SampleInput(FormActor):
             return err.page
         
         matter = self._createMatter(director)
-                matterId = pyre.inventory.str("id", default=None)
+        matterId = pyre.inventory.str("id", default=None)
         matterId.meta['tip'] = "the unique identifier for a given material"
         matterid = self.inventory.matterId = matter.
         
