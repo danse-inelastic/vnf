@@ -34,13 +34,24 @@ class ACL2(base):
     pass # end of ACL2
 
 
-def inittable(db):
+def associate(user, roles, db, idgenerator=None):
+    for role in roles:
+        r = ACL2()
+        r.id = idgenerator()
+        r.user = user
+        r.role = role
+        db.insertRow(r)
+        continue
     return
 
-
-def initids():
-    return []
-
+def inittable(db):
+    associate(
+        'role000001-demouser',
+        ['roleCM0000-experimentsimulation', 'roleCM0001-bvk'],
+        idgenerator=gid)
+    associate('role000002-developer', 'superrole-all', idgenerator=gid)
+    associate('role000001-internalreviewer', 'superrole-all', idgenerator=gid)
+    return
 
 # version
 __id__ = "$Id$"
