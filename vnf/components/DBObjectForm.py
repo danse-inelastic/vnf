@@ -45,7 +45,7 @@ class DBObjectForm( base ):
             record.short_description)
 
 
-    def expand(self, form, errors = None, properties = None):
+    def expand(self, form, errors = None, properties = None, id = ''):
         '''expand an existing form with fields from this component'''
 
         if empty_id( self.inventory.id ):

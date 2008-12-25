@@ -174,28 +174,19 @@ class Form( base ):
 #        clerk = director.clerk
 #        return clerk.getRecordByID( self.DBTable, id )
 
-    def _createMatter(self, director)
-
-        type = self.inventory.type
-        Computation = director.clerk._getTable(type)
-        
-        computation = director.clerk.newDbObject(Computation)
-        self.inventory.id = id = computation.id
-        computation.matter = matter
-        director.clerk.updateRecord(computation)
-        return computation
 
 
-    def createRecord(self):
-        type = self.DBTable
-        module = __import__( 'vnf.dom.%s' % type, {}, {}, [''] )
-        table = getattr( module, type )
-        record = table()
-        return record
+
+#    def createRecord(self):
+#        type = self.DBTable
+#        module = __import__( 'vnf.dom.%s' % type, {}, {}, [''] )
+#        table = getattr( module, type )
+#        record = table()
+#        return record
     
 formactor_action_prefix = 'actor.form-received' # assumed actor is a form actor
 
-def form(): return Form( 'inputMaterial' )
+def form(): return Form( 'singlecrystal' )
 
 
 # version

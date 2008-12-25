@@ -21,10 +21,16 @@ class SampleInput(FormActor):
         sampleId = pyre.inventory.str("id", default=None)
         sampleId.meta['tip'] = "the unique identifier for a given sample"
         
-        matterId = pyre.inventory.str("id", default=None)
-        matterId.meta['tip'] = "the unique identifier for a given material"
+        polycrystalId = pyre.inventory.str("polycrystalId", default=None)
+        polycrystalId.meta['tip'] = "the unique identifier for a given material"
         
-        sampleId = pyre.inventory.str("id", default=None)
+        singlecrystalId = pyre.inventory.str("singlecrystalId", default=None)
+        singlecrystalId.meta['tip'] = "the unique identifier for a given material"
+        
+        disorderedId = pyre.inventory.str("disorderedId", default=None)
+        disorderedId.meta['tip'] = "the unique identifier for a given material"
+        
+        sampleId = pyre.inventory.str("sampleId", default=None)
         sampleId.meta['tip'] = "the unique identifier for a given sample shape"
         
         page = pyre.inventory.str('page', default='empty')
@@ -32,55 +38,20 @@ class SampleInput(FormActor):
     def default(self, director):
         return self.inputMaterial(director)
     
-    def inputMaterialType(self, director):
-        try:
-            page = director.retrievePage( 'generic' )
-        except AuthenticationError, err:
-            return err.page
-        
-#        experiment = director.clerk.getNeutronExperiment(self.inventory.id)
-        main = page._body._content._main
-        # populate the main column
-        document = main.document(title='Material type input')
-        document.description = ''
-        document.byline = '<a href="http://danse.us">DANSE</a>'        
-        
-        formcomponent = self.retrieveFormToShow('inputMaterialType')
-        formcomponent.director = director
-        # build the form 
-        form = document.form(name='', action=director.cgihome)
-        # specify action
-        action = actionRequireAuthentication(          
-            actor = 'sampleInput', 
-            sentry = director.sentry,
-            routine = 'chooseMaterialInputForm',
-            label = '',
-            id=self.inventory.id,
-            arguments = {'form-received': formcomponent.name },
-            )
-        from vnf.weaver import action_formfields
-        action_formfields( action, form )
-        
-        # expand the form with fields of the data object that is being edited
-        formcomponent.expand( form )
-        submit = form.control(name='submit',type="submit", value="next")
-        return page  
-    
     def chooseMaterialInputForm(self, director):
         selected = self.processFormInputs(director)
         method = getattr(self, selected )
         return method( director )
         
-    def inputMaterial(self, director):
+    def polycrystal(self, director):
         try:
             page = director.retrievePage( 'generic' )
         except AuthenticationError, err:
             return err.page
         
-        matter = self._createMatter(director)
-        matterId = pyre.inventory.str("id", default=None)
-        matterId.meta['tip'] = "the unique identifier for a given material"
-        matterid = self.inventory.matterId = matter.
+        polycrystal = self._createPolycrystal(director)
+
+        polycrystalId = self.inventory.polycrystalId = polycrystal.id
         
 #        experiment = director.clerk.getNeutronExperiment(self.inventory.id)
         main = page._body._content._main
@@ -92,6 +63,44 @@ class SampleInput(FormActor):
         formcomponent = self.retrieveFormToShow('inputMaterial')
         formcomponent.director = director
         # build the form 
+        form = document.form(name = '', action = director.cgihome)
+        # specify action
+        action = actionRequireAuthentication(          
+            actor = 'sampleInput', 
+            sentry = director.sentry,
+            routine = 'storeAndVerifyInput',
+            label = '',
+            id = polycrystalId,
+            arguments = {'form-received': formcomponent.name },
+            )
+        from vnf.weaver import action_formfields
+        action_formfields( action, form )
+        
+        # expand the form with fields of the data object that is being edited
+        formcomponent.expand( form , id = polycrystalId )
+        submit = form.control(name='submit',type="submit", value="next")
+        return page  
+    
+    def singlecrystal(self, director):
+        try:
+            page = director.retrievePage( 'generic' )
+        except AuthenticationError, err:
+            return err.page
+        
+        polycrystal = self._createPolycrystal(director)
+
+        polycrystalId = self.inventory.polycrystalId = polycrystal.id
+        
+#        experiment = director.clerk.getNeutronExperiment(self.inventory.id)
+        main = page._body._content._main
+        # populate the main column
+        document = main.document(title='Material input')
+        document.description = ''
+        document.byline = '<a href="http://danse.us">DANSE</a>'        
+        
+        formcomponent = self.retrieveFormToShow('singlecrystal')
+        formcomponent.director = director
+        # build the form 
         form = document.form(name='', action=director.cgihome)
         # specify action
         action = actionRequireAuthentication(          
@@ -99,14 +108,14 @@ class SampleInput(FormActor):
             sentry = director.sentry,
             routine = 'storeAndVerifyInput',
             label = '',
-            id=self.inventory.id,
+            id = polycrystalId,
             arguments = {'form-received': formcomponent.name },
             )
         from vnf.weaver import action_formfields
         action_formfields( action, form )
         
         # expand the form with fields of the data object that is being edited
-        formcomponent.expand( form )
+        formcomponent.expand( form , id = polycrystalId)
         submit = form.control(name='submit',type="submit", value="next")
         return page  
     
@@ -239,6 +248,16 @@ class SampleInput(FormActor):
         
         computation = director.clerk.newDbObject(Computation)
         self.inventory.id = id = computation.id
+        computation.matter = matter
+        director.clerk.updateRecord(computation)
+        return computation
+    
+    def _createPolycrystal(self, director):
+
+        polycrystalTableClass = director.clerk._getTable('polycrystal')
+        
+        polycrystalDbObject = director.clerk.newDbObject(polycrystalTableClass)
+        self.inventory.id = id = polycrystalDbObject.id
         computation.matter = matter
         director.clerk.updateRecord(computation)
         return computation

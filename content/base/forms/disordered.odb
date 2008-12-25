@@ -1,0 +1,153 @@
+# -*- Python -*-
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                   Jiao Lin
+#                      California Institute of Technology
+#                        (C) 2007  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+from vnf.components.Form import Form as base
+from vnf.components.PyHtmlTable import PyHtmlTable
+from vnf.components.Actor import actionRequireAuthentication, action_link
+from vnf.components.DBObjectForm import formactor_action_prefix
+
+class Form( base ):
+
+    class Inventory( base.Inventory ):
+
+        import pyre.inventory as inv
+        
+        id = inv.str( 'id', default = '' )
+        
+        short_description = inv.str('short_description', default = '' )
+        short_description.meta['tip'] = 'A short description'
+        
+        listOfAtoms = inv.list('List_of_Atoms')
+        
+        ax = inv.float('ax',default = 1.0)
+        ay = inv.float('ay',default = 0.0)
+        az = inv.float('az',default = 0.0)
+        bx = inv.float('bx',default = 0.0)
+        by = inv.float('by',default = 1.0)
+        bz = inv.float('bz',default = 0.0)
+        cx = inv.float('cx',default = 0.0)
+        cy = inv.float('cy',default = 0.0)
+        cz = inv.float('cz',default = 1.0)
+
+
+    def  expand(self, form, errors = None, properties = None):
+        '''expand an existing form with fields from this component'''
+        
+        # get default values from the inventory if new or from the previous
+        # record if old
+#        if self.inventory.id == '':
+#            configuration = self.inventory
+#        else:
+#            configuration = self.getRecord()
+            
+            
+            
+        prefix = formactor_action_prefix
+        
+#        id_field = form.hidden(
+#            name = '%s.id' % prefix, value = configuration.id)
+        
+        self.sampleDescription = form.text(id='text1', name='%s.sampleDescription'%prefix, label='sampleDescription')
+
+        p = form.paragraph()
+        p.text = ['''Import the sample from a database:''']
+        p = form.paragraph()
+        p.text = ['''<a href="java/cod2.jnlp"><img src="images/CodPicture.gif" alt="CodUI"/></a>''']        
+        
+        p = form.paragraph()
+        p.text = ['''or input material parameters manually (for a liquid or disordered material enter a large box):''']        
+
+        box = form.box()
+        self.ax = box.text(id='ax', name='%s.ax' % prefix, label='a: (x)', 
+                      value = configuration.ax)        
+        self.ay = box.text(id='ay', name='%s.ay' % prefix, label='(y)', 
+                      value = configuration.ay)   
+        self.az = box.text(id='az', name='%s.az' % prefix, label='(z)', 
+                      value = configuration.az)  
+        box = form.box()
+        self.bx = box.text(id='bx', name='%s.bx' % prefix, label='b: (x)', 
+                      value = configuration.bx)        
+        self.by = box.text(id='by', name='%s.by' % prefix, label='(y)', 
+                      value = configuration.by)   
+        self.bz = box.text(id='bz', name='%s.bz' % prefix, label='(z)', 
+                      value = configuration.bz)  
+        box = form.box()
+        self.cx = box.text(id='cx', name='%s.cx' % prefix, label='c: (x)', 
+                      value = configuration.cx)        
+        self.cy = box.text(id='cy', name='%s.cy' % prefix, label='(y)', 
+                      value = configuration.cy)   
+        self.cz = box.text(id='cz', name='%s.cz' % prefix, label='(z)', 
+                      value = configuration.cz)  
+        self.listOfAtoms=form.textarea(id='listOfAtoms', name='%s.listOfAtoms' % prefix, 
+                                  label='List of atoms (i.e. H  0.0  0.0  0.5)', rows=20)
+          
+    def processUserInputs(self):   
+        '''process user inputs for material and save them to db
+        commit: if true, commit to database record. 
+        '''
+        record = self.getRecord()
+        props = [
+            'short_description',
+            'ax',
+            'ay',
+            'az',
+            'bx',
+            'by',
+            'bz',
+            'cx',
+            'cy',
+            'cz',
+            'listOfAtoms'
+            ]
+        for prop in props:
+            value = getattr(self.inventory, prop)
+            setattr(record, prop, value)
+
+        record.monkhorstPackMesh = [self.inventory.nKx, self.inventory.nKy, self.inventory.nKz]
+        record.supercell = [self.inventory.scx, self.inventory.scy, self.inventory.scz]
+        record.qGrid = [self.inventory.nQx, self.inventory.nQy, self.inventory.nQz]
+        self.director.clerk.updateRecord(record)
+        
+        return record
+
+    def getRecord(self):
+        'get DB record'
+        # in this case the names of the types of materials match the names of the DBTables
+        return self.director.clerk.getRecordByID( typeOfMaterial, self.inventory.id )
+
+#    def getRecord(self):
+#        'get DB record'
+#            
+#        
+#        id = self.inventory.id
+#        director = self.director
+#        clerk = director.clerk
+#        return clerk.getRecordByID( self.DBTable, id )
+
+#    def createRecord(self):
+#        type = self.DBTable
+#        module = __import__( 'vnf.dom.%s' % type, {}, {}, [''] )
+#        table = getattr( module, type )
+#        record = table()
+#        return record
+    
+formactor_action_prefix = 'actor.form-received' # assumed actor is a form actor
+
+def form(): return Form( 'disordered' )
+
+
+# version
+__id__ = "$Id$"
+
+# End of file 
