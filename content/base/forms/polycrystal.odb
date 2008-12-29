@@ -41,75 +41,58 @@ class Form( base ):
         cz = inv.str('cz',default = '1.0')
 
 
-    def  expand(self, form, id='', errors = None, properties = None):
+    def  expand(self, form, errors = None, properties = None, id = ''):
         '''expand an existing form with fields from this component'''
                   
         prefix = formactor_action_prefix
         i = self.inventory
         
         self.sampleDescription = form.text(id='text1', name='%s.sampleDescription'%prefix, label='Sample Description')
-
         p = form.paragraph()
-        p.text = ['''Import the sample from a database:''']
+        p.text = ['Import the sample from a database:']
         p = form.paragraph()
-        p.text = ['''<a href="java/cod2.jnlp"><img src="images/CodPicture.gif" alt="CodUI"/></a>''']        
+        p.text = ['<a href="java/cod2.jnlp"><img src="images/CodPicture.gif" alt="CodUI"/></a>']        
         
         p = form.paragraph()
-        p.text = ['''or input material parameters manually:''']      
-
+        p.text = ['or input material parameters manually:']      
         box = form.box()
         self.ax = box.text(id='ax', name='%s.ax' % prefix, label='a: (x)', 
-                      value = i.ax)        
+                      value = self.inventory.ax)        
         self.ay = box.text(id='ay', name='%s.ay' % prefix, label='(y)', 
-                      value = i.ay)   
+                      value = self.inventory.ay)   
         self.az = box.text(id='az', name='%s.az' % prefix, label='(z)', 
-                      value = i.az)  
+                      value = self.inventory.az)  
         box = form.box()
         self.bx = box.text(id='bx', name='%s.bx' % prefix, label='b: (x)', 
-                      value = i.bx)        
+                      value = self.inventory.bx)        
         self.by = box.text(id='by', name='%s.by' % prefix, label='(y)', 
-                      value = i.by)   
+                      value = self.inventory.by)   
         self.bz = box.text(id='bz', name='%s.bz' % prefix, label='(z)', 
-                      value = i.bz)  
+                      value = self.inventory.bz)  
         box = form.box()
         self.cx = box.text(id='cx', name='%s.cx' % prefix, label='c: (x)', 
-                      value = i.cx)        
+                      value = self.inventory.cx)        
         self.cy = box.text(id='cy', name='%s.cy' % prefix, label='(y)', 
-                      value = i.cy)   
+                      value = self.inventory.cy)   
         self.cz = box.text(id='cz', name='%s.cz' % prefix, label='(z)', 
-                      value = i.cz)  
+                      value = self.inventory.cz)  
         self.listOfAtoms = form.textarea(id='listOfAtoms', name='%s.listOfAtoms' % prefix, 
                                   label='List of atoms (i.e. H  0.0  0.0  0.5)', rows=20, 
-                                  value = '')
+                                  value = self.inventory.listOfAtoms)
           
     def processUserInputs(self):   
         '''process user inputs for material and save them to db
         commit: if true, commit to database record. 
         '''
-        record = self.getRecord()
-        props = ['short_description',
-            'ax',
-            'ay',
-            'az',
-            'bx',
-            'by',
-            'bz',
-            'cx',
-            'cy',
-            'cz',
-            'listOfAtoms'
-            ]
+        polycrystalRecord = self.director.clerk.getRecordByID( self.name, self.inventory.id )
+        polycrystalRecord.short_description = self.inventory.short_description
+        props = ['ax','ay','az','bx','by','bz','cx','cy','cz']
         for prop in props:
             value = getattr(self.inventory, prop)
-            setattr(record, prop, value)
-
-        self.director.clerk.updateRecord(record)
-        return record
-
-    def getRecord(self):
-        'get DB record'
-        # in this case the names of the types of materials match the names of the DBTables
-        return self.director.clerk.getRecordByID( typeOfMaterial, self.inventory.id )
+            setattr(polycrystalRecord, prop, float(value))
+        polycrystalRecord.listOfAtoms =     
+        self.director.clerk.updateRecord(polycrystalRecord)
+        return polycrystalRecord
     
 formactor_action_prefix = 'actor.form-received' # assumed actor is a form actor
 

@@ -15,7 +15,7 @@
 
   <component name='main'>
     <property name='actor'>sampleInput</property>
-    <property name='routine'>inputMaterial</property>   
+    <property name='routine'>polycrystal</property>   
     <component name='sentry'>
     	<property name='username'>demo</property>
     	<property name='passwd'>demo</property>
