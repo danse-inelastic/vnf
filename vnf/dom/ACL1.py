@@ -12,6 +12,9 @@
 #
 
 
+# user-role relation
+
+
 from Table import Table as base
 
 
@@ -56,22 +59,22 @@ def deassociate(user, roles, db):
 
 
 def inittable(db):
-    associate('demo', ['role000001-demouser'], db, idgenerator=gid)
-    associate('linjiao', ['role000002-developer'], db, idgenerator=gid)
-    associate('jbrkeith', ['role000002-developer'], db, idgenerator=gid)
-    associate('aivazis', ['role000000-internalreviewer'], db, idgenerator=id)
-    associate('btf', ['role000000-internalreviewer'], db, idgenerator=id)
-    associate('mmckerns', ['role000000-internalreviewer'], db, idgenerator=id)
+    associate('demo', ['roleU00002-demouser'], db, idgenerator=gid)
+    associate('linjiao', ['roleD00001-coredeveloper'], db, idgenerator=gid)
+    associate('jbrkeith', ['roleD00001-coredeveloper'], db, idgenerator=gid)
+    associate('aivazis', ['roleR00001-internalreviewer'], db, idgenerator=gid)
+    associate('btf', ['roleR00001-internalreviewer'], db, idgenerator=gid)
+    associate('mmckerns', ['roleR00001-internalreviewer'], db, idgenerator=gid)
     return
 
 
 def cleartable(db):
-    deassociate('demo', ['role000001-demouser'], db)
-    deassociate('linjiao', ['role000002-developer'], db)
-    deassociate('jbrkeith', ['role000002-developer'], db)
-    deassociate('aivazis', ['role000000-internalreviewer'], db)
-    deassociate('btf', ['role000000-internalreviewer'], db)
-    deassociate('mmckerns', ['role000000-internalreviewer'], db)
+    deassociate('demo', ['roleU00002-demouser'], db)
+    deassociate('linjiao', ['roleD00001-coredeveloper'], db)
+    deassociate('jbrkeith', ['roleD00001-coredeveloper'], db)
+    deassociate('aivazis', ['roleR00001-internalreviewer'], db)
+    deassociate('btf', ['roleR00001-internalreviewer'], db)
+    deassociate('mmckerns', ['roleR00001-internalreviewer'], db)
     return
 
 

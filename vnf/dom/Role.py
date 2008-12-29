@@ -42,13 +42,12 @@ def inittable(db):
         r.description = description
         return r
     records = [
-        role('superrole-all', 'superuser', 'Super user who can do anything'),
-        role('role000000-internalreviewer', 'internal-reviewer', 'Internal Reviewers of VNF'),
-        role('role000001-demouser', 'demo-user', 'Demo user'),
-        role('role000002-developer', 'developer', 'Developer'),
-        role('roleCE0000-experimentsimulation', 'virtual-experimentalist', 'User of virtual experiments'),
-        role('roleCM0000-vasp', 'vasp', 'VASP users'),
-        role('roleCM0001-bvk-forward', 'bvk', 'BvK forward model users'),
+        role('role000000-administrator', 'administrator', 'Administrator'),
+        role('roleD00001-coredeveloper', 'core-developer', 'Core Developer'),
+        role('roleD00002-developer', 'developer', 'Developer'),
+        role('roleR00001-internalreviewer', 'internal-reviewer', 'Internal Reviewers of VNF'),
+        role('roleU00001-user', 'user', 'User'),
+        role('roleU00002-demouser', 'demo-user', 'Demo user'),
         ]
     for r in records: db.insertRow( r )
     return
@@ -56,13 +55,12 @@ def inittable(db):
 
 def initids():
     return [
-        'superrole-all',
-        'role000000-internalreviewer',
-        'role000001-demouser',
-        'role000002-developer',
-        'roleCE0000-experimentsimulation',
-        'roleCM0000-vasp',
-        'roleCM0001-bvk-forward',
+        'role000000-administrator',
+        'roleD00001-coredeveloper',
+        'roleD00002-developer',
+        'roleR00001-internalreviewer',
+        'roleU00001-user',
+        'roleU00002-demouser',
         ]
 
 

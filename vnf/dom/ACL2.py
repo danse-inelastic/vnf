@@ -12,6 +12,9 @@
 #
 
 
+# role-role relation
+
+
 from Table import Table as base
 
 
@@ -44,14 +47,17 @@ def associate(user, roles, db, idgenerator=None):
         continue
     return
 
+
 def inittable(db):
-    associate(
-        'role000001-demouser',
-        ['roleCM0000-experimentsimulation', 'roleCM0001-bvk'],
-        idgenerator=gid)
-    associate('role000002-developer', 'superrole-all', idgenerator=gid)
-    associate('role000001-internalreviewer', 'superrole-all', idgenerator=gid)
     return
+
+
+import random
+alphabet = "0123456789abcdefghijklmnopqrstuvwxyz"
+def gid():
+    prefix = 'acl1-'
+    return prefix + ''.join(random.sample(alphabet, 32))
+
 
 # version
 __id__ = "$Id$"

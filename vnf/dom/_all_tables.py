@@ -7,6 +7,13 @@ main_dom = 'vnf.dom'
 external_dom_extensions = []
 
 
+acl = [
+    'User',
+    'Role',
+    'ACL1',
+    'ACL2',
+    ]
+
 instrument = [
     'Instrument',
     'InstrumentConfiguration',
@@ -53,7 +60,6 @@ kernel_related = [
 
 
 other = [
-    'User',
     'Server',
     'Job',
     ]
