@@ -1771,7 +1771,9 @@ class NeutronExperimentWizard(base):
 
         id = self.inventory.id
         experiment = director.clerk.getNeutronExperiment(id)
-        instrument = director.clerk.dereference(experiment.instrument)
+        instrument = experiment.instrument
+        if instrument:
+            instrument = director.clerk.dereference(instrument)
         
         main = page._body._content._main
 
@@ -1793,7 +1795,7 @@ class NeutronExperimentWizard(base):
                                       'select_instrument'),
             }
         items = [ 'name_assigned', 'instrument_configured']
-        if not _instrument_without_sample(instrument, director.clerk.db):
+        if instrument and not _instrument_without_sample(instrument, director.clerk.db):
             d.update( {
                 'sample_environment_configured': ('configure sample environment',
                                                   'sample_environment'),
