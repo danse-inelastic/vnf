@@ -123,8 +123,15 @@ class Clerk(Component):
 
 
     def indexNeutronExperiments(self, where = None):
+        director = self.director
+        username = director.sentry.username
+        mine = "creator='%s'" % username
+        if where:
+            where = '%s and (%s)' % (mine, where)
+        else:
+            where = mine
         from vnf.dom.NeutronExperiment import NeutronExperiment
-        return self._index( NeutronExperiment, where )
+        return self._index(NeutronExperiment, where=where)
 
 
     def getCrystal(self, id):
