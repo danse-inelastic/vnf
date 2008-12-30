@@ -28,21 +28,21 @@ class ACL2(base):
     id.constraints = 'PRIMARY KEY'
     id.meta['tip'] = "the unique id"
 
-    user = pyre.db.varchar(name='user', length=64)
-    user.constraints = 'REFERENCES roles (id)'
+    userid = pyre.db.varchar(name='userid', length=64)
+    userid.constraints = 'REFERENCES roles (id)'
     
-    role = pyre.db.varchar(name='role', length=64)
-    role.constraints = 'REFERENCES roles (id)'
+    roleid = pyre.db.varchar(name='roleid', length=64)
+    roleid.constraints = 'REFERENCES roles (id)'
     
     pass # end of ACL2
 
 
-def associate(user, roles, db, idgenerator=None):
-    for role in roles:
+def associate(userid, roleids, db, idgenerator=None):
+    for roleid in roleids:
         r = ACL2()
         r.id = idgenerator()
-        r.user = user
-        r.role = role
+        r.userid = userid
+        r.roleid = roleid
         db.insertRow(r)
         continue
     return

@@ -36,6 +36,7 @@ all: export
 # export
 
 EXPORT_PYTHON_MODULES = \
+	AccessControl.py \
 	Actor.py \
 	Clerk.py \
 	Computation.py \

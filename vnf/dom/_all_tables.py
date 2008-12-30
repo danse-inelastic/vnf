@@ -12,6 +12,7 @@ acl = [
     'Role',
     'ACL1',
     'ACL2',
+    'ACL_InstrumentSimulationPrivilege',
     ]
 
 instrument = [
@@ -66,7 +67,8 @@ other = [
 
 
 tablemodules = \
-             shapes \
+             acl \
+             + shapes \
              + materials \
              + kernels \
              + kernel_related \

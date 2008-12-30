@@ -49,6 +49,13 @@ class Form( base ):
         instruments = director.clerk.indexInstruments()
         instruments = instruments.itervalues()
         
+        accesscontrol = director.accesscontrol
+        username = director.sentry.username
+        user = director.clerk.getUser(username)
+        def _isAccessible(instrument):
+            return accesscontrol.checkPrivilege(user, instrument)
+        instruments = filter(_isAccessible, instruments)
+        
         entries = [
             (instrument.id,
              '%s (%s)' % (instrument.short_description, instrument.category)

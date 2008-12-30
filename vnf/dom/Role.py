@@ -26,7 +26,7 @@ class Role(Table):
     id = pyre.db.varchar(name="id", length=64)
     id.constraints = "PRIMARY KEY"
 
-    rolename = pyre.db.varchar(name='id', length=64)
+    rolename = pyre.db.varchar(name='rolename', length=64)
 
     description = pyre.db.varchar(name="description", length=255)
     status = pyre.db.char(name="status", length=1, default='l')
@@ -36,7 +36,7 @@ class Role(Table):
 
 def inittable(db):
     def role(id, name, description):
-        r = User()
+        r = Role()
         r.id = id
         r.rolename = name
         r.description = description

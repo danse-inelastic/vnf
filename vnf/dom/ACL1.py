@@ -28,31 +28,31 @@ class ACL1(base):
     id.constraints = 'PRIMARY KEY'
     id.meta['tip'] = "the unique id"
 
-    user = pyre.db.varchar(name='user', length=64)
-    user.constraints = 'REFERENCES users (id)'
+    userid = pyre.db.varchar(name='userid', length=64)
+    userid.constraints = 'REFERENCES users (id)'
     
-    role = pyre.db.varchar(name='role', length=64)
-    role.constraints = 'REFERENCES roles (id)'
+    groupid = pyre.db.varchar(name='groupid', length=64)
+    groupid.constraints = 'REFERENCES roles (id)'
     
     pass # end of ACL1
 
 
-def associate(user, roles, db, idgenerator=None):
-    for role in roles:
+def associate(userid, groupids, db, idgenerator=None):
+    for groupid in groupids:
         r = ACL1()
         r.id = idgenerator()
-        r.user = user
-        r.role = role
+        r.userid = userid
+        r.groupid = groupid
         db.insertRow(r)
         continue
     return
 
 
-def deassociate(user, roles, db):
-    where = "user='%s'" % user
+def deassociate(userid, groupids, db):
+    where = "userid='%s'" % userid
     all = db.fetchall(ACL1, where=where)
     for r in all:
-        if r.role in roles:
+        if r.groupid in groupids:
             db.deleteRow(ACL1, where="id='%s'" % r.id)
         continue
     return

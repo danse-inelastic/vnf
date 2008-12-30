@@ -31,6 +31,11 @@ def clerk():
     return Clerk( 'clerk', 'clerk' )
 
 
+def accesscontrol():
+    from AccessControl import AccessControl
+    return AccessControl()
+
+
 def scribe():
     from Scribe import Scribe
     return Scribe( 'scribe', 'scribe' )

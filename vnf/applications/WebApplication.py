@@ -133,6 +133,9 @@ class WebApplication(Base):
         self.debug = self.inventory.debug
         self.csaccessor = self.inventory.csaccessor
 
+        from vnf.components import accesscontrol
+        self.accesscontrol = accesscontrol()
+
         configurations = {
             'home': self.home,
             'cgihome':self.cgihome,
@@ -150,6 +153,9 @@ class WebApplication(Base):
     def _init(self):
         super(WebApplication, self)._init()
 
+        # accesscontrol need to know the database
+        self.accesscontrol.db = self.clerk.db
+        
         # initialize table registry
         import vnf.dom
         vnf.dom.register_alltables()

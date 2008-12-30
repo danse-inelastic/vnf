@@ -36,6 +36,10 @@ all: export
 
 EXPORT_PYTHON_MODULES = \
 	AbInitio.py \
+	ACL1.py \
+	ACL2.py \
+	ACL_Privilege.py \
+	ACL_InstrumentSimulationPrivilege.py \
 	Analysis.py \
 	Block.py \
 	Computation.py \
@@ -60,6 +64,7 @@ EXPORT_PYTHON_MODULES = \
 	PolyCrystal.py \
 	ReferenceManager.py \
 	ReferenceSet.py \
+	Role.py \
 	Sample.py \
 	SampleAssembly.py \
 	SampleEnvironment.py \
@@ -79,6 +84,7 @@ EXPORT_PYTHON_MODULES = \
 	_hidden_tables.py \
 	_referenceset.py \
 	__init__.py \
+	acl.py \
 	check.py \
 
 
