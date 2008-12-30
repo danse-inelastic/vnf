@@ -31,18 +31,18 @@ class ACL2(base):
     userid = pyre.db.varchar(name='userid', length=64)
     userid.constraints = 'REFERENCES roles (id)'
     
-    roleid = pyre.db.varchar(name='roleid', length=64)
-    roleid.constraints = 'REFERENCES roles (id)'
+    groupid = pyre.db.varchar(name='groupid', length=64)
+    groupid.constraints = 'REFERENCES roles (id)'
     
     pass # end of ACL2
 
 
-def associate(userid, roleids, db, idgenerator=None):
-    for roleid in roleids:
+def associate(userid, groupids, db, idgenerator=None):
+    for groupid in groupids:
         r = ACL2()
         r.id = idgenerator()
         r.userid = userid
-        r.roleid = roleid
+        r.groupid = groupid
         db.insertRow(r)
         continue
     return
@@ -55,7 +55,7 @@ def inittable(db):
 import random
 alphabet = "0123456789abcdefghijklmnopqrstuvwxyz"
 def gid():
-    prefix = 'acl1-'
+    prefix = 'acl2-'
     return prefix + ''.join(random.sample(alphabet, 32))
 
 

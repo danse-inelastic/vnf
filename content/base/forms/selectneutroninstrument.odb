@@ -53,7 +53,7 @@ class Form( base ):
         username = director.sentry.username
         user = director.clerk.getUser(username)
         def _isAccessible(instrument):
-            return accesscontrol.checkPrivilege(user, instrument)
+            return accesscontrol.checkInstrumentPrivilege(user, instrument)
         instruments = filter(_isAccessible, instruments)
         
         entries = [
