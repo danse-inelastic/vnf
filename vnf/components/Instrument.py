@@ -100,7 +100,8 @@ class Instrument(base):
 
         # retrieve id:record dictionary from db
         clerk = director.clerk
-        instruments = clerk.indexInstruments().values()
+        where = "status='online'"
+        instruments = clerk.indexInstruments(where=where).values()
         _sortByCategory(instruments)
 
         # images

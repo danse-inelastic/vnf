@@ -122,14 +122,9 @@ class Clerk(Component):
         return self._index( Scatterer, where )
 
 
-    def indexNeutronExperiments(self, where = None):
+    def indexNeutronExperiments(self, where=None):
         director = self.director
         username = director.sentry.username
-        mine = "creator='%s'" % username
-        if where:
-            where = '%s and (%s)' % (mine, where)
-        else:
-            where = mine
         from vnf.dom.NeutronExperiment import NeutronExperiment
         return self._index(NeutronExperiment, where=where)
 
@@ -358,6 +353,11 @@ class Clerk(Component):
 
 
     def _index(self, table, where = None):
+        '''create a dictionary of {id: row} for the given table
+
+        table: the table to be searched
+        where: the searching criteria
+        '''
         index = {}
         all = self.db.fetchall(table, where=where)
         for item in all:

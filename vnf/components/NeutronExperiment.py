@@ -107,7 +107,8 @@ class NeutronExperiment(base):
 
         # retrieve id:record dictionary from db
         clerk = director.clerk
-        experiments = clerk.indexNeutronExperiments()
+        where = "creator='%s'" % director.sentry.username
+        experiments = clerk.indexNeutronExperiments(where=where)
         # make a list of all experiments
         listexperiments( experiments.values(), document, director )
         return page

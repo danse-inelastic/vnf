@@ -60,7 +60,8 @@ class Actor(base):
             'You can also %s your sample.' % analyze,
             ]
 
-        simulations = getallsimulations(director.clerk.db)
+        where ="creator='%s'" % director.sentry.username
+        simulations = getallsimulations(director.clerk.db, where=where)
         if len(simulations):
             p = document.paragraph()
             p.text = [
@@ -88,13 +89,13 @@ class Actor(base):
         return page
 
 
-def getallsimulations(db):
+def getallsimulations(db, where=None):
     from vnf.dom import materialsimulationtables, materialmodelingtables
     tables = materialsimulationtables() + materialmodelingtables()
-
+    
     computations = []
     for table in tables:
-        computations += db.fetchall(table)
+        computations += db.fetchall(table, where=where)
         continue
     return computations
 

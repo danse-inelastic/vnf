@@ -38,17 +38,18 @@ class Actor(base):
         document = main.document(title='Jobs')
 
         from vnf.dom.Job import Job
-        jobs = director.clerk.db.fetchall(Job, where="creator='%s'" % director.sentry.username)
+        where="creator='%s'" % director.sentry.username
+        jobs = director.clerk.indexJobs(where=where)
 
-        for job in jobs:
+        for jobid, job in jobs.iteritems():
             p = document.paragraph()
             link = action_link(
                 actionRequireAuthentication(
                 sentry = director.sentry,
                 actor = 'job',
                 routine = 'view',
-                label = job.short_description or job.id,
-                id = job.id,
+                label = job.short_description or jobid,
+                id = jobid,
                 ),
                 director.cgihome
                 )
