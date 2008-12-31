@@ -32,7 +32,7 @@ class ACL_InstrumentSimulationPrivilege(base):
     role.constraints = 'REFERENCES roles (id)'
 
     instrument = pyre.db.varchar(name='instrument', length=64)
-    #instrument.constraints = 'REFERENCES instruments (id)'
+    instrument.constraints = 'REFERENCES instruments (id)'
     
     pass # end of ACL_InstrumentSimulationPrivilege
 

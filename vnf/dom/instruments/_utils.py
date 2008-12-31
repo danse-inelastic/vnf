@@ -3,7 +3,7 @@ def new_id():
     return generator()
 
 
-def newInstrument(db, id, short_description, long_description, category, creator, date, componentinfos):
+def newInstrument(db, id, short_description, long_description, category, creator, date, componentinfos, status='online'):
 
     from vnf.dom.Instrument import Instrument
     
@@ -14,6 +14,7 @@ def newInstrument(db, id, short_description, long_description, category, creator
     r.category = category
     r.creator = creator
     r.date = date
+    r.status = status
 
     components_proxy = r.components
     geometer_proxy = r.geometer

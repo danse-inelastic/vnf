@@ -31,6 +31,8 @@ class Instrument(OwnedObject):
     geometer = vnf.dom.geometer()
 
     long_description = pyre.db.varchar( name = 'long_description', length = 8192 )
+
+    status = pyre.db.varchar(name='status', length=32, default='online')
     
     pass # end of Instrument
 
