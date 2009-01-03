@@ -23,7 +23,8 @@ def issane(table, db):
 
     try:
         db.insertRow(row)
-    except db.ProgrammingError, e:
+    #except db.ProgrammingError, e:
+    except Exception, e:
         msg = 'table %s in db %s is no good: %s' % (table.name, db, e)
         info.log(msg)
         return False
