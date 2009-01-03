@@ -32,6 +32,7 @@ all: export
 EXPORT_PYTHON_MODULES = \
 	Action.py \
 	ActionRequireAuthentication.py \
+	Announcement.py \
 	AutoRefresh.py \
 	Image.py \
 	Page.py \

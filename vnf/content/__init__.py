@@ -12,6 +12,11 @@
 #
 
 
+def announcement():
+    from Announcement import Announcement
+    return Announcement()
+
+
 def autorefresh(**kwds):
     from AutoRefresh import AutoRefresh
     return AutoRefresh(**kwds)

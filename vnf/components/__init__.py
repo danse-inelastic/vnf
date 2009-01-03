@@ -51,6 +51,16 @@ def ssher():
     return SSHer( 'ssher', 'ssher' )
 
 
+def announcer():
+    from Announcer import Announcer
+    return Announcer()
+
+
+def postman():
+    from Postman import Postman
+    return Postman()
+
+
 def dds():
     from DistributedDataStorage import DistributedDataStorage
     return DistributedDataStorage('dds', 'dds')

@@ -38,6 +38,7 @@ all: export
 EXPORT_PYTHON_MODULES = \
 	AccessControl.py \
 	Actor.py \
+	Announcer.py \
 	Clerk.py \
 	Computation.py \
 	ComputationResultsRetriever.py \
@@ -57,6 +58,7 @@ EXPORT_PYTHON_MODULES = \
 	MaterialSimulationWizard.py \
 	NeutronExperiment.py \
 	NeutronExperimentWizard.py \
+	Postman.py \
 	Sample.py \
 	SampleAssembly.py \
 	SamplePreparation.py \

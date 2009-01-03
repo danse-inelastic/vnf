@@ -61,6 +61,7 @@ kernel_related = [
 
 
 other = [
+    'Registrant',
     'Server',
     'Job',
     ]

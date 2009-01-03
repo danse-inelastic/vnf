@@ -27,6 +27,29 @@ def nullpointer( p ):
     return p is None
 
 
+def announce(director, announcement, *args):
+    import vnf.components
+    
+    # create the announcer
+    announcer = vnf.components.announcer()
+    director.configureComponent(announcer)
+    announcer.init()
+    
+    # create the postman
+    postman = vnf.components.postman()
+    director.configureComponent(postman)
+    postman.init()
+
+    # load the message template
+    announcement = director.retrieveComponent(
+        announcement, factory="announcement", args=args,
+        vault=['announcements'])
+    
+    # send the email
+    announcement.announce(director, announcer=announcer, postman=postman)
+    
+    return
+
 # version
 __id__ = "$Id$"
 

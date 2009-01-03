@@ -64,6 +64,7 @@ EXPORT_PYTHON_MODULES = \
 	PolyCrystal.py \
 	ReferenceManager.py \
 	ReferenceSet.py \
+	Registrant.py \
 	Role.py \
 	Sample.py \
 	SampleAssembly.py \
