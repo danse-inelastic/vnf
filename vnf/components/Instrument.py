@@ -69,18 +69,30 @@ class Instrument(base):
         schematic = vnf.content.image( schematic )
         document.contents.append( schematic )
 
-        #
+        # empty line
         p = document.paragraph()
-        experimentplanning = actionRequireAuthentication(
-            actor = '%sexperimentwizard' % instrument.id,
-            sentry = director.sentry,
-            label = 'planning',
-            routine = 'start',
-            )
-        p.text = [
-            'Start %s for an experiment on %s' % (
-            action_link( experimentplanning, director.cgihome ), instrument.short_description ),
-            ]
+
+        # experiment planning link
+        if self._isAccessible(instrument, director):
+
+            p = document.paragraph()
+            experimentplanning = actionRequireAuthentication(
+                actor = '%sexperimentwizard' % instrument.id,
+                sentry = director.sentry,
+                label = 'planning',
+                routine = 'start',
+                )
+            p.text = [
+                'Start %s for an experiment on %s' % (
+                action_link( experimentplanning, director.cgihome ), instrument.short_description ),
+                ]
+        else:
+
+            # instrument not accessible
+            p = document.paragraph(cls='error')
+            p.text = [
+                'You are not authorized to do experiments wiith this instrument',
+                ]
         
         return page
 
@@ -224,6 +236,13 @@ class Instrument(base):
         return clerk.getInstrument( id )
 
 
+    def _isAccessible(self, instrument, director):
+        accesscontrol = director.accesscontrol
+        username = director.sentry.username
+        user = director.clerk.getUser(username)
+        return accesscontrol.checkInstrumentPrivilege(user, instrument)
+        
+        
     def _imageStore(self, instrument):
         return os.path.join( 'instruments', instrument.id )
 
