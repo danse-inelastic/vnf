@@ -21,7 +21,7 @@ def announcement(registrant):
 Dear %(firstname)s %(lastname)s,
 
 Thank you for your interests to becoming a user of Virtual Neutron Facility. 
-Your user account will be active soon upon review.
+Your user account will be activated soon upon review.
 
 """
         ]
