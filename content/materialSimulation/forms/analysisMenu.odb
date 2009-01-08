@@ -32,7 +32,7 @@ class Form( base ):
         short_description = inv.str('short_description', default = '' )
         short_description.meta['tip'] = 'A short description'
         
-        modelChosen = inv.str('modelChosen', default='vasp')
+        modelChosen = inv.str('modelChosen', default='vaspRun1')
         modelChosen.meta['tip'] = 'Model or simulation chosen for analysis'
         
         analysisType = inv.str('analysisType', default='S(Q,E)')
@@ -54,19 +54,19 @@ class Form( base ):
                 label = simulation.short_description or simulation.id
                 self.simulationChoices.append('%s: %s' % (label, desc))
                 self.simulationIds.append(simulation.id)
-        entries=zip(self.simulationChoices,self.simulationChoices)
-        models = form.selector(id='selector1',
-                name = '%s.models'%prefix,
+        entries=zip(self.simulationIds,self.simulationChoices)
+        modelChosen = form.selector(id='selector1',
+                name = '%s.modelChosen'%prefix,
                 entries = entries,
                 label = '',
-                selected = self.inventory.modelChosen,
+                selected = self.simulationChoices[0],
                 size=10) 
             
         p = form.paragraph()
         p.text = ['Choose a type of analysis:']
         entries=zip(self.analysisChoices, self.analysisChoices)
-        analysisTypes = form.selector(id='selector2',
-                name = '%s.analysisTypes'%prefix,
+        analysisType = form.selector(id='selector2',
+                name = '%s.analysisType'%prefix,
                 entries = entries,
                 label = '',
                 selected = self.inventory.analysisType,
@@ -75,9 +75,15 @@ class Form( base ):
     def processUserInputs(self):
         '''note the model's id and analytic method chosen and return them so the
         form actor can direct to the appropriate subsequent form'''
+        for simulation in simulations:
+                desc = _describe(simulation)
+                label = simulation.short_description or simulation.id
+                self.simulationChoices.append('%s: %s' % (label, desc))
+                self.simulationIds.append(simulation.id)
         simulationIndex = self.simulationChoices.index(self.inventory.modelChosen)
         analysisIndex = self.analysisChoices.index(self.inventory.analysisType)
-        return self.simulationIds[simulationIndex], analysisClasses[analysisIndex]
+        #return self.simulationIds[simulationIndex], analysisClasses[analysisIndex]
+        return self.inventory.modelChosen, analysisClasses[analysisIndex]
     
     def getRecord(self):
         'get DB record'
