@@ -36,15 +36,6 @@ class AbInitio(base):
     monkhorstPackMesh = pyre.db.integerArray(name='monkhorstPackMesh', default=[1,1,1])
     monkhorstPackMesh.meta['tip'] = 'Monkhorst pack mesh'
     
-    supercell = pyre.db.integerArray(name='supercell', default=[1,1,1])
-    supercell.meta['tip'] = 'Supercell for phonon calculation'
-    
-    displacementAmplitude = pyre.db.real(name='displacementAmplitude', default=0.01)
-    displacementAmplitude.meta['tip'] = 'Displacement amplitude'      
-    
-    qGrid = pyre.db.integerArray(name='qGrid', default=[1,1,1])
-    qGrid.meta['tip'] = 'Q grid for phonon calculation'       
-
 
 # version
 __id__ = "$Id$"
