@@ -266,7 +266,7 @@ class MaterialSimulationWizard(base):
         type = self.inventory.type
         Computation = director.clerk._getTable(type)
         
-        computation = director.clerk.newDbObject(Computation)
+        computation = director.clerk.newOwnedObject(Computation)
         self.inventory.id = id = computation.id
         computation.matter = matter
         director.clerk.updateRecord(computation)
