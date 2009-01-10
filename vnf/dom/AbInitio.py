@@ -35,6 +35,8 @@ class AbInitio(base):
     
     monkhorstPackMesh = pyre.db.integerArray(name='monkhorstPackMesh', default=[1,1,1])
     monkhorstPackMesh.meta['tip'] = 'Monkhorst pack mesh'
+
+    generateInputsOnly = pyre.db.boolean(name='generateInputsOnly', default=False)
     
 
 # version

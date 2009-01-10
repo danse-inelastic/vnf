@@ -12,6 +12,10 @@
 #
 
 
+import journal
+debug = journal.debug('abinitio-jobbuilder')
+
+
 from JobBuilder import JobBuilder as base
 class Builder(base):
 
@@ -45,6 +49,7 @@ class Builder(base):
             ('xcf', computation.xcFunctional),
             ('mpmesh', ','.join([str(i) for i in computation.monkhorstPackMesh]) ),
             ('unitcell', xyzfilename),
+            ('generateInputsOnly', computation.generateInputsOnly),
             ]
         cmds = [
             'source ~/.abinitio-env',
@@ -53,6 +58,29 @@ class Builder(base):
         path = self._path(self.shscriptname)
         open(path, 'w').write('\n'.join(cmds))
         self._files.append(self.shscriptname)
+
+        if not computation.generateInputsOnly:
+            # copy vasp input files if they alreday exist
+            dds = self.dds
+            files = [
+                'INCAR',
+                'POSCAR',
+                'POTCAR',
+                'KPOINTS',
+                ]
+            job = computation.job.dereference(self.db)
+            import shutil, os
+            for f in files:
+                src = dds.abspath(computation, f)
+                dest = dds.abspath(job, f)
+                debug.log('copying file %s to %s' % (src, dest))
+                if os.path.exists(src):
+                    shutil.copyfile(src, dest)
+                    self._files.append(f)
+                else:
+                    debug.log('file %s does not exist' % src)
+                continue
+            
         return
 
 

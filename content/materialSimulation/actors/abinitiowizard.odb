@@ -83,8 +83,161 @@ class AbinitioWizard(base):
             director.routine = 'configureSimulation'
             return self.configureSimulation( director, errors = errors )
 
+        return self.advancedConfiguration(director)
+
+
+    def advancedConfiguration(self, director, errors=None):
+        try:
+            page = self._retrievePage(director)
+        except AuthenticationError, err:
+            return err.page
+
+        main = page._body._content._main
+        document = main.document(title='Ab initio electronic structure simulation: advanced configuration' )
+        document.byline = '<a href="http://danse.us">DANSE</a>'    
+
+        simulation = self._getSimulation(director)
+        engine = simulation.engine
+        handler = '_advanced%s' % engine.upper()
+        handler = getattr(self, handler)
+        handler(document, director, errors=errors)
+
+        return page
+
+
+    def _advancedVASP(self, document, director, errors=None):
+        id = self.inventory.id
+        type = self.inventory.type
+        
+        inputs = self._createVASPInputs(director)
+
+        formcomponent = self.retrieveFormToShow( 'vasp-advanced')
+        formcomponent.director = director
+        
+        # build the form 
+        form = document.form(name='', action=director.cgihome)
+        # specify action
+        action = actionRequireAuthentication(          
+            actor = 'abinitiowizard', 
+            sentry = director.sentry,
+            routine = 'verifyAdvancedVASPConfiguration',
+            id=id, type=type,
+            arguments = {'form-received': formcomponent.name },
+            )
+        from vnf.weaver import action_formfields
+        action_formfields( action, form )
+        
+        # expand the form with fields from the form component
+        formcomponent.expand(form, **inputs)
+        next = form.control(name='submit',type="submit", value="next")
+
+        p = document.paragraph()
+        action = actionRequireAuthentication(
+            label = 'skip',
+            actor = 'abinitiowizard',
+            sentry = director.sentry,
+            routine = 'createJob',
+            id = id, type = type,
+            )
+        link = action_link(action, director.cgihome)
+        p.text = [
+            'You can %s this step.' % link,
+            ]
+            
+        return
+
+
+    def verifyAdvancedVASPConfiguration(self, director):
+        try:
+            page = self._retrievePage(director)
+        except AuthenticationError, err:
+            return err.page
+        
+        try:
+            vaspInputs = self.processFormInputs(director)
+        except InputProcessingError, err:
+            errors = err.errors
+            self.form_received = None
+            director.routine = 'advancedConfiguration'
+            return self.advancedConfiguration(director, errors = errors)
+
+        # save user inputs as files
+        simulation = self._getSimulation(director)
+        #  create directory first
+        dirpath = director.dds.abspath(simulation)
+        import os
+        if not os.path.exists(dirpath): os.makedirs(dirpath)
+        #  create files
+        for filename, content in vaspInputs.iteritems():
+            path = director.dds.abspath(simulation, filename)
+            open(path,'w').write(content)
+            continue
+        
         return self.createJob(director)
 
+
+    def _createVASPInputs(self, director):
+        # vasp computation configurations
+        simulation = self._getSimulation(director)
+
+        # make a copy of this computation
+        computation = director.clerk.deepcopy(simulation)
+
+        # make sure this computation only generate input files
+        computation.generateInputsOnly = True
+        director.clerk.updateRecord(computation)
+        
+        # create a job for this computation
+        from vnf.components.Job import new_job
+        job = new_job(director)
+
+        # connect this job to the computation
+        computation.job = job
+        director.clerk.updateRecord(computation)
+        job.computation = computation
+        director.clerk.updateRecord(job)
+        
+        # submit this job
+        from vnf.components.Job import submit
+        submit(job, director)
+
+        # the server this job was submitted to
+        server = job.server.dereference(director.clerk.db)
+        
+        # now wait and retrieve results
+        import time
+        time.sleep(1)
+        files = [
+            'INCAR',
+            'KPOINTS',
+            'POSCAR',
+            'POTCAR',
+            ]
+        
+        #  check whether input files were generated
+        #  try 10 times
+        count = 0; gotfiles = 0
+        while count<10:
+            count += 1
+            try:
+                director.dds.remember(job, files=files, server=server)
+                gotfiles = 1
+                break
+            except:
+                time.sleep(1)
+                continue
+        if not gotfiles:
+            raise RuntimeError, 'unable to generate VASP input files'
+
+        #  copy them to the vnf server
+        director.dds.make_available(job, files=files)
+
+        d = {}
+        for f in files:
+            d[f] = open(director.dds.abspath(job, f)).read()
+            continue
+        return d
+    
 
     def _readyForSubmission(self, director):
         if not base._readyForSubmission(self, director): return False

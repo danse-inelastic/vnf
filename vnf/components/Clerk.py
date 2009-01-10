@@ -560,6 +560,10 @@ class DeepCopier:
         return self._onRecordWithID( record )
 
 
+    def onAbInitio(self, record):
+        return self._onRecordWithID( record )
+
+
     def _onreference(self, reference):
         record = reference.dereference(self.clerk.db)
         copy = self(record)
