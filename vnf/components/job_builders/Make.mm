@@ -39,6 +39,7 @@ EXPORT_PYTHON_MODULES = \
 	McvineScattererXMLBuilder.py \
 	NeutronExperiment.py \
 	NeutronExperimentSimulationRunBuilder.py \
+	PhononsFromAbinitio.py \
 	SampleAssemblyXMLBuilder.py \
 	__init__.py \
 	_utils.py \
