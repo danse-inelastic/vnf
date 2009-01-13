@@ -25,15 +25,15 @@ def form( name, mattertype, shapetype ):
     shapeform = getattr(
         __import__( 'vnf.forms.%s' % shapetype, {}, {}, [''] ), shapetype)
     
-    #mattertable = getattr(
-    #    __import__( 'vnf.dom.%s' % mattertype, {}, {}, [''] ), mattertype)
-    #matterform = getattr(
-    #    __import__( 'vnf.forms.%s' % mattertype, {}, {}, [''] ), mattertype)
+    mattertable = getattr(
+        __import__( 'vnf.dom.%s' % mattertype, {}, {}, [''] ), mattertype)
+    matterform = getattr(
+        __import__( 'vnf.forms.%s' % mattertype, {}, {}, [''] ), mattertype)
     
     
-    class Form( shapeform ):
+    class Form( shapeform, matterform ):
 
-        class Inventory( shapeform.Inventory ):
+        class Inventory( shapeform.Inventory, matterform.Inventory ):
             import pyre.inventory
             pass # end of Inventory
 
@@ -62,19 +62,33 @@ def form( name, mattertype, shapetype ):
             p.text = [
                 'In this form, you can fine-tune your %s.' % scattererlabel,
                 ]
+
+            form.paragraph().text = ['<h2>Shape</h2>']
             
             p = form.paragraph()
             # get shape
             shape = scatterer.shape.dereference(director.clerk.db)
             p.text = [
-                'Your %s is a %s.' % (scattererlabel, shape.__class__.__name__.lower()),
+                'Your %s is a %s (id=%s).' % (
+                scattererlabel, shapetype.lower(), shape.id),
                 'You can change the dimensions here:',
                 ]
 
             # the shape form
             self.inventory.id = shape.id
             self.parameters = shapeform.parameters
-            shapeform.expand(self, form, errors = errors )
+            shapeform.expand(self, form, errors = errors)
+
+            form.paragraph().text = ['<h2>Matter form</h2>']
+            p = form.paragraph()
+            p.text = [
+                'Your %s is a %s (id=%s).' % (
+                scattererlabel, mattertype.lower(), scatterer.matter.id),
+                ]
+            # the matter form
+            self.inventory.id = scatterer.matter.id
+            #self.parameters = matterform.parameters
+            matterform.expand(self, form, errors = errors)
 
             prefix = formactor_action_prefix
             # id should be scatterer's id
@@ -94,21 +108,28 @@ def form( name, mattertype, shapetype ):
             scatterer = clerk.getScatterer( self.inventory.id )
             
             #get shape configuration
-            self.inventory.id = ''
+            self.inventory.id = scatterer.shape.id
             self.DBTable = shapetype
-            shapeinput = shapeform.processUserInputs(self, commit = False)
+            shapeinput = shapeform.processUserInputs(self)
 
             #transfer user inputs
-            shape = scatterer.shape.dereference( director.clerk.db )
-            transfer( shapeinput, shape, shapeform.parameters )
-                
+            #shape = scatterer.shape.dereference( director.clerk.db )
+            #transfer( shapeinput, shape, shapeform.parameters )
             #update db
-            clerk.updateRecord( shape )
+            #clerk.updateRecord( shape )
+
+            #matter
+            self.inventory.id = scatterer.matter.id
+            self.DBTable = mattertype
+            matterinput = matterform.processUserInputs(self)
+            #matter = scatterer.matter.dereference(director.clerk.db)
+            #transfer(matterinput, matter, matterform.parameters)
             return
 
 
         def __init__(self):
             shapeform.__init__(self, formname)
+            matterform.__init__(self, formname)
             return
 
         pass # end of Form
