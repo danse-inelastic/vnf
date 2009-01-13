@@ -21,7 +21,6 @@ class Form( base ):
 
         import pyre.inventory as inv
         id = inv.str( 'id', default = '' )
-        id.meta['tip'] = 'Scattering kernel calculation id'
         
         short_description = inv.str('short_description', default = '' )
         short_description.meta['tip'] = 'A short description'

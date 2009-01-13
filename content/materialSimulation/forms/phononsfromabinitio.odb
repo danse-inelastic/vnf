@@ -21,7 +21,6 @@ class Form( base ):
 
         import pyre.inventory as inv
         id = inv.str( 'id', default = '' )
-        id.meta['tip'] = 'Scattering kernel calculation id'
         
         short_description = inv.str('short_description', default = '' )
         short_description.meta['tip'] = 'A short description'
@@ -42,8 +41,11 @@ class Form( base ):
 
     DBTable = 'phononsfromabinitio'
         
-    def expand(self, form):
+    def expand(self, form, id=None, errors=None):
         '''expand an existing form with fields from this component'''
+        if id is None: id = self.inventory.id
+        else: self.inventory.id = id
+        
         prefix = formactor_action_prefix
 
         id_field = form.hidden(
@@ -57,9 +59,6 @@ class Form( base ):
                 label='Name of this calculation',
                 value = record.short_description)
         
-        p = form.paragraph()
-        p.text = ['<h2>Phonon Settings</h2>']
-
         box = form.box()
         supercellx = box.text(
                 id = 'text5',

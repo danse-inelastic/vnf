@@ -12,7 +12,9 @@
 #
 
 
-from Computation import Computation as base
+from AbInitio import AbInitio
+
+from MaterialSimulation import MaterialSimulation as base
 
 class PhononsFromAbinitio(base):
 
@@ -27,7 +29,9 @@ class PhononsFromAbinitio(base):
     displacementAmplitude.meta['tip'] = 'Displacement amplitude'      
     
     qGrid = pyre.db.integerArray(name='qGrid', default=[1,1,1])
-    qGrid.meta['tip'] = 'Q grid for phonon calculation'       
+    qGrid.meta['tip'] = 'Q grid for phonon calculation'
+
+    abinitio = pyre.db.reference(name='abinitio', table = AbInitio)
 
 
 # version

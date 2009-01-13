@@ -61,6 +61,7 @@ EXPORT_PYTHON_MODULES = \
 	NeutronComponent.py \
 	NeutronExperiment.py \
 	OwnedObject.py \
+	PhononsFromAbinitio.py \
 	PolyCrystal.py \
 	ReferenceManager.py \
 	ReferenceSet.py \

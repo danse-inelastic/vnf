@@ -73,6 +73,19 @@ class Actor(base):
             p.text = [
                 'To see the results of this computation, please click %s' % link,
                 ]
+
+            further_computation_doc = document.document(title='More...')
+            p = further_computation_doc.paragraph()
+            action = actionRequireAuthentication(
+                label = 'compute',
+                sentry = director.sentry,
+                actor = 'phononsfromabinitio', routine = 'create',
+                abinitio_id = id,
+                )
+            link = action_link(action, director.cgihome)
+            p.text = [
+                'You can %s phonons from here now' % link,
+                ]
         return page
 
 
