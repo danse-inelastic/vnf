@@ -11,6 +11,8 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
+import journal
+debug = journal.debug('jobbuilder')
 
 class JobBuilder:
 
@@ -39,9 +41,13 @@ def findBuilder(Computation, depositories):
         try:
             exec code in locals()
         except:
+            import traceback
+            debug.log(traceback.format_exc())
             continue
         candidates.append(Builder)
         continue
+
+    debug.log("candidates: %s" % (candidates,))
     
     l = filter(lambda Builder: Builder.Computation==Computation, candidates)
     if len(l) != 1:
