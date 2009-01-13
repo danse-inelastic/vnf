@@ -282,6 +282,7 @@ class Clerk(Component):
           - creator
           - date
         '''
+        if isinstance(table, str): table = self._getTable(table)
         
         director = self.director
         id = new_id( director )
