@@ -46,7 +46,8 @@ class Form( base ):
 
         prefix = formactor_action_prefix
 
-        instruments = director.clerk.indexInstruments()
+        where = "status='online'"
+        instruments = director.clerk.indexInstruments(where=where)
         instruments = instruments.itervalues()
         
         accesscontrol = director.accesscontrol
