@@ -133,7 +133,7 @@ class Actor(base):
         director.dds.make_available(dos)
         # read the dos
         path = director.dds.abspath(dos, 'data.idf')
-        x,y = _readdos(dos, director)
+        x,y = _readdos(path)
         
         import vnf.content
         data = x,y
