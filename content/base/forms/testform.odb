@@ -17,6 +17,7 @@
 
 
 from vnf.components.Form import Form as base
+from vnf.components.DBObjectForm import formactor_action_prefix
 
 
 class Test( base ):
@@ -32,6 +33,20 @@ class Test( base ):
 
     def __init__(self, name, *args ):
         base.__init__(self, name)
+        return
+
+    def legend(self):
+        return "Test"
+
+    def expand(self, form):
+        prefix = formactor_action_prefix
+        
+        field = form.text(
+            id = '',
+            name = '%s.parameter1' % prefix,
+            label = 'Parameter1',
+            value = 'value',
+            )
         return
 
     def processUserInputs(self):

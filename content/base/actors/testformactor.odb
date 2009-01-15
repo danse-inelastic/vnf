@@ -17,7 +17,7 @@
 # $ ./main.sh -actor=testformactor -actor.form-received=testform --help-components --actor.help-components
 
 
-from vnf.components.FormActor import FormActor as base
+from vnf.components.FormActor import FormActor as base, action
 
 
 class Test( base ):
@@ -34,10 +34,49 @@ class Test( base ):
         return
 
 
-    def default(self, director):
+    def present(self, director):
+        page = director.retrievePage('greet')
+        main = page._body._content._main
+
+        # populate the main column
+        document = main.document(title='Material Simulation/Modeling Wizard: select material')
+        document.description = ''
+        document.byline = 'byline?'
+        
+        formcomponent = self.retrieveFormToShow(
+            'testform' )
+        formcomponent.director = director
+
+        # create form
+        form = document.form(
+            name='testform',
+            legend= formcomponent.legend(),
+            action=director.cgihome)
+
+        # specify action
+        action1 = action(
+            label = '', 
+            actor = 'testformactor', routine = 'verify',
+            arguments = {'form-received': formcomponent.name } )
+        from vnf.weaver import action_formfields
+        action_formfields( action1, form )
+
+        # expand the form with fields of the data object that is being edited
+        formcomponent.expand( form )
+
+        # run button
+        submit = form.control(
+            name="actor.form-received.submit", type="submit", value="Submit")
+
+        return page
+
+
+    def verify(self, director):
         form_received = self.form_received
         form_received.processUserInputs()
         return
+
+    default = verify
 
     pass # end of Test
 
