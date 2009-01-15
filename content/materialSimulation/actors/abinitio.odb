@@ -45,7 +45,8 @@ class Actor(base):
 
         main = page._body._content._main
         # populate the main column
-        document = main.document(title='Ab initio simulation %s' % id)
+        document = main.document(title='Ab initio simulation %s: %s' % (
+            id, computation.short_description))
 
         job = director.clerk.dereference(computation.job)
 

@@ -182,7 +182,9 @@ class AbinitioWizard(base):
 
         # make a copy of this computation
         computation = director.clerk.deepcopy(simulation)
-
+        # change description
+        computation.short_description = 'generate vasp inputs for computation %s' \
+                                        % simulation.id
         # make sure this computation only generate input files
         computation.generateInputsOnly = True
         director.clerk.updateRecord(computation)
@@ -236,6 +238,9 @@ class AbinitioWizard(base):
         for f in files:
             d[f] = open(director.dds.abspath(job, f)).read()
             continue
+
+        # !!!should delete the computation that is only for
+        # creating the vasp inputs here!!!
         return d
     
 
