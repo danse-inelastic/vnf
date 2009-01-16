@@ -10,4 +10,5 @@
 <path>/vnf/content/base/portlets</path>
 <path>/vnf/vnf/components</path>
 </pydev_pathproperty>
+<pydev_property name="org.python.pydev.PYTHON_PROJECT_INTERPRETER">Default</pydev_property>
 </pydev_project>
