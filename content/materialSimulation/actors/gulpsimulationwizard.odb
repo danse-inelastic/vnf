@@ -24,11 +24,10 @@ class GulpWizard(base):
         import pyre.inventory
         
 
-    def configureSimulation(self, director, simulation=None):
+    def configureSimulation(self, director):
         type = self.inventory.type = 'gulpsimulations'
 
-        if not simulation:
-            simulation = self._getSimulation(director)
+        simulation = self._getSimulation(director)
         id = self.inventory.id = simulation.id
 
         # make sure material is defined
@@ -79,7 +78,7 @@ class GulpWizard(base):
         
         actor = 'sqefrommdwizard'
         routine = 'configureSimulation'
-        return self.redirect(director, actor, routine, simulation = sqefrommd)
+        return director.redirect(actor, routine, id=sqefrommd.id, type=sqefrommd.name)
    
 
     pass # end of GulpWizard

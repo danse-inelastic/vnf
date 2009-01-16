@@ -24,11 +24,10 @@ class LocalOrbitalHarmonicWizard(base):
         import pyre.inventory
         
 
-    def configureSimulation(self, director, simulation=None):
+    def configureSimulation(self, director):
         type = self.inventory.type = 'localOrbitalHarmonic'
 
-        if not simulation:
-            simulation = self._getSimulation(director)
+        simulation = self._getSimulation(director)
         id = self.inventory.id = simulation.id
 
         # make sure material is defined

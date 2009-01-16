@@ -24,12 +24,11 @@ class AbinitioWizard(base):
         import pyre.inventory
 
 
-    def configureSimulation(self, director, simulation=None):
+    def configureSimulation(self, director):
         # self assert computation type
         type = self.inventory.type = 'abinitio'
 
-        if not simulation:
-            simulation = self._getSimulation(director)
+        simulation = self._getSimulation(director)
         if not simulation:
             raise RuntimeError, '%s: %s' % (self.inventory.type, self.inventory.id)
         id = self.inventory.id = simulation.id

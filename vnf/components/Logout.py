@@ -34,7 +34,7 @@ class Logout(Actor):
 
         actor = 'login'
         routine = 'default'
-        return self.redirect(director, actor, routine)
+        return director.redirect(actor, routine)
 
 
     def __init__(self, name=None):

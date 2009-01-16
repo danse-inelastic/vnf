@@ -123,13 +123,13 @@ class Actor(base):
 
 
 
-    def view(self, director, id = None):
+    def view(self, director):
         try:
             page = director.retrieveSecurePage( 'job' )
         except AuthenticationError, err:
             return err.page
 
-        if id is None: id = self.inventory.id
+        id = self.inventory.id
         job = director.clerk.getJob( id )
 
         # if job has not been submitted, present the submission form

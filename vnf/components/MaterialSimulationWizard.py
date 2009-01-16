@@ -180,7 +180,7 @@ class MaterialSimulationWizard(base):
         
         actor = '%swizard' % table
         routine = 'configureSimulation'
-        return self.redirect(director, actor, routine, simulation = simulation)
+        return director.redirect(actor, routine, id=simulation.id, type=simulation.name)
 
 
 
@@ -197,7 +197,7 @@ class MaterialSimulationWizard(base):
         #nothing need to be done.
         #just go to the simulation list
         actor = 'materialsimulation'; routine = 'listall'
-        return self.redirect(director, actor=actor, routine=routine)
+        return director.redirect(actor=actor, routine=routine)
 
 
     def cancel(self, director):
@@ -212,7 +212,7 @@ class MaterialSimulationWizard(base):
         
         # redirect
         actor = 'materialsimulation'; routine = 'listall'
-        return self.redirect(director, actor=actor, routine=routine)
+        return director.redirect(actor=actor, routine=routine)
 
 
     def createJob(self, director):
@@ -245,7 +245,7 @@ class MaterialSimulationWizard(base):
         # redirect to job submission page
         actor = 'job'
         routine = 'view'
-        return self.redirect(director, actor, routine, id = job.id)
+        return director.redirect(actor, routine, id = job.id)
 
 
     def submitSimulation(self, director):

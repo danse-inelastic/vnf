@@ -21,31 +21,21 @@ from vnf.weaver import action_link
 from opal.components.Actor import Actor as base
 class Actor(base):
 
-    def redirect(self, director, actor, routine, *args, **kwds):
-        actor_name = actor
-        actor = director.retrieveActor( actor_name )
-        
-        # what kind of haxor code is this if statement?!?!   Jiao?
-        if actor is None:
-            class _: pass
-            actor = _(); actor.name = actor_name
-        else:        
-            director.configureComponent( actor )
-            
-        # these next few lines are extremely pythonic
-        director.inventory.actor = director.actor = actor
-        director.inventory.routine = director.routine = routine
 
-        try:
-            handler = getattr(actor, routine)
-        except:
-            handler = None
-            
-        if handler is None:
-            return director.retrievePage('nyi')
-        
-        return handler(director, *args, **kwds)
-    
+    def nyi(self, director):
+        """notify the user that the requested routine is not yet implemented"""
+        page = director.retrievePage("nyi")
+        main = page._body._content._main
+        document = main.document(title = 'Under construction...')
+        p = document.paragraph()
+        p.text = [
+            "Not implemented yet! actor=%s, routine=%s" % (
+            self.name, director.inventory.routine),
+            ]
+        return page
+
+    pass
+
 
 # version
 __id__ = "$Id$"

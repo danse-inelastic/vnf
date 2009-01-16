@@ -114,22 +114,20 @@ class NeutronExperiment(base):
         return page
 
 
-    def view(self, director, id=None):
+    def view(self, director):
         try:
             page = director.retrieveSecurePage( 'neutronexperiment' )
         except AuthenticationError, err:
             return err.page
 
         # the record we are working on
-        if id is None: id = self.inventory.id
-        else: self.inventory.id = id
+        id = self.inventory.id
         experiment = director.clerk.getNeutronExperiment( id )
 
         #see if the experiment is constructed or not. if not
         #ask the wizard to do the editing.
         if experiment.status in ['started', 'partially configured']:
-            return self.redirect(
-                director,
+            return director.redirect(
                 actor='neutronexperimentwizard',
                 routine = 'submit_experiment',
                 id = id,

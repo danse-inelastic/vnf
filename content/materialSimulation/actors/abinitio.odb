@@ -24,14 +24,13 @@ class Actor(base):
 
     table = 'abinitio'
 
-    def view(self, director, id = None):
+    def view(self, director):
         try:
             page = director.retrieveSecurePage( 'computation' )
         except AuthenticationError, err:
             return err.page
 
-        if id is None: id = self.inventory.id
-        else: self.inventory.id = id
+        id = self.inventory.id
 
         computation = director.clerk.getRecordByID(self.table, id)
         if not self._isConfigured(computation, director):

@@ -28,7 +28,7 @@ def page(app):
     sentry = app.sentry
     ticket = sentry.authenticate()
 
-    href = '%s?actor=nyi&sentry.username=%s&sentry.ticket=%s' % (
+    href = '%s?actor=greet&sentry.username=%s&sentry.ticket=%s' % (
         app.cgihome, app.sentry.username, app.sentry.ticket)
     header.logo(href=href)
     header.personalTools()
@@ -46,13 +46,6 @@ def page(app):
         
     # populate the right column
     #news = right.portlet(title="News")
-
-    document = main.document(title = 'Under construction...')
-    p = document.paragraph()
-    p.text = [
-        "Not implemented yet! actor=%s, routine=%s" % (
-        app.inventory.actor.name, app.inventory.routine),
-        ]
 
     # build the footer
     footer = body.pageFooter()

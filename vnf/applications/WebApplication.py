@@ -68,7 +68,29 @@ class WebApplication(Base):
             user = environ.get('USER') or 'webserver'
             toPml(self, '/tmp/main-debug-%s.pml' % user)
 
-        super(WebApplication, self).main(*args, **kwds)
+        actor = self.actor
+        if actor is None:
+            inquiry = self.inventory._getTraitDescriptor('actor').inquiry
+            actor = self.retrieveActor('nyi')
+            actor.message = "Not implemented yet! actor=%s, routine=%s" % (
+                inquiry, self.inventory.routine)
+            self.actor = actor
+            
+        page = self.actor.perform(self, routine=self.inventory.routine, debug=self.debug)
+        self.render(page)
+        return
+
+
+    def redirect(self, actor, routine, **kwds):
+        self.inventory.routine = routine
+        self.actor = self.retrieveActor(actor)
+        
+        if self.actor is not None:
+            self.configureComponent(self.actor)
+            for k,v in kwds.iteritems():
+                setattr(self.actor.inventory, k, v)
+
+        self.main()
         return
 
 
@@ -181,9 +203,6 @@ class WebApplication(Base):
 
 
 def suppressWarnings():
-    import journal
-    journal.error('pyre.inventory').deactivate()
-    
     import warnings
     categories_to_ignore = [
         DeprecationWarning,
@@ -191,6 +210,12 @@ def suppressWarnings():
     for category in categories_to_ignore:
         warnings.filterwarnings('ignore', category=category)
     return
+
+
+import journal
+journal.error('pyre.inventory').deactivate()
+    
+
 
 # version
 __id__ = "$Id: WebApplication.py,v 1.3 2007-08-30 16:46:08 aivazis Exp $"

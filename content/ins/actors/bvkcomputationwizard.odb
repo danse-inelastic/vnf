@@ -26,11 +26,10 @@ class BvK(base):
         pass # end of Inventory
 
 
-    def configureSimulation(self, director, simulation=None):
-        type = self.inventory.type = 'bvkcomputation'
+    def configureSimulation(self, director):
+        type = self.inventory.type = 'bvkcomputations'
         
-        if not simulation:
-            simulation = self._getSimulation(director)
+        simulation = self._getSimulation(director)
         id = self.inventory.id = simulation.id
 
         # make sure material is defined

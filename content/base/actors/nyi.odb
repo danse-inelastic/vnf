@@ -16,7 +16,17 @@ from vnf.components.Actor import Actor as base
 class Actor(base):
 
     def default(self, director):
-        return director.retrievePage('nyi')
+        page = director.retrievePage('nyi')
+        main = page._body._content._main
+        document = main.document(title = 'Under construction...')
+        p = document.paragraph()
+        p.text = self.message.split('\n')
+        return page
+
+    def __init__(self, *args, **kwds):
+        base.__init__(self, *args, **kwds)
+        self.message = ''
+        return
 
 def actor():
     return Actor('nyi')

@@ -129,17 +129,16 @@ class Actor(base):
         # redirect to job submission page
         actor = 'job'
         routine = 'view'
-        return self.redirect(director, actor, routine, id = job.id)
+        return director.redirect(actor, routine, id = job.id)
 
 
-    def view(self, director, id = None):
+    def view(self, director):
         try:
             page = self._retrievePage(director)
         except AuthenticationError, err:
             return err.page
 
-        if id is None: id = self.inventory.id
-        else: self.inventory.id = id
+        id = self.inventory.id
 
         computation = director.clerk.getRecordByID(self.table, id)
         if not self._isConfigured(computation, director):

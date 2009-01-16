@@ -1543,9 +1543,8 @@ class NeutronExperimentWizard(base):
 #        return page     
 
 
-    def submit_experiment(self, director, errors=None, id=None):
-        if id is None: id = self.inventory.id
-        else: self.inventory.id = id
+    def submit_experiment(self, director, errors=None):
+        id = self.inventory.id
 
         try:
             page = self._retrievePage(director)
