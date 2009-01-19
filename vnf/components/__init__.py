@@ -77,6 +77,17 @@ def retrieveresults(*args, **kwds):
     retriever = ComputationResultsRetriever()
     return retriever(*args, **kwds)
 
+class UndefType(object):
+
+    def __repr__(self):
+        return "Undef"
+
+    def __reduce__(self):
+        return "Undef"
+
+
+Undef = UndefType()
+
 
 # version
 __id__ = "$Id$"

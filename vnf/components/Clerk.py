@@ -29,7 +29,12 @@ def findDeepCopiers(extensions):
     return [ _(ext) for ext in extensions ]
 
 
-
+#from vnf.components import Undef
+#from vnf.variables import Variable, LazyValue
+#from vnf.SqlExpressions import (
+#    Expr, Select, Insert, Update, Delete, Column, Count, Max, Min,
+#    Avg, Sum, Eq, And, Asc, Desc, compile_python, compare_columns, SQLRaw,
+#    Union, Except, Intersect, Alias, SetExpr)
 from pyre.components.Component import Component
 
 class Clerk(Component):
@@ -272,6 +277,29 @@ class Clerk(Component):
     def getRecordByID(self, tablename, id):
         Table = self._getTable(tablename)
         return self._getRecordByID(Table, id)
+    
+#    def find(self, cls_spec, *args, **kwargs):
+#        """Perform a query.
+#
+#        Some examples::
+#
+#            clerk.find(Polycrystal, Polycrystal.chemical_formula == "KC28H") --> all Polycrystals with chemical formula KC28H
+#            clerk.find(Person, chemical_formula == "KC28H") --> same
+#
+#        @param cls_spec: The class or tuple of classes whose
+#            associated tables will be queried.
+#        @param args: Instances of L{Expr}.
+#        @param kwargs: Mapping of simple column names to values or
+#            expressions to query for.
+#
+#        @return: A L{ResultSet} of instances C{cls_spec}. If C{cls_spec}
+#            was a tuple, then an iterator of tuples of such instances.
+#        """
+#        if self._implicit_flush_block_count == 0:
+#            self.flush()
+#        find_spec = FindSpec(cls_spec)
+#        where = get_where_for_args(args, kwargs, find_spec.default_cls)
+#        return self._result_set_factory(self, find_spec, where)
 
 
     def newOwnedObject(self, table, owner = None):
@@ -393,6 +421,120 @@ class Clerk(Component):
         from vnf.dom.ReferenceManager import ReferenceManager
         self.referenceManager = ReferenceManager(self.db)
         return
+
+#class FindSpec(object):
+#    """The set of tables or expressions in the result of L{Store.find}."""
+#
+#    def __init__(self, cls_spec):
+#        self.is_tuple = type(cls_spec) == tuple
+#        if not self.is_tuple:
+#            cls_spec = (cls_spec,)
+#
+#        info = []
+#        for item in cls_spec:
+#            if isinstance(item, Expr):
+#                info.append((True, item))
+#            else:
+#                info.append((False, get_cls_info(item)))
+#        self._cls_spec_info = tuple(info)
+#
+#        # Do we have a single non-expression item here?
+#        if not self.is_tuple and not info[0][0]:
+#            self.default_cls = cls_spec[0]
+#            self.default_cls_info = info[0][1]
+#            self.default_order = self.default_cls_info.default_order
+#        else:
+#            self.default_cls = None
+#            self.default_cls_info = None
+#            self.default_order = Undef
+#
+#    def get_columns_and_tables(self):
+#        columns = []
+#        default_tables = []
+#        for is_expr, info in self._cls_spec_info:
+#            if is_expr:
+#                columns.append(info)
+#                if isinstance(info, Column):
+#                    default_tables.append(info.table)
+#            else:
+#                columns.extend(info.columns)
+#                default_tables.append(info.table)
+#        return columns, default_tables
+#
+#    def is_compatible(self, find_spec):
+#        """Return True if this FindSpec is compatible with a second one."""
+#        if self.is_tuple != find_spec.is_tuple:
+#            return False
+#        if len(self._cls_spec_info) != len(find_spec._cls_spec_info):
+#            return False
+#        for (is_expr1, info1), (is_expr2, info2) in zip(
+#            self._cls_spec_info, find_spec._cls_spec_info):
+#            if is_expr1 != is_expr2:
+#                return False
+#            if info1 is not info2:
+#                return False
+#        return True
+#
+#    def load_objects(self, store, result, values):
+#        objects = []
+#        values_start = values_end = 0
+#        for is_expr, info in self._cls_spec_info:
+#            if is_expr:
+#                values_end += 1
+#                variable = getattr(info, "variable_factory", Variable)(
+#                    value=values[values_start], from_db=True)
+#                objects.append(variable.get())
+#            else:
+#                values_end += len(info.columns)
+#                obj = store._load_object(info, result,
+#                                         values[values_start:values_end])
+#                objects.append(obj)
+#            values_start = values_end
+#        if self.is_tuple:
+#            return tuple(objects)
+#        else:
+#            return objects[0]
+#
+#    def get_columns_and_values_for_item(self, item):
+#        """Generate a comparison expression with the given item."""
+#        if isinstance(item, tuple):
+#            if not self.is_tuple:
+#                raise TypeError("Find spec does not expect tuples.")
+#        else:
+#            if self.is_tuple:
+#                raise TypeError("Find spec expects tuples.")
+#            item = (item,)
+#
+#        columns = []
+#        values = []
+#        for (is_expr, info), value in zip(self._cls_spec_info, item):
+#            if is_expr:
+#                if not isinstance(value, (Expr, Variable)) and (
+#                    value is not None):
+#                    value = getattr(info, "variable_factory", Variable)(
+#                        value=value)
+#                columns.append(info)
+#                values.append(value)
+#            else:
+#                obj_info = get_obj_info(value)
+#                if obj_info.cls_info != info:
+#                    raise TypeError("%r does not match %r" % (value, info))
+#                columns.extend(info.primary_key)
+#                values.extend(obj_info.primary_vars)
+#        return columns, values
+#
+#
+#def get_where_for_args(args, kwargs, cls=None):
+#    equals = list(args)
+#    if kwargs:
+#        if cls is None:
+#            raise Exception("Can't determine class that keyword "
+#                               "arguments are associated with")
+#        for key, value in kwargs.items():
+#            equals.append(getattr(cls, key) == value)
+#    if equals:
+#        return And(*equals)
+#    return Undef
 
 
 
