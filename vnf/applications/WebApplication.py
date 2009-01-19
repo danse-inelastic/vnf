@@ -101,7 +101,8 @@ class WebApplication(Base):
 
         if self.debug:
             self._debug.log( "*** could not locate page %r" % name )
-            return
+            page = super(WebApplication, self).retrievePage("page-loading-error")
+            return page
         
         page = super(WebApplication, self).retrievePage("error")
         return page
