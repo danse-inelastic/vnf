@@ -30,14 +30,14 @@ def findDeepCopiers(extensions):
 
 
 from vnf import Undef
-from vnf.util.variables import Variable, LazyValue
-from vnf.util.expr import (Expr, Select, Insert, Update, Delete, Column, Count, Max, Min,
+from vnf.utils.variables import Variable, LazyValue
+from vnf.utils.expr import (Expr, Select, Insert, Update, Delete, Column, Count, Max, Min,
     Avg, Sum, Eq, And, Asc, Desc, compile_python, compare_columns, SQLRaw,
     Union, Except, Intersect, Alias, SetExpr)
-from vnf.util.exceptions import (
+from vnf.utils.exceptions import (
     WrongStoreError, NotFlushedError, OrderLoopError, UnorderedError,
     NotOneError, FeatureError, CompileError, LostObjectError, ClassInfoError)
-from vnf.util.info import get_cls_info, get_obj_info
+from vnf.utils.info import get_cls_info, get_obj_info
 from pyre.components.Component import Component
 
 class Clerk(Component):
