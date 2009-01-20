@@ -29,15 +29,15 @@ def findDeepCopiers(extensions):
     return [ _(ext) for ext in extensions ]
 
 
-from vnf.components import Undef
-from vnf.components.variables import Variable, LazyValue
-from vnf.components.expr import (Expr, Select, Insert, Update, Delete, Column, Count, Max, Min,
+from vnf import Undef
+from vnf.util.variables import Variable, LazyValue
+from vnf.util.expr import (Expr, Select, Insert, Update, Delete, Column, Count, Max, Min,
     Avg, Sum, Eq, And, Asc, Desc, compile_python, compare_columns, SQLRaw,
     Union, Except, Intersect, Alias, SetExpr)
-from vnf.components.exceptions import (
+from vnf.util.exceptions import (
     WrongStoreError, NotFlushedError, OrderLoopError, UnorderedError,
     NotOneError, FeatureError, CompileError, LostObjectError, ClassInfoError)
-from vnf.components.info import get_cls_info, get_obj_info
+from vnf.util.info import get_cls_info, get_obj_info
 from pyre.components.Component import Component
 
 class Clerk(Component):
@@ -58,6 +58,13 @@ class Clerk(Component):
     def __init__(self, *args, **kwds):
         Component.__init__(self, *args, **kwds)
         self._implicit_flush_block_count = 0
+     
+    def _configure(self):
+        Component._configure(self)
+        self.db = self.inventory.db
+        
+    def setDb(self,dbName):
+        self.db = dbName
 
     def indexUsers(self, where=None):
         """create an index of all users that meet the specified criteria"""

@@ -18,6 +18,17 @@ extensions = [
     'tutorials',
     ]
 
+class UndefType(object):
+
+    def __repr__(self):
+        return "Undef"
+
+    def __reduce__(self):
+        return "Undef"
+
+
+Undef = UndefType()
+
 
 # version
 __id__ = "$Id: __init__.py,v 1.1.1.1 2006-11-27 00:09:19 aivazis Exp $"

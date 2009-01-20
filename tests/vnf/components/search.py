@@ -68,12 +68,21 @@ class App(Script):
 
     def main(self, *args, **kwds):
         clerk = self.clerk
+        # for some reason my _configure method doesn't work.  so i have to
+        # do it manually here
+        clerk.db = clerk.inventory.db
+        clerk.db = 'test'
+        self._createTables()
+
         self._testSearch()
-#        self._createTables()
+#
 #        self._testRemoveReferredRecord()
 #        self._testRemoveVersatileReferredRecord()
 #        self._testRemoveRecordInRefset()
         return
+    
+    def _testSearch(self):
+        pass
 
 
     def _testRemoveReferredRecord(self):
