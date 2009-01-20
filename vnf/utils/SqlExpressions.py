@@ -1,14 +1,23 @@
 from weakref import WeakKeyDictionary
+from copy import copy
+from vnf.components import Undef
+from vnf.variables import (
+    Variable, RawStrVariable, UnicodeVariable, LazyValue,
+    DateTimeVariable, DateVariable, TimeVariable, TimeDeltaVariable,
+    BoolVariable, IntVariable, FloatVariable, DecimalVariable)
+from vnf.components.exceptions import CompileError, NoTableError, ExprError
 
 
 
-class LazyValue(object):
-    """Marker to be used as a base class on lazily evaluated values."""
+# --------------------------------------------------------------------
+# Base classes 
 
-
+MAX_PRECEDENCE = 1000
 
 class Expr(LazyValue):
     pass
+
+# Basic compiler infrastructure
 
 class Compile(object):
     """Compiler based on the concept of generic functions."""
@@ -98,7 +107,7 @@ class Compile(object):
                     handler = dispatch_table[mro_cls]
                     break
             else:
-                raise CompileError("Don't know how to compile type %r of %r"
+                raise Exception("Don't know how to compile type %r of %r"
                                    % (expr.__class__, expr))
         inner_precedence = state.precedence = \
                            self._precedence.get(cls, MAX_PRECEDENCE)
@@ -225,7 +234,300 @@ compile_python = CompilePython()
 
 @compile_python.when(Expr)
 def compile_python_unsupported(compile, expr, state):
+    raise Exception("Can't compile python expressions with %r" % type(expr))
+
+# Base classes for expressions
+
+MAX_PRECEDENCE = 1000
+
+class Expr(LazyValue):
+    __slots__ = ()
+
+@compile_python.when(Expr)
+def compile_python_unsupported(compile, expr, state):
     raise CompileError("Can't compile python expressions with %r" % type(expr))
+
+
+class Comparable(object):
+    __slots__ = ()
+
+    def __eq__(self, other):
+        if other is not None and not isinstance(other, (Expr, Variable)):
+            other = getattr(self, "variable_factory", Variable)(value=other)
+        return Eq(self, other)
+
+    def __ne__(self, other):
+        if other is not None and not isinstance(other, (Expr, Variable)):
+            other = getattr(self, "variable_factory", Variable)(value=other)
+        return Ne(self, other)
+
+    def __gt__(self, other):
+        if not isinstance(other, (Expr, Variable)):
+            other = getattr(self, "variable_factory", Variable)(value=other)
+        return Gt(self, other)
+
+    def __ge__(self, other):
+        if not isinstance(other, (Expr, Variable)):
+            other = getattr(self, "variable_factory", Variable)(value=other)
+        return Ge(self, other)
+
+    def __lt__(self, other):
+        if not isinstance(other, (Expr, Variable)):
+            other = getattr(self, "variable_factory", Variable)(value=other)
+        return Lt(self, other)
+
+    def __le__(self, other):
+        if not isinstance(other, (Expr, Variable)):
+            other = getattr(self, "variable_factory", Variable)(value=other)
+        return Le(self, other)
+
+    def __rshift__(self, other):
+        if not isinstance(other, (Expr, Variable)):
+            other = getattr(self, "variable_factory", Variable)(value=other)
+        return RShift(self, other)
+
+    def __lshift__(self, other):
+        if not isinstance(other, (Expr, Variable)):
+            other = getattr(self, "variable_factory", Variable)(value=other)
+        return LShift(self, other)
+
+    def __and__(self, other):
+        if not isinstance(other, (Expr, Variable)):
+            other = getattr(self, "variable_factory", Variable)(value=other)
+        return And(self, other)
+
+    def __or__(self, other):
+        if not isinstance(other, (Expr, Variable)):
+            other = getattr(self, "variable_factory", Variable)(value=other)
+        return Or(self, other)
+
+    def __add__(self, other):
+        if not isinstance(other, (Expr, Variable)):
+            other = getattr(self, "variable_factory", Variable)(value=other)
+        return Add(self, other)
+
+    def __sub__(self, other):
+        if not isinstance(other, (Expr, Variable)):
+            other = getattr(self, "variable_factory", Variable)(value=other)
+        return Sub(self, other)
+
+    def __mul__(self, other):
+        if not isinstance(other, (Expr, Variable)):
+            other = getattr(self, "variable_factory", Variable)(value=other)
+        return Mul(self, other)
+
+    def __div__(self, other):
+        if not isinstance(other, (Expr, Variable)):
+            other = getattr(self, "variable_factory", Variable)(value=other)
+        return Div(self, other)
+
+    def __mod__(self, other):
+        if not isinstance(other, (Expr, Variable)):
+            other = getattr(self, "variable_factory", Variable)(value=other)
+        return Mod(self, other)
+
+    def is_in(self, others):
+        if not isinstance(others, Expr):
+            others = list(others)
+            if not others:
+                return False
+            variable_factory = getattr(self, "variable_factory", Variable)
+            for i, other in enumerate(others):
+                if not isinstance(other, (Expr, Variable)):
+                    others[i] = variable_factory(value=other)
+        return In(self, others)
+
+    def like(self, other, escape=Undef, case_sensitive=None):
+        if not isinstance(other, (Expr, Variable)):
+            other = getattr(self, "variable_factory", Variable)(value=other)
+        return Like(self, other, escape, case_sensitive)
+
+    def lower(self):
+        return Lower(self)
+
+    def upper(self):
+        return Upper(self)
+
+
+class ComparableExpr(Expr, Comparable):
+    __slots__ = ()
+
+class BinaryExpr(ComparableExpr):
+    __slots__ = ("expr1", "expr2")
+
+    def __init__(self, expr1, expr2):
+        self.expr1 = expr1
+        self.expr2 = expr2
+
+class CompoundExpr(ComparableExpr):
+    __slots__ = ("exprs",)
+
+    def __init__(self, *exprs):
+        self.exprs = exprs
+
+# --------------------------------------------------------------------
+# Operators
+
+class BinaryOper(BinaryExpr):
+    __slots__ = ()
+    oper = " (unknown) "
+
+@compile.when(BinaryOper)
+@compile_python.when(BinaryOper)
+def compile_binary_oper(compile, expr, state):
+    return "%s%s%s" % (compile(expr.expr1, state), expr.oper,
+                       compile(expr.expr2, state))
+
+
+class NonAssocBinaryOper(BinaryOper):
+    __slots__ = ()
+    oper = " (unknown) "
+
+@compile.when(NonAssocBinaryOper)
+@compile_python.when(NonAssocBinaryOper)
+def compile_non_assoc_binary_oper(compile, expr, state):
+    expr1 = compile(expr.expr1, state)
+    state.precedence += 0.5 # Enforce parentheses.
+    expr2 = compile(expr.expr2, state)
+    return "%s%s%s" % (expr1, expr.oper, expr2)
+
+
+class CompoundOper(CompoundExpr):
+    __slots__ = ()
+    oper = " (unknown) "
+
+@compile.when(CompoundOper)
+def compile_compound_oper(compile, expr, state):
+    return compile(expr.exprs, state, join=expr.oper)
+
+@compile_python.when(CompoundOper)
+def compile_compound_oper(compile, expr, state):
+    return compile(expr.exprs, state, join=expr.oper.lower())
+
+
+class Eq(BinaryOper):
+    __slots__ = ()
+    oper = " = "
+
+@compile.when(Eq)
+def compile_eq(compile, eq, state):
+    if eq.expr2 is None:
+        return "%s IS NULL" % compile(eq.expr1, state)
+    return "%s = %s" % (compile(eq.expr1, state), compile(eq.expr2, state))
+
+@compile_python.when(Eq)
+def compile_eq(compile, eq, state):
+    return "%s == %s" % (compile(eq.expr1, state), compile(eq.expr2, state))
+
+
+class Ne(BinaryOper):
+    __slots__ = ()
+    oper = " != "
+
+@compile.when(Ne)
+def compile_ne(compile, ne, state):
+    if ne.expr2 is None:
+        return "%s IS NOT NULL" % compile(ne.expr1, state)
+    return "%s != %s" % (compile(ne.expr1, state), compile(ne.expr2, state))
+
+
+class Gt(BinaryOper):
+    __slots__ = ()
+    oper = " > "
+
+class Ge(BinaryOper):
+    __slots__ = ()
+    oper = " >= "
+
+class Lt(BinaryOper):
+    __slots__ = ()
+    oper = " < "
+
+class Le(BinaryOper):
+    __slots__ = ()
+    oper = " <= "
+
+class RShift(BinaryOper):
+    __slots__ = ()
+    oper = ">>"
+
+class LShift(BinaryOper):
+    __slots__ = ()
+    oper = "<<"
+
+
+class Like(BinaryOper):
+    __slots__ = ("escape", "case_sensitive")
+    oper = " LIKE "
+
+    def __init__(self, expr1, expr2, escape=Undef, case_sensitive=None):
+        self.expr1 = expr1
+        self.expr2 = expr2
+        self.escape = escape
+        self.case_sensitive = case_sensitive
+
+@compile.when(Like)
+def compile_like(compile, like, state, oper=None):
+    statement = "%s%s%s" % (compile(like.expr1, state), oper or like.oper,
+                            compile(like.expr2, state))
+    if like.escape is not Undef:
+        statement = "%s ESCAPE %s" % (statement, compile(like.escape, state))
+    return statement
+
+# It's easy to support it. Later.
+compile_python.when(Like)(compile_python_unsupported)
+
+
+class In(BinaryOper):
+    __slots__ = ()
+    oper = " IN "
+
+@compile.when(In)
+def compile_in(compile, expr, state):
+    expr1 = compile(expr.expr1, state)
+    state.precedence = 0 # We're forcing parenthesis here.
+    return "%s IN (%s)" % (expr1, compile(expr.expr2, state))
+
+@compile_python.when(In)
+def compile_in(compile, expr, state):
+    expr1 = compile(expr.expr1, state)
+    state.precedence = 0 # We're forcing parenthesis here.
+    return "%s in (%s,)" % (expr1, compile(expr.expr2, state))
+
+
+class Add(CompoundOper):
+    __slots__ = ()
+    oper = "+"
+
+class Sub(NonAssocBinaryOper):
+    __slots__ = ()
+    oper = "-"
+
+class Mul(CompoundOper):
+    __slots__ = ()
+    oper = "*"
+
+class Div(NonAssocBinaryOper):
+    __slots__ = ()
+    oper = "/"
+
+class Mod(NonAssocBinaryOper):
+    __slots__ = ()
+    oper = "%"
+
+
+class And(CompoundOper):
+    __slots__ = ()
+    oper = " AND "
+
+class Or(CompoundOper):
+    __slots__ = ()
+    oper = " OR "
+
+@compile.when(And, Or)
+def compile_compound_oper(compile, expr, state):
+    return compile(expr.exprs, state, join=expr.oper, raw=True)
+
 
 
 class Comparable(object):
@@ -377,3 +679,55 @@ class And(CompoundOper):
 
 class Or(CompoundOper):
     oper = " OR "
+    
+# --------------------------------------------------------------------
+# Plain SQL expressions.
+
+class SQLRaw(str):
+    """Subtype to mark a string as something that shouldn't be compiled.
+
+    This is handled internally by the compiler.
+    """
+    __slots__ = ()
+
+
+class SQLToken(str):
+    """Marker for strings that should be considered as a single SQL token.
+
+    These strings will be quoted, when needed.
+    """
+    __slots__ = ()
+
+is_safe_token = re.compile("^[a-zA-Z][a-zA-Z0-9_]*$").match
+
+@compile.when(SQLToken)
+def compile_sql_token(compile, expr, state):
+    if is_safe_token(expr) and not compile.is_reserved_word(expr):
+        return expr
+    return '"%s"' % expr.replace('"', '""')
+
+@compile_python.when(SQLToken)
+def compile_python_sql_token(compile, expr, state):
+    return expr
+
+
+class SQL(ComparableExpr):
+    __slots__ = ("expr", "params", "tables")
+
+    def __init__(self, expr, params=Undef, tables=Undef):
+        self.expr = expr
+        self.params = params
+        self.tables = tables
+
+@compile.when(SQL)
+def compile_sql(compile, expr, state):
+    if expr.params is not Undef:
+        if type(expr.params) not in (tuple, list):
+            raise CompileError("Parameters should be a list or a tuple, "
+                               "not %r" % type(expr.params))
+        for param in expr.params:
+            state.parameters.append(param)
+    if expr.tables is not Undef:
+        state.auto_tables.append(expr.tables)
+    return expr.expr
+
