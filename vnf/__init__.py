@@ -29,6 +29,8 @@ class UndefType(object):
 
 Undef = UndefType()
 
+has_cextensions = False
+
 
 # version
 __id__ = "$Id: __init__.py,v 1.1.1.1 2006-11-27 00:09:19 aivazis Exp $"

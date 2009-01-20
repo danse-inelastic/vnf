@@ -24,8 +24,8 @@ from weakref import WeakKeyDictionary
 from copy import copy
 import re
 
-from vnf.exceptions import CompileError, NoTableError, ExprError
-from vnf.variables import (
+from vnf.utils.exceptions import CompileError, NoTableError, ExprError
+from vnf.utils.variables import (
     Variable, RawStrVariable, UnicodeVariable, LazyValue,
     DateTimeVariable, DateVariable, TimeVariable, TimeDeltaVariable,
     BoolVariable, IntVariable, FloatVariable, DecimalVariable)

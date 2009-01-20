@@ -1,7 +1,7 @@
 from vnf import Undef
 
-from vnf.expr import Expr, FromExpr, Column, Desc, TABLE
-from vnf.expr import SQLToken, CompileError, compile
+from vnf.utils.expr import Expr, FromExpr, Column, Desc, TABLE
+from vnf.utils.expr import SQLToken, CompileError, compile
 
 def get_obj_info(obj):
     try:

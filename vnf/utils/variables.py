@@ -3,7 +3,7 @@ from decimal import Decimal
 import cPickle as pickle
 import re
 
-from vnf.exceptions import NoneError
+from vnf.utils.exceptions import NoneError
 from vnf import Undef
 
 
@@ -273,3 +273,371 @@ class Variable(object):
             is from the database.
         """
         return value
+    
+class BoolVariable(Variable):
+    __slots__ = ()
+
+    def parse_set(self, value, from_db):
+        if not isinstance(value, (int, long, float, Decimal)):
+            raise TypeError("Expected bool, found %r: %r"
+                            % (type(value), value))
+        return bool(value)
+
+
+class IntVariable(Variable):
+    __slots__ = ()
+
+    def parse_set(self, value, from_db):
+        if not isinstance(value, (int, long, float, Decimal)):
+            raise TypeError("Expected int, found %r: %r"
+                            % (type(value), value))
+        return int(value)
+
+
+class FloatVariable(Variable):
+    __slots__ = ()
+
+    def parse_set(self, value, from_db):
+        if not isinstance(value, (int, long, float, Decimal)):
+            raise TypeError("Expected float, found %r: %r"
+                            % (type(value), value))
+        return float(value)
+
+
+class DecimalVariable(Variable):
+    __slots__ = ()
+
+    @staticmethod
+    def parse_set(value, from_db):
+        if (from_db and isinstance(value, basestring) or
+            isinstance(value, (int, long))):
+            value = Decimal(value)
+        elif not isinstance(value, Decimal):
+            raise TypeError("Expected Decimal, found %r: %r"
+                            % (type(value), value))
+        return value
+
+    @staticmethod
+    def parse_get(value, to_db):
+        if to_db:
+            return str(value)
+        return value
+
+
+class RawStrVariable(Variable):
+    __slots__ = ()
+
+    def parse_set(self, value, from_db):
+        if isinstance(value, buffer):
+            value = str(value)
+        elif not isinstance(value, str):
+            raise TypeError("Expected str, found %r: %r"
+                            % (type(value), value))
+        return value
+
+
+class UnicodeVariable(Variable):
+    __slots__ = ()
+
+    def parse_set(self, value, from_db):
+        if not isinstance(value, unicode):
+            raise TypeError("Expected unicode, found %r: %r"
+                            % (type(value), value))
+        return value
+
+
+class DateTimeVariable(Variable):
+    __slots__ = ("_tzinfo",)
+
+    def __init__(self, *args, **kwargs):
+        self._tzinfo = kwargs.pop("tzinfo", None)
+        super(DateTimeVariable, self).__init__(*args, **kwargs)
+
+    def parse_set(self, value, from_db):
+        if from_db:
+            if isinstance(value, datetime):
+                pass
+            elif isinstance(value, (str, unicode)):
+                if " " not in value:
+                    raise ValueError("Unknown date/time format: %r" % value)
+                date_str, time_str = value.split(" ")
+                value = datetime(*(_parse_date(date_str) +
+                                   _parse_time(time_str)))
+            else:
+                raise TypeError("Expected datetime, found %s" % repr(value))
+            if self._tzinfo is not None:
+                if value.tzinfo is None:
+                    value = value.replace(tzinfo=self._tzinfo)
+                else:
+                    value = value.astimezone(self._tzinfo)
+        else:
+            if type(value) in (int, long, float):
+                value = datetime.utcfromtimestamp(value)
+            elif not isinstance(value, datetime):
+                raise TypeError("Expected datetime, found %s" % repr(value))
+            if self._tzinfo is not None:
+                value = value.astimezone(self._tzinfo)
+        return value
+
+
+class DateVariable(Variable):
+    __slots__ = ()
+
+    def parse_set(self, value, from_db):
+        if from_db:
+            if value is None:
+                return None
+            if isinstance(value, date):
+                return value
+            if not isinstance(value, (str, unicode)):
+                raise TypeError("Expected date, found %s" % repr(value))
+            if " " in value:
+                value, time_str = value.split(" ")
+            return date(*_parse_date(value))
+        else:
+            if isinstance(value, datetime):
+                return value.date()
+            if not isinstance(value, date):
+                raise TypeError("Expected date, found %s" % repr(value))
+            return value
+
+
+class TimeVariable(Variable):
+    __slots__ = ()
+
+    def parse_set(self, value, from_db):
+        if from_db:
+            # XXX Can None ever get here, considering that set() checks for it?
+            if value is None:
+                return None
+            if isinstance(value, time):
+                return value
+            if not isinstance(value, (str, unicode)):
+                raise TypeError("Expected time, found %s" % repr(value))
+            if " " in value:
+                date_str, value = value.split(" ")
+            return time(*_parse_time(value))
+        else:
+            if isinstance(value, datetime):
+                return value.time()
+            if not isinstance(value, time):
+                raise TypeError("Expected time, found %s" % repr(value))
+            return value
+
+
+class TimeDeltaVariable(Variable):
+    __slots__ = ()
+
+    def parse_set(self, value, from_db):
+        if from_db:
+            # XXX Can None ever get here, considering that set() checks for it?
+            if value is None:
+                return None
+            if isinstance(value, timedelta):
+                return value
+            if not isinstance(value, (str, unicode)):
+                raise TypeError("Expected timedelta, found %s" % repr(value))
+            return _parse_interval(value)
+        else:
+            if not isinstance(value, timedelta):
+                raise TypeError("Expected timedelta, found %s" % repr(value))
+            return value
+
+
+class EnumVariable(Variable):
+    __slots__ = ("_get_map", "_set_map")
+
+    def __init__(self, get_map, set_map, *args, **kwargs):
+        self._get_map = get_map
+        self._set_map = set_map
+        Variable.__init__(self, *args, **kwargs)
+
+    def parse_set(self, value, from_db):
+        if from_db:
+            return value
+        try:
+            return self._set_map[value]
+        except KeyError:
+            raise ValueError("Invalid enum value: %s" % repr(value))
+
+    def parse_get(self, value, to_db):
+        if to_db:
+            return value
+        try:
+            return self._get_map[value]
+        except KeyError:
+            raise ValueError("Invalid enum value: %s" % repr(value))
+
+
+class MutableValueVariable(Variable):
+    """
+    A variable which contains a reference to mutable content. For this kind
+    of variable, we can't simply detect when a modification has been made, so
+    we have to synchronize the content of the variable when the store is
+    flushing current objects, to check if the state has changed.
+    """
+    __slots__ = ("_event_system")
+
+    def __init__(self, *args, **kwargs):
+        self._event_system = None
+        Variable.__init__(self, *args, **kwargs)
+        if self.event is not None:
+            self.event.hook("start-tracking-changes", self._start_tracking)
+            self.event.hook("object-deleted", self._detect_changes)
+
+    def _start_tracking(self, obj_info, event_system):
+        self._event_system = event_system
+        self.event.hook("stop-tracking-changes", self._stop_tracking)
+
+    def _stop_tracking(self, obj_info, event_system):
+        event_system.unhook("flush", self._detect_changes)
+        self._event_system = None
+
+    def _detect_changes(self, obj_info):
+        if self.get_state() != self._checkpoint_state:
+            self.event.emit("changed", self, None, self._value, False)
+
+    def get(self, default=None, to_db=False):
+        if self._event_system is not None:
+            self._event_system.hook("flush", self._detect_changes)
+        return super(MutableValueVariable, self).get(default, to_db)
+
+    def set(self, value, from_db=False):
+        if self._event_system is not None:
+            if isinstance(value, LazyValue):
+                self._event_system.unhook("flush", self._detect_changes)
+            else:
+                self._event_system.hook("flush", self._detect_changes)
+        super(MutableValueVariable, self).set(value, from_db)
+
+
+class PickleVariable(MutableValueVariable):
+    __slots__ = ()
+
+    def parse_set(self, value, from_db):
+        if from_db:
+            if isinstance(value, buffer):
+                value = str(value)
+            return pickle.loads(value)
+        else:
+            return value
+
+    def parse_get(self, value, to_db):
+        if to_db:
+            return pickle.dumps(value, -1)
+        else:
+            return value
+
+    def get_state(self):
+        return (self._lazy_value, pickle.dumps(self._value, -1))
+
+    def set_state(self, state):
+        self._lazy_value = state[0]
+        self._value = pickle.loads(state[1])
+
+
+class ListVariable(MutableValueVariable):
+    __slots__ = ("_item_factory",)
+
+    def __init__(self, item_factory, *args, **kwargs):
+        self._item_factory = item_factory
+        MutableValueVariable.__init__(self, *args, **kwargs)
+
+    def parse_set(self, value, from_db):
+        if from_db:
+            item_factory = self._item_factory
+            return [item_factory(value=val, from_db=from_db).get()
+                    for val in value]
+        else:
+            return value
+
+    def parse_get(self, value, to_db):
+        if to_db:
+            item_factory = self._item_factory
+            # XXX This from_db=to_db is dubious. What to do here?
+            return [item_factory(value=val, from_db=to_db) for val in value]
+        else:
+            return value
+
+    def get_state(self):
+        return (self._lazy_value, pickle.dumps(self._value, -1))
+
+    def set_state(self, state):
+        self._lazy_value = state[0]
+        self._value = pickle.loads(state[1])
+
+
+def _parse_time(time_str):
+    # TODO Add support for timezones.
+    colons = time_str.count(":")
+    if not 1 <= colons <= 2:
+        raise ValueError("Unknown time format: %r" % time_str)
+    if colons == 2:
+        hour, minute, second = time_str.split(":")
+    else:
+        hour, minute = time_str.split(":")
+        second = "0"
+    if "." in second:
+        second, microsecond = second.split(".")
+        second = int(second)
+        microsecond = int(int(microsecond) * 10 ** (6 - len(microsecond)))
+        return int(hour), int(minute), second, microsecond
+    return int(hour), int(minute), int(second), 0
+
+def _parse_date(date_str):
+    if "-" not in date_str:
+        raise ValueError("Unknown date format: %r" % date_str)
+    year, month, day = date_str.split("-")
+    return int(year), int(month), int(day)
+
+
+def _parse_interval_table():
+    table = {}
+    for units, delta in (
+        ("d day days", timedelta),
+        ("h hour hours", lambda x: timedelta(hours=x)),
+        ("m min minute minutes", lambda x: timedelta(minutes=x)),
+        ("s sec second seconds", lambda x: timedelta(seconds=x)),
+        ("ms millisecond milliseconds", lambda x: timedelta(milliseconds=x)),
+        ("microsecond microseconds", lambda x: timedelta(microseconds=x))
+        ):
+        for unit in units.split():
+            table[unit] = delta
+    return table
+
+_parse_interval_table = _parse_interval_table()
+
+_parse_interval_re = re.compile(r"[\s,]*"
+                                r"([-+]?(?:\d\d?:\d\d?(?::\d\d?)?(?:\.\d+)?"
+                                r"|\d+(?:\.\d+)?))"
+                                r"[\s,]*")
+
+def _parse_interval(interval):
+    result = timedelta(0)
+    value = None
+    for token in _parse_interval_re.split(interval):
+        if not token:
+            pass
+        elif ":" in token:
+            if value is not None:
+                result += timedelta(days=value)
+                value = None
+            h, m, s, ms = _parse_time(token)
+            result += timedelta(hours=h, minutes=m, seconds=s, microseconds=ms)
+        elif value is None:
+            try:
+                value = float(token)
+            except ValueError:
+                raise ValueError("Expected an interval value rather than "
+                                 "%r in interval %r" % (token, interval))
+        else:
+            unit = _parse_interval_table.get(token)
+            if unit is None:
+                raise ValueError("Unsupported interval unit %r in interval %r"
+                                 % (token, interval))
+            result += unit(value)
+            value = None
+    if value is not None:
+        result += timedelta(seconds=value)
+    return result
+
