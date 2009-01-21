@@ -45,6 +45,8 @@ class Test( base ):
     
 
     def sheet(self, director):
+        # *** this example is broken ***
+        # *** should update this example after the developer meeting ***
         page = director.retrievePage( 'greet' )
         main = page._body._content._main
         document = main.document(title = 'test sheet')
