@@ -13,7 +13,6 @@
 
 
 from vnf.components.Form import Form as base
-from vnf.components.PyHtmlTable import PyHtmlTable
 from vnf.components.Actor import actionRequireAuthentication, action_link
 from vnf.components.DBObjectForm import formactor_action_prefix
 
