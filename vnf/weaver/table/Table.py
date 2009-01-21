@@ -13,12 +13,13 @@
 
 class Table:
 
-    def __init__(self, column_descriptors, rows = None):
+    def __init__(self, column_descriptors, rows=None, editable=False):
 
         self.column_descriptors = column_descriptors
 
         if rows is None: rows = []
         self.rows = rows
+        self.editable = editable
         return
 
 

@@ -143,29 +143,30 @@ function make_table( div, descriptors ) {
 
         jscode.append( 'thetable.addClass( "tabulated" );' );
 
-        jscode.append( '''
-    thetable.find( 'tbody' ).find( "td[datatype=text]" ).dblclick( function () {
-	$(this).enable_cell_editing();
-      } );
-''')
+        if table.editable:
+            jscode.append( '''
+            thetable.find( 'tbody' ).find( "td[datatype=text]" ).dblclick( function () {
+            $(this).enable_cell_editing();
+            } );
+            ''')
         
-        jscode.append( '''
-    thetable.find( 'tbody' ).find( "td[datatype=money]" ).dblclick( function () {
-	$(this).enable_cell_editing();
-      } );
-''')
+            jscode.append( '''
+            thetable.find( 'tbody' ).find( "td[datatype=money]" ).dblclick( function () {
+            $(this).enable_cell_editing();
+            } );
+            ''')
 
-        jscode.append( '''
-    thetable.find( 'tbody' ).find( "td[datatype=single_choice]" ).dblclick( function () {
-	$(this).enable_cell_editing();
-      } );
-''')
+            jscode.append( '''
+            thetable.find( 'tbody' ).find( "td[datatype=single_choice]" ).dblclick( function () {
+            $(this).enable_cell_editing();
+            } );
+            ''')
 
-        jscode.append( '''
-    thetable.find( 'tbody' ).find( "td[datatype=date]" ).dblclick( function () {
-	$(this).enable_cell_editing();
-      } );
-''')
+            jscode.append( '''
+            thetable.find( 'tbody' ).find( "td[datatype=date]" ).dblclick( function () {
+            $(this).enable_cell_editing();
+            } );
+            ''')
 
         jscode.append( '});' );
         
@@ -207,7 +208,7 @@ def towidgetdescription(table):
         continue
     
     from table.Table import Table
-    return Table(coldescs, rows)
+    return Table(coldescs, rows, editable = table.view.editable)
 
 import os
 
@@ -220,7 +221,7 @@ def test():
         'cgihome': '**cgihome**',
         }
     renderer = TableMill(configurations)
-    print renderer.render(table)
+    print '\n'.join(renderer.render(table))
     return
 
 def main():

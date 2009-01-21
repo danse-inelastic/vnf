@@ -12,7 +12,6 @@
 #
 
 
-
 class Column:
 
     def __init__(self, id, label, datatype, **kwds):

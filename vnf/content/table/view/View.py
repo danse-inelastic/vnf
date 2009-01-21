@@ -17,6 +17,8 @@ class View(object):
     from Column import Column
 
     columns = None
+
+    editable = False
     
     pass # end of View
 
