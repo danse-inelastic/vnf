@@ -65,13 +65,17 @@ class App(Script):
         import vnf.components
         clerk = pyre.inventory.facility('clerk', factory=vnf.components.clerk)
         
+    def _init(self, *args, **kwds):
+        self.clerk = 'test'
+
 
     def main(self, *args, **kwds):
         clerk = self.clerk
         # for some reason my _configure method doesn't work.  so i have to
         # do it manually here
-        clerk.db = clerk.inventory.db
-        clerk.db = 'test'
+        #clerk.db = clerk.inventory.db
+        #clerk.db = 'test'
+        #clerk.inventory.db = 'test'
         self._createTables()
 
         self._testSearch()
@@ -198,7 +202,7 @@ class App(Script):
 
     def _createTables(self):
         for table in tables:
-            self._dropTable(table)
+            #self._dropTable(table)
             self._createTable(table)
         return
 
