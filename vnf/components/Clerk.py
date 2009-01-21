@@ -420,8 +420,6 @@ class Clerk(Component):
 
         # connect to the database
         import pyre.db
-        #temp--ask jiao how to initialize this properly-- _init and _configure don't seem to work
-        self.inventory.db = 'test'
         dbkwds = DbAddressResolver().resolve(self.inventory.db)
         self.db = pyre.db.connect(wrapper=self.inventory.dbwrapper, **dbkwds)
 
