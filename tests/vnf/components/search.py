@@ -66,8 +66,10 @@ class App(Script):
         clerk = pyre.inventory.facility('clerk', factory=vnf.components.clerk)
         
     def _init(self, *args, **kwds):
-        self.clerk = 'test'
-
+        pass
+    
+    def _defaults(self):
+        self.inventory.clerk.inventory.db = 'test'
 
     def main(self, *args, **kwds):
         clerk = self.clerk

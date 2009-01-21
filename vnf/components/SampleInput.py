@@ -12,6 +12,7 @@
 from Actor import AuthenticationError, actionRequireAuthentication
 from FormActor import FormActor
 
+
 class SampleInput(FormActor):
 
     class Inventory(FormActor.Inventory):
@@ -36,9 +37,42 @@ class SampleInput(FormActor):
         page = pyre.inventory.str('page', default='empty')
 
     def default(self, director):
-        return self.inputMaterial(director)
+        return self.selectMaterialType(director)
     
-    def chooseMaterialInputForm(self, director):
+    def selectMaterialType(self, director):
+        try:
+            page = director.retrieveSecurePage( 'generic' )
+        except AuthenticationError, err:
+            return err.page
+#        experiment = director.clerk.getNeutronExperiment(self.inventory.id)
+        main = page._body._content._main
+        # populate the main column
+        document = main.document(title='Material type selection')
+        document.description = ''
+        document.byline = '<a href="http://danse.us">DANSE</a>'        
+        
+        formcomponent = self.retrieveFormToShow( 'selectmaterialtype')
+        formcomponent.director = director
+        # build the form 
+        form = document.form(name='', action=director.cgihome)
+        # specify action
+        action = actionRequireAuthentication(          
+            actor = 'sampleInput', 
+            sentry = director.sentry,
+            routine = 'redirectMaterialInput',
+            label = '',
+            arguments = {'form-received': formcomponent.name },
+            )
+        from vnf.weaver import action_formfields
+        action_formfields( action, form )
+        
+        # expand the form with fields of the data object that is being edited
+        formcomponent.expand( form )
+        submit = form.control(name='submit',type="submit", value="next")
+        #self.processFormInputs(director)
+        return page 
+    
+    def redirectMaterialInput(self, director):
         selected = self.processFormInputs(director)
         method = getattr(self, selected )
         return method( director )
@@ -87,9 +121,9 @@ class SampleInput(FormActor):
         except AuthenticationError, err:
             return err.page
         
-        polycrystal = self._createPolycrystal(director)
+        singlecrystal = self._createSinglecrystal(director)
 
-        polycrystalId = self.inventory.polycrystalId = polycrystal.id
+        singlecrystalId = self.inventory.SinglecrystalId = singlecrystal.id
         
 #        experiment = director.clerk.getNeutronExperiment(self.inventory.id)
         main = page._body._content._main
@@ -108,14 +142,14 @@ class SampleInput(FormActor):
             sentry = director.sentry,
             routine = 'storeAndVerifyInput',
             label = '',
-            id = polycrystalId,
+            id = singlecrystalId,
             arguments = {'form-received': formcomponent.name },
             )
         from vnf.weaver import action_formfields
         action_formfields( action, form )
         
         # expand the form with fields of the data object that is being edited
-        formcomponent.expand( form , id = polycrystalId)
+        formcomponent.expand( form , id = singlecrystalId)
         submit = form.control(name='submit',type="submit", value="next")
         return page  
     
