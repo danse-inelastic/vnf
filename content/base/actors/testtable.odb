@@ -21,6 +21,8 @@ class Test( base ):
 
         import pyre.inventory
 
+        editable = pyre.inventory.bool('editable', default=False)
+
         pass # end of Inventory
 
 
@@ -34,16 +36,9 @@ class Test( base ):
         main = page._body._content._main
         document = main.document(title = 'table test')
 
-        from vnf.content.Table import Table, ColumnDescriptor
-
-        cols = [
-            ColumnDescriptor( 'col1', 'Title', 'text' ),
-            ColumnDescriptor( 'col2', 'Date', 'date',
-                              valid_range = [ '01/01/1977', '01/01/2008' ] ),
-            ]
-        table = Table( cols )
-        table.addRow( 'abc', '06/06/2006' )
-        table.addRow( 'hi', '05/05/2005' )
+        from vnf.content.table.Table import example
+        table = example()
+        table.view.editable = self.inventory.editable
         
         document.contents.append(table)
         return page
