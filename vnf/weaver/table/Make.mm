@@ -30,6 +30,8 @@ all: export
 # export
 
 EXPORT_PYTHON_MODULES = \
+	Column.py \
+	Table.py \
 	__init__.py \
 
 
