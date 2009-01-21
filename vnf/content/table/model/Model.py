@@ -12,22 +12,6 @@
 #
 
 
-class Model(object):
-
-    name = None
-
-    from Measure import Measure
-
-    def measures(self):
-        return self._measureRegistry.iteritems()
-
-
-    def getMeasure(self, name):
-        return self._measureRegistry[name]
-    
-    pass
-
-
 class MeasureCollector (type):
 
 
@@ -49,7 +33,7 @@ class MeasureCollector (type):
         for name, item in cls.__dict__.iteritems():
 
             # disregard entries that do not derive from Measure
-            if not isinstance(item, Model.Measure):
+            if not isinstance(item, cls.Measure):
                 continue
 
             # register it
@@ -59,6 +43,24 @@ class MeasureCollector (type):
         cls._measureRegistry = measureRegistry
         return
 
+
+
+class Model(object):
+
+    name = None
+
+    from Measure import Measure
+
+    def measures(cls):
+        return cls._measureRegistry.iteritems()
+    measure = classmethod(measures)
+
+    def getMeasure(cls, name):
+        return cls._measureRegistry[name]
+    getMeasure = classmethod(getMeasure)
+
+    __metaclass__ = MeasureCollector
+    pass
 
 
 def test():

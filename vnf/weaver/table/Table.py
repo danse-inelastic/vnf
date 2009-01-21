@@ -1,17 +1,15 @@
-#!/usr/bin/env python
+# -*- Python -*-
 #
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
-#                                Jiao Lin
+#                                   Jiao Lin
 #                      California Institute of Technology
-#                        (C) 2008  All Rights Reserved
+#                        (C) 2009  All Rights Reserved
 #
 # {LicenseText}
 #
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
-
-
 
 class Table:
 
@@ -34,20 +32,11 @@ class Table:
 
 
 
-class ColumnDescriptor:
-
-    def __init__(self, id, label, datatype, **kwds):
-        self.id = id
-        self.label = label
-        self.datatype = datatype
-        self.options = kwds
-        return
-
-
 def test():
+    from Column import Column
     cols = [
-        ColumnDescriptor( 'col1', 'Title', 'text' ),
-        ColumnDescriptor( 'col2', 'Date', 'date', valid_range = [ '01/01/1977', '01/01/2008' ] ),
+        Column( 'col1', 'Title', 'text' ),
+        Column( 'col2', 'Date', 'date', valid_range = [ '01/01/1977', '01/01/2008' ] ),
         ]
     table = Table( cols )
     table.addRow( 'abc', '06/06/2006' )

@@ -16,6 +16,7 @@ PACKAGE = weaver
 
 
 BUILD_DIRS = \
+	table \
 
 OTHER_DIRS = \
 

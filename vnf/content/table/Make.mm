@@ -15,6 +15,8 @@ PACKAGE = content/table
 
 
 BUILD_DIRS = \
+	model \
+	view \
 
 OTHER_DIRS = \
 
@@ -30,6 +32,7 @@ all: export
 # export
 
 EXPORT_PYTHON_MODULES = \
+	Table.py \
 	__init__.py \
 
 

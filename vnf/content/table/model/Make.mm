@@ -30,6 +30,8 @@ all: export
 # export
 
 EXPORT_PYTHON_MODULES = \
+	Measure.py \
+	Model.py \
 	__init__.py \
 
 

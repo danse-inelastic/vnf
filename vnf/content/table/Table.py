@@ -23,13 +23,13 @@ class Table(object):
     pass # end of Table
 
 
-def test():
 
-    from model.Model import Model as ModelBase
-    class Model(ModelBase):
+def example():
+    from model.Model import Model
+    class model(Model):
         
-        a = ModelBase.Measure(name='a', type='str')
-        b = ModelBase.Measure(name='b', type='integer')
+        a = Model.Measure(name='a', type='str')
+        b = Model.Measure(name='b', type='integer')
 
     class D:
         def __init__(self, a, b):
@@ -38,15 +38,20 @@ def test():
             return
     data = [D('hello', 345)]
 
-    from view.View import View as ViewBase
-    class View(ViewBase):
+    from view.View import View as View
+    class view(View):
         
         columns = [
-            ViewBase.Column(measure='a'),
-            ViewBase.Column(measure='b'),
+            View.Column(measure='a'),
+            View.Column(measure='b'),
             ]
 
-    table = Table(Model, data, View)
+    table = Table(model, data, view)
+    return table
+
+
+def test():
+    table = example()
     return
 
 

@@ -12,12 +12,16 @@
 #
 
 
-def table(model, data, view):
-    from Table import Table
-    return Table(model, data, view)
 
-from model.Model import Model
-from view.View import View
+class Column:
+
+    def __init__(self, id, label, datatype, **kwds):
+        self.id = id
+        self.label = label
+        self.datatype = datatype
+        self.options = kwds
+        return
+
 
 # version
 __id__ = "$Id$"

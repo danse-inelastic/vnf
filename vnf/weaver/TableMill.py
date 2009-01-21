@@ -18,9 +18,15 @@ class TableMill:
     def __init__(self, configurations):
         self.configurations = configurations
         return
-    
 
+
+    # this is a temporary 
     def render(self, table):
+        table = towidgetdescription(table)
+        return self._render(table)
+    
+    
+    def _render(self, table):
         configurations = self.configurations
         home = configurations['home']
         cgihome = configurations['cgihome']
@@ -175,7 +181,55 @@ def jscode_descriptor( descriptor ):
         [ '%s: %r' % (k,v) for k,v in d.iteritems() ] ) )
 
 
+
+def towidgetdescription(table):
+    # table is an instance of vnf.content.table.Table
+    # return: an instance of vnf.weaver.table.Table
+
+    # column descriptors
+    from table.Column import Column
+    coldescs = []
+    for col in table.view.columns:
+        id = col.id
+        label = col.label
+        measure = table.model.getMeasure(col.measure)
+        datatype = measure.type
+        options = col.options
+        coldesc = Column(id=id, label=label, datatype=datatype, **options)
+        coldescs.append(coldesc)
+        continue
+
+    # data
+    rows = []
+    for d in table.data:
+        row = [getattr(d, col.measure) for col in table.view.columns]
+        rows.append(row)
+        continue
+    
+    from table.Table import Table
+    return Table(coldescs, rows)
+
 import os
+
+
+def test():
+    from vnf.content.table.Table import example
+    table = example()
+    configurations = {
+        'home': '**home**',
+        'cgihome': '**cgihome**',
+        }
+    renderer = TableMill(configurations)
+    print renderer.render(table)
+    return
+
+def main():
+    test()
+    return
+
+
+if __name__ == '__main__': main()
+
 
 # version
 __id__ = "$Id$"
