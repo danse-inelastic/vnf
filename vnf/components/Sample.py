@@ -12,7 +12,6 @@
 
 from Actor import Actor, action_link, action, actionRequireAuthentication
 from vnf.weaver import action_href
-from PyHtmlTable import PyHtmlTable
 
 class Sample(Actor):
 
@@ -41,37 +40,10 @@ class Sample(Actor):
 
         # retrieve id:record dictionary from db
         clerk = director.clerk
-        samples = clerk.indexSamples().values()
+        #samples = clerk.indexSamples().values()
+        samples = clerk.indexScatterers().values()
             
-        p = document.paragraph()
-        import operator
-        generators = [
-            operator.attrgetter( 'short_description' ),
-            lambda s: format_chemical_formula(s.matter, director),
-            lambda s: format_lattice_parameters(s.matter, director),
-            lambda s: format_atoms(s.matter, director),
-            lambda s: format_shape(s.shape, director),
-            ]
-
-        columnTitles = [
-            'Sample description','Chemical formula', 'Cartesian lattice', 
-            'Atom positions', 'Shape']
-
-        t=PyHtmlTable(len(samples), len(columnTitles), {'width':'90%', 'border':2, 'bgcolor':'white'})
-        # first row for labels 
-        for colNum, col in enumerate(columnTitles):
-            t.setc(0,colNum,col)
-
-        # other rows for values
-        for row, sample in enumerate( samples ):
-            #first put in the radio button
-            #selection = "<input type='radio' name='actor.form-received.kernel_id' value="+sample.id+" id='radio'/>"
-            #t.setc(row+1, 0, selection)
-            for colNum, generator in enumerate( generators ):
-                value = generator( sample )
-                t.setc(row+1,colNum,value)
-        
-        p.text = [t.return_html()]
+        document.contents.append(sampletable(samples, director))
         
         p = document.paragraph()
         p.text = [action_link(
@@ -91,6 +63,54 @@ class Sample(Actor):
         super(Sample, self).__init__(name)
         return
 
+
+        columnTitles = [
+            'Sample description','Chemical formula', 'Cartesian lattice', 
+            'Atom positions', 'Shape']
+
+
+def sampletable(samples, director):
+    from vnf.content.table import Model, View, Table
+    class model(Model):
+        
+        description = Model.Measure(name='description', type='text')
+        chemical_formula = Model.Measure(name='chemical_formula', type='text')
+        cartesian_lattice = Model.Measure(name='cartesian_lattice', type='text')
+        atom_positions = Model.Measure(name='atom_positions', type='text')
+        shape = Model.Measure(name='shape', type='text')
+
+    class D: pass
+    import operator
+    generators = {
+        'description': operator.attrgetter( 'short_description' ),
+        'chemical_formula': lambda s: format_chemical_formula(s.matter, director),
+        'cartesian_lattice': lambda s: format_lattice_parameters(s.matter, director),
+        'atom_positions': lambda s: format_atoms(s.matter, director),
+        'shape': lambda s: format_shape(s.shape, director),
+        }
+    def d(s):
+        r = D()
+        for attr, g in generators.iteritems():
+            value = g(s)
+            setattr(r, attr, value)
+            continue
+        return r
+    data = [d(s) for s in samples]
+
+    class view(View):
+        
+        columns = [
+            View.Column(id='col1',label='Sample description', measure='description'),
+            View.Column(id='col2',label='Chemical formula', measure='chemical_formula'),
+            View.Column(id='col3',label='Cartesian Lattice', measure='cartesian_lattice'),
+            View.Column(id='col4',label='Atom positions', measure='atom_positions'),
+            View.Column(id='col5',label='Shape', measure='shape'),
+            ]
+
+        editable = False
+
+    table = Table(model, data, view)
+    return table
 
 
 def format_chemical_formula( matter,director ):
