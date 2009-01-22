@@ -42,6 +42,9 @@ class Sample(Actor):
         clerk = director.clerk
         #samples = clerk.indexSamples().values()
         samples = clerk.indexScatterers().values()
+        from vnf.utils.uniquelist import uniquelist
+        from vnf.dom.hash import hash
+        samples = uniquelist(samples, idfun=lambda sample: hash(sample, clerk.db))
             
         document.contents.append(sampletable(samples, director))
         
