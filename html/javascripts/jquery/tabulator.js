@@ -171,6 +171,16 @@
   };
 
 
+  // append a list of rows
+  $.fn.table_appendrows_dataonly = function(rows) {
+    var tbl = this;
+    for (var i=0; i<rows.length; i++) {
+      var row = rows[i];
+      tbl.table_appendrow_dataonly(row.id, row.data);
+    }
+  };
+
+
   // insert a row to the table body after the row for which the row id is given.
   // only the data are specified. meta data 
   // will be obtained from "column_descriptors" that is attached to the table
@@ -220,7 +230,7 @@
   // --------------------------------------
   //  text
   $.fn.establish_cell_from_data.handle_text = function( cell, value ) {
-    return cell.text( value ); 
+    return cell.html( value ); 
   };
   
   //  date
