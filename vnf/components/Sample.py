@@ -127,7 +127,7 @@ def format_lattice_parameters(matter, director):
     import numpy
     lattice = numpy.array(lattice)
     lattice.shape = -1,3
-    return '<br>'.join( [ format_vector( vec ) for vec in lattice ] )
+    return '\n'.join( [ format_vector( vec ) for vec in lattice ] )
 
 
 def format_atoms(matter, director):
@@ -139,7 +139,7 @@ def format_atoms(matter, director):
     coords = numpy.array(coords)
     coords.shape = -1,3
     atom_symbols = matter.atom_symbols
-    return '<br>'.join(
+    return '\n'.join(
         [ '%s: %s' % (symbol, format_vector(coord) )
           for symbol, coord in zip(atom_symbols, coords) ]
         )
