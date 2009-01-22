@@ -88,6 +88,7 @@ EXPORT_PYTHON_MODULES = \
 	__init__.py \
 	acl.py \
 	check.py \
+	hash.py \
 
 
 
