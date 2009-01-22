@@ -33,6 +33,8 @@ class ReferenceSet(object):
 
 
     def __get__(self, instance, cls = None):
+        if instance is None: return self
+        
         if not isinstance( instance, Table ):
             raise RuntimeError, "%s is not a db record"
 
