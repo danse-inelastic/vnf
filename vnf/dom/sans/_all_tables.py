@@ -5,6 +5,7 @@ def tables():
 
 
     kernels = [
+        'SANSSphereModelKernel',
         ]
 
 
@@ -24,7 +25,7 @@ def tables():
     
     tables = []
     for t in tablemodules:
-        exec 'from vnf.dom.ins.%s import %s as table' % (t, t) in locals()
+        exec 'from vnf.dom.sans.%s import %s as table' % (t, t) in locals()
         tables.append( table )
         continue
 
