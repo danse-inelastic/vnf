@@ -12,6 +12,9 @@
 #
 
 
+# This is obsolete.
+
+
 from praxis.tabular.SheetView import SheetView as base
 
 class SheetView(base):
