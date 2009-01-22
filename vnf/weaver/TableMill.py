@@ -134,12 +134,21 @@ function make_table( div, descriptors ) {
             )
         jscode.append( 'make_table( thetable, descriptors);' )
 
-        for i, row in enumerate(table.rows):
-            jscode.append(
-                'thetable.table_appendrow_dataonly(%d, [%s]);' %
-                (i, ','.join( ['%r' % v for v in row] ) )
-                )
-            continue
+        jscode.append(
+            'rows = [%s];' %
+            ','.join(
+                ["{'id': '%s', 'data': [%s]}" % (
+                    i, ','.join( ['%r' % v for v in row] ) )
+                 for i, row in enumerate(table.rows)
+                 ])
+            )
+        #for i, row in enumerate(table.rows):
+        #    jscode.append(
+        #        'thetable.table_appendrow_dataonly(%d, [%s]);' %
+        #        (i, ','.join( ['%r' % v for v in row] ) )
+        #        )
+        #    continue
+        jscode.append('thetable.table_appendrows_dataonly(rows);')
 
         jscode.append( 'thetable.addClass( "tabulated" );' );
 
