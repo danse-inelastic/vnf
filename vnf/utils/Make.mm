@@ -35,6 +35,7 @@ EXPORT_PYTHON_MODULES = \
 	expr.py \
 	info.py \
 	spawn.py \
+	uniquelist.py \
 	variables.py \
 	__init__.py \
 
