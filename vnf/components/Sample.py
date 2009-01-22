@@ -46,13 +46,17 @@ class Sample(Actor):
         document.contents.append(sampletable(samples, director))
         
         p = document.paragraph()
-        p.text = [action_link(
-            actionRequireAuthentication(
-            'sampleInput', 
-            director.sentry,
-            label = 'Add a new sample',
-            routine = 'default'            
-            ),  director.cgihome),'<br>']
+        p.text = [
+            action_link(
+                actionRequireAuthentication(
+                    'sampleInput', 
+                    director.sentry,
+                    label = 'Add a new sample',
+                    routine = 'default'            
+                    ),
+                director.cgihome,
+                ),
+            ]
 
         return page  
 
@@ -165,7 +169,7 @@ class ShapeFormatter:
             'height=%.3fcm' % (block.height * 100),
             'width=%.3fcm' % (block.width * 100),
             ]
-        return '<br>'.join( texts )
+        return '\n'.join( texts )
     
     def onCylinder(self, cylinder):
         texts = [
@@ -174,7 +178,7 @@ class ShapeFormatter:
             'inner radius=%.3fcm' % (cylinder.innerradius * 100),
             'outer radius=%.3fcm' % (cylinder.outerradius * 100),
             ]
-        return '<br>'.join( texts )
+        return '\n'.join( texts )
 
 def format_shape( shape, director ):
     if nullpointer(shape): return "undefined"

@@ -138,7 +138,7 @@ function make_table( div, descriptors ) {
             'rows = [%s];' %
             ','.join(
                 ["{'id': '%s', 'data': [%s]}" % (
-                    i, ','.join( ['%r' % v for v in row] ) )
+                    i, ','.join( [ ('\'%s\''%v).replace('\n', '<BR>') for v in row] ) )
                  for i, row in enumerate(table.rows)
                  ])
             )
