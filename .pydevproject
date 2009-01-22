@@ -9,6 +9,10 @@
 <path>/vnf/content/base/pages</path>
 <path>/vnf/content/base/portlets</path>
 <path>/vnf</path>
+<path>/vnf/content/materialSimulation/actors</path>
+<path>/vnf/content/materialSimulation/forms</path>
+<path>/vnf/content/materialSimulation/pages</path>
+<path>/vnf/content/materialSimulation/portlets</path>
 </pydev_pathproperty>
 <pydev_property name="org.python.pydev.PYTHON_PROJECT_INTERPRETER">Default</pydev_property>
 </pydev_project>

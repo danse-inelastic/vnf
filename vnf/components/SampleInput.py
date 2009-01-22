@@ -84,7 +84,6 @@ class SampleInput(FormActor):
             return err.page
         
         polycrystal = self._createPolycrystal(director)
-
         polycrystalId = self.inventory.polycrystalId = polycrystal.id
         
 #        experiment = director.clerk.getNeutronExperiment(self.inventory.id)
@@ -94,7 +93,8 @@ class SampleInput(FormActor):
         document.description = ''
         document.byline = '<a href="http://danse.us">DANSE</a>'        
         
-        formcomponent = self.retrieveFormToShow('inputMaterial')
+        #formcomponent = self.retrieveFormToShow('inputMaterial')
+        formcomponent = self.retrieveFormToShow('polycrystal')
         formcomponent.director = director
         # build the form 
         form = document.form(name = '', action = director.cgihome)
@@ -122,7 +122,6 @@ class SampleInput(FormActor):
             return err.page
         
         singlecrystal = self._createSinglecrystal(director)
-
         singlecrystalId = self.inventory.SinglecrystalId = singlecrystal.id
         
 #        experiment = director.clerk.getNeutronExperiment(self.inventory.id)
@@ -153,11 +152,49 @@ class SampleInput(FormActor):
         submit = form.control(name='submit',type="submit", value="next")
         return page  
     
-    def storeAndVerifyInput(self, director):
+    def disordered(self, director):
         try:
-            page = self._retrievePage(director)
+            page = director.retrievePage( 'generic' )
         except AuthenticationError, err:
             return err.page
+        
+        singlecrystal = self._createSinglecrystal(director)
+        singlecrystalId = self.inventory.SinglecrystalId = singlecrystal.id
+        
+#        experiment = director.clerk.getNeutronExperiment(self.inventory.id)
+        main = page._body._content._main
+        # populate the main column
+        document = main.document(title='Material input')
+        document.description = ''
+        document.byline = '<a href="http://danse.us">DANSE</a>'        
+        
+        formcomponent = self.retrieveFormToShow('disordered')
+        formcomponent.director = director
+        # build the form 
+        form = document.form(name='', action=director.cgihome)
+        # specify action
+        action = actionRequireAuthentication(          
+            actor = 'sampleInput', 
+            sentry = director.sentry,
+            routine = 'storeAndVerifyInput',
+            label = '',
+            id = singlecrystalId,
+            arguments = {'form-received': formcomponent.name },
+            )
+        from vnf.weaver import action_formfields
+        action_formfields( action, form )
+        
+        # expand the form with fields of the data object that is being edited
+        formcomponent.expand( form , id = singlecrystalId)
+        submit = form.control(name='submit',type="submit", value="next")
+        return page      
+    
+    
+    def storeAndVerifyInput(self, director):
+#        try:
+#            page = self._retrievePage(director)
+#        except AuthenticationError, err:
+#            return err.page
         self.processFormInputs(director) 
         return self.selectShape( director ) 
     
@@ -287,14 +324,9 @@ class SampleInput(FormActor):
         return computation
     
     def _createPolycrystal(self, director):
-
         polycrystalTableClass = director.clerk._getTable('polycrystal')
-        
         polycrystalDbObject = director.clerk.newDbObject(polycrystalTableClass)
-        self.inventory.id = id = polycrystalDbObject.id
-        computation.matter = matter
-        director.clerk.updateRecord(computation)
-        return computation
+        return polycrystalDbObject
 
 
 

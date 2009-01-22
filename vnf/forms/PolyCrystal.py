@@ -68,7 +68,10 @@ class PolyCrystal( base ):
         cartesian_lattice = record.cartesian_lattice
         import numpy
         cartesian_lattice = numpy.array(cartesian_lattice)
-        cartesian_lattice.shape = 3,3
+        if cartesian_lattice.shape is 9:
+            cartesian_lattice.shape = 3,3
+        else:
+            cartesian_lattice = numpy.array([[1,0,0],[0,1,0],[0,0,1]])
         a, b, c = cartesian_lattice
         
         self.ax = box.text(id='ax', name='%s.ax' % prefix, label='a: (x)', 

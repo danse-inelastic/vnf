@@ -26,9 +26,9 @@ class MaterialType:
     
 
 materialTypes = [
-    MaterialType('polycrystals', 'Polycrystals', ''),
-    MaterialType('singlecrystals', "Single crystals", ''),
-    MaterialType('disordereds', 'Disordered materials', '')
+    MaterialType('polycrystal', 'Polycrystal', ''),
+    MaterialType('singlecrystal', "Single crystal", ''),
+    MaterialType('disordered', 'Disordered material', '')
     ]
 
 class Form( base ):
@@ -37,7 +37,7 @@ class Form( base ):
         import pyre.inventory as inv
         #id = inv.str( 'id', default = '' )
         materialType = inv.str( 'materialType', default='polycrystal' )
-        materialType.validator = inv.choice(['polycrystal', 'singlecrystal', 'disordered'])
+        #materialType.validator = inv.choice(['polycrystal', 'singlecrystal', 'disordered'])
 
     def legend(self):
         'return a legend string'
@@ -80,71 +80,36 @@ class Form( base ):
 #            )
 
     def processUserInputs(self):
-        'process user inputs and save them to db'
+        'process user input'
+        return self.inventory.materialType
         
-        record = self.getRecord( )
+#        record = self.getRecord( )
+#
+#        shapetype = shapes[self.inventory.shape]
+#
+#        record.type = shapetype
+#
+#        director = self.director
+#        factory = eval( 'new_%s' % shapetype.lower() )
+#        realshape = factory( director )
+#
+#        # refer to real shape record from abstract shape table
+#        record.reference = realshape.id
+#
+#        director.clerk.updateRecord( record )
+#        return
 
-        shapetype = shapes[self.inventory.shape]
-
-        record.type = shapetype
-
-        director = self.director
-        factory = eval( 'new_%s' % shapetype.lower() )
-        realshape = factory( director )
-
-        # refer to real shape record from abstract shape table
-        record.reference = realshape.id
-
-        director.clerk.updateRecord( record )
-        return
-
-
-    def getRecord(self):
-        'get DB record'
-        id = self.inventory.id
-        director = self.director
-        clerk = director.clerk
-        return clerk.getRecordByID( 'Shape', id )
-
+#    def getRecord(self):
+#        'get DB record'
+#        id = self.inventory.id
+#        director = self.director
+#        clerk = director.clerk
+#        return clerk.getRecordByID( 'Shape', id )
 
     def __init__(self, name = None):
         if name is None:
-            name = 'selectshapetype'
-
+            name = 'selectmaterialtype'
         base.__init__(self, name)
-
-        return
-    
-    pass # end of Form
-
-
-
-
-def new_id( director ):
-    #new token
-    token = director.idd.token()
-    uniquename = '%s-%s-%s' % (token.locator, token.tid, token.date)
-    return uniquename
-
-
-def new_block( director ):
-    from vnf.dom.Block import Block as factory
-    record = factory()
-
-    id = new_id( director )
-    record.id = id
-
-    record.creator = director.sentry.username
-    record.width = record.height = record.thickness = 0.01
-
-    import time
-    record.date = time.ctime()
-
-    director.clerk.newRecord( record )
-    
-    return record
-
-
 
 formactor_action_prefix = 'actor.form-received' # assumed actor is a form actor
 
