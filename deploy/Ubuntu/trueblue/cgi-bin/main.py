@@ -87,20 +87,23 @@ def main():
 
 # main
 if __name__ == '__main__':
-    import os
+    import os, time
 #    try:
 #        os.system('rm -f /home/jbk/DANSE/vnf/html/test.html')
 #    except:
 #        pass
+
+    main()
+    
     try:
         main()
     except:
         import traceback
-        user = os.environ.get('USER') or 'webserver'
-        out = open( '/tmp/vnf-error-%s.log' % user, 'w' )
+        out = open( '/tmp/vnf-error-webserver.log', 'w' )
         out.write( traceback.format_exc() )
-    
-    import time
+        print traceback.format_exc()
+        toPml(self, '/tmp/main-debug-webserver.pml')
+
     time.sleep(1)
     os.system('firefox /home/jbk/DANSE/vnf/html/test.html')
 

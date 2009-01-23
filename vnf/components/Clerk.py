@@ -28,7 +28,7 @@ def findDeepCopiers(extensions):
         return DeepCopier
     return [ _(ext) for ext in extensions ]
 
-
+from copy import copy
 from vnf import Undef
 from vnf.utils.variables import Variable, LazyValue
 from vnf.utils.expr import (Expr, Select, Insert, Update, Delete, Column, Count, Max, Min,

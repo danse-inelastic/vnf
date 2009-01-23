@@ -18,10 +18,10 @@
     <component name="ipa-session">
         <property name="marshaller">ipa-pickler</property>
         <property name="host">131.215.30.140</property>
-        <property name="port">50005</property>
+        <property name="port">50001</property>
 
         <component name="ipa-pickler">
-            <property name="key">kel592gjs6xztr1o</property>
+            <property name="key">epszmu0i6g349qr2</property>
         </component>
 
     </component>

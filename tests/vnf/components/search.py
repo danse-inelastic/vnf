@@ -10,7 +10,9 @@
 #
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
-
+#from vnf.components import clerk
+#import vnf.components.clerk as c
+#cl=clerk()
 
 from pyre.applications.Script import Script
 

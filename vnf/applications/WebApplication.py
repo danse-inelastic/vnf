@@ -40,17 +40,20 @@ class WebApplication(Base):
         idd = pyre.inventory.facility('idd-session', factory=pyre.idd.session, args=['idd-session'])
         idd.meta['tip'] = "access to the token server"
 
-        import vnf.components
-        clerk = pyre.inventory.facility(name="clerk", factory=vnf.components.clerk)
+        from vnf.components import clerk
+        clerk = pyre.inventory.facility(name="clerk", factory=clerk)
         clerk.meta['tip'] = "the component that retrieves data from the various database tables"
 
-        dds = pyre.inventory.facility(name="dds", factory=vnf.components.dds)
+        from vnf.components import dds
+        dds = pyre.inventory.facility(name="dds", factory=dds)
         dds.meta['tip'] = "the component manages data files"
 
-        scribe = pyre.inventory.facility(name="scribe", factory=vnf.components.scribe)
+        from vnf.components import scribe
+        scribe = pyre.inventory.facility(name="scribe", factory=scribe)
         scribe.meta['tip'] = "the component responsible for rendering the generated reports"
 
-        csaccessor = pyre.inventory.facility( name='csaccessor', factory = vnf.components.ssher)
+        from vnf.components import ssher
+        csaccessor = pyre.inventory.facility( name='csaccessor', factory = ssher)
         csaccessor.meta['tip'] = 'computing server accessor'
 
         debug = pyre.inventory.bool(name="debug", default=True)
@@ -67,7 +70,11 @@ class WebApplication(Base):
             from os import environ
             user = environ.get('USER') or 'webserver'
             toPml(self, '/tmp/main-debug-%s.pml' % user)
-
+#            if user is 'jbk' or environ:
+#                import traceback
+#                out = open( '../log/vnf-error-%s.log' % user, 'w' )
+#                out.write( traceback.format_exc() )
+#                toPml(self, '../config/main.pml')
         actor = self.actor
         if actor is None:
             inquiry = self.inventory._getTraitDescriptor('actor').inquiry
@@ -217,6 +224,9 @@ import journal
 journal.error('pyre.inventory').deactivate()
     
 
+if __name__=='__main__':
+    w=WebApplication(name='test')
+    print w
 
 # version
 __id__ = "$Id: WebApplication.py,v 1.3 2007-08-30 16:46:08 aivazis Exp $"
