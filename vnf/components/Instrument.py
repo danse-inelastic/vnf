@@ -72,9 +72,17 @@ class Instrument(base):
         # empty line
         p = document.paragraph()
 
-        # experiment planning link
-        if self._isAccessible(instrument, director):
+        if not self._isAccessible(instrument, director):
 
+            # instrument not accessible
+            p = document.paragraph(cls='error')
+            p.text = [
+                'You are not authorized to do experiments wiith this instrument',
+                ]
+        
+        else:
+
+            # experiment planning link
             p = document.paragraph()
             experimentplanning = actionRequireAuthentication(
                 actor = '%sexperimentwizard' % instrument.id,
@@ -86,14 +94,21 @@ class Instrument(base):
                 'Start %s for an experiment on %s' % (
                 action_link( experimentplanning, director.cgihome ), instrument.short_description ),
                 ]
-        else:
 
-            # instrument not accessible
-            p = document.paragraph(cls='error')
+            # create new instrument from this template link
+            p = document.paragraph()
+            newinstrument = actionRequireAuthentication(
+                sentry = director.sentry,
+                actor = 'createinstrumentfromtemplate',
+                routine = 'start',
+                label = 'Create a new instrument',
+                template = instrument.id,
+                )
+            link = action_link(newinstrument, director.cgihome)
             p.text = [
-                'You are not authorized to do experiments wiith this instrument',
+                '%s using this instrument as template.' % link,
                 ]
-        
+
         return page
 
 
@@ -106,13 +121,16 @@ class Instrument(base):
         main = page._body._content._main
 
         # populate the main column
-        document = main.document(title='List of instruments')
+        document = main.document(title='Instruments')
         document.description = ''
         document.byline = 'byline?'
 
+        # featured instruments
+        featured_list_doc = document.document(title="Featured Instruments")
+        
         # retrieve id:record dictionary from db
         clerk = director.clerk
-        where = "status='online'"
+        where = "status='online' and creator='vnf'"
         instruments = clerk.indexInstruments(where=where).values()
         _sortByCategory(instruments)
 
@@ -131,7 +149,12 @@ class Instrument(base):
 
         # a gallery of instruments
         gallery  = vnf.content.slidableGallery( images )
-        document.contents.append( gallery )
+        featured_list_doc.contents.append( gallery )
+
+        p = featured_list_doc.paragraph()
+        p.text = ['']
+
+        my_list_doc = document.document(title="My Instruments")
         
         return page
 
