@@ -1,0 +1,229 @@
+#!/usr/bin/env python
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                               Jiao Lin
+#                      California Institute of Technology
+#                        (C) 2009  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+from vnf.components.Actor import action_link, action, actionRequireAuthentication, AuthenticationError
+
+from vnf.components.FormActor import FormActor as base
+class Actor(base):
+
+    class Inventory(base.Inventory):
+
+        import pyre.inventory
+        template = pyre.inventory.str('template')
+        id = pyre.inventory.str('id')
+        
+        editee = pyre.inventory.str('editee')
+        insertafter = pyre.inventory.int('insertafter')
+        
+
+    def start(self, director):
+        try:
+            page = self._retrievePage(director)
+        except AuthenticationError, err:
+            return err.page
+
+        if self.inventory.id:
+            raise RuntimeError
+        
+        # create a new instrument by copying from the template
+        template = director.clerk.getInstrument(self.inventory.template)
+        instrument = director.clerk.deepcopy(template)
+        self.inventory.id = instrument.id
+
+        return self.edit(director)
+
+
+    def edit(self, director):
+        try:
+            page = self._retrievePage(director)
+        except AuthenticationError, err:
+            return err.page
+
+        id = self.inventory.id
+        instrument = director.clerk.getInstrument(id)
+        
+        main = page._body._content._main
+        document = main.document(title= 'New instrument')
+
+        components = director.clerk.dereference(instrument.components)
+
+        # create a dummy form
+        form = document.form(
+            name='instrument editor',
+            legend= 'Instrument editor: %s' % instrument.id,
+            action=director.cgihome)
+
+        # specify action
+        action = actionRequireAuthentication(
+            label = '',
+            sentry = director.sentry,
+            actor = 'createinstrumentfromtemplate', 
+            routine = 'done',
+            id = self.inventory.id,
+            )
+        from vnf.weaver import action_formfields
+        action_formfields( action, form )
+
+        # present the component list
+        # 1. gather texts for all components
+        from vnf.dom.neutron_components.SampleComponent import SampleComponent
+        texts = []
+        for i, (name, component) in enumerate(components):
+            
+            if isinstance(component, SampleComponent):
+                # if it is sample place holder, no action links
+                texts.append(name)
+            else:
+                action = actionRequireAuthentication(
+                    label = 'edit',
+                    sentry = director.sentry,
+                    actor = 'createinstrumentfromtemplate', 
+                    routine = 'edit_neutron_component',
+                    id = self.inventory.id,
+                    editee = '%s,%s' % (component.name, component.id)
+                    )
+                editlink = action_link( action, director.cgihome )
+                texts.append(
+                    '%s: (%s)' % (
+                        name,
+                        editlink,
+                        )
+                    )
+
+            # add a vertical line for connecting components
+            action = actionRequireAuthentication(
+                label = 'insert',
+                sentry = director.sentry,
+                actor = 'createinstrumentfromtemplate',
+                routine = 'insert_neutron_component',
+                id = self.inventory.id,
+                insertafter = i,
+                )
+            link = action_link(action, director.cgihome)
+            texts.append( '|<small>%s</small>' % link )
+            continue
+        #remove the last "connection line"
+        texts = texts[:-1]
+        
+        # 2. create a table. This is a quick hack
+        htmllines = []
+        htmllines.append('<table>')
+        for text in texts:
+            htmllines.append('<tr>')
+            htmllines.append('<td align="center">')
+            htmllines.append(text)
+            htmllines.append('</td>')
+            htmllines.append('</tr>')
+            continue
+        htmllines.append('</table>')
+
+        literal = form.literal()
+        literal.text = htmllines
+        
+        # run button
+        submit = form.control(name="submit", type="submit", value="Continue")
+        return page
+        
+
+    def edit_neutron_component(self, director, errors=None):
+        try:
+            page = self._retrievePage(director)
+        except AuthenticationError, err:
+            return err.page
+
+        editee = self.inventory.editee
+        tablename, id = editee.split(',')
+        component = director.clerk.getRecordByID(tablename, id)
+        typename = component.__class__.__name__
+
+        main = page._body._content._main
+        # populate the main column
+        document = main.document(
+            title='Neutron component: %s %s' % (
+            typename, component.id))
+        document.description = ''
+        document.byline = 'byline?'
+
+        formcomponent = self.retrieveFormToShow(typename.lower())
+        formcomponent.inventory.id = component.id
+        formcomponent.director = director
+        
+        # create form
+        form = document.form(
+            name=typename,
+            legend= formcomponent.legend(),
+            action=director.cgihome)
+
+        # specify action
+        action = actionRequireAuthentication(
+            label = '',
+            sentry = director.sentry,
+            actor = 'createinstrumentfromtemplate', 
+            routine = 'verify_neutron_component_configuration',
+            id = self.inventory.id,
+            editee = editee,
+            arguments = {'form-received': formcomponent.name } )
+        from vnf.weaver import action_formfields
+        action_formfields( action, form )
+
+        # expand the form with fields of the data object that is being edited
+        formcomponent.expand(form, errors=errors)
+
+        # run button
+        submit = form.control(name="actor.form-received.submit", type="submit", value="Continue")
+        return page
+
+
+    def verify_neutron_component_configuration(self, director):
+        try:
+            page = self._retrievePage(director)
+        except AuthenticationError, err:
+            return err.page
+        
+        try:
+            self.processFormInputs( director )
+        except InputProcessingError, err:
+            errors = err.errors
+            self.form_received = None
+            director.routine = 'edit_neutron_component'
+            return self.edit_neutron_component( director, errors = errors )
+
+        return self.edit(director)
+
+
+    def insert_neutron_component(self, director):
+        try:
+            page = self._retrievePage(director)
+        except AuthenticationError, err:
+            return err.page
+
+        return page
+    
+
+    def __init__(self, name='createinstrumentfromtemplate'):
+        base.__init__(self, name)
+        return
+
+
+    def _retrievePage(self, director):
+        return director.retrieveSecurePage( 'instrument' )
+
+
+def actor():
+    return Actor()
+
+# version
+__id__ = "$Id$"
+
+# End of file 
