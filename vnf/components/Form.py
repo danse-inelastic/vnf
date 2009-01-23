@@ -59,6 +59,8 @@ class InputProcessingError(Exception):
     pass
 
 
+formactor_action_prefix = 'actor.form-received' # assumed actor is a form actor
+
 # version
 __id__ = "$Id$"
 

@@ -15,7 +15,7 @@
 # Specialized form to directly deal with a db object.
 
 
-from Form import Form as base, InputProcessingError
+from Form import Form as base, InputProcessingError, formactor_action_prefix
 
 
 class DBObjectForm( base ):
@@ -145,8 +145,6 @@ def _combine(text):
     raise NotImplementedError, text
 
 from misc import new_id, empty_id
-
-formactor_action_prefix = 'actor.form-received' # assumed actor is a form actor
 
 
 # version
