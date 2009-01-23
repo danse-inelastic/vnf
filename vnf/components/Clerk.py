@@ -1328,12 +1328,12 @@ class DeepCopier:
         instrument_copy = self.clerk.newOwnedObject( Instrument )
 
         #first copy all components
-        components = sa.components
+        components = instrument.components
         self._copyReferenceSet( components, instrument_copy.components )
 
         #then copy attributes
-        attrs = ['short_description', 'componentsequence', 'category']
-        self._copy_attrs( sa, sa_copy, attrs = attrs )
+        attrs = ['short_description', 'componentsequence', 'category', 'long_description', 'status']
+        self._copy_attrs( instrument, instrument_copy, attrs = attrs )
 
         #copy geometer
         geometer = instrument.geometer
@@ -1391,13 +1391,16 @@ class DeepCopier:
         return self._onRecordWithID( d )
 
 
-    def onMonochromaticSource(self, source):
-        return self._onRecordWithID( source )
+    def onNeutronComponent(self, component):
+        return self._onRecordWithID(component)
 
+    onSNSModerator = onMonochromaticSource = onNeutronComponent
 
-    def onDetectorSystem_fromXML(self, record):
-        return self._onRecordWithID( record )
+    onT0Chopper = onFermiChopper = onChanneledGuide = onNeutronComponent
 
+    onDetectorSystem_fromXML = onQEMonitor = onQMonitor = onTofMonitor = onNeutronComponent
+
+    onNeutronRecorder = onNeutronComponent
 
     def onAbInitio(self, record):
         return self._onRecordWithID( record )
@@ -1412,9 +1415,17 @@ class DeepCopier:
 
     def _onRecordWithID(self, record):
         # work with normal records with no reference, referenceset, etc
+
+        # make copy
         from copy import copy
         newrecord = copy( record )
+
+        # assign new id
         newrecord.id = new_id( self.director )
+
+        # change owner
+        newrecord.creator = self.director.sentry.username
+        
         self.clerk.db.insertRow( newrecord )
         return newrecord
 
@@ -1431,9 +1442,11 @@ class DeepCopier:
 
     def _copyGeometer(self, geometer, newgeometer):
         db = self.clerk.db
-        registry = geometer.dereference()
-        for k,v in registry.iteriterms():
-            newgeometer.add( k, v.position, v.orientation, db, reference = v.reference)
+        registry = geometer.dereference(db)
+        for k,v in registry.iteritems():
+            newgeometer.register(
+                k, v.position, v.orientation, db,
+                reference = v.reference_label)
             continue
         return 
 
