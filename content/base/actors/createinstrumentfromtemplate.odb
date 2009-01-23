@@ -57,6 +57,8 @@ class Actor(base):
         document = main.document(title= 'New instrument')
 
         components = director.clerk.dereference(instrument.components)
+        compsdict = {}
+        for name, component in components: compsdict[name]=component
 
         # create a dummy form
         form = document.form(
@@ -79,7 +81,9 @@ class Actor(base):
         # 1. gather texts for all components
         from vnf.dom.neutron_components.SampleComponent import SampleComponent
         texts = []
-        for i, (name, component) in enumerate(components):
+        for i, name in enumerate(instrument.componentsequence):
+
+            component = compsdict[name]
             
             if isinstance(component, SampleComponent):
                 # if it is sample place holder, no action links
@@ -202,17 +206,100 @@ class Actor(base):
         return self.edit(director)
 
 
-    def insert_neutron_component(self, director):
+    def insert_neutron_component(self, director, errors=None):
         try:
             page = self._retrievePage(director)
         except AuthenticationError, err:
             return err.page
 
+        main = page._body._content._main
+        
+        # populate the main column
+        document = main.document(title='Create new component')
+
+        # the form component
+        formcomponent = self.retrieveFormToShow( 'create_neutron_component' )
+
+        # create the form
+        instrument = director.clerk.getInstrument(self.inventory.id)
+        form = document.form(
+            name='instrument editor',
+            legend= 'Instrument editor: %s' % instrument.id,
+            action=director.cgihome)
+
+        # specify action
+        action = actionRequireAuthentication(
+            label = '',
+            sentry = director.sentry,
+            actor = 'createinstrumentfromtemplate', 
+            routine = 'verify_component_insertion',
+            id = self.inventory.id,
+            insertafter = self.inventory.insertafter,
+            arguments = {'form-received': formcomponent.name },
+            )
+        from vnf.weaver import action_formfields
+        action_formfields( action, form )
+
+        # expand the form with fields 
+        formcomponent.expand( form, errors = errors )
+        
+        submit = form.control(name="submit", type="submit", value="Insert")        
         return page
+
+
+    def verify_component_insertion(self, director):
+        try:
+            page = self._retrievePage(director)
+        except AuthenticationError, err:
+            return err.page
+        
+        name, type = self.processFormInputs( director )
+
+        instrument = director.clerk.getInstrument(self.inventory.id)
+        sequence = instrument.componentsequence
+
+        errors = {}
+        if name in sequence:
+            errors['name'] = 'Component %r already exists, choose a different name' % name
+
+        if errors:
+            self.form_received = None
+            director.routine = 'edit_neutron_component'
+            return self.insert_neutron_component( director, errors = errors )
+
+        self._insert_component(director, self.inventory.insertafter, name, type)
+        return self.edit(director)        
     
 
     def __init__(self, name='createinstrumentfromtemplate'):
         base.__init__(self, name)
+        return
+
+
+    def _insert_component(self, director, insertafter, name, type):
+        instrument = director.clerk.getInstrument(self.inventory.id)
+
+        # create a new neutron component
+        newcomponent = director.clerk.newOwnedObject(type)
+
+        # update instrument.components
+        components = instrument.components
+        components.add(newcomponent, director.clerk.db, name=name)
+
+        # update instrument.geometer
+        geometer = instrument.geometer
+        geometer.register(name, (0,0,0), (0,0,0), director.clerk.db, reference='previous')
+
+        # new update instrument.componentsequence
+        sequence = instrument.componentsequence
+        ncomponents = len(sequence)
+        #   list.insert inserts before the given index,
+        #   so we have to do some transformations
+        if insertafter < 0: index = 0
+        else: index = insertafter+1
+        sequence.insert(index, name)
+        instrument.componentsequence = sequence
+        director.clerk.updateRecord(instrument)
         return
 
 
