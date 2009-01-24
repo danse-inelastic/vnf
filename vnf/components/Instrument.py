@@ -55,7 +55,8 @@ class Instrument(base):
         instrument = self._getinstrument( director )
 
         # populate the main column
-        document = main.document(title= instrument.short_description)
+        title = 'Instrument #%s: %s' % (instrument.id, instrument.short_description)
+        document = main.document(title=title)
         document.byline = 'byline?'
 
         long_description = instrument.long_description
@@ -155,11 +156,43 @@ class Instrument(base):
         p.text = ['']
 
         my_list_doc = document.document(title="My Instruments")
+        p = my_list_doc.paragraph()
+        action = actionRequireAuthentication(
+            label = 'here',
+            sentry = director.sentry,
+            actor = 'instrument', routine = 'listmyinstruments',
+            )
+        link = action_link(action, director.cgihome)
+        p.text = [
+            'To view your own instruments, please click %s' % link,
+            ]
+        return page
+
+
+    def listmyinstruments(self, director):
+        try:
+            page = director.retrieveSecurePage( 'instrument' )
+        except AuthenticationError, err:
+            return err.page
+        
+        main = page._body._content._main
+
+        # populate the main column
+        document = main.document(title='My instruments')
+        document.description = ''
+        document.byline = 'byline?'
+
+        clerk = director.clerk
+        where = "status='online' and creator='%s'" % director.sentry.username
+        myinstruments = clerk.indexInstruments(where=where).values()
+        _sortByCategory(myinstruments)
+        table = instrumenttable(myinstruments, director)
+        document.contents.append(table)
         
         return page
 
 
-    def edit(self, director):
+    def _obsolete_edit(self, director):
         try:
             page = director.retrieveSecurePage( 'sampleassembly' )
         except AuthenticationError, err:
@@ -298,12 +331,55 @@ def build_run( instrument ):
 
 
 
-def ul(seq):
-    # unique list
-    # not order preserving 
-    set = {} 
-    map(set.__setitem__, seq, []) 
-    return set.keys()
+def instrumenttable(instruments, director):
+    from vnf.content.table import Model, View, Table
+    class model(Model):
+        
+        name = Model.Measure(name='name', type='text')
+        category = Model.Measure(name='category', type='text')
+        long_description = Model.Measure(name='long_description', type='text')
+
+    class D: pass
+    def _showinstrument_link(label, id, director):
+        action = actionRequireAuthentication(
+            label = label,
+            sentry = director.sentry,
+            actor = 'instrument', routine = 'show',
+            id = id,
+            )
+        return action_link(action, director.cgihome)
+    def _name(instrument):
+        label = instrument.short_description
+        id = instrument.id
+        return _showinstrument_link(label, id, director)
+    import operator
+    generators = {
+        'name': _name,
+        'category': operator.attrgetter( 'category' ),
+        'long_description': operator.attrgetter( 'long_description' ),
+        }
+    def d(s):
+        r = D()
+        for attr, g in generators.iteritems():
+            value = g(s)
+            setattr(r, attr, value)
+            continue
+        return r
+    data = [d(s) for s in instruments]
+
+    class view(View):
+        
+        columns = [
+            View.Column(id='col1',label='Name', measure='name'),
+            View.Column(id='col2',label='Category', measure='category'),
+            View.Column(id='col3',label='Description', measure='long_description'),
+            ]
+
+        editable = False
+
+    table = Table(model, data, view)
+    return table
+
 
 # version
 __id__ = "$Id$"
