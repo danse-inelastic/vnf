@@ -19,7 +19,7 @@ class OwnedObject(DbObject):
 
     import pyre.db
 
-    creator = pyre.db.reference(name='creator', table = User)
+    creator = pyre.db.varchar(name='creator', length=64)
 
     date = pyre.db.date( name='date' )
     date.meta['tip'] = 'date of creation'
