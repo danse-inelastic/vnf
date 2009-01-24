@@ -57,7 +57,7 @@ class Actor(base):
         instrument = director.clerk.getInstrument(id)
         
         main = page._body._content._main
-        document = main.document(title= 'New instrument')
+        document = main.document(title= 'Instrument editor')
 
         components = director.clerk.dereference(instrument.components)
         compsdict = {}
@@ -242,7 +242,7 @@ class Actor(base):
         componentname = self.inventory.editee
 
         main = page._body._content._main
-        document = main.document(title= 'Edit instrument %s' % self.inventory.id)
+        document = main.document(title= 'Editing instrument %s' % self.inventory.id)
 
         p = document.paragraph()
         p.text = [
@@ -407,8 +407,7 @@ class Actor(base):
         main = page._body._content._main
         # populate the main column
         document = main.document(
-            title='Neutron component: %s %s' % (
-            typename, component.id))
+            title='Editing istrument %s' % self.inventory.id)
         document.description = ''
         document.byline = 'byline?'
 
@@ -485,7 +484,8 @@ class Actor(base):
         main = page._body._content._main
         
         # populate the main column
-        document = main.document(title='Create new component')
+        title='Editing instrument %s: Create new component' % self.inventory.id
+        document = main.document(title=title)
 
         # the form component
         formcomponent = self.retrieveFormToShow( 'create_neutron_component' )
