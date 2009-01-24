@@ -47,7 +47,7 @@ class Actor(base):
         return self.edit(director)
 
 
-    def edit(self, director):
+    def edit(self, director, errors=None):
         try:
             page = self._retrievePage(director)
         except AuthenticationError, err:
@@ -63,6 +63,11 @@ class Actor(base):
         compsdict = {}
         for name, component in components: compsdict[name]=component
 
+        # form component
+        formcomponent = self.retrieveFormToShow('instrument')
+        formcomponent.inventory.id = id
+        formcomponent.director = director
+        
         # create a dummy form
         form = document.form(
             name='instrument editor',
@@ -74,11 +79,15 @@ class Actor(base):
             label = '',
             sentry = director.sentry,
             actor = 'createinstrumentfromtemplate', 
-            routine = 'done',
+            routine = 'verify_instrument_configuration',
             id = self.inventory.id,
+            arguments = {'form-received': formcomponent.name },
             )
         from vnf.weaver import action_formfields
         action_formfields( action, form )
+
+        #
+        formcomponent.expand(form, errors=errors)
 
         # present the component list
         # 1. gather texts for all components
@@ -120,8 +129,12 @@ class Actor(base):
                     )
 
             # add a vertical line for connecting components
+            if i == len(components)-1:
+                label = "append"
+            else:
+                label = "insert"
             action = actionRequireAuthentication(
-                label = 'insert',
+                label = label,
                 sentry = director.sentry,
                 actor = 'createinstrumentfromtemplate',
                 routine = 'insert_neutron_component',
@@ -131,8 +144,6 @@ class Actor(base):
             link = action_link(action, director.cgihome)
             texts.append( '|<small>%s</small>' % link )
             continue
-        #remove the last "connection line"
-        texts = texts[:-1]
         
         # 2. create a table. This is a quick hack
         htmllines = []
@@ -152,6 +163,29 @@ class Actor(base):
         # run button
         submit = form.control(name="submit", type="submit", value="Continue")
         return page
+
+
+    def verify_instrument_configuration(self, director):
+        try:
+            page = self._retrievePage(director)
+        except AuthenticationError, err:
+            return err.page
+
+        try:
+            self.processFormInputs( director )
+        except InputProcessingError, err:
+            errors = err.errors
+            self.form_received = None
+            director.routine = 'edit'
+            return self.edit( director, errors = errors )
+        
+        return self.done(director)
+
+
+    def done(self, director):
+        actor = 'instrument'
+        routine = 'show'
+        return director.redirect(actor=actor, routine=routine, id=self.inventory.id)
         
 
     def delete_neutron_component_confirmation(self, director):
@@ -236,6 +270,11 @@ class Actor(base):
         document.description = ''
         document.byline = 'byline?'
 
+        p = document.paragraph()
+        p.text = [
+            '',
+            ]
+
         formcomponent = self.retrieveFormToShow(typename.lower())
         formcomponent.inventory.id = component.id
         formcomponent.director = director
@@ -263,6 +302,18 @@ class Actor(base):
 
         # run button
         submit = form.control(name="actor.form-received.submit", type="submit", value="Continue")
+
+        # cancel 
+        action = actionRequireAuthentication(
+            label = 'Cancel',
+            sentry = director.sentry,
+            actor = 'createinstrumentfromtemplate', 
+            routine = 'edit',
+            id = self.inventory.id,
+            )
+        link = action_link(action, director.cgihome)
+        p = form.paragraph()
+        p.text = [link]
         return page
 
 
