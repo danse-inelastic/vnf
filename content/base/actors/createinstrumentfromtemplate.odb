@@ -24,7 +24,10 @@ class Actor(base):
         id = pyre.inventory.str('id')
         
         editee = pyre.inventory.str('editee')
+        
         insertafter = pyre.inventory.int('insertafter')
+
+        submit = pyre.inventory.str('submit')
         
 
     def start(self, director):
@@ -98,10 +101,21 @@ class Actor(base):
                     editee = '%s,%s' % (component.name, component.id)
                     )
                 editlink = action_link( action, director.cgihome )
+
+                action = actionRequireAuthentication(
+                    label = 'delete',
+                    sentry = director.sentry,
+                    actor = 'createinstrumentfromtemplate', 
+                    routine = 'delete_neutron_component_confirmation',
+                    id = self.inventory.id,
+                    editee = name,
+                    )
+                deletelink = action_link( action, director.cgihome )
                 texts.append(
-                    '%s: (%s)' % (
+                    '%s: (%s, %s)' % (
                         name,
                         editlink,
+                        deletelink,
                         )
                     )
 
@@ -139,6 +153,69 @@ class Actor(base):
         submit = form.control(name="submit", type="submit", value="Continue")
         return page
         
+
+    def delete_neutron_component_confirmation(self, director):
+        try:
+            page = self._retrievePage(director)
+        except AuthenticationError, err:
+            return err.page
+
+        componentname = self.inventory.editee
+
+        main = page._body._content._main
+        document = main.document(title= 'Edit instrument %s' % self.inventory.id)
+
+        p = document.paragraph()
+        p.text = [
+            'You are about to delete component %r.' % componentname,
+            ]
+
+        p = document.paragraph()
+        
+        p = document.paragraph()
+        p.text = [
+            'Are you sure you want to delete component %s?' % componentname,
+            ]
+
+        p = document.paragraph()
+        action = actionRequireAuthentication(
+            label = 'Yes',
+            sentry = director.sentry,
+            actor = 'createinstrumentfromtemplate', 
+            routine = 'delete_neutron_component',
+            id = self.inventory.id,
+            editee = componentname,
+            )
+        yeslink = action_link(action, director.cgihome)
+        p.text = [
+            yeslink,
+            ]
+
+        p = document.paragraph()
+        action = actionRequireAuthentication(
+            label = 'No',
+            sentry = director.sentry,
+            actor = 'createinstrumentfromtemplate', 
+            routine = 'edit',
+            id = self.inventory.id,
+            )
+        nolink = action_link(action, director.cgihome)
+        p.text = [
+            nolink,
+            ]
+        return page
+
+
+    def delete_neutron_component(self, director):
+        try:
+            page = self._retrievePage(director)
+        except AuthenticationError, err:
+            return err.page
+
+        componentname = self.inventory.editee
+        self._delete_component(director, componentname)
+        return self.edit(director)
+    
 
     def edit_neutron_component(self, director, errors=None):
         try:
@@ -302,6 +379,30 @@ class Actor(base):
         director.clerk.updateRecord(instrument)
         return
 
+
+    def _delete_component(self, director, name):
+        instrument = director.clerk.getInstrument(self.inventory.id)
+
+        componentname = name
+        
+        # update instrument.components
+        componentsref = instrument.components
+        components = director.clerk.dereference(componentsref)
+        d = {}
+        for k,v in components: d[k] = v
+        component = d[componentname]
+        componentsref.delete(component, director.clerk.db)
+
+        # update instrument.geometer
+        geometerref = instrument.geometer
+        geometerref.delete(componentname, director.clerk.db)
+
+        # update instrument.componentsequence
+        seq = instrument.componentsequence
+        del seq[seq.index(componentname)]
+        director.clerk.updateRecord(instrument)
+        return
+    
 
     def _retrievePage(self, director):
         return director.retrieveSecurePage( 'instrument' )
