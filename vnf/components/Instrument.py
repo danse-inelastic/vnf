@@ -66,9 +66,11 @@ class Instrument(base):
             continue
 
         # put up a graph
-        schematic = os.path.join( self._imageStore( instrument ), 'schematic.png' )
-        schematic = vnf.content.image( schematic )
-        document.contents.append( schematic )
+        #schematic = os.path.join( self._imageStore( instrument ), 'schematic.png' )
+        schematic = director.dds.path(instrument, 'schematic.png')
+        if os.path.exists(director.dds.abspath(instrument, 'schematic.png')):
+            schematic = vnf.content.image( schematic )
+            document.contents.append( schematic )
 
         # empty line
         p = document.paragraph()
@@ -95,6 +97,21 @@ class Instrument(base):
                 'Start %s for an experiment on %s' % (
                 action_link( experimentplanning, director.cgihome ), instrument.short_description ),
                 ]
+
+            # edit link
+            if instrument.creator == director.sentry.username:
+                p = document.paragraph()
+                edit = actionRequireAuthentication(
+                    label = 'Edit',
+                    sentry = director.sentry,
+                    actor = 'createinstrumentfromtemplate',
+                    routine = 'edit',
+                    id = instrument.id,
+                    )
+                link = action_link(edit, director.cgihome)
+                p.text = [
+                    '%s this instrument.' % link,
+                    ]
 
             # create new instrument from this template link
             p = document.paragraph()
