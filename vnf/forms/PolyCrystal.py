@@ -39,16 +39,20 @@ class PolyCrystal( base ):
         cy = inv.str('cy',default = '0.0')
         cz = inv.str('cz',default = '1.0')
 
-
-    def expand(self, form, errors = None, properties = None, id = '', showimportwidget=False):
+    def expand(self, form, errors = None, properties = None, id = '', 
+               dbRecord = None, showimportwidget=False):
         '''expand an existing form with fields from this component'''
                   
         prefix = formactor_action_prefix
         director = self.director
 
         if not id: id = self.inventory.id
-        record = director.clerk.getRecordByID('polycrystals', id)
-        
+        #first see if it is given in function
+        if dbRecord:
+            record = dbRecord
+        else: #if not, get it from db
+            record = director.clerk.getRecordByID('polycrystals', id)
+            
         chemical_formula = form.text(
             id='text1', name='%s.chemical_formula'%prefix,
             label='Matter Description', value = record.chemical_formula)

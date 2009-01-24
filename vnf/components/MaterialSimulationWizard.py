@@ -81,16 +81,12 @@ class MaterialSimulationWizard(base):
             arguments = {'form-received': formcomponent.name } )
         from vnf.weaver import action_formfields
         action_formfields( action, form )
-
         # expand the form with fields of the data object that is being edited
         formcomponent.expand( form )
-
         # run button
         submit = form.control(
             name="actor.form-received.submit", type="submit", value="Continue")
-
         return page
-    
 
     def verifyMaterialSelection(self, director):
         try:

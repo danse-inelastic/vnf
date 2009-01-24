@@ -16,10 +16,14 @@
         <facility name="clerk">clerk</facility>
         <property name="dumpconfiguration">True</property>
 
-        <component name="clerk">
+  		<component name='clerk'>
+  			<property name='db'>jbk:An7wnmc@localhost:5432:test</property>
+  		</component>
+
+        <!--<component name="clerk">
             <property name="db">test</property>
             <property name="dbwrapper">psycopg2</property>
-        </component>
+        </component>-->
 
     </component>
 
