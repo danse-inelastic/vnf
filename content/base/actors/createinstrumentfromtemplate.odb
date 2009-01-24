@@ -90,6 +90,10 @@ class Actor(base):
         formcomponent.expand(form, errors=errors)
 
         # present the component list
+        p = form.paragraph()
+        p.text = [
+            '<h2>Components</h2>',
+            ]
         # 1. gather texts for all components
         from vnf.dom.neutron_components.SampleComponent import SampleComponent
         texts = []
@@ -131,8 +135,10 @@ class Actor(base):
             # add a vertical line for connecting components
             if i == len(components)-1:
                 label = "append"
+                symbol = '*'
             else:
                 label = "insert"
+                symbol = '|'
             action = actionRequireAuthentication(
                 label = label,
                 sentry = director.sentry,
@@ -142,8 +148,23 @@ class Actor(base):
                 insertafter = i,
                 )
             link = action_link(action, director.cgihome)
-            texts.append( '|<small>%s</small>' % link )
+            texts.append( '%s<small>%s</small>' % (symbol, link) )
             continue
+
+        # the "prepend" link
+        symbol = '*'
+        label = 'prepend'
+        action = actionRequireAuthentication(
+            label = label,
+            sentry = director.sentry,
+            actor = 'createinstrumentfromtemplate',
+            routine = 'insert_neutron_component',
+            id = self.inventory.id,
+            insertafter = -1,
+            )
+        link = action_link(action, director.cgihome)
+        prepend = '%s<small>%s</small>' % (symbol, link)
+        texts = [prepend] + texts
         
         # 2. create a table. This is a quick hack
         htmllines = []
@@ -161,7 +182,20 @@ class Actor(base):
         literal.text = htmllines
         
         # run button
-        submit = form.control(name="submit", type="submit", value="Continue")
+        submit = form.control(name="submit", type="submit", value="Done")
+
+        # cancel
+        action = actionRequireAuthentication(
+            label = 'Cancel',
+            sentry = director.sentry,
+            actor = 'instrument', 
+            routine = 'show',
+            id = self.inventory.id,
+            )
+        link = action_link(action, director.cgihome)
+        p = form.paragraph()
+        p.text = [link]
+        
         return page
 
 
