@@ -14,7 +14,7 @@
 
 from vnf.components.Actor import action_link, action, actionRequireAuthentication, AuthenticationError
 
-from vnf.components.FormActor import FormActor as base
+from vnf.components.FormActor import FormActor as base, InputProcessingError
 class Actor(base):
 
     class Inventory(base.Inventory):
@@ -116,6 +116,16 @@ class Actor(base):
                 editlink = action_link( action, director.cgihome )
 
                 action = actionRequireAuthentication(
+                    label = 'move',
+                    sentry = director.sentry,
+                    actor = 'createinstrumentfromtemplate', 
+                    routine = 'move_neutron_component',
+                    id = self.inventory.id,
+                    editee = '%s' % name,
+                    )
+                movelink = action_link( action, director.cgihome )
+
+                action = actionRequireAuthentication(
                     label = 'delete',
                     sentry = director.sentry,
                     actor = 'createinstrumentfromtemplate', 
@@ -125,9 +135,10 @@ class Actor(base):
                     )
                 deletelink = action_link( action, director.cgihome )
                 texts.append(
-                    '%s: (%s, %s)' % (
+                    '%s: (%s, %s, %s)' % (
                         name,
                         editlink,
+                        movelink,
                         deletelink,
                         )
                     )
@@ -282,6 +293,103 @@ class Actor(base):
 
         componentname = self.inventory.editee
         self._delete_component(director, componentname)
+        return self.edit(director)
+
+
+    def move_neutron_component(self, director, errors=None): 
+        try:
+            page = self._retrievePage(director)
+        except AuthenticationError, err:
+            return err.page
+
+        componentname = self.inventory.editee
+
+        main = page._body._content._main
+
+        # populate the main column
+        title = 'Editing instrument %s' % self.inventory.id
+        document = main.document(title=title)
+        document.description = ''
+        document.byline = 'byline?'
+
+        p = document.paragraph()
+        p.text = [
+            '',
+            ]
+
+        formcomponent = self.retrieveFormToShow('move_neutron_component')
+        formcomponent.director = director
+        
+        # create form
+        legend = 'Change position and orientation of neutron component %r' % (
+            componentname,)
+        form = document.form(
+            name='moveneutroncomponent',
+            legend= legend,
+            action=director.cgihome)
+
+        # specify action
+        action = actionRequireAuthentication(
+            label = '',
+            sentry = director.sentry,
+            actor = 'createinstrumentfromtemplate',
+            routine = 'verify_neutron_component_move',
+            id = self.inventory.id,
+            editee = componentname,
+            arguments = {'form-received': formcomponent.name } )
+        from vnf.weaver import action_formfields
+        action_formfields( action, form )
+
+        # expand the form with fields of the data object that is being edited
+        formcomponent.expand(
+            form,
+            instrumentid=self.inventory.id, componentname=componentname,
+            errors=errors,)
+
+        # run button
+        submit = form.control(name="actor.form-received.submit", type="submit", value="Move component")
+
+        # cancel 
+        action = actionRequireAuthentication(
+            label = 'Cancel',
+            sentry = director.sentry,
+            actor = 'createinstrumentfromtemplate', 
+            routine = 'edit',
+            id = self.inventory.id,
+            )
+        link = action_link(action, director.cgihome)
+        p = form.paragraph()
+        p.text = [link]
+        
+        return page
+
+
+    def verify_neutron_component_move(self, director):
+        try:
+            page = self._retrievePage(director)
+        except AuthenticationError, err:
+            return err.page
+        
+        try:
+            position, orientation, reference = self.processFormInputs( director )
+        except InputProcessingError, err:
+            errors = err.errors
+            self.form_received = None
+            director.routine = 'move_neutron_component'
+            return self.move_neutron_component( director, errors = errors )
+
+        instrument = director.clerk.getInstrument(self.inventory.id)
+        geometer = instrument.geometer
+
+        componentname = self.inventory.editee
+
+        assert componentname in instrument.componentsequence
+        
+        geometer.delete(componentname, director.clerk.db)
+        geometer.register(
+            componentname, position, orientation, director.clerk.db,
+            reference=reference)
+        
         return self.edit(director)
     
 
