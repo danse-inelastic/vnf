@@ -146,7 +146,7 @@ class JobStatusUpdater(TCPService):
 
 
     def _alert_user(self, job):
-        user = self.clerk.dereference(job.creator)
+        user = self.clerk.getUser(job.creator)
         email = user.email
         title = 'Your vnf job %s is now %s.' % (job.id, job.state)
         content = [
