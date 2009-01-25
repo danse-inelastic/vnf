@@ -409,9 +409,10 @@ class Actor(base):
         action_formfields( action, form )
 
         # expand the form with fields of the data object that is being edited
+        instrument = director.clerk.getInstrument(self.inventory.id)
         formcomponent.expand(
             form,
-            instrumentid=self.inventory.id, componentname=componentname,
+            instrument=instrument, componentname=componentname,
             errors=errors,)
 
         # run button

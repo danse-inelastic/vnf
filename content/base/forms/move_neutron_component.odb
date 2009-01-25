@@ -48,11 +48,10 @@ class Form(base):
         return "Legend..."
 
 
-    def expand(self, form, instrumentid=None, componentname=None, errors=None):
+    def expand(self, form, instrument=None, componentname=None, errors=None):
         '''expand an existing form with fields from this component'''
 
         director = self.director
-        instrument = director.clerk.getInstrument(instrumentid)
         geometer = director.clerk.dereference(instrument.geometer)
         
         location = geometer[componentname]

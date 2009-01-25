@@ -332,58 +332,112 @@ class NeutronExperimentWizard(base):
         instrument = director.clerk.dereference(experiment.instrument)
         instrument_configuration = director.clerk.dereference(
             experiment.instrument_configuration)
+
+        # make sure instrument configuration has adequate information
+        # this is added for backward compatibility.
+        # Before this revision, only partial information about an instrument
+        # is copied to instrument_configuration.
+        # In this revision, Clerk.newInstrumentConfiguration is updated
+        # to copy all information from an instrument to an instrument configuration.
+        # Here we need to make sure the given instrument configuration has
+        # all information about the instrument.
+        _verifyInstrumentConfiguration(instrument_configuration, director)
+        
         components = director.clerk.dereference(instrument_configuration.components)
+        compsdict = {}
+        for name, component in components: compsdict[name]=component
 
         main = page._body._content._main
         # populate the main column
         document = main.document(
-            title='Neutron Experiment Wizard: configuration of instrument %s' % instrument.short_description)
+            title='Neutron Experiment Wizard: configuration of instrument %r' % instrument.short_description)
         document.description = ''
         document.byline = 'byline?'
 
-        # create a dummy form
-        form = document.form(
-            name='configure instrument components',
-            legend= 'Components of instrument',
-            action=director.cgihome)
+        p = document.paragraph()
+        p.text = [
+            'The following is a graph of all neutron components',
+            'in this neutron instrument.',
+            ]
 
-        # specify action
+        p = document.paragraph()
+        p.text = [
+            'Here, you can edit or move a component',
+            ]
+
+        # present the component list
+        # 1. gather texts for all components
+        from vnf.dom.neutron_components.SampleComponent import SampleComponent
+        texts = []
+        for i, name in enumerate(instrument.componentsequence):
+
+            component = compsdict[name]
+            
+            if isinstance(component, SampleComponent):
+                # if it is sample place holder, no action links
+                texts.append(name)
+            else:
+                action = actionRequireAuthentication(
+                    label = 'edit',
+                    sentry = director.sentry,
+                    actor = 'neutronexperimentwizard', 
+                    routine = 'edit_neutron_component',
+                    id = self.inventory.id,
+                    editee = '%s,%s' % (component.name, component.id)
+                    )
+                editlink = action_link( action, director.cgihome )
+
+                action = actionRequireAuthentication(
+                    label = 'move',
+                    sentry = director.sentry,
+                    actor = 'neutronexperimentwizard', 
+                    routine = 'move_neutron_component',
+                    id = self.inventory.id,
+                    editee = '%s' % name,
+                    )
+                movelink = action_link( action, director.cgihome )
+
+                texts.append(
+                    '%s: (%s, %s)' % (
+                        name,
+                        editlink,
+                        movelink,
+                        )
+                    )
+
+            symbol = '|'
+            texts.append( symbol )
+            continue
+
+        texts = texts[:-1]
+        
+        # 2. create a table. This is a quick hack
+        htmllines = []
+        htmllines.append('<table>')
+        for text in texts:
+            htmllines.append('<tr>')
+            htmllines.append('<td align="center">')
+            htmllines.append(text)
+            htmllines.append('</td>')
+            htmllines.append('</tr>')
+            continue
+        htmllines.append('</table>')
+
+        literal = document.literal()
+        literal.text = htmllines
+        
+        # finish
         action = actionRequireAuthentication(
-            actor = 'neutronexperimentwizard', sentry = director.sentry,
-            label = '',
+            label = 'Done',
+            sentry = director.sentry,
+            actor = 'neutronexperimentwizard', 
             routine = 'verify_neutron_components_configuration',
             id = self.inventory.id,
             )
-        from vnf.weaver import action_formfields
-        action_formfields( action, form )
-
-        # present the component list
-        from vnf.dom.neutron_components.SampleComponent import SampleComponent
-        for name, component in components:
-            
-            # if it is sample place holder, skip
-            if isinstance(component, SampleComponent): continue
-
-            #
-            p = form.paragraph()
-            action = actionRequireAuthentication(
-                actor = 'neutronexperimentwizard', sentry = director.sentry,
-                label = 'edit',
-                routine = 'edit_neutron_component',
-                id = self.inventory.id,
-                editee = '%s,%s' % (component.name, component.id)
-                )
-            editlink = action_link( action, director.cgihome )
-            p.text = [
-                '%s: (%s)' % (
-                name,
-                editlink,
-                )
-                ]
-            continue
+        link = action_link(action, director.cgihome)
+        p = document.paragraph()
+        p.text = [link]
         
-        # run button
-        submit = form.control(name="submit", type="submit", value="Continue")
         return page
 
 
@@ -473,6 +527,112 @@ class NeutronExperimentWizard(base):
             director.routine = 'edit_neutron_component'
             return self.edit_neutron_component( director, errors = errors )
 
+        return self.configure_neutron_components(director)
+
+
+    def move_neutron_component(self, director, errors=None): 
+        try:
+            page = self._retrievePage(director)
+        except AuthenticationError, err:
+            return err.page
+
+        componentname = self.inventory.editee
+
+        main = page._body._content._main
+
+        # populate the main column
+        experiment = director.clerk.getNeutronExperiment(self.inventory.id)
+        instrument = director.clerk.dereference(experiment.instrument)
+        instrument_configuration = director.clerk.dereference(
+            experiment.instrument_configuration)
+        
+        title = 'Neutron Experiment Wizard: configuration of instrument %r' % (
+            instrument.short_description,)
+        document = main.document(title=title)
+        document.description = ''
+        document.byline = 'byline?'
+
+        p = document.paragraph()
+        p.text = [
+            '',
+            ]
+
+        formcomponent = self.retrieveFormToShow('move_neutron_component')
+        formcomponent.director = director
+        
+        # create form
+        legend = 'Change position and orientation of neutron component %r' % (
+            componentname,)
+        form = document.form(
+            name='moveneutroncomponent',
+            legend= legend,
+            action=director.cgihome)
+
+        # specify action
+        action = actionRequireAuthentication(
+            label = '',
+            sentry = director.sentry,
+            actor = 'neutronexperimentwizard',
+            routine = 'verify_neutron_component_move',
+            id = self.inventory.id,
+            editee = componentname,
+            arguments = {'form-received': formcomponent.name } )
+        from vnf.weaver import action_formfields
+        action_formfields( action, form )
+
+        # expand the form with fields of the data object that is being edited
+        formcomponent.expand(
+            form,
+            instrument=instrument_configuration, componentname=componentname,
+            errors=errors,)
+
+        # run button
+        submit = form.control(
+            name="actor.form-received.submit", type="submit", value="Move component")
+
+        # cancel 
+        action = actionRequireAuthentication(
+            label = 'Cancel',
+            sentry = director.sentry,
+            actor = 'neutronexperimentwizard',
+            routine = 'configure_neutron_components',
+            id = self.inventory.id,
+            )
+        link = action_link(action, director.cgihome)
+        p = form.paragraph()
+        p.text = [link]
+        
+        return page
+
+
+    def verify_neutron_component_move(self, director):
+        try:
+            page = self._retrievePage(director)
+        except AuthenticationError, err:
+            return err.page
+        
+        try:
+            position, orientation, reference = self.processFormInputs( director )
+        except InputProcessingError, err:
+            errors = err.errors
+            self.form_received = None
+            director.routine = 'move_neutron_component'
+            return self.move_neutron_component( director, errors = errors )
+
+        experiment = director.clerk.getNeutronExperiment(self.inventory.id)
+        instrument_configuration = director.clerk.dereference(
+            experiment.instrument_configuration)
+        geometer = instrument_configuration.geometer
+
+        componentname = self.inventory.editee
+
+        assert componentname in instrument_configuration.componentsequence
+        
+        geometer.delete(componentname, director.clerk.db)
+        geometer.register(
+            componentname, position, orientation, director.clerk.db,
+            reference=reference)
+        
         return self.configure_neutron_components(director)
         
 
@@ -1935,6 +2095,28 @@ def _hasKernel(sample, db):
 def _describe_kernel(kernel):
     return '%s: %s' % (kernel.__class__.__name__, kernel.id)
 
+
+def _verifyInstrumentConfiguration(configuration, director):
+    clerk = director.clerk
+    instrument = clerk.dereference(configuration.target)
+    
+    if not configuration.componentsequence:
+        configuration.componentsequence = instrument.componentsequence
+        clerk.updateRecord(configuration)
+
+    if not clerk.dereference(configuration.geometer):
+        default = instrument.geometer.dereference(clerk.db)
+        geometer = configuration.geometer
+        for name in default:
+            t = default[name]
+            position = t.position
+            orientation = t.orientation
+            reference = t.reference_label
+            geometer.register(
+                name, position, orientation, clerk.db,
+                reference = reference)
+            continue 
+    return
 
 from misc import new_id, empty_id, nullpointer
 
