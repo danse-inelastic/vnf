@@ -126,7 +126,7 @@ class NeutronExperiment(base):
 
         #see if the experiment is constructed or not. if not
         #ask the wizard to do the editing.
-        if experiment.status in ['started', 'partially configured']:
+        if experiment.status in ['started', 'partially configured', 'ready for submission']:
             return director.redirect(
                 actor='neutronexperimentwizard',
                 routine = 'submit_experiment',
@@ -140,7 +140,7 @@ class NeutronExperiment(base):
         document.description = ( '')
         document.byline = 'byline?'
 
-        status = experiment.status
+        status = experiment.status.replace(' ', '_')
         method = '_view_%s' % status
         method = getattr(self, method)
         method( document, director )

@@ -1797,7 +1797,7 @@ class NeutronExperimentWizard(base):
         # redirect to job submission page
         actor = 'neutronexperiment'
         routine = 'view'
-        return self.redirect(director, actor, routine, id = id)
+        return director.redirect(actor, routine, id = id)
 
 
     def showExperimentStatus(self,director):
@@ -1856,7 +1856,7 @@ class NeutronExperimentWizard(base):
 
         # go to greeter
         actor = 'neutronexperiment'; routine = 'listall'
-        return self.redirect(director, actor, routine)
+        return director.redirect(actor, routine)
 
 
     def __init__(self, name=None):
@@ -2005,7 +2005,10 @@ class NeutronExperimentWizard(base):
                 
                 self.allconfigured = True
                 if experiment.status in ['started', 'partially configured']:
-                    experiment.status = 'constructed'
+                    if experiment.job:
+                        experiment.status = 'constructed'
+                    else:
+                        experiment.status = 'ready for submission'
                     director.clerk.updateRecord(experiment)
                 return
 
@@ -2035,7 +2038,10 @@ class NeutronExperimentWizard(base):
 
         self.allconfigured = True
         if experiment.status in ['started', 'partially configured']:
-            experiment.status = 'constructed'
+            if experiment.job:
+                experiment.status = 'constructed'
+            else:
+                experiment.status = 'ready for submission'
             director.clerk.updateRecord(experiment)
         return        
 
