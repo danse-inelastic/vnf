@@ -60,6 +60,7 @@ EXPORT_PYTHON_MODULES = \
 	NeutronExperimentWizard.py \
 	Postman.py \
 	Sample.py \
+	Sample2.py \
 	SampleAssembly.py \
 	SamplePreparation.py \
 	SampleInput.py \
