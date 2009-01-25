@@ -234,15 +234,32 @@ class Clerk(Component):
         configuration.target = instrument
         self.updateRecord(configuration)
 
-        # copy the default configuration (the components)
-        default = self.dereference(instrument.components)
+        # copy the default configuration 
         # to the configuration
+
+        # 1. components
+        default = self.dereference(instrument.components)
         components = configuration.components
         for name, component in default:
             copy = self.duplicateRecord(component)
             components.add(copy, self.db, name=name)
             continue
-
+        # 2. geometer
+        default = self.dereference(instrument.geometer)
+        geometer = configuration.geometer
+        for name in default:
+            t = default[name]
+            position = t.position
+            orientation = t.orientation
+            reference = t.reference_label
+            geometer.register(
+                name, position, orientation, self.db,
+                reference = reference)
+            continue
+        # 3. component sequence
+        configuration.componentsequence = instrument.componentsequence
+        self.updateRecord(configuration)
+        
         return configuration
 
 

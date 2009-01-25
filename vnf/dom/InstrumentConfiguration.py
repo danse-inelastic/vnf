@@ -26,6 +26,9 @@ class InstrumentConfiguration(OwnedObject):
     # the instrument for which this configuration is about
     target = pyre.db.reference(name='target', table=Instrument)
 
+    componentsequence = pyre.db.varcharArray(
+        name = 'componentsequence', length = 128, default = [] )
+
     components = vnf.dom.referenceSet(name='components')
     
     geometer = vnf.dom.geometer()
