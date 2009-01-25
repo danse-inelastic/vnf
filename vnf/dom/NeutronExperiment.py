@@ -43,7 +43,8 @@ class NeutronExperiment(base):
     status = pyre.db.varchar( name = 'status', length = 32, default = '' )
     # started: just started to be configured
     # partially configured: configuration not done
-    # constructed: configuration done
+    # ready for submission: configuration done and ready for submission, job not created yet
+    # constructed: configuration done and job created.
 
     expected_results = pyre.db.varcharArray( name = 'expected_results', length = 128 )
     
