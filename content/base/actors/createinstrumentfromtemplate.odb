@@ -47,7 +47,11 @@ class Actor(base):
         return self.edit(director)
 
 
-    def edit(self, director, errors=None):
+    def edit(self, director):
+        return self.edit_instrument(director)
+
+
+    def edit_instrument(self, director, errors=None):
         try:
             page = self._retrievePage(director)
         except AuthenticationError, err:
@@ -71,7 +75,7 @@ class Actor(base):
         # create a dummy form
         form = document.form(
             name='instrument editor',
-            legend= 'Instrument editor: %s' % instrument.id,
+            legend= 'Instrument editor: Instrument #%s' % instrument.id,
             action=director.cgihome)
 
         # specify action
@@ -89,11 +93,78 @@ class Actor(base):
         #
         formcomponent.expand(form, errors=errors)
 
-        # present the component list
+
+        #
+        p = form.paragraph()
+        p.text = ['<h4>Components</h4>']
+        
+        # edit components link
+        action = actionRequireAuthentication(
+            label = 'here',
+            sentry = director.sentry,
+            actor = 'createinstrumentfromtemplate', 
+            routine = 'edit_components',
+            id = self.inventory.id,
+            )
+        link = action_link(action, director.cgihome)
         p = form.paragraph()
         p.text = [
-            '<h2>Components</h2>',
+            'To manage the neutron components in your instrument,',
+            'you can start from %s.' % link,
             ]
+
+        # button
+        submit = form.control(name="submit", type="submit", value="Done")
+
+        # cancel
+        action = actionRequireAuthentication(
+            label = 'Cancel',
+            sentry = director.sentry,
+            actor = 'instrument', 
+            routine = 'show',
+            id = self.inventory.id,
+            )
+        link = action_link(action, director.cgihome)
+        p = form.paragraph()
+        p.text = [link]
+        
+        return page
+
+
+    def edit_components(self, director, errors=None):
+        try:
+            page = self._retrievePage(director)
+        except AuthenticationError, err:
+            return err.page
+
+        id = self.inventory.id
+        instrument = director.clerk.getInstrument(id)
+        
+        main = page._body._content._main
+        document = main.document(title= 'Instrument editor')
+
+        components = director.clerk.dereference(instrument.components)
+        compsdict = {}
+        for name, component in components: compsdict[name]=component
+
+        p = document.paragraph()
+        p.text = [
+            'The following is a graph of all neutron components',
+            'in this neutron instrument.',
+            ]
+
+        p = document.paragraph()
+        p.text = [
+            'Here, you can edit a component, move a component, or',
+            'delete a component from this instrument.',
+            ]
+
+        p = document.paragraph()
+        p.text = [
+            'You can also insert a neutron component to the instrument.',
+            ]
+
+        # present the component list
         # 1. gather texts for all components
         from vnf.dom.neutron_components.SampleComponent import SampleComponent
         texts = []
@@ -189,22 +260,19 @@ class Actor(base):
             continue
         htmllines.append('</table>')
 
-        literal = form.literal()
+        literal = document.literal()
         literal.text = htmllines
         
-        # run button
-        submit = form.control(name="submit", type="submit", value="Done")
-
-        # cancel
+        # finish
         action = actionRequireAuthentication(
-            label = 'Cancel',
+            label = 'Done',
             sentry = director.sentry,
             actor = 'instrument', 
             routine = 'show',
             id = self.inventory.id,
             )
         link = action_link(action, director.cgihome)
-        p = form.paragraph()
+        p = document.paragraph()
         p.text = [link]
         
         return page
@@ -221,8 +289,8 @@ class Actor(base):
         except InputProcessingError, err:
             errors = err.errors
             self.form_received = None
-            director.routine = 'edit'
-            return self.edit( director, errors = errors )
+            director.routine = 'edit_instrument'
+            return self.edit_instrument( director, errors = errors )
         
         return self.done(director)
 
@@ -275,7 +343,7 @@ class Actor(base):
             label = 'No',
             sentry = director.sentry,
             actor = 'createinstrumentfromtemplate', 
-            routine = 'edit',
+            routine = 'edit_components',
             id = self.inventory.id,
             )
         nolink = action_link(action, director.cgihome)
@@ -293,7 +361,7 @@ class Actor(base):
 
         componentname = self.inventory.editee
         self._delete_component(director, componentname)
-        return self.edit(director)
+        return self.edit_components(director)
 
 
     def move_neutron_component(self, director, errors=None): 
@@ -354,7 +422,7 @@ class Actor(base):
             label = 'Cancel',
             sentry = director.sentry,
             actor = 'createinstrumentfromtemplate', 
-            routine = 'edit',
+            routine = 'edit_components',
             id = self.inventory.id,
             )
         link = action_link(action, director.cgihome)
@@ -390,7 +458,7 @@ class Actor(base):
             componentname, position, orientation, director.clerk.db,
             reference=reference)
         
-        return self.edit(director)
+        return self.edit_components(director)
     
 
     def edit_neutron_component(self, director, errors=None):
@@ -449,7 +517,7 @@ class Actor(base):
             label = 'Cancel',
             sentry = director.sentry,
             actor = 'createinstrumentfromtemplate', 
-            routine = 'edit',
+            routine = 'edit_components',
             id = self.inventory.id,
             )
         link = action_link(action, director.cgihome)
@@ -472,7 +540,7 @@ class Actor(base):
             director.routine = 'edit_neutron_component'
             return self.edit_neutron_component( director, errors = errors )
 
-        return self.edit(director)
+        return self.edit_components(director)
 
 
     def insert_neutron_component(self, director, errors=None):
@@ -538,7 +606,7 @@ class Actor(base):
             return self.insert_neutron_component( director, errors = errors )
 
         self._insert_component(director, self.inventory.insertafter, name, type)
-        return self.edit(director)        
+        return self.edit_components(director)        
     
 
     def __init__(self, name='createinstrumentfromtemplate'):
