@@ -108,7 +108,8 @@ class NeutronExperimentWizard(base):
 
 #        self._footer( document, director )
         return page
-
+    start.belongs = 'start'
+    
 
     def verify_experiment_name(self, director):
         try:
@@ -175,6 +176,7 @@ class NeutronExperimentWizard(base):
             
 #        self._footer( document, director )
         return page
+    select_instrument.belongs = 'instrument'
 
 
     def verify_instrument_selection(self, director):
@@ -282,6 +284,7 @@ class NeutronExperimentWizard(base):
         
 #        self._footer( document, director )
         return page
+    configure_instrument.belongs = 'instrument'
     
     
     def verify_instrument_configuration(self, director):
@@ -687,6 +690,7 @@ class NeutronExperimentWizard(base):
         
 #        self._footer( document, director )
         return page
+    sample_environment.belongs = 'sample'
 
 
     def verify_sample_environment(self, director):
@@ -763,6 +767,7 @@ class NeutronExperimentWizard(base):
             ]
 
         return page
+    sample_preparation.belongs = 'sample'
 
 
     def restart_sample_preparation(self, director):
@@ -981,7 +986,8 @@ class NeutronExperimentWizard(base):
         submit = form.control(name='submit',type="submit", value="next")
         #self.processFormInputs(director)
 #        self._footer( form, director )
-        return page           
+        return page
+    select_sample_from_sample_library.belongs = 'sample'
      
 
     def input_material(self, director):
@@ -1075,6 +1081,7 @@ class NeutronExperimentWizard(base):
         
 #        self._footer( document, director )
         return page
+    configure_sample.belongs = 'sample'
 
 
     def verify_sample_configuration(self, director):
@@ -1176,6 +1183,7 @@ class NeutronExperimentWizard(base):
             return self.present_kernels(director)
 
         return self.nokernelsyet(director)
+    configure_scatteringkernels.belongs = 'sample'
 
 
     def nokernelsyet(self, director):
@@ -1573,7 +1581,7 @@ class NeutronExperimentWizard(base):
         formcomponent.expand( form )
         submit = form.control(name='submit',type="submit", value="next")
         #self.processFormInputs(director)
-        self._footer( form, director )
+        #self._footer( form, director )
         return page    
     
     def onSelect(self, director):
@@ -1755,6 +1763,7 @@ class NeutronExperimentWizard(base):
 
 #        self._footer( document, director )
         return page
+    submit_experiment.belongs = 'submit_experiment'
 
 
     def verify_experiment_submission(self, director):
@@ -1843,7 +1852,7 @@ class NeutronExperimentWizard(base):
         return getattr(actor, routine)( director )
 
 
-    def cancel(self, director):
+    def delete(self, director):
         try:
             page = self._retrievePage(director)
         except AuthenticationError, err:
@@ -1886,9 +1895,9 @@ class NeutronExperimentWizard(base):
 
         p = document.paragraph(align = 'right')
         action = actionRequireAuthentication(
-            label = 'Cancel',
+            label = 'Delete',
             actor = 'neutronexperimentwizard',
-            routine = 'cancel',
+            routine = 'delete',
             id = self.inventory.id,
             sentry = director.sentry)
         link = action_link( action, director.cgihome )

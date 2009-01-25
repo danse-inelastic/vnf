@@ -17,7 +17,16 @@ routine2menu = {
     'start': 'start',
     'select_instrument': 'instrument',
     'configure_instrument': 'instrument',
+    'sample_preparation': 'sample',
+    'configure_sample': 'sample',
+    'configure_scatteringkernels': 'sample',
+    'select_sample_from_sample_library': 'sample',
+    'create_new_sample': 'sample',
+    'sample_environment': 'sample_environment',
+    'configure_scatteringkernels': 'montecarlo_scatteringkernel',
+#    'gulp_dynamics': 'gulp_dynamics',
     'submit_experiment': 'submit_experiment',
+    #'experiment_parameters': 'experiment_parameters',
     #'pick_computation_server': 'submit_experiment',
     }
 
@@ -47,6 +56,46 @@ def portlet(app):
     instrument.icon = "images/link_icon.gif"
     instrument.type = "navItem"
     
+    sample_environment = portlet.item(description="Sample environment")
+    action = actionRequireAuthentication(
+        actor = 'neutronexperimentwizard', sentry = app.sentry,
+        routine = 'sample_environment',
+        id = app.actor.inventory.id,
+        )
+    sample_environment.target = action_href(action, app.cgihome)
+    sample_environment.icon = "images/link_icon.gif"
+    sample_environment.type = "navItem"
+    
+    sample = portlet.item(description="Sample preparation")
+    action = actionRequireAuthentication(
+        actor = 'neutronexperimentwizard', sentry = app.sentry,
+        routine = 'sample_preparation',
+        id = app.actor.inventory.id,
+        )
+    sample.target = action_href(action, app.cgihome)
+    sample.icon = "images/link_icon.gif"
+    sample.type = "navItem"
+
+    material_simulation = portlet.item(description="Material simulation, modeling, and theoretical scattering")
+    action = actionRequireAuthentication(
+        actor = 'neutronexperimentwizard', sentry = app.sentry,
+        routine = 'material_simulation',
+        id = app.actor.inventory.id,
+        )
+    material_simulation.target = action_href(action, app.cgihome)
+    material_simulation.icon = "images/link_icon.gif"
+    material_simulation.type = "navItem"
+
+    montecarlo_scatteringkernel = portlet.item(description="Monte Carlo scattering kernel")
+    action = actionRequireAuthentication(
+        actor = 'neutronexperimentwizard', sentry = app.sentry,
+        routine = 'configure_scatteringkernels',
+        id = app.actor.inventory.id,
+        )
+    montecarlo_scatteringkernel.target = action_href(action, app.cgihome)
+    montecarlo_scatteringkernel.icon = "images/link_icon.gif"
+    montecarlo_scatteringkernel.type = "navItem"
+        
     #experiment_parameters = portlet.item(description="Experiment parameters")
     #action = actionRequireAuthentication(
     #    actor = 'neutronexperimentwizard', sentry = app.sentry,
@@ -77,16 +126,17 @@ def portlet(app):
     save_experiment.icon = "images/link_icon.gif"
     save_experiment.type = "navItem"
     
-    delete = portlet.item(description="Delete")
+    cancel = portlet.item(description="Cancel")
     action = actionRequireAuthentication(
             actor = 'neutronexperimentwizard',
-            routine = 'delete',
+            routine = 'cancel',
             id = app.actor.inventory.id,
             sentry = app.sentry)
-    delete.target = action_href(action, app.cgihome)
-    delete.icon = "images/link_icon.gif"
-    delete.type = "navItem"
+    cancel.target = action_href(action, app.cgihome)
+    cancel.icon = "images/link_icon.gif"
+    cancel.type = "navItem"
     
+
     routine = app.routine
     menu = routine2menu.get( routine )
     if menu:
