@@ -19,7 +19,7 @@ class MatterBase(DbObject):
     import pyre.db
 
     cartesian_lattice = pyre.db.doubleArray(
-        name = 'cartesian_lattice', default = [])
+        name = 'cartesian_lattice', default = [1.0,0.0,0.0,0.0,1.0,0.0,0.0,0.0,1.0])
     cartesian_lattice.meta['tip'] = 'array of cartesian lattice vectors'
     
     fractional_coordinates = pyre.db.doubleArray(

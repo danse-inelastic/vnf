@@ -83,9 +83,9 @@ class SampleInput(FormActor):
         except AuthenticationError, err:
             return err.page
         
-        polycrystalTableClass = director.clerk._getTable('polycrystal')
-        polycrystalDbObject = director.clerk.newDbObject(polycrystalTableClass)
-        polycrystalId = self.inventory.polycrystalId = polycrystalDbObject.id
+#        polycrystalTableClass = director.clerk._getTable('polycrystal')
+#        polycrystalDbObject = director.clerk.newDbObject(polycrystalTableClass)
+#        polycrystalId = self.inventory.polycrystalId = polycrystalDbObject.id
         
 #        experiment = director.clerk.getNeutronExperiment(self.inventory.id)
         main = page._body._content._main
@@ -94,7 +94,6 @@ class SampleInput(FormActor):
         document.description = ''
         document.byline = '<a href="http://danse.us">DANSE</a>'        
         
-        #formcomponent = self.retrieveFormToShow('inputMaterial')
         formcomponent = self.retrieveFormToShow('polycrystal')
         formcomponent.director = director
         # build the form 
@@ -105,15 +104,15 @@ class SampleInput(FormActor):
             sentry = director.sentry,
             routine = 'storeAndVerifyInput',
             label = '',
-            id = polycrystalId,
+            #id = polycrystalId,
             arguments = {'form-received': formcomponent.name },
             )
         from vnf.weaver import action_formfields
         action_formfields( action, form )
         
         # expand the form with fields of the data object that is being edited
-        formcomponent.expand( form , id = polycrystalId, 
-                              dbRecord = polycrystalDbObject, showimportwidget=True)
+        formcomponent.expand( form , #id = polycrystalId, 
+                              materialType = 'polycrystal', showimportwidget=True)
         submit = form.control(name='submit',type="submit", value="next")
         return page  
     
@@ -224,7 +223,7 @@ class SampleInput(FormActor):
             sentry = director.sentry,
             routine = 'onShapeSelect',
             label = '',
-            id=self.inventory.id,
+            #id=self.inventory.id,
             arguments = {'form-received': formcomponent.name },
             )
         from vnf.weaver import action_formfields
@@ -263,7 +262,7 @@ class SampleInput(FormActor):
             sentry = director.sentry,
             routine = 'default',
             label = '',
-            id=self.inventory.id,
+            #id=self.inventory.id,
             arguments = {'form-received': formcomponent.name },
             )
         from vnf.weaver import action_formfields

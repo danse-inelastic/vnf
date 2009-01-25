@@ -38,22 +38,31 @@ class PolyCrystal( base ):
         cx = inv.str('cx',default = '0.0')
         cy = inv.str('cy',default = '0.0')
         cz = inv.str('cz',default = '1.0')
+        
+#    record = None
+        
+#    def __init__(self):
+#        base.__init__(self)
+#        self.dbRecord = None
 
     def expand(self, form, errors = None, properties = None, id = '', 
-               dbRecord = None, showimportwidget=False):
+               materialType = 'polycrystal', showimportwidget=False):
         '''expand an existing form with fields from this component'''
-                  
+        # the strategy is to create a new object of a given class if it does not exist
+        # and look up one if it already exists.  it's existence is based on whether an id
+        # is passed in the function argument
         prefix = formactor_action_prefix
-        director = self.director
-
-        if not id: id = self.inventory.id
-        #first see if it is given in function
-        if dbRecord:
-            record = dbRecord
-        else: #if not, get it from db
+        director = self.director        
+        
+        if not id:
+            tableClass = director.clerk._getTable(materialType)
+            record = director.clerk.newObject(tableClass)
+            id = self.inventory.id = record.id
+        else:
             record = director.clerk.getRecordByID('polycrystals', id)
-            
-        chemical_formula = form.text(
+            self.inventory.id = record.id
+
+        self.chemical_formula = form.text(
             id='text1', name='%s.chemical_formula'%prefix,
             label='Matter Description', value = record.chemical_formula)
 
@@ -72,10 +81,7 @@ class PolyCrystal( base ):
         cartesian_lattice = record.cartesian_lattice
         import numpy
         cartesian_lattice = numpy.array(cartesian_lattice)
-        if cartesian_lattice.shape is 9:
-            cartesian_lattice.shape = 3,3
-        else:
-            cartesian_lattice = numpy.array([[1,0,0],[0,1,0],[0,0,1]])
+        cartesian_lattice.shape = 3,3
         a, b, c = cartesian_lattice
         
         self.ax = box.text(id='ax', name='%s.ax' % prefix, label='a: (x)', 
@@ -118,16 +124,24 @@ class PolyCrystal( base ):
         '''process user inputs for material and save them to db
         commit: if true, commit to database record. 
         '''
-        record = self.director.clerk.getRecordByID(
-            'polycrystals', self.inventory.id )
         
+        director = self.director
+        
+        try: # first try to get a record with the inventory id from the db
+            record = director.clerk.getRecordByID('polycrystals', self.inventory.id)
+        except: # if can't find, create a new one
+            tableClass = director.clerk._getTable('polycrystal')
+            record = director.clerk.newDbObject(tableClass)
+            self.inventory.id = record.id
+      
         record.chemical_formula = self.inventory.chemical_formula
 
-        a = self.inventory.ax, self.inventory.ay, self.inventory.az
-        b = self.inventory.bx, self.inventory.by, self.inventory.bz
-        c = self.inventory.cx, self.inventory.cy, self.inventory.cz
-        cartesian_lattice = list(a)+list(b)+list(c)
-
+        a = map(float,[self.inventory.ax, self.inventory.ay, self.inventory.az])
+        b = map(float,[self.inventory.bx, self.inventory.by, self.inventory.bz])
+        c = map(float,[self.inventory.cx, self.inventory.cy, self.inventory.cz])
+        #lattice=a+b+c
+        record.cartesian_lattice = a+b+c#lattice
+        
         atoms = []; coords = []
         listOfAtoms = self.inventory.listOfAtoms
         for line in listOfAtoms.split('\n'):
@@ -135,7 +149,6 @@ class PolyCrystal( base ):
             if len(tokens) != 4: continue
             atoms.append(tokens[0])
             coords.append([eval(i) for i in tokens[1:4]])
-            continue
         record.atom_symbols = atoms
         import numpy
         coords = numpy.array(coords)

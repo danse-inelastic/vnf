@@ -288,12 +288,13 @@ class Clerk(Component):
         
         assignments = []
         
+        # get the column names and couple them with the new values
         for column in record.getColumnNames():
             value = getattr( record, column )
             #value = _tostr( value )
             assignments.append( (column, value) )
             continue
-        
+        # update the row, or in other words, record
         self.db.updateRow(record.__class__, assignments, where)
         return record
 
@@ -351,7 +352,7 @@ class Clerk(Component):
 
 
     def newDbObject(self, table):
-        '''create a new record for the given table.
+        '''create a new record for the given table and store it in the db.
 
         The given table is assumed to have following fields:
           - id
@@ -364,6 +365,21 @@ class Clerk(Component):
         record.id = id
 
         self.newRecord( record )
+        return record
+    
+    def newObject(self, table):
+        '''create a new record for the given table but do not store it in the db.
+
+        The given table is assumed to have following fields:
+          - id
+        '''
+        director = self.director
+        
+        record = table()
+        
+        id = new_id( director )
+        record.id = id
+
         return record
 
 
