@@ -171,11 +171,13 @@ class Actor(base):
         for i, name in enumerate(instrument.componentsequence):
 
             component = compsdict[name]
+
+            links = []
             
-            if isinstance(component, SampleComponent):
-                # if it is sample place holder, no action links
-                texts.append(name)
-            else:
+            # if it is sample place holder, we should be allowed to move the sample
+            # but not editing it
+            is_sample = isinstance(component, SampleComponent)
+            if not is_sample:
                 action = actionRequireAuthentication(
                     label = 'edit',
                     sentry = director.sentry,
@@ -185,17 +187,20 @@ class Actor(base):
                     editee = '%s,%s' % (component.name, component.id)
                     )
                 editlink = action_link( action, director.cgihome )
+                links.append(editlink)
 
-                action = actionRequireAuthentication(
-                    label = 'move',
-                    sentry = director.sentry,
-                    actor = 'createinstrumentfromtemplate', 
-                    routine = 'move_neutron_component',
-                    id = self.inventory.id,
-                    editee = '%s' % name,
-                    )
-                movelink = action_link( action, director.cgihome )
+            action = actionRequireAuthentication(
+                label = 'move',
+                sentry = director.sentry,
+                actor = 'createinstrumentfromtemplate', 
+                routine = 'move_neutron_component',
+                id = self.inventory.id,
+                editee = '%s' % name,
+                )
+            movelink = action_link( action, director.cgihome )
+            links.append(movelink)
 
+            if not is_sample:
                 action = actionRequireAuthentication(
                     label = 'delete',
                     sentry = director.sentry,
@@ -205,14 +210,10 @@ class Actor(base):
                     editee = name,
                     )
                 deletelink = action_link( action, director.cgihome )
-                texts.append(
-                    '%s: (%s, %s, %s)' % (
-                        name,
-                        editlink,
-                        movelink,
-                        deletelink,
-                        )
-                    )
+                links.append(deletelink)
+            
+            text = '%s: (%s)' % (name, ','.join(links))
+            texts.append(text)
 
             # add a vertical line for connecting components
             if i == len(components)-1:

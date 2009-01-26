@@ -80,7 +80,11 @@ def component_tables():
     from vnf.dom import alltables
     all = alltables()
     from vnf.dom.NeutronComponent import NeutronComponent
-    return filter(lambda t: issubclass(t, NeutronComponent), all)
+    from vnf.dom.neutron_components.SampleComponent import SampleComponent
+    def isComponent(candidate):
+        return issubclass(candidate, NeutronComponent) \
+               and not issubclass(candidate, SampleComponent)
+    return filter(isComponent, all)
 
 
 def form(): return Form()
