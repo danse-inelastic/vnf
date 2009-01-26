@@ -23,7 +23,7 @@ class Form( base ):
         sampleShape = inv.str('sampleShape',default='plate')
         sampleShape.validator=inv.choice(['plate', 'cylinder'])
         
-    routines={'cylinder':'inputCylinder','plate':'inputPlate'}
+    routines={'cylinder':'inputCylinder','plate':'inputBlock'}
 
     def expand(self, form):
         '''expand an existing form with fields from this component'''

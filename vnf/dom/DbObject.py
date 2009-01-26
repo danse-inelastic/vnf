@@ -21,7 +21,7 @@ class DbObject(Table):
     id.constraints = 'PRIMARY KEY'
     id.meta['tip'] = "the unique id"
 
-    short_description = pyre.db.varchar(name='short_description', length = 128)
+    short_description = pyre.db.varchar(name='short_description', length = 128, default='')
     short_description.meta['tip'] = 'short_description'
 
     pass # end of DbObject

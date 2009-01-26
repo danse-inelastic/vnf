@@ -43,7 +43,7 @@ class Form( base ):
         'return a legend string'
         return 'Select material type'
 
-    def expand(self, form):
+    def expand(self, form, id=''):
         '''expand an existing form with fields from this component'''
         # do we need this?
         #record = self.getRecord()

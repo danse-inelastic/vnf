@@ -38,15 +38,9 @@ class PolyCrystal( base ):
         cx = inv.str('cx',default = '0.0')
         cy = inv.str('cy',default = '0.0')
         cz = inv.str('cz',default = '1.0')
-        
-#    record = None
-        
-#    def __init__(self):
-#        base.__init__(self)
-#        self.dbRecord = None
 
-    def expand(self, form, errors = None, properties = None, id = '', 
-               materialType = 'polycrystal', showimportwidget=False):
+    def expand(self, form, errors = None, properties = None,
+               id = '', showimportwidget = False):
         '''expand an existing form with fields from this component'''
         # the strategy is to create a new object of a given class if it does not exist
         # and look up one if it already exists.  it's existence is based on whether an id
@@ -55,7 +49,7 @@ class PolyCrystal( base ):
         director = self.director        
         
         if not id:
-            tableClass = director.clerk._getTable(materialType)
+            tableClass = director.clerk._getTable('polycrystal')
             record = director.clerk.newObject(tableClass)
             id = self.inventory.id = record.id
         else:
@@ -156,7 +150,7 @@ class PolyCrystal( base ):
         self.director.clerk.updateRecord(record)
         return record
     
-formactor_action_prefix = 'actor.form-received' # assumed actor is a form actor
+
 
 
 # version
