@@ -43,6 +43,9 @@ class Form( base ):
         prefix = formactor_action_prefix
 
         matters = _findMatters(director)
+        from vnf.utils.uniquelist import uniquelist
+        from vnf.dom.hash import hash
+        matters = uniquelist(matters, idfun=lambda matter: hash(matter, director.clerk.db))
         
         entries = [
             ('%s%s%s' % (matter.__class__.__name__, separator, matter.id),
@@ -79,7 +82,8 @@ class Form( base ):
 
 
 def describe(matter):
-    return '%s: %s' % (matter.short_description, matter.__class__.__name__)
+    return '%s: %s' % (
+        matter.short_description or matter.chemical_formula, matter.__class__.__name__)
 
 
 def _findMatters(director):
