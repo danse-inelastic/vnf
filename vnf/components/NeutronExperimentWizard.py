@@ -375,11 +375,12 @@ class NeutronExperimentWizard(base):
         for i, name in enumerate(instrument.componentsequence):
 
             component = compsdict[name]
+
+            links = []
             
-            if isinstance(component, SampleComponent):
-                # if it is sample place holder, no action links
-                texts.append(name)
-            else:
+            # if it is sample place holder, we should be allowed to move the sample
+            # but not editing it
+            if not isinstance(component, SampleComponent):
                 action = actionRequireAuthentication(
                     label = 'edit',
                     sentry = director.sentry,
@@ -389,24 +390,21 @@ class NeutronExperimentWizard(base):
                     editee = '%s,%s' % (component.name, component.id)
                     )
                 editlink = action_link( action, director.cgihome )
+                links.append(editlink)
 
-                action = actionRequireAuthentication(
-                    label = 'move',
-                    sentry = director.sentry,
-                    actor = 'neutronexperimentwizard', 
-                    routine = 'move_neutron_component',
-                    id = self.inventory.id,
-                    editee = '%s' % name,
-                    )
-                movelink = action_link( action, director.cgihome )
+            action = actionRequireAuthentication(
+                label = 'move',
+                sentry = director.sentry,
+                actor = 'neutronexperimentwizard', 
+                routine = 'move_neutron_component',
+                id = self.inventory.id,
+                editee = '%s' % name,
+                )
+            movelink = action_link( action, director.cgihome )
+            links.append(movelink)
 
-                texts.append(
-                    '%s: (%s, %s)' % (
-                        name,
-                        editlink,
-                        movelink,
-                        )
-                    )
+            text = '%s: (%s)' % (name, ','.join(links))
+            texts.append(text)
 
             symbol = '|'
             texts.append( symbol )
