@@ -53,6 +53,12 @@ class Builder(base):
             sampleassembly = sampleassembly.dereference(self.db)
         if sampleassembly:
             self.dispatch( sampleassembly )
+
+        samplecomponent = experiment.samplecomponent
+        if samplecomponent:
+            samplecomponent = samplecomponent.dereference(self.db)
+        if samplecomponent:
+            self.onSampleComponent(samplecomponent)
         
         parameters = [ 'ncount' ]
         for parameter in parameters:
@@ -98,13 +104,22 @@ class Builder(base):
 
 
     def onSampleAssembly(self, sampleassembly):
-        if sampleassembly.__class__.__name__ == 'SampleAssembly':
-            from McvineSampleAssemblyBuilder import Builder
-        else:
-            from McstasSampleBuilder import Builder
-            pass
+        from vnf.dom.SampleAssembly import SampleAssembly
+        if not isinstance(sampleassembly, SampleAssembly):
+            raise RuntimeError
+        from McvineSampleAssemblyBuilder import Builder
         builder = Builder(self.path)
         builder.render(sampleassembly, db = self.db, dds = self.dds)
+        self.dependencies += builder.getDependencies()
+        self.filenames += builder.getFilenames()
+        self.options.update(builder.getOptions())
+        return
+
+
+    def onSampleComponent(self, samplecomponent):
+        from SampleComponentBuilder import Builder
+        builder = Builder(self.path)
+        builder.render(samplecomponent, db = self.db, dds = self.dds)
         self.dependencies += builder.getDependencies()
         self.filenames += builder.getFilenames()
         self.options.update(builder.getOptions())

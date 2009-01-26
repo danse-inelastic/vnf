@@ -33,13 +33,13 @@ EXPORT_PYTHON_MODULES = \
 	AbInitio.py \
 	InstrumentSimulationAppBuilder.py \
 	JobBuilder.py \
-	McstasSampleBuilder.py \
 	McvineSampleAssemblyBuilder.py \
 	McvineScattererXMLBuilder.py \
 	NeutronExperiment.py \
 	NeutronExperimentSimulationRunBuilder.py \
 	PhononsFromAbinitio.py \
 	SampleAssemblyXMLBuilder.py \
+	SampleComponentBuilder.py \
 	__init__.py \
 	_utils.py \
 
