@@ -1431,7 +1431,7 @@ class DeepCopier:
 
     onT0Chopper = onFermiChopper = onChanneledGuide = onNeutronComponent
 
-    onSphericalPSD = onDetectorSystem_fromXML = onQEMonitor = onQMonitor = onTofMonitor = onNeutronComponent
+    onSphericalPSD = onDetectorSystem_fromXML = onQEMonitor = onQMonitor = onTofMonitor = onEMonitor = onNeutronComponent
 
     onNeutronRecorder = onNeutronComponent
 

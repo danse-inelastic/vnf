@@ -388,6 +388,58 @@ def %(name)s():
         return
 
 
+    def onEMonitor(self, m):
+        kwds = {
+            'name': m.label,
+            'category': 'monitors',
+            'type': 'E_monitor',
+            'supplier': 'mcstas2',
+            }
+        self.onNeutronComponent( **kwds )
+
+        # need a odb file to enhance the monitor
+        odbname = 'enhanced_%s' % m.label
+        odbcodes = [
+            'def %(name)s():',
+            '    from mcni.pyre_support import componentfactory as component',
+            "    f = component('monitors', 'E_monitor', supplier = 'mcstas2')",
+            "    ret =  f('%(odbname)s')",
+            "    from mcstas2.pyre_support.monitor_exts import extend",
+            "    extend( ret )",
+            "    return ret",
+            ]
+        odbcode = '\n'.join(odbcodes)
+        odbcode = odbcode % {
+            'name': m.label,
+            'odbname': odbname,
+            }
+        odbcode = odbcode.split('\n')
+        self.odbs.append( ('%s.odb' % odbname, odbcode) )
+        
+        opts = {
+            m.label: odbname,
+            }
+
+        parameters = {
+            'filename': outputfilename(m),
+            'xmin': m.x_min,
+            'xmax': m.x_max,
+            'ymin': m.y_min,
+            'ymax': m.y_max,
+            'Emin': m.Emin,
+            'Emax': m.Emax,
+            'nchan': m.nchan,
+            'xwidth': 0,
+            'yheight': 0,
+            }
+        for k,v in parameters.iteritems():
+            opts['%s.%s' % (odbname, k)] = v
+            continue
+        
+        self.cmdline_opts.update( opts )
+        return
+
+
     def onTofMonitor(self, m):
         kwds = {
             'name': m.label,
@@ -530,6 +582,7 @@ class _ComponentOutputfiles:
         
         klass = component.__class__.__name__
         if klass in [
+            'EMonitor',
             'QEMonitor',
             'TofMonitor',
             'SphericalPSD',

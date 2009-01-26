@@ -41,6 +41,7 @@ EXPORT_PYTHON_MODULES = \
 	FermiChopper.py \
 	SampleComponent.py \
 	SampleComponentExample.py \
+	EMonitor.py \
 	QEMonitor.py \
 	QMonitor.py \
 	SphericalPSD.py \
