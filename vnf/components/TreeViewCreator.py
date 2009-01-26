@@ -45,7 +45,7 @@ class TreeViewCreator:
     def onNeutronExperiment(self, experiment):
         db = self.director.clerk.db
         elements = [
-            experiment.instrument.dereference(db),
+            experiment.instrument_configuration.dereference(db),
             ]
         if experiment.sampleassembly:
             elements.append(experiment.sampleassembly.dereference(db))
@@ -67,6 +67,9 @@ class TreeViewCreator:
         components = instrument.components.dereference(db)
         components = [ c for n,c in components ]
         return self.onContainer(instrument, components )
+
+
+    onInstrumentConfiguration = onInstrument
 
 
     def onSampleComponent(self, component):
@@ -140,7 +143,7 @@ class TreeViewCreator:
                    = onMonochromaticSource \
                    = onChanneledGuide \
                    = onT0Chopper = onFermiChopper \
-                   = onQEMonitor = onQMonitor = onTofMonitor = onSphericalPSD\
+                   = onQEMonitor = onQMonitor = onTofMonitor = onEMonitor = onSphericalPSD\
                    = onNeutronRecorder \
                    = onDetectorSystem_fromXML \
                    = onPolyCrystal = onDisordered \
