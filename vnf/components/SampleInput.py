@@ -102,7 +102,7 @@ class SampleInput(FormActor):
         action = actionRequireAuthentication(          
             actor = 'sampleInput', 
             sentry = director.sentry,
-            routine = 'storeAndVerifyInput',
+            routine = 'storeAndVerifyMatterInput',
             label = '',
             #id = polycrystalId,
             arguments = {'form-received': formcomponent.name },
@@ -131,9 +131,8 @@ class SampleInput(FormActor):
         # populate the main column
         document = main.document(title='Material input')
         document.description = ''
-        document.byline = '<a href="http://danse.us">DANSE</a>'        
-        
-        # this is not a bug--single crystal *form* is identical to polycrystal for now
+        document.byline = '<a href="http://danse.us">DANSE</a>'                
+
         formcomponent = self.retrieveFormToShow('singlecrystal')
         formcomponent.director = director
         # build the form 
@@ -142,7 +141,7 @@ class SampleInput(FormActor):
         action = actionRequireAuthentication(          
             actor = 'sampleInput', 
             sentry = director.sentry,
-            routine = 'storeAndVerifyInput',
+            routine = 'storeAndVerifyMatterInput',
             label = '',
             #id = polycrystalId,
             arguments = {'form-received': formcomponent.name },
@@ -156,7 +155,7 @@ class SampleInput(FormActor):
         submit = form.control(name='submit',type="submit", value="next")
         return page  
     
-    def disorderedl(self, director):
+    def disordered(self, director):
         try:
             page = director.retrievePage( 'generic' )
         except AuthenticationError, err:
@@ -173,7 +172,6 @@ class SampleInput(FormActor):
         document.description = ''
         document.byline = '<a href="http://danse.us">DANSE</a>'        
         
-        # this is not a bug--single crystal *form* is identical to polycrystal for now
         formcomponent = self.retrieveFormToShow('disordered')
         formcomponent.director = director
         # build the form 
@@ -182,7 +180,7 @@ class SampleInput(FormActor):
         action = actionRequireAuthentication(          
             actor = 'sampleInput', 
             sentry = director.sentry,
-            routine = 'storeAndVerifyInput',
+            routine = 'storeAndVerifyMatterInput',
             label = '',
             #id = polycrystalId,
             arguments = {'form-received': formcomponent.name },
@@ -192,11 +190,11 @@ class SampleInput(FormActor):
         
         # expand the form with fields of the data object that is being edited
         formcomponent.expand( form , #id = polycrystalId, 
-                              materialType = 'disordered', showimportwidget=True)
+                    materialType = 'disordered')
         submit = form.control(name='submit',type="submit", value="next")
         return page 
     
-    def storeAndVerifyInput(self, director):
+    def storeAndVerifyMatterInput(self, director):
         self.processFormInputs(director) 
         return self.selectShape( director ) 
     
@@ -251,15 +249,15 @@ class SampleInput(FormActor):
         document.description = ''
         document.byline = '<a href="http://danse.us">DANSE</a>'        
         
-        formcomponent = self.retrieveFormToShow( 'inputPlate')
+        formcomponent = self.retrieveFormToShow( 'inputBlock')
         formcomponent.director = director
         # build the form 
         form = document.form(name='', action=director.cgihome)
         # specify action
         action = actionRequireAuthentication(          
-            actor = 'sample', 
+            actor = 'sampleInput', 
             sentry = director.sentry,
-            routine = 'default',
+            routine = 'storeAndVerifyShapeInput',
             label = '',
             #id=self.inventory.id,
             arguments = {'form-received': formcomponent.name },
@@ -291,11 +289,11 @@ class SampleInput(FormActor):
         form = document.form(name='', action=director.cgihome)
         # specify action
         action = actionRequireAuthentication(          
-            actor = 'sample', 
+            actor = 'sampleInput', 
             sentry = director.sentry,
-            routine = 'default',
+            routine = 'storeAndVerifyShapeInput',
             label = '',
-            id=self.inventory.id,
+            #id=self.inventory.id,
             arguments = {'form-received': formcomponent.name },
             )
         from vnf.weaver import action_formfields
@@ -306,7 +304,12 @@ class SampleInput(FormActor):
         submit = form.control(name='submit',type="submit", value="submit")
         self.processFormInputs(director)
         return page
-
+    
+    def storeAndVerifyShapeInput(self, director):
+        self.processFormInputs(director) 
+        actor = 'sample'
+        routine = 'default'
+        return director.redirect(actor, routine)
 
     def __init__(self, name=None):
         if name is None:
@@ -314,16 +317,6 @@ class SampleInput(FormActor):
         super(SampleInput, self).__init__(name)
         return
 
-    def _createSample(self, director, matter=None):
-
-        type = self.inventory.type
-        Computation = director.clerk._getTable(type)
-        
-        computation = director.clerk.newDbObject(Computation)
-        self.inventory.id = id = computation.id
-        computation.matter = matter
-        director.clerk.updateRecord(computation)
-        return computation
     
 
 

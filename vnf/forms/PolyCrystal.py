@@ -121,9 +121,7 @@ class PolyCrystal( base ):
             default = listOfAtoms)
           
     def processUserInputs(self):   
-        '''process user inputs for material and save them to db
-        commit: if true, commit to database record. 
-        '''
+        '''process user inputs for material and save them to db'''
         
         director = self.director
         

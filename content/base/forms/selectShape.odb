@@ -36,10 +36,7 @@ class Form( base ):
 #        cylinder=box.radio(id='radio2',name=name, label = "Cylinder", value = 'cylinder') 
         plate=form.radio(id='radio1',name=name, label = "Plate", value = 'plate')       
         cylinder=form.radio(id='radio2',name=name, label = "Cylinder", value = 'cylinder') 
-        
-        
-        p = form.paragraph()
-        p.text = ['To begin the creation of a scattering kernel, select an energetics/dynamics engine or a set of phonon dispersions.']
+    
         prefix = formactor_action_prefix
 
     def processUserInputs(self):
