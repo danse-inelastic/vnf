@@ -36,6 +36,7 @@ EXPORT_PYTHON_MODULES = \
 	Announcement.py \
 	AutoRefresh.py \
 	Image.py \
+	ImagePlot.py \
 	Page.py \
 	Plot_2D.py \
 	SlidableGallery.py \

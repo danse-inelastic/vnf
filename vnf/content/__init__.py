@@ -54,6 +54,10 @@ def plot_2d(*args, **kwds):
     from Plot_2D import Plot_2D
     return Plot_2D(*args, **kwds)
 
+def imagePlot(*args, **kwds):
+    from ImagePlot import ImagePlot
+    return ImagePlot(*args, **kwds)
+
 def treeview(*args, **kwds ):
     from TreeView import TreeView
     return TreeView(*args, **kwds )
