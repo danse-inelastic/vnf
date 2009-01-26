@@ -46,17 +46,24 @@ class Form( base ):
 
         prefix = formactor_action_prefix
 
-        where = "status='online'"
-        instruments = director.clerk.indexInstruments(where=where)
-        instruments = instruments.itervalues()
-        
         accesscontrol = director.accesscontrol
         username = director.sentry.username
         user = director.clerk.getUser(username)
         def _isAccessible(instrument):
             return accesscontrol.checkInstrumentPrivilege(user, instrument)
-        instruments = filter(_isAccessible, instruments)
+
+        where = "status='online' and creator='vnf'"
+        instruments = director.clerk.indexInstruments(where=where)
+        instruments = instruments.itervalues()
+        vnfinstruments = filter(_isAccessible, instruments)
         
+        where = "status='online' and creator='%s'" % username
+        instruments = director.clerk.indexInstruments(where=where)
+        instruments = instruments.itervalues()
+        myinstruments = filter(_isAccessible, instruments)
+
+        instruments = vnfinstruments + myinstruments
+
         entries = [
             (instrument.id,
              '%s (%s)' % (instrument.short_description, instrument.category)
