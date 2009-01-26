@@ -140,7 +140,7 @@ class TreeViewCreator:
                    = onMonochromaticSource \
                    = onChanneledGuide \
                    = onT0Chopper = onFermiChopper \
-                   = onQEMonitor = onQMonitor = onTofMonitor \
+                   = onQEMonitor = onQMonitor = onTofMonitor = onSphericalPSD\
                    = onNeutronRecorder \
                    = onDetectorSystem_fromXML \
                    = onPolyCrystal = onDisordered \

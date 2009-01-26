@@ -43,6 +43,7 @@ EXPORT_PYTHON_MODULES = \
 	SampleComponentExample.py \
 	QEMonitor.py \
 	QMonitor.py \
+	SphericalPSD.py \
 	TofMonitor.py \
 	DetectorSystem_fromXML.py \
 	NeutronRecorder.py \

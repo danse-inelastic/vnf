@@ -12,6 +12,7 @@ def tables():
 	'SampleComponentExample',
 	'QEMonitor',
 	'QMonitor',
+        'SphericalPSD',
 	'TofMonitor',
 	'DetectorSystem_fromXML',
         'NeutronRecorder',

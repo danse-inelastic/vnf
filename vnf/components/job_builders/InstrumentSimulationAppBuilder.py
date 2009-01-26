@@ -91,8 +91,8 @@ class Builder(base):
             record = geometer[ component ]
             
             reference = record.reference_label
-            if reference is not None and reference != '':
-                raise NotImplementedError
+            if reference is not None and reference != '' and reference != 'absolute':
+                raise NotImplementedError, 'reference=%r' % reference
             
             position = record.position
             orientation = record.orientation
@@ -342,6 +342,52 @@ def %(name)s():
         return
 
 
+    def onSphericalPSD(self, m):
+        kwds = {
+            'name': m.label,
+            'category': 'monitors',
+            'type': 'PSD_monitor_4PI',
+            'supplier': 'mcstas2',
+            }
+        self.onNeutronComponent( **kwds )
+
+        # need a odb file to enhance the monitor
+        odbname = 'enhanced_%s' % m.label
+        odbcodes = [
+            'def %(name)s():',
+            '    from mcni.pyre_support import componentfactory as component',
+            "    f = component('monitors', 'PSD_monitor_4PI', supplier = 'mcstas2')",
+            "    ret =  f('%(odbname)s')",
+            "    from mcstas2.pyre_support.monitor_exts import extend",
+            "    extend( ret )",
+            "    return ret",
+            ]
+        odbcode = '\n'.join(odbcodes)
+        odbcode = odbcode % {
+            'name': m.label,
+            'odbname': odbname,
+            }
+        odbcode = odbcode.split('\n')
+        self.odbs.append( ('%s.odb' % odbname, odbcode) )
+        
+        opts = {
+            m.label: odbname,
+            '%s.filename' % odbname: outputfilename(m),
+            }
+
+        parameters = {
+            'radius': m.radius,
+            'nx': m.ncolumns,
+            'ny': m.nrows,
+            }
+        for k,v in parameters.iteritems():
+            opts['%s.%s' % (odbname, k)] = v
+            continue
+        
+        self.cmdline_opts.update( opts )
+        return
+
+
     def onTofMonitor(self, m):
         kwds = {
             'name': m.label,
@@ -464,6 +510,8 @@ def %(name)s():
 
 
 import os
+
+#!!! need a more structured way to handle this !!!
 from NeutronExperiment import outputfilename
 class _ComponentOutputfiles:
     '''Each component generates some output files. This class
@@ -484,6 +532,7 @@ class _ComponentOutputfiles:
         if klass in [
             'QEMonitor',
             'TofMonitor',
+            'SphericalPSD',
             ]:
             f1, ext = os.path.splitext(f)
             f = '.'.join( [f1, 'h5'] )
