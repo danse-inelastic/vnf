@@ -24,8 +24,8 @@ class PolyCrystal( base ):
         
         id = inv.str( 'id', default = '' )
         
-        chemical_formula = inv.str('chemical_formula', default = '' )
-        chemical_formula.meta['tip'] = 'A short description'
+        short_description = inv.str('short_description', default = '' )
+        short_description.meta['tip'] = 'A short description'
         
         listOfAtoms = inv.str('listOfAtoms')
         
@@ -56,9 +56,9 @@ class PolyCrystal( base ):
             record = director.clerk.getRecordByID('polycrystals', id)
             self.inventory.id = record.id
 
-        self.chemical_formula = form.text(
-            id='text1', name='%s.chemical_formula'%prefix,
-            label='Matter Description', value = record.chemical_formula)
+        self.short_description = form.text(
+            id='text1', name='%s.short_description'%prefix,
+            label='Matter Description', value = record.short_description)
 
         if showimportwidget:
             p = form.paragraph()
@@ -126,7 +126,7 @@ class PolyCrystal( base ):
             record = director.clerk.newDbObject(tableClass)
             self.inventory.id = record.id
       
-        record.chemical_formula = self.inventory.chemical_formula
+        record.short_description = self.inventory.short_description
 
         a = map(float,[self.inventory.ax, self.inventory.ay, self.inventory.az])
         b = map(float,[self.inventory.bx, self.inventory.by, self.inventory.bz])
