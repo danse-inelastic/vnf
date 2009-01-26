@@ -777,11 +777,24 @@ class NeutronExperimentWizard(base):
             return err.page
 
         experiment = director.clerk.getNeutronExperiment(self.inventory.id)
-        sampleassembly = _get_sampleassembly_from_experiment(experiment, director.clerk.db)
-        if not sampleassembly: raise RuntimeError
-        sample = _get_sample_from_sampleassembly(sampleassembly, director.clerk.db)
-        if not sample: raise RuntimeError
-        sampleassembly.scatterers.delete(sample, director.clerk.db)
+
+        # an experiment cannot have both a sample component and a sample assembly
+        if experiment.samplecomponent and experiment.sampleassembly:
+            raise RuntimeError
+
+        # if experiment has either a sample component or a sample assembly, remove it
+        if experiment.samplecomponent:
+            record = director.clerk.dereference(experiment.samplecomponent)
+            experiment.samplecomponent = ''
+            director.clerk.updateRecord(experiment)
+            director.clerk.deleteRecord(record)
+        else:
+            sampleassembly = _get_sampleassembly_from_experiment(experiment, director.clerk.db)
+            if not sampleassembly: raise RuntimeError
+            sample = _get_sample_from_sampleassembly(sampleassembly, director.clerk.db)
+            if not sample: raise RuntimeError
+            sampleassembly.scatterers.delete(sample, director.clerk.db)
+            director.clerk.deleteRecord(sample, recursive=True)
         
         return self.fresh_sample_preparation(director)
         
@@ -792,15 +805,6 @@ class NeutronExperimentWizard(base):
             page = self._retrievePage(director)
         except AuthenticationError, err:
             return err.page
-
-        # if no sample assembly, add one
-        experiment = director.clerk.getNeutronExperiment(self.inventory.id)
-        sampleassembly = _get_sampleassembly_from_experiment(experiment, director.clerk.db)
-        if not sampleassembly:
-            from vnf.dom.SampleAssembly import SampleAssembly
-            sampleassembly = director.clerk.newOwnedObject(SampleAssembly)
-            experiment.sampleassembly = sampleassembly
-            director.clerk.updateRecord(experiment)
 
         #
         main = page._body._content._main
@@ -903,6 +907,7 @@ class NeutronExperimentWizard(base):
         
 #        self._footer( document, director )
         return page
+    select_sample_from_examples.belongs = 'sample'
 
 
     def verify_sample_selection(self, director):
@@ -911,34 +916,76 @@ class NeutronExperimentWizard(base):
         except AuthenticationError, err:
             return err.page
         
-        scatterer_id = self.processFormInputs( director )
-
         experiment = director.clerk.getNeutronExperiment(
             self.inventory.id )
 
-        sampleassembly = _get_sampleassembly_from_experiment(experiment, director.clerk.db)
-        scatterers_refset = sampleassembly.scatterers
+        # the user selection
+        selected = self.processFormInputs( director )
+        tablename, id = selected.split('#')
+        selected_sample = director.clerk.getRecordByID(tablename, id)
 
-        # check if there is an old sample
-        oldsample = _get_sample_from_sampleassembly(sampleassembly, director.clerk.db)
-        if oldsample:
-            # if so, remove the reference from the referenceset
+        if isScatterer(selected_sample):
+            # if user select a scatterer, we will need a sampleassembly
+
+            # but first, if experiment has a sample component, need to remove that
+            if experiment.samplecomponent:
+                _remove_samplecomponent_from_experiment(experiment, director)
+
+            # now check old sample assembly
             sampleassembly = _get_sampleassembly_from_experiment(experiment, director.clerk.db)
-            scatterers_refset.delete( oldsample, director.clerk.db )
 
-        # the user chosen scatterer
-        sample = director.clerk.getScatterer( scatterer_id )
+            # if no sample assembly, create one
+            if sampleassembly is None:
+                sampleassembly = _create_sampleassembly_for_experiment(experiment, director)
+
+            # scatteres in sample assembly
+            scatterers_refset = sampleassembly.scatterers
+
+            # check if there is an old sample
+            oldsample = _get_sample_from_sampleassembly(sampleassembly, director.clerk.db)
+            if oldsample:
+                # if there is one, remove the reference from the referenceset
+                sampleassembly = _get_sampleassembly_from_experiment(experiment, director.clerk.db)
+                scatterers_refset.delete( oldsample, director.clerk.db )
+                # should we delete the old sample?
+
+            # the user chosen scatterer
+            sample = selected_sample
         
-        #now make a copy
-        samplecopy = director.clerk.deepcopy( sample )
+            # now make a copy
+            samplecopy = director.clerk.deepcopy( sample )
 
-        #and add to the sample assembly
-        scatterers_refset.add( samplecopy, director.clerk.db, name = 'sample' )
+            # and add to the sample assembly
+            scatterers_refset.add( samplecopy, director.clerk.db, name = 'sample' )
 
-        #redirect
-        director.routine = 'configure_sample'
-        return self.configure_sample(director)
+            # redirect
+            director.routine = 'configure_sample'
+            return self.configure_sample(director)
 
+        elif isSampleComponent(selected_sample):
+            # user select a sample component
+            
+            # first check if there is a sample assembly
+            sampleassembly = _get_sampleassembly_from_experiment(experiment, director.clerk.db)
+            if sampleassembly:
+                # need to remove the sample assembly
+                experiment.sampleassembly = ''
+                director.clerk.updateRecord(experiment)
+                director.clerk.deleteRecord(sampleassembly, recursive=True)
+
+            # now make a copy
+            sample = director.clerk.deepcopy(selected_sample)
+
+            # add to the experiment
+            experiment.samplecomponent = sample
+            director.clerk.updateRecord(experiment)
+            
+            return self.configure_samplecomponent(director)
+
+        else:
+            raise NotImplementedError
+
+        raise RuntimeError
     
 
     def select_sample_from_sample_library(self, director):
@@ -1048,6 +1095,10 @@ class NeutronExperimentWizard(base):
         sample = _get_sample_from_experiment(experiment, director.clerk.db)
         if sample is None: raise RuntimeError, "No sample in sample assembly"
 
+        # if sample is a sample component, redirect
+        if isSampleComponent(sample):
+            return self.configure_samplecomponent(director, errors=errors)
+
         #In this step we obtain configuration of sample
         formname = 'configure%s%s' % (
             director.clerk.dereference(sample.matter).__class__.__name__.lower(),
@@ -1114,6 +1165,86 @@ class NeutronExperimentWizard(base):
         if not _hasKernel(sample, director.clerk.db):
             return self.material_simulation(director)
         
+        return self.submit_experiment(director)
+
+
+    def configure_samplecomponent(self, director, errors=None):
+        try:
+            page = self._retrievePage(director)
+        except AuthenticationError, err:
+            return err.page        
+        main = page._body._content._main
+
+        # populate the main column
+        document = main.document(
+            title='Neutron Experiment Wizard: sample configuration')
+        document.description = ''
+        document.byline = 'byline?'
+
+        #get experiment
+        experiment = director.clerk.getNeutronExperiment(
+            self.inventory.id )
+
+        #sample
+        sample = _get_sample_from_experiment(experiment, director.clerk.db)
+        if sample is None: raise RuntimeError, "No sample in sample assembly"
+
+        # if sample is not a samplecomponent, raise
+        if not isSampleComponent(sample):
+            raise RuntimeError
+
+        #In this step we obtain configuration of sample
+        formname = sample.__class__.__name__.lower()
+        formcomponent = self.retrieveFormToShow(formname)
+        formcomponent.inventory.id = sample.id
+        formcomponent.director = director
+        
+        # create form
+        form = document.form(
+            name='configure sample',
+            legend= formcomponent.legend(),
+            action=director.cgihome)
+
+        # specify action
+        action = actionRequireAuthentication(
+            actor = 'neutronexperimentwizard', sentry = director.sentry,
+            label = '',
+            routine = 'verify_samplecomponent_configuration',
+            id = self.inventory.id,
+            arguments = {'form-received': formcomponent.name } )
+        from vnf.weaver import action_formfields
+        action_formfields( action, form )
+
+        # expand the form with fields of the data object that is being edited
+        formcomponent.expand( form, errors = errors )
+
+        # run button
+        submit = form.control(name="submit", type="submit", value="Continue")
+        
+#        self._footer( document, director )
+        return page
+    configure_samplecomponent.belongs = 'sample'
+
+
+    def verify_samplecomponent_configuration(self, director):
+        try:
+            page = self._retrievePage(director)
+        except AuthenticationError, err:
+            return err.page
+
+        try:
+            self.processFormInputs(director)
+        except InputProcessingError, err:
+            errors = err.errors
+            self.form_received = None
+            director.routine = 'configure_samplecomponent'
+            return self.configure_samplecomponent( director, errors = errors )            
+
+        experiment = director.clerk.getNeutronExperiment(
+            self.inventory.id )
+        sample = _get_samplecomponent_from_experiment(experiment, director.clerk.db)
+        if sample is None: raise RuntimeError, "No sample defined???"
+
         return self.submit_experiment(director)
 
 
@@ -1999,8 +2130,11 @@ class NeutronExperimentWizard(base):
     def _checkstatus(self, director):
         experiment = director.clerk.getNeutronExperiment(
             self.inventory.id )
+
+        # name
         self.name_assigned = experiment.short_description not in [None, '']
 
+        # instrument
         instrument_ref = experiment.instrument
 
         if instrument_ref:
@@ -2008,9 +2142,11 @@ class NeutronExperimentWizard(base):
             instrument = director.clerk.dereference(instrument_ref)
             self.instrument_configured = _instrument_configured(
                 experiment, director=director)
-            
+
             if _instrument_without_sample(instrument, director.clerk.db) \
                    and self.instrument_configured:
+
+                # for instrument without sample, we are done here
                 
                 self.allconfigured = True
                 if experiment.status in ['started', 'partially configured']:
@@ -2021,13 +2157,22 @@ class NeutronExperimentWizard(base):
                     director.clerk.updateRecord(experiment)
                 return
 
+        # sample environment
         sampleenvironment_ref = experiment.sampleenvironment
         self.sample_environment_configured = not nullpointer(sampleenvironment_ref)
-        
+
+        # sample
         if self.sample_environment_configured:
             sampleassembly_ref = experiment.sampleassembly
             if not sampleassembly_ref:
-                self.sample_prepared = self.kernel_configured = False
+                # try sample component
+                samplecomponent_ref = experiment.samplecomponent
+                if not samplecomponent_ref:
+                    # sample component is also undefined
+                    self.sample_prepared = self.kernel_configured = False
+                else:
+                    samplecomponent = director.clerk.dereference(samplecomponent_ref)
+                    self.sample_prepared = self.kernel_configured = True
             else:
                 sampleassembly = director.clerk.dereference(sampleassembly_ref)
                 sample = _get_sample_from_sampleassembly(sampleassembly, director.clerk.db)
@@ -2058,6 +2203,17 @@ class NeutronExperimentWizard(base):
     pass # end of NeutronExperimentWizard
 
 
+
+def isScatterer(candidate):
+    from vnf.dom.Scatterer import Scatterer
+    return isinstance(candidate, Scatterer)
+
+
+def isSampleComponent(candidate):
+    from vnf.dom.neutron_components.SampleComponent import SampleComponent
+    return isinstance(candidate, SampleComponent)
+
+
 def _instrument_configured(experiment, director):
     ic_ref = experiment.instrument_configuration
     if not ic_ref: return False
@@ -2076,7 +2232,9 @@ def _instrument_without_sample(instrument, db):
 
 def _get_sample_from_experiment(experiment, db):
     sampleassembly = _get_sampleassembly_from_experiment(experiment, db)
-    if not sampleassembly: return
+    if not sampleassembly:
+        samplecomponent = _get_samplecomponent_from_experiment(experiment, db)
+        return samplecomponent
     return _get_sample_from_sampleassembly(sampleassembly, db)
 
 
@@ -2094,6 +2252,28 @@ def _get_sampleassembly_from_experiment(experiment, db):
     sampleassembly_ref = experiment.sampleassembly
     if not sampleassembly_ref: return
     return sampleassembly_ref.dereference(db)
+
+
+def _get_samplecomponent_from_experiment(experiment, db):
+    samplecomponent_ref = experiment.samplecomponent
+    if not samplecomponent_ref: return
+    return samplecomponent_ref.dereference(db)
+
+
+def _create_sampleassembly_for_experiment(experiment, director):
+    from vnf.dom.SampleAssembly import SampleAssembly
+    sampleassembly = director.clerk.newOwnedObject(SampleAssembly)
+    experiment.sampleassembly = sampleassembly
+    director.clerk.updateRecord(experiment)
+    return sampleassembly
+
+
+def _remove_samplecomponent_from_experiment(experiment, director):
+    record = director.clerk.dereference(experiment.samplecomponent)
+    experiment.samplecomponent = ''
+    director.clerk.updateRecord(experiment)
+    director.clerk.deleteRecord(record)
+    return
 
 
 def _get_kernels_from_scatterer(scatterer, db):

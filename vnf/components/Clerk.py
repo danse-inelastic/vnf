@@ -1435,6 +1435,8 @@ class DeepCopier:
 
     onNeutronRecorder = onNeutronComponent
 
+    onVanadiumPlate = onNeutronComponent
+
     def onAbInitio(self, record):
         return self._onRecordWithID( record )
 

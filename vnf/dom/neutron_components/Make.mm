@@ -30,6 +30,7 @@ all: export
 # export
 
 EXPORT_PYTHON_MODULES = \
+	DbObject.py \
 	NeutronComponent.py \
 	Monitor.py \
 	MonochromaticSource.py \
@@ -39,11 +40,13 @@ EXPORT_PYTHON_MODULES = \
 	T0Chopper.py \
 	FermiChopper.py \
 	SampleComponent.py \
+	SampleComponentExample.py \
 	QEMonitor.py \
 	QMonitor.py \
 	TofMonitor.py \
 	DetectorSystem_fromXML.py \
 	NeutronRecorder.py \
+	VanadiumPlate.py \
 	__init__.py \
 	_all_tables.py \
 	registry.py \

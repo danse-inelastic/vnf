@@ -9,11 +9,13 @@ def tables():
 	'T0Chopper',
 	'FermiChopper',
 	'SampleComponent',
+	'SampleComponentExample',
 	'QEMonitor',
 	'QMonitor',
 	'TofMonitor',
 	'DetectorSystem_fromXML',
         'NeutronRecorder',
+        'VanadiumPlate',
         ]
     
     tables = [

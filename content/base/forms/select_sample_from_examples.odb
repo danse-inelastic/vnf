@@ -20,7 +20,7 @@ class Form( base ):
 
     class Inventory( base.Inventory ):
         import pyre.inventory
-        scatterer_id = pyre.inventory.str( 'scatterer_id', default = '' )
+        selected = pyre.inventory.str( 'selected', default = '' )
         pass # end of Inventory
 
 
@@ -37,13 +37,13 @@ class Form( base ):
             'Please select from the following list of sample examples:',
             ]
 
-        scatterers = self._getExamples(self.director)
-        entries = [ (scatterer.id, scatterer.short_description)
-                    for scatterer in scatterers ]
+        examples = self._getExamples(self.director)
+        entries = [ ('%s#%s' % (item.name, item.id), item.short_description)
+                    for item in examples ]
         
         selector = form.selector(
             id = 'scatterer_selector',
-            name = '%s.scatterer_id' % prefix,
+            name = '%s.selected' % prefix,
             entries = entries,
             label = 'Select sample',
             selected = 0,
@@ -58,15 +58,20 @@ class Form( base ):
         director = self.director
         clerk = director.clerk
 
-        return self.inventory.scatterer_id
+        return self.inventory.selected
 
 
     def _getExamples(self, director):
         # find all existing examples
         from vnf.dom.ScattererExample import ScattererExample
         scattererexamples = director.clerk.db.fetchall( ScattererExample, where = None )
-        return [ director.clerk.dereference(ex.scatterer) for ex in scattererexamples ]
-
+        scatterers = [ director.clerk.dereference(ex.scatterer) for ex in scattererexamples ]
+        
+        from vnf.dom.neutron_components.SampleComponentExample import SampleComponentExample
+        scexamples = director.clerk.db.fetchall(SampleComponentExample, where = None)
+        samplecomponents = [director.clerk.dereference(ex.samplecomponent) for ex in scexamples]
+        return scatterers + samplecomponents
+    
 
     def __init__(self, name = None):
         if name is None:

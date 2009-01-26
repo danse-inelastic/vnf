@@ -30,7 +30,15 @@ class NeutronExperiment(base):
     instrument_configuration = pyre.db.versatileReference(
         name = 'instrument_configuration', tableRegistry = tableRegistry)
 
+    # the following two references are used to define the sample
+    # only one of them should be assigned.
+    # sampleassembly is a more structured and extensible way to describe
+    # the whole sample assembly at the sample position of a neutron instrument.
+    # samplecomponent is a more straight-forward and quick way
+    # to define a sample.
     sampleassembly = pyre.db.reference( name = 'sampleassembly', table = SampleAssembly )
+    samplecomponent = pyre.db.versatileReference(name='samplecomponent', tableRegistry = tableRegistry)
+    
 
     sampleenvironment = pyre.db.reference( name = 'sampleenvironment', table = SampleEnvironment )
 
