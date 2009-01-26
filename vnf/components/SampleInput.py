@@ -122,9 +122,9 @@ class SampleInput(FormActor):
         except AuthenticationError, err:
             return err.page
         
-        singlecrystalTableClass = director.clerk._getTable('singlecrystal')
-        singlecrystalDbObject = director.clerk.newDbObject(singlecrystalTableClass)
-        singlecrystalId = self.inventory.singlecrystalId = singlecrystalDbObject.id
+#        polycrystalTableClass = director.clerk._getTable('polycrystal')
+#        polycrystalDbObject = director.clerk.newDbObject(polycrystalTableClass)
+#        polycrystalId = self.inventory.polycrystalId = polycrystalDbObject.id
         
 #        experiment = director.clerk.getNeutronExperiment(self.inventory.id)
         main = page._body._content._main
@@ -134,37 +134,37 @@ class SampleInput(FormActor):
         document.byline = '<a href="http://danse.us">DANSE</a>'        
         
         # this is not a bug--single crystal *form* is identical to polycrystal for now
-        formcomponent = self.retrieveFormToShow('polycrystal')
+        formcomponent = self.retrieveFormToShow('singlecrystal')
         formcomponent.director = director
         # build the form 
-        form = document.form(name='', action=director.cgihome)
+        form = document.form(name = '', action = director.cgihome)
         # specify action
         action = actionRequireAuthentication(          
             actor = 'sampleInput', 
             sentry = director.sentry,
             routine = 'storeAndVerifyInput',
             label = '',
-            id = singlecrystalId,
+            #id = polycrystalId,
             arguments = {'form-received': formcomponent.name },
             )
         from vnf.weaver import action_formfields
         action_formfields( action, form )
         
         # expand the form with fields of the data object that is being edited
-        formcomponent.expand( form , id = singlecrystalId, 
-                              dbRecord = singlecrystalDbObject, showimportwidget=True)
+        formcomponent.expand( form , #id = polycrystalId, 
+                              materialType = 'singlecrystal', showimportwidget=True)
         submit = form.control(name='submit',type="submit", value="next")
         return page  
     
-    def disordered(self, director):
+    def disorderedl(self, director):
         try:
             page = director.retrievePage( 'generic' )
         except AuthenticationError, err:
             return err.page
         
-        disorderedTableClass = director.clerk._getTable('disordered')
-        disorderedDbObject = director.clerk.newDbObject(disorderedTableClass)
-        disorderedId = self.inventory.disorderedId = disorderedDbObject.id
+#        polycrystalTableClass = director.clerk._getTable('polycrystal')
+#        polycrystalDbObject = director.clerk.newDbObject(polycrystalTableClass)
+#        polycrystalId = self.inventory.polycrystalId = polycrystalDbObject.id
         
 #        experiment = director.clerk.getNeutronExperiment(self.inventory.id)
         main = page._body._content._main
@@ -173,29 +173,28 @@ class SampleInput(FormActor):
         document.description = ''
         document.byline = '<a href="http://danse.us">DANSE</a>'        
         
-        # this is not a bug--disordered *form* is identical to polycrystal for now
-        formcomponent = self.retrieveFormToShow('polycrystal')
+        # this is not a bug--single crystal *form* is identical to polycrystal for now
+        formcomponent = self.retrieveFormToShow('disordered')
         formcomponent.director = director
         # build the form 
-        form = document.form(name='', action=director.cgihome)
+        form = document.form(name = '', action = director.cgihome)
         # specify action
         action = actionRequireAuthentication(          
             actor = 'sampleInput', 
             sentry = director.sentry,
             routine = 'storeAndVerifyInput',
             label = '',
-            id = disorderedId,
+            #id = polycrystalId,
             arguments = {'form-received': formcomponent.name },
             )
         from vnf.weaver import action_formfields
         action_formfields( action, form )
         
         # expand the form with fields of the data object that is being edited
-        formcomponent.expand( form , id = disorderedId,
-                              dbRecord = disorderedDbObject, dbRecord=True)
+        formcomponent.expand( form , #id = polycrystalId, 
+                              materialType = 'disordered', showimportwidget=True)
         submit = form.control(name='submit',type="submit", value="next")
-        return page      
-    
+        return page 
     
     def storeAndVerifyInput(self, director):
         self.processFormInputs(director) 

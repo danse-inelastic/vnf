@@ -28,7 +28,9 @@ EXPORT_PYTHON_MODULES = \
 	Block.py \
 	ConfigureNeutronScatterer.py \
 	Cylinder.py \
+	Disordered.py \
 	PolyCrystal.py \
+	SingleCrystal.py \
 	SANS_NG7.py \
 	__init__.py \
 
