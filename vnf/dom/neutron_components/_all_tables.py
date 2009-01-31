@@ -10,7 +10,7 @@ def tables():
 	'FermiChopper',
 	'SampleComponent',
 	'SampleComponentExample',
-        'EMonitor',
+#        'EMonitor',
 	'QEMonitor',
 	'QMonitor',
         'SphericalPSD',
