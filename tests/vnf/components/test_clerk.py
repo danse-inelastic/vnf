@@ -62,8 +62,8 @@ class App(Script):
     class Inventory(Script.Inventory):
 
         import pyre.inventory
-        from vnf.components import clerk as clerkFactory
-        clerk = pyre.inventory.facility('clerk', factory=clerkFactory)
+        from vnf.components.Clerk import Clerk #import clerk as clerkFactory
+        clerk = pyre.inventory.facility('clerk', default=Clerk('clerk','clerk'))
         
 
     def main(self, *args, **kwds):
