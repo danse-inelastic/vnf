@@ -12,7 +12,7 @@
 
 <inventory>
 
-    <component name="test-clerk">
+    <component name="test_clerk">
         <facility name="clerk">clerk</facility>
         <property name="dumpconfiguration">True</property>
 

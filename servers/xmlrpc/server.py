@@ -1,13 +1,14 @@
 from SimpleXMLRPCServer import SimpleXMLRPCServer
-from SimpleXMLRPCServer import SimpleXMLRPCRequestHandler
-
-# Restrict to a particular path.
-class RequestHandler(SimpleXMLRPCRequestHandler):
-    rpc_paths = ('/RPC2',)
+#from SimpleXMLRPCServer import SimpleXMLRPCRequestHandler
+#
+## Restrict to a particular path.
+#class RequestHandler(SimpleXMLRPCRequestHandler):
+#    rpc_paths = ('RPC2',)
 
 # Create server
-server = SimpleXMLRPCServer(("localhost", 8000),
-                            requestHandler=RequestHandler)
+#server = SimpleXMLRPCServer(("localhost", 80000),
+#                            requestHandler=RequestHandler)
+server = SimpleXMLRPCServer(("localhost", 80000))
 server.register_introspection_functions()
 
 # Register pow() function; this will use the value of
