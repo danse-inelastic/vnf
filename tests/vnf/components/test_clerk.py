@@ -229,7 +229,7 @@ class App(Script):
     def _defaults(self):
         Script._defaults(self)
         clerk = self.inventory.clerk
-        clerk.inventory.db = 'test'
+        clerk.inventory.db = 'jbk:chem88@localhost:5432:test'
         clerk.inventory.dbwrapper = 'psycopg2'
         return
 
