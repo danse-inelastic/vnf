@@ -14,7 +14,7 @@ def announcement(registrant):
     import vnf.content
 
     msg = vnf.content.announcement()
-    msg.sender = "linjiao@caltech.edu"
+    msg.sender = "jiao.lin@gmail.com"
     msg.subject = "New registration alert"
     msg.text = [
 """
@@ -30,7 +30,7 @@ New registrant:
         'lastname': registrant.lastname,
         }
 
-    adminemail = 'vnf-administrators@gmail.com'
+    adminemail = 'vnf-administrators@googlegroups.com'
     msg.recipients[adminemail] = subs
 
     return msg
