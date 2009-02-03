@@ -105,7 +105,13 @@ class Registrar(Actor):
         director.clerk.updateRecord(registrant)
 
         from vnf.components.misc import announce
+
+        # send an acknowlegement to registrant
         announce(director, 'new-registrant', registrant)
+
+        # alert administrators
+        announce(director, 'new-registrant-alert', registrant)
+        
         return director.retrievePage("registration-complete")
 
 
