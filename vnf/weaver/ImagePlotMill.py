@@ -12,7 +12,7 @@
 
 '''
 This implementation needs improvements.
-It assumes that there is a symbolic link in html/images/ named "tmp" pointing
+It assumes that there is a symbolic link in html/ named "tmp" pointing
 to the directory content/data/tmp
 '''
 
@@ -20,7 +20,7 @@ class ImagePlotMill:
 
 
     def onImagePlot(self, plot):
-        imagepath = self.configurations['imagepath']
+        tmproot = self.configurations['tmproot']
 
         histogram = plot.data
         # first save data to a file
@@ -55,7 +55,7 @@ class ImagePlotMill:
         os.remove(histtemp)
 
         # the url for the image
-        pngurl = os.path.join(imagepath, 'tmp', subdir, filename)
+        pngurl = os.path.join(tmproot, subdir, filename)
 
         return [ '<img src="%s" />' % pngurl ]
 

@@ -62,7 +62,8 @@ class WebApplication(Base):
         imagepath = pyre.inventory.str(name='imagepath', default = '/vnf/images' )
         javascriptpath = pyre.inventory.str(name='javascriptpath', default = '/vnf/javascripts' )
         javapath = pyre.inventory.str(name='javapath', default = '/vnf/java' )
-
+        tmproot = pyre.inventory.str(name='tmproot', default = '/vnf/tmp')
+        
 
     def main(self, *args, **kwds):
         if self.debug:
@@ -166,12 +167,14 @@ class WebApplication(Base):
         from vnf.components import accesscontrol
         self.accesscontrol = accesscontrol()
 
+        import os
         configurations = {
             'home': self.home,
             'cgihome':self.cgihome,
             'imagepath':self.inventory.imagepath,
             'javascriptpath':self.inventory.javascriptpath,
             'javapath':self.inventory.javapath,
+            'tmproot': self.inventory.tmproot,
             }
         import vnf.weaver
         vnf.weaver.extend_weaver(self.pageMill, configurations )
