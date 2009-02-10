@@ -24,6 +24,7 @@ all: export
 
 EXPORT_PYTHON_MODULES = \
 	configurationSaver.py \
+	ApproveUser.py \
 	LaunchDetached.py \
 	MigrateTable.py \
 	RetrieveResults.py \
