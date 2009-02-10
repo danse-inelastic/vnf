@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jnlp spec="1.0+"
+      codebase="http://fireball.phys.wvu.edu/gulp/test">
+    <information>
+        <title>GULP</title>
+        <vendor>Lewis Group</vendor>
+        <homepage href="http://fireball.phys.wvu.edu/gulp/test" />
+        <description>GULP</description>
+    </information>
+    <offline-allowed/>
+    <security>
+    	<all-permissions/>
+	</security>
+    <resources>
+        <j2se version="1.6+" java-vm-args="-Xmx512m -splash:splash.png"/>
+        <jar href="GULP.jar" />
+        <extension name="Jodaf_1.1" href="Jodaf_1.1.jnlp"/>
+    </resources>
+    <application-desc main-class="javagulp.controller.JavaGULP" />
+</jnlp>
