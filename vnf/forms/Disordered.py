@@ -22,7 +22,7 @@ class Disordered( base ):
 
         import pyre.inventory as inv
         
-        id = inv.str( 'id', default = '' )
+        disorderedId = inv.str( 'disorderedId', default = '' )
         
         chemical_formula = inv.str('chemical_formula', default = '' )
         chemical_formula.meta['tip'] = 'A short description'
@@ -45,7 +45,7 @@ class Disordered( base ):
 #        base.__init__(self)
 #        self.dbRecord = None
 
-    def expand(self, form, errors = None, properties = None, id = '', 
+    def expand(self, form, errors = None, properties = None, disorderedId = '', 
                materialType = 'disordered', showimportwidget=False):
         '''expand an existing form with fields from this component'''
         # the strategy is to create a new object of a given class if it does not exist
@@ -54,13 +54,13 @@ class Disordered( base ):
         prefix = formactor_action_prefix
         director = self.director        
         
-        if not id:
+        if not disorderedId:
             tableClass = director.clerk._getTable(materialType)
             record = director.clerk.newObject(tableClass)
-            id = self.inventory.id = record.id
+            disorderedId = self.inventory.disorderedId = record.id
         else:
-            record = director.clerk.getRecordByID('disordered', id)
-            self.inventory.id = record.id
+            record = director.clerk.getRecordByID('disordered', disorderedId)
+            self.inventory.disorderedId = record.id
 
         self.chemical_formula = form.text(
             id='text1', name='%s.chemical_formula'%prefix,
@@ -128,11 +128,11 @@ class Disordered( base ):
         director = self.director
         
         try: # first try to get a record with the inventory id from the db
-            record = director.clerk.getRecordByID('disordered', self.inventory.id)
+            record = director.clerk.getRecordByID('disordered', self.inventory.disorderedId)
         except: # if can't find, create a new one
             tableClass = director.clerk._getTable('disordered')
             record = director.clerk.newDbObject(tableClass)
-            self.inventory.id = record.id
+            self.inventory.disorderedId = record.id
       
         record.chemical_formula = self.inventory.chemical_formula
 

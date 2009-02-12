@@ -169,10 +169,6 @@ class SampleInput(FormActor):
         except AuthenticationError, err:
             return err.page
         
-#        polycrystalTableClass = director.clerk._getTable('polycrystal')
-#        polycrystalDbObject = director.clerk.newDbObject(polycrystalTableClass)
-#        polycrystalId = self.inventory.polycrystalId = polycrystalDbObject.id
-        
 #        experiment = director.clerk.getNeutronExperiment(self.inventory.id)
         main = page._body._content._main
         # populate the main column
@@ -207,10 +203,6 @@ class SampleInput(FormActor):
             page = director.retrievePage( 'generic' )
         except AuthenticationError, err:
             return err.page
-        
-#        polycrystalTableClass = director.clerk._getTable('polycrystal')
-#        polycrystalDbObject = director.clerk.newDbObject(polycrystalTableClass)
-#        polycrystalId = self.inventory.polycrystalId = polycrystalDbObject.id
         
 #        experiment = director.clerk.getNeutronExperiment(self.inventory.id)
         main = page._body._content._main

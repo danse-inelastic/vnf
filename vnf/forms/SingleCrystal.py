@@ -22,7 +22,7 @@ class SingleCrystal( base ):
 
         import pyre.inventory as inv
         
-        id = inv.str( 'id', default = '' )
+        singleCrystalId = inv.str( 'singleCrystalId', default = '' )
         
         chemical_formula = inv.str('chemical_formula', default = '' )
         chemical_formula.meta['tip'] = 'A short description'
@@ -45,7 +45,7 @@ class SingleCrystal( base ):
 #        base.__init__(self)
 #        self.dbRecord = None
 
-    def expand(self, form, errors = None, properties = None, id = '', 
+    def expand(self, form, errors = None, properties = None, singleCrystalId = '', 
                materialType = 'singlecrystal', showimportwidget=False):
         '''expand an existing form with fields from this component'''
         # the strategy is to create a new object of a given class if it does not exist
@@ -54,13 +54,13 @@ class SingleCrystal( base ):
         prefix = formactor_action_prefix
         director = self.director        
         
-        if not id:
+        if not singleCrystalId:
             tableClass = director.clerk._getTable(materialType)
             record = director.clerk.newObject(tableClass)
-            id = self.inventory.id = record.id
+            singleCrystalId = self.inventory.singleCrystalId = record.singleCrystalId
         else:
-            record = director.clerk.getRecordByID('singlecrystals', id)
-            self.inventory.id = record.id
+            record = director.clerk.getRecordByID('singlecrystals', singleCrystalId)
+            self.inventory.singleCrystalId = record.id
 
         self.chemical_formula = form.text(
             id='text1', name='%s.chemical_formula'%prefix,
@@ -128,19 +128,18 @@ class SingleCrystal( base ):
         director = self.director
         
         try: # first try to get a record with the inventory id from the db
-            record = director.clerk.getRecordByID('singlecrystals', self.inventory.id)
+            record = director.clerk.getRecordByID('singlecrystals', self.inventory.singleCrystalId)
         except: # if can't find, create a new one
             tableClass = director.clerk._getTable('singlecrystal')
             record = director.clerk.newDbObject(tableClass)
-            self.inventory.id = record.id
+            self.inventory.singleCrystalId = record.id
       
         record.chemical_formula = self.inventory.chemical_formula
 
         a = map(float,[self.inventory.ax, self.inventory.ay, self.inventory.az])
         b = map(float,[self.inventory.bx, self.inventory.by, self.inventory.bz])
         c = map(float,[self.inventory.cx, self.inventory.cy, self.inventory.cz])
-        #lattice=a+b+c
-        record.cartesian_lattice = a+b+c#lattice
+        record.cartesian_lattice = a+b+c
         
         atoms = []; coords = []
         listOfAtoms = self.inventory.listOfAtoms

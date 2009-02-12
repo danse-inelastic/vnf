@@ -35,6 +35,7 @@ class MaterialSimulationWizard(base):
     def default(self, director):
         return self.start(director)
 
+
     def start(self, director):
         return self.selectMaterial(director)
     
