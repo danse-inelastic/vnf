@@ -40,6 +40,7 @@ EXPORT_PYTHON_MODULES = \
 	DocumentMillExtensions.py \
 	ImagePlotMill.py \
 	Plot_2DMill.py \
+	SolidView3DMill.py \
 	StructuralMill.py \
 	TableMill.py \
 	TreeViewMill.py \

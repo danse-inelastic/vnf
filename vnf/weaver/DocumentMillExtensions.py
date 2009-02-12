@@ -83,12 +83,14 @@ import os
 from ActionLinkRenderer import ActionLinkRenderer
 from Plot_2DMill import Plot_2DMill
 from ImagePlotMill import ImagePlotMill
+from SolidView3DMill import SolidView3DMill
 from AutoRefreshRenderer import AutoRefreshRenderer
 
 extensions = [
     ActionLinkRenderer,
     Plot_2DMill,
     ImagePlotMill,
+    SolidView3DMill,
     AutoRefreshRenderer,
     Extension1,
     ]

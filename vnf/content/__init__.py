@@ -58,6 +58,10 @@ def imagePlot(*args, **kwds):
     from ImagePlot import ImagePlot
     return ImagePlot(*args, **kwds)
 
+def solidView3D(*args, **kwds):
+    from SolidView3D import SolidView3D
+    return SolidView3D(*args, **kwds)
+
 def treeview(*args, **kwds ):
     from TreeView import TreeView
     return TreeView(*args, **kwds )

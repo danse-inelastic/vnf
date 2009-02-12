@@ -40,6 +40,7 @@ EXPORT_PYTHON_MODULES = \
 	Page.py \
 	Plot_2D.py \
 	SlidableGallery.py \
+	SolidView3D.py \
 	TreeView.py \
 	__init__.py
 
