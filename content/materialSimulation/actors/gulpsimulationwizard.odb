@@ -14,7 +14,7 @@ from vnf.components.MaterialSimulationWizard import \
      actionRequireAuthentication, action_link, AuthenticationError, InputProcessingError
 
 from vnf.components.MaterialSimulationWizard import MaterialSimulationWizard as base
-from vnf.components.JnlpFile import JnlpFile
+
 
 class GulpWizard(base):
     
@@ -30,10 +30,6 @@ class GulpWizard(base):
         
 
     def configureSimulation(self, director):
-        jnlpFile = JnlpFile(resources=('GULP.jar','j2ssh.jar','commons-logging.jar'),
-                            mainClass='javagulp.controller.JavaGULP',
-                            programArguments=self.inventory.matterId)
-        self.writeJnlp(director,)
         type = self.inventory.type = 'gulpsimulations'
 
         simulation = self._getSimulation(director)
@@ -67,7 +63,7 @@ class GulpWizard(base):
         from vnf.weaver import action_formfields
         action_formfields( action, form )
         # expand the form with fields of the data object that is being edited
-        formcomponent.expand( form )
+        formcomponent.expand( form , materialSimulationId = id)
         next = form.control(name='submit',type="submit", value="next")
         return page 
     

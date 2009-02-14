@@ -27,6 +27,7 @@ class MaterialSimulationWizard(base):
         id.meta['tip'] = "the unique identifier of the material simulation"
 
         matterid = pyre.inventory.str('matterid')
+        
         mattertype = pyre.inventory.str('mattertype')
 
         pass # end of Inventory

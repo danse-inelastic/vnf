@@ -1,4 +1,5 @@
 
+import os, tempfile
 
 #this is a data object, not a component
  #### WARNING: THIS IS A QUICK AND DIRTY SOLUTION--NEEDS REFACTORING ####
@@ -9,22 +10,27 @@ class JnlpFile:
     def __init__(self,resources=[],
     mainClass='',
     programArguments=[],
+    fileName = 'jnlpFile',
     title=' ',
     description=' ',
     javaVersion='1.5'):
         self.resources = resources
         self.mainClass = mainClass
         self.programArguments = programArguments
+        self.fileName = fileName
         self.title = title
         self.description = description
         self.javaVersion = javaVersion
+        self.jnlpString=''
+        self.reformJnlp()
     
-    def returnFileAsString(self, director):
-        '''write the jnlp file which will load gulp with the correct structure'''
+    def reformJnlp(self,director=None):
+        if not director: codebase = 'http://vnf.caltech.edu'
+        else: codebase = director.home
         import os
-        jnlpFile = '''<?xml version="1.0" encoding="UTF-8"?>
+        self.jnlpString = '''<?xml version="1.0" encoding="UTF-8"?>
 <jnlp spec="1.0+"
-      codebase="'''+director.home+'''/java">
+      codebase="'''+codebase+'''/java">
     <information>
         <title>'''+self.title+'''</title>
         <vendor>DANSE</vendor>
@@ -39,11 +45,23 @@ class JnlpFile:
         <j2se version="''' + self.javaVersion + '''+" java-vm-args="-Xmx512m -splash:splash.png"/>
 '''
         for resource in self.resources:
-            jnlpFile += '<jar href="' + resource + '" />'+os.linesep
-        jnlpFile += '''
+            self.jnlpString += '<jar href="' + resource + '" />'+os.linesep
+        self.jnlpString += '''
     </resources>
     <application-desc main-class="''' + self.mainClass + '''" />
-</jnlp>'''
-        return jnlpFile
+</jnlp>'''     
+        
+    
+    def writeJnlp(self, director):
+        '''write the jnlp file and returns a url string pointing to it'''
+        self.reformJnlp(director)
+        if self.fileName[-5:] is '.jnlp': self.fileName = self.fileName[:-5]
+        parentdir = os.path.join('..', 'content', 'data', 'tmp')
+        tmpdirectory = tempfile.mkdtemp(dir=parentdir)
+        f = file(os.path.join(tmpdirectory, self.fileName + '.jnlp'),'w')
+        f.write(self.jnlpString)
+        f.close()
+        return os.path.join(director.home, 'html', 'tmp', os.path.split(tmpdirectory)[1], self.fileName + '.jnlp')
+        
     
     

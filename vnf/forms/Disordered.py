@@ -46,7 +46,7 @@ class Disordered( base ):
 #        self.dbRecord = None
 
     def expand(self, form, errors = None, properties = None, disorderedId = '', 
-               materialType = 'disordered', showimportwidget=False):
+               showimportwidget=False):
         '''expand an existing form with fields from this component'''
         # the strategy is to create a new object of a given class if it does not exist
         # and look up one if it already exists.  it's existence is based on whether an id
