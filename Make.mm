@@ -20,9 +20,11 @@ RECURSE_DIRS = \
 EXPORT_DATADIRS = \
     bin \
     cgi \
-    config \
     content \
     html \
+
+INIT_DATADIRS = \
+    config \
     log \
 
 
@@ -48,10 +50,21 @@ distclean::
 RSYNC_A = rsync -a
 EXPORT_DATA_PATH = $(EXPORT_ROOT)/$(PROJECT)
 
-export-package-data:: $(EXPORT_DATADIRS)
+export-package-data:: $(EXPORT_DATADIRS) init-data-dirs
 	mkdir -p $(EXPORT_DATA_PATH); \
 	for x in $(EXPORT_DATADIRS); do { \
             if [ -d $$x ]; then { \
+	        $(RSYNC_A) $$x $(EXPORT_DATA_PATH)/ ; \
+            } fi; \
+        } done
+
+
+#initialize some data directories when necessary
+#if EXPORT_DATA_PATH/<subdir> already exists, skip; other wise, copy <subdir> over.
+init-data-dirs:
+	mkdir -p $(EXPORT_DATA_PATH); \
+	for x in $(INIT_DATADIRS); do { \
+            if [ -d $$x -a ! -d $(EXPORT_DATA_PATH)/$$x ]; then { \
 	        $(RSYNC_A) $$x $(EXPORT_DATA_PATH)/ ; \
             } fi; \
         } done
