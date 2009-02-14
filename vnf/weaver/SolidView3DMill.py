@@ -35,14 +35,28 @@ class SolidView3DMill:
         jarfilename = '%s.jar' % jyclassname
         jarfilepath = os.path.join(tmpdirectory, jarfilename)
 
-        # the command to launch
-        substitution = locals()
-        cmd1 = 'cd %s' % tmpdirectory
-        cmd2 = 'jythonc --core --deep -A unbboolean --jar %(jarfilename)s %(jyfilename)s' \
-               % substitution
-        cmds = [cmd1, cmd2]
+        # bash script
+        # the commands
+        cmd0 = '. ~vnf/.j3d-env'
+        envs = {
+            'HOME': '/tmp',
+            'DISPLAY': ':2',
+            'XAUTHORITY': '/tmp/.xauth-www-data'
+            }
+        envstr = ' '.join(['%s=%s' % (k,v) for k,v in envs.iteritems()])
+        cmd2 = '%(envstr)s jythonc --core --deep -A unbboolean --jar %(jarfilename)s %(jyfilename)s' \
+               % locals()
+        cmds = [cmd0, cmd2]
+
+        bashscript = 'run.sh'
+        bashscriptpath = os.path.join(tmpdirectory, bashscript)
+        open(bashscriptpath, 'w').write('\n'.join(cmds))
+
         # launch
         from vnf.utils.spawn import spawn
+        cmd1 = 'cd %s' % tmpdirectory
+        cmd2 = 'bash %s' % bashscript
+        cmds = [cmd1, cmd2]
         fail, output, error = spawn('&&'.join(cmds))
 
         if fail:
