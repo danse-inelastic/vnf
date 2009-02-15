@@ -11,21 +11,20 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 PROJECT = vnf
-PACKAGE = vnf
+PACKAGE = content
 
 RECURSE_DIRS = \
-    vnf \
-    dds \
-    content \
 
 EXPORT_DATADIRS = \
-    bin \
-    cgi \
-    html \
+	base\
+	extension_template\
+	ins\
+	materialSimulation\
+	tutorials\
+
 
 INIT_DATADIRS = \
-    config \
-    log \
+	data\
 
 
 OTHERS = \
@@ -48,7 +47,7 @@ distclean::
 
 
 RSYNC_A = rsync -a
-EXPORT_DATA_PATH = $(EXPORT_ROOT)/$(PROJECT)
+EXPORT_DATA_PATH = $(EXPORT_ROOT)/$(PROJECT)/$(PACKAGE)
 
 export-package-data:: $(EXPORT_DATADIRS) init-data-dirs
 	mkdir -p $(EXPORT_DATA_PATH); \
