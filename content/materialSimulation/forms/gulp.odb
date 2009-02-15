@@ -37,7 +37,11 @@ class Form( base ):
         
         p = form.paragraph()
         p.text = ['''The Gulp simulation package uses classical forcefield
-        techniques for simulating larger systems.  Gulp contains a vast
+        techniques for simulating larger systems.  Its capabilities include:
+         
+        
+        Gulp allows the user to create and fit
+        forcefields from a large number of trial functions.  It's 
         number of forcefields and phonon / molecular dynamics capabilities
         to produce dynamics necessary for inelastic neutron scattering kernels and 
         to simulate a thermodynamically equilibrated structure which can be used to refine

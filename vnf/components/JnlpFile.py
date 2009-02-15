@@ -11,8 +11,8 @@ class JnlpFile:
     mainClass='',
     programArguments=[],
     fileName = 'jnlpFile',
-    title=' ',
-    description=' ',
+    title='Danse Application',
+    description='A Java web start application',
     javaVersion='1.5'):
         self.resources = resources
         self.mainClass = mainClass
@@ -46,9 +46,12 @@ class JnlpFile:
 '''
         for resource in self.resources:
             self.jnlpString += '<jar href="' + resource + '" />'+os.linesep
-        self.jnlpString += '''
-    </resources>
+        self.jnlpString += '''</resources>
     <application-desc main-class="''' + self.mainClass + '''" />
+'''
+        for argument in self.programArguments:
+            self.jnlpString += '<argument>'+argument+'</argument>'+os.linesep
+        self.jnlpString +='''</application-desc>
 </jnlp>'''     
         
     
@@ -61,7 +64,7 @@ class JnlpFile:
         f = file(os.path.join(tmpdirectory, self.fileName + '.jnlp'),'w')
         f.write(self.jnlpString)
         f.close()
-        return os.path.join(director.home, 'html', 'tmp', os.path.split(tmpdirectory)[1], self.fileName + '.jnlp')
+        return os.path.join(director.home, 'tmp', os.path.split(tmpdirectory)[1], self.fileName + '.jnlp')
         
     
     
