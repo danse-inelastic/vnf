@@ -10,6 +10,49 @@
 #
 
 
+'''
+This renderer takes a solid (represented by a hierarchy of geometry operations
+and primitives) and use java 3d and jython to create a jar file displaying
+a 3d view of the solid. Then a piece of html code is generated to show
+this java applet.
+
+Tricky things:
+  * We need to run jythonc to create the jar file, which actually needs a
+    display (this is weird though, because we do not need to see the 3d view
+    in the compiling process). The current solution is to use virtual frame
+    buffer. In a linux machine, run
+    
+      $ Xvfb :2 -screen 0 1024x768x16
+
+    The virtual display may not be accessible due to athorization limit.
+    Here is one way to deal with it:
+
+      1. set env var XAUTHORITY. The "user" that runs apache2 server
+      (www-data for ubuntu, _www for Mac) is not a normal user, and
+      we need to manually set the file path for xauth:
+      
+        $ export XAUTHORITY=/tmp/xauth-www-data
+
+      2. now add authorization key. We can use the authorization key of a
+      real user. As a real user, run
+
+        $ xauth list
+
+      you will see a list of authorization keys. Look for the line that looks
+      like
+
+        <your host name>/unix:0 MIT-MAGIC-COOKIE-1 xxxxxxxxxx
+
+      Copy the key at the end of that line, and as the apache2 user, run
+
+        $ xauth add <your host name>/unix:2 MIT-MAGIC-COOKIE-1 xxxxxxxxxx
+'''
+
+
+APACHE2_USER_XAUTHORITY = '/tmp/xauth-www-data'
+VIRTUAL_DISPLAY = ':2'
+APACHE2_USER_HOME = '/tmp'
+
 
 class SolidView3DMill:
 
@@ -37,11 +80,15 @@ class SolidView3DMill:
 
         # bash script
         # the commands
-        cmd0 = '. ~vnf/.j3d-env'
+        # j3d env vars
+        path = os.path.abspath( 'j3d-env.sh' )
+        if not os.path.exists(path):
+            raise RuntimeError, "j3d-env.sh is not in the right place: %s" % path
+        cmd0 = '. %s' % path
         envs = {
-            'HOME': '/tmp',
-            'DISPLAY': ':2',
-            'XAUTHORITY': '/tmp/.xauth-www-data'
+            'HOME': APACHE2_USER_HOME,
+            'DISPLAY': VIRTUAL_DISPLAY,
+            'XAUTHORITY': APACHE2_USER_XAUTHORITY,
             }
         envstr = ' '.join(['%s=%s' % (k,v) for k,v in envs.iteritems()])
         cmd2 = '%(envstr)s jythonc --core --deep -A unbboolean --jar %(jarfilename)s %(jyfilename)s' \
@@ -237,8 +284,7 @@ class ViewerApplet(Applet):
         return lines
 
 
-from vnf.components.misc import new_id
-import os, tempfile, histogram.hdf as hh
+import os, tempfile
 
 
 # version
