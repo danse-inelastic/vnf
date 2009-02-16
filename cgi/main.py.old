@@ -38,20 +38,13 @@ if __name__ == '__main__':
         debug = journal.debug('main' )
         debug.log(os.environ['PATH'] )
         debug.log(os.environ['PYTHONPATH'] )
-
         main()
     except:
-        errorlogfile = '../log/errors.log'
-
-        import traceback, time
-        t = time.ctime()
-        messages = [
-            '[%s]' % t,
-            ]
-        messages += traceback.format_exc().split('\n')
-        
-        out = open(errorlogfile, 'a' )
-        out.write( '\n'.join(messages))
+        import traceback
+        import os
+        user = os.environ.get('USER') or 'webserver'
+        out = open( '/tmp/vnf-error-%s.log' % user, 'w' )
+        out.write( traceback.format_exc() )
     
 
 # version

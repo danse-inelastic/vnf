@@ -63,9 +63,44 @@ class WebApplication(Base):
         javascriptpath = pyre.inventory.str(name='javascriptpath', default = '/vnf/javascripts' )
         javapath = pyre.inventory.str(name='javapath', default = '/vnf/java' )
         tmproot = pyre.inventory.str(name='tmproot', default = '/vnf/tmp')
-        
+
 
     def main(self, *args, **kwds):
+
+        actor = self.actor
+        if actor is None:
+            inquiry = self.inventory._getTraitDescriptor('actor').inquiry
+            actor = self.retrieveActor('nyi')
+            actor.message = "Not implemented yet! actor=%s, routine=%s" % (
+                inquiry, self.inventory.routine)
+            self.actor = actor
+
+        try:
+            page = self.actor.perform(self, routine=self.inventory.routine, debug=self.debug)
+            self.render(page)
+        except:
+            from vnf.dom.idgenerator import generator as idgenerator
+            id = idgenerator()
+
+            import os
+            logroot = '../log'
+            
+            from configurationSaver import toPml
+            pmlpath = os.path.join(logroot, id + '.pml')
+            toPml(self, pmlpath)
+
+            errorspath = os.path.join(logroot, id + '.errors')
+            import traceback
+            open(errorspath, 'w').write(traceback.format_exc())
+
+            inputspath = os.path.join(logroot, id + '.inputs')
+            text = ['%s=%s' % (k,v) for k,v in self._cgi_inputs.iteritems()]
+            text = '\n'.join(text)
+            open(inputspath, 'w').write(text)
+        return
+
+    
+    def _oldmain(self, *args, **kwds):
         if self.debug:
             from configurationSaver import toPml
             from os import environ
