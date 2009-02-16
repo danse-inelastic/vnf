@@ -16,14 +16,13 @@ PACKAGE = deploy
 RECURSE_DIRS = \
     vnf \
     dds \
+    content \
 
 EXPORT_DATADIRS = \
     bin \
     cgi \
-    config \
-    content \
     html \
-    log \
+    config \
 
 
 OTHERS = \
@@ -48,14 +47,13 @@ distclean::
 RSYNC_A = rsync -a
 EXPORT_DATA_PATH = $(EXPORT_ROOT)/$(PROJECT)
 
-export-package-data:: #$(EXPORT_DATADIRS)
+export-package-data:: 
 	mkdir -p $(EXPORT_DATA_PATH); \
 	for x in $(EXPORT_DATADIRS); do { \
             if [ -d $$x ]; then { \
 	        $(RSYNC_A) $$x $(EXPORT_DATA_PATH)/ ; \
             } fi; \
         } done
-
 
 # version
 # $Id: Make.mm,v 1.1.1.1 2006-11-27 00:09:14 aivazis Exp $
