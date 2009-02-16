@@ -30,7 +30,7 @@ class Actor(base):
         shape = halfsphericalshell()
         
         import vnf.content
-        view = vnf.content.solidView3D(shape)
+        view = vnf.content.solidView3D(shape, width=400, height=400)
         
         document.contents.append( view )
         return page
