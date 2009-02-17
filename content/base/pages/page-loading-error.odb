@@ -42,7 +42,7 @@ def page(app):
     footer = body.pageFooter()
     from opal.content.Paragraph import Paragraph
     p = Paragraph()
-    p.text = [ 'Copyright (C) 2008 California Institute of Technology. All rights reserved.' ]
+    p.text = [ 'Copyright (C) 2008-2009 California Institute of Technology. All rights reserved.' ]
     footer.add( p )
 
     # build the credits

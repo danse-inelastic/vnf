@@ -13,27 +13,37 @@
 
 
 def page(app):
+    import os
     import vnf.content
-    page = vnf.content.page(name='scatteringKernel', title='Scattering Kernels', root=app.home)
+
+    # create the page
+    page = vnf.content.page(name='contact us', title="Virtual Neutron Facility: Contact us", root=app.home)
     
     # build the body
     body = page.body()
 
     # build the header
     header = body.pageHeader()
-    header.logo(href="%s?actor=login" % app.cgihome)
+
+    sentry = app.sentry
+    ticket = sentry.authenticate()
+
+    href = '%s?actor=greet&sentry.username=%s&sentry.ticket=%s' % (
+        app.cgihome, app.sentry.username, app.sentry.ticket)
+    header.logo(href=href)
     header.personalTools()
 
     # build the client area
     content = body.pageContent()
     left = content.leftColumn()
     main = content.main()
-    
+    right = content.rightColumn()
+
     # populate the left column
-    nav = app.retrievePortlet("navigation")
+    nav = app.retrievePortlet("navigation-short")
     if nav:
         left.add(nav)
-
+        
     # build the footer
     footer = body.pageFooter()
     from opal.content.Paragraph import Paragraph
@@ -50,7 +60,8 @@ def page(app):
     
     return page
 
+
 # version
-__id__ = "$Id: sampleassembly.odb,v 1.1.1.1 2006-11-27 00:09:19 aivazis Exp $"
+__id__ = "$Id"
 
 # End of file 
