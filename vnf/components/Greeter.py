@@ -95,11 +95,15 @@ class Greeter(Actor):
             ]
 
         p = document.paragraph()
-        email = '<a href="mailto:danse-inelastic@cacr.caltech.edu">us</a>'
+        action = actionRequireAuthentication(
+            actor = 'contactus', sentry = director.sentry,
+            label = 'welcome', routine = 'default',
+            )
+        link = action_link( action, director.cgihome )
         p.text = [
-            'We welcome your comments on this web service, ',
+            'We %s your comments on this web service, ' % link,
             'suggestions for new features, and reports of',
-            'discrepancies or bugs.'
+            'discrepancies or bugs.',
             ]
 
         return page
