@@ -97,6 +97,9 @@ class WebApplication(Base):
             text = ['%s=%s' % (k,v) for k,v in self._cgi_inputs.iteritems()]
             text = '\n'.join(text)
             open(inputspath, 'w').write(text)
+
+            self._debug.log('*** Error: %s' % id)
+            
         return
 
     
