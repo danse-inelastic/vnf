@@ -21,7 +21,8 @@ actor2menu = {
     'neutronexperiment': 'experiments',
     'sample': 'samples',
     'instrument': 'instruments',
-    'logout': 'logout'
+    'logout': 'logout',
+    'contactus': 'contactus'
     }
 
 def portlet(app):
@@ -35,30 +36,6 @@ def portlet(app):
         app.cgihome)
     greet.icon = "images/link_icon.gif"
     greet.type = "navItem"
-    
-##     neutronexperimentwizard = portlet.item(description="Neutron Experiment Wizard")
-##     neutronexperimentwizard.target = action_href(
-##             actionRequireAuthentication(
-##             label = 'Neutron Experiment Wizard',
-##             actor = 'neutronexperimentwizard',
-##             routine = 'start',
-##             sentry = app.sentry,
-##             ),
-##             app.cgihome)
-##     neutronexperimentwizard.icon = "images/link_icon.gif"
-##     neutronexperimentwizard.type = "navItem"
-    
-##     materialsimulationwizard = portlet.item(description="Material Simulation Wizard")
-##     materialsimulationwizard.target = action_href(
-##             actionRequireAuthentication(
-##             label = 'Material Simulation Wizard',
-##             actor = 'materialsimulationwizard',
-##             routine = 'start',
-##             sentry = app.sentry,
-##             ),
-##             app.cgihome)
-##     materialsimulationwizard.icon = "images/link_icon.gif"
-##     materialsimulationwizard.type = "navItem"
     
     jobs = portlet.item(description="Jobs")
     jobs.target = action_href(
@@ -109,6 +86,14 @@ def portlet(app):
         app.cgihome)
     logout.icon = "images/link_icon.gif"
     logout.type = "navItem"
+
+    contactus = portlet.item(description="Contact us")
+    contactus.target = action_href(
+        actionRequireAuthentication(
+        'contactus', app.sentry, 'Contact us'),
+        app.cgihome)
+    contactus.icon = "images/link_icon.gif"
+    contactus.type = "navItem"
 
     actor = app.actor.name
     menu = actor2menu.get( actor )
