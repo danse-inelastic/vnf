@@ -79,14 +79,6 @@ def portlet(app):
     instruments.icon = "images/link_icon.gif"
     instruments.type = "navItem"
     
-    logout = portlet.item(description="Logout")
-    logout.target = action_href(
-        actionRequireAuthentication(
-        'logout', app.sentry, 'Logout'),
-        app.cgihome)
-    logout.icon = "images/link_icon.gif"
-    logout.type = "navItem"
-
     contactus = portlet.item(description="Contact us")
     contactus.target = action_href(
         actionRequireAuthentication(
@@ -94,6 +86,14 @@ def portlet(app):
         app.cgihome)
     contactus.icon = "images/link_icon.gif"
     contactus.type = "navItem"
+
+    logout = portlet.item(description="Logout")
+    logout.target = action_href(
+        actionRequireAuthentication(
+        'logout', app.sentry, 'Logout'),
+        app.cgihome)
+    logout.icon = "images/link_icon.gif"
+    logout.type = "navItem"
 
     actor = app.actor.name
     menu = actor2menu.get( actor )
