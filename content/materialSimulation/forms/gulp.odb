@@ -30,7 +30,7 @@ class Form( base ):
         prefix = formactor_action_prefix
         
         jnlpFile = JnlpFile(resources=('GULP.jar', 'j2ssh.jar', 'commons-logging.jar'),
-                            mainClass='javagulp.controller.JavaGULP',
+                            mainClass='javagulp.controller.LaunchFromMaterialId',
                             programArguments = [materialSimulationId],
                             fileName='gulpLauncher')
         relativeLocationOfFile = jnlpFile.writeJnlp(self.director)
