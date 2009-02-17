@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jnlp spec="1.0+"
-      codebase="http://fireball.phys.wvu.edu/gulp/test">
+      codebase="http://trueblue.caltech.edu/java">
     <information>
         <title>GULP</title>
-        <vendor>Lewis Group</vendor>
-        <homepage href="http://fireball.phys.wvu.edu/gulp/test" />
+        <vendor>Danse</vendor>
+        <homepage href="http://trueblue.caltech.edu" />
         <description>GULP</description>
     </information>
     <offline-allowed/>
@@ -12,9 +12,10 @@
     	<all-permissions/>
 	</security>
     <resources>
-        <j2se version="1.6+" java-vm-args="-Xmx512m -splash:splash.png"/>
+        <j2se version="1.5+" java-vm-args="-Xmx512m -splash:splash.png"/>
         <jar href="GULP.jar" />
-        <extension name="Jodaf_1.1" href="Jodaf_1.1.jnlp"/>
+        <jar href='j2ssh.jar' />
+        <jar href='commons-logging.jar' />
     </resources>
-    <application-desc main-class="javagulp.controller.JavaGULP" />
+    <application-desc main-class="javagulp.controller.LaunchFromMaterialId" />
 </jnlp>
