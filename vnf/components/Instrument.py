@@ -72,6 +72,20 @@ class Instrument(base):
             schematic = vnf.content.image( schematic )
             document.contents.append( schematic )
 
+        # link for 3d view
+        p = document.paragraph()
+        view3d = actionRequireAuthentication(
+            label = '3d view',
+            sentry = director.sentry,
+            id = self.inventory.id,
+            actor = 'instrument',
+            routine = 'view3d',
+            )
+        link = action_link(view3d, director.cgihome)
+        p.text = [
+            '%s' % link,
+            ]
+
         # empty line
         p = document.paragraph()
 
@@ -127,6 +141,33 @@ class Instrument(base):
                 '%s using this instrument as template.' % link,
                 ]
 
+        return page
+
+
+    def view3d(self, director):
+        try:
+            page = director.retrieveSecurePage( 'instrument' )
+        except AuthenticationError, err:
+            return err.page
+        
+        main = page._body._content._main
+
+        instrument = self._getinstrument(director)
+
+        # populate the main column
+        title = 'Instrument #%s: %s' % (instrument.id, instrument.short_description)
+        document = main.document(title=title)
+        document.description = ''
+        document.byline = 'byline?'
+
+        from InstrumentShapeRenderer import Renderer
+        renderer = Renderer(director.clerk.db)
+        solid = renderer.render(instrument)
+
+        import vnf.content
+        view = vnf.content.solidView3D(solid, width=400, height=400)
+        
+        document.contents.append( view )
         return page
 
 
@@ -248,25 +289,6 @@ class Instrument(base):
         # ok button
         submit = form.control(name="submit", type="submit", value="OK")
         
-        return page
-
-
-    def set(self, director):
-        try:
-            page = director.retrieveSecurePage( 'sampleassembly' )
-        except AuthenticationError, error:
-            return error.page
-
-        self.processFormInputs( director )
-        
-        main = page._body._content._main
-        document = self._document( main, director )
-        self._tree( document, director )
-
-        p = document.paragraph()
-        p.text = [
-            'To edit this instrument, please click a link in the tree.',
-            ]
         return page
 
 

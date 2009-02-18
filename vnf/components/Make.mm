@@ -50,6 +50,7 @@ EXPORT_PYTHON_MODULES = \
 	Geometer.py \
 	Greeter.py \
 	Instrument.py \
+	InstrumentShapeRenderer.py \
 	JnlpFile.py \
 	Job.py \
 	JobBuilder.py \
