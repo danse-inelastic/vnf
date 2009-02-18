@@ -29,7 +29,7 @@ class Form( base ):
     def expand(self, form, materialSimulationId = None):
         prefix = formactor_action_prefix
         
-        jnlpFile = JnlpFile(resources=('GULP.jar', 'j2ssh.jar', 'commons-logging.jar'),
+        jnlpFile = JnlpFile(resources=('GULP.jar', 'j2ssh.jar', 'commons-logging.jar','pg74.216.jdbc3.jar'),
                             mainClass='javagulp.controller.LaunchFromMaterialId',
                             programArguments = [materialSimulationId],
                             fileName='gulpLauncher')
