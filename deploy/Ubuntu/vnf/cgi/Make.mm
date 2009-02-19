@@ -16,7 +16,7 @@ PACKAGE = cgi
 #--------------------------------------------------------------------------
 #
 
-all: export-cgi-files
+all: export-data-files
 	BLD_ACTION="all" $(MM) recurse
 
 tidy::
@@ -33,10 +33,10 @@ EXPORT_DATAFILES = \
 	j3d-env.sh \
 
 
-CP_F = rsync
+CP_F = rsync 
 EXPORT_DATA_PATH = $(EXPORT_ROOT)/$(PROJECT)/$(PACKAGE)
 
-export-cgi-files:: 
+export-data-files:: 
 	mkdir -p $(EXPORT_DATA_PATH); \
 	for x in $(EXPORT_DATAFILES); do { \
 	  $(CP_F) $$x $(EXPORT_DATA_PATH)/ ; \
