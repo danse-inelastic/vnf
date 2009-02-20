@@ -229,21 +229,21 @@ class ViewerApplet(Applet):
 
 
     def createMouseBehavior(self, target):
-        bs = BoundingSphere()
+        mouseBounds = BoundingSphere()
         
-        alight = AmbientLight()
-        alight.setInfluencingBounds(bs)
+        mouseRotate = MouseRotate()
+        mouseRotate.setTransformGroup(target)
+        mouseRotate.setSchedulingBounds(mouseBounds)
 
-        dlight = DirectionalLight()
-        dlight.setInfluencingBounds(bs)
-        dlight.setDirection(-0.2, 0, -1)
+        mouseZoom = MouseZoom()
+        mouseZoom.setTransformGroup(target)
+        mouseZoom.setSchedulingBounds(mouseBounds)
 
-        translation = Transform3D()
-        translation.set(Vector3f(.6, .6, 0))
-        objTrans = TransformGroup(translation)
-        objTrans.addChild(dlight)
+        mouseTranslate = MouseTranslate()
+        mouseTranslate.setTransformGroup(target)
+        mouseTranslate.setSchedulingBounds(mouseBounds)
         
-        return [alight, objTrans]
+        return [mouseRotate, mouseZoom, mouseTranslate]
     
         
     def createLights(self):
