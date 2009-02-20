@@ -65,7 +65,14 @@ class Renderer:
         front = cg.w2, cg.h2
         back = cg.w1, cg.h1
         l = cg.l
-        return primitives.rectTube(front, back, l)
+        inner = primitives.rectTube(length=l, front=front, back=back)
+
+        thickness = cg.w2/10.
+        front = cg.w2+thickness, cg.h2+thickness
+        back = cg.w1+thickness, cg.h1+thickness
+        outer = primitives.rectTube(length=l, front=front, back=back)
+
+        return operations.subtract(outer, inner)
 
 
     def onEMonitor(self, emonitor):
@@ -114,8 +121,8 @@ class Renderer:
 
 
     def onSNSModerator(self, m):
-        X = xwidth
-        Y = height
+        X = m.width
+        Y = m.height
         Z = (X+Y)/20.
         diagonal = X,Y,Z
         b = primitives.block(diagonal)
