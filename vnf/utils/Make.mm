@@ -34,6 +34,7 @@ EXPORT_PYTHON_MODULES = \
 	executionguard.py \
 	expr.py \
 	info.py \
+	misc.py \
 	spawn.py \
 	uniquelist.py \
 	variables.py \
