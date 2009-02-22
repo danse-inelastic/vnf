@@ -133,6 +133,11 @@ class SSHer(base):
         return os.path.join( localdir, filename )
 
 
+    def getdirectory( self, server, remotepath, localdir ):
+        'retrieve a directory from remote server to local path'
+        return self.getfile(server, remotepath, localdir)
+
+
     def execute( self, cmd, server, remotepath, suppressException = False ):
         'execute command in the given directory of the given server'
 
