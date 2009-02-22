@@ -15,7 +15,7 @@
 from pyre.applications.Script import Script
 
 
-class GetdirmtimeApp(Script):
+class GetmtimeApp(Script):
 
 
     class Inventory(Script.Inventory):
@@ -27,32 +27,48 @@ class GetdirmtimeApp(Script):
 
     def main(self, *args, **kwds):
         path = self.path
-        
+
+        if not os.path.exists(path): return
+
+        if os.path.isdir(path):
+            mtime = self._handle_dir(path)
+        else:
+            mtime = self._handle_file(path)
+
+        print mtime
+        return mtime
+
+
+    def _handle_file(self, path):
+        return os.path.getmtime(path)
+
+
+    def _handle_dir(self, path):
         from filehistory import ModifyHist
         myhist = ModifyHist(path)
 
         mtimes = myhist.keys()
 
-        if not mtimes: return
-        t = mtimes[0]
-        print t
-        return t
+        if not mtimes: return os.path.getmtime(path)
+        return mtimes[0]
 
 
     def __init__(self):
-        super(GetdirmtimeApp, self).__init__('getdirmtime')
+        super(GetmtimeApp, self).__init__('getmtime')
         return
 
 
     def _configure(self):
-        super(GetdirmtimeApp, self)._configure()
+        super(GetmtimeApp, self)._configure()
         self.path = self.inventory.path
         return
 
 
+import os
+
 
 def main():
-    app = GetdirmtimeApp()
+    app = GetmtimeApp()
     return app.run()
 
 

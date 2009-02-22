@@ -44,7 +44,7 @@ EXPORT_PYTHON_MODULES = \
 
 EXPORT_PYAPPS = \
 	filehistory.py \
-	getdirmtime.py \
+	getmtime.py \
 
 
 EXPORT_BINS = $(PROJ_CPPEXE) $(EXPORT_PYAPPS)
