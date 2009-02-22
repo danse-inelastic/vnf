@@ -48,6 +48,7 @@ def spawn(command, dry_run = 0, env = None):
     ret = p.wait()
     del p
 
+    info.log( "cmd \n%s\n finished" % cmd )
     return ret, log.str(), errlog.str()
 import types
 
