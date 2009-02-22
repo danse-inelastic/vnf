@@ -14,13 +14,18 @@
 
 import os
 
-def isnewer(path, time):
-    mtime = os.path.getmtime(path)
+def isnewer(path, time,
+            getmtime=os.path.getmtime,
+            isdir=os.path.isdir,
+            listdir=os.listdir,
+            ):
+    mtime = getmtime(path)
     if mtime >= time: return True
-    if os.path.isdir(path):
-        entries = os.listdir(path)
+    if isdir(path):
+        entries = listdir(path)
         for entry in entries:
-            if isnewer(os.path.join(path, entry), time): return True
+            if isnewer(os.path.join(path, entry), time,
+                       getmtime=getmtime, isdir=isdir, listdir=listdir): return True
             continue
     return False
 
