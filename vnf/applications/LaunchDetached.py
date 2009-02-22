@@ -37,7 +37,7 @@ class Launch(Application, Stager):
         if ret:
             self._debug.log( 'out: %s' % out )
             self._debug.log( 'err: %s' % err )
-            raise RuntimeError, '%r failed' % (cmd,)
+            raise RuntimeError, '%r failed. Enable journal debug channel %r to see error messages' % (cmd, self.name)
         return
 
 
