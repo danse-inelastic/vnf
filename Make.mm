@@ -17,9 +17,9 @@ RECURSE_DIRS = \
     vnf \
     dds \
     content \
+    bin \
 
 EXPORT_DATADIRS = \
-    bin \
     cgi \
     html \
 

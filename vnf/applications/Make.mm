@@ -27,6 +27,7 @@ EXPORT_PYTHON_MODULES = \
 	ApproveUser.py \
 	LaunchDetached.py \
 	MigrateTable.py \
+	PackJobDir.py \
 	RetrieveResults.py \
 	SubmitJob.py \
 	WebApplication.py \
