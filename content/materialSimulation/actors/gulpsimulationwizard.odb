@@ -90,20 +90,14 @@ class GulpWizard(base):
             page = self._retrievePage(director)
         except AuthenticationError, err:
             return err.page
-        # eventually have some sort of gulp simulation verification
-
-        # this is a bit weird. the type is the table name. but usually
-        # table name has a 's' at the end, and it is not desirable.
-        # the following code takes the table class name.
-        self.createGulpInputs(director)
+        # eventually have some sort of gulp simulation verification?
+        #self.createGulpInputs(director)
         
-        table = director.clerk._getTable('sqefrommd')
+        #get javagulp cgi inputs and use them to update simulation and create job
+        simulation = self._getSimulation(director)
         
-        sqefrommd = director.clerk.newOwnedObject(table)
         
-        actor = 'sqefrommdwizard'
-        routine = 'configureSimulation'
-        return director.redirect(actor, routine, id=sqefrommd.id, type=sqefrommd.name)
+        return self.createJob(director)
    
     def createGulpInputs(self, director):
         # vasp computation configurations
@@ -135,16 +129,6 @@ class GulpWizard(base):
 
         # the server this job was submitted to
         server = job.server.dereference(director.clerk.db)
-        
-        # now wait and retrieve results
-        import time
-        time.sleep(1)
-        files = [
-            'INCAR',
-            'KPOINTS',
-            'POSCAR',
-            'POTCAR',
-            ]
         
         #  check whether input files were generated
         #  try 10 times
