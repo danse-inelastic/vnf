@@ -1163,7 +1163,7 @@ class NeutronExperimentWizard(base):
         if not _hasKernel(sample, director.clerk.db):
             return self.material_simulation(director)
         
-        return self.submit_experiment(director)
+        return self.configure_scatteringkernels(director)
 
 
     def configure_samplecomponent(self, director, errors=None):
@@ -1670,13 +1670,21 @@ class NeutronExperimentWizard(base):
             return err.page
 
         typename = self.processFormInputs(director)
-        exec 'from vnf.dom.%s import %s as table' % (typename, typename)
+        table = director.clerk._getTable(typename)
         kernel = director.clerk.newOwnedObject(table)
 
         experiment = director.clerk.getNeutronExperiment(self.inventory.id)
         sample = _get_sample_from_experiment(experiment, director.clerk.db)
-        sample.kernels
-        return page
+        sample.kernels.add(kernel, director.clerk.db)
+
+        actor = 'neutronexperimentwizard'
+        routine = 'edit_kernel'
+        return director.redirect(
+            actor, routine,
+            id = self.inventory.id,
+            kernel_id = kernel.id,
+            kernel_type = typename,
+            )
 
 
     def selectkernel(self, director):
