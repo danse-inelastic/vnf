@@ -1713,131 +1713,11 @@ class NeutronExperimentWizard(base):
         #self._footer( form, director )
         return page    
     
+
     def onSelect(self, director):
         selected = self.processFormInputs(director)
         method = getattr(self, selected )
         return method( director )
-
-#    def gulp(self, director):
-#        try:
-#            page = self._retrievePage(director)
-#        except AuthenticationError, err:
-#            return err.page
-#        
-#        main = page._body._content._main
-#        document = main.document(title='Classical atomistics kernel' )
-#        document.byline = '<a href="http://danse.us">DANSE</a>'    
-#        
-#        formcomponent = self.retrieveFormToShow( 'gulp')
-#        formcomponent.director = director
-#        # build the form form
-#        form = document.form(name='', action=director.cgihome)
-#        # specify action
-#        action = actionRequireAuthentication(          
-#            actor = 'neutronexperimentwizard', 
-#            sentry = director.sentry,
-#            routine = 'kernel_generator',
-#            id=self.inventory.id,
-#            arguments = {'form-received': formcomponent.name },
-#            )
-#        from vnf.weaver import action_formfields
-#        action_formfields( action, form )
-#        # expand the form with fields of the data object that is being edited
-#        formcomponent.expand( form )
-#        next = form.control(name='submit',type="submit", value="next")
-##        self._footer( document, director )
-#        return page 
-#   
-#    def localOrbitalHarmonic(self, director):
-#        try:
-#            page = self._retrievePage(director)
-#        except AuthenticationError, err:
-#            return err.page
-#        
-#        main = page._body._content._main
-#        document = main.document(title='Local orbital DFT energies, harmonic dynamics kernel' )
-#        document.byline = '<a href="http://danse.us">DANSE</a>'    
-#        
-#        formcomponent = self.retrieveFormToShow( 'localOrbitalHarmonic')
-#        formcomponent.director = director
-#        # build the form form
-#        form = document.form(name='', action=director.cgihome)
-#        # specify action
-#        action = actionRequireAuthentication(          
-#            actor = 'neutronexperimentwizard', 
-#            sentry = director.sentry,
-#            routine = 'kernel_generator',
-#            id=self.inventory.id,
-#            arguments = {'form-received': formcomponent.name },
-#            )
-#        from vnf.weaver import action_formfields
-#        action_formfields( action, form )
-#        # expand the form with fields of the data object that is being edited
-#        formcomponent.expand( form )
-#        next = form.control(name='submit',type="submit", value="next")
-##        self._footer( document, director )
-#        return page 
-#    
-#    def planeWaveHarmonic(self, director):
-#        try:
-#            page = self._retrievePage(director)
-#        except AuthenticationError, err:
-#            return err.page
-#        
-#        main = page._body._content._main
-#        document = main.document(title='Plane wave DFT energies, harmonic dynamics kernel' )
-#        document.byline = '<a href="http://danse.us">DANSE</a>'    
-#        
-#        formcomponent = self.retrieveFormToShow( 'abInitioHarmonic')
-#        formcomponent.director = director
-#        # build the form form
-#        form = document.form(name='', action=director.cgihome)
-#        # specify action
-#        action = actionRequireAuthentication(          
-#            actor = 'neutronexperimentwizard', 
-#            sentry = director.sentry,
-#            routine = 'kernel_generator',
-#            id=self.inventory.id,
-#            arguments = {'form-received': formcomponent.name },
-#            )
-#        from vnf.weaver import action_formfields
-#        action_formfields( action, form )
-#        # expand the form with fields of the data object that is being edited
-#        formcomponent.expand( form )
-#        next = form.control(name='submit',type="submit", value="next")
-##        self._footer( document, director )
-#        return page 
-#    
-#    def kernel_generator(self, director):
-#        try:
-#            page = self._retrievePage(director)
-#        except AuthenticationError, err:
-#            return err.page
-#        
-#        main = page._body._content._main
-#        document = main.document(title='Kernel Generator' )
-#        document.byline = '<a href="http://danse.us">DANSE</a>'        
-#        
-#        formcomponent = self.retrieveFormToShow( 'inelasticScatteringIntensity')
-#        formcomponent.director = director
-#        # build the form form
-#        form = document.form(name='', action=director.cgihome)
-#        # specify action
-#        action = actionRequireAuthentication(          
-#            actor = 'neutronexperimentwizard', 
-#            sentry = director.sentry,
-#            routine = 'submit_experiment',
-#            label = '',
-#            id = self.inventory.id,
-#            arguments = {'form-received': formcomponent.name },
-#            )
-#        from vnf.weaver import action_formfields
-#        action_formfields( action, form )
-#        # expand the form with fields of the data object that is being edited
-#        formcomponent.expand( form )
-#        next = form.control(name='submit',type="submit", value="next")
-##        self._footer( document, director )
-#        return page     
 
 
     def submit_experiment(self, director, errors=None):
@@ -2160,29 +2040,29 @@ class NeutronExperimentWizard(base):
         self.sample_environment_configured = not nullpointer(sampleenvironment_ref)
 
         # sample
-        if self.sample_environment_configured:
-            sampleassembly_ref = experiment.sampleassembly
-            if not sampleassembly_ref:
-                # try sample component
-                samplecomponent_ref = experiment.samplecomponent
-                if not samplecomponent_ref:
-                    # sample component is also undefined
-                    self.sample_prepared = self.kernel_configured = False
-                else:
-                    samplecomponent = director.clerk.dereference(samplecomponent_ref)
-                    self.sample_prepared = self.kernel_configured = True
+        sampleassembly_ref = experiment.sampleassembly
+        if not sampleassembly_ref:
+            # try sample component
+            samplecomponent_ref = experiment.samplecomponent
+            if not samplecomponent_ref:
+                # sample component is also undefined
+                self.sample_prepared = self.kernel_configured = False
             else:
-                sampleassembly = director.clerk.dereference(sampleassembly_ref)
-                sample = _get_sample_from_sampleassembly(sampleassembly, director.clerk.db)
+                samplecomponent = director.clerk.dereference(samplecomponent_ref)
+                self.sample_prepared = self.kernel_configured = True
+        else:
+            sampleassembly = director.clerk.dereference(sampleassembly_ref)
+            sample = _get_sample_from_sampleassembly(sampleassembly, director.clerk.db)
             
-                self.sample_prepared = not nullpointer(sample)
-                # need to test if kernel is configured
-                # ...
-                # probably need a canned solution here for the demo...
-                self.kernel_configured = True
-            pass
+            self.sample_prepared = not nullpointer(sample)
+            # need to test if kernel is configured
+            # ...
+            # probably need a canned solution here for the demo...
+            self.kernel_configured = True
 
-        if not self.kernel_configured: return
+        if not self.kernel_configured \
+           or not self.sample_environment_configured:
+            return
 
         #if experiment.ncount <=0 : return
         #if nullpointer(experiment.job): return
