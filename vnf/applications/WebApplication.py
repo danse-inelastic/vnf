@@ -93,10 +93,10 @@ class WebApplication(Base):
             import traceback
             open(errorspath, 'w').write(traceback.format_exc())
 
-#            inputspath = os.path.join(logroot, id + '.inputs')
-#            text = ['%s=%s' % (k,v) for k,v in self._cgi_inputs.iteritems()]
-#            text = '\n'.join(text)
-#            open(inputspath, 'w').write(text)
+            inputspath = os.path.join(logroot, id + '.inputs')
+            text = ['%s=%s' % (k,v) for k,v in self._cgi_inputs.iteritems()]
+            text = '\n'.join(text)
+            open(inputspath, 'w').write(text)
 
             self._debug.log('*** Error: %s' % id)
             
