@@ -48,6 +48,8 @@ class DBObjectForm( base ):
     def expand(self, form, errors = None, properties = None, id = ''):
         '''expand an existing form with fields from this component'''
 
+        if id: self.inventory.id = id
+        
         if empty_id( self.inventory.id ):
             configuration = self.inventory
         else:
