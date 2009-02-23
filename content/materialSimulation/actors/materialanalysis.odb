@@ -72,6 +72,27 @@ class MaterialAnalysis(base):
         return method( director )
     
     def sqe(self, director):
+        
+        #might want to reference this method from the redirect in gulpsimulationwizard:
+#            def verifySimulation(self, director):
+#        try:
+#            page = self._retrievePage(director)
+#        except AuthenticationError, err:
+#            return err.page
+#        # eventually have some sort of gulp simulation verification
+#
+#        # this is a bit weird. the type is the table name. but usually
+#        # table name has a 's' at the end, and it is not desirable.
+#        # the following code takes the table class name.
+#        table = director.clerk._getTable('sqefrommd')
+#        
+#        sqefrommd = director.clerk.newOwnedObject(table)
+#        
+#        actor = 'sqefrommdwizard'
+#        routine = 'configureSimulation'
+#        return director.redirect(actor, routine, id=sqefrommd.id, type=sqefrommd.name)
+        
+        
         try:
             page = director.retrieveSecurePage( 'generic' )
         except AuthenticationError, err:

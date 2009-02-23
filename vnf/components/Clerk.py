@@ -456,7 +456,7 @@ class Clerk(Component):
         dbkwds = DbAddressResolver().resolve(self.inventory.db)
         self.db = pyre.db.connect(wrapper=self.inventory.dbwrapper, **dbkwds)
 
-        #self.deepcopy = self.DeepCopier( self )
+        self.deepcopy = self.DeepCopier( self )
 
         from vnf.dom.ReferenceManager import ReferenceManager
         self.referenceManager = ReferenceManager(self.db)

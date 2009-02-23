@@ -67,6 +67,24 @@ class GulpWizard(base):
         next = form.control(name='submit',type="submit", value="next")
         return page 
     
+#    def verifySimulation(self, director):
+#        try:
+#            page = self._retrievePage(director)
+#        except AuthenticationError, err:
+#            return err.page
+#        # eventually have some sort of gulp simulation verification
+#
+#        # this is a bit weird. the type is the table name. but usually
+#        # table name has a 's' at the end, and it is not desirable.
+#        # the following code takes the table class name.
+#        table = director.clerk._getTable('sqefrommd')
+#        
+#        sqefrommd = director.clerk.newOwnedObject(table)
+#        
+#        actor = 'sqefrommdwizard'
+#        routine = 'configureSimulation'
+#        return director.redirect(actor, routine, id=sqefrommd.id, type=sqefrommd.name)
+    
     def verifySimulation(self, director):
         try:
             page = self._retrievePage(director)
@@ -77,6 +95,8 @@ class GulpWizard(base):
         # this is a bit weird. the type is the table name. but usually
         # table name has a 's' at the end, and it is not desirable.
         # the following code takes the table class name.
+        self.createGulpInputs(director)
+        
         table = director.clerk._getTable('sqefrommd')
         
         sqefrommd = director.clerk.newOwnedObject(table)
@@ -84,6 +104,74 @@ class GulpWizard(base):
         actor = 'sqefrommdwizard'
         routine = 'configureSimulation'
         return director.redirect(actor, routine, id=sqefrommd.id, type=sqefrommd.name)
+   
+    def createGulpInputs(self, director):
+        # vasp computation configurations
+        simulation = self._getSimulation(director)
+
+        # make a copy of this computation
+        computation = director.clerk.deepcopy(simulation)
+        # change description
+        computation.short_description = 'generate vasp inputs for computation %s' \
+                                        % simulation.id
+
+        # make sure this computation only generate input files
+        computation.generateInputsOnly = True
+        director.clerk.updateRecord(computation)
+        
+        # create a job for this computation
+        from vnf.components.Job import new_job
+        job = new_job(director)
+
+        # connect this job to the computation
+        computation.job = job
+        director.clerk.updateRecord(computation)
+        job.computation = computation
+        director.clerk.updateRecord(job)
+        
+        # submit this job
+        from vnf.components.Job import submit
+        submit(job, director)
+
+        # the server this job was submitted to
+        server = job.server.dereference(director.clerk.db)
+        
+        # now wait and retrieve results
+        import time
+        time.sleep(1)
+        files = [
+            'INCAR',
+            'KPOINTS',
+            'POSCAR',
+            'POTCAR',
+            ]
+        
+        #  check whether input files were generated
+        #  try 10 times
+        count = 0; gotfiles = 0
+        while count<10:
+            count += 1
+            try:
+                director.dds.remember(job, files=files, server=server)
+                gotfiles = 1
+                break
+            except:
+                time.sleep(1)
+                continue
+        if not gotfiles:
+            raise RuntimeError, 'unable to generate VASP input files'
+
+        #  copy them to the vnf server
+        director.dds.make_available(job, files=files)
+
+        d = {}
+        for f in files:
+            d[f] = open(director.dds.abspath(job, f)).read()
+            continue
+
+        # !!!should delete the computation that is only for
+        # creating the vasp inputs here!!!
+        return d
    
 
     pass # end of GulpWizard
