@@ -53,6 +53,7 @@ class NeutronExperiment(base):
     # partially configured: configuration not done
     # ready for submission: configuration done and ready for submission, job not created yet
     # constructed: configuration done and job created.
+    # deleted: experiment is deleted
 
     expected_results = pyre.db.varcharArray( name = 'expected_results', length = 128 )
     
