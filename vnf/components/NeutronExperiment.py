@@ -73,7 +73,7 @@ class NeutronExperiment(base):
             return error.page
 
         record = director.clerk.getNeutronExperiment( self.inventory.id )
-        director.clerk.deleteRecord( record )
+        director.clerk.deleteExperiment( record )
         return self.listall(director)
         
 
@@ -107,7 +107,7 @@ class NeutronExperiment(base):
 
         # retrieve id:record dictionary from db
         clerk = director.clerk
-        where = "creator='%s'" % director.sentry.username
+        where = "creator='%s' and status!='deleted'" % director.sentry.username
         experiments = clerk.indexNeutronExperiments(where=where)
         # make a list of all experiments
         listexperiments( experiments.values(), document, director )

@@ -1990,7 +1990,7 @@ class NeutronExperimentWizard(base):
         # remove this experiment
         experiment = director.clerk.getNeutronExperiment(
             self.inventory.id)
-        director.clerk.deleteRecord( experiment )
+        director.clerk.deleteExperiment(experiment)
 
         # go to greeter
         actor = 'neutronexperiment'; routine = 'listall'
