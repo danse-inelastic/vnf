@@ -26,12 +26,15 @@ class Form( base ):
 #        short_description.meta['tip'] = 'A short description'
 
 
-    def expand(self, form, materialSimulationId = None):
+    def expand(self, form, materialSimulationId = None, matterId = None):
         prefix = formactor_action_prefix
         
         jnlpFile = JnlpFile(resources=('GULP.jar', 'j2ssh.jar', 'commons-logging.jar','pg74.216.jdbc3.jar'),
                             mainClass='javagulp.controller.LaunchFromMaterialId',
-                            programArguments = [materialSimulationId],
+                            programArguments = {'simulationId':materialSimulationId,
+                                                'username':self.director.sentry.username,
+                                                'ticket':self.directory.sentry.ticket,
+                                                'matterId':matterId},
                             fileName='gulpLauncher')
         relativeLocationOfFile = jnlpFile.writeJnlp(self.director)
         

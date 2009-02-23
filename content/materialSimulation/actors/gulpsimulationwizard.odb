@@ -57,13 +57,14 @@ class GulpWizard(base):
             actor = 'gulpsimulationwizard', 
             sentry = director.sentry,
             routine = 'verifySimulation',
-            id=id, type=type,
+            id=id, 
+            type=type,
             arguments = {'form-received': formcomponent.name },
             )
         from vnf.weaver import action_formfields
         action_formfields( action, form )
         # expand the form with fields of the data object that is being edited
-        formcomponent.expand( form , materialSimulationId = id)
+        formcomponent.expand( form , materialSimulationId = id, matterId = simulation.matter.id)
         next = form.control(name='submit',type="submit", value="next")
         return page 
     
@@ -96,7 +97,9 @@ class GulpWizard(base):
         #get javagulp cgi inputs and use them to update simulation and create job
         simulation = self._getSimulation(director)
         
+        # process new information
         
+        # go to create job screen
         return self.createJob(director)
    
     def createGulpInputs(self, director):
