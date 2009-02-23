@@ -263,6 +263,12 @@ class Clerk(Component):
         return configuration
 
 
+    def deleteExperiment(self, exp):
+        exp.status = 'deleted'
+        self.updateRecord(exp)
+        return
+
+
     def duplicateRecord(self, record):
         save_id = record.id
 
@@ -300,7 +306,13 @@ class Clerk(Component):
 
 
     def getRecordByID(self, tablename, id):
-        Table = self._getTable(tablename)
+        from pyre.db.Table import Table as TableBase
+        if isinstance(tablename, basestring):
+            Table = self._getTable(tablename)
+        elif issubclass(tablename, TableBase):
+            Table = tablename
+        else:
+            raise ValueError, 'tablename must be a string or a table class: %s' % tablename
         return self._getRecordByID(Table, id)
     
     def find(self, cls_spec, *args, **kwargs):
