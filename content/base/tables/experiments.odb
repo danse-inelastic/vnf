@@ -36,7 +36,7 @@ def table(experiments, director):
         from vnf.components.NeutronExperimentWizard import _get_sample_from_experiment
         sample = _get_sample_from_experiment(exp, director.clerk.db)
         if not sample: return 'not defined'
-        label = sample.short_description or sample.chemical_formula
+        label = sample.short_description or sample.id
         return label
     def getInstrument(exp):
         instrument_ref = exp.instrument
