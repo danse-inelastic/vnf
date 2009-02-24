@@ -110,11 +110,12 @@ function make_table( div, descriptors ) {
   thetable = make_table_skeleton();
 
   // add table to a form
-  form = make_form();
-  form.append( thetable );
+  // form = make_form();
+  // form.append( thetable );
   
   // add form to the division
-  div.append( form );
+  // div.append( form );
+  div.append(thetable);
   
   // contents of table
   // head
@@ -130,15 +131,16 @@ function make_table( div, descriptors ) {
         descriptors = table.column_descriptors
         jscode.append(
             'descriptors={%s};' %
-            ','.join( [jscode_descriptor( d ) for d in descriptors] )
+            ',\n'.join( [jscode_descriptor( d ) for d in descriptors] )
             )
         jscode.append( 'make_table( thetable, descriptors);' )
 
         jscode.append(
-            'rows = [%s];' %
-            ','.join(
+            'rows = [\n%s\n];' %
+            ',\n\n\t'.join(
                 ["{'id': '%s', 'data': [%s]}" % (
-                    i, ','.join( [ ('\'%s\''%v).replace('\n', '<BR>') for v in row] ) )
+                    i, ',\n\t\t'.join( [
+            format(v, descriptor) for v, descriptor in zip(row, table.column_descriptors) ] ) )
                  for i, row in enumerate(table.rows)
                  ])
             )
@@ -181,6 +183,20 @@ function make_table( div, descriptors ) {
         
         codes = csscode + includes + ['<script>']  + jscode + ['</script>'] + htmlcode
         return codes
+
+
+
+def format(value, descriptor):
+    handler = '_format_%s' % descriptor.datatype
+    handler = eval(handler)
+    return handler(value)
+
+def _format_text(value): return ('\'%s\''% value).replace('\n', '<BR>')
+
+def _format_date(value): return '\'%s\'' % value
+
+def _format_single_choice_in_one_column(value): return str(value)
+
 
 
 def jscode_descriptor( descriptor ):
