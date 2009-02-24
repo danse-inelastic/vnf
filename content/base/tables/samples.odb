@@ -94,9 +94,14 @@ def format_selected(sample, selected):
     
 
 def format_kernels(sample, director):
+    from vnf.dom.neutron_components.SampleComponent import SampleComponent
+    if isinstance(sample, SampleComponent):
+        return 'McStas kernel: %s' % sample.__class__.__name__
+
     try: kernels = sample.kernels
     except AttributeError:
-        return 'McStas kernel: %s' % sample.__class__.__name__
+        return 'undefined'
+    
     if not kernels: return 'undefined'
     kernels = director.clerk.dereference(kernels)
     
