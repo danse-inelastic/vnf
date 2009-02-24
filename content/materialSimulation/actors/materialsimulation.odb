@@ -67,24 +67,7 @@ class Actor(base):
             p.text = [
                 'Following are simulations/models you have created:',
                 ]
-            for simulation in simulations:
-                p = document.paragraph()
-                link = action_link(
-                    actionRequireAuthentication(
-                    sentry = director.sentry,
-                    actor = 'computation',
-                    routine = 'view',
-                    label = simulation.short_description or simulation.id,
-                    id = simulation.id,
-                    type = simulation.__class__.__name__,
-                    ),
-                    director.cgihome
-                    )
-                desc = _desribe(simulation)
-                p.text = [
-                    '%s: %s' % (link, desc),
-                    ]
-                continue
+            document.contents.append(matsimtable(simulations, director))
             
         return page
 
@@ -98,6 +81,65 @@ def getallsimulations(db, where=None):
         computations += db.fetchall(table, where=where)
         continue
     return computations
+
+
+def matsimtable(matsims, director):
+    from vnf.content.table import Model, View, Table
+    class model(Model):
+
+        description = Model.Measure(name='description', type='text')
+        type = Model.Measure(name='type', type='text')
+        matter = Model.Measure(name='matter', type='text')
+
+
+    def getDesc(matsim):
+        label = matsim.short_description or matsim.id
+        action = actionRequireAuthentication(
+            sentry = director.sentry,
+            label = label,
+            actor = 'computation',
+            routine = 'view',
+            id = matsim.id,
+            type = matsim.__class__.__name__.lower(),
+            )
+        return action_link(action, director.cgihome)
+    def getType(matsim):
+        return matsim.__class__.__name__
+    def getMatter(matsim):
+        matter = matsim.matter
+        if not matter: return 'not defined'
+        matter = director.clerk.dereference(matter)
+        identifier = matter.short_description or matter.chemical_formula
+        return identifier
+    import operator
+    generators = {
+        'description': getDesc,
+        'type': getType,
+        'matter': getMatter,
+        }
+    
+    class D: pass
+    def d(s):
+        r = D()
+        for attr, g in generators.iteritems():
+            value = g(s)
+            setattr(r, attr, value)
+            continue
+        return r
+    data = [d(j) for j in matsims]
+
+    class view(View):
+        
+        columns = [
+            View.Column(id='col1',label='Simulation/modeling', measure='description'),
+            View.Column(id='col2',label='Type', measure='type'),
+            View.Column(id='col3',label='Matter', measure='matter'),
+            ]
+
+        editable = False
+
+    table = Table(model, data, view)
+    return table
 
 
 def _desribe(simulation):
