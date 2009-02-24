@@ -9,7 +9,11 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
-def table(samples, director):
+def table(samples, director, kwds={}):
+    return _table(samples, director, **kwds)
+
+
+def _table(samples, director, showkernels=False, selected=None):
     from vnf.content.table import Model, View, Table
     class model(Model):
         
@@ -18,15 +22,19 @@ def table(samples, director):
         cartesian_lattice = Model.Measure(name='cartesian_lattice', type='text')
         atom_positions = Model.Measure(name='atom_positions', type='text')
         shape = Model.Measure(name='shape', type='text')
+        kernels = Model.Measure(name='kernels', type='text')
+        selected = Model.Measure(name='selected', type='single_choice_in_one_column')
 
     class D: pass
     import operator
     generators = {
         'description': operator.attrgetter( 'short_description' ),
-        'chemical_formula': lambda s: format_chemical_formula(s.matter, director),
-        'cartesian_lattice': lambda s: format_lattice_parameters(s.matter, director),
-        'atom_positions': lambda s: format_atoms(s.matter, director),
-        'shape': lambda s: format_shape(s.shape, director),
+        'chemical_formula': lambda s: format_chemical_formula(s, director),
+        'cartesian_lattice': lambda s: format_lattice_parameters(s, director),
+        'atom_positions': lambda s: format_atoms(s, director),
+        'shape': lambda s: format_shape(s, director),
+        'kernels': lambda s: format_kernels(s, director),
+        'selected': lambda s: format_selected(s, selected),
         }
     def d(s):
         r = D()
@@ -47,6 +55,23 @@ def table(samples, director):
             View.Column(id='col5',label='Shape', measure='shape'),
             ]
 
+        if showkernels:
+            columns.append(
+                View.Column(id='col6',label='Scattering Kernels', measure='kernels')
+                )
+
+        if selected:
+            from vnf.components.DBObjectForm import formactor_action_prefix as prefix
+            name_for_form_action = '%s.selected' % prefix
+            columns.append(
+                View.Column(
+                    id='col7',
+                    label='Select',
+                    measure='selected',
+                    name_for_form_action=name_for_form_action,
+                    )
+                )
+
         editable = False
 
     table = Table(model, data, view)
@@ -57,13 +82,44 @@ def table(samples, director):
     return c
 
 
-def format_chemical_formula( matter,director ):
+from pyre.db._reference import reference
+def format_selected(sample, selected):
+    return {
+        'selected': str(int(selected == sample)),
+        'value': '%s%s%s' % (
+            sample.name,
+            reference.separator,
+            sample.id),
+        }
+    
+
+def format_kernels(sample, director):
+    try: kernels = sample.kernels
+    except AttributeError:
+        return 'McStas kernel: %s' % sample.__class__.__name__
+    if not kernels: return 'undefined'
+    kernels = director.clerk.dereference(kernels)
+    
+    lines = []
+    for name, kernel in kernels:
+        line = '%s #%s' % (kernel.__class__.__name__, kernel.id)
+        lines.append(line)
+        continue
+
+    return '\n'.join(lines)
+
+
+def format_chemical_formula(sample,director ):
+    try: matter = sample.matter
+    except AttributeError: return 'unknown'
     if nullpointer(matter): return "undefined"
     matter = director.clerk.dereference(matter)
     return matter.chemical_formula
 
 
-def format_lattice_parameters(matter, director):
+def format_lattice_parameters(sample, director):
+    try: matter = sample.matter
+    except AttributeError: return 'unknown'
     if nullpointer(matter): return "undefined"
     matter = director.clerk.dereference(matter)
     
@@ -74,7 +130,9 @@ def format_lattice_parameters(matter, director):
     return '\n'.join( [ format_vector( vec ) for vec in lattice ] )
 
 
-def format_atoms(matter, director):
+def format_atoms(sample, director):
+    try: matter = sample.matter
+    except AttributeError: return 'unknown'
     if nullpointer(matter): return "undefined"
     matter = director.clerk.dereference(matter)
 
@@ -121,7 +179,9 @@ class ShapeFormatter:
         return '\n'.join( texts )
 
 
-def format_shape( shape, director ):
+def format_shape( sample, director ):
+    try: shape = sample.shape
+    except AttributeError: return 'unknown'
     if nullpointer(shape): return "undefined"
     shape = director.clerk.dereference(shape)
     return ShapeFormatter()( shape )
