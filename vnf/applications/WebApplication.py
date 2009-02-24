@@ -99,6 +99,9 @@ class WebApplication(Base):
             open(inputspath, 'w').write(text)
 
             self._debug.log('*** Error: %s' % id)
+
+            page = self.retrievePage('error')
+            self.render(page)
             
         return
 
@@ -136,7 +139,11 @@ class WebApplication(Base):
             for k,v in kwds.iteritems():
                 setattr(self.actor.inventory, k, v)
 
-        self.main()
+        try:
+            self.main()
+        except:
+            raise RuntimeError, "redirect to actor %r, routine %r, with kwds %r failed" % (
+                actor, routine, kwds)
         return
 
 
