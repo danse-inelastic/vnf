@@ -502,83 +502,11 @@ def listexperiments( experiments, document, director ):
     p = document.paragraph()
     p.text = [ 'Here is a list of experiments you have planned or run:' ]
 
-    document.contents.append(experimenttable(experiments, director))
+    table = director.retrieveComponent(
+        'experiments', factory="table", args=[experiments, director],
+        vault=['tables']).table
+    document.contents.append(table)
     return
-
-
-def experimenttable(experiments, director):
-    from vnf.content.table import Model, View, Table
-    class model(Model):
-
-        id = Model.Measure(name='id', type='text')
-        description = Model.Measure(name='description', type='text')
-        sample = Model.Measure(name='sample', type='text')
-        instrument = Model.Measure(name='instrument', type='text')
-
-
-    def getDesc(exp):
-        label = exp.short_description or exp.id
-        action = actionRequireAuthentication(
-            sentry = director.sentry,
-            label = label,
-            actor = 'neutronexperiment',
-            routine = 'view',
-            id = exp.id,
-            )
-        return action_link(action, director.cgihome)
-    def getSample(exp):
-        from NeutronExperimentWizard import _get_sample_from_experiment
-        sample = _get_sample_from_experiment(exp, director.clerk.db)
-        if not sample: return 'not defined'
-        label = sample.short_description or sample.chemical_formula
-        return label
-    def getInstrument(exp):
-        instrument_ref = exp.instrument
-        if not instrument_ref: return "not defined"
-        instrument = director.clerk.dereference(instrument_ref)
-        label = instrument.short_description
-        action = actionRequireAuthentication(
-            sentry = director.sentry,
-            label = label,
-            actor = 'instrument',
-            routine = 'show',
-            id = instrument.id,
-            )
-        link = action_link(action, director.cgihome)
-        return link
-        
-    import operator
-    generators = {
-        'id': operator.attrgetter('id'),
-        'description': getDesc,
-        'sample': getSample,
-        'instrument': getInstrument,
-        }
-    
-    class D: pass
-    def d(s):
-        r = D()
-        for attr, g in generators.iteritems():
-            value = g(s)
-            setattr(r, attr, value)
-            continue
-        return r
-    data = [d(e) for e in experiments]
-
-    class view(View):
-        
-        columns = [
-            View.Column(id='col1',label='ID', measure='id'),
-            View.Column(id='col2',label='Description', measure='description'),
-            View.Column(id='col3',label='Sample', measure='sample'),
-            View.Column(id='col4',label='Instrument', measure='instrument'),
-            ]
-
-        editable = False
-
-    table = Table(model, data, view)
-    return table
-
 
 def view_sampleassembly(sampleassembly, form):
     p = form.paragraph()
