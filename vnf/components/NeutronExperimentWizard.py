@@ -61,7 +61,6 @@ class NeutronExperimentWizard(base):
         # populate the main column
         document = main.document(title='Neutron Experiment Wizard: start')
         document.description = ''
-        document.byline = 'byline?'
 
         p = document.paragraph()
         p.text = [
@@ -145,7 +144,6 @@ class NeutronExperimentWizard(base):
         document = main.document(
             title='Neutron Experiment Wizard: select neutron instrument')
         document.description = ''
-        document.byline = 'byline?'
 
         formcomponent = self.retrieveFormToShow( 'selectneutroninstrument' )
         formcomponent.director = director
@@ -243,7 +241,6 @@ class NeutronExperimentWizard(base):
         document = main.document(
             title='Neutron Experiment Wizard: instrument configuration')
         document.description = ''
-        document.byline = 'byline?'
 
         formname = 'configure_%s_instrument' % (
             experiment.instrument.id
@@ -355,7 +352,6 @@ class NeutronExperimentWizard(base):
         document = main.document(
             title='Neutron Experiment Wizard: configuration of instrument %r' % instrument.short_description)
         document.description = ''
-        document.byline = 'byline?'
 
         p = document.paragraph()
         p.text = [
@@ -484,7 +480,6 @@ class NeutronExperimentWizard(base):
             title='Neutron Experiment Wizard: %s %s' % (
             typename, component.id))
         document.description = ''
-        document.byline = 'byline?'
 
         formcomponent = self.retrieveFormToShow(typename.lower())
         formcomponent.inventory.id = component.id
@@ -551,7 +546,6 @@ class NeutronExperimentWizard(base):
             instrument.short_description,)
         document = main.document(title=title)
         document.description = ''
-        document.byline = 'byline?'
 
         p = document.paragraph()
         p.text = [
@@ -653,7 +647,6 @@ class NeutronExperimentWizard(base):
         document = main.document(
             title='Neutron Experiment Wizard: sample environment')
         document.description = ''
-        document.byline = 'byline?'
 
         formcomponent = self.retrieveFormToShow( 'sample_environment' )
         
@@ -737,7 +730,6 @@ class NeutronExperimentWizard(base):
         document = main.document(
             title='Neutron Experiment Wizard: sample preparation')
         document.description = ''
-        document.byline = 'byline?'
 
         p = document.paragraph()
         action = actionRequireAuthentication(
@@ -810,7 +802,6 @@ class NeutronExperimentWizard(base):
         document = main.document(
             title='Neutron Experiment Wizard: sample preparation')
         document.description = ''
-        document.byline = 'byline?'
         
         p = document.paragraph()
         p.text = [
@@ -875,7 +866,6 @@ class NeutronExperimentWizard(base):
         document = main.document(
             title='Neutron Experiment Wizard: sample preparation')
         document.description = ''
-        document.byline = 'byline?'
         
         formcomponent = self.retrieveFormToShow( 'select_sample_from_examples' )
         formcomponent.inventory.experiment_id = self.inventory.id
@@ -922,6 +912,11 @@ class NeutronExperimentWizard(base):
         from pyre.db._reference import reference
         tablename, id = selected.split(reference.separator)
         selected_sample = director.clerk.getRecordByID(tablename, id)
+
+
+        if isSample(selected_sample):
+            #create a scatterer
+            selected_sample = _createScattererFromSample(selected_sample)
 
         if isScatterer(selected_sample):
             # if user select a scatterer, we will need a sampleassembly
@@ -985,6 +980,53 @@ class NeutronExperimentWizard(base):
             raise NotImplementedError
 
         raise RuntimeError
+
+
+    def create_new_sample(self, director):
+        try:
+            page = self._retrievePage(director)
+        except AuthenticationError, err:
+            return err.page
+
+        main = page._body._content._main
+        # populate the main column
+        document = main.document(
+            title='Neutron Experiment Wizard: create a new sample')
+        document.description = ''
+
+        p = document.paragraph()
+        p.text = [
+            'A new vnf window will be created where a sample creation wizard',
+            'will be started. After you are done with the new sample,',
+            'please close that window and continue from here.',
+            ]
+        
+        p = document.paragraph()
+        action = actionRequireAuthentication(
+            sentry = director.sentry,
+            label = 'here',
+            actor = 'sampleInput',
+            routine = 'default',
+            target = '_blank',
+            )
+        link = action_link(action, director.cgihome)
+        p.text = [
+            'To create a new sample, please start %s.' % link,
+            ]
+
+        p = document.paragraph()
+        action = actionRequireAuthentication(
+            sentry = director.sentry,
+            label = 'Continue',
+            actor = 'neutronexperimentwizard',
+            routine = 'select_sample_from_examples',
+            id = self.inventory.id,
+            )
+        link = action_link(action, director.cgihome)
+        p.text = [
+            '%s to prepare your sample for the experiment.' % link,
+            ]
+        return page
     
 
     def select_sample_from_sample_library(self, director):
@@ -998,7 +1040,6 @@ class NeutronExperimentWizard(base):
         document = main.document(
             title='Neutron Experiment Wizard: Select a sample')
         document.description = ''
-        document.byline = '<a href="http://danse.us">DANSE</a>'        
         
         formcomponent = self.retrieveFormToShow( 'sampleLibrary')
         formcomponent.director = director
@@ -1047,7 +1088,6 @@ class NeutronExperimentWizard(base):
         document = main.document(
             title='Neutron Experiment Wizard: Create a new sample')
         document.description = ''
-        document.byline = '<a href="http://danse.us">DANSE</a>'        
         
         formcomponent = self.retrieveFormToShow( 'input_material')
         formcomponent.director = director
@@ -1082,7 +1122,6 @@ class NeutronExperimentWizard(base):
         document = main.document(
             title='Neutron Experiment Wizard: sample configuration')
         document.description = ''
-        document.byline = 'byline?'
 
         #self.processFormInputs( director )
 
@@ -1161,8 +1200,8 @@ class NeutronExperimentWizard(base):
 
         if sample is None: raise RuntimeError, "No sample in sample assembly"
 
-        if not _hasKernel(sample, director.clerk.db):
-            return self.material_simulation(director)
+        #if not _hasKernel(sample, director.clerk.db):
+        #    return self.material_simulation(director)
         
         return self.configure_scatteringkernels(director)
 
@@ -1178,7 +1217,6 @@ class NeutronExperimentWizard(base):
         document = main.document(
             title='Neutron Experiment Wizard: sample configuration')
         document.description = ''
-        document.byline = 'byline?'
 
         #get experiment
         experiment = director.clerk.getNeutronExperiment(
@@ -1258,7 +1296,6 @@ class NeutronExperimentWizard(base):
         document = main.document(
             title='Neutron Experiment Wizard: material simulation and modeling')
         document.description = ''
-        document.byline = 'byline?'
 
         p = document.paragraph()
         p.text = [
@@ -1327,7 +1364,6 @@ class NeutronExperimentWizard(base):
         document = main.document(
             title='Neutron Experiment Wizard: No kernel')
         document.description = ''
-        document.byline = '<a href="http://danse.us">DANSE</a>'
 
         p = document.paragraph()
         p.text = [
@@ -1361,7 +1397,6 @@ class NeutronExperimentWizard(base):
         document = main.document(
             title='Neutron Experiment Wizard: kernels')
         document.description = ''
-        document.byline = '<a href="http://danse.us">DANSE</a>'
 
         p = document.paragraph()
         p.text = [
@@ -1444,7 +1479,6 @@ class NeutronExperimentWizard(base):
         document = main.document(
             title='Neutron Experiment Wizard: Scattering kernel configuration')
         document.description = ''
-        document.byline = '<a href="http://danse.us">DANSE</a>'
 
         experiment = director.clerk.getNeutronExperiment( self.inventory.id )
         sample = _get_sample_from_experiment( experiment, director.clerk.db )
@@ -1535,7 +1569,6 @@ class NeutronExperimentWizard(base):
         document = main.document(
             title='Neutron Experiment Wizard: new kernel')
         document.description = ''
-        document.byline = 'byline?'
         
         p = document.paragraph()
         p.text = [
@@ -1591,7 +1624,6 @@ class NeutronExperimentWizard(base):
         document = main.document(
             title='Neutron Experiment Wizard: add new kernel')
         document.description = ''
-        document.byline = 'byline?'
 
         formcomponent = self.retrieveFormToShow( 'selectmaterialsimulationresult' )
         formcomponent.director = director
@@ -1634,7 +1666,6 @@ class NeutronExperimentWizard(base):
         document = main.document(
             title='Neutron Experiment Wizard: add new kernel')
         document.description = ''
-        document.byline = 'byline?'
 
         formcomponent = self.retrieveFormToShow( 'selectkerneltype' )
         formcomponent.director = director
@@ -1707,7 +1738,6 @@ class NeutronExperimentWizard(base):
         # populate the main column
         document = main.document(title='Neutron Experiment Wizard: submit')
         document.description = ''
-        document.byline = 'byline?'
 
         #In this step we obtain configuration of sample
         
@@ -1925,7 +1955,6 @@ class NeutronExperimentWizard(base):
         # populate the main column
         document = main.document(title='Neutron Experiment Wizard: status')
         document.description = ''
-        document.byline = 'byline?'
 
         p = document.paragraph()
         p.text = [
@@ -2055,9 +2084,22 @@ def isScatterer(candidate):
     return isinstance(candidate, Scatterer)
 
 
+def isSample(candidate):
+    from vnf.dom.Sample import Sample
+    return isinstance(candidate, Sample)
+
+
 def isSampleComponent(candidate):
     from vnf.dom.neutron_components.SampleComponent import SampleComponent
     return isinstance(candidate, SampleComponent)
+
+
+def _createScattererFromSample(sample):
+    from vnf.dom.Scatterer import Scatterer
+    s = Scatterer()
+    s.matter = sample.matter
+    s.shape = sample.shape
+    return s
 
 
 def _instrument_configured(experiment, director):
