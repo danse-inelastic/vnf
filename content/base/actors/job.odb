@@ -451,7 +451,17 @@ def jobtable(jobs, director):
         time_start = Model.Measure(name='time_start', type='text')
         #time_complete
 
-
+    def getID(job):
+        id = job.id
+        action = actionRequireAuthentication(
+            sentry = director.sentry,
+            label = id,
+            actor = 'job',
+            routine = 'view',
+            id = job.id,
+            )
+        link = action_link(action, director.cgihome)
+        return link
     def getComputation(job):
         computation = job.computation
         if not computation: return 'not defined'
@@ -475,7 +485,7 @@ def jobtable(jobs, director):
         return label
     import operator
     generators = {
-        'id': operator.attrgetter('id'),
+        'id': getID,
         'computation': getComputation,
         'owner': operator.attrgetter('creator'),
         'server': getServer,
