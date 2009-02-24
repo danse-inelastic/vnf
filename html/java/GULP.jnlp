@@ -14,8 +14,14 @@
     <resources>
         <j2se version="1.5+" java-vm-args="-Xmx512m -splash:splash.png"/>
         <jar href="GULP.jar" />
-        <jar href='j2ssh.jar' />
-        <jar href='commons-logging.jar' />
+        <jar href="j2ssh.jar" />
+        <jar href="commons-logging.jar" />
+        <jar href="pg74.216.jdbc3.jar" />
     </resources>
-    <application-desc main-class="javagulp.controller.LaunchFromMaterialId" />
+    <application-desc main-class="javagulp.controller.LaunchGulpUi" />
+    	<argument>username=demo</argument>
+    	<argument>ticket=5X</argument>
+    	<argument>simulationId=1</argument>
+    	<argument>matterId=9TAL9D</argument>
+    </application-desc>
 </jnlp>
