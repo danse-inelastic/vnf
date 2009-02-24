@@ -37,17 +37,17 @@ class Form( base ):
             'Please select from the following list of sample examples:',
             ]
 
-        examples = self._getExamples(self.director)
-        entries = [ ('%s#%s' % (item.name, item.id), item.short_description)
-                    for item in examples ]
-        
-        selector = form.selector(
-            id = 'scatterer_selector',
-            name = '%s.selected' % prefix,
-            entries = entries,
-            label = 'Select sample',
-            selected = 0,
-            )
+        samples = self._getExamples(self.director)
+
+        director = self.director
+        options = {
+            'selected': samples[0],
+            'showkernels': 1,
+            }
+        table = director.retrieveComponent(
+            'samples', factory="table", args=[samples, director, options],
+            vault=['tables']).table
+        form.contents.append(table)
         
         return
 

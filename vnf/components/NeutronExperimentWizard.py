@@ -919,7 +919,8 @@ class NeutronExperimentWizard(base):
 
         # the user selection
         selected = self.processFormInputs( director )
-        tablename, id = selected.split('#')
+        from pyre.db._reference import reference
+        tablename, id = selected.split(reference.separator)
         selected_sample = director.clerk.getRecordByID(tablename, id)
 
         if isScatterer(selected_sample):
