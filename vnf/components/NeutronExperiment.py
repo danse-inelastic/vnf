@@ -496,71 +496,82 @@ def listexperiments( experiments, document, director ):
     p = document.paragraph()
     p.text = [ 'Here is a list of experiments you have planned or run:' ]
 
+    document.contents.append(experimenttable(experiments, director))
+    return
 
-    formatstr = '%(index)s: %(viewlink)s (%(status)s) is a measurement of %(sample)r in %(instrument)r (%(deletelink)s)'
-    actor = 'neutronexperiment'
-    container = experiments
 
-    for i, element in enumerate( container ):
-        
-        p = document.paragraph()
-        name = element.short_description
-        if name in ['', None, 'None'] : name = 'undefined'
+def experimenttable(experiments, director):
+    from vnf.content.table import Model, View, Table
+    class model(Model):
+
+        id = Model.Measure(name='id', type='text')
+        description = Model.Measure(name='description', type='text')
+        sample = Model.Measure(name='sample', type='text')
+        instrument = Model.Measure(name='instrument', type='text')
+
+
+    def getDesc(exp):
+        label = exp.short_description or exp.id
         action = actionRequireAuthentication(
-            actor, director.sentry,
+            sentry = director.sentry,
+            label = label,
+            actor = 'neutronexperiment',
             routine = 'view',
-            label = '%s(%s)' % (element.id, name),
-            id = element.id,
+            id = exp.id,
             )
-        viewlink = action_link( action,  director.cgihome )
-
+        return action_link(action, director.cgihome)
+    def getSample(exp):
+        from NeutronExperimentWizard import _get_sample_from_experiment
+        sample = _get_sample_from_experiment(exp, director.clerk.db)
+        if not sample: return 'not defined'
+        label = sample.short_description or sample.chemical_formula
+        return label
+    def getInstrument(exp):
+        instrument_ref = exp.instrument
+        if not instrument_ref: return "not defined"
+        instrument = director.clerk.dereference(instrument_ref)
+        label = instrument.short_description
         action = actionRequireAuthentication(
-            actor, director.sentry,
-            routine = 'delete',
-            label = 'delete',
-            id = element.id,
+            sentry = director.sentry,
+            label = label,
+            actor = 'instrument',
+            routine = 'show',
+            id = instrument.id,
             )
-        deletelink = action_link( action,  director.cgihome )
-
-        if nullpointer(element.instrument) :
-            action = actionRequireAuthentication(
-                'neutronexperimentwizard', sentry = director.sentry,
-                label = 'select instrument',
-                routine = 'select_instrument',
-                id = element.id,
-                )
-            link = action_link( action, director.cgihome )
-            instrument = link
-        else:
-            instrument = director.clerk.dereference(element.instrument)
-            instrument = instrument.short_description
-            pass # end if
+        link = action_link(action, director.cgihome)
+        return link
         
-        subs = {'index': i+1,
-                'viewlink': viewlink,
-                'deletelink': deletelink,
-                'status': element.status,
-                'instrument': instrument,
-                'sample': 'sample',
-                }
-
-        p.text += [
-            formatstr % subs,
-            ]
-        continue
-    return
-
-
-def view_instrument(instrument, form):
-    p = form.paragraph()
-    p.text = [
-        'This experiment is to be performed in instrument %s' % instrument.short_description,
-        ]
+    import operator
+    generators = {
+        'id': operator.attrgetter('id'),
+        'description': getDesc,
+        'sample': getSample,
+        'instrument': getInstrument,
+        }
     
-    from TreeViewCreator import create
-    view = create( instrument )
-    form.contents.append( view )
-    return
+    class D: pass
+    def d(s):
+        r = D()
+        for attr, g in generators.iteritems():
+            value = g(s)
+            setattr(r, attr, value)
+            continue
+        return r
+    data = [d(e) for e in experiments]
+
+    class view(View):
+        
+        columns = [
+            View.Column(id='col1',label='ID', measure='id'),
+            View.Column(id='col2',label='Description', measure='description'),
+            View.Column(id='col3',label='Sample', measure='sample'),
+            View.Column(id='col4',label='Instrument', measure='instrument'),
+            ]
+
+        editable = False
+
+    table = Table(model, data, view)
+    return table
 
 
 def view_sampleassembly(sampleassembly, form):
@@ -575,111 +586,10 @@ def view_sampleassembly(sampleassembly, form):
     return
 
 
-def view_instrument_plain(instrument, form):
-    p = form.paragraph()
-    p.text = [
-        'This experiment is to be performed in instrument %s' % instrument.short_description,
-        ]
-    
-    p = form.paragraph()
-    geometer = instrument.geometer
-    components = instrument.componentsequence
-    p.text = [
-        'Instrument %r has %s components: %s' % (
-        instrument.short_description, len(components),
-        ', '.join( [ comp for comp in components ] ) ),
-        ]
-    
-    excluded_cols = [
-        'id', 'creator', 'date', 'short_description',
-        ]
-    p = form.paragraph()
-    p.text = [ '<UL>' ]
-    for component in components:
-        if component != 'sample': 
-            component_record = getattr( instrument, component ).realcomponent
-            component_type = component_record.__class__.__name__
-        else:
-            component_type = ''
-            pass # endif
-        p.text.append( '<li>%s: %s' % (component, component_type) )
-        p.text.append( '<UL>' )
-        record = geometer[ component ]
-        p.text.append( '<li>Position: %s' % (record.position,) )
-        p.text.append( '<li>Orientation: %s' % (record.orientation,) )
-        
-        if component == 'sample':
-            p.text.append( '</UL>' )
-            continue
-        
-        columns = component_record.getColumnNames()
-        for col in columns:
-            if col in excluded_cols: continue
-            value = getattr( component_record, col )
-            p.text.append('<li>%s: %s' % (col, value) )
-            continue
-        
-        p.text.append( '</UL>' )
-        continue
-    p.text.append( '</UL>' )
-    return
-
-
-class ResultDrawer:
-
-    def draw(self, experiment, result, document, director):
-        #special place to save plots
-        plots_path = 'images/plots'
-
-        #
-        results = director.clerk.getSimulationResults( experiment )
-        labels = [ r.label for r in results ]
-
-        if result in labels:
-            #if result already saved, just fetch that
-            id = filter( lambda r: r.label == result, results )[0].id
-        else:
-            #otherwise, we need to have a new record in simulatoinresults table
-            #and also need to save result in the special place
-            src = result
-            #simulationresults record
-            from vnf.dom.SimulationResult import SimulationResult
-            result_record = director.clerk.newDbObject(SimulationResult)
-            result_record.label = result
-            result_record.simulation_type = 'NeutronExperiment'
-            result_record.simulation_id = experiment.id
-            director.clerk.updateRecord( result_record )
-
-            id = result_record.id
-            # copy file to a special place
-            filepath1 = os.path.join( plots_path, '%s.png' % id )
-            dest = os.path.join( 'html', filepath1 )
-            #copy
-            import shutil
-            shutil.copyfile( src, dest )
-            
-        filepath1 = os.path.join( plots_path, '%s.png' % id )
-            
-        #create view
-        #hack
-        path, name = os.path.split( result )
-        name, ext = os.path.splitext( name )
-        p = document.paragraph()
-        p.text = [
-            name,
-            ]
-        p = document.paragraph()
-        p.text = [
-            '<img src="%s/%s">' % ( director.home, filepath1 ),
-            ]
-        return
-
-
-#switch pylab backend to ps so that it does not need interactivity
-import os, spawn
+import os
 import Scheduler
 
-from misc import empty_id, nullpointer
+from misc import nullpointer
 
 # version
 __id__ = "$Id$"
