@@ -41,10 +41,12 @@ class Sample(Actor):
         # retrieve id:record dictionary from db
         clerk = director.clerk
         samples = clerk.indexSamples().values()
-        #samples = clerk.indexScatterers().values()
+        scatterers = clerk.indexScatterers().values()
+        all = samples+scatterers
+        
         from vnf.utils.uniquelist import uniquelist
         from vnf.dom.hash import hash
-        samples = uniquelist(samples, idfun=lambda sample: hash(sample, clerk.db))
+        samples = uniquelist(all, idfun=lambda sample: hash(sample, clerk.db))
 
         table = director.retrieveComponent(
             'samples', factory="table", args=[samples, director],
