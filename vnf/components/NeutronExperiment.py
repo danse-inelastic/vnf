@@ -199,6 +199,12 @@ class NeutronExperiment(base):
         return
 
 
+    def _view_deleted(self, document, director):
+        p = document.paragraph()
+        p. text = ['This experiment was deleted.']
+        return
+
+
     def _view_constructed(self, document, director):
         experiment = director.clerk.getNeutronExperiment(self.inventory.id)
         job = director.clerk.dereference(experiment.job)
