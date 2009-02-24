@@ -274,11 +274,25 @@
 
   //  single choice in one column
   $.fn.establish_cell_from_data.handle_single_choice_in_one_column = function( cell, value ) {
+
+    var descriptor = get_column_descriptor( cell );
+    var name = descriptor.name_for_form_action;
+
     var html = '<input type="radio" ';
-    var checked = Number(value)==0? '':'checked="checked"';
-    html += checked;
-    html += 'name="' + cell.attr('name') + '"';
+    
+    var checked = Number(value.selected);
+    var selection_identifier = value.value;
+    
+    var checkedstr = checked==0? '':'checked="checked"';
+    html += checkedstr;
+
+    //html += 'name="' + cell.attr('name') + '"';
+    html += 'name="' + name + '"';
+
+    html += 'value="' + selection_identifier + '"';
+
     html += '/>';
+    
     cell.css( 'text-align', 'center' );
     return cell.html( html ); 
   };
