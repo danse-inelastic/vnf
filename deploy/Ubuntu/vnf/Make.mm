@@ -14,6 +14,7 @@ PROJECT = vnf
 PACKAGE = deploy
 
 RECURSE_DIRS = \
+    cgi \
     config \
     vnf \
 
