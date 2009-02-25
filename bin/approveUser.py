@@ -33,7 +33,14 @@ def main():
 
 
     app = App()
-    return app.run()
+    app.run()
+
+    # now need to send HUP signal to ipad so that the new user table is used
+    ipapid = open('../config/ipa.pid').read()
+    ipapid = eval(ipapid)
+    import os
+    os.kill( ipapid, 1 )
+    return
 
 
 # main
