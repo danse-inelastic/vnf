@@ -49,7 +49,7 @@ class JnlpFile:
         self.jnlpString += '''</resources>
     <application-desc main-class="''' + self.mainClass + '''" />
 '''
-        for argumentName, argumentValue in self.programArguments:
+        for argumentName, argumentValue in self.programArguments.iteritems():
             self.jnlpString += '<argument>'+argumentName+'='+argumentValue+'</argument>'+os.linesep
         self.jnlpString +='''</application-desc>
 </jnlp>'''     

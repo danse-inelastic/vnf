@@ -33,7 +33,7 @@ class Form( base ):
                             mainClass='javagulp.controller.LaunchFromMaterialId',
                             programArguments = {'simulationId':materialSimulationId,
                                                 'username':self.director.sentry.username,
-                                                'ticket':self.directory.sentry.ticket,
+                                                'ticket':self.director.sentry.ticket,
                                                 'matterId':matterId},
                             fileName='gulpLauncher')
         relativeLocationOfFile = jnlpFile.writeJnlp(self.director)
