@@ -91,7 +91,8 @@ class WebApplication(Base):
 
             errorspath = os.path.join(logroot, id + '.errors')
             import traceback
-            open(errorspath, 'w').write(traceback.format_exc())
+            errmsg = traceback.format_exc()
+            open(errorspath, 'w').write(errmsg)
 
             inputspath = os.path.join(logroot, id + '.inputs')
             text = ['%s=%s' % (k,v) for k,v in self._cgi_inputs.iteritems()]
@@ -100,9 +101,8 @@ class WebApplication(Base):
 
             self._debug.log('*** Error: %s' % id)
 
-            page = self.retrievePage('error')
-            self.render(page)
-            
+            self.redirect(actor='bug-report', routine='default',
+                          bugid = id, traceback = errmsg)
         return
 
     

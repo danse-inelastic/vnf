@@ -10,7 +10,7 @@
 #
 
 
-def announcement(user, comments):
+def announcement(user, bugid, comments):
     import vnf.content
 
     msg = vnf.content.announcement()
@@ -18,14 +18,20 @@ def announcement(user, comments):
     msg.subject = "User feed back from %s" % user.fullname
     msg.text = [
 """
-User %(username)s has left the following comments:
+User %(username)s has left the following comments for bug
+
+    %(bugid)s
+
+:
 
 %(comments)s
+
 """
         ]
 
     subs = {
         'username': user.username,
+        'bugid': bugid,
         'comments': comments,
         }
 
