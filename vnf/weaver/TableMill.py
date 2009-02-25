@@ -191,11 +191,19 @@ def format(value, descriptor):
     handler = eval(handler)
     return handler(value)
 
-def _format_text(value): return ('\'%s\''% value).replace('\n', '<BR>')
 
-def _format_date(value): return '\'%s\'' % value
 
-def _format_single_choice_in_one_column(value): return str(value)
+def _format_text(value):
+    value = str(value)
+    v = value.replace('\n', '<BR>')
+    return repr(v)
+
+def _format_date(value): 
+    return repr(str(value))
+
+def _format_single_choice_in_one_column(value): 
+    items_str = ', '.join([repr(str(k))+" : "+repr(str(v)) for k,v in value.iteritems()])
+    return '{' + items_str + '}'
 
 
 
