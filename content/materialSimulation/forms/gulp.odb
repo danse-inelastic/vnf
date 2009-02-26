@@ -30,7 +30,7 @@ class Form( base ):
         prefix = formactor_action_prefix
         
         jnlpFile = JnlpFile(resources=('GULP.jar', 'j2ssh.jar', 'commons-logging.jar','pg74.216.jdbc3.jar'),
-                            mainClass='javagulp.controller.LaunchFromMaterialId',
+                            mainClass='javagulp.controller.LaunchGulpUi',
                             programArguments = {'simulationId':materialSimulationId,
                                                 'username':self.director.sentry.username,
                                                 'ticket':self.director.sentry.ticket,
