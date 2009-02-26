@@ -23,6 +23,10 @@ EXPORT_DATADIRS = \
 	tutorials\
 
 
+EXPORT_DATAFILES = \
+	news \
+
+
 INIT_DATADIRS = \
 	data\
 
@@ -49,11 +53,22 @@ distclean::
 RSYNC_A = rsync -a
 EXPORT_DATA_PATH = $(EXPORT_ROOT)/$(PROJECT)/$(PACKAGE)
 
-export-package-data:: $(EXPORT_DATADIRS) init-data-dirs
+export-package-data:: export-package-datadirs export-package-datafiles
+
+
+export-package-datadirs:: $(EXPORT_DATADIRS) init-data-dirs
 	mkdir -p $(EXPORT_DATA_PATH); \
 	for x in $(EXPORT_DATADIRS); do { \
             if [ -d $$x ]; then { \
 	        $(RSYNC_A) $$x $(EXPORT_DATA_PATH)/ ; \
+            } fi; \
+        } done
+
+
+export-package-datafiles:: $(EXPORT_DATAFILES) 
+	for x in $(EXPORT_DATAFILES); do { \
+            if [ -f $$x ]; then { \
+	        $(RSYNC_A) $$x $(EXPORT_DATA_PATH)/$$x ; \
             } fi; \
         } done
 
