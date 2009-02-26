@@ -19,8 +19,8 @@
 
   <component name='main'>
     <property name='debug'>1</property>
-    <property name='home'>http://vnf.caltech.edu/vnf/</property>
-    <property name='cgi-home'>http://vnf.caltech.edu/cgi-bin/vnf/main.cgi</property>
+    <property name='home'>https://vnf.caltech.edu/vnf/</property>
+    <property name='cgi-home'>https://vnf.caltech.edu/cgi-bin/vnf/main.cgi</property>
     <property name='imagepath'>/vnf/images</property>
     <property name='javascriptpath'>/vnf/javascripts</property>
   </component>
