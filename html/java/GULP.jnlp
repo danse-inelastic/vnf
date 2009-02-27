@@ -18,7 +18,7 @@
         <jar href="commons-logging.jar" />
         <jar href="pg74.216.jdbc3.jar" />
     </resources>
-    <application-desc main-class="javagulp.controller.LaunchGulpUi" />
+    <application-desc main-class="javagulp.controller.LaunchGulpUi" >
     	<argument>username=demo</argument>
     	<argument>ticket=5X</argument>
     	<argument>simulationId=1</argument>

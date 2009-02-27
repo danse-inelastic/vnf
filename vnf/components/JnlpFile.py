@@ -47,7 +47,7 @@ class JnlpFile:
         for resource in self.resources:
             self.jnlpString += '<jar href="' + resource + '" />'+os.linesep
         self.jnlpString += '''</resources>
-    <application-desc main-class="''' + self.mainClass + '''" />
+    <application-desc main-class="''' + self.mainClass + '''" >
 '''
         for argumentName, argumentValue in self.programArguments.iteritems():
             self.jnlpString += '<argument>'+argumentName+'='+argumentValue+'</argument>'+os.linesep
