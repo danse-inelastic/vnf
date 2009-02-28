@@ -19,8 +19,8 @@ def portlet(app):
     import opal.content
     portlet = opal.content.portlet(title="News", id="portlet-news")
 
-    for title, href in readnews():
-        item = portlet.item(description=title)
+    for headline, href in readnews():
+        item = portlet.item(description=headline)
         item.target = href
         item.icon = "images/link_icon.gif"
         item.type = "navItem"
@@ -36,12 +36,12 @@ def readnews():
     lines.reverse()
     lines = lines[:10]
     
-    titles = lines[1:None:2]
+    headlines = lines[1:None:2]
     hrefs = lines[0:None:2]
 
-    assert len(titles)==len(hrefs)
+    assert len(headlines)==len(hrefs)
 
-    return zip(titles, hrefs)
+    return zip(headlines, hrefs)
 
 # version
 __id__ = "$Id: navigation.odb,v 1.1.1.1 2006-11-27 00:09:19 aivazis Exp $"
