@@ -20,7 +20,7 @@ class GulpSimulation(base):
     
     datafiles = [
         'gulp.gin', 
-        #'gulp.lib',
+        'gulp.lib',
         ]
 
 

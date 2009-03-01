@@ -27,7 +27,7 @@ class Builder(base):
         return files
 
     gulp_inputfile = "gulp.gin"
-    def _make_script(self, bvkcomputation):
+    def _make_script(self, computation):
         cmds = [
             'source ~/.gulp-env',
             'gulp < %s' % self.gulp_inputfile

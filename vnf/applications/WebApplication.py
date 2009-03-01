@@ -63,10 +63,11 @@ class WebApplication(Base):
         javascriptpath = pyre.inventory.str(name='javascriptpath', default = '/vnf/javascripts' )
         javapath = pyre.inventory.str(name='javapath', default = '/vnf/java' )
         tmproot = pyre.inventory.str(name='tmproot', default = '/vnf/tmp')
-
+        
 
     def main(self, *args, **kwds):
 
+        noErrors=True
         actor = self.actor
         if actor is None:
             inquiry = self.inventory._getTraitDescriptor('actor').inquiry
@@ -79,31 +80,41 @@ class WebApplication(Base):
             page = self.actor.perform(self, routine=self.inventory.routine, debug=self.debug)
             self.render(page)
         except:
+            noErrors=False
+            errmsg = self.generateDebugInfo()
+            self.redirect(actor='bug-report', routine='default', bugid = id, traceback = errmsg)
+        if noErrors and self.debug:
+            self.generateDebugInfo('generic')
+        return
+    
+    def generateDebugInfo(self,filetypes='unique'):
+        if filetypes is 'unique':
+            #from vnf.dom.idgenerator import idFromTime as idgenerator
             from vnf.dom.idgenerator import generator as idgenerator
             id = idgenerator()
-
-            import os
-            logroot = '../log'
-            
-            from configurationSaver import toPml
-            pmlpath = os.path.join(logroot, id + '.pml')
-            toPml(self, pmlpath)
-
-            errorspath = os.path.join(logroot, id + '.errors')
-            import traceback
-            errmsg = traceback.format_exc()
-            open(errorspath, 'w').write(errmsg)
-
-            inputspath = os.path.join(logroot, id + '.inputs')
-            text = ['%s=%s' % (k,v) for k,v in self._cgi_inputs.iteritems()]
-            text = '\n'.join(text)
-            open(inputspath, 'w').write(text)
-
             self._debug.log('*** Error: %s' % id)
+        else:
+            id = 'debugInfo'
 
-            self.redirect(actor='bug-report', routine='default',
-                          bugid = id, traceback = errmsg)
-        return
+        import os
+        logroot = '../log'
+        
+        from configurationSaver import toPml
+        pmlpath = os.path.join(logroot, id + '.pml')
+        toPml(self, pmlpath)
+
+        errorspath = os.path.join(logroot, id + '.errors')
+        import traceback
+        errmsg = traceback.format_exc()
+        open(errorspath, 'w').write(errmsg)
+
+        inputspath = os.path.join(logroot, id + '.inputs')
+        text = ['%s=%s' % (k,v) for k,v in self._cgi_inputs.iteritems()]
+        text = '\n'.join(text)
+        open(inputspath, 'w').write(text)
+
+        return errmsg
+            
 
     
     def _oldmain(self, *args, **kwds):

@@ -95,6 +95,10 @@ class GulpWizard(base):
         #self.createGulpInputs(director)
         
         #get javagulp cgi inputs and use them to update simulation and create job
+        cgiString = director._cgi_inputs['sys.stdin']
+        cgiInputs = dict([cgiItem.split('=') for cgiItem in cgiString.split('&')])
+        cgiInputs['gulpInputFile']
+        cgiInputs['gulpLibrary']
         simulation = self._getSimulation(director)
         
         # process new information
