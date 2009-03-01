@@ -33,8 +33,10 @@ class SampleInput(FormActor):
         
         page = pyre.inventory.str('page', default='empty')
 
+        
     def default(self, director):
         return self.sampleDescription(director)
+
     
     def sampleDescription(self, director):
         try:
@@ -54,7 +56,6 @@ class SampleInput(FormActor):
         # populate the main column
         document = main.document(title='Material type selection')
         document.description = ''
-        document.byline = '<a href="http://danse.us">DANSE</a>'        
         
         formcomponent = self.retrieveFormToShow( 'sampleDescription')
         formcomponent.director = director
@@ -76,13 +77,14 @@ class SampleInput(FormActor):
         submit = form.control(name='submit',type="submit", value="next")
         return page         
     
+    
     def storeSampleDescription(self, director):
         short_description = self.processFormInputs( director )
         try: # first try to get a record with the inventory id from the db
             record = director.clerk.getRecordByID('sample', self.inventory.sampleId)
         except: # if can't find, create a new one
             tableClass = director.clerk._getTable('sample')
-            record = director.clerk.newDbObject(tableClass)
+            record = director.clerk.newOwnedObject(tableClass)
             self.inventory.sampleId = record.id
 
         record.short_description = short_description
@@ -90,6 +92,7 @@ class SampleInput(FormActor):
         # and update db
         director.clerk.updateRecord( record )
         return self.selectMaterialType( director )
+
     
     def selectMaterialType(self, director):
         try:
@@ -101,7 +104,6 @@ class SampleInput(FormActor):
         # populate the main column
         document = main.document(title='Material type selection')
         document.description = ''
-        document.byline = '<a href="http://danse.us">DANSE</a>'        
         
         formcomponent = self.retrieveFormToShow( 'selectmaterialtype')
         formcomponent.director = director
@@ -123,115 +125,25 @@ class SampleInput(FormActor):
         formcomponent.expand( form )
         submit = form.control(name='submit',type="submit", value="next")
         return page 
+
     
     def redirectMaterialInput(self, director):
         selected = self.processFormInputs(director)
         method = getattr(self, selected )
         return method( director )
-        
-    def polycrystal(self, director):
-        try:
-            page = director.retrievePage( 'generic' )
-        except AuthenticationError, err:
-            return err.page
-        
-        main = page._body._content._main
-        # populate the main column
-        document = main.document(title='Material input')
-        document.description = ''
-        document.byline = '<a href="http://danse.us">DANSE</a>'        
-        
-        formcomponent = self.retrieveFormToShow('polycrystal')
-        formcomponent.director = director
-        # build the form 
-        form = document.form(name = '', action = director.cgihome)
-        # specify action
-        action = actionRequireAuthentication(          
-            actor = 'sampleInput', 
-            sentry = director.sentry,
-            routine = 'storeAndVerifyMatterInput',
-            label = '',
-            sampleId = self.inventory.sampleId,
-            #id = polycrystalId,
-            arguments = {'form-received': formcomponent.name },
-            )
-        from vnf.weaver import action_formfields
-        action_formfields( action, form )
-        
-        # expand the form with fields of the data object that is being edited
-        formcomponent.expand( form , showimportwidget=True)
-        submit = form.control(name='submit',type="submit", value="next")
-        return page  
-    
-    def singlecrystal(self, director):
-        try:
-            page = director.retrievePage( 'generic' )
-        except AuthenticationError, err:
-            return err.page
-        
-#        experiment = director.clerk.getNeutronExperiment(self.inventory.id)
-        main = page._body._content._main
-        # populate the main column
-        document = main.document(title='Material input')
-        document.description = ''
-        document.byline = '<a href="http://danse.us">DANSE</a>'                
 
-        formcomponent = self.retrieveFormToShow('singlecrystal')
-        formcomponent.director = director
-        # build the form 
-        form = document.form(name = '', action = director.cgihome)
-        # specify action
-        action = actionRequireAuthentication(          
-            actor = 'sampleInput', 
-            sentry = director.sentry,
-            routine = 'storeAndVerifyMatterInput',
-            label = '',
-            sampleId = self.inventory.sampleId,
-            #id = polycrystalId,
-            arguments = {'form-received': formcomponent.name },
-            )
-        from vnf.weaver import action_formfields
-        action_formfields( action, form )
-        
-        # expand the form with fields of the data object that is being edited
-        formcomponent.expand( form , showimportwidget=True)
-        submit = form.control(name='submit',type="submit", value="next")
-        return page  
+
+    def polycrystal(self, director):
+        return self._configureMaterial(director, 'polycrystal')
+
+
+    def singlecrystal(self, director):
+        return self._configureMaterial(director, 'singlecrystal')
+    
     
     def disordered(self, director):
-        try:
-            page = director.retrievePage( 'generic' )
-        except AuthenticationError, err:
-            return err.page
-        
-#        experiment = director.clerk.getNeutronExperiment(self.inventory.id)
-        main = page._body._content._main
-        # populate the main column
-        document = main.document(title='Material input')
-        document.description = ''
-        document.byline = '<a href="http://danse.us">DANSE</a>'        
-        
-        formcomponent = self.retrieveFormToShow('disordered')
-        formcomponent.director = director
-        # build the form 
-        form = document.form(name = '', action = director.cgihome)
-        # specify action
-        action = actionRequireAuthentication(          
-            actor = 'sampleInput', 
-            sentry = director.sentry,
-            routine = 'storeAndVerifyMatterInput',
-            label = '',
-            sampleId = self.inventory.sampleId,
-            #id = polycrystalId,
-            arguments = {'form-received': formcomponent.name },
-            )
-        from vnf.weaver import action_formfields
-        action_formfields( action, form )
-        
-        # expand the form with fields of the data object that is being edited
-        formcomponent.expand( form )
-        submit = form.control(name='submit',type="submit", value="next")
-        return page 
+        return self._configureMaterial(director, 'disordered')
+    
     
     def storeAndVerifyMatterInput(self, director):
         #store matter
@@ -241,6 +153,7 @@ class SampleInput(FormActor):
         sample.matter = matter
         director.clerk.updateRecord(sample)
         return self.selectShape( director ) 
+
     
     def selectShape(self, director):
         try:
@@ -252,7 +165,6 @@ class SampleInput(FormActor):
         # populate the main column
         document = main.document(title='Shape input')
         document.description = ''
-        document.byline = '<a href="http://danse.us">DANSE</a>'        
         
         formcomponent = self.retrieveFormToShow( 'selectShape')
         formcomponent.director = director
@@ -276,12 +188,14 @@ class SampleInput(FormActor):
         submit = form.control(name='submit',type="submit", value="next")
         #self.processFormInputs(director)
         return page  
+
     
     def onShapeSelect(self, director):
         selected = self.processFormInputs(director)
         method = getattr(self, selected )
         return method( director )
-        
+    
+    
     def inputBlock(self, director):
         try:
             page = director.retrieveSecurePage('generic')
@@ -292,7 +206,6 @@ class SampleInput(FormActor):
         # populate the main column
         document = main.document(title='Shape input')
         document.description = ''
-        document.byline = '<a href="http://danse.us">DANSE</a>'        
         
         formcomponent = self.retrieveFormToShow( 'inputBlock')
         formcomponent.director = director
@@ -316,6 +229,7 @@ class SampleInput(FormActor):
         submit = form.control(name='submit',type="submit", value="submit")
         self.processFormInputs(director)
         return page
+
     
     def inputCylinder(self, director):
         try:
@@ -327,7 +241,6 @@ class SampleInput(FormActor):
         # populate the main column
         document = main.document(title='Shape input')
         document.description = ''
-        document.byline = '<a href="http://danse.us">DANSE</a>'        
         
         formcomponent = self.retrieveFormToShow( 'inputCylinder')
         formcomponent.director = director
@@ -351,6 +264,7 @@ class SampleInput(FormActor):
         submit = form.control(name='submit',type="submit", value="submit")
         self.processFormInputs(director)
         return page
+
     
     def storeAndVerifyShapeInput(self, director):
         # store shape
@@ -363,6 +277,40 @@ class SampleInput(FormActor):
         actor = 'sample'
         routine = 'default'
         return director.redirect(actor, routine)
+    
+    
+    def _configureMaterial(self, director, material_type):
+        try:
+            page = director.retrievePage( 'generic' )
+        except AuthenticationError, err:
+            return err.page
+        
+        main = page._body._content._main
+        # populate the main column
+        document = main.document(title='Material input')
+        document.description = ''
+        
+        formcomponent = self.retrieveFormToShow(material_type)
+        formcomponent.director = director
+        # build the form 
+        form = document.form(name = '', action = director.cgihome)
+        # specify action
+        action = actionRequireAuthentication(          
+            actor = 'sampleInput', 
+            sentry = director.sentry,
+            routine = 'storeAndVerifyMatterInput',
+            label = '',
+            sampleId = self.inventory.sampleId,
+            #id = polycrystalId,
+            arguments = {'form-received': formcomponent.name },
+            )
+        from vnf.weaver import action_formfields
+        action_formfields( action, form )
+        
+        # expand the form with fields of the data object that is being edited
+        formcomponent.expand( form , showimportwidget=True)
+        submit = form.control(name='submit',type="submit", value="next")
+        return page
 
 #    def _retrievePage(self, director):
 #        page = 'sample'

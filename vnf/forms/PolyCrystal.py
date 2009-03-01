@@ -50,7 +50,7 @@ class PolyCrystal( base ):
         
         if not id:
             tableClass = director.clerk._getTable('polycrystal')
-            record = director.clerk.newObject(tableClass)
+            record = director.clerk.newOwnedObject(tableClass)
             id = self.inventory.id = record.id
         else:
             record = director.clerk.getRecordByID('polycrystals', id)
@@ -123,7 +123,7 @@ class PolyCrystal( base ):
             record = director.clerk.getRecordByID('polycrystals', self.inventory.id)
         except: # if can't find, create a new one
             tableClass = director.clerk._getTable('polycrystal')
-            record = director.clerk.newDbObject(tableClass)
+            record = director.clerk.newOwnedObject(tableClass)
             self.inventory.id = record.id
       
         record.short_description = self.inventory.short_description

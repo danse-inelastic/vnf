@@ -40,8 +40,9 @@ class Sample(Actor):
 
         # retrieve id:record dictionary from db
         clerk = director.clerk
-        samples = clerk.indexSamples().values()
-        scatterers = clerk.indexScatterers().values()
+        where = "creator='%s' or creator='vnf'" % director.sentry.username
+        samples = clerk.indexSamples(where=where).values()
+        scatterers = clerk.indexScatterers(where=where).values()
         all = samples+scatterers
         
         from vnf.utils.uniquelist import uniquelist

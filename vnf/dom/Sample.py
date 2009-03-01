@@ -14,8 +14,8 @@
 from registry import tableRegistry
 
 
-from DbObject import DbObject
-class Sample(DbObject):
+from OwnedObject import OwnedObject as base
+class Sample(base):
 
     name = 'samples'
 

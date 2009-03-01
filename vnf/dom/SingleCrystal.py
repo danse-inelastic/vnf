@@ -21,10 +21,12 @@ class SingleCrystal(base):
 
 
 def inittable(db):
-    def record( id, cartesian_lattice, fractional_coordinates,
+    def record( id, creator, date, cartesian_lattice, fractional_coordinates,
                 atom_symbols, chemical_formula, short_description ):
         r = SingleCrystal()
         r.id = id
+        r.creator = creator
+        r.date = date
         r.cartesian_lattice = cartesian_lattice
         r.fractional_coordinates = fractional_coordinates
         r.atom_symbols = atom_symbols
@@ -35,6 +37,7 @@ def inittable(db):
     records = [
         record(
             'silicon_diamond',
+            'vnf', '2008/12/1',
             [2.716,2.716,0, 2.716,0,2.716, 0,2.716,2.716],
             [0,0,0, 0.25,0.25,0.25],
             ['Si', 'Si'],

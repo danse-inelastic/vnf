@@ -43,8 +43,9 @@ class Form( base ):
         # temp hack
         # get all samples and scatterers
         clerk = director.clerk
-        samples = clerk.indexSamples().values()
-        scatterers = clerk.indexScatterers().values()
+        where = "creator='vnf' or creator='%s'" % director.sentry.username
+        samples = clerk.indexSamples(where=where).values()
+        scatterers = clerk.indexScatterers(where=where).values()
 
         all = examples + samples + scatterers
 

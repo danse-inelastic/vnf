@@ -56,7 +56,7 @@ class Disordered( base ):
         
         if not disorderedId:
             tableClass = director.clerk._getTable(materialType)
-            record = director.clerk.newObject(tableClass)
+            record = director.clerk.newOwnedObject(tableClass)
             disorderedId = self.inventory.disorderedId = record.id
         else:
             record = director.clerk.getRecordByID('disordered', disorderedId)
@@ -131,7 +131,7 @@ class Disordered( base ):
             record = director.clerk.getRecordByID('disordered', self.inventory.disorderedId)
         except: # if can't find, create a new one
             tableClass = director.clerk._getTable('disordered')
-            record = director.clerk.newDbObject(tableClass)
+            record = director.clerk.newOwnedObject(tableClass)
             self.inventory.disorderedId = record.id
       
         record.chemical_formula = self.inventory.chemical_formula

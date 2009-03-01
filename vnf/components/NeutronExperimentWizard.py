@@ -2099,6 +2099,8 @@ def _createScattererFromSample(sample):
     s = Scatterer()
     s.matter = sample.matter
     s.shape = sample.shape
+    s.creator = sample.creator
+    s.date = sample.date
     return s
 
 
