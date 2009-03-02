@@ -64,7 +64,7 @@ class GulpWizard(base):
         from vnf.weaver import action_formfields
         action_formfields( action, form )
         # expand the form with fields of the data object that is being edited
-        formcomponent.expand( form , materialSimulationId = id, matterId = simulation.matter.id)
+        formcomponent.expand( form , id = id, matterId = simulation.matter.id)
         next = form.control(name='submit',type="submit", value="next")
         return page 
     
@@ -86,25 +86,28 @@ class GulpWizard(base):
 #        routine = 'configureSimulation'
 #        return director.redirect(actor, routine, id=sqefrommd.id, type=sqefrommd.name)
     
-    def verifySimulation(self, director):
+    def storeConfiguration(self, director):
         try:
             page = self._retrievePage(director)
         except AuthenticationError, err:
             return err.page
-        # eventually have some sort of gulp simulation verification?
-        #self.createGulpInputs(director)
+
+        configurations, library = self.processFormInputs(director)
         
-        #get javagulp cgi inputs and use them to update simulation and create job
-        cgiString = director._cgi_inputs['sys.stdin']
-        cgiInputs = dict([cgiItem.split('=') for cgiItem in cgiString.split('&')])
-        cgiInputs['gulpInputFile']
-        cgiInputs['gulpLibrary']
         simulation = self._getSimulation(director)
-        
-        # process new information
-        
-        # go to create job screen
-        return self.createJob(director)
+
+        #create data directory for the simulation if necessary
+        datadir = director.dds.abspath(simulation)
+        import os
+        if not os.path.exists(datadir): os.makedirs(datadir)
+            
+        open(director.dds.abspath(simulation, filename='gulp.in'), 'w').write(configurations)
+
+        filename, content = library
+        open(director.dds.abspath(simulation, filename=filename), 'w').write(content)
+
+        return 'success'
+    
    
     def createGulpInputs(self, director):
         # vasp computation configurations

@@ -11,30 +11,35 @@
 #
 
 
-from vnf.components.Form import Form as base
+from vnf.components.Form import Form as base, formactor_action_prefix
 from vnf.components.JnlpFile import JnlpFile
 
 class Form( base ):
-#    class Inventory( base.Inventory ):
-#
-#        import pyre.inventory as inv
-#        id = inv.str( 'id', default = '' )
-#        id.meta['tip'] = 'A short description'
-#        
-#        short_description = inv.str(
-#            'short_description', default = '' )
-#        short_description.meta['tip'] = 'A short description'
+    
+    class Inventory( base.Inventory ):
+        
+        import pyre.inventory as inv
+        id = inv.str('id')
 
+        librarycontent = inv.str('librarycontent')
+        libraryname = inv.str('libraryname')
+        configurations = inv.str('configurations')
+        
 
-    def expand(self, form, materialSimulationId = None, matterId = None):
+    def expand(self, form, id = None, matterId = None):
         prefix = formactor_action_prefix
         
         jnlpFile = JnlpFile(resources=('GULP.jar', 'j2ssh.jar', 'commons-logging.jar','pg74.216.jdbc3.jar'),
                             mainClass='javagulp.controller.LaunchGulpUi',
-                            programArguments = {'actor.id':materialSimulationId,
+                            programArguments = {'actor.id':id,
+                                                '%s.id' % formactor_action_prefix: id,
+                                                'simulationId': id,
+                                                'formactor_action_prefix': formactor_action_prefix,
                                                 'sentry.username':self.director.sentry.username,
-                                                'sentry.ticket':self.directory.sentry.ticket,
-                                                'matterId':matterId},
+                                                'sentry.ticket':self.director.sentry.ticket,
+                                                'matterId':matterId,
+                                                'cgihome':self.director.cgihome,
+                                                },
                             fileName='gulpLauncher')
         relativeLocationOfFile = jnlpFile.writeJnlp(self.director)
         
@@ -222,7 +227,10 @@ class Form( base ):
 #</ul>''']
         return
 
-
+    def processUserInputs(self):
+        configurations = self.inventory.configurations
+        library = self.inventory.libraryname, self.inventory.librarycontent
+        return configurations, library
 
 
 
