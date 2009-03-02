@@ -67,7 +67,6 @@ class WebApplication(Base):
 
     def main(self, *args, **kwds):
 
-        noErrors=True
         actor = self.actor
         if actor is None:
             inquiry = self.inventory._getTraitDescriptor('actor').inquiry
@@ -76,6 +75,7 @@ class WebApplication(Base):
                 inquiry, self.inventory.routine)
             self.actor = actor
 
+        noErrors=True
         try:
             page = self.actor.perform(self, routine=self.inventory.routine, debug=self.debug)
             self.render(page)
@@ -83,6 +83,7 @@ class WebApplication(Base):
             noErrors=False
             errmsg = self.generateDebugInfo()
             self.redirect(actor='bug-report', routine='default', bugid = id, traceback = errmsg)
+            
         if noErrors and self.debug:
             self.generateDebugInfo('generic')
         return
