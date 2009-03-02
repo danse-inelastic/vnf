@@ -20,8 +20,8 @@ class DDS:
                  ):
         '''create a "distributed data storage"
 
-        maternode: a "distributed data storage" must have a mater node
-        transferfile: the facility to transfer file from one node to another
+        maternode: a "distributed data storage" must have a master node
+        transferfile: the facility to transfer a file from one node to another
         rename: the facility to rename a file in one node. rename(oldpath, newpath, "server.address")
         symlink: the facility to create a symbolic link to a file in one node. symlink(oldpath, newpath, "server.address")
         readfile: the facility to read a text file. readfile("server.address:/a/b/c")

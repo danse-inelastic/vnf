@@ -318,9 +318,9 @@ class MaterialSimulationWizard(base):
 
     def _getSimulation(self, director):
         id = self.inventory.id
-        type = self.inventory.type
-        if not type or not id: return
-        return director.clerk.getRecordByID(type, id)
+        table = self.inventory.type
+        if not table or not id: return
+        return director.clerk.getRecordByID(table, id)
 
 
     def _retrievePage(self, director):
