@@ -78,7 +78,10 @@ class WebApplication(Base):
         noErrors=True
         try:
             page = self.actor.perform(self, routine=self.inventory.routine, debug=self.debug)
-            self.render(page)
+            if isinstance(page, basestring):
+                print page,
+            else:
+                self.render(page)
         except:
             noErrors=False
             errmsg = self.generateDebugInfo()
