@@ -21,13 +21,14 @@ class GulpWizard(base):
     
     class Inventory(base.Inventory):
         
-        import pyre.inventory
+        import pyre.inventory as inv
         
-        pass
-    
-   
+        librarycontent = inv.str('librarycontent')
+        libraryname = inv.str('libraryname')
+        configurations = inv.str('configurations')
 
-        
+        pass
+
 
     def configureSimulation(self, director):
         type = self.inventory.type = 'gulpsimulations'
@@ -46,26 +47,60 @@ class GulpWizard(base):
         
         main = page._body._content._main
         document = main.document(title='Atomic-level Simulation with Forcefields' )
-        document.byline = '<a href="http://danse.us">DANSE</a>'    
+
+        args = {
+            'simulationId': id,
+            'matterId':simulation.matter.id,
+            }
+        callbackArgs = {
+            'cgihome':director.cgihome,
+            'sentry.username':director.sentry.username,
+            'sentry.ticket':director.sentry.ticket,
+            'simulationId': id,
+            'actor': self.name,
+            'routine': 'storeConfiguration',
+            'actor.id':id,
+            }
+        args.update(callbackArgs)
         
-        formcomponent = self.retrieveFormToShow( 'gulp')
-        formcomponent.director = director
-        # build the form form
-        form = document.form(name='', action=director.cgihome)
-        # specify action
-        action = actionRequireAuthentication(          
-            actor = 'gulpsimulationwizard', 
-            sentry = director.sentry,
-            routine = 'verifySimulation',
-            id=id, 
-            type=type,
-            arguments = {'form-received': formcomponent.name },
+        from vnf.components.JnlpFile import JnlpFile
+        jnlpFile = JnlpFile(
+            resources=('GULP.jar', 'j2ssh.jar', 'commons-logging.jar','pg74.216.jdbc3.jar'),
+            mainClass='javagulp.controller.LaunchGulpUi',
+            programArguments = args,
+            fileName='gulpLauncher',
             )
-        from vnf.weaver import action_formfields
-        action_formfields( action, form )
-        # expand the form with fields of the data object that is being edited
-        formcomponent.expand( form , id = id, matterId = simulation.matter.id)
-        next = form.control(name='submit',type="submit", value="next")
+        relativeLocationOfFile = jnlpFile.writeJnlp(director)
+        
+        p = document.paragraph()
+        p.text = ['''The Gulp simulation package uses classical foarcefield
+        techniques for simulating larger systems.  Its capabilities include forcefields from 
+        a large number of trial functions, phonon / molecular dynamics, experimental data fitting,
+        and crystal property calculation.  This dynamics information 
+        can be used in inelastic neutron scattering kernels and 
+        to simulate a thermodynamically equilibrated structure which can be used to refine
+        diffraction, sans, reflectometry, and engineering diffraction neutron scattering
+        measurements.<br>''',
+        '<center><a href="'+relativeLocationOfFile+'"><img src="images/webstart.gif" alt="GulpUI"/></a></center>']
+
+        p = document.paragraph()
+        p.text = ['''Press "Launch" above to activate the Gulp UI in Java Web Start mode.  Note you must have
+        a Java Virtual Machine (JVM) installed somewhere on your computer.  Most OS's will automatically
+        use the javaws application within a user's JVM to open the xml descripter (.jnlp file) that will be
+        downloaded clientside.''']
+
+        action = actionRequireAuthentication(
+            label = 'next',
+            sentry = director.sentry,
+            actor = 'gulpsimulationwizard', 
+            routine = 'advancedConfiguration',
+            id=id, type=type,
+            )
+        link = action_link(action, director.cgihome)
+
+        p = document.paragraph()
+        p.text = [link]
+        
         return page 
     
 #    def verifySimulation(self, director):
@@ -92,7 +127,8 @@ class GulpWizard(base):
         except AuthenticationError, err:
             return err.page
 
-        configurations, library = self.processFormInputs(director)
+        configurations = self.inventory.configurations
+        library = self.inventory.libraryname, self.inventory.librarycontent
         
         simulation = self._getSimulation(director)
 
@@ -107,67 +143,53 @@ class GulpWizard(base):
         open(director.dds.abspath(simulation, filename=filename), 'w').write(content)
 
         return 'success'
+
+
+    def advancedConfiguration(self, director):
+        try:
+            page = self._retrievePage(director)
+        except AuthenticationError, err:
+            return err.page
+
+        main = page._body._content._main
+        document = main.document(title='Gulp: advanced configuration' )
+
+        formcomponent = self.retrieveFormToShow( 'gulp-advanced')
+        formcomponent.director = director
+        
+        # build the form 
+        form = document.form(name='', action=director.cgihome)
+        # specify action
+        action = actionRequireAuthentication(          
+            actor = 'abinitiowizard', 
+            sentry = director.sentry,
+            routine = 'verifyAdvancedGULPConfiguration',
+            id=id, type=type,
+            arguments = {'form-received': formcomponent.name },
+            )
+        from vnf.weaver import action_formfields
+        action_formfields( action, form )
+        
+        # expand the form with fields from the form component
+        formcomponent.expand(form, **inputs)
+        next = form.control(name='submit',type="submit", value="next")
+
+        p = document.paragraph()
+        action = actionRequireAuthentication(
+            label = 'skip',
+            actor = 'gulpwizard',
+            sentry = director.sentry,
+            routine = 'createJob',
+            id = id, type = type,
+            )
+        link = action_link(action, director.cgihome)
+        p.text = [
+            'You can %s this step.' % link,
+            ]
+            
+        return
+        
     
-   
-    def createGulpInputs(self, director):
-        # vasp computation configurations
-        simulation = self._getSimulation(director)
-
-        # make a copy of this computation
-        computation = director.clerk.deepcopy(simulation)
-        # change description
-        computation.short_description = 'generate vasp inputs for computation %s' \
-                                        % simulation.id
-
-        # make sure this computation only generate input files
-        computation.generateInputsOnly = True
-        director.clerk.updateRecord(computation)
-        
-        # create a job for this computation
-        from vnf.components.Job import new_job
-        job = new_job(director)
-
-        # connect this job to the computation
-        computation.job = job
-        director.clerk.updateRecord(computation)
-        job.computation = computation
-        director.clerk.updateRecord(job)
-        
-        # submit this job
-        from vnf.components.Job import submit
-        submit(job, director)
-
-        # the server this job was submitted to
-        server = job.server.dereference(director.clerk.db)
-        
-        #  check whether input files were generated
-        #  try 10 times
-        count = 0; gotfiles = 0
-        while count<10:
-            count += 1
-            try:
-                director.dds.remember(job, files=files, server=server)
-                gotfiles = 1
-                break
-            except:
-                time.sleep(1)
-                continue
-        if not gotfiles:
-            raise RuntimeError, 'unable to generate VASP input files'
-
-        #  copy them to the vnf server
-        director.dds.make_available(job, files=files)
-
-        d = {}
-        for f in files:
-            d[f] = open(director.dds.abspath(job, f)).read()
-            continue
-
-        # !!!should delete the computation that is only for
-        # creating the vasp inputs here!!!
-        return d
-   
-
     pass # end of GulpWizard
 
 
