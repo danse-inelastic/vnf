@@ -84,8 +84,8 @@ class WebApplication(Base):
                 self.render(page)
         except:
             noErrors=False
-            errmsg = self.generateDebugInfo()
-            self.redirect(actor='bug-report', routine='default', bugid = id, traceback = errmsg)
+            bugid, errmsg = self.generateDebugInfo()
+            self.redirect(actor='bug-report', routine='default', bugid = bugid, traceback = errmsg)
             
         if noErrors and self.debug:
             self.generateDebugInfo('generic')
@@ -117,7 +117,7 @@ class WebApplication(Base):
         text = '\n'.join(text)
         open(inputspath, 'w').write(text)
 
-        return errmsg
+        return id, errmsg
             
 
     
