@@ -16,8 +16,8 @@ from vnf.components.MaterialSimulationWizard import \
 from vnf.components.MaterialSimulationWizard import MaterialSimulationWizard as base
 
 
-GULP_INPUT_FILE = 'gulp.in'
 
+from vnf.dom.GulpSimulation import GulpSimulation
 
     
 class GulpWizard(base):
@@ -139,7 +139,7 @@ class GulpWizard(base):
         p = document.paragraph()
         action = actionRequireAuthentication(
             label = 'start',
-            actor = 'abinitiowizard', 
+            actor = 'gulpsimulationwizard', 
             sentry = director.sentry,
             routine = 'submitSimulation',
             id=id, type=type,
@@ -148,7 +148,7 @@ class GulpWizard(base):
         
         action = actionRequireAuthentication(
             label = 'save it for latter submission',
-            actor = 'abinitiowizard', 
+            actor = 'gulpsimulationwizard', 
             sentry = director.sentry,
             routine = 'saveSimulation',
             id=id, type=type,
@@ -157,7 +157,7 @@ class GulpWizard(base):
         
         action = actionRequireAuthentication(
             label = 'delete',
-            actor = 'abinitiowizard', 
+            actor = 'gulpsimulationwizard', 
             sentry = director.sentry,
             routine = 'cancel',
             id=id, type=type,
@@ -178,18 +178,23 @@ class GulpWizard(base):
             return err.page
 
         configurations = self.inventory.configurations
-        library = self.inventory.libraryname, self.inventory.librarycontent
+        libraryname = self.inventory.libraryname
+        librarycontent = self.inventory.librarycontent
         
         simulation = self._getSimulation(director)
 
         #create data directory for the simulation if necessary
         datadir = director.dds.abspath(simulation)
         if not os.path.exists(datadir): os.makedirs(datadir)
-            
-        open(director.dds.abspath(simulation, filename=GULP_INPUT_FILE), 'w').write(configurations)
 
-        filename, content = library
-        open(director.dds.abspath(simulation, filename=filename), 'w').write(content)
+        configurationfile = director.dds.abspath(simulation, filename=GulpSimulation.CONFIGURATION_FILE)
+        open(configurationfile, 'w').write(configurations)
+
+        libpointerfile = director.dds.abspath(simulation, filename=GulpSimulation.LIBPOINTER_FILE)
+        open(libpointerfile, 'w').write(libraryname)
+
+        libfile = director.dds.abspath(simulation, filename=libraryname)
+        open(libfile, 'w').write(librarycontent)
 
         return 'success'
 
@@ -199,7 +204,7 @@ class GulpWizard(base):
 
 import os
 def isConfigured(sim, director):
-    path = director.dds.abspath(sim, filename=GULP_INPUT_FILE)
+    path = director.dds.abspath(sim, filename=GulpSimulation.CONFIGURATION_FILE)
     if os.path.exists(path): return True
     return False
 

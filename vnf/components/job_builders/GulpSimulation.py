@@ -22,15 +22,32 @@ class Builder(base):
         return
 
     def render(self, computation, db=None, dds=None):
-        files = [self.gulp_inputfile]
+        Computation = self.Computation
+
+        # find out the file name of the gulp library file
+        libptr = dds.abspath(computation, filename=Computation.LIBPOINTER_FILE)
+        libname = open(libptr).read().strip()
+
+        # two files need to be copied to job directory
+        # 1. gulp.gin
+        # 2. the library file
+        files = [Computation.CONFIGURATION_FILE, libname]
+
+        # copy files to job directory
+        job = computation.job.dereference(db)
+        for f in files:
+            dds.copy(computation, f, job, f)
+
+        # add run.sh
         files.append( self._make_script(computation) )
         return files
 
-    gulp_inputfile = "gulp.gin"
     def _make_script(self, computation):
+        Computation = self.Computation
+        
         cmds = [
             'source ~/.gulp-env',
-            'gulp < %s' % self.gulp_inputfile
+            'gulp < %s > gulp.out' % Computation.CONFIGURATION_FILE
             ]
         path = self._path(self.shscriptname)
         open(path, 'w').write('\n'.join(cmds))

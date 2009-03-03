@@ -17,10 +17,12 @@ class GulpSimulation(base):
     name = 'gulpsimulations'
     
     import pyre.db
-    
+
+    CONFIGURATION_FILE = 'gulp.gin'
+    LIBPOINTER_FILE = 'gulp.libs'
     datafiles = [
-        'gulp.gin', 
-        'gulp.lib',
+        CONFIGURATION_FILE,
+        LIBPOINTER_FILE,
         ]
 
 
