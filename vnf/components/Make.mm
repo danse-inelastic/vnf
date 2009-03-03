@@ -58,7 +58,6 @@ EXPORT_PYTHON_MODULES = \
 	Form.py \
 	FormActor.py \
 	Geometer.py \
-	Greeter.py \
 	Instrument.py \
 	InstrumentShapeRenderer.py \
 	JnlpFile.py \
