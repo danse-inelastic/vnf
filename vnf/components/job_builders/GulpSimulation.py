@@ -47,7 +47,7 @@ class Builder(base):
         
         cmds = [
             'source ~/.gulp-env',
-            'gulp < %s > gulp.out' % Computation.CONFIGURATION_FILE
+            'gulp < %s > gulp.out' % Computation.CONFIGURATION_FILE,
             ]
         path = self._path(self.shscriptname)
         open(path, 'w').write('\n'.join(cmds))
