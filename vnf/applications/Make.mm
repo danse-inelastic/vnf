@@ -23,7 +23,6 @@ all: export
 # export
 
 EXPORT_PYTHON_MODULES = \
-	configurationSaver.py \
 	ApproveUser.py \
 	LaunchDetached.py \
 	MigrateTable.py \
@@ -31,7 +30,9 @@ EXPORT_PYTHON_MODULES = \
 	RetrieveResults.py \
 	SubmitJob.py \
 	WebApplication.py \
-	__init__.py
+	__init__.py \
+	configurationSaver.py \
+	utils.py \
 
 
 export:: export-package-python-modules

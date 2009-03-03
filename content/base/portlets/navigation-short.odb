@@ -21,8 +21,9 @@ actor2menu = {
     'neutronexperiment': 'experiments',
     'sample': 'samples',
     'instrument': 'instruments',
+    'settings': 'settings',
+    'contactus': 'contactus',
     'logout': 'logout',
-    'contactus': 'contactus'
     }
 
 def portlet(app):
@@ -79,6 +80,17 @@ def portlet(app):
     instruments.icon = "images/link_icon.gif"
     instruments.type = "navItem"
     
+    settings = portlet.item(description="Settings")
+    settings.target = action_href(
+        actionRequireAuthentication(
+            label = 'Settings',
+            sentry = app.sentry,
+            actor = 'settings',
+            ),
+        app.cgihome)
+    settings.icon = "images/link_icon.gif"
+    settings.type = "navItem"
+
     contactus = portlet.item(description="Contact us")
     contactus.target = action_href(
         actionRequireAuthentication(

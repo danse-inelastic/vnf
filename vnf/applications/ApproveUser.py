@@ -23,6 +23,10 @@ class ApproveUser(base):
         clerk = pyre.inventory.facility(name="clerk", factory=vnf.components.clerk)
         clerk.meta['tip'] = "the component that retrieves data from the various database tables"
 
+        import opal.components
+        sentry = pyre.inventory.facility("sentry", factory=opal.components.sentry)
+        sentry.meta['tip'] = "the ipa session manager"
+
         debug = pyre.inventory.bool(name='debug', default=False)
         pass # end of Inventory
         
@@ -47,6 +51,9 @@ class ApproveUser(base):
         announce(self, 'user-approval', user)
         # alert administrators
         announce(self, 'user-approval-alert', user)
+
+        from utils import askIpadToReload
+        askIpadToReload(self)
         return
 
 
@@ -61,6 +68,8 @@ class ApproveUser(base):
 
         self.debug = self.inventory.debug
 
+        self.sentry = self.inventory.sentry
+        
         self.clerk = self.inventory.clerk
         self.clerk.director = self
         return

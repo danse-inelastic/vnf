@@ -184,10 +184,17 @@ class Clerk(Component):
         '''retrieve user of given username'''
         from vnf.dom.User import User
         all = self.db.fetchall( User, where = "username='%s'" % username )
-        assert len(all) == 1
+        assert len(all) == 1, 'found %s users for username %r' % (len(all), username)
         return all[0]
     
         
+    def getRegistrant(self, username):
+        from vnf.dom.Registrant import Registrant as Table
+        all = self.db.fetchall( Table, where = "username='%s'" % username )
+        assert len(all) == 1, 'found %s registrants for username %r' % (len(all), username)
+        return all[0]
+
+
     def getInstrument(self, id):
         '''retrieve instrument of given id'''
         from vnf.dom.Instrument import Instrument
