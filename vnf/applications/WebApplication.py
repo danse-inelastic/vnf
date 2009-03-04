@@ -85,7 +85,14 @@ class WebApplication(Base):
         except:
             noErrors=False
             bugid, errmsg = self.generateDebugInfo()
-            self.redirect(actor='bug-report', routine='default', bugid = bugid, traceback = errmsg)
+            #self.redirect(actor='bug-report', routine='default', bugid = bugid, traceback = errmsg)
+            actor = self.retrieveActor('bug-report')
+            if actor is None: raise
+            self.configureComponent(actor)
+            actor.inventory.bugid = bugid
+            actor.inventory.traceback = errmsg
+            page = actor.perform(self, routine='default')
+            self.render(page)
             
         if noErrors and self.debug:
             self.generateDebugInfo('generic')
