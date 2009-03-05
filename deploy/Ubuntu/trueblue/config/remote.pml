@@ -18,7 +18,7 @@
     <component name="remote">
         <property name="host">131.215.30.140</property>
         <property name="port">50000</property>
-        <property name="key">ctvxnh5odq60w9yk</property>
+        <property name="key">rjghw8pm29d34kiv</property>
     </component>
 
 </inventory>
