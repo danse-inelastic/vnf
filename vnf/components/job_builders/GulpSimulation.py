@@ -39,19 +39,41 @@ class Builder(base):
             dds.copy(computation, f, job, f)
 
         # add run.sh
+        files.append( self._make_script1(computation) )
         files.append( self._make_script(computation) )
         return files
 
+
     def _make_script(self, computation):
+        job = computation.job.dereference(self.db)
+        np = job.numprocessors
+        cmds = [
+            '#!/usr/bin/env sh',
+            '. ~/.gulp-env',
+            'chmod +x %s' % self.shscript1name,
+            'mpirun -np %d ./%s' % (np, self.shscript1name),
+            '',
+            ]
+        script = self.shscriptname
+        path = self._path(script)
+        open(path, 'w').write('\n'.join(cmds))
+        return script
+        
+
+    shscript1name = 'run1.sh'
+    def _make_script1(self, computation):
         Computation = self.Computation
         
         cmds = [
-            'source ~/.gulp-env',
+            '#!/usr/bin/env sh',
+            '. ~/.gulp-env',
             'gulp < %s > gulp.out' % Computation.CONFIGURATION_FILE,
+            '',
             ]
-        path = self._path(self.shscriptname)
+        script = self.shscript1name
+        path = self._path(script)
         open(path, 'w').write('\n'.join(cmds))
-        return self.shscriptname
+        return script
 
 
 # version
