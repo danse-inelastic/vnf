@@ -34,7 +34,14 @@ def table(experiments, director):
         return action_link(action, director.cgihome)
     def getSample(exp):
         from vnf.components.NeutronExperimentWizard import _get_sample_from_experiment
-        sample = _get_sample_from_experiment(exp, director.clerk.db)
+        try:
+            sample = _get_sample_from_experiment(exp, director.clerk.db)
+        except:
+            # sample not defined correctly
+            import traceback
+            tb = traceback.format_exc()
+            raise RuntimeError, "Experiment #%s: sample not defined correctly.\n%s" % (exp.id, tb)
+        
         if not sample: return 'not defined'
         label = sample.short_description or sample.id
         return label
