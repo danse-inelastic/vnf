@@ -33,6 +33,7 @@ EXPORT_DATAFILES = \
 	approveUser.py \
 	checkdb.py \
 	createInstrument.py \
+	delete.py \
 	idd.py \
 	initdb.py \
 	ipad.py \

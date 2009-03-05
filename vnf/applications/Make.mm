@@ -24,6 +24,7 @@ all: export
 
 EXPORT_PYTHON_MODULES = \
 	ApproveUser.py \
+	Delete.py \
 	LaunchDetached.py \
 	MigrateTable.py \
 	PackJobDir.py \

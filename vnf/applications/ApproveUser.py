@@ -57,7 +57,7 @@ class ApproveUser(base):
         return
 
 
-    def __init__(self, name='submitjob'):
+    def __init__(self, name='approveUser'):
         base.__init__(self, name)
         return
 
