@@ -23,7 +23,6 @@ class Actor(base):
         import pyre.inventory
 
         bugid = pyre.inventory.str('bugid')
-        traceback = pyre.inventory.str('traceback')
         
         pass # end of Inventory
 
@@ -54,8 +53,9 @@ class Actor(base):
             ]
 
         tracebackdoc = main.document(title='Traceback')
-        p = tracebackdoc.paragraph()
-        p.text = self.inventory.traceback.split('\n')
+        l = tracebackdoc.literal()
+        import sys, cgitb
+        l.text = cgitb.html((sys.exc_type, sys.exc_value, sys.exc_traceback)).splitlines()
 
         commentdoc = main.document(title='Comments')
         formcomponent = self.retrieveFormToShow(
@@ -73,7 +73,6 @@ class Actor(base):
             actor = 'bug-report', routine = 'verify',
             sentry = director.sentry,
             bugid = self.inventory.bugid,
-            traceback = self.inventory.traceback,
             arguments = {'form-received': formcomponent.name },
             )
         from vnf.weaver import action_formfields
@@ -134,6 +133,7 @@ class Actor(base):
         from vnf.components.misc import announce
         announcement = 'bug-report'
         username = director.sentry.username
+        if not username: return
         user = director.clerk.getUser(username)
         announce(director, announcement, user, self.inventory.bugid, comments)
         return

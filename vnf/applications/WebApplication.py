@@ -84,13 +84,12 @@ class WebApplication(Base):
                 self.render(page)
         except:
             noErrors=False
-            bugid, errmsg = self.generateDebugInfo()
-            #self.redirect(actor='bug-report', routine='default', bugid = bugid, traceback = errmsg)
+            bugid = self.generateDebugInfo()
+            #self.redirect(actor='bug-report', routine='default', bugid = bugid)
             actor = self.retrieveActor('bug-report')
             if actor is None: raise
             self.configureComponent(actor)
             actor.inventory.bugid = bugid
-            actor.inventory.traceback = errmsg
             page = actor.perform(self, routine='default')
             self.render(page)
             
@@ -124,7 +123,7 @@ class WebApplication(Base):
         text = '\n'.join(text)
         open(inputspath, 'w').write(text)
 
-        return id, errmsg
+        return id
             
 
     
