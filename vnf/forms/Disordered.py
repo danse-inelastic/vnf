@@ -16,6 +16,9 @@ from vnf.components.Form import Form as base
 from vnf.components.Actor import actionRequireAuthentication, action_link
 from vnf.components.DBObjectForm import formactor_action_prefix
 
+
+materialType = 'disordered'
+
 class Disordered( base ):
 
     class Inventory( base.Inventory ):

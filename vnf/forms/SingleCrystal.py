@@ -57,7 +57,7 @@ class SingleCrystal( base ):
         if not singleCrystalId:
             tableClass = director.clerk._getTable(materialType)
             record = director.clerk.newOwnedObject(tableClass)
-            singleCrystalId = self.inventory.singleCrystalId = record.singleCrystalId
+            singleCrystalId = self.inventory.singleCrystalId = record.id
         else:
             record = director.clerk.getRecordByID('singlecrystals', singleCrystalId)
             self.inventory.singleCrystalId = record.id
