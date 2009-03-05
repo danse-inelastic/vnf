@@ -123,7 +123,12 @@ class Scheduler:
         d = {}
         
         tag = 'Exit_status'
-        words = self._tracejob_search( jobid, tag )
+        try:
+            words = self._tracejob_search( jobid, tag )
+        except self.TracejobFailed:
+            # this job must have been terminated for a long time
+            return self.unknownTerminatedStatus(jobid)
+            
         status = words[3]
         key, value = status.split( '=' )
         assert key.lower() == 'exit_status'
@@ -142,6 +147,20 @@ class Scheduler:
             'state': 'terminated',
             } )
             
+        return d
+
+
+    def unknownTerminatedStatus(self, jobid):
+        d = {}
+        d['exit_code'] = 'unknown'
+        d['state'] = 'terminated'
+        output, error = self._readoutputerror(
+            self.outfilename, self.errfilename )
+
+        d.update( {
+            'output': output,
+            'error': error,
+            } )
         return d
 
 
@@ -170,7 +189,7 @@ class Scheduler:
         if failed:
             msg = "error in executing cmds %s. output: %s, error: %s" % (
                 cmds, output, error )
-            raise RuntimeError, msg
+            raise self.TracejobFailed, msg
 
         # remove trailing \n to make parsing easier
         if output.endswith( '\n' ): output = output[:-1] 
@@ -178,6 +197,8 @@ class Scheduler:
         words = lines[-1].split( )
         debug.log( 'words: %s' % words )
         return words
+
+    class TracejobFailed(Exception): pass
     
 
     def _launch(self, cmds):
