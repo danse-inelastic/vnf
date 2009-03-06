@@ -217,10 +217,14 @@ import os
 
 def _walltime_str(time):
     seconds = int(time/second)%60
+    seconds = '%0*d' % (2, seconds)
+    
     mins = int(time/minute)%60
+    mins = '%0*d' % (2, mins)
+    
     hours = int(time/hour)
-    from datetime import time
-    return str(time(hours, mins, seconds))
+    hours = str(hours)
+    return ':'.join([hours, mins, seconds])
 
 _states = {
     'C': 'finished',
