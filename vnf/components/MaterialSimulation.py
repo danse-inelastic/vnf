@@ -14,31 +14,31 @@
 
 class Engine:
 
-    def __init__(self, id, short_description, long_description):
+    def __init__(self, id, short_description, long_description, nickname = ''):
         self.id = id
         self.short_description = short_description
         self.long_description = long_description
+        self.nickname = nickname
         return
     
 
-basic_engines = [
-    Engine('gulpsimulations', 'Gulp', ''),
-    Engine('mmtksimulations', "Mmtk Newton's Equations", ''),
-    Engine('localOrbitalHarmonic', 'Local Orbital DFT Energies, Harmonic Dynamics', ''),
-    Engine('abinitio','Plane Wave DFT Energies, Harmonic Dynamics',''),
-    ]
+basic_engines = {
+    'gulp': Engine('gulpsimulations', 'Gulp', '', 'gulp'),
+    #'mmtksimulations': Engine('mmtksimulations', "Mmtk Newton's Equations", ''),
+    #'fireball': Engine('localOrbitalHarmonic', 'Local Orbital DFT Energies, Harmonic Dynamics', ''),
+    'vasp': Engine('abinitio','Plane Wave DFT Energies, Harmonic Dynamics','', 'vasp')}
 
 
 def engines():
-    ret = list(basic_engines)
+    ret = dict(basic_engines)
     from vnf import extensions
     for ext in extensions:
         p = _import('vnf.components.%s' % ext)
         try:
-            more = p.materialSimulationEngines()
+            moreEngines = p.materialSimulationEngines()
         except AttributeError:
             continue
-        ret += more
+        ret.update(moreEngines)
     return ret
 
 

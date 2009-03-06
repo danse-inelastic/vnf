@@ -15,9 +15,7 @@
 from vnf.components.MaterialSimulation import Engine
 
 def materialSimulationEngines():
-    return [
-        Engine('bvkcomputations', 'Born von Karman Lattice Dynamics', ''),
-        ]
+    return {'bvk': Engine('bvkcomputations', 'Born von Karman Lattice Dynamics', '', 'bvk')}
 
 
 

@@ -18,7 +18,7 @@
     <component name="idd-session">
         <property name="marshaller">idd-pickler</property>
         <property name="host">131.215.30.140</property>
-        <property name="port">50002</property>
+        <property name="port">50003</property>
 
         <component name="idd-pickler">
             <property name="key">loe125sf9jniaqvm</property>

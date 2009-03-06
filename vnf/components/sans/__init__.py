@@ -16,9 +16,7 @@
 from vnf.components.MaterialSimulation import Engine
 
 def materialSimulationEngines():
-    return [
-        Engine('sansmodels', 'Sans Models', ''),
-        ]
+    return {'sans': Engine('sansmodels', 'Sans Models', '', 'sans')}
 
 
 
