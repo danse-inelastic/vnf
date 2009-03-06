@@ -11,21 +11,21 @@
 
 
 def announcement(user, comments):
-    import vnf.content
+    import vnf.content, time
 
     msg = vnf.content.announcement()
     msg.sender = user.email
-    msg.subject = "User feed back from %s" % user.fullname
+    msg.subject = "User feed back from %s. (%s)" % (user.fullname, time.ctime(),)
     msg.text = [
 """
-User %(username)s has left the following comments:
+User %(fullname)s has left the following comments:
 
 %(comments)s
 """
         ]
 
     subs = {
-        'username': user.username,
+        'fullname': user.fullname,
         'comments': comments,
         }
 

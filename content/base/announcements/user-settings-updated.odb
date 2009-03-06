@@ -11,11 +11,11 @@
 
 
 def announcement(name, emails):
-    import vnf.content
+    import vnf.content, time
 
     msg = vnf.content.announcement()
     msg.sender = "linjiao@caltech.edu"
-    msg.subject = "Vnf account updated"
+    msg.subject = "Vnf account updated - %s. (%s)" % (name, time.ctime())
     msg.text = [
         """
     Dear %(name)s,

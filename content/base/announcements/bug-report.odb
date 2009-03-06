@@ -16,7 +16,7 @@ def announcement(user, bugid, comments):
     msg = vnf.content.announcement()
     msg.sender = user.email
     #msg.sender = 'linjiao@caltech.edu'
-    msg.subject = "User feed back from %s" % user.fullname
+    msg.subject = "User feed back from %s about bug #%s" % (user.fullname, bugid)
     msg.text = [
 """
 User %(username)s has left the following comments for bug
