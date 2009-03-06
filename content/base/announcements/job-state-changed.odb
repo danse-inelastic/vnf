@@ -42,6 +42,18 @@ DANSE-vnf team.
 
     return msg
 
+
+def test():
+    class job:
+        state = 'finished'
+        id = 'abcde'
+    class user:
+        fullname = 'full name'
+        email = 'linjiao@caltech.edu'
+    print announcement(job, user)
+    
+if __name__ == '__main__': test()
+
 # version
 __id__ = "$Id$"
 

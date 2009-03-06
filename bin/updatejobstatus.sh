@@ -1,3 +1,3 @@
-#!/usr/bin/env bash
+#!/usr/bin/env sh
 
-./timer.py --command="./launch-detached.py -cmd=./updatejobstatus.py -home=`pwd`" -interval=10*second
+./timer.py --command="./launch-detached.py -cmd=./updatejobstatus.py -home=`pwd`" -interval=10*second &

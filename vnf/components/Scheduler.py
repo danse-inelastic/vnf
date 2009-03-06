@@ -80,7 +80,7 @@ def check( job, director ):
 
     if oldstate != newstate:
         # alert user
-        user = director.clerk.dereference(job.creator)
+        user = director.clerk.getUser(job.creator)
         
         from vnf.components.misc import announce
         announce(director, 'job-state-changed', job, user)

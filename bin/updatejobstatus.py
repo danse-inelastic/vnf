@@ -22,7 +22,14 @@ def main():
 
 
         def _getPrivateDepositoryLocations(self):
-            return ['../config']
+            from os.path import join
+            root = '..'
+            content = join(root, 'content')
+            config = join(root, 'config')
+            
+            from vnf.depositories import depositories
+            
+            return depositories(content)+[config]
 
 
     app = App()
