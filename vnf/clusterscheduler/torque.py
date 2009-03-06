@@ -152,7 +152,7 @@ class Scheduler:
 
     def unknownTerminatedStatus(self, jobid):
         d = {}
-        d['exit_code'] = 'unknown'
+        d['exit_code'] = '999999'
         d['state'] = 'terminated'
         output, error = self._readoutputerror(
             self.outfilename, self.errfilename )

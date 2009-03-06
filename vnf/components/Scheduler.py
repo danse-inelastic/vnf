@@ -53,6 +53,8 @@ def check( job, director ):
     if job.state in ['finished', 'failed', 'terminated']:
         return job
 
+    oldstate = job.state
+    
     #scheduler
     server = director.clerk.dereference(job.server)
     scheduler = schedulerfactory( server )
@@ -73,6 +75,16 @@ def check( job, director ):
         continue
 
     director.clerk.updateRecord( job )
+
+    newstate = job.state
+
+    if oldstate != newstate:
+        # alert user
+        user = director.clerk.dereference(job.creator)
+        
+        from vnf.components.misc import announce
+        announce(director, 'job-state-changed', job, user)
+        
     return job
 
 

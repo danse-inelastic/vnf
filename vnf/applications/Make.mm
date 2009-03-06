@@ -30,6 +30,8 @@ EXPORT_PYTHON_MODULES = \
 	PackJobDir.py \
 	RetrieveResults.py \
 	SubmitJob.py \
+	Timer.py \
+	UpdateJobStatus.py \
 	WebApplication.py \
 	__init__.py \
 	configurationSaver.py \

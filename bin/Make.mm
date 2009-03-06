@@ -38,12 +38,14 @@ EXPORT_DATAFILES = \
 	initdb.py \
 	ipad.py \
 	journald.py \
-	jsud.py \
 	launch-detached.py \
 	migratetable.py \
 	packjobdir.py \
 	retrieveresults.py \
 	submitjob.py \
+	timer.py \
+	updatejobstatus.py \
+	updatejobstatus.sh \
 
 
 CP_F = rsync 

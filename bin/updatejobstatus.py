@@ -15,10 +15,10 @@
 def main():
 
 
-    from vnf.services.JSUDaemon import Daemon
+    from vnf.applications.UpdateJobStatus import UpdateJobStatus
 
 
-    class App(Daemon):
+    class App(UpdateJobStatus):
 
 
         def _getPrivateDepositoryLocations(self):
@@ -26,7 +26,7 @@ def main():
 
 
     app = App()
-    return app.run(spawn=True)
+    return app.run()
 
 
 # main
