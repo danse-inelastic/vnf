@@ -38,7 +38,9 @@ class Timer(base):
         t1.start()
         
         try:
-            while 1: continue
+            while 1:
+                time.sleep(self.interval*100)
+                continue
         except KeyboardInterrupt :
             pass
         
