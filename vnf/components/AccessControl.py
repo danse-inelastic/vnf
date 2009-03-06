@@ -26,11 +26,8 @@ class AccessControl:
         # if instrument is owned by users other than "vnf", no
         if instrument.creator != 'vnf':
             return False
-        # check special privilege
-        any = instrument.__class__()
-        any.id = 'any'
-        if self._checkPrivilege(user, any): return True
-        return self._checkPrivilege(user, instrument)
+        # for now allow anyone to access any instruments
+        return True
     
 
     def _checkPrivilege(self, user, privilege):
