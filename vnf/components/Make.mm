@@ -63,7 +63,6 @@ EXPORT_PYTHON_MODULES = \
 	JnlpFile.py \
 	Job.py \
 	JobBuilder.py \
-	Login.py \
 	Logout.py \
 	MaterialSimulation.py \
 	MaterialSimulationWizard.py \
