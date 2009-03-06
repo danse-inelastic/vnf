@@ -32,6 +32,8 @@ import journal
 debug = journal.debug( 'torque' )
 
 
+from pyre.units.time import hour, minute, second
+
 
 class Scheduler:
 
@@ -47,9 +49,11 @@ class Scheduler:
         return
     
     
-    def submit( self, cmd ):
-        cmds = [ r'echo \"%s\" | qsub  -o %s -e %s' % (
-            cmd,self.outfilename,self.errfilename) ]
+    def submit( self, cmd, walltime=1*hour ):
+        walltime = _walltime_str(walltime)
+        
+        cmds = [ r'echo \"%s\" | qsub -l walltime=%s -o %s -e %s' % (
+            cmd, walltime, self.outfilename, self.errfilename) ]
         failed, output, error = self._launch( cmds )
         if failed:
             if error.find( 'check pbs_server daemon' ) != -1:
@@ -209,6 +213,14 @@ class Scheduler:
 
 import os
 
+
+
+def _walltime_str(time):
+    seconds = int(time/second)%60
+    mins = int(time/minute)%60
+    hours = int(time/hour)
+    from datetime import time
+    return str(time(hours, mins, seconds))
 
 _states = {
     'C': 'finished',

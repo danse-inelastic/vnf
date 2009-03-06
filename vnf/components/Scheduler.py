@@ -32,7 +32,10 @@ def schedule( job, director ):
     scheduler = scheduler(launch, prefix = 'source ~/.vnf' )
 
     # submit job through scheduler
-    id1 = scheduler.submit( 'cd %s && sh run.sh' % server_jobpath )
+    walltime = job.walltime
+    from pyre.units.time import hour
+    walltime = walltime*hour
+    id1 = scheduler.submit( 'cd %s && sh run.sh' % server_jobpath, walltime=walltime )
 
     # write id to the remote directory
     director.csaccessor.execute('echo "%s" > jobid' % id1, server, server_jobpath)

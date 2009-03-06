@@ -38,14 +38,60 @@ class TestApp(Base):
             username = 'linjiao'
             workdir = '/home/linjiao/vnfjobs'
 
+        self.test1(scheduler, server)
+        self.test2(scheduler, server)
+        return
+
+
+    def test1(self, scheduler, server):
         torqueid = '231'
         jobremotedir = '/home/linjiao/vnfjobs/jobs/MCDFU'
         launch = lambda cmd: self.csaccessor.execute(
             cmd, server, jobremotedir, suppressException=True)
 
         scheduler = scheduler(launch, prefix = 'source ~/.vnf' )
-
         print scheduler.status(torqueid)
+        return
+
+
+    def test2(self, scheduler, server):
+        csaccessor = self.csaccessor
+        remotetmp = '/home/linjiao/tmp'
+        testdir = 'test-torque-submit'
+
+        #clean up
+        csaccessor.execute('rm -rf ' + testdir, server, remotetmp)
+        #copy over
+        csaccessor.pushdir(testdir, server, remotetmp)
+        
+        jobremotedir = remotetmp + '/' + testdir
+        launch = lambda cmd: self.csaccessor.execute(
+            cmd, server, jobremotedir, suppressException=True)
+
+        scheduler = scheduler(launch, prefix = 'source ~/.vnf' )
+
+        from pyre.units.time import second
+        jobid = scheduler.submit('cd %s && sh run.sh' % jobremotedir, walltime=second)
+
+        print jobid
+
+        import time
+        print '*'*60
+        print '> job should be running'
+        print scheduler.status(jobid)
+        
+        time.sleep(60)
+        print '*'*60
+        print '> job should be killed'
+        print scheduler.status(jobid)
+
+        errfilename = scheduler.errfilename
+        csaccessor.getfile(server, jobremotedir+'/'+errfilename, '.')
+        
+        err = open(errfilename).read()
+        print '*'*60
+        print '> Should get a meesage saying that walltime exceeded limit'
+        print err
         return
     
 

@@ -42,6 +42,11 @@ class Form(base):
             'Please input the number of processors',
             )
 
+        walltime = pyre.inventory.str( 'walltime', default = 1)
+        walltime.meta['label'] = 'Time limit (hours)'
+        walltime.meta['tip'] = (
+            'Please input a limit on the time your job will run. (Unit: hours)',
+            )
 
     DBTable = 'Job'
 
@@ -114,6 +119,15 @@ class Form(base):
             )
         field.help = meta['tip']
 
+        property = 'walltime'
+        meta = getattr( self.Inventory, property ).meta
+        field = form.text(
+            id = 'walltime',
+            name = '%s.walltime' % prefix,
+            label = meta['label'],
+            value = record.walltime,
+            )
+        field.help = meta['tip']
         return form
 
 
@@ -121,12 +135,14 @@ class Form(base):
         short_description = self.inventory.short_description
         server = self.inventory.server
         numprocessors = self.inventory.numprocessors
+        walltime = self.inventory.walltime
         
         record = self.getRecord()
 
         record.short_description = short_description
         record.server = server
         record.numprocessors = numprocessors
+        record.walltime = walltime
 
         director = self.director
         director.clerk.updateRecord( record )
