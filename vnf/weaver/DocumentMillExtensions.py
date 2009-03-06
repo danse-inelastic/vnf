@@ -58,19 +58,22 @@ class Extension1:
         htmlcode.append( '</ul>' )
         htmlcode.append( '</div>' )
 
-        includes = []
-        javascriptpath = configurations['javascriptpath']
-        includes.append( '<SCRIPT src="%s/jquery/jquery.js"></SCRIPT>' % javascriptpath )
-        includes.append( '<SCRIPT src="%s/jquery/ui/ui.core.js"></SCRIPT>' % javascriptpath )
-        includes.append( '<SCRIPT src="%s/jquery/ui/ui.slider.js"></SCRIPT>' % javascriptpath )
-        includes.append( '<SCRIPT src="%s/jquery/slidableGallery.js"></SCRIPT>' % javascriptpath )
-
-        jscode = []
-        jscode.append( '$(document).ready(function() {')
-        jscode.append( '$("#%s").slidableGallery( [] );' % gid )
-        jscode.append( '});' );
+        if len(gallery.images) < 8:
+            codes = csscode + htmlcode
+        else:
+            includes = []
+            javascriptpath = configurations['javascriptpath']
+            includes.append( '<SCRIPT src="%s/jquery/jquery.js"></SCRIPT>' % javascriptpath )
+            includes.append( '<SCRIPT src="%s/jquery/ui/ui.core.js"></SCRIPT>' % javascriptpath )
+            includes.append( '<SCRIPT src="%s/jquery/ui/ui.slider.js"></SCRIPT>' % javascriptpath )
+            includes.append( '<SCRIPT src="%s/jquery/slidableGallery.js"></SCRIPT>' % javascriptpath )
+            
+            jscode = []
+            jscode.append( '$(document).ready(function() {')
+            jscode.append( '$("#%s").slidableGallery( [] );' % gid )
+            jscode.append( '});' );
         
-        codes = csscode + includes + ['<script>']  + jscode + ['</script>'] + htmlcode
+            codes = csscode + includes + ['<script>']  + jscode + ['</script>'] + htmlcode
         return codes
 
 
