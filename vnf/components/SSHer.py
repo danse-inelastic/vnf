@@ -67,7 +67,7 @@ class SSHer(base):
             ]
 
         if port:
-            pieces.append( '-P %s' % port )
+            pieces.append( '-p %s' % port )
 
         if known_hosts:
             pieces.append( "-o 'UserKnownHostsFile=%s'" % known_hosts )
