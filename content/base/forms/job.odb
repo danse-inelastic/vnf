@@ -10,9 +10,7 @@
 #
 
 
-from vnf.components.Form import Form as base
-
-from vnf.components.DBObjectForm import formactor_action_prefix
+from vnf.components.Form import Form as base, InputProcessingError, formactor_action_prefix
 
 
 class Form(base):
@@ -41,11 +39,17 @@ class Form(base):
         numprocessors.meta['tip'] = (
             'Please input the number of processors',
             )
+        numprocessors.meta['tiponerror'] = (
+            'Please enter a positive integer',
+            )
 
         walltime = pyre.inventory.str( 'walltime', default = 1)
         walltime.meta['label'] = 'Time limit (hours)'
         walltime.meta['tip'] = (
             'Please input a limit on the time your job will run. (Unit: hours)',
+            )
+        walltime.meta['tiponerror'] = (
+            'Please enter a positive integer',
             )
 
     DBTable = 'Job'
@@ -109,6 +113,13 @@ class Form(base):
             )
         selector.help = meta['tip']
 
+        if director.sentry.username == 'demo':
+            # for demo user, we don't want them to use a lot of resources
+            # so let us hide those fields for the resources
+            form.hidden(name='%s.numprocessors' % prefix, value=1)
+            form.hidden(name='%s.walltime' % prefix, value=1)
+            return form
+        
         property = 'numprocessors'
         meta = getattr( self.Inventory, property ).meta
         field = form.text(
@@ -118,6 +129,7 @@ class Form(base):
             value = record.numprocessors,
             )
         field.help = meta['tip']
+        if errors and errors.get('numprocessors'): field.error = errors['numprocessors']
 
         property = 'walltime'
         meta = getattr( self.Inventory, property ).meta
@@ -128,14 +140,25 @@ class Form(base):
             value = record.walltime,
             )
         field.help = meta['tip']
+        if errors and errors.get('walltime'): field.error = errors['walltime']
         return form
 
 
     def processUserInputs(self):
+        errors = {}
+        
         short_description = self.inventory.short_description
         server = self.inventory.server
+        
         numprocessors = self.inventory.numprocessors
+        if not isPositiveInteger(numprocessors):
+            errors['numprocessors'] = self.Inventory.numprocessors.meta['tiponerror']
+            
         walltime = self.inventory.walltime
+        if not isPositiveInteger(walltime):
+            errors['walltime'] = self.Inventory.walltime.meta['tiponerror']
+
+        if errors: raise InputProcessingError, errors
         
         record = self.getRecord()
 
@@ -157,6 +180,12 @@ class Form(base):
         clerk = director.clerk
         return clerk.getRecordByID( self.DBTable, id )
 
+
+
+def isPositiveInteger(candiate):
+    try: value = int(candiate)
+    except: return False
+    return value > 0
 
 
 def _describe_computation(computation):
