@@ -12,7 +12,8 @@
 #
 
 
-from vnf.components.FormActor import FormActor as base, action, actionRequireAuthentication, action_link, InputProcessingError, AuthenticationError
+from vnf.components.FormActor import FormActor as base, action, \
+    actionRequireAuthentication, action_link, InputProcessingError, AuthenticationError
 
 
 class Actor(base):

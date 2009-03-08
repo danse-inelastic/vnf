@@ -30,9 +30,7 @@ class GulpWizard(base):
         librarycontent = inv.str('librarycontent')
         libraryname = inv.str('libraryname')
         configurations = inv.str('configurations')
-
         pass
-
 
     def configureSimulation(self, director):
         type = self.inventory.type = 'gulpsimulations'
