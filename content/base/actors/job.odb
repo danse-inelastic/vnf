@@ -65,6 +65,18 @@ class Actor(base):
         
         document = main.document( title = 'Job editor' )
 
+        p = document.paragraph()
+        p.text = [
+            'Your computation job will be submitted to a computing cluster.',
+            ]
+
+        p = document.paragraph()
+        clustermonitor_url = director.home + '/clustermonitor'
+        link = '<a href="%s">check</a>' % clustermonitor_url
+        p.text = [
+            'Please %s the loads of clusters before submission.' % link,
+            ]
+
         formcomponent = self.retrieveFormToShow( 'job' )
         formcomponent.inventory.id = id
         formcomponent.director = director
