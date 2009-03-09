@@ -81,11 +81,14 @@ class Actor(base):
             resdoc = document.document(title='Results')
             p = resdoc.paragraph()
             p.text = ['Here is the stdout file of the simulation:']
-            resdoc.textarea(
-                id = '',
-                name = 'gulpOutput',#'%s.%s' % (prefix, prop),
-                default = contents,
-                rows = 30)
+            #form = document.form(name='', action=director.cgihome)
+#            resdoc.textarea(
+#                id = '',
+#                name = 'gulpOutput',#'%s.%s' % (prefix, prop),
+#                default = contents,
+#                rows = 30)
+            l = resdoc.literal()
+            l.text = contents
             try:
                 p = resdoc.paragraph()
                 p.text = ['''A movie of the simulation can be accessed by launching 
