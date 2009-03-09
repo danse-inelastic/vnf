@@ -73,6 +73,42 @@ class Actor(base):
             gulpOutputFile = director.dds.abspath(job, 'gulp.out')
             # Use content/materialSimulation/actors/abinitio.odb/_view_vasp_results as an example
             f = file(gulpOutputFile)
+            
+            
+            
+            
+            contents = f.read()
+            
+            resdoc = document.document(title='Results')
+            p = resdoc.paragraph()
+            p.text = ['Here is the stdout file of the simulation:',
+                      '<pre>'+contents+'</pre>']
+            #form = document.form(name='', action=director.cgihome)
+#            resdoc.textarea(
+#                id = '',
+#                name = 'gulpOutput',#'%s.%s' % (prefix, prop),
+#                default = contents,
+#                rows = 30)
+            # 2. create a table. This is a quick hack--go back to pyre and put in *real* literal element
+            htmllines = []
+            htmllines.append('<table>')
+            for line in contents:
+                htmllines.append('<tr>')
+                htmllines.append('<td align="center">')
+                htmllines.append(line[:-1]) # this is to remove the newline character
+                htmllines.append('</td>')
+                htmllines.append('</tr>')
+                continue
+            htmllines.append('</table>')
+            l = resdoc.literal()
+            l.text = htmllines
+            
+            
+            
+            
+            
+            
+            
             contents = f.readlines()
             
             resdoc = document.document(title='Results')
@@ -101,7 +137,7 @@ class Actor(base):
                 p = resdoc.paragraph()
                 p.text = ['''A movie of the simulation can be accessed by launching 
                 the viewer below.''',
-                '<center><a href=JmolApp.jnlp><img src="images/webstart.gif" alt="Jmol"/></a></center>']
+                '<center><a href=/java/JmolApp.jnlp><img src="images/webstart.gif" alt="Jmol"/></a></center>']
                 
             except:
                 pass
