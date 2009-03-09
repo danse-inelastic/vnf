@@ -107,14 +107,14 @@ class Actor(base):
                 pass
             
             configurationdoc = document.document(title='Configuration')
-            self._view_configuration(computation, configurationdoc, director=director)
+            self._view_configuration(job, computation, configurationdoc, director=director)
         else:
             p = document.paragraph()
             p.text = ['The computation is not finished.  Please check back later.']
         return page
 
 
-    def _view_configuration(self, computation, document, director=None):
+    def _view_configuration(self, job, computation, document, director=None, job):
         p = document.paragraph()
         p.text = [
             'Gulp simulation #%s' % computation.id,
@@ -127,17 +127,11 @@ class Actor(base):
             ]
         
         gulpInputFile = director.dds.abspath(job, 'gulp.gin')
-        # Use content/materialSimulation/actors/abinitio.odb/_view_vasp_results as an example
+
         f = file(gulpIntputFile)
         contents = f.readlines()
 
         p.text = ['Here is the input file for the simulation:']
-        #form = document.form(name='', action=director.cgihome)
-#            resdoc.textarea(
-#                id = '',
-#                name = 'gulpOutput',#'%s.%s' % (prefix, prop),
-#                default = contents,
-#                rows = 30)
         # 2. create a table. This is a quick hack--go back to pyre and put in *real* literal element
         htmllines = []
         htmllines.append('<table>')
