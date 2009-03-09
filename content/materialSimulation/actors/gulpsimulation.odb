@@ -89,7 +89,8 @@ class Actor(base):
             try:
                 p = resdoc.paragraph()
                 p.text = ['''A movie of the simulation can be accessed by launching 
-                the viewer.''']
+                the viewer below.''',
+                '<center><a href=jmolVnf.jnlp><img src="images/webstart.gif" alt="Jmol"/></a></center>']
                 
             except:
                 pass

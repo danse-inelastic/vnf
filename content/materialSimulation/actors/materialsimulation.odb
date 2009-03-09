@@ -65,7 +65,7 @@ class Actor(base):
         if len(simulations):
             p = document.paragraph()
             p.text = [
-                'Following are simulations/models you have created:',
+                'The following are the simulations/models you have created:',
                 ]
             
             table = director.retrieveComponent(
