@@ -128,7 +128,7 @@ class Actor(base):
         
         gulpInputFile = director.dds.abspath(job, 'gulp.gin')
 
-        f = file(gulpIntputFile)
+        f = file(gulpInputFile)
         contents = f.readlines()
 
         p.text = ['Here is the input file for the simulation:']
