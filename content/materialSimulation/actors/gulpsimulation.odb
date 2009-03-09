@@ -114,7 +114,7 @@ class Actor(base):
         return page
 
 
-    def _view_configuration(self, job, computation, document, director=None, job):
+    def _view_configuration(self, job, computation, document, director=None):
         p = document.paragraph()
         p.text = [
             'Gulp simulation #%s' % computation.id,
