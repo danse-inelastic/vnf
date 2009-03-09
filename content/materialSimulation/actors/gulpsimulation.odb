@@ -73,7 +73,7 @@ class Actor(base):
             gulpOutputFile = director.dds.abspath(job, 'gulp.out')
             # Use content/materialSimulation/actors/abinitio.odb/_view_vasp_results as an example
             f = file(gulpOutputFile)
-            contents = f.readlines();
+            contents = f.readlines()
             
             resdoc = document.document(title='Results')
             p = resdoc.paragraph()
@@ -87,7 +87,7 @@ class Actor(base):
             # 2. create a table. This is a quick hack--go back to pyre and put in *real* literal element
             htmllines = []
             htmllines.append('<table>')
-            for line in content:
+            for line in contents:
                 htmllines.append('<tr>')
                 htmllines.append('<td align="center">')
                 htmllines.append(line[:-1]) # this is to remove the newline character
@@ -129,7 +129,7 @@ class Actor(base):
         gulpInputFile = director.dds.abspath(job, 'gulp.gin')
         # Use content/materialSimulation/actors/abinitio.odb/_view_vasp_results as an example
         f = file(gulpIntputFile)
-        contents = f.readlines();
+        contents = f.readlines()
 
         p.text = ['Here is the input file for the simulation:']
         #form = document.form(name='', action=director.cgihome)
@@ -141,7 +141,7 @@ class Actor(base):
         # 2. create a table. This is a quick hack--go back to pyre and put in *real* literal element
         htmllines = []
         htmllines.append('<table>')
-        for line in content:
+        for line in contents:
             htmllines.append('<tr>')
             htmllines.append('<td align="center">')
             htmllines.append(line[:-1]) # this is to remove the newline character
