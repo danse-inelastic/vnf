@@ -44,7 +44,7 @@ class Builder(base):
         xyzfilename = self._makeXYZfile(matter)
         
         params = [
-            ('name', matter.chemical_formula),
+            ('name', matter.chemical_formula or computation.short_description or computation.id),
             ('ecutoff', computation.kineticEnergyCutoff),
             ('xcf', computation.xcFunctional),
             ('mpmesh', ','.join([str(i) for i in computation.monkhorstPackMesh]) ),
