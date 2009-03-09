@@ -111,7 +111,7 @@ class Actor(base):
         gulpInputFile = director.dds.abspath(job, 'gulp.gin')
 
         f = file(gulpInputFile)
-        contents = f.readlines()
+        contents = f.read()
         # this is a hack--go back to pyre and put in *real* pre element
         p.text = ['Here is the input file for the simulation:',
                   '<pre>'+contents+'</pre>']
