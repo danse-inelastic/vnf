@@ -65,9 +65,34 @@ class Actor(base):
         self._view_configuration(computation, configurationdoc, director=director)
 
         if isdone(job):
+            server = director.clerk.dereference(job.server)
+            outputFiles = ['gulp.out'] # need to replace this with output file settings
+            try:
+                director.dds.remember(job, files=outputFiles, server=server)
+            except:
+                return self._alertResultsNotFound(document, director)
+            director.dds.make_available(job, files=outputFiles)
+            # now 'plot.dat' is available at vnf.caltech.edu with path 
+            gulpOutputFile = director.dds.abspath(job, 'gulp.out')
+            # Use content/materialSimulation/actors/abinitio.odb/_view_vasp_results as an example
+            f = file(gulpOutputFile)
+            contents = f.readlines();
+            
             resdoc = document.document(title='Results')
             p = resdoc.paragraph()
-            p.text = ['under construction.']
+            p.text = ['Here is the stdout file of the simulation:']
+            resdoc.textarea(
+                id = '',
+                name = 'gulpOutput',#'%s.%s' % (prefix, prop),
+                default = contents,
+                rows = 30)
+            try:
+                p = resdoc.paragraph()
+                p.text = ['''A movie of the simulation can be accessed by launching 
+                the viewer.''']
+                
+            except:
+                pass
         return page
 
 
