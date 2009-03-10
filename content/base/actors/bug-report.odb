@@ -23,6 +23,7 @@ class Actor(base):
         import pyre.inventory
 
         bugid = pyre.inventory.str('bugid')
+        traceback = pyre.inventory.str('traceback')
         
         pass # end of Inventory
 
@@ -54,8 +55,12 @@ class Actor(base):
 
         tracebackdoc = main.document(title='Traceback')
         l = tracebackdoc.literal()
+        # traceback in html format
         import sys, cgitb
         l.text = cgitb.html((sys.exc_type, sys.exc_value, sys.exc_traceback)).splitlines()
+        # traceback in text
+        import traceback
+        traceback = traceback.format_exc()
 
         commentdoc = main.document(title='Comments')
         formcomponent = self.retrieveFormToShow(
@@ -68,11 +73,17 @@ class Actor(base):
             legend= formcomponent.legend(),
             action=director.cgihome)
 
+        # for string with special characters, we have to quote it.
+        # This is the case for trace back that has \n.
+        # Should we improve opal weaver to make this autmoatic?
+        import urllib;  traceback = urllib.quote(traceback)
+        
         # specify action
         action = actionRequireAuthentication(
             actor = 'bug-report', routine = 'verify',
             sentry = director.sentry,
             bugid = self.inventory.bugid,
+            traceback = traceback,
             arguments = {'form-received': formcomponent.name },
             )
         from vnf.weaver import action_formfields
@@ -94,7 +105,14 @@ class Actor(base):
             return err.page
 
         comments = self.processFormInputs( director )
-        self._emailComments(comments, director)
+
+        bugid = self.inventory.bugid
+        
+        traceback = self.inventory.traceback
+        # need to unquote traceback. see presentform
+        import urllib; traceback = urllib.unquote(traceback)
+        
+        self._emailComments(bugid, comments, traceback, director)
 
         return self.acknowledge(director)
 
@@ -129,13 +147,13 @@ class Actor(base):
         return director.retrieveSecurePage(page)
 
 
-    def _emailComments(self, comments, director):
+    def _emailComments(self, bugid, comments, traceback, director):
         from vnf.components.misc import announce
         announcement = 'bug-report'
         username = director.sentry.username
         if not username: return
         user = director.clerk.getUser(username)
-        announce(director, announcement, user, self.inventory.bugid, comments)
+        announce(director, announcement, user, bugid, comments, traceback)
         return
 
 

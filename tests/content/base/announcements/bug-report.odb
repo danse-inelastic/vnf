@@ -19,8 +19,8 @@ def test(director):
         email = 'jiao.lin@gmail.com'
     bugid = '1qazxsw2'
     comments = 'test'
-    
-    announce(director, announcement, user, bugid, comments)
+    traceback = ''
+    announce(director, announcement, user, bugid, comments, traceback)
     return
     
 # version

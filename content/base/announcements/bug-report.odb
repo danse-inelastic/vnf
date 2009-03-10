@@ -10,30 +10,31 @@
 #
 
 
-def announcement(user, bugid, comments):
+def announcement(user, bugid, comments, traceback):
     import vnf.content
 
     msg = vnf.content.announcement()
     msg.sender = user.email
     #msg.sender = 'linjiao@caltech.edu'
-    msg.subject = "User feed back from %s about bug #%s" % (user.fullname, bugid)
+    msg.subject = "Bug #%s" % (bugid,)
     msg.text = [
 """
-User %(username)s has left the following comments for bug
-
-    %(bugid)s
-
-:
+User %(username)s has left the following comments for bug #%(bugid)s
 
 %(comments)s
 
-"""
+
+Trace back:
+
+%(traceback)s
+""",
         ]
 
     subs = {
         'username': user.username,
         'bugid': bugid,
         'comments': comments,
+        'traceback': traceback,
         }
 
     adminemail = 'vnf-dev@googlegroups.com'
