@@ -50,8 +50,16 @@ class Actor(base):
         job = director.clerk.dereference(computation.job)
 
         p = document.paragraph()
+        action = actionRequireAuthentication(
+            label = job.id,
+            sentry = director.sentry,
+            actor = 'job',
+            routine = 'view',
+            id = job.id,
+            )
+        link = action_link(action, director.cgihome)
         p.text = [
-            'The computation job id for this simulation is %s' % job.id,
+            'The computation job id for this simulation is %s' % link,
             ]
 
         configurationdoc = document.document(title='Configuration')
