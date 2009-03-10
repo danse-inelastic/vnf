@@ -116,6 +116,12 @@ class Actor(base):
     def _view_vasp_results(self, computation, document, director=None):
         job = director.clerk.dereference(computation.job)
         server = director.clerk.dereference(job.server)
+
+        self._view_vasp_dos(computation, document, director)
+        return
+
+
+    def _view_vasp_dos(self, computation, document, director):
         files = [
             'DOSCAR',
             ]
@@ -123,7 +129,10 @@ class Actor(base):
             director.dds.remember(job, files=files, server=server)
         except:
             # results not exist!!!
-            return self._alertResultsNotFound(document, director)
+            #return self._alertResultsNotFound(document, director)
+            p = document.paragraph()
+            p.text = ['Output for electronic DOS not found']
+            return
         director.dds.make_available(job, files=files)
 
         dosfile = director.dds.abspath(job, 'DOSCAR')
@@ -195,7 +204,12 @@ class Actor(base):
 
 
 def _readDOSCAR(doscar):
-    efermi = _readEfermiFromDOSCAR(doscar)
+    try:
+        efermi = _readEfermiFromDOSCAR(doscar)
+    except:
+        import journal, traceback
+        journal.debug('vasp-dos').log(traceback.format_exc())
+        return
     #quick hack for now
     f = open(doscar)
     lines = f.read().split('\n')
