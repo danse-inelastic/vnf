@@ -13,11 +13,9 @@
 
 
 
-def actor():
-    return SampleInput()
 
-from Actor import AuthenticationError, actionRequireAuthentication
-from FormActor import FormActor
+from vnf.components.Actor import AuthenticationError, actionRequireAuthentication
+from vnf.components.FormActor import FormActor
 
 
 class SampleInput(FormActor):
@@ -61,7 +59,7 @@ class SampleInput(FormActor):
         
         main = page._body._content._main
         # populate the main column
-        document = main.document(title='Material type selection')
+        document = main.document(title='Sample Description')
         document.description = ''
         
         formcomponent = self.retrieveFormToShow( 'sampleDescription')
@@ -315,7 +313,7 @@ class SampleInput(FormActor):
         action_formfields( action, form )
         
         # expand the form with fields of the data object that is being edited
-        formcomponent.expand( form , showimportwidget=True)
+        formcomponent.expand( form , showimportwidget=False)
         submit = form.control(name='submit',type="submit", value="next")
         return page
 
@@ -337,6 +335,9 @@ class SampleInput(FormActor):
         super(SampleInput, self).__init__(name)
         return
 
+
+def actor():
+    return SampleInput("sampleInput")
 
 
 # version
