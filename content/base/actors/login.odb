@@ -31,23 +31,22 @@ class Login(Actor):
         document.description = ('You have successfully logged out.')
         
         # build the login form
-        login = document.form(
-            name='login', legend='Account details', action=director.cgihome)
+        form = document.form(name='login', legend='Account details', action=director.cgihome)
         
-        actor = login.hidden(name='actor', value='greet')
-        attempts = login.hidden(name='sentry.attempts', value=str(director.sentry.attempts))
+        actor = form.hidden(name='actor', value='greet')
+        attempts = form.hidden(name='sentry.attempts', value=str(director.sentry.attempts))
         
-        username = login.text(id='username', name='sentry.username', label='Username')
+        username = form.text(id='username', name='sentry.username', label='Username')
         username.help = 'Usernames are case sensitive; make sure your caps lock key is not enabled.'
         
-        password = login.password(id='password', name='sentry.passwd', label='Password')
+        password = form.password(id='password', name='sentry.passwd', label='Password')
         password.help = (
             'Passwords are also case sensitive. If you have forgotten your password, you may '
             'be able to <a href="%s?actor=reset-password">reset</a> it.' % director.cgihome)
         
-        submit = login.control(name="submit", type="submit", value="login")
+        submit = form.control(name="submit", type="submit", value="login")
         
-        p = login.paragraph()
+        p = form.paragraph()
         p.text = [
             'When you are done, please logout or exit your browser'
             ]
