@@ -104,14 +104,13 @@
     var newrows = sort_rows_by_col( saverows, colid, column_descriptors, direction );
     
     for (var i=0; i<newrows.length; i++) {
-      odd = i % 2;
       row = newrows[i];
       
       // reestablish "odd" and "even"
       $row = $(row);
       if ($row.hasClass('odd')) $row.removeClass('odd');
       else $row.removeClass('even');
-      $row.addClass( odd? 'odd':'even' );
+      $row.addClass( i%2? 'odd':'even' );
 
       body.append( row );
     }
