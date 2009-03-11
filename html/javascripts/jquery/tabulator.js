@@ -67,6 +67,25 @@
   // table manipulations
   // ---------------------
 
+  // make a column sortable
+  $.fn.sortable_column = function(colid) {
+    var thetable = this;
+
+    var cell = $("#"+colid);
+    cell.attr('direction', 0);
+
+    cell.click( function () {
+	var $this = $(this);
+	
+	direction = $this.attr( 'direction' );
+	direction = direction == 0? 1:0;
+  
+	thetable.sort_table_by_col( colid, direction );
+  
+	$this.attr('direction', direction);
+      } );
+  };
+
   // sort a table by a column
   // this -> table
   $.fn.sort_table_by_col = function( colid, direction ) {
@@ -85,7 +104,16 @@
     var newrows = sort_rows_by_col( saverows, colid, column_descriptors, direction );
     
     for (var i=0; i<newrows.length; i++) {
-      body.append( newrows[i] );
+      odd = i % 2;
+      row = newrows[i];
+      
+      // reestablish "odd" and "even"
+      $row = $(row);
+      if ($row.hasClass('odd')) $row.removeClass('odd');
+      else $row.removeClass('even');
+      $row.addClass( odd? 'odd':'even' );
+
+      body.append( row );
     }
   };
   
@@ -669,6 +697,7 @@
 
     colno = find_column_no( column_id, $( rows[0] ).children() );
     var compare_handler = eval( "$.fn.sort_table_by_col.handle_" + datatype );
+    if (compare_handler==undefined) return rows;
 
     function compare (row1, row2) {
       var cells1 = $(row1).children('td');

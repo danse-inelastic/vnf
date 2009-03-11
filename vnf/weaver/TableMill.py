@@ -78,6 +78,7 @@ function add_headcell( id, text, headrow )
 {
   cell = $( '<td id="' + id + '">' + text + '</td>' );
   headrow.append( cell );
+  return cell;
 }
 ''')
 
@@ -86,7 +87,8 @@ function establish_headrow_from_column_descriptors( headrow, descriptors )
 {
   for (var colid in descriptors) {
     descriptor = descriptors[ colid ];
-    add_headcell( colid, descriptor.text, headrow );
+    cell = add_headcell( colid, descriptor.text, headrow );
+
   }
 }
 ''')
@@ -99,7 +101,9 @@ function make_table_head( thetable, descriptors ) {
   
   establish_headrow_from_column_descriptors( headrow, descriptors );
   thetable.table_setcolumndescriptors( descriptors );
-
+  for (var colid in descriptors) {
+    thetable.sortable_column(colid);
+  }
 }
 ''')
 
