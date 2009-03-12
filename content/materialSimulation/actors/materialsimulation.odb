@@ -57,7 +57,8 @@ class Actor(base):
         analyze = action_link( action, director.cgihome )
         p.text = [
             'You can %s a simulation/model or scattering kernel for use in a virtual instrument.' % create,
-            'You can also %s your sample.' % analyze,
+            'These simulations and models will be used to calculated theoretical scattering intensities.'
+            #'You can also %s your sample.', % analyze,
             ]
 
         where ="creator='%s'" % director.sentry.username
