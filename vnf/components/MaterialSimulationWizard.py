@@ -352,8 +352,6 @@ def _materialDefinedForSimulation(simulation, director):
 
 
 
-from misc import new_id, empty_id, nullpointer
-
 # version
 __id__ = "$Id$"
 
