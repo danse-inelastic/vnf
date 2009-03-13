@@ -85,7 +85,8 @@ class GulpWizard(base):
         p.text = ['''Press "Launch" above to activate the Gulp UI in Java Web Start mode.  Note you must have
         a Java Virtual Machine (JVM) installed.  If you do not, clicking "Launch" will likely cause your browser to alert you to this
         and install one automatically for you and use the javaws application within the JVM to open the xml descripter (.jnlp file) that will be
-        downloaded clientside.''']
+        downloaded clientside.  IMPORTANT: It is highly recommended to use the JVM from Sun Microsystems.  Using the OpenJDK (default on Ubuntu OS)
+        has been shown NOT to work due to inherent bugs in their webstart launcher.''']
 
         action = actionRequireAuthentication(
             label = 'Continue',
