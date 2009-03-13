@@ -122,9 +122,6 @@ class Actor(base):
 
 
     def _view_vasp_results(self, computation, document, director=None):
-        job = director.clerk.dereference(computation.job)
-        server = director.clerk.dereference(job.server)
-
         self._view_vasp_dos(computation, document, director)
         return
 
@@ -133,13 +130,21 @@ class Actor(base):
         files = [
             'DOSCAR',
             ]
+        job = director.clerk.dereference(computation.job)
+        server = director.clerk.dereference(job.server)
         try:
             director.dds.remember(job, files=files, server=server)
         except:
             # results not exist!!!
             #return self._alertResultsNotFound(document, director)
+            import traceback
             p = document.paragraph()
-            p.text = ['Output for electronic DOS not found']
+            p.text = ['Output for electronic DOS not found.']
+
+            l = document.literal()
+            l.text = ['<pre>'] \
+                + traceback.format_exc().splitlines() \
+                + ['</pre>']
             return
         director.dds.make_available(job, files=files)
 
