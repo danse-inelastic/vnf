@@ -43,6 +43,6 @@ if __name__ == '__main__':
 
 
 # version
-__id__ = "$Id: ipad.py,v 1.1.1.1 2006-11-27 00:09:14 aivazis Exp $"
+__id__ = "$Id$"
 
 # End of file 

@@ -22,6 +22,11 @@ def submit(job, director, debug=False):
     return
 
 
+def cancel(job, director):
+    from Scheduler import cancel
+    return cancel(job, director)
+    
+
 def pack(job, director, debug=False):
     from vnf.utils import launch_detached, bindir
     import os

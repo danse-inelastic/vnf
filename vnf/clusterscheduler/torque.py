@@ -63,6 +63,16 @@ class Scheduler:
                 cmds, output, error )
             raise RuntimeError, msg
         return output.strip()
+
+
+    def delete(self, jobid):
+        cmds = ['qdel %s' % jobid]
+        failed, output, error  = self._launch( cmds )
+        if failed:
+            msg = "error in executing cmds %s. output: %s, error: %s" % (
+                cmds, output, error )
+            raise RuntimeError, msg
+        return
     
 
     def status( self, jobid ):

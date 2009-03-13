@@ -150,6 +150,22 @@ class Actor(base):
         document = main.document( title = 'Job # %s: %s' % (
             job.id, job.state ) )
 
+        # if job is running, add a "cancel" link
+        if job.state == 'running':
+            p = document.paragraph()
+            action = actionRequireAuthentication(
+                sentry = director.sentry,
+                label = 'cancel',
+                actor = 'job',
+                routine = 'cancel',
+                id = job.id,
+                )
+            link = action_link(action, director.cgihome)
+            p.text = [
+                'Your job #%s is running.' % job.id,
+                'If you don\'t want it running anymore, please %s it.' % link,
+                ]
+            
         # put up all info about the job
         record = job
         props = record.getColumnNames()
@@ -406,6 +422,39 @@ class Actor(base):
             )
         p.text = [
             'If you are sure the error was fixed, please %s' % link
+            ]
+        return page
+
+
+    def cancel(self, director):
+        try:
+            page = director.retrieveSecurePage( 'job' )
+        except AuthenticationError, err:
+            return err.page
+
+        id = self.inventory.id
+        job = director.clerk.getJob(id)
+
+        if job.state != 'running':
+            raise RuntimeError, "Job %s is not running" % id
+
+        from vnf.components.Job import cancel
+        cancel(job, director)
+
+        main = page._body._content._main
+        document = main.document( title = 'Job %s: cancelled' % job.id )
+
+        p = document.paragraph()
+        action = actionRequireAuthentication(
+            sentry = director.sentry,
+            label = id,
+            actor = 'job',
+            routine = 'view',
+            id = id,
+            )
+        link = action_link(action, director.cgihome)
+        p.text = [
+            'Job #%s was cancelled' % link,
             ]
         return page
 

@@ -53,7 +53,7 @@ def schedule( job, director ):
 def check( job, director ):
     "check status of a job"
 
-    if job.state in ['finished', 'failed', 'terminated']:
+    if job.state in ['finished', 'failed', 'terminated', 'cancelled']:
         return job
 
     oldstate = job.state
@@ -89,6 +89,45 @@ def check( job, director ):
         announce(director, 'job-state-changed', job, user)
         
     return job
+
+
+def cancel( job, director ):
+    "cancel a job"
+
+    if job.state not in ['running']:
+        return job
+
+    oldstate = job.state
+    
+    #scheduler
+    server = director.clerk.dereference(job.server)
+    scheduler = schedulerfactory( server )
+
+    #remote job path
+    server_jobpath = director.dds.abspath(job, server=server)
+
+    #
+    launch = lambda cmd: director.csaccessor.execute(
+        cmd, server, server_jobpath, suppressException=True)
+
+    scheduler = scheduler(launch, prefix = 'source ~/.vnf' )
+
+    scheduler.delete( job.id_incomputingserver )
+
+    job.state = 'cancelled'
+    director.clerk.updateRecord( job )
+
+    newstate = job.state
+
+    if oldstate != newstate:
+        # alert user
+        user = director.clerk.getUser(job.creator)
+        
+        from vnf.components.misc import announce
+        announce(director, 'job-state-changed', job, user)
+        
+    return job
+
 
 
 def schedulerfactory( server ):
