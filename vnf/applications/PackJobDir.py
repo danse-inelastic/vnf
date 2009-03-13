@@ -73,8 +73,8 @@ class PackJobDir(base):
         server = clerk.dereference(server)
         
         dds = self.dds
-        path = dds.abspath(job, server = server)
-        assert os.path.basename(path) == id
+        remotejobpath = dds.abspath(job, server = server)
+        assert os.path.basename(remotejobpath) == id
 
         # temporary directory
         parentdir = temproot
@@ -83,34 +83,23 @@ class PackJobDir(base):
         if not os.path.exists(tmpdirectory): os.makedirs(tmpdirectory)
         subdir = os.path.basename(tmpdirectory)
 
-        # copy job directory to the temporary dir
+        # run tar cvfz at remote server
+        remotejobroot = os.path.dirname(remotejobpath)
+        remotejobtarball = remotejobpath + '.tgz'
+        tarball = id + '.tgz'
+        cmd = [
+            'rm -f ' + remotejobtarball,
+            ' '.join(['tar cvfz', tarball, id]),
+            ]
+        cmd = ';'.join(cmd)
         csaccessor = self.csaccessor
-        csaccessor.getdirectory(server, path, tmpdirectory)
-
-        # save curdir
-        curdir = os.path.abspath(os.curdir)
-        # chdir to the temporary directory
-        os.chdir(tmpdirectory)
+        csaccessor.execute(cmd, server, remotejobroot)
         
-        # create tar ball
-        tarballfilename = '%s.tgz' % id
-        # if file exists, remove it
-        if os.path.exists(tarballfilename): os.remove(tarballfilename)
+        # copy job tarball to the temporary dir
+        csaccessor.getfile(server, remotejobtarball, tmpdirectory)
 
-        #
-        import tarfile
-        tarball = tarfile.open(tarballfilename, 'w:gz')
-        tarball.add(id, recursive=True)
-        tarball.close()
-
-        # remove the job directory
-        shutil.rmtree(id)
-
-        # go back to original dir
-        os.chdir(curdir)
-        
         # leave a pointer in the job directory
-        ptr = os.path.join(subdir, tarballfilename)
+        ptr = os.path.join(subdir, tarball)
         self._establishPtr(job, ptr)
         return
 
