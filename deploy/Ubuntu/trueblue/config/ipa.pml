@@ -22,9 +22,7 @@
     <property name='ticketOnce'>no</property>
     <property name='ticketDuration'>2400*hour</property>
 
-    <component name='userManager'>
-      <property name='passwd'>userdb.md5</property>
-    </component>
+	<facility name='userManager'>usersFromDB</facility>
   </component>
 
 </inventory>
