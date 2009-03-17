@@ -2,6 +2,7 @@
 <!--
 ! ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
+!
 !                             Michael A.G. Aivazis
 !                      California Institute of Technology
 !                      (C) 1998-2005  All Rights Reserved
@@ -11,19 +12,20 @@
 ! ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 -->
 
+
 <!DOCTYPE inventory>
 
 <inventory>
 
-    <component name="remote">
-        <property name="host">131.215.30.140</property>
-        <property name="port">50000</property>
-        <property name="key">7n19abkwxsm835lg</property>
-    </component>
+  <component name='jsu-ssher'>
+    <property name='known_hosts'>/home/vnf/vnfssh/known_hosts.www.copy</property>
+    <property name='private_key'>/home/vnf/vnfssh/id_rsa.www.copy</property>
+  </component>
 
 </inventory>
 
+
 <!-- version-->
-<!-- $Id$-->
+<!-- $Id: main.pml,v 1.1.1.1 2006-11-27 00:09:15 aivazis Exp $-->
 
 <!-- End of file -->

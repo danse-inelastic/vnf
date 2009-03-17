@@ -31,22 +31,13 @@ distclean::
 
 EXPORT_DATAFILES = \
 	clerk.pml \
-	idd-config.pml \
-	idd-harness.pml \
-	idd-pickler.odb \
-	idd.pml \
-	idd-session.pml \
 	initdb.pml \
-	ipa-harness.pml \
-	ipa-pickler.odb \
-	ipa.pml \
-	ipa-session.pml \
-	journald-harness.pml \
-	journal.pml \
-	remote.pml \
+	jsu.pml \
+	jsu-ssher.pml \
+	main.pml \
+	retrieveresults.pml \
 	ssher.pml \
-	userdb.md5 \
-	weaver.pml \
+	submitjob.pml \
 	
 
 CP_F = cp -f
@@ -54,7 +45,6 @@ EXPORT_DATA_PATH = $(EXPORT_ROOT)/$(PROJECT)/$(PACKAGE)
 
 export-config-files:: 
 	mkdir -p $(EXPORT_DATA_PATH); \
-	$(CP_F) main.trueblue.pml $(EXPORT_DATA_PATH)/main.pml
 	for x in $(EXPORT_DATAFILES); do { \
 	  $(CP_F) $$x $(EXPORT_DATA_PATH)/ ; \
         } done

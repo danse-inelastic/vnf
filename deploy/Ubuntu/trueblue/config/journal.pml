@@ -38,6 +38,7 @@
       <property name='neutronexperimentwizard'>on</property>
       <property name='scatterer'>on</property>
       <property name='db'>on</property>
+      <property name='ipa'>on</property>
     </component>
 
   </component>

@@ -14,14 +14,10 @@
 <inventory>
 
   <component name='main'>
-    <property name='actor'>gulpsimulationwizard</property> 
-    <property name='routine'>verifySimulation</property>  
+  	<property name='debug'>1</property>
+    <property name='actor'>login</property>   
     <property name="home">http://trueblue.caltech.edu/vnf/</property>
     <property name="cgi-home">http://trueblue.caltech.edu/cgi-bin/vnf/main.cgi</property>
-    <component name='sentry'>
-    	<property name='username'>demo</property>
-    	<property name='passwd'>demo</property>
-    </component>
   </component>
 
 </inventory>

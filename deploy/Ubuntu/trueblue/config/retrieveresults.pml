@@ -2,6 +2,7 @@
 <!--
 ! ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
+!
 !                             Michael A.G. Aivazis
 !                      California Institute of Technology
 !                      (C) 1998-2005  All Rights Reserved
@@ -11,17 +12,16 @@
 ! ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 -->
 
+
 <!DOCTYPE inventory>
 
 <inventory>
 
-    <component name="remote">
-        <property name="host">131.215.30.140</property>
-        <property name="port">50000</property>
-        <property name="key">7n19abkwxsm835lg</property>
-    </component>
+  <component name='retrieveresults'>
+  </component>
 
 </inventory>
+
 
 <!-- version-->
 <!-- $Id$-->
