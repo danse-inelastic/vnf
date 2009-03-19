@@ -195,10 +195,10 @@ def format(value, descriptor):
     handler = eval(handler)
     return handler(value)
 
-def _format_link(value):
-    # value is a JnlpFile object--rename to remind
-    name,link = value
-    return '<a href="'+link+'">'+name+'</a>'
+#def _format_link(value):
+#    # value is a JnlpFile object--rename to remind
+#    name,link = value
+#    return repr('<a href="'+link+'">'+name+'</a>')
 
 def _format_text(value):
     value = str(value)

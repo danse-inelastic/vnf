@@ -18,7 +18,7 @@ def _table(samples, director, showkernels=False, selected=None):
     class model(Model):
         
         description = Model.Measure(name='description', type='text')
-        visualize = Model.Measure(name='visualize', type='link')
+        visualize = Model.Measure(name='visualize', type='text')
         chemical_formula = Model.Measure(name='chemical_formula', type='text')
         cartesian_lattice = Model.Measure(name='cartesian_lattice', type='text')
         atom_positions = Model.Measure(name='atom_positions', type='text')
@@ -134,7 +134,7 @@ def format_visualize(sample,director ):
             fileName='jmolVnfLauncher',
             )
     relativeLocationOfFile = jnlpFile.writeJnlp(director)
-    return ('view',relativeLocationOfFile)
+    return '<a href="'+relativeLocationOfFile+'">view</a>'
 
 def format_chemical_formula(sample,director ):
     try: matter = sample.matter
