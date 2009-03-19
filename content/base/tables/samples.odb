@@ -18,6 +18,7 @@ def _table(samples, director, showkernels=False, selected=None):
     class model(Model):
         
         description = Model.Measure(name='description', type='text')
+        visualize = Model.Measure(name='visualize', type='link')
         chemical_formula = Model.Measure(name='chemical_formula', type='text')
         cartesian_lattice = Model.Measure(name='cartesian_lattice', type='text')
         atom_positions = Model.Measure(name='atom_positions', type='text')
@@ -29,6 +30,7 @@ def _table(samples, director, showkernels=False, selected=None):
     import operator
     generators = {
         'description': operator.attrgetter( 'short_description' ),
+        'visualize': lambda s: format_visualize(s, director),
         'chemical_formula': lambda s: format_chemical_formula(s, director),
         'cartesian_lattice': lambda s: format_lattice_parameters(s, director),
         'atom_positions': lambda s: format_atoms(s, director),
@@ -48,16 +50,17 @@ def _table(samples, director, showkernels=False, selected=None):
     class view(View):
         
         columns = [
-            View.Column(id='col1',label='Sample description', measure='description'),
-            View.Column(id='col2',label='Chemical formula', measure='chemical_formula'),
-            View.Column(id='col3',label='Cartesian Lattice', measure='cartesian_lattice'),
-            View.Column(id='col4',label='Atom positions', measure='atom_positions'),
-            View.Column(id='col5',label='Shape', measure='shape'),
+            View.Column(id='col1',label='Description', measure='description'),
+            View.Column(id='col2',label='Visualize', measure='visualize'),
+            View.Column(id='col3',label='Chemical formula', measure='chemical_formula'),
+            View.Column(id='col4',label='Cartesian Lattice', measure='cartesian_lattice'),
+            View.Column(id='col5',label='Atom positions', measure='atom_positions'),
+            View.Column(id='col6',label='Shape', measure='shape'),
             ]
 
         if showkernels:
             columns.append(
-                View.Column(id='col6',label='Scattering Kernels', measure='kernels')
+                View.Column(id='col7',label='Scattering Kernels', measure='kernels')
                 )
 
         if selected:
@@ -65,7 +68,7 @@ def _table(samples, director, showkernels=False, selected=None):
             name_for_form_action = '%s.selected' % prefix
             columns.append(
                 View.Column(
-                    id='col7',
+                    id='col8',
                     label='Select',
                     measure='selected',
                     name_for_form_action=name_for_form_action,
@@ -113,6 +116,25 @@ def format_kernels(sample, director):
 
     return '\n'.join(lines)
 
+
+def format_visualize(sample,director ):
+    # this returns a hyperlink
+    # with the text 'view'.  Eventually the text should be
+    # replaced with a thumbnail of the object
+    try: matter = sample.matter
+    except AttributeError: return 'unknown'
+    if nullpointer(matter): return "undefined"
+    matter = director.clerk.dereference(matter)
+    from vnf.components.JnlpFile import JnlpFile
+    args = {'matterId':matter.id}
+    jnlpFile = JnlpFile(
+            resources=('jmolVnf.jar', 'Jmol.jar','pg74.216.jdbc3.jar'),
+            mainClass='jmolVnf.JmolVnf',
+            programArguments = args,
+            fileName='jmolVnfLauncher',
+            )
+    relativeLocationOfFile = jnlpFile.writeJnlp(director)
+    return ('view',relativeLocationOfFile)
 
 def format_chemical_formula(sample,director ):
     try: matter = sample.matter

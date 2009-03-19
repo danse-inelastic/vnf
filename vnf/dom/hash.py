@@ -48,7 +48,7 @@ class Hasher:
 
     def hash_dbrecord(self, record, db):
         'create a hash value from a db record'
-        # the difficulty of hasing a db record is that it may contains references
+        # the difficulty of hashing a db record is that it may contain references
         # so we need to hash recursively
         Table = record.__class__
         d = []
