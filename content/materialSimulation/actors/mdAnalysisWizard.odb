@@ -194,7 +194,109 @@ class MdAnalysisWizard(base):
         return 'success'
 
 
-    pass # end of GulpWizard
+
+    
+    def sqe(self, director):
+        
+        #might want to reference this method from the redirect in gulpsimulationwizard:
+#            def verifySimulation(self, director):
+#        try:
+#            page = self._retrievePage(director)
+#        except AuthenticationError, err:
+#            return err.page
+#        # eventually have some sort of gulp simulation verification
+#
+#        # this is a bit weird. the type is the table name. but usually
+#        # table name has a 's' at the end, and it is not desirable.
+#        # the following code takes the table class name.
+#        table = director.clerk._getTable('sqefrommd')
+#        
+#        sqefrommd = director.clerk.newOwnedObject(table)
+#        
+#        actor = 'sqefrommdwizard'
+#        routine = 'configureSimulation'
+#        return director.redirect(actor, routine, id=sqefrommd.id, type=sqefrommd.name)
+        
+        
+        try:
+            page = director.retrieveSecurePage( 'generic' )
+        except AuthenticationError, err:
+            return err.page
+        main = page._body._content._main
+        document = main.document(title='S(Q,E) calculation from atomic trajectories')
+        formcomponent = self.retrieveFormToShow( 'sqe')
+        formcomponent.director = director
+        # build the form form
+        form = document.form(name='', action=director.cgihome)
+        # specify action
+        action = actionRequireAuthentication(          
+            actor = 'materialanalysis', 
+            sentry = director.sentry,
+            routine = 'selectAnalysis',
+            id=id,
+            arguments = {'form-received': formcomponent.name },
+            )
+        from vnf.weaver import action_formfields
+        action_formfields( action, form )
+        # expand the form with fields of the data object that is being edited
+        formcomponent.expand( form )
+        next = form.control(name='submit',type="submit", value="next")
+        return page 
+    
+    def diffusionCoefficient(self, director):
+        try:
+            page = director.retrieveSecurePage( 'generic' )
+        except AuthenticationError, err:
+            return err.page
+        main = page._body._content._main
+        document = main.document(title='Diffusion coefficient from atomic trajectories')
+        formcomponent = self.retrieveFormToShow( 'diffusionCoefficient')
+        formcomponent.director = director
+        # build the form form
+        form = document.form(name='', action=director.cgihome)
+        # specify action
+        action = actionRequireAuthentication(          
+            actor = 'materialanalysis', 
+            sentry = director.sentry,
+            routine = 'selectAnalysis',
+            id=id,
+            arguments = {'form-received': formcomponent.name },
+            )
+        from vnf.weaver import action_formfields
+        action_formfields( action, form )
+        # expand the form with fields of the data object that is being edited
+        formcomponent.expand( form )
+        next = form.control(name='submit',type="submit", value="next")
+        return page 
+    
+    def velocityAutocorrelation(self, director):
+        try:
+            page = director.retrieveSecurePage( 'generic' )
+        except AuthenticationError, err:
+            return err.page
+        main = page._body._content._main
+        document = main.document(title='Velocity autocorrelation from atomic trajectories')
+        formcomponent = self.retrieveFormToShow( 'velocityAutocorrelation')
+        formcomponent.director = director
+        # build the form form
+        form = document.form(name='', action=director.cgihome)
+        # specify action
+        action = actionRequireAuthentication(          
+            actor = 'materialanalysis', 
+            sentry = director.sentry,
+            routine = 'createJob',
+            label = '',
+            id = self.inventory.id,
+            arguments = {'form-received': formcomponent.name },
+            )
+        from vnf.weaver import action_formfields
+        action_formfields( action, form )
+        # expand the form with fields of the data object that is being edited
+        formcomponent.expand( form )
+        next = form.control(name='submit',type="submit", value="next")
+#        self._footer( document, director )
+        return page 
+
 
 
 import os
