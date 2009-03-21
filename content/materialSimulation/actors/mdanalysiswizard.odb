@@ -17,8 +17,8 @@ from vnf.components.MaterialSimulationWizard import MaterialSimulationWizard as 
 
 
 
-from vnf.dom.MdAnalysis import MdAnalysis
-
+#from vnf.dom.MdAnalysis import MdAnalysis
+from vnf.dom.VacfComputation import VacfComputation
     
 class MdAnalysisWizard(base):
     
@@ -33,7 +33,8 @@ class MdAnalysisWizard(base):
         pass
 
     def configureSimulation(self, director):
-        type = self.inventory.type = 'mdanalysis'
+        #type = self.inventory.type = 'mdanalysis'
+        type = self.inventory.type = 'vacf'
 
         simulation = self._getSimulation(director)
         id = self.inventory.id = simulation.id
@@ -192,9 +193,7 @@ class MdAnalysisWizard(base):
         open(libfile, 'w').write(librarycontent)
 
         return 'success'
-
-
-
+    
     
     def sqe(self, director):
         
@@ -307,7 +306,7 @@ def isConfigured(sim, director):
 
 
 def actor():
-    return GulpWizard('gulpsimulationwizard')
+    return MdAnalysisWizard('mdanalysiswizard')
 
 
 # version

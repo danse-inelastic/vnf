@@ -81,7 +81,11 @@ class ChainWizard(base):
     def configureSimulation(self, director):
         type = self.inventory.type
         if not type: raise RuntimeError, "simulation type  not set"
-        wizard = self._wizardname(type, director)
+        #wizard = self._wizardname(type, director)
+        if type in ['vacf']:
+            wizard = 'mdanalysiswizard'
+        else:
+            wizard = 'phononsfromabinitio' # this is not yet done correctly
         routine = 'configureSimulation'
         id = self.inventory.id
         return director.redirect(wizard, routine, id=id, type=type)
@@ -174,8 +178,8 @@ class ChainWizard(base):
         
         computation = director.clerk.newOwnedObject(Computation)
         self.inventory.id = id = computation.id
-        computation.matter = matter
-        director.clerk.updateRecord(computation)
+        #computation.matter = matter
+        #director.clerk.updateRecord(computation)
         return computation
 
 
