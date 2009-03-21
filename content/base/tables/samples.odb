@@ -20,8 +20,8 @@ def _table(samples, director, showkernels=False, selected=None):
         description = Model.Measure(name='description', type='text')
         visualize = Model.Measure(name='visualize', type='text')
         chemical_formula = Model.Measure(name='chemical_formula', type='text')
-        cartesian_lattice = Model.Measure(name='cartesian_lattice', type='text')
-        atom_positions = Model.Measure(name='atom_positions', type='text')
+#        cartesian_lattice = Model.Measure(name='cartesian_lattice', type='text')
+#        atom_positions = Model.Measure(name='atom_positions', type='text')
         shape = Model.Measure(name='shape', type='text')
         kernels = Model.Measure(name='kernels', type='text')
         selected = Model.Measure(name='selected', type='single_choice_in_one_column')
@@ -32,8 +32,8 @@ def _table(samples, director, showkernels=False, selected=None):
         'description': operator.attrgetter( 'short_description' ),
         'visualize': lambda s: format_visualize(s, director),
         'chemical_formula': lambda s: format_chemical_formula(s, director),
-        'cartesian_lattice': lambda s: format_lattice_parameters(s, director),
-        'atom_positions': lambda s: format_atoms(s, director),
+#        'cartesian_lattice': lambda s: format_lattice_parameters(s, director),
+#        'atom_positions': lambda s: format_atoms(s, director),
         'shape': lambda s: format_shape(s, director),
         'kernels': lambda s: format_kernels(s, director),
         'selected': lambda s: format_selected(s, selected),
@@ -53,9 +53,9 @@ def _table(samples, director, showkernels=False, selected=None):
             View.Column(id='col1',label='Description', measure='description'),
             View.Column(id='col2',label='Visualize', measure='visualize'),
             View.Column(id='col3',label='Chemical formula', measure='chemical_formula'),
-            View.Column(id='col4',label='Cartesian Lattice', measure='cartesian_lattice'),
-            View.Column(id='col5',label='Atom positions', measure='atom_positions'),
-            View.Column(id='col6',label='Shape', measure='shape'),
+#            View.Column(id='col4',label='Cartesian Lattice', measure='cartesian_lattice'),
+#            View.Column(id='col5',label='Atom positions', measure='atom_positions'),
+            View.Column(id='col6',label='Sample container', measure='shape'),
             ]
 
         if showkernels:

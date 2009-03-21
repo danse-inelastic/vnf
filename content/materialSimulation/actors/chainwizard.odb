@@ -18,7 +18,7 @@ This actor gives the user a menu for performing analysis of his simulations/mode
 from vnf.components.FormActor import FormActor as base, action, \
 actionRequireAuthentication, action_link, InputProcessingError, AuthenticationError
 
-class MaterialAnalysis(base):
+class ChainWizard(base):
     
     class Inventory(base.Inventory):
 
@@ -43,10 +43,21 @@ class MaterialAnalysis(base):
         main = page._body._content._main
         document = main.document(title='Material Analysis')
         
-        formcomponent = self.retrieveFormToShow( 'analysisMenu')
-        formcomponent.director = director
+        #formcomponent = self.retrieveFormToShow( 'analysisMenu')
+        #formcomponent.director = director
         # build the form form
-        form = document.form(name='', action=director.cgihome)
+        #form = document.form(name='', action=director.cgihome)
+        document.description = ''
+        document.byline = '<a href="http://danse.us">DANSE</a>'        
+
+        prefix = 
+        p = form.paragraph()
+        p.text = ['<h2>Scattering Functions</h2>']        
+        p = form.paragraph()
+        p.text = ['''Using fundamental dynamics one can construct velocity autocorrelation functions, elastic incohoerent
+        structure factors, scattering intensities, etc. for use in scattering kernels of instrument simulation.''']
+        self.engineRadioButton(form, engines['vacf'])
+        
         # specify action
         action = actionRequireAuthentication(          
             actor = 'materialanalysis', 

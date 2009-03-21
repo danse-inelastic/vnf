@@ -2,10 +2,9 @@
 <!--
 ! ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
-!
 !                             Michael A.G. Aivazis
-!                      California Institute of Technology
-!                      (C) 1998-2005  All Rights Reserved
+!                               Orthologue, Ltd.
+!                      (C) 2004-2006  All Rights Reserved
 !
 ! {LicenseText}
 !
@@ -17,15 +16,16 @@
 
 <inventory>
 
-  <component name='ssher'>
-    <property name='known_hosts'>/home/jbk/.ssh/known_hosts.www</property>
-    <property name='private_key'>/home/jbk/.ssh/id_rsa.www</property>
+  <component name='postman'>
+
+    <property name='host'>smtp-server.cco.caltech.edu</property>
+
   </component>
 
 </inventory>
 
 
 <!-- version-->
-<!-- $Id: main.pml,v 1.1.1.1 2006-11-27 00:09:15 aivazis Exp $-->
+<!-- $Id: postman.pml,v 1.2 2007-01-20 00:53:34 aivazis Exp $-->
 
 <!-- End of file -->

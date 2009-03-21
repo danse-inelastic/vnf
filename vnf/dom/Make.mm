@@ -67,6 +67,7 @@ EXPORT_PYTHON_MODULES = \
 	MaterialModeling.py \
 	MaterialSimulation.py \
 	MatterBase.py \
+	MdAnalysis.py \
 	MmtkSimulation.py \
 	NeutronComponent.py \
 	NeutronExperiment.py \
@@ -86,7 +87,6 @@ EXPORT_PYTHON_MODULES = \
 	Server.py \
 	Shape.py \
 	SingleCrystal.py \
-	SqeFromMd.py \
 	Table.py \
 	User.py \
 	idgenerator.py \

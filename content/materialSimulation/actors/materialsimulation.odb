@@ -49,26 +49,17 @@ class Actor(base):
             sentry = director.sentry,
             )
         create = action_link( action, director.cgihome )
-        action = actionRequireAuthentication(
-            label = 'analyze',
-            actor = 'materialanalysis',
-            sentry = director.sentry,
-            )
-        analyze = action_link( action, director.cgihome )
-        p.text = [
-            'You can %s a simulation/model or scattering kernel for use in a virtual instrument.' % create,
-            'These simulations and models will be used to calculated theoretical scattering intensities.'
-            #'You can also %s your sample.', % analyze,
-            ]
 
+        p.text = [
+            'You can %s a simulation/model with a new sample for use in a virtual instrument.' % create,
+            ]
+        p = document.paragraph()
+        p.text = [
+            'Or you can chain further computations to a prexisting one:',
+            ]
         where ="creator='%s'" % director.sentry.username
         simulations = getallsimulations(director.clerk.db, where=where)
-        if len(simulations):
-            p = document.paragraph()
-            p.text = [
-                'The following are the simulations/models you have created:',
-                ]
-            
+        if len(simulations):           
             table = director.retrieveComponent(
                 'materialsimulations',
                 factory="table",

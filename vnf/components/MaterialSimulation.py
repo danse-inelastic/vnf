@@ -26,7 +26,8 @@ basic_engines = {
     'gulp': Engine('gulpsimulations', 'Gulp', '', 'gulp'),
     #'mmtksimulations': Engine('mmtksimulations', "Mmtk Newton's Equations", ''),
     #'fireball': Engine('localOrbitalHarmonic', 'Local Orbital DFT Energies, Harmonic Dynamics', ''),
-    'vasp': Engine('abinitio','Plane Wave DFT Energies, Harmonic Dynamics','', 'vasp')}
+    'vasp': Engine('abinitio','Plane Wave DFT Energies, Harmonic Dynamics','', 'vasp')
+}
 
 
 def engines():

@@ -20,6 +20,7 @@ def table(matsims, director):
         description = Model.Measure(name='description', type='text')
         type = Model.Measure(name='type', type='text')
         matter = Model.Measure(name='matter', type='text')
+        chain = Model.Measure(name='chain', type='text')
 
 
     def getDesc(matsim):
@@ -41,11 +42,24 @@ def table(matsims, director):
         matter = director.clerk.dereference(matter)
         identifier = matter.short_description or matter.chemical_formula
         return identifier
+    def getChain(matsim):
+        # for now just take them to the general postprocessing page..
+        # eventually can specialize to what computation is
+        #if matsim.type is 
+        action = actionRequireAuthentication(
+            label = 'chain',
+            actor = 'chainwizard',
+            sentry = director.sentry,
+            )
+        chain = action_link( action, director.cgihome )
+        return chain       
+        
     import operator
     generators = {
         'description': getDesc,
         'type': getType,
         'matter': getMatter,
+        'chain': getChain,
         }
     
     class D: pass
@@ -61,9 +75,11 @@ def table(matsims, director):
     class view(View):
         
         columns = [
-            View.Column(id='col1',label='Simulation/modeling', measure='description'),
+            View.Column(id='col1',label='Description', measure='description'),
+            #View.Column(id='col1',label='Description', measure='description'), #eventually add date here
             View.Column(id='col2',label='Type', measure='type'),
             View.Column(id='col3',label='Matter', measure='matter'),
+            View.Column(id='col4',label='Chain', measure='chain'),
             ]
 
         editable = False

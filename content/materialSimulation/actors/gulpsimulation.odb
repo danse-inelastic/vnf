@@ -70,17 +70,34 @@ class Actor(base):
                 return self._alertResultsNotFound(document, director)
             director.dds.make_available(job, files=outputFiles)
             # now 'plot.dat' is available at vnf.caltech.edu with path 
-            gulpOutputFile = director.dds.abspath(job, 'gulp.out')
-            # Use content/materialSimulation/actors/abinitio.odb/_view_vasp_results as an example
-            f = file(gulpOutputFile)
-            contents = f.read()
-            
+            gulpOutputFilePath = director.dds.abspath(job, 'gulp.out')
+            f = file(gulpOutputFilePath) 
             resdoc = document.document(title='Results')
             p = resdoc.paragraph()
-            # this is a hack--go back to pyre and put in *real* pre element
-            p.text = ['Here is the stdout file of the simulation:',
-                      '<pre>'+contents+'</pre>']
+            # if the file is too large, only show the top and the bottom
+            import os
+            if os.stat(gulpOutputFilePath).st_size > 40000:
+                top = f.read(35000)
+                p.text = ['Here is the first part of the stdout file of the simulation:']
+                p = resdoc.preformatted()
+                p.text = [top]
+                
+                # go to 5000 bytes from the end
+                f.seek(5000, 2)
+                bottom = f.read()
+                p = resdoc.paragraph()
+                p.text = ['Here is the last part of the stdout file:']
+                p = resdoc.preformatted()
+                p.text = [bottom]
+            else:
+                all = f.read()
+                p.text = ['Here is the stdout file of the simulation:']
+                p = resdoc.preformatted()
+                p.text = [all]
             try:
+                # eventually put this in place of the news portlet on the side
+                # visualize md or phonons
+                # plot various items such as temp, DOS, MSD, etc.
                 p = resdoc.paragraph()
                 p.text = ['''A movie of the simulation can be accessed by launching 
                 the viewer below.''',
