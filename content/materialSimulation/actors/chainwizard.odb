@@ -27,9 +27,9 @@ class ChainWizard(base):
         id = pyre.inventory.str("id", default='')
         id.meta['tip'] = "the unique identifier of the analysis simulation"
         
-        analysisType = pyre.inventory.str('analysisType', default = 'vacf')
-        analysisType.validator = pyre.inventory.choice(['sqe', 'eisf', 'dos',
-            'diffusionCoefficient', 'meanSquareDisplacement', 'vacf'])
+        analysisType = pyre.inventory.str('analysisType', default = 'vacfcomputations')
+        #analysisType.validator = pyre.inventory.choice(['sqe', 'eisf', 'dos',
+        #    'diffusionCoefficient', 'meanSquareDisplacement', 'vacfcomputations'])
         analysisType.meta['tip'] = 'type of analysis and method to call in this class'
 
     def default(self, director):
@@ -83,7 +83,7 @@ class ChainWizard(base):
         type = self.inventory.type
         if not type: raise RuntimeError, "simulation type  not set"
         #wizard = self._wizardname(type, director)
-        if type in ['vacf']:
+        if type in ['vacfcomputations']:
             wizard = 'mdanalysiswizard'
         else:
             wizard = 'phononsfromabinitio' # this is not yet done correctly
