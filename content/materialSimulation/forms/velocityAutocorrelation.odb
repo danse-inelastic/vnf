@@ -31,27 +31,12 @@ class Form( base ):
         weights = inv.str('weights', default='mass')
 
 
-    DBTable = 'velocityautocorrelation'
+    DBTable = 'vacfcomputations'
         
     def expand(self, form):
         '''expand an existing form with fields from this component'''
         prefix = formactor_action_prefix
-#        for property in self.parameters:
-#        
-#            value = getattr( record, property )
-#            exec 'self.inventory.%s = value' % property
-#            value = tostr( getattr(self.inventory, property) )
-#            
-#            field = form.text(
-#                id = property,
-#                name='%s.%s' % (prefix, property),
-#                label=property,
-#                value = value)
-#            
-#            descriptor = getattr(self.Inventory, property)
-#            tip = descriptor.meta.get('tip')
-#            if tip:
-#                field.help = tip
+
         record = self.getRecord()
         
         self.short_description = form.text(
@@ -63,7 +48,7 @@ class Form( base ):
         p = form.paragraph()
         p.text = ['<h2>Electronic structure settings</h2>']
 
-#drop down menu for abinitio engine: [vasp, (abinit)]
+#drop down menu for units
         choices=['vasp','abinit (not completely functional)']
         entries=enumerate(choices)
 

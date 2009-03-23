@@ -16,7 +16,7 @@ This actor gives the user a menu for performing analysis of his
 simulations/models and several follow-up forms for configuring those analyses.
 '''
 
-from vnf.components.FormActor import FormActor as base, action, \
+from vnf.components.SimulationWizard import SimulationWizard as base, action, \
 actionRequireAuthentication, action_link, InputProcessingError, AuthenticationError
 
 class ChainWizard(base):
@@ -24,13 +24,14 @@ class ChainWizard(base):
     class Inventory(base.Inventory):
 
         import pyre.inventory
-        id = pyre.inventory.str("id", default='')
-        id.meta['tip'] = "the unique identifier of the analysis simulation"
         
-        analysisType = pyre.inventory.str('analysisType', default = 'vacfcomputations')
+        analysisType = pyre.inventory.str('analysisType', default = 'vacfcomputationss')
         #analysisType.validator = pyre.inventory.choice(['sqe', 'eisf', 'dos',
         #    'diffusionCoefficient', 'meanSquareDisplacement', 'vacfcomputations'])
         analysisType.meta['tip'] = 'type of analysis and method to call in this class'
+        
+        previousSimulationId = pyre.inventory.str("previousSimulationId", default='')
+        previousSimulationId.meta['tip'] = "the unique identifier of the previous simulation"
 
     def default(self, director):
         return self.chainMenu( director )
@@ -65,6 +66,7 @@ class ChainWizard(base):
         next = form.control(name='submit',type="submit", value="next")
         return page 
         
+        
     def verifySimulationTypeSelection(self, director):
         '''send to the right method, or form, based on what analytic method is chosen'''
         try:
@@ -75,21 +77,14 @@ class ChainWizard(base):
         self.inventory.type = type = self.processFormInputs(director)
         # create a new simulation
         simulation = self._createSimulation(director)
-        wizard = self._wizardname(type, director)
-        routine = 'configureSimulation'
-        return director.redirect(wizard, routine, id=simulation.id, type=simulation.name)
-    
-    def configureSimulation(self, director):
-        type = self.inventory.type
-        if not type: raise RuntimeError, "simulation type  not set"
-        #wizard = self._wizardname(type, director)
         if type in ['vacfcomputations']:
             wizard = 'mdanalysiswizard'
         else:
             wizard = 'phononsfromabinitio' # this is not yet done correctly
+        #wizard = self._wizardname(type, director)
         routine = 'configureSimulation'
-        id = self.inventory.id
-        return director.redirect(wizard, routine, id=id, type=type)
+        return director.redirect(wizard, routine, id=simulation.id, type=simulation.name)
+    
     
     def saveSimulation(self, director):
         try:
@@ -99,7 +94,7 @@ class ChainWizard(base):
 
         #nothing need to be done.
         #just go to the simulation list
-        actor = 'materialsimulation'; routine = 'listall'
+        actor = 'chainwizard'; routine = 'listall'
         return director.redirect(actor=actor, routine=routine)
 
 
@@ -114,45 +109,8 @@ class ChainWizard(base):
         if simulation: director.clerk.deleteRecord(simulation)
         
         # redirect
-        actor = 'materialsimulation'; routine = 'listall'
+        actor = 'chainwizard'; routine = 'listall'
         return director.redirect(actor=actor, routine=routine)
-    
-
-    def createJob(self, director):
-        try:
-            page = self._retrievePage(director)
-        except AuthenticationError, err:
-            return err.page
-
-        if not self._readyForSubmission(director):
-            return self._notReadyForSubmissionAlert(director)
-
-        # job
-        id = self.inventory.id
-        type = self.inventory.type
-        computation = director.clerk.getRecordByID(type, id)
-        jobref = computation.job
-
-        if not jobref or not jobref.id:
-            # create a new job
-            from vnf.components.Job import new_job
-            job = new_job(director)
-            job.computation = computation
-            director.clerk.updateRecord(job)
-            
-            computation.job = job
-            director.clerk.updateRecord(computation)
-        else:
-            job = director.clerk.dereference(jobref)
-            
-        # redirect to job submission page
-        actor = 'job'
-        routine = 'view'
-        return director.redirect(actor, routine, id = job.id)
-
-
-    def submitSimulation(self, director):
-        return self.createJob(director)
 
 
     def __init__(self, name=None):
@@ -162,125 +120,8 @@ class ChainWizard(base):
         return
 
 
-    def _wizardname(self, type, director):
-        '''return the name of the wizard for the given simulation type'''
-        # this is a bit weird. the type is the table name. but usually
-        # table name has a 's' at the end, and it is not desirable.
-        # the following code takes the table class name.
-        table = director.clerk._getTable(type)
-        table = table.__name__.lower()
-        
-        return '%swizard' % table
-
-
-    def _createSimulation(self, director):
-        type = self.inventory.type
-        Computation = director.clerk._getTable(type)
-        
-        computation = director.clerk.newOwnedObject(Computation)
-        self.inventory.id = id = computation.id
-        #computation.matter = matter
-        #director.clerk.updateRecord(computation)
-        return computation
-
-
-    def _readyForSubmission(self, director):
-        id = self.inventory.id
-        type = self.inventory.type
-        if not id or not type: return False
-        simulation = director.clerk.getRecordByID(type, id)
-
-        if not simulation.matter: return False
-        if not simulation.matter.id: return False
-        return True
-
-
-    def _notReadyForSubmissionAlert(self, director):
-        try:
-            page = self._retrievePage(director)
-        except AuthenticationError, err:
-            return err.page
-        main = page._body._content._main
-        document = main.document(title='Material simulation' )
-        document.byline = '<a href="http://danse.us">DANSE</a>'    
-        p = document.paragraph()
-        p.text = [
-            'Not yet ready for submission',
-            ]
-        return page
-
-
-    def _materialDefinedForSimulation(self, simulation, director):
-        return _materialDefinedForSimulation(simulation, director)
-
-
-    def _needMaterialAlert(self, director):
-        try:
-            page = director._retrievePage(director)
-        except AuthenticationError, err:
-            return err.page
-        main = page._body._content._main
-        document = main.document(title='Ab initio electronic structure simulation' )
-        document.byline = '<a href="http://danse.us">DANSE</a>'    
-        p = document.paragraph()
-        p.text = [
-            'You have not selected the material.',
-            ]
-        return page
-
-
-    def _getSimulation(self, director):
-        id = self.inventory.id
-        table = self.inventory.type
-        if not table or not id: return
-        return director.clerk.getRecordByID(table, id)
-
-
     def _retrievePage(self, director):
         return director.retrieveSecurePage('chainwizard')
-
-# everythin below here is "leftover"
-    
-    def createJob(self, director):
-        self.inventory.type = 'sqefrommds'
-        id = self.inventory.id
-        
-        try:
-            page = self._retrievePage(director)
-        except AuthenticationError, err:
-            return err.page
-
-        if not self._readyForSubmission(director):
-            return self._notReadyForSubmissionAlert(director)
-
-        # job
-        id = self.inventory.id
-        type = self.inventory.type
-        computation = director.clerk.getRecordByID(type, id)
-        jobref = computation.job
-
-        if not jobref or not jobref.id:
-            # create a new job
-            from vnf.components.Job import new_job
-            job = new_job(director)
-            job.computation = computation
-            director.clerk.updateRecord(job)
-            
-            computation.job = job
-            director.clerk.updateRecord(computation)
-        else:
-            job = director.clerk.dereference(jobref)
-            
-        # redirect to job submission page
-        actor = 'job'
-        routine = 'view'
-        return director.redirect(actor, routine, id = job.id)
-    
-    def _readyForSubmission(self, director):
-        return True 
-    
-def classToMethod(className):
-    return className[0].lower()+className[1:]
     
 
 def actor():

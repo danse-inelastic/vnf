@@ -40,7 +40,7 @@ class Form( base ):
         p = form.paragraph()
         p.text = ['<h2>Scattering Functions</h2>']        
         p = form.paragraph()
-        p.text = ['''Using fundamental dynamics one can construct velocity autocorrelation functions, elastic incohoerent
+        p.text = ['''Using fundamental dynamics one can construct velocity autocorrelation functions, elastic incoherent
         structure factors, scattering intensities, etc. for use in scattering kernels of instrument simulation.''']
         self.engineRadioButton(form, engines['vacf'])
         

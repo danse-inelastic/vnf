@@ -55,6 +55,7 @@ EXPORT_PYTHON_MODULES = \
 	CSAccessor.py \
 	DBObjectForm.py \
 	DistributedDataStorage.py \
+	Engine.py \
 	Form.py \
 	FormActor.py \
 	Geometer.py \
@@ -64,7 +65,6 @@ EXPORT_PYTHON_MODULES = \
 	Job.py \
 	JobBuilder.py \
 	Logout.py \
-	MaterialSimulation.py \
 	NeutronExperiment.py \
 	NeutronExperimentWizard.py \
 	Postman.py \
@@ -79,6 +79,7 @@ EXPORT_PYTHON_MODULES = \
 	Scribe.py \
 	Server.py \
 	Shape.py \
+	SimulationWizard.py \
 	SSHer.py \
 	SupportingCalcs.py \
 	TreeViewCreator.py \

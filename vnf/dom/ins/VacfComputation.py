@@ -24,12 +24,12 @@ class VacfComputation(base):
 
     name = 'vacfcomputations'
 
-    import pyre.db
+    import pyre.db as d
 
-    units = pyre.db.varchar(name='units', length = 16, default = 'nm') # unit meV
-    weights = pyre.db.varchar(name='weights', length = 16, default = 'mass') # number of sampling points (in 1 dimension)
+    units = d.varchar(name='units', length = 16, default = 'nm') # unit meV
+    weights = d.varchar(name='weights', length = 16, default = 'mass') # number of sampling points (in 1 dimension)
 
-    gulpsimulation = pyre.db.reference(name='gulpsimulation', table = GulpSimulation)
+    gulpsimulation = d.reference(name='gulpsimulation', table = GulpSimulation)
 #    # the trajectory name can be either a  file name or an id
 #    from vnf.dom.Trajectory import Trajectory
 #    trajectory = pyre.db.reference(name='trajectory', table=Trajectory)
