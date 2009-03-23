@@ -12,7 +12,8 @@
 #
 
 '''
-This actor gives the user a menu for performing analysis of his simulations/models and several follow-up forms for configuring those analyses.
+This actor gives the user a menu for performing analysis of his 
+simulations/models and several follow-up forms for configuring those analyses.
 '''
 
 from vnf.components.FormActor import FormActor as base, action, \
@@ -53,7 +54,7 @@ class ChainWizard(base):
         action = actionRequireAuthentication(          
             actor = 'chainwizard', 
             sentry = director.sentry,
-            routine = 'selectAnalysis',
+            routine = 'verifySimulationTypeSelection',
             id=id,
             arguments = {'form-received': formcomponent.name },
             )
@@ -73,7 +74,7 @@ class ChainWizard(base):
 
         self.inventory.type = type = self.processFormInputs(director)
         # create a new simulation
-        simulation = self._createSimulation(director, matter=matter)
+        simulation = self._createSimulation(director)
         wizard = self._wizardname(type, director)
         routine = 'configureSimulation'
         return director.redirect(wizard, routine, id=simulation.id, type=simulation.name)
@@ -156,8 +157,8 @@ class ChainWizard(base):
 
     def __init__(self, name=None):
         if name is None:
-            name = "materialsimulationwizard"
-        super(MaterialSimulationWizard, self).__init__(name)
+            name = "chainwizard"
+        super(ChainWizard, self).__init__(name)
         return
 
 

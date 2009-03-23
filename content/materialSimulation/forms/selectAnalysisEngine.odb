@@ -33,6 +33,11 @@ class Form( base ):
         '''expand an existing form with fields from this component'''
         
         p = form.paragraph()
+        p.text = ['''One may build upon a base calculation by performing additional dynamics
+        calculations or "measuring" various quantities such as diffusion coefficients or 
+        mean square displacements.  One may also calculate the raw scattering intensities
+        which are used in scattering kernels of a Monte Carlo neutron scattering instrument simulation''']  
+        p = form.paragraph()
         p.text = ['<h2>Scattering Functions</h2>']        
         p = form.paragraph()
         p.text = ['''Using fundamental dynamics one can construct velocity autocorrelation functions, elastic incohoerent
