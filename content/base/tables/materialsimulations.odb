@@ -47,9 +47,10 @@ def table(matsims, director):
         # eventually can specialize to what computation is
         #if matsim.type is 
         action = actionRequireAuthentication(
-            label = 'chain',
-            actor = 'chainwizard',
             sentry = director.sentry,
+            actor = 'chainwizard',
+            label = 'chain',
+            simulationId = matsim.id,
             )
         chain = action_link( action, director.cgihome )
         return chain       

@@ -78,7 +78,7 @@ class MdAnalysisWizard(base):
             return err.page
 
         simulation = self._getSimulation(director)
-        # make sure gulp simulation is configured
+        # make sure simulation is configured
         if isConfigured(simulation, director):
             return self.readyForSubmission(director)
         return self.configureSimulation(director)

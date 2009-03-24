@@ -61,7 +61,7 @@ class Sample(Actor):
                     'sampleInput', 
                     director.sentry,
                     label = 'Add a new sample',
-                    routine = 'default'            
+                    routine = 'default'   
                     ),
                 director.cgihome,
                 ),

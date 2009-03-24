@@ -82,8 +82,8 @@ def getallsimulations(db, where=None):
     return computations
 
 
-def _desribe(simulation):
-    return '%s computation #%s' % (simulation.__class__.__name__, simulation.id)
+#def _desribe(simulation):
+#    return '%s computation #%s' % (simulation.__class__.__name__, simulation.id)
     
 
 def actor():

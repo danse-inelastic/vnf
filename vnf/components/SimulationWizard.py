@@ -9,7 +9,8 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
-from vnf.components.Actor import actionRequireAuthentication, action_link, AuthenticationError
+from vnf.components.Actor import actionRequireAuthentication, action, action_link, \
+actionRequireAuthentication, action_link, AuthenticationError
 from vnf.components.FormActor import FormActor as base, InputProcessingError
 
 

@@ -223,8 +223,12 @@ class WebApplication(Base):
 
         self.idd = self.inventory.idd
         self.clerk = self.inventory.clerk
+        # this next line is a problem.  Technically, many of the components can be None at
+        # this point....so trying to set an attribute of a None-type component throws an
+        # exception....root of the problem may be in initializeConfiguration() in Application.py
         self.clerk.director = self
         self.dds = self.inventory.dds
+        # same for this line
         self.dds.director = self
         self.scribe = self.inventory.scribe
         self.debug = self.inventory.debug
@@ -233,7 +237,7 @@ class WebApplication(Base):
         from vnf.components import accesscontrol
         self.accesscontrol = accesscontrol()
 
-        import os
+        #import os
         configurations = {
             'home': self.home,
             'cgihome':self.cgihome,

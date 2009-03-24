@@ -16,8 +16,8 @@ This actor gives the user a menu for performing analysis of his
 simulations/models and several follow-up forms for configuring those analyses.
 '''
 
-from vnf.components.SimulationWizard import SimulationWizard as base, action, \
-actionRequireAuthentication, action_link, InputProcessingError, AuthenticationError
+from vnf.components.SimulationWizard import SimulationWizard as base#, action, \
+#actionRequireAuthentication, action_link, InputProcessingError, AuthenticationError
 
 class ChainWizard(base):
     
@@ -25,7 +25,7 @@ class ChainWizard(base):
 
         import pyre.inventory
         
-        analysisType = pyre.inventory.str('analysisType', default = 'vacfcomputationss')
+        analysisType = pyre.inventory.str('analysisType', default = 'vacfcomputations')
         #analysisType.validator = pyre.inventory.choice(['sqe', 'eisf', 'dos',
         #    'diffusionCoefficient', 'meanSquareDisplacement', 'vacfcomputations'])
         analysisType.meta['tip'] = 'type of analysis and method to call in this class'
@@ -42,6 +42,13 @@ class ChainWizard(base):
             page = director.retrieveSecurePage( 'generic' )
         except AuthenticationError, err:
             return err.page
+        
+        # initialize the previousSimulationId
+        # this is a major hack...all cgi input is stored neatly in registry--don't have time
+        # right now to step through the code and figure out how to access it...
+        cgiString = director._cgi_inputs['sys.stdin'][0] # assume we only need the first line
+        inputDict = [keyValPair.split('=') for keyValPair in cgiString.split('&')]
+        self.inventory.previousSimulationId = inputDict['simulationId']
 
         main = page._body._content._main
         document = main.document(title='Material Analysis')
