@@ -54,7 +54,7 @@ class Form( base ):
         units = form.selector(id='selector1',
                 name = 'abInitioHarmonic.engine',
                 entries = entries,
-                label = 'Electronic Structure Engine',
+                label = 'Units',
                 selected = str(record.units))    
 
         choices=['mass','equal weighting','incoherent cross section', 'coherent cross section']

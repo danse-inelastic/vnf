@@ -97,12 +97,12 @@ class MdAnalysisWizard(base):
         document = main.document(title='Atomic-level Simulation with Forcefields' )
 
         p = document.paragraph()
-        p.text = ['Your gulp simulation #%s is ready for submission.' % id]
+        p.text = ['Simulation #%s is ready for submission.' % id]
         
         p = document.paragraph()
         action = actionRequireAuthentication(
             label = 'start',
-            actor = 'gulpsimulationwizard', 
+            actor = 'mdanalysiswizard', 
             sentry = director.sentry,
             routine = 'submitSimulation',
             id=id, type=type,
@@ -111,7 +111,7 @@ class MdAnalysisWizard(base):
         
         action = actionRequireAuthentication(
             label = 'save it for latter submission',
-            actor = 'gulpsimulationwizard', 
+            actor = 'mdanalysiswizard', 
             sentry = director.sentry,
             routine = 'saveSimulation',
             id=id, type=type,
@@ -120,7 +120,7 @@ class MdAnalysisWizard(base):
         
         action = actionRequireAuthentication(
             label = 'delete',
-            actor = 'gulpsimulationwizard', 
+            actor = 'mdanalysiswizard', 
             sentry = director.sentry,
             routine = 'cancel',
             id=id, type=type,

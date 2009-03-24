@@ -50,7 +50,7 @@ def table(matsims, director):
             sentry = director.sentry,
             actor = 'chainwizard',
             label = 'chain',
-            simulationId = matsim.id,
+            previousSimulationId = matsim.id,
             )
         chain = action_link( action, director.cgihome )
         return chain       

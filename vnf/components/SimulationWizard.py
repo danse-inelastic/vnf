@@ -9,9 +9,8 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
-from vnf.components.Actor import actionRequireAuthentication, action, action_link, \
-actionRequireAuthentication, action_link, AuthenticationError
-from vnf.components.FormActor import FormActor as base, InputProcessingError
+from vnf.components.Actor import actionRequireAuthentication, AuthenticationError
+from vnf.components.FormActor import FormActor as base
 
 
 class SimulationWizard(base):
@@ -199,15 +198,14 @@ class SimulationWizard(base):
 
 
     def _createSimulation(self, director, matter=None):
-        if not matter:
-            raise RuntimeError
 
         type = self.inventory.type
         Computation = director.clerk._getTable(type)
         
         computation = director.clerk.newOwnedObject(Computation)
         self.inventory.id = id = computation.id
-        computation.matter = matter
+        if matter:
+            computation.matter = matter
         director.clerk.updateRecord(computation)
         return computation
 
