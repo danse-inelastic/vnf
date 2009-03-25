@@ -62,6 +62,13 @@ class ImagePlotMill:
     pass # end of DocumentMill
 
 
+
+class JSMill:
+
+    def onImagePlot(self, plot):
+        return
+
+
 from vnf.components.misc import new_id
 import os, tempfile, histogram.hdf as hh
 

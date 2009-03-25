@@ -4,21 +4,18 @@
 #
 #                                  Jiao Lin
 #                     California Institute of Technology
-#                       (C) 2007  All Rights Reserved
+#                     (C) 2007-2009  All Rights Reserved
 #
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
 
-from DocumentMill import DocumentMill
-from opal.weaver.StructuralMill import StructuralMill  as base
 
-
-class StructuralMill(DocumentMill, base):
-    
-    def __init__(self, tagger, configurations):
-        DocumentMill.__init__(self, tagger, configurations)
-        return
+def Inherited(classes):
+    for i, C in enumerate(classes): exec 'C%d=C' % i in locals()
+    code = 'class N(%s): pass' % ', '.join([ 'C%d' % i for i in range(len(classes)) ])
+    exec code in locals()
+    return N
 
 
 # version

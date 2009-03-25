@@ -10,19 +10,14 @@
 #
 
 
-from DocumentMillExtensions import extensions
+from JavaScriptWeaverExtensions import extensions
 from _utils import Inherited
 Extension = Inherited(extensions)
 
-from opal.weaver.DocumentMill import DocumentMill as base
-class DocumentMill(Extension, base):
+from JavaScriptWeaverBase import JavaScriptWeaverBase as base
+class JavaScriptWeaver(Extension, base):
 
-    def __init__(self, tagger, configurations):
-        base.__init__(self, tagger)
-        self.configurations = configurations
-        return
-
-    pass # end of DocumentMill
+    pass  # end of JavaScriptWeaver
 
 
 # version

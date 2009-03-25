@@ -296,6 +296,14 @@ class ViewerApplet(Applet):
         return lines
 
 
+
+class JSMill:
+
+    def onSolidView3D(self, solid):
+        return
+
+
+
 import os, tempfile
 
 

@@ -72,7 +72,15 @@ class AutoRefreshRenderer:
         return minutes, seconds
 
 
-    pass 
+    pass
+
+
+
+class JSMill:
+
+
+    def onAutoRefresh(self, autorefresh):
+        return
     
 
 import os

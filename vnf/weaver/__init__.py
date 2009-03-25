@@ -27,15 +27,9 @@ def action_formfields( action, form ):
     return renderer.render( action )
 
 
-def extend_weaver(weaver, configurations):
-    weaver.bodyMill.structuralMill = structuralMill(
-        weaver.bodyMill.tagger, configurations)
-    return
-
-
-def structuralMill(tagger, configuration):
-    from StructuralMill import StructuralMill
-    return StructuralMill(tagger, configuration)
+def pageMill(configurations):
+    from PageMill import PageMill
+    return PageMill(configurations)
 
 
 # version

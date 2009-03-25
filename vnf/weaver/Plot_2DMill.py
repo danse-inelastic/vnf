@@ -137,6 +137,17 @@ def _jsdatacode( data ):
     x, y = data
     return 'X=%s; Y=%s' % (list(x),list(y))
 
+
+
+
+class JSMill:
+
+
+    def onPlot_2D(self, plot):
+        return
+
+
+
 import os
 from vnf.weaver import action_href
 

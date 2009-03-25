@@ -221,6 +221,20 @@ class WebApplication(Base):
     def _configure(self):
         super(WebApplication, self)._configure()
 
+        # custom weaver
+        import os
+        configurations = {
+            'home': self.home,
+            'cgihome':self.cgihome,
+            'imagepath':self.inventory.imagepath,
+            'javascriptpath':self.inventory.javascriptpath,
+            'javapath':self.inventory.javapath,
+            'tmproot': self.inventory.tmproot,
+            }
+        import vnf.weaver
+        self.pageMill = vnf.weaver.pageMill(configurations)
+        
+
         self.idd = self.inventory.idd
         self.clerk = self.inventory.clerk
         # this next line is a problem.  Technically, many of the components can be None at
@@ -236,18 +250,6 @@ class WebApplication(Base):
 
         from vnf.components import accesscontrol
         self.accesscontrol = accesscontrol()
-
-        #import os
-        configurations = {
-            'home': self.home,
-            'cgihome':self.cgihome,
-            'imagepath':self.inventory.imagepath,
-            'javascriptpath':self.inventory.javascriptpath,
-            'javapath':self.inventory.javapath,
-            'tmproot': self.inventory.tmproot,
-            }
-        import vnf.weaver
-        vnf.weaver.extend_weaver(self.pageMill, configurations )
 
         if not self.debug: suppressWarnings()
         return
