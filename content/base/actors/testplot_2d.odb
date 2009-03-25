@@ -40,7 +40,7 @@ class Actor(base):
 
 
 def actor():
-    return Actor('plot_2d')
+    return Actor('testplot_2d')
 
 
 import numpy as N
