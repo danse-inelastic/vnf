@@ -15,11 +15,6 @@ class ChainWizard(SimulationWizard):
 
         import pyre.inventory
         
-#        analysisType = pyre.inventory.str('analysisType', default = 'vacfcomputations')
-#        #analysisType.validator = pyre.inventory.choice(['sqe', 'eisf', 'dos',
-#        #    'diffusionCoefficient', 'meanSquareDisplacement', 'vacfcomputations'])
-#        analysisType.meta['tip'] = 'type of analysis and method to call in this class'
-        
         previousSimulationId = pyre.inventory.str("previousSimulationId", default='')
         previousSimulationId.meta['tip'] = "the unique identifier of the previous simulation"
 
@@ -53,7 +48,7 @@ class ChainWizard(SimulationWizard):
             actor = 'chainwizard', 
             sentry = director.sentry,
             routine = 'verifySimulationTypeSelection',
-            id=id,
+            analysisType = self.inventory.simType,
             arguments = {'form-received': formcomponent.name },
             )
         from vnf.weaver import action_formfields
@@ -71,10 +66,10 @@ class ChainWizard(SimulationWizard):
         except AuthenticationError, err:
             return err.page
 
-        self.inventory.type = type = self.processFormInputs(director)
+        self.inventory.simType = simType = self.processFormInputs(director)
         # create a new simulation
         simulation = self._createSimulation(director)
-        if type in ['vacfcomputations']:
+        if simType in ['vacfcomputations']:
             wizard = 'mdanalysiswizard'
         else:
             wizard = 'phononsfromabinitio' # this is not yet done correctly
@@ -119,3 +114,4 @@ class ChainWizard(SimulationWizard):
 
     def _retrievePage(self, director):
         return director.retrieveSecurePage('generic')
+    

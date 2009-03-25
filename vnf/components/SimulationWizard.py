@@ -19,101 +19,22 @@ class SimulationWizard(base):
     class Inventory(base.Inventory):
         
         import pyre.inventory
+        
+        simType = pyre.inventory.str('simType', default = '')
+        #simType.validator = pyre.inventory.choice(['sqe', 'eisf', 'dos',
+        #    'diffusionCoefficient', 'meanSquareDisplacement', 'vacfcomputations'])
+        simType.meta['tip'] = 'type of calculation'
 
         #type = pyre.inventory.str('type', default='gulpsimulations')
         
-        id = pyre.inventory.str("id", default='')
-        id.meta['tip'] = "the unique identifier of the simulation"
+        simId = pyre.inventory.str("simId", default='')
+        simId.meta['tip'] = "the unique identifier of the simulation"
 
         pass # end of Inventory
 
 
     def default(self, director):
         return self.start(director)
-    
-#**********these three methods may or may not be useful, and will probably be removed
-
-    def selectSimulationEngine(self, director):
-        try:
-            page = self._retrievePage(director)
-        except AuthenticationError, err:
-            return err.page
-
-        # if simulation already created, don't need to select simulation type
-        # again. just jump to configure
-        if self.inventory.id:
-            return self.configureSimulation(director)
-        
-        main = page._body._content._main
-        # populate the main column
-        document = main.document(
-            title='Select material simulation/modeling engine')
-        document.description = ''
-        document.byline = '<a href="http://danse.us">DANSE</a>'        
-
-        mattertype = self.inventory.mattertype
-        matterid = self.inventory.matterid
-        if not matterid or not mattertype:
-            p = document.paragraph()
-            p.text = [
-                'You have not selected the material.',
-                ]
-            return page
-            
-        formcomponent = self.retrieveFormToShow( 'selectSimulationEngine')
-        formcomponent.director = director
-        formcomponent.inventory.type = self.inventory.type
-        
-        # build the form 
-        form = document.form(name='', action=director.cgihome)
-        # specify action
-        action = actionRequireAuthentication(          
-            actor = 'materialsimulationwizard', 
-            sentry = director.sentry,
-            routine = 'verifySimulationTypeSelection',
-            id=self.inventory.id,
-            type=self.inventory.type,
-            matterid = self.inventory.matterid,
-            mattertype = self.inventory.mattertype,
-            arguments = {'form-received': formcomponent.name },
-            )
-        from vnf.weaver import action_formfields
-        action_formfields( action, form )
-        # expand the form with fields of the data object that is being edited
-        formcomponent.expand( form )
-        submit = form.control(name='submit',type="submit", value="Continue")
-        #self.processFormInputs(director)
-        return page    
-    
-
-    def verifySimulationTypeSelection(self, director):
-        try:
-            page = self._retrievePage(director)
-        except AuthenticationError, err:
-            return err.page
-
-        self.inventory.type = type = self.processFormInputs(director)
-
-        # create a new simulation
-        mattertype = self.inventory.mattertype
-        matterid = self.inventory.matterid
-        matter = director.clerk.getRecordByID(mattertype, matterid)
-        simulation = self._createSimulation(director, matter=matter)
-
-        wizard = self._wizardname(type, director)
-        routine = 'configureSimulation'
-        return director.redirect(wizard, routine, id=simulation.id, type=simulation.name)
-
-
-    def configureSimulation(self, director):
-        type = self.inventory.type
-        if not type: raise RuntimeError, "simulation type  not set"
-        wizard = self._wizardname(type, director)
-        routine = 'configureSimulation'
-        id = self.inventory.id
-        return director.redirect(wizard, routine, id=id, type=type)
-
-#*************************************************************
 
 #    def saveSimulation(self, director):
 #        try:
@@ -152,9 +73,9 @@ class SimulationWizard(base):
             return self._notReadyForSubmissionAlert(director)
 
         # job
-        id = self.inventory.id
-        type = self.inventory.type
-        computation = director.clerk.getRecordByID(type, id)
+        simId = self.inventory.simId
+        simType = self.inventory.simType
+        computation = director.clerk.getRecordByID(simType, simId)
         jobref = computation.job
 
         if not jobref or not jobref.id:
@@ -172,7 +93,7 @@ class SimulationWizard(base):
         # redirect to job submission page
         actor = 'job'
         routine = 'view'
-        return director.redirect(actor, routine, id = job.id)
+        return director.redirect(actor, routine, simId = job.id)
 
 
     def submitSimulation(self, director):
@@ -186,12 +107,12 @@ class SimulationWizard(base):
         return
 
 
-    def _wizardname(self, type, director):
-        '''return the name of the wizard for the given simulation type'''
-        # this is a bit weird. the type is the table name. but usually
+    def _wizardname(self, simType, director):
+        '''return the name of the wizard for the given simulation simType'''
+        # this is a bit weird. the simType is the table name. but usually
         # table name has a 's' at the end, and it is not desirable.
         # the following code takes the table class name.
-        table = director.clerk._getTable(type)
+        table = director.clerk._getTable(simType)
         table = table.__name__.lower()
         
         return '%swizard' % table
@@ -199,11 +120,11 @@ class SimulationWizard(base):
 
     def _createSimulation(self, director, matter=None):
 
-        type = self.inventory.type
-        Computation = director.clerk._getTable(type)
+        simType = self.inventory.simType
+        Computation = director.clerk._getTable(simType)
         
         computation = director.clerk.newOwnedObject(Computation)
-        self.inventory.id = id = computation.id
+        self.inventory.simId = simId = computation.id
         if matter:
             computation.matter = matter
         director.clerk.updateRecord(computation)
@@ -211,10 +132,10 @@ class SimulationWizard(base):
 
 
     def _readyForSubmission(self, director):
-        id = self.inventory.id
-        type = self.inventory.type
-        if not id or not type: return False
-        simulation = director.clerk.getRecordByID(type, id)
+        simId = self.inventory.simId
+        simType = self.inventory.simType
+        if not simId or not simType: return False
+        simulation = director.clerk.getRecordByID(simType, simId)
 
         if not simulation.matter: return False
         if not simulation.matter.id: return False
@@ -237,10 +158,10 @@ class SimulationWizard(base):
 
 
     def _getSimulation(self, director):
-        id = self.inventory.id
-        table = self.inventory.type
-        if not table or not id: return
-        return director.clerk.getRecordByID(table, id)
+        simId = self.inventory.simId
+        table = self.inventory.simType
+        if not table or not simId: return
+        return director.clerk.getRecordByID(table, simId)
 
     pass # end of SimulationWizard
 

@@ -14,7 +14,7 @@
 
 from vnf.components.Form import Form as base
 
-from vnf.components.MaterialSimulation import engines
+from vnf.components.Engine import engines
 engines = engines()
 
 
@@ -23,9 +23,9 @@ class Form( base ):
     class Inventory( base.Inventory ):
 
         import pyre.inventory as inv
-        type = inv.str('type',default=engines['vacf'])
+        analysisType = inv.str('analysisType',default=engines['vacf'].id)
         #type.validator=inv.choice([e.id for e in engines])
-        type.meta['tip'] = 'type of analysis engine'
+        analysisType.meta['tip'] = 'type of analysis engine'
         
         #kernel_id = inv.str( 'kernel_id' )
 
@@ -47,8 +47,8 @@ class Form( base ):
 
     def engineRadioButton(self, form, engine):
         prefix = formactor_action_prefix
-        name = '%s.%s' % (formactor_action_prefix, 'type')
-        default = self.inventory.type
+        name = '%s.%s' % (formactor_action_prefix, 'analysisType')
+        default = self.inventory.analysisType
         
         id = engine.id
         label = engine.short_description
@@ -58,14 +58,14 @@ class Form( base ):
                 'label':label,
                 'value':id,
                 }
-        if engine == default: kwds['checked']=True
+        if engine.id == default: kwds['checked']=True
         rb = form.radio(**kwds)
         return rb
     
 
     def processUserInputs(self):
         'process user input '
-        return self.inventory.type
+        return self.inventory.analysisType
 
 
 #formactor_action_prefix = 'actor.form-received' # assumed actor is a form actor

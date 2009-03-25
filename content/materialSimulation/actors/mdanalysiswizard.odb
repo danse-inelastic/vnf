@@ -25,20 +25,17 @@ class MdAnalysisWizard(ChainWizard):
         
         import pyre.inventory as inv
         
-        librarycontent = inv.str('librarycontent')
-        libraryname = inv.str('libraryname')
-        configurations = inv.str('configurations')
         pass
 
     def configureSimulation(self, director):
-        #type = self.inventory.type = 'mdanalysis'
-        type = self.inventory.type = 'vacfcomputations'
+        #simType = self.inventory.simType = 'mdanalysis'
+        simType = self.inventory.simType = 'vacfcomputations'
 
-        # get the simulation id
+        # get the simulation simId
         simulation = self._getSimulation(director)
         if not simulation:
-            raise RuntimeError, '%s: %s' % (self.inventory.type, self.inventory.id)
-        id = self.inventory.id = simulation.id
+            raise RuntimeError, '%s: %s' % (self.inventory.simType, self.inventory.simId)
+        simId = self.inventory.simId = simulation.id
         
         try:
             page = self._retrievePage(director)
@@ -50,7 +47,7 @@ class MdAnalysisWizard(ChainWizard):
 
         formcomponent = self.retrieveFormToShow( 'velocityAutocorrelation')
         formcomponent.director = director
-        formcomponent.inventory.id = id
+        formcomponent.inventory.simId = simId
         # build the form form
         form = document.form(name='', action=director.cgihome)
         # specify action
@@ -58,7 +55,7 @@ class MdAnalysisWizard(ChainWizard):
             actor = 'mdanalysiswizard', 
             sentry = director.sentry,
             routine = 'verifyConfiguration',
-            id=id, type=type,
+            simId=simId, simType=simType,
             arguments = {'form-received': formcomponent.name },
             )
         from vnf.weaver import action_formfields
@@ -85,14 +82,14 @@ class MdAnalysisWizard(ChainWizard):
         except AuthenticationError, err:
             return err.page
 
-        id = self.inventory.id
-        type = self.inventory.type
+        simId = self.inventory.simId
+        simType = self.inventory.simType
         
         main = page._body._content._main
         document = main.document(title='Atomic-level Simulation with Forcefields' )
 
         p = document.paragraph()
-        p.text = ['Simulation #%s is ready for submission.' % id]
+        p.text = ['Simulation #%s is ready for submission.' % simId]
         
         p = document.paragraph()
         action = actionRequireAuthentication(
@@ -100,7 +97,7 @@ class MdAnalysisWizard(ChainWizard):
             actor = 'mdanalysiswizard', 
             sentry = director.sentry,
             routine = 'submitSimulation',
-            id=id, type=type,
+            simId=simId, simType=simType,
             )
         submit_link = action_link(action, director.cgihome)
         
@@ -109,7 +106,7 @@ class MdAnalysisWizard(ChainWizard):
             actor = 'mdanalysiswizard', 
             sentry = director.sentry,
             routine = 'saveSimulation',
-            id=id, type=type,
+            simId=simId, simType=simType,
             )
         save_link = action_link(action, director.cgihome)
         
@@ -118,7 +115,7 @@ class MdAnalysisWizard(ChainWizard):
             actor = 'mdanalysiswizard', 
             sentry = director.sentry,
             routine = 'cancel',
-            id=id, type=type,
+            simId=simId, simType=simType,
             )
         delete_link = action_link(action, director.cgihome)
 
@@ -176,7 +173,7 @@ class MdAnalysisWizard(ChainWizard):
 #        
 #        actor = 'sqefrommdwizard'
 #        routine = 'configureSimulation'
-#        return director.redirect(actor, routine, id=sqefrommd.id, type=sqefrommd.name)
+#        return director.redirect(actor, routine, simId=sqefrommd.id, type=sqefrommd.name)
         
         
         try:
@@ -194,7 +191,7 @@ class MdAnalysisWizard(ChainWizard):
             actor = 'materialanalysis', 
             sentry = director.sentry,
             routine = 'selectAnalysis',
-            id=id,
+            simId=simId,
             arguments = {'form-received': formcomponent.name },
             )
         from vnf.weaver import action_formfields
@@ -220,7 +217,7 @@ class MdAnalysisWizard(ChainWizard):
             actor = 'materialanalysis', 
             sentry = director.sentry,
             routine = 'selectAnalysis',
-            id=id,
+            simId=simId,
             arguments = {'form-received': formcomponent.name },
             )
         from vnf.weaver import action_formfields
@@ -247,7 +244,7 @@ class MdAnalysisWizard(ChainWizard):
             sentry = director.sentry,
             routine = 'createJob',
             label = '',
-            id = self.inventory.id,
+            simId = self.inventory.simId,
             arguments = {'form-received': formcomponent.name },
             )
         from vnf.weaver import action_formfields
