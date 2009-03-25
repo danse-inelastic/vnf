@@ -58,7 +58,7 @@ class Form( base ):
                 'label':label,
                 'value':id,
                 }
-        if id == default: kwds['checked']=True
+        if engine == default: kwds['checked']=True
         rb = form.radio(**kwds)
         return rb
     

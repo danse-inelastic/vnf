@@ -52,7 +52,7 @@ class Form( base ):
         choices=['nm','Ang']
         entries=enumerate(choices)
         units = form.selector(id='selector1',
-                name = 'abInitioHarmonic.engine',
+                name = '%s.units' % prefix,
                 entries = entries,
                 label = 'Units',
                 selected = str(record.units))    

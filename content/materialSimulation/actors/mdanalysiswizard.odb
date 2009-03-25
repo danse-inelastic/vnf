@@ -13,17 +13,15 @@
 from vnf.components.MaterialSimulationWizard import \
      actionRequireAuthentication, action_link, AuthenticationError, InputProcessingError
 
-from vnf.components.MaterialSimulationWizard import MaterialSimulationWizard as base
-
-
+from vnf.components.ChainWizard import ChainWizard
 
 #from vnf.dom.MdAnalysis import MdAnalysis
 from vnf.dom.ins.VacfComputation import VacfComputation
     
-class MdAnalysisWizard(base):
+class MdAnalysisWizard(ChainWizard):
     
 
-    class Inventory(base.Inventory):
+    class Inventory(ChainWizard.Inventory):
         
         import pyre.inventory as inv
         
@@ -43,7 +41,7 @@ class MdAnalysisWizard(base):
         id = self.inventory.id = simulation.id
         
         try:
-            page = director.retrieveSecurePage( 'genericMaterialSimulationWizard' )
+            page = self._retrievePage(director)
         except AuthenticationError, err:
             return err.page
         
@@ -78,11 +76,8 @@ class MdAnalysisWizard(base):
             return err.page
 
         simulation = self._getSimulation(director)
-        # make sure simulation is configured
-        if isConfigured(simulation, director):
-            return self.readyForSubmission(director)
-        return self.configureSimulation(director)
-
+        return self.readyForSubmission(director)
+    
 
     def readyForSubmission(self, director):
         try:
@@ -262,14 +257,6 @@ class MdAnalysisWizard(base):
         next = form.control(name='submit',type="submit", value="next")
 #        self._footer( document, director )
         return page 
-
-
-
-import os
-def isConfigured(sim, director):
-    path = director.dds.abspath(sim, filename=GulpSimulation.CONFIGURATION_FILE)
-    if os.path.exists(path): return True
-    return False
 
 
 def actor():

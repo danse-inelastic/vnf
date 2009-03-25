@@ -49,6 +49,7 @@ EXPORT_PYTHON_MODULES = \
 	AccessControl.py \
 	Actor.py \
 	Announcer.py \
+	ChainWizard.py \
 	Clerk.py \
 	Computation.py \
 	ComputationResultsRetriever.py \
@@ -65,6 +66,7 @@ EXPORT_PYTHON_MODULES = \
 	Job.py \
 	JobBuilder.py \
 	Logout.py \
+	MaterialSimulationWizard.py \
 	NeutronExperiment.py \
 	NeutronExperimentWizard.py \
 	Postman.py \
