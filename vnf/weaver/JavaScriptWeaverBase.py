@@ -22,12 +22,16 @@ class JavaScriptWeaverBase:
         self._includes = []
         self._script = []
         self._main = []
+
         return
 
 
     def render(self, document):
         # init main function
         self.startmain()
+        
+        # jquery main needs jquery
+        self.include(script='jquery/jquery.js')
         
         # rendering
         document.identify(self)
@@ -113,7 +117,9 @@ class JavaScriptWeaverBase:
     def _include(self, script):
         configurations = self.configurations
         javascriptpath = configurations['javascriptpath']
-        self._includes.append(os.path.join(javascriptpath, script))
+        include = os.path.join(javascriptpath, script)
+        if include not in self._includes:
+            self._includes.append(include)
         return
 
 
