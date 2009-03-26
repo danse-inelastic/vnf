@@ -21,6 +21,9 @@ class Form( base ):
 
         import pyre.inventory as inv
         
+        simId = pyre.inventory.str("simId", default='')
+        simId.meta['tip'] = "the unique identifier of the simulation"
+        
         short_description = inv.str('short_description', default = '' )
         short_description.meta['tip'] = 'A short description'
         
@@ -82,7 +85,7 @@ class Form( base ):
     
     def getRecord(self):
         'get DB record'
-        return self.director.clerk.getRecordByID( self.DBTable, self.inventory.id )
+        return self.director.clerk.getRecordByID( self.DBTable, self.inventory.simId )
     
     
 

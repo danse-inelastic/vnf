@@ -124,7 +124,7 @@ class SimulationWizard(base):
         Computation = director.clerk._getTable(simType)
         
         computation = director.clerk.newOwnedObject(Computation)
-        self.inventory.simId = simId = computation.id
+        self.inventory.simId = computation.id
         if matter:
             computation.matter = matter
         director.clerk.updateRecord(computation)

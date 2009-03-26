@@ -27,13 +27,6 @@ class ChainWizard(SimulationWizard):
             page = director.retrieveSecurePage( 'generic' )
         except AuthenticationError, err:
             return err.page
-        
-        # initialize the previousSimulationId
-        # this is a major hack...all cgi input is stored neatly in registry--don't have time
-        # right now to step through the code and figure out how to access it...
-#        cgiString = director._cgi_inputs['sys.stdin'][0] # assume we only need the first line
-#        inputDict = [keyValPair.split('=') for keyValPair in cgiString.split('&')]
-#        self.inventory.previousSimulationId = inputDict['simulationId']
 
         main = page._body._content._main
         document = main.document(title='Material Analysis')
@@ -75,7 +68,7 @@ class ChainWizard(SimulationWizard):
             wizard = 'phononsfromabinitio' # this is not yet done correctly
         #wizard = self._wizardname(type, director)
         routine = 'configureSimulation'
-        return director.redirect(wizard, routine, id=simulation.id, type=simulation.name)
+        return director.redirect(wizard, routine, simId = simulation.id, simType=simulation.name)
     
     
     def saveSimulation(self, director):

@@ -29,13 +29,13 @@ class MdAnalysisWizard(ChainWizard):
 
     def configureSimulation(self, director):
         #simType = self.inventory.simType = 'mdanalysis'
-        simType = self.inventory.simType = 'vacfcomputations'
+        #self.inventory.simType = 'vacfcomputations'
 
         # get the simulation simId
         simulation = self._getSimulation(director)
         if not simulation:
             raise RuntimeError, '%s: %s' % (self.inventory.simType, self.inventory.simId)
-        simId = self.inventory.simId = simulation.id
+        self.inventory.simId = simulation.id
         
         try:
             page = self._retrievePage(director)
@@ -47,7 +47,7 @@ class MdAnalysisWizard(ChainWizard):
 
         formcomponent = self.retrieveFormToShow( 'velocityAutocorrelation')
         formcomponent.director = director
-        formcomponent.inventory.simId = simId
+        formcomponent.inventory.simId = self.inventory.simId
         # build the form form
         form = document.form(name='', action=director.cgihome)
         # specify action
@@ -55,7 +55,8 @@ class MdAnalysisWizard(ChainWizard):
             actor = 'mdanalysiswizard', 
             sentry = director.sentry,
             routine = 'verifyConfiguration',
-            simId=simId, simType=simType,
+            simId=self.inventory.simId, 
+            simType=self.inventory.simType,
             arguments = {'form-received': formcomponent.name },
             )
         from vnf.weaver import action_formfields
@@ -154,7 +155,7 @@ class MdAnalysisWizard(ChainWizard):
         return 'success'
     
     
-    def sqe(self, director):
+#    def sqe(self, director):
         
         #might want to reference this method from the redirect in gulpsimulationwizard:
 #            def verifySimulation(self, director):
@@ -176,84 +177,6 @@ class MdAnalysisWizard(ChainWizard):
 #        return director.redirect(actor, routine, simId=sqefrommd.id, type=sqefrommd.name)
         
         
-        try:
-            page = director.retrieveSecurePage( 'generic' )
-        except AuthenticationError, err:
-            return err.page
-        main = page._body._content._main
-        document = main.document(title='S(Q,E) calculation from atomic trajectories')
-        formcomponent = self.retrieveFormToShow( 'sqe')
-        formcomponent.director = director
-        # build the form form
-        form = document.form(name='', action=director.cgihome)
-        # specify action
-        action = actionRequireAuthentication(          
-            actor = 'materialanalysis', 
-            sentry = director.sentry,
-            routine = 'selectAnalysis',
-            simId=simId,
-            arguments = {'form-received': formcomponent.name },
-            )
-        from vnf.weaver import action_formfields
-        action_formfields( action, form )
-        # expand the form with fields of the data object that is being edited
-        formcomponent.expand( form )
-        next = form.control(name='submit',type="submit", value="next")
-        return page 
-    
-    def diffusionCoefficient(self, director):
-        try:
-            page = director.retrieveSecurePage( 'generic' )
-        except AuthenticationError, err:
-            return err.page
-        main = page._body._content._main
-        document = main.document(title='Diffusion coefficient from atomic trajectories')
-        formcomponent = self.retrieveFormToShow( 'diffusionCoefficient')
-        formcomponent.director = director
-        # build the form form
-        form = document.form(name='', action=director.cgihome)
-        # specify action
-        action = actionRequireAuthentication(          
-            actor = 'materialanalysis', 
-            sentry = director.sentry,
-            routine = 'selectAnalysis',
-            simId=simId,
-            arguments = {'form-received': formcomponent.name },
-            )
-        from vnf.weaver import action_formfields
-        action_formfields( action, form )
-        # expand the form with fields of the data object that is being edited
-        formcomponent.expand( form )
-        next = form.control(name='submit',type="submit", value="next")
-        return page 
-    
-    def velocityAutocorrelation(self, director):
-        try:
-            page = director.retrieveSecurePage( 'generic' )
-        except AuthenticationError, err:
-            return err.page
-        main = page._body._content._main
-        document = main.document(title='Velocity autocorrelation from atomic trajectories')
-        formcomponent = self.retrieveFormToShow( 'velocityAutocorrelation')
-        formcomponent.director = director
-        # build the form form
-        form = document.form(name='', action=director.cgihome)
-        # specify action
-        action = actionRequireAuthentication(          
-            actor = 'materialanalysis', 
-            sentry = director.sentry,
-            routine = 'createJob',
-            label = '',
-            simId = self.inventory.simId,
-            arguments = {'form-received': formcomponent.name },
-            )
-        from vnf.weaver import action_formfields
-        action_formfields( action, form )
-        # expand the form with fields of the data object that is being edited
-        formcomponent.expand( form )
-        next = form.control(name='submit',type="submit", value="next")
-#        self._footer( document, director )
-        return page 
 
 
 def actor():

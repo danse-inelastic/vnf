@@ -126,25 +126,12 @@ class Clerk(Component):
             continue
         return ret
 
-    def indexServers(self, where = None):
-        '''create and index of all servers
-        that meet the specified criteria'''
-
-        from vnf.dom.Scatterer import Scatterer
-        return self._index( Scatterer, where )
-
 
     def indexNeutronExperiments(self, where=None):
         director = self.director
         username = director.sentry.username
         from vnf.dom.NeutronExperiment import NeutronExperiment
         return self._index(NeutronExperiment, where=where)
-
-
-    def getCrystal(self, id):
-        '''retrieve crystal of given id'''
-        from vnf.dom.Crystal import Crystal
-        return self._getRecordByID( Crystal, id )
 
     
     def getJob(self, id):
@@ -153,32 +140,17 @@ class Clerk(Component):
         return self._getRecordByID( Job, id )
     
     
-    def getJobs(self, where = None):
-        '''retrieve all jobs'''
-        from vnf.dom.Job import Job
-        return self._getAll( Job, where )
-    
-    
     def getSample(self, id):
         '''retrieve sample of given id'''
         from vnf.dom.Sample import Sample
         return self._getRecordByID( Sample, id )
     
-    def getSamples(self, where = None):
-        '''retrieve all samples'''
-        from vnf.dom.Matter import Matter
-        return self._getAll( Matter, where )
 
     def getSampleAssembly(self, id):
         '''retrieve sample assembly of given id'''
         from vnf.dom.SampleAssembly import SampleAssembly
         return self._getRecordByID( SampleAssembly, id )
     
-#    def getScatteringKernels(self, where = None):
-#        '''retrieve all scattering kernels'''
-#        from vnf.dom.ScatteringKernel2 import ScatteringKernel2
-#        return self._getAll( ScatteringKernel2, where )
-
 
     def getUser(self, username):
         '''retrieve user of given username'''
