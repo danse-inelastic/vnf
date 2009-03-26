@@ -23,6 +23,7 @@
     <property name='cgi-home'>http://localhost/~linjiao/cgi-bin/vnf2/main.cgi</property>
     <property name='imagepath'>/~linjiao/vnf2/images</property>
     <property name='javascriptpath'>/~linjiao/vnf2/javascripts</property>
+    <property name='tmproot'>/~linjiao/vnf2/tmp</property>
   </component>
 
 </inventory>
