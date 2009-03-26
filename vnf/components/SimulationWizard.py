@@ -131,14 +131,11 @@ class SimulationWizard(base):
         return computation
 
 
-    def _readyForSubmission(self, director):
+    def _readyForSubmission(self, director, matter=None):
         simId = self.inventory.simId
         simType = self.inventory.simType
         if not simId or not simType: return False
         simulation = director.clerk.getRecordByID(simType, simId)
-
-        if not simulation.matter: return False
-        if not simulation.matter.id: return False
         return True
 
 

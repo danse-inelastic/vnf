@@ -29,7 +29,7 @@ class ChainWizard(SimulationWizard):
             return err.page
 
         main = page._body._content._main
-        document = main.document(title='Material Analysis')
+        document = main.document(title='Computational Chain')
         
         formcomponent = self.retrieveFormToShow( 'selectAnalysisEngine')
         formcomponent.director = director
@@ -70,6 +70,57 @@ class ChainWizard(SimulationWizard):
         routine = 'configureSimulation'
         return director.redirect(wizard, routine, simId = simulation.id, simType=simulation.name)
     
+    
+    
+    # this can prob. be moved to SimulationWizard.py
+    def readyForSubmission(self, director):
+        try:
+            page = self._retrievePage(director)
+        except AuthenticationError, err:
+            return err.page
+        
+        main = page._body._content._main
+        document = main.document(title='Trajectory analysis' )
+
+        p = document.paragraph()
+        p.text = ['Simulation #%s is ready for submission.' % self.inventory.simId]
+        
+        p = document.paragraph()
+        action = actionRequireAuthentication(
+            label = 'start',
+            actor = 'chainwizard', 
+            sentry = director.sentry,
+            routine = 'submitSimulation',
+            simId = self.inventory.simId, 
+            simType = self.inventory.simType,
+            )
+        submit_link = action_link(action, director.cgihome)
+        
+        action = actionRequireAuthentication(
+            label = 'save it for latter submission',
+            actor = 'chainwizard', 
+            sentry = director.sentry,
+            routine = 'saveSimulation',
+            simId = self.inventory.simId, 
+            simType = self.inventory.simType,
+            )
+        save_link = action_link(action, director.cgihome)
+        
+        action = actionRequireAuthentication(
+            label = 'delete',
+            actor = 'chainwizard', 
+            sentry = director.sentry,
+            routine = 'cancel',
+            simId = self.inventory.simId, 
+            simType = self.inventory.simType,
+            )
+        delete_link = action_link(action, director.cgihome)
+
+        p.text = [
+            'Your can %s this simulation, or %s, or %s it.' % (submit_link, save_link, delete_link),
+            ]
+
+        return page
     
     def saveSimulation(self, director):
         try:

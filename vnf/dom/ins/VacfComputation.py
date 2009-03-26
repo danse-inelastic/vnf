@@ -18,9 +18,9 @@ from registry import tableRegistry
 from vnf.dom.GulpSimulation import GulpSimulation
 
 #from Analysis import Analysis as base
-from vnf.dom.Computation import Computation as base
+from vnf.dom.Computation import Computation
 
-class VacfComputation(base):
+class VacfComputation(Computation):
 
     name = 'vacfcomputations'
 
