@@ -93,7 +93,8 @@ class SimulationWizard(base):
         # redirect to job submission page
         actor = 'job'
         routine = 'view'
-        return director.redirect(actor, routine, simId = job.id)
+        # the id below is the id in the inventory of the actor 'job'
+        return director.redirect(actor, routine, id = job.id)
 
 
     def submitSimulation(self, director):
