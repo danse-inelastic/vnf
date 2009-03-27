@@ -14,10 +14,6 @@
 
 class Extension1:
 
-    def onTreeView(self, treeview):
-        return
-
-
     def onImage(self, image):
         return
     
@@ -29,6 +25,7 @@ from ImagePlotMill import JSMill as ImagePlotMill
 from SolidView3DMill import JSMill as SolidView3DMill
 from AutoRefreshRenderer import JSMill as AutoRefreshRenderer
 from TableMill import JSMill as TableMill
+from TreeViewMill import JSMill as TreeViewMill
 
 extensions = [
     Plot_2DMill,
@@ -37,6 +34,7 @@ extensions = [
     SlidableGalleryMill,
     AutoRefreshRenderer,
     TableMill,
+    TreeViewMill,
     Extension1,
     ]
 
