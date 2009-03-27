@@ -41,6 +41,7 @@ class JSMill:
         includes = [
             'jquery/jquery.js',
             'jquery/jquery.flot.js',
+            'jquery/elementFactory.js',
             'jquery/plotxy.js',
             ]
         self.include(scripts=includes)

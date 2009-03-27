@@ -12,39 +12,11 @@
 //
 
 
-/* this is derived from a flot example */
+// needs elementFactory.js
+
+/* this is partially derived from a flot example */
 
 (function($) {
-
-  function createTag(name, kwds) {
-
-    var assignments = [];
-
-    for (var key in kwds) {
-      var value = kwds[key];
-      assignments.push( key + '=' + '"' + value + '"' );
-    }
-    
-    var  s = "<" + name + ' ' + assignments.join(' ') + ">" + "</"+name+">";
-    
-    return $(s);
-  }
-
-  function createDiv(id, style) {
-    var name = 'div';
-    var kwds = {};
-    
-    kwds['id'] = id;
-
-    var assignments = [];
-    for (var key in style) {
-      var value = style[key];
-      assignments.push(key+':'+value);
-    }
-    kwds['style'] = assignments.join(';');
-
-    return createTag(name, kwds);
-  }
 
   $.fn.plotxy = function(X,Y, options) {
 
@@ -92,20 +64,22 @@
     var miniatureid = myid+':'+'miniature';
     var miniaturelegendid = myid+':'+'miniaturelegend';
 
-    var mainpaneldiv = createDiv(mainpanelid, {'float': 'left'});
+    var factory = elementFactory;
+
+    var mainpaneldiv = factory.createDiv(mainpanelid, {'float': 'left'});
     $this.append(mainpaneldiv);
     
-    var mainplotdiv = createDiv(mainplotid, mainplot_size);
+    var mainplotdiv = factory.createDiv(mainplotid, mainplot_size);
     mainpaneldiv.append(mainplotdiv);
 
-    var miniaturepaneldiv = createDiv(miniaturepanelid, miniature_style);
+    var miniaturepaneldiv = factory.createDiv(miniaturepanelid, miniature_style);
     $this.append(miniaturepaneldiv);
     
-    var miniaturediv = createDiv(miniatureid, miniature_size);
+    var miniaturediv = factory.createDiv(miniatureid, miniature_size);
     miniaturepaneldiv.append(miniaturediv);
 
     legend_style = {'id': miniaturelegendid, 'style': 'margin-left:10px'};
-    var miniatureLegend = createTag('p', legend_style);
+    var miniatureLegend = factory.createParagraph('', legend_style);
     miniaturepaneldiv.append(miniatureLegend);
 
     function getYLimits() {
@@ -180,3 +154,6 @@
   };
 
  }) (jQuery);
+
+
+// End of file
