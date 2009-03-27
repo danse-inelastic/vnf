@@ -88,8 +88,10 @@ class Actor(base):
 
         # specify action
         action = actionRequireAuthentication(
-            actor = 'job', sentry = director.sentry,
-            label = '', routine = 'verify',
+            actor = 'job', 
+            sentry = director.sentry,
+            label = '', 
+            routine = 'verify',
             id = id,
             arguments = {'form-received': formcomponent.name },
             )

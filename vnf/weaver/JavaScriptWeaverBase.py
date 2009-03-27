@@ -101,7 +101,7 @@ class JavaScriptWeaverBase:
         for tag in contents:
             tag.identify(self)
         return
-    onLiteral = onParagraph = doNothing
+    onLiteral = onParagraph = onPreformatted = doNothing
 
     #structural
     onPortlet = onDocument = onContainer

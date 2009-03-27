@@ -63,7 +63,7 @@ class Job(base):
 
     computation = pyre.db.versatileReference(
         name = 'computation', tableRegistry = tableRegistry)
-    computation.meta['tip'] = 'The compuation that this job is about'
+    computation.meta['tip'] = 'The type of computation'
 
     import vnf.dom
     dependencies = vnf.dom.referenceSet(name='dependencies')

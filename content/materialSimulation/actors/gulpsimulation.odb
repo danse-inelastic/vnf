@@ -83,7 +83,7 @@ class Actor(base):
                 p.text = [top]
                 
                 # go to 5000 bytes from the end
-                f.seek(5000, 2)
+                f.seek(-5000, 2)
                 bottom = f.read()
                 p = resdoc.paragraph()
                 p.text = ['Here is the last part of the stdout file:']
