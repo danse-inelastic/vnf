@@ -20,126 +20,61 @@ class TableMill:
         return
 
 
-    # this is a temporary 
-    def render(self, table):
-        table = towidgetdescription(table)
-        return self._render(table)
-    
-    
-    def _render(self, table):
+    def onTable(self, table):
         configurations = self.configurations
         home = configurations['home']
-        cgihome = configurations['cgihome']
         
         csscode = []
-        csscode.append( '<link rel="stylesheet" type="text/css" href="%s/css/tabulator/datePicker.css" />' % home )
-        csscode.append( '<link rel="stylesheet" type="text/css" href="%s/css/tabulator/tabulator.css" />' % home )
-        csscode.append( '<link rel="stylesheet" type="text/css" href="%s/css/tabulator/tabulator-color.css" />' % home )
+        csss = [
+            'tabulator/datePicker.css',
+            'tabulator/tabulator.css',
+            'tabulator/tabulator-color.css',
+            ]
+        for css in csss:
+            csscode.append( '<link rel="stylesheet" type="text/css" href="%s/css/%s" />' % (
+                home,css) )
 
         htmlcode = []
-        gid = id(table)
-        htmlcode.append( '<div id="%s">' % gid )
+        id = _id(table)
+        htmlcode.append( '<div id="%s">' % id )
         htmlcode.append( '</div>' )
 
-        includes = []
-        javascriptpath = os.path.join(home, 'javascripts')
+        codes = csscode + htmlcode
+        return codes
+
+
+class JSMill:
+
+    def onTable(self, table):
+        id = _id(table)
+        table = towidgetdescription(table)
+        return self._onTable(table, id)
+    
+    
+    def _onTable(self, table, id):
+        includes = [
+            'jquery/jquery.js',
+            'jquery/date.js',
+            'jquery/jquery.datePicker.js',
+            'jquery/tabulator.js',
+            'jquery/elementFactory.js',
+            'jquery/tableFactory.js',
+            ]
+        self.include(scripts=includes)
+
+        self.writemain( 'Date.firstDayOfWeek = 7;')
+        self.writemain( 'Date.format = "mm/dd/yyyy";' )
         
-        includes.append( '<SCRIPT src="%s/jquery/jquery.js"></SCRIPT>' % javascriptpath )
-        includes.append( '<SCRIPT src="%s/jquery/date.js"></SCRIPT>' % javascriptpath )
-        includes.append( '<SCRIPT src="%s/jquery/jquery.datePicker.js"></SCRIPT>' % javascriptpath )
-        includes.append( '<SCRIPT src="%s/jquery/tabulator.js"></SCRIPT>' % javascriptpath )
-
-        jscode = []
-        jscode.append('''
-function make_form() {
-  return $( '<form> </form>' );
-}
-''')
-        jscode.append('''
-function make_table_skeleton( ) {
-  
-  table = $( '<table border="1"></table>' );
-  
-  thead = $( '<thead></thead' );
-  table.append(thead);
-  
-  headrow = $( '<tr></tr>' );
-  thead.append( headrow );
-
-  tbody = $( '<tbody></tbody>' );
-  table.append( tbody );
-  
-  return table;
-}
-''')
-
-        jscode.append('''
-function add_headcell( id, text, headrow )
-{
-  cell = $( '<td id="' + id + '">' + text + '</td>' );
-  headrow.append( cell );
-  return cell;
-}
-''')
-
-        jscode.append('''
-function establish_headrow_from_column_descriptors( headrow, descriptors )
-{
-  for (var colid in descriptors) {
-    descriptor = descriptors[ colid ];
-    cell = add_headcell( colid, descriptor.text, headrow );
-
-  }
-}
-''')
-
-        jscode.append('''
-function make_table_head( thetable, descriptors ) {
-
-  thead = $(thetable.children( 'thead' )[0]);
-  headrow = $(thead.children( 'tr' )[0]);
-  
-  establish_headrow_from_column_descriptors( headrow, descriptors );
-  thetable.table_setcolumndescriptors( descriptors );
-  for (var colid in descriptors) {
-    thetable.sortable_column(colid);
-  }
-}
-''')
-
-        jscode.append( '''
-function make_table( div, descriptors ) {
-  
-  // table skeleton
-  thetable = make_table_skeleton();
-
-  // add table to a form
-  // form = make_form();
-  // form.append( thetable );
-  
-  // add form to the division
-  // div.append( form );
-  div.append(thetable);
-  
-  // contents of table
-  // head
-  make_table_head( thetable, descriptors );
-}
-''');
-        jscode.append( '$(document).ready(function() {')
-        
-        jscode.append( 'Date.firstDayOfWeek = 7;')
-        jscode.append( 'Date.format = "mm/dd/yyyy";' )
-        
-        jscode.append( 'thetable = $("#%s");' % gid )
+        self.writemain( 'thetablediv = $("#%s");' % id )
         descriptors = table.column_descriptors
-        jscode.append(
+        self.writemain(
             'descriptors={%s};' %
             ',\n'.join( [jscode_descriptor( d ) for d in descriptors] )
             )
-        jscode.append( 'make_table( thetable, descriptors);' )
+        self.writemain( 'thetable = tableFactory.createTable( thetablediv, descriptors);' )
 
-        jscode.append(
+        # data
+        self.writemain(
             'rows = [\n%s\n];' %
             ',\n\n\t'.join(
                 ["{'id': '%s', 'data': [%s]}" % (
@@ -148,46 +83,46 @@ function make_table( div, descriptors ) {
                  for i, row in enumerate(table.rows)
                  ])
             )
-        #for i, row in enumerate(table.rows):
-        #    jscode.append(
-        #        'thetable.table_appendrow_dataonly(%d, [%s]);' %
-        #        (i, ','.join( ['%r' % v for v in row] ) )
-        #        )
-        #    continue
-        jscode.append('thetable.table_appendrows_dataonly(rows);')
 
-        jscode.append( 'thetable.addClass( "tabulated" );' );
+        self.writemain('thetable.table_appendrows_dataonly(rows);')
+
+        self.writemain( 'thetable.addClass( "tabulated" );' );
 
         if table.editable:
-            jscode.append( '''
+            self.writemain( '''
             thetable.find( 'tbody' ).find( "td[datatype=text]" ).dblclick( function () {
             $(this).enable_cell_editing();
             } );
             ''')
         
-            jscode.append( '''
+            self.writemain( '''
             thetable.find( 'tbody' ).find( "td[datatype=money]" ).dblclick( function () {
             $(this).enable_cell_editing();
             } );
             ''')
 
-            jscode.append( '''
+            self.writemain( '''
             thetable.find( 'tbody' ).find( "td[datatype=single_choice]" ).dblclick( function () {
             $(this).enable_cell_editing();
             } );
             ''')
 
-            jscode.append( '''
+            self.writemain( '''
             thetable.find( 'tbody' ).find( "td[datatype=date]" ).dblclick( function () {
             $(this).enable_cell_editing();
             } );
             ''')
 
-        jscode.append( '});' );
-        
-        codes = csscode + includes + ['<script>']  + jscode + ['</script>'] + htmlcode
-        return codes
 
+        return
+
+
+
+# helpers
+
+def _id(table):
+    # html id for renderred table
+    return id(table)
 
 
 def format(value, descriptor):

@@ -18,10 +18,6 @@ class Extension1:
         return
 
 
-    def onTable(self, table):
-        return
-
-
     def onImage(self, image):
         return
     
@@ -32,7 +28,7 @@ from Plot_2DMill import JSMill as Plot_2DMill
 from ImagePlotMill import JSMill as ImagePlotMill
 from SolidView3DMill import JSMill as SolidView3DMill
 from AutoRefreshRenderer import JSMill as AutoRefreshRenderer
-
+from TableMill import JSMill as TableMill
 
 extensions = [
     Plot_2DMill,
@@ -40,6 +36,7 @@ extensions = [
     SolidView3DMill,
     SlidableGalleryMill,
     AutoRefreshRenderer,
+    TableMill,
     Extension1,
     ]
 

@@ -18,12 +18,6 @@ class Extension1:
         return mill.render(treeview)
 
 
-    def onTable(self, table):
-        from TableMill import TableMill
-        mill = TableMill(self.configurations)
-        return mill.render(table)
-
-
     def onImage(self, image):
         path = os.path.join( self._imageStore(), image.path )
         return [ '<img src="%s" />' % path ]
@@ -44,6 +38,7 @@ from ImagePlotMill import ImagePlotMill
 from SolidView3DMill import SolidView3DMill
 from AutoRefreshRenderer import AutoRefreshRenderer
 from SlidableGallery import HtmlMill as SlidableGalleryMill
+from TableMill import TableMill
 
 extensions = [
     ActionLinkRenderer,
@@ -52,6 +47,7 @@ extensions = [
     SolidView3DMill,
     SlidableGalleryMill,
     AutoRefreshRenderer,
+    TableMill,
     Extension1,
     ]
 
