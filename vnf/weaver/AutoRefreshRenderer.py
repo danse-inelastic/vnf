@@ -31,7 +31,7 @@ class JSMill:
             'jquery/autorefresh.js',
             ]
         self.include(scripts=scripts)
-        self.writemain('$.autorefresh_start(%s);' % timeout)
+        self.writemain('autorefresh.start(%s);' % timeout)
         return
     
 
