@@ -25,18 +25,33 @@ class Actor(base):
         page = director.retrievePage( 'test' )
         main = page._body._content._main
         document = main.document(
-            title='Autorefresh')
+            title='Test treeview')
 
         import vnf.content
-        autorefresh = vnf.content.autorefresh(timeout=5)
+        tree = vnf.content.treeview('root')
         
-        document.contents.append( autorefresh )
+        branch1 = vnf.content.treeview.branch('branch1')
+        tree.addChild(branch1)
+        
+        leaf1a = vnf.content.treeview.leaf('leaf1a')
+        branch1.addChild(leaf1a)
+
+        leaf1b = vnf.content.treeview.leaf('leaf1b')
+        branch1.addChild(leaf1b)
+
+        branch2 = vnf.content.treeview.branch('branch2')
+        tree.addChild(branch2)
+        
+        leaf2a = vnf.content.treeview.leaf('leaf2a')
+        branch2.addChild(leaf2a)
+
+        document.contents.append( tree )
         return page
 
 
 
 def actor():
-    return Actor('testautorefresh')
+    return Actor('testtreeview')
 
 
 # version

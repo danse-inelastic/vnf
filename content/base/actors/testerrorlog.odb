@@ -24,7 +24,7 @@ class Actor(base):
 
 
     def default(self, director):
-        page = director.retrievePage('greet')
+        page = director.retrievePage('test')
         main = page._body._content._main
 
         document = main.document( title = 'Test' )
