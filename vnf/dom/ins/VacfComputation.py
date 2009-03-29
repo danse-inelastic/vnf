@@ -30,6 +30,7 @@ class VacfComputation(Computation):
     weights = d.varchar(name='weights', length = 16, default = 'mass') # number of sampling points (in 1 dimension)
 
     gulpsimulation = d.reference(name='gulpsimulation', table = GulpSimulation)
+    
 #    # the trajectory name can be either a  file name or an id
 #    from vnf.dom.Trajectory import Trajectory
 #    trajectory = pyre.db.reference(name='trajectory', table=Trajectory)
