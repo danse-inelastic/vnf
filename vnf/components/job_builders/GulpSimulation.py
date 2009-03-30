@@ -19,6 +19,7 @@ class Builder(base):
 
     def __init__(self, path):
         base.__init__(self, path)
+        self.convertHistoryFile = False
         return
 
     def render(self, computation, db=None, dds=None):
@@ -37,6 +38,16 @@ class Builder(base):
         job = computation.job.dereference(db)
         for f in files:
             dds.copy(computation, f, job, f)
+            
+        # if the job outputs in DL_POLY format (necessary for trajectory analysis), mandate
+        # conversion of the trajectory to netcdf format
+        # 1. open the input file
+        inputFilePath = dds.abspath(job, filename=Computation.CONFIGURATION_FILE)
+        inputFileContents = open(inputFilePath).read()
+        
+        # 2. scan for string 'output history' and signal conversion if found
+        if 'output history' in inputFileContents:
+            self.convertHistoryFile = True
 
         # add run.sh
         files.append( self._make_script1(computation) )
@@ -52,8 +63,10 @@ class Builder(base):
             '. ~/.gulp-env',
             'chmod +x %s' % self.shscript1name,
             'mpirun -np %d ./%s' % (np, self.shscript1name),
-            '',
             ]
+        if self.convertHistoryFile:
+            cmds += ['']
+        cmds = ['',]   
         script = self.shscriptname
         path = self._path(script)
         open(path, 'w').write('\n'.join(cmds))
