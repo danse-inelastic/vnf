@@ -56,7 +56,7 @@ EXPORT_PYTHON_MODULES = \
 	CSAccessor.py \
 	DBObjectForm.py \
 	DistributedDataStorage.py \
-	Engine.py \
+	MaterialSimulationEngine.py \
 	Form.py \
 	FormActor.py \
 	Geometer.py \
