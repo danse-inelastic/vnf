@@ -84,18 +84,38 @@ class WebApplication(Base):
                 self.render(page)
         except:
             noErrors=False
-            bugid = self.generateDebugInfo()
-            #self.redirect(actor='bug-report', routine='default', bugid = bugid)
-            actor = self.retrieveActor('bug-report')
-            if actor is None: raise
-            self.configureComponent(actor)
-            actor.inventory.bugid = bugid
-            page = actor.perform(self, routine='default')
-            self.render(page)
+            try:
+                self.fancyBugReport()
+            except:
+                # if we cannot generate a fancy report. we need a plain one
+                self.plainBugReport()
             
         if noErrors and self.debug:
             self.generateDebugInfo('generic')
         return
+
+
+    def plainBugReport(self):
+        print '<pre>'
+        import traceback
+        traceback.print_exc()
+        print '</pre>'
+        return
+
+
+    def fancyBugReport(self):
+        # try to generate a fancy bug report
+        bugid = self.generateDebugInfo()
+        
+        #self.redirect(actor='bug-report', routine='default', bugid = bugid)
+        actor = self.retrieveActor('bug-report')
+        if actor is None: raise
+        self.configureComponent(actor)
+        actor.inventory.bugid = bugid
+        page = actor.perform(self, routine='default', debug=self.debug)
+        self.render(page)
+        return
+
     
     def generateDebugInfo(self,filetypes='unique'):
         if filetypes is 'unique':
@@ -172,14 +192,7 @@ class WebApplication(Base):
         page = super(WebApplication, self).retrievePage(name)
         if page:
             return page
-
-        if self.debug:
-            self._debug.log( "*** could not locate page %r" % name )
-            page = super(WebApplication, self).retrievePage("page-loading-error")
-            return page
-        
-        page = super(WebApplication, self).retrievePage("error")
-        return page
+        raise RuntimeError, "Unable to load page %s" % name
 
 
     def retrieveSecurePage(self, name):
