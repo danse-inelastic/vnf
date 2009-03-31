@@ -63,6 +63,7 @@ class Builder(base):
             '. ~/.gulp-env',
             'chmod +x %s' % self.shscript1name,
             'mpirun -np %d ./%s' % (np, self.shscript1name),
+            ''
             ]
         if self.convertHistoryFile:
             cmds += ['']
