@@ -49,7 +49,7 @@ class Builder(base):
         if 'output history' in inputFileContents:
             self.convertHistoryFile = True
 
-        # add run.sh
+        # 3. add run.sh
         files.append( self._make_script1(computation) )
         files.append( self._make_script(computation) )
         return files
