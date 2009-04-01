@@ -11,12 +11,12 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 PROJECT = vnf
-PACKAGE = config
+PACKAGE = cgi-bin
 
 #--------------------------------------------------------------------------
 #
 
-all: export-config-files
+all: export-cgi-bin-files
 	BLD_ACTION="all" $(MM) recurse
 
 tidy::
@@ -30,18 +30,13 @@ distclean::
 
 
 EXPORT_DATAFILES = \
-	clerk.pml \
-	initdb.pml \
-	main.pml \
-	postman.pml \
-	retrieveresults.pml \
-	ssher.pml \
-	submitjob.pml \
+	main.cgi \
 
-CP_F = cp -f
-EXPORT_DATA_PATH = $(EXPORT_ROOT)/$(PROJECT)/$(PACKAGE)
 
-export-config-files:: 
+CP_F = rsync 
+EXPORT_DATA_PATH = $(EXPORT_ROOT)/$(PROJECT)/html/cgi-bin
+
+export-cgi-bin-files:: 
 	mkdir -p $(EXPORT_DATA_PATH); \
 	for x in $(EXPORT_DATAFILES); do { \
 	  $(CP_F) $$x $(EXPORT_DATA_PATH)/ ; \
