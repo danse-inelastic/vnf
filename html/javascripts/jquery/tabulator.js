@@ -336,7 +336,7 @@
 
   //  text
   $.fn.sort_table_by_col.handle_text = function( value1, value2 ) {
-    return value1.substring(0,1).toLowerCase() < value2.substring(0,1).toLowerCase()? -1: 1;
+    return value1.localeCompare(value2);
   };
 
   // **** need more compare handlers here
