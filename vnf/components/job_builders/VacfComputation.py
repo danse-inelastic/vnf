@@ -17,7 +17,7 @@ class Builder(base):
 
     from vnf.dom.ins.VacfComputation import VacfComputation as Computation
 
-    trajectory = 'output.history'
+    trajectory = 'output.nc'
 
     def __init__(self, path):
         base.__init__(self, path)
@@ -65,7 +65,6 @@ class Builder(base):
                 'weights': computation.weights,
                 'trajectory': trajectory,
                 }
-        runConversionCmd = ''
         rungovcmd = 'gov.py --units=%(units)s --weights=%(weights)s --trajectory=%(trajectory)s' % subs
         
         cmds = [
