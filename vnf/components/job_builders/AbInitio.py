@@ -99,6 +99,8 @@ _xcf = {
     'PAW-PBE': 'pawpbe',
     'PAW-GGA': 'pawgga',
     'PAW-LDA': 'pawlda',
+    'USPP-GGA': 'usppgga',
+    'USPP-LDA': 'uspplda',
     }
 
 # version
