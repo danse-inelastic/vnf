@@ -213,6 +213,7 @@ class Actor(base):
         if not computation.short_description: return False
         if not computation.engine: return False
         if not computation.matter: return False
+        if not computation.job: return False
         return True
 
 
