@@ -20,7 +20,7 @@ def table(matsims, director):
         description = Model.Measure(name='description', type='text')
         type = Model.Measure(name='type', type='text')
         matter = Model.Measure(name='matter', type='text')
-        chain = Model.Measure(name='chain', type='text')
+        #chain = Model.Measure(name='chain', type='text')
 
 
     def getDesc(matsim):
@@ -60,7 +60,7 @@ def table(matsims, director):
         'description': getDesc,
         'type': getType,
         'matter': getMatter,
-        'chain': getChain,
+        #'chain': getChain,
         }
     
     class D: pass
@@ -80,7 +80,7 @@ def table(matsims, director):
             #View.Column(id='col1',label='Description', measure='description'), #eventually add date here
             View.Column(id='col2',label='Type', measure='type'),
             View.Column(id='col3',label='Matter', measure='matter'),
-            View.Column(id='col4',label='Chain', measure='chain'),
+            #View.Column(id='col4',label='Chain', measure='chain'),
             ]
 
         editable = False
