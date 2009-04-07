@@ -75,9 +75,13 @@ def form( name, mattertype, shapetype ):
                 ]
 
             # the shape form
-            self.inventory.id = shape.id
+            # all shape forms are dbobject forms. they need following
+            # class varaibles:
+            #    parameters
+            #    DBTable
             self.parameters = shapeform.parameters
-            shapeform.expand(self, form, errors = errors)
+            self.DBTable = shapetable
+            shapeform.expand(self, form, errors = errors, id = shape.id)
 
             form.paragraph().text = ['<h2>Matter form</h2>']
             p = form.paragraph()
@@ -85,10 +89,11 @@ def form( name, mattertype, shapetype ):
                 'Your %s is a %s (id=%s).' % (
                 scattererlabel, mattertype.lower(), scatterer.matter.id),
                 ]
+
             # the matter form
-            self.inventory.id = scatterer.matter.id
             #self.parameters = matterform.parameters
-            matterform.expand(self, form, errors = errors)
+            #self.DBTable = mattertable
+            matterform.expand(self, form, id = scatterer.matter.id, errors = errors)
 
             prefix = formactor_action_prefix
             # id should be scatterer's id

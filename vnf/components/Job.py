@@ -22,6 +22,19 @@ def submit(job, director, debug=False):
     return
 
 
+def cancel(job, director):
+    from Scheduler import cancel
+    return cancel(job, director)
+    
+
+def pack(job, director, debug=False):
+    from vnf.utils import launch_detached, bindir
+    import os
+    exe = os.path.join(bindir, 'packjobdir.py')
+    launch_detached('%s -id=%s' % (exe, job.id), debug=debug)
+    return
+
+
 def data_manager( job, director ):
     from JobDataManager import JobDataManager
     return JobDataManager(job, director)

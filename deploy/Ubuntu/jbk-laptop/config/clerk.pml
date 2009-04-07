@@ -14,7 +14,7 @@
 <inventory>
 
   <component name='clerk'>
-  	<property name='db'>linjiao:4Od&amp;Cm#@localhost:54321:vnf</property>
+  	<property name='db'>vnf:A4*gl8D@vnf.caltech.edu:5432:vnf</property>
     <!--<property name='db'>jbrkeith:jbk_postgres@localhost:54321:vnf</property>-->
   </component>
 

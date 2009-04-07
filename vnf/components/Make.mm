@@ -32,6 +32,16 @@ RECURSE_DIRS = $(BUILD_DIRS) $(OTHER_DIRS)
 
 all: export
 
+tidy::
+	BLD_ACTION="tidy" $(MM) recurse
+
+clean::
+	BLD_ACTION="clean" $(MM) recurse
+
+distclean::
+	BLD_ACTION="distclean" $(MM) recurse
+
+
 #--------------------------------------------------------------------------
 # export
 
@@ -39,24 +49,23 @@ EXPORT_PYTHON_MODULES = \
 	AccessControl.py \
 	Actor.py \
 	Announcer.py \
+	ChainWizard.py \
 	Clerk.py \
 	Computation.py \
 	ComputationResultsRetriever.py \
 	CSAccessor.py \
 	DBObjectForm.py \
 	DistributedDataStorage.py \
+	MaterialSimulationEngine.py \
 	Form.py \
 	FormActor.py \
 	Geometer.py \
-	Greeter.py \
 	Instrument.py \
 	InstrumentShapeRenderer.py \
 	JnlpFile.py \
 	Job.py \
 	JobBuilder.py \
-	Login.py \
 	Logout.py \
-	MaterialSimulation.py \
 	MaterialSimulationWizard.py \
 	NeutronExperiment.py \
 	NeutronExperimentWizard.py \
@@ -72,6 +81,7 @@ EXPORT_PYTHON_MODULES = \
 	Scribe.py \
 	Server.py \
 	Shape.py \
+	SimulationWizard.py \
 	SSHer.py \
 	SupportingCalcs.py \
 	TreeViewCreator.py \

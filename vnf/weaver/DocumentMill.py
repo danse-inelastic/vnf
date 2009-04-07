@@ -10,10 +10,12 @@
 #
 
 
+from DocumentMillExtensions import extensions
+from _utils import Inherited
+Extension = Inherited(extensions)
+
 from opal.weaver.DocumentMill import DocumentMill as base
-
-
-class DocumentMill(base):
+class DocumentMill(Extension, base):
 
     def __init__(self, tagger, configurations):
         base.__init__(self, tagger)
@@ -21,17 +23,6 @@ class DocumentMill(base):
         return
 
     pass # end of DocumentMill
-
-
-def extended(extensions):
-    return subclassOf( [DocumentMill] + extensions )
-
-
-def subclassOf(classes):
-    for i, C in enumerate(classes): exec 'C%d=C' % i in locals()
-    code = 'class N(%s): pass' % ', '.join([ 'C%d' % i for i in range(len(classes)) ])
-    exec code in locals()
-    return N
 
 
 # version

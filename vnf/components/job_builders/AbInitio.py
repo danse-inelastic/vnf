@@ -42,11 +42,13 @@ class Builder(base):
     def _make_vasp_script(self, computation):
         matter = computation.matter.dereference(self.db)
         xyzfilename = self._makeXYZfile(matter)
+        xcFunctional = computation.xcFunctional
+        xcf = _xcf[xcFunctional]
         
         params = [
-            ('name', matter.chemical_formula),
+            ('name', matter.chemical_formula or computation.short_description or computation.id),
             ('ecutoff', computation.kineticEnergyCutoff),
-            ('xcf', computation.xcFunctional),
+            ('xcf', xcf),
             ('mpmesh', ','.join([str(i) for i in computation.monkhorstPackMesh]) ),
             ('unitcell', xyzfilename),
             ('generateInputsOnly', computation.generateInputsOnly),
@@ -93,6 +95,13 @@ class Builder(base):
         self._files.append(filename)
         return filename
 
+_xcf = {
+    'PAW-PBE': 'pawpbe',
+    'PAW-GGA': 'pawgga',
+    'PAW-LDA': 'pawlda',
+    'USPP-GGA': 'usppgga',
+    'USPP-LDA': 'uspplda',
+    }
 
 # version
 __id__ = "$Id$"

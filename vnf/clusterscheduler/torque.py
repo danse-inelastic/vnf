@@ -32,6 +32,8 @@ import journal
 debug = journal.debug( 'torque' )
 
 
+from pyre.units.time import hour, minute, second
+
 
 class Scheduler:
 
@@ -47,9 +49,11 @@ class Scheduler:
         return
     
     
-    def submit( self, cmd ):
-        cmds = [ r'echo \"%s\" | qsub  -o %s -e %s' % (
-            cmd,self.outfilename,self.errfilename) ]
+    def submit( self, cmd, walltime=1*hour ):
+        walltime = _walltime_str(walltime)
+        
+        cmds = [ r'echo \"%s\" | qsub -l walltime=%s -o %s -e %s' % (
+            cmd, walltime, self.outfilename, self.errfilename) ]
         failed, output, error = self._launch( cmds )
         if failed:
             if error.find( 'check pbs_server daemon' ) != -1:
@@ -59,6 +63,16 @@ class Scheduler:
                 cmds, output, error )
             raise RuntimeError, msg
         return output.strip()
+
+
+    def delete(self, jobid):
+        cmds = ['qdel %s' % jobid]
+        failed, output, error  = self._launch( cmds )
+        if failed:
+            msg = "error in executing cmds %s. output: %s, error: %s" % (
+                cmds, output, error )
+            raise RuntimeError, msg
+        return
     
 
     def status( self, jobid ):
@@ -123,7 +137,12 @@ class Scheduler:
         d = {}
         
         tag = 'Exit_status'
-        words = self._tracejob_search( jobid, tag )
+        try:
+            words = self._tracejob_search( jobid, tag )
+        except self.TracejobFailed:
+            # this job must have been terminated for a long time
+            return self.unknownTerminatedStatus(jobid)
+            
         status = words[3]
         key, value = status.split( '=' )
         assert key.lower() == 'exit_status'
@@ -142,6 +161,20 @@ class Scheduler:
             'state': 'terminated',
             } )
             
+        return d
+
+
+    def unknownTerminatedStatus(self, jobid):
+        d = {}
+        d['exit_code'] = '999999'
+        d['state'] = 'terminated'
+        output, error = self._readoutputerror(
+            self.outfilename, self.errfilename )
+
+        d.update( {
+            'output': output,
+            'error': error,
+            } )
         return d
 
 
@@ -170,7 +203,7 @@ class Scheduler:
         if failed:
             msg = "error in executing cmds %s. output: %s, error: %s" % (
                 cmds, output, error )
-            raise RuntimeError, msg
+            raise self.TracejobFailed, msg
 
         # remove trailing \n to make parsing easier
         if output.endswith( '\n' ): output = output[:-1] 
@@ -178,6 +211,8 @@ class Scheduler:
         words = lines[-1].split( )
         debug.log( 'words: %s' % words )
         return words
+
+    class TracejobFailed(Exception): pass
     
 
     def _launch(self, cmds):
@@ -188,6 +223,18 @@ class Scheduler:
 
 import os
 
+
+
+def _walltime_str(time):
+    seconds = int(time/second)%60
+    seconds = '%0*d' % (2, seconds)
+    
+    mins = int(time/minute)%60
+    mins = '%0*d' % (2, mins)
+    
+    hours = int(time/hour)
+    hours = str(hours)
+    return ':'.join([hours, mins, seconds])
 
 _states = {
     'C': 'finished',

@@ -15,7 +15,7 @@ def announcement(user):
 
     msg = vnf.content.announcement()
     msg.sender = "linjiao@caltech.edu"
-    msg.subject = "VNF account"
+    msg.subject = "Your VNF account"
     msg.text = [
 """
 Dear %(fullname)s,
@@ -25,6 +25,8 @@ Welcome to the Virtual Neutron Facility.
 Your user name is %(username)s.
 
 Please visit https://vnf.caltech.edu and start planning your experiments.
+
+DANSE-vnf team
 """
         ]
 

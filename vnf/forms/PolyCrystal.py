@@ -50,7 +50,7 @@ class PolyCrystal( base ):
         
         if not id:
             tableClass = director.clerk._getTable('polycrystal')
-            record = director.clerk.newObject(tableClass)
+            record = director.clerk.newOwnedObject(tableClass)
             id = self.inventory.id = record.id
         else:
             record = director.clerk.getRecordByID('polycrystals', id)
@@ -111,7 +111,7 @@ class PolyCrystal( base ):
             )
         self.listOfAtoms = form.textarea(
             id='listOfAtoms', name='%s.listOfAtoms' % prefix, 
-            label='List of atoms (i.e. H  0.0  0.0  0.5)', rows=20, 
+            label='List of atoms in fractional coordinates (i.e. H  0.0  0.0  0.5)', rows=20, 
             default = listOfAtoms)
           
     def processUserInputs(self):   
@@ -123,7 +123,7 @@ class PolyCrystal( base ):
             record = director.clerk.getRecordByID('polycrystals', self.inventory.id)
         except: # if can't find, create a new one
             tableClass = director.clerk._getTable('polycrystal')
-            record = director.clerk.newDbObject(tableClass)
+            record = director.clerk.newOwnedObject(tableClass)
             self.inventory.id = record.id
       
         record.short_description = self.inventory.short_description

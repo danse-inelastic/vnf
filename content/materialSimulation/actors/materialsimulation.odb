@@ -49,42 +49,24 @@ class Actor(base):
             sentry = director.sentry,
             )
         create = action_link( action, director.cgihome )
-        action = actionRequireAuthentication(
-            label = 'analyze',
-            actor = 'materialanalysis',
-            sentry = director.sentry,
-            )
-        analyze = action_link( action, director.cgihome )
-        p.text = [
-            'You can %s a simulation/model or scattering kernel for use in a virtual instrument.' % create,
-            'You can also %s your sample.' % analyze,
-            ]
 
+        p.text = [
+            'You can %s a simulation/model with a new sample for use in a virtual instrument.' % create,
+            ]
+        p = document.paragraph()
+        p.text = [
+            'Or you can chain further computations to a preexisting one:',
+            ]
         where ="creator='%s'" % director.sentry.username
         simulations = getallsimulations(director.clerk.db, where=where)
-        if len(simulations):
-            p = document.paragraph()
-            p.text = [
-                'Following are simulations/models you have created:',
-                ]
-            for simulation in simulations:
-                p = document.paragraph()
-                link = action_link(
-                    actionRequireAuthentication(
-                    sentry = director.sentry,
-                    actor = 'computation',
-                    routine = 'view',
-                    label = simulation.short_description or simulation.id,
-                    id = simulation.id,
-                    type = simulation.__class__.__name__,
-                    ),
-                    director.cgihome
-                    )
-                desc = _desribe(simulation)
-                p.text = [
-                    '%s: %s' % (link, desc),
-                    ]
-                continue
+        if len(simulations):           
+            table = director.retrieveComponent(
+                'materialsimulations',
+                factory="table",
+                args=[simulations, director],
+                vault=['tables']).table
+            
+            document.contents.append(table)
             
         return page
 
@@ -100,8 +82,8 @@ def getallsimulations(db, where=None):
     return computations
 
 
-def _desribe(simulation):
-    return '%s computation #%s' % (simulation.__class__.__name__, simulation.id)
+#def _desribe(simulation):
+#    return '%s computation #%s' % (simulation.__class__.__name__, simulation.id)
     
 
 def actor():

@@ -12,12 +12,17 @@
 #
 
 
-from vnf.components.MaterialSimulation import Engine
+from vnf.components.MaterialSimulationEngine import Engine
 
 def materialSimulationEngines():
-    return [
-        Engine('bvkcomputations', 'Born von Karman Lattice Dynamics', ''),
-        ]
+    return {
+            'bvk': Engine('bvkcomputations', 'Born von Karman Lattice Dynamics', '', 'bvk'),
+            'vacf': Engine('vacfcomputations','Velocity Autocorrelation Function','', 'vacf'),
+#            'eisf': Engine('eisf','Elastic Incoherent Structure Factor','', 'eisf'),
+#            'diffusionCoef': Engine('diffusionCoef','Diffusion Coefficient','', 'diffusionCoef'),
+#            'sqeFromMd': Engine('sqeFromMd','S(Q,E) from Md','', 'sqeFromMd'),
+#            'sqeFromPhonons': Engine('sqeFromPhonons','S(Q,E) from Phonons','', 'sqeFromPhonons'),
+            }
 
 
 

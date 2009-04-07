@@ -67,6 +67,25 @@
   // table manipulations
   // ---------------------
 
+  // make a column sortable
+  $.fn.sortable_column = function(colid) {
+    var thetable = this;
+
+    var cell = $("#"+colid);
+    cell.attr('direction', 0);
+
+    cell.click( function () {
+	var $this = $(this);
+	
+	direction = $this.attr( 'direction' );
+	direction = direction == 0? 1:0;
+  
+	thetable.sort_table_by_col( colid, direction );
+  
+	$this.attr('direction', direction);
+      } );
+  };
+
   // sort a table by a column
   // this -> table
   $.fn.sort_table_by_col = function( colid, direction ) {
@@ -85,7 +104,15 @@
     var newrows = sort_rows_by_col( saverows, colid, column_descriptors, direction );
     
     for (var i=0; i<newrows.length; i++) {
-      body.append( newrows[i] );
+      row = newrows[i];
+      
+      // reestablish "odd" and "even"
+      $row = $(row);
+      if ($row.hasClass('odd')) $row.removeClass('odd');
+      else $row.removeClass('even');
+      $row.addClass( i%2? 'odd':'even' );
+
+      body.append( row );
     }
   };
   
@@ -274,11 +301,25 @@
 
   //  single choice in one column
   $.fn.establish_cell_from_data.handle_single_choice_in_one_column = function( cell, value ) {
+
+    var descriptor = get_column_descriptor( cell );
+    var name = descriptor.name_for_form_action;
+
     var html = '<input type="radio" ';
-    var checked = Number(value)==0? '':'checked="checked"';
-    html += checked;
-    html += 'name="' + cell.attr('name') + '"';
+    
+    var checked = Number(value.selected);
+    var selection_identifier = value.value;
+    
+    var checkedstr = checked==0? '':'checked="checked"';
+    html += checkedstr;
+
+    //html += 'name="' + cell.attr('name') + '"';
+    html += 'name="' + name + '"';
+
+    html += 'value="' + selection_identifier + '"';
+
     html += '/>';
+    
     cell.css( 'text-align', 'center' );
     return cell.html( html ); 
   };
@@ -295,7 +336,7 @@
 
   //  text
   $.fn.sort_table_by_col.handle_text = function( value1, value2 ) {
-    return value1.substring(0,1).toLowerCase() < value2.substring(0,1).toLowerCase()? -1: 1;
+    return value1.localeCompare(value2);
   };
 
   // **** need more compare handlers here
@@ -655,6 +696,7 @@
 
     colno = find_column_no( column_id, $( rows[0] ).children() );
     var compare_handler = eval( "$.fn.sort_table_by_col.handle_" + datatype );
+    if (compare_handler==undefined) return rows;
 
     function compare (row1, row2) {
       var cells1 = $(row1).children('td');

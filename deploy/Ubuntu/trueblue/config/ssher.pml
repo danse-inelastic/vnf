@@ -18,8 +18,8 @@
 <inventory>
 
   <component name='ssher'>
-    <property name='known_hosts'>/Users/linjiao/vnfssh/known_hosts.www</property>
-    <property name='private_key'>/Users/linjiao/vnfssh/id_rsa.www</property>
+    <property name='known_hosts'>/home/jbk/.ssh/known_hosts.www</property>
+    <property name='private_key'>/home/jbk/.ssh/id_rsa.www</property>
   </component>
 
 </inventory>

@@ -15,7 +15,7 @@ def announcement(registrant):
 
     msg = vnf.content.announcement()
     msg.sender = "linjiao@caltech.edu"
-    msg.subject = "New registration"
+    msg.subject = "VNF registration"
     msg.text = [
 """
 Dear %(firstname)s %(lastname)s,
@@ -23,6 +23,7 @@ Dear %(firstname)s %(lastname)s,
 Thank you for your interests to becoming a user of Virtual Neutron Facility. 
 Your user account will be activated soon upon review.
 
+DANSE-vnf team
 """
         ]
 

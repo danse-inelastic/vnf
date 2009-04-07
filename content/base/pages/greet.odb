@@ -45,7 +45,9 @@ def page(app):
         left.add(nav)
         
     # populate the right column
-    news = right.portlet(title="News")
+    news = app.retrievePortlet('news')
+    if news:
+        right.add(news)
 
     # build the footer
     footer = body.pageFooter()

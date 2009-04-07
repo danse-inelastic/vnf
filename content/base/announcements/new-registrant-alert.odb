@@ -15,7 +15,7 @@ def announcement(registrant):
 
     msg = vnf.content.announcement()
     msg.sender = "jiao.lin@gmail.com"
-    msg.subject = "New registration alert"
+    msg.subject = "New registration alert: %s" % registrant.username
     msg.text = [
 """
 New registrant:

@@ -39,26 +39,13 @@ class Actor(base):
 
         from vnf.dom.Job import Job
         where="creator='%s'" % director.sentry.username
-        jobs = director.clerk.indexJobs(where=where)
+        jobs = director.clerk.indexJobs(where=where).itervalues()
 
-        for jobid, job in jobs.iteritems():
-            p = document.paragraph()
-            link = action_link(
-                actionRequireAuthentication(
-                sentry = director.sentry,
-                actor = 'job',
-                routine = 'view',
-                label = job.short_description or jobid,
-                id = jobid,
-                ),
-                director.cgihome
-                )
-            desc = _desribe(job)
-            p.text = [
-                '%s: %s' % (link, desc),
-                ]
-            continue
+        table = director.retrieveComponent(
+            'jobs', factory="table", args=[jobs, director],
+            vault=['tables']).table
         
+        document.contents.append(table)
         return page
 
 
@@ -78,6 +65,18 @@ class Actor(base):
         
         document = main.document( title = 'Job editor' )
 
+        p = document.paragraph()
+        p.text = [
+            'Your computation job will be submitted to a computing cluster.',
+            ]
+
+        p = document.paragraph()
+        clustermonitor_url = director.home + '/clustermonitor'
+        link = '<a href="%s">check</a>' % clustermonitor_url
+        p.text = [
+            'Please %s the loads of clusters before submission.' % link,
+            ]
+
         formcomponent = self.retrieveFormToShow( 'job' )
         formcomponent.inventory.id = id
         formcomponent.director = director
@@ -89,8 +88,10 @@ class Actor(base):
 
         # specify action
         action = actionRequireAuthentication(
-            actor = 'job', sentry = director.sentry,
-            label = '', routine = 'verify',
+            actor = 'job', 
+            sentry = director.sentry,
+            label = '', 
+            routine = 'verify',
             id = id,
             arguments = {'form-received': formcomponent.name },
             )
@@ -151,6 +152,22 @@ class Actor(base):
         document = main.document( title = 'Job # %s: %s' % (
             job.id, job.state ) )
 
+        # if job is running, add a "cancel" link
+        if job.state == 'running':
+            p = document.paragraph()
+            action = actionRequireAuthentication(
+                sentry = director.sentry,
+                label = 'cancel',
+                actor = 'job',
+                routine = 'cancel',
+                id = job.id,
+                )
+            link = action_link(action, director.cgihome)
+            p.text = [
+                'Your job #%s is running.' % job.id,
+                'If you don\'t want it running anymore, please %s it.' % link,
+                ]
+            
         # put up all info about the job
         record = job
         props = record.getColumnNames()
@@ -175,6 +192,20 @@ class Actor(base):
             director.cgihome
             )
         p.text = ["To see what this job is about, please click %s" % link]
+
+        # download link
+        p = document.paragraph()
+        action = actionRequireAuthentication(
+            sentry = director.sentry,
+            label = 'Download',
+            actor = 'job',
+            routine = 'download',
+            id = id,
+            )
+        link = action_link(action, director.cgihome)
+        p.text = [
+            '%s this job' % link,
+            ]
         
         # refresh link
         p = document.paragraph()
@@ -192,6 +223,54 @@ class Actor(base):
 
         return page
 
+
+    def download(self, director):
+        try:
+            page = director.retrieveSecurePage( 'job' )
+        except AuthenticationError, err:
+            return err.page
+
+        import os
+
+        id = self.inventory.id
+        job = director.clerk.getJob(id)
+
+        from vnf.applications.PackJobDir import PackJobDir
+        PTRFILEEXT = PackJobDir.PTRFILEEXT
+        ptrfilepath = '.'.join( [director.dds.abspath(job), PTRFILEEXT] )
+        
+        # if pointer file does not exists, need to start packing
+        if not os.path.exists(ptrfilepath):
+            return self._download_start_packing(director)
+
+        # if packing is in process, say that
+        s = open(ptrfilepath).read()
+        if s == PackJobDir.PACKINGINPROCESS:
+            return self._download_packing_in_progress(director)
+
+        # if something is available for download, try to see if it needs update
+        server = director.clerk.dereference(job.server)
+        jobmtime = director.dds.getmtime(job, server = server)
+        ptrmtime = os.path.getmtime(ptrfilepath)
+        if jobmtime > ptrmtime + 60*3: # 60*3 -- give 3 minute of delay
+            self._debug.log( "jobmtime, ptrmtime = %s, %s" % (jobmtime, ptrmtime) )
+            # if job directory is newer than the bar ball, pack again
+            return self._download_start_packing(director)
+
+        # hyperlink
+        href = os.path.join(director.home, 'tmp', s)
+
+        # prepare page
+        main = page._body._content._main
+        document = main.document( title = 'Job # %s: %s' % (
+            job.id, job.state ) )
+
+        p = document.paragraph()
+        link = '<a href="%s">download link</a>' % href
+        p.text = ['Here is the %s' % link]
+
+        return page
+    
 
     def submit(self, director, id = None):
         try:
@@ -349,14 +428,81 @@ class Actor(base):
         return page
 
 
+    def cancel(self, director):
+        try:
+            page = director.retrieveSecurePage( 'job' )
+        except AuthenticationError, err:
+            return err.page
+
+        id = self.inventory.id
+        job = director.clerk.getJob(id)
+
+        if job.state != 'running':
+            raise RuntimeError, "Job %s is not running" % id
+
+        from vnf.components.Job import cancel
+        cancel(job, director)
+
+        main = page._body._content._main
+        document = main.document( title = 'Job %s: cancelled' % job.id )
+
+        p = document.paragraph()
+        action = actionRequireAuthentication(
+            sentry = director.sentry,
+            label = id,
+            actor = 'job',
+            routine = 'view',
+            id = id,
+            )
+        link = action_link(action, director.cgihome)
+        p.text = [
+            'Job #%s was cancelled' % link,
+            ]
+        return page
+
+
+    def _download_start_packing(self, director):
+        try:
+            page = director.retrieveSecurePage( 'job' )
+        except AuthenticationError, err:
+            return err.page
+
+        id = self.inventory.id
+        job = director.clerk.getJob(id)
+        from vnf.components.Job import pack
+        pack(job, director, debug=False)
+
+        return self._download_packing_in_progress(director)
+    
+
+    def _download_packing_in_progress(self, director):
+        try:
+            page = director.retrieveSecurePage( 'job' )
+        except AuthenticationError, err:
+            return err.page
+
+        id = self.inventory.id
+
+        main = page._body._content._main
+        document = main.document( title = 'Job %s: packing data' % id )
+        
+        p = document.paragraph()
+        action = actionRequireAuthentication(
+            sentry = director.sentry,
+            label = 'check back',
+            actor = 'job',
+            routine = 'download',
+            id = id,
+            )
+        link = action_link(action, director.cgihome)            
+        p.text = [
+            'We are packing up the job directory for you.',
+            'Please %s in a few minutes to download.' % link,
+            ]
+        return page
+
 
 from vnf.components.Job import submit, check
-
-def _desribe(job):
-    return 'id=%s, owner=%s, server=%s, processors=%s, state=%s, start@%s, completed@%s' % (
-        job.id, job.creator, job.server.id, job.numprocessors,
-        job.state, job.time_start, job.time_completion,
-        )
 
 
 def actor():

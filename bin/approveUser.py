@@ -33,7 +33,8 @@ def main():
 
 
     app = App()
-    return app.run()
+    app.run()
+    return
 
 
 # main

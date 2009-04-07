@@ -30,7 +30,6 @@ class Form( base ):
         engine.meta['tip'] = 'Ab initio engine'
         
         xcFunctional = inv.str('xcFunctional', default='PAW-PBE')
-        xcFunctional.validator=inv.choice(['PAW-PBE', 'PAW-GGA', 'LDA'])
         xcFunctional.meta['tip'] = 'Exchange correlation functional'
         
         kineticEnergyCutoff = inv.float('kineticEnergyCutoff', default=140.0)
@@ -90,8 +89,14 @@ class Form( base ):
             label = 'Electronic Structure Engine',
             selected = eng)    
 
-# drop down menu XC-functional type: [PAW-PBE, PAW-GGA, LDA]
-        choices=['PAW-PBE', 'PAW-GGA', 'LDA']
+        # drop down menu XC-functional type:
+        choices=[
+            'PAW-PBE', 
+            'PAW-GGA', 
+            'PAW-LDA',
+            'USPP-GGA',
+            'USPP-LDA',
+            ]
         entries=zip(choices, choices)
 
         xcFunctional = form.selector(

@@ -61,7 +61,6 @@ class NeutronExperimentWizard(base):
         # populate the main column
         document = main.document(title='Neutron Experiment Wizard: start')
         document.description = ''
-        document.byline = 'byline?'
 
         p = document.paragraph()
         p.text = [
@@ -145,7 +144,6 @@ class NeutronExperimentWizard(base):
         document = main.document(
             title='Neutron Experiment Wizard: select neutron instrument')
         document.description = ''
-        document.byline = 'byline?'
 
         formcomponent = self.retrieveFormToShow( 'selectneutroninstrument' )
         formcomponent.director = director
@@ -243,7 +241,6 @@ class NeutronExperimentWizard(base):
         document = main.document(
             title='Neutron Experiment Wizard: instrument configuration')
         document.description = ''
-        document.byline = 'byline?'
 
         formname = 'configure_%s_instrument' % (
             experiment.instrument.id
@@ -355,7 +352,6 @@ class NeutronExperimentWizard(base):
         document = main.document(
             title='Neutron Experiment Wizard: configuration of instrument %r' % instrument.short_description)
         document.description = ''
-        document.byline = 'byline?'
 
         p = document.paragraph()
         p.text = [
@@ -484,7 +480,6 @@ class NeutronExperimentWizard(base):
             title='Neutron Experiment Wizard: %s %s' % (
             typename, component.id))
         document.description = ''
-        document.byline = 'byline?'
 
         formcomponent = self.retrieveFormToShow(typename.lower())
         formcomponent.inventory.id = component.id
@@ -551,7 +546,6 @@ class NeutronExperimentWizard(base):
             instrument.short_description,)
         document = main.document(title=title)
         document.description = ''
-        document.byline = 'byline?'
 
         p = document.paragraph()
         p.text = [
@@ -653,7 +647,6 @@ class NeutronExperimentWizard(base):
         document = main.document(
             title='Neutron Experiment Wizard: sample environment')
         document.description = ''
-        document.byline = 'byline?'
 
         formcomponent = self.retrieveFormToShow( 'sample_environment' )
         
@@ -737,7 +730,6 @@ class NeutronExperimentWizard(base):
         document = main.document(
             title='Neutron Experiment Wizard: sample preparation')
         document.description = ''
-        document.byline = 'byline?'
 
         p = document.paragraph()
         action = actionRequireAuthentication(
@@ -810,7 +802,6 @@ class NeutronExperimentWizard(base):
         document = main.document(
             title='Neutron Experiment Wizard: sample preparation')
         document.description = ''
-        document.byline = 'byline?'
         
         p = document.paragraph()
         p.text = [
@@ -875,7 +866,6 @@ class NeutronExperimentWizard(base):
         document = main.document(
             title='Neutron Experiment Wizard: sample preparation')
         document.description = ''
-        document.byline = 'byline?'
         
         formcomponent = self.retrieveFormToShow( 'select_sample_from_examples' )
         formcomponent.inventory.experiment_id = self.inventory.id
@@ -919,8 +909,14 @@ class NeutronExperimentWizard(base):
 
         # the user selection
         selected = self.processFormInputs( director )
-        tablename, id = selected.split('#')
+        from pyre.db._reference import reference
+        tablename, id = selected.split(reference.separator)
         selected_sample = director.clerk.getRecordByID(tablename, id)
+
+
+        if isSample(selected_sample):
+            #create a scatterer
+            selected_sample = _createScattererFromSample(selected_sample)
 
         if isScatterer(selected_sample):
             # if user select a scatterer, we will need a sampleassembly
@@ -984,6 +980,53 @@ class NeutronExperimentWizard(base):
             raise NotImplementedError
 
         raise RuntimeError
+
+
+    def create_new_sample(self, director):
+        try:
+            page = self._retrievePage(director)
+        except AuthenticationError, err:
+            return err.page
+
+        main = page._body._content._main
+        # populate the main column
+        document = main.document(
+            title='Neutron Experiment Wizard: create a new sample')
+        document.description = ''
+
+        p = document.paragraph()
+        p.text = [
+            'A new vnf window will be created where a sample creation wizard',
+            'will be started. After you are done with the new sample,',
+            'please close that window and continue from here.',
+            ]
+        
+        p = document.paragraph()
+        action = actionRequireAuthentication(
+            sentry = director.sentry,
+            label = 'here',
+            actor = 'sampleInput',
+            routine = 'default',
+            target = '_blank',
+            )
+        link = action_link(action, director.cgihome)
+        p.text = [
+            'To create a new sample, please start %s.' % link,
+            ]
+
+        p = document.paragraph()
+        action = actionRequireAuthentication(
+            sentry = director.sentry,
+            label = 'Continue',
+            actor = 'neutronexperimentwizard',
+            routine = 'select_sample_from_examples',
+            id = self.inventory.id,
+            )
+        link = action_link(action, director.cgihome)
+        p.text = [
+            '%s to prepare your sample for the experiment.' % link,
+            ]
+        return page
     
 
     def select_sample_from_sample_library(self, director):
@@ -997,7 +1040,6 @@ class NeutronExperimentWizard(base):
         document = main.document(
             title='Neutron Experiment Wizard: Select a sample')
         document.description = ''
-        document.byline = '<a href="http://danse.us">DANSE</a>'        
         
         formcomponent = self.retrieveFormToShow( 'sampleLibrary')
         formcomponent.director = director
@@ -1046,7 +1088,6 @@ class NeutronExperimentWizard(base):
         document = main.document(
             title='Neutron Experiment Wizard: Create a new sample')
         document.description = ''
-        document.byline = '<a href="http://danse.us">DANSE</a>'        
         
         formcomponent = self.retrieveFormToShow( 'input_material')
         formcomponent.director = director
@@ -1081,7 +1122,6 @@ class NeutronExperimentWizard(base):
         document = main.document(
             title='Neutron Experiment Wizard: sample configuration')
         document.description = ''
-        document.byline = 'byline?'
 
         #self.processFormInputs( director )
 
@@ -1160,10 +1200,10 @@ class NeutronExperimentWizard(base):
 
         if sample is None: raise RuntimeError, "No sample in sample assembly"
 
-        if not _hasKernel(sample, director.clerk.db):
-            return self.material_simulation(director)
+        #if not _hasKernel(sample, director.clerk.db):
+        #    return self.material_simulation(director)
         
-        return self.submit_experiment(director)
+        return self.configure_scatteringkernels(director)
 
 
     def configure_samplecomponent(self, director, errors=None):
@@ -1177,7 +1217,6 @@ class NeutronExperimentWizard(base):
         document = main.document(
             title='Neutron Experiment Wizard: sample configuration')
         document.description = ''
-        document.byline = 'byline?'
 
         #get experiment
         experiment = director.clerk.getNeutronExperiment(
@@ -1257,7 +1296,6 @@ class NeutronExperimentWizard(base):
         document = main.document(
             title='Neutron Experiment Wizard: material simulation and modeling')
         document.description = ''
-        document.byline = 'byline?'
 
         p = document.paragraph()
         p.text = [
@@ -1326,7 +1364,6 @@ class NeutronExperimentWizard(base):
         document = main.document(
             title='Neutron Experiment Wizard: No kernel')
         document.description = ''
-        document.byline = '<a href="http://danse.us">DANSE</a>'
 
         p = document.paragraph()
         p.text = [
@@ -1360,7 +1397,6 @@ class NeutronExperimentWizard(base):
         document = main.document(
             title='Neutron Experiment Wizard: kernels')
         document.description = ''
-        document.byline = '<a href="http://danse.us">DANSE</a>'
 
         p = document.paragraph()
         p.text = [
@@ -1443,7 +1479,6 @@ class NeutronExperimentWizard(base):
         document = main.document(
             title='Neutron Experiment Wizard: Scattering kernel configuration')
         document.description = ''
-        document.byline = '<a href="http://danse.us">DANSE</a>'
 
         experiment = director.clerk.getNeutronExperiment( self.inventory.id )
         sample = _get_sample_from_experiment( experiment, director.clerk.db )
@@ -1534,7 +1569,6 @@ class NeutronExperimentWizard(base):
         document = main.document(
             title='Neutron Experiment Wizard: new kernel')
         document.description = ''
-        document.byline = 'byline?'
         
         p = document.paragraph()
         p.text = [
@@ -1590,7 +1624,6 @@ class NeutronExperimentWizard(base):
         document = main.document(
             title='Neutron Experiment Wizard: add new kernel')
         document.description = ''
-        document.byline = 'byline?'
 
         formcomponent = self.retrieveFormToShow( 'selectmaterialsimulationresult' )
         formcomponent.director = director
@@ -1633,7 +1666,6 @@ class NeutronExperimentWizard(base):
         document = main.document(
             title='Neutron Experiment Wizard: add new kernel')
         document.description = ''
-        document.byline = 'byline?'
 
         formcomponent = self.retrieveFormToShow( 'selectkerneltype' )
         formcomponent.director = director
@@ -1670,174 +1702,21 @@ class NeutronExperimentWizard(base):
             return err.page
 
         typename = self.processFormInputs(director)
-        exec 'from vnf.dom.%s import %s as table' % (typename, typename)
+        table = director.clerk._getTable(typename)
         kernel = director.clerk.newOwnedObject(table)
 
         experiment = director.clerk.getNeutronExperiment(self.inventory.id)
         sample = _get_sample_from_experiment(experiment, director.clerk.db)
-        sample.kernels
-        return page
+        sample.kernels.add(kernel, director.clerk.db)
 
-
-    def selectkernel(self, director):
-        try:
-            page = self._retrievePage(director)
-        except AuthenticationError, err:
-            return err.page
-#        experiment = director.clerk.getNeutronExperiment(self.inventory.id)
-        main = page._body._content._main
-        # populate the main column
-        document = main.document(
-            title='Neutron Experiment Wizard: Kernel origin selection')
-        document.description = ''
-        document.byline = '<a href="http://danse.us">DANSE</a>'        
-        
-        formcomponent = self.retrieveFormToShow( 'selectkernel')
-        formcomponent.director = director
-        # build the form 
-        form = document.form(name='', action=director.cgihome)
-        # specify action
-        action = actionRequireAuthentication(          
-            actor = 'neutronexperimentwizard', 
-            sentry = director.sentry,
-            routine = 'onSelect',
-            id=self.inventory.id,
-            arguments = {'form-received': formcomponent.name },
+        actor = 'neutronexperimentwizard'
+        routine = 'edit_kernel'
+        return director.redirect(
+            actor, routine,
+            id = self.inventory.id,
+            kernel_id = kernel.id,
+            kernel_type = typename,
             )
-        from vnf.weaver import action_formfields
-        action_formfields( action, form )
-        # expand the form with fields of the data object that is being edited
-        formcomponent.expand( form )
-        submit = form.control(name='submit',type="submit", value="next")
-        #self.processFormInputs(director)
-        #self._footer( form, director )
-        return page    
-    
-    def onSelect(self, director):
-        selected = self.processFormInputs(director)
-        method = getattr(self, selected )
-        return method( director )
-
-#    def gulp(self, director):
-#        try:
-#            page = self._retrievePage(director)
-#        except AuthenticationError, err:
-#            return err.page
-#        
-#        main = page._body._content._main
-#        document = main.document(title='Classical atomistics kernel' )
-#        document.byline = '<a href="http://danse.us">DANSE</a>'    
-#        
-#        formcomponent = self.retrieveFormToShow( 'gulp')
-#        formcomponent.director = director
-#        # build the form form
-#        form = document.form(name='', action=director.cgihome)
-#        # specify action
-#        action = actionRequireAuthentication(          
-#            actor = 'neutronexperimentwizard', 
-#            sentry = director.sentry,
-#            routine = 'kernel_generator',
-#            id=self.inventory.id,
-#            arguments = {'form-received': formcomponent.name },
-#            )
-#        from vnf.weaver import action_formfields
-#        action_formfields( action, form )
-#        # expand the form with fields of the data object that is being edited
-#        formcomponent.expand( form )
-#        next = form.control(name='submit',type="submit", value="next")
-##        self._footer( document, director )
-#        return page 
-#   
-#    def localOrbitalHarmonic(self, director):
-#        try:
-#            page = self._retrievePage(director)
-#        except AuthenticationError, err:
-#            return err.page
-#        
-#        main = page._body._content._main
-#        document = main.document(title='Local orbital DFT energies, harmonic dynamics kernel' )
-#        document.byline = '<a href="http://danse.us">DANSE</a>'    
-#        
-#        formcomponent = self.retrieveFormToShow( 'localOrbitalHarmonic')
-#        formcomponent.director = director
-#        # build the form form
-#        form = document.form(name='', action=director.cgihome)
-#        # specify action
-#        action = actionRequireAuthentication(          
-#            actor = 'neutronexperimentwizard', 
-#            sentry = director.sentry,
-#            routine = 'kernel_generator',
-#            id=self.inventory.id,
-#            arguments = {'form-received': formcomponent.name },
-#            )
-#        from vnf.weaver import action_formfields
-#        action_formfields( action, form )
-#        # expand the form with fields of the data object that is being edited
-#        formcomponent.expand( form )
-#        next = form.control(name='submit',type="submit", value="next")
-##        self._footer( document, director )
-#        return page 
-#    
-#    def planeWaveHarmonic(self, director):
-#        try:
-#            page = self._retrievePage(director)
-#        except AuthenticationError, err:
-#            return err.page
-#        
-#        main = page._body._content._main
-#        document = main.document(title='Plane wave DFT energies, harmonic dynamics kernel' )
-#        document.byline = '<a href="http://danse.us">DANSE</a>'    
-#        
-#        formcomponent = self.retrieveFormToShow( 'abInitioHarmonic')
-#        formcomponent.director = director
-#        # build the form form
-#        form = document.form(name='', action=director.cgihome)
-#        # specify action
-#        action = actionRequireAuthentication(          
-#            actor = 'neutronexperimentwizard', 
-#            sentry = director.sentry,
-#            routine = 'kernel_generator',
-#            id=self.inventory.id,
-#            arguments = {'form-received': formcomponent.name },
-#            )
-#        from vnf.weaver import action_formfields
-#        action_formfields( action, form )
-#        # expand the form with fields of the data object that is being edited
-#        formcomponent.expand( form )
-#        next = form.control(name='submit',type="submit", value="next")
-##        self._footer( document, director )
-#        return page 
-#    
-#    def kernel_generator(self, director):
-#        try:
-#            page = self._retrievePage(director)
-#        except AuthenticationError, err:
-#            return err.page
-#        
-#        main = page._body._content._main
-#        document = main.document(title='Kernel Generator' )
-#        document.byline = '<a href="http://danse.us">DANSE</a>'        
-#        
-#        formcomponent = self.retrieveFormToShow( 'inelasticScatteringIntensity')
-#        formcomponent.director = director
-#        # build the form form
-#        form = document.form(name='', action=director.cgihome)
-#        # specify action
-#        action = actionRequireAuthentication(          
-#            actor = 'neutronexperimentwizard', 
-#            sentry = director.sentry,
-#            routine = 'submit_experiment',
-#            label = '',
-#            id = self.inventory.id,
-#            arguments = {'form-received': formcomponent.name },
-#            )
-#        from vnf.weaver import action_formfields
-#        action_formfields( action, form )
-#        # expand the form with fields of the data object that is being edited
-#        formcomponent.expand( form )
-#        next = form.control(name='submit',type="submit", value="next")
-##        self._footer( document, director )
-#        return page     
 
 
     def submit_experiment(self, director, errors=None):
@@ -1859,7 +1738,6 @@ class NeutronExperimentWizard(base):
         # populate the main column
         document = main.document(title='Neutron Experiment Wizard: submit')
         document.description = ''
-        document.byline = 'byline?'
 
         #In this step we obtain configuration of sample
         
@@ -1990,7 +1868,7 @@ class NeutronExperimentWizard(base):
         # remove this experiment
         experiment = director.clerk.getNeutronExperiment(
             self.inventory.id)
-        director.clerk.deleteRecord( experiment )
+        director.clerk.deleteExperiment(experiment)
 
         # go to greeter
         actor = 'neutronexperiment'; routine = 'listall'
@@ -2077,7 +1955,6 @@ class NeutronExperimentWizard(base):
         # populate the main column
         document = main.document(title='Neutron Experiment Wizard: status')
         document.description = ''
-        document.byline = 'byline?'
 
         p = document.paragraph()
         p.text = [
@@ -2160,29 +2037,29 @@ class NeutronExperimentWizard(base):
         self.sample_environment_configured = not nullpointer(sampleenvironment_ref)
 
         # sample
-        if self.sample_environment_configured:
-            sampleassembly_ref = experiment.sampleassembly
-            if not sampleassembly_ref:
-                # try sample component
-                samplecomponent_ref = experiment.samplecomponent
-                if not samplecomponent_ref:
-                    # sample component is also undefined
-                    self.sample_prepared = self.kernel_configured = False
-                else:
-                    samplecomponent = director.clerk.dereference(samplecomponent_ref)
-                    self.sample_prepared = self.kernel_configured = True
+        sampleassembly_ref = experiment.sampleassembly
+        if not sampleassembly_ref:
+            # try sample component
+            samplecomponent_ref = experiment.samplecomponent
+            if not samplecomponent_ref:
+                # sample component is also undefined
+                self.sample_prepared = self.kernel_configured = False
             else:
-                sampleassembly = director.clerk.dereference(sampleassembly_ref)
-                sample = _get_sample_from_sampleassembly(sampleassembly, director.clerk.db)
+                samplecomponent = director.clerk.dereference(samplecomponent_ref)
+                self.sample_prepared = self.kernel_configured = True
+        else:
+            sampleassembly = director.clerk.dereference(sampleassembly_ref)
+            sample = _get_sample_from_sampleassembly(sampleassembly, director.clerk.db)
             
-                self.sample_prepared = not nullpointer(sample)
-                # need to test if kernel is configured
-                # ...
-                # probably need a canned solution here for the demo...
-                self.kernel_configured = True
-            pass
+            self.sample_prepared = not nullpointer(sample)
+            # need to test if kernel is configured
+            # ...
+            # probably need a canned solution here for the demo...
+            self.kernel_configured = True
 
-        if not self.kernel_configured: return
+        if not self.kernel_configured \
+           or not self.sample_environment_configured:
+            return
 
         #if experiment.ncount <=0 : return
         #if nullpointer(experiment.job): return
@@ -2207,9 +2084,24 @@ def isScatterer(candidate):
     return isinstance(candidate, Scatterer)
 
 
+def isSample(candidate):
+    from vnf.dom.Sample import Sample
+    return isinstance(candidate, Sample)
+
+
 def isSampleComponent(candidate):
     from vnf.dom.neutron_components.SampleComponent import SampleComponent
     return isinstance(candidate, SampleComponent)
+
+
+def _createScattererFromSample(sample):
+    from vnf.dom.Scatterer import Scatterer
+    s = Scatterer()
+    s.matter = sample.matter
+    s.shape = sample.shape
+    s.creator = sample.creator
+    s.date = sample.date
+    return s
 
 
 def _instrument_configured(experiment, director):

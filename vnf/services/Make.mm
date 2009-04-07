@@ -23,8 +23,6 @@ all: export
 # export
 
 EXPORT_PYTHON_MODULES = \
-	JobStatusUpdater.py \
-	JSUDaemon.py \
 	Pickler.py \
 	__init__.py \
 

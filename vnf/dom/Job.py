@@ -33,6 +33,9 @@ class Job(base):
     numprocessors = pyre.db.integer(name='numprocessors', default = 1)
     numprocessors.meta['tip'] = 'the number of processors this job uses'
 
+    walltime = pyre.db.integer(name='walltime', default = 1)
+    walltime.meta['tip'] = 'limit of wall time. unit: hour'
+
     id_incomputingserver = pyre.db.varchar(name="id_incomputingserver", length=64)
     id_incomputingserver.meta['tip'] = "the id of this job when submitted to the computing server. this is given by the computing server."
 
@@ -60,7 +63,7 @@ class Job(base):
 
     computation = pyre.db.versatileReference(
         name = 'computation', tableRegistry = tableRegistry)
-    computation.meta['tip'] = 'The compuation that this job is about'
+    computation.meta['tip'] = 'The type of computation'
 
     import vnf.dom
     dependencies = vnf.dom.referenceSet(name='dependencies')

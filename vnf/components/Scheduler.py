@@ -4,7 +4,7 @@
 #
 #                                   Jiao Lin
 #                      California Institute of Technology
-#                        (C) 2007  All Rights Reserved
+#                      (C) 2007-2009  All Rights Reserved
 #
 # {LicenseText}
 #
@@ -32,7 +32,10 @@ def schedule( job, director ):
     scheduler = scheduler(launch, prefix = 'source ~/.vnf' )
 
     # submit job through scheduler
-    id1 = scheduler.submit( 'cd %s && sh run.sh' % server_jobpath )
+    walltime = job.walltime
+    from pyre.units.time import hour
+    walltime = walltime*hour
+    id1 = scheduler.submit( 'cd %s && sh run.sh' % server_jobpath, walltime=walltime )
 
     # write id to the remote directory
     director.csaccessor.execute('echo "%s" > jobid' % id1, server, server_jobpath)
@@ -50,9 +53,11 @@ def schedule( job, director ):
 def check( job, director ):
     "check status of a job"
 
-    if job.state in ['finished', 'failed', 'terminated']:
+    if job.state in ['finished', 'failed', 'terminated', 'cancelled']:
         return job
 
+    oldstate = job.state
+    
     #scheduler
     server = director.clerk.dereference(job.server)
     scheduler = schedulerfactory( server )
@@ -73,7 +78,56 @@ def check( job, director ):
         continue
 
     director.clerk.updateRecord( job )
+
+    newstate = job.state
+
+    if oldstate != newstate:
+        # alert user
+        user = director.clerk.getUser(job.creator)
+        
+        from vnf.components.misc import announce
+        announce(director, 'job-state-changed', job, user)
+        
     return job
+
+
+def cancel( job, director ):
+    "cancel a job"
+
+    if job.state not in ['running']:
+        return job
+
+    oldstate = job.state
+    
+    #scheduler
+    server = director.clerk.dereference(job.server)
+    scheduler = schedulerfactory( server )
+
+    #remote job path
+    server_jobpath = director.dds.abspath(job, server=server)
+
+    #
+    launch = lambda cmd: director.csaccessor.execute(
+        cmd, server, server_jobpath, suppressException=True)
+
+    scheduler = scheduler(launch, prefix = 'source ~/.vnf' )
+
+    scheduler.delete( job.id_incomputingserver )
+
+    job.state = 'cancelled'
+    director.clerk.updateRecord( job )
+
+    newstate = job.state
+
+    if oldstate != newstate:
+        # alert user
+        user = director.clerk.getUser(job.creator)
+        
+        from vnf.components.misc import announce
+        announce(director, 'job-state-changed', job, user)
+        
+    return job
+
 
 
 def schedulerfactory( server ):

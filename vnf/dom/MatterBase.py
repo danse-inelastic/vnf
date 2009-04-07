@@ -11,8 +11,8 @@
 #
 
 
-from DbObject import DbObject
-class MatterBase(DbObject):
+from OwnedObject import OwnedObject as base
+class MatterBase(base):
 
     name = 'matterbase'
 

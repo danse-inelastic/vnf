@@ -58,32 +58,40 @@ class Registrar(Actor):
         form.hidden(name='actor', value='registrar')
         form.hidden(name='routine', value='validateState')
 
-        if errors:
-            p = form.paragraph(cls='error')
-            p.text = errors
-        
         prefix = self.name
         def _pn(name): return '%s.%s' % (prefix, name)
         
-        firstname = form.text(id='firstname', name=_pn('firstname'), label='First name')
+        firstname = form.text(id='firstname', name=_pn('firstname'), label='First name',
+                              value = self.inventory.firstname)
         firstname.help = ''
         
-        lastname = form.text(id='lastname', name=_pn('lastname'), label='Last name')
+        lastname = form.text(id='lastname', name=_pn('lastname'), label='Last name',
+                             value = self.inventory.lastname)
         lastname.help = ''
         
-        username = form.text(id='username', name=_pn('username'), label='Desired Login Name')
+        if errors and errors.get('username'):
+            p = form.paragraph(cls='error')
+            p.text = errors['username']
+        username = form.text(id='username', name=_pn('username'), label='Desired Login Name',
+                             value = self.inventory.username)
         username.help = 'Usernames are case sensitive; make sure your caps lock key is not enabled.'
         
+        if errors and errors.get('password'):
+            p = form.paragraph(cls='error')
+            p.text = errors['password']            
         password = form.password(id='password', name=_pn('password'), label='Password')
         password.help = ('Passwords are also case sensitive.')
-
+ 
         confirmation = form.password(id='confirmation', name=_pn('confirmation'), label='Re-enter password')
         confirmation.help = ('Re-enter your password to confirm')
 
-        email = form.text(id='email', name=_pn('email'), label='Email')
+        email = form.text(id='email', name=_pn('email'), label='Email',
+                          value = self.inventory.email)
         email.help = ('This address is used to keep you informed of status of your virtual experiments, updates to your VNF service, etc.')
 
-        organization = form.text(id='organization', name=_pn('organization'), label='Organization')
+        organization = form.text(
+            id='organization', name=_pn('organization'), label='Organization',
+            value = self.inventory.organization)
         organization.help = ()
         
         submit = form.control(name="submit", type="submit", value="Create my account")
@@ -116,14 +124,21 @@ class Registrar(Actor):
 
 
     def validateState(self, director):
-        errors = []
+        errors = {}
         if self.password != self.confirmation:
-            errors += [
-                'Please make sure that you enter the same passwords in the two boxes provided below.'
+            errors['password'] = [
+                'Password and confirmation you entered do not match.'
                 ]
-        # !!!!!!!!
-        # should check username uniqueness too
 
+        from vnf.dom.Registrant import Registrant as Table
+        username = self.username
+        all = director.clerk.db.fetchall( Table, where = "username='%s'" % username )
+        if len(all):
+            errors['username'] = [
+                'Username %r has been registered.' % username,
+                'Please choose a different one.',
+                ]
+            
         if errors:
             return self.interview(director, errors=errors)
         return self.register(director)

@@ -23,9 +23,7 @@ class Actor(base):
         id = pyre.inventory.str( 'id', default = '')
         abinitio_id = pyre.inventory.str('abinitio_id')
         
-
     table = 'phononsfromabinitio'
-
 
     def create(self, director):
         try:

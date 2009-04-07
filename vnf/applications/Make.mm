@@ -23,14 +23,19 @@ all: export
 # export
 
 EXPORT_PYTHON_MODULES = \
-	configurationSaver.py \
 	ApproveUser.py \
+	Delete.py \
 	LaunchDetached.py \
 	MigrateTable.py \
+	PackJobDir.py \
 	RetrieveResults.py \
 	SubmitJob.py \
+	Timer.py \
+	UpdateJobStatus.py \
 	WebApplication.py \
-	__init__.py
+	__init__.py \
+	configurationSaver.py \
+	utils.py \
 
 
 export:: export-package-python-modules

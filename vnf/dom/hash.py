@@ -40,7 +40,7 @@ class Hasher:
         self.level += 1
         if self.rooms.get(self.level) is None:
             self.rooms[self.level] = 0
-        self._addressbook[self._id(obj)] = self._address(), obj.__class__.__name__
+        self._addressbook[self._id(obj)] = str( (self._address(), obj.__class__.__name__) )
         ret = handler(obj, db=db)
         self.level -= 1
         return ret
@@ -48,7 +48,7 @@ class Hasher:
 
     def hash_dbrecord(self, record, db):
         'create a hash value from a db record'
-        # the difficulty of hasing a db record is that it may contains references
+        # the difficulty of hashing a db record is that it may contain references
         # so we need to hash recursively
         Table = record.__class__
         d = []

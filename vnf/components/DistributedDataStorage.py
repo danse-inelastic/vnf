@@ -46,6 +46,18 @@ class DistributedDataStorage(base):
         return
 
 
+    def getmtime(self, dbrecord, filename=None, server=None):
+        path = self.abspath(dbrecord, filename=filename, server=server)
+        cmd = '. ~/.vnf; getmtime.py --path="%s"' % path
+        failed, output, error = self.director.csaccessor.execute(cmd, server, '/tmp')
+
+        # no output means the directory does not exist in the server
+        if not output: return
+
+        mtime = eval(output)
+        return mtime        
+
+
     def move(self, dbrecord1, filename1, dbrecord2, filename2, server=None):
         path1 = self.path(dbrecord1, filename1)
         path2 = self.path(dbrecord2, filename2)

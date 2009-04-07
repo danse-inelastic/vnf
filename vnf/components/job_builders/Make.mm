@@ -31,6 +31,7 @@ all: export
 
 EXPORT_PYTHON_MODULES = \
 	AbInitio.py \
+	GulpSimulation.py \
 	InstrumentSimulationAppBuilder.py \
 	JobBuilder.py \
 	McvineSampleAssemblyBuilder.py \

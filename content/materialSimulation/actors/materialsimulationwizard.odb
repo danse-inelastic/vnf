@@ -10,11 +10,10 @@
 #
 
 
-
-from vnf.components.MaterialSimulationWizard import MaterialSimulationWizard as factory
+from vnf.components.MaterialSimulationWizard import MaterialSimulationWizard
 
 def actor():
-    return factory()
+    return MaterialSimulationWizard()
 
 
 

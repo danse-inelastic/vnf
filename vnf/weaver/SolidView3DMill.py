@@ -184,7 +184,7 @@ from javax.media.j3d import AmbientLight, DirectionalLight, \
      Canvas3D
 from javax.vecmath import Vector3f
 from com.sun.j3d.utils.behaviors.mouse import \
-     MouseRotate
+     MouseRotate, MouseZoom, MouseTranslate
 
 import math
 
@@ -212,8 +212,9 @@ class ViewerApplet(Applet):
         for light in lights:
             objRoot.addChild(light)
         
-        mouseRotate = self.createMouseBehavior(mouseControllable)
-        objRoot.addChild(mouseRotate)
+        mouseInteractors = self.createMouseBehavior(mouseControllable)
+        for mi in mouseInteractors:
+            objRoot.addChild(mi)
 
         objRoot.compile()
         return objRoot
@@ -228,10 +229,21 @@ class ViewerApplet(Applet):
 
 
     def createMouseBehavior(self, target):
+        mouseBounds = BoundingSphere()
+        
         mouseRotate = MouseRotate()
         mouseRotate.setTransformGroup(target)
-        mouseRotate.setSchedulingBounds(BoundingSphere())
-        return mouseRotate
+        mouseRotate.setSchedulingBounds(mouseBounds)
+
+        mouseZoom = MouseZoom()
+        mouseZoom.setTransformGroup(target)
+        mouseZoom.setSchedulingBounds(mouseBounds)
+
+        mouseTranslate = MouseTranslate()
+        mouseTranslate.setTransformGroup(target)
+        mouseTranslate.setSchedulingBounds(mouseBounds)
+        
+        return [mouseRotate, mouseZoom, mouseTranslate]
     
         
     def createLights(self):
@@ -282,6 +294,14 @@ class ViewerApplet(Applet):
         lines = renderer.lines
         lines = ['def create():'] + lines
         return lines
+
+
+
+class JSMill:
+
+    def onSolidView3D(self, solid):
+        return
+
 
 
 import os, tempfile

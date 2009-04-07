@@ -15,15 +15,16 @@ def announcement(user):
 
     msg = vnf.content.announcement()
     msg.sender = "linjiao@caltech.edu"
-    msg.subject = "VNF account added"
+    msg.subject = "VNF account added - %s" % user.username
     msg.text = [
 """
-User %(username)s was approved.
+User %(username)s (%(fullname)s) was approved.
 """
         ]
 
     subs = {
         'username': user.username,
+        'fullname': user.fullname,
         }
 
     adminemail = 'vnf-administrators@googlegroups.com'

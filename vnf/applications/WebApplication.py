@@ -63,7 +63,7 @@ class WebApplication(Base):
         javascriptpath = pyre.inventory.str(name='javascriptpath', default = '/vnf/javascripts' )
         javapath = pyre.inventory.str(name='javapath', default = '/vnf/java' )
         tmproot = pyre.inventory.str(name='tmproot', default = '/vnf/tmp')
-
+        
 
     def main(self, *args, **kwds):
 
@@ -75,32 +75,76 @@ class WebApplication(Base):
                 inquiry, self.inventory.routine)
             self.actor = actor
 
+        noErrors=True
         try:
             page = self.actor.perform(self, routine=self.inventory.routine, debug=self.debug)
-            self.render(page)
+            if isinstance(page, basestring):
+                print page,
+            else:
+                self.render(page)
         except:
+            noErrors=False
+            try:
+                self.fancyBugReport()
+            except:
+                # if we cannot generate a fancy report. we need a plain one
+                self.plainBugReport()
+            
+        if noErrors and self.debug:
+            self.generateDebugInfo('generic')
+        return
+
+
+    def plainBugReport(self):
+        print '<pre>'
+        import traceback
+        traceback.print_exc()
+        print '</pre>'
+        return
+
+
+    def fancyBugReport(self):
+        # try to generate a fancy bug report
+        bugid = self.generateDebugInfo()
+        
+        #self.redirect(actor='bug-report', routine='default', bugid = bugid)
+        actor = self.retrieveActor('bug-report')
+        if actor is None: raise
+        self.configureComponent(actor)
+        actor.inventory.bugid = bugid
+        page = actor.perform(self, routine='default', debug=self.debug)
+        self.render(page)
+        return
+
+    
+    def generateDebugInfo(self,filetypes='unique'):
+        if filetypes is 'unique':
+            #from vnf.dom.idgenerator import idFromTime as idgenerator
             from vnf.dom.idgenerator import generator as idgenerator
             id = idgenerator()
-
-            import os
-            logroot = '../log'
-            
-            from configurationSaver import toPml
-            pmlpath = os.path.join(logroot, id + '.pml')
-            toPml(self, pmlpath)
-
-            errorspath = os.path.join(logroot, id + '.errors')
-            import traceback
-            open(errorspath, 'w').write(traceback.format_exc())
-
-            inputspath = os.path.join(logroot, id + '.inputs')
-            text = ['%s=%s' % (k,v) for k,v in self._cgi_inputs.iteritems()]
-            text = '\n'.join(text)
-            open(inputspath, 'w').write(text)
-
             self._debug.log('*** Error: %s' % id)
+        else:
+            id = 'debugInfo'
+
+        import os
+        logroot = '../log'
+        
+        from configurationSaver import toPml
+        pmlpath = os.path.join(logroot, id + '.pml')
+        toPml(self, pmlpath)
+
+        errorspath = os.path.join(logroot, id + '.errors')
+        import traceback
+        errmsg = traceback.format_exc()
+        open(errorspath, 'w').write(errmsg)
+
+        inputspath = os.path.join(logroot, id + '.inputs')
+        text = ['%s=%s' % (k,v) for k,v in self._cgi_inputs.iteritems()]
+        text = '\n'.join(text)
+        open(inputspath, 'w').write(text)
+
+        return id
             
-        return
 
     
     def _oldmain(self, *args, **kwds):
@@ -136,7 +180,11 @@ class WebApplication(Base):
             for k,v in kwds.iteritems():
                 setattr(self.actor.inventory, k, v)
 
-        self.main()
+        try:
+            self.main()
+        except:
+            raise RuntimeError, "redirect to actor %r, routine %r, with kwds %r failed" % (
+                actor, routine, kwds)
         return
 
 
@@ -144,14 +192,7 @@ class WebApplication(Base):
         page = super(WebApplication, self).retrievePage(name)
         if page:
             return page
-
-        if self.debug:
-            self._debug.log( "*** could not locate page %r" % name )
-            page = super(WebApplication, self).retrievePage("page-loading-error")
-            return page
-        
-        page = super(WebApplication, self).retrievePage("error")
-        return page
+        raise RuntimeError, "Unable to load page %s" % name
 
 
     def retrieveSecurePage(self, name):
@@ -193,18 +234,7 @@ class WebApplication(Base):
     def _configure(self):
         super(WebApplication, self)._configure()
 
-        self.idd = self.inventory.idd
-        self.clerk = self.inventory.clerk
-        self.clerk.director = self
-        self.dds = self.inventory.dds
-        self.dds.director = self
-        self.scribe = self.inventory.scribe
-        self.debug = self.inventory.debug
-        self.csaccessor = self.inventory.csaccessor
-
-        from vnf.components import accesscontrol
-        self.accesscontrol = accesscontrol()
-
+        # custom weaver
         import os
         configurations = {
             'home': self.home,
@@ -215,7 +245,24 @@ class WebApplication(Base):
             'tmproot': self.inventory.tmproot,
             }
         import vnf.weaver
-        vnf.weaver.extend_weaver(self.pageMill, configurations )
+        self.pageMill = vnf.weaver.pageMill(configurations)
+        
+
+        self.idd = self.inventory.idd
+        self.clerk = self.inventory.clerk
+        # this next line is a problem.  Technically, many of the components can be None at
+        # this point....so trying to set an attribute of a None-type component throws an
+        # exception....root of the problem may be in initializeConfiguration() in Application.py
+        self.clerk.director = self
+        self.dds = self.inventory.dds
+        # same for this line
+        self.dds.director = self
+        self.scribe = self.inventory.scribe
+        self.debug = self.inventory.debug
+        self.csaccessor = self.inventory.csaccessor
+
+        from vnf.components import accesscontrol
+        self.accesscontrol = accesscontrol()
 
         if not self.debug: suppressWarnings()
         return

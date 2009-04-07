@@ -1,0 +1,140 @@
+# -*- Python -*-
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                   Jiao Lin
+#                      California Institute of Technology
+#                        (C) 2007  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+
+from vnf.components.DBObjectForm import DBObjectForm as base, InputProcessingError, formactor_action_prefix
+
+
+class PolyXtalCoherentPhononScatteringKernel(base):
+
+
+    class Inventory(base.Inventory):
+
+        import pyre.inventory
+        
+        max_energy_transfer = pyre.inventory.str( name = 'max_energy_transfer' )
+        max_energy_transfer.meta['label'] = 'Maximumn energy transfer'
+        max_energy_transfer.meta['tip'] = 'Maximumn energy transfer allowed for kernel simulation. unit: meV'
+        max_energy_transfer.meta['tiponerror'] = (
+            'Please enter a positive real number for max energy transfer.',
+            'Typical value is 10-1000. Unit: meV',
+            )
+
+        max_momentum_transfer = pyre.inventory.str( name = 'max_momentum_transfer' )
+        max_momentum_transfer.meta['label'] = 'Maximumn momentum transfer'
+        max_momentum_transfer.meta['tip'] = 'Maximumn momentum transfer allowed for kernel simulation. unit: A**-1'
+        max_momentum_transfer.meta['tiponerror'] = (
+            'Please enter a positive real number for max momentum transfer.',
+            'Unit: inverse angstrom',
+            )
+
+        Ei = pyre.inventory.str( name = 'Ei' )
+        Ei.meta['label'] = 'Ei'
+        Ei.meta['tip'] = 'Approximate incident neutron energy. unit: meV'
+        Ei.meta['tiponerror'] = (
+            'Please enter a positive real number. '
+            'It should be the same as the neutron energy of your near-monochromatic ',
+            'neutron source.',
+            )
+
+        dispersion_id = pyre.inventory.str(name='dispersion_id')
+        dispersion_id.meta['label'] = 'Dispersion'
+        dispersion_id.meta['tip'] = "Phonon dispersion"
+
+        pass # end of Inventory
+
+
+    parameters = [
+        'max_momentum_transfer',
+        'max_energy_transfer',
+        'Ei',
+        ]
+
+    DBTable = 'PolyXtalCoherentPhononScatteringKernel'
+
+
+    def __init__(self, name = None):
+        if name is None:
+            name = 'polyxtalcoherentphononscatteringkernel'
+
+        base.__init__(self, name)
+
+        return
+
+
+    def expand(self, form, errors = None, properties = None):
+        p = form.paragraph( )
+        p.text = [
+            'Kernel type: %s' % self.DBTable,
+            ]
+            
+        base.expand(self, form, errors = errors, properties = properties)
+
+        prefix = formactor_action_prefix
+
+        director = self.director
+        dispersions = _findDispersions(director)
+        from vnf.utils.uniquelist import uniquelist
+        from vnf.dom.hash import hash
+        dispersions = uniquelist(
+            dispersions, idfun=lambda dispersion: hash(dispersion, director.clerk.db))
+        
+        entries = [
+            (dispersion.id,
+             '#%s: %s' % (dispersion.id, dispersion.short_description)
+             )
+            for dispersion in dispersions ]
+        
+        import opal.content
+        selector = form.selector(
+            id = 'disp_selector',
+            name = '%s.dispersion_id' % prefix,
+            entries = entries,
+            label = 'Dispersion',
+            selected = self.inventory.dispersion_id or entries[0][0],
+            )
+        
+        return
+
+
+    def processUserInputs(self, *args, **kwds):
+        errors = []
+        self._verify( 'max_energy_transfer', errors )
+        self._verify( 'max_momentum_transfer', errors )
+        if len(errors): raise InputProcessingError, errors
+        record = base.processUserInputs(self, *args, **kwds)
+        dispersion_id = self.inventory.dispersion_id
+        record.dispersion = dispersion_id
+        return record
+
+
+    def _verify(self, prop, errors):
+        value = getattr( self.inventory, prop )
+        try:
+            value = float(value)
+            if value < 0: errors.append( prop )
+        except:  errors.append(prop)
+        return
+
+
+def _findDispersions(director):
+    from vnf.dom.ins.PhononDispersion import PhononDispersion
+    return director.clerk.db.fetchall(PhononDispersion)
+
+def form(): return PolyXtalCoherentPhononScatteringKernel()
+
+# version
+__id__ = "$Id$"
+
+# End of file 

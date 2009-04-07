@@ -14,6 +14,7 @@ def tables():
         'PhononDispersion',
         'BvKComputation',
         'BvKModel',
+        'VacfComputation',
         ]
 
     
@@ -30,7 +31,7 @@ def tables():
     tables = []
     for t in tablemodules:
         exec 'from vnf.dom.ins.%s import %s as table' % (t, t) in locals()
-        tables.append( table )
+        tables.append(table)
         continue
 
     return tables

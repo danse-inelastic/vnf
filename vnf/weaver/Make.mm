@@ -32,19 +32,25 @@ all: export
 
 EXPORT_PYTHON_MODULES = \
 	AccordionMill.py \
-	ActionLinkRenderer.py \
 	ActionHrefRenderer.py \
+	ActionLinkRenderer.py \
 	ActionMill_forForm.py \
 	AutoRefreshRenderer.py \
 	DocumentMill.py \
 	DocumentMillExtensions.py \
 	ImagePlotMill.py \
+	JavaScriptWeaver.py \
+	JavaScriptWeaverBase.py \
+	JavaScriptWeaverExtensions.py \
+	PageMill.py \
 	Plot_2DMill.py \
+	SlidableGallery.py \
 	SolidView3DMill.py \
 	StructuralMill.py \
 	TableMill.py \
 	TreeViewMill.py \
 	__init__.py \
+	_utils.py \
 
 
 export:: export-package-python-modules

@@ -15,10 +15,12 @@
 class Action:
 
     def __init__(self, actor,
-                 label = '', routine = None, arguments = {}, **kwds ):
+                 label = '', routine = None, target = None,
+                 arguments = {}, **kwds ):
         self.actor = actor
         self.label = label
         self.routine = routine
+        self.target = target
         kwds.update( arguments )
         self.arguments = kwds
         return

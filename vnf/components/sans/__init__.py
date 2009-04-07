@@ -13,12 +13,10 @@
 
 
 
-from vnf.components.MaterialSimulation import Engine
+from vnf.components.MaterialSimulationEngine import Engine
 
 def materialSimulationEngines():
-    return [
-        Engine('sansmodels', 'Sans Models', ''),
-        ]
+    return {'sans': Engine('sansmodels', 'Sans Models', '', 'sans')}
 
 
 

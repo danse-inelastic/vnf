@@ -126,25 +126,12 @@ class Clerk(Component):
             continue
         return ret
 
-    def indexServers(self, where = None):
-        '''create and index of all servers
-        that meet the specified criteria'''
-
-        from vnf.dom.Scatterer import Scatterer
-        return self._index( Scatterer, where )
-
 
     def indexNeutronExperiments(self, where=None):
         director = self.director
         username = director.sentry.username
         from vnf.dom.NeutronExperiment import NeutronExperiment
         return self._index(NeutronExperiment, where=where)
-
-
-    def getCrystal(self, id):
-        '''retrieve crystal of given id'''
-        from vnf.dom.Crystal import Crystal
-        return self._getRecordByID( Crystal, id )
 
     
     def getJob(self, id):
@@ -153,41 +140,33 @@ class Clerk(Component):
         return self._getRecordByID( Job, id )
     
     
-    def getJobs(self, where = None):
-        '''retrieve all jobs'''
-        from vnf.dom.Job import Job
-        return self._getAll( Job, where )
-    
-    
     def getSample(self, id):
         '''retrieve sample of given id'''
         from vnf.dom.Sample import Sample
         return self._getRecordByID( Sample, id )
     
-    def getSamples(self, where = None):
-        '''retrieve all samples'''
-        from vnf.dom.Matter import Matter
-        return self._getAll( Matter, where )
 
     def getSampleAssembly(self, id):
         '''retrieve sample assembly of given id'''
         from vnf.dom.SampleAssembly import SampleAssembly
         return self._getRecordByID( SampleAssembly, id )
     
-#    def getScatteringKernels(self, where = None):
-#        '''retrieve all scattering kernels'''
-#        from vnf.dom.ScatteringKernel2 import ScatteringKernel2
-#        return self._getAll( ScatteringKernel2, where )
-
 
     def getUser(self, username):
         '''retrieve user of given username'''
         from vnf.dom.User import User
         all = self.db.fetchall( User, where = "username='%s'" % username )
-        assert len(all) == 1
+        assert len(all) == 1, 'found %s users for username %r' % (len(all), username)
         return all[0]
     
         
+    def getRegistrant(self, username):
+        from vnf.dom.Registrant import Registrant as Table
+        all = self.db.fetchall( Table, where = "username='%s'" % username )
+        assert len(all) == 1, 'found %s registrants for username %r' % (len(all), username)
+        return all[0]
+
+
     def getInstrument(self, id):
         '''retrieve instrument of given id'''
         from vnf.dom.Instrument import Instrument
@@ -263,6 +242,12 @@ class Clerk(Component):
         return configuration
 
 
+    def deleteExperiment(self, exp):
+        exp.status = 'deleted'
+        self.updateRecord(exp)
+        return
+
+
     def duplicateRecord(self, record):
         save_id = record.id
 
@@ -300,7 +285,13 @@ class Clerk(Component):
 
 
     def getRecordByID(self, tablename, id):
-        Table = self._getTable(tablename)
+        from pyre.db.Table import Table as TableBase
+        if isinstance(tablename, basestring):
+            Table = self._getTable(tablename)
+        elif issubclass(tablename, TableBase):
+            Table = tablename
+        else:
+            raise ValueError, 'tablename must be a string or a table class: %s' % tablename
         return self._getRecordByID(Table, id)
     
     def find(self, cls_spec, *args, **kwargs):
@@ -456,7 +447,7 @@ class Clerk(Component):
         dbkwds = DbAddressResolver().resolve(self.inventory.db)
         self.db = pyre.db.connect(wrapper=self.inventory.dbwrapper, **dbkwds)
 
-        #self.deepcopy = self.DeepCopier( self )
+        self.deepcopy = self.DeepCopier( self )
 
         from vnf.dom.ReferenceManager import ReferenceManager
         self.referenceManager = ReferenceManager(self.db)

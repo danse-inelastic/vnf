@@ -21,6 +21,19 @@ def main(depositoryLocation='../config'):
     class IpadApp(Daemon):
 
 
+        def daemon(self, pid):
+            #write pid to a file
+            import os
+            filename = 'ipa.pid' 
+            path = os.path.join(self.home, filename)
+            stream = open(path, 'w')
+            stream.write(str(pid))
+            stream.close()
+
+            Daemon.daemon(self, pid)
+            return
+
+
         def _getPrivateDepositoryLocations(self):
             print 'using '+depositoryLocation+' as a depository'
             return [depositoryLocation]

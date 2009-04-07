@@ -90,7 +90,8 @@ def _findMatters(director):
     from vnf.dom import mattertables
     tables = mattertables()
     ret = []
-    for t in tables: ret += director.clerk.db.fetchall(t)
+    where = "creator='vnf' or creator='%s'" % director.sentry.username
+    for t in tables: ret += director.clerk.db.fetchall(t, where=where)
     return ret
 
 

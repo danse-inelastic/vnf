@@ -26,6 +26,7 @@ class ActionHrefRenderer:
         arguments = {
             'actor': action.actor,
             }
+
         for k,v in action.arguments.iteritems():
             arguments[ '%s.%s' % (action.actor, k) ] = v
             continue
@@ -40,6 +41,7 @@ class ActionHrefRenderer:
         arguments = {
             'actor': action.actor,
             }
+
         for k,v in action.arguments.iteritems():
             arguments[ '%s.%s' % (action.actor, k) ] = v
             continue

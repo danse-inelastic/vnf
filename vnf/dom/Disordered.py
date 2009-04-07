@@ -21,10 +21,12 @@ class Disordered(base):
 
 
 def inittable(db):
-    def disordered( id, cartesian_lattice, fractional_coordinates,
+    def disordered( id, creator, date, cartesian_lattice, fractional_coordinates,
                     atom_symbols, chemical_formula, short_description ):
         p = Disordered()
         p.id = id
+        p.creator = creator
+        p.date = date
         p.cartesian_lattice = cartesian_lattice
         p.fractional_coordinates = fractional_coordinates
         p.atom_symbols = atom_symbols
@@ -34,6 +36,8 @@ def inittable(db):
 
     records = [
         disordered( 'liquid0',
+                    'vnf',
+                    '2008/12/1',
                      [],
                      [],
                      [],

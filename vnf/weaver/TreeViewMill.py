@@ -13,162 +13,118 @@
 class TreeViewMill:
 
 
-    def __init__(self, configurations):
-        self.imagepath = configurations['imagepath']
-        self.javascriptpath = configurations['javascriptpath']
-        
+    def onTreeView(self, treeview):
+        configurations = self.configurations
+        home = configurations['home']
         cgihome = configurations['cgihome']
+
+        # csscode
+        csscode = []
+        csss = [
+            'jquery.treeview.css',
+            ]
+        for css in csss:
+            csscode.append( '<link rel="stylesheet" type="text/css" href="%s/css/%s" />' % (
+                home,css) )
+
+        # now render the tree as <ul>s
         from ActionHrefRenderer import ActionHrefRenderer
-        self.hrefer = ActionHrefRenderer( cgihome )
+        hrefer = ActionHrefRenderer( cgihome )
+
+        htmlcode = []
+        htmlcode.append('<ul id="%s" class="filetree">' % _id(treeview))
+
+        theme = 'default'
+        styles = styles_dict[theme]
+        htmlcode += HtmlMill(hrefer, styles).render(treeview)
+
+        htmlcode.append('</ul>')
+        return csscode + htmlcode
+
+
+styles_dict  = {
+    'default': {'container': '',
+                'element': '',
+                },
+    'browser': {'container': 'folder',
+                'element': 'file',
+                },
+    }
+
+class HtmlMill:
+
+    def __init__(self, hrefer, styles):
+        self.hrefer = hrefer
+
+        self.styles = styles
         return
 
     def render(self, treeview):
-        return treeview.identify(self)
+        self._rep = []
+        treeview.identify(self)
+        return self._rep
 
+
+    def onContainer(self, container):
+        styles = self.styles
+        self.onElement(container, klass=styles['container'])
+        
+        self._rep.append('<ul>')
+        for element in container.children:
+            element.identify(self)
+            continue
+        self._rep.append('</ul>')
+        
+        return
+
+    
+    def onElement(self, element, klass=None):
+        styles = self.styles
+        if not klass: klass = styles['element']
+        
+        action = element.action
+        if action: href = action.identify(self.hrefer)
+        else: href = ''
+        self._rep.append(self.li(klass, element.label, href))
+        return
+
+
+    def li(self, klass, label, href):
+        s = '<li><span class="%s">' % klass
+        if href:
+            s+= '<a href="%s">' % href
+        s += label
+        if href:
+            s+= '</a>'
+        s += '</span>'
+        return s
+    
+    onTreeView = onBranch = onContainer
+    onLeaf = onElement
+    pass
+
+
+
+class JSMill:
 
     def onTreeView(self, treeview):
-        # go through the tree and render action_href from action
-        hrefer = self.hrefer
-        class _:
-            def onContainer(self, container):
-                self.onElement( container )
-                for element in container.children:
-                    element.identify(self) # assume the mill knows how to convert action to action href
-                    continue
-                return
-            def onElement(self, element):
-                action = element.action
-                if action: href = action.identify(hrefer)
-                else: href = ''
-                element.action_href = href
-                return
-            onTreeView = onBranch = onContainer
-            onLeaf = onElement
-            pass
-
-        _().onTreeView( treeview )
-
-        # now render js codes.
-        # this weaver makes use of TreeView js @ http://treeview.net/
-        #
-        imagepath = self.imagepath
-        javascriptpath = self.javascriptpath
-
-        prefix = [
-            #license requirement
-            '<TABLE border=0><TR><TD><FONT size=-2><A style="font-size:7pt;text-decoration:none;color:silver" href="http://www.treemenu.net/" target=_blank>Javascript Tree Menu</A></FONT></TD></TR></TABLE>',
-            #
-            '<SPAN class=TreeviewSpanArea>',
-            '<SCRIPT src="%s/TreeView/ua.js"></SCRIPT>' % javascriptpath,
-            '<SCRIPT src="%s/TreeView/ftiens4.js"></SCRIPT>' % javascriptpath,
+        includes = [
+            'jquery/jquery.js',
+            'jquery/jquery.cookie.js',
+            'jquery/treeview/jquery.treeview.js',
             ]
-        postfix = [
-            '</SPAN>'
-            ]
-        configurations = [
-            'USETEXTLINKS = 1',
-            'STARTALLOPEN = 0',
-            'USEFRAMES = 0',
-            'USEICONS = 0',
-            'WRAPTEXT = 1',
-            'PRESERVESTATE = 1',
-            'ICONPATH = "%s/TreeView/"' % imagepath,  #/vnfLJ/images
-            ]
+        self.include(scripts=includes)
 
-        codes = JSCodeRenderer().render( treeview )
-
-        codes = configurations + codes
-
-        codes.append( 'initializeDocument()' )
-        
-        codes = prefix + ['<script>'] + codes + ['</script>'] + postfix
-        return codes
-
-
-
-
-class JSCodeRenderer:
-
-    def render(self, tree):
-        self.generate_id = IdGenerator()
-        self.codes = []
-        tree.identify(self)
-        return self.codes
-
-
-    def onTreeView(self, treeview):
-        self._makeBranchNode( treeview )
-        self.codes.append( 'foldersTree = aux%d' % treeview.id )
-
-        # prepare to descend
-        self.id = treeview.id
-        # descend to children
-        for child in treeview.children:
-            child.identify(self)
-            continue
-
-        # back up
-        self.id = id
-        return
-
-
-    def onBranch(self, branch):
-        #parent's id
-        id = self.id
-
-        # js code to create the node
-        self._makeBranchNode( branch )
-        
-        # js code to add node to its parent
-        code = 'insFld( aux%d, aux%d )' % (
-            id, branch.id )
-        self.codes.append( code )
-
-        # prepare to descend
-        self.id = branch.id
-        # descend to children
-        for child in branch.children:
-            child.identify(self)
-            continue
-
-        # back up
-        self.id = id
-        return
-    
-
-    def onLeaf(self, leaf):
-        # parent's id
-        parentid = self.id
-        
-        # js code to create the leaf and add to its parent
-        code = 'insDoc(aux%d, gLnk("S", "%s", "%s"))' % (
-            parentid, leaf.label, leaf.action_href )
-        self.codes.append( code )
+        id = _id(treeview);
+        self.writemain('$("#%s").treeview();' % id);
         
         return
+        
 
 
-    def _makeBranchNode(self, branch):
-        branch.id = id = self.generate_id()
-        code = 'aux%d = gFld("%s", "%s")' % (
-            id, branch.label, branch.action_href )
-        self.codes.append(code)
-        return
+def _id(widget):
+    return id(widget)
 
-
-
-
-class IdGenerator:
-
-    def __init__(self):
-        self._id = 0
-        return
-
-    def __call__(self):
-        ret = self._id
-        self._id += 1
-        return ret
-    
 
 # version
 __id__ = "$Id$"

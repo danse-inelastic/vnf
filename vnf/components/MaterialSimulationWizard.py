@@ -1,17 +1,5 @@
-#!/usr/bin/env python
-#
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-#
-#                                  Jiao Lin
-#                     California Institute of Technology
-#                       (C) 2008  All Rights Reserved
-#
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-#
-
-
-from Actor import actionRequireAuthentication, action_link, AuthenticationError
-from FormActor import FormActor as base, InputProcessingError
+from vnf.components.Actor import actionRequireAuthentication, action_link, AuthenticationError
+from vnf.components.FormActor import FormActor as base, InputProcessingError
 
 
 class MaterialSimulationWizard(base):
@@ -170,20 +158,18 @@ class MaterialSimulationWizard(base):
         matter = director.clerk.getRecordByID(mattertype, matterid)
         simulation = self._createSimulation(director, matter=matter)
 
-        # this is a bit weird. the type is the table name. but usually
-        # table name has a 's' at the end, and it is not desirable.
-        # the following code takes the table class name.
-        table = director.clerk._getTable(type)
-        table = table.__name__.lower()
-        
-        actor = '%swizard' % table
+        wizard = self._wizardname(type, director)
         routine = 'configureSimulation'
-        return director.redirect(actor, routine, id=simulation.id, type=simulation.name)
-
+        return director.redirect(wizard, routine, id=simulation.id, type=simulation.name)
 
 
     def configureSimulation(self, director):
-        raise NotImplementedError
+        type = self.inventory.type
+        if not type: raise RuntimeError, "simulation type  not set"
+        wizard = self._wizardname(type, director)
+        routine = 'configureSimulation'
+        id = self.inventory.id
+        return director.redirect(wizard, routine, id=id, type=type)
 
 
     def saveSimulation(self, director):
@@ -257,6 +243,17 @@ class MaterialSimulationWizard(base):
         return
 
 
+    def _wizardname(self, type, director):
+        '''return the name of the wizard for the given simulation type'''
+        # this is a bit weird. the type is the table name. but usually
+        # table name has a 's' at the end, and it is not desirable.
+        # the following code takes the table class name.
+        table = director.clerk._getTable(type)
+        table = table.__name__.lower()
+        
+        return '%swizard' % table
+
+
     def _createSimulation(self, director, matter=None):
         if not matter:
             raise RuntimeError
@@ -318,9 +315,9 @@ class MaterialSimulationWizard(base):
 
     def _getSimulation(self, director):
         id = self.inventory.id
-        type = self.inventory.type
-        if not type or not id: return
-        return director.clerk.getRecordByID(type, id)
+        table = self.inventory.type
+        if not table or not id: return
+        return director.clerk.getRecordByID(table, id)
 
 
     def _retrievePage(self, director):
@@ -340,12 +337,3 @@ def _materialDefinedForSimulation(simulation, director):
     except:
         return False
     return True
-
-
-
-from misc import new_id, empty_id, nullpointer
-
-# version
-__id__ = "$Id$"
-
-# End of file 

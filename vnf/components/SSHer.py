@@ -67,7 +67,7 @@ class SSHer(base):
             ]
 
         if port:
-            pieces.append( '-P %s' % port )
+            pieces.append( '-p %s' % port )
 
         if known_hosts:
             pieces.append( "-o 'UserKnownHostsFile=%s'" % known_hosts )
@@ -131,6 +131,11 @@ class SSHer(base):
 
         remotedir, filename = os.path.split( remotepath )
         return os.path.join( localdir, filename )
+
+
+    def getdirectory( self, server, remotepath, localdir ):
+        'retrieve a directory from remote server to local path'
+        return self.getfile(server, remotepath, localdir)
 
 
     def execute( self, cmd, server, remotepath, suppressException = False ):

@@ -30,14 +30,20 @@ class ActionLinkRenderer:
     def onAction(self, action):
         href = self.hrefer.render( action )
         label = action.label
-        return [_link( label, href)]
+        kwds = {}
+        if action.target:
+            kwds['target'] = action.target
+        return [_link( label, href, **kwds)]
 
     onActionRequireAuthentication = onAction
 
 
 
-def _link( label, href ):
-    return '<a href="%s">%s</a>' % (href, label)
+def _link( label, href, **kwds ):
+    arguments = kwds.items()
+    arguments.append( ('href', href) )
+    argsstr = ' '.join( ['%s="%s"' % (k,v) for k,v in arguments] )
+    return '<a %s>%s</a>' % (argsstr, label)
         
 
 

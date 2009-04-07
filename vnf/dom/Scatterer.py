@@ -13,7 +13,7 @@
 
 from registry import tableRegistry
 
-from DbObject import DbObject as base
+from OwnedObject import OwnedObject as base
 class Scatterer(base):
 
     name = 'scatterers'
@@ -30,9 +30,11 @@ class Scatterer(base):
 
 
 def inittable(db):
-    def s( id, short_description, matter, shape, kernels ):
+    def s( id, creator, date, short_description, matter, shape, kernels ):
         r = Scatterer()
         r.id = id
+        r.creator = creator
+        r.date = date
         r.short_description = short_description
         r.matter = matter
         r.shape = shape
@@ -48,6 +50,8 @@ def inittable(db):
     
     records = [
         s( 'polyxtal-fccNi-scatterer-0',
+           'vnf',
+           '2008/12/01',
            'fcc Ni plate',
            (PolyCrystal, 'polyxtalfccNi0'),
            (Block, 'plate0'),
@@ -57,6 +61,8 @@ def inittable(db):
            ),
         
         s( 'sans-sphere-model-scatterer-0',
+           'vnf',
+           '2008/12/01',
            'SANS sphere model sample',
            (Disordered, 'liquid0'),
            (Cylinder, 'cylinder0'),
