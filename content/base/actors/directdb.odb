@@ -22,7 +22,7 @@ class DirectDB(Actor):
 
         #table = pyre.inventory.str('table')
         
-        tables = pyre.inventory.list('tables')
+        tables = pyre.inventory.str('tables')
 
         where = pyre.inventory.str('where')
 
@@ -36,19 +36,20 @@ class DirectDB(Actor):
         except AuthenticationError, error:
             return error.page
 
-        records = self._getRecords(director, self.table, self.where)
+        records = self._getRecords(director, self.tables, self.where)
         return self.encoder(records)
 
 
     def _getRecords(self, director, tables, where):
         results=[]
+        #print tables
         for table in tables:
             # should use acl mechanism to make sure users are authenticated to read
             # the tables and the records. this is a simple, naive implementation
             disallowed = ['user', 'users', 'registrant', 'registrants']
             if table.lower() in disallowed or table.lower().startswith('acl'):
-                print "Not allowed to access table %r" % table
-                return []
+                #print "Not allowed to access table %r" % table
+                continue
             
             table = director.clerk._getTable(table)
             
@@ -80,7 +81,8 @@ class DirectDB(Actor):
     def _configure(self):
         self.encoder = self._encoders[self.inventory.encoder]
         
-        self.tables = self.inventory.tables
+        # as a quick fix we simply hyphenate the tables if we want to query more than one
+        self.tables = self.inventory.tables.split('-')
         
         id = self.inventory.id
         where = self.inventory.where
