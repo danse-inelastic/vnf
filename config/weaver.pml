@@ -2,9 +2,9 @@
 <!-- 
  !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  !
- !                              Michael A.G. Aivazis
+ !                                DANSE/vnf team
  !                       California Institute of Technology
- !                       (C) 1998-2005  All Rights Reserved
+ !                       (C) 2008-2009  All Rights Reserved
  !
  !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 -->
@@ -15,9 +15,9 @@
 
     <component name="weaver">
         <!-- user info -->
-        <property name="author">Michael A.G. Aivazis</property>
+        <property name="author">DANSE vnf team</property>
         <property name="organization">California Institute of Technology</property>
-        <property name="copyright">1998-2005</property>
+        <property name="copyright">2008-2009</property>
         <property name="creator">opal</property>
 
         <!-- banner -->
@@ -31,6 +31,6 @@
 
 </inventory>
 
-<!-- $Id: weaver.pml,v 1.1.1.1 2006-11-27 00:09:15 aivazis Exp $ -->
+<!-- $Id$ -->
 
 <!-- End of file -->
