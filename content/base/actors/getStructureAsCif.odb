@@ -14,69 +14,41 @@ from vnf.components.DirectDB import DirectDB
 
 class GetStructureAsCif(DirectDB):
 
-#    class Inventory(DirectDB.Inventory):
-#
-#        import pyre.inventory
-#
-#        encoder = pyre.inventory.str('encoder', default = 'json')
-#        
-#        tables = pyre.inventory.str('tables')
-#
-#        where = pyre.inventory.str('where')
-#
-#        id = pyre.inventory.str('id')
-        
+    class Inventory(DirectDB.Inventory):
 
-#    def get(self, director):
-#        # these next lines are a hack just to make sure the user is authenticated
-#        try:
-#            page = director.retrieveSecurePage( 'greet' )
-#        except AuthenticationError, error:
-#            return error.page
-#        # get records
-#        records = self._getRecords(director, self.tables, self.where)
-#        # process records
-#        
-#        # encode and send
-#        return self.encoder(records)
+        import pyre.inventory
 
-
-#    def _getRecords(self, director, tables, where):
-#        results=[]
-#        #print tables
-#        for table in tables:
-#            # should use acl mechanism to make sure users are authenticated to read
-#            # the tables and the records. this is a simple, naive implementation
-#            disallowed = ['user', 'users', 'registrant', 'registrants']
-#            if table.lower() in disallowed or table.lower().startswith('acl'):
-#                #print "Not allowed to access table %r" % table
-#                continue
-#            
-#            table = director.clerk._getTable(table)
-#            
-#            from vnf.dom.OwnedObject import OwnedObject
-#            if issubclass(table, OwnedObject):
-#                if where:
-#                    where = "(%s) and creator='%s'" % (where, director.sentry.username)
-#                else:
-#                    where = "creator='%s'" % (director.sentry.username,)
-#    
-#            records = director.clerk.db.fetchall(table, where=where)
-#            results+=records
-#        return results
+        pass
     
 
     def _cifEncoder(self, records):
-        records = map(_record2dict, records)
-        import cjson
-        # make sure all are encodable
+
+        records = map(self._record2dict, records)
+        cifStrings = []
         for r in records:
-            for k,v in r.iteritems():
-                try:
-                    cjson.encode(v)
-                except:
-                    r[k] = str(v)
-        return cjson.encode(records)
+            print r
+            # convert record to structure 
+            from diffpy.Structure import Structure, Lattice, Atom
+            import numpy as n
+            fc = n.array(r['fractional_coordinates'])
+            atomSymbols = r['atom_symbols']
+            fc = fc.reshape((-1,3)) 
+            fc = fc.tolist()
+            atoms = [Atom(s,c) for s,c in zip(atomSymbols,fc)]
+            lat = n.array(r['cartesian_lattice'])
+            lat = lat.reshape((3,3))
+            lat = lat.tolist()
+            s = Structure( atoms, lattice = Lattice(base = lat))
+            print s
+            # convert structure to cif form
+            cifStrings.append(s.writeStr('cif'))
+#            for k,v in r.iteritems():
+#                try:
+#                    cjson.encode(v)
+#                except:
+#                    r[k] = str(v)
+        #return cjson.encode(records)
+        return cifStrings
 
     
 #    def _configure(self):
@@ -104,14 +76,12 @@ class GetStructureAsCif(DirectDB):
     def __init__(self, name=None):
         if name is None:
             name = "getStructureAsCif"
-        super(DirectDB, self).__init__(name)
+        super(GetStructureAsCif, self).__init__(name)
 
         # encoders
         self._encoders['cif'] = self._cifEncoder
         return
 
-
-    pass # end of DirectDB
 
 
 def actor():

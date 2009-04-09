@@ -1,4 +1,5 @@
 from vnf.components.Actor import Actor
+from vnf.applications.WebApplication import AuthenticationError
 
 
 class DirectDB(Actor):
@@ -9,7 +10,7 @@ class DirectDB(Actor):
 
         encoder = pyre.inventory.str('encoder', default = 'json')
 
-        #table = pyre.inventory.str('table')
+        format = pyre.inventory.str('format', default = 'dictionary')
         
         tables = pyre.inventory.str('tables')
 
@@ -55,20 +56,48 @@ class DirectDB(Actor):
     
 
     def _jsonEncoder(self, records):
-        records = map(_record2dict, records)
+        records = map(self._record2dict, records)
         import cjson
         # make sure all are encodable
+        data=[]
         for r in records:
-            for k,v in r.iteritems():
-                try:
-                    cjson.encode(v)
-                except:
-                    r[k] = str(v)
-        return cjson.encode(records)
+            if 'dictionary' in self.format:
+                for k,v in r.iteritems():
+                    try:
+                        cjson.encode(v)
+                    except:
+                        r[k] = str(v)
+                data.append(r)
+            elif 'cif' in self.format:
+                # convert record to structure 
+                from diffpy.Structure import Structure, Lattice, Atom
+                import numpy as n
+                fc = n.array(r['fractional_coordinates'])
+                atomSymbols = r['atom_symbols']
+                fc = fc.reshape((-1,3)) 
+                fc = fc.tolist()
+                atoms = [Atom(s,c) for s,c in zip(atomSymbols,fc)]
+                lat = n.array(r['cartesian_lattice'])
+                lat = lat.reshape((3,3))
+                lat = lat.tolist()
+                s = Structure( atoms, lattice = Lattice(base = lat))
+                # convert structure to cif form
+                data.append(s.writeStr('cif'))
+        return cjson.encode(data)
 
+
+    def _record2dict(self, record):
+        d = {}
+        for col in record.getColumnNames():
+            value = record.getColumnValue(col)
+            d[col] = value
+            continue
+        return d
+    
     
     def _configure(self):
         self.encoder = self._encoders[self.inventory.encoder]
+        self.format = self.inventory.format
         
         # as a quick fix we simply hyphenate the tables if we want to query more than one
         self.tables = self.inventory.tables.split('-')
@@ -98,10 +127,3 @@ class DirectDB(Actor):
 
     pass # end of DirectDB
 
-def _record2dict(record):
-    d = {}
-    for col in record.getColumnNames():
-        value = record.getColumnValue(col)
-        d[col] = value
-        continue
-    return d
