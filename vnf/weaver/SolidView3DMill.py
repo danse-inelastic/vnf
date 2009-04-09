@@ -68,6 +68,9 @@ class SolidView3DMill:
         if not os.path.exists(tmpdirectory): os.makedirs(tmpdirectory)
         subdir = os.path.split(tmpdirectory)[1]
 
+        # the bin directory
+        bindir = os.path.abspath(os.path.join('..', 'bin'))
+
         # first render jython sources
         generator = JythonCodeGenerator()
         jyclassname = JythonCodeGenerator.classname
@@ -85,21 +88,34 @@ class SolidView3DMill:
         if not os.path.exists(path):
             raise RuntimeError, "j3d-env.sh is not in the right place: %s" % path
         cmd0 = '. %s' % path
+        cmds = [cmd0]
+        
+        # use jythonc to compile sources
         envs = {
             'HOME': APACHE2_USER_HOME,
             'DISPLAY': VIRTUAL_DISPLAY,
             'XAUTHORITY': APACHE2_USER_XAUTHORITY,
             }
         envstr = ' '.join(['%s=%s' % (k,v) for k,v in envs.iteritems()])
-        cmd2 = '%(envstr)s jythonc --core --deep -A unbboolean --jar %(jarfilename)s %(jyfilename)s' \
+        cmd = '%(envstr)s jythonc --core --deep -A unbboolean --jar %(jarfilename)s %(jyfilename)s' \
                % locals()
-        cmds = [cmd0, cmd2]
+        cmds.append(cmd)
+        
+        # the jar created by jythonc is not good and we need to recreate that jar
+        cmd = 'mkdir tmp && cd tmp && jar xf ../%(jarfilename)s && jar cf %(jarfilename)s * && mv %(jarfilename)s .. && cd .. && rm -rf tmp' % locals()
+        cmds.append(cmd)
+
+        # sign the jar
+        cmd = 'cd %(bindir)s && ./signJar.py -jar=%(jarfilepath)s' % locals()
+        cmds.append(cmd)
+        cmd = 'cd -'
+        cmds.append(cmd)
 
         bashscript = 'run.sh'
         bashscriptpath = os.path.join(tmpdirectory, bashscript)
         open(bashscriptpath, 'w').write('\n'.join(cmds))
 
-        # launch
+        # launch the command to make jar
         from vnf.utils.spawn import spawn
         cmd1 = 'cd %s' % tmpdirectory
         cmd2 = 'bash %s' % bashscript
@@ -114,17 +130,91 @@ class SolidView3DMill:
 
         # the html code
         width = view.width; height = view.height
-        htmlcode = '''
-        <APPLET CODE="%(jyclassname)s" WIDTH="%(width)s" HEIGHT="%(height)s"
-	ARCHIVE="%(jarurl)s" 
-	NAME="%(jyclassname)s"
-	ALIGN="BOTTOM" 
-	alt="This browser doesn\'t support JDK 1.1 applets.">
-        ''' % locals()
-        return htmlcode.splitlines()
+
+        # jnlp
+        jnlpfilename = '%s.jnlp' % jyclassname
+        jnlpfilepath = os.path.join(tmpdirectory, jnlpfilename)
+        jnlpurl = os.path.join(tmproot, subdir, jnlpfilename)
+
+        weaver_options = self.master.options
+        codebase = self.configurations['home']
+        iconurl = 'images/webstart.png'
+        description = ['Description']
+        jnlptexts = _jnlpCode(
+            weaver_options = weaver_options,
+            codebase = codebase,
+            icon = iconurl,
+            description = description,
+            jnlpurl = jnlpurl,
+            jarurl = jarurl,
+            main_class = jyclassname,
+            )
+        open(jnlpfilepath, 'w').write('\n'.join(jnlptexts))
+
+        # link to jnlp
+        htmlcode = [
+            '<center>',
+            '<a href="%(jnlpurl)s"><img src="%(iconurl)s" alt="3D view"/></a>' % locals(),
+            '</center>',
+            ]
+
+        return htmlcode
 
     pass # end of DocumentMill
 
+
+
+def _jnlpCode(weaver_options, **kwds):
+    jnlp = _jnlp(**kwds)
+    from JnlpMill import Renderer as JnlpMill
+    mill = JnlpMill()
+    mill.options = weaver_options
+    texts = mill.render(jnlp)
+    return texts
+
+
+def _jnlp(**kwds):
+    from Jnlp import Jnlp, Information, Security, J2SE, Jar, Extension
+    
+    title = '3D view'
+    vendor = 'DANSE'
+    homepage = 'http://vnf.caltech.edu'
+    descriptions = {'': kwds['description']}
+    icons = {'': kwds['icon']}
+    options = ['offline-allowed']
+    info = Information(title, vendor, homepage, descriptions, icons, options)
+    
+    security = Security()
+
+    j2se = J2SE()
+
+    jarhref = kwds['jarurl']
+    jar = Jar(jarhref, main='true')
+
+    extension = Extension('http://download.java.net/media/java3d/webstart/release/java3d-latest.jnlp')
+
+    resources = [
+        j2se,
+        jar,
+        extension,
+        ]
+
+    codebase = kwds['codebase']
+    jnlpurl = kwds['jnlpurl']
+    main_class = kwds['main_class']
+    jnlp = Jnlp(codebase, jnlpurl, info, security, resources, main_class)
+    return jnlp
+
+
+def _appletCode(**kwds):
+    code = '''
+    <APPLET CODE="%(jyclassname)s" WIDTH="%(width)s" HEIGHT="%(height)s"
+    ARCHIVE="%(jarurl)s" 
+    NAME="%(jyclassname)s"
+    ALIGN="BOTTOM" 
+    alt="This browser doesn\'t support JDK 1.1 applets.">
+    ''' % kwds
+    return code.splitlines()
 
 
 class JythonCodeGenerator:
