@@ -1,16 +1,5 @@
-#!/usr/bin/env python
-#
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-#
-#                                  Jiao Lin
-#                     California Institute of Technology
-#                       (C) 2009  All Rights Reserved
-#
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-#
-
-
 from vnf.components.Actor import Actor
+
 
 class DirectDB(Actor):
 
@@ -109,12 +98,6 @@ class DirectDB(Actor):
 
     pass # end of DirectDB
 
-
-def actor():
-    return DirectDB()
-
-
-
 def _record2dict(record):
     d = {}
     for col in record.getColumnNames():
@@ -122,10 +105,3 @@ def _record2dict(record):
         d[col] = value
         continue
     return d
-
-
-
-# version
-__id__ = "$Id$"
-
-# End of file 
