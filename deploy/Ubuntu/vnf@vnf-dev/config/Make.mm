@@ -32,10 +32,9 @@ distclean::
 EXPORT_DATAFILES = \
 	clerk.pml \
 	initdb.pml \
-	jsu.pml \
-	jsu-ssher.pml \
 	main.pml \
 	retrieveresults.pml \
+	signJar.pml \
 	ssher.pml \
 	submitjob.pml \
 
