@@ -52,19 +52,6 @@ def portlet(app):
     sampleInput.icon = "images/link_icon.gif"
     sampleInput.type = "navItem"
 
-#        p = document.paragraph()
-#        p.text = [
-#            action_link(
-#                actionRequireAuthentication(
-#                    'sampleInput', 
-#                    director.sentry,
-#                    label = 'Add a new sample',
-#                    routine = 'default'   
-#                    ),
-#                director.cgihome,
-#                ),
-#            ]
-
     actor = app.actor.name
     menu = actor2menu.get( actor )
     if menu:

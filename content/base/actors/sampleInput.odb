@@ -45,7 +45,7 @@ class SampleInput(FormActor):
     
     def sampleDescription(self, director):
         try:
-            page = director.retrieveSecurePage( 'generic' )
+            page = director.retrieveSecurePage( 'samples' )
         except AuthenticationError, err:
             return err.page
         
@@ -101,7 +101,7 @@ class SampleInput(FormActor):
     
     def selectMaterialType(self, director):
         try:
-            page = director.retrieveSecurePage( 'generic' )
+            page = director.retrieveSecurePage( 'samples' )
         except AuthenticationError, err:
             return err.page
         
@@ -162,7 +162,7 @@ class SampleInput(FormActor):
     
     def selectShape(self, director):
         try:
-            page = director.retrieveSecurePage( 'generic' )
+            page = director.retrieveSecurePage( 'samples' )
         except AuthenticationError, err:
             return err.page
 #        experiment = director.clerk.getNeutronExperiment(self.inventory.id)
@@ -203,7 +203,7 @@ class SampleInput(FormActor):
     
     def inputBlock(self, director):
         try:
-            page = director.retrieveSecurePage('generic')
+            page = director.retrieveSecurePage('samples')
         except AuthenticationError, err:
             return err.page
 #        experiment = director.clerk.getNeutronExperiment(self.inventory.id)
@@ -238,7 +238,7 @@ class SampleInput(FormActor):
     
     def inputCylinder(self, director):
         try:
-            page = director.retrieveSecurePage('generic')
+            page = director.retrieveSecurePage('samples')
         except AuthenticationError, err:
             return err.page
 #        experiment = director.clerk.getNeutronExperiment(self.inventory.id)
@@ -286,7 +286,7 @@ class SampleInput(FormActor):
     
     def _configureMaterial(self, director, material_type):
         try:
-            page = director.retrievePage( 'generic' )
+            page = director.retrievePage( 'samples' )
         except AuthenticationError, err:
             return err.page
         
