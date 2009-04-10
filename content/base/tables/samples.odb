@@ -126,7 +126,11 @@ def format_visualize(sample,director ):
     if nullpointer(matter): return "undefined"
     matter = director.clerk.dereference(matter)
     from vnf.components.JnlpFile import JnlpFile
-    args = {'matterId':matter.id}
+    args = {
+            'cgihome':director.cgihome,
+            'sentry.username':director.sentry.username,
+            'sentry.ticket':director.sentry.ticket,
+            'matterId':matter.id}
     jnlpFile = JnlpFile(
             resources=('jmolVnf.jar', 'Jmol.jar','pg74.216.jdbc3.jar'),
             mainClass='jmolVnf.JmolVnf',
@@ -135,6 +139,7 @@ def format_visualize(sample,director ):
             )
     relativeLocationOfFile = jnlpFile.writeJnlp(director)
     return '<a href="'+relativeLocationOfFile+'">view</a>'
+
 
 def format_chemical_formula(sample,director ):
     try: matter = sample.matter
