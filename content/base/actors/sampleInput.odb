@@ -45,7 +45,7 @@ class SampleInput(FormActor):
     
     def sampleDescription(self, director):
         try:
-            page = director.retrieveSecurePage( 'samples' )
+            page = director.retrieveSecurePage( 'sample' )
         except AuthenticationError, err:
             return err.page
         
@@ -101,7 +101,7 @@ class SampleInput(FormActor):
     
     def selectMaterialType(self, director):
         try:
-            page = director.retrieveSecurePage( 'samples' )
+            page = director.retrieveSecurePage( 'sample' )
         except AuthenticationError, err:
             return err.page
         
@@ -162,7 +162,7 @@ class SampleInput(FormActor):
     
     def selectShape(self, director):
         try:
-            page = director.retrieveSecurePage( 'samples' )
+            page = director.retrieveSecurePage( 'sample' )
         except AuthenticationError, err:
             return err.page
 #        experiment = director.clerk.getNeutronExperiment(self.inventory.id)
@@ -203,7 +203,7 @@ class SampleInput(FormActor):
     
     def inputBlock(self, director):
         try:
-            page = director.retrieveSecurePage('samples')
+            page = director.retrieveSecurePage('sample')
         except AuthenticationError, err:
             return err.page
 #        experiment = director.clerk.getNeutronExperiment(self.inventory.id)
@@ -238,7 +238,7 @@ class SampleInput(FormActor):
     
     def inputCylinder(self, director):
         try:
-            page = director.retrieveSecurePage('samples')
+            page = director.retrieveSecurePage('sample')
         except AuthenticationError, err:
             return err.page
 #        experiment = director.clerk.getNeutronExperiment(self.inventory.id)
@@ -286,7 +286,7 @@ class SampleInput(FormActor):
     
     def _configureMaterial(self, director, material_type):
         try:
-            page = director.retrievePage( 'samples' )
+            page = director.retrievePage( 'sample' )
         except AuthenticationError, err:
             return err.page
         
@@ -317,17 +317,6 @@ class SampleInput(FormActor):
         submit = form.control(name='submit',type="submit", value="next")
         return page
 
-#    def _retrievePage(self, director):
-#        page = 'sample'
-#
-#        sampleId = self.inventory.sampleId
-#        if sampleId:
-#            sample = director.clerk.getNeutronExperiment(id)
-#            if sample.matter:
-#                instrument = director.clerk.dereference(iref)
-#                if _instrument_without_sample(instrument, director.clerk.db):
-#                    page = 'neutronexperimentwizard-nosample'
-#        return director.retrieveSecurePage(page)
 
     def __init__(self, name=None):
         if name is None:

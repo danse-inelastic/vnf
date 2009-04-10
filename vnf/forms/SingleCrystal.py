@@ -117,7 +117,7 @@ class SingleCrystal( base ):
             )
         self.listOfAtoms = form.textarea(
             id='listOfAtoms', name='%s.listOfAtoms' % prefix, 
-            label='List of atoms (i.e. H  0.0  0.0  0.5)', rows=20, 
+            label='List of atoms in fractional coordinates (i.e. H  0.0  0.0  0.5)', rows=20, 
             default = listOfAtoms)
           
     def processUserInputs(self):   
