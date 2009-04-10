@@ -1,0 +1,80 @@
+#!/usr/bin/env python
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                             Michael A.G. Aivazis
+#                      California Institute of Technology
+#                      (C) 1998-2005  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+from vnf.components.Actor import Actor, action_link, actionRequireAuthentication, AuthenticationError
+from vnf.weaver import action_href
+
+
+actor2menu = {
+    'greet': 'greet',
+    'sample': 'samples',
+    'sampleInput': 'sampleInput',
+    }
+
+def portlet(app):
+    import opal.content
+    portlet = opal.content.portlet(title="main", id="portlet-main--tree")
+
+    greet = portlet.item(description="Home")
+    greet.target = action_href(
+        actionRequireAuthentication(
+        'greet', app.sentry, 'Greet'),
+        app.cgihome)
+    greet.icon = "images/link_icon.gif"
+    greet.type = "navItem"
+    
+    samples = portlet.item(description="Samples")
+    samples.target = action_href(
+        actionRequireAuthentication(
+        'sample', app.sentry, 'Samples'),
+        app.cgihome)
+    samples.icon = "images/link_icon.gif"
+    samples.type = "navItem"
+    
+    sampleInput = portlet.item(description="SampleInput")
+    sampleInput.target = action_href(
+        actionRequireAuthentication(
+            label = 'Add a new sample',
+            sentry = app.sentry,
+            actor = 'sampleInput',
+            ),
+        app.cgihome)
+    sampleInput.icon = "images/link_icon.gif"
+    sampleInput.type = "navItem"
+
+#        p = document.paragraph()
+#        p.text = [
+#            action_link(
+#                actionRequireAuthentication(
+#                    'sampleInput', 
+#                    director.sentry,
+#                    label = 'Add a new sample',
+#                    routine = 'default'   
+#                    ),
+#                director.cgihome,
+#                ),
+#            ]
+
+    actor = app.actor.name
+    menu = actor2menu.get( actor )
+    if menu:
+        selected_menu = eval( menu )
+        selected_menu.icon = "images/selectedlink_icon.gif"
+        selected_menu.type = 'currentNavItem' 
+    return portlet
+
+
+# version
+__id__ = "$Id: navigation.odb,v 1.1.1.1 2006-11-27 00:09:19 aivazis Exp $"
+
+# End of file 

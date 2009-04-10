@@ -30,7 +30,7 @@ def page(app):
     main = content.main()
     
     # populate the left column
-    nav = app.retrievePortlet("navigation-short")
+    nav = app.retrievePortlet("samples")
     if nav:
         left.add(nav)
 
