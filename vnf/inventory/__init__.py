@@ -27,6 +27,8 @@ def geometer( *args, **kwds ):
     return Geometer( *args, **kwds )
 
 
+import validators
+
 # version
 __id__ = "$Id$"
 

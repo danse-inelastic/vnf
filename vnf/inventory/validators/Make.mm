@@ -11,12 +11,11 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 PROJECT = vnf
-PACKAGE = inventory
+PACKAGE = inventory/validators
 
 
 
 BUILD_DIRS = \
-	validators \
 
 OTHER_DIRS = \
 
@@ -31,9 +30,6 @@ all: export
 # export
 
 EXPORT_PYTHON_MODULES = \
-	DataObject.py \
-	Form.py \
-	Geometer.py \
 	__init__.py \
 
 
