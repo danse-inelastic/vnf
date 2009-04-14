@@ -105,15 +105,21 @@ class WebApplication(Base):
 
     def fancyBugReport(self):
         # try to generate a fancy bug report
-        bugid = self.generateDebugInfo()
+        bugid, inputs, errmsg = self.generateDebugInfo()
         
         #self.redirect(actor='bug-report', routine='default', bugid = bugid)
         actor = self.retrieveActor('bug-report')
         if actor is None: raise
-        self.configureComponent(actor)
-        actor.inventory.bugid = bugid
-        page = actor.perform(self, routine='default', debug=self.debug)
-        self.render(page)
+
+        try:
+            self.configureComponent(actor)
+            actor.inventory.bugid = bugid
+            page = actor.perform(self, routine='default', debug=self.debug)
+            self.render(page)
+        except:
+            import traceback
+            tb = traceback.format_exc()
+            raise RuntimeError, '\n%s\n\nWrapped error: %s' % (tb,errmsg)
         return
 
     
@@ -140,10 +146,10 @@ class WebApplication(Base):
 
         inputspath = os.path.join(logroot, id + '.inputs')
         text = ['%s=%s' % (k,v) for k,v in self._cgi_inputs.iteritems()]
-        text = '\n'.join(text)
-        open(inputspath, 'w').write(text)
+        inputs = '\n'.join(text)
+        open(inputspath, 'w').write(inputs)
 
-        return id
+        return id, inputs, errmsg
             
 
     
