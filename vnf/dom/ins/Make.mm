@@ -41,6 +41,8 @@ EXPORT_PYTHON_MODULES = \
 	PolyCrystal.py \
 	PolyXtalCoherentPhononScatteringKernel.py \
 	ScatteringKernel.py \
+	SQE.py \
+	SQEKernel.py \
 	VacfComputation.py \
 	__init__.py \
 	_all_tables.py \

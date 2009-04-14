@@ -17,7 +17,7 @@ from registry import tableRegistry
 from ScatteringKernel import ScatteringKernel as base
 class SQEKernel(base):
 
-    name = 'polyxtalcoherentphononscatteringkernels'
+    name = 'sqekernels'
     
     import pyre.db
 
