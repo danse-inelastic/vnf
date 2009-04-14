@@ -6,7 +6,7 @@ def tables():
 
     kernels = [
         'PolyXtalCoherentPhononScatteringKernel',
-        'SQEkernel',
+        'SQEKernel',
         ]
 
 
@@ -32,9 +32,16 @@ def tables():
     
     tables = []
     for t in tablemodules:
-        exec 'from vnf.dom.ins.%s import %s as table' % (t, t) in locals()
+        #print "importing table module %s" % t
+        module = '%s.%s' % (package, t)
+        module = _import(module)
+        table = getattr(module, t)
         tables.append(table)
         continue
 
     return tables
 
+package = 'vnf.dom.ins'
+
+def _import(module):
+    return __import__(module, {}, {}, [''])
