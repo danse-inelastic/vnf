@@ -41,14 +41,13 @@ class DirectDB(Actor):
                 #print "Not allowed to access table %r" % table
                 continue
             
-            table = director.clerk._getTable(table)
-            
+            table = director.clerk._getTable(table) 
             from vnf.dom.OwnedObject import OwnedObject
             if issubclass(table, OwnedObject):
                 if where:
-                    where = "(%s) and creator='%s'" % (where, director.sentry.username)
+                    where = "(%s) and (creator='%s' or creator='vnf')" % (where, director.sentry.username)
                 else:
-                    where = "creator='%s'" % (director.sentry.username,)
+                    where = "(creator='%s' or creator='vnf')" % (director.sentry.username,)
     
             records = director.clerk.db.fetchall(table, where=where)
             results+=records
