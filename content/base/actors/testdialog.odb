@@ -91,8 +91,54 @@ class Actor(base):
 
         document = main.document(title='Test')
 
-        # ----- begin dialog ----
-        # build the dialog
+        # dialog
+        dialog = self._create_dialog(document, director)
+        dialogid = id(dialog)
+        
+        # the button to launch the dialog
+        openbuttonid = '12345'
+        p = document.paragraph(id=openbuttonid)
+        p.text = ['open dialog']
+
+        # codes to connect events
+        import vnf.content
+        snippet = vnf.content.jssnippet()
+        snippet.includes = [
+            'jquery/ajaxUtils.js',
+            ]
+        showUserInputFunc = '''
+        var showUserInputFunc = function (data, textStatus) {
+          $("#%s").dialog("close");
+          alert("Your input: " + data.parameter1);
+        };
+        ''' % dialogid
+        snippet.main = [
+            showUserInputFunc,
+            '$("#%s form").submitWithAjax({callback: showUserInputFunc, responsetype: "json"});' % dialogid,
+            '$("#%s").click( function() {' % openbuttonid,
+            '  $("#%s").dialog("open");' % dialogid,
+            '});',
+            ]
+        document.add(snippet)
+        return page
+
+
+    def process_testform(self, director):
+
+        form_received = self.form_received
+        parameter1 = form_received.processUserInputs()
+
+        # the returned object is a json text string
+        d = {'parameter1': parameter1}
+        import cjson
+        s = cjson.encode(d)
+
+        #
+        self._debug.log('json output: %s' % s)
+        return s
+
+
+    def _create_dialog(self, document, director):
         import vnf.content
         dialog = vnf.content.dialog("test"); dialogid = id(dialog)
         document.add(dialog)
@@ -127,46 +173,8 @@ class Actor(base):
 
         # run button
         submit = form.control(name="submit", type="submit", value="Run")
-        
-        # ----- end dialog ----
-
-        # the button to launch the dialog
-        openbuttonid = '12345'
-        p = document.paragraph(id=openbuttonid)
-        p.text = ['open dialog']
-
-        # codes to connect events
-        snippet = vnf.content.jssnippet()
-        snippet.includes = [
-            'jquery/ajaxUtils.js',
-            ]
-        showUserInputFunc = '''
-        var showUserInputFunc = function (data, textStatus) {
-          $("#%s").dialog("close");
-          alert("Your input: " + data.parameter1);
-        };
-        ''' % dialogid
-        snippet.main = [
-            showUserInputFunc,
-            '$("#%s").submitWithAjax({callback: showUserInputFunc, responsetype: "json"});' % formid,
-            '$("#%s").click( function() {' % openbuttonid,
-            '  $("#%s").dialog("open");' % dialogid,
-            '});',
-            ]
-        document.add(snippet)
-        return page
-
-
-    def process_testform(self, director):
-        form_received = self.form_received
-        parameter1 = form_received.processUserInputs()
-        d = {'parameter1': parameter1}
-        import cjson
-        s = cjson.encode(d)
-        # the returned object is a json text string
-        self._debug.log('json output: %s' % s)
-        return s
-
+        return dialog
+    
 
     def __init__(self, name=None):
         if name is None:
