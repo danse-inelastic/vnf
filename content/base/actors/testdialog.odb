@@ -10,7 +10,7 @@
 #
 
 
-from vnf.components.Actor import Actor as base, action, actionRequireAuthentication, action_link, AuthenticationError
+from vnf.components.FormActor import FormActor as base, action, actionRequireAuthentication, action_link
 
 
 class Actor(base):
@@ -41,6 +41,89 @@ class Actor(base):
         p.text = [
             'This is a dialog.'
             ]
+
+        openbuttonid = '12345'
+        p = document.paragraph(id=openbuttonid)
+        p.text = ['open dialog']
+
+        snippet = vnf.content.jssnippet()
+        snippet.main = [
+            '$("#%s").click( function() {' % openbuttonid,
+            '  $("#%s").dialog("open");' % id(dialog),
+            '});',
+            ]
+        document.add(snippet)
+        return page
+
+
+    def simple(self, director):
+        page = director.retrievePage('greet')
+        main = page._body._content._main
+
+        document = main.document( title = 'Test' )
+
+        import vnf.content
+        dialog = vnf.content.dialog("test")
+        document.add(dialog)
+
+        p = dialog.paragraph()
+        p.text = [
+            'This is a dialog.'
+            ]
+
+        openbuttonid = '12345'
+        p = document.paragraph(id=openbuttonid)
+        p.text = ['open dialog']
+
+        snippet = vnf.content.jssnippet()
+        snippet.main = [
+            '$("#%s").click( function() {' % openbuttonid,
+            '  $("#%s").dialog("open");' % id(dialog),
+            '});',
+            ]
+        document.add(snippet)
+        return page
+
+
+    def form(self, director):
+        page = director.retrievePage('greet')
+        main = page._body._content._main
+
+        document = main.document(title='Test')
+
+        import vnf.content
+        dialog = vnf.content.dialog("test")
+        document.add(dialog)
+
+        p = dialog.paragraph()
+        p.text = [
+            'This is a dialog.'
+            ]
+
+        #
+        formcomponent = self.retrieveFormToShow( 'testform' )
+        formcomponent.director = director
+        
+        # create form
+        form = dialog.form(
+            name='testform',
+            legend= formcomponent.legend(),
+            action=director.cgihome)
+
+        # specify action
+        theaction = action(
+            actor = 'testdialog',
+            label = '', routine = 'process_testform',
+            arguments = {'form-received': formcomponent.name } )
+        from vnf.weaver import action_formfields
+        action_formfields( theaction, form )
+
+        # expand the form with fields of the data object that is being edited
+        formcomponent.expand( form )
+
+        # run button
+        submit = form.control(name="submit", type="submit", value="Run")
+        
 
         openbuttonid = '12345'
         p = document.paragraph(id=openbuttonid)

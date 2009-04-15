@@ -17,22 +17,25 @@ class HtmlMill:
         home = configurations['home']
         cgihome = configurations['cgihome']
 
-        stylesheets = ['dialog.css']
-        stylesheets = ['jquery-ui/smoothness/ui.all.css']
+        # css
+        stylesheets = [
+            'dialog.css',
+            'jquery-ui/smoothness/ui.all.css',
+            ]
         csscode = []
         for stylesheet in stylesheets:
             csscode.append( '<link rel="stylesheet" type="text/css" href="%s/css/%s" />' % (
                 home, stylesheet) )
             continue
 
+        # html
         htmlcode = []
-        gid = id(dialog)
-        htmlcode.append( '<div id="%s">' % gid )
 
-        for item in dialog.contents:
-            htmlcode += item.identify(self)
-            
-        htmlcode.append( '</div>' )
+        # need id
+        setid(dialog)
+
+        # render
+        htmlcode += self.onDocument(dialog)
         
         return csscode + htmlcode
 
@@ -55,11 +58,11 @@ class JSMill:
             ]
         self.include(scripts=includes)
 
-        gid = id(dialog)
+        gid = setid(dialog)
         self.writemain( '$("#%s").dialog( {' % (gid, ) )
         self.writemain( '  bgiframe: true,' )
         self.writemain( '  autoOpen: false,' )
-        self.writemain( '  height: 300,' )
+        #self.writemain( '  height: 300,' )
         self.writemain( '  modal: true,' )
         self.writemain( '  buttons: {' )
         self.writemain( '  },')
@@ -71,6 +74,12 @@ class JSMill:
             item.identify(self)
         return
         
+
+def setid(dialog):
+    gid = id(dialog)
+    if not dialog.attributes.get('id'):
+        dialog.attributes['id'] = gid
+    return dialog.attributes['id']
 
 
 # version
