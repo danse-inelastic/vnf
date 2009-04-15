@@ -91,6 +91,8 @@ class Actor(base):
 
         document = main.document(title='Test')
 
+        # ----- begin dialog ----
+        # build the dialog
         import vnf.content
         dialog = vnf.content.dialog("test"); dialogid = id(dialog)
         document.add(dialog)
@@ -126,11 +128,14 @@ class Actor(base):
         # run button
         submit = form.control(name="submit", type="submit", value="Run")
         
+        # ----- end dialog ----
 
+        # the button to launch the dialog
         openbuttonid = '12345'
         p = document.paragraph(id=openbuttonid)
         p.text = ['open dialog']
 
+        # codes to connect events
         snippet = vnf.content.jssnippet()
         snippet.includes = [
             'jquery/ajaxUtils.js',
