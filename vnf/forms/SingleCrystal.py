@@ -24,8 +24,8 @@ class SingleCrystal( base ):
         
         singleCrystalId = inv.str( 'singleCrystalId', default = '' )
         
-        chemical_formula = inv.str('chemical_formula', default = '' )
-        chemical_formula.meta['tip'] = 'A short description'
+        short_description = inv.str('short_description', default = '' )
+        short_description.meta['tip'] = 'A short description'
         
         listOfAtoms = inv.str('listOfAtoms')
         
@@ -62,9 +62,9 @@ class SingleCrystal( base ):
             record = director.clerk.getRecordByID('singlecrystals', singleCrystalId)
             self.inventory.singleCrystalId = record.id
 
-        self.chemical_formula = form.text(
-            id='text1', name='%s.chemical_formula'%prefix,
-            label='Matter Description', value = record.chemical_formula)
+        self.short_description = form.text(
+            id='text1', name='%s.short_description'%prefix,
+            label='Matter Description', value = record.short_description)
 
         if showimportwidget:
             p = form.paragraph()
@@ -134,7 +134,7 @@ class SingleCrystal( base ):
             record = director.clerk.newOwnedObject(tableClass)
             self.inventory.singleCrystalId = record.id
       
-        record.chemical_formula = self.inventory.chemical_formula
+        record.short_description = self.inventory.short_description
 
         a = map(float,[self.inventory.ax, self.inventory.ay, self.inventory.az])
         b = map(float,[self.inventory.bx, self.inventory.by, self.inventory.bz])
@@ -156,8 +156,6 @@ class SingleCrystal( base ):
             
         self.director.clerk.updateRecord(record)
         return record
-    
-formactor_action_prefix = 'actor.form-received' # assumed actor is a form actor
 
 
 # version
