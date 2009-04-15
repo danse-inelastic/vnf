@@ -73,7 +73,8 @@ class Test( base ):
 
     def verify(self, director):
         form_received = self.form_received
-        form_received.processUserInputs()
+        parameter1 = form_received.processUserInputs()
+        print parameter1
         return
 
     default = verify

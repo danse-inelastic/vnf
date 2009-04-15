@@ -92,7 +92,7 @@ class Actor(base):
         document = main.document(title='Test')
 
         import vnf.content
-        dialog = vnf.content.dialog("test")
+        dialog = vnf.content.dialog("test"); dialogid = id(dialog)
         document.add(dialog)
 
         p = dialog.paragraph()
@@ -105,8 +105,10 @@ class Actor(base):
         formcomponent.director = director
         
         # create form
+        formid = id(formcomponent)
         form = dialog.form(
             name='testform',
+            id = formid,
             legend= formcomponent.legend(),
             action=director.cgihome)
 
@@ -130,13 +132,35 @@ class Actor(base):
         p.text = ['open dialog']
 
         snippet = vnf.content.jssnippet()
+        snippet.includes = [
+            'jquery/ajaxUtils.js',
+            ]
+        showUserInputFunc = '''
+        var showUserInputFunc = function (data, textStatus) {
+          $("#%s").dialog("close");
+          alert("Your input: " + data.parameter1);
+        };
+        ''' % dialogid
         snippet.main = [
+            showUserInputFunc,
+            '$("#%s").submitWithAjax({callback: showUserInputFunc, responsetype: "json"});' % formid,
             '$("#%s").click( function() {' % openbuttonid,
-            '  $("#%s").dialog("open");' % id(dialog),
+            '  $("#%s").dialog("open");' % dialogid,
             '});',
             ]
         document.add(snippet)
         return page
+
+
+    def process_testform(self, director):
+        form_received = self.form_received
+        parameter1 = form_received.processUserInputs()
+        d = {'parameter1': parameter1}
+        import cjson
+        s = cjson.encode(d)
+        # the returned object is a json text string
+        self._debug.log('json output: %s' % s)
+        return s
 
 
     def __init__(self, name=None):
