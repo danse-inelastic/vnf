@@ -92,13 +92,13 @@ class Actor(base):
         document = main.document(title='Test')
 
         # dialog
-        dialog = self._create_dialog(document, director)
-        dialogid = id(dialog)
+        dialog = self._create_dialog(director);  dialogid = id(dialog)
+        document.add(dialog)
         
         # the button to launch the dialog
-        openbuttonid = '12345'
-        p = document.paragraph(id=openbuttonid)
-        p.text = ['open dialog']
+        import vnf.content
+        openbutton = vnf.content.button('Open dialog')
+        document.add(openbutton)
 
         # codes to connect events
         import vnf.content
@@ -115,7 +115,72 @@ class Actor(base):
         snippet.main = [
             showUserInputFunc,
             '$("#%s form").submitWithAjax({callback: showUserInputFunc, responsetype: "json"});' % dialogid,
-            '$("#%s").click( function() {' % openbuttonid,
+            '$("#%s").click( function() {' % openbutton.id,
+            '  $("#%s").dialog("open");' % dialogid,
+            '});',
+            ]
+        document.add(snippet)
+        return page
+
+
+    def form2(self, director):
+        page = director.retrievePage('greet')
+        main = page._body._content._main
+
+        document = main.document(title='Test')
+
+        # build a form in the main document
+        #
+        formcomponent = self.retrieveFormToShow( 'testform' )
+        formcomponent.director = director
+        
+        # create form
+        form = document.form(
+            name='main-testform',
+            legend= formcomponent.legend(),
+            action=director.cgihome)
+
+        # specify action
+        theaction = action(
+            actor = 'testdialog',
+            label = '', routine = 'process_testform',
+            arguments = {'form-received': formcomponent.name } )
+        from vnf.weaver import action_formfields
+        action_formfields( theaction, form )
+
+        # expand the form with fields of the data object that is being edited
+        formcomponent.expand( form )
+
+        # run button
+        submit = form.control(name="submit", type="submit", value="Run")
+
+
+        # dialog
+        dialog = self._create_dialog(director); dialogid = id(dialog)
+        document.add(dialog)
+        
+        # the button to launch the dialog
+        import vnf.content
+        openbutton = vnf.content.button('Open dialog')
+        document.add(openbutton)
+
+        # codes to connect events
+        snippet = vnf.content.jssnippet()
+        snippet.includes = [
+            'jquery/ajaxUtils.js',
+            ]
+        showUserInputFunc = '''
+        var showUserInputFunc = function (data, textStatus) {
+          $("#%s").dialog("close");
+          mainform = $("form[name='main-testform']");
+          parameter1input = mainform.find("input[name='actor.form-received.parameter1']");
+          parameter1input.attr('value', data.parameter1);
+        };
+        ''' % dialogid
+        snippet.main = [
+            showUserInputFunc,
+            '$("#%s form").submitWithAjax({callback: showUserInputFunc, responsetype: "json"});' % dialogid,
+            '$("#%s").click( function() {' % openbutton.id,
             '  $("#%s").dialog("open");' % dialogid,
             '});',
             ]
@@ -138,10 +203,9 @@ class Actor(base):
         return s
 
 
-    def _create_dialog(self, document, director):
+    def _create_dialog(self, director):
         import vnf.content
         dialog = vnf.content.dialog("test"); dialogid = id(dialog)
-        document.add(dialog)
 
         p = dialog.paragraph()
         p.text = [
