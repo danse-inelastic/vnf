@@ -52,6 +52,7 @@ EXPORT_PYTHON_MODULES = \
 	SlidableGallery.py \
 	SolidView3D.py \
 	TreeView.py \
+	Uploader.py \
 	__init__.py
 
 

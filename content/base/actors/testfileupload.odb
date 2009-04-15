@@ -55,6 +55,24 @@ class Actor(base):
         return page
 
 
+    def uploader(self, director):
+        page = director.retrieveSecurePage('greet')
+        main = page._body._content._main
+
+        document = main.document( title = 'Test file upload' )
+
+        import vnf.content
+        action = actionRequireAuthentication(
+            sentry = director.sentry,
+            actor = 'testfileupload', 
+            routine = 'receive_file',
+            )
+        uploader = vnf.content.uploader(action)
+        document.contents.append(uploader)
+        
+        return page
+    
+
     def receive_file(self, director):
         page = director.retrieveSecurePage('greet')
         main = page._body._content._main
