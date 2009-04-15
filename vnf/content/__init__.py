@@ -70,6 +70,10 @@ def dialog(*args, **kwds):
     from Dialog import Dialog
     return Dialog(*args, **kwds)
 
+def button(*args, **kwds):
+    from Button import Button
+    return Button(*args, **kwds)
+
 def treeview(*args, **kwds ):
     from TreeView import TreeView
     return TreeView(*args, **kwds )

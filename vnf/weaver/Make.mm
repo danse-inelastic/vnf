@@ -36,6 +36,7 @@ EXPORT_PYTHON_MODULES = \
 	ActionLinkRenderer.py \
 	ActionMill_forForm.py \
 	AutoRefreshRenderer.py \
+	ButtonMill.py \
 	DialogMill.py \
 	DocumentMill.py \
 	DocumentMillExtensions.py \

@@ -29,6 +29,7 @@ from TreeViewMill import JSMill as TreeViewMill
 from UploaderMill import JSMill as UploaderMill
 from DialogMill import JSMill as DialogMill
 from JSsnippetMill import JSMill as JSsnippetMill
+from ButtonMill import JSMill as ButtonMill
 
 extensions = [
     Plot_2DMill,
@@ -41,6 +42,7 @@ extensions = [
     UploaderMill,
     DialogMill,
     JSsnippetMill,
+    ButtonMill,
     Extension1,
     ]
 
