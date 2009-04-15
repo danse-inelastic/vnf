@@ -27,6 +27,8 @@ from AutoRefreshRenderer import JSMill as AutoRefreshRenderer
 from TableMill import JSMill as TableMill
 from TreeViewMill import JSMill as TreeViewMill
 from UploaderMill import JSMill as UploaderMill
+from DialogMill import JSMill as DialogMill
+from JSsnippetMill import JSMill as JSsnippetMill
 
 extensions = [
     Plot_2DMill,
@@ -37,6 +39,8 @@ extensions = [
     TableMill,
     TreeViewMill,
     UploaderMill,
+    DialogMill,
+    JSsnippetMill,
     Extension1,
     ]
 
