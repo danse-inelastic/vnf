@@ -14,6 +14,13 @@ from opal.content.Document import Document as base
 class Dialog(base):
 
     def __init__(self, title, description="", **kwds):
+
+        # get a unique id
+        id = kwds.get('id')
+        if not id:
+            id = __builtins__['id'](self)
+        kwds['id'] = self.id = id
+        
         super(Dialog, self).__init__(title, description=description, **kwds)
         return
 
