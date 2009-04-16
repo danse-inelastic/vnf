@@ -25,6 +25,7 @@ class Actor(base):
 
         id = pyre.inventory.str(name='id')
 
+        response_type = pyre.inventory.str(name='response-type', default='')
         pass # end of Inventory
 
 
@@ -55,20 +56,24 @@ class Actor(base):
     
 
     def receive_file(self, director):
+        self._debug.log('receive file...')
+        
         page = director.retrieveSecurePage('greet')
 
         # the directory to save the uploads
-        import os
-        root = self.inventory.root
-        id = self.inventory.id
-        directory = os.path.join(root, id)
+        directory = self.uploadDirectory()
 
         # make sure the directory exists
         if not os.path.exists(directory):
             os.makedirs(directory)
             
         # save uploaded files
-        uploads = director.getUploads()
+        try:
+            uploads = director.getUploads()
+        except:
+            self._debug.log('nothing got uploaded')
+            uploads = {}
+            
         for filename, content in uploads.iteritems():
             path = os.path.join(directory, filename)
             open(path, 'wb').write(content)
@@ -77,9 +82,24 @@ class Actor(base):
             continue
 
         # response
-        main = page._body._content._main
-        document = main.document( title = 'Received file(s)' )
-        return page
+        response_type = self.inventory.response_type
+
+        if response_type == '':
+            main = page._body._content._main
+            document = main.document( title = 'Received file(s)' )
+            return page
+
+        if response_type == 'json':
+            out =  '{}'
+            self._debug.log('json output: %s' % out)
+            return out
+
+
+    def uploadDirectory(self):
+        root = self.inventory.root
+        id = self.inventory.id
+        directory = os.path.join(root, id)
+        return directory
 
 
     def __init__(self, name=None):
@@ -96,6 +116,8 @@ class Actor(base):
 
     pass # end of Actor
 
+
+import os
 
 def actor(): return Actor()
 
