@@ -54,6 +54,8 @@ class JSMill:
             'sentry.username': action.sentry.username,
             'sentry.ticket': action.sentry.ticket,
             }
+        for k,v in action.arguments.iteritems():
+            parameters[ '%s.%s' % (action.actor, k) ] = v
         
         gid = id(uploader)
         self.writemain( '$("#%s").uploader( "%s", %s );' % (gid, cgihome, parameters) )
