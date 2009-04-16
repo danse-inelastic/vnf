@@ -36,12 +36,15 @@ class Actor(base):
 
         main = page._body._content._main
 
+        # the target
+        sqe = director.clerk.getRecordByID(SQE, self.inventory.id)
+        
         # populate the main column
-        document = main.document(title='S(Q,E) #%s' % self.inventory.id)
+        document = main.document(title='S(Q,E) #%s: %s' % (
+            sqe.id, sqe.short_description))
         document.description = ''
 
         # read sqe
-        sqe = director.clerk.getRecordByID(SQE, self.inventory.id)
         path = director.dds.abspath(sqe, SQE.histogramh5)
         
         import histogram.hdf as hh, histogram.hdf.utils as hhu
@@ -69,10 +72,6 @@ class Actor(base):
         document.description = ''
 
         #
-        if errors:
-            p = document.paragraph(cls='error')
-            p.text = errors
-
         formcomponent = self.retrieveFormToShow( 'sqe' )
         formcomponent.director = director
         
@@ -92,12 +91,91 @@ class Actor(base):
         action_formfields( action, form )
 
         # expand the form with fields of the data object that is being edited
-        formcomponent.expand( form )
+        formcomponent.expand( form, errors=errors )
 
         return page
 
 
     def verify(self, director):
+        page = director.retrieveSecurePage('greet')
+
+        response_type = self.inventory.response_type
+
+        # get user inputs
+        inputs = self.processFormInputs(director)
+        short_description = inputs['short_description']
+
+        # container for errors
+        errors = {}
+        
+        # make sure short_description is not empty
+        if not short_description:
+            errors['short_description'] = 'Name cannot be empty'
+        
+        # the uploaded file
+        uploadid = inputs['uploadid']
+        uploader = director.retrieveActor('upload')
+        uploader.inventory.id = uploadid
+        upload_directory = uploader.uploadDirectory()
+        if not os.path.exists(upload_directory):
+            errors['upload'] = "You have not upload any file"
+        else:
+            from vnf.utils.misc import most_recent_file
+            uploaded_file = most_recent_file(upload_directory)
+            # make sure the uploaded file is what we want
+            badfile = badhisth5file(uploaded_file)
+            
+            if badfile:
+                # if the file is no good, delete the file and the directory
+                shutil.rmtree(upload_directory)
+                
+                # and set the errors
+                errors['upload'] = badfile
+
+        #if there is any error, report that
+        if errors:
+            if response_type == '':
+                return self.edit(director, errors=errors)
+            
+            elif response_type == 'json':
+                d = {'errors': errors}
+                return str(d)
+
+
+        # create a SQE db record if necessary
+        if not self.inventory.id:
+            sqe = director.clerk.newOwnedObject(SQE)
+        else:
+            sqe = director.clerk.getRecordByID(SQE, self.inventory.id)
+
+        # and save the data file with it
+        directory = director.dds.abspath(sqe)
+        os.makedirs(directory)
+        os.rename(uploaded_file, director.dds.abspath(sqe, filename=SQE.histogramh5))
+
+        # update the record with other user inputs
+        sqe.short_description = short_description
+        director.clerk.updateRecord(sqe)
+
+        # remove the upload directory
+        shutil.rmtree(upload_directory)
+
+        # prepare response
+        if response_type == 'json':
+            response = {
+                'id': sqe.id,
+                'short_description': sqe.short_description,
+                }
+            return str(response)
+
+        if response_type == '':
+            self.inventory.id = sqe.id
+            return self.view(director)
+        
+        raise RuntimeError, 'unknown response type: %s' % response_type
+
+
+    def verify_normal_upload_form(self, director):
         page = director.retrieveSecurePage('greet')
 
         # save uploaded files
@@ -131,23 +209,33 @@ class Actor(base):
                 d = {'error': 'wrong file type'}
                 return str(d)
 
+        # get other user inputs
+        short_description = self.processFormInputs(director)
+        
         # create a SQE db record if necessary
         if not self.inventory.id:
             sqe = director.clerk.newOwnedObject(SQE)
         else:
             sqe = director.clerk.getRecordByID(SQE, self.inventory.id)
-            
+
         # and save the data file with it
         directory = director.dds.abspath(sqe)
         os.makedirs(directory)
         os.rename(path, director.dds.abspath(sqe, filename=SQE.histogramh5))
+
+        # update the record with other user inputs
+        sqe.short_description = short_description
+        director.clerk.updateRecord(sqe)
 
         # remove the temporary directory
         shutil.rmtree(tmpdir)
 
         # prepare response
         if response_type == 'json':
-            response = {'sqe': sqe.id}
+            response = {
+                'id': sqe.id,
+                'short_description': sqe.short_description,
+                }
             return str(response)
 
         if response_type == '':
@@ -186,6 +274,7 @@ def badhisth5file(filename):
         return "Histogram does not have energy axis"
 
     return
+
 
 
 def actor():
