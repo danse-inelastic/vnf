@@ -17,13 +17,15 @@ def table(experiments, director):
     class model(Model):
 
         id = Model.Measure(name='id', type='text')
+        creationDate = Model.Measure(name='creationDate', type='text')
         description = Model.Measure(name='description', type='text')
         sample = Model.Measure(name='sample', type='text')
         instrument = Model.Measure(name='instrument', type='text')
+        status = Model.Measure(name='status', type='text')
 
 
-    def getDesc(exp):
-        label = exp.short_description or exp.id
+    def getID(exp):
+        label = exp.id
         action = actionRequireAuthentication(
             sentry = director.sentry,
             label = label,
@@ -32,6 +34,12 @@ def table(experiments, director):
             id = exp.id,
             )
         return action_link(action, director.cgihome)
+    def getDesc(exp):
+        label = exp.short_description or exp.id
+        return label
+    def getCreationDate(exp):
+        date = exp.date
+        return date
     def getSample(exp):
         from vnf.components.NeutronExperimentWizard import _get_sample_from_experiment
         try:
@@ -62,10 +70,12 @@ def table(experiments, director):
         
     import operator
     generators = {
-        'id': operator.attrgetter('id'),
+        'id': getID,
         'description': getDesc,
         'sample': getSample,
         'instrument': getInstrument,
+        'creationDate': getCreationDate,
+        'status': operator.attrgetter('status'),
         }
     
     class D: pass
@@ -85,6 +95,8 @@ def table(experiments, director):
             View.Column(id='col2',label='Description', measure='description'),
             View.Column(id='col3',label='Sample', measure='sample'),
             View.Column(id='col4',label='Instrument', measure='instrument'),
+            View.Column(id='col5',label='Status', measure='status'),
+            View.Column(id='col6',label='Date created', measure='creationDate'),
             ]
 
         editable = False
