@@ -49,7 +49,7 @@ class Actor(base):
         snippet = vnf.content.jssnippet()
         snippet.main = [
             '$("#%s").click( function() {' % openbuttonid,
-            '  $("#%s").dialog("open");' % id(dialog),
+            '  $("#%s").dialog("open");' % dialog.id,
             '});',
             ]
         document.add(snippet)
@@ -78,7 +78,7 @@ class Actor(base):
         snippet = vnf.content.jssnippet()
         snippet.main = [
             '$("#%s").click( function() {' % openbuttonid,
-            '  $("#%s").dialog("open");' % id(dialog),
+            '  $("#%s").dialog("open");' % dialog.id,
             '});',
             ]
         document.add(snippet)
@@ -92,7 +92,7 @@ class Actor(base):
         document = main.document(title='Test')
 
         # dialog
-        dialog = self._create_dialog(director);  dialogid = id(dialog)
+        dialog = self._create_dialog(director);  dialogid = dialog.id
         document.add(dialog)
         
         # the button to launch the dialog
@@ -156,7 +156,7 @@ class Actor(base):
 
 
         # dialog
-        dialog = self._create_dialog(director); dialogid = id(dialog)
+        dialog = self._create_dialog(director); dialogid = dialog.id
         document.add(dialog)
         
         # the button to launch the dialog
@@ -205,7 +205,7 @@ class Actor(base):
 
     def _create_dialog(self, director):
         import vnf.content
-        dialog = vnf.content.dialog("test"); dialogid = id(dialog)
+        dialog = vnf.content.dialog("test")
 
         p = dialog.paragraph()
         p.text = [
