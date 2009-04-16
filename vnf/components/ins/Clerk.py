@@ -38,6 +38,9 @@ class DeepCopier:
         return self._onRecordWithID( kernel )
 
 
+    def onSQEKernel(self, kernel):
+        return self._onRecordWithID( kernel )
+
 
 # version
 __id__ = "$Id$"

@@ -150,7 +150,11 @@ class TreeViewCreator:
                    = onPhononDispersion \
                    = onSANSSphereModelKernel \
                    = onCrystal \
-                   = onBlock = onCylinder = onElement
+                   = onBlock = onCylinder \
+                   = onElement
+
+    onSQEKernel \
+                = onElement
     #onMatter = onPhononDispersion = onScatteringKernel = onComponent = onShape = onElement
     
 
