@@ -1,0 +1,62 @@
+# -*- Python -*-
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                   Jiao Lin
+#                      California Institute of Technology
+#                        (C) 2007  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+
+from vnf.components.DBObjectForm import DBObjectForm as base, InputProcessingError, formactor_action_prefix
+
+
+class SQE(base):
+
+
+    class Inventory(base.Inventory):
+
+        import pyre.inventory
+        
+        pass # end of Inventory
+
+
+    def __init__(self, name = None):
+        if name is None:
+            name = 'sqe'
+
+        base.__init__(self, name)
+        return
+
+
+    def expand(self, form, errors = None, properties = None):
+        prefix = formactor_action_prefix
+
+        upload = form.file(
+            id = 'upload',
+            name = 'upload',
+            label = 'Please select the S(Q,E) histogram hdf file you want to upload',
+            )
+        
+        # submit button
+        submit = form.control(name="submit", type="submit", value="Upload")
+        return
+
+
+    def processUserInputs(self, *args, **kwds):
+        return 
+
+
+
+def form(): return SQE()
+
+
+# version
+__id__ = "$Id$"
+
+# End of file 
