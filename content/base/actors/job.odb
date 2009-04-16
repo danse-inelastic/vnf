@@ -213,9 +213,10 @@ class Actor(base):
         time_start = job.time_start
         cluster = job.server.dereference(director.clerk.db).short_description
         nprocs = job.numprocessors
+        walltime = job.walltime
         p.text = [
-            "This job was started at %s on %s processors of cluster \"%s\"." % (
-            time_start, nprocs, cluster),
+            "This job was started at %s on %s processor(s) of cluster \"%s\" with time limit of %s hour(s)." % (
+            time_start, nprocs, cluster, walltime),
             ]
 
         if job.state in ['finished', 'terminated', 'cancelled']:
@@ -282,7 +283,6 @@ class Actor(base):
         # put up all other info about the job
         record = job
         props = [
-            'walltime',
             'creator',
             'remote_outputfilename',
             'remote_errorfilename',
