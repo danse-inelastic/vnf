@@ -48,7 +48,7 @@ def _table(samples, director, showkernels=False, selected=None):
     data = [d(s) for s in samples]
 
     class view(View):
-        
+    
         columns = [
             View.Column(id='col1',label='Description', measure='description'),
             View.Column(id='col2',label='Visualize', measure='visualize'),
