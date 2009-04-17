@@ -229,7 +229,7 @@ class Actor(base):
         plot = vnf.content.plot_2d( dos, options )
         
         document.contents.append( plot )
-        return
+        return page
 
 
     def _jobCreated(self, computation, director):
