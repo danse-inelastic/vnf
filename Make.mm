@@ -18,9 +18,9 @@ RECURSE_DIRS = \
     dds \
     content \
     bin \
+    cgi \
 
 EXPORT_DATADIRS = \
-    cgi \
     html \
 
 INIT_DATADIRS = \
