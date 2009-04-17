@@ -66,7 +66,6 @@ class WebApplication(Base):
         
 
     def main(self, *args, **kwds):
-
         actor = self.actor
         if actor is None:
             inquiry = self.inventory._getTraitDescriptor('actor').inquiry
@@ -270,7 +269,6 @@ class WebApplication(Base):
         from vnf.components import accesscontrol
         self.accesscontrol = accesscontrol()
 
-        if not self.debug: suppressWarnings()
         return
 
 
@@ -302,16 +300,6 @@ class WebApplication(Base):
 
         return depositories(content)+[config]
         
-
-
-def suppressWarnings():
-    import warnings
-    categories_to_ignore = [
-        DeprecationWarning,
-        ]
-    for category in categories_to_ignore:
-        warnings.filterwarnings('ignore', category=category)
-    return
 
 
 import journal
