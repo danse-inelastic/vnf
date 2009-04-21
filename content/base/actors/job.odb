@@ -258,22 +258,22 @@ class Actor(base):
                 'This job was %s at %s.' % (job.state, job.time_completion),
                 ]
 
-        # output document
-        outputdoc = document.document(title='Output')
-        outputdoc.paragraph().text = ['stdout']
-        l = outputdoc.literal()
-        l.text = [
-            '<pre>',
-            job.output,
-            '</pre>',
-            ]
-        outputdoc.paragraph().text = ['stderr']
-        l = outputdoc.literal()
-        l.text = [
-            '<pre>',
-            job.error,
-            '</pre>',
-            ]
+#        # output document
+#        outputdoc = document.document(title='Output')
+#        outputdoc.paragraph().text = ['stdout']
+#        l = outputdoc.literal()
+#        l.text = [
+#            '<pre>',
+#            job.output,
+#            '</pre>',
+#            ]
+#        outputdoc.paragraph().text = ['stderr']
+#        l = outputdoc.literal()
+#        l.text = [
+#            '<pre>',
+#            job.error,
+#            '</pre>',
+#            ]
 
         # Misc
         miscdoc = document.document(title='Misc.')
