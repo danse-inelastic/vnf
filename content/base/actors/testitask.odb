@@ -34,6 +34,20 @@ class Actor(base):
         p = document.paragraph(id='button-to-start')
         p.text = ['Click here to start']
 
+        l = document.literal()
+        l.text = ['<div id="progress-bar"></div>']
+        
+        l = document.literal()
+        l.text = ['''
+<link rel="stylesheet" type="text/css" href="css/jquery-ui/smoothness/ui.all.css" />
+
+<script src="javascripts/jquery/ui/ui.core.js"></script>
+<script src="javascripts/jquery/ui/ui.progressbar.js"></script>
+
+<style type="text/css">
+.ui-progressbar-value { background-image: url(/~linjiao/vnf2/javascripts/jquery/ui/css/images/pbar-ani.gif); }
+</style>
+        ''']
         startaction = action(
             actor = 'testitask',
             routine = 'start',
@@ -47,24 +61,42 @@ class Actor(base):
         refreshaction_url = action_href(refreshaction, director.cgihome)
 
         declarations = '''
-    var button = $("#button-to-start");
+    var button = $("#button-to-start"), pbar = $("#progress-bar");
+        
     var interval;
 '''        
 
         refreshfunc = '''
     function refresh() {
         $.getJSON("%s", function(data, textStatus) {
-            if (data.state=="finished") window.clearInterval(interval);
-            button.text(data.percentage*100);
+            var value = data.percentage*100;
+            pbar.progressbar('value', value);
+            if (data.state=="finished") {
+                window.clearInterval(interval);
+                pbar.progressbar('destroy');
+                pbar.text('Done');
+            }
+            ;
         });
     }
 ''' % refreshaction_url
         
         startonbuttonclick = '''
     button.click( function () {
-        $.get("%s");
-
-        interval = window.setInterval(refresh, 200);
+        $.getJSON(
+          "%s",
+          function(data, textStatus){
+          if (data.status != "succeeded") {
+            alert("failed to start task!");
+            return;
+          }
+          // create progress bar
+          pbar.text('');
+          pbar.progressbar({value:0});
+        
+          // repeat refresh
+          interval = window.setInterval(refresh, 200);
+          });
     });
         ''' % startaction_url
 
@@ -93,7 +125,7 @@ class Actor(base):
             director.clerk.db.insertRow(task)
 
         director.itaskmanager.start(task)
-        return ''
+        return '{"status": "succeeded"}'
     
 
     def getProgress(self, director):

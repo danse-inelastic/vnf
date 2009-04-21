@@ -7,10 +7,10 @@ class Worker(Component):
     def run(self, task):
         director = self.director
         import time
-        N = 10
+        N = 20
         for i in range(N):
-            director.declareProgress(i*1./N, 'running...')
-            time.sleep(1)
+            director.declareProgress(1.*i/N, 'running...')
+            time.sleep(0.2)
             continue
         director.declareProgress(1., 'done.')
         return
