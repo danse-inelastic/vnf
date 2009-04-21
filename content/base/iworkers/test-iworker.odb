@@ -1,0 +1,20 @@
+
+from pyre.components.Component import Component
+
+class Worker(Component):
+
+
+    def run(self, task):
+        director = self.director
+        import time
+        N = 10
+        for i in range(N):
+            director.declareProgress(i*1./N, 'running...')
+            time.sleep(1)
+            continue
+        director.declareProgress(1., 'done.')
+        return
+    
+
+def iworker():
+    return Worker('test-iworker', 'iworker')

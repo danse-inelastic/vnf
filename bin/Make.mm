@@ -37,6 +37,7 @@ EXPORT_DATAFILES = \
 	idd.py \
 	initdb.py \
 	ipad.py \
+	itaskapp.py \
 	journald.py \
 	launch-detached.py \
 	migratetable.py \

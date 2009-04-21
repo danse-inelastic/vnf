@@ -33,6 +33,9 @@ class Computation(base):
     #  - partially retrieved
     #  - (empty)   means nothing done
 
+    # pending internal-tasks to get this computation going
+    pending_tasks = vnf.dom.referenceSet(name='pending_tasks')
+
 
 # version
 __id__ = "$Id$"

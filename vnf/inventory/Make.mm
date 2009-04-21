@@ -34,6 +34,7 @@ EXPORT_PYTHON_MODULES = \
 	DataObject.py \
 	Form.py \
 	Geometer.py \
+	IWorker.py \
 	__init__.py \
 
 

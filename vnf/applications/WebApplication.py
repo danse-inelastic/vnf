@@ -56,6 +56,8 @@ class WebApplication(Base):
         csaccessor = pyre.inventory.facility( name='csaccessor', factory = ssher)
         csaccessor.meta['tip'] = 'computing server accessor'
 
+        itaskmanager = pyre.inventory.facility(name='itaskmanager', default = 'itask-manager')
+
         debug = pyre.inventory.bool(name="debug", default=True)
         debug.meta['tip'] = "suppress some html output for debugging purposes"
 
@@ -265,6 +267,7 @@ class WebApplication(Base):
         self.scribe = self.inventory.scribe
         self.debug = self.inventory.debug
         self.csaccessor = self.inventory.csaccessor
+        self.itaskmanager = self.inventory.itaskmanager
 
         from vnf.components import accesscontrol
         self.accesscontrol = accesscontrol()
