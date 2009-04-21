@@ -48,6 +48,28 @@ class ITask(base):
     error = pyre.db.varchar(name='error', length=1024)
 
 
+def inittable(db):
+    def r(id):
+        r = ITask()
+        r.id = id
+        return r
+    
+    records = [
+        r('test-itask'), # just for test
+        ]
+    
+    for r in records: db.insertRow( r )
+    return
+
+
+def initids():
+    return [
+        'test-itask', 
+        ]
+
+
+
+
 # version
 __id__ = "$Id$"
 
