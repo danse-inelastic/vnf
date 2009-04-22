@@ -142,7 +142,7 @@ class Actor(base):
             return self.in_submission(director, id=id)
 
         #
-        assert job.creator == director.sentry.username or 'vnf'
+        assert ( job.creator == director.sentry.username or job.creator == 'vnf' )
 
         # update job status
         state = check( job, director )
