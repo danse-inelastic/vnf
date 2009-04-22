@@ -45,7 +45,7 @@ class Actor(base):
 <script src="javascripts/jquery/ui/ui.progressbar.js"></script>
 
 <style type="text/css">
-.ui-progressbar-value { background-image: url(/~linjiao/vnf2/javascripts/jquery/ui/css/images/pbar-ani.gif); }
+.ui-progressbar-value { background-image: url(javascripts/jquery/ui/css/images/pbar-ani.gif); }
 </style>
         ''']
         startaction = action(
