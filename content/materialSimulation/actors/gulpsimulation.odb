@@ -66,8 +66,16 @@ class Actor(base):
             outputFiles = ['gulp.out'] # need to replace this with output file settings
             try:
                 director.dds.remember(job, files=outputFiles, server=server)
-            except:
-                return self._alertResultsNotFound(document, director)
+            except Exception:
+                import traceback
+                p = document.paragraph()
+                p.text = ['Output for gulp not found.']
+    
+                l = document.literal()
+                l.text = ['<pre>'] \
+                    + traceback.format_exc().splitlines() \
+                    + ['</pre>']
+                return page
             director.dds.make_available(job, files=outputFiles)
             # now 'plot.dat' is available at vnf.caltech.edu with path 
             gulpOutputFilePath = director.dds.abspath(job, 'gulp.out')
@@ -118,20 +126,21 @@ class Actor(base):
         p.text = [
             'Gulp simulation #%s' % computation.id,
             ]
-
-        matter = director.clerk.dereference(computation.matter)
-        p = document.paragraph()
-        p.text = [
-            'Material: %s' % (matter.short_description,),
-            ]
+#
+#        matter = director.clerk.dereference(computation.matter)
+#        
+#        p.text = [
+#            'Material: %s' % (matter.short_description,),
+#            ]
         
         gulpInputFile = director.dds.abspath(job, 'gulp.gin')
 
         f = file(gulpInputFile)
         contents = f.read()
-        # this is a hack--go back to pyre and put in *real* pre element
-        p.text = ['Here is the input file for the simulation:',
-                  '<pre>'+contents+'</pre>']
+        p = document.paragraph()
+        p.text = ['Here is the input file for the simulation:']
+        p = document.preformatted()
+        p.text = [contents]
         return
 
 
@@ -149,6 +158,13 @@ class Actor(base):
             director.clerk.updateRecord(sim)
             return False
         return True
+    
+    def _alertResultsNotFound(self, document, director):
+        p = document.paragraph()
+        p.text = [
+            'Computation results not found',
+            ]
+        return page
     
 
 
