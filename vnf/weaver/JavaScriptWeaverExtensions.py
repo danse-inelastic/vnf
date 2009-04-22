@@ -30,6 +30,7 @@ from UploaderMill import JSMill as UploaderMill
 from DialogMill import JSMill as DialogMill
 from JSsnippetMill import JSMill as JSsnippetMill
 from ButtonMill import JSMill as ButtonMill
+from ITaskProgressMill import JSMill as ITaskProgressMill
 
 extensions = [
     Plot_2DMill,
@@ -43,6 +44,7 @@ extensions = [
     DialogMill,
     JSsnippetMill,
     ButtonMill,
+    ITaskProgressMill, 
     Extension1,
     ]
 

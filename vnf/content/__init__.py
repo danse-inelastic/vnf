@@ -74,6 +74,10 @@ def button(*args, **kwds):
     from Button import Button
     return Button(*args, **kwds)
 
+def itaskMonitor(*args, **kwds):
+    from ITaskProgress import ITaskProgress
+    return ITaskProgress(*args, **kwds)
+
 def treeview(*args, **kwds ):
     from TreeView import TreeView
     return TreeView(*args, **kwds )

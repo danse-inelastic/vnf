@@ -38,6 +38,7 @@ from UploaderMill import HtmlMill as UploaderMill
 from DialogMill import HtmlMill as DialogMill
 from JSsnippetMill import HtmlMill as JSsnippetMill
 from ButtonMill import HtmlMill as ButtonMill
+from ITaskProgressMill import HtmlMill as ITaskProgressMill
 
 extensions = [
     ActionLinkRenderer,
@@ -52,6 +53,7 @@ extensions = [
     DialogMill,
     JSsnippetMill,
     ButtonMill,
+    ITaskProgressMill,
     Extension1,
     ]
 

@@ -41,6 +41,7 @@ EXPORT_PYTHON_MODULES = \
 	DocumentMill.py \
 	DocumentMillExtensions.py \
 	ImagePlotMill.py \
+	ITaskProgressMill.py \
 	JavaScriptWeaver.py \
 	JavaScriptWeaverBase.py \
 	JavaScriptWeaverExtensions.py \

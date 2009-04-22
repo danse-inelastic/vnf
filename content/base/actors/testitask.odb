@@ -4,7 +4,7 @@
 #
 #                                Jiao  Lin
 #                      California Institute of Technology
-#                        (C) 2008  All Rights Reserved
+#                        (C) 2009  All Rights Reserved
 #
 # {LicenseText}
 #
@@ -12,7 +12,7 @@
 #
 
 
-from vnf.components.Actor import Actor as base, action
+from vnf.components.Actor import Actor as base, action, AuthenticationError
 from vnf.weaver import action_href
 
 class Actor(base):
@@ -111,19 +111,56 @@ class Actor(base):
         return page
 
 
-    def start(self, director):
-        from vnf.dom.ITask import ITask
-        task = ITask()
-        
-        task.id = taskid
-        task.cmdoptions = '--iworker="test-iworker" --id="%s"' % taskid
-        task.state = 'created'
-
+    def widget(self, director):
         try:
-            director.clerk.updateRecord(task)
-        except:
-            director.clerk.db.insertRow(task)
+            page = director.retrieveSecurePage( 'test' )
+        except AuthenticationError, err:
+            return err.page
 
+        #
+        main = page._body._content._main
+        # populate the main column
+        document = main.document(
+            title='Test itask widget')
+        
+        p = document.paragraph(id='button-to-start')
+        p.text = ['Click here to start']
+
+        #
+        import vnf.content
+        itaskmonitor = vnf.content.itaskMonitor(
+            taskid,
+            label = 'label',
+            sentry=director.sentry,
+            )
+        itaskmonitor.finished_callback = 'function() {$("#%s").itaskmonitor("destroy");}' \
+                                         % itaskmonitor.id
+        document.add(itaskmonitor)
+
+        declarations = '''
+    var button = $("#button-to-start");
+'''        
+
+        startonbuttonclick = '''
+    button.click( function () {
+      $("#%s").itaskmonitor("start");
+    });
+        ''' % itaskmonitor.id
+
+        import vnf.content
+        snippet = vnf.content.jssnippet()
+        snippet.main = [
+            declarations,
+            startonbuttonclick,
+            ]
+        document.add(snippet)
+
+        self._reset(director)
+        return page
+
+
+    def start(self, director):
+        self._reset(director)
         director.itaskmanager.start(task)
         return '{"status": "succeeded"}'
     
@@ -138,6 +175,18 @@ class Actor(base):
             'state': task.state,
             }
         return str(p)
+
+
+    def _reset(self, director):
+        from vnf.dom.ITask import ITask
+        task = ITask()
+        
+        task.id = taskid
+        task.cmdoptions = '--iworker="test-iworker" --id="%s"' % taskid
+        task.state = 'created'
+
+        director.clerk.updateRecord(task)
+        return
 
 
 taskid = 'test-itask'
