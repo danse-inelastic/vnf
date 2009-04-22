@@ -38,7 +38,7 @@ class Actor(base):
         document = main.document(title='Jobs')
 
         from vnf.dom.Job import Job
-        where="creator='%s'" % director.sentry.username
+        where="creator='%s' or creator='vnf'" % director.sentry.username
         jobs = director.clerk.indexJobs(where=where).itervalues()
 
         table = director.retrieveComponent(
