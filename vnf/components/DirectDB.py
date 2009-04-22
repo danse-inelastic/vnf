@@ -72,10 +72,12 @@ class DirectDB(Actor):
                 from diffpy.Structure import Structure, Lattice, Atom
                 import numpy as n
                 fc = n.array(r['fractional_coordinates'])
-                atomSymbols = r['atom_symbols']
                 fc = fc.reshape((-1,3)) 
-                fc = fc.tolist()
-                atoms = [Atom(s,c) for s,c in zip(atomSymbols,fc)]
+                fcList = fc.tolist()
+                if fc.ndim==1: #this "fixes" the way tolist() works on single atoms or no atoms
+                    fcList = [fcList]
+                atomSymbols = r['atom_symbols']
+                atoms = [Atom(s,c) for s,c in zip(atomSymbols,fcList)]
                 lat = n.array(r['cartesian_lattice'])
                 lat = lat.reshape((3,3))
                 lat = lat.tolist()
