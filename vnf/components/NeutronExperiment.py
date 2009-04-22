@@ -449,7 +449,7 @@ class NeutronExperiment(base):
 
         for filename in filenames:
             # if the file has not been generated, skip
-            if not dds.is_available(job, filename=filename, server=server): return
+            if not dds.is_available(job, filename=filename, server=server): continue
 
             path = dds.abspath(job, filename=filename)
             import os
@@ -464,7 +464,7 @@ class NeutronExperiment(base):
                 # if not, skip
                 continue
             # let dds know that it exists in the server
-            #dds.remember(job, filename=filename, server=server)
+            dds.remember(job, filename=filename, server=server)
             # make it available locally
             dds.make_available(job, files=[filename])
             continue

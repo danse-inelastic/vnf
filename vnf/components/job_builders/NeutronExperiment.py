@@ -24,7 +24,10 @@ class Builder(base):
 
 # the relative path in the job directory where mcvine simulation will
 # generate outputs
-outputdir = 'out'
+outputdirs = [
+    'out',
+    'out-server-0', # temp hack to deal with parallel simulation
+    ]
 
 import os
 def outputfilename(component):
@@ -42,7 +45,11 @@ def outputfiles(component):
     '''paths of output files for the given component
     '''
     from InstrumentSimulationAppBuilder import _ComponentOutputfiles
-    return _ComponentOutputfiles(outputdir).dispath(component)
+    ret = []
+    for dir in outputdirs:
+        ret += _ComponentOutputfiles(dir).dispath(component)
+        continue
+    return ret
 
 
 # version
