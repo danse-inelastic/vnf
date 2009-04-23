@@ -36,16 +36,26 @@ class Actor(base):
 
         response_type = self.inventory.response_type
         assert response_type == 'json'
-        
+
         id = self.inventory.id
-        task = director.clerk.getRecordByID(ITask, id)
+        try:
+            task = director.clerk.getRecordByID(ITask, id)
+        except:
+            r = {'status': 'failed', 'reason-of-failure': 'failed to retreive task #%s' % id}
+            return str(r)
 
         #task.cmdoptions = '--iworker="test-iworker" --id="%s"' % taskid
         if task.state != 'created':
             r = {'status': 'failed', 'reason-of-failure': 'task is %s' % task.state}
             return str(r)
-                
-        director.itaskmanager.start(task)
+
+        try:
+            director.itaskmanager.start(task)
+        except:
+            import traceback
+            r = {'status': 'failed', 'reason-of-failure': traceback.format_exc()}
+            return str(r)
+            
         return '{"status": "succeeded"}'
     
 
@@ -59,7 +69,11 @@ class Actor(base):
         assert response_type == 'json'
         
         id = self.inventory.id
-        task = director.clerk.getRecordByID(ITask, id)
+        try:
+            task = director.clerk.getRecordByID(ITask, id)
+        except:
+            r = {'status': 'failed', 'reason-of-failure': 'failed to retreive task #%s' % id}
+            return str(r)
         
         p = {
             'percentage': task.progress_percentage,
