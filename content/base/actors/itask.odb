@@ -44,8 +44,7 @@ class Actor(base):
             r = {'status': 'failed', 'reason-of-failure': 'failed to retreive task #%s' % id}
             return str(r)
 
-        #task.cmdoptions = '--iworker="test-iworker" --id="%s"' % taskid
-        if task.state != 'created':
+        if task.state not in ['created', 'running']:
             r = {'status': 'failed', 'reason-of-failure': 'task is %s' % task.state}
             return str(r)
 
@@ -80,6 +79,9 @@ class Actor(base):
             'message': task.progress_text,
             'state': task.state,
             }
+        if task.state == 'failed':
+            p['reason-of-failure'] = task.error
+            
         return str(p)
 
 

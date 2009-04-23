@@ -204,16 +204,21 @@ class Actor(base):
                 )
             itaskmonitor.finished_callback = '''
   function(data) {
-    $("#%(itaskmonitorid)s").itaskmonitor("destroy");
+    var monitor = $("#%(itaskmonitorid)s");
+    
+    monitor.itaskmonitor("destroy");
+    
     if (data.state=="failed") {
-      alert("failed to download electronic dos: " + data["reason-of-failure"]);
+      monitor.text("failed to download electronic dos: ");
+      var errmsg = $("<pre>"+data["reason-of-failure"]+"</pre>");
+      monitor.append(errmsg);
     } else if (data.state=="cancelled") {
-      alert("download of electronic dos was cancelled");
+      monitor.text("download of electronic dos was cancelled");
     } else if (data.state=="finished") {
-      $("#%(itaskmonitorid)s").text("Please wait for this page to reload...");
+      monitor.text("Please wait for this page to reload...");
       window.location.reload();
     } else {
-      alert("failed to download electronic dos: unknown state " + data.state);
+      monitor.text("failed to download electronic dos: unknown state " + data.state);
     }
   }
 ''' % {'itaskmonitorid': itaskmonitor.id}

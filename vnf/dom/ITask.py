@@ -52,7 +52,7 @@ class ITask(base):
     
     options = pyre.db.varcharArray(name='options', length=64, default=[])
 
-    error = pyre.db.varchar(name='error', length=1024)
+    error = pyre.db.varchar(name='error', length=8192)
 
 
 def createITask(id, beneficiary, worker, type='', state='created', **options):

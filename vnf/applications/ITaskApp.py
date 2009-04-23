@@ -57,9 +57,16 @@ class ITaskApp(base):
             import traceback
             tb = traceback.format_exc()
             self._debug.log('Task %s failed: %s' % (self.id, tb))
+
+            tb = tb[:task.__class__.error.length]
             task.error = tb
             task.state = 'failed'
-            self.clerk.updateRecord(task)
+            try:
+                self.clerk.updateRecord(task)
+            except:
+                import traceback
+                tb = traceback.format_exc()
+                self._debug.log("Failed to update task %s.\n%s" % (self.id, tb))
             return
 
         # declare that this task finished
