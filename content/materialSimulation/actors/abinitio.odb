@@ -205,6 +205,7 @@ class Actor(base):
             itaskmonitor.finished_callback = '''
   function(data) {
     $("#%s").itaskmonitor("destroy");
+    window.location.reload();
   }
 ''' % itaskmonitor.id
             document.add(itaskmonitor)
