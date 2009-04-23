@@ -38,7 +38,7 @@ class ITask(base):
     #   - cancelled
     
     progress_percentage = pyre.db.real(name='progress_percentage')
-    progress_text = pyre.db.varchar(name='progress_text', length=32)
+    progress_text = pyre.db.varchar(name='progress_text', length=1024)
 
     # the party that benefits from this internal task
     beneficiary = pyre.db.versatileReference(
