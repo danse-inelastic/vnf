@@ -15,6 +15,10 @@
 // needs 
 //   - ui.progressbar.js
 
+// also refer to
+//   - content/base/actors/itask.odb
+
+
 (function($) {
 
   $.fn.itaskmonitor = function(action, options) {
@@ -33,8 +37,13 @@
     var updateurl = options.updateurl; // url to update progress of task
     var callback = options.callback; // call back function when task is done
     var starturl = options.starturl; // url to start task
+    var title = options.title;
     
     var itask = $(itaskdiv);
+
+    var titletag = $('<h4 class="itasktitle">'+title+'</h4>');
+    itask.append(titletag);
+
     var pbar = $('<div class="itaskprogressbar"></div>'); 
     itask.append(pbar);
 
@@ -59,7 +68,7 @@
     function start() {
       $.getJSON(starturl, function(data, textStatus){
 	  if (data.status != "succeeded") {
-	    alert("failed to start task!");
+	    alert("failed to start task!\n" + data['reason-of-failure']);
 	    return;
 	  }
 	  // create progress bar
@@ -70,10 +79,12 @@
 	});
     }
     itask.data('start-func', start);
+    itask.hide();
   }
 
   function start(itaskdiv, options) {
     var itask = $(itaskdiv);
+    itask.show();
     itask.data('start-func')();
   }
 

@@ -74,10 +74,12 @@ class JSMill:
         refreshaction_url = action_href(refreshaction, cgihome)
 
         finished_callback = widget.finished_callback
+        title = widget.label
         options = '''{
             updateurl: "%(refreshaction_url)s",
             starturl: "%(startaction_url)s",
             callback: %(finished_callback)s,
+            title: "%(title)s",
             }''' % locals()
         self.writemain(
             '$("#%s").itaskmonitor("create", %s);' % (widget.id, options)

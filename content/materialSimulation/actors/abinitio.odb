@@ -199,15 +199,24 @@ class Actor(base):
             import vnf.content
             itaskmonitor = vnf.content.itaskMonitor(
                 task.id,
-                label = 'label',
+                label = 'Downloading electronic dos ...',
                 sentry=director.sentry,
                 )
             itaskmonitor.finished_callback = '''
   function(data) {
-    $("#%s").itaskmonitor("destroy");
-    window.location.reload();
+    $("#%(itaskmonitorid)s").itaskmonitor("destroy");
+    if (data.state=="failed") {
+      alert("failed to download electronic dos: " + data["reason-of-failure"]);
+    } else if (data.state=="cancelled") {
+      alert("download of electronic dos was cancelled");
+    } else if (data.state=="finished") {
+      $("#%(itaskmonitorid)s").text("Please wait for this page to reload...");
+      window.location.reload();
+    } else {
+      alert("failed to download electronic dos: unknown state " + data.state);
+    }
   }
-''' % itaskmonitor.id
+''' % {'itaskmonitorid': itaskmonitor.id}
             document.add(itaskmonitor)
 
             import vnf.content

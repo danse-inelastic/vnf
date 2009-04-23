@@ -15,6 +15,9 @@
 from vnf.components.Actor import Actor as base, action, AuthenticationError
 from vnf.weaver import action_href
 
+taskid = 'test-itask'
+
+
 class Actor(base):
     
     class Inventory(base.Inventory):
@@ -22,7 +25,7 @@ class Actor(base):
         import pyre.inventory
         N = pyre.inventory.int('N', default=20)
         step = pyre.inventory.float('step', default=0.2)        
-        
+        id = pyre.inventory.str('id', default=taskid)
 
     def default(self, director):
         page = director.retrievePage( 'test' )
@@ -53,12 +56,14 @@ class Actor(base):
         startaction = action(
             actor = 'testitask',
             routine = 'start',
+            id = self.inventory.id,
             )
         startaction_url = action_href(startaction, director.cgihome)
 
         refreshaction = action(
             actor = 'testitask',
             routine = 'getProgress',
+            id = self.inventory.id,
             )
         refreshaction_url = action_href(refreshaction, director.cgihome)
 
@@ -131,7 +136,7 @@ class Actor(base):
         #
         import vnf.content
         itaskmonitor = vnf.content.itaskMonitor(
-            taskid,
+            self.inventory.id,
             label = 'label',
             sentry=director.sentry,
             )
@@ -169,6 +174,7 @@ class Actor(base):
 
     def getProgress(self, director):
         table = 'itasks'
+        taskid = self.inventory.id
         task = director.clerk.getRecordByID(table, taskid)
         
         p = {
@@ -180,6 +186,7 @@ class Actor(base):
 
 
     def _reset(self, director):
+        taskid = self.inventory.id
         from vnf.dom.ITask import createITask
         task = createITask(
             taskid,
@@ -191,11 +198,6 @@ class Actor(base):
             )
         director.clerk.updateRecord(task)
         return task
-
-
-taskid = 'test-itask'
-
-
 
 
 
