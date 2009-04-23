@@ -20,6 +20,8 @@ class Actor(base):
     class Inventory(base.Inventory):
 
         import pyre.inventory
+        N = pyre.inventory.int('N', default=20)
+        step = pyre.inventory.float('step', default=0.2)        
         
 
     def default(self, director):
@@ -160,7 +162,7 @@ class Actor(base):
 
 
     def start(self, director):
-        self._reset(director)
+        task = self._reset(director)
         director.itaskmanager.start(task)
         return '{"status": "succeeded"}'
     
@@ -178,15 +180,17 @@ class Actor(base):
 
 
     def _reset(self, director):
-        from vnf.dom.ITask import ITask
-        task = ITask()
-        
-        task.id = taskid
-        task.cmdoptions = '--iworker="test-iworker" --id="%s"' % taskid
-        task.state = 'created'
-
+        from vnf.dom.ITask import createITask
+        task = createITask(
+            taskid,
+            beneficiary = '',
+            worker = 'test-iworker',
+            type = 'test',
+            step = self.inventory.step,
+            N = self.inventory.N,
+            )
         director.clerk.updateRecord(task)
-        return
+        return task
 
 
 taskid = 'test-itask'
