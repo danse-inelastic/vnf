@@ -46,6 +46,7 @@ def _table(samples, director, showkernels=False, selected=None):
             continue
         return r
     data = [d(s) for s in samples]
+    #print data[3].description
 
     class view(View):
     
@@ -141,6 +142,7 @@ def format_chemical_formula(sample,director ):
     except AttributeError: return 'unknown'
     if nullpointer(matter): return "undefined"
     matter = director.clerk.dereference(matter)
+    #print matter.chemical_formula[0]
     return matter.chemical_formula
 
 

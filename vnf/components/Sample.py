@@ -44,7 +44,7 @@ class Sample(Actor):
         samples = clerk.indexSamples(where=where).values()
         scatterers = clerk.indexScatterers(where=where).values()
         all = samples+scatterers
-        
+
         from vnf.utils.uniquelist import uniquelist
         from vnf.dom.hash import hash
         samples = uniquelist(all, idfun=lambda sample: hash(sample, clerk.db))
@@ -53,7 +53,7 @@ class Sample(Actor):
             'samples', factory="table", args=[samples, director],
             vault=['tables']).table
         document.contents.append(table)
-        
+
         p = document.paragraph()
         p.text = [
             action_link(

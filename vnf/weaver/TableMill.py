@@ -38,6 +38,70 @@ class TableMill:
         id = _id(table)
         htmlcode.append( '<div id="%s">' % id )
         htmlcode.append( '</div>' )
+        table = towidgetdescription(table)
+        descriptors = table.column_descriptors
+        header = [ d.label for d in descriptors]
+        s = ""
+        s += """
+            <table border="1" id="tablesorter-demo" class="tablesorter">
+              <thead>
+                <tr>
+            """
+        for i in range(len(header)):
+            s += "<th>%s</th>\n" % header[i]
+   
+        s += """
+                </tr>
+              </thead>
+              <tbody>
+              """
+        rows = {}
+        for i, row in enumerate(table.rows):
+            rows[i] = row
+              
+        for r in range(len(rows)):
+            s += "<tr>"
+            for c in range(len(rows[r])):
+                s += "<td>%s&nbsp;</td>" % rows[r][c]
+            s += "</tr>"
+            
+        s += """
+              </tbody>
+            </table>
+            """
+            
+        htmlcode.append(s)   
+        htmlcode.append(
+            """
+            <table border="1" id="tablesorter-demo" class="tablesorter">
+              <thead>
+                <tr>
+                  <th>Month</th>
+                  <th>Savings</th>
+                </tr>
+              </thead>
+              <tbody> 
+                <tr>
+            
+                  <td id="0_0"><a href="http://www.google.com" >January</a></td>
+                  <td id="0_1">$80</td>
+                </tr>
+                 
+                <tr>
+                  <td id="2_0"><a href="http://www.google.com" >Sum</a></td>
+                  <td id="2_1">$180</td>
+                </tr>
+            
+                 
+                <tr>
+                  <td id="1_0"><a href="http://www.google.com" >February</a></td>
+                  <td id="1_1"> $100</td>
+                </tr>
+                
+               </tbody>
+            </table>
+            """
+        )
 
         codes = csscode + htmlcode
         return codes
@@ -115,7 +179,6 @@ class JSMill:
 
 
         return
-
 
 
 # helpers
