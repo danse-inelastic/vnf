@@ -36,8 +36,7 @@ class TableMill:
 
         htmlcode = []
         id = _id(table)
-        htmlcode.append( '<div id="%s">' % id )
-        htmlcode.append( '</div>' )
+        htmlcode.append( '<div id="%s"></div>' % id )
         table = towidgetdescription(table)
         descriptors = table.column_descriptors
         header = [ d.label for d in descriptors]
@@ -126,6 +125,7 @@ class JSMill:
             ]
         self.include(scripts=includes)
 
+        """
         self.writemain( 'Date.firstDayOfWeek = 7;')
         self.writemain( 'Date.format = "mm/dd/yyyy";' )
         
@@ -176,7 +176,7 @@ class JSMill:
             $(this).enable_cell_editing();
             } );
             ''')
-
+        """
 
         return
 
