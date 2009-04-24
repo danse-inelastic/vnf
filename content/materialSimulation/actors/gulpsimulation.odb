@@ -81,6 +81,18 @@ class Actor(base):
             gulpOutputFilePath = director.dds.abspath(job, 'gulp.out')
             f = file(gulpOutputFilePath) 
             resdoc = document.document(title='Results')
+            
+            try:
+                # eventually put this in place of the news portlet on the side
+                # visualize md or phonons
+                # plot various items such as temp, DOS, MSD, etc.
+                p = resdoc.paragraph()
+                p.text = ['''A movie of the simulation can be accessed by launching 
+                the viewer below.''',
+                '<center><a href=java/JmolApp.jnlp><img src="images/webstart.gif" alt="Jmol"/></a></center>']
+            except:
+                pass
+            
             p = resdoc.paragraph()
             # if the file is too large, only show the top and the bottom
             import os
@@ -102,16 +114,6 @@ class Actor(base):
                 p.text = ['Here is the stdout file of the simulation:']
                 p = resdoc.preformatted()
                 p.text = [all]
-            try:
-                # eventually put this in place of the news portlet on the side
-                # visualize md or phonons
-                # plot various items such as temp, DOS, MSD, etc.
-                p = resdoc.paragraph()
-                p.text = ['''A movie of the simulation can be accessed by launching 
-                the viewer below.''',
-                '<center><a href=java/JmolApp.jnlp><img src="images/webstart.gif" alt="Jmol"/></a></center>']
-            except:
-                pass
             
             configurationdoc = document.document(title='Configuration')
             self._view_configuration(job, computation, configurationdoc, director=director)
