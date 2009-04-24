@@ -27,6 +27,12 @@ def nullpointer( p ):
     return p is None
 
 
+def defaultServer(director):
+    from vnf.dom.Server import Server
+    servers = director.clerk.db.fetchall(Server)
+    return servers[0]
+
+
 def announce(director, announcement, *args):
     import vnf.components
     

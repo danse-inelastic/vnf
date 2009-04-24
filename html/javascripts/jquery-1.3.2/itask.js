@@ -59,6 +59,27 @@
 	  statuslabel.text(data.message);
 	  if (data.state=="finished" || data.state=='failed' || data.state=='cancelled') {
 	    window.clearInterval(interval);
+	    
+	    itask.itaskmonitor("destroy");
+    
+	    if (data.state=="failed") {
+
+	      itask.text("failed: ");
+	      var errmsg = $("<pre>"+data["reason-of-failure"]+"</pre>");
+	      itask.append(errmsg);
+
+	    } else if (data.state=="cancelled") {
+
+	      itask.text("cancelled");
+
+	    } else if (data.state=="finished") {
+
+	    } else {
+
+	      itask.text("unknown state: " + data.state);
+
+	    }
+
 	    callback(data);
 	  }
 	});

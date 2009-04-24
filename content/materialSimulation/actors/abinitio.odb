@@ -206,19 +206,9 @@ class Actor(base):
   function(data) {
     var monitor = $("#%(itaskmonitorid)s");
     
-    monitor.itaskmonitor("destroy");
-    
-    if (data.state=="failed") {
-      monitor.text("failed to download electronic dos: ");
-      var errmsg = $("<pre>"+data["reason-of-failure"]+"</pre>");
-      monitor.append(errmsg);
-    } else if (data.state=="cancelled") {
-      monitor.text("download of electronic dos was cancelled");
-    } else if (data.state=="finished") {
+    if (data.state=="finished") {
       monitor.text("Please wait for this page to reload...");
       window.location.reload();
-    } else {
-      monitor.text("failed to download electronic dos: unknown state " + data.state);
     }
   }
 ''' % {'itaskmonitorid': itaskmonitor.id}

@@ -73,11 +73,7 @@ class Worker(Component):
 
 
 from vnf.dom import VASP
-    
-class LocalHost:
-
-    address = None
-    port = None
+from vnf.dom.Server import LocalHost
 
 
 getdos_py_fn = '.getdos.py'
