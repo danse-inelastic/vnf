@@ -17,6 +17,7 @@ def _table(samples, director, showkernels=False, selected=None):
     from vnf.content.table import Model, View, Table
     class model(Model):
         
+        id = Model.Measure(name='id', type='text')
         description = Model.Measure(name='description', type='text')
         visualize = Model.Measure(name='visualize', type='text')
         chemical_formula = Model.Measure(name='chemical_formula', type='text')
@@ -29,6 +30,7 @@ def _table(samples, director, showkernels=False, selected=None):
     class D: pass
     import operator
     generators = {
+        'id': operator.attrgetter('id'),
         'description': operator.attrgetter( 'short_description' ),
         'visualize': lambda s: format_visualize(s, director),
         'chemical_formula': lambda s: format_chemical_formula(s, director),
@@ -37,6 +39,7 @@ def _table(samples, director, showkernels=False, selected=None):
         'shape': lambda s: format_shape(s, director),
         'kernels': lambda s: format_kernels(s, director),
         'selected': lambda s: format_selected(s, selected),
+        'polycrystals_id': lambda s: format_polycrystals_id(s, director) #operator.attrgetter( 'id' ) #
         }
     def d(s):
         r = D()
@@ -46,11 +49,12 @@ def _table(samples, director, showkernels=False, selected=None):
             continue
         return r
     data = [d(s) for s in samples]
-    #print data[3].description
+    #print data[3].polycrystals_id
 
     class view(View):
     
         columns = [
+            #View.Column(id='col0',label='ID', measure='id'),
             View.Column(id='col1',label='Description', measure='description'),
             View.Column(id='col2',label='Visualize', measure='visualize'),
             View.Column(id='col3',label='Chemical formula', measure='chemical_formula'),
@@ -141,10 +145,19 @@ def format_chemical_formula(sample,director ):
     try: matter = sample.matter
     except AttributeError: return 'unknown'
     if nullpointer(matter): return "undefined"
-    matter = director.clerk.dereference(matter)
-    #print matter.chemical_formula[0]
+    matter = director.clerk.dereference(matter)    
     return matter.chemical_formula
 
+#"""
+# Get polycrystals id
+def format_polycrystals_id(sample,director ):
+    try: matter = sample.matter
+    except AttributeError: return 'unknown'
+    if nullpointer(matter): return "undefined"
+    matter = director.clerk.dereference(matter)
+    #print matter.id
+    return matter.id
+#"""
 
 def format_lattice_parameters(sample, director):
     try: matter = sample.matter
@@ -196,7 +209,7 @@ class ShapeFormatter:
             'height=%.3fcm' % (block.height * 100),
             'width=%.3fcm' % (block.width * 100),
             ]
-        return '\n'.join( texts )
+        return '<br />'.join( texts )
     
     def onCylinder(self, cylinder):
         texts = [
@@ -205,7 +218,7 @@ class ShapeFormatter:
             'inner radius=%.3fcm' % (cylinder.innerradius * 100),
             'outer radius=%.3fcm' % (cylinder.outerradius * 100),
             ]
-        return '\n'.join( texts )
+        return '<br />'.join( texts )
 
 
 def format_shape( sample, director ):

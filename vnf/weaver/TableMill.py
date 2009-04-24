@@ -39,7 +39,20 @@ class TableMill:
         htmlcode.append( '<div id="%s"></div>' % id )
         table = towidgetdescription(table)
         descriptors = table.column_descriptors
+        
+        #tmp = []
+        #for row in table.data:
+        #    row.id
+            #tmp.append(row.id)
+        
+        #pid = table.polycrystals_id
         header = [ d.label for d in descriptors]
+        
+        # Example of table editing: temporary and dirty solution
+        # Only one column will be editable at this time: Chemical formula
+        tableMap    = {2: "polycrystals"} # {0:"scatterers", 1:"samples"} - complicated
+        columnMap   = {2: "chemical_formula" }
+        
         s = ""
         s += """
             <table border="1" id="tablesorter-demo" class="tablesorter">
@@ -55,13 +68,18 @@ class TableMill:
               <tbody>
               """
         rows = {}
+        
         for i, row in enumerate(table.rows):
             rows[i] = row
               
         for r in range(len(rows)):
             s += "<tr>"
             for c in range(len(rows[r])):
-                s += "<td>%s&nbsp;</td>" % rows[r][c]
+                if c == 2:
+                    idattr = """ id = "%s_%s" """ % ("000", c)
+                else:
+                    idattr = ""
+                s += "<td%s>%s&nbsp;</td>\n" % (idattr, rows[r][c])
             s += "</tr>"
             
         s += """
@@ -119,7 +137,10 @@ class JSMill:
             'jquery/jquery.js',
             'jquery/date.js',
             'jquery/jquery.datePicker.js',
-            'jquery/tabulator.js',
+            #'jquery/tabulator.js',
+            'jquery/jquery.uitableedit.custom.js',
+            'jquery/tableedit.js',
+            'jquery/jquery.tablesorter.js',
             'jquery/elementFactory.js',
             'jquery/tableFactory.js',
             ]
