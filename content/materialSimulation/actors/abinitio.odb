@@ -298,35 +298,6 @@ def _readDOS(filename):
     return E,I
         
 
-def _readDOSCAR(doscar):
-    try:
-        efermi = _readEfermiFromDOSCAR(doscar)
-    except:
-        import journal, traceback
-        journal.debug('vasp-dos').log(traceback.format_exc())
-        return
-    #quick hack for now
-    f = open(doscar)
-    lines = f.read().split('\n')
-    E = []; I = []
-
-    for line in lines[6:]:
-        if not line: continue
-        numbers = line.split()
-        E.append(float(numbers[0])-efermi)
-        I.append(float(numbers[1]))
-        continue
-    return E, I
-
-
-def _readEfermiFromDOSCAR(doscar):
-    f = open(doscar)
-    for i in range(6): line = f.readline()
-    words = line.split()
-    assert len(words)==5
-    return float(words[3])
-
-
 from vnf.components.Job import isdone
 from vnf.components.Computation import retrieve_results as retrieve_computation_results
 
