@@ -17,6 +17,7 @@ def _table(samples, director, showkernels=False, selected=None):
     from vnf.content.table import Model, View, Table
     class model(Model):
         
+        id = Model.Measure(name='id', type='text')
         description = Model.Measure(name='description', type='text')
         visualize = Model.Measure(name='visualize', type='text')
         chemical_formula = Model.Measure(name='chemical_formula', type='text')
@@ -29,6 +30,7 @@ def _table(samples, director, showkernels=False, selected=None):
     class D: pass
     import operator
     generators = {
+        'id': operator.attrgetter('id'),
         'description': operator.attrgetter( 'short_description' ),
         'visualize': lambda s: format_visualize(s, director),
         'chemical_formula': lambda s: format_chemical_formula(s, director),
@@ -50,6 +52,7 @@ def _table(samples, director, showkernels=False, selected=None):
     class view(View):
         
         columns = [
+            View.Column(id='col0',label='ID', measure='id'),
             View.Column(id='col1',label='Description', measure='description'),
             View.Column(id='col2',label='Visualize', measure='visualize'),
             View.Column(id='col3',label='Chemical formula', measure='chemical_formula'),
