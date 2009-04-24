@@ -63,10 +63,10 @@ class Builder(base):
             '. ~/.gulp-env',
             'chmod +x %s' % self.shscript1name,
             'mpirun -np %d ./%s' % (np, self.shscript1name),
-            '',
-            "#setup brandon's python path",
-            'source /home/jbrkeith/.tools',
-            'history2Nc.py --historyFile=output.history --ncFile=output.nc'
+#            '',
+#            "#setup brandon's python path",
+#            'source /home/jbrkeith/.tools',
+#            'history2Nc.py --historyFile=output.history --ncFile=output.nc'
             ]
         if self.convertHistoryFile:
             cmds += ['']
