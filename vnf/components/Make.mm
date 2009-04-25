@@ -85,12 +85,13 @@ EXPORT_PYTHON_MODULES = \
 	SupportingCalcs.py \
 	TreeViewCreator.py \
 	UsersFromDB.py \
+	_extend_class.py \
+	__init__.py \
 	inventorylist.py \
+	itask_utils.py \
 	misc.py \
 	spawn.py \
 	wording.py \
-	_extend_class.py \
-	__init__.py \
 
 
 export:: export-package-python-modules

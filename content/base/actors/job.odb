@@ -12,8 +12,9 @@
 #
 
 
-
+from vnf.weaver import action_href
 from vnf.components.FormActor import FormActor as base, action, actionRequireAuthentication, action_link, InputProcessingError, AuthenticationError
+
 
 class Actor(base):
     
@@ -370,6 +371,103 @@ class Actor(base):
         if job.state in ['submitting']:
             return self.in_submission(director)
 
+        iworker = 'submitjob'
+
+        # first check if there is itask running
+        found = None
+        from vnf.components.itask_utils import find_pending_tasks
+        pending_tasks = find_pending_tasks(iworker=iworker, beneficiary=job, director=director)
+
+        # 
+        if pending_tasks:
+            # if there is a pending task, check its status
+
+            if len(pending_tasks) > 1: raise RuntimeError
+            
+            label, task = pending_tasks[0]
+
+            if task.state == 'finished':
+                raise RuntimeError, "Task %s for %s finished but the job was not submitted." % (task.id, job.id)
+
+            elif task.state == 'failed':
+                self._debug.log("Task %s for %s found. Which has failed before." % (task.id, job.id))
+                # reopen the task
+                task.state = 'created'
+                director.clerk.updateRecord(task)
+
+            elif task.state == 'cancelled':
+                self._debug.log("Task %s for %s found. Which has been cancelled before." % (task.id, job.id))
+                # reopen the task
+                task.state = 'created'
+                director.clerk.updateRecord(task)
+
+            elif task.state in ['created', 'running']:
+                pass
+            
+            else:
+                raise RuntimeError, "Unknown state: %s" % task.state
+
+        else:
+            # if not, create one
+            
+            from vnf.dom.ITask import createITask, ITask
+            task = director.clerk.newDbObject(ITask)
+            task = createITask(
+                task.id,
+                beneficiary = job,
+                worker = iworker,
+                type = iworker,
+                )
+            director.clerk.updateRecord(task)
+
+            # add this task to pending task list
+            job.pending_tasks.add(task, director.clerk.db, name=iworker)
+
+
+        # prepare response
+        main = page._body._content._main
+        document = main.document( title = 'Job # %s: %s' % (
+            job.id, job.state ) )
+
+        # now create the monitor of the itask
+        import vnf.content
+        itaskmonitor = vnf.content.itaskMonitor(
+            task.id,
+            label = 'Submitting job #%s ...' % (job.id,),
+            sentry=director.sentry,
+            )
+        itaskmonitorid = itaskmonitor.id
+        
+        redirectaction = actionRequireAuthentication(
+            sentry = director.sentry,
+            label = '',
+            actor = self.name,
+            routine = 'view',
+            id = self.inventory.id,
+            )
+        redirecturl = action_href(redirectaction, director.cgihome)
+        itaskmonitor.finished_callback = '''
+  function(data) {
+    var monitor = $("#%(itaskmonitorid)s");
+    
+    if (data.state=="finished") {
+      monitor.text("Please wait for this page to reload...");
+      window.location = "%(redirecturl)s";
+    }
+  }
+''' % locals()
+        document.add(itaskmonitor)
+
+        import vnf.content
+        snippet = vnf.content.jssnippet()
+        snippet.main = [
+            '$("#%s").itaskmonitor("start");' % itaskmonitor.id,
+            ]
+        document.add(snippet)
+        return page
+
+
+    def _old_submit_(self, director):
         try:
             submit(job, director, debug=0)
         except Exception, err:
@@ -585,7 +683,7 @@ class Actor(base):
         return page
 
 
-from vnf.components.Job import submit, check
+from vnf.components.Job import check
 
 
 def actor():
