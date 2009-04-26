@@ -87,7 +87,12 @@ class DistributedDataStorage(base):
 
     def is_available(self, dbrecord, filename, server=None):
         p = self.path(dbrecord, filename)
-        return self._is_available(p, server=server)
+        ret = self._is_available(p, server=server)
+        msg = 'File %s for dbrecord %s:%s is ' % (filename, dbrecord.__class__.__name__, dbrecord.id)
+        if not ret: msg += 'not '
+        msg += 'available on %s.' % (server.short_description,)
+        self._debug.log(msg)
+        return ret
 
 
     def path(self, dbrecord, filename=None):
