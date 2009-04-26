@@ -35,6 +35,8 @@ from SlidableGallery import HtmlMill as SlidableGalleryMill
 from TableMill import TableMill
 from TreeViewMill import TreeViewMill
 from UploaderMill import HtmlMill as UploaderMill
+from DialogMill import HtmlMill as DialogMill
+from JSsnippetMill import HtmlMill as JSsnippetMill
 
 extensions = [
     ActionLinkRenderer,
@@ -46,6 +48,8 @@ extensions = [
     TableMill,
     TreeViewMill,
     UploaderMill,
+    DialogMill,
+    JSsnippetMill,
     Extension1,
     ]
 

@@ -66,6 +66,10 @@ def uploader(*args, **kwds):
     from Uploader import Uploader
     return Uploader(*args, **kwds)
 
+def dialog(*args, **kwds):
+    from Dialog import Dialog
+    return Dialog(*args, **kwds)
+
 def treeview(*args, **kwds ):
     from TreeView import TreeView
     return TreeView(*args, **kwds )
@@ -81,6 +85,14 @@ def leaf(*args, **kwds):
 treeview.branch = branch
 treeview.leaf = leaf
 del branch, leaf
+
+
+
+
+def jssnippet(*args, **kwds):
+    from JSsnippet import JSsnippet
+    return JSsnippet(*args, **kwds)
+
 
 # version
 __id__ = "$Id: __init__.py,v 1.1.1.1 2006-11-27 00:09:19 aivazis Exp $"

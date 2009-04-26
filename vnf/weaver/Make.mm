@@ -36,6 +36,7 @@ EXPORT_PYTHON_MODULES = \
 	ActionLinkRenderer.py \
 	ActionMill_forForm.py \
 	AutoRefreshRenderer.py \
+	DialogMill.py \
 	DocumentMill.py \
 	DocumentMillExtensions.py \
 	ImagePlotMill.py \
@@ -44,6 +45,7 @@ EXPORT_PYTHON_MODULES = \
 	JavaScriptWeaverExtensions.py \
 	Jnlp.py \
 	JnlpMill.py \
+	JSsnippetMill.py \
 	PageMill.py \
 	Plot_2DMill.py \
 	SlidableGallery.py \

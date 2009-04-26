@@ -45,8 +45,10 @@ EXPORT_PYTHON_MODULES = \
 	ActionRequireAuthentication.py \
 	Announcement.py \
 	AutoRefresh.py \
+	Dialog.py \
 	Image.py \
 	ImagePlot.py \
+	JSsnippet.py \
 	Page.py \
 	Plot_2D.py \
 	SlidableGallery.py \
