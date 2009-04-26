@@ -16,6 +16,7 @@ PACKAGE = inventory
 
 
 BUILD_DIRS = \
+	validators \
 
 OTHER_DIRS = \
 

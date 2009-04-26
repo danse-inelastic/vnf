@@ -26,6 +26,7 @@ from SolidView3DMill import JSMill as SolidView3DMill
 from AutoRefreshRenderer import JSMill as AutoRefreshRenderer
 from TableMill import JSMill as TableMill
 from TreeViewMill import JSMill as TreeViewMill
+from UploaderMill import JSMill as UploaderMill
 
 extensions = [
     Plot_2DMill,
@@ -35,6 +36,7 @@ extensions = [
     AutoRefreshRenderer,
     TableMill,
     TreeViewMill,
+    UploaderMill,
     Extension1,
     ]
 

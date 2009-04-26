@@ -62,6 +62,10 @@ def solidView3D(*args, **kwds):
     from SolidView3D import SolidView3D
     return SolidView3D(*args, **kwds)
 
+def uploader(*args, **kwds):
+    from Uploader import Uploader
+    return Uploader(*args, **kwds)
+
 def treeview(*args, **kwds ):
     from TreeView import TreeView
     return TreeView(*args, **kwds )

@@ -34,6 +34,7 @@ from AutoRefreshRenderer import AutoRefreshRenderer
 from SlidableGallery import HtmlMill as SlidableGalleryMill
 from TableMill import TableMill
 from TreeViewMill import TreeViewMill
+from UploaderMill import HtmlMill as UploaderMill
 
 extensions = [
     ActionLinkRenderer,
@@ -44,6 +45,7 @@ extensions = [
     AutoRefreshRenderer,
     TableMill,
     TreeViewMill,
+    UploaderMill,
     Extension1,
     ]
 

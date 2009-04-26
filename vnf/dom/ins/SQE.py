@@ -12,22 +12,18 @@
 #
 
 
-def dataobject( *args, **kwds ):
-    from DataObject import DataObject
-    return DataObject( *args, **kwds )
+from OwnedObject import OwnedObject as base1
+from ComputationResult import ComputationResult as base2
+class SQE(base1, base2):
 
+    name = 'sqes'
 
-def form( *args, **kwds ):
-    from Form import Form
-    return Form( *args, **kwds )
+    datafiles = [
+        'sqe.h5',
+        ]
+    
+    pass # end of SQE
 
-
-def geometer( *args, **kwds ):
-    from Geometer import Geometer
-    return Geometer( *args, **kwds )
-
-
-import validators
 
 # version
 __id__ = "$Id$"

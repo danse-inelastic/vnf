@@ -20,11 +20,14 @@ class Actor(base):
 
         import pyre.inventory
 
+        upload_directory = pyre.inventory.str( name = 'upload-directory', default = '../content/data/tmp' )
+        upload_directory.meta['tip'] = 'directory to save uploaded files'
+
         pass # end of Inventory
 
 
     def default(self, director):
-        page = director.retrievePage('greet')
+        page = director.retrieveSecurePage('greet')
         main = page._body._content._main
 
         document = main.document( title = 'Test' )
@@ -35,7 +38,8 @@ class Actor(base):
             enctype="multipart/form-data")
 
         # specify action
-        form_action = action(
+        form_action = actionRequireAuthentication(
+            sentry = director.sentry,
             actor = 'testfileupload', 
             routine = 'receive_file',
             )
@@ -51,10 +55,41 @@ class Actor(base):
         return page
 
 
-    def receive_file(self, director):
-        page = director.retrievePage('greet')
+    def uploader(self, director):
+        page = director.retrieveSecurePage('greet')
         main = page._body._content._main
 
+        document = main.document( title = 'Test file upload' )
+
+        import vnf.content
+        action = actionRequireAuthentication(
+            sentry = director.sentry,
+            actor = 'testfileupload', 
+            routine = 'receive_file',
+            )
+        uploader = vnf.content.uploader(action)
+        document.contents.append(uploader)
+        
+        return page
+    
+
+    def receive_file(self, director):
+        page = director.retrieveSecurePage('greet')
+        main = page._body._content._main
+
+        document = main.document( title = 'Test file upload' )
+
+        # save uploaded files
+        uploads = director.getUploads()
+        directory = self.inventory.upload_directory
+        import os
+        for filename, content in uploads.iteritems():
+            path = os.path.join(directory, filename)
+            open(path, 'wb').write(content)
+            p = document.paragraph()
+            p.text = ['saved uploaded file %r to %r.' % (filename, path)]
+            continue
+        
         return page
 
 

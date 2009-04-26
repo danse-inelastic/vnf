@@ -51,6 +51,7 @@ EXPORT_PYTHON_MODULES = \
 	StructuralMill.py \
 	TableMill.py \
 	TreeViewMill.py \
+	UploaderMill.py \
 	__init__.py \
 	_utils.py \
 
