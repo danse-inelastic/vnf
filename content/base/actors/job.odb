@@ -179,7 +179,7 @@ class Actor(base):
         p.text = [link]
         
         # Results
-        compdoc = document.document(title='Computation')
+        compdoc = document.document(title='Results')
         # link to computation
         p = compdoc.paragraph()
         computation_ptr = job.computation
@@ -188,29 +188,42 @@ class Actor(base):
             ( actor = 'computation',
               sentry = director.sentry,
               routine = 'view',
-              label = 'results',
+              label = 'results of the computation',
               id = computation_ptr.id,
               type = computation_ptr.table.__name__,
               ),
             director.cgihome
             )
-        p.text = ["See the %s of the computation." % link]
-
-        # download document
-        downloaddoc = document.document(title='Download')
+        p.text = ["See the %s." % link]
         # download link
-        p = downloaddoc.paragraph()
+        p = compdoc.paragraph()
         action = actionRequireAuthentication(
             sentry = director.sentry,
-            label = 'Download the output files of this job.',
+            label = 'output files of this job',
             actor = 'job',
             routine = 'download',
             id = id,
             )
         link = action_link(action, director.cgihome)
         p.text = [
-            link,
+            'Download the %s.' % link,
             ]
+
+#        # download document
+#        downloaddoc = document.document(title='Download')
+#        # download link
+#        p = downloaddoc.paragraph()
+#        action = actionRequireAuthentication(
+#            sentry = director.sentry,
+#            label = 'Download the output files of this job.',
+#            actor = 'job',
+#            routine = 'download',
+#            id = id,
+#            )
+#        link = action_link(action, director.cgihome)
+#        p.text = [
+#            link,
+#            ]
         
         # status document
         statusdoc = document.document(title='Status')
