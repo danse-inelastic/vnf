@@ -38,14 +38,38 @@ class ITask(base):
     #   - cancelled
     
     progress_percentage = pyre.db.real(name='progress_percentage')
-    progress_text = pyre.db.varchar(name='progress_text', length=32)
+    progress_text = pyre.db.varchar(name='progress_text', length=1024)
 
+    # the party that benefits from this internal task
+    beneficiary = pyre.db.versatileReference(
+        name = 'beneficiary', tableRegistry = tableRegistry)
+    
+    # the type of this internal task
     type = pyre.db.varchar(name='type', length=32)
+
+    # the worker of this internal task
     worker = pyre.db.varchar(name='worker', length=32)
     
-    cmdoptions = pyre.db.varchar(name='cmdoptions', length=256)
+    options = pyre.db.varcharArray(name='options', length=64, default=[])
 
-    error = pyre.db.varchar(name='error', length=1024)
+    error = pyre.db.varchar(name='error', length=8192)
+
+
+def createITask(id, beneficiary, worker, type='', state='created', **options):
+    t = ITask()
+    t.id = id
+    t.beneficiary = beneficiary
+    t.worker = worker
+    opts = []
+    for k, v in options.iteritems():
+        opts.append(str(k))
+        opts.append(str(v))
+        continue
+    t.options = opts
+    t.type = type
+    t.state = state
+    t.progress_percentage = 0
+    return t
 
 
 def inittable(db):

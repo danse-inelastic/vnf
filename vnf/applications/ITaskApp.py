@@ -39,9 +39,10 @@ class ITaskApp(base):
 
 
     def main(self):
+        task = self.getTask()
+        
         # only if a task was just created, we can start running
         if not self.isCreated():
-            task = self.getTask()
             self._debug.log('This task is %s.' % task.state)
             return
 
@@ -51,15 +52,21 @@ class ITaskApp(base):
         # run the real important stuff
         self.iworker.director = self
         try:
-            self.iworker.run(self.getTask())
+            self.iworker.run(task)
         except:
             import traceback
             tb = traceback.format_exc()
             self._debug.log('Task %s failed: %s' % (self.id, tb))
-            task = self.getTask()
+
+            tb = tb[:task.__class__.error.length]
             task.error = tb
             task.state = 'failed'
-            self.clerk.updateRecord(task)
+            try:
+                self.clerk.updateRecord(task)
+            except:
+                import traceback
+                tb = traceback.format_exc()
+                self._debug.log("Failed to update task %s.\n%s" % (self.id, tb))
             return
 
         # declare that this task finished

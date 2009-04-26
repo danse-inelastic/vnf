@@ -49,6 +49,7 @@ EXPORT_PYTHON_MODULES = \
 	Dialog.py \
 	Image.py \
 	ImagePlot.py \
+	ITaskProgress.py \
 	JSsnippet.py \
 	Page.py \
 	Plot_2D.py \

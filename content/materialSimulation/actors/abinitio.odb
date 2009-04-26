@@ -127,40 +127,110 @@ class Actor(base):
 
 
     def _view_vasp_dos(self, computation, document, director):
-        files = [
-            'DOSCAR',
-            ]
-        job = director.clerk.dereference(computation.job)
-        server = director.clerk.dereference(job.server)
-        try:
-            director.dds.remember(job, files=files, server=server)
-        except:
-            # results not exist!!!
-            #return self._alertResultsNotFound(document, director)
-            import traceback
-            p = document.paragraph()
-            p.text = ['Output for electronic DOS not found.']
-
-            l = document.literal()
-            l.text = ['<pre>'] \
-                + traceback.format_exc().splitlines() \
-                + ['</pre>']
-            return
-        director.dds.make_available(job, files=files)
-
-        dosfile = director.dds.abspath(job, 'DOSCAR')
-        dos = _readDOSCAR(dosfile)
+        job = computation.job.dereference(director.clerk.db)
         
-        p = document.paragraph()
-        p.text = [
-            'Electronic density of states:',
-            ]
+        from vnf.dom import VASP
+        total_dos_dat = director.dds.abspath(job, VASP.total_electronic_dos_filename)
 
-        import vnf.content
-        options = {}
-        plot = vnf.content.plot_2d( dos, options )
-        
-        document.contents.append( plot )
+        import os
+        if os.path.exists(total_dos_dat):
+            dos = _readDOS(total_dos_dat)
+            import vnf.content
+            options = {}
+            plot = vnf.content.plot_2d( dos, options )
+            document.add( plot )
+        else:
+            # the itask worker
+            iworker = 'retrieve-vasp-electronic-dos'
+            
+            # first check if there is itask running
+            found = None
+            pending_tasks = computation.pending_tasks.dereference(director.clerk.db)
+            if pending_tasks:
+                for label, task in pending_tasks:
+
+                    # if not the right task, skip
+                    if task.worker != iworker: continue
+
+                    if task.state == 'finished':
+                        raise RuntimeError, "Task %s for %s finished but no total dos available." % (task.id, computation.id)
+                    
+                    if task.state == 'failed':
+                        self._debug.log("Task %s for %s found. Which has failed before." % (task.id, computation.id))
+                        # reopen the task
+                        task.state = 'created'
+                        director.clerk.updateRecord(task)
+                        found = task
+                        break
+                    
+                    if task.state == 'cancelled':
+                        self._debug.log("Task %s for %s found. Which has been cancelled before." % (task.id, computation.id))
+                        # reopen the task
+                        task.state = 'created'
+                        director.clerk.updateRecord(task)
+                        found = task
+                        break
+
+                    found = task
+                    break
+                
+
+            # if no previous task found, create a new task
+            if not found:
+                
+                from vnf.dom.ITask import createITask, ITask
+                task = director.clerk.newDbObject(ITask)
+                task = createITask(
+                    task.id,
+                    beneficiary = computation,
+                    worker = iworker,
+                    type = iworker,
+                    )
+                director.clerk.updateRecord(task)
+
+                # add this task to pending task list
+                computation.pending_tasks.add(task, director.clerk.db, name=iworker)
+                
+                found = task
+
+            #
+            task = found
+
+            import vnf.content
+            itaskmonitor = vnf.content.itaskMonitor(
+                task.id,
+                label = 'Downloading electronic dos ...',
+                sentry=director.sentry,
+                )
+            itaskmonitor.finished_callback = '''
+  function(data) {
+    var monitor = $("#%(itaskmonitorid)s");
+    
+    monitor.itaskmonitor("destroy");
+    
+    if (data.state=="failed") {
+      monitor.text("failed to download electronic dos: ");
+      var errmsg = $("<pre>"+data["reason-of-failure"]+"</pre>");
+      monitor.append(errmsg);
+    } else if (data.state=="cancelled") {
+      monitor.text("download of electronic dos was cancelled");
+    } else if (data.state=="finished") {
+      monitor.text("Please wait for this page to reload...");
+      window.location.reload();
+    } else {
+      monitor.text("failed to download electronic dos: unknown state " + data.state);
+    }
+  }
+''' % {'itaskmonitorid': itaskmonitor.id}
+            document.add(itaskmonitor)
+
+            import vnf.content
+            snippet = vnf.content.jssnippet()
+            snippet.main = [
+                '$("#%s").itaskmonitor("start");' % itaskmonitor.id,
+                ]
+            document.add(snippet)
+            
         return
 
 
@@ -216,6 +286,27 @@ class Actor(base):
         if not computation.job: return False
         return True
 
+
+def _readDOS(filename):
+    f = open(filename)
+    lines = f.readlines()
+    E = []; I = []
+    for line in lines:
+        try:
+            e, dos = line.split()
+        except:
+            continue
+
+        e = float(e)
+        dos = float(dos)
+        
+        E.append(e)
+        I.append(dos)
+
+        continue
+
+    return E,I
+        
 
 def _readDOSCAR(doscar):
     try:

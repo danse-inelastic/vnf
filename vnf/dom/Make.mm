@@ -90,6 +90,7 @@ EXPORT_PYTHON_MODULES = \
 	SingleCrystal.py \
 	Table.py \
 	User.py \
+	VASP.py \
 	idgenerator.py \
 	registry.py \
 	_all_tables.py \
