@@ -35,6 +35,7 @@ EXPORT_DATAFILES = \
 	main.pml \
 	postman.pml \
 	retrieveresults.pml \
+	signJar.pml \
 	ssher.pml \
 	submitjob.pml \
 
