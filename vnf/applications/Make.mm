@@ -31,7 +31,6 @@ EXPORT_PYTHON_MODULES = \
 	PackJobDir.py \
 	RetrieveResults.py \
 	SignJar.py \
-	SubmitJob.py \
 	Timer.py \
 	UpdateJobStatus.py \
 	WebApplication.py \

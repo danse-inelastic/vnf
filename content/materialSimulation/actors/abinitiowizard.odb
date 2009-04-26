@@ -11,7 +11,10 @@
 
 
 from vnf.components.MaterialSimulationWizard import \
-     actionRequireAuthentication, action_link, AuthenticationError, InputProcessingError
+     actionRequireAuthentication, action_link, \
+     AuthenticationError, InputProcessingError
+from vnf.weaver import action_href
+
 
 from vnf.components.MaterialSimulationWizard import MaterialSimulationWizard as base
 
@@ -105,43 +108,139 @@ class AbinitioWizard(base):
     def _advancedVASP(self, document, director, errors=None):
         id = self.inventory.id
         type = self.inventory.type
-        
-        inputs = self._createVASPInputs(director)
 
-        formcomponent = self.retrieveFormToShow( 'vasp-advanced')
-        formcomponent.director = director
-        
-        # build the form 
-        form = document.form(name='', action=director.cgihome)
-        # specify action
-        action = actionRequireAuthentication(          
-            actor = 'abinitiowizard', 
-            sentry = director.sentry,
-            routine = 'verifyAdvancedVASPConfiguration',
-            id=id, type=type,
-            arguments = {'form-received': formcomponent.name },
-            )
-        from vnf.weaver import action_formfields
-        action_formfields( action, form )
-        
-        # expand the form with fields from the form component
-        formcomponent.expand(form, **inputs)
-        next = form.control(name='submit',type="submit", value="next")
-
-        p = document.paragraph()
-        action = actionRequireAuthentication(
-            label = 'skip',
-            actor = 'abinitiowizard',
-            sentry = director.sentry,
-            routine = 'createJob',
-            id = id, type = type,
-            )
-        link = action_link(action, director.cgihome)
-        p.text = [
-            'You can %s this step.' % link,
-            ]
+        computation = self._getSimulation(director)
+        if self._vaspRawInputFilesExists(computation, director):
+            rawInputs = self._readVaspRawInputFIles(computation, director)
             
-        return
+            formcomponent = self.retrieveFormToShow( 'vasp-advanced')
+            formcomponent.director = director
+            
+            # build the form 
+            form = document.form(name='', action=director.cgihome)
+            # specify action
+            action = actionRequireAuthentication(          
+                actor = 'abinitiowizard', 
+                sentry = director.sentry,
+                routine = 'verifyAdvancedVASPConfiguration',
+                id=id, type=type,
+                arguments = {'form-received': formcomponent.name },
+                )
+            from vnf.weaver import action_formfields
+            action_formfields( action, form )
+
+            # expand the form with fields from the form component
+            formcomponent.expand(form, **rawInputs)
+            next = form.control(name='submit',type="submit", value="next")
+
+            p = document.paragraph()
+            action = actionRequireAuthentication(
+                label = 'skip',
+                actor = 'abinitiowizard',
+                sentry = director.sentry,
+                routine = 'createJob',
+                id = id, type = type,
+                )
+            link = action_link(action, director.cgihome)
+            p.text = [
+                'You can %s this step.' % link,
+                ]
+            return
+
+        # the itask worker
+        iworker = 'build-vasp-input-files'
+
+        # first check if there is itask running
+        found = None
+        pending_tasks = computation.pending_tasks.dereference(director.clerk.db)
+        if pending_tasks:
+            for label, task in pending_tasks:
+
+                # if not the right task, skip
+                if task.worker != iworker: continue
+
+                if task.state == 'finished':
+                    raise RuntimeError, "Task %s for %s finished but no vasp inputs available." % (task.id, computation.id)
+
+                if task.state == 'failed':
+                    self._debug.log("Task %s for %s found. Which has failed before." % (task.id, computation.id))
+                    # reopen the task
+                    task.state = 'created'
+                    director.clerk.updateRecord(task)
+                    found = task
+                    break
+
+                if task.state == 'cancelled':
+                    self._debug.log("Task %s for %s found. Which has been cancelled before." % (task.id, computation.id))
+                    # reopen the task
+                    task.state = 'created'
+                    director.clerk.updateRecord(task)
+                    found = task
+                    break
+
+                found = task
+                break
+
+
+        # if no previous task found, create a new task
+        if not found:
+
+            from vnf.dom.ITask import createITask, ITask
+            task = director.clerk.newDbObject(ITask)
+            task = createITask(
+                task.id,
+                beneficiary = computation,
+                worker = iworker,
+                type = iworker,
+                )
+            director.clerk.updateRecord(task)
+
+            # add this task to pending task list
+            computation.pending_tasks.add(task, director.clerk.db, name=iworker)
+
+            found = task
+
+        #
+        task = found
+
+        import vnf.content
+        itaskmonitor = vnf.content.itaskMonitor(
+            task.id,
+            label = 'Generating raw VASP input files ...',
+            sentry=director.sentry,
+            )
+        itaskmonitorid = itaskmonitor.id
+        
+        redirectaction = actionRequireAuthentication(
+            sentry = director.sentry,
+            label = '',
+            actor = self.name,
+            routine = 'advancedConfiguration',
+            id = self.inventory.id,
+            type = self.inventory.type,
+            matterid = self.inventory.matterid,
+            mattertype = self.inventory.mattertype,
+            )
+        redirecturl = action_href(redirectaction, director.cgihome)
+        itaskmonitor.finished_callback = '''
+  function(data) {
+    var monitor = $("#%(itaskmonitorid)s");
+    
+    if (data.state=="finished") {
+      monitor.text("Please wait for this page to reload...");
+      window.location = "%(redirecturl)s";
+    }
+  }
+''' % locals()
+        document.add(itaskmonitor)
+
+        import vnf.content
+        snippet = vnf.content.jssnippet()
+        snippet.main = [
+            '$("#%s").itaskmonitor("start");' % itaskmonitor.id,
+            ]
+        document.add(snippet)
+        return        
 
 
     def verifyAdvancedVASPConfiguration(self, director):
@@ -173,73 +272,22 @@ class AbinitioWizard(base):
         return self.createJob(director)
 
 
-    def _createVASPInputs(self, director):
-        # vasp computation configurations
-        simulation = self._getSimulation(director)
-
-        # make a copy of this computation
-        computation = director.clerk.deepcopy(simulation)
-        # change description
-        computation.short_description = 'generate vasp inputs for computation %s' \
-                                        % simulation.id
-        # make sure this computation only generate input files
-        computation.generateInputsOnly = True
-        director.clerk.updateRecord(computation)
-        
-        # create a job for this computation
-        from vnf.components.Job import new_job
-        job = new_job(director)
-
-        # connect this job to the computation
-        computation.job = job
-        director.clerk.updateRecord(computation)
-        job.computation = computation
-        director.clerk.updateRecord(job)
-        
-        # submit this job
-        from vnf.components.Job import submit
-        submit(job, director)
-
-        # the server this job was submitted to
-        server = job.server.dereference(director.clerk.db)
-        
-        # now wait and retrieve results
-        import time
-        time.sleep(1)
-        files = [
-            'INCAR',
-            'KPOINTS',
-            'POSCAR',
-            'POTCAR',
-            ]
-        
-        #  check whether input files were generated
-        #  try 10 times
-        count = 0; gotfiles = 0
-        while count<10:
-            count += 1
-            try:
-                director.dds.remember(job, files=files, server=server)
-                gotfiles = 1
-                break
-            except:
-                time.sleep(1)
-                continue
-        if not gotfiles:
-            raise RuntimeError, 'unable to generate VASP input files'
-
-        #  copy them to the vnf server
-        director.dds.make_available(job, files=files)
-
-        d = {}
-        for f in files:
-            d[f] = open(director.dds.abspath(job, f)).read()
+    def _vaspRawInputFilesExists(self, computation, director):
+        import os
+        for f in VASP_RAW_INPUT_FILES:
+            path = director.dds.abspath(computation, f)
+            if not os.path.exists(path): return False
             continue
-
-        # !!!should delete the computation that is only for
-        # creating the vasp inputs here!!!
-        return d
+        return True
     
+
+    def _readVaspRawInputFIles(self, computation, director):
+        d = {}
+        for f in VASP_RAW_INPUT_FILES:
+            path = director.dds.abspath(computation, f)
+            d[f] = open(path).read()
+        return d
+
 
     def _readyForSubmission(self, director):
         if not base._readyForSubmission(self, director): return False
@@ -254,6 +302,13 @@ class AbinitioWizard(base):
 
     pass # end of AbinitioWizard
 
+
+VASP_RAW_INPUT_FILES = [
+    'INCAR',
+    'KPOINTS',
+    'POSCAR',
+    'POTCAR',
+    ]
 
 def actor():
     return AbinitioWizard('abinitiowizard')

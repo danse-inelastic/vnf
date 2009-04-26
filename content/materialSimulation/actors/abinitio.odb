@@ -206,19 +206,9 @@ class Actor(base):
   function(data) {
     var monitor = $("#%(itaskmonitorid)s");
     
-    monitor.itaskmonitor("destroy");
-    
-    if (data.state=="failed") {
-      monitor.text("failed to download electronic dos: ");
-      var errmsg = $("<pre>"+data["reason-of-failure"]+"</pre>");
-      monitor.append(errmsg);
-    } else if (data.state=="cancelled") {
-      monitor.text("download of electronic dos was cancelled");
-    } else if (data.state=="finished") {
+    if (data.state=="finished") {
       monitor.text("Please wait for this page to reload...");
       window.location.reload();
-    } else {
-      monitor.text("failed to download electronic dos: unknown state " + data.state);
     }
   }
 ''' % {'itaskmonitorid': itaskmonitor.id}
@@ -307,35 +297,6 @@ def _readDOS(filename):
 
     return E,I
         
-
-def _readDOSCAR(doscar):
-    try:
-        efermi = _readEfermiFromDOSCAR(doscar)
-    except:
-        import journal, traceback
-        journal.debug('vasp-dos').log(traceback.format_exc())
-        return
-    #quick hack for now
-    f = open(doscar)
-    lines = f.read().split('\n')
-    E = []; I = []
-
-    for line in lines[6:]:
-        if not line: continue
-        numbers = line.split()
-        E.append(float(numbers[0])-efermi)
-        I.append(float(numbers[1]))
-        continue
-    return E, I
-
-
-def _readEfermiFromDOSCAR(doscar):
-    f = open(doscar)
-    for i in range(6): line = f.readline()
-    words = line.split()
-    assert len(words)==5
-    return float(words[3])
-
 
 from vnf.components.Job import isdone
 from vnf.components.Computation import retrieve_results as retrieve_computation_results

@@ -48,6 +48,16 @@ class Server(Table):
     scheduler.meta['tip'] = 'scheduler to use on the server'
 
 
+
+
+class LocalHost:
+
+    address = None
+    port = None
+
+
+
+
 def inittable(db):
     def server(
         id, short_description,

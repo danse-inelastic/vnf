@@ -79,6 +79,8 @@ class WebApplication(Base):
         noErrors=True
         try:
             page = self.actor.perform(self, routine=self.inventory.routine, debug=self.debug)
+            self.recordActivity()
+            
             if isinstance(page, basestring):
                 print page,
             else:
@@ -151,33 +153,28 @@ class WebApplication(Base):
         open(inputspath, 'w').write(inputs)
 
         return id, inputs, errmsg
-            
 
-    
-    def _oldmain(self, *args, **kwds):
-        if self.debug:
-            from configurationSaver import toPml
-            from os import environ
-            user = environ.get('USER') or 'webserver'
-            toPml(self, '/tmp/main-debug-%s.pml' % user)
-#            if user is 'jbk' or environ:
-#                import traceback
-#                out = open( '../log/vnf-error-%s.log' % user, 'w' )
-#                out.write( traceback.format_exc() )
-#                toPml(self, '../config/main.pml')
-        actor = self.actor
-        if actor is None:
-            inquiry = self.inventory._getTraitDescriptor('actor').inquiry
-            actor = self.retrieveActor('nyi')
-            actor.message = "Not implemented yet! actor=%s, routine=%s" % (
-                inquiry, self.inventory.routine)
-            self.actor = actor
-            
-        page = self.actor.perform(self, routine=self.inventory.routine, debug=self.debug)
-        self.render(page)
+
+    def recordActivity(self):
+        from vnf.dom.Activity import Activity
+        activity = Activity()
+        
+        from vnf.components.misc import new_id
+        activity.id =  new_id(self)
+        
+        activity.actor = self.actor.name
+        
+        activity.username = self.sentry.username
+        
+        activity.routine = self.inventory.routine
+
+        activity.remote_address = self._cgi_inputs['REMOTE_ADDR']
+
+        self.clerk.newRecord(activity)
+
         return
 
-
+    
     def redirect(self, actor, routine, **kwds):
         self.inventory.routine = routine
         self.actor = self.retrieveActor(actor)

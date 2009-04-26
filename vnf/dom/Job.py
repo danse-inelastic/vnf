@@ -68,6 +68,9 @@ class Job(base):
     import vnf.dom
     dependencies = vnf.dom.referenceSet(name='dependencies')
 
+    # pending internal-tasks to get this job going
+    pending_tasks = vnf.dom.referenceSet(name='pending_tasks')
+
 
 # version
 __id__ = "$Id$"
