@@ -46,6 +46,7 @@ distclean::
 
 EXPORT_PYTHON_MODULES = \
 	AbInitio.py \
+	Activity.py \
 	ACL1.py \
 	ACL2.py \
 	ACL_Privilege.py \
