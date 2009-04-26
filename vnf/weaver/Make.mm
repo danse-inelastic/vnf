@@ -42,6 +42,8 @@ EXPORT_PYTHON_MODULES = \
 	JavaScriptWeaver.py \
 	JavaScriptWeaverBase.py \
 	JavaScriptWeaverExtensions.py \
+	Jnlp.py \
+	JnlpMill.py \
 	PageMill.py \
 	Plot_2DMill.py \
 	SlidableGallery.py \
