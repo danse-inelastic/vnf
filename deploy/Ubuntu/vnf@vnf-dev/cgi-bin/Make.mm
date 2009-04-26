@@ -11,20 +11,12 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 PROJECT = vnf
-PACKAGE = deploy
-
-RECURSE_DIRS = \
-    bin \
-    cgi \
-    cgi-bin \
-    config \
-    vnf \
-    html \
+PACKAGE = cgi-bin
 
 #--------------------------------------------------------------------------
 #
 
-all: 
+all: export-data-files
 	BLD_ACTION="all" $(MM) recurse
 
 tidy::
@@ -37,6 +29,18 @@ distclean::
 	BLD_ACTION="distclean" $(MM) recurse
 
 
+EXPORT_DATAFILES = \
+	main.cgi \
+
+
+CP_F = rsync 
+EXPORT_DATA_PATH = $(EXPORT_ROOT)/$(PROJECT)/$(PACKAGE)
+
+export-data-files:: 
+	mkdir -p $(EXPORT_DATA_PATH); \
+	for x in $(EXPORT_DATAFILES); do { \
+	  $(CP_F) $$x $(EXPORT_DATA_PATH)/ ; \
+        } done
 
 
 # version

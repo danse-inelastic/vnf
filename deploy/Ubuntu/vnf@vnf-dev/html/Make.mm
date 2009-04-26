@@ -31,8 +31,9 @@ distclean::
 
 EXPORT_DATAFILES = \
 	index.html \
+	cgi-bin \
 
-CP_F = cp -f
+CP_F = cp -af
 EXPORT_DATA_PATH = $(EXPORT_ROOT)/$(PROJECT)/$(PACKAGE)
 
 export-data-files:: 
