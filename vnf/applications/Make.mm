@@ -29,6 +29,7 @@ EXPORT_PYTHON_MODULES = \
 	MigrateTable.py \
 	PackJobDir.py \
 	RetrieveResults.py \
+	SignJar.py \
 	SubmitJob.py \
 	Timer.py \
 	UpdateJobStatus.py \

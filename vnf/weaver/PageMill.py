@@ -45,7 +45,7 @@ class PageMill(base):
         tagger = self.bodyMill.tagger
         from StructuralMill import StructuralMill
         self.bodyMill.structuralMill = StructuralMill(tagger, configurations)
-        
+        self.bodyMill.structuralMill.master = self
         return
     
 

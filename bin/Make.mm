@@ -42,6 +42,7 @@ EXPORT_DATAFILES = \
 	migratetable.py \
 	packjobdir.py \
 	retrieveresults.py \
+	signJar.py \
 	submitjob.py \
 	timer.py \
 	updatejobstatus.py \
