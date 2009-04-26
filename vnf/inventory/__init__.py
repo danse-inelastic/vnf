@@ -27,6 +27,10 @@ def geometer( *args, **kwds ):
     return Geometer( *args, **kwds )
 
 
+def iworker(*args, **kwds):
+    from IWorker import IWorker
+    return IWorker(*args, **kwds)
+
 import validators
 
 # version

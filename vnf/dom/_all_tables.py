@@ -65,6 +65,7 @@ other = [
     'Registrant',
     'Server',
     'Job',
+    'ITask',
     ]
 
 

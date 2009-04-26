@@ -63,6 +63,7 @@ EXPORT_PYTHON_MODULES = \
 	GulpSimulation.py \
 	Instrument.py \
 	InstrumentConfiguration.py \
+	ITask.py \
 	Job.py \
 	MaterialModeling.py \
 	MaterialSimulation.py \

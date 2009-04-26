@@ -163,7 +163,7 @@ class Actor(base):
             l.text.append('<li><em>%s:</em> %s </li>' % (k,v))
             continue
         l.text.append('</ul>')
-
+        
         # refresh link
         p = document.paragraph()
         link = action_link(
@@ -177,7 +177,40 @@ class Actor(base):
             director.cgihome
             )
         p.text = [link]
+        
+        # Results
+        compdoc = document.document(title='Computation')
+        # link to computation
+        p = compdoc.paragraph()
+        computation_ptr = job.computation
+        link = action_link(
+            actionRequireAuthentication
+            ( actor = 'computation',
+              sentry = director.sentry,
+              routine = 'view',
+              label = 'results',
+              id = computation_ptr.id,
+              type = computation_ptr.table.__name__,
+              ),
+            director.cgihome
+            )
+        p.text = ["See the %s of the computation." % link]
 
+        # download document
+        downloaddoc = document.document(title='Download')
+        # download link
+        p = downloaddoc.paragraph()
+        action = actionRequireAuthentication(
+            sentry = director.sentry,
+            label = 'Download the output files of this job.',
+            actor = 'job',
+            routine = 'download',
+            id = id,
+            )
+        link = action_link(action, director.cgihome)
+        p.text = [
+            link,
+            ]
         
         # status document
         statusdoc = document.document(title='Status')
@@ -242,42 +275,6 @@ class Actor(base):
             '</pre>',
             ]
 
-        # download document
-        downloaddoc = document.document(title='Download')
-        # download link
-        p = downloaddoc.paragraph()
-        action = actionRequireAuthentication(
-            sentry = director.sentry,
-            label = 'Download',
-            actor = 'job',
-            routine = 'download',
-            id = id,
-            )
-        link = action_link(action, director.cgihome)
-        p.text = [
-            'You can %s this job to your local computer.' % link,
-            ]
-
-
-        # Computation
-        compdoc = document.document(title='Computation')
-        # link to computation
-        p = compdoc.paragraph()
-        computation_ptr = job.computation
-        link = action_link(
-            actionRequireAuthentication
-            ( actor = 'computation',
-              sentry = director.sentry,
-              routine = 'view',
-              label = 'here',
-              id = computation_ptr.id,
-              type = computation_ptr.table.__name__,
-              ),
-            director.cgihome
-            )
-        p.text = ["To see what this job is about, please click %s" % link]
-
-        
         # Misc
         miscdoc = document.document(title='Misc.')
         # put up all other info about the job

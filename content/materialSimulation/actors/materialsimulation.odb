@@ -53,11 +53,11 @@ class Actor(base):
         p.text = [
             'You can %s a simulation/model with a new sample for use in a virtual instrument.' % create,
             ]
-        p = document.paragraph()
-        p.text = [
-            'Or you can chain further computations to a preexisting one:',
-            ]
-        where ="creator='%s'" % director.sentry.username
+#        p = document.paragraph()
+#        p.text = [
+#            'Or you can chain further computations to a preexisting one:',
+#            ]
+        where ="creator='%s' or creator='vnf'" % director.sentry.username
         simulations = getallsimulations(director.clerk.db, where=where)
         if len(simulations):           
             table = director.retrieveComponent(
