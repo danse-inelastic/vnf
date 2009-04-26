@@ -51,8 +51,7 @@ class Test( base ):
 
     def processUserInputs(self):
         parameter1 = self.inventory.parameter1
-        print parameter1
-        return 
+        return parameter1
 
     pass # end of Test
 

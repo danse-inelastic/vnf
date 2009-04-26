@@ -50,6 +50,22 @@ def announce(director, announcement, *args):
     
     return
 
+def partition(alist):
+    '''partitions a list into several lists, each list containing the same type of element'''
+    distinctKinds=[]
+    partitionList=[]
+    alist.sort()
+    for item in alist:
+        if item in distinctKinds:
+            partitionList[-1].append(item)
+        else:
+            partitionList.append([item])
+            distinctKinds.append(item)
+    return partitionList
+    
+if __name__=='__main__':
+    print partition([3,3,4,4,5,8,'x','x','h',3,2,5,5])
+
 # version
 __id__ = "$Id$"
 
