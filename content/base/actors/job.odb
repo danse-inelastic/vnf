@@ -152,9 +152,38 @@ class Actor(base):
         document = main.document( title = 'Job # %s: %s' % (
             job.id, job.state ) )
 
+        keyinfos = {
+            'ID': job.id,
+            'Description': job.short_description,
+            'Status': job.state,
+            }
+        l = document.literal()
+        l.text = ['<ul>']
+        for k,v in keyinfos.iteritems():
+            l.text.append('<li><em>%s:</em> %s </li>' % (k,v))
+            continue
+        l.text.append('</ul>')
+
+        # refresh link
+        p = document.paragraph()
+        link = action_link(
+            actionRequireAuthentication
+            ( actor = 'job',
+              sentry = director.sentry,
+              routine = 'view',
+              label = 'Refresh',
+              id = id,
+              ),
+            director.cgihome
+            )
+        p.text = [link]
+
+        
+        # status document
+        statusdoc = document.document(title='Status')
+        p = statusdoc.paragraph()
         # if job is running, add a "cancel" link
         if job.state == 'running':
-            p = document.paragraph()
             action = actionRequireAuthentication(
                 sentry = director.sentry,
                 label = 'cancel',
@@ -167,18 +196,73 @@ class Actor(base):
                 'Your job #%s is running.' % job.id,
                 'If you don\'t want it running anymore, please %s it.' % link,
                 ]
-            
-        # put up all info about the job
-        record = job
-        props = record.getColumnNames()
-        lines = ['%s=%s' % (prop, getattr(record, prop) ) for prop in props]
-        for line in lines:
-            p = document.paragraph()
-            p.text = [line]
-            continue
+        else:
+            p.text = [
+                'Your job #%s is %s.' % (job.id, job.state),
+                ]
 
+            if job.state in ['finished', 'terminated', 'cancelled']:
+                p = statusdoc.paragraph()
+                p.text = [
+                    'The job exited with code %s.' % job.exit_code
+                    ]
+
+        # runinfo document
+        runinfodoc = document.document(title='Run information')
+        p = runinfodoc.paragraph()
+        time_start = job.time_start
+        cluster = job.server.dereference(director.clerk.db).short_description
+        nprocs = job.numprocessors
+        walltime = job.walltime
+        p.text = [
+            "This job was started at %s on %s processor(s) of cluster \"%s\" with time limit of %s hour(s)." % (
+            time_start, nprocs, cluster, walltime),
+            ]
+
+        if job.state in ['finished', 'terminated', 'cancelled']:
+            p = runinfodoc.paragraph()
+            p.text = [
+                'This job was %s at %s.' % (job.state, job.time_completion),
+                ]
+
+        # output document
+        outputdoc = document.document(title='Output')
+        outputdoc.paragraph().text = ['stdout']
+        l = outputdoc.literal()
+        l.text = [
+            '<pre>',
+            job.output,
+            '</pre>',
+            ]
+        outputdoc.paragraph().text = ['stderr']
+        l = outputdoc.literal()
+        l.text = [
+            '<pre>',
+            job.error,
+            '</pre>',
+            ]
+
+        # download document
+        downloaddoc = document.document(title='Download')
+        # download link
+        p = downloaddoc.paragraph()
+        action = actionRequireAuthentication(
+            sentry = director.sentry,
+            label = 'Download',
+            actor = 'job',
+            routine = 'download',
+            id = id,
+            )
+        link = action_link(action, director.cgihome)
+        p.text = [
+            'You can %s this job to your local computer.' % link,
+            ]
+
+
+        # Computation
+        compdoc = document.document(title='Computation')
         # link to computation
-        p = document.paragraph()
+        p = compdoc.paragraph()
         computation_ptr = job.computation
         link = action_link(
             actionRequireAuthentication
@@ -193,33 +277,22 @@ class Actor(base):
             )
         p.text = ["To see what this job is about, please click %s" % link]
 
-        # download link
-        p = document.paragraph()
-        action = actionRequireAuthentication(
-            sentry = director.sentry,
-            label = 'Download',
-            actor = 'job',
-            routine = 'download',
-            id = id,
-            )
-        link = action_link(action, director.cgihome)
-        p.text = [
-            '%s this job' % link,
-            ]
         
-        # refresh link
-        p = document.paragraph()
-        link = action_link(
-            actionRequireAuthentication
-            ( actor = 'job',
-              sentry = director.sentry,
-              routine = 'view',
-              label = 'Refresh',
-              id = id,
-              ),
-            director.cgihome
-            )
-        p.text = [link]
+        # Misc
+        miscdoc = document.document(title='Misc.')
+        # put up all other info about the job
+        record = job
+        props = [
+            'creator',
+            'remote_outputfilename',
+            'remote_errorfilename',
+            'id_incomputingserver',
+            ]
+        lines = ['%s=%s' % (prop, getattr(record, prop) ) for prop in props]
+        for line in lines:
+            p = document.paragraph()
+            p.text = [line]
+            continue
 
         return page
 

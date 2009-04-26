@@ -86,6 +86,34 @@ class Builder(JobBuilder, XMLMill):
         return
 
 
+    def onSQEKernel(self, kernel):
+        attrs = {
+            'Q-range': '%s*angstrom**-1,%s*angstrom**-1' % (kernel.Qmin, kernel.Qmax),
+            'energy-range': '%s*meV,%s*meV' % (kernel.Emin, kernel.Emax),
+            }
+
+        self._write( '<SQEkernel %s>' % attribs_str( attrs ) )
+
+        self._indent()
+        sqe = kernel.sqe.dereference(self.db)
+        self.dispatch( sqe )
+        self._outdent()
+
+        self._write( '</SQEkernel>' )
+        return
+
+
+    def onSQE(self, sqe):
+        self.dependencies.append(sqe)
+
+        # this is done by assuming the <table>/<id> directory structure for data storage
+        # should be replaced later
+        import os
+        relpath = os.path.join( '..', '..', self.dds.path(sqe, sqe.histogramh5))
+        self._write( '<GridSQE histogram-hdf-path="%s/S(Q,E)"/>' % relpath )
+        return
+
+
     def onPolyXtalCoherentPhononScatteringKernel(self, kernel):
         attrs = {
             'Ei': '%s*meV' % kernel.Ei,

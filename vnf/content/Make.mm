@@ -45,6 +45,7 @@ EXPORT_PYTHON_MODULES = \
 	ActionRequireAuthentication.py \
 	Announcement.py \
 	AutoRefresh.py \
+	Button.py \
 	Dialog.py \
 	Image.py \
 	ImagePlot.py \

@@ -20,7 +20,8 @@ def table(matsims, director):
         description = Model.Measure(name='description', type='text')
         type = Model.Measure(name='type', type='text')
         matter = Model.Measure(name='matter', type='text')
-        #chain = Model.Measure(name='chain', type='text')
+        chain = Model.Measure(name='chain', type='text')
+        creationDate = Model.Measure(name='creationDate', type='text')
 
 
     def getDesc(matsim):
@@ -34,6 +35,9 @@ def table(matsims, director):
             type = matsim.__class__.__name__.lower(),
             )
         return action_link(action, director.cgihome)
+    def getCreationDate(exp):
+        date = exp.date
+        return date
     def getType(matsim):
         return matsim.__class__.__name__
     def getMatter(matsim):
@@ -60,7 +64,8 @@ def table(matsims, director):
         'description': getDesc,
         'type': getType,
         'matter': getMatter,
-        #'chain': getChain,
+        'creationDate': getCreationDate,
+        'chain': getChain,
         }
     
     class D: pass
@@ -77,10 +82,10 @@ def table(matsims, director):
         
         columns = [
             View.Column(id='col1',label='Description', measure='description'),
-            #View.Column(id='col1',label='Description', measure='description'), #eventually add date here
             View.Column(id='col2',label='Type', measure='type'),
             View.Column(id='col3',label='Matter', measure='matter'),
             #View.Column(id='col4',label='Chain', measure='chain'),
+            View.Column(id='col5',label='Date created', measure='creationDate'),
             ]
 
         editable = False

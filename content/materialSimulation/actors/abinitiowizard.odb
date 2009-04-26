@@ -45,7 +45,6 @@ class AbinitioWizard(base):
         
         main = page._body._content._main
         document = main.document(title='Ab initio electronic structure simulation' )
-        document.byline = '<a href="http://danse.us">DANSE</a>'    
         
         formcomponent = self.retrieveFormToShow( 'abinitio')
         formcomponent.director = director
@@ -93,7 +92,6 @@ class AbinitioWizard(base):
 
         main = page._body._content._main
         document = main.document(title='Ab initio electronic structure simulation: advanced configuration' )
-        document.byline = '<a href="http://danse.us">DANSE</a>'    
 
         simulation = self._getSimulation(director)
         engine = simulation.engine

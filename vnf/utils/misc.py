@@ -30,6 +30,23 @@ def isnewer(path, time,
     return False
 
 
+
+def most_recent_file(directory):
+    'find the most recent file in the given directory'
+    files = [os.path.join(directory, entry) for entry in os.listdir(directory)]
+
+    getctime = os.path.getctime
+    def comp(f1, f2):
+        timediff = getctime(f1) - getctime(f2)
+        if timediff<0: return -1
+        if timediff>0: return 1
+        return 0
+
+    files.sort(comp)
+
+    return files[-1]
+
+
 # version
 __id__ = "$Id$"
 

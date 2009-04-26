@@ -18,8 +18,9 @@ class SQE(base1, base2):
 
     name = 'sqes'
 
+    histogramh5 = 'sqe.h5'
     datafiles = [
-        'sqe.h5',
+        histogramh5,
         ]
     
     pass # end of SQE

@@ -31,9 +31,6 @@ class HtmlMill:
         # html
         htmlcode = []
 
-        # need id
-        setid(dialog)
-
         # render
         htmlcode += self.onDocument(dialog)
         
@@ -58,8 +55,7 @@ class JSMill:
             ]
         self.include(scripts=includes)
 
-        gid = setid(dialog)
-        self.writemain( '$("#%s").dialog( {' % (gid, ) )
+        self.writemain( '$("#%s").dialog( {' % (dialog.id, ) )
         self.writemain( '  bgiframe: true,' )
         self.writemain( '  autoOpen: false,' )
         #self.writemain( '  height: 300,' )
@@ -74,13 +70,6 @@ class JSMill:
             item.identify(self)
         return
         
-
-def setid(dialog):
-    gid = id(dialog)
-    if not dialog.attributes.get('id'):
-        dialog.attributes['id'] = gid
-    return dialog.attributes['id']
-
 
 # version
 __id__ = "$Id$"

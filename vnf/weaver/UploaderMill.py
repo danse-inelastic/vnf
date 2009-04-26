@@ -25,9 +25,19 @@ class HtmlMill:
             continue
 
         htmlcode = []
-        gid = id(uploader)
-        htmlcode.append( '<div id="%s">' % gid )
-        htmlcode.append( '</div>' )
+
+        htmlcode.append('<div class="formfield">')
+        
+        htmlcode.append('<div>')
+        htmlcode.append('<label for="%s">%s</label>' % (uploader.id, uploader.label))
+        htmlcode.append('</div>')
+        
+        if uploader.error:
+            htmlcode.append('<div class="error">%s</div>' % uploader.error)
+        if uploader.help:
+            htmlcode.append('<div class="formfieldHelp">%s</div>' % uploader.help)
+        htmlcode.append( '<div id="%s"> </div>' % uploader.id)
+        htmlcode.append('</div>')
 
         return csscode + htmlcode
 
@@ -54,9 +64,11 @@ class JSMill:
             'sentry.username': action.sentry.username,
             'sentry.ticket': action.sentry.ticket,
             }
+        for k,v in action.arguments.iteritems():
+            parameters[ '%s.%s' % (action.actor, k) ] = v
         
-        gid = id(uploader)
-        self.writemain( '$("#%s").uploader( "%s", %s );' % (gid, cgihome, parameters) )
+        self.writemain( '$("#%s").uploader( "%s", %s );' % (
+            uploader.id, cgihome, parameters) )
         
         return
         

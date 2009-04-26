@@ -25,7 +25,8 @@ class DBObjectForm( base ):
         id = pyre.inventory.str( 'id', default = '' )
         short_description = pyre.inventory.str(
             'short_description', default = '' )
-        short_description.meta['tip'] = 'A short description'
+        short_description.meta['label'] = "Name"
+        short_description.meta['tip'] = 'Please provide a short description'
         pass # end of Inventory
 
 
@@ -80,7 +81,12 @@ class DBObjectForm( base ):
             tip = _combine( meta.get('tip') )
             if tip: field.help = tip
             if errors and property in errors:
-                field.error = _combine( meta['tiponerror'] )
+                try:
+                    msg = errors[property]
+                except:
+                    msg = meta['tiponerror']
+                    
+                field.error = _combine(msg)
                 pass # end if
             continue
 

@@ -12,6 +12,19 @@
 #
 
 
+def suppressWarnings():
+    import warnings
+    categories_to_ignore = [
+        DeprecationWarning,
+        Warning,
+        ]
+    for category in categories_to_ignore:
+        warnings.filterwarnings('ignore', category=category)
+    return
+suppressWarnings()
+
+
+
 def main():
 
 

@@ -37,6 +37,7 @@ from TreeViewMill import TreeViewMill
 from UploaderMill import HtmlMill as UploaderMill
 from DialogMill import HtmlMill as DialogMill
 from JSsnippetMill import HtmlMill as JSsnippetMill
+from ButtonMill import HtmlMill as ButtonMill
 
 extensions = [
     ActionLinkRenderer,
@@ -50,6 +51,7 @@ extensions = [
     UploaderMill,
     DialogMill,
     JSsnippetMill,
+    ButtonMill,
     Extension1,
     ]
 

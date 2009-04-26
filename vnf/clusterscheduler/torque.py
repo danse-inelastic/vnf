@@ -123,7 +123,7 @@ class Scheduler:
                 outputfilename, errorfilename )
             ret.update(
                 { 'exit_code': d['exit_status'],
-                  'time_completion': d['etime'],
+                  'time_completion': d['mtime'],
                   'output': output,
                   'error': error,
                   } )

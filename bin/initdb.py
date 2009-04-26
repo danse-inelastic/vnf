@@ -51,7 +51,7 @@ class DbApp(Script):
             tables = [self.clerk._getTable(t) for t in tables]
 
         for table in tables:
-            self.dropTable( table )
+            #self.dropTable( table )
             self.createTable( table )
             if self.wwwuser: self.enableWWWUser( table )
             continue
