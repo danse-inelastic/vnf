@@ -42,9 +42,10 @@ EXPORT_DATAFILES = \
 	launch-detached.py \
 	migratetable.py \
 	packjobdir.py \
+	project.py \
 	retrieveresults.py \
 	signJar.py \
-	submitjob.py \
+	templator.py \
 	timer.py \
 	updatejobstatus.py \
 	updatejobstatus.sh \

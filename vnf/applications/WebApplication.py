@@ -311,6 +311,6 @@ if __name__=='__main__':
     print w
 
 # version
-__id__ = "$Id: WebApplication.py,v 1.3 2007-08-30 16:46:08 aivazis Exp $"
+__id__ = "$Id$"
 
 # End of file 

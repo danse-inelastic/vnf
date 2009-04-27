@@ -35,6 +35,7 @@ EXPORT_PYTHON_MODULES = \
 	Form.py \
 	Geometer.py \
 	IWorker.py \
+	Template.py \
 	__init__.py \
 
 

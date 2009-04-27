@@ -31,6 +31,11 @@ def iworker(*args, **kwds):
     from IWorker import IWorker
     return IWorker(*args, **kwds)
 
+
+def template(*args, **kwds):
+    from Template import Template
+    return Template(*args, **kwds)
+
 import validators
 
 # version

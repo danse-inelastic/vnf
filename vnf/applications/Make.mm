@@ -29,8 +29,10 @@ EXPORT_PYTHON_MODULES = \
 	LaunchDetached.py \
 	MigrateTable.py \
 	PackJobDir.py \
+	ProjectTemplator.py \
 	RetrieveResults.py \
 	SignJar.py \
+	Templator.py \
 	Timer.py \
 	UpdateJobStatus.py \
 	WebApplication.py \
