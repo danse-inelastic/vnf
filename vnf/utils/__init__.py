@@ -32,6 +32,15 @@ def launch_detached(cmd, home='.', debug=False):
         raise RuntimeError, '%r failed: out=%r, err=%r' % (c, log, err)
     return
 
+# Converts URL to UTF-8 encoded characters
+def unquote_unicode(source):
+    import urllib
+    result = urllib.unquote(source)
+    print result
+    if '%u' in result:
+        result = result.replace('%u','\\u').decode('unicode_escape')
+    return result
+
 
 # version
 __id__ = "$Id$"

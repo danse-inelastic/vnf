@@ -55,6 +55,7 @@ EXPORT_PYTHON_MODULES = \
 	ComputationResultsRetriever.py \
 	CSAccessor.py \
 	DBObjectForm.py \
+	DirectDB.py \
 	DistributedDataStorage.py \
 	MaterialSimulationEngine.py \
 	Form.py \

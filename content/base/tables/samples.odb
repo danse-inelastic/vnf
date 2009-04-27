@@ -54,7 +54,7 @@ def _table(samples, director, showkernels=False, selected=None):
     class view(View):
     
         columns = [
-            #View.Column(id='col0',label='ID', measure='id'),
+            View.Column(id='col0',label='ID', measure='id'),
             View.Column(id='col1',label='Description', measure='description'),
             View.Column(id='col2',label='Visualize', measure='visualize'),
             View.Column(id='col3',label='Chemical formula', measure='chemical_formula'),
@@ -146,7 +146,7 @@ def format_chemical_formula(sample,director ):
     except AttributeError: return 'unknown'
     if nullpointer(matter): return "undefined"
     matter = director.clerk.dereference(matter)    
-    return matter.chemical_formula
+    return matter.id #chemical_formula
 
 #"""
 # Get polycrystals id

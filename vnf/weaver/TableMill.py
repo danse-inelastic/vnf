@@ -36,14 +36,14 @@ class TableMill:
 
         htmlcode = []
         id = _id(table)
-        htmlcode.append( '<div id="%s"></div>' % id )
+        #htmlcode.append( '<div id="%s"></div>' % id )
         table = towidgetdescription(table)
         descriptors = table.column_descriptors
         
-        #tmp = []
+        #tmp = [ d.label for d in table.id]
         #for row in table.data:
         #    row.id
-            #tmp.append(row.id)
+        #    tmp.append(row.id)
         
         #pid = table.polycrystals_id
         header = [ d.label for d in descriptors]
@@ -75,8 +75,8 @@ class TableMill:
         for r in range(len(rows)):
             s += "<tr>"
             for c in range(len(rows[r])):
-                if c == 2:
-                    idattr = """ id = "%s_%s" """ % ("000", c)
+                if c == 1:
+                    idattr = """ id = "%s_%s" """ % (rows[r][0], c)
                 else:
                     idattr = ""
                 s += "<td%s>%s&nbsp;</td>\n" % (idattr, rows[r][c])
@@ -87,38 +87,41 @@ class TableMill:
             </table>
             """
             
-        htmlcode.append(s)   
+        htmlcode.append(s) 
+        
+        """  
         htmlcode.append(
-            """
-            <table border="1" id="tablesorter-demo" class="tablesorter">
-              <thead>
-                <tr>
-                  <th>Month</th>
-                  <th>Savings</th>
-                </tr>
-              </thead>
-              <tbody> 
-                <tr>
+        "" "
+        <table border="1" id="tablesorter-demo" class="tablesorter">
+          <thead>
+            <tr>
+              <th>Month</th>
+              <th>Savings</th>
+            </tr>
+          </thead>
+          <tbody> 
+            <tr>
+        
+              <td id="0_0"><a href="http://www.google.com" >January</a></td>
+              <td id="0_1">$80</td>
+            </tr>
+             
+            <tr>
+              <td id="2_0"><a href="http://www.google.com" >Sum</a></td>
+              <td id="2_1">$180</td>
+            </tr>
+        
+             
+            <tr>
+              <td id="1_0"><a href="http://www.google.com" >February</a></td>
+              <td id="1_1"> $100</td>
+            </tr>
             
-                  <td id="0_0"><a href="http://www.google.com" >January</a></td>
-                  <td id="0_1">$80</td>
-                </tr>
-                 
-                <tr>
-                  <td id="2_0"><a href="http://www.google.com" >Sum</a></td>
-                  <td id="2_1">$180</td>
-                </tr>
-            
-                 
-                <tr>
-                  <td id="1_0"><a href="http://www.google.com" >February</a></td>
-                  <td id="1_1"> $100</td>
-                </tr>
-                
-               </tbody>
-            </table>
-            """
+           </tbody>
+        </table>
+        "" "
         )
+        """
 
         codes = csscode + htmlcode
         return codes
