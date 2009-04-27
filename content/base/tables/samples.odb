@@ -39,7 +39,7 @@ def _table(samples, director, showkernels=False, selected=None):
         'shape': lambda s: format_shape(s, director),
         'kernels': lambda s: format_kernels(s, director),
         'selected': lambda s: format_selected(s, selected),
-        'polycrystals_id': lambda s: format_polycrystals_id(s, director) #operator.attrgetter( 'id' ) #
+        #'polycrystals_id': lambda s: format_polycrystals_id(s, director) #operator.attrgetter( 'id' ) #
         }
     def d(s):
         r = D()
@@ -148,7 +148,7 @@ def format_chemical_formula(sample,director ):
     matter = director.clerk.dereference(matter)    
     return matter.chemical_formula
 
-#"""
+"""
 # Get polycrystals id
 def format_polycrystals_id(sample,director ):
     try: matter = sample.matter
@@ -157,7 +157,7 @@ def format_polycrystals_id(sample,director ):
     matter = director.clerk.dereference(matter)
     #print matter.id
     return matter.id
-#"""
+"""
 
 def format_lattice_parameters(sample, director):
     try: matter = sample.matter
