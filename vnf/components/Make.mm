@@ -46,6 +46,7 @@ distclean::
 # export
 
 EXPORT_PYTHON_MODULES = \
+	AbstractForm.py \
 	AccessControl.py \
 	Actor.py \
 	Announcer.py \

@@ -15,43 +15,34 @@
 # This component is just for testing purpose.
 # Please read ../actors/testformactor.odb
 
-
-from vnf.components.Form import Form as base
-from vnf.components.DBObjectForm import formactor_action_prefix
+from vnf.components.Form import Form as base, formactor_action_prefix
 
 
 class Test( base ):
 
     class Inventory( base.Inventory ):
 
-        import pyre.inventory
+        import pyre.inventory, vnf.inventory
 
-        parameter1 = pyre.inventory.str( 'parameter1', default = 'hello' )
+        energy = pyre.inventory.str( 'energy', default = '10' )
+        energy.meta['tip'] = 'Please input neutron energy. unit: meV'
+        energy.meta['tiponerror'] = 'Please input a positve real number'
+        energy.meta['validator'] = vnf.inventory.validators.positivereal
 
         pass # end of Inventory
 
 
+    parameters = ['energy']
+
+    
     def __init__(self, name, *args ):
         base.__init__(self, name)
         return
 
+
     def legend(self):
         return "Test"
 
-    def expand(self, form):
-        prefix = formactor_action_prefix
-        
-        field = form.text(
-            id = '',
-            name = '%s.parameter1' % prefix,
-            label = 'Parameter1',
-            value = 'value',
-            )
-        return
-
-    def processUserInputs(self):
-        parameter1 = self.inventory.parameter1
-        return parameter1
 
     pass # end of Test
 

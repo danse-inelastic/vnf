@@ -30,8 +30,6 @@ class DBObjectForm( base ):
         pass # end of Inventory
 
 
-    parameters = [] # parameters to edit in the form
-
     DBTable = '' # db table class name
     
     
@@ -50,65 +48,47 @@ class DBObjectForm( base ):
         '''expand an existing form with fields from this component'''
 
         if id: self.inventory.id = id
-        
-        if empty_id( self.inventory.id ):
-            configuration = self.inventory
-        else:
-            configuration = self.getRecord()
-        
-        prefix = formactor_action_prefix
+        else: id = self.inventory.id
+
+        if not properties:
+            properties = self.parameters
+            
+        if not empty_id( id ):
+            record = self.getRecord()
+            values = [record.getColumnValue(name) for name in properties]
         
         id_field = form.hidden(
-            name = '%s.id' % prefix, value = configuration.id)
+            name = '%s.id' % prefix, value = id)
 
-        if errors:
-            p = form.paragraph( cls = 'error' )
-            p.text = [
-                'The form you filled out contained some errors.',
-                'Please look through the values you have entered',
-                'and correct any mistakes.',
-                ]
-
-        if properties is None: properties = self.parameters
-        for property in properties:
-            meta = getattr( self.Inventory, property ).meta
-            value = getattr( configuration, property )
-            field = form.text(
-                id = 'edit_%s' % property,
-                name='%s.%s' % (prefix, property),
-                label = meta.get('label') or property,
-                value = value)
-            tip = _combine( meta.get('tip') )
-            if tip: field.help = tip
-            if errors and property in errors:
-                try:
-                    msg = errors[property]
-                except:
-                    msg = meta['tiponerror']
-                    
-                field.error = _combine(msg)
-                pass # end if
-            continue
-
+        super(DBObjectForm, self).expand(
+            form,
+            errors=errors,
+            properties=properties,
+            values = values,
+            )
         return
 
 
-    def processUserInputs(self, commit = True):
+    def processUserInputs(self, commit = True, properties = None):
         '''process user inputs and save them to db
         commit: if true, commit to database record. 
         '''
-
+        # check inputs
+        super(DBObjectForm, self).processUserInputs(properties = properties)
+        
         # prepare a record to accept user inputs
         if empty_id(self.inventory.id):
             record = self.createRecord()
         else:
             record = self.getRecord( )
 
+        if not properties:
+            properties = self.parameters
+            
         # transfer user inputs to db record
-        for prop in self.parameters:
-            setattr(
-                record, prop,
-                self.inventory.getTraitValue( prop ) )
+        for prop in properties:
+            value = self.inventory.getTraitValue( prop )
+            record._setColumnValue(prop, value)
             continue
 
         # commit if requested
@@ -144,13 +124,6 @@ class DBObjectForm( base ):
 
     pass # end of DBObjectForm
 
-
-def _combine(text):
-    if text is None: return ''
-    if isinstance(text, str): return text
-    if isinstance(text, list) or isinstance(text, tuple):
-        return ' '.join( text )
-    raise NotImplementedError, text
 
 from misc import new_id, empty_id
 
