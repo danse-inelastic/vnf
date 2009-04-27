@@ -57,6 +57,8 @@ class DBObjectForm( base ):
             record = self.getRecord()
             values = [record.getColumnValue(name) for name in properties]
         
+        prefix = formactor_action_prefix
+
         id_field = form.hidden(
             name = '%s.id' % prefix, value = id)
 
