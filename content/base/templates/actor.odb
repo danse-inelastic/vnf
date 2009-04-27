@@ -17,9 +17,18 @@ from pyre.components.Component import Component
 
 class Template(Component):
 
+    class Inventory(Component.Inventory):
+
+        import pyre.inventory
+        form = pyre.inventory.str('form', default='testform')
+        
+
     def create(self, name=None):
+        
+        form = self.inventory.form
+        
         text = [
-            "from vnf.components.FormActor import FormActor as base, action",
+            "from vnf.components.FormActor import FormActor as base, action, InputProcessingError",
             "",
             "",
             "class Actor( base ):",
@@ -42,23 +51,25 @@ class Template(Component):
             "        page = director.retrievePage( 'greet' )",
             "        main = page._body._content._main",
             "        document = main.document(",
-            "            title='Title goes here')",
+            "            title='%s')" % name,
             "",
             "        p = document.paragraph()",
             "        p.text = ['Hello, world!']",
             "        return page",
             "",
+            "    default = helloWorld",
             "",
-            "    def presentform(self, director, errors=None):",
+            "",
+            "    def presentForm(self, director, errors=None):",
             "        page = director.retrievePage('greet')",
             "        main = page._body._content._main",
             "",
             "        # populate the main column",
-            "        document = main.document(title='Present a form')",
+            "        document = main.document(title='%s: Present a form')" % name,
             "        document.description = ''",
             "        ",
             "        formcomponent = self.retrieveFormToShow(",
-            "            'testform' )",
+            "            '%s' )" % form,
             "        formcomponent.director = director",
             "",
             "        # create form",
@@ -68,12 +79,12 @@ class Template(Component):
             "            action=director.cgihome)",
             "",
             "        # specify action",
-            "        action1 = action(",
+            "        submit_action = action(",
             "            label = '', ",
-            "            actor = 'testformactor', routine = 'verify',",
+            "            actor = '%s', routine = 'verify'," % name,
             "            arguments = {'form-received': formcomponent.name } )",
             "        from vnf.weaver import action_formfields",
-            "        action_formfields( action1, form )",
+            "        action_formfields( submit_action, form )",
             "",
             "        # expand the form with fields of the data object that is being edited",
             "        formcomponent.expand(form, errors=errors)",
@@ -91,12 +102,12 @@ class Template(Component):
             "            inputs = self.processFormInputs(director)",
             "        except InputProcessingError, err:",
             "            errors = err.errors",
-            "            return self.presentform(director, errors=error)",
+            "            return self.presentForm(director, errors=errors)",
             "",
             "        page = director.retrievePage( 'greet' )",
             "        main = page._body._content._main",
             "        document = main.document(",
-            "            title='Title goes here')",
+            "            title='%s: received user inputs')" % name,
             "",
             "        p = document.paragraph()",
             "        p.text = ['Your input for energy is: %s' % inputs.energy]",
