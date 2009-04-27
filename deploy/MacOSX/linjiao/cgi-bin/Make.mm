@@ -11,28 +11,12 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 PROJECT = vnf
-PACKAGE = deploy
-
-RECURSE_DIRS = \
-    vnf \
-    dds \
-    content \
-    cgi-bin \
-    html \
-
-EXPORT_DATADIRS = \
-    bin \
-    cgi \
-    html \
-    config \
-
-
-OTHERS = \
+PACKAGE = cgi-bin
 
 #--------------------------------------------------------------------------
 #
 
-all: export-package-data
+all: export-data-files
 	BLD_ACTION="all" $(MM) recurse
 
 tidy::
@@ -45,17 +29,19 @@ distclean::
 	BLD_ACTION="distclean" $(MM) recurse
 
 
+EXPORT_DATAFILES = \
+	main.cgi \
 
-RSYNC_A = rsync -a
-EXPORT_DATA_PATH = $(EXPORT_ROOT)/$(PROJECT)
 
-export-package-data:: 
+CP_F = rsync 
+EXPORT_DATA_PATH = $(EXPORT_ROOT)/$(PROJECT)/$(PACKAGE)
+
+export-data-files:: 
 	mkdir -p $(EXPORT_DATA_PATH); \
-	for x in $(EXPORT_DATADIRS); do { \
-            if [ -d $$x ]; then { \
-	        $(RSYNC_A) $$x $(EXPORT_DATA_PATH)/ ; \
-            } fi; \
+	for x in $(EXPORT_DATAFILES); do { \
+	  $(CP_F) $$x $(EXPORT_DATA_PATH)/ ; \
         } done
+
 
 # version
 # $Id: Make.mm,v 1.1.1.1 2006-11-27 00:09:14 aivazis Exp $
