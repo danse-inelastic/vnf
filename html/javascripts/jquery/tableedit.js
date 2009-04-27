@@ -17,7 +17,7 @@ jQuery(document).ready(function(){
                 var thead = jQuery("thead>tr>",t);
                 console.log(thead);//
 				//var data = {"id":idlist[0], "column":idlist[1], "value":escape(val)};
-                var data = {"sentry.passwd": "demo", "sentry.username": "demo", "actor": "directdb", "routine": "set", "directdb.tables": "samples", "directdb.id": "C8GCB", "directdb.value": escape(val) } //idlist[0] , "column":idlist[1], "value":escape(val)
+                var data = {"sentry.passwd": "demo", "sentry.username": "demo", "actor": "directdb", "routine": "set", "directdb.tables": "samples", "directdb.id": "C8GCB", "directdb.value": escape(val) }
                 console.log(data);
 
 				//s = "../cgi-bin/tabletest/table.cgi" 

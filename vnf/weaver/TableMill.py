@@ -36,7 +36,6 @@ class TableMill:
 
         htmlcode = []
         id = _id(table)
-        #htmlcode.append( '<div id="%s"></div>' % id )
         table = towidgetdescription(table)
         descriptors = table.column_descriptors
         
@@ -45,7 +44,6 @@ class TableMill:
         #    row.id
         #    tmp.append(row.id)
         
-        #pid = table.polycrystals_id
         header = [ d.label for d in descriptors]
         
         # Example of table editing: temporary and dirty solution
@@ -89,40 +87,6 @@ class TableMill:
             
         htmlcode.append(s) 
         
-        """  
-        htmlcode.append(
-        "" "
-        <table border="1" id="tablesorter-demo" class="tablesorter">
-          <thead>
-            <tr>
-              <th>Month</th>
-              <th>Savings</th>
-            </tr>
-          </thead>
-          <tbody> 
-            <tr>
-        
-              <td id="0_0"><a href="http://www.google.com" >January</a></td>
-              <td id="0_1">$80</td>
-            </tr>
-             
-            <tr>
-              <td id="2_0"><a href="http://www.google.com" >Sum</a></td>
-              <td id="2_1">$180</td>
-            </tr>
-        
-             
-            <tr>
-              <td id="1_0"><a href="http://www.google.com" >February</a></td>
-              <td id="1_1"> $100</td>
-            </tr>
-            
-           </tbody>
-        </table>
-        "" "
-        )
-        """
-
         codes = csscode + htmlcode
         return codes
 

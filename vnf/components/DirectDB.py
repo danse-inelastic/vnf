@@ -64,7 +64,6 @@ class DirectDB(Actor):
             return error.page
 
         self._setRecords(director, self.tables, self.where)
-        return 
 
     def _setRecords(self, director, tables, where):
         results=[]
@@ -87,11 +86,14 @@ class DirectDB(Actor):
 
             id = self.inventory.id
             
-            import vnf.utils
-            
             record = director.clerk.getRecordByID( table, id )
+            
             # It would be nice to have Unicode support
-            record.short_description = vnf.utils.unquote_unicode(self.inventory.value)
+            #import vnf.utils
+            #record.short_description = vnf.utils.unquote_unicode(self.inventory.value)
+            
+            import urllib
+            record.short_description = urllib.unquote(self.inventory.value)
             director.clerk.updateRecord(record)
             
 

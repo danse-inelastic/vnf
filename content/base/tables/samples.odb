@@ -146,7 +146,7 @@ def format_chemical_formula(sample,director ):
     except AttributeError: return 'unknown'
     if nullpointer(matter): return "undefined"
     matter = director.clerk.dereference(matter)    
-    return matter.id #chemical_formula
+    return matter.chemical_formula
 
 #"""
 # Get polycrystals id
