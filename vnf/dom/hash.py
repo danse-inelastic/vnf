@@ -24,10 +24,18 @@ def hash(obj, db):
 from pyre.db.Table import Table
 class Hasher:
 
-    def __init__(self):
+    def __init__(self, omitted_properties=None):
         self.level = 0
         self.rooms = {} # room number for each level
         self._addressbook = {}
+        if omitted_properties is None:
+            omitted_properties = [
+                'id',
+                'date',
+                'creator',
+                'short_description',
+                ]
+        self.omitted_properties = omitted_properties
         return
     
 
@@ -48,6 +56,9 @@ class Hasher:
 
     def hash_dbrecord(self, record, db):
         'create a hash value from a db record'
+
+        omitted_properties = self.omitted_properties
+
         # the difficulty of hashing a db record is that it may contain references
         # so we need to hash recursively
         Table = record.__class__
@@ -57,8 +68,8 @@ class Hasher:
             if not isDescriptor(attr): continue
 
             name = attr.name
-            # skip id
-            if name == 'id': continue
+            # skip a few properties
+            if name in omitted_properties: continue
 
             if isReference(attr):
                 ref = attr.__get__(record)
