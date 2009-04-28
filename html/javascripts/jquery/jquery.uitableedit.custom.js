@@ -141,15 +141,15 @@ jQuery.uiTableEdit = function(jq, options)
 		td.css({width: w + "px", height: h + "px", padding: "0", margin: "0"});
 		td.html( '<form name="td-editor" action="javascript:void(0);">' + 
 		'<input type="text" name="td_edit" value="' +
-		td.text().replace( /"/g, '&quot;') + '"' + ' style="margin:0px;padding:0px;border:0px;width: ' +
-		w  + 'px;">' + '</input></form>' ) 
+		td.text().replace( /"/g, '&quot;') + '" style="margin:0px;padding:0px;border:0px;width: ' +
+		w  + 'px;"></input></form>' ) 
 		.find('form').submit( restore ).mousedown( restore ).blur( restore ).keypress( checkEscape ); //height:' + h + 'px;
 
 		function focus_text(){ td.find('input:text').get(0).focus() }
 	
 		// focus bug (seen in FireFox) fixed by small delay
 		setTimeout(focus_text, 50);
-	
+		
 		/* TODO: investigate removing bind_mouse_down
 		I also got rid of bind_mouse_down(restore),
 		because now that you can refocus on fields that have been blurred,
@@ -182,20 +182,15 @@ jQuery.uiTableEdit = function(jq, options)
 			return false;
 		}
 	}
-	/*
-	hello = function (name)
-	{
-		console.log("Hello %s", name);
-	}
-	//setTimeout( "hello("+cid+");", 2000 );
-	*/
 	function event_mousedown()
 	{
-		var cid = this.id; // Cell ID
-		//console.log(this);
-		cid_date[cid] = _get_time_now(); // Start timer
-		//td_edit.apply(this,arguments);
-		setTimeout( "event_timer('"+cid+"');", 5 );
+		var cid = this.id; // Cell ID: <td id="some_id">
+		// Enter edit mode only if the <td> has id attribute and it is not empty
+		if (cid !== '')
+		{
+			cid_date[cid] = _get_time_now(); // Start timer
+			setTimeout( "event_timer('"+cid+"');", 5 );
+		}
 
 	}
 

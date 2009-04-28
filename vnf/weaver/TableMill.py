@@ -26,9 +26,10 @@ class TableMill:
         
         csscode = []
         csss = [
-            'tabulator/datePicker.css',
-            'tabulator/tabulator.css',
-            'tabulator/tabulator-color.css',
+            #'tabulator/style.css'
+            #'tabulator/datePicker.css',
+            #'tabulator/tabulator.css',
+            #'tabulator/tabulator-color.css',
             ]
         for css in csss:
             csscode.append( '<link rel="stylesheet" type="text/css" href="%s/css/%s" />' % (
@@ -39,21 +40,16 @@ class TableMill:
         table = towidgetdescription(table)
         descriptors = table.column_descriptors
         
-        #tmp = [ d.label for d in table.id]
-        #for row in table.data:
-        #    row.id
-        #    tmp.append(row.id)
-        
         header = [ d.label for d in descriptors]
         
         # Example of table editing: temporary and dirty solution
-        # Only one column will be editable at this time: Chemical formula
-        tableMap    = {2: "polycrystals"} # {0:"scatterers", 1:"samples"} - complicated
+        # Only one column will be editable at this time: Description
+        tableMap    = {1: "samples"} # {0:"scatterers", 1:"samples"} - complicated
         columnMap   = {2: "chemical_formula" }
         
         s = ""
         s += """
-            <table border="1" id="tablesorter-demo" class="tablesorter">
+            <table border="1" id="tablesorter-demo" class="tablesorter"> 
               <thead>
                 <tr>
             """
@@ -74,10 +70,11 @@ class TableMill:
             s += "<tr>"
             for c in range(len(rows[r])):
                 if c == 1:
-                    idattr = """ id = "%s_%s" """ % (rows[r][0], c)
+                    # Can only edit 'samples' database table
+                    idattr = """ id = "%s___%s" """ % (rows[r][0], "samples")
                 else:
                     idattr = ""
-                s += "<td%s>%s&nbsp;</td>\n" % (idattr, rows[r][c])
+                s += "<td%s>%s</td>\n" % (idattr, rows[r][c])
             s += "</tr>"
             
         s += """
@@ -113,6 +110,7 @@ class JSMill:
             ]
         self.include(scripts=includes)
 
+        self.writemain('var authdata={"sentry.passwd": "demo", "sentry.username": "demo", "actor": "directdb", "routine": "set"};')
         """
         self.writemain( 'Date.firstDayOfWeek = 7;')
         self.writemain( 'Date.format = "mm/dd/yyyy";' )
