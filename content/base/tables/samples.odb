@@ -133,7 +133,9 @@ def format_visualize(sample,director ):
             'cgihome':director.cgihome,
             'sentry.username':director.sentry.username,
             'sentry.ticket':director.sentry.ticket,
-            'matterId':matter.id}
+            'matterId':matter.id,
+            'displayType':'structure',
+            }
     jnlpFile = JnlpFile(
             resources=('jmolVnf.jar', 'Jmol.jar','pg74.216.jdbc3.jar'),
             mainClass='jmolVnf.JmolVnf',
