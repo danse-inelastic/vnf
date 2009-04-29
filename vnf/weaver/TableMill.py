@@ -26,7 +26,7 @@ class TableMill:
         
         csscode = []
         csss = [
-            #'tabulator/style.css'
+            'tabulator/blueonblue.css'
             #'tabulator/datePicker.css',
             #'tabulator/tabulator.css',
             #'tabulator/tabulator-color.css',
@@ -47,9 +47,9 @@ class TableMill:
         tableMap    = {1: "samples"} # {0:"scatterers", 1:"samples"} - complicated
         columnMap   = {2: "chemical_formula" }
         
-        s = ""
+        s = "" # class="tablesorter"
         s += """
-            <table border="1" id="tablesorter-demo" class="tablesorter"> 
+            <table id="tablesorter-demo" class="tablesorter"> 
               <thead>
                 <tr>
             """
@@ -67,13 +67,19 @@ class TableMill:
             rows[i] = row
               
         for r in range(len(rows)):
-            s += "<tr>"
+            if r%2 == 1:
+                odd = """ class="odd" """
+            else:
+                odd = ""
+            
+            s += "<tr%s>" % odd
             for c in range(len(rows[r])):
                 if c == 1:
-                    # Can only edit 'samples' database table
+                    # Can only edit 'samples' database table at this time
                     idattr = """ id = "%s___%s" """ % (rows[r][0], "samples")
                 else:
                     idattr = ""
+                
                 s += "<td%s>%s</td>\n" % (idattr, rows[r][c])
             s += "</tr>"
             

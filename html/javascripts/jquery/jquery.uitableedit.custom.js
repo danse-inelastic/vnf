@@ -138,10 +138,11 @@ jQuery.uiTableEdit = function(jq, options)
 		var w = td.width();
 		var h = td.height();
 
-		td.css({width: w + "px", height: h + "px", padding: "0", margin: "0"});
+		//td.css({width: w + "px", height: h + "px", padding: "0", margin: "0"});
+		td.css({width: w + "px", height: h + "px", padding: "0.4em 0.5em 0.4em 0.5em", margin: "0"});
 		td.html( '<form name="td-editor" action="javascript:void(0);">' + 
 		'<input type="text" name="td_edit" value="' +
-		td.text().replace( /"/g, '&quot;') + '" style="margin:0px;padding:0px;border:0px;width: ' +
+		td.text().replace( /"/g, '&quot;') + '" style="margin:0px;padding:0;border:0px;width: ' +
 		w  + 'px;"></input></form>' ) 
 		.find('form').submit( restore ).mousedown( restore ).blur( restore ).keypress( checkEscape ); //height:' + h + 'px;
 

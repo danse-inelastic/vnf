@@ -1,0 +1,85 @@
+/* 
+	Blue on blue
+	written by Glenn Slaven http://slaven.net.au
+*/
+table.tablesorter, table.tablesorter td, table.tablesorter th {
+	border-collapse:collapse;
+	margin:0;
+	padding:0;
+
+}
+table.tablesorter {
+	border: none;
+	font-family: 100% "Lucida Grande", Verdana, Lucida, Helvetica, Arial, sans-serif;
+	/* font-family: Garamond, Georgia, "Times New Roman", Times, serif;*/
+}
+
+table.tablesorter caption {
+	background-color: transparent;
+	/* background-image: url(cap_bg.gif); */
+	background-repeat: repeat-x;
+	background-position: bottom left;
+	text-align:left;
+	font-size:100%;
+	/* font-size:150%; */
+	text-transform:uppercase;
+	line-height: 30px;
+	letter-spacing:0px;	
+}
+
+table.tablesorter td, table.tablesorter th{	
+	vertical-align:top;
+	font-weight:normal;	
+}
+
+table.tablesorter thead {
+	border-left:1px solid #2293FF;	
+}
+
+table.tablesorter thead th {
+	background: #2293FF;
+	color: #FFFFFF;
+	font-size:100%;
+	/* font-size: 125%; */
+	border-top:1px solid #2293FF;
+	border-right:1px solid #2293FF;
+	padding: 4px 0.4em 4px 0.4em;	
+}
+
+table.tablesorter tfoot td, table.tablesorter tfoot th {
+	border-top:1px solid #2293FF;
+	border-right: none;
+	font-weight: bolder;
+	font-size:100%;
+	/* font-size: 110%;*/
+	padding: 0.4em 0.5em 0.4em 0.5em;
+}
+
+table.tablesorter tbody td, table.tablesorter tbody th {
+	background-color: #D9ECFF;
+	border-right:1px solid #2293FF;
+	font-size:100%;
+	/* font-size: 110%; */
+	padding: 0.4em 0.5em 0.4em 0.5em;
+}
+
+table.tablesorter tbody tr.odd th, table.tablesorter tbody tr.odd td{
+	background-color: #BDDFFF;
+}
+
+table.tablesorter tbody th{	
+	font-weight: bold;	
+	border-left:1px solid #2293FF
+}
+
+table.tablesorter a:link, table.tablesorter a:visited, table.tablesorter a:active {	
+	color:#444F66;
+	background-color: transparent;
+	text-decoration: underline;
+}
+
+table.tablesorter a:hover {
+	text-decoration:none;
+	background-color: #1E90FF;
+	color: #FFFFFF;
+}
