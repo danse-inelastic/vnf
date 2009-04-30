@@ -10,9 +10,9 @@ def main():
 
     EXPIRES=str(int(time.mktime(time.gmtime()))+60)
 
-    idfile = open("securityToken.id") #security token in a file
-    ACCESS_KEY = idfile.read()
-    idfile.close()
+#    idfile = open("securityToken.id") #security token in a file
+#    ACCESS_KEY = idfile.read()
+#    idfile.close()
 
     keyfile = open("jbrkeith.key") #private key (certificates page down at bottom)
     PRIVATE_KEY = keyfile.read()
@@ -34,11 +34,11 @@ def main():
 
     SIGNATURE = base64.encodestring(hmac.new(PRIVATE_KEY, string, sha).digest()).strip()
     
-    print 'signature', SIGNATURE
+    #print 'signature', SIGNATURE
 
-    print 'Test generation of Orbiter VFS SOA URI\n'
+    #print 'Test generation of Orbiter VFS SOA URI\n'
 
-    print URI + '?OrbiterAccessKeyId=' + ACCESS_KEY + '&Expires=' + EXPIRES + '&Signature=' + SIGNATURE + '\n'
+    #print URI + '?OrbiterAccessKeyId=' + ACCESS_KEY + '&Expires=' + EXPIRES + '&Signature=' + SIGNATURE + '\n'
 
     from urllib import urlopen
     print urlopen(URI + '?OrbiterAccessKeyId=' + ACCESS_KEY + '&Expires=' + EXPIRES + '&Signature=' + SIGNATURE).read()
