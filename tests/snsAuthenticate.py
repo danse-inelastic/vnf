@@ -8,13 +8,13 @@ import time
 
 def main():
 
-    #EXPIRES=str(int(time.mktime(time.gmtime())))
+    EXPIRES=str(int(time.mktime(time.gmtime()))+60)
 
     idfile = open("securityToken.id") #security token in a file
     ACCESS_KEY = idfile.read()
     idfile.close()
 
-    keyfile = open("snsPrivKey_rsa") #private key (certificates page down at bottom)
+    keyfile = open("jbrkeith.key") #private key (certificates page down at bottom)
     PRIVATE_KEY = keyfile.read()
     keyfile.close()
 
@@ -26,11 +26,11 @@ def main():
 
     URI =  'https://nucleus.sns.gov/service/user-group-service.php/users'
 
-    ACCESS_KEY='m4ic6c50onp0zt4havhdmati4tdptkb4fj6dmz2xdfn2xiax2f2egmn84qom2ng5'
+    ACCESS_KEY='shj4ajfhxm5kjgnuvjstrdcanmfysp48uf0tn7y8hshpzvbj5t4nu4m5grtw4otn'
 
-    EXPIRES='1241110492'
+    #EXPIRES='1241116263'
 
-    string = URI + 'OrbiterAccessKeyId=' + ACCESS_KEY + '&Expires=' + EXPIRES
+    string = URI + 'OrbiterAccessKeyId=' + ACCESS_KEY + 'Expires=' + EXPIRES
 
     SIGNATURE = base64.encodestring(hmac.new(PRIVATE_KEY, string, sha).digest()).strip()
     
