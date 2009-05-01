@@ -577,7 +577,7 @@ class _ComponentOutputfiles:
         self.root = root
         return
 
-    def dispath(self, component):
+    def dispatch(self, component):
         f = outputfilename(component)
         
         klass = component.__class__.__name__
