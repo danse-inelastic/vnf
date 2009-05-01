@@ -22,6 +22,10 @@ class ITaskApp(base):
         import pyre.inventory
         id = pyre.inventory.str('id')
         
+        import pyre.idd
+        idd = pyre.inventory.facility('idd-session', factory=pyre.idd.session, args=['idd-session'])
+        idd.meta['tip'] = "access to the token server"
+
         import vnf.components
         clerk = pyre.inventory.facility(name="clerk", factory=vnf.components.clerk)
         clerk.meta['tip'] = "the component that retrieves data from the various database tables"
@@ -122,6 +126,7 @@ class ITaskApp(base):
         self._info.log('start _configure')
         self.id = self.inventory.id
 
+        self.idd = self.inventory.idd
         self.clerk = self.inventory.clerk
         self.clerk.director = self
         self.dds = self.inventory.dds
@@ -139,6 +144,13 @@ class ITaskApp(base):
         # initialize table registry
         import vnf.dom
         vnf.dom.register_alltables()
+
+        # set id generator for referenceset
+        def _id():
+            from vnf.components.misc import new_id
+            return new_id(self)
+        vnf.dom.set_idgenerator(_id)
+
         return
 
 
