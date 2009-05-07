@@ -61,6 +61,7 @@ EXPORT_PYTHON_MODULES = \
 	DummyDataObject.py \
 	Disordered.py \
 	Geometer.py \
+	GulpResults.py \
 	GulpSimulation.py \
 	Instrument.py \
 	InstrumentConfiguration.py \
