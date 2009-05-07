@@ -21,6 +21,7 @@ class Actor(base):
 
         import pyre.inventory
         id = pyre.inventory.str( 'id', default = '')
+        # this is the simulation id, not job id
 
     table = 'gulpsimulations'
 
@@ -82,15 +83,47 @@ class Actor(base):
             f = file(gulpOutputFilePath) 
             resdoc = document.document(title='Results')
             
-            try:
-                # eventually put this in place of the news portlet on the side
-                # visualize md or phonons
-                # plot various items such as temp, DOS, MSD, etc.
+            # perhaps put this in place of the news portlet on the side
+            # visualize md or phonons
+            # plot various items such as temp, DOS, MSD, etc.
+            import os.path
+            trajectoryPath = os.path.join(director.dds.abspath(job),'output.nc')
+            #print computation.runtype
+            from vnf.components.JnlpFile import JnlpFile
+            if False:#'md' in computation.runtype:
+                
+                from vnf.applications.PackJobDir import PackJobDir
+                PTRFILEEXT = PackJobDir.PTRFILEEXT
+                ptrfilepath = '.'.join( [director.dds.abspath(job), PTRFILEEXT] )
+                
+                # if pointer file does not exists, need to start packing
+                if not os.path.exists(ptrfilepath):
+                    return self._download_start_packing(director)
+        
+                # if packing is in process, say that
+                s = open(ptrfilepath).read()
+                if s == PackJobDir.PACKINGINPROCESS:
+                    return self._download_packing_in_progress(director)
+                
+                args = {
+                'cgihome':director.cgihome,
+                'sentry.username':director.sentry.username,
+                'sentry.ticket':director.sentry.ticket,
+                'displayType':'trajectory',
+                'trajectoryPath':trajectoryPath,
+                }
+                jnlpFile = JnlpFile(
+                resources=('jmolVnf.jar', 'Jmol.jar','pg74.216.jdbc3.jar'),
+                mainClass='jmolVnf.JmolVnf',
+                programArguments = args,
+                fileName='jmolVnfLauncher',
+                )
+                relativeLocationOfFile = jnlpFile.writeJnlp(director)
+
                 p = resdoc.paragraph()
-                p.text = ['''A movie of the simulation can be accessed by launching 
-                the viewer below.''',
-                '<center><a href=java/JmolApp.jnlp><img src="images/webstart.gif" alt="Jmol"/></a></center>']
-            except:
+                p.text = ['''A movie of the simulation can be accessed by launching the viewer below.''',
+                '<center><a href="'+relativeLocationOfFile+'"><img src="images/webstart.gif" alt="Jmol"/></a></center>']
+            elif False:#'phonons' in computation.runtype:
                 pass
             
             p = resdoc.paragraph()
@@ -120,6 +153,46 @@ class Actor(base):
         else:
             p = document.paragraph()
             p.text = ['The computation is not finished.  Please check back later.']
+        return page
+    
+    def _download_start_packing(self, director):
+        try:
+            page = director.retrieveSecurePage( 'job' )
+        except AuthenticationError, err:
+            return err.page
+
+        id = self.inventory.id
+        job = director.clerk.getJob(id)
+        from vnf.components.Job import pack
+        pack(job, director, debug=False)
+
+        return self._download_packing_in_progress(director)
+    
+
+    def _download_packing_in_progress(self, director):
+        try:
+            page = director.retrieveSecurePage( 'job' )
+        except AuthenticationError, err:
+            return err.page
+
+        id = self.inventory.id
+
+        main = page._body._content._main
+        document = main.document( title = 'Job %s: packing data' % id )
+        
+        p = document.paragraph()
+        action = actionRequireAuthentication(
+            sentry = director.sentry,
+            label = 'check back',
+            actor = 'job',
+            routine = 'download',
+            id = id,
+            )
+        link = action_link(action, director.cgihome)            
+        p.text = [
+            'We are packing up the job directory for you.',
+            'Please %s in a few minutes to download.' % link,
+            ]
         return page
 
 
