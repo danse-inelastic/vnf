@@ -17,6 +17,8 @@ class GulpSimulation(base):
     name = 'gulpsimulations'
     
     import pyre.db
+    
+    runtype = pyre.db.varchar(name='runtype', length=64, default='md')
 
     CONFIGURATION_FILE = 'gulp.gin'
     LIBPOINTER_FILE = 'gulp.libs'
