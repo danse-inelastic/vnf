@@ -40,8 +40,8 @@ def main():
 
     #print URI + '?OrbiterAccessKeyId=' + ACCESS_KEY + '&Expires=' + EXPIRES + '&Signature=' + SIGNATURE + '\n'
 
-    from urllib import urlopen
-    print urlopen(URI + '?OrbiterAccessKeyId=' + ACCESS_KEY + '&Expires=' + EXPIRES + '&Signature=' + SIGNATURE).read()
+    from urllib import urlopen, quote
+    print urlopen(URI + '?OrbiterAccessKeyId=' + ACCESS_KEY + '&Expires=' + EXPIRES + '&Signature=' + quote(SIGNATURE)).read()
 
 
 if __name__=='__main__':
