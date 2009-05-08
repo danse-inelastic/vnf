@@ -93,28 +93,61 @@ class PolyXtalCoherentPhononScatteringKernel(base):
         matterid = hash(matter, director.clerk.db)
         def checkMatter(dispersion):
             origin = dispersion.origin
-            if not origin: return True
+            if not origin: return False
             origin = director.clerk.dereference(origin)
             matter = origin.matter
             matter = director.clerk.dereference(matter)
             return hash(matter, director.clerk.db) == matterid
         dispersions = filter(checkMatter, dispersions)
+
+        # 
+        if not dispersions:
+            p = form.paragraph(cls='error')
+            p.text = [
+                'No phonon dispersion was found for your material.',
+                'Please perform a material simulation to calculate',
+                'phonon dispersion for this material and come back',
+                'here.',
+                ]
+            return
+
+        # previous selection?
+        previous_selected_dispersion_id = None
+        kernel = self.getRecord()
+        if kernel:
+            dispersion_ref = kernel.dispersion
+            if dispersion_ref:
+                previous_selected_dispersion_id = dispersion_ref.id
+        if not previous_selected_dispersion_id:
+            previous_selected_dispersion_id = self.inventory.dispersion_id
+            
+        previous_selected_dispersion = None
+        if previous_selected_dispersion_id:
+            try:
+                previous_selected_dispersion = director.clerk.getRecordByID(
+                    'phonondispersions', previous_selected_dispersion_id)
+            except:
+                pass
         
-        entries = [
-            (dispersion.id,
-             '#%s: %s' % (dispersion.id, dispersion.short_description)
-             )
-            for dispersion in dispersions ]
+        if not previous_selected_dispersion:
+            previous_selected_dispersion = dispersions[0]
+
+        l = form.literal()
+        l.text = ['<h5>Phonon dispersion</h5>']
+
+        p = form.paragraph()
+        p.text = ['Please select a phonon dispersion from the following table']
         
-        import opal.content
-        selector = form.selector(
-            id = 'disp_selector',
-            name = '%s.dispersion_id' % prefix,
-            entries = entries,
-            label = 'Dispersion',
-            selected = self.inventory.dispersion_id or entries[0][0],
-            )
-        
+        options = {
+            'selected': previous_selected_dispersion,
+            'name': 'dispersion_id',
+            }
+        table = director.retrieveComponent(
+            'phonon-dispersions',
+            factory="table",
+            args=[dispersions, director, options],
+            vault=['tables']).table
+        form.contents.append(table)
         return
 
 
@@ -125,7 +158,15 @@ class PolyXtalCoherentPhononScatteringKernel(base):
         if len(errors): raise InputProcessingError, errors
         record = base.processUserInputs(self, *args, **kwds)
         dispersion_id = self.inventory.dispersion_id
+        
+        errors.append('dispersion_id')
+        
+        if not dispersion_id:
+            raise InputProcessingError, errors
+        
         record.dispersion = dispersion_id
+        director = self.director
+        director.clerk.updateRecord(record)
         return record
 
 
