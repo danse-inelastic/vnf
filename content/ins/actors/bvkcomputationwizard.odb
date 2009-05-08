@@ -75,7 +75,7 @@ class BvK(base):
         document = main.document(
             title='BvK model')
         document.description = ''
-        document.byline = 'byline?'
+        #document.byline = 'byline?'
 
         p = document.paragraph()
         p.text = [
@@ -323,7 +323,7 @@ class BvK(base):
             director.routine = 'configure_dos_computation'
             return self.configure_dos_computation( director, errors = errors )
 
-        return self.createJob(director)
+        return self.ask_for_description(director)
 
 
     def configure_disp_computation(self, director, errors=None):
@@ -378,6 +378,65 @@ class BvK(base):
             director.routine = 'configure_disp_computation'
             return self.configure_disp_computation( director, errors = errors )
 
+        return self.ask_for_description(director)
+
+
+    def ask_for_description(self, director, errors=None):
+        try:
+            page = director.retrieveSecurePage( 'bvkcomputationwizard' )
+        except AuthenticationError, err:
+            return err.page
+        
+        id = self.inventory.id
+        
+        main = page._body._content._main
+        # populate the main column
+        document = main.document(
+            title='BvK computatiion #%s' % id)
+        document.description = ''
+
+        formcomponent = self.retrieveFormToShow( 'getdescription' )
+        formcomponent.director = director
+
+        # build the form 
+        form = document.form(name='', action=director.cgihome)
+        # specify action
+        action = actionRequireAuthentication(
+            actor = 'bvkcomputationwizard', 
+            sentry = director.sentry,
+            routine = 'verify_description',
+            label = '',
+            id=self.inventory.id, type='bvkcomputation',
+            arguments = {'form-received': formcomponent.name },
+            )
+        from vnf.weaver import action_formfields
+        action_formfields(action, form)
+
+        # expand the form
+        formcomponent.expand(form, errors=errors)
+
+        # run button
+        submit = form.control(name="actor.form-received.submit", type="submit", value="Submit")
+
+        return page
+
+
+    def verify_description(self, director):
+        try:
+            page = director.retrieveSecurePage( 'bvkcomputationwizard' )
+        except AuthenticationError, err:
+            return err.page
+
+        try:
+            description = self.processFormInputs( director )
+        except InputProcessingError, err:
+            errors = err.errors
+            return self.ask_for_description(director, errors=errors)
+
+        simulation = self._getSimulation(director)
+        simulation.short_description = description
+        director.clerk.updateRecord(simulation)
+
         return self.createJob(director)
 
 
@@ -417,6 +476,33 @@ class BvK(base):
         bvk = director.clerk.getBvKComputation(id)
         matter = director.clerk.dereference(bvk.matter)
         return matter
+
+
+    def _readyForSubmission(self, director):
+        if not super(BvK, self)._readyForSubmission(director): return False
+        simulation = self._getSimulation(director)
+        if not simulation.short_description: return False
+        return True
+
+
+    def _notReadyForSubmissionAlert(self, director):
+        page = super(BvK, self)._notReadyForSubmissionAlert(director)
+        try:
+            simulation = self._getSimulation(director)
+        except:
+            return page
+
+        main = page._body._content._main
+        document = main.document(title='Alert')
+        
+        if not simulation.short_description:
+            p = document.paragraph()
+            p.text = [
+                'No description was given for this simulation',
+                ]
+            return page
+        
+        return page
 
 
     def _retrievePage(self, director):

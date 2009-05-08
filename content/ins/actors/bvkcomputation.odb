@@ -115,6 +115,7 @@ class Actor(base):
 
 
     def _isConfigured(self, computation, director):
+        if not computation.short_description: return False
         if not computation.model: return False
         if not computation.type: return False
         return True
