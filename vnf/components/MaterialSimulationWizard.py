@@ -289,8 +289,35 @@ class MaterialSimulationWizard(base):
         document.byline = '<a href="http://danse.us">DANSE</a>'    
         p = document.paragraph()
         p.text = [
-            'Not yet ready for submission',
+            'Not yet ready for submission!',
             ]
+
+        id = self.inventory.id
+        type = self.inventory.type
+        if not id or not type:
+            p = document.paragraph()
+            p.text = [
+                'You have not defined the type of the simulation.',
+                'Or you have not created a new simulation (no ID).',
+                ]
+            return page
+        
+        simulation = director.clerk.getRecordByID(type, id)
+
+        if not simulation.matter:
+            p = document.paragraph()
+            p.text = [
+                'You have select the material for your simulation',
+                ]
+            return page
+            
+        if not simulation.matter.id: 
+            p = document.paragraph()
+            p.text = [
+                'You have select the material for your simulation',
+                ]
+            return page
+
         return page
 
 
