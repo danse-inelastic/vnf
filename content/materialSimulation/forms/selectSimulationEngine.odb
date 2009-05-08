@@ -45,7 +45,18 @@ class Form( base ):
         p = form.paragraph()
         p.text = ['''At small length scales one may use quantum techniques as available in 
             the DFT plane wave codes.''']
-        self.engineRadioButton(form, engines['vasp'])
+        director = self.director
+        username = director.sentry.username
+        blacklist = ['demo', 'reviewer']
+        if username in blacklist: 
+            button = self.engineRadioButton(form, engines['vasp'], disabled=True)
+            button.error = (
+                'You do not have access to proprietory ab initio software '
+                'at this moment. Please contact the vnf team by clicking '
+                '"Contact us" link on the main menu'
+                )
+        else:
+            self.engineRadioButton(form, engines['vasp'])
         
         p = form.paragraph()
         p.text = ['<h2>Atomistic Forcefield Techniques</h2>']        
@@ -64,7 +75,7 @@ class Form( base ):
             length scales (multigrain crystals, complex liquids and multiphase materials, etc.)''']
    
 
-    def engineRadioButton(self, form, engine):
+    def engineRadioButton(self, form, engine, disabled=False):
         prefix = formactor_action_prefix
         name = '%s.%s' % (formactor_action_prefix, 'type')
         default = self.inventory.type
@@ -77,8 +88,11 @@ class Form( base ):
                 'label':label,
                 'value':id,
                 }
+        if disabled: kwds['disabled']=True
+
         if id == default: kwds['checked']=True
         rb = form.radio(**kwds)
+
         return rb
     
 

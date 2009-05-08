@@ -44,12 +44,11 @@ class Form( base ):
 
         matters = _findMatters(director)
         from vnf.utils.uniquelist import uniquelist
-        from vnf.dom.hash import hash
         matters = uniquelist(matters, idfun=lambda matter: hash(matter, director.clerk.db))
         
         entries = [
             ('%s%s%s' % (matter.__class__.__name__, separator, matter.id),
-             describe(matter))
+             describe(matter, director))
             for matter in matters ]
         
         import opal.content
@@ -79,12 +78,14 @@ class Form( base ):
     
     pass # end of Form
 
+from vnf.dom.hash import hash
 
 
-def describe(matter):
-    return '%s: %s' % (
+def describe(matter, director):
+    s = '%s: %s' % (
         matter.short_description or matter.chemical_formula, matter.__class__.__name__)
-
+    #s = '(%s)' % hash(matter, director.clerk.db)
+    return s
 
 def _findMatters(director):
     from vnf.dom import mattertables
