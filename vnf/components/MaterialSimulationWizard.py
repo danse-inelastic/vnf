@@ -50,7 +50,6 @@ class MaterialSimulationWizard(base):
         # populate the main column
         document = main.document(title='Material Simulation/Modeling Wizard: select material')
         document.description = ''
-        document.byline = 'byline?'
 
         formcomponent = self.retrieveFormToShow(
             'selectmaterial' )
@@ -107,7 +106,6 @@ class MaterialSimulationWizard(base):
         document = main.document(
             title='Select material simulation/modeling engine')
         document.description = ''
-        document.byline = '<a href="http://danse.us">DANSE</a>'        
 
         mattertype = self.inventory.mattertype
         matterid = self.inventory.matterid
@@ -286,7 +284,6 @@ class MaterialSimulationWizard(base):
             return err.page
         main = page._body._content._main
         document = main.document(title='Material simulation' )
-        document.byline = '<a href="http://danse.us">DANSE</a>'    
         p = document.paragraph()
         p.text = [
             'Not yet ready for submission!',
@@ -332,7 +329,6 @@ class MaterialSimulationWizard(base):
             return err.page
         main = page._body._content._main
         document = main.document(title='Ab initio electronic structure simulation' )
-        document.byline = '<a href="http://danse.us">DANSE</a>'    
         p = document.paragraph()
         p.text = [
             'You have not selected the material.',
