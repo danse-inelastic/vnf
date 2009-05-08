@@ -73,7 +73,7 @@ class PolyXtalCoherentPhononScatteringKernel(base):
         return
 
 
-    def expand(self, form, errors = None, properties = None):
+    def expand(self, form, errors = None, properties = None, matter=None):
         p = form.paragraph( )
         p.text = [
             'Kernel type: %s' % self.DBTable,
@@ -89,6 +89,16 @@ class PolyXtalCoherentPhononScatteringKernel(base):
         from vnf.dom.hash import hash
         dispersions = uniquelist(
             dispersions, idfun=lambda dispersion: hash(dispersion, director.clerk.db))
+
+        matterid = hash(matter, director.clerk.db)
+        def checkMatter(dispersion):
+            origin = dispersion.origin
+            if not origin: return True
+            origin = director.clerk.dereference(origin)
+            matter = origin.matter
+            matter = director.clerk.dereference(matter)
+            return hash(matter, director.clerk.db) == matterid
+        dispersions = filter(checkMatter, dispersions)
         
         entries = [
             (dispersion.id,
