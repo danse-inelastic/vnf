@@ -18,6 +18,12 @@ from vnf.components.Actor import action_link, actionRequireAuthentication
 
 
 def _table(dispersions, director, selected=None, name='dispersion'):
+    from vnf.content import jssnippet
+    snippet = jssnippet()
+    snippet.includes = ['jquery/jquery.qtips.js']
+    snippet.stylesheets = ['jquery.qtips.css']
+    snippet.main = []
+    
     from vnf.content.table import Model, View, Table
     class model(Model):
 
@@ -40,7 +46,7 @@ def _table(dispersions, director, selected=None, name='dispersion'):
         label = '%s %s' % (origin.__class__.__name__, origin.id)
         action = actionRequireAuthentication(
             label = label,
-            actor=origin.__class__.name,
+            actor=origin.__class__.__name__.lower(),
             routine='view',
             id = origin.id,
             sentry = director.sentry,
@@ -70,15 +76,36 @@ def _table(dispersions, director, selected=None, name='dispersion'):
             return "Cannot resolve matter: %s" % (matter,)
 
         label = '%s %s' % (matter.__class__.__name__, matter.id)
-        action = actionRequireAuthentication(
-            label = label,
-            actor=matter.__class__.name,
-            routine='view',
-            id = matter.id,
-            sentry = director.sentry,
-            )
-        url = action_link(action, director.cgihome)
-        return url
+        #action = actionRequireAuthentication(
+        #    label = label,
+        #    actor=matter.__class__.__name__.lower(),
+        #    routine='view',
+        #    id = matter.id,
+        #    sentry = director.sentry,
+        #    )
+        #url = action_link(action, director.cgihome)
+        #return url
+        ID = id(label)
+        div = '<div id="%s">%s</div>' % (ID, label)
+        
+        lattice = numpy.array(matter.cartesian_lattice); lattice.shape = 3,3
+        tip = [
+            matter.short_description or matter.id,
+            'Lattice: ',
+            ]
+        tip += [str(v) for v in lattice]
+        tip += ['Atoms: ',]
+        coords = matter.fractional_coordinates
+        coords = numpy.array(coords); coords.shape = -1, 3
+        tip += [
+            str(symbol) + ' at ' + str(pos)
+            for symbol, pos in zip(
+                matter.atom_symbols, coords)
+            ]
+        tip = '<br>'.join(tip)
+        enabletip = '$("#%s").qtip({content: "%s"});' % (ID, tip)
+        snippet.main.append(enabletip)
+        return div
     
     from pyre.db._reference import reference
     def getSelected(disp):
@@ -130,12 +157,15 @@ def _table(dispersions, director, selected=None, name='dispersion'):
         editable = False
 
     table = Table(model, data, view)
+    table.contents.append(snippet)
 
     from pyre.components.Component import Component
     c = Component('table', 'table')
     c.table = table
     return c
 
+
+import numpy
 
 # version
 __id__ = "$Id$"
