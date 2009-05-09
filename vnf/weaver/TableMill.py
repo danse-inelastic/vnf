@@ -40,6 +40,11 @@ class TableMill:
         htmlcode.append( '</div>' )
 
         codes = csscode + htmlcode
+
+        for item in table.contents:
+            codes += item.identify(self)
+            continue
+        
         return codes
 
 
@@ -47,8 +52,13 @@ class JSMill:
 
     def onTable(self, table):
         id = _id(table)
-        table = towidgetdescription(table)
-        return self._onTable(table, id)
+        _table = towidgetdescription(table)
+        self._onTable(_table, id)
+
+        for item in table.contents:
+            item.identify(self)
+            continue
+        return
     
     
     def _onTable(self, table, id):
