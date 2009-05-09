@@ -93,9 +93,10 @@ class Worker(base):
         dds = director.dds
         clerk = director.clerk
         
-        dds.remember(dep)
+        if dds.is_available(dep): dds.remember(dep)
+        
         server = clerk.dereference(job.server)
-        director.declareProgress(0.65, 'Preparing: setting up dependency %s ...' % (dep,) )
+        director.declareProgress(0.65, 'Preparing: setting up dependency %s###%s ...' % (dep.__class__.__name__, dep.id) )
         dds.make_available(dep, server=server)
         return
 
