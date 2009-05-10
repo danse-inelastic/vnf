@@ -71,6 +71,8 @@ class Retriever(base):
         #create the result holder
         from vnf.dom.ins.PhononDispersion import PhononDispersion
         dispersion = self._make_result_holder(job, PhononDispersion)
+        dispersion.matter = computation.matter
+        director.clerk.updateRecord(dispersion)
         
         # save results
         for filename in expected_files:
