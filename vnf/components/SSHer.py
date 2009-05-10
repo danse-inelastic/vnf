@@ -22,7 +22,7 @@ class SSHer(base):
         #auth_sock = pyre.inventory.str( 'auth_sock')
         known_hosts = pyre.inventory.str( 'known_hosts' )
         private_key = pyre.inventory.str( 'private_key' )
-
+        user = pyre.inventory.str('user', default = 'www-data')
         pass # end of Inventory
     
 
@@ -180,6 +180,7 @@ class SSHer(base):
 
 
     def _copyfile_rr(self, server1, path1, server2, path2):
+        'push a remote file to another remote server'
         if server1 == server2:
             pieces = [
                 'cp -r',
