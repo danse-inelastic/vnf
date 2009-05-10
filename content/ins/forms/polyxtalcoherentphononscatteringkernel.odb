@@ -90,14 +90,16 @@ class PolyXtalCoherentPhononScatteringKernel(base):
         dispersions = uniquelist(
             dispersions, idfun=lambda dispersion: hash(dispersion, director.clerk.db))
 
-        matterid = hash(matter, director.clerk.db)
+        matterindex = hash(matter, director.clerk.db)
         def checkMatter(dispersion):
-            origin = dispersion.origin
-            if not origin: return False
-            origin = director.clerk.dereference(origin)
-            matter = origin.matter
+            matter = dispersion.matter
+            if not matter:
+                origin = dispersion.origin
+                if not origin: return False
+                origin = director.clerk.dereference(origin)
+                matter = origin.matter
             matter = director.clerk.dereference(matter)
-            return hash(matter, director.clerk.db) == matterid
+            return hash(matter, director.clerk.db) == matterindex
         dispersions = filter(checkMatter, dispersions)
 
         # 
@@ -181,7 +183,9 @@ class PolyXtalCoherentPhononScatteringKernel(base):
 
 def _findDispersions(director):
     from vnf.dom.ins.PhononDispersion import PhononDispersion
-    return director.clerk.db.fetchall(PhononDispersion)
+    username = director.sentry.username
+    where = "creator='%s' or creator='vnf'" % username
+    return director.clerk.db.fetchall(PhononDispersion, where=where)
 
 def form(): return PolyXtalCoherentPhononScatteringKernel()
 

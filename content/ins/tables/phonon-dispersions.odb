@@ -36,7 +36,7 @@ def _table(dispersions, director, selected=None, name='dispersion'):
 
     def getOrigin(disp):
         origin = disp.origin
-        if not origin: return ''
+        if not origin: return 'Unknown'
         
         try:
             origin = director.clerk.dereference(origin)
@@ -57,18 +57,20 @@ def _table(dispersions, director, selected=None, name='dispersion'):
         date = disp.date
         return date
     def getMatter(disp):
-        origin = disp.origin
-        if not origin: return ''
+        matter = disp.matter
+        if not matter:
+            origin = disp.origin
+            if not origin: return 'Unknown'
         
-        try:
-            origin = director.clerk.dereference(origin)
-        except:
-            return "Cannot resolve origin: %s" % (origin,)
+            try:
+                origin = director.clerk.dereference(origin)
+            except:
+                return "Cannot resolve origin: %s" % (origin,)
         
-        try:
-            matter = origin.matter
-        except:
-            return "No matter for origin: %s" % (origin,)
+            try:
+                matter = origin.matter
+            except:
+                return "No matter for origin: %s" % (origin,)
 
         try:
             matter = director.clerk.dereference(matter)
@@ -85,8 +87,8 @@ def _table(dispersions, director, selected=None, name='dispersion'):
         #    )
         #url = action_link(action, director.cgihome)
         #return url
-        ID = id(label)
-        div = '<div id="%s">%s</div>' % (ID, label)
+        CLASS = 'matter_description' + str(id(label))
+        div = '<div class="%s">%s</div>' % (CLASS, label)
         
         lattice = numpy.array(matter.cartesian_lattice); lattice.shape = 3,3
         tip = [
@@ -103,7 +105,7 @@ def _table(dispersions, director, selected=None, name='dispersion'):
                 matter.atom_symbols, coords)
             ]
         tip = '<br>'.join(tip)
-        enabletip = '$("#%s").qtip({content: "%s"});' % (ID, tip)
+        enabletip = '$(".%s").qtip({content: "%s"});' % (CLASS, tip)
         snippet.main.append(enabletip)
         return div
     
