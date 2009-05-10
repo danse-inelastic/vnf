@@ -60,6 +60,7 @@ class DirectDB(Actor):
         # make sure all are encodable
         data=[]
         for r in records:
+            #print r
             if 'dictionary' in self.format:
                 for k,v in r.iteritems():
                     try:
