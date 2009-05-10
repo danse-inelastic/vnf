@@ -168,7 +168,7 @@ class WebApplication(Base):
         
         activity.routine = self.inventory.routine
 
-        activity.remote_address = self._cgi_inputs['REMOTE_ADDR']
+        activity.remote_address = self._cgi_inputs.get('REMOTE_ADDR') or 'local'
 
         self.clerk.newRecord(activity)
 
