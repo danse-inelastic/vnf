@@ -168,11 +168,17 @@ class Actor(base):
         options = {}
         plot = vnf.content.plot_2d( data, options )
         
-        document.contents.append( plot )
         p = document.paragraph()
         p.text = [
-            'Under construction...',
+            'The following is a plot of the phonon desnisty of states.',
             ]
+        document.contents.append( plot )
+
+        p = document.paragraph()
+        p.text = []
+
+        p = document.paragraph()
+        p.text = ['Plot of dispersions coming soon...']
         return
 
 
@@ -207,8 +213,21 @@ class Actor(base):
     def _view_disp(self, computation, document):
         p = document.paragraph()
         p.text = [
-            'Under construction...',
+            'This compuation calculates phonon dispersions on a grid',
+            'from the above BvK model.',
+            'The parameters for this computation is:',
             ]
+        parameters = [
+            'dE',
+            'N1',
+            ]
+        for param in parameters:
+            p = document.paragraph()
+            p.text = [
+                '%s: %s' % (param, getattr(computation, param)),
+                ]
+            continue
+
         return
 
 
