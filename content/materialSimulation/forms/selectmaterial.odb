@@ -46,19 +46,34 @@ class Form( base ):
         from vnf.utils.uniquelist import uniquelist
         matters = uniquelist(matters, idfun=lambda matter: hash(matter, director.clerk.db))
         
-        entries = [
-            ('%s%s%s' % (matter.__class__.__name__, separator, matter.id),
-             describe(matter, director))
-            for matter in matters ]
+        # previous selection
+        from vnf.dom.registry import tableRegistry
+        from pyre.db._reference import fromString
+        selected = self.inventory.selected
+        self._debug.log('selected=%s' % selected)
+        if selected:
+            reference = fromString(selected, tableRegistry)
+            previous_selected_matter = director.clerk.dereference(reference)
+        else:
+            previous_selected_matter = 'no selection'
         
-        import opal.content
-        selector = form.selector(
-            id = 'material_selector',
-            name = '%s.selected' % prefix,
-            entries = entries,
-            label = 'Material',
-            selected = self.inventory.selected or entries[0][0],
-            )
+        # the table for the matters
+        l = form.literal()
+        l.text = ['<h5>Materials</h5>']
+
+        p = form.paragraph()
+        p.text = ['Please select a material from the following table.']
+        
+        options = {
+            'selected': previous_selected_matter,
+            'name': 'selected',
+            }
+        table = director.retrieveComponent(
+            'matters',
+            factory="table",
+            args=[matters, director, options],
+            vault=['tables']).table
+        form.contents.append(table)
         return
 
 
