@@ -42,9 +42,25 @@ class MaterialSimulationWizard(base):
             simulation = director.clerk.getRecordByID(type, id)
             matter = simulation.matter
             selected = str(matter)
+            del matter
         else:
-            selected = ''
+            # try to get matter from inventory
+            matterid = self.inventory.matterid
+            mattertype = self.inventory.mattertype
+            if matterid and mattertype:
+                try:
+                    matter = director.clerk.getRecordByID(mattertype, matterid)
+                except:
+                    matter = None
 
+            selected = ''
+            if matter:
+                from pyre.db._reference import reference
+                ref = reference(matter.id, matter.__class__)
+                selected = str(ref)
+            
+        self._debug.log('selected=%s' % selected)
+        
         main = page._body._content._main
 
         # populate the main column
