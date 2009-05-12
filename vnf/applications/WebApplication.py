@@ -22,6 +22,7 @@ class AuthenticationError(Exception):
     
 
 from opal.applications.WebApplication import WebApplication as Base
+import os
 
 
 class WebApplication(Base):
@@ -55,6 +56,10 @@ class WebApplication(Base):
         from vnf.components import ssher
         csaccessor = pyre.inventory.facility( name='csaccessor', factory = ssher)
         csaccessor.meta['tip'] = 'computing server accessor'
+        
+        from vnf.components import sshAsUser
+        csaccessorAsUser = pyre.inventory.facility( name='csaccessorAsUser', factory = sshAsUser)
+        csaccessorAsUser.meta['tip'] = 'computing server accessor as a specific user'
 
         itaskmanager = pyre.inventory.facility(name='itaskmanager', default = 'itask-manager')
 
@@ -263,13 +268,29 @@ class WebApplication(Base):
         self.dds.director = self
         self.scribe = self.inventory.scribe
         self.debug = self.inventory.debug
-        self.csaccessor = self.inventory.csaccessor
+        
+        # this is a quick hack
+        if os.environ.has_key('USER'):
+            if 'jbk' in os.environ['USER']:
+                self.csaccessor = self.inventory.csaccessorAsUser
+            else:
+                self.csaccessor = self.inventory.csaccessor
+        else:
+            self.csaccessor = self.inventory.csaccessor
+        
         self.itaskmanager = self.inventory.itaskmanager
 
         from vnf.components import accesscontrol
         self.accesscontrol = accesscontrol()
 
         return
+    
+#    def _defaults(self):
+#        Base._defaults(self)
+#        # want to bind the appropriate ssher at runtime
+#        if os.environ['USER']:
+#            self.inventory.csaccessor = 'sshAsuser'
+#        # if this doesn't work, can always have two components and bind both and switch them at _configure
 
 
     def _init(self):
