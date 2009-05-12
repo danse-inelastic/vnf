@@ -51,6 +51,11 @@ def ssher():
     return SSHer( 'ssher', 'ssher' )
 
 
+def sshAsUser():
+    from SSHer import SSHer
+    return SSHer( 'sshAsUser', 'sshAsUser' )
+
+
 def announcer():
     from Announcer import Announcer
     return Announcer()
