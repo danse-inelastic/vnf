@@ -47,11 +47,12 @@ class MaterialSimulationWizard(base):
             # try to get matter from inventory
             matterid = self.inventory.matterid
             mattertype = self.inventory.mattertype
+            matter = None
             if matterid and mattertype:
                 try:
                     matter = director.clerk.getRecordByID(mattertype, matterid)
                 except:
-                    matter = None
+                    pass
 
             selected = ''
             if matter:

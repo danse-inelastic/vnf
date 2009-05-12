@@ -45,7 +45,8 @@ class Form( base ):
         matters = _findMatters(director)
         from vnf.utils.uniquelist import uniquelist
         matters = uniquelist(matters, idfun=lambda matter: hash(matter, director.clerk.db))
-        
+        if len(matters) == 0: raise RuntimeError, "No matters found"
+
         # previous selection
         from vnf.dom.registry import tableRegistry
         from pyre.db._reference import fromString
@@ -55,7 +56,7 @@ class Form( base ):
             reference = fromString(selected, tableRegistry)
             previous_selected_matter = director.clerk.dereference(reference)
         else:
-            previous_selected_matter = 'no selection'
+            previous_selected_matter = matters[0]
         
         # the table for the matters
         l = form.literal()
