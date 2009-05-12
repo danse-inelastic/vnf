@@ -209,7 +209,8 @@ class NeutronExperiment(base):
         experiment = director.clerk.getNeutronExperiment(self.inventory.id)
         job = director.clerk.dereference(experiment.job)
         
-        p = document.paragraph()
+        overviewdoc = document.document(title='Overview')
+        p = overviewdoc.paragraph()
         p.text = [
             'Experiment %r has been constructed.' % experiment.short_description,
             ]
@@ -219,20 +220,23 @@ class NeutronExperiment(base):
             'Please review them before you start the experiment.',
             ]
         
-        self._add_review_tree( document, director )
+        self._add_review_tree( overviewdoc, director )
+
+        linksdoc = document.document(title='Links')
+        resultsdoc = document.document(title='Results')
         if job.state in ['created', '']:
-            self._add_revision_sentence( document, director )
-            self._add_run_sentence( document, director )
+            self._add_revision_sentence( linksdoc, director )
+            self._add_run_sentence( linksdoc, director )
         else:
-            self._add_view_job_sentence(document, director)
-        self._add_delete_sentence( document, director )
+            self._add_view_job_sentence(linksdoc, director)
+        self._add_delete_sentence( linksdoc, director )
         if job.state in ['running']:
-            self._add_experiment_output(document, director)
+            self._add_experiment_output(linksdoc, director)
             Scheduler.check(job, director)
         elif job.state in ['finished', 'terminated', 'cancelled']:
-            self._add_experiment_results(document, director)
+            self._add_experiment_results(resultsdoc, director)
         elif job.state in ['submissionfailed']:
-            self._add_resubmit_sentence(document, director)
+            self._add_resubmit_sentence(linksdoc, director)
         return
 
 
