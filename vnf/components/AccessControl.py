@@ -28,6 +28,26 @@ class AccessControl:
             return False
         # for now allow anyone to access any instruments
         return True
+
+
+    # temp hack to limit access to vasp
+    def checkVASPPrivilege(self, user):
+        caltechgroup = [
+            'altafang',
+            'btf',
+            'chen',
+            'dabrecht',
+            'dexity',
+            'jbrkeith',
+            'linjiao',
+            'markovsk',
+            'mmckerns',
+            'aivazis',
+            'olivier',
+            'winterro',
+            ]
+        whitelist = caltechgroup
+        return user.username in whitelist
     
 
     def _checkPrivilege(self, user, privilege):

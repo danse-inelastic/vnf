@@ -47,13 +47,14 @@ class Form( base ):
             the DFT plane wave codes.''']
         director = self.director
         username = director.sentry.username
-        blacklist = ['demo', 'reviewer']
-        if username in blacklist: 
+        user = director.clerk.getUser(username)
+        privilege = director.accesscontrol.checkVASPPrivilege(user)
+        if not privilege:
             button = self.engineRadioButton(form, engines['vasp'], disabled=True)
             button.error = (
                 'You do not have access to proprietory ab initio software '
                 'at this moment. Please contact the vnf team by clicking '
-                '"Contact us" link on the main menu'
+                '"Contact us" link on the main menu.'
                 )
         else:
             self.engineRadioButton(form, engines['vasp'])
