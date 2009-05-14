@@ -12,7 +12,8 @@
 #
 
 
-compressed_trajectory_filename = 'output.nc.zip'
+compressed_xyzTrajectory_filename = 'outputmovie.xyz.zip'
+xyzTrajectory_filename = 'outputmovie.xyz'
 
 
 # version
