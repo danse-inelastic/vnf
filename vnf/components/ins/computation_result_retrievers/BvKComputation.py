@@ -126,10 +126,12 @@ def _lattice(array):
     
 def _reciprocal(lattice):
     v = _volume(lattice)
+    pi = N.pi
+    scale = 2*pi/v
     a1, a2, a3 = lattice
-    b1 = N.cross(a2,a3)/v
-    b2 = N.cross(a3,a1)/v
-    b3 = N.cross(a1,a2)/v
+    b1 = N.cross(a2,a3)*scale
+    b2 = N.cross(a3,a1)*scale
+    b3 = N.cross(a1,a2)*scale
     return b1, b2, b3
 
 def _volume(vectors):
