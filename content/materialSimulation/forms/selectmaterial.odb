@@ -35,11 +35,6 @@ class Form( base ):
 
         director = self.director
 
-        p = form.paragraph()
-        p.text = [
-            'Select from following list of materials',
-            ]
-
         prefix = formactor_action_prefix
 
         matters = _findMatters(director)
