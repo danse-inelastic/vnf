@@ -1,0 +1,170 @@
+<!DOCTYPE html PUBLIC "-//w3c//dtd html 4.0 transitional//en">
+<html><head>
+<!--
+! ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+!
+! Michael A.G. Aivazis
+! California Institute of Technology
+! (C) 1998-2005 All Rights Reserved
+!
+! {LicenseText}
+!
+! ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+--><base href="https://vnf.caltech.edu/vnf/"><title>Molecular dynamics run of ZrO2</title>
+
+<style media="all" rel="stylesheet">@import url(css/visual.css);</style>
+<style media="all" rel="stylesheet">@import url(css/visual-color.css);</style>
+<style media="all" rel="stylesheet">@import url(css/structural.css);</style>
+<style media="all" rel="stylesheet">@import url(css/structural-color.css);</style>
+<style media="all" rel="stylesheet">@import url(css/classes.css);</style>
+<style media="all" rel="stylesheet">@import url(css/classes-color.css);</style>
+<style media="all" rel="stylesheet">@import url(css/reports.css);</style>
+<style media="all" rel="stylesheet">@import url(css/reports-color.css);</style>
+<style type="text/css">
+<!--
+td {padding: 4; text-align: left; vertical-align: top}
+#introduction {font-size: 110%; padding: 10; text-align: left; vertical-align: top}
+// -->
+</style>
+</head>
+<body>
+<div id="body-wrapper">
+<!-- ** section page-header ** -->
+<div id="page-header">
+<div id="page-logo"><a href="index.html">Home</a></div>
+<p id="page-personaltools">&nbsp;</p>
+</div>
+<!-- ** end of section page-header ** -->
+<div class="visualClear"></div>
+<table id="page-content">
+<tbody>
+<tr>
+<td id="page-main">
+<div class="visualPadding"><!-- ** section ** -->
+<!-- original size: width='425' height='344' -->
+<p>
+Most of the code in Vnf is under the DANSE license:
+</p>
+<pre>
+DANSE Software 1.0 
+
+COPYRIGHT AND PERMISSION NOTICE:
+Copyright (c) 2009 California Institute of Technology. All rights reserved. 
+Permission is hereby granted, free of charge, to any person obtaining a copy 
+of this software and associated documentation files (the “Software”), to deal in 
+the Software without restriction, including without limitation the rights to use, 
+copy, modify, merge, publish, distribute, and/or sell copies of the Software, and to 
+permit persons to whom the Software is furnished to do so, provided that the above 
+copyright notice(s) and this permission notice appear in all copies of the Software 
+and that both the above copyright notice(s) and this permission notice appear in 
+supporting documentation. 
+
+THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY 
+KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE 
+WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PUR- 
+POSE AND NONINFRINGEMENT OF THIRD PARTY RIGHTS. IN NO EVENT 
+SHALL THE COPYRIGHT HOLDER OR HOLDERS INCLUDED IN THIS NO- 
+TICE BE LIABLE FOR ANY CLAIM, OR ANY SPECIAL INDIRECT OR CON- 
+SEQUENTIAL DAMAGES, OR ANY DAMAGES WHATSOEVER RESULTING 
+FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF 
+CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT 
+OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS 
+SOFTWARE. 
+
+Except as contained in this notice, the name of a copyright holder shall not be 
+used in advertising or otherwise to promote the sale, use or other dealings in this 
+Software without prior written authorization of the copyright holder. 
+All source code included in this distribution is covered by this notice, unless 
+specifically stated otherwise within each file. See each file within each release for 
+specific copyright holders. 
+
+DANSE is the name of a software system under construction with U.S. National 
+Science Foundation funding.  All work derived from DANSE software should
+acknowledge DANSE with the following statement:
+
+  "This work benefitted from DANSE software developed
+   under NSF award DMR-0520547."
+</pre>
+<p>
+However, some of the simulation packages have their own licenses.  VASP usage is restricted
+to those users who have a valid VASP license.  Prospective users should contact us if they desire
+to use it.  
+</p>
+<p>
+GULP users must comply with the following stipulations on the <a>href="https://www.ivec.org/gulp/">GULP homepage</a>:
+</p>
+   <P>&nbsp;</P>
+      <P>&nbsp;</P>
+    <P>For commercial and government use, you must contact <A
+      HREF="http://www.accelrys.com">Accelrys Inc</A>.</P>
+    <P>&nbsp;</P>
+
+    <P>GULP is available free of charge to academics provided you accept the
+    following conditions of use:</P>
+    <P><OL>
+      <LI>The program is not to be distributed to anyone else without the
+      express permission of the author.</LI>
+      <LI>The program is not to be used for commercial research. For any
+      commercial use of the program a license must be obtained from Accelrys
+      Inc, including contract research.</LI>
+      <LI>The program is supplied on an "as is" basis with no implied guarantee
+     <P>For commercial and government use, you must contact <A
+      HREF="http://www.accelrys.com">Accelrys Inc</A>.</P>
+    <P>&nbsp;</P>
+
+    <P>GULP is available free of charge to academics provided you accept the
+    following conditions of use:</P>
+    <P><OL>
+      <LI>The program is not to be distributed to anyone else without the
+      express permission of the author.</LI>
+      <LI>The program is not to be used for commercial research. For any
+      commercial use of the program a license must be obtained from Accelrys
+      Inc, including contract research.</LI>
+      <LI>The program is supplied on an "as is" basis with no implied guarantee
+      or support.</LI>
+    </OL></P>
+    <P>&nbsp;</P>
+
+    <P>To download GULP you must <A HREF="register.cgi">register</A>.  The
+    registration process checks that your email address is from a valid
+    educational institution domain.  Examples include .edu, .edu.au, and
+    .ac.uk.  If your institution is not recognised by the system then email us -
+    do not try to fool it.  If your institution does not have students, then you
+    must use the commercial version from Accelrys.</P>
+    <P>&nbsp;</P>
+ 
+ 
+      or support.</LI>
+    </OL></P>
+    <P>&nbsp;</P>
+
+    <P>To download GULP you must <A HREF="register.cgi">register</A>.  The
+    registration process checks that your email address is from a valid
+    educational institution domain.  Examples include .edu, .edu.au, and
+    .ac.uk.  If your institution is not recognised by the system then email us -
+    do not try to fool it.  If your institution does not have students, then you
+    must use the commercial version from Accelrys.</P>
+    <P>&nbsp;</P>
+
+<!-- ** end of section ** --> </div>
+</td>
+</tr>
+</tbody>
+</table>
+<!-- ** section page-footer ** -->
+<div id="page-footer">
+<p>Copyright (C) 2008 California Institute of Technology. All
+rights reserved.
+</p>
+</div>
+<!-- ** end of section page-footer ** -->
+<!-- ** section page-credits ** -->
+<div id="page-credits">
+<p class="discreet">powered by opal
+</p>
+</div>
+<!-- ** end of section page-credits ** -->
+</div>
+<!-- version-->
+<!-- $Id$--><!-- End of file -->
+</body></html>
