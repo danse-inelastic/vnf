@@ -303,28 +303,10 @@ class Builder(base):
             'supplier': 'mcstas2',
             }
         self.onNeutronComponent( **kwds )
-
-        # need a odb file to enhance the monitor
-        odbname = 'enhanced_%s' % m.label
-        odbcode = """
-def %(name)s():
-    from mcni.pyre_support import componentfactory as component
-    f = component('monitors', 'IQE_monitor', supplier = 'mcstas2')
-    ret =  f('%(odbname)s')
-    from mcstas2.pyre_support.monitor_exts import extend
-    extend( ret )
-    return ret
-    """ % {
-            'name': m.label,
-            'odbname': odbname,
-        }
-        odbcode = odbcode.split('\n')
-        self.odbs.append( ('%s.odb' % odbname, odbcode) )
         
         opts = {
-            m.label: odbname,
-            '%s.Ei' % odbname: self.Ei,
-            '%s.filename' % odbname: outputfilename(m),
+            '%s.Ei' % m.label: self.Ei,
+            '%s.filename' % m.label: outputfilename(m),
             }
 
         parameters = [
@@ -335,7 +317,7 @@ def %(name)s():
             ]
 
         for param in parameters:
-            opts[ '%s.%s' %  (odbname,param) ] = getattr(m, param)
+            opts[ '%s.%s' %  (m.label,param) ] = getattr(m, param)
             continue
         
         self.cmdline_opts.update( opts )
@@ -351,28 +333,8 @@ def %(name)s():
             }
         self.onNeutronComponent( **kwds )
 
-        # need a odb file to enhance the monitor
-        odbname = 'enhanced_%s' % m.label
-        odbcodes = [
-            'def %(name)s():',
-            '    from mcni.pyre_support import componentfactory as component',
-            "    f = component('monitors', 'PSD_monitor_4PI', supplier = 'mcstas2')",
-            "    ret =  f('%(odbname)s')",
-            "    from mcstas2.pyre_support.monitor_exts import extend",
-            "    extend( ret )",
-            "    return ret",
-            ]
-        odbcode = '\n'.join(odbcodes)
-        odbcode = odbcode % {
-            'name': m.label,
-            'odbname': odbname,
-            }
-        odbcode = odbcode.split('\n')
-        self.odbs.append( ('%s.odb' % odbname, odbcode) )
-        
         opts = {
-            m.label: odbname,
-            '%s.filename' % odbname: outputfilename(m),
+            '%s.filename' % m.label: outputfilename(m),
             }
 
         parameters = {
@@ -381,7 +343,7 @@ def %(name)s():
             'ny': m.nrows,
             }
         for k,v in parameters.iteritems():
-            opts['%s.%s' % (odbname, k)] = v
+            opts['%s.%s' % (m.label, k)] = v
             continue
         
         self.cmdline_opts.update( opts )
@@ -397,27 +359,7 @@ def %(name)s():
             }
         self.onNeutronComponent( **kwds )
 
-        # need a odb file to enhance the monitor
-        odbname = 'enhanced_%s' % m.label
-        odbcodes = [
-            'def %(name)s():',
-            '    from mcni.pyre_support import componentfactory as component',
-            "    f = component('monitors', 'E_monitor', supplier = 'mcstas2')",
-            "    ret =  f('%(odbname)s')",
-            "    from mcstas2.pyre_support.monitor_exts import extend",
-            "    extend( ret )",
-            "    return ret",
-            ]
-        odbcode = '\n'.join(odbcodes)
-        odbcode = odbcode % {
-            'name': m.label,
-            'odbname': odbname,
-            }
-        odbcode = odbcode.split('\n')
-        self.odbs.append( ('%s.odb' % odbname, odbcode) )
-        
         opts = {
-            m.label: odbname,
             }
 
         parameters = {
@@ -433,7 +375,7 @@ def %(name)s():
             'yheight': 0,
             }
         for k,v in parameters.iteritems():
-            opts['%s.%s' % (odbname, k)] = v
+            opts['%s.%s' % (m.label, k)] = v
             continue
         
         self.cmdline_opts.update( opts )
@@ -449,26 +391,8 @@ def %(name)s():
             }
         self.onNeutronComponent( **kwds )
 
-        # need a odb file to enhance the monitor
-        odbname = 'enhanced_%s' % m.label
-        odbcode = """
-def %(name)s():
-    from mcni.pyre_support import componentfactory as component
-    f = component('monitors', 'TOF_monitor2', supplier = 'mcstas2')
-    ret =  f('%(odbname)s')
-    from mcstas2.pyre_support.monitor_exts import extend
-    extend( ret )
-    return ret
-    """ % {
-            'name': m.label,
-            'odbname': odbname,
-        }
-        odbcode = odbcode.split('\n')
-        self.odbs.append( ('%s.odb' % odbname, odbcode) )
-        
         opts = {
-            m.label: odbname,
-            '%s.filename' % odbname: outputfilename(m),
+            '%s.filename' % m.label: outputfilename(m),
             }
 
         # map database record parameter names to parameters used in monte carlo components
@@ -483,7 +407,7 @@ def %(name)s():
             ]
 
         for recordparam, mcparam in parameters:
-            opts[ '%s.%s' %  (odbname,mcparam) ] = getattr(m, recordparam)
+            opts[ '%s.%s' %  (m.label,mcparam) ] = getattr(m, recordparam)
             continue
         
         self.cmdline_opts.update( opts )
