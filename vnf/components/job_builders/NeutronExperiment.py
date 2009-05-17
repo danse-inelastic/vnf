@@ -27,7 +27,7 @@ class Builder(base):
 outputdir = 'out'
 outputdirs = [
     outputdir,
-    'out-server-0', # temp hack to deal with parallel simulation
+    #'out-server-0', # temp hack to deal with parallel simulation
     ]
 
 import os
