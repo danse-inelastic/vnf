@@ -14,9 +14,10 @@
 <inventory>
 
   <component name='clerk'>
-  <property name='db'>vnf:A4*gl8D@vnf-dev.caltech.edu:5432:vnf</property>
+  <property name='db'>localhost:5432:vnf</property>
     <!--<property name='db'>jbrkeith:jbk_postgres@localhost:54321:vnf</property>-->
     <!-- 4Od&Cm#  -->
+  <property name='dbwrapper'>psycopg2</property>
   </component>
 
 </inventory>
