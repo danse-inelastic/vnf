@@ -122,12 +122,22 @@ def format_chemical_formula(matter,director ):
 
 def format_atoms(matter, director):
     coords = matter.fractional_coordinates
+    atom_symbols = matter.atom_symbols
+
     import numpy
     coords = numpy.array(coords)
     coords.shape = -1,3
-    atom_symbols = matter.atom_symbols
+    maxN = 5
+    if len(coords) > maxN:
+        coords = list(coords[:2]) + ['...'] + list(coords[-2:])
+        atom_symbols = list(atom_symbols[:2]) + ['...'] \
+            + list(atom_symbols[-2:])
+
+    def fv(coord):
+        if isinstance(coord, basestring): return coord
+        return format_vector(coord)
     return '\n'.join(
-        [ '%s: %s' % (symbol, format_vector(coord) )
+        [ '%s: %s' % (symbol, fv(coord) )
           for symbol, coord in zip(atom_symbols, coords) ]
         )
 
