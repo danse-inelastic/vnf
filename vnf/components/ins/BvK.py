@@ -18,6 +18,14 @@ def getSystem(model, director):
     return open(path).read()
 
 
+def setSystem(model, system, director):
+    dir = director.dds.abspath(model)
+    import os
+    if not os.path.exists(dir): os.makedirs(dir)
+    path = director.dds.abspath(model, 'system.py')
+    return open(path, 'w').write(system)
+
+
 def findModels_exact(matter, db):
     from vnf.dom.ins.BvKModel import BvKModel
     b = BvKModel()
