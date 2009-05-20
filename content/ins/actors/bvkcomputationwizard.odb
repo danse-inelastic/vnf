@@ -94,6 +94,9 @@ class BvK(base):
 
         formcomponent = self.retrieveFormToShow( 'selectbvkmodel' )
         formcomponent.director = director
+
+        simulation = self._getSimulation(director)
+        formcomponent.inventory.selected = simulation.model.id
         
         # build the form 
         form = document.form(name='', action=director.cgihome)
@@ -167,13 +170,16 @@ class BvK(base):
             ]
 
         system = getSystem(model, director)
-        
-        form = document.form(
-            name='', legend= '', action='')
-        ta = form.textarea(
-            id = '', name = '', label = 'BvK System',
-            default = system,
-            rows = 20)
+
+        l = document.literal()
+        l.text = ['<h4>BvK model</h4>']
+
+        l = document.literal()
+        l.text = [
+            '<pre>',
+            system,
+            '</pre>',
+            ]
 
         p = document.paragraph()
         # 
@@ -199,6 +205,83 @@ class BvK(base):
             use_link, as_template_link),
             ]
         return page
+
+
+    def new_model_from_template(self, director, template=None, system=None, errors=None):
+        try:
+            page = director.retrieveSecurePage( 'bvkcomputationwizard' )
+        except AuthenticationError, err:
+            return err.page
+
+        main = page._body._content._main
+        # populate the main column
+        document = main.document(
+            title='BvK model')
+        document.description = ''
+
+        form_received = self.inventory.form_received
+        if not form_received or form_received.name=='empty':
+            if template is None:
+                model_id = self.inventory.model_id
+                template = director.clerk.getBvKModel(model_id)
+            system = getSystem(template, director)
+            description = template.short_description
+        else:
+            system = form_received.inventory.system
+            description = form_received.inventory.description
+            
+        formcomponent = self.retrieveFormToShow( 'editbvkmodel' )
+        formcomponent.director = director
+        formcomponent.inventory.system = system
+        formcomponent.inventory.description = description
+        
+        # build the form 
+        form = document.form(name='', action=director.cgihome)
+        # specify action
+        action = actionRequireAuthentication( 
+            actor = 'bvkcomputationwizard', 
+            sentry = director.sentry,
+            routine = 'verify_new_bvkmodel',
+            label = '',
+            id=self.inventory.id, type='bvkcomputation',
+            arguments = {'form-received': formcomponent.name },
+            )
+        from vnf.weaver import action_formfields
+        action_formfields(action, form)
+        # expand the form with fields of the data object that is being edited
+        formcomponent.expand(form, errors=errors)
+        
+        submit = form.control(name='submit',type="submit", value="next")
+
+        return page
+
+
+    def verify_new_bvkmodel(self, director):
+        try:
+            page = director.retrieveSecurePage( 'bvkcomputationwizard' )
+        except AuthenticationError, err:
+            return err.page
+
+        try:
+            inputs = self.processFormInputs(director)
+        except InputProcessingError, err:
+            return self.new_model_from_template(
+                director, errors=err.errors)
+        
+        computation = director.clerk.getBvKComputation(self.inventory.id)
+
+        # create bvk model instance
+        model = director.clerk.newOwnedObject('bvkmodels')
+        # transfer data
+        model.matter = computation.matter
+        model.short_description = inputs['description']
+        director.clerk.updateRecord(model)
+        setSystem(model, inputs['system'], director)
+
+        # 
+        self.inventory.model_id = model.id
+        return self.use_model(director)
+        
 
 
     def use_model(self, director):
@@ -512,7 +595,7 @@ class BvK(base):
     pass # end of BvK
 
 
-from vnf.components.ins.BvK import getSystem, findModels, issimplematter
+from vnf.components.ins.BvK import getSystem, setSystem, findModels, issimplematter
 from vnf.components.misc import empty_id
 
 def actor():
