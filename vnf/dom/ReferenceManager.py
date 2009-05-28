@@ -16,15 +16,67 @@
 class ReferenceManager:
 
 
-
     def __init__(self, db):
         self.db = db
         import journal
         self._debug = journal.debug('reference-manager')
         return
+
+    
+    def findDanglingReferences(self, printer=None, tables=[]):
+        ret = []
+        from pyre.db.Reference import Reference
+        from pyre.db.VersatileReference import VersatileReference
+        from vnf.dom._referenceset import _ReferenceTable
+
+        if not tables:
+            from vnf.dom.registry import tableRegistry
+            tables = tableRegistry.itertables()
+
+        for table in tables:
+
+            if printer:
+                printer('Working on table %r' % table.name)
+                
+            refcols = []
+            
+            #check if a table has references
+            for name, attr in table.__dict__.iteritems():
+                if isinstance(attr, Reference):
+                    refcols.append(attr)
+                elif isinstance(attr, VersatileReference):
+                    refcols.append(attr)
+                continue
+
+            # no reference, skip
+            if not refcols: continue
+            
+            # for each table with references, retrieve all the records
+            records = self.db.fetchall(table)
+
+            # for each record, check references
+            for record in records:
+                for refcol in refcols:
+                    ref = refcol.__get__(record)
+                    if self.isDanglingReference(ref): ret.append((ref, record))
+                    continue
+                continue
+            
+            continue
+        
+        return ret
+
+
+    def isDanglingReference(self, reference):
+        try:
+            reference.dereference(self.db)
+        except:
+            return True
+        return False
     
 
     def deleteRecord(self, record, recursive=False):
+        # this does not work for cyclic reference, however
         if self.referred(record): return
         self._debug.log('This record %s, %s is not referred. Safe to remove' % (
             record.name, record.id))
@@ -38,6 +90,7 @@ class ReferenceManager:
         from vnf.dom._geometer import registry as geometerregistry
 
         for name, descriptor in record.__class__.__dict__.iteritems():
+            
             if not isColumnDescriptor(descriptor): continue
             attr = getattr(record, name)
             
@@ -83,7 +136,7 @@ class ReferenceManager:
         for table in all:
             for name, attr in table.__dict__.iteritems():
                 if isinstance(attr, Reference):
-                    if attr.referred_table is record.__class__:
+                    if attr.referred_table is record.__class__ :
                         where = "%s='%s'" % (attr.name, record.id)
                         records = self.db.fetchall(table=table, where=where)
                         n = len(records)

@@ -26,6 +26,7 @@ EXPORT_PYTHON_MODULES = \
 	ApproveUser.py \
 	Delete.py \
 	ITaskApp.py \
+	FindDanglingReferences.py \
 	LaunchDetached.py \
 	MigrateTable.py \
 	PackJobDir.py \

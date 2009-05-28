@@ -34,6 +34,7 @@ EXPORT_DATAFILES = \
 	checkdb.py \
 	createInstrument.py \
 	delete.py \
+	find-dangling-references.py \
 	idd.py \
 	initdb.py \
 	ipad.py \
