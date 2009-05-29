@@ -72,7 +72,7 @@ class FindDanglingReferences(base):
 def _str(record):
     l = [ '%s=%s' % (col, record.getColumnValue(col))
           for col in record.getColumnNames()]
-    return ', '.join(l)
+    return record.name + '(' + ', '.join(l) + ')'
         
 
 # version

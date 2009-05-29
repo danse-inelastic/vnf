@@ -23,7 +23,7 @@ class ReferenceManager:
         return
 
     
-    def findDanglingReferences(self, printer=None, tables=[]):
+    def findDanglingReferences(self, printer=None, tables=[], includeNoneReference=False):
         ret = []
         from pyre.db.Reference import Reference
         from pyre.db.VersatileReference import VersatileReference
@@ -58,6 +58,8 @@ class ReferenceManager:
             for record in records:
                 for refcol in refcols:
                     ref = refcol.__get__(record)
+                    if not includeNoneReference:
+                        if ref is None: continue
                     if self.isDanglingReference(ref): ret.append((ref, record))
                     continue
                 continue
