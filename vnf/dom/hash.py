@@ -75,7 +75,10 @@ class Hasher:
                 ref = attr.__get__(record)
                 #print 'ref=', ref
                 if ref:
-                    value = ref.dereference(db)
+                    if not ref.id:
+                        value = ''
+                    else:
+                        value = ref.dereference(db)
                 else:
                     value = ''
                 #print 'value=', value
