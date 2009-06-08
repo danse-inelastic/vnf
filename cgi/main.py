@@ -69,7 +69,7 @@ if __name__ == '__main__':
     # debugging hack by brandon    
     if os.environ.has_key('USER'):
         if 'jbk' in os.environ['USER']:
-            os.system('firefox ../log/test.html')
+            os.system('firefox ../html/test.html')
     
 
 # version
