@@ -12,11 +12,17 @@
 #
 
 
+from registry import tableRegistry
+
+
 from OwnedObject import OwnedObject as base1
 from ComputationResult import ComputationResult as base2
 class PhononDispersion(base1, base2):
 
     name = 'phonondispersions'
+
+    import pyre.db
+    matter = pyre.db.versatileReference(name='matter', tableRegistry=tableRegistry)
 
     datafiles = [
         'DOS',
@@ -29,9 +35,10 @@ class PhononDispersion(base1, base2):
 
 
 def inittable(db):
-    def new(id):
+    def new(id, creator='vnf'):
         r = PhononDispersion()
         r.id = id
+        r.creator = creator
         return r
 
     records = [

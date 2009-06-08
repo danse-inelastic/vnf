@@ -69,7 +69,7 @@ class Retriever:
         return
     
 
-    def _make_result_holder(self, job, table):
+    def _make_result_holder(self, job, table, name=None):
         '''make a result holder (a db record) for a
         
         For example, a bvk computation will create a dos data file, and it
@@ -79,9 +79,16 @@ class Retriever:
         '''
         director = self.director
         record = director.clerk.newOwnedObject(table, owner = job.creator)
+        
         # the result record should know where it comes from
         record.origin = self.computation
         director.clerk.updateRecord(record)
+        
+        # add the result to the "results" list of the computation
+        if name is None:
+            name = table.__name__.lower()
+        self.computation.results.add(record, director.clerk.db, name=name)
+        
         return record
         
 

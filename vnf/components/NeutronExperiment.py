@@ -209,7 +209,8 @@ class NeutronExperiment(base):
         experiment = director.clerk.getNeutronExperiment(self.inventory.id)
         job = director.clerk.dereference(experiment.job)
         
-        p = document.paragraph()
+        overviewdoc = document.document(title='Overview')
+        p = overviewdoc.paragraph()
         p.text = [
             'Experiment %r has been constructed.' % experiment.short_description,
             ]
@@ -219,20 +220,23 @@ class NeutronExperiment(base):
             'Please review them before you start the experiment.',
             ]
         
-        self._add_review_tree( document, director )
+        self._add_review_tree( overviewdoc, director )
+
+        linksdoc = document.document(title='Links')
+        resultsdoc = document.document(title='Results')
         if job.state in ['created', '']:
-            self._add_revision_sentence( document, director )
-            self._add_run_sentence( document, director )
+            self._add_revision_sentence( linksdoc, director )
+            self._add_run_sentence( linksdoc, director )
         else:
-            self._add_view_job_sentence(document, director)
-        self._add_delete_sentence( document, director )
+            self._add_view_job_sentence(linksdoc, director)
+        self._add_delete_sentence( linksdoc, director )
         if job.state in ['running']:
-            self._add_experiment_output(document, director)
+            self._add_experiment_output(linksdoc, director)
             Scheduler.check(job, director)
         elif job.state in ['finished', 'terminated', 'cancelled']:
-            self._add_experiment_results(document, director)
+            self._add_experiment_results(resultsdoc, director)
         elif job.state in ['submissionfailed']:
-            self._add_resubmit_sentence(document, director)
+            self._add_resubmit_sentence(linksdoc, director)
         return
 
 
@@ -441,6 +445,9 @@ class NeutronExperiment(base):
 
     
     def _sync(self, job, filenames, director):
+
+        self._debug.log("filenames: %s" % (filenames,))
+
         # should check if the file in the remote job directory is newer than
         # the local job directory
         # current implementation does not check for that...
@@ -448,10 +455,16 @@ class NeutronExperiment(base):
         server = director.clerk.dereference(job.server)
 
         for filename in filenames:
+
+            self._debug.log("working on %s" % (filename,))
+
             # if the file has not been generated, skip
-            if not dds.is_available(job, filename=filename, server=server): continue
+            available = dds.is_available(job, filename=filename, server=server)
+            self._debug.log("%s available: %s" % (filename, available))
+            if not available: continue
 
             path = dds.abspath(job, filename=filename)
+            self._debug.log("remove local copy %s if necessary" % path)
             import os
             if os.path.exists(path):
                 # remove the local copy
@@ -459,13 +472,12 @@ class NeutronExperiment(base):
                 # let dds forget the local copy
                 dds.forget(job, filename=filename)
 
-            # check if it exists in the server
-            if not dds.is_available(job, filename=filename, server=server):
-                # if not, skip
-                continue
             # let dds know that it exists in the server
+            self._debug.log("remember that %s exists at %s" % (filename, server.short_description))
             dds.remember(job, filename=filename, server=server)
+
             # make it available locally
+            self._debug.log("make %s availabe locally" % (filename,))
             dds.make_available(job, files=[filename])
             continue
         

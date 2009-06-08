@@ -1513,7 +1513,8 @@ class NeutronExperimentWizard(base):
         from vnf.weaver import action_formfields
         action_formfields( action, form )
         # expand the form with fields of the data object that is being edited
-        formcomponent.expand( form, errors = errors )
+        matter = director.clerk.dereference(sample.matter)
+        formcomponent.expand( form, errors = errors, matter = matter)
         
         submit = form.control(name='submit',type="submit", value="next")
         

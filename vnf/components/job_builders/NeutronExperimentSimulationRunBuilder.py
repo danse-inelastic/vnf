@@ -60,15 +60,21 @@ class Builder(base):
         if samplecomponent:
             self.onSampleComponent(samplecomponent)
         
+        #
         parameters = [ 'ncount' ]
         for parameter in parameters:
             self.options[ parameter ] = getattr(experiment, parameter )
             continue
 
-        pyscriptname = self.pyscriptname
+        # parallel computing
+        db = self.db
+        job = experiment.job.dereference(db)
+        np = job.numprocessors
+        self.options['mpirun.nodes'] = np
 
         #construct command line
-        command = '. ~/.mcvine && python %s %s' % (pyscriptname, ' '.join(
+        pyscriptname = self.pyscriptname
+        command = '. ~/.mcvine && python %s %s' % (pyscriptname, '\\\n\t'.join(
             ['--%s="%s"' % (item, self.options.get(item))
              for item in self.options ] ) )
 

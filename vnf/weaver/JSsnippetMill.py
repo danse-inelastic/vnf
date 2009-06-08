@@ -13,7 +13,15 @@
 class HtmlMill:
 
     def onJSsnippet(self, snippet):
-        return []
+        configurations = self.configurations
+        home = configurations['home']
+
+        csscode = []
+        for css in snippet.stylesheets:
+            csscode.append( '<link rel="stylesheet" type="text/css" href="%s/css/%s" />' % (
+                home,css) )
+            
+        return csscode
 
 
 class JSMill:

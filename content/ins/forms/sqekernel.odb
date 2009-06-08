@@ -90,7 +90,7 @@ class SQEKernel(base):
         return
 
 
-    def expand(self, form, errors = None, properties = None):
+    def expand(self, form, errors = None, properties = None, matter=None):
         p = form.paragraph( )
         p.text = [
             'Kernel type: %s' % self.DBTable,

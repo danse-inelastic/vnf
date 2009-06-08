@@ -44,22 +44,37 @@ class Form( base ):
 
         matters = _findMatters(director)
         from vnf.utils.uniquelist import uniquelist
-        from vnf.dom.hash import hash
         matters = uniquelist(matters, idfun=lambda matter: hash(matter, director.clerk.db))
+        if len(matters) == 0: raise RuntimeError, "No matters found"
+
+        # previous selection
+        from vnf.dom.registry import tableRegistry
+        from pyre.db._reference import fromString
+        selected = self.inventory.selected
+        self._debug.log('selected=%s' % selected)
+        if selected:
+            reference = fromString(selected, tableRegistry)
+            previous_selected_matter = director.clerk.dereference(reference)
+        else:
+            previous_selected_matter = matters[0]
         
-        entries = [
-            ('%s%s%s' % (matter.__class__.__name__, separator, matter.id),
-             describe(matter))
-            for matter in matters ]
+        # the table for the matters
+        l = form.literal()
+        l.text = ['<h5>Materials</h5>']
+
+        p = form.paragraph()
+        p.text = ['Please select a material from the following table.']
         
-        import opal.content
-        selector = form.selector(
-            id = 'material_selector',
-            name = '%s.selected' % prefix,
-            entries = entries,
-            label = 'Material',
-            selected = self.inventory.selected or entries[0][0],
-            )
+        options = {
+            'selected': previous_selected_matter,
+            'name': 'selected',
+            }
+        table = director.retrieveComponent(
+            'matters',
+            factory="table",
+            args=[matters, director, options],
+            vault=['tables']).table
+        form.contents.append(table)
         return
 
 
@@ -79,12 +94,14 @@ class Form( base ):
     
     pass # end of Form
 
+from vnf.dom.hash import hash
 
 
-def describe(matter):
-    return '%s: %s' % (
+def describe(matter, director):
+    s = '%s: %s' % (
         matter.short_description or matter.chemical_formula, matter.__class__.__name__)
-
+    #s = '(%s)' % hash(matter, director.clerk.db)
+    return s
 
 def _findMatters(director):
     from vnf.dom import mattertables

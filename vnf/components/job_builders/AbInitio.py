@@ -40,6 +40,28 @@ class Builder(base):
 
 
     def _make_vasp_script(self, computation):
+
+        self._make_vasp_script1(computation)
+
+        job = computation.job.dereference(self.db)
+        np = job.numprocessors
+        cmds = [
+            '#!/usr/bin/env sh',
+            '. ~/.abinitio-env',
+            'chmod +x %s' % self.shscript1name,
+            'mpirun -np %d ./%s' % (np, self.shscript1name),
+            '',
+            ]
+        script = self.shscriptname
+        path = self._path(script)
+        open(path, 'w').write('\n'.join(cmds))
+
+        self._files.append(self.shscriptname)
+        return script
+        
+
+    shscript1name = 'run1.sh'
+    def _make_vasp_script1(self, computation):
         matter = computation.matter.dereference(self.db)
         xyzfilename = self._makeXYZfile(matter)
         xcFunctional = computation.xcFunctional
@@ -54,12 +76,13 @@ class Builder(base):
             ('generateInputsOnly', computation.generateInputsOnly),
             ]
         cmds = [
-            'source ~/.abinitio-env',
+            '#!/usr/bin/env sh',
             'vaspapp.py ' + ' '.join(['-%s=%s' % (k,v) for k,v in params]),
             ]
-        path = self._path(self.shscriptname)
+        shscript1name = self.shscript1name
+        path = self._path(shscript1name)
         open(path, 'w').write('\n'.join(cmds))
-        self._files.append(self.shscriptname)
+        self._files.append(shscript1name)
 
         if not computation.generateInputsOnly:
             # copy vasp input files if they alreday exist

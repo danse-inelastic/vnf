@@ -59,6 +59,10 @@ def isdone(job):
     return job.state in ['finished', 'cancelled', 'terminated']
 
 
+def isnew(job):
+    return job.state in ['', 'created']
+
+
 from misc import new_id as new_jobid
 
 

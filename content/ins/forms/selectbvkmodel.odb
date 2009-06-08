@@ -41,14 +41,18 @@ class Form( base ):
         prefix = formactor_action_prefix
 
         entries = [(m.id, describe(m)) for m in models ]
-        
+
+        selected = self.inventory.selected
+        if not selected:
+            selected = entries[0][0]
+            
         import opal.content
         selector = form.selector(
             id = 'bvkmodel_selector',
             name = '%s.selected' % prefix,
             entries = entries,
             label = 'Bvk model',
-            selected = entries[0][0],
+            selected = selected,
             )
         return
 

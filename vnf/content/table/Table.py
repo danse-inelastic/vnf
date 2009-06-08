@@ -18,6 +18,7 @@ class Table(object):
         self.model = model
         self.data = data
         self.view = view
+        self.contents = []
         return
 
     def identify(self, visitor): return visitor.onTable(self)

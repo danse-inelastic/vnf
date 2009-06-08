@@ -23,8 +23,12 @@ def empty_id( id ):
     return id in [None, 'None', '']
 
 
+from pyre.db._reference import reference
 def nullpointer( p ):
-    return p is None
+    if p is None: return True
+    if not isinstance(p, reference):
+        raise TypeError, '%s is not a reference' % (p,)
+    return not p.id
 
 
 def defaultServer(director):

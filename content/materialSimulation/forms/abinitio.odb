@@ -79,6 +79,13 @@ class Form( base ):
 
 #drop down menu for abinitio engine: [vasp, (abinit)]
         choices=['vasp','abinit (not completely functional)']
+
+        # temporary hack to disallowing access to vasp
+        director = self.director
+        blacklist = ['demo', 'reviewer']
+        if director.sentry.username in blacklist:
+            del choices[choices.index('vasp')]
+
         entries=zip(choices,choices)
 
         eng=str(record.engine)

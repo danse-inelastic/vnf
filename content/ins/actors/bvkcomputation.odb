@@ -66,6 +66,11 @@ class Actor(base):
         handler(computation, compdoc)
 
         job = director.clerk.dereference(computation.job)
+
+        if isnew(job):
+            # if job is new, redirect to job submission
+            return director.redirect(actor='job', routine='view', id=job.id)
+
         if isdone(job):
             if not computation.results_state or computation.results_state == 'retrieval failed':
                 retrieve_computation_results(computation, director, debug=0)
@@ -115,6 +120,7 @@ class Actor(base):
 
 
     def _isConfigured(self, computation, director):
+        if not computation.short_description: return False
         if not computation.model: return False
         if not computation.type: return False
         return True
@@ -162,11 +168,17 @@ class Actor(base):
         options = {}
         plot = vnf.content.plot_2d( data, options )
         
-        document.contents.append( plot )
         p = document.paragraph()
         p.text = [
-            'Under construction...',
+            'The following is a plot of the phonon desnisty of states.',
             ]
+        document.contents.append( plot )
+
+        p = document.paragraph()
+        p.text = []
+
+        p = document.paragraph()
+        p.text = ['Plot of dispersions coming soon...']
         return
 
 
@@ -201,8 +213,21 @@ class Actor(base):
     def _view_disp(self, computation, document):
         p = document.paragraph()
         p.text = [
-            'Under construction...',
+            'This compuation calculates phonon dispersions on a grid',
+            'from the above BvK model.',
+            'The parameters for this computation is:',
             ]
+        parameters = [
+            'dE',
+            'N1',
+            ]
+        for param in parameters:
+            p = document.paragraph()
+            p.text = [
+                '%s: %s' % (param, getattr(computation, param)),
+                ]
+            continue
+
         return
 
 
@@ -247,7 +272,7 @@ def _readdos(path):
 
 
 from vnf.components.ins.BvK import getSystem
-from vnf.components.Job import isdone
+from vnf.components.Job import isdone, isnew
 from vnf.components.Computation import retrieve_results as retrieve_computation_results
 
 def actor():

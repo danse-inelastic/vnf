@@ -62,8 +62,8 @@ class App(Script):
     class Inventory(Script.Inventory):
 
         import pyre.inventory
-        from vnf.components.Clerk import Clerk #import clerk as clerkFactory
-        clerk = pyre.inventory.facility('clerk', default=Clerk('clerk','clerk'))
+        import vnf.components 
+        clerk = pyre.inventory.facility('clerk', default=vnf.components.clerk())
         
 
     def main(self, *args, **kwds):
@@ -228,9 +228,6 @@ class App(Script):
 
     def _defaults(self):
         Script._defaults(self)
-        clerk = self.inventory.clerk
-        clerk.inventory.db = 'jbk:chem88@localhost:5432:test'
-        clerk.inventory.dbwrapper = 'psycopg2'
         return
 
 

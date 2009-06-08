@@ -42,15 +42,31 @@ class MaterialSimulationWizard(base):
             simulation = director.clerk.getRecordByID(type, id)
             matter = simulation.matter
             selected = str(matter)
+            del matter
         else:
-            selected = ''
+            # try to get matter from inventory
+            matterid = self.inventory.matterid
+            mattertype = self.inventory.mattertype
+            matter = None
+            if matterid and mattertype:
+                try:
+                    matter = director.clerk.getRecordByID(mattertype, matterid)
+                except:
+                    pass
 
+            selected = ''
+            if matter:
+                from pyre.db._reference import reference
+                ref = reference(matter.id, matter.__class__)
+                selected = str(ref)
+            
+        self._debug.log('selected=%s' % selected)
+        
         main = page._body._content._main
 
         # populate the main column
         document = main.document(title='Material Simulation/Modeling Wizard: select material')
         document.description = ''
-        document.byline = 'byline?'
 
         formcomponent = self.retrieveFormToShow(
             'selectmaterial' )
@@ -107,7 +123,6 @@ class MaterialSimulationWizard(base):
         document = main.document(
             title='Select material simulation/modeling engine')
         document.description = ''
-        document.byline = '<a href="http://danse.us">DANSE</a>'        
 
         mattertype = self.inventory.mattertype
         matterid = self.inventory.matterid
@@ -331,7 +346,6 @@ class MaterialSimulationWizard(base):
             return err.page
         main = page._body._content._main
         document = main.document(title='Ab initio electronic structure simulation' )
-        document.byline = '<a href="http://danse.us">DANSE</a>'    
         p = document.paragraph()
         p.text = [
             'You have not selected the material.',

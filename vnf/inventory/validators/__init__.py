@@ -12,6 +12,13 @@
 #
 
 
+def notEmpty(candidate):
+    # not an empty string
+    s = str(candidate)
+    if len(s) == 0: raise ValueError, "Cannot be an empty string"
+    return s
+
+
 def real(candidate):
     try:
         f = float(candidate)

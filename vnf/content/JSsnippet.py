@@ -15,9 +15,10 @@
 
 class JSsnippet:
 
-    def __init__(self, includes=[], main=[]):
+    def __init__(self, includes=[], main=[], stylesheets=[]):
         self.includes = includes
         self.main = main
+        self.stylesheets = stylesheets
         return
 
 

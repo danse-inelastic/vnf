@@ -85,14 +85,29 @@ class DistributedDataStorage(base):
         return
 
 
-    def is_available(self, dbrecord, filename, server=None):
-        p = self.path(dbrecord, filename)
-        ret = self._is_available(p, server=server)
-        msg = 'File %s for dbrecord %s:%s is ' % (filename, dbrecord.__class__.__name__, dbrecord.id)
-        if not ret: msg += 'not '
-        msg += 'available on %s.' % (server.short_description,)
-        self._debug.log(msg)
-        return ret
+    def is_available(self, dbrecord, filename=None, server=None, files=None):
+
+        if files is None: files = []
+
+        self._debug.log("called with dbrecord=%s,%s, filename=%s, server=%s, files=%s" % (dbrecord.name, dbrecord.id, filename, server and server.short_description or 'localhost', files))
+        if filename and filename not in files:
+            files.append(filename)
+        if not files: files = _default_files(dbrecord)
+
+        for filename in files:
+            self._debug.log("checking file %s" % (filename,))
+            p = self.path(dbrecord, filename)
+            self._debug.log("its path is %s" % (p,))
+            available = self._is_available(p, server=server)
+            msg = 'File %s for dbrecord %s:%s is ' % (filename, dbrecord.__class__.__name__, dbrecord.id)
+            if not available: msg += 'not '
+            msg += 'available on %s.' % (server and server.short_description or "localhost",)
+            self._debug.log(msg)
+            
+            if not available: return False
+            continue
+        
+        return True
 
 
     def path(self, dbrecord, filename=None):
