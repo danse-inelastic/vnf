@@ -5,6 +5,10 @@
 <title>Insert title here</title>
 </head>
 <body>
-<?ohp print 'Hello world' ?>
+<?ohp 
+document = main.document(title = 'Under construction...')
+p = document.paragraph()
+p.text = ['This page has not been implemented.'] 
+?>
 </body>
 </html>
