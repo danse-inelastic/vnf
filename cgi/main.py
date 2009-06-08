@@ -66,6 +66,7 @@ if __name__ == '__main__':
         out = open(errorlogfile, 'a' )
         out.write( '\n'.join(messages))
         
+    # debugging hack by brandon    
     if os.environ.has_key('USER'):
         if 'jbk' in os.environ['USER']:
             os.system('firefox ../log/test.html')
