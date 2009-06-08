@@ -63,6 +63,7 @@ class WebApplication(Base):
 
         itaskmanager = pyre.inventory.facility(name='itaskmanager', default = 'itask-manager')
 
+        # properties
         debug = pyre.inventory.bool(name="debug", default=True)
         debug.meta['tip'] = "suppress some html output for debugging purposes"
 
@@ -73,18 +74,25 @@ class WebApplication(Base):
         
 
     def main(self, *args, **kwds):
+        # initializaiton
+        noErrors = True 
         actor = self.actor
-        if actor is None:
+        #ohp = self.ohp
+        
+        # initialization error handling
+        if actor is None:# and ohp is None:
             inquiry = self.inventory._getTraitDescriptor('actor').inquiry
             actor = self.retrieveActor('nyi')
             actor.message = "Not implemented yet! actor=%s, routine=%s" % (
                 inquiry, self.inventory.routine)
             self.actor = actor
 
-        noErrors=True
+        #if self._cgi_inputs.haskey('actor'):
+        page = self.actor.perform(self, routine=self.inventory.routine, debug=self.debug)    
         try:
             page = self.actor.perform(self, routine=self.inventory.routine, debug=self.debug)
-            self.recordActivity()
+            if self.debug is False: 
+                self.recordActivity()
             
             if isinstance(page, basestring):
                 print page,
@@ -97,6 +105,8 @@ class WebApplication(Base):
             except:
                 # if we cannot generate a fancy report. we need a plain one
                 self.plainBugReport()
+        #elif self._cgi_inputs.haskey('ohp'):
+        #page = self.ohp.process(self, page=self.inventory.routine, debug=self.debug)  
             
         if noErrors and self.debug:
             self.generateDebugInfo('generic')
@@ -179,7 +189,7 @@ class WebApplication(Base):
 
         return
 
-    
+    # after the review, this routine should be moved to opal's WebApplication
     def redirect(self, actor, routine, **kwds):
         self.inventory.routine = routine
         self.actor = self.retrieveActor(actor)
@@ -259,7 +269,7 @@ class WebApplication(Base):
 
         self.idd = self.inventory.idd
         self.clerk = self.inventory.clerk
-        # this next line is a problem.  Technically, many of the components can be None at
+        # this next line is a problem when attaching a debugger.  Technically, many of the components can be None at
         # this point....so trying to set an attribute of a None-type component throws an
         # exception....root of the problem may be in initializeConfiguration() in Application.py
         self.clerk.director = self
@@ -269,7 +279,7 @@ class WebApplication(Base):
         self.scribe = self.inventory.scribe
         self.debug = self.inventory.debug
         
-        # this is a quick hack
+        # this is a quick hack and will be cleaned up eventually
         if os.environ.has_key('USER'):
             if 'jbk' in os.environ['USER']:
                 self.csaccessor = self.inventory.csaccessorAsUser
