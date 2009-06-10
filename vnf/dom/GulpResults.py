@@ -14,6 +14,8 @@
 
 compressed_xyzTrajectory_filename = 'outputmovie.xyz.zip'
 xyzTrajectory_filename = 'outputmovie.xyz'
+output_filename = 'gulp.out'
+dos_filename = 'dos.dens'
 
 
 # version
