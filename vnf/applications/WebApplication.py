@@ -86,9 +86,7 @@ class WebApplication(Base):
             actor.message = "Not implemented yet! actor=%s, routine=%s" % (
                 inquiry, self.inventory.routine)
             self.actor = actor
-
-        #if self._cgi_inputs.haskey('actor'):
-        page = self.actor.perform(self, routine=self.inventory.routine, debug=self.debug)    
+ 
         try:
             page = self.actor.perform(self, routine=self.inventory.routine, debug=self.debug)
             if self.debug is False: 
