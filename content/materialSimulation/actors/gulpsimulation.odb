@@ -13,7 +13,7 @@
 
 
 from vnf.components.FormActor import FormActor as base, action, actionRequireAuthentication, action_link, InputProcessingError, AuthenticationError
-
+import os
 
 class Actor(base):
     
@@ -71,11 +71,12 @@ class Actor(base):
         '<center><a href="'+relativeLocationOfFile+'"><img src="images/webstart.gif" alt="Jmol"/></a></center>']      
     
     def dosShow(self, gulpDosFilePath):
-        # parse the dos file
-        
         # plot the DOS--for now just use flot--eventually combine with your 3d plotter to do "more advanced view"
         if os.path.exists(gulpDosFilePath):
-            dos = _readDOS(gulpDosFilePath)
+            # parse the dos file
+            from kernelGenerator.gulp.DosPlottingUtils import getGulpDosRebinned
+            e, dos = getGulpDosRebinned(gulpDosFilePath, numBins = 70, cutoffOfDosData = 500)
+            #dos = _readDOS(gulpDosFilePath)
             import vnf.content
             options = {}
             plot = vnf.content.plot_2d( dos, options )
@@ -99,13 +100,13 @@ class Actor(base):
 #        p.text = ['''Plot of the Density of States (DOS).''',
 #        '<center><a href="'+relativeLocationOfFile+'"><img src="images/webstart.gif" alt="ssPlotter"/></a></center>'] 
     
-    def viewDynamics(self, director, computation, document):
+    def viewDynamics(self, director, server, computation, document):
         job = computation.job.dereference(director.clerk.db)
         
         from vnf.dom import GulpResults
         compressed_xyzTrajectory_path = director.dds.abspath(job, GulpResults.compressed_xyzTrajectory_filename)
 
-        import os
+        
         if os.path.exists(compressed_xyzTrajectory_path):
             trajectoryShow(compressed_xyzTrajectory_path)   
         else:
@@ -194,11 +195,11 @@ class Actor(base):
 #                ]
 #            document.add(snippet)
             
-    def viewPhonons(self, director, computation, document):
+    def viewPhonons(self, director, server, computation, document):
         job = computation.job.dereference(director.clerk.db)
         from vnf.dom import GulpResults
         # need to pass gulpOutputFilePath here (only in the case that eigenvectors were output)
-#        import os
+#        
 #        if os.path.exists(gulpOutputFilePath):
         #modeShow(gulpOutputFilePath) 
         gulpFiles = [GulpResults.dos_filename]
@@ -207,18 +208,18 @@ class Actor(base):
         except Exception:
             import traceback
             p = document.paragraph()
-            p.text = ['Gulp dos file not found.']
+            p.text = ['Problem retrieving gulp DOS file:']
 
             l = document.literal()
             l.text = ['<pre>'] \
                 + traceback.format_exc().splitlines() \
                 + ['</pre>']
-            return page
-        director.dds.make_available(job, files=outputFiles)    
+            return
+        director.dds.make_available(job, files = gulpFiles)    
         gulpDosFilePath = director.dds.abspath(job, GulpResults.dos_filename)
-        import os
+        
         if os.path.exists(gulpDosFilePath):
-            dosShow(gulpDosFilePath) 
+            self.dosShow(gulpDosFilePath) 
 
     def view(self, director):
         try:
@@ -227,20 +228,29 @@ class Actor(base):
             return err.page
 
         id = self.inventory.id
-
         computation = director.clerk.getRecordByID(self.table, id)
+        main = page._body._content._main
+        # populate the main column
+        document = main.document(title='Gulp simulation #%s' % (
+            id,))
+        
+        # check to see if everything is ready, if not, tell user and redirect
         if not self._isConfigured(computation, director):
-            return director.redirect(
+            p = document.paragraph()
+            action = actionRequireAuthentication(
+                label = 'here',
+                sentry = director.sentry,
                 actor = 'gulpsimulationwizard',
                 routine = 'configureSimulation',
                 type = self.table,
                 id = self.inventory.id,
                 )
-
-        main = page._body._content._main
-        # populate the main column
-        document = main.document(title='Gulp simulation #%s' % (
-            id,))
+            link = action_link(action, director.cgihome)
+            p.text = [
+                'The computation does not have either a job number or an input file.',
+                'Please click %s to resubmit.' % link,
+                ]
+            return page
 
         job = director.clerk.dereference(computation.job)
 
@@ -258,12 +268,6 @@ class Actor(base):
             ]
 
         if isdone(job):        
-            # see the trajectory, phonon modes,...
-            if 'molecular dynamics' in computation.runtype:
-                self.viewDynamics(director, computation, resdoc)
-            elif 'phonons' in computation.runtype:
-                self.viewPhonons(director, computation, resdoc)
-            
             server = director.clerk.dereference(job.server)
             from vnf.dom import GulpResults
             outputFiles = [GulpResults.output_filename] # need to replace this with output file settings
@@ -286,8 +290,13 @@ class Actor(base):
             resdoc = document.document(title='Results')
 
             p = resdoc.paragraph()
+            # see the trajectory, phonon modes,...
+            if 'molecular dynamics' in computation.runtype:
+                self.viewDynamics(director, server, computation, resdoc)
+            elif 'phonons' in computation.runtype:
+                self.viewPhonons(director, server, computation, resdoc)
             # if the file is too large, only show the top and the bottom
-            import os
+            
             if os.stat(gulpOutputFilePath).st_size > 40000:
                 top = f.read(35000)
                 p.text = ['Here is the first part of the stdout file of the simulation:']
@@ -380,7 +389,7 @@ class Actor(base):
 
 
     def _isConfigured(self, sim, director):
-        import os
+        
         from vnf.dom.GulpSimulation import GulpSimulation
         path = director.dds.abspath(sim, filename=GulpSimulation.CONFIGURATION_FILE)
         if not os.path.exists(path): return False
