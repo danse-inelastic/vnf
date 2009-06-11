@@ -19,6 +19,8 @@ class GulpSimulation(base):
     import pyre.db
     
     runtype = pyre.db.varchar(name='runtype', length=64, default='md')
+    dos_projections = pyre.db.varcharArray(name='dos_projections', length=32, default=[])
+    
 
     CONFIGURATION_FILE = 'gulp.gin'
     LIBPOINTER_FILE = 'gulp.libs'
