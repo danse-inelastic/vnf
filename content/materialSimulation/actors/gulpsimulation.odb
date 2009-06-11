@@ -25,130 +25,200 @@ class Actor(base):
 
     table = 'gulpsimulations'
     
-    def viewTrajectory(self, computation):
+    def trajectoryShow(self, compressed_xyzTrajectory_path):
+        from vnf.components.JnlpFile import JnlpFile
+        #viewDynamics(self, computation)
+        args = {
+        'cgihome':director.cgihome,
+        'sentry.username':director.sentry.username,
+        'sentry.ticket':director.sentry.ticket,
+        'displayType':'trajectory',
+        'trajectoryPath':compressed_xyzTrajectory_path,
+        }
+        jnlpFile = JnlpFile(
+        resources=('jmolVnf.jar', 'Jmol.jar','pg74.216.jdbc3.jar'),
+        mainClass='jmolVnf.JmolVnf',
+        programArguments = args,
+        fileName='jmolVnfLauncher',
+        )
+        relativeLocationOfFile = jnlpFile.writeJnlp(director)
+
+        p = document.paragraph()
+        p.text = ['''A movie of the simulation can be accessed by launching the viewer below.''',
+        '<center><a href="'+relativeLocationOfFile+'"><img src="images/webstart.gif" alt="Jmol"/></a></center>'] 
+
+    def modeShow(self, gulpOutputFile):
+        #first process the modes:
+        
+        # then visualize the modes
+        args = {
+        'cgihome':director.cgihome,
+        'sentry.username':director.sentry.username,
+        'sentry.ticket':director.sentry.ticket,
+        'displayType':'trajectory',
+        'trajectoryPath':compressed_xyzTrajectory_path,
+        }
+        jnlpFile = JnlpFile(
+        resources=('jmolVnf.jar', 'Jmol.jar','pg74.216.jdbc3.jar'),
+        mainClass='jmolVnf.JmolVnf',
+        programArguments = args,
+        fileName='jmolVnfLauncher',
+        )
+        relativeLocationOfFile = jnlpFile.writeJnlp(director)
+
+        p = document.paragraph()
+        p.text = ['''Visualization of the phonon modes can be accessed by launching the viewer below.''',
+        '<center><a href="'+relativeLocationOfFile+'"><img src="images/webstart.gif" alt="Jmol"/></a></center>']      
+    
+    def dosShow(self, gulpDosFilePath):
+        # parse the dos file
+        
+        # plot the DOS--for now just use flot--eventually combine with your 3d plotter to do "more advanced view"
+        if os.path.exists(gulpDosFilePath):
+            dos = _readDOS(gulpDosFilePath)
+            import vnf.content
+            options = {}
+            plot = vnf.content.plot_2d( dos, options )
+            document.add( plot )
+#        # 3d stuff
+#        args = {
+#        'cgihome':director.cgihome,
+#        'sentry.username':director.sentry.username,
+#        'sentry.ticket':director.sentry.ticket,
+#        'dataPath':dataPath,
+#        }
+#        jnlpFile = JnlpFile(
+#        resources=('ssPlotter.jar', 'visad.jar'),
+#        mainClass='ss.JmolVnf',
+#        programArguments = args,
+#        fileName='jmolVnfLauncher',#change this
+#        )
+#        relativeLocationOfFile = jnlpFile.writeJnlp(director)
+#
+#        p = document.paragraph()
+#        p.text = ['''Plot of the Density of States (DOS).''',
+#        '<center><a href="'+relativeLocationOfFile+'"><img src="images/webstart.gif" alt="ssPlotter"/></a></center>'] 
+    
+    def viewDynamics(self, director, computation, document):
         job = computation.job.dereference(director.clerk.db)
         
         from vnf.dom import GulpResults
-        compressed_trajectory_path = director.dds.abspath(job, GulpResults.compressed_trajectory_filename)
+        compressed_xyzTrajectory_path = director.dds.abspath(job, GulpResults.compressed_xyzTrajectory_filename)
 
         import os
-        if os.path.exists(compressed_trajectory_path):
-                            
-#                from vnf.applications.PackJobDir import PackJobDir
-#                PTRFILEEXT = PackJobDir.PTRFILEEXT
-#                ptrfilepath = '.'.join( [director.dds.abspath(job), PTRFILEEXT] )
-#                
-#                # if pointer file does not exists, need to start packing
-#                if not os.path.exists(ptrfilepath):
-#                    return self._download_start_packing(director)
-#        
-#                # if packing is in process, say that
-#                s = open(ptrfilepath).read()
-#                if s == PackJobDir.PACKINGINPROCESS:
-#                    return self._download_packing_in_progress(director)
-                
-                args = {
-                'cgihome':director.cgihome,
-                'sentry.username':director.sentry.username,
-                'sentry.ticket':director.sentry.ticket,
-                'displayType':'trajectory',
-                'trajectoryPath':compressed_trajectory_path,
-                }
-                jnlpFile = JnlpFile(
-                resources=('jmolVnf.jar', 'Jmol.jar','pg74.216.jdbc3.jar'),
-                mainClass='jmolVnf.JmolVnf',
-                programArguments = args,
-                fileName='jmolVnfLauncher',
-                )
-                relativeLocationOfFile = jnlpFile.writeJnlp(director)
-
-                p = document.paragraph()
-                p.text = ['''A movie of the simulation can be accessed by launching the viewer below.''',
-                '<center><a href="'+relativeLocationOfFile+'"><img src="images/webstart.gif" alt="Jmol"/></a></center>']
+        if os.path.exists(compressed_xyzTrajectory_path):
+            trajectoryShow(compressed_xyzTrajectory_path)   
         else:
-            # the itask worker
-            iworker = 'pack-gulp-trajectory'
+            # don't worry about compressing part of a trajectory for now--just return the 
+            # uncompressed trajectory path
+            trajectoryShow(xyzTrajectory_path)
+#            # the itask worker
+#            #print 'working'
+#            iworker = 'get-dynamics'
+#            
+#            # first check if there is itask running
+#            found = None
+#            pending_tasks = computation.pending_tasks.dereference(director.clerk.db)
+#            if pending_tasks:
+#                for label, task in pending_tasks:
+##                    print label,task
+##                    print task.worker
+#
+#                    # if not the right task, skip
+#                    if task.worker != iworker: continue
+#
+#                    if task.state == 'finished':
+#                        raise RuntimeError, "Task %s for %s finished but no compressed trajectory available." % (task.id, computation.id)
+#                    
+#                    if task.state == 'failed':
+#                        self._debug.log("Task %s for %s found. It failed previously." % (task.id, computation.id))
+#                        # reopen the task
+#                        task.state = 'created'
+#                        director.clerk.updateRecord(task)
+#                        found = task
+#                        break
+#                    
+#                    if task.state == 'canceled':
+#                        self._debug.log("Task %s for %s found. It was canceled previously." % (task.id, computation.id))
+#                        # reopen the task
+#                        task.state = 'created'
+#                        director.clerk.updateRecord(task)
+#                        found = task
+#                        break
+#
+#                    found = task
+#                    break
+#                
+#            # if no previous task found, create a new task
+#            if not found:
+#                
+#                from vnf.dom.ITask import createITask, ITask
+#                task = director.clerk.newDbObject(ITask)
+#                task = createITask(
+#                    task.id,
+#                    beneficiary = computation,
+#                    worker = iworker,
+#                    type = iworker,
+#                    )
+#                director.clerk.updateRecord(task)
+#
+#                # add this task to pending task list
+#                computation.pending_tasks.add(task, director.clerk.db, name=iworker)
+#                
+#                found = task
+#            #
+#            task = found
+#
+#            import vnf.content
+#            itaskmonitor = vnf.content.itaskMonitor(
+#                task.id,
+#                label = 'Compressing trajectory ...',
+#                sentry=director.sentry,
+#                )
+#            itaskmonitor.finished_callback = '''
+#  function(data) {
+#    var monitor = $("#%(itaskmonitorid)s");
+#    
+#    if (data.state=="finished") {
+#      monitor.text("Please wait for this page to reload...");
+#      window.location.reload();
+#    }
+#  }
+#''' % {'itaskmonitorid': itaskmonitor.id}
+#            document.add(itaskmonitor)
+#
+#            import vnf.content
+#            snippet = vnf.content.jssnippet()
+#            snippet.main = [
+#                '$("#%s").itaskmonitor("start");' % itaskmonitor.id,
+#                ]
+#            document.add(snippet)
             
-            # first check if there is itask running
-            found = None
-            pending_tasks = computation.pending_tasks.dereference(director.clerk.db)
-            if pending_tasks:
-                for label, task in pending_tasks:
+    def viewPhonons(self, director, computation, document):
+        job = computation.job.dereference(director.clerk.db)
+        from vnf.dom import GulpResults
+        # need to pass gulpOutputFilePath here (only in the case that eigenvectors were output)
+#        import os
+#        if os.path.exists(gulpOutputFilePath):
+        #modeShow(gulpOutputFilePath) 
+        gulpFiles = [GulpResults.dos_filename]
+        try:
+            director.dds.remember(job, files = gulpFiles, server = server)
+        except Exception:
+            import traceback
+            p = document.paragraph()
+            p.text = ['Gulp dos file not found.']
 
-                    # if not the right task, skip
-                    if task.worker != iworker: continue
-
-                    if task.state == 'finished':
-                        raise RuntimeError, "Task %s for %s finished but no compressed trajectory available." % (task.id, computation.id)
-                    
-                    if task.state == 'failed':
-                        self._debug.log("Task %s for %s found. It failed previously." % (task.id, computation.id))
-                        # reopen the task
-                        task.state = 'created'
-                        director.clerk.updateRecord(task)
-                        found = task
-                        break
-                    
-                    if task.state == 'canceled':
-                        self._debug.log("Task %s for %s found. It was canceled previously." % (task.id, computation.id))
-                        # reopen the task
-                        task.state = 'created'
-                        director.clerk.updateRecord(task)
-                        found = task
-                        break
-
-                    found = task
-                    break
-                
-
-            # if no previous task found, create a new task
-            if not found:
-                
-                from vnf.dom.ITask import createITask, ITask
-                task = director.clerk.newDbObject(ITask)
-                task = createITask(
-                    task.id,
-                    beneficiary = computation,
-                    worker = iworker,
-                    type = iworker,
-                    )
-                director.clerk.updateRecord(task)
-
-                # add this task to pending task list
-                computation.pending_tasks.add(task, director.clerk.db, name=iworker)
-                
-                found = task
-
-            #
-            task = found
-
-            import vnf.content
-            itaskmonitor = vnf.content.itaskMonitor(
-                task.id,
-                label = 'Zipping trajectory ...',
-                sentry=director.sentry,
-                )
-            itaskmonitor.finished_callback = '''
-  function(data) {
-    var monitor = $("#%(itaskmonitorid)s");
-    
-    if (data.state=="finished") {
-      monitor.text("Please wait for this page to reload...");
-      window.location.reload();
-    }
-  }
-''' % {'itaskmonitorid': itaskmonitor.id}
-            document.add(itaskmonitor)
-
-            import vnf.content
-            snippet = vnf.content.jssnippet()
-            snippet.main = [
-                '$("#%s").itaskmonitor("start");' % itaskmonitor.id,
-                ]
-            document.add(snippet)
-            
-        return
-
+            l = document.literal()
+            l.text = ['<pre>'] \
+                + traceback.format_exc().splitlines() \
+                + ['</pre>']
+            return page
+        director.dds.make_available(job, files=outputFiles)    
+        gulpDosFilePath = director.dds.abspath(job, GulpResults.dos_filename)
+        import os
+        if os.path.exists(gulpDosFilePath):
+            dosShow(gulpDosFilePath) 
 
     def view(self, director):
         try:
@@ -187,9 +257,16 @@ class Actor(base):
             'The computation job id for this simulation is %s' % link,
             ]
 
-        if isdone(job):
+        if isdone(job):        
+            # see the trajectory, phonon modes,...
+            if 'molecular dynamics' in computation.runtype:
+                self.viewDynamics(director, computation, resdoc)
+            elif 'phonons' in computation.runtype:
+                self.viewPhonons(director, computation, resdoc)
+            
             server = director.clerk.dereference(job.server)
-            outputFiles = ['gulp.out'] # need to replace this with output file settings
+            from vnf.dom import GulpResults
+            outputFiles = [GulpResults.output_filename] # need to replace this with output file settings
             try:
                 director.dds.remember(job, files=outputFiles, server=server)
             except Exception:
@@ -204,42 +281,30 @@ class Actor(base):
                 return page
             director.dds.make_available(job, files=outputFiles)
             # now 'plot.dat' is available at vnf.caltech.edu with path 
-            gulpOutputFilePath = director.dds.abspath(job, 'gulp.out')
+            gulpOutputFilePath = director.dds.abspath(job, GulpResults.output_filename)
             f = file(gulpOutputFilePath) 
-            document = document.document(title='Results')
-            
-            # perhaps put this in place of the news portlet on the side
-            # visualize md or phonons
-            # plot various items such as temp, DOS, MSD, etc.
-            import os.path
-            trajectoryPath = os.path.join(director.dds.abspath(job),'output.nc')
-            #print computation.runtype
-            from vnf.components.JnlpFile import JnlpFile
-            if 'md' in computation.runtype:
-                viewTrajectory(self, computation)
-            elif 'phonons' in computation.runtype:
-                viewPhonons(self, computation)
-            
-            p = document.paragraph()
+            resdoc = document.document(title='Results')
+
+            p = resdoc.paragraph()
             # if the file is too large, only show the top and the bottom
             import os
             if os.stat(gulpOutputFilePath).st_size > 40000:
                 top = f.read(35000)
                 p.text = ['Here is the first part of the stdout file of the simulation:']
-                p = document.preformatted()
+                p = resdoc.preformatted()
                 p.text = [top]
                 
                 # go to 5000 bytes from the end
                 f.seek(-5000, 2)
                 bottom = f.read()
-                p = document.paragraph()
+                p = resdoc.paragraph()
                 p.text = ['Here is the last part of the stdout file:']
-                p = document.preformatted()
+                p = resdoc.preformatted()
                 p.text = [bottom]
             else:
                 all = f.read()
                 p.text = ['Here is the stdout file of the simulation:']
-                p = document.preformatted()
+                p = resdoc.preformatted()
                 p.text = [all]
             
             configurationdoc = document.document(title='Configuration')
@@ -248,6 +313,7 @@ class Actor(base):
             p = document.paragraph()
             p.text = ['The computation is not finished.  Please check back later.']
         return page
+
     
     def _download_start_packing(self, director):
         try:
@@ -334,7 +400,27 @@ class Actor(base):
             'Computation results not found',
             ]
         return page
-    
+ 
+ 
+def _readDOS(filename):
+    f = open(filename)
+    lines = f.readlines()
+    E = []; I = []
+    for line in lines:
+        try:
+            e, dos = line.split()
+        except:
+            continue
+
+        e = float(e)
+        dos = float(dos)
+        
+        E.append(e)
+        I.append(dos)
+
+        continue
+
+    return E,I   
 
 
 from vnf.components.Job import isdone
