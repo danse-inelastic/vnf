@@ -127,7 +127,10 @@ def format_visualize(sample,director ):
     try: matter = sample.matter
     except AttributeError: return 'unknown'
     if nullpointer(matter): return "undefined"
-    matter = director.clerk.dereference(matter)
+    try:
+        matter = director.clerk.dereference(matter)
+    except:
+        return 'matter %s not found' % matter.id
     from vnf.components.JnlpFile import JnlpFile
     args = {
             'cgihome':director.cgihome,
@@ -150,7 +153,10 @@ def format_chemical_formula(sample,director ):
     try: matter = sample.matter
     except AttributeError: return 'unknown'
     if nullpointer(matter): return "undefined"
-    matter = director.clerk.dereference(matter)
+    try:
+        matter = director.clerk.dereference(matter)
+    except:
+        return 'matter %s not found' % matter.id
     
     atom_symbols = matter.atom_symbols
     atom_symbols = partition(atom_symbols)
@@ -164,7 +170,10 @@ def format_atoms(sample, director):
     try: matter = sample.matter
     except AttributeError: return 'unknown'
     if nullpointer(matter): return "undefined"
-    matter = director.clerk.dereference(matter)
+    try:
+        matter = director.clerk.dereference(matter)
+    except:
+        return 'matter %s not found' % matter.id
 
     coords = matter.fractional_coordinates
     import numpy
@@ -181,7 +190,10 @@ def format_lattice_parameters(sample, director):
     try: matter = sample.matter
     except AttributeError: return 'unknown'
     if nullpointer(matter): return "undefined"
-    matter = director.clerk.dereference(matter)
+    try:
+        matter = director.clerk.dereference(matter)
+    except:
+        return 'matter %s not found'
     
     lattice = matter.cartesian_lattice
     import numpy

@@ -78,7 +78,10 @@ class Hasher:
                     if not ref.id:
                         value = ''
                     else:
-                        value = ref.dereference(db)
+                        try:
+                            value = ref.dereference(db)
+                        except:
+                            value = 'dangling reference %s' % ref
                 else:
                     value = ''
                 #print 'value=', value

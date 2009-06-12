@@ -39,8 +39,11 @@ def table(jobs, director):
         return link
     def getComputation(job):
         computation = job.computation
-        if not computation: return 'not defined'
-        computation = director.clerk.dereference(computation)
+        if nullpointer(computation): return 'not defined'
+        try:
+            computation = director.clerk.dereference(computation)
+        except:
+            return 'Broken reference: computation %s' % computation.id
         identifier = computation.short_description or computation.id
         action = actionRequireAuthentication(
             sentry = director.sentry,
@@ -98,6 +101,8 @@ def table(jobs, director):
     c.table = table
     return c
 
+
+from vnf.components.misc import nullpointer
 
 # version
 __id__ = "$Id$"

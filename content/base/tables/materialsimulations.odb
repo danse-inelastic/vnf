@@ -43,7 +43,10 @@ def table(matsims, director):
     def getMatter(matsim):
         matter = matsim.matter
         if not matter: return 'not defined'
-        matter = director.clerk.dereference(matter)
+        try:
+            matter = director.clerk.dereference(matter)
+        except:
+            return 'matter %s not found' % matter.id
         identifier = matter.short_description or matter.chemical_formula
         return identifier
     def getChain(matsim):

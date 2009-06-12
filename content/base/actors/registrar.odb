@@ -114,12 +114,12 @@ class Registrar(Actor):
 
         from vnf.components.misc import announce
 
-        # send an acknowlegement to registrant
-        announce(director, 'new-registrant', registrant)
-
         # alert administrators
         announce(director, 'new-registrant-alert', registrant)
         
+        # send an acknowlegement to registrant
+        announce(director, 'new-registrant', registrant)
+
         return director.retrievePage("registration-complete")
 
 
