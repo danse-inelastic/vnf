@@ -70,7 +70,7 @@ class Actor(base):
         p.text = ['''Visualization of the phonon modes can be accessed by launching the viewer below.''',
         '<center><a href="'+relativeLocationOfFile+'"><img src="images/webstart.gif" alt="Jmol"/></a></center>']      
     
-    def dosShow(self, gulpDosFilePath):
+    def dosShow(self, document, gulpDosFilePath):
         # plot the DOS--for now just use flot--eventually combine with your 3d plotter to do "more advanced view"
         if os.path.exists(gulpDosFilePath):
             # parse the dos file
@@ -79,7 +79,7 @@ class Actor(base):
             #dos = _readDOS(gulpDosFilePath)
             import vnf.content
             options = {}
-            plot = vnf.content.plot_2d( dos, options )
+            plot = vnf.content.plot_2d( (e, dos), options )
             document.add( plot )
 #        # 3d stuff
 #        args = {
@@ -219,7 +219,7 @@ class Actor(base):
         gulpDosFilePath = director.dds.abspath(job, GulpResults.dos_filename)
         
         if os.path.exists(gulpDosFilePath):
-            self.dosShow(gulpDosFilePath) 
+            self.dosShow(document, gulpDosFilePath) 
 
     def view(self, director):
         try:
@@ -288,32 +288,34 @@ class Actor(base):
             gulpOutputFilePath = director.dds.abspath(job, GulpResults.output_filename)
             f = file(gulpOutputFilePath) 
             resdoc = document.document(title='Results')
-
+            
             p = resdoc.paragraph()
+            p.text = ['A plot of the Density Of States (DOS) in terms of DOS (arbitrary units) vs energy (meV).']
             # see the trajectory, phonon modes,...
             if 'molecular dynamics' in computation.runtype:
                 self.viewDynamics(director, server, computation, resdoc)
             elif 'phonons' in computation.runtype:
                 self.viewPhonons(director, server, computation, resdoc)
-            # if the file is too large, only show the top and the bottom
-            
+        
+            outputdoc = document.document(title='Output')
+            p = outputdoc.paragraph()
             if os.stat(gulpOutputFilePath).st_size > 40000:
                 top = f.read(35000)
                 p.text = ['Here is the first part of the stdout file of the simulation:']
-                p = resdoc.preformatted()
+                p = outputdoc.preformatted()
                 p.text = [top]
                 
                 # go to 5000 bytes from the end
                 f.seek(-5000, 2)
                 bottom = f.read()
-                p = resdoc.paragraph()
+                p = outputdoc.paragraph()
                 p.text = ['Here is the last part of the stdout file:']
-                p = resdoc.preformatted()
+                p = outputdoc.preformatted()
                 p.text = [bottom]
             else:
                 all = f.read()
                 p.text = ['Here is the stdout file of the simulation:']
-                p = resdoc.preformatted()
+                p = outputdoc.preformatted()
                 p.text = [all]
             
             configurationdoc = document.document(title='Configuration')
@@ -411,25 +413,25 @@ class Actor(base):
         return page
  
  
-def _readDOS(filename):
-    f = open(filename)
-    lines = f.readlines()
-    E = []; I = []
-    for line in lines:
-        try:
-            e, dos = line.split()
-        except:
-            continue
-
-        e = float(e)
-        dos = float(dos)
-        
-        E.append(e)
-        I.append(dos)
-
-        continue
-
-    return E,I   
+#def _readDOS(filename):
+#    f = open(filename)
+#    lines = f.readlines()
+#    E = []; I = []
+#    for line in lines:
+#        try:
+#            e, dos = line.split()
+#        except:
+#            continue
+#
+#        e = float(e)
+#        dos = float(dos)
+#        
+#        E.append(e)
+#        I.append(dos)
+#
+#        continue
+#
+#    return E,I   
 
 
 from vnf.components.Job import isdone
