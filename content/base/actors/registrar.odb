@@ -137,7 +137,7 @@ class Registrar(Actor):
         # save to db
         from vnf.components.misc import new_id
         registrant.id = new_id(director)
-        director.clerk.updateRecord(registrant)
+        director.clerk.newRecord(registrant)
 
         return director.retrievePage("registration-complete")
 
@@ -148,6 +148,11 @@ class Registrar(Actor):
             errors['password'] = [
                 'Password and confirmation you entered do not match.'
                 ]
+        min_password_len = 8
+        if len(self.password) < min_password_len:
+            errors['password'] = [
+                'Password too short. Must have at least %s characters.' % min_password_len
+                ]            
 
         from vnf.dom.Registrant import Registrant as Table
         username = self.username
