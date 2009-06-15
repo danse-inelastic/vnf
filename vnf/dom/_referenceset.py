@@ -31,13 +31,19 @@ class referenceset:
         return
 
 
-    def dereference(self, db):
+    def dereference(self, db, asDict=False):
         records = self._get_referencetable_records( db )
-        ret = []
+        if asDict:
+            ret = {}
+        else:
+            ret = []
         for record in records:
             key = record.elementlabel
             value = record.element.dereference( db )
-            ret.append( (key, value) )
+            if asDict:
+                ret[key] = value
+            else:
+                ret.append( (key, value) )
             continue
         return ret
 

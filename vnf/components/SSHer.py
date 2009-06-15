@@ -39,7 +39,12 @@ class SSHer(base):
             import shutil
             shutil.copy(path1, path2)
         if _localhost(server1): self._copyfile_lr(path1, server2, path2)
-        if _localhost(server2): self.getfile(server1, path1, os.path.split(path2)[0] or '.')
+        if _localhost(server2):
+            if os.path.isdir(path2):
+                dir = path2; newfilename = None
+            else:
+                dir = os.path.dirname(path2); newfilename = os.path.basename(path2)
+            self.getfile(server1, path1, localdir=dir, newfilename=newfilename)
         return
     
 
@@ -92,8 +97,51 @@ class SSHer(base):
         return
 
 
-    def getfile( self, server, remotepath, localdir ):
+    def getfile( self, server, remotepath, localdir, newfilename=None):
         'retrieve file from remote server to local path'
+        address = server.address
+        port = server.port
+        username = server.username
+        known_hosts = self.inventory.known_hosts
+        private_key = self.inventory.private_key
+        
+        pieces = [
+            'scp',
+            "-o 'StrictHostKeyChecking=no'",
+            ]
+        
+        if port:
+            pieces.append( '-P %s' % port )
+
+        if known_hosts:
+            pieces.append( "-o 'UserKnownHostsFile=%s'" % known_hosts )
+        
+        if private_key:
+            pieces.append( "-i %s" % private_key )
+
+        localpath = localdir
+        if newfilename:
+            localpath = os.path.join(localdir, newfilename)
+        pieces += [
+            '%s@%s:%s' % (username, address, remotepath),
+            '%s' % localpath,
+            ]
+
+        cmd = ' '.join(pieces)
+        self._info.log( 'execute: %s' % cmd )
+
+        failed, output, error = spawn( cmd )
+        if failed:
+            msg = '%r failed: %s' % (
+                cmd, error )
+            raise RemoteAccessError, msg
+
+        remotedir, filename = os.path.split( remotepath )
+        return os.path.join( localdir, filename )
+
+
+    def getdirectory( self, server, remotepath, localdir ):
+        'retrieve a directory from remote server to local path'
         address = server.address
         port = server.port
         username = server.username
@@ -131,11 +179,6 @@ class SSHer(base):
 
         remotedir, filename = os.path.split( remotepath )
         return os.path.join( localdir, filename )
-
-
-    def getdirectory( self, server, remotepath, localdir ):
-        'retrieve a directory from remote server to local path'
-        return self.getfile(server, remotepath, localdir)
 
 
     def execute( self, cmd, server, remotepath, suppressException = False ):

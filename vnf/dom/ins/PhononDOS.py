@@ -11,12 +11,17 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
+from registry import tableRegistry
 
 from OwnedObject import OwnedObject
-class PhononDOS(OwnedObject):
+from ComputationResult import ComputationResult
+class PhononDOS(OwnedObject, ComputationResult):
 
     name = 'phonondoses'
 
+    import pyre.db
+    matter = pyre.db.versatileReference(name='matter', tableRegistry=tableRegistry)
+    
     datafiles = [
         'data.idf',
         ]

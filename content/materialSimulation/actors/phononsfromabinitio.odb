@@ -13,6 +13,7 @@
 
 
 from vnf.components.FormActor import FormActor as base, action, actionRequireAuthentication, action_link, InputProcessingError, AuthenticationError
+from vnf.weaver import action_href
 
 
 class Actor(base):
@@ -38,6 +39,7 @@ class Actor(base):
 
         computation = director.clerk.newOwnedObject(self.table)
         computation.abinitio = self.inventory.abinitio_id
+        computation.matter = abinitio.matter
         director.clerk.updateRecord(computation)
 
         self.inventory.id = computation.id
@@ -197,39 +199,117 @@ class Actor(base):
 
         main = page._body._content._main
         # populate the main column
-        document = main.document(title='Ab initio simulation %s: results' % id)
+        document = main.document(title='Phonons from Ab Initio %s: results' % id)
 
         configurationdoc = document.document(title='Configuration')
         self._view_configuration(computation, configurationdoc, director=director)
 
         resultsdoc = document.document(title='Results')
 
-        job = director.clerk.dereference(computation.job)
-        server = director.clerk.dereference(job.server)
-        files = [
-            'DOS.meV',
-            ]
-        try:
-            director.dds.remember(job, files=files, server=server)
-        except:
-            # results not exist!!!
-            return self._alertResultsNotFound(document, director)
-        director.dds.make_available(job, files=files)
+        # results set
+        resultsset = computation.results.dereference(director.clerk.db, asDict=True)
+        # dos
+        dos = resultsset.get('phonon dos')
 
-        dosfile = director.dds.abspath(job, 'DOS.meV')
-        dos = _readDOS(dosfile)
-        
-        p = document.paragraph()
-        p.text = [
-            'Phonon density of states:',
-            ]
+        #
+        if not dos:
+            try:
+                self._addDOSRetrievalMonitor(director, document)
+            except self.DOSRetrievalFailed:
+                p = document.paragraph()
+                p.text = ['Failed to retrieve phonon dos']
+        else:
+            p = document.paragraph()
+            p.text = [
+                'Phonon density of states:',
+                ]
+
+            dospath = director.dds.abspath(dos, 'data.idf')
+            dosdata = _readDOSidf(dospath)
+            
+            import vnf.content
+            options = {}
+            plot = vnf.content.plot_2d( dosdata, options )
+            
+            document.contents.append( plot )
+            
+        return page
+
+
+    class DOSRetrievalFailed(Exception): pass
+    def _addDOSRetrievalMonitor(self, director, document):
+        # the computation
+        id = self.inventory.id
+        computation = director.clerk.getRecordByID(self.table, id)
+
+        # the itask worker
+        iworker = 'retrieve-phon-results-phonon-dos'
+
+        # first check if there is itask running
+        from vnf.dom.Computation import findPendingTask
+        found = findPendingTask(computation, iworker=iworker, director=director)
+
+        #
+        if found == 'task failed':
+            raise self.DOSRetrievalFailed
+
+        # if no previous task found, create a new task
+        if not found:
+
+            from vnf.dom.ITask import createITask, ITask
+            task = director.clerk.newDbObject(ITask)
+            task = createITask(
+                task.id,
+                beneficiary = computation,
+                worker = iworker,
+                type = iworker,
+                )
+            director.clerk.updateRecord(task)
+
+            # add this task to pending task list
+            computation.pending_tasks.add(task, director.clerk.db, name=iworker)
+
+            found = task
+
+        # now we have a task
+        task = found
 
         import vnf.content
-        options = {}
-        plot = vnf.content.plot_2d( dos, options )
+        itaskmonitor = vnf.content.itaskMonitor(
+            task.id,
+            label = 'Fetching phonon DOS ...',
+            sentry=director.sentry,
+            )
+        itaskmonitorid = itaskmonitor.id
         
-        document.contents.append( plot )
-        return page
+        redirectaction = actionRequireAuthentication(
+            sentry = director.sentry,
+            label = '',
+            actor = self.name,
+            routine = 'view_results',
+            id = self.inventory.id,
+            )
+        redirecturl = action_href(redirectaction, director.cgihome)
+        itaskmonitor.finished_callback = '''
+  function(data) {
+    var monitor = $("#%(itaskmonitorid)s");
+    
+    if (data.state=="finished") {
+      monitor.text("Please wait for this page to reload...");
+      window.location = "%(redirecturl)s";
+    }
+  }
+''' % locals()
+        document.add(itaskmonitor)
+
+        import vnf.content
+        snippet = vnf.content.jssnippet()
+        snippet.main = [
+            '$("#%s").itaskmonitor("start");' % itaskmonitor.id,
+            ]
+        document.add(snippet)
+        return        
+    
 
 
     def _jobCreated(self, computation, director):
@@ -339,18 +419,10 @@ class Actor(base):
         return director.retrieveSecurePage( 'computation' )
 
 
-def _readDOS(dosfile):
-    lines = open(dosfile).readlines()
-    E = []; I = []
-
-    for line in lines[6:]:
-        if not line: continue
-        numbers = line.split()
-        if not numbers: continue
-        E.append(float(numbers[0]))
-        I.append(float(numbers[1]))
-        continue
-    return E, I
+def _readDOSidf(dosfile):
+    from idf.DOS import read
+    info, E,DOS = read(dosfile)
+    return E, DOS
 
 
 from vnf.components.Job import isdone
