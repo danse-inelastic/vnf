@@ -100,25 +100,44 @@ class Registrar(Actor):
 
 
     def register(self, director):
-        # save into the database
+
+        # create new registrant record
         from vnf.dom.Registrant import Registrant as Table
-        registrant = director.clerk.newDbObject(Table)
+        registrant = Table()
         registrant.firstname = self.firstname
         registrant.lastname = self.lastname
         registrant.username = self.username
         registrant.email = self.email
         registrant.organization = self.organization
         registrant.password = self._encode(director, self.password)
-        
-        director.clerk.updateRecord(registrant)
 
+        # make announcements
         from vnf.components.misc import announce
 
-        # alert administrators
+        # 1. alert administrators
         announce(director, 'new-registrant-alert', registrant)
         
-        # send an acknowlegement to registrant
-        announce(director, 'new-registrant', registrant)
+        # 2. send an acknowlegement to registrant
+        from smtplib import SMTPRecipientsRefused
+        try:
+            announce(director, 'new-registrant', registrant)
+        except SMTPRecipientsRefused:
+            page = director.retrievePage('registrant-bad-email-address')
+            main = page._body._content._main
+            document = main.document(title='You email address is not reachable')
+            p = document.paragraph()
+            action1 = action(actor='registrar', label='sign up')
+            link = action_link(action1, director.cgihome)
+            p.text = [
+                'Cannot send emails to the email address you supplied: %s.' % registrant.email,
+                'Please %s again with a valid email address.' % link,
+                ]
+            return page
+
+        # save to db
+        from vnf.components.misc import new_id
+        registrant.id = new_id(director)
+        director.clerk.updateRecord(registrant)
 
         return director.retrievePage("registration-complete")
 
