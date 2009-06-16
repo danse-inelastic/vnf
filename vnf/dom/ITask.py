@@ -45,10 +45,10 @@ class ITask(base):
         name = 'beneficiary', tableRegistry = tableRegistry)
     
     # the type of this internal task
-    type = pyre.db.varchar(name='type', length=32)
+    type = pyre.db.varchar(name='type', length=128)
 
     # the worker of this internal task
-    worker = pyre.db.varchar(name='worker', length=32)
+    worker = pyre.db.varchar(name='worker', length=128)
     
     options = pyre.db.varcharArray(name='options', length=64, default=[])
 

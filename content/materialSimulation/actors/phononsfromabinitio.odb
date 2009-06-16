@@ -208,22 +208,18 @@ class Actor(base):
 
         # results set
         resultsset = computation.results.dereference(director.clerk.db, asDict=True)
+        
         # dos
         dos = resultsset.get('phonon dos')
+        dosdoc = document.document(title='Phonon density of states')
 
-        #
         if not dos:
             try:
-                self._addDOSRetrievalMonitor(director, document)
+                self._addDOSRetrievalMonitor(director, dosdoc)
             except self.DOSRetrievalFailed:
-                p = document.paragraph()
+                p = dosdoc.paragraph()
                 p.text = ['Failed to retrieve phonon dos']
         else:
-            p = document.paragraph()
-            p.text = [
-                'Phonon density of states:',
-                ]
-
             dospath = director.dds.abspath(dos, 'data.idf')
             dosdata = _readDOSidf(dospath)
             
@@ -231,8 +227,30 @@ class Actor(base):
             options = {}
             plot = vnf.content.plot_2d( dosdata, options )
             
-            document.contents.append( plot )
-            
+            dosdoc.contents.append( plot )
+
+        # dispersion
+        dispersion = resultsset.get('phonon dispersion')
+        dispdoc = document.document(title='Phonon dispersion')
+        if not dispersion:
+            try:
+                self._addDispersionRetrievalMonitor(director, dispdoc)
+            except self.DispersionRetrievalFailed:
+                p = dispdoc.paragraph()
+                p.text = ['Failed to retrieve phonon dispersion']
+        else:
+            p = dispdoc.paragraph()
+            viewdisp_action = actionRequireAuthentication(
+                sentry = director.sentry,
+                label = dispersion.id,
+                actor = 'phonondispersion',
+                routine = 'view',
+                id = dispersion.id,
+                )
+            viewdisp_link = action_link(viewdisp_action, director.cgihome)
+            p.text = [
+                'Phonon dispersion: %s' % viewdisp_link,
+                ]
         return page
 
 
@@ -310,6 +328,80 @@ class Actor(base):
         document.add(snippet)
         return        
     
+
+    class DispersionRetrievalFailed(Exception): pass
+    def _addDispersionRetrievalMonitor(self, director, document):
+        # the computation
+        id = self.inventory.id
+        computation = director.clerk.getRecordByID(self.table, id)
+
+        # the itask worker
+        iworker = 'retrieve-phon-results-phonon-dispersion'
+
+        # first check if there is itask running
+        from vnf.dom.Computation import findPendingTask
+        found = findPendingTask(computation, iworker=iworker, director=director)
+
+        #
+        if found == 'task failed':
+            raise self.DispersionRetrievalFailed
+
+        # if no previous task found, create a new task
+        if not found:
+
+            from vnf.dom.ITask import createITask, ITask
+            task = director.clerk.newDbObject(ITask)
+            task = createITask(
+                task.id,
+                beneficiary = computation,
+                worker = iworker,
+                type = iworker,
+                )
+            director.clerk.updateRecord(task)
+
+            # add this task to pending task list
+            computation.pending_tasks.add(task, director.clerk.db, name=iworker)
+
+            found = task
+
+        # now we have a task
+        task = found
+
+        import vnf.content
+        itaskmonitor = vnf.content.itaskMonitor(
+            task.id,
+            label = 'Fetching phonon Dispersion ...',
+            sentry=director.sentry,
+            )
+        itaskmonitorid = itaskmonitor.id
+        
+        redirectaction = actionRequireAuthentication(
+            sentry = director.sentry,
+            label = '',
+            actor = self.name,
+            routine = 'view_results',
+            id = self.inventory.id,
+            )
+        redirecturl = action_href(redirectaction, director.cgihome)
+        itaskmonitor.finished_callback = '''
+  function(data) {
+    var monitor = $("#%(itaskmonitorid)s");
+    
+    if (data.state=="finished") {
+      monitor.text("Please wait for this page to reload...");
+      window.location = "%(redirecturl)s";
+    }
+  }
+''' % locals()
+        document.add(itaskmonitor)
+
+        import vnf.content
+        snippet = vnf.content.jssnippet()
+        snippet.main = [
+            '$("#%s").itaskmonitor("start");' % itaskmonitor.id,
+            ]
+        document.add(snippet)
+        return        
 
 
     def _jobCreated(self, computation, director):

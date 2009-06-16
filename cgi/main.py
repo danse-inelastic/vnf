@@ -20,6 +20,9 @@ def suppressWarnings():
         ]
     for category in categories_to_ignore:
         warnings.filterwarnings('ignore', category=category)
+
+    import journal
+    journal.error('pyre.inventory').deactivate()
     return
 suppressWarnings()
 

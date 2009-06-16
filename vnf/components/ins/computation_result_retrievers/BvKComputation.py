@@ -118,25 +118,8 @@ class Retriever(base):
         return
     
 
-import numpy as N
-def _lattice(array):
-    a = N.array(array)
-    a.shape = 3, 3
-    return a
-    
-def _reciprocal(lattice):
-    v = _volume(lattice)
-    pi = N.pi
-    scale = 2*pi/v
-    a1, a2, a3 = lattice
-    b1 = N.cross(a2,a3)*scale
-    b2 = N.cross(a3,a1)*scale
-    b3 = N.cross(a1,a2)*scale
-    return b1, b2, b3
 
-def _volume(vectors):
-    v0, v1, v2 = vectors
-    return N.dot(v0, N.cross(v1, v2))
+from vnf.utils.crystallattice import lattice as _lattice, reciprocal as _reciprocal
 
 # version
 __id__ = "$Id$"
