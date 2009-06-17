@@ -471,7 +471,7 @@ class Clerk(Component):
     def _recordWithFieldNameExists(self, table, field, fieldname ):
         all = self.db.fetchall( table, where = "%s='%s'" % (field, fieldname) )
         if len(all) >= 1:
-            return true
+            return True
         else:
             return False
 
