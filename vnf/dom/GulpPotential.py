@@ -16,11 +16,12 @@
 from OwnedObject import OwnedObject as base
 class GulpPotential(base):
 
-    # base class for all computations (including simulations)
+    name = 'gulppotential'
+
     path = '../content/data/gulppotentials'
 
     import pyre
-    potential_name = pyre.db.varchar(name='potential_name', length=128, default='potential')
+    potential_name = pyre.db.varchar(name='potential_name', length=2048, default='potential')
     
     elements = pyre.db.varcharArray(name = 'elements', length = 2, default = [] )
     elements.meta['tip'] = 'elements within the potential'
