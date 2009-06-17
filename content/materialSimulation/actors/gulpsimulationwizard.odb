@@ -13,15 +13,15 @@
 from vnf.components.MaterialSimulationWizard import \
      actionRequireAuthentication, action_link, AuthenticationError, InputProcessingError
 
-from vnf.components.MaterialSimulationWizard import MaterialSimulationWizard as base
+from vnf.components.MaterialSimulationWizard import MaterialSimulationWizard
 
 from vnf.dom.GulpSimulation import GulpSimulation
 
     
-class GulpWizard(base):
+class GulpWizard(MaterialSimulationWizard):
     
 
-    class Inventory(base.Inventory):
+    class Inventory(MaterialSimulationWizard.Inventory):
         
         import pyre.inventory as inv
         
@@ -195,8 +195,37 @@ class GulpWizard(base):
         open(libfile, 'w').write(librarycontent)
 
         return 'success'
+    
+    def storePotential(self, director):
+        # quick hack to make sure we're authenticated
+        try:
+            page = self._retrievePage(director)
+        except AuthenticationError, err:
+            return err.page
 
-    pass # end of GulpWizard
+        libraryname = self.inventory.libraryname
+        librarycontent = self.inventory.librarycontent
+        
+        # look for the library
+        from vnf.dom.GulpPotential import GulpPotential
+        try:
+            # if it already exists, just use it
+            gulpPotential = director.clerk.getRecordByFieldname(GulpPotential, "potential_name", libraryname)
+        except:
+            # if it doesn't exist, create a new one from this entry
+            gulpPotential = director.clerk.newDbObject(GulpPotential)
+            gulpPotential.potential_name = libraryname
+            director.clerk.updateRecord(gulpPotential)
+            #put the potential in the potentials subdirectory
+            libfile = director.dds.abspath('../content/data/gulppotentials', filename = libraryname)
+            open(libfile, 'w').write(librarycontents)
+        
+        #set simulation attributes
+#        simulation = self._getSimulation(director)
+#        simulation.LIBPOINTER_FILE = libraryname
+#        director.clerk.updateRecord(simulation)
+
+        return 'success'
 
 
 import os
