@@ -28,6 +28,19 @@ class DirectDB(Actor):
 
         records = self._getRecords(director, self.tables, self.where)
         return self.encoder(records)
+    
+#    def put(self, director, jsonFormattedInfo):
+#        # these next lines are a hack just to make sure the user is authenticated
+#        try:
+#            page = director.retrieveSecurePage( 'greet' )
+#        except AuthenticationError, error:
+#            return error.page
+#        
+#        # assume the is a handler directive
+#        
+#        # if there's a file string, assume it is in json format
+#        records = self._getRecords(director, self.tables, self.where)
+#        return self.encoder(records)
 
 
     def _getRecords(self, director, tables, where):
@@ -50,7 +63,7 @@ class DirectDB(Actor):
                     where = "(creator='%s' or creator='vnf')" % (director.sentry.username,)
     
             records = director.clerk.db.fetchall(table, where=where)
-            results+=records
+            results += records
         return results
     
 
@@ -83,6 +96,8 @@ class DirectDB(Actor):
                 lat = lat.reshape((3,3))
                 lat = lat.tolist()
                 s = Structure( atoms, lattice = Lattice(base = lat))
+                # expand the assymetric unit to generate all atoms in the unit cell?
+                #?
                 # convert structure to cif form
                 data.append(s.writeStr('cif'))
         return cjson.encode(data)

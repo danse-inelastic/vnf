@@ -294,6 +294,29 @@ class Clerk(Component):
             raise ValueError, 'tablename must be a string or a table class: %s' % tablename
         return self._getRecordByID(Table, id)
     
+    
+    def getRecordByFieldname(self, tablename, field, fieldname):
+        from pyre.db.Table import Table as TableBase
+        if isinstance(tablename, basestring):
+            Table = self._getTable(tablename)
+        elif issubclass(tablename, TableBase):
+            Table = tablename
+        else:
+            raise ValueError, 'tablename must be a string or a table class: %s' % tablename
+        return self._getRecordByFieldName(Table, field, fieldname)
+    
+    
+    def recordWithFieldNameExists(self, tablename, field, fieldname):
+        from pyre.db.Table import Table as TableBase
+        if isinstance(tablename, basestring):
+            Table = self._getTable(tablename)
+        elif issubclass(tablename, TableBase):
+            Table = tablename
+        else:
+            raise ValueError, 'tablename must be a string or a table class: %s' % tablename
+        return self._recordWithFieldNameExists(Table, field, fieldname)
+    
+    
     def find(self, cls_spec, *args, **kwargs):
         """Perform a query.
 
@@ -437,6 +460,20 @@ class Clerk(Component):
             return all[0]
         raise RuntimeError, "Cannot find record of id=%s in table %s" % (
             id, table.__name__)
+        
+    def _getRecordByFieldName(self, table, field, fieldname ):
+        all = self.db.fetchall( table, where = "%s='%s'" % (field, fieldname) )
+        if len(all) >= 1:
+            return all
+        raise RuntimeError, "Cannot find record of %s=%s in table %s" % (
+            field, fieldname, table.__name__)
+        
+    def _recordWithFieldNameExists(self, table, field, fieldname ):
+        all = self.db.fetchall( table, where = "%s='%s'" % (field, fieldname) )
+        if len(all) >= 1:
+            return true
+        else:
+            return False
 
 
     def _init(self):

@@ -345,7 +345,7 @@ class MaterialSimulationWizard(base):
         except AuthenticationError, err:
             return err.page
         main = page._body._content._main
-        document = main.document(title='Ab initio electronic structure simulation' )
+        document = main.document(title='Material simulation' )
         p = document.paragraph()
         p.text = [
             'You have not selected the material.',
