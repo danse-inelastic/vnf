@@ -46,14 +46,9 @@ def usersFromDB():
     return UsersFromDB('usersFromDB')
 
 
-def ssher():
+def ssher(name='ssher', facility='csaccessor'):
     from SSHer import SSHer
-    return SSHer( 'ssher', 'ssher' )
-
-
-def sshAsUser():
-    from SSHer import SSHer
-    return SSHer( 'sshAsUser', 'sshAsUser' )
+    return SSHer(name=name, facility=facility)
 
 
 def announcer():
