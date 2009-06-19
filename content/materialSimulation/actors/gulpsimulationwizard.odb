@@ -211,20 +211,33 @@ class GulpWizard(MaterialSimulationWizard):
         try:
             # if it already exists, just use it
             gulpPotential = director.clerk.getRecordByFieldname(GulpPotential, "potential_name", libraryname)
+            # make sure the potential file is readable...
+            #eventually: if not, delete the entry and throw exception?
+            libfile = director.dds.abspath(gulpPotential, filename = libraryname)
+            open(libfile, 'r')
         except:
             # if it doesn't exist, create a new one from this entry
             gulpPotential = director.clerk.newDbObject(GulpPotential)
             gulpPotential.potential_name = libraryname
             director.clerk.updateRecord(gulpPotential)
+            
             #put the potential in the potentials subdirectory
-            libfile = director.dds.abspath('../content/data/gulppotentials', filename = libraryname)
-            open(libfile, 'w').write(librarycontents)
+            libfile = director.dds.abspath(gulpPotential, filename = libraryname)
+            libDirectory,file = os.path.split(libfile)
+            if not os.path.exists(libDirectory):
+                try:
+                    os.makedirs(libDirectory)
+                except Exception, err:
+                    raise RuntimeError, "unable to create directory %r. %s: %s" % (
+                        self.path, err.__class__.__name__, err)
+            open(libfile, 'w').write(librarycontent)
+            #server = director.clerk.dereference(job.server)
+            director.dds.remember(gulpPotential, files=[libraryname])#, server=server)
         
         #set simulation attributes
 #        simulation = self._getSimulation(director)
 #        simulation.LIBPOINTER_FILE = libraryname
 #        director.clerk.updateRecord(simulation)
-
         return 'success'
 
 

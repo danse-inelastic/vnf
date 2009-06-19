@@ -215,7 +215,8 @@ class Actor(base):
                 + traceback.format_exc().splitlines() \
                 + ['</pre>']
             return
-        director.dds.make_available(job, files = gulpFiles)    
+        director.dds.make_available(job, files = gulpFiles)# server = (the server in vnf.dom 
+        # server = job.server.dereference(director.clerk.db)   
         gulpDosFilePath = director.dds.abspath(job, GulpResults.dos_filename)
         
         if os.path.exists(gulpDosFilePath):
