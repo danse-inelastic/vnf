@@ -177,6 +177,7 @@ class DistributedDataStorage(base):
             csaccessor.getfile(server, path, d)
             filename = os.path.split(path)[1]
             ret = open(os.path.join(d, filename)).read()
+            import shutil
             shutil.rmtree(d)
             return ret
             
@@ -187,6 +188,7 @@ class DistributedDataStorage(base):
             import tempfile
             f = tempfile.mktemp()
             open(f, 'w').write(content)
+            from vnf.dom.Server import LocalHost as localhost
             csaccessor.copyfile(localhost, f, server, path)
             os.remove(f)
             return
