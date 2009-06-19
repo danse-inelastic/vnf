@@ -57,10 +57,6 @@ class WebApplication(Base):
         csaccessor = pyre.inventory.facility( name='csaccessor', factory = ssher)
         csaccessor.meta['tip'] = 'computing server accessor'
         
-        from vnf.components import sshAsUser
-        csaccessorAsUser = pyre.inventory.facility( name='csaccessorAsUser', factory = sshAsUser)
-        csaccessorAsUser.meta['tip'] = 'computing server accessor as a specific user'
-
         itaskmanager = pyre.inventory.facility(name='itaskmanager', default = 'itask-manager')
 
         # properties
@@ -89,8 +85,7 @@ class WebApplication(Base):
  
         try:
             page = self.actor.perform(self, routine=self.inventory.routine, debug=self.debug)
-            if self.debug is False: 
-                self.recordActivity()
+            self.recordActivity()
             
             if isinstance(page, basestring):
                 print page,
@@ -169,6 +164,10 @@ class WebApplication(Base):
 
 
     def recordActivity(self):
+        # if this app is run by a user for debugging purpose, we don't
+        # really need to record activity
+        if self._runByUser: return
+        
         from vnf.dom.Activity import Activity
         activity = Activity()
         
@@ -251,8 +250,12 @@ class WebApplication(Base):
     def _configure(self):
         super(WebApplication, self)._configure()
 
+        # check if this is run by a real user (for debugging purpose)
+        # or by web server
+        USER = os.environ.get('USER')
+        self._runByUser = USER is not None
+
         # custom weaver
-        import os
         configurations = {
             'home': self.home,
             'cgihome':self.cgihome,
@@ -276,15 +279,17 @@ class WebApplication(Base):
         self.dds.director = self
         self.scribe = self.inventory.scribe
         self.debug = self.inventory.debug
-        
-        # this is a quick hack and will be cleaned up eventually
-        if os.environ.has_key('USER'):
-            if 'jbk' in os.environ['USER']:
-                self.csaccessor = self.inventory.csaccessorAsUser
-            else:
-                self.csaccessor = self.inventory.csaccessor
-        else:
+        self.csaccessor = self.inventory.csaccessor
+
+        # if this app is run by a real user, we need to switch to the special
+        # ssher.
+        if self._runByUser:
+            # use the pyre machinery to load the special csaccessor
+            self.inventory.csaccessor = 'csaccessorAsUser'
+            # assign to local vairable
             self.csaccessor = self.inventory.csaccessor
+            # need to configure the new component
+            self.configureComponent(self.csaccessor)
         
         self.itaskmanager = self.inventory.itaskmanager
 
@@ -293,13 +298,6 @@ class WebApplication(Base):
 
         return
     
-#    def _defaults(self):
-#        Base._defaults(self)
-#        # want to bind the appropriate ssher at runtime
-#        if os.environ['USER']:
-#            self.inventory.csaccessor = 'sshAsuser'
-#        # if this doesn't work, can always have two components and bind both and switch them at _configure
-
 
     def _init(self):
         super(WebApplication, self)._init()
