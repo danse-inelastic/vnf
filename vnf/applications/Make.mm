@@ -35,6 +35,7 @@ EXPORT_PYTHON_MODULES = \
 	Timer.py \
 	UpdateJobStatus.py \
 	WebApplication.py \
+	InMaintenanceWebApp.py \
 	__init__.py \
 	configurationSaver.py \
 	utils.py \
