@@ -2052,7 +2052,7 @@ class NeutronExperimentWizard(base):
             sampleassembly = director.clerk.dereference(sampleassembly_ref)
             sample = _get_sample_from_sampleassembly(sampleassembly, director.clerk.db)
             
-            self.sample_prepared = not nullpointer(sample)
+            self.sample_prepared = sample is not None
             # need to test if kernel is configured
             # ...
             # probably need a canned solution here for the demo...
