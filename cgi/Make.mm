@@ -31,6 +31,7 @@ distclean::
 
 EXPORT_DATAFILES = \
 	main.py \
+	main.py.in-maintenance \
 
 
 CP_F = rsync 
