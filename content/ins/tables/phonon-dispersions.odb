@@ -28,6 +28,7 @@ def _table(dispersions, director, selected=None, name='dispersion'):
     class model(Model):
 
         id = Model.Measure(name='id', type='text')
+        short_description = Model.Measure(name='short_description', type='text')
         origin = Model.Measure(name='origin', type='text')
         matter = Model.Measure(name='matter', type='text')
         creationDate = Model.Measure(name='creationDate', type='text')
@@ -43,7 +44,7 @@ def _table(dispersions, director, selected=None, name='dispersion'):
         except:
             return "Cannot resolve origin: %s" % (origin,)
         
-        label = '%s %s' % (origin.__class__.__name__, origin.id)
+        label = '%s %s: %s' % (origin.__class__.__name__, origin.id, origin.short_description)
         action = actionRequireAuthentication(
             label = label,
             actor=origin.__class__.__name__.lower(),
@@ -119,6 +120,7 @@ def _table(dispersions, director, selected=None, name='dispersion'):
     import operator
     generators = {
         'id': operator.attrgetter('id'),
+        'short_description': operator.attrgetter('short_description'),
         'origin': getOrigin,
         'matter': getMatter,
         'creationDate': getCreationDate,
@@ -139,8 +141,9 @@ def _table(dispersions, director, selected=None, name='dispersion'):
         
         columns = [
             View.Column(id='col1',label='id', measure='id'),
-            View.Column(id='col2',label='Origin', measure='origin'),
-            View.Column(id='col3',label='Matter', measure='matter'),
+            #View.Column(id='col2',label='Description', measure='short_description'),
+            View.Column(id='col3',label='Origin', measure='origin'),
+            View.Column(id='col4',label='Matter', measure='matter'),
             View.Column(id='col5',label='Date created', measure='creationDate'),
             ]
 

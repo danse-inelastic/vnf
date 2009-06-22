@@ -248,7 +248,7 @@ class Actor(base):
         matter = director.clerk.dereference(computation.matter)
         p = document.paragraph()
         p.text = [
-            'Material: %s' % (matter.short_description,),
+            'Material #%s: %s' % (matter.id, matter.short_description,),
             ]
 
         p = document.paragraph()

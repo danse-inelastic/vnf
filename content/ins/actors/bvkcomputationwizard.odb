@@ -96,7 +96,9 @@ class BvK(base):
         formcomponent.director = director
 
         simulation = self._getSimulation(director)
-        formcomponent.inventory.selected = simulation.model.id
+        original_model = simulation.model
+        original_model_id = original_model and original_model.id or ''
+        formcomponent.inventory.selected = original_model_id
         
         # build the form 
         form = document.form(name='', action=director.cgihome)

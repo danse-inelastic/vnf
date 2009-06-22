@@ -251,12 +251,15 @@ class Actor(base):
 
         system = getSystem(model, director)
         
-        form = document.form(name='', legend= '', action='')
-        ta = form.textarea(
-            id = '', name = '', label = 'BvK System',
-            default = system,
-            rows = 20)
+        l = document.literal()
+        l.text = ['<h4>BvK model</h4>']
 
+        l = document.literal()
+        l.text = [
+            '<pre>',
+            system,
+            '</pre>',
+            ]
         return
 
 
