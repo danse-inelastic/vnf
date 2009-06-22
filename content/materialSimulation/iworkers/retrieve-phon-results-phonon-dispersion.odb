@@ -93,17 +93,6 @@ class Worker(Component):
 
 
 
-def makeQgridinfo(reciprocal, gridsizes):
-    ret = []
-    for i in range(3):
-        v = reciprocal[i]
-        n = gridsizes[i]
-        j = i+1
-        ret.append('b%(j)d=%(v)s; n%(j)d=%(n)d' % locals())
-        continue
-    return ret
-
-
 from vnf.dom.Server import LocalHost
 import os
 
