@@ -42,6 +42,7 @@ class Worker(Component):
             'energies.idf': 'Omega2',
             'polarizations.idf': 'Polarizations',
             'DOS_meV.idf': 'DOS',
+            'Qgridinfo': 'Qgridinfo',
             }
         for datafile in map:
             if not director.dds.is_available(job, filename=datafile, server=server):
@@ -51,7 +52,7 @@ class Worker(Component):
         # dispersion db object
         director.declareProgress(0.3, 'Create new Dispersion container')
         from vnf.dom.ins.PhononDispersion import PhononDispersion
-        dispersion = director.clerk.newDbObject(PhononDispersion)
+        dispersion = director.clerk.newOwnedObject(PhononDispersion)
 
         # create directory
         localdir = director.dds.abspath(dispersion)
@@ -73,20 +74,6 @@ class Worker(Component):
             
             continue
 
-        # create file Qgridinfo
-        director.declareProgress(0.8, 'Connect Dispersion and phon computation')
-        qGrid = phon.qGrid
-        matter = phon.matter.dereference(director.clerk.db)
-        cartesian_lattice = matter.cartesian_lattice
-        from vnf.utils.crystallattice import reciprocal
-        reciprocal_lattice = reciprocal(cartesian_lattice)
-        #
-        content = makeQgridinfo(reciprocal_lattice, qGrid)
-        #
-        filename = 'Qgridinfo'
-        filepath = os.path.join(localdir, filename)
-        open(filepath, 'w').write('\n'.join(content))
-            
         # connect dispersion record and the phon computation
         director.declareProgress(0.9, 'Connect Dispersion and phon computation')
         dispersion.matter = phon.matter
