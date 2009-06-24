@@ -283,13 +283,13 @@ class WebApplication(Base):
 
         # if this app is run by a real user, we need to switch to the special
         # ssher.
-        if self._runByUser:
-            # use the pyre machinery to load the special csaccessor
-            self.inventory.csaccessor = 'csaccessorAsUser'
-            # assign to local vairable
-            self.csaccessor = self.inventory.csaccessor
-            # need to configure the new component
-            self.configureComponent(self.csaccessor)
+#        if self._runByUser:
+#            # use the pyre machinery to load the special csaccessor
+#            self.inventory.csaccessor = 'csaccessorAsUser'
+#            # assign to local vairable
+#            self.csaccessor = self.inventory.csaccessor
+#            # need to configure the new component
+#            self.configureComponent(self.csaccessor)
         
         self.itaskmanager = self.inventory.itaskmanager
 
