@@ -20,6 +20,8 @@ class Builder(base):
     def __init__(self, path):
         base.__init__(self, path)
         self.convertHistoryFile = False
+        self.zipXyzTrajectory = False
+        self.createPhononModesFile = False
         return
 
     def render(self, computation, db=None, dds=None):
@@ -45,9 +47,14 @@ class Builder(base):
         inputFilePath = dds.abspath(job, filename=Computation.CONFIGURATION_FILE)
         inputFileContents = open(inputFilePath).read()
         
-        # 2. scan for string 'output history' and signal conversion if found
+        # 2. scan for various items to be processed
+        if 'outputmovie.xyz' in inputFileContents:
+            self.zipXyzTrajectory = True
+        # scan for string 'output history' and signal conversion if found
         if 'output history' in inputFileContents:
             self.convertHistoryFile = True
+        if 'eigenvectors' in inputFileContents:
+            self.createPhononModesFile = True
 
         # 3. add run.sh
         files.append( self._make_script1(computation) )
@@ -67,7 +74,11 @@ class Builder(base):
             ]
         if self.convertHistoryFile:
             cmds += [
-            'history2Nc.py --historyFile=output.history --ncFile=output.nc',
+            'postProcessGulp.py --historyFile=output.history --ncFile=output.nc',
+                     ] 
+        if self.createPhononModesFile:
+            cmds += [
+            'postProcessGulp.py --historyFile=output.history --ncFile=output.nc',
                      ] 
         script = self.shscriptname
         path = self._path(script)
