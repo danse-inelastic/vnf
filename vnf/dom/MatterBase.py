@@ -20,7 +20,7 @@ class MatterBase(base):
 
     cartesian_lattice = pyre.db.doubleArray(
         name = 'cartesian_lattice', default = [1.0,0.0,0.0,0.0,1.0,0.0,0.0,0.0,1.0])
-    cartesian_lattice.meta['tip'] = 'array of cartesian lattice vectors'
+    cartesian_lattice.meta['tip'] = 'array of cartesian lattice vectors in Angstroms'
     
     fractional_coordinates = pyre.db.doubleArray(
         name = 'fractional_coordinates', default = [])

@@ -58,6 +58,7 @@ kernels = [
 
 
 kernel_related = [
+    'GulpPotential'
     ]
 
 
