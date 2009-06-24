@@ -18,7 +18,7 @@ from vnf.components.MaterialSimulationWizard import MaterialSimulationWizard
 from vnf.dom.GulpSimulation import GulpSimulation
 
     
-class GulpWizard(MaterialSimulationWizard):
+class GulpSimulationWizard(MaterialSimulationWizard):
     
 
     class Inventory(MaterialSimulationWizard.Inventory):
@@ -57,7 +57,6 @@ class GulpWizard(MaterialSimulationWizard):
             'sentry.username':director.sentry.username,
             'sentry.ticket':director.sentry.ticket,
             'actor': self.name,
-            'routine': 'storeConfiguration',
             'actor.id': id,
             'actor.type': type,
             'actor.runtype':simulation.runtype
@@ -161,11 +160,10 @@ class GulpWizard(MaterialSimulationWizard):
         p.text = [
             'You can %s this simulation, or %s, or %s it.' % (submit_link, save_link, delete_link),
             ]
-
         return page
         
     
-    def storeConfiguration(self, director):
+    def storeInputFile(self, director):
         try:
             page = self._retrievePage(director)
         except AuthenticationError, err:
@@ -249,7 +247,7 @@ def isConfigured(sim, director):
 
 
 def actor():
-    return GulpWizard('gulpsimulationwizard')
+    return GulpSimulationWizard('gulpsimulationwizard')
 
 
 # version
