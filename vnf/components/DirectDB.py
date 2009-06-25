@@ -212,7 +212,7 @@ class DirectDB(Actor):
         #then read
         potentialPath = director.dds.abspath(potential, filename=potentialName)
         potentialContents = open(potentialPath).read()
-        return potentialContents
+        return self._jsonAttributeEncoder([potentialContents])
 
     def __init__(self, name=None):
         if name is None:
