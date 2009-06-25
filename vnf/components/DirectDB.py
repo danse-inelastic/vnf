@@ -20,6 +20,8 @@ class DirectDB(Actor):
 
         id = pyre.inventory.str('id')
         
+        creator = pyre.inventory.str('creator', default = 'currentUser')
+        
 
     def get(self, director):
         # these next lines are a hack just to make sure the user is authenticated
@@ -63,11 +65,9 @@ class DirectDB(Actor):
             table = director.clerk._getTable(table) 
             from vnf.dom.OwnedObject import OwnedObject
             if issubclass(table, OwnedObject):
-                if where:
-                    where = "(%s) and (creator='%s' or creator='vnf')" % (where, director.sentry.username)
-                else:
-                    where = "(creator='%s' or creator='vnf')" % (director.sentry.username,)
-    
+                if self.creator=='currentUser':
+                    where = wrapIfPresent(where, "(creator='%s' or creator='vnf')" % (director.sentry.username))
+
             records = director.clerk.db.fetchall(table, where=where)
             results += records
         return results
@@ -87,18 +87,23 @@ class DirectDB(Actor):
             table = director.clerk._getTable(table) 
             from vnf.dom.OwnedObject import OwnedObject
             if issubclass(table, OwnedObject):
-                if where:
-                    if 'all' in where:
-                        where=''
-                    else:
-                        where = "(%s) and (creator='%s' or creator='vnf')" % (where, director.sentry.username)
-                else:
-                    where = "(creator='%s' or creator='vnf')" % (director.sentry.username,)
+                if self.creator=='currentUser':
+                    where = wrapIfPresent(where, "(creator='%s' or creator='vnf')" % (director.sentry.username))
     
             attributes = director.clerk.db.fetchAttributeFromAll(table, columns, where=where)
             attributes = flatten(attributes)
             results += attributes
         return results
+    
+#    def _retrieveTable(self, director, tableName):
+#        # should use acl mechanism to make sure users are authenticated to read
+#        # the tables and the records. this is a simple, naive implementation
+#        disallowed = ['user', 'users', 'registrant', 'registrants']
+#        if tableName.lower() in disallowed or tableName.lower().startswith('acl'):
+#            #print "Not allowed to access tableName %r" % tableName
+#            continue
+#        table = director.clerk._getTable(tableName) 
+#        return table
     
 
     def _jsonEncoder(self, records):
@@ -182,6 +187,7 @@ class DirectDB(Actor):
         self.where = where
         
         self.columns = self.inventory.columns
+        self.creator = self.inventory.creator
         return
     
     def getPotentialContents(self, director):
@@ -204,7 +210,7 @@ class DirectDB(Actor):
         potential = records[0]
         potentialName = records[0].potential_name
         #then read
-        potentialPath = director.clerk.dds.abspath(potential, filename=potentialName)
+        potentialPath = director.dds.abspath(potential, filename=potentialName)
         potentialContents = open(potentialPath).read()
         return potentialContents
 
@@ -225,6 +231,12 @@ class DirectDB(Actor):
 
 
     pass # end of DirectDB
+
+def wrapIfPresent(item1, item2):
+    if item1:
+        return item1+' and '+item2
+    else:
+        return item2
 
 def flatten(xList,whereto=1):
     """flattens a multidimensional list to a specified extent
