@@ -40,10 +40,12 @@ class AccessControl:
             'dexity',
             'jbrkeith',
             'linjiao',
+            'lmauger',
             'markovsk',
             'mmckerns',
             'aivazis',
             'olivier',
+            'purewal',
             'winterro',
             ]
         whitelist = caltechgroup
