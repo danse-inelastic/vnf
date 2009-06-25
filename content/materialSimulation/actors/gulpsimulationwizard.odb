@@ -56,7 +56,7 @@ class GulpSimulationWizard(MaterialSimulationWizard):
             'cgihome':director.cgihome,
             'sentry.username':director.sentry.username,
             'sentry.ticket':director.sentry.ticket,
-            'actor': self.name,
+#            'actor': self.name,
             'actor.id': id,
             'actor.type': type,
             'actor.runtype':simulation.runtype
