@@ -58,8 +58,8 @@ class GulpSimulationWizard(MaterialSimulationWizard):
             'sentry.ticket':director.sentry.ticket,
 #            'actor': self.name,
             'actor.id': id,
-            'actor.type': type,
-            'actor.runtype':simulation.runtype
+#            'actor.type': type,
+#            'actor.runtype':simulation.runtype
             }
         args.update(callbackArgs)
         
@@ -171,12 +171,16 @@ class GulpSimulationWizard(MaterialSimulationWizard):
 
         configurations = self.inventory.configurations
         libraryname = self.inventory.libraryname
-        librarycontent = self.inventory.librarycontent
+        # replace this next part with a movement of the library from the db to the job submission file
+        #librarycontent = self.inventory.librarycontent
         
         simulation = self._getSimulation(director)
         
         #set simulation attributes
         simulation.runtype = self.inventory.runtype
+        potential = simulation.potential.dereference(director.clerk.db)
+        potential.potential_name = libraryname
+        director.clerk.updateRecord(potential)
         director.clerk.updateRecord(simulation)
 
         #create data directory for the simulation if necessary
@@ -185,9 +189,11 @@ class GulpSimulationWizard(MaterialSimulationWizard):
 
         configurationfile = director.dds.abspath(simulation, filename=GulpSimulation.CONFIGURATION_FILE)
         open(configurationfile, 'w').write(configurations)
+        
+        potentialPath = director.dds.abspath(potential, filename=potentialName)
 
-        libpointerfile = director.dds.abspath(simulation, filename=GulpSimulation.LIBPOINTER_FILE)
-        open(libpointerfile, 'w').write(libraryname)
+#        libpointerfile = director.dds.abspath(simulation, filename=GulpSimulation.LIBPOINTER_FILE)
+#        open(libpointerfile, 'w').write(libraryname)
 
         libfile = director.dds.abspath(simulation, filename=libraryname)
         open(libfile, 'w').write(librarycontent)
