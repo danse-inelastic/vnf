@@ -26,10 +26,14 @@ class GulpSimulationWizard(MaterialSimulationWizard):
         import pyre.inventory as inv
         
         librarycontent = inv.str('librarycontent')
-        libraryname = inv.str('libraryname')
         configurations = inv.str('configurations')
         runtype = inv.str('runtype')
-
+        
+        creator = inv.str('creator')
+        description = inv.str('description')
+        potential_name = inv.str('potential_name')
+        potential_filename = inv.str('potential_filename')
+        
     def configureSimulation(self, director):
         type = self.inventory.type = 'gulpsimulations'
 
@@ -207,26 +211,29 @@ class GulpSimulationWizard(MaterialSimulationWizard):
         except AuthenticationError, err:
             return err.page
 
-        libraryname = self.inventory.libraryname
+        potential_filename = self.inventory.potential_filename
         librarycontent = self.inventory.librarycontent
         
         # look for the library
         from vnf.dom.GulpPotential import GulpPotential
         try:
             # if it already exists, just use it
-            gulpPotential = director.clerk.getRecordByFieldname(GulpPotential, "potential_name", libraryname)
+            gulpPotential = director.clerk.getRecordByFieldname(GulpPotential, "potential_name", self.inventory.potential_name)
             # make sure the potential file is readable...
             #eventually: if not, delete the entry and throw exception?
-            libfile = director.dds.abspath(gulpPotential, filename = libraryname)
+            libfile = director.dds.abspath(gulpPotential, filename = potential_filename)
             open(libfile, 'r')
         except:
             # if it doesn't exist, create a new one from this entry
             gulpPotential = director.clerk.newDbObject(GulpPotential)
-            gulpPotential.potential_name = libraryname
+            gulpPotential.id = self.inventory.potential_name
+            gulpPotential.filename = potential_filename
+            gulpPotential.creator = self.inventory.creator
+            gulpPotential.description = self.inventory.description
             director.clerk.updateRecord(gulpPotential)
             
             #put the potential in the potentials subdirectory
-            libfile = director.dds.abspath(gulpPotential, filename = libraryname)
+            libfile = director.dds.abspath(gulpPotential, filename = potential_filename)
             libDirectory,file = os.path.split(libfile)
             if not os.path.exists(libDirectory):
                 try:
@@ -236,11 +243,11 @@ class GulpSimulationWizard(MaterialSimulationWizard):
                         self.path, err.__class__.__name__, err)
             open(libfile, 'w').write(librarycontent)
             #server = director.clerk.dereference(job.server)
-            director.dds.remember(gulpPotential, files=[libraryname])#, server=server)
+            director.dds.remember(gulpPotential, files=[potential_filename])#, server=server)
         
         #set simulation attributes
 #        simulation = self._getSimulation(director)
-#        simulation.LIBPOINTER_FILE = libraryname
+#        simulation.LIBPOINTER_FILE = potential_filename
 #        director.clerk.updateRecord(simulation)
         return 'success'
 
