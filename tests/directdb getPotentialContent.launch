@@ -9,7 +9,7 @@
 <stringAttribute key="org.eclipse.debug.ui.ATTR_CAPTURE_IN_FILE" value="${workspace_loc:/pyreDv/vnf/html/test.html}"/>
 <stringAttribute key="org.eclipse.ui.externaltools.ATTR_LOCATION" value="${workspace_loc:pyreDv/vnf/cgi/main.py}"/>
 <stringAttribute key="org.eclipse.ui.externaltools.ATTR_OTHER_WORKING_DIRECTORY" value="${workspace_loc:pyreDv/vnf/cgi}"/>
-<stringAttribute key="org.eclipse.ui.externaltools.ATTR_TOOL_ARGUMENTS" value="--actor=directdb --sentry.username=jbrkeith --routine=getPotentialContents --cgihome=http://trueblue.caltech.edu/cgi-bin/vnf/main.cgi --directdb.tables=gulppotential --sentry.passwd=678yui --directdb.columns=potential_name"/>
+<stringAttribute key="org.eclipse.ui.externaltools.ATTR_TOOL_ARGUMENTS" value="--actor=directdb --sentry.username=jbrkeith --routine=getAssociatedData --cgihome=http://trueblue.caltech.edu/cgi-bin/vnf/main.cgi --directdb.tables=gulppotential --sentry.passwd=678yui --directdb.where=id='vashishta' --directdb.creator=everyone"/>
 <stringAttribute key="org.eclipse.ui.externaltools.ATTR_WORKING_DIRECTORY" value="${workspace_loc:pyreDv/vnf/cgi}"/>
 <stringAttribute key="org.python.pydev.debug.ATTR_INTERPRETER" value="__default"/>
 <stringAttribute key="org.python.pydev.debug.ATTR_PROJECT" value="pyreDv"/>
