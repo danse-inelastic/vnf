@@ -3,6 +3,7 @@ from vnf.applications.WebApplication import AuthenticationError
 
 
 class DirectDB(Actor):
+    ''' this whole thing needs to be refactored so id and creator are all put as "where" items (i.e. where=creator='''
 
     class Inventory(Actor.Inventory):
 
@@ -21,6 +22,10 @@ class DirectDB(Actor):
         id = pyre.inventory.str('id')
         
         creator = pyre.inventory.str('creator', default = 'currentUser')
+        
+        #filename_variable = pyre.inventory.str('filename_variable')
+        
+        #potential_name = pyre.inventory.str('potential_name')
         
 
     def get(self, director):
@@ -190,11 +195,9 @@ class DirectDB(Actor):
         self.creator = self.inventory.creator
         return
     
-    def getPotentialContents(self, director):
-        # this method is a hack for gulpUi for now since it needs a potential which
-        # is *associated* with gulppotentials metadata, rather than the metadata itself
-        # Since going to change gulp into javascript eventually, little point in
-        # altering this class significantly for now
+    def getAssociatedData(self, director):
+        '''this method is different from get because it gets associated data rather than
+the metadata in the database'''
         
         # these next lines are a hack just to make sure the user is authenticated
         try:
@@ -204,15 +207,15 @@ class DirectDB(Actor):
 
         # get the results
         records = self._getRecords(director, self.tables, self.where)
-        # for now, assume the first potential is the "right" one, and get the potential name
-        # (eventually this will have to be redone to search for a particular potential with a particular name)
-        # (should change the name to be the primary key so it will reject it if it has the same name)
-        potential = records[0]
-        potentialName = records[0].potential_name
+        # for now, assume the first potential that matches is the "right" one
+        record = records[0]
+        # assume records with associated data always store that data under a certain name: "filename")
+        dataFileName = record.__getattribute__("filename")
         #then read
-        potentialPath = director.dds.abspath(potential, filename=potentialName)
-        potentialContents = open(potentialPath).read()
-        return self._jsonAttributeEncoder([potentialContents])
+        dataPath = director.dds.abspath(record, filename=dataFileName)
+        dataContents = open(dataPath).read()
+        return self._jsonAttributeEncoder([dataContents])
+
 
     def __init__(self, name=None):
         if name is None:
@@ -231,6 +234,21 @@ class DirectDB(Actor):
 
 
     pass # end of DirectDB
+
+#import urllib
+# 
+#def urldecode(query):
+#    d = {}
+#    a = query.split('&')
+#    for s in a:
+#        if s.find('='):
+#            k,v = map(urllib.unquote, s.split('='))
+#            try:
+#                d[k].append(v)
+#            except KeyError:
+#                d[k] = [v]
+#    return d
+
 
 def wrapIfPresent(item1, item2):
     if item1:
