@@ -22,17 +22,17 @@ class GulpPotential(Table):
     import pyre.db
     filename = pyre.db.varchar(name='filename', length=2048, default='potential.lib')
     
-    elements = pyre.db.varcharArray(name = 'elements', length = 2, default = [] )
+    elements = pyre.db.varcharArray(name = 'elements', length = 10, default = [] )
     elements.meta['tip'] = 'elements within the potential'
     
-    description = pyre.db.varchar(name = 'description', length=8192)
+    description = pyre.db.varchar(name = 'description', length=10240)
     
-    creator = pyre.db.varchar(name='creator', length=64)
+    creator = pyre.db.varchar(name='creator', length=128)
 
     date = pyre.db.date( name='date' )
     date.meta['tip'] = 'date of creation'
     
-    id = pyre.db.varchar(name="id", length=64)
+    id = pyre.db.varchar(name="id", length=100)
     id.constraints = 'PRIMARY KEY'
     id.meta['tip'] = "the unique id"
 
