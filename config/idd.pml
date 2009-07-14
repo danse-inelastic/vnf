@@ -17,7 +17,7 @@
 <inventory>
 
   <component name='idd'>
-    <property name='port'>50002</property>
+    <property name='port'>50004</property>
   </component>
 
 </inventory>

@@ -271,12 +271,79 @@ class AbinitioWizard(base):
         
         return self.createJob(director)
 
+# this next part still needs to be folded into vasp
 
+#<<<<<<< .mine
+#    def _createVASPInputs(self, director):
+#        # overall strategy: write files and then retrieve them and show to user
+#        
+#        # vasp computation configurations
+#        simulation = self._getSimulation(director)
+#
+#        # make a copy of this computation
+#        computation = director.clerk.deepcopy(simulation)
+#        # change description
+#        computation.short_description = 'generate vasp inputs for computation %s' \
+#                                        % simulation.id
+#        # make sure this computation only generate input files
+#        computation.generateInputsOnly = True
+#        director.clerk.updateRecord(computation)
+#        
+#        # create a job for this computation
+#        from vnf.components.Job import new_job
+#        job = new_job(director)
+#
+#        # connect this job to the computation
+#        computation.job = job
+#        director.clerk.updateRecord(computation)
+#        job.computation = computation
+#        director.clerk.updateRecord(job)
+#        
+#        # submit this job
+#        from vnf.components.Job import submit
+#        submit(job, director)
+#
+#        # the server this job was submitted to
+#        server = job.server.dereference(director.clerk.db)
+#        
+#        # now wait and retrieve results
+#        import time
+#        time.sleep(1)
+#        files = [
+#            'INCAR',
+#            'KPOINTS',
+#            'POSCAR',
+#            'POTCAR',
+#            ]
+#        
+#        #  check whether input files were generated
+#        #  try 10 times
+#        count = 0; gotfiles = 0
+#        while count<10:
+#            count += 1
+#            try:
+#                director.dds.remember(job, files=files, server=server)
+#                gotfiles = 1
+#                break
+#            except:
+#                time.sleep(1)
+#                continue
+#        if not gotfiles:
+#            raise RuntimeError, 'unable to generate VASP input files'
+#
+#        #  copy them to the vnf server
+#        director.dds.make_available(job, files=files)
+#
+#        d = {}
+#        for f in files:
+#            d[f] = open(director.dds.abspath(job, f)).read()
+#=======
     def _vaspRawInputFilesExists(self, computation, director):
         import os
         for f in VASP_RAW_INPUT_FILES:
             path = director.dds.abspath(computation, f)
             if not os.path.exists(path): return False
+#>>>>>>> .r865
             continue
         return True
     

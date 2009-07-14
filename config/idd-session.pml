@@ -2,9 +2,9 @@
 <!--
 ! ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
-!                             Michael A.G. Aivazis
+!                                DANSE vnf team
 !                      California Institute of Technology
-!                      (C) 1998-2005  All Rights Reserved
+!                      (C) 2008-2009  All Rights Reserved
 !
 ! {LicenseText}
 !
