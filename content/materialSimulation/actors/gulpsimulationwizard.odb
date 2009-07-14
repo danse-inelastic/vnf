@@ -218,7 +218,7 @@ class GulpSimulationWizard(MaterialSimulationWizard):
         from vnf.dom.GulpPotential import GulpPotential
         try:
             # if it already exists, just use it
-            gulpPotential = director.clerk.getRecordByFieldname(GulpPotential, "potential_name", self.inventory.potential_name)
+            gulpPotential = director.clerk.getRecordByFieldname(GulpPotential, "id", self.inventory.potential_name)
             # make sure the potential file is readable...
             #eventually: if not, delete the entry and throw exception?
             libfile = director.dds.abspath(gulpPotential, filename = potential_filename)
