@@ -365,7 +365,7 @@ class Clerk(Component):
         return record
 
 
-    def newDbObject(self, table):
+    def newDbObject(self, table, id = None):
         '''create a new record for the given table and store it in the db.
 
         The given table is assumed to have following fields:
@@ -375,7 +375,8 @@ class Clerk(Component):
         
         record = table()
         
-        id = new_id( director )
+        if id is None:
+            id = new_id( director )
         record.id = id
 
         self.newRecord( record )

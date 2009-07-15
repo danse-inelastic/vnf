@@ -225,8 +225,7 @@ class GulpSimulationWizard(MaterialSimulationWizard):
             open(libfile, 'r')
         except:
             # if it doesn't exist, create a new one from this entry
-            gulpPotential = director.clerk.newDbObject(GulpPotential)
-            gulpPotential.id = self.inventory.potential_name
+            gulpPotential = director.clerk.newDbObject(GulpPotential, id = self.inventory.potential_name)
             gulpPotential.filename = potential_filename
             gulpPotential.creator = self.inventory.creator
             gulpPotential.description = self.inventory.description
