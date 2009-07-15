@@ -2,9 +2,9 @@
 <!--
 ! ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
-!                             Michael A.G. Aivazis
+!                                DANSE vnf team
 !                      California Institute of Technology
-!                      (C) 1998-2005  All Rights Reserved
+!                      (C) 2008-2009  All Rights Reserved
 !
 ! {LicenseText}
 !
@@ -16,9 +16,9 @@
 <inventory>
 
     <component name="remote">
-        <property name="host">131.215.30.140</property>
-        <property name="port">50002</property>
-        <property name="key">j90y8b2kfsp4eqhg</property>
+        <property name="host">127.0.1.1</property>
+        <property name="port">50000</property>
+        <property name="key">ze307f2qma9d1iut</property>
     </component>
 
 </inventory>
