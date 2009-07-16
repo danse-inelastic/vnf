@@ -11,17 +11,12 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 PROJECT = vnf
-PACKAGE = deploy
-
-RECURSE_DIRS = \
-    bin \
-    cgi-bin \
-    config \
+PACKAGE = bin
 
 #--------------------------------------------------------------------------
 #
 
-all: 
+all: export-bin-files
 	BLD_ACTION="all" $(MM) recurse
 
 tidy::
@@ -34,6 +29,17 @@ distclean::
 	BLD_ACTION="distclean" $(MM) recurse
 
 
+EXPORT_DATAFILES = \
+	startservices.sh \
+
+CP_F = rsync
+EXPORT_DATA_PATH = $(EXPORT_ROOT)/$(PROJECT)/$(PACKAGE)
+
+export-bin-files:: 
+	mkdir -p $(EXPORT_DATA_PATH); \
+	for x in $(EXPORT_DATAFILES); do { \
+	  $(CP_F) $$x $(EXPORT_DATA_PATH)/ ; \
+        } done
 
 
 # version
