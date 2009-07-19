@@ -69,11 +69,13 @@ class WebApplication(Base):
 
     def main(self, *args, **kwds):
         actor = self.actor
-        if actor is None:
-            inquiry = self.inventory._getTraitDescriptor('actor').inquiry
+        
+        # initialization error handling
+        actor_facility = self.Inventory.actor
+        if hasattr(actor_facility, 'failed_component_retrievals'):
             actor = self.retrieveActor('nyi')
-            actor.message = "Not implemented yet! actor=%s, routine=%s" % (
-                inquiry, self.inventory.routine)
+            actor.message = "Failed to retrieve actor. failed attempts: %s" % (
+                actor_facility.failed_component_retrievals,)
             self.actor = actor
 
         noErrors=True
