@@ -76,11 +76,11 @@ class WebApplication(Base):
         #ohp = self.ohp
         
         # initialization error handling
-        if actor is None:# and ohp is None:
-            inquiry = self.inventory._getTraitDescriptor('actor').inquiry
+        actor_facility = self.Inventory.actor
+        if hasattr(actor_facility, 'failed_component_retrievals'):
             actor = self.retrieveActor('nyi')
-            actor.message = "Not implemented yet! actor=%s, routine=%s" % (
-                inquiry, self.inventory.routine)
+            actor.message = "Failed to retrieve actor. failed attempts: %s" % (
+                actor_facility.failed_component_retrievals,)
             self.actor = actor
  
         try:
