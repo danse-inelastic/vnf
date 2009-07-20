@@ -3,6 +3,10 @@
 ! ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
 !
+!                             Michael A.G. Aivazis
+!                      California Institute of Technology
+!                      (C) 1998-2005  All Rights Reserved
+!
 ! {LicenseText}
 !
 ! ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -14,11 +18,12 @@
 <inventory>
 
   <component name='main'>
-    <property name='actor'>sample</property>   
-    <component name='sentry'>
-    	<property name='username'>demo</property>
-    	<property name='passwd'>demo</property>
-    </component>
+    <property name='debug'>1</property>
+    <property name='home'>http://localhost/vnf/</property>
+    <property name='cgi-home'>http://localhost/cgi-bin/vnf/main.cgi</property>
+    <property name='imagepath'>/~linjiao/vnf2/images</property>
+    <property name='javascriptpath'>/~linjiao/vnf2/javascripts</property>
+    <property name='tmproot'>/~linjiao/vnf2/tmp</property>
   </component>
 
 </inventory>
@@ -26,7 +31,5 @@
 
 <!-- version-->
 <!-- $Id$-->
-
-<!-- Generated automatically by XMLMill on Fri Apr  4 10:17:11 2008-->
 
 <!-- End of file -->
