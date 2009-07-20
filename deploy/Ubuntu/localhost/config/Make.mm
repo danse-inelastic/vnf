@@ -43,6 +43,7 @@ EXPORT_DATAFILES = \
 	ipa-session.pml \
 	journald-harness.pml \
 	journal.pml \
+	make.pml \
 	remote.pml \
 	ssher.pml \
 	userdb.md5 \
@@ -54,12 +55,17 @@ EXPORT_DATA_PATH = $(EXPORT_ROOT)/$(PROJECT)/$(PACKAGE)
 
 export-config-files:: 
 	mkdir -p $(EXPORT_DATA_PATH); \
-	$(CP_F) main.trueblue.pml $(EXPORT_DATA_PATH)/main.pml
 	for x in $(EXPORT_DATAFILES); do { \
 	  $(CP_F) $$x $(EXPORT_DATA_PATH)/ ; \
         } done
 
-
+#export-config-files:: 
+#	mkdir -p $(EXPORT_DATA_PATH); \
+#	$(CP_F) main.trueblue.pml $(EXPORT_DATA_PATH)/main.pml
+#	for x in $(EXPORT_DATAFILES); do { \
+#	  $(CP_F) $$x $(EXPORT_DATA_PATH)/ ; \
+#       } done
+        
 # version
 # $Id: Make.mm,v 1.1.1.1 2006-11-27 00:09:14 aivazis Exp $
 

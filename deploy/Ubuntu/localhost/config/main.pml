@@ -21,9 +21,6 @@
     <property name='debug'>1</property>
     <property name='home'>http://localhost/vnf/</property>
     <property name='cgi-home'>http://localhost/cgi-bin/vnf/main.cgi</property>
-    <property name='imagepath'>/~linjiao/vnf2/images</property>
-    <property name='javascriptpath'>/~linjiao/vnf2/javascripts</property>
-    <property name='tmproot'>/~linjiao/vnf2/tmp</property>
   </component>
 
 </inventory>
