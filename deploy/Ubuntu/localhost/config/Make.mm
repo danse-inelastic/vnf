@@ -43,7 +43,7 @@ EXPORT_DATAFILES = \
 	ipa-session.pml \
 	journald-harness.pml \
 	journal.pml \
-	make.pml \
+	main.pml \
 	remote.pml \
 	ssher.pml \
 	userdb.md5 \
