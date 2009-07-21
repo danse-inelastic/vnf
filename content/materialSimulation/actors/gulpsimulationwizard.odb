@@ -26,7 +26,7 @@ class GulpSimulationWizard(MaterialSimulationWizard):
         import pyre.inventory as inv
         
         librarycontent = inv.str('librarycontent')
-        configurations = inv.str('configurations')
+        inputFileContents = inv.str('inputFileContents')
         runtype = inv.str('runtype')
         
         creator = inv.str('creator')
@@ -173,18 +173,23 @@ class GulpSimulationWizard(MaterialSimulationWizard):
         except AuthenticationError, err:
             return err.page
 
-        configurations = self.inventory.configurations
-        libraryname = self.inventory.libraryname
-        # replace this next part with a movement of the library from the db to the job submission file
-        #librarycontent = self.inventory.librarycontent
+        inputFileContents = self.inventory.inputFileContents
+        potential_name = self.inventory.potential_name
         
         simulation = self._getSimulation(director)
+        from vnf.dom.GulpPotential import GulpPotential
+        try:
+            gulpPotential = director.clerk.getRecordByFieldname(director, GulpPotential, "id", 
+                self.inventory.potential_name, associatedDataFileToVerify = self.inventory.potential_filename)
+        except:
+            return "failure--cannot find selected potential in database"
         
         #set simulation attributes
         simulation.runtype = self.inventory.runtype
-        potential = simulation.potential.dereference(director.clerk.db)
-        potential.potential_name = libraryname
-        director.clerk.updateRecord(potential)
+        #potential = simulation.potential.dereference(director.clerk.db)
+        simulation.potential = gulpPotential
+        potential.potential_name = self.inventory.potential_name
+        #director.clerk.updateRecord(potential)
         director.clerk.updateRecord(simulation)
 
         #create data directory for the simulation if necessary
@@ -192,9 +197,9 @@ class GulpSimulationWizard(MaterialSimulationWizard):
         if not os.path.exists(datadir): os.makedirs(datadir)
 
         configurationfile = director.dds.abspath(simulation, filename=GulpSimulation.CONFIGURATION_FILE)
-        open(configurationfile, 'w').write(configurations)
+        open(configurationfile, 'w').write(self.inventory.inputFileContents)
         
-        potentialPath = director.dds.abspath(potential, filename=potentialName)
+        potentialPath = director.dds.abspath(potential, filename=self.inventory.potential_name)
 
 #        libpointerfile = director.dds.abspath(simulation, filename=GulpSimulation.LIBPOINTER_FILE)
 #        open(libpointerfile, 'w').write(libraryname)
@@ -214,15 +219,9 @@ class GulpSimulationWizard(MaterialSimulationWizard):
         potential_filename = self.inventory.potential_filename
         librarycontent = self.inventory.librarycontent
         
-        # look for the library
-        from vnf.dom.GulpPotential import GulpPotential
         try:
-            # if it already exists, just use it
-            gulpPotential = director.clerk.getRecordByFieldname(GulpPotential, "id", self.inventory.potential_name)
-            # make sure the potential file is readable...
-            #eventually: if not, delete the entry and throw exception?
-            libfile = director.dds.abspath(gulpPotential, filename = potential_filename)
-            open(libfile, 'r')
+            gulpPotential = director.clerk.getRecordByFieldname(director, GulpPotential, "id", 
+                self.inventory.potential_name, associatedDataFileToVerify = self.inventory.potential_filename)
         except:
             # if it doesn't exist, create a new one from this entry
             gulpPotential = director.clerk.newDbObject(GulpPotential, id = self.inventory.potential_name)
@@ -243,6 +242,20 @@ class GulpSimulationWizard(MaterialSimulationWizard):
             open(libfile, 'w').write(librarycontent)
             #server = director.clerk.dereference(job.server)
             director.dds.remember(gulpPotential, files=[potential_filename])#, server=server)
+        
+        def _getPotential(self, director):
+            # look for the library
+            from vnf.dom.GulpPotential import GulpPotential
+            try:
+            gulpPotential = director.clerk.getRecordByFieldname(director, GulpPotential, "id", 
+                self.inventory.potential_name, associatedDataFileToVerify = self.inventory.potential_filename)
+        except:
+            
+            id = self.inventory.id
+            table = self.inventory.type
+            if not table or not id: return
+            return director.clerk.getRecordByID(table, id)
+            
         
         #set simulation attributes
 #        simulation = self._getSimulation(director)
