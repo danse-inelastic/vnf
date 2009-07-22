@@ -99,19 +99,19 @@ class Clerk(Component):
         return self._index( SampleAssembly, where )
     
     def indexSamples(self, where = None):
-        '''create and index of all samples
+        '''create an index of all samples
         that meet the specified criteria'''
         from vnf.dom.Sample import Sample
         return self._index( Sample, where )
 
     def indexScatterers(self, where = None):
-        '''create and index of all scatterers
+        '''create an index of all scatterers
         that meet the specified criteria'''
         from vnf.dom.Scatterer import Scatterer
         return self._index( Scatterer, where )
 
     def indexScatteringKernels(self, where = None):
-        '''create and index of all scatterers
+        '''create an index of all scatterers
         that meet the specified criteria'''
         from vnf.dom.ScatteringKernel import ScatteringKernel
         from vnf.dom import subclassesOf
