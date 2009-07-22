@@ -25,7 +25,7 @@ class GulpSimulationWizard(MaterialSimulationWizard):
         
         import pyre.inventory as inv
         
-        librarycontent = inv.str('librarycontent')
+        #librarycontent = inv.str('librarycontent')
         inputFileContents = inv.str('inputFileContents')
         runtype = inv.str('runtype')
         
@@ -39,6 +39,7 @@ class GulpSimulationWizard(MaterialSimulationWizard):
 
         simulation = self._getSimulation(director)
         id = self.inventory.id = simulation.id
+        type = self.inventory.type = simulation.name
 
         # make sure material is defined
         if not self._materialDefinedForSimulation(simulation, director):
@@ -54,6 +55,7 @@ class GulpSimulationWizard(MaterialSimulationWizard):
 
         args = {
             'simulationId': id,
+            'simulationType': type,
             'matterId':simulation.matter.id,
             }
         callbackArgs = {
@@ -61,9 +63,6 @@ class GulpSimulationWizard(MaterialSimulationWizard):
             'sentry.username':director.sentry.username,
             'sentry.ticket':director.sentry.ticket,
 #            'actor': self.name,
-            #'actor.id': id,
-#            'actor.type': type,
-#            'actor.runtype':simulation.runtype
             }
         args.update(callbackArgs)
         
@@ -196,16 +195,15 @@ class GulpSimulationWizard(MaterialSimulationWizard):
         datadir = director.dds.abspath(simulation)
         if not os.path.exists(datadir): os.makedirs(datadir)
 
-        configurationfile = director.dds.abspath(simulation, filename=GulpSimulation.CONFIGURATION_FILE)
-        open(configurationfile, 'w').write(self.inventory.inputFileContents)
+        inputFilePath = director.dds.abspath(simulation, filename=GulpSimulation.CONFIGURATION_FILE)
+        open(inputFilePath, 'w').write(self.inventory.inputFileContents)
         
-        potentialPath = director.dds.abspath(gulpPotential, filename=self.inventory.potential_name)
-
-#        libpointerfile = director.dds.abspath(simulation, filename=GulpSimulation.LIBPOINTER_FILE)
-#        open(libpointerfile, 'w').write(libraryname)
-
-        libfile = director.dds.abspath(simulation, filename=libraryname)
-        open(libfile, 'w').write(librarycontent)
+        #read the potential from the database
+        potentialPath = director.dds.abspath(gulpPotential, filename=gulpPotential.filename)
+        potentialContent = open(potentialPath).read()
+        #write the potential in the simulation directory
+        simulationPotential = director.dds.abspath(simulation, filename=gulpPotential.filename)
+        open(simulationPotential, 'w').write(potentialContent)        
 
         return 'success'
     
