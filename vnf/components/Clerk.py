@@ -284,7 +284,7 @@ class Clerk(Component):
         return record
 
 
-    def getRecordByID(self, tablename, id):
+    def getRecordByID(self, tablename, id, associatedDataFileToVerify = None, director = None):
         from pyre.db.Table import Table as TableBase
         if isinstance(tablename, basestring):
             Table = self._getTable(tablename)
@@ -292,10 +292,22 @@ class Clerk(Component):
             Table = tablename
         else:
             raise ValueError, 'tablename must be a string or a table class: %s' % tablename
-        return self._getRecordByID(Table, id)
+        record = self._getRecordByID(Table, id)
+        if not associatedDataFileToVerify:
+            return record
+        else:
+            associatedDataFile = director.dds.abspath(record, filename = associatedDataFileToVerify)
+            try:
+                f = open(associatedDataFile, 'r')
+                f.close()
+                return record
+            except:
+                raise Exception('VNF cannot find the datafile '+associatedDataFileToVerify+ 
+                                ' associated with '+Table)
+                return
     
     
-    def getRecordByFieldname(self, director, tablename, field, fieldname, associatedDataFileToVerify = None):
+    def getRecordByFieldname(self, tablename, field, fieldname, associatedDataFileToVerify = None, director = None):
         from pyre.db.Table import Table as TableBase
         if isinstance(tablename, basestring):
             Table = self._getTable(tablename)

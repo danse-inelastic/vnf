@@ -61,7 +61,7 @@ class GulpSimulationWizard(MaterialSimulationWizard):
             'sentry.username':director.sentry.username,
             'sentry.ticket':director.sentry.ticket,
 #            'actor': self.name,
-            'actor.id': id,
+            #'actor.id': id,
 #            'actor.type': type,
 #            'actor.runtype':simulation.runtype
             }
@@ -179,8 +179,8 @@ class GulpSimulationWizard(MaterialSimulationWizard):
         simulation = self._getSimulation(director)
         from vnf.dom.GulpPotential import GulpPotential
         try:
-            gulpPotential = director.clerk.getRecordByFieldname(director, GulpPotential, "id", 
-                self.inventory.potential_name, associatedDataFileToVerify = self.inventory.potential_filename)
+            gulpPotential = director.clerk.getRecordByID(GulpPotential, self.inventory.potential_name, 
+                associatedDataFileToVerify = self.inventory.potential_filename, director=director)
         except:
             return "failure--cannot find selected potential in database"
         
@@ -188,7 +188,7 @@ class GulpSimulationWizard(MaterialSimulationWizard):
         simulation.runtype = self.inventory.runtype
         #potential = simulation.potential.dereference(director.clerk.db)
         simulation.potential = gulpPotential
-        potential.potential_name = self.inventory.potential_name
+        gulpPotential.potential_name = self.inventory.potential_name
         #director.clerk.updateRecord(potential)
         director.clerk.updateRecord(simulation)
 
@@ -199,7 +199,7 @@ class GulpSimulationWizard(MaterialSimulationWizard):
         configurationfile = director.dds.abspath(simulation, filename=GulpSimulation.CONFIGURATION_FILE)
         open(configurationfile, 'w').write(self.inventory.inputFileContents)
         
-        potentialPath = director.dds.abspath(potential, filename=self.inventory.potential_name)
+        potentialPath = director.dds.abspath(gulpPotential, filename=self.inventory.potential_name)
 
 #        libpointerfile = director.dds.abspath(simulation, filename=GulpSimulation.LIBPOINTER_FILE)
 #        open(libpointerfile, 'w').write(libraryname)
@@ -220,8 +220,8 @@ class GulpSimulationWizard(MaterialSimulationWizard):
         librarycontent = self.inventory.librarycontent
         
         try:
-            gulpPotential = director.clerk.getRecordByFieldname(director, GulpPotential, "id", 
-                self.inventory.potential_name, associatedDataFileToVerify = self.inventory.potential_filename)
+            gulpPotential = director.clerk.getRecordByID(GulpPotential, self.inventory.potential_name, 
+                associatedDataFileToVerify = self.inventory.potential_filename, director=director)
         except:
             # if it doesn't exist, create a new one from this entry
             gulpPotential = director.clerk.newDbObject(GulpPotential, id = self.inventory.potential_name)
@@ -242,19 +242,7 @@ class GulpSimulationWizard(MaterialSimulationWizard):
             open(libfile, 'w').write(librarycontent)
             #server = director.clerk.dereference(job.server)
             director.dds.remember(gulpPotential, files=[potential_filename])#, server=server)
-        
-        def _getPotential(self, director):
-            # look for the library
-            from vnf.dom.GulpPotential import GulpPotential
-            try:
-            gulpPotential = director.clerk.getRecordByFieldname(director, GulpPotential, "id", 
-                self.inventory.potential_name, associatedDataFileToVerify = self.inventory.potential_filename)
-        except:
-            
-            id = self.inventory.id
-            table = self.inventory.type
-            if not table or not id: return
-            return director.clerk.getRecordByID(table, id)
+
             
         
         #set simulation attributes
