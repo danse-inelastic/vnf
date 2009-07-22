@@ -25,7 +25,7 @@ class GulpSimulationWizard(MaterialSimulationWizard):
         
         import pyre.inventory as inv
         
-        #librarycontent = inv.str('librarycontent')
+        librarycontent = inv.str('librarycontent')
         inputFileContents = inv.str('inputFileContents')
         runtype = inv.str('runtype')
         
@@ -217,6 +217,7 @@ class GulpSimulationWizard(MaterialSimulationWizard):
         potential_filename = self.inventory.potential_filename
         librarycontent = self.inventory.librarycontent
         
+        from vnf.dom.GulpPotential import GulpPotential
         try:
             gulpPotential = director.clerk.getRecordByID(GulpPotential, self.inventory.potential_name, 
                 associatedDataFileToVerify = self.inventory.potential_filename, director=director)
@@ -241,12 +242,6 @@ class GulpSimulationWizard(MaterialSimulationWizard):
             #server = director.clerk.dereference(job.server)
             director.dds.remember(gulpPotential, files=[potential_filename])#, server=server)
 
-            
-        
-        #set simulation attributes
-#        simulation = self._getSimulation(director)
-#        simulation.LIBPOINTER_FILE = potential_filename
-#        director.clerk.updateRecord(simulation)
         return 'success'
 
 
