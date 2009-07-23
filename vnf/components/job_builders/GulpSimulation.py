@@ -13,9 +13,10 @@
 
 
 from JobBuilder import JobBuilder as base
-class Builder(base):
+from vnf.dom.GulpSimulation import GulpSimulation as Computation
+from vnf.dom.GulpResults import output_filename
 
-    from vnf.dom.GulpSimulation import GulpSimulation as Computation
+class Builder(base):
 
     def __init__(self, path):
         base.__init__(self, path)
@@ -93,7 +94,7 @@ class Builder(base):
         cmds = [
             '#!/usr/bin/env sh',
             '. ~/.gulp-env',
-            'gulp < %s > gulp.out' % Computation.CONFIGURATION_FILE,
+            'gulp < %s > %s' % (Computation.CONFIGURATION_FILE, output_filename),
             '',
             ]
         script = self.shscript1name

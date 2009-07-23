@@ -39,8 +39,10 @@ EXPORT_PYTHON_MODULES = \
 	NeutronExperiment.py \
 	NeutronExperimentSimulationRunBuilder.py \
 	PhononsFromAbinitio.py \
+	QuantumEspresso.py \
 	SampleAssemblyXMLBuilder.py \
 	SampleComponentBuilder.py \
+	VacfComputation.py \
 	__init__.py \
 	_utils.py \
 
