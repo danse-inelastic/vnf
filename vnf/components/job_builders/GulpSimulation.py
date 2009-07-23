@@ -13,10 +13,12 @@
 
 
 from JobBuilder import JobBuilder as base
-from vnf.dom.GulpSimulation import GulpSimulation as Computation
+
 from vnf.dom.GulpResults import output_filename
 
 class Builder(base):
+    
+    from vnf.dom.GulpSimulation import GulpSimulation as Computation
 
     def __init__(self, path):
         base.__init__(self, path)
@@ -29,8 +31,10 @@ class Builder(base):
         Computation = self.Computation
 
         # find out the file name of the gulp library file
-        libptr = dds.abspath(computation, filename=Computation.LIBPOINTER_FILE)
-        libname = open(libptr).read().strip()
+        potential = computation.potential.dereference(db)
+        libname = potential.filename
+        #libptr = dds.abspath(computation, filename=Computation.LIBPOINTER_FILE)
+        #libname = open(libptr).read().strip()
 
         # two files need to be copied to job directory
         # 1. gulp.gin
