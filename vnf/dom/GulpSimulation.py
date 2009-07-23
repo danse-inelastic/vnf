@@ -26,10 +26,10 @@ class GulpSimulation(base):
 
     # eventually going to get rid of LIBPOINTER_FILE
     CONFIGURATION_FILE = 'gulp.gin'
-    LIBPOINTER_FILE = 'gulp.libs'
+    #LIBPOINTER_FILE = 'gulp.libs'
     datafiles = [
         CONFIGURATION_FILE,
-        LIBPOINTER_FILE,
+        #LIBPOINTER_FILE,
         ]
 
 

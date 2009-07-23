@@ -25,7 +25,7 @@ class Actor(base):
 
     table = 'gulpsimulations'
     
-    def trajectoryShow(self, compressed_xyzTrajectory_path):
+    def trajectoryShow(self, director, xyzTrajectory_path, document):
         from vnf.components.JnlpFile import JnlpFile
         #viewDynamics(self, computation)
         args = {
@@ -33,7 +33,7 @@ class Actor(base):
         'sentry.username':director.sentry.username,
         'sentry.ticket':director.sentry.ticket,
         'displayType':'trajectory',
-        'trajectoryPath':compressed_xyzTrajectory_path,
+        'trajectoryPath':os.path.join(director.cgihome,xyzTrajectory_path),
         }
         jnlpFile = JnlpFile(
         resources=('jmolVnf.jar', 'Jmol.jar','pg74.216.jdbc3.jar'),
@@ -47,7 +47,7 @@ class Actor(base):
         p.text = ['''A movie of the simulation can be accessed by launching the viewer below.''',
         '<center><a href="'+relativeLocationOfFile+'"><img src="images/webstart.gif" alt="Jmol"/></a></center>'] 
 
-    def modeShow(self, gulpOutputFile):
+    def modeShow(self, director, gulpOutputFile, document):
         #first process the modes:
         
         # then visualize the modes
@@ -108,11 +108,12 @@ class Actor(base):
 
         
         if os.path.exists(compressed_xyzTrajectory_path):
-            trajectoryShow(compressed_xyzTrajectory_path)   
+            self.trajectoryShow(director, compressed_xyzTrajectory_path, document)   
         else:
+            xyzTrajectory_path = director.dds.abspath(job, GulpResults.xyzTrajectory_filename)
             # don't worry about compressing part of a trajectory for now--just return the 
             # uncompressed trajectory path
-            trajectoryShow(xyzTrajectory_path)
+            self.trajectoryShow(director, xyzTrajectory_path, document)
 #            # the itask worker
 #            #print 'working'
 #            iworker = 'get-dynamics'
@@ -220,7 +221,7 @@ class Actor(base):
         gulpDosFilePath = director.dds.abspath(job, GulpResults.dos_filename)
         
         if os.path.exists(gulpDosFilePath):
-            self.dosShow(document, gulpDosFilePath) 
+            self.dosShow(document, gulpDosFilePath, document) 
 
     def view(self, director):
         try:
@@ -291,11 +292,11 @@ class Actor(base):
             resdoc = document.document(title='Results')
             
             p = resdoc.paragraph()
-            p.text = ['A plot of the Density Of States (DOS) in terms of DOS (arbitrary units) vs energy (meV).']
             # see the trajectory, phonon modes,...
             if 'molecular dynamics' in computation.runtype:
                 self.viewDynamics(director, server, computation, resdoc)
             elif 'phonons' in computation.runtype:
+                p.text = ['A plot of the Density Of States (DOS) in terms of DOS (arbitrary units) vs energy (meV).']
                 self.viewPhonons(director, server, computation, resdoc)
         
             outputdoc = document.document(title='Output')
