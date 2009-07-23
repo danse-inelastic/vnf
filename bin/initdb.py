@@ -37,6 +37,8 @@ class DbApp(Script):
         wwwuser = pyre.inventory.str(name='wwwuser', default='')
 
         tables = pyre.inventory.list(name='tables', default=[])
+        
+        ignoreTables = pyre.inventory.list(name='ignoreTables', default=[])
 
 
     def main(self, *args, **kwds):
@@ -49,6 +51,9 @@ class DbApp(Script):
             tables = alltables()
         else:
             tables = [self.clerk._getTable(t) for t in tables]
+            
+        for table in self.inventory.ignoreTables:
+            tables = tables.remove(table)
 
         for table in tables:
             #self.dropTable( table )
