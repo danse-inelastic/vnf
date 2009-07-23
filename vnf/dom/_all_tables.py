@@ -12,12 +12,16 @@ acl = [
     'Role',
     'ACL1',
     'ACL2',
-    'ACL_InstrumentSimulationPrivilege',
     ]
 
 instrument = [
     'Instrument',
     'InstrumentConfiguration',
+    ]
+
+
+acl2 = [
+    'ACL_InstrumentSimulationPrivilege',
     ]
 
 
@@ -79,6 +83,7 @@ tablemodules = \
              + kernel_related \
              + sample \
              + instrument \
+             + acl2 \
              + experiment \
              + other
 
