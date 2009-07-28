@@ -30,10 +30,11 @@ class DirectDB(Actor):
 
     def get(self, director):
         # these next lines are a hack just to make sure the user is authenticated
-        try:
-            page = director.retrieveSecurePage( 'greet' )
-        except AuthenticationError, error:
-            return error.page
+#        atomsim public version cannot work unless these are commented out
+#        try:
+#            page = director.retrieveSecurePage( 'greet' )
+#        except AuthenticationError, error:
+#            return error.page
 
         if 'all' in self.columns:
             records = self._getRecords(director, self.tables, self.where)
@@ -198,12 +199,6 @@ class DirectDB(Actor):
     def getAssociatedData(self, director):
         '''this method is different from get because it gets associated data rather than
 the metadata in the database'''
-        
-        # these next lines are a hack just to make sure the user is authenticated
-        try:
-            page = director.retrieveSecurePage('greet')
-        except AuthenticationError, error:
-            return error.page
 
         # get the results
         records = self._getRecords(director, self.tables, self.where)
