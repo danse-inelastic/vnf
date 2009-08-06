@@ -6,6 +6,9 @@ lattice_type = "fcc"
 temperature = 297    # Units: K
 reference = "Svensson, E.C., Powell, B.M., Woods, A.D.B., Teuchert, W-D.: Can J. Phys. 57 (1979) 253"
 details = "Co_0.92Fe_0.08"
+# lattice parameters in angstroms, for alpha Co
+a = 2.51   
+c = 4.07
 
 # Units: N m^-1 
 force_constants = { "110": { "xx": 15.71, 

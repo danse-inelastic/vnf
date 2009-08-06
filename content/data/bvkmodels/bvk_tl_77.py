@@ -6,6 +6,8 @@ lattice_type = "hcp"
 temperature = 77    # Units: K
 reference = "Worlton, T.G., Schmunk, R.E.: Phys. Rev. B3 (1971) 4115"
 details = "The model is of the 'modified axially symmetric' form."
+a = 3.45   # lattice parameters in angstroms
+c = 5.51
 
 # Units: N m^-1 
 force_constants = { "1" : { "K" : 10.2475,
@@ -17,9 +19,11 @@ force_constants = { "1" : { "K" : 10.2475,
                     "3" : { "K" : -2.386,
                             "C_Bx" : 0.8603,
                             "C_Bz" : -1.6455 },
-                    "4" : { "K" : -1.4887,
-                            "C_Bx" : -0.2527,
-                            "C_Bz" : 0.4833 },
+                #    "4" : { "K" : -1.4887,
+                #            "C_Bx" : -0.2527,
+                #            "C_Bz" : 0.4833 },
+                    "4" : { "K + C_Bz" : -1.4887 + 0.4833,
+                            "C_Bx" : -0.2527 },
                     "5" : { "K" : 1.8162,
                             "C_Bx" : 0.0314,
                             "C_Bz" : -0.0601 },

@@ -6,6 +6,7 @@ lattice_type = "bcc"
 temperature = 12    # Units: K
 reference = "Copley, J.R.D., Brockhouse, B.N.: Can. J. Phys. 51 (1973) 657"
 details = "The dispersion curves can be fitted with a fourth neighbour model. Increasing the number of parameters changes the fit only marginally."
+a = 5.69   # lattice parameters in angstroms, at 120 K
 
 # Units: N m^-1 
 force_constants = { "111": { "xx": 0.669, 

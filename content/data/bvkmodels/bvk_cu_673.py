@@ -4,8 +4,9 @@
 element = "Cu"
 lattice_type = "fcc"
 temperature = 673    # Units: K
-reference = "Larose, A., Brokchouse, B.N.: Can. J. Phys. 54 (1976) 1990"
+reference = "Larose, A., Brockhouse, B.N.: Can. J. Phys. 54 (1976) 1990"
 details = "General force for next neighbour, otherwise axially symmetric model"
+a = 3.61   # lattice parameters in angstroms
 
 # Units: N m^-1 
 force_constants = { "110": { "xx": 12.275, 

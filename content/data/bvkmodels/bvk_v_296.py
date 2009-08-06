@@ -6,6 +6,7 @@ lattice_type = "bcc"
 temperature = 296    # Units: K
 reference = "Cohen, M., Heine, V., Weaire, D.: Solid State Phys. (H. Ehrenreich, F. Seitz and D. Turnbull eds.) Academic Press, New York 24 (1970)"
 details = "Model B. Calculated from fitted interplanar force constants. Generally poorer fitting than model A (direct fit to the phonon dispersion), but better agreement with the measured spectrum."
+a = 3.03   # lattice parameters in angstroms
 
 # Units: N m^-1 
 force_constants = { "111": { "xx": 10.534, 

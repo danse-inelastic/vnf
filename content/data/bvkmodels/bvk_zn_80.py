@@ -6,6 +6,8 @@ lattice_type = "hcp"
 temperature = 80    # Units: K
 reference = "Chesser, N.J., Axe, J.D.: Phys. Rev. B9 (1974) 4060"
 details = "The model is of the 'modified axially symmetric' form. Force constants obtained by a fit to the phonon frequencies and the relative phase of the two hexagonal sublattices for the [100] longitudinal (T) phonon modes."
+a = 2.66   # lattice parameters in angstroms
+c = 4.95
 
 # Units: N m^-1 
 force_constants = { "1" : { "K" : 10.150,

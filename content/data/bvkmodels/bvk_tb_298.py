@@ -6,6 +6,8 @@ lattice_type = "hcp"
 temperature = 298    # Units: K
 reference = "Houmann, J.C.G., Nicklow, R.M.: Phys. Rev. B1 (1970) 3943"
 details = "The model is axially symmetric from the fifth neighbours outward"
+a = 3.60   # lattice parameters in angstroms
+c = 5.70
 
 # Units: N m^-1 
 force_constants = { "1" : { "xx" : 5.467,

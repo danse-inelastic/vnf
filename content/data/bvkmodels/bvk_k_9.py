@@ -1,4 +1,4 @@
-# bvk_k_9_a.py
+# bvk_k_9.py
 # BvK force constants
 
 element = "K"
@@ -6,6 +6,7 @@ lattice_type = "bcc"
 temperature = 9    # Units: K
 reference = "Dolling, G., Meyer, J.: J. Phys. F7 (1977) 775"
 details = "Axially symmetric model"
+a = 5.31   # lattice parameters in angstroms
 
 # Units: N m^-1 
 force_constants = { "111": { "xx": 0.7688, 

@@ -6,6 +6,7 @@ lattice_type = "fcc" # gamma-phase
 temperature = 80    # Units: K
 reference = "Stassis, C., Gould, T., McMasters, O.D., Gschneider, K.A., Nicklow, R.M.: Phys. Rev B19 (1979) 5746"
 details = "Axially symmetric fit to elastic constants and phonons in symmetry directions"
+a = 5.16   # lattice parameter in angstroms
 
 # Units: N m^-1 
 force_constants = { "110": { "xx": 4.3726, 

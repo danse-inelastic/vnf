@@ -5,6 +5,7 @@ element = "Ag"
 lattice_type = "fcc"
 temperature = 296    # Units: K
 reference = "Kamitakahara, W.A., Brockhouse, B.N.: Phys. Lett. 29A (1969) 639"
+a = 4.08   # lattice parameter in angstroms
 
 # Units: N m^-1 
 force_constants = {"110": {"xx": 10.71, 

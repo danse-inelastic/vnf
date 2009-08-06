@@ -1,4 +1,4 @@
-# bvk_al_80_a.py
+# bvk_al_80.py
 # BvK force constants
 
 element = "Al"
@@ -6,6 +6,7 @@ lattice_type = "fcc"
 temperature = 80    # Units: K
 reference = "Cowley, E.R.: Can. J. Phys. 52 (1974) 1714"
 details = "Fit to elastic constants and phonons including off symmetry directions"
+a = 4.04   # lattice parameter in angstroms
 
 # Units: N m^-1 
 force_constants = { "110": { "xx": 10.4578, 

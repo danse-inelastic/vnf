@@ -6,6 +6,7 @@ lattice_type = "fcc"
 temperature = 90    # Units: K
 reference = "Dutton, D.H., Brockhouse, B.N., Miiller, A.P.: Can. J. Phys. 50 (1972) 2915"
 details = "The force constants to the fifth neighbours are axially symmetric. A fit to the experimental data requires force constants to the fourth neighbours. Weaker forces probably extend to at least the sixth neighbours. Extending the fit to eighth neighbours improves the goodness of the fit only marginally."
+a = 3.92   # lattice parameters in angstroms
 
 # Units: N m^-1 
 force_constants = { "110": { "xx": 25.834, 
@@ -25,4 +26,4 @@ force_constants = { "110": { "xx": 25.834,
                              "zz": -0.056,
                              "xy": 0.233 },
                     "222": { "xx": 0.468,
-                             "yz": -0.263 } }
+                             "xy": -0.263 } }

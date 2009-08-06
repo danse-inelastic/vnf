@@ -4,8 +4,9 @@
 element = "Cr"
 lattice_type = "bcc"
 temperature = 300    # Units: K
-reference = ""
-details = "Apart from the anomalies, a fourth neighbor fit reproduces the dispersion within 3%. The stron gmaximum in [00?]L direction indicates a strong second neighbour force constant."
+reference = "Shaw, W.M., Muhlestein, L.D.: Phys. Rev. B4 (1971) 969."
+details = "Apart from the anomalies, a fourth neighbor fit reproduces the dispersion within 3%. The strong maximum in [00?]L direction indicates a strong second neighbour force constant."
+a = 2.88   # lattice parameters in angstroms
 
 # Units: N m^-1 
 force_constants = { "111": { "xx": 13.526, 
@@ -18,4 +19,4 @@ force_constants = { "111": { "xx": 13.526,
                     "311": { "xx": -1.257,
                              "yy": 0.432,
                              "yz": 0.516,
-                             "xy": 0.007 } }
+                             "xz": 0.007 } }

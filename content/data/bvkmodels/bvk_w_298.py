@@ -6,6 +6,7 @@ lattice_type = "bcc"
 temperature = 298    # Units: K
 reference = "Larose, A., Brockhouse, B.N.: Can. J. Phys. 54 (1976) 1819"
 details = "Fit to the data of Chen, S.H.: Thesis, Mc. Master University, Hamilton, Ontario, Canada 1964 and Larose (see reference)"
+a = 3.165   # lattice parameters in angstroms
 
 # Units: N m^-1 
 force_constants = { "111": { "xx": 22.1, 

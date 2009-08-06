@@ -1,10 +1,11 @@
-# bvk_nb_296_a.py
+# bvk_nb_296.py
 # BvK force constants
 
 element = "Nb"
 lattice_type = "bcc"
 temperature = 296    # Units: K
 reference = "Nakagawa, Y., Wooods, A.D.B.: Phys. Rev. Lett. 11 (1963) 271"
+a = 3.29   # lattice parameters in angstroms
 
 # Units: N m^-1 
 force_constants = { "111": { "xx": 14.14, 

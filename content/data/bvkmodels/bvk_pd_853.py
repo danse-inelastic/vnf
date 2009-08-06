@@ -5,6 +5,7 @@ element = "Pd"
 lattice_type = "fcc"
 temperature = 853    # Units: K
 reference = "Miiller, A.P., Brockhouse, B.N.: Can. J. Phys. 49 (1971) 704"
+a = 3.88   # lattice parameters in angstroms
 
 # Units: N m^-1 
 force_constants = { "110": { "xx": 17.383, 
@@ -24,7 +25,7 @@ force_constants = { "110": { "xx": 17.383,
                              "zz": -0.134,
                              "xy": -0.043 },
                     "222": { "xx": -0.233,
-                             "yz": -0.015 },
+                             "xy": -0.015 },
                     "321": { "xx": -0.057,
                              "yy": 0.032,
                              "zz": 0.051,

@@ -6,6 +6,7 @@ lattice_type = "fcc"
 temperature = 296    # Units: K
 reference = "Svensson, E.C., Brockhouse, B.N., Rowe, J.M.: Phys. Rev. 155 (1967) 619"
 details = "Axially symmetric 5th neighbor force constants"
+a = 3.61   # lattice parameters in angstroms
 
 # Units: N m^-1 
 force_constants = { "110": { "xx": 13.102, 
@@ -25,4 +26,4 @@ force_constants = { "110": { "xx": 13.102,
                              "zz": -0.016,
                              "xy": -0.055 },
                     "222": { "xx": -0.138,
-                             "yz": -0.232 } }
+                             "xy": -0.232 } }

@@ -1,4 +1,4 @@
-# bvk_au_295_b.py
+# bvk_au_295.py
 # BvK force constants
 
 element = "Au"
@@ -6,6 +6,7 @@ lattice_type = "fcc"
 temperature = 295    # Units: K
 reference = "Gilat, G., Nicklow, R.M.: Phys. Rev. 143 (1965) 487"
 details = "M2 general 1st neighbour force constants and axially symmetric 2nd to 5th neighbour force constants"
+a = 4.07   # lattice parameter in angstroms
 
 # Units: N m^-1 
 force_constants = { "110": { "xx": 16.61, 

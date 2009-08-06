@@ -6,6 +6,7 @@ lattice_type = "fcc"
 temperature = 80    # Units: K
 reference = "Cowley, E.R.: Solid State Commun. 14 (1974) 587"
 details = "The interionic forces in Pb are very long range and BvK fits are therefore only of limited value. The spectrum calculated from an eighth neighbour fit to the symmetry phonons differs considerably from the one obtained directly by interpolation of the measured phonon frequencies. Utilizing the off symmetry phonon frequencies to fit the force constants of the spectrum can be fairly well reproduced."
+a = 4.95   # lattice parameters in angstroms
 
 # Units: N m^-1 
 force_constants = { "110": { "xx": 4.3243, 

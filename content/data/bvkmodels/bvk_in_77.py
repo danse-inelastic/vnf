@@ -5,6 +5,8 @@ element = "In"
 lattice_type = "fct"
 temperature = 77    # Units: K
 reference = "Smith, H.G., Reichardt, W.: Bull. Am. Phy. Soc. 14 (1969) 378 (unpublished)"
+a = 4.58   # lattice parameters in angstroms
+c = 4.94
 
 # Units: N m^-1 
 force_constants = { "101" : { "f_r" : 12.316,

@@ -5,6 +5,7 @@ element = "Ag"
 lattice_type = "fcc"
 temperature = 293    # Units: K
 reference = "Drexel, W.: Z. Phys. 255 (1972) 281, Drexel, W.: Rep KFK 1383, Kernforschungsanlage Karlsruhe, Germany 1971"
+a = 4.08   # lattice parameter in angstroms
 
 # Units: N m^-1 
 force_constants = { "110": { "xx": 10.4, 

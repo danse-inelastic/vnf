@@ -6,6 +6,7 @@ lattice_type = "fcc"
 temperature = 49    # Units: K
 reference = "Nicklow, R.M., Gilat, G., Smith, H.G., Raubenheimer, L.J., Wilkinson, M.K.: Phys. Rev. 164 (1967) 922"
 details = "Axially symmetric model, fit includes isothermal elastic constants"
+a = 3.61   # lattice parameters in angstroms
 
 # Units: N m^-1 
 force_constants = { "110": { "xx": 13.278, 
@@ -25,5 +26,5 @@ force_constants = { "110": { "xx": 13.278,
                              "zz": 0.017,
                              "xy": -0.071 },
                     "222": { "xx": -0.137,
-                             "yz": -0.135 } }
+                             "xy": -0.135 } }
 

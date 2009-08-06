@@ -6,6 +6,7 @@ lattice_type = "fcc"
 temperature = 296    # Units: K
 reference = "Reese, R.A., Sinha, S.K., Peterson, D.T.: Phys. Rev. B8 (1973) 1332"
 details = "The force constants are constrained to fit the elastic constants. Axial symmetry conditions are imposed on the fifth and seventh neighbour constants."
+a = 5.08   # lattice parameters in angstroms
 
 # Units: N m^-1 
 force_constants = { "110": { "xx": 1.181, 

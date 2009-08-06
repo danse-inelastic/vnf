@@ -6,6 +6,8 @@ lattice_type = "hcp"
 temperature = 295    # Units: K
 reference = "Stassis, C., Arch, D., Harmon, B.N., Wakabayashi, N.: Phys. Rev. B19 (1979) 181"
 details = "The model is of the 'modified axially symmetric' form."
+a = 2.95   # lattice parameters in angstroms
+c = 4.68
 
 # Units: N m^-1 
 force_constants = { "1" : { "K" : 41.38,

@@ -5,6 +5,7 @@ element = "Fe"
 lattice_type = "bcc"  # Alpha phase
 temperature = 295    # Units: K
 reference = "Minkiewicz, V.J., Shirane, G., Nathans, R.: Phys. Rev. 162 (1967) 528"
+a = 3.61   # lattice parameters in angstroms
 
 # Units: N m^-1 
 force_constants = { "111": { "xx": 16.88, 

@@ -6,6 +6,7 @@ lattice_type = "fcc"
 temperature = 300    # Units: K
 reference = "Gilat, G., Nicklow, R.M.: Phys. Rev. 143 (1965) 487"
 details = "Axially symmetric fit to elastic constants and phonons in symmetry directions"
+a = 4.04   # lattice parameter in angstroms
 
 # Units: N m^-1 
 force_constants = { "110": { "xx": 9.808, 

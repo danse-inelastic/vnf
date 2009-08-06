@@ -6,6 +6,8 @@ lattice_type = "hcp"
 temperature = 298    # Units: K
 reference = "Nicklow, R.M., Wakabayashi, N., Vijayaraghavan, P.R.: Phys. Rev. B3 (1971) 1229"
 details = "Axially symmetric from the fifth neighbours outward"
+a = 3.58   # lattice parameters in angstroms
+c = 5.62
 
 # Units: N m^-1 
 force_constants = { "1" : { "xx" : 7.054,

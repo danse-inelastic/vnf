@@ -6,6 +6,8 @@ lattice_type = "bcc"
 temperature = 296    # Units: K
 reference = "Woods, A.D.B., Chen, S.H.: Solid State Commun. 2 (1964) 233"
 details = "General force model"
+a = 3.60   # lattice parameters in angstroms
+c = 5.70
 
 # Units: N m^-1 
 force_constants = { "111": { "xx": 16.983, 

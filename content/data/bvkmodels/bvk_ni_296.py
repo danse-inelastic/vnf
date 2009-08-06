@@ -6,6 +6,7 @@ lattice_type = "fcc"
 temperature = 296    # Units: K
 reference = "Birgenau, R.J., Cordes, J. Dolling, G., Woods, A.D.B.: Phys. Rev. 136 (1964) A 1359"
 details = "All fits use the measured elastic constants. This fit uses axially symmetric forces."
+a = 3.52   # lattice parameters in angstroms
 
 # Units: N m^-1 
 force_constants = { "110": { "xx": 17.720, 

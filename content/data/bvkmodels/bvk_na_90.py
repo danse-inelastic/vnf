@@ -5,6 +5,7 @@ element = "Na"
 lattice_type = "bcc"
 temperature = 90    # Units: K
 reference = "Woods, A.D.B., Brockhouse, B.N., March, R.H., Stewart, A.T., Bowers, R.: Phys. Rev. 128 (1962) 1112"
+a = 4.28   # lattice parameters in angstroms
 
 # Units: N m^-1 
 force_constants = { "111": { "xx": 1.178, 

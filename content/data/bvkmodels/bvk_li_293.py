@@ -5,6 +5,7 @@ element = "Li"
 lattice_type = "bcc"
 temperature = 293    # Units: K
 reference = "Beg, M.M., Nielsen, M.: Phys. Rev. B14 (1976) 4266"
+a = 3.50   # lattice parameters in angstroms
 
 # Units: N m^-1 
 force_constants = { "111": { "xx": 2.114, 
