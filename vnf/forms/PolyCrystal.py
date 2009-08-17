@@ -38,6 +38,8 @@ class PolyCrystal( base ):
         cx = inv.str('cx',default = '0.0')
         cy = inv.str('cy',default = '0.0')
         cz = inv.str('cz',default = '1.0')
+        
+        coordinateType = inv.str('coordinateType',default = 'frac')
 
     def expand(self, form, errors = None, properties = None,
                id = '', showimportwidget = False):
@@ -99,6 +101,32 @@ class PolyCrystal( base ):
         self.cz = box.text(id='cz', name='%s.cz' % prefix, label='(z)', 
                       value = c[2])
 
+        # give users the choice of fractional or cartesian coordinates
+        p = form.paragraph()
+        p.text = ['Coordinates type:']
+        prefix = formactor_action_prefix
+        
+        name = '%s.%s' % (formactor_action_prefix, 'type')
+        id = 'frac'
+        kwds = {
+                'id':'radio'+id,
+                'name':name,
+                'label':'fractional',
+                'value':id,
+                }
+        kwds['checked']=True
+        self.rbFrac = form.radio(**kwds)
+        
+        name = '%s.%s' % (formactor_action_prefix, 'type')
+        id = 'cart'
+        kwds = {
+                'id':'radio'+id,
+                'name':name,
+                'label':'cartesian',
+                'value':id,
+                }
+        self.rbCart = form.radio(**kwds)
+        
         coords = record.fractional_coordinates
         import numpy
         coords = numpy.array(coords)
@@ -150,7 +178,25 @@ class PolyCrystal( base ):
         self.director.clerk.updateRecord(record)
         return record
     
+    def coordiatesRadioButton(self, form, engine, disabled=False):
+        prefix = formactor_action_prefix
+        name = '%s.%s' % (formactor_action_prefix, 'type')
+        default = self.inventory.coordinateType
+        
+        id = engine.id
+        label = engine.short_description
+        kwds = {
+                'id':'radio'+id,
+                'name':name,
+                'label':label,
+                'value':id,
+                }
+        if disabled: kwds['disabled']=True
 
+        if id == default: kwds['checked']=True
+        rb = form.radio(**kwds)
+
+        return rb
 
 
 # version

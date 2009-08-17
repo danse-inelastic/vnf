@@ -70,7 +70,7 @@ class Form( base ):
         
         p = form.paragraph()
         p.text = [
-            '''Future engines and models include sans / reflectometry / engineering diffraction models, Mmtk, Siesta / Fireball, and 
+            '''Future engines and models include sans / reflectometry / engineering diffraction models, Mmtk, Quantum Espresso, and 
             perhaps larger-scale structural 
             simulation tools such as bead-spring models for polymers or phase field simulations for mesoscopic 
             length scales (multigrain crystals, complex liquids and multiphase materials, etc.)''']
