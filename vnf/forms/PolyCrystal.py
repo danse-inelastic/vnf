@@ -78,21 +78,21 @@ class PolyCrystal( base ):
         cartesian_lattice.shape = 3,3
         a, b, c = cartesian_lattice
         
-        self.ax = box.text(id='ax', name='%s.ax' % prefix, label='a: (x)', 
+        self.ax = box.text(id='ax', name='%s.ax' % prefix, label='a (Ang): (x)', 
                       value = a[0]) 
         self.ay = box.text(id='ay', name='%s.ay' % prefix, label='(y)', 
                       value = a[1]) 
         self.az = box.text(id='az', name='%s.az' % prefix, label='(z)', 
                       value = a[2]) 
         box = form.box()
-        self.bx = box.text(id='bx', name='%s.bx' % prefix, label='b: (x)', 
+        self.bx = box.text(id='bx', name='%s.bx' % prefix, label='b (Ang): (x)', 
                       value = b[0])
         self.by = box.text(id='by', name='%s.by' % prefix, label='(y)', 
                       value = b[1])   
         self.bz = box.text(id='bz', name='%s.bz' % prefix, label='(z)', 
                       value = b[2])  
         box = form.box()
-        self.cx = box.text(id='cx', name='%s.cx' % prefix, label='c: (x)', 
+        self.cx = box.text(id='cx', name='%s.cx' % prefix, label='c (Ang): (x)', 
                       value = c[0]) 
         self.cy = box.text(id='cy', name='%s.cy' % prefix, label='(y)', 
                       value = c[1]) 
