@@ -103,7 +103,7 @@ class PolyCrystal( base ):
 
         # give users the choice of fractional or cartesian coordinates
         p = form.paragraph()
-        p.text = ['Coordinates type:']
+        p.text = ['<h3>Coordinates type:</h3>']
         prefix = formactor_action_prefix
         
         name = '%s.%s' % (formactor_action_prefix, 'type')
@@ -177,26 +177,6 @@ class PolyCrystal( base ):
             
         self.director.clerk.updateRecord(record)
         return record
-    
-    def coordiatesRadioButton(self, form, engine, disabled=False):
-        prefix = formactor_action_prefix
-        name = '%s.%s' % (formactor_action_prefix, 'type')
-        default = self.inventory.coordinateType
-        
-        id = engine.id
-        label = engine.short_description
-        kwds = {
-                'id':'radio'+id,
-                'name':name,
-                'label':label,
-                'value':id,
-                }
-        if disabled: kwds['disabled']=True
-
-        if id == default: kwds['checked']=True
-        rb = form.radio(**kwds)
-
-        return rb
 
 
 # version

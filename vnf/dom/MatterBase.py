@@ -26,6 +26,10 @@ class MatterBase(base):
         name = 'fractional_coordinates', default = [])
     fractional_coordinates.meta['tip'] = 'array positions as fractional values of unit cell'
     
+    cartesian_coordinates = pyre.db.doubleArray(
+        name = 'cartesian_coordinates', default = [])
+    cartesian_coordinates.meta['tip'] = 'array positions as cartesian values of unit cell'
+    
     atom_symbols = pyre.db.varcharArray(
         name = 'atom_symbols', length = 2, default = [] )
     atom_symbols.meta['tip'] = 'atom symbols for each position in the unit cell'
