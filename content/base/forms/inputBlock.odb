@@ -45,11 +45,11 @@ class Form( base ):
           
         p = form.paragraph()
         p.text=['Input the shape parameters for a plate sample']  
-        height = form.text(id='height', name='%s.height' % prefix, label='Height', 
+        height = form.text(id='height', name='%s.height' % prefix, label='Height (cm)', 
                            value = record.height)        
-        width = form.text(id='width', name='%s.width' % prefix, label='Width',
+        width = form.text(id='width', name='%s.width' % prefix, label='Width (cm)',
                           value = record.width)   
-        thickness = form.text(id='thickness', name='%s.thickness' % prefix, label='Thickness',
+        thickness = form.text(id='thickness', name='%s.thickness' % prefix, label='Thickness (cm)',
                               value = record.thickness)  
           
     def processUserInputs(self):   

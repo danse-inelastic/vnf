@@ -46,12 +46,12 @@ class Form( base ):
           
         p = form.paragraph()
         p.text=['Input the shape parameters for an annular, cylindrical sample.']
-        height = form.text(id='height', name='%s.height' % prefix, label='Height',
+        height = form.text(id='height', name='%s.height' % prefix, label='Height (cm)',
                            value = record.height)        
         innerRadius = form.text(id='innerradius', name='%s.innerradius' % prefix, 
-                                label='Inner radius', value = record.innerradius) 
+                                label='Inner radius (cm)', value = record.innerradius) 
         outerRadius = form.text(id='outerradius', name='%s.outerradius' % prefix, 
-                                label='Outer radius', value = record.outerradius)  
+                                label='Outer radius (cm)', value = record.outerradius)  
           
     def processUserInputs(self):   
         '''process user inputs and save them to db'''
