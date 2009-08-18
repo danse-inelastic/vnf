@@ -39,7 +39,7 @@ class PolyCrystal( base ):
         cy = inv.str('cy',default = '0.0')
         cz = inv.str('cz',default = '1.0')
         
-        coordinateType = inv.str('coordinateType',default = 'frac')
+        coordinatesType = inv.str('coordinatesType',default = 'fractional')
 
     def expand(self, form, errors = None, properties = None,
                id = '', showimportwidget = False):
@@ -103,11 +103,12 @@ class PolyCrystal( base ):
 
         # give users the choice of fractional or cartesian coordinates
         p = form.paragraph()
-        p.text = ['<h3>Coordinates type:</h3>']
+        # replace this with form.label() someday...
+        p.text = ["<div class='formfield' ><label>Coordinates type:</label></div>"]
         prefix = formactor_action_prefix
         
-        name = '%s.%s' % (formactor_action_prefix, 'type')
-        id = 'frac'
+        name = '%s.%s' % (formactor_action_prefix, 'coordinatesType')
+        id = 'fractional'
         kwds = {
                 'id':'radio'+id,
                 'name':name,
@@ -117,8 +118,8 @@ class PolyCrystal( base ):
         kwds['checked']=True
         self.rbFrac = form.radio(**kwds)
         
-        name = '%s.%s' % (formactor_action_prefix, 'type')
-        id = 'cart'
+        name = '%s.%s' % (formactor_action_prefix, 'coordinatesType')
+        id = 'cartesian'
         kwds = {
                 'id':'radio'+id,
                 'name':name,
@@ -139,7 +140,7 @@ class PolyCrystal( base ):
             )
         self.listOfAtoms = form.textarea(
             id='listOfAtoms', name='%s.listOfAtoms' % prefix, 
-            label='List of atoms in fractional coordinates (i.e. H  0.0  0.0  0.5)', rows=20, 
+            label='List of atoms (i.e. H  0.0  0.0  0.5)', rows=20, 
             default = listOfAtoms)
           
     def processUserInputs(self):   
@@ -171,9 +172,43 @@ class PolyCrystal( base ):
             coords.append([eval(i) for i in tokens[1:4]])
         record.atom_symbols = atoms
         import numpy
+        #director._debug.log('coords is '+str(coords))
         coords = numpy.array(coords)
-        coords.shape = -1,
-        record.fractional_coordinates = list(coords)
+        #director._debug.log('coords is '+str(coords))
+        if self.inventory.coordinatesType is 'fractional':
+            # just store them if fractional since this is the default
+            coords.shape = -1,
+            record.fractional_coordinates = list(coords)
+        else:
+            # convert to fractional and store as well:
+            
+            # this was the attempt with structure classes
+#            # convert record to structure 
+#            from diffpy.Structure import Structure, Lattice, Atom
+#            import numpy as n
+##            fc = n.array(r['fractional_coordinates'])
+##            atomSymbols = r['atom_symbols']
+##            fc = fc.reshape((-1,3)) 
+##            fc = fc.tolist()
+#            atoms = [Atom(s,c) for s,c in zip(atoms,coords)]
+##            lat = n.array(record['cartesian_lattice'])
+##            lat = lat.reshape((3,3))
+##            lat = lat.tolist()
+#            s = Structure( atoms, lattice = Lattice(base = [a,b,c]))
+            
+            # this is 'by hand'
+            #import copy
+            cartCoords = coords.copy()
+            cartCoords.shape = -1
+            #director._debug.log('coords is '+str(coords))
+            record.cartesian_coordinates = cartCoords.tolist()
+            lat = numpy.array([a,b,c])
+            mat = numpy.linalg.inv(lat)
+            
+            fracPos = numpy.dot(coords,mat)
+            #print 'fracPos',fracPos
+            fracPos.shape = -1
+            record.fractional_coordinates = fracPos.tolist()
             
         self.director.clerk.updateRecord(record)
         return record

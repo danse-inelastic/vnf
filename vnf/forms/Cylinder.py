@@ -23,7 +23,7 @@ class Cylinder(base):
 
         import pyre.inventory
         outerradius = pyre.inventory.str( name = 'outerradius', default = 0.01 )
-        outerradius.meta['label'] = 'Outer radius'
+        outerradius.meta['label'] = 'Outer radius (cm)'
         outerradius.meta['tip'] = (
             'The outer radius of the cylinder',
             )
@@ -32,7 +32,7 @@ class Cylinder(base):
             )
         
         innerradius = pyre.inventory.str( name = 'innerradius', default = 0.01 )
-        innerradius.meta['label'] = 'Inner radius'
+        innerradius.meta['label'] = 'Inner radius (cm)'
         innerradius.meta['tip'] = (
             'The inner radius of the cylinder',
             )
@@ -41,7 +41,7 @@ class Cylinder(base):
             )
         
         height = pyre.inventory.str( name = 'height', default = 0.1 )
-        height.meta['label'] = 'Height'
+        height.meta['label'] = 'Height (cm)'
         height.meta['tip'] = (
             'Height is the vertical length',
             )

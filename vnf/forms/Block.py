@@ -23,7 +23,7 @@ class Block(base):
 
         import pyre.inventory
         width = pyre.inventory.str( name = 'width', default = 0.05 )
-        width.meta['label'] = 'Width'
+        width.meta['label'] = 'Width (cm)'
         width.meta['tip'] = (
             'Width is the horizontal dimension that is perpendicular to',
             'the incident neutron beam',
@@ -33,7 +33,7 @@ class Block(base):
             )
         
         height = pyre.inventory.str( name = 'height', default = 0.1 )
-        height.meta['label'] = 'Height'
+        height.meta['label'] = 'Height (cm)'
         height.meta['tip'] = (
             'Height is the vertical length',
             )
@@ -42,7 +42,7 @@ class Block(base):
             )
         
         thickness = pyre.inventory.str( name = 'thickness', default = 0.002 )
-        thickness.meta['label'] = 'Thickness'
+        thickness.meta['label'] = 'Thickness (cm)'
         thickness.meta['tip'] = (
             'Thickness is the length of the dimension parallel',
             'to the neutron beam',

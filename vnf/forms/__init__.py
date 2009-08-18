@@ -17,6 +17,11 @@ def block():
     return Block()
 
 
+def cylinder():
+    from Cylinder import Cylinder
+    return Cylinder()
+
+
 def configure_arcs_simple_instrument():
     from ARCS_simple import ARCS_simple
     return ARCS_simple()

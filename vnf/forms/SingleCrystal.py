@@ -39,11 +39,7 @@ class SingleCrystal( base ):
         cy = inv.str('cy',default = '0.0')
         cz = inv.str('cz',default = '1.0')
         
-#    record = None
-        
-#    def __init__(self):
-#        base.__init__(self)
-#        self.dbRecord = None
+        coordinatesType = inv.str('coordinatesType',default = 'fractional')
 
     def expand(self, form, errors = None, properties = None, singleCrystalId = '', 
                materialType = 'singlecrystal', showimportwidget=False):
