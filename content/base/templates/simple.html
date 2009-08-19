@@ -1,5 +1,6 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html><head><!--
+<html><head>
+<!--
 Copyright 2009, Google Inc.
 All rights reserved.
 
@@ -42,7 +43,7 @@ library that attempts to make O3D super simple to use. See the comments below.
 Simple
 </title>
 <!-- Include sample javascript library functions-->
-<script type="text/javascript" src="simple_files/base.asc"></script>
+<script type="text/javascript" src="o3djs/base.js"></script>
 
 <!-- Our javascript code -->
 <script type="text/javascript" id="o3dscript">
@@ -95,114 +96,175 @@ function initStep2(clientElements) {
   g_finished = true;  // for selenium testing.
 }
 
-</script><script type="text/javascript" src="simple_files/simple.asc"></script><script type="text/javascript" src="simple_files/math.asc"></script><script type="text/javascript" src="simple_files/material.asc"></script><script type="text/javascript" src="simple_files/effect.asc"></script><script type="text/javascript" src="simple_files/shape.asc"></script><script type="text/javascript" src="simple_files/element.asc"></script><script type="text/javascript" src="simple_files/util.asc"></script><script type="text/javascript" src="simple_files/event.asc"></script><script type="text/javascript" src="simple_files/error.asc"></script><script type="text/javascript" src="simple_files/rendergraph.asc"></script><script type="text/javascript" src="simple_files/pack.asc"></script><script type="text/javascript" src="simple_files/primitives.asc"></script><script type="text/javascript" src="simple_files/io.asc"></script>
-</head><div expr="with(_FirebugCommandLine){g_sphere = g_simple.createSphere(20, 10);
-};" methodName="evaluated" firebugCommandLineAttached="true" FirebugVersion="1.4.2" style="display: none;" id="_firebugConsole"></div><script id="_firebugCommandLineInjector" type="text/javascript">/* See license.txt for terms of usage */
+</script><script type="text/javascript" src="simple_files/simple.js"></script><script type="text/javascript" src="simple_files/math.js"></script><script type="text/javascript" src="simple_files/material.js"></script><script type="text/javascript" src="simple_files/effect.js"></script><script type="text/javascript" src="simple_files/shape.js"></script><script type="text/javascript" src="simple_files/element.js"></script><script type="text/javascript" src="simple_files/util.js"></script><script type="text/javascript" src="simple_files/event.js"></script><script type="text/javascript" src="simple_files/error.js"></script><script type="text/javascript" src="simple_files/rendergraph.js"></script><script type="text/javascript" src="simple_files/pack.js"></script><script type="text/javascript" src="simple_files/primitives.js"></script><script type="text/javascript" src="simple_files/io.js"></script><script type="text/javascript" src="simple_files/texture.js"></script>
+<style type="text/css" charset="utf-8">/* See license.txt for terms of usage */
 
-var _FirebugCommandLine =
-{
-    init: function()
-    {
-        // Define console functions.
-        var commands = ["$", "$$", "$x", "$n", "cd", "clear", "inspect", "keys",
-            "values", "debug", "undebug", "monitor", "unmonitor", "traceCalls", "untraceCalls",
-            "traceAll", "untraceAll", "monitorEvents", "unmonitorEvents", "profile", "profileEnd", "copy"];
-        for (var i=0; i<commands.length; i++)
-        {
-            var command = commands[i];
+#firebugBody {
+    position: fixed;
+    top:0;
+    left:0;
+    margin:0;
+    padding:0;
+    width:1px;
+    height:1px;
+    overflow:visible;
+}
 
-            // If the method is already defined, don't override it.
-            if (window[command])
-                continue;
+.firebugCanvas {
+    position:fixed;
+    top: 0;
+    left: 0;
+    display:none;
+    border: 0 none;
+    margin: 0;
+    padding: 0;
+    outline: 0;
+}
 
-            this[command] = new Function(
-                "return window.console.notifyFirebug(arguments, '" + command + "', 'firebugExecuteCommand');");
-        }
+.firebugHighlight {
+    z-index: 2147483647;
+    position: absolute;
+    background-color: #3875d7;
+    margin: 0;
+    padding: 0;
+    outline: 0;
+    border: 0 none;
+}
 
-        // Define console shortcuts
-        var consoleShortcuts = ["dir", "dirxml"];
-        for (var i=0; i<consoleShortcuts.length; i++)
-        {
-            var command = consoleShortcuts[i];
-            this[command] = new Function("return window.console." + command + ".apply(window.console, arguments)");
-        }
+.firebugLayoutBoxParent {
+    z-index: 2147483647;
+    position: absolute;
+    background-color: transparent;
+    border-top: 0 none;
+    border-right: 1px dashed #BBBBBB;
+    border-bottom: 1px dashed #BBBBBB;
+    border-left: 0 none;
+    margin: 0;
+    padding: 0;
+    outline: 0;
+}
 
-        // Define console variables.
-        var props = ["$0", "$1"];
-        for (var j=0; j<props.length; j++)
-        {
-            var prop = props[j];
-            if (window[prop])
-                continue;
+.firebugRuler {
+    position: absolute;
+    margin: 0;
+    padding: 0;
+    outline: 0;
+    border: 0 none;
+}
 
-            this.__defineGetter__(prop, new Function(
-                "return window.console.notifyFirebug(arguments, '" + prop + "', 'firebugExecuteCommand');"));
-        }
+.firebugRulerH {
+    top: -15px;
+    left: 0;
+    width: 100%;
+    height: 14px;
+    background: url(chrome://firebug/skin/rulerH.png) repeat-x;
+    border-top: 1px solid #BBBBBB;
+    border-right: 1px dashed #BBBBBB;
+    border-bottom: 1px solid #000000;
+}
 
-        this.attachCommandLine();
-    },
+.firebugRulerV {
+    top: 0;
+    left: -15px;
+    width: 14px;
+    height: 100%;
+    background: url(chrome://firebug/skin/rulerV.png) repeat-y;
+    border-left: 1px solid #BBBBBB;
+    border-right: 1px solid #000000;
+    border-bottom: 1px dashed #BBBBBB;
+}
 
-    attachCommandLine: function()
-    {
-        // DBG window.dump("attachCommandLine "+window.location+"\n");
-        if (!window.console)
-        {
-            // DBG 	debugger;
-            window.loadFirebugConsole();
-        }
-        var element = window.console.getFirebugElement();
-        var self = this;
-        element.addEventListener("firebugCommandLine", function _firebugEvalEvent(event)
-        {
-            // DBG window.dump("attachCommandLine firebugCommandLine "+window.location+"\n");
-            var element = event.target;
-            var expr = element.getAttribute("expr"); // see commandLine.js
-            self.evaluate(expr);
-            // DBG window.dump("attachCommandLine did evaluate on "+expr+"\n");
-        }, true);
-        element.setAttribute("firebugCommandLineAttached", "true")
-        // DBG window.dump("Added listener for firebugCommandLine event "+window.location+"\n");
-    },
+.overflowRulerX > .firebugRulerV {
+    left: 0;
+}
 
-    evaluate: function(expr)
-    {
-        try
-        {
-            var result = window.eval(expr);
-            if (typeof result != "undefined")
-                window.console.notifyFirebug([result], "evaluated", "firebugAppendConsole");
-        }
-        catch(exc)
-        {
-            var result = exc;
-            result.source = expr;
-            window.console.notifyFirebug([result], "evaluateError", "firebugAppendConsole");
-        }
-    },
-};
+.overflowRulerY > .firebugRulerH {
+    top: 0;
+}
 
-(function()
-{
-    try
-    {
-        // DBG window.dump("_FirebugCommandLine init console is "+window.console+" in "+window.location+"\n");
-        _FirebugCommandLine.init();
-    }
-    catch(exc)
-    {
-        var wrappedException = {
-            cause: exc,
-            message: "_FirebugCommandLine init failed in "+window.location+" because "+exc,
-            toString: function() { return this.message; }
-        };
-        throw wrappedException;
-    }
-})();
-</script><body>
-<h1>Simple</h1>
-Using the simple library.<br>
-View the source of this sample to see the point.<br>
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+.firebugLayoutBox {
+    margin: 0;
+    padding: 0;
+    border: 0 none;
+    outline: 0;
+}
+
+.firebugLayoutBoxOffset {
+    z-index: 2147483647;
+    position: absolute;
+    opacity: 0.8;
+}
+
+.firebugLayoutBoxMargin {
+    background-color: #EDFF64;
+}
+
+.firebugLayoutBoxBorder {
+    background-color: #666666;
+}
+
+.firebugLayoutBoxPadding {
+    background-color: SlateBlue;
+}
+
+.firebugLayoutBoxContent {
+    background-color: SkyBlue;
+}
+
+/*.firebugHighlightGroup .firebugLayoutBox {
+    background-color: transparent;
+}
+
+.firebugHighlightBox {
+    background-color: Blue !important;
+}*/
+
+.firebugLayoutLine {
+    z-index: 2147483647;
+    background-color: #000000;
+    opacity: 0.4;
+    margin: 0;
+    padding: 0;
+    outline: 0;
+    border: 0 none;
+}
+
+.firebugLayoutLineLeft,
+.firebugLayoutLineRight {
+    position: fixed;
+    width: 1px;
+    height: 100%;
+}
+
+.firebugLayoutLineTop,
+.firebugLayoutLineBottom {
+    position: absolute;
+    width: 100%;
+    height: 1px;
+}
+
+.firebugLayoutLineTop {
+    margin-top: -1px;
+    border-top: 1px solid #999999;
+}
+
+.firebugLayoutLineRight {
+    border-right: 1px solid #999999;
+}
+
+.firebugLayoutLineBottom {
+    border-bottom: 1px solid #999999;
+}
+
+.firebugLayoutLineLeft {
+    margin-left: -1px;
+    border-left: 1px solid #999999;
+}
+</style></head><div FirebugVersion="1.4.2" style="display: none;" id="_firebugConsole"></div><body>
+<h1>Sample Container Builder</h1>
+<br>
 <!-- Start of O3D plugin -->
-<div id="o3d" style="width: 600px; height: 600px;"><object o3d_features="APIVersion=0.1.38.0" style="width: 100%; height: 100%;" type="application/vnd.o3d.auto"></object></div>
+<div id="o3d" style="width: 600px; height: 600px;"><object o3d_features="APIVersion=0.1.40.0" style="width: 100%; height: 100%;" type="application/vnd.o3d.auto"></object></div>
 <!-- End of O3D plugin -->
 </body></html>

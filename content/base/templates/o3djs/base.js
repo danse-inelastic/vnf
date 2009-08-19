@@ -188,6 +188,14 @@ o3djs.getObjectByName = function(name, opt_obj) {
  * @param {string} rule Rule to include, in the form o3djs.package.part.
  */
 o3djs.require = function(rule) {
+  // TODO(gman): For some unknown reason, when we call
+  // o3djs.util.getScriptTagText_ it calls
+  // document.getElementsByTagName('script') and for some reason the scripts do
+  // not always show up. Calling it here seems to fix that as long as we
+  // actually ask for the length, at least in FF 3.5.1 It would be nice to
+  // figure out why.
+  var dummy = document.getElementsByTagName('script').length;
+
   // if the object already exists we do not need do do anything
   if (o3djs.getObjectByName(rule)) {
     return;
@@ -520,7 +528,7 @@ o3djs.base = o3djs.base || {};
 /**
  * The a Javascript copy of the o3d namespace object. (holds constants, enums,
  * etc...)
- * @type {o3d.o3d}
+ * @type {o3d}
  */
 o3djs.base.o3d = null;
 
@@ -549,7 +557,7 @@ o3djs.base.snapshotProvidedNamespaces = function()  {
  * Initializes the o3djs.sample library in a v8 instance. This should be called
  * for every V8 instance that uses the sample library. It is automatically
  * called by o3djs.util.makeClients.
- * @param {!o3d.plugin} clientObject O3D.Plugin Object.
+ * @param {!Element} clientObject O3D.Plugin Object.
  */
 o3djs.base.initV8 = function(clientObject)  {
   var v8Init = function(initializer, args) {
@@ -638,6 +646,22 @@ o3djs.base.ready = function() {
  */
 o3djs.base.maybeDeobfuscateFunctionName_ = function(name) {
   return name;
+};
+
+/**
+ * Makes one class inherit from another.
+ * @param {!Object} subClass Class that wants to inherit.
+ * @param {!Object} superClass Class to inherit from.
+ */
+o3djs.base.inherit = function(subClass, superClass) {
+  /**
+   * TmpClass.
+   * @ignore
+   * @constructor
+   */
+  var TmpClass = function() { };
+  TmpClass.prototype = superClass.prototype;
+  subClass.prototype = new TmpClass();
 };
 
 /**

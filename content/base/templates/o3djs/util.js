@@ -60,7 +60,7 @@ o3djs.util.PLUGIN_NAME = 'O3D Plugin';
  * utility libraries.
  * @type {string}
  */
-o3djs.util.REQUIRED_VERSION = '0.1.38.0';
+o3djs.util.REQUIRED_VERSION = '0.1.40.0';
 
 /**
  * A URL at which to download the client.
@@ -517,8 +517,8 @@ o3djs.util.getElementContentById = function(id) {
  * Utility to get an element from the DOM by ID. This must be used from V8
  * in preference to document.getElementById because we do not currently
  * support invoking methods on DOM objects in IE.
- * @param {string} id The Node id.
- * @return {Node} The node or null if not found.
+ * @param {string} id The Element id.
+ * @return {Element} The Element or null if not found.
  */
 o3djs.util.getElementById = function(id) {
   o3djs.BROWSER_ONLY = true;
