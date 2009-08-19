@@ -1,4 +1,5 @@
-<!--
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><!--
 Copyright 2009, Google Inc.
 All rights reserved.
 
@@ -35,16 +36,15 @@ O3D Primitives
 This sample shows how to use the functions in the primitives utility library
 to make various shapes.
 -->
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
-  "http://www.w3.org/TR/html4/loose.dtd">
-<html>
-<head>
+
+
+
 <meta http-equiv="content-type" content="text/html; charset=UTF-8">
 <title>
 Primitives
 </title>
-<script type="text/javascript" src="o3djs/base.js"></script>
-<script type="text/javascript">
+<script type="text/javascript" src="primitives_files/base.asc"></script>
+<script type="text/javascript" id="o3dscript">
 o3djs.require('o3djs.util');
 o3djs.require('o3djs.math');
 o3djs.require('o3djs.rendergraph');
@@ -231,15 +231,13 @@ function createShapes() {
 }
 
 
-</script>
-</head>
-<body onload="initClient()">
+</script><script type="text/javascript" src="primitives_files/util.asc"></script><script type="text/javascript" src="primitives_files/io.asc"></script><script type="text/javascript" src="primitives_files/event.asc"></script><script type="text/javascript" src="primitives_files/error.asc"></script><script type="text/javascript" src="primitives_files/math.asc"></script><script type="text/javascript" src="primitives_files/rendergraph.asc"></script><script type="text/javascript" src="primitives_files/primitives.asc"></script><script type="text/javascript" src="primitives_files/effect.asc"></script>
+</head><body onload="initClient()">
 <h1>Primitives</h1>
 This example shows how to use the primitives utility library to make various
 shapes.
-<br/>
+<br>
 <!-- Start of O3D plugin -->
-<div id="o3d" style="width: 600px; height: 600px;"></div>
+<div id="o3d" style="width: 600px; height: 600px;"><object o3d_features="APIVersion=0.1.38.0" style="width: 100%; height: 100%;" type="application/vnd.o3d.auto"></object></div>
 <!-- End of O3D plugin -->
-</body>
-</html>
+</body></html>
