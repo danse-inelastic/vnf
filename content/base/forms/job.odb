@@ -43,7 +43,7 @@ class Form(base):
             'Please enter a positive integer',
             )
 
-        walltime = pyre.inventory.str( 'walltime', default = 1)
+        walltime = pyre.inventory.str( 'walltime', default = 10)
         walltime.meta['label'] = 'Time limit (hours)'
         walltime.meta['tip'] = (
             'Please input a limit on the time your job will run. (Unit: hours)',
