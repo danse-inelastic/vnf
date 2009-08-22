@@ -57,6 +57,7 @@ class GulpSimulationWizard(MaterialSimulationWizard):
             'simulationId': id,
             'simulationType': type,
             'matterId':simulation.matter.id,
+            #'coordinateType':simulation.matter.
             }
         callbackArgs = {
             'cgihome':director.cgihome,
