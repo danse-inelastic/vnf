@@ -1,0 +1,9 @@
+
+def visual(director):
+    from luban.content.Page import Page
+    page = Page(title='test page')
+
+    doc = page.document(title='Hello world!')
+    doc.paragraph().text = ['This is a test page.']
+    
+    return page
