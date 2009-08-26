@@ -24,6 +24,8 @@ distclean::
 
 EXPORT_DATAFILES = \
 	SimpleHttpServer.pml \
+	clerk.pml \
+	clerk.odb \
 	journal.pml \
 	librarian.pml \
 	main.pml \
