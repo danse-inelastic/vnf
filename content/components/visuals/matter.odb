@@ -1,0 +1,80 @@
+# -*- Python -*-
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                 Jiao Lin
+#                      California Institute of Technology
+#                      (C) 2006-2009  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+from luban.content.Document import Document
+from luban.content.Splitter import Splitter
+from luban.content.Splitter import SplitSection
+from luban.content.Tabs import Tabs
+from luban.content.Tabs import Tab
+
+def matterviewdoc():
+    return Document(
+        id='matterviewdoc',
+        title='View',
+        )
+
+def leftpanel():
+    instance = SplitSection()
+    instance.add(matterviewdoc())
+    return instance
+
+def newsimtab():
+    instance = Tab()
+    instance.Class = ''
+    instance.selected = False
+    instance.label = 'new simulations'
+    instance.contents = []
+    return instance
+
+def oldsimtab():
+    instance = Tab()
+    instance.Class = ''
+    instance.selected = False
+    instance.label = 'Existing simulations'
+    instance.contents = []
+    return instance
+
+def simtabs():
+    instance = Tabs()
+    instance.contents = [newsimtab(), oldsimtab()]
+    instance.Class = ''
+    return instance
+
+def rightpanel():
+    instance = SplitSection()
+    instance.size = ''
+    instance.Class = ''
+    instance.contents = [simtabs()]
+    return instance
+
+def horizsplit():
+    instance = Splitter()
+    instance.orientation = 'horizontal'
+    instance.contents = [leftpanel(), rightpanel()]
+    instance.Class = ''
+    return instance
+
+def visual(director):
+    instance = Document()
+    instance.title = 'Matter'
+    instance.id = 'matterdoc'
+    instance.contents = [horizsplit()]
+    instance.Class = ''
+    return instance
+
+    
+# version
+__id__ = "$Id$"
+
+# End of file 
