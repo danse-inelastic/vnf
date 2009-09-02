@@ -37,23 +37,62 @@ class Actor(base):
     
         
     def createView(self, director):
-        matter = self._getMatter(director)
-        
         visual = director.retrieveVisual('matter')
 
         matterviewdoc = visual.find(id='matterviewdoc')
+        descriptiondoc = self.createDescriptionDoc(director)
+        matterviewdoc.add(descriptiondoc)
 
-        # ReST
+        oldmatsimtab = visual.find(id='oldmatsimtab')
+        simstable = self.createSimsTable(director)
+        oldmatsimtab.add(simstable)
+        
+        return visual
+
+
+    def createSimsTable(self, director):
+        matter = self._getMatter(director)
+        from dsaw.db._reference import reference
+        ref = reference(matter.id, matter.__class__)
+        
+        where="matter='%s' " % ref
+        sims = getallsimulations(director.clerk.db, where=where)
+            
+        table = director.retrieveComponent(
+            'materialsimulation-table',
+            factory="visual", args=[sims, ['description', 'type', 'creationDate',], director],
+            vault=['visuals'])
+
+        return table
+
+
+    def createDescriptionDoc(self, director):
+        matter = self._getMatter(director)
+
+        # cartesian lattice
         cl = matter.cartesian_lattice
         import numpy
         cl = numpy.array(cl)
         cl.shape = 3,3
+
+        # atoms
+        symbols = matter.atom_symbols
+        n = len(symbols)
+        coords = matter.fractional_coordinates
+        coords = numpy.array(coords)
+        coords.shape = n, 3
+        atoms = [
+            ' * %s: %s' % (symbol, coord)
+            for symbol, coord in zip(symbols, coords)
+            ]
+        atoms = '\n'.join(atoms)
 
         subs = {
             'name': matter.short_description,
             'a': cl[0],
             'b': cl[1],
             'c': cl[2],
+            'atoms': atoms,
             }
         subs['namebar'] = '='*len(subs['name'])
         description = '''
@@ -67,13 +106,18 @@ Lattice
  * b = %(b)s
  * c = %(c)s
 
+
+Atoms
+"""""
+
+%(atoms)s
+
         ''' % subs
 
         from luban.content.ReSTDocument import ReSTDocument
         descriptiondoc = ReSTDocument(text = description.split('\b'))
-        matterviewdoc.add(descriptiondoc)
         
-        return visual
+        return descriptiondoc
 
 
     def test(self, director):
@@ -93,7 +137,19 @@ Lattice
         type = self.inventory.type
         id = self.inventory.id
         return director.clerk.getRecordByID(type, id)
+
+
+def getallsimulations(db, where=None):
+    from vnf.dom import materialsimulationtables, materialmodelingtables
+    tables = materialsimulationtables() + materialmodelingtables()
+   
+    computations = []
+    for table in tables:
+        computations += db.fetchall(table, where=where)
+        continue
     
+    return computations
+
 
 def actor(): return Actor()
     
