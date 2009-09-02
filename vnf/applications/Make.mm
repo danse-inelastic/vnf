@@ -25,6 +25,7 @@ all: export
 EXPORT_PYTHON_MODULES = \
 	ApproveUser.py \
 	Delete.py \
+	DumpVNFDB.py \
 	ITaskApp.py \
 	FindDanglingReferences.py \
 	LaunchDetached.py \
