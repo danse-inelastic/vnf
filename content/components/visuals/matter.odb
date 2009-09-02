@@ -38,7 +38,7 @@ def newsimtab():
     return instance
 
 def oldsimtab():
-    instance = Tab()
+    instance = Tab(id='oldmatsimtab')
     instance.Class = ''
     instance.selected = False
     instance.label = 'Existing simulations'
