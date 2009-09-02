@@ -1,0 +1,90 @@
+#!/usr/bin/env python
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                  Jiao Lin
+#                     California Institute of Technology
+#                       (C) 2009  All Rights Reserved
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+#from vnf.components.DirectDB import DirectDB
+
+from vnf.components.Actor import Actor
+from vnf.applications.WebApplication import AuthenticationError
+import os
+
+class OhpServer(Actor):
+
+    class Inventory(Actor.Inventory):
+
+        import pyre.inventory
+
+        page = pyre.inventory.str('page', default='notYetImplemented.ohp')
+        
+    def default(self, director):
+        return self.processPage( director )
+
+    def processPage(self, director):
+        # get the page and read it
+        htmlPage = director.retrievePage( 'vnfPage' )
+        main = htmlPage._body._content._main
+        # populate the main column
+        document = main.document(title='')
+        # while we're in the process of putting in a new codec,
+        #for now we punt and just read the file in clumsily...
+        f = file('../content/base/ohps/'+self.page)
+        fileContents = f.read()
+        # segments is just a list of lists
+        segments = self.ohpPartition(fileContents)
+        for segment in segments:
+            if segment[0]=='html':
+                lit = document.literal()
+                lit.text = segment[1].split(os.linesep)
+            else: #ohp material
+                envDefs = globals()
+                #envDefs['server'] = director
+                exec(segment[1].strip())
+        return htmlPage
+
+    def ohpPartition(self, astring):
+        '''partitions a string into several lists, each list containing the same type of element'''
+        # this could be done quickly with regex, but the follwoing works too
+        segments=[]
+        while True:
+            left,sep,right = astring.partition('<?ohp')
+            if sep=='':
+                segments.append(['html',left])
+                return segments
+            else:
+                segments.append(['html', left])
+                astring = right
+                left,sep,right = astring.partition('?>')
+                segments.append(['ohp', left])
+                astring = right
+
+#    def put(self, director, jsonFormattedInfo):
+#        # these next lines are a hack just to make sure the user is authenticated
+#        try:
+#            page = director.retrieveSecurePage( 'greet' )
+#        except AuthenticationError, error:
+#            return error.page
+        
+    def _configure(self):     
+        self.page = self.inventory.page
+
+
+    def __init__(self, name=None):
+        if name is None:
+            name = "ohpServer"
+        super(OhpServer, self).__init__(name)
+
+
+def actor():
+    return OhpServer()
+
+# version
+__id__ = "$Id$"
+
+# End of file 

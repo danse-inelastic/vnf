@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jnlp spec="1.0+" codebase="http://trueblue.caltech.edu/vnf/java">
+    <information>
+        <title>DansePlotter</title>
+        <vendor>Danse</vendor>
+        <homepage href="http://danse.us" />
+        <description></description>
+    </information>
+    <offline-allowed/>
+    <security>
+    	<all-permissions/>
+    </security>
+    <resources>
+        <j2se version="1.5+" java-vm-args="-Xmx512m"/>
+        <jar href="DansePlotter.jar"/>
+        <jar href="visad.jar" />
+        <jar href="VFSJFileChooser-0.0.3.jar" />
+        <jar href="commons-collections-3.2.1.jar" />
+        <jar href="commons-compress-20050911.jar" />
+        <jar href="commons-httpclient-3.1.jar" />
+        <jar href="commons-lang-2.4.jar" />
+        <jar href="commons-logging-1.1.1.jar" />
+        <jar href="commons-net-1.4.0.jar" />
+        <jar href="commons-vfs-2.0-SNAPSHOT.jar" />
+        <jar href="commons-vfs-sandbox-2.0-SNAPSHOT.jar" />
+        <jar href="jcifs-1.2.9.jar" />
+        <jar href="jsch-0.1.31.jar" />
+        <jar href="junit.jar" />
+        <jar href="oro-2.0.8.jar" />
+        <jar href="webdavclient4j-cmd-0.92.jar" />
+        <jar href="webdavclient4j-core-0.92.jar" />
+        <jar href="webdavclient4j-jca-0.92.jar" />
+        <jar href="webdavclient4j-vfs-0.92.jar" />
+        <!--<extension name="visad" href="visad.jnlp"/>-->
+    </resources>
+    <application-desc main-class="vnf.DansePlotter" />
+</jnlp>

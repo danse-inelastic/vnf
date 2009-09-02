@@ -1,0 +1,93 @@
+#!/usr/bin/env python
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                 Jiao Lin
+#                      California Institute of Technology
+#                      (C) 2009-  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+from pyre.components.Component import Component
+
+class Worker(Component):
+
+    class Inventory(Component.Inventory):
+
+        import pyre.inventory
+
+
+    def run(self, task):
+        director = self.director
+
+        # the computation
+        phon = director.clerk.dereference(task.beneficiary)
+        
+        # the job
+        job = director.clerk.dereference(phon.job)
+        
+        # the server this job was run
+        server = director.clerk.dereference(job.server)
+        
+        # the job dir on the server
+        remotejobdir = director.dds.abspath(job, server=server)
+
+        # check DOS file
+        director.declareProgress(0.2, 'Check if DOS file exists')
+        dosfile = 'DOS_meV.idf'
+        if not director.dds.is_available(job, filename=dosfile, server=server):
+            director.declareProgress(0.5, 'DOS file does not exist')
+            return
+
+        # remote file
+        remotedosfile = os.path.join(remotejobdir, dosfile)
+
+        # dos db object
+        director.declareProgress(0.3, 'Create new DOS container')
+        from vnf.dom.ins.PhononDOS import PhononDOS
+        dos = director.clerk.newDbObject(PhononDOS)
+
+        # copying
+        director.declareProgress(0.5, 'Copy dos to DOS container')
+        # create directory
+        localdir = director.dds.abspath(dos)
+        os.makedirs(localdir)
+        # the local path
+        localpath = os.path.join(localdir, 'data.idf')
+        # copy to the directory
+        director.csaccessor.copyfile(server, remotedosfile, LocalHost, localpath)
+
+        # connect dos record and the phon computation
+        director.declareProgress(0.8, 'Connect DOS and phon computation')
+        dos.matter = phon.matter
+        dos.origin = phon
+        director.clerk.updateRecord(dos)
+        
+        results_set = phon.results
+        results_set.add(dos, director.clerk.db, name='phonon dos')
+        
+        director.declareProgress(1., 'done.')
+        return
+
+
+    def _configure(self):
+        super(Worker, self)._configure()
+        return
+
+
+from vnf.dom.Server import LocalHost
+import os
+
+
+def iworker():
+    return Worker('retrieve-phon-results-phonon-dos', 'iworker')
+
+
+# version
+__id__ = "$Id$"
+
+# End of file 

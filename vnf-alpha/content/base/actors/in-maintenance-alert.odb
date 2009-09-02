@@ -1,0 +1,56 @@
+#!/usr/bin/env python
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                  Jiao Lin
+#                     California Institute of Technology
+#                     (C) 2007-2009  All Rights Reserved
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+from vnf.components.Actor import Actor as base
+
+
+class Actor(base):
+
+    class Inventory(base.Inventory):
+
+        import pyre.inventory
+
+        alert = pyre.inventory.str('alert')
+            
+
+
+    def default(self, director):
+        page = director.retrievePage( 'in-maintenance-alert' )
+
+        main = page._body._content._main
+        #
+        document = main.document(title='Virtual Neutron Facility is in maintenance')
+        p = document.paragraph()
+        p.text = self.inventory.alert.split('\n')
+        
+        return page
+
+
+    def __init__(self, name=None):
+        if name is None:
+            name = "in-maintenance-alert"
+        super(Actor, self).__init__(name)
+        return
+
+
+    pass # end of Login
+
+
+
+def actor():
+    return Actor()
+
+
+# version
+__id__ = "$Id$"
+
+# End of file 

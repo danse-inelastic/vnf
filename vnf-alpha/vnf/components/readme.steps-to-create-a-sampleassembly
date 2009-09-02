@@ -1,0 +1,14 @@
+  - new abstract scatterer (SampleAssembly.addnewscatterer)
+  - add abstract scatterer to sample assembly (SampleAssembly.addnewscatterer)
+  - set real scatterer type (selectscatterertype)
+  - new polyxtalscatterer (selectscatterertype)
+  - new crystal  (selectscatterertype)
+  - link polyxtalscatterer to crystal  (selectscatterertype)
+  - link abstractscatterer to polyxtalscatterer (selectscatterertype)
+  - new abstract shape (Scatterer.selectshapetype)
+  - link polyxtalscatterer to the abstract shape (Scatterer.selectshapetype)
+  - set real shape (selectshapetype)
+  - new block (selectshapetype)
+  - set blok parameters
+  - new crystal
+  - set crystal parameters

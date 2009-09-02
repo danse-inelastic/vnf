@@ -1,0 +1,449 @@
+#!/usr/bin/env python
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                 Jiao Lin
+#                      California Institute of Technology
+#                      (C) 2007-2009  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+from vnf.components.FormActor import FormActor as base, action, actionRequireAuthentication, action_link, InputProcessingError, AuthenticationError
+import os
+
+class Actor(base):
+    
+    class Inventory(base.Inventory):
+
+        import pyre.inventory
+        id = pyre.inventory.str( 'id', default = '')
+        # this is the simulation id, not job id
+
+    table = 'gulpsimulations'
+    
+    def trajectoryShow(self, director, xyzTrajectory_path, document):
+        from vnf.components.JnlpFile import JnlpFile
+        #viewDynamics(self, computation)
+        args = {
+        'cgihome':director.cgihome,
+        'sentry.username':director.sentry.username,
+        'sentry.ticket':director.sentry.ticket,
+        'displayType':'trajectory',
+        'trajectoryPath':os.path.join(director.cgihome,xyzTrajectory_path),
+        }
+        jnlpFile = JnlpFile(
+        resources=('jmolVnf.jar', 'Jmol.jar','pg74.216.jdbc3.jar'),
+        mainClass='jmolVnf.JmolVnf',
+        programArguments = args,
+        fileName='jmolVnfLauncher',
+        )
+        relativeLocationOfFile = jnlpFile.writeJnlp(director)
+
+        p = document.paragraph()
+        p.text = ['''A movie of the simulation can be accessed by launching the viewer below.''',
+        '<center><a href="'+relativeLocationOfFile+'"><img src="images/webstart.gif" alt="Jmol"/></a></center>'] 
+
+    def modeShow(self, director, gulpOutputFile, document):
+        #first process the modes:
+        
+        # then visualize the modes
+        args = {
+        'cgihome':director.cgihome,
+        'sentry.username':director.sentry.username,
+        'sentry.ticket':director.sentry.ticket,
+        'displayType':'trajectory',
+        'trajectoryPath':compressed_xyzTrajectory_path,
+        }
+        jnlpFile = JnlpFile(
+        resources=('jmolVnf.jar', 'Jmol.jar','pg74.216.jdbc3.jar'),
+        mainClass='jmolVnf.JmolVnf',
+        programArguments = args,
+        fileName='jmolVnfLauncher',
+        )
+        relativeLocationOfFile = jnlpFile.writeJnlp(director)
+
+        p = document.paragraph()
+        p.text = ['''Visualization of the phonon modes can be accessed by launching the viewer below.''',
+        '<center><a href="'+relativeLocationOfFile+'"><img src="images/webstart.gif" alt="Jmol"/></a></center>']      
+    
+    def dosShow(self, document, gulpDosFilePath):
+        # plot the DOS--for now just use flot--eventually combine with your 3d plotter to do "more advanced view"
+        if os.path.exists(gulpDosFilePath):
+            # parse the dos file
+            from kernelGenerator.gulp.DosPlottingUtils import getGulpDosRebinned
+            e, dos = getGulpDosRebinned(gulpDosFilePath, numBins = 70, cutoffOfDosData = 500)
+            #dos = _readDOS(gulpDosFilePath)
+            import vnf.content
+            options = {}
+            plot = vnf.content.plot_2d( (e, dos), options )
+            document.add( plot )
+#        # 3d stuff
+#        args = {
+#        'cgihome':director.cgihome,
+#        'sentry.username':director.sentry.username,
+#        'sentry.ticket':director.sentry.ticket,
+#        'dataPath':dataPath,
+#        }
+#        jnlpFile = JnlpFile(
+#        resources=('ssPlotter.jar', 'visad.jar'),
+#        mainClass='ss.JmolVnf',
+#        programArguments = args,
+#        fileName='jmolVnfLauncher',#change this
+#        )
+#        relativeLocationOfFile = jnlpFile.writeJnlp(director)
+#
+#        p = document.paragraph()
+#        p.text = ['''Plot of the Density of States (DOS).''',
+#        '<center><a href="'+relativeLocationOfFile+'"><img src="images/webstart.gif" alt="ssPlotter"/></a></center>'] 
+    
+    def viewDynamics(self, director, server, computation, document):
+        job = computation.job.dereference(director.clerk.db)
+        
+        from vnf.dom import GulpResults
+        compressed_xyzTrajectory_path = director.dds.abspath(job, GulpResults.compressed_xyzTrajectory_filename)
+
+        
+        if os.path.exists(compressed_xyzTrajectory_path):
+            self.trajectoryShow(director, compressed_xyzTrajectory_path, document)   
+        else:
+            xyzTrajectory_path = director.dds.abspath(job, GulpResults.xyzTrajectory_filename)
+            # don't worry about compressing part of a trajectory for now--just return the 
+            # uncompressed trajectory path
+            self.trajectoryShow(director, xyzTrajectory_path, document)
+#            # the itask worker
+#            #print 'working'
+#            iworker = 'get-dynamics'
+#            
+#            # first check if there is itask running
+#            found = None
+#            pending_tasks = computation.pending_tasks.dereference(director.clerk.db)
+#            if pending_tasks:
+#                for label, task in pending_tasks:
+##                    print label,task
+##                    print task.worker
+#
+#                    # if not the right task, skip
+#                    if task.worker != iworker: continue
+#
+#                    if task.state == 'finished':
+#                        raise RuntimeError, "Task %s for %s finished but no compressed trajectory available." % (task.id, computation.id)
+#                    
+#                    if task.state == 'failed':
+#                        self._debug.log("Task %s for %s found. It failed previously." % (task.id, computation.id))
+#                        # reopen the task
+#                        task.state = 'created'
+#                        director.clerk.updateRecord(task)
+#                        found = task
+#                        break
+#                    
+#                    if task.state == 'canceled':
+#                        self._debug.log("Task %s for %s found. It was canceled previously." % (task.id, computation.id))
+#                        # reopen the task
+#                        task.state = 'created'
+#                        director.clerk.updateRecord(task)
+#                        found = task
+#                        break
+#
+#                    found = task
+#                    break
+#                
+#            # if no previous task found, create a new task
+#            if not found:
+#                
+#                from vnf.dom.ITask import createITask, ITask
+#                task = director.clerk.newDbObject(ITask)
+#                task = createITask(
+#                    task.id,
+#                    beneficiary = computation,
+#                    worker = iworker,
+#                    type = iworker,
+#                    )
+#                director.clerk.updateRecord(task)
+#
+#                # add this task to pending task list
+#                computation.pending_tasks.add(task, director.clerk.db, name=iworker)
+#                
+#                found = task
+#            #
+#            task = found
+#
+#            import vnf.content
+#            itaskmonitor = vnf.content.itaskMonitor(
+#                task.id,
+#                label = 'Compressing trajectory ...',
+#                sentry=director.sentry,
+#                )
+#            itaskmonitor.finished_callback = '''
+#  function(data) {
+#    var monitor = $("#%(itaskmonitorid)s");
+#    
+#    if (data.state=="finished") {
+#      monitor.text("Please wait for this page to reload...");
+#      window.location.reload();
+#    }
+#  }
+#''' % {'itaskmonitorid': itaskmonitor.id}
+#            document.add(itaskmonitor)
+#
+#            import vnf.content
+#            snippet = vnf.content.jssnippet()
+#            snippet.main = [
+#                '$("#%s").itaskmonitor("start");' % itaskmonitor.id,
+#                ]
+#            document.add(snippet)
+            
+    def viewPhonons(self, director, server, computation, document):
+        job = computation.job.dereference(director.clerk.db)
+        from vnf.dom import GulpResults
+        # need to pass gulpOutputFilePath here (only in the case that eigenvectors were output)
+#        
+#        if os.path.exists(gulpOutputFilePath):
+        #modeShow(gulpOutputFilePath) 
+        gulpFiles = [GulpResults.dos_filename]
+        try:
+            director.dds.remember(job, files = gulpFiles, server = server)
+        except Exception:
+            import traceback
+            p = document.paragraph()
+            p.text = ['Problem retrieving gulp DOS file:']
+
+            l = document.literal()
+            l.text = ['<pre>'] \
+                + traceback.format_exc().splitlines() \
+                + ['</pre>']
+            return
+        director.dds.make_available(job, files = gulpFiles)# server = (the server in vnf.dom 
+        # server = job.server.dereference(director.clerk.db)   
+        gulpDosFilePath = director.dds.abspath(job, GulpResults.dos_filename)
+        
+        if os.path.exists(gulpDosFilePath):
+            self.dosShow(document, gulpDosFilePath, document) 
+
+    def view(self, director):
+        try:
+            page = director.retrieveSecurePage( 'computation' )
+        except AuthenticationError, err:
+            return err.page
+
+        id = self.inventory.id
+        computation = director.clerk.getRecordByID(self.table, id)
+        main = page._body._content._main
+        # populate the main column
+        document = main.document(title='Gulp simulation #%s' % (
+            id,))
+        
+        # check to see if everything is ready, if not, tell user and redirect
+        if not self._isConfigured(computation, director):
+            p = document.paragraph()
+            action = actionRequireAuthentication(
+                label = 'here',
+                sentry = director.sentry,
+                actor = 'gulpsimulationwizard',
+                routine = 'configureSimulation',
+                type = self.table,
+                id = self.inventory.id,
+                )
+            link = action_link(action, director.cgihome)
+            p.text = [
+                'The computation does not have either a job number or an input file.',
+                'Please click %s to resubmit.' % link,
+                ]
+            return page
+
+        job = director.clerk.dereference(computation.job)
+
+        p = document.paragraph()
+        action = actionRequireAuthentication(
+            label = job.id,
+            sentry = director.sentry,
+            actor = 'job',
+            routine = 'view',
+            id = job.id,
+            )
+        link = action_link(action, director.cgihome)
+        p.text = [
+            'The computation job id for this simulation is %s' % link,
+            ]
+
+        if isdone(job):        
+            server = director.clerk.dereference(job.server)
+            from vnf.dom import GulpResults
+            outputFiles = [GulpResults.output_filename] # need to replace this with output file settings
+            try:
+                director.dds.remember(job, files=outputFiles, server=server)
+            except Exception:
+                import traceback
+                p = document.paragraph()
+                p.text = ['Output for gulp not found.']
+    
+                l = document.literal()
+                l.text = ['<pre>'] \
+                    + traceback.format_exc().splitlines() \
+                    + ['</pre>']
+                return page
+            director.dds.make_available(job, files=outputFiles)
+            # now 'plot.dat' is available at vnf.caltech.edu with path 
+            gulpOutputFilePath = director.dds.abspath(job, GulpResults.output_filename)
+            f = file(gulpOutputFilePath) 
+            resdoc = document.document(title='Results')
+            
+            p = resdoc.paragraph()
+            # see the trajectory, phonon modes,...
+            if 'molecular dynamics' in computation.runtype:
+                self.viewDynamics(director, server, computation, resdoc)
+            elif 'phonons' in computation.runtype:
+                p.text = ['A plot of the Density Of States (DOS) in terms of DOS (arbitrary units) vs energy (meV).']
+                self.viewPhonons(director, server, computation, resdoc)
+        
+            outputdoc = document.document(title='Output')
+            p = outputdoc.paragraph()
+            if os.stat(gulpOutputFilePath).st_size > 40000:
+                top = f.read(35000)
+                p.text = ['Here is the first part of the stdout file of the simulation:']
+                p = outputdoc.preformatted()
+                p.text = [top]
+                
+                # go to 5000 bytes from the end
+                f.seek(-5000, 2)
+                bottom = f.read()
+                p = outputdoc.paragraph()
+                p.text = ['Here is the last part of the stdout file:']
+                p = outputdoc.preformatted()
+                p.text = [bottom]
+            else:
+                all = f.read()
+                p.text = ['Here is the stdout file of the simulation:']
+                p = outputdoc.preformatted()
+                p.text = [all]
+            
+            configurationdoc = document.document(title='Configuration')
+            self._view_configuration(job, computation, configurationdoc, director=director)
+        else:
+            p = document.paragraph()
+            p.text = ['The computation is not finished.  Please check back later.']
+        return page
+
+    
+    def _download_start_packing(self, director):
+        try:
+            page = director.retrieveSecurePage( 'job' )
+        except AuthenticationError, err:
+            return err.page
+
+        id = self.inventory.id
+        job = director.clerk.getJob(id)
+        from vnf.components.Job import pack
+        pack(job, director, debug=False)
+
+        return self._download_packing_in_progress(director)
+    
+
+    def _download_packing_in_progress(self, director):
+        try:
+            page = director.retrieveSecurePage( 'job' )
+        except AuthenticationError, err:
+            return err.page
+
+        id = self.inventory.id
+
+        main = page._body._content._main
+        document = main.document( title = 'Job %s: packing data' % id )
+        
+        p = document.paragraph()
+        action = actionRequireAuthentication(
+            sentry = director.sentry,
+            label = 'check back',
+            actor = 'job',
+            routine = 'download',
+            id = id,
+            )
+        link = action_link(action, director.cgihome)            
+        p.text = [
+            'We are packing up the job directory for you.',
+            'Please %s in a few minutes to download.' % link,
+            ]
+        return page
+
+
+    def _view_configuration(self, job, computation, document, director=None):
+        p = document.paragraph()
+        p.text = [
+            'Gulp simulation #%s' % computation.id,
+            ]
+#
+#        matter = director.clerk.dereference(computation.matter)
+#        
+#        p.text = [
+#            'Material: %s' % (matter.short_description,),
+#            ]
+        
+        gulpInputFile = director.dds.abspath(job, 'gulp.gin')
+
+        f = file(gulpInputFile)
+        contents = f.read()
+        p = document.paragraph()
+        p.text = ['Here is the input file for the simulation:']
+        p = document.preformatted()
+        p.text = [contents]
+        return
+
+
+    def _isConfigured(self, sim, director):
+        
+        from vnf.dom.GulpSimulation import GulpSimulation
+        path = director.dds.abspath(sim, filename=GulpSimulation.CONFIGURATION_FILE)
+        if not os.path.exists(path): return False
+        job = sim.job
+        if not job: return False
+        try:
+            job = director.clerk.dereference(job)
+        except:
+            sim.job = ''
+            director.clerk.updateRecord(sim)
+            return False
+        return True
+    
+    def _alertResultsNotFound(self, document, director):
+        p = document.paragraph()
+        p.text = [
+            'Computation results not found',
+            ]
+        return page
+ 
+ 
+#def _readDOS(filename):
+#    f = open(filename)
+#    lines = f.readlines()
+#    E = []; I = []
+#    for line in lines:
+#        try:
+#            e, dos = line.split()
+#        except:
+#            continue
+#
+#        e = float(e)
+#        dos = float(dos)
+#        
+#        E.append(e)
+#        I.append(dos)
+#
+#        continue
+#
+#    return E,I   
+
+
+from vnf.components.Job import isdone
+from vnf.components.Computation import retrieve_results as retrieve_computation_results
+
+def actor():
+    return Actor('gulpsimulation')
+
+
+# version
+__id__ = "$Id$"
+
+# End of file 

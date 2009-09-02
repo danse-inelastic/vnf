@@ -1,0 +1,96 @@
+#!/usr/bin/env python
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                  Fultz Group
+#                     California Institute of Technology
+#                       (C) 2009  All Rights Reserved
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+from vnf.components.DirectDB import DirectDB
+
+class GetStructureAsCif(DirectDB):
+
+    class Inventory(DirectDB.Inventory):
+
+        import pyre.inventory
+
+        pass
+    
+
+    def _cifEncoder(self, records):
+
+        records = map(self._record2dict, records)
+        cifStrings = []
+        for r in records:
+            print r
+            # convert record to structure 
+            from diffpy.Structure import Structure, Lattice, Atom
+            import numpy as n
+            fc = n.array(r['fractional_coordinates'])
+            atomSymbols = r['atom_symbols']
+            fc = fc.reshape((-1,3)) 
+            fc = fc.tolist()
+            atoms = [Atom(s,c) for s,c in zip(atomSymbols,fc)]
+            lat = n.array(r['cartesian_lattice'])
+            lat = lat.reshape((3,3))
+            lat = lat.tolist()
+            s = Structure( atoms, lattice = Lattice(base = lat))
+            print s
+            # convert structure to cif form
+            cifStrings.append(s.writeStr('cif'))
+#            for k,v in r.iteritems():
+#                try:
+#                    cjson.encode(v)
+#                except:
+#                    r[k] = str(v)
+        #return cjson.encode(records)
+        return cifStrings
+
+    
+#    def _configure(self):
+#        self.encoder = self._encoders[self.inventory.encoder]
+#        
+#        # as a quick fix we simply hyphenate the tables if we want to query more than one
+#        self.tables = self.inventory.tables.split('-')
+#        
+#        id = self.inventory.id
+#        where = self.inventory.where
+#        if id and where:
+#            where = "(%s) and id='%s'" % (where, id)
+#        elif id:
+#            where = "id='%s'" % id
+#        self.where = where
+#        return
+    
+    
+    def _defaults(self):
+        DirectDB._defaults(self)
+        self.inventory.encoder = 'cif'
+        return
+
+
+    def __init__(self, name=None):
+        if name is None:
+            name = "getStructureAsCif"
+        super(GetStructureAsCif, self).__init__(name)
+
+        # encoders
+        self._encoders['cif'] = self._cifEncoder
+        return
+
+
+
+def actor():
+    return GetStructureAsCif()
+
+
+
+
+# version
+__id__ = "$Id$"
+
+# End of file 

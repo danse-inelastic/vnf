@@ -1,0 +1,107 @@
+#!/usr/bin/env python
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                 Jiao Lin
+#                      California Institute of Technology
+#                      (C) 2009-  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+from pyre.components.Component import Component
+
+class Worker(Component):
+
+    class Inventory(Component.Inventory):
+
+        import pyre.inventory
+
+
+    def run(self, task):
+        director = self.director
+
+        # the computation
+        phon = director.clerk.dereference(task.beneficiary)
+        
+        # the job
+        job = director.clerk.dereference(phon.job)
+        
+        # the server this job was run
+        server = director.clerk.dereference(job.server)
+        
+        # the job dir on the server
+        remotejobdir = director.dds.abspath(job, server=server)
+
+        # check dispersion files
+        director.declareProgress(0.2, 'Check if dispersion files exist')
+        map = {
+            'energies.idf': 'Omega2',
+            'polarizations.idf': 'Polarizations',
+            'DOS_meV.idf': 'DOS',
+            'Qgridinfo': 'Qgridinfo',
+            }
+        for datafile in map:
+            if not director.dds.is_available(job, filename=datafile, server=server):
+                director.declareProgress(0.5, 'data file %s does not exist' % datafile)
+                return
+
+        # dispersion db object
+        director.declareProgress(0.3, 'Create new Dispersion container')
+        from vnf.dom.ins.PhononDispersion import PhononDispersion
+        dispersion = director.clerk.newOwnedObject(PhononDispersion)
+
+        # create directory
+        localdir = director.dds.abspath(dispersion)
+        os.makedirs(localdir)
+        
+        #
+        progress = 0.3
+        for src, dest in map.iteritems():
+            progress += 0.1
+            director.declareProgress(progress, 'copying %s:%s to %s' % (
+                server.short_description, src, dest))
+            # remote file
+            remotefile = os.path.join(remotejobdir, src)
+
+            # copying
+            # the local path
+            localpath = os.path.join(localdir, dest)
+            director.csaccessor.copyfile(server, remotefile, LocalHost, localpath)
+            
+            continue
+
+        # connect dispersion record and the phon computation
+        director.declareProgress(0.9, 'Connect Dispersion and phon computation')
+        dispersion.matter = phon.matter
+        dispersion.origin = phon
+        director.clerk.updateRecord(dispersion)
+        
+        results_set = phon.results
+        results_set.add(dispersion, director.clerk.db, name='phonon dispersion')
+            
+        director.declareProgress(1., 'done.')
+        return
+
+
+    def _configure(self):
+        super(Worker, self)._configure()
+        return
+
+
+
+from vnf.dom.Server import LocalHost
+import os
+
+
+def iworker():
+    return Worker('retrieve-phon-results-phonon-dispersion', 'iworker')
+
+
+# version
+__id__ = "$Id$"
+
+# End of file 

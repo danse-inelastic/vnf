@@ -1,0 +1,4 @@
+First create an actor that will create a jnlp file for DansePlot.  
+An examples is content/materialsimulation/actors/gulpsimulation.odb.
+Put your data in DansePlot text format.  Examples and a README are
+located in VNET/plotter/visadSrc/visad/data/text/README.txt
