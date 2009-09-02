@@ -24,10 +24,10 @@ class NeutronExperiment(base):
 
     name = 'neutronexperiments'
 
-    import pyre.db
+    import dsaw.db
 
-    instrument = pyre.db.reference( name = 'instrument', table = Instrument )
-    instrument_configuration = pyre.db.versatileReference(
+    instrument = dsaw.db.reference( name = 'instrument', table = Instrument )
+    instrument_configuration = dsaw.db.versatileReference(
         name = 'instrument_configuration', tableRegistry = tableRegistry)
 
     # the following two references are used to define the sample
@@ -36,26 +36,26 @@ class NeutronExperiment(base):
     # the whole sample assembly at the sample position of a neutron instrument.
     # samplecomponent is a more straight-forward and quick way
     # to define a sample.
-    sampleassembly = pyre.db.reference( name = 'sampleassembly', table = SampleAssembly )
-    samplecomponent = pyre.db.versatileReference(name='samplecomponent', tableRegistry = tableRegistry)
+    sampleassembly = dsaw.db.reference( name = 'sampleassembly', table = SampleAssembly )
+    samplecomponent = dsaw.db.versatileReference(name='samplecomponent', tableRegistry = tableRegistry)
     
 
-    sampleenvironment = pyre.db.reference( name = 'sampleenvironment', table = SampleEnvironment )
+    sampleenvironment = dsaw.db.reference( name = 'sampleenvironment', table = SampleEnvironment )
 
-    ncount = pyre.db.real( name = 'ncount', default = 1e6)
+    ncount = dsaw.db.real( name = 'ncount', default = 1e6)
 
-    constructed = pyre.db.varchar( name = 'constructed', length = 4, default = '' )
+    constructed = dsaw.db.varchar( name = 'constructed', length = 4, default = '' )
 
-    job = pyre.db.reference( name = 'job', table = Job )
+    job = dsaw.db.reference( name = 'job', table = Job )
 
-    status = pyre.db.varchar( name = 'status', length = 32, default = '' )
+    status = dsaw.db.varchar( name = 'status', length = 32, default = '' )
     # started: just started to be configured
     # partially configured: configuration not done
     # ready for submission: configuration done and ready for submission, job not created yet
     # constructed: configuration done and job created.
     # deleted: experiment is deleted
 
-    expected_results = pyre.db.varcharArray( name = 'expected_results', length = 128 )
+    expected_results = dsaw.db.varcharArray( name = 'expected_results', length = 128 )
     
 
 # version

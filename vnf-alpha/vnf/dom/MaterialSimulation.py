@@ -20,8 +20,8 @@ class MaterialSimulation(base):
 
     # base class for all material simulations
 
-    import pyre.db
-    matter = pyre.db.versatileReference(name='matter', tableRegistry=tableRegistry)
+    import dsaw.db
+    matter = dsaw.db.versatileReference(name='matter', tableRegistry=tableRegistry)
     
     pass # end of MaterialSimulation
 

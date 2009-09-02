@@ -22,16 +22,16 @@ class ACL1(base):
 
     name = "acl1"
     
-    import pyre.db
+    import dsaw.db
     
-    id = pyre.db.varchar(name="id", length=64)
+    id = dsaw.db.varchar(name="id", length=64)
     id.constraints = 'PRIMARY KEY'
     id.meta['tip'] = "the unique id"
 
-    userid = pyre.db.varchar(name='userid', length=64)
+    userid = dsaw.db.varchar(name='userid', length=64)
     userid.constraints = 'REFERENCES users (id)'
     
-    groupid = pyre.db.varchar(name='groupid', length=64)
+    groupid = dsaw.db.varchar(name='groupid', length=64)
     groupid.constraints = 'REFERENCES roles (id)'
     
     pass # end of ACL1

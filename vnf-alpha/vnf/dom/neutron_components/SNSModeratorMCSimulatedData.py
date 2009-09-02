@@ -12,16 +12,16 @@
 #
 
 
-from pyre.db.Table import Table
+from dsaw.db.Table import Table
 
 class SNSModeratorMCSimulatedData(Table):
 
     name = 'snsmoderatormcsimulateddata'
 
-    import pyre.db
+    import dsaw.db
 
-    id = pyre.db.varchar(name='id', length=128, default='')
-    instrument = pyre.db.varchar(name='instrument', length=32, default='')
+    id = dsaw.db.varchar(name='id', length=128, default='')
+    instrument = dsaw.db.varchar(name='instrument', length=32, default='')
 
     datafiles = ['profile.dat']
 

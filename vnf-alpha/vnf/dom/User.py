@@ -19,22 +19,22 @@ class User(base):
 
     name = "users"
     
-    import pyre.db
+    import dsaw.db
     
-    id = pyre.db.varchar(name="id", length=64)
+    id = dsaw.db.varchar(name="id", length=64)
     id.constraints = 'PRIMARY KEY'
     id.meta['tip'] = "the unique id"
 
-    username = pyre.db.varchar(name="username", length=64)
+    username = dsaw.db.varchar(name="username", length=64)
     username.meta['tip'] = "the user's name"
     #username.constraints = "PRIMARY KEY"
     
-    password = pyre.db.varchar(name="password", length=64)
+    password = dsaw.db.varchar(name="password", length=64)
     password.meta['tip'] = "the user's password"
 
-    fullname = pyre.db.varchar(name='fullname', length=1024)
+    fullname = dsaw.db.varchar(name='fullname', length=1024)
 
-    email = pyre.db.varchar(name='email', length=128)
+    email = dsaw.db.varchar(name='email', length=128)
 
     pass # end of User
 

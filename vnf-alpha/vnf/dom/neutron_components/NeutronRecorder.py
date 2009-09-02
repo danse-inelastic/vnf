@@ -18,9 +18,9 @@ class NeutronRecorder(base):
 
     name = 'neutronrecorders'
 
-    import pyre.db
+    import dsaw.db
 
-    packetsize = pyre.db.integer(name='packetsize', default=10000)
+    packetsize = dsaw.db.integer(name='packetsize', default=10000)
 
     pass # end of NeutronRecorder
 

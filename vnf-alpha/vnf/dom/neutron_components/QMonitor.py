@@ -17,11 +17,11 @@ class QMonitor(base):
 
     name = 'qmonitors'
 
-    import pyre.db
+    import dsaw.db
 
-    Qmin = pyre.db.real( name = 'Qmin', default = 0. )
-    Qmax = pyre.db.real( name = 'Qmax', default = 13.  )
-    nQ = pyre.db.integer( name = 'nQ', default = 130 )
+    Qmin = dsaw.db.real( name = 'Qmin', default = 0. )
+    Qmax = dsaw.db.real( name = 'Qmax', default = 13.  )
+    nQ = dsaw.db.integer( name = 'nQ', default = 130 )
 
     pass # end of QMonitor
 

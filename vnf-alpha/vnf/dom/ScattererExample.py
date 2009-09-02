@@ -23,9 +23,9 @@ class ScattererExample(base):
 
     name = 'scattererexampless'
 
-    import pyre.db
+    import dsaw.db
 
-    scatterer = pyre.db.reference( name = 'scatterer', table = Scatterer)
+    scatterer = dsaw.db.reference( name = 'scatterer', table = Scatterer)
 
     pass # end of Scatterer
 

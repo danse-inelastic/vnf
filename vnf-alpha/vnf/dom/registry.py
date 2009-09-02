@@ -12,8 +12,8 @@
 #
 
 
-import pyre.db
-tableRegistry = pyre.db.tableRegistry()
+import dsaw.db
+tableRegistry = dsaw.db.tableRegistry()
 
 
 # version

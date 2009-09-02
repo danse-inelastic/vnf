@@ -21,18 +21,18 @@ class Instrument(OwnedObject):
     import vnf.dom
     components = vnf.dom.referenceSet( name = 'components' )
     
-    import pyre.db
-    componentsequence = pyre.db.varcharArray(
+    import dsaw.db
+    componentsequence = dsaw.db.varcharArray(
         name = 'componentsequence', length = 128, default = [] )
 
-    category = pyre.db.varchar( name = 'category', length = 64 )
+    category = dsaw.db.varchar( name = 'category', length = 64 )
 
     import vnf.dom
     geometer = vnf.dom.geometer()
 
-    long_description = pyre.db.varchar( name = 'long_description', length = 8192 )
+    long_description = dsaw.db.varchar( name = 'long_description', length = 8192 )
 
-    status = pyre.db.varchar(name='status', length=32, default='online')
+    status = dsaw.db.varchar(name='status', length=32, default='online')
     
     pass # end of Instrument
 

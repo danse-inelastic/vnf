@@ -17,34 +17,34 @@ class Server(Table):
 
     name = 'servers'
 
-    import pyre.db
+    import dsaw.db
     
-    id = pyre.db.varchar(name="id", length=64)
+    id = dsaw.db.varchar(name="id", length=64)
     id.constraints = 'PRIMARY KEY'
     id.meta['tip'] = "the unique id"
 
-    short_description = pyre.db.varchar( name='short_description', length = 128)
+    short_description = dsaw.db.varchar( name='short_description', length = 128)
     short_description.meta['tip'] = 'short_description of server'
 
-    address = pyre.db.varchar(name='address', length = 128)
+    address = dsaw.db.varchar(name='address', length = 128)
     address.meta['tip'] = 'address of server'
 
-    port = pyre.db.varchar(name='port', length = 8, default = '22')
+    port = dsaw.db.varchar(name='port', length = 8, default = '22')
     port.meta['tip'] = 'port of server'
 
-    username = pyre.db.varchar( name='username', length = 100)
+    username = dsaw.db.varchar( name='username', length = 100)
     username.meta['tip'] = 'name of user that can run applications'
 
-    workdir = pyre.db.varchar( name='workdir', length = 1024)
+    workdir = dsaw.db.varchar( name='workdir', length = 1024)
     workdir.meta['tip'] = 'path in the server where jobs will be posted and run'
 
     #???
-    group_access = pyre.db.varchar(name='group_access', length = 128)
+    group_access = dsaw.db.varchar(name='group_access', length = 128)
     group_access.meta['tip'] = 'which group of users has access to the server'
     
     #this should not be here. scheduler should be in the public interface of a "server"
     #we should build a wrapper service of schedulers and only connect to that service
-    scheduler = pyre.db.varchar( name='scheduler', length = 64)
+    scheduler = dsaw.db.varchar( name='scheduler', length = 64)
     scheduler.meta['tip'] = 'scheduler to use on the server'
 
 

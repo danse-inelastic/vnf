@@ -20,20 +20,20 @@ class InstrumentConfiguration(OwnedObject):
     
     name = "instrumentconfigurations"
     
-    import pyre.db
+    import dsaw.db
     import vnf.dom
 
     # the instrument for which this configuration is about
-    target = pyre.db.reference(name='target', table=Instrument)
+    target = dsaw.db.reference(name='target', table=Instrument)
 
-    componentsequence = pyre.db.varcharArray(
+    componentsequence = dsaw.db.varcharArray(
         name = 'componentsequence', length = 128, default = [] )
 
     components = vnf.dom.referenceSet(name='components')
     
     geometer = vnf.dom.geometer()
 
-    configured = pyre.db.boolean(name='configured', default=False)
+    configured = dsaw.db.boolean(name='configured', default=False)
 
     pass # end of InstrumentConfiguration
 

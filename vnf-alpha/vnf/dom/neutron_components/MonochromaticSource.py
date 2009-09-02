@@ -17,9 +17,9 @@ class MonochromaticSource(base):
 
     name = 'monochromaticsources'
 
-    import pyre.db
+    import dsaw.db
 
-    energy = pyre.db.real( name = 'energy', default = 70. )
+    energy = dsaw.db.real( name = 'energy', default = 70. )
     energy.meta['tip'] = 'neutron energy. unit: meV'
     
     pass # end of MonochromaticSource

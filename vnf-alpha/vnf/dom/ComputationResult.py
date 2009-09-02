@@ -18,8 +18,8 @@ from registry import tableRegistry
 from Table import Table
 class ComputationResult(Table):
 
-    import pyre.db
-    origin = pyre.db.versatileReference(name='origin', tableRegistry=tableRegistry)
+    import dsaw.db
+    origin = dsaw.db.versatileReference(name='origin', tableRegistry=tableRegistry)
     
     pass # end of PhononDOS
 

@@ -18,10 +18,10 @@ class Scatterer(base):
 
     name = 'scatterers'
 
-    import pyre.db
+    import dsaw.db
 
-    matter = pyre.db.versatileReference( name = 'matter', tableRegistry = tableRegistry)
-    shape = pyre.db.versatileReference( name = 'shape', tableRegistry = tableRegistry)
+    matter = dsaw.db.versatileReference( name = 'matter', tableRegistry = tableRegistry)
+    shape = dsaw.db.versatileReference( name = 'shape', tableRegistry = tableRegistry)
 
     import vnf.dom
     kernels = vnf.dom.referenceSet( name = 'kernels' )

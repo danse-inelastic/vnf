@@ -21,15 +21,15 @@ class PolyXtalCoherentPhononScatteringKernel(base):
 
     name = 'polyxtalcoherentphononscatteringkernels'
     
-    import pyre.db
+    import dsaw.db
 
-    dispersion = pyre.db.reference(name = 'dispersion', table = PhononDispersion)
+    dispersion = dsaw.db.reference(name = 'dispersion', table = PhononDispersion)
 
-    Ei = pyre.db.real(name = 'Ei', default = 70)
+    Ei = dsaw.db.real(name = 'Ei', default = 70)
     
-    max_energy_transfer = pyre.db.real(name = 'max_energy_transfer', default = 55.)
+    max_energy_transfer = dsaw.db.real(name = 'max_energy_transfer', default = 55.)
 
-    max_momentum_transfer = pyre.db.real(name = 'max_momentum_transfer', default = 12.5)
+    max_momentum_transfer = dsaw.db.real(name = 'max_momentum_transfer', default = 12.5)
 
     pass # end of PolyXtalCoherentPhononScatteringKernel
 

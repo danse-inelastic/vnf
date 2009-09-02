@@ -17,7 +17,7 @@ class SampleComponent(base):
 
     name = 'samplecomponents'
 
-    import pyre.db
+    import dsaw.db
 
     pass # end of SampleComponent
 

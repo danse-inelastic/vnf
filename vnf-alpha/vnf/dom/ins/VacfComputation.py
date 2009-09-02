@@ -24,7 +24,7 @@ class VacfComputation(Computation):
 
     name = 'vacfcomputations'
 
-    import pyre.db as d
+    import dsaw.db as d
 
     units = d.varchar(name='units', length = 16, default = 'nm') # unit meV
     weights = d.varchar(name='weights', length = 16, default = 'mass') # number of sampling points (in 1 dimension)
@@ -33,7 +33,7 @@ class VacfComputation(Computation):
     
 #    # the trajectory name can be either a  file name or an id
 #    from vnf.dom.Trajectory import Trajectory
-#    trajectory = pyre.db.reference(name='trajectory', table=Trajectory)
+#    trajectory = dsaw.db.reference(name='trajectory', table=Trajectory)
 
 # version
 __id__ = "$Id$"

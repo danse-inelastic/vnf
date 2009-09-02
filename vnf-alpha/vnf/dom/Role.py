@@ -16,20 +16,20 @@ from Table import Table
 class Role(Table):
 
 
-    import pyre.db
+    import dsaw.db
 
 
     # the table name
     name = "roles"
 
     # the table columns
-    id = pyre.db.varchar(name="id", length=64)
+    id = dsaw.db.varchar(name="id", length=64)
     id.constraints = "PRIMARY KEY"
 
-    rolename = pyre.db.varchar(name='rolename', length=64)
+    rolename = dsaw.db.varchar(name='rolename', length=64)
 
-    description = pyre.db.varchar(name="description", length=255)
-    status = pyre.db.char(name="status", length=1, default='l')
+    description = dsaw.db.varchar(name="description", length=255)
+    status = dsaw.db.char(name="status", length=1, default='l')
     # "l": live
     # "d": deleted
 

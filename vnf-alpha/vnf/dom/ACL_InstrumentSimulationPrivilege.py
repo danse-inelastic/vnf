@@ -22,16 +22,16 @@ class ACL_InstrumentSimulationPrivilege(base):
 
     name = "acl_instrumentsimulationprivileges"
     
-    import pyre.db
+    import dsaw.db
     
-    id = pyre.db.varchar(name="id", length=64)
+    id = dsaw.db.varchar(name="id", length=64)
     id.constraints = 'PRIMARY KEY'
     id.meta['tip'] = "the unique id"
 
-    role = pyre.db.varchar(name='role', length=64)
+    role = dsaw.db.varchar(name='role', length=64)
     role.constraints = 'REFERENCES roles (id)'
 
-    instrument = pyre.db.varchar(name='instrument', length=64)
+    instrument = dsaw.db.varchar(name='instrument', length=64)
     instrument.constraints = 'REFERENCES instruments (id)'
     
     pass # end of ACL_InstrumentSimulationPrivilege

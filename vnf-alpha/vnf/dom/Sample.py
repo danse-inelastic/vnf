@@ -19,10 +19,10 @@ class Sample(base):
 
     name = 'samples'
 
-    import pyre.db
+    import dsaw.db
     
-    matter = pyre.db.versatileReference( name = 'matter', tableRegistry = tableRegistry)
-    shape = pyre.db.versatileReference( name = 'shape', tableRegistry = tableRegistry)
+    matter = dsaw.db.versatileReference( name = 'matter', tableRegistry = tableRegistry)
+    shape = dsaw.db.versatileReference( name = 'shape', tableRegistry = tableRegistry)
     
 
 # version

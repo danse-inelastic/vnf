@@ -17,11 +17,11 @@ from User import User
 from DbObject import DbObject
 class OwnedObject(DbObject):
 
-    import pyre.db
+    import dsaw.db
 
-    creator = pyre.db.varchar(name='creator', length=64)
+    creator = dsaw.db.varchar(name='creator', length=64)
 
-    date = pyre.db.date( name='date' )
+    date = dsaw.db.date( name='date' )
     date.meta['tip'] = 'date of creation'
 
     pass # end of OwnedObject

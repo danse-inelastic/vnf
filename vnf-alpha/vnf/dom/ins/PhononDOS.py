@@ -19,8 +19,8 @@ class PhononDOS(OwnedObject, ComputationResult):
 
     name = 'phonondoses'
 
-    import pyre.db
-    matter = pyre.db.versatileReference(name='matter', tableRegistry=tableRegistry)
+    import dsaw.db
+    matter = dsaw.db.versatileReference(name='matter', tableRegistry=tableRegistry)
     
     datafiles = [
         'data.idf',

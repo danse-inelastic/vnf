@@ -16,7 +16,7 @@ class MmtkSimulation(base):
 
     name = 'mmtksimulations'
     
-    import pyre.db
+    import dsaw.db
 
 
 # version

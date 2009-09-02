@@ -18,12 +18,12 @@ from registry import tableRegistry
 from OwnedObject import OwnedObject as base
 class Trajectory(base):
     # class for md trajectories
-    import pyre.db
+    import dsaw.db
 
-    #creator = pyre.db.reference(name='creator', table = User)
+    #creator = dsaw.db.reference(name='creator', table = User)
 
     
-    timespan = pyre.db.real(name='timespan')
+    timespan = dsaw.db.real(name='timespan')
     timespan.meta['tip'] = 'timespan of trajectory'
     
     pass

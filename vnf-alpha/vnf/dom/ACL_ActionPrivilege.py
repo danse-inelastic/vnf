@@ -22,17 +22,17 @@ class ACL_ActionPrivilege(base):
 
     name = "acl_actionprivileges"
     
-    import pyre.db
+    import dsaw.db
     
-    id = pyre.db.varchar(name="id", length=64)
+    id = dsaw.db.varchar(name="id", length=64)
     id.constraints = 'PRIMARY KEY'
     id.meta['tip'] = "the unique id"
 
-    role = pyre.db.varchar(name='role', length=64)
+    role = dsaw.db.varchar(name='role', length=64)
     role.constraints = 'REFERENCES roles (id)'
 
-    action = pyre.db.varchar(name='action', length=64)
-    routine = pyre.db.varchar(name='routine', length=64)
+    action = dsaw.db.varchar(name='action', length=64)
+    routine = dsaw.db.varchar(name='routine', length=64)
     
     pass # end of ACL_ActionPrivilege
 

@@ -17,18 +17,18 @@ class Activity(base):
 
     name = 'activities'
 
-    import pyre.db
+    import dsaw.db
 
-    id = pyre.db.varchar(name="id", length=64)
+    id = dsaw.db.varchar(name="id", length=64)
     id.constraints = 'PRIMARY KEY'
     id.meta['tip'] = "the unique id"
 
-    username = pyre.db.varchar(name='username', length=64)
-    requesttime = pyre.db.timestamp( name='requesttime' )
-    actor = pyre.db.varchar(name='actor', length=32)
-    routine = pyre.db.varchar(name='routine', length=128)
+    username = dsaw.db.varchar(name='username', length=64)
+    requesttime = dsaw.db.timestamp( name='requesttime' )
+    actor = dsaw.db.varchar(name='actor', length=32)
+    routine = dsaw.db.varchar(name='routine', length=128)
 
-    remote_address = pyre.db.varchar(name='remote_address', length=32)
+    remote_address = dsaw.db.varchar(name='remote_address', length=32)
     
     
 

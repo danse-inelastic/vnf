@@ -126,17 +126,17 @@ class _ReferenceTable(Table):
 
     name = "_____referenceset_____"
 
-    import pyre.db
+    import dsaw.db
     
     # columns
-    id = pyre.db.varchar( name = 'id', length = 64 )
+    id = dsaw.db.varchar( name = 'id', length = 64 )
     id.constraints = 'PRIMARY KEY'
 
-    containerlabel = pyre.db.varchar( name = 'containerlabel', length = 64 )
-    elementlabel = pyre.db.varchar( name = "elementlabel", length = 64 )
+    containerlabel = dsaw.db.varchar( name = 'containerlabel', length = 64 )
+    elementlabel = dsaw.db.varchar( name = "elementlabel", length = 64 )
 
-    container = pyre.db.versatileReference( name = 'container', tableRegistry = tableRegistry )
-    element = pyre.db.versatileReference( name = 'element', tableRegistry = tableRegistry )
+    container = dsaw.db.versatileReference( name = 'container', tableRegistry = tableRegistry )
+    element = dsaw.db.versatileReference( name = 'element', tableRegistry = tableRegistry )
 
 
 

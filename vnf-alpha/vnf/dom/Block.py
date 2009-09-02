@@ -17,11 +17,11 @@ class Block(base):
 
     name = 'blocks'
 
-    import pyre.db
+    import dsaw.db
 
-    width = pyre.db.real( name = 'width', default = 0.05 )
-    height = pyre.db.real( name = 'height', default = 0.1 )
-    thickness = pyre.db.real( name = 'thickness', default = 0.002 )
+    width = dsaw.db.real( name = 'width', default = 0.05 )
+    height = dsaw.db.real( name = 'height', default = 0.1 )
+    thickness = dsaw.db.real( name = 'thickness', default = 0.002 )
     
     pass # end of Block
 

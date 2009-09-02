@@ -23,10 +23,10 @@ class Computation(base):
     import vnf.dom
     results = vnf.dom.referenceSet(name='results')
 
-    import pyre.db
-    job = pyre.db.reference(name='job', table = Job)
+    import dsaw.db
+    job = dsaw.db.reference(name='job', table = Job)
 
-    results_state = pyre.db.varchar(name='results_state', length=16, default='')
+    results_state = dsaw.db.varchar(name='results_state', length=16, default='')
     #  - retrieved
     #  - retrieving
     #  - retrieval failed

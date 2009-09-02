@@ -12,7 +12,7 @@
 #
 
 
-from pyre.db.Table import Table
+from dsaw.db.Table import Table
 
 
 # version

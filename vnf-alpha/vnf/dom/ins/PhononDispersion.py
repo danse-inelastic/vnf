@@ -21,8 +21,8 @@ class PhononDispersion(base1, base2):
 
     name = 'phonondispersions'
 
-    import pyre.db
-    matter = pyre.db.versatileReference(name='matter', tableRegistry=tableRegistry)
+    import dsaw.db
+    matter = dsaw.db.versatileReference(name='matter', tableRegistry=tableRegistry)
 
     datafiles = [
         'DOS',

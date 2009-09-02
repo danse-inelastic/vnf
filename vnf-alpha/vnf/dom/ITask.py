@@ -21,15 +21,15 @@ class ITask(base):
 
     name = 'itasks'
 
-    import pyre.db
+    import dsaw.db
     
-    time_completion = pyre.db.timestamp(name='time_completion')
+    time_completion = dsaw.db.timestamp(name='time_completion')
     time_completion.meta['tip'] = 'time left to completion'
     
-    time_start = pyre.db.timestamp(name='time_start')
+    time_start = dsaw.db.timestamp(name='time_start')
     time_start.meta['tip'] = 'the time the job started'
     
-    state = pyre.db.varchar( name = 'state', length = 16 )
+    state = dsaw.db.varchar( name = 'state', length = 16 )
     # state:
     #   - created: just created. has not been submitted
     #   - running
@@ -37,22 +37,22 @@ class ITask(base):
     #   - failed
     #   - cancelled
     
-    progress_percentage = pyre.db.real(name='progress_percentage')
-    progress_text = pyre.db.varchar(name='progress_text', length=1024)
+    progress_percentage = dsaw.db.real(name='progress_percentage')
+    progress_text = dsaw.db.varchar(name='progress_text', length=1024)
 
     # the party that benefits from this internal task
-    beneficiary = pyre.db.versatileReference(
+    beneficiary = dsaw.db.versatileReference(
         name = 'beneficiary', tableRegistry = tableRegistry)
     
     # the type of this internal task
-    type = pyre.db.varchar(name='type', length=128)
+    type = dsaw.db.varchar(name='type', length=128)
 
     # the worker of this internal task
-    worker = pyre.db.varchar(name='worker', length=128)
+    worker = dsaw.db.varchar(name='worker', length=128)
     
-    options = pyre.db.varcharArray(name='options', length=64, default=[])
+    options = dsaw.db.varcharArray(name='options', length=64, default=[])
 
-    error = pyre.db.varchar(name='error', length=8192)
+    error = dsaw.db.varchar(name='error', length=8192)
 
 
 def createITask(id, beneficiary, worker, type='', state='created', **options):

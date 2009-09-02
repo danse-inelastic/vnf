@@ -17,12 +17,12 @@ class Crystal(DbObject):
 
     name = 'crystals'
 
-    import pyre.db
+    import dsaw.db
 
-    chemical_formula = pyre.db.varchar( name='chemical_formula', length = 1024 )
+    chemical_formula = dsaw.db.varchar( name='chemical_formula', length = 1024 )
     chemical_formula.meta['tip'] = "chemical formula"
 
-    datafile = pyre.db.varchar( name='datafile', length = 1024 )
+    datafile = dsaw.db.varchar( name='datafile', length = 1024 )
     datafile.meta['tip'] = 'data file name'
 
     pass # end of Crystal

@@ -21,14 +21,14 @@ class BvKComputation(base):
 
     name = 'bvkcomputations'
 
-    import pyre.db
-    matter = pyre.db.versatileReference(name='matter', tableRegistry=tableRegistry)
+    import dsaw.db
+    matter = dsaw.db.versatileReference(name='matter', tableRegistry=tableRegistry)
                                
-    model = pyre.db.reference(name='model', table = BvKModel)
-    type = pyre.db.varchar(name='type', length = 16)
+    model = dsaw.db.reference(name='model', table = BvKModel)
+    type = dsaw.db.varchar(name='type', length = 16)
     
-    dE = pyre.db.real(name='dE', default = 0.5) # unit meV
-    N1 = pyre.db.integer(name='N1', default = 10) # number of sampling points (in 1 dimension)
+    dE = dsaw.db.real(name='dE', default = 0.5) # unit meV
+    N1 = dsaw.db.integer(name='N1', default = 10) # number of sampling points (in 1 dimension)
 
 
 # types of computation

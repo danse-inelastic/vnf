@@ -21,7 +21,7 @@ def hash(obj, db):
     return hasher.hash(obj, db)
 
 
-from pyre.db.Table import Table
+from dsaw.db.Table import Table
 class Hasher:
 
     def __init__(self, omitted_properties=None):
@@ -139,7 +139,7 @@ class Hasher:
 
 
 
-from pyre.db.Column import Column
+from dsaw.db.Column import Column
 Descriptors = [
     Column,
     ]
@@ -157,8 +157,8 @@ def isDescriptor(candidate):
     return False
 
 
-from pyre.db.Reference import Reference
-from pyre.db.VersatileReference import VersatileReference
+from dsaw.db.Reference import Reference
+from dsaw.db.VersatileReference import VersatileReference
 from ReferenceSet import ReferenceSet
 from Geometer import Geometer
 References = [

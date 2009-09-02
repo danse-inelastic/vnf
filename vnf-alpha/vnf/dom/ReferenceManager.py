@@ -25,8 +25,8 @@ class ReferenceManager:
     
     def findDanglingReferences(self, printer=None, tables=[], includeNoneReference=False):
         ret = []
-        from pyre.db.Reference import Reference
-        from pyre.db.VersatileReference import VersatileReference
+        from dsaw.db.Reference import Reference
+        from dsaw.db.VersatileReference import VersatileReference
         from vnf.dom._referenceset import _ReferenceTable
 
         if not tables:
@@ -87,7 +87,7 @@ class ReferenceManager:
         # need to delete records from hidden table. this should somehow
         # be integrated into the DBManager.
         
-        from pyre.db._reference import reference
+        from dsaw.db._reference import reference
         from vnf.dom._referenceset import referenceset
         from vnf.dom._geometer import registry as geometerregistry
 
@@ -129,8 +129,8 @@ class ReferenceManager:
 
     def referred(self, record):
         # need to search all records with references and make sure this record is not referred
-        from pyre.db.Reference import Reference
-        from pyre.db.VersatileReference import VersatileReference
+        from dsaw.db.Reference import Reference
+        from dsaw.db.VersatileReference import VersatileReference
         from vnf.dom._referenceset import _ReferenceTable
         
         from vnf.dom.registry import tableRegistry
@@ -166,7 +166,7 @@ class ReferenceManager:
 
 
 
-from pyre.db.Column import Column
+from dsaw.db.Column import Column
 from vnf.dom.ReferenceSet import ReferenceSet
 from vnf.dom.Geometer import Geometer
 Descriptors = [

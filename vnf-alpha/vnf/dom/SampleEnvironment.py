@@ -17,16 +17,16 @@ class SampleEnvironment(DbObject):
 
     name = 'sampleenvironments'
 
-    import pyre.db
+    import dsaw.db
 
     #unit: K
-    temperature = pyre.db.real( name = 'temperature', default = 300 )
+    temperature = dsaw.db.real( name = 'temperature', default = 300 )
 
     #unit: Tesla
-    magnetic_field = pyre.db.doubleArray(name = 'magnetic_field', default = [0,0,0] )
+    magnetic_field = dsaw.db.doubleArray(name = 'magnetic_field', default = [0,0,0] )
 
     #unit: atm
-    pressure = pyre.db.real( name = 'pressure', default = 1. )
+    pressure = dsaw.db.real( name = 'pressure', default = 1. )
     
     pass # end of SampleEnvironment
 

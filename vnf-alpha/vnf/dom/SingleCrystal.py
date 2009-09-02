@@ -17,7 +17,7 @@ class SingleCrystal(base):
 
     name = 'singlecrystals'
 
-    import pyre.db
+    import dsaw.db
 
 
 def inittable(db):

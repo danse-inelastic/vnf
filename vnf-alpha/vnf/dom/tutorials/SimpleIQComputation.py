@@ -20,11 +20,11 @@ class SimpleIQComputation(base):
 
     name = 'simpleiqcomputations'
 
-    import pyre.db
-    model = pyre.db.versatileReference(name='model', tableRegistry=tableRegistry)
-    Qmin = pyre.db.real(name='Qmin', default=0)
-    Qmax = pyre.db.real(name='Qmax', default=10)
-    dQ = pyre.db.real(name='dQ', default=10)
+    import dsaw.db
+    model = dsaw.db.versatileReference(name='model', tableRegistry=tableRegistry)
+    Qmin = dsaw.db.real(name='Qmin', default=0)
+    Qmax = dsaw.db.real(name='Qmax', default=10)
+    dQ = dsaw.db.real(name='dQ', default=10)
 
 
 # version

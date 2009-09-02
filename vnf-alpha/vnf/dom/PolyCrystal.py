@@ -17,7 +17,7 @@ class PolyCrystal(base):
 
     name = 'polycrystals'
 
-    import pyre.db
+    import dsaw.db
 
 
 

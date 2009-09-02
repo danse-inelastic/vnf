@@ -23,9 +23,9 @@ class SampleComponentExample(base):
 
     name = 'samplecomponentexamples'
 
-    import pyre.db
+    import dsaw.db
 
-    samplecomponent = pyre.db.versatileReference(
+    samplecomponent = dsaw.db.versatileReference(
         name = 'samplecomponent', tableRegistry = tableRegistry)
 
     pass # end of SampleComponentExample

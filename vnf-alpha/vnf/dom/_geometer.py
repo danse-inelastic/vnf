@@ -67,7 +67,7 @@ class registry:
     def _id(self):
         from idgenerator import generator
         if generator is None:
-            msg = "id generator has not been set. please use pyre.db.set_referencesettable_idgenerator to set id generator"
+            msg = "id generator has not been set. please use dsaw.db.set_referencesettable_idgenerator to set id generator"
             raise RuntimeError, msg
         return generator()
     
@@ -101,23 +101,23 @@ class PositionOrientationRegistry(Table):
 
     name = '__position_orientation_registry__'
     
-    import pyre.db
+    import dsaw.db
     
     # columns
-    id = pyre.db.varchar( name = 'id', length = 64 )
+    id = dsaw.db.varchar( name = 'id', length = 64 )
     id.constraints = 'PRIMARY KEY'
     
-    container = pyre.db.versatileReference(
+    container = dsaw.db.versatileReference(
         name = 'container', tableRegistry = tableRegistry)
     
-    element_label = pyre.db.varchar( name = 'element_label', length = 64 )
+    element_label = dsaw.db.varchar( name = 'element_label', length = 64 )
     
-    position = pyre.db.doubleArray(
+    position = dsaw.db.doubleArray(
         name = 'position',  default = [0.,0.,0.] )
-    orientation = pyre.db.doubleArray(
+    orientation = dsaw.db.doubleArray(
         name = 'orientation', default = [0.,0.,0.] )
     
-    reference_label = pyre.db.varchar(
+    reference_label = dsaw.db.varchar(
         name = 'reference_label', length = 64, default = '')
     
     pass # end of PositionOrientationRegistry

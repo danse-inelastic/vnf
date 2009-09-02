@@ -17,18 +17,18 @@ class VanadiumPlate(base):
 
     name = 'vanadiumplates'
 
-    import pyre.db
+    import dsaw.db
 
     # dimensions (unit: meter)
-    width = pyre.db.real(name='width', default=0.05)
-    height = pyre.db.real(name='height', default=0.10)
-    thickness = pyre.db.real(name='thickness', default=0.002)
+    width = dsaw.db.real(name='width', default=0.05)
+    height = dsaw.db.real(name='height', default=0.10)
+    thickness = dsaw.db.real(name='thickness', default=0.002)
 
     # target definition
-    target_radius = pyre.db.real(name='target_radius', default=0)
+    target_radius = dsaw.db.real(name='target_radius', default=0)
     target_radius.meta['tip'] = 'radius of disk containg target. use 0 for full space'
     
-    target_position = pyre.db.doubleArray(name='target_position', default=(0,0,0))
+    target_position = dsaw.db.doubleArray(name='target_position', default=(0,0,0))
     
     pass # end of Vanadiumplates
 

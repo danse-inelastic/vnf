@@ -19,15 +19,15 @@ class SQEKernel(base):
 
     name = 'sqekernels'
     
-    import pyre.db
+    import dsaw.db
 
-    sqe = pyre.db.versatileReference(name = 'sqe', tableRegistry=tableRegistry)
+    sqe = dsaw.db.versatileReference(name = 'sqe', tableRegistry=tableRegistry)
 
-    Qmin = pyre.db.real(name = 'Qmin', default = 0)
-    Qmax = pyre.db.real(name = 'Qmax', default = 10)
+    Qmin = dsaw.db.real(name = 'Qmin', default = 0)
+    Qmax = dsaw.db.real(name = 'Qmax', default = 10)
 
-    Emin = pyre.db.real(name = 'Emin', default = -50)
-    Emax = pyre.db.real(name = 'Emax', default = 50)
+    Emin = dsaw.db.real(name = 'Emin', default = -50)
+    Emax = dsaw.db.real(name = 'Emax', default = 50)
     
     pass # end of SQEKernel
 

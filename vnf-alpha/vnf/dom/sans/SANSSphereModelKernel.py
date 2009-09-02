@@ -19,11 +19,11 @@ class SANSSphereModelKernel(base):
 
     name = 'sansspheremodelkernels'
     
-    import pyre.db
+    import dsaw.db
 
-    scale = pyre.db.real( name = 'scale', default = 1e-6 )
-    radius = pyre.db.real( name = 'radius', default = 60.0 )
-    contrast = pyre.db.real( name = 'contrast', default = 1.0 )
+    scale = dsaw.db.real( name = 'scale', default = 1e-6 )
+    radius = dsaw.db.real( name = 'radius', default = 60.0 )
+    contrast = dsaw.db.real( name = 'contrast', default = 1.0 )
     
     pass # end of SANSSphereModelKernel
 

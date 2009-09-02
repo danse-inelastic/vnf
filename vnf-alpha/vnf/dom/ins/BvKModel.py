@@ -20,8 +20,8 @@ class BvKModel(base):
 
     name = 'bvkmodels'
 
-    import pyre.db
-    matter = pyre.db.versatileReference(name='matter', tableRegistry=tableRegistry)
+    import dsaw.db
+    matter = dsaw.db.versatileReference(name='matter', tableRegistry=tableRegistry)
     
 
 def inittable(db):

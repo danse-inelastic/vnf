@@ -19,9 +19,9 @@ class SampleAssembly(OwnedObject):
 
     name = "sampleassemblies"
     
-    import pyre.db
+    import dsaw.db
 
-    status = pyre.db.varchar( name = 'status', default = 'new', length = 16 )
+    status = dsaw.db.varchar( name = 'status', default = 'new', length = 16 )
 
     import vnf.dom
     scatterers = vnf.dom.referenceSet( name = 'scatterers' )

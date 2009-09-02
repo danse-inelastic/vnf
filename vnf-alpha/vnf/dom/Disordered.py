@@ -17,7 +17,7 @@ class Disordered(base):
 
     name = 'disordered'
 
-    import pyre.db
+    import dsaw.db
 
 
 def inittable(db):

@@ -15,7 +15,7 @@
 from DbObject import DbObject as base
 class NeutronComponent(base):
 
-    import pyre.db
+    import dsaw.db
 
     pass # end of Scatterer
 
