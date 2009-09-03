@@ -1,0 +1,83 @@
+#!/usr/bin/env python
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                 Jiao Lin
+#                      California Institute of Technology
+#                      (C) 2006-2009  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+from luban.content import select, load
+
+from luban.components.Actor import Actor as base
+class Actor(base):
+
+    class Inventory(base.Inventory):
+
+        import pyre.inventory
+
+
+    def default(self, director):
+        from luban.content.Page import Page
+        page = Page(title='test table')
+
+        page.add(table())
+        return page
+
+
+def actor():
+    return Actor('testtable')
+
+
+
+def table():
+    from luban.content import load
+    
+    from luban.content.table import Model, View, Table
+    from luban.content.Link import Link
+
+    class model(Model):
+
+        author = Model.descriptors.str(name='author')
+        subject = Model.descriptors.link(name='subject')
+        time_created = Model.descriptors.str(name='time_created')
+        
+
+    view = View(
+        
+        columns = [
+            View.Column(name='col1',label='Author', measure='author'),
+            View.Column(name='col2',label='Subject', editable=True, measure='subject'),
+            View.Column(name='col3',label='Created', measure='time_created'),
+            ],
+
+        editable = False,
+        )
+
+    from luban.content.Link import Link
+    def subject_link(subject, id):
+        link = Link(
+            label = subject,
+            onclick = load(actor='someactor', routine='someroutine', thread=id),
+            )
+        return link
+
+    data = [
+        ('bob', subject_link('dynamical matrix?', 'subject1'), '09/03/2009'),
+        ('john', subject_link('black hole?', 'subject2'), '03/09/2009'),
+        ]
+
+    table = Table(model=model, data=data, view=view)
+
+    return table
+
+
+# version
+__id__ = "$Id$"
+
+# End of file 

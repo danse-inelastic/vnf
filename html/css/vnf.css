@@ -1,0 +1,73 @@
+/*  -*- CSS -*-  */
+
+.ui-accordion .ui-accordion-content { 
+    padding: 0.1em 0.2em;
+}
+
+.luban-toolbar {
+}
+
+.ui-widget {
+}
+
+.luban-document-title {
+    font-size: 130%;
+}
+
+a.luban-link {
+}
+
+a.luban-link:hover{
+}
+
+#body-wrapper{
+}
+
+
+table.luban-splitter {
+    width: 100%;
+}
+
+td.luban-splitter-section {
+    vertical-align: top;
+}
+
+div h1,h2,h3,h4,h5,h6 {
+    font-weight: normal;
+    margin: 0;
+    padding-top: 0.5em;
+    border-bottom: none;
+}
+
+#matterdoc {
+    max-width: 100%;
+    min-width: 70%;
+}
+
+#matterdoc {
+    max-width: 100%;
+    min-width: 70%;
+}
+
+#matterviewpanel {
+    width: 30%;
+}
+
+#mattersimspanel {
+    width: 70%;
+}
+
+#mattersimsdoc {
+    width: 100%;
+}
+
+#matsimstablecontainer {
+    min-height: 300;
+    max-height: 600;
+    overflow: scroll;
+}
+
+/* version */
+/* $Id$ */
+
+/* End of file  */

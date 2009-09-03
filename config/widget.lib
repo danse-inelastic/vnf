@@ -1,1 +1,76 @@
-{"": {"stylesheets": ["skeleton/visual.css", "skeleton/visual-color.css", "skeleton/structural.css", "skeleton/structural-color.css", "skeleton/classes.css", "skeleton/classes-color.css", "skeleton/reports.css", "skeleton/reports-color.css"], "jslibs": ["jquery/jquery.js", "luban/luban-core.js", "luban/luban-controller.js", "luban/luban-actioncompiler.js", "luban/luban-documentmill.js", "luban/luban-widgets-basic.js"]}, "table": {"stylesheets": ["tabulator/datePicker.css", "tabulator/tabulator.css", "tabulator/tabulator-color.css"], "jslibs": ["jquery/date.js", "jquery/jquery.datePicker.js", "jquery/tabulator.js", "jquery/elementFactory.js", "jquery/tableFactory.js", "luban/luban-widgets-table.js"]}, "tabs": {"stylesheets": ["jquery/ui/smoothness/ui.all.css"], "jslibs": ["jquery/ui/ui.core.js", "jquery/ui/ui.tabs.js"]}, "treeview": {"stylesheets": ["jquery/jquery.treeview.css"], "jslibs": ["jquery/jquery.cookie.js", "jquery/treeview/jquery.treeview.js"]}}
+{
+  "": {
+     "stylesheets": [
+        "skeleton/visual.css",
+        "skeleton/visual-color.css",
+        "skeleton/structural.css",
+        "skeleton/structural-color.css",
+        "skeleton/classes.css",
+        "skeleton/classes-color.css",
+        "skeleton/reports.css",
+        "skeleton/reports-color.css",
+        "jquery/ui/smoothness/ui.all.css",
+
+	"luban.css",
+        "vnf.css"
+        ],
+     "jslibs":      [
+        "jquery/jquery.js",
+        "jquery/ui/ui.core.js",
+        "luban/luban-core.js",
+        "luban/luban-controller.js",
+        "luban/luban-actioncompiler.js",
+        "luban/luban-documentmill.js",
+        "luban/luban-widgets-basic.js"
+        ]
+  },
+  "table": {
+     "stylesheets": [
+        "tabulator/datePicker.css",
+        "tabulator/tabulator.css",
+        "tabulator/tabulator-color.css"
+        ],
+     "jslibs":      [
+        "jquery/date.js",
+        "jquery/jquery.datePicker.js",
+        "jquery/tabulator.js",
+        "jquery/elementFactory.js",
+        "jquery/tableFactory.js",
+        "luban/luban-widgets-table.js"
+        ]
+  },
+  "treeview": {
+     "stylesheets": [
+        "jquery/jsTree/tree_component.css"
+        ],
+     "jslibs":      [
+        "jquery/jsTree/_lib/css.js",
+        "jquery/jsTree/source/tree_component.js"
+        ]
+  },
+  "tabs": {
+     "stylesheets": [
+        ],
+     "jslibs":      [
+        "jquery/ui/ui.tabs.js"
+        ]
+  },
+  "appmenubar": {
+     "stylesheets": [
+        "jquery/jquery.jdMenu.css"
+        ],
+     "jslibs":      [
+        "jquery/jdMenu-1.4.1/jquery.jdMenu.js",
+        "jquery/jdMenu-1.4.1/jquery.dimensions.js",
+        "jquery/jdMenu-1.4.1/jquery.bgiframe.js",
+        "jquery/jdMenu-1.4.1/jquery.positionBy.js"
+        ]
+  },
+  "accordion": {
+     "stylesheets": [
+        ],
+     "jslibs":      [
+        "jquery/ui/ui.accordion.js"
+        ]
+  }
+}
