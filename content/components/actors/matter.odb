@@ -12,6 +12,8 @@
 #
 
 
+from luban.content import load, select
+
 from luban.components.Actor import Actor as base
 
 
@@ -27,8 +29,10 @@ class Actor(base):
     
 
     def view(self, director):
+        matter = self._getMatter(director)
+        
         from luban.content.Page import Page
-        page = Page(title='test')
+        page = Page(title='Material %s' % matter.short_description)
 
         view = self.createView(director)
         page.add(view)
@@ -47,8 +51,36 @@ class Actor(base):
         simstablecontainer = oldmatsimtab.document(id='matsimstablecontainer')
         simstable = self.createSimsTable(director)
         simstablecontainer.add(simstable)
-        
+
+        newmatsimtab = visual.find(id='newmatsimtab')
+        newmatsimscontainer = newmatsimtab.document(id='newmatsimscontainer')
+        newsims = self.createNewSimButtons(director)
+        newmatsimscontainer.add(newsims)
         return visual
+
+
+    def createNewSimButtons(self, director):
+        matter = self._getMatter(director)
+        
+        from luban.content.Document import Document
+        doc = Document()
+        
+        simtables = simulationTables()
+        from luban.content.Button import Button
+        def _(table):
+            label = table.__name__
+            icon = 'material_simulations/%s.png' % label
+            actor = 'material_simulations/%s' % (label.lower(), )
+            return Button(
+                label=label, icon=icon,
+                onclick=load(
+                    actor=actor, routine='new',
+                    matter_type=matter.name, matter_id=matter.id)
+                )
+
+        buttons = map(_, simtables)
+        map(doc.add, buttons)
+        return doc
 
 
     def createSimsTable(self, director):
@@ -138,9 +170,14 @@ Atoms
         return director.clerk.getRecordByID(type, id)
 
 
-def getallsimulations(matter, db, **opts):
+def simulationTables():
     from vnf.dom import materialsimulationtables, materialmodelingtables
     tables = materialsimulationtables()# + materialmodelingtables()
+    return tables
+
+
+def getallsimulations(matter, db, **opts):
+    tables = simulationTables()
 
     computations = []
     for table in tables:
