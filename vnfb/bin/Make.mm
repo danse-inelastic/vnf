@@ -23,7 +23,10 @@ distclean::
 # export
 
 EXPORT_DATAFILES = \
-	startservices.sh
+	initdb.py \
+	destroydb.py \
+	restorevnfdb.py \
+	startservices.sh \
 
 
 

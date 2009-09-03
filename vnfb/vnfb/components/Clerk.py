@@ -21,7 +21,6 @@ class Clerk( base ):
 
         import pyre.inventory
         db = pyre.inventory.str('db', default = 'vnf' )
-        dbwrapper = pyre.inventory.str('dbwrapper', default = 'psycopg2')
         
 
     def __init__(self, name = 'clerk', facility = 'clerk'):
@@ -82,7 +81,7 @@ class Clerk( base ):
 
 
     def getRecordByID(self, tablename, id):
-        from pyre.db.Table import Table as TableBase
+        from dsaw.db.Table import Table as TableBase
         if isinstance(tablename, basestring):
             Table = self._getTable(tablename)
         elif issubclass(tablename, TableBase):
@@ -183,7 +182,6 @@ class Clerk( base ):
     def _configure(self):
         base._configure(self)
         self.db = self.inventory.db
-        self.dbwrapper = self.inventory.dbwrapper
         return
 
 
@@ -191,8 +189,8 @@ class Clerk( base ):
         base._init(self)
 
         from dsaw.db import connect
-        self.db = connect(self.db, self.dbwrapper)
-        self.db.autocommit()
+        self.db = connect(db=self.db)
+        self.db.autocommit(True)
 
         # create system tables if necessary
 ##         system_tables = self.db._systemtables
