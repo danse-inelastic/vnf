@@ -10,21 +10,24 @@
 #
 
 
-def table(matsims, cols, director):
-    try: return _table(matsims, director)
+def visual(matsims, cols, director):
+    try: return table(matsims, cols, director)
     except:
         import traceback
-        traceback.print_exc()
+        import journal
+        debug = journal.debug('pyre')
+        debug.log(traceback.format_exc())
+        return
 
 
-def _table(matsims, cols, director):
+def table(matsims, cols, director):
     from luban.content.table import Model, View, Table
     from luban.content import load
     from luban.content.Link import Link
     
     class model(Model):
 
-        description = Model.descriptors.str(name='description')
+        description = Model.descriptors.link(name='description')
         type = Model.descriptors.str(name='type')
         matter = Model.descriptors.str(name='matter')
         creationDate = Model.descriptors.str(name='creationDate')
@@ -53,7 +56,7 @@ def _table(matsims, cols, director):
         return link
     def getCreationDate(exp):
         date = exp.date
-        return date
+        return str(date)
     def getType(matsim):
         return matsim.__class__.__name__
     def getMatter(matsim):
@@ -74,15 +77,9 @@ def _table(matsims, cols, director):
         'creationDate': getCreationDate,
         }
     
-    def d(s):
-        r = []
-        for col in view.columns:
-            measure = col.measure
-            value = generators[measure](s)
-            r.append(value)
-            continue
-        return r
-    data = [d(j) for j in matsims]
+    value_generators = map(generators.get, [col.measure for col in view.columns])
+    record2tuple = lambda record: [g(record) for g in value_generators]
+    data = map(record2tuple, matsims)
 
     table = Table(model=model, data=data, view=view)
 

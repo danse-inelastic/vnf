@@ -25,7 +25,7 @@ def matterviewdoc():
         )
 
 def leftpanel():
-    instance = SplitSection()
+    instance = SplitSection(id='matterviewpanel')
     instance.add(matterviewdoc())
     return instance
 
@@ -51,11 +51,15 @@ def simtabs():
     instance.Class = ''
     return instance
 
+
+def simsdoc():
+    doc = Document(title='Simulations', id='mattersimsdoc')
+    doc.add(simtabs())
+    return doc
+
 def rightpanel():
-    instance = SplitSection()
-    instance.size = ''
-    instance.Class = ''
-    instance.contents = [simtabs()]
+    instance = SplitSection(id='mattersimspanel')
+    instance.add(simsdoc())
     return instance
 
 def horizsplit():

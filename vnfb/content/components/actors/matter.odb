@@ -44,26 +44,25 @@ class Actor(base):
         matterviewdoc.add(descriptiondoc)
 
         oldmatsimtab = visual.find(id='oldmatsimtab')
+        simstablecontainer = oldmatsimtab.document(id='matsimstablecontainer')
         simstable = self.createSimsTable(director)
-        oldmatsimtab.add(simstable)
+        simstablecontainer.add(simstable)
         
         return visual
 
 
     def createSimsTable(self, director):
         matter = self._getMatter(director)
-        from dsaw.db._reference import reference
-        ref = reference(matter.id, matter.__class__)
-        
-        where="matter='%s' " % ref
-        sims = getallsimulations(director.clerk.db, where=where)
-            
-        table = director.retrieveComponent(
+        sims = getallsimulations(matter=matter, db=director.clerk.db)
+
+        args = sims, ['description', 'type', 'creationDate',], director
+        #return table(*args)
+        thetable = director.retrieveComponent(
             'materialsimulation-table',
             factory="visual", args=[sims, ['description', 'type', 'creationDate',], director],
             vault=['visuals'])
 
-        return table
+        return thetable
 
 
     def createDescriptionDoc(self, director):
@@ -139,20 +138,22 @@ Atoms
         return director.clerk.getRecordByID(type, id)
 
 
-def getallsimulations(db, where=None):
+def getallsimulations(matter, db, **opts):
     from vnf.dom import materialsimulationtables, materialmodelingtables
-    tables = materialsimulationtables() + materialmodelingtables()
-   
+    tables = materialsimulationtables()# + materialmodelingtables()
+
     computations = []
     for table in tables:
-        computations += db.fetchall(table, where=where)
+        computations += matter.getReferences(db, table, 'matter', **opts)
         continue
     
     return computations
 
 
 def actor(): return Actor()
-    
+
+
+
 # version
 __id__ = "$Id$"
 
