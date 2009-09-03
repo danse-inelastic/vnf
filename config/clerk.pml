@@ -2,9 +2,10 @@
 <!--
 ! ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
-!                                   Jiao Lin
+!
+!                             Michael A.G. Aivazis
 !                      California Institute of Technology
-!                      (C) 2006-2009  All Rights Reserved
+!                      (C) 1998-2005  All Rights Reserved
 !
 ! {LicenseText}
 !
@@ -17,8 +18,7 @@
 <inventory>
 
   <component name='clerk'>
-    <property name='db'>vnf</property>
-    <property name='dbwrapper'>psycopg2</property>
+     <property name='db'>postgres://linjiao@localhost/vnfa2b</property>
   </component>
 
 </inventory>
@@ -26,7 +26,5 @@
 
 <!-- version-->
 <!-- $Id$-->
-
-<!-- Generated automatically by XMLMill on Sun May 24 06:50:52 2009-->
 
 <!-- End of file -->
