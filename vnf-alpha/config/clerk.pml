@@ -18,7 +18,7 @@
 <inventory>
 
   <component name='clerk'>
-     <property name='db'>vnf</property>
+     <property name='db'>vnfa2b</property>
      <property name='dbwrapper'>psycopg2</property>
   </component>
 
