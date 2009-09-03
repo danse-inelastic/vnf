@@ -12,7 +12,7 @@
 #
 
 
-from OwnedObject import OwnedObject as base
+from AbstractOwnedObjectBase import AbstractOwnedObjectBase as base
 class ScatteringKernel(base):
 
     pass # end of Scatterer

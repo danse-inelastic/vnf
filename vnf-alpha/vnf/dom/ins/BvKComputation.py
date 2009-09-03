@@ -22,7 +22,7 @@ class BvKComputation(base):
     name = 'bvkcomputations'
 
     import dsaw.db
-    matter = dsaw.db.versatileReference(name='matter', tableRegistry=tableRegistry)
+    matter = dsaw.db.versatileReference(name='matter')
                                
     model = dsaw.db.reference(name='model', table = BvKModel)
     type = dsaw.db.varchar(name='type', length = 16)

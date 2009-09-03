@@ -15,14 +15,13 @@
 from registry import tableRegistry
 
 
-from OwnedObject import OwnedObject as base1
-from ComputationResult import ComputationResult as base2
-class PhononDispersion(base1, base2):
+from ComputationResult import ComputationResult as base
+class PhononDispersion(base):
 
     name = 'phonondispersions'
 
     import dsaw.db
-    matter = dsaw.db.versatileReference(name='matter', tableRegistry=tableRegistry)
+    matter = dsaw.db.versatileReference(name='matter')
 
     datafiles = [
         'DOS',

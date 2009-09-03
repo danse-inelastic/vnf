@@ -42,7 +42,7 @@ class ITask(base):
 
     # the party that benefits from this internal task
     beneficiary = dsaw.db.versatileReference(
-        name = 'beneficiary', tableRegistry = tableRegistry)
+        name = 'beneficiary')
     
     # the type of this internal task
     type = dsaw.db.varchar(name='type', length=128)

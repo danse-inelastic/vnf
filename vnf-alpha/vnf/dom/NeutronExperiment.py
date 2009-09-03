@@ -19,7 +19,7 @@ from Job import Job
 from registry import tableRegistry
 
 
-from OwnedObject import OwnedObject as base
+from AbstractOwnedObjectBase import AbstractOwnedObjectBase as base
 class NeutronExperiment(base):
 
     name = 'neutronexperiments'
@@ -28,7 +28,7 @@ class NeutronExperiment(base):
 
     instrument = dsaw.db.reference( name = 'instrument', table = Instrument )
     instrument_configuration = dsaw.db.versatileReference(
-        name = 'instrument_configuration', tableRegistry = tableRegistry)
+        name = 'instrument_configuration')
 
     # the following two references are used to define the sample
     # only one of them should be assigned.
@@ -37,7 +37,7 @@ class NeutronExperiment(base):
     # samplecomponent is a more straight-forward and quick way
     # to define a sample.
     sampleassembly = dsaw.db.reference( name = 'sampleassembly', table = SampleAssembly )
-    samplecomponent = dsaw.db.versatileReference(name='samplecomponent', tableRegistry = tableRegistry)
+    samplecomponent = dsaw.db.versatileReference(name='samplecomponent')
     
 
     sampleenvironment = dsaw.db.reference( name = 'sampleenvironment', table = SampleEnvironment )

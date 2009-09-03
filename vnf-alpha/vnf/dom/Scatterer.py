@@ -20,8 +20,8 @@ class Scatterer(base):
 
     import dsaw.db
 
-    matter = dsaw.db.versatileReference( name = 'matter', tableRegistry = tableRegistry)
-    shape = dsaw.db.versatileReference( name = 'shape', tableRegistry = tableRegistry)
+    matter = dsaw.db.versatileReference( name = 'matter')
+    shape = dsaw.db.versatileReference( name = 'shape')
 
     import vnf.dom
     kernels = vnf.dom.referenceSet( name = 'kernels' )

@@ -45,6 +45,7 @@ distclean::
 # export
 
 EXPORT_PYTHON_MODULES = \
+	AbstractOwnedObjectBase.py \
 	AbInitio.py \
 	Activity.py \
 	ACL1.py \

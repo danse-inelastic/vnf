@@ -108,7 +108,7 @@ class PositionOrientationRegistry(Table):
     id.constraints = 'PRIMARY KEY'
     
     container = dsaw.db.versatileReference(
-        name = 'container', tableRegistry = tableRegistry)
+        name = 'container')
     
     element_label = dsaw.db.varchar( name = 'element_label', length = 64 )
     

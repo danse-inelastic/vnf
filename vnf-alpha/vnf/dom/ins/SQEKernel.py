@@ -21,7 +21,7 @@ class SQEKernel(base):
     
     import dsaw.db
 
-    sqe = dsaw.db.versatileReference(name = 'sqe', tableRegistry=tableRegistry)
+    sqe = dsaw.db.versatileReference(name = 'sqe')
 
     Qmin = dsaw.db.real(name = 'Qmin', default = 0)
     Qmax = dsaw.db.real(name = 'Qmax', default = 10)

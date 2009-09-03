@@ -12,12 +12,12 @@
 #
 
 
-from DbObject import DbObject as base
+from AbstractOwnedObjectBase import AbstractOwnedObjectBase as base
 class NeutronComponent(base):
 
     import dsaw.db
 
-    pass # end of Scatterer
+    pass # end of NeutronComponent
 
 
 # version

@@ -15,7 +15,7 @@
 from registry import tableRegistry
 from Server import Server
 
-from OwnedObject import OwnedObject as base
+from AbstractOwnedObjectBase import AbstractOwnedObjectBase as base
 class Job(base):
 
     name = 'jobs'
@@ -62,7 +62,7 @@ class Job(base):
     exit_code = dsaw.db.integer(name = 'exit_code', default = -1)
 
     computation = dsaw.db.versatileReference(
-        name = 'computation', tableRegistry = tableRegistry)
+        name = 'computation')
     computation.meta['tip'] = 'The type of computation'
 
     import vnf.dom

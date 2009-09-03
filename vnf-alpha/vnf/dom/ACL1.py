@@ -28,11 +28,11 @@ class ACL1(base):
     id.constraints = 'PRIMARY KEY'
     id.meta['tip'] = "the unique id"
 
-    userid = dsaw.db.varchar(name='userid', length=64)
-    userid.constraints = 'REFERENCES users (id)'
-    
-    groupid = dsaw.db.varchar(name='groupid', length=64)
-    groupid.constraints = 'REFERENCES roles (id)'
+    from User import User
+    userid = dsaw.db.reference(name='userid', table=User)
+
+    from Role import Role
+    groupid = dsaw.db.reference(name='groupid', table=Role)
     
     pass # end of ACL1
 

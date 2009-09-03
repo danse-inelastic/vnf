@@ -11,7 +11,7 @@
 #
 
 
-from OwnedObject import OwnedObject as base
+from AbstractOwnedObjectBase import AbstractOwnedObjectBase as base
 class MatterBase(base):
 
     name = 'matterbase'

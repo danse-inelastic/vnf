@@ -28,8 +28,8 @@ class ACL_ActionPrivilege(base):
     id.constraints = 'PRIMARY KEY'
     id.meta['tip'] = "the unique id"
 
-    role = dsaw.db.varchar(name='role', length=64)
-    role.constraints = 'REFERENCES roles (id)'
+    from Role import Role
+    role = dsaw.db.reference(name='role', table=Role)
 
     action = dsaw.db.varchar(name='action', length=64)
     routine = dsaw.db.varchar(name='routine', length=64)

@@ -28,8 +28,8 @@ class ACL_InstrumentSimulationPrivilege(base):
     id.constraints = 'PRIMARY KEY'
     id.meta['tip'] = "the unique id"
 
-    role = dsaw.db.varchar(name='role', length=64)
-    role.constraints = 'REFERENCES roles (id)'
+    from Role import Role
+    role = dsaw.db.reference(name='role', table=Role)
 
     instrument = dsaw.db.varchar(name='instrument', length=64)
     instrument.constraints = 'REFERENCES instruments (id)'

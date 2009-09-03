@@ -26,7 +26,7 @@ class SampleComponentExample(base):
     import dsaw.db
 
     samplecomponent = dsaw.db.versatileReference(
-        name = 'samplecomponent', tableRegistry = tableRegistry)
+        name = 'samplecomponent')
 
     pass # end of SampleComponentExample
 

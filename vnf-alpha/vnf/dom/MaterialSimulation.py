@@ -21,7 +21,7 @@ class MaterialSimulation(base):
     # base class for all material simulations
 
     import dsaw.db
-    matter = dsaw.db.versatileReference(name='matter', tableRegistry=tableRegistry)
+    matter = dsaw.db.versatileReference(name='matter')
     
     pass # end of MaterialSimulation
 

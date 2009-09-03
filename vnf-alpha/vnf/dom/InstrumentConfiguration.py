@@ -15,8 +15,8 @@
 from Instrument import Instrument
 
 
-from OwnedObject import OwnedObject
-class InstrumentConfiguration(OwnedObject):
+from AbstractOwnedObjectBase import AbstractOwnedObjectBase as base
+class InstrumentConfiguration(base):
     
     name = "instrumentconfigurations"
     

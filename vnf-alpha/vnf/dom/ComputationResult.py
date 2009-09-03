@@ -12,14 +12,11 @@
 #
 
 
-from registry import tableRegistry
-
-
-from Table import Table
-class ComputationResult(Table):
+from AbstractOwnedObjectBase import AbstractOwnedObjectBase as base
+class ComputationResult(base):
 
     import dsaw.db
-    origin = dsaw.db.versatileReference(name='origin', tableRegistry=tableRegistry)
+    origin = dsaw.db.versatileReference(name='origin')
     
     pass # end of PhononDOS
 

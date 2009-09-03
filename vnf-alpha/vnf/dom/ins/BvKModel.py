@@ -21,7 +21,7 @@ class BvKModel(base):
     name = 'bvkmodels'
 
     import dsaw.db
-    matter = dsaw.db.versatileReference(name='matter', tableRegistry=tableRegistry)
+    matter = dsaw.db.versatileReference(name='matter')
     
 
 def inittable(db):

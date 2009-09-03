@@ -12,8 +12,9 @@
 #
 
 
-from OwnedObject import OwnedObject as base
-class Shape(base):
+from AbstractOwnedObjectBase import AbstractOwnedObjectBase
+
+class Shape(AbstractOwnedObjectBase):
 
     pass # end of Shape
 

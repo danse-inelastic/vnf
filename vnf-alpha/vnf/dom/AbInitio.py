@@ -30,7 +30,7 @@ class AbInitio(base):
     #runType.validator=dsaw.db.choice(['energy', 'optimization', 'md'])
     runType.meta['tip'] = 'Type of run'
     
-    xcFunctional = dsaw.db.varcharArray(name='xcFunctional', length=64, default=['PAW-PBE'])
+    xcFunctional = dsaw.db.varchar(name='xcFunctional', length=64, default=['PAW-PBE'])
 #    xcFunctional.validator=dsaw.db.choice(['PAW-PBE', 'PAW-GGA', 'LDA'])
     xcFunctional.meta['tip'] = 'Exchange correlation functional'
     

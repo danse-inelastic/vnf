@@ -21,6 +21,8 @@ class SNSModeratorMCSimulatedData(Table):
     import dsaw.db
 
     id = dsaw.db.varchar(name='id', length=128, default='')
+    id.constraints  = 'PRIMARY KEY'
+    
     instrument = dsaw.db.varchar(name='instrument', length=32, default='')
 
     datafiles = ['profile.dat']

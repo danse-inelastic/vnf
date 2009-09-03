@@ -13,14 +13,13 @@
 
 from registry import tableRegistry
 
-from OwnedObject import OwnedObject
 from ComputationResult import ComputationResult
-class PhononDOS(OwnedObject, ComputationResult):
+class PhononDOS(ComputationResult):
 
     name = 'phonondoses'
 
     import dsaw.db
-    matter = dsaw.db.versatileReference(name='matter', tableRegistry=tableRegistry)
+    matter = dsaw.db.versatileReference(name='matter')
     
     datafiles = [
         'data.idf',

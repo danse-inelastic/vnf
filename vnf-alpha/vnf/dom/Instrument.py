@@ -13,8 +13,8 @@
 
 
 
-from OwnedObject import OwnedObject
-class Instrument(OwnedObject):
+from AbstractOwnedObjectBase import AbstractOwnedObjectBase as base
+class Instrument(base):
     
     name = "instruments"
     

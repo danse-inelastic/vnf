@@ -12,17 +12,11 @@
 #
 
 
-from ComputationResult import ComputationResult as base
-class SQE(base):
+from OwnedObject import OwnedObject
+from dsaw.db.GloballyReferrable import GloballyReferrable
+class AbstractOwnedObjectBase(OwnedObject, GloballyReferrable):
 
-    name = 'sqes'
-
-    histogramh5 = 'sqe.h5'
-    datafiles = [
-        histogramh5,
-        ]
-    
-    pass # end of SQE
+    pass
 
 
 # version

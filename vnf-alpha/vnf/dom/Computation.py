@@ -15,7 +15,7 @@
 from Job import Job
 
 
-from OwnedObject import OwnedObject as base
+from AbstractOwnedObjectBase import AbstractOwnedObjectBase as base
 class Computation(base):
 
     # base class for all computations (including simulations)

@@ -135,8 +135,8 @@ class _ReferenceTable(Table):
     containerlabel = dsaw.db.varchar( name = 'containerlabel', length = 64 )
     elementlabel = dsaw.db.varchar( name = "elementlabel", length = 64 )
 
-    container = dsaw.db.versatileReference( name = 'container', tableRegistry = tableRegistry )
-    element = dsaw.db.versatileReference( name = 'element', tableRegistry = tableRegistry )
+    container = dsaw.db.versatileReference( name = 'container' )
+    element = dsaw.db.versatileReference( name = 'element' )
 
 
 

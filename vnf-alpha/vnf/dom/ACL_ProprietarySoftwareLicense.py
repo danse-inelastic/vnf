@@ -28,8 +28,8 @@ class ACL_ProprietarySoftwareLicense(base):
     id.constraints = 'PRIMARY KEY'
     id.meta['tip'] = "the unique id"
 
-    role = dsaw.db.varchar(name='role', length=64)
-    role.constraints = 'REFERENCES roles (id)'
+    from Role import Role
+    role = dsaw.db.reference(name='role', table=Role)
 
     name = dsaw.db.varchar(name='name', length=64)
     name.meta['tip'] = 'Software name'
