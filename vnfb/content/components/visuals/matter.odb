@@ -30,7 +30,7 @@ def leftpanel():
     return instance
 
 def newsimtab():
-    instance = Tab()
+    instance = Tab(id='newmatsimtab')
     instance.Class = ''
     instance.selected = False
     instance.label = 'new simulations'
