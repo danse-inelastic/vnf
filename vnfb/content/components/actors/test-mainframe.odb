@@ -15,8 +15,11 @@ def actor():
     from luban.components.Actor import Actor as base
     class Actor(base):
         def default(self, director):
-            return director.retrieveVisual('vnfb')
-    return Actor('vnfb')
+            from luban.content.Page import Page
+            page = Page(title='test vnf')
+            page.add(director.retrieveVisual('mainframe-skeleton'))
+            return page
+    return Actor('test-mainframe')
 
 
 # version
