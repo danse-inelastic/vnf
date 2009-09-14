@@ -1,0 +1,38 @@
+# -*- Python -*-
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                 Jiao Lin
+#                      California Institute of Technology
+#                      (C) 2006-2009  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+from luban.content.Document import Document
+from luban.content.Splitter import Splitter
+from luban.content.Splitter import SplitSection
+from luban.content.Tabs import Tabs
+from luban.content.Tabs import Tab
+
+
+def visual(director):
+    vertical = Splitter(orientation='vertical')
+    header_frame = vertical.section(id='header-frame')
+    body_frame = vertical.section(id='body-frame')
+    footer_frame = vertical.section(id='footer-frame')
+
+    header = director.retrieveVisual('mainframe-header')
+    header_frame.add(header)
+    #body_frame.add(director.retrieveVisual('body-skeleton'))
+    
+    return vertical
+
+    
+# version
+__id__ = "$Id$"
+
+# End of file 
