@@ -12,7 +12,8 @@
         "jquery/ui/smoothness/ui.all.css",
 
 	"luban.css",
-        "vnf.css"
+        "vnf.css",
+        "vnf-mainframe.css"
         ],
      "jslibs":      [
         "jquery/jquery.js",

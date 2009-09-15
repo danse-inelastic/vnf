@@ -1,0 +1,31 @@
+# -*- Python -*-
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                 Jiao Lin
+#                      California Institute of Technology
+#                      (C) 2006-2009  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+from luban.content import load
+
+from luban.content.Splitter import Splitter 
+from luban.content.Link import Link
+from luban.content.Document import Document
+
+def visual(director):
+    doc = Document(id='credits')
+    doc.paragraph().text = [
+        'Powered by luban',
+        ]
+    return doc
+
+    
+# version
+__id__ = "$Id$"
+
+# End of file 
