@@ -39,35 +39,6 @@ div h1,h2,h3,h4,h5,h6 {
     border-bottom: none;
 }
 
-#matterdoc {
-    max-width: 100%;
-    min-width: 70%;
-}
-
-#matterdoc {
-    max-width: 100%;
-    min-width: 70%;
-}
-
-#matterviewpanel {
-    width: 30%;
-}
-
-#mattersimspanel {
-    width: 70%;
-}
-
-#mattersimsdoc {
-    width: 100%;
-}
-
-#matsimstablecontainer {
-    min-height: 300;
-    max-height: 600;
-    overflow: scroll;
-}
-
-
 /* version */
 /* $Id$ */
 
