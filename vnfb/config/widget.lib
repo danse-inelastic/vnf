@@ -16,6 +16,7 @@
         ],
      "jslibs":      [
         "jquery/jquery.js",
+        "jquery/jquery.dropshadow.js",
         "jquery/ui/ui.core.js",
         "luban/luban-core.js",
         "luban/luban-controller.js",
