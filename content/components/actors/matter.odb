@@ -26,6 +26,32 @@ class Actor(base):
 
         id = pyre.inventory.str('id')
         type = pyre.inventory.str('type')
+
+
+    def default(self, director):
+        return self.showListView(director)
+
+
+    def showListView(self, director):
+        # create a table of all matters
+        table = self.createMatterTable(director)
+        #
+        return select(id='main-display-area').replaceContent(table)
+
+
+    def createMatterTable(self, director, **filters):
+        matters = self._getMatters(director, **filters)
+
+        # XXX: hack
+        matters = matters[:10]
+        
+        cols = [ 'id', 'description', 'type', 'chemical_formula', 'created']
+        args = matters, cols, director
+        thetable = director.retrieveComponent(
+            'matter-table',
+            factory="visual", args=args,
+            vault=['visuals'])
+        return thetable
     
 
     def view(self, director):
@@ -91,7 +117,7 @@ class Actor(base):
         #return table(*args)
         thetable = director.retrieveComponent(
             'materialsimulation-table',
-            factory="visual", args=[sims, ['description', 'type', 'creationDate',], director],
+            factory="visual", args=args,
             vault=['visuals'])
 
         return thetable
@@ -170,6 +196,18 @@ Atoms
         return director.clerk.getRecordByID(type, id)
 
 
+    def _getMatters(self, director, **kwds):
+        from vnf.dom import mattertables
+        tables = mattertables()
+        def _(table): 
+            return director.clerk.db.query(table).filter_by(**kwds).all()
+        records = map(_, tables)
+
+        import operator
+        records = reduce(operator.__add__, records)
+        return records
+
+
 def simulationTables():
     from vnf.dom import materialsimulationtables, materialmodelingtables
     tables = materialsimulationtables()# + materialmodelingtables()
@@ -188,7 +226,6 @@ def getallsimulations(matter, db, **opts):
 
 
 def actor(): return Actor()
-
 
 
 # version

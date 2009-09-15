@@ -13,7 +13,8 @@
 
 	"luban.css",
         "vnf.css",
-        "vnf-mainframe.css"
+        "vnf-mainframe.css",
+	"vnf-matter.css"
         ],
      "jslibs":      [
         "jquery/jquery.js",
