@@ -134,6 +134,9 @@ body {
     margin: 25 25 0 25;
     background-color: white;
     padding: 20px;
+    border-style: outset;
+    border-width: 2;
+    border-color: #d0d0d0;
 }
 /* so that portlet is next to the display area */
 #body-frame table.luban-splitter {
@@ -147,10 +150,15 @@ body {
 
 /* portlets on the left */
 #portlets-frame {
+    
+    vertical-align: top;
     width: 15em;
 }
 
 /* main portlet */
+#main-portlet {
+    margin: 1em 0 0 0;
+}
 /* override default luban behavior */
 #main-portlet .portletBody {
     border: none;
