@@ -24,12 +24,19 @@ def visual(director):
     header_frame = vertical.section(id='header-frame')
     body_frame = vertical.section(id='body-frame', Class='has-shadow')
     footer_frame = vertical.section(id='footer-frame')
+    credits_frame = vertical.section(id='credits-frame')
 
     header = director.retrieveVisual('mainframe-header')
     header_frame.add(header)
 
     body_frame.add(director.retrieveVisual('body-skeleton'))
     
+    footer = director.retrieveVisual('mainframe-footer')
+    footer_frame.add(footer)
+
+    credits = director.retrieveVisual('mainframe-credits')
+    credits_frame.add(credits)
+
     return vertical
 
     
