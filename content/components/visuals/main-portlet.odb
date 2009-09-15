@@ -19,11 +19,11 @@ from luban.content import load
 def visual(director):
     portlet = Portlet(id='main-portlet', title='')
 
-    portlet.item(id='main-portlet-my-materials', onclick=load(actor='matter'))
-    portlet.item(id='main-portlet-my-simulations', onclick=load(actor='simulation'))
-    portlet.item(id='main-portlet-my-experiments', onclick=load(actor='experiment'))
-    portlet.item(id='main-portlet-my-jobs', onclick=load(actor='job'))
-
+    portlet.item(id='main-portlet-my-materials', label='my materials', onclick=load(actor='matter'))
+    portlet.item(id='main-portlet-my-simulations', label='my simulations', onclick=load(actor='simulation'))
+    portlet.item(id='main-portlet-my-experiments', label='my experiments', onclick=load(actor='experiment'))
+    portlet.item(id='main-portlet-my-jobs', label='my jobs', onclick=load(actor='job'), selected=1)
+    
     return portlet
 
     
