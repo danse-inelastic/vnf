@@ -25,6 +25,7 @@ distclean::
 EXPORT_DATAFILES = \
 	initdb.py \
 	destroydb.py \
+	establishglobalpointers.py \
 	restorevnfdb.py \
 	startservices.sh \
 

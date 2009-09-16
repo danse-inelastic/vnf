@@ -35,6 +35,7 @@ all: export
 # export
 
 EXPORT_PYTHON_MODULES = \
+	EstablishGlobalPointers.py \
 	RestoreVNFDB.py \
 	__init__.py \
 
