@@ -31,7 +31,7 @@ class Actor(base):
         # in case of working with a list
         number_records_per_page = pyre.inventory.int(name='number_records_per_page', default=20)
         page_number = pyre.inventory.int(name='page_number', default=0)
-        order_by = pyre.inventory.str(name='order_by')
+        order_by = pyre.inventory.str(name='order_by', default='id')
         filter_expr = pyre.inventory.str(name='filter_expr')
 
 
@@ -54,6 +54,31 @@ class Actor(base):
         from luban.content.Splitter import Splitter
         from luban.content.Link import Link
         view = Document(id='matter-list-view')
+
+        # controls
+        controls = Splitter(orientation='horizontal', id='matter-table-controls')
+        view.add(controls)
+        # sorting
+        sorting_container = controls.section(id='matter-table-sorting-control-container')
+        from luban.content.FormSelectorField import FormSelectorField
+        entries = [
+            ('id', 'ID'),
+            ('short_description', 'Description'),
+            ('chemical_formula', 'Chemical_formula'),
+            ('date', 'Date created'),
+            ]
+        selector = FormSelectorField(
+            label = 'Sort by: ',
+            entries=entries,
+            selection=order_by or '',
+            id='matter-table-order_by')
+        selector.onchange = load(
+            actor='matter', routine='showListView',
+            number_records_per_page = number_records_per_page,
+            page_number = 0,
+            order_by = select(element=selector).formfield('getSelection'),
+            )
+        sorting_container.add(selector)
         
         # navigation bar (previous, next...)
         # get a total count
@@ -269,6 +294,8 @@ Atoms
 
 
     def _getMatters(self, director, filters=None, order_by=None, slice=None):
+        # this implementation does not work when order_by=Type
+        self._debug.log('filters: %r, order_by: %r, slice: %r' % (filters, order_by, slice))
         from vnf.dom import mattertables
         tables = mattertables()
         db = director.clerk.db
@@ -289,7 +316,8 @@ Atoms
             pointer = r.globalpointer.dereference(db)
             return pointer.getPointed(db)
         return map(_, records)
-    
+
+
 
 def simulationTables():
     from vnf.dom import materialsimulationtables, materialmodelingtables

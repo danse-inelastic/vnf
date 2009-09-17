@@ -60,7 +60,7 @@ def table(matters, cols, director):
             )
         return link
     def getDescription(matter):
-        return matter.short_description or matter.id
+        return matter.short_description
     def getVisualize(matter):
         return 'not implemented'
     def getCreated(exp):
@@ -69,14 +69,8 @@ def table(matters, cols, director):
     def getType(matter):
         return matter.__class__.__name__.lower()
 
-    from vnf.components.misc import partition
     def getChemical_formula(matter):
-        atom_symbols = matter.atom_symbols
-        atom_symbols = partition(atom_symbols)
-        chemicalFormula = ''
-        for run in atom_symbols:
-            chemicalFormula+=str(run[0])+'_'+str(len(run))+' '
-        return chemicalFormula
+        return matter.chemical_formula
         
     def getSimulations(matter):
         return 'not implemented'
