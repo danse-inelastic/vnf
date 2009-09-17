@@ -91,7 +91,7 @@ def table(matters, cols, director):
     record2tuple = lambda record: [g(record) for g in value_generators]
     data = map(record2tuple, matters)
 
-    table = Table(model=model, data=data, view=view)
+    table = Table(model=model, data=data, view=view, id='matter-table')
 
     return table
 

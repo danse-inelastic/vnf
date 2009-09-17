@@ -1,5 +1,26 @@
 /*  -*- CSS -*-  */
 
+/* matter list */
+#matter-table-navigation-bar {
+    height: 30px;
+    width: 240;
+    margin-left: auto;
+    margin-right: 1px;
+}
+#matter-table-navigation-bar-left, #matter-table-navigation-bar-right{
+    width: auto;
+    text-align: center;
+}
+#matter-table-navigation-bar-middle{
+    width: auto;
+    text-align: center;
+}
+
+#matter-table {
+    width: 100%;
+}
+
+/* single matter view */
 #matterdoc {
     max-width: 100%;
     min-width: 70%;
