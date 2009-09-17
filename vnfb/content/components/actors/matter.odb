@@ -32,6 +32,7 @@ class Actor(base):
         number_records_per_page = pyre.inventory.int(name='number_records_per_page', default=20)
         page_number = pyre.inventory.int(name='page_number', default=0)
         order_by = pyre.inventory.str(name='order_by', default='id')
+        reverse_order = pyre.inventory.bool(name='reverse_order', default=0)
         filter_expr = pyre.inventory.str(name='filter_expr')
 
 
@@ -42,6 +43,7 @@ class Actor(base):
     def showListView(self, director):
         # parameters
         order_by = self.inventory.order_by or None
+        reverse_order = self.inventory.reverse_order
         number_records_per_page = self.inventory.number_records_per_page
         page_number = self.inventory.page_number
         slice = page_number*number_records_per_page, (page_number+1)*number_records_per_page
@@ -77,8 +79,28 @@ class Actor(base):
             number_records_per_page = number_records_per_page,
             page_number = 0,
             order_by = select(element=selector).formfield('getSelection'),
+            reverse_order = reverse_order,
             )
         sorting_container.add(selector)
+        # order reversing
+        reverse_order_container = controls.section(id='matter-table-sorting-reversing-control-container')
+        entries = [
+            ('False', 'Low to High'),
+            ('True', 'High to Low'),
+            ]
+        selector = FormSelectorField(
+            label = 'Ordering: ',
+            entries=entries,
+            selection=reverse_order,
+            id='matter-table-reverse_order')
+        selector.onchange = load(
+            actor='matter', routine='showListView',
+            number_records_per_page = number_records_per_page,
+            page_number = 0,
+            reverse_order = select(element=selector).formfield('getSelection'),
+            order_by = order_by,
+            )
+        reverse_order_container.add(selector)
         
         # navigation bar (previous, next...)
         # get a total count
@@ -95,6 +117,7 @@ class Actor(base):
                 page_number=page_number-1,
                 number_records_per_page = number_records_per_page,
                 order_by = order_by or '',
+                reverse_order = reverse_order,
                 #filter_expr = filter_expr,
                 )
             left.add(Link(label='previous',onclick=onclick))
@@ -111,6 +134,7 @@ class Actor(base):
                 page_number=page_number+1,
                 number_records_per_page = number_records_per_page,
                 order_by = order_by or '',
+                reverse_order = reverse_order,
                 #filter_expr = filter_expr,
                 )
             right.add(Link(label='next',onclick=onclick))
@@ -118,14 +142,14 @@ class Actor(base):
             right.paragraph(text='t', Class='hidden')
         
         # create a table
-        table = self.createMatterTable(director, order_by=order_by, slice=slice)
+        table = self.createMatterTable(director, order_by=order_by, reverse_order=reverse_order, slice=slice, )
         view.add(table)
         #
         return select(id='main-display-area').replaceContent(view)
 
 
-    def createMatterTable(self, director, order_by=None, slice=None, **filters):
-        matters = self._getMatters(director, filters=filters, order_by=order_by, slice=slice)
+    def createMatterTable(self, director, order_by=None, reverse_order=None, slice=None, **filters):
+        matters = self._getMatters(director, filters=filters, order_by=order_by, reverse_order=reverse_order, slice=slice)
 
         cols = [ 'id', 'description', 'type', 'chemical_formula', 'created']
         args = matters, cols, director
@@ -293,7 +317,7 @@ Atoms
         return q.count()
 
 
-    def _getMatters(self, director, filters=None, order_by=None, slice=None):
+    def _getMatters(self, director, filters=None, order_by=None, reverse_order=None, slice=None):
         # this implementation does not work when order_by=Type
         self._debug.log('filters: %r, order_by: %r, slice: %r' % (filters, order_by, slice))
         from vnf.dom import mattertables
@@ -310,13 +334,17 @@ Atoms
         if order_by:
             q = q.order_by(order_by)
         if slice:
+            if reverse_order:
+                n = self._countMatters(director, filters=filters)
+                slice = n-slice[1], n-slice[0]
             q = q.slice(*slice)
         records = q.all()
         def _(r):
             pointer = r.globalpointer.dereference(db)
             return pointer.getPointed(db)
-        return map(_, records)
-
+        ret = map(_, records)
+        if reverse_order: ret.reverse()
+        return ret
 
 
 def simulationTables():
