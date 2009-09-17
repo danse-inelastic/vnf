@@ -24,8 +24,15 @@ class Actor(base):
 
         import pyre.inventory
 
+        # in case of working with one matter
         id = pyre.inventory.str('id')
         type = pyre.inventory.str('type')
+
+        # in case of working with a list
+        number_records_per_page = pyre.inventory.int(name='number_records_per_page', default=20)
+        page_number = pyre.inventory.int(name='page_number', default=0)
+        order_by = pyre.inventory.str(name='order_by')
+        filter_expr = pyre.inventory.str(name='filter_expr')
 
 
     def default(self, director):
@@ -33,18 +40,68 @@ class Actor(base):
 
 
     def showListView(self, director):
-        # create a table of all matters
-        table = self.createMatterTable(director)
-        #
-        return select(id='main-display-area').replaceContent(table)
+        # parameters
+        order_by = self.inventory.order_by or None
+        number_records_per_page = self.inventory.number_records_per_page
+        page_number = self.inventory.page_number
+        slice = page_number*number_records_per_page, (page_number+1)*number_records_per_page
+        # XXX
+        # filter_expr ....
+        # filters = ...
 
-
-    def createMatterTable(self, director, **filters):
-        matters = self._getMatters(director, **filters)
-
-        # XXX: hack
-        matters = matters[:10]
+        # create a container
+        from luban.content.Document import Document
+        from luban.content.Splitter import Splitter
+        from luban.content.Link import Link
+        view = Document(id='matter-list-view')
         
+        # navigation bar (previous, next...)
+        # get a total count
+        totalcount = self._countMatters(director)
+        lastpage = (totalcount-1)/number_records_per_page
+        # 
+        bar = Splitter(id='matter-table-navigation-bar')
+        view.add(bar)
+        #
+        left = bar.section(id='matter-table-navigation-bar-left')
+        if page_number>0:
+            onclick=load(
+                actor='matter', routine='showListView',
+                page_number=page_number-1,
+                number_records_per_page = number_records_per_page,
+                order_by = order_by or '',
+                #filter_expr = filter_expr,
+                )
+            left.add(Link(label='previous',onclick=onclick))
+        else:
+            left.paragraph(text='t', Class='hidden')
+        #
+        text = '%s-%s of %s' % (slice[0], slice[1], totalcount)
+        bar.section(id='matter-table-navigation-bar-middle').paragraph(text=text)
+        #
+        right = bar.section(id='matter-table-navigation-bar-right')
+        if page_number < lastpage:
+            onclick=load(
+                actor='matter', routine='showListView',
+                page_number=page_number+1,
+                number_records_per_page = number_records_per_page,
+                order_by = order_by or '',
+                #filter_expr = filter_expr,
+                )
+            right.add(Link(label='next',onclick=onclick))
+        else:
+            right.paragraph(text='t', Class='hidden')
+        
+        # create a table
+        table = self.createMatterTable(director, order_by=order_by, slice=slice)
+        view.add(table)
+        #
+        return select(id='main-display-area').replaceContent(view)
+
+
+    def createMatterTable(self, director, order_by=None, slice=None, **filters):
+        matters = self._getMatters(director, filters=filters, order_by=order_by, slice=slice)
+
         cols = [ 'id', 'description', 'type', 'chemical_formula', 'created']
         args = matters, cols, director
         thetable = director.retrieveComponent(
@@ -196,17 +253,43 @@ Atoms
         return director.clerk.getRecordByID(type, id)
 
 
-    def _getMatters(self, director, **kwds):
+    def _countMatters(self, director, filters=None):
         from vnf.dom import mattertables
         tables = mattertables()
-        def _(table): 
-            return director.clerk.db.query(table).filter_by(**kwds).all()
-        records = map(_, tables)
+        db = director.clerk.db
+        q = db.query(tables[0])
+        if filters:
+            q = q.filter_by(**filters)
+        for t in tables[1:]:
+            q1 = db.query(t)
+            if filters:
+                q1 = q1.filter_by(**filters)
+            q = q.union(q1)
+        return q.count()
 
-        import operator
-        records = reduce(operator.__add__, records)
-        return records
 
+    def _getMatters(self, director, filters=None, order_by=None, slice=None):
+        from vnf.dom import mattertables
+        tables = mattertables()
+        db = director.clerk.db
+        q = db.query(tables[0])
+        if filters:
+            q = q.filter_by(**filters)
+        for t in tables[1:]:
+            q1 = db.query(t)
+            if filters:
+                q1 = q1.filter_by(**filters)
+            q = q.union(q1)
+        if order_by:
+            q = q.order_by(order_by)
+        if slice:
+            q = q.slice(*slice)
+        records = q.all()
+        def _(r):
+            pointer = r.globalpointer.dereference(db)
+            return pointer.getPointed(db)
+        return map(_, records)
+    
 
 def simulationTables():
     from vnf.dom import materialsimulationtables, materialmodelingtables

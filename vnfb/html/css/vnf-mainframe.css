@@ -154,7 +154,7 @@ body {
     padding: 0.1em 0.2em 0.4em 0.1em;
     background-color: #cced8c;
 }
-#main-display-area-frame div.luban-splitsection-interior-container{
+#main-display-area-frame > div.luban-splitsection-interior-container{
     -moz-border-radius: 25px 25px 25px 25px;
     min-height: 300;
     width: 100%;

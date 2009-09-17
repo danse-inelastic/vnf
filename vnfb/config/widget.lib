@@ -12,7 +12,9 @@
         "jquery/ui/smoothness/ui.all.css",
 
 	"luban.css",
+
         "vnf.css",
+        "vnf-table.css",
         "vnf-mainframe.css",
 	"vnf-matter.css"
         ],
@@ -29,9 +31,7 @@
   },
   "table": {
      "stylesheets": [
-        "tabulator/datePicker.css",
-        "tabulator/tabulator.css",
-        "tabulator/tabulator-color.css"
+        "tabulator/datePicker.css"
         ],
      "jslibs":      [
         "jquery/date.js",
