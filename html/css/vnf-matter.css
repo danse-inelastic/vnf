@@ -1,12 +1,35 @@
 /*  -*- CSS -*-  */
 
 /* matter list */
+/* navigation bar */
 #matter-table-navigation-bar {
+    /*
     height: 30px;
     width: 240;
+    */
+    height: auto;
+    max-width: 300px;
     margin-left: auto;
     margin-right: 1px;
 }
+#matter-table-navigation-bar > table.luban-splitter {
+    width: auto;
+    margin: 0 1px 0 auto;
+}
+#matter-table-navigation-bar > table.luban-splitter tr{
+}
+#matter-table-navigation-bar > table.luban-splitter td{
+    width: auto;
+    padding: 0 10px;
+}
+#matter-table-navigation-bar > table.luban-splitter td a{
+    margin: 0;
+}
+#matter-table-navigation-bar > table.luban-splitter td p{
+    margin: 0;
+}
+
+
 #matter-table-navigation-bar-left, #matter-table-navigation-bar-right{
     width: auto;
     text-align: center;
@@ -16,9 +39,49 @@
     text-align: center;
 }
 
+
+
+/* controls */
+#matter-table-controls {
+    /*
+    height: 30px;
+    width: 240;
+    */
+    height: auto;
+    max-width: 400px;
+    margin-left: 1px;
+    margin-right: auto;
+}
+#matter-table-controls > table.luban-splitter {
+    width: auto;
+    margin: 0 auto 0 1px;
+}
+#matter-table-controls > table.luban-splitter tr{
+}
+#matter-table-controls > table.luban-splitter td{
+    width: auto;
+    padding: 0 10px;
+}
+#matter-table-controls > table.luban-splitter td .formfield{
+    margin: 0;
+}
+#matter-table-controls > table.luban-splitter td a{
+    margin: 0;
+}
+#matter-table-controls > table.luban-splitter td p{
+    margin: 0;
+}
+
+#matter-table-filter input {
+    width: 250px;
+}
+
+/* table itself */
 #matter-table {
     width: 100%;
 }
+
+#
 
 /* single matter view */
 #matterdoc {
