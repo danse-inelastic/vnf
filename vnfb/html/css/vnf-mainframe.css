@@ -97,12 +97,18 @@ body {
 }
 /* portlet round borders */
 #main-portlet .portletContent {
-    -moz-border-radius: 18px 18px 18px 18px;
+    -moz-border-radius: 16px 16px 16px 16px;
+    -webkit-border-radius: 16px;
+    /* border: 1px solid green; */
     padding: 0.25em 0.5em;
     background-color: #e0e0e0;
 }
 #main-portlet .portletitem-container {
-    -moz-border-radius: 25px 0 0 25px;
+    -moz-border-radius: 23px 0 0 23px;
+    -webkit-border-top-left-radius: 23px;
+    -webkit-border-top-right-radius: 0px;
+    -webkit-border-bottom-right-radius: 0px;
+    -webkit-border-bottom-left-radius: 23px;
     padding: 0.5em 1.5em 0.5em 0.5em;
 }
 /* selected */
@@ -145,6 +151,7 @@ body {
 /* main area */
 #main-display-area-frame {
     -moz-border-radius: 25px 25px 25px 25px;
+    -webkit-border-radius: 25px;
     /*
     border-color: #f5c073;
     border-style: solid;
@@ -156,6 +163,7 @@ body {
 }
 #main-display-area-frame > div.luban-splitsection-interior-container{
     -moz-border-radius: 25px 25px 25px 25px;
+    -webkit-border-radius: 25px;
     min-height: 300;
     width: 100%;
     background-color: white;
