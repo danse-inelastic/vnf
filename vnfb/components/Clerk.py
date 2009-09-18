@@ -63,21 +63,7 @@ class Clerk( base ):
     # generic accessing methods
     def updateRecordWithID(self, record):
         'update a record. assumes that it has a "id" column'
-        id = record.id
-        where = "id='%s'" % id
-        
-        assignments = []
-        
-        # get the column names and couple them with the new values
-        for column, descriptor in record._columnRegistry.iteritems():
-            value = descriptor.getFormattedValue(record)
-            assignments.append( (column, value) )
-            continue
-
-        # update the row, or in other words, record
-        self.db.updateRow(record.__class__, assignments, where)
-        
-        return record
+        return self.db.updateRecord(record)
 
 
     def getRecordByID(self, tablename, id):
