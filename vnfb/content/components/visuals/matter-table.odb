@@ -57,7 +57,7 @@ def table(matters, cols, director):
             onclick = load(
                 actor='matter', routine='showMaterialView',
                 id = matter.id,
-                type = matter.__class__.__name__.lower(),
+                type = matter.__class__.name,
                 )
             )
         return link
