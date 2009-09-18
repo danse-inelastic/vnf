@@ -204,6 +204,8 @@ class Actor(base):
             'matter-table',
             factory="visual", args=args,
             vault=['visuals'])
+        thetable.oncellchanged = select(element=thetable).notify(
+            event='row-changed', actor='mattertable', routine='processRowChange')
         return thetable
     
 

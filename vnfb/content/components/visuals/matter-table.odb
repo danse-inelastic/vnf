@@ -35,9 +35,11 @@ def table(matters, cols, director):
         created = Model.descriptors.str(name='created')
         simulations = Model.descriptors.str(name='simulations')
 
+        row_identifiers = ['id', 'type']
+
     columns = [
         View.Column(name='col0',label='ID', measure='id'),
-        View.Column(name='col1',label='Description', measure='description'),
+        View.Column(name='col1',label='Description', measure='description', editable=True),
         View.Column(name='col2',label='Visualize', measure='visualize'),
         View.Column(name='col3',label='Type', measure='type'),
         View.Column(name='col4',label='Chemical_formula', measure='chemical_formula'),
@@ -67,7 +69,7 @@ def table(matters, cols, director):
         date = exp.date
         return str(date)
     def getType(matter):
-        return matter.__class__.__name__.lower()
+        return matter.__class__.name
 
     def getChemical_formula(matter):
         return matter.chemical_formula
