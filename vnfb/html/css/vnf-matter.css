@@ -37,6 +37,7 @@
 #matter-table-navigation-bar-middle{
     width: auto;
     text-align: center;
+    color: #666666;
 }
 
 
@@ -72,8 +73,23 @@
     margin: 0;
 }
 
+#matter-table-controls div.label-container {
+    color: #888888;
+    font-size: 90%;
+}
+
 #matter-table-filter input {
     width: 250px;
+}
+
+#matter-table-controls input {
+    border-color: #cced8c;
+    border-width: 2;
+}
+
+#matter-table-controls select {
+    border-color: #cced8c;
+    border-width: 2;
 }
 
 /* table itself */
@@ -81,7 +97,9 @@
     width: 100%;
 }
 
-#
+#matter-table thead {
+    color: #888888;
+}
 
 /* single matter view */
 #matterdoc {
