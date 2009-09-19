@@ -43,6 +43,13 @@ p.hidden {
     color: transparent;
 }
 
+
+/* overload the default behavior of luban for input */
+input {
+    border-color: #cced8c;
+    border-width: 2;
+}
+
 /* version */
 /* $Id$ */
 

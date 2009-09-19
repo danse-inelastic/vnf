@@ -231,8 +231,11 @@ class Actor(base):
         visual = director.retrieveVisual('matter')
 
         matter = self._getMatter(director)
-        title = matter.short_description or matter.id
-        visual.find(id='matterdoc-title').document(title=title)
+        name =  matter.short_description or matter.id
+        text = '<p>Matter\<a>%s</a></p>' % name
+        from luban.content.HtmlDocument import HtmlDocument
+        html = HtmlDocument(text=text)
+        visual.find(id='matterdoc-title').add(html)
         if not matter.short_description:
             visual.find(id='matterdoc-title-extra').add(
                 self.createMatterDescriptionInputControl(director))
@@ -260,8 +263,8 @@ class Actor(base):
         doc = Splitter(id='matter-description-editor-container')
 
         left = doc.section()
-        label = 'You may want to consider give this material a name'
-        link = Link(label=label)
+        label = 'To give this material a name, click here'
+        link = Link(label=label, id='matterdoc-change-matter-name-link')
         left.add(link)
 
         right = doc.section()
