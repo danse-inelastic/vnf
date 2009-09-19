@@ -27,6 +27,7 @@ class Actor(base):
         # in case of working with one matter
         id = pyre.inventory.str('id')
         type = pyre.inventory.str('type')
+        description = pyre.inventory.str('description')
 
         # in case of working with a list
         number_records_per_page = pyre.inventory.int(name='number_records_per_page', default=20)
@@ -229,6 +230,13 @@ class Actor(base):
     def createView(self, director):
         visual = director.retrieveVisual('matter')
 
+        matter = self._getMatter(director)
+        title = matter.short_description or matter.id
+        visual.find(id='matterdoc-title').document(title=title)
+        if not matter.short_description:
+            visual.find(id='matterdoc-title-extra').add(
+                self.createMatterDescriptionInputControl(director))
+        
         matterviewdoc = visual.find(id='matterviewdoc')
         descriptiondoc = self.createDescriptionDoc(director)
         matterviewdoc.add(descriptiondoc)
@@ -243,6 +251,45 @@ class Actor(base):
         newsims = self.createNewSimButtons(director)
         newmatsimscontainer.add(newsims)
         return visual
+
+
+    def createMatterDescriptionInputControl(self, director):
+        from luban.content.Splitter import Splitter
+        from luban.content.Link import Link
+        from luban.content.FormTextField import FormTextField
+        doc = Splitter(id='matter-description-editor-container')
+
+        left = doc.section()
+        label = 'You may want to consider give this material a name'
+        link = Link(label=label)
+        left.add(link)
+
+        right = doc.section()
+        field = FormTextField(
+            id = 'matter-description-input',
+            hidden = 1,
+            )
+        field.onchange = load(
+            actor='matter', routine='changeDescriptionAndUpdateMatterView',
+            id = self.inventory.id, type = self.inventory.type,
+            description = select(element=field).formfield('getValue')
+            )
+        right.add(field)
+
+        left.onclick = [select(element=link).hide(), select(element=field).show()]
+        return doc
+
+
+    def changeDescriptionAndUpdateMatterView(self, director):
+        self.changeDescription(director)
+        return self.showMaterialView(director)
+
+
+    def changeDescription(self, director):
+        matter = self._getMatter(director)
+        matter.short_description = self.inventory.description
+        director.clerk.updateRecordWithID(matter)
+        return
 
 
     def createNewSimButtons(self, director):
