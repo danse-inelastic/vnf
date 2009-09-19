@@ -21,7 +21,7 @@ from luban.content.Tabs import Tab
 def matterviewdoc():
     return Document(
         id='matterviewdoc',
-        title='View',
+        title='Details',
         )
 
 def leftpanel():
@@ -69,11 +69,21 @@ def horizsplit():
     instance.Class = ''
     return instance
 
+
+def titlesection():
+    ret = Splitter(id='matterdoc-titlecontainer')
+    ret.section(id='matterdoc-title')
+    ret.section(id='matterdoc-title-extra')
+    return ret
+
+
 def visual(director):
     instance = Document()
-    instance.title = 'Matter'
     instance.id = 'matterdoc'
-    instance.contents = [horizsplit()]
+    instance.contents = [
+        titlesection(),
+        horizsplit(),
+        ]
     instance.Class = ''
     return instance
 

@@ -118,6 +118,7 @@
 
 #mattersimspanel {
     width: 70%;
+    vertical-align: top;
 }
 
 #mattersimsdoc {
