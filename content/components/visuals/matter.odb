@@ -21,7 +21,6 @@ from luban.content.Tabs import Tab
 def matterviewdoc():
     return Document(
         id='matterviewdoc',
-        title='Details',
         )
 
 def leftpanel():
@@ -33,7 +32,7 @@ def newsimtab():
     instance = Tab(id='newmatsimtab')
     instance.Class = ''
     instance.selected = False
-    instance.label = 'new simulations'
+    instance.label = 'Create new simulations'
     instance.contents = []
     return instance
 
@@ -53,7 +52,7 @@ def simtabs():
 
 
 def simsdoc():
-    doc = Document(title='Simulations', id='mattersimsdoc')
+    doc = Document(id='mattersimsdoc')
     doc.add(simtabs())
     return doc
 

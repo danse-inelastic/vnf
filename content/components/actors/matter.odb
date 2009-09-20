@@ -232,7 +232,7 @@ class Actor(base):
 
         matter = self._getMatter(director)
         name =  matter.short_description or matter.id
-        text = '<p>Matter\<a>%s</a></p>' % name
+        text = '<p>Matter\ <a>%s</a></p>' % name
         from luban.content.HtmlDocument import HtmlDocument
         html = HtmlDocument(text=text)
         visual.find(id='matterdoc-title').add(html)
@@ -300,15 +300,23 @@ class Actor(base):
         
         from luban.content.Document import Document
         doc = Document()
+
+        # should be handled by resource manager
+        icons = {
+            }
         
         simtables = simulationTables()
         from luban.content.Button import Button
         def _(table):
-            label = table.__name__
-            icon = 'material_simulations/%s.png' % label
-            actor = 'material_simulations/%s' % (label.lower(), )
+            name = table.__name__
+            label = table.DESCRIPTION
+            icon = icons.get(name)
+            if not icon:
+                icon = '%s.png' % name
+            icon = 'material_simulations/%s' % icon
+            actor = 'material_simulations/%s' % (name.lower(), )
             return Button(
-                label=label, icon=icon,
+                label=label, icon=icon, id='new-simulation-%s-button' % name,
                 onclick=load(
                     actor=actor, routine='new',
                     matter_type=matter.name, matter_id=matter.id)
@@ -322,6 +330,11 @@ class Actor(base):
     def createSimsTable(self, director):
         matter = self._getMatter(director)
         sims = getallsimulations(matter=matter, db=director.clerk.db)
+
+        if not sims:
+            text = ['There is no simulation for this material. Please create a new simulation. To start, click the "Create new simulation" tab']
+            from luban.content.Document import Document
+            return Document().paragraph(text=text)
 
         args = sims, ['description', 'type', 'creationDate',], director
         #return table(*args)
@@ -362,9 +375,9 @@ class Actor(base):
             'atoms': atoms,
             }
         subs['namebar'] = '='*len(subs['name'])
+        # %(name)s
+        # %(namebar)s
         description = '''
-%(name)s
-%(namebar)s
 
 Lattice
 """""""
