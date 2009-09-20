@@ -12,8 +12,6 @@
 #
 
 
-from registry import tableRegistry
-
 from OwnedObject import OwnedObject as base
 class ITask(base):
 

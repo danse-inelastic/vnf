@@ -60,7 +60,9 @@ def computationtables():
 def materialsimulationtables():
     all = alltables()
     from MaterialSimulation import MaterialSimulation as base
-    return filter( lambda t: issubclass(t, base), all )
+    return  filter(
+        lambda t: issubclass(t, base) and not t.__dict__.get('NOTYETIMPLEMENTED'),
+        all)
 
 
 def materialmodelingtables():
