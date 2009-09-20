@@ -37,6 +37,19 @@ class MatterBase(base):
     chemical_formula = dsaw.db.varchar(name = 'chemical_formula', length = 1024)
     
 
+def buildFormula(matter):
+    atom_symbols = matter.atom_symbols
+    
+    from vnf.components.misc import partition
+    atom_symbols = partition(atom_symbols)
+    
+    chemicalFormula = ''
+    for sym in atom_symbols:
+        chemicalFormula+=str(sym[0])+'_'+str(len(sym))+' '
+        
+    return chemicalFormula
+
+
 # version
 __id__ = "$Id$"
 
