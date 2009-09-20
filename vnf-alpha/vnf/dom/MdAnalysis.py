@@ -36,6 +36,8 @@ class MdAnalysis(base):
 #        LIBPOINTER_FILE,
 #        ]
 
+    DESCRIPTION = "MD analysis"
+    NOTYETIMPLEMENTED = True
 
 # version
 __id__ = "$Id$"

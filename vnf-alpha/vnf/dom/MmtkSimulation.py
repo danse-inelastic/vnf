@@ -18,6 +18,9 @@ class MmtkSimulation(base):
     
     import dsaw.db
 
+    # meta data:
+    DESCRIPTION = "Mmtk"
+    NOTYETIMPLEMENTED = True
 
 # version
 __id__ = "$Id$"

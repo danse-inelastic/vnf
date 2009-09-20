@@ -34,6 +34,10 @@ class PhononsFromAbinitio(base):
     abinitio = dsaw.db.reference(name='abinitio', table = AbInitio)
 
 
+    # meta data:
+    DESCRIPTION = "Phonons from ab initio"
+    
+
 # version
 __id__ = "$Id$"
 

@@ -32,6 +32,9 @@ class GulpSimulation(base):
         #LIBPOINTER_FILE,
         ]
 
+    # meta data:
+    DESCRIPTION = "Gulp MD simulation"
+    
 
 # version
 __id__ = "$Id$"

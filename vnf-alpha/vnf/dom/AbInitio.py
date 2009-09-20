@@ -51,6 +51,10 @@ class AbInitio(base):
     generateInputsOnly = dsaw.db.boolean(name='generateInputsOnly', default=False)
     
 
+    # meta data:
+    DESCRIPTION = "ab initio"
+    
+
 # version
 __id__ = "$Id$"
 
