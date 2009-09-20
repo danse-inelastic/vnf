@@ -50,6 +50,23 @@ input {
     border-width: 2;
 }
 
+
+/* overload the default behavior of luban for buttons */
+.luban-button {
+    -moz-border-radius: 10px;
+    -webkit-border-radius: 10px;
+    background-color: #eeeeee;
+}
+
+.luban-button img {
+    margin: 5px;
+    height: 27px;
+}
+
+.luban-button span {
+    margin: 5px;
+}
+
 /* version */
 /* $Id$ */
 

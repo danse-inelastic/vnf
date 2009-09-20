@@ -150,6 +150,11 @@
 
 #matterviewpanel {
     width: 30%;
+    vertical-align: top;
+}
+
+#matterviewdoc {
+    font-size: 80%;
 }
 
 #mattersimspanel {
@@ -161,8 +166,12 @@
     width: 100%;
 }
 
+#new-simulation-gulpsimulation-button img {
+    height: 20px;
+}
+
 #matsimstablecontainer {
-    min-height: 300;
+    /* min-height: 300; */
     max-height: 600;
     overflow: scroll;
 }
