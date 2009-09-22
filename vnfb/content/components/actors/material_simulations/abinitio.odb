@@ -35,14 +35,12 @@ class Actor(base):
 
 
     def new(self, director):
-        # create a new simulation, and then start the wizard
-        new = director.clerk.insertNewRecordWithID(AbInitio)
         return director.redirect(
             actor='material_simulations/abinitiowizard',
             routine='start',
             matter_type=self.inventory.matter_type,
             matter_id=self.inventory.matter_id,
-            id = new.id,
+            id = '',
             )
 
 
