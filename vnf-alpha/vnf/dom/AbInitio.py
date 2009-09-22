@@ -53,6 +53,10 @@ class AbInitio(base):
 
     # meta data:
     DESCRIPTION = "ab initio"
+    LONG_DESCRIPTION = [
+        "Wikipedia: 'Ab initio quantum chemistry methods are computational chemistry methods based on quantum chemistry. The term ab initio indicates that the calculation is from first principles and that no empirical data is use.'.",
+        "In DANSE, we leverage the power of state-of-the-art density functional theory (DFT) codes for  users who want to know what first-principles methods predict about the structure and dynamics of materials.",
+        ]
     
 
 # version

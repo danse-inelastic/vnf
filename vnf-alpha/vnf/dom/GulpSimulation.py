@@ -34,6 +34,9 @@ class GulpSimulation(base):
 
     # meta data:
     DESCRIPTION = "Gulp MD simulation"
+    LONG_DESCRIPTION = [
+        "At larger length scales one can access common atom and molecular dynamics codes which employ Newton's equations of motion such as Gulp or quantized harmonic dynamics such as Gulp or a Born von Karman (BvK) calculation.",
+        ]
     
 
 # version

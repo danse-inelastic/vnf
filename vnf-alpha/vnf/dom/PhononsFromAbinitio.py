@@ -36,7 +36,9 @@ class PhononsFromAbinitio(base):
 
     # meta data:
     DESCRIPTION = "Phonons from ab initio"
-    
+    LONG_DESCRIPTION = [
+        "Computing phonon dispersions from ab initio.",
+        ]
 
 # version
 __id__ = "$Id$"
