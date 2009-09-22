@@ -329,6 +329,11 @@ class Actor(base):
 
     def createSimsTable(self, director):
         matter = self._getMatter(director)
+        #return director.redirect(
+        #    actor='materialsimulation',
+        #    routine='createTable',
+        #    filter="matsim.matter_gptr='%s'" % matter.globalpointer.id,
+        #    )
         sims = getallsimulations(matter=matter, db=director.clerk.db)
 
         if not sims:
@@ -336,7 +341,7 @@ class Actor(base):
             from luban.content.Document import Document
             return Document().paragraph(text=text)
 
-        args = sims, ['description', 'type', 'creationDate',], director
+        args = sims, ['id', 'description', 'type', 'creationDate',], director
         #return table(*args)
         thetable = director.retrieveComponent(
             'materialsimulation-table',

@@ -1,0 +1,229 @@
+#!/usr/bin/env python
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                 Jiao Lin
+#                      California Institute of Technology
+#                      (C) 2006-2009  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+from luban.content import load, select
+
+from luban.components.Actor import Actor as base
+
+
+class Actor(base):
+
+
+    class Inventory(base.Inventory):
+
+        import pyre.inventory
+
+        # in case of working with one matter
+        id = pyre.inventory.str('id')
+        type = pyre.inventory.str('type')
+        description = pyre.inventory.str('description')
+
+        # in case of working with a list
+        number_records_per_page = pyre.inventory.int(name='number_records_per_page', default=20)
+        page_number = pyre.inventory.int(name='page_number', default=0)
+        order_by = pyre.inventory.str(name='order_by', default='id')
+        reverse_order = pyre.inventory.bool(name='reverse_order', default=0)
+        filter_expr = pyre.inventory.str(name='filter_expr')
+
+
+    def default(self, director):
+        return self.showListView(director)
+
+
+    def createListView(self, director):
+        # create a table
+        table = self.createTable(director, order_by=order_by, reverse_order=reverse_order, slice=slice, filter=filter_expr)
+        return table
+
+
+    def createTable(self, director, order_by=None, reverse_order=None, slice=None, filter=None):
+        order_by = order_by or self.inventory.order_by
+        reverse_order = reverse_order or self.inventory.reverse_order
+        filter = filter or self.inventory.filter
+        matsims = self._getSimulations(director, filter=filter, order_by=order_by, reverse_order=reverse_order, slice=slice)
+
+        cols = [ 'id', 'description', 'type', 'matter', 'creationDate']
+        args = matsims, cols, director
+        thetable = director.retrieveComponent(
+            'materialsimulation-table',
+            factory="visual", args=args,
+            vault=['visuals'])
+        #thetable = table(*args)
+        thetable.oncellchanged = select(element=thetable).notify(
+            event='row-changed', actor='matsimtable', routine='processRowChange')
+        return thetable
+    
+
+    def view(self, director):
+        matter = self._getMatter(director)
+        
+        from luban.content.Page import Page
+        page = Page(title='Material %s' % matter.short_description)
+
+        view = self.createView(director)
+        page.add(view)
+        
+        return page
+
+
+    def showMaterialSimulation(self, director):
+        view = self.createView(director)
+        return select(id='main-display-area').replaceContent(view)
+    
+        
+    def createView(self, director):
+        return
+
+
+    def createMatterDescriptionInputControl(self, director):
+        from luban.content.Splitter import Splitter
+        from luban.content.Link import Link
+        from luban.content.FormTextField import FormTextField
+        doc = Splitter(id='matter-description-editor-container')
+
+        left = doc.section()
+        label = 'To give this material a name, click here'
+        link = Link(label=label, id='matterdoc-change-matter-name-link')
+        left.add(link)
+
+        right = doc.section()
+        field = FormTextField(
+            id = 'matter-description-input',
+            hidden = 1,
+            )
+        field.onchange = load(
+            actor='matter', routine='changeDescriptionAndUpdateMatterView',
+            id = self.inventory.id, type = self.inventory.type,
+            description = select(element=field).formfield('getValue')
+            )
+        right.add(field)
+
+        left.onclick = [select(element=link).hide(), select(element=field).show()]
+        return doc
+
+
+    def changeDescriptionAndUpdateMatterView(self, director):
+        self.changeDescription(director)
+        return self.showMaterialView(director)
+
+
+    def changeDescription(self, director):
+        matter = self._getMatter(director)
+        matter.short_description = self.inventory.description
+        director.clerk.updateRecordWithID(matter)
+        return
+
+
+    def __init__(self, name='materialsimulation'):
+        super(Actor, self).__init__(name)
+        return
+
+    # db access
+    def _getMaterialSimulation(self, director):
+        type = self.inventory.type
+        id = self.inventory.id
+        return director.clerk.getRecordByID(type, id)
+
+
+    def _countSimulations(self, director, filter=None):
+        tables = simulationTables()
+        
+        db = director.clerk.db
+        qf = lambda table: simulationQuery(table, db, filter=filter)
+
+        qs = map(qf, tables)
+        
+        q = sqlalchemy.union_all(*qs)
+        return q.count()
+
+
+    def _getSimulations(self, director, filter=None, order_by=None, reverse_order=None, slice=None):
+        self._debug.log('filter: %r, order_by: %r, slice: %r' % (filter, order_by, slice))
+        tables = simulationTables()
+        db = director.clerk.db
+        qf = lambda table: simulationQuery(table, db, filter=filter)
+
+        qs = map(qf, tables)
+        q = sqlalchemy.union_all(*qs)
+
+        if order_by:
+            q = q.order_by(order_by)
+        if slice:
+            if reverse_order:
+                n = self._countSimulations(director, filter=filter)
+                slice = n-slice[1], n-slice[0]
+            q = sqlalchemy.select(
+                [q.alias('tmptoslice')],
+                limit = slice[1]-slice[0],
+                offset = slice[0])
+
+        # only need gpointers to be returned
+        q = q.alias('tmp')
+        q1 = sqlalchemy.select(columns=['gptr'], from_obj=[q])
+
+        #db._saengine.echo = True
+        rows = q1.execute().fetchall()
+
+        #and then map to records
+        from dsaw.db.VersatileReference import vreference
+        def _(row): return db.dereference(vreference(row[0]))
+        
+        return map(_, rows)
+
+
+from dsaw.db.VersatileReference import global_pointer
+import sqlalchemy
+def simulationQuery(table, db, filter=None):
+    sGP = db._tablemap.TableToSATable(global_pointer)
+    st = db._tablemap.TableToSATable(table)
+    q = sqlalchemy.select(
+        [st.c.id.label('id'),
+         st.c.short_description.label('short_description'),
+         sGP.c.type.label('type'),
+         st.c.date.label('date'),
+         st.c.matter.label('matter_gptr'),
+         st.c.globalpointer.label('gptr'),
+         ],
+        st.c.globalpointer==sGP.c.id,
+        )
+    if filter:
+        q = sqlalchemy.select([q.alias('matsim')], whereclause=filter)
+    return q
+
+
+def simulationTables():
+    from vnf.dom import materialsimulationtables, materialmodelingtables
+    tables = materialsimulationtables()# + materialmodelingtables()
+    return tables
+
+
+def getallsimulations(matter, db, **opts):
+    tables = simulationTables()
+
+    computations = []
+    for table in tables:
+        computations += matter.getReferences(db, table, 'matter', **opts)
+        continue
+    
+    return computations
+
+
+def actor(): return Actor()
+
+
+# version
+__id__ = "$Id$"
+
+# End of file 
+

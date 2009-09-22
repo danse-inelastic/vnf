@@ -27,14 +27,18 @@ def table(matsims, cols, director):
     
     class model(Model):
 
-        description = Model.descriptors.link(name='description')
+        id = Model.descriptors.link(name='id')
+        description = Model.descriptors.str(name='description')
         type = Model.descriptors.str(name='type')
         matter = Model.descriptors.str(name='matter')
         creationDate = Model.descriptors.str(name='creationDate')
 
+        row_identifiers = ['id', 'type']
+
     
     columns = [
-        View.Column(name='col1',label='Description', measure='description'),
+        View.Column(name='col0',label='ID', measure='id'),
+        View.Column(name='col1',label='Description', measure='description', editable=True),
         View.Column(name='col2',label='Type', measure='type'),
         View.Column(name='col3',label='Matter', measure='matter'),
         View.Column(name='col5',label='Date created', measure='creationDate'),
@@ -43,17 +47,19 @@ def table(matsims, cols, director):
 
     view = View(columns=columns, editable=False)
 
-    def getDesc(matsim):
-        label = matsim.short_description or matsim.id
+    def getId(matsim):
+        label = matsim.id
         link = Link(
             label = label,
             onclick = load(
-                actor='computation', routine='view',
+                actor='materialsimulation', routine='showMaterialSimulation',
                 id = matsim.id,
-                type = matsim.__class__.__name__.lower(),
+                type = matsim.__class__.name,
                 )
             )
         return link
+    def getDesc(matsim):
+        return matsim.short_description
     def getCreationDate(exp):
         date = exp.date
         return str(date)
@@ -63,7 +69,7 @@ def table(matsims, cols, director):
         matter = matsim.matter
         if not matter: return 'not defined'
         try:
-            matter = director.clerk.dereference(matter)
+            matter = director.clerk.db.dereference(matter)
         except:
             return 'matter %s not found' % matter.id
         identifier = matter.short_description or matter.chemical_formula
@@ -71,6 +77,7 @@ def table(matsims, cols, director):
         
     import operator
     generators = {
+        'id': getId,
         'description': getDesc,
         'type': getType,
         'matter': getMatter,
@@ -81,9 +88,7 @@ def table(matsims, cols, director):
     record2tuple = lambda record: [g(record) for g in value_generators]
     data = map(record2tuple, matsims)
 
-    table = Table(model=model, data=data, view=view)
-
-    from pyre.components.Component import Component
+    table = Table(model=model, data=data, view=view, id='matsim-table')
     return table
 
 

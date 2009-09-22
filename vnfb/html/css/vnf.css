@@ -52,10 +52,17 @@ input {
 
 
 /* overload the default behavior of luban for buttons */
+.luban-button-container {
+    padding: 12px 8px;
+    margin: 5px;
+    text-align: center;
+}
 .luban-button {
-    -moz-border-radius: 10px;
-    -webkit-border-radius: 10px;
+    -moz-border-radius: 15px;
+    -webkit-border-radius: 15px;
     background-color: #eeeeee;
+    border: 1px outset;
+    padding: 15px 8px;
 }
 
 .luban-button img {
