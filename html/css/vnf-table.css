@@ -33,7 +33,7 @@ table.tabulated {
 
 table.tabulated td {
     /*text-align: center;*/
-    font: 100%  "Lucida Grande", Verdana, Lucida, Helvetica, Arial, sans-serif;
+    font: 90%  "Lucida Grande", Verdana, Lucida, Helvetica, Arial, sans-serif;
     border-left: 1px solid white;
     border-right: 1px solid white;
     border-style: solid;
@@ -81,12 +81,12 @@ input.dp-applied {
 
 
 .odd {
-    background-color: #dfe6fd;
+    background-color: #f5f5f5;
     /*background-color: #f0f3fc;*/
 }
 
 .even {
-    background-color: #f0f0f0;
+    background-color: #eaeaea;
 }
 
 

@@ -155,11 +155,29 @@
 
 #matterviewdoc {
     font-size: 80%;
+    padding: 5px 5px 5px 10px;
+}
+
+#matterviewpanel {
+    -moz-border-radius: 15px;
+    -webkit-border-radius: 15px;
+    /* border: solid 1px; */
+    padding: 10px;
+    background-color: #d8ffe4;
+}
+
+
+#matterdoc table.luban-splitter tr.luban-splitter-section-container {
+    border-spacing: 10px;
 }
 
 #mattersimspanel {
     width: 70%;
     vertical-align: top;
+    background-color: lightYellow;
+    padding: 15px;
+    -moz-border-radius: 10px;
+    -webkit-border-radius: 10px;
 }
 
 #mattersimsdoc {
@@ -167,7 +185,7 @@
 }
 
 #new-simulation-gulpsimulation-button img {
-    height: 20px;
+    /* height: 20px; */
 }
 
 #matsimstablecontainer {
@@ -176,6 +194,23 @@
     overflow: scroll;
 }
 
+#mattersimsdoc table.luban-button-container {
+    width: 100%;
+    text-align: center;
+}
+
+#matterviewdoc div.ReST div.section h1 {
+    font-size: 120%;
+    font-style: normal;
+}
+
+#matterviewdoc div.ReST div.section blockquote {
+    margin: 0.5em 10px;
+}
+
+#matterviewdoc div.ReST div.section blockquote ul{
+    line-height: 0.8em;
+}
 
 /* version */
 /* $Id$ */

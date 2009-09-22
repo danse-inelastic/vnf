@@ -82,7 +82,7 @@ body {
 
 /* portlets on the left */
 #portlets-frame {
-    
+    padding: 0;
     vertical-align: top;
     width: 15em;
 }

@@ -24,15 +24,16 @@ def matterviewdoc():
         )
 
 def leftpanel():
-    instance = SplitSection(id='matterviewpanel')
-    instance.add(matterviewdoc())
-    return instance
+    doc = SplitSection(id='matterviewpanel')
+    doc.add(titlesection())
+    doc.add(matterviewdoc())
+    return doc
 
 def newsimtab():
     instance = Tab(id='newmatsimtab')
     instance.Class = ''
     instance.selected = False
-    instance.label = 'Create new simulations'
+    instance.label = 'Create new simulation'
     instance.contents = []
     return instance
 
@@ -70,7 +71,7 @@ def horizsplit():
 
 
 def titlesection():
-    ret = Splitter(id='matterdoc-titlecontainer')
+    ret = Splitter(id='matterdoc-titlecontainer', orientation='vertical')
     ret.section(id='matterdoc-title')
     ret.section(id='matterdoc-title-extra')
     return ret
@@ -80,7 +81,6 @@ def visual(director):
     instance = Document()
     instance.id = 'matterdoc'
     instance.contents = [
-        titlesection(),
         horizsplit(),
         ]
     instance.Class = ''

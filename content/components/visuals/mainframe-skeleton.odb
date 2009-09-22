@@ -22,7 +22,7 @@ from luban.content.Tabs import Tab
 def visual(director):
     vertical = Splitter(orientation='vertical')
     header_frame = vertical.section(id='header-frame')
-    body_frame = vertical.section(id='body-frame', Class='has-shadow')
+    body_frame = vertical.section(id='body-frame')#, Class='has-shadow')
     footer_frame = vertical.section(id='footer-frame')
     credits_frame = vertical.section(id='credits-frame')
 
