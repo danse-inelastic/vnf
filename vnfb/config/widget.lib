@@ -15,6 +15,7 @@
 
         "vnf.css",
         "vnf-table.css",
+        "vnf-mastertable.css",
         "vnf-mainframe.css",
 	"vnf-matter.css"
         ],

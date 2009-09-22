@@ -42,6 +42,38 @@ class Actor(base):
 
 
     def showListView(self, director):
+        view = self.createListView(director)
+        return select(id='main-display-area').replaceContent(view)
+
+
+    def createListView(self, director):
+        from vnfb.components.MasterTable import MasterTableFactory
+        def countrecords(filter):
+            return self._countMatters(director, filter)
+        def createtable(order_by, reverse_order, slice, filter):
+            return self.createMatterTable(
+                director,
+                order_by=order_by,
+                reverse_order=reverse_order,
+                slice=slice,
+                filter=filter)
+        factory = MasterTableFactory(self.name, countrecords, createtable)
+
+        order_by = self.inventory.order_by
+        reverse_order = self.inventory.reverse_order
+        filter_expr = self.inventory.filter_expr
+        number_records_per_page = self.inventory.number_records_per_page
+        page_number = self.inventory.page_number
+
+        return factory.create(
+            order_by=order_by,
+            reverse_order=reverse_order,
+            filter_expr=filter_expr,
+            number_records_per_page=number_records_per_page,
+            page_number=page_number)
+    
+        
+    def createListView1(self, director):
         from luban.content.FormSelectorField import FormSelectorField
         from luban.content.FormTextField import FormTextField
         
@@ -193,7 +225,7 @@ class Actor(base):
         table = self.createMatterTable(director, order_by=order_by, reverse_order=reverse_order, slice=slice, filter=filter_expr)
         view.add(table)
         #
-        return select(id='main-display-area').replaceContent(view)
+        return view
 
 
     def createMatterTable(self, director, order_by=None, reverse_order=None, slice=None, filter=None):

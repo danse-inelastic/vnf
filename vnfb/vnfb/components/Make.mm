@@ -36,6 +36,7 @@ all: export
 
 EXPORT_PYTHON_MODULES = \
 	Clerk.py \
+	MasterTable.py \
 	__init__.py \
 
 
