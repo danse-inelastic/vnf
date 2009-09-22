@@ -1,0 +1,103 @@
+/*  -*- CSS -*-  */
+
+.master-table-navigation-bar {
+    height: auto;
+    max-width: 300px;
+    margin-left: auto;
+    margin-right: 1px;
+}
+,master-table-navigation-bar > table.luban-splitter {
+    width: auto;
+    margin: 0 1px 0 auto;
+}
+.master-table-navigation-bar > table.luban-splitter tr{
+}
+.master-table-navigation-bar > table.luban-splitter td{
+    width: auto;
+    padding: 0 10px;
+}
+.master-table-navigation-bar > table.luban-splitter td a{
+    margin: 0;
+}
+.master-table-navigation-bar > table.luban-splitter td p{
+    margin: 0;
+}
+
+/*
+.master-table-navigation-bar-left, .master-table-navigation-bar-right{
+    width: auto;
+    text-align: center;
+}
+*/
+.master-table-navigation-bar-middle{
+    width: auto;
+    text-align: center;
+    color: #666666;
+}
+
+
+
+/* controls */
+.master-table-controls {
+    /*
+    height: 30px;
+    width: 240;
+    */
+    height: auto;
+    max-width: 400px;
+    margin-left: 1px;
+    margin-right: auto;
+}
+.master-table-controls > table.luban-splitter {
+    width: auto;
+    margin: 0 auto 0 1px;
+}
+.master-table-controls > table.luban-splitter tr{
+}
+.master-table-controls > table.luban-splitter td{
+    width: auto;
+    padding: 0 10px;
+}
+.master-table-controls > table.luban-splitter td .formfield{
+    margin: 0;
+}
+.master-table-controls > table.luban-splitter td a{
+    margin: 0;
+}
+.master-table-controls > table.luban-splitter td p{
+    margin: 0;
+}
+
+.master-table-controls div.label-container {
+    color: #888888;
+    font-size: 90%;
+}
+
+.master-table-filter input {
+    width: 250px;
+}
+
+.master-table-controls input {
+    border-color: #cced8c;
+    border-width: 2;
+}
+
+.master-table-controls select {
+    border-color: #cced8c;
+    border-width: 2;
+}
+
+/* table itself */
+.master-table {
+    width: 100%;
+}
+
+.master-table thead {
+    color: #888888;
+}
+
+
+/* version */
+/* $Id$ */
+
+/* End of file  */

@@ -31,7 +31,7 @@ def table(matsims, cols, director):
         description = Model.descriptors.str(name='description')
         type = Model.descriptors.str(name='type')
         matter = Model.descriptors.str(name='matter')
-        creationDate = Model.descriptors.str(name='creationDate')
+        date = Model.descriptors.str(name='date')
 
         row_identifiers = ['id', 'type']
 
@@ -41,7 +41,7 @@ def table(matsims, cols, director):
         View.Column(name='col1',label='Description', measure='description', editable=True),
         View.Column(name='col2',label='Type', measure='type'),
         View.Column(name='col3',label='Matter', measure='matter'),
-        View.Column(name='col5',label='Date created', measure='creationDate'),
+        View.Column(name='col5',label='Date created', measure='date'),
         ]
     columns = filter(lambda col: col.measure in cols, columns)
 
@@ -67,7 +67,7 @@ def table(matsims, cols, director):
         return matsim.__class__.__name__
     def getMatter(matsim):
         matter = matsim.matter
-        if not matter: return 'not defined'
+        if not matter or not matter.id: return 'not defined'
         try:
             matter = director.clerk.db.dereference(matter)
         except:
@@ -81,7 +81,7 @@ def table(matsims, cols, director):
         'description': getDesc,
         'type': getType,
         'matter': getMatter,
-        'creationDate': getCreationDate,
+        'date': getCreationDate,
         }
     
     value_generators = map(generators.get, [col.measure for col in view.columns])

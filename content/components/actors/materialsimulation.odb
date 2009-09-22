@@ -41,25 +41,51 @@ class Actor(base):
         return self.showListView(director)
 
 
+    def showListView(self, director):
+        view = self.createListView(director)
+        return select(id='main-display-area').replaceContent(view)
+
+
     def createListView(self, director):
-        # create a table
-        table = self.createTable(director, order_by=order_by, reverse_order=reverse_order, slice=slice, filter=filter_expr)
-        return table
+        from vnfb.components.MasterTable import MasterTableFactory
+        def countrecords(filter):
+            return self._countSimulations(director, filter)
+        def createtable(order_by, reverse_order, slice, filter):
+            return self.createTable(
+                director,
+                order_by=order_by,
+                reverse_order=reverse_order,
+                slice=slice,
+                filter=filter)
+        factory = MasterTableFactory(self.name, countrecords, createtable)
+
+        order_by = self.inventory.order_by
+        reverse_order = self.inventory.reverse_order
+        filter_expr = self.inventory.filter_expr
+        number_records_per_page = self.inventory.number_records_per_page
+        page_number = self.inventory.page_number
+
+        return factory.create(
+            order_by=order_by,
+            reverse_order=reverse_order,
+            filter_expr=filter_expr,
+            number_records_per_page=number_records_per_page,
+            page_number=page_number)
 
 
     def createTable(self, director, order_by=None, reverse_order=None, slice=None, filter=None):
         order_by = order_by or self.inventory.order_by
         reverse_order = reverse_order or self.inventory.reverse_order
-        filter = filter or self.inventory.filter
+        filter = filter or self.inventory.filter_expr
         matsims = self._getSimulations(director, filter=filter, order_by=order_by, reverse_order=reverse_order, slice=slice)
 
-        cols = [ 'id', 'description', 'type', 'matter', 'creationDate']
+        cols = [ 'id', 'description', 'type', 'matter', 'date']
         args = matsims, cols, director
         thetable = director.retrieveComponent(
             'materialsimulation-table',
             factory="visual", args=args,
             vault=['visuals'])
-        #thetable = table(*args)
+        # thetable = table(*args)
         thetable.oncellchanged = select(element=thetable).notify(
             event='row-changed', actor='matsimtable', routine='processRowChange')
         return thetable
@@ -145,7 +171,7 @@ class Actor(base):
         qs = map(qf, tables)
         
         q = sqlalchemy.union_all(*qs)
-        return q.count()
+        return q.alias('tocount').count().execute().fetchone()[0]
 
 
     def _getSimulations(self, director, filter=None, order_by=None, reverse_order=None, slice=None):
@@ -206,17 +232,6 @@ def simulationTables():
     from vnf.dom import materialsimulationtables, materialmodelingtables
     tables = materialsimulationtables()# + materialmodelingtables()
     return tables
-
-
-def getallsimulations(matter, db, **opts):
-    tables = simulationTables()
-
-    computations = []
-    for table in tables:
-        computations += matter.getReferences(db, table, 'matter', **opts)
-        continue
-    
-    return computations
 
 
 def actor(): return Actor()
