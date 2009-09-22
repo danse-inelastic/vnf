@@ -248,8 +248,10 @@ class Actor(base):
         from luban.content.Page import Page
         page = Page(title='Material %s' % matter.short_description)
 
+        document = page.document(id='main-display-area')
+        
         view = self.createView(director)
-        page.add(view)
+        document.add(view)
         
         return page
 
@@ -339,7 +341,9 @@ class Actor(base):
         
         simtables = simulationTables()
         from luban.content.Button import Button
+        #from luban.content.Document import Document
         def _(table):
+            #doc = Document()
             name = table.__name__
             label = table.DESCRIPTION
             icon = icons.get(name)
@@ -347,12 +351,14 @@ class Actor(base):
                 icon = '%s.png' % name
             icon = 'material_simulations/%s' % icon
             actor = 'material_simulations/%s' % (name.lower(), )
-            return Button(
+            button = Button(
                 label=label, icon=icon, id='new-simulation-%s-button' % name,
+                tip = '\n '.join(table.LONG_DESCRIPTION),
                 onclick=load(
                     actor=actor, routine='new',
                     matter_type=matter.name, matter_id=matter.id)
                 )
+            return button
 
         buttons = map(_, simtables)
         map(doc.add, buttons)
