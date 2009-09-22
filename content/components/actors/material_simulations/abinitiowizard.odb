@@ -14,6 +14,10 @@
 
 from luban.content import load, select
 
+from luban.content.Document import Document
+from luban.content.Link import Link
+
+
 from luban.components.Actor import Actor as base
 
 
@@ -49,13 +53,32 @@ class Actor(base):
 
 
     def start(self, director):
-        view = self.startform(director)
-        return select(id='main-display-area').replaceContent(view)
+        assert self.inventory.id == ''
+
+        matter = self._getMatter(director)
+        matterlabel = matter.short_description or matter.chemical_formula or matter.id
+        title = 'Ab initio electronic structure simulation of %s' % (matterlabel,)
+        wizard = Document(id='abinitiowizard-start', title=title)
+
+        link = Link(label='back to Matter\ %s' % matterlabel)
+        link.onclick = load(
+            actor='matter', routine='showMaterialView',
+            id=matter.id, type=matter.name)
+        wizard.add(link)
+        
+        form = self.startform(director)
+        wizard.add(form)
+        
+        return select(id='main-display-area').replaceContent(wizard)
 
 
     def startform(self, director):
 
-        record = self._getSimulation(director)
+        id = self.inventory.id
+        if id:
+            record = self._getSimulation(director)
+        else:
+            record = AbInitio()
         
         from luban.content.Splitter import Splitter
         from luban.content.Form import Form
@@ -67,6 +90,7 @@ class Actor(base):
             title='Ab initio electronic structure simulation')
 
         short_description = form.text(
+            id='short_description-input',
             name='short_description',
             label='Name of this calculation',
             value = record.short_description)
@@ -88,7 +112,7 @@ class Actor(base):
 
         eng=str(record.engine)
         engine = FormSelectorField(
-            id='engine-selector',
+            id='engine-input',
             name = 'engine',
             entries = entries,
             label = 'Electronic Structure Engine',
@@ -106,7 +130,7 @@ class Actor(base):
         entries=zip(choices, choices)
 
         xcFunctional = FormSelectorField(
-            id='xcf-selector',
+            id='xcFunctional-input',
             name = 'xcFunctional',
             entries = entries,
             label = 'Exchange correlation functional',
@@ -115,6 +139,7 @@ class Actor(base):
         subdoc.add(xcFunctional)
         
         kineticEnergyCutoff = FormTextField(
+            id = 'kineticEnergyCutoff-input',
             name='kineticEnergyCutoff',
             label='Kinetic energy cutoff (eV)',
             value = str(record.kineticEnergyCutoff))
@@ -123,29 +148,87 @@ class Actor(base):
         box = Splitter(id='nkpts-container')
         subdoc.add(box)
         nKx = FormTextField(
-            id = 'text2',
+            id = 'nKx-input',
             name='nKx',
             label = 'Number of k-points (a*)',
             value = str(record.monkhorstPackMesh[0]))
         box.section().add(nKx)
         nKy = FormTextField(
-            id = 'text3',
+            id = 'nKy-input',
             name='nKy',
             label = 'Number of k-points (b*)',
             value = str(record.monkhorstPackMesh[1]))       
-        box.section().add(nKx)
+        box.section().add(nKy)
         nKz = FormTextField(
-            id = 'text4',
+            id = 'nKz-input',
             name='nKz',
             label = 'Number of k-points (c*)',
             value = str(record.monkhorstPackMesh[2]))     
-        box.section().add(nKx)
+        box.section().add(nKz)
 
         next = form.submitbutton(label="next")
+        
+        from luban.content import select
+        form.onsubmit = select(element=form).submit(
+            actor = 'material_simulations/abinitiowizard',
+            routine = 'processStartForm',
+            id = self.inventory.id,
+            matter_type = self.inventory.matter_type,
+            matter_id = self.inventory.matter_id,
+            )
         
         return form
 
 
+    def processStartForm(self, director):
+
+        # should verify inputs here....
+        errors = {}
+        short_description = self.inventory.short_description
+        if not short_description:
+            errors['short_description'] = 'Description cannot be empty'
+        
+        if errors:
+            return self.startFormShowError(director, errors=errors)
+        
+        # store data
+        id = self.inventory.id
+        if id:
+            record = self._getSimulation()
+        else:
+            record = director.clerk.insertNewOwnedRecord(AbInitio)
+            matter = self._getMatter(director)
+            record.matter = matter
+        
+        props = [
+            'short_description',
+            'engine',
+            'xcFunctional',
+            'kineticEnergyCutoff',
+            ]
+        for prop in props:
+            value = getattr(self.inventory, prop)
+            setattr(record, prop, value)
+            continue
+
+        record.monkhorstPackMesh = [self.inventory.nKx, self.inventory.nKy, self.inventory.nKz]
+        director.clerk.updateRecord(record)
+        return
+
+
+    def startFormShowError(self, director, errors=None):
+        from luban.content import select
+        return [
+            select(id='%s-input' % name).showError(text)
+            for name, text in errors.iteritems()
+            ]        
+
+
+    def _getMatter(self, director):
+        return director.clerk.getRecordByID(
+            self.inventory.matter_type, self.inventory.matter_id)
+
+    
     def _getSimulation(self, director):
         return director.clerk.getRecordByID(AbInitio, self.inventory.id)
     
