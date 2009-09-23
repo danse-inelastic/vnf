@@ -49,6 +49,10 @@ input {
     border-color: #cced8c;
     border-width: 2;
 }
+select {
+    border-color: #cced8c;
+    border-width: 2;
+}
 
 
 /* overload the default behavior of luban for buttons */
