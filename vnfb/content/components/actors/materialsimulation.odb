@@ -203,7 +203,10 @@ class Actor(base):
         from dsaw.db.VersatileReference import vreference
         def _(row): return db.dereference(vreference(row[0]))
         
-        return map(_, rows)
+        ret = map(_, rows)
+        if reverse_order:
+            ret.reverse()
+        return ret
 
 
 from dsaw.db.VersatileReference import global_pointer
