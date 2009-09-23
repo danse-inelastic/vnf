@@ -72,6 +72,29 @@ class Actor(base):
         return select(id='main-display-area').replaceContent(wizard)
 
 
+    def restart(self, director):
+        id = self.inventory.id
+        assert id
+
+        simulation = self._getSimulation(director)
+        matter = simulation.matter.dereference(director.clerk.db)
+        
+        matterlabel = matter.short_description or matter.chemical_formula or matter.id
+        title = 'Ab initio electronic structure simulation of %s: #%s' % (matterlabel, id)
+        wizard = Document(id='abinitiowizard-start', title=title)
+
+        link = Link(label='back to Matter\ %s' % matterlabel)
+        link.onclick = load(
+            actor='matter', routine='showMaterialView',
+            id=matter.id, type=matter.name)
+        wizard.add(link)
+        
+        form = self.startform(director)
+        wizard.add(form)
+        
+        return select(id='main-display-area').replaceContent(wizard)
+
+
     def startform(self, director):
 
         id = self.inventory.id
@@ -212,7 +235,7 @@ class Actor(base):
             continue
 
         record.monkhorstPackMesh = [self.inventory.nKx, self.inventory.nKy, self.inventory.nKz]
-        director.clerk.updateRecord(record)
+        director.clerk.updateRecordWithID(record)
         return
 
 

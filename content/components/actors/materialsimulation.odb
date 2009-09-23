@@ -104,14 +104,12 @@ class Actor(base):
 
 
     def showMaterialSimulation(self, director):
-        view = self.createView(director)
-        return select(id='main-display-area').replaceContent(view)
+        actor = 'material_simulations/' + self.inventory.type
+        routine = 'view'
+        id = self.inventory.id
+        return director.redirect(actor=actor, routine=routine, id=id)
     
         
-    def createView(self, director):
-        return
-
-
     def createMatterDescriptionInputControl(self, director):
         from luban.content.Splitter import Splitter
         from luban.content.Link import Link
