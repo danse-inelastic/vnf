@@ -222,6 +222,7 @@ class Actor(base):
             record = director.clerk.insertNewOwnedRecord(AbInitio)
             matter = self._getMatter(director)
             record.matter = matter
+            self.inventory.id = record.id
         
         props = [
             'short_description',
