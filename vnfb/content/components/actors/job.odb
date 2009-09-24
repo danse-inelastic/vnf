@@ -114,7 +114,7 @@ class Actor(base):
             'job for %s' % _describe_computation
             (director.clerk.dereference(record.computation))
             )
-        field.help = ' '.join( meta['tip'] )
+        field.help = meta['tip']
 
         from vnf.dom.Server import Server
         servers = director.clerk.db.fetchall(Server)
