@@ -153,6 +153,15 @@ class Actor(base):
         return form
 
 
+    def verifyForm(self, director):
+        # ...
+        computation = self._getSimulation(director)
+        return director.redirect(
+            actor='job', routine='create',
+            computation_type=computation.name, computation_id=computation.id,
+            )
+
+
     def _readVaspRawInputFIles(self, computation, director):
         d = {}
         for f in VASP_RAW_INPUT_FILES:
