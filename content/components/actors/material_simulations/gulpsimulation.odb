@@ -115,34 +115,34 @@ class Actor(base):
         return handler(computation, document, director=director)
 
 
-    def _view_vasp_configuration(self, computation, document, director=None):
-        p = document.paragraph()
-        p.text = [
-            'Vasp simulation %s' % computation.id,
-            ]
-
-        matter = director.clerk.dereference(computation.matter)
-        p = document.paragraph()
-        p.text = [
-            'Material #%s: %s' % (matter.id, matter.short_description,),
-            ]
-
-        p = document.paragraph()
-        p.text = [
-            'Kinetic energy cutoff: %s' % (computation.kineticEnergyCutoff,),
-            ]
-
-        p = document.paragraph()
-        p.text = [
-            'Exchange correlation functional: %s' % (computation.xcFunctional,),
-            ]
-
-        p = document.paragraph()
-        p.text = [
-            'Monkhorst pack messh: %s' % (computation.monkhorstPackMesh,),
-            ]
-
-        return
+#    def _view_vasp_configuration(self, computation, document, director=None):
+#        p = document.paragraph()
+#        p.text = [
+#            'Vasp simulation %s' % computation.id,
+#            ]
+#
+#        matter = director.clerk.dereference(computation.matter)
+#        p = document.paragraph()
+#        p.text = [
+#            'Material #%s: %s' % (matter.id, matter.short_description,),
+#            ]
+#
+#        p = document.paragraph()
+#        p.text = [
+#            'Kinetic energy cutoff: %s' % (computation.kineticEnergyCutoff,),
+#            ]
+#
+#        p = document.paragraph()
+#        p.text = [
+#            'Exchange correlation functional: %s' % (computation.xcFunctional,),
+#            ]
+#
+#        p = document.paragraph()
+#        p.text = [
+#            'Monkhorst pack messh: %s' % (computation.monkhorstPackMesh,),
+#            ]
+#
+#        return
 
 
 
@@ -160,17 +160,17 @@ class Actor(base):
 
     
     def _getSimulation(self, director):
-        return director.clerk.getRecordByID(AbInitio, self.inventory.id)
+        return director.clerk.getRecordByID(GulpSimulation, self.inventory.id)
     
 
 
-    def __init__(self, name='forcefieldsim'):
+    def __init__(self, name='gulpsimulations'):
         super(Actor, self).__init__(name)
         return
 
 
 
-from vnf.dom.AbInitio import AbInitio
+from vnf.dom.GulpSimulation import GulpSimulation
 from vnf.components.Job import isdone
 
 
