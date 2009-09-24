@@ -76,5 +76,12 @@
      "jslibs":      [
         "jquery/ui/ui.accordion.js"
         ]
+  },
+  "progressbar": {
+     "stylesheets": [
+        ],
+     "jslibs":      [
+        "jquery/ui/ui.progressbar.js"
+        ]
   }
 }
