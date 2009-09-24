@@ -24,7 +24,7 @@ class Computation(base):
     results = vnf.dom.referenceSet(name='results')
 
     import dsaw.db
-    job = dsaw.db.reference(name='job', table = Job)
+    # job = dsaw.db.reference(name='job', table = Job)
 
     results_state = dsaw.db.varchar(name='results_state', length=16, default='')
     #  - retrieved
@@ -34,42 +34,49 @@ class Computation(base):
     #  - (empty)   means nothing done
 
     # pending internal-tasks to get this computation going
-    pending_tasks = vnf.dom.referenceSet(name='pending_tasks')
+    # pending_tasks = vnf.dom.referenceSet(name='pending_tasks')
 
-
-
-def findPendingTask(computation, iworker=None, director=None):
-    import journal
-    debug = journal.debug('itask-findPendingTask')
+    def getJob(self, db):
+        from Job import Job
+        jobs = self.getReferences(db, Job, 'computation')
+        # right now we assume one computation only have one job
+        if len(jobs)>1: raise RuntimeError
+        if not jobs: return None
+        return jobs[1]
     
-    pending_tasks = computation.pending_tasks.dereference(director.clerk.db)
-    if not pending_tasks: return
 
-    found = None
-    for label, task in pending_tasks:
+    def findPendingTask(self, db, iworker=None):
+        import journal
+        debug = journal.debug('itask-findPendingTask')
+        from ITask import ITask
+        tasks = self.getReferences(db, ITask, 'beneficiary')
+        if not tasks: return
+
+        found = None
+        for task in tasks:
             
-        # if not the right task, skip
-        if task.worker != iworker: continue
+            # if not the right task, skip
+            if task.worker != iworker: continue
 
-        if task.state == 'finished':
-            raise RuntimeError, "Task %s for %s finished but apparently it is not giving the right results or the results of this task has been mistakenly removed." % (task.id, computation.id)
+            if task.state == 'finished':
+                raise RuntimeError, "Task %s for %s finished but apparently it is not giving the right results or the results of this task has been mistakenly removed." % (task.id, self.id)
 
-        if task.state == 'failed':
-            debug.log("Task %s for %s found. Which has failed before." % (task.id, computation.id))
-            return 'task failed'
+            if task.state == 'failed':
+                debug.log("Task %s for %s found. Which has failed before." % (task.id, self.id))
+                return task
 
-        if task.state == 'cancelled':
-            debug.log("Task %s for %s found. Which has been cancelled before." % (task.id, computation.id))
-            # reopen the task
-            task.state = 'created'
-            director.clerk.updateRecord(task)
+            if task.state == 'cancelled':
+                debug.log("Task %s for %s found. Which was cancelled." % (task.id, self.id))
+                # reopen the task
+                task.state = 'created'
+                db.updateRecord(task)
+                found = task
+                break
+
             found = task
             break
 
-        found = task
-        break
-    
-    return found
+        return found
     
 
 # version
