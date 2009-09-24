@@ -24,9 +24,11 @@ distclean::
 
 EXPORT_DATAFILES = \
 	initdb.py \
+	itaskapp.py \
 	destroydb.py \
 	createdefaultformulaformatters.py \
 	establishglobalpointers.py \
+	launch-detached.py \
 	restorevnfdb.py \
 	startservices.sh \
 
