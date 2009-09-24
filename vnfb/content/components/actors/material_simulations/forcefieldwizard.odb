@@ -36,6 +36,15 @@ class Actor(base):
         short_description = pyre.inventory.str('short_description', default = '' )
         short_description.meta['tip'] = 'A short description'
         
+        librarycontent = pyre.inventory.str('librarycontent')
+        inputFileContents = pyre.inventory.str('inputFileContents')
+        runtype = pyre.inventory.str('runtype')
+        
+        creator = pyre.inventory.str('creator')
+        description = pyre.inventory.str('description')
+        potential_name = pyre.inventory.str('potential_name')
+        potential_filename = pyre.inventory.str('potential_filename')
+        
 #        engine = pyre.inventory.str('engine', default='vasp')
 #        engine.validator=pyre.inventory.choice(['vasp', 'ab init'])
 #        engine.meta['tip'] = 'Ab initio engine'
@@ -101,7 +110,7 @@ class Actor(base):
         if id:
             record = self._getSimulation(director)
         else:
-            record = AbInitio()
+            record = GulpSimulation()
         
         from luban.content.Splitter import Splitter
         from luban.content.Form import Form
@@ -205,6 +214,13 @@ class Actor(base):
 
     def processStartForm(self, director):
 
+        gulpSimulation = self._getSimulation(director)
+        
+        # make sure gulp simulation is configured
+        if isConfigured(gulpSimulation, director):
+            return self.readyForSubmission(director)
+        return self.configureSimulation(director)
+
         # should verify inputs here....
         errors = {}
         short_description = self.inventory.short_description
@@ -219,7 +235,7 @@ class Actor(base):
         if id:
             record = self._getSimulation(director)
         else:
-            record = director.clerk.insertNewOwnedRecord(AbInitio)
+            record = director.clerk.insertNewOwnedRecord(GulpSimulation)
             matter = self._getMatter(director)
             record.matter = matter
         
@@ -267,7 +283,7 @@ class Actor(base):
 
     
     def _getSimulation(self, director):
-        return director.clerk.getRecordByID(AbInitio, self.inventory.id)
+        return director.clerk.getRecordByID(GulpSimulation, self.inventory.id)
     
 
     def __init__(self, name='forcefieldwizard'):
@@ -277,19 +293,6 @@ class Actor(base):
     
 #class GulpSimulationWizard(MaterialSimulationWizard):
     
-
-    class Inventory(MaterialSimulationWizard.Inventory):
-        
-        import pyre.inventory as inv
-        
-        librarycontent = inv.str('librarycontent')
-        inputFileContents = inv.str('inputFileContents')
-        runtype = inv.str('runtype')
-        
-        creator = inv.str('creator')
-        description = inv.str('description')
-        potential_name = inv.str('potential_name')
-        potential_filename = inv.str('potential_filename')
         
     def configureSimulation(self, director):
         type = self.inventory.type = 'gulpsimulations'
@@ -361,18 +364,18 @@ class Actor(base):
         return page
 
 
-    def verifyConfiguration(self, director):
-        try:
-            page = self._retrievePage(director)
-        except AuthenticationError, err:
-            return err.page
-
-        gulpSimulation = self._getSimulation(director)
-        
-        # make sure gulp simulation is configured
-        if isConfigured(gulpSimulation, director):
-            return self.readyForSubmission(director)
-        return self.configureSimulation(director)
+#    def verifyConfiguration(self, director):
+#        try:
+#            page = self._retrievePage(director)
+#        except AuthenticationError, err:
+#            return err.page
+#
+#        gulpSimulation = self._getSimulation(director)
+#        
+#        # make sure gulp simulation is configured
+#        if isConfigured(gulpSimulation, director):
+#            return self.readyForSubmission(director)
+#        return self.configureSimulation(director)
 
 
     def readyForSubmission(self, director):
