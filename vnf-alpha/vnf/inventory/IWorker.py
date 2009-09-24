@@ -12,13 +12,19 @@
 #
 
 
+from pyre.components.Component import Component
+class Dummy(Component):
+    def __init__(self, name='dummy', facility='iworker'):
+        Component.__init__(self, name, facility)
+        
+
 from pyre.inventory.Facility import Facility
 
 
 class IWorker(Facility):
 
 
-    def __init__(self, name = 'iworker', family=None, default=None, meta=None):
+    def __init__(self, name = 'iworker', family=None, default=Dummy(), meta=None):
         Facility.__init__(self, name, family, default, None, (), meta)
         return
 
