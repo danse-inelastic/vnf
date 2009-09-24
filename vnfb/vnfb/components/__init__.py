@@ -11,9 +11,12 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
+def dds():
+    from DistributedDataStorage import DistributedDataStorage
+    return DistributedDataStorage('dds', 'dds')
+
+
 # version
 __id__ = "$Id$"
-
-# Generated automatically by PythonMill on Tue Aug 25 14:40:56 2009
 
 # End of file 

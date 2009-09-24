@@ -35,9 +35,12 @@ all: export
 # export
 
 EXPORT_PYTHON_MODULES = \
+	AppExtension.py \
 	Clerk.py \
+	DistributedDataStorage.py \
 	MasterTable.py \
 	__init__.py \
+	itask_utils.py \
 
 
 #include doxygen/default.def
