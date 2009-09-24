@@ -80,7 +80,7 @@ class Actor(base):
         matter = simulation.matter.dereference(director.clerk.db)
         
         matterlabel = matter.short_description or matter.chemical_formula or matter.id
-        title = 'Ab initio electronic structure simulation of %s: #%s' % (matterlabel, id)
+        title = 'Simulation\ %s: Ab initio electronic structure simulation of Matter\ %s' % (id, matterlabel)
         wizard = Document(id='abinitiowizard-start', title=title)
 
         link = Link(label='back to Matter\ %s' % matterlabel)
@@ -110,7 +110,7 @@ class Actor(base):
         
         form = Form(
             id='abinitio-wizard-startform',
-            title='Ab initio electronic structure simulation')
+            title='')
 
         short_description = form.text(
             id='short_description-input',

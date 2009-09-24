@@ -45,13 +45,14 @@ p.hidden {
 
 
 /* overload the default behavior of luban for input */
-input {
+input, select, textarea{
     border-color: #cced8c;
     border-width: 2;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
 }
-select {
-    border-color: #cced8c;
-    border-width: 2;
+textarea {
+    min-height: 120px;
 }
 
 
@@ -76,6 +77,14 @@ select {
 
 .luban-button span {
     margin: 5px;
+}
+
+
+/* overload the default behavior of luban for forms */
+fieldset{
+    background-color: lightYellow;
+    -moz-border-radius: 15px;
+    -webkit-border-radius: 15px;
 }
 
 /* version */
