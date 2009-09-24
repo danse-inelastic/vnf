@@ -24,8 +24,11 @@ distclean::
 
 EXPORT_DATAFILES = \
 	SimpleHttpServer.pml \
+	app-extension.odb \
 	clerk.pml \
 	clerk.odb \
+	idd-pickler.odb \
+	itask-manager.odb \
 	journal.pml \
 	librarian.pml \
 	main.pml \
