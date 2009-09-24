@@ -42,7 +42,7 @@ class Computation(base):
         # right now we assume one computation only have one job
         if len(jobs)>1: raise RuntimeError
         if not jobs: return None
-        return jobs[1]
+        return jobs[0]
     
 
     def findPendingTask(self, db, iworker=None):
