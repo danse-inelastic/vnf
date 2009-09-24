@@ -217,7 +217,7 @@ class Actor(base):
         # store data
         id = self.inventory.id
         if id:
-            record = self._getSimulation()
+            record = self._getSimulation(director)
         else:
             record = director.clerk.insertNewOwnedRecord(AbInitio)
             matter = self._getMatter(director)
@@ -236,7 +236,8 @@ class Actor(base):
 
         record.monkhorstPackMesh = [self.inventory.nKx, self.inventory.nKy, self.inventory.nKz]
         director.clerk.updateRecordWithID(record)
-        return
+
+        return self.advancedConfiguration(director)
 
 
     def startFormShowError(self, director, errors=None):
@@ -244,7 +245,20 @@ class Actor(base):
         return [
             select(id='%s-input' % name).showError(text)
             for name, text in errors.iteritems()
-            ]        
+            ]
+
+
+    def advancedConfiguration(self, director):
+        document = Document(title='Ab initio electronic structure simulation: advanced configuration' )
+
+        simulation = self._getSimulation(director)
+        engine = simulation.engine
+        actor = 'material_simulations/%s-advanced' % engine.lower()
+        routine = 'start'
+        
+        return director.redirect(
+            actor=actor, routine=routine,
+            id=simulation.id)
 
 
     def _getMatter(self, director):
@@ -259,7 +273,6 @@ class Actor(base):
     def __init__(self, name='abinitiowizard'):
         super(Actor, self).__init__(name)
         return
-
 
 
 from vnf.dom.AbInitio import AbInitio
