@@ -100,7 +100,7 @@ class Actor(base):
 
 
     def createEditForm(self, director):
-        record = director.clerk.getRecordByID(Job, self.inventory.id)
+        record = self._getJob(director)
         
         form = Form(id='job-edit-form')
         
@@ -115,7 +115,7 @@ class Actor(base):
             (director.clerk.dereference(record.computation))
             )
         field.help = meta['tip']
-
+        
         from vnf.dom.Server import Server
         servers = director.clerk.db.fetchall(Server)
         entries = [ (server.id, server.short_description) for server in servers ]
@@ -127,7 +127,7 @@ class Actor(base):
         property = 'server'
         meta = getattr( self.Inventory, property ).meta
         selector = form.selector(
-            id = 'server_selector',
+            id = _input_widget_ID(property),
             name = 'server',
             entries = entries,
             label = meta['label'],
@@ -146,7 +146,7 @@ class Actor(base):
             property = 'numprocessors'
             meta = getattr( self.Inventory, property ).meta
             field = form.text(
-                id = 'numprocessors',
+                id = _input_widget_ID(property),
                 name = 'numprocessors',
                 label = meta['label'],
                 value = record.numprocessors,
@@ -156,7 +156,7 @@ class Actor(base):
             property = 'walltime'
             meta = getattr( self.Inventory, property ).meta
             field = form.text(
-                id = 'walltime',
+                id = _input_widget_ID(property),
                 name = 'walltime',
                 label = meta['label'],
                 value = record.walltime,
@@ -170,7 +170,51 @@ class Actor(base):
             id = self.inventory.id, **extra)
 
         return form
-    
+
+
+    def verify(self, director):
+        errors = {}
+        
+        short_description = self.inventory.short_description
+        server = self.inventory.server
+        
+        numprocessors = self.inventory.numprocessors
+        if not isPositiveInteger(numprocessors):
+            errors['numprocessors'] = self.Inventory.numprocessors.meta['tiponerror']
+            
+        walltime = self.inventory.walltime
+        if not isPositiveInteger(walltime):
+            errors['walltime'] = self.Inventory.walltime.meta['tiponerror']
+
+        if errors:
+            return self.showErrors(director, errors=errors)
+        
+        record = self._getJob(director)
+
+        record.short_description = short_description
+        record.server = server
+        record.numprocessors = numprocessors
+        record.walltime = walltime
+
+        director.clerk.updateRecordWithID(record)
+        return self.submit(director)
+
+
+    def submit(self, director):
+        return
+
+
+    def showErrors(self, director, errors=None):
+        from luban.content import select
+        return [
+            select(id=_input_widget_ID(name)).showError(text)
+            for name, text in errors.iteritems()
+            ]
+
+
+    def _getJob(self, director):
+        id = self.inventory.id
+        return director.clerk.getRecordByID(Job, id)
 
     def _getComputation(self, director):
         type = self.inventory.computation_type
@@ -183,9 +227,18 @@ class Actor(base):
         return
 
 
+def _input_widget_ID(name):
+    return '%s-input' % name
+
+
 def _describe_computation(computation):
     return '%s %s' % (computation.__class__.__name__, computation.id)
 
+
+def isPositiveInteger(candiate):
+    try: value = int(candiate)
+    except: return False
+    return value > 0
 
 
 from vnf.dom.Job import Job
