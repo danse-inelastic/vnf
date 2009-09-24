@@ -96,7 +96,7 @@ class Actor(base):
             routine='presentForm',
             id = self.inventory.id)
 
-        title = 'VASP simulation #%s' % self.inventory.id
+        title = 'Building raw VASP inputs for Simulation\ %s' % self.inventory.id
         document = Document(title=title)
         document.add(pbar)
         
@@ -104,8 +104,19 @@ class Actor(base):
 
 
     def presentForm(self, director):
+        computation = self._getSimulation(director)
+        doc = Document(title='Simulation\ %s: Advanced VASP configuration' % computation.id)
+
+        link = Link(label='back to Previous Step')
+        link.onclick = load(
+            actor='material_simulations/abinitiowizard', routine='restart',
+            id=computation.id)
+        doc.add(link)
+        
         form = self.createForm(director)
-        return select(id='main-display-area').replaceContent(form)
+        doc.add(form)
+        
+        return select(id='main-display-area').replaceContent(doc)
     
 
     def createForm(self, director):
@@ -137,7 +148,7 @@ class Actor(base):
             actor='job', routine='create',
             computation_type=computation.name, computation_id=computation.id,
             )
-        link = Link(label="Skip this step", onclick=action)
+        link = Link(label="Skip this step", onclick=action, Class='skip-link')
         form.add(link)
         return form
 
