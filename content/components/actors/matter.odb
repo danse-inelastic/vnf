@@ -379,7 +379,7 @@ class Actor(base):
             from luban.content.Document import Document
             return Document().paragraph(text=text)
 
-        args = sims, ['id', 'description', 'type', 'creationDate',], director
+        args = sims, ['id', 'description', 'type', 'date',], director
         #return table(*args)
         thetable = director.retrieveComponent(
             'materialsimulation-table',
