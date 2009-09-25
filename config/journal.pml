@@ -8,6 +8,8 @@
       <property name="ipa">on</property>
       <property name="itaskapp">on</property>
       <property name="submitjob">on</property>
+      <property name='forcefieldwizard'>on</property>
+      <property name='main'>on</property>
     </component>
   </component>
 </inventory>
