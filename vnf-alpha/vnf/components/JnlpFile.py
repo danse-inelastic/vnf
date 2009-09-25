@@ -13,7 +13,8 @@ class JnlpFile:
     fileName = 'jnlpFile',
     title='Danse Application',
     description='A Java web start application',
-    javaVersion='1.5'):
+    javaVersion='1.5',
+    director=None):
         self.resources = resources
         self.mainClass = mainClass
         self.programArguments = programArguments
@@ -22,11 +23,11 @@ class JnlpFile:
         self.description = description
         self.javaVersion = javaVersion
         self.jnlpString=''
-        self.reformJnlp()
+        self.reformJnlp(director)
     
     def reformJnlp(self,director=None):
-        if not director: codebase = 'http://vnf.caltech.edu'
-        else: codebase = director.home
+        if not director: codebase = 'http://localhost'
+        else: codebase = director.cgihome
         import os
         self.jnlpString = '''<?xml version="1.0" encoding="UTF-8"?>
 <jnlp spec="1.0+"
@@ -50,6 +51,8 @@ class JnlpFile:
     <application-desc main-class="''' + self.mainClass + '''" >
 '''
         for argumentName, argumentValue in self.programArguments.iteritems():
+            #print argumentName, argumentValue
+            director._debug.log('jnlp args %s, %s' % (argumentName, argumentValue))
             self.jnlpString += '<argument>'+argumentName+'='+argumentValue+'</argument>'+os.linesep
         self.jnlpString +='''</application-desc>
 </jnlp>'''     
