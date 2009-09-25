@@ -5,8 +5,10 @@ This walkthrough assumes a fresh Ubuntu or Fedora install.  However, any part of
 
 CACR
 ----
+VNF can be installed with read-only access to danse svn repository. But if you are
+a VNF developer, please follow the steps here to get an account from CACR.
 
-To aquire a CACR account first generate a `SSH key <http://www.cacr.caltech.edu/main/?page_id=85>`_.  Then head over to the `CACR Registration Site <http://www.cacr.caltech.edu/main/?page_id=477>`_ . VNF can still be installed with read-only access.
+To aquire a CACR account first generate a `SSH key <http://www.cacr.caltech.edu/main/?page_id=85>`_.  Then head over to the `CACR Registration Site <http://www.cacr.caltech.edu/main/?page_id=477>`_ . 
 
 Configuring Your Environment
 ----------------------------
@@ -20,14 +22,15 @@ For Ubuntu, open a terminal and type 'sudo apt-get install' and each of the pack
 
 For Fedora, log in to root and type 'yum install' and each of these package names.
 
+- python-devel
 - subversion
-- postgresql-8.3
-- postgresql postgresql-server
+- postgresql postgresql-devel postgresql-server (8.3)
 - pgadmin3 (Optional)
-- wxPython
+- wxPython (Optional)
 - numpy
-- matplotlib
-- hdf5
+- matplotlib (Optional)
+- hdf5 (Optional)
+- gcc, g++ (or gcc-c++)
 
 Test wxPython, numpy, and matplotlib by making sure there are no errors when you type, in terminal::
 
@@ -35,6 +38,11 @@ Test wxPython, numpy, and matplotlib by making sure there are no errors when you
 	>>> import wx
 	>>> import numpy
 	>>> import matplotlib
+
+Test if you have gcc and g++ installed::
+
+     gcc
+     g++
 
 Downgrading to Python 2.5
 ~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -53,8 +61,33 @@ Open terminal and type this code in::
 	sudo ln -s /usr/bin/python2.6 /usr/bin/python
  
 
+Download and install vnf
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+This can be done two ways. The easier way is to use the "buildInelast" "releaser".
+
+Using "releaser"
+!!!!!!!!!!!!!!!!
+
+Fire the following commands from a terminal ::
+
+     svn co -N svn://danse.us/buildInelast
+     cd buildInelast
+     svn up common web-vnf-alpha
+     cd web-vnf-alpha
+     ./getsrc.py
+     ./build.py
+     ./build_envs.py
+
+
+The more flexible/powerful way for vnf developers to install vnf is a little complex.
+Please follow the following instructions.
+
+Using "mm" build procedure directly
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
 Make.mm
-~~~~~~~~
++++++++
 
 Throughout these instructions, it will be assumed that everything is installed in /home/username, for example's sake. It is highly recommended to not install VNF as root unless a step in the instructions says to, to prevent problems with file permissions.
 
@@ -69,7 +102,7 @@ In terminal, navigate to your home directory and execute this code::
 You will need to execute this command every time you start a terminal (a shortcut might be to add it to your .bashrc).
 
 Checking Python and Make.mm Install
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~	
++++++++++++++++++++++++++++++++++++
 	
 If you downgraded to Python2.5, try the following. If you did not downgrade, you can skip this step.
 In terminal, execute this code::
@@ -84,7 +117,7 @@ After you execute env, you should see a mass of text that describe a variety of 
 	
 
 Pyre Install
--------------
+++++++++++++
 
 In terminal, navigate to root and type this code in::
 
@@ -101,7 +134,7 @@ which should produce the message: "creating application 'Simple' in 'simple.py'"
 
 
 Histogram Install
------------------
++++++++++++++++++
 
 Follow the instructions `here <http://dev.danse.us/trac/histogram/wiki/Install-0.1_from_svn>`_ to install the histogram package after you finish installing Pyre. Then, copy the necessary files from tmp to your pyre directory (so the main.cgi supplied below will work) by typing in terminal::
 
@@ -113,7 +146,7 @@ Follow the instructions `here <http://dev.danse.us/trac/histogram/wiki/Install-0
 Where $EXPORT_ROOT is, for example, /home/username/dv/tools/pythia-0.8
 
 Downloading VNF
----------------
++++++++++++++++
 
 In terminal, go to where you would like to install VNF and type::
 
@@ -131,6 +164,7 @@ For Ubuntu, open a terminal and type::
 
 In Fedora, logged in as root, type in a terminal::
 
+        service postgresql initdb
         service postgresql start
 	su -- postgres
 	psql template1
@@ -213,6 +247,9 @@ Also, you may need to find where it says::
 and change apache to your username (which matches your database username). 
 
 If using Fedora, disable SELinux (System > Administration > SELinux Management) to allow apache to access user directories. You may have to reboot your machine to make this take effect.  
+More secure way is to use to the tools of SELinux to carefully enable access 
+to hosted files. This needs a bit of work. Please google for SELinux and apache for
+more details.
 
 After making changes to httpd.conf, restart the server by logging in to root and type::
 
