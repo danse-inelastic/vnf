@@ -5,7 +5,13 @@ import os
 
 #The "request" object passed from simple http server
 #convert it to a query string
-query_string = '&'.join( '%s=%s' % (k, ','.join(v)) for k,v in request.iteritems() )
+try:
+    request
+    query_string = '&'.join( '%s=%s' % (k, ','.join(v)) for k,v in request.iteritems() )
+except NameError:
+    import sys
+    request = dict([item[2:].split("=") for item in sys.argv[1:]])
+    query_string = '&'.join( '%s=%s' % (k,v) for k,v in request.iteritems() )
 os.environ['QUERY_STRING'] = query_string
 
 
