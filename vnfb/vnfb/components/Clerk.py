@@ -45,7 +45,7 @@ class Clerk( base ):
 
 
     def getUser(self, username):
-        from gongshuzi.dom.User import User
+        from vnf.dom.User import User
         users = self.db.fetchall(User, where="username='%s'" % username)
         if not users: raise RuntimeError, "user %r not found" % username
         assert len(users) == 1
@@ -53,7 +53,7 @@ class Clerk( base ):
 
 
     def getUserInfo(self, username):
-        from gongshuzi.dom.Registrant import Registrant
+        from vnf.dom.Registrant import Registrant
         registrants = self.db.fetchall(Registrant, where="username='%s'"% username)
         if not registrants: raise RuntimeError, "user %r not found" % username
         assert len(registrants) == 1
