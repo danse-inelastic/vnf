@@ -17,6 +17,12 @@ from luban.content import load, select
 
 from luban.content.Form import Form
 from luban.content.Document import Document
+from luban.content.ProgressBar import ProgressBar
+from luban.content.Form import Form
+from luban.content.Link import Link
+
+
+from vnfb.components.job_utils import check
 
 
 from luban.components.Actor import Actor as base
@@ -71,6 +77,148 @@ class Actor(base):
         return
 
 
+    def view(self, director):
+        id = self.inventory.id
+        job = self._getJob(director)
+        
+        # if job has not been submitted, present the submission form
+        if job.state in ['created']:
+            return self.edit(director)
+        if job.state in ['submissionfailed']:
+            return self.view_failed_submission(director)
+        if job.state in ['submitting']:
+            return self.in_submission(director)
+
+        #
+        assert (job.creator == director.sentry.username or job.creator == 'vnf' )
+
+        # update job status
+        state = check( job, director )
+
+        # prepare page
+        document = Document( title = 'Job # %s: %s' % (
+            job.id, job.state ) )
+
+        keyinfos = {
+            'ID': job.id,
+            'Description': job.short_description,
+            'Status': job.state,
+            }
+        from luban.content.HtmlDocument import HtmlDocument
+        l = HtmlDocument()
+        l.text = ['<ul>']
+        for k,v in keyinfos.iteritems():
+            l.text.append('<li><em>%s:</em> %s </li>' % (k,v))
+            continue
+        l.text.append('</ul>')
+        document.add(l)
+        
+        # refresh link
+        link = Link(label = 'Refresh')
+        link.onclick = load(
+            actor = 'job', routine = 'view',
+            id = id,
+            )
+        document.add(link)
+        
+        # Results
+        compdoc = document.document(title='Results')
+        # link to computation
+        computation = job.computation.dereference(director.clerk.db)
+        link = Link(label = 'Results of the computation')
+        link.onclick = load(
+            actor = 'computation',
+            routine = 'view',
+            id = computation.id,
+            type = computation.name,
+            )
+        compdoc.add(link)
+        
+        # download link
+        link = Link(label = 'Download the output files of this job')
+        link.onclick = load(
+            actor = 'job',
+            routine = 'download',
+            id = id,
+            )
+        compdoc.add(link)
+
+        # status document
+        statusdoc = document.document(title='Status')
+        # if job is running, add a "cancel" link
+        if job.state == 'running':
+            statusdoc.paragraph(text=['Your job #%s is running.' % job.id])
+            link = Link(label = 'Cancel the job')
+            link.onclick = load(
+                actor = 'job',
+                routine = 'If you don\'t want it running anymore, please cancel it.',
+                id = job.id,
+                )
+        else:
+            statusdoc.paragraph(text=[
+                'Your job #%s is %s.' % (job.id, job.state),
+                ])
+
+            if job.state in ['finished', 'terminated', 'cancelled']:
+                p = statusdoc.paragraph()
+                p.text = [
+                    'The job exited with code %s.' % job.exit_code
+                    ]
+
+        # runinfo document
+        runinfodoc = document.document(title='Run information')
+        p = runinfodoc.paragraph()
+        time_start = job.time_start
+        cluster = job.server.dereference(director.clerk.db).short_description
+        nprocs = job.numprocessors
+        walltime = job.walltime
+        p.text = [
+            "This job was started at %s on %s processor(s) of cluster \"%s\" with time limit of %s hour(s)." % (
+            time_start, nprocs, cluster, walltime),
+            ]
+
+        if job.state in ['finished', 'terminated', 'cancelled']:
+            p = runinfodoc.paragraph()
+            p.text = [
+                'This job was %s at %s.' % (job.state, job.time_completion),
+                ]
+
+#        # output document
+#        outputdoc = document.document(title='Output')
+#        outputdoc.paragraph().text = ['stdout']
+#        l = outputdoc.literal()
+#        l.text = [
+#            '<pre>',
+#            job.output,
+#            '</pre>',
+#            ]
+#        outputdoc.paragraph().text = ['stderr']
+#        l = outputdoc.literal()
+#        l.text = [
+#            '<pre>',
+#            job.error,
+#            '</pre>',
+#            ]
+
+        # Misc
+        miscdoc = document.document(title='Misc.')
+        # put up all other info about the job
+        record = job
+        props = [
+            'creator',
+            'remote_outputfilename',
+            'remote_errorfilename',
+            'id_incomputingserver',
+            ]
+        lines = ['%s=%s' % (prop, getattr(record, prop) ) for prop in props]
+        for line in lines:
+            p = document.paragraph()
+            p.text = [line]
+            continue
+
+        return select(id='main-display-area').replaceContent(document)
+
+
     def create(self, director):
         computation = self._getComputation(director)
         # if there is already a job, we have a problem
@@ -78,27 +226,28 @@ class Actor(base):
         if job: raise RuntimeError, "computation %s already has a job" % computation.id
 
         # create new job
-        job = director.clerk.insertNewOwnedRecord('jobs')
-
+        from vnfb.components.job_utils import new
+        job = new(director)
+        
         # assign computation
         job.computation = computation
-
+        
         # update
         director.clerk.updateRecordWithID(job)
         
         self.inventory.id = job.id
         return self.edit(director)
-
-
+    
+    
     def edit(self, director):
         form = self.createEditForm(director)
         
         doc = Document(title='Job\ %s' % self.inventory.id)
         doc.add(form)
-
+        
         return select(id='main-display-area').replaceContent(doc)
-
-
+    
+    
     def createEditForm(self, director):
         record = self._getJob(director)
         
@@ -201,7 +350,68 @@ class Actor(base):
 
 
     def submit(self, director):
-        return
+        view = self.create_submitting_view(director)
+        return select(id='main-display-area').replaceContent(view)
+
+
+    def debug_submit(self, director):
+        from luban.content.Page import Page
+        page = Page()
+
+        document = page.document(id='main-display-area')
+        
+        view = self.create_submitting_view(director)
+        document.add(view)
+
+        return page
+    
+
+    def create_submitting_view(self, director):
+        job = self._getJob(director)
+
+        if job.state in ['submitted', 'running', 'onhold',
+                         'finished', 'terminated', 'cancelled']:
+            return self.already_submitted(director)
+        if job.state in ['submitting']:
+            return self.in_submission(director)
+        
+        iworker = 'submitjob'
+        
+        # first check if there is itask running
+        task = job.findPendingTask(director.clerk.db, iworker=iworker)
+        if not task:
+            from vnf.dom.ITask import createITask, ITask
+            task = director.clerk.insertNewOwnedRecord(ITask)
+            task = createITask(
+                task.id,
+                beneficiary = job,
+                worker = iworker,
+                type = iworker,
+                )
+            director.clerk.updateRecordWithID(task)
+            
+        # start the task
+        from vnfb.components.itask_utils import start
+        start(task)
+        
+        # build the progress bar and return
+        pbar = ProgressBar(
+            id = 'itask-%s-pbar' % task.id,
+            status = 'Submitting job...',
+            percentage = 0,
+            skip = 1000,
+            )
+        pbar.onchecking = load(
+            actor='itask',
+            routine='checkProgress',
+            id = task.id,
+            )
+        pbar.onfinished = load(
+            actor = 'job',
+            routine='view',
+            id = self.inventory.id)
+
+        return pbar
 
 
     def showErrors(self, director, errors=None):
@@ -210,6 +420,65 @@ class Actor(base):
             select(id=_input_widget_ID(name)).showError(text)
             for name, text in errors.iteritems()
             ]
+
+
+        job = director.clerk.getJob(self.inventory.id)
+        main = page._body._content._main
+        document = main.document( title = 'Job already submitted: %s' % job.id )
+        
+        p = document.paragraph()
+        link = action_link(
+            actionRequireAuthentication
+            ( actor = 'job',
+              sentry = director.sentry,
+              routine = 'view',
+              label = 'here',
+              id = self.inventory.id,
+              ),
+            director.cgihome
+            )
+        p.text = [
+            'This job has already been submitted. To view its status, please click %s' % link
+            ]
+        return page
+
+
+    def already_submitted(self, director):
+        job = self._getJob(director)
+
+        document = Document( title = 'Job already submitted: %s' % job.id )
+        
+        p = document.paragraph()
+        p.text = [
+            'This job has already been submitted.'
+            ]
+        
+        link = Link(label = 'To view its status, please click here')
+        link.onclick = load (
+            actor = 'job', routine = 'view',
+            id = self.inventory.id,
+            )
+        document.add(link)
+        
+        return document
+
+    
+    def in_submission(self, director):
+        job = self._getJob(director)
+        document = Document( title = 'Job is being submmitted: %s' % job.id )
+        
+        p = document.paragraph()
+        p.text = ['This job is being submitted.']
+        
+        link = Link(label='To check its status, please click here')
+        link.onclick = load(
+            actor = 'job',
+            routine = 'view',
+            id = id,
+            )
+        document.add(link)
+        
+        return document
 
 
     def _getJob(self, director):
