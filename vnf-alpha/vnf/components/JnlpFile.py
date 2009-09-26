@@ -51,10 +51,7 @@ class JnlpFile:
     <application-desc main-class="''' + self.mainClass + '''" >
 '''
         for argumentName, argumentValue in self.programArguments.iteritems():
-            #print argumentName, argumentValue
             director._debug.log('jnlp args %s, %s' % (argumentName, argumentValue))
-            #import sys
-            #print >>sys.stderr 'jnlp', argumentName, argumentValue
             self.jnlpString += '<argument>'+argumentName+'='+argumentValue+'</argument>'+os.linesep
         self.jnlpString +='''</application-desc>
 </jnlp>'''     
@@ -69,7 +66,7 @@ class JnlpFile:
         f = file(os.path.join(tmpdirectory, self.fileName + '.jnlp'),'w')
         f.write(self.jnlpString)
         f.close()
-        return os.path.join('../html/tmp', os.path.split(tmpdirectory)[1], self.fileName + '.jnlp')
+        return os.path.join('tmp', os.path.split(tmpdirectory)[1], self.fileName + '.jnlp')
         
     
     
