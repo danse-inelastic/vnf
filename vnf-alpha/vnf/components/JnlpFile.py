@@ -63,9 +63,10 @@ class JnlpFile:
         if self.fileName[-5:] is '.jnlp': self.fileName = self.fileName[:-5]
         parentdir = os.path.join('..', 'content', 'data', 'tmp')
         tmpdirectory = tempfile.mkdtemp(dir=parentdir)
-        f = file(os.path.join(tmpdirectory, self.fileName + '.jnlp'),'w')
+        f = file(os.path.join(tmpdirectory, self.fileName + '.jnlp'), 'w')
         f.write(self.jnlpString)
         f.close()
+        #return os.path.join(tmpdirectory, self.fileName + '.jnlp')
         return os.path.join(director.home, 'tmp', os.path.split(tmpdirectory)[1], self.fileName + '.jnlp')
         
     
