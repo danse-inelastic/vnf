@@ -154,8 +154,12 @@ class Actor(base):
         p.text = ['''The Gulp simulation package uses efficient forcefield
         techniques for simulating larger systems.  Its capabilities include forcefields from 
         a large number of trial functions, phonon / molecular dynamics / optimization, experimental data fitting,
-        and crystal property calculation.  <br>''',
-        '<center><a href="'+relativeLocationOfFile+'"><img src="images/webstart.gif" alt="GulpUi"/></a></center>']
+        and crystal property calculation.''']
+        
+        from luban.content.HtmlDocument import HtmlDocument
+        h = HtmlDocument()
+        h.text = ['<br><center><a href="'+relativeLocationOfFile+'"><img src="images/webstart.gif" alt="GulpUi"/></a></center>']
+        form.add(h)
 
         p = form.paragraph()
         p.text = ['''Press "Launch" above to activate GulpUi in Java Web Start mode.  Note: you must have
