@@ -5,5 +5,6 @@
     <facility name="extension">app-extension</facility>
     <property name="log-dir">../log</property>
     <property name='cgi-home'>http://localhost:8600/cgi-bin/main.py</property>
+    <property name='home'>http://localhost:8600</property>
   </component>
 </inventory>
