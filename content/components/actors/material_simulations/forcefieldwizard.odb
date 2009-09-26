@@ -66,6 +66,8 @@ class Actor(base):
 
         matter = self._getMatter(director)
         matterlabel = matter.short_description or matter.chemical_formula or matter.id
+        self.inventory.matter_id = matter.id
+        
         title = 'Forcefield simulation of %s' % (matterlabel,)
         wizard = Document(id='forcefieldwizard-start', title=title)
 
@@ -87,6 +89,7 @@ class Actor(base):
 
         simulation = self._getSimulation(director)
         matter = simulation.matter.dereference(director.clerk.db)
+        self.inventory.matter_id = matter.id
         
         matterlabel = matter.short_description or matter.chemical_formula or matter.id
         title = 'Simulation\ %s: Forcefield simulation of Matter\ %s' % (id, matterlabel)
@@ -123,11 +126,10 @@ class Actor(base):
             id='forcefield-wizard-startform',
             title='')
 
-        self._debug.log("I'm in forcefield!")
         args = {
             'simulationId': id,
             'simulationType': type,
-            'matterId':record.matter.id,
+            'matterId': self.inventory.matter_id,
             #'coordinateType':simulation.matter.
             }
         callbackArgs = {
@@ -160,18 +162,6 @@ class Actor(base):
         a Java Virtual Machine (JVM) installed.  If you do not, clicking "Launch" will likely cause your browser to alert you to this
         and install one automatically.  It is highly recommended to use the JVM from Sun Microsystems.  The OpenJDK (default on Ubuntu OS)
         does not work due to bugs in their webstart launcher.''']
-
-        action = actionRequireAuthentication(
-            label = 'Continue',
-            sentry = director.sentry,
-            actor = 'gulpsimulationwizard', 
-            routine = 'verifyConfiguration',
-            id=id, type=type,
-            )
-        link = action_link(action, director.cgihome)
-
-        p = form.paragraph()
-        p.text = [link]
 
         next = form.submitbutton(label="next")
         
