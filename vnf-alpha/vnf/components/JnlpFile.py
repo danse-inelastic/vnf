@@ -66,7 +66,7 @@ class JnlpFile:
         f = file(os.path.join(tmpdirectory, self.fileName + '.jnlp'),'w')
         f.write(self.jnlpString)
         f.close()
-        return os.path.join('tmp', os.path.split(tmpdirectory)[1], self.fileName + '.jnlp')
+        return os.path.join(director.home, 'tmp', os.path.split(tmpdirectory)[1], self.fileName + '.jnlp')
         
     
     
