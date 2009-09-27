@@ -14,6 +14,9 @@
 
 from luban.content import load, select
 
+from luban.content.Button import Button
+
+
 from luban.components.Actor import Actor as base
 
 
@@ -65,169 +68,22 @@ class Actor(base):
         number_records_per_page = self.inventory.number_records_per_page
         page_number = self.inventory.page_number
 
-        return factory.create(
+        tableview = factory.create(
             order_by=order_by,
             reverse_order=reverse_order,
             filter_expr=filter_expr,
             number_records_per_page=number_records_per_page,
             page_number=page_number)
+
+        # add some buttons to the left of navbar
+        leftbar = tableview.find(id='matter-table-toolbar-left')
+        #
+        button = Button(label='new')
+        leftbar.add(button)
+        button.onclick = load(actor='matter', routine='new')
+        return tableview
     
         
-    def createListView1(self, director):
-        from luban.content.FormSelectorField import FormSelectorField
-        from luban.content.FormTextField import FormTextField
-        
-        # parameters
-        order_by = self.inventory.order_by or None
-        reverse_order = self.inventory.reverse_order
-        filter_expr = self.inventory.filter_expr
-        number_records_per_page = self.inventory.number_records_per_page
-        page_number = self.inventory.page_number
-        slice = [page_number*number_records_per_page, (page_number+1)*number_records_per_page]
-        # XXX
-        # filter_expr ....
-        # filters = ...
-
-        # create a container
-        from luban.content.Document import Document
-        from luban.content.Splitter import Splitter
-        from luban.content.Link import Link
-        view = Document(id='matter-list-view')
-
-        # controls
-        controls = Splitter(orientation='horizontal', id='matter-table-controls')
-        view.add(controls)
-        # sorting
-        sorting_container = controls.section(id='matter-table-sorting-control-container')
-        entries = [
-            ('id', 'ID'),
-            ('short_description', 'Description'),
-            ('chemical_formula', 'Chemical_formula'),
-            ('date', 'Date created'),
-            ]
-        selector = FormSelectorField(
-            label = 'Sort by: ',
-            entries=entries,
-            selection=order_by or '',
-            id='matter-table-order_by')
-        selector.onchange = load(
-            actor='matter', routine='showListView',
-            number_records_per_page = number_records_per_page,
-            page_number = 0,
-            order_by = select(element=selector).formfield('getSelection'),
-            reverse_order = reverse_order,
-            filter_expr = filter_expr,
-            )
-        sorting_container.add(selector)
-        # order reversing
-        reverse_order_container = controls.section(id='matter-table-sorting-reversing-control-container')
-        entries = [
-            ('False', 'Low to High'),
-            ('True', 'High to Low'),
-            ]
-        selector = FormSelectorField(
-            label = 'Ordering: ',
-            entries=entries,
-            selection=reverse_order,
-            id='matter-table-reverse_order')
-        selector.onchange = load(
-            actor='matter', routine='showListView',
-            number_records_per_page = number_records_per_page,
-            page_number = 0,
-            reverse_order = select(element=selector).formfield('getSelection'),
-            order_by = order_by,
-            filter_expr = filter_expr,
-            )
-        reverse_order_container.add(selector)
-        # filter
-        filter_ctrl_container = controls.section(id='matter-table-filter-control-container')
-        field = FormTextField(
-            label = 'Filter: ',
-            value = filter_expr,
-            id='matter-table-filter')
-        field.onchange = load(
-            actor='matter', routine='showListView',
-            number_records_per_page = number_records_per_page,
-            page_number = 0,
-            reverse_order = reverse_order,
-            order_by = order_by,
-            filter_expr = select(element=field).formfield('getValue'),
-            )
-        filter_ctrl_container.add(field)
-        
-        # navigation bar (previous, next...)
-        # get a total count
-        totalcount = self._countMatters(director, filter=filter_expr)
-        if slice[1] > totalcount: slice[1] = totalcount
-        lastpage = (totalcount-1)/number_records_per_page
-        # 
-        bar = Splitter(id='matter-table-navigation-bar')
-        view.add(bar)
-        #
-        first = bar.section(id='matter-table-navigation-bar-first')
-        if page_number>0:
-            onclick=load(
-                actor='matter', routine='showListView',
-                page_number=0,
-                number_records_per_page = number_records_per_page,
-                order_by = order_by or '',
-                reverse_order = reverse_order,
-                filter_expr = filter_expr,
-                )
-            first.add(Link(label='first',onclick=onclick))
-        else:
-            first.paragraph(text='t', Class='hidden')
-        left = bar.section(id='matter-table-navigation-bar-left')
-        if page_number>0:
-            onclick=load(
-                actor='matter', routine='showListView',
-                page_number=page_number-1,
-                number_records_per_page = number_records_per_page,
-                order_by = order_by or '',
-                reverse_order = reverse_order,
-                filter_expr = filter_expr,
-                )
-            left.add(Link(label='previous',onclick=onclick))
-        else:
-            left.paragraph(text='t', Class='hidden')
-        #
-        text = '%s-%s of %s' % (slice[0]+1, slice[1], totalcount)
-        bar.section(id='matter-table-navigation-bar-middle').paragraph(text=text)
-        #
-        right = bar.section(id='matter-table-navigation-bar-right')
-        if page_number < lastpage:
-            onclick=load(
-                actor='matter', routine='showListView',
-                page_number=page_number+1,
-                number_records_per_page = number_records_per_page,
-                order_by = order_by or '',
-                reverse_order = reverse_order,
-                filter_expr = filter_expr,
-                )
-            right.add(Link(label='next',onclick=onclick))
-        else:
-            right.paragraph(text='t', Class='hidden')
-        last = bar.section(id='matter-table-navigation-bar-last')
-        if page_number < lastpage:
-            onclick=load(
-                actor='matter', routine='showListView',
-                page_number=lastpage,
-                number_records_per_page = number_records_per_page,
-                order_by = order_by or '',
-                reverse_order = reverse_order,
-                filter_expr = filter_expr,
-                )
-            last.add(Link(label='last',onclick=onclick))
-        else:
-            last.paragraph(text='t', Class='hidden')
-        
-        # create a table
-        table = self.createMatterTable(director, order_by=order_by, reverse_order=reverse_order, slice=slice, filter=filter_expr)
-        view.add(table)
-        #
-        return view
-
-
     def createMatterTable(self, director, order_by=None, reverse_order=None, slice=None, filter=None):
         matters = self._getMatters(director, filter=filter, order_by=order_by, reverse_order=reverse_order, slice=slice)
 
