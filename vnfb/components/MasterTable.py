@@ -115,7 +115,12 @@ class MasterTableFactory(object):
             filter_expr = select(element=field).formfield('getValue'),
             )
         filter_ctrl_container.add(field)
-        
+
+        # toolbar
+        toolbar = Splitter(id='%s-table-toolbar'%name, Class='master-table-toolbar')
+        view.add(toolbar)
+        lefttoolbar = toolbar.section(id='%s-table-toolbar-left' % name, Class='master-table-toolbar-left')
+        righttoolbar = toolbar.section(id='%s-table-toolbar-right' % name, Class='master-table-toolbar-right')
         # navigation bar (previous, next...)
         # get a total count
         totalcount = self.countrecords(filter=filter_expr)
@@ -126,7 +131,7 @@ class MasterTableFactory(object):
             id='%s-table-navigation-bar'%name,
             Class='master-table-navigation-bar',
             )
-        view.add(bar)
+        righttoolbar.add(bar)
         #
         first = bar.section(id='%s-table-navigation-bar-first'%name)
         if page_number>0:

@@ -1,105 +1,18 @@
 /*  -*- CSS -*-  */
 
-/* matter list */
-/* navigation bar */
-#matter-table-navigation-bar {
-    /*
-    height: 30px;
-    width: 240;
-    */
-    height: auto;
-    max-width: 300px;
-    margin-left: auto;
-    margin-right: 1px;
-}
-#matter-table-navigation-bar > table.luban-splitter {
-    width: auto;
-    margin: 0 1px 0 auto;
-}
-#matter-table-navigation-bar > table.luban-splitter tr{
-}
-#matter-table-navigation-bar > table.luban-splitter td{
-    width: auto;
-    padding: 0 10px;
-}
-#matter-table-navigation-bar > table.luban-splitter td a{
-    margin: 0;
-}
-#matter-table-navigation-bar > table.luban-splitter td p{
-    margin: 0;
+/* matter table view */
+#matter-table-toolbar-left .luban-button-container {
+    margin:5px;
+    padding:2px;
+    text-align:left;
 }
 
-
-#matter-table-navigation-bar-left, #matter-table-navigation-bar-right{
-    width: auto;
-    text-align: center;
-}
-#matter-table-navigation-bar-middle{
-    width: auto;
-    text-align: center;
-    color: #666666;
+#matter-table-toolbar-left .luban-button {
+    padding: 2px 5px;
+    -moz-border-radius: 8px;
+    -webkit-border-radius: 8px;
 }
 
-
-
-/* controls */
-#matter-table-controls {
-    /*
-    height: 30px;
-    width: 240;
-    */
-    height: auto;
-    max-width: 400px;
-    margin-left: 1px;
-    margin-right: auto;
-}
-#matter-table-controls > table.luban-splitter {
-    width: auto;
-    margin: 0 auto 0 1px;
-}
-#matter-table-controls > table.luban-splitter tr{
-}
-#matter-table-controls > table.luban-splitter td{
-    width: auto;
-    padding: 0 10px;
-}
-#matter-table-controls > table.luban-splitter td .formfield{
-    margin: 0;
-}
-#matter-table-controls > table.luban-splitter td a{
-    margin: 0;
-}
-#matter-table-controls > table.luban-splitter td p{
-    margin: 0;
-}
-
-#matter-table-controls div.label-container {
-    color: #888888;
-    font-size: 90%;
-}
-
-#matter-table-filter input {
-    width: 250px;
-}
-
-#matter-table-controls input {
-    border-color: #cced8c;
-    border-width: 2;
-}
-
-#matter-table-controls select {
-    border-color: #cced8c;
-    border-width: 2;
-}
-
-/* table itself */
-#matter-table {
-    width: 100%;
-}
-
-#matter-table thead {
-    color: #888888;
-}
 
 /* single matter view */
 #matterdoc {
