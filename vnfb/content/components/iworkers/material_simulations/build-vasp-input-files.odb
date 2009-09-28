@@ -94,7 +94,7 @@ class Worker(Component):
 
 
     def _makeXYZfile(self, crystal):
-        from vnf.components.job_builders.SampleAssemblyXMLBuilder import crystal2xyz
+        from vnfb.components.matter_utils import crystal2xyz
         contents = crystal2xyz(crystal)
         filename = 'matter.xyz'
         return filename, contents
