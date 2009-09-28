@@ -25,8 +25,8 @@ def set_idgenerator( generator ):
 
 
 def referenceSet(**kwds):
-    from ReferenceSet import ReferenceSet
-    return ReferenceSet(**kwds)
+    from dsaw.db import referenceSet
+    return referenceSet(**kwds)
 
 
 def geometer(**kwds):

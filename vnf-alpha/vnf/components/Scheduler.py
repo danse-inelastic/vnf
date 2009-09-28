@@ -45,7 +45,7 @@ def schedule( job, director ):
     job.state = 'submitted'
     import time
     job.time_start = time.ctime()
-    director.clerk.updateRecord(job)
+    director.clerk.updateRecordWithID(job)
     
     return
 
@@ -77,7 +77,7 @@ def check( job, director ):
         setattr(job, k, v)
         continue
 
-    director.clerk.updateRecord( job )
+    director.clerk.updateRecordWithID( job )
 
     newstate = job.state
 
@@ -115,7 +115,7 @@ def cancel( job, director ):
     scheduler.delete( job.id_incomputingserver )
 
     job.state = 'cancelled'
-    director.clerk.updateRecord( job )
+    director.clerk.updateRecordWithID( job )
 
     newstate = job.state
 
