@@ -16,6 +16,16 @@ def dds():
     return DistributedDataStorage('dds', 'dds')
 
 
+def clerk():
+    from Clerk import Clerk
+    return Clerk('clerk', 'clerk')
+
+
+def usersFromDB():
+    from UsersFromDB import UsersFromDB
+    return UsersFromDB('usersFromDB')
+
+
 # version
 __id__ = "$Id$"
 
