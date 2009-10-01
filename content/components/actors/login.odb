@@ -24,6 +24,9 @@ class Actor(base):
 
         import pyre.inventory
 
+        username = pyre.inventory.str('username')
+        password = pyre.inventory.str('password')
+
 
     def default(self, director):
         visual = director.retrieveVisual('login-frame')
@@ -42,6 +45,44 @@ class Actor(base):
         return page
 
 
+    def verify(self, director):
+        # pass info to sentry
+        sentry = director.sentry
+        sentry.username = self.inventory.username
+        sentry.passwd = self.inventory.password
+
+        errors = {}
+        
+        username = self.inventory.username
+        if not username:
+            errors['username'] = 'Username cannot be empty'
+        elif not director.userIsActive():
+            errors['username'] = 'Username does not exist. Please register first.'
+            
+        password = self.inventory.password
+        if not password:
+            errors['password'] = 'Password cannot be empty'
+
+        if director.userIsActive() and password and not director.userIsAuthorized():
+            errors['password'] = "Invalid password"
+        
+        if errors:
+            return self.formError(director, errors=errors)
+
+        assert director.userIsAuthorized()
+        
+        self._debug.log('redirect to greeter.greet')
+        return director.redirect(actor='greeter', routine='greet')
+
+
+    def formError(self, director, errors=None):
+        from luban.content import select
+        return [
+            select(id='login-%s-input' % name).formfield('showError', message=text)
+            for name, text in errors.iteritems()
+            ]
+    
+    
     def __init__(self, name='login'):
         super(Actor, self).__init__(name)
         return

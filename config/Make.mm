@@ -28,10 +28,12 @@ EXPORT_DATAFILES = \
 	clerk.pml \
 	clerk.odb \
 	idd-pickler.odb \
+	ipa.pml \
 	itask-manager.odb \
 	journal.pml \
 	librarian.pml \
 	main.pml \
+	usersFromDB.odb \
 	web-weaver.pml \
 	widget.lib
 

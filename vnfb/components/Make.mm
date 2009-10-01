@@ -40,6 +40,7 @@ EXPORT_PYTHON_MODULES = \
 	DistributedDataStorage.py \
 	JobBuilder.py \
 	MasterTable.py \
+	UsersFromDB.py \
 	__init__.py \
 	itask_utils.py \
 	job_utils.py \
