@@ -31,7 +31,9 @@ class MasterTableFactory(object):
     
 
     def create(self, order_by=None, reverse_order=None, filter_expr=None,
-               number_records_per_page=None, page_number=None):
+               number_records_per_page=None, page_number=None,
+               sorting_options=None,
+               ):
         name = self.name
 
         # parameters
@@ -51,12 +53,15 @@ class MasterTableFactory(object):
             id='%s-table-sorting-control-container'%name,
             Class='master-table-sorting-control-container',
             )
-        entries = [
-            ('id', 'ID'),
-            ('short_description', 'Description'),
-            ('type', 'Type'),
-            ('date', 'Date created'),
-            ]
+        if sorting_options is None:
+            entries = [
+                ('id', 'ID'),
+                ('short_description', 'Description'),
+                ('type', 'Type'),
+                ('date', 'Date created'),
+                ]
+        else:
+            entries = sorting_options
         selector = FormSelectorField(
             label = 'Sort by: ',
             entries=entries,

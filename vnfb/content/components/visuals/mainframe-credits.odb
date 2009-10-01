@@ -20,7 +20,7 @@ from luban.content.Document import Document
 def visual(director):
     doc = Document(id='credits')
     doc.paragraph().text = [
-        'Powered by luban',
+        'Powered by pyre/luban',
         ]
     return doc
 

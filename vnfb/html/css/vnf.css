@@ -43,6 +43,10 @@ p.hidden {
     color: transparent;
 }
 
+.invisible {
+    color: transparent;
+}
+
 
 /* overload the default behavior of luban for input */
 input, select, textarea{

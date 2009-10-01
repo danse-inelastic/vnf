@@ -44,6 +44,21 @@ class Actor(base):
         return self.showListView(director)
 
 
+    def replaceBodyFrameWithMatterList(self, director):
+        body_frame = select(id='body-frame')
+
+        body_skeleton = director.retrieveVisual('body-skeleton')
+        
+        main_display_area = body_skeleton.find(id='main-display-area')
+        matterlist = self.createListView(director)
+        main_display_area.add(matterlist)
+
+        material_portlet = body_skeleton.find(id='main-portlet-my-materials')
+        material_portlet.selected = 1
+        
+        return body_frame.replaceContent(body_skeleton)
+
+
     def showListView(self, director):
         view = self.createListView(director)
         return select(id='main-display-area').replaceContent(view)
