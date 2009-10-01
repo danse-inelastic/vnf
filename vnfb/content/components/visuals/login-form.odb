@@ -1,0 +1,48 @@
+# -*- Python -*-
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                 Jiao Lin
+#                      California Institute of Technology
+#                      (C) 2006-2009  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+from luban.content.Form import Form
+
+
+def visual(director):
+    form = Form(id='login-form', title='Sign in to your vnf account')
+    username = form.text(
+        name='username', label='Username', value='', id='login-username-input')
+    username.help = 'Usernames are case sensitive; make sure your caps lock key is not enabled.'
+
+    password = form.password(
+        name='password', label='Password', value='', id='login-password-input')
+    password.help = 'Passwords are also case sensitive.'
+    
+    submit = form.submitbutton(label="login")
+
+    # action when form is submitted
+    from luban.content import select
+    form.onsubmit = select(element=form).submit(
+        actor = 'login',
+        routine = 'verify',
+        )
+
+    p = form.paragraph()
+    p.text = [
+        'When you are done, please logout or exit your browser'
+        ]
+
+    return form
+
+    
+# version
+__id__ = "$Id$"
+
+# End of file 

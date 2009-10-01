@@ -1,0 +1,39 @@
+/*  -*- CSS -*-  */
+
+#login-body-doc {
+    font-size: 130%;
+}
+
+
+#login-body-left {
+    vertical-align: top;
+    padding: 40px;
+}
+
+#login-body-right {
+    vertical-align: top;
+}
+
+#login-form legend {
+    background-color: transparent;
+}
+
+#login-form input {
+    width: 300px;
+    height: 30px;
+    border-width: 4px;
+}
+
+#login-form input[type=submit] {
+    height: 40px;
+    width: 100px;
+    border-style: outset;
+    border-width: 1px;
+    background-color: lightGray;
+    font-size: 110%;
+}
+
+/* version */
+/* $Id$ */
+
+/* End of file  */

@@ -16,12 +16,14 @@
         "vnf.css",
         "vnf-table.css",
         "vnf-mastertable.css",
+	"vnf-login.css",
         "vnf-mainframe.css",
 	"vnf-matsim.css",
 	"vnf-matter.css"
         ],
      "jslibs":      [
         "jquery/jquery.js",
+        "jquery/jquery.rightClick.js",
         "jquery/jquery.dropshadow.js",
         "jquery/ui/ui.core.js",
         "luban/luban-core.js",
@@ -42,6 +44,13 @@
         "jquery/elementFactory.js",
         "jquery/tableFactory.js",
         "luban/luban-widgets-table.js"
+        ]
+  },
+  "plot2d": {
+     "stylesheets": [
+        ],
+     "jslibs":      [
+        "jquery/jquery.flot.js"
         ]
   },
   "treeview": {
