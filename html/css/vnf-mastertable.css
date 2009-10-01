@@ -1,5 +1,18 @@
 /*  -*- CSS -*-  */
 
+.master-table-toolbar-left .luban-button-container {
+    margin:5px;
+    padding:2px;
+    text-align:left;
+}
+
+.master-table-toolbar-left .luban-button {
+    padding: 2px 5px;
+    -moz-border-radius: 8px;
+    -webkit-border-radius: 8px;
+}
+
+
 .master-table-navigation-bar {
     height: auto;
     max-width: 300px;

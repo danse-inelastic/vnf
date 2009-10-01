@@ -26,7 +26,7 @@ class Actor(base):
 
 
     def greet(self, director):
-        return
+        return director.redirect(actor='matter', routine='replaceBodyFrameWithMatterList')
 
 
     def __init__(self, name='greeter'):

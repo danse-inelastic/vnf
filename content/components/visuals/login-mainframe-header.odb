@@ -1,0 +1,45 @@
+# -*- Python -*-
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                 Jiao Lin
+#                      California Institute of Technology
+#                      (C) 2006-2009  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+from luban.content import load
+
+from luban.content.Splitter import Splitter 
+from luban.content.Link import Link 
+
+def visual(director):
+    horizontal = Splitter(orientation='horizontal', id='mainframe-header')
+    logo_container = horizontal.section(id='header-logo-container')
+    title_container = horizontal.section(id='header-title-container')
+    userinfo_container = horizontal.section(id='header-userinfo-container')
+
+    #
+    # logo_container.document(id='header-logo')
+    link = Link(label='home', onclick=load(actor='vnf'))
+    logo_container.add(link)
+    # logo_container.paragraph(text='')
+
+    #
+    title_doc = title_container.document(id='header-title', title='virtual neutron facility')
+
+    #
+    userinfo_doc = userinfo_container.document(id='header-userinfo', Class="invisible")
+    link = Link(label='logoff', Class="invisible")
+    userinfo_doc.add(link)
+    
+    return horizontal
+
+    
+# version
+__id__ = "$Id$"
+
+# End of file 

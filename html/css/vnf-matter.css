@@ -1,17 +1,6 @@
 /*  -*- CSS -*-  */
 
 /* matter table view */
-#matter-table-toolbar-left .luban-button-container {
-    margin:5px;
-    padding:2px;
-    text-align:left;
-}
-
-#matter-table-toolbar-left .luban-button {
-    padding: 2px 5px;
-    -moz-border-radius: 8px;
-    -webkit-border-radius: 8px;
-}
 
 
 /* single matter view */
