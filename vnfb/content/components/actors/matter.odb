@@ -91,10 +91,10 @@ class Actor(base):
             page_number=page_number)
 
         # add some buttons to the left of navbar
-        leftbar = tableview.find(id='matter-table-toolbar-left')
+        buttoncontainer = tableview.find(id='matter-table-buttons-container')
         #
         button = Button(label='new')
-        leftbar.add(button)
+        buttoncontainer.add(button)
         button.onclick = load(actor='matter', routine='new')
         return tableview
     

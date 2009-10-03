@@ -42,12 +42,16 @@ class MasterTableFactory(object):
         # create a container
         view = Document(id='%s-list-view' % name)
 
+        # buttons
+        buttons = view.document(
+            id='%s-table-buttons-container' % name,
+            Class='master-table-buttons-container')
+        
         # controls
         controls = Splitter(
             orientation='horizontal',
             id='%s-table-controls'%name,
             Class = 'master-table-controls')
-        view.add(controls)
         # sorting
         sorting_container = controls.section(
             id='%s-table-sorting-control-container'%name,
@@ -125,6 +129,7 @@ class MasterTableFactory(object):
         toolbar = Splitter(id='%s-table-toolbar'%name, Class='master-table-toolbar')
         view.add(toolbar)
         lefttoolbar = toolbar.section(id='%s-table-toolbar-left' % name, Class='master-table-toolbar-left')
+        lefttoolbar.add(controls)
         righttoolbar = toolbar.section(id='%s-table-toolbar-right' % name, Class='master-table-toolbar-right')
         # navigation bar (previous, next...)
         # get a total count
