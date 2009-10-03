@@ -1,13 +1,15 @@
 /*  -*- CSS -*-  */
 
-.master-table-toolbar-left .luban-button-container {
+.master-table-buttons-container .luban-button-container {
     margin:5px;
     padding:2px;
     text-align:left;
 }
 
-.master-table-toolbar-left .luban-button {
-    padding: 2px 5px;
+.master-table-buttons-container .luban-button {
+    color: darkblue;
+    font-size: 130%;
+    padding: 1px 6px;
     -moz-border-radius: 8px;
     -webkit-border-radius: 8px;
 }
