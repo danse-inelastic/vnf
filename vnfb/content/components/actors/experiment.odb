@@ -80,11 +80,11 @@ class Actor(base):
             )
 
         # add some buttons to the left of navbar
-        buttoncontainer = tableview.find(id='experiment-table-buttons-container')
+        #buttoncontainer = tableview.find(id='experiment-table-buttons-container')
         #
-        button = Button(label='new')
-        buttoncontainer.add(button)
-        button.onclick = load(actor='experiment', routine='new')
+        #button = Button(label='new')
+        #buttoncontainer.add(button)
+        #button.onclick = load(actor='experiment', routine='new')
         return tableview
     
         

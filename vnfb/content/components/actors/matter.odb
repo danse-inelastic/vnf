@@ -105,11 +105,11 @@ class Actor(base):
             page_number=page_number)
 
         # add some buttons to the left of navbar
-        buttoncontainer = tableview.find(id='matter-table-buttons-container')
+        #buttoncontainer = tableview.find(id='matter-table-buttons-container')
         #
-        button = Button(label='new')
-        buttoncontainer.add(button)
-        button.onclick = load(actor='matter', routine='new')
+        #button = Button(label='new')
+        #buttoncontainer.add(button)
+        #button.onclick = load(actor='matter', routine='new')
 
         self._debug.log('list view created')
         return tableview
