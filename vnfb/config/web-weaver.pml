@@ -1,6 +1,6 @@
 <inventory >
   <component name="web-weaver">
-    <property name="controller-url">/cgi-bin/main.py</property>
-    <property name="html-base">http://localhost:8600</property>
+    <property name="controller-url">http://luban.danse.us/cgi-bin/vnfb/main.cgi</property>
+    <property name="html-base">http://luban.danse.us/vnfb/</property>
   </component>
 </inventory>

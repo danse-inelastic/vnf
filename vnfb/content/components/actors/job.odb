@@ -367,6 +367,7 @@ class Actor(base):
     
 
     def create_submitting_view(self, director):
+        return "this is a demo site and you cannot submit"
         job = self._getJob(director)
 
         if job.state in ['submitted', 'running', 'onhold',

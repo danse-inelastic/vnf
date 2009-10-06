@@ -18,7 +18,7 @@
 <inventory>
 
   <component name='clerk'>
-     <property name='db'>postgres://linjiao:4OdACm#@localhost/vnfa2b</property>
+     <property name='db'>postgres:///vnfa2b</property>
   </component>
 
 </inventory>

@@ -10,6 +10,8 @@
       <property name="submitjob">on</property>
       <property name='forcefieldwizard'>on</property>
       <property name='main'>on</property>
+      <property name='matter'>on</property>
+      <property name='luban.weaver.web.prerenderer'>off</property>
     </component>
   </component>
 </inventory>
