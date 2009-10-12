@@ -26,8 +26,7 @@ class JnlpFile:
     
     def reformJnlp(self,director=None):
         if not director: codebase = 'http://vnf.caltech.edu'
-        else: codebase = director.home
-        import os
+        else: codebase = director.weaver.htmlbase
         self.jnlpString = '''<?xml version="1.0" encoding="UTF-8"?>
 <jnlp spec="1.0+"
       codebase="'''+codebase+'''/java">
