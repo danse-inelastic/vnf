@@ -145,8 +145,7 @@ class Actor(base):
             resources=('GULP.jar', 'j2ssh.jar', 'commons-logging.jar','pg74.216.jdbc3.jar'),
             mainClass='javagulp.controller.LaunchGulpUi',
             programArguments = args,
-            fileName='gulpLauncher',
-            director=director
+            fileName='gulpLauncher'
             )
         relativeLocationOfFile = jnlpFile.writeJnlp(director)
         
