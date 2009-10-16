@@ -1,14 +1,6 @@
 {
   "": {
      "stylesheets": [
-        "skeleton/visual.css",
-        "skeleton/visual-color.css",
-        "skeleton/structural.css",
-        "skeleton/structural-color.css",
-        "skeleton/classes.css",
-        "skeleton/classes-color.css",
-        "skeleton/reports.css",
-        "skeleton/reports-color.css",
         "jquery/ui/smoothness/ui.all.css",
 
 	"luban.css",
@@ -42,8 +34,7 @@
         "jquery/jquery.datePicker.js",
         "jquery/tabulator.js",
         "jquery/elementFactory.js",
-        "jquery/tableFactory.js",
-        "luban/luban-widgets-table.js"
+        "jquery/tableFactory.js"
         ]
   },
   "plot2d": {

@@ -89,21 +89,21 @@ body {
 
 /* main portlet */
 #main-portlet {
-    margin: 1em 0 0 0;
+    margin: 2em 0 0 0;
 }
 /* override default luban behavior */
-#main-portlet .portletBody {
+#main-portlet .luban-portlet-body {
     border: none;
 }
 /* portlet round borders */
-#main-portlet .portletContent {
+#main-portlet .luban-portletitem-content {
     -moz-border-radius: 16px 16px 16px 16px;
     -webkit-border-radius: 16px;
     /* border: 1px solid green; */
     padding: 0.25em 0.5em;
     background-color: #e0e0e0;
 }
-#main-portlet .portletitem-container {
+#main-portlet .luban-portletitem-container {
     -moz-border-radius: 23px 0 0 23px;
     -webkit-border-top-left-radius: 21px;
     -webkit-border-top-right-radius: 0px;
@@ -112,37 +112,42 @@ body {
     padding: 0.5em 1.5em 0.5em 0.5em;
 }
 /* selected */
-#main-portlet div.portletitem-container.selected div.portletContent{
+#main-portlet div.luban-portletitem-container.selected div.luban-portletitem-content{
     /* orange */
     /* background-color: #f5c073; */
     
     /* light orange */
     background-color: #f5e3ca;
 }
-#main-portlet div.portletitem-container.selected{
+#main-portlet div.luban-portletitem-container.selected{
     /* background-color: #f5c073; */  /*oragne*/
     background-color: #cced8c;
 }
 /* portlet font size */
-#main-portlet div.portletContent a.navItem{
+#main-portlet .luban-portletitem-content{
     font-size: 120%;
     color: #454545;
     text-align: center;
+    padding: 7px;
+}
+
+.luban-portletitem-content a{
+    border-width: 0;
 }
 
 /* override the existing hover effect */
-.portletContent a:hover {
+.luban-portletitem-content a:hover {
     background-color: transparent;
     border-color: transparent;
     border: none;
 }
 /* so that we can have new hover effect */
-#main-portlet div.portletContent:hover{
+#main-portlet div.luban-portletitem-content:hover{
     background-color: #cced8c;
     cursor: pointer; cursor: hand;
 }
 /*
-#main-portlet div.portletitem-container:hover{
+#main-portlet div.luban-portletitem-container:hover{
     background-color: #f5c073;
     cursor: default;
 }
@@ -199,18 +204,19 @@ body {
     text-shadow: 1px 1px #444;
     font-family:Times,"Times New Roman",serif;
     font-size:85%;
+    margin: 7px 0;
     color: #d0d0d0;
     vertical-align: bottom;
 }
 
 /* ------------------------------------------------------------ */
-/*   3. footer */
-/* footer: gradient bg */
+/*   4. credits */
 #credits p {
     text-align:center;
     font-family:Times,"Times New Roman",serif;
     font-size:80%;
-    color: #555555;
+    margin: 5px;
+    color: #333333;
 }
 
 /* version */

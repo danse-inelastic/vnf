@@ -11,18 +11,26 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 PROJECT = vnfb
-PACKAGE = html
+PACKAGE = html/css
 
 RECURSE_DIRS = \
-	javascripts \
-	css \
 
 EXPORT_DATADIRS = \
-	images \
-	java \
+	jquery\
+	skeleton\
+	tabulator\
+
 
 EXPORT_DATAFILES = \
-	cgi-bin \
+	luban.css\
+	vnf-login.css \
+	vnf-mainframe.css \
+	vnf-mastertable.css \
+	vnf-matsim.css \
+	vnf-matter.css \
+	vnf-table.css \
+	vnf.css \
+
 
 
 OTHERS = \
@@ -44,11 +52,12 @@ distclean::
 
 
 
-RSYNC_A = rsync -a
+RSYNC_A = rsync -a --copy-unsafe-links
 EXPORT_DATA_PATH = $(EXPORT_ROOT)/$(PROJECT)/$(PACKAGE)
 
 
 export-package-data: export-package-data-dirs export-package-data-files
+
 
 export-package-data-dirs:: $(EXPORT_DATADIRS) 
 	mkdir -p $(EXPORT_DATA_PATH); \
@@ -58,11 +67,10 @@ export-package-data-dirs:: $(EXPORT_DATADIRS)
             } fi; \
         } done
 
-CP_SYMLINK = rsync -a
 export-package-data-files:: $(EXPORT_DATAFILES) 
 	mkdir -p $(EXPORT_DATA_PATH); \
 	for x in $(EXPORT_DATAFILES); do { \
-	        $(CP_SYMLINK) $$x $(EXPORT_DATA_PATH)/ ; \
+	        $(RSYNC_A) $$x $(EXPORT_DATA_PATH)/ ; \
         } done
 
 
