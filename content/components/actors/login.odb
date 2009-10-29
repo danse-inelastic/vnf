@@ -48,6 +48,7 @@ class Actor(base):
     def verify(self, director):
         # pass info to sentry
         sentry = director.sentry
+        sentry.ticket = ''
         sentry.username = self.inventory.username
         sentry.passwd = self.inventory.password
 
@@ -72,6 +73,9 @@ class Actor(base):
         assert director.userIsAuthorized()
         
         self._debug.log('redirect to greeter.greet')
+        return [
+            
+            ]
         return director.redirect(actor='greeter', routine='greet')
 
 

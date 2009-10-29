@@ -63,12 +63,14 @@ body {
 /* ------------------------------------------------------------ */
 /*   2. body */
 #body-frame {
+    /*
     margin: 25 25 25 25;
     background-color: white;
-    padding: 20px;
     border-style: outset;
     border-width: 2;
     border-color: #d0d0d0;
+    */
+    padding: 20px 10px;
 }
 /* so that portlet is next to the display area */
 #body-frame table.luban-splitter {
@@ -84,16 +86,18 @@ body {
 #portlets-frame {
     padding: 0;
     vertical-align: top;
-    width: 15em;
+    width: 13em;
 }
 
 /* main portlet */
 #main-portlet {
-    margin: 2em 0 0 0;
+    margin: 0 0 0 0;
+    padding: 0 0 0 0.2em;
 }
 /* override default luban behavior */
 #main-portlet .luban-portlet-body {
     border: none;
+    padding: 1.2em 0 0 0;
 }
 /* portlet round borders */
 #main-portlet .luban-portletitem-content {
@@ -117,7 +121,7 @@ body {
     /* background-color: #f5c073; */
     
     /* light orange */
-    background-color: #f5e3ca;
+    background-color: #fffbb4;
 }
 #main-portlet div.luban-portletitem-container.selected{
     /* background-color: #f5c073; */  /*oragne*/
@@ -125,14 +129,23 @@ body {
 }
 /* portlet font size */
 #main-portlet .luban-portletitem-content{
-    font-size: 120%;
+    font-size: 110%;
     color: #454545;
     text-align: center;
-    padding: 7px;
+    padding: 4px 7px;
 }
 
+.luban-portletitem-container.selected .luban-portletitem-content a{
+    color: #30572C;
+    background-color: transparent;
+}
+.luban-portletitem-container.selected .luban-portletitem-content a:hover{
+    border: none;
+}
 .luban-portletitem-content a{
     border-width: 0;
+    background-color: transparent;
+    color: #555555;
 }
 
 /* override the existing hover effect */
@@ -173,8 +186,9 @@ body {
     width: 100%;
     background-color: white;
 }
+
 #main-display-area {
-    padding: 1em;
+    padding: 0.5em 1em 1em 1em;
     /*
     min-height: 100%;
     min-width: 100%;

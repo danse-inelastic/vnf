@@ -15,6 +15,7 @@ from luban.content.FormSelectorField import FormSelectorField
 from luban.content.FormTextField import FormTextField
 from luban.content.Document import Document
 from luban.content.Splitter import Splitter
+from luban.content.Toolbar import Toolbar
 from luban.content.Link import Link
 from luban.content import load, select
 
@@ -42,10 +43,47 @@ class MasterTableFactory(object):
         # create a container
         view = Document(id='%s-list-view' % name)
 
-        # buttons
-        buttons = view.document(
-            id='%s-table-buttons-container' % name,
-            Class='master-table-buttons-container')
+        # toolbar with widgets with actions that can change the items in the table
+        # such as filtering and creating. sorting and navigating are not such actions
+        splitter = Splitter(Class='master-table-title-bar')
+        view.add(splitter)
+        view_indicator = splitter.section(id='view-indicator')
+        view_indicator.add(Link(label=name.capitalize()+'s', onclick=load(actor=name)))
+        view_indicator.paragraph(text=['/ '], Class='splitter')
+        if filter_expr:
+            text = filter_expr
+        else:
+            text = 'View all'
+        view_indicator.paragraph(text=[text])
+        
+        right = splitter.section(Class='master-table-toolbar-changeview-container')
+        toolbar_changeview = Toolbar(
+            id= '%s-table-toolbar-changeview' % name,
+            Class='master-table-toolbar-changeview',
+            )
+        right.add(toolbar_changeview)
+        # filter
+        filter_ctrl_container = Document(
+            id='%s-table-filter-control-container'%name,
+            Class = 'master-table-filter-control-container',
+            )
+        toolbar_changeview.add(filter_ctrl_container)
+        
+        field = FormTextField(
+            label = 'Filter/search: ',
+            value = filter_expr,
+            id='%s-table-filter' % name,
+            Class='master-table-filter',
+            )
+        field.onchange = load(
+            actor=name, routine='showListView',
+            number_records_per_page = number_records_per_page,
+            page_number = 0,
+            reverse_order = reverse_order,
+            order_by = order_by,
+            filter_expr = select(element=field).formfield('getValue'),
+            )
+        filter_ctrl_container.add(field)
         
         # controls
         controls = Splitter(
@@ -104,47 +142,27 @@ class MasterTableFactory(object):
             filter_expr = filter_expr,
             )
         reverse_order_container.add(selector)
-        # filter
-        filter_ctrl_container = controls.section(
-            id='%s-table-filter-control-container'%name,
-            Class = 'master-table-filter-control-container',
-            )
-        field = FormTextField(
-            label = 'Filter: ',
-            value = filter_expr,
-            id='%s-table-filter' % name,
-            Class='master-table-filter',
-            )
-        field.onchange = load(
-            actor=name, routine='showListView',
-            number_records_per_page = number_records_per_page,
-            page_number = 0,
-            reverse_order = reverse_order,
-            order_by = order_by,
-            filter_expr = select(element=field).formfield('getValue'),
-            )
-        filter_ctrl_container.add(field)
 
-        # toolbar
-        toolbar = Splitter(id='%s-table-toolbar'%name, Class='master-table-toolbar')
+        # toolbar right on top of table
+        toolbar = Splitter(id='%s-table-toolbarontop'%name, Class='master-table-toolbarontop')
         view.add(toolbar)
-        lefttoolbar = toolbar.section(id='%s-table-toolbar-left' % name, Class='master-table-toolbar-left')
+        lefttoolbar = toolbar.section(id='%s-table-toolbarontop-left' % name, Class='master-table-toolbarontop-left')
         lefttoolbar.add(controls)
-        righttoolbar = toolbar.section(id='%s-table-toolbar-right' % name, Class='master-table-toolbar-right')
+        righttoolbar = toolbar.section(id='%s-table-toolbarontop-right' % name, Class='master-table-toolbarontop-right')
         # navigation bar (previous, next...)
         # get a total count
         totalcount = self.countrecords(filter=filter_expr)
         if slice[1] > totalcount: slice[1] = totalcount
         lastpage = (totalcount-1)/number_records_per_page
         # 
-        bar = Splitter(
+        bar = Document(
             id='%s-table-navigation-bar'%name,
             Class='master-table-navigation-bar',
             )
         righttoolbar.add(bar)
         #
-        first = bar.section(id='%s-table-navigation-bar-first'%name)
         if page_number>0:
+            id='%s-table-navigation-bar-first'%name
             onclick=load(
                 actor=name, routine='showListView',
                 page_number=0,
@@ -153,11 +171,11 @@ class MasterTableFactory(object):
                 reverse_order = reverse_order,
                 filter_expr = filter_expr,
                 )
-            first.add(Link(label='first',onclick=onclick))
-        else:
-            first.paragraph(text='t', Class='hidden')
-        left = bar.section(id='%s-table-navigation-bar-left'%name)
-        if page_number>0:
+            first = bar.link(id=id, label='first',onclick=onclick)
+
+            bar.paragraph(Class='splitter', text='|')
+            
+            id='%s-table-navigation-bar-left'%name
             onclick=load(
                 actor=name, routine='showListView',
                 page_number=page_number-1,
@@ -166,18 +184,17 @@ class MasterTableFactory(object):
                 reverse_order = reverse_order,
                 filter_expr = filter_expr,
                 )
-            left.add(Link(label='previous',onclick=onclick))
-        else:
-            left.paragraph(text='t', Class='hidden')
+            left = bar.link(id=id, label='previous',onclick=onclick)
         #
         text = '%s-%s of %s' % (slice[0]+1, slice[1], totalcount)
-        bar.section(
+        bar.paragraph(
             id='%s-table-navigation-bar-middle'%name,
-            Class='master-table-navigation-bar-middle')\
-            .paragraph(text=text)
+            Class='master-table-navigation-bar-middle',
+            text=text,
+            )
         #
-        right = bar.section(id='matter-table-navigation-bar-right')
         if page_number < lastpage:
+            id='matter-table-navigation-bar-right'
             onclick=load(
                 actor=name, routine='showListView',
                 page_number=page_number+1,
@@ -186,11 +203,11 @@ class MasterTableFactory(object):
                 reverse_order = reverse_order,
                 filter_expr = filter_expr,
                 )
-            right.add(Link(label='next',onclick=onclick))
-        else:
-            right.paragraph(text='t', Class='hidden')
-        last = bar.section(id='%s-table-navigation-bar-last'%name)
-        if page_number < lastpage:
+            right = bar.link(id=id,label='next',onclick=onclick)
+
+            bar.paragraph(Class='splitter', text='|')
+
+            id='%s-table-navigation-bar-last'%name
             onclick=load(
                 actor=name, routine='showListView',
                 page_number=lastpage,
@@ -199,9 +216,7 @@ class MasterTableFactory(object):
                 reverse_order = reverse_order,
                 filter_expr = filter_expr,
                 )
-            last.add(Link(label='last',onclick=onclick))
-        else:
-            last.paragraph(text='t', Class='hidden')
+            last = bar.link(id=id,label='last',onclick=onclick)
         
         # create a table
         table = self.createtable(

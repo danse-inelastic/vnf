@@ -15,6 +15,7 @@
 from luban.content import load, select
 
 from luban.content.Button import Button
+from luban.content.Paragraph import Paragraph
 
 
 from luban.components.Actor import Actor as base
@@ -80,11 +81,13 @@ class Actor(base):
             )
 
         # add some buttons to the left of navbar
-        buttoncontainer = tableview.find(id='experiment-table-buttons-container')
+        toolbar = tableview.find(id='experiment-table-toolbar-changeview')
+        toolbar.add(Paragraph(text='|', Class='splitter'))
         #
-        button = Button(label='new')
-        buttoncontainer.add(button)
+        button = Button(label='New', tip='create new experiment', icon='new.png')
+        toolbar.add(button)
         button.onclick = load(actor='experiment', routine='new')
+
         return tableview
     
         
