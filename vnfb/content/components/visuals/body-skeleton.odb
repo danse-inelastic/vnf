@@ -25,6 +25,10 @@ def visual(director):
     portlets_frame.add(director.retrieveVisual('main-portlet'))
     
     main_display_area_frame = horizontal.section(id='main-display-area-frame')
+
+    # area for indicator of what the current view is
+    #view_indicator = main_display_area_frame.document(id='view-indicator')
+
     main_display_area = main_display_area_frame.document(id='main-display-area')
 
     return horizontal

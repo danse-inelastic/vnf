@@ -1,44 +1,95 @@
 /*  -*- CSS -*-  */
 
-.master-table-buttons-container .luban-button-container {
-    margin:5px;
-    padding:2px;
-    text-align:left;
+/* top portion: view indicator and change-view-toolbar */
+.master-table-title-bar{
+    margin: 2px 0 13px 0;
+}
+.master-table-title-bar .luban-splitter-section-container>td {
+    width: 50%;
 }
 
-.master-table-buttons-container .luban-button {
-    color: darkblue;
+#view-indicator {
+    padding: 1em 0 0 0;
+    font-size: 90%;
+    float: left;
+}
+#view-indicator a{
+    color: #6f4980;
+    text-decoration: underline;
+}
+#view-indicator p{
+    display: inline;
+}
+#view-indicator div{
+    display: inline;
+}
+
+.master-table-toolbar-changeview-container .luban-toolbar .luban-button-container {
+    padding:0;
+    margin:0;
+}
+.master-table-toolbar-changeview-container .luban-toolbar {
+    -moz-border-radius:12px;
+    -webkit-border-radius:12px;
+    background-color:#f0f5f5;
+    border:1px solid #AAAAAA;
+    padding:1px 5px;
+}
+.master-table-toolbar-changeview-container .luban-toolbar .splitter{
     font-size: 130%;
-    padding: 1px 6px;
-    -moz-border-radius: 8px;
-    -webkit-border-radius: 8px;
+    padding: 0 10px;
+}
+.master-table-toolbar-changeview-container .luban-toolbar img{
+    height: 20px;
+    margin: 0px;
+    padding: 0px;
+    vertical-align: bottom;
+}
+.master-table-toolbar-changeview-container .luban-toolbar span{
+    font-size: 90%;
+    margin: 0 1px;
+    padding: 0;
+}
+.master-table-filter div{
+    display: inline;
+}
+.master-table-filter input {
+    width: 250px;
+    border-width: 3px;
+}
+.master-table-toolbar-changeview-container label {
+    font-size:70%;
+}
+.master-table-toolbar-changeview-container .luban-formfield {
+    margin: 0;
+}
+.master-table-toolbar-changeview-container .luban-toolbar .luban-button{
+    padding: 0;
 }
 
+
+/* toolbar just on top of table */
+.master-table-toolbarontop td {
+    vertical-align: bottom;
+}
 
 .master-table-navigation-bar {
-    font-size: 90%;
+    font-size: 80%;
     height: auto;
     max-width: 300px;
     margin-left: auto;
     margin-right: 1px;
+    text-align: right;
 }
-,master-table-navigation-bar > table.luban-splitter {
-    width: auto;
-    margin: 0 1px 0 auto;
+.master-table-navigation-bar p{
+    display: inline;
 }
-.master-table-navigation-bar > table.luban-splitter tr{
+.master-table-navigation-bar a {
+    color:#47823c;
 }
-.master-table-navigation-bar > table.luban-splitter td{
-    width: auto;
-    padding: 0 10px;
+.master-table-navigation-bar .splitter {
+    padding:0px 3px;
 }
-.master-table-navigation-bar > table.luban-splitter td a{
-    margin: 0;
-}
-.master-table-navigation-bar > table.luban-splitter td p{
-    margin: 0;
-}
-
 /*
 .master-table-navigation-bar-left, .master-table-navigation-bar-right{
     width: auto;
@@ -49,6 +100,8 @@
     width: auto;
     text-align: center;
     color: #666666;
+    padding: 0px 10px;
+    font-size: 92%;
 }
 
 
@@ -76,6 +129,7 @@
 }
 .master-table-controls > table.luban-splitter td .formfield{
     margin: 0;
+    font-size: 80%;
 }
 .master-table-controls > table.luban-splitter td a{
     margin: 0;
@@ -87,20 +141,22 @@
 .master-table-controls div.label-container {
     color: #888888;
     font-size: 90%;
+    display: inline;
 }
-
-.master-table-filter input {
-    width: 250px;
+.master-table-controls div.label-container div{
+    display: inline;
 }
 
 .master-table-controls input {
     border-color: #cced8c;
     border-width: 2;
+    display: inline;
 }
 
 .master-table-controls select {
     border-color: #cced8c;
     border-width: 2;
+    display: inline;
 }
 
 /* table itself */
@@ -109,7 +165,42 @@
 }
 
 .master-table thead {
-    color: #888888;
+    color: #1C227A;
+    font-size: 60%;
+    text-transform: uppercase;
+}
+.master-table thead>tr>td{
+    padding: 7px 15px;
+    font-weight: bold;
+}
+.master-table thead td:first-child {
+    -moz-border-radius:10px 0 0 10px;
+    -webkit-border-top-left-radius: 10px;
+    -webkit-border-bottom-left-radius: 10px;
+}
+.master-table thead td:last-child {
+    -moz-border-radius:0 10px 10px 0;
+    -webkit-border-top-right-radius: 10px;
+    -webkit-border-bottom-right-radius: 10px;
+}
+.master-table tr.odd>td:first-child {
+    -moz-border-radius:9px 0 0 9px;
+    -webkit-border-top-left-radius: 9px;
+    -webkit-border-bottom-left-radius: 9px;
+}
+.master-table tr.odd>td:last-child {
+    -moz-border-radius:0 9px 9px 0;
+    -webkit-border-top-right-radius: 9px;
+    -webkit-border-bottom-right-radius: 9px;
+}
+.master-table tr.odd td {
+    background-color:#eaeaea;
+}
+.master-table tr.even {
+    background-color:white;
+}
+.master-table a.luban-link {
+    color:#657098;
 }
 
 

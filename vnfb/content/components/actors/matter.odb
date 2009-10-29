@@ -15,6 +15,9 @@
 from luban.content import load, select
 
 from luban.content.Button import Button
+from luban.content.Link import Link
+from luban.content.Paragraph import Paragraph
+from luban.content.Document import Document
 
 
 from luban.components.Actor import Actor as base
@@ -46,10 +49,9 @@ class Actor(base):
 
     def replaceBodyFrameWithMatterList(self, director):
         body_frame = select(id='body-frame')
-
         body_skeleton = director.retrieveVisual('body-skeleton')
-        
         main_display_area = body_skeleton.find(id='main-display-area')
+
         matterlist = self.createListView(director)
         main_display_area.add(matterlist)
 
@@ -61,9 +63,11 @@ class Actor(base):
 
     def showListView(self, director):
         view = self.createListView(director)
-        return select(id='main-display-area').replaceContent(view)
-
-
+        return [
+            select(id='main-display-area').replaceContent(view),
+            ]
+            
+            
     def createListView(self, director):
         from vnfb.components.MasterTable import MasterTableFactory
         def countrecords(filter):
@@ -90,12 +94,14 @@ class Actor(base):
             number_records_per_page=number_records_per_page,
             page_number=page_number)
 
-        # add some buttons to the left of navbar
-        buttoncontainer = tableview.find(id='matter-table-buttons-container')
+        # add new button
+        toolbar = tableview.find(id='matter-table-toolbar-changeview')
+        toolbar.add(Paragraph(text='|', Class='splitter'))
         #
-        button = Button(label='new')
-        buttoncontainer.add(button)
+        button = Button(label='New', tip='create new matter', icon='new.png')
+        toolbar.add(button)
         button.onclick = load(actor='matter', routine='new')
+        
         return tableview
     
         
@@ -203,7 +209,6 @@ class Actor(base):
     def createNewSimButtons(self, director):
         matter = self._getMatter(director)
         
-        from luban.content.Document import Document
         doc = Document()
 
         # should be handled by resource manager
@@ -211,8 +216,6 @@ class Actor(base):
             }
         
         simtables = simulationTables()
-        from luban.content.Button import Button
-        #from luban.content.Document import Document
         def _(table):
             #doc = Document()
             name = table.__name__
@@ -247,7 +250,6 @@ class Actor(base):
 
         if not sims:
             text = ['There is no simulation for this material. Please create a new simulation. To start, click the "Create new simulation" tab']
-            from luban.content.Document import Document
             return Document().paragraph(text=text)
 
         args = sims, ['id', 'description', 'type', 'date',], director
