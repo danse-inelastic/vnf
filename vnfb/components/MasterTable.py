@@ -22,7 +22,7 @@ from luban.content import load, select
 
 class MasterTableFactory(object):
 
-
+    
     def __init__(self, name, countrecords, createtable):
         self.name = name
         self.countrecords = countrecords
@@ -36,13 +36,13 @@ class MasterTableFactory(object):
                sorting_options=None,
                ):
         name = self.name
-
+        
         # parameters
         slice = [page_number*number_records_per_page, (page_number+1)*number_records_per_page]
-
+        
         # create a container
         view = Document(id='%s-list-view' % name)
-
+        
         # toolbar with widgets with actions that can change the items in the table
         # such as filtering and creating. sorting and navigating are not such actions
         splitter = Splitter(Class='master-table-title-bar')
@@ -150,19 +150,64 @@ class MasterTableFactory(object):
         lefttoolbar.add(controls)
         righttoolbar = toolbar.section(id='%s-table-toolbarontop-right' % name, Class='master-table-toolbarontop-right')
         # navigation bar (previous, next...)
+        bar = self.create_navigation_bar(
+            name,
+            slice, number_records_per_page, page_number,
+            order_by, reverse_order,
+            filter_expr,
+            'top',
+            )
+        righttoolbar.add(bar)
+        
+        # create a table
+        table = self.createtable(
+            order_by=order_by,
+            reverse_order=reverse_order,
+            slice=slice,
+            filter=filter_expr)
+        table.addClass('master-table')
+        view.add(table)
+        #
+
+        # toolbar right at the bottom of table
+        toolbar = Splitter(id='%s-table-toolbaronbottom'%name, Class='master-table-toolbaronbottom')
+        view.add(toolbar)
+        lefttoolbar = toolbar.section(id='%s-table-toolbaronbottom-left' % name, Class='master-table-toolbaronbottom-left')
+        righttoolbar = toolbar.section(id='%s-table-toolbaronbottom-right' % name, Class='master-table-toolbaronbottom-right')
+        # navigation bar (previous, next...)
+        bar = self.create_navigation_bar(
+            name,
+            slice, number_records_per_page, page_number,
+            order_by, reverse_order,
+            filter_expr,
+            'bottom',
+            )
+        righttoolbar.add(bar)
+        
+        return view
+
+
+
+    def create_navigation_bar(
+        self, name,
+        slice, number_records_per_page, page_number,
+        order_by, reverse_order,
+        filter_expr,
+        position,
+        ):
+        
         # get a total count
         totalcount = self.countrecords(filter=filter_expr)
         if slice[1] > totalcount: slice[1] = totalcount
         lastpage = (totalcount-1)/number_records_per_page
         # 
         bar = Document(
-            id='%s-table-navigation-bar'%name,
+            id='%s-table-%s-navigation-bar'%(name, position),
             Class='master-table-navigation-bar',
             )
-        righttoolbar.add(bar)
         #
         if page_number>0:
-            id='%s-table-navigation-bar-first'%name
+            id='%s-table-%s-navigation-bar-first'%(name, position)
             onclick=load(
                 actor=name, routine='showListView',
                 page_number=0,
@@ -175,7 +220,7 @@ class MasterTableFactory(object):
 
             bar.paragraph(Class='splitter', text='|')
             
-            id='%s-table-navigation-bar-left'%name
+            id='%s-table-%s-navigation-bar-left'%(name, position)
             onclick=load(
                 actor=name, routine='showListView',
                 page_number=page_number-1,
@@ -188,13 +233,13 @@ class MasterTableFactory(object):
         #
         text = '%s-%s of %s' % (slice[0]+1, slice[1], totalcount)
         bar.paragraph(
-            id='%s-table-navigation-bar-middle'%name,
+            id='%s-table-%s-navigation-bar-middle'%(name,position),
             Class='master-table-navigation-bar-middle',
             text=text,
             )
         #
         if page_number < lastpage:
-            id='matter-table-navigation-bar-right'
+            id='%s-table-%s-navigation-bar-right' % (name, position)
             onclick=load(
                 actor=name, routine='showListView',
                 page_number=page_number+1,
@@ -207,7 +252,7 @@ class MasterTableFactory(object):
 
             bar.paragraph(Class='splitter', text='|')
 
-            id='%s-table-navigation-bar-last'%name
+            id='%s-table-%s-navigation-bar-last'%(name, position)
             onclick=load(
                 actor=name, routine='showListView',
                 page_number=lastpage,
@@ -217,17 +262,8 @@ class MasterTableFactory(object):
                 filter_expr = filter_expr,
                 )
             last = bar.link(id=id,label='last',onclick=onclick)
-        
-        # create a table
-        table = self.createtable(
-            order_by=order_by,
-            reverse_order=reverse_order,
-            slice=slice,
-            filter=filter_expr)
-        table.addClass('master-table')
-        view.add(table)
-        #
-        return view
+
+        return bar
 
 
 
