@@ -19,6 +19,7 @@
 }
 #view-indicator p{
     display: inline;
+    color:#47823c;
 }
 #view-indicator div{
     display: inline;
@@ -194,7 +195,10 @@
     -webkit-border-bottom-right-radius: 9px;
 }
 .master-table tr.odd td {
-    background-color:#eaeaea;
+    background-color:#e3e5e1;
+}
+.master-table tr.odd {
+    background-color: transparent;
 }
 .master-table tr.even {
     background-color:white;
