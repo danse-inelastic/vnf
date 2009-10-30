@@ -63,27 +63,13 @@ class MasterTableFactory(object):
             )
         right.add(toolbar_changeview)
         # filter
-        filter_ctrl_container = Document(
-            id='%s-table-filter-control-container'%name,
-            Class = 'master-table-filter-control-container',
+        filter_ctrl_container = self.createFilterWidget(
+            name,
+            number_records_per_page,
+            order_by, reverse_order,
+            filter_expr,
             )
         toolbar_changeview.add(filter_ctrl_container)
-        
-        field = FormTextField(
-            label = 'Filter/search: ',
-            value = filter_expr,
-            id='%s-table-filter' % name,
-            Class='master-table-filter',
-            )
-        field.onchange = load(
-            actor=name, routine='showListView',
-            number_records_per_page = number_records_per_page,
-            page_number = 0,
-            reverse_order = reverse_order,
-            order_by = order_by,
-            filter_expr = select(element=field).formfield('getValue'),
-            )
-        filter_ctrl_container.add(field)
         
         # controls
         controls = Splitter(
@@ -150,7 +136,7 @@ class MasterTableFactory(object):
         lefttoolbar.add(controls)
         righttoolbar = toolbar.section(id='%s-table-toolbarontop-right' % name, Class='master-table-toolbarontop-right')
         # navigation bar (previous, next...)
-        bar = self.create_navigation_bar(
+        bar = self.createNavigationBar(
             name,
             slice, number_records_per_page, page_number,
             order_by, reverse_order,
@@ -175,7 +161,7 @@ class MasterTableFactory(object):
         lefttoolbar = toolbar.section(id='%s-table-toolbaronbottom-left' % name, Class='master-table-toolbaronbottom-left')
         righttoolbar = toolbar.section(id='%s-table-toolbaronbottom-right' % name, Class='master-table-toolbaronbottom-right')
         # navigation bar (previous, next...)
-        bar = self.create_navigation_bar(
+        bar = self.createNavigationBar(
             name,
             slice, number_records_per_page, page_number,
             order_by, reverse_order,
@@ -188,7 +174,38 @@ class MasterTableFactory(object):
 
 
 
-    def create_navigation_bar(
+    def createFilterWidget(
+        self, name,
+        number_records_per_page,
+        order_by, reverse_order,
+        filter_expr,
+        ):
+
+        filter_ctrl_container = Document(
+            id='%s-table-filter-control-container'%name,
+            Class = 'master-table-filter-control-container',
+            )
+        
+        field = FormTextField(
+            label = 'Filter/search: ',
+            value = filter_expr,
+            id='%s-table-filter' % name,
+            Class='master-table-filter',
+            )
+        field.onchange = load(
+            actor=name, routine='showListView',
+            number_records_per_page = number_records_per_page,
+            page_number = 0,
+            reverse_order = reverse_order,
+            order_by = order_by,
+            filter_expr = select(element=field).formfield('getValue'),
+            )
+        filter_ctrl_container.add(field)
+        
+        return filter_ctrl_container
+
+
+    def createNavigationBar(
         self, name,
         slice, number_records_per_page, page_number,
         order_by, reverse_order,
