@@ -64,11 +64,28 @@
 }
 .master-table-toolbar-changeview-container .luban-formfield {
     margin: 0;
+    display: inline;
+}
+.master-table-toolbar-changeview-container .luban-formfield div{
+    display: inline;
 }
 .master-table-toolbar-changeview-container .luban-toolbar .luban-button{
     padding: 0;
 }
 
+/* smart label widget */
+.master-table-filter-control-container {
+    border-right:dotted 2px;
+    padding-right:5px;
+}
+
+div.master-table-smartlabel input{
+    width: 5em;
+}
+#smartlabel-button {
+    font-size: 80%;
+    display: inline;
+}
 
 /* toolbar just on top of table */
 .master-table-toolbarontop td {
