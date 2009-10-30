@@ -25,7 +25,7 @@ from luban.content.Link import Link
 from vnfb.components.job_utils import check
 
 
-from luban.components.Actor import Actor as base
+from luban.components.AuthorizedActor import AuthorizedActor as base
 
 
 class Actor(base):
