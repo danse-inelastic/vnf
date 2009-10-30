@@ -14,6 +14,8 @@
 from luban.content.FormSelectorField import FormSelectorField
 from luban.content.FormTextField import FormTextField
 from luban.content.Document import Document
+from luban.content.Paragraph import Paragraph
+from luban.content.Button import Button
 from luban.content.Splitter import Splitter
 from luban.content.Toolbar import Toolbar
 from luban.content.Link import Link
@@ -43,8 +45,6 @@ class MasterTableFactory(object):
         # create a container
         view = Document(id='%s-list-view' % name)
         
-        # toolbar with widgets with actions that can change the items in the table
-        # such as filtering and creating. sorting and navigating are not such actions
         splitter = Splitter(Class='master-table-title-bar')
         view.add(splitter)
         view_indicator = splitter.section(id='view-indicator')
@@ -56,13 +56,16 @@ class MasterTableFactory(object):
             text = 'View all'
         view_indicator.paragraph(text=[text])
         
+        # toolbar with widgets with actions that can change the items in the table
+        # such as filtering and creating. sorting and navigating are not such actions
         right = splitter.section(Class='master-table-toolbar-changeview-container')
         toolbar_changeview = Toolbar(
             id= '%s-table-toolbar-changeview' % name,
             Class='master-table-toolbar-changeview',
             )
         right.add(toolbar_changeview)
-        # filter
+        
+        # filter widget
         filter_ctrl_container = self.createFilterWidget(
             name,
             number_records_per_page,
@@ -70,6 +73,10 @@ class MasterTableFactory(object):
             filter_expr,
             )
         toolbar_changeview.add(filter_ctrl_container)
+
+        # smart label
+        smartlabel_widget = self.createSmartLabelWidget(name)
+        toolbar_changeview.add(smartlabel_widget)
         
         # controls
         controls = Splitter(
@@ -173,6 +180,33 @@ class MasterTableFactory(object):
         return view
 
 
+    def createSmartLabelWidget(
+        self, name,
+        ):
+
+        doc = Document()
+
+        field = FormTextField(
+            label = '',
+            id='%s-table-smartlabel' % name,
+            Class='master-table-smartlabel',
+            )
+
+        button = Button(
+            label='', icon='label.png', tip='save this search as a smart label',
+            id='smartlabel-button')
+        button.onclick = load(
+            actor='smartlabel', routine='create',
+            table = name,
+            label = select(id=field.id).getAttr('value'),
+            fitler_expr = select(id=self._filterInputFieldID(name)).getAttr('value'),
+            )
+
+        doc.add(button)
+        doc.add(field)
+        
+        return doc
+
 
     def createFilterWidget(
         self, name,
@@ -189,7 +223,7 @@ class MasterTableFactory(object):
         field = FormTextField(
             label = 'Filter/search: ',
             value = filter_expr,
-            id='%s-table-filter' % name,
+            id=self._filterInputFieldID(name),
             Class='master-table-filter',
             )
         field.onchange = load(
@@ -204,6 +238,10 @@ class MasterTableFactory(object):
         
         return filter_ctrl_container
 
+
+    def _filterInputFieldID(self, name):
+        return '%s-table-filter' % name
+    
 
     def createNavigationBar(
         self, name,
