@@ -14,7 +14,7 @@
 
 from luban.content import alert
 
-from luban.components.Actor import Actor as base
+from luban.components.AuthorizedActor import AuthorizedActor as base
 
 
 class Actor(base):
@@ -32,10 +32,21 @@ class Actor(base):
         table = self.inventory.table
         label = self.inventory.label
         filter_expr = self.inventory.filter_expr
-        msg = 'table: %s, label: %s, filter_expr: %s' % (
-            table, label, filter_expr)
-        return alert(msg)
+        if not filter_expr and not label:
+            return alert('Both search/filter expression and label need to be supplied.')
 
+        if not filter_expr:
+            return alert('Please input a filter expression')
+
+        if not label:
+            return alert('Please specify a label.')
+
+        # get all my labels
+        #db = director.clerk.db
+        #from vnf.dom.SmartLabel import SmartLabel
+        #labels = db.query(SmartLabel).filter("targettable='%s' and creator='%s'" % ())
+        return
+    
 
     def __init__(self, name='smartlabel'):
         super(Actor, self).__init__(name)

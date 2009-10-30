@@ -20,7 +20,7 @@ from luban.content.Paragraph import Paragraph
 from luban.content.Document import Document
 
 
-from luban.components.Actor import Actor as base
+from luban.components.AuthorizedActor import AuthorizedActor as base
 
 
 class Actor(base):

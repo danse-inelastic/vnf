@@ -12,7 +12,7 @@
 #
 
 
-from luban.content import load, select
+from luban.content import load, select, createCredential
 
 from luban.components.Actor import Actor as base
 
@@ -70,13 +70,14 @@ class Actor(base):
         if errors:
             return self.formError(director, errors=errors)
 
-        assert director.userIsAuthorized()
-        
         self._debug.log('redirect to greeter.greet')
         return [
-            
+            createCredential(
+                username=director.sentry.username,
+                ticket=director.sentry.ticket,
+                ),
+            load(actor='greeter', routine='greet'),
             ]
-        return director.redirect(actor='greeter', routine='greet')
 
 
     def formError(self, director, errors=None):
