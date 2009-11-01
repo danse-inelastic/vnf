@@ -22,14 +22,19 @@ from luban.content.Link import Link
 from luban.content import load, select
 
 
+import journal
+debug = journal.debug('MasterTableFactory')
+
+
 class MasterTableFactory(object):
 
     
-    def __init__(self, name, countrecords, createtable):
+    def __init__(self, name, countrecords, createtable, compilefilter):
         self.name = name
         self.countrecords = countrecords
         #self.fetchrecords = fetchrecords
         self.createtable = createtable
+        self.compilefilter = compilefilter
         return
     
 
@@ -38,6 +43,14 @@ class MasterTableFactory(object):
                sorting_options=None,
                ):
         name = self.name
+
+        # compile filter
+        try:
+            filter = self.compilefilter(filter_expr)
+        except:
+            raise FilterSyntaxError, filter_expr
+        
+        debug.log('compiled filter: %s' % filter)
         
         # parameters
         slice = [page_number*number_records_per_page, (page_number+1)*number_records_per_page]
@@ -147,7 +160,7 @@ class MasterTableFactory(object):
             name,
             slice, number_records_per_page, page_number,
             order_by, reverse_order,
-            filter_expr,
+            filter_expr, filter,
             'top',
             )
         righttoolbar.add(bar)
@@ -157,7 +170,7 @@ class MasterTableFactory(object):
             order_by=order_by,
             reverse_order=reverse_order,
             slice=slice,
-            filter=filter_expr)
+            filter=filter)
         table.addClass('master-table')
         view.add(table)
         #
@@ -172,7 +185,7 @@ class MasterTableFactory(object):
             name,
             slice, number_records_per_page, page_number,
             order_by, reverse_order,
-            filter_expr,
+            filter_expr, filter,
             'bottom',
             )
         righttoolbar.add(bar)
@@ -247,12 +260,12 @@ class MasterTableFactory(object):
         self, name,
         slice, number_records_per_page, page_number,
         order_by, reverse_order,
-        filter_expr,
+        filter_expr, filter,
         position,
         ):
         
         # get a total count
-        totalcount = self.countrecords(filter=filter_expr)
+        totalcount = self.countrecords(filter=filter)
         if slice[1] > totalcount: slice[1] = totalcount
         lastpage = (totalcount-1)/number_records_per_page
         # 
@@ -320,6 +333,39 @@ class MasterTableFactory(object):
 
         return bar
 
+
+class FilterSyntaxError(Exception): pass
+
+
+def filtercompiler(measures, measure2dbcol):
+    '''create a compiler that compiles filter expression entered by users to
+    a db query expression.
+
+    measures: measures that can be used in user filtering expression. should be a iterable
+    measure2dbcol: mapping dictionary to map measure name (used in user filtering expression)
+        to db col name.
+    '''
+    def compilefilter(filter_expr):
+        if not filter_expr: return
+        from vnfb.utils.safe_eval import safe_eval
+        from vnfb.utils.filter import measure as filtermeasure, expr2dbsyntax
+
+        # building the evaluation context
+        context = {}
+        for measure in measures:
+            dbcol = measure2dbcol.get(measure) or measure
+            context[measure] = filtermeasure(dbcol)
+            continue
+        context['expr2dbsyntax'] = expr2dbsyntax
+        code = 'expr2dbsyntax(%s)' % filter_expr
+
+        # make sure code is safe
+        safe_eval(filter_expr, context=context, check_only=1)
+
+        #
+        return expr2dbsyntax(filter_expr, context=context)
+
+    return compilefilter
 
 
 # version

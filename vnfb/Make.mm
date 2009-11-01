@@ -33,6 +33,7 @@ RECURSE_DIRS = $(BUILD_DIRS) $(OTHER_DIRS)
 #
 
 all: export
+	BLD_ACTION="all" $(MM) recurse
 
 tidy::
 	BLD_ACTION="tidy" $(MM) recurse
