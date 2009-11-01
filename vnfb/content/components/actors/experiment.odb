@@ -50,7 +50,7 @@ class Actor(base):
 
 
     def createListView(self, director):
-        from vnfb.components.MasterTable import MasterTableFactory
+        from vnfb.components.MasterTable import MasterTableFactory, filtercompiler
         def countrecords(filter):
             return self._countExperiments(director, filter)
         def createtable(order_by, reverse_order, slice, filter):
@@ -60,7 +60,9 @@ class Actor(base):
                 reverse_order=reverse_order,
                 slice=slice,
                 filter=filter)
-        factory = MasterTableFactory(self.name, countrecords, createtable)
+        compilefilter = filtercompiler(columns, measure2dbcol)
+
+        factory = MasterTableFactory(self.name, countrecords, createtable, compilefilter)
 
         order_by = self.inventory.order_by
         reverse_order = self.inventory.reverse_order
@@ -94,7 +96,7 @@ class Actor(base):
     def createExperimentTable(self, director, order_by=None, reverse_order=None, slice=None, filter=None):
         experiments = self._getExperiments(director, filter=filter, order_by=order_by, reverse_order=reverse_order, slice=slice)
 
-        cols = [ 'id', 'description']
+        cols = columns
         args = experiments, cols, director
         thetable = director.retrieveComponent(
             'experiment-table',
@@ -136,6 +138,12 @@ class Actor(base):
         if reverse_order:
             ret.reverse()
         return ret
+
+
+columns = [ 'id', 'description']
+measure2dbcol = {
+    'description': 'short_description',
+    }
 
 
 from dsaw.db.VersatileReference import global_pointer

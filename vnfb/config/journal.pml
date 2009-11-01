@@ -10,6 +10,7 @@
       <property name="submitjob">on</property>
       <property name='forcefieldwizard'>on</property>
       <property name='main'>on</property>
+      <property name='MasterTableFactory'>on</property>
     </component>
   </component>
 </inventory>
