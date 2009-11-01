@@ -1,1 +1,11 @@
-inherit most actors from AuthorizedActor
+Establish a suite of tests to make sure that vnf is running correctly.
+This would be useful, for example, when vnf vm is restarted.
+
+Also make a test script for testing if a computing cluster is live  
+ * ssh connection (or other connection)
+ * cluster status daemon
+ * job scheduler script (torque for example)
+ * mpi daemon
+ * test if any of the computing engine is available
+THis script probably is best written with facilities in pathos.
+
