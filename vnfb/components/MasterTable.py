@@ -29,26 +29,35 @@ debug = journal.debug('MasterTableFactory')
 class MasterTableFactory(object):
 
     
-    def __init__(self, name, countrecords, createtable, compilefilter):
+    def __init__(self, name, countrecords, createtable, compilefilter, filtercols):
         self.name = name
         self.countrecords = countrecords
         #self.fetchrecords = fetchrecords
         self.createtable = createtable
         self.compilefilter = compilefilter
+        self.filtercols = filtercols
         return
     
 
-    def create(self, order_by=None, reverse_order=None, filter_expr=None,
+    def create(self, order_by=None, reverse_order=None,
+               filter_expr=None, filter_key=None, filter_value=None,
                number_records_per_page=None, page_number=None,
                sorting_options=None,
                ):
         name = self.name
 
+        if filter_expr:
+            filter_expr_tocompile = filter_expr
+        elif filter_value:
+            filter_expr_tocompile = "%s=='%s'" % (filter_key, filter_value)
+        else:
+            filter_expr_tocompile = None
+
         # compile filter
         try:
-            filter = self.compilefilter(filter_expr)
+            filter = self.compilefilter(filter_expr_tocompile)
         except:
-            raise FilterSyntaxError, filter_expr
+            raise FilterSyntaxError, filter_expr_tocompile
         
         debug.log('compiled filter: %s' % filter)
         
@@ -63,8 +72,8 @@ class MasterTableFactory(object):
         view_indicator = splitter.section(id='view-indicator')
         view_indicator.add(Link(label=name.capitalize()+'s', onclick=load(actor=name)))
         view_indicator.paragraph(text=['/ '], Class='splitter')
-        if filter_expr:
-            text = filter_expr
+        if filter_expr_tocompile:
+            text = filter_expr_tocompile
         else:
             text = 'View all'
         view_indicator.paragraph(text=[text])
@@ -83,7 +92,7 @@ class MasterTableFactory(object):
             name,
             number_records_per_page,
             order_by, reverse_order,
-            filter_expr,
+            filter_expr, filter_key, filter_value
             )
         toolbar_changeview.add(filter_ctrl_container)
 
@@ -212,7 +221,7 @@ class MasterTableFactory(object):
             actor='smartlabel', routine='create',
             table = name,
             label = select(id=field.id).getAttr('value'),
-            fitler_expr = select(id=self._filterInputFieldID(name)).getAttr('value'),
+            fitler_expr = select(id=self._filterAdvancedInputFieldID(name)).getAttr('value'),
             )
 
         doc.add(button)
@@ -225,19 +234,103 @@ class MasterTableFactory(object):
         self, name,
         number_records_per_page,
         order_by, reverse_order,
-        filter_expr,
+        filter_expr, filter_key, filter_value,
         ):
 
+        show_advanced_widget = bool(filter_expr)
+        
         filter_ctrl_container = Document(
             id='%s-table-filter-control-container'%name,
             Class = 'master-table-filter-control-container',
             )
+
+        filter_ctrl_container.paragraph(
+            text='Filter/search: ', Class='master-table-filter-label')
+            
+        advanced = self.createAdvancedFilterWidget(
+            name,
+            number_records_per_page,
+            order_by, reverse_order,
+            filter_expr,
+            )
+        advanced.hidden = not show_advanced_widget
+        filter_ctrl_container.add(advanced)
+
+        basic = self.createBasicFilterWidget(
+            name,
+            number_records_per_page,
+            order_by, reverse_order,
+            filter_key, filter_value,
+            )
+        basic.hidden = show_advanced_widget
+        filter_ctrl_container.add(basic)
+        
+        return filter_ctrl_container
+
+
+    def createBasicFilterWidget(
+        self, name,
+        number_records_per_page,
+        order_by, reverse_order,
+        filter_key, filter_value,
+        ):
+        basic = Document(
+            id=self._basicFilterWidgetID(name),
+            Class='master-table-basic-filter-widget',
+            )
+        
+        filtercols = self.filtercols
+        entries = enumerate(filtercols)
+        selector = FormSelectorField(
+            label = 'col:',
+            entries=entries,
+            selection=filter_key,
+            )
+        basic.add(selector)
+
+        field = FormTextField(
+            label = 'value:',
+            id = self._filterBasicInputFieldID(name),
+            value = filter_value,
+            )
+        basic.add(field)
+        field.onchange =  load(
+            actor=name, routine='showListView',
+            number_records_per_page = number_records_per_page,
+            page_number = 0,
+            reverse_order = reverse_order,
+            order_by = order_by,
+            filter_key = select(element=selector).getAttr('value'),
+            filter_value = select(element=field).getAttr('value'),
+            )
+        selector.onchange = select(element=field).setAttr(value='')
+
+        link = Link(label='advanced')
+        basic.add(link)
+        link.onclick = [
+            select(id = self._basicFilterWidgetID(name)).hide(),
+            select(id = self._advancedFilterWidgetID(name)).show(),
+            ]
+        return basic
+    
+        
+    def createAdvancedFilterWidget(
+        self, name,
+        number_records_per_page,
+        order_by, reverse_order,
+        filter_expr,
+        ):
+        
+        advanced = Document(
+            id=self._advancedFilterWidgetID(name),
+            Class='master-table-advanced-filter-widget',
+        )
         
         field = FormTextField(
-            label = 'Filter/search: ',
+            label = '',
             value = filter_expr,
-            id=self._filterInputFieldID(name),
-            Class='master-table-filter',
+            id=self._filterAdvancedInputFieldID(name),
+            Class='master-table-advanced-filter',
             )
         field.onchange = load(
             actor=name, routine='showListView',
@@ -247,13 +340,25 @@ class MasterTableFactory(object):
             order_by = order_by,
             filter_expr = select(element=field).formfield('getValue'),
             )
-        filter_ctrl_container.add(field)
-        
-        return filter_ctrl_container
+        advanced.add(field)
+
+        link = Link(label='basic')
+        advanced.add(link)
+        link.onclick = [
+            select(id = self._basicFilterWidgetID(name)).show(),
+            select(id = self._advancedFilterWidgetID(name)).hide(),
+            ]
+        return advanced
 
 
-    def _filterInputFieldID(self, name):
-        return '%s-table-filter' % name
+    def _advancedFilterWidgetID(self, name):
+        return '%s-table-advanced-filter-widget' % name
+    def _basicFilterWidgetID(self, name):
+        return '%s-table-basic-filter-widget' % name
+    def _filterAdvancedInputFieldID(self, name):
+        return '%s-table-advanced-filter' % name
+    def _filterBasicInputFieldID(self, name):
+        return '%s-table-basic-filter' % name
     
 
     def createNavigationBar(

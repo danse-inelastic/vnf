@@ -52,12 +52,35 @@
     margin: 0 1px;
     padding: 0;
 }
-.master-table-filter div{
+.master-table-advanced-filter-widget {
     display: inline;
 }
-.master-table-filter input {
+.master-table-advanced-filter-widget div{
+    display: inline;
+}
+.master-table-advanced-filter-widget input {
     width: 250px;
     border-width: 3px;
+}
+.master-table-advanced-filter-widget a {
+    margin: 0 2px 0 5px;
+}
+.master-table-basic-filter-widget {
+    display: inline;
+}
+.master-table-basic-filter-widget div{
+    display: inline;
+}
+.master-table-basic-filter-widget input {
+    width: 80px;
+    margin: 0 5px;
+}
+.master-table-basic-filter-widget select {
+    width: 80px;
+    margin: 0 5px;
+}
+.master-table-basic-filter-widget a {
+    margin: 0 2px 0 5px;
 }
 .master-table-toolbar-changeview-container label {
     font-size:70%;
@@ -77,6 +100,12 @@
 .master-table-filter-control-container {
     border-right:dotted 2px;
     padding-right:5px;
+    font-size: 80%;
+}
+.master-table-filter-control-container p {
+    display:inline;
+    font-weight: bold;
+    margin: 0 7px 0 0 ;
 }
 
 div.master-table-smartlabel input{
