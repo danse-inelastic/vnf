@@ -23,7 +23,6 @@ from luban.content import load, select
 
 
 import journal
-debug = journal.debug('MasterTableFactory')
 
 
 class MasterTableFactory(object):
@@ -36,6 +35,8 @@ class MasterTableFactory(object):
         self.createtable = createtable
         self.compilefilter = compilefilter
         self.filtercols = filtercols
+
+        self.debug = journal.debug('MasterTableFactory')
         return
     
 
@@ -59,7 +60,7 @@ class MasterTableFactory(object):
         except:
             raise FilterSyntaxError, filter_expr_tocompile
         
-        debug.log('compiled filter: %s' % filter)
+        self.debug.log('compiled filter: %s' % filter)
         
         # parameters
         slice = [page_number*number_records_per_page, (page_number+1)*number_records_per_page]
@@ -472,6 +473,28 @@ def filtercompiler(measures, measure2dbcol):
 
     return compilefilter
 
+
+from luban.components.AuthorizedActor import AuthorizedActor as base
+class MasterTableActor(base):
+
+    class Inventory(base.Inventory):
+
+        import pyre.inventory
+        
+        number_records_per_page = pyre.inventory.int(name='number_records_per_page', default=20)
+        page_number = pyre.inventory.int(name='page_number', default=0)
+        order_by = pyre.inventory.str(name='order_by', default='id')
+        reverse_order = pyre.inventory.bool(name='reverse_order', default=0)
+        
+        filter_expr = pyre.inventory.str(name='filter_expr')
+        filter_key = pyre.inventory.int(name='filter_key')
+        filter_value = pyre.inventory.str(name='filter_value')
+        
+
+    def showListView(self, *args, **kwds):
+        raise NotImplementedError
+
+    
 
 # version
 __id__ = "$Id$"
