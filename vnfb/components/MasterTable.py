@@ -41,12 +41,13 @@ class MasterTableFactory(object):
     
 
     def create(self, order_by=None, reverse_order=None,
-               filter_expr=None, filter_key=None, filter_value=None,
+               filter_expr=None, filter_key_index=None, filter_value=None,
                number_records_per_page=None, page_number=None,
                sorting_options=None,
                ):
         name = self.name
 
+        filter_key = self.filtercols[filter_key_index]
         if filter_expr:
             filter_expr_tocompile = filter_expr
         elif filter_value:
@@ -93,7 +94,7 @@ class MasterTableFactory(object):
             name,
             number_records_per_page,
             order_by, reverse_order,
-            filter_expr, filter_key, filter_value
+            filter_expr, filter_key_index, filter_value
             )
         toolbar_changeview.add(filter_ctrl_container)
 
@@ -132,7 +133,7 @@ class MasterTableFactory(object):
             page_number = 0,
             order_by = select(element=selector).formfield('getSelection'),
             reverse_order = reverse_order,
-            filter_expr = filter_expr,
+            filter_expr = filter_expr, filter_key_index=filter_key_index, filter_value=filter_value,
             )
         sorting_container.add(selector)
         # order reversing
@@ -155,7 +156,7 @@ class MasterTableFactory(object):
             page_number = 0,
             reverse_order = select(element=selector).formfield('getSelection'),
             order_by = order_by,
-            filter_expr = filter_expr,
+            filter_expr = filter_expr, filter_key_index=filter_key_index, filter_value=filter_value,
             )
         reverse_order_container.add(selector)
 
@@ -170,7 +171,7 @@ class MasterTableFactory(object):
             name,
             slice, number_records_per_page, page_number,
             order_by, reverse_order,
-            filter_expr, filter,
+            filter_expr, filter_key_index, filter_value, filter,
             'top',
             )
         righttoolbar.add(bar)
@@ -195,7 +196,7 @@ class MasterTableFactory(object):
             name,
             slice, number_records_per_page, page_number,
             order_by, reverse_order,
-            filter_expr, filter,
+            filter_expr, filter_key_index, filter_value, filter,
             'bottom',
             )
         righttoolbar.add(bar)
@@ -223,6 +224,8 @@ class MasterTableFactory(object):
             table = name,
             label = select(id=field.id).getAttr('value'),
             fitler_expr = select(id=self._filterAdvancedInputFieldID(name)).getAttr('value'),
+            filter_key_index = select(id=self._filterBasicKeyFieldID(name)).getAttr('value'),
+            filter_value = select(id=self._filterBasicInputFieldID(name)).getAttr('value'),
             )
 
         doc.add(button)
@@ -235,7 +238,7 @@ class MasterTableFactory(object):
         self, name,
         number_records_per_page,
         order_by, reverse_order,
-        filter_expr, filter_key, filter_value,
+        filter_expr, filter_key_index, filter_value,
         ):
 
         show_advanced_widget = bool(filter_expr)
@@ -261,7 +264,7 @@ class MasterTableFactory(object):
             name,
             number_records_per_page,
             order_by, reverse_order,
-            filter_key, filter_value,
+            filter_key_index, filter_value,
             )
         basic.hidden = show_advanced_widget
         filter_ctrl_container.add(basic)
@@ -273,7 +276,7 @@ class MasterTableFactory(object):
         self, name,
         number_records_per_page,
         order_by, reverse_order,
-        filter_key, filter_value,
+        filter_key_index, filter_value,
         ):
         basic = Document(
             id=self._basicFilterWidgetID(name),
@@ -283,9 +286,10 @@ class MasterTableFactory(object):
         filtercols = self.filtercols
         entries = enumerate(filtercols)
         selector = FormSelectorField(
+            id = self._filterBasicKeyFieldID(name),
             label = 'col:',
             entries=entries,
-            selection=filter_key,
+            selection=filter_key_index,
             )
         basic.add(selector)
 
@@ -301,7 +305,7 @@ class MasterTableFactory(object):
             page_number = 0,
             reverse_order = reverse_order,
             order_by = order_by,
-            filter_key = select(element=selector).getAttr('value'),
+            filter_key_index = select(element=selector).getAttr('value'),
             filter_value = select(element=field).getAttr('value'),
             )
         selector.onchange = select(element=field).setAttr(value='')
@@ -359,14 +363,16 @@ class MasterTableFactory(object):
     def _filterAdvancedInputFieldID(self, name):
         return '%s-table-advanced-filter' % name
     def _filterBasicInputFieldID(self, name):
-        return '%s-table-basic-filter' % name
+        return '%s-table-basic-filter-value' % name
+    def _filterBasicKeyFieldID(self, name):
+        return '%s-table-basic-filter-key' % name
     
 
     def createNavigationBar(
         self, name,
         slice, number_records_per_page, page_number,
         order_by, reverse_order,
-        filter_expr, filter,
+        filter_expr, filter_key_index, filter_value, filter,
         position,
         ):
         
@@ -388,7 +394,7 @@ class MasterTableFactory(object):
                 number_records_per_page = number_records_per_page,
                 order_by = order_by or '',
                 reverse_order = reverse_order,
-                filter_expr = filter_expr,
+                filter_expr=filter_expr, filter_key_index=filter_key_index, filter_value=filter_value,
                 )
             first = bar.link(id=id, label='first',onclick=onclick)
 
@@ -401,7 +407,7 @@ class MasterTableFactory(object):
                 number_records_per_page = number_records_per_page,
                 order_by = order_by or '',
                 reverse_order = reverse_order,
-                filter_expr = filter_expr,
+                filter_expr=filter_expr, filter_key_index=filter_key_index, filter_value=filter_value,
                 )
             left = bar.link(id=id, label='previous',onclick=onclick)
         #
@@ -420,7 +426,7 @@ class MasterTableFactory(object):
                 number_records_per_page = number_records_per_page,
                 order_by = order_by or '',
                 reverse_order = reverse_order,
-                filter_expr = filter_expr,
+                filter_expr = filter_expr, filter_key_index=filter_key_index, filter_value=filter_value,
                 )
             right = bar.link(id=id,label='next',onclick=onclick)
 
@@ -433,7 +439,7 @@ class MasterTableFactory(object):
                 number_records_per_page = number_records_per_page,
                 order_by = order_by or '',
                 reverse_order = reverse_order,
-                filter_expr = filter_expr,
+                filter_expr=filter_expr, filter_key_index=filter_key_index, filter_value=filter_value,
                 )
             last = bar.link(id=id,label='last',onclick=onclick)
 
@@ -487,7 +493,7 @@ class MasterTableActor(base):
         reverse_order = pyre.inventory.bool(name='reverse_order', default=0)
         
         filter_expr = pyre.inventory.str(name='filter_expr')
-        filter_key = pyre.inventory.int(name='filter_key')
+        filter_key_index = pyre.inventory.int(name='filter_key_index')
         filter_value = pyre.inventory.str(name='filter_value')
         
 
