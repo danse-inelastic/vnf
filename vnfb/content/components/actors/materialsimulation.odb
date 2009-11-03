@@ -14,7 +14,7 @@
 
 from luban.content import load, select
 
-from luban.components.AuthorizedActor import AuthorizedActor as base
+from vnfb.components.MasterTable import FilterSyntaxError, MasterTableActor as base
 
 
 class Actor(base):
@@ -28,13 +28,6 @@ class Actor(base):
         id = pyre.inventory.str('id')
         type = pyre.inventory.str('type')
         description = pyre.inventory.str('description')
-
-        # in case of working with a list
-        number_records_per_page = pyre.inventory.int(name='number_records_per_page', default=20)
-        page_number = pyre.inventory.int(name='page_number', default=0)
-        order_by = pyre.inventory.str(name='order_by', default='id')
-        reverse_order = pyre.inventory.bool(name='reverse_order', default=0)
-        filter_expr = pyre.inventory.str(name='filter_expr')
 
 
     def default(self, director):
@@ -59,20 +52,26 @@ class Actor(base):
                 filter=filter)
         compilefilter = filtercompiler(columns, measure2dbcol)
 
-        factory = MasterTableFactory(self.name, countrecords, createtable, compilefilter)
+        factory = MasterTableFactory(
+            self.name, countrecords, createtable, compilefilter, filtercols)
 
         order_by = self.inventory.order_by
         reverse_order = self.inventory.reverse_order
-        filter_expr = self.inventory.filter_expr
         number_records_per_page = self.inventory.number_records_per_page
         page_number = self.inventory.page_number
 
-        return factory.create(
+        filter_expr = self.inventory.filter_expr
+        filter_key_index = self.inventory.filter_key_index
+        filter_value = self.inventory.filter_value
+
+        tableview = factory.create(
             order_by=order_by,
             reverse_order=reverse_order,
-            filter_expr=filter_expr,
+            filter_expr=filter_expr, filter_key_index=filter_key_index, filter_value=filter_value,
             number_records_per_page=number_records_per_page,
             page_number=page_number)
+
+        return tableview
 
 
     def createTable(self, director, order_by=None, reverse_order=None, slice=None, filter=None):
@@ -215,6 +214,7 @@ columns = [ 'id', 'description', 'type', 'matter', 'date']
 measure2dbcol = {
     'description': 'short_description',
     }
+filtercols = columns
 
 
 from dsaw.db.VersatileReference import global_pointer
