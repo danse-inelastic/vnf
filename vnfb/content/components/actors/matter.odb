@@ -79,9 +79,21 @@ class Actor(base):
                 slice=slice,
                 filter=filter)
         compilefilter = filtercompiler(columns, measure2dbcol)
+        def filterfromlabel(label):
+            db = director.clerk.db
+            from vnf.dom.SmartLabel import SmartLabel, getFilterExpr
+            slabel = db.query(SmartLabel).filter_by(
+                creator=director.sentry.username,
+                label=label,
+                targettable=self.name
+                ).one()
+            return getFilterExpr(slabel)
 
+        labels = self._getLabels(director)
         factory = MasterTableFactory(
-            self.name, countrecords, createtable, compilefilter, filtercols)
+            self.name, countrecords, createtable,
+            compilefilter, filtercols,
+            filterfromlabel, labels)
 
         order_by = self.inventory.order_by
         reverse_order = self.inventory.reverse_order
@@ -91,17 +103,20 @@ class Actor(base):
         filter_expr = self.inventory.filter_expr
         filter_key_index = self.inventory.filter_key_index
         filter_value = self.inventory.filter_value
+
+        label_index = self.inventory.label_index
         
         tableview = factory.create(
+            label_index = label_index,
+            filter_expr=filter_expr, filter_key_index=filter_key_index, filter_value=filter_value,
             order_by=order_by,
             reverse_order=reverse_order,
-            filter_expr=filter_expr, filter_key_index=filter_key_index, filter_value=filter_value,
             number_records_per_page=number_records_per_page,
             page_number=page_number)
 
         # add new button
         toolbar = tableview.find(id='matter-table-toolbar-changeview')
-        toolbar.add(Paragraph(text='|', Class='splitter'))
+        #toolbar.add(Paragraph(text='|', Class='splitter'))
         #
         button = Button(label='New', tip='create new matter', icon='new.png')
         toolbar.add(button)
@@ -333,7 +348,17 @@ Atoms
         super(Actor, self).__init__(name)
         return
 
+
     # db access
+    def _getLabels(self, director):
+        db = director.clerk.db
+        from vnf.dom.SmartLabel import SmartLabel
+        labels = db.query(SmartLabel).filter_by(
+            creator=director.sentry.username,
+            ).all()
+        return [l.label for l in labels]
+    
+        
     def _getMatter(self, director):
         type = self.inventory.type
         id = self.inventory.id

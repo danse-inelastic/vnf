@@ -12,7 +12,7 @@
 #
 
 
-from luban.content import alert
+from luban.content import alert, load
 
 from luban.components.AuthorizedActor import AuthorizedActor as base
 
@@ -26,26 +26,41 @@ class Actor(base):
         table = pyre.inventory.str(name='table')
         label = pyre.inventory.str(name='label')
         filter_expr = pyre.inventory.str(name='filter_expr')
+        filter_key = pyre.inventory.str(name='filter_key')
+        filter_value = pyre.inventory.str(name='filter_value')
 
 
     def create(self, director):
         table = self.inventory.table
         label = self.inventory.label
         filter_expr = self.inventory.filter_expr
-        if not filter_expr and not label:
-            return alert('Both search/filter expression and label need to be supplied.')
-
-        if not filter_expr:
-            return alert('Please input a filter expression')
-
+        filter_key = self.inventory.filter_key
+        filter_value = self.inventory.filter_value
+        
         if not label:
             return alert('Please specify a label.')
 
+        if not filter_expr and not filter_value:
+            return alert('Please input a filter value in the basic filter or a filter expression in the advanced filter')
+
         # get all my labels
-        #db = director.clerk.db
-        #from vnf.dom.SmartLabel import SmartLabel
-        #labels = db.query(SmartLabel).filter("targettable='%s' and creator='%s'" % ())
-        return
+        db = director.clerk.db
+        from vnf.dom.SmartLabel import SmartLabel
+        labels = db.query(SmartLabel).filter_by(
+            creator=director.sentry.username,
+            ).all()
+        if label in [l.label for l in labels]:
+            return alert('you already create this label: %s. Please use a different name.' % label)
+
+        #
+        slabel = director.clerk.insertNewOwnedRecord(SmartLabel)
+        slabel.label = label
+        slabel.filter_expr = filter_expr
+        slabel.filter_key = filter_key
+        slabel.filter_value = filter_value
+        slabel.targettable = table
+        director.clerk.updateRecordWithID(slabel)
+        return load(actor=table, routine='showListView', label_index=len(labels)+1)
     
 
     def __init__(self, name='smartlabel'):
