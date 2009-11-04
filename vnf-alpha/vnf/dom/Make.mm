@@ -92,6 +92,7 @@ EXPORT_PYTHON_MODULES = \
 	Server.py \
 	Shape.py \
 	SingleCrystal.py \
+	SmartLabel.py \
 	Table.py \
 	User.py \
 	VASP.py \

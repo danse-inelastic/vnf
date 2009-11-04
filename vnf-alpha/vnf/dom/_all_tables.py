@@ -72,6 +72,7 @@ other = [
     'Job',
     'ITask',
     'Activity',
+    'SmartLabel',
     ]
 
 
