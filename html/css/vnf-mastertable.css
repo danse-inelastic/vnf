@@ -35,7 +35,10 @@
     -webkit-border-radius:12px;
     background-color:#f0f5f5;
     border:1px solid #AAAAAA;
-    padding:1px 5px;
+    padding:0px 5px;
+}
+.master-table-toolbar-changeview-container .luban-toolbar > table{
+    border-collapse: collapse;
 }
 .master-table-toolbar-changeview-container .luban-toolbar .splitter{
     font-size: 130%;
@@ -52,6 +55,12 @@
     margin: 0 1px;
     padding: 0;
 }
+
+div.master-table-toolbar-changeview-container h1.luban-document-title {
+    font-size:75%;
+    font-weight:bold;
+}
+
 .master-table-advanced-filter-widget {
     display: inline;
 }
@@ -96,24 +105,45 @@
     padding: 0;
 }
 
-/* smart label widget */
+
 .master-table-filter-control-container {
-    border-right:dotted 2px;
-    padding-right:5px;
-    font-size: 80%;
+    border-right:dotted 2px grey;
+    padding-right:7px;
 }
+.master-table-filter-control-container > div{
+    font-size: 80%;
+}    
 .master-table-filter-control-container p {
     display:inline;
     font-weight: bold;
     margin: 0 7px 0 0 ;
 }
 
-div.master-table-smartlabel input{
-    width: 5em;
+.master-table-smartlabel-widget {
+border-right:2px solid grey;
+margin-right:5px;
+padding-right:5px;
+}
+div.master-table-smartlabel {
+padding-left:1.5em;
+}
+div.master-table-smartlabel input {
+width:8em;
+padding-left:10px;
 }
 #smartlabel-button {
-    font-size: 80%;
-    display: inline;
+display:inline;
+font-size:80%;
+}
+.master-table-labeled-collection-selector-widget {
+border-right:2px solid grey;
+margin-right:7px;
+padding-right:7px;
+}
+.master-table-labeled-collection-selector-widget select {
+width:9em;
+margin-left:1em;
+margin-top:4px;
 }
 
 /* toolbar just on top of table */

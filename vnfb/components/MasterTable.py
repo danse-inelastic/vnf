@@ -28,32 +28,49 @@ import journal
 class MasterTableFactory(object):
 
     
-    def __init__(self, name, countrecords, createtable, compilefilter, filtercols):
+    def __init__(self, name, countrecords, createtable,
+                 compilefilter, filtercols,
+                 filterfromlabel, labels):
         self.name = name
         self.countrecords = countrecords
         #self.fetchrecords = fetchrecords
         self.createtable = createtable
+        
         self.compilefilter = compilefilter
         self.filtercols = filtercols
+
+        self.filterfromlabel = filterfromlabel
+        self.labels = ['select ...'] + labels
 
         self.debug = journal.debug('MasterTableFactory')
         return
     
 
-    def create(self, order_by=None, reverse_order=None,
-               filter_expr=None, filter_key_index=None, filter_value=None,
-               number_records_per_page=None, page_number=None,
-               sorting_options=None,
-               ):
+    def create(
+        self,
+        label_index=None,
+        filter_expr=None, filter_key_index=None, filter_value=None,
+        order_by=None, reverse_order=None,
+        number_records_per_page=None, page_number=None,
+        sorting_options=None,
+        ):
         name = self.name
 
-        filter_key = self.filtercols[filter_key_index]
-        if filter_expr:
-            filter_expr_tocompile = filter_expr
-        elif filter_value:
-            filter_expr_tocompile = "%s=='%s'" % (filter_key, filter_value)
+        view_label = 'View all'
+        if label_index is not None and label_index > 0:
+            label = self.labels[label_index]
+            filter_expr = filter_expr_tocompile = self.filterfromlabel(label)
+            view_label = 'collection %r' % label
         else:
-            filter_expr_tocompile = None
+            filter_key = self.filtercols[filter_key_index]
+            if filter_expr:
+                filter_expr_tocompile = filter_expr
+            elif filter_value:
+                filter_expr_tocompile = "%s=='%s'" % (filter_key, filter_value)
+            else:
+                filter_expr_tocompile = None
+                
+            if filter_expr_tocompile: view_label = filter_expr_tocompile
 
         # compile filter
         try:
@@ -74,11 +91,7 @@ class MasterTableFactory(object):
         view_indicator = splitter.section(id='view-indicator')
         view_indicator.add(Link(label=name.capitalize()+'s', onclick=load(actor=name)))
         view_indicator.paragraph(text=['/ '], Class='splitter')
-        if filter_expr_tocompile:
-            text = filter_expr_tocompile
-        else:
-            text = 'View all'
-        view_indicator.paragraph(text=[text])
+        view_indicator.paragraph(text=[view_label])
         
         # toolbar with widgets with actions that can change the items in the table
         # such as filtering and creating. sorting and navigating are not such actions
@@ -92,15 +105,24 @@ class MasterTableFactory(object):
         # filter widget
         filter_ctrl_container = self.createFilterWidget(
             name,
+            filter_expr, filter_key_index, filter_value,
             number_records_per_page,
             order_by, reverse_order,
-            filter_expr, filter_key_index, filter_value
             )
         toolbar_changeview.add(filter_ctrl_container)
 
         # smart label
         smartlabel_widget = self.createSmartLabelWidget(name)
         toolbar_changeview.add(smartlabel_widget)
+
+        # labeled selector
+        labeled_widget = self.createLabeledSelectorWidget(
+            name,
+            label_index,
+            number_records_per_page,
+            reverse_order,
+            )
+        toolbar_changeview.add(labeled_widget)
         
         # controls
         controls = Splitter(
@@ -125,7 +147,7 @@ class MasterTableFactory(object):
             label = 'Sort by: ',
             entries=entries,
             selection=order_by or '',
-            id='%s-table-order_by' % name,
+            id=self._orderByWidgetID(name),
             )
         selector.onchange = load(
             actor=name, routine='showListView',
@@ -134,6 +156,7 @@ class MasterTableFactory(object):
             order_by = select(element=selector).formfield('getSelection'),
             reverse_order = reverse_order,
             filter_expr = filter_expr, filter_key_index=filter_key_index, filter_value=filter_value,
+            label_index=label_index,
             )
         sorting_container.add(selector)
         # order reversing
@@ -157,6 +180,7 @@ class MasterTableFactory(object):
             reverse_order = select(element=selector).formfield('getSelection'),
             order_by = order_by,
             filter_expr = filter_expr, filter_key_index=filter_key_index, filter_value=filter_value,
+            label_index=label_index,
             )
         reverse_order_container.add(selector)
 
@@ -169,9 +193,10 @@ class MasterTableFactory(object):
         # navigation bar (previous, next...)
         bar = self.createNavigationBar(
             name,
+            label_index,
+            filter_expr, filter_key_index, filter_value, filter,
             slice, number_records_per_page, page_number,
             order_by, reverse_order,
-            filter_expr, filter_key_index, filter_value, filter,
             'top',
             )
         righttoolbar.add(bar)
@@ -194,9 +219,10 @@ class MasterTableFactory(object):
         # navigation bar (previous, next...)
         bar = self.createNavigationBar(
             name,
+            label_index,
+            filter_expr, filter_key_index, filter_value, filter,
             slice, number_records_per_page, page_number,
             order_by, reverse_order,
-            filter_expr, filter_key_index, filter_value, filter,
             'bottom',
             )
         righttoolbar.add(bar)
@@ -204,31 +230,70 @@ class MasterTableFactory(object):
         return view
 
 
+    def createLabeledSelectorWidget(
+        self, name,
+        label_index,
+        number_records_per_page,
+        reverse_order,
+        ):
+
+        doc = Document(
+            title='Collections:',
+            Class='master-table-labeled-collection-selector-widget')
+
+        labels = self.labels
+        entries = enumerate(labels)
+        field = FormSelectorField(
+            #label = 'labeled collections',
+            id='%s-table-labeled-selector' % name,
+            Class='master-table-labeled-selector',
+            entries = entries,
+            selection = label_index,
+            )
+        field.onchange = load(
+            actor=name, routine='showListView',
+            number_records_per_page = number_records_per_page,
+            page_number = 0,
+            order_by = select(id=self._orderByWidgetID(name)).getAttr('value'),
+            reverse_order = reverse_order,
+            label_index = select(element=field).getAttr('value'),
+            )
+
+        doc.add(field)
+        
+        return doc
+
+
     def createSmartLabelWidget(
         self, name,
         ):
 
-        doc = Document()
+        doc = Document(title='Create smart collection', Class='master-table-smartlabel-widget')
 
         field = FormTextField(
             label = '',
             id='%s-table-smartlabel' % name,
             Class='master-table-smartlabel',
+            #tip = "save this search as a smart label",
             )
 
-        button = Button(
-            label='', icon='label.png', tip='save this search as a smart label',
-            id='smartlabel-button')
-        button.onclick = load(
+        createlabel = load(
             actor='smartlabel', routine='create',
             table = name,
             label = select(id=field.id).getAttr('value'),
-            fitler_expr = select(id=self._filterAdvancedInputFieldID(name)).getAttr('value'),
-            filter_key_index = select(id=self._filterBasicKeyFieldID(name)).getAttr('value'),
+            filter_expr = select(id=self._filterAdvancedInputFieldID(name)).getAttr('value'),
+            filter_key = select(id=self._filterBasicKeyFieldID(name)).formfield('getSelectedLabel'),
             filter_value = select(id=self._filterBasicInputFieldID(name)).getAttr('value'),
             )
 
-        doc.add(button)
+        field.onchange = createlabel
+        
+##         button = Button(
+##             label='', icon='label.png', tip='save this search as a smart label',
+##             id='smartlabel-button')
+##         button.onclick = 
+
+        #doc.add(button)
         doc.add(field)
         
         return doc
@@ -236,9 +301,9 @@ class MasterTableFactory(object):
 
     def createFilterWidget(
         self, name,
+        filter_expr, filter_key_index, filter_value,
         number_records_per_page,
         order_by, reverse_order,
-        filter_expr, filter_key_index, filter_value,
         ):
 
         show_advanced_widget = bool(filter_expr)
@@ -246,10 +311,11 @@ class MasterTableFactory(object):
         filter_ctrl_container = Document(
             id='%s-table-filter-control-container'%name,
             Class = 'master-table-filter-control-container',
+            title='Filter/search:',
             )
 
-        filter_ctrl_container.paragraph(
-            text='Filter/search: ', Class='master-table-filter-label')
+        #filter_ctrl_container.paragraph(
+        #    text='Filter/search: ', Class='master-table-filter-label')
             
         advanced = self.createAdvancedFilterWidget(
             name,
@@ -262,9 +328,9 @@ class MasterTableFactory(object):
 
         basic = self.createBasicFilterWidget(
             name,
+            filter_key_index, filter_value,
             number_records_per_page,
             order_by, reverse_order,
-            filter_key_index, filter_value,
             )
         basic.hidden = show_advanced_widget
         filter_ctrl_container.add(basic)
@@ -274,9 +340,9 @@ class MasterTableFactory(object):
 
     def createBasicFilterWidget(
         self, name,
+        filter_key_index, filter_value,
         number_records_per_page,
         order_by, reverse_order,
-        filter_key_index, filter_value,
         ):
         basic = Document(
             id=self._basicFilterWidgetID(name),
@@ -356,6 +422,8 @@ class MasterTableFactory(object):
         return advanced
 
 
+    def _orderByWidgetID(self, name):
+        return '%s-table-order_by' % name
     def _advancedFilterWidgetID(self, name):
         return '%s-table-advanced-filter-widget' % name
     def _basicFilterWidgetID(self, name):
@@ -370,9 +438,10 @@ class MasterTableFactory(object):
 
     def createNavigationBar(
         self, name,
+        label_index,
+        filter_expr, filter_key_index, filter_value, filter,
         slice, number_records_per_page, page_number,
         order_by, reverse_order,
-        filter_expr, filter_key_index, filter_value, filter,
         position,
         ):
         
@@ -395,6 +464,7 @@ class MasterTableFactory(object):
                 order_by = order_by or '',
                 reverse_order = reverse_order,
                 filter_expr=filter_expr, filter_key_index=filter_key_index, filter_value=filter_value,
+                label_index=label_index,
                 )
             first = bar.link(id=id, label='first',onclick=onclick)
 
@@ -408,6 +478,7 @@ class MasterTableFactory(object):
                 order_by = order_by or '',
                 reverse_order = reverse_order,
                 filter_expr=filter_expr, filter_key_index=filter_key_index, filter_value=filter_value,
+                label_index=label_index,
                 )
             left = bar.link(id=id, label='previous',onclick=onclick)
         #
@@ -427,6 +498,7 @@ class MasterTableFactory(object):
                 order_by = order_by or '',
                 reverse_order = reverse_order,
                 filter_expr = filter_expr, filter_key_index=filter_key_index, filter_value=filter_value,
+                label_index=label_index,
                 )
             right = bar.link(id=id,label='next',onclick=onclick)
 
@@ -440,6 +512,7 @@ class MasterTableFactory(object):
                 order_by = order_by or '',
                 reverse_order = reverse_order,
                 filter_expr=filter_expr, filter_key_index=filter_key_index, filter_value=filter_value,
+                label_index=label_index,
                 )
             last = bar.link(id=id,label='last',onclick=onclick)
 
@@ -495,6 +568,8 @@ class MasterTableActor(base):
         filter_expr = pyre.inventory.str(name='filter_expr')
         filter_key_index = pyre.inventory.int(name='filter_key_index')
         filter_value = pyre.inventory.str(name='filter_value')
+
+        label_index = pyre.inventory.int(name='label_index', default=0)
         
 
     def showListView(self, *args, **kwds):
