@@ -46,14 +46,21 @@ class AST2DBSyntax(object):
 
 
 def test():
+    from parser import parse
+    
     from expression import measure
-    length = measure('length')
-
     renderer = AST2DBSyntax()
-    print renderer.render(length==3)
 
-    radius = measure('radius')
-    print renderer.render( (length==3) & (radius==4))
+    a = measure('a')
+    b = measure('b')
+    env = {'a':a, 'b': b}
+    print renderer.render(parse("a==3 and b==4", env))
+
+    c = measure('c')
+    env['c'] = c
+    print renderer.render(parse('a==3 and b==4 and c==5', env))
+    print renderer.render(parse('a==3 and b==4 or c==5', env))
+    print renderer.render(parse('a==3 and (b==4 or c==5)', env))
     return
 
 

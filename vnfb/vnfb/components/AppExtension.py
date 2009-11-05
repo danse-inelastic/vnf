@@ -31,6 +31,17 @@ class AppExtension(Base):
         itaskmanager = pyre.inventory.facility(name='itaskmanager', default = 'itask-manager')
 
 
+    def retrieveDOMAccessor(self, name):
+        director = self.director
+        db = director.clerk.db
+        r = director.retrieveComponent(
+            name,
+            factory="accessor", args=[db],
+            vault=['dom-access'])
+        r.director = director
+        return r
+    
+
     def _configure(self):
         super(AppExtension, self)._configure()
 
@@ -56,6 +67,8 @@ class AppExtension(Base):
         director.itaskmanager = self.itaskmanager
         director.accesscontrol = self.accesscontrol
         self.dds.director = director
+
+        director.retrieveDOMAccessor = self.retrieveDOMAccessor
         
         # accesscontrol need to know the database
         self.accesscontrol.db = director.clerk.db

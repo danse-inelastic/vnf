@@ -44,12 +44,13 @@ class Actor(base):
             return alert('Please input a filter value in the basic filter or a filter expression in the advanced filter')
 
         # get all my labels
-        db = director.clerk.db
-        from vnf.dom.SmartLabel import SmartLabel
-        labels = db.query(SmartLabel).filter_by(
-            creator=director.sentry.username,
-            ).all()
-        if label in [l.label for l in labels]:
+        labelaccess = director.retrieveDOMAccessor('label')
+        labels = labelaccess.getLabelNames(table)
+
+        smartlabelaccess = director.retrieveDOMAccessor('smartlabelaccess')
+        smartlabels = smartlabelaccess.getLabelNames(table)
+        
+        if label in labels or label in smartlabels:
             return alert('you already create this label: %s. Please use a different name.' % label)
 
         #

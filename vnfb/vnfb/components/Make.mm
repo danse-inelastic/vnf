@@ -38,6 +38,7 @@ EXPORT_PYTHON_MODULES = \
 	AppExtension.py \
 	Clerk.py \
 	DistributedDataStorage.py \
+	DOMAccessor.py \
 	JnlpFile.py \
 	JobBuilder.py \
 	MasterTable.py \

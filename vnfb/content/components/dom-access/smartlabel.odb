@@ -1,0 +1,71 @@
+# -*- Python -*-
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                   Jiao Lin
+#                      California Institute of Technology
+#                      (C) 2006-2009  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+from vnf.dom.SmartLabel import SmartLabel, getFilterExpr
+
+
+from vnfb.components.DOMAccessor import DOMAccessor as base
+
+class Accessor(base):
+
+
+    def __init__(self, db):
+        self.db = db
+        super(Accessor, self).__init__('smartlabel-accessor')
+        return
+    
+
+    def createFilterExprFromLabel(self, label, targettable, creator=None):
+        '''create filter expression from the given label for the given user
+        and target table
+        '''
+        if creator is None:
+            creator = self._getUsername()
+        db = self.db
+        slabel = db.query(SmartLabel).filter_by(
+            creator=creator,
+            label=label,
+            targettable=targettable
+            ).one()
+        return getFilterExpr(slabel)
+
+
+    def getLabelNames(self, targettable, creator=None):
+        if creator is None:
+            creator = self._getUsername()
+        
+        labels = self.getLabels(targettable, creator=creator)
+        return [l.label for l in labels]
+
+    
+    def getLabels(self, targettable, creator=None):
+        if creator is None:
+            creator = self._getUsername()
+
+        db = self.db
+        labels = db.query(SmartLabel).filter_by(
+            creator=creator,
+            targettable=targettable,
+            ).all()
+        return labels
+        
+
+def accessor(db):
+    return Accessor(db)
+
+
+# version
+__id__ = "$Id$"
+
+# End of file 

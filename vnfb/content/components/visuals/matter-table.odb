@@ -27,6 +27,7 @@ def table(matters, cols, director):
     
     class model(Model):
 
+        selected = Model.descriptors.bool(name='selected')
         id = Model.descriptors.link(name='id')
         description = Model.descriptors.str(name='description')
         visualize = Model.descriptors.link(name='visualize')
@@ -38,18 +39,20 @@ def table(matters, cols, director):
         row_identifiers = ['id', 'type']
 
     columns = [
-        View.Column(name='col0',label='ID', measure='id'),
-        View.Column(name='col1',label='Description', measure='description', editable=True),
-        View.Column(name='col2',label='Visualize', measure='visualize'),
-        View.Column(name='col3',label='Type', measure='type'),
-        View.Column(name='col4',label='Chemical_formula', measure='chemical_formula'),
-        View.Column(name='col5',label='Date created', measure='created'),
-        View.Column(name='col6',label='Simulations', measure='simulations'),
+        View.Column(label='', measure='selected'),
+        View.Column(label='ID', measure='id'),
+        View.Column(label='Description', measure='description', editable=True),
+        View.Column(label='Visualize', measure='visualize'),
+        View.Column(label='Type', measure='type'),
+        View.Column(label='Chemical_formula', measure='chemical_formula'),
+        View.Column(label='Date created', measure='created'),
+        View.Column(label='Simulations', measure='simulations'),
         ]
     columns = filter(lambda col: col.measure in cols, columns)
 
     view = View(columns=columns, editable=True)
 
+    def getSelected(matter): return False
     def getId(matter):
         label = matter.id
         link = Link(
@@ -82,7 +85,7 @@ def table(matters, cols, director):
         measure = col.measure
         
     value_generators = [
-        eval('get'+col.measure[0].upper()+col.measure[1:])
+        eval('get'+col.measure.capitalize())
         for col in view.columns]
     record2tuple = lambda record: [g(record) for g in value_generators]
     data = map(record2tuple, matters)
