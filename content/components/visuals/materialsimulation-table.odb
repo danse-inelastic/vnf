@@ -27,6 +27,7 @@ def table(matsims, cols, director):
     
     class model(Model):
 
+        selected = Model.descriptors.bool(name='selected')
         id = Model.descriptors.link(name='id')
         description = Model.descriptors.str(name='description')
         type = Model.descriptors.str(name='type')
@@ -37,16 +38,18 @@ def table(matsims, cols, director):
 
     
     columns = [
-        View.Column(name='col0',label='ID', measure='id'),
-        View.Column(name='col1',label='Description', measure='description', editable=True),
-        View.Column(name='col2',label='Type', measure='type'),
-        View.Column(name='col3',label='Matter', measure='matter'),
-        View.Column(name='col5',label='Date created', measure='date'),
+        View.Column(label='', measure='selected'),
+        View.Column(label='ID', measure='id'),
+        View.Column(label='Description', measure='description', editable=True),
+        View.Column(label='Type', measure='type'),
+        View.Column(label='Matter', measure='matter'),
+        View.Column(label='Date created', measure='created'),
         ]
     columns = filter(lambda col: col.measure in cols, columns)
 
     view = View(columns=columns, editable=False)
 
+    def getSelected(matter): return False
     def getId(matsim):
         label = matsim.id
         link = Link(
@@ -58,13 +61,13 @@ def table(matsims, cols, director):
                 )
             )
         return link
-    def getDesc(matsim):
+    def getDescription(matsim):
         return matsim.short_description
-    def getCreationDate(exp):
+    def getCreated(exp):
         date = exp.date
         return str(date)
     def getType(matsim):
-        return matsim.__class__.__name__
+        return matsim.__class__.name
     def getMatter(matsim):
         matter = matsim.matter
         if not matter or not matter.id: return 'not defined'
@@ -76,15 +79,9 @@ def table(matsims, cols, director):
         return identifier
         
     import operator
-    generators = {
-        'id': getId,
-        'description': getDesc,
-        'type': getType,
-        'matter': getMatter,
-        'date': getCreationDate,
-        }
-    
-    value_generators = map(generators.get, [col.measure for col in view.columns])
+    value_generators = [
+        eval('get'+col.measure.capitalize())
+        for col in view.columns]
     record2tuple = lambda record: [g(record) for g in value_generators]
     data = map(record2tuple, matsims)
 
