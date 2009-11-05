@@ -48,6 +48,11 @@ class Accessor(base):
     def isLabeled(self, entity, table, label, creator=None):
         'check if an entity is labled given label for the given table'
 
+        gp = entity.globalpointer
+        if not gp or not gp.id:
+            # no global pointer, it should not be labeled
+            return False
+        
         db = self.db
         
         if creator is None:
