@@ -637,6 +637,14 @@ class MasterTableActor(base):
     def showListView(self, *args, **kwds):
         raise NotImplementedError
 
+
+    def _init(self):
+        super(MasterTableActor, self)._init()
+        si = self.inventory
+        self._debug.log('label=%s, filter_expr=%s, filter_key_index=%s, filter_value=%s' % (
+            si.label, si.filter_expr, si.filter_key_index, si.filter_value) )
+        return
+    
     
 
 # version
