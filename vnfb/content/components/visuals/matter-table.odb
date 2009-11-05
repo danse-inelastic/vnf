@@ -81,9 +81,6 @@ def table(matters, cols, director):
         return 'not implemented'
         
     import operator
-    for col in view.columns:
-        measure = col.measure
-        
     value_generators = [
         eval('get'+col.measure.capitalize())
         for col in view.columns]
