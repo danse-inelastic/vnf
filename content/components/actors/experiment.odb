@@ -43,20 +43,42 @@ class Actor(base):
 
 
     def createListView(self, director):
+
+        domaccess = director.retrieveDOMAccessor('experiment')
+        
         from vnfb.components.MasterTable import MasterTableFactory, filtercompiler
-        def countrecords(filter):
-            return self._countExperiments(director, filter)
-        def createtable(order_by, reverse_order, slice, filter):
+        def countrecords(filter, label=None):
+            return domaccess.countExperiments(filter, label=label)
+        def createtable(order_by, reverse_order, slice, filter, label=None):
             return self.createExperimentTable(
                 director,
                 order_by=order_by,
                 reverse_order=reverse_order,
                 slice=slice,
-                filter=filter)
+                filter=filter,
+                label=label
+                )
         compilefilter = filtercompiler(columns, measure2dbcol)
 
+        smartlabelaccess = director.retrieveDOMAccessor('smartlabel')
+        def filterfromlabel(label):
+            return smartlabelaccess.createFilterExprFromLabel(
+                label, self.name)
+        smartlabels = smartlabelaccess.getLabelNames(self.name)
+
+        labelaccess = director.retrieveDOMAccessor('label')
+        labels = labelaccess.getLabelNames(self.name)
+            
         factory = MasterTableFactory(
-            self.name, countrecords, createtable, compilefilter, filtercols)
+            self.name, countrecords, createtable,
+            compilefilter, filtercols,
+            filterfromlabel, smartlabels, labels,
+            sorting_options = [
+                ('id', 'ID'),
+                ('short_description', 'Description'),
+            ],
+            polymorphic = False, dbtablename='neutronexperiments'
+            )
 
         order_by = self.inventory.order_by
         reverse_order = self.inventory.reverse_order
@@ -67,16 +89,15 @@ class Actor(base):
         filter_key_index = self.inventory.filter_key_index
         filter_value = self.inventory.filter_value
 
+        label = self.inventory.label
+        
         tableview = factory.create(
+            label=label,
+            filter_expr=filter_expr, filter_key_index=filter_key_index, filter_value=filter_value,
             order_by=order_by,
             reverse_order=reverse_order,
-            filter_expr=filter_expr, filter_key_index=filter_key_index, filter_value=filter_value,
             number_records_per_page=number_records_per_page,
             page_number=page_number,
-            sorting_options = [
-                ('id', 'ID'),
-                ('short_description', 'Description'),
-            ]
             )
 
         # add some buttons to the left of navbar
@@ -90,8 +111,17 @@ class Actor(base):
         return tableview
     
         
-    def createExperimentTable(self, director, order_by=None, reverse_order=None, slice=None, filter=None):
-        experiments = self._getExperiments(director, filter=filter, order_by=order_by, reverse_order=reverse_order, slice=slice)
+    def createExperimentTable(
+        self, director,
+        order_by=None, reverse_order=None, slice=None, filter=None,
+        label = None,
+        ):
+        domaccess = director.retrieveDOMAccessor('experiment')
+        
+        experiments = domaccess.getExperiments(
+            filter=filter, order_by=order_by, reverse_order=reverse_order, slice=slice,
+            label=label,
+            )
 
         cols = columns
         args = experiments, cols, director
@@ -110,44 +140,14 @@ class Actor(base):
 
 
     # db access
-    def _countExperiments(self, director, filter=None):
-        db = director.clerk.db
-        q = experimentQuery(db, filter=filter)
-        return q.count()
 
 
-    def _getExperiments(self, director, filter=None, order_by=None, reverse_order=None, slice=None):
-        # this implementation does not work when order_by=Type
-        self._debug.log('filter: %r, order_by: %r, slice: %r' % (filter, order_by, slice))
-
-        db = director.clerk.db
-        q = experimentQuery(db, filter=filter)
-
-        if order_by:
-            q = q.order_by(order_by)
-        if slice:
-            if reverse_order:
-                n = self._countExperiments(director, filter=filter)
-                slice = n-slice[1], n-slice[0]
-            q = q.slice(*slice)
-
-        ret = q.all()
-        if reverse_order:
-            ret.reverse()
-        return ret
-
-
-columns = [ 'id', 'description']
+columns = ['selected', 'id', 'description']
 measure2dbcol = {
     'description': 'short_description',
     }
-filtercols = columns
+filtercols = columns[1:]
 
-
-from dsaw.db.VersatileReference import global_pointer
-from vnf.dom.NeutronExperiment import NeutronExperiment
-def experimentQuery(db, filter=None):
-    return db.query(NeutronExperiment).filter(filter)
 
 
 def actor(): return Actor()

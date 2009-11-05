@@ -12,6 +12,8 @@
       <property name='main'>on</property>
       <property name='MasterTableFactory'>on</property>
       <property name='materialsimulation'>on</property>
+      <property name='experiment-accessor'>on</property>
+      <property name='experiment-table'>on</property>
     </component>
   </component>
 </inventory>
