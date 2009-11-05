@@ -24,6 +24,21 @@ class Accessor(base):
         self.db = db
         super(Accessor, self).__init__('smartlabel-accessor')
         return
+
+
+    def createSmartLabel(
+        self, label, table,
+        filter_expr=None, filter_key=None, filter_value=None,
+        ):
+        
+        slabel = self.insertNewOwnedRecord(SmartLabel)
+        slabel.label = label
+        slabel.filter_expr = filter_expr
+        slabel.filter_key = filter_key
+        slabel.filter_value = filter_value
+        slabel.targettable = table
+        self.updateRecordWithID(slabel)
+        return slabel
     
 
     def createFilterExprFromLabel(self, label, targettable, creator=None):
