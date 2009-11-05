@@ -1,5 +1,10 @@
 /*  -*- CSS -*-  */
 
+/* overall container */
+.master-table-container a.luban-link {
+    color:#47823c;
+}
+
 /* top portion: view indicator and change-view-toolbar */
 .master-table-title-bar{
     margin: 2px 0 13px 0;
@@ -11,7 +16,8 @@
 #view-indicator {
     padding: 1em 0 0 0;
     font-size: 90%;
-    min-width: 300px;
+    min-width: 270px;
+    max-width: 330px;
     float: left;
 }
 #view-indicator a{
@@ -237,6 +243,37 @@ margin-top:4px;
     display: inline;
 }
 
+
+/* toolbar at the bottom-left */
+.master-table-toolbaronbottom-left {
+    font-size:80%;
+    margin-top:8px;
+}
+.master-table-toolbaronbottom-left a {
+    /*border-left:solid 1px;*/
+    border-right:1px solid #444;
+    padding:0 5px;
+}
+.master-table-toolbaronbottom-left div {
+    display:inline;
+}
+.master-table-toolbaronbottom-left h1.luban-document-title {
+    font-size:95%;
+    font-weight:bold;
+    display:inline;
+    /* margin-right:10px; */
+}
+.master-table-toolbaronbottom-left select {
+    width:90px;
+}
+.master-table-toolbaronbottom-left input {
+    width:70px;
+}
+.master-table-toolbaronbottom-left .luban-formfield {
+    margin-left: 5px;
+    margin-right: 0;
+}
+
 /* table itself */
 .master-table {
     width: 100%;
@@ -282,6 +319,10 @@ margin-top:4px;
 }
 .master-table a.luban-link {
     color:#657098;
+}
+.master-table input[type="checkbox"] {
+    width:1.6em;
+    height:1.6em;
 }
 
 

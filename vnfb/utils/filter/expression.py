@@ -28,14 +28,11 @@ class measure:
         return factory(self.name, s)
 
 
+    def __str__(self):
+        return self.name
 
-class CompareOperator(object):
 
-    def __init__(self, measure, value):
-        self.measure = measure
-        self.value = value
-        return
-
+class Operator(object):
 
     def __l_and__(self, rhs):
         return And(self, rhs)
@@ -46,10 +43,23 @@ class CompareOperator(object):
         
 
 
+class CompareOperator(Operator):
+
+    def __init__(self, measure, value):
+        self.measure = measure
+        self.value = value
+        return
+
+
+
 class Equal(CompareOperator):
 
     def identify(self, visitor):
         return visitor.onEqual(self)
+
+
+    def __str__(self):
+        return '(%s == %s)' % (self.measure, self.value)
 
 
 class Like(CompareOperator):
@@ -58,8 +68,12 @@ class Like(CompareOperator):
         return visitor.onLike(self)
 
 
+    def __str__(self):
+        return '(%s like %s)' % (self.measure, self.value)
 
-class LogicalOperator(object):
+
+
+class LogicalOperator(Operator):
 
     pass
 
@@ -78,12 +92,20 @@ class And(BinaryLogicalOperator):
         return visitor.onAnd(self)
 
 
+    def __str__(self):
+        return '(%s and %s)' % (self.left, self.right)
+
+
 class Or(BinaryLogicalOperator):
 
     def identify(self, visitor):
         return visitor.onOr(self)
     
     
+    def __str__(self):
+        return '(%s or %s)' % (self.left, self.right)
+
+
 
 # version
 __id__ = "$Id$"
