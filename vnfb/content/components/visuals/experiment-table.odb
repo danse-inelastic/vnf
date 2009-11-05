@@ -27,19 +27,22 @@ def table(experiments, cols, director):
     
     class model(Model):
 
+        selected = Model.descriptors.bool(name='selected')
         id = Model.descriptors.link(name='id')
         description = Model.descriptors.str(name='description')
 
         row_identifiers = ['id']
 
     columns = [
-        View.Column(name='col0',label='ID', measure='id'),
-        View.Column(name='col1',label='Description', measure='description', editable=True),
+        View.Column(label='', measure='selected'),
+        View.Column(label='ID', measure='id'),
+        View.Column(label='Description', measure='description', editable=True),
         ]
     columns = filter(lambda col: col.measure in cols, columns)
 
     view = View(columns=columns, editable=True)
     
+    def getSelected(matter): return False
     def getId(experiment):
         label = experiment.id
         link = Link(
@@ -47,7 +50,6 @@ def table(experiments, cols, director):
             onclick = load(
                 actor='experiment', routine='showExperimentView',
                 id = experiment.id,
-                type = experiment.__class__.name,
                 )
             )
         return link
@@ -55,9 +57,6 @@ def table(experiments, cols, director):
         return experiment.short_description
         
     import operator
-    for col in view.columns:
-        measure = col.measure
-        
     value_generators = [
         eval('get'+col.measure[0].upper()+col.measure[1:])
         for col in view.columns]

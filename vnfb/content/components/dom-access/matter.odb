@@ -105,7 +105,7 @@ class Accessor(base):
 
 
     def makeLabeledQuery(self, label, table):
-        'craete a uery for a matter table with given filter'
+        'craete a uery for a matter table'
         db = self.db
         sL = db._tablemap.TableToSATable(Label)
         labelq = sqlalchemy.select(

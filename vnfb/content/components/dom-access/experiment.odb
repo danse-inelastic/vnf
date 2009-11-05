@@ -1,0 +1,123 @@
+# -*- Python -*-
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                   Jiao Lin
+#                      California Institute of Technology
+#                      (C) 2006-2009  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+tablename = 'experiment'
+
+
+from vnfb.components.DOMAccessor import DOMAccessor as base
+
+class Accessor(base):
+
+
+    def __init__(self, db):
+        self.db = db
+        super(Accessor, self).__init__('experiment-accessor')
+        return
+
+
+    def countExperiments(self, filter=None, label=None):
+        q = self.makeQuery(filter=filter, label=label)
+        return q.alias('tocount').count().execute().fetchone()[0]
+
+
+    def getExperiments(
+        self,
+        filter=None, order_by=None, reverse_order=None, slice=None,
+        label=None,
+        ):
+        
+        self._debug.log('filter: %r, order_by: %r, slice: %r' % (filter, order_by, slice))
+
+        db = self.db
+        q = self.makeQuery(filter=filter, label=label)
+
+        if order_by:
+            q = q.order_by(order_by)
+        if slice:
+            if reverse_order:
+                n = self.countExperiments(filter=filter, label=label)
+                slice = n-slice[1], n-slice[0]
+            q = sqlalchemy.select(
+                [q.alias('toslice')],
+                limit = slice[1]-slice[0],
+                offset = slice[0])
+
+        ret = q.execute().fetchall()
+        
+        if reverse_order:
+            ret.reverse()
+
+        self._debug.log('experiments: %s' % (ret,))
+        return ret
+
+
+    def makeQuery(self, filter=None, label=None):
+        if label:
+            if filter: raise RuntimeError
+            return self.makeLabeledQuery(label)
+        db = self.db
+
+        st = db._tablemap.TableToSATable(NeutronExperiment)
+        q = sqlalchemy.select(
+            [st.c.id.label('id'),
+             st.c.short_description.label('short_description'),
+             st.c.date.label('date'),
+             ]
+            )
+        if filter:
+            q = sqlalchemy.select([q.alias('experiment')], whereclause=filter)
+        return q
+
+
+    def makeLabeledQuery(self, label):
+        'craete a uery for experiment table'
+        db = self.db
+        sL = db._tablemap.TableToSATable(Label)
+        labelq = sqlalchemy.select(
+            [sL.c.entity.label('entity'),
+             sL.c.labelname.label('label'),
+             ],
+            whereclause="labelname='%s' and targettable='%s'" % (label, tablename))\
+            .alias('labelq')
+        
+        st = db._tablemap.TableToSATable(NeutronExperiment)
+        
+        q = sqlalchemy.select(
+            [st.c.id.label('id'),
+             st.c.short_description.label('short_description'),
+             st.c.date.label('date'),
+             labelq.c.entity.label('gptr'),
+             ],
+            st.c.globalpointer==labelq.c.entity,
+            )
+
+        return q
+        
+
+from vnf.dom.Label import Label
+from vnf.dom.NeutronExperiment import NeutronExperiment
+
+
+from dsaw.db.VersatileReference import global_pointer
+import sqlalchemy
+
+
+def accessor(db):
+    return Accessor(db)
+
+
+# version
+__id__ = "$Id$"
+
+# End of file 
