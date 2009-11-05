@@ -143,6 +143,9 @@ class Accessor(base):
         return q
 
 
+    def getTables(self):
+        return simulationTables()
+    
 
 from vnf.dom.Label import Label
 

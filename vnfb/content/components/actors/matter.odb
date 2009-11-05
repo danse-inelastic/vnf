@@ -247,8 +247,9 @@ class Actor(base):
         # should be handled by resource manager
         icons = {
             }
-        
-        simtables = simulationTables()
+
+        simsaccess = director.retrieveDOMAccessor('materialsimulation')
+        simtables = simsaccess.getTables()
         def _(table):
             #doc = Document()
             name = table.__name__
