@@ -31,7 +31,10 @@ class MasterTableFactory(object):
     
     def __init__(self, name, countrecords, createtable,
                  compilefilter, filtercols,
-                 filterfromlabel, smartlabels, labels):
+                 filterfromlabel, smartlabels, labels,
+                 sorting_options=None,
+                 polymorphic=True, dbtablename=None,
+                 ):
         self.name = name
         self.countrecords = countrecords
         #self.fetchrecords = fetchrecords
@@ -44,7 +47,20 @@ class MasterTableFactory(object):
         self.smartlabels = [self.dummylabel] + smartlabels
         self.labels = labels
 
+        self.sorting_options = sorting_options or [
+            ('id', 'ID'),
+            ('short_description', 'Description'),
+            ('type', 'Type'),
+            ('date', 'Date created'),
+            ]
+
+        self.polymorphic = polymorphic
+        if not self.polymorphic and not dbtablename:
+            raise ProgrammingError, "a non-polymorphic table must supply a table name"
+        self.dbtablename = dbtablename
+
         self.debug = journal.debug('MasterTableFactory')
+
         return
     
 
@@ -54,7 +70,6 @@ class MasterTableFactory(object):
         filter_expr=None, filter_key_index=None, filter_value=None,
         order_by=None, reverse_order=None,
         number_records_per_page=None, page_number=None,
-        sorting_options=None,
         ):
         name = self.name
 
@@ -140,15 +155,7 @@ class MasterTableFactory(object):
             id='%s-table-sorting-control-container'%name,
             Class='master-table-sorting-control-container',
             )
-        if sorting_options is None:
-            entries = [
-                ('id', 'ID'),
-                ('short_description', 'Description'),
-                ('type', 'Type'),
-                ('date', 'Date created'),
-                ]
-        else:
-            entries = sorting_options
+        entries = self.sorting_options
         selector = FormSelectorField(
             label = 'Sort by: ',
             entries=entries,
@@ -269,6 +276,8 @@ class MasterTableFactory(object):
             entities = select(element=table).table(
                 'getIdentifiersForCheckedRows',
                 colname='selected'),
+            entity_has_type=self.polymorphic,
+            type=self.dbtablename,
             )
 
         field = FormTextField()
@@ -645,7 +654,8 @@ class MasterTableActor(base):
             si.label, si.filter_expr, si.filter_key_index, si.filter_value) )
         return
     
-    
+
+class ProgrammingError(Exception): pass
 
 # version
 __id__ = "$Id$"
