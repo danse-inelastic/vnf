@@ -12,7 +12,7 @@
 #
 
 
-from luban.content import alert, load
+from luban.content import alert, load, select
 
 from luban.components.AuthorizedActor import AuthorizedActor as base
 
@@ -47,21 +47,26 @@ class Actor(base):
         labelaccess = director.retrieveDOMAccessor('label')
         labels = labelaccess.getLabelNames(table)
 
-        smartlabelaccess = director.retrieveDOMAccessor('smartlabelaccess')
+        smartlabelaccess = director.retrieveDOMAccessor('smartlabel')
         smartlabels = smartlabelaccess.getLabelNames(table)
         
         if label in labels or label in smartlabels:
             return alert('you already create this label: %s. Please use a different name.' % label)
 
         #
-        slabel = director.clerk.insertNewOwnedRecord(SmartLabel)
-        slabel.label = label
-        slabel.filter_expr = filter_expr
-        slabel.filter_key = filter_key
-        slabel.filter_value = filter_value
-        slabel.targettable = table
-        director.clerk.updateRecordWithID(slabel)
-        return load(actor=table, routine='showListView', label_index=len(labels)+1)
+        slabel = smartlabelaccess.createSmartLabel(
+            label, table,
+            filter_key = filter_key, filter_value = filter_value,
+            filter_expr = filter_expr,
+            )
+        
+        # return load(actor=table, routine='showListView', label=label)
+
+        # this depends on MasterTableFactory implementation not very good
+        id = '%s-table-collection-selector' % table
+        a = select(id=id).formfield('addOption', value=-1, label=label, selected=1)
+
+        return a
     
 
     def __init__(self, name='smartlabel'):
