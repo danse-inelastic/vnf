@@ -69,11 +69,11 @@ class Actor(base):
             
     def createListView(self, director):
 
-        matteraccess = self.getMatterAccess(director)
+        domaccess = self.getMatterAccess(director)
         
         from vnfb.components.MasterTable import MasterTableFactory, filtercompiler
         def countrecords(filter, label=None):
-            return matteraccess.countMatters(filter, label=label)
+            return domaccess.countMatters(filter, label=label)
         def createtable(order_by, reverse_order, slice, filter, label=None):
             return self.createMatterTable(
                 director,
@@ -134,8 +134,8 @@ class Actor(base):
         filter=None,
         label=None):
         
-        matteraccess = self.getMatterAccess(director)
-        matters = matteraccess.getMatters(
+        domaccess = self.getMatterAccess(director)
+        matters = domaccess.getMatters(
             order_by=order_by, reverse_order=reverse_order, slice=slice,
             filter=filter,
             label=label,
