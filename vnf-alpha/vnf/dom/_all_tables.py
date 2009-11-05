@@ -73,6 +73,7 @@ other = [
     'ITask',
     'Activity',
     'SmartLabel',
+    'Label',
     ]
 
 

@@ -69,6 +69,7 @@ EXPORT_PYTHON_MODULES = \
 	InstrumentConfiguration.py \
 	ITask.py \
 	Job.py \
+	Label.py \
 	MaterialModeling.py \
 	MaterialSimulation.py \
 	MatterBase.py \
