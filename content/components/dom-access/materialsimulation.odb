@@ -12,6 +12,9 @@
 #
 
 
+tablename='materialsimulation'
+
+
 from vnfb.components.DOMAccessor import DOMAccessor as base
 
 class Accessor(base):
@@ -113,7 +116,7 @@ class Accessor(base):
             [sL.c.entity.label('entity'),
              sL.c.labelname.label('label'),
              ],
-            whereclause="labelname='%s'" % label)\
+            whereclause="labelname='%s' and targettable='%s'" % (label, tablename))\
             .alias('labelq')
         
         sGP = db._tablemap.TableToSATable(global_pointer)
