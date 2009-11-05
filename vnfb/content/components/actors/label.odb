@@ -24,31 +24,49 @@ class Actor(base):
 
         import pyre.inventory
         table = pyre.inventory.str(name='table')
+        table.meta['tip'] = 'name of the master table'
+        
         label = pyre.inventory.str(name='label')
         entity = pyre.inventory.str(name='entity')
 
         entities = pyre.inventory.list(name='entities')
 
+        entity_has_type = pyre.inventory.bool(name='entity_has_type', default=True)
+        type = pyre.inventory.str(name='type', default='')
+        type.meta['tip'] = 'name of the db table of interest'
+
 
     def addEntities(self, director):
         entities = self.inventory.entities
-        assert len(entities)%2==0
+        if not entities: return alert('please select some items to apply label')
+
+        entity_has_type = self.inventory.entity_has_type
+        if entity_has_type:
+            assert len(entities)%2==0
 
         labelaccess = director.retrieveDOMAccessor('label')
 
         table = self.inventory.table
         label = self.inventory.label
-        
-        for i in range(len(entities)/2):
-            
-            id = entities[2*i]
-            type = entities[2*i+1]
-            entity = director.clerk.getRecordByID(type, id)
 
+        if not label: return alert('please select a label to apply')
+
+        records = []
+        if entity_has_type:
+            for i in range(len(entities)/2):
+                id = entities[2*i]
+                type = entities[2*i+1]
+                records.append(director.clerk.getRecordByID(type, id))
+        else:
+            type = self.inventory.type
+            for id in entities:
+                records.append(director.clerk.getRecordByID(type, id))
+                
+        for record in records:
             # already labeled, skip
-            if labelaccess.isLabeled(entity, table, label): continue
+            if labelaccess.isLabeled(record, table, label): continue
 
-            labelaccess.createLabel(label=label, table=table, entity=entity)
+            labelaccess.createLabel(label=label, table=table, entity=record)
             continue
         
         return
