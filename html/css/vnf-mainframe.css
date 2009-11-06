@@ -233,6 +233,29 @@ body {
     color: #333333;
 }
 
+
+
+/* inside main area */
+#view-indicator {
+    padding: 1em 0 0 0;
+    font-size: 90%;
+    min-width: 270px;
+    max-width: 330px;
+    float: left;
+}
+#view-indicator a{
+    color: #6f4980;
+    text-decoration: underline;
+}
+#view-indicator p{
+    display: inline;
+    color:#47823c;
+}
+#view-indicator div{
+    display: inline;
+}
+
+
 /* version */
 /* $Id$ */
 

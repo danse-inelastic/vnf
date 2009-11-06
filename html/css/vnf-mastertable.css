@@ -13,25 +13,6 @@
     /*width: 50%;*/
 }
 
-#view-indicator {
-    padding: 1em 0 0 0;
-    font-size: 90%;
-    min-width: 270px;
-    max-width: 330px;
-    float: left;
-}
-#view-indicator a{
-    color: #6f4980;
-    text-decoration: underline;
-}
-#view-indicator p{
-    display: inline;
-    color:#47823c;
-}
-#view-indicator div{
-    display: inline;
-}
-
 .master-table-toolbar-changeview-container .luban-toolbar .luban-button-container {
     padding:0;
     margin:0;
@@ -153,7 +134,7 @@ margin-top:4px;
 }
 
 /* toolbar just on top of table */
-.master-table-toolbarontop td {
+.master-table-tabletoptoolbar td {
     vertical-align: bottom;
 }
 
@@ -190,8 +171,8 @@ margin-top:4px;
 
 
 
-/* controls */
-.master-table-controls {
+/* sortingtoolbar */
+.master-table-sortingtoolbar {
     /*
     height: 30px;
     width: 240;
@@ -201,43 +182,43 @@ margin-top:4px;
     margin-left: 1px;
     margin-right: auto;
 }
-.master-table-controls > table.luban-splitter {
+.master-table-sortingtoolbar > table.luban-splitter {
     width: auto;
     margin: 0 auto 0 1px;
 }
-.master-table-controls > table.luban-splitter tr{
+.master-table-sortingtoolbar > table.luban-splitter tr{
 }
-.master-table-controls > table.luban-splitter td{
+.master-table-sortingtoolbar > table.luban-splitter td{
     width: auto;
     padding: 0 10px;
 }
-.master-table-controls > table.luban-splitter td .formfield{
+.master-table-sortingtoolbar > table.luban-splitter td .formfield{
     margin: 0;
     font-size: 80%;
 }
-.master-table-controls > table.luban-splitter td a{
+.master-table-sortingtoolbar > table.luban-splitter td a{
     margin: 0;
 }
-.master-table-controls > table.luban-splitter td p{
+.master-table-sortingtoolbar > table.luban-splitter td p{
     margin: 0;
 }
 
-.master-table-controls div.label-container {
+.master-table-sortingtoolbar div.label-container {
     color: #888888;
     font-size: 90%;
     display: inline;
 }
-.master-table-controls div.label-container div{
+.master-table-sortingtoolbar div.label-container div{
     display: inline;
 }
 
-.master-table-controls input {
+.master-table-sortingtoolbar input {
     border-color: #cced8c;
     border-width: 2;
     display: inline;
 }
 
-.master-table-controls select {
+.master-table-sortingtoolbar select {
     border-color: #cced8c;
     border-width: 2;
     display: inline;
@@ -245,31 +226,31 @@ margin-top:4px;
 
 
 /* toolbar at the bottom-left */
-.master-table-toolbaronbottom-left {
+.master-table-tablebottomtoolbar-left {
     font-size:80%;
     margin-top:8px;
 }
-.master-table-toolbaronbottom-left a {
+.master-table-tablebottomtoolbar-left a {
     /*border-left:solid 1px;*/
     border-right:1px solid #444;
     padding:0 5px;
 }
-.master-table-toolbaronbottom-left div {
+.master-table-tablebottomtoolbar-left div {
     display:inline;
 }
-.master-table-toolbaronbottom-left h1.luban-document-title {
+.master-table-tablebottomtoolbar-left h1.luban-document-title {
     font-size:95%;
     font-weight:bold;
     display:inline;
     /* margin-right:10px; */
 }
-.master-table-toolbaronbottom-left select {
+.master-table-tablebottomtoolbar-left select {
     width:90px;
 }
-.master-table-toolbaronbottom-left input {
+.master-table-tablebottomtoolbar-left input {
     width:70px;
 }
-.master-table-toolbaronbottom-left .luban-formfield {
+.master-table-tablebottomtoolbar-left .luban-formfield {
     margin-left: 5px;
     margin-right: 0;
 }
