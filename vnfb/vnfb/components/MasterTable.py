@@ -261,13 +261,14 @@ class MasterTableFactory(object):
         entries = enumerate(labels)
         field = FormSelectorField(
             #label = 'labeled collections',
+            tip = 'choose a label',
             id = '%s-table-applylabel-selector' % name,
             Class='master-table-applylabel-selector',
             entries = entries,
             )
         doc.add(field)
             
-        link = Link(label="apply")
+        link = Link(label="apply", tip='apply the label to the items you checked')
         doc.add(link)
         
         link.onclick = load(
@@ -280,10 +281,10 @@ class MasterTableFactory(object):
             type=self.dbtablename,
             )
 
-        field = FormTextField()
+        field = FormTextField(tip='input the name of a new label')
         doc.add(field)
         
-        link = Link(label='new')
+        link = Link(label='new', tip='click to create a new label')
         doc.add(link)
 
         link.onclick = load(
@@ -292,7 +293,7 @@ class MasterTableFactory(object):
             label=select(element=field).getAttr('value'),
             )
             
-        link = Link(label='manage')
+        link = Link(label='manage', tip='manage my labels')
         doc.add(link)
         link.onclick = load(
             actor='label', routine='manage', table=name,
@@ -316,6 +317,7 @@ class MasterTableFactory(object):
         entries = enumerate(smartlabels+labels)
         field = FormSelectorField(
             #label = 'labeled collections',
+            tip='select a collection or a smart collection',
             id='%s-table-collection-selector' % name,
             Class='master-table-collection-selector',
             entries = entries,
@@ -343,6 +345,7 @@ class MasterTableFactory(object):
 
         field = FormTextField(
             label = '',
+            tip='input a name to create a "smart collection" that saves your filtering criteria',
             id='%s-table-smartlabel' % name,
             Class='master-table-smartlabel',
             #tip = "save this search as a smart label",
@@ -425,6 +428,7 @@ class MasterTableFactory(object):
         selector = FormSelectorField(
             id = self._filterBasicKeyFieldID(name),
             label = 'col:',
+            tip = 'select the quantity to filter',
             entries=entries,
             selection=filter_key_index,
             )
@@ -432,6 +436,7 @@ class MasterTableFactory(object):
 
         field = FormTextField(
             label = 'value:',
+            tip = 'input a value. wildcard can be use. Eg. *Fe*',
             id = self._filterBasicInputFieldID(name),
             value = filter_value,
             )
@@ -470,6 +475,7 @@ class MasterTableFactory(object):
         
         field = FormTextField(
             label = '',
+            tip="input a filter expression. Eg. description=='*Fe*'",
             value = filter_expr,
             id=self._filterAdvancedInputFieldID(name),
             Class='master-table-advanced-filter',

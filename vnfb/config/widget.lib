@@ -2,6 +2,7 @@
   "": {
      "stylesheets": [
         "jquery/ui/smoothness/ui.all.css",
+        "jquery/jquery.tooltip.css",
 
 	"luban.css",
 
@@ -16,6 +17,9 @@
      "jslibs":      [
         "jquery/jquery.js",
         "jquery/jquery.rightClick.js",
+        "jquery/jquery.dimensions.js",
+        "jquery/jquery.bgiframe.js",
+        "jquery/jquery.tooltip.js",
         "jquery/jquery.dropshadow.js",
         "jquery/ui/ui.core.js",
         "luban/luban-core.js",
