@@ -118,7 +118,7 @@ class Actor(base):
             page_number=page_number)
 
         # add new button
-        toolbar = tableview.find(id='matter-table-toolbar-changeview')
+        toolbar = tableview.find(id='matter-table-toptoolbar')
         #toolbar.add(Paragraph(text='|', Class='splitter'))
         #
         button = Button(label='New', tip='create new matter', icon='new.png')

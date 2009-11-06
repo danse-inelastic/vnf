@@ -118,7 +118,7 @@ class MasterTableFactory(object):
         
         # toolbar with widgets with actions that can change the items in the table
         # such as filtering and creating. sorting and navigating are not such actions
-        right = titlebar.section(Class='master-table-toolbar-changeview-container')
+        right = titlebar.section(Class='master-table-toptoolbar-container')
         toolbar_changeview = self.createTopToolbar(
             name,
             label,
@@ -214,8 +214,8 @@ class MasterTableFactory(object):
         ):
 
         toolbar_changeview = Toolbar(
-            id= '%s-table-toolbar-changeview' % name,
-            Class='master-table-toolbar-changeview',
+            id= '%s-table-toptoolbar' % name,
+            Class='master-table-toptoolbar',
             )
         
         # filter widget

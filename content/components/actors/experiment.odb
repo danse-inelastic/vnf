@@ -101,7 +101,7 @@ class Actor(base):
             )
 
         # add some buttons to the left of navbar
-        toolbar = tableview.find(id='experiment-table-toolbar-changeview')
+        toolbar = tableview.find(id='experiment-table-toptoolbar')
         toolbar.add(Paragraph(text='|', Class='splitter'))
         #
         button = Button(label='New', tip='create new experiment', icon='new.png')

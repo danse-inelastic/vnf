@@ -13,37 +13,45 @@
     /*width: 50%;*/
 }
 
-.master-table-toolbar-changeview-container .luban-toolbar .luban-button-container {
+.master-table-toptoolbar-container .luban-toolbar .luban-button-container {
     padding:0;
     margin:0;
 }
-.master-table-toolbar-changeview-container .luban-toolbar {
+.master-table-toptoolbar-container .luban-toolbar {
     -moz-border-radius:12px;
     -webkit-border-radius:12px;
     background-color:#f0f5f5;
     border:1px solid #AAAAAA;
-    padding:0px 5px;
+    /*padding:0px 5px;*/
 }
-.master-table-toolbar-changeview-container .luban-toolbar > table{
+.master-table-toptoolbar-container .luban-toolbar > table{
     border-collapse: collapse;
 }
-.master-table-toolbar-changeview-container .luban-toolbar .splitter{
+.master-table-toptoolbar-container .luban-toolbar .splitter{
     font-size: 130%;
     padding: 0 10px;
 }
-.master-table-toolbar-changeview-container .luban-toolbar img{
+.master-table-toptoolbar-container .luban-toolbar .luban-toolbar-left-padding{
+    -moz-border-radius-bottomleft:12px;
+    -moz-border-radius-topleft:12px;
+    -webkit-border-top-left-radius: 12px;
+    -webkit-border-bottom-left-radius: 12px;
+    width: 8px;
+    background-color: gray;
+}
+.master-table-toptoolbar-container .luban-toolbar img{
     height: 20px;
     margin: 0px;
     padding: 0px;
     vertical-align: bottom;
 }
-.master-table-toolbar-changeview-container .luban-toolbar span{
+.master-table-toptoolbar-container .luban-toolbar span{
     font-size: 90%;
     margin: 0 1px;
     padding: 0;
 }
 
-div.master-table-toolbar-changeview-container h1.luban-document-title {
+div.master-table-toptoolbar-container h1.luban-document-title {
     font-size:75%;
     font-weight:bold;
 }
@@ -78,24 +86,26 @@ div.master-table-toolbar-changeview-container h1.luban-document-title {
 .master-table-basic-filter-widget a {
     margin: 0 2px 0 5px;
 }
-.master-table-toolbar-changeview-container label {
+
+
+.master-table-toptoolbar-container label {
     font-size:70%;
 }
-.master-table-toolbar-changeview-container .luban-formfield {
+.master-table-toptoolbar-container .luban-formfield {
     margin: 0;
     display: inline;
 }
-.master-table-toolbar-changeview-container .luban-formfield div{
+.master-table-toptoolbar-container .luban-formfield div{
     display: inline;
 }
-.master-table-toolbar-changeview-container .luban-toolbar .luban-button{
+.master-table-toptoolbar-container .luban-toolbar .luban-button{
     padding: 0;
 }
 
 
 .master-table-filter-control-container {
     border-right:dotted 2px grey;
-    padding-right:7px;
+    padding: 0 7px;
 }
 .master-table-filter-control-container > div{
     font-size: 80%;
