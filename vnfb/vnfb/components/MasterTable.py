@@ -16,7 +16,7 @@ from luban.content.FormTextField import FormTextField
 from luban.content.Document import Document
 from luban.content.Paragraph import Paragraph
 from luban.content.Button import Button
-from luban.content.Splitter import Splitter
+from luban.content.Splitter import Splitter, SplitSection
 from luban.content.Toolbar import Toolbar
 from luban.content.Link import Link
 from luban.content import load, select
@@ -26,7 +26,7 @@ import journal
 
 
 class MasterTableFactory(object):
-
+    
     dummylabel = 'select ...'
     
     def __init__(self, name, countrecords, createtable,
@@ -42,28 +42,28 @@ class MasterTableFactory(object):
         
         self.compilefilter = compilefilter
         self.filtercols = filtercols
-
+        
         self.filterfromlabel = filterfromlabel
         self.smartlabels = [self.dummylabel] + smartlabels
         self.labels = labels
-
+        
         self.sorting_options = sorting_options or [
             ('id', 'ID'),
             ('short_description', 'Description'),
             ('type', 'Type'),
             ('date', 'Date created'),
             ]
-
+        
         self.polymorphic = polymorphic
         if not self.polymorphic and not dbtablename:
             raise ProgrammingError, "a non-polymorphic table must supply a table name"
         self.dbtablename = dbtablename
-
+        
         self.debug = journal.debug('MasterTableFactory')
-
+        
         return
     
-
+    
     def create(
         self,
         label=None,
@@ -72,8 +72,10 @@ class MasterTableFactory(object):
         number_records_per_page=None, page_number=None,
         ):
         name = self.name
-
+        
         view_label = 'View all'
+
+        # the following is to find out the filtering or labeling
         self.debug.log('label: %s' % label)
         if label and label!=self.dummylabel:
             if label in self.smartlabels:
@@ -107,102 +109,45 @@ class MasterTableFactory(object):
         # create a container
         view = Document(id='%s-list-view' % name, Class='master-table-container')
         
-        splitter = Splitter(Class='master-table-title-bar')
-        view.add(splitter)
-        view_indicator = splitter.section(id='view-indicator')
-        view_indicator.add(Link(label=name.capitalize()+'s', onclick=load(actor=name)))
-        view_indicator.paragraph(text=['/ '], Class='splitter')
-        view_indicator.paragraph(text=[view_label])
+        titlebar = Splitter(Class='master-table-title-bar')
+        view.add(titlebar)
+
+        # view indicator
+        view_indicator = self.createViewIndicator(name, view_label)
+        titlebar.add(view_indicator)
         
         # toolbar with widgets with actions that can change the items in the table
         # such as filtering and creating. sorting and navigating are not such actions
-        right = splitter.section(Class='master-table-toolbar-changeview-container')
-        toolbar_changeview = Toolbar(
-            id= '%s-table-toolbar-changeview' % name,
-            Class='master-table-toolbar-changeview',
-            )
-        right.add(toolbar_changeview)
-        
-        # filter widget
-        filter_ctrl_container = self.createFilterWidget(
+        right = titlebar.section(Class='master-table-toolbar-changeview-container')
+        toolbar_changeview = self.createTopToolbar(
             name,
+            label,
             filter_expr, filter_key_index, filter_value,
             number_records_per_page,
             order_by, reverse_order,
             )
-        toolbar_changeview.add(filter_ctrl_container)
-
-        # smart label
-        smartlabel_widget = self.createSmartLabelWidget(name)
-        toolbar_changeview.add(smartlabel_widget)
-
-        # labeled selector
-        labeled_widget = self.createLabeledSelectorWidget(
-            name,
-            label,
-            number_records_per_page,
-            reverse_order,
-            )
-        toolbar_changeview.add(labeled_widget)
+        right.add(toolbar_changeview)
         
-        # controls
-        controls = Splitter(
+        # sortingtoolbar
+        sortingtoolbar = Splitter(
             orientation='horizontal',
-            id='%s-table-controls'%name,
-            Class = 'master-table-controls')
-        # sorting
-        sorting_container = controls.section(
-            id='%s-table-sorting-control-container'%name,
-            Class='master-table-sorting-control-container',
-            )
-        entries = self.sorting_options
-        selector = FormSelectorField(
-            label = 'Sort by: ',
-            entries=entries,
-            selection=order_by or '',
-            id=self._orderByWidgetID(name),
-            )
-        selector.onchange = load(
-            actor=name, routine='showListView',
-            number_records_per_page = number_records_per_page,
-            page_number = 0,
-            order_by = select(element=selector).formfield('getSelection'),
-            reverse_order = reverse_order,
-            filter_expr = filter_expr, filter_key_index=filter_key_index, filter_value=filter_value,
+            id='%s-table-sortingtoolbar'%name,
+            Class = 'master-table-sortingtoolbar')
+        self.addSortingControls(
+            sortingtoolbar,
+            name=name,
             label=label,
+            filter_expr=filter_expr, filter_key_index=filter_key_index, filter_value=filter_value,
+            order_by=order_by, reverse_order=reverse_order,
+            number_records_per_page=number_records_per_page,
             )
-        sorting_container.add(selector)
-        # order reversing
-        reverse_order_container = controls.section(
-            id='%s-table-sorting-reversing-control-container' % name,
-            Class = 'master-table-sorting-reversing-control-container',
-            )
-        entries = [
-            ('False', 'Low to High'),
-            ('True', 'High to Low'),
-            ]
-        selector = FormSelectorField(
-            label = 'Ordering: ',
-            entries=entries,
-            selection=reverse_order,
-            id='%s-table-reverse_order' % name)
-        selector.onchange = load(
-            actor=name, routine='showListView',
-            number_records_per_page = number_records_per_page,
-            page_number = 0,
-            reverse_order = select(element=selector).formfield('getSelection'),
-            order_by = order_by,
-            filter_expr = filter_expr, filter_key_index=filter_key_index, filter_value=filter_value,
-            label=label,
-            )
-        reverse_order_container.add(selector)
 
         # toolbar right on top of table
-        toolbar = Splitter(id='%s-table-toolbarontop'%name, Class='master-table-toolbarontop')
-        view.add(toolbar)
-        lefttoolbar = toolbar.section(id='%s-table-toolbarontop-left' % name, Class='master-table-toolbarontop-left')
-        lefttoolbar.add(controls)
-        righttoolbar = toolbar.section(id='%s-table-toolbarontop-right' % name, Class='master-table-toolbarontop-right')
+        tabletoptoolbar = Splitter(id='%s-table-tabletoptoolbar'%name, Class='master-table-tabletoptoolbar')
+        view.add(tabletoptoolbar)
+        lefttoolbar = tabletoptoolbar.section(id='%s-table-tabletoptoolbar-left' % name, Class='master-table-tabletoptoolbar-left')
+        lefttoolbar.add(sortingtoolbar)
+        righttoolbar = tabletoptoolbar.section(id='%s-table-tabletoptoolbar-right' % name, Class='master-table-tabletoptoolbar-right')
         # navigation bar (previous, next...)
         bar = self.createNavigationBar(
             name,
@@ -227,16 +172,16 @@ class MasterTableFactory(object):
         #
 
         # toolbar right at the bottom of table
-        toolbar = Splitter(id='%s-table-toolbaronbottom'%name, Class='master-table-toolbaronbottom')
-        view.add(toolbar)
-        lefttoolbar = toolbar.section(id='%s-table-toolbaronbottom-left' % name, Class='master-table-toolbaronbottom-left')
-        collections_toolbar = self.createCollectionToolbar(
+        tablebottomtoolbar = Splitter(id='%s-table-tablebottomtoolbar'%name, Class='master-table-tablebottomtoolbar')
+        view.add(tablebottomtoolbar)
+        lefttoolbar = tablebottomtoolbar.section(id='%s-table-tablebottomtoolbar-left' % name, Class='master-table-tablebottomtoolbar-left')
+        collections_toolbar = self.createLabelsToolbar(
             name,
             table=table
             )
         lefttoolbar.add(collections_toolbar)
         
-        righttoolbar = toolbar.section(id='%s-table-toolbaronbottom-right' % name, Class='master-table-toolbaronbottom-right')
+        righttoolbar = tablebottomtoolbar.section(id='%s-table-tablebottomtoolbar-right' % name, Class='master-table-tablebottomtoolbar-right')
         # navigation bar (previous, next...)
         bar = self.createNavigationBar(
             name,
@@ -251,7 +196,54 @@ class MasterTableFactory(object):
         return view
 
 
-    def createCollectionToolbar(
+    def createViewIndicator(self, name, label):
+        view_indicator = SplitSection(id='view-indicator')
+        view_indicator.add(Link(label=name.capitalize()+'s', onclick=load(actor=name)))
+        view_indicator.paragraph(text=['/ '], Class='splitter')
+        view_indicator.paragraph(text=[label])
+        return view_indicator
+
+
+    def createTopToolbar(
+        self,
+        name,
+        label,
+        filter_expr, filter_key_index, filter_value,
+        number_records_per_page,
+        order_by, reverse_order,
+        ):
+
+        toolbar_changeview = Toolbar(
+            id= '%s-table-toolbar-changeview' % name,
+            Class='master-table-toolbar-changeview',
+            )
+        
+        # filter widget
+        filter_ctrl_container = self.createFilterWidget(
+            name,
+            filter_expr, filter_key_index, filter_value,
+            number_records_per_page,
+            order_by, reverse_order,
+            )
+        toolbar_changeview.add(filter_ctrl_container)
+
+        # smart label
+        smartlabel_widget = self.createSaveSmartLabelWidget(name)
+        toolbar_changeview.add(smartlabel_widget)
+
+        # labeled selector
+        labeled_widget = self.createCollectionSelectorWidget(
+            name,
+            label,
+            number_records_per_page,
+            reverse_order,
+            )
+        toolbar_changeview.add(labeled_widget)
+        
+        return toolbar_changeview
+    
+
+    def createLabelsToolbar(
         self, name,
         table=None,
         ):
@@ -301,7 +293,7 @@ class MasterTableFactory(object):
         return doc
 
 
-    def createLabeledSelectorWidget(
+    def createCollectionSelectorWidget(
         self, name,
         label,
         number_records_per_page,
@@ -337,7 +329,7 @@ class MasterTableFactory(object):
         return doc
 
 
-    def createSmartLabelWidget(
+    def createSaveSmartLabelWidget(
         self, name,
         ):
 
@@ -497,6 +489,66 @@ class MasterTableFactory(object):
             select(id = self._advancedFilterWidgetID(name)).hide(),
             ]
         return advanced
+
+
+    def addSortingControls(
+        self, toolbar,
+        name=None,
+        label=None,
+        filter_expr=None, filter_key_index=None, filter_value=None,
+        order_by=None, reverse_order=None,
+        number_records_per_page=None,
+        ):
+        
+        # sorting
+        sorting_container = toolbar.section(
+            id='%s-table-sorting-control-container'%name,
+            Class='master-table-sorting-control-container',
+            )
+        entries = self.sorting_options
+        selector = FormSelectorField(
+            label = 'Sort by: ',
+            entries=entries,
+            selection=order_by or '',
+            id=self._orderByWidgetID(name),
+            )
+        selector.onchange = load(
+            actor=name, routine='showListView',
+            number_records_per_page = number_records_per_page,
+            page_number = 0,
+            order_by = select(element=selector).formfield('getSelection'),
+            reverse_order = reverse_order,
+            filter_expr = filter_expr, filter_key_index=filter_key_index, filter_value=filter_value,
+            label=label,
+            )
+        sorting_container.add(selector)
+        
+        # order reversing
+        reverse_order_container = toolbar.section(
+            id='%s-table-sorting-reversing-control-container' % name,
+            Class = 'master-table-sorting-reversing-control-container',
+            )
+        entries = [
+            ('False', 'Low to High'),
+            ('True', 'High to Low'),
+            ]
+        selector = FormSelectorField(
+            label = 'Ordering: ',
+            entries=entries,
+            selection=reverse_order,
+            id='%s-table-reverse_order' % name)
+        selector.onchange = load(
+            actor=name, routine='showListView',
+            number_records_per_page = number_records_per_page,
+            page_number = 0,
+            reverse_order = select(element=selector).formfield('getSelection'),
+            order_by = order_by,
+            filter_expr = filter_expr, filter_key_index=filter_key_index, filter_value=filter_value,
+            label=label,
+            )
+        reverse_order_container.add(selector)
+
+        return
 
 
     def _orderByWidgetID(self, name):
