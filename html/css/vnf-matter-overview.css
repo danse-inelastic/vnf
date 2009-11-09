@@ -2,6 +2,7 @@
 
 #matter-info-section {
     width:100%;
+    margin-top: 1em;
 }
 #matter-info-section .luban-splitter {
     width:95%;
@@ -10,13 +11,20 @@
     vertical-align:top;
     font-size:88%;
 }
+#matter-info-section .editable {
+    color: green;
+}
 #matter-name-container {
     width:30%;
 }
 #matter-lattice-container {
     width:35%;
+    border-left:1px dashed;
+    padding-left:1em;
+    border-right:1px dashed;
 }
 #matter-atoms-container {
+    padding-left:1em;
     width:35%;
 }
 #matter-info-section h1.luban-document-title {
@@ -42,6 +50,10 @@
     min-height:3em;
     width:80%;
     max-width:90%;
+}
+.lattice-vector p{
+    font-family: mono-space;
+    font-size: 130%;
 }
 
 /* version */
