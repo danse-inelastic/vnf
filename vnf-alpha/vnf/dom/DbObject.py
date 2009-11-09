@@ -27,6 +27,12 @@ class DbObject(Table):
     pass # end of DbObject
 
 
+if __name__=='__main__':
+    dbOb = DbObject()
+    dbOb.id = '3328'
+    print dbOb
+    print dbOb.id
+
 # version
 __id__ = "$Id$"
 
