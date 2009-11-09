@@ -93,7 +93,7 @@ class Factory(object):
 
     def createLatticeDoc(self):
 
-        doc = lc.document(title='Lattice')
+        doc = lc.document(title='Lattice', Class='matter-info-subsection')
 
         matter = self.matter
         
@@ -109,16 +109,16 @@ class Factory(object):
             doc.add(self.createLatticeVectorDoc(name, v))
 
         return doc
-
-
+    
+    
     def createLatticeVectorDoc(self, name, vec):
         splitter = lc.splitter(Class='lattice-vector')
         namesec = splitter.section()
         valuesec = splitter.section()
         editsec = splitter.section(Class='editlink-container')
-
+        
         namep = namesec.paragraph(text=[name, '='], Class='label')
-
+        
         vp = valuesec.paragraph(text=[str(vec)], Class='editable')
         vi = FormTextField(hidden=True, value=str(vec)); valuesec.add(vi)
 
@@ -149,7 +149,7 @@ class Factory(object):
     
 
     def createAtomsDoc(self):
-        doc = lc.document(title='Atoms')
+        doc = lc.document(title='Atoms', Class='matter-info-subsection')
 
         matter = self.matter
         
@@ -183,7 +183,7 @@ class Factory(object):
     def createNameDoc(self):
         matter = self.matter
         
-        doc = lc.document(title='Name')
+        doc = lc.document(title='Name', Class='matter-info-subsection')
         splitter = doc.splitter()
         left = splitter.section()
         right = splitter.section(Class='editlink-container')
