@@ -194,7 +194,14 @@ body {
     min-width: 100%;
     */
 }
+#main-display-area a.luban-link{
+    color:#47823c;
+}
 
+/* editable */
+#main-display-area .editable {
+    color: #555555;
+}
 
 /* ------------------------------------------------------------ */
 /*   3. footer */
