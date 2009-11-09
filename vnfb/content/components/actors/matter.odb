@@ -153,6 +153,7 @@ class Actor(base):
 
 
     def view(self, director):
+        "view a matter as a standalone page"
         matter = self._getMatter(director)
         
         from luban.content.Page import Page
@@ -167,11 +168,19 @@ class Actor(base):
 
 
     def showMaterialView(self, director):
+        'change view to matter view'
         view = self.createView(director)
         return select(id='main-display-area').replaceContent(view)
 
 
     def createView(self, director):
+        'create matter view document'
+        return director.retrieveVisual(
+            'matter/overview',
+            director=director,
+            id=self.inventory.id, type = self.inventory.type,
+            )
+        # the following are obsolete.
         visual = director.retrieveVisual(self.name)
 
         matter = self._getMatter(director)
