@@ -19,10 +19,10 @@ class SmartLabel(base):
 
     import dsaw.db
     
-    targettable = dsaw.db.varchar(name='targettable', length=16)
-    label = dsaw.db.varchar(name='label', length=32)
+    targettable = dsaw.db.varchar(name='targettable', length=64)
+    label = dsaw.db.varchar(name='label', length=64)
     filter_expr = dsaw.db.varchar(name='filter_expr', length=512)
-    filter_key = dsaw.db.varchar(name='filter_key', length=16)
+    filter_key = dsaw.db.varchar(name='filter_key', length=64)
     filter_value = dsaw.db.varchar(name='filter_value', length=256)
 
 

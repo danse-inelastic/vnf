@@ -19,9 +19,9 @@ class Label(base):
 
     import dsaw.db
     
-    labelname = dsaw.db.varchar(name='labelname', length=32)
+    labelname = dsaw.db.varchar(name='labelname', length=64)
     entity = dsaw.db.versatileReference(name = 'entity')
-    targettable = dsaw.db.varchar(name='targettable', length=16)
+    targettable = dsaw.db.varchar(name='targettable', length=64)
 
 
 # version
