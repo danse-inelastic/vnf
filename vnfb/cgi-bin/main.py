@@ -1,31 +1,58 @@
+#!/usr/bin/env python
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                 Jiao Lin
+#                      California Institute of Technology
+#                        (C) 2008  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+# this script is to be used with the SimpleHttpServer.
+# The implementation is crappy.
+# SimpleHttpServer is for development test purpose anyway, so
+# there is not yet much effort to improve this implementation.
+
 
 webapp = 'webmain.py'
+
 
 import os
 
 #The "request" object passed from simple http server
 #convert it to a query string
-try:
-    request
-    query_string = '&'.join( '%s=%s' % (k, ','.join(v)) for k,v in request.iteritems() )
-except NameError:
-    import sys
-    request = dict([item[2:].split("=") for item in sys.argv[1:]])
-    query_string = '&'.join( '%s=%s' % (k,v) for k,v in request.iteritems() )
+query_string = '&'.join( '%s=%s' % (k, ','.join(v)) for k,v in request.iteritems() )
 os.environ['QUERY_STRING'] = query_string
 
+cookie_str = cookie.output(header='', sep=';')
+os.environ['HTTP_COOKIE'] = cookie_str
 
-import tempfile
-d = tempfile.mkdtemp()
-out = os.path.join(d, 'out.html')
-err = os.path.join(d, 'err.html')
 
-cmd = "%s >%s  2>%s" % (webapp, out, err)
-if os.system( cmd ):
-    print open( err ).read()
+#headers
+#print 'headers: %s<br><br>' % headers
+#os.environ[ 'CONTENT_TYPE' ] = headers['content-type']
+
+
+#posted data
+#posted = file_handle_for_posted_data.read()
+#print posted
+
+
+from subprocess import Popen, PIPE
+p = Popen([webapp], stdout=PIPE, stderr=PIPE)
+outdata, errdata = p.communicate()
+
+if p.returncode:
+    print errdata
 else:
-    lines = open( out ).readlines()
-    print ''.join( lines[1:] )
+    print outdata[outdata.find('\n')+1:]
+    
 
-import shutil
-shutil.rmtree(d)
+# version
+__id__ = "$Id$"
+
+# End of file 
