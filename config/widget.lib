@@ -9,10 +9,10 @@
         "vnf.css",
         "vnf-table.css",
         "vnf-mastertable.css",
-	"vnf-login.css",
+        "vnf-login.css",
         "vnf-mainframe.css",
-	"vnf-matsim.css",
-	"vnf-matter.css"
+        "vnf-matsim.css",
+        "vnf-matter.css"
         ],
      "jslibs":      [
         "jquery/jquery.js",
@@ -26,7 +26,18 @@
         "luban/luban-controller.js",
         "luban/luban-actioncompiler.js",
         "luban/luban-documentmill.js",
-        "luban/luban-widgets-basic.js"
+        "luban/luban-widgets-basic.js",
+
+        "other/editarea_0_8_1_1/edit_area/edit_area_full.js"
+        ]
+  },
+  "dialog": {
+     "stylesheets": [
+        ],
+     "jslibs":      [
+        "jquery/ui/ui.draggable.js",
+        "jquery/ui/ui.resizable.js",
+        "jquery/ui/ui.dialog.js"
         ]
   },
   "table": {
@@ -39,13 +50,6 @@
         "jquery/tabulator.js",
         "jquery/elementFactory.js",
         "jquery/tableFactory.js"
-        ]
-  },
-  "plot2d": {
-     "stylesheets": [
-        ],
-     "jslibs":      [
-        "jquery/jquery.flot.js"
         ]
   },
   "treeview": {
@@ -70,8 +74,6 @@
         ],
      "jslibs":      [
         "jquery/jdMenu-1.4.1/jquery.jdMenu.js",
-        "jquery/jdMenu-1.4.1/jquery.dimensions.js",
-        "jquery/jdMenu-1.4.1/jquery.bgiframe.js",
         "jquery/jdMenu-1.4.1/jquery.positionBy.js"
         ]
   },
@@ -87,6 +89,19 @@
         ],
      "jslibs":      [
         "jquery/ui/ui.progressbar.js"
+        ]
+  },
+  "plot2d": {
+     "stylesheets": [
+        ],
+     "jslibs":      [
+        "jquery/jquery.flot.js"
+        ]
+  },
+  "codeeditor": {
+     "stylesheets": [
+        ],
+     "jslibs":      [
         ]
   }
 }
