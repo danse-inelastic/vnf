@@ -1,0 +1,50 @@
+/*  -*- CSS -*-  */
+
+#matter-info-section {
+    width:100%;
+}
+#matter-info-section .luban-splitter {
+    width:95%;
+}
+#matter-info-section .luban-splitter td {
+    vertical-align:top;
+    font-size:88%;
+}
+#matter-name-container {
+    width:30%;
+}
+#matter-lattice-container {
+    width:35%;
+}
+#matter-atoms-container {
+    width:35%;
+}
+#matter-info-section h1.luban-document-title {
+    text-transform:uppercase;
+    font-size:0.8em;
+    font-weight:bold;
+    margin-bottom:0.8em;
+}
+.editlink-container-container {
+    width: 4em;
+}
+.editatoms-container-container {
+    width: 8em;
+}
+#matter-info-section .luban-formfield {
+    margin:0;
+}
+#matter-info-section p {
+    margin:0;
+}
+#matter-info-section textarea {
+    height:5em;
+    min-height:3em;
+    width:80%;
+    max-width:90%;
+}
+
+/* version */
+/* $Id$ */
+
+/* End of file  */

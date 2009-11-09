@@ -12,7 +12,8 @@
         "vnf-login.css",
         "vnf-mainframe.css",
         "vnf-matsim.css",
-        "vnf-matter.css"
+        "vnf-matter.css",
+        "vnf-matter-overview.css"
         ],
      "jslibs":      [
         "jquery/jquery.js",

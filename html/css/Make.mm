@@ -28,6 +28,7 @@ EXPORT_DATAFILES = \
 	vnf-mastertable.css \
 	vnf-matsim.css \
 	vnf-matter.css \
+	vnf-matter-overview.css \
 	vnf-table.css \
 	vnf.css \
 
