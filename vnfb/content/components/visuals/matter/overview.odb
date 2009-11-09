@@ -117,9 +117,9 @@ class Factory(object):
         valuesec = splitter.section()
         editsec = splitter.section(Class='editlink-container')
 
-        namep = namesec.paragraph(text=[name, '='])
+        namep = namesec.paragraph(text=[name, '='], Class='label')
 
-        vp = valuesec.paragraph(text=[str(vec)])
+        vp = valuesec.paragraph(text=[str(vec)], Class='editable')
         vi = FormTextField(hidden=True, value=str(vec)); valuesec.add(vi)
 
         vi.onblur = [
@@ -189,7 +189,7 @@ class Factory(object):
         right = splitter.section(Class='editlink-container')
 
         label = self.getMatterLabel()
-        p = left.paragraph(text=[label])
+        p = left.paragraph(text=[label], Class='editable')
 
         i = FormTextField(hidden=True, value=matter.short_description); left.add(i)
 
