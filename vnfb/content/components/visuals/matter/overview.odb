@@ -43,8 +43,16 @@ class Factory(object):
         view_indicator = self.createViewIndicator()
         titlebar.section().add(view_indicator)
 
+        # info
         matterinfo = self.createMatterInfoSection()
         view.add(matterinfo)
+
+        director = self.director
+        # props
+        propsdoc = director.retrieveVisual(
+            'matter/computed-props',
+            director, self.id, self.type)
+        view.add(propsdoc)
         
         return view
 
