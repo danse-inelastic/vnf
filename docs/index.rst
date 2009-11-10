@@ -3,12 +3,13 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to VNF's documentation!
+VNF: Virtual Neutron Facility
 ===============================
 
 Contents:
 
 .. toctree::
+
    overview
 
 Indices and tables
