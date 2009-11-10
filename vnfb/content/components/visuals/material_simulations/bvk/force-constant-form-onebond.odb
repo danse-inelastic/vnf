@@ -1,0 +1,115 @@
+# -*- Python -*-
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                 Jiao Lin
+#                      California Institute of Technology
+#                      (C) 2006-2009  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+import luban.content as lc
+from luban.content import select, load, alert
+from luban.content.FormSelectorField import FormSelectorField
+from luban.content.FormTextField import FormTextField
+
+
+def visual(uid, sites, bond_vector=None, site1=None, site2=None, matrix=None, constraints=None):
+    doc = lc.document(Class='force-constant-form-one-bond')
+
+    opts = enumerate(sites)
+    s1 = FormSelectorField(
+        label = 'site 1',
+        tip = 'select site 1 for this bond',
+        name = 'site1',
+        entries = opts,
+        selection = site1,
+        )
+    doc.add(s1)
+    
+    opts = enumerate(sites)
+    s2 = FormSelectorField(
+        label = 'site 2',
+        tip = 'select site 2 for this bond',
+        name = 'site2',
+        entries = opts,
+        selection = site2,
+        )
+    doc.add(s2)
+
+    v = FormTextField(
+        label = 'bond vector',
+        name = 'vector',
+        value = bond_vector or '',
+        )
+    doc.add(v)
+
+    grid = doc.document(Class='grid')
+    if constraints:
+        import numpy
+        dependents = numpy.zeros((3,3), bool)
+        for constraint in constraints:
+            dependents[constraint.right.indexes] = 1
+            continue
+    
+    minputs = []
+    for i in range(3):
+
+        if matrix: vec = matrix[i]
+        else: vec = None
+
+        if constraints: deps = dependents[i]
+        else: deps = None
+        
+        vecinputs, fields = vectorInput('%s-%s' % (uid, i), vec, deps)
+        grid.add(vecinputs)
+
+        minputs.append(fields)
+        continue
+
+    if constraints is not None:
+        for constraint in constraints:
+            assert constraint.__class__.__name__.lower() == 'equal'
+            left = constraint.left.indexes
+            right = constraint.right.indexes
+            i,j = left
+            minputs[i][j].onchange = select(id=minputid(uid, right)).setAttr(
+                text=select(id=minputid(uid, left)).getAttr('value'))
+    
+    return doc
+
+
+
+def minputid(uid, indexes):
+    i,j = indexes
+    return '%s-%s-%s' % (uid, i,j)
+
+
+def vectorInput(uid, vec=None, deps=None):
+    splitter = lc.splitter()
+    fields = []
+    for i in range(3):
+        id = '%s-%s' % (uid, i)
+        if deps is not None and deps[i]:
+            f = lc.paragraph(id=id)
+            if vec: f.text = [vec[i]]
+        else:
+            f = FormTextField(id=id)
+            if vec: f.value = vec[i]
+            
+        fields.append(f)
+        splitter.section().add(f)
+        
+        continue
+    
+    return splitter, fields
+
+
+# version
+__id__ = "$Id$"
+
+# End of file 

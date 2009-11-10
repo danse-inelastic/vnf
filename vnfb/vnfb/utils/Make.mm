@@ -37,6 +37,7 @@ all: export
 
 EXPORT_PYTHON_MODULES = \
 	__init__.py \
+	constraints.py \
 	safe_eval.py \
 
 
