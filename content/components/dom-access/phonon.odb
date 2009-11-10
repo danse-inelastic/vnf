@@ -1,0 +1,49 @@
+# -*- Python -*-
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                   Jiao Lin
+#                      California Institute of Technology
+#                      (C) 2006-2009  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+
+from vnfb.components.DOMAccessor import DOMAccessor as base
+
+class Accessor(base):
+
+
+    def __init__(self, db):
+        self.db = db
+        super(Accessor, self).__init__('phonon-accessor')
+        return
+
+
+    def getDispersions(self, matter):
+        db = self.db
+        return matter.getReferences(db, PhononDispersion, 'matter')
+
+
+    def getDOSes(self, matter):
+        db = self.db
+        return matter.getReferences(db, PhononDOS, 'matter')
+
+
+
+from vnf.dom.ins.PhononDispersion import PhononDispersion
+from vnf.dom.ins.PhononDOS import PhononDOS
+
+
+def accessor(db):
+    return Accessor(db)
+
+
+# version
+__id__ = "$Id$"
+
+# End of file 
