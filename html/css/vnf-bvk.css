@@ -1,25 +1,67 @@
 /*  -*- CSS -*-  */
 
 .force-constant-form-one-bond {
-    margin: 0.5em;
+    margin: 0.2em;
+}
+
+.force-constant-form-one-bond .luban-document > div {
+    margin-left:0.7em;
+}
+.force-constant-form-one-bond .luban-document > .luban-document-title {
+    margin-left:0;
+    margin-bottom:0.2em;
+    border-bottom:1px solid #bbb;
+    -moz-border-radius:12px;
+    -web-border-radius:12px;
+}
+.force-constant-form-one-bond table.luban-splitter {
+    width:auto;
+}
+.force-constant-form-one-bond > table.luban-splitter > tbody > tr > td {
+vertical-align:top;
+padding:0 1em;
+}
+.force-constant-form-one-bond .bond-sites .luban-formfield {
+    margin:0;
+}
+.force-constant-form-one-bond .bond-sites .bond {
+    padding:0 1em;
+}
+
+.force-constant-form-one-bond .bond-vector-container div {
+    display:inline;
+}
+.force-constant-form-one-bond .bond-vector-container p {
+    display:inline;
+    margin-right:1em;
+}
+.force-constant-form-one-bond .bond-vector-container input {
+    width:5em;
+}
+.force-constant-form-one-bond .luban-document .luban-document-title {
+    font-size:90%;
+    text-transform:capitalize;
+}
+.force-constant-form-one-bond .bond-vector-container .luban-formfield {
+    margin-right: 0.3em;
 }
 
 .force-constant-form-one-bond .grid input {
-    margin:0.5em;
-    padding:0.5em;
+    margin:0.2em;
+    padding:0.1em 0.4em;
     width:4em;
     font-size:90%;
 }
 .force-constant-form-one-bond .grid p {
-    margin:0.5em;
-    padding:0.5em;
+    margin:0.2em;
+    padding:0.1em 0.4em;
     width:3em;
     font-size:90%;
 }
 .force-constant-form-one-bond .grid .luban-formfield {
     margin:0;
 }
-.force-constant-form-one-bond table.luban-splitter {
+.force-constant-form-one-bond .grid table.luban-splitter {
     border-collapse:collapse;
     width:auto;
 }
