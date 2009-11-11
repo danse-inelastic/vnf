@@ -19,36 +19,24 @@ from luban.content.FormTextField import FormTextField
 
 
 def visual(uid, sites, bond_vector=None, site1=None, site2=None, matrix=None, constraints=None):
-    doc = lc.document(Class='force-constant-form-one-bond')
+    doc = lc.splitter(Class='force-constant-form-one-bond')
 
-    opts = enumerate(sites)
-    s1 = FormSelectorField(
-        label = 'site 1',
-        tip = 'select site 1 for this bond',
-        name = 'site1',
-        entries = opts,
-        selection = site1,
-        )
-    doc.add(s1)
+    left = doc.section()
+    right = doc.section()
+
+    site_inputs = sitesInputs(sites, site1=site1, site2=site2)
+    left.add(site_inputs)
     
-    opts = enumerate(sites)
-    s2 = FormSelectorField(
-        label = 'site 2',
-        tip = 'select site 2 for this bond',
-        name = 'site2',
-        entries = opts,
-        selection = site2,
-        )
-    doc.add(s2)
+    v = bondvectorInput(uid, bond_vector)
+    site_inputs.add(v)
 
-    v = FormTextField(
-        label = 'bond vector',
-        name = 'vector',
-        value = bond_vector or '',
-        )
-    doc.add(v)
+    grid = matrixdoc(uid, matrix, constraints)
+    right.add(grid)
+    return doc
 
-    grid = doc.document(Class='grid')
+
+def matrixdoc(uid, matrix, constraints):
+    grid = lc.document(Class='grid', title='Force constant matrix')
     if constraints:
         import numpy
         dependents = numpy.zeros((3,3), bool)
@@ -80,8 +68,56 @@ def visual(uid, sites, bond_vector=None, site1=None, site2=None, matrix=None, co
             minputs[i][j].onchange = select(id=minputid(uid, right)).setAttr(
                 text=select(id=minputid(uid, left)).getAttr('value'))
     
-    return doc
+    return grid
 
+
+def sitesInputs(sites, site1, site2):
+    doc = lc.document(title='bond', Class='bond-sites')
+    sp = doc.splitter()
+    
+    opts = enumerate(sites)
+    s1 = FormSelectorField(
+        label = 'site 1',
+        tip = 'select site 1 for this bond',
+        name = 'site1',
+        entries = opts,
+        selection = site1 or 0,
+        )
+    sp.section().add(s1)
+
+    sp.section().paragraph(text=['==='], Class='bond')
+    
+    opts = enumerate(sites)
+    s2 = FormSelectorField(
+        label = 'site 2',
+        tip = 'select site 2 for this bond',
+        name = 'site2',
+        entries = opts,
+        selection = site2 or 0,
+        )
+    sp.section().add(s2)
+    return doc
+    
+
+def bondvectorInput(uid, vec=None):
+    if vec is None:
+        vec = [0,0,0]
+        
+    doc = lc.document(title='vector', Class='bond-vector-container')
+    
+    lvs = ['a', 'b', 'c']
+    for i, (val, lv) in enumerate(zip(vec, lvs)):
+        f = FormTextField(
+            label = '',
+            name = 'vector-%s' % lv,
+            value = val,
+            )
+        doc.add(f)
+        text = ['*', lv]
+        if i<2: text.append(',')
+        doc.paragraph(text=text)
+
+    return doc
 
 
 def minputid(uid, indexes):
