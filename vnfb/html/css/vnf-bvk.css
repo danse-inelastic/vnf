@@ -13,6 +13,12 @@
     border-bottom:1px solid #bbb;
     -moz-border-radius:12px;
     -web-border-radius:12px;
+    font-size:80%;
+    font-weight:bold;
+    color:#444;
+}
+.force-constant-form-one-bond .luban-document .luban-document .luban-document-title {
+border-bottom:none;
 }
 .force-constant-form-one-bond table.luban-splitter {
     width:auto;
@@ -21,28 +27,32 @@
 vertical-align:top;
 padding:0 1em;
 }
-.force-constant-form-one-bond .bond-sites .luban-formfield {
+.force-constant-form-one-bond .bond-container .luban-formfield {
     margin:0;
 }
-.force-constant-form-one-bond .bond-sites .bond {
+.force-constant-form-one-bond .bond-container p {
+    margin:0;
+}
+.force-constant-form-one-bond .bond-container .bond-sign {
     padding:0 1em;
 }
 
-.force-constant-form-one-bond .bond-vector-container div {
+.force-constant-form-one-bond .siteB-lattice-vector-container {
+    text-align:right;
+}
+.force-constant-form-one-bond .siteB-lattice-vector-container div {
     display:inline;
 }
-.force-constant-form-one-bond .bond-vector-container p {
+.force-constant-form-one-bond .siteB-lattice-vector-container p {
     display:inline;
     margin-right:1em;
 }
-.force-constant-form-one-bond .bond-vector-container input {
-    width:5em;
+.force-constant-form-one-bond .siteB-lattice-vector-container input {
+    width:3em;
 }
-.force-constant-form-one-bond .luban-document .luban-document-title {
-    font-size:90%;
-    text-transform:capitalize;
+.force-constant-form-one-bond .siteB-lattice-vector-container .luban-document-title {
 }
-.force-constant-form-one-bond .bond-vector-container .luban-formfield {
+.force-constant-form-one-bond .siteB-lattice-vector-container .luban-formfield {
     margin-right: 0.3em;
 }
 
@@ -65,6 +75,17 @@ padding:0 1em;
     border-collapse:collapse;
     width:auto;
 }
+/**/
+.force-constant-form-one-bond .value{
+    color: green;
+}
+.force-constant-form-one-bond .bond-container .value {
+    font-size:90%;
+}
+.force-constant-form-one-bond .bond-sites .luban-document-title{
+    text-align:center;
+}
+
 /* version */
 /* $Id$ */
 

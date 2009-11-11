@@ -28,23 +28,29 @@ class Actor(base):
 
     def force_constant_form_onebond(self, director):
         p = lc.page()
-        
+
+        sites = [
+            '0*a+0*b+0*c',
+            '0.5*a+0.5*b+0.5*c',
+            ]
+            
         d1 = p.document(title='test form 1')
         v = director.retrieveVisual(
             'material_simulations/bvk/force-constant-form-onebond',
-            uid = 'bond1', sites = [0],
+            uid = 'bond1', sites = sites,
             )
         d1.add(v)
         
         d2 = p.document(title='test form 2')
         v = director.retrieveVisual(
             'material_simulations/bvk/force-constant-form-onebond',
-            uid = 'bond2', sites = [0,1],
-            site1 = 0, site2 = 1,
+            uid = 'bond2', sites = sites,
+            siteA = 0, siteB = 1,
             matrix = [ [1,2,3],
                        [4,5,6],
                        [7,8,9],
                        ],
+            editable=False,
             )
         d2.add(v)
 
@@ -61,8 +67,9 @@ class Actor(base):
         d3 = p.document(title='test form 3')
         v = director.retrieveVisual(
             'material_simulations/bvk/force-constant-form-onebond',
-            uid = 'bond3', sites = [0,1],
-            site1 = 0, site2 = 1,
+            uid = 'bond3', sites = sites,
+            siteA = 0, siteB = 1, siteBlatticevector=[1,1,1],
+            bondiseditable=True,
             matrix = [ [1,2,3],
                        [4,5,6],
                        [7,8,9],

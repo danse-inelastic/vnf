@@ -18,40 +18,60 @@ from luban.content.FormSelectorField import FormSelectorField
 from luban.content.FormTextField import FormTextField
 
 
-def visual(uid, sites, bond_vector=None, site1=None, site2=None, matrix=None, constraints=None):
+mat0 = [
+    [0,0,0],
+    [0,0,0],
+    [0,0,0],
+    ]
+
+
+def visual(
+    uid, sites,
+    siteA=0, siteB=0, siteBlatticevector=[0,0,0],
+    editable = True,
+    bondiseditable=False,
+    matrix=mat0, constraints=[],
+    ):
+    
     doc = lc.splitter(Class='force-constant-form-one-bond')
 
     left = doc.section()
     right = doc.section()
 
-    site_inputs = sitesInputs(sites, site1=site1, site2=site2)
-    left.add(site_inputs)
+    bonddoc = bondWidget(
+        uid, sites,
+        siteA=siteA, siteB=siteB, siteBlatticevector=siteBlatticevector,
+        editable=editable and bondiseditable)
+        
+    left.add(bonddoc)
     
-    v = bondvectorInput(uid, bond_vector)
-    site_inputs.add(v)
-
-    grid = matrixdoc(uid, matrix, constraints)
+    grid = matrixdoc(uid, matrix, constraints, editable)
     right.add(grid)
     return doc
 
 
-def matrixdoc(uid, matrix, constraints):
+def matrixdoc(uid, matrix, constraints, editable):
     grid = lc.document(Class='grid', title='Force constant matrix')
-    if constraints:
+
+    # find those that depends on others
+    if editable and constraints:
         import numpy
         dependents = numpy.zeros((3,3), bool)
         for constraint in constraints:
             dependents[constraint.right.indexes] = 1
             continue
-    
+
+    # create input fields
     minputs = []
     for i in range(3):
 
-        if matrix: vec = matrix[i]
-        else: vec = None
+        if not editable:
+            deps = [1,1,1]
+        else:
+            if constraints: deps = dependents[i]
+            else: deps = None
 
-        if constraints: deps = dependents[i]
-        else: deps = None
+        vec = matrix[i]
         
         vecinputs, fields = vectorInput('%s-%s' % (uid, i), vec, deps)
         grid.add(vecinputs)
@@ -59,7 +79,7 @@ def matrixdoc(uid, matrix, constraints):
         minputs.append(fields)
         continue
 
-    if constraints is not None:
+    if editable and constraints is not None:
         for constraint in constraints:
             assert constraint.__class__.__name__.lower() == 'equal'
             left = constraint.left.indexes
@@ -71,39 +91,57 @@ def matrixdoc(uid, matrix, constraints):
     return grid
 
 
-def sitesInputs(sites, site1, site2):
-    doc = lc.document(title='bond', Class='bond-sites')
-    sp = doc.splitter()
-    
-    opts = enumerate(sites)
-    s1 = FormSelectorField(
-        label = 'site 1',
-        tip = 'select site 1 for this bond',
-        name = 'site1',
-        entries = opts,
-        selection = site1 or 0,
-        )
-    sp.section().add(s1)
+def bondWidget(uid, sites, siteA, siteB, siteBlatticevector, editable=False):
+    doc = lc.document(title='bond', Class='bond-container')
+    sp = doc.splitter(Class='bond-sites')
 
-    sp.section().paragraph(text=['==='], Class='bond')
+    left = sp.section()
+    sp.section().paragraph(text=['---'], Class='bond-sign')
+    right = sp.section()
+
+    wA = siteWidget(sites, siteA, 'siteA', editable)
+    left.document(title='A').add(wA)
     
-    opts = enumerate(sites)
-    s2 = FormSelectorField(
-        label = 'site 2',
-        tip = 'select site 2 for this bond',
-        name = 'site2',
-        entries = opts,
-        selection = site2 or 0,
-        )
-    sp.section().add(s2)
+    wB = siteWidget(sites, siteB, 'siteB', editable)
+    right.document(title='B').add(wB)
+
+    v = siteBLatticeVectorDoc(uid, siteBlatticevector, editable)
+    doc.add(v)
+
     return doc
-    
 
-def bondvectorInput(uid, vec=None):
+
+def siteWidget(sites, siteindex, name, editable):
+    if editable:
+        opts = enumerate(sites)
+        return FormSelectorField(
+            tip = 'select site',
+            name = 'siteB',
+            entries = opts,
+            selection = siteindex,
+            )
+    return lc.paragraph(text=[sites[siteindex]], Class='value')
+
+
+def siteBLatticeVectorDoc(uid, vec, editable=False):
+    doc = lc.document(
+        title='Lattice vector added to siteB',
+        Class='siteB-lattice-vector-container')
+
+    if editable:
+        doc.add(siteBLatticeVectorInput(uid, vec))
+    else:
+        a,b,c = vec
+        vtxt = "%s * a + %s * b + %s * c" % (a,b,c)
+        doc.paragraph(text=[vtxt], Class='value')
+    return doc
+
+
+def siteBLatticeVectorInput(uid, vec=None):
     if vec is None:
         vec = [0,0,0]
         
-    doc = lc.document(title='vector', Class='bond-vector-container')
+    doc = lc.document()
     
     lvs = ['a', 'b', 'c']
     for i, (val, lv) in enumerate(zip(vec, lvs)):
@@ -131,7 +169,7 @@ def vectorInput(uid, vec=None, deps=None):
     for i in range(3):
         id = '%s-%s' % (uid, i)
         if deps is not None and deps[i]:
-            f = lc.paragraph(id=id)
+            f = lc.paragraph(id=id, Class='value')
             if vec: f.text = [vec[i]]
         else:
             f = FormTextField(id=id)
