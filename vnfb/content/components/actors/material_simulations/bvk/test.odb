@@ -37,6 +37,7 @@ class Actor(base):
         d1 = p.document(title='test form 1')
         v = director.retrieveVisual(
             'material_simulations/bvk/force-constant-form-onebond',
+            bvkid='unknown', bondindex=3,
             uid = 'bond1', sites = sites,
             )
         d1.add(v)
@@ -44,6 +45,7 @@ class Actor(base):
         d2 = p.document(title='test form 2')
         v = director.retrieveVisual(
             'material_simulations/bvk/force-constant-form-onebond',
+            bvkid='unknown', bondindex=3,
             uid = 'bond2', sites = sites,
             siteA = 0, siteB = 1,
             matrix = [ [1,2,3],
@@ -67,6 +69,7 @@ class Actor(base):
         d3 = p.document(title='test form 3')
         v = director.retrieveVisual(
             'material_simulations/bvk/force-constant-form-onebond',
+            bvkid='unknown', bondindex=3,
             uid = 'bond3', sites = sites,
             siteA = 0, siteB = 1, siteBlatticevector=[1,1,1],
             bondiseditable=True,
