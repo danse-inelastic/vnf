@@ -26,17 +26,21 @@ mat0 = [
 
 
 def visual(
+    bvkid, bondindex,
     uid, sites,
     siteA=0, siteB=0, siteBlatticevector=[0,0,0],
     editable = True,
     bondiseditable=False,
     matrix=mat0, constraints=[],
     ):
-    
-    doc = lc.splitter(Class='force-constant-form-one-bond')
 
-    left = doc.section()
-    right = doc.section()
+    form = lc.form()
+    
+    sp = lc.splitter(Class='force-constant-form-one-bond')
+    form.add(sp)
+
+    left = sp.section()
+    right = sp.section()
 
     bonddoc = bondWidget(
         uid, sites,
@@ -47,7 +51,17 @@ def visual(
     
     grid = matrixdoc(uid, matrix, constraints, editable)
     right.add(grid)
-    return doc
+
+    if editable:
+        form.submitbutton(label='save')
+        form.onsubmit = select(element=form).submit(
+            actor = 'material_simulations/bvk/force-constant-form',
+            routine = 'process',
+            id = bvkid, bondindex = bondindex,
+            bondiseditable = bondiseditable,
+            )
+    
+    return form
 
 
 def matrixdoc(uid, matrix, constraints, editable):
@@ -73,7 +87,7 @@ def matrixdoc(uid, matrix, constraints, editable):
 
         vec = matrix[i]
         
-        vecinputs, fields = vectorInput('%s-%s' % (uid, i), vec, deps)
+        vecinputs, fields = vectorInput(uid, i, vec, deps)
         grid.add(vecinputs)
 
         minputs.append(fields)
@@ -116,7 +130,7 @@ def siteWidget(sites, siteindex, name, editable):
         opts = enumerate(sites)
         return FormSelectorField(
             tip = 'select site',
-            name = 'siteB',
+            name = name,
             entries = opts,
             selection = siteindex,
             )
@@ -147,12 +161,12 @@ def siteBLatticeVectorInput(uid, vec=None):
     for i, (val, lv) in enumerate(zip(vec, lvs)):
         f = FormTextField(
             label = '',
-            name = 'vector-%s' % lv,
+            name = 'siteB_offset_%s' % lv,
             value = val,
             )
         doc.add(f)
         text = ['*', lv]
-        if i<2: text.append(',')
+        if i<2: text.append('+')
         doc.paragraph(text=text)
 
     return doc
@@ -163,16 +177,22 @@ def minputid(uid, indexes):
     return '%s-%s-%s' % (uid, i,j)
 
 
-def vectorInput(uid, vec=None, deps=None):
+def vectorInput(uid, index, vec=None, deps=None):
+
+    # index is the index of this vector in the force constant matrix
+    
     splitter = lc.splitter()
     fields = []
     for i in range(3):
-        id = '%s-%s' % (uid, i)
+
+        id = minputid(uid, (index, i))
+        
         if deps is not None and deps[i]:
             f = lc.paragraph(id=id, Class='value')
             if vec: f.text = [vec[i]]
         else:
-            f = FormTextField(id=id)
+            name = 'm%s%s' % (index, i)
+            f = FormTextField(id=id, name=name)
             if vec: f.value = vec[i]
             
         fields.append(f)
