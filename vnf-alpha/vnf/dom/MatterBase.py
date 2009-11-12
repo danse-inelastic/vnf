@@ -19,15 +19,16 @@ class MatterBase(base):
     import dsaw.db
 
     cartesian_lattice = dsaw.db.doubleArray(
-        name = 'cartesian_lattice', default = [1.0,0.0,0.0,0.0,1.0,0.0,0.0,0.0,1.0])
+        name = 'cartesian_lattice', default = [1.0,0.0,0.0,0.0,1.0,0.0,0.0,0.0,1.0],
+        shape = (3,3))
     cartesian_lattice.meta['tip'] = 'array of cartesian lattice vectors in Angstroms'
     
     fractional_coordinates = dsaw.db.doubleArray(
-        name = 'fractional_coordinates', default = [])
+        name = 'fractional_coordinates', default = None, shape = (-1,3))
     fractional_coordinates.meta['tip'] = 'array positions as fractional values of unit cell'
     
     cartesian_coordinates = dsaw.db.doubleArray(
-        name = 'cartesian_coordinates', default = [])
+        name = 'cartesian_coordinates', default = None, shape=(-1,3))
     cartesian_coordinates.meta['tip'] = 'array positions as cartesian values of unit cell'
     
     atom_symbols = dsaw.db.varcharArray(

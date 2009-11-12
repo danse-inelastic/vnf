@@ -32,6 +32,7 @@ all: export
 EXPORT_PYTHON_MODULES = \
 	Analysis.py \
 	BvKComputation.py \
+	BvKBond.py \
 	BvKModel.py \
 	ComputationResult.py \
 	MaterialModeling.py \

@@ -14,7 +14,7 @@
 
 from registry import tableRegistry
 
-from OwnedObject import OwnedObject as base
+from vnf.dom.AbstractOwnedObjectBase import AbstractOwnedObjectBase as base
 
 class BvKModel(base):
 
@@ -22,6 +22,10 @@ class BvKModel(base):
 
     import dsaw.db
     matter = dsaw.db.versatileReference(name='matter')
+
+    bonds = dsaw.db.referenceSet(name='bonds')
+
+    mutable = dsaw.db.boolean(name='mutable', default=True)
     
 
 def inittable(db):
