@@ -16,7 +16,7 @@ from luban.content import load, select, alert
 import luban.content as lc
 
 
-from luban.components.Actor import Actor as base
+from luban.components.AuthorizedActor import AuthorizedActor as base
 
 class Actor(base):
 
@@ -68,8 +68,19 @@ class Actor(base):
             [si.m10, si.m11, si.m12],
             [si.m20, si.m21, si.m22],
             ]
-            
-        return alert(str((id, bondindex, bondiseditable, siteA, siteB, offsetB, m)))
+
+        domaccess = director.retrieveDOMAccessor('material_simulations/bvk')
+        model = domaccess.getModel(id)
+        bond = model.getBond(bondindex)
+        bond.A = siteA; bond.B = siteB
+        bond.Boffset = offsetB
+        bond.force_constant_matrix = m
+        director.clerk.updateRecordWithID(bond)
+
+        return director.redirect(
+            actor='material_simulations/bvk/editor', routine='displaybond',
+            id=id, bondindex = bondindex,
+            )
     
 
 def actor(): return Actor('test')

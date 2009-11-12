@@ -16,7 +16,7 @@ from luban.content import load, select, alert
 import luban.content as lc
 
 
-from luban.components.Actor import Actor as base
+from luban.components.AuthorizedActor import AuthorizedActor as base
 
 class Actor(base):
 
@@ -39,6 +39,7 @@ class Actor(base):
             'material_simulations/bvk/force-constant-form-onebond',
             bvkid='unknown', bondindex=3,
             uid = 'bond1', sites = sites,
+            debug = True,
             )
         d1.add(v)
         
@@ -53,6 +54,7 @@ class Actor(base):
                        [7,8,9],
                        ],
             editable=False,
+            debug = True,
             )
         d2.add(v)
 
@@ -72,12 +74,13 @@ class Actor(base):
             bvkid='unknown', bondindex=3,
             uid = 'bond3', sites = sites,
             siteA = 0, siteB = 1, siteBlatticevector=[1,1,1],
-            bondiseditable=True,
+            editbond=True,
             matrix = [ [1,2,3],
                        [4,5,6],
                        [7,8,9],
                        ],
             constraints = constraints,
+            debug = True,
             )
         d3.add(v)
         
