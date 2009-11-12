@@ -1,0 +1,115 @@
+#!/usr/bin/env python
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                 Jiao Lin
+#                      California Institute of Technology
+#                      (C) 2006-2009  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+from luban.content import load, select, alert
+import luban.content as lc
+
+
+from luban.components.AuthorizedActor import AuthorizedActor as base
+
+class Actor(base):
+
+
+    class Inventory(base.Inventory):
+
+        import pyre.inventory
+
+        id = pyre.inventory.str('id')
+        id.meta['tip'] = 'id of bvk model'
+
+        bondindex = pyre.inventory.int('bondindex')
+
+
+    def startPage(self, director):
+        page = lc.page()
+        v = director.retrieveVisual(
+            'material_simulations/bvk/editor',
+            director=director, bvkid = self.inventory.id)
+        page.add(v)
+        return page
+
+
+    def newbond(self, director):
+        actions = []
+
+        domaccess = director.retrieveDOMAccessor('material_simulations/bvk')
+
+        bvkid = self.inventory.id
+        model = domaccess.getModel(bvkid)
+
+        nbonds = model.countBonds()
+        if nbonds==0 : actions.append(select(id='nobonds-alert-bvk-%s'%bvkid).destroy())
+
+        bond = model.newBond()
+        index = model.countBonds()-1
+
+        container = lc.document(id=_getBonddocContainerID(bvkid, index))
+        v = director.retrieveVisual(
+            'material_simulations/bvk/force-constant-form-onebond',
+            director=director,
+            bvkid=bvkid, bondindex=index,
+            edit=True, containerid=container.id,
+            )
+        container.add(v)
+
+        addwidget = select(id='bvk-%s-editor-bonds-container' % bvkid)\
+                    .append(container)
+        actions.append(addwidget)
+        return actions
+
+
+    def editbond(self, director):
+        bvkid = self.inventory.id
+        index = self.inventory.bondindex
+        
+        containerid=_getBonddocContainerID(bvkid, index)
+        
+        v = director.retrieveVisual(
+            'material_simulations/bvk/force-constant-form-onebond',
+            director=director,
+            bvkid=bvkid, bondindex=index,
+            edit=True, containerid=containerid,
+            )
+
+        return select(id=containerid).replaceContent(v)
+
+        
+    def displaybond(self, director):
+        bvkid = self.inventory.id
+        index = self.inventory.bondindex
+        
+        containerid=_getBonddocContainerID(bvkid, index)
+        
+        v = director.retrieveVisual(
+            'material_simulations/bvk/force-constant-form-onebond',
+            director=director,
+            bvkid=bvkid, bondindex=index,
+            edit=False, containerid=containerid,
+            )
+
+        return select(id=containerid).replaceContent(v)
+
+        
+def _getBonddocContainerID(bvkid, index):
+    return 'bvk-%s-bond-%s' % (bvkid, index)
+
+
+def actor(): return Actor('editor')
+
+
+# version
+__id__ = "$Id$"
+
+# End of file 
+

@@ -25,16 +25,85 @@ mat0 = [
     ]
 
 
-def visual(
+def visual(**kwds):
+    debug = kwds.get('debug')
+    if kwds.has_key('debug'): del kwds['debug']
+    if debug:
+        return _visual(**kwds)
+    return visualFromDB(**kwds)
+
+
+def visualFromDB(director, bvkid, bondindex, edit, containerid):
+    
+    domaccess = director.retrieveDOMAccessor('material_simulations/bvk')
+    model = domaccess.getModel(bvkid)
+    fraccoords = model.getFractionalCoordinates()
+    uid = 'bvk%s-bond%s'%(bvkid,bondindex)
+
+    bond = model.getBond(bondindex)
+    siteA = bond.A; siteB = bond.B
+    siteBlatticevector = bond.Boffset
+    matrix=bond.force_constant_matrix
+    # ...
+    constraints = []
+
+    editable = edit and model.mutable
+
+    editbond = editable and bond.bond_is_mutable
+
+    form = _visual(
+        bvkid=bvkid, bondindex=bondindex,
+        uid=uid, sites=fraccoords,
+        siteA=siteA, siteB=siteB, siteBlatticevector=siteBlatticevector,
+        editable = editable,
+        editbond = editbond,
+        matrix=matrix, constraints=constraints,
+        )
+
+    if editable:
+        form.submitbutton(label='save')
+        form.onsubmit = select(element=form).submit(
+            actor = 'material_simulations/bvk/force-constant-form',
+            routine = 'process',
+            id = bvkid, bondindex = bondindex,
+            )
+
+        cancel = lc.link(label='cancel')
+        cancel.onclick = load(
+            actor='material_simulations/bvk/editor', routine='displaybond',
+            id = bvkid, bondindex = bondindex,
+            )
+        form.add(cancel)
+
+    else:
+
+        if model.mutable:
+            edit = lc.link(label='edit')
+            edit.onclick = load(
+                actor='material_simulations/bvk/editor', routine='editbond',
+                id = bvkid, bondindex = bondindex,
+                )
+            form.add(edit)
+
+    return form
+
+
+# implementation method. 
+def _visual(
     bvkid, bondindex,
     uid, sites,
     siteA=0, siteB=0, siteBlatticevector=[0,0,0],
     editable = True,
-    bondiseditable=False,
+    editbond=False,
     matrix=mat0, constraints=[],
     ):
 
-    form = lc.form()
+    # convert numpy array to list 
+    siteBlatticevector = [int(x) for x in siteBlatticevector]
+    matrix = [list(v) for v in matrix]
+    sites = [str(site) for site in sites]
+    
+    form = lc.form(title='Bond %s' % bondindex)
     
     sp = lc.splitter(Class='force-constant-form-one-bond')
     form.add(sp)
@@ -45,22 +114,13 @@ def visual(
     bonddoc = bondWidget(
         uid, sites,
         siteA=siteA, siteB=siteB, siteBlatticevector=siteBlatticevector,
-        editable=editable and bondiseditable)
+        editable=editable and editbond)
         
     left.add(bonddoc)
     
     grid = matrixdoc(uid, matrix, constraints, editable)
     right.add(grid)
 
-    if editable:
-        form.submitbutton(label='save')
-        form.onsubmit = select(element=form).submit(
-            actor = 'material_simulations/bvk/force-constant-form',
-            routine = 'process',
-            id = bvkid, bondindex = bondindex,
-            bondiseditable = bondiseditable,
-            )
-    
     return form
 
 
@@ -189,11 +249,11 @@ def vectorInput(uid, index, vec=None, deps=None):
         
         if deps is not None and deps[i]:
             f = lc.paragraph(id=id, Class='value')
-            if vec: f.text = [vec[i]]
+            if vec is not None: f.text = [vec[i]]
         else:
             name = 'm%s%s' % (index, i)
             f = FormTextField(id=id, name=name)
-            if vec: f.value = vec[i]
+            if vec is not None: f.value = vec[i]
             
         fields.append(f)
         splitter.section().add(f)
