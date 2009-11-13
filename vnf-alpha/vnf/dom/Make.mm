@@ -53,10 +53,13 @@ EXPORT_PYTHON_MODULES = \
 	ACL_Privilege.py \
 	ACL_InstrumentSimulationPrivilege.py \
 	Analysis.py \
+	Atom.py \
+	AtomicStructure.py \
 	Block.py \
 	Computation.py \
 	ComputationResult.py \
 	Crystal.py \
+	CrystallineMatterBase.py \
 	Cylinder.py \
 	DbObject.py \
 	DummyDataObject.py \
@@ -70,6 +73,7 @@ EXPORT_PYTHON_MODULES = \
 	ITask.py \
 	Job.py \
 	Label.py \
+	Lattice.py \
 	MaterialModeling.py \
 	MaterialSimulation.py \
 	MatterBase.py \
