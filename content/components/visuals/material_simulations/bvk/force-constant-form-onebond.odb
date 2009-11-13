@@ -17,6 +17,8 @@ from luban.content import select, load, alert
 from luban.content.FormSelectorField import FormSelectorField
 from luban.content.FormTextField import FormTextField
 
+import journal
+info = journal.info('force-constant-form-onebond')
 
 mat0 = [
     [0,0,0],
@@ -34,6 +36,8 @@ def visual(**kwds):
 
 
 def visualFromDB(director, bvkid, bondindex, edit, containerid):
+
+    info.log('building visual for bvk %s bond %s' % (bvkid, bondindex))
     
     domaccess = director.retrieveDOMAccessor('material_simulations/bvk')
     model = domaccess.getModel(bvkid)
@@ -46,6 +50,8 @@ def visualFromDB(director, bvkid, bondindex, edit, containerid):
     matrix=bond.force_constant_matrix
     # ...
     constraints = []
+
+    info.log('finished loading data from db, about to build visual')
 
     editable = edit and model.mutable
 
@@ -102,11 +108,13 @@ def _visual(
     siteBlatticevector = [int(x) for x in siteBlatticevector]
     matrix = [list(v) for v in matrix]
     sites = [str(site) for site in sites]
-    
+
+    info.log('start form')
     form = lc.form(title='Bond %s' % bondindex)
     
     sp = lc.splitter(Class='force-constant-form-one-bond')
     form.add(sp)
+    info.log('added splitter')
 
     left = sp.section()
     right = sp.section()
@@ -115,11 +123,15 @@ def _visual(
         uid, sites,
         siteA=siteA, siteB=siteB, siteBlatticevector=siteBlatticevector,
         editable=editable and editbond)
+
+    info.log('added bond widget')
         
     left.add(bonddoc)
     
     grid = matrixdoc(uid, matrix, constraints, editable)
     right.add(grid)
+
+    info.log('added matrix')
 
     return form
 
@@ -128,6 +140,7 @@ def matrixdoc(uid, matrix, constraints, editable):
     grid = lc.document(Class='grid', title='Force constant matrix')
 
     # find those that depends on others
+    info.log('finding dependents...')
     if editable and constraints:
         import numpy
         dependents = numpy.zeros((3,3), bool)
@@ -139,6 +152,8 @@ def matrixdoc(uid, matrix, constraints, editable):
     minputs = []
     for i in range(3):
 
+        info.log('building input fields for row %s...' % i)
+        
         if not editable:
             deps = [1,1,1]
         else:
@@ -153,6 +168,7 @@ def matrixdoc(uid, matrix, constraints, editable):
         minputs.append(fields)
         continue
 
+    info.log('applying constraints...')
     if editable and constraints is not None:
         for constraint in constraints:
             assert constraint.__class__.__name__.lower() == 'equal'
@@ -186,6 +202,7 @@ def bondWidget(uid, sites, siteA, siteB, siteBlatticevector, editable=False):
 
 
 def siteWidget(sites, siteindex, name, editable):
+    info.log('site widget for %s' % name)
     if editable:
         opts = enumerate(sites)
         return FormSelectorField(
