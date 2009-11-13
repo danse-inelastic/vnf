@@ -26,6 +26,7 @@ class Actor(base):
 
 
     def greet(self, director):
+        return director.redirect(actor='atomicstructure', routine='replaceBodyFrameWithAtomicStructureList')
         return director.redirect(actor='matter', routine='replaceBodyFrameWithMatterList')
 
 

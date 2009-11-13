@@ -12,10 +12,8 @@
 #
 
 
-from luban.content import load, select
-
-from luban.content.Button import Button
-from luban.content.Paragraph import Paragraph
+from luban.content import load, select, alert
+import luban.content as lc
 
 
 from vnfb.components.MasterTable import FilterSyntaxError, MasterTableActor as base
@@ -28,7 +26,6 @@ class Actor(base):
 
         import pyre.inventory
 
-        # in case of working with one experiment
         id = pyre.inventory.str('id')
         description = pyre.inventory.str('description')
 
@@ -37,27 +34,49 @@ class Actor(base):
         return self.showListView(director)
 
 
+    def replaceBodyFrameWithAtomicStructureList(self, director):
+        body_frame = select(id='body-frame')
+        body_skeleton = director.retrieveVisual('body-skeleton')
+        main_display_area = body_skeleton.find(id='main-display-area')
+
+        try:
+            atomicstructurelist = self.createListView(director)
+        except FilterSyntaxError, msg:
+            return alert('filter syntax error: %s' % msg)
+            
+        main_display_area.add(atomicstructurelist)
+
+        material_portlet = body_skeleton.find(id='main-portlet-my-atomicstructures')
+        material_portlet.selected = 1
+        
+        return body_frame.replaceContent(body_skeleton)
+
+
     def showListView(self, director):
-        view = self.createListView(director)
-        return select(id='main-display-area').replaceContent(view)
-
-
+        try:
+            view = self.createListView(director)
+        except FilterSyntaxError, msg:
+            return alert('filter syntax error: %s' % msg)
+        return [
+            select(id='main-display-area').replaceContent(view),
+            ]
+    
+            
     def createListView(self, director):
 
-        domaccess = director.retrieveDOMAccessor('experiment')
+        domaccess = self.getAtomicStructureAccess(director)
         
         from vnfb.components.MasterTable import MasterTableFactory, filtercompiler
         def countrecords(filter, label=None):
-            return domaccess.countExperiments(filter, label=label)
+            return domaccess.countAtomicStructures(filter, label=label)
         def createtable(order_by, reverse_order, slice, filter, label=None):
-            return self.createExperimentTable(
+            return self.createAtomicStructureTable(
                 director,
                 order_by=order_by,
                 reverse_order=reverse_order,
                 slice=slice,
                 filter=filter,
-                label=label
-                )
+                label=label)
         compilefilter = filtercompiler(columns, measure2dbcol)
 
         smartlabelaccess = director.retrieveDOMAccessor('smartlabel')
@@ -72,13 +91,7 @@ class Actor(base):
         factory = MasterTableFactory(
             self.name, countrecords, createtable,
             compilefilter, filtercols,
-            filterfromlabel, smartlabels, labels,
-            sorting_options = [
-                ('id', 'ID'),
-                ('short_description', 'Description'),
-            ],
-            polymorphic = False, dbtablename='neutronexperiments'
-            )
+            filterfromlabel, smartlabels, labels)
 
         order_by = self.inventory.order_by
         reverse_order = self.inventory.reverse_order
@@ -92,62 +105,69 @@ class Actor(base):
         label = self.inventory.label
         
         tableview = factory.create(
-            label=label,
+            label = label,
             filter_expr=filter_expr, filter_key=filter_key, filter_value=filter_value,
             order_by=order_by,
             reverse_order=reverse_order,
             number_records_per_page=number_records_per_page,
-            page_number=page_number,
-            )
+            page_number=page_number)
 
-        # add some buttons to the left of navbar
-        toolbar = tableview.find(id='experiment-table-toptoolbar')
-        toolbar.add(Paragraph(text='|', Class='splitter'))
+        # add new button
+        toolbar = tableview.find(id='atomicstructure-table-toptoolbar')
+        #toolbar.add(Paragraph(text='|', Class='splitter'))
         #
-        button = Button(label='New', tip='create new experiment', icon='new.png')
+        button = lc.button(label='New', tip='create new atomic structure', icon='new.png')
         toolbar.add(button)
-        button.onclick = load(actor='experiment', routine='new')
-
+        button.onclick = load(actor=self.name, routine='new')
+        
         return tableview
-    
-        
-    def createExperimentTable(
+
+
+    def createAtomicStructureTable(
         self, director,
-        order_by=None, reverse_order=None, slice=None, filter=None,
-        label = None,
-        ):
-        domaccess = director.retrieveDOMAccessor('experiment')
+        order_by=None, reverse_order=None, slice=None,
+        filter=None,
+        label=None):
         
-        experiments = domaccess.getExperiments(
-            filter=filter, order_by=order_by, reverse_order=reverse_order, slice=slice,
+        domaccess = self.getAtomicStructureAccess(director)
+        atomicstructures = domaccess.getAtomicStructures(
+            order_by=order_by, reverse_order=reverse_order, slice=slice,
+            filter=filter,
             label=label,
             )
 
         cols = columns
-        args = experiments, cols, director
+        args = atomicstructures, cols, director
         thetable = director.retrieveComponent(
-            'experiment-table',
+            'atomicstructure-table',
             factory="visual", args=args,
             vault=['visuals'])
         thetable.oncellchanged = select(element=thetable).notify(
-            event='row-changed', actor='experimenttable', routine='processRowChange')
+            event='row-changed', actor='atomicstructuretable', routine='processRowChange')
         return thetable
-    
 
-    def __init__(self, name='experiment'):
+
+    def __init__(self, name='atomicstructure'):
         super(Actor, self).__init__(name)
         return
 
 
     # db access
+    def getAtomicStructureAccess(self, director):
+        return director.retrieveDOMAccessor(self.name)
+
+    
+    def _getAtomicStructure(self, director):
+        id = self.inventory.id
+        return self.getAtomicStructureAccess(director).getAtomicStructure(id)
 
 
-columns = ['selected', 'id', 'description']
+columns = [ 'selected', 'id', 'description', 'chemical_formula', 'created']
 measure2dbcol = {
     'description': 'short_description',
+    'created': 'date',
     }
 filtercols = columns[1:]
-
 
 
 def actor(): return Actor()
