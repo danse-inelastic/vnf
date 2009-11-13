@@ -67,7 +67,7 @@ def table(atomicstructures, cols, director):
         date = exp.date
         return str(date)
     def getChemical_formula(matter):
-        return matter.chemical_formula
+        return matter.getChemicalFormula()
                 
     import operator
     value_generators = [

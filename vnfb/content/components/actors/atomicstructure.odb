@@ -63,36 +63,6 @@ class Actor(base):
     
             
     def createListView(self, director):
-
-        domaccess = self.getAtomicStructureAccess(director)
-        
-        from vnfb.components.MasterTable import MasterTableFactory, filtercompiler
-        def countrecords(filter, label=None):
-            return domaccess.countAtomicStructures(filter, label=label)
-        def createtable(order_by, reverse_order, slice, filter, label=None):
-            return self.createAtomicStructureTable(
-                director,
-                order_by=order_by,
-                reverse_order=reverse_order,
-                slice=slice,
-                filter=filter,
-                label=label)
-        compilefilter = filtercompiler(columns, measure2dbcol)
-
-        smartlabelaccess = director.retrieveDOMAccessor('smartlabel')
-        def filterfromlabel(label):
-            return smartlabelaccess.createFilterExprFromLabel(
-                label, self.name)
-        smartlabels = smartlabelaccess.getLabelNames(self.name)
-
-        labelaccess = director.retrieveDOMAccessor('label')
-        labels = labelaccess.getLabelNames(self.name)
-            
-        factory = MasterTableFactory(
-            self.name, countrecords, createtable,
-            compilefilter, filtercols,
-            filterfromlabel, smartlabels, labels)
-
         order_by = self.inventory.order_by
         reverse_order = self.inventory.reverse_order
         number_records_per_page = self.inventory.number_records_per_page
@@ -104,7 +74,9 @@ class Actor(base):
 
         label = self.inventory.label
         
-        tableview = factory.create(
+        tableview = director.retrieveVisual(
+            'atomicstructure/tableview',
+            director, self.name,
             label = label,
             filter_expr=filter_expr, filter_key=filter_key, filter_value=filter_value,
             order_by=order_by,
@@ -112,62 +84,13 @@ class Actor(base):
             number_records_per_page=number_records_per_page,
             page_number=page_number)
 
-        # add new button
-        toolbar = tableview.find(id='atomicstructure-table-toptoolbar')
-        #toolbar.add(Paragraph(text='|', Class='splitter'))
-        #
-        button = lc.button(label='New', tip='create new atomic structure', icon='new.png')
-        toolbar.add(button)
-        button.onclick = load(actor=self.name, routine='new')
-        
         return tableview
-
-
-    def createAtomicStructureTable(
-        self, director,
-        order_by=None, reverse_order=None, slice=None,
-        filter=None,
-        label=None):
-        
-        domaccess = self.getAtomicStructureAccess(director)
-        atomicstructures = domaccess.getAtomicStructures(
-            order_by=order_by, reverse_order=reverse_order, slice=slice,
-            filter=filter,
-            label=label,
-            )
-
-        cols = columns
-        args = atomicstructures, cols, director
-        thetable = director.retrieveComponent(
-            'atomicstructure-table',
-            factory="visual", args=args,
-            vault=['visuals'])
-        thetable.oncellchanged = select(element=thetable).notify(
-            event='row-changed', actor='atomicstructuretable', routine='processRowChange')
-        return thetable
 
 
     def __init__(self, name='atomicstructure'):
         super(Actor, self).__init__(name)
         return
 
-
-    # db access
-    def getAtomicStructureAccess(self, director):
-        return director.retrieveDOMAccessor(self.name)
-
-    
-    def _getAtomicStructure(self, director):
-        id = self.inventory.id
-        return self.getAtomicStructureAccess(director).getAtomicStructure(id)
-
-
-columns = [ 'selected', 'id', 'description', 'chemical_formula', 'created']
-measure2dbcol = {
-    'description': 'short_description',
-    'created': 'date',
-    }
-filtercols = columns[1:]
 
 
 def actor(): return Actor()

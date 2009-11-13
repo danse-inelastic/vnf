@@ -25,19 +25,18 @@ class Accessor(base):
 
     def getModel(self, id):
         director = self.director
-        clerk = director.clerk
-        model = clerk.getRecordByID(BvKModel, id)
-        return BvKModelProxy(model, director)
+        model = self.getRecordByID(BvKModel, id)
+        return BvKModelProxy(model, self)
 
     
     
 class BvKModelProxy(object):
 
 
-    def __init__(self, model, director):
+    def __init__(self, model, domaccessor):
         self.model = model
-        self.director = director
-        self.db = director.clerk.db
+        self.domaccessor = domaccessor
+        self.db = domaccessor.db
         self.matter = self.model.matter.dereference(self.db)
         return
 
@@ -45,6 +44,13 @@ class BvKModelProxy(object):
     def __getattr__(self, name):
         return getattr(self.model, name)
 
+
+    def getForceConstantMatrixConstraints(self):
+        if not hasattr(self, '_fcm_constraints'):
+            finder = FCMConstraintsFinder(self.matter)
+            self._fcm_constraints = finder.findall()
+        return self._fcm_constraints
+    
 
     def getFractionalCoordinates(self):
         c = numpy.array(self.matter.fractional_coordinates)
@@ -58,7 +64,7 @@ class BvKModelProxy(object):
 
     def newBond(self):
         b = newBond(
-            self.director.clerk,
+            self.domaccessor,
             A=0, B=0, Boffset=[0,0,0], force_constant_matrix=m0,
             )
         
@@ -75,12 +81,57 @@ class BvKModelProxy(object):
         
 
 
+class FCMConstraintsFinder(object):
 
-def newBond(clerk, **kwds):
-    r = clerk.insertNewRecordWithID(BvKBond)
+    def __init__(self, matter):
+        self.matter = matter
+
+
+    def findall(self):
+        # now only knows about fcc and bcc single atom
+        if matter.lattice_system == 'cubic':
+            if matter.lattice_centering == 'I' and len(matter.atom_symbols)==1:
+                return self._handle_bcc()
+            elif matter.lattice_centering == 'F' and len(matter.atom_symbols)==1:
+                return self._handle_fcc()
+        raise NotImplementedError
+
+
+    def _handle_fcc(self):
+        return [
+            (0,0), (1,0,0), [
+              M(0,0)==M(1,1),
+              M(1,0)==M(0,1),
+              M(0,2)==0,
+              M(2,0)==0,
+              M(1,2)==0,
+              M(2,1)==0,
+            ],
+            (0,0), (1,0,0), [
+              M(0,0)==M(1,1),
+              M(1,0)==M(0,1),
+              M(0,2)==0,
+              M(2,0)==0,
+              M(1,2)==0,
+              M(2,1)==0,
+            ],
+            ]
+
+
+    def _handle_bcc(self):
+        return
+
+
+from vnfb.utils.constraints import Variable
+class M(Variable):
+    def __init__(self, *indexes): self.indexes = indexes
+    
+
+def newBond(domaccessor, **kwds):
+    r = domaccessor.insertNewRecordWithID(BvKBond)
     for k, v in kwds.iteritems():
         setattr(r, k, v)
-    clerk.updateRecordWithID(r)
+    domaccessor.updateRecordWithID(r)
     return r
 
 
@@ -94,6 +145,7 @@ m0 = [
     [0,0,0],
     [0,0,0],
     ]
+
 
 def accessor(db):
     return Accessor(db)

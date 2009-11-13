@@ -27,7 +27,8 @@ class Accessor(base):
 
 
     def getAtomicStructure(self, id):
-        return self.getRecordByID(AtomicStructure, id)
+        record = self.getRecordByID(AtomicStructure, id)
+        return AtomicStructureProxy(record)
 
 
     def countAtomicStructures(self, filter=None, label=None):
@@ -60,7 +61,7 @@ class Accessor(base):
         if reverse_order:
             ret.reverse()
 
-        self._debug.log('atomicstructures: %s' % (ret,))
+        return [AtomicStructureProxy(i) for i in ret]
         return ret
 
 
@@ -120,6 +121,69 @@ class Accessor(base):
             continue
 
         return computations
+
+
+
+class Proxy(object):
+
+    def __init__(self, record, db):
+        self.record = record
+
+    
+    def __getattr__(self, name):
+        o = self._getObject()
+        if hasattr(o, name): return getattr(o, name)
+        return getattr(self.record, name)
+
+
+    def _getObject(self):
+        if not hasattr(self, '_object'):
+            self._object = self._convertToObject()
+        return self._object
+
+
+    def _convertToObject(self):
+        raise NotImplementedError
+
+
+
+class AtomProxy(Proxy):
+
+    def _convertToObject(self):
+        record = self.record
+        from matter.Atom import Atom
+        return Atom(atype=record.element, xyz=record.xyz, occupancy=record.occupancy)
+
+
+class LatticeProxy(Proxy):
+
+    def _convertToObject(self):
+        attrs = ['a', 'b', 'c',
+                 'alpha', 'beta', 'gamma',
+                 ]
+        record = self.record
+        from matter.Lattice import Lattice
+
+        kwds = {}
+        for k in attrs:
+            kwds[k] = getattr(record, k)
+        return Lattice(**kwds)
+    
+
+class AtomicStructureProxy(object):
+
+    def _convertToObject(self):
+        record = self.record
+        db = self.db
+
+        atoms = db.dereference(record.atoms)
+        atoms = [AtomProxy(atom, db) for atom in atoms]
+
+        lattice = db.dereference(record.lattice)
+        lattice = LatticeProxy(lattice)
+        
+        from matter.Structure import Structure
+        return Structure(atoms=atoms, lattice=lattice)
 
 
 from vnf.dom.Label import Label

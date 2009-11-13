@@ -4,6 +4,7 @@
     <component name="info">
       <property name="ipa">off</property>
       <property name="main">on</property>
+      <property name="force-constant-form-onebond">on</property>
     </component>
     <component name="debug">
       <property name="ipa">off</property>
