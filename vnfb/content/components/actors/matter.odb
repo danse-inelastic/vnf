@@ -104,14 +104,14 @@ class Actor(base):
         page_number = self.inventory.page_number
 
         filter_expr = self.inventory.filter_expr
-        filter_key_index = self.inventory.filter_key_index
+        filter_key = self.inventory.filter_key
         filter_value = self.inventory.filter_value
 
         label = self.inventory.label
         
         tableview = factory.create(
             label = label,
-            filter_expr=filter_expr, filter_key_index=filter_key_index, filter_value=filter_value,
+            filter_expr=filter_expr, filter_key=filter_key, filter_value=filter_value,
             order_by=order_by,
             reverse_order=reverse_order,
             number_records_per_page=number_records_per_page,
