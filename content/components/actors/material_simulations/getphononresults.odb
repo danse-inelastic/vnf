@@ -25,29 +25,28 @@ class Actor(base):
 
         import pyre.inventory
 
-        type = pyre.inventory.str('type')
         id = pyre.inventory.str('id')
 
 
-    def updatePhononViewForMatter(self, director):
-        doc = self.createPhononDocForMatter(director)
+    def updatePhononViewForAtomicStructure(self, director):
+        doc = self.createPhononDocForAtomicStructure(director)
         return lc.select(id='computed-phonons-body').replaceContent(doc)
 
 
-    def createPhononDocForMatter(self, director):
+    def createPhononDocForAtomicStructure(self, director):
         doc = lc.document()
-        doc.add(self.createDispersionDocForMatter(director))
+        doc.add(self.createDispersionDocForAtomicStructure(director))
         return doc
 
 
-    def createDispersionDocForMatter(self, director):
+    def createDispersionDocForAtomicStructure(self, director):
         doc = lc.document()
 
-        matteraccess = director.retrieveDOMAccessor('matter')
-        matter = matteraccess.getMatter(self.inventory.type, self.inventory.id)
+        atomicstructureaccess = director.retrieveDOMAccessor('atomicstructure')
+        atomicstructure = atomicstructureaccess.getAtomicStructure(self.inventory.id)
         
         phononaccess = director.retrieveDOMAccessor('phonon')
-        disps = phononaccess.getDispersions(matter)
+        disps = phononaccess.getDispersions(atomicstructure)
         
         if not disps:
             doc.paragraph(text=['There is no dispersion calculated.'])
