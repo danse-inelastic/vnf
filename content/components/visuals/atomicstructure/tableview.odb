@@ -78,7 +78,9 @@ def visual(
     #
     button = lc.button(label='New', tip='create new atomic structure', icon='new.png')
     toolbar.add(button)
-    button.onclick = load(actor=name, routine='new')
+    button.onclick = select(id='main-display-area').replaceContent(
+        load(actor=name, routine='newAtomicStructureForm')
+        )
 
     return tableview
 

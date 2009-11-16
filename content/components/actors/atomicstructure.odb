@@ -34,6 +34,13 @@ class Actor(base):
         return self.showListView(director)
 
 
+    def debug_tableview(self, director):
+        p = lc.page()
+        doc = p.document(id='main-display-area')
+        doc.add(self.createListView(director))
+        return p
+
+
     def replaceBodyFrameWithAtomicStructureList(self, director):
         body_frame = select(id='body-frame')
         body_skeleton = director.retrieveVisual('body-skeleton')
@@ -85,6 +92,20 @@ class Actor(base):
             page_number=page_number)
 
         return tableview
+
+
+    def debug_newAtomicStructureForm(self, director):
+        p = lc.page()
+        doc = p.document(id='main-display-area')
+        doc.add(self.newAtomicStructureForm(director))
+        return p
+
+
+    def newAtomicStructureForm(self, director):
+        return director.retrieveVisual(
+            'atomicstructure/create-structure-form',
+            director=director,
+            id =self.inventory.id)
 
 
     def __init__(self, name='atomicstructure'):

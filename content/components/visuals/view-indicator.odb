@@ -1,0 +1,36 @@
+# -*- Python -*-
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                   Jiao Lin
+#                      California Institute of Technology
+#                      (C) 2006-2009  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+import luban.content as lc
+
+
+def visual(path):
+    # path is a list of (label, action) and one label as the last item
+
+    doc = lc.document(id='view-indicator')
+
+    for (label, action) in path[:-1]:
+        doc.add(lc.link(label=label, onclick=action))
+        doc.paragraph(text=['/ '], Class='splitter')
+        continue
+
+    doc.paragraph(text=path[-1])
+    
+    return doc
+
+
+# version
+__id__ = "$Id$"
+
+# End of file 

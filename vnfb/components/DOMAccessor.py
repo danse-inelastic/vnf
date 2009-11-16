@@ -15,14 +15,74 @@
 from pyre.components.Component import Component as base
 
 
+# domaccessor facilitates association of db with the application.
+# the application must has facility to
+#  1. create a unique ID
+#  2. know who is the current user
+#
 class DOMAccessor( base ):
 
+
     db = None
+    director = None
+    
 
     def __init__(self, name, facility = 'dom-accessor'):
         super(DOMAccessor, self).__init__(name, facility)
         return
+
+
+    # initialization methods
+    def setApplicationDirector(self, director):
+        self.director = director
+        return
+
+
+    def setDB(self, db):
+        self.db = db
+        return
+
+
+    def set(self, db=None, director=None):
+        if db: self.setDB(db)
+        if director: self.setApplicationDirector(director)
+        return
+
+
+    # transient objects
+    def isTransient(self, record):
+        from vnf.dom.TransientObject import TransientObject
+        q = self.db.query(TransientObject).filter_by(
+            target = record.globalpointer.id)
+        r = q.all()
+        return bool(len(r))
+
+
+    def setTransient(self, record):
+        from vnf.dom.TransientObject import TransientObject
+        row = TransientObject()
+        row.target = record
+        self.db.insertRow(row)
+        return
+
+
+    def removeTransient(self, record):
+        from vnf.dom.TransientObject import TransientObject
+        q = self.db.query(TransientObject).filter_by(
+            target = record.globalpointer.id)
+        rs = q.all()
+        if len(rs)==0: return
+        for r in rs:
+            self.db.deleteRow(TransientObject, where="id='%s'" % r.id)
+            continue
+        return
+        
+
+    # access to proxy
+    def makeProxy(self, record, factory):
+        return factory(record, domaccess=self)
     
+
 
     # generic accessing methods
     def updateRecordWithID(self, record):
@@ -132,6 +192,46 @@ class DOMAccessor( base ):
         raise RuntimeError, "Cannot find record of id=%s in table %s" % (
             id, table.__name__)
         
+
+
+class Proxy(object):
+
+    
+    def __init__(self, record, domaccess=None):
+        self.record = record
+        self.domaccess = domaccess
+        self.db = domaccess.db
+        return
+
+
+    def __getattr__(self, name):
+        o = self._getObject()
+        if hasattr(o, name): return getattr(o, name)
+        return getattr(self.record, name)
+
+
+    def _getObject(self):
+        if not '_object' in self.__dict__:
+            try:
+                o = self._convertToObject()
+            except:
+                import traceback
+                raise RuntimeError, 'failed to convert record %s:%s to object: %s' % (
+                    self.record.__class__.name, self.record.id, traceback.format_exc())
+            
+            setattr(self, '_object', o)
+        return self._object
+
+
+    def _setObjectObsolete(self):
+        if self.__dict__.has_key('_object'):
+            del self.__dict__['_object']
+
+
+    def _convertToObject(self):
+        raise NotImplementedError
+
+
 
 # version
 __id__ = "$Id$"

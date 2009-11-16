@@ -92,6 +92,34 @@ fieldset{
     -webkit-border-radius: 15px;
 }
 
+/* error */
+.luban-formfield .error {
+    /* Class for error indication in forms */
+    border: 1px solid;
+    padding: 0.5em;
+    margin: 0 0 1em 0;
+    width: 68% !important;
+    font-family: Times, "Times New Roman", serif;
+    font-size: 93%;
+    border-color: #ffa500;
+    color: red;
+}
+.error {
+    /* Class for error indication in forms */
+    border: 1px solid;
+    padding: 0.5em;
+    margin: 0 0 1em 0;
+    width: 68% !important;
+    font-family: Times, "Times New Roman", serif;
+    font-size: 93%;
+    border-color: #ffa500;
+    color: red;
+}
+.error p {
+    margin:0;
+}
+
+
 /* version */
 /* $Id$ */
 

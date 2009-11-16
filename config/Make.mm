@@ -27,6 +27,7 @@ EXPORT_DATAFILES = \
 	app-extension.odb \
 	clerk.pml \
 	clerk.odb \
+	guidfromidddaemon.odb \
 	idd-pickler.odb \
 	ipa.pml \
 	itask-manager.odb \
