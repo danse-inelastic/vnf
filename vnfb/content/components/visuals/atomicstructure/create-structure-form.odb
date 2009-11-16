@@ -114,6 +114,7 @@ def addanatomlink(structid):
 
 def atomsdoc(director, id, atomids):
     doc = lc.document(id='add-atoms-form', title='Atoms')
+    doc.document(id='atomicstructure-atoms-error', Class='error', hidden=1)
     
     def atom(atomid):
         return director.retrieveVisual('atomicstructure/atom-input', structid=id, atomid=atomid)

@@ -22,7 +22,7 @@ def visual(director, bvkid):
     domaccess = director.retrieveDOMAccessor('material_simulations/bvk')
     model = domaccess.getModel(bvkid)
 
-    fraccoords = model.getFractionalCoordinates()
+    # fraccoords = model.getFractionalCoordinates()
 
 
     bondscontainer = doc.document(id='bvk-%s-editor-bonds-container' % bvkid)

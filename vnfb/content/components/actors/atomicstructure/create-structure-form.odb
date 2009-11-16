@@ -44,8 +44,13 @@ class Actor(base):
 
     def process(self, director):
         id = self.inventory.id
+
+        ew = select(id='atomicstructure-atoms-error')
         if not id:
-            return alert('You have not added any atom.')
+            return [
+                ew.replaceContent(lc.paragraph(text=['Please add at least one atom'])),
+                ew.show(),
+                ]
         
         domaccess = director.retrieveDOMAccessor('atomicstructure')
         structure = domaccess.getAtomicStructure(id)
@@ -62,6 +67,7 @@ class Actor(base):
             
         lattice_in = {}
         lattice_error = errors['lattice'] = []
+        angle_vars = ['alpha', 'beta', 'gamma']
         for var in lattice_vars:
             value = getattr(self.inventory, var)
             try:
@@ -71,6 +77,8 @@ class Actor(base):
             else:
                 if value <= 0 :
                     lattice_error.append('%s: must be positive' % var)
+                elif value >= 180 and var in angle_vars:
+                    lattice_error.append('%s: must be between 0-180' % var)
                 else:
                     lattice_in[var] = value
 
@@ -81,7 +89,7 @@ class Actor(base):
         except:
             errors['spacegroup'].append('spacegroup number: must be an integer')
         else:
-            if spacegroupno<0 or spacegroupno>230:
+            if spacegroupno<=0 or spacegroupno>230:
                 errors['spacegroup'].append('spacegroup number: must be between 1-230')
                     
         atoms_in = {}
@@ -140,7 +148,8 @@ class Actor(base):
         for v in errors.itervalues():
             if v: e=True; break;
             continue
-        
+
+        self._debug.log('errors: %s' % errors)
         if e: return self.reportErrors(director, errors, atomids)
 
         self._saveData(director, short_description, lattice_in, atoms_in, spacegroupno)
@@ -195,13 +204,17 @@ class Actor(base):
         
         actions = []
 
+        ew = select(id='atomicstructure-atoms-error')
+        actions.append(ew.hide())
+        
         short_description_error = errors['short_description']
+        ew = select(id='atomicstructure-label-input')
         if short_description_error:
-            ew = select(id='atomicstructure-label-input')
             actions.append(ew.setAttr(error=short_description_error))
             actions.append(ew.show())
         else:
-            actions.append(ew.hide())
+            #actions.append(ew.hide())
+            pass
         
         lattice_error = errors['lattice']
         ew = select(id='lattice-inputs-error')
