@@ -48,26 +48,29 @@ def table(atomicstructures, cols, director):
 
     view = View(columns=columns, editable=True)
     
-    def getSelected(matter): return False
+    def getSelected(atomicstructure): return False
     def getId(atomicstructure):
-        label = atomicstructure.id
+        record = atomicstructure.record
+        label = record.id
         link = Link(
             label = label,
             onclick = load(
                 actor='atomicstructure', routine='showOverview',
-                id = atomicstructure.id,
+                id = record.id,
                 )
             )
         return link
     def getDescription(atomicstructure):
-        return atomicstructure.short_description
-    def getVisualize(matter):
+        record = atomicstructure.record
+        return record.short_description
+    def getVisualize(atomicstructure):
         return 'not implemented'
-    def getCreated(exp):
-        date = exp.date
+    def getCreated(atomicstructure):
+        record = atomicstructure.record
+        date = record.date
         return str(date)
-    def getChemical_formula(matter):
-        return matter.getChemicalFormula()
+    def getChemical_formula(atomicstructure):
+        return atomicstructure.getChemicalFormula()
                 
     import operator
     value_generators = [

@@ -248,7 +248,7 @@ body {
     font-size: 90%;
     min-width: 270px;
     max-width: 330px;
-    float: left;
+    /* float: left; */
 }
 #view-indicator a{
     color: #6f4980;

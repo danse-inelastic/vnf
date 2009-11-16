@@ -1,0 +1,333 @@
+#!/usr/bin/env python
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                 Jiao Lin
+#                      California Institute of Technology
+#                      (C) 2006-2009  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+from luban.content import load, select, alert
+import luban.content as lc
+
+
+from luban.components.AuthorizedActor import AuthorizedActor as base
+
+lattice_vars = ['a', 'b', 'c', 'alpha', 'beta', 'gamma']
+
+class Actor(base):
+
+
+    class Inventory(base.Inventory):
+
+        import pyre.inventory
+
+        id = pyre.inventory.str('id')
+        atomid = pyre.inventory.str('atomid')
+
+        short_description = pyre.inventory.str('short_description')
+        
+        a = pyre.inventory.str('a')
+        b = pyre.inventory.str('b')
+        c = pyre.inventory.str('c')
+        alpha = pyre.inventory.str('alpha')
+        beta = pyre.inventory.str('beta')
+        gamma = pyre.inventory.str('gamma')
+
+        spacegroupno = pyre.inventory.str('spacegroupno')
+        
+
+    def process(self, director):
+        id = self.inventory.id
+        if not id:
+            return alert('You have not added any atom.')
+        
+        domaccess = director.retrieveDOMAccessor('atomicstructure')
+        structure = domaccess.getAtomicStructure(id)
+
+        iteratoms = structure.iterAtomRecords()
+
+        errors = {}
+
+        short_description = self.inventory.short_description
+        if not short_description:
+            errors['short_description' ] = 'label: must be not empty'
+        else:
+            errors['short_description' ] = ''
+            
+        lattice_in = {}
+        lattice_error = errors['lattice'] = []
+        for var in lattice_vars:
+            value = getattr(self.inventory, var)
+            try:
+                value = float(value)
+            except:
+                lattice_error.append('%s: must be a float' % var)
+            else:
+                if value <= 0 :
+                    lattice_error.append('%s: must be positive' % var)
+                else:
+                    lattice_in[var] = value
+
+        errors['spacegroup'] = []
+        spacegroupno = self.inventory.spacegroupno
+        try:
+            spacegroupno = int(spacegroupno)
+        except:
+            errors['spacegroup'].append('spacegroup number: must be an integer')
+        else:
+            if spacegroupno<0 or spacegroupno>230:
+                errors['spacegroup'].append('spacegroup number: must be between 1-230')
+                    
+        atoms_in = {}
+        atoms_errors = errors['atoms'] = {}
+        atomids = []
+        for atom in iteratoms:
+            id = atom.id; atomids.append(id)
+
+            # position
+            pos = []
+            for c in ['x', 'y', 'z']:
+                var = '%s%s' % (c, id)
+                value = getattr(self.inventory, var)
+                try:
+                    value = float(value)
+                except:
+                    t = atoms_errors.setdefault(id, [])
+                    t.append('%s coordinate: must be a float' % c)
+                else:
+                    pos.append(value)
+                continue
+
+            # element
+            var = 'element%s' % id
+            value = getattr(self.inventory, var)
+            if not value:
+                t = atoms_errors.setdefault(id, [])
+                t.append('element: must not be empty')
+            # ... check more ...
+            element = value
+
+            # occupancy
+            occupancy = None
+            var = 'occupancy%s' % id
+            value = getattr(self.inventory, var)
+            try:
+                value = float(value)
+            except:
+                t = atoms_errors.setdefault(id, [])
+                t.append('occupancy: must be a float')
+            else:
+                if value < 0 or value > 1:
+                    t = atoms_errors.setdefault(id, [])
+                    t.append('occupancy: must between 0 and 1')
+                else:
+                    occupancy = value
+
+            atoms_in[id] = {
+                'xyz': pos,
+                'element': element,
+                'occupancy': occupancy,
+                }
+            continue
+
+        e = False
+        for v in errors.itervalues():
+            if v: e=True; break;
+            continue
+        
+        if e: return self.reportErrors(director, errors, atomids)
+
+        self._saveData(director, short_description, lattice_in, atoms_in, spacegroupno)
+        return load(actor='atomicstructure', routine='replaceBodyFrameWithAtomicStructureList')
+
+
+    def cancel(self, director):
+        id = self.inventory.id
+        if id:
+            domaccess = director.retrieveDOMAccessor('atomicstructure')
+            domaccess.removeAtomicStructure(id)
+
+        return load(actor='atomicstructure', routine='replaceBodyFrameWithAtomicStructureList')
+
+
+    def _saveData(self, director, short_description, lattice_in, atoms_in, spacegroupno_in):
+        id = self.inventory.id
+
+        domaccess = director.retrieveDOMAccessor('atomicstructure')
+        struct = domaccess.getAtomicStructure(id)
+
+        lattice = struct.lattice.record
+        for var in lattice_vars:
+            setattr(lattice, var, lattice_in[var])
+        domaccess.updateRecordWithID(lattice)
+
+        for atom in struct.iterAtomRecords():
+            atomid = atom.id
+            atom_in = atoms_in[atomid]
+            for var in ['xyz', 'element', 'occupancy']:
+                setattr(atom, var, atom_in[var])
+            domaccess.updateRecordWithID(atom)
+            continue
+
+        structrecord = struct.record
+        structrecord.short_description = short_description
+        structrecord.spacegroupno = spacegroupno_in
+        structrecord.chemical_formula = struct.getChemicalFormula()
+        
+        domaccess.updateRecordWithID(structrecord)
+
+        if domaccess.isTransient(structrecord):
+            # make structure a permanant record
+            domaccess.removeTransient(structrecord)
+            
+        return
+
+
+    def reportErrors(self, director, errors, atomids):
+
+        self._debug.log('errors: %s' % errors)
+        
+        actions = []
+
+        short_description_error = errors['short_description']
+        if short_description_error:
+            ew = select(id='atomicstructure-label-input')
+            actions.append(ew.setAttr(error=short_description_error))
+            actions.append(ew.show())
+        else:
+            actions.append(ew.hide())
+        
+        lattice_error = errors['lattice']
+        ew = select(id='lattice-inputs-error')
+        if lattice_error:
+            doc = lc.document()
+            for item in lattice_error:
+                doc.paragraph(text=[item])
+                
+            actions.append(ew.replaceContent(doc))
+            actions.append(ew.show())
+        else:
+            a = ew.hide()
+            
+        atoms_errors = errors['atoms']
+        for atomid in atomids:
+            ew = select(id='atomicstructure-editatom-error-%s'%atomid)
+            e = atoms_errors.get(atomid)
+            if e:
+                doc = lc.document()
+                for item in e: doc.paragraph(text=[item])
+                actions.append(ew.replaceContent(doc))
+                actions.append(ew.show())
+            else:
+                actions.append(ew.hide())
+            continue
+
+        spacegroup_error = errors['spacegroup']
+        ew = select(id='atomicstructure-spacegroup-error')
+        if spacegroup_error:
+            doc = lc.document()
+            for item in spacegroup_error:
+                doc.paragraph(text=[item])
+            actions.append(ew.replaceContent(doc))
+            actions.append(ew.show())
+        else:
+            actions.append(ew.hide())
+        return actions
+    
+
+    def addAtom(self, director):
+        id = self.inventory.id
+
+        domaccess = director.retrieveDOMAccessor('atomicstructure')
+        if not id:
+            structure = domaccess.newAtomicStructure()
+
+        else:
+            structure = domaccess.getAtomicStructure(id)
+
+        atom = structure.newAtom()
+
+        if not id:
+            domaccess.setTransient(structure.record)
+            id = structure.record.id
+            return refreshform(id)
+
+        actions = []
+        atomwidget = select(id='add-atoms-form').append(
+            director.retrieveVisual(
+              'atomicstructure/atom-input',
+              structid = id, atomid = atom.id,
+            )
+        )
+        actions.append(atomwidget)
+
+        return actions
+
+
+    def delAtom(self, director):
+        id = self.inventory.id
+
+        domaccess = director.retrieveDOMAccessor('atomicstructure')
+        if not id:
+            return
+
+        structure = domaccess.getAtomicStructure(id)
+
+        atomid = self.inventory.atomid
+        structure.delAtom(id=atomid)
+
+        actions = [select(id='atomicstructure-editatom-%s'%atomid).destroy()]
+        return actions
+
+
+    def updateConfiguration(self, registry):
+        listing = self._listing(registry)
+        if listing:
+            for k, v in listing:
+                setattr(self.inventory, k, v)        
+        return []
+
+
+    def __init__(self, name='create-structure-form'):
+        super(Actor, self).__init__(name)
+        return
+
+
+    def _listing(self, registry):
+        if not registry: return []
+        listing = [
+            (name, descriptor.value) for name, descriptor in registry.properties.iteritems()
+            ]
+
+        listing += [
+            ("%s.%s" % (nodename, name), value)
+            for nodename, node in registry.facilities.iteritems()
+            for name, value in self._listing(node)
+            ]
+
+        return listing
+
+
+
+def refreshform(id):
+    return select(id='main-display-area').replaceContent(
+        load(actor='atomicstructure',
+             routine='newAtomicStructureForm',
+             id = id)
+        )
+
+
+def actor(): return Actor()
+
+
+# version
+__id__ = "$Id$"
+
+# End of file 
+

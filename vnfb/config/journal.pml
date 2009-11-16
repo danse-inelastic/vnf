@@ -8,6 +8,7 @@
     </component>
     <component name="debug">
       <property name="ipa">off</property>
+      <property name="db">on</property>
       <property name="pyre.inventory.curator">on</property>
       <property name="itaskapp">on</property>
       <property name="submitjob">on</property>
@@ -18,6 +19,9 @@
       <property name='materialsimulation'>on</property>
       <property name='experiment-accessor'>on</property>
       <property name='experiment-table'>on</property>
+      <property name='atomicstructure-table'>on</property>
+      <property name='atomicstructure-accessor'>on</property>
+      <property name='create-structure-form'>on</property>
     </component>
   </component>
 </inventory>
