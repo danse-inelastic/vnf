@@ -1,0 +1,52 @@
+# -*- Python -*-
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                 Jiao Lin
+#                      California Institute of Technology
+#                      (C) 2006-2009  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+import luban.content as lc
+from luban.content import select, load, alert
+
+class Factory(object):
+
+    def __init__(self, director, id):
+        self.director = director
+        self.id = id
+        self.domaccess = director.retrieveDOMAccessor('atomicstructure')
+        self.atomicstructure = self.domaccess.getAtomicStructure(id)
+        self.actor = 'atomicstructure'
+
+
+    def create(self):
+        bodyid = 'computed-phonons-body'
+        body = lc.document(id=bodyid)
+        loadphonons = lc.load(
+            actor='material_simulations/getphononresults',
+            routine='updatePhononViewForAtomicStructure',
+            id = self.id,
+            )
+        doc = self.director.retrieveVisual(
+            'collapsable',
+            id='atomicstructure-computed-phonons',
+            title='Phonons',
+            body=body,
+            loadbody=loadphonons,
+            )
+        return doc
+
+
+def visual(director, id):
+    return Factory(director, id).create()
+    
+# version
+__id__ = "$Id$"
+
+# End of file 

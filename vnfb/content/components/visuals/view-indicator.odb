@@ -25,7 +25,12 @@ def visual(path):
         doc.paragraph(text=['/ '], Class='splitter')
         continue
 
-    doc.paragraph(text=path[-1])
+    last = path[-1]
+    if isinstance(last, basestring):
+        doc.paragraph(text=path[-1])
+    else:
+        label, action = last
+        doc.add(lc.link(label=label, onclick=action))
     
     return doc
 

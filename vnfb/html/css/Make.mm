@@ -23,6 +23,7 @@ EXPORT_DATADIRS = \
 
 EXPORT_DATAFILES = \
 	luban.css\
+	vnf-atomicstructure-overview.css \
 	vnf-bvk.css \
 	vnf-login.css \
 	vnf-mainframe.css \

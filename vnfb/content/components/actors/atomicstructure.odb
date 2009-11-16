@@ -108,6 +108,12 @@ class Actor(base):
             id =self.inventory.id)
 
 
+    def showOverview(self, director):
+        doc = director.retrieveVisual(
+            'atomicstructure/overview', director=director, id = self.inventory.id)
+        return select(id='main-display-area').replaceContent(doc)
+
+
     def __init__(self, name='atomicstructure'):
         super(Actor, self).__init__(name)
         return
