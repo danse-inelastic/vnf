@@ -16,7 +16,7 @@ from luban.content import load, select, alert
 import luban.content as lc
 
 
-from luban.components.AuthorizedActor import AuthorizedActor as base
+from luban.components.FormProcessor import FormProcessor as base
 
 lattice_vars = ['a', 'b', 'c', 'alpha', 'beta', 'gamma']
 
@@ -25,22 +25,56 @@ class Actor(base):
 
     class Inventory(base.Inventory):
 
-        import pyre.inventory
+        import luban.inventory
 
-        id = pyre.inventory.str('id')
-        atomid = pyre.inventory.str('atomid')
+        id = luban.inventory.str('id')
+        atomid = luban.inventory.str('atomid')
 
-        short_description = pyre.inventory.str('short_description')
-        
-        a = pyre.inventory.str('a')
-        b = pyre.inventory.str('b')
-        c = pyre.inventory.str('c')
-        alpha = pyre.inventory.str('alpha')
-        beta = pyre.inventory.str('beta')
-        gamma = pyre.inventory.str('gamma')
+        from luban.inventory import positive, greater, less, greaterEqual, lessEqual, notempty, isBoth, range
+        short_description = luban.inventory.str('short_description', validator=notempty)
 
-        spacegroupno = pyre.inventory.str('spacegroupno')
-        
+        a = luban.inventory.float('a', validator=positive)
+        b = luban.inventory.float('b', validator=positive)
+        c = luban.inventory.float('c', validator=positive)
+
+        angle = range(0, 180, brackets='()')
+        alpha = luban.inventory.float('alpha', validator=angle)
+        beta = luban.inventory.float('beta', validator=angle)
+        gamma = luban.inventory.float('gamma', validator=angle)
+
+        spacegroupno = luban.inventory.int(
+            'spacegroupno',
+            validator = range(1, 230, brackets='[]'),
+            )
+
+        import re
+        element = luban.inventory.propertySet(
+            name='element',
+            pattern = re.compile('element.*'),
+            validator = notempty)
+        x = luban.inventory.propertySet(
+            name='x',
+            pattern = re.compile('x.*'),
+            type = 'float',
+            )
+        y = luban.inventory.propertySet(
+            name='y',
+            pattern = re.compile('y.*'),
+            type = 'float',
+            )
+        z = luban.inventory.propertySet(
+            name='z',
+            pattern = re.compile('z.*'),
+            type = 'float',
+            )
+        between01 = range(0,1, brackets='[]')
+        occupancy = luban.inventory.propertySet(
+            name='occupancy',
+            pattern = re.compile('occupancy.*'),
+            type = 'float',
+            validator=between01,
+            )
+
 
     def process(self, director):
         id = self.inventory.id
@@ -56,102 +90,27 @@ class Actor(base):
         structure = domaccess.getAtomicStructure(id)
 
         iteratoms = structure.iterAtomRecords()
+        atomids = [a.id for a in iteratoms]
 
-        errors = {}
-
-        short_description = self.inventory.short_description
-        if not short_description:
-            errors['short_description' ] = 'label: must be not empty'
-        else:
-            errors['short_description' ] = ''
-            
-        lattice_in = {}
-        lattice_error = errors['lattice'] = []
-        angle_vars = ['alpha', 'beta', 'gamma']
-        for var in lattice_vars:
-            value = getattr(self.inventory, var)
-            try:
-                value = float(value)
-            except:
-                lattice_error.append('%s: must be a float' % var)
-            else:
-                if value <= 0 :
-                    lattice_error.append('%s: must be positive' % var)
-                elif value >= 180 and var in angle_vars:
-                    lattice_error.append('%s: must be between 0-180' % var)
-                else:
-                    lattice_in[var] = value
-
-        errors['spacegroup'] = []
-        spacegroupno = self.inventory.spacegroupno
-        try:
-            spacegroupno = int(spacegroupno)
-        except:
-            errors['spacegroup'].append('spacegroup number: must be an integer')
-        else:
-            if spacegroupno<=0 or spacegroupno>230:
-                errors['spacegroup'].append('spacegroup number: must be between 1-230')
-                    
-        atoms_in = {}
-        atoms_errors = errors['atoms'] = {}
-        atomids = []
-        for atom in iteratoms:
-            id = atom.id; atomids.append(id)
-
-            # position
-            pos = []
-            for c in ['x', 'y', 'z']:
-                var = '%s%s' % (c, id)
-                value = getattr(self.inventory, var)
-                try:
-                    value = float(value)
-                except:
-                    t = atoms_errors.setdefault(id, [])
-                    t.append('%s coordinate: must be a float' % c)
-                else:
-                    pos.append(value)
-                continue
-
-            # element
-            var = 'element%s' % id
-            value = getattr(self.inventory, var)
-            if not value:
-                t = atoms_errors.setdefault(id, [])
-                t.append('element: must not be empty')
-            # ... check more ...
-            element = value
-
-            # occupancy
-            occupancy = None
-            var = 'occupancy%s' % id
-            value = getattr(self.inventory, var)
-            try:
-                value = float(value)
-            except:
-                t = atoms_errors.setdefault(id, [])
-                t.append('occupancy: must be a float')
-            else:
-                if value < 0 or value > 1:
-                    t = atoms_errors.setdefault(id, [])
-                    t.append('occupancy: must between 0 and 1')
-                else:
-                    occupancy = value
-
-            atoms_in[id] = {
-                'xyz': pos,
-                'element': element,
-                'occupancy': occupancy,
-                }
-            continue
-
-        e = False
-        for v in errors.itervalues():
-            if v: e=True; break;
-            continue
+        errors = self.getInputErrors()
 
         self._debug.log('errors: %s' % errors)
-        if e: return self.reportErrors(director, errors, atomids)
+        if errors: return self.reportErrors(director, errors, atomids)
 
+        short_description = self.inventory.short_description
+        lattice_in = {}
+        for var in lattice_vars:
+            lattice_in[var] = getattr(self.inventory, var)
+        atoms_in = {}
+        for id in atomids:
+            def _(attr):
+                return getattr(self.inventory, '%s%s' % (attr,id) )
+            atoms_in[id] = {
+                'xyz': [_('x'), _('y'), _('z')],
+                'element': _('element'),
+                'occupancy': _('occupancy'),
+                }
+        spacegroupno = self.inventory.spacegroupno
         self._saveData(director, short_description, lattice_in, atoms_in, spacegroupno)
         return load(actor='atomicstructure', routine='replaceBodyFrameWithAtomicStructureList')
 
@@ -198,59 +157,46 @@ class Actor(base):
         return
 
 
-    def reportErrors(self, director, errors, atomids):
-
-        self._debug.log('errors: %s' % errors)
+    def _formatErrors(self, errors, atomids):
+        def em(var, error):
+            return '%s: %s' % (var, error)
         
-        actions = []
-
-        ew = select(id='atomicstructure-atoms-error')
-        actions.append(ew.hide())
-        
-        short_description_error = errors['short_description']
-        ew = select(id='atomicstructure-label-input')
-        if short_description_error:
-            actions.append(ew.setAttr(error=short_description_error))
-            actions.append(ew.show())
-        else:
-            #actions.append(ew.hide())
-            pass
-        
-        lattice_error = errors['lattice']
-        ew = select(id='lattice-inputs-error')
-        if lattice_error:
-            doc = lc.document()
-            for item in lattice_error:
-                doc.paragraph(text=[item])
-                
-            actions.append(ew.replaceContent(doc))
-            actions.append(ew.show())
-        else:
-            a = ew.hide()
+        e = {}
+        k = 'short_description'
+        e[k] = []
+        if errors.has_key(k):
+            e[k].append(em('name', errors[k]))
             
-        atoms_errors = errors['atoms']
-        for atomid in atomids:
-            ew = select(id='atomicstructure-editatom-error-%s'%atomid)
-            e = atoms_errors.get(atomid)
-            if e:
-                doc = lc.document()
-                for item in e: doc.paragraph(text=[item])
-                actions.append(ew.replaceContent(doc))
-                actions.append(ew.show())
-            else:
-                actions.append(ew.hide())
+        e['lattice'] = [em(var, errors[var]) for var in lattice_vars if var in errors]
+
+        e['spacegroup'] = []
+        k = 'spacegroupno'
+        if errors.get(k): e['spacegroup'].append(em('number', errors[k]))
+
+        eatoms = e['atoms'] = {}
+        for id in atomids:
+            def _(var):
+                n = '%s%s' % (var, id)
+                if errors.has_key(n):
+                    l = eatoms.setdefault(id, [])
+                    l.append(em(var,errors[n]))
+            _('x')
+            _('y')
+            _('z')
+            _('element')
+            _('occupancy')
             continue
 
-        spacegroup_error = errors['spacegroup']
-        ew = select(id='atomicstructure-spacegroup-error')
-        if spacegroup_error:
-            doc = lc.document()
-            for item in spacegroup_error:
-                doc.paragraph(text=[item])
-            actions.append(ew.replaceContent(doc))
-            actions.append(ew.show())
-        else:
-            actions.append(ew.hide())
+        return e
+
+
+    def reportErrors(self, director, errors, atomids):
+        actions = []
+        form = select(id='create-structure-form')
+        for name, error in errors.iteritems():
+            a = form.find(name=name).formfield('showError', message=error)
+            actions.append(a)
+            continue
         return actions
     
 
@@ -299,7 +245,7 @@ class Actor(base):
         return actions
 
 
-    def updateConfiguration(self, registry):
+    def updateConfiguration1(self, registry):
         listing = self._listing(registry)
         if listing:
             for k, v in listing:

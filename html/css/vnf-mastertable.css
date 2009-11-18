@@ -98,6 +98,9 @@ div.master-table-toptoolbar-container h1.luban-document-title {
 .master-table-toptoolbar-container .luban-formfield div{
     display: inline;
 }
+.master-table-toptoolbar-container .luban-formfield table{
+    display: inline;
+}
 .master-table-toptoolbar-container .luban-toolbar .luban-button{
     padding: 0;
 }
@@ -263,6 +266,9 @@ margin-top:4px;
 .master-table-tablebottomtoolbar-left .luban-formfield {
     margin-left: 5px;
     margin-right: 0;
+}
+.master-table-tablebottomtoolbar-left .luban-formfield table {
+    display:inline;
 }
 
 /* table itself */
