@@ -1,0 +1,260 @@
+/*  -*- CSS -*-  */
+
+/* */
+body {
+    font-family: "Lucida Grande",Verdana,Lucida,Helvetica,Arial,sans-serif;
+    margin: 0px;
+}
+
+
+/* widgets */
+
+/* this is special for the accordion implementation using jQuery */
+.ui-accordion .ui-accordion-content { 
+}
+
+.ui-widget {
+    font-size: 0.9em;
+}
+
+/* */
+.luban-toolbar {
+    background-color: #e4d5d5;
+}
+
+.luban-toolbar .luban-button {
+    background-color: transparent;
+    border-style: none;
+}
+
+.luban-document-title {
+    font-size: 130%;
+}
+
+a.luban-link {
+    color: blue;
+}
+
+a.luban-link:hover{
+    text-decoration: underline;
+}
+
+.luban-portlet-padding{
+    padding: 1em 0 0 1em;
+}
+
+
+.luban-portlet{
+    border:medium none;
+    margin-bottom:1em;
+    padding:0;
+}
+
+.luban-portlet-title {
+    margin: 0px;
+    display: inline;
+    padding: 0px 12px;
+    border-style: solid;
+    border-width: 1px;
+    border-color: #8CACBB;
+    background: #DEE7EC none repeat scroll 0 0;
+}
+
+.luban-portlet-body {
+    background: transparent none repeat scroll 0 0;
+    border-color: #8CACBB;
+    border-width:1px;
+    border-style:solid;
+    border-collapse:collapse;
+    padding:1em 0;
+}
+
+.luban-portlet a {
+    display: block;
+    background-color:transparent;
+    color:#436976;
+    text-decoration:none;
+}
+
+.luban-portletitem-container{
+    padding: 2px 1em;
+}
+
+.luban-portletitem-content{
+}
+
+.luban-portletitem-content:hover{
+}
+
+.luban-portletitem-content a{
+    padding: 2px;
+    border-width: 1px;
+    border-style: dotted;
+    border-color: #8CACBB;
+}
+
+.luban-portletitem-container.selected .luban-portletitem-content a{
+    border-style: solid;
+    background-color: #eee;
+}
+
+.luban-portletitem-content a:hover{
+    border-style: solid;
+    background: #DEE7EC none repeat scroll 0 0;
+}
+
+.luban-portletitem-icon-container{
+    display: inline;
+}
+
+.luban-portletitem-text {
+    margin: 0px 5px;
+}
+
+
+/* button */
+.luban-button {
+    cursor: pointer;
+    font-size: 100%;
+    padding: 1px 5px 1px 5px;
+
+    border-top: 1px solid white;
+    border-right: 1px solid #888888;
+    border-bottom: 1px solid #333333;
+    border-left: 1px solid white;
+    background-color: #758273;
+    color: white;    
+}
+
+
+/* special panels */
+#luban-----loadingdiv {
+    position: fixed;
+    background-color: #f5f1b3;
+    font-size: 125%;
+    z-index: 1000000;
+}
+
+/* form */
+fieldset {
+    border-style: solid;
+    border-color: cadetBlue;
+    border-width: 1px;
+    line-height:1.5em;
+    margin:1em 0;
+    padding:0 1em 1em;
+    width:auto;
+}
+
+/* common for all fields */
+.luban-formfield {
+    margin: 0 1em 1em 0;
+}
+
+/* label */
+label {
+    font-weight: bold;
+}
+
+/* error and help */
+.luban-formfield .error {
+    /* Class for error indication in forms */
+    position: absolute;
+    z-index: 100;
+    border: 2px solid #999999;
+    padding: 0.1em 0.3em;
+    font-family: Times, "Times New Roman", serif;
+    font-size: 103%;
+    border-color: #ffa500;
+    color: darkBlue;
+    cursor: pointer;
+    -moz-border-radius: 9px;
+    -webkit-border-radius: 9px;
+    /* for IE */
+    filter:alpha(opacity=70);
+    /* CSS3 standard */
+    opacity:0.7;
+    background-color:white;
+}
+.luban-formfield .error-sign {
+    font-weight: bold;
+    color: red;
+    cursor: pointer;
+    padding: 2px;
+}
+
+.luban-formfield .help{
+    font-family: Times, "Times New Roman", serif;
+    font-size: 100%;
+    margin: 0 0 0.2em 0;
+    color: #76797c;
+    text-decoration: none;
+    display: block;
+}
+
+.luban-formfield a.help:hover{
+    cursor: default;
+    color: Black;
+}
+
+/* specific to each type of fields */
+.luban-formcheckbox p.label {
+    display: inline;
+}
+
+.luban-submitbutton-container {
+    padding: 15px 2px;
+}
+
+
+/* input fields */
+select, input, textarea {
+    border-style: solid;
+    border-width: 1px;
+    border-color: lightBlue;
+    height: 2em;
+}
+
+
+/* disabled ui elements */
+input[disabled] {
+    border-color: gray;
+    border-style: dotted;
+}
+
+select[disabled] {
+    border-color: gray;
+    border-style: dotted;
+}
+
+textarea[disabled] {
+    border-color: gray;
+    border-style: dotted;
+}
+
+
+
+/* dialog*/
+.luban-dialog {
+    width: 80%;
+}
+.luban-dialog .luban-button-container {
+    text-align: center;
+}
+.luban-dialog .luban-button-container .luban-button {
+    padding: 2px 18px;
+    color: white;
+}
+
+
+/* misc */
+li {
+    margin: 4px 1px;
+}
+
+
+
+/* version */
+/* $Id$ */
+
+/* End of file  */
