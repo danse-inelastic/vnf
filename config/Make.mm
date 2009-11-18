@@ -40,7 +40,9 @@ EXPORT_DATAFILES = \
 
 
 
-CP_F = rsync -r --copy-unsafe-links
+#CP_F = rsync -r --copy-unsafe-links
+
+CP_F = cp -f
 EXPORT_DATA_PATH = $(EXPORT_ROOT)/$(PROJECT)/$(PACKAGE)
 
 export-data-files::
