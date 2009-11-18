@@ -19,7 +19,7 @@ from luban.content.FormSelectorField import FormSelectorField
 def visual(structid, atomid):
     'input widget of atom #i of atomicstructure of given id'
     def x(var, id):
-        return FormTextField(label=var, name='%s%s' % (var, id))
+        return FormTextField(label=var, name='%s%s' % (var, id), value=0)
     def xyz(id):
         sp = lc.splitter()
         sp.section().add(x('x',id))
@@ -42,7 +42,7 @@ def visual(structid, atomid):
         sp = subdoc.splitter(id='atomicstructure-editatom-%s'%id)
         sp.section().add(FormTextField(label='element', name='element%s' % id))
         sp.section().add(xyz(id))
-        sp.section().add(FormTextField(label='occupancy', name='occupancy%s' % id))
+        sp.section().add(FormTextField(label='occupancy', name='occupancy%s' % id, value=1))
         sp.section().add(delatombutton(id))
         return subdoc
 

@@ -45,6 +45,7 @@ class Factory(object):
 
 def visual(director, id):
     return Factory(director, id).create()
+
     
 # version
 __id__ = "$Id$"

@@ -84,20 +84,20 @@ def labeldoc():
 def latticedoc():
     doc = lc.document(id='create-lattice-form', title='Lattice')
 
-    def field(var):
-        return FormTextField(label=var, name=var)
+    def field(var, **kwds):
+        return FormTextField(label=var, name=var, **kwds)
 
     edoc = doc.document(id='lattice-inputs-error', Class='error', hidden=True)
 
     sp1 = doc.splitter()
-    sp1.section().add(field('a'))
-    sp1.section().add(field('b'))
-    sp1.section().add(field('c'))
+    sp1.section().add(field('a', value=1))
+    sp1.section().add(field('b', value=1))
+    sp1.section().add(field('c', value=1))
 
     sp2 = doc.splitter()
-    sp2.section().add(field('alpha'))
-    sp2.section().add(field('beta'))
-    sp2.section().add(field('gamma'))
+    sp2.section().add(field('alpha', value=90))
+    sp2.section().add(field('beta', value=90))
+    sp2.section().add(field('gamma', value=90))
     
     return doc
 
