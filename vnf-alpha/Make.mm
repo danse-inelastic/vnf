@@ -15,17 +15,10 @@ PACKAGE = vnf
 
 RECURSE_DIRS = \
     vnf \
-    dds \
-    content \
-    bin \
-    cgi \
 
 EXPORT_DATADIRS = \
-    html \
 
 INIT_DATADIRS = \
-    config \
-    log \
 
 
 OTHERS = \
