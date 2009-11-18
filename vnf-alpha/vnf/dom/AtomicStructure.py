@@ -28,7 +28,7 @@ class AtomicStructure(base):
     spacegroupno = dsaw.db.integer(name='spacegroupno')
 
     chemical_formula = dsaw.db.varchar(name='chemical_formula', length=1024)
-    
+
     pass # end of AtomicStructure
 
 

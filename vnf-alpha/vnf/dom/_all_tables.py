@@ -74,6 +74,7 @@ other = [
     'Activity',
     'SmartLabel',
     'Label',
+    'TransientObject',
     ]
 
 

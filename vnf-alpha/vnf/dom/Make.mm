@@ -99,6 +99,7 @@ EXPORT_PYTHON_MODULES = \
 	SingleCrystal.py \
 	SmartLabel.py \
 	Table.py \
+	TransientObject.py \
 	User.py \
 	VASP.py \
 	idgenerator.py \
