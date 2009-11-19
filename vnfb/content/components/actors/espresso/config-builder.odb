@@ -1,0 +1,113 @@
+#!/usr/bin/env python
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                               Alex Dementsov
+#                      California Institute of Technology
+#                        (C) 2009  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+from vinil.utils.const import STEPS
+from vinil.utils.simulationsteps import SimulationSteps
+from vinil.utils.stepper import Stepper
+
+from luban.content import select
+from luban.content.Paragraph import Paragraph
+from luban.content.Document import Document
+from luban.content.HtmlDocument import HtmlDocument
+from luban.content import load
+from luban.content.Link import Link
+from luban.content.Splitter import Splitter
+from luban.content.FormSelectorField import FormSelectorField
+from luban.content.FormRadioBox import FormRadioBox
+from luban.content.Form import Form
+from luban.content.Tabs import Tabs
+from luban.content.Button import Button
+
+from vinil.components.Actor import Actor as base
+class Actor(base):
+
+    class Inventory(base.Inventory):
+        import pyre.inventory
+        id      = pyre.inventory.str('id', default='')
+
+
+    def content(self, director):
+        splitter    = Splitter(orientation='vertical', id="step-splitter")
+        simsteps    = SimulationSteps(current=2)
+        s_steps     = simsteps.getSteps()
+        splitter.add(s_steps)
+        s_content   = splitter.section()
+
+        sim         = director.clerk.getSimulations(id=self.id)
+        if sim:
+            name = sim.sname
+        else:
+            name = ""
+
+        d           = Document(title="Simulation Name: %s" % name, Class="step-content")
+
+        tabs = Tabs()
+        tabs.tab('Control').paragraph(text=['Namelist: CONTROL '])
+        tabs.tab('System').document(title='Namelist: SYSTEM')
+        tabs.tab('Electrons').paragraph(text=['Namelist: ELECTRONS'])
+        tabs.tab('Ions').paragraph(text=['Namelist: IONS'])
+        tabs.tab('Cell').paragraph(text=['Namelist: CELL'])
+        tabs.tab('Phonon').paragraph(text=['Namelist: PHONON'])
+        tabs.tab('Lattice').paragraph(text=['Some form'])
+        tabs.tab('K-Points').paragraph(text=['Card: K_POINTS'])
+        tabs.tab('Other').paragraph(text=['Some form'])
+        d.add(tabs)
+
+        cancel      = Button(label="Return")
+        cancel.onclick = load(actor = 'espresso/step-two', routine = 'link', id=sim.id)
+        d.add(cancel)
+
+        s_content.add(d)
+
+#        linklist    = (("espresso/step-one", "link"), ("espresso/step-three", "link"))
+#        stepper     = Stepper(linklist)
+#        s_stepper   = stepper.getStepper()
+#        splitter.add(s_stepper)
+
+        return splitter
+
+
+    def pathlist(self, director):
+        sim     = director.clerk.getSimulations(id=self.id)
+        self.pathlist = [("Home","greet","link"),
+                         ("Simulations", "simulations", "link"),
+                         ("Quantum Espresso", "espresso/index", "link"),
+                         (sim.sname, "espresso/sim-view", "link", self.id),
+                         (STEPS[1], "espresso/step-two", "link", self.id),
+                         ("PW", "espresso/set-config", "link", self.id),
+                         ("Configuration Builder", None, None)]
+
+        return self.pathlist
+
+    def __init__(self, *args, **kwds):
+        super(Actor, self).__init__(*args, **kwds)
+
+        return
+
+
+    def _configure(self):
+        super(Actor, self)._configure()
+        self.id = self.inventory.id
+        return
+
+
+    def _init(self):
+        super(Actor, self)._init()
+        return
+
+def actor():
+    return Actor('espresso/set-config')
+
+__date__ = "$Nov 3, 2009 6:01:31 PM$"
+
+

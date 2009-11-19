@@ -1,0 +1,192 @@
+#!/usr/bin/env python
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                               Alex Dementsov
+#                      California Institute of Technology
+#                        (C) 2009  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+from vinil.utils.const import STEPS
+from vinil.utils.utils import stamp2date
+from vinil.utils.simchain import SimChain
+from vinil.utils.simparams import SimParams
+from vinil.utils.simserver import SimServer
+
+from luban.content.Splitter import Splitter
+
+from luban.content import select
+from luban.content.Paragraph import Paragraph
+from luban.content.Document import Document
+from luban.content.HtmlDocument import HtmlDocument
+from luban.content import load
+from luban.content.Link import Link
+
+from vinil.components.Actor import Actor as base
+class Actor(base):
+
+    class Inventory(base.Inventory):
+        import pyre.inventory
+        id      = pyre.inventory.str('id', default='')      # Simulation Id
+
+
+    def content(self, director):
+        sim     = director.clerk.getSimulations(id=self.id)
+
+        document = Document(title='Simulation Name: %s' % sim.sname)
+
+        self.showLinks(document)
+        self.showSim(document, sim)
+        self.showInputFiles(director, document, sim.type)
+        self.showSettings(director, document)
+        self.showServer(director, document)
+        self.showJobs(director, document)
+        self.showRefs(document)
+        
+        return document
+
+    def showLinks(self, document):
+        document.add(Link(label="Edit", Class="action-link",
+                          onclick = load(actor='espresso/sim-edit',
+                          routine='link', id=self.id)))
+        document.add(Link(label="Delete", Class="action-link",
+                          onclick = load(actor='espresso/sim-delete',
+                          routine='link', id=self.id)))
+        document.add(Link(label="Clone", Class="action-link",
+                          onclick = load(actor='espresso/sim-use',
+                          routine='link', id=self.id)))
+
+
+    def showSim(self, document, sim):
+        """Shows simulation data"""
+        if sim: # ?
+            document.add(Paragraph(text="Description: %s" % sim.description))
+            document.add(Paragraph(text="Type: %s" % sim.type))
+            document.add(Paragraph(text="Package: %s" % sim.package))
+            document.add(Paragraph(text="Formula: %s" % sim.formula))
+            document.add(Paragraph(text="Created: %s" % stamp2date(sim.timeCreated)))
+
+
+    def showInputFiles(self, director, document, type):
+        """Shows chain of configuration files"""
+        document.add(Document(Class="clear-both"))
+        document.add(Paragraph(text="Input Files: "))
+        splitter        = SimChain(director, type)
+        
+        document.add(splitter.chain(self.id))
+
+
+    def showSettings(self, director, document):
+        document.add(Document(Class="clear-both"))   # Empty document
+        setdoc  = Document(Class="display-inline")
+        setdoc.add(Paragraph(text="Simulation Parameters: "))
+
+        params  = SimParams(director)
+        setdoc.add(params.getLink(self.id))
+        document.add(setdoc) # [STUB]
+
+
+    def showServer(self, director, document):
+        document.add(Document(Class="clear-both"))   # Empty document
+        servdoc = Document(Class="display-inline")
+        servdoc.add(Paragraph(text="Default Server: "))
+
+        server  = SimServer(director)
+        servdoc.add(server.getServer(self.id)) 
+        document.add(servdoc)
+
+#Link(label="foxtrot.danse.us", Class="action-link",
+#                         onclick=load(actor="server-view",
+#                         routine="link",
+#                         sname="foxtrot.danse.us"))
+
+    def showJobs(self, director, document):
+        """Adds list of job ids to the document"""
+        document.add(Document(Class="clear-both"))   # Empty document
+        jobsdoc = Document(Class="display-inline")
+        jobsdoc.add(Paragraph(text="Jobs: "))
+        joblist  = self.jobs(director)
+
+        if len(joblist) != 0:
+            for job in joblist:
+                jobsdoc.add(Link(label=job.id, Class="action-link",
+                                 onclick=load(actor="jobs/view",
+                                 routine="link", id=job.id))
+                            )
+        else:
+            jobsdoc.add(Paragraph(text="None", Class="action-link"))
+            
+        document.add(jobsdoc) 
+
+
+    # TODO: Should have "Submit to Queue" only
+    def showRefs(self, document):
+        """Adds References"""
+        document.add(Document(Class="clear-both"))   # Empty document
+        refsdoc = Document(Class="display-block")
+        refsdoc.add(Link(label="Submit to Queue", onclick=load(actor="espresso/sim-view", routine="checkSubmit", id=self.id)))
+        document.add(refsdoc)
+
+
+    def checkSubmit(self):
+        # Check config inputs
+        # Check settings
+        # If check failed, go to error page (with link "Go Back")
+        return load(actor="jobs/submitted", routine="submit", id=self.id)
+
+
+    def jobs(self, director):
+        joblist = []
+        jobs = director.clerk.getJobs(where="simulationId='%s'" % self.id)
+        for job in jobs:
+            if job:
+                joblist.append(job)
+
+        return joblist
+
+    def settings(self):
+        pass
+
+
+    def pathlist(self, director):
+        sim     = director.clerk.getSimulations(id=self.id)
+
+        self.pathlist = [("Home","greet","link"),
+                         ("Simulations", "simulations", "link"),
+                         ("Quantum Espresso", "espresso/index", "link"),
+                         (sim.sname, None, None)]
+
+        return self.pathlist
+    
+
+
+    def __init__(self, *args, **kwds):
+        super(Actor, self).__init__(*args, **kwds)
+
+        return
+
+
+    def _configure(self):
+        super(Actor, self)._configure()
+        self.id = self.inventory.id
+        return
+
+
+    def _init(self):
+        super(Actor, self)._init()
+        return
+
+def actor():
+    return Actor('espresso/sim-view')
+
+
+__date__ = "$Nov 2, 2009 3:15:35 PM$"
+
+
+#        refsdoc.add(Link(label=STEPS[1], onclick=load(actor="espresso/set-config", routine="link", id=self.id)))
+#        refsdoc.add(Link(label=STEPS[2], onclick=load(actor="espresso/step-three", routine="link", id=self.id)))
+#        refsdoc.add(Link(label=STEPS[3], onclick=load(actor="espresso/step-four", routine="link", id=self.id)))

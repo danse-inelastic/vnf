@@ -1,0 +1,155 @@
+#!/usr/bin/env python
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                               Alex Dementsov
+#                      California Institute of Technology
+#                        (C) 2009  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+from vinil.dom.Configuration import Configuration
+from vinil.utils.const import SERVERS
+
+from luban.content import select
+from luban.content.Document import Document
+from luban.content import load
+from luban.content.Form import Form
+from luban.content.Button import Button
+
+from vinil.components.Actor import Actor as base
+
+# Requires simulation id,
+class Actor(base):
+
+    class Inventory(base.Inventory):
+        import pyre.inventory
+        id          = pyre.inventory.str('id', default='')          # Simulation Id
+        filename    = pyre.inventory.str('filename', default='')
+        description = pyre.inventory.str('description', default='') # Not used
+        servername  = pyre.inventory.str('servername', default='')
+        numproc     = pyre.inventory.int('numproc', default=0)
+        numnodes    = pyre.inventory.int('numnodes', default=0)
+        procpernode = pyre.inventory.int('procpernode', default=0)
+        npool       = pyre.inventory.int('npool', default=0)
+        executable  = pyre.inventory.str('executable', default='')
+        params      = pyre.inventory.str('params', default='')
+        modules     = pyre.inventory.str('modules', default='')
+
+
+    def content(self, director):
+        self._sim       = director.clerk.getSimulations(id=self.id)
+        d               = Document(title="Create Settings Configuration")   # , Class="step-content"
+
+        form            = Form(id="form-vinil")
+        filename        = form.text(name="filename", label='File Name', value=self.filename)
+        servername      = form.selector(name="servername", label='Server Name', entries=enumerate(SERVERS)) # value?
+        numproc         = form.text(name="numproc", label='Number of Processors', value=self.numproc)
+        numnodes        = form.text(name="numnodes", label='Number of Nodes', value=self.numnodes)
+        procpernode     = form.text(name="procpernode", label='Processors Per Node', value=self.procpernode)
+        npool           = form.text(name="npool", label='Npool', value=self.npool)
+        executable      = form.text(name="executable", label='Executable', value=self.executable)
+        params          = form.text(name="params", label='Additional Parameters', value=self.params)
+        modulesespresso    = form.text(name="modules", label='Modules', value=self.modules)
+
+        submit          = form.submitbutton(label="Create Settings Configuration")
+        form.onsubmit   = select(element=form).submit(actor = 'espresso/settings-add',
+                                                      routine = 'createRecord',
+                                                      id=self.id)
+
+        # TODO: "Cancel" button looks UGLY
+        cancel      = Button(label="Cancel")
+        cancel.onclick = load(actor = 'espresso/sim-view', routine = 'link', id=self.id)
+        form.add(cancel)
+        d.add(form)
+
+        return d
+
+
+    def createRecord(self, director):
+        """Create settings record"""
+        params  = {"simulationId":  self.id,
+                   "filename":      self.filename,
+                   "type":          "settings",
+                   "parser":        "ConfigParser",
+                   "text":          self._text()}
+                   #"description":   self.description,  # I don't really need description at this point!
+
+        settings     = Configuration()
+        settings.setDirector(director)
+
+        settings.createRecord(params)
+        return load(actor='espresso/sim-view', routine='link', id=self.id)
+
+
+    def _text(self):
+        """Returns text based on set parameters"""
+        import ConfigParser
+        import StringIO
+
+        parser  = ConfigParser.ConfigParser()
+        fp  = StringIO.StringIO()
+        parser.read(fp)
+
+        if parser:
+            parser.add_section("server")
+            parser.set("server", "server-name", SERVERS[int(self.servername)])
+            parser.set("server", "num-proc", self.numproc)
+            parser.set("server", "num-nodes", self.numnodes)
+            parser.set("server", "proc-per-node", self.procpernode)
+            parser.set("server", "npool", self.npool)
+            parser.set("server", "executable", self.executable)
+            parser.set("server", "params", self.params)
+            parser.set("server", "modules", self.modules)
+
+            parser.write(fp)
+            return fp.getvalue()
+
+        return ''
+
+
+    def pathlist(self, director):
+        sim     = director.clerk.getSimulations(id=self.id)
+        self.pathlist = [("Home","greet","link"),
+                         ("Simulations", "simulations", "link"),
+                         ("Quantum Espresso", "espresso/index", "link"),
+                         (sim.sname, "espresso/sim-view", "link", self.id),
+                         ("Create Settings Configuration", None, None)]
+
+        return self.pathlist
+
+    def __init__(self, *args, **kwds):
+        super(Actor, self).__init__(*args, **kwds)
+
+        return
+
+
+    def _configure(self):
+        super(Actor, self)._configure()
+        self.id             = self.inventory.id
+        self.filename       = self.inventory.filename
+        self.description    = self.inventory.description
+        self.servername     = self.inventory.servername
+        self.numproc        = self.inventory.numproc
+        self.numnodes       = self.inventory.numnodes
+        self.procpernode    = self.inventory.procpernode
+        self.npool          = self.inventory.npool
+        self.executable     = self.inventory.executable
+        self.params         = self.inventory.params
+        self.modules        = self.inventory.modules
+
+
+    def _init(self):
+        super(Actor, self)._init()
+        return
+
+def actor():
+    return Actor('espresso/settings-add')
+
+
+__date__ = "$Nov 11, 2009 1:03:02 PM$"
+
+

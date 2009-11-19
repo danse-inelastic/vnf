@@ -1,0 +1,128 @@
+#!/usr/bin/env python
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                               Alex Dementsov
+#                      California Institute of Technology
+#                        (C) 2009  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+from vinil.utils.const import STEPS, TYPES
+from vinil.utils.simulationsteps import SimulationSteps
+from vinil.utils.stepper import Stepper
+
+from luban.content import select
+from luban.content.Paragraph import Paragraph
+from luban.content.Document import Document
+from luban.content.HtmlDocument import HtmlDocument
+from luban.content import load
+from luban.content.Link import Link
+from luban.content.Splitter import Splitter
+from luban.content.FormSelectorField import FormSelectorField
+from luban.content.FormRadioBox import FormRadioBox
+from luban.content.Form import Form
+from luban.content.Tabs import Tabs
+from luban.content.Button import Button
+
+from vinil.components.Actor import Actor as base
+
+# Requires simulation id
+class Actor(base):
+
+    class Inventory(base.Inventory):
+        import pyre.inventory
+        id      = pyre.inventory.str('id', default='')
+        fname       = pyre.inventory.str('fname', default='')
+        description = pyre.inventory.str('description', default='')
+        configtype  = pyre.inventory.str('configtype', default='')
+        text        = pyre.inventory.str('text', default='')
+
+
+    def content(self, director):
+        splitter    = Splitter(orientation='vertical', id="step-splitter")
+        simsteps    = SimulationSteps(current=2)
+        s_steps     = simsteps.getSteps()
+        splitter.add(s_steps)
+        s_content   = splitter.section()
+
+        sim         = director.clerk.getSimulations(id=self.id)
+        if sim:
+            name = sim.sname
+        else:
+            name = ""
+
+        d           = Document(title="Simulation Name: %s" % name, Class="step-content")
+
+        d.add(Link(label="Use Configuration Builder", onclick=load(actor="espresso/config-builder", routine="link", id=self.id)))
+        d.add(Paragraph(text="OR"))
+        d.add(Paragraph(text="Create configuration using the form:"))
+        
+        form        = Form(id="form-vinil")
+        fname       = form.text(name="fname", label='File Name', value=self.fname)
+        description = form.text(name="description", label='Description', value=self.description)
+        configtype  = form.selector(name="configtype", label='Config Type', entries=enumerate(TYPES))
+        text        = form.textarea(name="text", label='Config Text', value=self.text)
+        submit      = form.submitbutton(label="Create Configuration")
+        form.onsubmit   = select(element=form).submit(actor = 'espresso/set-config', routine = 'createRecord', id=sim.id)
+
+        # TODO: "Cancel" button looks UGLY
+        cancel      = Button(label="Cancel")
+        cancel.onclick = load(actor = 'espresso/step-two', routine = 'link', id=sim.id)
+        form.add(cancel)
+        d.add(form)
+
+        s_content.add(d)
+
+#        linklist    = (("espresso/step-one", "link"), ("espresso/step-three", "link"))
+#        stepper     = Stepper(linklist)
+#        s_stepper   = stepper.getStepper()
+#        splitter.add(s_stepper)
+
+        return splitter
+
+
+    def createRecord(self):
+        pass
+
+    def pathlist(self, director):
+        sim     = director.clerk.getSimulations(id=self.id)
+        self.pathlist = [("Home","greet","link"),
+                         ("Simulations", "simulations", "link"),
+                         ("Quantum Espresso", "espresso/index", "link"),
+                         (sim.sname, "espresso/sim-view", "link", self.id),
+                         (STEPS[1], "espresso/step-two", "link", self.id),
+                         ("PW", None, None)]
+
+        return self.pathlist
+
+    def __init__(self, *args, **kwds):
+        super(Actor, self).__init__(*args, **kwds)
+
+        return
+
+
+    def _configure(self):
+        super(Actor, self)._configure()
+        self.id = self.inventory.id
+        self.fname       = self.inventory.fname
+        self.description = self.inventory.description
+        self.text        = self.inventory.text
+        self.configtype  = self.inventory.configtype
+
+        return
+
+
+    def _init(self):
+        super(Actor, self)._init()
+        return
+
+def actor():
+    return Actor('espresso/set-config')
+
+__date__ = "$Nov 3, 2009 6:01:31 PM$"
+
+
