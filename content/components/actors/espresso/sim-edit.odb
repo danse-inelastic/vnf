@@ -1,0 +1,155 @@
+#!/usr/bin/env python
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                               Alex Dementsov
+#                      California Institute of Technology
+#                        (C) 2009  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+from vinil.utils.utils import timestamp
+from vinil.utils.utils import ifelse
+from vinil.utils.const import PACKAGES, SIMULATIONS, TYPES, SIMCHAINS
+from vinil.dom.Configuration import Configuration
+
+from luban.content import select
+from luban.content.Paragraph import Paragraph
+from luban.content.Document import Document
+from luban.content.HtmlDocument import HtmlDocument
+from luban.content import load
+from luban.content.Link import Link
+from luban.content.Form import Form
+from luban.content.Button import Button
+
+from vinil.components.Actor import Actor as base
+class Actor(base):
+
+    class Inventory(base.Inventory):
+        import pyre.inventory
+        # Add tips for each parameter?
+
+        id          = pyre.inventory.str('id', default='')      # Simulation Id
+        sname       = pyre.inventory.str('sname', default='')
+        package     = pyre.inventory.str('package', default='')
+        simtype     = pyre.inventory.str('simtype', default='')
+        description = pyre.inventory.str('description', default='')
+        formula     = pyre.inventory.str('formula', default='')
+
+
+    def content(self, director):
+        # What if record is not present?
+        sim         = director.clerk.getSimulations(id=self.id)
+
+        document    = Document(title='Edit Simulation: %s' % sim.sname, Class="step-content")  # Class="step-content-form")
+        types       = []
+        types.append(sim.type)
+
+        form        = Form(id="form-vinil")
+        sname       = form.text(name="sname", label='Simulation Name', value=sim.sname)
+        package     = form.selector(name="package", label='Package', entries=enumerate(PACKAGES))
+        simtype     = form.selector(name="simtype", label='Simulation Type',
+                                    entries=enumerate(SIMULATIONS),
+                                    selection=self.simtypeValue(sim.type))
+        description = form.text(name="description", label='Description', value=sim.description)   # Make as textarea
+        formula     = form.text(name="formula", label='Formula', value=sim.formula)
+        submit      = form.submitbutton(label="Save Changes")
+        form.onsubmit   = select(element=form).submit(actor = 'espresso/sim-edit', routine = 'updateRecord', id=sim.id)
+
+        # TODO: "Cancel" button looks UGLY
+        cancel      = Button(label="Cancel")
+        cancel.onclick = load(actor = 'espresso/sim-view', routine = 'link', id=self.id)
+        form.add(cancel)
+        document.add(form)
+
+        return document
+    
+
+
+    def simtypeValue(self, simtype):
+        for i in range(len(SIMULATIONS)):
+            if SIMULATIONS[i] == simtype:
+                return i
+
+        return 0
+
+
+    def updateRecord(self, director):
+        """Updates record in the database """
+        self.verify()
+        sim             = director.clerk.getSimulations(id=self.id)
+
+        if sim:
+            params  = {"sname":         self.sname,
+                       "package":       PACKAGES[int(self.package)],
+                       "type":          SIMULATIONS[int(self.simtype)], # Type cannot be updated
+                       "description":   self.description,
+                       "formula":       self.formula}
+            sim.setDirector(director)
+            sim.updateRecord(params)
+
+
+        return load(actor='espresso/sim-view', routine='link', id=self.id)  # Redirection to the page
+
+    # stub
+    def verify(self):
+        """Verify data first """
+        pass
+
+    def pathlist(self, director):
+        sim     = director.clerk.getSimulations(id=self.id)
+        self.pathlist = [("Home","greet","link"),
+                         ("Simulations", "simulations", "link"),
+                         ("Quantum Espresso", "espresso/index", "link"),
+                         (sim.sname, "espresso/sim-view", "link", self.id),
+                         ("Edit", None, None)]
+
+        return self.pathlist
+
+    def __init__(self, *args, **kwds):
+        super(Actor, self).__init__(*args, **kwds)
+
+        return
+
+
+    def _configure(self):
+        super(Actor, self)._configure()
+        self.id          = self.inventory.id
+        self.sname       = self.inventory.sname
+        self.package     = self.inventory.package
+        self.simtype     = self.inventory.simtype
+        self.description = self.inventory.description
+        self.formula     = self.inventory.formula
+
+        return
+
+
+    def _init(self):
+        super(Actor, self)._init()
+        return
+
+def actor():
+    return Actor('espresso/sim-edit')
+
+
+
+__date__ = "$Nov 2, 2009 3:15:49 PM$"
+
+# ****************** DEAD CODE ****************
+
+# Example of using 'selection' option
+
+#        simtype     = form.selector(name="simtype", label='Simulation Type',
+#                                    entries=enumerate(SIMULATIONS),
+#                                    selection=self.simtypeValue(sim.type))
+
+#    def simtypeValue(self, simtype):
+#        for i in range(len(SIMULATIONS)):
+#            if SIMULATIONS[i] == simtype:
+#                return i
+#
+#        return 0
