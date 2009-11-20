@@ -18,9 +18,7 @@ import luban.content as lc
 
 from vnfb.components.MasterTable import FilterSyntaxError, MasterTableActor as base
 
-
 class Actor(base):
-
 
     class Inventory(base.Inventory):
 
@@ -35,16 +33,16 @@ class Actor(base):
 
 
     def debug_tableview(self, director):
-        p = lc.page()
-        doc = p.document(id='main-display-area')
+        p       = lc.page()
+        doc     = p.document(id='main-display-area')
         doc.add(self.createListView(director))
         return p
 
 
     def replaceBodyFrameWithAtomicStructureList(self, director):
-        body_frame = select(id='body-frame')
-        body_skeleton = director.retrieveVisual('body-skeleton')
-        main_display_area = body_skeleton.find(id='main-display-area')
+        body_frame          = select(id='body-frame')
+        body_skeleton       = director.retrieveVisual('body-skeleton')
+        main_display_area   = body_skeleton.find(id='main-display-area')
 
         try:
             atomicstructurelist = self.createListView(director)
@@ -53,7 +51,7 @@ class Actor(base):
             
         main_display_area.add(atomicstructurelist)
 
-        material_portlet = body_skeleton.find(id='main-portlet-my-atomicstructures')
+        material_portlet    = body_skeleton.find(id='main-portlet-my-atomicstructures')
         material_portlet.selected = 1
         
         return body_frame.replaceContent(body_skeleton)
@@ -65,7 +63,7 @@ class Actor(base):
         except FilterSyntaxError, msg:
             return alert('filter syntax error: %s' % msg)
         return [
-            select(id='main-display-area').replaceContent(view),
+            select(id = 'main-display-area').replaceContent(view),
             ]
     
             
@@ -99,22 +97,25 @@ class Actor(base):
 
 
     def debug_newAtomicStructureForm(self, director):
-        p = lc.page()
-        doc = p.document(id='main-display-area')
+        p       = lc.page()
+        doc     = p.document(id='main-display-area')
         doc.add(self.newAtomicStructureForm(director))
         return p
 
 
     def newAtomicStructureForm(self, director):
         return director.retrieveVisual(
-            'atomicstructure/create-structure-form',
-            director=director,
-            id =self.inventory.id)
+                                        'atomicstructure/create-structure-form',
+                                        director    = director,
+                                        id          = self.inventory.id
+                                      )
 
 
     def showOverview(self, director):
         doc = director.retrieveVisual(
-            'atomicstructure/overview', director=director, id = self.inventory.id)
+                                      'atomicstructure/overview',
+                                      director  = director,
+                                      id        = self.inventory.id)
         return select(id='main-display-area').replaceContent(doc)
 
 

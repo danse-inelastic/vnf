@@ -13,6 +13,7 @@
 
 
 from luban.content import load, select
+import luban.content as lc
 
 from vnfb.components.MasterTable import FilterSyntaxError, MasterTableActor as base
 
@@ -40,7 +41,7 @@ class Actor(base):
 
 
     def createListView(self, director):
-
+        # TODO: I guess needs to be refactored the same way as atomicstructure.odb was
         domaccess = director.retrieveDOMAccessor(self.name)
         
         from vnfb.components.MasterTable import MasterTableFactory, filtercompiler
@@ -89,6 +90,16 @@ class Actor(base):
             reverse_order=reverse_order,
             number_records_per_page=number_records_per_page,
             page_number=page_number)
+
+        # add new button
+        toolbar = tableview.find(id='materialsimulation-table-toptoolbar')
+
+        button = lc.button(label='New', tip='create new simulation', icon='new.png')
+        toolbar.add(button)
+        button.onclick = select(id='main-display-area').replaceContent(
+            load(actor='materialsimulation', routine='newAtomicStructureForm')
+            )
+
 
         return tableview
 
