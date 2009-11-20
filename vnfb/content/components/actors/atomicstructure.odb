@@ -70,26 +70,30 @@ class Actor(base):
     
             
     def createListView(self, director):
-        order_by = self.inventory.order_by
-        reverse_order = self.inventory.reverse_order
-        number_records_per_page = self.inventory.number_records_per_page
-        page_number = self.inventory.page_number
+        order_by        = self.inventory.order_by
+        reverse_order   = self.inventory.reverse_order
+        number_records_per_page     = self.inventory.number_records_per_page
+        page_number     = self.inventory.page_number
 
-        filter_expr = self.inventory.filter_expr
-        filter_key = self.inventory.filter_key
-        filter_value = self.inventory.filter_value
+        filter_expr     = self.inventory.filter_expr
+        filter_key      = self.inventory.filter_key
+        filter_value    = self.inventory.filter_value
 
         label = self.inventory.label
         
         tableview = director.retrieveVisual(
-            'atomicstructure/tableview',
-            director, self.name,
-            label = label,
-            filter_expr=filter_expr, filter_key=filter_key, filter_value=filter_value,
-            order_by=order_by,
-            reverse_order=reverse_order,
-            number_records_per_page=number_records_per_page,
-            page_number=page_number)
+                                            'atomicstructure/tableview',
+                                            director,
+                                            self.name,
+                                            label           = label,
+                                            filter_expr     = filter_expr,
+                                            filter_key      = filter_key,
+                                            filter_value    = filter_value,
+                                            order_by        = order_by,
+                                            reverse_order   = reverse_order,
+                                            number_records_per_page = number_records_per_page,
+                                            page_number     = page_number
+                                            )
 
         return tableview
 
