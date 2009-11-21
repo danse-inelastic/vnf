@@ -1,0 +1,64 @@
+#!/usr/bin/env python
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                               Alex Dementsov
+#                      California Institute of Technology
+#                        (C) 2009  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+import luban.content as lc
+from luban.content import load, select
+
+def visual(director):
+    doc = lc.document(title   = "Create New Simulation", id="simulations-list")
+    doc.link(label="BvK", onclick=load(actor="material_simulations/bvk/editor"))
+    doc.link(label="MCViNE", onclick=load(actor="materialsimulation"))
+    doc.link(label="VASP", onclick=load(actor="material_simulations/vasp-rawinput"))
+    doc.link(label="GULP", onclick=load(actor="material_simulations/gulpsimulation"))
+    doc.link(label="Quantum Espresso", onclick=load(actor="material_simulations/espresso/sim-create"))
+
+    #  Link(label=item.label, onclick=load(actor=item.actor, routine=item.routine, id=item.id))
+#    doc.add(viewIndicator(director, id))
+#
+#    form = doc.form(id='create-structure-form', title='Create a new atomic structure')
+#    form.add(labeldoc())
+#    form.add(latticedoc())
+#    if not id: atomids = []
+#    else:
+#        domaccess = director.retrieveDOMAccessor('atomicstructure')
+#        s = domaccess.getAtomicStructure(id)
+#        atomids = s.iterAtomIDs()
+#    form.add(atomsdoc(director, id, atomids))
+#    form.add(addanatomlink(id))
+#    form.add(symmdoc())
+#
+#    sp = lc.splitter(); form.add(sp)
+#
+#    submit = FormSubmitButton(label='Save')
+#    sp.section().add(submit)
+#
+#    cancel = lc.link(
+#        label='cancel',
+#        onclick=load(
+#          actor='atomicstructure/create-structure-form',
+#          routine='cancel',
+#          id=id
+#        ))
+#    sp.section().add(cancel)
+#
+#    form.onsubmit = select(element=form).submit(
+#        actor='atomicstructure/create-structure-form',
+#        routine = 'process',
+#        id = id,
+#        )
+
+    return doc
+
+__date__ = "$Nov 20, 2009 3:11:39 PM$"
+
+
