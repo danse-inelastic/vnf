@@ -1,5 +1,15 @@
 /*  -*- CSS -*-  */
 
+/* Link */
+a {
+    text-decoration: underline;
+    color: blue;
+}
+a:hover {
+    text-decoration: none;
+    cursor: pointer;
+}
+
 .ui-accordion .ui-accordion-content { 
     padding: 0.1em 0.2em;
 }
@@ -15,9 +25,12 @@
 }
 
 a.luban-link {
+    text-decoration: underline;
 }
 
 a.luban-link:hover{
+    text-decoration: none;
+    cursor: pointer;
 }
 
 #body-wrapper{

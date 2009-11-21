@@ -61,7 +61,7 @@ class Factory(object):
         path = []
 
         actor = self.actor
-        path.append(('Atomic structures', lc.load(actor=actor)))
+        path.append(('Atomic Structures', lc.load(actor=actor)))
 
         label = self.getAtomicStructureLabel()
         action = lc.load(actor=actor, routine='showMaterialView', id = self.id,)

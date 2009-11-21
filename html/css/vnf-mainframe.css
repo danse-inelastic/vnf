@@ -244,7 +244,7 @@ body {
 
 /* inside main area */
 #view-indicator {
-    padding: 1em 0 0 0;
+    padding: 1em 0 1em 0;
     font-size: 90%;
     min-width: 270px;
     max-width: 330px;
@@ -252,7 +252,7 @@ body {
 }
 #view-indicator a{
     color: #6f4980;
-    text-decoration: underline;
+    /* text-decoration: underline; */
 }
 #view-indicator p{
     display: inline;
