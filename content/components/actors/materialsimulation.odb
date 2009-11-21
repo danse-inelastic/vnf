@@ -35,6 +35,14 @@ class Actor(base):
         return self.showListView(director)
 
 
+    def debugListView(self, director):
+        page = lc.page()
+        doc = page.document(id='main-display-area')
+        view = self.createListView(director)
+        doc.add(view)
+        return  page
+
+
     def showListView(self, director):
         view = self.createListView(director)
         return select(id='main-display-area').replaceContent(view)
