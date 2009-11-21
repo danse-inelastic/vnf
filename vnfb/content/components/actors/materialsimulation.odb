@@ -97,11 +97,16 @@ class Actor(base):
         button = lc.button(label='New', tip='create new simulation', icon='new.png')
         toolbar.add(button)
         button.onclick = select(id='main-display-area').replaceContent(
-            load(actor='materialsimulation', routine='newAtomicStructureForm')
+            load(actor='materialsimulation', routine='newSimulation')
             )
 
 
         return tableview
+
+
+    def newSimulation(self, director):
+        return director.retrieveVisual('material_simulations/simulations',
+                                        director    = director)
 
 
     def createTable(
