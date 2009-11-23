@@ -28,11 +28,21 @@ def visual(director):
     sB.add(lc.link(label="GULP", onclick=load(actor="material_simulations/gulpsimulation")))
     sB.add(lc.link(label="Quantum Espresso", onclick=load(actor="material_simulations/espresso/sim-create")))
 
+    return doc
 
 
+def viewIndicator(director):
+    path = []
+    path.append(('Simulations ', load(actor='materialsimulation')))
 
-#    doc.add(viewIndicator(director, id))
-#
+#    if id:
+#        label = 'structure %s' % id
+#    else:
+    label = 'Create New Simulation'
+    path.append(label)
+    return director.retrieveVisual('view-indicator', path=path)
+
+
 #    form = doc.form(id='create-structure-form', title='Create a new atomic structure')
 #    form.add(labeldoc())
 #    form.add(latticedoc())
@@ -64,19 +74,6 @@ def visual(director):
 #        routine = 'process',
 #        id = id,
 #        )
-
-    return doc
-
-def viewIndicator(director):
-    path = []
-    path.append(('Simulations ', load(actor='materialsimulation')))
-
-#    if id:
-#        label = 'structure %s' % id
-#    else:
-    label = 'Create New Simulation'
-    path.append(label)
-    return director.retrieveVisual('view-indicator', path=path)
 
 
 #def labeldoc():

@@ -113,6 +113,7 @@ class Actor(base):
 
 
     def newSimulation(self, director):
+        """Retrieves list of simulations"""
         return director.retrieveVisual('material_simulations/simulations',
                                         director    = director)
 
