@@ -25,6 +25,10 @@ class Clerk:
         return self._getRecordByID(BvKModel, id)
 
 
+    def getQEComputation(self, id):
+        from vnf.dom.ins.QEComputation import QEComputation
+        return self._getRecordByID(QEComputation, id)
+
 
 
 class DeepCopier:
