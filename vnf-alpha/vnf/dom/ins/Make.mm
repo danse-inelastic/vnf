@@ -41,6 +41,7 @@ EXPORT_PYTHON_MODULES = \
 	PhononDOS.py \
 	PolyCrystal.py \
 	PolyXtalCoherentPhononScatteringKernel.py \
+        QEComputation.py \
 	ScatteringKernel.py \
 	SQE.py \
 	SQEKernel.py \
