@@ -84,6 +84,7 @@ EXPORT_PYTHON_MODULES = \
 	OwnedObject.py \
 	PhononsFromAbinitio.py \
 	PolyCrystal.py \
+        QESimulation.py \
 	ReferenceManager.py \
 	ReferenceSet.py \
 	Registrant.py \

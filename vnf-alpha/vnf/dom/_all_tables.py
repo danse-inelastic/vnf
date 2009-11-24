@@ -56,6 +56,7 @@ kernels = [
     'AbInitio',
     'PhononsFromAbinitio',
     'GulpSimulation',
+    'QESimulation',
     'MmtkSimulation',
     'MdAnalysis',
     ]

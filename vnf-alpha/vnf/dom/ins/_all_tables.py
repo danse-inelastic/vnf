@@ -16,7 +16,6 @@ def tables():
         'BvKBond',
         'BvKComputation',
         'BvKModel',
-        'QEComputation',
         'SQE',
         'VacfComputation',
         ]

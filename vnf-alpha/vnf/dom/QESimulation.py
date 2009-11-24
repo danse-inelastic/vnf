@@ -20,13 +20,15 @@
 #           "Multi-Phonon Dispersion")
 
 import dsaw.db
-from MaterialModeling import MaterialModeling as base
+from vnf.dom.MaterialSimulation import MaterialSimulation as base
 
-class QEComputation(base):
+class QESimulation(base):
 
-    name    = 'qecomputations'
+    name    = 'qesimulations'
     matter  = dsaw.db.versatileReference(name='matter')
     type    = dsaw.db.varchar(name='type', length = 128)
+
+# id, date, creator, short_description, globalpointer, results_state, job, matter, type
 
 __date__ = "$Nov 22, 2009 11:42:42 PM$"
 
