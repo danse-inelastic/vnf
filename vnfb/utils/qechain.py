@@ -11,7 +11,7 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
-from vinil.utils.const import SIMCHAINS
+from vnfb.utils.qeconst import SIMCHAINS
 
 from luban.content.Splitter import Splitter
 from luban.content.Paragraph import Paragraph
@@ -19,7 +19,8 @@ from luban.content import load
 from luban.content.Link import Link
 
 
-class SimChain:
+class QEChain:
+    """Displays the chain of QE simulation steps"""
 
     def __init__(self, director, type=None):
         self._director  = director

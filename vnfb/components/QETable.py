@@ -17,13 +17,13 @@ Notes on database classes implementation:
     - Directly use clerk's methods (e.g. Clerk.updateRecord(record)) by passing the class object
         Pros: Saves extra call
         Cons: Not very convenient to write
-    - Use DBTable methods (e.g. DBTable.updateRecord(params) by passing dictionary of parameters
+    - Use QETable methods (e.g. QETable.updateRecord(params) by passing dictionary of parameters
       (e.g. params = {"id": 5, "name": "Hi", ...})
       Pros: Convenient for handling table forms?
-2. Using DBTable methods does not require passing director every time you use it.
+2. Using QETable methods does not require passing director every time you use it.
 """
 
-from vnfb.utils.utils import timestamp, newid, setname, ifelse
+from vnfb.utils.qeutils import timestamp, newid, setname, ifelse
 from dsaw.db.Table import Table
 
 NO_UPDATE   = ["timeCreated", "id"]
@@ -56,6 +56,7 @@ class QETable(Table):
         self._clerk     = director.clerk    # Specific for director
 
 
+    # Haven't tested yet
     def updateRecord(self, params):
         """Tries to update record, otherwise complains"""
         for column in self.getColumnNames():
@@ -69,12 +70,12 @@ class QETable(Table):
             setattr(self, column, setname(params, self, column))
 
         try:
-            self._clerk.updateRecord(self)   # Commit to database
+            self._clerk.updateRecordWithID(self)   # Commit to database
         except:
             raise   # Complain
 
-
-    def createRecord(self, params):
+    # Haven't tested yet
+    def createRecord(self, params, owner=None):
         """Tries to create record, otherwise complains"""
         for column in self.getColumnNames():
             if self._id(column):
@@ -88,10 +89,18 @@ class QETable(Table):
             setattr(self, column, setname(params, self, column))
 
         try:
-            "Interface changed! (Old version: self._clerk.insertRecord(self))"
-            self._clerk.newRecord(self)   # Commit to database
+            if owner:
+                self._clerk.insertNewOwnedRecord(self, owner)
+            else:
+                self._clerk.insertNewRecordWithID(self)   # Commit to database
         except:
             raise   # Complain
+
+
+    def deleteRecord(self):
+        """Deletes record is clerk exists, ignores otherwise"""
+        if self._clerk:
+            self._clerk.deleteRecordWithID(self, where="id='%s'" % getattr(self, 'id'))
 
 
     def _noUpdate(self, value):
@@ -113,12 +122,6 @@ class QETable(Table):
             return True
 
         return False
-
-
-    def deleteRecord(self):
-        """Deletes record is clerk exists, ignores otherwise"""
-        if self._clerk:
-            self._clerk.deleteRecord(self, id=getattr(self, 'id'))
 
 
 __date__ = "$Nov 24, 2009 5:52:44 PM$"

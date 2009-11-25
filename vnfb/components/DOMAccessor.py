@@ -209,11 +209,11 @@ class DOMAccessor( base ):
 
     def _getEntry(self, classname, id=None, where=None):
         """Get entry specified by id or where clause"""
-        vclass = self._getClass(classname)
+        table = self._getClass(classname)
         if id is not None:
-            return self._getRecordByID( vclass, id )
+            return self._getRecordByID( table, id )
 
-        return self._getAll(vclass, where)
+        return self._getAll(table, where)
 
 
 
