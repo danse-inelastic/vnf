@@ -53,6 +53,7 @@ class QEConfiguration(base):
     timeModified = pyre.db.varchar(name="timeModified", length=16, default='')
     timeModified.meta['tip'] = "timeModified"
 
+    # FIXME: Do I need text fields once I use get file from DDS location?
     text = pyre.db.varchar(name="text", length=8192, default='')
     text.meta['tip'] = "text"
 

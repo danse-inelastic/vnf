@@ -56,7 +56,6 @@ kernels = [
     'AbInitio',
     'PhononsFromAbinitio',
     'GulpSimulation',
-    'QESimulation',
     'MmtkSimulation',
     'MdAnalysis',
     ]
@@ -78,6 +77,12 @@ other = [
     'TransientObject',
     ]
 
+# If error is returned, change order in the list
+qetables    = [
+               'QESimulation',
+               'QEJob',
+               'QEConfiguration',
+              ]
 
 tablemodules = \
              acl \
@@ -89,7 +94,8 @@ tablemodules = \
              + instrument \
              + acl2 \
              + experiment \
-             + other
+             + other \
+             + qetables
 
 
 def tables():
