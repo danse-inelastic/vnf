@@ -37,7 +37,9 @@ all: export
 
 EXPORT_PYTHON_MODULES = \
 	__init__.py \
+        const.py \
 	constraints.py \
+        orderedDict.py \
 	safe_eval.py \
 
 
