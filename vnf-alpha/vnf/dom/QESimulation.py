@@ -12,7 +12,8 @@
 #
 
 """
-QESimulation - sequence (or chain) of Quantum Espresso simulation steps (e.g. PW, PH)
+QESimulation - table that holds data for sequence (or chain) of Quantum Espresso
+simulation steps (e.g. PW, PH)
     Total Energy:               PW
     Electron DOS:               PW -> DOS
     Electron Dispersion:        PW -> DOS
@@ -69,22 +70,22 @@ class QESimulation(base):
 
 
 # Default records
-defaults    = ({"id": 1, "sname": 'MgB2_SP', "package": 'Quantum Espresso',
+defaults    = ({"id": 1, "sname": 'MgB2_SP', "creator": "dexity", "package": 'Quantum Espresso',
                 "type": SIMULATIONS[4], "description": 'Single-Phonon simualtion',
                 "formula": 'MgB2', "label": LABELS["F"]},
-                {"id": 2, "sname": 'MgB2_E', "package": 'Quantum Espresso',
+                {"id": 2, "sname": 'MgB2_E', "creator": "dexity", "package": 'Quantum Espresso',
                 "type": SIMULATIONS[0], "description": 'Electron simualtion',
                 "formula": 'MgB2', "label": LABELS["F"]},
-                {"id": 3, "sname": 'MgB2_MP', "package": 'Quantum Espresso',
+                {"id": 3, "sname": 'MgB2_MP', "creator": "dexity", "package": 'Quantum Espresso',
                 "type": SIMULATIONS[5], "description": 'Multy-Phonon simualtion',
                 "formula": 'MgB2', "label": LABELS["F"]},
-                {"id": 4, "sname": 'Ni_Energy', "package": 'Quantum Espresso',
+                {"id": 4, "sname": 'Ni_Energy', "creator": "dexity", "package": 'Quantum Espresso',
                 "type": SIMULATIONS[0], "description": 'Total Energy simualtion',
                 "formula": 'Ni', "label": LABELS["E"]},
-                {"id": 5, "sname": 'Ni_E_DOS', "package": 'Quantum Espresso',
+                {"id": 5, "sname": 'Ni_E_DOS', "creator": "dexity", "package": 'Quantum Espresso',
                 "type": SIMULATIONS[1], "description": 'Electron DOS simualtion',
                 "formula": 'Ni', "label": LABELS["E"]},
-                {"id": 6, "sname": 'Ni_Ph_DOS', "package": 'Quantum Espresso',
+                {"id": 6, "sname": 'Ni_Ph_DOS', "creator": "dexity", "package": 'Quantum Espresso',
                 "type": SIMULATIONS[5], "description": 'Multy-Phonon DOS simualtion',
                 "formula": 'Ni', "label": LABELS["E"]})
 
