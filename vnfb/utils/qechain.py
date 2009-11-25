@@ -29,7 +29,7 @@ class QEChain:
 
 
     def chain(self, id):
-        inputs          = self._director.clerk.getConfigurations(where="simulationId='%s'" % id)
+        inputs          = self._director.clerk.getQEConfigurations(where="simulationId='%s'" % id)
         orderedInputs   = self._orderInput(self._simlist, inputs)
 
         splitter    = Splitter(orientation='horizontal')
@@ -39,8 +39,10 @@ class QEChain:
             section     = splitter.section()
             section.add(Paragraph(text=self._simlist[i]))   # Simulation type
             section.add(Link(label=self._inputText(orderedInputs[i]), Class="action-link",
-                             onclick=load(actor=self._getActor(orderedInputs[i]),
-                                          routine="link", id=id, type=self._simlist[i],
+                             onclick=load(actor="material_simulations/espresso/input",
+                                          routine=self._getRoutine(orderedInputs[i]),
+                                          id=id,
+                                          type=self._simlist[i],
                                           configid=self._getId(self._simlist[i], inputs)))   # Passes config type (not id)
                         )
 
@@ -59,12 +61,12 @@ class QEChain:
         return "Add"
 
 
-    def _getActor(self, input):
-        """Returns proper actor depending if 'input' exists"""
+    def _getRoutine(self, input):
+        # FIXME: Change routines if necessary
         if input:   # View
-            return "espresso/input-view"
+            return "view"
 
-        return "espresso/input-add" # Create New
+        return "add" # Create New
 
 
     def _orderInput(self, simlist, inputs):
@@ -101,7 +103,7 @@ class QEChain:
         return ""
 
 if __name__ == "__main__":
-    chain   = SimChain(None, None)
+    chain   = QEChain(None, None)
 
 
 __date__ = "$Nov 9, 2009 10:50:54 AM$"
@@ -117,4 +119,12 @@ __date__ = "$Nov 9, 2009 10:50:54 AM$"
 #        two.add(Paragraph(text="DOS"))
 #        two.add(Link(label="Add"))
 
+
+#    def _getActor(self, input):
+#        # FIXME: merge to one 'input' actor
+#        """Returns proper actor depending if 'input' exists"""
+#        if input:   # View
+#            return "material_simulations/espresso/input-view"
+#
+#        return "material_simulations/espresso/input-add" # Create New
 

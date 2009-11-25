@@ -12,6 +12,9 @@
 #
 
 """
+QETable - abstract class for all QE database tables. It serves as an adapter for
+VNF Clerk for convenience purposes (in case if interfaces change)
+
 Notes on database classes implementation:
 1. There are two alternative ways to perform action (update, create, delete) on database class:
     - Directly use clerk's methods (e.g. Clerk.updateRecord(record)) by passing the class object
@@ -30,7 +33,6 @@ NO_UPDATE   = ["timeCreated", "id"]
 STAMPED     = ["timeCreated", "timeModified"]
 
 class QETable(Table):
-    """ Abstract class for all the database tables"""
 
     def __init__(self, director, clerk):
         """
