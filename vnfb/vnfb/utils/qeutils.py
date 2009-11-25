@@ -50,13 +50,6 @@ def parsePHFile(filename):
     return (e,  x)
 
 
-#def newid(director):
-#    id  = ''
-#    if director:
-#        id = director.idd.token().locator
-#
-#    return id
-
 def newid(director):
     id  = ''
     if director:
@@ -91,7 +84,7 @@ def stamp2date(stamp):
     from datetime import date
     if m:
         s   = time.strptime(date.fromtimestamp(float(stamp)).ctime())
-        return str(time.strftime("%b-%d-%Y", s))     # Format: Month-Day-Year
+        return str(time.strftime("%Y-%b-%d", s))     # Format: Year-Month-Day
 
     return ""
 

@@ -17,18 +17,19 @@ from luban.content import load
 from luban.content.Link import Link
 
 
-class SimParams:
+class QEParams:
+    """Displays parameters of the simulation"""
 
     def __init__(self, director):
         self._director  = director
         self._type      = "settings"
 
     def getLink(self, id):      # simulation
-        settings  = self._director.clerk.getConfigurations(where="simulationId='%s' AND type='%s'" % (id, self._type))
+        settings  = self._director.clerk.getQEConfigurations(where="simulationId='%s' AND type='%s'" % (id, self._type))
 
         link = Link(label="Add", Class="action-link",
-                    onclick=load(actor      = "espresso/settings-add",
-                                 routine    = "link",
+                    onclick=load(actor      = "espresso/settings",
+                                 routine    = "add",
                                  id         = id)
                     )
 
@@ -36,8 +37,8 @@ class SimParams:
             s = settings[0]
             if s:
                 link = Link(label=s.filename, Class="action-link",
-                            onclick=load(actor      = "espresso/settings-view",
-                                         routine    = "link",
+                            onclick=load(actor      = "espresso/settings",
+                                         routine    = "view",
                                          id         = id,
                                          configid   = s.id)
                             )
@@ -46,8 +47,11 @@ class SimParams:
 
 
 if __name__ == "__main__":
-    chain   = SimParams(None)
+    chain   = QEParams(None)
 
+
+#"espresso/settings-add",
+#"link",
 
 __date__ = "$Nov 10, 2009 5:52:02 PM$"
 
