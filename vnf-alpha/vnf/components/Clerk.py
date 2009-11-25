@@ -222,7 +222,6 @@ class Clerk(Component):
         module  = _import("%s.%s" % (maindom, classname))
         return getattr(module, classname)
 
-
     def _getEntry(self, classname, id=None, where=None):
         """Get entry specified by id or where clause"""
         vclass = self._getClass(classname)
@@ -299,6 +298,7 @@ class Clerk(Component):
     
 
     def updateRecord(self, record):
+        """Updates row in the database specified by record.id"""
         id = record.id
         where = "id='%s'" % id
         
@@ -307,7 +307,6 @@ class Clerk(Component):
         # get the column names and couple them with the new values
         for column in record.getColumnNames():
             value = getattr( record, column )
-            #value = _tostr( value )
             assignments.append( (column, value) )
             continue
         # update the row, or in other words, record
@@ -471,6 +470,7 @@ class Clerk(Component):
 
 
     def deleteRecord(self, record, recursive=False):
+        """Deletes record"""
         return self.referenceManager.deleteRecord(record, recursive=recursive)
 
 

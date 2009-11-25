@@ -28,9 +28,9 @@ in VNF (e.g. gulpsimulations or bvkcomputations) which refer to the actual simul
 """
 
 from vnfb.utils.const import SIMULATIONS, LABELS
-from vnfb.components.DBTable import DBTable
+from vnfb.components.QETable import QETable as base
 
-class QESimulation(DBTable):
+class QESimulation(base):
 
     name = "qesimulations"
     import dsaw.db
