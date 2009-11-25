@@ -60,6 +60,21 @@ class Clerk( base ):
         return registrants[0]
         
 
+    """QE methods for retrieving records using vnf.dom"""
+
+    def getQEJobs(self, id=None, where=None):
+        '''retrieve qejobs record specified by id'''
+        return self._getEntry('QEJob', id=id, where=where)
+
+    def getQESimulations(self, id=None, where=None):
+        '''retrieve simulation record specified by id'''
+        return self._getEntry('QESimulation', id=id, where=where)
+
+    def getQEConfigurations(self, id=None, where=None):
+        '''retrieve user configuration specified by id'''
+        return self._getEntry('QEConfiguration', id=id, where=where)
+
+
     def _configure(self):
         base._configure(self)
         self.db = self.inventory.db

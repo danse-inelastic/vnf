@@ -199,37 +199,7 @@ class Clerk(Component):
     def getSampleEnvironment(self,id):
         from vnf.dom.SampleEnvironment import SampleEnvironment
         return self._getRecordByID( SampleEnvironment, id )
-
-
-    """QE methods"""
-
-    def getQEJobs(self, id=None, where=None):
-        '''retrieve qejobs record specified by id'''
-        return self._getEntry('QEJob', id=id, where=where)
-
-    def getQESimulations(self, id=None, where=None):
-        '''retrieve simulation record specified by id'''
-        return self._getEntry('QESimulation', id=id, where=where)
-
-    def getQEConfigurations(self, id=None, where=None):
-        '''retrieve user configuration specified by id'''
-        return self._getEntry('QEConfiguration', id=id, where=where)
-
-
-    def _getClass(self, classname):
-        """Get class from classname"""
-        maindom = "vnf.dom"
-        module  = _import("%s.%s" % (maindom, classname))
-        return getattr(module, classname)
-
-    def _getEntry(self, classname, id=None, where=None):
-        """Get entry specified by id or where clause"""
-        vclass = self._getClass(classname)
-        if id is not None:
-            return self._getRecordByID( vclass, id )
-
-        return self._getAll(vclass, where)
-
+    
 
     def newInstrumentConfiguration(self, instrument):
         tablename = '%sconfiguration' % instrument.id
