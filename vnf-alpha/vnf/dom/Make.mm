@@ -85,7 +85,7 @@ EXPORT_PYTHON_MODULES = \
 	PhononsFromAbinitio.py \
 	PolyCrystal.py \
         QEConfiguration.py \
-        QEJobs.py \
+        QEJob.py \
         QESimulation.py \
 	ReferenceManager.py \
 	ReferenceSet.py \

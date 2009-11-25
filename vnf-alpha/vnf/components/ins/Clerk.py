@@ -25,9 +25,9 @@ class Clerk:
         return self._getRecordByID(BvKModel, id)
 
 
-    def getQEComputation(self, id):
-        from vnf.dom.ins.QESimulation import QESimulation
-        return self._getRecordByID(QESimulation, id)
+#    def getQEComputation(self, id):
+#        from vnf.dom.ins.QESimulation import QESimulation
+#        return self._getRecordByID(QESimulation, id)
 
 
 
