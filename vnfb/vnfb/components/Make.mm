@@ -37,6 +37,7 @@ all: export
 EXPORT_PYTHON_MODULES = \
 	AppExtension.py \
 	Clerk.py \
+        DBTable.py \
 	DistributedDataStorage.py \
 	DOMAccessor.py \
 	JnlpFile.py \
