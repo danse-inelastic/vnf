@@ -37,9 +37,13 @@ all: export
 
 EXPORT_PYTHON_MODULES = \
 	__init__.py \
-        const.py \
 	constraints.py \
         orderedDict.py \
+        qechain.py \
+        qeconst.py \
+        qeparams.py \
+        qeserver.py \
+        qeutils.py \
 	safe_eval.py \
 
 
