@@ -191,7 +191,30 @@ class DOMAccessor( base ):
             return all[0]
         raise RuntimeError, "Cannot find record of id=%s in table %s" % (
             id, table.__name__)
-        
+
+    def _getAll(self, table, where = None):
+        index = {}
+        all = self.db.fetchall(table, where=where)
+        return all
+
+    
+    """Auxiliary classes"""
+    
+    def _getClass(self, classname):
+        """Get class from classname"""
+        maindom = "vnf.dom"
+        module  = _import("%s.%s" % (maindom, classname))
+        return getattr(module, classname)
+
+
+    def _getEntry(self, classname, id=None, where=None):
+        """Get entry specified by id or where clause"""
+        vclass = self._getClass(classname)
+        if id is not None:
+            return self._getRecordByID( vclass, id )
+
+        return self._getAll(vclass, where)
+
 
 
 class Proxy(object):
@@ -235,5 +258,24 @@ class Proxy(object):
 
 # version
 __id__ = "$Id$"
+
+#    # Added from old Clerk, same as updateRecordWithID()?
+#    def updateRecord(self, record):
+#        """Updates row in the database specified by record.id"""
+#        id = record.id
+#        where = "id='%s'" % id
+#
+#        assignments = []
+#
+#        # get the column names and couple them with the new values
+#        for column in record.getColumnNames():
+#            value = getattr( record, column )
+#            assignments.append( (column, value) )
+#            continue
+#        # update the row, or in other words, record
+#        self.db.updateRow(record.__class__, assignments, where)
+#        return record
+
+
 
 # End of file 
