@@ -25,9 +25,10 @@ Notes:
     - It has a bit different meaning from other "simulation" or "computation" tables used
 in VNF (e.g. gulpsimulations or bvkcomputations) which refer to the actual simulation steps.
     - This table is Quantum Espresso specific
+    - Has 'creator' field (owned table)
 """
 
-from vnfb.utils.const import SIMULATIONS, LABELS
+from vnfb.utils.qeconst import SIMULATIONS, LABELS
 from vnfb.components.QETable import QETable as base
 
 class QESimulation(base):
@@ -41,6 +42,9 @@ class QESimulation(base):
 
     sname = dsaw.db.varchar(name="sname", length=128, default='')
     sname.meta['tip'] = ""
+
+    creator = dsaw.db.varchar(name="creator", length=128, default='')
+    creator.meta['tip'] = ""
 
     package = dsaw.db.varchar(name="package", length=128, default='')
     package.meta['tip'] = ""
