@@ -29,8 +29,8 @@ Notes on database classes implementation:
 from vnfb.utils.qeutils import timestamp, newid, setname, ifelse
 from dsaw.db.Table import Table
 
-NO_UPDATE   = ["timeCreated", "id"]
-STAMPED     = ["timeCreated", "timeModified"]
+NO_UPDATE   = ["timeCreated", "date", "id"]
+STAMPED     = ["timeCreated", "date", "timeModified"]
 
 class QETable(Table):
 
