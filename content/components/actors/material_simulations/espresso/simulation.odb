@@ -1,0 +1,145 @@
+#!/usr/bin/env python
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                               Alex Dementsov
+#                      California Institute of Technology
+#                        (C) 2009  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+from vnfb.utils.qeconst import SIMULATIONS
+#from vnfb.utils.simulationsteps import SimulationSteps
+#from vnfb.utils.stepper import Stepper
+from vnf.dom.QESimulation import QESimulation
+
+from luban.content import select
+from luban.content.Paragraph import Paragraph
+from luban.content.Document import Document
+from luban.content.HtmlDocument import HtmlDocument
+from luban.content import load
+from luban.content.Link import Link
+from luban.content.Splitter import Splitter
+from luban.content.FormSelectorField import FormSelectorField
+from luban.content.FormRadioBox import FormRadioBox
+from luban.content.Form import Form
+
+
+import luban.content as lc
+from luban.components.AuthorizedActor import AuthorizedActor as base
+
+class Actor(base):
+    """ Create Quantum Espresso simulation"""
+
+    class Inventory(base.Inventory):
+        import pyre.inventory
+        sname       = pyre.inventory.str('sname', default='')
+        simtype     = pyre.inventory.str('simtype', default='')
+        description = pyre.inventory.str('description', default='')
+        formula     = pyre.inventory.str('formula', default='')
+        label       = pyre.inventory.str('label', default='')
+
+    def default(self, director):
+        return select(id='main-display-area').replaceContent(self.content(director))
+
+    def content(self, director):
+        def viewIndicator(director):
+            path = []
+            path.append(('Simulations ', load(actor='materialsimulation')))
+            path.append(('Create New Simulation ', select(id='main-display-area').replaceContent(
+                                                          load(actor='materialsimulation',
+                                                               routine='newSimulation')
+                                                          ))
+                        )
+
+            path.append('Quantum Espresso')
+            return director.retrieveVisual('view-indicator', path=path)
+
+        doc         = lc.document(title   = "Create New Simulation")
+        splitter    = doc.splitter(orientation="vertical")
+        sA          = splitter.section()
+        sA.add(viewIndicator(director))
+        sB          = splitter.section()
+
+        form        = Form(id='create-simulation-form', title='Create New Quantum Espresso Simulation')
+        sname       = form.text(name="sname", label='Simulation Name', value=self.sname)
+        simtype     = form.selector(name="simtype",
+                                    label='Simulation Type',
+                                    entries=enumerate(SIMULATIONS))
+        description = form.text(name="description", label='Description', value=self.description)   # Make as textarea
+        formula     = form.text(name="formula", label='Chemical Formula', value=self.formula)
+        label       = form.text(name="label", label='Label', value=self.label)
+        submit      = form.submitbutton(label="Create New Simulation")
+        form.onsubmit   = select(element=form).submit(actor = 'material_simulations/espresso/simulation',
+                                                      routine = 'createRecord')
+        cancel      = lc.link(label="Cancel", onclick = load(actor = 'materialsimulation'))
+        form.add(cancel)
+        
+        sB.add(form)
+
+        return doc
+
+
+
+
+    def createRecord(self, director):
+        """Create simulation record"""
+        self._verify()
+        simtype = SIMULATIONS[int(self.simtype)]
+
+        params  = {"sname":         self.sname,
+                   "type":          simtype,
+                   "creator":       director.sentry.username,
+                   "description":   self.description,
+                   "formula":       self.formula}
+        sim     = QESimulation()
+        sim.setDirector(director)
+        sim.createRecord(params)
+
+        return load(actor='materialsimulation')  # Redirection to the page
+
+
+    # stub
+    def _verify(self):
+        """Verify data first """
+        pass
+
+    def _simtypeValue(self, simtype):
+        for i in range(len(SIMULATIONS)):
+            if SIMULATIONS[i] == simtype:
+                return i
+
+        return 0
+
+
+    def __init__(self):
+        super(Actor, self).__init__(name='material_simulations/espresso/simulation')
+
+        return
+
+
+    def _configure(self):
+        super(Actor, self)._configure()
+        self.sname       = self.inventory.sname
+        self.simtype     = self.inventory.simtype
+        self.description = self.inventory.description
+        self.formula     = self.inventory.formula
+        self.label       = self.inventory.label
+
+        return
+
+
+    def _init(self):
+        super(Actor, self)._init()
+        return
+
+def actor():
+    return Actor()
+
+__date__ = "$Nov 10, 2009 11:02:01 AM$"
+
+

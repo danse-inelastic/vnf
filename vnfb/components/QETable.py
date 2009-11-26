@@ -38,13 +38,13 @@ class QETable(Table):
         """
         clerk     - is set for actual managing database records
         """
-        super(DBTable, self).__init__()
+        super(QETable, self).__init__()
         self._clerk     = clerk
         self._director  = director
 
 
     def __init__(self):
-        super(DBTable, self).__init__()
+        super(QETable, self).__init__()
         self._clerk     = None
         self._director  = None
 
@@ -77,7 +77,7 @@ class QETable(Table):
             raise   # Complain
 
     # Haven't tested yet
-    def createRecord(self, params, owner=None):
+    def createRecord(self, params):
         """Tries to create record, otherwise complains"""
         for column in self.getColumnNames():
             if self._id(column):
@@ -91,10 +91,7 @@ class QETable(Table):
             setattr(self, column, setname(params, self, column))
 
         try:
-            if owner:
-                self._clerk.insertNewOwnedRecord(self, owner)
-            else:
-                self._clerk.insertNewRecordWithID(self)   # Commit to database
+            self._clerk.insertNewRecord(self)
         except:
             raise   # Complain
 
