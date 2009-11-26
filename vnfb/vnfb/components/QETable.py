@@ -76,7 +76,7 @@ class QETable(Table):
         except:
             raise   # Complain
 
-    # Haven't tested yet
+
     def createRecord(self, params):
         """Tries to create record, otherwise complains"""
         for column in self.getColumnNames():
@@ -95,7 +95,7 @@ class QETable(Table):
         except:
             raise   # Complain
 
-
+    # Haven't tested yet
     def deleteRecord(self):
         """Deletes record is clerk exists, ignores otherwise"""
         if self._clerk:

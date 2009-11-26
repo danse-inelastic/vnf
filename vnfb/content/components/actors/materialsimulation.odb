@@ -76,37 +76,47 @@ class Actor(base):
         labels = labelaccess.getLabelNames(self.name)
             
         factory = MasterTableFactory(
-            self.name, countrecords, createtable,
-            compilefilter, filtercols,
-            filterfromlabel, smartlabels, labels)
+                                    self.name,
+                                    countrecords,
+                                    createtable,
+                                    compilefilter,
+                                    filtercols,
+                                    filterfromlabel,
+                                    smartlabels,
+                                    labels
+                                    )
 
-        order_by = self.inventory.order_by
-        reverse_order = self.inventory.reverse_order
-        number_records_per_page = self.inventory.number_records_per_page
-        page_number = self.inventory.page_number
+        order_by        = self.inventory.order_by
+        reverse_order   = self.inventory.reverse_order
+        number_records_per_page     = self.inventory.number_records_per_page
+        page_number     = self.inventory.page_number
 
-        filter_expr = self.inventory.filter_expr
-        filter_key = self.inventory.filter_key
-        filter_value = self.inventory.filter_value
+        filter_expr     = self.inventory.filter_expr
+        filter_key      = self.inventory.filter_key
+        filter_value    = self.inventory.filter_value
 
-        label = self.inventory.label
+        label           = self.inventory.label
 
         tableview = factory.create(
-            label=label,
-            filter_expr=filter_expr, filter_key=filter_key, filter_value=filter_value,
-            order_by=order_by,
-            reverse_order=reverse_order,
-            number_records_per_page=number_records_per_page,
-            page_number=page_number)
+                                    label               = label,
+                                    filter_expr         = filter_expr,
+                                    filter_key          = filter_key,
+                                    filter_value        = filter_value,
+                                    order_by            = order_by,
+                                    reverse_order       = reverse_order,
+                                    number_records_per_page = number_records_per_page,
+                                    page_number         = page_number
+                                  )
 
         # add new button
-        toolbar = tableview.find(id='materialsimulation-table-toptoolbar')
+        toolbar         = tableview.find(id='materialsimulation-table-toptoolbar')
 
-        button = lc.button(label='New', tip='create new simulation', icon='new.png')
+        button          = lc.button(label='New', tip='create new simulation', icon='new.png')
         toolbar.add(button)
-        button.onclick = select(id='main-display-area').replaceContent(
-            load(actor='materialsimulation', routine='newSimulation')
-            )
+        button.onclick  = select(id='main-display-area').replaceContent(
+                                            load(actor      = 'materialsimulation',
+                                                 routine    = 'newSimulation')
+                                                                      )
 
 
         return tableview
@@ -118,31 +128,40 @@ class Actor(base):
                                         director    = director)
 
 
-    def createTable(
-        self, director,
-        order_by=None, reverse_order=None, slice=None,
-        filter=None, label=None):
+    def createTable(self,
+                    director,
+                    order_by        = None,
+                    reverse_order   = None,
+                    slice           = None,
+                    filter          = None,
+                    label           = None):
 
-        order_by = order_by or self.inventory.order_by
-        reverse_order = reverse_order or self.inventory.reverse_order
-        filter = filter or self.inventory.filter_expr
+        order_by        = order_by or self.inventory.order_by
+        reverse_order   = reverse_order or self.inventory.reverse_order
+        filter          = filter or self.inventory.filter_expr
 
-        domaccess = director.retrieveDOMAccessor(self.name)
-        matsims = domaccess.getSimulations(
-            order_by=order_by, reverse_order=reverse_order, slice=slice,
-            filter=filter,
-            label=label,
-            )
+        domaccess       = director.retrieveDOMAccessor(self.name)
+        matsims         = domaccess.getSimulations(
+                                                    order_by        = order_by,
+                                                    reverse_order   = reverse_order,
+                                                    slice           = slice,
+                                                    filter          = filter,
+                                                    label           = label
+                                                    )
 
         cols = columns
         args = matsims, cols, director
         thetable = director.retrieveComponent(
-            'materialsimulation-table',
-            factory="visual", args=args,
-            vault=['visuals'])
+                                              'materialsimulation-table',
+                                              factory     = "visual",
+                                              args        = args,
+                                              vault       = ['visuals']
+                                              )
         # thetable = table(*args)
         thetable.oncellchanged = select(element=thetable).notify(
-            event='row-changed', actor='matsimtable', routine='processRowChange')
+                                                            event='row-changed',
+                                                            actor='matsimtable',
+                                                            routine='processRowChange')
         return thetable
     
 

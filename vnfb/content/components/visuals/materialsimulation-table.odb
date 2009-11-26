@@ -21,18 +21,20 @@ def visual(matsims, cols, director):
 
 
 def table(matsims, cols, director):
+    """Creates table for material simulations"""
+
     from luban.content.table import Model, View, Table
     from luban.content import load
     from luban.content.Link import Link
     
     class model(Model):
 
-        selected = Model.descriptors.bool(name='selected')
-        id = Model.descriptors.link(name='id')
-        description = Model.descriptors.str(name='description')
-        type = Model.descriptors.str(name='type')
-        matter = Model.descriptors.str(name='matter')
-        date = Model.descriptors.str(name='date')
+        selected        = Model.descriptors.bool(name='selected')
+        id              = Model.descriptors.link(name='id')
+        description     = Model.descriptors.str(name='description')
+        type            = Model.descriptors.str(name='type')
+        matter          = Model.descriptors.str(name='matter')
+        date            = Model.descriptors.str(name='date')
 
         row_identifiers = ['id', 'type']
 
