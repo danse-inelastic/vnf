@@ -29,7 +29,7 @@ in VNF (e.g. gulpsimulations or bvkcomputations) which refer to the actual simul
     - Has 'creator' field (owned table)
 """
 
-from vnfb.utils.qeconst import SIMULATIONS, LABELS
+from vnfb.utils.qeconst import SIMULATIONS
 from vnfb.components.QETable import QETable as base
 
 class QESimulation(base):
@@ -47,7 +47,7 @@ class QESimulation(base):
     creator = dsaw.db.varchar(name="creator", length=128, default='')
     creator.meta['tip'] = ""
 
-    package = dsaw.db.varchar(name="package", length=128, default='')
+    package = dsaw.db.varchar(name="package", length=128, default='Quantum Espresso')
     package.meta['tip'] = ""
 
     type = dsaw.db.varchar(name="type", length=128, default='')
@@ -65,29 +65,29 @@ class QESimulation(base):
     timeModified = dsaw.db.varchar(name="timeModified", length=16, default='')
     timeModified.meta['tip'] = "timeModified"
 
-    label       = dsaw.db.varchar(name="label", length=128, default='')
-    label.meta['tip'] = "So far label can be 'Favorite' or 'Example' only"
+    label       = dsaw.db.varchar(name="label", length=128, default='Favorite')
+    label.meta['tip'] = "Label associated with the simulation"
 
 
 # Default records
 defaults    = ({"id": 1, "sname": 'MgB2_SP', "creator": "dexity", "package": 'Quantum Espresso',
                 "type": SIMULATIONS[4], "description": 'Single-Phonon simualtion',
-                "formula": 'MgB2', "label": LABELS["F"]},
+                "formula": 'MgB2'},
                 {"id": 2, "sname": 'MgB2_E', "creator": "dexity", "package": 'Quantum Espresso',
                 "type": SIMULATIONS[0], "description": 'Electron simualtion',
-                "formula": 'MgB2', "label": LABELS["F"]},
+                "formula": 'MgB2'},
                 {"id": 3, "sname": 'MgB2_MP', "creator": "dexity", "package": 'Quantum Espresso',
                 "type": SIMULATIONS[5], "description": 'Multy-Phonon simualtion',
-                "formula": 'MgB2', "label": LABELS["F"]},
+                "formula": 'MgB2'},
                 {"id": 4, "sname": 'Ni_Energy', "creator": "dexity", "package": 'Quantum Espresso',
                 "type": SIMULATIONS[0], "description": 'Total Energy simualtion',
-                "formula": 'Ni', "label": LABELS["E"]},
+                "formula": 'Ni'},
                 {"id": 5, "sname": 'Ni_E_DOS', "creator": "dexity", "package": 'Quantum Espresso',
                 "type": SIMULATIONS[1], "description": 'Electron DOS simualtion',
-                "formula": 'Ni', "label": LABELS["E"]},
+                "formula": 'Ni'},
                 {"id": 6, "sname": 'Ni_Ph_DOS', "creator": "dexity", "package": 'Quantum Espresso',
                 "type": SIMULATIONS[5], "description": 'Multy-Phonon DOS simualtion',
-                "formula": 'Ni', "label": LABELS["E"]})
+                "formula": 'Ni'})
 
 # Init tables
 def inittable(clerk):

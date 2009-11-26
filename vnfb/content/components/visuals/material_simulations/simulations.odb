@@ -26,7 +26,7 @@ def visual(director):
     sB.add(lc.link(label="MCViNE", onclick=load(actor="materialsimulation")))
     sB.add(lc.link(label="VASP", onclick=load(actor="material_simulations/vasp-rawinput")))
     sB.add(lc.link(label="GULP", onclick=load(actor="material_simulations/gulpsimulation")))
-    sB.add(lc.link(label="Quantum Espresso", onclick=load(actor="material_simulations/espresso/sim-create")))
+    sB.add(lc.link(label="Quantum Espresso", onclick=load(actor="material_simulations/espresso/simulation")))
 
     return doc
 
@@ -35,9 +35,6 @@ def viewIndicator(director):
     path = []
     path.append(('Simulations ', load(actor='materialsimulation')))
 
-#    if id:
-#        label = 'structure %s' % id
-#    else:
     label = 'Create New Simulation'
     path.append(label)
     return director.retrieveVisual('view-indicator', path=path)
