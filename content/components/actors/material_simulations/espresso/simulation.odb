@@ -40,7 +40,6 @@ class Actor(base):
         sname       = pyre.inventory.str('sname', default='')
         simtype     = pyre.inventory.str('simtype', default='')
         description = pyre.inventory.str('description', default='')
-        formula     = pyre.inventory.str('formula', default='')
         label       = pyre.inventory.str('label', default='')
 
     def default(self, director):
@@ -71,7 +70,6 @@ class Actor(base):
                                     label='Simulation Type',
                                     entries=enumerate(SIMULATIONS))
         description = form.text(name="description", label='Description', value=self.description)   # Make as textarea
-        formula     = form.text(name="formula", label='Chemical Formula', value=self.formula)
         label       = form.text(name="label", label='Label', value=self.label)
         submit      = form.submitbutton(label="Create New Simulation")
         form.onsubmit   = select(element=form).submit(actor = 'material_simulations/espresso/simulation',
@@ -95,7 +93,9 @@ class Actor(base):
                    "type":          simtype,
                    "creator":       director.sentry.username,
                    "short_description":   self.description,
-                   "formula":       self.formula}
+                   "label":         self.label,
+                   "globalpointer": '',
+                   "matter":        ''}
         sim     = QESimulation()
         sim.setDirector(director)
         sim.createRecord(params)
@@ -127,7 +127,6 @@ class Actor(base):
         self.sname       = self.inventory.sname
         self.simtype     = self.inventory.simtype
         self.description = self.inventory.description
-        self.formula     = self.inventory.formula
         self.label       = self.inventory.label
 
         return
