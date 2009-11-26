@@ -255,6 +255,9 @@ class Proxy(object):
         raise NotImplementedError
 
 
+def _import(package):
+    return __import__(package, {}, {}, [''])
+
 
 # version
 __id__ = "$Id$"

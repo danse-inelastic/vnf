@@ -149,6 +149,9 @@ class Actor(base):
                                                     label           = label
                                                     )
 
+        # Temp solution
+        matsims         += director.clerk.getQESimulations()
+
         cols = columns
         args = matsims, cols, director
         thetable = director.retrieveComponent(

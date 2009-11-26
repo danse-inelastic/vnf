@@ -33,13 +33,26 @@ from vnfb.utils.qeconst import SIMULATIONS
 from vnfb.components.QETable import QETable
 from MaterialSimulation import MaterialSimulation
 
-class QESimulation(QETable, MaterialSimulation):
+class QESimulation(QETable):
 
     name = "qesimulations"
     import dsaw.db
 
+    id = dsaw.db.varchar(name="id", length=8)
+    id.constraints = 'PRIMARY KEY'
+    id.meta['tip'] = "the unique id"
+
     sname = dsaw.db.varchar(name="sname", length=128, default='')
     sname.meta['tip'] = ""
+
+    creator = dsaw.db.varchar(name="creator", length=128, default='')
+    creator.meta['tip'] = ""
+
+    short_description = dsaw.db.varchar(name="short_description", length=1024, default='')
+    short_description.meta['tip'] = ""
+
+    date = dsaw.db.varchar(name="date", length=16, default='')
+    date.meta['tip'] = "timeCreated"
 
     package = dsaw.db.varchar(name="package", length=128, default='Quantum Espresso')
     package.meta['tip'] = ""
@@ -53,7 +66,8 @@ class QESimulation(QETable, MaterialSimulation):
     label       = dsaw.db.varchar(name="label", length=128, default='Favorite')
     label.meta['tip'] = "Label associated with the simulation"
 
-
+    matter = dsaw.db.varchar(name="matter", length=128, default='')
+    matter.meta['tip']  = "stub"
 
 
 # Default records
