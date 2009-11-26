@@ -94,7 +94,7 @@ class Actor(base):
         params  = {"sname":         self.sname,
                    "type":          simtype,
                    "creator":       director.sentry.username,
-                   "description":   self.description,
+                   "short_description":   self.description,
                    "formula":       self.formula}
         sim     = QESimulation()
         sim.setDirector(director)

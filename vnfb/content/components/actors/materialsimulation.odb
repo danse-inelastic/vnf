@@ -26,8 +26,8 @@ class Actor(base):
         import pyre.inventory
 
         # in case of working with one matter
-        id = pyre.inventory.str('id')
-        type = pyre.inventory.str('type')
+        id          = pyre.inventory.str('id')
+        type        = pyre.inventory.str('type')
         description = pyre.inventory.str('description')
 
 

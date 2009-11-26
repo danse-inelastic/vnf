@@ -30,22 +30,23 @@ in VNF (e.g. gulpsimulations or bvkcomputations) which refer to the actual simul
 """
 
 from vnfb.utils.qeconst import SIMULATIONS
-from vnfb.components.QETable import QETable as base
+from vnfb.components.QETable import QETable
+from MaterialSimulation import MaterialSimulation
 
-class QESimulation(base):
+class QESimulation(QETable, MaterialSimulation):
 
     name = "qesimulations"
     import dsaw.db
 
-    id = dsaw.db.varchar(name="id", length=8)
-    id.constraints = 'PRIMARY KEY'
-    id.meta['tip'] = "the unique id"
+#    id = dsaw.db.varchar(name="id", length=8)
+#    id.constraints = 'PRIMARY KEY'
+#    id.meta['tip'] = "the unique id"
 
     sname = dsaw.db.varchar(name="sname", length=128, default='')
     sname.meta['tip'] = ""
 
-    creator = dsaw.db.varchar(name="creator", length=128, default='')
-    creator.meta['tip'] = ""
+#    creator = dsaw.db.varchar(name="creator", length=128, default='')
+#    creator.meta['tip'] = ""
 
     package = dsaw.db.varchar(name="package", length=128, default='Quantum Espresso')
     package.meta['tip'] = ""
@@ -53,14 +54,14 @@ class QESimulation(base):
     type = dsaw.db.varchar(name="type", length=128, default='')
     type.meta['tip'] = ""
 
-    description = dsaw.db.varchar(name="description", length=1024, default='')
-    description.meta['tip'] = ""
+#    short_description = dsaw.db.varchar(name="short_description", length=1024, default='')
+#    short_description.meta['tip'] = ""
 
-    formula = dsaw.db.varchar(name="formula", length=32, default='')
-    formula.meta['tip'] = ""
+#    formula = dsaw.db.varchar(name="formula", length=32, default='')
+#    formula.meta['tip'] = ""
 
-    timeCreated = dsaw.db.varchar(name="timeCreated", length=16, default='')
-    timeCreated.meta['tip'] = "timeCreated"
+#    date = dsaw.db.varchar(name="date", length=16, default='')
+#    date.meta['tip'] = "timeCreated"
 
     timeModified = dsaw.db.varchar(name="timeModified", length=16, default='')
     timeModified.meta['tip'] = "timeModified"
@@ -68,25 +69,38 @@ class QESimulation(base):
     label       = dsaw.db.varchar(name="label", length=128, default='Favorite')
     label.meta['tip'] = "Label associated with the simulation"
 
+#    matter = dsaw.db.versatileReference(name='matter')
+#    matter.meta['tip']  = "stub"
+
+
+#    from vnfb.utils.qeutils import stamp2date
+#    timeCreated = dsaw.db.varchar(name="timeCreated", length=16, default='')
+#    timeCreated.meta['tip'] = "timeCreated - replaced by 'date'"
+#
+#    description = dsaw.db.varchar(name="description", length=1024, default='')
+#    description.meta['tip'] = "description - replaced by 'short_description'"
+
+
+
 
 # Default records
 defaults    = ({"id": 1, "sname": 'MgB2_SP', "creator": "dexity", "package": 'Quantum Espresso',
-                "type": SIMULATIONS[4], "description": 'Single-Phonon simualtion',
+                "type": SIMULATIONS[4], "short_description": 'Single-Phonon simualtion',
                 "formula": 'MgB2'},
                 {"id": 2, "sname": 'MgB2_E', "creator": "dexity", "package": 'Quantum Espresso',
-                "type": SIMULATIONS[0], "description": 'Electron simualtion',
+                "type": SIMULATIONS[0], "short_description": 'Electron simualtion',
                 "formula": 'MgB2'},
                 {"id": 3, "sname": 'MgB2_MP', "creator": "dexity", "package": 'Quantum Espresso',
-                "type": SIMULATIONS[5], "description": 'Multy-Phonon simualtion',
+                "type": SIMULATIONS[5], "short_description": 'Multy-Phonon simualtion',
                 "formula": 'MgB2'},
                 {"id": 4, "sname": 'Ni_Energy', "creator": "dexity", "package": 'Quantum Espresso',
-                "type": SIMULATIONS[0], "description": 'Total Energy simualtion',
+                "type": SIMULATIONS[0], "short_description": 'Total Energy simualtion',
                 "formula": 'Ni'},
                 {"id": 5, "sname": 'Ni_E_DOS', "creator": "dexity", "package": 'Quantum Espresso',
-                "type": SIMULATIONS[1], "description": 'Electron DOS simualtion',
+                "type": SIMULATIONS[1], "short_description": 'Electron DOS simualtion',
                 "formula": 'Ni'},
                 {"id": 6, "sname": 'Ni_Ph_DOS', "creator": "dexity", "package": 'Quantum Espresso',
-                "type": SIMULATIONS[5], "description": 'Multy-Phonon DOS simualtion',
+                "type": SIMULATIONS[5], "short_description": 'Multy-Phonon DOS simualtion',
                 "formula": 'Ni'})
 
 # Init tables

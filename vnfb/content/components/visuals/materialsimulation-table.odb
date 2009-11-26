@@ -81,11 +81,10 @@ def table(matsims, cols, director):
         return identifier
         
     import operator
-    value_generators = [
-        eval('get'+col.measure.capitalize())
-        for col in view.columns]
-    record2tuple = lambda record: [g(record) for g in value_generators]
-    data = map(record2tuple, matsims)
+    value_generators    = [ eval('get'+col.measure.capitalize())
+                            for col in view.columns]
+    record2tuple        = lambda record: [g(record) for g in value_generators]
+    data                = map(record2tuple, matsims)
 
     table = Table(model=model, data=data, view=view, id='matsim-table')
     return table
