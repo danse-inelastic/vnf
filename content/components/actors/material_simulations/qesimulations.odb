@@ -12,24 +12,27 @@
 #
 
 from luban.content import load
+from luban.components.AuthorizedActor import AuthorizedActor as base
 
 class Actor(base):
-    """ Actor that redirects to """
+    """ Actor to redirect material_simulations/espresso/sim-view"""
 
-#    class Inventory(base.Inventory):
-#        import pyre.inventory
-#        sname       = pyre.inventory.str('sname', default='')
-#        simtype     = pyre.inventory.str('simtype', default='')
-#        description = pyre.inventory.str('description', default='')
-#        label       = pyre.inventory.str('label', default='')
+    class Inventory(base.Inventory):
+        import pyre.inventory
+        id      = pyre.inventory.str('id', default='')
+
 
     def default(self, director):
-        return select(id='main-display-area').replaceContent( self.content())
+        pass
 
-    def content(self):
-        return load(actor   ='material_simulations/espresso/sim-create',
-                    routine ='view',
-                    id      = '')
+    def view(self, director):
+        return load(actor   ='material_simulations/espresso/sim-view',
+                    id      = self.inventory.id)
+
+
+    def _configure(self):
+        super(Actor, self)._configure()
+        self.id = self.inventory.id
 
 
     def __init__(self):

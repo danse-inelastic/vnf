@@ -13,8 +13,6 @@
 
 
 from vnfb.utils.qeconst import SIMULATIONS
-#from vnfb.utils.simulationsteps import SimulationSteps
-#from vnfb.utils.stepper import Stepper
 from vnf.dom.QESimulation import QESimulation
 
 from luban.content import select
