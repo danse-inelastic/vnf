@@ -25,7 +25,7 @@ class QEServer:
         self._type      = "settings"
 
     def getServer(self, id):      # simulation id
-        settings    = self._clerk.getQEConfigurations(where="simulationId='%s' AND type='%s'" % (id, self._type))
+        settings    = self._clerk.getQEConfigurations(where="simulationid='%s' AND type='%s'" % (id, self._type))
         servername  = self._serverName(settings)
 
         if servername   != '':  

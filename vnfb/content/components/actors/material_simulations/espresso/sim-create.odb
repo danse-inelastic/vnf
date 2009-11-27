@@ -52,8 +52,8 @@ class Actor(base):
                                                                routine='newSimulation')
                                                           ))
                         )
-
             path.append('Quantum Espresso')
+            
             return director.retrieveVisual('view-indicator', path=path)
 
         doc         = lc.document(title   = "Create New Simulation")
