@@ -74,10 +74,11 @@ class Actor(base):
                                     entries=enumerate(SIMULATIONS),
                                     selection=self.simtypeValue(sim.type))
         description = form.text(name="description", label='Description', value=sim.short_description)   # Make as textarea
-        label       = form.text(name="label", label='Label', value=self.label)
+        label       = form.text(name="label", label='Label', value=sim.label)
         submit      = form.submitbutton(label="Save Changes")
         form.onsubmit   = select(element=form).submit(actor = 'material_simulations/espresso/sim-edit',
-                                                      routine = 'updateRecord', id=sim.id)
+                                                      routine = 'updateRecord',
+                                                      id=sim.id)
 
         # TODO: "Cancel" button looks UGLY
         cancel      = lc.link(label="Cancel")
@@ -100,17 +101,18 @@ class Actor(base):
     def updateRecord(self, director):
         """Updates record in the database """
         self.verify()
-        sim             = director.clerk.getSimulations(id=self.id)
+        sim             = director.clerk.getQESimulations(id=self.id)
 
         if sim:
             params  = {"sname":         self.sname,
                        "type":          SIMULATIONS[int(self.simtype)], # Type cannot be updated
-                       "description":   self.description}
+                       "short_description":   self.description,
+                       "label":         self.label}
             sim.setDirector(director)
             sim.updateRecord(params)
 
 
-        return load(actor='espresso/sim-view', routine='link', id=self.id)  # Redirection to the page
+        return load(actor='material_simulations/espresso/sim-view', id=self.id)  # Redirection to the page
 
     # stub
     def verify(self):

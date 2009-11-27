@@ -84,6 +84,7 @@ class Actor(base):
             document.add(Paragraph(text="Description: %s" % sim.short_description))
             document.add(Paragraph(text="Type: %s" % sim.type))
             document.add(Paragraph(text="Package: %s" % sim.package))
+            document.add(Paragraph(text="Label: %s" % sim.label))
             document.add(Paragraph(text="Created: %s" % stamp2date(sim.date)))
 
 
