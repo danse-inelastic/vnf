@@ -35,16 +35,16 @@ class QEJob(base):
     id.constraints = 'PRIMARY KEY'
     id.meta['tip'] = "the unique id"
 
-    simulationId = pyre.db.varchar(name="simulationid", length=8)
-    simulationId.constraints = 'REFERENCES qesimulations (id)'
-    simulationId.meta['tip'] = ""
+    simulationid = pyre.db.varchar(name="simulationid", length=8)
+    simulationid.constraints = 'REFERENCES qesimulations (id)'
+    simulationid.meta['tip'] = ""
 
     creator = pyre.db.varchar(name="creator", length=128, default='')
     creator.meta['tip'] = ""
 
-    serverId    = pyre.db.varchar(name="serverid", length=8)
-    serverId.constraints = 'REFERENCES servers (id)'
-    serverId.meta['tip'] = ""
+    serverid    = pyre.db.varchar(name="serverid", length=8)
+    serverid.constraints = 'REFERENCES servers (id)'
+    serverid.meta['tip'] = ""
 
     description = pyre.db.varchar(name="description", length=1024, default='')
     description.meta['tip'] = ""

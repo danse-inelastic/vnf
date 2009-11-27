@@ -30,9 +30,9 @@ class QEConfiguration(base):
     id.constraints = 'PRIMARY KEY'
     id.meta['tip'] = "the unique id"
 
-    simulationId    = pyre.db.varchar(name="simulationid", length=8)
-    simulationId.constraints = 'REFERENCES qesimulations (id)'    # Important
-    simulationId.meta['tip'] = "simulationId"
+    simulationid    = pyre.db.varchar(name="simulationid", length=8)
+    simulationid.constraints = 'REFERENCES qesimulations (id)'    # Important
+    simulationid.meta['tip'] = "simulationId"
 
     type        = pyre.db.varchar(name="type", length=1024, default='')
     type.meta['tip'] = "Type of configuration. Example: PW, PP"

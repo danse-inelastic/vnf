@@ -38,13 +38,24 @@ class QEChain:
         for i in range(listsize):
             section     = splitter.section()
             section.add(Paragraph(text=self._simlist[i]))   # Simulation type
-            section.add(Link(label=self._inputText(orderedInputs[i]), Class="action-link",
-                             onclick=load(actor="material_simulations/espresso/input",
-                                          routine=self._getRoutine(orderedInputs[i]),
-                                          id=id,
-                                          type=self._simlist[i],
-                                          configid=self._getId(self._simlist[i], inputs)))   # Passes config type (not id)
-                        )
+            link        = Link(label="Add", 
+                               onclick=load(actor      = "material_simulations/espresso/input-add",
+                                            id         = id,
+                                            type       = self._simlist[i])
+                              )
+
+            input   = orderedInputs[i]
+            #print input
+            if input:
+                link    = Link(label=input.filename,
+                               onclick=load(actor      = "material_simulations/espresso/input-view",
+                                            configid   = self._getId(self._simlist[i], inputs),
+                                            id         = id,
+                                            type       = self._simlist[i]  # ?
+                                            )
+                              )
+
+            section.add(link)
 
             if i != listsize - 1:   # No arrow for last config
                 sep     = splitter.section()        # Separator
@@ -53,20 +64,28 @@ class QEChain:
         return splitter
 
 
-    def _inputText(self, input):
-        """Returns"""
-        if input:
-            return input.filename
+#            section.add(Link(label=self._inputText(orderedInputs[i]), Class="action-link",
+#                             onclick=load(actor="material_simulations/espresso/input",
+#                                          routine=self._getRoutine(orderedInputs[i]),
+#                                          id=id,
+#                                          type=self._simlist[i],
+#                                          configid=self._getId(self._simlist[i], inputs)))   # Passes config type (not id)
+#                        )
 
-        return "Add"
-
-
-    def _getRoutine(self, input):
-        # FIXME: Change routines if necessary
-        if input:   # View
-            return "view"
-
-        return "add" # Create New
+#    def _inputText(self, input):
+#        """Returns"""
+#        if input:
+#            return input.filename
+#
+#        return "Add"
+#
+#
+#    def _getRoutine(self, input):
+#        # FIXME: Change routines if necessary
+#        if input:   # View
+#            return "view"
+#
+#        return "add" # Create New
 
 
     def _orderInput(self, simlist, inputs):
