@@ -11,8 +11,8 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
-from vinil.dom.Configuration import Configuration
-from vinil.utils.const import SERVERS
+from vnf.dom.QEConfiguration import QEConfiguration
+from vnfb.utils.qeconst import SERVERS
 
 from luban.content import select
 from luban.content.Document import Document
@@ -20,7 +20,8 @@ from luban.content import load
 from luban.content.Form import Form
 from luban.content.Button import Button
 
-from vinil.components.Actor import Actor as base
+import luban.content as lc
+from luban.components.AuthorizedActor import AuthorizedActor as base
 
 # Requires simulation id,
 class Actor(base):
@@ -78,7 +79,7 @@ class Actor(base):
                    "text":          self._text()}
                    #"description":   self.description,  # I don't really need description at this point!
 
-        settings     = Configuration()
+        settings     = QEConfiguration()
         settings.setDirector(director)
 
         settings.createRecord(params)
