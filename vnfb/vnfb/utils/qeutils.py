@@ -84,7 +84,7 @@ def stamp2date(stamp):
     from datetime import date
     if m:
         s   = time.strptime(date.fromtimestamp(float(stamp)).ctime())
-        return str(time.strftime("%Y-%b-%d", s))     # Format: Year-Month-Day
+        return str(time.strftime("%Y-%m-%d", s))     # Format: Year-Month-Day
 
     return ""
 

@@ -18,28 +18,31 @@ Notes:
     - Has 'creator' field (owned table)
 """
 
+from vnf.dom.QESimulation import QESimulation
+from vnf.dom.Server import Server
+
 from vnfb.utils.qeconst import STATES
 from vnfb.utils.qeutils import timestamp
+from dsaw.db.WithID import WithID
+
 from vnfb.components.QETable import QETable as base
 
-class QEJob(base):
+class QEJob(base, WithID):
     # 'name' attribute should be present in every class table.
     name = "qejobs"
     import dsaw.db
 
-    id          = dsaw.db.varchar(name="id", length=8)
-    id.constraints = 'PRIMARY KEY'
-    id.meta['tip'] = "the unique id"
+#    id          = dsaw.db.varchar(name="id", length=8)
+#    id.constraints = 'PRIMARY KEY'
+#    id.meta['tip'] = "the unique id"
 
-    userId      = dsaw.db.varchar(name="userId", length=8)
-    userId.constraints = 'REFERENCES users (id)'
-    userId.meta['tip'] = ""
+    simulationId = dsaw.db.reference(name='simulationId', table=QESimulation) #varchar(name="simulationId", length=8)
+    simulationId.meta['tip'] = ""
 
     creator = dsaw.db.varchar(name="creator", length=128, default='')
     creator.meta['tip'] = ""
 
-    serverId    = dsaw.db.varchar(name="serverId", length=8)
-    serverId.constraints = 'REFERENCES server (id)'
+    serverId    = dsaw.db.reference(name='serverId', table=Server)
     serverId.meta['tip'] = ""
 
     description = dsaw.db.varchar(name="description", length=1024, default='')

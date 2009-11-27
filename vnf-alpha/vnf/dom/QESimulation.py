@@ -31,17 +31,19 @@ in VNF (e.g. gulpsimulations or bvkcomputations) which refer to the actual simul
 
 from vnfb.utils.qeconst import SIMULATIONS
 from vnfb.components.QETable import QETable
+from dsaw.db.WithID import WithID
+
 from MaterialSimulation import MaterialSimulation
 
-class QESimulation(QETable):
+class QESimulation(QETable, WithID):
 
     name = "qesimulations"
     import dsaw.db
 
-    # in MS
-    id = dsaw.db.varchar(name="id", length=8)
-    id.constraints = 'PRIMARY KEY'
-    id.meta['tip'] = "the unique id"
+#    # in MS
+#    id = dsaw.db.varchar(name="id", length=8)
+#    id.constraints = 'PRIMARY KEY'
+#    id.meta['tip'] = "the unique id"
 
     sname = dsaw.db.varchar(name="sname", length=128, default='')
     sname.meta['tip'] = ""

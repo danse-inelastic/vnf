@@ -17,7 +17,7 @@ from luban.content import load
 from luban.content.Link import Link
 
 
-class SimServer:
+class QEServer:
 
     def __init__(self, director):
         self._director  = director
