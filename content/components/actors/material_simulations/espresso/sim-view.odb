@@ -44,6 +44,7 @@ class Actor(base):
         def viewIndicator(director):
             path = []
             path.append(('Simulations ', load(actor='materialsimulation')))
+             # Stub, should filter by simulation type
             path.append(('Quantum Espresso ', load(actor='materialsimulation')))
             path.append(self.id)
 
