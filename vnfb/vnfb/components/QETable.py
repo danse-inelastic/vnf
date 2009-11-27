@@ -99,7 +99,7 @@ class QETable(Table):
     def deleteRecord(self):
         """Deletes record is clerk exists, ignores otherwise"""
         if self._clerk:
-            self._clerk.deleteRecordWithID(self, where="id='%s'" % getattr(self, 'id'))
+            self._clerk.deleteRecordWithID(self)    # , where="id='%s'" % getattr(self, 'id')
 
 
     def _noUpdate(self, value):
