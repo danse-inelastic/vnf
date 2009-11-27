@@ -10,6 +10,9 @@
 #
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
+
+# OBSOLETE !!!
+
 from vinil.utils.const import STEPS
 
 from luban.content import select

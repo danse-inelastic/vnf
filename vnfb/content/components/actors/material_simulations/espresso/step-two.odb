@@ -11,6 +11,8 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
+# OBSOLETE !!!
+
 # TODO: When you go to step one and then back to step two it doesn't create the simulation again
 
 from vinil.utils.const import STEPS

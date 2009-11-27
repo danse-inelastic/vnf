@@ -10,6 +10,9 @@
 #
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
+
+# OBSOLETE !!!
+
 from vinil.utils.const import STEPS, SERVERS
 
 from luban.content import select

@@ -11,6 +11,7 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
+# OBSOLETE !!!
 
 from vinil.utils.const import STEPS, SIMULATIONS, PACKAGES
 from vinil.utils.simulationsteps import SimulationSteps
