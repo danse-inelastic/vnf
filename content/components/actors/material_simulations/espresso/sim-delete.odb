@@ -20,7 +20,9 @@ from luban.content.Link import Link
 from luban.content.Form import Form
 from luban.content.Button import Button
 
-from vinil.components.Actor import Actor as base
+import luban.content as lc
+from luban.components.AuthorizedActor import AuthorizedActor as base
+
 # REDO Delete simulation
 class Actor(base):
 
@@ -29,26 +31,47 @@ class Actor(base):
         id      = pyre.inventory.str('id', default='')      # Simulation Id
 
 
+    def default(self, director):
+        return select(id='main-display-area').replaceContent(self.content(director))
+
 
     def content(self, director):
-        sim     = director.clerk.getSimulations(id=self.id)
+        sim     = director.clerk.getQESimulations(id=self.id)
+
+        def viewIndicator(director):
+            path = []
+            path.append(('Simulations ', load(actor='materialsimulation')))
+             # Stub, should filter by simulation type
+            path.append(('Quantum Espresso ', load(actor='materialsimulation')))
+            path.append(('%s ' % self.id, load(actor    = 'material_simulations/espresso/sim-view',
+                                               id       = self.id))
+                        )
+            path.append('Delete')
+
+            return director.retrieveVisual('view-indicator', path=path)
+
+        doc         = lc.document(title   = 'Delete Simulation: %s' % sim.sname)
+        splitter    = doc.splitter(orientation="vertical")
+        sA          = splitter.section()
+        sA.add(viewIndicator(director))
+        sB          = splitter.section()
 
         document = Document(title='Delete Simulation: %s' % sim.sname)
-        document.add(Paragraph(text="Deleting simulation will also delete jobs and configuration inputs."))
-        document.add(Paragraph(text="Are you sure you want to delete the simulation?"))
+        sB.add(Paragraph(text="Deleting simulation will also delete jobs and configuration inputs."))
+        sB.add(Paragraph(text="Are you sure you want to delete the simulation?"))
 
-        form        = Form(id="form-vinil")
+        form        = Form(title='Delete Quantum Espresso Simulation')
         submit      = form.submitbutton(label="Delete")
-        form.onsubmit   = select(element=form).submit(actor = 'espresso/sim-delete', routine = 'deleteRecord', id=sim.id)
+        form.onsubmit   = select(element=form).submit(actor = 'material_simulations/espresso/sim-delete', routine = 'deleteRecord', id=sim.id)
 
         # TODO: "Cancel" button looks UGLY
-        cancel      = Button(label="Cancel")
-        cancel.onclick = load(actor = 'espresso/index', routine = 'link')
+        cancel      = lc.link(label="Cancel")
+        cancel.onclick = load(actor = 'material_simulations/espresso/sim-view', id=self.id)
         form.add(cancel)
 
-        document.add(form)
+        sB.add(form)
 
-        return document
+        return doc
 
     def deleteRecord(self, director):
         # Order in which records are deleted is important. See the database schema
@@ -57,11 +80,11 @@ class Actor(base):
         self.deleteSim(director)
         
         # Delete Matter?
-        return load(actor='espresso/index', routine='link')  # Redirection to the page
+        return load(actor='materialsimulation')  # Redirection to the page
 
     def deleteConfigs(self, director):
         """Deletes config records"""
-        configs         = director.clerk.getConfigurations(where="simulationId='%s'" % self.id)
+        configs         = director.clerk.getQEConfigurations(where="simulationid='%s'" % self.id)
         if configs:
             for c in configs:
                 c.setDirector(director)
@@ -70,7 +93,7 @@ class Actor(base):
 
     def deleteJobs(self, director):
         """Deletes jobs"""
-        jobs            = director.clerk.getJobs(where="simulationId='%s'" % self.id)
+        jobs            = director.clerk.getQEJobs(where="simulationid='%s'" % self.id)
         if jobs:
             for j in jobs:
                 j.setDirector(director)
@@ -79,25 +102,14 @@ class Actor(base):
 
     def deleteSim(self, director):
         """Finally, deletes simulation"""
-        sim             = director.clerk.getSimulations(id=self.id)
+        sim             = director.clerk.getQESimulations(id=self.id)
         if sim:
             sim.setDirector(director)
             sim.deleteRecord()
 
 
-    def pathlist(self, director):
-        sim     = director.clerk.getSimulations(id=self.id)
-        self.pathlist = [("Home","greet","link"),
-                         ("Simulations", "simulations", "link"),
-                         ("Quantum Espresso", "espresso/index", "link"),
-                         (sim.sname, "espresso/sim-view", "link", self.id),
-                         ("Delete", None, None)]
-
-        return self.pathlist
-
-
-    def __init__(self, *args, **kwds):
-        super(Actor, self).__init__(*args, **kwds)
+    def __init__(self):
+        super(Actor, self).__init__(name='material_simulations/espresso/sim-delete')
 
         return
 
@@ -113,7 +125,7 @@ class Actor(base):
         return
 
 def actor():
-    return Actor('espresso/sim-delete')
+    return Actor()
 
 __date__ = "$Nov 2, 2009 3:19:17 PM$"
 
