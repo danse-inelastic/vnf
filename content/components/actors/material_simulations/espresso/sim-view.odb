@@ -25,6 +25,7 @@ from luban.content.HtmlDocument import HtmlDocument
 from luban.content import load
 from luban.content.Link import Link
 
+import luban.content as lc
 from luban.components.AuthorizedActor import AuthorizedActor as base
 class Actor(base):
 
@@ -39,18 +40,30 @@ class Actor(base):
 
     def content(self, director):
         sim     = director.clerk.getQESimulations(id=self.id)
-
-        document = Document(title='Simulation Name: %s' % sim.sname)
-
-        self.showLinks(document)
-        self.showSim(document, sim)
-        self.showInputFiles(director, document, sim.type)
-#        self.showSettings(director, document)
-#        self.showServer(director, document)
-#        self.showJobs(director, document)
-        self.showRefs(document)
         
-        return document
+        def viewIndicator(director):
+            path = []
+            path.append(('Simulations ', load(actor='materialsimulation')))
+            path.append(('Quantum Espresso ', load(actor='materialsimulation')))
+            path.append(self.id)
+
+            return director.retrieveVisual('view-indicator', path=path)
+
+        doc         = lc.document(title   = 'Simulation Name: %s' % sim.sname)
+        splitter    = doc.splitter(orientation="vertical")
+        sA          = splitter.section()
+        sA.add(viewIndicator(director))
+        sB          = splitter.section()
+
+        self.showLinks(sB)
+        self.showSim(sB, sim)
+        self.showInputFiles(director, sB, sim.type)
+        self.showSettings(director, sB)
+        self.showServer(director, sB)
+        self.showJobs(director, sB)
+        self.showRefs(sB)
+        
+        return doc
 
     def showLinks(self, document):
         document.add(Link(label="Edit", Class="action-link",
@@ -70,7 +83,6 @@ class Actor(base):
             document.add(Paragraph(text="Description: %s" % sim.short_description))
             document.add(Paragraph(text="Type: %s" % sim.type))
             document.add(Paragraph(text="Package: %s" % sim.package))
-            #document.add(Paragraph(text="Formula: %s" % sim.formula))
             document.add(Paragraph(text="Created: %s" % stamp2date(sim.date)))
 
 
@@ -140,7 +152,7 @@ class Actor(base):
 
     def jobs(self, director):
         joblist = []
-        jobs = director.clerk.getQEJobs(where="simulationId='%s'" % self.id)
+        jobs = director.clerk.getQEJobs(where="simulationid='%s'" % self.id)
         for job in jobs:
             if job:
                 joblist.append(job)
@@ -171,7 +183,3 @@ def actor():
 
 __date__ = "$Nov 2, 2009 3:15:35 PM$"
 
-
-#        refsdoc.add(Link(label=STEPS[1], onclick=load(actor="espresso/set-config", routine="link", id=self.id)))
-#        refsdoc.add(Link(label=STEPS[2], onclick=load(actor="espresso/step-three", routine="link", id=self.id)))
-#        refsdoc.add(Link(label=STEPS[3], onclick=load(actor="espresso/step-four", routine="link", id=self.id)))
