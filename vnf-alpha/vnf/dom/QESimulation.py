@@ -38,6 +38,7 @@ class QESimulation(QETable):
     name = "qesimulations"
     import dsaw.db
 
+    # in MS
     id = dsaw.db.varchar(name="id", length=8)
     id.constraints = 'PRIMARY KEY'
     id.meta['tip'] = "the unique id"
@@ -45,12 +46,15 @@ class QESimulation(QETable):
     sname = dsaw.db.varchar(name="sname", length=128, default='')
     sname.meta['tip'] = ""
 
+    # in MS
     creator = dsaw.db.varchar(name="creator", length=128, default='')
     creator.meta['tip'] = ""
 
+    # in MS
     short_description = dsaw.db.varchar(name="short_description", length=1024, default='')
     short_description.meta['tip'] = ""
 
+    # in MS
     date = dsaw.db.varchar(name="date", length=16, default='')
     date.meta['tip'] = "timeCreated"
 
@@ -66,6 +70,7 @@ class QESimulation(QETable):
     label       = dsaw.db.varchar(name="label", length=128, default='Favorite')
     label.meta['tip'] = "Label associated with the simulation"
 
+    # Change type
     matter = dsaw.db.varchar(name="matter", length=128, default='')
     matter.meta['tip']  = "stub"
 
