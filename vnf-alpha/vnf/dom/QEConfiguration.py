@@ -20,42 +20,42 @@ Notes:
 
 from vnf.dom.QESimulation import QESimulation
 from vnfb.components.QETable import QETable as base
-from dsaw.db.WithID import WithID
 
-class QEConfiguration(base, WithID):
+class QEConfiguration(base):
 
     name = "qeconfigurations"
-    import dsaw.db
+    import pyre.db
 
-#    id = dsaw.db.varchar(name="id", length=8)
-#    id.constraints = 'PRIMARY KEY'
-#    id.meta['tip'] = "the unique id"
+    id = pyre.db.varchar(name="id", length=8)
+    id.constraints = 'PRIMARY KEY'
+    id.meta['tip'] = "the unique id"
 
-    simulationId    = dsaw.db.reference(name='simulationId', table=QESimulation)
+    simulationId    = pyre.db.varchar(name="simulationid", length=8)
+    simulationId.constraints = 'REFERENCES qesimulations (id)'    # Important
     simulationId.meta['tip'] = "simulationId"
 
-    type        = dsaw.db.varchar(name="type", length=1024, default='')
+    type        = pyre.db.varchar(name="type", length=1024, default='')
     type.meta['tip'] = "Type of configuration. Example: PW, PP"
 
     # Later on can be tranformed to a separate File table
-    filename    = dsaw.db.varchar(name="filename", length=1024, default='')
+    filename    = pyre.db.varchar(name="filename", length=1024, default='')
     filename.meta['tip'] = "Filename assiciated with this configuration"
 
     # To separate table?
-    parser    = dsaw.db.varchar(name="parser", length=1024, default='')
+    parser    = pyre.db.varchar(name="parser", length=1024, default='')
     parser.meta['tip'] = "Parser for configuration"
 
-    description = dsaw.db.varchar(name="description", length=1024, default='')
+    description = pyre.db.varchar(name="description", length=1024, default='')
     description.meta['tip'] = "description"
 
-    timeCreated = dsaw.db.varchar(name="timeCreated", length=16, default='')
+    timeCreated = pyre.db.varchar(name="timeCreated", length=16, default='')
     timeCreated.meta['tip'] = "timeCreated"
 
-    timeModified = dsaw.db.varchar(name="timeModified", length=16, default='')
+    timeModified = pyre.db.varchar(name="timeModified", length=16, default='')
     timeModified.meta['tip'] = "timeModified"
 
     # FIXME: Do I need text fields once I use get file from DDS location?
-    text = dsaw.db.varchar(name="text", length=8192, default='')
+    text = pyre.db.varchar(name="text", length=8192, default='')
     text.meta['tip'] = "text"
 
 

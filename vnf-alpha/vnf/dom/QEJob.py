@@ -23,59 +23,60 @@ from vnf.dom.Server import Server
 
 from vnfb.utils.qeconst import STATES
 from vnfb.utils.qeutils import timestamp
-from dsaw.db.WithID import WithID
 
 from vnfb.components.QETable import QETable as base
 
-class QEJob(base, WithID):
+class QEJob(base):
     # 'name' attribute should be present in every class table.
     name = "qejobs"
-    import dsaw.db
+    import pyre.db
 
-#    id          = dsaw.db.varchar(name="id", length=8)
-#    id.constraints = 'PRIMARY KEY'
-#    id.meta['tip'] = "the unique id"
+    id          = pyre.db.varchar(name="id", length=8)
+    id.constraints = 'PRIMARY KEY'
+    id.meta['tip'] = "the unique id"
 
-    simulationId = dsaw.db.reference(name='simulationId', table=QESimulation) #varchar(name="simulationId", length=8)
+    simulationId = pyre.db.varchar(name="simulationid", length=8)
+    simulationId.constraints = 'REFERENCES qesimulations (id)'
     simulationId.meta['tip'] = ""
 
-    creator = dsaw.db.varchar(name="creator", length=128, default='')
+    creator = pyre.db.varchar(name="creator", length=128, default='')
     creator.meta['tip'] = ""
 
-    serverId    = dsaw.db.reference(name='serverId', table=Server)
+    serverId    = pyre.db.varchar(name="serverid", length=8)
+    serverId.constraints = 'REFERENCES servers (id)'
     serverId.meta['tip'] = ""
 
-    description = dsaw.db.varchar(name="description", length=1024, default='')
+    description = pyre.db.varchar(name="description", length=1024, default='')
     description.meta['tip'] = ""
 
-    status = dsaw.db.varchar(name="status", length=64, default='')
+    status = pyre.db.varchar(name="status", length=64, default='')
     status.meta['tip'] = ""
 
-    timeSubmitted = dsaw.db.varchar(name="timeSubmitted", length=16, default='')
+    timeSubmitted = pyre.db.varchar(name="timeSubmitted", length=16, default='')
     timeSubmitted.meta['tip'] = "timeSubmitted"
 
-    timeStarted = dsaw.db.varchar(name="timeStarted", length=16, default='')
+    timeStarted = pyre.db.varchar(name="timeStarted", length=16, default='')
     timeStarted.meta['tip'] = "timeStarted"
 
-    timeRestarted = dsaw.db.varchar(name="timeRestarted", length=16, default='')
+    timeRestarted = pyre.db.varchar(name="timeRestarted", length=16, default='')
     timeRestarted.meta['tip'] = "timeRestarted"
 
-    timeCompleted = dsaw.db.varchar(name="timeCompleted", length=16, default='')
+    timeCompleted = pyre.db.varchar(name="timeCompleted", length=16, default='')
     timeCompleted.meta['tip'] = "timeCompleted"
 
-    exitCode = dsaw.db.integer(name="exitCode", default=-1)
+    exitCode = pyre.db.integer(name="exitCode", default=-1)
     exitCode.meta['tip'] = "exitCode"
 
-    numberProcessors = dsaw.db.integer(name="numberProcessors", default=0)
+    numberProcessors = pyre.db.integer(name="numberProcessors", default=0)
     numberProcessors.meta['tip'] = "numberProcessors"
 
-    errorFilename = dsaw.db.varchar(name="errorFilename", length=256, default='stderr.log')
+    errorFilename = pyre.db.varchar(name="errorFilename", length=256, default='stderr.log')
     errorFilename.meta['tip'] = "errorFilename"
 
-    outputFilename = dsaw.db.varchar(name="outputFilename", length=256, default='stdout.log')
+    outputFilename = pyre.db.varchar(name="outputFilename", length=256, default='stdout.log')
     outputFilename.meta['tip'] = "outputFilename"
 
-    statusMessage = dsaw.db.varchar(name="statusMessage", length=256, default='')
+    statusMessage = pyre.db.varchar(name="statusMessage", length=256, default='')
     statusMessage.meta['tip'] = "statusMessage"
 
 
