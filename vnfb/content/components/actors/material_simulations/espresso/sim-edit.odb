@@ -68,7 +68,7 @@ class Actor(base):
         types       = []
         types.append(sim.type)
 
-        form        = Form(id="form-vinil")
+        form        = Form(title='Edit Quantum Espresso Simulation')
         sname       = form.text(name="sname", label='Simulation Name', value=sim.sname)
         simtype     = form.selector(name="simtype", label='Simulation Type',
                                     entries=enumerate(SIMULATIONS),
