@@ -1,0 +1,46 @@
+#!/usr/bin/env python
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                               Alex Dementsov
+#                      California Institute of Technology
+#                        (C) 2009  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+from luban.content import load
+
+class Actor(base):
+    """ Actor that redirects to """
+
+#    class Inventory(base.Inventory):
+#        import pyre.inventory
+#        sname       = pyre.inventory.str('sname', default='')
+#        simtype     = pyre.inventory.str('simtype', default='')
+#        description = pyre.inventory.str('description', default='')
+#        label       = pyre.inventory.str('label', default='')
+
+    def default(self, director):
+        return select(id='main-display-area').replaceContent( self.content())
+
+    def content(self):
+        return load(actor   ='material_simulations/espresso/sim-create',
+                    routine ='view',
+                    id      = '')
+
+
+    def __init__(self):
+        super(Actor, self).__init__(name='material_simulations/qesimulations')
+
+        return
+
+
+def actor():
+    return Actor()
+
+__date__ = "$Nov 27, 2009 10:05:14 AM$"
+
+

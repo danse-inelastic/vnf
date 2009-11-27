@@ -72,7 +72,7 @@ class Actor(base):
         description = form.text(name="description", label='Description', value=self.description)   # Make as textarea
         label       = form.text(name="label", label='Label', value=self.label)
         submit      = form.submitbutton(label="Create New Simulation")
-        form.onsubmit   = select(element=form).submit(actor = 'material_simulations/espresso/simulation',
+        form.onsubmit   = select(element=form).submit(actor = 'material_simulations/espresso/sim-create',
                                                       routine = 'createRecord')
         cancel      = lc.link(label="Cancel", onclick = load(actor = 'materialsimulation'))
         form.add(cancel)
@@ -80,8 +80,6 @@ class Actor(base):
         sB.add(form)
 
         return doc
-
-
 
 
     def createRecord(self, director):
@@ -101,6 +99,8 @@ class Actor(base):
         return load(actor='materialsimulation')  # Redirection to the page
 
 
+
+
     # stub
     def _verify(self):
         """Verify data first """
@@ -115,7 +115,7 @@ class Actor(base):
 
 
     def __init__(self):
-        super(Actor, self).__init__(name='material_simulations/espresso/simulation')
+        super(Actor, self).__init__(name='material_simulations/espresso/sim-create')
 
         return
 
