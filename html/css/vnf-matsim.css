@@ -11,11 +11,26 @@
     display: block;
 }
 
-/* Temp CSS*/
+/* Vinil CSS*/
 .action-link {
     padding: 0px 2px;
 }
 
+.clear-both {
+    clear: both;
+}
+
+.display-inline a,
+.display-inline p{
+    margin: 0px;
+    float: left;
+}
+
+.display-block,
+.display-block a,
+.display-block p{
+    display: block;
+}
 
 /* version */
 /* $Id$ */

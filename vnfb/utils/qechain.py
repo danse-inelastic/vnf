@@ -29,7 +29,7 @@ class QEChain:
 
 
     def chain(self, id):
-        inputs          = self._director.clerk.getQEConfigurations(where="simulationId='%s'" % id)
+        inputs          = self._director.clerk.getQEConfigurations(where="simulationId='88E8PBS'")#'%s'" % id)
         orderedInputs   = self._orderInput(self._simlist, inputs)
 
         splitter    = Splitter(orientation='horizontal')
