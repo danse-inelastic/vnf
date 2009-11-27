@@ -74,7 +74,7 @@ class Actor(base):
                           onclick = load(actor='material_simulations/espresso/sim-delete',
                           id=self.id)))
         document.add(Link(label="Clone", Class="action-link",
-                          onclick = load(actor='material_simulations/espresso/sim-use',
+                          onclick = load(actor='material_simulations/espresso/sim-clone',
                           id=self.id)))
 
 
