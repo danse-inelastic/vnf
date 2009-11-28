@@ -11,11 +11,7 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
-from vinil.utils.const import STEPS, TYPES
-from vinil.utils.utils import stamp2date
-from vinil.utils.simulationsteps import SimulationSteps
-from vinil.utils.stepper import Stepper
-from vinil.dom.Configuration import Configuration
+from vnfb.utils.qeutils import stamp2date
 
 from luban.content import select
 from luban.content.Paragraph import Paragraph
@@ -30,7 +26,8 @@ from luban.content.Form import Form
 from luban.content.Tabs import Tabs
 from luban.content.Button import Button
 
-from vinil.components.Actor import Actor as base
+import luban.content as lc
+from luban.components.AuthorizedActor import AuthorizedActor as base
 
 # Requires simulation id, config id and config type: (id, configid, type)
 class Actor(base):
@@ -40,30 +37,47 @@ class Actor(base):
         id          = pyre.inventory.str('id', default='')          # Simulation Id
         configid    = pyre.inventory.str('configid', default='')    # Configuration Id
 
+    def default(self, director):
+        return select(id='main-display-area').replaceContent(self.content(director))
+
 
     def content(self, director):
-        self._sim       = director.clerk.getSimulations(id=self.id)
-        self._settings  = director.clerk.getConfigurations(id=self.configid)    # type=settings
+        self._sim       = director.clerk.getQESimulations(id=self.id)
+        self._settings  = director.clerk.getQEConfigurations(id=self.configid)    # type=settings
 
-        document        = Document(title="Settings Configuration: %s" % self.filename(self._settings))   # , Class="step-content"
-        self.showLinks(document)    # Finish
-        self.showConfig(document, self._settings)
+        def viewIndicator(director):
+            path = []
+            path.append(('Simulations ', load(actor='materialsimulation')))
+            path.append(('Quantum Espresso ', load(actor='materialsimulation')))
+            path.append(('%s ' % self.id, load(actor    = 'material_simulations/espresso/sim-view',
+                                               id       = self.id)))
 
-        return document
+            path.append('Settings Configuration')
+
+            return director.retrieveVisual('view-indicator', path=path)
+
+        doc         = lc.document(title="Settings Configuration: %s" % self.filename(self._settings))
+        splitter    = doc.splitter(orientation="vertical")
+        sA          = splitter.section()
+        sA.add(viewIndicator(director))
+        sB          = splitter.section()
+
+        self.showLinks(sB)    # Finish
+        self.showConfig(sB, self._settings)
+
+        return doc
 
 
     def showLinks(self, document):  #, inputs
         document.add(Link(label="Edit", Class="action-link",
-                          onclick = load(actor='espresso/settings-edit',
-                                         routine='link',
-                                         id=self.id,
-                                         configid=self.configid))
+                          onclick = load(actor      = 'material_simulations/espresso/settings-edit',
+                                         id         = self.id,
+                                         configid   = self.configid))
                     )
         document.add(Link(label="Delete", Class="action-link",
-                          onclick = load(actor='espresso/settings-delete',
-                                         routine='link',
-                                         id=self.id,
-                                         configid=self.configid))
+                          onclick = load(actor      = 'material_simulations/espresso/settings-delete',
+                                         id         = self.id,
+                                         configid   = self.configid))
                     )
 
                     
@@ -111,18 +125,8 @@ class Actor(base):
         return ""
 
 
-    def pathlist(self, director):
-        sim     = director.clerk.getSimulations(id=self.id)
-        self.pathlist = [("Home","greet","link"),
-                         ("Simulations", "simulations", "link"),
-                         ("Quantum Espresso", "espresso/index", "link"),
-                         (sim.sname, "espresso/sim-view", "link", self.id),
-                         ("Settings Configuration", None, None)]
-
-        return self.pathlist
-
-    def __init__(self, *args, **kwds):
-        super(Actor, self).__init__(*args, **kwds)
+    def __init__(self):
+        super(Actor, self).__init__(name='material_simulations/espresso/settings-view')
 
         return
 
@@ -137,7 +141,7 @@ class Actor(base):
         return
 
 def actor():
-    return Actor('espresso/settings-view')
+    return Actor()
 
 
 
