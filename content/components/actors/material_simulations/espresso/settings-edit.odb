@@ -11,7 +11,7 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
-from vinil.utils.const import SERVERS
+from vnfb.utils.qeconst import SERVERS
 
 from luban.content import select
 from luban.content.Paragraph import Paragraph
@@ -26,7 +26,8 @@ from luban.content.Form import Form
 from luban.content.Tabs import Tabs
 from luban.content.Button import Button
 
-from vinil.components.Actor import Actor as base
+import luban.content as lc
+from luban.components.AuthorizedActor import AuthorizedActor as base
 
 # Requires simulation id,
 class Actor(base):
@@ -46,15 +47,35 @@ class Actor(base):
         params      = pyre.inventory.str('params', default='')
         modules     = pyre.inventory.str('modules', default='')
 
+    def default(self, director):
+        return select(id='main-display-area').replaceContent(self.content(director))
+
 
     def content(self, director):
-        self._sim       = director.clerk.getSimulations(id=self.id)
-        self._settings  = director.clerk.getConfigurations(id=self.configid)
+        self._sim       = director.clerk.getQESimulations(id=self.id)
+        self._settings  = director.clerk.getQEConfigurations(id=self.configid)
 
         (self._parser, fp)  = self.parser(self._settings)
-        d               = Document(title="Edit Settings Configuration")   # , Class="step-content"
 
-        form            = Form(id="form-vinil")
+        def viewIndicator(director):
+            path = []
+            path.append(('Simulations ', load(actor='materialsimulation')))
+             # Stub, should filter by simulation type
+            path.append(('Quantum Espresso ', load(actor='materialsimulation')))
+            path.append(('%s ' % self.id, load(actor    = 'material_simulations/espresso/sim-view',
+                                               id       = self.id))
+                        )
+            path.append("Edit Settings Configuration")
+
+            return director.retrieveVisual('view-indicator', path=path)
+
+        doc         = lc.document(title="Edit Settings Configuration")
+        splitter    = doc.splitter(orientation="vertical")
+        sA          = splitter.section()
+        sA.add(viewIndicator(director))
+        sB          = splitter.section()
+
+        form            = Form(title="Edit Quantum Espresso Settings Configuration")
         filename        = form.text(name="filename", label='File Name', value=self._filename(self._settings))
         servername      = form.selector(name="servername", label='Server Name', entries=enumerate(SERVERS)) # value?
         numproc         = form.text(name="numproc", label='Number of Processors', value=self._get("server", "num-proc"))
@@ -66,23 +87,23 @@ class Actor(base):
         modulesespresso    = form.text(name="modules", label='Modules', value=self._get("server", "modules"))
 
         submit          = form.submitbutton(label="Edit Settings Configuration")
-        form.onsubmit   = select(element=form).submit(actor = 'espresso/settings-edit',
-                                                      routine = 'updateRecord',
-                                                      id=self.id,
-                                                      configid=self.configid)
+        form.onsubmit   = select(element=form).submit(actor     = 'material_simulations/espresso/settings-edit',
+                                                      routine   = 'updateRecord',
+                                                      id        = self.id,
+                                                      configid  = self.configid)
 
         # TODO: "Cancel" button looks UGLY
-        cancel      = Button(label="Cancel")
-        cancel.onclick = load(actor = 'espresso/sim-view', routine = 'link', id=self.id)
+        cancel      = lc.link(label="Cancel")
+        cancel.onclick = load(actor = 'material_simulations/espresso/sim-view', id=self.id)
         form.add(cancel)
-        d.add(form)
+        sB.add(form)
 
-        return d
+        return doc
 
 
     def updateRecord(self, director):
         """Update settings record"""
-        self._settings     = director.clerk.getConfigurations(id=self.configid)
+        self._settings     = director.clerk.getQEConfigurations(id=self.configid)
         self._settings.setDirector(director)
 
         params  = {"filename":      self.filename,
@@ -90,7 +111,7 @@ class Actor(base):
                    #"description":   self.description,  # I don't really need description at this point!
                    
         self._settings.updateRecord(params)
-        return load(actor='espresso/sim-view', routine='link', id=self.id)
+        return load(actor = 'material_simulations/espresso/sim-view', id=self.id)
 
 
     def _text(self):
@@ -150,18 +171,8 @@ class Actor(base):
         return ""
 
 
-    def pathlist(self, director):
-        sim     = director.clerk.getSimulations(id=self.id)
-        self.pathlist = [("Home","greet","link"),
-                         ("Simulations", "simulations", "link"),
-                         ("Quantum Espresso", "espresso/index", "link"),
-                         (sim.sname, "espresso/sim-view", "link", self.id),
-                         ("Edit Settings Configuration", None, None)]
-
-        return self.pathlist
-
-    def __init__(self, *args, **kwds):
-        super(Actor, self).__init__(*args, **kwds)
+    def __init__(self):
+        super(Actor, self).__init__(name='material_simulations/espresso/settings-edit')
 
         return
 
@@ -187,7 +198,7 @@ class Actor(base):
         return
 
 def actor():
-    return Actor('espresso/settings-edit')
+    return Actor()
 
 
 
