@@ -63,7 +63,7 @@ class Actor(base):
 
             return director.retrieveVisual('view-indicator', path=path)
 
-        doc         = lc.document(title="Edit Input Configuration: %s" % self.type)
+        doc         = lc.document(title="Edit Configuration: %s" % self.type)
         splitter    = doc.splitter(orientation="vertical")
         sA          = splitter.section()
         sA.add(viewIndicator(director))
