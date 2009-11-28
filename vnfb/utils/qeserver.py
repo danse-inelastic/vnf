@@ -16,7 +16,7 @@ from luban.content.Paragraph import Paragraph
 from luban.content import load
 from luban.content.Link import Link
 
-
+# Stub at this point
 class QEServer:
 
     def __init__(self, director):
@@ -30,9 +30,9 @@ class QEServer:
 
         if servername   != '':  
             text    = Link(label=servername, Class="action-link",
-                           onclick=load(actor="server",
-                           routine="view",
-                           sname=servername))
+                           onclick=load(actor="materialsimulation"))
+#                           routine="view",
+#                           sname=servername))
         else:
             text    = Paragraph(text="None")
 
@@ -51,11 +51,13 @@ class QEServer:
             # check if settings[0] isinstanceof Configuration
             config  = settings[0].text  
 
-        #Example of config:
-        #config  = """
-        #[server]
-        #server-name = foxtrot.danse.us
-        #"""
+            """
+            Example of config:
+            config  = "
+            [server]
+            server-name = foxtrot.danse.us
+            "
+            """
             if config:  # Implies that it has sections already
                 fp  = StringIO.StringIO(config)
                 parser  = ConfigParser.ConfigParser()
@@ -68,47 +70,23 @@ class QEServer:
         return ''
                 
     def _isServerName(self, name):
-        if name == '':
-            return False
-
-        if self._director:
-            servers  = self._clerk.getServers()
-            for s in servers:
-                """Check if the server name is available in the server names """
-                if name == s.sname:
-                    return True
-
-        return False
-
-        
-#        s   = settings[0]
-#        if s:
-#            config  = s.text
-            
-        
-
-
-
-    def _label(self, settings):
-        """Returns filename"""
-        if settings:
-            return settings[0].filename
-
-        return "Add"
-
-
-    def _getActor(self, settings):
-        """Returns proper actor depending if 'input' exists"""
-        if settings:   # View
-            return "espresso/settings-view"
-
-        return "espresso/settings-add" # Create New
-
-
+        return True
+    
+#        if name == '':
+#            return False
+#
+#        if self._director:
+#            servers  = self._clerk.getServers()
+#            for s in servers:
+#                """Check if the server name is available in the server names """
+#                if name == s.sname:
+#                    return True
+#
+#        return False
 
 
 if __name__ == "__main__":
-    params   = SimServer(None)
+    params   = QEServer(None)
     #params.serverIsSet(None)
 
 
