@@ -13,12 +13,11 @@
 
 from luban.content import select
 from luban.content.Paragraph import Paragraph
-from luban.content.Document import Document
 from luban.content.Form import Form
 from luban.content import load
-from luban.content.Button import Button
 
-from vinil.components.Actor import Actor as base
+import luban.content as lc
+from luban.components.AuthorizedActor import AuthorizedActor as base
 
 # Requires simulation id,
 class Actor(base):
@@ -29,50 +28,61 @@ class Actor(base):
         configid    = pyre.inventory.str('configid', default='')    # Configuration Id
 
 
+    def default(self, director):
+        return select(id='main-display-area').replaceContent(self.content(director))
+
+
     def content(self, director):
-        self._input = director.clerk.getConfigurations(id=self.configid)
+        self._input = director.clerk.getQEConfigurations(id=self.configid)
 
-        document = Document(title='Delete Settings Configuration')
-        document.add(Paragraph(text="Are you sure you want to delete settings configuration?"))
+        def viewIndicator(director):
+            path = []
+            path.append(('Simulations ', load(actor='materialsimulation')))
+             # Stub, should filter by simulation type
+            path.append(('Quantum Espresso ', load(actor='materialsimulation')))
+            path.append(('%s ' % self.id, load(actor    = 'material_simulations/espresso/sim-view',
+                                               id       = self.id))
+                        )
+            path.append("Delete Settings Configuration")
 
-        form        = Form(id="form-vinil")
+            return director.retrieveVisual('view-indicator', path=path)
+
+        doc         = lc.document(title="Delete Settings Configuration")
+        splitter    = doc.splitter(orientation="vertical")
+        sA          = splitter.section()
+        sA.add(viewIndicator(director))
+        sB          = splitter.section()
+
+        sB.add(Paragraph(text="Are you sure you want to delete settings configuration?"))
+
+        form        = Form(title = "Delete Quantum Espresso Settings Configuration")
         submit      = form.submitbutton(label="Delete")
-        form.onsubmit   = select(element=form).submit(actor     = 'espresso/settings-delete',
+        form.onsubmit   = select(element=form).submit(actor     = 'material_simulations/espresso/settings-delete',
                                                       routine   = 'deleteRecord',
                                                       id        = self.id,
                                                       configid  = self.configid)
 
         # TODO: "Cancel" button looks UGLY
-        cancel      = Button(label="Cancel")
-        cancel.onclick = load(actor = 'espresso/sim-view', routine = 'link', id=self.id)
+        cancel      = lc.link(label="Cancel")
+        cancel.onclick = load(actor = 'material_simulations/espresso/sim-view', id = self.id)
         form.add(cancel)
 
-        document.add(form)
+        sB.add(form)
 
-        return document
+        return doc
 
 
     def deleteRecord(self, director):
         """Delete configuration record"""
-        self._input     = director.clerk.getConfigurations(id=self.configid)
+        self._input     = director.clerk.getQEConfigurations(id=self.configid)
         self._input.setDirector(director)
         self._input.deleteRecord()
 
-        return load(actor='espresso/sim-view', routine='link', id=self.id)
+        return load(actor='material_simulations/espresso/sim-view', id=self.id)
 
 
-    def pathlist(self, director):
-        sim     = director.clerk.getSimulations(id=self.id)
-        self.pathlist = [("Home","greet","link"),
-                         ("Simulations", "simulations", "link"),
-                         ("Quantum Espresso", "espresso/index", "link"),
-                         (sim.sname, "espresso/sim-view", "link", self.id),
-                         ("Delete Settings Configuration", None, None)]
-
-        return self.pathlist
-
-    def __init__(self, *args, **kwds):
-        super(Actor, self).__init__(*args, **kwds)
+    def __init__(self):
+        super(Actor, self).__init__(name='material_simulations/espresso/settings-delete')
 
         return
 
@@ -82,12 +92,13 @@ class Actor(base):
         self.id             = self.inventory.id
         self.configid       = self.inventory.configid
 
+
     def _init(self):
         super(Actor, self)._init()
         return
 
 def actor():
-    return Actor('espresso/settings-delete')
+    return Actor()
 
 
 __date__ = "$Nov 11, 2009 1:03:02 PM$"
