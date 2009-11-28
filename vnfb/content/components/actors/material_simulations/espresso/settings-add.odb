@@ -41,9 +41,30 @@ class Actor(base):
         modules     = pyre.inventory.str('modules', default='')
 
 
+    def default(self, director):
+        return select(id='main-display-area').replaceContent(self.content(director))
+
+
     def content(self, director):
-        self._sim       = director.clerk.getSimulations(id=self.id)
-        d               = Document(title="Create Settings Configuration")   # , Class="step-content"
+        self._sim       = director.clerk.getQESimulations(id = self.id)
+
+        def viewIndicator(director):
+            path = []
+            path.append(('Simulations ', load(actor='materialsimulation')))
+            path.append(('Quantum Espresso ', load(actor='materialsimulation')))
+            path.append(('%s ' % self.id, load(actor    = 'material_simulations/espresso/sim-view',
+                                               id       = self.id)))
+
+            path.append('Create Settings Configuration')
+
+            return director.retrieveVisual('view-indicator', path = path)
+
+        doc         = lc.document(title   = "Create Settings Configuration")
+        splitter    = doc.splitter(orientation="vertical")
+        sA          = splitter.section()
+        sA.add(viewIndicator(director))
+        sB          = splitter.section()
+
 
         form            = Form(id="form-vinil")
         filename        = form.text(name="filename", label='File Name', value=self.filename)
@@ -57,22 +78,22 @@ class Actor(base):
         modulesespresso    = form.text(name="modules", label='Modules', value=self.modules)
 
         submit          = form.submitbutton(label="Create Settings Configuration")
-        form.onsubmit   = select(element=form).submit(actor = 'espresso/settings-add',
-                                                      routine = 'createRecord',
-                                                      id=self.id)
+        form.onsubmit   = select(element=form).submit(actor     = 'material_simulations/espresso/settings-add',
+                                                      routine   = 'createRecord',
+                                                      id        = self.id)
 
         # TODO: "Cancel" button looks UGLY
-        cancel      = Button(label="Cancel")
-        cancel.onclick = load(actor = 'espresso/sim-view', routine = 'link', id=self.id)
+        cancel          = lc.link(label="Cancel")
+        cancel.onclick  = load(actor = 'material_simulations/espresso/sim-view', id=self.id)
         form.add(cancel)
-        d.add(form)
+        sB.add(form)
 
-        return d
+        return doc
 
 
     def createRecord(self, director):
         """Create settings record"""
-        params  = {"simulationId":  self.id,
+        params  = {"simulationid":  self.id,
                    "filename":      self.filename,
                    "type":          "settings",
                    "parser":        "ConfigParser",
@@ -83,7 +104,7 @@ class Actor(base):
         settings.setDirector(director)
 
         settings.createRecord(params)
-        return load(actor='espresso/sim-view', routine='link', id=self.id)
+        return load(actor='material_simulations/espresso/sim-view', id=self.id)
 
 
     def _text(self):
@@ -112,18 +133,8 @@ class Actor(base):
         return ''
 
 
-    def pathlist(self, director):
-        sim     = director.clerk.getSimulations(id=self.id)
-        self.pathlist = [("Home","greet","link"),
-                         ("Simulations", "simulations", "link"),
-                         ("Quantum Espresso", "espresso/index", "link"),
-                         (sim.sname, "espresso/sim-view", "link", self.id),
-                         ("Create Settings Configuration", None, None)]
-
-        return self.pathlist
-
-    def __init__(self, *args, **kwds):
-        super(Actor, self).__init__(*args, **kwds)
+    def __init__(self):
+        super(Actor, self).__init__(name='material_simulations/espresso/settings-add')
 
         return
 
@@ -148,7 +159,7 @@ class Actor(base):
         return
 
 def actor():
-    return Actor('espresso/settings-add')
+    return Actor()
 
 
 __date__ = "$Nov 11, 2009 1:03:02 PM$"

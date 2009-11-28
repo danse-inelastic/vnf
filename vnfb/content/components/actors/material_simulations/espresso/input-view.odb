@@ -104,7 +104,7 @@ class Actor(base):
 
 
     def __init__(self):
-        super(Actor, self).__init__(name='material_simulations/espresso/input-add')
+        super(Actor, self).__init__(name='material_simulations/espresso/input-view')
 
         return
 
