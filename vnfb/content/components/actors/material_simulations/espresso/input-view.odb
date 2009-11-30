@@ -64,25 +64,28 @@ class Actor(base):
         splitter    = doc.splitter(orientation="vertical")
         sA          = splitter.section()
         sA.add(viewIndicator(director))
-        sB          = splitter.section()
+        sC          = splitter.section()
+        self.showLinks(sC)
 
-        self.showLinks(sB)    # Finish
+        sB          = splitter.section()
         self.showConfig(sB, self._input)
 
         return doc
 
 
     def showLinks(self, document):  #, inputs
-        document.add(Link(label="Edit", Class="action-link",
-                          onclick = load(actor='material_simulations/espresso/input-edit',
-                                         id=self.id,
-                                         configid=self.configid,
-                                         type=self.type)))
-        document.add(Link(label="Delete", Class="action-link",
-                          onclick = load(actor='material_simulations/espresso/input-delete',
-                                         id=self.id,
-                                         configid=self.configid,
-                                         type=self.type)))
+        document.add(lc.button(label="Edit",
+                              onclick = load(actor='material_simulations/espresso/input-edit',
+                                             id=self.id,
+                                             configid=self.configid,
+                                             type=self.type)))
+        document.add(lc.button(label="Delete",
+                              onclick = load(actor='material_simulations/espresso/input-delete',
+                                             id=self.id,
+                                             configid=self.configid,
+                                             type=self.type)))
+
+        document.add(lc.document(Class="clear-both"))
 
 
     def showConfig(self, document, input):
