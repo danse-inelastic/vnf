@@ -54,9 +54,11 @@ class Actor(base):
         splitter    = doc.splitter(orientation="vertical")
         sA          = splitter.section()
         sA.add(viewIndicator(director))
-        sB          = splitter.section()
+        
+        sC          = splitter.section()
+        self.showLinks(sC)
 
-        self.showLinks(sB)
+        sB          = splitter.section()
         self.showSim(sB, sim)
         self.showInputFiles(director, sB, sim.type)
         self.showSettings(director, sB)
@@ -67,15 +69,16 @@ class Actor(base):
         return doc
 
     def showLinks(self, document):
-        document.add(Link(label="Edit", Class="action-link",
+        document.add(lc.button(label="Edit", #Class="action-link",
                           onclick = load(actor='material_simulations/espresso/sim-edit',
                           id=self.id)))
-        document.add(Link(label="Delete", Class="action-link",
+        document.add(lc.button(label="Delete", #Class="action-link",
                           onclick = load(actor='material_simulations/espresso/sim-delete',
                           id=self.id)))
-        document.add(Link(label="Clone", Class="action-link",
+        document.add(lc.button(label="Clone", #Class="action-link",
                           onclick = load(actor='material_simulations/espresso/sim-clone',
                           id=self.id)))
+        document.add(lc.document(Class="clear-both"))
 
 
     def showSim(self, document, sim):

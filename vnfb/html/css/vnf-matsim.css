@@ -12,10 +12,36 @@
 }
 
 /* Vinil CSS*/
-.action-link {
-    padding: 0px 2px;
+
+/* overload the default behavior of luban for buttons */
+.luban-button-container,
+.luban-button-container a{
+    text-decoration: none;
+    padding: 3px 5px;
+    margin: 3px 5px 3px 0px;
+    float: left;
 }
 
+.luban-button {
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    background-color: #eeeeee;
+    border: 1px outset;
+    padding: 2px 5px;
+    color: #333333;
+}
+
+/*
+.action-link,
+.action-link a{
+    border-color: #cced8c;
+    border-width: 2px;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    width:  50px;
+    padding: 0px 2px;
+}
+*/
 .clear-both {
     clear: both;
 }
