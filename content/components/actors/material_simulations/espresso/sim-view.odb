@@ -69,15 +69,15 @@ class Actor(base):
         return doc
 
     def showLinks(self, document):
-        document.add(lc.button(label="Edit", #Class="action-link",
-                          onclick = load(actor='material_simulations/espresso/sim-edit',
-                          id=self.id)))
-        document.add(lc.button(label="Delete", #Class="action-link",
-                          onclick = load(actor='material_simulations/espresso/sim-delete',
-                          id=self.id)))
-        document.add(lc.button(label="Clone", #Class="action-link",
-                          onclick = load(actor='material_simulations/espresso/sim-clone',
-                          id=self.id)))
+        document.add(lc.button(label="Edit",
+                              onclick = load(actor='material_simulations/espresso/sim-edit',
+                              id=self.id)))
+        document.add(lc.button(label="Delete",
+                              onclick = load(actor='material_simulations/espresso/sim-delete',
+                              id=self.id)))
+        document.add(lc.button(label="Clone",
+                              onclick = load(actor='material_simulations/espresso/sim-clone',
+                              id=self.id)))
         document.add(lc.document(Class="clear-both"))
 
 

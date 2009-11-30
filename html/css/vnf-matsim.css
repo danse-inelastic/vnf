@@ -31,17 +31,6 @@
     color: #333333;
 }
 
-/*
-.action-link,
-.action-link a{
-    border-color: #cced8c;
-    border-width: 2px;
-    -moz-border-radius: 5px;
-    -webkit-border-radius: 5px;
-    width:  50px;
-    padding: 0px 2px;
-}
-*/
 .clear-both {
     clear: both;
 }
@@ -57,6 +46,19 @@
 .display-block p{
     display: block;
 }
+
+/*
+.action-link,
+.action-link a{
+    border-color: #cced8c;
+    border-width: 2px;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    width:  50px;
+    padding: 0px 2px;
+}
+*/
+
 
 /* version */
 /* $Id$ */
