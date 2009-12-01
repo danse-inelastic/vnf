@@ -88,6 +88,16 @@ def stamp2date(stamp):
 
     return ""
 
+"""
+Adds row to the table
+"""
+def addRow(table, param, value):
+    row     = table.row()
+    cell    = row.cell()
+    cell.add(param)
+    cell    = row.cell()
+    cell.add(value)
+
 
 def testStamp():
     import time
