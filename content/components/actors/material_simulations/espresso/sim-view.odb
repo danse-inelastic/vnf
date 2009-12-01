@@ -59,11 +59,11 @@ class Actor(base):
         self.showLinks(sC)
 
         sB          = splitter.section()
-        self.showSim(sB, sim)
-        self.showInputFiles(director, sB, sim.type)
-        self.showSettings(director, sB)
-        self.showServer(director, sB)
-        self.showJobs(director, sB)
+        table   = self.showSim(sB, sim)
+        self.showSettings(director, table)
+        self.showServer(director, table)
+        self.showJobs(director, table)
+        self.showInputFiles(director, sB, table, sim.type)
         self.showRefs(sB)
         
         return doc
@@ -84,47 +84,88 @@ class Actor(base):
     def showSim(self, document, sim):
         """Shows simulation data"""
         if sim: # ?
-            document.add(Paragraph(text="Description: %s" % sim.short_description))
-            document.add(Paragraph(text="Type: %s" % sim.type))
-            document.add(Paragraph(text="Package: %s" % sim.package))
-            document.add(Paragraph(text="Label: %s" % sim.label))
-            document.add(Paragraph(text="Created: %s" % stamp2date(sim.date)))
+            table   = lc.grid()
+            document.add(table)
+
+            # Description row
+            row     = table.row()
+            cell    = row.cell()
+            cell.add('Description: ')
+            cell    = row.cell()
+            cell.add(sim.short_description)
+
+            # Type row
+            row     = table.row()
+            cell    = row.cell()
+            cell.add('Type: ')
+            cell    = row.cell()
+            cell.add(sim.type)
+
+            # Package row
+            row     = table.row()
+            cell    = row.cell()
+            cell.add('Package: ')
+            cell    = row.cell()
+            cell.add(sim.package)
+
+            # Label row
+            row     = table.row()
+            cell    = row.cell()
+            cell.add('Label: ')
+            cell    = row.cell()
+            cell.add(sim.label)
+
+            # Created row
+            row     = table.row()
+            cell    = row.cell()
+            cell.add('Created: ')
+            cell    = row.cell()
+            cell.add(stamp2date(sim.date))
+
+            return table
 
 
-    def showInputFiles(self, director, document, type):
+    def showInputFiles(self, director, document, table, type):
         """Shows chain of configuration files"""
-        document.add(Document(Class="clear-both"))
-        document.add(Paragraph(text="Input Files: "))
-        splitter        = QEChain(director, type)
+        #document.add(Document(Class="clear-both"))
+        row     = table.row()
+        cell    = row.cell()
+        cell.add('Input Files: ')
+        cell    = row.cell()
+        cell.add("")
+
+        document.add(Paragraph(text=""))
+        splitter = QEChain(director, type)
 
         document.add(splitter.chain(self.id))
 
 
-    def showSettings(self, director, document):
-        document.add(Document(Class="clear-both"))   # Empty document
-        setdoc  = Document(Class="display-inline")
-        setdoc.add(Paragraph(text="Simulation Parameters: "))
-
+    def showSettings(self, director, table):
         params  = QEParams(director)
-        setdoc.add(params.getLink(self.id))
-        document.add(setdoc) # [STUB]
+        link    = params.getLink(self.id)
+
+        row     = table.row()
+        cell    = row.cell()
+        cell.add("Simulation Parameters: ")
+        cell    = row.cell()
+        cell.add(link)
 
 
-    def showServer(self, director, document):
-        document.add(Document(Class="clear-both"))   # Empty document
-        servdoc = Document(Class="display-inline")
-        servdoc.add(Paragraph(text="Default Server: "))
-
+    def showServer(self, director, table):
         server  = QEServer(director)
-        servdoc.add(server.getServer(self.id))
-        document.add(servdoc)
+        link    = server.getServer(self.id)
+
+        row     = table.row()
+        cell    = row.cell()
+        cell.add("Default Server: ")
+        cell    = row.cell()
+        cell.add(link)
 
 
-    def showJobs(self, director, document):
+    def showJobs(self, director, table):
         """Adds list of job ids to the document"""
-        document.add(Document(Class="clear-both"))   # Empty document
+
         jobsdoc = Document(Class="display-inline")
-        jobsdoc.add(Paragraph(text="Jobs: "))
         joblist  = self.jobs(director)
 
         if len(joblist) != 0:
@@ -136,7 +177,11 @@ class Actor(base):
         else:
             jobsdoc.add(Paragraph(text="None", Class="action-link"))
 
-        document.add(jobsdoc)
+        row     = table.row()
+        cell    = row.cell()
+        cell.add("Jobs: ")
+        cell    = row.cell()
+        cell.add(jobsdoc)
 
 
     # TODO: Should have "Submit to Queue" only
@@ -144,15 +189,19 @@ class Actor(base):
         """Adds References"""
         document.add(Document(Class="clear-both"))   # Empty document
         refsdoc = Document(Class="display-block")
-        refsdoc.add(Link(label="Submit to Queue", onclick=load(actor="espresso/sim-view", routine="checkSubmit", id=self.id)))
+        refsdoc.add(lc.button(label="Submit to Queue", onclick=load(actor="material_simulations/espresso/sim-view",
+                                                               routine="checkSubmit",
+                                                               id=self.id)))
         document.add(refsdoc)
+        document.add(lc.document(Class="clear-both"))
 
 
     def checkSubmit(self):
         # Check config inputs
         # Check settings
         # If check failed, go to error page (with link "Go Back")
-        return load(actor="jobs/submitted", routine="submit", id=self.id)
+        #return load(actor="jobs/submitted", routine="submit", id=self.id)
+        return load(actor="materialsimulation")
 
 
     def jobs(self, director):
@@ -184,6 +233,64 @@ class Actor(base):
 
 def actor():
     return Actor()
+
+
+#def table(matsims, cols, director):
+#    """Table of simulations parameters"""
+#
+#    from luban.content.table import Model, View, Table
+#    from luban.content import load
+#    from luban.content.Link import Link
+#
+#    class model(Model):
+#        parameter        = Model.descriptors.str(name='parameter')
+#        value            = Model.descriptors.str(name='value')
+#
+#
+#    columns = [
+#        View.Column(label='', measure='parameter'),
+#        View.Column(label='', measure='value'),
+#        ]
+#
+#    view = View(columns=columns, editable=False)
+#
+#    def getSelected(matter): return False
+#    def getId(matsim):
+#        label = matsim.id
+#        link = Link(
+#            label = label,
+#            onclick = load(
+#                actor='materialsimulation', routine='showMaterialSimulation',
+#                id = matsim.id,
+#                type = matsim.__class__.name,
+#                )
+#            )
+#        return link
+#    def getDescription(matsim):
+#        return matsim.short_description
+#    def getCreated(exp):
+#        date = exp.date
+#        return str(date)
+#    def getType(matsim):
+#        return matsim.__class__.name
+#    def getMatter(matsim):
+#        matter = matsim.matter
+#        if not matter or not matter.id: return 'not defined'
+#        try:
+#            matter = director.clerk.db.dereference(matter)
+#        except:
+#            return 'matter %s not found' % matter.id
+#        identifier = matter.short_description or matter.chemical_formula
+#        return identifier
+#
+#    import operator
+#    value_generators    = [ eval('get'+col.measure.capitalize())
+#                            for col in view.columns]
+#    record2tuple        = lambda record: [g(record) for g in value_generators]
+#    data                = map(record2tuple, matsims)
+#
+#    table = Table(model=model, data=data, view=view, id='matsim-table')
+#    return table
 
 
 __date__ = "$Nov 2, 2009 3:15:35 PM$"

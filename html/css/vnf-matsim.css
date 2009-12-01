@@ -18,7 +18,7 @@
 .luban-button-container a{
     text-decoration: none;
     padding: 3px 5px;
-    margin: 3px 5px 3px 0px;
+    margin: 3px 0px 7px 0px;
     float: left;
 }
 
@@ -47,9 +47,8 @@
     display: block;
 }
 
-/*
-.action-link,
-.action-link a{
+
+.action-link {
     border-color: #cced8c;
     border-width: 2px;
     -moz-border-radius: 5px;
@@ -57,7 +56,7 @@
     width:  50px;
     padding: 0px 2px;
 }
-*/
+
 
 
 /* version */
