@@ -87,15 +87,20 @@ class Actor(base):
                     
     def showConfig(self, document, settings):
         (self._parser, fp)    = self.parser(settings)
-        document.add(Paragraph(text="File Name: %s" % self.filename(settings)) )
-        document.add(Paragraph(text="Server Name: %s" % self._get("server", "server-name")))
-        document.add(Paragraph(text="Number of Processors: %s" % self._get("server", "num-proc")))
-        document.add(Paragraph(text="Number of Nodes: %s" % self._get("server", "num-nodes")))
-        document.add(Paragraph(text="Processors Per Node: %s" % self._get("server", "proc-per-node")))
-        document.add(Paragraph(text="Npool: %s" % self._get("server", "npool")))
-        document.add(Paragraph(text="Executable: %s" % self._get("server", "executable")))
-        document.add(Paragraph(text="Additional Parameters: %s" % self._get("server", "params")))
-        document.add(Paragraph(text="Modules: %s" % self._get("server", "modules")))
+        table   = lc.grid()
+        document.add(table)
+
+        from vnfb.utils.qeutils import addRow
+
+        addRow(table, 'File Name: ', self.filename(settings))
+        addRow(table, 'Server Name: ', self._get("server", "server-name"))
+        addRow(table, "Number of Processors: ", self._get("server", "num-proc"))
+        addRow(table, "Number of Nodes: ", self._get("server", "num-nodes"))
+        addRow(table, "Processors Per Node: ", self._get("server", "proc-per-node"))
+        addRow(table, "Npool: ", self._get("server", "npool"))
+        addRow(table, "Executable: ", self._get("server", "executable"))
+        addRow(table, "Additional Parameters: ", self._get("server", "params"))
+        addRow(table, "Modules: ", self._get("server", "modules"))
 
 
     def parser(self, settings):
