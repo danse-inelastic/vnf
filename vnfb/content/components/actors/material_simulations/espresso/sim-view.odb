@@ -12,6 +12,7 @@
 #
 
 from vnfb.utils.qeutils import stamp2date
+from vnfb.utils.qeutils import addRow
 from vnfb.utils.qechain import QEChain
 from vnfb.utils.qeparams import QEParams
 from vnfb.utils.qeserver import QEServer
@@ -87,52 +88,19 @@ class Actor(base):
             table   = lc.grid()
             document.add(table)
 
-            # Description row
-            row     = table.row()
-            cell    = row.cell()
-            cell.add('Description: ')
-            cell    = row.cell()
-            cell.add(sim.short_description)
-
-            # Type row
-            row     = table.row()
-            cell    = row.cell()
-            cell.add('Type: ')
-            cell    = row.cell()
-            cell.add(sim.type)
-
-            # Package row
-            row     = table.row()
-            cell    = row.cell()
-            cell.add('Package: ')
-            cell    = row.cell()
-            cell.add(sim.package)
-
-            # Label row
-            row     = table.row()
-            cell    = row.cell()
-            cell.add('Label: ')
-            cell    = row.cell()
-            cell.add(sim.label)
-
-            # Created row
-            row     = table.row()
-            cell    = row.cell()
-            cell.add('Created: ')
-            cell    = row.cell()
-            cell.add(stamp2date(sim.date))
+            addRow(table, 'Description: ', sim.short_description)
+            addRow(table, 'Type: ', sim.type)
+            addRow(table, 'Package: ', sim.package)
+            addRow(table, 'Label: ', sim.label)
+            addRow(table, 'Created: ', stamp2date(sim.date))
 
             return table
 
 
     def showInputFiles(self, director, document, table, type):
         """Shows chain of configuration files"""
-        #document.add(Document(Class="clear-both"))
-        row     = table.row()
-        cell    = row.cell()
-        cell.add('Input Files: ')
-        cell    = row.cell()
-        cell.add("")
+        from vnfb.utils.qeutils import addRow
+        addRow(table, 'Input Files: ', '')
 
         document.add(Paragraph(text=""))
         splitter = QEChain(director, type)
@@ -144,22 +112,14 @@ class Actor(base):
         params  = QEParams(director)
         link    = params.getLink(self.id)
 
-        row     = table.row()
-        cell    = row.cell()
-        cell.add("Simulation Parameters: ")
-        cell    = row.cell()
-        cell.add(link)
+        addRow(table, "Simulation Parameters: ", link)
 
 
     def showServer(self, director, table):
         server  = QEServer(director)
         link    = server.getServer(self.id)
 
-        row     = table.row()
-        cell    = row.cell()
-        cell.add("Default Server: ")
-        cell    = row.cell()
-        cell.add(link)
+        addRow(table, "Default Server: ", link)
 
 
     def showJobs(self, director, table):
@@ -177,11 +137,7 @@ class Actor(base):
         else:
             jobsdoc.add(Paragraph(text="None", Class="action-link"))
 
-        row     = table.row()
-        cell    = row.cell()
-        cell.add("Jobs: ")
-        cell    = row.cell()
-        cell.add(jobsdoc)
+        addRow(table, "Jobs: ", jobsdoc)
 
 
     # TODO: Should have "Submit to Queue" only
