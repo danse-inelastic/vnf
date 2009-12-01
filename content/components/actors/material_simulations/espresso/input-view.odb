@@ -12,6 +12,7 @@
 #
 
 from vnfb.utils.qeutils import stamp2date
+from vnfb.utils.qeutils import addRow
 
 from luban.content import select
 from luban.content.Paragraph import Paragraph
@@ -89,13 +90,16 @@ class Actor(base):
 
 
     def showConfig(self, document, input):
-        document.add(Paragraph(text="File Name: %s" % input.filename))
-        document.add(Paragraph(text="Type: %s" % input.type))
-        document.add(Paragraph(text="Description: %s" % input.description))
-        document.add(Paragraph(text="Parser: %s" % input.parser))
-        document.add(Paragraph(text="Created: %s" % stamp2date(input.timeCreated)))
-        document.add(Paragraph(text="Last Modified: %s" % stamp2date(input.timeModified)))
-        document.add(Paragraph(text="Text: %s" % input.text))
+        table   = lc.grid()
+        document.add(table)
+
+        addRow(table, 'File Name: ', input.filename)
+        addRow(table, "Type: ", input.type)
+        addRow(table, "Description: ", input.description)
+        addRow(table, "Parser: ", input.parser)
+        addRow(table, "Created: ", stamp2date(input.timeCreated))
+        addRow(table, "Last Modified: ", stamp2date(input.timeModified))
+        addRow(table, "Text: ", input.text)
 
 
     def filename(self, input):
