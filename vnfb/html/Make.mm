@@ -21,7 +21,7 @@ EXPORT_DATADIRS = \
 	images \
 	java \
 
-EXPORT_DATAFILES = \
+EXPORT_SYMLINKS = \
 	cgi-bin \
 
 
@@ -48,7 +48,7 @@ RSYNC_A = rsync -a
 EXPORT_DATA_PATH = $(EXPORT_ROOT)/$(PROJECT)/$(PACKAGE)
 
 
-export-package-data: export-package-data-dirs export-package-data-files
+export-package-data: export-package-data-dirs export-package-symlinks
 
 export-package-data-dirs:: $(EXPORT_DATADIRS) 
 	mkdir -p $(EXPORT_DATA_PATH); \
@@ -59,9 +59,9 @@ export-package-data-dirs:: $(EXPORT_DATADIRS)
         } done
 
 CP_SYMLINK = rsync -a
-export-package-data-files:: $(EXPORT_DATAFILES) 
+export-package-symlinks:: $(EXPORT_SYMLINKS) 
 	mkdir -p $(EXPORT_DATA_PATH); \
-	for x in $(EXPORT_DATAFILES); do { \
+	for x in $(EXPORT_SYMLINKS); do { \
 	        $(CP_SYMLINK) $$x $(EXPORT_DATA_PATH)/ ; \
         } done
 
