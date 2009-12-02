@@ -17,6 +17,9 @@ class Actor(base):
         page = lc.page(title='test cod')
         visual = director.retrieveVisual("cod/frame")
         page.add(visual)
+        
+        form = doc.find(id="login-form")
+        form.onsubmit = alert('form submitted')
         return page
 
 
@@ -26,6 +29,9 @@ class Actor(base):
 
 
     def _getData(self, director):
+        
+                
+
         # this is a test implementation
         return [
             (False, '3XFABC', 1.0, 2.0, 3.0, 88, 89., 91., 6.0, 5, 'symmetry', 'formula...', 'text...'),

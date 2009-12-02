@@ -9,7 +9,7 @@ from luban.content.FormTextField import FormTextField
 from luban.content.FormTextArea import FormTextArea
 
 def visual(director):
-    doc = lc.document(title='Crystallography search')
+    doc = lc.document(title='Crystallography Open Database')
     
     searchpanel = lc.form(); doc.add(searchpanel)
     sp = lc.splitter(); searchpanel.add(sp)
