@@ -1,0 +1,74 @@
+# -*- Python -*-
+
+
+from luban.content import select, load, alert
+import luban.content as lc
+
+
+from luban.content.FormTextField import FormTextField
+from luban.content.FormTextArea import FormTextArea
+
+def visual(director):
+    doc = lc.document(title='Crystallography search')
+    
+    searchpanel = lc.form(); doc.add(searchpanel)
+    sp = lc.splitter(); searchpanel.add(sp)
+    
+    left = sp.section()
+    left.add(createLeftSearchPanel())
+             
+    middle = sp.section()
+    middle.add(createMiddleSearchPanel())
+    
+    right = sp.section()
+    right.add(createRightSearchPanel())
+
+    searchpanel.submitbutton(label='search')
+    searchpanel.onsubmit = select(element=searchpanel).submit(
+        actor = 'cod', routine = 'process')
+
+    tablecontainer = doc.document(id='cod-table-container')
+    tablecontainer.add(director.retrieveVisual('cod/table', data=[], director=director))
+    tablecontainer.oncreate = select(element=tablecontainer).replaceContent(
+        load(actor='cod', routine='getTableView')
+        )
+    return doc
+
+
+def createLeftSearchPanel():
+    grid = lc.grid()
+
+    row = grid.row()
+    row.cell().add('Text'); row.cell().add(FormTextField(name='text'))
+
+    row = grid.row()
+    row.cell().add('Elements'); row.cell().add(FormTextField(name='elements'))
+
+    row = grid.row()
+    row.cell().add('Not elements'); row.cell().add(FormTextField(name='notelements'))
+
+    row = grid.row()
+    row.cell().add('Volume');
+    cell = row.cell()
+    sp = lc.splitter(); cell.add(sp)
+    sp.section().add(FormTextField(name='volume_min'))
+    sp.section().add(FormTextField(name='volume_max'))
+
+    row = grid.row()
+    row.cell().add('Number'); row.cell().add(FormTextField(name='number'))
+    return grid
+
+
+def createMiddleSearchPanel():
+    grid = lc.grid()
+    for attr in ['a', 'b', 'c', 'alpha', 'beta', 'gamma']:
+        row = grid.row()
+        row.cell().add(attr)
+        row.cell().add(FormTextField(name='%s_min'%attr))
+        row.cell().add(FormTextField(name='%s_max'%attr))
+        continue
+    return grid
+
+
+def createRightSearchPanel():
+    return FormTextArea(name='sql')
