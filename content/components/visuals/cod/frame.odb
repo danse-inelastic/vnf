@@ -24,14 +24,15 @@ def visual(director):
     right.add(createRightSearchPanel())
 
     searchpanel.submitbutton(label='search')
-    searchpanel.onsubmit = select(element=searchpanel).submit(
-        actor = 'cod', routine = 'process')
 
     tablecontainer = doc.document(id='cod-table-container')
     tablecontainer.add(director.retrieveVisual('cod/table', data=[], director=director))
-    tablecontainer.oncreate = select(element=tablecontainer).replaceContent(
-        load(actor='cod', routine='getTableView')
-        )
+
+    searchpanel.onsubmit = select(element=searchpanel).submit(
+        actor = 'cod', routine = 'process',
+        formid = searchpanel.id,
+        new_display_container_id=tablecontainer.id, new_display_creator='getTableView')
+
     return doc
 
 
@@ -51,24 +52,35 @@ def createLeftSearchPanel():
     row.cell().add('Volume');
     cell = row.cell()
     sp = lc.splitter(); cell.add(sp)
-    sp.section().add(FormTextField(name='volume_min'))
-    sp.section().add(FormTextField(name='volume_max'))
+
+    field = _limit_field
+    sp.section().add(field('volume', 'min'))
+    sp.section().add(field('volume', 'max'))
 
     row = grid.row()
-    row.cell().add('Number'); row.cell().add(FormTextField(name='number'))
+    row.cell().add('# of elements'); row.cell().add(FormTextField(name='nelements'))
     return grid
 
 
 def createMiddleSearchPanel():
     grid = lc.grid()
+    field = _limit_field
+        
     for attr in ['a', 'b', 'c', 'alpha', 'beta', 'gamma']:
         row = grid.row()
         row.cell().add(attr)
-        row.cell().add(FormTextField(name='%s_min'%attr))
-        row.cell().add(FormTextField(name='%s_max'%attr))
+
+        row.cell().add(field(attr, 'min'))
+        row.cell().add(field(attr, 'max'))
         continue
     return grid
 
 
 def createRightSearchPanel():
     return FormTextArea(name='sql')
+
+
+def _limit_field(var, postfix):
+    name = '%s_%s' % (var, postfix)
+    tip = '%s: %simum of %s' % (name, postfix, var)
+    return FormTextField(name=name, tip=tip)
