@@ -3,23 +3,49 @@
 from luban.content import select, load, alert
 import luban.content as lc
 
-from luban.components.Actor import Actor as base
+from luban.components.FormProcessor import FormProcessor as base
 
 class Actor(base):
 
 
     class Inventory(base.Inventory):
 
-        import pyre.inventory
+        import luban.inventory
+
+        text = luban.inventory.str('text', default=None)
+        elements = luban.inventory.str('elements', default=None)
+        notelements = luban.inventory.str('notelements', default=None)
+        nelements = luban.inventory.int('nelements', validator=luban.inventory.positive, default=None)
+        
+        volume_min = luban.inventory.float('volume_min', validator=luban.inventory.nonnegative, default=None)
+        volume_max = luban.inventory.float('volume_max', validator=luban.inventory.nonnegative, default=None)
+
+        a_min = luban.inventory.float('a_min', validator=luban.inventory.nonnegative, default=None)
+        a_max = luban.inventory.float('a_max', validator=luban.inventory.nonnegative, default=None)
+
+        b_min = luban.inventory.float('b_min', validator=luban.inventory.nonnegative, default=None)
+        b_max = luban.inventory.float('b_max', validator=luban.inventory.nonnegative, default=None)
+
+        c_min = luban.inventory.float('c_min', validator=luban.inventory.nonnegative, default=None)
+        c_max = luban.inventory.float('c_max', validator=luban.inventory.nonnegative, default=None)
+
+        anglelimit = luban.inventory.range(0,180,brackets='()')
+        alpha_min = luban.inventory.float('alpha_min', validator=anglelimit, default=None)
+        alpha_max = luban.inventory.float('alpha_max', validator=anglelimit, default=None)
+
+        beta_min = luban.inventory.float('beta_min', validator=anglelimit, default=None)
+        beta_max = luban.inventory.float('beta_max', validator=anglelimit, default=None)
+
+        gamma_min = luban.inventory.float('gamma_min', validator=anglelimit, default=None)
+        gamma_max = luban.inventory.float('gamma_max', validator=anglelimit, default=None)
+
+        pass # end of Inventory
 
         
     def debug(self, director):
         page = lc.page(title='test cod')
         visual = director.retrieveVisual("cod/frame")
-        page.add(visual)
-        
-        form = doc.find(id="login-form")
-        form.onsubmit = alert('form submitted')
+        page.add(visual)        
         return page
 
 
@@ -28,14 +54,59 @@ class Actor(base):
         return director.retrieveVisual('cod/table', director=director, data=data)
 
 
-    def _getData(self, director):
-        
-                
+    def store(self, director):
+        return
 
-        # this is a test implementation
+
+    def _getInputErrors(self):
+        errors = super(Actor, self)._getInputErrors()
+        if errors: return errors
+
+        errors = {}
+        
+        self._castInventoryProperties()
+        si = self.inventory
+
+        props = [
+            'a', 'b', 'c',
+            'alpha', 'beta', 'gamma',
+            'volume',
+            ]
+        for prop in props:
+            minprop = '%s_min' % prop
+            min = getattr(si, minprop)
+            
+            maxprop = '%s_max' % prop
+            max = getattr(si, maxprop)
+
+            if min > max:
+                errors[minprop] = '%s must be smaller than %s' % (minprop, maxprop)
+            continue
+
+        return errors
+
+
+    def _getData(self, director):
+        self._castInventoryProperties()
+        si = self.inventory
+        text = si.text
+        elements = si.elements
+        notelements = si.notelements
+        nelements = si.nelements
+        volume = si.volume_min, si.volume_max
+        a = si.a_min, si.a_max
+        b = si.b_min, si.b_max
+        c = si.c_min, si.c_max
+        alpha = si.alpha_min, si.alpha_max
+        beta = si.beta_min, si.beta_max
+        gamma = si.gamma_min, si.gamma_max
+
+        # the list returned here should be calculated from the parameters above
         return [
             (False, '3XFABC', 1.0, 2.0, 3.0, 88, 89., 91., 6.0, 5, 'symmetry', 'formula...', 'text...'),
             (True, '3ER4VC', 2.0, 3.0, 1.0, 99, 88., 90., 6.0, 3, 'P-1', 'formula...', 'text...'),
+            (False, 'XXX', str(a), str(b), str(c), str(alpha), str(beta), str(gamma),
+             str(volume), str(nelements), 'symmetry', 'formula', 'text',),
             ]
 
 
