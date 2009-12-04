@@ -167,7 +167,6 @@ class Actor(base):
         if errors:
             return self.formError(errors)
 
-        
 
         return load(actor="materialsimulation")
 
@@ -178,6 +177,9 @@ class Actor(base):
         chain   = SIMCHAINS[sim.type]
         if not self._isComplete(chain, inputs):
             errors['input']  = "Error: One of the configuration inputs are missing"
+            return
+
+        self._storeFiles(director, inputs)
 
 
     def _isComplete(self, chain, inputs):
@@ -203,6 +205,15 @@ class Actor(base):
                 types.append(i.type)
 
         return types
+
+
+    def _storeFiles(self, director, inputs):
+        """Temp solution. Stores files from configuration input strings """
+        
+        dds = director.dds
+        for o in inputs:
+            filepath = dds.abspath(o)
+            print filepath
 
 
     def formError(self, errors):
