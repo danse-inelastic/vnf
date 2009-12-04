@@ -16,6 +16,7 @@ from vnfb.utils.qeutils import addRow
 from vnfb.utils.qechain import QEChain
 from vnfb.utils.qeparams import QEParams
 from vnfb.utils.qeserver import QEServer
+from vnfb.utils.qeconst import SIMCHAINS
 
 from luban.content.Splitter import Splitter
 
@@ -40,7 +41,8 @@ class Actor(base):
 
 
     def content(self, director):
-        sim     = director.clerk.getQESimulations(id=self.id)
+        sim         = director.clerk.getQESimulations(id=self.id)
+        self.type   = sim.type
         
         def viewIndicator(director):
             path = []
@@ -57,7 +59,9 @@ class Actor(base):
         sA.add(viewIndicator(director))
         
         sC          = splitter.section()
-        self.showLinks(sC)
+        self.showActions(sC)
+        splitter.section(id="input-error-area")
+
 
         sB          = splitter.section()
         table   = self.showSim(sB, sim)
@@ -65,11 +69,11 @@ class Actor(base):
         self.showServer(director, table)
         self.showJobs(director, table)
         self.showInputFiles(director, sB, table, sim.type)
-        self.showRefs(sB)
+        self.showSubmit(sB)
         
         return doc
 
-    def showLinks(self, document):
+    def showActions(self, document):
         document.add(lc.button(label="Edit",
                               onclick = load(actor='material_simulations/espresso/sim-edit',
                               id=self.id)))
@@ -141,7 +145,7 @@ class Actor(base):
 
 
     # TODO: Should have "Submit to Queue" only
-    def showRefs(self, document):
+    def showSubmit(self, document):
         """Adds References"""
         document.add(Document(Class="clear-both"))   # Empty document
         refsdoc = Document(Class="display-block")
@@ -152,12 +156,60 @@ class Actor(base):
         document.add(lc.document(Class="clear-both"))
 
 
-    def checkSubmit(self):
-        # Check config inputs
-        # Check settings
+    def checkSubmit(self, director):
+        """Checks if the simulation can be submitted to jobs queue"""
+        errors  = {}
+        self._checkInputs(director, errors)
+        
+        # Check settings # Not sure if I need it now
         # If check failed, go to error page (with link "Go Back")
         #return load(actor="jobs/submitted", routine="submit", id=self.id)
+        if errors:
+            return self.formError(errors)
+
+        
+
         return load(actor="materialsimulation")
+
+    def _checkInputs(self, director, errors):
+        """Checks config inputs"""
+        sim     = director.clerk.getQESimulations(id = self.id)
+        inputs  = director.clerk.getQEConfigurations(where = "simulationid='%s'" % self.id)
+        chain   = SIMCHAINS[sim.type]
+        if not self._isComplete(chain, inputs):
+            errors['input']  = "Error: One of the configuration inputs are missing"
+
+
+    def _isComplete(self, chain, inputs):
+        test    = [0 for i in range(len(chain))]
+        types   = self._getInputTypes(inputs)
+
+        for i in range(len(types)):    # Check if inputs has all the values from chain list
+            for j in range(len(chain)):
+                if types[i] == chain[j]:
+                    test[j] = 1
+
+        if test.count(0) == 0:  # No zeros left, then set is complete
+            return True
+
+        return False
+
+
+    def _getInputTypes(self, inputs):
+        """Converts configuration entries to """
+        types   = []
+        for i in inputs:
+            if i.text != '':
+                types.append(i.type)
+
+        return types
+
+
+    def formError(self, errors):
+        return [
+                select(id='%s-error-area' % key).replaceContent(value)
+                    for key, value in errors.iteritems()
+                ]
 
 
     def jobs(self, director):

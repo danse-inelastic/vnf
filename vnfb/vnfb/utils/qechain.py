@@ -64,30 +64,6 @@ class QEChain:
         return splitter
 
 
-#            section.add(Link(label=self._inputText(orderedInputs[i]), Class="action-link",
-#                             onclick=load(actor="material_simulations/espresso/input",
-#                                          routine=self._getRoutine(orderedInputs[i]),
-#                                          id=id,
-#                                          type=self._simlist[i],
-#                                          configid=self._getId(self._simlist[i], inputs)))   # Passes config type (not id)
-#                        )
-
-#    def _inputText(self, input):
-#        """Returns"""
-#        if input:
-#            return input.filename
-#
-#        return "Add"
-#
-#
-#    def _getRoutine(self, input):
-#        # FIXME: Change routines if necessary
-#        if input:   # View
-#            return "view"
-#
-#        return "add" # Create New
-
-
     def _orderInput(self, simlist, inputs):
         """Orders input according to simlist (E.g. simlist = ("PW", "PH") )"""
         newinputs   = []

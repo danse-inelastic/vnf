@@ -31,6 +31,11 @@
     color: #333333;
 }
 
+#error-area,
+#input-error-area {
+    color: red;
+}
+
 .clear-both {
     clear: both;
 }
