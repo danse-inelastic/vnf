@@ -107,5 +107,27 @@
         ],
      "jslibs":      [
         ]
+  },
+  "matterbuilder": {
+     "stylesheets": [
+        ],
+     "jslibs":      [
+	"other/o3djs/base.js",
+	"other/o3djs/texture.js",
+	"other/o3djs/io.js",
+	"other/o3djs/event.js",
+	"other/o3djs/error.js",
+	"other/o3djs/util.js",
+	"other/o3djs/math.js",
+	"other/o3djs/quaternions.js",
+	"other/o3djs/rendergraph.js",
+	"other/o3djs/effect.js",
+	"other/o3djs/material.js",
+	"other/o3djs/element.js",
+	"other/o3djs/shape.js",
+	"other/o3djs/arcball.js",
+	"other/o3djs/serialization.js",
+	"other/o3djs/primitives.js"
+        ]
   }
 }
