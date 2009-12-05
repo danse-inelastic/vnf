@@ -86,6 +86,7 @@ class Actor(base):
         self._input     = director.clerk.getQEConfigurations(id=self.configid)
         self._input.setDirector(director)
         self._input.deleteRecord()
+        # TODO: Delete also the directory
 
         return load(actor='material_simulations/espresso/sim-view', id=self.id)
 
