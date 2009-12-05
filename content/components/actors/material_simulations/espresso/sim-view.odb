@@ -25,7 +25,6 @@ from luban.content.Splitter import Splitter
 from luban.content import select
 from luban.content.Paragraph import Paragraph
 from luban.content.Document import Document
-from luban.content.HtmlDocument import HtmlDocument
 from luban.content import load
 from luban.content.Link import Link
 
@@ -170,7 +169,22 @@ class Actor(base):
             return self.formError(errors)
 
 
-        return load(actor="materialsimulation")
+        return load(actor="material_simulations/espresso/sim-view",
+                   routine="submit",
+                   id=self.id)
+
+
+    # Refactor later on
+    def submit(self, director):
+        """
+        The process of submission of simulation includes the following steps:
+        1. Store configuration inputs to local disk storage
+        2. Copy files to the computational cluster
+        3.
+        """
+        self._storeFiles(director, inputs)
+
+
 
     def _checkInputs(self, director, errors):
         """Checks config inputs"""
@@ -180,8 +194,6 @@ class Actor(base):
         if not self._isComplete(chain, inputs):
             errors['input']  = "Error: One of the configuration inputs are missing"
             return
-
-        self._storeFiles(director, inputs)
 
 
     def _isComplete(self, chain, inputs):
