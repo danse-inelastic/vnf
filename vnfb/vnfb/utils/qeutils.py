@@ -99,6 +99,13 @@ def addRow(table, param, value):
     cell.add(value)
 
 
+def makedirs(path):
+    """Recursively creates directory specified by path"""
+    import os
+    if not os.path.exists(path):
+        os.makedirs(path)
+
+
 def testStamp():
     import time
     print stamp2date(time.time())

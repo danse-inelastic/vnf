@@ -11,7 +11,9 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
-from vnfb.utils.qeutils import stamp2date
+import os
+
+from vnfb.utils.qeutils import stamp2date, makedirs
 from vnfb.utils.qeutils import addRow
 from vnfb.utils.qechain import QEChain
 from vnfb.utils.qeparams import QEParams
@@ -212,8 +214,15 @@ class Actor(base):
         
         dds = director.dds
         for o in inputs:
-            filepath = dds.abspath(o)
-            print filepath
+            filename    = dds.abspath(o, filename = o.type)
+            self._writeContent(dds, o, filename, o.text)
+
+
+    def _writeContent(self, dds, record, filename, content):
+        """Writes content of the configuration input to file"""
+        path    = dds.abspath(record)
+        makedirs(path)
+        open(filename, 'w').write(content)
 
 
     def formError(self, errors):
@@ -252,64 +261,6 @@ class Actor(base):
 
 def actor():
     return Actor()
-
-
-#def table(matsims, cols, director):
-#    """Table of simulations parameters"""
-#
-#    from luban.content.table import Model, View, Table
-#    from luban.content import load
-#    from luban.content.Link import Link
-#
-#    class model(Model):
-#        parameter        = Model.descriptors.str(name='parameter')
-#        value            = Model.descriptors.str(name='value')
-#
-#
-#    columns = [
-#        View.Column(label='', measure='parameter'),
-#        View.Column(label='', measure='value'),
-#        ]
-#
-#    view = View(columns=columns, editable=False)
-#
-#    def getSelected(matter): return False
-#    def getId(matsim):
-#        label = matsim.id
-#        link = Link(
-#            label = label,
-#            onclick = load(
-#                actor='materialsimulation', routine='showMaterialSimulation',
-#                id = matsim.id,
-#                type = matsim.__class__.name,
-#                )
-#            )
-#        return link
-#    def getDescription(matsim):
-#        return matsim.short_description
-#    def getCreated(exp):
-#        date = exp.date
-#        return str(date)
-#    def getType(matsim):
-#        return matsim.__class__.name
-#    def getMatter(matsim):
-#        matter = matsim.matter
-#        if not matter or not matter.id: return 'not defined'
-#        try:
-#            matter = director.clerk.db.dereference(matter)
-#        except:
-#            return 'matter %s not found' % matter.id
-#        identifier = matter.short_description or matter.chemical_formula
-#        return identifier
-#
-#    import operator
-#    value_generators    = [ eval('get'+col.measure.capitalize())
-#                            for col in view.columns]
-#    record2tuple        = lambda record: [g(record) for g in value_generators]
-#    data                = map(record2tuple, matsims)
-#
-#    table = Table(model=model, data=data, view=view, id='matsim-table')
-#    return table
 
 
 __date__ = "$Nov 2, 2009 3:15:35 PM$"
