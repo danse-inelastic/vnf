@@ -1,0 +1,35 @@
+# -*- python -*-
+
+from luban.content import select, load, alert
+import luban.content as lc
+
+from luban.components.FormProcessor import FormProcessor as base
+
+class Actor(base):
+
+    class Inventory(base.Inventory):
+
+        import luban.inventory
+
+    def default(self, director):
+        page = lc.page(title='test matterbuilder')
+        visual = director.retrieveVisual("matterbuildervisual")
+        page.add(visual)  
+        from luban.content.science.MatterBuilder import MatterBuilder
+        mb = MatterBuilder()  
+         
+        mb.atoms = [
+            {'element': 'H',
+             'position': [0,1,2]
+             },
+            {'element': 'O',
+             'position': [2,1,0]
+             },
+            ]
+        
+        page.add(mb)        
+        return page
+
+
+def actor():
+    return Actor("matterbuilder")

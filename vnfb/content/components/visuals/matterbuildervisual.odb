@@ -1,0 +1,22 @@
+# -*- Python -*-
+
+
+from luban.content.science.MatterBuilder import MatterBuilder
+import luban.content as lc
+from luban.content import alert
+
+def visual(director):
+    doc = lc.document(title='Structure Builder')
+    toolbar = createToolbar()
+    doc.add(toolbar)
+    return doc
+
+
+def createToolbar():
+    from luban.content.Toolbar import Toolbar
+    toolbar = Toolbar()
+    toolbar.button(label='button1', onclick=alert('button1 clicked'))
+    toolbar.button(label='button2', onclick=alert('button2 clicked'))
+    toolbar.spacer()
+    toolbar.button(label='button3', onclick=alert('button3 clicked'))
+    return toolbar
