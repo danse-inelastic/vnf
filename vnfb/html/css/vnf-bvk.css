@@ -13,7 +13,7 @@
     border-bottom:1px solid #bbb;
     -moz-border-radius:12px;
     -web-border-radius:12px;
-    font-size:80%;
+    font-size:0.8em;
     font-weight:bold;
     color:#444;
 }
@@ -60,13 +60,13 @@ padding:0 1em;
     margin:0.2em;
     padding:0.1em 0.4em;
     width:4em;
-    font-size:90%;
+    font-size:0.9em;
 }
 .force-constant-form-one-bond .grid p {
     margin:0.2em;
     padding:0.1em 0.4em;
     width:3em;
-    font-size:90%;
+    font-size:0.9em;
 }
 .force-constant-form-one-bond .grid .luban-formfield {
     margin:0;
@@ -80,7 +80,7 @@ padding:0 1em;
     color: green;
 }
 .force-constant-form-one-bond .bond-container .value {
-    font-size:90%;
+    font-size:0.9em;
 }
 .force-constant-form-one-bond .bond-sites .luban-document-title{
     text-align:center;

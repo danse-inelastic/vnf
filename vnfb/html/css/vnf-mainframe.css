@@ -40,7 +40,7 @@ body {
     vertical-align: bottom;
 }
 #header-title > h1{
-    font-size: 110%;
+    font-size: 1.1em;
     font-family: "courier new";
     /* text-shadow:0 2px 2px #FFFFFF; */
     text-shadow: 1px 1px white, -1px -1px #444;
@@ -53,7 +53,7 @@ body {
     vertical-align: bottom;
 }
 #header-userinfo-container a{
-    font-size: 80%;
+    font-size: 0.8em;
 }
 #header-userinfo{
     text-align: right;
@@ -86,7 +86,7 @@ body {
 #portlets-frame {
     padding: 0;
     vertical-align: top;
-    width: 13em;
+    width: 15em;
 }
 
 /* main portlet */
@@ -97,7 +97,7 @@ body {
 /* override default luban behavior */
 #main-portlet .luban-portlet-body {
     border: none;
-    padding: 1.2em 0 0 0;
+    padding: 1.6em 0 0 0;
 }
 /* portlet round borders */
 #main-portlet .luban-portletitem-content {
@@ -129,7 +129,7 @@ body {
 }
 /* portlet font size */
 #main-portlet .luban-portletitem-content{
-    font-size: 110%;
+    font-size: 1.1em;
     color: #454545;
     text-align: center;
     padding: 4px 7px;
@@ -224,7 +224,7 @@ body {
     text-align:center;
     text-shadow: 1px 1px #444;
     font-family:Times,"Times New Roman",serif;
-    font-size:85%;
+    font-size:0.85em;
     margin: 7px 0;
     color: #d0d0d0;
     vertical-align: bottom;
@@ -235,7 +235,7 @@ body {
 #credits p {
     text-align:center;
     font-family:Times,"Times New Roman",serif;
-    font-size:80%;
+    font-size:0.8em;
     margin: 5px;
     color: #333333;
 }
@@ -245,7 +245,7 @@ body {
 /* inside main area */
 #view-indicator {
     padding: 1em 0 1em 0;
-    font-size: 90%;
+    font-size: 0.9em;
     min-width: 270px;
     max-width: 330px;
     /* float: left; */
