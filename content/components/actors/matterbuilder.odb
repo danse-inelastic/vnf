@@ -5,6 +5,20 @@ import luban.content as lc
 
 from luban.components.FormProcessor import FormProcessor as base
 
+from vimm.Renderers import RenderOptions, SimpleRenderer, LINES, BALLSTICK, \
+     BALLS, CYLINDERS
+from vimm.Canvas import Canvas
+from vimm.CoordEditor import CoordEditor
+from vimm.Animation import Animation
+from vimm.Measurements import Measurements
+from vimm.Sketcher import Sketcher
+from vimm.CrystalBuilder import CrystalBuilder, CrystalDatabase, Supercell,\
+     SlabBuilder, AddUC
+from vimm.NanoBuilder import NanoBuilder
+from vimm.AlkaneBuilder import AlkaneBuilder
+from vimm.OrbitalViewer import OrbitalViewer
+from vimm.BondAdjustor import BondAdjustor
+
 class Actor(base):
 
     class Inventory(base.Inventory):
@@ -183,6 +197,143 @@ class Actor(base):
         wx.Frame.Close(self, force)
         
     def dump(self,*args): self.canvas.dump()
+
+    def set_bg_color(self,*args):
+        d = wx.ColourDialog(self)
+        d.GetColourData().SetChooseFull(True)
+        if d.ShowModal() == wx.ID_OK:
+            data = d.GetColourData()
+            r,g,b = data.GetColour().Get()
+            color = r/255.,g/255.,b/255.
+            self.canvas.OnColor(color)
+            fg_r=255-r
+            fg_g=255-g
+            fg_b=255-b
+            fg_color=fg_r/255.,fg_g/255.,fg_b/255.
+            self.renderOptions.set_fg_color(fg_color)
+            self.render()
+        return
+    
+    def edit_coord(self, *args):
+        coord_editor = CoordEditor(self, -1)
+        coord_editor.Show()
+        return
+
+    def animate(self, *args):
+        animate_frame = Animation(self, -1)
+        animate_frame.Show()
+        return
+
+    def set_render_lines(self, *args):
+        self.renderOptions.set_mode(LINES)
+        self.render()
+        return
+
+    def set_render_ballstick(self, *args):
+        self.renderOptions.set_mode(BALLSTICK)
+        self.render()
+        return
+
+    def set_render_balls(self, *args):
+        self.renderOptions.set_mode(BALLS)
+        self.render()
+        return
+
+    def set_render_cylinders(self, *args):
+        self.renderOptions.set_mode(CYLINDERS)
+        self.render()
+        return
+
+    def set_unit_cell(self, *args):
+        self.renderOptions.show_unit_cells(self.viewmenu.IsChecked(self.ID_UNIT_CELL))
+        self.render()
+        return
+        
+    def set_cell_labels(self, *args):
+        self.renderOptions.show_cell_labels(self.viewmenu.IsChecked(self.ID_CELL_LABELS))
+        self.render()
+        return
+        
+    def set_atom_labels(self, *args):
+        self.renderOptions.show_atom_labels(self.viewmenu.IsChecked(self.ID_ATOM_LABELS))
+        self.render()
+        return
+        
+    def set_hide_h(self, *args):
+        self.renderOptions.hide_hydrogens(self.viewmenu.IsChecked(self.ID_HIDE_H))
+        self.render()
+        return
+    
+    def measurements(self, *args):
+        self.canvas.set_measure(True)
+        self.measurement_window = Measurements(self, -1)
+        self.measurement_window.Show()
+        return
+    
+    def view_orbs(self, *args):
+        if hasattr(self.material.geo, 'orbs'):
+            ov = OrbitalViewer(self,-1)
+            ov.Show()
+        else:
+            d = wx.MessageDialog(self,
+                "Orbitals do not exist in this file",
+                "Cannot View Orbitals",
+                wx.ICON_ERROR)
+            d.ShowModal()
+            d.Destroy()
+        return
+    
+    def adjust_bonds(self, *args):
+        bondd = BondAdjustor(self,-1)
+        bondd.ShowModal()
+        return    
+    
+    def build_xtal(self, *args):
+        xtlb = CrystalBuilder(self,-1)
+        xtlb.ShowModal()
+        return
+
+    def xtal_db(self, *args):
+        xtlb = CrystalDatabase(self,-1)
+        xtlb.ShowModal()
+        return
+
+    def build_super(self, *args):
+        xtlb = Supercell(self,-1)
+        xtlb.ShowModal()
+        return
+
+    def build_slab(self, *args):
+        xtlb = SlabBuilder(self,-1)
+        xtlb.ShowModal()
+        return
+
+    def add_uc(self, *args):
+        xtlb = AddUC(self,-1)
+        xtlb.ShowModal()
+        return
+
+    def build_nano(self, *args):
+        nanob = NanoBuilder(self,-1)
+        nanob.ShowModal()
+        return
+
+    def build_alka(self, *args):
+        alkab = AlkaneBuilder(self,-1)
+        alkab.ShowModal()
+        return
+
+#    def zbuild(self,*args):
+#        zbuilder = ZBuilder(self,-1)
+#        zbuilder.Show()
+#        return
+
+    def sketch(self, *args):
+        self.canvas.set_sketching(True)
+        self.sketcher_window = Sketcher(self, -1)
+        self.sketcher_window.Show()
+        return
+
 
 
 def actor():
