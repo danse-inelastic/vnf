@@ -1,5 +1,13 @@
 /*  -*- CSS -*-  */
 
+body {
+    font-size: 85%;
+}
+
+div table {
+    font-size: 1em;
+}
+
 /* Link */
 a {
     text-decoration: underline;
@@ -21,7 +29,7 @@ a:hover {
 }
 
 .luban-document-title {
-    font-size: 130%;
+    font-size: 1.2em;
 }
 
 a.luban-link {

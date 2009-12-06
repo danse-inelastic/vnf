@@ -12,7 +12,7 @@
 }
 #atomicstructure-info-section .luban-splitter td {
     vertical-align:top;
-    font-size:88%;
+    font-size:0.88em;
 }
 /* sizes */
 #atomicstructure-name-container {
@@ -62,7 +62,7 @@
 }
 .lattice-vector p{
     font-family: monospace;
-    font-size: 130%;
+    font-size: 1.3em;
 }
 
 
@@ -97,7 +97,7 @@ margin-bottom:0.2em;
 padding:0.1em 0.2em;
 -moz-border-radius:7px;
 -webkit-border-radius:7px;
-font-size:85%;
+font-size:0.85em;
 }
 .collapsable.luban-document .titlebar a {
 margin:0.5em;
