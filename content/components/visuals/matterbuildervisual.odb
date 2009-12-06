@@ -7,15 +7,59 @@ from luban.content import alert
 
 def visual(director):
     doc = lc.document(title='Structure Builder')
-    toolbar = createToolbar()
-    doc.add(toolbar)
+    from luban.content.AppMenuBar import AppMenuBar
+    menubar = AppMenuBar()
+    menu1 = menubar.menu(label='File')
+
+    from luban.content import select
+    from luban.content.Document import Document
+    newcontent = Document(title='new doc')
+    item = menu1.item(label='Open', 
+                      onclick=select(element=document).replaceContent(newcontent), 
+                      tip='open a file')
+    
+    
+    menu2 = menu1.menu(label='menu2')
+
+    from luban.content import load
+    item2 = menu2.item(label='item2')
+    document.add(menubar)
+
+    item3 = menu2.item(label='item3')
+    doc.add(menubar)
     return doc
+
+    def load_file(self,*args):
+        fname = None
+        d = wx.FileDialog(self,"Open","","","*",wx.OPEN)
+        if d.ShowModal() == wx.ID_OK:
+            fname = d.GetFilename()
+            dir = d.GetDirectory()
+            fullfilename = os.path.join(dir,fname)
+        d.Destroy()
+        self.load_file_nodialog(fullfilename)
+        return
+
+    def load_file_nodialog(self,fname=None):
+        if fname:
+            from vimm.Material import Material
+#            from matter.Structure import Structure
+            if isinstance(fname, Material):
+                self.material = fname
+#            elif isinstance(fname, Structure):
+#                self.material = vimmLib.loadStructure(fname)
+            else:
+                self.material = vimmLib.load_file(fname, "GUI")
+            if self.material:
+                self.SetTitle("Vimm: %s" % self.material.name)
+                self.render(1)
+        return
 
 
 def createToolbar():
     from luban.content.Toolbar import Toolbar
     toolbar = Toolbar()
-    toolbar.button(label='button1', onclick=alert('button1 clicked'))
+    toolbar.button(label='', onclick=alert('button1 clicked'))
     toolbar.button(label='button2', onclick=alert('button2 clicked'))
     toolbar.spacer()
     toolbar.button(label='button3', onclick=alert('button3 clicked'))
