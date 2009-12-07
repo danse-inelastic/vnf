@@ -180,11 +180,16 @@ class Actor(base):
         The process of submission of simulation includes the following steps:
         1. Store configuration inputs to local disk storage
         2. Copy files to the computational cluster
-        3.
+        3. 
         """
+        inputs  = director.clerk.getQEConfigurations(where = "simulationid='%s'" % self.id)
         self._storeFiles(director, inputs)
+        self._moveFiles(director, inputs)
 
+        return load(actor="materialsimulation")
 
+#        return load(actor="material_simulations/espresso/sim-view",
+#                   id=self.id)
 
     def _checkInputs(self, director, errors):
         """Checks config inputs"""
@@ -225,9 +230,17 @@ class Actor(base):
         """Temp solution. Stores files from configuration input strings """
         
         dds = director.dds
-        for o in inputs:
-            filename    = dds.abspath(o, filename = o.type)
-            self._writeContent(dds, o, filename, o.text)
+        for input in inputs:
+            filename    = dds.abspath(input, filename = input.type)
+            self.files.append(input.type) # Relative path, e.g. ni.scf.in
+
+            # for f in files: dds.remember(job, f) #?
+            self._writeContent(dds, input, filename, input.text)
+
+        # FIXME
+        #for f in self.files:
+        # Should be local filename
+        dds.remember(inputs[0], 'PW')
 
 
     def _writeContent(self, dds, record, filename, content):
@@ -235,6 +248,21 @@ class Actor(base):
         path    = dds.abspath(record)
         makedirs(path)
         open(filename, 'w').write(content)
+
+
+    def _moveFiles(self, director, inputs):
+        dds     = director.dds
+        server  = director.clerk.getServers(id='server001') # Hardcoded
+        #input   = inputs[0]
+        #files   = []
+        #files.append(self.files[0])
+        dds.make_available(inputs[0], server=server, files=['PW',]) #self.files[0]
+
+        # Why job? - Can be any table instead. How to get server?
+#        server = clerk.dereference(job.server)
+#        director.declareProgress(0.5, 'Preparing: transfering job to the server %s ...' % server.short_description)
+#        dds.make_available(job, server=server, files=files)
+
 
 
     def formError(self, errors):
@@ -257,6 +285,7 @@ class Actor(base):
 
     def __init__(self):
         super(Actor, self).__init__(name='material_simulations/espresso/sim-view')
+        self.files  = [] # Temp
 
         return
 
