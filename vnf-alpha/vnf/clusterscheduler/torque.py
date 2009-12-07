@@ -52,8 +52,14 @@ class Scheduler:
     def submit( self, cmd, walltime=1*hour ):
         walltime = _walltime_str(walltime)
         
-        cmds = [ r'echo \"%s\" | qsub -l walltime=%s -o %s -e %s' % (
-            cmd, walltime, self.outfilename, self.errfilename) ]
+#        cmds = [ r'echo \"%s\" | qsub -l walltime=%s -o %s -e %s' % (
+#            cmd, walltime, self.outfilename, self.errfilename) ]
+
+        dir     = "/home/dexity/espresso/qeconfigurations/MQDHXV7"
+        str     = "-V -N myjob -l nodes=8:ppn=12"
+        cmds    = [ r'echo \"%s\" | qsub -d %s -o %s -e %s %s -' % (
+            cmd, dir, self.outfilename, self.errfilename, str) ]
+
         failed, output, error = self._launch( cmds )
         if failed:
             if error.find( 'check pbs_server daemon' ) != -1:

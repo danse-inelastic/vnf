@@ -12,7 +12,7 @@
 #
 
 # Temp solution for QE jobs submission. Hardcoded for the foxtrot cluster
-# param: job (input - temp solution)
+# param: job (input -> temp solution)
 
 def schedule( input, director ):
     # copy local job directory to server
@@ -26,23 +26,23 @@ def schedule( input, director ):
     scheduler = schedulerfactory( server )
     launch = lambda cmd: director.csaccessor.execute(
         cmd, server, server_jobpath, suppressException=True)
-    scheduler = scheduler(launch, prefix = 'source ~/.vnf' )
+    scheduler = scheduler(launch, prefix = 'source ~/.vnf-qe' )
 
     # submit job through scheduler
-    walltime = job.walltime
+    #walltime = job.walltime
     from pyre.units.time import hour
-    walltime = walltime*hour
+    walltime = 1*hour   # limit to one hour
     id1 = scheduler.submit( 'cd %s && sh run.sh' % server_jobpath, walltime=walltime )
 
     # write id to the remote directory
     director.csaccessor.execute('echo "%s" > jobid' % id1, server, server_jobpath)
 
     # update job db record
-    job.id_incomputingserver = id1
-    job.state = 'submitted'
-    import time
-    job.time_start = time.ctime()
-    director.clerk.updateRecordWithID(job)
+#    job.id_incomputingserver = id1
+#    job.state = 'submitted'
+#    import time
+#    job.time_start = time.ctime()
+#    director.clerk.updateRecordWithID(job)
 
     return
 
@@ -55,6 +55,7 @@ def schedulerfactory( server ):
         raise RuntimeError, "scheduler not specified"
 
     from vnf.clusterscheduler import scheduler as factory
+    #from vnf.clusterscheduler.qetorque import Scheduler as factory
     try: scheduler = factory( scheduler )
     except: raise NotImplementedError, 'scheduler %r' % scheduler
     return scheduler

@@ -238,6 +238,9 @@ class Actor(base):
             # for f in files: dds.remember(job, f) #?
             self._writeContent(dds, input, filename, input.text)
 
+        #filename    = dds.abspath(input, filename = "run.sh")
+        #content     =
+        #self._writeContent(dds, input, filename, content)
         # FIXME
         #for f in self.files:
         # Should be local filename
