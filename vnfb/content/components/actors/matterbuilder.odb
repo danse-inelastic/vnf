@@ -3,7 +3,7 @@
 from luban.content import select, load, alert
 import luban.content as lc
 
-from luban.components.FormProcessor import FormProcessor as base
+from luban.components.Actor import Actor as base
 
 from vimm.Renderers import RenderOptions, SimpleRenderer, LINES, BALLSTICK, \
      BALLS, CYLINDERS
@@ -24,6 +24,13 @@ class Actor(base):
     class Inventory(base.Inventory):
 
         import luban.inventory
+        
+    def __init__(self,name = None):
+        super(base, self).__init__(name, facility='actor')
+        self.canvas = Canvas(self, -1)
+        self.canvas.SetSize((height, width))
+        self.material = None
+        self.renderOptions = RenderOptions(CYLINDERS)
 
     def default(self, director):
         page = lc.page(title='test matterbuilder')
@@ -192,7 +199,7 @@ class Actor(base):
                 scene.display()
         return
         
-    def dump(self,*args): self.canvas.dump()
+    def dump(self,*args): pass#self.canvas.dump()
 
     def set_bg_color(self,*args):
 #        d = wx.ColourDialog(self)
