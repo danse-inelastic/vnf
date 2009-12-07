@@ -24,6 +24,7 @@ distclean::
 
 EXPORT_DATAFILES = \
 	initdb.py \
+	getuserlist.py \
 	itaskapp.py \
 	destroydb.py \
 	createdefaultformulaformatters.py \
