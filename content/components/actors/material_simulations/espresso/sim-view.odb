@@ -185,6 +185,7 @@ class Actor(base):
         inputs  = director.clerk.getQEConfigurations(where = "simulationid='%s'" % self.id)
         self._storeFiles(director, inputs)
         self._moveFiles(director, inputs)
+        self._scheduleJob(director, inputs)
 
         return load(actor="materialsimulation")
 
@@ -253,6 +254,9 @@ class Actor(base):
     def _moveFiles(self, director, inputs):
         dds     = director.dds
         server  = director.clerk.getServers(id='server001') # Hardcoded
+
+        # See also: submitjob.odb
+
         #input   = inputs[0]
         #files   = []
         #files.append(self.files[0])
@@ -263,6 +267,12 @@ class Actor(base):
 #        director.declareProgress(0.5, 'Preparing: transfering job to the server %s ...' % server.short_description)
 #        dds.make_available(job, server=server, files=files)
 
+
+    def _scheduleJob(self, director, inputs):
+        # FIXME
+        dds     = director.dds
+        from vnfb.utils.qescheduler import schedule
+        schedule(inputs[0], director)
 
 
     def formError(self, errors):
