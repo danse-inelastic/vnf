@@ -13,18 +13,19 @@
 
 
 from DOMAccessor import DOMAccessor as base
+from luban.components.Clerk import Clerk as ClerkBase
 
 
-class Clerk( base ):
+class Clerk(ClerkBase, base):
 
-    class Inventory( base.Inventory):
+    class Inventory(ClerkBase.Inventory, base.Inventory):
 
         import pyre.inventory
         db = pyre.inventory.str('db', default = 'vnf' )
         
 
     def __init__(self, name = 'clerk', facility = 'clerk'):
-        base.__init__(self, name, facility=facility)
+        ClerkBase.__init__(self, name, facility=facility)
         return
     
 
@@ -79,42 +80,20 @@ class Clerk( base ):
         '''retrieve server data specified by id'''
         return self._getEntry('Server', id=id, where=where)
 
-
-
-    def _configure(self):
-        base._configure(self)
-        self.db = self.inventory.db
-        return
-
-
-    def _init(self):
-        base._init(self)
-
-        from dsaw.db import connect
-        self.db = connect(db=self.db)
-        self.db.autocommit(True)
-
-        # create system tables if necessary
-##         system_tables = self.db._systemtables
-##         for table in system_tables.itertables():
-##             try:
-##                 self.db.createTable(table)
-##             except:
-##                 import traceback
-##                 traceback.print_exc()
-##             continue
-
+    # for compatibility with vnf-alpha. should eventually remove
+    def _registerVnfAlphaTables(self, db):
         # register tables
         from vnf.dom import alltables
         for table in alltables():
-            self.db.registerTable(table)
+            db.registerTable(table)
         return
+    def _createDB(self):
+        db = self.inventory.db
+        from dsaw.db import connect
+        db = connect(db=db)
+        self._registerVnfAlphaTables(db)
+        return db
 
-
-    def _fini(self):
-        base._fini(self)
-        return
-    
 
 
 # version
