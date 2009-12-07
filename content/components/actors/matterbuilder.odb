@@ -27,8 +27,8 @@ class Actor(base):
 
     def default(self, director):
         page = lc.page(title='test matterbuilder')
-        #visual = director.retrieveVisual("matterbuildervisual")
-        visual = director.retrieveVisual("default")
+        visual = director.retrieveVisual("matterbuildervisual")
+        # = director.retrieveVisual("default")
         page.add(visual)  
         
         from luban.content.AppMenuBar import AppMenuBar
@@ -44,8 +44,6 @@ class Actor(base):
                           onclick = self.save_as())    
         povray = fileMenu.item(label='EXport Povray', 
                           onclick = self.render_povray())  
-        quit = fileMenu.item(label='Exit', 
-                          onclick = self.quit())  
         
         editMenu = menubar.menu(label='Edit')
         screenshot = fileMenu.item(label='Screenshot', 
@@ -55,49 +53,49 @@ class Actor(base):
         editCoordinates = fileMenu.item(label='Edit Coordinates', 
                           onclick = self.edit_coord())   
          
-        viewMenu = menubar.menu(label='View')
-        animate = fileMenu.item(label='Animate', 
-                          onclick = self.animate())
-        lines = fileMenu.item(label='Lines', 
-                          onclick = self.set_render_lines())
-        ballAndStick = fileMenu.item(label='Ball and Stick', 
-                          onclick = self.set_render_ballstick())   
-        balls = fileMenu.item(label='Balls', 
-                          onclick = self.set_render_balls()) 
-        cylinders = fileMenu.item(label='Cylinders', 
-                          onclick = self.set_render_cylinders()) 
-        unitCell = fileMenu.item(label='Unit Cell', 
-                          onclick = self.set_unit_cell()) 
-        cellLabels = fileMenu.item(label='Cell Labels', 
-                          onclick = self.set_cell_labels()) 
-        atomLabels = fileMenu.item(label='Atom Labels', 
-                          onclick = self.set_atom_labels()) 
-        hideHydrogens = fileMenu.item(label='Hide Hydrogens', 
-                          onclick = self.set_hide_h()) 
-        
-        toolsMenu = menubar.menu(label='Tools')
-        measureDistances = fileMenu.item(label='Measure Distances', 
-                          onclick = self.measurements())
-        viewOrbitals = fileMenu.item(label='View Orbitals', 
-                          onclick = self.view_orbs())
-        adjustBonds = fileMenu.item(label='Adjust Bonds', 
-                          onclick = self.adjust_bonds()) 
-        crystalBuilder = fileMenu.item(label='Crystal Builder', 
-                          onclick = self.build_xtal())    
-        crystalDatabase = fileMenu.item(label='Crystal Database', 
-                          onclick = self.xtal_db())
-        buildSupercell = fileMenu.item(label='Build Supercell', 
-                          onclick = self.build_super())
-        buildSlab = fileMenu.item(label='Build Slab', 
-                          onclick = self.build_slab())
-        addUnitCell = fileMenu.item(label='Add Unit Cell', 
-                          onclick = self.add_uc())  
-        buildNanotube = fileMenu.item(label='Build Nanotube', 
-                          onclick = self.build_nano())
-        buildAlkane = fileMenu.item(label='Build Alkane', 
-                          onclick = self.build_alka())  
-        sketcher = fileMenu.item(label='Sketcher', 
-                          onclick = self.sketch())             
+#        viewMenu = menubar.menu(label='View')
+#        animate = fileMenu.item(label='Animate', 
+#                          onclick = self.animate())
+#        lines = fileMenu.item(label='Lines', 
+#                          onclick = self.set_render_lines())
+#        ballAndStick = fileMenu.item(label='Ball and Stick', 
+#                          onclick = self.set_render_ballstick())   
+#        balls = fileMenu.item(label='Balls', 
+#                          onclick = self.set_render_balls()) 
+#        cylinders = fileMenu.item(label='Cylinders', 
+#                          onclick = self.set_render_cylinders()) 
+#        unitCell = fileMenu.item(label='Unit Cell', 
+#                          onclick = self.set_unit_cell()) 
+#        cellLabels = fileMenu.item(label='Cell Labels', 
+#                          onclick = self.set_cell_labels()) 
+#        atomLabels = fileMenu.item(label='Atom Labels', 
+#                          onclick = self.set_atom_labels()) 
+#        hideHydrogens = fileMenu.item(label='Hide Hydrogens', 
+#                          onclick = self.set_hide_h()) 
+#        
+#        toolsMenu = menubar.menu(label='Tools')
+#        measureDistances = fileMenu.item(label='Measure Distances', 
+#                          onclick = self.measurements())
+#        viewOrbitals = fileMenu.item(label='View Orbitals', 
+#                          onclick = self.view_orbs())
+#        adjustBonds = fileMenu.item(label='Adjust Bonds', 
+#                          onclick = self.adjust_bonds()) 
+#        crystalBuilder = fileMenu.item(label='Crystal Builder', 
+#                          onclick = self.build_xtal())    
+#        crystalDatabase = fileMenu.item(label='Crystal Database', 
+#                          onclick = self.xtal_db())
+#        buildSupercell = fileMenu.item(label='Build Supercell', 
+#                          onclick = self.build_super())
+#        buildSlab = fileMenu.item(label='Build Slab', 
+#                          onclick = self.build_slab())
+#        addUnitCell = fileMenu.item(label='Add Unit Cell', 
+#                          onclick = self.add_uc())  
+#        buildNanotube = fileMenu.item(label='Build Nanotube', 
+#                          onclick = self.build_nano())
+#        buildAlkane = fileMenu.item(label='Build Alkane', 
+#                          onclick = self.build_alka())  
+#        sketcher = fileMenu.item(label='Sketcher', 
+#                          onclick = self.sketch())             
     #    menu2 = fileMenu.menu(label='menu2')
     #
     #    from luban.content import load
@@ -105,7 +103,8 @@ class Actor(base):
     #    document.add(menubar)
     #
     #    item3 = menu2.item(label='item3')
-        doc.add(menubar)
+        #doc.add(menubar)
+        page.add(menubar)
         
         from luban.content.science.MatterBuilder import MatterBuilder
         mb = MatterBuilder()  
@@ -122,25 +121,26 @@ class Actor(base):
         page.add(mb)        
         return page
     
-    def load_file(*args):
+    def load_file(self, *args):
         fname = None
-    #    d = wx.FileDialog(self,"Open","","","*",wx.OPEN)
-    #    if d.ShowModal() == wx.ID_OK:
-    #        fname = d.GetFilename()
-    #        dir = d.GetDirectory()
-    #        fullfilename = os.path.join(dir,fname)
-    #    d.Destroy()
-        load_file_nodialog(fullfilename)
+#        import wx
+#        d = wx.FileDialog(self,"Open","","","*",wx.OPEN)
+#        if d.ShowModal() == wx.ID_OK:
+#            fname = d.GetFilename()
+#            dir = d.GetDirectory()
+#            fullfilename = os.path.join(dir,fname)
+#        d.Destroy()
+        self.load_file_nodialog()#fullfilename)
         return
     
     def load_file_nodialog(self,fname=None):
         if fname:
             from vimm.Material import Material
-    #            from matter.Structure import Structure
+#            from matter.Structure import Structure
             if isinstance(fname, Material):
                 self.material = fname
-    #            elif isinstance(fname, Structure):
-    #                self.material = vimmLib.loadStructure(fname)
+#            elif isinstance(fname, Structure):
+#                self.material = vimmLib.loadStructure(fname)
             else:
                 self.material = vimmLib.load_file(fname, "GUI")
             if self.material:
@@ -150,29 +150,31 @@ class Actor(base):
     
     def save_as(self,*args):
         fname = None
-        d = wx.FileDialog(self,"Save","","","*",wx.SAVE)
-        if d.ShowModal() == wx.ID_OK:
-            fname = d.GetFilename()
-            dir = d.GetDirectory()
-            fullfilename = os.path.join(dir,fname)
-        d.Destroy()
+#        d = wx.FileDialog(self,"Save","","","*",wx.SAVE)
+#        if d.ShowModal() == wx.ID_OK:
+#            fname = d.GetFilename()
+#            dir = d.GetDirectory()
+#            fullfilename = os.path.join(dir,fname)
+#        d.Destroy()
+        fullfilename = 'VimmFile.png'
         if fname:
             vimmLib.save_file(fullfilename, self.material, "GUI")
         return
     
     def render_povray(self,*args):
         povOutput = None
-        d = wx.FileDialog(self,"Save","","","*",wx.SAVE)
-        if d.ShowModal() == wx.ID_OK:
-            povOutput = d.GetFilename()
-            dir = d.GetDirectory()
-            fullfilename = os.path.join(dir,povOutput)
-        d.Destroy()
+#        d = wx.FileDialog(self,"Save","","","*",wx.SAVE)
+#        if d.ShowModal() == wx.ID_OK:
+#            povOutput = d.GetFilename()
+#            dir = d.GetDirectory()
+#            fullfilename = os.path.join(dir,povOutput)
+#        d.Destroy()
+        fullfilename = 'VimmPovRayFile.png'
         if fullfilename:
             # Still to do:
             # - Background color
             # - Is the camera position reversed?
-            from POVRay import Scene
+            from vimm.POVRay import Scene
             if self.material:
                 shapes = SimpleRenderer(self.material.geo,self.renderOptions)
                 shapes = shapes.povray()
@@ -189,29 +191,23 @@ class Actor(base):
                 scene.render(outputFile = fullfilename)
                 scene.display()
         return
-    
-    def quit(self,*args):
-        self.Close(True)
-        
-    def Close(self, force):
-        wx.Frame.Close(self, force)
         
     def dump(self,*args): self.canvas.dump()
 
     def set_bg_color(self,*args):
-        d = wx.ColourDialog(self)
-        d.GetColourData().SetChooseFull(True)
-        if d.ShowModal() == wx.ID_OK:
-            data = d.GetColourData()
-            r,g,b = data.GetColour().Get()
-            color = r/255.,g/255.,b/255.
-            self.canvas.OnColor(color)
-            fg_r=255-r
-            fg_g=255-g
-            fg_b=255-b
-            fg_color=fg_r/255.,fg_g/255.,fg_b/255.
-            self.renderOptions.set_fg_color(fg_color)
-            self.render()
+#        d = wx.ColourDialog(self)
+#        d.GetColourData().SetChooseFull(True)
+#        if d.ShowModal() == wx.ID_OK:
+#            data = d.GetColourData()
+#            r,g,b = data.GetColour().Get()
+#            color = r/255.,g/255.,b/255.
+#            self.canvas.OnColor(color)
+#            fg_r=255-r
+#            fg_g=255-g
+#            fg_b=255-b
+#            fg_color=fg_r/255.,fg_g/255.,fg_b/255.
+#            self.renderOptions.set_fg_color(fg_color)
+#            self.render()
         return
     
     def edit_coord(self, *args):
