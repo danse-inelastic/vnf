@@ -80,6 +80,8 @@ class Clerk(ClerkBase, base):
         '''retrieve server data specified by id'''
         return self._getEntry('Server', id=id, where=where)
 
+
+
     # for compatibility with vnf-alpha. should eventually remove
     def _registerVnfAlphaTables(self, db):
         # register tables
@@ -87,6 +89,18 @@ class Clerk(ClerkBase, base):
         for table in alltables():
             db.registerTable(table)
         return
+
+
+    def _createOrmManager(self):
+        director = self.director
+        guid = director.getGUID
+        db = self.db
+        from vnfb.dom import object2table
+        from dsaw.model.visitors.OrmManager import OrmManager
+        self._orm = OrmManager(db=db, guid=guid, object2table=object2table)
+        return
+        
+    
     def _createDB(self):
         db = self.inventory.db
         from dsaw.db import connect
