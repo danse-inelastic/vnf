@@ -74,6 +74,12 @@ class Clerk( base ):
         '''retrieve user configuration specified by id'''
         return self._getEntry('QEConfiguration', id=id, where=where)
 
+    # Temp solution
+    def getServers(self, id=None, where=None):
+        '''retrieve server data specified by id'''
+        return self._getEntry('Server', id=id, where=where)
+
+
 
     def _configure(self):
         base._configure(self)

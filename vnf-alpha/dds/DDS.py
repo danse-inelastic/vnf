@@ -123,12 +123,16 @@ class DDS:
 
 
     def is_available(self, path, node=None):
-        if node is None: node = self.masternode
+        if node is None:
+            node = self.masternode
 
         l = self._read_availability_list(path)
-        if _str(node) in l: return True
+
+        if _str(node) in l:
+            return True
 
         ret = self._fileexists(_url(node, path))
+
         if ret:
             l.append(_str(node))
             self._update_availability_list(path,l)
@@ -137,10 +141,14 @@ class DDS:
 
     def make_available(self, path, node=None):
         '''make file at given path available at given node'''
-        if self.is_available(path, node): return
-        if node is None: node = self.masternode
+        if self.is_available(path, node):
+            return
+
+        if node is None:
+            node = self.masternode
         node1 = self.find_node(path)
-        if node1 is None: raise RuntimeError, "%s is not available anywhere" % path
+        if node1 is None:
+            raise RuntimeError, "%s is not available anywhere" % path
         self._transfer(path, node1, node)
         self.remember(path, node)
         return
