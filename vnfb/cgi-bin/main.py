@@ -22,24 +22,13 @@ webapp = 'webmain.py'
 
 
 import os
+import pickle
 
-#The "request" object passed from simple http server
-#convert it to a query string
-query_string = '&'.join( '%s=%s' % (k, ','.join(v)) for k,v in request.iteritems() )
-os.environ['QUERY_STRING'] = query_string
+# The "request" object passed from simple http server
+os.environ['REQUEST_PICKLED'] = pickle.dumps(request)
+# cookie
+os.environ['COOKIE_PICKLED'] = pickle.dumps(cookie)
 
-cookie_str = cookie.output(header='', sep=';')
-os.environ['HTTP_COOKIE'] = cookie_str
-
-
-#headers
-#print 'headers: %s<br><br>' % headers
-#os.environ[ 'CONTENT_TYPE' ] = headers['content-type']
-
-
-#posted data
-#posted = file_handle_for_posted_data.read()
-#print posted
 
 
 from subprocess import Popen, PIPE
@@ -48,6 +37,7 @@ outdata, errdata = p.communicate()
 
 if p.returncode:
     print errdata
+    print outdata
 else:
     print outdata[outdata.find('\n')+1:]
     
