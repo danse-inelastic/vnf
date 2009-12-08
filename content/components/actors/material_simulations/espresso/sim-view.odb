@@ -280,17 +280,24 @@ class Actor(base):
 
 
     def showResults(self, director, table):
-        link    = self._retrieveResults(director)
-#        link    = Link(label="Get Results", Class="action-link",
-#                       onclick=load(actor       = "material_simulations/espresso/sim-view",
-#                                    routine     = "retrieveStatus",
-#                                    id          = self.id)
-#                      )
+        doc     = Document(id="results-link")
+#        link    = self._retrieveResults(director)
+        link    = Link(label="Get Results", Class="action-link",
+                       onclick=load(actor       = "material_simulations/espresso/sim-view",
+                                    routine     = "retrieveStatus",
+                                    id          = self.id)
+                      )
 
-        addRow(table, "Results: ", link)
+        doc.add(link)
+
+        addRow(table, "Results: ", doc)
 
 
     def retrieveStatus(self, director):
+#        inputs  = director.clerk.getQEConfigurations(where = "simulationid='%s'" % self.id)
+#        input   = inputs[0]
+#
+#        return self._packingInProgress(director, input)
         return self._retrieveResults(director)
 
 
@@ -324,7 +331,7 @@ class Actor(base):
                                      id         = self.id)
                       )
 
-        return link
+        return select(id='results-link').replaceContent(link)
 
 
     def _startPacking(self, director, input):
@@ -340,7 +347,7 @@ class Actor(base):
                                      id         = self.id)
                       )
 
-        return link
+        return select(id='results-link').replaceContent(link)
 
 
 
