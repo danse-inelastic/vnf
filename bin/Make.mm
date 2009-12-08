@@ -30,6 +30,7 @@ EXPORT_DATAFILES = \
 	createdefaultformulaformatters.py \
 	establishglobalpointers.py \
 	launch-detached.py \
+        packjobdir.py \
 	restorevnfdb.py \
 	startservices.sh \
 
