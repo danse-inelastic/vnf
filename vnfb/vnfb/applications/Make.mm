@@ -37,6 +37,7 @@ all: export
 EXPORT_PYTHON_MODULES = \
 	ITaskApp.py \
 	EstablishGlobalPointers.py \
+        PackJobDir.py \
 	RestoreVNFDB.py \
 	__init__.py \
 
