@@ -20,6 +20,15 @@
     border:none;
     padding:0;
 }
+.object-editor form.luban-form fieldset {
+    margin:0;
+}
+.object-editor .highlighted {
+    border: 1px solid red;
+}
+.object-editor .highlighted.luban-document {
+    border: 1px solid red;
+}
 
 /* collapsable */
 .collapsable.luban-document {

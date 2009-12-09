@@ -25,7 +25,9 @@ class Actor(base):
         import pyre.inventory
 
         id = pyre.inventory.str('id')
-        description = pyre.inventory.str('description')
+        
+        formids = pyre.inventory.list('formids')
+        viewid = pyre.inventory.str('viewid')
 
 
     def default(self, director):
@@ -143,6 +145,30 @@ class Actor(base):
         s = domaccess.getAtomicStructure(id)
         domaccess.orm.destroy(s)
         return
+
+
+    def doneediting(self, director):
+        actions = []; messages = []
+
+        #
+        id = self.inventory.id
+        domaccess = self._domaccess(director)
+        struct = domaccess.getAtomicStructure(id)
+        #
+        if len(struct) ==0:
+            messages.append('sorry. you have not add an atom to your structure.')
+            viewid = self.inventory.viewid
+            actions.append(select(id=viewid).find(name='atoms').addClass('highlighted'))
+        
+        formids = self.inventory.formids
+        actions += [select(id=id).addClass('highlighted') for id in formids]
+        n = len(formids)
+        messages.append('sorry. there are %s forms to fill out. please look for highlighted sections.' % n)
+
+        if len(actions):
+            actions.append(alert('\n\n'.join(messages)))
+            return actions
+        return self.showListView(director)
 
 
     def showOverview(self, director):

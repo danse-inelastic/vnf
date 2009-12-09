@@ -13,8 +13,6 @@
         "vnf-login.css",
         "vnf-mainframe.css",
         "vnf-matsim.css",
-        "vnf-matter.css",
-        "vnf-matter-overview.css",
         "vnf-atomicstructure.css",
         "vnf-bvk.css"
         ],
