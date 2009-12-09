@@ -58,6 +58,8 @@ class DOMAccessor( base ):
 
     # transient objects
     def isTransient(self, record):
+        gp = record.globalpointer
+        if not gp: return False
         from vnf.dom.TransientObject import TransientObject
         q = self.db.query(TransientObject).filter_by(
             target = record.globalpointer.id)

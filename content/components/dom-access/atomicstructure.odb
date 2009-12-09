@@ -55,6 +55,29 @@ class Accessor(base):
         return orm.load(Structure, id)
 
 
+    def getAtomicStructureRecord(self, id):
+        db = self.db
+        return db.query(StructureTable).filter_by(id=id).one()
+
+
+    def isConstructued(self, id):
+        'check if a structure is constructed and ready to be used'
+        s = self.getAtomicStructure(id)
+        if not s.description: return False
+        # check if there are atoms
+        if not len(s): return False
+        # more...
+        return True
+
+
+    def isTransient(self, id=None, record=None):
+        if record:
+            return super(Accessor, self).isTransient(record)
+        
+        r = self.getAtomicStructureRecord(id)
+        return self.isTransient(record=r)
+
+
     def countAtomicStructures(self, filter=None, label=None):
         q = self.makeQuery(filter=filter, label=label)
         return q.alias('tocount').count().execute().fetchone()[0]

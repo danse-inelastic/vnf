@@ -107,7 +107,6 @@ class Actor(base):
         domaccess = director.retrieveDOMAccessor('atomicstructure')
         s = domaccess.newAtomicStructure()
         record = domaccess.orm(s)
-        domaccess.setTransient(record)
         self.inventory.id = record.id
         return self.editAtomicStructureForm(director)
 
@@ -127,12 +126,40 @@ class Actor(base):
                                       )
 
 
+    def canceledit(self, director):
+        domaccess = self._domaccess(director)
+        id = self.inventory.id
+        if domaccess.isTransient(id=id):
+            s = domaccess.getAtomicStructure(id)
+            record = domaccess.orm(s)
+            domaccess.removeTransient(record=record)
+            domaccess.orm.destroy(s)
+        return self.showListView(director)
+
+
+    def delete(self, director):
+        domaccess = self._domaccess(director)
+        id = self.inventory.id
+        s = domaccess.getAtomicStructure(id)
+        domaccess.orm.destroy(s)
+        return
+
+
     def showOverview(self, director):
-        doc = director.retrieveVisual(
-                                      'atomicstructure/overview',
-                                      director  = director,
-                                      id        = self.inventory.id)
+        id = self.inventory.id
+        domaccess = director.retrieveDOMAccessor('atomicstructure')
+        if not domaccess.isConstructued(id=id):
+            doc = self.editAtomicStructureForm(director)
+        else:
+            doc = director.retrieveVisual(
+                                          'atomicstructure/overview',
+                                          director  = director,
+                                          id        = self.inventory.id)
         return select(id='main-display-area').replaceContent(doc)
+
+
+    def _domaccess(self, director):
+        return director.retrieveDOMAccessor(self.name)
 
 
     def __init__(self, name='atomicstructure'):
