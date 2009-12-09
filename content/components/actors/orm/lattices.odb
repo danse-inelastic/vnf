@@ -31,15 +31,6 @@ class Actor(base):
         import luban.inventory
 
 
-    def _setupORM(self, orm):
-        orm.registerObjectTypes([Structure, Atom])
-        return
-
-
-    def _defaults(self):
-        super(Actor, self)._defaults()
-        self.inventory.actor_formatter = 'orm/%s'
-        return
         
 
 def actor():
