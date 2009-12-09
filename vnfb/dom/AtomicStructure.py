@@ -60,6 +60,9 @@ Structure.Inventory = Inventory
 # db table
 StructureTable = o2t(Structure)
 
+# more cols
+import dsaw.db
+StructureTable.addColumn(dsaw.db.date(name='date'))
 
 # view
 def customizeLubanObjectDrawer(self, drawer):

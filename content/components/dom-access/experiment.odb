@@ -20,8 +20,7 @@ from vnfb.components.DOMAccessor import DOMAccessor as base
 class Accessor(base):
 
 
-    def __init__(self, db):
-        self.db = db
+    def __init__(self):
         super(Accessor, self).__init__('experiment-accessor')
         return
 
@@ -113,8 +112,8 @@ from dsaw.db.VersatileReference import global_pointer
 import sqlalchemy
 
 
-def accessor(db):
-    return Accessor(db)
+def accessor():
+    return Accessor()
 
 
 # version

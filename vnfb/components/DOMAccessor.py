@@ -22,9 +22,16 @@ from pyre.components.Component import Component as base
 #
 class DOMAccessor( base ):
 
-
-    db = None
     director = None
+
+    def _getOrm(self):
+        return self.director.clerk.orm
+    orm = property(_getOrm)
+
+
+    def _getDB(self):
+        return self.orm.db
+    db = property(_getDB)
     
 
     def __init__(self, name, facility = 'dom-accessor'):
@@ -240,7 +247,7 @@ class Proxy(object):
             except:
                 import traceback
                 raise RuntimeError, 'failed to convert record %s:%s to object: %s' % (
-                    self.record.__class__.name, self.record.id, traceback.format_exc())
+                    self.record.__class__.getTableName(), self.record.id, traceback.format_exc())
             
             setattr(self, '_object', o)
         return self._object
