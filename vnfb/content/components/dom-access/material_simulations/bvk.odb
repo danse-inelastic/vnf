@@ -17,8 +17,7 @@ from vnfb.components.DOMAccessor import DOMAccessor as base
 class Accessor(base):
 
 
-    def __init__(self, db):
-        self.db = db
+    def __init__(self):
         super(Accessor, self).__init__('bvk-accessor')
         return
 
@@ -150,8 +149,8 @@ m0 = [
     ]
 
 
-def accessor(db):
-    return Accessor(db)
+def accessor():
+    return Accessor()
 
 
 # version

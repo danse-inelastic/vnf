@@ -32,9 +32,9 @@ shapes = [
 
 
 materials = [
-    'Atom',
-    'Lattice',
-    'AtomicStructure',
+    #'Atom',
+    #'Lattice',
+    #'AtomicStructure',
     ]
 
 

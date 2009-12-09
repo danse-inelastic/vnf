@@ -50,7 +50,8 @@ def testDelete():
     for t in alltables(): db.registerTable(t)
 
     import atomicstructure
-    da = atomicstructure.Accessor(db)
+    da = atomicstructure.Accessor()
+    da.db = db
     
     id = '6AGGUMN'
     da.removeAtomicStructure(id)

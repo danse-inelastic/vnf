@@ -36,7 +36,7 @@ class AppExtension(Base):
         db = director.clerk.db
         r = director.retrieveComponent(
             name,
-            factory="accessor", args=[db],
+            factory="accessor", args=[],
             vault=['dom-access'])
         r.director = director
         return r
