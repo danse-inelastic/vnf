@@ -183,7 +183,9 @@ class Actor(base):
         2. Copy files to the computational cluster
         3. 
         """
+
         inputs  = director.clerk.getQEConfigurations(where = "simulationid='%s'" % self.id)
+
         self._storeFiles(director, inputs)
         self._moveFiles(director, inputs)
         self._scheduleJob(director, inputs)

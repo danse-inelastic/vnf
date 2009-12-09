@@ -24,38 +24,35 @@ from vnfb.components.QETable import QETable as base
 class QEConfiguration(base):
 
     name = "qeconfigurations"
-    import pyre.db
+    import dsaw.db
 
-    id = pyre.db.varchar(name="id", length=8)
+    id = dsaw.db.varchar(name="id", length=8)
     id.constraints = 'PRIMARY KEY'
     id.meta['tip'] = "the unique id"
 
-    simulationid    = pyre.db.varchar(name="simulationid", length=8)
-    simulationid.constraints = 'REFERENCES qesimulations (id)'    # Important
-    simulationid.meta['tip'] = "simulationId"
-
-    type        = pyre.db.varchar(name="type", length=1024, default='')
-    type.meta['tip'] = "Type of configuration. Example: PW, PP"
+    taskid    = dsaw.db.varchar(name="taskid", length=8)
+    taskid.constraints = 'REFERENCES qetasks (id)'    # Important
+    taskid.meta['tip'] = "Task id"
 
     # Later on can be tranformed to a separate File table
-    filename    = pyre.db.varchar(name="filename", length=1024, default='')
+    filename    = dsaw.db.varchar(name="filename", length=1024, default='')
     filename.meta['tip'] = "Filename assiciated with this configuration"
 
     # To separate table?
-    parser    = pyre.db.varchar(name="parser", length=1024, default='')
+    parser    = dsaw.db.varchar(name="parser", length=1024, default='')
     parser.meta['tip'] = "Parser for configuration"
 
-    description = pyre.db.varchar(name="description", length=1024, default='')
+    description = dsaw.db.varchar(name="description", length=1024, default='')
     description.meta['tip'] = "description"
 
-    timeCreated = pyre.db.varchar(name="timeCreated", length=16, default='')
-    timeCreated.meta['tip'] = "timeCreated"
+    timecreated = dsaw.db.varchar(name="timecreated", length=16, default='')
+    timecreated.meta['tip'] = "timecreated"
 
-    timeModified = pyre.db.varchar(name="timeModified", length=16, default='')
-    timeModified.meta['tip'] = "timeModified"
+    timemodified = dsaw.db.varchar(name="timemodified", length=16, default='')
+    timemodified.meta['tip'] = "timemodified"
 
     # FIXME: Do I need text fields once I use get file from DDS location?
-    text = pyre.db.varchar(name="text", length=8192, default='')
+    text = dsaw.db.varchar(name="text", length=8192, default='')
     text.meta['tip'] = "text"
 
 
@@ -125,19 +122,19 @@ params          = --mca btl openib,sm,self
 modules         = openmpi/gnu acml/4.3.0_gfortran64_int32 espresso
 """
 
-# Electron DOS (Ni_E_DOS): simulationId = 5
+# Electron DOS (Ni_E_DOS): taskid = 5
 
 # Default records
 defaults    = (
-               {"id": 1, "simulationId": 5, "type": "PW", "parser": "qeinput",
+               {"id": 1, "taskid": 5, "type": "PW", "parser": "qeinput",
                "filename": "ni.scf.in", "text": configPW},
-               {"id": 2, "simulationId": 6, "type": "PH", "parser": "qeinput",
+               {"id": 2, "taskid": 6, "type": "PH", "parser": "qeinput",
                 "filename": "ni.ph.in", "text": configPH},
-               {"id": 3, "simulationId": 4, "type": "PP", "parser": "qeinput",
+               {"id": 3, "taskid": 4, "type": "PP", "parser": "qeinput",
                 "filename": "ni.pp.in", "text": configDOS},
-                {"id": 4, "simulationId": 5, "type": "DOS", "parser": "qeinput",
+                {"id": 4, "taskid": 5, "type": "DOS", "parser": "qeinput",
                 "filename": "ni.scf.dos.in", "text": configDOS},
-                {"id": 5, "simulationId": 6, "type": "settings", "parser": "ConfigParser",   # Example of settings type
+                {"id": 5, "taskid": 6, "type": "settings", "parser": "ConfigParser",   # Example of settings type
                 "filename": "settings.conf", "text": configSettings},
               )
 

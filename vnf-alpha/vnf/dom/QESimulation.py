@@ -35,30 +35,31 @@ from dsaw.db.WithID import WithID
 
 from MaterialSimulation import MaterialSimulation
 
+# WithID -> id
+
 class QESimulation(QETable, WithID):
 
     name = "qesimulations"
     import dsaw.db
 
-#    # in MS
-#    id = dsaw.db.varchar(name="id", length=8)
-#    id.constraints = 'PRIMARY KEY'
-#    id.meta['tip'] = "the unique id"
+    serverid    = dsaw.db.varchar(name="serverid", length=8)
+    serverid.constraints = 'REFERENCES servers (id)'    # Important
+    serverid.meta['tip'] = "Default server for the simulation"
 
     sname = dsaw.db.varchar(name="sname", length=128, default='')
-    sname.meta['tip'] = ""
+    sname.meta['tip'] = "Simulation name"
 
     # in MS
     creator = dsaw.db.varchar(name="creator", length=128, default='')
-    creator.meta['tip'] = ""
+    creator.meta['tip'] = "User name"
 
     # in MS
     short_description = dsaw.db.varchar(name="short_description", length=1024, default='')
-    short_description.meta['tip'] = ""
+    short_description.meta['tip'] = "Description of the simulation"
 
     # in MS
     date = dsaw.db.varchar(name="date", length=16, default='')
-    date.meta['tip'] = "timeCreated"
+    date.meta['tip'] = "timecreated"
 
     package = dsaw.db.varchar(name="package", length=128, default='Quantum Espresso')
     package.meta['tip'] = ""
@@ -66,15 +67,15 @@ class QESimulation(QETable, WithID):
     type = dsaw.db.varchar(name="type", length=128, default='')
     type.meta['tip'] = ""
 
-    timeModified = dsaw.db.varchar(name="timeModified", length=16, default='')
-    timeModified.meta['tip'] = "timeModified"
+    timemodified = dsaw.db.varchar(name="timemodified", length=16, default='')
+    timemodified.meta['tip'] = "timemodified"
 
     label       = dsaw.db.varchar(name="label", length=128, default='Favorite')
     label.meta['tip'] = "Label associated with the simulation"
 
     # Change type
     matter = dsaw.db.varchar(name="matter", length=128, default='')
-    matter.meta['tip']  = "stub"
+    matter.meta['tip']  = "STUB"
 
 
 # Default records

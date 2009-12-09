@@ -35,9 +35,9 @@ class QEJob(base):
     id.constraints = 'PRIMARY KEY'
     id.meta['tip'] = "the unique id"
 
-    simulationid = pyre.db.varchar(name="simulationid", length=8)
-    simulationid.constraints = 'REFERENCES qesimulations (id)'
-    simulationid.meta['tip'] = ""
+    task = pyre.db.varchar(name="taskid", length=8)
+    task.constraints = 'REFERENCES qetasks (id)'
+    task.meta['tip'] = ""
 
     creator = pyre.db.varchar(name="creator", length=128, default='')
     creator.meta['tip'] = ""
@@ -52,44 +52,44 @@ class QEJob(base):
     status = pyre.db.varchar(name="status", length=64, default='')
     status.meta['tip'] = ""
 
-    timeSubmitted = pyre.db.varchar(name="timeSubmitted", length=16, default='')
-    timeSubmitted.meta['tip'] = "timeSubmitted"
+    timesubmitted = pyre.db.varchar(name="timesubmitted", length=16, default='')
+    timesubmitted.meta['tip'] = "timesubmitted"
 
-    timeStarted = pyre.db.varchar(name="timeStarted", length=16, default='')
-    timeStarted.meta['tip'] = "timeStarted"
+    timestarted = pyre.db.varchar(name="timestarted", length=16, default='')
+    timestarted.meta['tip'] = "timestarted"
 
-    timeRestarted = pyre.db.varchar(name="timeRestarted", length=16, default='')
-    timeRestarted.meta['tip'] = "timeRestarted"
+    timerestarted = pyre.db.varchar(name="timerestarted", length=16, default='')
+    timerestarted.meta['tip'] = "timerestarted"
 
-    timeCompleted = pyre.db.varchar(name="timeCompleted", length=16, default='')
-    timeCompleted.meta['tip'] = "timeCompleted"
+    timecompleted = pyre.db.varchar(name="timecompleted", length=16, default='')
+    timecompleted.meta['tip'] = "timecompleted"
 
-    exitCode = pyre.db.integer(name="exitCode", default=-1)
-    exitCode.meta['tip'] = "exitCode"
+    exitcode = pyre.db.integer(name="exitcode", default=-1)
+    exitcode.meta['tip'] = "exitcode"
 
-    numberProcessors = pyre.db.integer(name="numberProcessors", default=0)
-    numberProcessors.meta['tip'] = "numberProcessors"
+    numberprocessors = pyre.db.integer(name="numberprocessors", default=0)
+    numberprocessors.meta['tip'] = "numberprocessors"
 
-    errorFilename = pyre.db.varchar(name="errorFilename", length=256, default='stderr.log')
-    errorFilename.meta['tip'] = "errorFilename"
+    errorfilename = pyre.db.varchar(name="errorfilename", length=256, default='stderr.log')
+    errorfilename.meta['tip'] = "errorfilename"
 
-    outputFilename = pyre.db.varchar(name="outputFilename", length=256, default='stdout.log')
-    outputFilename.meta['tip'] = "outputFilename"
+    outputfilename = pyre.db.varchar(name="outputfilename", length=256, default='stdout.log')
+    outputfilename.meta['tip'] = "outputfilename"
 
-    statusMessage = pyre.db.varchar(name="statusMessage", length=256, default='')
-    statusMessage.meta['tip'] = "statusMessage"
+    statusmessage = pyre.db.varchar(name="statusmessage", length=256, default='')
+    statusmessage.meta['tip'] = "statusmessage"
 
 
 # Default records
-defaults    = ({"id": 1, "creator": "dexity", "simulationId": 4, "serverId": 1,
-               "status": STATES["C"], "timeCompleted": timestamp() + 60, "exitCode": 0,
-                "numberProcessors": 8},
-               {"id": 2, "creator": "dexity", "simulationId": 5, "serverId": 1,
-               "status": STATES["C"], "timeCompleted": timestamp() + 60, "exitCode": 0,
-                "numberProcessors": 8},
-               {"id": 3, "creator": "dexity", "simulationId": 6, "serverId": 1,
-               "status": STATES["R"], "timeCompleted": timestamp() + 60, "exitCode": 0,
-                "numberProcessors": 8})
+defaults    = ({"id": 1, "creator": "dexity", "taskid": 4, "serverid": 1,
+               "status": STATES["C"], "timecompleted": timestamp() + 60, "exitcode": 0,
+                "numberprocessors": 8},
+               {"id": 2, "creator": "dexity", "taskid": 5, "serverid": 1,
+               "status": STATES["C"], "timecompleted": timestamp() + 60, "exitcode": 0,
+                "numberprocessors": 8},
+               {"id": 3, "creator": "dexity", "taskid": 6, "serverid": 1,
+               "status": STATES["R"], "timecompleted": timestamp() + 60, "exitcode": 0,
+                "numberprocessors": 8})
 
 # Init tables
 def inittable(clerk):

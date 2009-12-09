@@ -87,6 +87,7 @@ EXPORT_PYTHON_MODULES = \
         QEConfiguration.py \
         QEJob.py \
         QESimulation.py \
+        QETask.py \
 	ReferenceManager.py \
 	ReferenceSet.py \
 	Registrant.py \
