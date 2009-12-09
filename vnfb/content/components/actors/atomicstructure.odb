@@ -104,8 +104,24 @@ class Actor(base):
 
 
     def newAtomicStructureForm(self, director):
+        domaccess = director.retrieveDOMAccessor('atomicstructure')
+        s = domaccess.newAtomicStructure()
+        record = domaccess.orm(s)
+        domaccess.setTransient(record)
+        self.inventory.id = record.id
+        return self.editAtomicStructureForm(director)
+
+
+    def debug_editAtomicStructureForm(self, director):
+        p       = lc.page()
+        doc     = p.document(id='main-display-area')
+        doc.add(self.editAtomicStructureForm(director))
+        return p
+
+
+    def editAtomicStructureForm(self, director):
         return director.retrieveVisual(
-                                        'atomicstructure/create-structure-form',
+                                        'atomicstructure/edit-structure-form',
                                         director    = director,
                                         id          = self.inventory.id
                                       )

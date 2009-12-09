@@ -24,6 +24,8 @@ def table(atomicstructures, cols, director):
     from luban.content.table import Model, View, Table
     from luban.content import load
     from luban.content.Link import Link
+
+    orm = director.clerk.orm
     
     class model(Model):
 
@@ -50,7 +52,7 @@ def table(atomicstructures, cols, director):
     
     def getSelected(atomicstructure): return False
     def getId(atomicstructure):
-        record = atomicstructure.record
+        record = orm(atomicstructure)
         label = record.id
         link = Link(
             label = label,
@@ -61,16 +63,16 @@ def table(atomicstructures, cols, director):
             )
         return link
     def getDescription(atomicstructure):
-        record = atomicstructure.record
-        return record.short_description
+        return atomicstructure.description
     def getVisualize(atomicstructure):
         return 'not implemented'
     def getCreated(atomicstructure):
-        record = atomicstructure.record
+        record = orm(atomicstructure)
         date = record.date
         return str(date)
     def getChemical_formula(atomicstructure):
-        return atomicstructure.getChemicalFormula()
+        record = orm(atomicstructure)
+        return record.chemical_formula
                 
     import operator
     value_generators = [
