@@ -14,23 +14,6 @@
 /* Vinil CSS*/
 
 /* overload the default behavior of luban for buttons */
-.luban-button-container,
-.luban-button-container a{
-    text-decoration: none;
-    padding: 3px 5px;
-    margin: 3px 0px 7px 0px;
-    float: left;
-}
-
-.luban-button {
-    -moz-border-radius: 5px;
-    -webkit-border-radius: 5px;
-    background-color: #eeeeee;
-    border: 1px outset;
-    padding: 2px 5px;
-    color: #333333;
-}
-
 #error-area,
 #input-error-area {
     color: red;

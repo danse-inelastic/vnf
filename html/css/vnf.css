@@ -88,12 +88,21 @@ textarea {
     text-align: center;
 }
 .luban-button {
-    -moz-border-radius: 15px;
-    -webkit-border-radius: 15px;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
     background-color: #eeeeee;
-    border: 1px outset;
-    padding: 15px 8px;
+    border: none;
+    padding: 2px 5px;
     color: #333333;
+    border: 2px solid #CCED8C;
+}
+
+.luban-button-container,
+.luban-button-container a{
+    text-decoration: none;
+    padding: 3px 5px;
+    margin: 3px 0px 7px 0px;
+    float: left;
 }
 
 .luban-button img {
