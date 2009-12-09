@@ -7,6 +7,7 @@
 	"luban.css",
 
         "vnf.css",
+	"vnf-objecteditor.css",
         "vnf-table.css",
         "vnf-mastertable.css",
         "vnf-login.css",
@@ -14,7 +15,7 @@
         "vnf-matsim.css",
         "vnf-matter.css",
         "vnf-matter-overview.css",
-        "vnf-atomicstructure-overview.css",
+        "vnf-atomicstructure.css",
         "vnf-bvk.css"
         ],
      "jslibs":      [

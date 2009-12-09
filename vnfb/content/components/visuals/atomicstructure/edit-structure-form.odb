@@ -25,11 +25,30 @@ from luban.content.FormSubmitButton import FormSubmitButton
 def visual(director, id):
     doc = lc.document()
     doc.add(viewIndicator(director, id))
+
+    container = doc.document(id='edit-atomic-structure-form', Class='container')
+
+    #
+    cancel = load(actor='atomicstructure', routine='canceledit', id = id)
+    delete = [
+        load(actor='atomicstructure', routine='delete', id = id),
+        load(actor='atomicstructure', routine='showListView'),
+        ]
     
-    container = doc.document(id='edit-structure-form', Class='container')
+    controls = container.document(Class='controls')
+    cancellink = lc.link(label='cancel', onclick=cancel, Class='cancel')
+    controls.add(cancellink)
+    deletelink = lc.link(label='delete', onclick=delete, Class='delete')
+    controls.add(deletelink)
+    
     view = editview(director, id)
     container.add(view)
-    
+
+    controls2 = container.document(Class='controls')
+    cancellink2 = lc.link(label='cancel', onclick=cancel, Class='cancel')
+    controls2.add(cancellink2)
+    deletelink2 = lc.link(label='delete', onclick=delete, Class='delete')
+    controls2.add(deletelink2)
     return doc
 
 
