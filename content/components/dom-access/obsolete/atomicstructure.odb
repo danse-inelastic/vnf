@@ -1,0 +1,285 @@
+# -*- Python -*-
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                   Jiao Lin
+#                      California Institute of Technology
+#                      (C) 2006-2009  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+# TODO: the proxy should not be necessary any more. just use dsaw orm. shoudl remove all proxy classes etc
+
+
+tablename = 'atomicstructure'
+
+
+from vnfb.components.DOMAccessor import DOMAccessor as base, Proxy
+
+class Accessor(base):
+
+
+    def __init__(self):
+        super(Accessor, self).__init__('atomicstructure-accessor')
+        return
+
+
+    def _getOrm(self):
+        orm = self.director.clerk.orm
+        from vnfb.dom.AtomicStructure import Structure
+        orm(Structure)
+        return orm
+    orm = property(_getOrm)
+
+
+    def removeAtomicStructure(self, id):
+        struct = self.getAtomicStructure(id)
+        record = struct.record
+        if self.isTransient(record):
+            self.removeTransient(record)
+
+        self._debug.log('removed transient')
+        
+        atomsrefset = record.atoms
+        db = self.db
+        for atom in struct.iterAtomRecords():
+            atomsrefset.delete(atom, db)
+            self.deleteRecordWithID(atom)
+            continue
+        
+        self._debug.log('removed atoms')
+        
+        latticeref = record.lattice
+        if latticeref:
+            latticerecord = latticeref.dereference(db)
+            if latticerecord:
+                record.lattice = None
+                self.updateRecordWithID(record)
+                self.deleteRecordWithID(latticerecord)
+
+        self._debug.log('removed lattice')
+
+        self.deleteRecordWithID(record)
+
+        self._debug.log('removed struct')        
+        return
+    
+
+    def newAtomicStructure(self):
+        s = self.insertNewOwnedRecord(AtomicStructure)
+        return self.getAtomicStructure(s.id)
+
+
+    def getAtomicStructure(self, id):
+        record = self.getRecordByID(AtomicStructure, id)
+        return AtomicStructureProxy(record, self)
+
+
+    def countAtomicStructures(self, filter=None, label=None):
+        q = self.makeQuery(filter=filter, label=label)
+        return q.alias('tocount').count().execute().fetchone()[0]
+
+
+    def getAtomicStructures(
+        self,
+        filter=None, order_by=None, reverse_order=None, slice=None,
+        label=None,
+        ):
+        
+        db = self.db
+        q = self.makeQuery(filter=filter, label=label)
+
+        if order_by:
+            q = q.order_by(order_by)
+        if slice:
+            if reverse_order:
+                n = self.countAtomicStructures(filter=filter, label=label)
+                slice = n-slice[1], n-slice[0]
+            q = sqlalchemy.select(
+                [q.alias('toslice')],
+                limit = slice[1]-slice[0],
+                offset = slice[0])
+
+        ret = q.execute().fetchall()
+        
+        if reverse_order:
+            ret.reverse()
+
+        return [self.getAtomicStructure(i.id) for i in ret]
+
+
+    def makeQuery(self, filter=None, label=None):
+        if label:
+            if filter: raise RuntimeError
+            return self.makeLabeledQuery(label)
+        db = self.db
+
+        st = db._tablemap.TableToSATable(AtomicStructure)
+        q = sqlalchemy.select(
+            [st.c.id.label('id'),
+             st.c.short_description.label('short_description'),
+             st.c.chemical_formula.label('chemical_formula'),
+             st.c.date.label('date'),
+             ]
+            )
+        if filter:
+            q = sqlalchemy.select([q.alias('atomicstructure')], whereclause=filter)
+        return q
+
+
+    def makeLabeledQuery(self, label):
+        db = self.db
+        sL = db._tablemap.TableToSATable(Label)
+        labelq = sqlalchemy.select(
+            [sL.c.entity.label('entity'),
+             sL.c.labelname.label('label'),
+             ],
+            whereclause="labelname='%s' and targettable='%s'" % (label, tablename))\
+            .alias('labelq')
+        
+        st = db._tablemap.TableToSATable(AtomStructure)
+        
+        q = sqlalchemy.select(
+            [st.c.id.label('id'),
+             st.c.short_description.label('short_description'),
+             st.c.chemical_formula.label('chemical_formula'),
+             st.c.date.label('date'),
+             labelq.c.entity.label('gptr'),
+             ],
+            st.c.globalpointer==labelq.c.entity,
+            )
+
+        return q
+
+
+    def getallsimulations(self, atomicstructure, **opts):
+        '''get all simulations for this atomic structure
+        '''
+        db = self.db
+        tables = simulationTables()
+
+        computations = []
+        for table in tables:
+            computations += atomicstructure.getReferences(db, table, 'matter', **opts)
+            continue
+
+        return computations
+
+
+
+class AtomProxy(Proxy):
+
+    def _convertToObject(self):
+        record = self.record
+        from matter.Atom import Atom
+        return Atom(atype=record.element, xyz=record.xyz, occupancy=record.occupancy)
+
+
+class LatticeProxy(Proxy):
+
+    def _convertToObject(self):
+        attrs = ['a', 'b', 'c',
+                 'alpha', 'beta', 'gamma',
+                 ]
+        record = self.record
+        from matter.Lattice import Lattice
+
+        kwds = {}
+        for k in attrs:
+            kwds[k] = getattr(record, k)
+        return Lattice(**kwds)
+    
+
+class AtomicStructureProxy(Proxy):
+
+    def getNumberOfAtoms(self):
+        return len(self._getObject())
+
+
+    def iterAtomIDs(self):
+        for r in self.iterAtomRecords():
+            yield r.id
+        return
+
+    
+    def iterAtomRecords(self):
+        for k, a in self.record.atoms.dereference(self.db):
+            yield a
+        return
+
+
+    def newAtom(self, name=None):
+        atom = self.domaccess.insertNewRecordWithID(Atom)
+        self._setObjectObsolete()
+        self.record.atoms.add(atom, self.db, name=name or '')
+        return atom
+
+
+    def delAtom(self, name=None, id=None):
+        if id is not None and name: raise ValueError
+        if id is None and not name: raise ValueError
+        
+        if name:
+            atomrecord = self.record.atoms.delElement(name, self.db)
+        else:
+            # the record
+            atomrecord = self.domaccess.getRecordByID(Atom, id)
+            self.record.atoms.delete(atomrecord, self.db)
+            
+        self.db.deleteRecord(atomrecord)
+        self._setObjectObsolete()
+        return
+        
+
+    def _convertToObject(self):
+        record = self.record
+        db = self.db
+
+        atoms = [a for k,a in db.dereference(record.atoms)]
+        atoms = [AtomProxy(atom, self.domaccess) for atom in atoms]
+
+        lattice = db.dereference(record.lattice)
+        if lattice is None:
+            domaccess = self.domaccess
+            lattice = domaccess.insertNewRecordWithID(Lattice)
+            record.lattice = lattice
+            domaccess.updateRecordWithID(record)
+            
+        lattice = LatticeProxy(lattice, self.domaccess)
+        
+        from matter.Structure import Structure
+        s = Structure(lattice=lattice)
+        # this a bit weird. need to implement a better way to add atoms to Structure
+        s.__setslice__(0, len(atoms), atoms, copy=False)
+        return s
+
+
+from vnf.dom.Label import Label
+from vnfb.dom.AtomicStructure import StructureTable as AtomicStructure
+from vnfb.dom.Atom import AtomTable as Atom
+from vnfb.dom.Lattice import LatticeTable as Lattice
+
+
+from dsaw.db.VersatileReference import global_pointer
+import sqlalchemy
+
+
+def simulationTables():
+    from vnf.dom import materialsimulationtables, materialmodelingtables
+    tables = materialsimulationtables()# + materialmodelingtables()
+    return tables
+
+
+
+def accessor():
+    return Accessor()
+
+
+# version
+__id__ = "$Id$"
+
+# End of file 

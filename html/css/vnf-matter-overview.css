@@ -74,12 +74,6 @@
 padding:0.3em;
 border:solid 1px #ccc;
 }
-.collapsable.luban-document .collapsable.luban-document {
-margin:0.5em;
-padding:0.3em;
-border:none;
-border-left:1px solid;
-}
 .collapsable.luban-document .titlebar {
 -moz-border-radius:12px;
 -webkit-border-radius:12px;
