@@ -37,34 +37,29 @@ class Actor(base):
     Inventory.short_description.default = ''  # default to None will prevent validator from working
     
     def debug(self, director):
+        id = self.inventory.id
+        if not id:
+            self._createStructure(director)
+
+        # view
+        view = self.edit(director)
+
+        # add to skeleton
         from luban.content.Page import Page
         page = Page(title='title')
-        
         document = page.document(title='test', id='maindoc')
-
-	struct = Structure()
-
-        orm = director.clerk.orm
-        orm.save(struct)
-
-        self.inventory.id = orm(struct).id
-        view = self.edit(director)
-        
         document.add(view)
             
         return page
 
 
-    def _setupORM(self, orm):
-        orm.registerObjectTypes([Lattice, Atom])
+    def _createStructure(self, director):
+	struct = Structure()
+        orm = director.clerk.orm
+        orm.save(struct)
+        self.inventory.id = orm(struct).id
         return
 
-
-    def _defaults(self):
-        super(Actor, self)._defaults()
-        self.inventory.actor_formatter = 'orm/%s'
-        return
-        
 
 def actor():
     return Actor('orm/atomicstructures')

@@ -28,7 +28,7 @@ body {
 
 /* document */
 .luban-document-title-text {
-    font-size: 1.3em;
+    font-size: 130%;
 }
 .luban-document.collapsable{
     border: solid 1px lightgray;
@@ -57,7 +57,7 @@ body {
 }
 .luban-document.collapsable > .luban-document-title > table td.luban-document-title-controls .collapse-expand{
     color: blue;
-    font-size: 1.5em;
+    font-size: 150%;
 }
 .luban-document.collapsable > .luban-document-title > table td.luban-document-title-controls a.collapse-expand:hover{
     cursor: pointer;
@@ -150,7 +150,7 @@ a.luban-link:hover{
 /* button */
 .luban-button {
     cursor: pointer;
-    font-size: 1em;
+    font-size: 100%;
     padding: 1px 5px 1px 5px;
 
     border-top: 1px solid white;
@@ -166,7 +166,7 @@ a.luban-link:hover{
 #luban-----loadingdiv {
     position: fixed;
     background-color: #f5f1b3;
-    font-size: 1.25em;
+    font-size: 125%;
     z-index: 1000000;
 }
 
@@ -199,7 +199,7 @@ label {
     border: 2px solid #999999;
     padding: 0.1em 0.3em;
     font-family: Times, "Times New Roman", serif;
-    font-size: 1.03em;
+    font-size: 103%;
     border-color: #ffa500;
     color: darkBlue;
     cursor: pointer;
@@ -220,7 +220,7 @@ label {
 
 .luban-formfield .help{
     font-family: Times, "Times New Roman", serif;
-    font-size: 1em;
+    font-size: 100%;
     margin: 0 0 0.2em 0;
     color: #76797c;
     text-decoration: none;
@@ -291,7 +291,7 @@ li {
 /* orm */
 .object-editor.luban-document.collapsable {
     border: 2px solid #555555;
-    background-color:#f0ff99;
+    background-color:#E5E5E5;
 }
 /* apply to all document inside object editor*/
 .object-editor .luban-document {
@@ -310,7 +310,7 @@ li {
 }
 /* apply to all document tilte text */
 .object-editor .luban-document-title-text {
-    font-size: 1em;
+    font-size: 100%;
     font-weight: normal;
 }
 /* properties */
