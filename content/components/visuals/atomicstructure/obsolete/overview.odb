@@ -27,7 +27,6 @@ class Factory(object):
         self.id = id
         self.domaccess = director.retrieveDOMAccessor('atomicstructure')
         self.atomicstructure = self.domaccess.getAtomicStructure(id)
-        self.record = self.domaccess.orm(self.atomicstructure)
         self.actor = 'atomicstructure'
 
 
@@ -38,8 +37,7 @@ class Factory(object):
         view.add(titlebar)
 
         atomicstructure = self.atomicstructure
-        record = self.record
-        view_label = self.getAtomicStructureLabel()
+        view_label = atomicstructure.short_description or atomicstructure.id
 
         # view indicator
         view_indicator = self.createViewIndicator()
@@ -66,7 +64,7 @@ class Factory(object):
         path.append(('Atomic Structures', lc.load(actor=actor)))
 
         label = self.getAtomicStructureLabel()
-        action = lc.load(actor=actor, routine='showOverview', id = self.id,)
+        action = lc.load(actor=actor, routine='showMaterialView', id = self.id,)
         path.append((label,action))
 
         return self.director.retrieveVisual('view-indicator', path=path)
@@ -79,53 +77,97 @@ class Factory(object):
         namedoc = self.createNameDoc()
         namesec.add(namedoc)
 
-        structuresec = splitter.section(id='atomicstructure-structure-container')
-        structuredoc = self.createStructureDoc()
-        structuresec.add(structuredoc)
+        latticesec = splitter.section(id='atomicstructure-lattice-container')
+        latticedoc = self.createLatticeDoc()
+        latticesec.add(latticedoc)
         
+        atomssec = splitter.section(id='atomicstructure-atoms-container')
+        atomsdoc = self.createAtomsDoc()
+        atomssec.add(atomsdoc)
+
         return splitter
 
 
-    def createStructureDoc(self):
+    def createLatticeDoc(self):
+
+        doc = lc.document(title='Lattice', Class='atomicstructure-info-subsection')
+
         atomicstructure = self.atomicstructure
-        record = self.record
 
-        doc = lc.document(title='Structure', Class='atomicstructure-info-subsection')
+        lattice = atomicstructure.lattice
+        base = lattice.base
 
-        sp = lc.splitter(); doc.add(sp)
-        # bcc, fcc etc
-        struk = atomicstructure.StrukturberichtDesignation
-        if struk:
-            label = str(struk)
-            struklink = lc.link(label=label)
-            sp.section().add(struklink)
+        #
+        names = ['a', 'b', 'c']
+        
+        for name, v in zip(names, base):
+            doc.add(self.createLatticeVectorDoc(name, v))
 
-        # cubic, mononclinic etc
-        xtalsystem = atomicstructure.sg.crystal_system.lower()
-        xtalsystemlink = lc.link(label=xtalsystem)
-        sp.section().add(xtalsystemlink)
+        return doc
+    
+    
+    def createLatticeVectorDoc(self, name, vec):
+        splitter = lc.splitter(Class='lattice-vector')
+        namesec = splitter.section()
+        valuesec = splitter.section()
+        editsec = splitter.section(Class='editlink-container')
+        
+        namep = namesec.paragraph(text=[name, '='], Class='label')
+        
+        vp = valuesec.paragraph(text=[str(vec)], Class='editable')
+        vi = FormTextField(hidden=True, value=str(vec)); valuesec.add(vi)
 
-        # sg
-        sg = atomicstructure.sg
-        sglink = lc.link(label=sg.short_name)
-        sp.section().add(sglink)
+        vi.onblur = [
+            select(element=vp).show(),
+            select(element=vi).hide(),
+            ]
+        getnewvalue = select(element=vi).getAttr('value')
+        kwds = {name: getnewvalue}
+        vi.onchange = [
+            load(
+                actor=self.actor, routine='changeLattice%s'%name,
+                id = self.id,
+                **kwds),
+            select(element=vp).show(),
+            select(element=vp).setAttr(value=getnewvalue),
+            select(element=vi).hide(),
+            ]
 
-        # chemical formula
-        chemical_formula = record.chemical_formula or atomicstructure.getChemicalFormula()
-        label = chemical_formula
-        tip = '\n'.join(["%s %s" % (a.symbol, a.xyz) for a in atomicstructure])
-        cflink = lc.link(label=label, tip=tip)
-        sp.section().add(cflink)
+        l = lc.link(label='edit'); editsec.add(l)
+        l.onclick = [
+            select(element=vp).hide(),
+            select(element=vi).show(),
+            select(element=vi).focus(),
+            ]
 
-        # edit link
-        domaccess = self.domaccess
-        if not domaccess.isReferred(self.id):
-            edit = select(id='main-display-area').replaceContent(
-                load(actor=self.actor, routine='editAtomicStructureForm',
-                     id=self.id)
-                )
-            editlink = lc.link(label='edit', onclick=edit)
-            doc.add(editlink)
+        return splitter
+    
+
+    def createAtomsDoc(self):
+        doc = lc.document(title='Atoms', Class='atomicstructure-info-subsection')
+
+        atomicstructure = self.atomicstructure
+        
+        splitter = doc.splitter()
+        left = splitter.section()
+        right = splitter.section(Class='editatoms-container')
+        #
+        atoms = []
+        for atomrecord in atomicstructure.iterAtomRecords():
+            t = '%s: %s' % (atomrecord.element, atomrecord.xyz)
+            atoms.append(t)
+            continue
+        atoms = '\n'.join(atoms)
+
+        #
+        ta = FormTextArea(readonly=True, value=atoms); left.add(ta)
+
+        #
+        editlink = lc.link(label='edit'); 
+        right.document().add(editlink)
+
+        expandviewlink = lc.link(label='larger view'); 
+        right.document().add(expandviewlink)
         return doc
 
 
@@ -140,7 +182,7 @@ class Factory(object):
         label = self.getAtomicStructureLabel()
         p = left.paragraph(text=[label], Class='editable')
 
-        i = FormTextField(hidden=True, value=atomicstructure.description); left.add(i)
+        i = FormTextField(hidden=True, value=atomicstructure.short_description); left.add(i)
 
         i.onblur = [
             select(element=p).show(),
@@ -165,8 +207,7 @@ class Factory(object):
 
     def getAtomicStructureLabel(self):
         atomicstructure = self.atomicstructure
-        record = self.record
-        return atomicstructure.description or record.id
+        return atomicstructure.short_description or atomicstructure.id
         
 
 
