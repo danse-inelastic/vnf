@@ -173,14 +173,19 @@ class Actor(base):
 
     def showOverview(self, director):
         id = self.inventory.id
-        domaccess = director.retrieveDOMAccessor('atomicstructure')
+        domaccess = self._domaccess(director)
+        
         if not domaccess.isConstructued(id=id):
+            # structure not ready
             doc = self.editAtomicStructureForm(director)
+            
         else:
+            # structure good
             doc = director.retrieveVisual(
-                                          'atomicstructure/overview',
-                                          director  = director,
-                                          id        = self.inventory.id)
+                'atomicstructure/overview',
+                director  = director,
+                id        = self.inventory.id)
+            
         return select(id='main-display-area').replaceContent(doc)
 
 

@@ -70,6 +70,17 @@ class Accessor(base):
         return True
 
 
+    def isEditable(self, id):
+        'check if a structure is still editable'
+        return self.isReferred(id)
+
+
+    def isReferred(self, id):
+        'check if this structure is referred by someone'
+        r = self.getAtomicStructureRecord(id)
+        return r.globalpointer is not None
+
+
     def isTransient(self, id=None, record=None):
         if record:
             return super(Accessor, self).isTransient(record)
