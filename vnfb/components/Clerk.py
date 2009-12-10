@@ -75,6 +75,10 @@ class Clerk(ClerkBase, base):
         '''retrieve user configuration specified by id'''
         return self._getEntry('QEConfiguration', id=id, where=where)
 
+    def getQETasks(self, id=None, where=None):
+        '''retrieve task specified by id'''
+        return self._getEntry('QETask', id=id, where=where)
+
     # Temp solution
     def getServers(self, id=None, where=None):
         '''retrieve server data specified by id'''
