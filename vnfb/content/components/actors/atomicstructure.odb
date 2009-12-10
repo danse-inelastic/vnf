@@ -171,7 +171,19 @@ class Actor(base):
         return self.showListView(director)
 
 
+    def debug_overview(self, director):
+        p       = lc.page()
+        doc     = p.document(id='main-display-area')
+        doc.add(self.createOverview(director))
+        return p
+
+
     def showOverview(self, director):
+        doc = self.createOverview(director)
+        return select(id='main-display-area').replaceContent(doc)
+    
+        
+    def createOverview(self, director):
         id = self.inventory.id
         domaccess = self._domaccess(director)
         
@@ -186,7 +198,7 @@ class Actor(base):
                 director  = director,
                 id        = self.inventory.id)
             
-        return select(id='main-display-area').replaceContent(doc)
+        return doc
 
 
     def _domaccess(self, director):

@@ -101,13 +101,18 @@ class Factory(object):
             sp.section().add(struklink)
 
         # cubic, mononclinic etc
-        xtalsystem = atomicstructure.sg.crystal_system.lower()
-        xtalsystemlink = lc.link(label=xtalsystem)
+        xtalsystem = atomicstructure.crystal_system.capitalize()
+        centering = atomicstructure.centering_description
+        tip = '<p>Crystal system: %s</p><p>Centering: %s</p>' % (xtalsystem, centering)
+        label = '%s, %s' % (xtalsystem, centering)
+        xtalsystemlink = lc.link(label=xtalsystem, tip=tip)
         sp.section().add(xtalsystemlink)
 
         # sg
         sg = atomicstructure.sg
-        sglink = lc.link(label=sg.short_name)
+        sgname = sg.pdb_name
+        tip = 'Space group: %s' % sgname
+        sglink = lc.link(label=sgname, tip=tip)
         sp.section().add(sglink)
 
         # chemical formula
@@ -124,7 +129,8 @@ class Factory(object):
                 load(actor=self.actor, routine='editAtomicStructureForm',
                      id=self.id)
                 )
-            editlink = lc.link(label='edit', onclick=edit)
+            tip = 'click me to edit this atomic structure'
+            editlink = lc.link(label='edit', onclick=edit, tip=tip)
             doc.add(editlink)
         return doc
 
@@ -134,13 +140,14 @@ class Factory(object):
         
         doc = lc.document(title='Name', Class='atomicstructure-info-subsection')
         splitter = doc.splitter()
-        left = splitter.section()
+        left = splitter.section(id='atomicstructure-name-field')
         right = splitter.section(Class='editlink-container')
 
         label = self.getAtomicStructureLabel()
         p = left.paragraph(text=[label], Class='editable')
 
-        i = FormTextField(hidden=True, value=atomicstructure.description); left.add(i)
+        i = FormTextField(hidden=True, value=atomicstructure.description)
+        left.add(i)
 
         i.onblur = [
             select(element=p).show(),
