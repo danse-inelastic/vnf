@@ -35,7 +35,7 @@ class QETask(QETable, WithID):
     name = "qetasks"
     import dsaw.db
 
-    simulationid    = pyre.db.varchar(name="simulationid", length=8)
+    simulationid    = dsaw.db.varchar(name="simulationid", length=8)
     simulationid.constraints = 'REFERENCES qesimulations (id)'    # Important
     simulationid.meta['tip'] = "simulationid"
 
@@ -60,6 +60,10 @@ class QETask(QETable, WithID):
     # ?
     label       = dsaw.db.varchar(name="label", length=128, default='Favorite')
     label.meta['tip'] = "Label associated with the simulation"
+
+    # Change type
+    matter = dsaw.db.varchar(name="matter", length=128, default='')
+    matter.meta['tip']  = "STUB"
 
 
 # Default records

@@ -80,6 +80,7 @@ other = [
 # If error is returned, change order in the list
 qetables    = [
                'QESimulation',
+               'QETask',
                'QEJob',
                'QEConfiguration',
               ]
