@@ -63,7 +63,6 @@ class Actor(base):
         self._showActions(sC)
         splitter.section(id="input-error-area")
 
-
         sB          = splitter.section()
 
         table       = lc.grid(Class="qe-table")
@@ -72,6 +71,10 @@ class Actor(base):
         self._showSettings(director, table)
         self._showServer(director, table)
         self._showResults(director, table)
+
+        sC          = splitter.section()
+        sC.add(Paragraph(text="Simulation Tasks"))
+
 #        self._showTasks(director, sB, table, sim.type)
 #        self._showSubmit(sB)
         

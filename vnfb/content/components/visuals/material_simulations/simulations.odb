@@ -12,6 +12,7 @@
 #
 
 import luban.content as lc
+from vnfb.utils.qeutils import addRow
 
 from luban.content import load, select
 
@@ -20,120 +21,43 @@ def visual(director):
     splitter    = doc.splitter(orientation="vertical")
     sA          = splitter.section()
     sA.add(viewIndicator(director))
-    sB          = splitter.section(id="simulations-list")
-    
-    sB.add(lc.link(label="BvK", onclick=load(actor="material_simulations/bvk/editor")))
-    sB.add(lc.link(label="MCViNE", onclick=load(actor="materialsimulation")))
-    sB.add(lc.link(label="VASP", onclick=load(actor="material_simulations/vasp-rawinput")))
-    sB.add(lc.link(label="GULP", onclick=load(actor="material_simulations/gulpsimulation", routine='new')))
-    sB.add(lc.link(label="Quantum Espresso", onclick=load(actor="material_simulations/espresso/sim-create")))
 
+    sB          = splitter.section()
+    table       = lc.grid(Class="qe-table")
+    sB.add(table)
+
+    showSimulations(table)
+    
     return doc
+
+
+def showSimulations(table):
+    """
+    Shows simulation packages as "Package Name":"Description" table
+    """
+    packages   = []
+    packages.append((lc.link(label="BvK", onclick=load(actor="material_simulations/bvk/editor")),
+                    ""))
+    packages.append((lc.link(label="MCViNE", onclick=load(actor="materialsimulation")),
+                    ""))
+    packages.append((lc.link(label="VASP", onclick=load(actor="material_simulations/vasp-rawinput")),
+                    ""))
+    packages.append((lc.link(label="GULP", onclick=load(actor="material_simulations/gulpsimulation", routine='new')),
+                    ""))
+    packages.append((lc.link(label="Quantum Espresso", onclick=load(actor="material_simulations/espresso/sim-create")),
+                    "Electronic-structure calculations and materials modeling using density-functional theory, plane waves, and pseudopotentials"))
+
+    for p in packages:
+        addRow(table, p[0], p[1])
 
 
 def viewIndicator(director):
     path = []
     path.append(('Simulations ', load(actor='materialsimulation')))
-
-    label = 'Create New Simulation'
-    path.append(label)
+    path.append('Create New Simulation')
+    
     return director.retrieveVisual('view-indicator', path=path)
 
-
-#    form = doc.form(id='create-structure-form', title='Create a new atomic structure')
-#    form.add(labeldoc())
-#    form.add(latticedoc())
-#    if not id: atomids = []
-#    else:
-#        domaccess = director.retrieveDOMAccessor('atomicstructure')
-#        s = domaccess.getAtomicStructure(id)
-#        atomids = s.iterAtomIDs()
-#    form.add(atomsdoc(director, id, atomids))
-#    form.add(addanatomlink(id))
-#    form.add(symmdoc())
-#
-#    sp = lc.splitter(); form.add(sp)
-#
-#    submit = FormSubmitButton(label='Save')
-#    sp.section().add(submit)
-#
-#    cancel = lc.link(
-#        label='cancel',
-#        onclick=load(
-#          actor='atomicstructure/create-structure-form',
-#          routine='cancel',
-#          id=id
-#        ))
-#    sp.section().add(cancel)
-#
-#    form.onsubmit = select(element=form).submit(
-#        actor='atomicstructure/create-structure-form',
-#        routine = 'process',
-#        id = id,
-#        )
-
-
-#def labeldoc():
-#    doc = lc.document()
-#    labelfield = FormTextField(
-#        label='name', name='short_description', id='atomicstructure-label-input')
-#    doc.add(labelfield)
-#    return doc
-#
-#
-#def latticedoc():
-#    doc = lc.document(id='create-lattice-form', title='Lattice')
-#
-#    def field(var, **kwds):
-#        return FormTextField(label=var, name=var, **kwds)
-#
-#    edoc = doc.document(id='lattice-inputs-error', Class='error', hidden=True)
-#
-#    sp1 = doc.splitter()
-#    sp1.section().add(field('a', value=1))
-#    sp1.section().add(field('b', value=1))
-#    sp1.section().add(field('c', value=1))
-#
-#    sp2 = doc.splitter()
-#    sp2.section().add(field('alpha', value=90))
-#    sp2.section().add(field('beta', value=90))
-#    sp2.section().add(field('gamma', value=90))
-#
-#    return doc
-#
-#
-#def addanatomlink(structid):
-#    return lc.link(
-#        label='add an atom',
-#        onclick=load(
-#            actor='atomicstructure/create-structure-form',
-#            routine='addAtom',
-#            id=structid
-#            ),
-#        )
-#
-#def atomsdoc(director, id, atomids):
-#    doc = lc.document(id='add-atoms-form', title='Atoms')
-#    doc.document(id='atomicstructure-atoms-error', Class='error', hidden=1)
-#
-#    def atom(atomid):
-#        return director.retrieveVisual('atomicstructure/atom-input', structid=id, atomid=atomid)
-#
-#    count = 0
-#    for atomid in atomids:
-#        doc.add(atom(atomid))
-#        count += 1
-#        continue
-#
-#    return doc
-#
-#
-#def symmdoc():
-#    doc = lc.document(title='Symmetry')
-#    doc.document(id='atomicstructure-spacegroup-error', Class='error', hidden=1)
-#    sp = doc.splitter()
-#    sp.section().add(FormTextField(label='number', name='spacegroupno'))
-#    return doc
 
 
 __date__ = "$Nov 20, 2009 3:11:39 PM$"
