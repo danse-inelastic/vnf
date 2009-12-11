@@ -39,10 +39,12 @@ border:solid 1px #ccc;
 }
 .collapsable.luban-document > .luban-document-title {
     -moz-border-radius: 0.8em 0.8em 0 0;
-    -webkit-border-top-left-radius: 0.8em;
-    -webkit-border-top-right-radius: 0.8em;
+    -webkit-border-top-left-radius: 1.2em;
+    -webkit-border-top-right-radius: 1.2em;
     -webkit-border-bottom-left-radius: 0;
     -webkit-border-bottom-right-radius: 0;
+    font-size: 0.73em;
+    background-color: lightGrey;
 }
 .collapsable.luban-document > .luban-document-body {
     -moz-border-radius-bottomleft:1em;
