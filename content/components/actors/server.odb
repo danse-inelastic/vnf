@@ -11,6 +11,99 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
+from luban.content import select
+from luban.content import load
+
+import luban.content as lc
+from luban.components.AuthorizedActor import AuthorizedActor as base
+
+
+class Actor(base):
+
+    class Inventory(base.Inventory):
+        import pyre.inventory
+        id          = pyre.inventory.str('id', default='')          # Server Id
+
+    def default(self, director):
+        return select(id='main-display-area').replaceContent(self.content(director))
+
+
+    def content(self, director):
+        server       = director.clerk.getServers(id=self.id)
+
+        def viewIndicator(director):
+            path = []
+            path.append(('Servers ', load(actor='materialsimulation')))
+            path.append('%s' % self.id)
+
+            return director.retrieveVisual('view-indicator', path=path)
+
+        doc         = lc.document(title="Computing Server: %s" % server.address)
+#        splitter    = doc.splitter(orientation="vertical")
+#        sA          = splitter.section()
+#        sA.add(viewIndicator(director))
+#        sC          = splitter.section()
+#        self.showLinks(sC)
+#
+#        sB          = splitter.section()
+#        self.showConfig(sB, self._input)
+
+        return doc
+
+
+#    def showLinks(self, document):  #, inputs
+#        document.add(lc.button(label="Edit",
+#                              onclick = load(actor='material_simulations/espresso/input-edit',
+#                                             id=self.id,
+#                                             configid=self.configid,
+#                                             type=self.type)))
+#        document.add(lc.button(label="Delete",
+#                              onclick = load(actor='material_simulations/espresso/input-delete',
+#                                             id=self.id,
+#                                             configid=self.configid,
+#                                             type=self.type)))
+#
+#        document.add(lc.document(Class="clear-both"))
+#
+#
+#    def showConfig(self, document, input):
+#        table   = lc.grid()
+#        document.add(table)
+#
+#        addRow(table, 'File Name: ', input.filename)
+#        addRow(table, "Type: ", input.type)
+#        addRow(table, "Description: ", input.description)
+#        addRow(table, "Parser: ", input.parser)
+#        addRow(table, "Created: ", stamp2date(input.timeCreated))
+#        addRow(table, "Last Modified: ", stamp2date(input.timeModified))
+#        addRow(table, "Text: ", input.text)
+#
+#
+#    def filename(self, input):
+#        if input:
+#            return input.filename
+#
+#        return ""
+
+
+    def __init__(self):
+        super(Actor, self).__init__(name='server')
+
+        return
+
+
+    def _configure(self):
+        super(Actor, self)._configure()
+        self.id             = self.inventory.id
+
+
+    def _init(self):
+        super(Actor, self)._init()
+        return
+
+def actor():
+    return Actor()
+
 
 __date__ = "$Dec 11, 2009 10:24:39 AM$"
 
