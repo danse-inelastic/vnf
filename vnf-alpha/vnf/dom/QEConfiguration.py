@@ -12,13 +12,15 @@
 #
 
 """
-Configuration - table that holds simulation configuration files
+QEConfiguration - table that holds task configuration records
 
 Notes:
      (None)
+
+TODO:
+    - Change name from QEConfiguration to QEInput? QEInput is too specific?
 """
 
-from vnf.dom.QESimulation import QESimulation
 from vnfb.components.QETable import QETable as base
 
 class QEConfiguration(base):
@@ -36,7 +38,7 @@ class QEConfiguration(base):
 
     # Later on can be tranformed to a separate File table
     filename    = dsaw.db.varchar(name="filename", length=1024, default='')
-    filename.meta['tip'] = "Filename assiciated with this configuration"
+    filename.meta['tip'] = "Filename associated with this configuration"
 
     # To separate table?
     parser    = dsaw.db.varchar(name="parser", length=1024, default='')
@@ -51,7 +53,9 @@ class QEConfiguration(base):
     timemodified = dsaw.db.varchar(name="timemodified", length=16, default='')
     timemodified.meta['tip'] = "timemodified"
 
-    # FIXME: Do I need text fields once I use get file from DDS location?
+    # FIXME:
+    # Question: Do I need text fields once I use get file from DDS location?
+    # Answer: Keep it just in case
     text = dsaw.db.varchar(name="text", length=8192, default='')
     text.meta['tip'] = "text"
 

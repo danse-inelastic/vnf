@@ -11,6 +11,18 @@
     display: block;
 }
 
+#action-edit a{
+    background-color: #33DD33; /* deep green */
+}
+
+#action-delete a{
+    background-color: #FF7700; /* light red */
+}
+
+#action-clone a {
+    background-color: #FFCC00; /* orange */
+}
+
 /* Vinil CSS*/
 
 /* overload the default behavior of luban for buttons */

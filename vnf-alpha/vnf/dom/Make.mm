@@ -86,6 +86,7 @@ EXPORT_PYTHON_MODULES = \
 	PolyCrystal.py \
         QEConfiguration.py \
         QEJob.py \
+        QESetting.py \
         QESimulation.py \
         QETask.py \
 	ReferenceManager.py \

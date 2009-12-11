@@ -83,6 +83,7 @@ qetables    = [
                'QETask',
                'QEJob',
                'QEConfiguration',
+               'QESetting'
               ]
 
 tablemodules = \

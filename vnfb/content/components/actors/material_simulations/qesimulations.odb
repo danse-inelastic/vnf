@@ -15,7 +15,7 @@ from luban.content import load
 from luban.components.AuthorizedActor import AuthorizedActor as base
 
 class Actor(base):
-    """ Actor to redirect material_simulations/espresso/sim-view"""
+    """ Actor to redirect to material_simulations/espresso/sim-view"""
 
     class Inventory(base.Inventory):
         import pyre.inventory

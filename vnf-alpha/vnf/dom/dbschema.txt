@@ -9,6 +9,8 @@ qetasks:
     -> qesimulations
 qeconfigurations:
     -> qetasks
+qesettings:
+    -> qesimulations
 qejobs:
     -> qetasks
     -> servers
