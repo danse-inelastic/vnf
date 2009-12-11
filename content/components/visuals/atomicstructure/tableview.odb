@@ -91,17 +91,17 @@ def createAtomicStructureTable(
     filter=None,
     label=None):
 
-    atomicstructures = domaccess.getAtomicStructures(
+    records = domaccess.getAtomicStructureRecords(
         order_by=order_by, reverse_order=reverse_order, slice=slice,
         filter=filter,
         label=label,
         )
 
     cols = columns
-    args = atomicstructures, cols, director
+    args = records, cols, director
     thetable = director.retrieveVisual(
         'atomicstructure/table',
-        atomicstructures = atomicstructures,
+        atomicstructures = records,
         cols = cols,
         director = director)
     thetable.oncellchanged = select(element=thetable).notify(

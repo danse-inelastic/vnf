@@ -101,7 +101,7 @@ class Accessor(base):
         return q.alias('tocount').count().execute().fetchone()[0]
     
 
-    def getAtomicStructures(
+    def getAtomicStructureIDs(
         self,
         filter=None, order_by=None, reverse_order=None, slice=None,
         label=None,
@@ -125,8 +125,19 @@ class Accessor(base):
         
         if reverse_order:
             ret.reverse()
-            
-        return [self.getAtomicStructure(i.id) for i in ret]
+        return [i.id for i in ret]
+
+
+    def getAtomicStructureRecords(
+        self,
+        filter=None, order_by=None, reverse_order=None, slice=None,
+        label=None,
+        ):
+        ids = self.getAtomicStructureIDs(
+            filter=filter, order_by=order_by, reverse_order=reverse_order, slice=slice,
+            label=label,
+            )
+        return map(self.getAtomicStructureRecord, ids)
 
 
     def makeQuery(self, filter=None, label=None):
