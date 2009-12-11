@@ -18,7 +18,7 @@
 }
 /* "name" section */
 #atomicstructure-name-container {
-    width:50%;
+    width:20em;
     border-right:dotted 2px grey;
 }
 #atomicstructure-name-field {

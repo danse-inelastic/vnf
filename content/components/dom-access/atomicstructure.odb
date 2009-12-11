@@ -60,6 +60,13 @@ class Accessor(base):
         return db.query(StructureTable).filter_by(id=id).one()
 
 
+    def setDescription(self, id, description):
+        record = self.getAtomicStructureRecord(id)
+        record.short_description = description
+        self.db.updateRecord(record)
+        return
+
+
     def isConstructued(self, id):
         'check if a structure is constructed and ready to be used'
         s = self.getAtomicStructure(id)
