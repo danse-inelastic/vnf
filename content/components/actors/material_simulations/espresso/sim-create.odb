@@ -13,6 +13,7 @@
 
 
 from vnfb.utils.qeconst import SIMULATIONS
+from vnfb.utils.orderedDict import OrderedDict
 from vnf.dom.QESimulation import QESimulation
 
 from luban.content import select
@@ -39,9 +40,12 @@ class Actor(base):
         simtype     = pyre.inventory.str('simtype', default='')
         description = pyre.inventory.str('description', default='')
         label       = pyre.inventory.str('label', default='')
+        serverid    = pyre.inventory.str('serverid', default='')
+        matter      = pyre.inventory.str('matter', default='')
 
     def default(self, director):
         return select(id='main-display-area').replaceContent(self.content(director))
+
 
     def content(self, director):
         def viewIndicator(director):
@@ -56,6 +60,10 @@ class Actor(base):
             
             return director.retrieveVisual('view-indicator', path=path)
 
+        # Set servers first
+        self._setServers(director)
+        serversList = self._serversList()
+
         doc         = lc.document(title   = "Create New Simulation")
         splitter    = doc.splitter(orientation="vertical")
         sA          = splitter.section()
@@ -69,6 +77,13 @@ class Actor(base):
                                     entries=enumerate(SIMULATIONS))
         description = form.text(name="description", label='Description', value=self.description)   # Make as textarea
         label       = form.text(name="label", label='Label', value=self.label)
+        serverid    = form.selector(name="serverid",
+                                    label='Server',
+                                    entries=enumerate(serversList))
+        matter      = form.selector(name="matter",
+                                    label='Atomic Structure',
+                                    entries=enumerate(["STUB",]))
+
         submit      = form.submitbutton(label="Create New Simulation")
         form.onsubmit   = select(element=form).submit(actor = 'material_simulations/espresso/sim-create',
                                                       routine = 'createRecord')
@@ -84,12 +99,15 @@ class Actor(base):
         """Create simulation record"""
         self._verify()
         simtype = SIMULATIONS[int(self.simtype)]
+        self._setServers(director)
 
         params  = {"sname":         self.sname,
                    "type":          simtype,
                    "creator":       director.sentry.username,
                    "short_description":   self.description,
-                   "label":         self.label}
+                   "label":         self.label,
+                   "serverid":      self._serverId(self.serverid),
+                   "matter":        self.matter}
         sim     = QESimulation()
         sim.setDirector(director)
         sim.createRecord(params)
@@ -97,7 +115,30 @@ class Actor(base):
         return load(actor='material_simulations/espresso/sim-view', id = sim.id)  # Redirection to the page
 
 
+    def _setServers(self, director):
+        "Set servers from the database"
+        servers     = director.clerk.getServers()
+        self._servers = OrderedDict()
+        for s in servers:
+            # I suppose that short_description serves as a name
+            # {id: short_description} pair
+            self._servers[s.id]    = s.short_description
 
+        return self._servers
+
+
+    def _serversList(self):
+        "Returns list of server names"
+        return self._servers.values()
+
+
+    def _serverId(self, i):
+        "Return server's id"
+        keys    = self._servers.keys()
+        #if len(keys) < i + 1 and i >= 0:
+        #    return None
+        # Check if i-th element is present
+        return keys[int(i)]
 
     # stub
     def _verify(self):
@@ -124,6 +165,8 @@ class Actor(base):
         self.simtype     = self.inventory.simtype
         self.description = self.inventory.description
         self.label       = self.inventory.label
+        self.serverid    = self.inventory.serverid
+        self.matter      = self.inventory.matter
 
         return
 
