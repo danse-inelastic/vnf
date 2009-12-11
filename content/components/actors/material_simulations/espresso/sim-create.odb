@@ -123,7 +123,7 @@ class Actor(base):
         for s in servers:
             # I suppose that short_description serves as a name
             # {id: short_description} pair
-            self._servers[s.id]    = s.short_description
+            self._servers[s.id]    = s.address
 
         return self._servers
 

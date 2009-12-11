@@ -22,55 +22,78 @@ class QEServer:
     def __init__(self, director):
         self._director  = director
         self._clerk     = director.clerk
-        self._type      = "settings"
+ 
+    def getLink(self, id):      # simulation id
+        server = None
+        sim     = self._director.clerk.getQESimulations(id = id )
+        if sim:
+            server = self._director.clerk.getServers(id = sim.serverid )
 
-    def getServer(self, id):      # simulation id
-        settings    = self._clerk.getQEConfigurations(where="simulationid='%s' AND type='%s'" % (id, self._type))
-        servername  = self._serverName(settings)
+        link = Paragraph(text="None")
 
-        if servername   != '':  
-            text    = Link(label=servername, Class="action-link",
-                           onclick=load(actor="materialsimulation"))
-#                           routine="view",
-#                           sname=servername))
-        else:
-            text    = Paragraph(text="None")
+        if server:
+            link = Link(label=server.address, Class="action-link",
+                        onclick=load(actor      = "server",
+                                     id         = server.id)
+                        )
 
-        return text
+        return link
 
-    def _serverName(self, settings):
-        """Get the server name"""
-        # settings is list of Configuration tables
-        if len(settings) == 0:
-            return ''
 
-        import ConfigParser
-        import StringIO
+if __name__ == "__main__":
+    pass
 
-        if settings[0]:
-            # check if settings[0] isinstanceof Configuration
-            config  = settings[0].text  
 
-            """
-            Example of config:
-            config  = "
-            [server]
-            server-name = foxtrot.danse.us
-            "
-            """
-            if config:  # Implies that it has sections already
-                fp  = StringIO.StringIO(config)
-                parser  = ConfigParser.ConfigParser()
-                parser.readfp(fp)
-                name    = parser.get("server", "server-name")
+__date__ = "$Nov 11, 2009 1:21:52 PM$"
 
-                if self._isServerName(name):
-                    return name
 
-        return ''
-                
-    def _isServerName(self, name):
-        return True
+#    def getServer(self, id):      # simulation id
+#        settings    = self._clerk.getQEConfigurations(where="simulationid='%s' AND type='%s'" % (id, self._type))
+#        servername  = self._serverName(settings)
+#
+#        if servername   != '':  
+#            text    = Link(label=servername, Class="action-link",
+#                           onclick=load(actor="materialsimulation"))
+##                           routine="view",
+##                           sname=servername))
+#        else:
+#            text    = Paragraph(text="None")
+#
+#        return text
+#
+#    def _serverName(self, settings):
+#        """Get the server name"""
+#        # settings is list of Configuration tables
+#        if len(settings) == 0:
+#            return ''
+#
+#        import ConfigParser
+#        import StringIO
+#
+#        if settings[0]:
+#            # check if settings[0] isinstanceof Configuration
+#            config  = settings[0].text  
+#
+#            """
+#            Example of config:
+#            config  = "
+#            [server]
+#            server-name = foxtrot.danse.us
+#            "
+#            """
+#            if config:  # Implies that it has sections already
+#                fp  = StringIO.StringIO(config)
+#                parser  = ConfigParser.ConfigParser()
+#                parser.readfp(fp)
+#                name    = parser.get("server", "server-name")
+#
+#                if self._isServerName(name):
+#                    return name
+#
+#        return ''
+#                
+#    def _isServerName(self, name):
+#        return True
     
 #        if name == '':
 #            return False
@@ -83,13 +106,3 @@ class QEServer:
 #                    return True
 #
 #        return False
-
-
-if __name__ == "__main__":
-    params   = QEServer(None)
-    #params.serverIsSet(None)
-
-
-__date__ = "$Nov 11, 2009 1:21:52 PM$"
-
-

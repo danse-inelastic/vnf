@@ -70,7 +70,7 @@ class Actor(base):
         sB.add(table)
         self.showSim(table, sim)
         self.showSettings(director, table)
-#        self.showServer(director, table)
+        self.showServer(director, table)
 #        self.showJobs(director, table)
 #        self.showResults(director, table)
 #        self.showInputFiles(director, sB, table, sim.type)
@@ -101,7 +101,7 @@ class Actor(base):
             addRow(table, 'Type: ', sim.type)
             addRow(table, 'Package: ', sim.package)
             addRow(table, 'Label: ', sim.label)
-            addRow(table, 'Created: ', stamp2date(sim.date))
+            addRow(table, 'Time Created: ', stamp2date(sim.date))
 
 
     def showSettings(self, director, table):
@@ -124,9 +124,9 @@ class Actor(base):
 
     def showServer(self, director, table):
         server  = QEServer(director)
-        link    = server.getServer(self.id)
+        link    = server.getLink(self.id)
 
-        addRow(table, "Default Server: ", link)
+        addRow(table, "Server: ", link)
 
 
     def showJobs(self, director, table):
