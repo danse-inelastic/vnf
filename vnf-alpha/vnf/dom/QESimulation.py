@@ -42,7 +42,7 @@ class QESimulation(QETable, WithID):
     name = "qesimulations"
     import dsaw.db
 
-    serverid    = dsaw.db.varchar(name="serverid", length=8)
+    serverid    = dsaw.db.varchar(name="serverid", length=16)
     serverid.constraints = 'REFERENCES servers (id)'    # Important
     serverid.meta['tip'] = "Default server for the simulation"
 
@@ -70,7 +70,7 @@ class QESimulation(QETable, WithID):
     timemodified = dsaw.db.varchar(name="timemodified", length=16, default='')
     timemodified.meta['tip'] = "timemodified"
 
-    label       = dsaw.db.varchar(name="label", length=128, default='Favorite')
+    label       = dsaw.db.varchar(name="label", length=128, default='')
     label.meta['tip'] = "Label associated with the simulation"
 
     # Change type

@@ -64,14 +64,14 @@ class Actor(base):
         splitter.section(id="input-error-area")
 
 
-        sB          = splitter.section()
-        table   = self.showSim(sB, sim)
-        self.showSettings(director, table)
-        self.showServer(director, table)
-        self.showJobs(director, table)
-        self.showResults(director, table)
-        self.showInputFiles(director, sB, table, sim.type)
-        self.showSubmit(sB)
+#        sB          = splitter.section()
+#        table   = self.showSim(sB, sim)
+#        self.showSettings(director, table)
+#        self.showServer(director, table)
+#        self.showJobs(director, table)
+#        self.showResults(director, table)
+#        self.showInputFiles(director, sB, table, sim.type)
+#        self.showSubmit(sB)
         
         return doc
 
