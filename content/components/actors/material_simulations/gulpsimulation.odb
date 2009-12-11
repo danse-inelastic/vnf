@@ -40,7 +40,7 @@ class Actor(base):
         return director.redirect(
             actor='material_simulations/forcefieldwizard',
             routine='start',
-            matter_id=self.inventory.structure_id,
+            structure_id=self.inventory.structure_id,
             id = '',
             )
 

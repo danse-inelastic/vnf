@@ -62,9 +62,9 @@ class Actor(base):
 
     def start(self, director):
         assert self.inventory.id == ''
+        
         domaccess = director.retrieveDOMAccessor('atomicstructure')
         structure = domaccess.getAtomicStructure('48QWPK9')
-        #matter = self._getMatter(director)
         structurelabel = structure.short_description or structure.chemical_formula or structure.id
         self.inventory.structure_id = structure.id
         
@@ -73,8 +73,8 @@ class Actor(base):
 
         link = Link(label='back to Matter\ %s' % structurelabel)
         link.onclick = load(
-            actor='matter', routine='showMaterialView',
-            id=matter.id)
+            actor='atomicstructure', routine='editAtomicStructureForm',
+            id=structure.id)
         wizard.add(link)
         
         form = self.startform(director)
@@ -87,18 +87,20 @@ class Actor(base):
         id = self.inventory.id
         assert id
 
-        simulation = self._getSimulation(director)
-        matter = simulation.matter.dereference(director.clerk.db)
-        self.inventory.matter_id = matter.id
+        domaccess = director.retrieveDOMAccessor("materialsimulation")
+        gulpsim = domaccess.getMaterialSimulation("gulpsimulations",id)
         
-        matterlabel = matter.short_description or matter.chemical_formula or matter.id
-        title = 'Simulation\ %s: Forcefield simulation of Matter\ %s' % (id, matterlabel)
+        structure = gulpsim.structure.dereference(director.clerk.db)
+        self.inventory.structure_id = structure.id
+        
+        structurelabel = structure.short_description or structure.chemical_formula or structure.id
+        title = 'Simulation\ %s: Forcefield simulation of Matter\ %s' % (id, structurelabel)
         wizard = Document(id='forcefieldwizard-start', title=title)
 
         link = Link(label='back to Matter\ %s' % matterlabel)
         link.onclick = load(
-            actor='matter', routine='showMaterialView',
-            id=matter.id, type=matter.name)
+            actor='atomicstructure', routine='editAtomicStructureForm',
+            id=structure.id)
         wizard.add(link)
         
         form = self.startform(director)
@@ -251,6 +253,7 @@ class Actor(base):
 
     
     def _getSimulation(self, director):
+
         return director.clerk.getRecordByID(GulpSimulation, self.inventory.id)
     
 

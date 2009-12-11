@@ -81,7 +81,7 @@ class Accessor(base):
 
 
     def makeQuery(self, table, filter=None, label=None):
-        'craete a uery for a material simulation table with given filter'
+        'craete a query for a material simulation table with given filter'
 
         db = self.db
         
