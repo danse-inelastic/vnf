@@ -23,14 +23,14 @@ class Accessor(base):
         return
 
 
-    def getDispersions(self, matter):
+    def getDispersions(self, atomicstructure):
         db = self.db
-        return matter.getReferences(db, PhononDispersion, 'matter')
+        return atomicstructure.getReferences(db, PhononDispersion, 'matter')
 
 
-    def getDOSes(self, matter):
+    def getDOSes(self, atomicstructure):
         db = self.db
-        return matter.getReferences(db, PhononDOS, 'matter')
+        return atomicstructure.getReferences(db, PhononDOS, 'matter')
 
 
 
