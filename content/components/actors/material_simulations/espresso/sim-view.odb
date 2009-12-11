@@ -60,7 +60,7 @@ class Actor(base):
         sA.add(viewIndicator(director))
         
         sC          = splitter.section()
-        self.showActions(sC)
+        self._showActions(sC)
         splitter.section(id="input-error-area")
 
 
@@ -68,17 +68,19 @@ class Actor(base):
 
         table       = lc.grid(Class="qe-table")
         sB.add(table)
-        self.showSim(table, sim)
-        self.showSettings(director, table)
-        self.showServer(director, table)
-#        self.showJobs(director, table)
-#        self.showResults(director, table)
-#        self.showInputFiles(director, sB, table, sim.type)
-#        self.showSubmit(sB)
+        self._showSimulationInfo(table, sim)
+        self._showSettings(director, table)
+        self._showServer(director, table)
+        self._showResults(director, table)
+#        self._showTasks(director, sB, table, sim.type)
+#        self._showSubmit(sB)
         
         return doc
 
-    def showActions(self, document):
+    def _showActions(self, document):
+        document.add(lc.button(label="Refresh",
+                              onclick = load(actor='material_simulations/espresso/sim-view',
+                              id=self.id)))
         document.add(lc.button(label="Edit",
                                id="action-edit",
                               onclick = load(actor='material_simulations/espresso/sim-edit',
@@ -94,7 +96,7 @@ class Actor(base):
         document.add(lc.document(Class="clear-both"))
 
 
-    def showSim(self, table, sim):
+    def _showSimulationInfo(self, table, sim):
         """Shows simulation data"""
         if sim: # ?
             addRow(table, 'Description: ', sim.short_description)
@@ -104,14 +106,43 @@ class Actor(base):
             addRow(table, 'Time Created: ', stamp2date(sim.date))
 
 
-    def showSettings(self, director, table):
+    def _showSettings(self, director, table):
         params  = QEParams(director)
         link    = params.getLink(self.id)
 
         addRow(table, "Simulation Settings: ", link)
 
 
-    def showInputFiles(self, director, document, table, type):
+    def _showServer(self, director, table):
+        server  = QEServer(director)
+        link    = server.getLink(self.id)
+
+        addRow(table, "Server: ", link)
+
+
+    def _showResults(self, director, table):
+        "STUB: Returns link to tar file for download. "
+        celldoc     = Document(Class="display-inline")
+        cell        = Document(id="results-link")   # Container for tar link
+        celldoc.add(cell)
+
+        tarlink     = Paragraph(text="None")
+        #link    = self._retrieveResults(director)
+
+        # Change actor
+        link    = Link(label="Check", Class="padding-left-20",
+                       onclick=load(actor       = "material_simulations/espresso/sim-view",
+                                    routine     = "retrieveStatus",
+                                    id          = self.id)
+                      )
+
+        cell.add(tarlink)
+        celldoc.add(link)
+
+        addRow(table, "Results: ", celldoc)
+
+
+    def _showTasks(self, director, document, table, type):
         """Shows chain of configuration files"""
         from vnfb.utils.qeutils import addRow
         addRow(table, 'Input Files: ', '')
@@ -122,33 +153,28 @@ class Actor(base):
         document.add(splitter.chain(self.id))
 
 
-    def showServer(self, director, table):
-        server  = QEServer(director)
-        link    = server.getLink(self.id)
 
-        addRow(table, "Server: ", link)
-
-
-    def showJobs(self, director, table):
-        """Adds list of job ids to the document"""
-
-        jobsdoc = Document(Class="display-inline")
-        joblist  = self.jobs(director)
-
-        if len(joblist) != 0:
-            for job in joblist:
-                jobsdoc.add(Link(label=job.id, Class="action-link",
-                                 onclick=load(actor="jobs/view",
-                                 routine="link", id=job.id))
-                            )
-        else:
-            jobsdoc.add(Paragraph(text="None", Class="action-link"))
-
-        addRow(table, "Jobs: ", jobsdoc)
+# Move to task
+#    def showJobs(self, director, table):
+#        """Adds list of job ids to the document"""
+#
+#        jobsdoc = Document(Class="display-inline")
+#        joblist  = self.jobs(director)
+#
+#        if len(joblist) != 0:
+#            for job in joblist:
+#                jobsdoc.add(Link(label=job.id, Class="action-link",
+#                                 onclick=load(actor="jobs/view",
+#                                 routine="link", id=job.id))
+#                            )
+#        else:
+#            jobsdoc.add(Paragraph(text="None", Class="action-link"))
+#
+#        addRow(table, "Jobs: ", jobsdoc)
 
 
-    # TODO: Should have "Submit to Queue" only
-    def showSubmit(self, document):
+    # TODO: Should be separate for each task
+    def _showSubmit(self, document):
         """Adds References"""
         document.add(Document(Class="clear-both"))   # Empty document
         refsdoc = Document(Class="display-block")
@@ -280,20 +306,6 @@ class Actor(base):
         dds     = director.dds
         from vnfb.utils.qescheduler import schedule
         schedule(inputs[0], director)
-
-
-    def showResults(self, director, table):
-        doc     = Document(id="results-link")
-#        link    = self._retrieveResults(director)
-        link    = Link(label="Get Results", Class="action-link",
-                       onclick=load(actor       = "material_simulations/espresso/sim-view",
-                                    routine     = "retrieveStatus",
-                                    id          = self.id)
-                      )
-
-        doc.add(link)
-
-        addRow(table, "Results: ", doc)
 
 
     def retrieveStatus(self, director):
