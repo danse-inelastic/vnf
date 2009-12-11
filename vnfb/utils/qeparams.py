@@ -22,10 +22,9 @@ class QEParams:
 
     def __init__(self, director):
         self._director  = director
-        self._type      = "settings"
 
     def getLink(self, id):      # simulation
-        settings  = self._director.clerk.getQEConfigurations(where="simulationid='%s' AND type='%s'" % (id, self._type))
+        settings  = self._director.clerk.getQESettings(where="simulationid='%s'" % id )
 
         link = Link(label="Add", Class="action-link",
                     onclick=load(actor      = "material_simulations/espresso/settings-add",

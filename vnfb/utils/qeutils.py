@@ -93,9 +93,9 @@ Adds row to the table
 """
 def addRow(table, param, value):
     row     = table.row()
-    cell    = row.cell()
+    cell    = row.cell(Class="qe-cell-param")
     cell.add(param)
-    cell    = row.cell()
+    cell    = row.cell(Class="qe-cell-value")
     cell.add(value)
 
 

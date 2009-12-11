@@ -66,7 +66,7 @@ class Actor(base):
 
         sB          = splitter.section()
 
-        table       = lc.grid()
+        table       = lc.grid(Class="qe-table")
         sB.add(table)
         self.showSim(table, sim)
         self.showSettings(director, table)

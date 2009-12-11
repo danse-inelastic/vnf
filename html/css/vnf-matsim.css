@@ -23,6 +23,32 @@
     background-color: #FFCC00; /* orange */
 }
 
+.qe-table {
+
+}
+
+.qe-table table{
+    border-collapse: collapse;
+    -moz-border-radius: 10px;
+    -webkit-border-radius: 10px;
+    width: 500px;
+    background-color: #f0f0f0;
+}
+
+.qe-table td {
+    border: 2px solid white;
+    padding: 3px 10px 3px 10px;
+}
+
+.qe-cell-param {
+    width: 170px;
+    font-weight: bold;
+}
+
+.qe-cell-value {
+
+}
+
 /* Vinil CSS*/
 
 /* overload the default behavior of luban for buttons */
