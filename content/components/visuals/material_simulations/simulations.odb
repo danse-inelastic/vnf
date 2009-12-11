@@ -25,7 +25,7 @@ def visual(director):
     sB.add(lc.link(label="BvK", onclick=load(actor="material_simulations/bvk/editor")))
     sB.add(lc.link(label="MCViNE", onclick=load(actor="materialsimulation")))
     sB.add(lc.link(label="VASP", onclick=load(actor="material_simulations/vasp-rawinput")))
-    sB.add(lc.link(label="GULP", onclick=load(actor="material_simulations/gulpsimulation")))
+    sB.add(lc.link(label="GULP", onclick=load(actor="material_simulations/gulpsimulation", routine='new')))
     sB.add(lc.link(label="Quantum Espresso", onclick=load(actor="material_simulations/espresso/sim-create")))
 
     return doc

@@ -29,9 +29,7 @@ class Actor(base):
         import pyre.inventory
 
         id = pyre.inventory.str('id')
-
-        matter_type = pyre.inventory.str('matter_type')
-        matter_id = pyre.inventory.str('matter_id')
+        structure_id = pyre.inventory.str('structure_id')
 
 
     def default(self, director):
@@ -42,8 +40,7 @@ class Actor(base):
         return director.redirect(
             actor='material_simulations/forcefieldwizard',
             routine='start',
-            matter_type=self.inventory.matter_type,
-            matter_id=self.inventory.matter_id,
+            matter_id=self.inventory.structure_id,
             id = '',
             )
 
@@ -164,7 +161,7 @@ class Actor(base):
     
 
 
-    def __init__(self, name='gulpsimulations'):
+    def __init__(self, name='gulpsimulation'):
         super(Actor, self).__init__(name)
         return
 

@@ -30,8 +30,7 @@ class Actor(base):
 
         id = pyre.inventory.str('id')
 
-        matter_type = pyre.inventory.str('matter_type')
-        matter_id = pyre.inventory.str('matter_id')
+        structure_id = pyre.inventory.str('structure_id')
 
         short_description = pyre.inventory.str('short_description', default = '' )
         short_description.meta['tip'] = 'A short description'
@@ -63,18 +62,19 @@ class Actor(base):
 
     def start(self, director):
         assert self.inventory.id == ''
-
-        matter = self._getMatter(director)
-        matterlabel = matter.short_description or matter.chemical_formula or matter.id
-        self.inventory.matter_id = matter.id
+        domaccess = director.retrieveDOMAccessor('atomicstructure')
+        structure = domaccess.getAtomicStructure('48QWPK9')
+        #matter = self._getMatter(director)
+        structurelabel = structure.short_description or structure.chemical_formula or structure.id
+        self.inventory.structure_id = structure.id
         
-        title = 'Forcefield simulation of %s' % (matterlabel,)
+        title = 'Forcefield simulation of %s' % (structurelabel,)
         wizard = Document(id='forcefieldwizard-start', title=title)
 
-        link = Link(label='back to Matter\ %s' % matterlabel)
+        link = Link(label='back to Matter\ %s' % structurelabel)
         link.onclick = load(
             actor='matter', routine='showMaterialView',
-            id=matter.id, type=matter.name)
+            id=matter.id)
         wizard.add(link)
         
         form = self.startform(director)
