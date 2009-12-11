@@ -50,9 +50,8 @@ def table(atomicstructures, cols, director):
 
     view = View(columns=columns, editable=True)
     
-    def getSelected(atomicstructure): return False
-    def getId(atomicstructure):
-        record = orm(atomicstructure)
+    def getSelected(record): return False
+    def getId(record):
         label = record.id
         link = Link(
             label = label,
@@ -62,16 +61,14 @@ def table(atomicstructures, cols, director):
                 )
             )
         return link
-    def getDescription(atomicstructure):
-        return atomicstructure.description
-    def getVisualize(atomicstructure):
+    def getDescription(record):
+        return record.short_description
+    def getVisualize(record):
         return 'not implemented'
-    def getCreated(atomicstructure):
-        record = orm(atomicstructure)
+    def getCreated(record):
         date = record.date
         return str(date)
-    def getChemical_formula(atomicstructure):
-        record = orm(atomicstructure)
+    def getChemical_formula(record):
         return record.chemical_formula
                 
     import operator
