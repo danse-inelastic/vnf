@@ -34,6 +34,7 @@ class QEServer:
         if server:
             link = Link(label=server.address, Class="action-link",
                         onclick=load(actor      = "server",
+                                     routine    = "view",
                                      id         = server.id)
                         )
 
