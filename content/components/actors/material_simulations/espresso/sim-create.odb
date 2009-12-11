@@ -106,8 +106,9 @@ class Actor(base):
                    "creator":       director.sentry.username,
                    "short_description":   self.description,
                    "label":         self.label,
-                   "serverid":      self._serverId(self.serverid),
-                   "matter":        self.matter}
+                   "serverid":      self._serverId(self.serverid)
+                   #"matter":        self.matter    # Doesn't work at this moment
+                   }
         sim     = QESimulation()
         sim.setDirector(director)
         sim.createRecord(params)

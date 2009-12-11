@@ -31,7 +31,7 @@ class Actor(base):
         id          = pyre.inventory.str('id', default='')          # Simulation Id
         filename    = pyre.inventory.str('filename', default='')
         description = pyre.inventory.str('description', default='') # Not used
-        servername  = pyre.inventory.str('servername', default='')
+        servername  = pyre.inventory.str('servername', default='')  # Remove
         numproc     = pyre.inventory.int('numproc', default=0)
         numnodes    = pyre.inventory.int('numnodes', default=0)
         procpernode = pyre.inventory.int('procpernode', default=0)

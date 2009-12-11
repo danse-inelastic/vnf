@@ -20,7 +20,7 @@ from vnfb.utils.qeparams import QEParams
 from vnfb.utils.qeserver import QEServer
 from vnfb.utils.qeconst import SIMCHAINS
 
-from luban.content.Splitter import Splitter
+#from luban.content.Splitter import Splitter
 
 from luban.content import select
 from luban.content.Paragraph import Paragraph
@@ -64,9 +64,12 @@ class Actor(base):
         splitter.section(id="input-error-area")
 
 
-#        sB          = splitter.section()
-#        table   = self.showSim(sB, sim)
-#        self.showSettings(director, table)
+        sB          = splitter.section()
+
+        table       = lc.grid()
+        sB.add(table)
+        self.showSim(table, sim)
+        self.showSettings(director, table)
 #        self.showServer(director, table)
 #        self.showJobs(director, table)
 #        self.showResults(director, table)
@@ -77,30 +80,35 @@ class Actor(base):
 
     def showActions(self, document):
         document.add(lc.button(label="Edit",
+                               id="action-edit",
                               onclick = load(actor='material_simulations/espresso/sim-edit',
                               id=self.id)))
         document.add(lc.button(label="Delete",
+                              id="action-delete",
                               onclick = load(actor='material_simulations/espresso/sim-delete',
                               id=self.id)))
         document.add(lc.button(label="Clone",
+                              id="action-clone",
                               onclick = load(actor='material_simulations/espresso/sim-clone',
                               id=self.id)))
         document.add(lc.document(Class="clear-both"))
 
 
-    def showSim(self, document, sim):
+    def showSim(self, table, sim):
         """Shows simulation data"""
         if sim: # ?
-            table   = lc.grid()
-            document.add(table)
-
             addRow(table, 'Description: ', sim.short_description)
             addRow(table, 'Type: ', sim.type)
             addRow(table, 'Package: ', sim.package)
             addRow(table, 'Label: ', sim.label)
             addRow(table, 'Created: ', stamp2date(sim.date))
 
-            return table
+
+    def showSettings(self, director, table):
+        params  = QEParams(director)
+        link    = params.getLink(self.id)
+
+        addRow(table, "Simulation Settings: ", link)
 
 
     def showInputFiles(self, director, document, table, type):
@@ -112,13 +120,6 @@ class Actor(base):
         splitter = QEChain(director, type)
 
         document.add(splitter.chain(self.id))
-
-
-    def showSettings(self, director, table):
-        params  = QEParams(director)
-        link    = params.getLink(self.id)
-
-        addRow(table, "Simulation Parameters: ", link)
 
 
     def showServer(self, director, table):
