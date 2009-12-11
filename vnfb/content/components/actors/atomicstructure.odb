@@ -25,6 +25,7 @@ class Actor(base):
         import pyre.inventory
 
         id = pyre.inventory.str('id')
+        description = pyre.inventory.str('description')
         
         formids = pyre.inventory.list('formids')
         viewid = pyre.inventory.str('viewid')
@@ -199,6 +200,14 @@ class Actor(base):
                 id        = self.inventory.id)
             
         return doc
+
+
+    def changeDescriptionAndUpdateAtomicStructureView(self, director):
+        id = self.inventory.id
+        description = self.inventory.description
+        domaccess = self._domaccess(director)
+        domaccess.setDescription(id, description)
+        return self.showOverview(director)
 
 
     def _domaccess(self, director):
