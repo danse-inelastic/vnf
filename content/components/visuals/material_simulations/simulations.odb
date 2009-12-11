@@ -45,7 +45,7 @@ def showSimulations(table):
     packages.append((lc.link(label="GULP", onclick=load(actor="material_simulations/gulpsimulation", routine='new')),
                     ""))
     packages.append((lc.link(label="Quantum Espresso", onclick=load(actor="material_simulations/espresso/sim-create")),
-                    "Electronic-structure calculations and materials modeling using density-functional theory, plane waves, and pseudopotentials"))
+                    "Open source package for electronic-structure calculations and materials modeling using density-functional theory, plane waves, and pseudopotentials"))
 
     for p in packages:
         addRow(table, p[0], p[1])

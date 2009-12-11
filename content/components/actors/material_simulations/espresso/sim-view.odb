@@ -15,7 +15,7 @@ import os
 
 from vnfb.utils.qeutils import stamp2date, makedirs
 from vnfb.utils.qeutils import addRow
-from vnfb.utils.qechain import QEChain
+from vnfb.utils.qechain import QETasks
 from vnfb.utils.qeparams import QEParams
 from vnfb.utils.qeserver import QEServer
 from vnfb.utils.qeconst import SIMCHAINS
@@ -71,12 +71,8 @@ class Actor(base):
         self._showSettings(director, table)
         self._showServer(director, table)
         self._showResults(director, table)
-
-        sC          = splitter.section()
-        sC.add(Paragraph(text="Simulation Tasks"))
-
-#        self._showTasks(director, sB, table, sim.type)
-#        self._showSubmit(sB)
+        self._showTasks(director, splitter, sim.type)
+#        self._showSubmit(splitter)
         
         return doc
 
@@ -145,15 +141,17 @@ class Actor(base):
         addRow(table, "Results: ", celldoc)
 
 
-    def _showTasks(self, director, document, table, type):
+    def _showTasks(self, director, splitter, type):
         """Shows chain of configuration files"""
-        from vnfb.utils.qeutils import addRow
-        addRow(table, 'Input Files: ', '')
+        sC          = splitter.section()
+        sC.add(Paragraph(text="Simulation Tasks", Class="qe-section"))
 
-        document.add(Paragraph(text=""))
-        splitter = QEChain(director, type)
+        taskstable   = QETasks(director, type)
+        sD          = splitter.section()
+        sD.add(taskstable.chain(self.id))
+        
 
-        document.add(splitter.chain(self.id))
+
 
 
 
@@ -179,8 +177,8 @@ class Actor(base):
     # TODO: Should be separate for each task
     def _showSubmit(self, document):
         """Adds References"""
-        document.add(Document(Class="clear-both"))   # Empty document
-        refsdoc = Document(Class="display-block")
+        #document.add(Document(Class="clear-both"))   # Empty document
+        #refsdoc = Document(Class="display-block")
         refsdoc.add(lc.button(label="Submit to Queue", onclick=load(actor="material_simulations/espresso/sim-view",
                                                                routine="checkSubmit",
                                                                id=self.id)))

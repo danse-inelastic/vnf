@@ -19,7 +19,7 @@ from luban.content import load
 from luban.content.Link import Link
 
 
-class QEChain:
+class QETasks:
     """Displays the chain of QE simulation steps"""
 
     def __init__(self, director, type=None):
@@ -29,7 +29,7 @@ class QEChain:
 
 
     def chain(self, id):
-        inputs          = self._director.clerk.getQEConfigurations(where="simulationid='%s'" % id)
+        inputs          = self._director.clerk.getQEConfigurations(where="taskid='%s'" % id)
         orderedInputs   = self._orderInput(self._simlist, inputs)
 
         splitter    = Splitter(orientation='horizontal')
@@ -98,7 +98,7 @@ class QEChain:
         return ""
 
 if __name__ == "__main__":
-    chain   = QEChain(None, None)
+    pass
 
 
 __date__ = "$Nov 9, 2009 10:50:54 AM$"

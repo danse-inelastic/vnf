@@ -19,6 +19,15 @@
     background-color: #FFCC00; /* orange */
 }
 
+#action-refresh a {
+    
+}
+
+.qe-section {
+    font-size: 1.1em;
+    font-weight: bold;
+}
+
 .qe-table {
 
 }
@@ -85,8 +94,5 @@
 }
 
 
-
-/* version */
-/* $Id$ */
 
 /* End of file  */
