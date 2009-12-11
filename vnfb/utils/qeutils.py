@@ -88,15 +88,21 @@ def stamp2date(stamp):
 
     return ""
 
-"""
-Adds row to the table
-"""
+
 def addRow(table, param, value):
+    "Adds row with two cells to the table"
     row     = table.row()
     cell    = row.cell(Class="qe-cell-param")
     cell.add(param)
     cell    = row.cell(Class="qe-cell-value")
     cell.add(value)
+
+
+def addCell(table, item):
+    "Adds cell to the table"
+    row     = table.row()
+    cell    = row.cell()
+    cell.add(item)
 
 
 def makedirs(path):
