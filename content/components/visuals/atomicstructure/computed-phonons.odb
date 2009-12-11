@@ -26,20 +26,17 @@ class Factory(object):
 
 
     def create(self):
-        bodyid = 'computed-phonons-body'
-        body = lc.document(id=bodyid)
-        loadphonons = lc.load(
-            actor='material_simulations/getphononresults',
-            routine='updatePhononViewForAtomicStructure',
-            id = self.id,
-            )
-        doc = self.director.retrieveVisual(
-            'collapsable',
+        doc = lc.document(
+            collapsable=1,
             id='atomicstructure-computed-phonons',
             title='Phonons',
-            body=body,
-            loadbody=loadphonons,
             )
+        loadphonons = select(element=doc).replaceContent(lc.load(
+            actor='material_simulations/getphononresults',
+            routine='createPhononDocForAtomicStructure',
+            id = self.id,
+            ))
+        doc.onexpand = loadphonons
         return doc
 
 

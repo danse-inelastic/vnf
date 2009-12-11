@@ -28,11 +28,6 @@ class Actor(base):
         id = pyre.inventory.str('id')
 
 
-    def updatePhononViewForAtomicStructure(self, director):
-        doc = self.createPhononDocForAtomicStructure(director)
-        return lc.select(id='computed-phonons-body').replaceContent(doc)
-
-
     def createPhononDocForAtomicStructure(self, director):
         doc = lc.document()
         doc.add(self.createDispersionDocForAtomicStructure(director))
@@ -43,10 +38,10 @@ class Actor(base):
         doc = lc.document()
 
         atomicstructureaccess = director.retrieveDOMAccessor('atomicstructure')
-        atomicstructure = atomicstructureaccess.getAtomicStructure(self.inventory.id)
+        structrecord = atomicstructureaccess.getAtomicStructureRecord(self.inventory.id)
         
         phononaccess = director.retrieveDOMAccessor('phonon')
-        disps = phononaccess.getDispersions(atomicstructure)
+        disps = phononaccess.getDispersions(atomicstructure=structrecord)
         
         if not disps:
             doc.paragraph(text=['There is no dispersion calculated.'])

@@ -26,11 +26,12 @@ class Factory(object):
 
     def create(self):
         body = self.createBody()
-        doc = self.director.retrieveVisual(
-            'collapsable',
+        doc = lc.document(
             id='atomicstructure-computed-props',
             title='Computed properties',
-            body=body)
+            collapsable = 1,
+            )
+        doc.add(body)
         return doc
     
     
