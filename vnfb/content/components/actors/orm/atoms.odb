@@ -23,7 +23,7 @@ from vnfb.dom.AtomicStructure import Structure, Lattice, Atom
 
 from luban.components.Actor import Actor
 import luban.orm
-base = luban.orm.object2actor(Atom, ActorBase=Actor)
+base = luban.orm.object2actor(Atom)
 class Actor(base):
 
     class Inventory(base.Inventory):
