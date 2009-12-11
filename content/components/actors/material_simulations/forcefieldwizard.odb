@@ -113,9 +113,11 @@ class Actor(base):
 
         id = self.inventory.id
         if id:
-            record = self._getSimulation(director)
-            type = self.inventory.type = record.name
+            gulpSimSettings = director.clerk.orm.load(type, id)
+            #record = self._getSimulation(director)
+            #type = self.inventory.type = record.name
         else:
+            from 
             record = GulpSimulation()
             type = self.inventory.type = 'gulpsimulations'
         
