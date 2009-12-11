@@ -89,6 +89,7 @@ def stamp2date(stamp):
     return ""
 
 
+# Bad design
 def addRow(table, param, value):
     "Adds row with two cells to the table"
     row     = table.row()
@@ -98,6 +99,7 @@ def addRow(table, param, value):
     cell.add(value)
 
 
+# Bad design
 def addCell(table, item):
     "Adds cell to the table"
     row     = table.row()
