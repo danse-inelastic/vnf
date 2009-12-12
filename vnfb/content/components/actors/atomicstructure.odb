@@ -16,6 +16,13 @@ from luban.content import load, select, alert
 import luban.content as lc
 
 
+
+# common actions
+setpagetitle = select(id='').setAttr(title='Virtual neutron facility: atomic structures')
+
+
+
+
 from vnfb.components.MasterTable import FilterSyntaxError, MasterTableActor as base
 
 class Actor(base):
@@ -57,7 +64,10 @@ class Actor(base):
         material_portlet    = body_skeleton.find(id='main-portlet-my-atomicstructures')
         material_portlet.selected = 1
         
-        return body_frame.replaceContent(body_skeleton)
+        return [
+            body_frame.replaceContent(body_skeleton),
+            setpagetitle,
+            ]
 
 
     def showListView(self, director):
@@ -67,6 +77,7 @@ class Actor(base):
             return alert('filter syntax error: %s' % msg)
         return [
             select(id = 'main-display-area').replaceContent(view),
+            setpagetitle,
             ]
     
             
