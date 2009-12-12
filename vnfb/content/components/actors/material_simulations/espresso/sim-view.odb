@@ -15,7 +15,7 @@ import os
 
 from vnfb.utils.qeutils import stamp2date, makedirs
 from vnfb.utils.qeutils import addRow
-from vnfb.utils.qechain import QETasks
+from vnfb.utils.qetasks import QETasks
 from vnfb.utils.qeparams import QEParams
 from vnfb.utils.qeserver import QEServer
 from vnfb.utils.qeconst import SIMCHAINS
@@ -61,6 +61,8 @@ class Actor(base):
         
         sC          = splitter.section()
         self._showActions(sC)
+
+        # Area for errors
         splitter.section(id="input-error-area")
 
         sB          = splitter.section()
@@ -143,12 +145,23 @@ class Actor(base):
 
     def _showTasks(self, director, splitter, type):
         """Shows chain of configuration files"""
+        # Show simulation tasks section
         sC          = splitter.section()
         sC.add(Paragraph(text="Simulation Tasks", Class="qe-section"))
 
+        # Show refresh status button
+        sR          = splitter.section()
+        # Change actor
+        sR.add(lc.button(label="Refresh Status",
+                         onclick = load(actor='material_simulations/espresso/sim-view',
+                                        id=self.id)
+                        ))
+        sR.add(lc.document(Class="clear-both"))
+
+        # Show tasks table
         taskstable   = QETasks(director, type)
-        sD          = splitter.section()
-        sD.add(taskstable.chain(self.id))
+        sT          = splitter.section()
+        sT.add(taskstable.tasks(self.id))
         
 
 
