@@ -79,9 +79,6 @@ class Actor(base):
         return doc
 
     def _showActions(self, document):
-        document.add(lc.button(label="Refresh",
-                              onclick = load(actor='material_simulations/espresso/sim-view',
-                              id=self.id)))
         document.add(lc.button(label="Edit",
                                id="action-edit",
                               onclick = load(actor='material_simulations/espresso/sim-edit',
