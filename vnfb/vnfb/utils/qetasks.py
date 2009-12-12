@@ -12,6 +12,7 @@
 #
 
 from vnfb.utils.qeconst import SIMCHAINS
+from vnfb.utils.qetaskcell import QETaskCell
 
 import luban.content as lc
 from luban.content.Splitter import Splitter
@@ -64,9 +65,18 @@ class QETasks:
 
     def _setTaskCell(self, colnum):
         "Populates the task's cell"
+        table   = lc.grid(Class="qe-tasks-info")
+
         self.cell[0][colnum].add(Paragraph(text=self._simlist[colnum], Class="text-bold"))   # Simulation type
-        self.cell[1][colnum].add(Paragraph(text="Input: ni.scf.in"))
+        self.cell[1][colnum].add(table)  # Paragraph(text="Input: ni.scf.in"))
         self.cell[2][colnum].add(Paragraph(text="Cancel"))
+
+        self._addRow(table, "Input:", "ni.scf.in")
+        self._addRow(table, "Output:", "ni.scf.out")
+        self._addRow(table, "Status:", "Running")
+        self._addRow(table, "Current Job:", "RBGF6")
+        self._addRow(table, "Jobs:", "RBGF6, BNFGS")
+        
 
         link        = Link(label="Add",
                            onclick=load(actor      = "material_simulations/espresso/input-add",
@@ -92,6 +102,14 @@ class QETasks:
 #                sep.add(Paragraph(text=" ----> "))
 
 
+    def _addRow(self, table, param, value):
+        "Add row"
+        row     = table.row()
+        cell    = row.cell()
+        cell.add(param)
+        cell    = row.cell()
+        cell.add(value)
+        
 
     def _orderInput(self, simlist, inputs):
         """Orders input according to simlist (E.g. simlist = ("PW", "PH") )"""

@@ -128,7 +128,7 @@ class Actor(base):
         #link    = self._retrieveResults(director)
 
         # Change actor
-        link    = Link(label="Check", Class="padding-left-20",
+        link    = Link(label="Check", id="qe-check-results", #Class="padding-left-20",
                        onclick=load(actor       = "material_simulations/espresso/sim-view",
                                     routine     = "retrieveStatus",
                                     id          = self.id)
@@ -148,7 +148,6 @@ class Actor(base):
 
         # Show refresh status button
         sR          = splitter.section()
-        # Change actor
         sR.add(lc.button(label="Refresh Status",
                          onclick = load(actor='material_simulations/espresso/sim-view',
                                         id=self.id)
