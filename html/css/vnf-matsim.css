@@ -26,6 +26,8 @@
 .qe-section {
     font-size: 1.1em;
     font-weight: bold;
+    margin-top: 25px;
+    margin-bottom: 10px;
 }
 
 .qe-table {
@@ -40,11 +42,20 @@
     background-color: #f0f0f0;
 }
 
-.qe-table td {
+.qe-table td,
+.qe-tasks-table td{
     border: 2px solid white;
     padding: 3px 10px 3px 10px;
     vertical-align: top;
 }
+
+.qe-tasks-table table{
+    border-collapse: collapse;
+    -moz-border-radius: 10px;
+    -webkit-border-radius: 10px;
+    background-color: #f0f0f0;
+}
+
 
 .qe-cell-param {
     width: 170px;
@@ -77,6 +88,10 @@
 .display-block a,
 .display-block p{
     display: block;
+}
+
+.text-bold {
+    font-weight: bold;
 }
 
 .padding-left-20 {

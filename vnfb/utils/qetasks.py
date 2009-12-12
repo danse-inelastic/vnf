@@ -13,6 +13,7 @@
 
 from vnfb.utils.qeconst import SIMCHAINS
 
+import luban.content as lc
 from luban.content.Splitter import Splitter
 from luban.content.Paragraph import Paragraph
 from luban.content import load
@@ -28,40 +29,68 @@ class QETasks:
         self._simlist   = self._getSimlist(type)
 
 
-    def chain(self, id):
+    def tasks(self, id):
         inputs          = self._director.clerk.getQEConfigurations(where="taskid='%s'" % id)
         orderedInputs   = self._orderInput(self._simlist, inputs)
 
-        splitter    = Splitter(orientation='horizontal')
-        listsize    = len(self._simlist)
+        tasknum         = len(self._simlist)
+        table           = self._setTable(tasknum)
 
-        for i in range(listsize):
-            section     = splitter.section()
-            section.add(Paragraph(text=self._simlist[i]))   # Simulation type
-            link        = Link(label="Add", 
-                               onclick=load(actor      = "material_simulations/espresso/input-add",
-                                            id         = id,
-                                            type       = self._simlist[i])
-                              )
+        # Populate table
+        for i in range(tasknum):
+            self._setTaskCell(i)
 
-            input   = orderedInputs[i]
-            #print input
-            if input:
-                link    = Link(label=input.filename,
-                               onclick=load(actor      = "material_simulations/espresso/input-view",
-                                            configid   = self._getId(self._simlist[i], inputs),
-                                            id         = id,
-                                            type       = self._simlist[i]  # ?
-                                            )
-                              )
+        return table
 
-            section.add(link)
 
-            if i != listsize - 1:   # No arrow for last config
-                sep     = splitter.section()        # Separator
-                sep.add(Paragraph(text=" ----> "))
+    def _setTable(self, tasknum):
+        table           = lc.grid(Class="qe-tasks-table")     #Splitter(orientation='horizontal')
 
-        return splitter
+        # self.cell[m][n] - specifies the (m, n)-th cell
+        # m - row index, n - column index
+        self.cell  = []
+
+        # Create table structure
+        for i in range(3):
+            rows       = []
+            row     = table.row()
+            for j in range(tasknum):   # 3 columns
+                rows.append(row.cell())
+
+            self.cell.append(rows)
+
+        return table
+
+
+    def _setTaskCell(self, colnum):
+        "Populates the task's cell"
+        self.cell[0][colnum].add(Paragraph(text=self._simlist[colnum], Class="text-bold"))   # Simulation type
+        self.cell[1][colnum].add(Paragraph(text="Input: ni.scf.in"))
+        self.cell[2][colnum].add(Paragraph(text="Cancel"))
+
+        link        = Link(label="Add",
+                           onclick=load(actor      = "material_simulations/espresso/input-add",
+                                        id         = id,
+                                        type       = self._simlist[colnum])
+                          )
+#
+#            input   = orderedInputs[i]
+#            #print input
+#            if input:
+#                link    = Link(label=input.filename,
+#                               onclick=load(actor      = "material_simulations/espresso/input-view",
+#                                            configid   = self._getId(self._simlist[i], inputs),
+#                                            id         = id,
+#                                            type       = self._simlist[i]  # ?
+#                                            )
+#                              )
+#
+#            section.add(link)
+#
+#            if i != listsize - 1:   # No arrow for last config
+#                sep     = splitter.section()        # Separator
+#                sep.add(Paragraph(text=" ----> "))
+
 
 
     def _orderInput(self, simlist, inputs):
