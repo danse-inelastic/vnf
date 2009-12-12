@@ -56,6 +56,19 @@
     background-color: #f0f0f0;
 }
 
+.qe-tasks-table td{
+    width: 200px
+}
+
+.qe-tasks-info table {
+    
+}
+
+.qe-tasks-info td {
+    border: 0px;
+    padding: 0px  5px 0px 0px;
+    vertical-align: top;
+}
 
 .qe-cell-param {
     width: 170px;
@@ -64,6 +77,16 @@
 
 .qe-cell-value {
 
+}
+
+#qe-check-results {
+    margin-left: 20px;
+    padding: 0px 6px;
+    background-color: #33DD33;
+}
+
+.qe-run-tasks {
+    
 }
 
 /* Vinil CSS*/
