@@ -1,0 +1,193 @@
+/*
+This is CSS layout for Quantum Espresso pages
+*/
+
+#qe-section-actions {
+    margin-bottom: 15px;
+}
+
+#action-edit,
+#action-delete,
+#action-clone,
+#action-refresh-status,
+.qe-run-task {
+    padding: 2px 15px;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    text-decoration: none;
+    margin-right: 10px;
+}
+
+#action-edit {
+    background-color: #1fff1f; /* deep green */
+}
+
+#action-delete {
+    background-color: #FF7700; /* light red */
+}
+
+#action-clone {
+    background-color: #FFCC00; /* orange */
+}
+
+#action-refresh-status {
+    float: left;
+    background-color: #8aff61;
+    margin: 30px 10px 10px 25px;
+}
+
+
+.button-green a{
+    background-color: #33DD33; /* deep green */
+}
+
+.qe-run-task {
+    background-color: #1fff1f; /* deep green */
+}
+
+a.qe-run-task {
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.qe-tasks-table td.qe-action-task {
+    padding: 10px;
+}
+
+.qe-section,
+.qe-section-inline {
+    font-size: 1.1em;
+    font-weight: bold;
+    margin-top: 30px;
+    margin-bottom: 10px;
+}
+
+.qe-section-inline,
+.qe-section-inline a,
+.qe-section-inline p {
+    float: left;
+}
+
+#qe-tasks-label {
+    display: inline;
+}
+
+.qe-table {
+
+}
+
+.qe-table table{
+    border-collapse: collapse;
+    -moz-border-radius: 10px;
+    -webkit-border-radius: 10px;
+    width: 500px;
+    background-color: #f0f0f0;
+}
+
+.qe-table td,
+.qe-tasks-table td{
+    border: 2px solid white;
+    padding: 3px 10px 3px 10px;
+    vertical-align: top;
+}
+
+.qe-tasks-table table{
+    border-collapse: collapse;
+    -moz-border-radius: 10px;
+    -webkit-border-radius: 10px;
+    background-color: #f0f0f0;
+}
+
+.qe-tasks-table td{
+    width: 200px
+}
+
+.qe-grid table,
+.qe-tasks-info table {
+
+}
+
+.qe-grid td,
+.qe-tasks-info td {
+    border: 0px;
+    padding: 0px  5px 0px 0px;
+    vertical-align: top;
+}
+
+.qe-tasks-info td.qe-tasks-param {
+    width: 70px;
+}
+
+.qe-cell-param {
+    width: 170px;
+    font-weight: bold;
+}
+
+.qe-cell-value {
+
+}
+
+.qe-task-header-change {
+    text-align: right;
+}
+
+#qe-check-results {
+    margin-left: 20px;
+    padding: 2px 10px;
+    background-color: #8aff61; /* light green */
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    text-decoration: none;
+}
+
+
+
+.qe-run-tasks {
+
+}
+
+/* Vinil CSS*/
+
+/* overload the default behavior of luban for buttons */
+#error-area,
+#input-error-area {
+    color: red;
+}
+
+.clear-both {
+    clear: both;
+}
+
+.display-inline a,
+.display-inline p{
+    margin: 0px;
+    float: left;
+}
+
+.display-block,
+.display-block a,
+.display-block p{
+    display: block;
+}
+
+.text-bold {
+    font-weight: bold;
+}
+
+.text-green {
+    color: green;
+}
+
+.padding-left-20 {
+    padding-left: 20px;
+}
+
+
+.action-link {
+    border-color: #cced8c;
+    border-width: 2px;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    width:  50px;
+    padding: 0px 2px;
+}
