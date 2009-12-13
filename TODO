@@ -9,3 +9,8 @@ Also make a test script for testing if a computing cluster is live
  * test if any of the computing engine is available
 THis script probably is best written with facilities in pathos.
 
+
+*** Quantum Espresso ***
+Problem: How to define similarity for simulation tasks?
+Solution:
+

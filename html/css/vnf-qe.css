@@ -131,16 +131,23 @@ a.qe-run-task {
     text-align: right;
 }
 
-#qe-check-results {
+#qe-check-results,
+#qe-analyze-results {
     margin-left: 20px;
     padding: 2px 10px;
-    background-color: #8aff61; /* light green */
     -moz-border-radius: 5px;
     -webkit-border-radius: 5px;
     text-decoration: none;
 }
 
+#qe-check-results {
+    background-color: #8aff61; /* light green */
+}
 
+#qe-analyze-results {
+    margin-left: 10px;
+    background-color: yellow;
+}
 
 .qe-run-tasks {
 

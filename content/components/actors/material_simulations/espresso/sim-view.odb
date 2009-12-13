@@ -128,14 +128,20 @@ class Actor(base):
         #link    = self._retrieveResults(director)
 
         # Change actor
-        link    = Link(label="Check", id="qe-check-results", #Class="padding-left-20",
+        check    = Link(label="Check", id="qe-check-results", #Class="padding-left-20",
                        onclick=load(actor       = "material_simulations/espresso/sim-view",
                                     routine     = "retrieveStatus",
                                     id          = self.id)
                       )
 
+        analyze  = Link(label="Analyze", id="qe-analyze-results", #Class="padding-left-20",
+                       onclick=load(actor       = "material_simulations/espresso/results",
+                                    id          = self.id)
+                      )
+
         cell.add(tarlink)
-        celldoc.add(link)
+        celldoc.add(check)
+        celldoc.add(analyze)
 
         addRow(table, "Results: ", celldoc)
 
