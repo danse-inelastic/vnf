@@ -20,6 +20,7 @@ class QETaskCell:
         self._type  = type
 
     def header(self):
+        "Shows the header for the simulation task"
         type    = lc.paragraph(text=self._type, Class="text-bold")
         link    = lc.link(label="Change")
 
@@ -33,14 +34,20 @@ class QETaskCell:
         
         return table
 
+
     def taskInfo(self):
         table   = lc.grid(Class="qe-tasks-info")
 
-        self._addRow(table, "Task:", self._taskId(), ("qe-tasks-param", ""))
-        self._addRow(table, "Input:", self._input(), ("qe-tasks-param", ""))
-        self._addRow(table, "Output:", self._output(), ("qe-tasks-param", ""))
-        self._addRow(table, "Status:", self._status(), ("qe-tasks-param", "text-green"))
-        self._addRow(table, "Job:", self._currentJob(), ("qe-tasks-param", ""))
+        self._addCell(table, "Create New Task")
+        self._addCell(table, "or")
+        self._addCell(table, "Use Existing Task")
+        
+#        self._addRow(table, "Task:", self._taskId(), ("qe-tasks-param", ""))
+#        self._addRow(table, "Input:", self._input(), ("qe-tasks-param", ""))
+#        self._addRow(table, "Output:", self._output(), ("qe-tasks-param", ""))
+#        self._addRow(table, "Status:", self._status(), ("qe-tasks-param", "text-green"))
+#        self._addRow(table, "Job:", self._currentJob(), ("qe-tasks-param", ""))
+        
         #self._addRow(table, "Jobs:", self._jobs())
 
         return table
@@ -82,9 +89,15 @@ class QETaskCell:
             return row.cell()
         
         row     = table.row()
-        cell    = cellfactory(row, tdclass, 0) #row.cell(Class=tdclass[0])
+        cell    = cellfactory(row, tdclass, 0)
         cell.add(param)
-        cell    = cellfactory(row, tdclass, 1) #row.cell(Class=tdclass[1])
+        cell    = cellfactory(row, tdclass, 1)
+        cell.add(value)
+
+
+    def _addCell(self, table, value):
+        row     = table.row()
+        cell    = row.cell()
         cell.add(value)
 
 
