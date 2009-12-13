@@ -34,10 +34,6 @@ class QETask(QETable):
     name = "qetasks"
     import dsaw.db
 
-#    simulationid    = dsaw.db.varchar(name="simulationid", length=64)
-#    simulationid.constraints = 'REFERENCES qesimulations (id)'    # Important
-#    simulationid.meta['tip'] = "simulationid"
-#
     # in MS
     short_description = dsaw.db.varchar(name="short_description", length=1024, default='')
     short_description.meta['tip'] = ""
