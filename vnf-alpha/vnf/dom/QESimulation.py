@@ -100,7 +100,7 @@ def inittable(clerk):
 
 
 def test():
-    for e in examples:
+    for e in defaults:
         s = ""
         for v in e:
             s += "%s " % v

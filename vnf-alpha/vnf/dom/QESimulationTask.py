@@ -21,7 +21,7 @@ Notes:
 
 from vnfb.components.QETable import QETable
 
-QESimulationTask(QETable):
+class QESimulationTask(QETable):
     
     name = "qesimulationtasks"
     import dsaw.db
