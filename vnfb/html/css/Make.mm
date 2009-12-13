@@ -25,6 +25,7 @@ EXPORT_DATAFILES = \
 	luban.css\
 	vnf-atomicstructure.css \
 	vnf-bvk.css \
+        vnf-qe.css \
 	vnf-login.css \
 	vnf-mainframe.css \
 	vnf-mastertable.css \
