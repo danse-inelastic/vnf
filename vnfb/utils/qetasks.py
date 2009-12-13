@@ -24,7 +24,7 @@ from luban.content.Link import Link
 class QETasks:
     """Displays the chain of QE simulation steps"""
 
-    def __init__(self, director, type=None):
+    def __init__(self, director, type, id = None):
         self._director  = director
         self._simtype   = type
         self._simlist   = self._getSimlist(type)
@@ -55,8 +55,13 @@ class QETasks:
         for i in range(3):
             rows       = []
             row     = table.row()
+
             for j in range(tasknum):   # 3 columns
-                rows.append(row.cell())
+                if i != 2:
+                    rows.append(row.cell())
+                else:
+                    # Special layout for action buttons (e.g. "Run Task")
+                    rows.append(row.cell(Class="qe-action-task"))
 
             self.cell.append(rows)
 
@@ -65,24 +70,14 @@ class QETasks:
 
     def _setTaskCell(self, colnum):
         "Populates the task's cell"
-        table   = lc.grid(Class="qe-tasks-info")
-
-        self.cell[0][colnum].add(Paragraph(text=self._simlist[colnum], Class="text-bold"))   # Simulation type
-        self.cell[1][colnum].add(table)  # Paragraph(text="Input: ni.scf.in"))
-        self.cell[2][colnum].add(Paragraph(text="Cancel"))
-
-        self._addRow(table, "Input:", "ni.scf.in")
-        self._addRow(table, "Output:", "ni.scf.out")
-        self._addRow(table, "Status:", "Running")
-        self._addRow(table, "Current Job:", "RBGF6")
-        self._addRow(table, "Jobs:", "RBGF6, BNFGS")
         
 
-        link        = Link(label="Add",
-                           onclick=load(actor      = "material_simulations/espresso/input-add",
-                                        id         = id,
-                                        type       = self._simlist[colnum])
-                          )
+        tc      = QETaskCell(self._simlist[colnum])
+        self.cell[0][colnum].add(tc.header())     # Simulation type
+        self.cell[1][colnum].add(tc.taskInfo()) # Paragraph(text="Input: ni.scf.in"))
+        self.cell[2][colnum].add(tc.action())
+        
+
 #
 #            input   = orderedInputs[i]
 #            #print input
@@ -101,15 +96,6 @@ class QETasks:
 #                sep     = splitter.section()        # Separator
 #                sep.add(Paragraph(text=" ----> "))
 
-
-    def _addRow(self, table, param, value):
-        "Add row"
-        row     = table.row()
-        cell    = row.cell()
-        cell.add(param)
-        cell    = row.cell()
-        cell.add(value)
-        
 
     def _orderInput(self, simlist, inputs):
         """Orders input according to simlist (E.g. simlist = ("PW", "PH") )"""
