@@ -28,13 +28,12 @@ Notes on database classes implementation:
 """
 
 from vnfb.utils.qeutils import timestamp, newid, setname, ifelse
-from dsaw.db.Table import Table
 from dsaw.db.WithID import WithID
 
 NO_UPDATE   = ["timecreated", "date", "id"]
 STAMPED     = ["timecreated", "date", "timemodified"]
 
-class QETable(Table, WithID):
+class QETable(WithID):
 
     def __init__(self, director, clerk):
         """
