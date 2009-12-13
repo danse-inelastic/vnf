@@ -11,26 +11,88 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
+import luban.content as lc
+from luban.content import load
+
 class QETaskCell:
 
-    def __init__(self):
-        pass
+    def __init__(self, type):   # Temp
+        self._type  = type
 
-    def type(self):
-        pass
+    def header(self):
+        type    = lc.paragraph(text=self._type, Class="text-bold")
+        link    = lc.link(label="Change")
 
-    def input(self):
-        pass
+        table   = lc.grid(Class="qe-grid")
+        row     = table.row()
+        cell    = row.cell()
+        cell.add(type)
+        # Add link only if id is not None
+        cell    = row.cell(Class="qe-task-header-change")
+        cell.add(link)
+        
+        return table
 
-    def output(self):
-        pass
+    def taskInfo(self):
+        table   = lc.grid(Class="qe-tasks-info")
 
-    def currentJob(self):
-        pass
+        self._addRow(table, "Task:", self._taskId(), ("qe-tasks-param", ""))
+        self._addRow(table, "Input:", self._input(), ("qe-tasks-param", ""))
+        self._addRow(table, "Output:", self._output(), ("qe-tasks-param", ""))
+        self._addRow(table, "Status:", self._status(), ("qe-tasks-param", "text-green"))
+        self._addRow(table, "Job:", self._currentJob(), ("qe-tasks-param", ""))
+        #self._addRow(table, "Jobs:", self._jobs())
 
-    def jobs(self):
-        action
+        return table
 
+    def action(self):
+        return lc.link(label="Run Task",
+                       Class="qe-run-task",
+                       onclick = load(actor='material_simulations/espresso/sim-edit')
+                        )
+
+
+    def _taskId(self):
+        return "VBDG4"
+
+    def _input(self):
+        return "ni.scf.in"
+
+    def _output(self):
+        return "ni.scf.out"
+
+    def _status(self):
+        return "Running"
+
+    def _currentJob(self):
+        return "RBGF6"
+
+    def _jobs(self):
+        return "RBGF6, BNFGS"
+
+
+    def _addRow(self, table, param, value, tdclass = None):
+        """Add row with two columns
+        tdclass - tuple of classes applied to the cell
+        """
+        def cellfactory(row, tdclass, colnum):
+            if tdclass:
+                return row.cell(Class=tdclass[colnum])
+
+            return row.cell()
+        
+        row     = table.row()
+        cell    = cellfactory(row, tdclass, 0) #row.cell(Class=tdclass[0])
+        cell.add(param)
+        cell    = cellfactory(row, tdclass, 1) #row.cell(Class=tdclass[1])
+        cell.add(value)
+
+
+#        link        = Link(label="Add",
+#                           onclick=load(actor      = "material_simulations/espresso/input-add",
+#                                        id         = id,
+#                                        type       = self._simlist[colnum])
+#                          )
 
 __date__ = "$Dec 12, 2009 3:21:13 PM$"
 
