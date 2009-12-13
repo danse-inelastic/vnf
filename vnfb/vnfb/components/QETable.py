@@ -16,23 +16,25 @@ QETable - abstract class for all QE database tables. It serves as an adapter for
 VNF Clerk for convenience purposes (in case if interfaces change)
 
 Notes on database classes implementation:
-1. There are two alternative ways to perform action (update, create, delete) on database class:
+1. All the tables inherited from QETable have 'id' column!
+2. There are two alternative ways to perform action (update, create, delete) on database class:
     - Directly use clerk's methods (e.g. Clerk.updateRecord(record)) by passing the class object
         Pros: Saves extra call
         Cons: Not very convenient to write
     - Use QETable methods (e.g. QETable.updateRecord(params) by passing dictionary of parameters
       (e.g. params = {"id": 5, "name": "Hi", ...})
       Pros: Convenient for handling table forms?
-2. Using QETable methods does not require passing director every time you use it.
+3. Using QETable methods does not require passing director every time you use it.
 """
 
 from vnfb.utils.qeutils import timestamp, newid, setname, ifelse
 from dsaw.db.Table import Table
+from dsaw.db.WithID import WithID
 
 NO_UPDATE   = ["timecreated", "date", "id"]
 STAMPED     = ["timecreated", "date", "timemodified"]
 
-class QETable(Table):
+class QETable(Table, WithID):
 
     def __init__(self, director, clerk):
         """

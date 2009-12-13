@@ -19,18 +19,14 @@ Notes:
 
 """
 
-from vnfb.components.QETable import QETable as base
+from vnfb.components.QETable import QETable
 
 # Update column from QECalc
 
-class QESetting(base):
+class QESetting(QETable):
 
     name = "qesettings"
     import dsaw.db
-
-    id = dsaw.db.varchar(name="id", length=8)
-    id.constraints = 'PRIMARY KEY'
-    id.meta['tip'] = "the unique id"
 
     simulationid    = dsaw.db.varchar(name="simulationid", length=8)
     simulationid.constraints = 'REFERENCES qesimulations (id)'    # Important

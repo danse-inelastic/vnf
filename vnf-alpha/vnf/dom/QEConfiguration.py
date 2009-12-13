@@ -21,16 +21,12 @@ TODO:
     - Change name from QEConfiguration to QEInput? QEInput is too specific?
 """
 
-from vnfb.components.QETable import QETable as base
+from vnfb.components.QETable import QETable
 
-class QEConfiguration(base):
+class QEConfiguration(QETable):
 
     name = "qeconfigurations"
     import dsaw.db
-
-    id = dsaw.db.varchar(name="id", length=8)
-    id.constraints = 'PRIMARY KEY'
-    id.meta['tip'] = "the unique id"
 
     taskid    = dsaw.db.varchar(name="taskid", length=8)
     taskid.constraints = 'REFERENCES qetasks (id)'    # Important
