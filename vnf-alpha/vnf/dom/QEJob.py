@@ -31,16 +31,16 @@ class QEJob(QETable):
     name = "qejobs"
     import dsaw.db
 
-    task = dsaw.db.varchar(name="taskid", length=8)
-    task.constraints = 'REFERENCES qetasks (id)'
-    task.meta['tip'] = ""
+    taskid = dsaw.db.varchar(name="taskid", length=64)
+    taskid.constraints = 'REFERENCES qetasks (id)'
+    taskid.meta['tip'] = ""
+
+    serverid    = dsaw.db.varchar(name="serverid", length=64)
+    serverid.constraints = 'REFERENCES servers (id)'
+    serverid.meta['tip'] = ""
 
     creator = dsaw.db.varchar(name="creator", length=128, default='')
     creator.meta['tip'] = ""
-
-    serverid    = dsaw.db.varchar(name="serverid", length=8)
-    serverid.constraints = 'REFERENCES servers (id)'
-    serverid.meta['tip'] = ""
 
     description = dsaw.db.varchar(name="description", length=1024, default='')
     description.meta['tip'] = ""

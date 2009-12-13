@@ -41,7 +41,7 @@ class QESimulation(QETable):
     name = "qesimulations"
     import dsaw.db
 
-    serverid    = dsaw.db.varchar(name="serverid", length=16)
+    serverid    = dsaw.db.varchar(name="serverid", length=64)
     serverid.constraints = 'REFERENCES servers (id)'    # Important
     serverid.meta['tip'] = "Default server for the simulation"
 

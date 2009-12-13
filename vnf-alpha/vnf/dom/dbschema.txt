@@ -6,7 +6,7 @@ qesimulations:
     -> servers
     ? -> matter
 qetasks:
-    -> qesimulations
+    ? -> matter
 qeconfigurations:
     -> qetasks
 qesettings:
@@ -14,3 +14,6 @@ qesettings:
 qejobs:
     -> qetasks
     -> servers
+qesimulationtasks:
+    -> qesimulations
+    -> qetasks

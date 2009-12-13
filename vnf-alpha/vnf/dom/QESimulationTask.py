@@ -28,11 +28,11 @@ QESimulationTask(QETable):
     
     # TODO: Remove reference to QESimulation from QETask table first,
     #       then uncomment columns
-    simulationid    = dsaw.db.varchar(name="simulationid", length=8)
+    simulationid    = dsaw.db.varchar(name="simulationid", length=64)
     simulationid.constraints = 'REFERENCES qesimulations (id)'    # Important
     simulationid.meta['tip'] = "simulationid"
     
-    taskid    = dsaw.db.varchar(name="taskid", length=8)
+    taskid    = dsaw.db.varchar(name="taskid", length=64)
     taskid.constraints = 'REFERENCES qetasks (id)'    # Important
     taskid.meta['tip'] = "Task id"
 

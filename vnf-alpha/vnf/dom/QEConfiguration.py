@@ -28,7 +28,7 @@ class QEConfiguration(QETable):
     name = "qeconfigurations"
     import dsaw.db
 
-    taskid    = dsaw.db.varchar(name="taskid", length=8)
+    taskid    = dsaw.db.varchar(name="taskid", length=64)
     taskid.constraints = 'REFERENCES qetasks (id)'    # Important
     taskid.meta['tip'] = "Task id"
 

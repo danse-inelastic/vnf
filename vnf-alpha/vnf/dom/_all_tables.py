@@ -81,6 +81,7 @@ other = [
 qetables    = [
                'QESimulation',
                'QETask',
+               'QESimulationTask',
                'QEJob',
                'QEConfiguration',
                'QESetting'

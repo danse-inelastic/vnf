@@ -28,7 +28,7 @@ class QESetting(QETable):
     name = "qesettings"
     import dsaw.db
 
-    simulationid    = dsaw.db.varchar(name="simulationid", length=8)
+    simulationid    = dsaw.db.varchar(name="simulationid", length=64)
     simulationid.constraints = 'REFERENCES qesimulations (id)'    # Important
     simulationid.meta['tip'] = "Task id"
 
