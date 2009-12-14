@@ -45,10 +45,16 @@ class Actor(base):
         
         if not disps:
             doc.paragraph(text=['There is no dispersion calculated.'])
-
         else:
             doc.paragraph(text=['dispersion table'])
             
+        newphononcomputation = lc.load(
+            actor='material_simulations/phonon_calculators', routine='start',
+            atomicstructure_id = self.inventory.id
+            )
+        link = lc.link(label='Start a new phonon computation', onclick=newphononcomputation)
+        doc.add(link)
+
         return doc
     
     
