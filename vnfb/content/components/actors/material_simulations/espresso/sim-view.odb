@@ -16,6 +16,7 @@ import os
 from vnfb.utils.qeutils import stamp2date, makedirs
 from vnfb.utils.qeutils import addRow
 from vnfb.utils.qetasks import QETasks
+from vnfb.utils.qegrid import QEGrid
 from vnfb.utils.qeparams import QEParams
 from vnfb.utils.qeserver import QEServer
 from vnfb.utils.qeconst import SIMCHAINS
@@ -67,15 +68,16 @@ class Actor(base):
 
         sB          = splitter.section()
 
-        table       = lc.grid()
-        table.Class = "qe-table"
+        table       = lc.grid(Class = "qe-table")
+        grid        = QEGrid(table)
+#        table.Class = "qe-table"
         sB.add(table)
-        self._showSimulationInfo(table, sim)
-        self._showSettings(director, table)
-        self._showServer(director, table)
-        self._showResults(director, table)
-        self._showTasks(director, splitter, sim.type)
-#        self._showSubmit(splitter)
+        self._showSimulationInfo(grid, sim)
+#        self._showSettings(director, table)
+#        self._showServer(director, table)
+#        self._showResults(director, table)
+#        self._showTasks(director, splitter, sim.type)
+
         
         return doc
 
@@ -112,11 +114,11 @@ class Actor(base):
     def _showSimulationInfo(self, table, sim):
         """Shows simulation data"""
         if sim: # ?
-            addRow(table, 'Description: ', sim.short_description)
-            addRow(table, 'Type: ', sim.type)
-            addRow(table, 'Package: ', sim.package)
-            addRow(table, 'Label: ', sim.label)
-            addRow(table, 'Time Created: ', stamp2date(sim.date))
+            table.addRow(('Description: ', sim.short_description))
+#            addRow(table, 'Type: ', sim.type)
+#            addRow(table, 'Package: ', sim.package)
+#            addRow(table, 'Label: ', sim.label)
+#            addRow(table, 'Time Created: ', stamp2date(sim.date))
 
 
     def _showSettings(self, director, table):
@@ -209,16 +211,16 @@ class Actor(base):
 #        addRow(table, "Jobs: ", jobsdoc)
 
 
-    # TODO: Should be separate for each task
-    def _showSubmit(self, document):
-        """Adds References"""
-        #document.add(Document(Class="clear-both"))   # Empty document
-        #refsdoc = Document(Class="display-block")
-        refsdoc.add(lc.button(label="Submit to Queue", onclick=load(actor="material_simulations/espresso/sim-view",
-                                                               routine="checkSubmit",
-                                                               id=self.id)))
-        document.add(refsdoc)
-        document.add(lc.document(Class="clear-both"))
+#    # TODO: Should be separate for each task
+#    def _showSubmit(self, document):
+#        """Adds References"""
+#        #document.add(Document(Class="clear-both"))   # Empty document
+#        #refsdoc = Document(Class="display-block")
+#        refsdoc.add(lc.button(label="Submit to Queue", onclick=load(actor="material_simulations/espresso/sim-view",
+#                                                               routine="checkSubmit",
+#                                                               id=self.id)))
+#        document.add(refsdoc)
+#        document.add(lc.document(Class="clear-both"))
 
 
     def checkSubmit(self, director):
