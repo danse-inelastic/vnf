@@ -79,18 +79,32 @@ class Actor(base):
         return doc
 
     def _showActions(self, section):
+        section.add(lc.link(label="Refresh",
+                            Class="qe-action-refresh",
+                            onclick = load(actor='material_simulations/espresso/sim-edit',
+                                           id=self.id)))
+        section.add(lc.link(label="New",
+                            Class="qe-action-new",
+                            onclick = load(actor='material_simulations/espresso/sim-edit',
+                                           id=self.id)))
+
         section.add(lc.link(label="Edit",
-                               id="action-edit",
-                              onclick = load(actor='material_simulations/espresso/sim-edit',
-                              id=self.id)))
+                            Class="qe-action-edit",
+                            onclick = load(actor='material_simulations/espresso/sim-edit',
+                                           id=self.id)))
+        section.add(lc.link(label="Clone",
+                            Class="qe-action-clone",
+                            onclick = load(actor='material_simulations/espresso/sim-clone',
+                                           id=self.id)))
+        section.add(lc.link(label="Analyze",
+                            Class="qe-action-analyze",
+                            onclick = load(actor='material_simulations/espresso/sim-edit',
+                                           id=self.id)))
         section.add(lc.link(label="Delete",
-                              id="action-delete",
+                              Class="qe-action-delete",
                               onclick = load(actor='material_simulations/espresso/sim-delete',
                               id=self.id)))
-        section.add(lc.link(label="Clone",
-                              id="action-clone",
-                              onclick = load(actor='material_simulations/espresso/sim-clone',
-                              id=self.id)))
+
         section.add(lc.document(Class="clear-both"))
 
 

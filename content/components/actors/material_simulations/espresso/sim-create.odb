@@ -25,6 +25,7 @@ from luban.content.Link import Link
 from luban.content.Splitter import Splitter
 from luban.content.FormSelectorField import FormSelectorField
 from luban.content.FormRadioBox import FormRadioBox
+from luban.content.FormTextField import FormTextField
 from luban.content.Form import Form
 
 
@@ -70,19 +71,27 @@ class Actor(base):
         sA.add(viewIndicator(director))
         sB          = splitter.section()
 
-        form        = Form(id='create-simulation-form', title='Create New Quantum Espresso Simulation')
-        sname       = form.text(name="sname", label='Simulation Name', value=self.sname)
-        simtype     = form.selector(name="simtype",
-                                    label='Simulation Type',
-                                    entries=enumerate(SIMULATIONS))
-        description = form.text(name="description", label='Description', value=self.description)   # Make as textarea
-        label       = form.text(name="label", label='Label', value=self.label)
-        serverid    = form.selector(name="serverid",
-                                    label='Server',
-                                    entries=enumerate(serversList))
-        matter      = form.selector(name="matter",
-                                    label='Atomic Structure',
-                                    entries=enumerate(["STUB",]))
+        form        = Form(id='create-simulation-form') # , title='Create New Quantum Espresso Simulation'
+        table       = lc.grid()
+        form.add(table)
+
+        sname       = FormTextField(name = "sname", value = self.sname)
+        simtype     = FormSelectorField(name="simtype",
+                                        entries=enumerate(SIMULATIONS))
+        description = FormTextField(name="description", value=self.description)   # Make as textarea
+        label       = FormTextField(name="label", value=self.label)
+        serverid    = FormSelectorField(name="serverid",
+                                        entries=enumerate(serversList))
+        matter      = FormSelectorField(name="matter",
+                                        entries=enumerate(["STUB",]))
+
+        self._addRow(table, "Simulation Name", sname)
+        self._addRow(table, "Simulation Type", simtype)
+        self._addRow(table, "Description", description)
+        self._addRow(table, "Label", label)
+        self._addRow(table, "Server", serverid)
+        self._addRow(table, "Atomic Structure", matter)
+        
 
         submit      = form.submitbutton(label="Create New Simulation")
         form.onsubmit   = select(element=form).submit(actor = 'material_simulations/espresso/sim-create',
@@ -114,6 +123,14 @@ class Actor(base):
         sim.createRecord(params)
 
         return load(actor='material_simulations/espresso/sim-view', id = sim.id)  # Redirection to the page
+
+
+    def _addRow(self, table, label, field, trclass = None, tdclasses = None):
+        row     = table.row()
+        cell    = row.cell(Class="qe-form-label")
+        cell.add(label)
+        cell    = row.cell()
+        cell.add(field)
 
 
     def _setServers(self, director):
