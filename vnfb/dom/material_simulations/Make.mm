@@ -11,13 +11,12 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 PROJECT = vnfb
-PACKAGE = dom
+PACKAGE = dom/material_simulations
 
 
 # directory structure
 
 BUILD_DIRS = \
-	material_simulations \
 
 OTHER_DIRS = \
 
@@ -36,11 +35,11 @@ all: export
 # export
 
 EXPORT_PYTHON_MODULES = \
-	Atom.py \
-	AtomicStructure.py \
-	Lattice.py \
+	BvKBond.py \
+	BvKComputation.py \
+	BvKModel.py \
 	__init__.py \
-	_.py \
+	phonon_calculators.py \
 
 
 #include doxygen/default.def

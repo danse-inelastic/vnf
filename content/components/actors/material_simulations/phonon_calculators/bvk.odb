@@ -1,0 +1,113 @@
+#!/usr/bin/env python
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                 Jiao Lin
+#                      California Institute of Technology
+#                      (C) 2006-2009  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+import luban.content as lc
+from luban.content import load, select
+
+from luban.components.AuthorizedActor import AuthorizedActor as base
+
+
+class Actor(base):
+
+
+    class Inventory(base.Inventory):
+
+        import pyre.inventory
+
+	atomicstructure_id = pyre.inventory.str('atomicstructure_id')
+
+        target = pyre.inventory.str('target')
+
+
+    def start(self, director):
+        sid = self.inventory.atomicstructure_id
+        if not sid:
+            return self.askForAtomicStructure(director)
+        return self.presentComputingTarget(director)
+
+
+    def presentComputingTarget(self, director):
+        doc = lc.document()
+
+        #
+        path = [
+            ('simulations', lc.load(actor='materialsimulation')),
+            ('phonons', lc.load(
+            actor='/'.join(self.name.split('/')[:-1]), routine='start',
+            atomicstructure_id=self.inventory.atomicstructure_id)),
+            ('bvk', lc.load(
+            actor=self.name, routine='start',
+            atomicstructure_id=self.inventory.atomicstructure_id)),
+            ]
+        view_indicator = director.retrieveVisual('view-indicator', path=path)
+        doc.add(view_indicator)
+
+        domaccess = director.retrieveDOMAccessor('atomicstructure')
+        matter = domaccess.getAtomicStructureRecord(id=self.inventory.atomicstructure_id)
+        matterlabel = matter.short_description
+        link = lc.link(label='Back to atomic structure %s' % matterlabel,
+                       onclick=load(actor='atomicstructure', routine='showOverview',
+                                    id=self.inventory.atomicstructure_id)
+                       )
+        doc.add(link)
+        
+        doc.paragraph(
+            text = ['To compute phonons for %s using bvk, please select a target' % matterlabel],
+            )
+        #
+        form = lc.form(title='Select a target'); doc.add(form)
+
+        from vnfb.dom.material_simulations.BvKComputation import targets
+        entries = targets
+        selector = form.radio(name='target', entries=entries)
+
+        #
+        form.submitbutton(label='OK')
+        form.onsubmit = lc.select(element=form).submit(
+            actor=self.name, routine='onSelectComputingTarget')
+        
+        return select(id='main-display-area').replaceContent(doc)
+
+
+    def onSelectComputingTarget(self, director):
+        target = self.inventory.target
+        routine = 'onConfiguring%sComputation' % target.capitalize()
+        return getattr(self, routine)(director)
+
+
+    def onConfiguringDosComputation(self, director):
+        return        
+
+
+    def onConfiguringDirectionaldispersionComputation(self, director):
+        return        
+
+
+    def onConfiguringDispersionComputation(self, director):
+        return        
+
+
+    def __init__(self, name='material_simulations/phonon_calculators/bvk'):
+        super(Actor, self).__init__(name)
+        return
+
+
+def actor(): return Actor()
+
+
+# version
+__id__ = "$Id$"
+
+# End of file 
+
