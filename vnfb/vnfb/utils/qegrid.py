@@ -114,6 +114,7 @@ class QEGrid:
 
         return colclass[col]
 
+
 __date__ = "$Dec 13, 2009 9:14:07 PM$"
 
 
