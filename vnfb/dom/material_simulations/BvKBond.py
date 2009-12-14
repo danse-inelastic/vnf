@@ -34,6 +34,14 @@ class BvKBond(object):
         dbtablename = 'bvkbonds'
 
 
+
+# view
+def customizeLubanObjectDrawer(self, drawer):
+    drawer.mold.sequence = ['A', 'B', 'Boffset', 'force_constant_matrix']
+BvKBond.customizeLubanObjectDrawer = customizeLubanObjectDrawer
+
+
+
 # version
 __id__ = "$Id$"
 

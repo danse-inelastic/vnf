@@ -22,8 +22,8 @@ class BvKComputation(object):
 
     class Inventory(InvBase):
         
-        matter = InvBase.d.reference(name='matter', targettype=Structure, owned=0)
-        model = InvBase.d.reference(name='model', targettype = BvKModel, owned=1)
+        matter = InvBase.d.reference(name='matter', targettype=None, targettypes=[Structure], owned=0)
+        model = InvBase.d.reference(name='model', targettype = BvKModel, owned=0)
         
 
 class BvKComputation_GetDOS(BvKComputation):
