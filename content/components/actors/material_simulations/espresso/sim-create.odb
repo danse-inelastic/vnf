@@ -14,6 +14,7 @@
 
 from vnfb.utils.qeconst import SIMULATIONS
 from vnfb.utils.orderedDict import OrderedDict
+from vnfb.utils.qegrid import QEGrid
 from vnf.dom.QESimulation import QESimulation
 
 from luban.content import select
@@ -72,8 +73,11 @@ class Actor(base):
         sB          = splitter.section()
 
         form        = Form(id='create-simulation-form') # , title='Create New Quantum Espresso Simulation'
-        table       = lc.grid()
-        form.add(table)
+        table       = QEGrid(lc.grid())
+        form.add(table.grid())
+
+#        table       = lc.grid()
+#        form.add(table)
 
         sname       = FormTextField(name = "sname", value = self.sname)
         simtype     = FormSelectorField(name="simtype",
@@ -85,13 +89,14 @@ class Actor(base):
         matter      = FormSelectorField(name="matter",
                                         entries=enumerate(["STUB",]))
 
-        self._addRow(table, "Simulation Name", sname)
-        self._addRow(table, "Simulation Type", simtype)
-        self._addRow(table, "Description", description)
-        self._addRow(table, "Label", label)
-        self._addRow(table, "Server", serverid)
-        self._addRow(table, "Atomic Structure", matter)
-        
+        table.addRow(("Simulation Name", sname))
+        table.addRow(("Simulation Type", simtype))
+        table.addRow(("Description", description))
+        table.addRow(("Label", label))
+        table.addRow(("Server", serverid))
+        table.addRow(("Atomic Structure", matter))
+
+        table.setColumnStyle(0, "qe-form-label")
 
         submit      = form.submitbutton(label="Create New Simulation")
         form.onsubmit   = select(element=form).submit(actor = 'material_simulations/espresso/sim-create',
@@ -123,14 +128,6 @@ class Actor(base):
         sim.createRecord(params)
 
         return load(actor='material_simulations/espresso/sim-view', id = sim.id)  # Redirection to the page
-
-
-    def _addRow(self, table, label, field, trclass = None, tdclasses = None):
-        row     = table.row()
-        cell    = row.cell(Class="qe-form-label")
-        cell.add(label)
-        cell    = row.cell()
-        cell.add(field)
 
 
     def _setServers(self, director):
