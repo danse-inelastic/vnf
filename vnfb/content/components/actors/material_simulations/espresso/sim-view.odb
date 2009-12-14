@@ -70,7 +70,7 @@ class Actor(base):
 
         table       = lc.grid(Class = "qe-table")
         grid        = QEGrid(table)
-#        table.Class = "qe-table"
+
         sB.add(table)
         self._showSimulationInfo(grid, sim)
 #        self._showSettings(director, table)
@@ -78,6 +78,7 @@ class Actor(base):
 #        self._showResults(director, table)
 #        self._showTasks(director, splitter, sim.type)
 
+        grid.setColumnStyle(0, "qe-cell-param")
         
         return doc
 
