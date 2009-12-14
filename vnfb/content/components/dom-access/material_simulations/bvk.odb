@@ -22,12 +22,57 @@ class Accessor(base):
         return
 
 
-    def getModel(self, id):
-        director = self.director
-        model = self.getRecordByID(BvKModel, id)
-        return BvKModelProxy(model, self)
+    def _getOrm(self):
+        orm = self.director.clerk.orm
+        orm(BvKModel)
+        return orm
+    orm = property(_getOrm)
+
+
+    def newModel(self, atomicstructure_id):
+        structdomacess = self.director.retrieveDOMAccessor('atomicstructure')
+        struct = structdomacess.getAtomicStructure(atomicstructure_id)
+        model = BvKModel()
+        model.matter = struct
+
+        # save to db
+        orm = self.orm
+        orm.save(model)
+        
+        return model
 
     
+    def getModelRecord(self, id):
+        return self.getRecordByID(self.orm(BvKModel), id)
+
+
+    def getModel(self, id):
+        return self.orm.load(BvKModel, id)
+
+
+    def getModelRecords(self, atomicstructure_id):
+        struct = self.director.retrieveDOMAccessor('atomicstructure').getAtomicStructureRecord(atomicstructure_id)
+        Table = self.orm(BvKModel)
+        return struct.getReferences(self.db, Table, refname='matter')
+
+
+    def getModels(self, atomicstructure_id):
+        rs = self.getModelRecords(atomicstructure_id)
+        return map(self.getModel, [r.id for r in rs])
+
+
+    def isModelEditable(self, id=None, modelrecord=None):
+        'check if a model is still editable'
+        if modelrecord is None:
+            modelrecord = self.getModelRecord(id)
+        return self.isModelReferred(modelrecord)
+
+
+    def isModelReferred(self, modelrecord):
+        'check if this model is referred by someone'
+        return modelrecord.globalpointer is not None
+
+
     
 class BvKModelProxy(object):
 
@@ -129,16 +174,8 @@ class M(Variable):
     def __init__(self, *indexes): self.indexes = indexes
     
 
-def newBond(domaccessor, **kwds):
-    r = domaccessor.insertNewRecordWithID(BvKBond)
-    for k, v in kwds.iteritems():
-        setattr(r, k, v)
-    domaccessor.updateRecordWithID(r)
-    return r
-
-
-from vnf.dom.ins.BvKModel import BvKModel
-from vnf.dom.ins.BvKBond import BvKBond
+from vnfb.dom.material_simulations.BvKModel import BvKModel
+from vnfb.dom.material_simulations.BvKBond import BvKBond
 
 import os, numpy
 

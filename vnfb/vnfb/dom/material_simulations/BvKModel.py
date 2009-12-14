@@ -20,13 +20,28 @@ from BvKBond import BvKBond
 
 class BvKModel(object):
 
+    matter = Structure()
+    short_description = ''
+    bonds = []
+    
+
     class Inventory(InvBase):
         
-        matter = InvBase.d.reference(name='matter', targettype=Structure, owned=0)
+        matter = InvBase.d.reference(name='matter', targettype=None, targettypes=[Structure], owned=0)
+        short_description = InvBase.d.str(name='short_description', label='description')
 
         bonds = InvBase.d.referenceSet(name='bonds', targettype=BvKBond, owned=1)
 
         dbtablename = 'bvkmodels'
+
+
+
+
+# view
+def customizeLubanObjectDrawer(self, drawer):
+    drawer.sequence = ['properties', 'bonds']
+BvKModel.customizeLubanObjectDrawer = customizeLubanObjectDrawer
+
 
 
 # !!! needs update

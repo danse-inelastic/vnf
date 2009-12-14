@@ -13,9 +13,9 @@ def tables():
     kernel_related = [
         'PhononDOS',
         'PhononDispersion',
-        'BvKBond',
-        'BvKComputation',
-        'BvKModel',
+        #'BvKBond',
+        #'BvKComputation',
+        #'BvKModel',
         'SQE',
         'VacfComputation',
         ]
