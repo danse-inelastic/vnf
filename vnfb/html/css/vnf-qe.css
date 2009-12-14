@@ -2,14 +2,26 @@
 This is CSS layout for Quantum Espresso pages
 */
 
+fieldset {
+    border: 0px;
+    padding: 10px;
+    margin: 0px;
+    background-color: white;
+}
+
+
 #qe-section-actions {
     margin-bottom: 15px;
 }
 
-#action-edit,
-#action-delete,
-#action-clone,
+
 #action-refresh-status,
+.qe-action-refresh,
+.qe-action-new,
+.qe-action-edit,
+.qe-action-clone,
+.qe-action-analyze,
+.qe-action-delete,
 .qe-run-task {
     padding: 2px 15px;
     -moz-border-radius: 5px;
@@ -18,21 +30,43 @@ This is CSS layout for Quantum Espresso pages
     margin-right: 10px;
 }
 
-#action-edit {
-    background-color: #1fff1f; /* deep green */
+a.qe-action-refresh,
+a.qe-action-new,
+a.qe-action-edit,
+a.qe-action-clone,
+a.qe-action-analyze,
+a.qe-action-delete {
+    text-decoration: none;
 }
 
-#action-delete {
-    background-color: #FF7700; /* light red */
+.qe-action-refresh {
+    background-color: #abff8d; /* light green, #dcf6db */
 }
 
-#action-clone {
+.qe-action-new {
+    background-color: #48f640; /* deep green */
+}
+
+.qe-action-edit {
+    background-color: #c2d6f9; /* light blue */
+}
+
+.qe-action-clone {
     background-color: #FFCC00; /* orange */
 }
 
+.qe-action-analyze {
+    background-color: yellow;
+}
+
+.qe-action-delete {
+    background-color: #FF7700; /* light red */
+}
+
+
 #action-refresh-status {
     float: left;
-    background-color: #8aff61;
+    background-color: #abff8d;   /* #8aff61; */
     margin: 30px 10px 10px 25px;
 }
 
@@ -124,7 +158,14 @@ a.qe-run-task {
 }
 
 .qe-cell-value {
+    
+}
 
+.qe-form-label {
+    width: 170px;
+    font-weight: bold;
+    vertical-align: top;
+    text-align: right;
 }
 
 .qe-task-header-change {
