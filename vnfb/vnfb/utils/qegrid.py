@@ -59,8 +59,6 @@ class QEGrid:
         if len(self._gridrows) == 0:    # Rows do not exist, create first column
             self._addFirstColumn(len(rows))
 
-        #print gridlen, rowslen
-
         if len(self._gridrows) != len(rows):  # Row sizes do not match
             raise
 
