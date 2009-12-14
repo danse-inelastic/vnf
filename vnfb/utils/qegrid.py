@@ -11,21 +11,18 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
-#from luban.content.Grid import Grid
-
-class QEGrid:#(Grid):
+class QEGrid:
     """
     QEGrid  - thin convenient wrapper for luban Grid.
 
     Notes:
-        - QEGrid basically consitst of two data structures: Grid and self._grid
-          Grid refers to the layout table (layout grid), whereas self._grid
-          contains data structure for table cells manipulation (data grid)
+        1. QEGrid basically consitst of two data structures:
+           - grid that refers to the layout table (layout grid, or self._grid), and
+           - grid that stores table rows and cells as a list data structure (data grid, or self._dgrid)
         - Can assign class styles only except in the constructor. Need to assign ids?
     """
 
     def __init__(self, grid):
-        #super(QEGrid, self).__init__(**kwds)
         self._grid  = grid
         self._dgrid = []
 
@@ -38,17 +35,11 @@ class QEGrid:#(Grid):
             trclass - class applied to row
             tdclass - tupple of classes applied to the column
         """
-        row     = self._grid.row()
-        cell    = row.cell(Class="qe-cell-param")
-        cell.add(columns[0])
-        cell    = row.cell(Class="qe-cell-value")
-        cell.add(columns[1])
 
-
-#        (row, drow)  = self._addRow()#**kwds
-#        for c in range(len(columns)):
-#            cell    = self._addCell(row, drow, self._getStyle(c, colclass))
-#            cell.add(columns[c])
+        (row, drow)  = self._addRow()   #**kwds
+        for c in range(len(columns)):
+            cell    = self._addCell(row, drow, self._getStyle(c, colclass))
+            cell.add(columns[c])
             
 
 
@@ -68,6 +59,15 @@ class QEGrid:#(Grid):
         self._dgrid[row].Class    = cls
 
 
+    def setGridStyle(self, cls = None, id = None):
+        "Sets style for the whole grid"
+        if cls:
+            self._grid.Class    = cls
+
+        if id:
+            self._grid.id       = id
+
+
     def createTable(self, rownum, colnum):
         """Create table's structure
 
@@ -79,12 +79,16 @@ class QEGrid:#(Grid):
             
             for j in range(colnum):
                 self._addCell(row, drow)
-                #drow.append(row.cell())
+
+
+    def grid(self):
+        "Return layout grid (in case you need to use it for other purposes)"
+        return self._grid
 
 
     def _addRow(self, **kwds):
         "Appends row to grid"
-        row    = self.row(**kwds)   # layout row
+        row    = self._grid.row(**kwds)   # layout row
         drow    = []                # data row
         self._dgrid.append(drow)
         return (row, drow)
