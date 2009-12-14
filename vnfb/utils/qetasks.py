@@ -13,6 +13,7 @@
 
 from vnfb.utils.qeconst import SIMCHAINS
 from vnfb.utils.qetaskcell import QETaskCell
+from vnfb.utils.qegrid import QEGrid
 
 import luban.content as lc
 from luban.content.Splitter import Splitter
@@ -35,47 +36,23 @@ class QETasks:
         orderedInputs   = self._orderInput(self._simlist, inputs)
 
         tasknum         = len(self._simlist)
-        table           = self._setTable(tasknum)
+        table           = QEGrid(lc.grid(Class="qe-tasks-table"))
 
-        # Populate table
         for i in range(tasknum):
-            self._setTaskCell(i)
+            self._setTaskCell(table, i)
+            # Special layout for action buttons (e.g. "Run Task")
+            table.setCellStyle(2, i, "qe-action-task")
 
-        return table
-
-
-    def _setTable(self, tasknum):
-        table           = lc.grid(Class="qe-tasks-table")     #Splitter(orientation='horizontal')
-
-        # self.cell[m][n] - specifies the (m, n)-th cell
-        # m - row index, n - column index
-        self.cell  = []
-
-        # Create table structure
-        for i in range(3):
-            rows       = []
-            row     = table.row()
-
-            for j in range(tasknum):   # 3 columns
-                if i != 2:
-                    rows.append(row.cell())
-                else:
-                    # Special layout for action buttons (e.g. "Run Task")
-                    rows.append(row.cell(Class="qe-action-task"))
-
-            self.cell.append(rows)
-
-        return table
+        return table.grid()
 
 
-    def _setTaskCell(self, colnum):
+    def _setTaskCell(self, table, colnum):
         "Populates the task's cell"
-        
 
         tc      = QETaskCell(self._simlist[colnum])
-        self.cell[0][colnum].add(tc.header())     # Simulation type
-        self.cell[1][colnum].add(tc.taskInfo()) # Paragraph(text="Input: ni.scf.in"))
-        self.cell[2][colnum].add(tc.action())
+        rows    = (tc.header(), tc.taskInfo(), tc.action())
+        table.addColumn(rows)
+
         
 
 #

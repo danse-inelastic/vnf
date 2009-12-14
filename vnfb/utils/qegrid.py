@@ -23,17 +23,18 @@ class QEGrid:
     """
 
     def __init__(self, grid):
-        self._grid  = grid
-        self._dgrid = []
+        self._grid      = grid
+        self._gridrows  = []    # holds rows of the grid
+        self._dgrid     = []
 
 
     def addRow(self, columns, colclass = None):   #**kwds rowclass = None, rowid = None
-        """Adds row with two cells to the table
+        """Appends row to the table
 
         Parameters:
             columns - tuple of columns in the row
-            trclass - class applied to row
-            tdclass - tupple of classes applied to the column
+            rowclass - class applied to row
+            colclass - tupple of classes applied to the column
         """
 
         (row, drow)  = self._addRow()   #**kwds
@@ -42,6 +43,33 @@ class QEGrid:
             cell.add(columns[c])
             
 
+    def addColumn(self, rows, rowclass = None):
+        """Appends column to the table
+        
+        Parameters:
+            rows     - tuple of rows in the column
+            rowclass - class applied to row
+        """
+        if rows is None:
+            return  # do nothing
+
+        gridlen = len(self._gridrows)   # Rows size for grid
+        rowslen = len(rows)             # Rows size provided
+
+        if len(self._gridrows) == 0:    # Rows do not exist, create first column
+            self._addFirstColumn(len(rows))
+
+        #print gridlen, rowslen
+
+        if len(self._gridrows) != len(rows):  # Row sizes do not match
+            raise
+
+        for r in range(len(rows)):
+            cell    = self._addCell(self._gridrows[r],
+                                    self._dgrid[r],
+                                    self._getStyle(r, rowclass))
+            cell.add(rows[r])
+        
 
     def setCellStyle(self, row, col, cls):
         "Sets style for the cells (row, col)"
@@ -56,7 +84,7 @@ class QEGrid:
 
     def setRowStyle(self, row, cls):
         "Sets style for the row: row"
-        self._dgrid[row].Class    = cls
+        self._gridrows[row].Class    = cls
 
 
     def setGridStyle(self, cls = None, id = None):
@@ -88,10 +116,17 @@ class QEGrid:
 
     def _addRow(self, **kwds):
         "Appends row to grid"
-        row    = self._grid.row(**kwds)   # layout row
-        drow    = []                # data row
+        row    = self._grid.row(**kwds) # layout row
+        drow   = []                    # data row
+        self._gridrows.append(row)
         self._dgrid.append(drow)
         return (row, drow)
+
+
+    def _addFirstColumn(self, rownum):
+        "Creates rows in the table, particularly useful for adding columns"
+        for r in range(rownum):
+            self._addRow()
 
 
     def _addCell(self, row, drow, cls = None):
