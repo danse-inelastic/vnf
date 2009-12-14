@@ -76,7 +76,7 @@ class Actor(base):
         self._showTasks(director, splitter, sim.type)
 
         # Should go after all of the rows are added!
-        table.setColumnStyle(0, "qe-cell-param")    
+        table.setColumnStyle(0, "qe-cell-param")
         
         return doc
 

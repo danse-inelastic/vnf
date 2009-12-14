@@ -12,6 +12,7 @@
 #
 
 from vnfb.utils.qeutils import stamp2date
+from vnfb.utils.qegrid import QEGrid
 
 from luban.content import select
 from luban.content.Paragraph import Paragraph
@@ -87,20 +88,19 @@ class Actor(base):
                     
     def showConfig(self, document, settings):
         (self._parser, fp)    = self.parser(settings)
-        table   = lc.grid()
-        document.add(table)
+        
+        table   = QEGrid(lc.grid())
+        document.add(table.grid())
 
-        from vnfb.utils.qeutils import addRow
-
-        addRow(table, 'File Name: ', self.filename(settings))
-        addRow(table, 'Server Name: ', self._get("server", "server-name"))
-        addRow(table, "Number of Processors: ", self._get("server", "num-proc"))
-        addRow(table, "Number of Nodes: ", self._get("server", "num-nodes"))
-        addRow(table, "Processors Per Node: ", self._get("server", "proc-per-node"))
-        addRow(table, "Npool: ", self._get("server", "npool"))
-        addRow(table, "Executable: ", self._get("server", "executable"))
-        addRow(table, "Additional Parameters: ", self._get("server", "params"))
-        addRow(table, "Modules: ", self._get("server", "modules"))
+        table.addRow(('File Name: ', self.filename(settings)))
+        table.addRow(('Server Name: ', self._get("server", "server-name")))
+        table.addRow(("Number of Processors: ", self._get("server", "num-proc")))
+        table.addRow(("Number of Nodes: ", self._get("server", "num-nodes")))
+        table.addRow(("Processors Per Node: ", self._get("server", "proc-per-node")))
+        table.addRow(("Npool: ", self._get("server", "npool")))
+        table.addRow(("Executable: ", self._get("server", "executable")))
+        table.addRow(("Additional Parameters: ", self._get("server", "params")))
+        table.addRow(("Modules: ", self._get("server", "modules")))
 
 
     def parser(self, settings):

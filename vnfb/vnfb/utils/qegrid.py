@@ -53,9 +53,6 @@ class QEGrid:
         if rows is None:
             return  # do nothing
 
-        gridlen = len(self._gridrows)   # Rows size for grid
-        rowslen = len(rows)             # Rows size provided
-
         if len(self._gridrows) == 0:    # Rows do not exist, create first column
             self._addFirstColumn(len(rows))
 

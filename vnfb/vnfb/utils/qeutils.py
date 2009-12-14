@@ -89,40 +89,6 @@ def stamp2date(stamp):
     return ""
 
 
-# Bad design
-def addRow(table, first, second, trclass = None, tdclass = None):
-    """Adds row with two cells to the table
-
-    Parameters:
-        first   - first column in the row
-        second  - second column in the row
-        trclass - class applied to row
-        tdclass - tupple of classes applied to the column
-    """
-    row     = table.row()
-    cell    = row.cell(Class="qe-cell-param")
-    cell.add(first)
-    cell    = row.cell(Class="qe-cell-value")
-    cell.add(second)
-
-
-#def addRow(table, param, value):
-#    "Adds row with two cells to the table"
-#    row     = table.row()
-#    cell    = row.cell(Class="qe-cell-param")
-#    cell.add(param)
-#    cell    = row.cell(Class="qe-cell-value")
-#    cell.add(value)
-
-
-# Bad design
-def addCell(table, item):
-    "Adds cell to the table"
-    row     = table.row()
-    cell    = row.cell()
-    cell.add(item)
-
-
 def makedirs(path):
     """Recursively creates directory specified by path"""
     import os

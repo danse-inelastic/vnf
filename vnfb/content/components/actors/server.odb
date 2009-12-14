@@ -11,8 +11,8 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
-from vnfb.utils.qeutils import addCell
-from vnfb.utils.qeutils import addRow
+from vnfb.utils.qegrid import QEGrid
+
 from luban.content.Link import Link
 from luban.content import select
 from luban.content import load
@@ -46,8 +46,9 @@ class Actor(base):
         sA.add(viewIndicator(director))
 
         sB          = splitter.section()
-        table       = lc.grid(Class="qe-table")
-        sB.add(table)
+
+        table       = QEGrid(lc.grid(Class="qe-table"))
+        sB.add(table.grid())
         self._showServers(table, servers)
 
         return doc
@@ -75,8 +76,8 @@ class Actor(base):
         sA.add(viewIndicator(director))
 
         sB          = splitter.section()
-        table       = lc.grid(Class="qe-table")
-        sB.add(table)
+        table       = QEGrid(lc.grid(Class="qe-table"))
+        sB.add(table.grid())
         self._showServerInfo(table, server)
 
         return doc
@@ -94,17 +95,17 @@ class Actor(base):
                                      routine    = "view",
                                      id         = s.id)
                         )
-            addCell(table, link)
+            table.addRow((link,))
 
 
     def _showServerInfo(self, table, server):
         "Shows servers information"
         if server:
-            addRow(table, "Server Name: ", server.sname)
-            addRow(table, "Address Name: ", server.address)
-            addRow(table, "Description: ", server.short_description)
-            addRow(table, "Number of Nodes: ", str(server.nodes))
-            addRow(table, "Cores per Node: ", str(server.corespernode))
+            table.addRow(("Server Name: ", server.sname))
+            table.addRow(("Address Name: ", server.address))
+            table.addRow(("Description: ", server.short_description))
+            table.addRow(("Number of Nodes: ", str(server.nodes)))
+            table.addRow(("Cores per Node: ", str(server.corespernode)))
 
 
     def __init__(self):
