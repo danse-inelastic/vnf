@@ -110,16 +110,12 @@ class Actor(base):
 
 
     def startform(self, director):
-
         id = self.inventory.id
-        if id:
-            gulpSimSettings = director.clerk.orm.load(type, id)
-            #record = self._getSimulation(director)
-            #type = self.inventory.type = record.name
+        from memd.gulp.GulpSettings import GulpSettings
+        if id:            
+            gulpSettings = director.clerk.orm.load(GulpSettings, id)
         else:
-            from 
-            record = GulpSimulation()
-            type = self.inventory.type = 'gulpsimulations'
+            gulpSettings = GulpSettings()
         
         from luban.content.Splitter import Splitter
         from luban.content.Form import Form
