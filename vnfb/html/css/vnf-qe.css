@@ -76,7 +76,7 @@ a.qe-action-delete {
 }
 
 .qe-run-task {
-    background-color: #1fff1f; /* deep green */
+    background-color: #48f640; /* deep green #1fff1f*/
 }
 
 a.qe-run-task {
@@ -182,7 +182,7 @@ a.qe-run-task {
 }
 
 #qe-check-results {
-    background-color: #8aff61; /* light green */
+    background-color: #abff8d; /* light green #8aff61*/
 }
 
 #qe-analyze-results {
