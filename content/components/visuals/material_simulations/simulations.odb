@@ -12,7 +12,7 @@
 #
 
 import luban.content as lc
-from vnfb.utils.qeutils import addRow
+from vnfb.utils.qegrid import QEGrid
 
 from luban.content import load, select
 
@@ -23,11 +23,12 @@ def visual(director):
     sA.add(viewIndicator(director))
 
     sB          = splitter.section()
-    table       = lc.grid(Class="qe-table")
-    sB.add(table)
-
-    showSimulations(table)
     
+    table       = QEGrid(lc.grid(Class="qe-table"))
+    sB.add(table.grid())
+    showSimulations(table)
+
+    table.setColumnStyle(0, "qe-cell-param")
     return doc
 
 
@@ -48,7 +49,7 @@ def showSimulations(table):
                     "Open source package for electronic-structure calculations and materials modeling using density-functional theory, plane waves, and pseudopotentials"))
 
     for p in packages:
-        addRow(table, p[0], p[1])
+        table.addRow((p[0], p[1]))
 
 
 def viewIndicator(director):

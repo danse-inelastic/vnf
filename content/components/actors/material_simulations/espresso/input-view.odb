@@ -12,7 +12,7 @@
 #
 
 from vnfb.utils.qeutils import stamp2date
-from vnfb.utils.qeutils import addRow
+from vnfb.utils.qegrid import QEGrid
 
 from luban.content import select
 from luban.content.Paragraph import Paragraph
@@ -41,6 +41,7 @@ class Actor(base):
         fname       = pyre.inventory.str('fname', default='')
         description = pyre.inventory.str('description', default='')
         text        = pyre.inventory.str('text', default='')
+
 
     def default(self, director):
         return select(id='main-display-area').replaceContent(self.content(director))
@@ -90,16 +91,17 @@ class Actor(base):
 
 
     def showConfig(self, document, input):
-        table   = lc.grid()
-        document.add(table)
 
-        addRow(table, 'File Name: ', input.filename)
-        addRow(table, "Type: ", input.type)
-        addRow(table, "Description: ", input.description)
-        addRow(table, "Parser: ", input.parser)
-        addRow(table, "Created: ", stamp2date(input.timeCreated))
-        addRow(table, "Last Modified: ", stamp2date(input.timeModified))
-        addRow(table, "Text: ", input.text)
+        table   = QEGrid(lc.grid())
+        document.add(table.grid())
+
+        table.addRow(('File Name: ', input.filename))
+        table.addRow(("Type: ", input.type))
+        table.addRow(("Description: ", input.description))
+        table.addRow(("Parser: ", input.parser))
+        table.addRow(("Created: ", stamp2date(input.timeCreated)))
+        table.addRow(("Last Modified: ", stamp2date(input.timeModified)))
+        table.addRow(("Text: ", input.text))
 
 
     def filename(self, input):
