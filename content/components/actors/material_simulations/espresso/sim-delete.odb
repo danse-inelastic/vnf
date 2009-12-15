@@ -11,14 +11,14 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
+from vnfb.utils.qegrid import QEGrid
+
 from luban.content import select
 from luban.content.Paragraph import Paragraph
 from luban.content.Document import Document
-from luban.content.HtmlDocument import HtmlDocument
 from luban.content import load
-from luban.content.Link import Link
 from luban.content.Form import Form
-from luban.content.Button import Button
+from luban.content.FormSubmitButton import FormSubmitButton
 
 import luban.content as lc
 from luban.components.AuthorizedActor import AuthorizedActor as base
@@ -57,50 +57,55 @@ class Actor(base):
         sB          = splitter.section()
 
         document = Document(title='Delete Simulation: %s' % sim.sname)
-        sB.add(Paragraph(text="Deleting simulation will also delete jobs and configuration inputs."))
+        sB.add(Paragraph(text="Warning: Deleting simulation will also delete settings and simulation results!"))
         sB.add(Paragraph(text="Are you sure you want to delete the simulation?"))
-
-        form        = Form(title='Delete Quantum Espresso Simulation')
-        submit      = form.submitbutton(label="Delete")
-        form.onsubmit   = select(element=form).submit(actor = 'material_simulations/espresso/sim-delete', routine = 'deleteRecord', id=sim.id)
-
-        # TODO: "Cancel" button looks UGLY
-        cancel      = lc.link(label="Cancel")
-        cancel.onclick = load(actor = 'material_simulations/espresso/sim-view', id=self.id)
-        form.add(cancel)
-
-        sB.add(form)
+        sB.add(self._setForm())
 
         return doc
 
+
+    def _setForm(self):
+        form        = Form()
+
+        submit      = FormSubmitButton(label="Delete")
+        cancel      = lc.button(label="Cancel")
+        cancel.onclick = load(actor = 'material_simulations/espresso/sim-view', id=self.id)
+
+        st          = QEGrid(lc.grid()) # Submit Table
+        st.addRow((submit, cancel), ("qe-action-accept", "qe-action-cancel"))
+
+        form.add(st.grid())
+        form.onsubmit   = select(element=form).submit(actor     = 'material_simulations/espresso/sim-delete',
+                                                      routine   = 'deleteRecord',
+                                                      id        = self.id)
+
+        return form
+
+
     def deleteRecord(self, director):
         # Order in which records are deleted is important. See the database schema
-        self.deleteConfigs(director)
-        self.deleteJobs(director)
-        self.deleteSim(director)
+        self._deleteSettings(director)
+        self._deleteResults(director)
+        self._deleteSimulation(director)
         
-        # Delete Matter?
-        return load(actor='materialsimulation')  # Redirection to the page
+        return load(actor='materialsimulation') 
 
-    def deleteConfigs(self, director):
+
+    def _deleteSettings(self, director):
         """Deletes config records"""
-        configs         = director.clerk.getQEConfigurations(where="simulationid='%s'" % self.id)
-        if configs:
-            for c in configs:
-                c.setDirector(director)
-                c.deleteRecord()
-        
-
-    def deleteJobs(self, director):
-        """Deletes jobs"""
-        jobs            = director.clerk.getQEJobs(where="simulationid='%s'" % self.id)
-        if jobs:
-            for j in jobs:
-                j.setDirector(director)
-                j.deleteRecord()
+        settings         = director.clerk.getQESettings(where="simulationid='%s'" % self.id)
+        if settings:
+            s   = settings[0]
+            s.setDirector(director)
+            s.deleteRecord()
 
 
-    def deleteSim(self, director):
+    def _deleteResults(self, director):
+        "Delete simulation results. E.g. clean up directory"
+        pass
+
+
+    def _deleteSimulation(self, director):
         """Finally, deletes simulation"""
         sim             = director.clerk.getQESimulations(id=self.id)
         if sim:
@@ -129,4 +134,17 @@ def actor():
 
 __date__ = "$Nov 2, 2009 3:19:17 PM$"
 
+
+
+# ************************ DEAD CODE ******************
+
+#    def deleteJobs(self, director):
+#        """Deletes jobs"""
+#        jobs            = director.clerk.getQEJobs(where="simulationid='%s'" % self.id)
+#        if jobs:
+#            for j in jobs:
+#                j.setDirector(director)
+#                j.deleteRecord()
+#
+#
 
