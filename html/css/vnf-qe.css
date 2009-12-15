@@ -161,17 +161,38 @@ a.qe-run-task {
     
 }
 
+/* Style for QE forms */
+
+.qe-form {
+    border-collapse: collapse;
+}
+
 .qe-form-label {
     width: 170px;
     font-weight: bold;
     vertical-align: top;
     text-align: right;
+    padding-top: 5px;
+    padding-right: 5px;
+}
+
+.qe-form-field div {
+    margin: -2px;
 }
 
 .qe-task-header-change {
     text-align: right;
 }
 
+.qe-action-accept {
+
+}
+
+.qe-action-cancel {
+    padding-top: 5px;
+}
+
+/* Change? */
 #qe-check-results,
 #qe-analyze-results {
     margin-left: 20px;

@@ -112,8 +112,8 @@ class Actor(base):
     def _showSimulationInfo(self, table, sim):
         """Shows simulation data"""
         if sim: # ?
-            table.addRow(('Description: ', sim.short_description))
             table.addRow(('Type: ', sim.type))
+            table.addRow(('Description: ', sim.short_description))
             table.addRow(('Package: ', sim.package))
             table.addRow(('Label: ', sim.label))
             table.addRow(('Time Created: ', stamp2date(sim.date)))
