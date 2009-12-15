@@ -40,11 +40,11 @@ a.qe-action-delete {
 }
 
 .qe-action-refresh {
-    background-color: #abff8d; /* light green, #dcf6db */
+    background-color: #abff8d; /* #abff8d - light green, #dcf6db */
 }
 
 .qe-action-new {
-    background-color: #48f640; /* deep green */
+    background-color: #c2d6f9; /* #48f640 - deep green */
 }
 
 .qe-action-edit {
@@ -52,15 +52,15 @@ a.qe-action-delete {
 }
 
 .qe-action-clone {
-    background-color: #FFCC00; /* orange */
+    background-color: #c2d6f9; /* #FFCC00 - orange */
 }
 
 .qe-action-analyze {
-    background-color: yellow;
+    background-color: #c2d6f9; /* yellow */
 }
 
 .qe-action-delete {
-    background-color: #FF7700; /* light red */
+    background-color: #c2d6f9; /* #FF7700 - light red */
 }
 
 

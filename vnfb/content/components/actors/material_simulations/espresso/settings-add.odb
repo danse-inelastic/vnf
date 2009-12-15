@@ -11,14 +11,16 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
-from vnf.dom.QEConfiguration import QEConfiguration
-from vnfb.utils.qeconst import SERVERS
+from vnf.dom.QESetting import QESetting
+from vnfb.utils.qegrid import QEGrid
+from vnfb.utils.serverlist import ServerList
 
 from luban.content import select
-from luban.content.Document import Document
 from luban.content import load
 from luban.content.Form import Form
-from luban.content.Button import Button
+from luban.content.FormSelectorField import FormSelectorField
+from luban.content.FormTextField import FormTextField
+from luban.content.FormSubmitButton import FormSubmitButton
 
 import luban.content as lc
 from luban.components.AuthorizedActor import AuthorizedActor as base
@@ -29,16 +31,15 @@ class Actor(base):
     class Inventory(base.Inventory):
         import pyre.inventory
         id          = pyre.inventory.str('id', default='')          # Simulation Id
-        filename    = pyre.inventory.str('filename', default='')
+        sname       = pyre.inventory.str('sname', default='')
         description = pyre.inventory.str('description', default='') # Not used
-        servername  = pyre.inventory.str('servername', default='')  # Remove
         numproc     = pyre.inventory.int('numproc', default=0)
         numnodes    = pyre.inventory.int('numnodes', default=0)
-        procpernode = pyre.inventory.int('procpernode', default=0)
         npool       = pyre.inventory.int('npool', default=0)
         executable  = pyre.inventory.str('executable', default='')
         params      = pyre.inventory.str('params', default='')
         modules     = pyre.inventory.str('modules', default='')
+        text        = pyre.inventory.str('text', default='')
 
 
     def default(self, director):
@@ -46,7 +47,7 @@ class Actor(base):
 
 
     def content(self, director):
-        self._sim       = director.clerk.getQESimulations(id = self.id)
+        sim       = director.clerk.getQESimulations(id = self.id)
 
         def viewIndicator(director):
             path = []
@@ -64,73 +65,76 @@ class Actor(base):
         sA          = splitter.section()
         sA.add(viewIndicator(director))
         sB          = splitter.section()
+        sB.add(self._setForm(director, sim))
+
+        return doc
 
 
-        form            = Form(id="form-vinil")
-        filename        = form.text(name="filename", label='File Name', value=self.filename)
-        servername      = form.selector(name="servername", label='Server Name', entries=enumerate(SERVERS)) # value?
-        numproc         = form.text(name="numproc", label='Number of Processors', value=self.numproc)
-        numnodes        = form.text(name="numnodes", label='Number of Nodes', value=self.numnodes)
-        procpernode     = form.text(name="procpernode", label='Processors Per Node', value=self.procpernode)
-        npool           = form.text(name="npool", label='Npool', value=self.npool)
-        executable      = form.text(name="executable", label='Executable', value=self.executable)
-        params          = form.text(name="params", label='Additional Parameters', value=self.params)
-        modulesespresso    = form.text(name="modules", label='Modules', value=self.modules)
+    def _setForm(self, director, sim):
+        "Sets create new settings form"
+        # Set servers first
+        servers     = ServerList(director)
+        serversList = servers.list()
 
-        submit          = form.submitbutton(label="Create Settings Configuration")
+        form        = Form(id='create-simulation-form')
+        table       = QEGrid(lc.grid(Class="qe-form"))
+        form.add(table.grid())
+
+        sname           = FormTextField(name = "sname", value = self.sname)
+        description     = FormTextField(name = "description", value=self.description)   # Make as textarea
+        numproc         = FormTextField(name = "numproc", value=self.numproc)
+        numnodes        = FormTextField(name = "numnodes", value=self.numnodes)
+        npool           = FormTextField(name = "npool", value=self.npool)
+        executable      = FormTextField(name = "executable", value=self.executable)
+        params          = FormTextField(name = "params", value=self.params)
+        modules         = FormTextField(name = "modules", value=self.modules)
+
+        submit      = FormSubmitButton(label="Create Settings Configuration")
+        cancel      = lc.button(label="Cancel")
+        cancel.onclick  = load(actor = 'material_simulations/espresso/sim-view', id=self.id)
+
+        st          = QEGrid(lc.grid()) # Submit Table
+        st.addRow((submit, cancel), ("qe-action-accept", "qe-action-cancel"))
+
+        table.addRow(("Name:", sname))
+        table.addRow(("Description:", description))
+        table.addRow(("Number of Processors:", numproc))
+        table.addRow(("Number of Nodes:", numnodes))
+        table.addRow(("Npool:", npool))
+        table.addRow(("Executable:", executable))
+        table.addRow(("Additional Parameters:", params))
+        table.addRow(("Modules:", modules))
+        
+        table.addRow(("", st.grid()))
+
+        table.setColumnStyle(0, "qe-form-label")
+        table.setColumnStyle(1, "qe-form-field")
+
         form.onsubmit   = select(element=form).submit(actor     = 'material_simulations/espresso/settings-add',
                                                       routine   = 'createRecord',
                                                       id        = self.id)
 
-        # TODO: "Cancel" button looks UGLY
-        cancel          = lc.link(label="Cancel")
-        cancel.onclick  = load(actor = 'material_simulations/espresso/sim-view', id=self.id)
-        form.add(cancel)
-        sB.add(form)
-
-        return doc
+        return form
 
 
     def createRecord(self, director):
         """Create settings record"""
         params  = {"simulationid":  self.id,
-                   "filename":      self.filename,
-                   "type":          "settings",
-                   "parser":        "ConfigParser",
-                   "text":          self._text()}
-                   #"description":   self.description,  # I don't really need description at this point!
-
-        settings     = QEConfiguration()
+                   "sname":         self.sname,
+                   "description":   self.description,  # I don't really need description at this point!
+                   "numproc":       self.numproc,
+                   "numnodes":      self.numnodes,
+                   "npool":         self.npool,
+                   "executable":    self.executable,
+                   "params":        self.params,
+                   "modules":       self.modules
+                   # "text":    self.text
+                  }
+        settings     = QESetting()
         settings.setDirector(director)
-
         settings.createRecord(params)
+        
         return load(actor='material_simulations/espresso/sim-view', id=self.id)
-
-
-    def _text(self):
-        """Returns text based on set parameters"""
-        import ConfigParser
-        import StringIO
-
-        parser  = ConfigParser.ConfigParser()
-        fp  = StringIO.StringIO()
-        parser.read(fp)
-
-        if parser:
-            parser.add_section("server")
-            parser.set("server", "server-name", SERVERS[int(self.servername)])
-            parser.set("server", "num-proc", self.numproc)
-            parser.set("server", "num-nodes", self.numnodes)
-            parser.set("server", "proc-per-node", self.procpernode)
-            parser.set("server", "npool", self.npool)
-            parser.set("server", "executable", self.executable)
-            parser.set("server", "params", self.params)
-            parser.set("server", "modules", self.modules)
-
-            parser.write(fp)
-            return fp.getvalue()
-
-        return ''
 
 
     def __init__(self):
@@ -142,16 +146,15 @@ class Actor(base):
     def _configure(self):
         super(Actor, self)._configure()
         self.id             = self.inventory.id
-        self.filename       = self.inventory.filename
+        self.sname          = self.inventory.sname
         self.description    = self.inventory.description
-        self.servername     = self.inventory.servername
         self.numproc        = self.inventory.numproc
         self.numnodes       = self.inventory.numnodes
-        self.procpernode    = self.inventory.procpernode
         self.npool          = self.inventory.npool
         self.executable     = self.inventory.executable
         self.params         = self.inventory.params
         self.modules        = self.inventory.modules
+        self.text           = self.inventory.text
 
 
     def _init(self):
