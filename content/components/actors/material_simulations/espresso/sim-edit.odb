@@ -16,6 +16,9 @@ TODO: Handle cases when:
     - simulation type changes (simtype)
     - server change (server)
     - matter changes
+
+Question:
+    - What happens to tasks?
 """
 
 from vnfb.utils.serverlist import ServerList

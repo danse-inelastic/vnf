@@ -117,7 +117,7 @@ class Actor(base):
         """Create simulation record"""
         self._verify()
         simtype = SIMULATIONS[int(self.simtype)]
-        servers     = ServerList(director)
+        servers = ServerList(director)
 
         params  = {"sname":         self.sname,
                    "type":          simtype,
