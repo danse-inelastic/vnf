@@ -48,6 +48,7 @@ EXPORT_PYTHON_MODULES = \
         qeserver.py \
         qeutils.py \
 	safe_eval.py \
+        serverlist.py \
 
 
 #include doxygen/default.def

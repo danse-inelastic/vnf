@@ -13,23 +13,19 @@
 
 
 from vnfb.utils.qeconst import SIMULATIONS
-from vnfb.utils.orderedDict import OrderedDict
 from vnfb.utils.qegrid import QEGrid
+from vnfb.utils.serverlist import ServerList
 from vnf.dom.QESimulation import QESimulation
 
 from luban.content import select
-from luban.content.Paragraph import Paragraph
-from luban.content.Document import Document
-from luban.content.HtmlDocument import HtmlDocument
 from luban.content import load
-from luban.content.Link import Link
-from luban.content.Splitter import Splitter
 from luban.content.FormSelectorField import FormSelectorField
-from luban.content.FormRadioBox import FormRadioBox
 from luban.content.FormTextField import FormTextField
 from luban.content.FormSubmitButton import FormSubmitButton
+from luban.content.FormRadioBox import FormRadioBox
 from luban.content.Form import Form
 
+#from vnfb.utils.orderedDict import OrderedDict
 
 import luban.content as lc
 from luban.components.AuthorizedActor import AuthorizedActor as base
@@ -43,7 +39,7 @@ class Actor(base):
         simtype     = pyre.inventory.str('simtype', default='')
         description = pyre.inventory.str('description', default='')
         label       = pyre.inventory.str('label', default='')
-        serverid    = pyre.inventory.str('serverid', default='')
+        server      = pyre.inventory.str('server', default='')
         matter      = pyre.inventory.str('matter', default='')
 
     def default(self, director):
@@ -77,10 +73,10 @@ class Actor(base):
         "Sets create new simulation form"
 
         # Set servers first
-        self._setServers(director)
-        serversList = self._serversList()
+        servers     = ServerList(director)
+        serversList = servers.list()
 
-        form        = Form(id='create-simulation-form') # , title='Create New Quantum Espresso Simulation'
+        form        = Form(id='create-simulation-form') 
         table       = QEGrid(lc.grid(Class="qe-form"))
         form.add(table.grid())
 
@@ -89,7 +85,7 @@ class Actor(base):
                                         entries=enumerate(SIMULATIONS))
         description = FormTextField(name="description", value=self.description)   # Make as textarea
         label       = FormTextField(name="label", value=self.label)
-        serverid    = FormSelectorField(name="serverid",
+        server      = FormSelectorField(name="server",
                                         entries=enumerate(serversList))
         matter      = FormSelectorField(name="matter",
                                         entries=enumerate(["Not Available",]))
@@ -104,7 +100,7 @@ class Actor(base):
         table.addRow(("Type:", simtype))
         table.addRow(("Description:", description))
         table.addRow(("Label:", label))
-        table.addRow(("Server:", serverid))
+        table.addRow(("Server:", server))
         table.addRow(("Atomic Structure:", matter))
         table.addRow(("", st.grid()))
 
@@ -121,14 +117,15 @@ class Actor(base):
         """Create simulation record"""
         self._verify()
         simtype = SIMULATIONS[int(self.simtype)]
-        self._setServers(director)
+
+        servers     = ServerList(director)
 
         params  = {"sname":         self.sname,
                    "type":          simtype,
                    "creator":       director.sentry.username,
                    "short_description":   self.description,
                    "label":         self.label,
-                   "serverid":      self._serverId(self.serverid)
+                   "serverid":      servers.id(self.server)
                    #"matter":        self.matter    # Doesn't work at this moment
                    }
         sim     = QESimulation()
@@ -137,31 +134,6 @@ class Actor(base):
 
         return load(actor='material_simulations/espresso/sim-view', id = sim.id)  # Redirection to the page
 
-
-    def _setServers(self, director):
-        "Set servers from the database"
-        servers     = director.clerk.getServers()
-        self._servers = OrderedDict()
-        for s in servers:
-            # I suppose that short_description serves as a name
-            # {id: short_description} pair
-            self._servers[s.id]    = s.address
-
-        return self._servers
-
-
-    def _serversList(self):
-        "Returns list of server names"
-        return self._servers.values()
-
-
-    def _serverId(self, i):
-        "Return server's id"
-        keys    = self._servers.keys()
-        #if len(keys) < i + 1 and i >= 0:
-        #    return None
-        # Check if i-th element is present
-        return keys[int(i)]
 
     # stub
     def _verify(self):
@@ -188,7 +160,7 @@ class Actor(base):
         self.simtype     = self.inventory.simtype
         self.description = self.inventory.description
         self.label       = self.inventory.label
-        self.serverid    = self.inventory.serverid
+        self.server      = self.inventory.server
         self.matter      = self.inventory.matter
 
         return

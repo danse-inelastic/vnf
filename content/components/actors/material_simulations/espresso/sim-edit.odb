@@ -16,11 +16,10 @@ from vnfb.utils.qeutils import timestamp, ifelse
 from vnfb.utils.qeconst import PACKAGES, SIMULATIONS, TYPES, SIMCHAINS
 
 from luban.content import select
-from luban.content.Paragraph import Paragraph
-from luban.content.Document import Document
-from luban.content.HtmlDocument import HtmlDocument
 from luban.content import load
-from luban.content.Link import Link
+from luban.content.FormSelectorField import FormSelectorField
+from luban.content.FormTextField import FormTextField
+from luban.content.FormSubmitButton import FormSubmitButton
 from luban.content.Form import Form
 from luban.content.Button import Button
 
@@ -68,26 +67,69 @@ class Actor(base):
         types       = []
         types.append(sim.type)
 
-        form        = Form(title='Edit Quantum Espresso Simulation')
-        sname       = form.text(name="sname", label='Simulation Name', value=sim.sname)
-        simtype     = form.selector(name="simtype", label='Simulation Type',
-                                    entries=enumerate(SIMULATIONS),
-                                    selection=self.simtypeValue(sim.type))
-        description = form.text(name="description", label='Description', value=sim.short_description)   # Make as textarea
-        label       = form.text(name="label", label='Label', value=sim.label)
-        submit      = form.submitbutton(label="Save Changes")
-        form.onsubmit   = select(element=form).submit(actor = 'material_simulations/espresso/sim-edit',
-                                                      routine = 'updateRecord',
-                                                      id=sim.id)
-
-        # TODO: "Cancel" button looks UGLY
-        cancel      = lc.link(label="Cancel")
-        cancel.onclick = load(actor = 'material_simulations/espresso/sim-view', id=self.id)
-        form.add(cancel)
-        sB.add(form)
+        sB.add(self._setForm(director, sim))
 
         return doc
     
+
+    def _setForm(self, director, sim):
+
+        # Set servers first
+        self._setServers(director)
+        serversList = self._serversList()
+
+        form        = Form()
+        table       = QEGrid(lc.grid(Class="qe-form"))
+        form.add(table.grid())
+
+        sname       = FormTextField(name = "sname", value = sim.sname)
+        simtype     = FormSelectorField(name="simtype",
+                                        entries=enumerate(SIMULATIONS),
+                                        selection=self.simtypeValue(sim.type))
+        description = FormTextField(name="description", value=sim.short_description)   # Make as textarea
+        label       = FormTextField(name="label", value=sim.label)
+        serverid    = FormSelectorField(name="serverid",
+                                        entries=enumerate(serversList))
+        matter      = FormSelectorField(name="matter",
+                                        entries=enumerate(["Not Available",]))  #?
+
+        submit      = FormSubmitButton(label="Create New Simulation")
+        cancel      = lc.button(label="Cancel", onclick = load(actor = 'materialsimulation'))
+
+        st          = QEGrid(lc.grid()) # Submit Table
+        st.addRow((submit, cancel), ("qe-action-accept", "qe-action-cancel"))
+
+        table.addRow(("Name:", sname))
+        table.addRow(("Type:", simtype))
+        table.addRow(("Description:", description))
+        table.addRow(("Label:", label))
+        table.addRow(("Server:", serverid))
+        table.addRow(("Atomic Structure:", matter))
+        table.addRow(("", st.grid()))
+
+        table.setColumnStyle(0, "qe-form-label")
+        table.setColumnStyle(1, "qe-form-field")
+
+        form.onsubmit   = select(element=form).submit(actor     = 'material_simulations/espresso/sim-create',
+                                                      routine   = 'createRecord')
+
+#        sname       = form.text(name="sname", label='Simulation Name', value=sim.sname)
+#        simtype     = form.selector(name="simtype", label='Simulation Type',
+#                                    entries=enumerate(SIMULATIONS),
+#                                    selection=self.simtypeValue(sim.type))
+#        description = form.text(name="description", label='Description', value=sim.short_description)   # Make as textarea
+#        label       = form.text(name="label", label='Label', value=sim.label)
+#        submit      = form.submitbutton(label="Save Changes")
+#        form.onsubmit   = select(element=form).submit(actor = 'material_simulations/espresso/sim-edit',
+#                                                      routine = 'updateRecord',
+#                                                      id=sim.id)
+#
+#        # TODO: "Cancel" button looks UGLY
+#        cancel      = lc.link(label="Cancel")
+#        cancel.onclick = load(actor = 'material_simulations/espresso/sim-view', id=self.id)
+#        form.add(cancel)
+
+        return form
 
 
     def simtypeValue(self, simtype):
@@ -97,6 +139,8 @@ class Actor(base):
 
         return 0
 
+    def _serverValue(self, ):
+        pass
 
     def updateRecord(self, director):
         """Updates record in the database """
