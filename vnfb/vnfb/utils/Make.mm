@@ -18,6 +18,7 @@ PACKAGE = utils
 
 BUILD_DIRS = \
 	filter \
+	material_simulations \
 
 OTHER_DIRS = \
 
