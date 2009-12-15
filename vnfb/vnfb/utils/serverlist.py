@@ -21,6 +21,27 @@ class ServerList:
         self._setServers(director)
 
 
+    def list(self):
+        "Returns list of server names"
+        return self._servers.values()
+
+
+    def id(self, selected):
+        "Returns server's id from the number of selected option"
+        keys    = self._servers.keys()
+        return keys[int(selected)]  # What if selected is out of range?
+
+
+    def selected(self, id):
+        "Returns number of selected option from id. Opposite to self.id()"
+        keys    = self._servers.keys()
+        for k in range(len(keys)):
+            if keys[k] == id:
+                return k
+
+        return 0
+
+
     def _setServers(self, director):
         "Set servers dictionary {id: short_description} from the database"
         servers     = director.clerk.getServers()
@@ -31,23 +52,6 @@ class ServerList:
         return self._servers
 
 
-    def list(self):
-        "Returns list of server names"
-        return self._servers.values()
-
-
-    def id(self, i):
-        "Return server's id"
-        keys    = self._servers.keys()
-        return keys[int(i)]
-
-
 __date__ = "$Dec 14, 2009 5:32:06 PM$"
 
-
-# *********** DEAD CODE ******************
-
-#        #if len(keys) < i + 1 and i >= 0:
-#        #    return None
-#        # Check if i-th element is present
 
