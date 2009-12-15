@@ -51,9 +51,10 @@ def parsePHFile(filename):
 
 
 def newid(director):
+    "Id generator "
     id  = ''
     if director:
-        id = director.getGUID()
+        id = director.getGUID()     # Changed from idd.token().locator
 
     return id
 
@@ -104,15 +105,5 @@ if __name__ == "__main__":
     testStamp()
 
 __date__ = "$Jul 30, 2009 12:08:31 PM$"
-
-
-# ************ DEAD CODE ********************
-#def newid(idd):
-#    """Id generator """
-#    id  = ''
-#    if idd:
-#        id = idd.token().locator
-#
-#    return id
 
 
