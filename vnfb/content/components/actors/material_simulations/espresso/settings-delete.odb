@@ -10,10 +10,12 @@
 #
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
+from vnfb.utils.qegrid import QEGrid
 
 from luban.content import select
 from luban.content.Paragraph import Paragraph
 from luban.content.Form import Form
+from luban.content.FormSubmitButton import FormSubmitButton
 from luban.content import load
 
 import luban.content as lc
@@ -33,7 +35,7 @@ class Actor(base):
 
 
     def content(self, director):
-        self._input = director.clerk.getQEConfigurations(id=self.configid)
+        #self._input = director.clerk.getQEConfigurations(id=self.configid)
 
         def viewIndicator(director):
             path = []
@@ -52,31 +54,35 @@ class Actor(base):
         sA          = splitter.section()
         sA.add(viewIndicator(director))
         sB          = splitter.section()
-
         sB.add(Paragraph(text="Are you sure you want to delete settings configuration?"))
+        sB.add(self._setForm())
 
-        form        = Form(title = "Delete Quantum Espresso Settings Configuration")
-        submit      = form.submitbutton(label="Delete")
+        return doc
+
+
+    def _setForm(self):
+        form        = Form()
+        submit      = FormSubmitButton(label="Delete")
+        cancel      = lc.button(label="Cancel")
+        cancel.onclick = load(actor = 'material_simulations/espresso/sim-view', id=self.id)
+
+        st          = QEGrid(lc.grid()) # Submit Table
+        st.addRow((submit, cancel), ("qe-action-accept", "qe-action-cancel"))
+
+        form.add(st.grid())
         form.onsubmit   = select(element=form).submit(actor     = 'material_simulations/espresso/settings-delete',
                                                       routine   = 'deleteRecord',
                                                       id        = self.id,
                                                       configid  = self.configid)
 
-        # TODO: "Cancel" button looks UGLY
-        cancel      = lc.link(label="Cancel")
-        cancel.onclick = load(actor = 'material_simulations/espresso/sim-view', id = self.id)
-        form.add(cancel)
-
-        sB.add(form)
-
-        return doc
+        return form
 
 
     def deleteRecord(self, director):
         """Delete configuration record"""
-        self._input     = director.clerk.getQEConfigurations(id=self.configid)
-        self._input.setDirector(director)
-        self._input.deleteRecord()
+        settings     = director.clerk.getQESettings(id=self.configid)
+        settings.setDirector(director)
+        settings.deleteRecord()
 
         return load(actor='material_simulations/espresso/sim-view', id=self.id)
 
