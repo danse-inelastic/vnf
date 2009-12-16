@@ -101,7 +101,7 @@ class Actor(base):
                 inp.setDirector(director)
                 inp.deleteRecord()
 
-
+    # TODO: Check the logic
     def _deleteReference(self, director):
         "Handle references in QESimulationTask"
         simtasks = director.clerk.getQESimulationTasks(where="simulationid='%s' AND taskid='%s'" % (self.id, self.taskid))
@@ -113,6 +113,20 @@ class Actor(base):
                 return
             
             self._updateReference(director, simtask)
+
+
+    def _updateReference(self, director, simtask):
+        "Update QESimulationTask record"
+        params  = {"taskid": '',
+                  }
+        simtask.setDirector(director)
+        simtask.updateRecord(params)
+
+
+    def _deleteReferenceRecord(self, director, simtask):
+        "Delete QESimulationTask record"
+        simtask.setDirector(director)
+        simtask.deleteRecord()
 
 
     def _deleteJobs(self, director):
@@ -133,20 +147,6 @@ class Actor(base):
         task     = director.clerk.getQETasks(id=self.taskid)
         task.setDirector(director)
         task.deleteRecord()
-
-
-    def _updateReference(self, director, simtask):
-        "Update QESimulationTask record"
-        params  = {"taskid": '',
-                  }
-        simtask.setDirector(director)
-        simtask.updateRecord(params)
-
-
-    def _deleteReferenceRecord(self, director, simtask):
-        "Delete QESimulationTask record"
-        simtask.setDirector(director)
-        simtask.deleteRecord(params)
 
 
     def __init__(self):
