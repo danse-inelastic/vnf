@@ -18,8 +18,9 @@ from luban.content.Link import Link
 class QEInput:
     """Displays input for simulation task"""
 
-    def __init__(self, director, taskid, type):
+    def __init__(self, director, id, taskid, type):
         self._director  = director
+        self._id        = id
         self._taskid    = taskid
         self._type      = type
 
@@ -28,6 +29,7 @@ class QEInput:
 
         link = Link(label="Add", 
                     onclick=load(actor      = "material_simulations/espresso/input-add",
+                                 id         = self._id,
                                  taskid     = self._taskid,
                                  type       = self._type)   # Some more?
                     )
@@ -37,7 +39,9 @@ class QEInput:
             if s:
                 link = Link(label=s.filename,
                             onclick=load(actor      = "material_simulations/espresso/input-view",
-                                         id         = self._taskid,
+                                         id         = self._id,
+                                         taskid     = self._taskid,
+                                         type       = self._type,
                                          configid   = s.id)   # Some more?
                             )
 

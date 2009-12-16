@@ -13,6 +13,7 @@
 
 from vnfb.utils.qeutils import stamp2date
 from vnfb.utils.qegrid import QEGrid
+from vnfb.utils.qeinput import QEInput
 
 from luban.content import select
 from luban.content import load
@@ -59,7 +60,7 @@ class Actor(base):
         sB          = splitter.section()
         table       = QEGrid(lc.grid(Class = "qe-table"))
         sB.add(table.grid())
-        self._showTask(table, task)
+        self._showTask(director, table, task)
 
         # Should go after all of the rows are added!
         table.setColumnStyle(0, "qe-cell-param")
@@ -87,15 +88,22 @@ class Actor(base):
         section.add(lc.document(Class="clear-both"))
 
 
-    def _showTask(self, table, task):
+    def _showTask(self, director, table, task):
         if task:
             table.addRow(('Type:', task.type))
             table.addRow(("Package: ", task.package ))
+            table.addRow(("Input: ", self._input(director) ))
             table.addRow(('Description:', task.short_description))
             table.addRow(('Label: ', task.label))
             table.addRow(('Time Created: ', stamp2date(task.date)))
             table.addRow(('Current Job: ', 'None'))
             #table.addRow(('All Jobs: ', 'None'))   # Keep. Disable option to run same task multiple times
+
+
+    def _input(self, director):
+        "Show input"
+        qeinput = QEInput(director, self.id, self.taskid, self.type)
+        return qeinput.getLink()
 
 
     def __init__(self):

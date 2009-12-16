@@ -85,7 +85,7 @@ class QETaskCell:
 
     def _input(self):
         # Suppose that self._task is not None
-        qeinput = QEInput(self._director, self._task.id, self._type) 
+        qeinput = QEInput(self._director, self._simid, self._task.id, self._type)
         return qeinput.getLink()
 
     def _output(self):
