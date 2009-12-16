@@ -46,7 +46,6 @@ class Actor(base):
 
 
     def content(self, director):
-        sim       = director.clerk.getQESimulations(id = self.id)
 
         def viewIndicator(director):
             path = []
@@ -64,12 +63,12 @@ class Actor(base):
         sA          = splitter.section()
         sA.add(viewIndicator(director))
         sB          = splitter.section()
-        sB.add(self._setForm(sim))
+        sB.add(self._setForm())
 
         return doc
 
 
-    def _setForm(self, sim):
+    def _setForm(self):
         "Sets create new settings form"
         
         form        = Form(id='create-simulation-form')

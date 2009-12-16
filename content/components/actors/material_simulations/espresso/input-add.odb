@@ -13,19 +13,15 @@
 
 from vnf.dom.QEConfiguration import QEConfiguration
 from vnfb.utils.qeconst import PARSERS
+from vnfb.utils.qegrid import QEGrid
 
 from luban.content import select
-from luban.content.Paragraph import Paragraph
-from luban.content.Document import Document
-from luban.content.HtmlDocument import HtmlDocument
 from luban.content import load
-from luban.content.Link import Link
-from luban.content.Splitter import Splitter
 from luban.content.FormSelectorField import FormSelectorField
-from luban.content.FormRadioBox import FormRadioBox
+from luban.content.FormTextArea import FormTextArea
+from luban.content.FormTextField import FormTextField
+from luban.content.FormSubmitButton import FormSubmitButton
 from luban.content.Form import Form
-from luban.content.Tabs import Tabs
-from luban.content.Button import Button
 
 import luban.content as lc
 from luban.components.AuthorizedActor import AuthorizedActor as base
@@ -36,19 +32,19 @@ class Actor(base):
     class Inventory(base.Inventory):
         import pyre.inventory
         id          = pyre.inventory.str('id', default='')          # Simulation Id
-        configid    = pyre.inventory.str('configid', default='')    # Configuration Id
+        taskid      = pyre.inventory.str('taskid', default='')
         type        = pyre.inventory.str('type', default='')        # Type of the configuration file
         fname       = pyre.inventory.str('fname', default='')
         description = pyre.inventory.str('description', default='')
         parser      = pyre.inventory.str('parser', default='')
         text        = pyre.inventory.str('text', default='')
 
+
     def default(self, director):
         return select(id='main-display-area').replaceContent(self.content(director))
 
 
     def content(self, director):
-        self._sim   = director.clerk.getQESimulations(id=self.id)
 
         def viewIndicator(director):
             path = []
@@ -56,8 +52,13 @@ class Actor(base):
             path.append(('Quantum Espresso ', load(actor='materialsimulation')))
             path.append(('%s ' % self.id, load(actor    = 'material_simulations/espresso/sim-view',
                                                id       = self.id)))
+            path.append(('%s Task ' % self.type, load(actor    = 'material_simulations/espresso/task-view',
+                                                      id       = self.id,
+                                                      taskid   = self.taskid,
+                                                      type     = self.type)))
 
-            path.append('Create Configuration: %s' % self.type)
+
+            path.append('Create Input Configuration')
             
             return director.retrieveVisual('view-indicator', path=path)
 
@@ -67,44 +68,66 @@ class Actor(base):
         sA.add(viewIndicator(director))
         sB          = splitter.section()
 
-        sB.add(Link(label="Use Configuration Builder", onclick=load(actor = "material_simulations/espresso/config-builder",
-                                                                    id    = self.id)))
-        sB.add(Paragraph(text="OR"))
-        sB.add(Paragraph(text="Create configuration using the form:"))
+        # Keep for configuration builder
+        #sB.add(lc.link(label="Use Configuration Builder", onclick=load(actor = "material_simulations/espresso/config-builder",
+        #                                                               id    = self.id)))
+        #sB.add(lc.paragraph(text="OR"))
 
-        form        = Form(title = "Create Quantum Espresso Configuration Input")
-        fname       = form.text(name="fname", label='File Name', value=self.fname)
-        type        = form.text(name="type", label='Config Type', value = self.type)      # Should be text
-        description = form.text(name="description", label='Description', value=self.description)
-        parser      = form.selector(name="parser", label='Parser', entries=enumerate(PARSERS))  # Doesn't do anything
-        text        = form.textarea(name="text", label='Config Text', value=self.text)
-        submit      = form.submitbutton(label="Create Configuration")
-        form.onsubmit   = select(element=form).submit(actor     = 'material_simulations/espresso/input-add',
-                                                      routine   = 'createRecord',
-                                                      id        = self.id)
-
-        # TODO: "Cancel" button looks UGLY
-        cancel      = lc.link(label="Cancel")
-        cancel.onclick = load(actor = 'material_simulations/espresso/sim-view', id=self.id)
-        form.add(cancel)
-        sB.add(form)
+        sB.add(self._setForm())
 
         return doc
+
+    def _setForm(self):
+        "Sets create new settings form"
+
+        form        = Form(id='create-simulation-form')
+        table       = QEGrid(lc.grid(Class="qe-form"))
+        form.add(table.grid())
+
+        fname           = FormTextField(name = "fname", value = self.fname)
+        description     = FormTextField(name = "description", value=self.description)   # Make as textarea
+        parser          = FormSelectorField(name="parser",
+                                            entries=enumerate(PARSERS))
+        text            = FormTextArea(name="text", value=self.text)
+
+        submit      = FormSubmitButton(label="Create Input Configuration")
+        cancel      = lc.button(label="Cancel")
+        cancel.onclick  = load(actor = 'material_simulations/espresso/sim-view', id=self.id)
+
+        st          = QEGrid(lc.grid()) # Submit Table
+        st.addRow((submit, cancel), ("qe-action-accept", "qe-action-cancel"))
+
+        table.addRow(("Name:", fname))
+        table.addRow(("Description:", description))
+        table.addRow(("Parser:", parser))
+        table.addRow(("Configuration:", text))
+        table.addRow(("", st.grid()))
+
+        table.setColumnStyle(0, "qe-form-label")
+        table.setColumnStyle(1, "qe-form-field")
+
+        form.onsubmit   = select(element=form).submit(actor     = 'material_simulations/espresso/input-add',
+                                                      routine   = 'createRecord',
+                                                      taskid    = self.taskid,
+                                                      id        = self.id)
+
+        return form
 
 
     def createRecord(self, director):
         """Create configuration record"""
-        params  = {"simulationid":  self.id,
+        params  = {"taskid":        self.taskid,
                    "filename":      self.fname,
-                   "type":          self.type,
                    "description":   self.description,
                    "parser":        PARSERS[int(self.parser)],
-                   "text":          self.text}
+                   "text":          self.text,
+                   #"type":          self.type,
+                   }
         config  = QEConfiguration()
         config.setDirector(director)
         config.createRecord(params)
+        
         return load(actor = 'material_simulations/espresso/sim-view', id = self.id)
-
 
 
     def __init__(self):
@@ -116,12 +139,13 @@ class Actor(base):
     def _configure(self):
         super(Actor, self)._configure()
         self.id             = self.inventory.id
-        self.configid       = self.inventory.configid
+        self.taskid         = self.inventory.taskid
         self.type           = self.inventory.type
         self.fname          = self.inventory.fname
         self.description    = self.inventory.description
         self.parser         = self.inventory.parser
         self.text           = self.inventory.text
+
 
     def _init(self):
         super(Actor, self)._init()
