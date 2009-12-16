@@ -14,3 +14,10 @@ THis script probably is best written with facilities in pathos.
 Problem: How to define similarity for simulation tasks?
 Solution:
 
+Alpha release of QE simulations:
+- Disable option to run several jobs for one task or use existing task in simulation
+    Reason: involves complexity in dealing with computation nodes on cluster and
+settings handling.
+- Disable option to change simulation type 
+    Reason: involves complexity in dealing with dereferencing simulation tasks
+
