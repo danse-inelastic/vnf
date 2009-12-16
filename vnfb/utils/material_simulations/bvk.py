@@ -23,7 +23,7 @@ import numpy
 import sympy.matrices as matrices
 import sympy
 def _matrixelementsymbol(i,j):
-    r = sympy.Symbol('m%s%s' % (i,j))
+    r = sympy.Symbol('m%s%s' % (i+1,j+1))
     return r
 T = [ [_matrixelementsymbol(i,j) for j in range(3)] for i in range(3)]
 T = matrices.Matrix(T)
@@ -70,7 +70,7 @@ def _equationsForSymmetriesRestricted3X3Tensor(Rs):
     
 
 # depends on "matter" package
-def findForceContantTensorRestrictions(vector, lattice, sg):
+def findForceContantTensorConstraints(vector, lattice, sg):
     """find the restrictions on force constant tensor (3X3) given
     the vector of the bond (in relative lattice coordinates), and
     the symmetry group.
@@ -84,9 +84,19 @@ def findForceContantTensorRestrictions(vector, lattice, sg):
     binv = nl.inv(b)
 
     # the equations result from symmetry requirement of the bond
-    def _R(symop):
-        return numpy.dot(numpy.dot(binv, symop.R), b)
-    Rs = [_R(symop) for symop in sg.iter_symops_leave_vector_unchanged(vector)]
+    # the rotation matrices in relative coords
+    #   R in Rs don't work: special things about numpy array
+    Rs = []; ids = []
+    for symop in sg.iter_symops_leave_vector_unchanged(vector):
+        R = symop.R
+        if id(R) not in ids:
+            Rs.append(R)
+            ids.append(id(R))
+        continue
+    #  function to convert matrix to cartesian
+    def _toCartesian(symop):
+        return numpy.dot(numpy.dot(binv, R), b)
+    Rs = map(_toCartesian, Rs)
     equations = _equationsForSymmetriesRestricted3X3Tensor(Rs)
 
     # add the equations for instrisic symmetry of force constant tensor
@@ -176,7 +186,8 @@ class VarFromSympySymbol(constraints.Variable):
 
     def __str__(self):
         return self.name
-    
+
+
         
 
 import unittest
@@ -244,31 +255,31 @@ class TestCase(unittest.TestCase):
         # 110
         vector = [0.5, 0.5, 0]
         print 'bond 110 for fcc lattice'
-        for constraint in  findForceContantTensorRestrictions(vector, lattice, sg225):
+        for constraint in  findForceContantTensorConstraints(vector, lattice, sg225):
             print constraint
             
         # 200
         vector = [1,0,0]
         print 'bond 200 for fcc lattice'
-        for constraint in  findForceContantTensorRestrictions(vector, lattice, sg225):
+        for constraint in  findForceContantTensorConstraints(vector, lattice, sg225):
             print constraint
 
         # 211
         vector = [1,0.5,0.5]
         print 'bond 211 for fcc lattice'
-        for constraint in  findForceContantTensorRestrictions(vector, lattice, sg225):
+        for constraint in  findForceContantTensorConstraints(vector, lattice, sg225):
             print constraint
             
         # 220
         vector = [1,1,0]
         print 'bond 220 for fcc lattice'
-        for constraint in  findForceContantTensorRestrictions(vector, lattice, sg225):
+        for constraint in  findForceContantTensorConstraints(vector, lattice, sg225):
             print constraint
             
         # 310
         vector = [1.5,0.5,0]
         print 'bond 310 for fcc lattice'
-        for constraint in  findForceContantTensorRestrictions(vector, lattice, sg225):
+        for constraint in  findForceContantTensorConstraints(vector, lattice, sg225):
             print constraint
             
         return

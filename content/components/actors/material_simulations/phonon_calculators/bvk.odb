@@ -73,6 +73,18 @@ class Actor(base):
         return self.editModel(director)
 
 
+    def selectModel(self, director):
+        model_id = self.inventory.model_id
+        domaccess = self._domaccess(director)
+        model = domaccess.getModel(id=model_id)
+
+        orm = domaccess.orm
+        if domaccess.isModelEditable(modelrecord=orm(model)):
+            return self.editModel(director)
+        
+        return self.presentComputingTarget(director)
+
+
     def editModel(self, director):
         model_id = self.inventory.model_id
         domaccess = self._domaccess(director)
@@ -101,6 +113,16 @@ class Actor(base):
     
 
     def presentComputingTarget(self, director):
+        # get model
+        model_id = self.inventory.model_id
+        domaccess = self._domaccess(director)
+        model = domaccess.getModel(id=model_id)
+
+        # assign matter if necessary
+        if not self.inventory.atomicstructure_id:
+            self.inventory.atomicstructure_id = domaccess.orm(model.matter).id
+
+        # create doc to present
         doc = lc.document()
 
         #
@@ -111,11 +133,6 @@ class Actor(base):
         domaccess = director.retrieveDOMAccessor('atomicstructure')
         matter = domaccess.getAtomicStructureRecord(id=self.inventory.atomicstructure_id)
         matterlabel = matter.short_description
-        link = lc.link(label='Back to atomic structure %s' % matterlabel,
-                       onclick=load(actor='atomicstructure', routine='showOverview',
-                                    id=self.inventory.atomicstructure_id)
-                       )
-        doc.add(link)
         
         doc.paragraph(
             text = ['To compute phonons for %s using bvk, please select a target' % matterlabel],
@@ -162,7 +179,7 @@ class Actor(base):
     def _pathToMe(self):
         atomicstructure_id = self.inventory.atomicstructure_id
         return [
-            ('simulations', lc.load(actor='materialsimulation')),
+            ('matter', lc.load(actor='atomicstructure', routine='showOverview', id=atomicstructure_id)),
             ('phonons', lc.load(
             actor='/'.join(self.name.split('/')[:-1]), routine='start',
             atomicstructure_id=atomicstructure_id)),
