@@ -166,19 +166,13 @@ class Actor(base):
         # Show simulation tasks section
         sC          = splitter.section(id="qe-tasks-label")
         sC.add(Paragraph(text="Simulation Tasks", Class="qe-section-inline"))
+
+        # Show refresh status button
         sC.add(lc.link(label="Refresh Status", id = "action-refresh-status",
                          onclick = load(actor='material_simulations/espresso/sim-view',
                                         id=self.id)
                         ))
         sC.add(lc.document(Class="clear-both"))
-
-        # Show refresh status button
-#        sR          = splitter.section()
-#        sR.add(lc.button(label="Refresh Status",
-#                         onclick = load(actor='material_simulations/espresso/sim-view',
-#                                        id=self.id)
-#                        ))
-#        sR.add(lc.document(Class="clear-both"))
 
         # Show tasks table
         taskstable   = QETasks(director, type, self.id)

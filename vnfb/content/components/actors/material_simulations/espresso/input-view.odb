@@ -35,7 +35,7 @@ class Actor(base):
 
     class Inventory(base.Inventory):
         import pyre.inventory
-        id          = pyre.inventory.str('id', default='')          # Simulation Id
+        id          = pyre.inventory.str('id', default='')          # Task Id
         configid    = pyre.inventory.str('configid', default='')    # Configuration Id
         type        = pyre.inventory.str('type', default='')        # Type of the configuration file
         fname       = pyre.inventory.str('fname', default='')

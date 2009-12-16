@@ -13,14 +13,17 @@
 
 import luban.content as lc
 from luban.content import load
+
 from vnfb.utils.qegrid import QEGrid
+from vnfb.utils.qeinput import QEInput
 
 class QETaskCell:
 
-    def __init__(self, type, simid, task):
+    def __init__(self, director, type, simid, task):
         self._type  = type
         self._simid = simid
         self._task  = task
+        self._director  = director
 
 
     def header(self):
@@ -38,7 +41,7 @@ class QETaskCell:
     def taskInfo(self):
         table   = QEGrid(lc.grid(Class="qe-tasks-info"))
         if self._task:
-            table.addRow(("Task:", self._task.id))
+            table.addRow(("Task:", self._taskId()))
             table.addRow(("Input:", self._input()))
             table.addRow(("Output:", self._output()))
             table.addRow(("Status:", self._status()))
@@ -63,14 +66,27 @@ class QETaskCell:
         return table.grid()
 
     def action(self):
+        "Displays simulation task action button: 'Run Task', 'Cancel'"
         return lc.link(label="Run Task",
                        Class="qe-run-task",
                        onclick = load(actor='material_simulations/espresso/sim-edit')
                         )
 
 
+    def _taskId(self):
+        tid = self._task.id
+        return lc.link(label    = tid,
+                       onclick  = load(actor    = 'material_simulations/espresso/task-view',
+                                       simid    = self._simid,
+                                       taskid   = tid,
+                                       tasktype = self._type)
+                        )
+
+
     def _input(self):
-        return "ni.scf.in"
+        # Suppose that self._task is not None
+        qeinput = QEInput(self._director, self._task.id, self._type) 
+        return qeinput.getLink()
 
     def _output(self):
         return "ni.scf.out"
