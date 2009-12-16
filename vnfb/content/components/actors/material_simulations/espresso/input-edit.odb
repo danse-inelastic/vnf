@@ -127,6 +127,14 @@ class Actor(base):
         return load(actor='material_simulations/espresso/sim-view', id=self.id)
 
 
+    def _verify(self):
+        #Note: Do not allow the following characters in the input filename:
+        #	"/"
+        #	"'"
+        #	"""
+        pass
+
+
     def __init__(self):
         super(Actor, self).__init__(name='material_simulations/espresso/input-edit')
 

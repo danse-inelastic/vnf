@@ -69,7 +69,10 @@ class QETaskCell:
         "Displays simulation task action button: 'Run Task', 'Cancel'"
         return lc.link(label="Run Task",
                        Class="qe-run-task",
-                       onclick = load(actor='material_simulations/espresso/sim-edit')
+                       onclick = load(actor     ='jobs/submit',
+                                      routine   = 'submit',
+                                      id        = self._simid,
+                                      taskid    = self._task.id)
                         )
 
 

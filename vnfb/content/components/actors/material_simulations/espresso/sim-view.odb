@@ -180,41 +180,6 @@ class Actor(base):
         sT.add(taskstable.tasks())
         
 
-
-
-
-
-# Move to task
-#    def showJobs(self, director, table):
-#        """Adds list of job ids to the document"""
-#
-#        jobsdoc = Document(Class="display-inline")
-#        joblist  = self.jobs(director)
-#
-#        if len(joblist) != 0:
-#            for job in joblist:
-#                jobsdoc.add(Link(label=job.id, Class="action-link",
-#                                 onclick=load(actor="jobs/view",
-#                                 routine="link", id=job.id))
-#                            )
-#        else:
-#            jobsdoc.add(Paragraph(text="None", Class="action-link"))
-#
-#        addRow(table, "Jobs: ", jobsdoc)
-
-
-#    # TODO: Should be separate for each task
-#    def _showSubmit(self, document):
-#        """Adds References"""
-#        #document.add(Document(Class="clear-both"))   # Empty document
-#        #refsdoc = Document(Class="display-block")
-#        refsdoc.add(lc.button(label="Submit to Queue", onclick=load(actor="material_simulations/espresso/sim-view",
-#                                                               routine="checkSubmit",
-#                                                               id=self.id)))
-#        document.add(refsdoc)
-#        document.add(lc.document(Class="clear-both"))
-
-
     def checkSubmit(self, director):
         """Checks if the simulation can be submitted to jobs queue"""
         errors  = {}
@@ -232,25 +197,6 @@ class Actor(base):
                    id=self.id)
 
 
-    # Refactor later on
-    def submit(self, director):
-        """
-        The process of submission of simulation includes the following steps:
-        1. Store configuration inputs to local disk storage
-        2. Copy files to the computational cluster
-        3. 
-        """
-
-        inputs  = director.clerk.getQEConfigurations(where = "simulationid='%s'" % self.id)
-
-        self._storeFiles(director, inputs)
-        self._moveFiles(director, inputs)
-        self._scheduleJob(director, inputs)
-
-        return load(actor="materialsimulation")
-
-#        return load(actor="material_simulations/espresso/sim-view",
-#                   id=self.id)
 
     def _checkInputs(self, director, errors):
         """Checks config inputs"""
@@ -287,120 +233,120 @@ class Actor(base):
         return types
 
 
-    def _storeFiles(self, director, inputs):
-        """Temp solution. Stores files from configuration input strings """
-        
-        dds = director.dds
-        for input in inputs:
-            filename    = dds.abspath(input, filename = input.type)
-            self.files.append(input.type) # Relative path, e.g. ni.scf.in
-
-            # for f in files: dds.remember(job, f) #?
-            self._writeContent(dds, input, filename, input.text)
-
-        #filename    = dds.abspath(input, filename = "run.sh")
-        #content     =
-        #self._writeContent(dds, input, filename, content)
-        # FIXME
-        #for f in self.files:
-        # Should be local filename
-        dds.remember(inputs[0], 'PW')
-
-
-    def _writeContent(self, dds, record, filename, content):
-        """Writes content of the configuration input to file"""
-        path    = dds.abspath(record)
-        makedirs(path)
-        open(filename, 'w').write(content)
-
-
-    def _moveFiles(self, director, inputs):
-        dds     = director.dds
-        server  = director.clerk.getServers(id='server001') # Hardcoded
-
-        # See also: submitjob.odb
-
-        #input   = inputs[0]
-        #files   = []
-        #files.append(self.files[0])
-        dds.make_available(inputs[0], server=server, files=['PW',]) #self.files[0]
-
-        # Why job? - Can be any table instead. How to get server?
-#        server = clerk.dereference(job.server)
-#        director.declareProgress(0.5, 'Preparing: transfering job to the server %s ...' % server.short_description)
-#        dds.make_available(job, server=server, files=files)
-
-
-    def _scheduleJob(self, director, inputs):
-        # FIXME
-        dds     = director.dds
-        from vnfb.utils.qescheduler import schedule
-        schedule(inputs[0], director)
-
-
-    def retrieveStatus(self, director):
+#    def _storeFiles(self, director, inputs):
+#        """Temp solution. Stores files from configuration input strings """
+#
+#        dds = director.dds
+#        for input in inputs:
+#            filename    = dds.abspath(input, filename = input.type)
+#            self.files.append(input.type) # Relative path, e.g. ni.scf.in
+#
+#            # for f in files: dds.remember(job, f) #?
+#            self._writeContent(dds, input, filename, input.text)
+#
+#        #filename    = dds.abspath(input, filename = "run.sh")
+#        #content     =
+#        #self._writeContent(dds, input, filename, content)
+#        # FIXME
+#        #for f in self.files:
+#        # Should be local filename
+#        dds.remember(inputs[0], 'PW')
+#
+#
+#    def _writeContent(self, dds, record, filename, content):
+#        """Writes content of the configuration input to file"""
+#        path    = dds.abspath(record)
+#        makedirs(path)
+#        open(filename, 'w').write(content)
+#
+#
+#    def _moveFiles(self, director, inputs):
+#        dds     = director.dds
+#        server  = director.clerk.getServers(id='server001') # Hardcoded
+#
+#        # See also: submitjob.odb
+#
+#        #input   = inputs[0]
+#        #files   = []
+#        #files.append(self.files[0])
+#        dds.make_available(inputs[0], server=server, files=['PW',]) #self.files[0]
+#
+#        # Why job? - Can be any table instead. How to get server?
+##        server = clerk.dereference(job.server)
+##        director.declareProgress(0.5, 'Preparing: transfering job to the server %s ...' % server.short_description)
+##        dds.make_available(job, server=server, files=files)
+#
+#
+#    def _scheduleJob(self, director, inputs):
+#        # FIXME
+#        dds     = director.dds
+#        from vnfb.utils.qescheduler import schedule
+#        schedule(inputs[0], director)
+#
+#
+#    def retrieveStatus(self, director):
+##        inputs  = director.clerk.getQEConfigurations(where = "simulationid='%s'" % self.id)
+##        input   = inputs[0]
+##
+##        return self._packingInProgress(director, input)
+#        return self._retrieveResults(director)
+#
+#
+#    def _retrieveResults(self, director):
 #        inputs  = director.clerk.getQEConfigurations(where = "simulationid='%s'" % self.id)
 #        input   = inputs[0]
 #
+#        from vnf.applications.PackJobDir import PackJobDir
+#        PTRFILEEXT = PackJobDir.PTRFILEEXT
+#        ptrfilepath = '.'.join( [director.dds.abspath(input), PTRFILEEXT] )
+#
+#        # if pointer file does not exists, need to start packing
+#        if not os.path.exists(ptrfilepath):
+#            return self._startPacking(director, input)
+#
+#        # if packing is in process, say that
+#        s = open(ptrfilepath).read()
+#        if s == PackJobDir.PACKINGINPROCESS:
+#            return self._packingInProgress(director, input)
+#
+#
+#        server      = server  = director.clerk.getServers(id='server001')
+#        jobmtime    = director.dds.getmtime(input, server = server)
+#        ptrmtime    = os.path.getmtime(ptrfilepath)
+#        if jobmtime > ptrmtime + 60*3: # 60*3 -- give 3 minute of delay
+#            # if job directory is newer than the bar ball, pack again
+#            return self._startPacking(director, input)
+#
+#        link    = Link(label="Downloaded", Class="action-link",
+#                       onclick=load(actor      = "material_simulations/espresso/sim-view",
+#                                     id         = self.id)
+#                      )
+#
+#        return select(id='results-link').replaceContent(link)
+#
+#
+#    def _startPacking(self, director, input):
+#        from vnf.components.Job import pack
+#        pack(input, director, debug=False)
+#
 #        return self._packingInProgress(director, input)
-        return self._retrieveResults(director)
-
-
-    def _retrieveResults(self, director):
-        inputs  = director.clerk.getQEConfigurations(where = "simulationid='%s'" % self.id)
-        input   = inputs[0]
-        
-        from vnf.applications.PackJobDir import PackJobDir
-        PTRFILEEXT = PackJobDir.PTRFILEEXT
-        ptrfilepath = '.'.join( [director.dds.abspath(input), PTRFILEEXT] )
-        
-        # if pointer file does not exists, need to start packing
-        if not os.path.exists(ptrfilepath):
-            return self._startPacking(director, input)
-
-        # if packing is in process, say that
-        s = open(ptrfilepath).read()
-        if s == PackJobDir.PACKINGINPROCESS:
-            return self._packingInProgress(director, input)
-
-
-        server      = server  = director.clerk.getServers(id='server001')
-        jobmtime    = director.dds.getmtime(input, server = server)
-        ptrmtime    = os.path.getmtime(ptrfilepath)
-        if jobmtime > ptrmtime + 60*3: # 60*3 -- give 3 minute of delay
-            # if job directory is newer than the bar ball, pack again
-            return self._startPacking(director, input)
-
-        link    = Link(label="Downloaded", Class="action-link",
-                       onclick=load(actor      = "material_simulations/espresso/sim-view",
-                                     id         = self.id)
-                      )
-
-        return select(id='results-link').replaceContent(link)
-
-
-    def _startPacking(self, director, input):
-        from vnf.components.Job import pack
-        pack(input, director, debug=False)
-
-        return self._packingInProgress(director, input)
-
-
-    def _packingInProgress(self, director, input):
-        link    = Link(label="Packing", Class="action-link",
-                       onclick=load(actor      = "material_simulations/espresso/sim-view",
-                                     id         = self.id)
-                      )
-
-        return select(id='results-link').replaceContent(link)
-
-
-
-    def formError(self, errors):
-        return [
-                select(id='%s-error-area' % key).replaceContent(value)
-                    for key, value in errors.iteritems()
-                ]
+#
+#
+#    def _packingInProgress(self, director, input):
+#        link    = Link(label="Packing", Class="action-link",
+#                       onclick=load(actor      = "material_simulations/espresso/sim-view",
+#                                     id         = self.id)
+#                      )
+#
+#        return select(id='results-link').replaceContent(link)
+#
+#
+#
+#    def formError(self, errors):
+#        return [
+#                select(id='%s-error-area' % key).replaceContent(value)
+#                    for key, value in errors.iteritems()
+#                ]
 
 
     def jobs(self, director):

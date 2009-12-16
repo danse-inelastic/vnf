@@ -21,6 +21,11 @@ from luban.content.Paragraph import Paragraph
 from luban.content import load
 from luban.content.Link import Link
 
+# TODO: 
+# - Do not display action buttons "Run Task" or "Cancel" unless previous simulation
+#   is running or completed
+# - Change action buttom depending on the status of the job:
+#   "Run Task" -> "Cancel" -> "Run Task"
 
 class QETasks:
     """Displays the chain of QE simulation steps"""
@@ -101,76 +106,4 @@ if __name__ == "__main__":
 
 
 __date__ = "$Nov 9, 2009 10:50:54 AM$"
-
-
-# *************** DEAD CODE ********************
-
-#            #inputs          = self._director.clerk.getQEConfigurations(where="taskid='%s'" % self._simid)
-#            #orderedInputs   = self._orderInput(self._simlist, inputs)
-
-#
-#            input   = orderedInputs[i]
-#            #print input
-#            if input:
-#                link    = Link(label=input.filename,
-#                               onclick=load(actor      = "material_simulations/espresso/input-view",
-#                                            configid   = self._getId(self._simlist[i], inputs),
-#                                            id         = id,
-#                                            type       = self._simlist[i]  # ?
-#                                            )
-#                              )
-#
-#            section.add(link)
-#
-#            if i != listsize - 1:   # No arrow for last config
-#                sep     = splitter.section()        # Separator
-#                sep.add(Paragraph(text=" ----> "))
-
-
-#    def _orderInput(self, simlist, inputs):
-#        """Orders input according to simlist (E.g. simlist = ("PW", "PH") )"""
-#        newinputs   = []
-#
-#        for name in simlist:
-#            newinputs.append(self._configObject(name, inputs))
-#
-#        return newinputs
-#
-#
-#    def _configObject(self, type, inputs):
-#        """Returns object if simulation type exists or None otherwise"""
-#        for sim in inputs:
-#            if sim.type == type:
-#                return sim
-#
-#        return None
-
-#    def _getId(self, type, inputs):
-#        config  = self._configObject(type, inputs)
-#        if config:
-#            return config.id
-#
-#        return ""
-
-
-
-
-# ***********************************************
-#        one     = splitter.section()
-#        one.add(Paragraph(text="PW "))
-#        one.add(Link(label=filename, Class="action-link", onclick=load(actor="espresso/set-config", routine="link", id=id)))
-#        sep     = splitter.section()        # Separator
-#        sep.add(Paragraph(text=" -> "))
-#        two     = splitter.section()
-#        two.add(Paragraph(text="DOS"))
-#        two.add(Link(label="Add"))
-
-
-#    def _getActor(self, input):
-#        # FIXME: merge to one 'input' actor
-#        """Returns proper actor depending if 'input' exists"""
-#        if input:   # View
-#            return "material_simulations/espresso/input-view"
-#
-#        return "material_simulations/espresso/input-add" # Create New
 
