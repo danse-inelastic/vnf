@@ -67,7 +67,7 @@ class Actor(base):
                  + Boffset
         lattice = structure.lattice
         sg = structure.sg
-        from vnfb.utils.material_simulations.bvk import findForceContantTensorConstraints
+        from vnfb.utils.material_simulations.bvkutils import findForceContantTensorConstraints
         constraints = findForceContantTensorConstraints(vector, lattice, sg)
         return constraints
     
