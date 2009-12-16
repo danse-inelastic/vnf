@@ -15,17 +15,7 @@ from vnfb.utils.qeutils import stamp2date
 from vnfb.utils.qegrid import QEGrid
 
 from luban.content import select
-from luban.content.Paragraph import Paragraph
-from luban.content.Document import Document
-from luban.content.HtmlDocument import HtmlDocument
 from luban.content import load
-from luban.content.Link import Link
-from luban.content.Splitter import Splitter
-from luban.content.FormSelectorField import FormSelectorField
-from luban.content.FormRadioBox import FormRadioBox
-from luban.content.Form import Form
-from luban.content.Tabs import Tabs
-from luban.content.Button import Button
 
 import luban.content as lc
 from luban.components.AuthorizedActor import AuthorizedActor as base
@@ -44,7 +34,7 @@ class Actor(base):
 
     def content(self, director):
         self._sim       = director.clerk.getQESimulations(id=self.id)
-        self._settings  = director.clerk.getQEConfigurations(id=self.configid)    # type=settings
+        self._settings  = director.clerk.getQESettings(id=self.configid)    # type=settings
 
         def viewIndicator(director):
             path = []
@@ -57,81 +47,57 @@ class Actor(base):
 
             return director.retrieveVisual('view-indicator', path=path)
 
-        doc         = lc.document(title="Settings Configuration: %s" % self.filename(self._settings))
+        doc         = lc.document(title="Settings Configuration: %s" % self._settings.sname)
         splitter    = doc.splitter(orientation="vertical")
         sA          = splitter.section()
         sA.add(viewIndicator(director))
-        sC          = splitter.section()
-        self.showLinks(sC)
+        sC          = splitter.section(id="qe-section-actions")
+        self._showActions(sC)
+
+        # Area for errors
+        splitter.section(id="input-error-area") # ?
 
         sB          = splitter.section()
-        self.showConfig(sB, self._settings)
+        table       = QEGrid(lc.grid(Class = "qe-table"))
+        sB.add(table.grid())
+        self._showSettings(table, self._settings)
+
+        # Should go after all of the rows are added!
+        table.setColumnStyle(0, "qe-cell-param")
 
         return doc
 
 
-    def showLinks(self, document):  #, inputs
-        document.add(lc.button(label="Edit",
-                              onclick = load(actor      = 'material_simulations/espresso/settings-edit',
+    def _showActions(self, section):  #, inputs
+        section.add(lc.link(label="Edit",
+                            Class="qe-action-edit",
+                            onclick = load(actor      = 'material_simulations/espresso/settings-edit',
                                              id         = self.id,
                                              configid   = self.configid))
                     )
                     
-        document.add(lc.button(label="Delete",
-                              onclick = load(actor      = 'material_simulations/espresso/settings-delete',
+        section.add(lc.link(label="Delete",
+                            Class="qe-action-delete",
+                            onclick = load(actor      = 'material_simulations/espresso/settings-delete',
                                              id         = self.id,
                                              configid   = self.configid))
                     )
 
-        document.add(lc.document(Class="clear-both"))
+        section.add(lc.document(Class="clear-both"))
         
                     
-    def showConfig(self, document, settings):
-        (self._parser, fp)    = self.parser(settings)
-        
-        table   = QEGrid(lc.grid())
-        document.add(table.grid())
-
-        table.addRow(('File Name: ', self.filename(settings)))
-        table.addRow(('Server Name: ', self._get("server", "server-name")))
-        table.addRow(("Number of Processors: ", self._get("server", "num-proc")))
-        table.addRow(("Number of Nodes: ", self._get("server", "num-nodes")))
-        table.addRow(("Processors Per Node: ", self._get("server", "proc-per-node")))
-        table.addRow(("Npool: ", self._get("server", "npool")))
-        table.addRow(("Executable: ", self._get("server", "executable")))
-        table.addRow(("Additional Parameters: ", self._get("server", "params")))
-        table.addRow(("Modules: ", self._get("server", "modules")))
-
-
-    def parser(self, settings):
-        import ConfigParser
-        import StringIO
+    def _showSettings(self, table, settings):
+        #(self._parser, fp)    = self.parser(settings)
 
         if settings:
-            # check if settings[0] isinstanceof Configuration
-            config  = settings.text
-
-            if config:  # Important: Implies that it has sections already
-                fp  = StringIO.StringIO(config)
-                parser  = ConfigParser.ConfigParser()
-                parser.readfp(fp)
-                return (parser, fp)
-
-        return (None, None)
-
-
-    def _get(self, section, param):
-        if self._parser:
-            return self._parser.get(section, param)
-
-        return ''
-    
-
-    def filename(self, input):
-        if input:
-            return input.filename
-
-        return ""
+            table.addRow(('Name:', settings.sname))
+            table.addRow(('Description:', settings.description))
+            table.addRow(("Number of Processors: ", str(settings.numproc) ))
+            table.addRow(("Number of Nodes: ", str(settings.numnodes)))
+            table.addRow(("Npool: ", str(settings.npool)))
+            table.addRow(("Executable: ", settings.executable))
+            table.addRow(("Additional Parameters: ", settings.params))
+            table.addRow(("Modules: ", settings.modules))
 
 
     def __init__(self):
