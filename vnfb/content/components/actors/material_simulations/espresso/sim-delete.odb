@@ -115,6 +115,7 @@ class Actor(base):
                 else:
                     self._updateReference(director, st)
 
+        # else do nothing
 
     def _updateReference(self, director, simtask):
         "Update QESimulationTask record"
