@@ -116,7 +116,6 @@ class Actor(base):
         return form
     
 
-
     def updateRecord(self, director):
         """Update settings record"""
         settings     = director.clerk.getQESettings(id=self.configid)
