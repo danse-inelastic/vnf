@@ -13,6 +13,70 @@
 
 # Use matplotlib and QECalc to analyze results
 
+from vnfb.utils.qeutils import stamp2date
+from vnfb.utils.qegrid import QEGrid
+
+from luban.content import select
+from luban.content import load
+
+import luban.content as lc
+from luban.components.AuthorizedActor import AuthorizedActor as base
+
+# Requires simulation id, config id and config type: (id, configid, type)
+class Actor(base):
+
+    class Inventory(base.Inventory):
+        import pyre.inventory
+        id          = pyre.inventory.str('id', default='')          # Simulation Id
+        configid    = pyre.inventory.str('configid', default='')    # Configuration Id
+
+    def default(self, director):
+        return select(id='main-display-area').replaceContent(self.content(director))
+
+
+    def content(self, director):
+        #self._sim       = director.clerk.getQESimulations(id=self.id)
+        #self._settings  = director.clerk.getQESettings(id=self.configid)    # type=settings
+
+        def viewIndicator(director):
+            path = []
+            path.append(('Simulations ', load(actor='materialsimulation')))
+            path.append(('Quantum Espresso ', load(actor='materialsimulation')))
+            path.append(('%s ' % self.id, load(actor    = 'material_simulations/espresso/sim-view',
+                                               id       = self.id)))
+
+            path.append('Simulation Results')
+
+            return director.retrieveVisual('view-indicator', path=path)
+
+        doc         = lc.document(title="Simulation Results")
+        splitter    = doc.splitter(orientation="vertical")
+        sA          = splitter.section()
+        sA.add(viewIndicator(director))
+        sB          = splitter.section()
+        sB.add(lc.paragraph(text="Sorry! Results are not yet available"))
+
+        return doc
+
+
+    def __init__(self):
+        super(Actor, self).__init__(name='material_simulations/espresso/results')
+
+        return
+
+
+    def _configure(self):
+        super(Actor, self)._configure()
+        self.id             = self.inventory.id
+        self.configid       = self.inventory.configid
+
+    def _init(self):
+        super(Actor, self)._init()
+        return
+
+def actor():
+    return Actor()
+
 
 __date__ = "$Dec 13, 2009 1:01:27 AM$"
 
