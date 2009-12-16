@@ -94,6 +94,8 @@ class Actor(base):
             table.addRow(('Description:', task.short_description))
             table.addRow(('Label: ', task.label))
             table.addRow(('Time Created: ', stamp2date(task.date)))
+            table.addRow(('Current Job: ', 'None'))
+            #table.addRow(('All Jobs: ', 'None'))   # Keep
 
 
     def __init__(self):
