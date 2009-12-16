@@ -121,7 +121,7 @@ class Actor(base):
                    "description":   self.description,
                    "parser":        PARSERS[int(self.parser)],
                    "text":          self.text,
-                   #"type":          self.type,
+                   "type":          self.type
                    }
         config  = QEConfiguration()
         config.setDirector(director)

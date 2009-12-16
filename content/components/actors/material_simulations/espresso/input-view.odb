@@ -15,17 +15,7 @@ from vnfb.utils.qeutils import stamp2date
 from vnfb.utils.qegrid import QEGrid
 
 from luban.content import select
-from luban.content.Paragraph import Paragraph
-from luban.content.Document import Document
-from luban.content.HtmlDocument import HtmlDocument
 from luban.content import load
-from luban.content.Link import Link
-from luban.content.Splitter import Splitter
-from luban.content.FormSelectorField import FormSelectorField
-from luban.content.FormRadioBox import FormRadioBox
-from luban.content.Form import Form
-from luban.content.Tabs import Tabs
-from luban.content.Button import Button
 
 import luban.content as lc
 from luban.components.AuthorizedActor import AuthorizedActor as base
@@ -37,10 +27,12 @@ class Actor(base):
         import pyre.inventory
         id          = pyre.inventory.str('id', default='')          # Task Id
         configid    = pyre.inventory.str('configid', default='')    # Configuration Id
+        taskid      = pyre.inventory.str('taskid', default='')
         type        = pyre.inventory.str('type', default='')        # Type of the configuration file
-        fname       = pyre.inventory.str('fname', default='')
-        description = pyre.inventory.str('description', default='')
-        text        = pyre.inventory.str('text', default='')
+#        fname       = pyre.inventory.str('fname', default='')
+#        description = pyre.inventory.str('description', default='')
+#        parser      = pyre.inventory.str('parser', default='')
+#        text        = pyre.inventory.str('text', default='')
 
 
     def default(self, director):
@@ -48,8 +40,8 @@ class Actor(base):
 
 
     def content(self, director):
-        self._sim       = director.clerk.getQESimulations(id=self.id)
-        self._input     = director.clerk.getQEConfigurations(id=self.configid)
+        #self._sim       = director.clerk.getQESimulations(id=self.id)
+        input     = director.clerk.getQEConfigurations(id=self.configid)
 
         def viewIndicator(director):
             path = []
@@ -57,58 +49,64 @@ class Actor(base):
             path.append(('Quantum Espresso ', load(actor='materialsimulation')))
             path.append(('%s ' % self.id, load(actor    = 'material_simulations/espresso/sim-view',
                                                id       = self.id)))
+            path.append(('%s Task ' % self.type, load(actor    = 'material_simulations/espresso/task-view',
+                                                      id       = self.id,
+                                                      taskid   = self.taskid,
+                                                      type     = self.type)))
 
-            path.append('%s Configuration' % self.type)
+            path.append('Configuration Input: %s' % input.filename)
 
             return director.retrieveVisual('view-indicator', path=path)
 
-        doc         = lc.document(title="%s Configuration: %s" % (self.type, self.filename(self._input)))
+        doc         = lc.document(title="Configuration Input: %s" % input.filename)
         splitter    = doc.splitter(orientation="vertical")
         sA          = splitter.section()
         sA.add(viewIndicator(director))
-        sC          = splitter.section()
-        self.showLinks(sC)
+        sC          = splitter.section(id="qe-section-actions")
+        self._showActions(sC)
 
         sB          = splitter.section()
-        self.showConfig(sB, self._input)
+        table       = QEGrid(lc.grid(Class = "qe-table"))
+        sB.add(table.grid())
+
+        self._showInput(table, input)
+        # Should go after all of the rows are added!
+        table.setColumnStyle(0, "qe-cell-param")
 
         return doc
 
 
-    def showLinks(self, document):  #, inputs
-        document.add(lc.button(label="Edit",
-                              onclick = load(actor='material_simulations/espresso/input-edit',
-                                             id=self.id,
-                                             configid=self.configid,
-                                             type=self.type)))
-        document.add(lc.button(label="Delete",
-                              onclick = load(actor='material_simulations/espresso/input-delete',
-                                             id=self.id,
-                                             configid=self.configid,
-                                             type=self.type)))
+    def _showActions(self, section):  #, inputs
+        section.add(lc.link(label="Edit",
+                            Class="qe-action-edit",
+                            onclick = load(actor      = 'material_simulations/espresso/task-edit',
+                                             id         = self.id,
+                                             configid   = self.configid,
+                                             taskid     = self.taskid,
+                                             type       = self.type))
+                    )
 
-        document.add(lc.document(Class="clear-both"))
+        section.add(lc.link(label="Delete",
+                            Class="qe-action-delete",
+                            onclick = load(actor      = 'material_simulations/espresso/task-delete',
+                                             id         = self.id,
+                                             configid   = self.configid,
+                                             taskid     = self.taskid,
+                                             type       = self.type))
+                    )
 
+        section.add(lc.document(Class="clear-both"))
+        
 
-    def showConfig(self, document, input):
-
-        table   = QEGrid(lc.grid())
-        document.add(table.grid())
-
-        table.addRow(('File Name: ', input.filename))
-        table.addRow(("Type: ", input.type))
-        table.addRow(("Description: ", input.description))
-        table.addRow(("Parser: ", input.parser))
-        table.addRow(("Created: ", stamp2date(input.timeCreated)))
-        table.addRow(("Last Modified: ", stamp2date(input.timeModified)))
-        table.addRow(("Text: ", input.text))
-
-
-    def filename(self, input):
+    def _showInput(self, table, input):
         if input:
-            return input.filename
-
-        return ""
+            table.addRow(('Name:', input.filename))
+            table.addRow(("Type: ", input.type))
+            table.addRow(("Description: ", input.description))
+            table.addRow(("Parser: ", input.parser))
+            table.addRow(("Created: ", stamp2date(input.timecreated)))
+            table.addRow(("Last Modified: ", stamp2date(input.timemodified)))
+            table.addRow(("Text: ", input.text))
 
 
     def __init__(self):
@@ -121,11 +119,10 @@ class Actor(base):
         super(Actor, self)._configure()
         self.id             = self.inventory.id
         self.configid       = self.inventory.configid
+        self.taskid         = self.inventory.taskid
         self.type           = self.inventory.type
-        self.fname          = self.inventory.fname
-        self.description    = self.inventory.description
-        self.text           = self.inventory.text
 
+        
     def _init(self):
         super(Actor, self)._init()
         return
