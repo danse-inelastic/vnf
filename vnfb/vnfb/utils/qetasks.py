@@ -38,8 +38,6 @@ class QETasks:
             # At most one task for each simtask is possible
             simtasks        = self._director.clerk.getQESimulationTasks(where="simulationid='%s'" % self._simid)
             taskslist       = self._tasksList(simtasks)
-            inputs          = self._director.clerk.getQEConfigurations(where="taskid='%s'" % self._simid)
-            orderedInputs   = self._orderInput(self._simlist, inputs)
 
             table           = QEGrid(lc.grid(Class="qe-tasks-table"))
 
@@ -89,6 +87,26 @@ class QETasks:
 
         return None
 
+
+    def _getSimlist(self, type):
+        if type in SIMCHAINS:
+            return SIMCHAINS[type]
+
+        return ()
+
+
+if __name__ == "__main__":
+    pass
+
+
+__date__ = "$Nov 9, 2009 10:50:54 AM$"
+
+
+# *************** DEAD CODE ********************
+
+#            #inputs          = self._director.clerk.getQEConfigurations(where="taskid='%s'" % self._simid)
+#            #orderedInputs   = self._orderInput(self._simlist, inputs)
+
 #
 #            input   = orderedInputs[i]
 #            #print input
@@ -108,47 +126,35 @@ class QETasks:
 #                sep.add(Paragraph(text=" ----> "))
 
 
-    def _orderInput(self, simlist, inputs):
-        """Orders input according to simlist (E.g. simlist = ("PW", "PH") )"""
-        newinputs   = []
+#    def _orderInput(self, simlist, inputs):
+#        """Orders input according to simlist (E.g. simlist = ("PW", "PH") )"""
+#        newinputs   = []
+#
+#        for name in simlist:
+#            newinputs.append(self._configObject(name, inputs))
+#
+#        return newinputs
+#
+#
+#    def _configObject(self, type, inputs):
+#        """Returns object if simulation type exists or None otherwise"""
+#        for sim in inputs:
+#            if sim.type == type:
+#                return sim
+#
+#        return None
 
-        for name in simlist:
-            newinputs.append(self._configObject(name, inputs))
-
-        return newinputs
-
-
-    def _configObject(self, type, inputs):
-        """Returns object if simulation type exists or None otherwise"""
-        for sim in inputs:
-            if sim.type == type:
-                return sim
-
-        return None
-
-
-    def _getSimlist(self, type):
-        if type in SIMCHAINS:
-            return SIMCHAINS[type]
-
-        return ()
-
-
-    def _getId(self, type, inputs):
-        config  = self._configObject(type, inputs)
-        if config:
-            return config.id
-
-        return ""
-
-if __name__ == "__main__":
-    pass
+#    def _getId(self, type, inputs):
+#        config  = self._configObject(type, inputs)
+#        if config:
+#            return config.id
+#
+#        return ""
 
 
-__date__ = "$Nov 9, 2009 10:50:54 AM$"
 
 
-# *************** DEAD CODE ********************
+# ***********************************************
 #        one     = splitter.section()
 #        one.add(Paragraph(text="PW "))
 #        one.add(Link(label=filename, Class="action-link", onclick=load(actor="espresso/set-config", routine="link", id=id)))
