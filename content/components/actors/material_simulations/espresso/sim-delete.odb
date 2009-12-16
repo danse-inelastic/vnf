@@ -103,11 +103,38 @@ class Actor(base):
         "Delete simulation results. E.g. clean up directory"
         pass
 
-
+    # TODO: Check the logic
     def _deleteReference(self, director):
-        # Set simulationid to '' in QESimulationTask if taskid != ''
-        # or delete QESimulationTask record
-        pass
+        "Handle references in QESimulationTask"
+        simtasks = director.clerk.getQESimulationTasks(where="simulationid='%s'" % self.id)
+
+        if simtasks:
+            for st in simtasks:
+                if st.taskid == '':
+                    self._deleteReferenceRecord(director, st)
+                else:
+                    self._updateReference(director, st)
+
+
+    def _updateReference(self, director, simtask):
+        "Update QESimulationTask record"
+        params  = {"simulationid": '',
+                  }
+        simtask.setDirector(director)
+        simtask.updateRecord(params)
+
+
+    def _deleteReferenceRecord(self, director, simtask):
+        "Delete QESimulationTask record"
+        simtask.setDirector(director)
+        simtask.deleteRecord()
+
+
+
+#    def _deleteReference(self, director):
+#        # Set simulationid to '' in QESimulationTask if taskid != ''
+#        # or delete QESimulationTask record
+#        pass
 
 
     def _deleteSimulation(self, director):
