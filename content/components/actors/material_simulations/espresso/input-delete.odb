@@ -11,18 +11,13 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
+from vnfb.utils.qegrid import QEGrid
+
 from luban.content import select
 from luban.content.Paragraph import Paragraph
-from luban.content.Document import Document
-from luban.content.HtmlDocument import HtmlDocument
-from luban.content import load
-from luban.content.Link import Link
-from luban.content.Splitter import Splitter
-from luban.content.FormSelectorField import FormSelectorField
-from luban.content.FormRadioBox import FormRadioBox
 from luban.content.Form import Form
-from luban.content.Tabs import Tabs
-from luban.content.Button import Button
+from luban.content.FormSubmitButton import FormSubmitButton
+from luban.content import load
 
 import luban.content as lc
 from luban.components.AuthorizedActor import AuthorizedActor as base
@@ -34,6 +29,7 @@ class Actor(base):
         import pyre.inventory
         id          = pyre.inventory.str('id', default='')          # Simulation Id
         configid    = pyre.inventory.str('configid', default='')    # Configuration Id
+        taskid      = pyre.inventory.str('taskid', default='')
         type        = pyre.inventory.str('type', default='')        # Type of the configuration file
 
 
@@ -42,7 +38,7 @@ class Actor(base):
 
 
     def content(self, director):
-        self._input = director.clerk.getQEConfigurations(id=self.configid)
+        input = director.clerk.getQEConfigurations(id=self.configid)
 
         def viewIndicator(director):
             path = []
@@ -52,41 +48,50 @@ class Actor(base):
             path.append(('%s ' % self.id, load(actor    = 'material_simulations/espresso/sim-view',
                                                id       = self.id))
                         )
-            path.append("Delete Configuration: %s" % self.type)
+            path.append(('%s Task ' % self.type, load(actor    = 'material_simulations/espresso/task-view',
+                                                      id       = self.id,
+                                                      taskid   = self.taskid,
+                                                      type     = self.type)))
+
+            path.append("Delete Configuration Input: %s" % input.filename)
 
             return director.retrieveVisual('view-indicator', path=path)
 
-        doc         = lc.document(title="Delete Configuration: %s" % self.type)
+        doc         = lc.document(title="Delete Configuration Input: %s" % input.filename)
         splitter    = doc.splitter(orientation="vertical")
         sA          = splitter.section()
         sA.add(viewIndicator(director))
         sB          = splitter.section()
 
         sB.add(Paragraph(text="Are you sure you want to delete the configuration input?"))
+        sB.add(self._setForm())
 
-        form        = Form(title = "Delete Quantum Espresso PW Configuration")
-        submit      = form.submitbutton(label="Delete")
+        return doc
+
+    def _setForm(self):
+        form        = Form()
+        submit      = FormSubmitButton(label="Delete")
+        cancel      = lc.button(label="Cancel")
+        cancel.onclick = load(actor = 'material_simulations/espresso/sim-view', id=self.id)
+
+        st          = QEGrid(lc.grid()) # Submit Table
+        st.addRow((submit, cancel), ("qe-action-accept", "qe-action-cancel"))
+
+        form.add(st.grid())
         form.onsubmit   = select(element=form).submit(actor     = 'material_simulations/espresso/input-delete',
                                                       routine   = 'deleteRecord',
                                                       id        = self.id,
                                                       configid  = self.configid)
 
-        # TODO: "Cancel" button looks UGLY
-        cancel      = lc.link(label="Cancel")
-        cancel.onclick = load(actor = 'material_simulations/espresso/sim-view', id = self.id)
-        form.add(cancel)
-
-        sB.add(form)
-
-        return doc
+        return form
 
 
+    # TODO: Delete also the directory
     def deleteRecord(self, director):
         """Delete configuration record"""
-        self._input     = director.clerk.getQEConfigurations(id=self.configid)
-        self._input.setDirector(director)
-        self._input.deleteRecord()
-        # TODO: Delete also the directory
+        input     = director.clerk.getQEConfigurations(id=self.configid)
+        input.setDirector(director)
+        input.deleteRecord()
 
         return load(actor='material_simulations/espresso/sim-view', id=self.id)
 
@@ -101,6 +106,7 @@ class Actor(base):
         super(Actor, self)._configure()
         self.id             = self.inventory.id
         self.configid       = self.inventory.configid
+        self.taskid         = self.inventory.taskid
         self.type           = self.inventory.type
 
 

@@ -29,10 +29,6 @@ class Actor(base):
         configid    = pyre.inventory.str('configid', default='')    # Configuration Id
         taskid      = pyre.inventory.str('taskid', default='')
         type        = pyre.inventory.str('type', default='')        # Type of the configuration file
-#        fname       = pyre.inventory.str('fname', default='')
-#        description = pyre.inventory.str('description', default='')
-#        parser      = pyre.inventory.str('parser', default='')
-#        text        = pyre.inventory.str('text', default='')
 
 
     def default(self, director):
