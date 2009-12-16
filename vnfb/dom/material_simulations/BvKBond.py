@@ -57,7 +57,7 @@ def customizeLubanObjectDrawer(self, drawer):
     # we need a special field for force constant matrix
     def _createfields(obj):
         # a new field for force_constant_matrix
-        doc = lc.document(title='force constant matrix')
+        doc = lc.document(title='force constant matrix', id='force-constant-matrix-input-container')
         from luban.content.FormTextField import FormTextField
 
         # left and right
@@ -78,7 +78,7 @@ def customizeLubanObjectDrawer(self, drawer):
             continue
 
         # right is the container for constraints
-        cdoc = right.document(Class='container', id='force-constant-matrix-constraints')
+        cdoc = right.document(id='force-constant-matrix-constraints', title='constraints')
 
         # replace the force constant matrix field
         fields = drawer.mold.o2f(obj)

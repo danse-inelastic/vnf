@@ -1,5 +1,17 @@
 /*  -*- CSS -*-  */
 
+#force-constant-matrix-input-container .error{
+    border: 1px solid red;
+}
+#force-constant-matrix {
+    vertical-align: top;
+}
+#force-constant-matrix-constraints p{
+    margin: 0.2em 0;
+}
+
+/* obsolet */
+/*
 .force-constant-form-one-bond {
     margin: 0.2em;
 }
@@ -75,7 +87,6 @@ padding:0 1em;
     border-collapse:collapse;
     width:auto;
 }
-/**/
 .force-constant-form-one-bond .value{
     color: green;
 }
@@ -85,6 +96,7 @@ padding:0 1em;
 .force-constant-form-one-bond .bond-sites .luban-document-title{
     text-align:center;
 }
+*/
 
 /* version */
 /* $Id$ */

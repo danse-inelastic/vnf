@@ -88,11 +88,11 @@ class Actor(base):
         violations = self._findViolations(fcm, constraints)
         if violations:
             doc = lc.document(Class='container')
-            doc1 = doc.document(title='Following constraints are not satisfied', Class='error')
+            doc1 = doc.document(title='Not satisfied', Class='error')
             for violation in violations:
                 doc1.paragraph(text=[str(violation)])
                 continue
-            doc2 = doc.document(title='Constraints that are satisfied')
+            doc2 = doc.document(title='Satisfied')
             for constraint in constraints:
                 if constraint not in violations:
                     doc2.paragraph(text=[str(constraint)])
