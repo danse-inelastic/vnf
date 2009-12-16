@@ -77,9 +77,9 @@ class QETaskCell:
         tid = self._task.id
         return lc.link(label    = tid,
                        onclick  = load(actor    = 'material_simulations/espresso/task-view',
-                                       simid    = self._simid,
+                                       id       = self._simid,
                                        taskid   = tid,
-                                       tasktype = self._type)
+                                       type     = self._type)
                         )
 
 
