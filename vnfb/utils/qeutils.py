@@ -97,6 +97,27 @@ def makedirs(path):
         os.makedirs(path)
 
 
+def packname(id, name):
+    """Packs name by appending name to id.
+    E.g.
+        id   = "3YEQ8PNV"
+        name = "ni.scf.in"
+    =>  3YEQ8PNVni.scf.in
+    """
+    return "%s%s" % (id, name)
+
+def unpackname(string, id):
+    """
+    Unpacks string: returns tupple (id, name) by trancating id from string
+    """
+    parts   = string.split("id")
+    # Raise error if id is not in string
+    assert len(parts) == 2  # breaks into two parts
+    name    = parts[1]
+
+    return (id, name)
+
+
 def testStamp():
     import time
     print stamp2date(time.time())
