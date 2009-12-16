@@ -13,7 +13,6 @@
 
 from vnf.dom.QESetting import QESetting
 from vnfb.utils.qegrid import QEGrid
-from vnfb.utils.serverlist import ServerList
 
 from luban.content import select
 from luban.content import load
@@ -65,17 +64,14 @@ class Actor(base):
         sA          = splitter.section()
         sA.add(viewIndicator(director))
         sB          = splitter.section()
-        sB.add(self._setForm(director, sim))
+        sB.add(self._setForm(sim))
 
         return doc
 
 
-    def _setForm(self, director, sim):
+    def _setForm(self, sim):
         "Sets create new settings form"
-        # Set servers first
-        servers     = ServerList(director)
-        serversList = servers.list()
-
+        
         form        = Form(id='create-simulation-form')
         table       = QEGrid(lc.grid(Class="qe-form"))
         form.add(table.grid())
