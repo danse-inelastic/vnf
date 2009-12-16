@@ -41,23 +41,13 @@ class Actor(base):
         doc = lc.document()
 
         #
-        path = [
-            ('simulations', lc.load(actor='materialsimulation')),
-            ('phonons', lc.load(
-            actor=self.name, routine='start',
-            atomicstructure_id=self.inventory.atomicstructure_id)),
-            ]
+        path = self._path()
         view_indicator = director.retrieveVisual('view-indicator', path=path)
         doc.add(view_indicator)
 
         domaccess = director.retrieveDOMAccessor('atomicstructure')
         matter = domaccess.getAtomicStructureRecord(id=self.inventory.atomicstructure_id)
         matterlabel = matter.short_description
-        link = lc.link(label='Back to atomic structure %s' % matterlabel,
-                       onclick=load(actor='atomicstructure', routine='showOverview',
-                                    id=self.inventory.atomicstructure_id)
-                       )
-        doc.add(link)
         
         doc.paragraph(
             text = ['To compute phonons for %s, please select a computation engine' % matterlabel],
@@ -87,6 +77,16 @@ class Actor(base):
         return lc.load(actor=actor, routine=routine, atomicstructure_id=atomicstructure_id)
         
 
+
+    def _path(self):
+        return [
+            ('matter', lc.load(actor='atomicstructure', routine='showOverview',
+                               id=self.inventory.atomicstructure_id)),
+            ('phonons', lc.load(
+            actor=self.name, routine='start',
+            atomicstructure_id=self.inventory.atomicstructure_id)),
+            ]
+        
 
     def __init__(self, name='material_simulations/phonon_calculators'):
         super(Actor, self).__init__(name)

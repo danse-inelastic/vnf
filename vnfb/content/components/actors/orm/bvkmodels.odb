@@ -20,6 +20,7 @@ from luban.content import select, load, alert
 
 #
 from vnfb.dom.material_simulations.BvKModel import BvKModel
+from vnfb.dom.material_simulations.BvKBond import BvKBond
 
 from luban.components.Actor import Actor
 import luban.orm
@@ -29,6 +30,36 @@ class Actor(base):
     class Inventory(base.Inventory):
 
         import luban.inventory
+
+
+    # reload to make sure a new bvkbond is created correctly
+    def appendNewReferenceSetItem(self, director):
+        '''append a new item to a reference set of this object
+
+        id: id of the record that represents this object
+        refname: name of the reference set
+        '''
+        refname = self.inventory.refname
+        assert refname == 'bonds'
+
+        # this object
+        model = obj = self._load(director)
+        
+        #
+        orm = director.clerk.orm
+        
+        # create a new item
+        bond = BvKBond()
+        bond.matter = model.matter
+        orm.save(bond)
+        
+        # add to the refset
+        record = orm(model)
+        refset = record.bonds
+        refset.add(orm(bond), db=orm.db)
+
+        return orm.db.getUniqueIdentifierStr(orm(bond))
+
 
 
 

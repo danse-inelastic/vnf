@@ -30,7 +30,7 @@ def visual(models, director):
         left = row.cell(); left.add(modelView(model, domaccess, painter))
         right = row.cell();
         link = lc.link(label='select this model', onclick=load(
-            actor='material_simulations/bvk', routine='selectModel',
+            actor='material_simulations/phonon_calculators/bvk', routine='selectModel',
             model_id = orm(model).id))
         right.add(link)
 
