@@ -11,6 +11,79 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
+from vnf.dom.QETask import QETask
+from vnf.dom.QESimulationTask import QESimulationTask
+
+from luban.content import load
+
+import luban.content as lc
+from luban.components.AuthorizedActor import AuthorizedActor as base
+
+class Actor(base):
+    """ Silently creates simulation task"""
+
+    class Inventory(base.Inventory):
+        import pyre.inventory
+        simid       = pyre.inventory.str('simid', default='')
+        tasktype    = pyre.inventory.str('tasktype', default='')
+
+
+    def default(self, director):
+        pass
+
+
+    def createRecord(self, director):
+        """Create simulation record"""
+        self._createTask(director)
+        self._createSimulationTask(director)
+
+        return load(actor   ='material_simulations/espresso/sim-view',
+                    id      = self.simid)
+
+
+    def _createTask(self, director):
+        "Creates task"
+        params  = {"type":          self.tasktype,
+                   "package":       "Quantum Espresso",
+                   #"matter":        self.matter    # Doesn't work at this moment
+                   }
+        task     = QETask()
+        task.setDirector(director)
+        task.createRecord(params)
+        self._taskid    = task.id
+
+        
+    def _createSimulationTask(self, director):
+        "Creates simulation task"
+        params  = {"simulationid":  self.simid,
+                   "taskid":        self._taskid
+                  }
+        simtask = QESimulationTask()
+        simtask.setDirector(director)
+        simtask.createRecord(params)
+
+
+    def __init__(self):
+        super(Actor, self).__init__(name='material_simulations/espresso/task-create')
+
+        return
+
+
+    def _configure(self):
+        super(Actor, self)._configure()
+        self.simid       = self.inventory.simid
+        self.tasktype    = self.inventory.tasktype
+
+        return
+
+
+    def _init(self):
+        super(Actor, self)._init()
+        return
+
+def actor():
+    return Actor()
+
 
 __date__ = "$Dec 12, 2009 10:42:10 PM$"
 
