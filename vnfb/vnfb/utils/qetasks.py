@@ -81,9 +81,10 @@ class QETasks:
         Return task object in simtasks of type 'type' or None otherwise
         """
         for st in simtasks:
-            task    = self._director.clerk.getQETasks(id = st.taskid)
-            if task is not None and task.type    == type:
-                return task
+            if st.taskid != '': # Avoid dangling references
+                task    = self._director.clerk.getQETasks(id = st.taskid)
+                if task is not None and task.type    == type:
+                    return task
 
         return None
 

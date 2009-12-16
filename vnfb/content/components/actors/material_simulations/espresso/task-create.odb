@@ -52,6 +52,7 @@ class Actor(base):
         
     def _createSimulationTask(self, director):
         "Creates simulation task"
+        # TODO: What if dangling record already exists? Use it?
         params  = {"simulationid":  self.simid,
                    "taskid":        self._taskid
                   }
@@ -59,6 +60,7 @@ class Actor(base):
         simtask.setDirector(director)
         simtask.createRecord(params)
 
+    #def
 
     def __init__(self):
         super(Actor, self).__init__(name='material_simulations/espresso/task-create')
