@@ -49,6 +49,11 @@ class QEConfiguration(QETable):
     timemodified = dsaw.db.varchar(name="timemodified", length=16, default='')
     timemodified.meta['tip'] = "timemodified"
 
+    # Kind of redundant because QETask has also type
+    type         = dsaw.db.varchar(name="type", length=1024, default='')
+    type.meta['tip'] = "Configration type"
+
+
     # FIXME:
     # Question: Do I need text fields once I use get file from DDS location?
     # Answer: Keep it just in case
