@@ -17,15 +17,17 @@ from vnfb.utils.qegrid import QEGrid
 
 class QETaskCell:
 
-    def __init__(self, type, simid, task):   # Temp
+    def __init__(self, type, simid, task):
         self._type  = type
+        self._simid = simid
+        self._task  = task
 
 
     def header(self):
         "Shows the header for the simulation task"
         type    = lc.paragraph(text=self._type, Class="text-bold")
-        link    = lc.paragraph(text="")    # Task cannot be changed at this time
-        #link    = lc.link(label="Change")
+        link    = lc.paragraph(text="")     # Task cannot be changed at this time
+        #link    = lc.link(label="Change")  # Keep
 
         table   = QEGrid(lc.grid(Class="qe-grid"))
         table.addRow((type, link), (None, "qe-task-header-change"))
@@ -35,21 +37,28 @@ class QETaskCell:
 
     def taskInfo(self):
         table   = QEGrid(lc.grid(Class="qe-tasks-info"))
+        if self._task:
+            table.addRow(("Task:", self._task.id))
+            table.addRow(("Input:", self._input()))
+            table.addRow(("Output:", self._output()))
+            table.addRow(("Status:", self._status()))
+            table.addRow(("Job:", self._currentJob()))
+            table.setColumnStyle(0, "qe-tasks-param")
+            table.setCellStyle(3, 1, "text-green")
 
-#        self._addCell(table, "Create New Task")
-#        self._addCell(table, "or")
-#        self._addCell(table, "Use Existing Task")
-        
-        table.addRow(("Task:", self._taskId()))
-        table.addRow(("Input:", self._input()))
-        table.addRow(("Output:", self._output()))
-        table.addRow(("Status:", self._status()))
-        table.addRow(("Job:", self._currentJob()))
-        
-        #table.addRow(("Jobs:", self._jobs()))
-        
-        table.setColumnStyle(0, "qe-tasks-param")
-        table.setCellStyle(3, 1, "text-green")
+            #table.addRow(("Jobs:", self._jobs()))
+        else:
+            # May be it would be better to just replace content with task info?
+            link    = lc.link(label="Create New Task",
+                              onclick = load(actor      = 'material_simulations/espresso/task-create',
+                                             routine    = 'createRecord',
+                                             simid      = self._simid,
+                                             tasktype   = self._type)
+                             )
+
+            table.addRow((link, ))
+            #table.addRow(("or", ))                 # Keep
+            #table.addRow(("Use Existing Task", ))  # Keep
 
         return table.grid()
 
@@ -59,9 +68,6 @@ class QETaskCell:
                        onclick = load(actor='material_simulations/espresso/sim-edit')
                         )
 
-
-    def _taskId(self):
-        return "VBDG4"
 
     def _input(self):
         return "ni.scf.in"
