@@ -79,7 +79,7 @@ class Actor(base):
 
 
     def deleteRecord(self, director):
-        """Delete configuration record"""
+        """Delete settings record"""
         settings     = director.clerk.getQESettings(id=self.configid)
         settings.setDirector(director)
         settings.deleteRecord()

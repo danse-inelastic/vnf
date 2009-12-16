@@ -71,6 +71,10 @@ class Clerk(ClerkBase, base):
         '''retrieve simulation record specified by id'''
         return self._getEntry('QESimulation', id=id, where=where)
 
+    def getQESimulationTasks(self, id=None, where=None):
+        '''retrieve simulation task record specified by id'''
+        return self._getEntry('QESimulationTask', id=id, where=where)
+
     def getQEConfigurations(self, id=None, where=None):
         '''retrieve user configuration specified by id'''
         return self._getEntry('QEConfiguration', id=id, where=where)

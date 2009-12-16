@@ -25,35 +25,69 @@ from luban.content.Link import Link
 class QETasks:
     """Displays the chain of QE simulation steps"""
 
-    def __init__(self, director, type, id = None):
+    def __init__(self, director, type, simid = None):
+        self._simid     = simid
         self._director  = director
         self._simtype   = type
         self._simlist   = self._getSimlist(type)
 
 
-    def tasks(self, id):
-        inputs          = self._director.clerk.getQEConfigurations(where="taskid='%s'" % id)
-        orderedInputs   = self._orderInput(self._simlist, inputs)
+    def tasks(self):
+        container   = ""
+        if self._simid:
+            # At most one task for each simtask is possible
+            simtasks        = self._director.clerk.getQESimulationTasks(where="simulationid='%s'" % self._simid)
+            taskslist       = self._tasksList(simtasks)
+            inputs          = self._director.clerk.getQEConfigurations(where="taskid='%s'" % self._simid)
+            orderedInputs   = self._orderInput(self._simlist, inputs)
 
-        tasknum         = len(self._simlist)
-        table           = QEGrid(lc.grid(Class="qe-tasks-table"))
+            table           = QEGrid(lc.grid(Class="qe-tasks-table"))
 
-        for i in range(tasknum):
-            self._setTaskCell(table, i)
-            # Special layout for action buttons (e.g. "Run Task")
-            table.setCellStyle(2, i, "qe-action-task")
+            for i in range(self._tasknum()):
+                self._setTaskCell(table, i, taskslist[i])
+                # Special layout for action buttons (e.g. "Run Task")
+                table.setCellStyle(2, i, "qe-action-task")
 
-        return table.grid()
+            container   = table.grid()
+            
+        return container
 
-
-    def _setTaskCell(self, table, colnum):
+    def _setTaskCell(self, table, colnum, task):
         "Populates the task's cell"
 
-        tc      = QETaskCell(self._simlist[colnum])
+        tc      = QETaskCell(self._type(colnum), self._simid, task)
         rows    = (tc.header(), tc.taskInfo(), tc.action())
         table.addColumn(rows)
 
-        
+
+    def _type(self, colnum):
+        "Returns task type"
+        return self._simlist[colnum]
+
+
+    def _tasknum(self):
+        "Returns number of tasks"
+        return len(self._simlist)
+
+
+    def _tasksList(self, simtasks):
+        taskslist   = []
+        for type in self._simlist:
+            taskslist.append(self._taskObject(simtasks, type))
+            
+        return taskslist
+
+
+    def _taskObject(self, simtasks, type):
+        """
+        Return task object in simtasks of type 'type' or None otherwise
+        """
+        for st in simtasks:
+            task    = self._director.clerk.getQETasks(id = st.taskid)
+            if task is not None and task.type    == type:
+                return task
+
+        return None
 
 #
 #            input   = orderedInputs[i]
