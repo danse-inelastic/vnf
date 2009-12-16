@@ -34,7 +34,7 @@ class QEParams:
         if settings:
             s = settings[0]
             if s:
-                link = Link(label=s.filename, Class="action-link",
+                link = Link(label=s.sname, Class="action-link",
                             onclick=load(actor      = "material_simulations/espresso/settings-view",
                                          id         = id,
                                          configid   = s.id)
