@@ -44,6 +44,7 @@ EXPORT_PYTHON_MODULES = \
         qetasks.py \
         qeconst.py \
         qegrid.py \
+        qeinput.py \
         qeparams.py \
         qescheduler.py \
         qeserver.py \
