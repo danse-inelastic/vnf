@@ -95,7 +95,7 @@ class Actor(base):
             table.addRow(('Label: ', task.label))
             table.addRow(('Time Created: ', stamp2date(task.date)))
             table.addRow(('Current Job: ', 'None'))
-            #table.addRow(('All Jobs: ', 'None'))   # Keep
+            #table.addRow(('All Jobs: ', 'None'))   # Keep. Disable option to run same task multiple times
 
 
     def __init__(self):

@@ -55,8 +55,6 @@ class Actor(base):
         sA          = splitter.section()
         sA.add(viewIndicator(director))
         sB          = splitter.section()
-
-        document = Document(title='Delete Simulation: %s' % sim.sname)
         sB.add(Paragraph(text="Warning: Deleting simulation will also delete settings and simulation results!"))
         sB.add(Paragraph(text="Are you sure you want to delete the simulation?"))
         sB.add(self._setForm())
@@ -86,6 +84,7 @@ class Actor(base):
         # Order in which records are deleted is important. See the database schema
         self._deleteSettings(director)
         self._deleteResults(director)
+        self._deleteReference(director)
         self._deleteSimulation(director)
         
         return load(actor='materialsimulation') 
@@ -102,6 +101,12 @@ class Actor(base):
 
     def _deleteResults(self, director):
         "Delete simulation results. E.g. clean up directory"
+        pass
+
+
+    def _deleteReference(self, director):
+        # Set simulationid to '' in QESimulationTask if taskid != ''
+        # or delete QESimulationTask record
         pass
 
 
@@ -133,18 +138,4 @@ def actor():
     return Actor()
 
 __date__ = "$Nov 2, 2009 3:19:17 PM$"
-
-
-
-# ************************ DEAD CODE ******************
-
-#    def deleteJobs(self, director):
-#        """Deletes jobs"""
-#        jobs            = director.clerk.getQEJobs(where="simulationid='%s'" % self.id)
-#        if jobs:
-#            for j in jobs:
-#                j.setDirector(director)
-#                j.deleteRecord()
-#
-#
 
