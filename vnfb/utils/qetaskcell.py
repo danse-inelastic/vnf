@@ -17,13 +17,15 @@ from vnfb.utils.qegrid import QEGrid
 
 class QETaskCell:
 
-    def __init__(self, type):   # Temp
+    def __init__(self, type, simid, task):   # Temp
         self._type  = type
+
 
     def header(self):
         "Shows the header for the simulation task"
         type    = lc.paragraph(text=self._type, Class="text-bold")
-        link    = lc.link(label="Change")
+        link    = lc.paragraph(text="")    # Task cannot be changed at this time
+        #link    = lc.link(label="Change")
 
         table   = QEGrid(lc.grid(Class="qe-grid"))
         table.addRow((type, link), (None, "qe-task-header-change"))

@@ -143,13 +143,13 @@ class Actor(base):
         #link    = self._retrieveResults(director)
 
         # Change actor
-        check    = Link(label="Check", id="qe-check-results", #Class="padding-left-20",
+        check    = Link(label="Check", id="qe-check-results", 
                        onclick=load(actor       = "material_simulations/espresso/sim-view",
                                     routine     = "retrieveStatus",
                                     id          = self.id)
                       )
 
-        analyze  = Link(label="Analyze", id="qe-analyze-results", #Class="padding-left-20",
+        analyze  = Link(label="Analyze", id="qe-analyze-results", 
                        onclick=load(actor       = "material_simulations/espresso/results",
                                     id          = self.id)
                       )
@@ -181,9 +181,9 @@ class Actor(base):
 #        sR.add(lc.document(Class="clear-both"))
 
         # Show tasks table
-        taskstable   = QETasks(director, type)
+        taskstable   = QETasks(director, type, self.id)
         sT          = splitter.section()
-        sT.add(taskstable.tasks(self.id))
+        sT.add(taskstable.tasks())
         
 
 
