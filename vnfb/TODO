@@ -20,6 +20,7 @@ Solution:
     is running or completed
 - Change action buttom depending on the status of the job:
     "Run Task" -> "Cancel" -> "Run Task"
+- Change status of jobs depending on scheduling steps
 
 
 *********** TODO Steps **************
