@@ -17,7 +17,7 @@ from dsaw.model.Inventory import Inventory as InvBase
 class BvKBond(object):
 
     # should be assigned when created
-    structure = None
+    matter = None
 
     # settable by users
     A = 0

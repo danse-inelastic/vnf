@@ -23,7 +23,9 @@ class BvKModel(object):
     matter = Structure()
     short_description = ''
     bonds = []
-    
+
+    long_description = ''
+    reference = ''
 
     class Inventory(InvBase):
         
@@ -32,6 +34,10 @@ class BvKModel(object):
 
         bonds = InvBase.d.referenceSet(name='bonds', targettype=BvKBond, owned=1)
 
+        long_description = InvBase.d.str(name='long_description', label='details', max_length=2048)
+        reference = InvBase.d.str(name='reference', max_length=1024)
+
+        
         dbtablename = 'bvkmodels'
 
 
