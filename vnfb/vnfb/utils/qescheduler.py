@@ -14,28 +14,30 @@
 # Temp solution for QE jobs submission. Hardcoded for the foxtrot cluster
 # param: job (input -> temp solution)
 
-def schedule( input, director ):
+def schedule( sim, director ):
     # copy local job directory to server
-    server  = director.clerk.getServers(id='server001')
-    server_jobpath = director.dds.abspath(input, server=server)
-
-#    # the server
-#    server = job.server.dereference(director.clerk.db)
+    server         = director.clerk.getServers(id=sim.serverid)
+    server_jobpath = director.dds.abspath(sim, server=server)
 
     # the scheduler
     scheduler = schedulerfactory( server )
     launch = lambda cmd: director.csaccessor.execute(
-        cmd, server, server_jobpath, suppressException=True)
+                                                    cmd,
+                                                    server,
+                                                    server_jobpath,
+                                                    suppressException=True)
     scheduler = scheduler(launch, prefix = 'source ~/.vnf-qe' )
 
-    # submit job through scheduler
-    #walltime = job.walltime
     from pyre.units.time import hour
     walltime = 1*hour   # limit to one hour
     id1 = scheduler.submit( 'cd %s && sh run.sh' % server_jobpath, walltime=walltime )
 
     # write id to the remote directory
     director.csaccessor.execute('echo "%s" > jobid' % id1, server, server_jobpath)
+
+
+    # submit job through scheduler
+    #walltime = job.walltime
 
     # update job db record
 #    job.id_incomputingserver = id1

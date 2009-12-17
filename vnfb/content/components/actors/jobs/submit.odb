@@ -55,8 +55,8 @@ class Actor(base):
         """
         self._createJob(director)
         self._storeFiles(director)
-        #self._moveFiles(director, inputs)
-        #self._scheduleJob(director, inputs)
+        self._moveFiles(director)
+        self._scheduleJob(director)
 
         return load(actor="material_simulations/espresso/sim-view",
                     id=self.id)
@@ -81,7 +81,7 @@ class Actor(base):
     def _storeFiles(self, director):
         """TEMP SOLUTION: Stores files from configuration input strings """
         self._storeConfigurations(director)
-        self._generateRunScript(director)
+        self._createRunScript(director)
         self._prepareFiles()
 
 
@@ -92,13 +92,13 @@ class Actor(base):
         for input in inputs:
             fn          = input.filename
             pfn         = packname(self._sim.id, fn)            # E.g. 44XXJJG2ni.scf.in
-            #filename    = dds.abspath(input, filename = fn)
             self._write2file(dds, input, fn, input.text)        # -> qeconfigurations directory
             self._write2file(dds, self._sim, pfn, input.text)   # -> qesimulations directory
             dds.remember(self._sim, pfn)     # Change object and filename?
+            self._files.append(pfn)
 
 
-    def _generateRunScript(self, director):
+    def _createRunScript(self, director):
         settings    = director.clerk.getQESettings(where = "simulationid='%s'" % self.id)   # Should exist
         inputs      = director.clerk.getQEConfigurations(where = "taskid='%s'" % self.taskid)
         setting     = settings[0]
@@ -122,21 +122,11 @@ class Actor(base):
         dds     = director.dds
         self._write2file(dds, self._sim, RUNSCRIPT, "\n".join(cmds))    # -> qesimulations directory
         dds.remember(self._sim, RUNSCRIPT)
+        self._files.append(RUNSCRIPT)
         
 
     def _prepareFiles(self):
         pass
-
-
-#    def _storeSettings(self, director):
-#        # Store Settings files. I don't really need to store to files.
-#        # Instead use data to create run.sh
-#        settings  = director.clerk.getQESettings(where = "simulationid='%s'" % self.id)
-#        dds     = director.dds
-#        for s in settings:
-#            filename    = dds.abspath(s, filename = s.sname)
-#            dds.remember(s, s.sname)     # Change object and filename?
-#            self._write2file(dds, input, filename, input.text)
 
 
     def _write2file(self, dds, record, fname, content):
@@ -147,35 +137,27 @@ class Actor(base):
         writefile(absfilename, content)
 
 
-    def _moveFiles(self, director, inputs):
+    def _moveFiles(self, director):
         """
         Moves files from local server to the computational cluster.
         Files that need to be moved:
             - Configuration inputs
             - Simulation Settings
             - run.sh script (generate it first)
+        Notes:
+            - See also: submitjob.odb
         """
         dds     = director.dds
-        server  = director.clerk.getServers(id = self._sim.serverid) # Hardcoded
+        server  = director.clerk.getServers(id = self._sim.serverid)
 
-        # See also: submitjob.odb
-
-        #input   = inputs[0]
-        #files   = []
-        #files.append(self.files[0])
-        dds.make_available(inputs[0], server=server, files=['PW',]) #self.files[0]
-
-        # Why job? - Can be any table instead. How to get server?
-#        server = clerk.dereference(job.server)
-#        director.declareProgress(0.5, 'Preparing: transfering job to the server %s ...' % server.short_description)
-#        dds.make_available(job, server=server, files=files)
+        dds.make_available(self._sim, server=server, files=self._files)
 
 
-    def _scheduleJob(self, director, inputs):
-        # FIXME
+    def _scheduleJob(self, director):
+        "Schedule job"
         dds     = director.dds
         from vnfb.utils.qescheduler import schedule
-        schedule(inputs[0], director)
+        schedule(self._sim, director)
 
 
     def retrieveStatus(self, director):
@@ -257,6 +239,7 @@ class Actor(base):
 
     def _init(self):
         super(Actor, self)._init()
+        self._files = []
         return
 
 def actor():
@@ -267,6 +250,20 @@ __date__ = "$Nov 4, 2009 9:27:51 AM$"
 
 
 # ********************** DEAD CODE ***********************
+
+
+#    def _storeSettings(self, director):
+#        # Store Settings files. I don't really need to store to files.
+#        # Instead use data to create run.sh
+#        settings  = director.clerk.getQESettings(where = "simulationid='%s'" % self.id)
+#        dds     = director.dds
+#        for s in settings:
+#            filename    = dds.abspath(s, filename = s.sname)
+#            dds.remember(s, s.sname)     # Change object and filename?
+#            self._write2file(dds, input, filename, input.text)
+
+
+
 
         #self.files  = []
         #self.files.append(input.filename)       # ??? Relative path, e.g. ni.scf.in

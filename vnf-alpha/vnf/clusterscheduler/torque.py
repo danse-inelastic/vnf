@@ -52,13 +52,8 @@ class Scheduler:
     def submit( self, cmd, walltime=1*hour ):
         walltime = _walltime_str(walltime)
         
-#        cmds = [ r'echo \"%s\" | qsub -l walltime=%s -o %s -e %s' % (
-#            cmd, walltime, self.outfilename, self.errfilename) ]
-
-        dir     = "/home/dexity/espresso/qeconfigurations/MQDHXV7"
-        str     = "-V -N myjob -l nodes=8:ppn=12"
-        cmds    = [ r'echo \"%s\" | qsub -d %s -o %s -e %s %s -' % (
-            cmd, dir, self.outfilename, self.errfilename, str) ]
+        cmds = [ r'echo \"%s\" | qsub -l walltime=%s -o %s -e %s' % (
+            cmd, walltime, self.outfilename, self.errfilename) ]
 
         failed, output, error = self._launch( cmds )
         if failed:

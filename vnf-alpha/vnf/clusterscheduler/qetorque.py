@@ -19,14 +19,36 @@ debug = journal.debug( 'torque' )
 from pyre.units.time import hour, minute, second
 
 from vnf.clusterscheduler.torque import Scheduler as base
+from vnf.clusterscheduler.torque import _walltime_str
 
 class Scheduler(base):
-    
+
+    def setSimulationParams(self, sim, settings, server):
+        "Set simulation objects"
+        self._sim       = sim       # not None
+        self._settings  = settings  # not None
+        self._server    = server    # not None
+        
+
     def submit( self, cmd, walltime=1*hour ):
         walltime = _walltime_str(walltime)
 
-        dir     = "/home/dexity/espresso/qeconfigurations/MQDHXV7"
-        str     = "-V -N myjob -l nodes=8:ppn=12"
+        # Pass:
+        #   - full filename (qesimulations)
+        #   - number of nodes (nodes)
+        #   - cores per node (ppn)
+        #   - job name (from QESimulation id? May be later on matter formula)
+        # Objects:
+        #   - QESimulation
+        #   - QESettings
+        #   - Server
+        # /home/dexity/espresso
+
+        # Example:
+        #   dir = "/home/dexity/espresso/qesimulations/MQDHXV7"
+        #   str = "-V -N myjob -l nodes=8:ppn=12"
+        dir     = "%s/%s/%s" % (self._server.workdir, self._sim.name, self._sim.id)
+        str     = "-V -N %s -l nodes=%s:ppn=%s"  % (self._sim.id, self._settings.numnodes, self._server.corespernode)
         cmds    = [ r'echo \"%s\" | qsub -d %s -o %s -e %s %s -' % (
             cmd, dir, self.outfilename, self.errfilename, str) ]
 
