@@ -78,8 +78,7 @@ class Actor(base):
         domaccess = self._domaccess(director)
         model = domaccess.getModel(id=model_id)
 
-        orm = domaccess.orm
-        if domaccess.isModelEditable(modelrecord=orm(model)):
+        if not domaccess.isModelConstructed(model=model):
             return self.editModel(director)
         
         return self.presentComputingTarget(director)
@@ -89,12 +88,22 @@ class Actor(base):
         model_id = self.inventory.model_id
         domaccess = self._domaccess(director)
         model = domaccess.getModel(id=model_id)
+        if not domaccess.isModelEditable(modelrecord = domaccess.orm(model)):
+            raise RuntimeError, "Model %s is not editable" % model_id
 
         if not self.inventory.atomicstructure_id:
             self.inventory.atomicstructure_id = domaccess.orm(model.matter).id
 
         doc = lc.document()
         path = self._pathToMe(director)
+
+        # 
+        modellabel = domaccess.getModelLabel(model=model)
+        path.append(('edit %s'%modellabel,
+                     load(actor=self.name, routine='editModel', model_id=model_id))
+                    )
+
+        #
         view_indicator = director.retrieveVisual('view-indicator', path=path)
         doc.add(view_indicator)
         
