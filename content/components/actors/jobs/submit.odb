@@ -13,7 +13,7 @@
 
 from vnf.dom.QEJob import QEJob
 from vnfb.utils.qeutils import makedirs, writefile
-from vnfb.utils.qeconst import STATES
+from vnfb.utils.qeconst import STATES, RUNSCRIPT
 from vnfb.utils.qeutils import packname, unpackname
 
 import os
@@ -53,7 +53,7 @@ class Actor(base):
         2. Copy files to the computational cluster
         3. Submit Job
         """
-        #self._createJob(director)
+        self._createJob(director)
         self._storeFiles(director)
         #self._moveFiles(director, inputs)
         #self._scheduleJob(director, inputs)
@@ -63,6 +63,7 @@ class Actor(base):
 
 
     def _createJob(self, director):
+        "Create Job"
         self._sim   = director.clerk.getQESimulations(id = self.id)     # Should exist
         settings    = director.clerk.getQESettings(where = "simulationid='%s'" % self.id)   # Should exist
         setting     = settings[0]
@@ -74,14 +75,13 @@ class Actor(base):
                    }
         job  = QEJob()
         job.setDirector(director)
-        job.createRecord(params)
+        #job.createRecord(params)
 
-    # creator, status, numberprocessors, taskid, serverid
 
     def _storeFiles(self, director):
         """TEMP SOLUTION: Stores files from configuration input strings """
         self._storeConfigurations(director)
-        self._generateRunScript()
+        self._generateRunScript(director)
         self._prepareFiles()
 
 
@@ -90,21 +90,43 @@ class Actor(base):
         inputs  = director.clerk.getQEConfigurations(where = "taskid='%s'" % self.taskid)
         dds     = director.dds
         for input in inputs:
-            filename    = dds.abspath(input, filename = input.filename)
-            dds.remember(input, input.filename)     # Change object and filename?
-            self._writeContent(dds, input, filename, input.text)
+            fn          = input.filename
+            pfn         = packname(self._sim.id, fn)            # E.g. 44XXJJG2ni.scf.in
+            #filename    = dds.abspath(input, filename = fn)
+            self._write2file(dds, input, fn, input.text)        # -> qeconfigurations directory
+            self._write2file(dds, self._sim, pfn, input.text)   # -> qesimulations directory
+            dds.remember(self._sim, pfn)     # Change object and filename?
 
 
     def _generateRunScript(self, director):
+        settings    = director.clerk.getQESettings(where = "simulationid='%s'" % self.id)   # Should exist
+        inputs      = director.clerk.getQEConfigurations(where = "taskid='%s'" % self.taskid)
+        setting     = settings[0]
+        input       = inputs[0]
 
         # mpirun --mca btl openib,sm,self pw.x -npool 8 -inp  PW > PW.out
-        cmds    = [
+        words   = [ setting.executable,
+                    setting.params,
+                    "pw.x",
+                    "-npool %s" % setting.npool,
+                    "-inp",
+                    packname(self._sim.id, input.filename),       # replace
+                    ">",
+                    packname(self._sim.id, "%s.out" % input.filename)    # replace
+        ]
+        
+        cmds    = [ "#!/bin/env bash",   # Suppose there is bash available
+                    " ".join(words)
         ]
 
-        #[mpirun --mca btl openib,sm,self pw.x -npool 8 -inp  PW > PW.out
+        dds     = director.dds
+        self._write2file(dds, self._sim, RUNSCRIPT, "\n".join(cmds))    # -> qesimulations directory
+        dds.remember(self._sim, RUNSCRIPT)
+        
 
+    def _prepareFiles(self):
+        pass
 
-        ]
 
 #    def _storeSettings(self, director):
 #        # Store Settings files. I don't really need to store to files.
@@ -114,14 +136,15 @@ class Actor(base):
 #        for s in settings:
 #            filename    = dds.abspath(s, filename = s.sname)
 #            dds.remember(s, s.sname)     # Change object and filename?
-#            self._writeContent(dds, input, filename, input.text)
+#            self._write2file(dds, input, filename, input.text)
 
 
-    def _writeContent(self, dds, record, filename, content):
+    def _write2file(self, dds, record, fname, content):
         """Writes content of the configuration input to file"""
-        path    = dds.abspath(record)
+        path        = dds.abspath(record)
+        absfilename = dds.abspath(record, filename = fname)
         makedirs(path)
-        writefile(filename, content)
+        writefile(absfilename, content)
 
 
     def _moveFiles(self, director, inputs):
