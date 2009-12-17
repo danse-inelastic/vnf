@@ -20,6 +20,7 @@ Notes:
 """
 
 from vnfb.components.QETable import QETable
+from vnfb.utils.qeconst import SETTINGS
 
 # Update column from QECalc
 
@@ -40,26 +41,22 @@ class QESetting(QETable):
     description = dsaw.db.varchar(name="description", length=1024, default='')
     description.meta['tip'] = "description"
 
-    numproc     = dsaw.db.integer(name='numproc', default = 0)
+    numproc     = dsaw.db.integer(name='numproc', default = SETTINGS["numproc"])
     numproc.meta['tip'] = "Number of processes to occupy"
 
-    numnodes    = dsaw.db.integer(name='numnodes', default = 0)
+    numnodes    = dsaw.db.integer(name='numnodes', default = SETTINGS["numnodes"])
     numnodes.meta['tip'] = "Number of nodes"
 
-    # Should be moved Server???
-    procpernode = dsaw.db.integer(name='procpernode', default = 0)
-    procpernode.meta['tip'] = "Number of processes per node"
-    
-    npool       = dsaw.db.integer(name='npool', default = 0)
+    npool       = dsaw.db.integer(name='npool', default = SETTINGS["npool"])
     npool.meta['tip'] = "Parameters npool"
 
-    executable  = dsaw.db.varchar(name='executable', length=512, default='')
+    executable  = dsaw.db.varchar(name='executable', length=512, default = SETTINGS["executable"])
     executable.meta['tip'] = "Name of executable"
 
     params      = dsaw.db.varchar(name='params', length=512, default='')
     params.meta['tip'] = "Arbitrary parameters"
 
-    modules     = dsaw.db.varchar(name='modules', length=512, default='')
+    modules     = dsaw.db.varchar(name='modules', length=512, default = SETTINGS["modules"])
     modules.meta['tip'] = "Modules"
 
     timecreated = dsaw.db.varchar(name="timecreated", length=16, default='')
@@ -71,6 +68,11 @@ class QESetting(QETable):
     # Keep it just in case
     text = dsaw.db.varchar(name="text", length=8192, default='')
     text.meta['tip'] = "text"
+
+
+#    # Should be moved Server???
+#    procpernode = dsaw.db.integer(name='procpernode', default = 0)
+#    procpernode.meta['tip'] = "Number of processes per node"
 
 
 __date__ = "$Dec 10, 2009 10:08:22 PM$"

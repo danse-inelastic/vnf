@@ -53,8 +53,8 @@ class Actor(base):
         2. Copy files to the computational cluster
         3. Submit Job
         """
-        self._createJob(director)
-        #self._storeFiles(director)
+        #self._createJob(director)
+        self._storeFiles(director)
         #self._moveFiles(director, inputs)
         #self._scheduleJob(director, inputs)
 
@@ -63,11 +63,14 @@ class Actor(base):
 
 
     def _createJob(self, director):
+        self._sim   = director.clerk.getQESimulations(id = self.id)     # Should exist
+        settings    = director.clerk.getQESettings(where = "simulationid='%s'" % self.id)   # Should exist
+        setting     = settings[0]
         params  = {"taskid":        self.taskid,
-                   "serverid":      "server001",     # -> take from QESimulations
+                   "serverid":      self._sim.serverid,  # -> take from QESimulations
                    "status":        "Preparing",
                    "creator":        director.sentry.username,
-                   "numberprocessors":   8 # -> take from QESettings
+                   "numberprocessors":   setting.numproc # -> take from QESettings
                    }
         job  = QEJob()
         job.setDirector(director)
@@ -91,6 +94,17 @@ class Actor(base):
             dds.remember(input, input.filename)     # Change object and filename?
             self._writeContent(dds, input, filename, input.text)
 
+
+    def _generateRunScript(self, director):
+
+        # mpirun --mca btl openib,sm,self pw.x -npool 8 -inp  PW > PW.out
+        cmds    = [
+        ]
+
+        #[mpirun --mca btl openib,sm,self pw.x -npool 8 -inp  PW > PW.out
+
+
+        ]
 
 #    def _storeSettings(self, director):
 #        # Store Settings files. I don't really need to store to files.
@@ -119,7 +133,7 @@ class Actor(base):
             - run.sh script (generate it first)
         """
         dds     = director.dds
-        server  = director.clerk.getServers(id='server001') # Hardcoded
+        server  = director.clerk.getServers(id = self._sim.serverid) # Hardcoded
 
         # See also: submitjob.odb
 
