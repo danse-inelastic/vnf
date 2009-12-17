@@ -66,10 +66,10 @@ class QEJob(QETable):
     numberprocessors = dsaw.db.integer(name="numberprocessors", default=0)
     numberprocessors.meta['tip'] = "numberprocessors"
 
-    errorfilename = dsaw.db.varchar(name="errorfilename", length=256, default='stderr.log')
+    errorfilename = dsaw.db.varchar(name="errorfilename", length=256, default='STDERR.log')
     errorfilename.meta['tip'] = "errorfilename"
 
-    outputfilename = dsaw.db.varchar(name="outputfilename", length=256, default='stdout.log')
+    outputfilename = dsaw.db.varchar(name="outputfilename", length=256, default='STDOUT.log')
     outputfilename.meta['tip'] = "outputfilename"
 
     statusmessage = dsaw.db.varchar(name="statusmessage", length=256, default='')

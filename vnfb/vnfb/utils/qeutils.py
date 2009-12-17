@@ -97,6 +97,10 @@ def makedirs(path):
         os.makedirs(path)
 
 
+def writefile(filename, content):
+    open(filename, 'w').write(content)
+
+
 def packname(id, name):
     """Packs name by appending name to id.
     E.g.
