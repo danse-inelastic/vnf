@@ -1,3 +1,4 @@
+# -*- Makefile -*-
 
 PROJECT = vnfb
 PACKAGE = bin
@@ -23,6 +24,7 @@ distclean::
 # export
 
 EXPORT_DATAFILES = \
+	addbvkmodelstodb.py \
 	initdb.py \
 	getuserlist.py \
 	itaskapp.py \
