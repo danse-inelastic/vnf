@@ -33,20 +33,10 @@ class Scheduler(base):
     def submit( self, cmd, walltime=1*hour ):
         walltime = _walltime_str(walltime)
 
-        # Pass:
-        #   - full filename (qesimulations)
-        #   - number of nodes (nodes)
-        #   - cores per node (ppn)
-        #   - job name (from QESimulation id? May be later on matter formula)
-        # Objects:
-        #   - QESimulation
-        #   - QESettings
-        #   - Server
-        # /home/dexity/espresso
-
         # Example:
         #   dir = "/home/dexity/espresso/qesimulations/MQDHXV7"
         #   str = "-V -N myjob -l nodes=8:ppn=12"
+        
         dir     = "%s/%s/%s" % (self._server.workdir, self._sim.name, self._sim.id)
         str     = "-V -N %s -l nodes=%s:ppn=%s"  % (self._sim.id, self._settings.numnodes, self._server.corespernode)
         cmds    = [ r'echo \"%s\" | qsub -d %s -o %s -e %s %s -' % (
