@@ -61,10 +61,35 @@ class Accessor(base):
         return map(self.getModel, [r.id for r in rs])
 
 
-    def isModelEditable(self, id=None, modelrecord=None):
+    def getModelLabel(self, id=None, model=None, modelrecord=None):
+        if modelrecord is None:
+            if model:
+                modelrecord = self.orm(model)
+            else:
+                modelrecord = self.getModelRecord(id)
+        return modelrecord.short_description or modelrecord.id
+
+
+    def isModelConstructed(self, id=None, model=None):
+        'check if a bvk model is constructed and ready to be used'
+        if model is None:
+            model = self.getModel(id)
+        # check if there is a reference to atomic structure
+        if not model.matter: return False
+        # a label is necessary
+        if not model.short_description: return False
+        # check if there are bonds
+        if not len(model.bonds): return False
+        return True
+
+
+    def isModelEditable(self, id=None, modelrecord=None, model=None):
         'check if a model is still editable'
         if modelrecord is None:
-            modelrecord = self.getModelRecord(id)
+            if model:
+                modelrecord = self.orm(model)
+            else:
+                modelrecord = self.getModelRecord(id)
         return self.isModelReferred(modelrecord)
 
 

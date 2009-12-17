@@ -27,12 +27,24 @@ def visual(models, director):
 
     for model in models:
         row = grid.row()
-        left = row.cell(); left.add(modelView(model, domaccess, painter))
-        right = row.cell();
+
+        # model
+        modelcell = row.cell(); modelcell.add(modelView(model, domaccess, painter))
+
+        # select link
+        selectlinkcell = row.cell();
         link = lc.link(label='select this model', onclick=load(
             actor='material_simulations/phonon_calculators/bvk', routine='selectModel',
             model_id = orm(model).id))
-        right.add(link)
+        selectlinkcell.add(link)
+
+        # edit link
+        editlinkcell = row.cell();
+        if domaccess.isModelEditable(model=model):
+            link = lc.link(label='edit', onclick=load(
+                actor='material_simulations/phonon_calculators/bvk', routine='editModel',
+                model_id = orm(model).id))
+            editlinkcell.add(link)
 
     return doc
 
