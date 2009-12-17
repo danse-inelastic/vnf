@@ -144,7 +144,7 @@ class Actor(base):
 
         # Change actor
         check    = Link(label="Check", id="qe-check-results", 
-                       onclick=load(actor       = "material_simulations/espresso/sim-view",
+                       onclick=load(actor       = "jobs/getresults",
                                     routine     = "retrieveStatus",
                                     id          = self.id)
                       )
