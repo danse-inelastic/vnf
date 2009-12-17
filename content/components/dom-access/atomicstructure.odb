@@ -60,6 +60,19 @@ class Accessor(base):
         return db.query(StructureTable).filter_by(id=id).one()
 
 
+    def getAtomicStructureLabel(self, id):
+        r = self.getAtomicStructureRecord(id)
+        return r.short_description or r.id
+    
+
+    def getSimilarAtomicStructureRecords(self, id):
+        'find the atomic structure records that are similar to the one with given id'
+        # the criterias is
+        #  1. same space group
+        #  2. same chemical formula
+        raise NotImplementedError
+
+
     def setDescription(self, id, description):
         record = self.getAtomicStructureRecord(id)
         record.short_description = description

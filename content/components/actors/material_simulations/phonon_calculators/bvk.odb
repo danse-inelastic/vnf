@@ -44,7 +44,7 @@ class Actor(base):
         doc = lc.document()
         
         #
-        path = self._pathToMe()
+        path = self._pathToMe(director)
         view_indicator = director.retrieveVisual('view-indicator', path=path)
         doc.add(view_indicator)
 
@@ -94,7 +94,7 @@ class Actor(base):
             self.inventory.atomicstructure_id = domaccess.orm(model.matter).id
 
         doc = lc.document()
-        path = self._pathToMe()
+        path = self._pathToMe(director)
         view_indicator = director.retrieveVisual('view-indicator', path=path)
         doc.add(view_indicator)
         
@@ -126,7 +126,7 @@ class Actor(base):
         doc = lc.document()
 
         #
-        path = self._pathToMe()
+        path = self._pathToMe(director)
         view_indicator = director.retrieveVisual('view-indicator', path=path)
         doc.add(view_indicator)
 
@@ -176,10 +176,16 @@ class Actor(base):
             models, director)
 
 
-    def _pathToMe(self):
+    def _pathToMe(self, director):
         atomicstructure_id = self.inventory.atomicstructure_id
+        struct_label = director.retrieveDOMAccessor('atomicstructure').getAtomicStructureLabel(
+            atomicstructure_id)
+        struct_label = 'structure %r' % struct_label
         return [
-            ('matter', lc.load(actor='atomicstructure', routine='showOverview', id=atomicstructure_id)),
+            ('Atomic structures',
+             lc.load(actor='atomicstructure')),            
+            (struct_label,
+             lc.load(actor='atomicstructure', routine='showOverview', id=atomicstructure_id)),
             ('phonons', lc.load(
             actor='/'.join(self.name.split('/')[:-1]), routine='start',
             atomicstructure_id=atomicstructure_id)),
