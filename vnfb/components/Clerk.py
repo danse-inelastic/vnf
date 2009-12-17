@@ -15,7 +15,6 @@
 from DOMAccessor import DOMAccessor as base
 from luban.components.Clerk import Clerk as ClerkBase
 
-
 class Clerk(ClerkBase, base):
 
     class Inventory(ClerkBase.Inventory, base.Inventory):

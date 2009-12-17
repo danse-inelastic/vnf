@@ -65,16 +65,15 @@ STATES = {
 PARSERS = ("qeinput",)
 
 # Settings specific to QE
-QESETTINGS  = {
-                "server":       "Server Name",
-                "numproc":      "Number of Processors",
-                "numnodes":     "Number of Nodes",
-                "procpernode":  "Processors Per Node",
-                "npool":        "Npool",
-                "executable":   "Executable",
-                "params":       "Additional Parameters",
-                "qemodules":    "Modules"
+SETTINGS  = {
+                "numproc":      8,
+                "numnodes":     8,
+                "npool":        8,
+                "executable":   "mpirun",
+                "params":       "--mca btl openib,sm,self",                       # Specific for foxtrot
+                "modules":      "openmpi acml/4.3.0_gfortran64_int32 espresso"    # Specific for foxtrot
               }
+
 
 
 __date__ = "$Nov 3, 2009 3:12:34 PM$"
