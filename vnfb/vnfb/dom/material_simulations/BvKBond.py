@@ -78,7 +78,7 @@ def customizeLubanObjectDrawer(self, drawer):
             continue
 
         # right is the container for constraints
-        cdoc = right.document(id='force-constant-matrix-constraints', title='constraints')
+        cdoc = right.document(name='force-constant-matrix-constraints', title='constraints')
 
         # replace the force constant matrix field
         fields = drawer.mold.o2f(obj)
@@ -96,7 +96,9 @@ def customizeLubanObjectDrawer(self, drawer):
         self._addfieldstoform(form, obj)
         #
         # make sure when A, or B, or Boffset changes, reload constraints
-        updateconstraints = select(id='force-constant-matrix-constraints').replaceContent(
+        updateconstraints = select(element=form)\
+                            .find(name='force-constant-matrix-constraints')\
+                            .replaceContent(
             select(element=form).submit(actor='orm/bvkbonds', routine='getConstraints',
                                         id = self.orm(obj).id)
             )
@@ -104,7 +106,7 @@ def customizeLubanObjectDrawer(self, drawer):
             field = form.getDescendentByName(fname)
             field.onchange = updateconstraints
         # when constraints document load, update constraints too
-        form.getDescendentByID('force-constant-matrix-constraints').oncreate = updateconstraints
+        form.getDescendentByName('force-constant-matrix-constraints').oncreate = updateconstraints
         
         return form
         
