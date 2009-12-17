@@ -74,7 +74,7 @@ SETTINGS  = {
                 "modules":      "openmpi acml/4.3.0_gfortran64_int32 espresso"    # Specific for foxtrot
               }
 
-
+RUNSCRIPT   = "run.sh"
 
 __date__ = "$Nov 3, 2009 3:12:34 PM$"
 
