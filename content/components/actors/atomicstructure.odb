@@ -180,6 +180,12 @@ class Actor(base):
         if len(actions):
             actions.append(alert('\n\n'.join(messages)))
             return actions
+
+        # update the chemical formula
+        record = domaccess.orm(struct)
+        record.chemical_formula = struct.getChemicalFormula()
+        domaccess.db.updateRecord(record)
+        
         return self.showListView(director)
 
 

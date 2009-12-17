@@ -23,7 +23,7 @@ def visual(models, director):
     
     doc = lc.document()
 
-    grid = lc.grid(); doc.add(grid)
+    grid = lc.grid(Class='bvk-models-selector-grid'); doc.add(grid)
 
     for model in models:
         row = grid.row()
@@ -39,7 +39,7 @@ def visual(models, director):
 
 def modelView(model, domaccess, painter):
     orm = domaccess.orm
-    title = 'BvK model %r' % (model.short_description or orm(model).id)
+    title = 'Model %r' % (model.short_description or orm(model).id)
     doc = lc.document(title=title, collapsed=True, collapsable=True)
     p = lc.paragraph(text=['loading...'])
     doc.add(p)

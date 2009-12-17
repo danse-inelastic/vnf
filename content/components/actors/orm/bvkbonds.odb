@@ -18,7 +18,8 @@ import luban.content as lc
 from luban.content import select, load, alert
 
 
-select_constraint_alert = select(id='force-constant-matrix-constraints')
+select_constraint_alert = lambda formid:\
+                          select(id=formid).find(name='force-constant-matrix-constraints')
 
 #
 from vnfb.dom.material_simulations.BvKBond import BvKBond
@@ -73,6 +74,7 @@ class Actor(base):
     
 
     def process(self, director):
+        formid = self.inventory.formid
         errors = self._getInputErrors()
         if errors:
             return self._reportErrors(errors)
@@ -97,17 +99,18 @@ class Actor(base):
                 if constraint not in violations:
                     doc2.paragraph(text=[str(constraint)])
             return [
-                select_constraint_alert.show(),
-                select_constraint_alert.replaceContent(doc),
+                select_constraint_alert(formid).show(),
+                select_constraint_alert(formid).replaceContent(doc),
                 ]
 
         return self._postProcessing(director)
 
 
     def _reportErrors(self, errors):
+        formid = self.inventory.formid
         actions = super(Actor, self)._reportErrors(errors)
         # need to add an action to clean up the constraint alert
-        actions.append(select_constraint_alert.hide())
+        actions.append(select_constraint_alert(formid).hide())
         return actions
 
 
