@@ -44,8 +44,8 @@ class PackJobDir(base):
         id = self.id
         try:
             #job = self.clerk.getJob(id)
-            input  = self.clerk.getQEConfigurations(id = self.id)  #where = "simulationid='%s'" % self.id)
-            #input   = inputs[0]
+            # Change to QEJob
+            sim  = self.clerk.getQESimulations(id = self.id)
 
         except:
             if self.debug: raise
@@ -61,7 +61,7 @@ class PackJobDir(base):
 
         print "before: _packingInProcess"
 
-        if self._packingInProcess(input):
+        if self._packingInProcess(sim):
             msg = "Job %s: packing already in process." % id
             if self.debug: raise RuntimeError, msg
             self._debug.log(msg)
@@ -69,21 +69,21 @@ class PackJobDir(base):
 
         print "after: _packingInProcess"
         
-        if self._packingIsUpToDate(input):
+        if self._packingIsUpToDate(sim):
             msg = "Job %s: packing is already up to date." % id
             if self.debug: print msg
             self._debug.log(msg)
             return
 
-        self._removeOldTarBall(input)
-        self._declarePackingInProcess(input)
+        self._removeOldTarBall(sim)
+        self._declarePackingInProcess(sim)
 
 #        clerk = self.clerk
 #        server = clerk.dereference(server)
-        server  = self.clerk.getServers(id='server001')
+        server  = self.clerk.getServers(id=sim.serverid)
 
         dds = self.dds
-        remotejobpath = dds.abspath(input, server = server)
+        remotejobpath = dds.abspath(sim, server = server)
         assert os.path.basename(remotejobpath) == id
 
         # temporary directory
@@ -110,38 +110,38 @@ class PackJobDir(base):
 
         # leave a pointer in the job directory
         ptr = os.path.join(subdir, tarball)
-        self._establishPtr(input, ptr)
+        self._establishPtr(sim, ptr)
         return
 
 
-    def _establishPtr(self, input, ptr):
-        path = self._ptrFilePath(input)
+    def _establishPtr(self,job, ptr):
+        path = self._ptrFilePath(job)
         f = open(path, 'w')
         f.write(ptr)
         return
 
 
-    def _packingIsUpToDate(self, input):
-        path = self._ptrFilePath(input)
+    def _packingIsUpToDate(self, job):
+        path = self._ptrFilePath(job)
         if not os.path.exists(path): return
         packtime = os.path.getmtime(path)
 
         #server = self.clerk.dereference(job.server)
-        server  = self.clerk.getServers(id='server001')
-        mtime = self.dds.getmtime(input, server=server)
+        server  = self.clerk.getServers(id=job.serverid)
+        mtime = self.dds.getmtime(job, server=server)
         return packtime > mtime
     
 
-    def _packingInProcess(self, input):
-        path = self._ptrFilePath(input)
+    def _packingInProcess(self, job):
+        path = self._ptrFilePath(job)
         if not os.path.exists(path): return
         f = open(path)
         s = f.read().strip()
         return s == self.PACKINGINPROCESS
 
 
-    def _removeOldTarBall(self, input):
-        path = self._ptrFilePath(input)
+    def _removeOldTarBall(self, job):
+        path = self._ptrFilePath(job)
         if not os.path.exists(path): return
         
         oldptr = open(path).read()
@@ -153,16 +153,16 @@ class PackJobDir(base):
         return
     
 
-    def _declarePackingInProcess(self, input):
-        path = self._ptrFilePath(input)
+    def _declarePackingInProcess(self, job):
+        path = self._ptrFilePath(job)
 
         f = open(path, 'w')
         f.write(self.PACKINGINPROCESS)
         return
 
 
-    def _ptrFilePath(self, input):
-        return '.'.join( [self.dds.abspath(input), self.PTRFILEEXT] )
+    def _ptrFilePath(self, job):
+        return '.'.join( [self.dds.abspath(job), self.PTRFILEEXT] )
 
 
     def __init__(self, name='packjobdir'):

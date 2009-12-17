@@ -11,16 +11,26 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
+import os
 from luban.content import load
+from luban.content import select
+import luban.content as lc
+from luban.content.HtmlDocument import HtmlDocument
+from vnf.applications.PackJobDir import PackJobDir
 
 from luban.components.AuthorizedActor import AuthorizedActor as base
 
 class Actor(base):
+    """
+    Actor for retrieving results from server
+    Notes:
+        - See also 
+    """
 
     class Inventory(base.Inventory):
         import pyre.inventory
-        id          = pyre.inventory.str('id', default='')  # Simulation Id
-        taskid      = pyre.inventory.str('taskid', default='')
+        id          = pyre.inventory.str('id', default='')      # Simulation Id
+        taskid      = pyre.inventory.str('taskid', default='')  # ?
 
 
     def default(self, director):
@@ -29,61 +39,68 @@ class Actor(base):
 
 
     def retrieveStatus(self, director):
-#        inputs  = director.clerk.getQEConfigurations(where = "simulationid='%s'" % self.id)
-#        input   = inputs[0]
-#
-#        return self._packingInProgress(director, input)
-        return self._retrieveResults(director)
+        link    = self._retrieveResults(director)
+        
+        return select(id='results-link').replaceContent(link)
 
 
     def _retrieveResults(self, director):
-        inputs  = director.clerk.getQEConfigurations(where = "simulationid='%s'" % self.id)
-        input   = inputs[0]
+        sim     = director.clerk.getQESimulations(id = self.id)
+        link    = lc.link(label="None",
+                           onclick=load(actor      = "material_simulations/espresso/sim-view",
+                                         id         = self.id)
+                      )
 
-        from vnf.applications.PackJobDir import PackJobDir
-        PTRFILEEXT = PackJobDir.PTRFILEEXT
-        ptrfilepath = '.'.join( [director.dds.abspath(input), PTRFILEEXT] )
+        ptrfilepath = self._ptrfilepath(sim, director)
 
         # if pointer file does not exists, need to start packing
         if not os.path.exists(ptrfilepath):
-            return self._startPacking(director, input)
+            self._startPacking(director, sim)
+            link.label  = "Started Packing"
+            return link
 
         # if packing is in process, say that
         s = open(ptrfilepath).read()
         if s == PackJobDir.PACKINGINPROCESS:
-            return self._packingInProgress(director, input)
+            link.label  = "Packing In Progress"
+            return link
 
 
-        server      = server  = director.clerk.getServers(id='server001')
-        jobmtime    = director.dds.getmtime(input, server = server)
-        ptrmtime    = os.path.getmtime(ptrfilepath)
-        if jobmtime > ptrmtime + 60*3: # 60*3 -- give 3 minute of delay
-            # if job directory is newer than the bar ball, pack again
-            return self._startPacking(director, input)
 
-        link    = Link(label="Downloaded", Class="action-link",
-                       onclick=load(actor      = "material_simulations/espresso/sim-view",
-                                     id         = self.id)
-                      )
+        # Keep!
+#        server      = director.clerk.getServers(id = sim.serverid)
+#        jobmtime    = director.dds.getmtime(sim, server = server)   # Requires getmtime.py
+#        ptrmtime    = os.path.getmtime(ptrfilepath)
+#        if jobmtime > ptrmtime + 60*3: # 60*3 -- give 3 minute of delay
+#            # if job directory is newer than the bar ball, pack again
+#            self._startPacking(director, sim)
+#            link.label  = "Started Packing Again"
+#            return link
 
-        return select(id='results-link').replaceContent(link)
+        link = self._tarballLink(sim, ptrfilepath)
+
+        return link
 
 
-    def _startPacking(self, director, input):
+    def _tarballLink(self, sim, ptrfilepath):
+        text        = "%s.tgz" % sim.id
+        f           = open(ptrfilepath)
+        localpath   = f.read().strip()
+        path        = "tmp/%s" % localpath      # Example: "tmp/tmp31LUyu/44MTMA42.tgz"
+        link        = HtmlDocument(text="<a href='%s'>%s</a>" % (path, text) )
+
+        return link
+
+
+    def _ptrfilepath(self, sim, director):
+        "Return pointer filename. e.g. 44MTMA42..__dir__pack__ptr__"
+        PTRFILEEXT = PackJobDir.PTRFILEEXT
+        return '.'.join( [director.dds.abspath(sim), PTRFILEEXT] )
+        
+
+    def _startPacking(self, director, sim):
         from vnf.components.Job import pack
-        pack(input, director, debug=False)
-
-        return self._packingInProgress(director, input)
-
-
-    def _packingInProgress(self, director, input):
-        link    = Link(label="Packing", Class="action-link",
-                       onclick=load(actor      = "material_simulations/espresso/sim-view",
-                                     id         = self.id)
-                      )
-
-        return select(id='results-link').replaceContent(link)
-
+        pack(sim, director, debug=False)
 
 
     def formError(self, errors):
@@ -114,5 +131,19 @@ def actor():
 
 
 __date__ = "$Dec 17, 2009 11:39:10 AM$"
+
+
+# ****************** DEAD CODE *************************
+
+#        return self._packingInProgress(director, sim)
+#    def _packingInProgress(self, director, input):
+#        link    = Link(label="Packing", Class="action-link",
+#                       onclick=load(actor      = "material_simulations/espresso/sim-view",
+#                                     id         = self.id)
+#                      )
+#
+#        return select(id='results-link').replaceContent(link)
+
+
 
 
