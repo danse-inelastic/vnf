@@ -11,8 +11,6 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
-import os
-
 from vnfb.utils.qeutils import stamp2date
 from vnfb.utils.qetasks import QETasks
 from vnfb.utils.qegrid import QEGrid

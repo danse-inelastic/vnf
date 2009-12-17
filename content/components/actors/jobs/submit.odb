@@ -16,7 +16,6 @@ from vnfb.utils.qeutils import makedirs, writefile
 from vnfb.utils.qeconst import STATES, RUNSCRIPT
 from vnfb.utils.qeutils import packname, unpackname
 
-import os
 from luban.content import load
 
 from luban.components.AuthorizedActor import AuthorizedActor as base
