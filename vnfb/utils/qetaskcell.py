@@ -65,6 +65,7 @@ class QETaskCell:
 
         return table.grid()
 
+
     def action(self):
         "Displays simulation task action button: 'Run Task', 'Cancel'"
         link    = ""
@@ -78,6 +79,7 @@ class QETaskCell:
                             )
 
         return link
+
 
     def _taskId(self):
         tid = self._task.id
@@ -94,8 +96,10 @@ class QETaskCell:
         qeinput = QEInput(self._director, self._simid, self._task.id, self._type)
         return qeinput.getLink()
 
+
     def _output(self):
         return "ni.scf.out"
+
 
     def _status(self):
         "Displays status of the simulation"
@@ -120,6 +124,7 @@ class QETaskCell:
                             )
 
         return link
+
 
 __date__ = "$Dec 12, 2009 3:21:13 PM$"
 

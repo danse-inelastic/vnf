@@ -64,10 +64,10 @@ class Actor(base):
 
     def _createJob(self, director):
         params  = {"taskid":        self.taskid,
-                   "serverid":      self.fname,
-                   "status":        self.description,
-                   "creator":        PARSERS[int(self.parser)],
-                   "numberprocessors":          self.text
+                   "serverid":      "server001",     # -> take from QESimulations
+                   "status":        "Preparing",
+                   "creator":        director.sentry.username,
+                   "numberprocessors":   8 # -> take from QESettings
                    }
         job  = QEJob()
         job.setDirector(director)
