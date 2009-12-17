@@ -21,7 +21,8 @@ from luban.content.Paragraph import Paragraph
 from luban.content import load
 from luban.content.Link import Link
 
-# TODO: 
+# TODO:
+# - Remove row[2] (action row) if task is not created!
 # - Do not display action buttons "Run Task" or "Cancel" unless previous simulation
 #   is running or completed
 # - Change action buttom depending on the status of the job:
@@ -55,11 +56,15 @@ class QETasks:
             
         return container
 
+
     def _setTaskCell(self, table, colnum, task):
         "Populates the task's cell"
 
         tc      = QETaskCell(self._director, self._type(colnum), self._simid, task)
-        rows    = (tc.header(), tc.taskInfo(), tc.action())
+        rows    = [tc.header(), tc.taskInfo(), ""]
+        if task:
+            rows[2] = tc.action()
+
         table.addColumn(rows)
 
 

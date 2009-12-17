@@ -49,7 +49,7 @@ class QETaskCell:
             table.setColumnStyle(0, "qe-tasks-param")
             table.setCellStyle(3, 1, "text-green")
 
-            #table.addRow(("Jobs:", self._jobs()))
+            #table.addRow(("Jobs:", self._jobs()))  # Keep
         else:
             # May be it would be better to just replace content with task info?
             link    = lc.link(label="Create New Task",
@@ -69,8 +69,8 @@ class QETaskCell:
         "Displays simulation task action button: 'Run Task', 'Cancel'"
         return lc.link(label="Run Task",
                        Class="qe-run-task",
-                       onclick = load(actor     ='jobs/submit',
-                                      routine   = 'submit',
+                       onclick = load(actor     ='jobs/checksubmit',
+                                      routine   = 'checkSubmit',
                                       id        = self._simid,
                                       taskid    = self._task.id)
                         )
