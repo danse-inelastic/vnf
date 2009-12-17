@@ -13,7 +13,7 @@
 
 import os
 
-from vnfb.utils.qeutils import stamp2date, makedirs
+from vnfb.utils.qeutils import stamp2date
 from vnfb.utils.qetasks import QETasks
 from vnfb.utils.qegrid import QEGrid
 from vnfb.utils.qeparams import QEParams
@@ -180,17 +180,6 @@ class Actor(base):
         sT.add(taskstable.tasks())
 
 
-#    def jobs(self, director):
-#        joblist = []
-#        jobs = director.clerk.getQEJobs(where="simulationid='%s'" % self.id)
-#        for job in jobs:
-#            if job:
-#                joblist.append(job)
-#
-#        return joblist
-
-
-
     def __init__(self):
         super(Actor, self).__init__(name='material_simulations/espresso/sim-view')
         self.files  = [] # Temp
@@ -213,4 +202,17 @@ def actor():
 
 
 __date__ = "$Nov 2, 2009 3:15:35 PM$"
+
+
+# ****************** DEAD CODE *******************************
+#    def jobs(self, director):
+#        joblist = []
+#        jobs = director.clerk.getQEJobs(where="simulationid='%s'" % self.id)
+#        for job in jobs:
+#            if job:
+#                joblist.append(job)
+#
+#        return joblist
+
+
 

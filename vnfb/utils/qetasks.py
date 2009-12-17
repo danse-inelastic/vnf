@@ -61,9 +61,7 @@ class QETasks:
         "Populates the task's cell"
 
         tc      = QETaskCell(self._director, self._type(colnum), self._simid, task)
-        rows    = [tc.header(), tc.taskInfo(), ""]
-        if task:
-            rows[2] = tc.action()
+        rows    = [tc.header(), tc.taskInfo(), tc.action()]
 
         table.addColumn(rows)
 

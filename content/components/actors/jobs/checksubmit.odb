@@ -42,7 +42,13 @@ class Actor(base):
 
 
     def checkSubmit(self, director):
-        """Checks if the simulation can be submitted to jobs queue"""
+        """
+        Checks if the simulation can be submitted to jobs queue
+            - Check if settings are set
+            - Check if server is set
+            - Check if configuration input is set
+        """
+        
 #        errors  = {}
 #        self._checkInputs(director, errors)
 #

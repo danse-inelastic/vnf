@@ -12,6 +12,7 @@
 #
 
 from vnf.dom.QEJob import QEJob
+from vnfb.utils.qeutils import makedirs, writefile
 from vnfb.utils.qeconst import STATES
 from vnfb.utils.qeutils import packname, unpackname
 
@@ -52,11 +53,8 @@ class Actor(base):
         2. Copy files to the computational cluster
         3. Submit Job
         """
-
-        inputs  = director.clerk.getQEConfigurations(where = "taskid='%s'" % self.taskid)
-
-        self._createJob(director, )
-        self._storeFiles(director, inputs)
+        self._createJob(director)
+        #self._storeFiles(director)
         #self._moveFiles(director, inputs)
         #self._scheduleJob(director, inputs)
 
@@ -64,35 +62,62 @@ class Actor(base):
                     id=self.id)
 
 
-    def _storeFiles(self, director, inputs):
-        """TEMP SOLUTION. Stores files from configuration input strings """
+    def _createJob(self, director):
+        params  = {"taskid":        self.taskid,
+                   "serverid":      self.fname,
+                   "status":        self.description,
+                   "creator":        PARSERS[int(self.parser)],
+                   "numberprocessors":          self.text
+                   }
+        job  = QEJob()
+        job.setDirector(director)
+        job.createRecord(params)
 
+    # creator, status, numberprocessors, taskid, serverid
+
+    def _storeFiles(self, director):
+        """TEMP SOLUTION: Stores files from configuration input strings """
+        self._storeConfigurations(director)
+        self._generateRunScript()
+        self._prepareFiles()
+
+
+    def _storeConfigurations(self, director):
+        "Store Configuration files"
+        inputs  = director.clerk.getQEConfigurations(where = "taskid='%s'" % self.taskid)
         dds     = director.dds
-        #fname   = packname
         for input in inputs:
             filename    = dds.abspath(input, filename = input.filename)
-            self.files.append(input.type) # Relative path, e.g. ni.scf.in
-
-            # for f in files: dds.remember(job, f) #?
+            dds.remember(input, input.filename)     # Change object and filename?
             self._writeContent(dds, input, filename, input.text)
 
-        #filename    = dds.abspath(input, filename = "run.sh")
-        #content     =
-        #self._writeContent(dds, input, filename, content)
-        # FIXME
-        #for f in self.files:
-        # Should be local filename
-        dds.remember(inputs[0], 'PW')
+
+#    def _storeSettings(self, director):
+#        # Store Settings files. I don't really need to store to files.
+#        # Instead use data to create run.sh
+#        settings  = director.clerk.getQESettings(where = "simulationid='%s'" % self.id)
+#        dds     = director.dds
+#        for s in settings:
+#            filename    = dds.abspath(s, filename = s.sname)
+#            dds.remember(s, s.sname)     # Change object and filename?
+#            self._writeContent(dds, input, filename, input.text)
 
 
     def _writeContent(self, dds, record, filename, content):
         """Writes content of the configuration input to file"""
         path    = dds.abspath(record)
         makedirs(path)
-        open(filename, 'w').write(content)
+        writefile(filename, content)
 
 
     def _moveFiles(self, director, inputs):
+        """
+        Moves files from local server to the computational cluster.
+        Files that need to be moved:
+            - Configuration inputs
+            - Simulation Settings
+            - run.sh script (generate it first)
+        """
         dds     = director.dds
         server  = director.clerk.getServers(id='server001') # Hardcoded
 
@@ -202,6 +227,20 @@ def actor():
 
 
 __date__ = "$Nov 4, 2009 9:27:51 AM$"
+
+
+# ********************** DEAD CODE ***********************
+
+        #self.files  = []
+        #self.files.append(input.filename)       # ??? Relative path, e.g. ni.scf.in
+        #filename    = dds.abspath(input, filename = "run.sh")
+        #content     =
+        #self._writeContent(dds, input, filename, content)
+        # FIXME
+        #for f in self.files:
+        # Should be local filename
+        #dds.remember(inputs[0], 'PW')
+            # for f in files: dds.remember(job, f) #?
 
 
 # ********************** DEAD CODE ***********************

@@ -45,7 +45,7 @@ class QETaskCell:
             table.addRow(("Input:", self._input()))
             table.addRow(("Output:", self._output()))
             table.addRow(("Status:", self._status()))
-            table.addRow(("Job:", self._currentJob()))
+            table.addRow(("Job:", self._job()))
             table.setColumnStyle(0, "qe-tasks-param")
             table.setCellStyle(3, 1, "text-green")
 
@@ -67,14 +67,17 @@ class QETaskCell:
 
     def action(self):
         "Displays simulation task action button: 'Run Task', 'Cancel'"
-        return lc.link(label="Run Task",
-                       Class="qe-run-task",
-                       onclick = load(actor     ='jobs/checksubmit',
-                                      routine   = 'checkSubmit',
-                                      id        = self._simid,
-                                      taskid    = self._task.id)
-                        )
+        link    = ""
+        if self._task:
+            link = lc.link(label="Run Task",
+                           Class="qe-run-task",
+                           onclick = load(actor     ='jobs/submit',    # 'jobs/checksubmit'
+                                          routine   = 'submit',        # 'checkSubmit'
+                                          id        = self._simid,
+                                          taskid    = self._task.id)
+                            )
 
+        return link
 
     def _taskId(self):
         tid = self._task.id
@@ -95,26 +98,28 @@ class QETaskCell:
         return "ni.scf.out"
 
     def _status(self):
-        return "Running"
+        "Displays status of the simulation"
+        link    = "Not Started"
+        jobs    = self._director.clerk.getQEJobs(where="taskid='%s'" % self._task.id)
+        if jobs:
+            job  = jobs[0]
+            link = job.status
 
-    def _currentJob(self):
-        return "RBGF6"
-
-    def _jobs(self):
-        return "RBGF6, BNFGS"
-
-
-#    def _addCell(self, table, value):
-#        row     = table.row()
-#        cell    = row.cell()
-#        cell.add(value)
+        return link
 
 
-#        link        = Link(label="Add",
-#                           onclick=load(actor      = "material_simulations/espresso/input-add",
-#                                        id         = id,
-#                                        type       = self._simlist[colnum])
-#                          )
+    def _job(self):
+        "Displays id of the current job"
+        link    = "None"
+        jobs    = self._director.clerk.getQEJobs(where="taskid='%s'" % self._task.id)
+        if jobs:
+            job  = jobs[0]
+            link = lc.link(label=job.id,
+                           onclick = load(actor     ='material_simulations/espresso/sim-view',
+                                          id        = self._simid)
+                            )
+
+        return link
 
 __date__ = "$Dec 12, 2009 3:21:13 PM$"
 
