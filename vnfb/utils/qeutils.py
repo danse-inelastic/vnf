@@ -111,8 +111,10 @@ def unpackname(string, id):
     Unpacks string: returns tupple (id, name) by trancating id from string
     """
     parts   = string.split("id")
-    # Raise error if id is not in string
+    
+    # raise error if id is not in string
     assert len(parts) == 2  # breaks into two parts
+    assert parts[0] == ''
     name    = parts[1]
 
     return (id, name)

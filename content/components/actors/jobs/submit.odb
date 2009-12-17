@@ -13,6 +13,7 @@
 
 from vnf.dom.QEJob import QEJob
 from vnfb.utils.qeconst import STATES
+from vnfb.utils.qeutils import packname, unpackname
 
 import os
 from luban.content import select
@@ -39,7 +40,8 @@ class Actor(base):
 
 
     def default(self, director):
-        return select(id='main-display-area').replaceContent(self.content(director))
+        "Not implemented"
+        pass
     
 
     def submit(self, director):
@@ -53,6 +55,7 @@ class Actor(base):
 
         inputs  = director.clerk.getQEConfigurations(where = "taskid='%s'" % self.taskid)
 
+        self._createJob(director, )
         self._storeFiles(director, inputs)
         #self._moveFiles(director, inputs)
         #self._scheduleJob(director, inputs)
@@ -64,9 +67,10 @@ class Actor(base):
     def _storeFiles(self, director, inputs):
         """TEMP SOLUTION. Stores files from configuration input strings """
 
-        dds = director.dds
+        dds     = director.dds
+        #fname   = packname
         for input in inputs:
-            filename    = dds.abspath(input, filename = input.type)
+            filename    = dds.abspath(input, filename = input.filename)
             self.files.append(input.type) # Relative path, e.g. ni.scf.in
 
             # for f in files: dds.remember(job, f) #?
