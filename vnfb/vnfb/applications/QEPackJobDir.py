@@ -18,7 +18,7 @@ class PackJobDir(base):
     class Inventory(base.Inventory):
 
         import pyre.inventory
-        id = pyre.inventory.str('id')
+        id = pyre.inventory.str('id')   # job id
 
         import vnfb.components
         import vnf.components
@@ -43,9 +43,7 @@ class PackJobDir(base):
     def main(self):
         id = self.id
         try:
-            #job = self.clerk.getJob(id)
-            # Change to QEJob
-            sim  = self.clerk.getQESimulations(id = self.id)
+            job  = self.clerk.getQEJobs(id = self.id)
 
         except:
             if self.debug: raise
@@ -61,7 +59,7 @@ class PackJobDir(base):
 
         print "before: _packingInProcess"
 
-        if self._packingInProcess(sim):
+        if self._packingInProcess(job):
             msg = "Job %s: packing already in process." % id
             if self.debug: raise RuntimeError, msg
             self._debug.log(msg)
@@ -69,21 +67,21 @@ class PackJobDir(base):
 
         print "after: _packingInProcess"
         
-        if self._packingIsUpToDate(sim):
+        if self._packingIsUpToDate(job):
             msg = "Job %s: packing is already up to date." % id
             if self.debug: print msg
             self._debug.log(msg)
             return
 
-        self._removeOldTarBall(sim)
-        self._declarePackingInProcess(sim)
+        self._removeOldTarBall(job)
+        self._declarePackingInProcess(job)
 
 #        clerk = self.clerk
 #        server = clerk.dereference(server)
-        server  = self.clerk.getServers(id=sim.serverid)
+        server  = self.clerk.getServers(id=job.serverid)
 
         dds = self.dds
-        remotejobpath = dds.abspath(sim, server = server)
+        remotejobpath = dds.abspath(job, server = server)
         assert os.path.basename(remotejobpath) == id
 
         # temporary directory
@@ -110,7 +108,7 @@ class PackJobDir(base):
 
         # leave a pointer in the job directory
         ptr = os.path.join(subdir, tarball)
-        self._establishPtr(sim, ptr)
+        self._establishPtr(job, ptr)
         return
 
 

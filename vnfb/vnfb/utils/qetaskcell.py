@@ -49,11 +49,6 @@ class QETaskCell:
             self._job(table)
             self._results(table)
 
-#            table.addRow(("Task:", self._taskId()))
-#            table.addRow(("Input:", self._input()))
-#            table.addRow(("Output:", self._output()))
-#            table.addRow(("Status:", self._status()))
-#            table.addRow(("Job:", self._job()))
             table.setColumnStyle(0, "qe-tasks-param")
             table.setCellStyle(3, 1, "text-green")
 
@@ -108,7 +103,7 @@ class QETaskCell:
 
 
     def _output(self, table):
-        table.addRow(("Output:", "ni.scf.out"))
+        table.addRow(("Output:", "None"))
 
 
     def _status(self, table):
@@ -124,13 +119,14 @@ class QETaskCell:
 
     def _job(self, table):
         "Displays id of the current job"
-        link    = "None"
-        jobs    = self._director.clerk.getQEJobs(where="taskid='%s'" % self._task.id)
+        self._job   = None
+        link        = "None"
+        jobs        = self._director.clerk.getQEJobs(where="taskid='%s'" % self._task.id)
         if jobs:
-            job  = jobs[0]
-            link = lc.link(label=job.id,
-                           onclick = load(actor     ='material_simulations/espresso/sim-view',
-                                          id        = self._simid)
+            self._job  = jobs[0]
+            link = lc.link(label=self._job.id,
+                           onclick = load(actor     ='jobs/jobs-view',
+                                          id        = self._job.id)
                             )
 
         table.addRow(("Job:", link))
@@ -149,7 +145,8 @@ class QETaskCell:
         check    = lc.link(label="Check", id="qe-check-results",
                        onclick=load(actor       = "jobs/getresults",
                                     routine     = "retrieveStatus",
-                                    id          = self._simid)
+                                    id          = self._simid,
+                                    taskid      = self._task.id)    # No jobid at this time
                       )
 
         cell.add(tarlink)

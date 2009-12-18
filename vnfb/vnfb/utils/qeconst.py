@@ -17,7 +17,17 @@ from vnfb.utils.orderedDict import OrderedDict
 PACKAGES    = ("Quantum Espresso",)  #, "VASP", "GULP"]  # Packages
 
 # Type of configuration files
-TYPES       = ("PW", "PH", "PP")  # "BANDS", "CPPP", "D3", "DOS", "DYNMAT", "INITIAL_STATE", "GIPAW", "D1", "MATDYN", "PROJWFC", "PWCOND", "Q2R" 
+TYPE        = {"PW":    "pw.x",
+               "PH":    "ph.x",
+               "BANDS": "bands.x",
+               "PP":    "pp.x",
+               "DOS":   "dos.x",
+               "Q2R":   "q2r.x",
+               "MATDYN": "matdyn.x",
+               "DYNMAT": "dynmat.x",
+               "D3":    "d3.x"
+               }
+               # "BANDS", "CPPP", "D3", "DOS", "DYNMAT", "INITIAL_STATE", "GIPAW", "D1", "MATDYN", "PROJWFC", "PWCOND", "Q2R"
 
 # Steps of job creation
 STEPS       = ("Create Simulation",
@@ -75,6 +85,7 @@ SETTINGS  = {
               }
 
 RUNSCRIPT   = "run.sh"
+
 
 __date__ = "$Nov 3, 2009 3:12:34 PM$"
 

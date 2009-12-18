@@ -23,9 +23,9 @@ from vnf.clusterscheduler.torque import _walltime_str
 
 class Scheduler(base):
 
-    def setSimulationParams(self, sim, settings, server):
+    def setSimulationParams(self, job, settings, server):
         "Set simulation objects"
-        self._sim       = sim       # not None
+        self._job       = job       # not None
         self._settings  = settings  # not None
         self._server    = server    # not None
         
@@ -37,8 +37,8 @@ class Scheduler(base):
         #   dir = "/home/dexity/espresso/qesimulations/MQDHXV7"
         #   str = "-V -N myjob -l nodes=8:ppn=12"
         
-        dir     = "%s/%s/%s" % (self._server.workdir, self._sim.name, self._sim.id)
-        str     = "-V -N %s -l nodes=%s:ppn=%s"  % (self._sim.id, self._settings.numnodes, self._server.corespernode)
+        dir     = "%s/%s/%s" % (self._server.workdir, self._job.name, self._job.id)
+        str     = "-V -N %s -l nodes=%s:ppn=%s"  % (self._job.id, self._settings.numnodes, self._server.corespernode)
         cmds    = [ r'echo \"%s\" | qsub -d %s -o %s -e %s %s -' % (
             cmd, dir, self.outfilename, self.errfilename, str) ]
 

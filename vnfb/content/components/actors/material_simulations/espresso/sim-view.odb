@@ -173,15 +173,3 @@ def actor():
 __date__ = "$Nov 2, 2009 3:15:35 PM$"
 
 
-# ****************** DEAD CODE *******************************
-#    def jobs(self, director):
-#        joblist = []
-#        jobs = director.clerk.getQEJobs(where="simulationid='%s'" % self.id)
-#        for job in jobs:
-#            if job:
-#                joblist.append(job)
-#
-#        return joblist
-
-
-

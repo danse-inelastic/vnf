@@ -14,13 +14,13 @@
 # Temp solution for QE jobs submission. Hardcoded for the foxtrot cluster
 # param: job (input -> temp solution)
 
-def schedule( sim, director ):
+def schedule( sim, director, job ):
     # TODO: Change status of jobs depending on the scheduling steps
     # copy local job directory to server
-    server          = director.clerk.getServers(id=sim.serverid)
+    server          = director.clerk.getServers(id=job.serverid)
     settingslist    = director.clerk.getQESettings(where="simulationid='%s'" % sim.id)
     settings        = settingslist[0]   # not None
-    server_jobpath  = director.dds.abspath(sim, server=server)
+    server_jobpath  = director.dds.abspath(job, server=server)
 
     # the scheduler
     scheduler = schedulerfactory( server )
@@ -30,7 +30,7 @@ def schedule( sim, director ):
                                                     server_jobpath,
                                                     suppressException=True)
     scheduler = scheduler(launch, prefix = 'source ~/.vnf-qe' )
-    scheduler.setSimulationParams(sim, settings, server)
+    scheduler.setSimulationParams(job, settings, server)
 
     from pyre.units.time import hour
     walltime = 1*hour   # limit to one hour
