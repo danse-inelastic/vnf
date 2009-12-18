@@ -63,8 +63,6 @@ class DbApp(base):
             model = self._convertToModel(mod)
             if model:
                 models.append(model)
-                # XXX debug
-                break
             continue
         return models
 
