@@ -13,7 +13,7 @@
 
 from vnf.dom.QEJob import QEJob
 from vnfb.utils.qeutils import makedirs, writefile
-from vnfb.utils.qeconst import STATES, RUNSCRIPT, TYPE
+from vnfb.utils.qeconst import STATES, RUNSCRIPT, TYPE, NOPARALLEL
 from vnfb.utils.qeutils import packname, unpackname
 
 from luban.content import load
@@ -61,11 +61,16 @@ class Actor(base):
                    "creator":        director.sentry.username,
                    "numberprocessors":   setting.numproc # -> take from QESettings
                    }
-        jobs        = director.clerk.getQEJobs(where = "taskid='%s'" % self.taskid) # Temp
-        self._job   = jobs[0]
-#        self._job  = QEJob()
-#        self._job.setDirector(director)
-#        self._job.createRecord(params) # uncomment
+                   
+        debug   = False  # Debugging flag
+        if debug:
+            #self.taskid = "4FUNHMTP"
+            jobs        = director.clerk.getQEJobs(where = "taskid='%s'" % self.taskid) # Temp
+            self._job   = jobs[0]
+        else:
+            self._job  = QEJob()
+            self._job.setDirector(director)
+            self._job.createRecord(params) # uncomment
 
 
     def _storeFiles(self, director):
@@ -89,18 +94,18 @@ class Actor(base):
 
 
     def _createRunScript(self, director):
-        settings    = director.clerk.getQESettings(where = "simulationid='%s'" % self.id)       # not None
+        settingslist = director.clerk.getQESettings(where = "simulationid='%s'" % self.id)       # not None
         inputs      = director.clerk.getQEConfigurations(where = "taskid='%s'" % self.taskid)
         task        = director.clerk.getQETasks(id = self.taskid)
         server      = director.clerk.getServers(id = self._job.serverid)
-        setting     = settings[0]
+        settings    = settingslist[0]
         input       = inputs[0]
 
         # mpirun --mca btl openib,sm,self pw.x -npool 8 -inp  PW > PW.out
-        words   = [ setting.executable,
-                    setting.params,
+        words   = [ settings.executable,
+                    settings.params,
                     TYPE[task.type],
-                    "-npool %s" % setting.npool,
+                    "-npool %s" % self._npool(settings, task.type),
                     "-inp",
                     packname(input.id, input.filename),       # replace
                     ">",
@@ -117,9 +122,19 @@ class Actor(base):
 
         dds     = director.dds
         self._write2file(dds, self._job, RUNSCRIPT, "\n".join(cmds))    # -> qesimulations directory
-        dds.remember(self._job, RUNSCRIPT)
+        dds.remember(self._job, RUNSCRIPT)  # Important step during which the .__dds_nodelist* files are created
         self._files.append(RUNSCRIPT)
         
+
+    def _npool(self, settings, type):
+        "Returns npool depending on type of simulation task"
+        # suppose settings is not None
+        num = settings.npool
+        if type in NOPARALLEL:
+            num = 1
+        
+        return num
+
 
     def _prepareFiles(self):
         pass
@@ -146,6 +161,11 @@ class Actor(base):
         dds     = director.dds
         server  = director.clerk.getServers(id = self._job.serverid)
         dds.make_available(self._job, server=server, files=self._files)
+
+        # Hack
+        run  = 'run.sh'
+        dds.remember(self._sim, run)
+        dds.make_available(self._sim, server=server, files=[run,])
 
 
     def _scheduleJob(self, director):

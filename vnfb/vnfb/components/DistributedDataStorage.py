@@ -84,6 +84,8 @@ class DistributedDataStorage(base):
             continue
         return
 
+    #def
+
 
     def is_available(self, dbrecord, filename=None, server=None, files=None):
         if files is None: files = []

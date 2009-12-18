@@ -138,7 +138,7 @@ class QETaskCell:
         cell        = lc.document(id="results-link")   # Container for tar link
         celldoc.add(cell)
 
-        tarlink     = lc.paragraph(text="None")
+        tarlink     = self._tarlink()
         #link    = self._retrieveResults(director)
 
         # Change actor
@@ -154,6 +154,9 @@ class QETaskCell:
 
         table.addRow(("Results: ", celldoc))
 
+    def _tarlink(self):
+        link    = lc.paragraph(text="None")
+        return link
 
 
 __date__ = "$Dec 12, 2009 3:21:13 PM$"
