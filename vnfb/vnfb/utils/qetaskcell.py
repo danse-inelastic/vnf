@@ -17,6 +17,7 @@ from luban.content.Document import Document
 
 from vnfb.utils.qegrid import QEGrid
 from vnfb.utils.qeinput import QEInput
+from vnfb.utils.qeconst import RESULTS_ID
 
 class QETaskCell:
 
@@ -135,7 +136,8 @@ class QETaskCell:
     def _results(self, table):
         "STUB: Returns link to tar file for download. "
         celldoc     = lc.document(Class="display-inline")
-        cell        = lc.document(id="results-link")   # Container for tar link
+        cid         = "%s-%s" % (RESULTS_ID, self._task.type) # self._task.id?
+        cell        = lc.document(id=cid)   # Container for tar link
         celldoc.add(cell)
 
         tarlink     = self._tarlink()
