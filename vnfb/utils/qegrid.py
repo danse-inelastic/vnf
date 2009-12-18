@@ -68,6 +68,7 @@ class QEGrid:
 
     def setCellStyle(self, row, col, cls):
         "Sets style for the cells (row, col)"
+        # Check range
         self._dgrid[row][col].Class    = cls
 
 
@@ -144,6 +145,12 @@ class QEGrid:
 
         return colclass[col]
 
+
+    def _inrange(self, ):
+        pass
+
+    def _listinrange(self):
+        pass
 
 __date__ = "$Dec 13, 2009 9:14:07 PM$"
 
