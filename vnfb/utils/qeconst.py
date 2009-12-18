@@ -84,7 +84,10 @@ SETTINGS  = {
                 "modules":      "openmpi acml/4.3.0_gfortran64_int32 espresso"    # Specific for foxtrot
               }
 
+# Default name of script that runs simulation of computing cluster
 RUNSCRIPT   = "run.sh"
+
+RESULTS_ID   = "results-link"
 
 
 __date__ = "$Nov 3, 2009 3:12:34 PM$"

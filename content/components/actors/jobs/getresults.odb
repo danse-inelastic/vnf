@@ -17,6 +17,7 @@ from luban.content import select
 import luban.content as lc
 from luban.content.HtmlDocument import HtmlDocument
 from vnf.applications.PackJobDir import PackJobDir
+from vnfb.utils.qeconst import RESULTS_ID
 
 from luban.components.AuthorizedActor import AuthorizedActor as base
 
@@ -41,8 +42,10 @@ class Actor(base):
 
     def retrieveStatus(self, director):
         link    = self._retrieveResults(director)
+        task    = director.clerk.getQETasks(id = self.taskid)
+        cid     = "%s-%s" % (RESULTS_ID, task.type)
         
-        return select(id='results-link').replaceContent(link)
+        return select(id=cid).replaceContent(link)
 
 
     def _retrieveResults(self, director):
