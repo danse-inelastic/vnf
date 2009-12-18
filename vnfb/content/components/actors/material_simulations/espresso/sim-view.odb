@@ -70,7 +70,6 @@ class Actor(base):
         self._showSimulationInfo(table, sim)
         self._showSettings(director, table)
         self._showServer(director, table)
-        self._showResults(director, table)
         self._showTasks(director, splitter, sim.type)
 
         # Should go after all of the rows are added!
@@ -129,34 +128,6 @@ class Actor(base):
         link    = server.getLink(self.id)
 
         table.addRow(("Server: ", link))
-
-
-    def _showResults(self, director, table):
-        "STUB: Returns link to tar file for download. "
-        celldoc     = Document(Class="display-inline")
-        cell        = Document(id="results-link")   # Container for tar link
-        celldoc.add(cell)
-
-        tarlink     = Paragraph(text="None")
-        #link    = self._retrieveResults(director)
-
-        # Change actor
-        check    = Link(label="Check", id="qe-check-results", 
-                       onclick=load(actor       = "jobs/getresults",
-                                    routine     = "retrieveStatus",
-                                    id          = self.id)
-                      )
-
-        analyze  = Link(label="Analyze", id="qe-analyze-results", 
-                       onclick=load(actor       = "material_simulations/espresso/results",
-                                    id          = self.id)
-                      )
-
-        cell.add(tarlink)
-        celldoc.add(check)
-        celldoc.add(analyze)
-
-        table.addRow(("Results: ", celldoc))
 
 
     def _showTasks(self, director, splitter, type):
