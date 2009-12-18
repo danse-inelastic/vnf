@@ -41,10 +41,11 @@ class Actor(base):
         2. Copy files to the computational cluster
         3. Submit Job
         """
-        self._createJob(director)
-        self._storeFiles(director)
-        self._moveFiles(director)
-        self._scheduleJob(director)
+        self._test_makedirs(director)
+        #self._createJob(director)
+        #self._storeFiles(director)
+        #self._moveFiles(director)
+        #self._scheduleJob(director)
 
         return load(actor="material_simulations/espresso/sim-view",
                     id=self.id)
@@ -65,6 +66,7 @@ class Actor(base):
         debug   = False  # Debugging flag
         if debug:
             #self.taskid = "4FUNHMTP"
+            self.taskid = "46M3E9PE"
             jobs        = director.clerk.getQEJobs(where = "taskid='%s'" % self.taskid) # Temp
             self._job   = jobs[0]
         else:
@@ -162,10 +164,15 @@ class Actor(base):
         server  = director.clerk.getServers(id = self._job.serverid)
         dds.make_available(self._job, server=server, files=self._files)
 
-        # Hack
-        run  = 'run.sh'
-        dds.remember(self._sim, run)
-        dds.make_available(self._sim, server=server, files=[run,])
+        # Create output directory (ESPRESSO_TEMPDIR) for QE
+        dds.makedirs(self._sim, server=server)
+
+
+    def _test_makedirs(self, director):
+        dds         = director.dds
+        self._sim   = director.clerk.getQESimulations(id = self.id)
+        server      = director.clerk.getServers(id = self._sim.serverid)
+        dds.makedirs(self._sim, server=server)
 
 
     def _scheduleJob(self, director):

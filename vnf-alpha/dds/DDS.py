@@ -169,6 +169,15 @@ class DDS:
         return _node(ret)
 
 
+    def makedirs(self, path, node):
+        """Recursively creates directories on destination node 'node', which can also be remote node
+        Issues:
+            - Doesn't check if the node already exists
+        """
+        self._makedirs(_url(node, path))
+        self.remember(path, node)
+
+
     def _transfer(self, path, srcnode, destnode):
         d = os.path.split(path)[0]
         self._makedirs(_url(destnode,d))

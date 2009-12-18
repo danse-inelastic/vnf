@@ -84,7 +84,10 @@ class DistributedDataStorage(base):
             continue
         return
 
-    #def
+
+    def makedirs(self, dbrecord, server=None):
+        p = self.path(dbrecord)
+        self._makedirs(p, server=server)
 
 
     def is_available(self, dbrecord, filename=None, server=None, files=None):
@@ -113,7 +116,8 @@ class DistributedDataStorage(base):
 
     def path(self, dbrecord, filename=None):
         d = os.path.join(dbrecord.name, dbrecord.id)
-        if filename: return os.path.join(d, filename)
+        if filename:
+            return os.path.join(d, filename)
         return d
 
 
@@ -150,6 +154,11 @@ class DistributedDataStorage(base):
     def _make_available(self, path, server=None):
         node = _node(server)
         return self._engine().make_available(path, node=node)
+
+
+    def _makedirs(self, path, server=None):
+        node = _node(server)
+        return self._engine().makedirs(path, node=node)
 
 
     def _is_available(self, path, server=None):

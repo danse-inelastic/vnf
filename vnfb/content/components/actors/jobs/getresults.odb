@@ -43,7 +43,7 @@ class Actor(base):
     def retrieveStatus(self, director):
         link    = self._retrieveResults(director)
         task    = director.clerk.getQETasks(id = self.taskid)
-        cid     = "%s-%s" % (RESULTS_ID, task.type)
+        cid     = "%s-%s" % (RESULTS_ID, task.type) # results link
         
         return select(id=cid).replaceContent(link)
 
