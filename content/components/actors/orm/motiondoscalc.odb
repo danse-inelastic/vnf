@@ -29,7 +29,10 @@ class Actor(base):
     class Inventory(base.Inventory):
 
         import luban.inventory
-
+        
+    
+    def debug(self, director):
+        
 
 def actor():
     return Actor('orm/motiondoscalc')
