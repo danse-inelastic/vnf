@@ -24,8 +24,8 @@ Solution:
 
 
 *********** TODO Steps **************
-1. Run simulation with vnf created bash script (no qeapp.py)
-2. Get results with "Check" link
+1. [DONE] Run simulation with vnf created bash script (no qeapp.py)
+2. [DONE] Get results with "Check" link
 3. Make "Status" string and action buttons ("Run Task", "Cancel") work properly
 4. Hook up QECalc (use qeapp.py)
 5. Display simulation results (make "Analyze" working)

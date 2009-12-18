@@ -13,7 +13,7 @@
 
 from vnf.dom.QEJob import QEJob
 from vnfb.utils.qeutils import makedirs, writefile
-from vnfb.utils.qeconst import STATES, RUNSCRIPT
+from vnfb.utils.qeconst import STATES, RUNSCRIPT, TYPE
 from vnfb.utils.qeutils import packname, unpackname
 
 from luban.content import load
@@ -24,7 +24,7 @@ class Actor(base):
 
     class Inventory(base.Inventory):
         import pyre.inventory
-        id          = pyre.inventory.str('id', default='')  # Simulation Id
+        id          = pyre.inventory.str('id', default='')      # Simulation Id
         taskid      = pyre.inventory.str('taskid', default='')
 
 
@@ -61,9 +61,11 @@ class Actor(base):
                    "creator":        director.sentry.username,
                    "numberprocessors":   setting.numproc # -> take from QESettings
                    }
-        job  = QEJob()
-        job.setDirector(director)
-        #job.createRecord(params)
+        jobs        = director.clerk.getQEJobs(where = "taskid='%s'" % self.taskid) # Temp
+        self._job   = jobs[0]
+#        self._job  = QEJob()
+#        self._job.setDirector(director)
+#        self._job.createRecord(params) # uncomment
 
 
     def _storeFiles(self, director):
@@ -79,37 +81,43 @@ class Actor(base):
         dds     = director.dds
         for input in inputs:
             fn          = input.filename
-            pfn         = packname(self._sim.id, fn)            # E.g. 44XXJJG2ni.scf.in
+            pfn         = packname(input.id, fn)                # E.g. 44XXJJG2ni.scf.in
             self._write2file(dds, input, fn, input.text)        # -> qeconfigurations directory
-            self._write2file(dds, self._sim, pfn, input.text)   # -> qesimulations directory
-            dds.remember(self._sim, pfn)     # Change object and filename?
+            self._write2file(dds, self._job, pfn, input.text)   # -> qejobs directory
+            dds.remember(self._job, pfn)     # Change object and filename?
             self._files.append(pfn)
 
 
     def _createRunScript(self, director):
-        settings    = director.clerk.getQESettings(where = "simulationid='%s'" % self.id)   # Should exist
+        settings    = director.clerk.getQESettings(where = "simulationid='%s'" % self.id)       # not None
         inputs      = director.clerk.getQEConfigurations(where = "taskid='%s'" % self.taskid)
+        task        = director.clerk.getQETasks(id = self.taskid)
+        server      = director.clerk.getServers(id = self._job.serverid)
         setting     = settings[0]
         input       = inputs[0]
 
         # mpirun --mca btl openib,sm,self pw.x -npool 8 -inp  PW > PW.out
         words   = [ setting.executable,
                     setting.params,
-                    "pw.x",
+                    TYPE[task.type],
                     "-npool %s" % setting.npool,
                     "-inp",
-                    packname(self._sim.id, input.filename),       # replace
+                    packname(input.id, input.filename),       # replace
                     ">",
-                    packname(self._sim.id, "%s.out" % input.filename)    # replace
+                    packname(input.id, "%s.out" % input.filename)    # replace
         ]
-        
+
+        # QE temp simulation directory is qesimulations/[simid] directory
+        # E.g.: /home/dexity/espresso/qesimulations/3YEQ8PNV    -> no trailing slash
+        qetempdir  = director.dds.abspath(self._sim, server=server)
         cmds    = [ "#!/bin/env bash",   # Suppose there is bash available
+                    "export ESPRESSO_TMPDIR=%s/" % qetempdir,
                     " ".join(words)
         ]
 
         dds     = director.dds
-        self._write2file(dds, self._sim, RUNSCRIPT, "\n".join(cmds))    # -> qesimulations directory
-        dds.remember(self._sim, RUNSCRIPT)
+        self._write2file(dds, self._job, RUNSCRIPT, "\n".join(cmds))    # -> qesimulations directory
+        dds.remember(self._job, RUNSCRIPT)
         self._files.append(RUNSCRIPT)
         
 
@@ -136,16 +144,15 @@ class Actor(base):
             - See also: submitjob.odb
         """
         dds     = director.dds
-        server  = director.clerk.getServers(id = self._sim.serverid)
-
-        dds.make_available(self._sim, server=server, files=self._files)
+        server  = director.clerk.getServers(id = self._job.serverid)
+        dds.make_available(self._job, server=server, files=self._files)
 
 
     def _scheduleJob(self, director):
         "Schedule job"
         dds     = director.dds
         from vnfb.utils.qescheduler import schedule
-        schedule(self._sim, director)
+        schedule(self._sim, director, self._job)
 
 
     def __init__(self):

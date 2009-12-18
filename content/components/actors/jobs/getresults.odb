@@ -30,7 +30,8 @@ class Actor(base):
     class Inventory(base.Inventory):
         import pyre.inventory
         id          = pyre.inventory.str('id', default='')      # Simulation Id
-        taskid      = pyre.inventory.str('taskid', default='')  # ?
+        taskid      = pyre.inventory.str('taskid', default='')  
+        jobid       = pyre.inventory.str('jobid', default='')   # Not passed at this time
 
 
     def default(self, director):
@@ -45,17 +46,20 @@ class Actor(base):
 
 
     def _retrieveResults(self, director):
-        sim     = director.clerk.getQESimulations(id = self.id)
-        link    = lc.link(label="None",
-                           onclick=load(actor      = "material_simulations/espresso/sim-view",
-                                         id         = self.id)
-                      )
+        #sim     = director.clerk.getQESimulations(id = self.id)
+        jobs    = director.clerk.getQEJobs(where = "taskid='%s'" % self.taskid)
+        link    = "None"
+        
+        if len(jobs) == 0:  # Empty list
+            return link
+        
+        job     = jobs[0]   # not None
 
-        ptrfilepath = self._ptrfilepath(sim, director)
+        ptrfilepath = self._ptrfilepath(job, director)
 
         # if pointer file does not exists, need to start packing
         if not os.path.exists(ptrfilepath):
-            self._startPacking(director, sim)
+            self._startPacking(director, job)
             link.label  = "Started Packing"
             return link
 
@@ -77,13 +81,13 @@ class Actor(base):
 #            link.label  = "Started Packing Again"
 #            return link
 
-        link = self._tarballLink(sim, ptrfilepath)
+        link = self._tarballLink(job, ptrfilepath)
 
         return link
 
 
-    def _tarballLink(self, sim, ptrfilepath):
-        text        = "%s.tgz" % sim.id
+    def _tarballLink(self, job, ptrfilepath):
+        text        = "%s.tgz" % job.id
         f           = open(ptrfilepath)
         localpath   = f.read().strip()
         path        = "tmp/%s" % localpath      # Example: "tmp/tmp31LUyu/44MTMA42.tgz"
@@ -92,15 +96,15 @@ class Actor(base):
         return link
 
 
-    def _ptrfilepath(self, sim, director):
+    def _ptrfilepath(self, job, director):
         "Return pointer filename. e.g. 44MTMA42..__dir__pack__ptr__"
         PTRFILEEXT = PackJobDir.PTRFILEEXT
-        return '.'.join( [director.dds.abspath(sim), PTRFILEEXT] )
+        return '.'.join( [director.dds.abspath(job), PTRFILEEXT] )
         
 
-    def _startPacking(self, director, sim):
+    def _startPacking(self, director, job):
         from vnf.components.Job import pack
-        pack(sim, director, debug=False)
+        pack(job, director, debug=False)
 
 
     def formError(self, errors):
