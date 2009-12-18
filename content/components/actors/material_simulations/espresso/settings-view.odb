@@ -69,6 +69,12 @@ class Actor(base):
 
 
     def _showActions(self, section):  #, inputs
+        section.add(lc.link(label="Back",
+                            Class="qe-action-back",
+                            onclick = load(actor      = 'material_simulations/espresso/sim-view',
+                                             id         = self.id))
+                    )
+
         section.add(lc.link(label="Edit",
                             Class="qe-action-edit",
                             onclick = load(actor      = 'material_simulations/espresso/settings-edit',

@@ -16,6 +16,7 @@ fieldset {
 
 
 #action-refresh-status,
+.qe-action-back,
 .qe-action-refresh,
 .qe-action-new,
 .qe-action-edit,
@@ -30,6 +31,7 @@ fieldset {
     margin-right: 10px;
 }
 
+a.qe-action-back,
 a.qe-action-refresh,
 a.qe-action-new,
 a.qe-action-edit,
@@ -37,6 +39,10 @@ a.qe-action-clone,
 a.qe-action-analyze,
 a.qe-action-delete {
     text-decoration: none;
+}
+
+.qe-action-back {
+    background-color: #dcf6db;
 }
 
 .qe-action-refresh {
