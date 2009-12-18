@@ -51,7 +51,7 @@ class Actor(base):
         # create a new item
         bond = BvKBond()
         bond.matter = model.matter
-        orm.save(bond)
+        orm.save(bond, save_not_owned_referred_object=0)
         
         # add to the refset
         record = orm(model)

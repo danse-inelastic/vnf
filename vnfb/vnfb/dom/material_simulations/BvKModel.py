@@ -12,35 +12,16 @@
 #
 
 
-from dsaw.model.Inventory import Inventory as InvBase
+# deactivate the warning from importing bvk
+import journal
+journal.warning('UserWarning').deactivate()
+import bvk
+#
+journal.warning('UserWarning').activate()
 
 
-from vnfb.dom.AtomicStructure import Structure
-from BvKBond import BvKBond
 
-class BvKModel(object):
-
-    matter = Structure()
-    short_description = ''
-    bonds = []
-
-    long_description = ''
-    reference = ''
-
-    class Inventory(InvBase):
-        
-        matter = InvBase.d.reference(name='matter', targettype=None, targettypes=[Structure], owned=0)
-        short_description = InvBase.d.str(name='short_description', label='description')
-
-        bonds = InvBase.d.referenceSet(name='bonds', targettype=BvKBond, owned=1)
-
-        long_description = InvBase.d.str(name='long_description', label='details', max_length=2048)
-        reference = InvBase.d.str(name='reference', max_length=1024)
-
-        
-        dbtablename = 'bvkmodels'
-
-
+from bvk.orm.BvKModel import BvKModel
 
 
 # view

@@ -12,39 +12,15 @@
 #
 
 
-from dsaw.model.Inventory import Inventory as InvBase
-
-class BvKBond(object):
-
-    # should be assigned when created
-    matter = None
-
-    # settable by users
-    A = 0
-    B = 0
-    Boffset = [0,0,0]
-    force_constant_matrix = [[0,0,0], [0,0,0], [0,0,0]]
+# deactivate the warning from importing bvk
+import journal
+journal.warning('UserWarning').deactivate()
+import bvk
+#
+journal.warning('UserWarning').activate()
 
 
-    class Inventory(InvBase):
-
-        from vnfb.dom.AtomicStructure import Structure
-        matter = InvBase.d.reference(name='matter', targettype=Structure, owned=0)
-
-        A = InvBase.d.int(name='A')
-        B = InvBase.d.int(name='B')
-
-        Boffset = InvBase.d.array(
-            name='Boffset', elementtype='float',
-            default=[0,0,0], shape=3)
-
-        force_constant_matrix = InvBase.d.array(
-            name='force_constant_matrix', elementtype='float',
-            default=[0,0,0,0,0,0,0,0,0,], shape=(3,3))
-    
-
-        dbtablename = 'bvkbonds'
-
+from bvk.orm.BvKBond import BvKBond
 
 
 # view
