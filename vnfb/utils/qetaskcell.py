@@ -13,6 +13,7 @@
 
 import luban.content as lc
 from luban.content import load
+from luban.content.Document import Document
 
 from vnfb.utils.qegrid import QEGrid
 from vnfb.utils.qeinput import QEInput
@@ -41,11 +42,18 @@ class QETaskCell:
     def taskInfo(self):
         table   = QEGrid(lc.grid(Class="qe-tasks-info"))
         if self._task:
-            table.addRow(("Task:", self._taskId()))
-            table.addRow(("Input:", self._input()))
-            table.addRow(("Output:", self._output()))
-            table.addRow(("Status:", self._status()))
-            table.addRow(("Job:", self._job()))
+            self._taskId(table)
+            self._input(table)
+            self._output(table)
+            self._status(table)
+            self._job(table)
+            self._results(table)
+
+#            table.addRow(("Task:", self._taskId()))
+#            table.addRow(("Input:", self._input()))
+#            table.addRow(("Output:", self._output()))
+#            table.addRow(("Status:", self._status()))
+#            table.addRow(("Job:", self._job()))
             table.setColumnStyle(0, "qe-tasks-param")
             table.setCellStyle(3, 1, "text-green")
 
@@ -81,27 +89,29 @@ class QETaskCell:
         return link
 
 
-    def _taskId(self):
-        tid = self._task.id
-        return lc.link(label    = tid,
-                       onclick  = load(actor    = 'material_simulations/espresso/task-view',
-                                       id       = self._simid,
-                                       taskid   = tid,
-                                       type     = self._type)
-                        )
+    def _taskId(self, table):
+        tid     = self._task.id
+        link    = lc.link(label    = tid,
+                           onclick  = load(actor    = 'material_simulations/espresso/task-view',
+                                           id       = self._simid,
+                                           taskid   = tid,
+                                           type     = self._type)
+                            )
+
+        table.addRow(("Task:", link))
 
 
-    def _input(self):
+    def _input(self, table):
         # Suppose that self._task is not None
         qeinput = QEInput(self._director, self._simid, self._task.id, self._type)
-        return qeinput.getLink()
+        table.addRow(("Input:", qeinput.getLink()))
 
 
-    def _output(self):
-        return "ni.scf.out"
+    def _output(self, table):
+        table.addRow(("Output:", "ni.scf.out"))
 
 
-    def _status(self):
+    def _status(self, table):
         "Displays status of the simulation"
         link    = "Not Started"
         jobs    = self._director.clerk.getQEJobs(where="taskid='%s'" % self._task.id)
@@ -109,10 +119,10 @@ class QETaskCell:
             job  = jobs[0]
             link = job.status
 
-        return link
+        table.addRow(("Status:", link))
 
 
-    def _job(self):
+    def _job(self, table):
         "Displays id of the current job"
         link    = "None"
         jobs    = self._director.clerk.getQEJobs(where="taskid='%s'" % self._task.id)
@@ -123,7 +133,30 @@ class QETaskCell:
                                           id        = self._simid)
                             )
 
-        return link
+        table.addRow(("Job:", link))
+
+        
+    def _results(self, table):
+        "STUB: Returns link to tar file for download. "
+        celldoc     = lc.document(Class="display-inline")
+        cell        = lc.document(id="results-link")   # Container for tar link
+        celldoc.add(cell)
+
+        tarlink     = lc.paragraph(text="None")
+        #link    = self._retrieveResults(director)
+
+        # Change actor
+        check    = lc.link(label="Check", id="qe-check-results",
+                       onclick=load(actor       = "jobs/getresults",
+                                    routine     = "retrieveStatus",
+                                    id          = self._simid)
+                      )
+
+        cell.add(tarlink)
+        celldoc.add(check)
+
+        table.addRow(("Results: ", celldoc))
+
 
 
 __date__ = "$Dec 12, 2009 3:21:13 PM$"
