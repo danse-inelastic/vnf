@@ -46,25 +46,47 @@ class QETasks:
             taskslist       = self._tasksList(simtasks)
 
             table           = QEGrid(lc.grid(Class="qe-tasks-table"))
+            doshow          = self._showActions(taskslist)
 
             for i in range(self._tasknum()):
-                self._setTaskCell(table, i, taskslist[i])
-                # Special layout for action buttons (e.g. "Run Task")
-                table.setCellStyle(2, i, "qe-action-task")
+                rows    = self._list(doshow)
+                self._setTaskCell(table, i, taskslist[i], rows)
+                if doshow:
+                    # Special layout for action buttons (e.g. "Run Task")
+                    table.setCellStyle(2, i, "qe-action-task")
 
             container   = table.grid()
             
         return container
 
 
-    def _setTaskCell(self, table, colnum, task):
+    def _setTaskCell(self, table, colnum, task, rows):
         "Populates the task's cell"
 
         tc      = QETaskCell(self._director, self._type(colnum), self._simid, task)
-        rows    = [tc.header(), tc.taskInfo(), tc.action()]
-
+        fields  = [tc.header(), tc.taskInfo(), tc.action()]
+        for i in range(len(rows)):
+            rows[i] = fields[i]
         table.addColumn(rows)
 
+
+    def _showActions(self, taskslist):
+        doshow  = False
+        for t in taskslist:
+            if t:
+                doshow = True
+
+        return doshow
+
+    def _list(self, doshow):
+        """Return list of size 'num' filled with None values
+        If at least one task is created show 3 rows, else show 2 rows
+        """
+        num     = 2
+        if doshow:
+            num = 3
+
+        return [None for i in range(num)]
 
     def _type(self, colnum):
         "Returns task type"
