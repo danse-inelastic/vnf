@@ -17,8 +17,9 @@
 def schedule( sim, director, job ):
     # TODO: Change status of jobs depending on the scheduling steps
     # copy local job directory to server
-    server          = director.clerk.getServers(id=job.serverid)
+    server          = director.clerk.getServers(id=job.serverid)    # not None
     settingslist    = director.clerk.getQESettings(where="simulationid='%s'" % sim.id)
+    task            = director.clerk.getQETasks(id=job.taskid)  # not None
     settings        = settingslist[0]   # not None
     server_jobpath  = director.dds.abspath(job, server=server)
 
@@ -30,7 +31,7 @@ def schedule( sim, director, job ):
                                                     server_jobpath,
                                                     suppressException=True)
     scheduler = scheduler(launch, prefix = 'source ~/.vnf-qe' )
-    scheduler.setSimulationParams(job, settings, server)
+    scheduler.setSimulationParams(job, settings, server, task)
 
     from pyre.units.time import hour
     walltime = 1*hour   # limit to one hour

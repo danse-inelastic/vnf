@@ -46,7 +46,6 @@ class Actor(base):
 
 
     def _retrieveResults(self, director):
-        #sim     = director.clerk.getQESimulations(id = self.id)
         jobs    = director.clerk.getQEJobs(where = "taskid='%s'" % self.taskid)
         link    = "None"
         
@@ -54,6 +53,7 @@ class Actor(base):
             return link
         
         job     = jobs[0]   # not None
+        link    = lc.link()
 
         ptrfilepath = self._ptrfilepath(job, director)
 
@@ -68,7 +68,6 @@ class Actor(base):
         if s == PackJobDir.PACKINGINPROCESS:
             link.label  = "Packing In Progress"
             return link
-
 
 
         # Keep!

@@ -29,6 +29,8 @@ TYPE        = {"PW":    "pw.x",
                }
                # "BANDS", "CPPP", "D3", "DOS", "DYNMAT", "INITIAL_STATE", "GIPAW", "D1", "MATDYN", "PROJWFC", "PWCOND", "Q2R"
 
+NOPARALLEL  = ("DOS", "MATDYN", "DYNMAT", "Q2R") # "BANDS"?, "PP"? #
+
 # Steps of job creation
 STEPS       = ("Create Simulation",
                "Create Configuration",
@@ -37,11 +39,10 @@ STEPS       = ("Create Simulation",
 
 SIMULATIONS = ("Total Energy",              # 0
                "Electron DOS",              # 1
-               "Electron Dispersion",       # 2
+               "Electron Dispersion",       # 2 pw.x -> pw.x -> bands.x -> plotbands.x
                "Geometry Optimization",     # 3
                "Single-Phonon",             # 4
-               "Multi-Phonon DOS",          # 5
-               "Multi-Phonon Dispersion")   # 6
+               "Multi-Phonon Dispersion")   # 5 DOS and Dispersion
             
 # Types of simulations
 SIMCHAINS = OrderedDict()
@@ -51,7 +52,6 @@ SIMCHAINS[SIMULATIONS[2]]   = ("PW", "DOS")
 SIMCHAINS[SIMULATIONS[3]]   = ("PW",)
 SIMCHAINS[SIMULATIONS[4]]   = ("PW", "PH", "DYNMAT")
 SIMCHAINS[SIMULATIONS[5]]   = ("PW", "PH", "Q2R", "MATDYN")
-SIMCHAINS[SIMULATIONS[6]]   = ("PW", "PH", "Q2R", "MATDYN")
 
 
 # Available servers
