@@ -58,7 +58,7 @@ class Actor(base):
         job     = jobs[0]   # not None
         link    = lc.link()
 
-        ptrfilepath = self._ptrfilepath(job, director)
+        ptrfilepath = self._ptrfilepath(director, job)
 
         # if pointer file does not exists, need to start packing
         if not os.path.exists(ptrfilepath):
@@ -98,7 +98,7 @@ class Actor(base):
         return link
 
 
-    def _ptrfilepath(self, job, director):
+    def _ptrfilepath(self, director, job):
         "Return pointer filename. e.g. 44MTMA42..__dir__pack__ptr__"
         PTRFILEEXT = PackJobDir.PTRFILEEXT
         return '.'.join( [director.dds.abspath(job), PTRFILEEXT] )

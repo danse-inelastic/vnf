@@ -11,10 +11,13 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
+import os
 import luban.content as lc
 from luban.content import load
 from luban.content.Document import Document
+from luban.content.HtmlDocument import HtmlDocument
 
+from vnf.applications.PackJobDir import PackJobDir
 from vnfb.utils.qegrid import QEGrid
 from vnfb.utils.qeinput import QEInput
 from vnfb.utils.qeconst import RESULTS_ID
@@ -141,7 +144,6 @@ class QETaskCell:
         celldoc.add(cell)
 
         tarlink     = self._tarlink()
-        #link    = self._retrieveResults(director)
 
         # Change actor
         check    = lc.link(label="Check", id="qe-check-results",
@@ -156,9 +158,43 @@ class QETaskCell:
 
         table.addRow(("Results: ", celldoc))
 
+
     def _tarlink(self):
-        link    = lc.paragraph(text="None")
+        link        = lc.paragraph(text="None")
+        if not self._job:
+            return link
+        
+        ptrfilepath = self._ptrfilepath(self._director, self._job)
+
+        if not os.path.exists(ptrfilepath):
+            link.text   = "Not Requested"
+            return link
+
+        s = open(ptrfilepath).read()
+        if s == PackJobDir.PACKINGINPROCESS:
+            link.text   = "In Progress"
+            return link # 
+
+        link = self._tarballLink(self._job, ptrfilepath)
+
         return link
+
+
+    # Duplicate from jobs/getresults.odb
+    def _tarballLink(self, job, ptrfilepath):
+        text        = "%s.tgz" % job.id
+        f           = open(ptrfilepath)
+        localpath   = f.read().strip()
+        path        = "tmp/%s" % localpath      # Example: "tmp/tmp31LUyu/44MTMA42.tgz"
+        link        = HtmlDocument(text="<a href='%s'>%s</a>" % (path, text) )
+
+        return link
+
+    # Duplicate from jobs/getresults.odb
+    def _ptrfilepath(self, director, job):
+        "Return pointer filename. e.g. 44MTMA42..__dir__pack__ptr__"
+        PTRFILEEXT = PackJobDir.PTRFILEEXT
+        return '.'.join( [director.dds.abspath(job), PTRFILEEXT] )
 
 
 __date__ = "$Dec 12, 2009 3:21:13 PM$"
