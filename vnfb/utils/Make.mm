@@ -46,8 +46,10 @@ EXPORT_PYTHON_MODULES = \
         qegrid.py \
         qeinput.py \
         qeparams.py \
+        qeresults.py \
         qescheduler.py \
         qeserver.py \
+        qestatus.py \
         qeutils.py \
 	safe_eval.py \
         serverlist.py \
