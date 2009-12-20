@@ -41,10 +41,11 @@ class Actor(base):
         2. Copy files to the computational cluster
         3. Submit Job
         """
-        self._createJob(director)
-        self._storeFiles(director)
-        self._moveFiles(director)
-        self._scheduleJob(director)
+        # Disable for now
+#        self._createJob(director)
+#        self._storeFiles(director)
+#        self._moveFiles(director)
+#        self._scheduleJob(director)
 
         return load(actor="material_simulations/espresso/sim-view",
                     id=self.id)
