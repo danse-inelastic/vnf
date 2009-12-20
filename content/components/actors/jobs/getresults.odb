@@ -57,7 +57,7 @@ class Actor(base):
             return link
 
         results = QEResults(director, jobs[0])  # change 0-index to latest job
-        results.retrieve()          # Syncronous?
+        results.retrieve()                      # Syncronous?
         link    = results.status()
 
         
