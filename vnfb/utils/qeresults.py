@@ -65,7 +65,7 @@ class QEResults:
 #            #self._status.set("untarring", "Untarring Results")
 #            #return self._statusstring()
 
-        if self._ready():
+        if self.ready():
             self._untar()   # Always untar
             return self._tarlink()
             
@@ -95,7 +95,7 @@ class QEResults:
 #            #self._status.set("untarring", "Untarring Results")
 #            #return self.status()
 
-        if self._ready():
+        if self.ready():
             self._status.set("ready", "Results Ready")
             return self._tarlink()
         
@@ -141,7 +141,7 @@ class QEResults:
         return False    # Not supported yet
 
 
-    def _ready(self):
+    def ready(self):
         "Results are delivered to the server"
         s       = open(self._ptrfilepath).read()
         ss      = s.split("tmp")
@@ -153,7 +153,7 @@ class QEResults:
 
     def _notuntarred(self):
         "Not relevant. It will untar all the time!"
-        #if self._ready() and "directory does not exist or is older than .tgz file":
+        #if self.ready() and "directory does not exist or is older than .tgz file":
         #   return True
         #else:
         #   return False
@@ -190,7 +190,7 @@ class QEResults:
         return "tmp/%s" % localpath      # Example: "tmp/tmp31LUyu/44MTMA42.tgz"
 
 
-    def _tardir(self):
+    def tardir(self):
         path    = self._tarpath()
         parts   = path.split(".tgz")
         dir     = parts[0]
