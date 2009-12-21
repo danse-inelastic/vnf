@@ -26,12 +26,23 @@ class BvKComputation(object):
         model = InvBase.d.reference(name='model', targettype = BvKModel, owned=0)
         
 
-class BvKComputation_GetDOS(BvKComputation):
 
-    class Inventory(InvBase):
+# name of classes must use convention BvK_Get..., see method "getComputationClass"
+
+class BvK_GetDos(BvKComputation):
+
+    dE = 0.5
+    N1 = 10
+
+    class Inventory(BvKComputation.Inventory):
 
         dE = InvBase.d.float(name='dE', default = 0.5) # unit meV
         N1 = InvBase.d.int(name='N1', default = 10) # number of sampling points (in 1 dimension)
+
+    
+    def customizeLubanObjectDrawer(self, drawer):
+        drawer.sequence = ['properties']
+        drawer.mold.sequence = ['N1', 'dE']
 
 
 # targets of computation
@@ -40,6 +51,10 @@ targets = [
     ('directionaldispersion', 'Phonon dispersion on a special direction'),
     ('dispersion', 'Full phonon dispersion on a grid (can be used in virtual neutron experiment)'),
     ]
+
+
+def getComputationClass(target):
+    return eval('BvK_Get%s' % target.capitalize())
 
 
 # version

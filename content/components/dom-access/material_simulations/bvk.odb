@@ -29,6 +29,29 @@ class Accessor(base):
     orm = property(_getOrm)
 
 
+    def newComputation(self, type, model_id):
+        # model
+        model = self.getModel(model_id)
+        
+        # new computation
+        Computation = BvKComputation.getComputationClass(type)
+        c = Computation()
+        c.matter = model.matter
+        c.model = model
+
+        #
+        orm = self.orm
+        orm.save(c, save_not_owned_referred_object=0)
+
+        return c
+
+
+    def getComputation(self, type, computation_id):
+        kls = BvKComputation.getComputationClass(type)
+        orm = self.orm
+        return orm.load(kls, computation_id)
+
+
     def newModel(self, atomicstructure_id):
         structdomacess = self.director.retrieveDOMAccessor('atomicstructure')
         struct = structdomacess.getAtomicStructure(atomicstructure_id)
@@ -98,7 +121,7 @@ class Accessor(base):
         return modelrecord.globalpointer is not None
 
 
-    
+# obsolete ...    
 class BvKModelProxy(object):
 
 
@@ -153,54 +176,9 @@ class BvKModelProxy(object):
         
 
 
-class FCMConstraintsFinder(object):
-
-    def __init__(self, matter):
-        self.matter = matter
-
-
-    def findall(self):
-        # now only knows about fcc and bcc single atom
-        if matter.lattice_system == 'cubic':
-            if matter.lattice_centering == 'I' and len(matter.atom_symbols)==1:
-                return self._handle_bcc()
-            elif matter.lattice_centering == 'F' and len(matter.atom_symbols)==1:
-                return self._handle_fcc()
-        raise NotImplementedError
-
-
-    def _handle_fcc(self):
-        return [
-            (0,0), (1,0,0), [
-              M(0,0)==M(1,1),
-              M(1,0)==M(0,1),
-              M(0,2)==0,
-              M(2,0)==0,
-              M(1,2)==0,
-              M(2,1)==0,
-            ],
-            (0,0), (1,0,0), [
-              M(0,0)==M(1,1),
-              M(1,0)==M(0,1),
-              M(0,2)==0,
-              M(2,0)==0,
-              M(1,2)==0,
-              M(2,1)==0,
-            ],
-            ]
-
-
-    def _handle_bcc(self):
-        return
-
-
-from vnfb.utils.constraints import Variable
-class M(Variable):
-    def __init__(self, *indexes): self.indexes = indexes
-    
-
 from vnfb.dom.material_simulations.BvKModel import BvKModel
 from vnfb.dom.material_simulations.BvKBond import BvKBond
+import vnfb.dom.material_simulations.BvKComputation as BvKComputation
 
 import os, numpy
 

@@ -29,6 +29,8 @@ class Actor(base):
         model_id = pyre.inventory.str('model_id')
         target = pyre.inventory.str('target')
 
+        computation_id = pyre.inventory.str('computation_id')
+
 
     def start(self, director):
         sid = self.inventory.atomicstructure_id
@@ -156,19 +158,61 @@ class Actor(base):
         #
         form.submitbutton(label='OK')
         form.onsubmit = lc.select(element=form).submit(
-            actor=self.name, routine='onSelectComputingTarget')
+            actor=self.name, routine='onSelectComputingTarget',
+            model_id = self.inventory.model_id,
+            )
         
         return select(id='main-display-area').replaceContent(doc)
 
 
     def onSelectComputingTarget(self, director):
         target = self.inventory.target
+
+        model_id = self.inventory.model_id
+        domaccess = self._domaccess(director)
+        #
+        c = domaccess.newComputation(target, model_id)
+
+        #
+        orm = domaccess.orm
+        self.inventory.computation_id = orm(c).id
+        
         routine = 'onConfiguring%sComputation' % target.capitalize()
         return getattr(self, routine)(director)
 
 
     def onConfiguringDosComputation(self, director):
-        return        
+        computation_id = self.inventory.computation_id
+        
+        domaccess = self._domaccess(director)
+        c = domaccess.getComputation('dos', computation_id)
+
+        drawer = director.painter.paintObj.drawers.getDrawer(c.__class__)
+        computation_doc = drawer(c)
+
+        form = computation_doc.getDescendentByName('properties-form')
+        newjob = load(
+            actor='job', routine='create',
+            computation_type = 'material_simulations.BvKComputation.BvK_GetDos',
+            computation_id = computation_id,
+            )
+        form.onsubmit = [
+            form.onsubmit,
+            newjob,
+            ]
+
+        # the container
+        doc = lc.document()
+
+        # path
+        path = self._pathToMe(director)
+        view_indicator = director.retrieveVisual('view-indicator', path=path)
+        doc.add(view_indicator)
+
+        # 
+        doc.add(computation_doc)
+        
+        return select(id='main-display-area').replaceContent(doc)
 
 
     def onConfiguringDirectionaldispersionComputation(self, director):
@@ -185,8 +229,18 @@ class Actor(base):
             models, director)
 
 
+
+    def _getModelRecord(self, director):
+        domaccess = self._domaccess(director)
+        return domaccess.getModelRecord(self.inventory.model_id)
+
+
     def _pathToMe(self, director):
         atomicstructure_id = self.inventory.atomicstructure_id
+        if not atomicstructure_id:
+            modelrecord = self._getModelRecord(director)
+            atomicstructure_id = modelrecord.matter.dereference(director.clerk.db).id
+            
         struct_label = director.retrieveDOMAccessor('atomicstructure').getAtomicStructureLabel(
             atomicstructure_id)
         struct_label = 'structure %r' % struct_label
