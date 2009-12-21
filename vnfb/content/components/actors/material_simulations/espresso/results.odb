@@ -1,3 +1,4 @@
+import os.path
 #!/usr/bin/env python
 #
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -13,9 +14,11 @@
 
 # Use matplotlib and QECalc to analyze results
 
+import os
 from vnfb.utils.qeutils import stamp2date
 from vnfb.utils.qeutils import parseFile
 from vnfb.utils.qegrid import QEGrid
+from vnfb.utils.qeresults import QEResults
 
 from luban.content import select
 from luban.content import load
@@ -36,10 +39,14 @@ class Actor(base):
 
 
     def content(self, director):
-        sim         = director.clerk.getQESimulations(id=self.id)
-        simtasks    = director.clerk.getQESimulationTasks(where="simulationid='%s'" % self.id)
-        #tasks       = director.clerk.getQETasks(where="taskid"id=self.id)
-        #self._settings  = director.clerk.getQESettings(id=self.configid)    # type=settings
+        self._director  = director
+        sim         = director.clerk.getQESimulations(id=self.id)   # Not None
+        self._simlist   = self._getSimlist(sim.type)
+        simtasks        = director.clerk.getQESimulationTasks(where="simulationid='%s'" % self.id)
+        taskslist       = self._tasksList(simtasks)
+        jobslist        = self._jobsList(taskslist)
+        inputslist      = self._inputsList(taskslist)
+        self._jitlist    = zip(jobslist, inputslist, taskslist) # Jobs - Input list
 
         def viewIndicator(director):
             path = []
@@ -136,10 +143,13 @@ class Actor(base):
         
         #infile      = EXPORT_ROOT + "/output/ni.scf.dos.out"
         # Added hardcoded dos
-        infile      = "/home/dexity/exports/vnf/vnfb/content/data/tmp/tmpVr7_LD/4IJW2PEI/ni.dos"
+        dosfile      = self._dosFile()
+        #print dosfile
+        if dosfile is None:
+            return ""
 
         # Populate 'x', 'y' and 'z' (cumulative) lists from file
-        (e,  up,  down,  cum) = parseFile(infile)
+        (e,  up,  down,  cum) = parseFile(dosfile)
 
         plot = lc.plot2d(width=500, height=350)
 
@@ -147,6 +157,71 @@ class Actor(base):
         plot.curve(x=e, y=down, label='Spin Down')
 
         return plot
+
+
+    def _dosFile(self):
+        "Retruns absolute path of the DOS file"
+        # Example: "/home/dexity/exports/vnf/vnfb/content/data/tmp/tmpVr7_LD/4IJW2PEI/ni.dos" v
+        for jit in self._jitlist:
+            if jit[0] is None:   # If job is None
+                continue
+
+            if jit[1] is not None and jit[2].type == "DOS":   # DOS type
+                dataroot    = self._dataroot()
+                results      = QEResults(self._director, jit[0])
+                if results.ready():
+                    path        = os.path.join(results.tardir(), "ni.dos")  # dos name is hardcoded
+                    filepath    = os.path.join(dataroot, path)
+                    print filepath
+                    return filepath
+            
+        return None
+
+    def _dataroot(self):
+        dds = self._director.dds
+        return os.path.abspath(dds.dataroot)
+
+
+    def _jobsList(self, taskslist):
+        jobslist    = []
+        for t in taskslist:
+            jobslist.append(self._jobObject(t))
+
+        return jobslist
+
+
+    def _jobObject(self, task):
+        "Job object"
+        if task is None:
+            return None
+
+        jobs    = self._director.clerk.getQEJobs(where="taskid='%s'" % task.id)
+        if jobs and jobs[0]:    # Pick the first
+            return jobs[0]
+
+        return None
+
+
+    def _inputsList(self, taskslist):
+        inputslist    = []
+        for t in taskslist:
+            inputslist.append(self._inputObject(t))
+
+        return inputslist
+
+
+    def _inputObject(self, task):
+        "Input object"
+        if task is None:
+            return None
+
+        inputs    = self._director.clerk.getQEConfigurations(where="taskid='%s'" % task.id)
+        if inputs and inputs[0]:    # Pick the first
+            return inputs[0]
+
+        return None
+
+
 
 
     def __init__(self):
@@ -162,6 +237,53 @@ class Actor(base):
     def _init(self):
         super(Actor, self)._init()
         return
+
+
+
+    # REFACTOR: Dumplicated from vnfb.utils.qetasks.py
+    def _type(self, colnum):
+        "Returns task type"
+        return self._simlist[colnum]
+
+    # REFACTOR: Dumplicated from vnfb.utils.qetasks.py
+    def _tasknum(self):
+        "Returns number of tasks"
+        return len(self._simlist)
+
+
+    # REFACTOR: Dumplicated from vnfb.utils.qetasks.py
+    def _tasksList(self, simtasks):
+        taskslist   = []
+        for type in self._simlist:
+            taskslist.append(self._taskObject(simtasks, type))
+
+        return taskslist
+
+
+    # REFACTOR: Dumplicated from vnfb.utils.qetasks.py
+    def _taskObject(self, simtasks, type):
+        """
+        Return task object in simtasks of type 'type' or None otherwise
+        """
+        for st in simtasks:
+            if st.taskid != '': # Avoid dangling references
+                task    = self._director.clerk.getQETasks(id = st.taskid)
+                if task is not None and task.type    == type:
+                    return task
+
+        return None
+
+
+    # REFACTOR: Dumplicated from vnfb.utils.qetasks.py
+    def _getSimlist(self, type):
+        from vnfb.utils.qeconst import SIMCHAINS
+        if type in SIMCHAINS:
+            return SIMCHAINS[type]
+
+        return ()
+
+
+
 
 def actor():
     return Actor()
