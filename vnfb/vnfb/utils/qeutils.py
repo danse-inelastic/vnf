@@ -16,6 +16,10 @@ Contains little but useful itils!
 """
 
 def parseFile(filename):
+    """Parses file consisting of at least 4 columns separated by space or tab
+    Notes:
+        - First line is the description
+    """
     e = []
     x = []
     y = []
@@ -34,6 +38,7 @@ def parseFile(filename):
         line = f.readline()
     f.close()
     return (e,  x,  y,  z)
+
 
 def parsePHFile(filename):
     e = []

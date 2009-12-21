@@ -22,7 +22,6 @@ from luban.content import load
 from luban.content.Link import Link
 
 # TODO:
-# - Remove row[2] (action row) if task is not created!
 # - Do not display action buttons "Run Task" or "Cancel" unless previous simulation
 #   is running or completed
 # - Change action buttom depending on the status of the job:
@@ -46,7 +45,7 @@ class QETasks:
             taskslist       = self._tasksList(simtasks)
 
             table           = QEGrid(lc.grid(Class="qe-tasks-table"))
-            doshow          = self._showActions(taskslist)
+            doshow          = self._showActions(taskslist)  # show "Run Task"?
 
             for i in range(self._tasknum()):
                 rows    = self._list(doshow)

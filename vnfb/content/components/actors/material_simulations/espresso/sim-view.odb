@@ -36,7 +36,6 @@ class Actor(base):
 
 
     def default(self, director):
-        print director.dds.dataroot
         return select(id='main-display-area').replaceContent(self.content(director))
 
 

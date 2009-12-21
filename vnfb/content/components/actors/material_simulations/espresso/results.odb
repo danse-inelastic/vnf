@@ -14,6 +14,7 @@
 # Use matplotlib and QECalc to analyze results
 
 from vnfb.utils.qeutils import stamp2date
+from vnfb.utils.qeutils import parseFile
 from vnfb.utils.qegrid import QEGrid
 
 from luban.content import select
@@ -28,14 +29,16 @@ class Actor(base):
     class Inventory(base.Inventory):
         import pyre.inventory
         id          = pyre.inventory.str('id', default='')          # Simulation Id
-        configid    = pyre.inventory.str('configid', default='')    # Configuration Id
+
 
     def default(self, director):
         return select(id='main-display-area').replaceContent(self.content(director))
 
 
     def content(self, director):
-        #self._sim       = director.clerk.getQESimulations(id=self.id)
+        sim         = director.clerk.getQESimulations(id=self.id)
+        simtasks    = director.clerk.getQESimulationTasks(where="simulationid='%s'" % self.id)
+        #tasks       = director.clerk.getQETasks(where="taskid"id=self.id)
         #self._settings  = director.clerk.getQESettings(id=self.configid)    # type=settings
 
         def viewIndicator(director):
@@ -56,6 +59,9 @@ class Actor(base):
         sC          = splitter.section(id="qe-section-actions")
         self._showActions(sC)
 
+        sB          = splitter.section()
+        self._showPlot(director, sB)
+
         return doc
 
 
@@ -66,8 +72,40 @@ class Actor(base):
                                              id         = self.id))
                     )
 
+        section.add(lc.link(label="Electrons",
+                            Class="qe-action-edit",
+                            onclick = load(actor      = 'material_simulations/espresso/results',
+                                             id         = self.id))
+                    )
+
+        section.add(lc.link(label="Phonons",
+                            Class="qe-action-edit",
+                            onclick = load(actor      = 'material_simulations/espresso/results',
+                                             id         = self.id))
+                    )
+
         section.add(lc.document(Class="clear-both"))
 
+
+    def _showPlot(self, director, section):
+        section.add(self.electronDOS())
+
+
+    def electronDOS(self):
+        
+        #infile      = EXPORT_ROOT + "/output/ni.scf.dos.out"
+        # Added hardcoded dos
+        infile      = "/home/dexity/exports/vnf/vnfb/content/data/tmp/tmpVr7_LD/4IJW2PEI/ni.dos"
+
+        # Populate 'x', 'y' and 'z' (cumulative) lists from file
+        (e,  up,  down,  cum) = parseFile(infile)
+
+        plot = lc.plot2d(width=500, height=350)
+
+        plot.curve(x=e, y=up, label='Spin Up')
+        plot.curve(x=e, y=down, label='Spin Down')
+
+        return plot
 
 
     def __init__(self):
@@ -79,7 +117,6 @@ class Actor(base):
     def _configure(self):
         super(Actor, self)._configure()
         self.id             = self.inventory.id
-        self.configid       = self.inventory.configid
 
     def _init(self):
         super(Actor, self)._init()
