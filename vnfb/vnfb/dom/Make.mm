@@ -36,11 +36,16 @@ all: export
 # export
 
 EXPORT_PYTHON_MODULES = \
+	AbstractOwnedObjectBase.py \
 	Atom.py \
 	AtomicStructure.py \
+	Computation.py \
+	Job.py \
 	Lattice.py \
+	OwnedObject.py \
 	__init__.py \
 	_.py \
+	computation_types.py \
 
 
 #include doxygen/default.def

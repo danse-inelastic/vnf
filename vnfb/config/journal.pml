@@ -13,7 +13,7 @@
       <property name="itaskapp">off</property>
       <property name="submitjob">off</property>
       <property name='forcefieldwizard'>off</property>
-      <property name='main'>off</property>
+      <property name='main'>on</property>
       <property name='luban.weaver.web.prerenderer'>off</property>
       <property name='MasterTableFactory'>off</property>
       <property name='materialsimulation'>off</property>

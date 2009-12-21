@@ -1,0 +1,58 @@
+# -*- Python -*-
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                   Jiao Lin
+#                      California Institute of Technology
+#                      (C) 2006-2009  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+tablename = 'jobs'
+
+
+from vnfb.components.DOMAccessor import DOMAccessor as base
+
+class Accessor(base):
+
+
+    def __init__(self):
+        super(Accessor, self).__init__('job')
+        return
+
+
+    def _getOrm(self):
+        orm = self.director.clerk.orm
+        
+        # build orm for all computation types
+        from vnfb.dom.computation_types import types
+        for type in types:
+            Obj = self._getObjectByImportingFromDOM(type)
+            orm(Obj)
+            continue
+        #
+        return orm
+    orm = property(_getOrm)
+
+
+
+from vnf.dom.Job import Job as JobTable
+
+
+from dsaw.db.VersatileReference import global_pointer
+import sqlalchemy
+
+
+
+def accessor():
+    return Accessor()
+
+
+# version
+__id__ = "$Id$"
+
+# End of file 

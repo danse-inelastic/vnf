@@ -43,6 +43,11 @@ class Accessor(base):
         orm = self.orm
         orm.save(c, save_not_owned_referred_object=0)
 
+        # assign the owner
+        r = orm(c)
+        r.creator = self.director.sentry.username
+        self.updateRecordWithID(r)
+        
         return c
 
 

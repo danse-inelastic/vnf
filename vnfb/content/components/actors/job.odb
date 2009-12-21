@@ -240,6 +240,9 @@ class Actor(base):
     
     
     def edit(self, director):
+        domaccess = self._domaccess(director)
+        orm = domaccess.orm
+        
         form = self.createEditForm(director)
         
         doc = Document(title='Job\ %s' % self.inventory.id)
@@ -481,6 +484,10 @@ class Actor(base):
         return document
 
 
+    def _domaccess(self, director):
+        return director.retrieveDOMAccessor('job')
+
+
     def _getJob(self, director):
         id = self.inventory.id
         return director.clerk.getRecordByID(Job, id)
@@ -501,7 +508,7 @@ def _input_widget_ID(name):
 
 
 def _describe_computation(computation):
-    return '%s %s' % (computation.__class__.__name__, computation.id)
+    return '%s %s' % (computation.getTableName(), computation.id)
 
 
 def isPositiveInteger(candiate):

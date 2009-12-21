@@ -191,15 +191,9 @@ class Actor(base):
         computation_doc = drawer(c)
 
         form = computation_doc.getDescendentByName('properties-form')
-        newjob = load(
-            actor='job', routine='create',
-            computation_type = 'material_simulations.BvKComputation.BvK_GetDos',
-            computation_id = computation_id,
-            )
-        form.onsubmit = [
-            form.onsubmit,
-            newjob,
-            ]
+        form.onsubmit.params.update({
+            'poststoring_routine': 'createJob',
+            })
 
         # the container
         doc = lc.document()
