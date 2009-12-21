@@ -39,6 +39,7 @@ EXPORT_PYTHON_MODULES = \
 	BvKComputation.py \
 	BvKModel.py \
 	__init__.py \
+	_.py \
 	phonon_calculators.py \
 
 
