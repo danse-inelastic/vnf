@@ -108,7 +108,7 @@ class QEResults:
 
     def _norequest(self):
         "Packing was not requested before"
-        if not os.path.exists(self._ptrfilepath):
+        if self._ptrfilepath and not os.path.exists(self._ptrfilepath):
             return True
 
         return False
@@ -116,9 +116,10 @@ class QEResults:
 
     def _packing(self):
         "Packing in progress"
-        s = open(self._ptrfilepath).read()
-        if s == PackJobDir.PACKINGINPROCESS:
-            return True
+        if self._ptrfilepath and os.path.exists(self._ptrfilepath):
+            s = open(self._ptrfilepath).read()
+            if s == PackJobDir.PACKINGINPROCESS:
+                return True
 
         return False
 
@@ -143,10 +144,11 @@ class QEResults:
 
     def ready(self):
         "Results are delivered to the server"
-        s       = open(self._ptrfilepath).read()
-        ss      = s.split("tmp")
-        if len(ss) != 0 and ss[0] == '':
-            return True
+        if self._ptrfilepath and os.path.exists(self._ptrfilepath):
+            s       = open(self._ptrfilepath).read()
+            ss      = s.split("tmp")
+            if len(ss) != 0 and ss[0] == '':
+                return True
 
         return False
 
@@ -208,6 +210,9 @@ class QEResults:
         """Return pointer filename
         E.g.: /home/dexity/exports/vnf/vnfb/content/data/qejobs/44MTMA42..__dir__pack__ptr__
         """
+        if self._job is None:
+            return
+        
         PTRFILEEXT = PackJobDir.PTRFILEEXT
         return '.'.join( [self._director.dds.abspath(self._job), PTRFILEEXT] )
 

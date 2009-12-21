@@ -96,19 +96,22 @@ class Actor(base):
 
 
     def _showData(self, section):
+        "Shows electron's data"
+        filename    = self._pwOutputFile()
+        if filename is None:
+            return
+
+        # output exists
         section.add(lc.paragraph(text="Electron System", Class="qe-section"))
         table       = QEGrid(lc.grid(Class = "qe-table"))
         section.add(table.grid())
 
-        filename    = self._pwOutputFile()
-        if filename:    # output exists
-            tEnergy     = self.getTotalEnergy(filename)
-            fEnergy     = self.getFermiEnergy(filename)
+        tEnergy     = self.getTotalEnergy(filename)
+        fEnergy     = self.getFermiEnergy(filename)
 
-            table.addRow(('Total Energy:', "%s %s" % tEnergy))
-            table.addRow(('Fermi Energy:', "%s %s" % fEnergy))
-
-            table.setColumnStyle(0, "qe-cell-param")
+        table.addRow(('Total Energy:', "%s %s" % tEnergy))
+        table.addRow(('Fermi Energy:', "%s %s" % fEnergy))
+        table.setColumnStyle(0, "qe-cell-param")
 
 
     def getTotalEnergy(self, filename):
@@ -136,26 +139,22 @@ class Actor(base):
 
 
     def _showPlot(self, director, section):
-        section.add(lc.paragraph(text="Electron DOS", Class="qe-section"))
-        section.add(self.electronDOS())
-
-
-    def electronDOS(self):
         "Plot electron DOS"
         dosfile      = self._dosFile()
 
         if dosfile is None:
-            return ""
+            return
+
+        section.add(lc.paragraph(text="Electron DOS", Class="qe-section"))
 
         # Populate 'x', 'y' and 'z' (cumulative) lists from file
         (e,  up,  down,  cum) = parseFile(dosfile)
-
+        
         plot = lc.plot2d(width=500, height=350)
-
         plot.curve(x=e, y=up, label='Spin Up')
         plot.curve(x=e, y=down, label='Spin Down')
 
-        return plot
+        section.add(plot)
 
 
     def _dosFile(self):

@@ -155,8 +155,11 @@ class QETaskCell:
 
         results = QEResults(self._director, self._job)  # change 0-index to latest job
 
-        cell.add(results.status())
-        celldoc.add(check)
+        if self._job:   # Job created (submitted)
+            cell.add(results.status())
+            celldoc.add(check)  # Check action does not show up unless a job is submitted
+        else:
+            cell.add(lc.paragraph(text="None"))
 
         table.addRow(("Results: ", celldoc))
 
