@@ -38,7 +38,7 @@ class QEStatus:
                 "paragraph" - luban Paragraph
         """
         
-        if format == "link"
+        if format == "link":
             return self._link()
 
         if format == "html":

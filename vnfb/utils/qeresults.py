@@ -11,8 +11,10 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
+import os
 from vnfb.utils.qestatus import QEStatus
 from vnf.applications.PackJobDir import PackJobDir
+
 
 class QEResults:
     """
@@ -23,100 +25,125 @@ class QEResults:
         packing     - Packing on progress
         oldrequest  - Outdated request
         packingagain    - Packing started again
+        untarring   - Untar the simulation results
+        ready       - Results are ready for analysis
+
+    Notes:
+        - The reason why I separate two methods: retrieve() and status() is because I have
+          at least two types of triggers: 1) check results and 2) show results
     """
 
     def __init__(self, director, job):
         self._director  = director
-        self._job       = job   # not None
+        self._job       = job       # not None
         self._status    = QEStatus()
+        self._status.set("norequest", "Not Requested")
+        self._ptrfilepath   = self._ptrfilepath()
 
 
     def retrieve(self):
         "Retrievs results based on the status"
-
-        self.status()   # Set status
-
-        if self._status in ["norequest", "oldrequest"]:
+        
+        # Packing was not requested before
+        if self._norequest():
             self._startPacking()
-            return self.statusstring()
+            self._status.set("started", "Started Packing")
+            return self.status()
 
+        # Packing in progress
+        if self._packing():
+            self._status.set("packing", "Packing In Progress")
+            return self.status()
 
-
-        self._untar()
-
-
-
-        return string
+        # Outdated packing request
+        if self._oldrequest():
+            self._status.set("oldrequest", "Outdated Request")
+            self._startPacking()
+            self._status.set("packingagain", "Packing Again")
+            return self.status()
+            
+        # Need to untar directory?
+        if self._notuntarred():
+            self._untar()
+            self._status.set("untarring", "Untarring Results")
+            #return self.status()
+            
+        self._status.set("ready", "Results Ready")
+        return self.status()
 
 
     def status(self):
         "Returns status of the simulation without any action (such as results retrieval)"
+        if self._ready():
+            return self._tarlink()
 
-        # Status changed during results retrieval
-        if self._status.get() in [""]:
-            return 
+        return self._status.string()
+    
 
-        ptrfilepath = self._ptrfilepath()
-
-        # Packing was not requested
-        if not os.path.exists(ptrfilepath):
-            self._status.set("norequest", "Not Requested")
-            return self.statusstring()
-
-        # Packing in progress
-        s = open(ptrfilepath).read()
-        if s == PackJobDir.PACKINGINPROCESS:
-            self._status.set("packing", "Packing In Progress")
-            return self.statusstring()
-
-        # Packing is old
-        # if tarball old, 
-        #    self._status.set("oldrequest", "Outdated Request")
-        #    -> "Packing Again"
-
-        # Keep!
-#        server      = director.clerk.getServers(id = sim.serverid)
-#        jobmtime    = director.dds.getmtime(sim, server = server)   # Requires getmtime.py
-#        ptrmtime    = os.path.getmtime(ptrfilepath)
-#        if jobmtime > ptrmtime + 60*3: # 60*3 -- give 3 minute of delay
-#            # if job directory is newer than the bar ball, pack again
-#            self._startPacking(director, sim)
-#            link.label  = "Started Packing Again"
-#            return link
-
-
-        s       = open(ptrfilepath).read()
-        ss      = s.strip("/")
-        if len(ss) != 0 and ss[0] == "tmp":
-            return self._tarlink(ptrfilepath)
-
-
-        return self.statusstring()
-
-
-    def _norequest(self, ptrfilepath):
-        "Packing was not requested"
-        if not os.path.exists(ptrfilepath):
+    def _norequest(self):
+        "Packing was not requested before"
+        if not os.path.exists(self._ptrfilepath):
             return True
 
         return False
         
 
-    def _packing(self, ptrfilepath):
+    def _packing(self):
+        "Packing in progress"
+        s = open(self._ptrfilepath).read()
+        if s == PackJobDir.PACKINGINPROCESS:
+            return True
+
+        return False
 
 
-    def statusstring(self):
-        return self._status.string()
+    def _oldrequest(self):
+        "Outdated packing request"
+        # if tarball old,
+        #    self._status.set("oldrequest", "Outdated Request")
+        #    -> "Packing Again"
+
+        # Keep!
+        #        server      = director.clerk.getServers(id = sim.serverid)
+        #        jobmtime    = director.dds.getmtime(sim, server = server)   # Requires getmtime.py
+        #        ptrmtime    = os.path.getmtime(self._ptrfilepath)
+        #        if jobmtime > ptrmtime + 60*3: # 60*3 -- give 3 minute of delay
+        #            # if job directory is newer than the bar ball, pack again
+        #            self._startPacking(director, sim)
+        #            link.label  = "Started Packing Again"
+        #            return link
+        return False    # Not supported yet
 
 
-    def _tarlink(self, ptrfilepath):
+    def _ready(self):
+        "Results are delivered to the server"
+        s       = open(self._ptrfilepath).read()
+        ss      = s.split("tmp")
+        if len(ss) != 0 and ss[0] == '':
+            return True
+
+        return False
+
+
+    def _notuntarred(self):
+        "Not relevant. It will untar all the time!"
+        #if self._ready() and "directory does not exist or is older than .tgz file":
+        #   return True
+        #else:
+        #   return False
+        return True
+
+
+    def _untar(self):
+        #untarring
+        pass
+
+    def _tarlink(self):
         text        = "%s.tgz" % self._job.id
-        f           = open(ptrfilepath)
+        f           = open(self._ptrfilepath)
         localpath   = f.read().strip()
         path        = "tmp/%s" % localpath      # Example: "tmp/tmp31LUyu/44MTMA42.tgz"
         self._status.setHtmlLink(text, path)
-        #link        = HtmlDocument(text="<a href='%s'>%s</a>" % (path, text) )
-        #return link
         return self._status.string("html")
 
 
@@ -128,21 +155,9 @@ class QEResults:
         return '.'.join( [self._director.dds.abspath(self._job), PTRFILEEXT] )
 
 
-    def _untar(self):
-        "Untar directory"
-        pass
-
-    
     def _startPacking(self):
         from vnf.components.Job import pack
         pack(self._job, self._director, debug=False)
-        
-        if self._status.get() == "oldrequest":
-            # Packing is repeated again
-            self._status.set("packingagain", "Packing Again")
-        else:
-            # Packing has just started
-            self._status.set("packing", "Started Packing")
         
 
 
