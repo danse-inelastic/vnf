@@ -19,11 +19,11 @@ from luban.content import select, load, alert
 
 
 #
-from vsat.trajectory.CsfCalc import MotionDosCalc
+from vsat.trajectory.EisfCalc import EisfCalc
 
 from luban.components.Actor import Actor
 import luban.orm
-base = luban.orm.object2actor(MotionDosCalc)
+base = luban.orm.object2actor(EisfCalc)
 class Actor(base):
 
     class Inventory(base.Inventory):
@@ -36,7 +36,7 @@ class Actor(base):
         
 
 def actor():
-    return Actor('orm/motiondoscalc')
+    return Actor('orm/eisfcalc')
 
 
 # version
