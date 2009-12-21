@@ -58,7 +58,7 @@ class Actor(base):
         setting     = settings[0]
         params  = {"taskid":        self.taskid,
                    "serverid":      self._sim.serverid,  # -> take from QESimulations
-                   "status":        "Preparing",    # Fixed status
+                   "status":        "Submitted",    # Fixed status
                    "creator":        director.sentry.username,
                    "numberprocessors":   setting.numproc # -> take from QESettings
                    }
