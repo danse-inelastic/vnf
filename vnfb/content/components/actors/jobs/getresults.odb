@@ -11,7 +11,6 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
-import os
 from luban.content import load
 from luban.content import select
 import luban.content as lc
@@ -57,67 +56,10 @@ class Actor(base):
             return link
 
         results = QEResults(director, jobs[0])  # change 0-index to latest job
-        results.retrieve()                      # Syncronous?
-        link    = results.status()
+
+        return results.retrieve()
 
         
-#        job     = jobs[0]   # not None
-#        link    = lc.link()
-#
-#        ptrfilepath = self._ptrfilepath(director, job)
-#
-#        # If pointer file does not exists, need to start packing
-#        # If it exists the file will not be delivered again
-#        if not os.path.exists(ptrfilepath):
-#            self._startPacking(director, job)
-#            link.label  = "Started Packing"
-#            return link
-#
-#        # if packing is in process, say that
-#        s = open(ptrfilepath).read()
-#        if s == PackJobDir.PACKINGINPROCESS:
-#            link.label  = "Packing In Progress"
-#            return link
-#
-#
-#        # Keep!
-##        server      = director.clerk.getServers(id = sim.serverid)
-##        jobmtime    = director.dds.getmtime(sim, server = server)   # Requires getmtime.py
-##        ptrmtime    = os.path.getmtime(ptrfilepath)
-##        if jobmtime > ptrmtime + 60*3: # 60*3 -- give 3 minute of delay
-##            # if job directory is newer than the bar ball, pack again
-##            self._startPacking(director, sim)
-##            link.label  = "Started Packing Again"
-##            return link
-#
-#        link = self._tarballLink(job, ptrfilepath)
-
-        return link
-
-
-#    def _tarballLink(self, job, ptrfilepath):
-#        text        = "%s.tgz" % job.id
-#        f           = open(ptrfilepath)
-#        localpath   = f.read().strip()
-#        path        = "tmp/%s" % localpath      # Example: "tmp/tmp31LUyu/44MTMA42.tgz"
-#        link        = HtmlDocument(text="<a href='%s'>%s</a>" % (path, text) )
-#
-#        return link
-#
-#
-#    def _ptrfilepath(self, director, job):
-#        """Return pointer filename
-#        E.g.: /home/dexity/exports/vnf/vnfb/content/data/qejobs/44MTMA42..__dir__pack__ptr__
-#        """
-#        PTRFILEEXT = PackJobDir.PTRFILEEXT
-#        return '.'.join( [director.dds.abspath(job), PTRFILEEXT] )
-        
-
-#    def _startPacking(self, director, job):
-#        from vnf.components.Job import pack
-#        pack(job, director, debug=False)
-
-
     def formError(self, errors):
         return [
                 select(id='%s-error-area' % key).replaceContent(value)
@@ -146,18 +88,6 @@ def actor():
 
 
 __date__ = "$Dec 17, 2009 11:39:10 AM$"
-
-
-# ****************** DEAD CODE *************************
-
-#        return self._packingInProgress(director, sim)
-#    def _packingInProgress(self, director, input):
-#        link    = Link(label="Packing", Class="action-link",
-#                       onclick=load(actor      = "material_simulations/espresso/sim-view",
-#                                     id         = self.id)
-#                      )
-#
-#        return select(id='results-link').replaceContent(link)
 
 
 
