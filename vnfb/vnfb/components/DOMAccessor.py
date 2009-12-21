@@ -191,7 +191,27 @@ class DOMAccessor( base ):
 
 
     def _getTable(self, name):
-        return self.db.getTable(name)
+        try:
+            return self.db.getTable(name)
+        except:
+            return self._getTableByImportingFromDOM(name)
+
+
+    def _getObjectByImportingFromDOM(self, name):
+        pkg = 'vnfb.dom'
+        domains = name.split('.')
+        module = '%s.%s' % (pkg, '.'.join(domains[:-1]))
+        try:
+            exec 'from %s import %s as Obj' % (module, domains[-1])
+        except ImportError:
+            raise RuntimeError, 'failed to resolve data object type %s by importing' % name
+        return Obj
+
+
+    def _getTableByImportingFromDOM(self, name):
+        Obj = self._getObjectByImportingFromDOM(name)
+        orm = self.orm
+        return orm(Obj)
 
 
     def _getRecordByID(self, table, id ):

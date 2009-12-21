@@ -15,7 +15,7 @@
 from DOMAccessor import DOMAccessor as base
 from luban.components.Clerk import Clerk as ClerkBase
 
-class Clerk(ClerkBase, base):
+class Clerk(base, ClerkBase):
 
     class Inventory(ClerkBase.Inventory, base.Inventory):
 
@@ -102,6 +102,14 @@ class Clerk(ClerkBase, base):
         return
 
 
+    # orm
+    def _getOrm(self):
+        if not hasattr(self, '_orm'):
+            self._createOrmManager()
+        return self._orm
+    orm = property(_getOrm)
+    
+
     def _createOrmManager(self):
         director = self.director
         guid = director.getGUID
@@ -111,6 +119,13 @@ class Clerk(ClerkBase, base):
         self._orm = OrmManager(db=db, guid=guid, object2table=object2table)
         return
         
+
+    def _getDB(self):
+        if not hasattr(self, '_db'):
+            self._db = self._createDB()
+        return self._db
+    db = property(_getDB)
+    
     
     def _createDB(self):
         db = self.inventory.db
