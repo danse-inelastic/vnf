@@ -18,6 +18,8 @@ from luban.content.Document import Document
 from luban.content.HtmlDocument import HtmlDocument
 
 from vnf.applications.PackJobDir import PackJobDir
+
+from vnfb.utils.qeresults import QEResults
 from vnfb.utils.qegrid import QEGrid
 from vnfb.utils.qeinput import QEInput
 from vnfb.utils.qeconst import RESULTS_ID
@@ -28,6 +30,7 @@ class QETaskCell:
         self._type  = type
         self._simid = simid
         self._task  = task
+        self._job   = None
         self._director  = director
 
 
@@ -50,7 +53,7 @@ class QETaskCell:
             self._input(table)
             self._output(table)
             self._status(table)
-            self._job(table)
+            self._jobId(table)
             self._results(table)
 
             table.setColumnStyle(0, "qe-tasks-param")
@@ -121,13 +124,12 @@ class QETaskCell:
         table.addRow(("Status:", link))
 
 
-    def _job(self, table):
+    def _jobId(self, table):
         "Displays id of the current job"
-        self._job   = None
         link        = "None"
         jobs        = self._director.clerk.getQEJobs(where="taskid='%s'" % self._task.id)
         if jobs:
-            self._job  = jobs[0]
+            self._job  = jobs[0]    # FIXME
             link = lc.link(label=self._job.id,
                            onclick = load(actor     ='jobs/jobs-view',
                                           id        = self._job.id)
@@ -143,8 +145,6 @@ class QETaskCell:
         cell        = lc.document(id=cid)   # Container for tar link
         celldoc.add(cell)
 
-        tarlink     = self._tarlink()
-
         # Change actor
         check    = lc.link(label="Check", id="qe-check-results",
                        onclick=load(actor       = "jobs/getresults",
@@ -153,48 +153,13 @@ class QETaskCell:
                                     taskid      = self._task.id)    # No jobid at this time
                       )
 
-        cell.add(tarlink)
+        results = QEResults(self._director, self._job)  # change 0-index to latest job
+
+        cell.add(results.status())
         celldoc.add(check)
 
         table.addRow(("Results: ", celldoc))
 
-
-    def _tarlink(self):
-        link        = lc.paragraph(text="None")
-        if not self._job:
-            return link
-        
-        ptrfilepath = self._ptrfilepath(self._director, self._job)
-
-        if not os.path.exists(ptrfilepath):
-            link.text   = "Not Requested"
-            return link
-
-        s = open(ptrfilepath).read()
-        if s == PackJobDir.PACKINGINPROCESS:
-            link.text   = "In Progress"
-            return link # 
-
-        link = self._tarballLink(self._job, ptrfilepath)
-
-        return link
-
-
-    # Duplicate from jobs/getresults.odb
-    def _tarballLink(self, job, ptrfilepath):
-        text        = "%s.tgz" % job.id
-        f           = open(ptrfilepath)
-        localpath   = f.read().strip()
-        path        = "tmp/%s" % localpath      # Example: "tmp/tmp31LUyu/44MTMA42.tgz"
-        link        = HtmlDocument(text="<a href='%s'>%s</a>" % (path, text) )
-
-        return link
-
-    # Duplicate from jobs/getresults.odb
-    def _ptrfilepath(self, director, job):
-        "Return pointer filename. e.g. 44MTMA42..__dir__pack__ptr__"
-        PTRFILEEXT = PackJobDir.PTRFILEEXT
-        return '.'.join( [director.dds.abspath(job), PTRFILEEXT] )
 
 
 __date__ = "$Dec 12, 2009 3:21:13 PM$"

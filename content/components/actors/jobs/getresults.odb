@@ -14,8 +14,6 @@
 from luban.content import load
 from luban.content import select
 import luban.content as lc
-from luban.content.HtmlDocument import HtmlDocument
-from vnf.applications.PackJobDir import PackJobDir
 from vnfb.utils.qeconst import RESULTS_ID
 from vnfb.utils.qeresults import QEResults
 

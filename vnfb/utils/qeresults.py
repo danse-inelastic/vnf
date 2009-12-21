@@ -43,42 +43,67 @@ class QEResults:
 
     def retrieve(self):
         "Retrievs results based on the status"
+
+        self.status()
         
         # Packing was not requested before
         if self._norequest():
             self._startPacking()
             self._status.set("started", "Started Packing")
-            return self.status()
-
-        # Packing in progress
-        if self._packing():
-            self._status.set("packing", "Packing In Progress")
-            return self.status()
+            return self._statusstring()
 
         # Outdated packing request
         if self._oldrequest():
-            self._status.set("oldrequest", "Outdated Request")
             self._startPacking()
             self._status.set("packingagain", "Packing Again")
-            return self.status()
+            return self._statusstring()
             
-        # Need to untar directory?
-        if self._notuntarred():
-            self._untar()
-            self._status.set("untarring", "Untarring Results")
-            #return self.status()
+#        # Need to untar directory?
+#        if self._notuntarred():
+#            self._untar()
+#            #self._status.set("untarring", "Untarring Results")
+#            #return self._statusstring()
+
+        if self._ready():
+            self._untar()   # Always untar
+            return self._tarlink()
             
-        self._status.set("ready", "Results Ready")
-        return self.status()
+        return self._statusstring()
 
 
     def status(self):
         "Returns status of the simulation without any action (such as results retrieval)"
-        if self._ready():
-            return self._tarlink()
+        # Packing was not requested before
+        if self._norequest():
+            self._status.set("norequest", "Not Requested")
+            return self._statusstring()
 
-        return self._status.string()
+        # Packing in progress
+        if self._packing():
+            self._status.set("packing", "Packing In Progress")
+            return self._statusstring()
+
+        # Outdated packing request
+        if self._oldrequest():
+            self._status.set("oldrequest", "Outdated Request")
+            return self._statusstring()
+
+#        # Need to untar directory?
+#        if self._notuntarred():
+#            pass
+#            #self._status.set("untarring", "Untarring Results")
+#            #return self.status()
+
+        if self._ready():
+            self._status.set("ready", "Results Ready")
+            return self._tarlink()
+        
+        return self._statusstring()
     
+
+    def _statusstring(self):
+        return self._status.string("paragraph")
+
 
     def _norequest(self):
         "Packing was not requested before"
