@@ -61,6 +61,7 @@ class Actor(base):
 
         sB          = splitter.section()
         self._showPlot(director, sB)
+        self._showData(sB)
 
         return doc
 
@@ -85,6 +86,39 @@ class Actor(base):
                     )
 
         section.add(lc.document(Class="clear-both"))
+
+
+    def _showData(self, section):
+        filename    = "/home/dexity/exports/vnf/vnfb/content/data/tmp/tmpTsdw21/4ICDAVNK/4I2NPMY4ni.scf.in.out"
+        print self.getTotalEnergy(filename)
+        print self.getFermiEnergy(filename)
+        # Total energy
+        # Fermy energy
+        # Forces
+        pass
+
+    def getTotalEnergy(self, filename):
+        """
+        Borrowed from QECalc
+        Extract total energy value from pwscf output
+        """
+        #read Espresso output into memory:
+        file = open(filename)
+        pwscfOut = file.readlines()
+        posList =  [i for i,line in enumerate(pwscfOut) if '!    total energy' in line]
+        return (float(pwscfOut[posList[-1]].split()[4]), 'Ry')
+
+
+    def getFermiEnergy(self, filename):
+        """
+        Borrowed from QECalc
+        Extract Fermi energy value from pwscf output
+        """
+        #read Espresso output into memory:
+        file = open(filename)
+        pwscfOut = file.readlines()
+        posList =  [i for i,line in enumerate(pwscfOut) if 'the Fermi energy is' in line]
+        return (float(pwscfOut[posList[-1]].split()[4]), 'eV')
 
 
     def _showPlot(self, director, section):
