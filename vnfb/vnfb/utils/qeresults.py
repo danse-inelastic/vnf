@@ -1,3 +1,4 @@
+import os.path
 #!/usr/bin/env python
 #
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -102,7 +103,7 @@ class QEResults:
     
 
     def _statusstring(self):
-        return self._status.string("paragraph")
+        return self._status.string("p")
 
 
     def _norequest(self):
@@ -160,16 +161,47 @@ class QEResults:
 
 
     def _untar(self):
-        #untarring
-        pass
+        dds = self._director.dds
+        # Example: dataroot = /home/dexity/exports/vnf/vnfb/content/data
+        dataroot    = os.path.abspath(dds.dataroot) # Absolute data root
+
+        tarfile     = os.path.join(dataroot, self._tarpath())
+        tempdir     = os.path.join(dataroot, self._tempdir())
+
+        dds.untar(tarfile, tempdir)
+        
 
     def _tarlink(self):
-        text        = "%s.tgz" % self._job.id
-        f           = open(self._ptrfilepath)
-        localpath   = f.read().strip()
-        path        = "tmp/%s" % localpath      # Example: "tmp/tmp31LUyu/44MTMA42.tgz"
+        text    = self._tarfile()
+        path    = self._tarpath()
         self._status.setHtmlLink(text, path)
         return self._status.string("html")
+
+
+    def _tarfile(self):
+        "Tar file"
+        return "%s.tgz" % self._job.id      # Example: "44MTMA42.tgz"
+
+
+    def _tarpath(self):
+        "Path to tar file is expected"
+        f           = open(self._ptrfilepath)
+        localpath   = f.read().strip()
+        return "tmp/%s" % localpath      # Example: "tmp/tmp31LUyu/44MTMA42.tgz"
+
+
+    def _tardir(self):
+        path    = self._tarpath()
+        parts   = path.split(".tgz")
+        dir     = parts[0]
+        return dir                      # Example: "tmp/tmp31LUyu/44MTMA42"
+
+
+    def _tempdir(self):
+        path    = self._tarpath()
+        parts   = path.split(self._tarfile())
+        tmp     = parts[0]
+        return tmp                      # Example: "tmp/tmp31LUyu
 
 
     def _ptrfilepath(self):

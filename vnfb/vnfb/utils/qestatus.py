@@ -34,17 +34,17 @@ class QEStatus:
             format  - format in which to display the message
                 None    - No format
                 "html"  - luban HtmlDocument
-                "link"  - luban Link (action link)
-                "paragraph" - luban Paragraph
+                "a"     - luban Link (action link)
+                "p"     - luban Paragraph
         """
         
-        if format == "link":
+        if format == "a":
             return self._link()
 
         if format == "html":
             return self._html()
 
-        if format == "paragraph":
+        if format == "p":
             return self._paragraph()
 
         return self._message

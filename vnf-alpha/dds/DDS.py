@@ -174,8 +174,38 @@ class DDS:
         Issues:
             - Doesn't check if the node already exists
         """
+        if node is None:
+            node = self.masternode
+
         self._makedirs(_url(node, path))
-        self.remember(path, node)
+        #self.remember(path, node)  # Need remember?
+
+
+    def untar(self, tarfile, path, node):
+        """
+        Extracts (untars) tarfile to the specified 'path'. 
+        Parameters:
+            tarfile - absolute path of tar file to be extracted
+            path    - absolute path where tarfile to be extracted
+        Notes:
+            - Parameter 'node' is not supported at this time
+            - If path doesn't exist, it will create it
+            - Not very flexible for other accessors
+        """
+        # If path doesn't exist, create it
+        if not os.path.exists(path):
+            self.makedirs(path, node)
+
+        pieces = [
+            'tar',
+            '-xzf',
+            tarfile,
+            '-C',
+            path
+            ]
+
+        # Extract tar file
+        os.system(" ".join(pieces))
 
 
     def _transfer(self, path, srcnode, destnode):
