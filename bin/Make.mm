@@ -25,6 +25,7 @@ distclean::
 
 EXPORT_DATAFILES = \
 	addbvkmodelstodb.py \
+	createtable.py \
 	initdb.py \
 	getuserlist.py \
 	itaskapp.py \
