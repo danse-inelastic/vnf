@@ -172,7 +172,7 @@ class Actor(base):
                 if results.ready():
                     path        = os.path.join(results.tardir(), "ni.dos")  # dos name is hardcoded
                     filepath    = os.path.join(dataroot, path)
-                    print filepath
+                    #print filepath
                     return filepath
             
         return None
