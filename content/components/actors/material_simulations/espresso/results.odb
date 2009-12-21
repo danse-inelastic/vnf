@@ -56,12 +56,12 @@ class Actor(base):
         splitter    = doc.splitter(orientation="vertical")
         sA          = splitter.section()
         sA.add(viewIndicator(director))
-        sC          = splitter.section(id="qe-section-actions")
-        self._showActions(sC)
-
-        sB          = splitter.section()
-        self._showPlot(director, sB)
-        self._showData(sB)
+        sB          = splitter.section(id="qe-section-actions")
+        self._showActions(sB)               # Show actions
+        sC          = splitter.section()
+        self._showData(sC)                  # Show data
+        sD          = splitter.section()
+        self._showPlot(director, sD)        # Show plot
 
         return doc
 
@@ -89,13 +89,19 @@ class Actor(base):
 
 
     def _showData(self, section):
+        section.add(lc.paragraph(text="Electron System", Class="qe-section"))
+        table       = QEGrid(lc.grid(Class = "qe-table"))
+        section.add(table.grid())
+
         filename    = "/home/dexity/exports/vnf/vnfb/content/data/tmp/tmpTsdw21/4ICDAVNK/4I2NPMY4ni.scf.in.out"
-        print self.getTotalEnergy(filename)
-        print self.getFermiEnergy(filename)
-        # Total energy
-        # Fermy energy
-        # Forces
-        pass
+        tEnergy     = self.getTotalEnergy(filename)
+        fEnergy     = self.getFermiEnergy(filename)
+
+        table.addRow(('Total Energy:', "%s %s" % tEnergy))
+        table.addRow(('Fermi Energy:', "%s %s" % fEnergy))
+        
+        table.setColumnStyle(0, "qe-cell-param")
+
 
     def getTotalEnergy(self, filename):
         """
@@ -122,6 +128,7 @@ class Actor(base):
 
 
     def _showPlot(self, director, section):
+        section.add(lc.paragraph(text="Electron DOS", Class="qe-section"))
         section.add(self.electronDOS())
 
 
