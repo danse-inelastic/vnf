@@ -30,6 +30,22 @@ class Actor(base):
 
         import luban.inventory
 
+        poststoring_routine = luban.inventory.str(name='poststoring_routine')
+
+
+    def _postStoringUserInputs(self, director):
+        poststoring_routine = self.inventory.poststoring_routine
+        if poststoring_routine:
+            return getattr(self, poststoring_routine)(director)
+        return super(Actor, self)._postStoringUserInputs(director)
+    
+    
+    def createJob(self, director):
+        return load(
+            actor='job', routine='create',
+            computation_type = 'material_simulations.BvKComputation.BvK_GetDos',
+            computation_id = self.inventory.id
+            )
 
 
 def actor():

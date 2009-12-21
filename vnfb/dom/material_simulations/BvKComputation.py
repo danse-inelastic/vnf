@@ -15,7 +15,7 @@
 from _ import o2t
 
 # still import from vnf-alpha dom. need to change
-from vnf.dom.Computation import Computation as ComputationTableBase
+from Computation import Computation as ComputationTableBase
 
 
 from dsaw.model.Inventory import Inventory as InvBase
@@ -52,7 +52,7 @@ class BvK_GetDos(BvKComputation):
 
 
 
-o2t(BvK_GetDos, {'subclassFrom': ComputationTableBase})
+BvK_GetDos_Table = o2t(BvK_GetDos, {'subclassFrom': ComputationTableBase})
 
 
 # targets of computation
