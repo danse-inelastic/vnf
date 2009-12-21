@@ -139,7 +139,7 @@ a.qe-run-task {
 }
 
 .qe-tasks-table td{
-    width: 200px
+    width: 230px
 }
 
 .qe-grid table,
@@ -201,7 +201,7 @@ a.qe-run-task {
 /* Change? */
 #qe-check-results,
 #qe-analyze-results {
-    margin-left: 20px;
+    margin-left: 10px;
     padding: 1px 10px;
     -moz-border-radius: 5px;
     -webkit-border-radius: 5px;
