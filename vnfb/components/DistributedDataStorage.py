@@ -90,6 +90,10 @@ class DistributedDataStorage(base):
         self._makedirs(p, server=server)
 
 
+    def untar(self, tarfile, path, server=None):
+        self._untar(tarfile, path, server)
+
+
     def is_available(self, dbrecord, filename=None, server=None, files=None):
         if files is None: files = []
 
@@ -157,8 +161,15 @@ class DistributedDataStorage(base):
 
 
     def _makedirs(self, path, server=None):
+        "Creates directory"
         node = _node(server)
         return self._engine().makedirs(path, node=node)
+
+
+    def _untar(self, tarfile, path, server=None):
+        "Extracts (untars) tarfile to the specified 'path'. 'server' parameter is not supported"
+        node = _node(server)
+        return self._engine().untar(tarfile, path, node=node)
 
 
     def _is_available(self, path, server=None):
@@ -220,6 +231,11 @@ class DistributedDataStorage(base):
             cmd = 'mkdir -p %s' % path
             csaccessor.execute(cmd, server, '')
             return
+
+        def rmdirs():
+            "Recursively removes directory"
+            pass
+
 
         def rename(path1, path2, surl):
             server = _decodesurl(surl)
