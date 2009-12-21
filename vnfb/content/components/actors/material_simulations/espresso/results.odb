@@ -100,14 +100,15 @@ class Actor(base):
         table       = QEGrid(lc.grid(Class = "qe-table"))
         section.add(table.grid())
 
-        filename    = "/home/dexity/exports/vnf/vnfb/content/data/tmp/tmpTsdw21/4ICDAVNK/4I2NPMY4ni.scf.in.out"
-        tEnergy     = self.getTotalEnergy(filename)
-        fEnergy     = self.getFermiEnergy(filename)
+        filename    = self._pwOutputFile()
+        if filename:    # output exists
+            tEnergy     = self.getTotalEnergy(filename)
+            fEnergy     = self.getFermiEnergy(filename)
 
-        table.addRow(('Total Energy:', "%s %s" % tEnergy))
-        table.addRow(('Fermi Energy:', "%s %s" % fEnergy))
-        
-        table.setColumnStyle(0, "qe-cell-param")
+            table.addRow(('Total Energy:', "%s %s" % tEnergy))
+            table.addRow(('Fermi Energy:', "%s %s" % fEnergy))
+
+            table.setColumnStyle(0, "qe-cell-param")
 
 
     def getTotalEnergy(self, filename):
@@ -140,11 +141,9 @@ class Actor(base):
 
 
     def electronDOS(self):
-        
-        #infile      = EXPORT_ROOT + "/output/ni.scf.dos.out"
-        # Added hardcoded dos
+        "Plot electron DOS"
         dosfile      = self._dosFile()
-        #print dosfile
+
         if dosfile is None:
             return ""
 
@@ -176,6 +175,27 @@ class Actor(base):
                     return filepath
             
         return None
+
+
+    def _pwOutputFile(self):
+        "Retruns absolute path of the PW output file"
+        # Example: "/home/dexity/exports/vnf/vnfb/content/data/tmp/tmpTsdw21/4ICDAVNK/4I2NPMY4ni.scf.in.out"
+        for jit in self._jitlist:
+            if jit[0] is None:   # If job is None
+                continue
+
+            if jit[1] is not None and jit[2].type == "PW":   # PW type
+                dataroot    = self._dataroot()
+                results      = QEResults(self._director, jit[0])
+                if results.ready():
+                    file        = "%s%s.out" % (jit[1].id, jit[1].filename)
+                    path        = os.path.join(results.tardir(), file)
+                    filepath    = os.path.join(dataroot, path)
+                    return filepath
+
+        return None
+
+
 
     def _dataroot(self):
         dds = self._director.dds
