@@ -16,7 +16,7 @@ from pyre.components.Component import Component as base
 
 
 # domaccessor facilitates association of db with the application.
-# the application must has facility to
+# the application must have facility to
 #  1. create a unique ID
 #  2. know who is the current user
 #

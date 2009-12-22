@@ -8,33 +8,27 @@ class Actor(baseActor):
     class Inventory(baseActor.Inventory):
 
         import pyre.inventory
-
         encoder = pyre.inventory.str('encoder', default = 'json')
-
         format = pyre.inventory.str('format', default = 'dictionary')
-        
         tables = pyre.inventory.str('tables')
-        
         columns = pyre.inventory.str('columns', default = 'all')
-
         where = pyre.inventory.str('where')
-
         id = pyre.inventory.str('id')
-        
         creator = pyre.inventory.str('creator', default = 'currentUser')
-        
         #filename_variable = pyre.inventory.str('filename_variable')
-        
         #potential_name = pyre.inventory.str('potential_name')
-        
 
     def get(self, director):
-        # these next lines are a hack just to make sure the user is authenticated
-#        atomsim public version cannot work unless these are commented out
-#        try:
-#            page = director.retrieveSecurePage( 'greet' )
-#        except AuthenticationError, error:
-#            return error.page
+        if 'all' in self.columns:
+            records = self._getRecords(director, self.tables, self.where)
+            return self.encoder(records)
+        else:
+            results = self._getAttributes(director, self.tables, self.columns, self.where)
+            return self.attributeEncoder(results)
+
+    def getMaterial(self, director):
+        domaccess = director.retrieveDOMAccessor('atomicstructure')
+        structure = domaccess.getAtomicStructureRecord(self.inventory.id)
 
         if 'all' in self.columns:
             records = self._getRecords(director, self.tables, self.where)
@@ -42,20 +36,6 @@ class Actor(baseActor):
         else:
             results = self._getAttributes(director, self.tables, self.columns, self.where)
             return self.attributeEncoder(results)
-    
-#    def put(self, director, jsonFormattedInfo):
-#        # these next lines are a hack just to make sure the user is authenticated
-#        try:
-#            page = director.retrieveSecurePage( 'greet' )
-#        except AuthenticationError, error:
-#            return error.page
-#        
-#        # assume the is a handler directive
-#        
-#        # if there's a file string, assume it is in json format
-#        records = self._getRecords(director, self.tables, self.where)
-#        return self.encoder(records)
-
 
     def _getRecords(self, director, tables, where):
         results=[]
@@ -100,16 +80,7 @@ class Actor(baseActor):
             attributes = flatten(attributes)
             results += attributes
         return results
-    
-#    def _retrieveTable(self, director, tableName):
-#        # should use acl mechanism to make sure users are authenticated to read
-#        # the tables and the records. this is a simple, naive implementation
-#        disallowed = ['user', 'users', 'registrant', 'registrants']
-#        if tableName.lower() in disallowed or tableName.lower().startswith('acl'):
-#            #print "Not allowed to access tableName %r" % tableName
-#            continue
-#        table = director.clerk._getTable(tableName) 
-#        return table
+
     
 
     def _jsonEncoder(self, records):
@@ -130,7 +101,9 @@ class Actor(baseActor):
                 data.append(r)
             elif 'cif' in self.format:
                 # convert record to structure 
-                from diffpy.Structure import Structure, Lattice, Atom
+                from matter.Structure import Structure
+                from matter.Lattice import Lattice
+                from matter.Atom import Atom
                 import numpy as n
                 fc = n.array(r['fractional_coordinates'])
                 fc = fc.reshape((-1,3)) 
@@ -214,8 +187,8 @@ the metadata in the database'''
 
     def __init__(self, name=None):
         if name is None:
-            name = "directdb"
-        super(DirectDB, self).__init__(name)
+            name = "cgiquery"
+        super(Actor, self).__init__(name)
 
         # encoders
         self._encoders = {
@@ -227,8 +200,28 @@ the metadata in the database'''
         
         return
 
+#    def put(self, director, jsonFormattedInfo):
+#        # these next lines are a hack just to make sure the user is authenticated
+#        try:
+#            page = director.retrieveSecurePage( 'greet' )
+#        except AuthenticationError, error:
+#            return error.page
+#        
+#        # assume the is a handler directive
+#        
+#        # if there's a file string, assume it is in json format
+#        records = self._getRecords(director, self.tables, self.where)
+#        return self.encoder(records)
 
-    pass # end of DirectDB
+#    def _retrieveTable(self, director, tableName):
+#        # should use acl mechanism to make sure users are authenticated to read
+#        # the tables and the records. this is a simple, naive implementation
+#        disallowed = ['user', 'users', 'registrant', 'registrants']
+#        if tableName.lower() in disallowed or tableName.lower().startswith('acl'):
+#            #print "Not allowed to access tableName %r" % tableName
+#            continue
+#        table = director.clerk._getTable(tableName) 
+#        return table
 
 #import urllib
 # 
@@ -263,6 +256,5 @@ def flatten(xList,whereto=1):
         whereto=whereto-1
     return temp1
 
-def cgiQuery():
-    return Actor()
+def actor(): return Actor()
     
