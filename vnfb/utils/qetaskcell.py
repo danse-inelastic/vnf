@@ -131,8 +131,11 @@ class QETaskCell:
         if jobs:
             self._job  = jobs[0]    # FIXME
             link = lc.link(label=self._job.id,
-                           onclick = load(actor     ='jobs/jobs-view',
-                                          id        = self._job.id)
+                           onclick = load(actor     = 'jobs/jobs-view',
+                                          id        = self._simid,
+                                          taskid    = self._task.id,
+                                          jobid     = self._job.id,
+                                          type      = self._type)
                             )
 
         table.addRow(("Job:", link))
