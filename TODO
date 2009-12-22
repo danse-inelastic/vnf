@@ -10,31 +10,4 @@ Also make a test script for testing if a computing cluster is live
 THis script probably is best written with facilities in pathos.
 
 
-*** Quantum Espresso ***
-Problem: How to define similarity for simulation tasks? Settings? Matter?
-Solution:
-
-- Move some of the qe stuff from vnfb/vnfb/utils -> vnfb/content/components/visuals
- because they look like visuals :)
-- Do not display action buttons "Run Task" or "Cancel" unless previous simulation
-    is running or completed
-- Change action buttom depending on the status of the job:
-    "Run Task" -> "Cancel" -> "Run Task"
-- Change status of jobs depending on scheduling steps
-
-
-*********** TODO Steps **************
-1. [DONE] Run simulation with vnf created bash script (no qeapp.py)
-2. [DONE] Get results with "Check" link
-3. Make "Status" string and action buttons ("Run Task", "Cancel") work properly
-4. Hook up QECalc (use qeapp.py)
-5. Display simulation results (make "Analyze" working)
-
-
-*** Alpha Release of QE simulations ***
-- Disable option to run several jobs for one task or use existing task in simulation
-    Reason: involves complexity in dealing with computation nodes on cluster and
-settings handling.
-- Disable option to change simulation type 
-    Reason: involves complexity in dealing with dereferencing simulation tasks
 
