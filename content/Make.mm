@@ -17,6 +17,7 @@ RECURSE_DIRS = \
 
 EXPORT_DATADIRS = \
 	components \
+	
 
 EXPORT_DATAFILES = \
 
