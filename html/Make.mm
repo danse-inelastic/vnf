@@ -20,6 +20,7 @@ RECURSE_DIRS = \
 EXPORT_DATADIRS = \
 	images \
 	java \
+	tmp \
 
 EXPORT_SYMLINKS = \
 	cgi-bin \
