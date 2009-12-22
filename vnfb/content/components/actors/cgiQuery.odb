@@ -1,11 +1,11 @@
-from vnf.components.Actor import Actor
-from vnf.applications.WebApplication import AuthenticationError
+from luban.components.Actor import Actor as baseActor
+#from vnf.applications.WebApplication import AuthenticationError
 
 
-class DirectDB(Actor):
+class Actor(baseActor):
     ''' this whole thing needs to be refactored so id and creator are all put as "where" items (i.e. where=creator='''
 
-    class Inventory(Actor.Inventory):
+    class Inventory(baseActor.Inventory):
 
         import pyre.inventory
 
@@ -263,6 +263,6 @@ def flatten(xList,whereto=1):
         whereto=whereto-1
     return temp1
 
-def actor():
-    return DirectDB()
+def cgiQuery():
+    return Actor()
     
