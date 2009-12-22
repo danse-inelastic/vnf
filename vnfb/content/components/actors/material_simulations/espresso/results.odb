@@ -106,36 +106,18 @@ class Actor(base):
         table       = QEGrid(lc.grid(Class = "qe-table"))
         section.add(table.grid())
 
-        tEnergy     = self.getTotalEnergy(filename)
-        fEnergy     = self.getFermiEnergy(filename)
+        from qecalc.qetask.pwtask import PWTask
+        
+        config  = "[pw.x]\npwOutput: %s" % filename
 
-        table.addRow(('Total Energy:', "%s %s" % tEnergy))
-        table.addRow(('Fermi Energy:', "%s %s" % fEnergy))
+        pw = PWTask(configString=config)
+        pw.output.parse()
+        tEnergy     = pw.output.property('total energy', withUnits=True)
+        fEnergy     = pw.output.property('fermi energy', withUnits=True)
+
+        table.addRow(('Total Energy:', "%s %s" % (tEnergy[0][0], tEnergy[1])))
+        table.addRow(('Fermi Energy:', "%s %s" % (fEnergy[0][0], fEnergy[1])))
         table.setColumnStyle(0, "qe-cell-param")
-
-
-    def getTotalEnergy(self, filename):
-        """
-        Borrowed from QECalc
-        Extract total energy value from pwscf output
-        """
-        #read Espresso output into memory:
-        file = open(filename)
-        pwscfOut = file.readlines()
-        posList =  [i for i,line in enumerate(pwscfOut) if '!    total energy' in line]
-        return (float(pwscfOut[posList[-1]].split()[4]), 'Ry')
-
-
-    def getFermiEnergy(self, filename):
-        """
-        Borrowed from QECalc
-        Extract Fermi energy value from pwscf output
-        """
-        #read Espresso output into memory:
-        file = open(filename)
-        pwscfOut = file.readlines()
-        posList =  [i for i,line in enumerate(pwscfOut) if 'the Fermi energy is' in line]
-        return (float(pwscfOut[posList[-1]].split()[4]), 'eV')
 
 
     def _showPlot(self, director, section):
