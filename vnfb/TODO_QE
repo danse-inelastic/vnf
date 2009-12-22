@@ -1,0 +1,42 @@
+TODO List for Quantum Espresso
+==============================
+
+Problem: How to define similarity for simulation tasks? Settings? Matter?
+Solution:
+
+- Move some of the qe stuff from vnfb/vnfb/utils -> vnfb/content/components/visuals
+ because they look like visuals :)
+- Do not display action buttons "Run Task" or "Cancel" unless previous simulation
+    is running or completed
+- Change action buttom depending on the status of the job:
+    "Run Task" -> "Cancel" -> "Run Task"
+
+NOW
+===
+
+- [PART] Display simulation results and plot with "Analyze" button
+- Handle multiple jobs for the task
+- Fix retrieving results again (fix getmtime.py)
+- Fix database jobs status depending on the actual jobs status
+- Fix the formatting of config view and create
+- Display jobs
+
+Minor:
+- Update only simulation task field (revise visuals)
+
+
+TODO Steps
+==========
+
+1. [DONE] Run simulation with vnf created bash script (no qeapp.py)
+2. [DONE] Get results with "Check" link
+3. Make "Status" string and action buttons ("Run Task", "Cancel", "Run Task Again") work properly
+4. Hook up QECalc (use qeapp.py?)
+
+
+*** Alpha Release of QE simulations ***
+- Disable option to use existing task in simulation
+    Reason: involves complexity in dealing with computation nodes on cluster and
+settings handling.
+- Disable option to change simulation type (?)
+    Reason: involves complexity in dealing with dereferencing simulation tasks
