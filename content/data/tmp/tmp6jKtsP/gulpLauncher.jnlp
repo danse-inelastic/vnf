@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jnlp spec="1.0+"
+      codebase="http://localhost:8600/java">
+    <information>
+        <title>Danse Application</title>
+        <vendor>DANSE</vendor>
+        <homepage href="http://danse.us" />
+        <description>A Java web start application</description>
+    </information>
+    <offline-allowed/>
+    <security>
+        <all-permissions/>
+    </security>
+    <resources>
+        <j2se version="1.5+" java-vm-args="-Xmx512m -splash:splash.png"/>
+<jar href="GULP.jar" />
+<jar href="j2ssh.jar" />
+<jar href="commons-logging.jar" />
+<jar href="pg74.216.jdbc3.jar" />
+</resources>
+    <application-desc main-class="javagulp.controller.LaunchGulpUi" >
+<argument>simulationType=</argument>
+<argument>sentry.username=demo</argument>
+<argument>matterId=48QWPK9</argument>
+<argument>cgihome=/cgi-bin/main.py</argument>
+<argument>simulationId=9N8NLE</argument>
+<argument>sentry.ticket=demo22ffc9e8c78e12f9afdaceb40aa7a0e2</argument>
+</application-desc>
+</jnlp>
