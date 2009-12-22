@@ -14,28 +14,26 @@
 
     <component name="main">
         <property name="typos">relaxed</property>
-        <property name="cgi-home">http://localhost:8600/cgi-bin/main.py</property>
         <property name="help-persistence">False</property>
         <property name="dumpconfiguration">False</property>
-        <property name="stream"><open file '<stdout>', mode 'w' at 0xb7ed9068></property>
+        <property name="stream"><open file '<stdout>', mode 'w' at 0xb7810070></property>
         <property name="log-dir">../log</property>
-        <facility name="idd-session">idd-session</facility>
         <facility name="clerk">clerk</facility>
         <facility name="sentry">sentry</facility>
-        <property name="help-properties">False</property>
-        <property name="actor">vnfb</property>
+        <property name="dumpconfiguration-output"></property>
+        <property name="actor">gulpsimulation</property>
         <property name="content">html</property>
         <property name="extension">luban-uiapp-extension</property>
-        <property name="dumpconfiguration-output"></property>
+        <property name="help-properties">False</property>
         <facility name="activity-logger">activity-logger</facility>
         <property name="help-components">False</property>
-        <property name="routine">None</property>
+        <property name="routine">start</property>
         <property name="debug">True</property>
-        <property name="home">http://localhost:8600</property>
+        <facility name="guid">guid</facility>
         <facility name="painter">painter</facility>
         <property name="help">False</property>
 
-        <component name="vnfb">
+        <component name="activity-logger">
             <property name="help-properties">False</property>
             <property name="help-persistence">False</property>
             <property name="help">False</property>
@@ -43,11 +41,13 @@
         </component>
 
 
-        <component name="activity-logger">
-            <property name="help-properties">False</property>
+        <component name="gulpsimulation">
             <property name="help-persistence">False</property>
             <property name="help">False</property>
+            <property name="structure_id"></property>
+            <property name="help-properties">False</property>
             <property name="help-components">False</property>
+            <property name="id"></property>
         </component>
 
 
@@ -88,16 +88,17 @@
 
 
         <component name="clerk">
-            <property name="help-properties">False</property>
+            <property name="engine">sqlite</property>
             <property name="help-persistence">False</property>
-            <property name="db">postgres://linjiao:4OdACm#@localhost/vnfa2b</property>
             <property name="help">False</property>
+            <property name="db">postgres://linjiao:4OdACm#@localhost/vnfa2b</property>
+            <property name="help-properties">False</property>
             <property name="help-components">False</property>
         </component>
 
 
         <component name="sentry">
-            <property name="username"></property>
+            <property name="username">demo</property>
             <property name="help-persistence">False</property>
             <property name="help">False</property>
             <property name="passwd"></property>
@@ -105,45 +106,25 @@
             <property name="attempts">0</property>
             <property name="session">ipa-session</property>
             <property name="help-components">False</property>
-            <property name="ticket"></property>
+            <property name="ticket">demo22ffc9e8c78e12f9afdaceb40aa7a0e2</property>
 
             <component name="ipa-session">
                 <property name="help-persistence">False</property>
                 <property name="help">False</property>
                 <property name="help-properties">False</property>
                 <property name="marshaller">ipa-pickler</property>
-                <property name="host">localhost</property>
+                <property name="host">127.0.1.1</property>
                 <property name="help-components">False</property>
-                <property name="port">50000</property>
+                <property name="port">50001</property>
 
                 <component name="ipa-pickler">
                     <property name="help-properties">False</property>
                     <property name="help-persistence">False</property>
                     <property name="help">False</property>
-                    <property name="key">htoeuz8vp950a7xl</property>
+                    <property name="key">cdwoxq4801k9sp6e</property>
                     <property name="help-components">False</property>
                 </component>
 
-            </component>
-
-        </component>
-
-
-        <component name="idd-session">
-            <property name="help-persistence">False</property>
-            <property name="help">False</property>
-            <property name="help-properties">False</property>
-            <property name="marshaller">idd-pickler</property>
-            <property name="host">127.0.1.1</property>
-            <property name="help-components">False</property>
-            <property name="port">50002</property>
-
-            <component name="idd-pickler">
-                <property name="help-properties">False</property>
-                <property name="help-persistence">False</property>
-                <property name="help">False</property>
-                <property name="key">uiesn91pvc4hmwrx</property>
-                <property name="help-components">False</property>
             </component>
 
         </component>
@@ -189,11 +170,40 @@
         </component>
 
 
+        <component name="guid">
+            <property name="help-persistence">False</property>
+            <property name="help">False</property>
+            <property name="help-properties">False</property>
+            <property name="recordLocator">locator</property>
+            <property name="help-components">False</property>
+            <property name="datastore-path">../config/guid.dat</property>
+
+            <component name="locator">
+                <property name="alphabet">23456789ABCDEFGHIJKLMNPQRSTUVWXYZ</property>
+                <property name="help-properties">False</property>
+                <property name="help-persistence">False</property>
+                <property name="help">False</property>
+                <property name="help-components">False</property>
+            </component>
+
+        </component>
+
+
         <component name="painter">
+            <property name="help-components">False</property>
             <property name="help-properties">False</property>
             <property name="help-persistence">False</property>
             <property name="help">False</property>
-            <property name="help-components">False</property>
+            <property name="object_painter">object-painter</property>
+
+            <component name="object-painter">
+                <property name="help-properties">False</property>
+                <property name="actor_formatter">orm/%s</property>
+                <property name="help-persistence">False</property>
+                <property name="help">False</property>
+                <property name="help-components">False</property>
+            </component>
+
         </component>
 
     </component>
@@ -203,6 +213,6 @@
 <!-- version-->
 <!-- $Id$-->
 
-<!-- Generated automatically by Renderer on Tue Oct 13 10:33:32 2009-->
+<!-- Generated automatically by Renderer on Tue Dec 22 05:22:41 2009-->
 
 <!-- End of file -->
