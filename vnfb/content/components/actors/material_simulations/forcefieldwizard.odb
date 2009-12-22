@@ -114,11 +114,16 @@ class Actor(base):
     def startform(self, director):
         id = self.inventory.id
         from memd.gulp.GulpSettings import GulpSettings
-        if id:            
-            gulpSettings = director.clerk.orm.load(GulpSettings, id)
-        else:
-            gulpSettings = GulpSettings()
-        
+#        if id:            
+#            gulpSettings = director.clerk.orm.load(GulpSettings, id)
+#        else:
+#            gulpSettings = GulpSettings()
+##            from dsaw.model.visitors.OrmManager import OrmManager
+##            orm = OrmManager(director.clerk.db, director.getGUID())
+#            director.clerk.orm.save(gulpSettings)
+#            id = self.inventory.id = gulpSettings.id
+#            self.inventory.runtype = gulpSettings.runtype
+
         from luban.content.Splitter import Splitter
         from luban.content.Form import Form
         from luban.content.FormTextField import FormTextField
@@ -129,8 +134,8 @@ class Actor(base):
             title='')
 
         args = {
-            'simulationId': id,
-            'simulationType': self.inventory.runtype,
+            'simulationId': director.getGUID(),
+            'simulationType': '',
             'matterId': self.inventory.structure_id,
             #'coordinateType':simulation.matter.
             }

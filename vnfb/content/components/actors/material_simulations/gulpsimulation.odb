@@ -40,8 +40,8 @@ class Actor(base):
         return director.redirect(
             actor='material_simulations/forcefieldwizard',
             routine='start',
-            structure_id=self.inventory.structure_id,
-            id = '',
+            structure_id=self.inventory.structure_id, #TODO: replace this with a redirect to pick material first
+            id = '',#director.getGUID(),
             )
 
 
