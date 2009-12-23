@@ -27,7 +27,8 @@ StructureTable.addColumn(dsaw.db.date(name='date'))
 
 # view
 def customizeLubanObjectDrawer(self, drawer):
-    drawer.sequence = ['lattice', 'atoms', 'properties']
+    drawer.sequence = ['lattice', 'atoms', 'properties',]
+    drawer.readonly_view_sequence =  ['lattice', 'atoms', 'primitive_unitcell', 'properties',]
     drawer.mold.sequence = ['short_description', 'spacegroupno']
 Structure.customizeLubanObjectDrawer = customizeLubanObjectDrawer
 
