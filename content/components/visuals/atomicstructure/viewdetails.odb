@@ -1,0 +1,80 @@
+# -*- Python -*-
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                 Jiao Lin
+#                      California Institute of Technology
+#                      (C) 2006-2009  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+import numpy
+
+import luban.content as lc
+from luban.content import select, load, alert
+
+
+class Factory(object):
+
+    def __init__(self, director, id):
+        self.director = director
+        self.id = id
+        self.domaccess = director.retrieveDOMAccessor('atomicstructure')
+        self.atomicstructure = self.domaccess.getAtomicStructure(id)
+        self.record = self.domaccess.orm(self.atomicstructure)
+        self.actor = 'atomicstructure'
+
+
+    def create(self):
+        view = lc.document(id='atomicstructure-details-view')
+
+        titlebar = lc.splitter(Class='atomicstructure-details-view-title-bar')
+        view.add(titlebar)
+
+        # view indicator
+        view_indicator = self.createViewIndicator()
+        titlebar.section().add(view_indicator)
+
+        #
+        obj = self.atomicstructure
+        director = self.director
+        drawer = director.painter.paintObj.drawers.getDrawer(obj.__class__)
+
+        editable = self.domaccess.isEditable(self.id)
+        doc = drawer(obj, readonly=True, editlink=editable)
+        view.add(doc)
+        
+        return view
+
+
+    def createViewIndicator(self):
+        path = []
+
+        actor = self.actor
+        path.append(('Atomic Structures', lc.load(actor=actor)))
+
+        label = self.getAtomicStructureLabel()
+        action = lc.load(actor=actor, routine='showOverview', id = self.id,)
+        path.append((label,action))
+
+        path.append('details')
+        
+        return self.director.retrieveVisual('view-indicator', path=path)
+
+
+    def getAtomicStructureLabel(self):
+        return self.domaccess.getAtomicStructureLabel(self.id)
+
+
+
+def visual(director, id):
+    return Factory(director, id).create()
+    
+# version
+__id__ = "$Id$"
+
+# End of file 

@@ -61,7 +61,19 @@ class Actor(base):
         return orm.db.getUniqueIdentifierStr(orm(bond))
 
 
-
+    # need to update 'uses_primitive_unitcell' of all bonds after update
+    def _postStoringUserInputs(self, director):
+        model = self._load(director)
+        orm = director.clerk.orm
+        
+        bonds = model.bonds
+        for bond in bonds:
+            bond.uses_primitive_unitcell = model.uses_primitive_unitcell
+            orm.save(bond)
+            continue
+        
+        return super(Actor, self)._postStoringUserInputs(director)
+            
 
 def actor():
     return Actor('orm/bvkmodels')
