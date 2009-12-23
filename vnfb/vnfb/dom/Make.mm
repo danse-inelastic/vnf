@@ -43,6 +43,7 @@ EXPORT_PYTHON_MODULES = \
 	Job.py \
 	Lattice.py \
 	OwnedObject.py \
+	UnitCell.py \
 	__init__.py \
 	_.py \
 	computation_types.py \

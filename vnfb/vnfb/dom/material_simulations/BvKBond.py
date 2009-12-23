@@ -78,7 +78,7 @@ def customizeLubanObjectDrawer(self, drawer):
             select(element=form).submit(actor='orm/bvkbonds', routine='getConstraints',
                                         id = self.orm(obj).id)
             )
-        for fname in ['A', 'B', 'Boffset_0', 'Boffset_1', 'Boffset_2']:
+        for fname in ['A', 'B', 'Boffset_0', 'Boffset_1', 'Boffset_2', 'Boffset_is_fractional']:
             field = form.getDescendentByName(fname)
             field.onchange = updateconstraints
         # when constraints document load, update constraints too
@@ -88,7 +88,10 @@ def customizeLubanObjectDrawer(self, drawer):
         
     drawer.mold._form = _form
     drawer.mold._createfields = _createfields
-    drawer.mold.sequence = ['A', 'B', 'Boffset', 'force_constant_matrix']
+    
+    # uses_primitive_unitcell should be hidden because it should always be synced with
+    # model.uses_primitive_unitcell
+    drawer.mold.sequence = ['A', 'B', 'Boffset', 'Boffset_is_fractional', 'force_constant_matrix']
     drawer.sequence = ['properties']
     return
     
