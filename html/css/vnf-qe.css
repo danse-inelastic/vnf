@@ -198,9 +198,11 @@ a.qe-run-task {
     padding-top: 5px;
 }
 
+
 /* Change? */
 #qe-check-results,
-#qe-analyze-results {
+#qe-analyze-results,
+.qe-task-action {
     margin-left: 10px;
     padding: 1px 10px;
     -moz-border-radius: 5px;
@@ -208,8 +210,13 @@ a.qe-run-task {
     text-decoration: none;
 }
 
-#qe-check-results {
+#qe-check-results,
+.qe-task-action {
     background-color: #abff8d; /* light green #8aff61*/
+}
+
+a.qe-task-action {
+    text-decoration: none;
 }
 
 #qe-analyze-results {

@@ -57,6 +57,7 @@ class QETaskCell:
             self._results(table)
 
             table.setColumnStyle(0, "qe-tasks-param")
+
             table.setCellStyle(3, 1, "text-green")
 
             #table.addRow(("Jobs:", self._jobs()))  # Keep
@@ -100,17 +101,21 @@ class QETaskCell:
                                            type     = self._type)
                             )
 
-        table.addRow(("Task:", link))
+        table.addRow(("Task:", link, ""))
 
 
     def _input(self, table):
         # Suppose that self._task is not None
         qeinput = QEInput(self._director, self._simid, self._task.id, self._type)
-        table.addRow(("Input:", qeinput.getLink()))
+        table.addRow(("Input:", qeinput.getLink(), ""))
 
 
     def _output(self, table):
-        table.addRow(("Output:", "None"))
+        action  = lc.link(label="Refresh",
+                          Class     = "qe-task-action",
+                          #onclick   = load()
+                         )
+        table.addRow(("Output:", "None", action))
 
 
     def _status(self, table):
@@ -121,50 +126,54 @@ class QETaskCell:
             job  = jobs[0]
             link = job.status
 
-        table.addRow(("Status:", link))
+        table.addRow(("Status:", link, ""))
 
 
     def _jobId(self, table):
         "Displays id of the current job"
         link        = "None"
+        action      = ""
         jobs        = self._director.clerk.getQEJobs(where="taskid='%s'" % self._task.id)
         if jobs:
             self._job  = jobs[0]    # FIXME
             link = lc.link(label=self._job.id,
-                           onclick = load(actor     = 'jobs/jobs-view',
-                                          id        = self._simid,
-                                          taskid    = self._task.id,
-                                          jobid     = self._job.id,
-                                          type      = self._type)
-                            )
+                               onclick = load(actor     = 'jobs/jobs-view',
+                                              id        = self._simid,
+                                              taskid    = self._task.id,
+                                              jobid     = self._job.id,
+                                              type      = self._type)
+                                )
+            action = lc.link(label    = "All",
+                              Class    = "qe-task-action",
+                               onclick = load(actor     = 'jobs/jobs-view-all',
+                                              id        = self._simid,
+                                              taskid    = self._task.id,
+                                              type      = self._type)
+                                )
 
-        table.addRow(("Job:", link))
+        table.addRow(("Job:", link, action))
 
         
     def _results(self, table):
-        "STUB: Returns link to tar file for download. "
-        celldoc     = lc.document(Class="display-inline")
+        "Returns link to tar file for download. "
         cid         = "%s-%s" % (RESULTS_ID, self._task.type) # self._task.id?
-        cell        = lc.document(id=cid)   # Container for tar link
-        celldoc.add(cell)
 
-        # Change actor
-        check    = lc.link(label="Check", id="qe-check-results",
-                       onclick=load(actor       = "jobs/getresults",
-                                    routine     = "retrieveStatus",
-                                    id          = self._simid,
-                                    taskid      = self._task.id)    # No jobid at this time
-                      )
-
+        link    = lc.paragraph(text="None", id=cid)
+        action  = ""
         results = QEResults(self._director, self._job)  # change 0-index to latest job
 
         if self._job:   # Job created (submitted)
-            cell.add(results.status())
-            celldoc.add(check)  # Check action does not show up unless a job is submitted
-        else:
-            cell.add(lc.paragraph(text="None"))
+            link    = results.status()
+            # Change actor
+            action   = lc.link(label = "Check",
+                               id = "qe-check-results",
+                               onclick=load(actor       = "jobs/getresults",
+                                            routine     = "retrieveStatus",
+                                            id          = self._simid,
+                                            taskid      = self._task.id)    # No jobid at this time
+                          )
 
-        table.addRow(("Results: ", celldoc))
+        table.addRow(("Results: ", link, action))
 
 
 
