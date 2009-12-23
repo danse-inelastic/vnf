@@ -28,14 +28,13 @@ class Actor(baseActor):
 
     def getMaterial(self, director):
         domaccess = director.retrieveDOMAccessor('atomicstructure')
-        structure = domaccess.getAtomicStructureRecord(self.inventory.id)
+        structure = domaccess.getAtomicStructure(self.inventory.id)
+        ans = {'cartesian_lattice':structure.lattice.base, 
+               "cartesian_coordinates":structure.xyz_cartn,
+               "fractional_coordinates":structure.xyz,
+               "atom_symbols":structure.symbols}
+        return self.encoder(ans)
 
-        if 'all' in self.columns:
-            records = self._getRecords(director, self.tables, self.where)
-            return self.encoder(records)
-        else:
-            results = self._getAttributes(director, self.tables, self.columns, self.where)
-            return self.attributeEncoder(results)
 
     def _getRecords(self, director, tables, where):
         results=[]
@@ -187,7 +186,7 @@ the metadata in the database'''
 
     def __init__(self, name=None):
         if name is None:
-            name = "cgiquery"
+            name = "dbObjToWeb"
         super(Actor, self).__init__(name)
 
         # encoders
