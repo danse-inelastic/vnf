@@ -8,7 +8,8 @@ class Actor(baseActor):
     class Inventory(baseActor.Inventory):
 
         import pyre.inventory
-        encoder = pyre.inventory.str('encoder', default = 'json')
+        encoder = pyre.inventory.str('encoder', default = 'dict2json')
+        attributeEncoder = pyre.inventory.str('attributeEncoder', default = 'json')
         format = pyre.inventory.str('format', default = 'dictionary')
         tables = pyre.inventory.str('tables')
         columns = pyre.inventory.str('columns', default = 'all')
@@ -83,7 +84,7 @@ class Actor(baseActor):
 
     
 
-    def _jsonEncoder(self, records):
+    def _jsonRecordEncoder(self, records):
         records = map(self._record2dict, records)
         import cjson
         # make sure all are encodable
@@ -99,7 +100,28 @@ class Actor(baseActor):
                     except:
                         r[k] = str(v)
                 data.append(r)
-            elif 'cif' in self.format:
+        return cjson.encode(data)
+    
+    def _jsonDictEncoder(self, dict):
+        import cjson
+        # make sure all are encodable
+        for k,v in dict.iteritems():
+            try:
+                cjson.encode(v)
+            except:
+                dict[k] = str(v)
+        return cjson.encode(dict)
+    
+    def _jsonCifEncoder(self, records):
+        records = map(self._record2dict, records)
+        import cjson
+        # make sure all are encodable
+        data=[]
+        for r in records:
+            #print r
+            #note this will return either an *array* of json objects (which are dictionaries)
+            # or an array of cifs...
+            if 'cif' in self.format:
                 # convert record to structure 
                 from matter.Structure import Structure
                 from matter.Lattice import Lattice
@@ -139,7 +161,6 @@ class Actor(baseActor):
                 raise Exception
         return cjson.encode(data)
 
-
     def _record2dict(self, record):
         d = {}
         for col in record.getColumnNames():
@@ -148,10 +169,9 @@ class Actor(baseActor):
             continue
         return d
     
-    
     def _configure(self):
         self.encoder = self._encoders[self.inventory.encoder]
-        self.attributeEncoder = self._attributeEncoders[self.inventory.encoder]
+        self.attributeEncoder = self._attributeEncoders[self.inventory.attributeEncoder]
         self.format = self.inventory.format
         
         # as a quick fix we simply hyphenate the tables if we want to query more than one
@@ -172,7 +192,6 @@ class Actor(baseActor):
     def getAssociatedData(self, director):
         '''this method is different from get because it gets associated data rather than
 the metadata in the database'''
-
         # get the results
         records = self._getRecords(director, self.tables, self.where)
         # for now, assume the first potential that matches is the "right" one
@@ -192,7 +211,9 @@ the metadata in the database'''
 
         # encoders
         self._encoders = {
-            'json': self._jsonEncoder,
+            'dict2json': self._jsonDictEncoder,
+            'records2json': self._jsonRecordEncoder,
+            'cifs2json': self._jsonCifEncoder,
             }
         self._attributeEncoders = {
             'json': self._jsonAttributeEncoder,
