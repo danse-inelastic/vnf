@@ -29,7 +29,8 @@ class Actor(baseActor):
     def getMaterial(self, director):
         domaccess = director.retrieveDOMAccessor('atomicstructure')
         structure = domaccess.getAtomicStructure(self.inventory.id)
-        ans = {'cartesian_lattice':structure.lattice.base, 
+        lattice = structure.lattice
+        ans = {'cartesian_lattice':lattice.base, 
                "cartesian_coordinates":structure.xyz_cartn,
                "fractional_coordinates":structure.xyz,
                "atom_symbols":structure.symbols}

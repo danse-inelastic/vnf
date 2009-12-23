@@ -11,6 +11,7 @@ Contents:
 .. toctree::
 
    overview
+   discussion
 
 Indices and tables
 ==================
