@@ -143,6 +143,15 @@ class Factory(object):
         cflink = lc.link(label=label, tip=tip)
         sp.section().add(cflink)
 
+        # "details' link
+        details = select(id='main-display-area').replaceContent(
+            load(actor=self.actor, routine='createDetailsview',
+                 id=self.id)
+            )
+        tip = 'click me to show details of this atomic structure'
+        detailslink = lc.link(label='details', onclick=details, tip=tip)
+        doc.add(detailslink)
+
         # edit link
         domaccess = self.domaccess
         if not domaccess.isReferred(self.id):
@@ -192,9 +201,7 @@ class Factory(object):
 
 
     def getAtomicStructureLabel(self):
-        atomicstructure = self.atomicstructure
-        record = self.record
-        return atomicstructure.description or record.id
+        return self.domaccess.getAtomicStructureLabel(self.id)
         
 
 

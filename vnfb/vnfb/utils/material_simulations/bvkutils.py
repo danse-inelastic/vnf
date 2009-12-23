@@ -15,19 +15,11 @@
 # depends on "bvk", "matter"
 
 # depends on "matter" package
-def findForceContantTensorConstraints(vector, lattice, sg):
-    """find the restrictions on force constant tensor (3X3) given
-    the vector of the bond (in relative lattice coordinates), and
-    the symmetry group.
-
-    sg is an instance of matter.SpaceGroups.SpaceGroup. required methods are 'iter_symops_leave_vector_unchanged', which should return symmetry operations that has an attribute 'R' being 3X3 rotation matrix represented in relative lattice coordinates.
-    lattice is an instance of matter.Lattice.Lattice. required attribute: 'stdbase', which is the matrix of base vectors in cartesian coordinates in standard orientation.
-    vector is a vector of 3 in relative lattice coords
+def findForceContantTensorConstraints(bond):
+    """find the constraints of force constant tensor given the bvk bond, which
+    is an instance of BvKBond
     """
-    
-    from bvk.find_force_constant_tensor_constraints \
-         import findForceContantTensorConstraints as find
-    restrictions = find(vector, lattice, sg)
+    restrictions = bond.getConstraints()
 
     # need to convert restrictions dictionary to descriptor like
     _ = SympyExpression2ConstraintExpression()
@@ -85,6 +77,11 @@ class SympyExpression2ConstraintExpression(object):
 
     def onZero(self, symbol):
         return 0
+
+
+    def onNegativeone(self, symbol):
+        return -1
+    
 
 # special var to represent sympy symbol
 class VarFromSympySymbol(constraints.Variable):

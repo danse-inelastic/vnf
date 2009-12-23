@@ -58,17 +58,15 @@ class Actor(base):
             bond = self._initBond(bond, director)
 
         # establish the restrictions for force constant matrix
-        structure = bond.matter
-
-        # convert Boffset to array
-        Boffset = self.inventory.Boffset
-        vector = structure[self.inventory.B].xyz \
-                 - structure[self.inventory.A].xyz \
-                 + Boffset
-        lattice = structure.lattice
-        sg = structure.sg
+        # 1. transfer info into bond object
+        bond.A = self.inventory.A
+        bond.B = self.inventory.B
+        bond.Boffset = self.inventory.Boffset
+        bond.Boffset_is_fractional = self.inventory.Boffset_is_fractional
+        # 2. find constraints
         from vnfb.utils.material_simulations.bvkutils import findForceContantTensorConstraints
-        constraints = findForceContantTensorConstraints(vector, lattice, sg)
+        constraints = findForceContantTensorConstraints(bond)
+        
         return constraints
     
 

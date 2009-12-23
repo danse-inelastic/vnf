@@ -201,6 +201,11 @@ class Actor(base):
         return select(id='main-display-area').replaceContent(doc)
     
         
+    def showDetailsview(self, director):
+        doc = self.createDetailsview(director)
+        return select(id='main-display-area').replaceContent(doc)
+    
+        
     def createOverview(self, director):
         id = self.inventory.id
         domaccess = self._domaccess(director)
@@ -213,6 +218,24 @@ class Actor(base):
             # structure good
             doc = director.retrieveVisual(
                 'atomicstructure/overview',
+                director  = director,
+                id        = self.inventory.id)
+            
+        return doc
+
+
+    def createDetailsview(self, director):
+        id = self.inventory.id
+        domaccess = self._domaccess(director)
+        
+        if not domaccess.isConstructued(id=id):
+            # structure not ready
+            doc = self.editAtomicStructureForm(director)
+            
+        else:
+            # structure good
+            doc = director.retrieveVisual(
+                'atomicstructure/viewdetails',
                 director  = director,
                 id        = self.inventory.id)
             
