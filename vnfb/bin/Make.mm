@@ -30,6 +30,7 @@ EXPORT_DATAFILES = \
 	getuserlist.py \
 	itaskapp.py \
 	destroydb.py \
+	destroydataobject.py \
 	createdefaultformulaformatters.py \
 	establishglobalpointers.py \
 	launch-detached.py \
