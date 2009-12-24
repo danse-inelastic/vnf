@@ -115,7 +115,7 @@ class DbApp(base):
 
 
     def __init__(self):
-        base.__init__(self, 'findreferences')
+        base.__init__(self, 'findreferrals')
         return
 
 
