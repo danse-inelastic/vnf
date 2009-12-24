@@ -46,7 +46,7 @@ class DbApp(base):
 
 
     def __init__(self):
-        base.__init__(self, 'createtable')
+        base.__init__(self, 'destroydataobject')
         return
 
 
