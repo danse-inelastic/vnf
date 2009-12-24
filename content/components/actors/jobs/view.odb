@@ -31,12 +31,12 @@ class Actor(base):
 
     class Inventory(base.Inventory):
         import pyre.inventory
-        id      = pyre.inventory.str('id', default='')      # Job Id
+        id = pyre.inventory.str('id', default='')      # Job Id
 
 
     def content(self, director):
-        job     = director.clerk.getJobs(id=self.id)
-        (simid, simname)    = self.simdata(director, job)
+        job = director.clerk.getJobs(id=self.id)
+        (simid, simname) = self.simdata(director, job)
 
         d = Document(title='Job#: %s' % job.id)
         d.add(Link(label="Delete", Class="action-link", onclick = load(actor='jobs/delete', routine='link', id=self.id)))
@@ -66,7 +66,7 @@ class Actor(base):
 
     def getPWPlot(self, director):
         from vinil.utils import utils
-        infile      = EXPORT_ROOT + "/output/ni.scf.dos.out"
+        infile = EXPORT_ROOT + "/output/ni.scf.dos.out"
 
         # Populate 'x', 'y' and 'z' (cumulative) lists from file
         (e,  up,  down,  cum) = utils.parseFile(infile)
