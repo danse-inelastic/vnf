@@ -27,7 +27,7 @@ EXPORT_DATAFILES = \
 	addbvkmodelstodb.py \
 	createtable.py \
 	initdb.py \
-	findreferences.py \
+	findreferrals.py \
 	getuserlist.py \
 	itaskapp.py \
 	destroydb.py \
