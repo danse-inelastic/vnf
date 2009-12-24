@@ -54,6 +54,7 @@ def buildjob(computation, db=None, dds=None, path=None, director=None):
         name,
         factory="job_builder", args=[name, path],
         vault=['job_builders'])
+    builder.director = director
     files = builder.build(computation, db=db, dds=dds)
     deps = builder.getDependencies()
     return files, deps

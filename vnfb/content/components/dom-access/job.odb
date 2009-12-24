@@ -39,6 +39,101 @@ class Accessor(base):
     orm = property(_getOrm)
 
 
+    def getJobRecord(self, id):
+        # make sure orm is initd
+        orm = self.orm
+        #
+        return self.getRecordByID(JobTable, id)
+
+
+    def countJobs(self, filter=None, label=None):
+        q = self.makeQuery(filter=filter, label=label)
+        return q.alias('tocount').count().execute().fetchone()[0]
+    
+
+    def getJobIDs(
+        self,
+        filter=None, order_by=None, reverse_order=None, slice=None,
+        label=None,
+        ):
+        
+        db = self.db
+        q = self.makeQuery(filter=filter, label=label)
+
+        if order_by:
+            q = q.order_by(order_by)
+        if slice:
+            if reverse_order:
+                n = self.countJobs(filter=filter, label=label)
+                slice = n-slice[1], n-slice[0]
+            q = sqlalchemy.select(
+                [q.alias('toslice')],
+                limit = slice[1]-slice[0],
+                offset = slice[0])
+
+        ret = q.execute().fetchall()
+        
+        if reverse_order:
+            ret.reverse()
+        return [i.id for i in ret]
+
+
+    def getJobRecords(
+        self,
+        filter=None, order_by=None, reverse_order=None, slice=None,
+        label=None,
+        ):
+        ids = self.getJobIDs(
+            filter=filter, order_by=order_by, reverse_order=reverse_order, slice=slice,
+            label=label,
+            )
+        return map(self.getJobRecord, ids)
+
+
+    def makeQuery(self, filter=None, label=None):
+        if label:
+            if filter: raise RuntimeError
+            return self.makeLabeledQuery(label)
+        db = self.db
+
+        st = db._tablemap.TableToSATable(JobTable)
+        q = sqlalchemy.select(
+            [st.c.id.label('id'),
+             st.c.short_description.label('short_description'),
+             st.c.state.label('state'),
+             st.c.time_start.label('time_start'),
+             ]
+            )
+        if filter:
+            q = sqlalchemy.select([q.alias('jobs')], whereclause=filter)
+        return q
+
+
+    def makeLabeledQuery(self, label):
+        db = self.db
+        sL = db._tablemap.TableToSATable(Label)
+        labelq = sqlalchemy.select(
+            [sL.c.entity.label('entity'),
+             sL.c.labelname.label('label'),
+             ],
+            whereclause="labelname='%s' and targettable='%s'" % (label, tablename))\
+            .alias('labelq')
+        
+        st = db._tablemap.TableToSATable(JobTable)
+        
+        q = sqlalchemy.select(
+            [st.c.id.label('id'),
+             st.c.short_description.label('short_description'),
+             st.c.state.label('state'),
+             st.c.time_start.label('time_start'),
+             labelq.c.entity.label('gptr'),
+             ],
+            st.c.globalpointer==labelq.c.entity,
+            )
+
+        return q
+
+
 
 from vnf.dom.Job import Job as JobTable
 
