@@ -32,7 +32,44 @@ class DOMAccessor( base ):
     def _getDB(self):
         return self.orm.db
     db = property(_getDB)
-    
+
+
+    def importAllDataObjects(self):
+        '''in some circumstances, it is useful to know of all the data objects
+        in the system. this is done by importing all modules in vnfb.dom
+        '''
+        def _imp(m): return __import__(m, {}, {}, [''])
+
+        #
+        dompkgname = 'vnfb.dom'
+        dompkg = _imp(dompkgname)
+        f = dompkg.__file__
+
+        #
+        import os
+        directory = os.path.dirname(f)
+
+        #
+        def _importallmodules(dir, pkg):
+            for entry in os.listdir(dir):
+                # private, skip
+                if entry.startswith('_'): continue
+                # directory, recurse into
+                # assumes that directories are all python subpackages
+                p = os.path.join(dir, entry)
+                if os.path.isdir(p):
+                    _importallmodules(p, pkg+'.'+entry)
+                    continue
+                # python module
+                if not entry.endswith('.py'): continue
+                m = pkg + '.' + entry[:-3]
+                _imp(m)
+                continue
+            return
+
+        _importallmodules(directory, dompkgname)
+        return
+
 
     def __init__(self, name, facility = 'dom-accessor'):
         super(DOMAccessor, self).__init__(name, facility)
