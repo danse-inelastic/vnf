@@ -37,18 +37,20 @@ class BvKComputation(object):
 
 class BvK_GetDos(BvKComputation):
 
-    dE = 0.5
+    df = 0.5
     N1 = 10
 
     class Inventory(BvKComputation.Inventory):
 
-        dE = InvBase.d.float(name='dE', default = 0.5) # unit meV
-        N1 = InvBase.d.int(name='N1', default = 10) # number of sampling points (in 1 dimension)
+        df = InvBase.d.float(name='df', default = 0.5) # unit THz
+        df.tip = 'Frequency axis bin size. unit: THz'
+        N1 = InvBase.d.int(name='N1', default = 10)
+        N1.tip = 'number of sampling points in Q space(in 1 dimension)'
 
     
     def customizeLubanObjectDrawer(self, drawer):
         drawer.sequence = ['properties']
-        drawer.mold.sequence = ['N1', 'dE']
+        drawer.mold.sequence = ['N1', 'df']
 
 
 

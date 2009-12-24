@@ -19,7 +19,8 @@
       <property name='materialsimulation'>off</property>
       <property name='experiment-accessor'>off</property>
       <property name='experiment-table'>off</property>
-      <property name='atomicstructure-table'>on</property>
+      <property name='atomicstructure-table'>off</property>
+      <property name='job-table'>on</property>
       <property name='atomicstructure-accessor'>off</property>
       <property name='create-structure-form'>on</property>
     </component>
