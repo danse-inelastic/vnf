@@ -112,18 +112,6 @@ class Actor(base):
 
 
     def startform(self, director):
-        id = self.inventory.id
-        from memd.gulp.GulpSettings import GulpSettings
-#        if id:            
-#            gulpSettings = director.clerk.orm.load(GulpSettings, id)
-#        else:
-#            gulpSettings = GulpSettings()
-##            from dsaw.model.visitors.OrmManager import OrmManager
-##            orm = OrmManager(director.clerk.db, director.getGUID())
-#            director.clerk.orm.save(gulpSettings)
-#            id = self.inventory.id = gulpSettings.id
-#            self.inventory.runtype = gulpSettings.runtype
-
         from luban.content.Splitter import Splitter
         from luban.content.Form import Form
         from luban.content.FormTextField import FormTextField
@@ -134,8 +122,8 @@ class Actor(base):
             title='')
 
         args = {
-            'simulationId': director.getGUID(),
-            'simulationType': '',
+            #'simulationId': director.getGUID(),
+            #'simulationType': '',
             'matterId': self.inventory.structure_id,
             #'coordinateType':simulation.matter.
             }
@@ -175,55 +163,21 @@ class Actor(base):
         from luban.content import select
         form.onsubmit = select(element=form).submit(
             actor = 'material_simulations/forcefieldwizard',
-            routine = 'processStartForm',
+            routine = 'configureSubmissionQueue',
             id = self.inventory.id,
-            structure_id = self.inventory.structure_id,
             )
         return form
 
 
-    def processStartForm(self, director):
-
-        gulpSimulation = self._getSimulation(director)
-        
-        # make sure gulp simulation is configured
-        if isConfigured(gulpSimulation, director):
-            return self.readyForSubmission(director)
-        return self.configureSimulation(director)
-
-#        # should verify inputs here....
-#        errors = {}
-#        short_description = self.inventory.short_description
-#        if not short_description:
-#            errors['short_description'] = 'Description cannot be empty'
-#        
-#        if errors:
-#            return self.startFormShowError(director, errors=errors)
-#        
-#        # store data
-#        id = self.inventory.id
-#        if id:
-#            record = self._getSimulation(director)
-#        else:
-#            record = director.clerk.insertNewOwnedRecord(GulpSimulation)
-#            matter = self._getMatter(director)
-#            record.matter = matter
-#        
-#        props = [
-#            'short_description',
-#            'engine',
-#            'xcFunctional',
-#            'kineticEnergyCutoff',
-#            ]
-#        for prop in props:
-#            value = getattr(self.inventory, prop)
-#            setattr(record, prop, value)
-#            continue
-#
-#        record.monkhorstPackMesh = [self.inventory.nKx, self.inventory.nKy, self.inventory.nKz]
-#        director.clerk.updateRecordWithID(record)
-#
-#        return self.advancedConfiguration(director)
+    def storeInputFile(self, director):
+        # this method is called by the java web start gui (AtomSim)
+        #id = self.inventory.id #this was passed by AtomSim
+        from memd.gulp.GulpSettings import GulpSettings
+        gulpSettings = GulpSettings()
+        self.inventory.runtype = gulpSettings.runtype
+        self.inventory.inputFileContents = gulpSettings.inputFileContents
+        self.inventory.potential_name = gulpSettings.potential_name
+        director.clerk.orm.save(gulpSettings)
 
 
     def startFormShowError(self, director, errors=None):
@@ -233,34 +187,18 @@ class Actor(base):
             for name, text in errors.iteritems()
             ]
 
-
-#    def advancedConfiguration(self, director):
-#        document = Document(title='Ab initio electronic structure simulation: advanced configuration' )
+#    def _getMatter(self, director):
+#        return director.clerk.getRecordByID(
+#            self.inventory.matter_type, self.inventory.matter_id)
 #
-#        simulation = self._getSimulation(director)
-#        engine = simulation.engine
-#        actor = 'material_simulations/%s-advanced' % engine.lower()
-#        routine = 'start'
-#        
-#        return director.redirect(
-#            actor=actor, routine=routine,
-#            id=simulation.id)
-
-
-    def _getMatter(self, director):
-        return director.clerk.getRecordByID(
-            self.inventory.matter_type, self.inventory.matter_id)
-
+#    
+#    def _getSimulation(self, director):
+#
+#        return director.clerk.getRecordByID(GulpSimulation, self.inventory.id)
     
-    def _getSimulation(self, director):
-
-        return director.clerk.getRecordByID(GulpSimulation, self.inventory.id)
-    
-
     def __init__(self, name='forcefieldwizard'):
         super(Actor, self).__init__(name)
         return
-    
     
 #class GulpSimulationWizard(MaterialSimulationWizard):
 
@@ -278,12 +216,10 @@ class Actor(base):
 #            return self.readyForSubmission(director)
 #        return self.configureSimulation(director)
 
-
+    def configureSubmissionQueue(self, director):
+        
+    
     def readyForSubmission(self, director):
-        try:
-            page = self._retrievePage(director)
-        except AuthenticationError, err:
-            return err.page
 
         id = self.inventory.id
         type = self.inventory.type

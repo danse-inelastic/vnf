@@ -53,47 +53,35 @@ class Actor(base):
     def default(self, director):
         return select(id='main-display-area').replaceContent(self.content(director))
 
-
     def content(self, director):
         # What if record is not present?
-        sim         = director.clerk.getQESimulations(id=self.id)
-
+        sim = director.clerk.getQESimulations(id=self.id)
         def viewIndicator(director):
             path = []
             path.append(('Simulations ', load(actor='materialsimulation')))
              # Stub, should filter by simulation type
             path.append(('Quantum Espresso ', load(actor='materialsimulation')))
-            path.append(('%s ' % self.id, load(actor    = 'material_simulations/espresso/sim-view',
-                                               id       = self.id))
-                        )
+            path.append(('%s ' % self.id, load(actor= 'material_simulations/espresso/sim-view',
+                    id= self.id)))
             path.append('Edit')
-
             return director.retrieveVisual('view-indicator', path=path)
-
         doc         = lc.document(title   = 'Edit Simulation: %s' % sim.sname)
         splitter    = doc.splitter(orientation="vertical")
         sA          = splitter.section()
         sA.add(viewIndicator(director))
         sB          = splitter.section()
-
         types       = []
         types.append(sim.type)
-
         sB.add(self._setForm(director, sim))
-
         return doc
     
-
     def _setForm(self, director, sim):
-
         # Set servers first
         servers     = ServerList(director)
         serversList = servers.list()
-
         form        = Form()
         table       = QEGrid(lc.grid(Class="qe-form"))
         form.add(table.grid())
-
         sname       = FormTextField(name = "sname", value = sim.sname)
         simtype     = FormSelectorField(name="simtype",
                                         entries=enumerate(SIMULATIONS),
@@ -105,14 +93,11 @@ class Actor(base):
                                         selection=servers.selected(sim.serverid))
         matter      = FormSelectorField(name="matter",
                                         entries=enumerate(["Not Available",]))  # ?
-
         submit      = FormSubmitButton(label="Save Changes")
         cancel      = lc.button(label="Cancel")
         cancel.onclick = load(actor = 'material_simulations/espresso/sim-view', id=self.id)
-
         st          = QEGrid(lc.grid()) # Submit Table
         st.addRow((submit, cancel), ("qe-action-accept", "qe-action-cancel"))
-
         table.addRow(("Name:", sname))
         table.addRow(("Type:", simtype))
         table.addRow(("Description:", description))
@@ -120,34 +105,25 @@ class Actor(base):
         table.addRow(("Server:", server))
         table.addRow(("Atomic Structure:", matter))
         table.addRow(("", st.grid()))
-
         table.setColumnStyle(0, "qe-form-label")
         table.setColumnStyle(1, "qe-form-field")
-
-        form.onsubmit   = select(element=form).submit(actor     = 'material_simulations/espresso/sim-edit',
+        form.onsubmit = select(element=form).submit(actor     = 'material_simulations/espresso/sim-edit',
                                                       routine   = 'updateRecord',
                                                       id        = sim.id)
-
         return form
-
 
     def simtypeValue(self, simtype):
         for i in range(len(SIMULATIONS)):
             if SIMULATIONS[i] == simtype:
                 return i
-
         return 0
-
 
     def updateRecord(self, director):
         """Updates record in the database """
-
         self._verify()
         simtype     = SIMULATIONS[int(self.simtype)]
         servers     = ServerList(director)
-
         sim             = director.clerk.getQESimulations(id=self.id)   # ?
-
         if sim:
             params  = {"sname":         self.sname,
                        "type":          simtype, # Type cannot be updated
@@ -156,10 +132,8 @@ class Actor(base):
                        "serverid":      servers.id(self.server)
                        #"matter":        self.matter    # Doesn't work at this moment
                        }
-
             sim.setDirector(director)
             sim.updateRecord(params)
-
         return load(actor='material_simulations/espresso/sim-view', id=self.id)  # Redirection to the page
 
     # stub
