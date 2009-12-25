@@ -27,6 +27,18 @@ def usersFromDB():
 
 
 
+# communications
+def announcer():
+    from Announcer import Announcer
+    return Announcer()
+
+
+def postman():
+    from Postman import Postman
+    return Postman()
+
+
+
 # version
 __id__ = "$Id$"
 

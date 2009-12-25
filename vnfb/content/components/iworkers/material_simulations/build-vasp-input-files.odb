@@ -23,6 +23,8 @@ class Worker(Component):
 
     def run(self, task):
         director = self.director
+        self.domdomaccess = domaccess = director.retrieveDOMAccessor('atomicstructure')
+        
         db = director.clerk.db
 
         director.declareProgress(0.1, 'Get vasp computation user inputs ...')
@@ -93,9 +95,19 @@ class Worker(Component):
         return
 
 
-    def _makeXYZfile(self, crystal):
-        from vnfb.components.matter_utils import crystal2xyz
-        contents = crystal2xyz(crystal)
+    def _makeXYZfile(self, structurerecord):
+        # get structure
+        domaccess = self.domaccess
+        structure = domaccess.getAtomicStructure(id=structurerecord.id)
+
+        # get "parser"
+        from matter.Parsers import getParsers
+        xyz = getParsers('xyz')
+
+        # content strings
+        contents = xyz.tostring(structure).splitlines()
+
+        #
         filename = 'matter.xyz'
         return filename, contents
 

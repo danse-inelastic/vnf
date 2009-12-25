@@ -10,17 +10,17 @@
 #
 
 
-from vnf.components.Scheduler import schedule, check
+from scheduler import schedule, check
 
 
 
 def cancel(job, director):
-    from vnf.components.Scheduler import cancel
+    from scheduler import cancel
     return cancel(job, director)
     
 
 def pack(job, director, debug=False):
-    from vnf.utils import launch_detached, bindir
+    from vnfb.utils import launch_detached, bindir
     import os
     exe = os.path.join(bindir, 'packjobdir.py')
     launch_detached('%s -id=%s' % (exe, job.id), debug=debug)
@@ -28,7 +28,7 @@ def pack(job, director, debug=False):
 
 
 def new(director):
-    from vnf.dom.Job import Job
+    from vnfb.dom.Job import Job
     job = director.clerk.insertNewOwnedRecord(Job)
 
     job.creator = director.sentry.username
@@ -37,8 +37,9 @@ def new(director):
     import time
     job.time_start = job.time_completion = time.ctime()
 
-    from vnf.dom.Server import Server
-    servers = director.clerk.db.fetchall(Server)
+    domaccess = director.retrieveDOMAccessor('server')
+    servers = domaccess.getServerRecords()
+    # assumption: there is at least 1 server
     server = servers[0]
     job.server = server
     

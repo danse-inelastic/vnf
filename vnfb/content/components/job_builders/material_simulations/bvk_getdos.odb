@@ -26,10 +26,12 @@ class Builder(base):
         self._files = []
 
         # make system
-        domaccess = self.director.retrieveDOMAccessor('material_simulations/bvk')
+        self.domaccess = domaccess = self.director.retrieveDOMAccessor(
+            'material_simulations/bvk')
+        
         model = domaccess.getModel(computation.model.id)
         system = self._render_system(model)
-
+        
         # make script
         self._make_script(computation)
 
@@ -41,9 +43,14 @@ class Builder(base):
         filename = 'system'
         
         dds = self.director.dds
-        modelpath = dds.abspath(model)
+        orm = self.domaccess.orm
+        
+        modelpath = dds.abspath(orm(model))
         modelsystempath = os.path.join(modelpath, filename)
         if not os.path.exists(modelsystempath):
+            # create directory first
+            if not os.path.exists(modelpath):
+                os.makedirs(modelpath)
             # create system
             from bvk import systemFromModel
             systemFromModel(model, filename=modelsystempath)

@@ -30,7 +30,7 @@ class Actor(base):
     def checkProgress(self, director):
         itask = director.clerk.getRecordByID('itasks', self.inventory.id)
 
-        from vnfb.components.itask_utils import progressbarID
+        from vnfb.utils.itask import progressbarID
         pbarid = progressbarID(itask)
         selectpbar = select(id=pbarid)
         

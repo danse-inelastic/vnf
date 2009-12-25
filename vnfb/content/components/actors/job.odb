@@ -22,6 +22,7 @@
 
 
 from luban.content import load, select
+import luban.content as lc
 
 
 from luban.content.Form import Form
@@ -31,7 +32,7 @@ from luban.content.Form import Form
 from luban.content.Link import Link
 
 
-from vnfb.components.job_utils import check
+from vnfb.utils.job import check
 
 
 from vnfb.components.MasterTable import FilterSyntaxError, MasterTableActor as base
@@ -122,7 +123,7 @@ class Actor(base):
 
     def view(self, director):
         id = self.inventory.id
-        job = self._getJob(director)
+        job = self._getJobRecord(director)
         
         # if job has not been submitted, present the submission form
         if job.state in ['created']:
@@ -173,7 +174,7 @@ class Actor(base):
             actor = 'computation',
             routine = 'view',
             id = computation.id,
-            type = computation.name,
+            type = computation.getTableName(),
             )
         compdoc.add(link)
         
@@ -269,7 +270,7 @@ class Actor(base):
         if job: raise RuntimeError, "computation %s already has a job" % computation.id
 
         # create new job
-        from vnfb.components.job_utils import new
+        from vnfb.utils.job import new
         job = new(director)
         
         # assign computation
@@ -295,7 +296,7 @@ class Actor(base):
     
     
     def createEditForm(self, director):
-        record = self._getJob(director)
+        record = self._getJobRecord(director)
         
         form = Form(id='job-edit-form')
         
@@ -384,7 +385,7 @@ class Actor(base):
         if errors:
             return self.showErrors(director, errors=errors)
         
-        record = self._getJob(director)
+        record = self._getJobRecord(director)
 
         record.short_description = short_description
         record.server = server
@@ -413,7 +414,7 @@ class Actor(base):
     
 
     def create_submitting_view(self, director):
-        job = self._getJob(director)
+        job = self._getJobRecord(director)
 
         if job.state in ['submitted', 'running', 'onhold',
                          'finished', 'terminated', 'cancelled']:
@@ -437,7 +438,7 @@ class Actor(base):
             director.clerk.updateRecordWithID(task)
             
         # start the task
-        from vnfb.components.itask_utils import start
+        from vnfb.utils.itask import start
         start(task)
         
         # build the progress bar and return
@@ -490,7 +491,7 @@ class Actor(base):
 
 
     def already_submitted(self, director):
-        job = self._getJob(director)
+        job = self._getJobRecord(director)
 
         document = Document( title = 'Job already submitted: %s' % job.id )
         
@@ -510,7 +511,7 @@ class Actor(base):
 
     
     def in_submission(self, director):
-        job = self._getJob(director)
+        job = self._getJobRecord(director)
         document = Document( title = 'Job is being submmitted: %s' % job.id )
         
         p = document.paragraph()
@@ -527,11 +528,64 @@ class Actor(base):
         return document
 
 
+    def view_failed_submission(self, director):
+        job = self._getJobRecord(director)
+        
+        doc = lc.document(Class='container')
+        
+        #
+        pathtome = self._pathToMe(director)
+        view_indicator = self._viewIndicactor(pathtome, director)
+        doc.add(view_indicator)
+
+        #
+        document = doc.document( title = 'Job %s: submission failed' % job.id )
+        
+        p = document.paragraph()
+        p.text = [
+            'This job was not submitted successfully. ',
+            ]
+
+        #p = document.paragraph()
+        #p.text = ['The error was:']
+        #p = document.paragraph()
+        #p.text = [job.error]
+
+        p = document.paragraph()
+        p.text = [
+            'If you are sure the error was fixed, please'
+            ]
+        
+        resubmit = load(actor='job', routine='edit', id=job.id)
+        resubmitlink = lc.link(label='resubmit', onclick=resubmit)
+        document.add(resubmitlink)
+        
+        return select(id='main-display-area').replaceContent(doc)
+
+
+    def _viewIndicactor(self, path, director):
+        return director.retrieveVisual('view-indicator', path=path)
+
+
+    def _pathToMe(self, director):
+        id = self.inventory.id
+        if not id:
+            raise RuntimeError, 'no job id'
+        domaccess = self._domaccess(director)
+        job_label = domaccess.getJobLabel(id)
+        return [
+            ('Jobs',
+             lc.load(actor='job')), 
+            (job_label,
+             lc.load(actor='job', routine='view', id=id)),
+            ]
+
+
     def _domaccess(self, director):
         return director.retrieveDOMAccessor('job')
 
 
-    def _getJob(self, director):
+    def _getJobRecord(self, director):
         domaccess = self._domaccess(director)
         id = self.inventory.id
         return domaccess.getJobRecord(id)
