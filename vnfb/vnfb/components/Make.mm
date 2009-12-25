@@ -35,6 +35,7 @@ all: export
 # export
 
 EXPORT_PYTHON_MODULES = \
+	Announcer.py \
 	AppExtension.py \
 	Clerk.py \
 	CSAccessor.py \
@@ -44,6 +45,7 @@ EXPORT_PYTHON_MODULES = \
 	JnlpFile.py \
 	JobBuilder.py \
 	MasterTable.py \
+	Postman.py \
 	UsersFromDB.py \
 	__init__.py \
 

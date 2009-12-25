@@ -27,7 +27,7 @@ class Builder(base):
 
         # make system
         self.domaccess = domaccess = self.director.retrieveDOMAccessor(
-            'material_simulations/bvk')
+            'material_simulations/phonon_calculators/bvk')
         
         model = domaccess.getModel(computation.model.id)
         system = self._render_system(model)

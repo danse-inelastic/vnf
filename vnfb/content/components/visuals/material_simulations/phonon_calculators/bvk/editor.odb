@@ -19,7 +19,7 @@ from luban.content import select, load, alert
 def visual(director, bvkid):
     doc = lc.document(id='bvk-editor-%s' % bvkid, Class='bvkeditor')
 
-    domaccess = director.retrieveDOMAccessor('material_simulations/bvk')
+    domaccess = director.retrieveDOMAccessor('material_simulations/phonon_calculators/bvk')
     model = domaccess.getModel(bvkid)
 
     # fraccoords = model.getFractionalCoordinates()
@@ -38,7 +38,7 @@ def visual(director, bvkid):
         bondscontainer.add(container)
         
         v = director.retrieveVisual(
-            'material_simulations/bvk/force-constant-form-onebond',
+            'material_simulations/phonon_calculators/bvk/force-constant-form-onebond',
             director = director,
             bvkid=bvkid, bondindex=i,
             edit = False, containerid = container.id
@@ -48,7 +48,7 @@ def visual(director, bvkid):
 
     newbond = lc.link(label='new bond')
     newbond.onclick =  load(
-        actor='material_simulations/bvk/editor', routine='newbond',
+        actor='material_simulations/phonon_calculators/bvk/editor', routine='newbond',
         id = bvkid)
 
     doc.add(newbond)

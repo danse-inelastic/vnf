@@ -219,7 +219,7 @@ class Actor(base):
 
     def _createModelSelector(self, director, models):
         return director.retrieveVisual(
-            'material_simulations/bvk/model-selector',
+            'material_simulations/phonon_calculators/bvk/model-selector',
             models, director)
 
 
@@ -253,7 +253,7 @@ class Actor(base):
 
 
     def _domaccess(self, director):
-        return director.retrieveDOMAccessor('material_simulations/bvk')
+        return director.retrieveDOMAccessor('material_simulations/phonon_calculators/bvk')
 
 
     def __init__(self, name='material_simulations/phonon_calculators/bvk'):

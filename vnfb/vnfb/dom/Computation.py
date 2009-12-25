@@ -11,6 +11,17 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
+'''
+All computation tables should be inherited from this base class.
+
+Class attributes of a computation table inherited from this base class:
+  * job_builder: the "job_builder" component for this computation.
+    eg. "material_simulations/bvk_getdos"
+  * actor: the actor component for this computation
+    eg. "material_simulations/bvk_getdos"
+'''
+
+
 
 from Job import Job
 
@@ -43,12 +54,6 @@ class Computation(base):
     # pending_tasks = vnf.dom.referenceSet(name='pending_tasks')
 
     
-    @classmethod
-    def getJobBuilderName(cls):
-        if hasattr(cls, 'job_builder'): return cls.job_builder
-        return cls.__name__.lower()
-
-
     def getJobs(self, db):
         from Job import Job
         return self.getReferences(db, Job, 'computation')
@@ -94,6 +99,17 @@ class Computation(base):
 
         return found
 
+
+    @classmethod
+    def getJobBuilderName(cls):
+        if hasattr(cls, 'job_builder'): return cls.job_builder
+        return cls.__name__.lower()
+
+
+    @classmethod
+    def getActorName(cls):
+        if hasattr(cls, 'actor'): return cls.actor
+        return cls.__name__.lower()
 
 
 # version
