@@ -160,11 +160,13 @@ class Actor(base):
                                               args        = args,
                                               vault       = ['visuals']
                                               )
+        if thetable is None:
+            raise RuntimeError, 'failed to load visual "materialsimulation table"'
         # thetable = table(*args)
         thetable.oncellchanged = select(element=thetable).notify(
-                                                            event='row-changed',
-                                                            actor='matsimtable',
-                                                            routine='processRowChange')
+            event='row-changed',
+            actor='matsimtable',
+            routine='processRowChange')
         return thetable
     
 

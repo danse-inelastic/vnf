@@ -42,6 +42,7 @@ EXPORT_PYTHON_MODULES = \
 	Computation.py \
 	Job.py \
 	Lattice.py \
+	MaterialSimulation.py \
 	OwnedObject.py \
 	Server.py \
 	UnitCell.py \

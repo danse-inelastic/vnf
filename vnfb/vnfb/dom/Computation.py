@@ -12,7 +12,11 @@
 #
 
 '''
+Computation is the base class of all kinds of computations.
 All computation tables should be inherited from this base class.
+It is an abstract class, not a real table.
+There are abstract subclasses of Computation, such as MaterialSimulation,
+which define special categories of computations.
 
 Class attributes of a computation table inherited from this base class:
   * job_builder: the "job_builder" component for this computation.

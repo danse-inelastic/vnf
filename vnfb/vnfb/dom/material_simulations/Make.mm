@@ -38,7 +38,7 @@ EXPORT_PYTHON_MODULES = \
 	BvKBond.py \
 	BvKComputation.py \
 	BvKModel.py \
-	Computation.py \
+	SimulationBase.py \
 	__init__.py \
 	_.py \
 	computation_types.py \

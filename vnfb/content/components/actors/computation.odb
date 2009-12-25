@@ -33,15 +33,13 @@ class Actor(base):
         orm = domaccess.orm
         
         table = director.clerk.db.getTable(self.inventory.type)
-        from vnf.dom.MaterialSimulation import MaterialSimulation
-        if issubclass(table, MaterialSimulation):
-            actor = 'materialsimulation'
-            routine = 'showMaterialSimulation'
-            return director.redirect(
-                actor=actor, routine=routine,
-                type=self.inventory.type, id=self.inventory.id,
-                )
-        raise NotImplementedError
+        actor = table.getActorName()
+
+        return select(id='main-display-area').replaceContent(
+            load(actor=actor, routine='createView',
+                 id=self.inventory.id,
+                 )
+            )
 
 
     def __init__(self, name='computation'):
