@@ -11,6 +11,7 @@
 
 
 def visual(matsims, cols, director):
+    return table(matsims, cols, director)
     try: return table(matsims, cols, director)
     except:
         import traceback
@@ -59,7 +60,7 @@ def table(matsims, cols, director):
             onclick = load(
                 actor='materialsimulation', routine='showMaterialSimulation',
                 id = matsim.id,
-                type = matsim.__class__.name,
+                type = matsim.getTableName(),
                 )
             )
         return link
@@ -69,7 +70,7 @@ def table(matsims, cols, director):
         date = exp.date
         return str(date)
     def getType(matsim):
-        return matsim.__class__.name
+        return matsim.getTableName()
     def getMatter(matsim):
         matter = matsim.matter
         if not matter or not matter.id: return 'not defined'

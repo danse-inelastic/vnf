@@ -15,7 +15,7 @@
 from _ import o2t
 
 # still import from vnf-alpha dom. need to change
-from Computation import Computation as ComputationTableBase
+from SimulationBase import SimulationBase as SimulationTableBase
 
 
 from dsaw.model.Inventory import Inventory as InvBase
@@ -53,8 +53,9 @@ class BvK_GetDos(BvKComputation):
         drawer.mold.sequence = ['N1', 'df']
 
 
-BvK_GetDos_Table = o2t(BvK_GetDos, {'subclassFrom': ComputationTableBase})
+BvK_GetDos_Table = o2t(BvK_GetDos, {'subclassFrom': SimulationTableBase})
 BvK_GetDos_Table.job_builder = 'material_simulations/phonon_calculators/bvk_getdos'
+BvK_GetDos_Table.actor = 'material_simulations/phonon_calculators/bvk_getdos'
 
 
 # targets of computation

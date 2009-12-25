@@ -32,7 +32,7 @@ class Accessor(base):
     def countSimulations(self, filter=None, label=None):
         db = self.db
         
-        tables = simulationTables()
+        tables = self.simulationTables()
         
         qf = lambda table: self.makeQuery(table, filter=filter, label=label)
 
@@ -46,7 +46,7 @@ class Accessor(base):
         db = self.db
 
         self._debug.log('filter: %r, order_by: %r, slice: %r' % (filter, order_by, slice))
-        tables = simulationTables()
+        tables = self.simulationTables()
         qf = lambda table: self.makeQuery(table, filter=filter, label=label)
 
         qs = map(qf, tables)
@@ -143,21 +143,24 @@ class Accessor(base):
 
 
     def getTables(self):
-        return simulationTables()
+        return self.simulationTables()
     
+
+    def simulationTables(self):
+        from vnf.dom import materialsimulationtables, materialmodelingtables
+        tables = materialsimulationtables()# + materialmodelingtables()
+
+        from vnfb.dom.material_simulations.computation_types import types
+        newtables = map(self._getTable, types)
+
+        return tables + newtables
+
 
 from vnf.dom.Label import Label
 
 
 from dsaw.db.VersatileReference import global_pointer
 import sqlalchemy
-
-
-def simulationTables():
-    from vnf.dom import materialsimulationtables, materialmodelingtables
-    tables = materialsimulationtables()# + materialmodelingtables()
-    return tables
-
 
 
 def accessor():
