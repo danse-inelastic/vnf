@@ -53,6 +53,8 @@ def schedule( job, director ):
 def check( job, director ):
     "check status of a job"
 
+    info.log('checking status of job %s' % job.id)
+    
     if job.state in ['finished', 'failed', 'terminated', 'cancelled']:
         return job
 
@@ -82,7 +84,10 @@ def check( job, director ):
     newstate = job.state
 
     if oldstate != newstate:
-        # alert user
+        # state changed alert user
+        info.log('job %s: state changed from %r to %r' % (
+            job.id, oldstate, newstate))
+        
         user = director.clerk.getUser(job.creator)
         
         from vnfb.utils.communications import announce

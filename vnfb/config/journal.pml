@@ -5,6 +5,7 @@
       <property name="ipa">off</property>
       <property name="main">off</property>
       <property name="force-constant-form-onebond">off</property>
+      <property name="scheduler">on</property>
     </component>
     <component name="debug">
       <property name="ipa">off</property>

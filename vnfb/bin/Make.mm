@@ -25,19 +25,22 @@ distclean::
 
 EXPORT_DATAFILES = \
 	addbvkmodelstodb.py \
+	createdefaultformulaformatters.py \
 	createtable.py \
-	initdb.py \
-	findreferrals.py \
-	getuserlist.py \
-	itaskapp.py \
 	destroydb.py \
 	destroydataobject.py \
-	createdefaultformulaformatters.py \
 	establishglobalpointers.py \
+	findreferrals.py \
+	getuserlist.py \
+	initdb.py \
+	itaskapp.py \
 	launch-detached.py \
         packjobdir.py \
 	restorevnfdb.py \
 	startservices.sh \
+	timer.py \
+	updatejobstatus.py \
+	updatejobstatus.sh \
 
 
 

@@ -38,6 +38,10 @@ class AppExtension(Base):
             name,
             factory="accessor", args=[],
             vault=['dom-access'])
+        if r is None:
+            curator_dump = director._dumpCurator()
+            raise RuntimeError, "could not locate dom acceossr %r. curator dump: %s" % (
+                name, curator_dump)
         r.director = director
         return r
     

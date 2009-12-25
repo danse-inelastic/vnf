@@ -72,6 +72,11 @@ class Actor(base):
             )
 
         # results
+        resultsdoc = doc.document(title = 'Results', collapsable=True, collapsed=True)
+        resultsdoc.onexpand = select(element=resultsdoc).replaceContent(
+            load(actor=self.name, routine='createResultsDoc',
+                 id=self.inventory.id)
+            )
         return doc
 
 
