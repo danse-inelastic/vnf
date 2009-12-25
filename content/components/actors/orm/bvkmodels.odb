@@ -68,8 +68,9 @@ class Actor(base):
         
         bonds = model.bonds
         for bond in bonds:
-            bond.uses_primitive_unitcell = model.uses_primitive_unitcell
-            orm.save(bond)
+            record = orm(bond)
+            record.uses_primitive_unitcell = model.uses_primitive_unitcell
+            orm.db.updateRecord(record)
             continue
         
         return super(Actor, self)._postStoringUserInputs(director)
