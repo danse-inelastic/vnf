@@ -29,6 +29,9 @@ class Actor(base):
 
 
     def view(self, director):
+        domaccess = director.retrieveDOMAccessor('computation')
+        orm = domaccess.orm
+        
         table = director.clerk.db.getTable(self.inventory.type)
         from vnf.dom.MaterialSimulation import MaterialSimulation
         if issubclass(table, MaterialSimulation):

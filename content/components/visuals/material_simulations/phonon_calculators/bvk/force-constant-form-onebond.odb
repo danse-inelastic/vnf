@@ -39,7 +39,7 @@ def visualFromDB(director, bvkid, bondindex, edit, containerid):
 
     info.log('building visual for bvk %s bond %s' % (bvkid, bondindex))
     
-    domaccess = director.retrieveDOMAccessor('material_simulations/bvk')
+    domaccess = director.retrieveDOMAccessor('material_simulations/phonon_calculators/bvk')
     model = domaccess.getModel(bvkid)
     fraccoords = model.getFractionalCoordinates()
     uid = 'bvk%s-bond%s'%(bvkid,bondindex)
@@ -69,14 +69,14 @@ def visualFromDB(director, bvkid, bondindex, edit, containerid):
     if editable:
         form.submitbutton(label='save')
         form.onsubmit = select(element=form).submit(
-            actor = 'material_simulations/bvk/force-constant-form',
+            actor = 'material_simulations/phonon_calculators/bvk/force-constant-form',
             routine = 'process',
             id = bvkid, bondindex = bondindex,
             )
 
         cancel = lc.link(label='cancel')
         cancel.onclick = load(
-            actor='material_simulations/bvk/editor', routine='displaybond',
+            actor='material_simulations/phonon_calculators/bvk/editor', routine='displaybond',
             id = bvkid, bondindex = bondindex,
             )
         form.add(cancel)
@@ -86,7 +86,7 @@ def visualFromDB(director, bvkid, bondindex, edit, containerid):
         if model.mutable:
             edit = lc.link(label='edit')
             edit.onclick = load(
-                actor='material_simulations/bvk/editor', routine='editbond',
+                actor='material_simulations/phonon_calculators/bvk/editor', routine='editbond',
                 id = bvkid, bondindex = bondindex,
                 )
             form.add(edit)

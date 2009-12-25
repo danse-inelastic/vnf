@@ -54,7 +54,7 @@ class BvK_GetDos(BvKComputation):
 
 
 BvK_GetDos_Table = o2t(BvK_GetDos, {'subclassFrom': ComputationTableBase})
-BvK_GetDos_Table.job_builder = 'material_simulations/bvk_getdos'
+BvK_GetDos_Table.job_builder = 'material_simulations/phonon_calculators/bvk_getdos'
 
 
 # targets of computation

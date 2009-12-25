@@ -83,6 +83,9 @@ class Actor(base):
             )
 
 
+        resubmission = pyre.inventory.bool('resubmission', default=0)
+
+
     def default(self, director):
         return self.showListView(director)
 
@@ -361,6 +364,7 @@ class Actor(base):
 
         form.submitbutton(label='submit')
 
+        extra['resubmission'] = self.inventory.resubmission
         form.onsubmit = select(element=form).submit(
             actor = 'job', routine = 'verify',
             id = self.inventory.id, **extra)
@@ -435,6 +439,15 @@ class Actor(base):
                 worker = iworker,
                 type = iworker,
                 )
+            director.clerk.updateRecordWithID(task)
+        else:
+            if task.state not in ['failed', 'cancelled']:
+                # should not reach here
+                raise RuntimeError, \
+                      "failed to generate submission view for job %s. itask is %s" % (
+                    job.id, task.id)
+            # reopen the task
+            task.state = 'created'
             director.clerk.updateRecordWithID(task)
             
         # start the task
@@ -556,7 +569,7 @@ class Actor(base):
             'If you are sure the error was fixed, please'
             ]
         
-        resubmit = load(actor='job', routine='edit', id=job.id)
+        resubmit = load(actor='job', routine='edit', id=job.id, resubmission=1)
         resubmitlink = lc.link(label='resubmit', onclick=resubmit)
         document.add(resubmitlink)
         

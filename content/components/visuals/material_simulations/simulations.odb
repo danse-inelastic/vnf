@@ -37,6 +37,12 @@ def showSimulations(table):
     Shows simulation packages as "Package Name":"Description" table
     """
     packages   = []
+    packages.append(
+        (lc.link(label="BvK",
+                 onclick=load(actor="material_simulations/phonon_calculators/bvk/editor")),
+         "Born von Karman non-central forces lattice dynamics calculator.",
+         )
+        )
     packages.append((lc.link(label="Quantum Espresso", onclick=load(actor="material_simulations/espresso/sim-create")),
                     "Open source package for electronic-structure calculations and materials modeling using density-functional theory, plane waves, and pseudopotentials."))
     packages.append((lc.link(label="VASP", onclick=load(actor="material_simulations/vasp-rawinput")),
@@ -45,8 +51,6 @@ def showSimulations(table):
                     "Open source molecular mechanics toolkit with Amber and Lennard Jones forcefields."))
     packages.append((lc.link(label="GULP", onclick=load(actor="material_simulations/gulpsimulation", routine='new')),
                     "Academically open source lattice and molecular dynamics code with a wide range of functionality and forcefields. See License."))
-    packages.append((lc.link(label="BvK", onclick=load(actor="material_simulations/bvk/editor")),
-                    "Born von Karman non-central forces lattice dynamics calculator."))
     packages.append((lc.link(label="MCViNE", onclick=load(actor="materialsimulation")),
                     "Neutron scattering instrument simulation."))
     for p in packages:

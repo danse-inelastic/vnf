@@ -18,7 +18,7 @@ from luban.content import select, load, alert
 
 def visual(models, director):
     painter = director.painter
-    domaccess = director.retrieveDOMAccessor('material_simulations/bvk')
+    domaccess = director.retrieveDOMAccessor('material_simulations/phonon_calculators/bvk')
     orm = domaccess.orm
     
     doc = lc.document()
