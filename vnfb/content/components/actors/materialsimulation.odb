@@ -183,10 +183,11 @@ class Actor(base):
 
 
     def showMaterialSimulation(self, director):
-        actor = 'material_simulations/' + self.inventory.type
+        actor = 'computation'
         routine = 'view'
         id = self.inventory.id
-        return director.redirect(actor=actor, routine=routine, id=id)
+        type = self.inventory.type
+        return director.redirect(actor=actor, routine=routine, id=id, type=type)
     
         
     def createMatterDescriptionInputControl(self, director):

@@ -57,6 +57,12 @@ class Accessor(base):
         return orm.load(kls, computation_id)
 
 
+    def getComputationLabel(self, type, computation_id):
+        comutation = self.getComputation(type, computation_id)
+        record = self.orm(comutation)
+        return record.short_description or record.id
+    
+
     def newModel(self, atomicstructure_id):
         structdomacess = self.director.retrieveDOMAccessor('atomicstructure')
         struct = structdomacess.getAtomicStructure(atomicstructure_id)

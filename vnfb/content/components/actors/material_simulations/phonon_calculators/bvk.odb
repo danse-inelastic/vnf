@@ -182,31 +182,12 @@ class Actor(base):
 
 
     def onConfiguringDosComputation(self, director):
-        computation_id = self.inventory.computation_id
-        
-        domaccess = self._domaccess(director)
-        c = domaccess.getComputation('dos', computation_id)
-
-        drawer = director.painter.paintObj.drawers.getDrawer(c.__class__)
-        computation_doc = drawer(c)
-
-        form = computation_doc.getDescendentByName('properties-form')
-        form.onsubmit.params.update({
-            'poststoring_routine': 'createJob',
-            })
-
-        # the container
-        doc = lc.document()
-
-        # path
-        path = self._pathToMe(director)
-        view_indicator = director.retrieveVisual('view-indicator', path=path)
-        doc.add(view_indicator)
-
-        # 
-        doc.add(computation_doc)
-        
-        return select(id='main-display-area').replaceContent(doc)
+        return select(id='main-display-area').replaceContent(
+            load(actor='material_simulations/phonon_calculators/bvk_getdos',
+                 routine='createConfigurationView',
+                 id = self.inventory.computation_id
+                 )
+            )
 
 
     def onConfiguringDirectionaldispersionComputation(self, director):
