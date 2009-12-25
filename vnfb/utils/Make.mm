@@ -17,7 +17,10 @@ PACKAGE = utils
 # directory structure
 
 BUILD_DIRS = \
+	communications \
 	filter \
+	itask \
+	job \
 	material_simulations \
 
 OTHER_DIRS = \

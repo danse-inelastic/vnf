@@ -23,8 +23,12 @@ class Worker(base):
     def run(self, task):
 
         director = self.director
-        clerk = director.clerk
-        db = clerk.db
+        #
+        domaccess = self.domaccess = director.retrieveDOMAccessor('job')
+        # make sure orm is initd
+        orm = domaccess.orm
+        # db manager
+        db = domaccess.db
 
         director.declareProgress(0.1, 'Verifying job ...')
         
@@ -36,7 +40,7 @@ class Worker(base):
             raise RuntimeError, "Job %s not suitable for submission: %s" % (id, state)
         
         job.state = 'submitting'
-        clerk.updateRecordWithID(job)
+        domaccess.updateRecordWithID(job)
 
         try:
             director.declareProgress(0.2, 'Verifying computation ...')
@@ -56,7 +60,7 @@ class Worker(base):
             job.state = 'submissionfailed'
             errmsg = '%s: %s' % (e.__class__.__name__, e)
             job.error = errmsg
-            clerk.updateRecordWithID(job)
+            domaccess.updateRecordWithID(job)
 
             import traceback
             self._debug.log('submission of Job %s failed. %s' % (
@@ -70,19 +74,20 @@ class Worker(base):
     def prepare(self, job):
         director = self.director
         dds = director.dds
-        clerk = director.clerk
+        domaccess = self.domaccess
+        db = domaccess.db
         
         jobpath = dds.abspath(job)
-        computation = clerk.dereference(job.computation)
+        computation = db.dereference(job.computation)
         
         director.declareProgress(0.4, 'Preparing: building job ...')
-        from vnfb.components.job_utils import buildjob
+        from vnfb.utils.job import buildjob
         files, deps = buildjob(
-            computation, db=clerk.db, dds=dds, path=jobpath, director=director)
+            computation, db=db, dds=dds, path=jobpath, director=director)
         for f in files: dds.remember(job, f)
 
         # make job related files available on the server
-        server = clerk.dereference(job.server)
+        server = db.dereference(job.server)
         director.declareProgress(0.5, 'Preparing: transfering job to the server %s ...' % server.short_description)
         dds.make_available(job, server=server, files=files)
 
@@ -95,11 +100,12 @@ class Worker(base):
     def prepare_dependency(self, dep, job):
         director = self.director
         dds = director.dds
-        clerk = director.clerk
+        domaccess = self.domaccess
+        db = domaccess.db
         
         if dds.is_available(dep): dds.remember(dep)
         
-        server = clerk.dereference(job.server)
+        server = db.dereference(job.server)
         director.declareProgress(0.65, 'Preparing: setting up dependency %s###%s ...' % (dep.__class__.__name__, dep.id) )
         dds.make_available(dep, server=server)
         return

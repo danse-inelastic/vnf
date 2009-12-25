@@ -110,12 +110,19 @@ class Builder(base):
         return
 
 
-    def _makeXYZfile(self, crystal):
-        from vnfb.components.matter_utils import crystal2xyz
-        contents = crystal2xyz(crystal)
+    def _makeXYZfile(self, structrecord):
+        # get structure 
+        domaccess = self.director.retrieveDOMAccessor('atomicstructure')
+        struct = domaccess.getAtomicStructure(id=structrecord.id)
+
+        # file path
         filename = 'matter.xyz'
         path = self._path(filename)
-        open(path, 'w').write('\n'.join(contents))
+
+        # write
+        struct.write(path, 'xyz')
+
+        #
         self._files.append(filename)
         return filename
 

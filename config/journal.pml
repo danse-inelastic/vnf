@@ -10,7 +10,7 @@
       <property name="ipa">off</property>
       <property name="db">off</property>
       <property name="pyre.inventory.curator">off</property>
-      <property name="itaskapp">off</property>
+      <property name="itaskapp">on</property>
       <property name="submitjob">off</property>
       <property name='forcefieldwizard'>off</property>
       <property name='main'>on</property>

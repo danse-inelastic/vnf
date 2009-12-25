@@ -46,6 +46,14 @@ class Accessor(base):
         return self.getRecordByID(JobTable, id)
 
 
+    def getJobLabel(self, id):
+        r = self.getJobRecord(id)
+        t = 'Job %s' % id
+        if r.short_description:
+            t += '(%s)' % r.short_description
+        return t
+
+
     def countJobs(self, filter=None, label=None):
         q = self.makeQuery(filter=filter, label=label)
         return q.alias('tocount').count().execute().fetchone()[0]
@@ -135,7 +143,7 @@ class Accessor(base):
 
 
 
-from vnf.dom.Job import Job as JobTable
+from vnfb.dom.Job import Job as JobTable
 
 
 from dsaw.db.VersatileReference import global_pointer

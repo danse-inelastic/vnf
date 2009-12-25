@@ -76,7 +76,7 @@ class Actor(base):
             director.clerk.updateRecordWithID(task)
 
         # start the task
-        from vnfb.components.itask_utils import start
+        from vnfb.utils.itask import start
         start(task)
         
         # build the progress bar and return

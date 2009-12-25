@@ -25,6 +25,7 @@ distclean::
 EXPORT_DATAFILES = \
 	SimpleHttpServer.pml \
 	app-extension.odb \
+	itaskapp.pml \
 	clerk.pml \
 	clerk.odb \
 	guidfromidddaemon.odb \

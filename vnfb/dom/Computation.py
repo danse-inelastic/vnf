@@ -42,6 +42,12 @@ class Computation(base):
     # pending internal-tasks to get this computation going
     # pending_tasks = vnf.dom.referenceSet(name='pending_tasks')
 
+    
+    @classmethod
+    def getJobBuilderName(cls):
+        if hasattr(cls, 'job_builder'): return cls.job_builder
+        return cls.__name__.lower()
+
 
     def getJobs(self, db):
         from Job import Job

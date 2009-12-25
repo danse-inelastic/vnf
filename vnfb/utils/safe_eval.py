@@ -28,6 +28,7 @@
 # Version 0.1 / May 27 2006
 #----------------------------------------------------------------------
 #
+# From Jiao:
 # The main difference is that ast instead of compiler.ast is used.
 #
 

@@ -10,7 +10,7 @@
 #
 
 
-from pyre.applications.Script import Script as base
+from luban.applications.UIApp import UIApp as base
 
 
 class ITaskApp(base):
@@ -125,7 +125,7 @@ class ITaskApp(base):
             name='itaskapp'
         super(ITaskApp, self).__init__( name)
         return
-    
+
 
     def _configure(self):
         super(ITaskApp, self)._configure()

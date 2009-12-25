@@ -97,7 +97,7 @@ class DistributedDataStorage(base):
     def is_available(self, dbrecord, filename=None, server=None, files=None):
         if files is None: files = []
 
-        self._debug.log("called with dbrecord=%s,%s, filename=%s, server=%s, files=%s" % (dbrecord.name, dbrecord.id, filename, server and server.short_description or 'localhost', files))
+        self._debug.log("called with dbrecord=%s,%s, filename=%s, server=%s, files=%s" % (dbrecord.getTableName(), dbrecord.id, filename, server and server.short_description or 'localhost', files))
         if filename and filename not in files:
             files.append(filename)
         if not files: files = _default_files(dbrecord)
@@ -119,7 +119,7 @@ class DistributedDataStorage(base):
 
 
     def path(self, dbrecord, filename=None):
-        d = os.path.join(dbrecord.name, dbrecord.id)
+        d = os.path.join(dbrecord.getTableName(), dbrecord.id)
         if filename:
             return os.path.join(d, filename)
         return d

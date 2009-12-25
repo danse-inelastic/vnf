@@ -37,6 +37,7 @@ all: export
 EXPORT_PYTHON_MODULES = \
 	AppExtension.py \
 	Clerk.py \
+	CSAccessor.py \
         QETable.py \
 	DistributedDataStorage.py \
 	DOMAccessor.py \
@@ -45,9 +46,6 @@ EXPORT_PYTHON_MODULES = \
 	MasterTable.py \
 	UsersFromDB.py \
 	__init__.py \
-	itask_utils.py \
-	job_utils.py \
-	matter_utils.py \
 
 
 #include doxygen/default.def
