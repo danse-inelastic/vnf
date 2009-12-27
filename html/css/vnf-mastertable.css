@@ -37,6 +37,7 @@
     -webkit-border-top-left-radius: 12px;
     -webkit-border-bottom-left-radius: 12px;
     width: 8px;
+    min-width: 8px;
     background-color: gray;
 }
 .master-table-toptoolbar-container .luban-toolbar img{
@@ -117,6 +118,7 @@ div.master-table-toptoolbar-container h1.luban-document-title {
 .master-table-filter-control-container {
     border-right:dotted 2px grey;
     padding: 0 7px;
+    min-width: 21em;
 }
 .master-table-filter-control-container > div{
     font-size: 0.8em;
