@@ -1,0 +1,67 @@
+# -*- Python -*-
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                   Jiao Lin
+#                      California Institute of Technology
+#                      (C) 2006-2010  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+import luban.content as lc
+from luban.content import load, select, alert
+
+
+def visual(computation, director):
+    domaccess = director.retrieveDOMAccessor('computation')
+    orm = domaccess.orm
+    db = orm.db
+
+    # the document to build
+    doc = lc.document(Class='container')
+
+    # depending on retrieval status, we need to add some extra things to the document
+    result_retrieval_status = computation.getResultRetrievalStatus(db)
+
+    if result_retrieval_status == 'retrieving':
+        p = doc.paragraph(text=['Still retrieving results...'])
+        l = lc.link(
+            label='refresh',
+            onclick=select(element=doc).replaceBy(
+                load(actor=self.name, routine='createResultsDoc',
+                     id=self.inventory.id)
+                )
+            )
+        doc.add(l)
+
+    elif result_retrieval_status == 'retrieval failed':
+        p = document.paragraph(text=['failed to retrieve results'])
+
+    elif result_retrieval_status == 'retrieved':
+
+        pass
+
+    else:
+        raise NotImplementedError, 'computation: %s, retrieval status: %s' % (
+            computation.getTableName(), result_retrieval_status)
+
+    # display results 
+    results = computation.results.dereference(db)
+    for k, r in results:
+        obj = orm.record2object(r)
+        drawer = director.painter.paintObj.drawers.getDrawer(obj.__class__)
+        drawer.obj_resource_path = director.dds.abspath(r)
+        doc.add(drawer(obj, readonly=True, editlink=False))
+        continue
+    
+    return doc
+
+
+# version
+__id__ = "$Id$"
+
+# End of file 

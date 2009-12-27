@@ -57,6 +57,13 @@ class Accessor(base):
         return orm.load(kls, computation_id)
 
 
+    def getComputationRecord(self, type, computation_id):
+        kls = BvKComputation.getComputationClass(type)
+        orm = self.orm
+        table = orm(kls)
+        return self.getRecordByID(table, computation_id)
+
+
     def getComputationLabel(self, type, computation_id):
         comutation = self.getComputation(type, computation_id)
         record = self.orm(comutation)

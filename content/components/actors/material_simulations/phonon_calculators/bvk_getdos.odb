@@ -80,6 +80,13 @@ class Actor(base):
         return doc
 
 
+    def createResultsDoc(self, director):
+        record = self._getComputationRecord(director)
+        return director.retrieveVisual(
+            'computation-results',
+            computation=record, director=director)
+
+
     def createConfigurationView(self, director):
         c = self._getComputation(director)
 
@@ -132,11 +139,17 @@ class Actor(base):
         return domaccess.getComputation('dos', id)
 
 
+    def _getComputationRecord(self, director):
+        domaccess = self._domaccess(director)
+        id = self.inventory.id
+        return domaccess.getComputationRecord('dos', id)
+
+
     def _domaccess(self, director):
         return director.retrieveDOMAccessor('material_simulations/phonon_calculators/bvk')
 
 
-    def __init__(self, name='material_simulations/phonon_calculators/bvk'):
+    def __init__(self, name='material_simulations/phonon_calculators/bvk_getdos'):
         super(Actor, self).__init__(name)
         return
 
