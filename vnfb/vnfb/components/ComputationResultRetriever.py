@@ -143,7 +143,7 @@ class ComputationResultRetriever(Component):
 
         # add the result to the result list
         if not name:
-            name = result_holder.__class__.__name__.lower()
+            name = result_holder.getTableName()
 
         computation.results.add(result_holder, self.db, name=name)
         self._mark_result_as_saved(computation, filenameinjobdir)
