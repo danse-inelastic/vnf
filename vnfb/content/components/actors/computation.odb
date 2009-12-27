@@ -42,6 +42,16 @@ class Actor(base):
             )
 
 
+    def restartResultsRetrieval(self, director):
+        domaccess = director.retrieveDOMAccessor('computation')
+        orm = domaccess.orm
+        
+        computation = domaccess.getRecordByID(self.inventory.type, id=self.inventory.id)
+        
+        from vnfb.utils.computation import start_results_retrieval
+        return start_results_retrieval(computation, director)
+
+
     def __init__(self, name='computation'):
         super(Actor, self).__init__(name)
         return

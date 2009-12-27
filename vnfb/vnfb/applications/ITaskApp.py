@@ -95,9 +95,9 @@ class ITaskApp(base):
 
 
     def declareProgress(self, fractional=None, message=None, percentage=None):
-        if fractional and percentage:
+        if fractional is not None and percentage is not None:
             raise RuntimeError, "both fractional and percentage are supplied"
-        if fractional: percentage = fractional * 100
+        if fractional is not None: percentage = fractional * 100
         
         task = self.getTask()
         task.progress_percentage = percentage

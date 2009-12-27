@@ -16,10 +16,16 @@ import luban.content as lc
 from luban.content import load, select, alert
 
 
-def visual(computation, director):
+def visual(computation, actor, director):
     domaccess = director.retrieveDOMAccessor('computation')
     orm = domaccess.orm
     db = orm.db
+
+    # the job
+    job = computation.getJob(db)
+    # always good to check the job
+    from vnfb.utils.job import check
+    check(job, director)
 
     # the document to build
     doc = lc.document(Class='container')
@@ -27,19 +33,52 @@ def visual(computation, director):
     # depending on retrieval status, we need to add some extra things to the document
     result_retrieval_status = computation.getResultRetrievalStatus(db)
 
+
+    if result_retrieval_status is None:
+        from vnfb.utils.computation import start_results_retrieval
+        start_results_retrieval(computation, director)
+        result_retrieval_status = 'retrieving'
+        
+    refresh = select(element=doc).replaceBy(
+        load(actor=actor, routine='createResultsDoc',
+             id=computation.id)
+        )
+    
     if result_retrieval_status == 'retrieving':
         p = doc.paragraph(text=['Still retrieving results...'])
-        l = lc.link(
-            label='refresh',
-            onclick=select(element=doc).replaceBy(
-                load(actor=self.name, routine='createResultsDoc',
-                     id=self.inventory.id)
-                )
+
+        from vnfb.utils.computation import get_results_retrieval_task
+        task = get_results_retrieval_task(computation, db)
+        if not task:
+            raise RuntimeError, 'there should be an itask working at retrieving results for computation %s, but we found none' % computation.id
+        
+        pbar = lc.progressbar(
+            id = 'itask-%s-pbar' % task.id,
+            status = 'Retrieving results...',
+            percentage = 0,
+            skip = 1000,
             )
-        doc.add(l)
+        pbar.onchecking = load(
+            actor='itask',
+            routine='checkProgress',
+            id = task.id,
+            )
+        
+        pbar.onfinished = refresh
+        pbar.oncanceled = refresh
+        doc.add(pbar)
 
     elif result_retrieval_status == 'retrieval failed':
-        p = document.paragraph(text=['failed to retrieve results'])
+        p = doc.paragraph(text=['failed to retrieve results'])
+        l = lc.link(
+            label = 'restart results retrieval',
+            onclick = [
+              load(actor='computation', routine='restartResultsRetrieval',
+                   type = computation.getTableName(), id = computation.id),
+              refresh,
+              ],
+            )
+        doc.add(l)
 
     elif result_retrieval_status == 'retrieved':
 

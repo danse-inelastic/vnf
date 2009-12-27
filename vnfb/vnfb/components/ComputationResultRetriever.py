@@ -15,21 +15,26 @@
 class ResultsMissing(Exception): pass
 
 
-
 from pyre.components.Component import Component
 
 class ComputationResultRetriever(Component):
 
     director = None # should be signed when initd
 
-    def run(self, computation, debug=False):
+    def run(self, computation):
         director = self.director
         # aliases
         self.clerk = director.clerk
         self.orm = self.clerk.orm
         self.db = self.clerk.db
         self.dds = director.dds
-        
+        # this may be run in a itaskapp
+        if hasattr(director, 'declareProgress'):
+            self.declareProgress = director.declareProgress
+        else:
+            self.declareProgress = self._declareProgress
+
+        self.declareProgress(0.05, 'check status of retrieval')
         # first check if it is necessary to run this component
         states = [
             'retrieved',
@@ -43,6 +48,7 @@ class ComputationResultRetriever(Component):
             return
 
         # set the results_state so that this retriever won't be run twice
+        self.declareProgress(0.06, 'set status of retrieval to prevent reentry')
         computation.setResultRetrievalStatusAndErrorMessage('retrieving', '', db = self.db)
 
         # retrieve results
@@ -62,13 +68,18 @@ class ComputationResultRetriever(Component):
                 'retrieval failed', error, db=self.db)
             self.db.commit()
 
-            if debug:
-                raise
+            raise
 
         else:
             # if we reach here it means everything is good
             computation.setResultRetrievalStatusAndErrorMessage('retrieved', message='', db=self.db)
-            
+
+            self.declareProgress(1.0, 'retrieval succeeded')
+        return
+
+
+    def _declareProgress(self, percentage, message):
+        self._debug.log('%s: %s' % (percentage, message))
         return
 
 

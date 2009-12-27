@@ -20,8 +20,6 @@ class RetrieveResults(base):
         id = pyre.inventory.str('id')
         type = pyre.inventory.str('type')
         
-        debug = pyre.inventory.bool(name='debug', default=False)
-
         pass # end of Inventory
         
 
@@ -33,7 +31,7 @@ class RetrieveResults(base):
         computation = domaccess.getRecordByID(type, id)
 
         from vnfb.utils.computation import retrieve_results
-        retrieve_results(computation, director=self, debug=self.debug)
+        retrieve_results(computation, director=self)
         return
 
 
@@ -48,7 +46,6 @@ class RetrieveResults(base):
         super(RetrieveResults, self)._configure()
         self.id = self.inventory.id
         self.type = self.inventory.type
-        self.debug = self.inventory.debug
         return
 
 
