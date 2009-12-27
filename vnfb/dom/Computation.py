@@ -131,12 +131,14 @@ class Computation(base):
 
     def getResultRetrievalStatus(self, db):
         entry = self.getResultRetrievalEntry(filename='', db=db)
-        return entry.status
+        if entry:
+            return entry.status
 
 
     def getResultRetrievalErrorMessage(self, db):
         entry = self.getResultRetrievalEntry(filename='', db=db)
-        return entry.message
+        if entry:
+            return entry.message
 
 
     def isResultFileSaved(self, filename, db):

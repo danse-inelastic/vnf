@@ -84,7 +84,7 @@ class Actor(base):
         record = self._getComputationRecord(director)
         return director.retrieveVisual(
             'computation-results',
-            computation=record, director=director)
+            computation=record, actor=self.name, director=director)
 
 
     def createConfigurationView(self, director):

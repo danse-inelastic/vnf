@@ -84,8 +84,8 @@ def onfinished(job, director):
     computation = job.computation.dereference(db)
 
     # 2. retrieve
-    from vnfb.utils.computation import retrieve_results
-    retrieve_results(computation, director)
+    from vnfb.utils.computation import start_results_retrieval
+    start_results_retrieval(computation, director)
     return
 
 

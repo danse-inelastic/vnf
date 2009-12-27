@@ -25,7 +25,6 @@ class Actor(base):
         import pyre.inventory
 
         id = pyre.inventory.str(name='id')
-        
 
     def checkProgress(self, director):
         itask = director.clerk.getRecordByID('itasks', self.inventory.id)
@@ -42,7 +41,7 @@ class Actor(base):
         if itask.state in ['failed', 'cancelled']:
             return [
                 selectpbar.progressbar('cancel'),
-                alert('itask %s %s:\n%s' % (itask.id, itask.state, itask.error))
+                alert('itask %s %s:\n%s' % (itask.id, itask.state, itask.error)),
                 ]
 
         raise RuntimeError
