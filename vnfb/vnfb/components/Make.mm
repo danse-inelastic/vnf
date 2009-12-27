@@ -38,14 +38,15 @@ EXPORT_PYTHON_MODULES = \
 	Announcer.py \
 	AppExtension.py \
 	Clerk.py \
+	ComputationResultRetriever.py \
 	CSAccessor.py \
-        QETable.py \
 	DistributedDataStorage.py \
 	DOMAccessor.py \
 	JnlpFile.py \
 	JobBuilder.py \
 	MasterTable.py \
 	Postman.py \
+        QETable.py \
 	UsersFromDB.py \
 	__init__.py \
 

@@ -269,6 +269,9 @@ class DistributedDataStorage(base):
             cmd = 'ls %s' % path
             self._debug.log('cmd=%r'%cmd)
             failed, out, err = csaccessor.execute(cmd, server, '', suppressException=True)
+            if failed:
+                self._debug.log('cmd %r failed\n - out %s\n - error %s\n' % (
+                    cmd, out, err))
             return not failed
             
             

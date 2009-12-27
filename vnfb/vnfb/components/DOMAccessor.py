@@ -137,7 +137,6 @@ class DOMAccessor( base ):
 
 
     def getRecordByID(self, tablename, id):
-        from dsaw.db.Table import Table as TableBase
         if isinstance(tablename, basestring):
             Table = self._getTable(tablename)
         elif issubclass(tablename, TableBase):
@@ -249,8 +248,10 @@ class DOMAccessor( base ):
 
     def _getTableByImportingFromDOM(self, name):
         Obj = self._getObjectByImportingFromDOM(name)
-        orm = self.orm
-        return orm(Obj)
+        if not issubclass(Obj, TableBase):
+            orm = self.orm
+            return orm(Obj)
+        return Obj
 
 
     def _getRecordByID(self, table, id ):
@@ -282,6 +283,11 @@ class DOMAccessor( base ):
             return self._getRecordByID( table, id )
 
         return self._getAll(table, where)
+
+
+
+
+from dsaw.db.Table import Table as TableBase
 
 
 

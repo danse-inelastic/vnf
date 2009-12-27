@@ -37,6 +37,7 @@ EXPORT_DATAFILES = \
 	launch-detached.py \
         packjobdir.py \
 	restorevnfdb.py \
+	retrieveresults.py \
 	startservices.sh \
 	timer.py \
 	updatejobstatus.py \

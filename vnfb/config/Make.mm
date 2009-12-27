@@ -35,6 +35,7 @@ EXPORT_DATAFILES = \
 	journal.pml \
 	librarian.pml \
 	main.pml \
+	retrieveresults.pml \
 	updatejobstatus.pml \
 	usersFromDB.odb \
 	web-weaver.pml \

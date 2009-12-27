@@ -40,6 +40,7 @@ EXPORT_PYTHON_MODULES = \
 	Atom.py \
 	AtomicStructure.py \
 	Computation.py \
+	ComputationResult.py \
 	Job.py \
 	Lattice.py \
 	MaterialSimulation.py \

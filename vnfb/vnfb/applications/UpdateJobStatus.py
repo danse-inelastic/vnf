@@ -67,7 +67,7 @@ class UpdateJobStatus(base):
         domaccess = self.retrieveDOMAccessor('job')
         jobs = domaccess.getJobRecords(filter=where)
         
-        from vnfb.utils.job.scheduler import check
+        from vnfb.utils.job import check
         for job in jobs:
             check(job, self)
             continue
