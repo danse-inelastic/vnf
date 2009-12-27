@@ -21,6 +21,8 @@ def visual(id, title, body=None, loadbody=None):
     body: body document
     loadbody: action to load body document
     '''
+    import pdb; pdb.set_trace()
+    
     doc = lc.document(id=id, Class='collapsable')
     
     titlebar = lc.splitter(Class='titlebar')

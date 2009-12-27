@@ -1,0 +1,96 @@
+#!/usr/bin/env python
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                 Jiao Lin
+#                      California Institute of Technology
+#                      (C) 2006-2009  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+
+#
+import luban.content as lc
+from luban.content import select, load, alert
+
+
+#
+from vnfb.dom.material_simulations.PhononDOS import PhononDOS
+
+from luban.components.Actor import Actor
+import luban.orm
+base = luban.orm.object2actor(PhononDOS)
+class Actor(base):
+
+    class Inventory(base.Inventory):
+
+        import luban.inventory
+
+
+    def createGraphicalView(self, director):
+        obj = self._load(director)
+        orm = self._initComputationOrm(director)
+        db = orm.db
+        
+        record = orm(obj)
+
+        # the document to build
+        doc = lc.document(title='Phonon density of states %s' % record.id)
+
+        # link to the computation
+        origin = record.getOrigin(db)
+        origin_link = lc.link(
+            label='computed from %s %s' % (origin.getTableName(), origin.id),
+            onclick = load(actor='computation', routine='view',
+                           type = origin.getTableName(), id = origin.id)
+            )
+        doc.add(origin_link)
+        
+        # plot
+        p = self.createPlot(director)
+        doc.add(p)
+        
+        return doc        
+
+
+    def createPlot(self, director):
+        obj = self._load(director)
+        orm = director.clerk.orm
+        record = orm(obj)
+        
+        # the idf file
+        path = director.dds.abspath(record)
+        import os
+        f = os.path.join(path, 'data.idf')
+        
+        # check path
+        if not os.path.exists(f): return
+
+        # read
+        from idf import DOS
+        (t,version,comment), e, i = DOS.read(f)
+
+        # plot
+        p = lc.plot2d(width=480, height=320)
+        p.curve(x=list(e), y=list(i), label='Density of states')
+
+        return p
+        
+
+    def _initComputationOrm(self, director):
+        domaccess = director.retrieveDOMAccessor('computation')
+        return domaccess.orm
+            
+
+def actor():
+    return Actor('orm/phonondoses')
+
+
+# version
+__id__ = "$Id$"
+
+# End of file 
