@@ -6,10 +6,12 @@
       <property name="main">off</property>
       <property name="force-constant-form-onebond">off</property>
       <property name="scheduler">on</property>
-    </component>
+      <property name="job">on</property>
+   </component>
     <component name="debug">
       <property name="ipa">off</property>
       <property name="db">off</property>
+      <property name="dds">on</property>
       <property name="pyre.inventory.curator">off</property>
       <property name="itaskapp">on</property>
       <property name="submitjob">off</property>

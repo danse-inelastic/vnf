@@ -14,6 +14,7 @@
 
 types = [
     'material_simulations.BvKComputation.BvK_GetDos',
+    'material_simulations.PhononDOS.PhononDOS',
     ]
 
 

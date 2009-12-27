@@ -12,7 +12,7 @@
 #
 
 
-from _ import o2t as object2table
+from vnfb.dom.ComputationResult import ComputationResult, ComputationResultInterface
 
 
 # version
