@@ -14,7 +14,7 @@
 
 # this is an interface class. any data object table type that could be
 # a result of a computation should use this class as one of its base classes.
-# This interface depends on the implementation in the "Computation" table.
+# The implementation here depends on the implementation in the "Computation" table.
 class ComputationResultInterface:
 
     def getOrigin(self, db):
@@ -32,7 +32,7 @@ class ComputationResultInterface:
 
         #
         where = "element=%s and containerlabel='computation_results'" % gp
-        r = db.query(_ReferenceSetTable).filter(where=where).one()
+        r = db.query(_ReferenceSetTable).filter(where).one()
 
         return r.container.dereference(db)
 

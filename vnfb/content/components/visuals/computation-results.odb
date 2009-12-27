@@ -91,10 +91,12 @@ def visual(computation, actor, director):
     # display results 
     results = computation.results.dereference(db)
     for k, r in results:
-        obj = orm.record2object(r)
-        drawer = director.painter.paintObj.drawers.getDrawer(obj.__class__)
-        drawer.obj_resource_path = director.dds.abspath(r)
-        doc.add(drawer(obj, readonly=True, editlink=False))
+        doc1 = doc.document(Class='container')
+        doc1.oncreate = select(element=doc1).append(
+            load(actor='orm/%s' % r.getTableName(),
+                 routine='createGraphicalView',
+                 id = r.id)
+            )
         continue
     
     return doc

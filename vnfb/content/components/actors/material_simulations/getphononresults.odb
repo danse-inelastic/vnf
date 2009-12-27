@@ -13,6 +13,7 @@
 
 
 import luban.content as lc
+from luban.content import select, load, alert
 
 
 from luban.components.AuthorizedActor import AuthorizedActor as base
@@ -31,11 +32,42 @@ class Actor(base):
     def createPhononDocForAtomicStructure(self, director):
         doc = lc.document()
         doc.add(self.createDispersionDocForAtomicStructure(director))
+        doc.add(self.createDOSDocForAtomicStructure(director))
+        return doc
+
+
+    def createDOSDocForAtomicStructure(self, director):
+        doc = lc.document(title='Density of states')
+        
+        atomicstructureaccess = director.retrieveDOMAccessor('atomicstructure')
+        structrecord = atomicstructureaccess.getAtomicStructureRecord(self.inventory.id)
+        
+        phononaccess = director.retrieveDOMAccessor('phonon')
+        doses = phononaccess.getDOSes(atomicstructure=structrecord)
+        
+        if not doses:
+            doc.paragraph(text=['There is no density of states calculated.'])
+        elif len(doses)==1:
+            dos = doses[0]
+            doc1 = doc.document(Class='container')
+            doc1.oncreate = select(element=doc1).append(
+                load(actor='orm/phonondoses', routine='createGraphicalView', id=dos.id)
+                )
+        else:
+            doc.paragraph(text=['dispersion table'])
+            
+        newphononcomputation = lc.load(
+            actor='material_simulations/phonon_calculators', routine='start',
+            atomicstructure_id = self.inventory.id
+            )
+        link = lc.link(label='Start a new phonon computation', onclick=newphononcomputation)
+        doc.add(link)
+
         return doc
 
 
     def createDispersionDocForAtomicStructure(self, director):
-        doc = lc.document()
+        doc = lc.document(title='Dispersions')
 
         atomicstructureaccess = director.retrieveDOMAccessor('atomicstructure')
         structrecord = atomicstructureaccess.getAtomicStructureRecord(self.inventory.id)

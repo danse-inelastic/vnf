@@ -26,6 +26,7 @@ class Factory(object):
 
 
     def create(self):
+        import pdb; pdb.set_trace()
         body = self.createBody()
         doc = self.director.retrieveVisual(
             'matter/collapsable',
