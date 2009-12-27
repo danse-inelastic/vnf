@@ -104,6 +104,11 @@ class Job(base):
         return found
 
 
+
+    def isdone(self):
+        return self.state in ['finished', 'cancelled', 'terminated']
+        
+    
 # version
 __id__ = "$Id$"
 
