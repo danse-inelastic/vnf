@@ -122,6 +122,14 @@ fieldset{
     -webkit-border-radius: 15px;
 }
 
+
+/* plot2d default size */
+.luban-plot2d {
+    width: 480;
+    height: 320;
+}
+
+
 /* error */
 .luban-formfield .error {
 }
