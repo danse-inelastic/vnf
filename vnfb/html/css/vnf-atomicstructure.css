@@ -112,6 +112,13 @@ margin-left:0;
 #computed-props .luban-document.collapsable > .luban-document-body {
 margin-left:0;
 }
+/* .. phonon dos */
+.plot-with-legends table table td {
+    padding-left:1em;
+}
+.plot-with-legends table td {
+    vertical-align:top;
+}
 
 
 /* version */

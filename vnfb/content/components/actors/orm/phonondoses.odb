@@ -86,7 +86,7 @@ class Actor(base):
 
 
     def _createPlotM(self, director):
-        doc = lc.splitter()
+        doc = lc.splitter(Class='plot-with-legends')
         left = doc.section(); right = doc.section()
         
         domaccess = self._domaccess(director)

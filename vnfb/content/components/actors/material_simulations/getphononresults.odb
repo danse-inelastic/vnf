@@ -50,13 +50,15 @@ class Actor(base):
         elif len(doses)==1:
             dos = doses[0]
             doc1 = doc.document(Class='container')
-            doc1.oncreate = select(element=doc1).append(
+            doc1.paragraph(text=['loading...'])
+            doc1.oncreate = select(element=doc1).replaceContent(
                 load(actor='orm/phonondoses', routine='createGraphicalView', id=dos.id)
                 )
         else:
             doc1 = doc.document(Class='container')
+            doc1.paragraph(text=['loading...'])
             ids = [dos.id for dos in doses]
-            doc1.oncreate = select(element=doc1).append(
+            doc1.oncreate = select(element=doc1).replaceContent(
                 load(actor='orm/phonondoses', routine='createGraphicalView', ids=ids)
                 )
             
