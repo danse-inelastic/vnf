@@ -54,7 +54,11 @@ class Actor(base):
                 load(actor='orm/phonondoses', routine='createGraphicalView', id=dos.id)
                 )
         else:
-            doc.paragraph(text=['dispersion table'])
+            doc1 = doc.document(Class='container')
+            ids = [dos.id for dos in doses]
+            doc1.oncreate = select(element=doc1).append(
+                load(actor='orm/phonondoses', routine='createGraphicalView', ids=ids)
+                )
             
         newphononcomputation = lc.load(
             actor='material_simulations/phonon_calculators', routine='start',
