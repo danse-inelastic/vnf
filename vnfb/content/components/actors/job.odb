@@ -110,7 +110,7 @@ class Actor(base):
         tableview = director.retrieveVisual(
             'job/tableview',
             director,
-            self.name,
+            'job',  # name of master table
             label           = label,
             filter_expr     = filter_expr,
             filter_key      = filter_key,
