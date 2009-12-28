@@ -31,12 +31,13 @@ class Actor(baseActor):
         domaccess = director.retrieveDOMAccessor('atomicstructure')
         structure = domaccess.getAtomicStructure(self.inventory.id)
         lattice = structure.lattice
-        ans = {'cartesian_lattice':lattice.base, 
+        materialInfo = {'cartesian_lattice':lattice.base.tolist(), 
                "cartesian_coordinates":structure.xyz_cartn,
                "fractional_coordinates":structure.xyz,
                "atom_symbols":structure.symbols}
-        return self.encoder(ans)
-
+        ans = self.encoder(materialInfo)
+        return ans
+        #return 'hi'
 
     def _getRecords(self, director, tables, where):
         results=[]
@@ -103,14 +104,18 @@ class Actor(baseActor):
         return cjson.encode(data)
     
     def _jsonDictEncoder(self, dict):
-        import cjson
+        import json
+        return json.dumps(dict)
+    
+#    def _jsonDictEncoder(self, dict):
+#        import cjson
         # make sure all are encodable
-        for k,v in dict.iteritems():
-            try:
-                cjson.encode(v)
-            except:
-                dict[k] = str(v)
-        return cjson.encode(dict)
+#        for k,v in dict.iteritems():
+#            try:
+#                cjson.encode(v)
+#            except:
+#                dict[k] = str(v)
+#        return cjson.encode(dict)
     
     def _jsonCifEncoder(self, records):
         records = map(self._record2dict, records)
