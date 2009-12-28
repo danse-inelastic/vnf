@@ -46,23 +46,35 @@ class Actor(base):
         
         # matter view
         matter = c.matter
-        matterview = doc.document(
-            title='Atomic structure %r' % matter.description,
-            collapsable = True, collapsed = True)
-        matterview.onexpand = select(element=matterview).replaceContent(
-            load(actor='orm/atomicstructures', routine='display',
-                 id = orm(matter).id, editlink=False)
-            )
+        matterview = doc.document(title='material', collapsable=True, collapsed=False)
+        viewmatter = load(actor='atomicstructure', routine='showOverview',
+                          id = orm(matter).id)
+        link = lc.link(label=matter.description, onclick=viewmatter)
+        matterview.add(link)
+##         matterview = doc.document(
+##             title='Atomic structure %r' % matter.description,
+##             collapsable = True, collapsed = True)
+##         matterview.onexpand = select(element=matterview).replaceContent(
+##             load(actor='orm/atomicstructures', routine='display',
+##                  id = orm(matter).id, editlink=False)
+##             )
 
         # model view
         model = c.model
-        modelview = doc.document(
-            title='BvK model %r' % model.short_description,
-            collapsable = True, collapsed = True)
-        modelview.onexpand = select(element=modelview).replaceContent(
+        modelview = doc.document(title='model', collapsable=True, collapsed=False)
+        viewmodel = select(id='main-display-area').replaceContent(
             load(actor='orm/bvkmodels', routine='display',
                  id = orm(model).id, editlink=False)
             )
+        link = lc.link(label=model.short_description, onclick=viewmodel)
+        modelview.add(link)
+##         modelview = doc.document(
+##             title='BvK model %r' % model.short_description,
+##             collapsable = True, collapsed = True)
+##         modelview.onexpand = select(element=modelview).replaceContent(
+##             load(actor='orm/bvkmodels', routine='display',
+##                  id = orm(model).id, editlink=False)
+##             )
 
         # my configuration
         configdoc = doc.document(title = 'Configuration', collapsable = True)
