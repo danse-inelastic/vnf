@@ -75,7 +75,7 @@ class Actor(base):
         (t,version,comment), e, i = DOS.read(f)
 
         # plot
-        p = lc.plot2d(width=480, height=320)
+        p = lc.plot2d()
         p.curve(x=list(e), y=list(i), label='Density of states')
 
         return p
