@@ -86,17 +86,33 @@ class Actor(base):
 
 
     def _createPlotM(self, director):
+        doc = lc.splitter()
+        left = doc.section(); right = doc.section()
+        
         domaccess = self._domaccess(director)
         doslist = map(domaccess.getDataForDOS, self.inventory.ids)
 
-        # plot
-        p = lc.plot2d()
+        #
+        p = lc.plot2d(); left.add(p)
+        g = lc.grid(); right.add(g)
         for dos in doslist:
             origin = domaccess.getOrigin(dos=dos)
             label='%s %s' % (origin.getTableName(), origin.id)
             p.curve(x=list(dos.e), y=list(dos.i), label=label)
+
+            row = g.row()
+            # left cell shows label
+            labelcell = row.cell()
+            loadorigin = load(actor='computation', routine='view',
+                              type=origin.getTableName(), id = origin.id)
+            labellink = lc.link(label=label, onclick=loadorigin)
+            labelcell.add(labellink)
+            # right cel shows summary
+            summarycell = row.cell()
+            summarycell.add(str(origin))
             continue
-        return p
+
+        return doc
 
 
     def _createPlot1(self, director):
