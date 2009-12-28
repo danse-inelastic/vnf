@@ -12,9 +12,6 @@
 #
 
 
-tablename = 'jobs'
-
-
 from vnfb.components.DOMAccessor import DOMAccessor as base
 
 class Accessor(base):
@@ -118,13 +115,15 @@ class Accessor(base):
 
 
     def makeLabeledQuery(self, label):
+        mastertablename = 'job'
+        
         db = self.db
         sL = db._tablemap.TableToSATable(Label)
         labelq = sqlalchemy.select(
             [sL.c.entity.label('entity'),
              sL.c.labelname.label('label'),
              ],
-            whereclause="labelname='%s' and targettable='%s'" % (label, tablename))\
+            whereclause="labelname='%s' and targettable='%s'" % (label, mastertablename))\
             .alias('labelq')
         
         st = db._tablemap.TableToSATable(JobTable)
@@ -143,6 +142,7 @@ class Accessor(base):
 
 
 
+from vnf.dom.Label import Label
 from vnfb.dom.Job import Job as JobTable
 
 
