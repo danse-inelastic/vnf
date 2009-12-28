@@ -21,7 +21,6 @@ class PhononDOS:
     matter = None
 
 
-
 # orm
 from vnfb.dom.AtomicStructure import Structure
 

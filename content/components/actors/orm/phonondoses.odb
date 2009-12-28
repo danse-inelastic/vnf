@@ -28,12 +28,34 @@ class Actor(base):
 
     class Inventory(base.Inventory):
 
-        import luban.inventory
+        import pyre.inventory
+
+        ids = pyre.inventory.list(name='ids')
 
 
     def createGraphicalView(self, director):
+        ids = self.inventory.ids
+        if ids: return self._createGraphicalViewM(director)
+        return self._createGraphicalView1(director)        
+
+
+    def _createGraphicalViewM(self, director):
+        domaccess = self._domaccess(director)
+        
+        # the document to build
+        doc = lc.document(title='Phonon density of states')
+
+        # plot
+        p = self._createPlotM(director)
+        doc.add(p)
+        
+        return doc
+
+
+    def _createGraphicalView1(self, director):
+        domaccess = self._domaccess(director)
         obj = self._load(director)
-        orm = self._initComputationOrm(director)
+        orm = domaccess.orm
         db = orm.db
         
         record = orm(obj)
@@ -54,29 +76,37 @@ class Actor(base):
         p = self.createPlot(director)
         doc.add(p)
         
-        return doc        
+        return doc
 
 
     def createPlot(self, director):
-        obj = self._load(director)
-        orm = director.clerk.orm
-        record = orm(obj)
-        
-        # the idf file
-        path = director.dds.abspath(record)
-        import os
-        f = os.path.join(path, 'data.idf')
-        
-        # check path
-        if not os.path.exists(f): return
+        ids = self.inventory.ids
+        if ids: return self._createPlotM(director)
+        return self._createPlot1(director)
 
-        # read
-        from idf import DOS
-        (t,version,comment), e, i = DOS.read(f)
+
+    def _createPlotM(self, director):
+        domaccess = self._domaccess(director)
+        doslist = map(domaccess.getDataForDOS, self.inventory.ids)
 
         # plot
         p = lc.plot2d()
-        p.curve(x=list(e), y=list(i), label='Density of states')
+        for dos in doslist:
+            origin = domaccess.getOrigin(dos=dos)
+            label='%s %s' % (origin.getTableName(), origin.id)
+            p.curve(x=list(dos.e), y=list(dos.i), label=label)
+            continue
+        return p
+
+
+    def _createPlot1(self, director):
+        domaccess = self._domaccess(director)
+
+        dos = domaccess.getDataForDOS(id=self.inventory.id)
+        
+        # plot
+        p = lc.plot2d()
+        p.curve(x=list(dos.e), y=list(dos.i), label='Density of states')
 
         return p
         
@@ -84,6 +114,11 @@ class Actor(base):
     def _initComputationOrm(self, director):
         domaccess = director.retrieveDOMAccessor('computation')
         return domaccess.orm
+
+
+    def _domaccess(self, director):
+        self._initComputationOrm(director)
+        return director.retrieveDOMAccessor('material_simulations/phonondos')
             
 
 def actor():
