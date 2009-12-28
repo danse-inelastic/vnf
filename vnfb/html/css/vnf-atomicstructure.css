@@ -90,6 +90,30 @@ margin:0.3em 2em;
 margin:1em;
 }
 
+
+/* computed properties */
+#computed-props .luban-document {
+margin-bottom:1em;
+}
+#computed-props .luban-document > .luban-document-title {
+font-style:italic;
+font-size:1.05em;
+}
+#computed-props .luban-document.collapsable > .luban-document-title {
+font-size:0.78em;
+}
+#computed-props .luban-document > .luban-document-body {
+margin-left:1em;
+padding:0;
+}
+#computed-props .luban-document.container >.luban-document-body {
+margin-left:0;
+}
+#computed-props .luban-document.collapsable > .luban-document-body {
+margin-left:0;
+}
+
+
 /* version */
 /* $Id$ */
 
