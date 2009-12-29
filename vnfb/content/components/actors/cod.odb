@@ -41,6 +41,9 @@ class Actor(base):
 
         pass # end of Inventory
 
+    def default(self, director):
+        return director.retrieveVisual("cod/frame")     
+         
         
     def debug(self, director):
         page = lc.page(title='test cod')
