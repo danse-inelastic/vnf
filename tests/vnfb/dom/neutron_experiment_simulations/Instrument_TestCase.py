@@ -1,10 +1,10 @@
-# -*- Python -*-
+#!/usr/bin/env python
 #
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 #                                   Jiao Lin
 #                      California Institute of Technology
-#                      (C) 2007-2010 All Rights Reserved
+#                      (C) 2006-2010  All Rights Reserved
 #
 # {LicenseText}
 #
@@ -12,9 +12,22 @@
 #
 
 
-class AbstraceNeutronComponent:
+import unittest
+class TestCase(unittest.TestCase):
 
-    pass # end of AbstractNeutronComponent
+    def test(self):
+        from vnfb.dom.neutron_experiment_simulations.Instrument import Instrument
+        return
+
+    
+
+def main():
+    unittest.main()
+    return
+
+
+
+if __name__ == '__main__': main()
 
 
 # version
