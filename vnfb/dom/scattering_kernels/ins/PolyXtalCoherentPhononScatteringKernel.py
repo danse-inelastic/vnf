@@ -27,7 +27,8 @@ class PolyXtalCoherentPhononScatteringKernel(base):
 from _ import AbstractScatteringKernelInventory as InvBase
 class Inventory(InvBase):
     
-    dispersion = InvBase.d.reference(name='dispersion', targettype=PhononDispersion)
+    dispersion = InvBase.d.reference(
+        name='dispersion', targettype=PhononDispersion, owned=0)
 
     Ei = InvBase.d.float(name = 'Ei', default = 70)
     
