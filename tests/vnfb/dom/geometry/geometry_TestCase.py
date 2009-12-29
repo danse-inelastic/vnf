@@ -1,4 +1,4 @@
-# -*- Python -*-
+#!/usr/bin/env python
 #
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
@@ -12,26 +12,24 @@
 #
 
 
-shapenames = [
-    'Block',
-    'Cylinder',
-    ]
+import unittest
+class TestCase(unittest.TestCase):
+
+    def test(self):
+        from vnfb.dom.geometry import shapes
+        shapes()
+        return
+
+    
+
+def main():
+    unittest.main()
+    return
 
 
-def shapes():
-    pkg = 'vnfb.dom.geometry'
 
-    def _(n):
-        m = '%s.%s' % (pkg, n)
-        m = _import(m)
-        return getattr(m, n)
-        
-    return map(_, shapenames)
+if __name__ == '__main__': main()
 
-
-def _import(m):
-    return __import__(m, {}, {}, [''])
-        
 
 # version
 __id__ = "$Id$"

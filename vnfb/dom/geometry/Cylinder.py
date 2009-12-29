@@ -37,6 +37,7 @@ Cylinder.Inventory = Inventory
 del Inventory
 
 
+from _ import o2t
 CylinderTable = o2t(Cylinder)
 
 
