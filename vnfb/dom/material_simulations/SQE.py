@@ -35,10 +35,10 @@ SQE.Inventory = Inventory
 # db table
 from ComputationResult import ComputationResult
 from _ import o2t
-PhononDOSTable = o2t(PhononDOS, {'subclassFrom': ComputationResult})
-PhononDOSTable.histogramh5 = 'sqe.h5'
-PhononDOSTable.datafiles = [
-    PhononDOSTable.histogramh5
+SQETable = o2t(SQE, {'subclassFrom': ComputationResult})
+SQETable.histogramh5 = 'sqe.h5'
+SQETable.datafiles = [
+    SQETable.histogramh5
     ]
 
 

@@ -17,7 +17,10 @@ PACKAGE = dom
 # directory structure
 
 BUILD_DIRS = \
+	geometry \
 	material_simulations \
+	neutron_experiment_simulations \
+	scattering_kernels \
 
 OTHER_DIRS = \
 
