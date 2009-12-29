@@ -20,12 +20,15 @@ import luban.content as lc
 from luban.content.FormTextField import FormTextField
 from luban.content.FormSelectorField import FormSelectorField
 from luban.content.FormSubmitButton import FormSubmitButton
+from luban.content.Button import Button
 
 def visual(director, id):
     doc = lc.document()
     doc.add(viewIndicator(director, id))
 
-    container = doc.document(id='edit-atomic-structure-form', Class='container')
+    container = doc.document(id='new-structure', Class='container')
+    
+    
 
     cancel = load(actor='atomicstructure', routine='canceledit', id = id)
     delete = [
@@ -39,8 +42,19 @@ def visual(director, id):
     deletelink = lc.link(label='delete', onclick=delete, Class='delete')
     controls.add(deletelink)
     
-    editView = director.retrieveVisual('atomicstructure/edit-structure-view')
-    container.add(view)
+    decideInput = container.document(Class='decideInputMethod')
+    btnDb = Button(label='Load from database', tip='load from database')
+    codActor = load(actor='cod', routine='default', id = id)
+    btnDb.onclick = select(id=id).replaceContent(codActor)
+    decideInput.add(btnDb)
+    btnMan = Button(label='Create manually', tip='input coordinates by hand')
+    #editView = director.retrieveVisual('atomicstructure/edit-structure-view')
+    editview = editView(director, id)
+    btnMan.onclick = select(id=id).replaceContent(editview)
+    decideInput.add(btnMan)
+    
+    #view = codview(director, id)
+    container.add(codActor)
 
     sp = container.splitter()
     left = sp.section(); right = sp.section()
@@ -59,6 +73,12 @@ def visual(director, id):
     controls2.add(deletelink2)
 
     return doc
+
+def editView(director, id):
+    domaccess = director.retrieveDOMAccessor('atomicstructure')
+    struct = domaccess.getAtomicStructure(id)
+    drawer = director.painter.paintObj.drawers.getDrawer(struct.__class__)
+    return drawer(struct)
 
 def viewIndicator(director, id):
     path = []

@@ -106,7 +106,6 @@ class Actor(base):
                                             number_records_per_page = number_records_per_page,
                                             page_number     = page_number
                                             )
-
         return tableview
 
 
@@ -122,7 +121,12 @@ class Actor(base):
         s = domaccess.newAtomicStructure()
         record = domaccess.orm(s)
         self.inventory.id = record.id
-        return self.editAtomicStructureForm(director)
+        return director.retrieveVisual(
+                                        'atomicstructure/new-structure',
+                                        director    = director,
+                                        id          = self.inventory.id
+                                      )
+        #return self.editAtomicStructureForm(director)
 
 
     def debug_editAtomicStructureForm(self, director):
@@ -168,7 +172,7 @@ class Actor(base):
         struct = domaccess.getAtomicStructure(id)
         #
         if len(struct) ==0:
-            messages.append('sorry. you have not add an atom to your structure.')
+            messages.append('sorry. you have not added an atom to your structure.')
             viewid = self.inventory.viewid
             actions.append(select(id=viewid).find(name='atoms').addClass('highlighted'))
         
