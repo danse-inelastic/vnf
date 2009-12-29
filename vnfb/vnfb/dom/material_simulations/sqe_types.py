@@ -12,11 +12,14 @@
 #
 
 
-typenames = []
+typenames = [
+    'material_simulations.SQE.SQE',
+    ]
 
-from material_simulations.computation_types import typenames as t
-typenames+=t
 
+def getTypes():
+    from vnfb.dom import importType
+    return map(importType, typenames)
 
 
 # version

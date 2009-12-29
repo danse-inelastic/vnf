@@ -26,10 +26,10 @@ class Accessor(base):
         orm = self.director.clerk.orm
         
         # build orm for all computation types
-        from vnfb.dom.computation_types import types
-        for type in types:
-            Obj = self._getObjectByImportingFromDOM(type)
-            orm(Obj)
+        from vnfb.dom.computation_types import typenames
+        for name in typenames:
+            type = self._getObjectByImportingFromDOM(name)
+            orm(type)
             continue
         #
         return orm

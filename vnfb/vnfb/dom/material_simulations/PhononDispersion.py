@@ -16,7 +16,7 @@ from _ import o2t
 
 
 # data object
-class PhononDispersion:
+class PhononDispersion(object):
 
     matter = None
 
@@ -30,9 +30,10 @@ class Inventory(InvBase):
     matter = InvBase.d.reference(
         name='matter', targettype=None, targettypes=[Structure], owned=0)
 
-    dbtablename = 'phonondoses'
+    dbtablename = 'phonondispersions'
 
 PhononDispersion.Inventory = Inventory
+del Inventory
 
 
 # db table

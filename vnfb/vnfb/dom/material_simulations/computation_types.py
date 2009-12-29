@@ -12,7 +12,7 @@
 #
 
 
-types = [
+typenames = [
     'material_simulations.BvKComputation.BvK_GetDos',
 
     # these should got to a different list like computation_related_types
