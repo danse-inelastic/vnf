@@ -37,6 +37,7 @@ Block.Inventory = Inventory
 del Inventory
 
 
+from _ import o2t
 BlockTable = o2t(Block)
 
 
