@@ -31,7 +31,11 @@ class SQEKernel(base):
 from _ import AbstractScatteringKernelInventory as InvBase, sqe_types
 class Inventory(InvBase):
 
-    sqe = InvBase.d.reference(name = 'sqe', targettype=None, targettypes=[sqe_types])
+    sqe = InvBase.d.reference(
+        name = 'sqe',
+        targettype=None, targettypes=[sqe_types],
+        owned = 0,
+        )
 
     Qmin = InvBase.d.float(name = 'Qmin', default = 0)
     Qmax = InvBase.d.float(name = 'Qmax', default = 10)

@@ -25,7 +25,11 @@ from dsaw.model.Inventory import Inventory as InvBase
 from _ import AtomicStructure
 class AbstractScatteringKernelInventory(InvBase):
 
-    matter = InvBase.d.reference(name='matter', targettype=None, targettypes=[AtomicStructure])
+    matter = InvBase.d.reference(
+        name='matter',
+        targettype=None, targettypes=[AtomicStructure],
+        owned=0,
+        )
     
 
 
