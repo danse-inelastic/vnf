@@ -14,7 +14,11 @@
 
 types = [
     'material_simulations.BvKComputation.BvK_GetDos',
+
+    # these should got to a different list like computation_related_types
     'material_simulations.PhononDOS.PhononDOS',
+    'material_simulations.PhononDispersion.PhononDispersion',
+    'material_simulations.SQE.SQE',
     ]
 
 

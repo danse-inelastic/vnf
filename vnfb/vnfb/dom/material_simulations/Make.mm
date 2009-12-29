@@ -40,7 +40,9 @@ EXPORT_PYTHON_MODULES = \
 	BvKModel.py \
 	ComputationResult.py \
 	PhononDOS.py \
+	PhononDispersion.py \
 	SimulationBase.py \
+	SQE.py \
 	__init__.py \
 	_.py \
 	computation_types.py \
