@@ -17,47 +17,14 @@
 from luban.content import load, select, alert
 import luban.content as lc
 
-from luban.content.FormTextField import FormTextField
-from luban.content.FormSelectorField import FormSelectorField
-from luban.content.FormSubmitButton import FormSubmitButton
-
 def visual(director, id):
     doc = lc.document()
     doc.add(viewIndicator(director, id))
 
-    container = doc.document(id='edit-atomic-structure-form', Class='container')
-
-    cancel = load(actor='atomicstructure', routine='canceledit', id = id)
-    delete = [
-        load(actor='atomicstructure', routine='delete', id = id),
-        load(actor='atomicstructure', routine='showListView'),
-        ]
-    
-    controls = container.document(Class='master-controls')
-    cancellink = lc.link(label='cancel', onclick=cancel, Class='cancel')
-    controls.add(cancellink)
-    deletelink = lc.link(label='delete', onclick=delete, Class='delete')
-    controls.add(deletelink)
-    
-    editView = director.retrieveVisual('atomicstructure/edit-structure-view',id=id)
-    container.add(view)
-
-    sp = container.splitter()
-    left = sp.section(); right = sp.section()
-    done = load(
-        actor='atomicstructure', routine='doneediting',
-        id = id, viewid = view.id,
-        formids = select(element=container).findDescendentIDs(type='form')
-        )
-    donebutton = lc.button(label='done', onclick=done)
-    left.add(donebutton)
-
-    controls2 = right.document(Class='master-controls')
-    cancellink2 = lc.link(label='cancel', onclick=cancel, Class='cancel')
-    controls2.add(cancellink2)
-    deletelink2 = lc.link(label='delete', onclick=delete, Class='delete')
-    controls2.add(deletelink2)
-
+    doc.document(id='edit-atomic-structure-form', Class='container')
+    importedDoc = director.retrieveVisual('atomicstructure/edit-structure-view',
+                                       id = id)
+    doc.select(id='edit-atomic-structure-form').replaceContent(importedDoc)
     return doc
 
 def viewIndicator(director, id):

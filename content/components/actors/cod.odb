@@ -38,6 +38,8 @@ class Actor(base):
 
         gamma_min = luban.inventory.float('gamma_min', validator=anglelimit, default=None)
         gamma_max = luban.inventory.float('gamma_max', validator=anglelimit, default=None)
+        
+        id = pyre.inventory.str('id')
 
         pass # end of Inventory
 
