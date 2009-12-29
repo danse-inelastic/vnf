@@ -32,13 +32,16 @@ def visual(director, id):
     decideInput.add(btnDb)
     btnMan = Button(label='Create manually', tip='input coordinates by hand')
     btnMan.onclick = select(id='new-structure-form'
-                            ).replaceContent(director.retrieveVisual('atomicstructure/edit-structure-view',
-                                       id = id))
+                            ).replaceContent(
+        director.retrieveVisual('atomicstructure/edit-structure-view',
+                                director=director,
+                                id = id))
     decideInput.add(btnMan)
 
-    doc.document(id='new-structure-form', Class='new-structure-container')
-    doc.find(id='new-structure-form'
-                           ).replaceContent(load(actor='cod', routine='default', id = id))
+    formdoc = doc.document(id='new-structure-form', Class='new-structure-container')
+    formdoc.oncreate = select(element=formdoc).replaceContent(
+        load(actor='cod', routine='default', id = id)
+        )
    
     #form = (id="login-form")
     #form.onsubmit =  select(id='login-form').submit(actor='login', routine='verify')
