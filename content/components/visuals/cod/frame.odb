@@ -1,7 +1,7 @@
 # -*- Python -*-
 
 
-from luban.content import select, load, alert
+from luban.content import select
 import luban.content as lc
 
 

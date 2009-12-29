@@ -39,7 +39,7 @@ def visual(director, id):
     deletelink = lc.link(label='delete', onclick=delete, Class='delete')
     controls.add(deletelink)
     
-    editView = director.retrieveVisual('atomicstructure/edit-structure-view')
+    editView = director.retrieveVisual('atomicstructure/edit-structure-view',id=id)
     container.add(view)
 
     sp = container.splitter()
