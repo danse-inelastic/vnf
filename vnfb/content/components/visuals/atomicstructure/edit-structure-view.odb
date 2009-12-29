@@ -7,6 +7,8 @@
 #
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
+
+from luban.content import load, select, alert
 import luban.content as lc
 
 from luban.content.FormTextField import FormTextField
