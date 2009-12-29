@@ -2,7 +2,6 @@
 #
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
-#                                  Jiao Lin
 #                     California Institute of Technology
 #                       (C) 2009  All Rights Reserved
 #
@@ -26,59 +25,24 @@ def visual(director, id):
     doc = lc.document()
     doc.add(viewIndicator(director, id))
 
-    container = doc.document(id='new-structure', Class='container')
-    
-    
-
-    cancel = load(actor='atomicstructure', routine='canceledit', id = id)
-    delete = [
-        load(actor='atomicstructure', routine='delete', id = id),
-        load(actor='atomicstructure', routine='showListView'),
-        ]
-    
-    controls = container.document(Class='master-controls')
-    cancellink = lc.link(label='cancel', onclick=cancel, Class='cancel')
-    controls.add(cancellink)
-    deletelink = lc.link(label='delete', onclick=delete, Class='delete')
-    controls.add(deletelink)
-    
-    decideInput = container.document(Class='decideInputMethod')
+    decideInput = doc.document(Class='decideInputMethod')
     btnDb = Button(label='Load from database', tip='load from database')
-    codActor = load(actor='cod', routine='default', id = id)
-    btnDb.onclick = select(id=id).replaceContent(codActor)
+    btnDb.onclick = select(id='new-structure-form'
+                           ).replaceContent(load(actor='cod', routine='default', id = id))
     decideInput.add(btnDb)
     btnMan = Button(label='Create manually', tip='input coordinates by hand')
-    #editView = director.retrieveVisual('atomicstructure/edit-structure-view')
-    editview = editView(director, id)
-    btnMan.onclick = select(id=id).replaceContent(editview)
+    btnMan.onclick = select(id='new-structure-form'
+                            ).replaceContent(director.retrieveVisual('atomicstructure/edit-structure-view',
+                                       id = id))
     decideInput.add(btnMan)
-    
-    #view = codview(director, id)
-    container.add(codActor)
 
-    sp = container.splitter()
-    left = sp.section(); right = sp.section()
-    done = load(
-        actor='atomicstructure', routine='doneediting',
-        id = id, viewid = view.id,
-        formids = select(element=container).findDescendentIDs(type='form')
-        )
-    donebutton = lc.button(label='done', onclick=done)
-    left.add(donebutton)
-
-    controls2 = right.document(Class='master-controls')
-    cancellink2 = lc.link(label='cancel', onclick=cancel, Class='cancel')
-    controls2.add(cancellink2)
-    deletelink2 = lc.link(label='delete', onclick=delete, Class='delete')
-    controls2.add(deletelink2)
-
+    doc.document(id='new-structure-form', Class='new-structure-container')
+    doc.find(id='new-structure-form'
+                           ).replaceContent(load(actor='cod', routine='default', id = id))
+   
+    #form = (id="login-form")
+    #form.onsubmit =  select(id='login-form').submit(actor='login', routine='verify')
     return doc
-
-def editView(director, id):
-    domaccess = director.retrieveDOMAccessor('atomicstructure')
-    struct = domaccess.getAtomicStructure(id)
-    drawer = director.painter.paintObj.drawers.getDrawer(struct.__class__)
-    return drawer(struct)
 
 def viewIndicator(director, id):
     path = []
