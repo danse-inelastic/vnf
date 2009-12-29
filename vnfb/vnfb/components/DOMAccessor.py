@@ -230,6 +230,8 @@ class DOMAccessor( base ):
         try:
             return self.db.getTable(name)
         except:
+            import traceback
+            self._debug.log(traceback.format_exc())
             return self._getTableByImportingFromDOM(name)
 
 
