@@ -18,7 +18,7 @@ shapenames = [
     ]
 
 
-def shapes():
+def getShapeTypes():
     pkg = 'vnfb.dom.geometry'
 
     def _(n):
