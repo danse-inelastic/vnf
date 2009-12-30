@@ -174,11 +174,84 @@ class Actor(base):
         #id = self.inventory.id #this was passed by AtomSim
         from memd.gulp.GulpSettings import GulpSettings
         gulpSettings = GulpSettings()
-        self.inventory.runtype = gulpSettings.runtype
-        self.inventory.inputFileContents = gulpSettings.inputFileContents
-        self.inventory.potential_name = gulpSettings.potential_name
+        gulpSettings.runtype = self.inventory.runtype
+        gulpSettings.inputFileContents = self.inventory.inputFileContents
+        gulpSettings.potential_name = self.inventory.potential_name
         director.clerk.orm.save(gulpSettings)
 
+#    def storeInputFile(self, director):
+#        try:
+#            page = self._retrievePage(director)
+#        except AuthenticationError, err:
+#            return err.page
+#
+#        inputFileContents = self.inventory.inputFileContents
+#        potential_name = self.inventory.potential_name
+        
+#        simulation = self._getSimulation(director)
+        from memd.gulp.GulpPotential import GulpPotential
+        try:
+            gulpPotential = director.clerk.getRecordByID(GulpPotential, self.inventory.potential_name, 
+                associatedDataFileToVerify = self.inventory.potential_filename, director=director)
+        except:
+            return "failure--cannot find selected potential in database"
+        
+        #set simulation attributes
+#        simulation.runtype = self.inventory.runtype
+#        #potential = simulation.potential.dereference(director.clerk.db)
+#        simulation.potential = gulpPotential
+#        gulpPotential.potential_name = self.inventory.potential_name
+#        #director.clerk.updateRecord(potential)
+#        director.clerk.updateRecord(simulation)
+
+        #create data directory for the simulation if necessary
+        datadir = director.dds.abspath(gulpSettings)
+        if not os.path.exists(datadir): os.makedirs(datadir)
+
+        inputFilePath = director.dds.abspath(gulpSettings, filename=GulpSettings.inputFile)
+        open(inputFilePath, 'w').write(self.inventory.inputFileContents)
+        
+        #get the potential from the database
+        potentialPath = director.dds.abspath(gulpPotential, filename=gulpPotential.filename)
+        potentialContent = open(potentialPath).read()
+        #write the potential in the simulation directory
+        simulationPotential = director.dds.abspath(gulpSettings, filename=gulpPotential.filename)
+        open(simulationPotential, 'w').write(potentialContent)        
+
+        return 'success'
+    
+    def storePotential(self, director):
+
+        potential_filename = self.inventory.potential_filename
+        librarycontent = self.inventory.librarycontent
+        
+        from memd.gulp.GulpPotential import GulpPotential
+        try:
+            gulpPotential = director.clerk.getRecordByID(GulpPotential, self.inventory.potential_name, 
+                associatedDataFileToVerify = self.inventory.potential_filename, director=director)
+        except:
+            # if it doesn't exist, create a new one from this entry
+            #gulpPotential = director.clerk.newDbObject(GulpPotential, id = self.inventory.potential_name)
+            gulpPotential = GulpPotential()
+            gulpPotential.filename = potential_filename
+            gulpPotential.creator = self.inventory.creator
+            gulpPotential.description = self.inventory.description
+            director.clerk.orm.save(gulpSettings)
+            
+            #put the potential in the potentials subdirectory
+            libfile = director.dds.abspath(gulpPotential, filename = potential_filename)
+            libDirectory,file = os.path.split(libfile)
+            if not os.path.exists(libDirectory):
+                try:
+                    os.makedirs(libDirectory)
+                except Exception, err:
+                    raise RuntimeError, "unable to create directory %r. %s: %s" % (
+                        self.path, err.__class__.__name__, err)
+            open(libfile, 'w').write(librarycontent)
+            #server = director.clerk.dereference(job.server)
+            director.dds.remember(gulpPotential, files=[potential_filename])#, server=server)
+
+        return 'success'
 
     def startFormShowError(self, director, errors=None):
         from luban.content import select
@@ -186,40 +259,12 @@ class Actor(base):
             select(id='%s-input' % name).showError(text)
             for name, text in errors.iteritems()
             ]
-
-#    def _getMatter(self, director):
-#        return director.clerk.getRecordByID(
-#            self.inventory.matter_type, self.inventory.matter_id)
-#
-#    
-#    def _getSimulation(self, director):
-#
-#        return director.clerk.getRecordByID(GulpSimulation, self.inventory.id)
     
     def __init__(self, name='forcefieldwizard'):
         super(Actor, self).__init__(name)
         return
     
-#class GulpSimulationWizard(MaterialSimulationWizard):
-
-
-#    def verifyConfiguration(self, director):
-#        try:
-#            page = self._retrievePage(director)
-#        except AuthenticationError, err:
-#            return err.page
-#
-#        gulpSimulation = self._getSimulation(director)
-#        
-#        # make sure gulp simulation is configured
-#        if isConfigured(gulpSimulation, director):
-#            return self.readyForSubmission(director)
-#        return self.configureSimulation(director)
-
     def configureSubmissionQueue(self, director):
-        
-    
-    def readyForSubmission(self, director):
 
         id = self.inventory.id
         type = self.inventory.type
@@ -241,7 +286,7 @@ class Actor(base):
         submit_link = action_link(action, director.cgihome)
         
         action = actionRequireAuthentication(
-            label = 'save it for latter submission',
+            label = 'save it for later submission',
             actor = 'gulpsimulationwizard', 
             sentry = director.sentry,
             routine = 'saveSimulation',
@@ -264,83 +309,7 @@ class Actor(base):
         return page
         
     
-    def storeInputFile(self, director):
-        try:
-            page = self._retrievePage(director)
-        except AuthenticationError, err:
-            return err.page
 
-        inputFileContents = self.inventory.inputFileContents
-        potential_name = self.inventory.potential_name
-        
-        simulation = self._getSimulation(director)
-        from vnf.dom.GulpPotential import GulpPotential
-        try:
-            gulpPotential = director.clerk.getRecordByID(GulpPotential, self.inventory.potential_name, 
-                associatedDataFileToVerify = self.inventory.potential_filename, director=director)
-        except:
-            return "failure--cannot find selected potential in database"
-        
-        #set simulation attributes
-        simulation.runtype = self.inventory.runtype
-        #potential = simulation.potential.dereference(director.clerk.db)
-        simulation.potential = gulpPotential
-        gulpPotential.potential_name = self.inventory.potential_name
-        #director.clerk.updateRecord(potential)
-        director.clerk.updateRecord(simulation)
-
-        #create data directory for the simulation if necessary
-        datadir = director.dds.abspath(simulation)
-        if not os.path.exists(datadir): os.makedirs(datadir)
-
-        inputFilePath = director.dds.abspath(simulation, filename=GulpSimulation.CONFIGURATION_FILE)
-        open(inputFilePath, 'w').write(self.inventory.inputFileContents)
-        
-        #read the potential from the database
-        potentialPath = director.dds.abspath(gulpPotential, filename=gulpPotential.filename)
-        potentialContent = open(potentialPath).read()
-        #write the potential in the simulation directory
-        simulationPotential = director.dds.abspath(simulation, filename=gulpPotential.filename)
-        open(simulationPotential, 'w').write(potentialContent)        
-
-        return 'success'
-    
-    def storePotential(self, director):
-        # quick hack to make sure we're authenticated
-        try:
-            page = self._retrievePage(director)
-        except AuthenticationError, err:
-            return err.page
-
-        potential_filename = self.inventory.potential_filename
-        librarycontent = self.inventory.librarycontent
-        
-        from vnf.dom.GulpPotential import GulpPotential
-        try:
-            gulpPotential = director.clerk.getRecordByID(GulpPotential, self.inventory.potential_name, 
-                associatedDataFileToVerify = self.inventory.potential_filename, director=director)
-        except:
-            # if it doesn't exist, create a new one from this entry
-            gulpPotential = director.clerk.newDbObject(GulpPotential, id = self.inventory.potential_name)
-            gulpPotential.filename = potential_filename
-            gulpPotential.creator = self.inventory.creator
-            gulpPotential.description = self.inventory.description
-            director.clerk.updateRecord(gulpPotential)
-            
-            #put the potential in the potentials subdirectory
-            libfile = director.dds.abspath(gulpPotential, filename = potential_filename)
-            libDirectory,file = os.path.split(libfile)
-            if not os.path.exists(libDirectory):
-                try:
-                    os.makedirs(libDirectory)
-                except Exception, err:
-                    raise RuntimeError, "unable to create directory %r. %s: %s" % (
-                        self.path, err.__class__.__name__, err)
-            open(libfile, 'w').write(librarycontent)
-            #server = director.clerk.dereference(job.server)
-            director.dds.remember(gulpPotential, files=[potential_filename])#, server=server)
-
-        return 'success'
 
 
 import os
