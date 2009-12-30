@@ -12,6 +12,20 @@
 #
 
 
+"""
+This script creates some prebuilt neutron instruments for vnf.
+
+Those prebuilt instruments are under vnfb/dom/neutron_experiment_simulations/instruments/
+Two forms of instrument files are accepted:
+ 1. instrument = dictionary of information about the instrument. eg. Test.py
+ 2. createInstrument = factory method that create an instrument in the db given this
+    application as the directory. eg. ARCS_beam.py
+
+It should be easy to make this app to accept arbitrary python file (so it is
+not limited to the files in vnfb/dom/neutron_experiment_simulations/instruments
+"""
+
+
 from luban.applications.UIApp import UIApp as base
 
 

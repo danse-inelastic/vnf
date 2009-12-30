@@ -12,20 +12,20 @@
 #
 
 
-def create(db):
-    newInstrument(
-        db=db,
-        id='Pharos',
+def createInstrument(director):
+    cinstr(
+        director,
+        name='Pharos',
         short_description='Pharos. place holder',
         long_description='long description here',
         category='ins',
         creator='vnf', date='08/11/2008',
-        componentinfos=[],
+        components=[],
         )
     return
 
 
-from _utils import new_id, newInstrument, componentinfo as ci
+from _utils import ccomp, cinstr
 
 
 # version

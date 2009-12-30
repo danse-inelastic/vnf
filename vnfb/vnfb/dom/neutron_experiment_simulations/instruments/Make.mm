@@ -30,13 +30,14 @@ all: export
 # export
 
 EXPORT_PYTHON_MODULES = \
-	Test.py \
+	Any.py \
 	ARCS_beam.py \
 	IdealPowderINS.py \
 	Pharos.py \
 	Powgen3.py \
 	SANS_NG7.py \
 	SEQUOIA.py \
+	Test.py \
 	VULCAN.py \
 	__init__.py \
 	_utils.py \
