@@ -15,6 +15,15 @@
 from Monitor import Monitor as base
 class QEMonitor(base):
 
+    Emin = -50; Emax = 50.; nE = 100
+    Qmin = 0; Qmax = 13.; nQ = 130
+
+    max_angle_in_plane = 120.
+    min_angle_in_plane = -30.
+
+    max_angle_out_of_plane = 30.
+    min_angle_out_of_plane = -30.
+    
     pass
 
 

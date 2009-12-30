@@ -16,6 +16,8 @@
 from AbstractNeutronComponent import AbstractNeutronComponent as base
 class NeutronRecorder(base):
 
+    packetsize = 10000
+    
     pass
 
 

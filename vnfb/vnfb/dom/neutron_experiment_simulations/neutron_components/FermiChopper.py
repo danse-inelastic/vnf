@@ -15,6 +15,17 @@
 from AbstractNeutronComponent import AbstractNeutronComponent as base
 class FermiChopper(base):
 
+    len = 0.1
+    w = 0.06
+    ymin = -0.325
+    ymax = 0.325
+    nu =600
+    delta = 0.0
+    tc = 0.0
+    nchans = 10
+    bw = 0.0005
+    blader = 0.5
+
     pass
 
 

@@ -15,6 +15,13 @@
 from AbstractNeutronComponent import AbstractNeutronComponent as base
 class T0Chopper(base):
 
+    len = 0.1
+    w1 = w2 = 0.06
+    ymin = -0.05; ymax = 0.05
+    nu = 300
+    delta = 0.0
+    tc = 0.
+
     pass
 
 

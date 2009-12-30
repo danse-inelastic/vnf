@@ -17,6 +17,10 @@ from AbstractNeutronComponent import AbstractNeutronComponent as base
 class SNSModerator(base):
 
     neutronprofile = None
+    width = height = 0.1
+    dist = 2.5
+    xw = yh = 0.1
+    Emin = 0; Emax = 100
     
     pass
 

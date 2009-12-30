@@ -15,6 +15,7 @@
 from Monitor import Monitor as base
 class QMonitor(base):
 
+    Qmin = 0.; Qmax = 13.; nQ = 130
     pass
 
 

@@ -3,10 +3,10 @@ def createInstrument(
     instrumentinfo,
     orm,
     ):
-
+    '''create an instrument from a instrument info dictionary (see Test.py for an example)
+    and save it to db by using the given orm
+    '''
     from vnfb.dom.neutron_experiment_simulations.Instrument import Instrument
-    from vnfb.dom.neutron_experiment_simulations.GeometricalRelation import GeometricalRelation
-    
     
     instrument = Instrument()
     instrument.short_description = instrumentinfo['short_description']
@@ -14,7 +14,6 @@ def createInstrument(
     instrument.category = instrumentinfo['category']
 
     components = []; instrument.components = components
-    geo_relations = []; instrument.geometrical_relations = geo_relations
     
     for name, (type, kwds), (position, orientation, reference) \
             in instrumentinfo['components']:
@@ -22,12 +21,10 @@ def createInstrument(
         component = createComponent(type, kwds)
         components.append(component)
 
-        geo_relation = GeometricalRelation()
-        geo_relation.targetname = name
-        geo_relation.position = position
-        geo_relation.orientation = _tomatrix(orientation)
-        geo_relation.referencename = reference
-        geo_relations.append(geo_relation)
+        component.componentname = name
+        component.position = position
+        component.orientation = _tomatrix(orientation)
+        component.referencename = reference
         continue
 
     orm.save(instrument)
@@ -64,3 +61,31 @@ def createComponent(typename, kwds):
 
 
 
+# convenient function only for the instrument modules in this subpackage
+def ccomp(name, component, geoinfo):
+    position, orientation, reference = geoinfo
+    component.componentname = name
+    component.position = position
+    component.orientation = _tomatrix(orientation)
+    component.referencename = reference
+    return component
+    
+def cinstr(director, name, short_description, long_description, category, creator, date, components):
+    'name must be unique'
+    from _ import Instrument
+    instrument = Instrument()
+    instrument.short_description = short_description
+    instrument.long_description = long_description
+    instrument.category = category
+    instrument.components = components
+
+    orm = director.clerk.orm
+    orm.save(instrument)
+
+    r = orm(instrument)
+    r.name = name
+    r.creator = creator
+    r.date = date
+    orm.db.updateRecord(r)
+
+    return instrument

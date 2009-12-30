@@ -25,7 +25,7 @@ class CreateInstrumentsApp(base):
 
 
     def main(self, *args, **kwds):
-        instruments = map(self._getInstrumentInfo, self.inventory.instruments)
+        instruments = self.inventory.instruments
         self._createInstruments(instruments)
         return
 
@@ -37,20 +37,26 @@ class CreateInstrumentsApp(base):
 
 
     def _createInstrument(self, instrument):
+        module = self._importInstrumentModule(instrument)
+        
+        fkey = 'createInstrument'
+        if hasattr(module, fkey):
+            f = getattr(module, fkey)
+            return f(self)
+
+        instrument = getattr(module, 'instrument')
+        
         orm = self.clerk.orm
         from vnfb.dom.neutron_experiment_simulations.instruments import createInstrument
         createInstrument(instrument, orm)
+        
         return
 
 
-    def _getInstrumentInfo(self, name):
-        return self._importInstrumentInfo(name)
-
-
-    def _importInstrumentInfo(self, name):
-        n = 'neutron_experiment_simulations.instruments.%s.instrument' % name
-        from vnfb.dom import importType
-        return importType(n)
+    def _importInstrumentModule(self, name):
+        n = 'neutron_experiment_simulations.instruments.%s' % name
+        from vnfb.dom import _import
+        return _import(n)
 
 
     def _getPrivateDepositoryLocations(self):

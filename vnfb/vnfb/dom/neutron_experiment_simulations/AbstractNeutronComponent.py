@@ -14,7 +14,12 @@
 
 class AbstractNeutronComponent(object):
 
-    short_description = ''
+    componentname = ''
+    position = [0.,0.,0.]
+    orientation = [[1.,0.,0.],
+                   [0.,1.,0.],
+                   [0.,0.,1.],]
+    referencename = ''
     
     pass # end of AbstractNeutronComponent
 
@@ -22,7 +27,11 @@ class AbstractNeutronComponent(object):
 from dsaw.model.Inventory import Inventory as InvBase
 class Inventory(InvBase):
 
-    short_description = InvBase.d.str(name='short_description')
+    componentname = InvBase.d.str(name='componentname')
+    position = InvBase.d.array(name='position', elementtype='float', shape=3)
+    orientation = InvBase.d.array(name='orientation', elementtype='float', shape=(3,3))
+    referencename = InvBase.d.str(name='referencename')
+
 
 AbstractNeutronComponent.Inventory = Inventory
 del Inventory
