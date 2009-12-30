@@ -26,6 +26,7 @@ distclean::
 EXPORT_DATAFILES = \
 	addbvkmodelstodb.py \
 	createdefaultformulaformatters.py \
+	createdataobject.py \
 	createtable.py \
 	createInstruments.py \
 	destroydb.py \

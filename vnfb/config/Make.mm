@@ -26,6 +26,7 @@ EXPORT_DATAFILES = \
 	SimpleHttpServer.pml \
 	app-extension.odb \
 	itaskapp.pml \
+	createdataobject.pml \
 	clerk.pml \
 	clerk.odb \
 	createInstruments.pml \
