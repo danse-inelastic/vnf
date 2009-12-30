@@ -4,7 +4,7 @@
 #
 #                                   Jiao Lin
 #                      California Institute of Technology
-#                      (C) 2007-2010 All Rights Reserved
+#                        (C) 2008  All Rights Reserved
 #
 # {LicenseText}
 #
@@ -12,9 +12,13 @@
 #
 
 
-class AbstractNeutronComponent(object):
+typenames = [
+    'neutron_experiment_simulations.neutron_components.ChanneledGuide.ChanneledGuide',
+    ]
 
-    pass # end of AbstractNeutronComponent
+def getTypes():
+    from vnfb.dom import importType
+    return map(importType, typenames)
 
 
 # version

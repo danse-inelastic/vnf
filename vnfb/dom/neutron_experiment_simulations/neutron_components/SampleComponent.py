@@ -4,7 +4,7 @@
 #
 #                                   Jiao Lin
 #                      California Institute of Technology
-#                      (C) 2007-2010 All Rights Reserved
+#                        (C) 2008  All Rights Reserved
 #
 # {LicenseText}
 #
@@ -12,9 +12,14 @@
 #
 
 
-class AbstractNeutronComponent(object):
+from AbstractNeutronComponent import AbstractNeutronComponent as base
+class SampleComponent(base):
 
-    pass # end of AbstractNeutronComponent
+    name = 'samplecomponents'
+
+    import dsaw.db
+
+    pass # end of SampleComponent
 
 
 # version

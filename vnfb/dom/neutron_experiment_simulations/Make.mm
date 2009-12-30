@@ -17,6 +17,7 @@ PACKAGE = dom/neutron_experiment_simulations
 # directory structure
 
 BUILD_DIRS = \
+	neutron_components \
 
 OTHER_DIRS = \
 
