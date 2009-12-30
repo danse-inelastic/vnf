@@ -11,6 +11,7 @@
     <component name="debug">
       <property name="ipa">off</property>
       <property name="db">off</property>
+      <property name="clerk">on</property>
       <property name="dds">on</property>
       <property name="pyre.inventory.curator">off</property>
       <property name="itaskapp">on</property>

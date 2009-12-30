@@ -160,7 +160,7 @@ class DbApp(Script):
 
 
     def _getPrivateDepositoryLocations(self):
-        return ['../config']
+        return ['../config', '../content/components', '/tmp/luban-services']
     
 
 
