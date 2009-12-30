@@ -22,7 +22,7 @@ class SNSModerator(base):
 
 
 from SNSModeratorMCSimulatedData import SNSModeratorMCSimulatedData
-from dsaw.model.Inventory import Inventory as InvBase
+InvBase=base.Inventory
 class Inventory(InvBase):
     
     width = InvBase.d.float(name='width', default=0.1)

@@ -18,7 +18,7 @@ class QEMonitor(base):
     pass
 
 
-from dsaw.model.Inventory import Inventory as InvBase
+InvBase=base.Inventory
 class Inventory(InvBase):
 
     Emin = InvBase.d.float( name = 'Emin', default = -50. )

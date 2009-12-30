@@ -18,7 +18,7 @@ class ChanneledGuide(base):
     pass # end of ChanneledGuide
 
 
-from dsaw.model.Inventory import Inventory as InvBase
+InvBase=base.Inventory
 class Inventory(InvBase):
     
     w1 = InvBase.d.float(name='w1', default=0.1, validator=InvBase.v.positive)

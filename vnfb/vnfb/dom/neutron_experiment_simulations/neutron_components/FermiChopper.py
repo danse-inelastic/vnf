@@ -18,7 +18,7 @@ class FermiChopper(base):
     pass
 
 
-from dsaw.model.Inventory import Inventory as InvBase
+InvBase=base.Inventory
 class Inventory(InvBase):
 
     len = InvBase.d.float(name='len', default=0.1)

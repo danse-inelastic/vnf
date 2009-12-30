@@ -20,8 +20,6 @@ class SNSModeratorMCSimulatedData(object):
 
 
 
-from vnfb.dom.neutron_experiment_simulations.Instrument import Instrument
-
 from dsaw.model.Inventory import Inventory as InvBase
 class Inventory(InvBase):
 

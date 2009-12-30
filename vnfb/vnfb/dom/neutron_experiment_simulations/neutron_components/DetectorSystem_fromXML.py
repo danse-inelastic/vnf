@@ -18,7 +18,7 @@ class DetectorSystem_fromXML(base):
     pass
 
 
-from dsaw.model.Inventory import Inventory as InvBase
+InvBase=base.Inventory
 class Inventory(InvBase):
 
     tofmin = InvBase.d.float(name='tofmin', default=3000., validator=InvBase.v.positive)
