@@ -16,13 +16,24 @@
 from AbstractNeutronComponent import AbstractNeutronComponent as base
 class NeutronRecorder(base):
 
-    name = 'neutronrecorders'
+    pass
 
-    import dsaw.db
 
-    packetsize = dsaw.db.integer(name='packetsize', default=10000)
+from dsaw.model.Inventory import Inventory as InvBase
+class Inventory(InvBase):
 
-    pass # end of NeutronRecorder
+    packetsize = InvBase.d.int(name='packetsize', default=10000, validator=InvBase.v.positive)
+
+    dbtablename = 'neutronrecorders'
+
+
+
+NeutronRecorder.Inventory = Inventory
+del Inventory
+
+
+from _ import o2t
+NeutronRecorderTable = o2t(NeutronRecorder)
 
 
 # version

@@ -14,25 +14,36 @@
 
 from SampleComponent import SampleComponent as base
 class VanadiumPlate(base):
+    pass
 
-    name = 'vanadiumplates'
 
-    import dsaw.db
+from dsaw.model.Inventory import Inventory as InvBase
+class Inventory(InvBase):
 
     # dimensions (unit: meter)
-    width = dsaw.db.real(name='width', default=0.05)
-    height = dsaw.db.real(name='height', default=0.10)
-    thickness = dsaw.db.real(name='thickness', default=0.002)
+    width = InvBase.d.float(name='width', default=0.05, validator=InvBase.v.positive)
+    height = InvBase.d.float(name='height', default=0.10, validator=InvBase.v.positive)
+    thickness = InvBase.d.float(name='thickness', default=0.002, validator=InvBase.v.positive)
 
     # target definition
-    target_radius = dsaw.db.real(name='target_radius', default=0)
-    target_radius.meta['tip'] = 'radius of disk containg target. use 0 for full space'
+    target_radius = InvBase.d.float(name='target_radius', default=0)
+    target_radius.tip = 'radius of disk containg target. use 0 for full space'
     
-    target_position = dsaw.db.doubleArray(name='target_position', default=(0,0,0))
+    target_position = InvBase.d.array(name='target_position', elementtype='float', default=(0,0,0))
     
-    pass # end of Vanadiumplates
+    dbtablename = 'vanadiumplates'
+
+    
+VanadiumPlate.Inventory = Inventory
+del Inventory
 
 
+from _ import o2t
+VanadiumPlateTable = o2t(VanadiumPlate)
+
+
+
+# obsolete ...
 def inittable(db):
     Table = VanadiumPlate
     def new(id, short_description, width, height, thickness, target_radius, target_position):

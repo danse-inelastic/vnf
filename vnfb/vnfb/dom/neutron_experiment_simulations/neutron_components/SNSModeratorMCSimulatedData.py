@@ -12,24 +12,36 @@
 #
 
 
-from dsaw.db.Table import Table
+class SNSModeratorMCSimulatedData(object):
 
-class SNSModeratorMCSimulatedData(Table):
+    instrument = None
 
-    name = 'snsmoderatormcsimulateddata'
-
-    import dsaw.db
-
-    id = dsaw.db.varchar(name='id', length=128, default='')
-    id.constraints  = 'PRIMARY KEY'
-    
-    instrument = dsaw.db.varchar(name='instrument', length=32, default='')
-
-    datafiles = ['profile.dat']
-
-    pass # end of SNSModerator
+    pass
 
 
+
+from vnfb.dom.neutron_experiment_simulations.Instrument import Instrument
+
+from dsaw.model.Inventory import Inventory as InvBase
+class Inventory(InvBase):
+
+    instrument = InvBase.d.reference(name='instrument', targettype=Instrument)
+
+    dbtablename = 'snsmoderatormcsimulateddata'
+
+
+
+SNSModeratorMCSimulatedData.Inventory = Inventory
+del Inventory
+
+
+from _ import o2t
+SNSModeratorMCSimulatedDataTable = o2t(SNSModeratorMCSimulatedData)
+
+SNSModeratorMCSimulatedDataTable.datafiles = ['profile.dat']
+
+
+# obsolete...
 def inittable(db):
 
     def data(id, instrument):

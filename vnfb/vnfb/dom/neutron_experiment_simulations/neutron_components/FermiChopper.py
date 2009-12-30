@@ -15,22 +15,32 @@
 from AbstractNeutronComponent import AbstractNeutronComponent as base
 class FermiChopper(base):
 
-    name = 'fermichoppers'
+    pass
 
-    import dsaw.db
 
-    len = dsaw.db.real(name='len', default=0.1)
-    w = dsaw.db.real(name='w', default=0.06)
-    ymin = dsaw.db.real(name='ymin', default=-.0325)
-    ymax = dsaw.db.real(name='ymax', default=.0325)
-    nu = dsaw.db.integer(name='nu', default=600)
-    delta = dsaw.db.real(name='delta', default=0.0)
-    tc = dsaw.db.real(name='tc', default=0.0)
-    nchans = dsaw.db.integer(name='nchans', default=10)
-    bw = dsaw.db.real(name='bw', default=0.0005)
-    blader = dsaw.db.real(name='blader', default=0.5)    
+from dsaw.model.Inventory import Inventory as InvBase
+class Inventory(InvBase):
 
-    pass # end of FermiChopper
+    len = InvBase.d.float(name='len', default=0.1)
+    w = InvBase.d.float(name='w', default=0.06)
+    ymin = InvBase.d.float(name='ymin', default=-.0325)
+    ymax = InvBase.d.float(name='ymax', default=.0325)
+    nu = InvBase.d.int(name='nu', default=600)
+    delta = InvBase.d.float(name='delta', default=0.0)
+    tc = InvBase.d.float(name='tc', default=0.0)
+    nchans = InvBase.d.int(name='nchans', default=10)
+    bw = InvBase.d.float(name='bw', default=0.0005)
+    blader = InvBase.d.float(name='blader', default=0.5)    
+
+    dbtablename = 'fermichoppers'
+
+
+FermiChopper.Inventory = Inventory
+del Inventory
+
+
+from _ import o2t
+FermiChopperTable = o2t(FermiChopper)
 
 
 # version

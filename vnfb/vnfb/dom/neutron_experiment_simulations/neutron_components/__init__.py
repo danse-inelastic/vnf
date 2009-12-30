@@ -14,6 +14,18 @@
 
 typenames = [
     'neutron_experiment_simulations.neutron_components.ChanneledGuide.ChanneledGuide',
+    'neutron_experiment_simulations.neutron_components.DetectorSystem_fromXML.DetectorSystem_fromXML',
+    'neutron_experiment_simulations.neutron_components.EMonitor.EMonitor',
+    'neutron_experiment_simulations.neutron_components.FermiChopper.FermiChopper',
+    'neutron_experiment_simulations.neutron_components.MonochromaticSource.MonochromaticSource',
+    'neutron_experiment_simulations.neutron_components.NeutronRecorder.NeutronRecorder',
+    'neutron_experiment_simulations.neutron_components.QEMonitor.QEMonitor',
+    'neutron_experiment_simulations.neutron_components.QMonitor.QMonitor',
+    'neutron_experiment_simulations.neutron_components.SNSModerator.SNSModerator',
+    'neutron_experiment_simulations.neutron_components.SphericalPSD.SphericalPSD',
+    'neutron_experiment_simulations.neutron_components.T0Chopper.T0Chopper',
+    'neutron_experiment_simulations.neutron_components.TofMonitor.TofMonitor',
+    'neutron_experiment_simulations.neutron_components.VanadiumPlate.VanadiumPlate',
     ]
 
 def getTypes():
