@@ -15,15 +15,26 @@
 from Monitor import Monitor as base
 class SphericalPSD(base):
 
-    name = 'sphericalpsds'
+    pass
 
-    import dsaw.db
 
-    radius = dsaw.db.real( name = 'radius', default = 3. )
-    ncolumns = dsaw.db.integer( name = 'ncolumns', default = 100 )
-    nrows = dsaw.db.integer( name = 'nrows', default = 100 )
+from dsaw.model.Inventory import Inventory as InvBase
+class Inventory(InvBase):
 
-    pass # end of TofMonitor
+    radius = InvBase.d.float( name = 'radius', default = 3., validator=InvBase.v.positive )
+    ncolumns = InvBase.d.int( name = 'ncolumns', default = 100, validator=InvBase.v.positive)
+    nrows = InvBase.d.int( name = 'nrows', default = 100, validator=InvBase.v.positive)
+    
+    dbtablename = 'sphericalpsds'
+
+
+
+SphericalPSD.Inventory = Inventory
+del Inventory
+
+
+from _ import o2t
+SphericalPSDTable = o2t(SphericalPSD)
 
 
 # version

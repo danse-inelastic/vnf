@@ -15,20 +15,30 @@
 from Monitor import Monitor as base
 class TofMonitor(base):
 
-    name = 'tofmonitors'
+    pass
 
-    import dsaw.db
 
-    tmin = dsaw.db.real( name = 'tmin', default = 3000e-6 )
-    tmax = dsaw.db.real( name = 'tmax', default = 6000e-6  )
-    x_min = dsaw.db.real( name = 'x_min', default = -0.1 )
-    x_max = dsaw.db.real( name = 'x_max', default = 0.1 )
-    y_min = dsaw.db.real( name = 'y_min', default = -0.1 )
-    y_max = dsaw.db.real( name = 'y_max', default = 0.1 )
+from dsaw.model.Inventory import Inventory as InvBase
+class Inventory(InvBase):
+
+    tmin = InvBase.d.float( name = 'tmin', default = 3000e-6 )
+    tmax = InvBase.d.float( name = 'tmax', default = 6000e-6  )
+    x_min = InvBase.d.float( name = 'x_min', default = -0.1 )
+    x_max = InvBase.d.float( name = 'x_max', default = 0.1 )
+    y_min = InvBase.d.float( name = 'y_min', default = -0.1 )
+    y_max = InvBase.d.float( name = 'y_max', default = 0.1 )
     
-    nchan = dsaw.db.integer( name = 'nchan', default = 100 )
+    nchan = InvBase.d.int( name = 'nchan', default = 100, validator=InvBase.v.positive)
 
-    pass # end of TofMonitor
+    dbtablename = 'tofmonitors'
+
+
+TofMonitor.Inventory = Inventory
+del Inventory
+
+
+from _ import o2t
+TofMonitorTable = o2t(TofMonitor)
 
 
 # version

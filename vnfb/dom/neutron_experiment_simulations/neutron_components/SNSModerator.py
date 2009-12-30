@@ -12,25 +12,29 @@
 #
 
 
-from SNSModeratorMCSimulatedData import SNSModeratorMCSimulatedData
 
 from AbstractNeutronComponent import AbstractNeutronComponent as base
 class SNSModerator(base):
 
-    name = 'snsmoderators'
+    neutronprofile = None
+    
+    pass
 
-    import dsaw.db
 
-    width = dsaw.db.real(name='width', default=0.1)
-    height = dsaw.db.real(name='height', default=0.1)
-    dist = dsaw.db.real(name='dist', default=2.5)
-    xw = dsaw.db.real(name='xw', default=0.1)
-    yh = dsaw.db.real(name='yh', default=0.1)
-    Emin = dsaw.db.real(name='Emin', default=0)
-    Emax = dsaw.db.real(name='Emax', default=100)
-    neutronprofile = dsaw.db.reference(name='neutronprofile', table=SNSModeratorMCSimulatedData)
+from SNSModeratorMCSimulatedData import SNSModeratorMCSimulatedData
+from dsaw.model.Inventory import Inventory as InvBase
+class Inventory(InvBase):
+    
+    width = InvBase.d.float(name='width', default=0.1)
+    height = InvBase.d.float(name='height', default=0.1)
+    dist = InvBase.d.float(name='dist', default=2.5)
+    xw = InvBase.d.float(name='xw', default=0.1)
+    yh = InvBase.d.float(name='yh', default=0.1)
+    Emin = InvBase.d.float(name='Emin', default=0)
+    Emax = InvBase.d.float(name='Emax', default=100)
+    neutronprofile = InvBase.d.reference(name='neutronprofile', targettype=SNSModeratorMCSimulatedData)
 
-    pass # end of SNSModerator
+    dbtablename = 'snsmoderators'
 
 
 # version

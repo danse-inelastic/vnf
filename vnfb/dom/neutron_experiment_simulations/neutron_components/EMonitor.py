@@ -15,20 +15,30 @@
 from Monitor import Monitor as base
 class EMonitor(base):
 
-    name = 'emonitors'
+    pass
 
-    import dsaw.db
 
-    Emin = dsaw.db.real( name = 'Emin', default = 10 )
-    Emax = dsaw.db.real( name = 'Emax', default = 100 )
-    x_min = dsaw.db.real( name = 'x_min', default = -0.1 )
-    x_max = dsaw.db.real( name = 'x_max', default = 0.1 )
-    y_min = dsaw.db.real( name = 'y_min', default = -0.1 )
-    y_max = dsaw.db.real( name = 'y_max', default = 0.1 )
+from dsaw.model.Inventory import Inventory as InvBase
+class Inventory(InvBase):
+
+    Emin = InvBase.d.float( name = 'Emin', default = 10 )
+    Emax = InvBase.d.float( name = 'Emax', default = 100 )
+    x_min = InvBase.d.float( name = 'x_min', default = -0.1 )
+    x_max = InvBase.d.float( name = 'x_max', default = 0.1 )
+    y_min = InvBase.d.float( name = 'y_min', default = -0.1 )
+    y_max = InvBase.d.float( name = 'y_max', default = 0.1 )
     
-    nchan = dsaw.db.integer( name = 'nchan', default = 100 )
+    nchan = InvBase.d.int( name = 'nchan', default = 100, validator=InvBase.v.positive)
     
-    pass # end of EMonitor
+    dbtablename = 'emonitors'
+
+
+EMonitor.Inventory = Inventory
+del Inventory
+
+
+from _ import o2t
+EMonitorTable = o2t(EMonitor)
 
 
 # version

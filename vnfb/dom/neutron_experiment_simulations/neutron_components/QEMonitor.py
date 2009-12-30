@@ -15,28 +15,38 @@
 from Monitor import Monitor as base
 class QEMonitor(base):
 
-    name = 'qemonitors'
+    pass
 
-    import dsaw.db
 
-    Emin = dsaw.db.real( name = 'Emin', default = -50. )
-    Emax = dsaw.db.real( name = 'Emax', default = 50. )
-    nE = dsaw.db.integer( name = 'nE', default = 100)
+from dsaw.model.Inventory import Inventory as InvBase
+class Inventory(InvBase):
 
-    Qmin = dsaw.db.real( name = 'Qmin', default = 0. )
-    Qmax = dsaw.db.real( name = 'Qmax', default = 13.  )
-    nQ = dsaw.db.integer( name = 'nQ', default = 130 )
+    Emin = InvBase.d.float( name = 'Emin', default = -50. )
+    Emax = InvBase.d.float( name = 'Emax', default = 50. )
+    nE = InvBase.d.int( name = 'nE', default = 100)
 
-    max_angle_in_plane = dsaw.db.real(
+    Qmin = InvBase.d.float( name = 'Qmin', default = 0. )
+    Qmax = InvBase.d.float( name = 'Qmax', default = 13.  )
+    nQ = InvBase.d.int( name = 'nQ', default = 130 )
+
+    max_angle_in_plane = InvBase.d.float(
         name = 'max_angle_in_plane', default = 120. )
-    min_angle_in_plane = dsaw.db.real(
+    min_angle_in_plane = InvBase.d.float(
         name = 'min_angle_in_plane', default = -30 )
-    max_angle_out_of_plane = dsaw.db.real(
+    max_angle_out_of_plane = InvBase.d.float(
         name = 'max_angle_out_of_plane', default = 30 )
-    min_angle_out_of_plane = dsaw.db.real(
+    min_angle_out_of_plane = InvBase.d.float(
         name = 'min_angle_out_of_plane', default = -30 )
     
-    pass # end of QEMonitor
+    dbtablename = 'qemonitors'
+
+
+QEMonitor.Inventory = Inventory
+del Inventory
+
+
+from _ import o2t
+QEMonitorTable = o2t(QEMonitor)
 
 
 # version

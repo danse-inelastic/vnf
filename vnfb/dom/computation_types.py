@@ -16,7 +16,8 @@ typenames = []
 deps_typenames = []
 
 
-from material_simulations.computation_types import typenames as ts, deps_typenames as dts
+from material_simulations.computation_types import \
+     typenames as ts, deps_typenames as dts
 typenames+=ts
 deps_typenames+=dts
 

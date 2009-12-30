@@ -15,10 +15,6 @@
 from AbstractNeutronComponent import AbstractNeutronComponent as base
 class SampleComponent(base):
 
-    name = 'samplecomponents'
-
-    import dsaw.db
-
     pass # end of SampleComponent
 
 
