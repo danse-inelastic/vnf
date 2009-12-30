@@ -18,7 +18,7 @@ class SphericalPSD(base):
     pass
 
 
-from dsaw.model.Inventory import Inventory as InvBase
+InvBase=base.Inventory
 class Inventory(InvBase):
 
     radius = InvBase.d.float( name = 'radius', default = 3., validator=InvBase.v.positive )

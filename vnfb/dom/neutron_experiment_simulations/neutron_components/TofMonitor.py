@@ -26,7 +26,7 @@ class TofMonitor(base):
     pass
 
 
-from dsaw.model.Inventory import Inventory as InvBase
+InvBase=base.Inventory
 class Inventory(InvBase):
 
     tmin = InvBase.d.float( name = 'tmin', default = 3000e-6 )

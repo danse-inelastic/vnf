@@ -18,7 +18,7 @@ class QMonitor(base):
     pass
 
 
-from dsaw.model.Inventory import Inventory as InvBase
+InvBase=base.Inventory
 class Inventory(InvBase):
 
     Qmin = InvBase.d.float( name = 'Qmin', default = 0. )

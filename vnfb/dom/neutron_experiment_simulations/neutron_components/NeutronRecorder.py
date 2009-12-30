@@ -19,7 +19,7 @@ class NeutronRecorder(base):
     pass
 
 
-from dsaw.model.Inventory import Inventory as InvBase
+InvBase=base.Inventory
 class Inventory(InvBase):
 
     packetsize = InvBase.d.int(name='packetsize', default=10000, validator=InvBase.v.positive)

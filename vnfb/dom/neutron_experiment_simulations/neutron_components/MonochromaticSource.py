@@ -18,7 +18,7 @@ class MonochromaticSource(base):
     pass
 
 
-from dsaw.model.Inventory import Inventory as InvBase
+InvBase=base.Inventory
 class Inventory(InvBase):
 
     energy = InvBase.d.float( name = 'energy', default = 70. )

@@ -17,7 +17,7 @@ class VanadiumPlate(base):
     pass
 
 
-from dsaw.model.Inventory import Inventory as InvBase
+InvBase=base.Inventory
 class Inventory(InvBase):
 
     # dimensions (unit: meter)

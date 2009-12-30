@@ -19,7 +19,7 @@ class T0Chopper(base):
 
 
 
-from dsaw.model.Inventory import Inventory as InvBase
+InvBase=base.Inventory
 class Inventory(InvBase):
 
     len = InvBase.d.float(name='len', default=0.1, validator=InvBase.v.positive)
