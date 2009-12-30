@@ -14,23 +14,21 @@
 
 # a special instrument for the purpose of supporting privilege checking
 
-def create(db):
-    newInstrument(
-        db=db,
-        id='any',
+def createInstrument(director):
+    return cinstr(
+        director,
+        name='any',
         short_description='Special instrument for privilege checking',
         long_description='''Special fake instrument for privilege checking''',
         category='Test',
         creator='vnf',
         date='12/29/2008',
-        componentinfos=[],
+        components=[],
         status = 'offline',
         )
-    
-    return
 
 
-from _utils import new_id, newInstrument, componentinfo as ci
+from _utils import ccomp, cinstr
 
 
 # version

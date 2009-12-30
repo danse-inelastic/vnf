@@ -12,7 +12,7 @@
 #
 
 
-def create(db):
+def createInstrument(director):
     newInstrument(
         db=db,
         id='SEQUOIA',
@@ -25,7 +25,7 @@ def create(db):
     return
 
 
-from _utils import new_id, newInstrument, componentinfo as ci
+from _utils import ccomp, cinstr
 
 
 # version

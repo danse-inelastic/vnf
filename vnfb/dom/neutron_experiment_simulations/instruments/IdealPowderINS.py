@@ -20,14 +20,12 @@ from vnfb.dom.neutron_experiment_simulations.neutron_components.QEMonitor import
 
 def source():
     c = MonochromaticSource()
-    c.id = new_id()
     c.energy = 70
     return c
     
 
 def monitor():
     c = QEMonitor()
-    c.id = new_id()
     
     c.Emin = -50
     c.Emax = 50
@@ -47,32 +45,30 @@ def monitor():
 
 def sample():
     c = SampleComponent()
-    c.id = new_id()
     return c
 
 
-def create(db):
-    componentinfos = [
-        ci('source', source(), ( (0,0,0), (0,0,0), '' ) ),
-        ci('sample', sample(), ( (0,0,3), (0,0,0), '' ) ),
-        ci('monitor', monitor(), ( (0,0,3), (0,0,0), '' ) ),
+def createInstrument(director):
+    components = [
+        ccomp('source', source(), ( (0,0,0), (0,0,0), '' ) ),
+        ccomp('sample', sample(), ( (0,0,3), (0,0,0), '' ) ),
+        ccomp('monitor', monitor(), ( (0,0,3), (0,0,0), '' ) ),
         ]
     
-    newInstrument(
-        db=db,
-        id='IdealPowderINS',
+    return cinstr(
+        director,
+        name='IdealPowderINS',
         short_description='Ideal INS instrument for powder sample',
         long_description='''Ideal inelastic neutron scattering instrument for powder sample''',
         category='ins',
         creator='vnf',
         date='12/16/2008',
-        componentinfos=componentinfos,
+        components=components,
         )
     
-    return
 
 
-from _utils import new_id, newInstrument, componentinfo as ci
+from _utils import ccomp, cinstr
 
 
 # version

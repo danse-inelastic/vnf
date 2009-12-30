@@ -70,7 +70,11 @@ def ccomp(name, component, geoinfo):
     component.referencename = reference
     return component
     
-def cinstr(director, name, short_description, long_description, category, creator, date, components):
+def cinstr(
+    director,
+    name, short_description, long_description, category,
+    creator, date, components,
+    status='online'):
     'name must be unique'
     from _ import Instrument
     instrument = Instrument()
@@ -86,6 +90,7 @@ def cinstr(director, name, short_description, long_description, category, creato
     r.name = name
     r.creator = creator
     r.date = date
+    r.status = status
     orm.db.updateRecord(r)
 
     return instrument
