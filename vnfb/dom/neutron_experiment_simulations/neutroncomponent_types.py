@@ -1,4 +1,4 @@
-typenames = []
+from neutron_components import typenames
 
 
 def getTypes():

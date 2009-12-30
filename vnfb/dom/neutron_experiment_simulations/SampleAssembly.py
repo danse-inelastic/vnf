@@ -39,8 +39,8 @@ del Inventory
 
 
 # orm
-from _ import o2t, OwnedObject
-SampleAssemblyTable = o2t(SampleAssembly, {'subclassFrom': OwnedObject})
+from _ import o2t, AbstractOwnedObjectBase
+SampleAssemblyTable = o2t(SampleAssembly, {'subclassFrom': AbstractOwnedObjectBase})
 
 
 

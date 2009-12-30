@@ -15,6 +15,14 @@
 from Monitor import Monitor as base
 class TofMonitor(base):
 
+    tmin = 3000e-6
+    tmax = 6000e-6
+    x_min = -0.1
+    x_max = 0.1
+    y_min = -0.1
+    y_max = 0.1
+    nchan = 100
+
     pass
 
 

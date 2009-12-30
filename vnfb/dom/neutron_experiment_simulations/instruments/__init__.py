@@ -4,7 +4,7 @@
 #
 #                                   Jiao Lin
 #                      California Institute of Technology
-#                        (C) 2008  All Rights Reserved
+#                      (C) 2006-2010  All Rights Reserved
 #
 # {LicenseText}
 #
@@ -12,9 +12,7 @@
 #
 
 
-thispackage = 'vnfb.dom.instruments'
-
-instruments = [
+instrument_names = [
     'ARCS_beam',
     'IdealPowderINS',
     'SANS_NG7',
@@ -26,15 +24,7 @@ instruments = [
     ]
 
 
-def initall(db):
-    modules = [_import('%s.%s' % (thispackage, name)) for name in instruments]
-    for m in modules: m.create(db)
-    return
-    
-
-def _import(package):
-    return __import__(package, {}, {}, [''])
-
+from _utils import createInstrument
 
 # version
 __id__ = "$Id$"

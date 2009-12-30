@@ -50,8 +50,8 @@ Scatterer.Inventory = Inventory
 del Inventory
 
 
-from _ import OwnedObject, o2t
-ScattererTable = o2t(Scatterer, {'subclassFrom': OwnedObject})
+from _ import AbstractOwnedObjectBase, o2t
+ScattererTable = o2t(Scatterer, {'subclassFrom': AbstractOwnedObjectBase})
 
 
 

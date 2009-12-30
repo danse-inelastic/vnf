@@ -27,6 +27,7 @@ EXPORT_DATAFILES = \
 	addbvkmodelstodb.py \
 	createdefaultformulaformatters.py \
 	createtable.py \
+	createInstruments.py \
 	destroydb.py \
 	destroydataobject.py \
 	establishglobalpointers.py \

@@ -10,7 +10,7 @@
 #
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-PROJECT = vnf
+PROJECT = vnfb
 PACKAGE = dom/neutron_experiment_simulations/instruments
 
 
@@ -39,6 +39,7 @@ EXPORT_PYTHON_MODULES = \
 	SEQUOIA.py \
 	VULCAN.py \
 	__init__.py \
+	_utils.py \
 
 
 export:: export-package-python-modules

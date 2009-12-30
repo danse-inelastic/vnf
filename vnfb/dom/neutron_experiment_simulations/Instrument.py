@@ -57,8 +57,8 @@ Instrument.Inventory = Inventory
 del Inventory
 
 
-from _ import o2t, OwnedObject
-InstrumentTable = o2t(Instrument, {'subclassFrom': OwnedObject})
+from _ import o2t, AbstractOwnedObjectBase
+InstrumentTable = o2t(Instrument, {'subclassFrom': AbstractOwnedObjectBase})
 
 
 import dsaw.db
