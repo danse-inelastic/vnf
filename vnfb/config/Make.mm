@@ -28,6 +28,7 @@ EXPORT_DATAFILES = \
 	itaskapp.pml \
 	clerk.pml \
 	clerk.odb \
+	createInstruments.pml \
 	guidfromidddaemon.odb \
 	idd-pickler.odb \
 	ipa.pml \

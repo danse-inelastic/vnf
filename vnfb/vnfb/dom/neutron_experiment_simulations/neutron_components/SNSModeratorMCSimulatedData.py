@@ -14,7 +14,7 @@
 
 class SNSModeratorMCSimulatedData(object):
 
-    instrument = None
+    instrument = ''
 
     pass
 
@@ -25,7 +25,7 @@ from vnfb.dom.neutron_experiment_simulations.Instrument import Instrument
 from dsaw.model.Inventory import Inventory as InvBase
 class Inventory(InvBase):
 
-    instrument = InvBase.d.reference(name='instrument', targettype=Instrument)
+    instrument = InvBase.d.str(name='instrument')
 
     dbtablename = 'snsmoderatormcsimulateddata'
 
