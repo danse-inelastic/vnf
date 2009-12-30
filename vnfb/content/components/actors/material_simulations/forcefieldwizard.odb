@@ -64,7 +64,7 @@ class Actor(base):
         assert self.inventory.id == ''
         
         domaccess = director.retrieveDOMAccessor('atomicstructure')
-        structure = domaccess.getAtomicStructureRecord('48QWPK9')
+        structure = domaccess.getAtomicStructureRecord('3W4G7NUM')
         #structurelabel = structure.description or structure.chemical_formula or structure.id
         #structurelabel = domaccess.getAtomicStructureLabel(id)
         structurelabel = structure.chemical_formula or structure.id
@@ -128,7 +128,7 @@ class Actor(base):
             #'coordinateType':simulation.matter.
             }
         callbackArgs = {
-            'cgihome':director.weaver.controllerurl,
+            'cgihome':director.weaver.controllerurl+director.weaver.controllerurl,
             'sentry.username':director.sentry.username,
             'sentry.ticket':director.sentry.ticket,
 #            'actor': self.name,
