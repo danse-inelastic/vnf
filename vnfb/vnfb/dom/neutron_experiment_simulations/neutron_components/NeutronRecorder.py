@@ -4,7 +4,7 @@
 #
 #                                   Jiao Lin
 #                      California Institute of Technology
-#                      (C) 2007-2010 All Rights Reserved
+#                        (C) 2007  All Rights Reserved
 #
 # {LicenseText}
 #
@@ -12,9 +12,17 @@
 #
 
 
-class AbstractNeutronComponent(object):
+#from Monitor import Monitor as base
+from AbstractNeutronComponent import AbstractNeutronComponent as base
+class NeutronRecorder(base):
 
-    pass # end of AbstractNeutronComponent
+    name = 'neutronrecorders'
+
+    import dsaw.db
+
+    packetsize = dsaw.db.integer(name='packetsize', default=10000)
+
+    pass # end of NeutronRecorder
 
 
 # version
