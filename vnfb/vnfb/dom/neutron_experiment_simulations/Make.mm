@@ -50,6 +50,7 @@ EXPORT_PYTHON_MODULES = \
 	instrument_configuration_types.py \
 	neutroncomponent_types.py \
 	samplecomponent_types.py \
+	sample_types.py \
 
 
 #include doxygen/default.def

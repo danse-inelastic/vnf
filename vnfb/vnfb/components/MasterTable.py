@@ -18,7 +18,7 @@ to create a master table
  * create an actor that inheritst from MasterTableActor. eg actors/job
  * create a dom-accessor that has methods to return filterred and sorted list of
    records. eg dom-access/job
- * create a visual to return a table view. eg visuals/job/table-view
+ * create a visual to return a table view. eg visuals/job/tableview
  * create a visual to return a table. eg visuals/job/table
  * create an actor for handling editing entries in the table eg actors/job/table
 '''

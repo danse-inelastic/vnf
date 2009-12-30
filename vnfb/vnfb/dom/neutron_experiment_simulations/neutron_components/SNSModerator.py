@@ -41,6 +41,14 @@ class Inventory(InvBase):
     dbtablename = 'snsmoderators'
 
 
+SNSModerator.Inventory = Inventory
+del Inventory
+
+
+from _ import o2t, AbstractOwnedObjectBase
+SNSModeratorTable = o2t(SNSModerator, {'subclassFrom': AbstractOwnedObjectBase})
+
+
 # version
 __id__ = "$Id$"
 

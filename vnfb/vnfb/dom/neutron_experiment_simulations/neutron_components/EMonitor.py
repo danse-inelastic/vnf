@@ -43,8 +43,8 @@ EMonitor.Inventory = Inventory
 del Inventory
 
 
-from _ import o2t
-EMonitorTable = o2t(EMonitor)
+from _ import o2t, AbstractOwnedObjectBase
+EMonitorTable = o2t(EMonitor, {'subclassFrom': AbstractOwnedObjectBase})
 
 
 # version

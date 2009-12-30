@@ -40,8 +40,9 @@ DetectorSystem_fromXML.Inventory = Inventory
 del Inventory
 
 
-from _ import o2t
-DetectorSystem_fromXMLTable = o2t(DetectorSystem_fromXML)
+from _ import o2t, AbstractOwnedObjectBase
+DetectorSystem_fromXMLTable = o2t(
+    DetectorSystem_fromXML, {'subclassFrom': AbstractOwnedObjectBase})
 
 
 # version
