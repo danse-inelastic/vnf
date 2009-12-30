@@ -5,8 +5,8 @@ def tables():
 
 
     kernels = [
-        'PolyXtalCoherentPhononScatteringKernel',
-        'SQEKernel',
+        #'PolyXtalCoherentPhononScatteringKernel',
+        #'SQEKernel',
         ]
 
 
@@ -16,7 +16,7 @@ def tables():
         #'BvKBond',
         #'BvKComputation',
         #'BvKModel',
-        'SQE',
+        #'SQE',
         'VacfComputation',
         ]
 
