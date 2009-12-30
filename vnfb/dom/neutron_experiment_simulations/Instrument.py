@@ -19,10 +19,10 @@ class Instrument(object):
 
     category = ''
 
-    geometrical_relations = []
-
+    name = ''
     short_description = ''
     long_description = ''
+
 
     pass # end of Instrument
 
@@ -44,10 +44,7 @@ class Inventory(InvBase):
     
     category = InvBase.d.str(name = 'category', max_length = 64)
 
-    geometrical_relations = InvBase.d.referenceSet(
-        name='geometrical_relations', targettype=GeometricalRelation,
-        owned=1)
-
+    name = InvBase.d.str(name='name')
     short_description = InvBase.d.str(name='short_description')
     long_description = InvBase.d.str( name = 'long_description', max_length = 8192 )
 

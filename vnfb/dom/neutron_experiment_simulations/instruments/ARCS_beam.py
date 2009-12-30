@@ -48,6 +48,11 @@ tplotmax=LM1/(sqrt(Emin)*SE2V)+toffset;
 
 
 
+from vnfb.dom.neutron_experiment_simulations.neutron_components.SNSModeratorMCSimulatedData\
+     import SNSModeratorMCSimulatedData
+moderator_data = SNSModeratorMCSimulatedData()
+
+
 from vnfb.dom.neutron_experiment_simulations.neutron_components.SampleComponent import SampleComponent
 from vnfb.dom.neutron_experiment_simulations.neutron_components.SNSModerator import SNSModerator
 from vnfb.dom.neutron_experiment_simulations.neutron_components.TofMonitor import TofMonitor
@@ -59,7 +64,6 @@ from vnfb.dom.neutron_experiment_simulations.neutron_components.FermiChopper imp
 def moderator():
     c = SNSModerator()
     c.short_description = 'Moderator for ARCS'
-    c.id = new_id()
     c.width=0.1
     c.height=0.12
     c.dist=2.5
@@ -67,14 +71,13 @@ def moderator():
     c.yh=0.12
     c.Emin=Emin
     c.Emax=Emax
-    c.neutronprofile = 'sct521_bu_17_1-ARCS'
+    c.neutronprofile = moderator_data
     return c
 
 
 def core_ves():
     c = ChanneledGuide()
     c.short_description = 'Core vessel insert'
-    c.id = new_id()
     c.w1=0.094285
     c.h1=0.11323
     c.w2=0.084684
@@ -96,7 +99,6 @@ def core_ves():
 def shutter_guide():
     c = ChanneledGuide()
     c.short_description = 'shutter guide'
-    c.id = new_id()
     c.w1=0.074930
     c.h1=.094040
     c.w2=0.070880
@@ -118,7 +120,6 @@ def shutter_guide():
 def guide_1_1_1():
     c = ChanneledGuide()
     c.short_description = 'guide 1_1_1'
-    c.id = new_id()
     c.w1=0.07088
     c.h1=0.08688
     c.w2=0.07019
@@ -140,7 +141,6 @@ def guide_1_1_1():
 def guide_1_1_2():
     c = ChanneledGuide()
     c.short_description = 'guide 1_1_2'
-    c.id = new_id()
     c.w1=0.07019
     c.h1=0.08573
     c.w2=0.06947
@@ -162,7 +162,6 @@ def guide_1_1_2():
 def guide_1_1_3():
     c = ChanneledGuide()
     c.short_description = 'guide 1_1_3'
-    c.id = new_id()
     c.w1=0.06947
     c.h1=0.08454
     c.w2=0.06871
@@ -184,7 +183,6 @@ def guide_1_1_3():
 def guide_1_2_1():
     c = ChanneledGuide()
     c.short_description = 'guide 1_2_1'
-    c.id = new_id()
     c.w1=0.06871
     c.h1=0.08329
     c.w2=0.06792
@@ -206,7 +204,6 @@ def guide_1_2_1():
 def guide_1_2_2():
     c = ChanneledGuide()
     c.short_description = 'guide 1_2_2'
-    c.id = new_id()
     c.w1=0.06792
     c.h1=0.08197
     c.w2=0.06710
@@ -228,7 +225,6 @@ def guide_1_2_2():
 def guide_1_2_3():
     c = ChanneledGuide()
     c.short_description = 'guide 1_2_3'
-    c.id = new_id()
     c.w1=0.06710
     c.h1=0.08060
     c.w2=0.06624
@@ -250,7 +246,6 @@ def guide_1_2_3():
 def guide_1_3_1():
     c = ChanneledGuide()
     c.short_description = 'guide 1_3_1'
-    c.id = new_id()
     c.w1=0.06624
     c.h1=0.07917
     c.w2=0.06534
@@ -272,7 +267,6 @@ def guide_1_3_1():
 def guide_1_3_2():
     c = ChanneledGuide()
     c.short_description = 'guide 1_3_2'
-    c.id = new_id()
     c.w1=0.06534
     c.h1=0.07766
     c.w2=0.06440
@@ -294,7 +288,6 @@ def guide_1_3_2():
 def guide_1_3_3():
     c = ChanneledGuide()
     c.short_description = 'guide 1_3_3'
-    c.id = new_id()
     c.w1=0.06440
     c.h1=0.07609
     c.w2=0.06342
@@ -316,7 +309,6 @@ def guide_1_3_3():
 def t0_chopp():
     c = T0Chopper()
     c.short_description = 'T0 chopper'
-    c.id = new_id()
     c.len=0.474
     c.w1=0.08
     c.w2=0.101
@@ -331,7 +323,6 @@ def t0_chopp():
 def guide_2_1():
     c = ChanneledGuide()
     c.short_description = 'guide 2_1'
-    c.id = new_id()
     c.w1=0.06136
     c.h1=0.07094
     c.w2=0.06044
@@ -353,7 +344,6 @@ def guide_2_1():
 def guide_2_2():
     c = ChanneledGuide()
     c.short_description = 'guide 2_2'
-    c.id = new_id()
     c.w1=0.06044
     c.h1=0.06936
     c.w2=0.05948
@@ -375,7 +365,6 @@ def guide_2_2():
 def guide_2_3():
     c = ChanneledGuide()
     c.short_description = 'guide 2_3'
-    c.id = new_id()
     c.w1=0.05948
     c.h1=0.06771
     c.w2=0.05848
@@ -397,7 +386,6 @@ def guide_2_3():
 def guide_2_4():
     c = ChanneledGuide()
     c.short_description = 'guide 2_4'
-    c.id = new_id()
     c.w1=0.05848
     c.h1=0.06598
     c.w2=0.05745
@@ -419,7 +407,6 @@ def guide_2_4():
 def guide_2_5():
     c = ChanneledGuide()
     c.short_description = 'guide 2_5'
-    c.id = new_id()
     c.w1=0.05745
     c.h1=0.06417
     c.w2=0.05637
@@ -442,7 +429,6 @@ def guide_2_5():
 def fermi_chopp():
     c = FermiChopper()
     c.short_description = 'Fermi chopper'
-    c.id = new_id()
     c.len=0.10
     c.w=0.06
     c.ymin=-.0325
@@ -459,7 +445,6 @@ def fermi_chopp():
 def tofmonitor1():
     c = TofMonitor()
     c.short_description = 'Monitor #1'
-    c.id = new_id()
     c.x_min=-0.035
     c.x_max=0.035
     c.y_min=-0.035
@@ -473,7 +458,6 @@ def tofmonitor1():
 def guide_3():
     c = ChanneledGuide()
     c.short_description = 'guide 3'
-    c.id = new_id()
     c.w1=0.05536
     c.h1=0.06046
     c.w2=0.05473
@@ -495,7 +479,6 @@ def guide_3():
 def guide_4_1():
     c = ChanneledGuide()
     c.short_description = 'guide 4_1'
-    c.id = new_id()
     c.w1=0.05468
     c.h1=0.05924
     c.w2=0.05331
@@ -517,7 +500,6 @@ def guide_4_1():
 def guide_4_2():
     c = ChanneledGuide()
     c.short_description = 'guide 4_2'
-    c.id = new_id()
     c.w1=0.05331
     c.h1=0.05674
     c.w2=0.05187
@@ -539,7 +521,6 @@ def guide_4_2():
 def guide_5():
     c = ChanneledGuide()
     c.short_description = 'guide 5'
-    c.id = new_id()
     c.w1=0.05186
     c.h1=0.05405
     c.w2=0.05062
@@ -562,53 +543,76 @@ def guide_5():
 def neutron_recorder():
     c = NeutronRecorder()
     c.short_description = 'neutron recorder at sample position of ARCS'
-    c.id = new_id()
     return c
 
 
-def create(db):
-    componentinfos = [
-        ci('moderator', moderator(), ((0,0,0), (0,0,0), '')),
-        ci('core_ves', core_ves(), ((0,0,1.0106), (0,0,0), '')),
-        ci('shutter_guide', shutter_guide(), ((0,0,2.26790), (0,0,0), '')),
-        ci('guide_1_1_1', guide_1_1_1(), ((0,0,4.17230), (0,0,0), '')),
-        ci('guide_1_1_2', guide_1_1_2(), ((0,0,4.65589), (0,0,0), '')),
-        ci('guide_1_1_3', guide_1_1_3(), ((0,0,5.13948), (0,0,0), '')),
-        ci('guide_1_2_1', guide_1_2_1(), ((0,0,5.62331), (0,0,0), '')),
-        ci('guide_1_2_2', guide_1_2_2(), ((0,0,6.10690), (0,0,0), '')),
-        ci('guide_1_2_3', guide_1_2_3(), ((0,0,6.59049), (0,0,0), '')),
-        ci('guide_1_3_1', guide_1_3_1(), ((0,0,7.07433), (0,0,0), '')),
-        ci('guide_1_3_2', guide_1_3_2(), ((0,0,7.55792), (0,0,0), '')),
-        ci('guide_1_3_3', guide_1_3_3(), ((0,0,8.04145), (0,0,0), '')),
-        ci('t0_chopp', t0_chopp(), ((0,0,8.77), (0,0,0), '')),
-        ci('guide_2_1', guide_2_1(), ((0,0,9.47504), (0,0,0), '')),
-        ci('guide_2_2', guide_2_2(), ((0,0,9.87713), (0,0,0), '')),
-        ci('guide_2_3', guide_2_3(), ((0,0,10.27922), (0,0,0), '')),
-        ci('guide_2_4', guide_2_4(), ((0,0,10.68131), (0,0,0), '')),
-        ci('guide_2_5', guide_2_5(), ((0,0,11.08340), (0,0,0), '')),
-        ci('fermi_chopp', fermi_chopp(), ((0,0,11.61), (0,0,0), '')),
-        ci('tofmonitor1', tofmonitor1(), ((0,0,11.82), (0,0,0), '')),
-        ci('guide_3', guide_3(), ((0,0,11.84975), (0,0,0), '')),
-        ci('guide_4_1', guide_4_1(), ((0,0,12.08825), (0,0,0), '')),
-        ci('guide_4_2', guide_4_2(), ((0,0,12.55105), (0,0,0), '')),
-        ci('guide_5', guide_5(), ((0,0,13.01830), (0,0,0), '')),
-        ci('neutron_recorder', neutron_recorder(), ((0,0,13.5), (0,0,0), '')),
+
+
+def createInstrument(director):
+    from _utils import ccomp, cinstr
+    components = [
+        ccomp('moderator', moderator(), ((0,0,0), (0,0,0), '')),
+        ccomp('core_ves', core_ves(), ((0,0,1.0106), (0,0,0), '')),
+        ccomp('shutter_guide', shutter_guide(), ((0,0,2.26790), (0,0,0), '')),
+        ccomp('guide_1_1_1', guide_1_1_1(), ((0,0,4.17230), (0,0,0), '')),
+        ccomp('guide_1_1_2', guide_1_1_2(), ((0,0,4.65589), (0,0,0), '')),
+        ccomp('guide_1_1_3', guide_1_1_3(), ((0,0,5.13948), (0,0,0), '')),
+        ccomp('guide_1_2_1', guide_1_2_1(), ((0,0,5.62331), (0,0,0), '')),
+        ccomp('guide_1_2_2', guide_1_2_2(), ((0,0,6.10690), (0,0,0), '')),
+        ccomp('guide_1_2_3', guide_1_2_3(), ((0,0,6.59049), (0,0,0), '')),
+        ccomp('guide_1_3_1', guide_1_3_1(), ((0,0,7.07433), (0,0,0), '')),
+        ccomp('guide_1_3_2', guide_1_3_2(), ((0,0,7.55792), (0,0,0), '')),
+        ccomp('guide_1_3_3', guide_1_3_3(), ((0,0,8.04145), (0,0,0), '')),
+        ccomp('t0_chopp', t0_chopp(), ((0,0,8.77), (0,0,0), '')),
+        ccomp('guide_2_1', guide_2_1(), ((0,0,9.47504), (0,0,0), '')),
+        ccomp('guide_2_2', guide_2_2(), ((0,0,9.87713), (0,0,0), '')),
+        ccomp('guide_2_3', guide_2_3(), ((0,0,10.27922), (0,0,0), '')),
+        ccomp('guide_2_4', guide_2_4(), ((0,0,10.68131), (0,0,0), '')),
+        ccomp('guide_2_5', guide_2_5(), ((0,0,11.08340), (0,0,0), '')),
+        ccomp('fermi_chopp', fermi_chopp(), ((0,0,11.61), (0,0,0), '')),
+        ccomp('tofmonitor1', tofmonitor1(), ((0,0,11.82), (0,0,0), '')),
+        ccomp('guide_3', guide_3(), ((0,0,11.84975), (0,0,0), '')),
+        ccomp('guide_4_1', guide_4_1(), ((0,0,12.08825), (0,0,0), '')),
+        ccomp('guide_4_2', guide_4_2(), ((0,0,12.55105), (0,0,0), '')),
+        ccomp('guide_5', guide_5(), ((0,0,13.01830), (0,0,0), '')),
+        ccomp('neutron_recorder', neutron_recorder(), ((0,0,13.5), (0,0,0), '')),
         ]
-        
-    newInstrument(
-        db = db,
-        id = 'ARCS_beam', short_description = 'ARCS',
+
+
+    instrument = cinstr(
+        director,
+        name = 'ARCS_beam',
+        short_description = 'ARCS instrument down to the sample position',
         long_description = '''ARCS is a wide Angular-Range, direct-geometry, time-of-flight Chopper Spectrometer at the Spallation Neutron Source. It is optimized to provide a high neutron flux at the sample, and a large solid angle of detector coverage.
-  This virtual instrument simulates neutrons being emitted from moderator and going through neutron optics of ARCS until they reach the sample position. Those neutrons are then saved and can be used to study inelastic neutron scattering of samples later.
-  ''',
+        This virtual instrument simulates neutrons being emitted from moderator and going through neutron optics of ARCS until they reach the sample position. Those neutrons are then saved and can be used to study inelastic neutron scattering of samples later.
+        ''',
         category = 'ins',
         creator = 'vnf',
         date = '08/09/2008',
-        componentinfos = componentinfos,
+        components = components
         )
 
 
-from _utils import new_id, newInstrument, componentinfo as ci
+    # set up neutron profile for moderator
+    orm = director.clerk.orm
+    datarecord = orm(moderator_data)
+    dds = director.dds
+    dest = dds.abspath(datarecord)
+
+    srcdata = orm(SNSModeratorMCSimulatedData())
+    srcdata.id = 'sct521_bu_17_1-ARCS'
+    src = dds.abspath(srcdata)
+
+    import shutil, os
+    # create dest dir if necessary
+    if not os.path.exists(dest): os.makedirs(dest)
+    # copy files
+    for f in srcdata.datafiles:
+        shutil.copyfile(os.path.join(src, f), os.path.join(dest, f))
+        continue
+    
+    return instrument
+
 
 # version
 __id__ = "$Id$"

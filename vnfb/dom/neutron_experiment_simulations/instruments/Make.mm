@@ -40,6 +40,7 @@ EXPORT_PYTHON_MODULES = \
 	VULCAN.py \
 	__init__.py \
 	_utils.py \
+	_.py \
 
 
 export:: export-package-python-modules

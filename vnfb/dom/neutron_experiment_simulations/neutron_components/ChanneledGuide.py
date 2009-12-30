@@ -15,6 +15,17 @@
 from AbstractNeutronComponent import AbstractNeutronComponent as base
 class ChanneledGuide(base):
 
+    w1 = h1 = 0.1
+    w2 = h2 = 0.1
+    l = 1.
+    R0 = 0.
+    mx = 3.6; my  = 0.1
+    Qcx = Qcy = 0.2
+    W = 2e-3
+    k = 1
+    d = 0.
+    alphax = alphay = 0.
+    
     pass # end of ChanneledGuide
 
 

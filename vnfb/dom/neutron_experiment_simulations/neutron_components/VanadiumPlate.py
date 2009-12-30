@@ -14,6 +14,11 @@
 
 from SampleComponent import SampleComponent as base
 class VanadiumPlate(base):
+    
+    width = 0.05; height = 0.10; thickness = 0.002
+
+    target_radius = 0
+    target_position = (0,0,0)
     pass
 
 

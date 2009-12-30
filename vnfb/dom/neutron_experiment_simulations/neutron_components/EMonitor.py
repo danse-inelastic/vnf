@@ -15,6 +15,12 @@
 from Monitor import Monitor as base
 class EMonitor(base):
 
+    Emin = 10.
+    Emax = 100.
+    x_min = y_min = -0.1
+    x_max = y_max = 0.1
+    nchan = 100
+    
     pass
 
 

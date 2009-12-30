@@ -15,6 +15,8 @@
 from AbstractNeutronComponent import AbstractNeutronComponent as base
 class MonochromaticSource(base):
 
+    energy = 70.
+    
     pass
 
 
