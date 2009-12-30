@@ -15,19 +15,19 @@ acl = [
     ]
 
 instrument = [
-    'Instrument',
-    'InstrumentConfiguration',
+    #'Instrument',
+    #'InstrumentConfiguration',
     ]
 
 
 acl2 = [
-    'ACL_InstrumentSimulationPrivilege',
+    #'ACL_InstrumentSimulationPrivilege',
     ]
 
 
 shapes = [
-    'Block',
-    'Cylinder',
+    #'Block',
+    #'Cylinder',
     ]
 
 
@@ -39,16 +39,16 @@ materials = [
 
 
 sample = [
-    'Scatterer',
-    'ScattererExample',
-    'Sample',
-    'SampleAssembly',
-    'SampleEnvironment',
+    #'Scatterer',
+    #'ScattererExample',
+    #'Sample',
+    #'SampleAssembly',
+    #'SampleEnvironment',
     ]
 
 
 experiment = [
-    'NeutronExperiment',
+    #'NeutronExperiment',
     ]
 
 
@@ -122,7 +122,7 @@ def tables():
     domexts = []
     from vnf import extensions
     domexts += extensions
-    domexts.append('neutron_components')
+    # domexts.append('neutron_components')
     dompackages = [_get_standard_extension(ext) for ext in domexts]
 
     # additional external doms
