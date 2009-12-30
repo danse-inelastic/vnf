@@ -43,8 +43,6 @@ def visual(director, id):
         load(actor='cod', routine='default', id = id)
         )
    
-    #form = (id="login-form")
-    #form.onsubmit =  select(id='login-form').submit(actor='login', routine='verify')
     return doc
 
 def viewIndicator(director, id):
