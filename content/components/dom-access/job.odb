@@ -25,13 +25,9 @@ class Accessor(base):
     def _getOrm(self):
         orm = self.director.clerk.orm
         
-        # build orm for all computation types
-        from vnfb.dom.computation_types import typenames
-        for name in typenames:
-            type = self._getObjectByImportingFromDOM(name)
-            orm(type)
-            continue
-        #
+        # job depends on computation, let us just reuse orm initialization from computation
+        self.director.retrieveDOMAccessor('computation').orm
+        
         return orm
     orm = property(_getOrm)
 
