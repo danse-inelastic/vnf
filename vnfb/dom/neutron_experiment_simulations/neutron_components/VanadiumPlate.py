@@ -43,8 +43,8 @@ VanadiumPlate.Inventory = Inventory
 del Inventory
 
 
-from _ import o2t
-VanadiumPlateTable = o2t(VanadiumPlate)
+from _ import o2t, AbstractOwnedObjectBase
+VanadiumPlateTable = o2t(VanadiumPlate, {'subclassFrom': AbstractOwnedObjectBase})
 
 
 

@@ -50,8 +50,8 @@ FermiChopper.Inventory = Inventory
 del Inventory
 
 
-from _ import o2t
-FermiChopperTable = o2t(FermiChopper)
+from _ import o2t, AbstractOwnedObjectBase
+FermiChopperTable = o2t(FermiChopper, {'subclassFrom': AbstractOwnedObjectBase})
 
 
 # version

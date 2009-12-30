@@ -33,8 +33,8 @@ MonochromaticSource.Inventory = Inventory
 del Inventory
 
 
-from _ import o2t
-MonochromaticSourceTable = o2t(MonochromaticSource)
+from _ import o2t, AbstractOwnedObjectBase
+MonochromaticSourceTable = o2t(MonochromaticSource, {'subclassFrom': AbstractOwnedObjectBase})
 
 
 # version

@@ -45,8 +45,8 @@ TofMonitor.Inventory = Inventory
 del Inventory
 
 
-from _ import o2t
-TofMonitorTable = o2t(TofMonitor)
+from _ import o2t, AbstractOwnedObjectBase
+TofMonitorTable = o2t(TofMonitor, {'subclassFrom': AbstractOwnedObjectBase})
 
 
 # version

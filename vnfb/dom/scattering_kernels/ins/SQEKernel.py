@@ -33,7 +33,7 @@ class Inventory(InvBase):
 
     sqe = InvBase.d.reference(
         name = 'sqe',
-        targettype=None, targettypes=[sqe_types],
+        targettype=None, targettypes=sqe_types,
         owned = 0,
         )
 

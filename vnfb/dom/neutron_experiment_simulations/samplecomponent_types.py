@@ -1,4 +1,6 @@
-typenames = []
+typenames = [
+    'neutron_experiment_simulations.neutron_components.VanadiumPlate.VanadiumPlate',
+    ]
 
 
 def getTypes():

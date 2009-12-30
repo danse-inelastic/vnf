@@ -20,7 +20,7 @@ class AbstractNeutronComponent(object):
                    [0.,1.,0.],
                    [0.,0.,1.],]
     referencename = ''
-    
+
     pass # end of AbstractNeutronComponent
 
 
@@ -35,7 +35,7 @@ class Inventory(InvBase):
 
 AbstractNeutronComponent.Inventory = Inventory
 del Inventory
-    
+
 
 # version
 __id__ = "$Id$"

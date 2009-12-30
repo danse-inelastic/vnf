@@ -34,8 +34,8 @@ NeutronRecorder.Inventory = Inventory
 del Inventory
 
 
-from _ import o2t
-NeutronRecorderTable = o2t(NeutronRecorder)
+from _ import o2t, AbstractOwnedObjectBase
+NeutronRecorderTable = o2t(NeutronRecorder, {'subclassFrom':AbstractOwnedObjectBase})
 
 
 # version

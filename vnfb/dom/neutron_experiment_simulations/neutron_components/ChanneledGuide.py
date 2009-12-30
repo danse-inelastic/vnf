@@ -55,8 +55,8 @@ ChanneledGuide.Inventory = Inventory
 del Inventory
 
 
-from _ import o2t
-ChanneledGuideTable = o2t(ChanneledGuide)
+from _ import o2t, AbstractOwnedObjectBase
+ChanneledGuideTable = o2t(ChanneledGuide, {'subclassFrom': AbstractOwnedObjectBase})
 
 
 

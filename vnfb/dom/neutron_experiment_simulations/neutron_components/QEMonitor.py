@@ -54,8 +54,8 @@ QEMonitor.Inventory = Inventory
 del Inventory
 
 
-from _ import o2t
-QEMonitorTable = o2t(QEMonitor)
+from _ import o2t, AbstractOwnedObjectBase
+QEMonitorTable = o2t(QEMonitor, {'subclassFrom': AbstractOwnedObjectBase})
 
 
 # version
