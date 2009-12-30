@@ -142,9 +142,9 @@ class Actor(base):
 
         domaccess       = director.retrieveDOMAccessor(self.name)
         # Temp solution
-        matsims         = director.clerk.getQESimulations()
+        #matsims         = director.clerk.getQESimulations()
 
-        matsims         += domaccess.getSimulations(
+        matsims         = domaccess.getSimulations(
                                                     order_by        = order_by,
                                                     reverse_order   = reverse_order,
                                                     slice           = slice,
