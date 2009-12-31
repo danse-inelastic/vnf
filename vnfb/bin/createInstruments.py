@@ -40,6 +40,9 @@ class CreateInstrumentsApp(base):
 
     def main(self, *args, **kwds):
         instruments = self.inventory.instruments
+        if not instruments:
+            from vnfb.dom.neutron_experiment_simulations.instruments \
+                 import instrument_names as instruments
         self._createInstruments(instruments)
         return
 

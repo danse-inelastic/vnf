@@ -13,16 +13,15 @@
 
 
 def createInstrument(director):
-    newInstrument(
-        db=db,
-        id='SEQUOIA',
+    return cinstr(
+        director,
+        name='SEQUOIA',
         short_description='SEQUOIA. place holder',
         long_description='long description here',
         category='ins',
         creator='vnf', date='08/11/2008',
-        componentinfos=[],
+        components=[],
         )
-    return
 
 
 from _utils import ccomp, cinstr

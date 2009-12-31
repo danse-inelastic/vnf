@@ -35,6 +35,7 @@ EXPORT_DATAFILES = \
 	findreferrals.py \
 	getuserlist.py \
 	initdb.py \
+	initdb.sh \
 	itaskapp.py \
 	launch-detached.py \
         packjobdir.py \
