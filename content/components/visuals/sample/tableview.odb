@@ -131,7 +131,7 @@ def createTable(
 
 
 
-columns = [ 'selected', 'id', 'description',]
+columns = [ 'selected', 'id', 'description','type', 'date']
 measure2dbcol = {
     'description': 'short_description',
     }

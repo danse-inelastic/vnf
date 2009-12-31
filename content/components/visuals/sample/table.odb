@@ -32,7 +32,7 @@ def visual(samples, cols, director):
         View.Column(label='ID', measure='id'),
         View.Column(label='Description', measure='description', editable=True),
         View.Column(label='Type', measure='type'),
-        View.Column(label='Date created', measure='created'),
+        View.Column(label='Date created', measure='date'),
         ]
     columns = filter(lambda col: col.measure in cols, columns)
 
@@ -52,7 +52,7 @@ def visual(samples, cols, director):
         return link
     def getDescription(record):
         return record.short_description
-    def getCreated(exp):
+    def getDate(exp):
         date = exp.date
         return str(date)
     def getType(matsim):
