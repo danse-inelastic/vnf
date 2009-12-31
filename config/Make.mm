@@ -24,6 +24,7 @@ distclean::
 
 EXPORT_DATAFILES = \
 	SimpleHttpServer.pml \
+	addbvkmodelstodb.pml \
 	app-extension.odb \
 	itaskapp.pml \
 	createdataobject.pml \
