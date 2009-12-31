@@ -18,6 +18,11 @@ class SampleAssembly(object):
 
     scatterers = []
 
+    position = [0.,0.,0.]
+    orientation = [[1.,0.,0.],
+                   [0.,1.,0.],
+                   [0.,0.,1.],]
+
     pass # end of SampleAssembly
 
 
@@ -30,6 +35,13 @@ class Inventory(InvBase):
 
     scatterers = InvBase.d.referenceSet(
         name = 'scatterers', targettype=Scatterer, owned = 0)
+    
+    position = InvBase.d.array(name='position', elementtype='float', shape=3)
+    position.help = 'position of this sample assembly relative to coordinate system at '\
+                    'the sample position of the instrument'
+    orientation = InvBase.d.array(name='orientation', elementtype='float', shape=(3,3))
+    orientation.help = 'orientation of this sample assembly relative to coordinate system at '\
+                       'the sample position of the instrument'
     
     dbtablename = 'sampleassemblies'
 

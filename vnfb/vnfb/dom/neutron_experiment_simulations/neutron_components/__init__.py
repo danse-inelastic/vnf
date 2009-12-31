@@ -13,6 +13,7 @@
 
 
 typenames = [
+    'neutron_experiment_simulations.neutron_components.SampleComponent.SampleComponent',
     'neutron_experiment_simulations.neutron_components.ChanneledGuide.ChanneledGuide',
     'neutron_experiment_simulations.neutron_components.DetectorSystem_fromXML.DetectorSystem_fromXML',
     'neutron_experiment_simulations.neutron_components.EMonitor.EMonitor',

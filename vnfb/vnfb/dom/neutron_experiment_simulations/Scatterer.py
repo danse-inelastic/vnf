@@ -19,6 +19,13 @@ class Scatterer(object):
 
     kernels = []
     
+    scatterername = ''
+    position = [0.,0.,0.]
+    orientation = [[1.,0.,0.],
+                   [0.,1.,0.],
+                   [0.,0.,1.],]
+    referencename = ''
+
     pass # end of Scatterer
 
 
@@ -31,8 +38,6 @@ sktypes = scattering_kernels.getKernelTypes()
 from dsaw.model.Inventory import Inventory as InvBase
 class Inventory(InvBase):
 
-    dbtablename = 'scatterers'
-
     matter = InvBase.d.reference(
         name = 'matter', targettype=None, targettypes=[AtomicStructure], owned=0)
     
@@ -43,7 +48,15 @@ class Inventory(InvBase):
     kernels = InvBase.d.referenceSet(
         name='kernels',
         targettype=AbstractScatteringKernel, targettypes=sktypes, owend=1)
+
     
+    scatterername = InvBase.d.str(name='scatterername')
+    position = InvBase.d.array(name='position', elementtype='float', shape=3)
+    orientation = InvBase.d.array(name='orientation', elementtype='float', shape=(3,3))
+    referencename = InvBase.d.str(name='referencename')
+
+    dbtablename = 'scatterers'
+
     pass # end of Inventory
 
 Scatterer.Inventory = Inventory

@@ -1,0 +1,88 @@
+# -*- Python -*-
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                 Jiao Lin
+#                      California Institute of Technology
+#                      (C) 2006-2010  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+from luban.content import load, select, alert
+import luban.content as lc
+
+from luban.content.FormSelectorField import FormSelectorField
+
+
+class Factory(object):
+
+
+    def __init__(self, id, director):
+        domaccess = director.retrieveDOMAccessor('experiment')
+        self.domaccess = domaccess
+        self.director = director
+        self.id = id
+        self.experiment = domaccess.getExperiment(id)
+        return
+    
+
+    def __call__(self):
+        director = self.director
+        
+        doc = lc.document(Class='container')
+
+        path = self._path()
+        view_indicator = director.retrieveVisual('view-indicator', path=path)
+        doc.add(view_indicator)
+
+        form = doc.form()
+        # short description
+        form.text(name='short_description', label='Description', help='please input a short description of this experiment')
+        # select instrument
+        form.add(self.instrument_selector())
+        # select sample
+        form.add(self.sample_selector())
+
+        form.submitbutton(label='next')
+        
+        return doc
+
+
+    def instrument_selector(self):
+        records = self.domaccess.getInstrumentRecords()
+        ids = [r.id for r in records]
+        names = [r.name for r in records]
+        entries = zip(ids, names)
+        selector = FormSelectorField(entries = entries, name='instrument', label='Instrument')
+        return selector
+
+
+    def sample_selector(self):
+        sampledomaccess = self.director.retrieveDOMAccessor('sample')
+        samples = sampledomaccess.getSamples()
+        db = sampledomaccess.db
+        identifiers = map(db.getUniqueIdentifierStr, samples)
+        names = [s.short_description or s.id for s in samples]
+        entries = zip(identifiers, names)
+        return FormSelectorField(entries=entries, name='sample', label='Sample')
+        
+
+    def _path(self):
+        id = self.id
+        return [
+            ('Experiments', load(actor='experiment')),
+            ('Edit experiment %s' % id, load(actor='experiment', routine='edit', id=id)),
+            ]
+
+
+def visual(id, director):
+    return Factory(id, director)()
+
+# version
+__id__ = "$Id$"
+
+# End of file 

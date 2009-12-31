@@ -25,6 +25,40 @@ class Accessor(base):
         return
 
 
+    def _getOrm(self):
+        orm = self.director.clerk.orm
+
+        orm(NeutronExperiment)
+
+        return orm
+    orm = property(_getOrm)
+
+
+    def getExperiment(self, id):
+        orm = self.orm
+        return orm.load(NeutronExperiment, id)
+
+
+    def getInstrumentRecords(self):
+        orm = self.orm
+        table = orm(Instrument)
+        
+        db = self.db
+        rs = db.query(table).filter_by(status='online').all()
+        return rs
+
+
+    def isConstructued(self, id):
+        'check if an experiment is constructed and ready to be run'
+        e = self.getExperiment(id)
+        if not e.instrument: return False
+        if not e.instrument_configuration: return False
+        if not e.sample: return False
+        if not e.sampleenvironment: return False
+        if e.ncount <= 0: return False
+        return True
+
+
     def countExperiments(self, filter=None, label=None):
         q = self.makeQuery(filter=filter, label=label)
         return q.alias('tocount').count().execute().fetchone()[0]
@@ -67,7 +101,7 @@ class Accessor(base):
             return self.makeLabeledQuery(label)
         db = self.db
 
-        st = db._tablemap.TableToSATable(NeutronExperiment)
+        st = db._tablemap.TableToSATable(NeutronExperimentTable)
         q = sqlalchemy.select(
             [st.c.id.label('id'),
              st.c.short_description.label('short_description'),
@@ -90,7 +124,7 @@ class Accessor(base):
             whereclause="labelname='%s' and targettable='%s'" % (label, tablename))\
             .alias('labelq')
         
-        st = db._tablemap.TableToSATable(NeutronExperiment)
+        st = db._tablemap.TableToSATable(NeutronExperimentTable)
         
         q = sqlalchemy.select(
             [st.c.id.label('id'),
@@ -105,7 +139,8 @@ class Accessor(base):
         
 
 from vnf.dom.Label import Label
-from vnf.dom.NeutronExperiment import NeutronExperiment
+from vnfb.dom.neutron_experiment_simulations.NeutronExperiment import NeutronExperiment, NeutronExperimentTable
+from vnfb.dom.neutron_experiment_simulations.Instrument import Instrument
 
 
 from dsaw.db.VersatileReference import global_pointer

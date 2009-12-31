@@ -23,14 +23,8 @@ class NeutronExperiment:
     instrument = None
     instrument_configuration = None
 
-    # the following two references are used to define the sample
-    # only one of them should be assigned.
-    # sampleassembly is a more structured and extensible way to describe
-    # the whole sample assembly at the sample position of a neutron instrument.
-    # samplecomponent is a more straight-forward and quick way
-    # to define a sample.
-    sampleassembly = None
-    samplecomponent = None
+    # sample
+    sample = None
 
     # sample environment
     sampleenvironment = None
@@ -59,11 +53,10 @@ class Inventory(InvBase):
         owend = 1,
         )
 
-    sampleassembly = InvBase.d.reference(
-        name = 'sampleassembly', targettype=SampleAssembly,
-        owned = 0)
-    samplecomponent = InvBase.d.reference(
-        name='samplecomponent', targettypes=samplecomponent_types,
+    sample = InvBase.d.reference(
+        name = 'sample',
+        targettype=None,
+        targettypes = [SampleAssembly] + samplecomponent_types,
         owned = 0)
     
     sampleenvironment = InvBase.d.reference(
@@ -87,7 +80,7 @@ del Inventory
 
 
 from _ import o2t, AbstractOwnedObjectBase as TableBase
-NeutronExperimentTabel = o2t(NeutronExperiment, {'subclassFrom': TableBase})
+NeutronExperimentTable = o2t(NeutronExperiment, {'subclassFrom': TableBase})
     
 
 # version
