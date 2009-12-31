@@ -12,6 +12,10 @@
 #
 
 
+## This script is inherited from vnf-alpha, and it is good for initialization
+## of db tables that are not mapped by dsaw.model orm.
+
+
 ## Initialize vnf db to have necessary tables. This will remove all
 ## existing tables, so be careful!
 
