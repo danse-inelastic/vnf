@@ -53,7 +53,6 @@ from vnfb.dom.neutron_experiment_simulations.neutron_components.SNSModeratorMCSi
 moderator_data = SNSModeratorMCSimulatedData()
 
 
-from vnfb.dom.neutron_experiment_simulations.neutron_components.SampleComponent import SampleComponent
 from vnfb.dom.neutron_experiment_simulations.neutron_components.SNSModerator import SNSModerator
 from vnfb.dom.neutron_experiment_simulations.neutron_components.TofMonitor import TofMonitor
 from vnfb.dom.neutron_experiment_simulations.neutron_components.ChanneledGuide import ChanneledGuide

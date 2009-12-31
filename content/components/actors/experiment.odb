@@ -132,6 +132,34 @@ class Actor(base):
         thetable.oncellchanged = select(element=thetable).notify(
             event='row-changed', actor='experimenttable', routine='processRowChange')
         return thetable
+
+
+    def showExperimentView(self, director):
+        id = self.inventory.id
+        
+        domaccess = self._domaccess(director)
+        if not domaccess.isConstructued(id):
+            view = self.createEditor(director)
+        else:
+            view = self.createSimpleDisplay()
+        return select(id='main-display-area').replaceContent(view)
+
+
+    def createSimpleDisplay(self, director):
+        return load(actor='orm/neutronexperiments', routine='display',
+                 id = self.inventory.id, editlink = False)
+    
+
+    def createEditor(self, director):
+        return director.retrieveVisual(
+            'neutronexperiment/edit/start',
+            id = self.inventory.id,
+            director = director,
+            )
+
+
+    def _domaccess(self, director):
+        return director.retrieveDOMAccessor('experiment')
     
 
     def __init__(self, name='experiment'):
