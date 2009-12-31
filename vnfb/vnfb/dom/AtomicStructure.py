@@ -25,6 +25,7 @@ StructureTable = o2t(Structure)
 import dsaw.db
 StructureTable.addColumn(dsaw.db.date(name='date'))
 
+
 # view
 def customizeLubanObjectDrawer(self, drawer):
     drawer.sequence = ['lattice', 'atoms', 'properties',]

@@ -13,11 +13,11 @@
 
 
 # orm in effect
-from bvk.orm.BvKModel import BvKModel
-from bvk.orm.BvKBond import BvKBond
-from matter.orm.Lattice import Lattice
-from matter.orm.Atom import Atom
-from matter.orm.Structure import Structure
+## from bvk.orm.BvKModel import BvKModel
+## from bvk.orm.BvKBond import BvKBond
+## from matter.orm.Lattice import Lattice
+## from matter.orm.Atom import Atom
+## from matter.orm.Structure import Structure
 
 
 from luban.applications.UIApp import UIApp as base
@@ -30,17 +30,11 @@ class DbApp(base):
 
         import pyre.inventory
 
-        import vnf.components
-        clerk = pyre.inventory.facility(name="clerk", default='clerk')
-        clerk.meta['tip'] = "the component that retrieves data from the various database tables"
-
-        import pyre.idd
-        idd = pyre.inventory.facility('idd-session', factory=pyre.idd.session, args=['idd-session'])
-        idd.meta['tip'] = "access to the token server"
 
 
     def main(self, *args, **kwds):
-        orm = self.clerk.orm
+        domaccess = self.retrieveDOMAccessor('material_simulations/phonon_calculators/bvk')
+        orm = domaccess.orm
 
         models = self._readModels()
         for model in models:
@@ -97,7 +91,7 @@ class DbApp(base):
 
 
     def _getPrivateDepositoryLocations(self):
-        return ['../config']
+        return ['../config', '../content/components', '/tmp/luban/services']
 
 
 
