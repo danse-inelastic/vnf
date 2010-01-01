@@ -49,6 +49,7 @@ def createInstrument(director):
         creator='vnf',
         date='08/24/2008',
         components=components,
+        status = 'offline',
         )
     
 

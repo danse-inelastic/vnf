@@ -21,6 +21,7 @@ def createInstrument(director):
         category='ins',
         creator='vnf', date='08/11/2008',
         components=[],
+        status = 'offline',
         )
 
 

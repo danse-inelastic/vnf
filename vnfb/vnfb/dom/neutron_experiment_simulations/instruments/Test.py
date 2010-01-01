@@ -27,6 +27,7 @@ components = [
     ]
 
 instrument = {
+    'name': 'Test',
     'short_description': 'Test',
     'long_description': 'Test instrument (monochromatic source and a tof monitor)',
     'category': 'Test',

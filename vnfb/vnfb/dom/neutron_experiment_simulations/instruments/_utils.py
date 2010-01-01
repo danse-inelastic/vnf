@@ -9,6 +9,7 @@ def createInstrument(
     from vnfb.dom.neutron_experiment_simulations.Instrument import Instrument
     
     instrument = Instrument()
+    instrument.name = instrumentinfo['name']
     instrument.short_description = instrumentinfo['short_description']
     instrument.long_description = instrumentinfo['long_description']
     instrument.category = instrumentinfo['category']
