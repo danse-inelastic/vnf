@@ -39,6 +39,11 @@ class Accessor(base):
         return orm.load(NeutronExperiment, id)
 
 
+    def getExperimentRecord(self, id):
+        db = self.db
+        return db.query(NeutronExperimentTable).filter_by(id=id).one()
+
+
     def getInstrumentRecords(self):
         orm = self.orm
         table = orm(Instrument)

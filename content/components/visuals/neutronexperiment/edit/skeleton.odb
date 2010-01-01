@@ -45,7 +45,7 @@ class Factory(object):
         doc.add(view_indicator)
 
         tabs = lc.tabs(); doc.add(tabs)
-        tab1 = tabs.tab(label='start')
+        tab1 = tabs.tab(label='start', id='experimentwizard-startform-tab')
         tab1.onselect = select(element=tab1).replaceContent(load(
             actor='experiment',
             routine='createEditWizard_startform',
@@ -55,7 +55,7 @@ class Factory(object):
         tab1.add(director.retrieveVisual('neutronexperiment/edit/startform',
                                          id=self.id, director=director))
 
-        tab2 = tabs.tab(label='instrument configuration')
+        tab2 = tabs.tab(label='instrument configuration', id='experimentwizard-instrumentconfiguration-tab')
         tab2.onselect = select(element=tab2).replaceContent(load(
             actor='experiment',
             routine='createEditWizard_instrumentconfiguration',

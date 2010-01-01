@@ -36,7 +36,7 @@ class Factory(object):
         experiment = self.experiment
         record = self.domaccess.orm(experiment)
         #
-        form = lc.form()
+        form = lc.form(id='experimentwizard-startform')
         # short description
         form.text(name='short_description', label='Description', help='please input a short description of this experiment', value=record.short_description)
         # select instrument
@@ -45,6 +45,10 @@ class Factory(object):
         form.add(self.sample_selector())
 
         form.submitbutton(label='next')
+
+        form.onsubmit = select(element=form).submit(
+            actor='experiment', routine='verifyEditWizard_startform',
+            id = self.id)
         
         return form
 
@@ -82,13 +86,6 @@ class Factory(object):
             selector.value = db.getUniqueIdentifierStr(self.domaccess.orm(sample))
         return selector
         
-
-    def _path(self):
-        id = self.id
-        return [
-            ('Experiments', load(actor='experiment')),
-            ('Edit experiment %s' % id, load(actor='experiment', routine='edit', id=id)),
-            ]
 
 
 def visual(id, director):
