@@ -177,7 +177,11 @@ class Actor(base):
         gulpSettings.runtype = self.inventory.runtype
         gulpSettings.inputFileContents = self.inventory.inputFileContents
         gulpSettings.potential_name = self.inventory.potential_name
-        director.clerk.orm.save(gulpSettings)
+        domaccess = director.retrieveDOMAccessor('atomicstructure')
+        self.inventory.structure_id = '3W4G7NUM'
+        structure = domaccess.getAtomicStructure(self.inventory.structure_id)
+        gulpSettings.structure = structure
+        director.clerk.orm.save(gulpSettings, save_not_owned_referred_object=0)
 
         from memd.gulp.GulpPotential import GulpPotential
         try:
@@ -185,14 +189,6 @@ class Actor(base):
                 associatedDataFileToVerify = self.inventory.potential_filename, director=director)
         except:
             return "failure--cannot find selected potential in database"
-        
-        #set simulation attributes
-#        simulation.runtype = self.inventory.runtype
-#        #potential = simulation.potential.dereference(director.clerk.db)
-#        simulation.potential = gulpPotential
-#        gulpPotential.potential_name = self.inventory.potential_name
-#        #director.clerk.updateRecord(potential)
-#        director.clerk.updateRecord(simulation)
 
         #create data directory for the simulation if necessary
         datadir = director.dds.abspath(gulpSettings)
@@ -297,10 +293,6 @@ class Actor(base):
             'You can %s this simulation, or %s, or %s it.' % (submit_link, save_link, delete_link),
             ]
         return page
-        
-    
-
-
 
 import os
 def isConfigured(sim, director):
