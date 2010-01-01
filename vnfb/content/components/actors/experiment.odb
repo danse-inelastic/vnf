@@ -30,7 +30,9 @@ class Actor(base):
 
         # in case of working with one experiment
         id = pyre.inventory.str('id')
-        description = pyre.inventory.str('description')
+        short_description = pyre.inventory.str('short_description')
+        instrument = pyre.inventory.str('instrument')
+        sample = pyre.inventory.str('sample')
 
 
     def default(self, director):
@@ -193,6 +195,35 @@ class Actor(base):
             id = self.inventory.id,
             director = director
             )
+
+
+    def verifyEditWizard_startform(self, director):
+        short_description = self.inventory.short_description
+        if not short_description:
+            return select(id='experimentwizard-startform').find(name='short_description')\
+                   .formfield('showError', message = 'cannot be empty')
+
+        #
+        domaccess = self._domaccess(director)
+
+        # get record
+        id = self.inventory.id
+        r = domaccess.getExperimentRecord(id)
+
+        # description
+        r.short_description = short_description
+
+        # instrument
+        r.instrument = self.inventory.instrument
+        # sample
+        sample = domaccess.db.fetchRecordUsingUniqueIdentifierStr(self.inventory.sample)
+        r.sample = sample
+
+        # update
+        domaccess.db.updateRecord(r)
+
+        # switch to the next form
+        return select(id='experimentwizard-instrumentconfiguration-tab').tab('select')
 
 
     def _domaccess(self, director):
