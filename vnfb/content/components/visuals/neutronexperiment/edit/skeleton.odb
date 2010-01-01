@@ -1,0 +1,81 @@
+# -*- Python -*-
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                 Jiao Lin
+#                      California Institute of Technology
+#                      (C) 2006-2010  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+from luban.content import load, select, alert
+import luban.content as lc
+
+from luban.content.FormSelectorField import FormSelectorField
+
+
+class Factory(object):
+
+
+    def __init__(self, id, director):
+        domaccess = director.retrieveDOMAccessor('experiment')
+        self.domaccess = domaccess
+        self.director = director
+        self.id = id
+        self.experiment = domaccess.getExperiment(id)
+        self.instrument = self.experiment.instrument
+        self.sample = self.experiment.sample
+        return
+    
+
+    def __call__(self):
+        director = self.director
+        experiment = self.experiment
+        domaccess = self.domaccess
+        orm = domaccess.orm
+        
+        doc = lc.document(Class='container')
+
+        path = self._path()
+        view_indicator = director.retrieveVisual('view-indicator', path=path)
+        doc.add(view_indicator)
+
+        tabs = lc.tabs(); doc.add(tabs)
+        tab1 = tabs.tab(label='start')
+        tab1.onclick = select(element=tab1).replaceContent(load(
+            actor='experiment',
+            routine='createEditWizard_startform',
+            id = self.id))
+        # select tab1 when started
+        # tabs.oncreate = select(element=tab1).tab('select')
+        tab1.add(director.retrieveVisual('neutronexperiment/edit/startform',
+                                         id=self.id, director=director))
+
+        tab2 = tabs.tab(label='instrument configuration')
+        tab2.onclick = select(element=tab2).replaceContent(load(
+            actor='experiment',
+            routine='createEditWizard_instrumentconfiguration',
+            id = self.id))
+        
+        return doc
+
+
+    def _path(self):
+        id = self.id
+        return [
+            ('Experiments', load(actor='experiment')),
+            ('Edit experiment %s' % id, load(actor='experiment', routine='edit', id=id)),
+            ]
+
+
+def visual(id, director):
+    return Factory(id, director)()
+
+# version
+__id__ = "$Id$"
+
+# End of file 

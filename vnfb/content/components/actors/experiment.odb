@@ -152,9 +152,46 @@ class Actor(base):
 
     def createEditor(self, director):
         return director.retrieveVisual(
-            'neutronexperiment/edit/start',
+            'neutronexperiment/edit/skeleton',
             id = self.inventory.id,
             director = director,
+            )
+
+
+    def edit(self, director):
+        view = self.createEditor(director)
+        return select(id='main-display-area').replaceContent(view)
+
+
+    def createEditWizard_startform(self, director):
+        return director.retrieveVisual(
+            'neutronexperiment/edit/startform',
+            id = self.inventory.id,
+            director = director
+            )
+
+
+    def createEditWizard_instrumentconfiguration(self, director):
+        return director.retrieveVisual(
+            'neutronexperiment/edit/instrumentconfiguration',
+            id = self.inventory.id,
+            director = director
+            )
+
+
+    def createEditWizard_sampleconfiguration(self, director):
+        return director.retrieveVisual(
+            'neutronexperiment/edit/sampleconfiguration',
+            id = self.inventory.id,
+            director = director
+            )
+
+
+    def createEditWizard_sampleenvironmentconfiguration(self, director):
+        return director.retrieveVisual(
+            'neutronexperiment/edit/sampleenvironmentconfiguration',
+            id = self.inventory.id,
+            director = director
             )
 
 
