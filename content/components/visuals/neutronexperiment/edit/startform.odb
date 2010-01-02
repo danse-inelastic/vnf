@@ -66,6 +66,14 @@ class Factory(object):
         #
         if instrument:
             selector.value = self.domaccess.orm(instrument).id
+
+        # when instrument selection change, sample selector could be removed or added
+        selector.onchange = select(element=selector).notify(
+            'changed',
+            actor='neutronexperiment/edit/startform',
+            routine='onInstrumentChange',
+            id = self.id,
+            )
         return selector
 
 
