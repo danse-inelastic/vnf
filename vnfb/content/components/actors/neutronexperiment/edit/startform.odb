@@ -1,0 +1,75 @@
+#!/usr/bin/env python
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                 Jiao Lin
+#                      California Institute of Technology
+#                      (C) 2006-2010  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+from luban.content import load, select
+import luban.content as lc
+
+
+from luban.components.AuthorizedActor import AuthorizedActor as base
+
+
+class Actor(base):
+
+
+    class Inventory(base.Inventory):
+
+        import pyre.inventory
+
+        id = pyre.inventory.str(name='id')
+        formid = pyre.inventory.str(name='formid')
+        
+        oldvalue = pyre.inventory.str(name='oldvalue')
+        value = pyre.inventory.str(name='value')
+
+
+    def onInstrumentChange(self, director):
+        # selectors
+        form = select(id=self.inventory.formid)
+        sampleselector = form.find(name='sample')
+
+        #
+        domaccess = self._domaccess(director)
+
+        # instruments user selected
+        oldinstrument = domaccess.getInstrument(self.inventory.oldvalue)
+        newinstrument = domaccess.getInstrument(self.inventory.value)
+
+        #
+        oldhassample = oldinstrument.hasSampleComponent()
+        newhassample = newinstrument.hasSampleComponent()
+        if oldhassample and not newhassample:
+            return sampleselector.hide()
+        elif not oldhassample and newhassample:
+            return sampleselector.show()
+        return
+
+
+    def _domaccess(self, director):
+        return director.retrieveDOMAccessor('experiment')
+    
+
+    def __init__(self, name='neutronexperiment/edit/startform'):
+        super(Actor, self).__init__(name)
+        return
+
+
+
+def actor(): return Actor()
+
+
+# version
+__id__ = "$Id$"
+
+# End of file 
+

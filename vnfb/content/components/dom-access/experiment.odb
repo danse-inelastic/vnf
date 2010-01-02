@@ -44,6 +44,17 @@ class Accessor(base):
         return db.query(NeutronExperimentTable).filter_by(id=id).one()
 
 
+    def getInstrumentRecord(self, id):
+        db = self.db
+        r = db.query(InstrumentTable).filter_by(id=id).one()
+        return r
+
+
+    def getInstrument(self, id):
+        orm = self.orm
+        return orm.load(Instrument, id)
+
+
     def getInstrumentRecords(self):
         orm = self.orm
         table = orm(Instrument)
@@ -145,7 +156,7 @@ class Accessor(base):
 
 from vnf.dom.Label import Label
 from vnfb.dom.neutron_experiment_simulations.NeutronExperiment import NeutronExperiment, NeutronExperimentTable
-from vnfb.dom.neutron_experiment_simulations.Instrument import Instrument
+from vnfb.dom.neutron_experiment_simulations.Instrument import Instrument, InstrumentTable
 
 
 from dsaw.db.VersatileReference import global_pointer

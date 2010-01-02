@@ -23,6 +23,15 @@ class Instrument(object):
     short_description = ''
     long_description = ''
 
+    def hasSampleComponent(self):
+        "checks whether this instrument has a 'sample' component"
+        from neutron_components.SampleComponent import SampleComponent
+        for component in self.components:
+            if isinstance(component, SampleComponent):
+                return True
+            continue
+        return False
+    
 
     pass # end of Instrument
 
