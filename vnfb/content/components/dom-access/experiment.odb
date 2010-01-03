@@ -34,6 +34,32 @@ class Accessor(base):
     orm = property(_getOrm)
 
 
+    def destroyInstrumentConfiguration(self, id):
+        # destroy an instrument configuration given its id (not the experiment id)
+        orm = self.orm
+        o = orm.load(InstrumentConfiguration, id)
+        orm.destroy(o)
+        return
+
+
+    def createInstrumentConfiguration(self, experiment):
+        # the instrument
+        instrument = experiment.instrument
+        # the components
+        components = instrument.components
+        # new configuration
+        ic = InstrumentConfiguration()
+        # copy the components
+        from copy import copy
+        ic.components = [copy(c) for c in components]
+        # save to db
+        orm = self.orm
+        experiment.instrument_configuration = ic
+        orm.save(experiment, save_not_owned_referred_object=0)
+        #
+        return ic
+
+
     def getExperiment(self, id):
         orm = self.orm
         return orm.load(NeutronExperiment, id)
@@ -157,6 +183,7 @@ class Accessor(base):
 from vnf.dom.Label import Label
 from vnfb.dom.neutron_experiment_simulations.NeutronExperiment import NeutronExperiment, NeutronExperimentTable
 from vnfb.dom.neutron_experiment_simulations.Instrument import Instrument, InstrumentTable
+from vnfb.dom.neutron_experiment_simulations.InstrumentConfiguration import InstrumentConfiguration
 
 
 from dsaw.db.VersatileReference import global_pointer

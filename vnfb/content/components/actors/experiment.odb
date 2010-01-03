@@ -214,7 +214,14 @@ class Actor(base):
         r.short_description = short_description
 
         # instrument
-        r.instrument = self.inventory.instrument
+        instrument = self.inventory.instrument
+        if r.instrument.id != instrument:
+            # user selects a new instrument, need to annihilate the old configuration
+            icid = r.instrument_configuration.dereference(domaccess.db).id
+            r.instrument_configuration = None
+            domaccess.db.updateRecord(r)
+            domaccess.destroyInstrumentConfiguration(icid)
+        r.instrument = instrument
         # sample
         sample = domaccess.db.fetchRecordUsingUniqueIdentifierStr(self.inventory.sample)
         r.sample = sample

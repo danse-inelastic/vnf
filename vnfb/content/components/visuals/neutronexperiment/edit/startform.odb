@@ -42,7 +42,10 @@ class Factory(object):
         # select instrument
         form.add(self.instrument_selector())
         # select sample
-        form.add(self.sample_selector())
+        ss = self.sample_selector()
+        form.add(ss)
+        if not self.instrument.hasSampleComponent():
+            ss.hidden = True
 
         form.submitbutton(label='next')
 
