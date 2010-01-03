@@ -50,7 +50,7 @@ class Inventory(InvBase):
     instrument_configuration = InvBase.d.reference(
         name = 'instrument_configuration',
         targettypes = instrument_configuration_types,
-        owend = 1,
+        owned = 1,
         )
 
     sample = InvBase.d.reference(

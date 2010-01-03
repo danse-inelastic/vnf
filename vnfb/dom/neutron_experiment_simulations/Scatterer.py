@@ -47,7 +47,7 @@ class Inventory(InvBase):
 
     kernels = InvBase.d.referenceSet(
         name='kernels',
-        targettype=AbstractScatteringKernel, targettypes=sktypes, owend=1)
+        targettype=AbstractScatteringKernel, targettypes=sktypes, owned=1)
 
     
     scatterername = InvBase.d.str(name='scatterername')

@@ -40,7 +40,6 @@ class Instrument(object):
 from AbstractNeutronComponent import AbstractNeutronComponent
 from neutroncomponent_types import getTypes
 neutroncomponent_types = getTypes()
-from GeometricalRelation import GeometricalRelation
 
 
 from dsaw.model.Inventory import Inventory as InvBase

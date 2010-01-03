@@ -40,6 +40,7 @@ EXPORT_PYTHON_MODULES = \
 	AbstractNeutronComponent.py \
 	GeometricalRelation.py \
 	Instrument.py \
+	InstrumentConfiguration.py \
 	NeutronExperiment.py \
 	SampleAssembly.py \
 	SampleEnvironment.py \
