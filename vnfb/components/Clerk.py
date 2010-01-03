@@ -130,7 +130,7 @@ class Clerk(base, ClerkBase):
     def _createDB(self):
         db = self.inventory.db
         from dsaw.db import connect
-        db = connect(db=db)
+        db = connect(db=db, echo=True)
         self._registerVnfAlphaTables(db)
         return db
 
