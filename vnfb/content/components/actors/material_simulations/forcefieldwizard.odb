@@ -28,9 +28,9 @@ class Actor(base):
 
         import pyre.inventory
 
-        id = pyre.inventory.str('id')
+        simulationId = pyre.inventory.str('simulationId', default = '')
 
-        structure_id = pyre.inventory.str('structure_id')
+        structureId = pyre.inventory.str('structureId', default = '')
 
         short_description = pyre.inventory.str('short_description', default = '' )
         short_description.meta['tip'] = 'A short description'
@@ -43,63 +43,19 @@ class Actor(base):
         description = pyre.inventory.str('description')
         potential_name = pyre.inventory.str('potential_name')
         potential_filename = pyre.inventory.str('potential_filename')
-        
-#        engine = pyre.inventory.str('engine', default='vasp')
-#        engine.validator=pyre.inventory.choice(['vasp', 'ab init'])
-#        engine.meta['tip'] = 'Ab initio engine'
-#        
-#        xcFunctional = pyre.inventory.str('xcFunctional', default='PAW-PBE')
-#        xcFunctional.meta['tip'] = 'Exchange correlation functional'
-#        
-#        kineticEnergyCutoff = pyre.inventory.float('kineticEnergyCutoff', default=140.0)
-#        kineticEnergyCutoff.meta['tip'] = 'Kinetic energy cutoff'
-#
-#        #monkhorstPackMesh.meta['tip'] = 'Monkhorst pack mesh'
-#        nKx = pyre.inventory.int('nKx')
-#        nKy = pyre.inventory.int('nKy')
-#        nKz = pyre.inventory.int('nKz')
-
+        potentialCreator = pyre.inventory.str('potentialCreator')
+        potentialDescription = pyre.inventory.str('potentialDescription')
 
     def start(self, director):
-        assert self.inventory.id == ''
         
         domaccess = director.retrieveDOMAccessor('atomicstructure')
-        structure = domaccess.getAtomicStructureRecord('3W4G7NUM')
-        #structurelabel = structure.description or structure.chemical_formula or structure.id
-        #structurelabel = domaccess.getAtomicStructureLabel(id)
+        structure = domaccess.getAtomicStructureRecord(self.inventory.structureId)
         structurelabel = structure.chemical_formula or structure.id
-        self.inventory.structure_id = structure.id
         
         title = 'Forcefield simulation of %s' % (structurelabel,)
         wizard = Document(id='forcefieldwizard-start', title=title)
 
         link = Link(label='back to Matter\ %s' % structurelabel)
-        link.onclick = load(
-            actor='atomicstructure', routine='editAtomicStructureForm',
-            id=structure.id)
-        wizard.add(link)
-        
-        form = self.startform(director)
-        wizard.add(form)
-        
-        return select(id='main-display-area').replaceContent(wizard)
-
-
-    def restart(self, director):
-        id = self.inventory.id
-        assert id
-
-        domaccess = director.retrieveDOMAccessor("materialsimulation")
-        gulpsim = domaccess.getMaterialSimulation("gulpsimulations",id)
-        
-        structure = gulpsim.structure.dereference(director.clerk.db)
-        self.inventory.structure_id = structure.id
-        
-        structurelabel = structure.short_description or structure.chemical_formula or structure.id
-        title = 'Simulation\ %s: Forcefield simulation of Matter\ %s' % (id, structurelabel)
-        wizard = Document(id='forcefieldwizard-start', title=title)
-
-        link = Link(label='back to Matter\ %s' % matterlabel)
         link.onclick = load(
             actor='atomicstructure', routine='editAtomicStructureForm',
             id=structure.id)
@@ -120,11 +76,10 @@ class Actor(base):
         form = Form(
             id='forcefield-wizard-startform',
             title='')
-
         args = {
-            #'simulationId': director.getGUID(),
+            'simulationId': director.getGUID(),
             #'simulationType': '',
-            'structureId': self.inventory.structure_id,
+            'structureId': self.inventory.structureId,
             #'coordinateType':simulation.matter.
             }
         callbackArgs = {
@@ -168,75 +123,84 @@ class Actor(base):
             )
         return form
 
-
     def storeInputFile(self, director):
         # this method is called by the java web start gui (AtomSim)
-        #id = self.inventory.id #this was passed by AtomSim
+        orm = director.clerk.orm
+        
+        # first store the potential
+        #self.storePotential(director)--> TODO: this is already stored by gulpUi so don't need to re-store
+        
+        #TODO: make it so it will load settings back in if restarting
+        # then store the settings
         from memd.gulp.GulpSettings import GulpSettings
         gulpSettings = GulpSettings()
         gulpSettings.runtype = self.inventory.runtype
-        gulpSettings.inputFileContents = self.inventory.inputFileContents
-        gulpSettings.potential_name = self.inventory.potential_name
+        #gulpSettings.inputFileContents = self.inventory.inputFileContents
+        #gulpSettings.potential_name = self.inventory.potential_name
         domaccess = director.retrieveDOMAccessor('atomicstructure')
-        self.inventory.structure_id = '3W4G7NUM'
-        structure = domaccess.getAtomicStructure(self.inventory.structure_id)
+        structure = domaccess.getAtomicStructure(self.inventory.structureId)
         gulpSettings.structure = structure
-        director.clerk.orm.save(gulpSettings, save_not_owned_referred_object=0)
-
+        #since the potential has already been stored, we just get it 
         from memd.gulp.GulpPotential import GulpPotential
         try:
-            gulpPotential = director.clerk.getRecordByID(GulpPotential, self.inventory.potential_name, 
-                associatedDataFileToVerify = self.inventory.potential_filename, director=director)
-        except:
-            return "failure--cannot find selected potential in database"
+            record = orm.db.query(orm(GulpPotential), useexisting = True).filter_by(
+                        potential_name = self.inventory.potential_name).one()
+        except Exception, err:
+            print err
+            print 'creating new potential'
+            self.storePotential(director)
+            record = orm.db.query(orm(GulpPotential), useexisting = True).filter_by(
+                        potential_name = self.inventory.potential_name).one()
+        gulpSettings.potential = orm.record2object(record)
 
+        #save the settings
+        orm.save(gulpSettings, save_not_owned_referred_object=0)
+        # these last few lines will eventually be taken care of by the orm
         #create data directory for the simulation if necessary
-        datadir = director.dds.abspath(gulpSettings)
-        if not os.path.exists(datadir): os.makedirs(datadir)
+        datadir = director.dds.abspath(orm(gulpSettings))
+        if not os.path.exists(datadir): 
+            os.makedirs(datadir)
 
-        inputFilePath = director.dds.abspath(gulpSettings, filename=GulpSettings.inputFile)
+        inputFilePath = director.dds.abspath(orm(gulpSettings), filename=GulpSettings.inputFile)
         open(inputFilePath, 'w').write(self.inventory.inputFileContents)
         
+        #these lines should be executed right before the job is submitted
         #get the potential from the database
-        potentialPath = director.dds.abspath(gulpPotential, filename=gulpPotential.filename)
+        potentialPath = director.dds.abspath(orm(gulpPotential), filename=gulpPotential.filename)
         potentialContent = open(potentialPath).read()
         #write the potential in the simulation directory
-        simulationPotential = director.dds.abspath(gulpSettings, filename=gulpPotential.filename)
+        simulationPotential = director.dds.abspath(orm(gulpSettings), filename=gulpPotential.filename)
         open(simulationPotential, 'w').write(potentialContent)        
-
         return 'success'
     
     def storePotential(self, director):
-
-        potential_filename = self.inventory.potential_filename
-        librarycontent = self.inventory.librarycontent
-        
+        orm = director.clerk.orm
         from memd.gulp.GulpPotential import GulpPotential
         try:
-            gulpPotential = director.clerk.getRecordByID(GulpPotential, self.inventory.potential_name, 
-                associatedDataFileToVerify = self.inventory.potential_filename, director=director)
-        except:
-            # if it doesn't exist, create a new one from this entry
-            #gulpPotential = director.clerk.newDbObject(GulpPotential, id = self.inventory.potential_name)
+            record = orm.db.query(orm(GulpPotential)).filter_by(
+                                potential_name = self.inventory.potential_name).one()
+            gulpPotential = orm.record2object(record)
+        except Exception, err:
+            print err
+            print 'creating new potential'
             gulpPotential = GulpPotential()
-            gulpPotential.filename = potential_filename
-            gulpPotential.creator = self.inventory.creator
-            gulpPotential.description = self.inventory.description
-            director.clerk.orm.save(gulpSettings)
-            
-            #put the potential in the potentials subdirectory
-            libfile = director.dds.abspath(gulpPotential, filename = potential_filename)
-            libDirectory,file = os.path.split(libfile)
-            if not os.path.exists(libDirectory):
-                try:
-                    os.makedirs(libDirectory)
-                except Exception, err:
-                    raise RuntimeError, "unable to create directory %r. %s: %s" % (
-                        self.path, err.__class__.__name__, err)
-            open(libfile, 'w').write(librarycontent)
-            #server = director.clerk.dereference(job.server)
-            director.dds.remember(gulpPotential, files=[potential_filename])#, server=server)
-
+        gulpPotential.filename = self.inventory.potential_filename
+        gulpPotential.creator = self.inventory.potentialCreator
+        gulpPotential.description = self.inventory.potentialDescription
+        gulpPotential.potential_name = self.inventory.potential_name
+        orm.save(gulpPotential)
+        #put the potential in the potentials subdirectory
+        libfile = self.dds.abspath(orm(gulpPotential), filename = gulpPotential.filename)
+        libDirectory,file = os.path.split(libfile)
+        if not os.path.exists(libDirectory):
+            try:
+                os.makedirs(libDirectory)
+            except Exception, err:
+                raise RuntimeError, "unable to create directory %r. %s: %s" % (
+                    self.path, err.__class__.__name__, err)
+        open(libfile, 'w').write(self.inventory.librarycontent)
+        #server = director.clerk.dereference(job.server)
+        self.dds.remember(orm(gulpPotential), files=[gulpPotential.filename])
         return 'success'
 
     def startFormShowError(self, director, errors=None):
@@ -251,9 +215,7 @@ class Actor(base):
         return
     
     def configureSubmissionQueue(self, director):
-
         id = self.inventory.id
-        type = self.inventory.type
         
         main = page._body._content._main
         document = main.document(title='Atomic-level Simulation with Forcefields' )
