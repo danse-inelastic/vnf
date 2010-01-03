@@ -60,11 +60,6 @@ kernels = [
     ]
 
 
-kernel_related = [
-    #'GulpPotential'
-    ]
-
-
 other = [
     'Registrant',
     'Server',
@@ -91,7 +86,6 @@ tablemodules = \
              + shapes \
              + materials \
              + kernels \
-             + kernel_related \
              + sample \
              + instrument \
              + acl2 \
