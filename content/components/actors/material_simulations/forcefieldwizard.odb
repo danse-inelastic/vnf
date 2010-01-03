@@ -35,7 +35,7 @@ class Actor(base):
         short_description = pyre.inventory.str('short_description', default = '' )
         short_description.meta['tip'] = 'A short description'
         
-        librarycontent = pyre.inventory.str('librarycontent')
+        potentialContent = pyre.inventory.str('potentialContent')
         inputFileContents = pyre.inventory.str('inputFileContents')
         runtype = pyre.inventory.str('runtype')
         
@@ -143,7 +143,7 @@ class Actor(base):
         #since the potential has already been stored, we just get it 
         from memd.gulp.GulpPotential import GulpPotential
         try:
-            record = orm.db.query(orm(GulpPotential), useexisting = True).filter_by(
+            record = orm.db.query(orm(GulpPotential)).filter_by(
                         potential_name = self.inventory.potential_name).one()
         except Exception, err:
             print err
@@ -198,7 +198,7 @@ class Actor(base):
             except Exception, err:
                 raise RuntimeError, "unable to create directory %r. %s: %s" % (
                     self.path, err.__class__.__name__, err)
-        open(libfile, 'w').write(self.inventory.librarycontent)
+        open(libfile, 'w').write(self.inventory.potentialContent)
         #server = director.clerk.dereference(job.server)
         self.dds.remember(orm(gulpPotential), files=[gulpPotential.filename])
         return 'success'
