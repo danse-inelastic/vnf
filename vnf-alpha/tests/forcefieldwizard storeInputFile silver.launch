@@ -8,7 +8,7 @@
 </listAttribute>
 <stringAttribute key="org.eclipse.ui.externaltools.ATTR_LOCATION" value="${workspace_loc:vnfBetaLuban/vnfb/html/webmain.py}"/>
 <stringAttribute key="org.eclipse.ui.externaltools.ATTR_OTHER_WORKING_DIRECTORY" value="${workspace_loc:vnfBetaLuban/vnfb/html}"/>
-<stringAttribute key="org.eclipse.ui.externaltools.ATTR_TOOL_ARGUMENTS" value="--actor=material_simulations/forcefieldwizard --routine=storeInputFile --actor.inputFileContents=&quot;energy\n&quot; --forcefieldwizard.potential_name=clerirosato --actor.runtype=&quot;molecular dynamics&quot; --sentry.username=demo --sentry.passwd=demo --actor.structureId=3W4G7NUM"/>
+<stringAttribute key="org.eclipse.ui.externaltools.ATTR_TOOL_ARGUMENTS" value="--actor=material_simulations/forcefieldwizard --routine=storeInputFile --actor.inputFileContents=&quot;energy\n&quot; --forcefieldwizard.potential_name=clerirosato --actor.runtype=&quot;molecular dynamics&quot; --sentry.username=demo --sentry.passwd=demo --actor.structureId=3W4G7NUM --actor.potential_filename=test.lib --actor.potential_name=test"/>
 <stringAttribute key="org.eclipse.ui.externaltools.ATTR_WORKING_DIRECTORY" value="${workspace_loc:vnfBetaLuban/vnfb/html}"/>
 <stringAttribute key="org.python.pydev.debug.ATTR_INTERPRETER" value="__default"/>
 <stringAttribute key="org.python.pydev.debug.ATTR_PROJECT" value="vnfBetaLuban"/>
