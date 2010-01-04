@@ -12,6 +12,12 @@
 #
 
 
+
+"""
+create a data object and save it to the db
+"""
+
+
 from luban.applications.UIApp import UIApp as base
 
 

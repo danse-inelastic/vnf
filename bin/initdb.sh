@@ -9,14 +9,8 @@
 # in the following, each commands initialize some db tables
 
 # create tables that are still in vnf-alpha
-./initdb.py  --init-tables \
+./initdb-alpha.py  --init-tables \
     --tables=users
 
-# add bvk models
-./addbvkmodelstodb.py 
+./initdb.py --tables=bvkmodels,instruments,vanadiumplates
 
-# add instruments
-./createInstruments.py
-
-# add a vanadium plate
-./createdataobject.py --type=neutron_experiment_simulations.neutron_components.VanadiumPlate.VanadiumPlate 

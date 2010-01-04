@@ -20,20 +20,15 @@
 ## from matter.orm.Structure import Structure
 
 
-from luban.applications.UIApp import UIApp as base
+from pyre.components.Component import Component as base
 
 
-class DbApp(base):
+class Component(base):
 
 
-    class Inventory(base.Inventory):
-
-        import pyre.inventory
-
-
-
-    def main(self, *args, **kwds):
-        domaccess = self.retrieveDOMAccessor('material_simulations/phonon_calculators/bvk')
+    def initdb(self):
+        director = self.director
+        domaccess = director.retrieveDOMAccessor('material_simulations/phonon_calculators/bvk')
         orm = domaccess.orm
 
         models = self._readModels()
@@ -60,7 +55,7 @@ class DbApp(base):
             continue
         return models
 
-
+    
     def _getModules(self):
         from bvk import bvkmodels
         f = bvkmodels.__file__
@@ -86,26 +81,12 @@ class DbApp(base):
 
 
     def __init__(self):
-        base.__init__(self, 'addbvkmodelstodb')
+        base.__init__(self, 'bvkmodels', 'initdb')
         return
 
 
-    def _getPrivateDepositoryLocations(self):
-        return ['../config', '../content/components', '/tmp/luban/services']
 
-
-
-def main():
-    import journal
-    journal.debug('db').activate()
-    app = DbApp()
-    return app.run()
-
-
-# main
-if __name__ == '__main__':
-    # invoke the application shell
-    main()
+def initdb(): return Component()
 
 
 # version
