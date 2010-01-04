@@ -33,6 +33,7 @@ EXPORT_DATAFILES = \
 	createInstruments.pml \
 	guidfromidddaemon.odb \
 	idd-pickler.odb \
+	initdb.pml \
 	ipa.pml \
 	itask-manager.odb \
 	journal.pml \
