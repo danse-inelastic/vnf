@@ -21,6 +21,7 @@ class Clerk(base, ClerkBase):
 
         import pyre.inventory
         db = pyre.inventory.str('db', default = 'vnf' )
+        echo = pyre.inventory.bool('echo', default=False)
         
 
     def __init__(self, name = 'clerk', facility = 'clerk'):
@@ -130,7 +131,7 @@ class Clerk(base, ClerkBase):
     def _createDB(self):
         db = self.inventory.db
         from dsaw.db import connect
-        db = connect(db=db, echo=True)
+        db = connect(db=db, echo=self.inventory.echo)
         self._registerVnfAlphaTables(db)
         return db
 
