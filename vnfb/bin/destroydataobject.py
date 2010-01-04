@@ -28,6 +28,7 @@ class DbApp(base):
 
         type = pyre.inventory.str(name='type')
         id = pyre.inventory.str(name='id')
+        ids = pyre.inventory.list(name='ids')
 
 
     def main(self, *args, **kwds):
@@ -35,13 +36,15 @@ class DbApp(base):
         
         type = self.inventory.type
         type = clerk._getObjectByImportingFromDOM(type)
-        
-        id = self.inventory.id
+
+        ids = self.inventory.ids
+        if not ids:
+            ids = [self.inventory.id]
 
         orm = clerk.orm
-        obj = orm.load(type, id)
-
-        orm.destroy(obj)
+        for id in ids:
+            obj = orm.load(type, id)
+            orm.destroy(obj)
         return
 
 
