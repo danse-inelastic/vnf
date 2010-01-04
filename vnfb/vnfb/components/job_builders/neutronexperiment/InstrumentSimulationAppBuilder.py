@@ -10,13 +10,13 @@
 #
 
 
-from JobBuilder import JobBuilder as base
+from _ import JobBuilder as base
 class Builder(base):
 
 
     def __init__(self, path):
         'path: path in which data files are generated'
-        base.__init__(self, path)
+        base.__init__(self, 'instrumentsimulationappbuilder', path)
         return
     
 
@@ -48,7 +48,6 @@ class Builder(base):
     def onInstrumentConfiguration(self, configuration):
         
         components = configuration.components.dereference(self.db)
-        instrument = configuration.target.dereference(self.db)
         
         self._write( 'import mccomponents.pyre_support' )
         self._write( 'from mcni.pyre_support.Instrument import Instrument as base' )
@@ -62,14 +61,14 @@ class Builder(base):
         self._indent()
         self._write( 'import pyre.inventory' )
         self._write( 'from mcni.pyre_support import facility, componentfactory as component')
-        
+
+        sequence = []
         for name, component in components:
             component.label = name
             self.dispatch( component )
+            sequence.append(component.componentname)
             continue
 
-        sequence = instrument.componentsequence
-        
         #if 'sample' in sequence:
         #    self.onSample( )
         #    pass # end if
@@ -85,21 +84,18 @@ class Builder(base):
 
         self.cmdline_opts[ 'sequence' ] = sequence
 
-        geometer = instrument.geometer.dereference(self.db)
-        for component in sequence:
-            
-            record = geometer[ component ]
-            
-            reference = record.reference_label
+        for name, component in components:
+            reference = component.referencename
             if reference is not None and reference != '' and reference != 'absolute':
                 raise NotImplementedError, 'reference=%r' % reference
             
-            position = record.position
-            orientation = record.orientation
+            position = component.position
+            orientation = component.orientation
 
-            value = '%s,%s' % (position, orientation)
-            
-            self.cmdline_opts[ 'geometer.%s' % component ] = value
+            value = '%s,%s' % (list(position), _formatOrientation(orientation))
+
+            name = component.componentname
+            self.cmdline_opts[ 'geometer.%s' % name ] = value
 
             continue
 
@@ -108,7 +104,7 @@ class Builder(base):
 
         self._write( 'if __name__ == "__main__":' )
         self._indent()
-        self._write( 'app = Instrument( "Instr%s" )' % instrument.id )
+        self._write( 'app = Instrument( "Instr%s" )' % configuration.id )
         self._write( 'app.run()' )
         self._outdent()
         self._write( '' )
@@ -117,7 +113,7 @@ class Builder(base):
 
     def onMonochromaticSource(self, source):
         kwds = {
-            'name': source.label,
+            'name': source.componentname,
             'category': 'sources',
             'type': 'MonochromaticSource',
             'supplier': 'mcni',
@@ -127,13 +123,13 @@ class Builder(base):
         from _utils import e2v
         v = e2v( source.energy )
         self.Ei = source.energy
-        self.cmdline_opts[ '%s.velocity' % source.label ] = (0,0,v) 
+        self.cmdline_opts[ '%s.velocity' % source.componentname ] = (0,0,v) 
         return
 
 
     def onSNSModerator(self, component):
         kwds = {
-            'name': component.label,
+            'name': component.componentname,
             'category': 'sources',
             'type': 'SNS_source',
             'supplier': 'mcstas2',
@@ -154,13 +150,13 @@ class Builder(base):
             ]
 
         for param in parameters:
-            opts[ '%s.%s' %  (component.label,param) ] = getattr(component, param)
+            opts[ '%s.%s' %  (component.componentname,param) ] = getattr(component, param)
             continue
 
         neutronprofile = component.neutronprofile.dereference(self.db)
         self.registerDependency(neutronprofile)
         
-        opts[ '%s.S_filename' % component.label ] = os.path.join(
+        opts[ '%s.S_filename' % component.componentname ] = os.path.join(
             '..', '..', self.dds.path(neutronprofile, 'profile.dat'))
 
         self.cmdline_opts.update( opts )
@@ -169,7 +165,7 @@ class Builder(base):
 
     def onChanneledGuide(self, component):
         kwds = {
-            'name': component.label,
+            'name': component.componentname,
             'category': 'optics',
             'type': 'Guide_channeled',
             'supplier': 'mcstas2',
@@ -193,7 +189,7 @@ class Builder(base):
             ]
 
         for param in parameters:
-            opts[ '%s.%s' %  (component.label,param) ] = getattr(component, param)
+            opts[ '%s.%s' %  (component.componentname,param) ] = getattr(component, param)
             continue
         
         self.cmdline_opts.update( opts )
@@ -202,7 +198,7 @@ class Builder(base):
 
     def onT0Chopper(self, component):
         kwds = {
-            'name': component.label,
+            'name': component.componentname,
             'category': 'optics',
             'type': 'Vertical_T0',
             'supplier': 'mcstas2',
@@ -222,7 +218,7 @@ class Builder(base):
             ]
 
         for param in parameters:
-            opts[ '%s.%s' %  (component.label,param) ] = getattr(component, param)
+            opts[ '%s.%s' %  (component.componentname,param) ] = getattr(component, param)
             continue
         
         self.cmdline_opts.update( opts )
@@ -231,7 +227,7 @@ class Builder(base):
 
     def onFermiChopper(self, component):
         kwds = {
-            'name': component.label,
+            'name': component.componentname,
             'category': 'optics',
             'type': 'Fermi_chop2',
             'supplier': 'mcstas2',
@@ -253,10 +249,10 @@ class Builder(base):
             ]
 
         for param in parameters:
-            opts[ '%s.%s' %  (component.label,param) ] = getattr(component, param)
+            opts[ '%s.%s' %  (component.componentname,param) ] = getattr(component, param)
             continue
 
-        opts[ '%s.nchan' % (component.label,)] = component.nchans
+        opts[ '%s.nchan' % (component.componentname,)] = component.nchans
         
         self.cmdline_opts.update( opts )
         return
@@ -264,7 +260,7 @@ class Builder(base):
 
     def onNeutronRecorder(self, component):
         kwds = {
-            'name': component.label,
+            'name': component.componentname,
             'category': 'monitors',
             'type': 'NeutronToStorage',
             'supplier': 'mcni',
@@ -272,7 +268,7 @@ class Builder(base):
         self.onNeutronComponent(**kwds)
 
         opts = {
-            '%s.path' % component.label: outputfilename(component),
+            '%s.path' % component.componentname: outputfilename(component),
             }
 
         # map database record parameter names to parameters used in monte carlo components
@@ -281,7 +277,7 @@ class Builder(base):
             ]
 
         for param in parameters:
-            opts[ '%s.%s' %  (component.label,param) ] = getattr(component, param)
+            opts[ '%s.%s' %  (component.componentname,param) ] = getattr(component, param)
             continue
         
         self.cmdline_opts.update( opts )
@@ -297,7 +293,7 @@ class Builder(base):
 
     def onQEMonitor(self, m):
         kwds = {
-            'name': m.label,
+            'name': m.componentname,
             'category': 'monitors',
             'type': 'IQE_monitor',
             'supplier': 'mcstas2',
@@ -305,8 +301,8 @@ class Builder(base):
         self.onNeutronComponent( **kwds )
         
         opts = {
-            '%s.Ei' % m.label: self.Ei,
-            '%s.filename' % m.label: outputfilename(m),
+            '%s.Ei' % m.componentname: self.Ei,
+            '%s.filename' % m.componentname: outputfilename(m),
             }
 
         parameters = [
@@ -317,7 +313,7 @@ class Builder(base):
             ]
 
         for param in parameters:
-            opts[ '%s.%s' %  (m.label,param) ] = getattr(m, param)
+            opts[ '%s.%s' %  (m.componentname,param) ] = getattr(m, param)
             continue
         
         self.cmdline_opts.update( opts )
@@ -326,7 +322,7 @@ class Builder(base):
 
     def onSphericalPSD(self, m):
         kwds = {
-            'name': m.label,
+            'name': m.componentname,
             'category': 'monitors',
             'type': 'PSD_monitor_4PI',
             'supplier': 'mcstas2',
@@ -334,7 +330,7 @@ class Builder(base):
         self.onNeutronComponent( **kwds )
 
         opts = {
-            '%s.filename' % m.label: outputfilename(m),
+            '%s.filename' % m.componentname: outputfilename(m),
             }
 
         parameters = {
@@ -343,7 +339,7 @@ class Builder(base):
             'ny': m.nrows,
             }
         for k,v in parameters.iteritems():
-            opts['%s.%s' % (m.label, k)] = v
+            opts['%s.%s' % (m.componentname, k)] = v
             continue
         
         self.cmdline_opts.update( opts )
@@ -352,7 +348,7 @@ class Builder(base):
 
     def onEMonitor(self, m):
         kwds = {
-            'name': m.label,
+            'name': m.componentname,
             'category': 'monitors',
             'type': 'E_monitor',
             'supplier': 'mcstas2',
@@ -375,7 +371,7 @@ class Builder(base):
             'yheight': 0,
             }
         for k,v in parameters.iteritems():
-            opts['%s.%s' % (m.label, k)] = v
+            opts['%s.%s' % (m.componentname, k)] = v
             continue
         
         self.cmdline_opts.update( opts )
@@ -384,7 +380,7 @@ class Builder(base):
 
     def onTofMonitor(self, m):
         kwds = {
-            'name': m.label,
+            'name': m.componentname,
             'category': 'monitors',
             'type': 'TOF_monitor2',
             'supplier': 'mcstas2',
@@ -392,7 +388,7 @@ class Builder(base):
         self.onNeutronComponent( **kwds )
 
         opts = {
-            '%s.filename' % m.label: outputfilename(m),
+            '%s.filename' % m.componentname: outputfilename(m),
             }
 
         # map database record parameter names to parameters used in monte carlo components
@@ -407,7 +403,7 @@ class Builder(base):
             ]
 
         for recordparam, mcparam in parameters:
-            opts[ '%s.%s' %  (m.label,mcparam) ] = getattr(m, recordparam)
+            opts[ '%s.%s' %  (m.componentname,mcparam) ] = getattr(m, recordparam)
             continue
         
         self.cmdline_opts.update( opts )
@@ -424,7 +420,7 @@ class Builder(base):
 
         # then we need to build the options ( odb?)
         kwds = {
-            'name': ds.label,
+            'name': ds.componentname,
             'category': 'detectors',
             'type': 'DetectorSystemFromXml',
             'supplier': 'mcni',
@@ -439,9 +435,9 @@ class Builder(base):
         tofparams = '%s,%s,%s' % (
             tofmin, tofmax, (tofmax-tofmin)*1./ntofbins )
         opts = {
-            '%s.eventsdat' % ds.label: outputfilename(ds),
-            '%s.instrumentxml' % ds.label: self.detectorsystem_xmlfile,
-            '%s.tofparams' % ds.label: tofparams,
+            '%s.eventsdat' % ds.componentname: outputfilename(ds),
+            '%s.instrumentxml' % ds.componentname: self.detectorsystem_xmlfile,
+            '%s.tofparams' % ds.componentname: tofparams,
             }
 
         self.cmdline_opts.update( opts )
@@ -482,6 +478,12 @@ class Builder(base):
 
 
     pass # end of Builder
+
+
+
+def _formatOrientation(matrix):
+    from mcni.neutron_coordinates_transformers.mcstasRotations import toAngles
+    return list(toAngles(matrix))
 
 
 

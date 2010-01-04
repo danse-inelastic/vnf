@@ -11,7 +11,7 @@
 
 
 from pyre.weaver.mills.XMLMill import XMLMill
-from JobBuilder import JobBuilder
+from _ import JobBuilder
 
 
 class Builder(JobBuilder, XMLMill):

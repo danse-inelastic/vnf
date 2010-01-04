@@ -4,7 +4,7 @@
 #
 #                                   Jiao Lin
 #                      California Institute of Technology
-#                      (C) 2006-2010  All Rights Reserved
+#                      (C) 2008-2010  All Rights Reserved
 #
 # {LicenseText}
 #
@@ -12,7 +12,9 @@
 #
 
 
-# components for building jobs
+from vnfb.components.job_builders.neutronexperiment.NeutronExperiment import Builder
+def job_builder(name, path):
+    return Builder(name, path)
 
 
 # version

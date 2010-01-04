@@ -12,14 +12,24 @@
 #
 
 
-from JobBuilder import JobBuilder as base
+from _ import JobBuilder as base
+
 class Builder(base):
 
-    from vnf.dom.NeutronExperiment import NeutronExperiment as Computation
+    from vnfb.dom.neutron_experiment_simulations.NeutronExperiment import NeutronExperiment as Computation
 
     def render(self, computation, db=None, dds=None):
+        # make sure orm is initd
+        domaccess = self.director.retrieveDOMAccessor('experiment')
+        orm = domaccess.orm
+
+        # convert db record to data object
+        # computation = orm.record2object(computation)
+        
+        #
         from NeutronExperimentSimulationRunBuilder import Builder
-        return Builder(self.path).render(computation, db=db, dds=dds)
+        builder = Builder(self.path)
+        return builder.render(computation, db=db, dds=dds)
 
 
 # the relative path in the job directory where mcvine simulation will

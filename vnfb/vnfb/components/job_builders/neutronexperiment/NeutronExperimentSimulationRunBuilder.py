@@ -10,10 +10,7 @@
 #
 
 
-import journal
-debug = journal.debug('jobbuilder')
-
-from JobBuilder import JobBuilder as base
+from _ import JobBuilder as base
 
 class Builder(base):
 
@@ -48,16 +45,15 @@ class Builder(base):
         configured_instrument = experiment.instrument_configuration.dereference(self.db)
         self.dispatch(configured_instrument)
 
-        sampleassembly = experiment.sampleassembly
-        if sampleassembly:
-            sampleassembly = sampleassembly.dereference(self.db)
-        if sampleassembly:
+        sample = experiment.sample.dereference(self.db)
+        from vnfb.dom.neutron_experiment_simulations.SampleAssembly import SampleAssemblyTable
+        from vnfb.dom.neutron_experiment_simulations.neutron_components.SampleBase import TableBase as SampleTableBase
+        if isinstance(sample, SampleAssemblyTable):
+            sampleassembly = sample
             self.dispatch( sampleassembly )
-
-        samplecomponent = experiment.samplecomponent
-        if samplecomponent:
-            samplecomponent = samplecomponent.dereference(self.db)
-        if samplecomponent:
+        else:
+            assert isinstance(sample, SampleTableBase), "not a sample: %s" % sample
+            samplecomponent = sample
             self.onSampleComponent(samplecomponent)
         
         #
@@ -68,10 +64,10 @@ class Builder(base):
 
         # parallel computing
         db = self.db
-        job = experiment.job.dereference(db)
+        job = experiment.getJob(db)
         np = job.numprocessors
         self.options['mpirun.nodes'] = np
-
+        
         #construct command line
         pyscriptname = self.pyscriptname
         command = '. ~/.mcvine && python %s %s' % (pyscriptname, '\\\n\t'.join(
@@ -110,8 +106,8 @@ class Builder(base):
 
 
     def onSampleAssembly(self, sampleassembly):
-        from vnf.dom.SampleAssembly import SampleAssembly
-        if not isinstance(sampleassembly, SampleAssembly):
+        from vnfb.dom.SampleAssembly import SampleAssemblyTable
+        if not isinstance(sampleassembly, SampleAssemblyTable):
             raise RuntimeError
         from McvineSampleAssemblyBuilder import Builder
         builder = Builder(self.path)

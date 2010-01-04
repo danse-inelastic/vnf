@@ -10,8 +10,8 @@
 #
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-PROJECT = vnf
-PACKAGE = components/job_builders
+PROJECT = vnfb
+PACKAGE = components/job_builders/neutronexperiment
 
 
 BUILD_DIRS = \
@@ -30,20 +30,16 @@ all: export
 # export
 
 EXPORT_PYTHON_MODULES = \
-	AbInitio.py \
-	GulpSimulation.py \
 	InstrumentSimulationAppBuilder.py \
 	JobBuilder.py \
 	McvineSampleAssemblyBuilder.py \
 	McvineScattererXMLBuilder.py \
 	NeutronExperiment.py \
 	NeutronExperimentSimulationRunBuilder.py \
-	PhononsFromAbinitio.py \
-	QuantumEspresso.py \
 	SampleAssemblyXMLBuilder.py \
 	SampleComponentBuilder.py \
-	VacfComputation.py \
 	__init__.py \
+	_.py \
 	_utils.py \
 
 
