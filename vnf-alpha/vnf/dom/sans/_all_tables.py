@@ -5,7 +5,7 @@ def tables():
 
 
     kernels = [
-        'SANSSphereModelKernel',
+        #'SANSSphereModelKernel',
         ]
 
 
