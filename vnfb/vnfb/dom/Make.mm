@@ -44,6 +44,7 @@ EXPORT_PYTHON_MODULES = \
 	AtomicStructure.py \
 	Computation.py \
 	ComputationResult.py \
+	Histogram.py \
 	ITask.py \
 	Job.py \
 	Lattice.py \
