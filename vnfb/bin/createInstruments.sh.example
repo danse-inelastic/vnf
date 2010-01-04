@@ -1,0 +1,8 @@
+#!/usr/bin/env sh
+
+# create all instruments in vnfb.dom
+./initdb.py -table=instruments
+
+
+# create one instrument named 'Test'
+./initdb.py -table=instruments --initdb-instruments.instruments=Test

@@ -13,8 +13,6 @@
 
 
 """
-This script creates some prebuilt neutron instruments for vnf.
-
 Those prebuilt instruments are under vnfb/dom/neutron_experiment_simulations/instruments/
 Two forms of instrument files are accepted:
  1. instrument = dictionary of information about the instrument. eg. Test.py
@@ -26,10 +24,10 @@ not limited to the files in vnfb/dom/neutron_experiment_simulations/instruments
 """
 
 
-from luban.applications.UIApp import UIApp as base
+from pyre.components.Component import Component as base
 
 
-class CreateInstrumentsApp(base):
+class Component(base):
 
 
     class Inventory(base.Inventory):
@@ -38,7 +36,7 @@ class CreateInstrumentsApp(base):
         instruments = pyre.inventory.list(name='instruments')
 
 
-    def main(self, *args, **kwds):
+    def initdb(self):
         instruments = self.inventory.instruments
         if not instruments:
             from vnfb.dom.neutron_experiment_simulations.instruments \
@@ -59,11 +57,11 @@ class CreateInstrumentsApp(base):
         fkey = 'createInstrument'
         if hasattr(module, fkey):
             f = getattr(module, fkey)
-            return f(self)
+            return f(self.director)
 
         instrument = getattr(module, 'instrument')
         
-        orm = self.clerk.orm
+        orm = self.director.clerk.orm
         from vnfb.dom.neutron_experiment_simulations.instruments import createInstrument
         createInstrument(instrument, orm)
         
@@ -81,17 +79,7 @@ class CreateInstrumentsApp(base):
     
 
 
-def main():
-    import journal
-    journal.debug('db').activate()
-    app = CreateInstrumentsApp('createInstruments')
-    return app.run()
-
-
-# main
-if __name__ == '__main__':
-    # invoke the application shell
-    main()
+def initdb(): return Component('initdb-instruments', 'initdb')
 
 
 # version

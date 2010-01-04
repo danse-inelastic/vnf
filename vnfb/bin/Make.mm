@@ -34,6 +34,7 @@ EXPORT_DATAFILES = \
 	establishglobalpointers.py \
 	findreferrals.py \
 	getuserlist.py \
+	initdb-alpha.py \
 	initdb.py \
 	initdb.sh \
 	itaskapp.py \

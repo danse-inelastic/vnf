@@ -131,7 +131,7 @@ class DbApp(Script):
 
 
     def __init__(self):
-        Script.__init__(self, 'initdb')
+        Script.__init__(self, 'initdb-alpha')
         self.db = None
         return
 
