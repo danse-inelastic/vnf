@@ -1,5 +1,6 @@
 from vnfb.dom._ import o2t
 
+from vnfb.dom.Computation import Computation as ComputationTableBase
 from vnfb.dom.AbstractOwnedObjectBase import AbstractOwnedObjectBase
 from vnfb.dom.ComputationResult import ComputationResult, ComputationResultInterface
 from vnfb.dom.OwnedObject import OwnedObject
