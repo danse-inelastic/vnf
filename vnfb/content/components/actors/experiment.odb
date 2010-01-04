@@ -203,6 +203,14 @@ class Actor(base):
             )
 
 
+    def createEditWizard_summary(self, director):
+        return director.retrieveVisual(
+            'neutronexperiment/edit/summary',
+            id = self.inventory.id,
+            director = director
+            )
+
+
     def verifyEditWizard_startform(self, director):
         short_description = self.inventory.short_description
         if not short_description:

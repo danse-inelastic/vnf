@@ -73,6 +73,12 @@ class Factory(object):
             routine='createEditWizard_sampleenvironmentconfiguration',
             id = self.id))
 
+        tab5 = tabs.tab(label='summary', id='experimentwizard-summary-tab')
+        tab5.onselect = select(element=tab5).replaceContent(load(
+            actor='experiment',
+            routine='createEditWizard_summary',
+            id = self.id))
+
         return doc
 
 

@@ -137,9 +137,26 @@ class Accessor(base):
         return rs
 
 
-    def isConstructued(self, id):
+    def getMissingInformation(self, id=None, experiment=None):
+        if experiment:
+            e = experiment
+        else:
+            e = self.getExperiment(id)
+        if not e.instrument: return 'instrument'
+        if not e.instrument_configuration: return 'instrument configuration'
+        if not e.sample: return 'sample'
+        if not e.sample_configuration: return 'sample configuration'
+        if not e.sampleenvironment: return 'sample environment'
+        if e.ncount <= 0: return 'number of counts'
+        return 
+
+
+    def isConstructued(self, id=None, experiment=None):
         'check if an experiment is constructed and ready to be run'
-        e = self.getExperiment(id)
+        if experiment:
+            e = experiment
+        else:
+            e = self.getExperiment(id)
         if not e.instrument: return False
         if not e.instrument_configuration: return False
         if not e.sample: return False
