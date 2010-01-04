@@ -38,6 +38,7 @@ EXPORT_PYTHON_MODULES = \
 	ChanneledGuide.py \
 	T0Chopper.py \
 	FermiChopper.py \
+	SampleBase.py \
 	SampleComponent.py \
 	SampleComponentExample.py \
 	EMonitor.py \

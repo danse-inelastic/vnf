@@ -34,6 +34,42 @@ class Accessor(base):
     orm = property(_getOrm)
 
 
+    def createExperiment(self):
+        exp = NeutronExperiment()
+        orm = self.orm
+        orm.save(exp)
+        return exp
+
+
+    def destroySampleConfiguration(self, record=None):
+        # destroy an sample configuration
+        # record: sample configuration record
+        orm = self.orm
+        type = orm.getObjectTypeFromTableName(record.getTableName())
+        id = record.id
+        o = orm.load(type, id)
+        assert orm(o).isconfiguration
+        orm.destroy(o)
+        return
+
+
+    def createSampleConfiguration(self, experiment):
+        # the sample
+        sample = experiment.sample
+        # copy the sample to a configuration
+        orm = self.orm
+        sc = orm.deepcopy(sample)
+        # assign
+        experiment.sample_configuration = sc
+        # save
+        orm.save(experiment, save_not_owned_referred_object=0)
+        # mark as configuration
+        r = orm(sc)
+        r.isconfiguration = True
+        orm.db.updateRecord(r)
+        return sc
+
+
     def destroyInstrumentConfiguration(self, id):
         # destroy an instrument configuration given its id (not the experiment id)
         orm = self.orm
@@ -50,8 +86,9 @@ class Accessor(base):
         # new configuration
         ic = InstrumentConfiguration()
         # copy the components
-        from copy import copy
-        ic.components = [copy(c) for c in components]
+        orm = self.orm
+        deepcopy = orm.deepcopy
+        ic.components = map(deepcopy, components)
         # save to db
         orm = self.orm
         experiment.instrument_configuration = ic
@@ -96,6 +133,7 @@ class Accessor(base):
         if not e.instrument: return False
         if not e.instrument_configuration: return False
         if not e.sample: return False
+        if not e.sample_configuration: return False
         if not e.sampleenvironment: return False
         if e.ncount <= 0: return False
         return True

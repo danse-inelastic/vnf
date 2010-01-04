@@ -44,10 +44,10 @@ class Factory(object):
         # select sample
         ss = self.sample_selector()
         form.add(ss)
-        if not self.instrument.hasSampleComponent():
+        if self.instrument and not self.instrument.hasSampleComponent():
             ss.hidden = True
 
-        form.submitbutton(label='next')
+        form.submitbutton(label='Save')
 
         form.onsubmit = select(element=form).submit(
             actor='experiment', routine='verifyEditWizard_startform',

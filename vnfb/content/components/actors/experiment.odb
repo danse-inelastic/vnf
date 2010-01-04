@@ -104,7 +104,6 @@ class Actor(base):
 
         # add some buttons to the left of navbar
         toolbar = tableview.find(id='experiment-table-toptoolbar')
-        toolbar.add(Paragraph(text='|', Class='splitter'))
         #
         button = Button(label='New', tip='create new experiment', icon='new.png')
         toolbar.add(button)
@@ -158,6 +157,13 @@ class Actor(base):
             id = self.inventory.id,
             director = director,
             )
+
+
+    def new(self, director):
+        domaccess = self._domaccess(director)
+        exp = domaccess.createExperiment()
+        self.inventory.id = domaccess.orm(exp).id
+        return self.edit(director)
 
 
     def edit(self, director):
@@ -215,16 +221,29 @@ class Actor(base):
 
         # instrument
         instrument = self.inventory.instrument
-        if r.instrument.id != instrument:
+        if r.instrument and (r.instrument.id != instrument \
+                             and r.instrument_configuration \
+                             and r.instrument_configuration.id):
             # user selects a new instrument, need to annihilate the old configuration
             icid = r.instrument_configuration.dereference(domaccess.db).id
             r.instrument_configuration = None
             domaccess.db.updateRecord(r)
             domaccess.destroyInstrumentConfiguration(icid)
         r.instrument = instrument
+        
         # sample
-        sample = domaccess.db.fetchRecordUsingUniqueIdentifierStr(self.inventory.sample)
-        r.sample = sample
+        samplerecord = domaccess.db.fetchRecordUsingUniqueIdentifierStr(self.inventory.sample)
+        oldsamplerecord = r.sample and r.sample.dereference(domaccess.db)
+        if oldsamplerecord \
+               and (type(oldsamplerecord) != type(samplerecord) \
+                    or oldsamplerecord.id != samplerecord.id) \
+               and r.sample_configuration and r.sample_configuration.id:
+            # user selects a new sample, need to annihilate the old configuration
+            screcord = r.sample_configuration.dereference(domaccess.db)
+            r.sample_configuration = None
+            domaccess.db.updateRecord(r)
+            domaccess.destroySampleConfiguration(record=screcord)
+        r.sample = samplerecord
 
         # update
         domaccess.db.updateRecord(r)

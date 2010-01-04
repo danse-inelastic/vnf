@@ -55,12 +55,24 @@ class Factory(object):
         tab1.add(director.retrieveVisual('neutronexperiment/edit/startform',
                                          id=self.id, director=director))
 
-        tab2 = tabs.tab(label='instrument configuration', id='experimentwizard-instrumentconfiguration-tab')
+        tab2 = tabs.tab(label='instrument', id='experimentwizard-instrumentconfiguration-tab')
         tab2.onselect = select(element=tab2).replaceContent(load(
             actor='experiment',
             routine='createEditWizard_instrumentconfiguration',
             id = self.id))
-        
+
+        tab3 = tabs.tab(label='sample', id='experimentwizard-sampleconfiguration-tab')
+        tab3.onselect = select(element=tab3).replaceContent(load(
+            actor='experiment',
+            routine='createEditWizard_sampleconfiguration',
+            id = self.id))
+
+        tab4 = tabs.tab(label='sample environment', id='experimentwizard-sampleenvironmentconfiguration-tab')
+        tab4.onselect = select(element=tab4).replaceContent(load(
+            actor='experiment',
+            routine='createEditWizard_sampleenvironmentconfiguration',
+            id = self.id))
+
         return doc
 
 
