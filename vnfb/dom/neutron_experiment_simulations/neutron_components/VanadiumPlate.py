@@ -12,7 +12,7 @@
 #
 
 
-from SampleComponent import SampleComponent as base
+from SampleBase import SampleBase as base, TableBase
 class VanadiumPlate(base):
     
     width = 0.05; height = 0.10; thickness = 0.002
@@ -43,8 +43,8 @@ VanadiumPlate.Inventory = Inventory
 del Inventory
 
 
-from _ import o2t, AbstractOwnedObjectBase
-VanadiumPlateTable = o2t(VanadiumPlate, {'subclassFrom': AbstractOwnedObjectBase})
+from _ import o2t
+VanadiumPlateTable = o2t(VanadiumPlate, {'subclassFrom': TableBase})
 
 
 

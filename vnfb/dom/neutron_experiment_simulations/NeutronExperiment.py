@@ -13,6 +13,7 @@
 
 
 from Instrument import Instrument
+from InstrumentConfiguration import InstrumentConfiguration
 from SampleAssembly import SampleAssembly
 from SampleEnvironment import SampleEnvironment
 
@@ -25,6 +26,7 @@ class NeutronExperiment:
 
     # sample
     sample = None
+    sample_configuration = None
 
     # sample environment
     sampleenvironment = None
@@ -34,12 +36,13 @@ class NeutronExperiment:
 
 from instrument_configuration_types import getTypes
 instrument_configuration_types = getTypes()
-instrument_configuration_types.append(Instrument)
+instrument_configuration_types.append(InstrumentConfiguration)
 
 
 from samplecomponent_types import getTypes
 samplecomponent_types = getTypes()
-from SampleEnvironment import SampleEnvironment
+sample_types = [SampleAssembly] + samplecomponent_types
+
 
 from dsaw.model.Inventory import Inventory as InvBase
 class Inventory(InvBase):
@@ -56,8 +59,20 @@ class Inventory(InvBase):
     sample = InvBase.d.reference(
         name = 'sample',
         targettype=None,
-        targettypes = [SampleAssembly] + samplecomponent_types,
+        targettypes = sample_types,
         owned = 0)
+    # sample_configuration is the configuration of the sample
+    # separation of sample and sample_configuration simplifies implementation of
+    # manipulations of sample configuration.
+    # sample_configuration is implemented using the same data object types as
+    # sample. in db, sample_configuration just has its column "isconfiguration"
+    # marked as true.
+    # please also read neutron_components.SampleBase
+    sample_configuration = InvBase.d.reference(
+        name = 'sample_configuration',
+        targettypes = sample_types,
+        owned = 1,
+        )
     
     sampleenvironment = InvBase.d.reference(
         name = 'sampleenvironment', targettype = SampleEnvironment, owned = 1)

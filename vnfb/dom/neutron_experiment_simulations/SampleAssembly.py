@@ -12,9 +12,9 @@
 #
 
 
+from neutron_components.SampleBase import SampleBase, TableBase
 
-
-class SampleAssembly(object):
+class SampleAssembly(SampleBase):
 
     scatterers = []
 
@@ -29,20 +29,12 @@ class SampleAssembly(object):
 from Scatterer import Scatterer
 
 
-# db table
-from dsaw.model.Inventory import Inventory as InvBase
-class Inventory(InvBase):
-
-    scatterers = InvBase.d.referenceSet(
-        name = 'scatterers', targettype=Scatterer, owned = 0)
+# Inventory for orm
+class Inventory(SampleBase.Inventory):
     
-    position = InvBase.d.array(name='position', elementtype='float', shape=3)
-    position.help = 'position of this sample assembly relative to coordinate system at '\
-                    'the sample position of the instrument'
-    orientation = InvBase.d.array(name='orientation', elementtype='float', shape=(3,3))
-    orientation.help = 'orientation of this sample assembly relative to coordinate system at '\
-                       'the sample position of the instrument'
-    
+    scatterers = SampleBase.Inventory.d.referenceSet(
+        name = 'scatterers', targettype=Scatterer, owned = 1)
+        
     dbtablename = 'sampleassemblies'
 
 
@@ -51,8 +43,8 @@ del Inventory
 
 
 # orm
-from _ import o2t, AbstractOwnedObjectBase
-SampleAssemblyTable = o2t(SampleAssembly, {'subclassFrom': AbstractOwnedObjectBase})
+from _ import o2t
+SampleAssemblyTable = o2t(SampleAssembly, {'subclassFrom': TableBase})
 
 
 

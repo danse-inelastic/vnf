@@ -96,10 +96,12 @@ class Accessor(base):
              st.c.short_description.label('short_description'),
              sGP.c.type.label('type'),
              st.c.date.label('date'),
+             st.c.isconfiguration.label('isconfiguration'),
              st.c.globalpointer.label('gptr'),
              ],
             st.c.globalpointer==sGP.c.id,
             )
+        filter = self._normalizeFilter(filter)
         if filter:
             q = sqlalchemy.select([q.alias('sample')], whereclause=filter)
         return q
@@ -132,6 +134,7 @@ class Accessor(base):
              st.c.short_description.label('short_description'),
              q1.c.type.label('type'),
              st.c.date.label('date'),
+             st.c.isconfiguration.label('isconfiguration'),
              st.c.globalpointer.label('gptr'),
              ],
             st.c.globalpointer==q1.c.entity,
@@ -153,6 +156,16 @@ class Accessor(base):
         from vnfb.dom.neutron_experiment_simulations.sample_types import typenames
         ormtables = map(self._getTable, typenames)
         return ormtables
+
+
+    def _normalizeFilter(self, filter):
+        # any sample component has a special column "isconfiguration",
+        # when it is true, a sample component is really a sample configuration
+        # we need to normalize the filter to only return records for which isconfiguration
+        # is false.
+        addtional_filter = 'isconfiguration=false or isconfiguration=null'
+        if not filter: return addtional_filter
+        return '(%s) and (%s)' % (filter, addtional_filter)
 
 
     def _establishGlobalPointers(self):
