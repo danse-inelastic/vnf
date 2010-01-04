@@ -17,6 +17,7 @@ PACKAGE = components
 # directory structure
 
 BUILD_DIRS = \
+	job_builders \
 
 OTHER_DIRS = \
 
