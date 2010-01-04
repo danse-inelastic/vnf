@@ -66,9 +66,9 @@ def server(
 
 octopod = server(
     'server000', 'default server',
-    'localhost', '54321',
-    'vnf', 'jobs', 
-    'group access???',
+    'localhost', '50022',
+    'linjiao', '/home/linjiao/vnfjobs', 
+    '',
     'torque',
     )
 
