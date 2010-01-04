@@ -35,16 +35,16 @@ class Actor(base):
         short_description = pyre.inventory.str('short_description', default = '' )
         short_description.meta['tip'] = 'A short description'
         
-        potentialContent = pyre.inventory.str('potentialContent')
-        inputFileContents = pyre.inventory.str('inputFileContents')
-        runtype = pyre.inventory.str('runtype')
+        potentialContent = pyre.inventory.str('potentialContent', default='')
+        inputFileContents = pyre.inventory.str('inputFileContents', default='')
+        runtype = pyre.inventory.str('runtype', default='')
         
-        creator = pyre.inventory.str('creator')
-        description = pyre.inventory.str('description')
-        potential_name = pyre.inventory.str('potential_name')
-        potential_filename = pyre.inventory.str('potential_filename')
-        potentialCreator = pyre.inventory.str('potentialCreator')
-        potentialDescription = pyre.inventory.str('potentialDescription')
+        creator = pyre.inventory.str('creator', default='')
+        description = pyre.inventory.str('description', default='')
+        potential_name = pyre.inventory.str('potential_name', default='')
+        potential_filename = pyre.inventory.str('potential_filename', default='')
+        potentialCreator = pyre.inventory.str('potentialCreator', default='')
+        potentialDescription = pyre.inventory.str('potentialDescription', default='')
 
     def start(self, director):
         
@@ -149,7 +149,7 @@ class Actor(base):
             print err
             print 'creating new potential'
             self.storePotential(director)
-            record = orm.db.query(orm(GulpPotential), useexisting = True).filter_by(
+            record = orm.db.query(orm(GulpPotential)).filter_by(
                         potential_name = self.inventory.potential_name).one()
         gulpSettings.potential = orm.record2object(record)
 
@@ -166,6 +166,7 @@ class Actor(base):
         
         #these lines should be executed right before the job is submitted
         #get the potential from the database
+        gulpPotential = gulpSettings.potential
         potentialPath = director.dds.abspath(orm(gulpPotential), filename=gulpPotential.filename)
         potentialContent = open(potentialPath).read()
         #write the potential in the simulation directory
@@ -190,7 +191,8 @@ class Actor(base):
         gulpPotential.potential_name = self.inventory.potential_name
         orm.save(gulpPotential)
         #put the potential in the potentials subdirectory
-        libfile = self.dds.abspath(orm(gulpPotential), filename = gulpPotential.filename)
+        libfile = director.dds.abspath(orm(gulpPotential), 
+                                             filename = gulpPotential.filename)
         libDirectory,file = os.path.split(libfile)
         if not os.path.exists(libDirectory):
             try:
@@ -200,7 +202,7 @@ class Actor(base):
                     self.path, err.__class__.__name__, err)
         open(libfile, 'w').write(self.inventory.potentialContent)
         #server = director.clerk.dereference(job.server)
-        self.dds.remember(orm(gulpPotential), files=[gulpPotential.filename])
+        director.dds.remember(orm(gulpPotential), files=[gulpPotential.filename])
         return 'success'
 
     def startFormShowError(self, director, errors=None):
