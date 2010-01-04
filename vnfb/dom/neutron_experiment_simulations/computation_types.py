@@ -13,7 +13,11 @@
 
 
 typenames = [
+    'neutron_experiment_simulations.NeutronExperiment.NeutronExperiment',
     ]
+
+
+deps_typenames = []
 
 
 def getTypes():

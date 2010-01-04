@@ -94,9 +94,9 @@ NeutronExperiment.Inventory = Inventory
 del Inventory
 
 
-from _ import o2t, AbstractOwnedObjectBase as TableBase
+from _ import o2t, ComputationTableBase as TableBase
 NeutronExperimentTable = o2t(NeutronExperiment, {'subclassFrom': TableBase})
-    
+NeutronExperimentTable.job_builder = 'neutronexperiment'    
 
 # version
 __id__ = "$Id$"

@@ -40,7 +40,6 @@ EXPORT_PYTHON_MODULES = \
 	FermiChopper.py \
 	SampleBase.py \
 	SampleComponent.py \
-	SampleComponentExample.py \
 	EMonitor.py \
 	QEMonitor.py \
 	QMonitor.py \
