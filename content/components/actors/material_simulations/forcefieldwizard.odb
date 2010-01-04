@@ -147,7 +147,6 @@ class Actor(base):
                         potential_name = self.inventory.potential_name).one()
         except Exception, err:
             print err
-            print 'creating new potential'
             self.storePotential(director)
             record = orm.db.query(orm(GulpPotential)).filter_by(
                         potential_name = self.inventory.potential_name).one()
