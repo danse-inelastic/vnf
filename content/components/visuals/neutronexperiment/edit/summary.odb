@@ -42,25 +42,32 @@ class Factory(object):
         
         # the form
         doc = lc.document(Class='container')
-        doc.add(self._buildForm(self.sampleenvironment))
+        doc.add(self._buildSumary())
         #
-        switch = select(id='experimentwizard-summary-tab').tab('select')
-        continuebutton = lc.button(label='continue', onclick=switch)
+        switch = load(
+            actor='job', routine='create',
+            computation_type = 'neutron_experiment_simulations.NeutronExperiment.NeutronExperiment',
+            computation_id = self.id
+            )
+        continuebutton = lc.button(label='create job', onclick=switch)
         doc.add(continuebutton)
         return doc
 
 
-    def _buildForm(self, se):
+    def _buildSumary(self):
+        exp = self.experiment
         director = self.director
         getDrawer = director.painter.paintObj.drawers.getDrawer
-        drawer = getDrawer(se.__class__)
-        doc = drawer(se, edithierarchy=False)
+        drawer = getDrawer(exp.__class__)
+        doc = drawer(exp, readonly=True, editlink=False)
         return doc
 
 
     def _notReadyDocument(self):
+        missing = self.domaccess.getMissingInformation(experiment = self.experiment)
         doc = lc.document()
-        doc.paragraph(text=['You are not ready to configure the sample.'])
+        doc.paragraph(text=['You are not ready to configure the sample: ',
+                            '%s is missing' % missing])
 
         l = lc.link(
             label = 'start from beginning',
@@ -71,7 +78,7 @@ class Factory(object):
 
 
     def _isNotReady(self):
-        return self.sample is None
+        return not self.domaccess.isConstructued(experiment=self.experiment)
 
 
 def visual(id, director):
