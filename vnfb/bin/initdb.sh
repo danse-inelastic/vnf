@@ -12,5 +12,5 @@
 ./initdb-alpha.py  --init-tables \
     --tables=users
 
-./initdb.py --tables=bvkmodels,instruments,vanadiumplates
+./initdb.py --tables=bvkmodels,instruments,vanadiumplates,servers
 
