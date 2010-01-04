@@ -39,11 +39,6 @@ class Component(base):
         return
 
 
-    def _getPrivateDepositoryLocations(self):
-        return ['../config', '../content/components', '/tmp/luban-servicces']
-    
-
-
 def initdb(): return Component('initdb-vanadiumplates', 'initdb')
 
 
