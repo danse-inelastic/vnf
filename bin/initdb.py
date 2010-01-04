@@ -33,9 +33,15 @@ class DbApp(base):
         
 
     def main(self, *args, **kwds):
+        clerk = self.clerk
+        clerk.importAllDataObjects()
+        clerk.db.createAllTables()
+        
         tables = self.inventory.tables
         if not tables:
-            tables = [self.inventory.table]
+            table = self.inventory.table
+            if table:
+                tables = []
 
         self.inittables(tables)
         return
@@ -46,6 +52,7 @@ class DbApp(base):
 
 
     def inittable(self, table):
+        print ' * %s' % table
         clerk = self.inventory.clerk
         orm = clerk.orm
 
@@ -58,8 +65,12 @@ class DbApp(base):
         elif hasattr(component, 'initdb'):
             component.initdb()
 
+        elif component is None:
+            print 'initdb component for table %s does not exist' % table
+            pass
+
         else:
-            raise RuntimeError
+            raise RuntimeError, 'initdb component for table %s does not implement the required interface' % table
 
         return
 
@@ -68,10 +79,11 @@ class DbApp(base):
         component = self.retrieveComponent(name, factory='initdb', vault=['initdb'])
         if component is None:
             curator_dump = self._dumpCurator()
-            raise RuntimeError, "could not locate db initializer %r. curator dump: %s" % (
-                name, curator_dump)
-        self.configureComponent(component)
-        component.director = self
+            self._debug.log("could not locate db initializer %r. curator dump: %s" % (
+                name, curator_dump))
+        else:
+            self.configureComponent(component)
+            component.director = self
         return component
 
 
