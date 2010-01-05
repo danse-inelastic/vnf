@@ -218,7 +218,7 @@ class Actor(base):
     
     def configureSubmissionQueue(self, director):
         return director.redirect(actor = 'job', routine = 'create', 
-                                 computation_type = 'gulpsettings', 
+                                 computation_type = 'material_simulations.GulpSettingsHolder.GulpSettingsHolder', 
                                  computation_id = self.inventory.simulationId)
        
 #        id = self.inventory.id

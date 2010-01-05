@@ -69,9 +69,10 @@ from memd.gulp.GulpSettings import GulpSettings
 
 
 GulpSettingsHolder = o2t(GulpSettings, {'subclassFrom': SimulationTableBase})
-GulpSettingsHolder.job_builder = 'material_simulations/gulp_settings'
+GulpSettingsHolder.job_builder = 'material_simulations/gulpSettings'
+GulpSettingsHolder.name = 'gulpsettings'
 #GulpSettingsHolder.actor = 'material_simulations/phonon_calculators/bvk_getdos'
-GulpSettingsHolder.result_retriever = 'material_simulations/gulp_settings'
+GulpSettingsHolder.result_retriever = 'material_simulations/gulpSettings'
 #def getShortDescription(self):
 #    if self.short_description: return self.short_description
 #    return 'Compute DOS from BvK model %s: df=%s, N1=%s' % (
