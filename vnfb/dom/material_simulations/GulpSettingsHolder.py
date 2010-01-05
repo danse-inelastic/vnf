@@ -70,7 +70,6 @@ from memd.gulp.GulpSettings import GulpSettings
 
 GulpSettingsHolder = o2t(GulpSettings, {'subclassFrom': Computable, 'dbtablename':'gulpsettings'})
 GulpSettingsHolder.job_builder = 'material_simulations/gulpSettings'
-GulpSettingsHolder.name = 'gulpsettings'
 #GulpSettingsHolder.actor = 'material_simulations/phonon_calculators/bvk_getdos'
 GulpSettingsHolder.result_retriever = 'material_simulations/gulpSettings'
 #def getShortDescription(self):
