@@ -72,12 +72,13 @@ class Actor(base):
         from luban.content.Form import Form
         from luban.content.FormTextField import FormTextField
         from luban.content.FormSelectorField import FormSelectorField
+        self.inventory.simulationId = director.getGUID()
         
         form = Form(
             id='forcefield-wizard-startform',
             title='')
         args = {
-            'simulationId': director.getGUID(),
+            'simulationId': self.inventory.simulationId,
             #'simulationType': '',
             'structureId': self.inventory.structureId,
             #'coordinateType':simulation.matter.
@@ -119,7 +120,7 @@ class Actor(base):
         form.onsubmit = select(element=form).submit(
             actor = 'material_simulations/forcefieldwizard',
             routine = 'configureSubmissionQueue',
-            id = self.inventory.id,
+            id = self.inventory.simulationId,
             )
         return form
 
@@ -216,46 +217,50 @@ class Actor(base):
         return
     
     def configureSubmissionQueue(self, director):
-        id = self.inventory.id
-        
-        main = page._body._content._main
-        document = main.document(title='Atomic-level Simulation with Forcefields' )
-
-        p = document.paragraph()
-        p.text = ['Your gulp simulation #%s is ready for submission.' % id]
-        
-        p = document.paragraph()
-        action = actionRequireAuthentication(
-            label = 'start',
-            actor = 'gulpsimulationwizard', 
-            sentry = director.sentry,
-            routine = 'submitSimulation',
-            id=id, type=type,
-            )
-        submit_link = action_link(action, director.cgihome)
-        
-        action = actionRequireAuthentication(
-            label = 'save it for later submission',
-            actor = 'gulpsimulationwizard', 
-            sentry = director.sentry,
-            routine = 'saveSimulation',
-            id=id, type=type,
-            )
-        save_link = action_link(action, director.cgihome)
-        
-        action = actionRequireAuthentication(
-            label = 'delete',
-            actor = 'gulpsimulationwizard', 
-            sentry = director.sentry,
-            routine = 'cancel',
-            id=id, type=type,
-            )
-        delete_link = action_link(action, director.cgihome)
-
-        p.text = [
-            'You can %s this simulation, or %s, or %s it.' % (submit_link, save_link, delete_link),
-            ]
-        return page
+        return director.redirect(actor = 'job', routine = 'create', 
+                                 computation_type = 'gulpsettings', 
+                                 computation_id = self.inventory.simulationId)
+       
+#        id = self.inventory.id
+#        
+#        main = page._body._content._main
+#        document = main.document(title='Atomic-level Simulation with Forcefields' )
+#
+#        p = document.paragraph()
+#        p.text = ['Your gulp simulation #%s is ready for submission.' % id]
+#        
+#        p = document.paragraph()
+#        action = actionRequireAuthentication(
+#            label = 'start',
+#            actor = 'gulpsimulationwizard', 
+#            sentry = director.sentry,
+#            routine = 'submitSimulation',
+#            id=id, type=type,
+#            )
+#        submit_link = action_link(action, director.cgihome)
+#        
+#        action = actionRequireAuthentication(
+#            label = 'save it for later submission',
+#            actor = 'gulpsimulationwizard', 
+#            sentry = director.sentry,
+#            routine = 'saveSimulation',
+#            id=id, type=type,
+#            )
+#        save_link = action_link(action, director.cgihome)
+#        
+#        action = actionRequireAuthentication(
+#            label = 'delete',
+#            actor = 'gulpsimulationwizard', 
+#            sentry = director.sentry,
+#            routine = 'cancel',
+#            id=id, type=type,
+#            )
+#        delete_link = action_link(action, director.cgihome)
+#
+#        p.text = [
+#            'You can %s this simulation, or %s, or %s it.' % (submit_link, save_link, delete_link),
+#            ]
+#        return page
 
 import os
 def isConfigured(sim, director):
