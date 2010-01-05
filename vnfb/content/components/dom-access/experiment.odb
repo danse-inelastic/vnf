@@ -159,10 +159,19 @@ class Accessor(base):
             e = self.getExperiment(id)
         if not e.instrument: return False
         if not e.instrument_configuration: return False
-        if not e.sample: return False
-        if not e.sample_configuration: return False
-        if not e.sampleenvironment: return False
+        if e.instrument.hasSampleComponent():
+            if not e.sample: return False
+            if not e.sample_configuration: return False
+            if not e.sampleenvironment: return False
         if e.ncount <= 0: return False
+        return True
+
+
+    def isEditable(self, id=None):
+        record = self.getExperimentRecord(id)
+        db = self.db
+        if record.getJob(db):
+            return False
         return True
 
 

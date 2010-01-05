@@ -12,6 +12,8 @@
 #
 
 
+import luban.content as lc
+
 from luban.content import load, select
 
 from luban.content.Button import Button
@@ -142,13 +144,31 @@ class Actor(base):
         if not domaccess.isConstructued(id):
             view = self.createEditor(director)
         else:
-            view = self.createSimpleDisplay()
+            view = self.createSimpleDisplay(director)
         return select(id='main-display-area').replaceContent(view)
 
 
     def createSimpleDisplay(self, director):
-        return load(actor='orm/neutronexperiments', routine='display',
+        domaccess = self._domaccess(director)
+        id = self.inventory.id
+        
+        doc = lc.document(Class='container')
+        
+        if domaccess.isEditable(id):
+            link = lc.link(
+                label='edit',
+                onclick=select(id='main-display-area').replaceContent(
+                  load(actor='experiment', routine='createEditor',
+                       id=id)
+                ),
+                )
+            doc.add(link)
+
+        doc.oncreate = select(element=doc).append(
+            load(actor='orm/neutronexperiments', routine='display',
                  id = self.inventory.id, editlink = False)
+            )
+        return doc
     
 
     def createEditor(self, director):

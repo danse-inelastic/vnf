@@ -64,7 +64,6 @@ class Builder(base):
 
         sequence = []
         for name, component in components:
-            component.label = name
             self.dispatch( component )
             sequence.append(component.componentname)
             continue
