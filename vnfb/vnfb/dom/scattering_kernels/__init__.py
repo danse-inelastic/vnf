@@ -15,7 +15,7 @@
 kernelnames = [
     'ins.PolyXtalCoherentPhononScatteringKernel.PolyXtalCoherentPhononScatteringKernel',
     'ins.SQEKernel.SQEKernel',
-    'sans.SANSSphereModelKernel.SANSSphereModelKernel',
+    #'sans.SANSSphereModelKernel.SANSSphereModelKernel',
     ]
 
 

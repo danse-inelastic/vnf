@@ -24,16 +24,15 @@ Class attributes of a computation table inherited from this base class:
 
 from Job import Job
 
-
-# base class for all computations (including simulations)
-class Computable:
+from dsaw.db.GloballyReferrable import GloballyReferrable
+from dsaw.db.WithID import WithID
+# alternate base class for all computations (including simulations)
+class Computable(WithID,GloballyReferrable):
 
 
     import dsaw.db
     
-    
-    short_description = dsaw.db.varchar(name='short_description', length = 128, default='')
-    short_description.meta['tip'] = 'short_description'
+
 
     # XXX: this really should be in the _ComputationResultRetrievals table XXX
     results_state = dsaw.db.varchar(name='results_state', length=16, default='')
