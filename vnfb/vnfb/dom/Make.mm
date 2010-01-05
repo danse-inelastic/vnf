@@ -42,7 +42,7 @@ EXPORT_PYTHON_MODULES = \
 	AbstractOwnedObjectBase.py \
 	Atom.py \
 	AtomicStructure.py \
-	Computable.ply \
+	Computable.py \
 	Computation.py \
 	ComputationResult.py \
 	Histogram.py \
