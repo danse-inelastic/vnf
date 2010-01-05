@@ -92,7 +92,7 @@ class Accessor(base):
 
     def isEditable(self, id):
         'check if a structure is still editable'
-        return self.isReferred(id)
+        return not self.isReferred(id)
 
 
     def isReferred(self, id):
