@@ -67,14 +67,16 @@ def check( job, director ):
 
         # callback
         try:
-            callback = eval('onjob%s'%newstate)
+            callback = eval('on%s'%newstate)
         except:
             pass
-        callback(job, director)
+        else:
+            callback(job, director)
         
     return job
 
 
+# event handlers
 def onfinished(job, director):
     info.log('onfinished: %s' % job.id)
     # when a job finished, should try to retrieve results from
@@ -97,6 +99,8 @@ def onterminated(job, director):
     return onfinished(job, director)
 
 
+
+#
 def cancel(job, director):
     from scheduler import cancel
     return cancel(job, director)
