@@ -418,6 +418,8 @@ class Actor(base):
     
 
     def create_submitting_view(self, director):
+        view = lc.document(title='submitting job %s' % self.inventory.id)
+        
         job = self._getJobRecord(director)
 
         if job.state in ['submitted', 'running', 'onhold',
@@ -461,17 +463,25 @@ class Actor(base):
             percentage = 0,
             skip = 1000,
             )
+        view.add(pbar)
+        
+        loadingjobview_alert = view.paragraph(
+            text=['job submission done. reloading...'])
+        loadingjobview_alert.hidden = True
+
         pbar.onchecking = load(
             actor='itask',
             routine='checkProgress',
             id = task.id,
             )
-        pbar.onfinished = load(
-            actor = 'job',
-            routine='view',
-            id = self.inventory.id)
-
-        return pbar
+        pbar.onfinished = [
+            select(element=loadingjobview_alert).show(),
+            load(actor = 'job',
+                 routine='view',
+                 id = self.inventory.id),
+            ]
+        
+        return view
 
 
     def showErrors(self, director, errors=None):
