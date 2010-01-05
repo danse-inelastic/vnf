@@ -63,14 +63,7 @@ class DOMAccessor( base ):
                 # python module
                 if not entry.endswith('.py'): continue
                 m = pkg + '.' + entry[:-3]
-                m = _imp(m)
-                import inspect
-                for symbol, entity in m.__dict__.iteritems():
-                    if inspect.isclass(entity) \
-                           and issubclass(entity, TableBase) \
-                           and entity is not TableBase \
-                           and entity.tablenameIsDefined():
-                        self.db.registerTable(entity)
+                _imp(m)
                 continue
             return
 
