@@ -34,9 +34,14 @@ class Actor(base):
 
 
     def onInstrumentChange(self, director):
-        # selectors
+        # widgets to disable/enable
+        widgets = []
+        #
         form = select(id=self.inventory.formid)
-        sampleselector = form.find(name='sample')
+        widgets.append(form.find(name='sample'))
+        #
+        widgets.append(select(id='experimentwizard-sampleconfiguration-tab'))
+        widgets.append(select(id='experimentwizard-sampleenvironmentconfiguration-tab'))
 
         #
         domaccess = self._domaccess(director)
@@ -49,9 +54,9 @@ class Actor(base):
         oldhassample = oldinstrument.hasSampleComponent()
         newhassample = newinstrument.hasSampleComponent()
         if oldhassample and not newhassample:
-            return sampleselector.hide()
+            return [w.disable() for w in widgets]
         elif not oldhassample and newhassample:
-            return sampleselector.show()
+            return [w.enable() for w in widgets]
         return
 
 

@@ -45,7 +45,7 @@ class Factory(object):
         ss = self.sample_selector()
         form.add(ss)
         if self.instrument and not self.instrument.hasSampleComponent():
-            ss.hidden = True
+            form.oncreate = select(element=ss).disable()
 
         form.submitbutton(label='Save')
 
@@ -69,6 +69,9 @@ class Factory(object):
         #
         if instrument:
             selector.value = self.domaccess.orm(instrument).id
+        else:
+            # by default selector select item 0
+            self.instrument = self.domaccess.orm.record2object(records[0])
 
         # when instrument selection change, sample selector could be removed or added
         selector.onchange = select(element=selector).notify(

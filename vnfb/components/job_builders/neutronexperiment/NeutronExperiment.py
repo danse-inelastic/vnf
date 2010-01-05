@@ -48,7 +48,7 @@ def outputfilename(component):
     This has to be unique so that different components don't
     write to the same output file.
     """
-    f = '%s-%s.out' % (component.__class__.__name__, component.label)
+    f = '%s-%s.out' % (component.__class__.__name__, component.componentname)
     return f
 
 
