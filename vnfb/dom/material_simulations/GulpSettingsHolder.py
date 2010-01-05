@@ -14,7 +14,7 @@
 from _ import o2t
 
 # still import from vnf-alpha dom. need to change
-from SimulationBase import SimulationBase as SimulationTableBase
+from vnfb.dom.Computable import Computable
 
 
 #from dsaw.model.Inventory import Inventory as InvBase
@@ -68,7 +68,7 @@ from memd.gulp.GulpSettings import GulpSettings
 
 
 
-GulpSettingsHolder = o2t(GulpSettings, {'subclassFrom': SimulationTableBase})
+GulpSettingsHolder = o2t(GulpSettings, {'subclassFrom': Computable})
 GulpSettingsHolder.job_builder = 'material_simulations/gulpSettings'
 GulpSettingsHolder.name = 'gulpsettings'
 #GulpSettingsHolder.actor = 'material_simulations/phonon_calculators/bvk_getdos'
