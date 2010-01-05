@@ -41,7 +41,7 @@ class Retriever(base):
 
 
 def retriever():
-    return Retriever('bvk_getdos')
+    return Retriever('gulpSettings')
 
 
 # version

@@ -17,7 +17,7 @@ debug = journal.debug('atomsim')
 
 
 from vnfb.components.JobBuilder import JobBuilder as base
-from memd.gulp.GulpSettings import GulpSettings as Computation
+from vnfb.dom.GulpSettingsHolder import GulpSettingsHolder as Computation
 
 class Builder(base):
 
@@ -35,14 +35,13 @@ class Builder(base):
 
         # find out the file name of the gulp library file
         potential = computation.potential.dereference(db)
-        libname = potential.filename
         #libptr = dds.abspath(computation, filename=Computation.LIBPOINTER_FILE)
         #libname = open(libptr).read().strip()
 
         # two files need to be copied to job directory
         # 1. gulp.gin
         # 2. the library file
-        files = [Computation.CONFIGURATION_FILE, libname]
+        files = [Computation.inputFile, potential.filename]
 
         # copy files to job directory
         job = computation.job.dereference(db)
@@ -52,7 +51,7 @@ class Builder(base):
         # if the job outputs in DL_POLY format (necessary for trajectory analysis), mandate
         # conversion of the trajectory to netcdf format
         # 1. open the input file
-        inputFilePath = dds.abspath(job, filename=Computation.CONFIGURATION_FILE)
+        inputFilePath = dds.abspath(job, filename=Computation.inputFile)
         inputFileContents = open(inputFilePath).read()
         
         # 2. scan for various items to be processed
