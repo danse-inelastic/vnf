@@ -225,7 +225,7 @@ class Computable(WithID,GloballyReferrable):
 from dsaw.db.Table import Table
 class _ComputationResultRetrievals(Table):
 
-    name = "_____computation_result_retrievals_____"
+    name = "_____computation_result_retrievals2_____"
 
     import dsaw.db
 
