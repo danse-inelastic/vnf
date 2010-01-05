@@ -28,7 +28,7 @@ class Retriever(base):
         self._check_results_sanity(expected_results=['DOS'], job=job)
 
         # create a phonon dos record to save dos
-        self.declareProgress(0.4, 'create a phonon dos to store the result')
+        self.declareProgress(0.4, 'create an AtomSim simulation to store the result')
         from vnfb.dom.material_simulations.PhononDOS import PhononDOSTable
         dos = self._make_result_holder(computation, PhononDOSTable)
         dos.matter = computation.matter
