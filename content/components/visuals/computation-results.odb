@@ -92,7 +92,11 @@ def visual(computation, actor, director):
     results = computation.results.dereference(db)
     for k, r in results:
         doc1 = doc.document(Class='container')
-        doc1.oncreate = select(element=doc1).append(
+        doc1.paragraph(
+            text=['loading computation result %s %s. please wait...' % (
+                    r.getTableName(), r.id)]
+            )
+        doc1.oncreate = select(element=doc1).replaceContent(
             load(actor='orm/%s' % r.getTableName(),
                  routine='createGraphicalView',
                  id = r.id)
