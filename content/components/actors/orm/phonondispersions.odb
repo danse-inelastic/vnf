@@ -41,7 +41,8 @@ class Actor(base):
 
     def _createGraphicalViewM(self, director):
         ids = self.inventory.ids
-        nrows = (len(ids)+1)/2
+        nids = len(ids)
+        nrows = (nids+1)/2
         doc = lc.document(Class='container')
         grid = lc.grid(); doc.add(grid)
         for i in range(nrows):
@@ -51,9 +52,10 @@ class Actor(base):
             self.inventory.id = ids[2*i];
             cell1.add(self._createGraphicalView1(director))
 
-            cell2 = row.cell();
-            self.inventory.id = ids[2*i+1];
-            cell2.add(self._createGraphicalView1(director))
+            if 2*i+1 < nids:
+                cell2 = row.cell();
+                self.inventory.id = ids[2*i+1];
+                cell2.add(self._createGraphicalView1(director))
 
             continue
         
