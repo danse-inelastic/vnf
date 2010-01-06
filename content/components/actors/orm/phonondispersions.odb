@@ -36,7 +36,28 @@ class Actor(base):
     def createGraphicalView(self, director):
         ids = self.inventory.ids
         if ids: return self._createGraphicalViewM(director)
-        return self._createGraphicalView1(director)        
+        return self._createGraphicalView1(director)
+
+
+    def _createGraphicalViewM(self, director):
+        ids = self.inventory.ids
+        nrows = (len(ids)+1)/2
+        doc = lc.document(Class='container')
+        grid = lc.grid(); doc.add(grid)
+        for i in range(nrows):
+            row = grid.row()
+
+            cell1 = row.cell();
+            self.inventory.id = ids[2*i];
+            cell1.add(self._createGraphicalView1(director))
+
+            cell2 = row.cell();
+            self.inventory.id = ids[2*i+1];
+            cell2.add(self._createGraphicalView1(director))
+
+            continue
+        
+        return doc
 
 
     def _createGraphicalView1(self, director):
@@ -48,7 +69,7 @@ class Actor(base):
         record = orm(obj)
 
         # the document to build
-        doc = lc.document(title='Phonon density of states %s' % record.id)
+        doc = lc.document(title='Phonon dispersion %s' % record.id)
 
         # link to the computation
         origin = record.getOrigin(db)
