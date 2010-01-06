@@ -91,13 +91,13 @@ def visual(computation, actor, director):
     # display results 
     results = computation.results.dereference(db)
     for k, r in results:
-        doc1 = doc.document(Class='container')
-        p = doc1.paragraph(
+        alertdoc = doc.paragraph(
             text=['loading computation result %s %s. please wait...' % (
             r.getTableName(), r.id)]
             )
+        doc1 = doc.document(Class='container')
         doc1.oncreate = [
-            select(element=p).hide(),
+            select(element=alertdoc).hide(),
             select(element=doc1).append(
             load(actor='orm/%s' % r.getTableName(),
                  routine='createGraphicalView',

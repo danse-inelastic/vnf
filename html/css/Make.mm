@@ -23,9 +23,10 @@ EXPORT_DATADIRS = \
 
 EXPORT_DATAFILES = \
 	luban.css\
+	vnf.css \
 	vnf-atomicstructure.css \
 	vnf-bvk.css \
-        vnf-qe.css \
+	vnf-jobs.css \
 	vnf-login.css \
 	vnf-mainframe.css \
 	vnf-mastertable.css \
@@ -33,8 +34,8 @@ EXPORT_DATAFILES = \
 	vnf-matter.css \
 	vnf-matter-overview.css \
 	vnf-objecteditor.css \
+        vnf-qe.css \
 	vnf-table.css \
-	vnf.css \
 
 
 

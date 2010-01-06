@@ -135,17 +135,30 @@ class Actor(base):
             return self.view_failed_submission(director)
         if job.state in ['submitting']:
             return self.in_submission(director)
-
+        
         #
         assert (job.creator == director.sentry.username or job.creator == 'vnf' )
-
+        
         # update job status
         state = check( job, director )
-
+        
         # prepare page
-        document = Document( title = 'Job # %s: %s' % (
-            job.id, job.state ) )
+        container = lc.document(Class='container')
 
+        #
+        pathtome = self._pathToMe(director)
+        view_indicator = self._viewIndicactor(pathtome, director)
+        container.add(view_indicator)
+
+        title = 'Job # %s: %s' % (job.id, job.state ) 
+        document = container.document(title=title, Class='job-view')
+        
+        # refresh 
+        refreshbutton = lc.button(label = 'Refresh')
+        refreshbutton.onclick = load(actor = 'job', routine = 'view', id = id,)
+        document.add(refreshbutton)
+
+        # key information section
         keyinfos = {
             'ID': job.id,
             'Description': job.short_description,
@@ -160,19 +173,13 @@ class Actor(base):
         l.text.append('</ul>')
         document.add(l)
         
-        # refresh link
-        link = Link(label = 'Refresh')
-        link.onclick = load(
-            actor = 'job', routine = 'view',
-            id = id,
-            )
-        document.add(link)
-        
         # Results
         compdoc = document.document(title='Results')
         # link to computation
+        #compdoc.paragraph(text=['To view the results of this computation job, '])
         computation = job.computation.dereference(director.clerk.db)
-        link = Link(label = 'Results of the computation')
+        link = lc.button(label = 'switch to view of computation %s %s' % (
+            computation.__class__.__name__, computation.id))
         link.onclick = load(
             actor = 'computation',
             routine = 'view',
@@ -182,7 +189,8 @@ class Actor(base):
         compdoc.add(link)
         
         # download link
-        link = Link(label = 'Download the output files of this job')
+        # compdoc.paragraph(text=['To download the whole job directory to your local machine'])
+        link = lc.button(label = 'Download the whole working directory of job %s' % job.id)
         link.onclick = load(
             actor = 'job',
             routine = 'download',
@@ -259,11 +267,11 @@ class Actor(base):
             ]
         lines = ['%s=%s' % (prop, getattr(record, prop) ) for prop in props]
         for line in lines:
-            p = document.paragraph()
+            p = miscdoc.paragraph()
             p.text = [line]
             continue
 
-        return select(id='main-display-area').replaceContent(document)
+        return select(id='main-display-area').replaceContent(container)
 
 
     def create(self, director):
