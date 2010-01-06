@@ -141,8 +141,6 @@ class Actor(base):
         filter          = filter or self.inventory.filter_expr
 
         domaccess       = director.retrieveDOMAccessor(self.name)
-        # Temp solution
-        matsims         = director.clerk.getQESimulations()
 
         matsims         = domaccess.getSimulations(
                                                     order_by        = order_by,
@@ -151,6 +149,9 @@ class Actor(base):
                                                     filter          = filter,
                                                     label           = label
                                                     )
+
+        # Temp solution
+        matsims         += director.clerk.getQESimulations()
 
         cols = columns
         args = matsims, cols, director
