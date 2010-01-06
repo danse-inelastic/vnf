@@ -1,0 +1,85 @@
+# -*- Python -*-
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                   Jiao Lin
+#                      California Institute of Technology
+#                      (C) 2006-2009  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+from vnfb.components.DOMAccessor import DOMAccessor as base
+
+class Accessor(base):
+
+
+    def __init__(self):
+        super(Accessor, self).__init__('phonondispersion-accessor')
+        return
+
+
+    def _getOrm(self):
+        orm = self.director.clerk.orm
+        orm(PhononDispersion)
+        return orm
+    orm = property(_getOrm)
+
+
+    def getDispersion(self, id):
+        orm = self.orm
+        return orm.load(PhononDispersion, id)
+
+
+    def getDispersionRecord(self, id):
+        db = self.db
+        return db.query(PhononDispersionTable).filter_by(id=id).one()
+
+
+    def getDataForDispersion(self, id):
+        record = self.getDispersionRecord(id)
+
+        director = self.director
+        
+        # the idf file
+        path = director.dds.abspath(record)
+        import os
+        f = os.path.join(path, 'data.idf')
+        
+        # check path
+        if not os.path.exists(f): return
+
+        # read
+        from idf import Dispersion
+        (t,version,comment), e, i = Dispersion.read(f)
+
+        dispersion.e = e
+        dispersion.i = i
+        return dispersion
+
+
+    def getOrigin(self, id=None, dispersion=None):
+        'get the original computation that creates this dispersion'
+        if dispersion is None:
+            dispersion = self.getDispersion(id)
+        orm = self.orm
+        r = orm(dispersion)
+        origin = r.getOrigin(orm.db)
+        return origin
+
+
+from vnfb.dom.material_simulations.PhononDispersion import PhononDispersion
+
+import os, numpy
+
+def accessor():
+    return Accessor()
+
+
+# version
+__id__ = "$Id$"
+
+# End of file 
