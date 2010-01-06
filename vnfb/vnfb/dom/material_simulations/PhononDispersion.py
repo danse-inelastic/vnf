@@ -30,11 +30,8 @@ class PhononDispersion(object):
         self.nAtoms = nAtoms
         self.dimension = dimension
         self.Qaxes = Qaxes
-        self.Qbasis = [q for q,n in Qaxes]
         self.polarizations = polarizations
         self.energies = energies
-
-        self._toFractionalQ = self._toFractionalQMatrix()
         return
 
 
@@ -87,7 +84,7 @@ class PhononDispersion(object):
 
     def getDefaultDispersionPlot(self, branches=None, npointspersegment=20):
         if branches is None:
-            branches = range(self.dimension*self.nAtom)
+            branches = range(self.dimension*self.nAtoms)
             
         matter = self.matter
         sg = matter.sg
@@ -142,11 +139,22 @@ class PhononDispersion(object):
         return interp3D_01(*args)
 
 
-    def _toFractionalQMatrix(self):
+    def _getQbasis(self):
+        return [q for q,n in self.Qaxes]
+    Qbasis = property(_getQbasis)
+
+
+    def _createToFractionalQMatrix(self):
         m = numpy.array(self.Qbasis)
         f = numpy.linalg.inv(m.T)
         return f
-        
+    def _getToFractionalQ(self):
+        k = '_toFractionalQ_'
+        if hasattr(self, k): return getattr(self, k)
+        v = self._createToFractionalQMatrix()
+        setattr(self, k, v)
+        return v
+    _toFractionalQ = property(_getToFractionalQ)
 
 
 import numpy
