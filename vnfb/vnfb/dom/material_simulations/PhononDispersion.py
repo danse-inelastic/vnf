@@ -21,7 +21,7 @@ class PhononDispersion(object):
     matter = None
     nAtoms = 1
     dimension = 3
-    Qaxes = [[1,0,0], [0,1,0], [0,0,1]]
+    Qaxes = [([1,0,0], 20), ([0,1,0], 20), ([0,0,1], 20)]
     polarizations = None # numpy array of nx * ny * nz * nD * nAtoms * nD *2  (the last 2 due to the vector is complex)
     energies = None # numpy array of nx * ny * nz * (nD*nAtoms)
 
