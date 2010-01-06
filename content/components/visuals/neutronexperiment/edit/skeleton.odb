@@ -79,7 +79,7 @@ class Factory(object):
             routine='createEditWizard_summary',
             id = self.id))
 
-        if not self.instrument.hasSampleComponent():
+        if self.instrument and not self.instrument.hasSampleComponent():
             doc.oncreate = [
                 select(id='experimentwizard-sampleconfiguration-tab').disable(),
                 select(id='experimentwizard-sampleenvironmentconfiguration-tab').disable(),
