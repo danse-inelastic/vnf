@@ -11,6 +11,7 @@
         "vnf-table.css",
         "vnf-mastertable.css",
         "vnf-login.css",
+        "vnf-jobs.css",
         "vnf-mainframe.css",
         "vnf-matsim.css",
         "vnf-atomicstructure.css",
