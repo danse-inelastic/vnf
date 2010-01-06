@@ -43,7 +43,7 @@ class PhononDispersion(object):
         return self._interpolate(fractional, self.energies[:,:,:,branch])
 
 
-    def getDispersionCurve(self, Qstart, Qend, branch=0, npoints=10):
+    def getDispersionCurve(self, Qstart, Qend, branch=0, npoints=20):
         Qstart = numpy.array(Qstart)
         Qend = numpy.array(Qend)
         Qstep = (Qend-Qstart)/(npoints-1)
@@ -52,7 +52,8 @@ class PhononDispersion(object):
         return x,y
 
 
-    def getDispersionCurves(self, Qstart, Qend, branches=[0], npoints=10):
+    def getDispersionCurves(self, Qstart, Qend, branches=[0], npoints=20):
+        '''get dispersion curves from Qstart to Qend for the given branches'''
         Qstart = numpy.array(Qstart)
         Qend = numpy.array(Qend)
         Qstep = (Qend-Qstart)/(npoints-1)
@@ -62,7 +63,14 @@ class PhononDispersion(object):
         return x,ys
 
 
-    def getDispersionCurvesAsCombinedSegments(self, Qpoints, branches=[0], npointspersegment=10):
+    def getDispersionPlot(self, Qpoints, branches=[0], npointspersegment=20):
+        '''get dispersion plot for the given branches
+
+        The plot is the typical dispersion plot that has several curves; one
+        curve for one branch.
+        Each curve has several segments. Each segment start from Qpoints[i], and
+        ends with Qpoints[i+1].
+        '''
         x = []
         ys = [[] for b in branches]
         for i,(Qstart, Qend) in enumerate(zip(Qpoints[:-1], Qpoints[1:])):
@@ -75,6 +83,42 @@ class PhononDispersion(object):
                 continue
             continue
         return x, ys
+
+
+    def getDefaultDispersionPlot(self, branches=None, npointspersegment=20):
+        if branches is None:
+            branches = range(self.dimension*self.nAtom)
+            
+        matter = self.matter
+        sg = matter.sg
+        from math import pi
+        
+        if sg.number == 225: # fcc
+            a = matter.lattice.a
+            b = 2*pi/a
+            Qpoints = [
+                (0,0,0),
+                (0,0,b),
+                (0,b,b),
+                (0,0,0),
+                (b/2,b/2,b/2),
+                ]
+            
+        elif sg.number == 229: # bcc
+            a = matter.lattice.a
+            b = 2*pi/a
+            Qpoints = [
+                (b/2,b/2,0),
+                (0,0,0),
+                (b,0,0),
+                (b/2,b/2,b/2),
+                (0,0,0),
+                ]
+            
+        else:
+            raise NotImplementedError
+
+        return self.getDispersionPlot(Qpoints, branches, npointspersegment)
 
 
     def _fractionalQ(self, Q):
