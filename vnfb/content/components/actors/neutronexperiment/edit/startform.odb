@@ -47,15 +47,15 @@ class Actor(base):
         domaccess = self._domaccess(director)
 
         # instruments user selected
-        oldinstrument = domaccess.getInstrument(self.inventory.oldvalue)
+        #oldinstrument = domaccess.getInstrument(self.inventory.oldvalue)
         newinstrument = domaccess.getInstrument(self.inventory.value)
 
         #
-        oldhassample = oldinstrument.hasSampleComponent()
+        #oldhassample = oldinstrument.hasSampleComponent()
         newhassample = newinstrument.hasSampleComponent()
-        if oldhassample and not newhassample:
+        if not newhassample:
             return [w.disable() for w in widgets]
-        elif not oldhassample and newhassample:
+        else:
             return [w.enable() for w in widgets]
         return
 
