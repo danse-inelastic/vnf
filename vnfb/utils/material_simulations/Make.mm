@@ -29,6 +29,7 @@ all: export
 
 EXPORT_PYTHON_MODULES = \
 	bvkutils.py \
+	phonon.py \
 	__init__.py \
 
 

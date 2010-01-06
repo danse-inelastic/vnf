@@ -12,18 +12,6 @@
 #
 
 
-typenames = [
-    'material_simulations.BvKComputation.BvK_GetDos',
-    'material_simulations.BvKComputation.BvK_GetDispersion',
-    ]
-
-
-deps_typenames = [
-    'material_simulations.PhononDOS.PhononDOS',
-    'material_simulations.PhononDispersion.PhononDispersion',
-    'material_simulations.SQE.SQE',
-    ]
-
 
 # version
 __id__ = "$Id$"
