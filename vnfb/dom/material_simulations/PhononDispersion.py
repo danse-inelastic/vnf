@@ -44,6 +44,7 @@ PhononDispersionTable.datafiles = [
     'Omega2',
     'Polarizations',
     'Qgridinfo',
+    'WeightedQ', # this is optional actually
     ]
 
 

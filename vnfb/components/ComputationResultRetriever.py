@@ -161,6 +161,38 @@ class ComputationResultRetriever(Component):
         return
 
 
+    def _save_results(self, computation, job, files, result_holder, name=None):
+        '''save computation result data files to a db record.
+
+        computation, job: the computation and the job db records
+        files: a list of file names or a dictionary of {filenameinjobdir: filenameinresultholder}
+        result_holder: the db record in which the result will be saved
+        name: name of this result in the result set (optional)
+        '''
+        # copy result file from job to the result holder
+        server = self.db.dereference(job.server)
+        filesisdict = isinstance(files, dict)
+        for f in files:
+            finjobdir = f
+            if filesisdict:
+                finresultholder = files[f]
+            else:
+                finresultholder = f
+            self.dds.copy(job, finjobdir, result_holder, finresultholder, server)
+            
+        # make copy of result holder in the master node
+        self.dds.make_available(result_holder)
+        
+        # add the result to the result list
+        if not name:
+            name = result_holder.getTableName()
+
+        computation.results.add(result_holder, self.db, name=name)
+        for f in files:
+            self._mark_result_as_saved(computation, f)
+        return
+
+
     def _mark_result_as_saved(self, computation, filename):
         '''make a computation result filename as saved'''
         return computation.markResultFileAsSaved(filename, self.db)

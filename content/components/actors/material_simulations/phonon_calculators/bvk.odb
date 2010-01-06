@@ -79,7 +79,7 @@ class Actor(base):
         model_id = self.inventory.model_id
         domaccess = self._domaccess(director)
         model = domaccess.getModel(id=model_id)
-
+        
         if not domaccess.isModelConstructed(model=model):
             return self.editModel(director)
         
@@ -132,15 +132,15 @@ class Actor(base):
         # assign matter if necessary
         if not self.inventory.atomicstructure_id:
             self.inventory.atomicstructure_id = domaccess.orm(model.matter).id
-
+            
         # create doc to present
         doc = lc.document()
-
+        
         #
         path = self._pathToMe(director)
         view_indicator = director.retrieveVisual('view-indicator', path=path)
         doc.add(view_indicator)
-
+        
         domaccess = director.retrieveDOMAccessor('atomicstructure')
         matter = domaccess.getAtomicStructureRecord(id=self.inventory.atomicstructure_id)
         matterlabel = matter.short_description
@@ -172,7 +172,7 @@ class Actor(base):
         domaccess = self._domaccess(director)
         #
         c = domaccess.newComputation(target, model_id)
-
+        
         #
         orm = domaccess.orm
         self.inventory.computation_id = orm(c).id
@@ -195,7 +195,12 @@ class Actor(base):
 
 
     def onConfiguringDispersionComputation(self, director):
-        return
+        return select(id='main-display-area').replaceContent(
+            load(actor='material_simulations/phonon_calculators/bvk_getdispersion',
+                 routine='createConfigurationView',
+                 id = self.inventory.computation_id
+                 )
+            )
 
 
     def _createModelSelector(self, director, models):
