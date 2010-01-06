@@ -39,26 +39,21 @@ class Accessor(base):
         return db.query(PhononDispersionTable).filter_by(id=id).one()
 
 
-    def getDataForDispersion(self, id):
-        record = self.getDispersionRecord(id)
-
+    def getDataForDispersion(self, disp):
+        orm  = self.orm
+        record = orm(disp)
+        
         director = self.director
         
-        # the idf file
-        path = director.dds.abspath(record)
-        import os
-        f = os.path.join(path, 'data.idf')
+        # the files
+        datadir = director.dds.abspath(record)
+        from mccomponents.sample.idf import readDispersion
+        nAtoms, dimension, Qaxes, polarizations, energies, dos = readDispersion(datadir)
+        for k in ['nAtoms', 'dimension', 'Qaxes', 'polarizations', 'energies']:
+            setattr(disp, k, eval(k))
+            continue
         
-        # check path
-        if not os.path.exists(f): return
-
-        # read
-        from idf import Dispersion
-        (t,version,comment), e, i = Dispersion.read(f)
-
-        dispersion.e = e
-        dispersion.i = i
-        return dispersion
+        return disp
 
 
     def getOrigin(self, id=None, dispersion=None):
