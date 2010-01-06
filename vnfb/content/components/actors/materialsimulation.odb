@@ -151,7 +151,7 @@ class Actor(base):
                                                     )
 
         # Temp solution
-        matsims         += director.clerk.getQESimulations()
+        #matsims         += director.clerk.getQESimulations()
 
         cols = columns
         args = matsims, cols, director
