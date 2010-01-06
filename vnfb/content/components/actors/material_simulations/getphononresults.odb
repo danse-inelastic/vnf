@@ -83,8 +83,20 @@ class Actor(base):
         
         if not disps:
             doc.paragraph(text=['There is no dispersion calculated.'])
+        elif len(disps)==1:
+            disp = disps[0]
+            doc1 = doc.document(Class='container')
+            doc1.paragraph(text=['loading phonon dispersion. please wait...'])
+            doc1.oncreate = select(element=doc1).replaceContent(
+                load(actor='orm/phonondispersions', routine='createGraphicalView', id=disp.id)
+                )
         else:
-            doc.paragraph(text=['dispersion table'])
+            doc1 = doc.document(Class='container')
+            doc1.paragraph(text=['loading phonon dispersion curves. please wait...'])
+            ids = [disp.id for disp in disps]
+            doc1.oncreate = select(element=doc1).replaceContent(
+                load(actor='orm/phonondispersions', routine='createGraphicalView', ids=ids)
+                )
             
         newphononcomputation = lc.load(
             actor='material_simulations/phonon_calculators', routine='start',
