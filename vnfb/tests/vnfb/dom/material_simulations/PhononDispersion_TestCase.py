@@ -39,14 +39,38 @@ class TestCase(unittest.TestCase):
         self.assertAlmostEqual(disp.energy( Q=(0,0,0), branch=0 ), energies[0,0,0,0])
         self.assertAlmostEqual(disp.energy( Q=(0,0,0), branch=1 ), energies[0,0,0,1])
         self.assertAlmostEqual(disp.energy( Q=(0,0,0), branch=2 ), energies[0,0,0,2])
+        print disp.energy( Q=(0,0,3.08), branch=0)
         return
 
 
     def test2(self):
         disp = self.disp
-        x,y = disp.getDispersionCurve((0,0,0), (0,0,3.), branch=0, npoints=20)
+        x,y = disp.getDispersionCurve((0,0,0), (0,0,3.08), branch=0, npoints=20)
         import pylab
         pylab.plot(x,y)
+        pylab.show()
+        return
+
+    
+    def test3(self):
+        disp = self.disp
+        x,ys = disp.getDispersionCurvesAsCombinedSegments(
+            [ (0,0,0),
+              (0,0,1.54),
+              (0,1.54,1.54),
+              (0,0,0),
+              (0.77,0.77,0.77),
+              ],
+##             [(0,0,0),
+##              (3.08,3.08,3.08),
+##              (1.54, 1.54, 0),
+##              (1.54, 1.54, 1.54),
+##              (1.54, 2.31, 0.77),
+##              ],
+             branches=range(3), npointspersegment=31)
+        import pylab
+        for y in ys:
+            pylab.plot(x,y)
         pylab.show()
         raw_input('press ENTER to continue')
         return

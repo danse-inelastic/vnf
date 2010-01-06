@@ -47,13 +47,38 @@ class PhononDispersion(object):
         Qstart = numpy.array(Qstart)
         Qend = numpy.array(Qend)
         Qstep = (Qend-Qstart)/(npoints-1)
-        x = numpy.arange(npoints)
-        y = map(lambda i: self.energy(Qstart+Qstep*i, branch), x)
+        x = numpy.arange(0,1+1e-10,1./(npoints-1))
+        y = map(lambda i: self.energy(Qstart+Qstep*i, branch), range(npoints))
         return x,y
 
 
+    def getDispersionCurves(self, Qstart, Qend, branches=[0], npoints=10):
+        Qstart = numpy.array(Qstart)
+        Qend = numpy.array(Qend)
+        Qstep = (Qend-Qstart)/(npoints-1)
+        x = numpy.arange(0,1+1e-10,1./(npoints-1))
+        ys = [ map(lambda i: self.energy(Qstart+Qstep*i, branch), range(npoints))
+               for branch in branches ]
+        return x,ys
+
+
+    def getDispersionCurvesAsCombinedSegments(self, Qpoints, branches=[0], npointspersegment=10):
+        x = []
+        ys = [[] for b in branches]
+        for i,(Qstart, Qend) in enumerate(zip(Qpoints[:-1], Qpoints[1:])):
+            x1, ys1= self.getDispersionCurves(
+                Qstart, Qend, branches=branches, npoints=npointspersegment)
+            x1 += i
+            x = numpy.concatenate((x, x1))
+            for j, y in enumerate(ys):
+                ys[j]=numpy.concatenate((y,ys1[j]))
+                continue
+            continue
+        return x, ys
+
+
     def _fractionalQ(self, Q):
-        return numpy.dot(self._toFractionalQ, Q)
+        return numpy.mod(numpy.dot(self._toFractionalQ, Q), 1)
 
 
     def _interpolate(self, x, fm):
@@ -76,7 +101,7 @@ class PhononDispersion(object):
     def _toFractionalQMatrix(self):
         m = numpy.array(self.Qbasis)
         f = numpy.linalg.inv(m.T)
-        return numpy.mod(f, 1)
+        return f
         
 
 
