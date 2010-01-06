@@ -54,7 +54,7 @@ class TestCase(unittest.TestCase):
     
     def test3(self):
         disp = self.disp
-        x,ys = disp.getDispersionCurvesAsCombinedSegments(
+        x,ys = disp.getDispersionPlot(
             [ (0,0,0),
               (0,0,1.54),
               (0,1.54,1.54),
