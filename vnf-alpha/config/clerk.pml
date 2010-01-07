@@ -18,8 +18,8 @@
 <inventory>
 
   <component name='clerk'>
-     <property name='db'>vnfa2b</property>
-     <property name='dbwrapper'>psycopg2</property>
+      <property name='db'>vnfa2b</property>
+      <property name='dbwrapper'>psycopg2</property>
   </component>
 
 </inventory>
@@ -27,5 +27,6 @@
 
 <!-- version-->
 <!-- $Id$-->
+<!-- <property name='db'>vnfa2b</property> -->
 
 <!-- End of file -->
