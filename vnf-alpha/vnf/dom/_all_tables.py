@@ -103,6 +103,7 @@ def tables():
     from _hidden_tables import tables as _hidden_tables
     tables += _hidden_tables()
     
+    
     #   normal tables
     for t in tablemodules:
         m = '%s.%s' % (main_dom, t)
@@ -110,6 +111,8 @@ def tables():
         table = getattr(module, t)
         tables.append( table )
         continue
+
+    #tables = simpleNamespaceList(tables)
 
     # other dom packages in standard places
     domexts = []
@@ -124,6 +127,8 @@ def tables():
     # add all dom packages
     for package in dompackages: _add_tables_from_package(package, tables) 
     
+    
+    
     return tables
 
 
@@ -131,7 +136,10 @@ def children( base ):
     'find child tables of given base'
     return filter(lambda t: issubclass(t, base), tables())
 
-
+def simpleNamespaceList(tables):
+    simpleList = ['vnfb.dom.GulpSettingsHolder']
+    return tables+simpleList
+    
 
 
 # implementations

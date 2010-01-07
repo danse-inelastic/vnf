@@ -15,6 +15,7 @@
 typenames = [
     'material_simulations.BvKComputation.BvK_GetDos',
     'material_simulations.BvKComputation.BvK_GetDispersion',
+    'material_simulations.GulpSettingsHolder.GulpSettings',
     ]
 
 
