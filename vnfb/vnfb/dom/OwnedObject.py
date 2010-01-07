@@ -24,9 +24,6 @@ class OwnedObject(WithID):
     date = dsaw.db.date( name='date' )
     date.meta['tip'] = 'date of creation'
 
-    short_description = dsaw.db.varchar(name='short_description', length = 128, default='')
-    short_description.meta['tip'] = 'short_description'
-
     pass # end of OwnedObject
 
 

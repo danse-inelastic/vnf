@@ -1,0 +1,70 @@
+#!/usr/bin/env python
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                     California Institute of Technology
+#                       (C) 2009  All Rights Reserved
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+# a simple form to create a atomic structure
+# it collaborates with actor atomicstructure/create-structure-form
+
+
+from luban.content import load, select, alert
+import luban.content as lc
+
+from luban.content.FormTextField import FormTextField
+from luban.content.FormSelectorField import FormSelectorField
+from luban.content.FormSubmitButton import FormSubmitButton
+from luban.content.Button import Button
+from luban.content.Document import Document
+
+def visual(director, id):
+    doc = lc.document()
+    doc.add(viewIndicator(director, id))
+    
+#    sp = lc.splitter(orientation='vertical'); doc.add(sp)
+#    top = sp.section()
+#    bottom = sp.section()
+
+    decideInput = Document(Class='decideInputMethod')
+    btnDb = Button(label='Load from database', tip='load from database')
+    btnDb.onclick = select(id='new-structure-form'
+                           ).replaceContent(load(actor='cod', routine='default', id = id))
+    decideInput.add(btnDb)
+    btnMan = Button(label='Create manually', tip='input coordinates by hand')
+    btnMan.onclick = select(id='new-structure-form'
+                            ).replaceContent(
+        director.retrieveVisual('atomicstructure/edit-structure-view',
+                                director=director,
+                                id = id))
+    decideInput.add(btnMan)
+    doc.add(decideInput)
+
+    formdoc = Document(id='new-structure-form', Class='new-structure-container')
+    formdoc.oncreate = select(element=formdoc).replaceContent(
+        load(actor='cod', routine='default', id = id)
+        )
+    doc.add(formdoc)
+   
+    return doc
+
+def viewIndicator(director, id):
+    path = []
+    path.append(('analysis', load(actor='analysis')))
+
+    if id:
+        label = 'analysis %s' % id
+    else:
+        label = 'new analysis'
+    path.append(label)
+    return director.retrieveVisual('view-indicator', path=path)
+
+
+# version
+__id__ = "$Id$"
+
+# End of file 
