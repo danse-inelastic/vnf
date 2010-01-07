@@ -27,7 +27,7 @@ class AbstractScatteringKernelInventory(InvBase):
 
     matter = InvBase.d.reference(
         name='matter',
-        targettype=None, targettypes=[AtomicStructure],
+        targettype=AtomicStructure,
         owned=0,
         )
     
