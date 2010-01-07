@@ -25,7 +25,7 @@ from dsaw.model.Inventory import Inventory as InvBase
 class Inventory(InvBase):
 
     matter = InvBase.d.reference(
-        name='matter', targettype=None, targettypes=[Structure], owned=0)
+        name='matter', targettype=Structure, owned=0)
 
     dbtablename = 'sqes'
 
