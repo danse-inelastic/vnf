@@ -28,7 +28,6 @@ EXPORT_DATAFILES = \
 	app-extension.odb \
 	itaskapp.pml \
 	createdataobject.pml \
-	clerk.pml \
 	clerk.odb \
 	createInstruments.pml \
 	guidfromidddaemon.odb \
@@ -41,13 +40,13 @@ EXPORT_DATAFILES = \
 	main.pml \
 	postman.pml \
 	retrieveresults.pml \
-	ssher.pml \
 	updatejobstatus.pml \
 	usersFromDB.odb \
 	web-weaver.pml \
 	widget.lib
 
-
+# 	clerk.pml \
+# 	ssher.pml \
 
 #CP_F = rsync -r --copy-unsafe-links
 
