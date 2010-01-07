@@ -53,8 +53,8 @@ experiment = [
 
 
 kernels = [
-    'AbInitio',
-    'PhononsFromAbinitio',
+    #'AbInitio',
+    #'PhononsFromAbinitio',
     'MmtkSimulation',
     'MdAnalysis',
     ]
