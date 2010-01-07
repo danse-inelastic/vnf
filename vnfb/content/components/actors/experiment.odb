@@ -144,8 +144,18 @@ class Actor(base):
         if not domaccess.isConstructued(id):
             view = self.createEditor(director)
         else:
-            view = self.createSimpleDisplay(director)
+            #view = self.createSimpleDisplay(director)
+            view = self.createDisplay(director)
         return select(id='main-display-area').replaceContent(view)
+
+
+
+    def createDisplay(self, director):
+        return director.retrieveVisual(
+            name='neutronexperiment/view/skeleton',
+            id = self.inventory.id,
+            director = director
+            )
 
 
     def createSimpleDisplay(self, director):
@@ -169,6 +179,16 @@ class Actor(base):
                  id = self.inventory.id, editlink = False)
             )
         return doc
+
+
+    def createResultsView(self, director):
+        domaccess = self._domaccess(director)
+        experiment_record = domaccess.getExperimentRecord(id=self.inventory.id)
+        return director.retrieveVisual(
+            'computation-results',
+            computation=experiment_record,
+            actor=self.name, director=director
+            )
     
 
     def createEditor(self, director):

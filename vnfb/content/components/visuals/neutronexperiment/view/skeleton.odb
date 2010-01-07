@@ -1,0 +1,83 @@
+# -*- Python -*-
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                 Jiao Lin
+#                      California Institute of Technology
+#                      (C) 2006-2010  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+from luban.content import load, select, alert
+import luban.content as lc
+
+from luban.content.FormSelectorField import FormSelectorField
+
+
+class Factory(object):
+
+
+    def __init__(self, id, director):
+        domaccess = director.retrieveDOMAccessor('experiment')
+        self.domaccess = domaccess
+        self.director = director
+        self.id = id
+        self.experiment_record = domaccess.getExperimentRecord(id)
+        return
+    
+
+    def __call__(self):
+        director = self.director
+        id = self.id
+        experiment_record = self.experiment_record
+        domaccess = self.domaccess
+        orm = domaccess.orm
+        
+        doc = lc.document(Class='container')
+
+        path = self._path()
+        view_indicator = director.retrieveVisual('view-indicator', path=path)
+        doc.add(view_indicator)
+
+        overview = doc.document(title="Overview", collapsable=True)
+        overview.paragraph(text=['loading...'])
+        overview.oncreate = select(element=overview).replaceContent(
+            load(actor='orm/neutronexperiments', routine='displayProperties',
+                 id = self.id, editlink=False)
+            )
+        
+        details = doc.document(title="Details", collapsable=True, collapsed=True)
+        details.paragraph(text='loading. please wait ...')
+        details.onexpand = select(element=details).replaceContent(
+            load(actor='orm/neutronexperiments', routine='display',
+                 id = self.id, editlink=False)
+            )
+
+        resultsdoc = doc.document(title = 'Results', collapsable=True, collapsed=True)
+        resultsdoc.paragraph(text=['loading results. please wait...'])
+        resultsdoc.onexpand = select(element=resultsdoc).replaceContent(
+            load(actor='experiment', routine='createResultsView', id=id)
+            )
+        return doc
+
+
+    def _path(self):
+        id = self.id
+        return [
+            ('Experiments', load(actor='experiment')),
+            ('Experiment %s' % id,
+             load(actor='experiment', routine='showExperimentView', id=id)),
+            ]
+
+
+def visual(id, director):
+    return Factory(id, director)()
+
+# version
+__id__ = "$Id$"
+
+# End of file 
