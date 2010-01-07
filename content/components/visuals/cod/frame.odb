@@ -25,18 +25,14 @@ def visual(director):
 
     searchpanel.submitbutton(label='search')
 
-#    searchpanel.onsubmit = select(element=searchpanel).submit(
-#        actor = 'cod', routine = 'process',
-#        formid = searchpanel.id,
-#        new_display_container_id=tablecontainer.id, new_display_creator='getTableView')
+    tablecontainer = doc.document(id='cod-table-container')
+    tablecontainer.add(director.retrieveVisual('cod/table', data=[], director=director))
     
-    searchpanel.onsubmit = select(element=tablecontainer).submit(
+    searchpanel.onsubmit = select(element=searchpanel).submit(
         actor = 'cod', routine = 'process',
         formid = searchpanel.id,
         new_display_container_id=tablecontainer.id, new_display_creator='getTableView')
 
-    tablecontainer = doc.document(id='cod-table-container')
-    tablecontainer.add(director.retrieveVisual('cod/table', data=[], director=director))
 
     return doc
 
