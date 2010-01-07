@@ -108,13 +108,11 @@ class Actor(base):
                                             )
         return tableview
 
-
 #    def debug_newAtomicStructureForm(self, director):
 #        p       = lc.page()
 #        doc     = p.document(id='main-display-area')
 #        doc.add(self.newAtomicStructureForm(director))
 #        return p
-
 
     def newAnalysisForm(self, director):
         #domaccess = director.retrieveDOMAccessor('atomicstructure')
@@ -127,13 +125,11 @@ class Actor(base):
                                         id          = self.inventory.id)
         #return self.editAtomicStructureForm(director)
 
-
 #    def debug_editAtomicStructureForm(self, director):
 #        p       = lc.page()
 #        doc     = p.document(id='main-display-area')
 #        doc.add(self.editAtomicStructureForm(director))
 #        return p
-
 
     def editAnalysisForm(self, director):
         return director.retrieveVisual(
@@ -141,7 +137,6 @@ class Actor(base):
                                         director    = director,
                                         id          = self.inventory.id
                                       )
-
 
     def canceledit(self, director):
         domaccess = self._domaccess(director)
@@ -219,7 +214,7 @@ class Actor(base):
         else:
             # structure good
             doc = director.retrieveVisual(
-                'atomicstructure/overview',
+                'analysis/overview',
                 director  = director,
                 id        = self.inventory.id)
             
@@ -237,7 +232,7 @@ class Actor(base):
         else:
             # structure good
             doc = director.retrieveVisual(
-                'atomicstructure/viewdetails',
+                'analysis/viewdetails',
                 director  = director,
                 id        = self.inventory.id)
             
@@ -256,7 +251,7 @@ class Actor(base):
         return director.retrieveDOMAccessor(self.name)
 
 
-    def __init__(self, name='atomicstructure'):
+    def __init__(self, name='analysis'):
         super(Actor, self).__init__(name)
         return
 
