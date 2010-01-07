@@ -31,6 +31,39 @@ class Actor(base):
         import luban.inventory
 
 
+    def displayProperties(self, director):
+        # this is overloaded to have a better view of an experiment
+        # this view is concise and not graphical
+
+        # the target
+        experiment = self._load(director)
+
+        # k,v pair
+        items = []
+        
+        # instrument
+        instrument = experiment.instrument
+        items.append(('instrument', instrument.name))
+
+        # sample
+        sample = experiment.sample
+        if sample is not None:
+            items.append(('sample', sample.__class__.__name__))
+
+        # ncount
+        items.append(('ncount', experiment.ncount))
+
+        doc = lc.document(Class='container')
+        grid = lc.grid(); doc.add(grid)
+        for key, value in items:
+            row = grid.row()
+            row.cell(Class='property-name').add(key)
+            row.cell(Class='property-value').add(str(value))
+            continue
+
+        return doc
+        
+
 
 def actor():
     return Actor('orm/neutronexperiments')
