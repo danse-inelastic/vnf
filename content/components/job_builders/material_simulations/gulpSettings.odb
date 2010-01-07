@@ -17,13 +17,12 @@ debug = journal.debug('atomsim')
 
 
 from vnfb.components.JobBuilder import JobBuilder as base
-from vnfb.dom.GulpSettingsHolder import GulpSettingsHolder as Computation
 
 class Builder(base):
 
 
-    def __init__(self, path):
-        base.__init__(self, path)
+    def __init__(self, name, path):
+        base.__init__(self, name, path)
         self.convertHistoryFile = False
         self.zipXyzTrajectory = False
         self.createPhononModesFile = False
@@ -31,8 +30,6 @@ class Builder(base):
 
 
     def render(self, computation, db=None, dds=None):
-        Computation = self.Computation
-
         # find out the file name of the gulp library file
         potential = computation.potential.dereference(db)
         #libptr = dds.abspath(computation, filename=Computation.LIBPOINTER_FILE)
@@ -41,17 +38,17 @@ class Builder(base):
         # two files need to be copied to job directory
         # 1. gulp.gin
         # 2. the library file
-        files = [Computation.inputFile, potential.filename]
+        files = [computation.inputFile, potential.filename]
 
         # copy files to job directory
-        job = computation.job.dereference(db)
+        job = computation.getJob(self.db)
         for f in files:
             dds.copy(computation, f, job, f)
             
         # if the job outputs in DL_POLY format (necessary for trajectory analysis), mandate
         # conversion of the trajectory to netcdf format
         # 1. open the input file
-        inputFilePath = dds.abspath(job, filename=Computation.inputFile)
+        inputFilePath = dds.abspath(job, filename=computation.inputFile)
         inputFileContents = open(inputFilePath).read()
         
         # 2. scan for various items to be processed
@@ -84,7 +81,7 @@ class Builder(base):
     
     
     def _make_script(self, computation):
-        job = computation.job.dereference(self.db)
+        job = computation.getJob(self.db)
         np = job.numprocessors
         cmds = [
             '#!/usr/bin/env sh',
@@ -108,13 +105,11 @@ class Builder(base):
     
     
     shscript1name = 'run1.sh'
-    def _make_script1(self, computation):
-        Computation = self.Computation
-        
+    def _make_script1(self, computation):     
         cmds = [
             '#!/usr/bin/env sh',
             '. ~/.gulp-env',
-            'gulp < %s > %s' % (Computation.CONFIGURATION_FILE, output_filename),
+            'gulp < %s > %s' % (computation.inputFile, computation.output_filename),
             '',
             ]
         script = self.shscript1name

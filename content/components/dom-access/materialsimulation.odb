@@ -42,7 +42,8 @@ class Accessor(base):
         return q.alias('tocount').count().execute().fetchone()[0]
 
 
-    def getSimulations(self, filter=None, order_by=None, reverse_order=None, slice=None, label=None):
+    def getSimulations(self, filter=None, order_by=None, 
+                       reverse_order=None, slice=None, label=None):
         db = self.db
 
         self._debug.log('filter: %r, order_by: %r, slice: %r' % (filter, order_by, slice))
@@ -81,7 +82,7 @@ class Accessor(base):
 
 
     def makeQuery(self, table, filter=None, label=None):
-        'craete a query for a material simulation table with given filter'
+        'create a query for a material simulation table with given filter'
 
         db = self.db
         
@@ -91,12 +92,22 @@ class Accessor(base):
         
         sGP = db._tablemap.TableToSATable(global_pointer)
         st = db._tablemap.TableToSATable(table)
+        #columns with name variance among d.o.s
+        try:
+            description = st.c.short_description.label('short_description')
+        except:
+            description = st.c.description.label('description')
+        try:
+            material = st.c.matter.label('matter')
+        except:
+            material = st.c.structure.label('structure')          
+        
         q = sqlalchemy.select(
             [st.c.id.label('id'),
-             st.c.short_description.label('short_description'),
+             #description,
              sGP.c.type.label('type'),
              st.c.date.label('date'),
-             st.c.matter.label('matter_gptr'),
+             #material,
              st.c.globalpointer.label('gptr'),
              ],
             st.c.globalpointer==sGP.c.id,

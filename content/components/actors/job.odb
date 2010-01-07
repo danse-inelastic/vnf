@@ -58,7 +58,7 @@ class Actor(base):
             'Please give a short description for this job'
             )
         
-        server = pyre.inventory.str( 'server', default = 'serverid' )
+        server = pyre.inventory.str( 'server', default = 'server000' )
         server.meta['label'] = 'Computation server'
         server.meta['tip'] = (
             'Please choose the server on which the job will be run'
