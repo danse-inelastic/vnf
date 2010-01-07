@@ -12,13 +12,16 @@
 #
 
 
+from AtomicStructure import StructureTable
+
+
 from Computation import Computation as base
 class MaterialSimulation(base):
 
     # base class for all material simulations
 
     import dsaw.db
-    matter = dsaw.db.versatileReference(name='matter')
+    matter = dsaw.db.reference(name='matter', table=StructureTable)
     
     pass # end of MaterialSimulation
 
