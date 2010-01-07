@@ -30,26 +30,23 @@ class Actor(base):
 
     def createView(self, director):
         doc = lc.document(Class='container')
-        
-        c = self._getComputation(director)
-        if not c.isConfigured():
+
+        domaccess = self._domaccess(director)
+        db = domaccess.db
+        c = self._getComputationRecord(director)
+        if not domaccess.isComputationConfigured(c):
             return self.createConfigurationView(director)
         
         path = self._pathToMe(director)
         view_indicator = director.retrieveVisual('view-indicator', path=path)
         doc.add(view_indicator)
 
-        #
-        domaccess = self._domaccess(director)
-        orm = domaccess.orm
-        record = orm(c)
-        
         # matter view
-        matter = c.matter
+        matter = c.matter.dereference(db)
         matterview = doc.document(title='material', collapsable=True, collapsed=False)
         viewmatter = load(actor='atomicstructure', routine='showOverview',
-                          id = orm(matter).id)
-        link = lc.link(label=matter.description, onclick=viewmatter)
+                          id = matter.id)
+        link = lc.link(label=matter.short_description, onclick=viewmatter)
         matterview.add(link)
 ##         matterview = doc.document(
 ##             title='Atomic structure %r' % matter.description,
@@ -60,11 +57,11 @@ class Actor(base):
 ##             )
 
         # model view
-        model = c.model
+        model = c.model.dereference(db)
         modelview = doc.document(title='model', collapsable=True, collapsed=False)
         viewmodel = select(id='main-display-area').replaceContent(
             load(actor='orm/bvkmodels', routine='display',
-                 id = orm(model).id, editlink=False)
+                 id = model.id, editlink=False)
             )
         link = lc.link(label=model.short_description, onclick=viewmodel)
         modelview.add(link)
@@ -78,10 +75,11 @@ class Actor(base):
 
         # my configuration
         configdoc = doc.document(title = 'Configuration', collapsable = True)
-        drawer = director.painter.paintObj.drawers.getDrawer(c.__class__)
-        configdoc.add(
-            drawer.createPropertiesView(c, editlink=False)
-            )
+        configdoc.oncreate = select(element=configdoc).append(
+            load(
+              actor='orm/bvk_getdos', routine='displayProperties',
+              id = c.id, editlink=False,
+            ))
 
         # results
         resultsdoc = doc.document(title = 'Results', collapsable=True, collapsed=True)
@@ -131,7 +129,7 @@ class Actor(base):
             raise RuntimeError
         domaccess = self._domaccess(director)
         label = domaccess.getComputationLabel('dos', id)
-        computation = self._getComputation(director)
+        computation = self._getComputationRecord(director)
         return [
             ('Simulations',
              lc.load(actor='materialsimulation')),

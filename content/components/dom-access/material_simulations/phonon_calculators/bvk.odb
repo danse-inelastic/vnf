@@ -64,6 +64,12 @@ class Accessor(base):
         return self.getRecordByID(table, computation_id)
 
 
+    def isComputationConfigured(self, computation):
+        # this implementation may change if bvk computation objects change
+        if computation.model is None or computation.matter is None: return False
+        return computation.df >0 and computation.N1 >0
+
+
     def getComputationLabel(self, type, computation_id):
         comutation = self.getComputation(type, computation_id)
         record = self.orm(comutation)
