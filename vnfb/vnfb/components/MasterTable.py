@@ -48,6 +48,8 @@ class MasterTableFactory(object):
                  filterfromlabel, smartlabels, labels,
                  sorting_options=None,
                  polymorphic=True, dbtablename=None,
+                 labeltargettablename=None,
+                 createlabelstoolbar = True,
                  ):
         self.name = name
         self.countrecords = countrecords
@@ -74,7 +76,11 @@ class MasterTableFactory(object):
         self.dbtablename = dbtablename
         
         self.debug = journal.debug('MasterTableFactory')
-        
+
+        if labeltargettablename is None:
+            labeltargettablename = name
+        self.labeltargettablename = labeltargettablename
+        self.createlabelstoolbar = createlabelstoolbar
         return
     
     
@@ -188,11 +194,12 @@ class MasterTableFactory(object):
         tablebottomtoolbar = Splitter(id='%s-table-tablebottomtoolbar'%name, Class='master-table-tablebottomtoolbar')
         view.add(tablebottomtoolbar)
         lefttoolbar = tablebottomtoolbar.section(id='%s-table-tablebottomtoolbar-left' % name, Class='master-table-tablebottomtoolbar-left')
-        collections_toolbar = self.createLabelsToolbar(
-            name,
-            table=table
-            )
-        lefttoolbar.add(collections_toolbar)
+        if self.createlabelstoolbar:
+            collections_toolbar = self.createLabelsToolbar(
+                name,
+                table=table
+                )
+            lefttoolbar.add(collections_toolbar)
         
         righttoolbar = tablebottomtoolbar.section(id='%s-table-tablebottomtoolbar-right' % name, Class='master-table-tablebottomtoolbar-right')
         # navigation bar (previous, next...)
@@ -277,7 +284,7 @@ class MasterTableFactory(object):
         doc.add(link)
         
         link.onclick = load(
-            actor='label', routine='addEntities', table=name,
+            actor='label', routine='addEntities', table=self.labeltargettablename,
             label = select(element=field).getAttr('selection'),
             entities = select(element=table).table(
                 'getIdentifiersForCheckedRows',
@@ -294,14 +301,14 @@ class MasterTableFactory(object):
 
         link.onclick = load(
             actor='label', routine='new',
-            table=name,
+            table=self.labeltargettablename,
             label=select(element=field).getAttr('value'),
             )
             
         link = Link(label='manage', tip='manage my labels')
         doc.add(link)
         link.onclick = load(
-            actor='label', routine='manage', table=name,
+            actor='label', routine='manage', table=self.labeltargettablename,
             )
         return doc
 
