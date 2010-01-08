@@ -45,8 +45,8 @@ T0Chopper.Inventory = Inventory
 del Inventory
 
 
-from _ import o2t, AbstractOwnedObjectBase
-T0ChopperTable = o2t(T0Chopper, {'subclassFrom': AbstractOwnedObjectBase})
+from _ import o2t, NeutronComponentTableBase
+T0ChopperTable = o2t(T0Chopper, {'subclassFrom': NeutronComponentTableBase})
     
 
 

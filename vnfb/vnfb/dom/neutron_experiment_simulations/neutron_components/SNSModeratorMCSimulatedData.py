@@ -33,9 +33,9 @@ SNSModeratorMCSimulatedData.Inventory = Inventory
 del Inventory
 
 
-from _ import o2t, AbstractOwnedObjectBase
+from _ import o2t, NeutronComponentTableBase
 SNSModeratorMCSimulatedDataTable = o2t(
-    SNSModeratorMCSimulatedData, {'subclassFrom': AbstractOwnedObjectBase})
+    SNSModeratorMCSimulatedData, {'subclassFrom': NeutronComponentTableBase})
 
 SNSModeratorMCSimulatedDataTable.datafiles = ['profile.dat']
 

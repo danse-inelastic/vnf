@@ -33,8 +33,8 @@ QMonitor.Inventory = Inventory
 del Inventory
 
 
-from _ import o2t, AbstractOwnedObjectBase
-QMonitorTable = o2t(QMonitor, {'subclassFrom': AbstractOwnedObjectBase})
+from _ import o2t, MonitorTableBase
+QMonitorTable = o2t(QMonitor, {'subclassFrom': MonitorTableBase})
 
 
 # version

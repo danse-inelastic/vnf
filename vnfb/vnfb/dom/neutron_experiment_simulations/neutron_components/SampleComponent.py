@@ -29,10 +29,10 @@ SampleComponent.Inventory = Inventory
 del Inventory
 
 
-from _ import o2t, AbstractOwnedObjectBase
+from _ import o2t, NeutronComponentTableBase
 SampleComponentTable = o2t(
     SampleComponent,
-    {'subclassFrom': AbstractOwnedObjectBase},
+    {'subclassFrom': NeutronComponentTableBase},
     )
 
 

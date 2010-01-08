@@ -37,8 +37,8 @@ SphericalPSD.Inventory = Inventory
 del Inventory
 
 
-from _ import o2t, AbstractOwnedObjectBase
-SphericalPSDTable = o2t(SphericalPSD, {'subclassFrom': AbstractOwnedObjectBase})
+from _ import o2t, MonitorTableBase
+SphericalPSDTable = o2t(SphericalPSD, {'subclassFrom': MonitorTableBase})
 
 
 # version
