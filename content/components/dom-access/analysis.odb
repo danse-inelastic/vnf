@@ -42,7 +42,7 @@ class Accessor(base):
         return q.alias('tocount').count().execute().fetchone()[0]
 
 
-    def getSimulations(self, filter=None, order_by=None, 
+    def getAnalysisRecords(self, filter=None, order_by=None, 
                        reverse_order=None, slice=None, label=None):
         db = self.db
 
@@ -151,7 +151,7 @@ class Accessor(base):
     
 
     def analysisTables(self):
-        from vnfb.dom.material_simulations.computation_types import typenames
+        from vnfb.dom.analysis.computation_types import typenames
         ormtables = map(self._getTable, typenames)
 
         return ormtables

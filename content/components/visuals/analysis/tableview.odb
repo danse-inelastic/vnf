@@ -25,13 +25,13 @@ def visual(
     ):
     # name: name of table view
     # 
-    domaccess = director.retrieveDOMAccessor(name)
+    domaccess = director.retrieveDOMAccessor(name)<--temporary
         
     from vnfb.components.MasterTable import MasterTableFactory, filtercompiler
     def countrecords(filter, label=None):
         return domaccess.countAtomicStructures(filter, label=label)
     def createtable(order_by, reverse_order, slice, filter, label=None):
-        return createAtomicStructureTable(
+        return createAnalysisTable(
             director, domaccess,
             order_by=order_by,
             reverse_order=reverse_order,
@@ -58,7 +58,7 @@ def visual(
             ('short_description', 'Description'),
             ('date', 'Date created'),
         ],
-        polymorphic = False, dbtablename='atomicstructures'
+        polymorphic = False, dbtablename='analysis'
         )
 
     tableview = factory.create(
@@ -70,25 +70,25 @@ def visual(
         page_number=page_number)
 
     # add new button
-    toolbar = tableview.find(id='atomicstructure-table-toptoolbar')
+    toolbar = tableview.find(id='analysis-table-toptoolbar')
     # toolbar.add(Paragraph(text='|', Class='splitter'))
     #
-    button = lc.button(label='New', tip='create new atomic structure', icon='new.png')
+    button = lc.button(label='New', tip='create new analysis', icon='new.png')
     toolbar.add(button)
     button.onclick = select(id='main-display-area').replaceContent(
-        load(actor=name, routine='newAtomicStructureForm')
+        load(actor=name, routine='newAnalysisForm')
         )
 
     return tableview
 
 
-def createAtomicStructureTable(
+def createAnalysisTable(
     director, domaccess,
     order_by=None, reverse_order=None, slice=None,
     filter=None,
     label=None):
 
-    records = domaccess.getAtomicStructureRecords(
+    records = domaccess.getAnalysisRecords(
         order_by=order_by, reverse_order=reverse_order, slice=slice,
         filter=filter,
         label=label,
@@ -97,17 +97,17 @@ def createAtomicStructureTable(
     cols = columns
     args = records, cols, director
     thetable = director.retrieveVisual(
-        'atomicstructure/table',
-        atomicstructures = records,
+        'analysis/table',
+        analyses = records,
         cols = cols,
         director = director)
     thetable.oncellchanged = select(element=thetable).notify(
-        event='row-changed', actor='atomicstructuretable', routine='processRowChange')
+        event='row-changed', actor='analysistable', routine='processRowChange')
     return thetable
 
 
 
-columns = [ 'selected', 'id', 'description', 'chemical_formula', 'created']
+columns = [ 'selected', 'id', 'description', 'chemical_formula', 'simulation', 'created']
 measure2dbcol = {
     'description': 'short_description',
     'created': 'date',

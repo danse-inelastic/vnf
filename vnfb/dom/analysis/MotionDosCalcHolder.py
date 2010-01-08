@@ -19,7 +19,7 @@ from vnfb.dom.Computable import Computable
 
 #from dsaw.model.Inventory import Inventory as InvBase
 
-from memd.gulp.GulpSettings import GulpSettings
+from vsat.gulp.MotionDosCalc import MotionDosCalc
 #from vnfb.dom.AtomicStructure import Structure
 #from BvKModel import BvKModel
 
@@ -68,10 +68,10 @@ from memd.gulp.GulpSettings import GulpSettings
 
 
 
-GulpSettingsHolder = o2t(GulpSettings, {'subclassFrom': Computable, 'dbtablename':'gulpsettings'})
-GulpSettingsHolder.job_builder = 'material_simulations/gulpSettings'
-GulpSettingsHolder.actor = 'material_simulations/gulpSettings'
-GulpSettingsHolder.result_retriever = 'material_simulations/gulpSettings'
+MotionDosCalcHolder = o2t(MotionDosCalc, {'subclassFrom': Computable, 'dbtablename':'motiondoscalc'})
+MotionDosCalcHolder.job_builder = 'analysis/motiondoscalc'
+MotionDosCalcHolder.actor = 'analysis/motiondoscalc'
+MotionDosCalcHolder.result_retriever = 'analysis/motiondoscalc'
 #def getShortDescription(self):
 #    if self.short_description: return self.short_description
 #    return 'Compute DOS from BvK model %s: df=%s, N1=%s' % (
