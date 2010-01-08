@@ -38,8 +38,8 @@ del Inventory
 
 
 # db table base class
-from _ import AbstractOwnedObjectBase
-class TableBase(AbstractOwnedObjectBase):
+from _ import NeutronComponentTableBase
+class TableBase(NeutronComponentTableBase):
 
     import dsaw.db
 
