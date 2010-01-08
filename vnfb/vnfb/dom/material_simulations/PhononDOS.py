@@ -22,7 +22,7 @@ class PhononDOS:
 
 
 # orm
-from vnfb.dom.AtomicStructure import Structure
+from vnfb.dom.AtomicStructure import Structure, StructureTable
 
 from dsaw.model.Inventory import Inventory as InvBase
 class Inventory(InvBase):
@@ -38,6 +38,11 @@ PhononDOS.Inventory = Inventory
 # db table
 from ComputationResult import ComputationResult
 PhononDOSTable = o2t(PhononDOS, {'subclassFrom': ComputationResult})
+import dsaw.db
+PhononDOSTable.addColumn(
+    dsaw.db.reference(name='matter', table=StructureTable, backref='phonondoses')
+    )
+
 PhononDOSTable.datafiles = [
     'data.idf',
     ]

@@ -163,7 +163,7 @@ import numpy
 
 
 # orm
-from vnfb.dom.AtomicStructure import Structure
+from vnfb.dom.AtomicStructure import Structure, StructureTable
 
 from dsaw.model.Inventory import Inventory as InvBase
 class Inventory(InvBase):
@@ -180,6 +180,11 @@ del Inventory
 # db table
 from ComputationResult import ComputationResult
 PhononDispersionTable = o2t(PhononDispersion, {'subclassFrom': ComputationResult})
+import dsaw.db
+PhononDispersionTable.addColumn(
+    dsaw.db.reference(name='matter', table=StructureTable, backref='phonondispersions')
+    )
+
 PhononDispersionTable.datafiles = [
     'DOS',
     'Omega2',
@@ -187,7 +192,6 @@ PhononDispersionTable.datafiles = [
     'Qgridinfo',
     'WeightedQ', # this is optional actually
     ]
-
 
 
 # version
