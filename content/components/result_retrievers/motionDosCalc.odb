@@ -25,23 +25,23 @@ class Retriever(base):
 
         # check result is available
         self.declareProgress(0.2, 'check if results exist')
-#        self._check_results_sanity(expected_results=['DOS'], job=job)
+        self._check_results_sanity(expected_results=['dos'], job=job)
 
         # create a phonon dos record to save dos
         self.declareProgress(0.4, 'create an AtomSim simulation to store the result')
-#        from vnfb.dom.material_simulations.PhononDOS import PhononDOSTable
-#        dos = self._make_result_holder(computation, PhononDOSTable)
-#        dos.matter = computation.matter
-#        db.updateRecord(dos)
+        from vnfb.dom.material_simulations.PhononDOS import PhononDOSTable
+        dos = self._make_result_holder(computation, PhononDOSTable)
+        dos.matter = computation.matter
+        db.updateRecord(dos)
 
         # save the result from job to dos
         self.declareProgress(0.5, 'get result from server')
-        self._save_result(computation, job, 'DOS', dos, 'data.idf')
+        self._save_result(computation, job, 'dos', dos, 'data.idf')
         return
 
 
 def retriever():
-    return Retriever('gulpSettings')
+    return Retriever('motionDosCalc')
 
 
 # version

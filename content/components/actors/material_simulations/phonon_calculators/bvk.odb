@@ -25,7 +25,7 @@ class Actor(base):
 
         import pyre.inventory
 
-	atomicstructure_id = pyre.inventory.str('atomicstructure_id')
+        atomicstructure_id = pyre.inventory.str('atomicstructure_id')
         model_id = pyre.inventory.str('model_id')
         target = pyre.inventory.str('target')
 
