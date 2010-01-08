@@ -12,7 +12,7 @@
 #
 
 
-tablename='materialsimulation'
+tablename='analysis'
 
 
 from vnfb.components.DOMAccessor import DOMAccessor as base
@@ -21,15 +21,15 @@ class Accessor(base):
 
 
     def __init__(self):
-        super(Accessor, self).__init__('materialsimulation-accessor')
+        super(Accessor, self).__init__('analysis-accessor')
         return
 
 
-    def getMaterialSimulation(self, type, id):
+    def getAnalysis(self, type, id):
         return self.getRecordByID(type, id)
 
 
-    def countSimulations(self, filter=None, label=None):
+    def countAnalyses(self, filter=None, label=None):
         db = self.db
         
         tables = self.simulationTables()
@@ -82,7 +82,7 @@ class Accessor(base):
 
 
     def makeQuery(self, table, filter=None, label=None):
-        'create a query for a material simulation table with given filter'
+        'create a query for an analysis table with given filter'
 
         db = self.db
         
@@ -91,30 +91,26 @@ class Accessor(base):
             return self.makeLabeledQuery(label, table)
         
         sGP = db._tablemap.TableToSATable(global_pointer)
-        st = db._tablemap.TableToSATable(table)
-        #columns with name variance among d.o.s
-        try:
-            material = st.c.matter.label('matter')
-        except:
-            material = st.c.structure.label('structure')          
+        st = db._tablemap.TableToSATable(table)   
         
         q = sqlalchemy.select(
             [st.c.id.label('id'),
-             st.c.short_description.label('short_description'),
+             st.c.description.label('description'),
              sGP.c.type.label('type'),
              st.c.date.label('date'),
-             #material,
+             st.c.structure.label('structure'),
+             st.c.dynamicsObject.label('dynamicsObject'),
              st.c.globalpointer.label('gptr'),
              ],
             st.c.globalpointer==sGP.c.id,
             )
         if filter:
-            q = sqlalchemy.select([q.alias('matsim')], whereclause=filter)
+            q = sqlalchemy.select([q.alias('analysis')], whereclause=filter)
         return q
 
 
     def makeLabeledQuery(self, label, table):
-        'create a query for a matter table with given filter'
+        'create a query for an analysis table with a given filter'
         db = self.db
         
         sL = db._tablemap.TableToSATable(Label)
@@ -137,10 +133,11 @@ class Accessor(base):
 
         q = sqlalchemy.select(
             [st.c.id.label('id'),
-             st.c.short_description.label('short_description'),
+             st.c.description.label('description'),
              q1.c.type.label('type'),
              st.c.date.label('date'),
-             st.c.matter.label('matter_gptr'),
+             st.c.structure.label('structure'),
+             st.c.dynamicsObject.label('dynamicsObject'),
              st.c.globalpointer.label('gptr'),
              ],
             st.c.globalpointer==q1.c.entity,
@@ -150,17 +147,14 @@ class Accessor(base):
 
 
     def getTables(self):
-        return self.simulationTables()
+        return self.analysisTables()
     
 
-    def simulationTables(self):
-        from vnf.dom import materialsimulationtables, materialmodelingtables
-        tables = materialsimulationtables()# + materialmodelingtables()
-
+    def analysisTables(self):
         from vnfb.dom.material_simulations.computation_types import typenames
         ormtables = map(self._getTable, typenames)
 
-        return tables + ormtables
+        return ormtables
 
 
 from vnf.dom.Label import Label
