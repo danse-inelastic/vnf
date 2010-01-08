@@ -40,45 +40,23 @@ class Actor(base):
         view_indicator = director.retrieveVisual('view-indicator', path=path)
         doc.add(view_indicator)
 
-        # matter view
-        matter = c.matter.dereference(db)
-        matterview = doc.document(title='material', collapsable=True, collapsed=False)
-        viewmatter = load(actor='atomicstructure', routine='showOverview',
-                          id = matter.id)
-        link = lc.link(label=matter.short_description, onclick=viewmatter)
-        matterview.add(link)
-##         matterview = doc.document(
-##             title='Atomic structure %r' % matter.description,
-##             collapsable = True, collapsed = True)
-##         matterview.onexpand = select(element=matterview).replaceContent(
-##             load(actor='orm/atomicstructures', routine='display',
-##                  id = orm(matter).id, editlink=False)
-##             )
+        # structure view
+#        matter = c.matter.dereference(db)
+#        matterview = doc.document(title='material', collapsable=True, collapsed=False)
+#        viewmatter = load(actor='atomicstructure', routine='showOverview',
+#                          id = matter.id)
+#        link = lc.link(label=matter.short_description, onclick=viewmatter)
+#        matterview.add(link)
 
         # model view
-        model = c.model.dereference(db)
-        modelview = doc.document(title='model', collapsable=True, collapsed=False)
-        viewmodel = select(id='main-display-area').replaceContent(
-            load(actor='orm/bvkmodels', routine='display',
-                 id = model.id, editlink=False)
-            )
-        link = lc.link(label=model.short_description, onclick=viewmodel)
-        modelview.add(link)
-##         modelview = doc.document(
-##             title='BvK model %r' % model.short_description,
-##             collapsable = True, collapsed = True)
-##         modelview.onexpand = select(element=modelview).replaceContent(
-##             load(actor='orm/bvkmodels', routine='display',
-##                  id = orm(model).id, editlink=False)
-##             )
-
-        # my configuration
-        configdoc = doc.document(title = 'Configuration', collapsable = True)
-        configdoc.oncreate = select(element=configdoc).append(
-            load(
-              actor='orm/bvk_getdispersion', routine='displayProperties',
-              id = c.id, editlink=False,
-            ))
+#        model = c.model.dereference(db)
+#        modelview = doc.document(title='model', collapsable=True, collapsed=False)
+#        viewmodel = select(id='main-display-area').replaceContent(
+#            load(actor='orm/bvkmodels', routine='display',
+#                 id = model.id, editlink=False)
+#            )
+#        link = lc.link(label=model.short_description, onclick=viewmodel)
+#        modelview.add(link)
 
         # results
         resultsdoc = doc.document(title = 'Results', collapsable=True, collapsed=True)
@@ -87,6 +65,14 @@ class Actor(base):
             load(actor=self.name, routine='createResultsDoc',
                  id=self.inventory.id)
             )
+
+        # settings
+        settingsdoc = doc.document(title = 'Settings', collapsable = True)
+        settingsdoc.oncreate = select(element=settingsdoc).append(
+            load(
+              actor='orm/motiondoscalc', routine='displayProperties',
+              id = c.id, editlink=False,
+            ))
         return doc
 
 
@@ -127,17 +113,16 @@ class Actor(base):
         if not id:
             raise RuntimeError
         domaccess = self._domaccess(director)
-        label = domaccess.getComputationLabel('dispersion', id)
+        label = domaccess.getComputationLabel('motion dos calc', id)
         computation = self._getComputation(director)
         return [
-            ('Simulations',
-             lc.load(actor='materialsimulation')),
-            # assume all simulation types that start with "bvk_" are bvk simulations
-            ('BvK simulations',
-             lc.load(actor='materialsimulation', filter_expr="type=='bvk_*'")),
+            ('Analysis',
+             lc.load(actor='analysis')),
+            ('Motion Dos Calculations',
+             lc.load(actor='analysis', filter_expr="type=='motiondoscalc'")),
             ('%s %s' % (computation.__class__.__name__, label),
              lc.select(id='main-display-area').replaceContent(
-            lc.load(actor='material_simulations/phonon_calculators/bvk_getdispersion',
+            lc.load(actor='analysis/motionDosCalc',
                     routine = 'createView', id=id)
             )),
             ]
@@ -146,20 +131,20 @@ class Actor(base):
     def _getComputation(self, director):
         domaccess = self._domaccess(director)
         id = self.inventory.id
-        return domaccess.getComputation('dispersion', id)
+        return domaccess.getComputation('motiondoscalc', id)
 
 
     def _getComputationRecord(self, director):
         domaccess = self._domaccess(director)
         id = self.inventory.id
-        return domaccess.getComputationRecord('dispersion', id)
+        return domaccess.getComputationRecord('motiondoscalc', id)
 
 
     def _domaccess(self, director):
-        return director.retrieveDOMAccessor('material_simulations/phonon_calculators/bvk')
+        return director.retrieveDOMAccessor('analysis')
 
 
-    def __init__(self, name='material_simulations/phonon_calculators/bvk_getdispersion'):
+    def __init__(self, name='analysis/motionDosCalc'):
         super(Actor, self).__init__(name)
         return
 

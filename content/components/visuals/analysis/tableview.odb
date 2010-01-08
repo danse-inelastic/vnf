@@ -25,7 +25,7 @@ def visual(
     ):
     # name: name of table view
     # 
-    domaccess = director.retrieveDOMAccessor(name)<--temporary
+    domaccess = director.retrieveDOMAccessor(name)
         
     from vnfb.components.MasterTable import MasterTableFactory, filtercompiler
     def countrecords(filter, label=None):
