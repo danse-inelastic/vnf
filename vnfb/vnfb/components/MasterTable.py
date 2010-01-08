@@ -98,9 +98,9 @@ class MasterTableFactory(object):
         # the following is to find out the filtering or labeling
         self.debug.log('label: %s' % label)
         if label and label!=self.dummylabel:
+            view_label = 'collection %r' % label
             if label in self.smartlabels:
                 filter_expr = filter_expr_tocompile = self.filterfromlabel(label)
-                view_label = 'collection %r' % label
             else:
                 filter_expr_tocompile = None
         else:
