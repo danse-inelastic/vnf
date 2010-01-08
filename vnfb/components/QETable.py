@@ -29,12 +29,12 @@ Notes on database classes implementation:
 
 from vnfb.utils.qeutils import timestamp, newid, setname, ifelse
 from dsaw.db.WithID import WithID
-from vnfb.dom.Computation import Computation
+#from vnfb.dom.Computation import Computation
 
 NO_UPDATE   = ["timecreated", "date", "id"]
 STAMPED     = ["timecreated", "date", "timemodified"]
 
-class QETable(Computation): #WithID):
+class QETable(WithID):
 
     def __init__(self, director, clerk):
         """
@@ -97,10 +97,10 @@ class QETable(Computation): #WithID):
         except:
             raise   # Complain
 
-    @classmethod
-    def getActorName(cls):
-        if hasattr(cls, 'actor'): return cls.actor
-        return cls.__name__.lower()
+#    @classmethod
+#    def getActorName(cls):
+#        if hasattr(cls, 'actor'): return cls.actor
+#        return cls.__name__.lower()
 
 
     # Haven't tested yet
