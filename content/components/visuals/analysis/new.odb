@@ -1,0 +1,59 @@
+#!/usr/bin/env python
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                               Alex Dementsov
+#                      California Institute of Technology
+#                        (C) 2009  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+import luban.content as lc
+from vnfb.utils.qegrid import QEGrid
+
+from luban.content import load, select
+
+def visual(director):
+    doc         = lc.document(title = "New Analysis")
+    splitter    = doc.splitter(orientation="vertical")
+    sA          = splitter.section()
+    sA.add(viewIndicator(director))
+
+    sB          = splitter.section()
+    
+    table       = QEGrid(lc.grid(Class="qe-table"))
+    sB.add(table.grid())
+    showSimulations(table)
+
+    table.setColumnStyle(0, "qe-cell-param")
+    return doc
+
+
+def showAnalyses(table):
+    """
+    Shows analysis routines as "Name":"Description" table
+    """
+    packages   = []
+    packages.append((lc.link(label="DoPS", onclick=load(actor="orm/motiondoscalc")),
+                    "Density of Phonon States from an MD trajectory"))
+    packages.append((lc.link(label="DoPS", onclick=load(actor="orm/motiondoscalc")),
+                    "Density of Phonon States from an MD trajectory"))
+    for p in packages:
+        table.addRow((p[0], p[1]))
+
+
+def viewIndicator(director):
+    path = []
+    path.append(('Simulations ', load(actor='materialsimulation')))
+    path.append('Create New Simulation')
+    
+    return director.retrieveVisual('view-indicator', path=path)
+
+
+
+__date__ = "$Nov 20, 2009 3:11:39 PM$"
+
+
