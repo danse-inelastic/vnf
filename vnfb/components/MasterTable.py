@@ -278,7 +278,7 @@ class MasterTableFactory(object):
         
         link.onclick = load(
             actor='label', routine='addEntities', table=name,
-            label = select(element=field).getAttr('value'),
+            label = select(element=field).getAttr('selection'),
             entities = select(element=table).table(
                 'getIdentifiersForCheckedRows',
                 colname='selected'),
@@ -335,7 +335,7 @@ class MasterTableFactory(object):
             page_number = 0,
             order_by = select(id=self._orderByWidgetID(name)).getAttr('value'),
             reverse_order = reverse_order,
-            label = select(element=field).getAttr('value'),
+            label = select(element=field).getAttr('selection'),
             )
 
         doc.add(field)

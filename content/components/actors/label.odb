@@ -94,11 +94,12 @@ class Actor(base):
         # this depends on MasterTableFactory implementation not very good
         id = '%s-table-applylabel-selector' % table
         a1 = select(id=id).formfield('addOption', value=-1, label=label)
+        a1b = select(id=id).setAttr(selection=label)
     
         id = '%s-table-collection-selector' % table
         a2 = select(id=id).formfield('addOption', value=-1, label=label)
 
-        return [a1, a2]
+        return [a1, a1b, a2]
     
 
     def __init__(self, name='smartlabel'):
