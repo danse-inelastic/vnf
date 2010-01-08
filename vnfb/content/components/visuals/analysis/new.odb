@@ -2,7 +2,6 @@
 #
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
-#                               Alex Dementsov
 #                      California Institute of Technology
 #                        (C) 2009  All Rights Reserved
 #
@@ -23,26 +22,44 @@ def visual(director):
     sA.add(viewIndicator(director))
 
     sB          = splitter.section()
+    sp = lc.splitter(); sB.add(sp)
     
-    table       = QEGrid(lc.grid(Class="qe-table"))
-    sB.add(table.grid())
-    showSimulations(table)
-
-    table.setColumnStyle(0, "qe-cell-param")
+    left = sp.section(title='Structure Analysis')
+    left.add(createStructureAnalysis())
+             
+#    middle = sp.section(title='Dynamics Analysis')
+#    middle.add(createDynamicsAnalysis())
+#    
+#    right = sp.section(title='Scattering Analysis')
+#    right.add(createScatteringAnalysis())
+    
+#    table       = QEGrid(lc.grid(Class="qe-table"))
+#    sB.add(table.grid())
+#    showAnalyses(table)
+#
+#    table.setColumnStyle(0, "qe-cell-param")
     return doc
 
+def createStructureAnalysis():
+    grid = lc.grid()
+    
+    routines   = []
+    routines.append((lc.link(label="DoPS", onclick=load(actor="orm/motiondoscalc")),
+                    "Density of Phonon States from an MD trajectory"))
+    routines.append((lc.link(label="DoPS", onclick=load(actor="orm/motiondoscalc")),
+                    "Density of Phonon States from an MD trajectory"))
+    
+    for link,desc in routines:
+        row = grid.row()
+        row.cell().add(link)
+        row.cell().add(desc)
+    return grid
+    
+#    for p in packages:
+#        table.addRow((p[0], p[1]))
 
-def showAnalyses(table):
-    """
-    Shows analysis routines as "Name":"Description" table
-    """
-    packages   = []
-    packages.append((lc.link(label="DoPS", onclick=load(actor="orm/motiondoscalc")),
-                    "Density of Phonon States from an MD trajectory"))
-    packages.append((lc.link(label="DoPS", onclick=load(actor="orm/motiondoscalc")),
-                    "Density of Phonon States from an MD trajectory"))
-    for p in packages:
-        table.addRow((p[0], p[1]))
+
+
 
 
 def viewIndicator(director):

@@ -15,13 +15,8 @@
 from luban.content import load, select, alert
 import luban.content as lc
 
-
-
 # common actions
 setpagetitle = select(id='').setAttr(title='Virtual neutron facility: analysis of structural/dynamical simulations')
-
-
-
 
 from vnfb.components.MasterTable import FilterSyntaxError, MasterTableActor as base
 
