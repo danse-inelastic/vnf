@@ -96,7 +96,8 @@ del Inventory
 
 from _ import o2t, ComputationTableBase as TableBase
 NeutronExperimentTable = o2t(NeutronExperiment, {'subclassFrom': TableBase})
-NeutronExperimentTable.job_builder = 'neutronexperiment'    
+NeutronExperimentTable.job_builder = 'neutronexperiment'
+NeutronExperimentTable.actor = 'experiment'
 
 # version
 __id__ = "$Id$"

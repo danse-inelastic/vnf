@@ -21,7 +21,6 @@ class Worker(base):
     
 
     def run(self, task):
-
         director = self.director
         #
         domaccess = self.domaccess = director.retrieveDOMAccessor('computation')
@@ -35,7 +34,20 @@ class Worker(base):
 
         #
         from vnfb.utils.computation import retrieve_results
-        retrieve_results(computation, director)
+        from vnfb.components.ComputationResultRetriever import RetrievalFailed
+        try:
+            retrieve_results(computation, director)
+            
+        except RetrievalFailed:  # failed retrieval in retrieving results
+            raise
+        
+        except:  # other exceptions such as results-retrieval component not implemented
+            import traceback
+            msg = traceback.format_exc()
+            computation.setResultRetrievalStatusAndErrorMessage(
+                'failed', msg, db)
+            raise
+        
         return
 
 

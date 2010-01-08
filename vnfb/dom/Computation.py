@@ -124,8 +124,13 @@ class Computation(base):
 
     # result retrieval related
     def setResultRetrievalStatusAndErrorMessage(self, status, message, db):
-        self.markResultFileStatusAndErrorMessage(
-            filename='', db=db, status=status, message=message)
+        try:
+            self.markResultFileStatusAndErrorMessage(
+                filename='', db=db, status=status, message=message)
+        except db.InvalidRequestError:
+            db.rollback()
+            self.markResultFileStatusAndErrorMessage(
+                filename='', db=db, status=status, message=message)
         return
 
 
@@ -159,6 +164,7 @@ class Computation(base):
         
         where = "computation=%s and filename='%s' "  % (gp, filename)
         rs = db.query(_ComputationResultRetrievals).filter(where).all()
+        db.commit()
         
         if not rs: return
         
@@ -189,6 +195,7 @@ class Computation(base):
             # look for the entries
             where = "computation=%s and filename='%s'"  % (gp, filename)
             rs = db.query(_ComputationResultRetrievals).filter(where).all()
+            db.commit()
             
             if len(rs) == 0:
                 # no entry, need one

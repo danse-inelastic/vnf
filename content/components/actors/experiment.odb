@@ -145,12 +145,12 @@ class Actor(base):
             view = self.createEditor(director)
         else:
             #view = self.createSimpleDisplay(director)
-            view = self.createDisplay(director)
+            view = self.createView(director)
         return select(id='main-display-area').replaceContent(view)
 
 
 
-    def createDisplay(self, director):
+    def createView(self, director):
         return director.retrieveVisual(
             name='neutronexperiment/view/skeleton',
             id = self.inventory.id,
@@ -180,16 +180,6 @@ class Actor(base):
             )
         return doc
 
-
-    def createResultsView(self, director):
-        domaccess = self._domaccess(director)
-        experiment_record = domaccess.getExperimentRecord(id=self.inventory.id)
-        return director.retrieveVisual(
-            'computation-results',
-            computation=experiment_record,
-            actor=self.name, director=director
-            )
-    
 
     def createEditor(self, director):
         return director.retrieveVisual(
@@ -280,18 +270,20 @@ class Actor(base):
         r.instrument = instrument
         
         # sample
-        samplerecord = domaccess.db.fetchRecordUsingUniqueIdentifierStr(self.inventory.sample)
-        oldsamplerecord = r.sample and r.sample.dereference(domaccess.db)
-        if oldsamplerecord \
-               and (type(oldsamplerecord) != type(samplerecord) \
-                    or oldsamplerecord.id != samplerecord.id) \
-               and r.sample_configuration and r.sample_configuration.id:
-            # user selects a new sample, need to annihilate the old configuration
-            screcord = r.sample_configuration.dereference(domaccess.db)
-            r.sample_configuration = None
-            domaccess.db.updateRecord(r)
-            domaccess.destroySampleConfiguration(record=screcord)
-        r.sample = samplerecord
+        sample = self.inventory.sample
+        if sample:
+            samplerecord = domaccess.db.fetchRecordUsingUniqueIdentifierStr(sample)
+            oldsamplerecord = r.sample and r.sample.dereference(domaccess.db)
+            if oldsamplerecord \
+                   and (type(oldsamplerecord) != type(samplerecord) \
+                        or oldsamplerecord.id != samplerecord.id) \
+                   and r.sample_configuration and r.sample_configuration.id:
+                # user selects a new sample, need to annihilate the old configuration
+                screcord = r.sample_configuration.dereference(domaccess.db)
+                r.sample_configuration = None
+                domaccess.db.updateRecord(r)
+                domaccess.destroySampleConfiguration(record=screcord)
+            r.sample = samplerecord
 
         # update
         domaccess.db.updateRecord(r)

@@ -50,8 +50,29 @@ class Actor(base):
         computation = domaccess.getRecordByID(self.inventory.type, id=self.inventory.id)
         
         from vnfb.utils.computation import start_results_retrieval
-        return start_results_retrieval(computation, director)
+        start_results_retrieval(computation, director)
+        return
 
+
+    def createResultsDoc(self, director):
+        record = self._getComputationRecord(director)
+        return director.retrieveVisual(
+            'computation-results',
+            computation=record,
+            actor=self.name, director=director
+            )
+
+
+    def _getComputationRecord(self, director):
+        domaccess = self._domaccess(director)
+        return domaccess.getComputationRecord(self.inventory.type, self.inventory.id)
+
+
+    def _domaccess(self, director):
+        domaccess = director.retrieveDOMAccessor('computation')
+        orm = domaccess.orm
+        return domaccess
+    
 
     def __init__(self, name='computation'):
         super(Actor, self).__init__(name)

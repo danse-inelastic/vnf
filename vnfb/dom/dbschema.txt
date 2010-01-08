@@ -17,3 +17,18 @@ qejobs:
 qesimulationtasks:
     -> qesimulations
     -> qetasks
+
+
+
+Migration of schema:
+
+Jan 7, 2010
+changed reference to "matter" from polymorphic to nonpolymorphic:
+
+ bvk_getdos
+ bvk_getdispersion
+ abinitio
+ phonondispersions
+ phonondoses
+ sqes
+ scatterers
