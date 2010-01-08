@@ -40,9 +40,11 @@ class Actor(base):
 
 
     def content(self, director):
+        self.id     = self.inventory.id
+        #print self.inventory.id
         sim         = director.clerk.getQESimulations(id=self.id)
         self.type   = sim.type
-        
+
         def viewIndicator(director):
             path = []
             path.append(('Simulations ', load(actor='materialsimulation')))
@@ -56,7 +58,7 @@ class Actor(base):
         splitter    = doc.splitter(orientation="vertical")
         sA          = splitter.section()
         sA.add(viewIndicator(director))
-        
+
         sC          = splitter.section(id="qe-section-actions")
         self._showActions(sC)
 
@@ -76,6 +78,7 @@ class Actor(base):
         table.setColumnStyle(0, "qe-cell-param")
         
         return doc
+
 
     def _showActions(self, section):
         section.add(lc.link(label="Refresh",

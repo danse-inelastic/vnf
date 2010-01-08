@@ -31,12 +31,13 @@ in VNF (e.g. gulpsimulations or bvkcomputations) which refer to the actual simul
 
 from vnfb.utils.qeconst import SIMULATIONS
 from vnfb.components.QETable import QETable
+from vnfb.dom.Computation import Computation
 
 from MaterialSimulation import MaterialSimulation
 
 # WithID -> id
 
-class QESimulation(QETable):
+class QESimulation(QETable):    #, Computation): #):
 
     name = "qesimulations"
     import dsaw.db
@@ -75,6 +76,11 @@ class QESimulation(QETable):
     # Change type
     matter = dsaw.db.varchar(name="matter", length=128, default='')
     matter.meta['tip']  = "STUB"
+
+    @classmethod
+    def getActorName(cls):
+        if hasattr(cls, 'actor'): return cls.actor
+        return cls.__name__.lower()
 
 
 # Default records

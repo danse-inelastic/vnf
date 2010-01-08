@@ -34,6 +34,7 @@ class Actor(base):
         
         table = director.clerk.db.getTable(self.inventory.type)
         actor = table.getActorName()
+        #print actor
 
         return select(id='main-display-area').replaceContent(
             load(actor=actor, routine='createView',
