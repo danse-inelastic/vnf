@@ -1,0 +1,19 @@
+
+Displays dependencies in the database schema
+
+servers
+qesimulations:
+    -> servers
+    ? -> matter
+qetasks:
+    ? -> matter
+qeconfigurations:
+    -> qetasks
+qesettings:
+    -> qesimulations
+qejobs:
+    -> qetasks
+    -> servers
+qesimulationtasks:
+    -> qesimulations
+    -> qetasks
