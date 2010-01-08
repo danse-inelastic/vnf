@@ -30,6 +30,7 @@ def table(atomicstructures, cols, director):
     class model(Model):
 
         selected = Model.descriptors.bool(name='selected')
+        selectone = Model.descriptors.radio_button(name='selectone')
         id = Model.descriptors.link(name='id')
         description = Model.descriptors.str(name='description')
         visualize = Model.descriptors.link(name='visualize')
@@ -40,6 +41,7 @@ def table(atomicstructures, cols, director):
 
     columns = [
         View.Column(label='', measure='selected'),
+        View.Column(label='', measure='selectone'),
         View.Column(label='ID', measure='id'),
         View.Column(label='Description', measure='description', editable=True),
         View.Column(label='Visualize', measure='visualize'),
@@ -51,6 +53,7 @@ def table(atomicstructures, cols, director):
     view = View(columns=columns, editable=True)
     
     def getSelected(record): return False
+    def getSelectone(record): return False
     def getId(record):
         label = record.id
         link = Link(
