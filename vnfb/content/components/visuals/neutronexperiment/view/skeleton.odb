@@ -60,7 +60,8 @@ class Factory(object):
         resultsdoc = doc.document(title = 'Results', collapsable=True, collapsed=True)
         resultsdoc.paragraph(text=['loading results. please wait...'])
         resultsdoc.onexpand = select(element=resultsdoc).replaceContent(
-            load(actor='experiment', routine='createResultsView', id=id)
+            load(actor='computation', routine='createResultsDoc',
+                 id=id, type=experiment_record.getTableName())
             )
         return doc
 

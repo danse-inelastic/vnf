@@ -29,6 +29,7 @@ class Builder(base):
         #
         from NeutronExperimentSimulationRunBuilder import Builder
         builder = Builder(self.path)
+        builder.director = self.director
         return builder.render(computation, db=db, dds=dds)
 
 

@@ -44,7 +44,7 @@ class Actor(base):
                 alert('itask %s %s:\n%s' % (itask.id, itask.state, itask.error)),
                 ]
 
-        raise RuntimeError
+        raise RuntimeError, "Unknown itask state: %s" % itask.state
 
 
     def __init__(self, name='itask'):

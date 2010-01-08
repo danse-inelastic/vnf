@@ -41,7 +41,7 @@ def visual(computation, actor, director):
         
     refresh = select(element=doc).replaceBy(
         load(actor=actor, routine='createResultsDoc',
-             id=computation.id)
+             id=computation.id, type=computation.getTableName())
         )
     
     if result_retrieval_status == 'retrieving':
@@ -68,7 +68,7 @@ def visual(computation, actor, director):
         pbar.oncanceled = refresh
         doc.add(pbar)
 
-    elif result_retrieval_status == 'retrieval failed':
+    elif result_retrieval_status.find('failed') != -1:
         p = doc.paragraph(text=['failed to retrieve results'])
         l = lc.link(
             label = 'restart results retrieval',

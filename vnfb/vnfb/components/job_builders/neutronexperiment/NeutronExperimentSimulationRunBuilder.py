@@ -27,6 +27,7 @@ class Builder(base):
         self.computation = self.experiment = experiment
         self.db = db
         self.dds = dds
+        self.domaccess = self.director.retrieveDOMAccessor('experiment')
         
         self.dependencies = []
         self.filenames = []
@@ -45,16 +46,20 @@ class Builder(base):
         configured_instrument = experiment.instrument_configuration.dereference(self.db)
         self.dispatch(configured_instrument)
 
-        sample = experiment.sample.dereference(self.db)
-        from vnfb.dom.neutron_experiment_simulations.SampleAssembly import SampleAssemblyTable
-        from vnfb.dom.neutron_experiment_simulations.neutron_components.SampleBase import TableBase as SampleTableBase
-        if isinstance(sample, SampleAssemblyTable):
-            sampleassembly = sample
-            self.dispatch( sampleassembly )
-        else:
-            assert isinstance(sample, SampleTableBase), "not a sample: %s" % sample
-            samplecomponent = sample
-            self.onSampleComponent(samplecomponent)
+        # if the instrument has a sample place holder, we need to render the sample
+        instrument_record = experiment.instrument.dereference(self.db)
+        instrument = self.domaccess.orm.record2object(instrument_record)
+        if instrument.hasSampleComponent():
+            sample = experiment.sample.dereference(self.db)
+            from vnfb.dom.neutron_experiment_simulations.SampleAssembly import SampleAssemblyTable
+            from vnfb.dom.neutron_experiment_simulations.neutron_components.SampleBase import TableBase as SampleTableBase
+            if isinstance(sample, SampleAssemblyTable):
+                sampleassembly = sample
+                self.dispatch( sampleassembly )
+            else:
+                assert isinstance(sample, SampleTableBase), "not a sample: %s" % sample
+                samplecomponent = sample
+                self.onSampleComponent(samplecomponent)
         
         #
         parameters = [ 'ncount' ]

@@ -47,7 +47,11 @@ class Factory(object):
         doc = lc.document(Class='container')
         doc.add(self._buildForm(ic))
         #
-        switch = select(id='experimentwizard-sampleconfiguration-tab').tab('select')
+        if self.instrument.hasSampleComponent():
+            nexttab = 'experimentwizard-sampleconfiguration-tab'
+        else:
+            nexttab = 'experimentwizard-summary-tab'
+        switch = select(id=nexttab).tab('select')
         continuebutton = lc.button(label='continue', onclick=switch)
         doc.add(continuebutton)
         return doc

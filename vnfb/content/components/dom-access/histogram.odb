@@ -18,30 +18,38 @@ class Accessor(base):
 
 
     def __init__(self):
-        super(Accessor, self).__init__('computation')
+        super(Accessor, self).__init__('histogram-accessor')
         return
 
 
     def _getOrm(self):
         orm = self.director.clerk.orm
-        
-        # build orm for all computation types
-        from vnfb.dom.computation_types import typenames, deps_typenames
-        for name in typenames+deps_typenames:
-            type = self._getObjectByImportingFromDOM(name)
-            orm(type)
-            continue
-        #
+        orm(Histogram)
         return orm
     orm = property(_getOrm)
 
 
-    def getComputationRecord(self, type, id):
-        orm = self.orm
-        db = orm.db
-        table = db.getTable(type)
-        return db.query(table).filter_by(id=id).one()
+    def getRecord(self, id):
+        db = self.db
+        return db.query(HistogramTable).filter_by(id=id).one()
 
+
+    def getData(self, record):
+        directory = self.director.dds.abspath(record)
+        import os
+        p = os.path.join(directory, 'data.h5')
+        import histogram.hdf as hh
+        from histogram.hdf.utils import getOnlyEntry
+        entry = getOnlyEntry(p)
+        h = hh.load(p, entry)
+        record.data = h
+        return record
+
+
+
+from vnfb.dom.Histogram import Histogram, HistogramTable
+
+import os, numpy
 
 def accessor():
     return Accessor()

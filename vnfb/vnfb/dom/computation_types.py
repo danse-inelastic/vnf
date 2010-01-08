@@ -13,7 +13,9 @@
 
 
 typenames = []
-deps_typenames = []
+deps_typenames = [
+    'Histogram.Histogram',
+    ]
 
 
 from material_simulations.computation_types import \

@@ -13,6 +13,7 @@
 
 
 class ResultsMissing(Exception): pass
+class RetrievalFailed(Exception): pass
 
 
 from pyre.components.Component import Component
@@ -66,9 +67,8 @@ class ComputationResultRetriever(Component):
             # save to db
             computation.setResultRetrievalStatusAndErrorMessage(
                 'retrieval failed', error, db=self.db)
-            self.db.commit()
 
-            raise
+            raise RetrievalFailed, error
 
         else:
             # if we reach here it means everything is good
