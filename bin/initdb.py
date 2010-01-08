@@ -35,6 +35,11 @@ class DbApp(base):
     def main(self, *args, **kwds):
         clerk = self.clerk
         clerk.importAllDataObjects()
+        print "registered tables:"
+        for table in clerk.db.iterAllTables():
+            print ' -', table.getTableName()
+        print
+        print "create all tables"
         clerk.db.createAllTables()
         
         tables = self.inventory.tables
@@ -43,6 +48,7 @@ class DbApp(base):
             if table:
                 tables = []
 
+        print "init tables"
         self.inittables(tables)
         return
 
