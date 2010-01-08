@@ -45,6 +45,7 @@ class Actor(base):
             assert len(entities)%2==0
 
         labelaccess = director.retrieveDOMAccessor('label')
+        labelaccess.importAllDataObjects()
 
         table = self.inventory.table
         label = self.inventory.label

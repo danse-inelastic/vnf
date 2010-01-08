@@ -96,14 +96,14 @@ class Accessor(base):
         try:
             material = st.c.matter.label('matter')
         except:
-            material = st.c.structure.label('structure')          
+            material = st.c.structure.label('matter')
         
         q = sqlalchemy.select(
             [st.c.id.label('id'),
              st.c.short_description.label('short_description'),
              sGP.c.type.label('type'),
              st.c.date.label('date'),
-             #material,
+             material,
              st.c.globalpointer.label('gptr'),
              ],
             st.c.globalpointer==sGP.c.id,
@@ -140,7 +140,7 @@ class Accessor(base):
              st.c.short_description.label('short_description'),
              q1.c.type.label('type'),
              st.c.date.label('date'),
-             st.c.matter.label('matter_gptr'),
+             #st.c.matter.label('matter_gptr'),
              st.c.globalpointer.label('gptr'),
              ],
             st.c.globalpointer==q1.c.entity,
