@@ -93,10 +93,10 @@ class Accessor(base):
         sGP = db._tablemap.TableToSATable(global_pointer)
         st = db._tablemap.TableToSATable(table)
         #columns with name variance among d.o.s
-        try:
-            description = st.c.short_description.label('short_description')
-        except:
-            description = st.c.description.label('description')
+#        try:
+#            description = st.c.short_description.label('short_description')
+#        except:
+#            description = st.c.description.label('description')
         try:
             material = st.c.matter.label('matter')
         except:
@@ -104,6 +104,7 @@ class Accessor(base):
         
         q = sqlalchemy.select(
             [st.c.id.label('id'),
+             st.c.short_description.label('short_description'),
              #description,
              sGP.c.type.label('type'),
              st.c.date.label('date'),
