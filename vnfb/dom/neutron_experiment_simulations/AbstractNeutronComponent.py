@@ -21,6 +21,8 @@ class AbstractNeutronComponent(object):
                    [0.,0.,1.],]
     referencename = ''
 
+    short_description = ''
+
     pass # end of AbstractNeutronComponent
 
 
@@ -31,6 +33,8 @@ class Inventory(InvBase):
     position = InvBase.d.array(name='position', elementtype='float', shape=3)
     orientation = InvBase.d.array(name='orientation', elementtype='float', shape=(3,3))
     referencename = InvBase.d.str(name='referencename')
+
+    short_description = InvBase.d.str(name='short_description')
 
 
 AbstractNeutronComponent.Inventory = Inventory
