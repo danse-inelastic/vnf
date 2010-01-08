@@ -2,7 +2,6 @@
 #
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
-#                                  Jiao Lin
 #                     California Institute of Technology
 #                       (C) 2009  All Rights Reserved
 #
@@ -10,17 +9,17 @@
 #
 
 
-def visual(atomicstructures, cols, director):
-    try: return table(atomicstructures, cols, director)
+def visual(analyses, cols, director):
+    try: return table(analyses, cols, director)
     except:
         import journal
-        debug = journal.debug('atomicstructure-table')
+        debug = journal.debug('analyses-table')
         import traceback
         debug.log(traceback.format_exc())
         return
 
 
-def table(atomicstructures, cols, director):
+def table(analyses, cols, director):
     from luban.content.table import Model, View, Table
     from luban.content import load
     from luban.content.Link import Link
@@ -34,6 +33,7 @@ def table(atomicstructures, cols, director):
         description = Model.descriptors.str(name='description')
         visualize = Model.descriptors.link(name='visualize')
         chemical_formula = Model.descriptors.str(name='chemical_formula')
+        simulation = Model.descriptors.str(name='simulation')
         created = Model.descriptors.str(name='created')
 
         row_identifiers = ['id']
@@ -44,6 +44,7 @@ def table(atomicstructures, cols, director):
         View.Column(label='Description', measure='description', editable=True),
         View.Column(label='Visualize', measure='visualize'),
         View.Column(label='Chemical_formula', measure='chemical_formula'),
+        View.Column(label='Simulation', measure='simulation'),
         View.Column(label='Date created', measure='created'),
         ]
     columns = filter(lambda col: col.measure in cols, columns)
@@ -56,7 +57,7 @@ def table(atomicstructures, cols, director):
         link = Link(
             label = label,
             onclick = load(
-                actor='atomicstructure', routine='showOverview',
+                actor='analysis', routine='showOverview',
                 id = record.id,
                 )
             )
@@ -65,20 +66,24 @@ def table(atomicstructures, cols, director):
         return record.short_description
     def getVisualize(record):
         return 'not implemented'
+    def getChemical_formula(record):
+        return record.chemical_formula
+    def getSimulation(record):
+        return 'not implemented'
+        #return record.chemical_formula
     def getCreated(record):
         date = record.date
         return str(date)
-    def getChemical_formula(record):
-        return record.chemical_formula
+
                 
     import operator
     value_generators = [
         eval('get'+col.measure.capitalize())
         for col in view.columns]
     record2tuple = lambda record: [g(record) for g in value_generators]
-    data = map(record2tuple, atomicstructures)
+    data = map(record2tuple, analyses)
 
-    table = Table(model=model, data=data, view=view, id='atomicstructure-table')
+    table = Table(model=model, data=data, view=view, id='analysis-table')
 
     return table
 

@@ -37,27 +37,27 @@ class Actor(base):
         return self.showListView(director)
 
 
-    def debug_tableview(self, director):
-        p       = lc.page()
-        doc     = p.document(id='main-display-area')
-        doc.add(self.createListView(director))
-        return p
+#    def debug_tableview(self, director):
+#        p       = lc.page()
+#        doc     = p.document(id='main-display-area')
+#        doc.add(self.createListView(director))
+#        return p
 
 
-    def replaceBodyFrameWithAtomicStructureList(self, director):
+    def replaceBodyFrameWithAnalysisList(self, director):
         body_frame          = select(id='body-frame')
         body_skeleton       = director.retrieveVisual('body-skeleton')
         main_display_area   = body_skeleton.find(id='main-display-area')
 
         try:
-            atomicstructurelist = self.createListView(director)
+            analysislist = self.createListView(director)
         except FilterSyntaxError, msg:
             return alert('filter syntax error: %s' % msg)
             
-        main_display_area.add(atomicstructurelist)
+        main_display_area.add(analysislist)
 
-        material_portlet    = body_skeleton.find(id='main-portlet-my-analysis')
-        material_portlet.selected = 1
+        analysis_portlet    = body_skeleton.find(id='main-portlet-my-analysis')
+        analysis_portlet.selected = 1
         
         return [
             body_frame.replaceContent(body_skeleton),
@@ -115,7 +115,7 @@ class Actor(base):
         
         record = domaccess.orm(s)
         self.inventory.id = record.id
-        return director.retrieveVisual('analysis/new-structure',
+        return director.retrieveVisual('analysis/new',
                                         director    = director,
                                         id          = self.inventory.id)
         #return self.editAtomicStructureForm(director)
