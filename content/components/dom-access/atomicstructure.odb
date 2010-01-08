@@ -200,6 +200,10 @@ class Accessor(base):
     def getallsimulations(self, id, **opts):
         '''get all simulations for this atomic structure
         '''
+        # XXX this implementation does not work anymore ...
+        # XXX has to go through all material simulation tables and use back reference
+        # XXX to find the simulations.
+
         s = self.getAtomicStructure(id)
         orm = self.orm
         record = orm(s)
