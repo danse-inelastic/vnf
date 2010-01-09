@@ -92,18 +92,13 @@ class Accessor(base):
         
         sGP = db._tablemap.TableToSATable(global_pointer)
         st = db._tablemap.TableToSATable(table)
-        #columns with name variance among d.o.s
-        try:
-            material = st.c.matter.label('matter')
-        except:
-            material = st.c.structure.label('matter')
         
         q = sqlalchemy.select(
             [st.c.id.label('id'),
              st.c.short_description.label('short_description'),
              sGP.c.type.label('type'),
              st.c.date.label('date'),
-             material,
+             st.c.matter.label('matter'),
              st.c.globalpointer.label('gptr'),
              ],
             st.c.globalpointer==sGP.c.id,
