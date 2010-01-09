@@ -41,8 +41,8 @@ SIMULATIONS = ("Total Energy",              # 0
                "Electron DOS",              # 1
                "Electron Dispersion",       # 2 pw.x -> pw.x -> bands.x -> plotbands.x
                "Geometry Optimization",     # 3
-               "Single-Phonon",             # 4
-               "Multi-Phonon")   # 5 DOS and Dispersion
+               "Single Phonon",             # 4
+               "Multiple Phonon")           # 5 DOS and Dispersion
             
 # Types of simulations
 SIMCHAINS = OrderedDict()
