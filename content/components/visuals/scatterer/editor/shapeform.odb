@@ -25,7 +25,8 @@ class Factory(object):
         self.id = id
         self.director = director
         self.domaccess = director.retrieveDOMAccessor('scatterer')
-        self.record = self.domaccess.getRecord(id)
+        r = self.record = self.domaccess.getRecord(id)
+        self.shape = r.shape and r.shape.id and r.shape.dereference(self.domaccess.db)
         return
 
 
@@ -42,7 +43,13 @@ class Factory(object):
         drawer = painter.paintObj.drawers.getDrawer(type)
 
         # form
-        obj = type(); orm=self.domaccess.orm; orm(obj)
+        # the object to edit. if the shape type is the same as current shape type
+        # should edit the existing shape, otherwise, create a new shape and edit that
+        orm = self.domaccess.orm
+        if self.shape and self.shape.__class__.__name__ == typename:
+            obj = orm.record2object(self.shape)
+        else:
+            obj = type(); orm(obj)
         view = drawer.createPropertiesForm(obj); doc.add(view)
         form = view.getDescendentByName('properties-form')
         # this action will return the unique identifier of new shape
