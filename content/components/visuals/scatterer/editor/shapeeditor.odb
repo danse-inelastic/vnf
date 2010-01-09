@@ -31,7 +31,7 @@ class Factory(object):
 
 
     def __call__(self):
-        doc = lc.document(id='scatterer-shape-editor-doc')
+        doc = lc.document(id='scatterer-shape-editor-doc', title='edit shape')
 
         # tool bar to select shape type
         # import pdb; pdb.set_trace()
@@ -44,17 +44,11 @@ class Factory(object):
         if self.shape:
             shapetypename = self.shape.__class__.__name__
             shapeform = self._createShapeForm(shapetypename)
+
         else:
             shapeform = lc.document(id='scatterer-shape-form', Class='container')
         doc.add(shapeform)
         
-        # cancel
-        c = lc.link(label='cancel', Class='float-right'); doc.add(c)
-        c.onclick = select(id=self.shape_view_id).replaceBy(
-            load(actor='scatterer/editor', routine='createShapeView',
-                 id = self.id)
-            )
-
         return doc
 
 

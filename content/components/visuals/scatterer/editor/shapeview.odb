@@ -46,11 +46,12 @@ class Factory(object):
                                         id=id, director=director)
                 )
         else:
+            interior = doc.document(Class='container')
             summary = self._createSummary()
-            doc.add(summary)
+            interior.add(summary)
 
-            link = lc.link(label='edit'); doc.add(link)
-            link.onclick = select(element=link).replaceBy(
+            link = lc.link(label='edit'); interior.add(link)
+            link.onclick = select(element=interior).replaceBy(
                 load(actor='scatterer/editor', routine='createShapeEditor',
                      id = id)
                 )
