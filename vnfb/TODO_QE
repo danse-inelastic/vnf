@@ -4,6 +4,9 @@ TODO List for Quantum Espresso
 Problem: How to define similarity for simulation tasks? Settings? Matter?
 Solution:
 
+Nice To Have
+============
+
 - Move some of the qe stuff from vnfb/vnfb/utils -> vnfb/content/components/visuals
  because they look like visuals :)
 - Do not display action buttons "Run Task" or "Cancel" unless previous simulation
@@ -11,15 +14,31 @@ Solution:
 - Change action buttom depending on the status of the job:
     "Run Task" -> "Cancel" -> "Run Task"
 
+Must Have
+=========
+
+- Generate QE config file from atomic structure
+
 NOW
 ===
+-
+
 
 - [PART] Display simulation results and plot with "Analyze" button
-- Handle multiple jobs for the task
 - Fix retrieving results again (fix getmtime.py)
+- Run "Single Phonon" simulation
+- Run "Multiple Phonon" simulation
+- Phonon DOS
+- Phonon Dispersion
+- Add progress bar for jobs with steps description
+
+
+- Handle multiple jobs for the task
 - Fix database jobs status depending on the actual jobs status
 - Fix the formatting of config view and create
-- Add progress bar for jobs with steps description
+
+- Display and refresh output file
+- Hide "Run Task" button unless the previous simulation task is completed
 - Display jobs
 
 Minor:
