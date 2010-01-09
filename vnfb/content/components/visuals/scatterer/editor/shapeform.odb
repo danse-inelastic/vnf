@@ -51,6 +51,13 @@ class Factory(object):
         form.onsubmit = load(actor='scatterer/editor', routine='setShape',
                              id=self.id, shape= original_submit_action)
 
+        # cancel
+        c = lc.link(label='cancel', Class='float-right');
+        form.add(c)
+        c.onclick = select(id=self.shape_view_id).replaceBy(
+            load(actor='scatterer/editor', routine='createShapeView',
+                 id = self.id)
+            )
         return doc
             
     
