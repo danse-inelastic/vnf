@@ -27,6 +27,8 @@ class Actor(base):
 
         matter = pyre.inventory.str(name='matter')
 
+        shape = pyre.inventory.str(name='shape')
+
 
     def selectMatter(self, director):
         domaccess = self._domaccess(director)
@@ -54,6 +56,74 @@ class Actor(base):
     def createMatterSelector(self, director):
         id = self.inventory.id
         return director.retrieveVisual('scatterer/editor/matterselector', id=id, director=director)
+
+
+    def createShapeView(self, director):
+        id = self.inventory.id
+        return director.retrieveVisual('scatterer/editor/shapeview', id=id, director=director)
+
+
+    def createShapeEditor(self, director):
+        id = self.inventory.id
+        return director.retrieveVisual('scatterer/editor/shapeeditor', id=id, director=director)
+
+
+    def onSelectShapeType(self, director):
+        'handles the event a user clicks a shape type button'
+        #
+        _buttonid = lambda s: 'scatterer-shape-button-%s' % s.lower()
+        # dehighlight buttons
+        from vnfb.dom.geometry import shapenames
+        dehighlight = [select(id=_buttonid(s)).removeClass('highlight')
+                       for s in shapenames ]
+
+        # highlight
+        shapetypename = self.inventory.shape
+        highlightbutton = select(id=_buttonid(shapetypename)).addClass('highlight')
+
+        # chang form
+        newform = director.retrieveVisual(
+            'scatterer/editor/shapeform',
+            id = self.inventory.id,
+            director = director,
+            typename = shapetypename,
+            )
+        changeshapeform = select(id='scatterer-shape-form').replaceBy(newform)
+
+        #
+        actions = dehighlight + [highlightbutton, changeshapeform]
+        return actions
+
+
+    def setShape(self, director):
+        "given new shape's unique identifier, change the shape of this scatterer"
+        domaccess = self._domaccess(director)
+        db = domaccess.db
+        
+        scatterer = domaccess.getRecord(self.inventory.id)
+
+        # destroy old shape if exists
+        oldshape = scatterer.shape and scatterer.shape.id and scatterer.shape.dereference(db)
+        if oldshape:
+            orm = domaccess.orm
+            oldshapeobj = orm.record2object(oldshape)
+            # remove reference from scatterer to old shape
+            scatterer.shape = None
+            db.updateRecord(scatterer)
+            # destroy old shape
+            orm.destroy(oldshapeobj)
+
+        # assign new shape
+        scatterer.shape = db.fetchRecordUsingUniqueIdentifierStr(self.inventory.shape)
+
+        # update db
+        db.updateRecord(scatterer)
+
+        # change to view
+        view = director.retrieveVisual(
+            'scatterer/editor/shapeview',
+            id=self.inventory.id, director=director)
+        return select(id='scatterer-shape-view').replaceBy(view)
 
 
     def _domaccess(self, director):

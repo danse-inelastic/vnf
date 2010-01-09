@@ -28,15 +28,21 @@ class Accessor(base):
     def _getOrm(self):
         orm = self.director.clerk.orm
         
-        # build orm for all computation types
+        # build orm for all dependent types
         from vnfb.dom.scattering_kernels import kernelnames
         for name in kernelnames:
             type = self._getObjectByImportingFromDOM(name)
             orm(type)
             continue
-        #
+        from vnfb.dom.geometry import getShapeTypes
+        map(orm, getShapeTypes())
+        
         return orm
     orm = property(_getOrm)
+
+
+    def getObject(self, id):
+        return self.orm.load(Scatterer, id)
 
 
     def getRecord(self, id):

@@ -12,26 +12,19 @@
 #
 
 
-shapenames = [
-    'Block',
-    'Cylinder',
-    ]
+def helper(type):
 
+    class ShapeOrmActorHelper(object):
 
-def getShapeTypes():
-    return map(importShapeType, shapenames)
+        def _postStoringUserInputs(self, director):
+            orm = director.clerk.orm
+            table = orm(type)
+            db = orm.db
+            record = db.query(table).filter_by(id=self.inventory.id).one()
+            return db.getUniqueIdentifierStr(record)
 
+    return ShapeOrmActorHelper
 
-def importShapeType(name):
-    pkg = 'vnfb.dom.geometry'
-    m = '%s.%s' % (pkg, name)
-    m = _import(m)
-    return getattr(m, name)
-
-
-def _import(m):
-    return __import__(m, {}, {}, [''])
-        
 
 # version
 __id__ = "$Id$"
