@@ -105,7 +105,7 @@ def createAtomicStructureTable(
         cols = cols,
         director = director)
     thetable.oncellchanged = select(element=thetable).notify(
-        event='row-changed', actor='atomicstructuretable', routine='processRowChange')
+        event='row-changed', actor='atomicstructure/table', routine='processRowChange')
     return thetable
 
 

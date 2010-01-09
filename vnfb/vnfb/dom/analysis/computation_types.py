@@ -13,9 +13,7 @@
 
 
 typenames = [
-    'analysis.BvKComputation.BvK_GetDos',
-    'material_simulations.BvKComputation.BvK_GetDispersion',
-    'material_simulations.GulpSettingsHolder.GulpSettings',
+    'analysis.MotionDosCalcHolder.MotionDosCalcHolder',
     ]
 
 

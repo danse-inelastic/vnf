@@ -18,10 +18,6 @@ from matter.orm.Structure import Structure
 from _ import o2t
 StructureTable = o2t(Structure)
 
-# more cols
-import dsaw.db
-StructureTable.addColumn(dsaw.db.date(name='date'))
-
 
 # view
 def customizeLubanObjectDrawer(self, drawer):
