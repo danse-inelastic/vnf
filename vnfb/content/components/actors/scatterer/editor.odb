@@ -101,10 +101,11 @@ class Actor(base):
         db = domaccess.db
         
         scatterer = domaccess.getRecord(self.inventory.id)
+        newshape = db.fetchRecordUsingUniqueIdentifierStr(self.inventory.shape)
 
-        # destroy old shape if exists
+        # destroy old shape if it exists and is different type
         oldshape = scatterer.shape and scatterer.shape.id and scatterer.shape.dereference(db)
-        if oldshape:
+        if oldshape and oldshape.__class__ is not newshape.__class__:
             orm = domaccess.orm
             oldshapeobj = orm.record2object(oldshape)
             # remove reference from scatterer to old shape
