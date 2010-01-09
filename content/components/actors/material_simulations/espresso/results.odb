@@ -132,7 +132,7 @@ class Actor(base):
         # Populate 'x', 'y' and 'z' (cumulative) lists from file
         (e,  up,  down,  cum) = parseFile(dosfile)
         
-        plot = lc.plot2d(width=500, height=350)
+        plot = lc.plot2d(Class="default-size-plot")
         plot.curve(x=e, y=up, label='Spin Up')
         plot.curve(x=e, y=down, label='Spin Down')
 

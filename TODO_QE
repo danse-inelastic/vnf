@@ -19,6 +19,7 @@ NOW
 - Fix retrieving results again (fix getmtime.py)
 - Fix database jobs status depending on the actual jobs status
 - Fix the formatting of config view and create
+- Add progress bar for jobs with steps description
 - Display jobs
 
 Minor:
