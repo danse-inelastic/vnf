@@ -71,6 +71,12 @@ class Actor(base):
         return tableview
 
 
+    def _defaults(self):
+        super(Actor, self)._defaults()
+        self.inventory.number_records_per_page = 10
+        return
+
+
     def __init__(self, name='selectoneatomicstructure'):
         super(Actor, self).__init__(name)
         return
