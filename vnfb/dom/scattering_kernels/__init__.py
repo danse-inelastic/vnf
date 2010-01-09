@@ -13,22 +13,15 @@
 
 
 kernelnames = [
-    'ins.PolyXtalCoherentPhononScatteringKernel.PolyXtalCoherentPhononScatteringKernel',
-    'ins.SQEKernel.SQEKernel',
+    'scattering_kernels.ins.PolyXtalCoherentPhononScatteringKernel.PolyXtalCoherentPhononScatteringKernel',
+    'scattering_kernels.ins.SQEKernel.SQEKernel',
     #'sans.SANSSphereModelKernel.SANSSphereModelKernel',
     ]
 
 
 def getKernelTypes():
-    pkg = 'vnfb.dom.scattering_kernels'
-
-    def _(n):
-        path = n.split('.')
-        m = '%s.%s' % (pkg, '.'.join(path[:-1]))
-        m = _import(m)
-        return getattr(m, path[-1])
-        
-    return map(_, kernelnames)
+    from vnfb.dom import importType
+    return map(importType, kernelnames)
 
 
 def _import(m):

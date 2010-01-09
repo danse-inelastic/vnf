@@ -12,7 +12,7 @@
 #
 
 
-from luban.content import load, select
+from luban.content import load, select, alert
 
 from luban.components.AuthorizedActor import AuthorizedActor as base
 

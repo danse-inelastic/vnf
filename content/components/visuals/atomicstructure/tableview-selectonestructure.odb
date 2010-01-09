@@ -92,7 +92,7 @@ def createAtomicStructureTable(
     cols = columns
     args = records, cols, director
     thetable = director.retrieveVisual(
-        'atomicstructure/table',
+        'atomicstructure/table-selectonestructure',
         atomicstructures = records,
         cols = cols,
         director = director)
@@ -100,7 +100,12 @@ def createAtomicStructureTable(
 
 
 
-columns = [ 'selectone', 'id', 'description', 'chemical_formula', 'created']
+columns = [
+    'selectone',
+    'id',
+    'description',
+    'chemical_formula',
+    'created']
 measure2dbcol = {
     'description': 'short_description',
     'created': 'date',
