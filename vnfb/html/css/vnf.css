@@ -135,6 +135,10 @@ fieldset{
 }
 
 
+/* misc */
+.float-right {
+    float: right;
+}
 
 /* version */
 /* $Id$ */

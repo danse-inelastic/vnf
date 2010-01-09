@@ -48,7 +48,14 @@ class Factory(object):
               ),
             ]
 
-        # the button
+        # cancel
+        c = lc.link(label='cancel', Class='float-right'); doc.add(c)
+        c.onclick = select(id=self.matter_view_id).replaceBy(
+            load(actor='scatterer/editor', routine='createMatterView',
+                 id = self.id)
+            )
+
+        # select button
         b = lc.button(label='select'); doc.add(b)
         updatematter = load(
             actor='scatterer/editor', routine='selectMatter',
@@ -60,10 +67,7 @@ class Factory(object):
             load(actor='scatterer/editor', routine='createMatterView',
                  id = self.id, matter=updatematter)
             )
-##         b.onclick = alert(
-##             select(id='atomicstructure-table').table(
-##                 'getIdentifiersForSelectedRow', colname='selectone')
-##             )
+
         return doc
     
     
