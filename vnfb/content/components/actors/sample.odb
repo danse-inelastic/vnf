@@ -77,12 +77,6 @@ class Actor(base):
         
 
 
-    def newSimulation(self, director):
-        """Retrieves list of simulations"""
-        return director.retrieveVisual('material_simulations/simulations',
-                                        director    = director)
-
-
     def createTable(self,
                     director,
                     order_by        = None,
@@ -126,62 +120,29 @@ class Actor(base):
     
 
     def view(self, director):
-        matter = self._getMatter(director)
-        
-        from luban.content.Page import Page
-        page = Page(title='Material %s' % matter.short_description)
-
-        view = self.createView(director)
-        page.add(view)
-        
-        return page
-
-
-    def showMaterialSimulation(self, director):
-        actor = 'computation'
-        routine = 'view'
-        id = self.inventory.id
         type = self.inventory.type
-        return director.redirect(actor=actor, routine=routine, id=id, type=type)
-    
-        
-    def createMatterDescriptionInputControl(self, director):
-        from luban.content.Splitter import Splitter
-        from luban.content.Link import Link
-        from luban.content.FormTextField import FormTextField
-        doc = Splitter(id='matter-description-editor-container')
+        id = self.inventory.id
 
-        left = doc.section()
-        label = 'To give this material a name, click here'
-        link = Link(label=label, id='matterdoc-change-matter-name-link')
-        left.add(link)
+        if type == 'scatterers':
+            actor = 'scatterer'
+        elif type == 'sampleassemblies':
+            actor = 'sampleassembly'
+        else:
+            actor = 'samplecomponent'
+        return director.redirect(actor=actor, routine='view', id=id)
 
-        right = doc.section()
-        field = FormTextField(
-            id = 'matter-description-input',
-            hidden = 1,
+
+    def newSample(self, director):
+        # temporarily connect to "scatterer editor"
+        return self.newScatterer(director)
+
+
+    def newScatterer(self, director):
+        domaccess = director.retrieveDOMAccessor('scatterer')
+        scatterer = domaccess.createRecord()
+        return select(id='main-display-area').replaceContent(
+            load(actor='scatterer', routine='createEditor', id = scatterer.id)
             )
-        field.onchange = load(
-            actor='matter', routine='changeDescriptionAndUpdateMatterView',
-            id = self.inventory.id, type = self.inventory.type,
-            description = select(element=field).formfield('getValue')
-            )
-        right.add(field)
-
-        left.onclick = [select(element=link).hide(), select(element=field).show()]
-        return doc
-
-
-    def changeDescriptionAndUpdateMatterView(self, director):
-        self.changeDescription(director)
-        return self.showMaterialView(director)
-
-
-    def changeDescription(self, director):
-        matter = self._getMatter(director)
-        matter.short_description = self.inventory.description
-        director.clerk.updateRecordWithID(matter)
-        return
 
 
     def __init__(self, name='materialsimulation'):

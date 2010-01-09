@@ -11,8 +11,11 @@
 #
 
 
+# meaning "Scatterer" can be used as a sample in an experiment simulation
+from neutron_components.SampleBase import SampleBase, TableBase
 
-class Scatterer(object):
+
+class Scatterer(SampleBase):
 
     matter = None
     shape = None
@@ -25,6 +28,8 @@ class Scatterer(object):
                    [0.,1.,0.],
                    [0.,0.,1.],]
     referencename = ''
+
+    short_description = ''
 
     pass # end of Scatterer
 
@@ -55,6 +60,8 @@ class Inventory(InvBase):
     orientation = InvBase.d.array(name='orientation', elementtype='float', shape=(3,3))
     referencename = InvBase.d.str(name='referencename')
 
+    short_description = InvBase.d.str(name='short_description')
+
     dbtablename = 'scatterers'
 
     pass # end of Inventory
@@ -63,8 +70,8 @@ Scatterer.Inventory = Inventory
 del Inventory
 
 
-from _ import AbstractOwnedObjectBase, o2t
-ScattererTable = o2t(Scatterer, {'subclassFrom': AbstractOwnedObjectBase})
+from _ import o2t
+ScattererTable = o2t(Scatterer, {'subclassFrom': TableBase})
 
 
 
