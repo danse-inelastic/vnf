@@ -1,6 +1,7 @@
 /*  -*- CSS -*-  */
 
 /* editor */
+/* matter selector */
 #sample-matter-selector-doc {
 -moz-border-radius:10px;
 -webkit-border-radius:10px;
@@ -36,6 +37,23 @@ padding:3px;
 }
 #sample-matter-selector-doc .master-table td {
 padding:0 2em;
+}
+/* shape editor */
+#scatterer-shape-type-selector-doc table {
+border-collapse:collapse;
+}
+#scatterer-shape-type-selector-doc .luban-toolbar {
+background-color:transparent;
+}
+#scatterer-shape-type-selector-doc .luban-button-container {
+margin:0;
+padding:0;
+}
+#scatterer-shape-type-selector-doc .luban-button-container.highlight {
+border:1px solid lightgreen;
+}
+#scatterer-shape-type-selector-doc .luban-button-container:not(.highlight) a.luban-button:hover {
+background-color:#f0f0f0;
 }
 
 /* version */

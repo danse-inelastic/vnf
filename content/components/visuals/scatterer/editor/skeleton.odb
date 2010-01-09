@@ -39,6 +39,8 @@ class Factory(object):
         doc.add(view)
 
         # shape
+        view = self._createShapeView()
+        doc.add(view)
 
         # kernels
         return doc
@@ -50,9 +52,9 @@ class Factory(object):
             'scatterer/editor/matterview', id=self.id, director=self.director)
     
 
-    def _createMatterSelector(self):
+    def _createShapeView(self):
         return self.director.retrieveVisual(
-            'scatterer/editor/selectmatter', id=self.id, director=self.director)
+            'scatterer/editor/shapeview', id=self.id, director=self.director)
 
 
     def _createViewIndicator(self):
