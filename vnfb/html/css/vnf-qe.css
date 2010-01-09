@@ -228,7 +228,12 @@ a.qe-task-action {
 
 }
 
-/* Vinil CSS*/
+.default-size-plot {
+    width: 500;
+    height: 350;
+}
+
+/* CSS from Vinil */
 
 /* overload the default behavior of luban for buttons */
 #error-area,
