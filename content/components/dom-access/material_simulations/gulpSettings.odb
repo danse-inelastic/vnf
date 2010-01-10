@@ -1,0 +1,80 @@
+# -*- Python -*-
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                   Jiao Lin
+#                      California Institute of Technology
+#                      (C) 2006-2009  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+from vnfb.components.DOMAccessor import DOMAccessor as base
+from vnfb.dom.material_simulations.GulpSettingsHolder import GulpSettingsHolder
+import os, numpy
+
+class Accessor(base):
+
+
+    def __init__(self):
+        super(Accessor, self).__init__('gulp-settings-query')
+        return
+
+
+    def _getOrm(self):
+        orm = self.director.clerk.orm
+        orm(GulpSettings)
+        return orm
+    orm = property(_getOrm)
+
+
+    def getSettings(self, id):
+        orm = self.orm
+        return orm.load(GulpSettings, id)
+
+
+#    def getDataForDOS(self, id):
+#        dos = self.getDOS(id)
+#        record = self.orm(dos)
+#
+#        director = self.director
+#        
+#        # the idf file
+#        path = director.dds.abspath(record)
+#        import os
+#        f = os.path.join(path, 'data.idf')
+#        
+#        # check path
+#        if not os.path.exists(f): return
+#
+#        # read
+#        from idf import DOS
+#        (t,version,comment), e, i = DOS.read(f)
+#
+#        dos.e = e
+#        dos.i = i
+#        return dos
+
+
+#    def getOrigin(self, id=None, dos=None):
+#        'get the original computation that creates this dos'
+#        if dos is None:
+#            dos = self.getDOS(id)
+#        orm = self.orm
+#        r = orm(dos)
+#        origin = r.getOrigin(orm.db)
+#        return origin
+
+
+
+
+def accessor():
+    return Accessor()
+
+
+# version
+__id__ = "$Id$"
+
+# End of file 

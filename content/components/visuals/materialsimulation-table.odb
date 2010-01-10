@@ -58,10 +58,16 @@ def table(matsims, cols, director):
         link = Link(
             label = label,
             onclick = load(
-                actor='materialsimulation', routine='showMaterialSimulation',
+                actor='computation', routine='view',
                 id = matsim.id,
                 type = matsim.getTableName(),
                 )
+            # no need for a redirection
+#            onclick = load(
+#                actor='materialsimulation', routine='showMaterialSimulation',
+#                id = matsim.id,
+#                type = matsim.getTableName(),
+#                )
             )
         return link
     def getDescription(matsim):
