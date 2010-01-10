@@ -140,7 +140,7 @@ class Actor(base):
 
 
     def addKernel(self, director):
-        """add a new kernel to the kernels list of the scatterer
+        """replace the kernel view by a new kernel editor
 
         id: id of scatterer
 
@@ -195,6 +195,9 @@ class Actor(base):
         elif not oldkernel:
             # if there is no old kernel, neeed to add the kernel to the kernel set
             scatterer.kernels.add(newkernel, db)
+            # need to set kernel.matter to scatterer.matter
+            newkernel.matter = scatterer.matter
+            db.updateRecord(newkernel)
 
         else:
             # thre is old kernel, but the old kernel and the new kernel is the same

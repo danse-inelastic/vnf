@@ -64,7 +64,7 @@ class Factory(object):
         doc = lc.document(Class='container', title='')
         doc.oncreate = select(element=doc).append(
             load(actor='orm/%s' % kernel.getTableName(),
-                 routine='display',
+                 routine='displayProperties',
                  id=kernel.id,
                  editlink = False,
                  )
