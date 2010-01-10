@@ -59,9 +59,12 @@ background-color:#f0f0f0;
 #scatterer-kernels-view table {
 border-collapse:collapse;
 }
+/* kernels editor: portlet */
 #scatterer-editor-kernels-portlet-container {
     vertical-align: top;
     width: 22em;
+    padding: 0;
+    border: 0;
 }
 #scatterer-editor-kernels-portlet {
     width: 22em;
@@ -116,7 +119,24 @@ background-color:transparent;
     background-color: #cced8c;
     cursor: hand;
 }
-/* */
+/* kernesl editor: kernel type selector */
+#scatterer-kernel-type-selector-doc .luban-toolbar {
+background-color:transparent;
+}
+#scatterer-kernel-type-selector-doc .luban-button img {
+    height:70px;
+}
+#scatterer-kernel-type-selector-doc .luban-button-container {
+margin:0;
+padding:0;
+}
+#scatterer-kernel-type-selector-doc .luban-button-container.highlight {
+border:1px solid lightgreen;
+}
+#scatterer-kernel-type-selector-doc .luban-button-container:not(.highlight) a.luban-button:hover {
+background-color:#f0f0f0;
+}
+/* kernels editor: kernel view*/
 #scatterer-kernel-view {
     background-color:white;
     padding:1em;

@@ -35,7 +35,7 @@ class Factory(object):
         kernel: db record of the kernel of interest
         '''
         container = lc.document(id=self.kernel_view_id, Class='container')
-        doc = lc.document(id='scatterer-kernel-editor-doc', title='edit kernel')
+        doc = lc.document(id='scatterer-kernel-editor-doc', title='Kernel editor')
         container.add(doc)
 
         # tool bar to select kernel type
@@ -68,7 +68,7 @@ class Factory(object):
         doc = lc.document(Class='container', id='scatterer-kernel-type-selector-doc')
 
         #
-        doc.paragraph(text=['Select one of the kernels',])
+        doc.paragraph(text=['Choose one of the kernel types',])
 
         #
         toolbar = lc.toolbar(); doc.add(toolbar)
