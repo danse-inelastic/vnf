@@ -42,14 +42,16 @@ class Factory(object):
         kernels = self.kernels
         
         sp = lc.splitter(); doc.add(sp)
-        left = sp.section()
-        right = sp.section()
+        left = sp.section(id='scatterer-editor-kernels-portlet-container')
+        right = sp.section(id='scatterer-editor-kernel-view-container')
 
-        portlet = lc.portlet(); left.add(portlet)
-        for key, kernel in kernels:
+        portlet = lc.portlet(id='scatterer-editor-kernels-portlet', title='kernel list')
+        left.add(portlet)
+        for i, (key, kernel) in enumerate(kernels):
             item = director.retrieveVisual(
                 'scatterer/editor/kernelsview-kernel-portletitem',
                 id=id, director=director, kernel=kernel)
+            item.selected = i==0
             portlet.add(item)
             continue
         portlet.item(
@@ -57,7 +59,8 @@ class Factory(object):
             label='add a kernel',
             onclick=load(
               actor='scatterer/editor', routine='addKernel',
-              id=id)
+              id=id),
+            selected = not bool(kernels)
             )
 
         if kernels:
