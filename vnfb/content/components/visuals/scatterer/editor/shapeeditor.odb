@@ -65,6 +65,7 @@ class Factory(object):
             action = load(actor=actor, routine=routine, id=self.id, shape=shape)
             button = lc.button(
                 icon='shapes/%s.png' % shape.lower(),
+                tip = shape.lower(),
                 id = 'scatterer-shape-button-%s' % shape.lower(),
                 onclick=action)
             toolbar.add(button)

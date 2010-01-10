@@ -50,10 +50,10 @@ class Inventory(InvBase):
 
 SQEKernel.Inventory = Inventory
 del Inventory
-from _ import o2t, AbstractOwnedObjectBase
+from _ import o2t, KernelTableBase
 SQEKernelTable = o2t(
     SQEKernel,
-    {'subclassFrom': AbstractOwnedObjectBase},
+    {'subclassFrom': KernelTableBase},
     )
 
 

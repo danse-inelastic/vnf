@@ -19,6 +19,7 @@ PACKAGE = components
 BUILD_DIRS = \
 	geometry \
 	job_builders \
+	scattering_kernels \
 
 OTHER_DIRS = \
 

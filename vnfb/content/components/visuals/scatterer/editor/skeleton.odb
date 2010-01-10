@@ -27,8 +27,11 @@ class Factory(object):
 
 
     def __call__(self):
-        doc = lc.document(Class='container')
+        director = self.director
         record = self.record
+        id = self.id
+
+        doc = lc.document(Class='container')
 
         # view indicator
         viewindicator = self._createViewIndicator()
@@ -43,6 +46,13 @@ class Factory(object):
         doc.add(view)
 
         # kernels
+##         view = doc.document(Class='container')
+##         view.oncreate = select(element=view).append(
+##             load(actor='scatterer/editor', routine='createKernelsView',
+##                  id = id)
+##             )
+        view = self._createKernelsView()
+        doc.add(view)
         return doc
 
 
@@ -55,6 +65,11 @@ class Factory(object):
     def _createShapeView(self):
         return self.director.retrieveVisual(
             'scatterer/editor/shapeview', id=self.id, director=self.director)
+
+
+    def _createKernelsView(self):
+        return self.director.retrieveVisual(
+            'scatterer/editor/kernelsview', id=self.id, director=self.director)
 
 
     def _createViewIndicator(self):
