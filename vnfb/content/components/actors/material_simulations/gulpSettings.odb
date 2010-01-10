@@ -133,10 +133,10 @@ class Actor(base):
 
 
     def _domaccess(self, director):
-        return director.retrieveDOMAccessor('material_simulations/gulpsettings')
+        return director.retrieveDOMAccessor('material_simulations/gulpSettings')
 
 
-    def __init__(self, name='material_simulations/gulpsettings'):
+    def __init__(self, name='material_simulations/gulpSettings'):
         super(Actor, self).__init__(name)
         return
 
