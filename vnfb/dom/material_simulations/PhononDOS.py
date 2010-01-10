@@ -11,7 +11,6 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
-
 from _ import o2t
 
 
@@ -19,7 +18,6 @@ from _ import o2t
 class PhononDOS:
 
     matter = None
-
 
 # orm
 from vnfb.dom.AtomicStructure import Structure, StructureTable
