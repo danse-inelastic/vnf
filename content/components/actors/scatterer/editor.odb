@@ -13,6 +13,7 @@
 
 
 from luban.content import load, select, alert
+import luban.content as lc
 
 from luban.components.AuthorizedActor import AuthorizedActor as base
 
@@ -28,6 +29,11 @@ class Actor(base):
         matter = pyre.inventory.str(name='matter')
 
         shape = pyre.inventory.str(name='shape')
+
+        kernel = pyre.inventory.str(name='kernel')
+        kerneltype = pyre.inventory.str(name='kerneltype')
+
+        oldkernel = pyre.inventory.str(name='oldkernel')
 
 
     def selectMatter(self, director):
@@ -125,6 +131,183 @@ class Actor(base):
             'scatterer/editor/shapeview',
             id=self.inventory.id, director=director)
         return select(id='scatterer-shape-view').replaceBy(view)
+
+
+    def createKernelsView(self, director):
+        id = self.inventory.id
+        return director.retrieveVisual(
+            'scatterer/editor/kernelsview', id=id, director=director)
+
+
+    def addKernel(self, director):
+        """add a new kernel to the kernels list of the scatterer
+
+        id: id of scatterer
+
+        actions returned:
+          * change the kernel view to a kernel editor
+        """
+        id = self.inventory.id
+        view = director.retrieveVisual(
+            'scatterer/editor/kerneleditor',
+            id =id, director=director, kernel=None)
+        return select(id='scatterer-kernel-view').replaceBy(view)
+
+
+    def showNewKernelEditor(self, director):
+        id = self.inventory.id
+        kernelview = select(id='scatterer-kernel-view')
+        newview = director.retrieveVisual(
+            'scatterer/editor/kerneleditor',
+            id = id, director=director, kernel=None)
+        return kernelview.replaceBy(newview)
+
+
+    def setKernel(self, director):
+        '''change a kernel in the kernel list of the scatterer
+
+        id: scatterer id
+        oldkernel: unique id of old kernel.
+          could be empty string: meaning there is no old kernel
+        kernel: unique id of new kernel.
+        '''
+        domaccess = self._domaccess(director)
+        db = domaccess.db
+
+        id = self.inventory.id
+        scatterer = domaccess.getRecord(id)
+        newkernel = db.fetchRecordUsingUniqueIdentifierStr(self.inventory.kernel)
+
+        #
+        oldkernel = self.inventory.oldkernel
+        oldkernel = oldkernel and db.fetchRecordUsingUniqueIdentifierStr(oldkernel)
+        if oldkernel and oldkernel.__class__ is not newkernel.__class__:
+            # destroy old kernel if it exists and is different type
+            orm = domaccess.orm
+            oldkernelobj = orm.record2object(oldkernel)
+            # remove reference from scatterer to old kernel
+            scatterer.kernels.delete(oldkernel, db)
+            # destroy old kernel
+            orm.destroy(oldkernelobj)
+            # add new kernel
+            scatterer.kernels.add(newkernel, db)
+            
+        elif not oldkernel:
+            # if there is no old kernel, neeed to add the kernel to the kernel set
+            scatterer.kernels.add(newkernel, db)
+
+        else:
+            # thre is old kernel, but the old kernel and the new kernel is the same
+            # type. actually they should be the exact same record
+            assert oldkernel.__class__  is newkernel.__class__ and oldkernel.id == newkernel.id
+            
+        # actions
+        actions = []
+        if not oldkernel:
+            # in case of adding a new kernel, need to change portlet items
+            addkernelportletitem = select(id='scatterer-add-a-kernel-portletitem')
+            newportletitem = director.retrieveVisual(
+                'scatterer/editor/kernelsview-kernel-portletitem',
+                id=id, director=director, kernel=newkernel)
+            #
+            insertnewportletitem = addkernelportletitem.before(newportletitem)
+            actions.append(insertnewportletitem)
+        #
+        portletitemid = 'kernel-%s-portletitem' % newkernel.id
+        selectnewportletitem = select(id=portletitemid).portletitem('select')
+        actions.append(selectnewportletitem)
+        return actions
+
+
+    def onSelectKernelType(self, director):
+        '''handles the event a user clicks a kernel type button
+
+        id: id of the scatterer
+        kerneltype: the type name string of kernel that user selected.
+        kernel: the unique id of the kernel being edited
+        '''
+        from vnfb.dom.scattering_kernels import getKernelTypes
+        types = getKernelTypes()
+        #
+        _buttonid = lambda t: 'scatterer-kernel-button-%s' % t.lower()
+        # dehighlight buttons
+        dehighlight = [select(id=_buttonid(t.__name__)).removeClass('highlight')
+                       for t in types ]
+
+        # highlight
+        kerneltypename = self.inventory.kerneltype
+        highlightbutton = select(id=_buttonid(kerneltypename)).addClass('highlight')
+
+        # chang form
+        domaccess = self._domaccess(director)
+        orm = domaccess.orm
+        db = orm.db
+        # 1. kernel
+        kernel = self.inventory.kernel
+        kernel = kernel and db.fetchRecordUsingUniqueIdentifierStr(kernel)
+        # 2. tablename
+        type = orm.getObjectTypeFromName(kerneltypename)
+        tablename = orm(type).getTableName()
+        # 3.
+        newform = director.retrieveVisual(
+            'scatterer/editor/kernelform',
+            id = self.inventory.id,
+            director = director,
+            kernel = kernel,
+            tablename = tablename,
+            )
+        changekernelform = select(id='scatterer-kernel-form').replaceBy(newform)
+
+        #
+        actions = dehighlight + [highlightbutton, changekernelform]
+        return actions
+
+
+    def createKernelView(self, director):
+        '''create view for the kernel
+
+        id: id of scatterer
+        kernel: unique id of kernel record. could be empty string, meaning this is from a form
+          that is editing the new kernel and user clicks cancel
+        '''
+        id = self.inventory.id
+        kernel = self.inventory.kernel
+        if not kernel:
+            view = lc.document(id='scatterer-kernel-view')
+            editor = director.retrieveVisual(
+                'scatterer/editor/kerneleditor',
+                id =id, director=director, kernel=None)
+            view.add(editor)
+            return view
+        else:
+            domaccess = self._domaccess(director)
+            orm = domaccess.orm
+            db = orm.db
+            kernel = db.fetchRecordUsingUniqueIdentifierStr(kernel)
+            return director.retrieveVisual(
+                'scatterer/editor/kernelview',
+                id=id, director=director, kernel=kernel)
+
+
+    def createKernelEditor(self, director):
+        '''create editor for the kernel
+
+        id: id of the scatterer
+        kernel: unique id of kernel record. cannot be empty
+        '''
+        id = self.inventory.id
+        kernel = self.inventory.kernel
+        domaccess = self._domaccess(director)
+        orm = domaccess.orm
+        db = orm.db
+        kernel = db.fetchRecordUsingUniqueIdentifierStr(kernel)
+        return director.retrieveVisual(
+            'scatterer/editor/kerneleditor', id=id, director=director, kernel=kernel)
+
+
+    def selectKernelView(self, director):
+        view = self.createKernelView(director)
+        return select(id='scatterer-kernel-view').replaceBy(view)
 
 
     def _domaccess(self, director):

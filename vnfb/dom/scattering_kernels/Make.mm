@@ -38,6 +38,7 @@ all: export
 
 EXPORT_PYTHON_MODULES = \
 	AbstractScatteringKernel.py \
+	IsotropicElasticKernel.py \
 	_.py \
 	__init__.py \
 

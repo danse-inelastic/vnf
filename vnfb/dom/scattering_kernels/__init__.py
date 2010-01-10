@@ -13,6 +13,7 @@
 
 
 kernelnames = [
+    'scattering_kernels.IsotropicElasticKernel.IsotropicElasticKernel',
     'scattering_kernels.ins.PolyXtalCoherentPhononScatteringKernel.PolyXtalCoherentPhononScatteringKernel',
     'scattering_kernels.ins.SQEKernel.SQEKernel',
     #'sans.SANSSphereModelKernel.SANSSphereModelKernel',

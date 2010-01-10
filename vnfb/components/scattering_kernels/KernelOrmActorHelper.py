@@ -18,27 +18,30 @@ def helper(type):
     type: the data object type being orm-ed
     '''
 
-    class ShapeOrmActorHelper(object):
+    class KernelOrmActorHelper(object):
+
 
         def callScattererEditorActor(self, director):
             '''redirect to scatterer/editor actor
 
-            id: id of the shape being edited
+            id: id of the kernel being edited
             scattererid: id of the sccatterer the scatterer editor is editing
+            oldkerneluid: unique identifier of the kernel that was in the
+              kernel list of the scatterer.
             '''
             id = self.inventory.id
             scattererid = self.inventory.scattererid
+            oldkerneluid = self.inventory.oldkerneluid
 
             orm = director.clerk.orm
             table = orm(type)
             db = orm.db
             record = db.query(table).filter_by(id=self.inventory.id).one()
             uid = db.getUniqueIdentifierStr(record)
-
             from luban.content import load
             return load(
-                actor='scatterer/editor', routine='setShape',
-                id=scattererid, shape=uid
+                actor='scatterer/editor', routine='setKernel',
+                id=scattererid, oldkernel=oldkerneluid, kernel=uid
                 )
 
 
@@ -47,10 +50,10 @@ def helper(type):
                 handler = self.inventory.handler
                 handler = getattr(self, handler)
                 return handler(director)
-            return super(ShapeOrmActorHelper, self)._postStoringUserInputs(director)
+            return super(KernelOrmActorHelper, self)._postStoringUserInputs(director)
         
 
-    return ShapeOrmActorHelper
+    return KernelOrmActorHelper
 
 
 # version

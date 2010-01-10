@@ -43,10 +43,10 @@ class Inventory(InvBase):
 
 PolyXtalCoherentPhononScatteringKernel.Inventory = Inventory
 del Inventory
-from _ import o2t, AbstractOwnedObjectBase
+from _ import o2t, KernelTableBase
 PolyXtalCoherentPhononScatteringKernelTable = o2t(
     PolyXtalCoherentPhononScatteringKernel,
-    {'subclassFrom': AbstractOwnedObjectBase},
+    {'subclassFrom': KernelTableBase},
     )
 
 

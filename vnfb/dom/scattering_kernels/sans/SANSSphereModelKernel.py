@@ -37,10 +37,10 @@ class Inventory(InvBase):
 
 SANSSphereModelKernel.Inventory = Inventory
 del Inventory
-from _ import o2t, AbstractOwnedObjectBase
+from _ import o2t, KernelTableBase
 SANSSphereModelKernelTable = o2t(
     SANSSphereModelKernel,
-    {'subclassFrom': AbstractOwnedObjectBase},
+    {'subclassFrom': KernelTableBase},
     )
 
 

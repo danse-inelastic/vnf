@@ -32,6 +32,18 @@ class AbstractScatteringKernelInventory(InvBase):
         )
     
 
+AbstractScatteringKernel.Inventory = AbstractScatteringKernelInventory
+
+
+from _ import AbstractOwnedObjectBase
+class TableBase(AbstractOwnedObjectBase):
+
+    import dsaw.db
+
+    short_description = dsaw.db.varchar(name='short_description', length=64)
+
+    pass
+
 
 # version
 __id__ = "$Id$"

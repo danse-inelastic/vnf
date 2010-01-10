@@ -62,7 +62,7 @@ class Accessor(base):
         db = orm.db
         kernels = record.kernels.dereference(db)
         if not len(kernels): return False
-        return self.scatterername and self.short_description
+        return record.scatterername and record.short_description
 
 
 from vnfb.dom.neutron_experiment_simulations.Scatterer import Scatterer, ScattererTable

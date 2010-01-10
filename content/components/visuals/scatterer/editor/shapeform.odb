@@ -54,9 +54,11 @@ class Factory(object):
         form = view.getDescendentByName('properties-form')
         # this action will return the unique identifier of new shape
         # , see orm/<shape>._postStoringUserInputs
-        original_submit_action = form.onsubmit
-        form.onsubmit = load(actor='scatterer/editor', routine='setShape',
-                             id=self.id, shape= original_submit_action)
+        form.onsubmit.params.update(
+            {
+            'handler': 'callScattererEditorActor',
+            'scattererid': self.id,
+            })
 
         # cancel
         c = lc.link(label='cancel', Class='float-right');
