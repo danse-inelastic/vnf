@@ -310,6 +310,28 @@ class Actor(base):
         return select(id='scatterer-kernel-view').replaceBy(view)
 
 
+    def deleteKernelAndRefreshKernelsView(self, director):
+        '''delete the kernel and the refresh the kernesl view
+
+        id: id of the scatterer
+        kernel: unique identifier for the kernel
+        '''
+        id = self.inventory.id
+        kernel = self.inventory.kernel
+        domaccess = self._domaccess(director)
+        orm = domaccess.orm
+        db = orm.db
+        kernel = db.fetchRecordUsingUniqueIdentifierStr(kernel)
+        # remove kernel from the refset
+        scatterer = domaccess.getRecord(id)
+        scatterer.kernels.delete(kernel, db)
+        # destroy kernel
+        orm.destroy(orm.record2object(kernel))
+        # refresh
+        view = self.createKernelsView(director)
+        return select(id='scatterer-kernels-view').replaceBy(view)
+
+
     def _domaccess(self, director):
         return director.retrieveDOMAccessor('scatterer')
 
@@ -317,6 +339,9 @@ class Actor(base):
     def __init__(self, name='scatterer/editor'):
         super(Actor, self).__init__(name)
         return
+
+
+
 
 
 def actor(): return Actor()

@@ -44,13 +44,18 @@ class Factory(object):
         summary = self._createSummary(kernel)
         interior.add(summary)
         
-        link = lc.link(label='edit'); interior.add(link)
+        link = lc.button(label='edit'); interior.add(link)
         db = director.clerk.db
         kerneluid = db.getUniqueIdentifierStr(kernel)
         link.onclick = select(element=interior).replaceBy(
            load(actor='scatterer/editor', routine='createKernelEditor',
                 id = id, kernel=kerneluid)
            )
+            
+        link = lc.button(label='delete'); interior.add(link)
+        link.onclick = load(
+            actor='scatterer/editor', routine='deleteKernelAndRefreshKernelsView',
+            id = id, kernel = kerneluid)
             
         return doc
 
