@@ -30,10 +30,12 @@ class Factory(object):
     def __call__(self, kernel):
         db = self.db
         id = self.id
-        label = '%s %s' % (kernel.__class__.__name__,
-                           kernel.short_description or kernel.id)
+        typename = kernel.__class__.__name__
+        label = typename
+        if len(label)>12: label = label[:9]+ '...'
+        
         widgetid = 'kernel-%s-portletitem' % kernel.id
-        item = PortletItem(label=label, id=widgetid)
+        item = PortletItem(label=label, id=widgetid, tip=typename)
         item.onselect = load(
             actor='scatterer/editor', routine='selectKernelView',
             id=id, kernel = db.getUniqueIdentifierStr(kernel),
