@@ -36,6 +36,7 @@
 -webkit-border-radius:1em;
 padding:0;
 border:solid 1px #ccc;
+margin-bottom:0.5em;
 }
 .collapsable.luban-document > .luban-document-title {
     -moz-border-radius: 0.8em 0.8em 0 0;

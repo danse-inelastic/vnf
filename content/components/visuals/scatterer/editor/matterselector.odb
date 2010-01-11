@@ -57,16 +57,24 @@ class Factory(object):
 
         # select button
         b = lc.button(label='select'); doc.add(b)
+        selected_matter = select(id='atomicstructure-table').table(
+            'getIdentifiersForSelectedRow', colname='selectone')
         updatematter = load(
             actor='scatterer/editor', routine='selectMatter',
             id = self.id,
-            matter=select(id='atomicstructure-table').table(
-            'getIdentifiersForSelectedRow', colname='selectone'),
+            matter=selected_matter
             )
-        b.onclick = select(id=self.matter_view_id).replaceBy(
-            load(actor='scatterer/editor', routine='createMatterView',
-                 id = self.id, matter=updatematter)
+        # this does not work because all kernels need to be flushed out
+        # b.onclick = select(id=self.matter_view_id).replaceBy(
+        #    load(actor='scatterer/editor', routine='createMatterView',
+        #         id = self.id, matter=updatematter)
+        #    )
+        # need to refresh the whole view
+        neweditor = load(
+            actor='scatterer', routine='createEditor', id=self.id,
+            updatematter = updatematter
             )
+        b.onclick = select(id='main-display-area').replaceContent(neweditor)
 
         return doc
     
