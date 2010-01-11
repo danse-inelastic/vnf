@@ -110,14 +110,14 @@ class Actor(base):
 #        return p
 
     def newAnalysisForm(self, director):
-        #domaccess = director.retrieveDOMAccessor('atomicstructure')
-        #s = domaccess.newAtomicStructure()
-        
-        record = domaccess.orm(s)
-        self.inventory.id = record.id
+#        domaccess = director.retrieveDOMAccessor('analysis')
+#        s = domaccess.newAtomicStructure()
+#        
+#        record = domaccess.orm(s)
+#        self.inventory.id = record.id
         return director.retrieveVisual('analysis/new',
-                                        director    = director,
-                                        id          = self.inventory.id)
+                                        director    = director)#,
+        #                                id          = self.inventory.id)
         #return self.editAtomicStructureForm(director)
 
 #    def debug_editAtomicStructureForm(self, director):
