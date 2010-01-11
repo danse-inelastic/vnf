@@ -11,17 +11,12 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 PROJECT = vnfb
-PACKAGE = dom
+PACKAGE = dom/analysis
 
 
 # directory structure
 
 BUILD_DIRS = \
-	analysis \
-	geometry \
-	material_simulations \
-	neutron_experiment_simulations \
-	scattering_kernels \
 
 OTHER_DIRS = \
 
@@ -40,23 +35,9 @@ all: export
 # export
 
 EXPORT_PYTHON_MODULES = \
-	AbstractOwnedObjectBase.py \
-	Atom.py \
-	AtomicStructure.py \
-	Computable.py \
-	Computation.py \
-	ComputationResult.py \
-	Histogram.py \
-	ITask.py \
-	Job.py \
-	Lattice.py \
-	MaterialSimulation.py \
-	OwnedObject.py \
-	Server.py \
-	UnitCell.py \
 	__init__.py \
-	_.py \
 	computation_types.py \
+	MotionDosCalcHolder.py \
 
 
 #include doxygen/default.def
