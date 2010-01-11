@@ -65,6 +65,7 @@ class Actor(base):
     def _createGraphicalView1(self, director):
         domaccess = self._domaccess(director)
         obj = self._load(director)
+        if not obj: return
         orm = domaccess.orm
         db = orm.db
         
