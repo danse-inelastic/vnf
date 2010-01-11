@@ -2,7 +2,6 @@
 #
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
-#                                 Jiao Lin
 #                      California Institute of Technology
 #                      (C) 2006-2009  All Rights Reserved
 #
@@ -19,7 +18,7 @@ from luban.content import select, load, alert
 
 
 #
-from vsat.trajectory.CsfCalc import MotionDosCalc
+from vsat.trajectory.MotionDosCalc import MotionDosCalc
 
 from luban.components.Actor import Actor
 import luban.orm
