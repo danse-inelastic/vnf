@@ -62,13 +62,25 @@ class Factory(object):
     def _createSummary(self):
         shape = self.shape
         doc = lc.document(Class='container', title=shape.__class__.__name__)
-        doc.oncreate = select(element=doc).append(
+
+        sp = doc.splitter()
+        
+        left = sp.section().document()
+        left.oncreate = select(element=left).append(
             load(actor='orm/%s' % shape.getTableName(),
                  routine='displayProperties',
                  id=shape.id,
                  editlink = False,
                  )
             )
+
+        right = sp.section()
+        typename = shape.__class__.__name__
+        path='icons/shapes/%s.png' % typename.lower()
+        image = lc.image(path=path)
+        image.Class='shape-summary-image'
+        right.add(image)
+
         return  doc
 
 
