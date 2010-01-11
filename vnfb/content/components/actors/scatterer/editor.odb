@@ -51,8 +51,15 @@ class Actor(base):
 
         #
         record.matter = matter
-
         domaccess.updateRecordWithID(record)
+
+        # delete all kernels
+        db = domaccess.db
+        kernelrecords = [k for n,k in record.kernels.dereference(db)]
+        record.kernels.clear(db)
+        orm = domaccess.orm
+        for r in kernelrecords:
+            orm.destroy(orm.record2object(r))
         return matter
 
 

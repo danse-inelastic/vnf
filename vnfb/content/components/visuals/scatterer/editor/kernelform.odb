@@ -58,7 +58,8 @@ class Factory(object):
         drawer = painter.paintObj.drawers.getDrawer(obj.__class__)
 
         # form
-        view = drawer.createPropertiesForm(obj); doc.add(view)
+        #view = drawer.createPropertiesForm(obj); doc.add(view)
+        view = drawer(obj); doc.add(view)
         form = view.getDescendentByName('properties-form')
         # this action will return the unique identifier of new kernel
         # , see orm/<kernel>._postStoringUserInputs

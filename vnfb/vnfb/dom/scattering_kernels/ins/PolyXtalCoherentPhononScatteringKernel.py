@@ -20,6 +20,12 @@ class PolyXtalCoherentPhononScatteringKernel(base):
     max_energy_transfer = 55.
     max_momentum_transfer = 12.5
 
+
+    def customizeLubanObjectDrawer(self, drawer):
+        drawer.sequence = ['dispersion', 'properties']
+        drawer.mold.sequence = ['Ei', 'max_energy_transfer', 'max_momentum_transfer']
+
+
     pass # end of PolyXtalCoherentPhononScatteringKernel
 
 

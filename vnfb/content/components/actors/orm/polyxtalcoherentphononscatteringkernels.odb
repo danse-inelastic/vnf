@@ -29,6 +29,27 @@ class Actor(helper(PolyXtalCoherentPhononScatteringKernel), base):
         import luban.inventory
 
 
+    def getSelectorEntriesForReference(self, director):
+        refname = self.inventory.refname
+        if refname == 'dispersion':
+            return self.getSelectorEntriesForDispersion(director)
+        return super(Actor, self).getSelectorEntriesForReference(director)
+
+
+    def getSelectorEntriesForDispersion(self, director):
+        # the kernel
+        kernel = self._load(director)
+        # the matter
+        orm = director.clerk.orm
+        matter = orm(kernel.matter)
+        # the dispersions
+        phonondomaccess = director.retrieveDOMAccessor('phonon')
+        disps = phonondomaccess.getDispersions(matter)
+        entries = [(disp.id, disp.short_description or disp.id) for disp in disps]
+        return entries
+    
+
+
 def actor():
     return Actor('orm/polyxtalcoherentphononscatteringkernels')
 
