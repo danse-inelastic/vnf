@@ -20,6 +20,10 @@ from AbstractScatteringKernel import AbstractScatteringKernel as base, TableBase
 class IsotropicElasticKernel(base):
 
     scattering_length = 1.0
+
+    def customizeLubanObjectDrawer(self, drawer):
+        drawer.sequence = ['properties']
+        return
     
     pass 
 

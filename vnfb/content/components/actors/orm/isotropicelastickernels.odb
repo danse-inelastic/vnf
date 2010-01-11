@@ -27,7 +27,15 @@ class Actor(helper(IsotropicElasticKernel), base):
     class Inventory(base.Inventory):
 
         import luban.inventory
+        
 
+    def createGraphicalView(self, director):
+        doc = lc.document(Class='container')
+        properties_view = doc.document(title="Properties")
+        self.inventory.editlink = False
+        properties_view.add(self.displayProperties(director))
+        return doc
+    
 
 def actor():
     return Actor('orm/isotropicelastickernels')
