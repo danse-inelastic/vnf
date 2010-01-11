@@ -34,10 +34,11 @@ class QEResults:
           at least two types of triggers: 1) check results and 2) show results
     """
 
-    def __init__(self, director, job):
+    def __init__(self, director, job, id = None):
         self._director  = director
         self._job       = job       # not None
-        self._status    = QEStatus()
+        self._id        = id
+        self._status    = QEStatus(id = id)
         self._status.set("norequest", "Not Requested")
         self._ptrfilepath   = self._ptrfilepath()
 

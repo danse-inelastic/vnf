@@ -17,13 +17,14 @@ class QEStatus:
     """
     Data structure for job and delivery status"
     """
-    def __init__(self, message=""):
+    def __init__(self, message="", id = None, Class = None):
         self._message   = message
+        self._id        = id        # CSS id            # None
+        self._class     = Class     # CSS class         # None
         self._onload    = None
-        self._htmllink  = ""    # for HtmlDocument
+        self._htmllink  = None      # for HtmlDocument  # None
         self._islink    = False
-        self._class     = ""
-        self._state     = ""    # State of the status
+        self._state     = ""        # State of the status
 
 
     def string(self, format=None):
@@ -50,16 +51,18 @@ class QEStatus:
         return self._message
 
 
-    def setHtmlLink(self, message, link, Class=None):
+    def setHtmlLink(self, message, link):   #, Class=None, id=None):
         self._message   = message
         self._htmllink  = link
-        self._class     = Class
+#        self._class     = Class
+#        self._id        = id
 
 
-    def setLink(self, message, onload = None, Class = None):
+    def setLink(self, message, onload = None):  #, Class = None, id=None):
         self._message   = message
         self._onload    = onload
-        self._class     = Class
+#        self._class     = Class
+#        self._id        = id
 
     
     def message(self, message):
@@ -79,7 +82,20 @@ class QEStatus:
         return self._state
 
     def _html(self):
-        return lc.htmldocument(text="<a href='%s'>%s</a>" % (self._htmllink, self._message))
+        attr    = []
+        if self._htmllink:
+            attr.append("href='%s'" % self._htmllink)
+
+        if self._class:
+            attr.append("class='%s'" % self._class)
+
+        if self._id:
+            attr.append("id='%s'" % self._id)
+
+        s   = " ".join(attr)
+        #print s
+        print self._id
+        return lc.htmldocument(text="<a %s>%s</a>" % (s, self._message))
 
 
     def _link(self):

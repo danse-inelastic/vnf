@@ -160,7 +160,7 @@ class QETaskCell:
 
         link    = lc.paragraph(text="None", id=cid)
         action  = ""
-        results = QEResults(self._director, self._job)  # change 0-index to latest job
+        results = QEResults(self._director, self._job, id = cid)  # change 0-index to latest job
 
         if self._job:   # Job created (submitted)
             link    = results.status()
