@@ -81,16 +81,13 @@ setname = lambda params, obj, name: ifelse(params.has_key(name), params.get(name
 
 def stamp2date(stamp):
     """Converts stamp to date"""
-    # TODO: Change to: Month Day, Hours:Minutes:Seconds
-    # Check is stamp is
     import time
     import re
     p   = re.compile("[\d.]+")
     m   = p.match(str(stamp))
-    from datetime import date
-    if m:
-        s   = time.strptime(date.fromtimestamp(float(stamp)).ctime())
-        return str(time.strftime("%Y-%m-%d", s))     # Format: Year-Month-Day
+    
+    if m:   # Check if timestamp
+        return time.strftime("%b %d %Y, %H:%M:%S", time.localtime(float(stamp)))
 
     return ""
 
@@ -132,6 +129,7 @@ def unpackname(string, id):
 def testStamp():
     import time
     print stamp2date(time.time())
+
 
 if __name__ == "__main__":
     testStamp()
