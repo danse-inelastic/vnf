@@ -11,7 +11,12 @@
 
 
 from pyre.applications.Script import Script as base
+"""
+TODO:
+    Considering that time on the remote cluster and local machine are syncronized
+    is WRONG!
 
+"""
 
 class PackJobDir(base):
 
@@ -50,14 +55,6 @@ class PackJobDir(base):
             self._debug.log("Job %s: not found in db." % id)
             return
 
-#        server = job.server
-#        if not job.server:
-#            msg = "Job %s: server not assigned." % id
-#            if self.debug: raise RuntimeError, msg
-#            self._debug.log(msg)
-#            return
-
-        print "before: _packingInProcess"
 
         if self._packingInProcess(job):
             msg = "Job %s: packing already in process." % id
@@ -65,19 +62,17 @@ class PackJobDir(base):
             self._debug.log(msg)
             return
 
-        print "after: _packingInProcess"
-        
-        if self._packingIsUpToDate(job):
-            msg = "Job %s: packing is already up to date." % id
-            if self.debug: print msg
-            self._debug.log(msg)
-            return
+        # This method prevents from downloading results again and doesn't handle failure!
+        # I'll comment out the method for further discussion
+        #        if self._packingIsUpToDate(job):
+        #            msg = "Job %s: packing is already up to date." % id
+        #            if self.debug: print msg
+        #            self._debug.log(msg)
+        #            return
 
         self._removeOldTarBall(job)
         self._declarePackingInProcess(job)
 
-#        clerk = self.clerk
-#        server = clerk.dereference(server)
         server  = self.clerk.getServers(id=job.serverid)
 
         dds = self.dds
@@ -121,10 +116,10 @@ class PackJobDir(base):
 
     def _packingIsUpToDate(self, job):
         path = self._ptrFilePath(job)
-        if not os.path.exists(path): return
+        if not os.path.exists(path):
+            return
         packtime = os.path.getmtime(path)
 
-        #server = self.clerk.dereference(job.server)
         server  = self.clerk.getServers(id=job.serverid)
         mtime = self.dds.getmtime(job, server=server)
         return packtime > mtime

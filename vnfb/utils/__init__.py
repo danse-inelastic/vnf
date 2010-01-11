@@ -22,7 +22,6 @@ def launch_detached(cmd, home='.', debug=False):
     if debug: c.append('debug')
 
     c = ' '.join(c)
-    #print c
 
     # Move spawn from vnf -> vnfb
     from vnf.utils.spawn import spawn
