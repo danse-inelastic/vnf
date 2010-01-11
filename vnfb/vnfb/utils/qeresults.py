@@ -13,6 +13,7 @@ import os.path
 #
 
 import os
+import time
 from vnfb.utils.qestatus import QEStatus
 from vnf.applications.PackJobDir import PackJobDir
 
@@ -57,7 +58,7 @@ class QEResults:
 
         # Outdated packing request
         if self._oldrequest():
-            # if job directory is newer than the bar ball, pack again
+            # If job directory is newer than the tar ball, pack again
             self._startPacking()
             self._status.set("packingagain", "Packing Again")
             return self._statusstring()
@@ -87,17 +88,16 @@ class QEResults:
             self._status.set("packing", "Packing In Progress")
             return self._statusstring()
 
-        # Outdated packing request
-        if self._oldrequest():
-            self._status.set("oldrequest", "Outdated Request")
-            return self._statusstring()
+#        # Outdated packing request # Don't need?
+#        if self._oldrequest():
+#            self._status.set("oldrequest", "Outdated Request")
+#            return self._statusstring()
 
 
 #        # Need to untar directory?
 #        if self._notuntarred():
-#            pass
-#            #self._status.set("untarring", "Untarring Results")
-#            #return self.status()
+#            self._status.set("untarring", "Untarring Results")
+#            return self.status()
 
         if self.ready():
             self._status.set("ready", "Results Ready")
@@ -129,22 +129,21 @@ class QEResults:
 
 
     def _oldrequest(self):
-        "Outdated packing request"
-        # if tarball old,
-        #    self._status.set("oldrequest", "Outdated Request")
-        #    -> "Packing Again"
-
-        # Keep!
+        """
+        Outdated packing request. Implemented in case if results delivery failed. It can trigger packing
+        from remote server
+        """
         server      = self._director.clerk.getServers(id = self._job.serverid)
-        jobmtime    = self._director.dds.getmtime(self._job, server = server)   # Requires getmtime.py
-        ptrmtime    = os.path.getmtime(self._ptrfilepath)
-        if jobmtime > ptrmtime + 60*3: # 60*3 -- give 3 minute of delay
-            # if job directory is newer than the bar ball, pack again
+        # Don't understant what's the point
+        #jobmtime    = self._director.dds.getmtime(self._job, server = server)   # Requires getmtime.py
+
+        ptrmtime    = os.path.getmtime(self._ptrfilepath)  
+        curtime     = time.time()
+
+        if curtime > ptrmtime + 60*3:  # 3 minute of delay
             return True
-#            self._startPacking()
-#            link.label  = "Started Packing Again"
-#            return link
-        return False    # Not supported yet
+
+        return False
 
 
     def ready(self):
@@ -229,32 +228,3 @@ class QEResults:
 
 
 __date__ = "$Dec 20, 2009 11:36:09 AM$"
-
-
-
-
-# ********************** DEAD CODE **************************
-
-#        #link    = lc.link()
-#        #ptrfilepath = self._ptrfilepath()
-#
-#        # If pointer file does not exists, need to start packing
-#        # If it exists the file will not be delivered again
-#        if not os.path.exists(ptrfilepath):
-#            self._startPacking()
-#            self._status.set("Started Packing")
-#            return self._status.string()
-
-#            #link.label  = "Started Packing"
-#            #return link
-#
-#        # if packing is in process, say that
-#        s = open(ptrfilepath).read()
-#        if s == PackJobDir.PACKINGINPROCESS:
-#            self._status.set("Packing In Progress")
-#            return self._status.string()
-
-            #link.label  = "Packing In Progress"
-            #return link
-
-

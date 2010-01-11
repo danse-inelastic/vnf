@@ -20,10 +20,10 @@ class QEStatus:
     """
     def __init__(self, message="", id = None, Class = None):
         self._message   = message
-        self._id        = id        # CSS id            # None
-        self._class     = Class     # CSS class         # None
+        self._id        = id        # CSS id            
+        self._class     = Class     # CSS class         
         self._onload    = None
-        self._htmllink  = None      # for HtmlDocument  # None
+        self._htmllink  = None      # for HtmlDocument  
         self._islink    = False
         self._state     = ""        # State of the status
 
@@ -52,12 +52,12 @@ class QEStatus:
         return self._message
 
 
-    def setHtmlLink(self, message, link):   #, Class=None, id=None):
+    def setHtmlLink(self, message, link):       # Need to pass Class or id?
         self._message   = message
         self._htmllink  = link
 
 
-    def setLink(self, message, onload = None):  #, Class = None, id=None):
+    def setLink(self, message, onload = None):  # Need to pass Class or id?
         self._message   = message
         self._onload    = onload
 
