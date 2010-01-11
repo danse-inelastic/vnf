@@ -63,16 +63,16 @@ class Actor(base):
                    "numberprocessors":   setting.numproc # -> take from QESettings
                    }
                    
-        debug   = False  # Debugging flag
-        if debug:
-            #self.taskid = "4FUNHMTP"
-            self.taskid = "46M3E9PE"
-            jobs        = director.clerk.getQEJobs(where = "taskid='%s'" % self.taskid) # Temp
-            self._job   = jobs[0]
-        else:
-            self._job  = QEJob()
-            self._job.setDirector(director)
-            self._job.createRecord(params) # uncomment
+#        debug   = False  # Debugging flag
+#        if debug:
+#            #self.taskid = "4FUNHMTP"
+#            self.taskid = "46M3E9PE"
+#            jobs        = director.clerk.getQEJobs(where = "taskid='%s'" % self.taskid) # Temp
+#            self._job   = jobs[0]
+#        else:
+        self._job  = QEJob()
+        self._job.setDirector(director)
+        self._job.createRecord(params) # uncomment
 
 
     def _storeFiles(self, director):
