@@ -161,9 +161,16 @@ background-color:#f0f0f0;
     padding:0.5em;
 }
 .kernel-summary-image img{
-    height: 10em;
+    height: 4em;
 }
-/* phonon kernel */
+/* plot in kernel view */
+#scatterer-kernel-view .luban-plot2d {
+width:200px;
+height:160px;
+}
+#scatterer-kernel-view table td {
+vertical-align:top;
+}/* phonon kernel */
 #dispersion-selector-container .luban-plot2d {
 height:160px;
 width:220px;

@@ -29,6 +29,59 @@ class Actor(helper(PolyXtalCoherentPhononScatteringKernel), base):
         import luban.inventory
 
 
+    def createGraphicalView(self, director):
+        kernel = self._load(director)
+        orm = director.clerk.orm
+
+        doc = lc.document(Class='container')
+        sp = doc.splitter()
+        left = sp.section()
+        right = sp.section()
+        
+        properties_view = left.document(title="Properties")
+        properties_view.add(self.displayProperties(director))
+
+        disp_doc = right.document(title='Dispersion')
+        dispersion = kernel.dispersion
+        if dispersion is None:
+            disp_doc.paragraph('this kernel does not have a dispersion yet!')
+        else:
+            dispid = orm(dispersion).id
+            dispview = director.redirect(
+                actor='orm/phonondispersions', routine='createGraphicalView',
+                id = dispid, include_credential=False)
+            disp_doc.add(dispview)
+        
+        return doc
+
+
+    def _getInputErrors(self):
+        e = super(Actor, self)._getInputErrors()
+        if e: return e
+        dispersion = self.inventory.dispersion
+        if not dispersion:
+            return {'dispersion': 'have to select a dispersion'}
+
+
+    def store(self, director):
+        #
+        ret = super(Actor, self).store(director)
+
+        #
+        kernel = self._load(director)
+        orm = director.clerk.orm
+        record = orm(kernel)
+
+        #
+        dispersion = self.inventory.dispersion
+        dispersion = orm.db.fetchRecordUsingUniqueIdentifierStr(dispersion)
+
+        #
+        record.dispersion = dispersion
+        orm.db.updateRecord(record)
+        return ret
+    
+
     def getSelectorEntriesForReference(self, director):
         refname = self.inventory.refname
         if refname == 'dispersion':
