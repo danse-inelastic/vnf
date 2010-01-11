@@ -37,10 +37,6 @@ class Factory(object):
 
         form = doc.form(id='scatterer-basicinfo-form')
         
-        scatterername = record.scatterername
-        name = form.text(label='name', name='scatterername', value=scatterername,
-                         help='Please give this scatter a name')
-
         short_description = record.short_description or ''
         sd = form.text(label='description', name='short_description',
                        value = short_description,

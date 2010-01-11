@@ -38,7 +38,7 @@ class Factory(object):
         id = self.id
         record = self.record
         
-        if not record.scatterername:
+        if not record.short_description:
             doc.add(
                 director.retrieveVisual('scatterer/editor/basicinfoeditor',
                                         id=id, director=director)
@@ -61,7 +61,7 @@ class Factory(object):
         record = self.record
         doc = lc.document(Class='container', title='')
         grid = lc.grid(); doc.add(grid)
-        attrs = ['scatterername', 'short_description']
+        attrs = ['short_description']
         for attr in attrs:
             value = getattr(record, attr)
             row = grid.row()

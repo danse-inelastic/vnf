@@ -35,7 +35,6 @@ class Actor(base):
 
         oldkernel = pyre.inventory.str(name='oldkernel')
 
-        scatterername = pyre.inventory.str(name='scatterername')
         short_description = pyre.inventory.str(name='short_description')
 
 
@@ -185,6 +184,7 @@ class Actor(base):
         oldkernel = self.inventory.oldkernel
         oldkernel = oldkernel and db.fetchRecordUsingUniqueIdentifierStr(oldkernel)
         if oldkernel and oldkernel.__class__ is not newkernel.__class__:
+            kerneltypechange = True
             # destroy old kernel if it exists and is different type
             orm = domaccess.orm
             oldkernelobj = orm.record2object(oldkernel)
@@ -205,6 +205,7 @@ class Actor(base):
         else:
             # thre is old kernel, but the old kernel and the new kernel is the same
             # type. actually they should be the exact same record
+            kerneltypechange = False
             assert oldkernel.__class__  is newkernel.__class__ and oldkernel.id == newkernel.id
             
         # actions
@@ -218,10 +219,24 @@ class Actor(base):
             #
             insertnewportletitem = addkernelportletitem.before(newportletitem)
             actions.append(insertnewportletitem)
-        #
+            
+        elif kerneltypechange:
+            # kernel changed type, need to replace the portlet item with a new
+            # one. 
+            newportletitem = director.retrieveVisual(
+                'scatterer/editor/kernelsview-kernel-portletitem',
+                id=id, director=director, kernel=newkernel)
+            #
+            replaceportletitem = select(id='kernel-%s-portletitem' % oldkernel.id).replaceBy(
+                newportletitem)
+            actions.append(replaceportletitem)
+
+        # select the new porletitem
         portletitemid = 'kernel-%s-portletitem' % newkernel.id
         selectnewportletitem = select(id=portletitemid).portletitem('select')
         actions.append(selectnewportletitem)
+
+        #
         return actions
 
 
@@ -340,10 +355,11 @@ class Actor(base):
 
     def verifyBasicInfo(self, director):
         errors = {}
-        if not self.inventory.scatterername:
-            errors['scatterername'] = 'name cannot be empty'
+        short_description = self.inventory.short_description
+        if not short_description:
+            errors['short_description'] = 'cannot be empty'
         if len(self.inventory.short_description) > 64:
-            errors['short_description'] = 'description must be less than 64 characters'
+            errors['short_description'] = 'must be less than 64 characters'
 
         if errors:
             form = select(id='scatterer-basicinfo-form')
@@ -356,10 +372,7 @@ class Actor(base):
         domaccess = self._domaccess(director)
         id = self.inventory.id
         record = domaccess.getRecord(id)
-        record.scatterername = self.inventory.scatterername
-        short_description = self.inventory.short_description
-        if short_description:
-            record.short_description = short_description
+        record.short_description = short_description
         domaccess.db.updateRecord(record)
 
         view = director.retrieveVisual(

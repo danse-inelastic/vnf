@@ -36,3 +36,12 @@ changed reference to "matter" from polymorphic to nonpolymorphic:
 table gulpsettings
  col "description" -> "short_description"
  col "date" -> date type
+
+
+
+Jan 11, 2010
+changed reference to "matter" from polymorphic to nonpolymorphic:
+kernels
+
+ sqekernel
+ polyxtalcoherentphononscatteringkernel

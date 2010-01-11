@@ -44,7 +44,8 @@ class Actor(base):
         id = self.inventory.id
         if not domaccess.isConstructed(id):
             return self.createEditor(director)
-        raise NotImplementedError
+        # temporary
+        return self.createEditor(director)
 
 
     def createEditor(self, director):

@@ -22,12 +22,12 @@ class Scatterer(SampleBase):
 
     kernels = []
     
-    scatterername = ''
+    scatterername = '' # name of this scatterer in the sample assembly
     position = [0.,0.,0.]
     orientation = [[1.,0.,0.],
                    [0.,1.,0.],
                    [0.,0.,1.],]
-    referencename = ''
+    referencename = '' # name of the scatterer in the sample assembly that this scatterer uses as reference
 
     short_description = ''
 
