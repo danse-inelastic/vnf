@@ -55,15 +55,11 @@ class QEStatus:
     def setHtmlLink(self, message, link):   #, Class=None, id=None):
         self._message   = message
         self._htmllink  = link
-#        self._class     = Class
-#        self._id        = id
 
 
     def setLink(self, message, onload = None):  #, Class = None, id=None):
         self._message   = message
         self._onload    = onload
-#        self._class     = Class
-#        self._id        = id
 
     
     def message(self, message):
@@ -94,8 +90,6 @@ class QEStatus:
             attr.append("id='%s'" % self._id)
 
         s   = " ".join(attr)
-        #print s
-        #print self._id
         return lc.htmldocument(text="<a %s>%s</a>" % (s, self._message))
 
 

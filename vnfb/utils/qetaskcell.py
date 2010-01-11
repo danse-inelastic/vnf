@@ -163,8 +163,8 @@ class QETaskCell:
         if self._job:   # Job created (submitted)
             results = QEResults(self._director, self._job)  # change 0-index to latest job
             link    = results.status()
-            container.add(link)
-            # Change actor
+            container.add(link)     # Add link
+
             action   = lc.link(label = "Check",
                                id = "qe-check-results",
                                onclick=load(actor       = "jobs/getresults",

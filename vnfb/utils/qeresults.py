@@ -57,6 +57,7 @@ class QEResults:
 
         # Outdated packing request
         if self._oldrequest():
+            # if job directory is newer than the bar ball, pack again
             self._startPacking()
             self._status.set("packingagain", "Packing Again")
             return self._statusstring()
@@ -134,12 +135,13 @@ class QEResults:
         #    -> "Packing Again"
 
         # Keep!
-#        server      = self._director.clerk.getServers(id = sim.serverid)
-#        jobmtime    = director.dds.getmtime(sim, server = server)   # Requires getmtime.py
-#        ptrmtime    = os.path.getmtime(self._ptrfilepath)
-#        if jobmtime > ptrmtime + 60*3: # 60*3 -- give 3 minute of delay
-#            # if job directory is newer than the bar ball, pack again
-#            self._startPacking(director, sim)
+        server      = self._director.clerk.getServers(id = self._job.serverid)
+        jobmtime    = self._director.dds.getmtime(self._job, server = server)   # Requires getmtime.py
+        ptrmtime    = os.path.getmtime(self._ptrfilepath)
+        if jobmtime > ptrmtime + 60*3: # 60*3 -- give 3 minute of delay
+            # if job directory is newer than the bar ball, pack again
+            return True
+#            self._startPacking()
 #            link.label  = "Started Packing Again"
 #            return link
         return False    # Not supported yet

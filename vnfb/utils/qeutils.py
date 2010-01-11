@@ -74,7 +74,7 @@ ifelse  = lambda a,b,c: (b,c)[not a]
 
 """
 Sets attribute 'name' of object 'obj' from params dictionary
-Used mostly on database classes (vini.dom)
+Used mostly on database classes (vnfb.dom)
 """
 setname = lambda params, obj, name: ifelse(params.has_key(name), params.get(name), getattr(obj, name))
 
