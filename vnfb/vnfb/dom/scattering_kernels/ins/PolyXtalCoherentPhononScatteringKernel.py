@@ -22,9 +22,65 @@ class PolyXtalCoherentPhononScatteringKernel(base):
 
 
     def customizeLubanObjectDrawer(self, drawer):
-        drawer.sequence = ['dispersion', 'properties']
-        drawer.mold.sequence = ['Ei', 'max_energy_transfer', 'max_momentum_transfer']
+        drawer.sequence = ['properties']
+        drawer.mold.sequence = ['dispersion', 'Ei', 'max_energy_transfer', 'max_momentum_transfer']
 
+        #
+        def _createfield_for_dispersion(obj):
+            # this is a method of mold.
+            self = drawer.mold
+
+            # imports
+            import luban.content as lc
+            from luban.content import load, select
+            from luban.content.FormSelectorField import FormSelectorField
+            
+            # utils
+            orm = self.orm
+
+            # data 
+            record = self.orm(obj)
+            referred_record = record.dispersion and record.dispersion.id \
+                              and record.dispersion.dereference(self.orm.db)
+
+            # widget
+            doc = lc.document(Class='container', id='dispersion-selector-container')
+            sp = doc.splitter()
+            left = sp.section(); right = sp.section()
+            #
+            selector = FormSelectorField(label='Dispersion:', name='dispersion')
+            left.add(selector)
+            #
+            plotcontainer = right.document(Class='container')
+            #
+            loadplot = lambda uid: load(
+                actor='orm/phonondispersions', routine='createGraphicalView',
+                uid=uid)
+
+            # default selection
+            if referred_record:
+                value=orm.db.getUniqueIdentifierStr(referred_record)
+            else:
+                value=None
+
+            # choices
+            #  get matter
+            matter = orm.db.dereference(record.matter)
+            matterid = matter.id
+            #  dynamically load choices
+            entries = load(
+                actor='orm/atomicstructures',
+                routine='getSelectorEntriesForDispersion',
+                id = matterid,
+                include_none_entry = 1,
+                )
+            selector.oncreate = select(element=selector).setAttr(entries=entries, value=value)
+            selector.onchange = select(element=plotcontainer).replaceContent(
+                loadplot(select(element=selector).getAttr('value')))
+            
+            return doc
+
+        drawer.mold._createfield_for_dispersion = _createfield_for_dispersion
 
     pass # end of PolyXtalCoherentPhononScatteringKernel
 

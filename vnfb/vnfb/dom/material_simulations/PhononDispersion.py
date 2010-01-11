@@ -19,6 +19,7 @@ from _ import o2t
 class PhononDispersion(object):
 
     matter = None
+    short_description = ''
     nAtoms = 1
     dimension = 3
     Qaxes = [([1,0,0], 20), ([0,1,0], 20), ([0,0,1], 20)]
@@ -170,6 +171,8 @@ class Inventory(InvBase):
 
     matter = InvBase.d.reference(
         name='matter', targettype=Structure, owned=0)
+
+    short_description = InvBase.d.str(name='short_description')
 
     dbtablename = 'phonondispersions'
 

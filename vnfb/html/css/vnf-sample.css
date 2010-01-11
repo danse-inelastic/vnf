@@ -163,6 +163,14 @@ background-color:#f0f0f0;
 .kernel-summary-image img{
     height: 10em;
 }
+/* phonon kernel */
+#dispersion-selector-container .luban-plot2d {
+height:160px;
+width:220px;
+}
+#dispersion-selector-container table td {
+vertical-align:top;
+}
 
 /* version */
 /* $Id$ */

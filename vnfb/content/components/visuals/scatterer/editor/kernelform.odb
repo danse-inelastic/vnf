@@ -50,8 +50,11 @@ class Factory(object):
         if kernel and table.__name__ == kernel.__class__.__name__:
             obj = orm.record2object(kernel)
         else:
-            r = table()
-            obj = orm.record2object(r)
+            Obj = orm.getObjectTypeFromTableName(tablename)
+            obj = Obj()
+            scattererrecord = self.record; matterrecord = scattererrecord.matter.dereference(db)
+            matter = orm.record2object(matterrecord)
+            obj.matter = matter
 
         # drawer
         painter = director.painter

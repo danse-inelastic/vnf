@@ -53,6 +53,27 @@ class Actor(base):
         return page
 
 
+    def getSelectorEntriesForDispersion(self, director):
+        #
+        matter = self._load(director)
+        orm = director.clerk.orm; db = orm.db
+        matterrecord = orm(matter)
+        # the dispersions
+        phonondomaccess = director.retrieveDOMAccessor('phonon')
+        disps = phonondomaccess.getDispersions(matterrecord)
+        #
+        if eval(self.inventory.include_none_entry):
+            entries = [('', '')]
+        else:
+            entries = []
+            
+        entries += [(db.getUniqueIdentifierStr(disp),
+                    disp.short_description or disp.id)
+                   for disp in disps]
+        self.inventory.include_credential = 0
+        return entries
+
+
     def _createStructure(self, director):
 	struct = Structure()
         orm = director.clerk.orm
