@@ -2,7 +2,6 @@
 #
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
-#                                   Jiao Lin
 #                      California Institute of Technology
 #                      (C) 2006-2009  All Rights Reserved
 #
@@ -47,7 +46,7 @@ class Accessor(base):
         db = self.db
 
         self._debug.log('filter: %r, order_by: %r, slice: %r' % (filter, order_by, slice))
-        tables = self.simulationTables()
+        tables = self.analysisTables()
         qf = lambda table: self.makeQuery(table, filter=filter, label=label)
 
         qs = map(qf, tables)
@@ -95,11 +94,9 @@ class Accessor(base):
         
         q = sqlalchemy.select(
             [st.c.id.label('id'),
-             st.c.description.label('description'),
              sGP.c.type.label('type'),
              st.c.date.label('date'),
-             st.c.structure.label('structure'),
-             st.c.dynamicsObject.label('dynamicsObject'),
+             st.c.motion.label('motion'),
              st.c.globalpointer.label('gptr'),
              ],
             st.c.globalpointer==sGP.c.id,
@@ -133,11 +130,9 @@ class Accessor(base):
 
         q = sqlalchemy.select(
             [st.c.id.label('id'),
-             st.c.description.label('description'),
              q1.c.type.label('type'),
              st.c.date.label('date'),
-             st.c.structure.label('structure'),
-             st.c.dynamicsObject.label('dynamicsObject'),
+             st.c.motion.label('motion'),
              st.c.globalpointer.label('gptr'),
              ],
             st.c.globalpointer==q1.c.entity,
