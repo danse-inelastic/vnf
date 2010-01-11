@@ -30,7 +30,7 @@ def schedule( sim, director, job ):
                                                     server,
                                                     server_jobpath,
                                                     suppressException=True)
-    scheduler = scheduler(launch, prefix = 'source ~/.vnf-qe' )
+    scheduler = scheduler(launch, prefix = 'source ~/.vnf' )
     scheduler.setSimulationParams(job, settings, server, task)
 
     from pyre.units.time import hour
