@@ -60,6 +60,8 @@ class PolyXtalCoherentPhononScatteringKernel(base):
             # default selection
             if referred_record:
                 value=orm.db.getUniqueIdentifierStr(referred_record)
+                plotcontainer.oncreate = select(element=plotcontainer).append(
+                    loadplot(value))
             else:
                 value=None
 

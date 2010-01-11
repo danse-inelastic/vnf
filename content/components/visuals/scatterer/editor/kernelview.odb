@@ -73,12 +73,11 @@ class Factory(object):
         image.Class='float-right kernel-summary-image'
         doc.add(image)
 
-        doc1 = doc.document(title='Properties')
+        doc1 = doc.document(Class='container')
         doc1.oncreate = select(element=doc1).append(
             load(actor='orm/%s' % kernel.getTableName(),
-                 routine='displayProperties',
+                 routine='createGraphicalView',
                  id=kernel.id,
-                 editlink = False,
                  )
             )
         return  doc
