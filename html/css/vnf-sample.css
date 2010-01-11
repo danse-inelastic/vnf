@@ -38,6 +38,10 @@ padding:3px;
 #sample-matter-selector-doc .master-table td {
 padding:0 2em;
 }
+/* shape view */
+.shape-summary-image img{
+    height: 5em;
+}
 /* shape editor */
 #scatterer-shape-type-selector-doc table {
 border-collapse:collapse;
