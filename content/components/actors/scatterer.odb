@@ -32,6 +32,13 @@ class Actor(base):
         return select(id='main-display-area').replaceContent(view)
 
 
+    def createNewScattererAndCreateView(self, director):
+        domaccess = director.retrieveDOMAccessor('scatterer')
+        scatterer = domaccess.createRecord()
+        self.inventory.id = scatterer.id
+        return self.createView(director)
+
+
     def createView(self, director):
         domaccess = self._domaccess(director)
         id = self.inventory.id

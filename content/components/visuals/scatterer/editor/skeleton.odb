@@ -46,11 +46,6 @@ class Factory(object):
         doc.add(view)
 
         # kernels
-##         view = doc.document(Class='container')
-##         view.oncreate = select(element=view).append(
-##             load(actor='scatterer/editor', routine='createKernelsView',
-##                  id = id)
-##             )
         view = self._createKernelsView()
         doc.add(view)
         return doc

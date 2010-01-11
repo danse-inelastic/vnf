@@ -133,16 +133,21 @@ class Actor(base):
 
 
     def newSample(self, director):
+        '''return a view for creating new sample
+
+        return: luban document (not action)
+        '''
         # temporarily connect to "scatterer editor"
         return self.newScatterer(director)
 
 
     def newScatterer(self, director):
-        domaccess = director.retrieveDOMAccessor('scatterer')
-        scatterer = domaccess.createRecord()
-        return select(id='main-display-area').replaceContent(
-            load(actor='scatterer', routine='createEditor', id = scatterer.id)
-            )
+        '''create a new scatterer and return a view of this new scatterer
+
+        return: luban document (not action)
+        '''
+        return director.redirect(
+            actor='scatterer', routine='createNewScattererAndCreateView')
 
 
     def __init__(self, name='materialsimulation'):

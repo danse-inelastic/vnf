@@ -43,8 +43,11 @@ class Factory(object):
         interior = doc.document(Class='container')
         summary = self._createSummary(kernel)
         interior.add(summary)
+
+        controls = interior.document(Class='controls')
+        sp = controls.splitter()
         
-        link = lc.button(label='edit'); interior.add(link)
+        link = lc.button(label='edit'); sp.section().add(link)
         db = director.clerk.db
         kerneluid = db.getUniqueIdentifierStr(kernel)
         link.onclick = select(element=interior).replaceBy(
@@ -52,7 +55,7 @@ class Factory(object):
                 id = id, kernel=kerneluid)
            )
             
-        link = lc.button(label='delete'); interior.add(link)
+        link = lc.button(label='delete'); sp.section().add(link)
         link.onclick = load(
             actor='scatterer/editor', routine='deleteKernelAndRefreshKernelsView',
             id = id, kernel = kerneluid)
@@ -62,7 +65,16 @@ class Factory(object):
 
     def _createSummary(self, kernel):
         doc = lc.document(Class='container', title='')
-        doc.oncreate = select(element=doc).append(
+
+        #
+        typename = kernel.__class__.__name__
+        path='icons/scattering_kernels/%s.png' % typename.lower()
+        image = lc.image(path=path)
+        image.Class='float-right kernel-summary-image'
+        doc.add(image)
+
+        doc1 = doc.document(title='Properties')
+        doc1.oncreate = select(element=doc1).append(
             load(actor='orm/%s' % kernel.getTableName(),
                  routine='displayProperties',
                  id=kernel.id,
