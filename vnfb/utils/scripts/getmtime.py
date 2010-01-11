@@ -16,12 +16,39 @@ Non-pyre version of getmtime.py script that returns time of lastly modified file
 or directory. This is useful to use on remote server where pyre is not installed
 """
 
+import os
+
+usage   = """Usage:
+    getmtime.py --path=/path/to/something
+Make sure that directory of getmtime.py is in $PATH
+"""
+
 class Getmtime:
 
     def __init__(self):
-        pass
+        import sys
+        argv    = sys.argv
+        
+        # If number of arguments is not equal to two,
+        # or second argument does not have "=" character
+        if len(argv) != 2:
+            print usage
+            return
+            
+        if len(argv) == 2:
+            s   = argv[1]
+            ss  = s.split("=")
+            if len(ss) != 2 or ss[1] == '':
+                print usage
+                return
 
-    def main(self, *args, **kwds):
+        # Arguments are corrent
+        ss          = argv[1].split("=")
+        self.path   = ss[1]
+
+
+    def get(self):
+        "Print the time"
         path = self.path
 
         if not os.path.exists(path): return
@@ -51,4 +78,10 @@ class Getmtime:
 
 __date__ = "$Jan 8, 2010 5:54:45 PM$"
 
+if __name__ == "__main__":
+    time = Getmtime()
+    time.get()
+    
+#    import time
+#    print time.strftime("%a, %d %b %Y %H:%M:%S +0000", time.localtime(1249069869))
 
