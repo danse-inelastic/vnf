@@ -74,7 +74,8 @@ class Factory(object):
         doc.add(image)
 
         doc1 = doc.document(Class='container')
-        doc1.oncreate = select(element=doc1).append(
+        doc1.paragraph(text=['loading...'])
+        doc1.oncreate = select(element=doc1).replaceContent(
             load(actor='orm/%s' % kernel.getTableName(),
                  routine='createGraphicalView',
                  id=kernel.id,
