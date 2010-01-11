@@ -62,12 +62,12 @@ border-collapse:collapse;
 /* kernels editor: portlet */
 #scatterer-editor-kernels-portlet-container {
     vertical-align: top;
-    width: 22em;
+    width: 12em;
     padding: 0;
     border: 0;
 }
 #scatterer-editor-kernels-portlet {
-    width: 22em;
+    width: 12em;
     padding: 0;
 }
 /* portlet title */
