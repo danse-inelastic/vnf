@@ -158,12 +158,12 @@ class QETaskCell:
         "Returns link to tar file for download. "
         cid         = "%s-%s" % (RESULTS_ID, self._task.type) # self._task.id?
 
-        link    = lc.paragraph(text="None", id=cid)
-        action  = ""
-        results = QEResults(self._director, self._job, id = cid)  # change 0-index to latest job
+        container   = lc.document(id=cid)
 
         if self._job:   # Job created (submitted)
+            results = QEResults(self._director, self._job)  # change 0-index to latest job
             link    = results.status()
+            container.add(link)
             # Change actor
             action   = lc.link(label = "Check",
                                id = "qe-check-results",
@@ -172,8 +172,31 @@ class QETaskCell:
                                             id          = self._simid,
                                             taskid      = self._task.id)    # No jobid at this time
                           )
+        else:
+            link    = lc.paragraph(text="None")
+            container.add(link)
+            action  = ""
 
-        table.addRow(("Results: ", link, action))
+        table.addRow(("Results: ", container, action))
+
+
+
+#        link    = lc.paragraph(text="None", id=cid)
+#        action  = ""
+#        results = QEResults(self._director, self._job)  # change 0-index to latest job
+
+#        if self._job:   # Job created (submitted)
+#            link    = results.status()
+#            # Change actor
+#            action   = lc.link(label = "Check",
+#                               id = "qe-check-results",
+#                               onclick=load(actor       = "jobs/getresults",
+#                                            routine     = "retrieveStatus",
+#                                            id          = self._simid,
+#                                            taskid      = self._task.id)    # No jobid at this time
+#                          )
+#
+#        table.addRow(("Results: ", link, action))
 
 
 

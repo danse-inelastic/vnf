@@ -32,6 +32,7 @@ class QEResults:
     Notes:
         - The reason why I separate two methods: retrieve() and status() is because I have
           at least two types of triggers: 1) check results and 2) show results
+        - Results link is specified by id
     """
 
     def __init__(self, director, job, id = None):
@@ -90,6 +91,7 @@ class QEResults:
             self._status.set("oldrequest", "Outdated Request")
             return self._statusstring()
 
+
 #        # Need to untar directory?
 #        if self._notuntarred():
 #            pass
@@ -132,14 +134,14 @@ class QEResults:
         #    -> "Packing Again"
 
         # Keep!
-        #        server      = director.clerk.getServers(id = sim.serverid)
-        #        jobmtime    = director.dds.getmtime(sim, server = server)   # Requires getmtime.py
-        #        ptrmtime    = os.path.getmtime(self._ptrfilepath)
-        #        if jobmtime > ptrmtime + 60*3: # 60*3 -- give 3 minute of delay
-        #            # if job directory is newer than the bar ball, pack again
-        #            self._startPacking(director, sim)
-        #            link.label  = "Started Packing Again"
-        #            return link
+#        server      = self._director.clerk.getServers(id = sim.serverid)
+#        jobmtime    = director.dds.getmtime(sim, server = server)   # Requires getmtime.py
+#        ptrmtime    = os.path.getmtime(self._ptrfilepath)
+#        if jobmtime > ptrmtime + 60*3: # 60*3 -- give 3 minute of delay
+#            # if job directory is newer than the bar ball, pack again
+#            self._startPacking(director, sim)
+#            link.label  = "Started Packing Again"
+#            return link
         return False    # Not supported yet
 
 

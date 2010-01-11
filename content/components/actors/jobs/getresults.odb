@@ -39,14 +39,14 @@ class Actor(base):
 
 
     def retrieveStatus(self, director):
-        link    = self._retrieveResults(director)
         task    = director.clerk.getQETasks(id = self.taskid)
         cid     = "%s-%s" % (RESULTS_ID, task.type) # results link
+        link    = self._retrieveResults(director, id = cid) 
         
         return select(id=cid).replaceContent(link)
 
 
-    def _retrieveResults(self, director):
+    def _retrieveResults(self, director, id):   # Remove id?
         jobs    = director.clerk.getQEJobs(where = "taskid='%s'" % self.taskid)
         link    = "None"
         

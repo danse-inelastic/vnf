@@ -15,7 +15,8 @@ import luban.content as lc
 
 class QEStatus:
     """
-    Data structure for job and delivery status"
+    Data structure for job and delivery status.
+    
     """
     def __init__(self, message="", id = None, Class = None):
         self._message   = message
@@ -94,7 +95,7 @@ class QEStatus:
 
         s   = " ".join(attr)
         #print s
-        print self._id
+        #print self._id
         return lc.htmldocument(text="<a %s>%s</a>" % (s, self._message))
 
 
