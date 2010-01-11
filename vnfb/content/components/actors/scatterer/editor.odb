@@ -35,6 +35,9 @@ class Actor(base):
 
         oldkernel = pyre.inventory.str(name='oldkernel')
 
+        scatterername = pyre.inventory.str(name='scatterername')
+        short_description = pyre.inventory.str(name='short_description')
+
 
     def selectMatter(self, director):
         domaccess = self._domaccess(director)
@@ -333,6 +336,41 @@ class Actor(base):
         # refresh
         view = self.createKernelsView(director)
         return select(id='scatterer-kernels-view').replaceBy(view)
+
+
+    def verifyBasicInfo(self, director):
+        errors = {}
+        if not self.inventory.scatterername:
+            errors['scatterername'] = 'name cannot be empty'
+        if len(self.inventory.short_description) > 64:
+            errors['short_description'] = 'description must be less than 64 characters'
+
+        if errors:
+            form = select(id='scatterer-basicinfo-form')
+            actions = [
+                form.find(name=name).formfield('showError', message=error)
+                for name, error in errors.iteritems()
+                ]
+            return actions
+        
+        domaccess = self._domaccess(director)
+        id = self.inventory.id
+        record = domaccess.getRecord(id)
+        record.scatterername = self.inventory.scatterername
+        short_description = self.inventory.short_description
+        if short_description:
+            record.short_description = short_description
+        domaccess.db.updateRecord(record)
+
+        view = director.retrieveVisual(
+            'scatterer/editor/basicinfoview', id=id, director=director)
+        return select(id='scatterer-basicinfo-view').replaceBy(view)
+
+
+    def createBasicinfoEditor(self, director):
+        id = self.inventory.id
+        return director.retrieveVisual(
+            'scatterer/editor/basicinfoeditor', id=id, director=director)
 
 
     def _domaccess(self, director):

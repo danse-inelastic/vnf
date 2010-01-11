@@ -36,6 +36,10 @@ class Factory(object):
         # view indicator
         viewindicator = self._createViewIndicator()
         doc.add(viewindicator)
+
+        # basic info
+        view = self._createBasicInfoView()
+        doc.add(view)
         
         # matter
         view = self._createMatterView()
@@ -49,6 +53,11 @@ class Factory(object):
         view = self._createKernelsView()
         doc.add(view)
         return doc
+
+
+    def _createBasicInfoView(self):
+        return self.director.retrieveVisual(
+            'scatterer/editor/basicinfoview', id=self.id, director=self.director)
 
 
     matter_view_id = 'scatterer-matter-view'
