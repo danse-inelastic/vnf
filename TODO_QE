@@ -23,7 +23,7 @@ NOW
 ===
 
 - [PART] Display simulation results and plot with 
-- Fix retrieving results again (fix getmtime.py)
+- [DONE] Fix retrieving results again (fix getmtime.py)
 - Run "Single Phonon" simulation
 - Run "Multiple Phonon" simulation
 - Phonon DOS ("Analyze" button)
