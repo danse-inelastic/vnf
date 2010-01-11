@@ -32,7 +32,7 @@ class Accessor(base):
     def countAnalyses(self, filter=None, label=None):
         db = self.db
         
-        tables = self.simulationTables()
+        tables = self.analysisTables()
         
         qf = lambda table: self.makeQuery(table, filter=filter, label=label)
 
