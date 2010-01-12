@@ -139,6 +139,7 @@ class Actor(base):
         # then store the settings
         from memd.gulp.GulpSettings import GulpSettings
         gulpSettings = GulpSettings()
+        gulpSettings.creator = director.sentry.username
         gulpSettings.runtype = self.inventory.runtype
         #gulpSettings.inputFileContents = self.inventory.inputFileContents
         #gulpSettings.potential_name = self.inventory.potential_name
@@ -158,7 +159,7 @@ class Actor(base):
         gulpSettings.potential = orm.record2object(record)
 
         #save the settings
-        from dsaw.db.GloballyReferrable import GloballyReferrable
+        #from dsaw.db.GloballyReferrable import GloballyReferrable
         orm.save(gulpSettings, save_not_owned_referred_object=0, 
                  id = self.inventory.simulationId)
         # these last few lines will eventually be taken care of by the orm
