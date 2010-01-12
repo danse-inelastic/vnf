@@ -27,6 +27,60 @@ class Actor(helper(SQEKernel), base):
     class Inventory(base.Inventory):
 
         import luban.inventory
+        
+
+    def createGraphicalView(self, director):
+        kernel = self._load(director)
+        orm = director.clerk.orm
+        
+        doc = lc.document(Class='container')
+        sp = doc.splitter()
+        left = sp.section()
+        right = sp.section()
+        
+        properties_view = left.document(title="Properties")
+        properties_view.add(self.displayProperties(director))
+
+        sqe_doc = right.document(title='Sqe')
+        sqe = kernel.sqe
+        if sqe is None:
+            sqe_doc.paragraph('this kernel does not have a sqe yet!')
+        else:
+            sqeid = orm(sqe).id
+            sqeview = director.redirect(
+                actor='orm/sqes', routine='createGraphicalView',
+                id = sqeid, include_credential=False)
+            sqe_doc.add(sqeview)
+        
+        return doc
+
+
+    def _getInputErrors(self):
+        e = super(Actor, self)._getInputErrors()
+        if e: return e
+        sqe = self.inventory.sqe
+        if not sqe:
+            return {'sqe': 'have to select a sqe'}
+
+
+    def store(self, director):
+        #
+        ret = super(Actor, self).store(director)
+
+        #
+        kernel = self._load(director)
+        orm = director.clerk.orm
+        record = orm(kernel)
+
+        #
+        sqe = self.inventory.sqe
+        sqe = orm.db.fetchRecordUsingUniqueIdentifierStr(sqe)
+
+        #
+        record.sqe = sqe
+        orm.db.updateRecord(record)
+        return ret
+    
 
 
 def actor():
