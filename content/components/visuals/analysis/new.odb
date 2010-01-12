@@ -11,7 +11,7 @@
 #
 
 import luban.content as lc
-from vnfb.utils.qegrid import QEGrid
+#from vnfb.utils.qegrid import QEGrid
 
 from luban.content import load, select
 
@@ -50,10 +50,9 @@ def createStructureAnalysis():
     grid = lc.grid()
     
     routines   = []
-    routines.append((lc.link(label="RDF", onclick=load(actor="orm/rdfcalc", routine='edit')),
+    routines.append((lc.link(label="RDF", 
+                             onclick=load(actor="orm/rdfcalc", routine='edit')),
                     "Radial Distribution Function from an MD trajectory"))
-#    routines.append((lc.link(label="DoPS", onclick=load(actor="orm/motiondoscalc")),
-#                    "Density of Phonon States from an MD trajectory"))
     
     for link,desc in routines:
         row = grid.row()
