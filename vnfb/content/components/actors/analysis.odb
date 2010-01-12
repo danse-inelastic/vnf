@@ -103,28 +103,14 @@ class Actor(base):
                                             )
         return tableview
 
-#    def debug_newAtomicStructureForm(self, director):
-#        p       = lc.page()
-#        doc     = p.document(id='main-display-area')
-#        doc.add(self.newAtomicStructureForm(director))
-#        return p
-
     def newAnalysisForm(self, director):
-#        domaccess = director.retrieveDOMAccessor('analysis')
-#        s = domaccess.newAtomicStructure()
-#        
-#        record = domaccess.orm(s)
-#        self.inventory.id = record.id
-        return director.retrieveVisual('analysis/new',
-                                        director    = director)#,
-        #                                id          = self.inventory.id)
-        #return self.editAtomicStructureForm(director)
+        return select(id='main-display-area').replaceContent(
+                                        director.retrieveVisual('analysis/new',
+                                          director    = director))
+        #return director.retrieveVisual('analysis/new', director = director)
 
-#    def debug_editAtomicStructureForm(self, director):
-#        p       = lc.page()
-#        doc     = p.document(id='main-display-area')
-#        doc.add(self.editAtomicStructureForm(director))
-#        return p
+
+
 
     def editAnalysisForm(self, director):
         return director.retrieveVisual(
