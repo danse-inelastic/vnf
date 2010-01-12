@@ -135,6 +135,41 @@ fieldset{
 }
 
 
+/* properties grid */
+.properties td.prop-name {
+    font-style:italic;
+    text-align:right;
+    padding-right:1em;
+    font-size:90%;
+}
+
+
+/* toolbar at the top-right corner */
+.topright-toolbar.luban-toolbar {
+    background-color:#f0f5f5;
+    border: 1px solid #AAAAAA;
+    -moz-border-radius:12px;
+}
+.topright-toolbar.luban-toolbar table {
+border-collapse:collapse;
+}
+.topright-toolbar.luban-toolbar .luban-toolbar-left-padding {
+    -moz-border-radius-bottomleft:12px;
+    -moz-border-radius-topleft:12px;
+    width:8px;
+    min-width:8px;
+    background-color:gray;
+}
+.topright-toolbar.luban-toolbar td {
+    border-right:2px solid #999999;
+}
+.topright-toolbar.luban-toolbar .luban-button-container {
+    margin:5px 2px;
+}
+.topright-toolbar.luban-toolbar .luban-button-container a {
+    margin:0;
+    color:green;
+}
 /* misc */
 .float-right {
     float: right;

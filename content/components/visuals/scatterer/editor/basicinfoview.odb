@@ -60,14 +60,14 @@ class Factory(object):
     def _createSummary(self):
         record = self.record
         doc = lc.document(Class='container', title='')
-        grid = lc.grid(); doc.add(grid)
+        grid = lc.grid(Class='properties'); doc.add(grid)
         attrs = ['short_description']
         for attr in attrs:
             value = getattr(record, attr)
             row = grid.row()
-            pcell = row.cell(Class='property')
+            pcell = row.cell(Class='prop-name')
             pcell.add(attr)
-            vcell = row.cell(Class='value')
+            vcell = row.cell(Class='prop-value')
             vcell.add(str(value))
             continue
         return  doc

@@ -26,30 +26,50 @@ class Factory(object):
         self.domaccess = domaccess
         self.director = director
         self.id = id
-        self.experiment_record = domaccess.getExperimentRecord(id)
         return
     
 
     def __call__(self):
         director = self.director
         id = self.id
-        experiment_record = self.experiment_record
         domaccess = self.domaccess
+        experiment = domaccess.getExperiment(id)
         orm = domaccess.orm
+        experiment_record = orm(experiment)
+        db = orm.db
         
         doc = lc.document(Class='container')
 
+        # title bar
+        sp = doc.splitter(Class='title-bar')
+        left = sp.section()
+        right = sp.section()
+        # left: viewindicator
         path = self._path()
         view_indicator = director.retrieveVisual('view-indicator', path=path)
-        doc.add(view_indicator)
+        left.add(view_indicator)
+        # right: toolbar
+        toolbar = lc.toolbar(Class='topright-toolbar'); right.add(toolbar)
+        if domaccess.isEditable(id=id):
+            edit = lc.button(label='Edit')
+            edit.onclick = select(id='main-display-area').replaceContent(
+                load(actor='experiment', routine='createEditor', id=id))
+            toolbar.add(edit)
+        # job
+        job = experiment_record.getJob(db)
+        if job:
+            jobbutton = lc.button(
+                label='View job',
+                tip='view the computation job of this virutal experiment')
+            jobbutton.onclick = load(actor='job', routine='view', id = job.id)
+            toolbar.add(jobbutton)
 
+        # panels
+        # overview
         overview = doc.document(title="Overview", collapsable=True)
-        overview.paragraph(text=['loading...'])
-        overview.oncreate = select(element=overview).replaceContent(
-            load(actor='orm/neutronexperiments', routine='displayProperties',
-                 id = self.id, editlink=False)
-            )
-        
+        overview.add(self._createOverview(experiment))
+
+        # details
         details = doc.document(title="Details", collapsable=True, collapsed=True)
         details.paragraph(text='loading. please wait ...')
         details.onexpand = select(element=details).replaceContent(
@@ -57,12 +77,39 @@ class Factory(object):
                  id = self.id, editlink=False)
             )
 
+        # results
         resultsdoc = doc.document(title = 'Results', collapsable=True, collapsed=True)
         resultsdoc.paragraph(text=['loading results. please wait...'])
         resultsdoc.onexpand = select(element=resultsdoc).replaceContent(
             load(actor='computation', routine='createResultsDoc',
                  id=id, type=experiment_record.getTableName())
             )
+        return doc
+
+
+    def _createOverview(self, experiment):
+        # k,v pair
+        items = []
+        
+        # instrument
+        instrument = experiment.instrument
+        items.append(('instrument', instrument.name))
+
+        # sample
+        sample = experiment.sample
+        if sample is not None:
+            items.append(('sample', sample.__class__.__name__))
+
+        # ncount
+        items.append(('ncount', experiment.ncount))
+
+        doc = lc.document(Class='container')
+        grid = lc.grid(Class='properties'); doc.add(grid)
+        for key, value in items:
+            row = grid.row()
+            row.cell(Class='prop-name').add(key)
+            row.cell(Class='prop-value').add(str(value))
+            continue
         return doc
 
 
