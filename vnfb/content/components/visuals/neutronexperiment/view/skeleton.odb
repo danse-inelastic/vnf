@@ -61,8 +61,18 @@ class Factory(object):
             jobbutton = lc.button(
                 label='View job',
                 tip='view the computation job of this virutal experiment')
-            jobbutton.onclick = load(actor='job', routine='view', id = job.id)
+            viewjob = load(actor='job', routine='view', id = job.id)
+            jobbutton.onclick = viewjob
             toolbar.add(jobbutton)
+
+            # if the job was created but not yet submitted,
+            # also add an alert line to let user submit the job
+            if job.state == 'created':
+                alertdoc = doc.document(Class='warning', title='Reminder', collapsable=True)
+                label = 'You have created a computation job for this virtual experiment. '\
+                        'Do you want to submit it?'
+                startjobalert = lc.link(label=label, onclick=viewjob)
+                alertdoc.add(startjobalert)
 
         # panels
         # overview

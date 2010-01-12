@@ -170,6 +170,18 @@ border-collapse:collapse;
     margin:0;
     color:green;
 }
+
+/* warning */
+.collapsable.luban-document.warning {
+border:1px solid #EEAAAA;
+}
+.luban-document.warning {
+-moz-border-radius-bottomleft:1em;
+border:1px solid #EEAAAA;
+margin-bottom:1em;
+padding:0.5em 1em;
+}
+
 /* misc */
 .float-right {
     float: right;
