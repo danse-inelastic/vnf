@@ -30,19 +30,19 @@ class Actor(base):
         domaccess = self._domaccess(director)
         db = domaccess.db
         c = self._getComputationRecord(director)
-        if not domaccess.isComputationConfigured(c):
-            return self.createConfigurationView(director)
+#        if not domaccess.isComputationConfigured(c):
+#            return self.createConfigurationView(director)
         
         path = self._pathToMe(director)
         view_indicator = director.retrieveVisual('view-indicator', path=path)
         doc.add(view_indicator)
 
-        # structure view
-        structure = c.structure.dereference(db)
-        structureview = doc.document(title='material', collapsable=True, collapsed=False)
-        viewstructure = load(actor='atomicstructure', routine='showOverview',
-                          id = structure.id)
-        link = lc.link(label=structure.short_description, onclick=viewstructure)
+        # matter view
+        matter = c.matter.dereference(db)
+        matterview = doc.document(title='material', collapsable=True, collapsed=False)
+        viewmatter = load(actor='atomicstructure', routine='showOverview',
+                          id = matter.id)
+        link = lc.link(label=structure.short_description, onclick=viewmatter)
         structureview.add(link)
 
         # results
@@ -101,7 +101,7 @@ class Actor(base):
         if not id:
             raise RuntimeError
         domaccess = self._domaccess(director)
-        label = domaccess.getComputationLabel('dispersion', id)
+        label = domaccess.getComputationLabel('gulpSettings', id)
         computation = self._getComputation(director)
         return [
             ('Simulations',
@@ -120,13 +120,13 @@ class Actor(base):
     def _getComputation(self, director):
         domaccess = self._domaccess(director)
         id = self.inventory.id
-        return domaccess.getComputation('gulpsettings', id)
+        return domaccess.getComputation(id)
 
 
     def _getComputationRecord(self, director):
         domaccess = self._domaccess(director)
         id = self.inventory.id
-        return domaccess.getSettingsRecord(id)
+        return domaccess.getComputationRecord(id)
 
 
     def _domaccess(self, director):
