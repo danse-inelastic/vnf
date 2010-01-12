@@ -104,10 +104,7 @@ class Actor(base):
         return tableview
 
     def newAnalysisForm(self, director):
-        return select(id='main-display-area').replaceContent(
-                                        director.retrieveVisual('analysis/new',
-                                          director    = director))
-        #return director.retrieveVisual('analysis/new', director = director)
+        return director.retrieveVisual('analysis/new', director = director)
 
 
 
