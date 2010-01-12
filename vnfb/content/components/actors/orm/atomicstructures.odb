@@ -74,6 +74,28 @@ class Actor(base):
         return entries
 
 
+    def getSelectorEntriesForSqe(self, director):
+        #
+        matter = self._load(director)
+        orm = director.clerk.orm; db = orm.db
+        matterrecord = orm(matter)
+        # the sqes
+        from vnfb.dom.material_simulations.SQE import SQE
+        orm(SQE)
+        sqes = matterrecord.sqes.dereference(db)
+        #
+        if eval(self.inventory.include_none_entry):
+            entries = [('', '')]
+        else:
+            entries = []
+            
+        entries += [(db.getUniqueIdentifierStr(sqe),
+                     sqe.short_description or sqe.id)
+                    for sqe in sqes]
+        self.inventory.include_credential = 0
+        return entries
+
+
     def _createStructure(self, director):
 	struct = Structure()
         orm = director.clerk.orm

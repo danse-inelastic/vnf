@@ -19,7 +19,7 @@ class SQE(object):
 
 
 # orm
-from vnfb.dom.AtomicStructure import Structure
+from vnfb.dom.AtomicStructure import Structure, StructureTable
 
 from dsaw.model.Inventory import Inventory as InvBase
 class Inventory(InvBase):
@@ -36,6 +36,12 @@ SQE.Inventory = Inventory
 from ComputationResult import ComputationResult
 from _ import o2t
 SQETable = o2t(SQE, {'subclassFrom': ComputationResult})
+import dsaw.db
+SQETable.addColumn(
+    dsaw.db.reference(name='matter', table=StructureTable, backref='sqes')
+    )
+
+
 SQETable.histogramh5 = 'sqe.h5'
 SQETable.datafiles = [
     SQETable.histogramh5

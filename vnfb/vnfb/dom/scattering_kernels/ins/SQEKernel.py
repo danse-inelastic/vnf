@@ -24,6 +24,74 @@ class SQEKernel(base):
     Emin = -50.
     Emax = 50.
     
+    def customizeLubanObjectDrawer(self, drawer):
+        drawer.sequence = ['properties']
+        drawer.mold.sequence = [
+            'sqe',
+            'Emin', 'Emax',
+            'Qmin', 'Qmax',
+            ]
+        #
+        def _createfield_for_sqe(obj):
+            # this is a method of mold.
+            self = drawer.mold
+
+            # imports
+            import luban.content as lc
+            from luban.content import load, select
+            from luban.content.FormSelectorField import FormSelectorField
+            
+            # utils
+            orm = self.orm
+
+            # data 
+            record = self.orm(obj)
+            referred_record = record.sqe and record.sqe.id \
+                              and record.sqe.dereference(self.orm.db)
+
+            # widget
+            doc = lc.document(Class='container', id='sqe-selector-container')
+            sp = doc.splitter()
+            left = sp.section(); right = sp.section()
+            #
+            selector = FormSelectorField(label='Sqe:', name='sqe')
+            left.add(selector)
+            #
+            plotcontainer = right.document(Class='container')
+            #
+            loadplot = lambda uid: load(
+                actor='orm/sqes', routine='createGraphicalView',
+                uid=uid)
+
+            # default selection
+            if referred_record:
+                value=orm.db.getUniqueIdentifierStr(referred_record)
+                plotcontainer.oncreate = select(element=plotcontainer).append(
+                    loadplot(value))
+            else:
+                value=None
+
+            # choices
+            #  get matter
+            matter = orm.db.dereference(record.matter)
+            matterid = matter.id
+            #  dynamically load choices
+            entries = load(
+                actor='orm/atomicstructures',
+                routine='getSelectorEntriesForSqe',
+                id = matterid,
+                include_none_entry = 1,
+                )
+            selector.oncreate = select(element=selector).setAttr(entries=entries, value=value)
+            selector.onchange = select(element=plotcontainer).replaceContent(
+                loadplot(select(element=selector).getAttr('value')))
+            
+            return doc
+
+        drawer.mold._createfield_for_sqe = _createfield_for_sqe
+
+        return
+    
     pass # end of SQEKernel
 
 
