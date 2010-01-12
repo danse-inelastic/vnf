@@ -12,7 +12,7 @@
 #
 
 from vnfb.components.DOMAccessor import DOMAccessor as base
-#from vnfb.dom.material_simulations.GulpSettingsHolder import GulpSettingsHolder
+from vnfb.dom.material_simulations.GulpSettingsHolder import GulpSettingsHolder
 from memd.gulp.GulpSettings import GulpSettings
 import os, numpy
 
@@ -34,40 +34,11 @@ class Accessor(base):
     def getSettings(self, id):
         orm = self.orm
         return orm.load(GulpSettings, id)
+    
 
-
-#    def getDataForDOS(self, id):
-#        dos = self.getDOS(id)
-#        record = self.orm(dos)
-#
-#        director = self.director
-#        
-#        # the idf file
-#        path = director.dds.abspath(record)
-#        import os
-#        f = os.path.join(path, 'data.idf')
-#        
-#        # check path
-#        if not os.path.exists(f): return
-#
-#        # read
-#        from idf import DOS
-#        (t,version,comment), e, i = DOS.read(f)
-#
-#        dos.e = e
-#        dos.i = i
-#        return dos
-
-
-#    def getOrigin(self, id=None, dos=None):
-#        'get the original computation that creates this dos'
-#        if dos is None:
-#            dos = self.getDOS(id)
-#        orm = self.orm
-#        r = orm(dos)
-#        origin = r.getOrigin(orm.db)
-#        return origin
-
+    def getSettingsRecord(self, id):
+        db = self.db
+        return db.query(GulpSettingsHolder).filter_by(id=id).one()
 
 
 
