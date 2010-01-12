@@ -24,8 +24,8 @@ NOW
 
 - [PART] Display simulation results and plot with 
 - [DONE] Fix retrieving results again (fix getmtime.py)
-- Run "Single Phonon" simulation
 - Run "Multiple Phonon" simulation
+- Run "Single Phonon" simulation
 - Phonon DOS ("Analyze" button)
 - Phonon Dispersion ("Analyze" button)
 - Add progress bar for jobs with steps description
