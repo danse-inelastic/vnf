@@ -57,6 +57,7 @@ class QETaskCell:
             self._results(table)
 
             table.setColumnStyle(0, "qe-tasks-param")
+            table.setColumnStyle(1, "qe-tasks-value")
 
             table.setCellStyle(3, 1, "text-green")
 
@@ -158,11 +159,13 @@ class QETaskCell:
         "Returns link to tar file for download. "
         cid         = "%s-%s" % (RESULTS_ID, self._task.type) # self._task.id?
 
-        container   = lc.document(id=cid)
+        container   = lc.document(id=cid)   #, Class="qe-tasks-results")
 
         if self._job:   # Job created (submitted)
             results = QEResults(self._director, self._job)  # change 0-index to latest job
             link    = results.status()
+#            l       = lc.document()
+#            l.add(link)
             container.add(link)     # Add link
 
             action   = lc.link(label = "Check",
@@ -178,26 +181,6 @@ class QETaskCell:
             action  = ""
 
         table.addRow(("Results: ", container, action))
-
-
-
-#        link    = lc.paragraph(text="None", id=cid)
-#        action  = ""
-#        results = QEResults(self._director, self._job)  # change 0-index to latest job
-
-#        if self._job:   # Job created (submitted)
-#            link    = results.status()
-#            # Change actor
-#            action   = lc.link(label = "Check",
-#                               id = "qe-check-results",
-#                               onclick=load(actor       = "jobs/getresults",
-#                                            routine     = "retrieveStatus",
-#                                            id          = self._simid,
-#                                            taskid      = self._task.id)    # No jobid at this time
-#                          )
-#
-#        table.addRow(("Results: ", link, action))
-
 
 
 __date__ = "$Dec 12, 2009 3:21:13 PM$"

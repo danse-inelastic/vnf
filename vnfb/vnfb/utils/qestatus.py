@@ -34,7 +34,7 @@ class QEStatus:
 
         Parameters:
             format  - format in which to display the message
-                None    - No format
+                None    - No format (string)
                 "html"  - luban HtmlDocument
                 "a"     - luban Link (action link)
                 "p"     - luban Paragraph
