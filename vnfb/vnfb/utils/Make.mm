@@ -23,6 +23,7 @@ BUILD_DIRS = \
 	itask \
 	job \
 	material_simulations \
+	neutron_experiment_simulations \
         scripts \
 
 OTHER_DIRS = \
