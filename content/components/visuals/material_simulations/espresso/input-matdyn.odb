@@ -15,7 +15,6 @@ import luban.content as lc
 from luban.content import select
 from luban.content import load
 from vnfb.utils.qegrid import QEGrid
-from luban.content.FormSelectorField import FormSelectorField
 from luban.content.FormTextField import FormTextField
 from luban.content.FormSubmitButton import FormSubmitButton
 
