@@ -43,6 +43,7 @@ all: export
 
 EXPORT_PYTHON_MODULES = \
 	__init__.py \
+	atomicstructure.py \
 	constraints.py \
 	math.py \
         orderedDict.py \
