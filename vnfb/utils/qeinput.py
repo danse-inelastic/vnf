@@ -28,7 +28,7 @@ class QEInput:
         inputs  = self._director.clerk.getQEConfigurations(where="taskid='%s'" % self._taskid )
 
         link = Link(label="Add", 
-                    onclick=load(actor      = "material_simulations/espresso/input-add",
+                    onclick=load(actor      = "material_simulations/espresso/input-generate",
                                  id         = self._id,
                                  taskid     = self._taskid,
                                  type       = self._type)   # Some more?

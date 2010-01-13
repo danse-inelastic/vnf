@@ -42,8 +42,8 @@ def visual(actor):
     table.setColumnStyle(0, "qe-form-label")
     table.setColumnStyle(1, "qe-form-field")
 
-    form.onsubmit   = select(element=form).submit(actor     = 'material_simulations/espresso/input-add',
-                                                  routine   = 'createRecord',
+    form.onsubmit   = select(element=form).submit(actor     = 'material_simulations/espresso-utils/generate-q2r',
+                                                  routine   = 'generateInput',
                                                   taskid    = actor.taskid,
                                                   id        = actor.id)
 

@@ -11,9 +11,6 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
-from luban.content import select
-from luban.content import load
-
 from vnfb.utils.parser.qeinput import QEInput
 from vnfb.utils.parser.namelist import Namelist
 
@@ -31,18 +28,22 @@ class Actor(base):
         nq3         = pyre.inventory.str('nq3', default='')
 
     def generateInput(self, director):
-        ph      = QEInput(type='ph')
+        return director.redirect(actor   = 'material_simulations/espresso/input-create',
+                                routine = 'default',
+                                text    = self._input(),
+                                id      = self.inventory.id,
+                                taskid  = self.inventory.taskid)
+
+
+    def _input(self):
+        input      = QEInput(type='ph')
         nl  = Namelist("inputph")
         nl.add("nq1", self.nq1)
         nl.add("nq2", self.nq2)
         nl.add("nq3", self.nq3)
-        ph.addNamelist(nl)
-        input   = ph.toString()
-        return director.redirect(actor   = 'material_simulations/espresso/input-create',
-                                routine = 'default',
-                                text    = input,
-                                id      = self.inventory.id,
-                                taskid  = self.inventory.taskid)
+        input.addNamelist(nl)
+        return input.toString()
+
 
     def __init__(self):
         super(Actor, self).__init__(name='material_simulations/espresso-utils/generate-ph')
