@@ -38,14 +38,20 @@ def toangles(orientation):
     if the input is a 3x3 matrix, it is assumed to be the rotation matrix
 
     if the input is a 3-tuple like object, just return it
+
+    return: a 3-tuple
     '''
+    if orientation is None:
+        return 0,0,0
     orientation = np.array(orientation)
     if orientation.size==3:
-        return orientation
+        pass
     elif orientation.size==9:
         orientation.shape = 3,3
-        return mcstasRotations.toAngles(orientation, unit='degree')
-    raise ValueError, str(orientation)
+        orientation = mcstasRotations.toAngles(orientation, unit='degree')
+    else:
+        raise ValueError, str(orientation)
+    return tuple(orientation)
 
 
 def calculateAbsoluteCoordinates(relative_coordinates):
@@ -100,6 +106,51 @@ def calculateAbsoluteCoordinates(relative_coordinates):
             return r
         
     return _solver().solve(relative_coordinates)
+
+
+
+import numpy
+I = numpy.array(
+    [[1,0,0],
+     [0,1,0],
+     [0,0,1],
+     ])
+def calculateComponentAbsoluteCoordinates(components):
+    """calculate the absolute coordinates of all components.
+
+    The given components might have relative coords. This method
+    calculates the absolute coordinates and assign that back to
+    the components.
+
+    All components must be instances of vnfb.dom.neutron_experiment_simulations.AbstractNeutronComponent
+    """
+    # prepare to call calculateAbsoluteCoordinates
+    componentdict = {}
+    relative_coords = {}
+    for c in components:
+        componentdict[c.componentname] = c
+        
+        # c is a db record. c.position and c.orientation both could be None
+        pos = c.position
+        if pos is None: pos = (0,0,0)
+        ori = c.orientation
+        if ori is None: ori = I
+
+        #
+        relative_coords[c.componentname] = c.referencename, pos, ori
+        continue
+
+    # call calculateAbsoluteCoordinates
+    abscoords = calculateAbsoluteCoordinates(relative_coords)
+
+    # assign coords back to component
+    for name, (pos, ori) in abscoords.iteritems():
+        c = componentdict[name]
+        c.referencename = ''
+        c.position = pos
+        c.orientation = ori
+        continue
+    return components
 
 
 # version

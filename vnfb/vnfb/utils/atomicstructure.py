@@ -12,7 +12,7 @@
 #
 
 
-def makeXYZfileContent(structure):
+def makeXYZfileContent(structure, **kwds):
     '''create a list of strings (each string is one line) as the content
     of the xyz file for the given structure
     '''
@@ -21,7 +21,7 @@ def makeXYZfileContent(structure):
     xyz = getParser('xyz')
     
     # content strings
-    content = xyz.tostring(structure).splitlines()
+    content = xyz.toLines(structure, **kwds)
     
     return content
 
