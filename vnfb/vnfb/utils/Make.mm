@@ -23,6 +23,7 @@ BUILD_DIRS = \
 	itask \
 	job \
 	material_simulations \
+        parser \
 	neutron_experiment_simulations \
         scripts \
 

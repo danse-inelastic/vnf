@@ -35,7 +35,14 @@ class Actor(base):
 
 
     def generateInput(self, director):
+        return director.redirect(actor   = 'material_simulations/espresso/input-create',
+                                routine = 'default',
+                                text    = self._input(),
+                                id      = self.inventory.id,
+                                taskid  = self.inventory.taskid)
 
+
+    def _input(self):
         input      = QEInput(type='pw')
         nl  = Namelist("system")
         nl.add("ecutwfc", self.inventory.ecutwfc)
@@ -46,13 +53,8 @@ class Actor(base):
         c.addLine("Ni 26.98 %s" % self.inventory.pseudo)
         input.addNamelist(nl)
         input.addCard(c)
-        str   = input.toString()
-
-        return director.redirect(actor   = 'material_simulations/espresso/input-create',
-                                routine = 'default',
-                                text    = str,
-                                id      = self.inventory.id,
-                                taskid  = self.inventory.taskid)
+        return input.toString()
+        
 
     def __init__(self):
         super(Actor, self).__init__(name='material_simulations/espresso-utils/generate-pw')

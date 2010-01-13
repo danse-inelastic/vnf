@@ -36,6 +36,7 @@ CRITICAL FIXES
 ==============
 - Recognize elements and populate psedo potentials depending on the elements in the structure
     (see input-pw.odb visual)
+- Don't allow to set config input unless the previous config input is set
 
 - Handle multiple jobs for the task
 - Fix database jobs status depending on the actual jobs status

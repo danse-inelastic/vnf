@@ -67,12 +67,6 @@ class Actor(base):
 
     def _setForm(self, director):
         "Sets create new settings form"
-        # Remove "PW" case when atomic structure connector is implemented
-#        if self.type == "PW":
-#            visual  = "material_simulations/espresso/input-default"
-#            return director.retrieveVisual(visual, actor = self)
-
-
         if self.type in TYPE:
             visual  = "material_simulations/espresso/input-%s" % self.type.lower()
             return director.retrieveVisual(visual, actor = self)
