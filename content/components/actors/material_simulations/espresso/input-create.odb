@@ -12,8 +12,6 @@
 #
 
 from vnf.dom.QEConfiguration import QEConfiguration
-from vnfb.utils.qeconst import PARSERS, TYPE
-from vnfb.utils.qegrid import QEGrid
 
 from luban.content import select
 from luban.content import load
@@ -21,7 +19,7 @@ from luban.content import load
 import luban.content as lc
 from luban.components.AuthorizedActor import AuthorizedActor as base
 
-# Requires simulation id, 
+# Requires simulation id,
 class Actor(base):
 
     class Inventory(base.Inventory):
@@ -44,18 +42,19 @@ class Actor(base):
             path = []
             path.append(('Simulations ', load(actor='materialsimulation')))
             path.append(('Quantum Espresso ', load(actor='materialsimulation')))
-            path.append(('%s ' % self.id, load(actor    = 'material_simulations/espresso/sim-view',
-                                               id       = self.id)))
-            path.append(('%s Task ' % self.type, load(actor    = 'material_simulations/espresso/task-view',
-                                                      id       = self.id,
-                                                      taskid   = self.taskid,
-                                                      type     = self.type)))
+            path.append(('%s ' % self.inventory.id, load(actor    = 'material_simulations/espresso/sim-view',
+                                               id       = self.inventory.id)))
+            path.append(('%s Task ' % self.inventory.type, load(actor    = 'material_simulations/espresso/task-view',
+                                                      id       = self.inventory.id,
+                                                      taskid   = self.inventory.taskid,
+                                                      type     = self.inventory.type)))
 
-            path.append('Set Parameters')
-            
+
+            path.append('Create Input Configuration')
+
             return director.retrieveVisual('view-indicator', path=path)
 
-        doc         = lc.document(title   = "Create Input Configuration: %s" % self.type)
+        doc         = lc.document(title   = "Create Input Configuration: %s" % self.inventory.type)
         splitter    = doc.splitter(orientation="vertical")
         sA          = splitter.section()
         sA.add(viewIndicator(director))
@@ -64,24 +63,38 @@ class Actor(base):
 
         return doc
 
-
     def _setForm(self, director):
         "Sets create new settings form"
-        # Remove "PW" case when atomic structure connector is implemented
-        if self.type == "PW":
-            visual  = "material_simulations/espresso/input-default"
-            return director.retrieveVisual(visual, actor = self)
-
-
-        if self.type in TYPE:
-            visual  = "material_simulations/espresso/input-%s" % self.type.lower()
-            return director.retrieveVisual(visual, actor = self)
 
         visual  = "material_simulations/espresso/input-default"
-        return director.retrieveVisual(visual, actor = self)
+        return director.retrieveVisual(visual, actor = self.inventory)
+
+
+    def createRecord(self, director):
+        """Create configuration record"""
+        params  = {"taskid":        self.taskid,
+                   "filename":      self.fname,
+                   "description":   self.description,
+                   "text":          self.text,
+                   "type":          self.type
+                   }
+        config  = QEConfiguration()
+        config.setDirector(director)
+        config.createRecord(params)
+
+        return load(actor = 'material_simulations/espresso/sim-view', id = self.id)
+
+    def _verify(self):
+        #Note:
+        #   - Do not allow the following characters in the input filename:
+        #	"/"
+        #	"'"
+        #	"""
+        #   - filename should not be empty
+        pass
 
     def __init__(self):
-        super(Actor, self).__init__(name='material_simulations/espresso/input-add')
+        super(Actor, self).__init__(name='material_simulations/espresso/input-create')
 
         return
 
@@ -103,9 +116,7 @@ class Actor(base):
 def actor():
     return Actor()
 
-__date__ = "$Nov 9, 2009 4:09:15 PM$"
 
-
-
+__date__ = "$Jan 13, 2010 10:50:06 AM$"
 
 

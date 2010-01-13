@@ -43,10 +43,14 @@ def visual(actor):
     table.setColumnStyle(0, "qe-form-label")
     table.setColumnStyle(1, "qe-form-field")
 
-    form.onsubmit   = select(element=form).submit(actor     = 'material_simulations/espresso/input-add',
-                                                  routine   = 'createRecord',
+    form.onsubmit   = select(element=form).submit(actor     = 'material_simulations/espresso-utils/generate-ph',
+                                                  routine   = 'generateInput',
                                                   taskid    = actor.taskid,
-                                                  id        = actor.id)
+                                                  id        = actor.id,
+                                                  nq1       = nq1.value,
+                                                  nq2       = nq2.value,
+                                                  nq3       = nq3.value
+                                                  )
 
     return form
 
