@@ -105,9 +105,9 @@ class Actor(base):
             from luban.content.HtmlDocument import HtmlDocument
             conftext    = HtmlDocument(text="<pre>%s<pre>" % input.text)
             table.addRow(('Name:', input.filename))
-            table.addRow(("Type: ", input.type))
+            table.addRow(("Type: ", self.type))  # input.type
             table.addRow(("Description: ", input.description))
-            table.addRow(("Parser: ", input.parser))
+            #table.addRow(("Parser: ", input.parser))
             table.addRow(("Created: ", stamp2date(input.timecreated)))
             table.addRow(("Last Modified: ", stamp2date(input.timemodified)))
             table.addRow(("Text: ", conftext))

@@ -84,8 +84,8 @@ class Actor(base):
 
         fname           = FormTextField(name = "fname", value = input.filename)
         description     = FormTextField(name = "description", value=input.description)   # Make as textarea
-        parser          = FormSelectorField(name="parser",
-                                            entries=enumerate(PARSERS)) # No choice :)
+        #parser          = FormSelectorField(name="parser",
+        #                                    entries=enumerate(PARSERS)) # No choice :)
         text            = FormTextArea(name="text", value=input.text)
 
         submit      = FormSubmitButton(label="Edit Configuration Input")
@@ -97,7 +97,7 @@ class Actor(base):
 
         table.addRow(("Name:", fname))
         table.addRow(("Description:", description))
-        table.addRow(("Parser:", parser))
+        #table.addRow(("Parser:", parser))
         table.addRow(("Configuration:", text))
         table.addRow(("", st.grid()))
 
@@ -117,7 +117,7 @@ class Actor(base):
         """Update configuration record"""
         params  = {"filename":      self.fname,
                    "description":   self.description,
-                   "parser":        PARSERS[int(self.parser)],
+                   #"parser":        PARSERS[int(self.parser)],
                    "text":          self.text}
 
         input     = director.clerk.getQEConfigurations(id=self.configid)
