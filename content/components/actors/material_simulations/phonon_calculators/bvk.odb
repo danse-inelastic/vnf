@@ -194,9 +194,9 @@ class Actor(base):
         return        
 
 
-    def onConfiguringDispersionComputation(self, director):
+    def onConfiguringPhononsComputation(self, director):
         return select(id='main-display-area').replaceContent(
-            load(actor='material_simulations/phonon_calculators/bvk_getdispersion',
+            load(actor='material_simulations/phonon_calculators/bvk_getphonons',
                  routine='createConfigurationView',
                  id = self.inventory.computation_id
                  )

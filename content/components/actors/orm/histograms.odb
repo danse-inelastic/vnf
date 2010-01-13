@@ -58,7 +58,7 @@ class Actor(base):
 
 
 def actor():
-    return Actor('orm/phonondispersions')
+    return Actor('orm/phonons')
 
 
 # version

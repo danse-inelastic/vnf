@@ -84,7 +84,7 @@ BvK_GetDos_Table.__str__ = getShortDescription
 
 
 
-class BvK_GetDispersion(BvKComputation):
+class BvK_GetPhonons(BvKComputation):
 
     df = 0.1
     N1 = 10
@@ -98,7 +98,7 @@ class BvK_GetDispersion(BvKComputation):
 
 
     def isConfigured(self):
-        c = super(BvK_GetDispersion, self).isConfigured()
+        c = super(BvK_GetPhonons, self).isConfigured()
         if not c: return c
 
         if self.df <= 0 or self.N1 <= 0: return False
@@ -111,24 +111,24 @@ class BvK_GetDispersion(BvKComputation):
 
 
 
-BvK_GetDispersion_Table = o2t(BvK_GetDispersion, {'subclassFrom': SimulationTableBase})
-BvK_GetDispersion_Table.job_builder = 'material_simulations/phonon_calculators/bvk_getdispersion'
-BvK_GetDispersion_Table.actor = 'material_simulations/phonon_calculators/bvk_getdispersion'
-BvK_GetDispersion_Table.result_retriever = 'material_simulations/phonon_calculators/bvk_getdispersion'
+BvK_GetPhonons_Table = o2t(BvK_GetPhonons, {'subclassFrom': SimulationTableBase})
+BvK_GetPhonons_Table.job_builder = 'material_simulations/phonon_calculators/bvk_getphonons'
+BvK_GetPhonons_Table.actor = 'material_simulations/phonon_calculators/bvk_getphonons'
+BvK_GetPhonons_Table.result_retriever = 'material_simulations/phonon_calculators/bvk_getphonons'
 def getShortDescription(self):
     if self.short_description: return self.short_description
-    return 'Compute Dispersion from BvK model %s: df=%s, N1=%s' % (
+    return 'Compute Phonons from BvK model %s: df=%s, N1=%s' % (
         self.model.id, self.df, self.N1)
-BvK_GetDispersion_Table.getShortDescription = getShortDescription
-BvK_GetDispersion_Table.__str__ = getShortDescription
+BvK_GetPhonons_Table.getShortDescription = getShortDescription
+BvK_GetPhonons_Table.__str__ = getShortDescription
 
 
 
 # targets of computation
 targets = [
     ('dos', 'Phonon Density of States'),
-    # ('directionaldispersion', 'Phonon dispersion on a special direction'),
-    ('dispersion', 'Full phonon dispersion on a grid (can be used in virtual neutron experiment)'),
+    # ('directionalphonons', 'Phonon dispersion on a special direction'),
+    ('phonons', 'Full phonons on a grid (can be used in virtual neutron experiment)'),
     ]
 
 

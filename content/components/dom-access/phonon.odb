@@ -23,9 +23,9 @@ class Accessor(base):
         return
 
 
-    def getDispersions(self, atomicstructure):
+    def getPhonons(self, atomicstructure):
         db = self.db
-        return atomicstructure.phonondispersions.dereference(db)
+        return atomicstructure.phonons.dereference(db)
 
 
     def getDOSes(self, atomicstructure):
@@ -34,7 +34,7 @@ class Accessor(base):
 
 
 
-from vnfb.dom.material_simulations.PhononDispersion import PhononDispersion, PhononDispersionTable
+from vnfb.dom.material_simulations.Phonons import Phonons, PhononsTable
 from vnfb.dom.material_simulations.PhononDOS import PhononDOS, PhononDOSTable
 
 

@@ -171,11 +171,11 @@ height:160px;
 #scatterer-kernel-view table td {
 vertical-align:top;
 }/* phonon kernel */
-#dispersion-selector-container .luban-plot2d {
+#phonons-selector-container .luban-plot2d {
 height:160px;
 width:220px;
 }
-#dispersion-selector-container table td {
+#phonons-selector-container table td {
 vertical-align:top;
 }
 

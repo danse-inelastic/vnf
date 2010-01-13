@@ -19,11 +19,11 @@ from luban.content import select, load, alert
 
 
 #
-from vnfb.dom.material_simulations.BvKComputation import BvK_GetDispersion
+from vnfb.dom.material_simulations.BvKComputation import BvK_GetPhonons
 
 from luban.components.Actor import Actor
 import luban.orm
-base = luban.orm.object2actor(BvK_GetDispersion)
+base = luban.orm.object2actor(BvK_GetPhonons)
 class Actor(base):
 
     class Inventory(base.Inventory):
@@ -43,13 +43,13 @@ class Actor(base):
     def createJob(self, director):
         return load(
             actor='job', routine='create',
-            computation_type = 'material_simulations.BvKComputation.BvK_GetDispersion',
+            computation_type = 'material_simulations.BvKComputation.BvK_GetPhonons',
             computation_id = self.inventory.id
             )
 
 
 def actor():
-    return Actor('orm/bvk_getdispersion')
+    return Actor('orm/bvk_getphonons')
 
 
 # version

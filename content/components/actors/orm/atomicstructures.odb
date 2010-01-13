@@ -53,14 +53,14 @@ class Actor(base):
         return page
 
 
-    def getSelectorEntriesForDispersion(self, director):
+    def getSelectorEntriesForPhonons(self, director):
         #
         matter = self._load(director)
         orm = director.clerk.orm; db = orm.db
         matterrecord = orm(matter)
-        # the dispersions
+        # the phononss
         phonondomaccess = director.retrieveDOMAccessor('phonon')
-        disps = phonondomaccess.getDispersions(matterrecord)
+        disps = phonondomaccess.getPhonons(matterrecord)
         #
         if eval(self.inventory.include_none_entry):
             entries = [('', '')]

@@ -18,11 +18,11 @@ class TestCase(unittest.TestCase):
     def __init__(self, *args, **kwds):
         super(TestCase, self).__init__(*args, **kwds)
         
-        from vnfb.dom.material_simulations.PhononDispersion import PhononDispersion
+        from vnfb.dom.material_simulations.Phonons import Phonons
         from mccomponents.sample.idf import readDispersion
-        datadir = '../../../../content/data/phonondispersions/bvk-fccAgAt293-N20-df0.2'
+        datadir = '../../../../content/data/phonons/bvk-fccAgAt293-N20-df0.2'
         nAtoms, dimension, Qaxes, polarizations, energies, dos = readDispersion(datadir)
-        disp = PhononDispersion(
+        disp = Phonons(
             nAtoms = nAtoms,
             dimension = dimension,
             Qaxes = Qaxes,
@@ -45,7 +45,7 @@ class TestCase(unittest.TestCase):
 
     def test2(self):
         disp = self.disp
-        x,y = disp.getDispersionCurve((0,0,0), (0,0,3.08), branch=0, npoints=20)
+        x,y = disp.getDispersionsCurve((0,0,0), (0,0,3.08), branch=0, npoints=20)
         import pylab
         pylab.plot(x,y)
         pylab.show()
@@ -54,7 +54,7 @@ class TestCase(unittest.TestCase):
     
     def test3(self):
         disp = self.disp
-        x,ys = disp.getDispersionPlot(
+        x,ys = disp.getDispersionsPlot(
             [ (0,0,0),
               (0,0,1.54),
               (0,1.54,1.54),

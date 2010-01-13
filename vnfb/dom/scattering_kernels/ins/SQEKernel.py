@@ -12,7 +12,7 @@
 #
 
 
-from _ import PhononDispersion, AbstractScatteringKernel as base
+from _ import Phonons, AbstractScatteringKernel as base
 
 class SQEKernel(base):
 

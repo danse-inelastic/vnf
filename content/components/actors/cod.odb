@@ -113,6 +113,13 @@ class Actor(base):
             (False, 'XXX', str(a), str(b), str(c), str(alpha), str(beta), str(gamma),
              str(volume), str(nelements), 'symmetry', 'formula', 'text',),
             ]
+        
+    def getFile(self):
+        db = "cod";
+
+        fileName = "http://fireball.phys.wvu.edu/cod/" + db + "/" + fileNumbers[tblResult.getSelectedRow()] + ".cif";
+        
+        contents=Main.getFileContents(fileName);
 
 
 

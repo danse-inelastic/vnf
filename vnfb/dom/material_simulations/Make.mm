@@ -41,7 +41,7 @@ EXPORT_PYTHON_MODULES = \
 	ComputationResult.py \
 	GulpSettingsHolder.py \
 	PhononDOS.py \
-	PhononDispersion.py \
+	Phonons.py \
 	SimulationBase.py \
 	SQE.py \
 	__init__.py \

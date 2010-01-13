@@ -18,7 +18,7 @@ typenames = [
 
 #deps_typenames = [
 #    'material_simulations.PhononDOS.PhononDOS',
-#    'material_simulations.PhononDispersion.PhononDispersion',
+#    'material_simulations.Phonons.Phonons',
 #    'material_simulations.SQE.SQE',
 #    ]
 

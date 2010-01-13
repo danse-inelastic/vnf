@@ -45,21 +45,21 @@ class Retriever(base):
 ##         self.declareProgress(0.5, 'get result from server')
 ##         self._save_result(computation, job, 'DOS', dos, 'data.idf')
         
-        # create a phonon dispersion record to save dispersion
-        self.declareProgress(0.6, 'create a phonon dispersion to store the result')
-        from vnfb.dom.material_simulations.PhononDispersion import PhononDispersionTable
-        disp = self._make_result_holder(computation, PhononDispersionTable)
+        # create a phonons record to save phonons
+        self.declareProgress(0.6, 'create phonons entry to store the result')
+        from vnfb.dom.material_simulations.Phonons import PhononsTable
+        disp = self._make_result_holder(computation, PhononsTable)
         disp.matter = computation.matter
         db.updateRecord(disp)
 
-        # save the result from job to dispersion
+        # save the result from job to phonons
         self.declareProgress(0.7, 'get result from server')
         self._save_results(computation, job, expected_results, disp)
         return
 
 
 def retriever():
-    return Retriever('bvk_getdispersion')
+    return Retriever('bvk_getphonons')
 
 
 # version

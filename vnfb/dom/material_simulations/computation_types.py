@@ -14,14 +14,14 @@
 
 typenames = [
     'material_simulations.BvKComputation.BvK_GetDos',
-    'material_simulations.BvKComputation.BvK_GetDispersion',
+    'material_simulations.BvKComputation.BvK_GetPhonons',
     'material_simulations.GulpSettingsHolder.GulpSettings',
     ]
 
 
 deps_typenames = [
     'material_simulations.PhononDOS.PhononDOS',
-    'material_simulations.PhononDispersion.PhononDispersion',
+    'material_simulations.Phonons.Phonons',
     'material_simulations.SQE.SQE',
     ]
 
