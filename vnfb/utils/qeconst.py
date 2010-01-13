@@ -27,7 +27,7 @@ TYPE        = {"PW":    "pw.x",
                "DYNMAT": "dynmat.x",
                "D3":    "d3.x"
                }
-               # "BANDS", "CPPP", "D3", "DOS", "DYNMAT", "INITIAL_STATE", "GIPAW", "D1", "MATDYN", "PROJWFC", "PWCOND", "Q2R"
+               # Other types: "CPPP", "INITIAL_STATE", "GIPAW", "D1", "MATDYN", "PROJWFC", "PWCOND"
 
 NOPARALLEL  = ("DOS", "MATDYN", "DYNMAT", "Q2R") # "BANDS"?, "PP"? #
 
@@ -42,7 +42,7 @@ SIMULATIONS = ("Total Energy",              # 0
                "Electron Dispersion",       # 2 pw.x -> pw.x -> bands.x -> plotbands.x
                "Geometry Optimization",     # 3
                "Single Phonon",             # 4
-               "Multiple Phonon")           # 5 DOS and Dispersion
+               "Multiple Phonon")           # 5 DOS and Dispersion, See: example06
             
 # Types of simulations
 SIMCHAINS = OrderedDict()
@@ -89,6 +89,8 @@ RUNSCRIPT   = "run.sh"
 
 RESULTS_ID   = "results-link"
 
+# TODO: Move to parser/inputs
+ZASR    = ("crystal", "simple", "one-dim", "zero-dim", "no")
 
 __date__ = "$Nov 3, 2009 3:12:34 PM$"
 
