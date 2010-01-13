@@ -32,6 +32,11 @@ NOW
 - Generate QE config file from atomic structure !!!
 
 
+CRITICAL FIXES
+==============
+- Recognize elements and populate psedo potentials depending on the elements in the structure
+    (see input-pw.odb visual)
+
 - Handle multiple jobs for the task
 - Fix database jobs status depending on the actual jobs status
 - Fix the formatting of config view and create
@@ -39,6 +44,15 @@ NOW
 - Display and refresh output file
 - Hide "Run Task" button unless the previous simulation task is completed
 - Display jobs
+
+Simulations Types [Status]
+=================
+- Total Energy
+- Electron DOS
+- Electron Dispersion
+- Geometry Optimization
+- Single Phonon
+- Multiple Phonon (1. On-host run)
 
 Minor:
 - Update only simulation task field (revise visuals)

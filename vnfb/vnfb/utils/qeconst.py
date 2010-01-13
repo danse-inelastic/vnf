@@ -90,8 +90,12 @@ RUNSCRIPT   = "run.sh"
 RESULTS_ID   = "results-link"
 
 # TODO: Move to parser/inputs
-ZASR    = ("crystal", "simple", "one-dim", "zero-dim", "no")
-
+ZASR        = ("crystal", "simple", "one-dim", "zero-dim", "no")
+SMEARING    = {"gaussian":              "gauss",
+               "methfessel-paxton":     "mp",
+               "marzari-vanderbilt":    "mv",
+               "fermi-dirac":           "fd"
+              }
 __date__ = "$Nov 3, 2009 3:12:34 PM$"
 
 
