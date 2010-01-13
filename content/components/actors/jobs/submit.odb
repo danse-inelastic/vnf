@@ -123,7 +123,7 @@ class Actor(base):
         ]
 
         dds     = director.dds
-        self._write2file(dds, self._job, RUNSCRIPT, "\n".join(cmds))    # -> qesimulations directory
+        self._write2file(dds, self._job, RUNSCRIPT, "\n".join(cmds))    # -> qejobs directory
         dds.remember(self._job, RUNSCRIPT)  # Important step during which the .__dds_nodelist* files are created
         self._files.append(RUNSCRIPT)
         
