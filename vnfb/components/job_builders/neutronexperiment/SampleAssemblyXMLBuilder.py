@@ -58,24 +58,30 @@ class Builder(ShapeRenderer, XMLMill):
             
         self._preElement( sampleassembly, attrs )
 
+        # get scatterers from db
         scatterers_ref = sampleassembly.scatterers
         if not scatterers_ref:
             raise RuntimeError, "Sample assmebly %s has no scatterers" % sampleassembly.id
-        scatterers = scatterers_ref.dereference(self.db)
+        scatterers = [s for n,s in scatterers_ref.dereference(self.db)]
+
+        # calculate absolute coordinates of scatterers
+        from vnfb.utils.neutron_experiment_simulations.geometry \
+             import calculateComponentAbsoluteCoordinates
+        calculateComponentAbsoluteCoordinates(scatterers)
         
-        for name, scatterer in scatterers:
+        for scatterer in scatterers:
             self.dispatch( scatterer )
             continue
 
         self._write( '' )
         self._write( '<LocalGeometer registry-coordinate-system="InstrumentScientist">' )
         self._indent()
-        for name, scatterer in scatterers:
+        for scatterer in scatterers:
             name = scatterer.short_description.replace( ' ', '_' )
             attrs = {
                 'name': name,
-                'position': (0,0,0),
-                'orientation': (0,0,0),
+                'position': scatterer.position,
+                'orientation': scatterer.orientation,
                 }
             self._write( '<Register %s/>' % attribs_str( attrs ) )
             continue
@@ -107,6 +113,7 @@ class Builder(ShapeRenderer, XMLMill):
         orm = self.orm
         from vnfb.dom.AtomicStructure import Structure
         matter = orm.load(Structure, matterrecord.id)
+        matter.description = '' # right now mcvine cannot parse description
         xyzfilename = self._create_xyzfile(matter)
         self.filenames.append(xyzfilename)
 
@@ -158,7 +165,10 @@ class Builder(ShapeRenderer, XMLMill):
         filename = '%s.xyz' % self.orm(structure).id
         filepath = os.path.join( self.directory, filename )
         
-        content = makeXYZfileContent(structure)
+        content = makeXYZfileContent(
+            structure,
+            use_primitive_unitcell=1,
+            use_fractional_coordinates=1)
         
         open( filepath, 'w' ).write( '\n'.join( content ) )
         return filename

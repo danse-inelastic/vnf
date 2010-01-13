@@ -39,16 +39,7 @@ def createInstrument(
     return instrument
 
 
-import numpy as np
-from mcni.neutron_coordinates_transformers import mcstasRotations
-def _tomatrix(orientation):
-    orientation = np.array(orientation)
-    if orientation.size==3:
-        return mcstasRotations.toMatrix(*orientation)
-    elif orientation.size==9:
-        orientation.shape =3,3
-        return orientation
-    raise ValueError, str(orientation)
+from vnfb.utils.neutron_experiment_simulations.geometry import tomatrix as _tomatrix
 
 
 def createComponent(typename, kwds):

@@ -56,10 +56,21 @@ class Builder(base):
         self._indent()
         # scatterer name
         name = scatterer.short_description.replace( ' ', '_' )
+
+        # position
+        position = scatterer.position
+        if position is None: position = 0,0,0
+        else: position = tuple(position)
+        
+        # orientation
+        orientation = scatterer.orientation
+        from vnfb.utils.neutron_experiment_simulations.geometry import toangles
+        orientation = toangles(orientation)
+        
         attrs = {
             'name': name,
-            'position': scatterer.position,
-            'orientation': scatterer.orientation,
+            'position': position ,
+            'orientation': orientation,
             }
         self._write( '<Register %s/>' % attribs_str( attrs ) )
         self._outdent()
