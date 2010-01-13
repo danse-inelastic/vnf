@@ -31,7 +31,6 @@ class Actor(base):
         nq3         = pyre.inventory.str('nq3', default='')
 
     def generateInput(self, director):
-        #print self.inventory.id
         ph      = QEInput(type='ph')
         nl  = Namelist("inputph")
         nl.add("nq1", self.nq1)
@@ -39,8 +38,8 @@ class Actor(base):
         nl.add("nq3", self.nq3)
         ph.addNamelist(nl)
         input   = ph.toString()
-        return director.redirect(actor   = 'material_simulations/espresso/input-add',
-                                routine = 'defaultForm',
+        return director.redirect(actor   = 'material_simulations/espresso/input-create',
+                                routine = 'default',
                                 text    = input,
                                 id      = self.inventory.id,
                                 taskid  = self.inventory.taskid)
