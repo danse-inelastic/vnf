@@ -21,9 +21,41 @@ class Builder:
         return
     
 
-    def render(self, sampleassembly, db=None, dds=None):
-        self.db = db; self.dds = dds
+    def render(self, target, db=None, dds=None, orm=None):
+        self.db = db; self.dds = dds; self.orm = orm
+        handler = '_on%s' % target.__class__.__name__
+        return getattr(self, handler)(target)
 
+
+    def _onScatterer(self, scatterer):
+        db = self.db; dds = self.dds; orm = self.orm
+        self.dependencies = []
+        self.filenames = []
+        
+        # the sample assembly xml
+        from SampleAssemblyXMLfromOneScatterer import Builder
+        filename = self.sampleassemblyxmlfilename
+        filepath = self._path(filename)
+        builder = Builder(filepath)
+        builder.render(scatterer, db=db, dds=dds, orm=orm)
+        self.filenames.append(filename)
+        self.filenames += builder.getFilenames()
+        del builder
+
+        # xml files for scatterers
+        from McvineScattererXMLBuilder import Builder
+        builder = Builder(self.path)
+        builder.render(scatterer, db=db, dds=dds)
+        self.dependencies += builder.getDependencies()
+        self.filenames += builder.getFilenames()
+
+        # odb file for the sample assembly
+        self.options = self._build_odb( )
+        return
+
+
+    def _onSampleAssembly(self, sampleassembly):
+        db = self.db; dds = self.dds
         self.dependencies = []
         self.filenames = []
         

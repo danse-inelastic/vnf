@@ -17,8 +17,8 @@ def makeXYZfileContent(structure):
     of the xyz file for the given structure
     '''
     # get "parser"
-    from matter.Parsers import getParsers
-    xyz = getParsers('xyz')
+    from matter.Parsers import getParser
+    xyz = getParser('xyz')
     
     # content strings
     content = xyz.tostring(structure).splitlines()

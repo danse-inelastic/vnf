@@ -11,7 +11,8 @@
 
 '''Builder to render mcvine code from configurations of a "samplecomponent".
 A sample component is an instance of one of the subclasses of
-dom.neutron_components.SampleComponent.
+dom.neutron_experiment_simulations.neutron_components.SampleBase, and
+not of either SampleAssembly or Scatterer.
 '''
 
 class Builder:

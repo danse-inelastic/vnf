@@ -59,10 +59,8 @@ class Builder(JobBuilder, XMLMill):
 
 
     def onScatterer(self, scatterer):
-        matter = scatterer.matter.dereference(self.db)
-        mattertype = matter.__class__.__name__
-        handler = 'on%sScatterer' % mattertype
-        return getattr(self, handler)( scatterer )
+        # at this moment we can only deal with polycrystalline sample
+        return self.onPolyCrystalScatterer(scatterer)
 
 
     def onPolyCrystalScatterer(self, scatterer):
