@@ -25,9 +25,10 @@ class Builder(ShapeRenderer, XMLMill):
         return
 
 
-    def render(self, sampleassembly, db=None, dds=None):
+    def render(self, sampleassembly, db=None, dds=None, orm=None):
         self.db = db
         self.dds = dds
+        self.orm = orm
 
         self.filenames = []
         
@@ -86,10 +87,9 @@ class Builder(ShapeRenderer, XMLMill):
 
 
     def onScatterer(self, scatterer):
-        matter = scatterer.matter.dereference(self.db)
-        mattertype = matter.__class__.__name__
-        handler = 'on%sScatterer' % mattertype
-        return getattr(self, handler)( scatterer )
+        # at this moment we only know to do polycrystalline sample
+        # should add sample phase information into the Scatterer data object
+        return self.onPolyCrystalScatterer(scatterer)
 
 
     def onPolyCrystalScatterer(self, scatterer):
@@ -103,15 +103,18 @@ class Builder(ShapeRenderer, XMLMill):
         self.onShape(scatterer.shape.dereference(self.db))
 
         # now need to create a xyz file
-        polyxtal = scatterer.matter.dereference(self.db)
-        xyzfilename = self._create_xyzfile(polyxtal)
+        matterrecord = scatterer.matter.dereference(self.db)
+        orm = self.orm
+        from vnfb.dom.AtomicStructure import Structure
+        matter = orm.load(Structure, matterrecord.id)
+        xyzfilename = self._create_xyzfile(matter)
         self.filenames.append(xyzfilename)
 
         self._write('')
         self._write( '<Phase type="crystal">' )
         self._indent()
         self._write( '<ChemicalFormula>%s</ChemicalFormula>' % (
-            polyxtal.chemical_formula,) )
+            matter.getChemicalFormula(),) )
         self._write( '<xyzfile>%s</xyzfile>' % xyzfilename )
         self._outdent()
         self._write( '</Phase>' )
@@ -142,22 +145,22 @@ class Builder(ShapeRenderer, XMLMill):
 
     def _postElement(self, element):
         t = element.__class__.__name__
-
+        
         self._outdent()
-
+        
         self._write( '</%s>' % t )
         self._write( '' )
         return
 
 
-    def _create_xyzfile(self, crystal):
+    def _create_xyzfile(self, structure):
         import os
-        filename = '%s.xyz' % crystal.id
+        filename = '%s.xyz' % self.orm(structure).id
         filepath = os.path.join( self.directory, filename )
-
-        contents = crystal2xyz( crystal )
-
-        open( filepath, 'w' ).write( '\n'.join( contents ) )
+        
+        content = makeXYZfileContent(structure)
+        
+        open( filepath, 'w' ).write( '\n'.join( content ) )
         return filename
 
 
@@ -171,28 +174,7 @@ def attribs_str( attributes ):
 
 
 
-def crystal2xyz( crystal ):
-    # convert a crystal db record to a xyz file
-    lattice = crystal.cartesian_lattice
-    coords= crystal.fractional_coordinates
-    atoms = crystal.atom_symbols
-    
-    from numpy import array
-    coords = array(coords)
-    coords.shape = -1,3
-    
-    assert len(atoms) == len(coords)
-
-    contents = []
-    contents.append( '%d' % len(atoms) )
-    contents.append( ' '.join( [ '%s' % a for a in lattice ] ) )
-    for atom, coord in zip( atoms, coords):
-        contents.append(
-            '%s %s' % (atom, ' '.join( [ '%s' % x for x in coord] ) )
-            )
-        continue
-    
-    return contents
+from vnfb.utils.atomicstructure import makeXYZfileContent
 
 
 # version

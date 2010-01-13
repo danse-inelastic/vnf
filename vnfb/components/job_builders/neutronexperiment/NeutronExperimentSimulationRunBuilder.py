@@ -25,9 +25,10 @@ class Builder(base):
 
     def render(self, experiment, db=None, dds=None):
         self.computation = self.experiment = experiment
-        self.db = db
-        self.dds = dds
         self.domaccess = self.director.retrieveDOMAccessor('experiment')
+        self.dds = dds
+        self.orm = self.domaccess.orm
+        self.db = self.orm.db
         
         self.dependencies = []
         self.filenames = []
@@ -52,10 +53,14 @@ class Builder(base):
         if instrument.hasSampleComponent():
             sample = experiment.sample.dereference(self.db)
             from vnfb.dom.neutron_experiment_simulations.SampleAssembly import SampleAssemblyTable
+            from vnfb.dom.neutron_experiment_simulations.Scatterer import ScattererTable
             from vnfb.dom.neutron_experiment_simulations.neutron_components.SampleBase import TableBase as SampleTableBase
             if isinstance(sample, SampleAssemblyTable):
                 sampleassembly = sample
                 self.dispatch( sampleassembly )
+            elif isinstance(sample, ScattererTable):
+                scatterer = sample
+                self.dispatch(scatterer)
             else:
                 assert isinstance(sample, SampleTableBase), "not a sample: %s" % sample
                 samplecomponent = sample
@@ -111,12 +116,19 @@ class Builder(base):
 
 
     def onSampleAssembly(self, sampleassembly):
-        from vnfb.dom.SampleAssembly import SampleAssemblyTable
-        if not isinstance(sampleassembly, SampleAssemblyTable):
-            raise RuntimeError
         from McvineSampleAssemblyBuilder import Builder
         builder = Builder(self.path)
-        builder.render(sampleassembly, db = self.db, dds = self.dds)
+        builder.render(sampleassembly, db = self.db, dds = self.dds, orm=self.orm)
+        self.dependencies += builder.getDependencies()
+        self.filenames += builder.getFilenames()
+        self.options.update(builder.getOptions())
+        return
+
+
+    def onScatterer(self, scatterer):
+        from McvineSampleAssemblyBuilder import Builder
+        builder = Builder(self.path)
+        builder.render(scatterer, db = self.db, dds = self.dds, orm=self.orm)
         self.dependencies += builder.getDependencies()
         self.filenames += builder.getFilenames()
         self.options.update(builder.getOptions())

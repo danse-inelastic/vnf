@@ -100,16 +100,12 @@ class Worker(Component):
         domaccess = self.domaccess
         structure = domaccess.getAtomicStructure(id=structurerecord.id)
 
-        # get "parser"
-        from matter.Parsers import getParsers
-        xyz = getParsers('xyz')
-
-        # content strings
-        contents = xyz.tostring(structure).splitlines()
+        from vnfb.utils.atomicstructure import makeXYZfileContent
+        content = makeXYZfileContent(structure)
 
         #
         filename = 'matter.xyz'
-        return filename, contents
+        return filename, content
 
 
 

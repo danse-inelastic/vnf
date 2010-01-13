@@ -37,6 +37,7 @@ EXPORT_PYTHON_MODULES = \
 	NeutronExperiment.py \
 	NeutronExperimentSimulationRunBuilder.py \
 	SampleAssemblyXMLBuilder.py \
+	SampleAssemblyXMLfromOneScatterer.py \
 	SampleComponentBuilder.py \
 	__init__.py \
 	_.py \
