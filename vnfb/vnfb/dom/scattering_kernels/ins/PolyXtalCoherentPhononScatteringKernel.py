@@ -12,10 +12,10 @@
 #
 
 
-from _ import PhononDispersion, AbstractScatteringKernel as base
+from _ import Phonons, AbstractScatteringKernel as base
 class PolyXtalCoherentPhononScatteringKernel(base):
 
-    dispersion = None
+    phonons = None
     Ei = 70.
     max_energy_transfer = 55.
     max_momentum_transfer = 12.5
@@ -23,10 +23,10 @@ class PolyXtalCoherentPhononScatteringKernel(base):
 
     def customizeLubanObjectDrawer(self, drawer):
         drawer.sequence = ['properties']
-        drawer.mold.sequence = ['dispersion', 'Ei', 'max_energy_transfer', 'max_momentum_transfer']
+        drawer.mold.sequence = ['phonons', 'Ei', 'max_energy_transfer', 'max_momentum_transfer']
 
         #
-        def _createfield_for_dispersion(obj):
+        def _createfield_for_phonons(obj):
             # this is a method of mold.
             self = drawer.mold
 
@@ -40,21 +40,21 @@ class PolyXtalCoherentPhononScatteringKernel(base):
 
             # data 
             record = self.orm(obj)
-            referred_record = record.dispersion and record.dispersion.id \
-                              and record.dispersion.dereference(self.orm.db)
+            referred_record = record.phonons and record.phonons.id \
+                              and record.phonons.dereference(self.orm.db)
 
             # widget
-            doc = lc.document(Class='container', id='dispersion-selector-container')
+            doc = lc.document(Class='container', id='phonons-selector-container')
             sp = doc.splitter()
             left = sp.section(); right = sp.section()
             #
-            selector = FormSelectorField(label='Dispersion:', name='dispersion')
+            selector = FormSelectorField(label='Phonons:', name='phonons')
             left.add(selector)
             #
             plotcontainer = right.document(Class='container')
             #
             loadplot = lambda uid: load(
-                actor='orm/phonondispersions', routine='createGraphicalView',
+                actor='orm/phonons', routine='createGraphicalView',
                 uid=uid)
 
             # default selection
@@ -72,7 +72,7 @@ class PolyXtalCoherentPhononScatteringKernel(base):
             #  dynamically load choices
             entries = load(
                 actor='orm/atomicstructures',
-                routine='getSelectorEntriesForDispersion',
+                routine='getSelectorEntriesForPhonons',
                 id = matterid,
                 include_none_entry = 1,
                 )
@@ -82,7 +82,7 @@ class PolyXtalCoherentPhononScatteringKernel(base):
             
             return doc
 
-        drawer.mold._createfield_for_dispersion = _createfield_for_dispersion
+        drawer.mold._createfield_for_phonons = _createfield_for_phonons
 
     pass # end of PolyXtalCoherentPhononScatteringKernel
 
@@ -91,8 +91,8 @@ class PolyXtalCoherentPhononScatteringKernel(base):
 from _ import AbstractScatteringKernelInventory as InvBase
 class Inventory(InvBase):
     
-    dispersion = InvBase.d.reference(
-        name='dispersion', targettype=PhononDispersion, owned=0)
+    phonons = InvBase.d.reference(
+        name='phonons', targettype=Phonons, owned=0)
 
     Ei = InvBase.d.float(name = 'Ei', default = 70)
     
@@ -116,19 +116,19 @@ PolyXtalCoherentPhononScatteringKernelTable = o2t(
 
 # obsolete
 def inittable(db):
-    def k(id, dispersion, Ei, max_energy_transfer, max_momentum_transfer):
+    def k(id, phonons, Ei, max_energy_transfer, max_momentum_transfer):
         r = PolyXtalCoherentPhononScatteringKernel()
         r.id = id
         r.Ei = Ei
-        r.dispersion = dispersion
+        r.phonons = phonons
         r.max_energy_transfer = max_energy_transfer
         r.max_momentum_transfer = max_momentum_transfer
         return r
 
-    from PhononDispersion import PhononDispersion
+    from Phonons import Phonons
     records = [
         k('polyxtalcoherentphononscatteringkernel-fccNi-0',
-          'phonon-dispersion-fccNi-0',
+          'phonon-phonons-fccNi-0',
           70.,
           55.,
           12.5,

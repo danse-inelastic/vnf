@@ -147,7 +147,7 @@ class TreeViewCreator:
                    = onNeutronRecorder \
                    = onDetectorSystem_fromXML \
                    = onPolyCrystal = onDisordered \
-                   = onPhononDispersion \
+                   = onPhonons \
                    = onSANSSphereModelKernel \
                    = onCrystal \
                    = onBlock = onCylinder \
@@ -155,7 +155,7 @@ class TreeViewCreator:
 
     onSQEKernel \
                 = onElement
-    #onMatter = onPhononDispersion = onScatteringKernel = onComponent = onShape = onElement
+    #onMatter = onPhonons = onScatteringKernel = onComponent = onShape = onElement
     
 
     def rootNode(self, container):

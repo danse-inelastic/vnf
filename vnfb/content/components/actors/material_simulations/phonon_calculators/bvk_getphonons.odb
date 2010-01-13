@@ -77,7 +77,7 @@ class Actor(base):
         configdoc = doc.document(title = 'Configuration', collapsable = True)
         configdoc.oncreate = select(element=configdoc).append(
             load(
-              actor='orm/bvk_getdispersion', routine='displayProperties',
+              actor='orm/bvk_getphonons', routine='displayProperties',
               id = c.id, editlink=False,
             ))
 
@@ -128,7 +128,7 @@ class Actor(base):
         if not id:
             raise RuntimeError
         domaccess = self._domaccess(director)
-        label = domaccess.getComputationLabel('dispersion', id)
+        label = domaccess.getComputationLabel('phonons', id)
         computation = self._getComputation(director)
         return [
             ('Simulations',
@@ -138,7 +138,7 @@ class Actor(base):
              lc.load(actor='materialsimulation', filter_expr="type=='bvk_*'")),
             ('%s %s' % (computation.__class__.__name__, label),
              lc.select(id='main-display-area').replaceContent(
-            lc.load(actor='material_simulations/phonon_calculators/bvk_getdispersion',
+            lc.load(actor='material_simulations/phonon_calculators/bvk_getphonons',
                     routine = 'createView', id=id)
             )),
             ]
@@ -147,20 +147,20 @@ class Actor(base):
     def _getComputation(self, director):
         domaccess = self._domaccess(director)
         id = self.inventory.id
-        return domaccess.getComputation('dispersion', id)
+        return domaccess.getComputation('phonons', id)
 
 
     def _getComputationRecord(self, director):
         domaccess = self._domaccess(director)
         id = self.inventory.id
-        return domaccess.getComputationRecord('dispersion', id)
+        return domaccess.getComputationRecord('phonons', id)
 
 
     def _domaccess(self, director):
         return director.retrieveDOMAccessor('material_simulations/phonon_calculators/bvk')
 
 
-    def __init__(self, name='material_simulations/phonon_calculators/bvk_getdispersion'):
+    def __init__(self, name='material_simulations/phonon_calculators/bvk_getphonons'):
         super(Actor, self).__init__(name)
         return
 

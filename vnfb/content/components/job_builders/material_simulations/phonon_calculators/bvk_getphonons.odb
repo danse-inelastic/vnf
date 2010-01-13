@@ -13,14 +13,14 @@
 
 
 import journal
-debug = journal.debug('bvk_getdispersion-jobbuilder')
+debug = journal.debug('bvk_getphonons-jobbuilder')
 
 
 from vnfb.components.JobBuilder import JobBuilder as base
 
 class Builder(base):
 
-    from vnfb.dom.material_simulations.BvKComputation import BvK_GetDispersion as Computation
+    from vnfb.dom.material_simulations.BvKComputation import BvK_GetPhonons as Computation
 
     def render(self, computation, db=None, dds=None):
         self._files = []

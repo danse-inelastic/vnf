@@ -26,9 +26,9 @@ Jan 7, 2010
 changed reference to "matter" from polymorphic to nonpolymorphic:
 
  bvk_getdos
- bvk_getdispersion
+ bvk_getphonons
  abinitio
- phonondispersions
+ phonons
  phonondoses
  sqes
  scatterers

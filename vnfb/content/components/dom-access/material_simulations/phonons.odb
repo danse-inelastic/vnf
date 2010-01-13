@@ -18,28 +18,28 @@ class Accessor(base):
 
 
     def __init__(self):
-        super(Accessor, self).__init__('phonondispersion-accessor')
+        super(Accessor, self).__init__('phonons-accessor')
         return
 
 
     def _getOrm(self):
         orm = self.director.clerk.orm
-        orm(PhononDispersion)
+        orm(Phonons)
         return orm
     orm = property(_getOrm)
 
 
-    def getDispersion(self, id):
+    def getPhonons(self, id):
         orm = self.orm
-        return orm.load(PhononDispersion, id)
+        return orm.load(Phonons, id)
 
 
-    def getDispersionRecord(self, id):
+    def getPhononsRecord(self, id):
         db = self.db
-        return db.query(PhononDispersionTable).filter_by(id=id).one()
+        return db.query(PhononsTable).filter_by(id=id).one()
 
 
-    def getDataForDispersion(self, disp):
+    def getDataForPhonons(self, disp):
         orm  = self.orm
         record = orm(disp)
         
@@ -56,17 +56,17 @@ class Accessor(base):
         return disp
 
 
-    def getOrigin(self, id=None, dispersion=None):
-        'get the original computation that creates this dispersion'
-        if dispersion is None:
-            dispersion = self.getDispersion(id)
+    def getOrigin(self, id=None, phonons=None):
+        'get the original computation that creates this phonons'
+        if phonons is None:
+            phonons = self.getPhonons(id)
         orm = self.orm
-        r = orm(dispersion)
+        r = orm(phonons)
         origin = r.getOrigin(orm.db)
         return origin
 
 
-from vnfb.dom.material_simulations.PhononDispersion import PhononDispersion
+from vnfb.dom.material_simulations.Phonons import Phonons
 
 import os, numpy
 

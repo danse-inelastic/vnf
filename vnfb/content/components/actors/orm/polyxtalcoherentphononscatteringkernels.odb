@@ -41,14 +41,14 @@ class Actor(helper(PolyXtalCoherentPhononScatteringKernel), base):
         properties_view = left.document(title="Properties")
         properties_view.add(self.displayProperties(director))
 
-        disp_doc = right.document(title='Dispersion')
-        dispersion = kernel.dispersion
-        if dispersion is None:
-            disp_doc.paragraph('this kernel does not have a dispersion yet!')
+        disp_doc = right.document(title='Phonons')
+        phonons = kernel.phonons
+        if phonons is None:
+            disp_doc.paragraph('this kernel does not have a phonons yet!')
         else:
-            dispid = orm(dispersion).id
+            dispid = orm(phonons).id
             dispview = director.redirect(
-                actor='orm/phonondispersions', routine='createGraphicalView',
+                actor='orm/phonons', routine='createGraphicalView',
                 id = dispid, include_credential=False)
             disp_doc.add(dispview)
         
@@ -58,9 +58,9 @@ class Actor(helper(PolyXtalCoherentPhononScatteringKernel), base):
     def _getInputErrors(self):
         e = super(Actor, self)._getInputErrors()
         if e: return e
-        dispersion = self.inventory.dispersion
-        if not dispersion:
-            return {'dispersion': 'have to select a dispersion'}
+        phonons = self.inventory.phonons
+        if not phonons:
+            return {'phonons': 'have to select a phonons'}
 
 
     def store(self, director):
@@ -73,31 +73,31 @@ class Actor(helper(PolyXtalCoherentPhononScatteringKernel), base):
         record = orm(kernel)
 
         #
-        dispersion = self.inventory.dispersion
-        dispersion = orm.db.fetchRecordUsingUniqueIdentifierStr(dispersion)
+        phonons = self.inventory.phonons
+        phonons = orm.db.fetchRecordUsingUniqueIdentifierStr(phonons)
 
         #
-        record.dispersion = dispersion
+        record.phonons = phonons
         orm.db.updateRecord(record)
         return ret
     
 
     def getSelectorEntriesForReference(self, director):
         refname = self.inventory.refname
-        if refname == 'dispersion':
-            return self.getSelectorEntriesForDispersion(director)
+        if refname == 'phonons':
+            return self.getSelectorEntriesForPhonons(director)
         return super(Actor, self).getSelectorEntriesForReference(director)
 
 
-    def getSelectorEntriesForDispersion(self, director):
+    def getSelectorEntriesForPhonons(self, director):
         # the kernel
         kernel = self._load(director)
         # the matter
         orm = director.clerk.orm
         matter = orm(kernel.matter)
-        # the dispersions
+        # the phononss
         phonondomaccess = director.retrieveDOMAccessor('phonon')
-        disps = phonondomaccess.getDispersions(matter)
+        disps = phonondomaccess.getPhonons(matter)
         entries = [(disp.id, disp.short_description or disp.id) for disp in disps]
         return entries
     

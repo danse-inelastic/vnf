@@ -19,11 +19,11 @@ from luban.content import select, load, alert
 
 
 #
-from vnfb.dom.material_simulations.PhononDispersion import PhononDispersion
+from vnfb.dom.material_simulations.Phonons import Phonons
 
 from luban.components.Actor import Actor
 import luban.orm
-base = luban.orm.object2actor(PhononDispersion)
+base = luban.orm.object2actor(Phonons)
 class Actor(base):
 
     class Inventory(base.Inventory):
@@ -72,7 +72,7 @@ class Actor(base):
         record = orm(obj)
 
         # the document to build
-        doc = lc.document(title='Phonon dispersion %s' % record.id)
+        doc = lc.document(title='phonons %s' % record.id)
 
         # link to the computation
         origin = record.getOrigin(db)
@@ -93,8 +93,8 @@ class Actor(base):
     def _createPlot1(self, disp, director):
         domaccess = self._domaccess(director)
 
-        disp = domaccess.getDataForDispersion(disp)
-        x, ys = disp.getDefaultDispersionPlot()
+        disp = domaccess.getDataForPhonons(disp)
+        x, ys = disp.getDefaultPhononsPlot()
         
         # plot
         p = lc.plot2d()
@@ -112,11 +112,11 @@ class Actor(base):
 
     def _domaccess(self, director):
         self._initComputationOrm(director)
-        return director.retrieveDOMAccessor('material_simulations/phonondispersion')
+        return director.retrieveDOMAccessor('material_simulations/phonons')
             
 
 def actor():
-    return Actor('orm/phonondispersions')
+    return Actor('orm/phonons')
 
 
 # version

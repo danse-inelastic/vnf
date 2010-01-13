@@ -83,13 +83,13 @@ class Collector:
         return 
 
 
-    def onPhononDispersion(self, dispersion):
+    def onPhonons(self, dispersion):
         realphonondispersion = dispersion.realphonondispersion
         self.dispatch( realphonondispersion )
         return
     
 
-    def onIDFPhononDispersion(self, dispersion):
+    def onIDFPhonons(self, dispersion):
         idfdispersion_dir = self._datadir( dispersion )
         #make a symbolic link in the run directory to the dispersion
         link = os.path.join( self.path, dispersion.id )

@@ -124,22 +124,22 @@ class Builder(JobBuilder, XMLMill):
                      attribs_str( attrs ) )
 
         self._indent()
-        dispersion = kernel.dispersion.dereference(self.db)
-        self.dispatch( dispersion )
+        phonons = kernel.phonons.dereference(self.db)
+        self.dispatch( phonons )
         self._outdent()
 
         self._write( '</Phonon_CoherentInelastic_PolyXtal_Kernel>' )
         return 
 
 
-    def onPhononDispersion(self, dispersion):
-        self.dependencies.append(dispersion)
+    def onPhonons(self, phonons):
+        self.dependencies.append(phonons)
 
         # this is done by assuming the <table>/<id> directory structure for data storage
         # should be replaced later
         import os
-        relpath = os.path.join( '..', '..', self.dds.path(dispersion))
-        self._write( '<LinearlyInterpolatedDispersion idf-data-path="%s"/>' % relpath )
+        relpath = os.path.join( '..', '..', self.dds.path(phonons))
+        self._write( '<LinearlyInterpolatedPhonons idf-data-path="%s"/>' % relpath )
         return
 
 

@@ -31,7 +31,7 @@ class Actor(base):
 
     def createPhononDocForAtomicStructure(self, director):
         doc = lc.document()
-        doc.add(self.createDispersionDocForAtomicStructure(director))
+        doc.add(self.createPhononsDocForAtomicStructure(director))
         doc.add(self.createDOSDocForAtomicStructure(director))
         return doc
 
@@ -72,30 +72,30 @@ class Actor(base):
         return doc
 
 
-    def createDispersionDocForAtomicStructure(self, director):
-        doc = lc.document(title='Dispersions')
+    def createPhononsDocForAtomicStructure(self, director):
+        doc = lc.document(title='Phonons')
 
         atomicstructureaccess = director.retrieveDOMAccessor('atomicstructure')
         structrecord = atomicstructureaccess.getAtomicStructureRecord(self.inventory.id)
         
         phononaccess = director.retrieveDOMAccessor('phonon')
-        disps = phononaccess.getDispersions(atomicstructure=structrecord)
+        disps = phononaccess.getPhonons(atomicstructure=structrecord)
         
         if not disps:
-            doc.paragraph(text=['There is no dispersion calculated.'])
+            doc.paragraph(text=['There is no phonons calculated.'])
         elif len(disps)==1:
             disp = disps[0]
             doc1 = doc.document(Class='container')
-            doc1.paragraph(text=['loading phonon dispersion. please wait...'])
+            doc1.paragraph(text=['loading phonons. please wait...'])
             doc1.oncreate = select(element=doc1).replaceContent(
-                load(actor='orm/phonondispersions', routine='createGraphicalView', id=disp.id)
+                load(actor='orm/phonons', routine='createGraphicalView', id=disp.id)
                 )
         else:
             doc1 = doc.document(Class='container')
-            doc1.paragraph(text=['loading phonon dispersion curves. please wait...'])
+            doc1.paragraph(text=['loading phonons curves. please wait...'])
             ids = [disp.id for disp in disps]
             doc1.oncreate = select(element=doc1).replaceContent(
-                load(actor='orm/phonondispersions', routine='createGraphicalView', ids=ids)
+                load(actor='orm/phonons', routine='createGraphicalView', ids=ids)
                 )
             
         newphononcomputation = lc.load(
