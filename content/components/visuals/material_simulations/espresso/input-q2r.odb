@@ -28,7 +28,7 @@ def visual(actor):
     zasr          = FormSelectorField(name="zasr",
                                       entries=enumerate(ZASR))
 
-    submit      = FormSubmitButton(label="Create Input Configuration")
+    submit      = FormSubmitButton(label="Generate Input Configuration")
     cancel      = lc.button(label="Cancel")
     cancel.onclick  = load(actor = 'material_simulations/espresso/sim-view', id=actor.id)
 
