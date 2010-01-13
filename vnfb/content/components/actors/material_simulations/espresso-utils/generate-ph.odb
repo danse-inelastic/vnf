@@ -1,0 +1,147 @@
+#!/usr/bin/env python
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                               Alex Dementsov
+#                      California Institute of Technology
+#                        (C) 2009  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+from luban.content import select
+from luban.content import load
+
+from vnfb.utils.parser.qeinput import QEInput
+from vnfb.utils.parser.namelist import Namelist
+
+from luban.components.AuthorizedActor import AuthorizedActor as base
+
+# Requires simulation id,
+class Actor(base):
+
+    class Inventory(base.Inventory):
+        import pyre.inventory
+        id          = pyre.inventory.str('id', default='')          # Simulation Id
+        taskid      = pyre.inventory.str('taskid', default='')
+        nq1         = pyre.inventory.str('nq1', default='')        # Type of the configuration file
+        nq2         = pyre.inventory.str('nq2', default='')
+        nq3         = pyre.inventory.str('nq3', default='')
+
+    def generateInput(self, director):
+        #print self.inventory.id
+        ph      = QEInput(type='ph')
+        nl  = Namelist("inputph")
+        nl.add("nq1", self.nq1)
+        nl.add("nq2", self.nq2)
+        nl.add("nq3", self.nq3)
+        ph.addNamelist(nl)
+        input   = ph.toString()
+        return director.redirect(actor   = 'material_simulations/espresso/input-add',
+                                routine = 'defaultForm',
+                                text    = input,
+                                id      = self.inventory.id,
+                                taskid  = self.inventory.taskid)
+
+    def __init__(self):
+        super(Actor, self).__init__(name='material_simulations/espresso-utils/generate-ph')
+
+        return
+
+
+    def _configure(self):
+        super(Actor, self)._configure()
+        self.id             = self.inventory.id
+        self.taskid         = self.inventory.taskid
+        self.nq1            = self.inventory.nq1
+        self.nq2            = self.inventory.nq2
+        self.nq3            = self.inventory.nq3
+
+
+    def _init(self):
+        super(Actor, self)._init()
+        return
+
+def actor():
+    return Actor()
+
+__date__ = "$Jan 13, 2010 4:29:22 AM$"
+
+
+#    def default(self, director):
+#        return select(id='main-display-area').replaceContent(self.content(director))
+#
+#
+#    def content(self, director):
+#
+#        def viewIndicator(director):
+#            path = []
+#            path.append(('Simulations ', load(actor='materialsimulation')))
+#            path.append(('Quantum Espresso ', load(actor='materialsimulation')))
+#            path.append(('%s ' % self.id, load(actor    = 'material_simulations/espresso/sim-view',
+#                                               id       = self.id)))
+#            path.append(('%s Task ' % self.type, load(actor    = 'material_simulations/espresso/task-view',
+#                                                      id       = self.id,
+#                                                      taskid   = self.taskid,
+#                                                      type     = self.type)))
+#
+#
+#            path.append('Create Input Configuration')
+#
+#            return director.retrieveVisual('view-indicator', path=path)
+#
+#        doc         = lc.document(title   = "Create Input Configuration: %s" % self.type)
+#        splitter    = doc.splitter(orientation="vertical")
+#        sA          = splitter.section()
+#        sA.add(viewIndicator(director))
+#        sB          = splitter.section()
+#
+#        # Keep for configuration builder
+#        #sB.add(lc.link(label="Use Configuration Builder", onclick=load(actor = "material_simulations/espresso/config-builder",
+#        #                                                               id    = self.id)))
+#        #sB.add(lc.paragraph(text="OR"))
+#
+#        sB.add(self._setForm(director))
+#
+#        return doc
+#
+#    def _setForm(self, director):
+#        "Sets create new settings form"
+#        # Remove "PW" case when atomic structure connector is implemented
+#        if self.type == "PW":
+#            visual  = "material_simulations/espresso/input-default"
+#            return director.retrieveVisual(visual, actor = self)
+#
+#
+#        if self.type in TYPE:
+#            visual  = "material_simulations/espresso/input-%s" % self.type.lower()
+#            return director.retrieveVisual(visual, actor = self)
+#
+#        visual  = "material_simulations/espresso/input-default"
+#        return director.retrieveVisual(visual, actor = self)
+#
+#    def createRecord(self, director):
+#        """Create configuration record"""
+#        params  = {"taskid":        self.taskid,
+#                   "filename":      self.fname,
+#                   "description":   self.description,
+#                   #"parser":        PARSERS[int(self.parser)],
+#                   "text":          self.text,
+#                   "type":          self.type
+#                   }
+#        config  = QEConfiguration()
+#        config.setDirector(director)
+#        config.createRecord(params)
+#
+#        return load(actor = 'material_simulations/espresso/sim-view', id = self.id)
+#
+#    def _verify(self):
+#        #Note:
+#        #   - Do not allow the following characters in the input filename:
+#        #	"/"
+#        #	"'"
+#        #	"""
+#        #   - filename should not be empty
+#        pass
