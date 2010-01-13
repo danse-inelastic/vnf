@@ -98,6 +98,9 @@ class Factory(object):
 
 
     def _createOverview(self, experiment):
+        #
+        orm = self.domaccess.orm
+        
         # k,v pair
         items = []
         
@@ -108,17 +111,25 @@ class Factory(object):
         # sample
         sample = experiment.sample
         if sample is not None:
-            items.append(('sample', sample.__class__.__name__))
+            label = sample.__class__.__name__
+            samplerecord = orm(sample)
+            if label in ['Scatterer', 'SampleAssembly']:
+                label = '%s %s' % (label, samplerecord.short_description or samplerecord.id)
+            action = load(
+                actor='sample', routine='view',
+                type=samplerecord.getTableName(), id=samplerecord.id)
+            link = lc.link(label=label, onclick=action, tip='click to view the sample')
+            items.append(('sample', link))
 
         # ncount
-        items.append(('ncount', experiment.ncount))
+        items.append(('ncount', str(experiment.ncount)))
 
         doc = lc.document(Class='container')
         grid = lc.grid(Class='properties'); doc.add(grid)
         for key, value in items:
             row = grid.row()
             row.cell(Class='prop-name').add(key)
-            row.cell(Class='prop-value').add(str(value))
+            row.cell(Class='prop-value').add(value)
             continue
         return doc
 
