@@ -25,6 +25,7 @@ def visual(actor):
     table       = QEGrid(lc.grid(Class="qe-form"))
     form.add(table.grid())
 
+    # zasr
     zasr          = FormSelectorField(name="zasr",
                                       entries=enumerate(ZASR))
 
@@ -35,7 +36,7 @@ def visual(actor):
     st          = QEGrid(lc.grid()) # Submit Table
     st.addRow((submit, cancel), ("qe-action-accept", "qe-action-cancel"))
 
-    table.addRow(("Acoustic Sum Rules (zasr):", zasr))
+    table.addRow(("Acoustic Sum Rules:", zasr))
     table.addRow(("", st.grid()))
 
     table.setColumnStyle(0, "qe-form-label")

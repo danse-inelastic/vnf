@@ -12,7 +12,7 @@
 #
 
 from vnf.dom.QEConfiguration import QEConfiguration
-from vnfb.utils.qeconst import PARSERS
+from vnfb.utils.qeconst import PARSERS, TYPE
 from vnfb.utils.qegrid import QEGrid
 
 from luban.content import select
@@ -73,46 +73,24 @@ class Actor(base):
         #                                                               id    = self.id)))
         #sB.add(lc.paragraph(text="OR"))
 
-        sB.add(self._setForm())
+        sB.add(self._setForm(director))
 
         return doc
 
-    def _setForm(self):
+    def _setForm(self, director):
         "Sets create new settings form"
+        # Remove "PW" case when atomic structure connector is implemented
+#        if self.type == "PW":
+#            visual  = "material_simulations/espresso/input-default"
+#            return director.retrieveVisual(visual, actor = self)
 
-        form        = Form(id='create-simulation-form')
-        table       = QEGrid(lc.grid(Class="qe-form"))
-        form.add(table.grid())
 
-        fname           = FormTextField(name = "fname", value = self.fname)
-        description     = FormTextField(name = "description", value=self.description)   # Make as textarea
-        parser          = FormSelectorField(name="parser",
-                                            entries=enumerate(PARSERS))
-        text            = FormTextArea(name="text", value=self.text)
+        if self.type in TYPE:
+            visual  = "material_simulations/espresso/input-%s" % self.type.lower()
+            return director.retrieveVisual(visual, actor = self)
 
-        submit      = FormSubmitButton(label="Create Input Configuration")
-        cancel      = lc.button(label="Cancel")
-        cancel.onclick  = load(actor = 'material_simulations/espresso/sim-view', id=self.id)
-
-        st          = QEGrid(lc.grid()) # Submit Table
-        st.addRow((submit, cancel), ("qe-action-accept", "qe-action-cancel"))
-
-        table.addRow(("Name:", fname))
-        table.addRow(("Description:", description))
-        table.addRow(("Parser:", parser))
-        table.addRow(("Configuration:", text))
-        table.addRow(("", st.grid()))
-
-        table.setColumnStyle(0, "qe-form-label")
-        table.setColumnStyle(1, "qe-form-field")
-
-        form.onsubmit   = select(element=form).submit(actor     = 'material_simulations/espresso/input-add',
-                                                      routine   = 'createRecord',
-                                                      taskid    = self.taskid,
-                                                      id        = self.id)
-
-        return form
-
+        visual  = "material_simulations/espresso/input-default"
+        return director.retrieveVisual(visual, actor = self)
 
     def createRecord(self, director):
         """Create configuration record"""
@@ -163,6 +141,8 @@ def actor():
     return Actor()
 
 __date__ = "$Nov 9, 2009 4:09:15 PM$"
+
+
 
 
 
