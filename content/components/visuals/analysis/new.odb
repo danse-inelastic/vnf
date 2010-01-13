@@ -50,9 +50,11 @@ def createStructureAnalysis():
     grid = lc.grid()
     
     routines   = []
-    routines.append((lc.link(label="RDF", 
+    routines.append(
+                    (lc.link(label="RDF", 
                              onclick=load(actor="orm/rdfcalc", routine='edit')),
-                    "Radial Distribution Function from an MD trajectory"))
+                    "Radial Distribution Function from an MD trajectory")
+                    )
     
     for link,desc in routines:
         row = grid.row()
@@ -65,17 +67,24 @@ def createDynamicsAnalysis():
     
     routines   = []
     routines.append(
-                    (lc.link(label="DoPS", onclick=select(id='main-display-area').replaceContent(
-                                    load(actor="orm/motiondoscalc", routine='edit', id='2')
-                                    )
-                                    ),"Density of Phonon States from an MD trajectory")
+                    (lc.link(label="DoPS", onclick=select(id='main-display-area'
+                            ).replaceContent(load(actor="orm/motiondoscalc", routine='edit', id='2'))),
+                    "Density of Phonon States from an MD trajectory")
                     )
-    routines.append((lc.link(label="VACF", onclick=load(actor="orm/vacfcalc", routine='edit')),
-                    "Velocity Autocorrelation Function from an MD trajectory"))
-    routines.append((lc.link(label="MSD", onclick=load(actor="orm/msdcalc", routine='edit')),
-                    "Mean Squared Displacement from an MD trajectory"))
-    routines.append((lc.link(label="Diffusion", onclick=load(actor="orm/diffusioncalc", routine='edit')),
-                    "Generate a diffusion coefficient from an MD trajectory"))
+    routines.append(
+                    (lc.link(label="VACF", onclick=select(id='main-display-area'
+                            ).replaceContent(load(actor="orm/vacfcalc", routine='edit', id='2'))),
+                    "Velocity Autocorrelation Function from an MD trajectory")
+                    )
+    routines.append(
+                    (lc.link(label="MSD", onclick=select(id='main-display-area'
+                            ).replaceContent(load(actor="orm/msdcalc", routine='edit', id='2'))),
+                    "Mean Squared Displacement from an MD trajectory")
+                    )
+    routines.append(
+                    (lc.link(label="Diffusion", onclick=load(actor="orm/diffusioncalc", routine='edit')),
+                    "Generate a diffusion coefficient from an MD trajectory")
+                    )
     
     for link,desc in routines:
         row = grid.row()
@@ -87,16 +96,26 @@ def createScatteringAnalysis():
     grid = lc.grid()
     
     routines   = []
-    routines.append((lc.link(label="S(Q,E)", onclick=load(actor="orm/csfcalc", routine='edit')),
+    routines.append(
+                    (lc.link(label="S(Q,E)", onclick=load(actor="orm/csfcalc", routine='edit')),
                     "Generate coherent and incoherent portions of inelastic scattering through an MD trajectory"))
-    routines.append((lc.link(label="EISF", onclick=load(actor="orm/eisfcalc", routine='edit')),
-                    "Elastic Incoherent Structure Factor from an MD trajectory"))
-    routines.append((lc.link(label="Static S(Q)", onclick=load(actor="orm/staticsqcalc", routine='edit')),
-                    "Static Structure Factor from an MD trajectory"))
-    routines.append((lc.link(label="Dynamic S(Q)", onclick=load(actor="orm/dynamicsqcalc", routine='edit')),
-                    "Dynamic Structure Factor from an MD trajectory"))
-    routines.append((lc.link(label="Multiphonon Scattering", onclick=load(actor="orm/multiscatcalc", routine='edit')),
-                    "Add multiphonon scattering corrections to an S(Q,E)"))
+    routines.append(
+                    (lc.link(label="EISF", onclick=load(actor="orm/eisfcalc", routine='edit')
+                             ),
+                    "Elastic Incoherent Structure Factor from an MD trajectory")
+                    )
+    routines.append(
+                    (lc.link(label="Static S(Q)", onclick=load(actor="orm/staticsqcalc", routine='edit')),
+                    "Static Structure Factor from an MD trajectory")
+                    )
+    routines.append(
+                    (lc.link(label="Dynamic S(Q)", onclick=load(actor="orm/dynamicsqcalc", routine='edit')),
+                    "Dynamic Structure Factor from an MD trajectory")
+                    )
+    routines.append(
+                    (lc.link(label="Multiphonon Scattering", onclick=load(actor="orm/multiscatcalc", routine='edit')),
+                    "Add multiphonon scattering corrections to an S(Q,E)")
+                    )
     
     for link,desc in routines:
         row = grid.row()
