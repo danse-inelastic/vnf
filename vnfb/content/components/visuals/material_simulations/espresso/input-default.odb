@@ -11,6 +11,7 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
+
 import luban.content as lc
 from luban.content import select
 from luban.content import load
@@ -24,20 +25,20 @@ def visual(actor):
     table       = QEGrid(lc.grid(Class="qe-form"))
     form.add(table.grid())
 
-    nq1         = FormTextField(name = "nq1", value = "")
-    nq2         = FormTextField(name = "nq2", value = "")
-    nq3         = FormTextField(name = "nq3", value = "")
+    fname           = FormTextField(name = "fname", value = actor.fname)
+    description     = FormTextField(name = "description", value=actor.description)   # Make as textarea
+    text            = FormTextArea(name="text", value=actor.text)
 
-    submit      = FormSubmitButton(label="Generate Input Configuration")
+    submit      = FormSubmitButton(label="Create Input Configuration")
     cancel      = lc.button(label="Cancel")
     cancel.onclick  = load(actor = 'material_simulations/espresso/sim-view', id=actor.id)
 
     st          = QEGrid(lc.grid()) # Submit Table
     st.addRow((submit, cancel), ("qe-action-accept", "qe-action-cancel"))
 
-    table.addRow(("nq1:", nq1))
-    table.addRow(("nq2:", nq2))
-    table.addRow(("nq3:", nq3))
+    table.addRow(("Name:", fname))
+    table.addRow(("Description:", description))
+    table.addRow(("Configuration:", text))
     table.addRow(("", st.grid()))
 
     table.setColumnStyle(0, "qe-form-label")
@@ -51,6 +52,6 @@ def visual(actor):
     return form
 
 
-__date__ = "$Jan 12, 2010 5:50:00 PM$"
+__date__ = "$Jan 12, 2010 7:21:52 PM$"
 
 
