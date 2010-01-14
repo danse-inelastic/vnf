@@ -31,7 +31,7 @@ def table(jobs, cols, taskinfo, director):
         submitted   = Model.descriptors.str(name='submitted')
         status      = Model.descriptors.str(name='status')
         results     = Model.descriptors.str(name='results')
-        check        = Model.descriptors.link(name='check')
+        check       = Model.descriptors.link(name='check')
         delete      = Model.descriptors.link(name='delete')
 
     columns = [
@@ -63,7 +63,6 @@ def table(jobs, cols, taskinfo, director):
         return job.status
 
     def getResults(job):
-        print director
         results = QEResults(director, job, taskinfo)
         return results.link()
 
@@ -71,8 +70,13 @@ def table(jobs, cols, taskinfo, director):
         return lc.link(label   = "Check")
 
     def getDelete(job):
-        return lc.link(label   = "Delete")
-
+        return lc.link( label   = "Delete",
+                        Class   = "qe-action-delete",
+                        onclick = load(actor      = 'jobs/job-delete',
+                                         id         = taskinfo.simid(),
+                                         jobid      = job.id,
+                                         taskid     = taskinfo.taskid(),
+                                         type       = taskinfo.type()))
 
 
     value_generators = [ eval('get'+col.measure.capitalize())

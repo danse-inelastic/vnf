@@ -159,29 +159,6 @@ class QETaskCell:
         container   = results.link()
         action      = results.action()
         
-#        cid         = "%s-%s" % (RESULTS_ID, self._task.type) # self._task.id?
-#
-#        container   = lc.document(id=cid)   #, Class="qe-tasks-results")
-#
-#        if self._job:   # Job created (submitted)
-#            results = QEResults(self._director, self._job)  # change 0-index to latest job
-#            link    = results.status()
-##            l       = lc.document()
-##            l.add(link)
-#            container.add(link)     # Add link
-#
-#            action   = lc.link(label = "Check",
-#                               id = "qe-check-results",
-#                               onclick=load(actor       = "jobs/getresults",
-#                                            routine     = "retrieveStatus",
-#                                            id          = self._simid,
-#                                            taskid      = self._task.id)    # No jobid at this time
-#                          )
-#        else:
-#            link    = lc.paragraph(text="None")
-#            container.add(link)
-#            action  = ""
-
         table.addRow(("Results: ", container, action))
 
 
