@@ -258,7 +258,7 @@ body {
     color:#47823c;
 }
 #view-indicator div{
-    display: inline;
+    margin-left: 0.5em;
 }
 
 
