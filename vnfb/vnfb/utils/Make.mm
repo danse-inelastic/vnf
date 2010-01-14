@@ -50,6 +50,7 @@ EXPORT_PYTHON_MODULES = \
 	math.py \
         orderedDict.py \
         qetaskcell.py \
+        qetaskinfo.py \
         qetasks.py \
         qeconst.py \
         qegrid.py \

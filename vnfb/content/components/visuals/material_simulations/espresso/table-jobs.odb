@@ -1,0 +1,94 @@
+#!/usr/bin/env python
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                               Alex Dementsov
+#                      California Institute of Technology
+#                        (C) 2009  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+from vnfb.utils.qeutils import stamp2date
+
+def visual(jobs, cols, tinfo, director):
+    """Returns the table of jobs related to QE task
+    tinfo = TaskInfo() - task info"""
+    return table(jobs, cols, tinfo, director)
+    
+
+def table(jobs, cols, tinfo, director):
+    from luban.content.table import Model, View, Table
+    from luban.content import load
+    import luban.content as lc
+
+    class model(Model):
+        id          = Model.descriptors.link(name='id')
+        submitted   = Model.descriptors.str(name='submitted')
+        status      = Model.descriptors.str(name='status')
+        results     = Model.descriptors.str(name='results')
+        check        = Model.descriptors.link(name='check')
+        delete      = Model.descriptors.link(name='delete')
+
+    columns = [
+        View.Column(label='Id', measure='id'),
+        View.Column(label='Submitted', measure='submitted'),
+        View.Column(label='Status', measure='status'),
+        View.Column(label='Results', measure='results'),
+        View.Column(label='', measure='check'),
+        View.Column(label='', measure='delete'),
+    ]
+
+    columns = filter(lambda col: col.measure in cols, columns)
+
+    view = View(columns=columns)    # , editable=True
+
+    def getId(job):
+        return  lc.link(label   = job.id,
+                       onclick = load(actor     = 'jobs/jobs-view',
+                                      id        = tinfo.simid(),
+                                      taskid    = tinfo.taskid(),
+                                      jobid     = job.id,
+                                      type      = tinfo.type())
+                        )
+
+    def getSubmitted(job):
+        return stamp2date(job.timesubmitted)
+
+    def getStatus(job):
+        return job.status
+
+    def getResults(job):
+        return "results"
+
+    def getCheck(job):
+        return lc.link(label   = "Check")
+
+    def getDelete(job):
+        return lc.link(label   = "Delete")
+
+    value_generators = [ eval('get'+col.measure.capitalize())
+                         for col in view.columns]
+    record2tuple = lambda record: [g(record) for g in value_generators]
+    data = map(record2tuple, jobs)
+
+    table = Table(model=model, data=data, view=view, id='matter-table')
+
+    return table
+
+
+__date__ = "$Jan 14, 2010 6:09:10 AM$"
+
+# **************** DEAD CODE *****************
+
+#    try: return table(jobs, cols, tinfo, director)
+#    except:
+#        import journal
+#        debug = journal.debug('qe-task-jobs-table')
+#        import traceback
+#        debug.log(traceback.format_exc())
+#        return
+
