@@ -11,8 +11,9 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
-from vnfb.utils.parser.qeinput import QEInput
-from vnfb.utils.parser.namelist import Namelist
+import os
+from vnfb.utils.qeparser.qeinput import QEInput
+from vnfb.utils.qeparser.namelist import Namelist
 
 from luban.components.AuthorizedActor import AuthorizedActor as base
 
@@ -28,17 +29,51 @@ class Actor(base):
     def generateInput(self, director):
         return director.redirect(actor   = 'material_simulations/espresso/input-create',
                                 routine = 'default',
-                                text    = self._input(),
+                                text    = self._input(director),
                                 id      = self.inventory.id,
                                 taskid  = self.inventory.taskid)
 
-    def _input(self):
+    def _input(self, director):
         input      = QEInput(type='q2r')
         nl  = Namelist("input")
+
+        path    = self._dynpath(director)   
+        fildyn  = os.path.join(path, "matdyn")  # "matdyn" - default value for PH fildyn
+
+        nl.add("fildyn", "'%s'" % fildyn)
         nl.add("zasr", self.inventory.zasr)
+        nl.add("flfrc", "'ni.fc'")  # XXX
         input.addNamelist(nl)
         return input.toString()
 
+
+    # TODO: Test!!!
+    def _dynpath(self, director):
+        "Returns the path of the directory where dyn file are located. E.g.: phonon directory"
+        path    = ""
+        simtasks = director.clerk.getQESimulationTasks(where="simulationid='%s'" % self.id)
+        for st in simtasks:
+            tasks   = director.clerk.getQETasks(where="id='%s' AND type='PH'" % st.taskid)
+            if tasks:   # First found tasks
+                break
+        
+        if not tasks:
+            return path
+
+        task    = tasks[0]
+        if not task:
+            return path
+        
+        jobs    = director.clerk.getQEJobs(where="taskid='%s'" % task.id)
+        if len(jobs) > 0:
+            # Find job of PH task
+            job = jobs[0]   # XXX
+
+            if job:
+                server  = director.clerk.getServers(id=job.serverid)
+                path    = os.path.join(server.workdir, job.id)
+
+        return path
 
     def __init__(self):
         super(Actor, self).__init__(name='material_simulations/espresso-utils/generate-q2r')
