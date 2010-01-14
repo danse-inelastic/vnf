@@ -12,7 +12,7 @@
 #
 
 from vnf.dom.QEJob import QEJob
-from vnfb.utils.qeutils import makedirs, writefile
+from vnfb.utils.qeutils import makedirs, writefile, stamp
 from vnfb.utils.qeconst import STATES, RUNSCRIPT, TYPE, NOPARALLEL
 from vnfb.utils.qeutils import packname, unpackname
 
@@ -59,7 +59,8 @@ class Actor(base):
         params  = {"taskid":        self.taskid,
                    "serverid":      self._sim.serverid,  # -> take from QESimulations
                    "status":        "Submitted",    # Fixed status
-                   "creator":        director.sentry.username,
+                   "timesubmitted": stamp(),
+                   "creator":       director.sentry.username,
                    "numberprocessors":   setting.numproc # -> take from QESettings
                    }
                    

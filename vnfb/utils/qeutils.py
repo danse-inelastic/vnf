@@ -91,6 +91,10 @@ def stamp2date(stamp):
 
     return ""
 
+def stamp():
+    "Returns timestamp"
+    import time
+    return time.time()
 
 def makedirs(path):
     """Recursively creates directory specified by path"""

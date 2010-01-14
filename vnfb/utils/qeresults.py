@@ -16,7 +16,10 @@ import os
 import time
 from vnfb.utils.qestatus import QEStatus
 from vnf.applications.PackJobDir import PackJobDir
+from vnfb.utils.qeconst import RESULTS_ID
 
+import luban.content as lc
+from luban.content import load
 
 class QEResults:
     """
@@ -36,10 +39,10 @@ class QEResults:
         - Results link is specified by id
     """
 
-    def __init__(self, director, job, id = None):
+    def __init__(self, director, job, taskinfo):    #type,id = None
         self._director  = director
         self._job       = job       # not None
-        self._id        = id
+        self._taskinfo  = taskinfo
         self._status    = QEStatus(id = id)
         self._status.set("norequest", "Not Requested")
         self._ptrfilepath   = self._ptrfilepath()
@@ -105,6 +108,34 @@ class QEResults:
         
         return self._statusstring()
     
+    def link(self):
+        "Returns link to results when ready or string with status"
+        cid         = "%s-%s" % (RESULTS_ID, self._taskinfo.type()) # self._task.id?
+        container   = lc.document(id=cid)
+        link    = lc.paragraph(text="None") # Default value
+
+        if self._job:
+            link    = self.status()
+
+        container.add(link)
+        return container
+
+
+    def action(self):
+        "Returns link to action that refreshes the status of results"
+        action  = ""     # Default value
+        
+        if self._job:
+            action   = lc.link(label = "Check",
+                               id = "qe-check-results",
+                               onclick=load(actor       = "jobs/getresults",
+                                            routine     = "retrieveStatus",
+                                            id          = self._taskinfo.simid(),
+                                            taskid      = self._taskinfo.taskid())    # No jobid at this time
+                          )
+
+        return action
+
 
     def _statusstring(self):
         return self._status.string("p")
@@ -130,8 +161,8 @@ class QEResults:
 
     def _oldrequest(self):
         """
-        Outdated packing request. Implemented in case if results delivery failed. It can trigger packing
-        from remote server
+        Outdated packing request. Implemented in case if results delivery failed.
+        It can trigger packing from remote server
         """
         server      = self._director.clerk.getServers(id = self._job.serverid)
         # Don't understant what's the point
