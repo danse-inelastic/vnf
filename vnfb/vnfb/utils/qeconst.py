@@ -90,13 +90,30 @@ RUNSCRIPT   = "run.sh"
 RESULTS_ID   = "results-link"
 
 # TODO: Move to parser/inputs
-_ZASR       = ("crystal", "simple", "one-dim", "zero-dim", "no")
+_zasr       = ("crystal", "simple", "one-dim", "zero-dim", "no")
 ZASR        = OrderedDict()
-ZASR[_ZASR[0]]  = "'crystal'"
-ZASR[_ZASR[1]]  = "'simple'"
-ZASR[_ZASR[2]]  = "'one-dim'"
-ZASR[_ZASR[3]]  = "'zero-dim'"
-ZASR[_ZASR[4]]  = "'no'"
+ZASR[_zasr[0]]  = "'crystal'"
+ZASR[_zasr[1]]  = "'simple'"
+ZASR[_zasr[2]]  = "'one-dim'"
+ZASR[_zasr[3]]  = "'zero-dim'"
+ZASR[_zasr[4]]  = "'no'"
+
+IBRAV       = ( "None",                             # 0
+                "cubic P (sc)",                     # 1
+                "cubic F (fcc)",                    # 2
+                "cubic I (bcc)",                    # 3
+                "Hexagonal and Trigonal P",         # 4
+                "Trigonal R",                       # 5
+                "Tetragonal P (st)",                # 6
+                "Tetragonal I (bct)",               # 7
+                "Orthorhombic P",                   # 8
+                "Orthorhombic base-centered(bco)",  # 9
+                "Orthorhombic face-centered",       # 10
+                "Orthorhombic body-centered",       # 11
+                "Monoclinic P",                     # 12
+                "Monoclinic base-centered",         # 13
+                "Triclinic"                         # 14
+                )
 
 SMEARING    = {"gaussian":              "gauss",
                "methfessel-paxton":     "mp",
