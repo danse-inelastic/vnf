@@ -1,3 +1,52 @@
+High priority
+-------------
+ * check fcc ni simulation. make sure one end-to-end work flow works
+ * analytical sqe model
+ * DetectorSytemFromXML component
+
+
+
+Front page
+----------
+
+
+
+Misc.
+-----
+ * logo
+ * "view indicator" may be too long. use indentation.
+
+
+Master table
+------------
+ * delete button
+
+
+
+Job
+---
+ * job view page
+
+
+
+Neutron experiment
+------------------
+ * revise neutron experiment wizard (to make it more graphic and more
+   intuitive)
+
+
+Atomicstructure
+---------------
+ * link to create sample from atomicstructure page
+ * panels for SQE, samples, experiments
+
+
+
+More long term 
+--------------
+
+Help system
+
 Establish a suite of tests to make sure that vnf is running correctly.
 This would be useful, for example, when vnf vm is restarted.
 
