@@ -94,7 +94,7 @@ class Actor(base):
         domaccess = self._domaccess(director)
 
         disp = domaccess.getDataForPhonons(disp)
-        x, ys = disp.getDefaultPhononsPlot()
+        x, ys = disp.getDefaultDispersionPlot()
         
         # plot
         p = lc.plot2d()
