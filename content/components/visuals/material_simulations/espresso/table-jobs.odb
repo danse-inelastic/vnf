@@ -13,18 +13,19 @@
 
 
 from vnfb.utils.qeutils import stamp2date
+from vnfb.utils.qeresults import QEResults
+from luban.content.table import Model, View, Table
+from luban.content import load
+import luban.content as lc
 
-def visual(jobs, cols, tinfo, director):
+
+def visual(jobs, cols, taskinfo, director):
     """Returns the table of jobs related to QE task
-    tinfo = TaskInfo() - task info"""
-    return table(jobs, cols, tinfo, director)
+    taskinfo = TaskInfo()"""
+    return table(jobs, cols, taskinfo, director)
     
 
-def table(jobs, cols, tinfo, director):
-    from luban.content.table import Model, View, Table
-    from luban.content import load
-    import luban.content as lc
-
+def table(jobs, cols, taskinfo, director):
     class model(Model):
         id          = Model.descriptors.link(name='id')
         submitted   = Model.descriptors.str(name='submitted')
@@ -49,10 +50,10 @@ def table(jobs, cols, tinfo, director):
     def getId(job):
         return  lc.link(label   = job.id,
                        onclick = load(actor     = 'jobs/jobs-view',
-                                      id        = tinfo.simid(),
-                                      taskid    = tinfo.taskid(),
+                                      id        = taskinfo.simid(),
+                                      taskid    = taskinfo.taskid(),
                                       jobid     = job.id,
-                                      type      = tinfo.type())
+                                      type      = taskinfo.type())
                         )
 
     def getSubmitted(job):
@@ -62,13 +63,17 @@ def table(jobs, cols, tinfo, director):
         return job.status
 
     def getResults(job):
-        return "results"
+        print director
+        results = QEResults(director, job, taskinfo)
+        return results.link()
 
     def getCheck(job):
         return lc.link(label   = "Check")
 
     def getDelete(job):
         return lc.link(label   = "Delete")
+
+
 
     value_generators = [ eval('get'+col.measure.capitalize())
                          for col in view.columns]

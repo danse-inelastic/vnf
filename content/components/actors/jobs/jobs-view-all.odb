@@ -79,7 +79,7 @@ class Actor(base):
         jobstable   = director.retrieveVisual('material_simulations/espresso/table-jobs',
                                               jobs      = jobs,
                                               cols      = ['id', 'submitted', 'status', 'results', 'check', 'delete'],
-                                              tinfo     = TaskInfo(self.id, self.taskid, self.type),
+                                              taskinfo  = TaskInfo(self.id, self.taskid, self.type),
                                               director  = director
                                              )
 
