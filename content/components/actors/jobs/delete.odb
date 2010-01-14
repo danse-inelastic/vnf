@@ -11,73 +11,118 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
+
+from vnfb.utils.qegrid import QEGrid
+
 from luban.content import select
 from luban.content.Paragraph import Paragraph
-from luban.content.Document import Document
-from luban.content.HtmlDocument import HtmlDocument
-from luban.content import load
-from luban.content.Link import Link
 from luban.content.Form import Form
-from luban.content.Button import Button
+from luban.content.FormSubmitButton import FormSubmitButton
+from luban.content import load
 
-from vinil.components.Actor import Actor as base
+import luban.content as lc
+from luban.components.AuthorizedActor import AuthorizedActor as base
+
+# Requires simulation id,
 class Actor(base):
 
     class Inventory(base.Inventory):
         import pyre.inventory
-        id      = pyre.inventory.str('id', default='')      # Job Id
+        id      = pyre.inventory.str('id', default='')    # Simulation Id
+        taskid  = pyre.inventory.str('taskid', default='')
+        jobid   = pyre.inventory.str('jobid', default='')
+        type    = pyre.inventory.str('type', default='')
+
+
+    def default(self, director):
+        return select(id='main-display-area').replaceContent(self.content(director))
 
 
     def content(self, director):
-        job     = director.clerk.getJobs(id=self.id)
 
-        document = Document(title='Delete Job: %s' % job.id)
-        document.add(Paragraph(text="Are you sure you want to delete the job?"))
+        def viewIndicator(director):
+            path = []
+            path.append(('Simulations ', load(actor='materialsimulation')))
+             # Stub, should filter by simulation type
+            path.append(('Quantum Espresso ', load(actor='materialsimulation')))
+            path.append(('%s ' % self.id, load(actor    = 'material_simulations/espresso/sim-view',
+                                               id       = self.id))
+                        )
+            path.append("Delete %s Task: %s" % (self.type, self.taskid))
 
-        form        = Form(id="form-vinil")
-        submit      = form.submitbutton(label="Delete")
-        form.onsubmit   = select(element=form).submit(actor = 'jobs/delete', routine = 'deleteRecord', id=job.id)
+            return director.retrieveVisual('view-indicator', path=path)
 
-        # TODO: "Cancel" button looks UGLY
-        cancel      = Button(label="Cancel")
-        cancel.onclick = load(actor = 'jobs/index', routine = 'link')
-        form.add(cancel)
+        doc         = lc.document(title="Delete %s Task: %s" % (self.type, self.taskid))
+        splitter    = doc.splitter(orientation="vertical")
+        sA          = splitter.section()
+        sA.add(viewIndicator(director))
+        sB          = splitter.section()
+        sB.add(Paragraph(text="Warning: Deleting job will also delete results of the job"))
+        sB.add(Paragraph(text="Are you sure you want to delete the job?"))
+        sB.add(self._setForm())
 
-        document.add(form)
+        return doc
 
-        return document
+
+    def _setForm(self):
+        form        = Form()
+        submit      = FormSubmitButton(label="Delete")
+        cancel      = lc.button(label="Cancel")
+        cancel.onclick = load(actor = 'material_simulations/espresso/sim-view', id=self.id)
+
+        st          = QEGrid(lc.grid()) # Submit Table
+        st.addRow((submit, cancel), ("qe-action-accept", "qe-action-cancel"))
+
+        form.add(st.grid())
+        form.onsubmit   = select(element=form).submit(actor     = 'material_simulations/espresso/delete',
+                                                      routine   = 'deleteRecord',
+                                                      id        = self.id,
+                                                      jobid     = self.jobid,
+                                                      taskid    = self.taskid)
+
+        return form
+
 
     def deleteRecord(self, director):
-        job             = director.clerk.getJobs(id=self.id)
+        """Delete task record"""
+        self._deleteJobs(director)      # Not tested
+        self._deleteLocalResults(director)   # Not tested
+        self._deleteRemoteResults(director)   # Not tested
 
+        return load(actor='material_simulations/espresso/sim-view', id=self.id)
+
+
+    def _deleteJobs(self, director):
+        """Deletes jobs"""
+        job            = director.clerk.getQEJobs(id = self.jobid)
         if job:
-            job.deleteRecord(director)
-
-        return load(actor='jobs/index', routine='link')  # Redirection to the page
-
-f
-    def pathlist(self, director):
-        job     = director.clerk.getJobs(id=self.id)
-        self.pathlist = [("Home","greet","link"),
-                         ("Simulations", "simulations", "link"),
-                         ("Quantum Espresso", "espresso", "link"),
-                         ("Jobs", "jobs/index", "link"),
-                         (job.id, "jobs/view", "link", self.id),
-                         ("Delete", None, None)]
-
-        return self.pathlist
+            job.setDirector(director)
+            job.deleteRecord()
 
 
-    def __init__(self, *args, **kwds):
-        super(Actor, self).__init__(*args, **kwds)
+    def _deleteLocalResults(self, director):
+        "Delete local results. E.g. clean up directory"
+        pass
+
+
+    def _deleteRemoteResults(self, director):
+        "Delete remote results. E.g. clean up directory"
+        pass
+
+
+
+    def __init__(self):
+        super(Actor, self).__init__(name='jobs/delete')
 
         return
 
 
     def _configure(self):
         super(Actor, self)._configure()
-        self.id = self.inventory.id
-        return
+        self.id             = self.inventory.id
+        self.jobid          = self.inventory.jobid
+        self.taskid         = self.inventory.taskid
+        self.type           = self.inventory.type
 
 
     def _init(self):
@@ -85,7 +130,7 @@ f
         return
 
 def actor():
-    return Actor('jobs/delete')
+    return Actor()
 
 
 __date__ = "$Nov 4, 2009 7:21:22 PM$"

@@ -81,7 +81,7 @@ class Actor(base):
 
         section.add(lc.link(label="Delete",
                             Class="qe-action-delete",
-                            onclick = load(actor      = 'jobs/job-delete',
+                            onclick = load(actor      = 'jobs/delete',
                                              id         = self.id,
                                              jobid      = self.jobid,
                                              taskid     = self.taskid,
