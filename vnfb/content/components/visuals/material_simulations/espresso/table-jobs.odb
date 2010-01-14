@@ -14,40 +14,19 @@
 
 from vnfb.utils.qeutils import stamp2date
 from vnfb.utils.qeresults import QEResults
-from luban.content.table import Model, View, Table
+from vnfb.utils.qegrid import QEGrid
+#from luban.content.table import Model, View, Table
 from luban.content import load
 import luban.content as lc
 
 
-def visual(jobs, cols, taskinfo, director):
+def visual(jobs, taskinfo, director):
     """Returns the table of jobs related to QE task
-    taskinfo = TaskInfo()"""
-    return table(jobs, cols, taskinfo, director)
-    
+    taskinfo - object of class TaskInfo()"""
 
-def table(jobs, cols, taskinfo, director):
-    class model(Model):
-        id          = Model.descriptors.link(name='id')
-        submitted   = Model.descriptors.str(name='submitted')
-        status      = Model.descriptors.str(name='status')
-        results     = Model.descriptors.str(name='results')
-        check       = Model.descriptors.link(name='check')
-        delete      = Model.descriptors.link(name='delete')
+    table   = QEGrid(lc.grid(Class="qe-tasks-table"))
 
-    columns = [
-        View.Column(label='Id', measure='id'),
-        View.Column(label='Submitted', measure='submitted'),
-        View.Column(label='Status', measure='status'),
-        View.Column(label='Results', measure='results'),
-        View.Column(label='', measure='check'),
-        View.Column(label='', measure='delete'),
-    ]
-
-    columns = filter(lambda col: col.measure in cols, columns)
-
-    view = View(columns=columns)    # , editable=True
-
-    def getId(job):
+    def jobid(job):
         return  lc.link(label   = job.id,
                        onclick = load(actor     = 'jobs/jobs-view',
                                       id        = taskinfo.simid(),
@@ -56,38 +35,38 @@ def table(jobs, cols, taskinfo, director):
                                       type      = taskinfo.type())
                         )
 
-    def getSubmitted(job):
+    def submitted(job):
         return stamp2date(job.timesubmitted)
 
-    def getStatus(job):
+    def status(job):
         return job.status
 
-    def getResults(job):
+    def results(job):
         results = QEResults(director, job, taskinfo)
         return results.link()
 
-    def getCheck(job):
-        return lc.link(label   = "Check")
+    def check(job):
+        results = QEResults(director, job, taskinfo)
+        return results.action()
 
-    def getDelete(job):
+    def delete(job):
         return lc.link( label   = "Delete",
                         Class   = "qe-action-delete",
-                        onclick = load(actor      = 'jobs/job-delete',
+                        onclick = load(actor        = 'jobs/delete',
                                          id         = taskinfo.simid(),
                                          jobid      = job.id,
                                          taskid     = taskinfo.taskid(),
-                                         type       = taskinfo.type()))
+                                         type       = taskinfo.type())
+                       )
+
+    if len(jobs):
+        table.addRow(("Id", "Time Submitted", "Status", "Results", "", ""))
+        for j in jobs:
+            table.addRow((jobid(j), submitted(j), status(j), results(j), check(j), delete(j)))
 
 
-    value_generators = [ eval('get'+col.measure.capitalize())
-                         for col in view.columns]
-    record2tuple = lambda record: [g(record) for g in value_generators]
-    data = map(record2tuple, jobs)
-
-    table = Table(model=model, data=data, view=view, id='matter-table')
-
-    return table
-
+    return table.grid()
+    
 
 __date__ = "$Jan 14, 2010 6:09:10 AM$"
 
