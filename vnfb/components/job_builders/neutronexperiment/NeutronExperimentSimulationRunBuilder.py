@@ -51,7 +51,7 @@ class Builder(base):
         instrument_record = experiment.instrument.dereference(self.db)
         instrument = self.domaccess.orm.record2object(instrument_record)
         if instrument.hasSampleComponent():
-            sample = experiment.sample.dereference(self.db)
+            sample = experiment.sample_configuration.dereference(self.db)
             from vnfb.dom.neutron_experiment_simulations.SampleAssembly import SampleAssemblyTable
             from vnfb.dom.neutron_experiment_simulations.Scatterer import ScattererTable
             from vnfb.dom.neutron_experiment_simulations.neutron_components.SampleBase import TableBase as SampleTableBase
