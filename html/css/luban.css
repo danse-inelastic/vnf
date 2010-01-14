@@ -54,6 +54,7 @@ body {
 }
 .luban-document.collapsable > .luban-document-title > table td.luban-document-title-controls{
     width: 2em;
+    text-align: center;
 }
 .luban-document.collapsable > .luban-document-title > table td.luban-document-title-controls .collapse-expand{
     color: blue;
