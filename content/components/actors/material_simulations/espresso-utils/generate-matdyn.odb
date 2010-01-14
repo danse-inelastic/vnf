@@ -11,6 +11,7 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
+import os
 from vnfb.utils.qeparser.qeinput import QEInput
 from vnfb.utils.qeparser.namelist import Namelist
 
@@ -30,19 +31,58 @@ class Actor(base):
     def generateInput(self, director):
         return director.redirect(actor   = 'material_simulations/espresso/input-create',
                                 routine = 'default',
-                                text    = self._input(),
+                                text    = self._input(director),
                                 id      = self.inventory.id,
                                 taskid  = self.inventory.taskid)
 
 
-    def _input(self):
+    def _input(self, director):
+        # E.g.: /home/dexity/espresso/qejobs/643E2QQI/ni.fc
+        path    = self._fcpath(director)
+        path    = os.path.join(path, "ni.fc")
+
         input      = QEInput(type='matdyn')
         nl  = Namelist("input")
+        nl.add("asr", "'crystal'")
+        nl.add("amass(1)", "26.98")
+        nl.add("dos", ".true.")
+        nl.add("flfrc", "'%s'" % path)
         nl.add("nk1", self.nk1)
         nl.add("nk2", self.nk2)
         nl.add("nk3", self.nk3)
         input.addNamelist(nl)
         return input.toString()
+
+
+    # TODO: Test!!!
+    def _fcpath(self, director):
+        """Returns the path of the directory where fc (force constant) file is located.
+        E.g.: q2r directory"""
+        path    = ""
+        simtasks = director.clerk.getQESimulationTasks(where="simulationid='%s'" % self.id)
+        for st in simtasks:
+            tasks   = director.clerk.getQETasks(where="id='%s' AND type='Q2R'" % st.taskid)
+            if tasks:   # First found tasks
+                break
+
+        if not tasks:
+            return path
+
+        task    = tasks[0]
+        if not task:
+            return path
+
+        jobs    = director.clerk.getQEJobs(where="taskid='%s'" % task.id)
+        if len(jobs) > 0:
+            # Find job of Q2R task
+            job = jobs[0]   # XXX
+
+            if job:
+                server  = director.clerk.getServers(id=job.serverid)
+                path    = os.path.join(server.workdir, job.name)
+                path    = os.path.join(path, job.id)
+
+        return path
 
 
     def __init__(self):

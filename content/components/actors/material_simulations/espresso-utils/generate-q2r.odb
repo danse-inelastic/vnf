@@ -38,6 +38,7 @@ class Actor(base):
         input      = QEInput(type='q2r')
         nl  = Namelist("input")
 
+        # E.g.: /home/dexity/espresso/qejobs/5YWWTCQT/matdyn
         path    = self._dynpath(director)   
         fildyn  = os.path.join(path, "matdyn")  # "matdyn" - default value for PH fildyn
         zasr    = ZASR[ZASR.keys()[int(self.inventory.zasr)]]
@@ -51,7 +52,7 @@ class Actor(base):
 
     # TODO: Test!!!
     def _dynpath(self, director):
-        "Returns the path of the directory where dyn file are located. E.g.: phonon directory"
+        "Returns the path of the directory where dyn file is located. E.g.: phonon directory"
         path    = ""
         simtasks = director.clerk.getQESimulationTasks(where="simulationid='%s'" % self.id)
         for st in simtasks:
@@ -74,7 +75,6 @@ class Actor(base):
             if job:
                 server  = director.clerk.getServers(id=job.serverid)
                 path    = os.path.join(server.workdir, job.name)
-                # E.g.: /home/dexity/espresso/qejobs/5YWWTCQT/matdyn
                 path    = os.path.join(path, job.id)
 
         return path
