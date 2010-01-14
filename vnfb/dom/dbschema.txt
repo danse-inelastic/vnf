@@ -45,3 +45,13 @@ kernels
 
  sqekernel
  polyxtalcoherentphononscatteringkernel
+
+
+Jan 13, 2010
+renamed tables
+ phonondispersions-> phonons
+ bvk_getdispersion -> bvk_getphonons
+
+rename columns
+ polyxtalcoherentphononscatteringkernels
+   dispersion -> phonons

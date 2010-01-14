@@ -3,6 +3,7 @@ High priority
  * check fcc ni simulation. make sure one end-to-end work flow works
  * analytical sqe model
  * DetectorSytemFromXML component
+ * Nuetron recorder, player
 
 
 
@@ -13,7 +14,7 @@ Front page
 
 Misc.
 -----
- * logo
+ * logo (DONE)
  * "view indicator" may be too long. use indentation.
 
 
