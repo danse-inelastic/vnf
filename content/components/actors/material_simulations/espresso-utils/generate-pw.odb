@@ -11,9 +11,9 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
-from vnfb.utils.parser.qeinput import QEInput
-from vnfb.utils.parser.namelist import Namelist
-from vnfb.utils.parser.card import Card
+from vnfb.utils.qeparser.qeinput import QEInput
+from vnfb.utils.qeparser.namelist import Namelist
+from vnfb.utils.qeparser.card import Card
 
 from luban.components.AuthorizedActor import AuthorizedActor as base
 
