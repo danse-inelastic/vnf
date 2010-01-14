@@ -20,17 +20,19 @@ def visual(path):
 
     doc = lc.document(id='view-indicator')
 
+    doc1 = doc
     for (label, action) in path[:-1]:
-        doc.add(lc.link(label=label, onclick=action))
-        doc.paragraph(text=['/ '], Class='splitter')
+        doc1.add(lc.link(label=label, onclick=action))
+        doc1.paragraph(text=['/ '], Class='splitter')
+        doc1 = doc1.document()
         continue
 
     last = path[-1]
     if isinstance(last, basestring):
-        doc.paragraph(text=path[-1])
+        doc1.paragraph(text=path[-1])
     else:
         label, action = last
-        doc.add(lc.link(label=label, onclick=action))
+        doc1.add(lc.link(label=label, onclick=action))
     
     return doc
 
