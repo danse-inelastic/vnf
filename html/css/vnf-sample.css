@@ -9,8 +9,9 @@ background-color:#e5e5e5;
 border:1px solid lightGrey;
 font-size:90%;
 margin-left:2em;
-max-width:70%;
+max-width:90%;
 padding:1em;
+min-width: 58em;
 }
 #sample-matter-selector-doc table {
 width:auto;
@@ -24,7 +25,7 @@ font-size:80%;
 #sample-matter-selector-doc .master-table {
 font-size:100%;
 text-align:center;
-width:90%;
+width:98%;
 }
 #sample-matter-selector-doc .luban-button-container {
 margin-top:1.5em;
