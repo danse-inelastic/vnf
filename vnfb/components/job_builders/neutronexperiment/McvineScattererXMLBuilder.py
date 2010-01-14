@@ -139,7 +139,7 @@ class Builder(JobBuilder, XMLMill):
         # should be replaced later
         import os
         relpath = os.path.join( '..', '..', self.dds.path(phonons))
-        self._write( '<LinearlyInterpolatedPhonons idf-data-path="%s"/>' % relpath )
+        self._write( '<LinearlyInterpolatedDispersion idf-data-path="%s"/>' % relpath )
         return
 
 
