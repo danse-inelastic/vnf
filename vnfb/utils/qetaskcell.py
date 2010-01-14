@@ -22,17 +22,18 @@ from vnfb.utils.qeconst import RESULTS_ID
 
 class QETaskCell:
 
-    def __init__(self, director, type, simid, task):
-        self._type  = type
-        self._simid = simid
-        self._task  = task
-        self._job   = None
+    def __init__(self, director, type, colnum, simid, task):
+        self._type      = type
+        self._simid     = simid
+        self._task      = task
+        self._colnum    = colnum
+        self._job       = None
         self._director  = director
 
 
     def header(self):
         "Shows the header for the simulation task"
-        type    = lc.paragraph(text=self._type, Class="text-bold")
+        type    = lc.paragraph(text="Step %s: %s" % (self._colnum+1 , self._type), Class="text-bold")
         link    = lc.paragraph(text="")     # Task cannot be changed at this time
         #link    = lc.link(label="Change")  # Keep
 
