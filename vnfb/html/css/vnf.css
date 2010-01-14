@@ -28,10 +28,6 @@ a:hover {
 .ui-widget {
 }
 
-.luban-document-title {
-    font-size: 1.2em;
-}
-
 a.luban-link {
     text-decoration: underline;
 }
@@ -180,6 +176,23 @@ border:1px solid #EEAAAA;
 border:1px solid #EEAAAA;
 margin-bottom:1em;
 padding:0.5em 1em;
+}
+
+
+/* luban document */
+.luban-document-title {
+    font-size: 1.2em;
+}
+
+/* collapsable luban document */
+.luban-document.collapsable > .luban-document-title > table td.luban-document-title-controls .collapse-expand{
+    color: white;
+    font-size: 1.7em;
+    font-weight: bolder;
+    text-decoration: none;
+}
+.luban-document.collapsable > .luban-document-title > table td.luban-document-title-controls a.collapse-expand:hover {
+    text-decoration:underline;
 }
 
 /* misc */
