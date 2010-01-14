@@ -90,7 +90,14 @@ RUNSCRIPT   = "run.sh"
 RESULTS_ID   = "results-link"
 
 # TODO: Move to parser/inputs
-ZASR        = ("crystal", "simple", "one-dim", "zero-dim", "no")
+_ZASR       = ("crystal", "simple", "one-dim", "zero-dim", "no")
+ZASR        = OrderedDict()
+ZASR[_ZASR[0]]  = "'crystal'"
+ZASR[_ZASR[1]]  = "'simple'"
+ZASR[_ZASR[2]]  = "'one-dim'"
+ZASR[_ZASR[3]]  = "'zero-dim'"
+ZASR[_ZASR[4]]  = "'no'"
+
 SMEARING    = {"gaussian":              "gauss",
                "methfessel-paxton":     "mp",
                "marzari-vanderbilt":    "mv",

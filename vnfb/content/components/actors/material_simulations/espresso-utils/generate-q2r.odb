@@ -14,6 +14,7 @@
 import os
 from vnfb.utils.qeparser.qeinput import QEInput
 from vnfb.utils.qeparser.namelist import Namelist
+from vnfb.utils.qeconst import ZASR
 
 from luban.components.AuthorizedActor import AuthorizedActor as base
 
@@ -39,9 +40,10 @@ class Actor(base):
 
         path    = self._dynpath(director)   
         fildyn  = os.path.join(path, "matdyn")  # "matdyn" - default value for PH fildyn
+        zasr    = ZASR[ZASR.keys()[int(self.inventory.zasr)]]
 
         nl.add("fildyn", "'%s'" % fildyn)
-        nl.add("zasr", self.inventory.zasr)
+        nl.add("zasr", zasr)
         nl.add("flfrc", "'ni.fc'")  # XXX
         input.addNamelist(nl)
         return input.toString()
@@ -71,7 +73,9 @@ class Actor(base):
 
             if job:
                 server  = director.clerk.getServers(id=job.serverid)
-                path    = os.path.join(server.workdir, job.id)
+                path    = os.path.join(server.workdir, job.name)
+                # E.g.: /home/dexity/espresso/qejobs/5YWWTCQT/matdyn
+                path    = os.path.join(path, job.id)
 
         return path
 
