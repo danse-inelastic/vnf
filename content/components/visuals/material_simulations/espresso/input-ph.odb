@@ -19,7 +19,7 @@ from luban.content.FormTextField import FormTextField
 from luban.content.FormSubmitButton import FormSubmitButton
 
 
-def visual(actor):
+def visual(actor, director):
     form        = lc.form(id='create-simulation-form')
     table       = QEGrid(lc.grid(Class="qe-form"))
     form.add(table.grid())

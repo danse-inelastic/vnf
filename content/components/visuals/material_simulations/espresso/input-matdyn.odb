@@ -18,7 +18,7 @@ from vnfb.utils.qegrid import QEGrid
 from luban.content.FormTextField import FormTextField
 from luban.content.FormSubmitButton import FormSubmitButton
 
-def visual(actor):
+def visual(actor, director):
     form    = lc.form()
 
     METHODS  = ("Phonon Density of States",
