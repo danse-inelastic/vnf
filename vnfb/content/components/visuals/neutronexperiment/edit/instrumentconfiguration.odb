@@ -35,44 +35,94 @@ class Factory(object):
     def __call__(self):
         #
         domaccess = self.domaccess
-        orm = domaccess.orm
-        
+        director = self.director
+
         # check if configuration exists
         experiment = self.experiment
         ic = experiment.instrument_configuration
-        ic = ic and ic.id and ic.dereference(orm.db)
+        ic = ic and ic.id and ic.dereference(domaccess.db)
         if not ic:
-            ic = domaccess.createInstrumentConfiguration(experiment)
-        else:
-            ic = orm.record2object(ic)
-            
-        # the form
-        doc = lc.document(Class='container')
-        doc.add(self._buildForm(ic))
+            orm = domaccess.orm
+            ic = domaccess.createInstrumentConfiguration(orm.record2object(experiment))
+            ic = domaccess.orm(ic)
+        # now ic is the db record of the configuration
+
         #
-        if orm.record2object(self.instrument).hasSampleComponent():
-            nexttab = 'experimentwizard-sampleconfiguration-tab'
+        instrument = experiment.instrument.dereference(domaccess.db)
+        doc = lc.document(title='Configuring instrument %s' % instrument.name)
+        doc.paragraph(text=[
+            'to edit, please select a component from the following component chain',
+            ])
+        
+        # the panel to edit/view individual component
+        componentpanel = lc.document(id='experimentwizard-componentpanel')
+
+        #
+        loadcomponentview = lambda component: load(
+            actor='orm/%s' % component.getTableName(), routine='display',
+            id = component.id, editlink = True)
+        refreshconfigurationpanel = lambda component: select(
+            element=componentpanel).replaceContent(loadcomponentview(component))
+        
+        # component list
+        components = [c for n, c in ic.components.dereference(domaccess.db)]
+        componentchainview = self._createComponentChainView(
+            components, refreshconfigurationpanel, component = components[0])
+
+        #
+        doc.add(componentchainview)
+        doc.add(componentpanel)
+
+        # continue button
+        if self.instrument.has_sample_component:
+            nexttab = 'sample'
         else:
-            nexttab = 'experimentwizard-summary-tab'
-        switch = select(id=nexttab).tab('select')
+            nexttab = 'finish'
+
+        switch = director.retrieveVisual(
+            'neutronexperiment/edit/switch-to-editpanel')\
+            .get(self.id, nexttab)
         continuebutton = lc.button(label='continue', onclick=switch)
         doc.add(continuebutton)
         return doc
 
 
-    def _buildForm(self, ic):
-        #
-        doc = lc.document()
-        #
+    def _createComponentChainView(self, components, refreshconfigurationpanel, component=None):
         director = self.director
-        getDrawer = director.painter.paintObj.drawers.getDrawer
-        for c in ic.components:
-            drawer = getDrawer(c.__class__)
-            doc1 = drawer(c)
-            doc.add(doc1)
-            continue
         
-        return doc   
+        current_component = component
+        
+        doc = lc.document(id='component-chain-container', title='Component chain')
+        sp = doc.splitter(id='component-chain')
+
+        idformatter = 'component-%s'
+        ids = [c.id for c in components]
+        buttonids = [idformatter % id for id in ids]
+        for component in components:
+            # "button" of a comonent
+            button = sp.section().document(id=idformatter % component.id)
+            button.Class='component-chain-button'
+
+            # when icons are available, add them into the "button"
+            #path = 'components/%s/middle-size-icon.png' % name
+            #img = lc.image(path=path)
+            label = '%s: %s' % (component.componentname, component.__class__.__name__)
+            button.paragraph(text=[label])
+
+            #if current_component and current_component.id == component.id:
+            #    button.addClass('selected')
+            
+            #
+            selectthisbutton = director.retrieveVisual(
+                'neutronexperiment/edit/select-a-button').select(button.id, buttonids)
+            button.onclick = selectthisbutton + [
+                refreshconfigurationpanel(component),
+                ]
+
+            button.tip = '%s: click for more details' % component.componentname
+            continue
+                
+        return doc
 
 
 

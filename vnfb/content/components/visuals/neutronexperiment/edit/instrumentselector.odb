@@ -42,7 +42,7 @@ class Factory(object):
 
         #
         from luban.content.FormTextField import FormTextField
-        hidden_field = FormTextField(hidden=True)
+        hidden_field = FormTextField(hidden=True, value=self.id)
         doc.add(hidden_field)
 
         #
@@ -53,38 +53,54 @@ class Factory(object):
         updateinstrumentid = lambda id: select(element=hidden_field).setAttr(value=id)
         
         instrument_gallery = self._createInstrumentGallery(
-            instruments, refreshintroduction, updateinstrumentid)
+            instruments, introductiondoc, refreshintroduction, updateinstrumentid)
 
         doc.add(instrument_gallery)
         doc.add(introductiondoc)
 
-        b = lc.button(label="Select"); doc.add(b)
+        b = lc.button(label="continue"); doc.add(b)
         b.onclick = refreshinstrumentconfigurationdoc(select(element=hidden_field)\
                                                       .getAttr('value'))
         
         return doc
 
 
-    def _createInstrumentGallery(self, instruments, refreshintroduction, updateinstrumentid):
+    def _createInstrumentGallery(
+        self, instruments, introductiondoc, refreshintroduction, updateinstrumentid):
+        
+        director = self.director
+        
         # current instrument id
-        id = self.id
+        currentinstrument_id = self.id
         
         doc = lc.document(id='instrument-gallery-container')
         sp = doc.splitter(id='instrument-gallery')
+        
+        idformatter = 'instrument-%s'
+        ids = [c.id for c in instruments]
+        buttonids = [idformatter % id for id in ids]
+
         for instrument in instruments:
             name = instrument.name
             path = 'instruments/%s/middle-size-icon.png' % name
-            img = lc.image(path=path)
+            
+            buttonid = idformatter % instrument.id
+            img = lc.image(path=path, id=buttonid)
             sp.section().add(img)
 
-            if id and id == instrument.id:
-                img.addClass('selected')
-            
             introduction = lc.document()
             short_description = instrument.short_description
             introduction.paragraph(text=[short_description])
+
+            if currentinstrument_id and currentinstrument_id == instrument.id:
+                img.addClass('selected')
+                introductiondoc.add(introduction)
             
-            img.onclick = [
+            selectthisbutton = director.retrieveVisual(
+                'neutronexperiment/edit/select-a-button')\
+                .select(buttonid, buttonids)
+            
+            img.onclick = selectthisbutton + [
                 refreshintroduction(introduction),
                 updateinstrumentid(instrument.id),
                 ]
