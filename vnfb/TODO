@@ -14,7 +14,7 @@ Front page
 
 Misc.
 -----
-* "view indicator" may be too long. use indentation.
+ * The "collapsed" document need a small tiny document body to look better
 
 
 Master tables
@@ -40,6 +40,12 @@ Atomicstructure
  * link to create sample from atomicstructure page
  * panels for SQE, samples, experiments
 
+
+
+Kernels
+-------
+* Phonon kernel: should be able to take polarizations as numpy array
+  of complex numbers
 
 
 More long term 
