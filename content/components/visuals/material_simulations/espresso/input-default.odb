@@ -28,7 +28,7 @@ def visual(actor):
 
     fname           = FormTextField(name = "fname", value = actor.fname)
     description     = FormTextField(name = "description", value=actor.description)   # Make as textarea
-    text            = FormTextArea(name="text", value=actor.text)
+    text            = FormTextArea(name="text", value=actor.text, Class="qe-text-area")
 
     submit      = FormSubmitButton(label="Create Input Configuration")
     cancel      = lc.button(label="Cancel")

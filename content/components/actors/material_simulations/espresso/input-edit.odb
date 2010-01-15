@@ -84,9 +84,7 @@ class Actor(base):
 
         fname           = FormTextField(name = "fname", value = input.filename)
         description     = FormTextField(name = "description", value=input.description)   # Make as textarea
-        #parser          = FormSelectorField(name="parser",
-        #                                    entries=enumerate(PARSERS)) # No choice :)
-        text            = FormTextArea(name="text", value=input.text)
+        text            = FormTextArea(name="text", value=input.text, Class="qe-text-area")
 
         submit      = FormSubmitButton(label="Edit Configuration Input")
         cancel      = lc.button(label="Cancel")

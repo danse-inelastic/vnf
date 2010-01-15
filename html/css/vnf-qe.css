@@ -158,12 +158,20 @@ a.qe-run-task {
     width: 70px;
 }
 
+
+textarea {
+    width: 400px;
+    height: 200px;
+}
+
 /*
+.qe-text-area {
+    width: 200px;
+}
+
 .qe-tasks-info td.qe-tasks-value {
     width: 100px;
 }
-*/
-/*
 .qe-tasks-results p {
     display: inline;
     float: left;
