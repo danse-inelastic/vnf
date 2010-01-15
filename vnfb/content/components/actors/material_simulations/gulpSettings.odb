@@ -42,8 +42,8 @@ class Actor(base):
         matterview = doc.document(title='material', collapsable=True, collapsed=False)
         viewmatter = load(actor='atomicstructure', routine='showOverview',
                           id = matter.id)
-        link = lc.link(label=structure.short_description, onclick=viewmatter)
-        structureview.add(link)
+        link = lc.link(label=matter.short_description, onclick=viewmatter)
+        matterview.add(link)
 
         # results
         resultsdoc = doc.document(title = 'Results', collapsable=True, collapsed=True)
@@ -54,12 +54,12 @@ class Actor(base):
             )
 
         # my configuration
-        configdoc = doc.document(title = 'Configuration', collapsable = True)
-        configdoc.oncreate = select(element=configdoc).append(
-            load(
-              actor='material_simulations/forcefieldwizard', routine='start',
-              id = c.id, editlink=False,
-            ))
+#        configdoc = doc.document(title = 'Configuration', collapsable = True)
+#        configdoc.oncreate = select(element=configdoc).append(
+#            load(
+#              actor='material_simulations/forcefieldwizard', routine='start',
+#              id = c.id, editlink=False,
+#            ))
 
         return doc
 
@@ -101,7 +101,7 @@ class Actor(base):
         if not id:
             raise RuntimeError
         domaccess = self._domaccess(director)
-        label = domaccess.getComputationLabel('gulpSettings', id)
+        label = domaccess.getComputationLabel(id)
         computation = self._getComputation(director)
         return [
             ('Simulations',
