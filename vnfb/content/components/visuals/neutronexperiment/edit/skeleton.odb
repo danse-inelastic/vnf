@@ -41,6 +41,11 @@ class Factory(object):
         view_indicator = director.retrieveVisual('view-indicator', path=path)
         doc.add(view_indicator)
 
+        instructiondoc = doc.document( title='Setup your experiment')
+        instructiondoc.paragraph(
+            text = ['Please set up your experiment using the following wizard.']
+            )
+
         wizard_container = doc.document(id='experimentwizard-container')
         
         navigation_bar = lc.toolbar(id='experimentwizard-navigationbar');
@@ -69,9 +74,7 @@ class Factory(object):
         instrument = experiment.instrument
         instrument = instrument and instrument.id and instrument.dereference(domaccess.db)
         if instrument:
-            orm = domaccess.orm
-            instrument = orm.record2object(instrument)
-            if not instrument.hasSampleComponent():
+            if not instrument.has_sample_component:
                 wizard_container.oncreate = [
                     select(id='experimentwizard-samplebutton-container').hide(),
                     select(id='experimentwizard-sampleenvironmentbutton-container').hide(),

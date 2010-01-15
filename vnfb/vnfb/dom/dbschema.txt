@@ -55,3 +55,8 @@ renamed tables
 rename columns
  polyxtalcoherentphononscatteringkernels
    dispersion -> phonons
+
+
+Jan 15, 2010
+
+table "instruments" added column "has_sample_component". boolean

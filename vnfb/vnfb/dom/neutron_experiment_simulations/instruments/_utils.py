@@ -83,6 +83,7 @@ def cinstr(
     r.creator = creator
     r.date = date
     r.status = status
+    r.has_sample_component = instrument.hasSampleComponent()
     orm.db.updateRecord(r)
 
     return instrument
