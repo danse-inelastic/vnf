@@ -14,7 +14,7 @@
 
 import luban.content as lc
 
-from luban.content import load, select
+from luban.content import load, select, alert
 
 from luban.content.Button import Button
 from luban.content.Paragraph import Paragraph
@@ -207,6 +207,70 @@ class Actor(base):
             id = self.inventory.id,
             director = director
             )
+
+
+    def createEditWizard_instrumentconfigurationpanel(self, director):
+        """
+        id: experiment id
+        instrument: id of the newly selected instrument for which configuration will be edited
+        """
+        instrument = self.inventory.instrument
+        if not instrument:
+            return
+            
+        id = self.inventory.id
+        return director.retrieveVisual(
+            'neutronexperiment/edit/instrumentconfiguration',
+            id = id,
+            director = director,
+            )
+
+
+    def editWizard_changeinstrumentconfigurationpanel(self, director):
+        """
+        id: experiment id
+        instrument: id of the newly selected instrument for which configuration will be edited
+        """
+        v = self.createEditWizard_instrumentconfigurationpanel(director)
+        if v is None:
+            return alert('Please select an instrument')
+        return select(id='instrumentconfigurationpanel').replaceContent(v)
+
+
+    def setInstrument(self, director):
+        """
+        id: experiment id
+        instrument: instrument id
+
+        return: instrument id
+        """
+        id = self.inventory.id
+        domaccess = self._domaccess(director)
+        exp = domaccess.getExperimentRecord(id)
+
+        # old instrument
+        oldinstrument = exp.instrument and exp.instrument.id
+
+        # new instrument
+        instrument = self.inventory.instrument
+        # if old = new, nothing to do
+        if instrument == oldinstrument: return instrument
+
+        # assign to experiment
+        exp.instrument = instrument
+        domaccess.db.updateRecord(exp)
+
+        # remove old configuration if necessary
+        ic = exp.instrument_configuration
+        ic = ic and ic.id and ic.dereference(domaccess.db)
+        if ic:
+            exp.instrument_configuration = None
+            domaccess.db.updateRecord(exp)
+            orm = domaccess.orm
+            ic = orm.load(ic.id)
+            orm.destroy(ic)
+
+        return instrument
 
 
     def createEditWizard_samplepanel(self, director):

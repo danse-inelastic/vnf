@@ -24,75 +24,68 @@ class Factory(object):
     def __init__(self, id=None, experiment=None, domaccess=None, director=None):
         if director is None:
             raise RuntimeError
+        self.director = director
+
         if not domaccess:
             domaccess = director.retrieveDOMAccessor('experiment')
         self.domaccess = domaccess
-        self.orm = self.domaccess.orm
-        self.director = director
         
-        if not id:
-            if not experiment: raise RuntimeError
-            id = self.orm(experiment).id
-        self.id = id
-        
+        if id is None and experiment is None:
+            raise RuntimeError
+
         if not experiment:
-            experiment = domaccess.getExperiment(id)
+            experiment = domaccess.getExperimentRecord(id)
         self.experiment = experiment
+
+        if not id:
+            id = experiment.id
+        self.id = id
         
         return
     
 
     def __call__(self):
-        instruments = self.domaccess.getInstrumentRecords()
+        director = self.director
+        domaccess = self.domaccess
+        db = domaccess.db
         
-        doc = lc.document()
-
-        #
-        from luban.content.FormTextField import FormTextField
-        hidden_field = FormTextField(hidden=True)
-        doc.add(hidden_field)
-
-        #
-        introductiondoc = lc.document()
-
-        #
-        refreshintroduction = select(element=introductiondoc).replaceContent
-        updateinstrumentid = lambda id: select(element=hidden_field).setAttr(value=id)
+        experiment = self.experiment
         
-        instrument_gallery = self._createInstrumentGallery(
-            instruments, refreshintroduction, updateinstrumentid)
-
-        doc.add(instrument_gallery)
-        doc.add(introductiondoc)
+        instrument = experiment.instrument
+        instrument = instrument and instrument.id and instrument.dereference(db)
         
-        return doc
+        doc = lc.document(id='instrumentpanel')
+        
+        configdoc = lc.document(id='instrumentconfigurationpanel')
 
-
-    def _createInstrumentGallery(self, instruments, refreshintroduction, updateinstrumentid):
-        doc = lc.document(id='instrument-gallery-container')
-        sp = doc.splitter(id='instrument-gallery')
-        for instrument in instruments:
-            name = instrument.name
-            path = 'instruments/%s/middle-size-icon.png' % name
-            img = lc.image(path=path)
-            sp.section().add(img)
+        setinstrument = lambda id, instrument_id: load(
+            actor='experiment', routine='setInstrument', id=id, instrument=instrument_id)
+        
+        refreshinstrumentconfigurationdoc = lambda instrument_id: load(
+            actor='experiment',
+            routine='editWizard_changeinstrumentconfigurationpanel',
+            id = self.id,
+            instrument = setinstrument(self.id, instrument_id),
+            )
             
-            introduction = lc.document()
-            short_description = instrument.short_description
-            introduction.paragraph(text=[short_description])
-            
-            img.onclick = [
-                refreshintroduction(introduction),
-                updateinstrumentid(instrument.id),
-                ]
-            continue
-                
-        return doc
+        
+        instrument_selector = director.retrieveVisual(
+            'neutronexperiment/edit/instrumentselector',
+            id=instrument and instrument.id, domaccess=domaccess, director=director,
+            refreshinstrumentconfigurationdoc=refreshinstrumentconfigurationdoc)
+        doc.add(instrument_selector)
 
+        doc.add(configdoc)
+
+        return doc
 
 
 
 def visual(id=None, experiment=None, domaccess=None, director=None):
+    """
+    id: experiment id
+    experiment: experiment record
+    """
     return Factory(id=id, experiment=experiment, domaccess=domaccess, director=director)()
 
 # version
