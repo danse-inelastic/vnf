@@ -11,6 +11,8 @@ padding:0.3em;
 /*background-color:#F0F5F5;*/
 -moz-border-radius-topleft:2em;
 -moz-border-radius-topright:2em;
+-webkit-border-top-left-radius: 2em;
+-webkit-border-top-right-radius: 2em;
 }
 #experimentwizard-navigationbar table {
 border-collapse:collapse;
@@ -35,7 +37,7 @@ margin:0;
 padding:0;
 }
 #experimentwizard-navigationbar .navigation-button {
-background-color:#f0f0f0;
+background-color:#d0d0d0;
 -moz-border-radius:1em;
 -webkit-border-radius:1em;
 border:3px solid #f0f0f0;
@@ -64,16 +66,24 @@ width:auto;
 text-align:center;
 border:1em solid transparent;
 }
-#instrument-gallery img:hover {
-border:2px solid lightgreen;
+#instrument-gallery div.luban-image-container:hover {
+border:3px solid lightgreen;
 }
-#instrument-gallery img.selected {
-border:2px solid lightblue;
+#instrument-gallery div.luban-image-container:hover img {
+height:5.1em;
+}
+#instrument-gallery div.luban-image-container.selected {
+border:3px solid red;
+}
+#instrument-gallery div.luban-image-container.selected img{
+height:6em;
 }
 #instrument-gallery img {
 height:5em;
+}
+#instrument-gallery div.luban-image-container {
+border:3px solid transparent;
 cursor:pointer;
-border:2px solid transparent;
 }
 #instrument-gallery {
 background-color:#444444;
@@ -99,6 +109,46 @@ font-size:1.3em;
 border-width:3px;
 }
 
+/* instrument configuration */
+#instrumentconfigurationpanel {
+margin:1em;
+padding-bottom:1em;
+}
+/* component chain */
+#component-chain-container td {
+padding:0.2em 0.5em;
+}
+#component-chain-container .component-chain-button p {
+margin:0;
+}
+#component-chain-container div.component-chain-button:hover {
+border:3px solid lightGreen;
+}
+#component-chain-container .component-chain-button.selected {
+border:3px dotted blue;
+}
+#component-chain-container .component-chain-button {
+border:3px solid #333333;
+padding:0.2em 0.5em;
+background-color:white;
+}
+#component-chain-container > h1 {
+text-decoration:underline;
+margin-bottom:0.5em;
+}
+#component-chain-container {
+padding:0.5em 1.5em 1.3em 1.5em;
+border:1px solid #999999;
+max-width:70em;
+overflow-x:scroll;
+-moz-border-radius:1em;
+-web-border-radius:1em;
+background-color:white;
+margin-bottom:1em;
+}
+#component-chain-container table{
+    width: auto;
+}
 
 /* version */
 /* $Id$ */

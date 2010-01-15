@@ -234,7 +234,10 @@ class Actor(base):
         v = self.createEditWizard_instrumentconfigurationpanel(director)
         if v is None:
             return alert('Please select an instrument')
-        return select(id='instrumentconfigurationpanel').replaceContent(v)
+        return [
+            select(id='experimentwizard-instrumentselector').hide(),
+            select(id='instrumentconfigurationpanel').replaceContent(v),
+            ]
 
 
     def setInstrument(self, director):
@@ -267,7 +270,7 @@ class Actor(base):
             exp.instrument_configuration = None
             domaccess.db.updateRecord(exp)
             orm = domaccess.orm
-            ic = orm.load(ic.id)
+            ic = orm.record2object(ic)
             orm.destroy(ic)
 
         return instrument

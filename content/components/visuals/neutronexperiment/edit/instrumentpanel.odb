@@ -50,7 +50,7 @@ class Factory(object):
         db = domaccess.db
         
         experiment = self.experiment
-        
+
         instrument = experiment.instrument
         instrument = instrument and instrument.id and instrument.dereference(db)
         
@@ -68,7 +68,6 @@ class Factory(object):
             instrument = setinstrument(self.id, instrument_id),
             )
             
-        
         instrument_selector = director.retrieveVisual(
             'neutronexperiment/edit/instrumentselector',
             id=instrument and instrument.id, domaccess=domaccess, director=director,

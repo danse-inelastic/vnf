@@ -1,0 +1,55 @@
+# -*- Python -*-
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                 Jiao Lin
+#                      California Institute of Technology
+#                      (C) 2006-2010  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+
+'''
+this actually returns an action, not a visual
+
+'''
+
+
+from luban.content import select, load, alert
+
+
+from pyre.components.Component import Component
+class Factory(Component):
+
+
+    def select(self, id, ids):
+        """
+        returns actions that mark only one button as 'selected',
+        and remove 'selected' Class from all others.
+        
+        id: id of the button to select
+        ids: ids of all butons
+        """
+        if id not in ids: raise RuntimeError
+        actions = []
+        for id1 in ids:
+            if id1 != id:
+                action = select(id=id1).removeClass('selected')
+            else:
+                action = select(id=id1).addClass('selected')
+            actions.append(action)
+            continue
+
+        return actions
+
+
+def visual(dummy): return Factory('select-a-button', 'action')
+
+# version
+__id__ = "$Id$"
+
+# End of file 
