@@ -15,7 +15,7 @@ import luban.content as lc
 from luban.content import select
 from luban.content import load
 from vnfb.utils.qegrid import QEGrid
-from vnfb.utils.qeconst import SMEARING
+from vnfb.utils.qeconst import SMEARING, IBRAV
 from luban.content.FormTextField import FormTextField
 from luban.content.FormSelectorField import FormSelectorField
 from luban.content.FormSubmitButton import FormSubmitButton
@@ -27,12 +27,11 @@ def visual(actor):
     form.add(table.grid())
 
     PSEUDO      = ("Ni.pbe-nd-rrkjus.UPF",)     # CRITICAL
-    LATTICE     = ("fcc", "bcc")                # CRITICAL
 
+    ibrav       = FormSelectorField(name="ibrav",
+                                    entries=enumerate(IBRAV)) # Take from atomic structure?
     pseudo      = FormSelectorField(name="pseudo",
                                     entries=enumerate(PSEUDO))
-    lattice     = FormSelectorField(name="lattice",
-                                    entries=enumerate(LATTICE)) # Take from atomic structure?
     ecutwfc     = FormTextField(name = "ecutwfc", value = "")
     ecutrho     = FormTextField(name = "ecutrho", value = "")
     smearing    = FormSelectorField(name="smearing",
@@ -49,8 +48,8 @@ def visual(actor):
     st          = QEGrid(lc.grid()) # Submit Table
     st.addRow((submit, cancel), ("qe-action-accept", "qe-action-cancel"))
 
+    table.addRow(("Lattice Type:", ibrav))
     table.addRow(("Pseudo-Potential:", pseudo))
-    table.addRow(("Lattice Type:", lattice))
     table.addRow(("Enertgy Cutoff:", ecutwfc))    # XXX Check name
     table.addRow(("Density Cutoff:", ecutrho))    # XXX Check name
     table.addRow(("Smearing:", smearing))    # XXX Check name
@@ -67,7 +66,7 @@ def visual(actor):
                                                   taskid    = actor.taskid,
                                                   id        = actor.id,
                                                   pseudo    = pseudo.value, # change
-                                                  lattice   = lattice.value,
+                                                  ibrav     = ibrav.value,
                                                   ecutwfc   = ecutwfc.value,
                                                   ecutrho   = ecutrho.value,
                                                   smearing  = smearing.value,

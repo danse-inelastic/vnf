@@ -98,28 +98,32 @@ ZASR[_zasr[2]]  = "'one-dim'"
 ZASR[_zasr[3]]  = "'zero-dim'"
 ZASR[_zasr[4]]  = "'no'"
 
-IBRAV       = ( "None",                             # 0
-                "cubic P (sc)",                     # 1
-                "cubic F (fcc)",                    # 2
-                "cubic I (bcc)",                    # 3
-                "Hexagonal and Trigonal P",         # 4
-                "Trigonal R",                       # 5
-                "Tetragonal P (st)",                # 6
-                "Tetragonal I (bct)",               # 7
-                "Orthorhombic P",                   # 8
-                "Orthorhombic base-centered(bco)",  # 9
-                "Orthorhombic face-centered",       # 10
-                "Orthorhombic body-centered",       # 11
-                "Monoclinic P",                     # 12
-                "Monoclinic base-centered",         # 13
-                "Triclinic"                         # 14
+IBRAV       = ( " 0. None",                             # 0
+                " 1. Cubic P (sc)",                     # 1
+                " 2. Cubic F (fcc)",                    # 2
+                " 3. Cubic I (bcc)",                    # 3
+                " 4. Hexagonal and Trigonal P",         # 4
+                " 5. Trigonal R",                       # 5
+                " 6. Tetragonal P (st)",                # 6
+                " 7. Tetragonal I (bct)",               # 7
+                " 8. Orthorhombic P",                   # 8
+                " 9. Orthorhombic base-centered(bco)",  # 9
+                "10. Orthorhombic face-centered",       # 10
+                "11. Orthorhombic body-centered",       # 11
+                "12. Monoclinic P",                     # 12
+                "13. Monoclinic base-centered",         # 13
+                "14. Triclinic"                         # 14
                 )
 
-SMEARING    = {"gaussian":              "gauss",
-               "methfessel-paxton":     "mp",
-               "marzari-vanderbilt":    "mv",
-               "fermi-dirac":           "fd"
-              }
+_smearing   = ("gaussian", "methfessel-paxton", "marzari-vanderbilt", "fermi-dirac")
+SMEARING    = OrderedDict()
+SMEARING[_smearing[0]]  = "'gauss'"
+SMEARING[_smearing[1]]  = "'mp'"
+SMEARING[_smearing[2]]  = "'mv'"
+SMEARING[_smearing[3]]  = "'fd'"
+
+
+
 __date__ = "$Nov 3, 2009 3:12:34 PM$"
 
 
