@@ -23,7 +23,7 @@ LatticeTable = o2t(Lattice)
 
 # view
 def customizeLubanObjectDrawer(self, drawer):
-    drawer.mold.sequence = ['a', 'b', 'c', 'alpha', 'beta', 'gamma', 'base']
+    drawer.mold.sequence = ['a', 'b', 'c', 'alpha', 'beta', 'gamma'] # 'base']
 Lattice.customizeLubanObjectDrawer = customizeLubanObjectDrawer
 
 
