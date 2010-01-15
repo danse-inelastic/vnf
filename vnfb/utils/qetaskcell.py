@@ -133,7 +133,7 @@ class QETaskCell:
         action      = ""
         jobs        = self._director.clerk.getQEJobs(where="taskid='%s'" % self._task.id)
         if jobs:
-            self._job  = jobs[0]    # FIXME
+            self._job  = self._latest(jobs) 
             link = lc.link(label=self._job.id,
                                onclick = load(actor     = 'jobs/jobs-view',
                                               id        = self._simid,
@@ -151,7 +151,24 @@ class QETaskCell:
 
         table.addRow(("Job:", link, action))
 
+
+    def _latest(self, jobs):
+        "Retruns latest job based on timesubmitted column"
+        # jobs have at least one element
+        latest  = jobs[0]
         
+        for job in jobs:
+            if job.timesubmitted == "":
+                continue
+
+            if latest.timesubmitted == "":
+                latest = job
+
+            if float(job.timesubmitted) > float(latest.timesubmitted):
+                latest  = job
+
+        return latest
+
     def _results(self, table):
         "Returns link to tar file for download. "
         taskinfo    = TaskInfo(self._simid, self._task.id, self._type)
