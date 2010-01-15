@@ -14,6 +14,12 @@
 import os
 from vnfb.utils.qeparser.qeinput import QEInput
 from vnfb.utils.qeparser.namelist import Namelist
+from vnfb.utils.qegrid import QEGrid
+from luban.content.FormTextField import FormTextField
+from luban.content.FormSubmitButton import FormSubmitButton
+from luban.content import select
+from luban.content import load
+import luban.content as lc
 
 from luban.components.AuthorizedActor import AuthorizedActor as base
 
@@ -24,9 +30,72 @@ class Actor(base):
         import pyre.inventory
         id          = pyre.inventory.str('id', default='')          # Simulation Id
         taskid      = pyre.inventory.str('taskid', default='')
+        type        = pyre.inventory.str('type', default='')
         nk1         = pyre.inventory.str('nk1', default='')        # Type of the configuration file
         nk2         = pyre.inventory.str('nk2', default='')
         nk3         = pyre.inventory.str('nk3', default='')
+
+    def default(self, director):
+        return select(id='main-display-area').replaceContent(self.content(director))
+
+
+    def content(self, director):
+        def viewIndicator(director):
+            path = []
+            path.append(('Simulations ', load(actor='materialsimulation')))
+            path.append(('Quantum Espresso ', load(actor='materialsimulation')))
+            path.append(('%s ' % self.id, load(actor    = 'material_simulations/espresso/sim-view',
+                                               id       = self.id)))
+
+            path.append(('%s Task ' % self.type, load(actor    = 'material_simulations/espresso/task-view',
+                                                      id       = self.id,
+                                                      taskid   = self.taskid,
+                                                      type     = self.type)))
+            path.append("Set Parameters")
+
+            return director.retrieveVisual('view-indicator', path=path)
+
+        doc         = lc.document(title   = "Create Input Configuration: %s" % self.type)
+        splitter    = doc.splitter(orientation="vertical")
+        sA          = splitter.section()
+        sA.add(viewIndicator(director))
+        sB          = splitter.section()
+        sB.add(self._setForm(director))
+
+        return doc
+        
+
+    def _setForm(self, director):
+        form        = lc.form(id='create-simulation-form')
+        table       = QEGrid(lc.grid(Class="qe-form"))
+        form.add(table.grid())
+
+        nk1         = FormTextField(name = "nk1", value = "")
+        nk2         = FormTextField(name = "nk2", value = "")
+        nk3         = FormTextField(name = "nk3", value = "")
+
+        submit      = FormSubmitButton(label="Generate Input Configuration")
+        cancel      = lc.button(label="Cancel")
+        cancel.onclick  = load(actor = 'material_simulations/espresso/sim-view', id=self.id)
+
+        st          = QEGrid(lc.grid()) # Submit Table
+        st.addRow((submit, cancel), ("qe-action-accept", "qe-action-cancel"))
+
+        table.addRow(("nk1:", nk1))
+        table.addRow(("nk2:", nk2))
+        table.addRow(("nk3:", nk3))
+        table.addRow(("", st.grid()))
+
+        table.setColumnStyle(0, "qe-form-label")
+        table.setColumnStyle(1, "qe-form-field")
+
+        form.onsubmit   = select(element=form).submit(actor     = 'material_simulations/espresso-utils/generate-matdyn',
+                                                      routine   = 'generateInput',
+                                                      id        = self.id,
+                                                      taskid    = self.taskid)
+
+        return form
+
 
     def generateInput(self, director):
         return director.redirect(actor   = 'material_simulations/espresso/input-create',
@@ -95,6 +164,7 @@ class Actor(base):
         super(Actor, self)._configure()
         self.id             = self.inventory.id
         self.taskid         = self.inventory.taskid
+        self.type           = self.inventory.type
         self.nk1            = self.inventory.nk1
         self.nk2            = self.inventory.nk2
         self.nk3            = self.inventory.nk3
