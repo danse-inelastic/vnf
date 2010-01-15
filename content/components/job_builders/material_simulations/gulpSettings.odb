@@ -24,6 +24,7 @@ class Builder(base):
     def __init__(self, name, path):
         base.__init__(self, name, path)
         self.convertHistoryFile = False
+        self.serializePhononArrays = False
         self.zipXyzTrajectory = False
         self.createPhononModesFile = False
         return
@@ -50,8 +51,9 @@ class Builder(base):
         # 1. open the input file
         inputFilePath = dds.abspath(job, filename=computation.inputFile)
         inputFileContents = open(inputFilePath).read()
+        firstLine = open(inputFilePath).readline()
         
-        # 2. scan for various items to be processed
+        # 2. scan for various items to be processed--eventually info will be passed from GulpSettings DO
         if 'outputmovie.xyz' in inputFileContents:
             self.zipXyzTrajectory = True
         # scan for string 'output history' and signal conversion if found
@@ -59,6 +61,8 @@ class Builder(base):
             self.convertHistoryFile = True
         if 'eigenvectors' in inputFileContents:
             self.createPhononModesFile = True
+        if 'phonon' in firstLine:
+            self.serializePhononArrays = True
 
         # 3. add run.sh
         files.append( self._make_script1(computation) )
@@ -92,11 +96,15 @@ class Builder(base):
             ]
         if self.convertHistoryFile:
             cmds += [
-            'postProcessGulp.py --historyFile=output.history --ncFile=output.nc',
+            'postProcessGulp.py -convertHistoryFile=True -historyFile=output.history -ncFile=output.nc',
+                     ] 
+        if self.serializePhononArrays:
+            cmds += [
+            'postProcessGulp.py -serializePhononArrays=True -historyFile=output.history -ncFile=output.nc',
                      ] 
         if self.createPhononModesFile:
             cmds += [
-            'postProcessGulp.py --historyFile=output.history --ncFile=output.nc',
+            'postProcessGulp.py -historyFile=output.history -ncFile=output.nc',
                      ] 
         script = self.shscriptname
         path = self._path(script)
