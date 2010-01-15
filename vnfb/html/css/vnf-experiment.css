@@ -1,0 +1,74 @@
+/*  -*- CSS -*-  */
+
+#experimentwizard-navigationbar {
+padding:0.3em;
+background-color:#F0F5F5;
+-moz-border-radius:2em;
+}
+#experimentwizard-navigationbar table {
+border-collapse:collapse;
+width:auto;
+}
+#experimentwizard-navigationbar td {
+padding:0 0.4em;
+text-align:center;
+}
+#experimentwizard-navigationbar div.navigation-button:hover {
+border:3px solid lightGreen;
+cursor:pointer;
+}
+#experimentwizard-navigationbar .index {
+color:#229999;
+font-size:1.3em;
+margin:0;
+padding:0;
+}
+#experimentwizard-navigationbar .navigation-button {
+background-color:#f0f0f0;
+-moz-border-radius:1em;
+-webkit-border-radius:1em;
+border:3px solid white;
+}
+#experimentwizard-navigationbar p {
+margin:0;
+}
+#experimentwizard-navigationbar div {
+margin:0;
+padding:0.2em 0.3em;
+}
+#experimentwizard-navigationbar img {
+height:2.5em;
+}
+
+#instrument-gallery-container {
+}
+#instrument-gallery table {
+width:auto;
+}
+#instrument-gallery td {
+text-align:center;
+border:1em solid transparent;
+}
+#instrument-gallery img:hover {
+border:2px solid lightgreen;
+}
+#instrument-gallery img {
+height:5em;
+cursor:pointer;
+border:2px solid transparent;
+}
+#instrument-gallery {
+background-color:#444444;
+padding:0.2em;
+-moz-border-radius:1em;
+-webkit-border-radius:1em;
+margin:1em;
+width:60em;
+overflow-x:scroll;
+}
+
+
+/* version */
+/* $Id$ */
+
+/* End of file  */

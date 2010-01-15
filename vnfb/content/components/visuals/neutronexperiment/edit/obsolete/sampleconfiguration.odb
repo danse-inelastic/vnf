@@ -1,0 +1,86 @@
+# -*- Python -*-
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                 Jiao Lin
+#                      California Institute of Technology
+#                      (C) 2006-2010  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+from luban.content import load, select, alert
+import luban.content as lc
+
+from luban.content.FormSelectorField import FormSelectorField
+
+
+class Factory(object):
+
+
+    def __init__(self, id, director):
+        domaccess = director.retrieveDOMAccessor('experiment')
+        self.domaccess = domaccess
+        self.director = director
+        self.id = id
+        self.experiment = domaccess.getExperiment(id)
+        self.instrument = self.experiment.instrument
+        self.sample = self.experiment.sample
+        return
+    
+
+    def __call__(self):
+        # check if it is ready to work on this form
+        if self._isNotReady():
+            return self._notReadyDocument()
+        #
+        domaccess = self.domaccess
+        # check if configuration exists
+        experiment = self.experiment
+        sc = experiment.sample_configuration
+        if sc is None:
+            sc = domaccess.createSampleConfiguration(experiment)
+        # the form
+        doc = lc.document(Class='container')
+        doc.add(self._buildForm(sc))
+        #
+        switch = select(id='experimentwizard-sampleenvironmentconfiguration-tab').tab('select')
+        continuebutton = lc.button(label='continue', onclick=switch)
+        doc.add(continuebutton)
+        return doc
+
+
+    def _buildForm(self, sc):
+        director = self.director
+        getDrawer = director.painter.paintObj.drawers.getDrawer
+        drawer = getDrawer(sc.__class__)
+        doc = drawer(sc, edithierarchy=False)
+        return doc
+
+
+    def _notReadyDocument(self):
+        doc = lc.document()
+        doc.paragraph(text=['You are not ready to configure the sample.'])
+
+        l = lc.link(
+            label = 'start from beginning',
+            onclick = select(id='experimentwizard-startform-tab').tab('select')
+            )
+        doc.add(l)
+        return doc
+
+
+    def _isNotReady(self):
+        return self.sample is None
+
+
+def visual(id, director):
+    return Factory(id, director)()
+
+# version
+__id__ = "$Id$"
+
+# End of file 

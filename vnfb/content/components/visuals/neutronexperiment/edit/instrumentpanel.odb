@@ -1,0 +1,101 @@
+# -*- Python -*-
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                 Jiao Lin
+#                      California Institute of Technology
+#                      (C) 2006-2010  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+from luban.content import load, select, alert
+import luban.content as lc
+
+from luban.content.FormSelectorField import FormSelectorField
+
+
+class Factory(object):
+
+
+    def __init__(self, id=None, experiment=None, domaccess=None, director=None):
+        if director is None:
+            raise RuntimeError
+        if not domaccess:
+            domaccess = director.retrieveDOMAccessor('experiment')
+        self.domaccess = domaccess
+        self.orm = self.domaccess.orm
+        self.director = director
+        
+        if not id:
+            if not experiment: raise RuntimeError
+            id = self.orm(experiment).id
+        self.id = id
+        
+        if not experiment:
+            experiment = domaccess.getExperiment(id)
+        self.experiment = experiment
+        
+        return
+    
+
+    def __call__(self):
+        instruments = self.domaccess.getInstrumentRecords()
+        
+        doc = lc.document()
+
+        #
+        from luban.content.FormTextField import FormTextField
+        hidden_field = FormTextField(hidden=True)
+        doc.add(hidden_field)
+
+        #
+        introductiondoc = lc.document()
+
+        #
+        refreshintroduction = select(element=introductiondoc).replaceContent
+        updateinstrumentid = lambda id: select(element=hidden_field).setAttr(value=id)
+        
+        instrument_gallery = self._createInstrumentGallery(
+            instruments, refreshintroduction, updateinstrumentid)
+
+        doc.add(instrument_gallery)
+        doc.add(introductiondoc)
+        
+        return doc
+
+
+    def _createInstrumentGallery(self, instruments, refreshintroduction, updateinstrumentid):
+        doc = lc.document(id='instrument-gallery-container')
+        sp = doc.splitter(id='instrument-gallery')
+        for instrument in instruments:
+            name = instrument.name
+            path = 'instruments/%s/middle-size-icon.png' % name
+            img = lc.image(path=path)
+            sp.section().add(img)
+            
+            introduction = lc.document()
+            short_description = instrument.short_description
+            introduction.paragraph(text=[short_description])
+            
+            img.onclick = [
+                refreshintroduction(introduction),
+                updateinstrumentid(instrument.id),
+                ]
+            continue
+                
+        return doc
+
+
+
+
+def visual(id=None, experiment=None, domaccess=None, director=None):
+    return Factory(id=id, experiment=experiment, domaccess=domaccess, director=director)()
+
+# version
+__id__ = "$Id$"
+
+# End of file 
