@@ -18,7 +18,6 @@ from vnfb.utils.qeconst import SMEARING, IBRAV
 
 from luban.components.AuthorizedActor import AuthorizedActor as base
 
-# Requires simulation id,
 class Actor(base):
 
     class Inventory(base.Inventory):
@@ -38,21 +37,38 @@ class Actor(base):
     def generateInput(self, director):
         return director.redirect(actor   = 'material_simulations/espresso/input-create',
                                 routine = 'default',
-                                text    = self._input(),
+                                text    = self._input(director),
                                 id      = self.inventory.id,
                                 taskid  = self.inventory.taskid)
 
 
-    def _input(self):
+    def _input(self, director):
+        domaccess = director.retrieveDOMAccessor('atomicstructure')
+        structure = domaccess.getAtomicStructure("6NPTL72J")
+        from qecalc.qetask.qeparser.pwinput import PWInput
+        ml  = [26.98,]    # mass list
+        ps  = ["HaHa",]
+        pwInput = PWInput()
+        pwInput.structure.load(source = 'diffpy', ibrav = 2 , structure = structure, massList = ml, psList = ps)
+        print pwInput.structure.toString()
+        print pwInput.structure.atomLabels()
+        #print structure
+
+
+
         input      = QEInput(type='pw')
         system  = Namelist("system")
         system.add("ibrav", self.inventory.ibrav)
         system.add("ecutwfc", self.inventory.ecutwfc)
         system.add("ecutrho", self.inventory.ecutrho)
         system.add("smearing", self._smearing())
-        c   = Card("k_points")
-        c.setArg("automatic")
-        c.addLine("Ni 26.98 %s" % self.inventory.pseudo)
+
+        atomic_species  = Card("atomic_species")
+        atomic_species.addLine("Ni 26.98 %s" % self.inventory.pseudo)
+
+        k_points   = Card("k_points")
+        k_points.setArg("automatic")
+        k_points.addLine("%s %s %s 0 0 0" % (self.nk1, self.nk2, self.nk3))
         input.addNamelist(system)
         input.addCard(c)
         return input.toString()

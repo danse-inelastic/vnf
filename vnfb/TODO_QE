@@ -46,6 +46,11 @@ CRITICAL FIXES
 - Hide "Run Task" button unless the previous simulation task is completed
 - Display jobs
 
+
+BUGS
+====
+director.redirect() does not always pass parameters
+
 Simulations Types [Status]
 =================
 - Total Energy
