@@ -12,6 +12,7 @@
 
 
 from luban.content import load, select
+import luban.content as lc
 
 from luban.content.Document import Document
 from luban.content.Link import Link
@@ -45,28 +46,24 @@ class Actor(base):
 
     def start(self, director):
         
-        domaccess = director.retrieveDOMAccessor('atomicstructure')
-        '3W4G7NUM'
-        structure = domaccess.getAtomicStructureRecord(self.inventory.structureId)
-        structurelabel = structure.chemical_formula or structure.id
+#        domaccess = director.retrieveDOMAccessor('atomicstructure')
+#        '3W4G7NUM'
+#        structure = domaccess.getAtomicStructureRecord(self.inventory.structureId)
+#        structurelabel = structure.chemical_formula or structure.id
         
-        title = 'Forcefield simulation of %s' % (structurelabel,)
+        #title = 'Forcefield simulation of %s' % (structurelabel,)
+        title = 'Simulation with forcefields'
         wizard = Document(id='forcefieldwizard-start', title=title)
 
-        link = Link(label='back to Matter\ %s' % structurelabel)
-        link.onclick = load(
-            actor='atomicstructure', routine='editAtomicStructureForm',
-            id=structure.id)
-        wizard.add(link)
         
-        form = self.startform(director)
-        wizard.add(form)
+        doc = self.selectMatter(director)
+        wizard.add(doc)
         
         return select(id='main-display-area').replaceContent(wizard)
     
     
     def selectMatter(self, director):
-        doc = lc.document(id='sample-matter-selector-doc')
+        doc = lc.document(id='matter-selector-doc')
 
         doc.paragraph(
             text=[
@@ -85,37 +82,56 @@ class Actor(base):
             ]
 
         # cancel
-        c = lc.link(label='cancel', Class='float-right'); doc.add(c)
-        c.onclick = select(id=self.matter_view_id).replaceBy(
-            load(actor='scatterer/editor', routine='createMatterView',
-                 id = self.id)
-            )
+#        c = lc.link(label='cancel', Class='float-right'); doc.add(c)
+#        c.onclick = select(id=self.matter_view_id).replaceBy(
+#            load(actor='scatterer/editor', routine='createMatterView',
+#                 id = self.id)
+#            )
 
         # select button
         b = lc.button(label='select'); doc.add(b)
-        selected_matter = select(id='atomicstructure-table').table(
-            'getIdentifiersForSelectedRow', colname='selectone')
-        updatematter = load(
-            actor='scatterer/editor', routine='selectMatter',
-            id = self.id,
-            matter=selected_matter
-            )
+#        updatematter = load(
+#            actor='scatterer/editor', routine='selectMatter',
+#            id = self.id,
+#            matter=selected_matter
+#            )
         # this does not work because all kernels need to be flushed out
         # b.onclick = select(id=self.matter_view_id).replaceBy(
         #    load(actor='scatterer/editor', routine='createMatterView',
         #         id = self.id, matter=updatematter)
         #    )
         # need to refresh the whole view
-        neweditor = load(
-            actor='scatterer', routine='createEditor', id=self.id,
-            updatematter = updatematter
-            )
-        b.onclick = select(id='main-display-area').replaceContent(neweditor)
+        b.onclick = load(
+                actor=self.name, routine='atomSimForm',
+                structureId=select(id='atomicstructure-table').table(
+                    'getIdentifiersForSelectedRow', colname='selectone'),
+                )
 
+        #b.onclick = self.atomSimForm(director, structureId = selected_matter)
         return doc
 
+#    def storeMatter(self, director, matterId):
+#        domaccess = self._domaccess(director)
+#        id = self.inventory.id
+#
+#        # scatterer record
+#        record = domaccess.getRecord(id)
+#
+#        #
+#        matter = self.inventory.matter
+#        if not matter: raise RuntimeError
+#
+#        #
+#        record.matter = matter
+#        domaccess.updateRecordWithID(record)
+#        neweditor = load(
+#            actor='scatterer', routine='createEditor', id=self.id,
+#            updatematter = updatematter
+#            )
+#
+#        select(id='main-display-area').replaceContent(neweditor)
 
-    def startform(self, director):
+    def atomSimForm(self, director):
         from luban.content.Splitter import Splitter
         from luban.content.Form import Form
         from luban.content.FormTextField import FormTextField
@@ -127,9 +143,7 @@ class Actor(base):
             title='')
         args = {
             'simulationId': self.inventory.simulationId,
-            #'simulationType': '',
             'structureId': self.inventory.structureId,
-            #'coordinateType':simulation.matter.
             }
         callbackArgs = {
             'cgihome':director.weaver.htmlbase+director.weaver.controllerurl,
@@ -177,7 +191,7 @@ class Actor(base):
             routine = 'configureSubmissionQueue',
             simulationId = self.inventory.simulationId,
             )
-        return form
+        select(id='main-display-area').replaceContent(form)
 
     def storeInputFile(self, director):
         # this method is called by the java web start gui (AtomSim)
