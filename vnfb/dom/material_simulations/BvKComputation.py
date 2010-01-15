@@ -128,7 +128,7 @@ BvK_GetPhonons_Table.__str__ = getShortDescription
 targets = [
     ('dos', 'Phonon Density of States'),
     # ('directionalphonons', 'Phonon dispersion on a special direction'),
-    ('phonons', 'Full phonons on a grid (can be used in virtual neutron experiment)'),
+    ('phonons', 'Phonons on a grid (Good for virtual neutron experiments)'),
     ]
 
 
