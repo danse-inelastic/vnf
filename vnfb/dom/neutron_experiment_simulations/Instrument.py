@@ -68,6 +68,7 @@ InstrumentTable = o2t(Instrument, {'subclassFrom': AbstractOwnedObjectBase})
 
 import dsaw.db
 InstrumentTable.addColumn(dsaw.db.varchar(name='status', length=32, default='online'))
+InstrumentTable.addColumn(dsaw.db.boolean(name='has_sample_component'))
 
 
 
