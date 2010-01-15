@@ -29,7 +29,6 @@ class Actor(base):
         import pyre.inventory
 
         simulationId = pyre.inventory.str('simulationId', default = '')
-
         structureId = pyre.inventory.str('structureId', default = '')
         short_description = pyre.inventory.str('short_description', default = '' )
         short_description.meta['tip'] = 'A short description'
@@ -90,46 +89,13 @@ class Actor(base):
 
         # select button
         b = lc.button(label='select'); doc.add(b)
-#        updatematter = load(
-#            actor='scatterer/editor', routine='selectMatter',
-#            id = self.id,
-#            matter=selected_matter
-#            )
-        # this does not work because all kernels need to be flushed out
-        # b.onclick = select(id=self.matter_view_id).replaceBy(
-        #    load(actor='scatterer/editor', routine='createMatterView',
-        #         id = self.id, matter=updatematter)
-        #    )
-        # need to refresh the whole view
         b.onclick = load(
                 actor=self.name, routine='atomSimForm',
                 structureId=select(id='atomicstructure-table').table(
                     'getIdentifiersForSelectedRow', colname='selectone'),
                 )
 
-        #b.onclick = self.atomSimForm(director, structureId = selected_matter)
         return doc
-
-#    def storeMatter(self, director, matterId):
-#        domaccess = self._domaccess(director)
-#        id = self.inventory.id
-#
-#        # scatterer record
-#        record = domaccess.getRecord(id)
-#
-#        #
-#        matter = self.inventory.matter
-#        if not matter: raise RuntimeError
-#
-#        #
-#        record.matter = matter
-#        domaccess.updateRecordWithID(record)
-#        neweditor = load(
-#            actor='scatterer', routine='createEditor', id=self.id,
-#            updatematter = updatematter
-#            )
-#
-#        select(id='main-display-area').replaceContent(neweditor)
 
     def atomSimForm(self, director):
         from luban.content.Splitter import Splitter
@@ -191,7 +157,7 @@ class Actor(base):
             routine = 'configureSubmissionQueue',
             simulationId = self.inventory.simulationId,
             )
-        select(id='main-display-area').replaceContent(form)
+        return select(id='main-display-area').replaceContent(form)
 
     def storeInputFile(self, director):
         # this method is called by the java web start gui (AtomSim)
@@ -284,14 +250,14 @@ class Actor(base):
             for name, text in errors.iteritems()
             ]
     
-    def __init__(self, name='forcefieldwizard'):
+    def __init__(self, name='material_simulations/forcefieldwizard'):
         super(Actor, self).__init__(name)
         return
     
     def configureSubmissionQueue(self, director):
         return director.redirect(actor = 'job', routine = 'create', 
-                                 computation_type = 'material_simulations.GulpSettingsHolder.GulpSettingsHolder', 
-                                 computation_id = self.inventory.simulationId)
+                computation_type = 'material_simulations.GulpSettingsHolder.GulpSettingsHolder', 
+                computation_id = self.inventory.simulationId)
 
 import os
 
