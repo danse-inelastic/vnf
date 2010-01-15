@@ -21,7 +21,7 @@ from luban.content.FormSelectorField import FormSelectorField
 from luban.content.FormSubmitButton import FormSubmitButton
 
 
-def visual(actor):
+def visual(actor, director):
     form        = lc.form(id='create-simulation-form')
     table       = QEGrid(lc.grid(Class="qe-form"))
     form.add(table.grid())
@@ -49,7 +49,7 @@ def visual(actor):
     st.addRow((submit, cancel), ("qe-action-accept", "qe-action-cancel"))
 
     table.addRow(("Lattice Type:", ibrav))
-    table.addRow(("Pseudo-Potential:", pseudo))
+    table.addRow(("Atomic Structure:", pseudo))
     table.addRow(("Enertgy Cutoff:", ecutwfc))    # XXX Check name
     table.addRow(("Density Cutoff:", ecutrho))    # XXX Check name
     table.addRow(("Smearing:", smearing))    # XXX Check name
@@ -76,6 +76,19 @@ def visual(actor):
                                                   )
 
     return form
+
+#        domaccess = director.retrieveDOMAccessor('atomicstructure')
+#        structure = domaccess.getAtomicStructure("6NPTL72J")
+#        from qecalc.qetask.qeparser.pwinput import PWInput
+#        ml  = [26.98,]    # mass list
+#        ps  = ["HaHa",]
+#        pwInput = PWInput()
+#        pwInput.structure.load(source = 'diffpy', ibrav = 2 , structure = structure, massList = ml, psList = ps)
+#        print pwInput.structure.toString()
+#        print pwInput.structure.atomLabels()
+
+
+
 
 __date__ = "$Jan 12, 2010 5:48:06 PM$"
 
