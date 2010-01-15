@@ -26,28 +26,31 @@ class Factory(object):
         self.domaccess = domaccess
         self.director = director
         self.id = id
-        self.experiment = domaccess.getExperiment(id)
-        self.instrument = self.experiment.instrument
-        self.sample = self.experiment.sample
+        self.experiment = domaccess.getExperimentRecord(id)
+        instrument = self.experiment.instrument
+        self.instrument = instrument.dereference(domaccess.db)
         return
     
 
     def __call__(self):
-        # check if it is ready to work on this form
-        if self._isNotReady():
-            return self._notReadyDocument()
         #
         domaccess = self.domaccess
+        orm = domaccess.orm
+        
         # check if configuration exists
         experiment = self.experiment
         ic = experiment.instrument_configuration
-        if ic is None:
+        ic = ic and ic.id and ic.dereference(orm.db)
+        if not ic:
             ic = domaccess.createInstrumentConfiguration(experiment)
+        else:
+            ic = orm.record2object(ic)
+            
         # the form
         doc = lc.document(Class='container')
         doc.add(self._buildForm(ic))
         #
-        if self.instrument.hasSampleComponent():
+        if orm.record2object(self.instrument).hasSampleComponent():
             nexttab = 'experimentwizard-sampleconfiguration-tab'
         else:
             nexttab = 'experimentwizard-summary-tab'
@@ -72,23 +75,12 @@ class Factory(object):
         return doc   
 
 
-    def _notReadyDocument(self):
-        doc = lc.document()
-        doc.paragraph(text=['You are not ready to configure the instrument.'])
 
-        l = lc.link(
-            label = 'start from beginning',
-            onclick = select(id='experimentwizard-startform-tab').tab('select')
-            )
-        doc.add(l)
-        return doc
-
-
-    def _isNotReady(self):
-        return self.instrument is None
-
-
-def visual(id, director):
+def visual(id=None, director=None):
+    '''
+    id: experiment id
+    instrument: instrument id (not configuration)
+    '''
     return Factory(id, director)()
 
 # version

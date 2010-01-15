@@ -1,0 +1,109 @@
+# -*- Python -*-
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                 Jiao Lin
+#                      California Institute of Technology
+#                      (C) 2006-2010  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+from luban.content import load, select, alert
+import luban.content as lc
+
+from luban.content.FormSelectorField import FormSelectorField
+
+
+class Factory(object):
+
+
+    def __init__(self, id=None, domaccess=None, director=None):
+        if director is None:
+            raise RuntimeError
+        if not domaccess:
+            domaccess = director.retrieveDOMAccessor('experiment')
+        self.domaccess = domaccess
+        self.director = director
+        self.id = id
+        return
+    
+
+    def __call__(self, refreshinstrumentconfigurationdoc):
+        instruments = self.domaccess.getInstrumentRecords()
+        
+        doc = lc.document(
+            title='Select the instrument where you want to do your experiment',
+            id='experimentwizard-instrumentselector',
+            )
+
+        #
+        from luban.content.FormTextField import FormTextField
+        hidden_field = FormTextField(hidden=True)
+        doc.add(hidden_field)
+
+        #
+        introductiondoc = lc.document(id='experimentwizard-instrumentintro')
+
+        #
+        refreshintroduction = select(element=introductiondoc).replaceContent
+        updateinstrumentid = lambda id: select(element=hidden_field).setAttr(value=id)
+        
+        instrument_gallery = self._createInstrumentGallery(
+            instruments, refreshintroduction, updateinstrumentid)
+
+        doc.add(instrument_gallery)
+        doc.add(introductiondoc)
+
+        b = lc.button(label="Select"); doc.add(b)
+        b.onclick = refreshinstrumentconfigurationdoc(select(element=hidden_field)\
+                                                      .getAttr('value'))
+        
+        return doc
+
+
+    def _createInstrumentGallery(self, instruments, refreshintroduction, updateinstrumentid):
+        # current instrument id
+        id = self.id
+        
+        doc = lc.document(id='instrument-gallery-container')
+        sp = doc.splitter(id='instrument-gallery')
+        for instrument in instruments:
+            name = instrument.name
+            path = 'instruments/%s/middle-size-icon.png' % name
+            img = lc.image(path=path)
+            sp.section().add(img)
+
+            if id and id == instrument.id:
+                img.addClass('selected')
+            
+            introduction = lc.document()
+            short_description = instrument.short_description
+            introduction.paragraph(text=[short_description])
+            
+            img.onclick = [
+                refreshintroduction(introduction),
+                updateinstrumentid(instrument.id),
+                ]
+
+            img.tip = '%s: click for more details' % instrument.name
+            continue
+                
+        return doc
+
+
+
+
+def visual(id=None, domaccess=None, director=None, refreshinstrumentconfigurationdoc=None):
+    """
+    id: id of current instrument
+    """
+    return Factory(id=id, domaccess=domaccess, director=director)(refreshinstrumentconfigurationdoc)
+
+# version
+__id__ = "$Id$"
+
+# End of file 
