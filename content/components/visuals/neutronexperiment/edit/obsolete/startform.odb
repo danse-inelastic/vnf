@@ -1,0 +1,111 @@
+# -*- Python -*-
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                 Jiao Lin
+#                      California Institute of Technology
+#                      (C) 2006-2010  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+from luban.content import load, select, alert
+import luban.content as lc
+
+from luban.content.FormSelectorField import FormSelectorField
+
+
+class Factory(object):
+
+
+    def __init__(self, id, director):
+        domaccess = director.retrieveDOMAccessor('experiment')
+        self.domaccess = domaccess
+        self.director = director
+        self.id = id
+        self.experiment = domaccess.getExperiment(id)
+        self.instrument = self.experiment.instrument
+        self.sample = self.experiment.sample
+        return
+    
+
+    def __call__(self):
+        experiment = self.experiment
+        record = self.domaccess.orm(experiment)
+        #
+        form = lc.form(id='experimentwizard-startform')
+        # short description
+        form.text(name='short_description', label='Description', help='please input a short description of this experiment', value=record.short_description)
+        # select instrument
+        form.add(self.instrument_selector())
+        # select sample
+        ss = self.sample_selector()
+        form.add(ss)
+        if self.instrument and not self.instrument.hasSampleComponent():
+            form.oncreate = select(element=ss).disable()
+
+        form.submitbutton(label='Save')
+
+        form.onsubmit = select(element=form).submit(
+            actor='experiment', routine='verifyEditWizard_startform',
+            id = self.id)
+        
+        return form
+
+
+    def instrument_selector(self):
+        # current instrument
+        instrument = self.instrument
+        # available instruments
+        records = self.domaccess.getInstrumentRecords()
+        ids = [r.id for r in records]
+        names = [r.name for r in records]
+        entries = zip(ids, names)
+        # widget
+        selector = FormSelectorField(entries = entries, name='instrument', label='Instrument')
+        #
+        if instrument:
+            selector.value = self.domaccess.orm(instrument).id
+        else:
+            # by default selector select item 0
+            self.instrument = self.domaccess.orm.record2object(records[0])
+
+        # when instrument selection change, sample selector could be removed or added
+        selector.onchange = select(element=selector).notify(
+            'changed',
+            actor='neutronexperiment/edit/startform',
+            routine='onInstrumentChange',
+            id = self.id,
+            )
+        return selector
+
+
+    def sample_selector(self):
+        # current sample
+        sample = self.sample
+        # options
+        sampledomaccess = self.director.retrieveDOMAccessor('sample')
+        samples = sampledomaccess.getSamples()
+        db = sampledomaccess.db
+        identifiers = map(db.getUniqueIdentifierStr, samples)
+        names = [s.short_description or s.id for s in samples]
+        entries = zip(identifiers, names)
+        # widget
+        selector = FormSelectorField(entries=entries, name='sample', label='Sample')
+        #
+        if sample:
+            selector.value = db.getUniqueIdentifierStr(self.domaccess.orm(sample))
+        return selector
+        
+
+
+def visual(id, director):
+    return Factory(id, director)()
+
+# version
+__id__ = "$Id$"
+
+# End of file 

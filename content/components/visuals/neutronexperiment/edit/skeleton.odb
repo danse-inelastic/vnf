@@ -39,52 +39,56 @@ class Factory(object):
         orm = domaccess.orm
         
         doc = lc.document(Class='container')
-
+        
         path = self._path()
         view_indicator = director.retrieveVisual('view-indicator', path=path)
         doc.add(view_indicator)
 
-        tabs = lc.tabs(); doc.add(tabs)
-        tab1 = tabs.tab(label='start', id='experimentwizard-startform-tab')
-        tab1.onselect = select(element=tab1).replaceContent(load(
-            actor='experiment',
-            routine='createEditWizard_startform',
-            id = self.id))
+        navigation_bar = lc.toolbar(id='experimentwizard-navigationbar');
+        doc.add(navigation_bar)
+
+        #
+        editpanel = doc.document(id='experiemntwizard-editpanel', Class='container')
+        refresheditpanel = select(element=editpanel).replaceContent
         # select tab1 when started
         # tabs.oncreate = select(element=tab1).tab('select')
-        tab1.add(director.retrieveVisual('neutronexperiment/edit/startform',
-                                         id=self.id, director=director))
+        editpanel.add(
+            director.retrieveVisual(
+              'neutronexperiment/edit/instrumentpanel',
+              experiment=experiment, domaccess=domaccess, director=director)
+            )
 
-        tab2 = tabs.tab(label='instrument', id='experimentwizard-instrumentconfiguration-tab')
-        tab2.onselect = select(element=tab2).replaceContent(load(
-            actor='experiment',
-            routine='createEditWizard_instrumentconfiguration',
-            id = self.id))
+        #
+        names = ['instrument', 'sample', 'sample_environment', 'finish']
+        for index, name in enumerate(names):
+            navigation_bar.add(self._button(name, index+1, refresheditpanel))
+            continue
 
-        tab3 = tabs.tab(label='sample', id='experimentwizard-sampleconfiguration-tab')
-        tab3.onselect = select(element=tab3).replaceContent(load(
-            actor='experiment',
-            routine='createEditWizard_sampleconfiguration',
-            id = self.id))
-
-        tab4 = tabs.tab(label='sample environment', id='experimentwizard-sampleenvironmentconfiguration-tab')
-        tab4.onselect = select(element=tab4).replaceContent(load(
-            actor='experiment',
-            routine='createEditWizard_sampleenvironmentconfiguration',
-            id = self.id))
-
-        tab5 = tabs.tab(label='summary', id='experimentwizard-summary-tab')
-        tab5.onselect = select(element=tab5).replaceContent(load(
-            actor='experiment',
-            routine='createEditWizard_summary',
-            id = self.id))
-
+        #
         if self.instrument and not self.instrument.hasSampleComponent():
             doc.oncreate = [
-                select(id='experimentwizard-sampleconfiguration-tab').disable(),
-                select(id='experimentwizard-sampleenvironmentconfiguration-tab').disable(),
+                select(id='experimentwizard-samplebutton-container').hide(),
+                select(id='experimentwizard-sampleenvironmentbutton-container').hide(),
                 ]
+            
         return doc
+
+
+    def _button(self, name, index, refresheditpanel):
+        doc1 = lc.document(Class='navigation-button')
+        sp1 = doc1.splitter()
+        sp1.section(Class='index').paragraph(text=[str(index)])
+        right = sp1.section()
+        button = lc.image(path='neutronexperiment/editor/%s.png' % name)
+        right.add(button)
+        right.paragraph(text=['%s' % name.capitalize().replace('_', ' ')])
+
+        doc1.onclick = refresheditpanel(load(
+            actor='experiment',
+            routine='createEditWizard_%spanel' % name,
+            id = self.id))
+                
+        return doc1
 
 
     def _path(self):

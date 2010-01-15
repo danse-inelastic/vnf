@@ -45,7 +45,7 @@ distclean::
 
 
 
-RSYNC_A = rsync -a
+RSYNC_A = rsync -a --copy-unsafe-links
 EXPORT_DATA_PATH = $(EXPORT_ROOT)/$(PROJECT)/$(PACKAGE)
 
 
