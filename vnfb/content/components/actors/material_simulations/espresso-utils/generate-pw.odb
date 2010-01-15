@@ -14,6 +14,7 @@
 from vnfb.utils.qeparser.qeinput import QEInput
 from vnfb.utils.qeparser.namelist import Namelist
 from vnfb.utils.qeparser.card import Card
+from vnfb.utils.qeconst import SMEARING, IBRAV
 
 from luban.components.AuthorizedActor import AuthorizedActor as base
 
@@ -25,7 +26,7 @@ class Actor(base):
         id          = pyre.inventory.str('id', default='')          # Simulation Id
         taskid      = pyre.inventory.str('taskid', default='')
         pseudo      = pyre.inventory.str('pseudo', default='')
-        lattice     = pyre.inventory.str('lattice', default='')
+        ibrav       = pyre.inventory.str('ibrav', default='')
         ecutwfc     = pyre.inventory.str('ecutwfc', default='')
         ecutrho     = pyre.inventory.str('ecutrho', default='')
         smearing    = pyre.inventory.str('smearing', default='')
@@ -44,17 +45,23 @@ class Actor(base):
 
     def _input(self):
         input      = QEInput(type='pw')
-        nl  = Namelist("system")
-        nl.add("ecutwfc", self.inventory.ecutwfc)
-        nl.add("ecutrho", self.inventory.ecutrho)
-        nl.add("smearing", self.inventory.smearing)
+        system  = Namelist("system")
+        system.add("ibrav", self.inventory.ibrav)
+        system.add("ecutwfc", self.inventory.ecutwfc)
+        system.add("ecutrho", self.inventory.ecutrho)
+        system.add("smearing", self._smearing())
         c   = Card("k_points")
         c.setArg("automatic")
         c.addLine("Ni 26.98 %s" % self.inventory.pseudo)
-        input.addNamelist(nl)
+        input.addNamelist(system)
         input.addCard(c)
         return input.toString()
         
+    def _smearing(self):
+        keys    = SMEARING.keys()
+        name    = keys[int(self.inventory.smearing)]
+
+        return SMEARING[name]
 
     def __init__(self):
         super(Actor, self).__init__(name='material_simulations/espresso-utils/generate-pw')
@@ -67,7 +74,7 @@ class Actor(base):
         self.id             = self.inventory.id
         self.taskid         = self.inventory.taskid
         self.pseudo         = self.inventory.pseudo
-        self.lattice        = self.inventory.lattice
+        self.ibrav          = self.inventory.ibrav
         self.ecutwfc        = self.inventory.ecutwfc
         self.ecutrho        = self.inventory.ecutrho
         self.smearing       = self.inventory.smearing
