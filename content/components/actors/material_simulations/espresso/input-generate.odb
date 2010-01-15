@@ -15,6 +15,7 @@ from vnf.dom.QEConfiguration import QEConfiguration
 from vnfb.utils.qeconst import PARSERS, TYPE
 from vnfb.utils.qegrid import QEGrid
 
+from luban.content.FormSubmitButton import FormSubmitButton
 from luban.content import select
 from luban.content import load
 
@@ -51,7 +52,7 @@ class Actor(base):
                                                       taskid   = self.taskid,
                                                       type     = self.type)))
 
-            path.append('Set Parameters')
+            path.append('Select Option')
             
             return director.retrieveVisual('view-indicator', path=path)
 
@@ -73,6 +74,7 @@ class Actor(base):
 
         visual  = "material_simulations/espresso/input-default"
         return director.retrieveVisual(visual, actor = self)
+
 
     def __init__(self):
         super(Actor, self).__init__(name='material_simulations/espresso/input-generate')
