@@ -18,6 +18,14 @@ class DetectorSystem_fromXML(base):
     tofmin = 3000.
     tofmax = 6000.
     ntofbins = 300
+
+    
+    def customizeLubanObjectDrawer(self, drawer):
+        drawer.mold.sequence = [
+            'componentname', 'short_description',
+            'referencename', 'position', 'orientation',
+            'tofmin', 'tofmax', 'ntofbins'
+            ]
     pass
 
 
@@ -30,7 +38,7 @@ class Inventory(InvBase):
     tofmax = InvBase.d.float( name = 'tofmax', default = 6000., validator=InvBase.v.positive)
     tofmax.tip = 'maximum tof. unit: microsecond'
 
-    ntofbins = InvBase.d.int( name = 'ntofbins', default = 300 )
+    ntofbins = InvBase.d.int( name = 'ntofbins', default = 300, validator=InvBase.v.positive)
     ntofbins.tip = 'number of tof bins'
 
     dbtablename = 'detectorsystem_fromxmls'

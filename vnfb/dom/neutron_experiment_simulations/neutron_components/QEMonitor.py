@@ -24,6 +24,16 @@ class QEMonitor(base):
     max_angle_out_of_plane = 30.
     min_angle_out_of_plane = -30.
     
+    def customizeLubanObjectDrawer(self, drawer):
+        drawer.mold.sequence = [
+            'componentname', 'short_description',
+            'referencename', 'position', 'orientation',
+            'Emin', 'Emax', 'nE',
+            'Qmin', 'Qmax', 'nQ',
+            'min_angle_in_plane', 'max_angle_in_plane',
+            'min_angle_out_of_plane', 'max_angle_out_of_plane',
+            ]
+
     pass
 
 

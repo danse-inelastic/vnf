@@ -23,6 +23,15 @@ class TofMonitor(base):
     y_max = 0.1
     nchan = 100
 
+    def customizeLubanObjectDrawer(self, drawer):
+        drawer.mold.sequence = [
+            'componentname', 'short_description',
+            'referencename', 'position', 'orientation',
+            'tmin', 'tmax', 'nchan',
+            'x_min', 'x_max',
+            'y_min', 'y_max',
+            ]
+
     pass
 
 

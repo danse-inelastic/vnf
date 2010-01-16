@@ -18,6 +18,12 @@ class NeutronRecorder(base):
 
     packetsize = 10000
     
+    def customizeLubanObjectDrawer(self, drawer):
+        drawer.mold.sequence = [
+            'componentname', 'short_description',
+            'referencename', 'position', 'orientation',
+            'packetsize',
+            ]
     pass
 
 

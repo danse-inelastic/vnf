@@ -17,14 +17,20 @@ class MonochromaticSource(base):
 
     energy = 70.
     
+    def customizeLubanObjectDrawer(self, drawer):
+        drawer.mold.sequence = [
+            'componentname', 'short_description',
+            'referencename', 'position', 'orientation',
+            'energy',
+            ]
     pass
 
 
 InvBase=base.Inventory
 class Inventory(InvBase):
 
-    energy = InvBase.d.float( name = 'energy', default = 70. )
-    energy.tip = 'neutron energy. unit: meV'
+    energy = InvBase.d.float( name = 'energy', default = 70., validator=InvBase.v.positive)
+    energy.help = 'neutron energy. unit: meV'
     
     dbtablename = 'monochromaticsources'
 

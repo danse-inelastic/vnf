@@ -19,6 +19,16 @@ class VanadiumPlate(base):
 
     target_radius = 0
     target_position = (0,0,0)
+
+
+    def customizeLubanObjectDrawer(self, drawer):
+        drawer.mold.sequence = [
+            'componentname', 'short_description',
+            'referencename', 'position', 'orientation',
+            'width', 'height', 'thickness',
+            'target_radius', 'target_position',
+            ]
+
     pass
 
 

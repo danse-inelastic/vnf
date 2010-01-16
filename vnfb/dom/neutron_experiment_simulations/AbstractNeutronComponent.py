@@ -30,11 +30,22 @@ from dsaw.model.Inventory import Inventory as InvBase
 class Inventory(InvBase):
 
     componentname = InvBase.d.str(name='componentname')
+    componentname.label = 'name'
+    componentname.help = 'name of the component'
+
     position = InvBase.d.array(name='position', elementtype='float', shape=3)
+    position.help = 'position of this component relative to the reference component'
+
     orientation = InvBase.d.array(name='orientation', elementtype='float', shape=(3,3))
+    orientation.help = 'orientation of this component relative to the reference component'
+
     referencename = InvBase.d.str(name='referencename')
+    referencename.label = 'reference'
+    referencename.help = 'name of the component as reference. if blank, position and orientation are absolute'
 
     short_description = InvBase.d.str(name='short_description')
+    short_description.label = 'description (optional)'
+    short_description.help = 'Give a brief description of this component'
 
 
 AbstractNeutronComponent.Inventory = Inventory

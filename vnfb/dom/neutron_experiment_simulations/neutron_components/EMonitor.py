@@ -21,14 +21,22 @@ class EMonitor(base):
     x_max = y_max = 0.1
     nchan = 100
     
+    def customizeLubanObjectDrawer(self, drawer):
+        drawer.mold.sequence = [
+            'componentname', 'short_description',
+            'referencename', 'position', 'orientation',
+            'Emin', 'Emax', 'nchan',
+            'x_min', 'x_max',
+            'y_min', 'y_max',
+            ]
     pass
 
 
 InvBase=base.Inventory
 class Inventory(InvBase):
 
-    Emin = InvBase.d.float( name = 'Emin', default = 10 )
-    Emax = InvBase.d.float( name = 'Emax', default = 100 )
+    Emin = InvBase.d.float( name = 'Emin', default = 10, validator=InvBase.v.positive)
+    Emax = InvBase.d.float( name = 'Emax', default = 100, validator=InvBase.v.positive)
     x_min = InvBase.d.float( name = 'x_min', default = -0.1 )
     x_max = InvBase.d.float( name = 'x_max', default = 0.1 )
     y_min = InvBase.d.float( name = 'y_min', default = -0.1 )
