@@ -26,58 +26,77 @@ class Factory(object):
         self.domaccess = domaccess
         self.director = director
         self.id = id
-        self.experiment = domaccess.getExperiment(id)
-        self.instrument = self.experiment.instrument
-        self.sample = self.experiment.sample
+        self.experiment = domaccess.getExperimentRecord(id)
+        sample = self.experiment.sample
+        self.sample = sample.dereference(domaccess.db)
         return
     
 
     def __call__(self):
-        # check if it is ready to work on this form
-        if self._isNotReady():
-            return self._notReadyDocument()
         #
         domaccess = self.domaccess
+        director = self.director
+        
         # check if configuration exists
         experiment = self.experiment
         sc = experiment.sample_configuration
-        if sc is None:
-            sc = domaccess.createSampleConfiguration(experiment)
-        # the form
-        doc = lc.document(Class='container')
-        doc.add(self._buildForm(sc))
-        #
-        switch = select(id='experimentwizard-sampleenvironmentconfiguration-tab').tab('select')
+        sc = sc and sc.id and sc.dereference(domaccess.db)
+        if not sc:
+            orm = domaccess.orm
+            sc = domaccess.createSampleConfiguration(orm.record2object(experiment))
+            sc = domaccess.orm(sc)
+            
+        # the container document
+        sample = self.sample
+        doc = lc.document(title='Configuring sample %s' % sample.short_description or sample.id)
+
+        # the editor
+        view = self._createEditor(sc); doc.add(view)
+
+        # continue button
+        switch = director.retrieveVisual(
+            'neutronexperiment/edit/switch-to-editpanel')\
+            .get(self.id, 'sample_environment')
         continuebutton = lc.button(label='continue', onclick=switch)
         doc.add(continuebutton)
+        
+        return
+
+
+    def _createEditor(self, sampleconfiguration):
+        typename = sampleconfiguration.__class__.__name__
+        handler = '_on' + typename
+        if not hasattr(self, handler):
+            handler = '_onSampleComponent'
+        handler = getattr(self, handler)
+        return handler(sampleconfiguration)
+
+
+    def _onScatterer(self, sc):
+        return direditor.retrieveVisual(
+            'neutronexperiment/edit/scatterereditor', id=sc.id)
+
+
+    def _onSampleAssembly(self, sc):
+        doc = lc.document(Class='container')
+        doc.oncreate = load(
+            actor='orm/sampleassemblies', routine='edit', id=sc.id)
         return doc
 
 
-    def _buildForm(self, sc):
-        director = self.director
-        getDrawer = director.painter.paintObj.drawers.getDrawer
-        drawer = getDrawer(sc.__class__)
-        doc = drawer(sc, edithierarchy=False)
+    def _onSampleComponent(self, sc):
+        tablename = sc.getTableName()
+        doc = lc.document(Class='container')
+        doc.oncreate = load(
+            actor='orm/%s' % tablename, routine='edit', id=sc.id)
         return doc
 
-
-    def _notReadyDocument(self):
-        doc = lc.document()
-        doc.paragraph(text=['You are not ready to configure the sample.'])
-
-        l = lc.link(
-            label = 'start from beginning',
-            onclick = select(id='experimentwizard-startform-tab').tab('select')
-            )
-        doc.add(l)
-        return doc
-
-
-    def _isNotReady(self):
-        return self.sample is None
 
 
 def visual(id, director):
+    '''
+    id of the experiment
+    '''
     return Factory(id, director)()
 
 # version

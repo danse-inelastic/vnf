@@ -150,6 +150,10 @@ class Actor(base):
             actor='scatterer', routine='createNewScattererAndCreateView')
 
 
+    def _domaccess(self, director):
+        return director.retrieveDOMAccessor('sample')
+
+
     def __init__(self, name='materialsimulation'):
         super(Actor, self).__init__(name)
         return

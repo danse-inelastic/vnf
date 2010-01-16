@@ -21,17 +21,19 @@ class Factory(object):
     matter_view_id = 'scatterer-matter-view'
 
 
-    def __init__(self, id, director):
+    def __init__(self, id, director, readonly=False):
         self.id = id
         self.director = director
         self.domaccess = director.retrieveDOMAccessor('scatterer')
         self.record = self.domaccess.getRecord(id)
         matter = self.record.matter
         self.matter = matter and matter.id and matter.dereference(self.domaccess.db)
+        self.readonly = readonly
         return
 
 
     def __call__(self):
+        readonly = self.readonly
         doc = lc.document(
             title='Atomic structure', id=self.matter_view_id,
             collapsable=True)
@@ -41,6 +43,7 @@ class Factory(object):
         matter = self.matter
         
         if not matter:
+            if readonly: raise RuntimeError
             doc.add(
                 director.retrieveVisual('scatterer/editor/matterselector',
                                         id=id, director=director)
@@ -50,14 +53,14 @@ class Factory(object):
             doc.add(summary)
 
             # placeholder = doc.document(Class='Container')
-            
-            tip='Be careful! If you change the atomic structure, all kernel settings are lost'
-            link = lc.link(label='change', tip=tip); doc.add(link)
-            # link.onclick = select(element=placeholder).replaceBy(
-            link.onclick = select(element=link).replaceBy(
-                load(actor='scatterer/editor', routine='createMatterSelector',
-                     id = id)
-                )
+            if not readonly:
+                tip='Be careful! If you change the atomic structure, all kernel settings are lost'
+                link = lc.link(label='change', tip=tip); doc.add(link)
+                # link.onclick = select(element=placeholder).replaceBy(
+                link.onclick = select(element=link).replaceBy(
+                    load(actor='scatterer/editor', routine='createMatterSelector',
+                         id = id)
+                    )
                 
         return doc
 
@@ -74,7 +77,7 @@ class Factory(object):
 
 
     
-def visual(id, director):
+def visual(id, director, readonly=False):
     return Factory(id, director)()
 
 

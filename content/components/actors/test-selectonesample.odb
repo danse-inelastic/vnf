@@ -42,10 +42,11 @@ class Actor(base):
 
     def showme(self, director):
         # the overall document
-        doc1 = lc.document(title='whatever document needs a sample selector')
+        doc1 = lc.document(title='whatever document needs a sample selector',
+                           Class='mastertable-as-selector-panel')
 
         # the container of the sample selector
-        container = doc1.document(id='sample-selector-container')
+        container = doc1.document(id='sample-selector-container', Class='master-table-wrapper')
         container.oncreate = select(element=container).append(
             load(actor='selectonesample', routine='createListView')
             )
