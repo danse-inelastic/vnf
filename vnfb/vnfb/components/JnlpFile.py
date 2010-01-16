@@ -25,8 +25,11 @@ class JnlpFile:
         self.reformJnlp()
     
     def reformJnlp(self,director=None):
-        if not director: codebase = 'http://vnf.caltech.edu'
-        else: codebase = director.weaver.htmlbase
+        import urlparse as up
+        if not director: 
+            codebase = 'http://vnf.caltech.edu'
+        else: 
+            codebase = director.weaver.htmlbase
         self.jnlpString = '''<?xml version="1.0" encoding="UTF-8"?>
 <jnlp spec="1.0+"
       codebase="'''+codebase+'''/java">
@@ -55,7 +58,7 @@ class JnlpFile:
         
     
     def writeJnlp(self, director):
-        '''write the jnlp file and returns a url string pointing to it'''
+        '''write the jnlp file and return a url string pointing to it'''
         self.reformJnlp(director)
         if self.fileName[-5:] is '.jnlp': self.fileName = self.fileName[:-5]
         parentdir = os.path.join('..', 'content', 'data', 'tmp')
