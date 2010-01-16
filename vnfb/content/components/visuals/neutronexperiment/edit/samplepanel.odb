@@ -44,7 +44,7 @@ class Factory(object):
         return
     
 
-    def __call__(self):
+    def __call__(self, mode=None):
         director = self.director
         domaccess = self.domaccess
         db = domaccess.db
@@ -54,43 +54,91 @@ class Factory(object):
         sample = experiment.sample
         sample = sample and sample.id and sample.dereference(db)
 
-        doc = lc.document(id='samplepanel')
+        doc = lc.document(id='samplepanel', title='Sample')
 
-        if sample:
-            return director.retrieveVisual(
-                'neutronexperiment/edit/sampleconfiguration',
-                id = self.id, director=director)            
-
-        # action to change sample for an experimetn
-        setsample = lambda id, sample_id: load(
-            actor='experiment', routine='setSample', id=id, sample=sample_id)
-
-        # action to refresh sample configuration view
-        refreshsampleconfigurationdoc = lambda sample_id: load(
-            actor='experiment',
-            routine='editWizard_changesampleconfigurationpanel',
-            id = self.id,
-            sample = setsample(self.id, sample_id),
-            )
+        if mode is None:
+            if sample: mode = 'configure'
+            else: mode = 'selector'
             
-        sample_selector = director.retrieveVisual(
-            'neutronexperiment/edit/sampleselector',
-            id=sample and sample.id, domaccess=domaccess, director=director,
-            refreshsampleconfigurationdoc=refreshsampleconfigurationdoc)
-        doc.add(sample_selector)
+        if mode == 'configure':
+            interior = self._createConfigureDocument()
+        else:
+            interior = self._createSelectorDocument()
 
-        #doc.add(configdoc)
+        doc.add(interior)
 
         return doc
 
 
+    def _createSelectorDocument(self):
+        '''create a document to select a sample'''
+        director = self.director
+        domaccess = self.domaccess
+        db = domaccess.db
 
-def visual(id=None, experiment=None, domaccess=None, director=None):
+        experiment = self.experiment
+        
+        sample = experiment.sample
+        sample = sample and sample.id and sample.dereference(db)
+
+        # action to change sample for an experimetn
+        setsample = lambda id, sample_id: load(
+            actor='experiment', routine='setSample',
+            id=id, sample=sample_id)
+
+        # action to refresh sample configuration view
+        refreshsamplepanel = lambda sample_id: select(id='samplepanel').replaceBy(
+            load(
+              actor='experiment',
+              routine='createEditWizard_samplepanel',
+              id = self.id,
+              sample = setsample(self.id, sample_id),
+              mode = 'configure',
+              )
+            )
+
+        # selector widget
+        sample_selector = director.retrieveVisual(
+            'neutronexperiment/edit/sampleselector',
+            id=sample and sample.id, domaccess=domaccess, director=director,
+            refreshsampleconfigurationdoc=refreshsamplepanel)
+        
+        return sample_selector
+    
+
+    def _createConfigureDocument(self):
+        '''create a document for configuring the sample
+        '''
+        doc = lc.document(Class='container')
+        
+        selectsamplebutton = lc.button(
+            label='Choose a different sample',
+            tip=('Careful! if you choose a different sample, '\
+                 'all your current sample configuration will be lost.'),
+            onclick=select(id='samplepanel').replaceBy(self(mode='selector'))
+            )
+        doc.add(selectsamplebutton)
+
+        director = self.director
+        configdoc = director.retrieveVisual(
+            'neutronexperiment/edit/sampleconfiguration',
+            id = self.id, director=director)
+        doc.add(configdoc) 
+
+        return doc
+
+
+def visual(id=None, experiment=None, domaccess=None, director=None, mode=None):
     """
     id: experiment id
     experiment: experiment record
+    mode: mode of sample panel.
+      * configure: shows a panel to configure a sample,
+      * selector:  shows a panel to select a sample.
     """
-    return Factory(id=id, experiment=experiment, domaccess=domaccess, director=director)()
+    f = Factory(id=id, experiment=experiment, domaccess=domaccess, director=director)
+    return f(mode=mode)
+
 
 # version
 __id__ = "$Id$"

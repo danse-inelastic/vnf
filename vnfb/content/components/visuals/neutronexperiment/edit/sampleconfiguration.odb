@@ -60,7 +60,7 @@ class Factory(object):
         continuebutton = lc.button(label='continue', onclick=switch)
         doc.add(continuebutton)
         
-        return
+        return doc
 
 
     def _createEditor(self, sampleconfiguration):
@@ -73,8 +73,9 @@ class Factory(object):
 
 
     def _onScatterer(self, sc):
-        return direditor.retrieveVisual(
-            'neutronexperiment/edit/scatterereditor', id=sc.id)
+        director = self.director
+        return director.retrieveVisual(
+            'neutronexperiment/edit/scatterereditor', id=sc.id, director=director)
 
 
     def _onSampleAssembly(self, sc):

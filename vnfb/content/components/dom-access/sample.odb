@@ -25,6 +25,15 @@ class Accessor(base):
         return
 
 
+    def _getOrm(self):
+        # _sampleTables actually orm all sample data objects
+        self._sampleTables()
+        # so we are good to go here
+        orm = self.director.clerk.orm
+        return orm
+    orm = property(_getOrm)
+
+
     def getSample(self, type, id):
         return self.getRecordByID(type, id)
 
@@ -153,8 +162,13 @@ class Accessor(base):
 
 
     def _sampleTables(self):
-        from vnfb.dom.neutron_experiment_simulations.sample_types import typenames
-        ormtables = map(self._getTable, typenames)
+        # data object types
+        from vnfb.dom.neutron_experiment_simulations.sample_types import getTypes
+        types = getTypes()
+        #
+        orm = self.director.clerk.orm
+        # orm all types
+        ormtables = map(orm, types)
         return ormtables
 
 
