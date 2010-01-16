@@ -121,6 +121,45 @@ margin-left:0;
 }
 
 
+/* atomic structure selector */
+.atomicstructure-selector-panel {
+-moz-border-radius:10px;
+-webkit-border-radius:10px;
+background-color:#e5e5e5;
+border:1px solid lightGrey;
+font-size:90%;
+margin-left:2em;
+max-width:90%;
+padding:1em;
+min-width: 58em;
+}
+.atomicstructure-selector-panel table {
+width:auto;
+}
+.atomicstructure-selector-panel #view-indicator {
+min-width:4em;
+}
+.atomicstructure-selector-panel .master-table-title-bar {
+font-size:80%;
+}
+.atomicstructure-selector-panel .master-table {
+font-size:100%;
+text-align:center;
+width:98%;
+}
+.atomicstructure-selector-panel .luban-button-container {
+margin-top:1.5em;
+}
+.atomicstructure-selector-panel #atomicstructure-selector-container {
+-moz-border-radius:8px;
+-webkit-border-radius:8px;
+background-color:white;
+padding:3px;
+}
+.atomicstructure-selector-panel .master-table td {
+padding:0 2em;
+}
+
 /* version */
 /* $Id$ */
 
