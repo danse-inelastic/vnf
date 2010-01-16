@@ -22,7 +22,6 @@ def visual(actor, director):
     form    = lc.form()
 
     METHODS  = ("Phonon Density of States",
-                "Phonon Dispersion Diagrams",
                 "Phonon on Grid (Virtual Neutron Experiment)")
 
     form.radio(name = "method", entries = enumerate(METHODS))

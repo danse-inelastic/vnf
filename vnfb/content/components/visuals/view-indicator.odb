@@ -14,8 +14,7 @@
 
 import luban.content as lc
 
-
-def visual(path):
+def visual_step(path):
     # path is a list of (label, action) and one label as the last item
 
     doc = lc.document(id='view-indicator')
@@ -35,6 +34,30 @@ def visual(path):
         doc1.add(lc.link(label=label, onclick=action))
     
     return doc
+
+def visual_inline(path):
+    # path is a list of (label, action) and one label as the last item
+
+    doc = lc.document(id='view-indicator')
+
+    doc1 = doc
+    for (label, action) in path[:-1]:
+        doc1.add(lc.link(label=label, onclick=action))
+        doc1.paragraph(text=['/ '], Class='splitter')
+        continue
+
+    last = path[-1]
+    if isinstance(last, basestring):
+        doc1.paragraph(text=path[-1])
+    else:
+        label, action = last
+        doc1.add(lc.link(label=label, onclick=action))
+
+    return doc
+
+
+def visual(path):
+    return visual_inline(path)
 
 
 # version
