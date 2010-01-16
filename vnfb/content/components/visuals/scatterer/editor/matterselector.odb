@@ -30,7 +30,7 @@ class Factory(object):
 
 
     def __call__(self):
-        doc = lc.document(id='sample-matter-selector-doc')
+        doc = lc.document(id='sample-matter-selector-doc', Class='atomicstructure-selector-panel')
 
         doc.paragraph(
             text=[
