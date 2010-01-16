@@ -112,7 +112,7 @@ class Actor(base):
             'structureId': self.inventory.structureId,
             }
         import urlparse as up
-        parts = up.parse(director.weaver.htmlbase)
+        parts = up.urlparse(director.weaver.htmlbase)
         cgihome = up.urljoin(parts.scheme+'://'+parts.netloc, director.weaver.controllerurl)
         callbackArgs = {
             'cgihome':cgihome,
