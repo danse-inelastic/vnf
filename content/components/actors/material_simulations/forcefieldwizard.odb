@@ -111,8 +111,11 @@ class Actor(base):
             'simulationId': self.inventory.simulationId,
             'structureId': self.inventory.structureId,
             }
+        import urlparse as up
+        parts = up.parse(director.weaver.htmlbase)
+        cgihome = up.urljoin(parts.scheme+'://'+parts.netloc, director.weaver.controllerurl)
         callbackArgs = {
-            'cgihome':director.weaver.htmlbase+director.weaver.controllerurl,
+            'cgihome':cgihome,
             'sentry.username':director.sentry.username,
             'sentry.ticket':director.sentry.ticket,
 #            'actor': self.name,
