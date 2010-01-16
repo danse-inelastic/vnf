@@ -277,10 +277,14 @@ class Actor(base):
 
 
     def createEditWizard_samplepanel(self, director):
+        si = self.inventory
+        if hasattr(si, 'mode'): mode = si.mode
+        else: mode = None
         return director.retrieveVisual(
             'neutronexperiment/edit/samplepanel',
             id = self.inventory.id,
-            director = director
+            director = director,
+            mode = mode
             )
 
 
@@ -305,7 +309,7 @@ class Actor(base):
         sample = self.inventory.sample
         sample = sampledomaccess.db.fetchRecordUsingUniqueIdentifierStr(sample)
         # if old = new, nothing to do
-        if sample.id == oldsample.id: return self.inventory.sample
+        if oldsample and sample.id == oldsample.id: return self.inventory.sample
 
         # assign to experiment
         exp.sample = sample
@@ -321,38 +325,7 @@ class Actor(base):
             sc = orm.record2object(sc)
             orm.destroy(sc)
 
-        return sample
-
-
-    def editWizard_changesampleconfigurationpanel(self, director):
-        """
-        id: experiment id
-        sample: unique id of the newly selected sample for which configuration will be edited
-        """
-        v = self.createEditWizard_sampleconfigurationpanel(director)
-        if v is None:
-            return alert('Please select a sample')
-        return [
-            select(id='experimentwizard-sampleselector').hide(),
-            select(id='sampleconfigurationpanel').replaceContent(v),
-            ]
-
-
-    def createEditWizard_sampleconfigurationpanel(self, director):
-        """
-        id: experiment id
-        sample: unique id of the newly selected sample for which configuration will be edited
-        """
-        sample = self.inventory.sample
-        if not sample:
-            return
-            
-        id = self.inventory.id
-        return director.retrieveVisual(
-            'neutronexperiment/edit/sampleconfiguration',
-            id = id,
-            director = director,
-            )
+        return self.inventory.sample
 
 
     def createEditWizard_sample_environmentpanel(self, director):

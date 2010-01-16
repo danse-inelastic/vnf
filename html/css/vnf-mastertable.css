@@ -367,7 +367,7 @@ padding:1em;
 min-width: 58em;
 }
 .mastertable-as-selector-panel table {
-width:auto;
+ /* width:auto; */
 }
 .mastertable-as-selector-panel #view-indicator {
 min-width:4em;

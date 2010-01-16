@@ -32,7 +32,7 @@ class Factory(object):
         return
     
 
-    def __call__(self, refreshsampleconfigurationdoc):
+    def __call__(self, refreshsamplepanel):
         director = self.director
         
         doc = lc.document(
@@ -57,7 +57,7 @@ class Factory(object):
             routine='getSelectedSampleUniqueIdentifierStr',
             selected = selectedsample,
             )
-        b.onclick = refreshsampleconfigurationdoc(selecteduid)
+        b.onclick = refreshsamplepanel(selecteduid)
         
         return doc
 

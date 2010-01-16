@@ -63,6 +63,7 @@ class Accessor(base):
 
 
     def createSampleConfiguration(self, experiment):
+        sample = experiment.sample
         # copy the sample to a configuration
         orm = self.orm
         sc = orm.deepcopy(sample)
