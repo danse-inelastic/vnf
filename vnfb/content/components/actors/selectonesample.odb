@@ -24,6 +24,19 @@ class Actor(base):
     class Inventory(base.Inventory):
 
         import pyre.inventory
+        selected = pyre.inventory.str(name='selected')
+
+
+
+    def getSelectedSampleUniqueIdentifierStr(self, director):
+        '''converts the "selected" string to the unique identifier string
+        that can be decoded by db manager method fetchRecordUsingUniqueIdentifierStr
+        '''
+        selected = self.inventory.selected
+        id, table = selected.split(',')
+        domaccess = director.retrieveDOMAccessor('sample')
+        sample = domaccess.getSample(table, id)
+        return domaccess.db.getUniqueIdentifierStr(sample)        
 
 
     def default(self, director):

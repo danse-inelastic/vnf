@@ -284,6 +284,77 @@ class Actor(base):
             )
 
 
+    def setSample(self, director):
+        """
+        id: experiment id
+        sample: sample uid
+
+        return: sample uid
+        """
+        id = self.inventory.id
+        domaccess = self._domaccess(director)
+        sampledomaccess = director.retrieveDOMAccessor('sample')
+
+        #
+        exp = domaccess.getExperimentRecord(id)
+
+        # old sample
+        oldsample = exp.sample and exp.sample.id and exp.sample.dereference(sampledomaccess.db)
+
+        # new sample
+        sample = self.inventory.sample
+        sample = sampledomaccess.db.fetchRecordUsingUniqueIdentifierStr(sample)
+        # if old = new, nothing to do
+        if sample.id == oldsample.id: return self.inventory.sample
+
+        # assign to experiment
+        exp.sample = sample
+        domaccess.db.updateRecord(exp)
+
+        # remove old configuration if necessary
+        sc = exp.sample_configuration
+        sc = sc and sc.id and sc.dereference(domaccess.db)
+        if sc:
+            exp.sample_configuration = None
+            domaccess.db.updateRecord(exp)
+            orm = sampledomaccess.orm
+            sc = orm.record2object(sc)
+            orm.destroy(sc)
+
+        return sample
+
+
+    def editWizard_changesampleconfigurationpanel(self, director):
+        """
+        id: experiment id
+        sample: unique id of the newly selected sample for which configuration will be edited
+        """
+        v = self.createEditWizard_sampleconfigurationpanel(director)
+        if v is None:
+            return alert('Please select a sample')
+        return [
+            select(id='experimentwizard-sampleselector').hide(),
+            select(id='sampleconfigurationpanel').replaceContent(v),
+            ]
+
+
+    def createEditWizard_sampleconfigurationpanel(self, director):
+        """
+        id: experiment id
+        sample: unique id of the newly selected sample for which configuration will be edited
+        """
+        sample = self.inventory.sample
+        if not sample:
+            return
+            
+        id = self.inventory.id
+        return director.retrieveVisual(
+            'neutronexperiment/edit/sampleconfiguration',
+            id = id,
+            director = director,
+            )
+
+
     def createEditWizard_sample_environmentpanel(self, director):
         return director.retrieveVisual(
             'neutronexperiment/edit/sample_environmentpanel',

@@ -1,0 +1,98 @@
+# -*- Python -*-
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                 Jiao Lin
+#                      California Institute of Technology
+#                      (C) 2006-2010  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+from luban.content import load, select, alert
+import luban.content as lc
+
+from luban.content.FormSelectorField import FormSelectorField
+
+
+class Factory(object):
+
+
+    def __init__(self, id=None, experiment=None, domaccess=None, director=None):
+        if director is None:
+            raise RuntimeError
+        self.director = director
+
+        if not domaccess:
+            domaccess = director.retrieveDOMAccessor('experiment')
+        self.domaccess = domaccess
+        
+        if id is None and experiment is None:
+            raise RuntimeError
+
+        if not experiment:
+            experiment = domaccess.getExperimentRecord(id)
+        self.experiment = experiment
+
+        if not id:
+            id = experiment.id
+        self.id = id
+        
+        return
+    
+
+    def __call__(self):
+        director = self.director
+        domaccess = self.domaccess
+        db = domaccess.db
+        
+        experiment = self.experiment
+
+        sample = experiment.sample
+        sample = sample and sample.id and sample.dereference(db)
+
+        doc = lc.document(id='samplepanel')
+
+        if sample:
+            return director.retrieveVisual(
+                'neutronexperiment/edit/sampleconfiguration',
+                id = self.id, director=director)            
+
+        # action to change sample for an experimetn
+        setsample = lambda id, sample_id: load(
+            actor='experiment', routine='setSample', id=id, sample=sample_id)
+
+        # action to refresh sample configuration view
+        refreshsampleconfigurationdoc = lambda sample_id: load(
+            actor='experiment',
+            routine='editWizard_changesampleconfigurationpanel',
+            id = self.id,
+            sample = setsample(self.id, sample_id),
+            )
+            
+        sample_selector = director.retrieveVisual(
+            'neutronexperiment/edit/sampleselector',
+            id=sample and sample.id, domaccess=domaccess, director=director,
+            refreshsampleconfigurationdoc=refreshsampleconfigurationdoc)
+        doc.add(sample_selector)
+
+        #doc.add(configdoc)
+
+        return doc
+
+
+
+def visual(id=None, experiment=None, domaccess=None, director=None):
+    """
+    id: experiment id
+    experiment: experiment record
+    """
+    return Factory(id=id, experiment=experiment, domaccess=domaccess, director=director)()
+
+# version
+__id__ = "$Id$"
+
+# End of file 

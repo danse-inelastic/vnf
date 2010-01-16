@@ -50,7 +50,6 @@ class Accessor(base):
         return se
         
 
-
     def destroySampleConfiguration(self, record=None):
         # destroy an sample configuration
         # record: sample configuration record
@@ -64,8 +63,6 @@ class Accessor(base):
 
 
     def createSampleConfiguration(self, experiment):
-        # the sample
-        sample = experiment.sample
         # copy the sample to a configuration
         orm = self.orm
         sc = orm.deepcopy(sample)
@@ -262,6 +259,7 @@ from vnfb.dom.neutron_experiment_simulations.Instrument import Instrument, Instr
 from vnfb.dom.neutron_experiment_simulations.InstrumentConfiguration import InstrumentConfiguration
 
 
+from dsaw.db.Table import Table
 from dsaw.db.VersatileReference import global_pointer
 import sqlalchemy
 

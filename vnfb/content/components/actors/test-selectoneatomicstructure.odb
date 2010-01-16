@@ -43,10 +43,10 @@ class Actor(base):
     def showme(self, director):
         # the overall document
         doc1 = lc.document(title='whatever document needs a atomicstructure selector')
-        doc1.Class = 'atomicstructure-selector-panel'
+        doc1.Class = 'mastertable-as-selector-panel'
 
         # the container of the atomicstructure selector
-        container = doc1.document(id='atomicstructure-selector-container')
+        container = doc1.document(id='atomicstructure-selector-container', Class='master-table-wrapper')
         container.oncreate = select(element=container).append(
             load(actor='selectoneatomicstructure', routine='createListView')
             )

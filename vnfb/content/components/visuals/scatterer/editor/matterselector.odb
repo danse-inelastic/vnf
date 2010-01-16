@@ -30,7 +30,9 @@ class Factory(object):
 
 
     def __call__(self):
-        doc = lc.document(id='sample-matter-selector-doc', Class='atomicstructure-selector-panel')
+        doc = lc.document(
+            id='sample-matter-selector-doc',
+            Class='mastertable-as-selector-panel')
 
         doc.paragraph(
             text=[
@@ -40,7 +42,7 @@ class Factory(object):
             )
 
         # the container of the atomicstructure selector
-        container = lc.document(id='atomicstructure-selector-container')
+        container = lc.document(id='atomicstructure-selector-container', Class='master-table-wrapper')
         doc.add(container)
         container.oncreate = [
             select(element=container).append(
