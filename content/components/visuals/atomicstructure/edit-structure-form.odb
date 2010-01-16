@@ -22,9 +22,10 @@ def visual(director, id):
     doc.add(viewIndicator(director, id))
 
     doc.document(id='edit-atomic-structure-form', Class='container')
-    importedDoc = director.retrieveVisual('atomicstructure/edit-structure-view',
-                                       id = id)
-    doc.select(id='edit-atomic-structure-form').replaceContent(importedDoc)
+    importedDoc = director.retrieveVisual(
+        'atomicstructure/edit-structure-view',
+        id = id, director=director)
+    doc.oncreate = select(id='edit-atomic-structure-form').replaceContent(importedDoc)
     return doc
 
 def viewIndicator(director, id):
