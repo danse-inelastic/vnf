@@ -1,44 +1,6 @@
 /*  -*- CSS -*-  */
 
 /* editor */
-/* matter selector */
-#sample-matter-selector-doc {
--moz-border-radius:10px;
--webkit-border-radius:10px;
-background-color:#e5e5e5;
-border:1px solid lightGrey;
-font-size:90%;
-margin-left:2em;
-max-width:90%;
-padding:1em;
-min-width: 58em;
-}
-#sample-matter-selector-doc table {
-width:auto;
-}
-#sample-matter-selector-doc #view-indicator {
-min-width:4em;
-}
-#sample-matter-selector-doc .master-table-title-bar {
-font-size:80%;
-}
-#sample-matter-selector-doc .master-table {
-font-size:100%;
-text-align:center;
-width:98%;
-}
-#sample-matter-selector-doc .luban-button-container {
-margin-top:1.5em;
-}
-#sample-matter-selector-doc #atomicstructure-selector-container {
--moz-border-radius:8px;
--webkit-border-radius:8px;
-background-color:white;
-padding:3px;
-}
-#sample-matter-selector-doc .master-table td {
-padding:0 2em;
-}
 /* shape view */
 .shape-summary-image img{
     height: 5em;

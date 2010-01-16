@@ -102,7 +102,7 @@ font-size:1.2em;
 
 /* select button */
 #experimentwizard-instrumentselector .luban-button-container {
-text-align:center;
+/* text-align:center; */
 font-size:1.3em;
 }
 #experimentwizard-instrumentselector .luban-button-container a.luban-button {

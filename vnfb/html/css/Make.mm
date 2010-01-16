@@ -33,7 +33,6 @@ EXPORT_DATAFILES = \
 	vnf-mainframe.css \
 	vnf-mastertable.css \
 	vnf-matsim.css \
-	vnf-matter.css \
 	vnf-matter-overview.css \
 	vnf-objecteditor.css \
         vnf-qe.css \
