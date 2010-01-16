@@ -16,6 +16,15 @@ from Monitor import Monitor as base
 class QMonitor(base):
 
     Qmin = 0.; Qmax = 13.; nQ = 130
+
+
+    def customizeLubanObjectDrawer(self, drawer):
+        drawer.mold.sequence = [
+            'componentname', 'short_description',
+            'referencename', 'position', 'orientation',
+            'Qmin', 'Qmax', 'nQ',
+            ]
+        
     pass
 
 

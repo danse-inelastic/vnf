@@ -26,6 +26,16 @@ class FermiChopper(base):
     bw = 0.0005
     blader = 0.5
 
+    def customizeLubanObjectDrawer(self, drawer):
+        drawer.mold.sequence = [
+            'componentname', 'short_description',
+            'referencename', 'position', 'orientation',
+            'len', 'w',
+            'ymin', 'ymax',
+            'nu', 'delta',
+            'tc', 'nchans',
+            'bw', 'blader',
+            ]
     pass
 
 

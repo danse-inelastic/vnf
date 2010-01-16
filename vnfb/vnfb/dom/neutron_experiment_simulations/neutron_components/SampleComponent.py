@@ -17,6 +17,11 @@ from AbstractNeutronComponent import AbstractNeutronComponent as base
 # this is the "place-holder" sample component to be used in neutron instrument
 class SampleComponent(base):
 
+    def customizeLubanObjectDrawer(self, drawer):
+        drawer.mold.sequence = [
+            'referencename', 'position', 'orientation',
+            ]
+
     pass # end of SampleComponent
 
 

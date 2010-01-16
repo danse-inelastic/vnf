@@ -19,6 +19,12 @@ class SphericalPSD(base):
     ncolumns = 100
     nrows = 100
     
+    def customizeLubanObjectDrawer(self, drawer):
+        drawer.mold.sequence = [
+            'componentname', 'short_description',
+            'referencename', 'position', 'orientation',
+            'radius', 'ncolumns', 'nrows',
+            ]
     pass
 
 

@@ -22,6 +22,16 @@ class T0Chopper(base):
     delta = 0.0
     tc = 0.
 
+    def customizeLubanObjectDrawer(self, drawer):
+        drawer.mold.sequence = [
+            'componentname', 'short_description',
+            'referencename', 'position', 'orientation',
+            'len', 'w1', 'w2',
+            'ymin', 'ymax',
+            'nu', 'delta',
+            'tc',
+            ]
+
     pass
 
 

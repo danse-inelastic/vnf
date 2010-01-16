@@ -25,7 +25,24 @@ class ChanneledGuide(base):
     k = 1
     d = 0.
     alphax = alphay = 0.
-    
+
+
+    def customizeLubanObjectDrawer(self, drawer):
+        drawer.mold.sequence = [
+            'componentname', 'short_description',
+            'referencename', 'position', 'orientation',
+            'w1', 'h1',
+            'w2', 'h2',
+            'l',
+            'R0',
+            'mx', 'my',
+            'Qcx', 'Qcy',
+            'W',
+            'k',
+            'd',
+            'alphax', 'alphay',
+            ]
+
     pass # end of ChanneledGuide
 
 

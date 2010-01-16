@@ -22,6 +22,17 @@ class SNSModerator(base):
     xw = yh = 0.1
     Emin = 0; Emax = 100
     
+    def customizeLubanObjectDrawer(self, drawer):
+        drawer.sequence = ['properties', 'neutronprofile']
+        drawer.mold.sequence = [
+            'componentname', 'short_description',
+            'referencename', 'position', 'orientation',
+            'width', 'height',
+            'dist',
+            'xw', 'yh',
+            'Emin', 'Emax',
+            ]
+
     pass
 
 
