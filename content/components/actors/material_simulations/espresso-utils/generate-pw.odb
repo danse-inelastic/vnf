@@ -41,18 +41,8 @@ class Actor(base):
                                 id      = self.inventory.id,
                                 taskid  = self.inventory.taskid)
 
-
+    # TODO: Fix 'occupations' parameter
     def _input(self, director):
-        domaccess = director.retrieveDOMAccessor('atomicstructure')
-        structure = domaccess.getAtomicStructure("6NPTL72J")
-        from qecalc.qetask.qeparser.pwinput import PWInput
-        ml  = [26.98,]    # mass list
-        ps  = ["HaHa",]
-        pwInput = PWInput()
-        pwInput.structure.load(source = 'diffpy', ibrav = 2 , structure = structure, massList = ml, psList = ps)
-        print pwInput.structure.toString()
-        print pwInput.structure.atomLabels()
-        #print structure
 
 
 
@@ -70,7 +60,8 @@ class Actor(base):
         k_points.setArg("automatic")
         k_points.addLine("%s %s %s 0 0 0" % (self.nk1, self.nk2, self.nk3))
         input.addNamelist(system)
-        input.addCard(c)
+        input.addCard(atomic_species)
+        input.addCard(k_points)
         return input.toString()
         
     def _smearing(self):

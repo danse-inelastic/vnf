@@ -68,12 +68,14 @@ class Actor(base):
 
     def _setForm(self, director):
         "Sets create new settings form"
+        visual  = "material_simulations/espresso/input-default"
+
         if self.type in TYPE:
             visual  = "material_simulations/espresso/input-%s" % self.type.lower()
-            return director.retrieveVisual(visual, actor = self)
 
-        visual  = "material_simulations/espresso/input-default"
-        return director.retrieveVisual(visual, actor = self)
+        return director.retrieveVisual(visual,
+                                       actor    = self.inventory,
+                                       director = director)
 
 
     def __init__(self):

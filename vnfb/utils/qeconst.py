@@ -98,7 +98,7 @@ ZASR[_zasr[2]]  = "'one-dim'"
 ZASR[_zasr[3]]  = "'zero-dim'"
 ZASR[_zasr[4]]  = "'no'"
 
-IBRAV       = ( "0.  None",                             # 0
+IBRAV       = ( "0.  Not Specified",                    # 0
                 "1.  Cubic P (sc)",                     # 1
                 "2.  Cubic F (fcc)",                    # 2
                 "3.  Cubic I (bcc)",                    # 3

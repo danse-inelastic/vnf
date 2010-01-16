@@ -67,7 +67,9 @@ class Actor(base):
         "Sets create new settings form"
 
         visual  = "material_simulations/espresso/input-default"
-        return director.retrieveVisual(visual, actor = self.inventory)
+        return director.retrieveVisual(visual,
+                                       actor    = self.inventory,
+                                       director = director)
 
 
     def createRecord(self, director):
