@@ -15,7 +15,7 @@ from luban.content.FormTextField import FormTextField
 from luban.content.FormSelectorField import FormSelectorField
 from luban.content.FormSubmitButton import FormSubmitButton
 
-def visual(director, id):
+def visual(director=None, id=None):
     
     container = lc.document(id='edit-atomic-structure-form', Class='container')
 
