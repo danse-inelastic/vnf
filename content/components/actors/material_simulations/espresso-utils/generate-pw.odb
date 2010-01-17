@@ -15,6 +15,7 @@ from vnfb.utils.qeparser.qeinput import QEInput
 from vnfb.utils.qeparser.namelist import Namelist
 from vnfb.utils.qeparser.card import Card
 from vnfb.utils.qeconst import SMEARING, IBRAV
+from qecalc.qetask.qeparser.pwinput import PWInput
 
 from luban.components.AuthorizedActor import AuthorizedActor as base
 
@@ -57,7 +58,6 @@ class Actor(base):
 
 
     def generateInput(self, director):
-        #print self.mass0
         return director.redirect(actor   = 'material_simulations/espresso/input-create',
                                 routine = 'default',
                                 text    = self._input(director),
@@ -75,16 +75,38 @@ class Actor(base):
         system.add("smearing", self._smearing())
 
         atomic_species  = Card("atomic_species")
-        atomic_species.addLine("Ni 26.98 %s" % self.inventory.pseudo)
+        atomic_species.addLine("Ni 26.98 %s" % self.inventory.pseudo0)
 
-        k_points   = Card("k_points")
-        k_points.setArg("automatic")
-        k_points.addLine("%s %s %s 0 0 0" % (self.nk1, self.nk2, self.nk3))
-        input.addNamelist(system)
-        input.addCard(atomic_species)
-        input.addCard(k_points)
-        return input.toString()
-        
+        domaccess   = director.retrieveDOMAccessor('atomicstructure')
+        structure   = domaccess.getAtomicStructure("6T4M6SSB")    # XXX Ni: 6NPTL72J, Cu4: 6T4M6SSB
+
+        masslist    = []
+        pseudolist  = []
+        for i in range(len(self._labels(structure))):
+            masslist.append(getattr(self, "mass%s" % i))
+            pseudolist.append(getattr(self, "pseudo%s" % i))
+
+        pw          = PWInput()
+        pw.structure.load(source    = 'diffpy',
+                          structure = structure,
+                          massList  = masslist,
+                          psList    = pseudolist)
+
+        return pw.structure.toString()
+
+
+#        k_points   = Card("k_points")
+#        k_points.setArg("automatic")
+#        k_points.addLine("%s %s %s 0 0 0" % (self.nk1, self.nk2, self.nk3))
+#        input.addNamelist(system)
+#        input.addCard(atomic_species)
+#        input.addCard(k_points)
+#        return input.toString()
+
+
+    def _labels(self, structure):
+        return list(set([e.symbol for e in structure]))
+
     def _smearing(self):
         keys    = SMEARING.keys()
         name    = keys[int(self.inventory.smearing)]
