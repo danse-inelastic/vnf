@@ -46,14 +46,23 @@ class Visual:
 
         ibrav       = FormSelectorField(name="ibrav",
                                         entries=enumerate(IBRAV)) # Take from atomic structure?
-#        # Space for atoms
+        # Space for atoms
+
+        nimass        = FormTextField(name = "mass", value = "55", Class="mass-textfield")
+
+        # Version 2
 #        atoms    = QEGrid(lc.grid())
 #        atoms.addRow(("", "Mass (u)", "Pseudo Potential"))
 #
 #        PSEUDO      = ("Ni.pbe-nd-rrkjus.UPF", "Cu.pbe-nd-rrkjus.UPF") # Temp
-#        masslist    = []
-#        pseudolist  = []
 #
+#        atom        = Atom("Ni")
+#        nimass        = FormTextField(name = "nimass", value = atom.mass, Class="mass-textfield")
+#        nipseudo      = FormSelectorField(name="nipseudo",
+#                                        entries=enumerate(PSEUDO))
+#        atoms.addRow(("Ni", nimass, nipseudo))
+
+        # Version 1
 #        for l in self._labels:
 #            atom        = Atom(l)
 #            mass        = FormTextField(name = l, value = atom.mass, Class="mass-textfield")
@@ -62,11 +71,11 @@ class Visual:
 #            masslist.append(mass.value)
 #            pseudolist.append(pseudo.selection)
 #            atoms.addRow((l, mass, pseudo))
-#
+
 #        atoms.setRowStyle(0, "qe-atoms-header")
 #        atoms.setColumnStyle(0, "qe-atoms-label")
-#
-#        # END
+
+        # END
 
         ecutwfc     = FormTextField(name = "ecutwfc", value = ECUTWFC)
         ecutrho     = FormTextField(name = "ecutrho", value = ECUTRHO)
@@ -85,7 +94,7 @@ class Visual:
         st.addRow((submit, cancel), ("qe-action-accept", "qe-action-cancel"))
 
         table.addRow(("Lattice Type:", ibrav))
-        table.addRow(("Atomic Structure:", atoms.grid()))
+        table.addRow(("Atomic Structure:", nimass))   #self._atoms()atoms.grid()
         table.addRow(("Enertgy Cutoff (Ry):", ecutwfc))    # XXX Check name
         table.addRow(("Density Cutoff (Ry):", ecutrho))    # XXX Check name
         table.addRow(("Smearing:", smearing))    # XXX Check name
@@ -97,19 +106,12 @@ class Visual:
         table.setColumnStyle(0, "qe-form-label")
         table.setColumnStyle(1, "qe-form-field")
 
+        #Nimass  = getattr(self, "Nimass")
+
         form.onsubmit   = select(element=form).submit(actor     = 'material_simulations/espresso-utils/generate-pw',
                                                       routine   = 'generateInput',
                                                       taskid    = self._actor.taskid,
                                                       id        = self._actor.id,
-                                                      mass      = masslist,     #("1", "2"),
-                                                      pseudo    = pseudolist,   #("A", "B"),
-                                                      ibrav     = ibrav.value,
-                                                      ecutwfc   = ecutwfc.value,
-                                                      ecutrho   = ecutrho.value,
-                                                      smearing  = smearing.value,
-                                                      nk1       = nk1.value,
-                                                      nk2       = nk2.value,
-                                                      nk3       = nk3.value
                                                       )
 
         return form
@@ -129,18 +131,25 @@ class Visual:
             mass        = FormTextField(name = l, value = atom.mass, Class="mass-textfield")
             pseudo      = FormSelectorField(name="%spseudo" % l,
                                             entries=enumerate(PSEUDO))
+            setattr(self, "%smass" % l, mass)
+            setattr(self, "%spseudo" % l, pseudo)
 #            masslist.append(mass)#.value)
 #            pseudolist.append(pseudo.selection)
             atoms.addRow((l, mass, pseudo))
             
         atoms.setRowStyle(0, "qe-atoms-header")
         atoms.setColumnStyle(0, "qe-atoms-label")
-        return (atoms.grid(), masslist, pseudolist)
+        return atoms.grid() #(atoms.grid(), masslist, pseudolist)
 
 
-#    def _masslist(self):
-#        for l in self._labels:
-#            setattr(self, "%smass" % l, )
+    def _masslist(self):
+        ml      = []    # Mass list
+        for l in self._labels:
+            mass    = getattr(self, "%smass" % l)
+            print mass.value
+            ml.append(mass.value)
+
+        return ml
 
     def _labels(self):
         "Returns list of unique atom labels. E.g.: ('Ni', 'Cu')"
@@ -150,6 +159,7 @@ class Visual:
         pw.structure.load(source = 'diffpy', structure = structure)
         #return pw.structure.atomLabels()
         return ("Ni", "Cu")
+
 
     def _atomsdump(self):
         pass
@@ -162,6 +172,18 @@ class Visual:
 def visual(actor, director):
     v   = Visual(actor, director)
     return v.render()
+
+#                                                      #mass      = nimass.value, #[nimass.value, ],       #("1", "2"),
+#                                                      pseudo    = ("A", "B"),  #  (nipseudo.value,) ("A", "B"),   #pseudolist,   #
+#                                                      ibrav     = ibrav.value,
+#                                                      ecutwfc   = ecutwfc.value,
+#                                                      ecutrho   = ecutrho.value,
+#                                                      smearing  = smearing.value,
+#                                                      nk1       = nk1.value,
+#                                                      nk2       = nk2.value,
+#                                                      nk3       = nk3.value
+
+
 
 #        domaccess = director.retrieveDOMAccessor('atomicstructure')
 #        structure = domaccess.getAtomicStructure("6NPTL72J")

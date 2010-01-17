@@ -24,7 +24,8 @@ class Actor(base):
         import pyre.inventory
         id          = pyre.inventory.str('id', default='')          # Simulation Id
         taskid      = pyre.inventory.str('taskid', default='')
-        mass        = pyre.inventory.list('mass', default=[])
+        #mass        = pyre.inventory.list('mass', default=[])
+        #mass        = pyre.inventory.str('mass', default='')
         pseudo      = pyre.inventory.list('pseudo', default=[])
         ibrav       = pyre.inventory.str('ibrav', default='')
         ecutwfc     = pyre.inventory.str('ecutwfc', default='')
@@ -36,7 +37,7 @@ class Actor(base):
 
 
     def generateInput(self, director):
-        print self.mass,self.pseudo
+        #print self.mass,self.pseudo, self.nk1
         return director.redirect(actor   = 'material_simulations/espresso/input-create',
                                 routine = 'default',
                                 text    = self._input(director),
@@ -80,7 +81,7 @@ class Actor(base):
         super(Actor, self)._configure()
         self.id             = self.inventory.id
         self.taskid         = self.inventory.taskid
-        self.mass           = self.inventory.mass
+        #self.mass           = self.inventory.mass
         self.pseudo         = self.inventory.pseudo
         self.ibrav          = self.inventory.ibrav
         self.ecutwfc        = self.inventory.ecutwfc
