@@ -50,7 +50,7 @@ class Factory(object):
         form.submitbutton(label='Save')
 
         form.onsubmit = select(element=form).submit(
-            actor='experiment', routine='verifyEditWizard_startform',
+            actor='experiment/editor', routine='verifyEditWizard_startform',
             id = self.id)
         
         return form

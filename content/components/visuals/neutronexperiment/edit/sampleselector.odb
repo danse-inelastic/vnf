@@ -32,14 +32,14 @@ class Factory(object):
         return
     
 
-    def __call__(self, refreshsamplepanel):
+    def __call__(self):
         director = self.director
         
         doc = lc.document(
             title='Select a sample from the following table',
             id='experimentwizard-sampleselector',
-            Class='mastertable-as-selector-panel',
             )
+        doc.Class='mastertable-as-selector-panel'
 
         # the container of the sample selector
         container = doc.document(id='sample-selector-container', Class='master-table-wrapper')
@@ -47,7 +47,7 @@ class Factory(object):
             actor='selectonesample', routine='createListView',
             include_credential=False)
         container.add(listview)
-
+        
         #
         b = lc.button(label="continue"); doc.add(b)
         selectedsample = select(id='sample-table').table(
@@ -57,17 +57,19 @@ class Factory(object):
             routine='getSelectedSampleUniqueIdentifierStr',
             selected = selectedsample,
             )
-        b.onclick = refreshsamplepanel(selecteduid)
+        b.onclick = load(
+            actor='experiment/editor', routine='onSelectSample',
+            id = self.id, sample=selecteduid)
         
         return doc
 
 
 
-def visual(id=None, domaccess=None, director=None, refreshsampleconfigurationdoc=None):
+def visual(id=None, domaccess=None, director=None):
     """
-    id: id of current sample
+    id: id of experiment
     """
-    return Factory(id=id, domaccess=domaccess, director=director)(refreshsampleconfigurationdoc)
+    return Factory(id=id, domaccess=domaccess, director=director)()
 
 # version
 __id__ = "$Id$"

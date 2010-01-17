@@ -79,6 +79,7 @@ class Factory(object):
             load(actor='orm/%s' % kernel.getTableName(),
                  routine='createGraphicalView',
                  id=kernel.id,
+                 editlink = False,
                  )
             )
         return  doc

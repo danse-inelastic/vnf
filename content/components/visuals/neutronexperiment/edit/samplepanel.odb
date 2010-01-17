@@ -74,34 +74,17 @@ class Factory(object):
         '''create a document to select a sample'''
         director = self.director
         domaccess = self.domaccess
-        db = domaccess.db
+        # db = domaccess.db
 
-        experiment = self.experiment
-        
-        sample = experiment.sample
-        sample = sample and sample.id and sample.dereference(db)
-
-        # action to change sample for an experimetn
-        setsample = lambda id, sample_id: load(
-            actor='experiment', routine='setSample',
-            id=id, sample=sample_id)
-
-        # action to refresh sample configuration view
-        refreshsamplepanel = lambda sample_id: select(id='samplepanel').replaceBy(
-            load(
-              actor='experiment',
-              routine='createEditWizard_samplepanel',
-              id = self.id,
-              sample = setsample(self.id, sample_id),
-              mode = 'configure',
-              )
-            )
+        # experiment = self.experiment
+        # sample = experiment.sample
+        # sample = sample and sample.id and sample.dereference(db)
 
         # selector widget
         sample_selector = director.retrieveVisual(
             'neutronexperiment/edit/sampleselector',
-            id=sample and sample.id, domaccess=domaccess, director=director,
-            refreshsampleconfigurationdoc=refreshsamplepanel)
+            id=self.id, domaccess=domaccess, director=director,
+            )
         
         return sample_selector
     
