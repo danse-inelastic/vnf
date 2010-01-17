@@ -49,7 +49,17 @@ class Factory(object):
             component = domaccess.db.fetchRecordUsingUniqueIdentifierStr(componentuid)
 
         #
-        doc = lc.document(Class='container')
+        doc = lc.document(Class='container', id='componenteditor')
+
+        # delete link
+        deletelink = lc.button(
+            label = 'Delete this component',
+            onclick = load(actor='experiment/editor', routine='onDeleteComponent',
+                           id=self.id, component=componentuid),
+            id = 'delete-component',
+            )
+        #deletelink.Class='float-right'
+        doc.add(deletelink)
         
         # orm generated view of current component
         ormview = director.redirect(

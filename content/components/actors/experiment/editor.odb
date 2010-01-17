@@ -35,6 +35,7 @@ class Actor(base):
         instrument = pyre.inventory.str('instrument')
         sample = pyre.inventory.str('sample')
         mode = pyre.inventory.str('mode')
+        component = pyre.inventory.str('component')
         before = pyre.inventory.str('before')
 
 
@@ -159,6 +160,37 @@ class Actor(base):
         newview = director.retrieveVisual(
             'neutronexperiment/edit/instrumentconfiguration',
             id = id, director=director, component=newcomponent)
+        return select(id='instrument-configuration').replaceBy(newview)
+
+
+    def onDeleteComponent(self, director):
+        """
+        id: id of experiment
+        component: unique identifier of the component before which the new component will be inserted
+        """
+        domaccess = self._domaccess(director)
+
+        # experiment
+        id = self.inventory.id
+        exp = domaccess.getExperimentRecord(id=id)
+
+        # component
+        component = self.inventory.component
+        component = domaccess.db.fetchRecordUsingUniqueIdentifierStr(component)
+
+        # instrument configuration
+        ic = exp.instrument_configuration.dereference(domaccess.db)
+
+        # delete component from the refset
+        ic.components.delete(component,domaccess.db)
+        # destroy it
+        orm = domaccess.orm
+        orm.destroy(orm.record2object(component))
+        
+        # actions
+        newview = director.retrieveVisual(
+            'neutronexperiment/edit/instrumentconfiguration',
+            id = id, director=director)
         return select(id='instrument-configuration').replaceBy(newview)
 
 
