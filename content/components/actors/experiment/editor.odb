@@ -37,6 +37,7 @@ class Actor(base):
         mode = pyre.inventory.str('mode')
         component = pyre.inventory.str('component')
         before = pyre.inventory.str('before')
+        newtype = pyre.inventory.str('newtype')
 
 
     def createEditor(self, director):
@@ -163,6 +164,45 @@ class Actor(base):
         return select(id='instrument-configuration').replaceBy(newview)
 
 
+    def onChangeComponentType(self, director):
+        """
+        id: id of experiment
+        component: unique identifier of the component before which the new component will be inserted
+        newtype: new component type
+        """
+        domaccess = self._domaccess(director)
+        orm = domaccess.orm
+
+        # experiment
+        id = self.inventory.id
+        exp = domaccess.getExperimentRecord(id=id)
+
+        # component
+        component = self.inventory.component
+        component = domaccess.db.fetchRecordUsingUniqueIdentifierStr(component)
+
+        # instrument configuration
+        ic = exp.instrument_configuration.dereference(domaccess.db)
+
+        # create a new component
+        newtype = self.inventory.newtype
+        table = domaccess._getTable(newtype)
+        newcomponent = domaccess.insertNewRecordWithID(table)
+        
+        # replace the old component with the newcomponent
+        index = ic.components.getIndex(component, db=domaccess.db)
+        ic.components.setElement(index=index, element=newcomponent, db=domaccess.db)
+
+        # destroy the old component
+        orm.destroy(orm.record2object(component))
+
+        # actions
+        newview = director.retrieveVisual(
+            'neutronexperiment/edit/instrumentconfiguration',
+            id = id, director=director, component=newcomponent)
+        return select(id='instrument-configuration').replaceBy(newview)
+
+
     def onDeleteComponent(self, director):
         """
         id: id of experiment
@@ -180,6 +220,13 @@ class Actor(base):
 
         # instrument configuration
         ic = exp.instrument_configuration.dereference(domaccess.db)
+
+        # if there is only one component left, alert user
+        components = ic.components.dereference(domaccess.db)
+        if len(components) == 1:
+            return alert('There is only one component left.')
+        if len(components) == 0:
+            raise RuntimeError
 
         # delete component from the refset
         ic.components.delete(component,domaccess.db)
