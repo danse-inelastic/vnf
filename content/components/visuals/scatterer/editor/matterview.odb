@@ -21,19 +21,17 @@ class Factory(object):
     matter_view_id = 'scatterer-matter-view'
 
 
-    def __init__(self, id, director, readonly=False):
+    def __init__(self, id, director):
         self.id = id
         self.director = director
         self.domaccess = director.retrieveDOMAccessor('scatterer')
         self.record = self.domaccess.getRecord(id)
         matter = self.record.matter
         self.matter = matter and matter.id and matter.dereference(self.domaccess.db)
-        self.readonly = readonly
         return
 
 
-    def __call__(self):
-        readonly = self.readonly
+    def __call__(self, readonly=False):
         doc = lc.document(
             title='Atomic structure', id=self.matter_view_id,
             collapsable=True)
@@ -78,7 +76,7 @@ class Factory(object):
 
     
 def visual(id, director, readonly=False):
-    return Factory(id, director)()
+    return Factory(id, director)(readonly=readonly)
 
 
 # version

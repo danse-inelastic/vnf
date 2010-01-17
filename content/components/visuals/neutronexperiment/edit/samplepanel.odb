@@ -54,7 +54,7 @@ class Factory(object):
         sample = experiment.sample
         sample = sample and sample.id and sample.dereference(db)
 
-        doc = lc.document(id='samplepanel', title='Sample')
+        doc = lc.document(id='samplepanel', title='Sample configuration')
 
         if mode is None:
             if sample: mode = 'configure'
@@ -100,6 +100,7 @@ class Factory(object):
                  'all your current sample configuration will be lost.'),
             onclick=select(id='samplepanel').replaceBy(self(mode='selector'))
             )
+        selectsamplebutton.Class = 'float-right'
         doc.add(selectsamplebutton)
 
         director = self.director
