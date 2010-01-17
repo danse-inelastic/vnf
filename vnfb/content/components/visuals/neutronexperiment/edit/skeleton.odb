@@ -78,10 +78,10 @@ class Factory(object):
         instrument = instrument and instrument.id and instrument.dereference(domaccess.db)
         if instrument:
             if not instrument.has_sample_component:
-                wizard_container.oncreate = [
-                    select(id='experimentwizard-samplebutton-container').hide(),
-                    select(id='experimentwizard-sampleenvironmentbutton-container').hide(),
-                    ]
+                hidesamplepanels = director.retrieveVisual(
+                    'neutronexperiment/edit/hidesamplepanels')\
+                    .get()
+                wizard_container.oncreate = hidesamplepanels
             
         return doc
 

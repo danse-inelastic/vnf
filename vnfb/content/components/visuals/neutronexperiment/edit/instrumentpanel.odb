@@ -48,7 +48,13 @@ class Factory(object):
         doc = lc.document(id='instrumentpanel')
 
         if mode is None:
-            mode = 'selector'
+            experiment = self.experiment
+            instrument = experiment.instrument
+            instrument = instrument and instrument.id
+            if instrument:
+                mode = 'configuration'
+            else:
+                mode = 'selector'
 
         h = '_create%sDoc' % mode.capitalize()
         interior = getattr(self, h)()
