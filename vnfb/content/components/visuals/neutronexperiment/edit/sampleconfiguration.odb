@@ -88,8 +88,14 @@ class Factory(object):
     def _onSampleComponent(self, sc):
         tablename = sc.getTableName()
         doc = lc.document(Class='container')
-        doc.oncreate = load(
-            actor='orm/%s' % tablename, routine='edit', id=sc.id)
+        
+        director = self.director
+        doc1 = director.redirect(
+            actor='orm/%s' % tablename, routine='edit',
+            id=sc.id,
+            include_credential=False)
+
+        doc.add(doc1)
         return doc
 
 
