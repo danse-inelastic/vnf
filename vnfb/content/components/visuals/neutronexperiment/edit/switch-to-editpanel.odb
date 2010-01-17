@@ -47,7 +47,7 @@ class Factory(Component):
 
         refresheditpanel = select(id='experiemntwizard-editpanel').replaceContent
         a = refresheditpanel(load(
-            actor='experiment',
+            actor='experiment/editor',
             routine='createEditWizard_%spanel' % name,
             id = id))
         actions.append(a)

@@ -59,10 +59,10 @@ class Factory(object):
         configdoc = lc.document(id='instrumentconfigurationpanel')
 
         setinstrument = lambda id, instrument_id: load(
-            actor='experiment', routine='setInstrument', id=id, instrument=instrument_id)
+            actor='experiment/editor', routine='setInstrument', id=id, instrument=instrument_id)
         
         refreshinstrumentconfigurationdoc = lambda instrument_id: load(
-            actor='experiment',
+            actor='experiment/editor',
             routine='editWizard_changeinstrumentconfigurationpanel',
             id = self.id,
             instrument = setinstrument(self.id, instrument_id),
