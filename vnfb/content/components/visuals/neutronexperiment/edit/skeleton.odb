@@ -65,8 +65,11 @@ class Factory(object):
 
         #
         names = ['instrument', 'sample', 'sample_environment', 'finish']
+        nsteps = len(names)
         for index, name in enumerate(names):
-            b = self._button(name, index+1, refresheditpanel, selected=not index)
+            b = self._button(
+                name, refresheditpanel, selected=not index,
+                index=index, nsteps=nsteps)
             navigation_bar.add(b)
             continue
 
@@ -83,16 +86,20 @@ class Factory(object):
         return doc
 
 
-    def _button(self, name, index, refresheditpanel, selected):
+    def _button(self, name, refresheditpanel, selected, index=None, nsteps=None):
         doc1 = lc.document(Class='navigation-button', id='navigation-button-%s' % name)
         if selected: doc1.addClass('selected')
         
         sp1 = doc1.splitter()
-        sp1.section(Class='index').paragraph(text=[str(index)])
-        right = sp1.section()
+        #sp1.section(Class='index').paragraph(text=[str(index+1)])
+        sec = sp1.section()
         button = lc.image(path='neutronexperiment/editor/%s.png' % name)
-        right.add(button)
-        right.paragraph(text=['%s' % name.capitalize().replace('_', ' ')])
+        sec.add(button)
+        sec.paragraph(text=['%s' % name.capitalize().replace('_', ' ')])
+
+        if index < nsteps-1:
+            sec = sp1.section()
+            sec.add('>>')
 
         director = self.director
         doc1.onclick = director.retrieveVisual('neutronexperiment/edit/switch-to-editpanel')\
