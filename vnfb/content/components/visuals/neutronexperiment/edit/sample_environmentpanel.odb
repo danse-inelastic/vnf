@@ -30,6 +30,7 @@ class Factory(object):
 
     def __call__(self):
         #
+        director = self.director
         domaccess = self.domaccess
         db = domaccess.db
 
@@ -39,7 +40,7 @@ class Factory(object):
         se = se and se.id and se.dereference(db)
         
         if se is None:
-            se = domaccess.createSampleEnvironment(experiment)
+            se = domaccess.createSampleEnvironmentRecord(experiment)
         
         # the form
         doc = lc.document(Class='container')

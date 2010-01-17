@@ -41,12 +41,11 @@ class Accessor(base):
         return exp
 
 
-    def createSampleEnvironment(self, exp):
+    def createSampleEnvironmentRecord(self, exp):
         '''create sampleenvironment for the given experiment and save to db'''
-        se = SampleEnvironment()
-        orm = self.orm
+        se = self.insertNewRecordWithID(SampleEnvironmentTable)
         exp.sampleenvironment = se
-        orm.save(exp, save_not_owned_referred_object=0)
+        self.db.updateRecord(exp)
         return se
         
 
@@ -254,8 +253,8 @@ class Accessor(base):
 
 from vnf.dom.Label import Label
 from vnfb.dom.neutron_experiment_simulations.NeutronExperiment import \
-     NeutronExperiment, NeutronExperimentTable, \
-     SampleEnvironment
+     NeutronExperiment, NeutronExperimentTable
+from vnfb.dom.neutron_experiment_simulations.SampleEnvironment import SampleEnvironmentTable
 from vnfb.dom.neutron_experiment_simulations.Instrument import Instrument, InstrumentTable
 from vnfb.dom.neutron_experiment_simulations.InstrumentConfiguration import InstrumentConfiguration
 
