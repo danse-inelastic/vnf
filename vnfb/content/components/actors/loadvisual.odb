@@ -30,10 +30,9 @@ class Actor(base):
     def default(self, director):
         visual = self.inventory.visual
         kwds = {}
-        from pyre.inventory.Trait import Trait
         for k, v in self.inventory.__dict__.iteritems():
             if k.startswith('_'): continue
-            if isinstance(getattr(self.Inventory, k), Trait): continue
+            if hasattr(self.Inventory, k): continue
             kwds[k] = v
             continue
         

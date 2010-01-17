@@ -1,0 +1,79 @@
+# -*- Python -*-
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                 Jiao Lin
+#                      California Institute of Technology
+#                      (C) 2006-2010  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+from luban.content import load, select, alert
+import luban.content as lc
+
+from luban.content.FormSelectorField import FormSelectorField
+
+
+class Factory(object):
+
+
+    def __init__(self, id, director, experiment=None, domaccess=None):
+        self.director = director
+        self.id = id
+
+        if not domaccess:
+            domaccess = director.retrieveDOMAccessor('experiment')
+        self.domaccess = domaccess
+
+        if not experiment:
+            experiment = domaccess.getExperimentRecord(id)
+        self.experiment = experiment
+        
+        return
+    
+
+    def __call__(self, component=None, componentuid=None):
+        #
+        director = self.director
+        domaccess = self.domaccess
+
+        #
+        experiment = self.experiment
+
+        #
+        if component is None:
+            component = domaccess.db.fetchRecordUsingUniqueIdentifierStr(componentuid)
+
+        #
+        doc = lc.document(Class='container')
+        
+        # orm generated view of current component
+        ormview = director.redirect(
+            actor = 'orm/%s' % component.getTableName(), routine='display',
+            id = component.id, editlink=True, include_credential=False)
+
+
+        doc.add(ormview)
+        return doc
+
+
+def visual(
+    id=None, director=None, domaccess=None, experiment=None,
+    component=None, componentuid=None):
+    '''
+    id: experiment id
+    component: component to edit
+    componentid: id of component
+    '''
+    return Factory(id, director, domaccess=domaccess, experiment=experiment)\
+           (component=component, componentuid=componentuid)
+
+
+# version
+__id__ = "$Id$"
+
+# End of file 

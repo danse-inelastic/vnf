@@ -31,22 +31,23 @@ all: export
 
 EXPORT_PYTHON_MODULES = \
 	AbstractNeutronComponent.py \
+	ChanneledGuide.py \
+	DetectorSystem_fromXML.py \
+	EMonitor.py \
+	FermiChopper.py \
 	Monitor.py \
 	MonochromaticSource.py \
-	SNSModerator.py \
-	SNSModeratorMCSimulatedData.py \
-	ChanneledGuide.py \
-	T0Chopper.py \
-	FermiChopper.py \
-	SampleBase.py \
-	SampleComponent.py \
-	EMonitor.py \
+	NeutronRecorder.py \
+	PlaceHolder.py \
 	QEMonitor.py \
 	QMonitor.py \
+	SampleBase.py \
+	SampleComponent.py \
+	SNSModerator.py \
+	SNSModeratorMCSimulatedData.py \
 	SphericalPSD.py \
 	TofMonitor.py \
-	DetectorSystem_fromXML.py \
-	NeutronRecorder.py \
+	T0Chopper.py \
 	VanadiumPlate.py \
 	__init__.py \
 	_.py \
