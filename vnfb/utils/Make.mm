@@ -49,6 +49,7 @@ EXPORT_PYTHON_MODULES = \
 	constraints.py \
 	math.py \
         orderedDict.py \
+        qeatom.py \
         qetaskcell.py \
         qetaskinfo.py \
         qetasks.py \
