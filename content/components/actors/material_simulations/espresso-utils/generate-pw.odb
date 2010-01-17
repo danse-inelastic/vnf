@@ -25,7 +25,7 @@ class Actor(base):
         import pyre.inventory
         id          = pyre.inventory.str('id', default='')          # Simulation Id
         taskid      = pyre.inventory.str('taskid', default='')
-        ibrav       = pyre.inventory.str('ibrav', default='')
+        ibrav       = pyre.inventory.int('ibrav', default=0)
         ecutwfc     = pyre.inventory.str('ecutwfc', default='')
         ecutrho     = pyre.inventory.str('ecutrho', default='')
         smearing    = pyre.inventory.str('smearing', default='')
@@ -89,6 +89,7 @@ class Actor(base):
         pw          = PWInput()
         pw.structure.load(source    = 'diffpy',
                           structure = structure,
+                          ibrav     = self.ibrav,
                           massList  = masslist,
                           psList    = pseudolist)
 
