@@ -164,6 +164,31 @@ class Actor(base):
         return select(id='instrument-configuration').replaceBy(newview)
 
 
+    def onAppendComponent(self, director):
+        """
+        id: id of experiment
+        """
+        domaccess = self._domaccess(director)
+
+        # experiment
+        id = self.inventory.id
+        exp = domaccess.getExperimentRecord(id=id)
+
+        # instrument configuration
+        ic = exp.instrument_configuration.dereference(domaccess.db)
+
+        # append a new component
+        from vnfb.dom.neutron_experiment_simulations.neutron_components.PlaceHolder import PlaceHolderTable
+        newcomponent = domaccess.insertNewRecordWithID(PlaceHolderTable)
+        ic.components.add(newcomponent, db=domaccess.db)
+
+        # actions
+        newview = director.retrieveVisual(
+            'neutronexperiment/edit/instrumentconfiguration',
+            id = id, director=director, component=newcomponent)
+        return select(id='instrument-configuration').replaceBy(newview)
+
+
     def onChangeComponentType(self, director):
         """
         id: id of experiment

@@ -132,7 +132,7 @@ class Factory(object):
             insertbutton = lc.button(id=insertbuttonidformatter%component.id)
             insertbuttoncontainer.add(insertbutton)
             insertbutton.Class='component-chain-insert-button'
-            insertbutton.label = '--'
+            insertbutton.label = '->'
             insertbutton.tip = 'click to insert component'
             insertbutton.onclick = load(
                 actor='experiment/editor', routine='onInsertComponent',
@@ -166,7 +166,7 @@ class Factory(object):
         appendbutton = lc.button(id='append-component')
         appendbuttoncontainer.add(appendbutton)
         appendbutton.Class='component-chain-insert-button'
-        appendbutton.label = '--'
+        appendbutton.label = '->'
         appendbutton.tip = 'click to append component'
         appendbutton.onclick = load(
             actor='experiment/editor', routine='onAppendComponent',
