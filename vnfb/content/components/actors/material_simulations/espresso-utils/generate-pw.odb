@@ -24,9 +24,6 @@ class Actor(base):
         import pyre.inventory
         id          = pyre.inventory.str('id', default='')          # Simulation Id
         taskid      = pyre.inventory.str('taskid', default='')
-        #mass        = pyre.inventory.list('mass', default=[])
-        #mass        = pyre.inventory.str('mass', default='')
-        pseudo      = pyre.inventory.list('pseudo', default=[])
         ibrav       = pyre.inventory.str('ibrav', default='')
         ecutwfc     = pyre.inventory.str('ecutwfc', default='')
         ecutrho     = pyre.inventory.str('ecutrho', default='')
@@ -35,9 +32,32 @@ class Actor(base):
         nk2         = pyre.inventory.str('nk2', default='')
         nk3         = pyre.inventory.str('nk3', default='')
 
+        # HACK: population of inventory parameters for form submission
+
+        mass0       = pyre.inventory.str('mass0', default='')
+        mass1       = pyre.inventory.str('mass1', default='')
+        mass2       = pyre.inventory.str('mass2', default='')
+        mass3       = pyre.inventory.str('mass3', default='')
+        mass4       = pyre.inventory.str('mass4', default='')
+        mass5       = pyre.inventory.str('mass5', default='')
+        mass6       = pyre.inventory.str('mass6', default='')
+        mass7       = pyre.inventory.str('mass7', default='')
+        mass8       = pyre.inventory.str('mass8', default='')
+        mass9       = pyre.inventory.str('mass9', default='')
+        pseudo0     = pyre.inventory.str('pseudo0', default='')
+        pseudo1     = pyre.inventory.str('pseudo1', default='')
+        pseudo2     = pyre.inventory.str('pseudo2', default='')
+        pseudo3     = pyre.inventory.str('pseudo3', default='')
+        pseudo4     = pyre.inventory.str('pseudo4', default='')
+        pseudo5     = pyre.inventory.str('pseudo5', default='')
+        pseudo6     = pyre.inventory.str('pseudo6', default='')
+        pseudo7     = pyre.inventory.str('pseudo7', default='')
+        pseudo8     = pyre.inventory.str('pseudo8', default='')
+        pseudo9     = pyre.inventory.str('pseudo9', default='')
+
 
     def generateInput(self, director):
-        #print self.mass,self.pseudo, self.nk1
+        #print self.mass0
         return director.redirect(actor   = 'material_simulations/espresso/input-create',
                                 routine = 'default',
                                 text    = self._input(director),
@@ -81,8 +101,6 @@ class Actor(base):
         super(Actor, self)._configure()
         self.id             = self.inventory.id
         self.taskid         = self.inventory.taskid
-        #self.mass           = self.inventory.mass
-        self.pseudo         = self.inventory.pseudo
         self.ibrav          = self.inventory.ibrav
         self.ecutwfc        = self.inventory.ecutwfc
         self.ecutrho        = self.inventory.ecutrho
@@ -90,6 +108,15 @@ class Actor(base):
         self.nk1            = self.inventory.nk1
         self.nk2            = self.inventory.nk2
         self.nk3            = self.inventory.nk3
+
+        N_ATOMS  = 10
+        # Set masses for atoms
+        for i in range(N_ATOMS):
+            setattr(self, "mass%s" % i, getattr(self.inventory, "mass%s" % i))
+
+        # Set pseudo potentials for atoms
+        for i in range(N_ATOMS):
+            setattr(self, "pseudo%s" % i, getattr(self.inventory, "pseudo%s" % i))
 
 
     def _init(self):
