@@ -53,7 +53,7 @@ class Factory(object):
 
         #
         editpanel = wizard_container.document(
-            id='experiemntwizard-editpanel', Class='container')
+            id='experimentwizard-editpanel', Class='container')
         refresheditpanel = select(element=editpanel).replaceContent
         # select tab1 when started
         # tabs.oncreate = select(element=tab1).tab('select')

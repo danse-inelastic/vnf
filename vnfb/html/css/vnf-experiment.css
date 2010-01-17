@@ -53,6 +53,10 @@ padding:0.2em 0.3em;
 height:2.5em;
 }
 
+#experimentwizard-editpanel {
+padding:1em;
+}
+
 #experimentwizard-instrumentselector {
 padding:0.5em 1em;
 }
@@ -149,6 +153,22 @@ margin-bottom:1em;
 }
 #component-chain-container table{
     width: auto;
+}
+
+#samplepanel {
+background-color:#f5f5f5;
+padding:0.5em;
+-moz-border-radius:1em;
+}
+#samplepanel .luban-document-body {
+padding-left:0.2em;
+}
+#samplepanel > .luban-document-title {
+font-weight:bold;
+font-size:1.4em;
+}
+#samplepanel h1.luban-document-title {
+margin-bottom:5px;
 }
 
 /* version */
