@@ -98,21 +98,21 @@ ZASR[_zasr[2]]  = "'one-dim'"
 ZASR[_zasr[3]]  = "'zero-dim'"
 ZASR[_zasr[4]]  = "'no'"
 
-IBRAV       = ( "0.  Not Specified",                    # 0
-                "1.  Cubic P (sc)",                     # 1
-                "2.  Cubic F (fcc)",                    # 2
-                "3.  Cubic I (bcc)",                    # 3
-                "4.  Hexagonal and Trigonal P",         # 4
-                "5.  Trigonal R",                       # 5
-                "6.  Tetragonal P (st)",                # 6
-                "7.  Tetragonal I (bct)",               # 7
-                "8.  Orthorhombic P",                   # 8
-                "9.  Orthorhombic base-centered(bco)",  # 9
-                "10. Orthorhombic face-centered",       # 10
-                "11. Orthorhombic body-centered",       # 11
-                "12. Monoclinic P",                     # 12
-                "13. Monoclinic base-centered",         # 13
-                "14. Triclinic"                         # 14
+IBRAV       = ( "Not Specified",                    # 0
+                "Cubic P (sc)",                     # 1
+                "Cubic F (fcc)",                    # 2
+                "Cubic I (bcc)",                    # 3
+                "Hexagonal and Trigonal P",         # 4
+                "Trigonal R",                       # 5
+                "Tetragonal P (st)",                # 6
+                "Tetragonal I (bct)",               # 7
+                "Orthorhombic P",                   # 8
+                "Orthorhombic base-centered(bco)",  # 9
+                "Orthorhombic face-centered",       # 10
+                "Orthorhombic body-centered",       # 11
+                "Monoclinic P",                     # 12
+                "Monoclinic base-centered",         # 13
+                "Triclinic"                         # 14
                 )
 
 _smearing   = ("gaussian", "methfessel-paxton", "marzari-vanderbilt", "fermi-dirac")
