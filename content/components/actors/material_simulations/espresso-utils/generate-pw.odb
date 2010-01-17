@@ -44,8 +44,6 @@ class Actor(base):
     # TODO: Fix 'occupations' parameter
     def _input(self, director):
 
-
-
         input      = QEInput(type='pw')
         system  = Namelist("system")
         system.add("ibrav", self.inventory.ibrav)

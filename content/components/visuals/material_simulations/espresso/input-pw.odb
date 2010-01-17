@@ -20,6 +20,12 @@ from luban.content.FormTextField import FormTextField
 from luban.content.FormSelectorField import FormSelectorField
 from luban.content.FormSubmitButton import FormSubmitButton
 from qecalc.qetask.qeparser.pwinput import PWInput
+from matter.Atom import Atom
+
+# Default values:
+ECUTWFC = 27.0
+ECUTRHO = 300.0
+NK      = 4
 
 class Visual:
 
@@ -31,7 +37,7 @@ class Visual:
         return self._form()
 
     def _form(self):
-        form        = lc.form(id='create-simulation-form')
+        form        = lc.form(id='qe-atoms-form')
         table       = QEGrid(lc.grid(Class="qe-form"))
         form.add(table.grid())
 
@@ -39,14 +45,14 @@ class Visual:
 
         ibrav       = FormSelectorField(name="ibrav",
                                         entries=enumerate(IBRAV)) # Take from atomic structure?
-        ecutwfc     = FormTextField(name = "ecutwfc", value = "")
-        ecutrho     = FormTextField(name = "ecutrho", value = "")
+        ecutwfc     = FormTextField(name = "ecutwfc", value = ECUTWFC)
+        ecutrho     = FormTextField(name = "ecutrho", value = ECUTRHO)
         smearing    = FormSelectorField(name="smearing",
                                         entries=enumerate(SMEARING.keys()))
 
-        nk1         = FormTextField(name = "nk1", value = "")
-        nk2         = FormTextField(name = "nk2", value = "")
-        nk3         = FormTextField(name = "nk3", value = "")
+        nk1         = FormTextField(name = "nk1", value = NK)
+        nk2         = FormTextField(name = "nk2", value = NK)
+        nk3         = FormTextField(name = "nk3", value = NK)
 
         submit      = FormSubmitButton(label="Generate Input Configuration")
         cancel      = lc.button(label="Cancel")
@@ -56,7 +62,7 @@ class Visual:
         st.addRow((submit, cancel), ("qe-action-accept", "qe-action-cancel"))
 
         table.addRow(("Lattice Type:", ibrav))
-        table.addRow(("Atomic Structure:", self._elements()))
+        table.addRow(("Atomic Structure:", self._atoms()))
         table.addRow(("Enertgy Cutoff:", ecutwfc))    # XXX Check name
         table.addRow(("Density Cutoff:", ecutrho))    # XXX Check name
         table.addRow(("Smearing:", smearing))    # XXX Check name
@@ -84,21 +90,29 @@ class Visual:
 
         return form
 
-    def _elements(self):
-        elements    = QEGrid(lc.grid())
-        elements.addRow(("Element", "Mass", "Pseudo Potential"))
+    def _atoms(self):
+        atoms    = QEGrid(lc.grid())
+        atoms.addRow(("", "Mass", "Pseudo Potential"))
 
         domaccess = self._director.retrieveDOMAccessor('atomicstructure')
-        structure = domaccess.getAtomicStructure("6NPTL72J")    # XXX
+        structure = domaccess.getAtomicStructure("6NPTL72J")    # XXX Ni: 6NPTL72J, Cu4: 
         pwInput = PWInput()
         pwInput.structure.load(source = 'diffpy', structure = structure)
         #print pwInput.structure.atomLabels()
-        elements.addRow(("Ni", "[..........]", "[..........]"))
-        return elements.grid()
-    
-#        pseudo      = FormSelectorField(name="pseudo",
-#                                        entries=enumerate(PSEUDO))
+        PSEUDO      = ("Ni.pbe-nd-rrkjus.UPF", ) # Temp
+        labels      = ("Ni", "Cu")
 
+        for l in labels:
+            atom        = Atom(l)
+            mass        = FormTextField(name = l, value = atom.mass, Class="mass-textfield")
+            pseudo      = FormSelectorField(name="Nipseudo",
+                                            entries=enumerate(PSEUDO))
+            atoms.addRow((l, mass, pseudo))
+            
+        atoms.setRowStyle(0, "qe-atoms-header")
+        atoms.setColumnStyle(0, "qe-atoms-label")
+        return atoms.grid()
+    
 
 def visual(actor, director):
     v   = Visual(actor, director)

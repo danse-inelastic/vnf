@@ -164,6 +164,29 @@ textarea {
     height: 200px;
 }
 
+#qe-atoms-form {
+    
+}
+
+
+.qe-atoms-header td{
+    font-weight: bold;
+    padding-top: 3px;
+    padding-left: 15px;
+
+}
+
+.qe-atoms-label{
+    font-weight: bold;
+}
+
+.mass-textfield {
+    width: 90px;
+}
+
+.mass-textfield input {
+    width: 80px;
+}
 /*
 .qe-text-area {
     width: 200px;
