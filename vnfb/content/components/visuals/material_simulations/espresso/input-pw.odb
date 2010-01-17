@@ -63,8 +63,8 @@ class Visual:
 
         table.addRow(("Lattice Type:", ibrav))
         table.addRow(("Atomic Structure:", self._atoms()))
-        table.addRow(("Enertgy Cutoff:", ecutwfc))    # XXX Check name
-        table.addRow(("Density Cutoff:", ecutrho))    # XXX Check name
+        table.addRow(("Enertgy Cutoff (Ry):", ecutwfc))    # XXX Check name
+        table.addRow(("Density Cutoff (Ry):", ecutrho))    # XXX Check name
         table.addRow(("Smearing:", smearing))    # XXX Check name
         table.addRow(("nk1:", nk1))
         table.addRow(("nk2:", nk2))
@@ -78,7 +78,9 @@ class Visual:
                                                       routine   = 'generateInput',
                                                       taskid    = self._actor.taskid,
                                                       id        = self._actor.id,
-                                                      pseudo    = "pseudo.value", # change
+                                                      #atoms     = atomsdump,    # json serialized list of atoms
+                                                      mass      = ("1", "2"),
+                                                      pseudo    = ("A", "B"),
                                                       ibrav     = ibrav.value,
                                                       ecutwfc   = ecutwfc.value,
                                                       ecutrho   = ecutrho.value,
@@ -92,7 +94,7 @@ class Visual:
 
     def _atoms(self):
         atoms    = QEGrid(lc.grid())
-        atoms.addRow(("", "Mass", "Pseudo Potential"))
+        atoms.addRow(("", "Mass (u)", "Pseudo Potential"))
 
         domaccess = self._director.retrieveDOMAccessor('atomicstructure')
         structure = domaccess.getAtomicStructure("6NPTL72J")    # XXX Ni: 6NPTL72J, Cu4: 
@@ -112,7 +114,11 @@ class Visual:
         atoms.setRowStyle(0, "qe-atoms-header")
         atoms.setColumnStyle(0, "qe-atoms-label")
         return atoms.grid()
-    
+
+    def _atomsdump(self):
+        pass
+
+   
 
 def visual(actor, director):
     v   = Visual(actor, director)
