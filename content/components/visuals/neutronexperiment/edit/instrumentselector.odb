@@ -29,10 +29,15 @@ class Factory(object):
         self.domaccess = domaccess
         self.director = director
         self.id = id
+        self.experiment = domaccess.getExperimentRecord(id=id)
+        instrument = self.experiment.instrument
+        instrument = instrument and instrument.id and instrument.dereference(domaccess.db)
+        self.instrument = instrument
+        self.instrument_id = instrument and instrument.id
         return
     
 
-    def __call__(self, refreshinstrumentconfigurationdoc):
+    def __call__(self):
         instruments = self.domaccess.getInstrumentRecords()
         
         doc = lc.document(
@@ -42,7 +47,7 @@ class Factory(object):
 
         #
         from luban.content.FormTextField import FormTextField
-        hidden_field = FormTextField(hidden=True, value=self.id)
+        hidden_field = FormTextField(hidden=True, value=self.instrument_id)
         doc.add(hidden_field)
 
         #
@@ -59,8 +64,11 @@ class Factory(object):
         doc.add(introductiondoc)
 
         b = lc.button(label="continue"); doc.add(b)
-        b.onclick = refreshinstrumentconfigurationdoc(select(element=hidden_field)\
-                                                      .getAttr('value'))
+        selectedinstrument = select(element=hidden_field).getAttr('value')
+        b.onclick = load(
+            actor='experiment/editor', routine='onSelectInstrument',
+            id = self.id, instrument = selectedinstrument,
+            )
         
         return doc
 
@@ -71,7 +79,7 @@ class Factory(object):
         director = self.director
         
         # current instrument id
-        currentinstrument_id = self.id
+        currentinstrument_id = self.instrument_id
         
         doc = lc.document(id='instrument-gallery-container')
         sp = doc.splitter(id='instrument-gallery')
@@ -113,11 +121,11 @@ class Factory(object):
 
 
 
-def visual(id=None, domaccess=None, director=None, refreshinstrumentconfigurationdoc=None):
+def visual(id=None, domaccess=None, director=None):
     """
-    id: id of current instrument
+    id: id of neutron experiment
     """
-    return Factory(id=id, domaccess=domaccess, director=director)(refreshinstrumentconfigurationdoc)
+    return Factory(id=id, domaccess=domaccess, director=director)()
 
 # version
 __id__ = "$Id$"

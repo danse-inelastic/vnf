@@ -53,35 +53,46 @@ class Actor(base):
             )
 
 
-    def createEditWizard_instrumentconfigurationpanel(self, director):
+    def onSelectInstrument(self, director):
         """
         id: experiment id
-        instrument: id of the newly selected instrument for which configuration will be edited
+        instrument: id of selected instrument
+
+        return: adction to update edit panel of experiment wizard
         """
+        domaccess = self._domaccess(director)
+        orm = domaccess.orm
+        db = orm.db
+
+        #
         instrument = self.inventory.instrument
-        if not instrument:
-            return
-            
-        id = self.inventory.id
-        return director.retrieveVisual(
-            'neutronexperiment/edit/instrumentconfiguration',
-            id = id,
-            director = director,
-            )
+        if not instrument: return
 
+        #
+        instrument = domaccess.getInstrumentRecord(instrument)
+        # XXX shoule check if instrument is constructed well
+        #if not domaccess.isConstructed(record=instrument):
+        #    return alert('this instrument is not yet fully constructed. please choose another one')
 
-    def editWizard_changeinstrumentconfigurationpanel(self, director):
-        """
-        id: experiment id
-        instrument: id of the newly selected instrument for which configuration will be edited
-        """
-        v = self.createEditWizard_instrumentconfigurationpanel(director)
-        if v is None:
-            return alert('Please select an instrument')
-        return [
-            select(id='experimentwizard-instrumentselector').hide(),
-            select(id='instrumentconfigurationpanel').replaceContent(v),
-            ]
+        # set instrument to the new instrument
+        self.setInstrument(director)
+
+        # actions
+        # 
+        if instrument.has_sample_component:
+            panelactions = director.retrieveVisual('neutronexperiment/edit/showsamplepanels').get()
+        else:
+            panelactions = director.retrieveVisual('neutronexperiment/edit/hidesamplepanels').get()
+        #
+        mode = 'configuration'
+        newpanel = director.retrieveVisual(
+            'neutronexperiment/edit/instrumentpanel',
+            id=self.inventory.id, director=director, domaccess=domaccess,
+            mode=mode)
+        refreshactions = [select(id='instrumentpanel').replaceBy(newpanel)]
+        #
+        actions = panelactions + refreshactions
+        return actions
 
 
     def setInstrument(self, director):
