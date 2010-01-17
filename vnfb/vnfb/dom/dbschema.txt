@@ -60,3 +60,8 @@ rename columns
 Jan 15, 2010
 
 table "instruments" added column "has_sample_component". boolean
+
+
+Jan 17, 2010
+
+table 'neutronexperiments' added col "buffer_size". integer

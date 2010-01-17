@@ -67,7 +67,7 @@ class Builder(base):
                 self.onSampleComponent(samplecomponent)
         
         #
-        parameters = [ 'ncount' ]
+        parameters = [ 'ncount' , 'buffer_size']
         for parameter in parameters:
             self.options[ parameter ] = getattr(experiment, parameter )
             continue

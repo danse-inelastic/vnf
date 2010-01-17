@@ -20,7 +20,7 @@ from luban.content.Button import Button
 from luban.content.Paragraph import Paragraph
 
 
-from vnfb.components.MasterTable import FilterSyntaxError, MasterTableActor as base
+from luban.components.AuthorizedActor import AuthorizedActor as base
 
 
 class Actor(base):
@@ -30,11 +30,11 @@ class Actor(base):
 
         import pyre.inventory
 
-        # in case of working with one experiment
         id = pyre.inventory.str('id')
         short_description = pyre.inventory.str('short_description')
         instrument = pyre.inventory.str('instrument')
         sample = pyre.inventory.str('sample')
+        mode = pyre.inventory.str('mode')
 
 
     def createEditor(self, director):
@@ -121,9 +121,7 @@ class Actor(base):
 
 
     def createEditWizard_samplepanel(self, director):
-        si = self.inventory
-        if hasattr(si, 'mode'): mode = si.mode
-        else: mode = None
+        mode = self.inventory.mode or None
         return director.retrieveVisual(
             'neutronexperiment/edit/samplepanel',
             id = self.inventory.id,
@@ -208,63 +206,14 @@ class Actor(base):
             )
 
 
-    def createEditWizard_finish(self, director):
+    def createEditWizard_finishpanel(self, director):
+        mode = self.inventory.mode or None
         return director.retrieveVisual(
-            'neutronexperiment/edit/finish',
+            'neutronexperiment/edit/finishpanel',
             id = self.inventory.id,
-            director = director
+            director = director,
+            mode = mode
             )
-
-
-    def verifyEditWizard_startform(self, director):
-        short_description = self.inventory.short_description
-        if not short_description:
-            return select(id='experimentwizard-startform').find(name='short_description')\
-                   .formfield('showError', message = 'cannot be empty')
-
-        #
-        domaccess = self._domaccess(director)
-
-        # get record
-        id = self.inventory.id
-        r = domaccess.getExperimentRecord(id)
-
-        # description
-        r.short_description = short_description
-
-        # instrument
-        instrument = self.inventory.instrument
-        if r.instrument and (r.instrument.id != instrument \
-                             and r.instrument_configuration \
-                             and r.instrument_configuration.id):
-            # user selects a new instrument, need to annihilate the old configuration
-            icid = r.instrument_configuration.dereference(domaccess.db).id
-            r.instrument_configuration = None
-            domaccess.db.updateRecord(r)
-            domaccess.destroyInstrumentConfiguration(icid)
-        r.instrument = instrument
-        
-        # sample
-        sample = self.inventory.sample
-        if sample:
-            samplerecord = domaccess.db.fetchRecordUsingUniqueIdentifierStr(sample)
-            oldsamplerecord = r.sample and r.sample.dereference(domaccess.db)
-            if oldsamplerecord \
-                   and (type(oldsamplerecord) != type(samplerecord) \
-                        or oldsamplerecord.id != samplerecord.id) \
-                   and r.sample_configuration and r.sample_configuration.id:
-                # user selects a new sample, need to annihilate the old configuration
-                screcord = r.sample_configuration.dereference(domaccess.db)
-                r.sample_configuration = None
-                domaccess.db.updateRecord(r)
-                domaccess.destroySampleConfiguration(record=screcord)
-            r.sample = samplerecord
-
-        # update
-        domaccess.db.updateRecord(r)
-
-        # switch to the next form
-        return select(id='experimentwizard-instrumentconfiguration-tab').tab('select')
 
 
     def _domaccess(self, director):
