@@ -32,6 +32,17 @@ class NeutronExperiment:
     sampleenvironment = None
     
     ncount = 1e6
+    buffer_size = 1e5
+    short_description = ''
+
+    def customizeLubanObjectDrawer(self, drawer):
+        drawer.sequence = [
+            'instrument_configuration',
+            'sample_configuration',
+            'sampleenvironment',
+            'properties',
+            ]
+        drawer.mold.sequence = ['short_description', 'ncount', 'buffer_size']
 
 
 from instrument_configuration_types import getTypes
@@ -78,6 +89,9 @@ class Inventory(InvBase):
         name = 'sampleenvironment', targettype = SampleEnvironment, owned = 1)
 
     ncount = InvBase.d.float(name = 'ncount', default = 1e6)
+    buffer_size = InvBase.d.int(name = 'buffer_size', default = 100000)
+    short_description = InvBase.d.str(
+        name='short_description', default='', validator=InvBase.v.notempty)
 
     # constructed = InvBase.d.varchar( name = 'constructed', length = 4, default = '' )
 
