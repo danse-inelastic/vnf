@@ -25,6 +25,8 @@ class Actor(base):
         import pyre.inventory
         id          = pyre.inventory.str('id', default='')          # Simulation Id
         taskid      = pyre.inventory.str('taskid', default='')
+        type        = pyre.inventory.str('type', default='')
+        structureid = pyre.inventory.str('structureid', default='')
         zasr        = pyre.inventory.str('zasr', default='')        # Type of the configuration file
 
     def generateInput(self, director):
@@ -89,6 +91,8 @@ class Actor(base):
         super(Actor, self)._configure()
         self.id             = self.inventory.id
         self.taskid         = self.inventory.taskid
+        self.type           = self.inventory.type
+        self.structureid    = self.inventory.structureid
         self.zasr           = self.inventory.zasr
 
 

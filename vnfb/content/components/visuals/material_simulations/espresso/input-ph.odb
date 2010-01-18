@@ -24,9 +24,9 @@ def visual(actor, director, structureid):
     table       = QEGrid(lc.grid(Class="qe-form"))
     form.add(table.grid())
 
-    nq1         = FormTextField(name = "nq1", value = "")
-    nq2         = FormTextField(name = "nq2", value = "")
-    nq3         = FormTextField(name = "nq3", value = "")
+    nq1         = FormTextField(name = "nq1", value = 2)
+    nq2         = FormTextField(name = "nq2", value = 2)
+    nq3         = FormTextField(name = "nq3", value = 2)
 
     submit      = FormSubmitButton(label="Generate Input Configuration")
     cancel      = lc.button(label="Cancel")
@@ -47,11 +47,8 @@ def visual(actor, director, structureid):
                                                   routine   = 'generateInput',
                                                   taskid    = actor.taskid,
                                                   id        = actor.id,
-                                                  structureid   = structureid
-#                                                  nq1       = nq1.value,
-#                                                  nq2       = nq2.value,
-#                                                  nq3       = nq3.value
-                                                  )
+                                                  type      = actor.type,
+                                                  structureid   = structureid)
 
     return form
 

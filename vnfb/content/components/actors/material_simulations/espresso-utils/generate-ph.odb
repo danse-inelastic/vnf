@@ -16,6 +16,10 @@ from vnfb.utils.qeparser.namelist import Namelist
 
 from luban.components.AuthorizedActor import AuthorizedActor as base
 
+TR2_PH  = "1.0d-16"
+LDISP   = ".true."
+PREFIX  = "'default'"
+
 # Requires simulation id,
 class Actor(base):
 
@@ -23,16 +27,20 @@ class Actor(base):
         import pyre.inventory
         id          = pyre.inventory.str('id', default='')          # Simulation Id
         taskid      = pyre.inventory.str('taskid', default='')
+        type        = pyre.inventory.str('type', default='')
+        structureid = pyre.inventory.str('structureid', default='')
         nq1         = pyre.inventory.str('nq1', default='')        # Type of the configuration file
         nq2         = pyre.inventory.str('nq2', default='')
         nq3         = pyre.inventory.str('nq3', default='')
+
 
     def generateInput(self, director):
         return director.redirect(actor   = 'material_simulations/espresso/input-create',
                                 routine = 'default',
                                 text    = self._input(),
                                 id      = self.inventory.id,
-                                taskid  = self.inventory.taskid)
+                                taskid  = self.inventory.taskid,
+                                type    = self.inventory.type)
 
 
     def _input(self):
@@ -41,6 +49,9 @@ class Actor(base):
         nl.add("nq1", self.nq1)
         nl.add("nq2", self.nq2)
         nl.add("nq3", self.nq3)
+        nl.add("tr2_ph", TR2_PH)
+        nl.add("ldisp", LDISP)
+        nl.add("prefix", PREFIX)
         input.addNamelist(nl)
         return input.toString()
 
@@ -55,6 +66,8 @@ class Actor(base):
         super(Actor, self)._configure()
         self.id             = self.inventory.id
         self.taskid         = self.inventory.taskid
+        self.type           = self.inventory.type
+        self.structureid    = self.inventory.structureid
         self.nq1            = self.inventory.nq1
         self.nq2            = self.inventory.nq2
         self.nq3            = self.inventory.nq3

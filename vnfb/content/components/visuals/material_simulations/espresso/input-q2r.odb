@@ -46,6 +46,7 @@ def visual(actor, director, structureid):
                                                   routine   = 'generateInput',
                                                   taskid    = actor.taskid,
                                                   id        = actor.id,
+                                                  type      = actor.type,
                                                   structureid   = structureid)
 
     return form

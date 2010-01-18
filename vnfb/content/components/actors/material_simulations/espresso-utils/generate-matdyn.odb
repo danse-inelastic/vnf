@@ -31,6 +31,7 @@ class Actor(base):
         id          = pyre.inventory.str('id', default='')          # Simulation Id
         taskid      = pyre.inventory.str('taskid', default='')
         type        = pyre.inventory.str('type', default='')
+        structureid = pyre.inventory.str('structureid', default='')
         nk1         = pyre.inventory.str('nk1', default='')        # Type of the configuration file
         nk2         = pyre.inventory.str('nk2', default='')
         nk3         = pyre.inventory.str('nk3', default='')
@@ -102,7 +103,8 @@ class Actor(base):
                                 routine = 'default',
                                 text    = self._input(director),
                                 id      = self.inventory.id,
-                                taskid  = self.inventory.taskid)
+                                taskid  = self.inventory.taskid,
+                                type    = self.inventory.type)
 
 
     def _input(self, director):
@@ -165,6 +167,7 @@ class Actor(base):
         self.id             = self.inventory.id
         self.taskid         = self.inventory.taskid
         self.type           = self.inventory.type
+        self.structureid    = self.inventory.structureid
         self.nk1            = self.inventory.nk1
         self.nk2            = self.inventory.nk2
         self.nk3            = self.inventory.nk3

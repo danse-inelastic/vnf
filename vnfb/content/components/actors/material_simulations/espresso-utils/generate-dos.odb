@@ -22,6 +22,8 @@ class Actor(base):
         import pyre.inventory
         id          = pyre.inventory.str('id', default='')          # Simulation Id
         taskid      = pyre.inventory.str('taskid', default='')
+        type        = pyre.inventory.str('type', default='')
+        structureid = pyre.inventory.str('structureid', default='')
 
 
     def generateInput(self, director):
@@ -29,7 +31,8 @@ class Actor(base):
                                 routine = 'default',
                                 text    = self._input(),
                                 id      = self.inventory.id,
-                                taskid  = self.inventory.taskid)
+                                taskid  = self.inventory.taskid,
+                                type    = self.inventory.type)
 
 
     def _input(self):
@@ -49,6 +52,8 @@ class Actor(base):
         super(Actor, self)._configure()
         self.id             = self.inventory.id
         self.taskid         = self.inventory.taskid
+        self.type           = self.inventory.type
+        self.structureid    = self.inventory.structureid
 
 
     def _init(self):
