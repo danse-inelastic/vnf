@@ -67,23 +67,11 @@ class Actor(base):
                                 taskid  = self.inventory.taskid,
                                 type    = self.inventory.type)
 
-    # TODO: Fix 'occupations' parameter
+    
     def _input(self, director):
         pwinput   = self._loadStructure(director)
         return self._getInput(pwinput, director)
 
-
-
-        #return pwinput.structure.toString()
-
-
-#        k_points   = Card("k_points")
-#        k_points.setArg("automatic")
-#        k_points.addLine("%s %s %s 0 0 0" % (self.nk1, self.nk2, self.nk3))
-#        input.addNamelist(system)
-#        input.addCard(atomic_species)
-#        input.addCard(k_points)
-#        return input.toString()
 
     def _getInput(self, input, director):
         # CONTROL namelist
@@ -98,7 +86,7 @@ class Actor(base):
         system  = input.namelist("system")
         system.add("degauss", "0.02")
         system.add("smearing", self._smearing())
-        system.add("occupations", "'smearing'")
+        system.add("occupations", "'smearing'")     # TODO: Fix 'occupations' parameter
         system.add("ecutwfc", self.inventory.ecutwfc)
         system.add("ecutrho", self.inventory.ecutrho)
         #system.add("nspin", "2")
@@ -110,33 +98,18 @@ class Actor(base):
 #        electrons.add("mixing_beta", "0.7")
 #        input.addNamelist(electrons)
 
+        input.removeCard("atomic_species")
+
         # K_POINTS
         k_points   = Card("k_points")
         k_points.setArg("automatic")
         k_points.addLine("%s %s %s 0 0 0" % (self.nk1, self.nk2, self.nk3))
         input.addCard(k_points)
 
-        input.structure.parseInput()
-        
-        # HACK, Should work without setting
-        input.removeCard("atomic_species")
-
-#        #atomic_species  = Card("atomic_species")
-#        atomic_species  = input.card("atomic_species")
-#        #atomic_species.removeLines()
-#
-#        structure       = self._structure(director)
-#        labels          = self._labels(structure)
-#        for i in range(len(labels)):
-#            mass    = getattr(self, "mass%s" % i)
-#            pseudo  = getattr(self, "pseudo%s" % i)
-#            #print mass, pseudo
-#            atomic_species.addLine("%s %s %s" % (labels[i], mass, pseudo))    #self.inventory.pseudo0)
-
-        input.structure.parseInput()
-
         return input.structure.toString()
 
+    def _controls(self):
+        pass
 
     def _loadStructure(self, director):
         """Populates the geometry (structure) related parameters:
@@ -157,7 +130,9 @@ class Actor(base):
                               ibrav     = self.ibrav,
                               massList  = masslist,
                               psList    = pseudolist)
-                              
+
+        input.structure.updatePWInput()
+        
         return input
 
 
