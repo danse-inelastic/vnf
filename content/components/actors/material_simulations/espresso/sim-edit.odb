@@ -15,7 +15,9 @@
 TODO: Handle cases when:
     - simulation type changes (simtype)
     - server change (server)
-    - matter changes
+
+Notes:
+    - Atomic structure cannot be changed
 
 Question:
     - What happens to tasks?
@@ -47,7 +49,6 @@ class Actor(base):
         description = pyre.inventory.str('description', default='')
         label       = pyre.inventory.str('label', default='')
         server      = pyre.inventory.str('server', default='')
-        matter      = pyre.inventory.str('matter', default='')
 
 
     def default(self, director):
@@ -91,19 +92,16 @@ class Actor(base):
         server      = FormSelectorField(name="server",
                                         entries=enumerate(serversList),
                                         selection=servers.selected(sim.serverid))
-        matter      = FormSelectorField(name="matter",
-                                        entries=enumerate(["Not Available",]))  # ?
         submit      = FormSubmitButton(label="Save Changes")
         cancel      = lc.button(label="Cancel")
         cancel.onclick = load(actor = 'material_simulations/espresso/sim-view', id=self.id)
         st          = QEGrid(lc.grid()) # Submit Table
         st.addRow((submit, cancel), ("qe-action-accept", "qe-action-cancel"))
-        table.addRow(("Name:", sname))
         table.addRow(("Type:", simtype))
+        table.addRow(("Name:", sname))
         table.addRow(("Description:", description))
         table.addRow(("Label:", label))
         table.addRow(("Server:", server))
-        table.addRow(("Atomic Structure:", matter))
         table.addRow(("", st.grid()))
         table.setColumnStyle(0, "qe-form-label")
         table.setColumnStyle(1, "qe-form-field")
@@ -130,7 +128,6 @@ class Actor(base):
                        "short_description":   self.description,
                        "label":         self.label,
                        "serverid":      servers.id(self.server)
-                       #"matter":        self.matter    # Doesn't work at this moment
                        }
             sim.setDirector(director)
             sim.updateRecord(params)
@@ -150,7 +147,6 @@ class Actor(base):
         self.description = self.inventory.description
         self.label       = self.inventory.label
         self.server      = self.inventory.server
-        self.matter      = self.inventory.matter
 
         return
 
