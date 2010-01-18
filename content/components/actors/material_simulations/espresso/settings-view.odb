@@ -96,14 +96,14 @@ class Actor(base):
         #(self._parser, fp)    = self.parser(settings)
 
         if settings:
+            table.addRow(("Number of Processors: ", str(settings.numproc) ))
             table.addRow(('Name:', settings.sname))
             table.addRow(('Description:', settings.description))
-            table.addRow(("Number of Processors: ", str(settings.numproc) ))
-            table.addRow(("Number of Nodes: ", str(settings.numnodes)))
-            table.addRow(("Npool: ", str(settings.npool)))
-            table.addRow(("Executable: ", settings.executable))
-            table.addRow(("Additional Parameters: ", settings.params))
-            table.addRow(("Modules: ", settings.modules))
+#            table.addRow(("Number of Nodes: ", str(settings.numnodes)))
+#            table.addRow(("Npool: ", str(settings.npool)))
+#            table.addRow(("Executable: ", settings.executable))
+#            table.addRow(("Additional Parameters: ", settings.params))
+#            table.addRow(("Modules: ", settings.modules))
 
 
     def __init__(self):

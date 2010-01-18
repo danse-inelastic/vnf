@@ -34,12 +34,6 @@ class Actor(base):
         sname       = pyre.inventory.str('sname', default='')
         description = pyre.inventory.str('description', default='') # Not used
         numproc     = pyre.inventory.int('numproc', default=0)
-#        numnodes    = pyre.inventory.int('numnodes', default=SETTINGS["numnodes"])
-#        npool       = pyre.inventory.int('npool', default=SETTINGS["npool"])
-#        executable  = pyre.inventory.str('executable', default=SETTINGS["executable"])
-#        params      = pyre.inventory.str('params', default=SETTINGS["params"])
-#        modules     = pyre.inventory.str('modules', default=SETTINGS["modules"])
-#        text        = pyre.inventory.str('text', default='')
 
 
     def default(self, director):
@@ -80,12 +74,6 @@ class Actor(base):
         description     = FormTextField(name = "description", value=self.description)   # Make as textarea
         numproc         = FormSelectorField(name="numproc",
                                             entries=enumerate(PROCESSORS))
-        #FormTextField(name = "numproc", value=self.numproc)
-#        numnodes        = FormTextField(name = "numnodes", value=self.numnodes)
-#        npool           = FormTextField(name = "npool", value=self.npool)
-#        executable      = FormTextField(name = "executable", value=self.executable)
-#        params          = FormTextField(name = "params", value=self.params)
-#        modules         = FormTextField(name = "modules", value=self.modules)
 
         submit      = FormSubmitButton(label="Create Settings Configuration")
         cancel      = lc.button(label="Cancel")
@@ -96,13 +84,7 @@ class Actor(base):
 
         table.addRow(("Number of Processors: *", numproc))
         table.addRow(("Name:", sname))
-        table.addRow(("Description:", description))
-#        table.addRow(("Number of Nodes:", numnodes))
-#        table.addRow(("Npool:", npool))
-#        table.addRow(("Executable:", executable))
-#        table.addRow(("Additional Parameters:", params))
-#        table.addRow(("Modules:", modules))
-        
+        table.addRow(("Description:", description))        
         table.addRow(("", st.grid()))
 
         table.setColumnStyle(0, "qe-form-label")
@@ -118,13 +100,13 @@ class Actor(base):
     def createRecord(self, director):
         """Create settings record"""
         params  = {"simulationid":  self.id,
-                   "sname":         self.sname,
-                   "description":   self.description,  # I don't really need description at this point!
+                   "sname":         self._sname(),
+                   "description":   self.description,
                    "numproc":       PROCESSORS[int(self.numproc)],
-                   "npool":         SETTINGS["npool"],
-                   "executable":    SETTINGS["executable"],
-                   "params":        SETTINGS["params"],
-                   "modules":       SETTINGS["modules"]
+                   "npool":         SETTINGS["npool"],      # Set from constants?
+                   "executable":    SETTINGS["executable"], # Set from constants?
+                   "params":        SETTINGS["params"],     # Set from constants?
+                   "modules":       SETTINGS["modules"]     # Set from constants?
                    #"numnodes":      self.numnodes, # Not Set. Calculated from numproc
                    #"procpernode":   12,            # Not Set. Calculated from numproc
                   }
@@ -134,6 +116,12 @@ class Actor(base):
         
         return load(actor='material_simulations/espresso/sim-view', id=self.id)
 
+    def _sname(self):
+        # Settings name is not set
+        if self.sname == '':
+            return "settings.conf"
+
+        return self.sname
 
     def __init__(self):
         super(Actor, self).__init__(name='material_simulations/espresso/settings-add')
@@ -147,12 +135,6 @@ class Actor(base):
         self.sname          = self.inventory.sname
         self.description    = self.inventory.description
         self.numproc        = self.inventory.numproc
-#        self.numnodes       = self.inventory.numnodes
-#        self.npool          = self.inventory.npool
-#        self.executable     = self.inventory.executable
-#        self.params         = self.inventory.params
-#        self.modules        = self.inventory.modules
-#        self.text           = self.inventory.text
 
 
     def _init(self):
