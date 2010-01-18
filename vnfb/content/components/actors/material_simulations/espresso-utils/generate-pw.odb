@@ -19,6 +19,7 @@ from qecalc.qetask.qeparser.pwinput import PWInput
 
 from luban.components.AuthorizedActor import AuthorizedActor as base
 
+# TODO: The number atomic species is limited by 10 for now
 class Actor(base):
 
     class Inventory(base.Inventory):

@@ -71,6 +71,32 @@ class Actor(base):
         return doc
 
 
+    def showOptions(self, director):
+        " Displays 'Select Atomic Structure' page"
+        doc = lc.document(title='Select Atomic Structure')
+        doc.Class = 'mastertable-as-selector-panel'
+
+        # the container of the atomicstructure selector
+        container = doc.document(id     = 'atomicstructure-selector-container',
+                                 Class  = 'master-table-wrapper')
+        container.oncreate = select(element=container).append(
+                                            load(actor='selectoneatomicstructure',
+                                                 routine='createListView')
+                                    )
+
+        # the button
+        b = lc.button(label='Select')
+        doc.add(b)
+        b.onclick = load(actor          = self.name,
+                         structureid    = select(id='atomicstructure-table').table(
+                                                        'getIdentifiersForSelectedRow',
+                                                        colname = 'selectone')
+            )
+        return select(id='main-display-area').replaceContent(doc)
+
+
+
+
     def _setForm(self, director):
         "Sets create new simulation form"
 
@@ -98,7 +124,7 @@ class Actor(base):
         st          = QEGrid(lc.grid()) # Submit Table
         st.addRow((submit, cancel), ("qe-action-accept", "qe-action-cancel"))
 
-        table.addRow(("Atomic Structure: *", self._structure()))
+        table.addRow(("Atomic Structure: *", self._structure(director)))
         table.addRow(("Name: *", sname))
         table.addRow(("Type: *", simtype))
         table.addRow(("Server: *", server))
@@ -115,16 +141,24 @@ class Actor(base):
         return form
 
 
-    def _structure(self):
-        table   = QEGrid(lc.grid())
-        link    = lc.link(label="Select Atomic Structure",
-                        Class="qe-action-structure",
-                        onclick = load(actor=self.name, routine='showOptions')) #'material_simulations/espresso/sim-create'
+    def _structure(self, director):
+        link        = lc.link(label="Select Atomic Structure",
+                              Class="qe-action-structure")
+        link.onclick = load(actor=self.name, routine='showOptions')
+        section     = link
 
-        change  = lc.link(label="Change")
-        table.addRow((link, change))
+        if self.structureid != '':
+            domaccess   = director.retrieveDOMAccessor('atomicstructure')
+            structure   = domaccess.getAtomicStructureRecord(id=self.structureid)
 
-        return table.grid()
+            table   = QEGrid(lc.grid())
+            change  = lc.link(label="Change")
+            change.onclick  = load(actor = self.name, routine = 'showOptions')
+            label   = "%s: %s" % (structure.chemical_formula, self.structureid)
+            table.addRow((label, change))
+            section   = table.grid()
+
+        return section
 
 
     def _description(self):
@@ -165,32 +199,7 @@ class Actor(base):
         return 0
 
 
-    def showOptions(self, director):
-        # the overall document
-        doc = lc.document(title='Select Atomic Structure')
-        doc.Class = 'mastertable-as-selector-panel'
 
-        # the container of the atomicstructure selector
-        container = doc.document(id     = 'atomicstructure-selector-container',
-                                 Class  = 'master-table-wrapper')
-        container.oncreate = select(element=container).append(
-            load(actor='selectoneatomicstructure', routine='createListView')
-            )
-
-        # the button
-        b = lc.button(label='Select')
-        doc.add(b)
-        b.onclick = load(actor      = self.name,
-                         routine    = 'processSelection',
-                         selected   = select(id='atomicstructure-table').table(
-                                                        'getIdentifiersForSelectedRow',
-                                                        colname = 'selectone'),
-            )
-        return select(id='main-display-area').replaceContent(doc)
-
-
-    def processSelection(self, director):
-        return alert('selected structure %s' % self.inventory.selected)
 
 
     def __init__(self):
@@ -206,8 +215,9 @@ class Actor(base):
         self.description = self.inventory.description
         self.label       = self.inventory.label
         self.server      = self.inventory.server
-        self.matter      = self.inventory.matter
-        self.selected    = self.inventory.selected
+        self.structureid = self.inventory.structureid
+#        self.matter      = self.inventory.matter
+#        self.selected    = self.inventory.selected
 
         return
 
@@ -221,4 +231,7 @@ def actor():
 
 __date__ = "$Nov 10, 2009 11:02:01 AM$"
 
+
+#    def processSelection(self, director):
+#        return alert('selected structure %s' % self.inventory.selected)
 
