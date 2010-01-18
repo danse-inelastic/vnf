@@ -116,20 +116,22 @@ class Actor(base):
         k_points.addLine("%s %s %s 0 0 0" % (self.nk1, self.nk2, self.nk3))
         input.addCard(k_points)
 
+        input.structure.parseInput()
+        
         # HACK, Should work without setting
-        #input.removeCard("atomic_species")
+        input.removeCard("atomic_species")
 
-        #atomic_species  = Card("atomic_species")
-        atomic_species  = input.card("atomic_species")
-        #atomic_species.removeLines()
-
-        structure       = self._structure(director)
-        labels          = self._labels(structure)
-        for i in range(len(labels)):
-            mass    = getattr(self, "mass%s" % i)
-            pseudo  = getattr(self, "pseudo%s" % i)
-            #print mass, pseudo
-            atomic_species.addLine("%s %s %s" % (labels[i], mass, pseudo))    #self.inventory.pseudo0)
+#        #atomic_species  = Card("atomic_species")
+#        atomic_species  = input.card("atomic_species")
+#        #atomic_species.removeLines()
+#
+#        structure       = self._structure(director)
+#        labels          = self._labels(structure)
+#        for i in range(len(labels)):
+#            mass    = getattr(self, "mass%s" % i)
+#            pseudo  = getattr(self, "pseudo%s" % i)
+#            #print mass, pseudo
+#            atomic_species.addLine("%s %s %s" % (labels[i], mass, pseudo))    #self.inventory.pseudo0)
 
         input.structure.parseInput()
 
@@ -146,7 +148,7 @@ class Actor(base):
         masslist    = []
         pseudolist  = []
         for i in range(len(self._labels(structure))):
-            masslist.append(getattr(self, "mass%s" % i))
+            masslist.append(float(getattr(self, "mass%s" % i)))
             pseudolist.append(getattr(self, "pseudo%s" % i))
 
         input          = PWInput()
