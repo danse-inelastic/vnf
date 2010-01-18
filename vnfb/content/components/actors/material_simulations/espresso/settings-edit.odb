@@ -75,7 +75,7 @@ class Actor(base):
 
         numproc         = FormSelectorField(name        = "numproc",
                                             entries     = enumerate(PROCESSORS),
-                                            selection   = 3)
+                                            selection   = self._proc(settings))
         sname           = FormTextField(name = "sname", value = settings.sname)
         description     = FormTextField(name = "description", value=settings.description)   # Make as textarea
 
@@ -102,6 +102,16 @@ class Actor(base):
         return form
     
 
+    def _proc(self, settings):
+        "Return selected order"
+        selected    = 1
+        for i in range(len(PROCESSORS)):
+            if PROCESSORS[i] == settings.numproc:
+                return i+1
+
+        return selected
+
+
     def updateRecord(self, director):
         """Update settings record"""
         settings     = director.clerk.getQESettings(id=self.configid)
@@ -109,7 +119,7 @@ class Actor(base):
 
         params  = {"sname":         self.sname,
                    "description":   self.description,  # I don't really need description at this point!
-                   "numproc":       self.numproc,
+                   "numproc":       PROCESSORS[int(self.numproc)],
                   }                   
         settings.updateRecord(params)
         
