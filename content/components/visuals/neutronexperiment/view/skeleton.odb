@@ -109,7 +109,7 @@ class Factory(object):
         items.append(('instrument', instrument.name))
 
         # sample
-        if instrument.has_sample_component:
+        if orm(instrument).has_sample_component:
             sample = experiment.sample
             if sample is not None:
                 label = sample.__class__.__name__
