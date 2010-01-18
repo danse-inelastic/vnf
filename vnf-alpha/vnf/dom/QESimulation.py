@@ -77,9 +77,8 @@ class QESimulation(QETable):    #, Computation): #):
     label       = dsaw.db.varchar(name="label", length=128, default='')
     label.meta['tip'] = "Label associated with the simulation"
 
-#    # Change type
-#    matter = dsaw.db.varchar(name="matter", length=128, default='')
-#    matter.meta['tip']  = "STUB"
+    matter = dsaw.db.integer(name="matter", default=0)
+    matter.meta['tip']  = "(STUB) Refers to atomic group. Kind of useless but must have"
 
     @classmethod
     def getActorName(cls):
