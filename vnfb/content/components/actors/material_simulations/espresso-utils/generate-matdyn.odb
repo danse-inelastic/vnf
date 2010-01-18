@@ -17,6 +17,7 @@ from vnfb.utils.qeparser.namelist import Namelist
 from vnfb.utils.qegrid import QEGrid
 from luban.content.FormTextField import FormTextField
 from luban.content.FormSubmitButton import FormSubmitButton
+from vnfb.utils.qeutils import latestJob
 from luban.content import select
 from luban.content import load
 import luban.content as lc
@@ -146,7 +147,7 @@ class Actor(base):
         jobs    = director.clerk.getQEJobs(where="taskid='%s'" % task.id)
         if len(jobs) > 0:
             # Find job of Q2R task
-            job = jobs[0]   # XXX
+            job = latestJob(jobs)
 
             if job:
                 server  = director.clerk.getServers(id=job.serverid)

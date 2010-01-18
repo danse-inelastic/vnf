@@ -19,6 +19,7 @@ from vnfb.utils.qeutils import stamp2date
 from vnfb.utils.qeutils import parseFile
 from vnfb.utils.qegrid import QEGrid
 from vnfb.utils.qeresults import QEResults
+from vnfb.utils.qeutils import latestJob
 
 from luban.content import select
 from luban.content import load
@@ -197,8 +198,8 @@ class Actor(base):
             return None
 
         jobs    = self._director.clerk.getQEJobs(where="taskid='%s'" % task.id)
-        if jobs and jobs[0]:    # Pick the first
-            return jobs[0]
+        if jobs:    # Pick the first
+            return latestJob(jobs)
 
         return None
 
