@@ -115,7 +115,7 @@ class Actor(base):
     def _atomic_species(self, input):
         "ATOMIC_SPECIES card"
         input.removeCard("atomic_species")  # For testing
-        #input.structure.parseInput()    # XXX Updates QEInput
+        input.structure.parseInput()    # XXX Updates QEInput
         
 
     def _k_points(self, input):
