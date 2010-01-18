@@ -156,8 +156,11 @@ border-collapse:collapse;
     min-width:8px;
     background-color:gray;
 }
-.topright-toolbar.luban-toolbar td {
+.topright-toolbar.luban-toolbar > table > tbody > tr > td {
     border-right:2px solid #999999;
+}
+.topright-toolbar.luban-toolbar > table > tbody > tr > td:last-child {
+    border-right:none;
 }
 .topright-toolbar.luban-toolbar .luban-button-container {
     margin:5px 2px;

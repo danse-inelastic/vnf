@@ -126,15 +126,15 @@ padding:0.2em 0.1em;
 margin:0;
 }
 #component-chain-container div.component-chain-button:hover {
-border:3px solid lightGreen;
+border:2px solid green;
 }
 #component-chain-container .component-chain-button.selected {
-border:3px dotted blue;
+border:2px solid #f590a0;
 }
 #component-chain-container .component-chain-button {
-border:3px solid #333333;
+border:2px solid #777777;
 padding:0.5em 0.5em;
-background-color:white;
+background-color:#f5fff5;
 cursor: pointer;
 -moz-border-radius: 9px;
 -webkit-border-radius: 9px;
@@ -164,6 +164,19 @@ margin:0;
 }
 #component-chain-container div.component-chain-insert-button:hover a {
 color:red;
+}
+
+/* component editor */
+#component-editor {
+}
+#component-editor-toolbar {
+    margin-right:1em;
+    margin-left:auto;
+    width:29em;
+    margin-bottom: 4px;
+}
+#component-editor-toolbar .luban-formfield {
+margin:0.2em 0.5em;
 }
 
 /* sample */
