@@ -63,6 +63,7 @@ EXPORT_PYTHON_MODULES = \
         qeutils.py \
 	safe_eval.py \
         serverlist.py \
+        spawn.py \
 
 
 #include doxygen/default.def
