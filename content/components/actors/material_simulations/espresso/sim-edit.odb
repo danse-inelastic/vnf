@@ -98,10 +98,10 @@ class Actor(base):
         st          = QEGrid(lc.grid()) # Submit Table
         st.addRow((submit, cancel), ("qe-action-accept", "qe-action-cancel"))
         table.addRow(("Type:", simtype))
+        table.addRow(("Server:", server))
         table.addRow(("Name:", sname))
         table.addRow(("Description:", description))
         table.addRow(("Label:", label))
-        table.addRow(("Server:", server))
         table.addRow(("", st.grid()))
         table.setColumnStyle(0, "qe-form-label")
         table.setColumnStyle(1, "qe-form-field")

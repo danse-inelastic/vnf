@@ -20,7 +20,7 @@ from luban.content.Form import Form
 from luban.content.FormSelectorField import FormSelectorField
 from luban.content.FormTextField import FormTextField
 from luban.content.FormSubmitButton import FormSubmitButton
-from vnfb.utils.qeconst import SETTINGS
+from vnfb.utils.qeconst import SETTINGS, PROCESSORS
 
 import luban.content as lc
 from luban.components.AuthorizedActor import AuthorizedActor as base
@@ -33,13 +33,13 @@ class Actor(base):
         id          = pyre.inventory.str('id', default='')          # Simulation Id
         sname       = pyre.inventory.str('sname', default='')
         description = pyre.inventory.str('description', default='') # Not used
-        numproc     = pyre.inventory.int('numproc', default=SETTINGS["numproc"])
-        numnodes    = pyre.inventory.int('numnodes', default=SETTINGS["numnodes"])
-        npool       = pyre.inventory.int('npool', default=SETTINGS["npool"])
-        executable  = pyre.inventory.str('executable', default=SETTINGS["executable"])
-        params      = pyre.inventory.str('params', default=SETTINGS["params"])
-        modules     = pyre.inventory.str('modules', default=SETTINGS["modules"])
-        text        = pyre.inventory.str('text', default='')
+        numproc     = pyre.inventory.int('numproc', default=0)
+#        numnodes    = pyre.inventory.int('numnodes', default=SETTINGS["numnodes"])
+#        npool       = pyre.inventory.int('npool', default=SETTINGS["npool"])
+#        executable  = pyre.inventory.str('executable', default=SETTINGS["executable"])
+#        params      = pyre.inventory.str('params', default=SETTINGS["params"])
+#        modules     = pyre.inventory.str('modules', default=SETTINGS["modules"])
+#        text        = pyre.inventory.str('text', default='')
 
 
     def default(self, director):
@@ -78,12 +78,14 @@ class Actor(base):
 
         sname           = FormTextField(name = "sname", value = self.sname)
         description     = FormTextField(name = "description", value=self.description)   # Make as textarea
-        numproc         = FormTextField(name = "numproc", value=self.numproc)
-        numnodes        = FormTextField(name = "numnodes", value=self.numnodes)
-        npool           = FormTextField(name = "npool", value=self.npool)
-        executable      = FormTextField(name = "executable", value=self.executable)
-        params          = FormTextField(name = "params", value=self.params)
-        modules         = FormTextField(name = "modules", value=self.modules)
+        numproc         = FormSelectorField(name="numproc",
+                                            entries=enumerate(PROCESSORS))
+        #FormTextField(name = "numproc", value=self.numproc)
+#        numnodes        = FormTextField(name = "numnodes", value=self.numnodes)
+#        npool           = FormTextField(name = "npool", value=self.npool)
+#        executable      = FormTextField(name = "executable", value=self.executable)
+#        params          = FormTextField(name = "params", value=self.params)
+#        modules         = FormTextField(name = "modules", value=self.modules)
 
         submit      = FormSubmitButton(label="Create Settings Configuration")
         cancel      = lc.button(label="Cancel")
@@ -92,14 +94,14 @@ class Actor(base):
         st          = QEGrid(lc.grid()) # Submit Table
         st.addRow((submit, cancel), ("qe-action-accept", "qe-action-cancel"))
 
+        table.addRow(("Number of Processors: *", numproc))
         table.addRow(("Name:", sname))
         table.addRow(("Description:", description))
-        table.addRow(("Number of Processors:", numproc))
-        table.addRow(("Number of Nodes:", numnodes))
-        table.addRow(("Npool:", npool))
-        table.addRow(("Executable:", executable))
-        table.addRow(("Additional Parameters:", params))
-        table.addRow(("Modules:", modules))
+#        table.addRow(("Number of Nodes:", numnodes))
+#        table.addRow(("Npool:", npool))
+#        table.addRow(("Executable:", executable))
+#        table.addRow(("Additional Parameters:", params))
+#        table.addRow(("Modules:", modules))
         
         table.addRow(("", st.grid()))
 
@@ -118,13 +120,13 @@ class Actor(base):
         params  = {"simulationid":  self.id,
                    "sname":         self.sname,
                    "description":   self.description,  # I don't really need description at this point!
-                   "numproc":       self.numproc,
-                   "numnodes":      self.numnodes,
-                   "npool":         self.npool,
-                   "executable":    self.executable,
-                   "params":        self.params,
-                   "modules":       self.modules
-                   # "text":    self.text
+                   "numproc":       PROCESSORS[int(self.numproc)],
+                   "npool":         SETTINGS["npool"],
+                   "executable":    SETTINGS["executable"],
+                   "params":        SETTINGS["params"],
+                   "modules":       SETTINGS["modules"]
+                   #"numnodes":      self.numnodes, # Not Set. Calculated from numproc
+                   #"procpernode":   12,            # Not Set. Calculated from numproc
                   }
         settings     = QESetting()
         settings.setDirector(director)
@@ -145,12 +147,12 @@ class Actor(base):
         self.sname          = self.inventory.sname
         self.description    = self.inventory.description
         self.numproc        = self.inventory.numproc
-        self.numnodes       = self.inventory.numnodes
-        self.npool          = self.inventory.npool
-        self.executable     = self.inventory.executable
-        self.params         = self.inventory.params
-        self.modules        = self.inventory.modules
-        self.text           = self.inventory.text
+#        self.numnodes       = self.inventory.numnodes
+#        self.npool          = self.inventory.npool
+#        self.executable     = self.inventory.executable
+#        self.params         = self.inventory.params
+#        self.modules        = self.inventory.modules
+#        self.text           = self.inventory.text
 
 
     def _init(self):

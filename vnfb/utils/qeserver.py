@@ -32,10 +32,12 @@ class QEServer:
         link = Paragraph(text="None")
 
         if server:
-            link = Link(label=server.address, Class="action-link",
-                        onclick=load(actor      = "server",
-                                     routine    = "view",
-                                     id         = server.id)
+            link = Link(label   = server.address,
+                        Class   = "action-link",
+                        tip     = "Show details of computational cluster",
+                        onclick = load(actor      = "server",
+                                         routine    = "view",
+                                         id         = server.id)
                         )
 
         return link
