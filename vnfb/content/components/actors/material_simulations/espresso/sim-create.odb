@@ -41,8 +41,7 @@ class Actor(base):
         label       = pyre.inventory.str('label', default='')
         server      = pyre.inventory.str('server', default='')
         structureid = pyre.inventory.str('structureid', default='')
-#        matter      = pyre.inventory.str('matter', default='')
-#        selected    = pyre.inventory.str('selected')
+
 
     def default(self, director):
         return select(id='main-display-area').replaceContent(self.content(director))
@@ -95,6 +94,25 @@ class Actor(base):
         return select(id='main-display-area').replaceContent(doc)
 
 
+    def createRecord(self, director):
+        """Create simulation record"""
+        self._verify()
+        simtype = SIMULATIONS[int(self.simtype)]
+        servers = ServerList(director)
+
+        params  = {"sname":         self._sname(),
+                   "type":          simtype,
+                   "creator":       director.sentry.username,
+                   "short_description":   self._description(),
+                   "label":         self.label,
+                   "serverid":      servers.id(self.server),
+                   "structureid":   self.structureid
+                   }
+        sim     = QESimulation()
+        sim.setDirector(director)
+        sim.createRecord(params)
+
+        return load(actor='material_simulations/espresso/sim-view', id = sim.id)  # Redirection to the page
 
 
     def _setForm(self, director):
@@ -115,8 +133,6 @@ class Actor(base):
         label       = FormTextField(name="label", value=self.label)
         server      = FormSelectorField(name="server",
                                         entries=enumerate(serversList)) # XXX Move to QESettings
-#        matter      = FormSelectorField(name="matter",
-#                                        entries=enumerate(["Not Available",]))
                                         
         submit      = FormSubmitButton(label="Create New Simulation")
         cancel      = lc.button(label="Cancel", onclick = load(actor = 'materialsimulation'))
@@ -125,9 +141,9 @@ class Actor(base):
         st.addRow((submit, cancel), ("qe-action-accept", "qe-action-cancel"))
 
         table.addRow(("Atomic Structure: *", self._structure(director)))
-        table.addRow(("Name: *", sname))
         table.addRow(("Type: *", simtype))
         table.addRow(("Server: *", server))
+        table.addRow(("Name:", sname))
         table.addRow(("Description:", description))
         table.addRow(("Label:", label))
         table.addRow(("", st.grid()))
@@ -135,8 +151,9 @@ class Actor(base):
         table.setColumnStyle(0, "qe-form-label")
         table.setColumnStyle(1, "qe-form-field")
 
-        form.onsubmit   = select(element=form).submit(actor     = 'material_simulations/espresso/sim-create',
-                                                      routine   = 'createRecord')
+        form.onsubmit   = select(element=form).submit(actor         = 'material_simulations/espresso/sim-create',
+                                                      routine       = 'createRecord',
+                                                      structureid   = self.structureid)
         
         return form
 
@@ -163,29 +180,18 @@ class Actor(base):
 
 
     def _description(self):
-        pass
+        # Description is not set
+        if self.description == '':
+            return "QE simulation"
 
+        return self.description
 
-    def createRecord(self, director):
-        """Create simulation record"""
-        self._verify()
-        simtype = SIMULATIONS[int(self.simtype)]
-        servers = ServerList(director)
+    def _sname(self):
+        # Simulation name is not set
+        if self.sname == '':
+            return "Default"
 
-        params  = {"sname":         self.sname,
-                   "type":          simtype,
-                   "creator":       director.sentry.username,
-                   "short_description":   self.description,
-                   "label":         self.label,
-                   "serverid":      servers.id(self.server)
-                   #"matter":        self.matter    # Doesn't work at this moment
-                   }
-        sim     = QESimulation()
-        sim.setDirector(director)
-        sim.createRecord(params)
-
-        return load(actor='material_simulations/espresso/sim-view', id = sim.id)  # Redirection to the page
-
+        return self.sname
 
     # stub
     def _verify(self):
@@ -217,8 +223,6 @@ class Actor(base):
         self.label       = self.inventory.label
         self.server      = self.inventory.server
         self.structureid = self.inventory.structureid
-#        self.matter      = self.inventory.matter
-#        self.selected    = self.inventory.selected
 
         return
 
