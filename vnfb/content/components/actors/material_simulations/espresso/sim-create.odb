@@ -151,11 +151,12 @@ class Actor(base):
             domaccess   = director.retrieveDOMAccessor('atomicstructure')
             structure   = domaccess.getAtomicStructureRecord(id=self.structureid)
 
-            table   = QEGrid(lc.grid())
-            change  = lc.link(label="Change")
-            change.onclick  = load(actor = self.name, routine = 'showOptions')
-            label   = "%s: %s" % (structure.chemical_formula, self.structureid)
-            table.addRow((label, change))
+            table   = QEGrid(lc.grid(Class="qe-structure-label"))
+            change  = lc.link( label="Change",
+                                onclick  = load(actor = self.name, routine = 'showOptions'))
+            matter   = "%s (%s)" % (structure.chemical_formula, self.structureid)
+            
+            table.addRow((matter, change))
             section   = table.grid()
 
         return section
