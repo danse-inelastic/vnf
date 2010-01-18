@@ -115,7 +115,6 @@ class Actor(base):
         """Update configuration record"""
         params  = {"filename":      self.fname,
                    "description":   self.description,
-                   #"parser":        PARSERS[int(self.parser)],
                    "text":          self.text}
 
         input     = director.clerk.getQEConfigurations(id=self.configid)

@@ -78,7 +78,8 @@ class Visual:
                                                       routine   = 'generateInput',
                                                       taskid    = self._actor.taskid,
                                                       id        = self._actor.id,
-                                                      type      = self._actor.type)
+                                                      type      = self._actor.type,
+                                                      structureid   = self._structureid)
 
         return form
 
@@ -110,7 +111,6 @@ class Visual:
         pw          = PWInput()
         pw.structure.load(source = 'diffpy', structure = structure)
         return pw.structure.atomLabels()
-        #return ("Ni", "Cu")
 
 
     def _atomsdump(self):

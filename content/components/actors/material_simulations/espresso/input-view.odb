@@ -110,7 +110,7 @@ class Actor(base):
             #table.addRow(("Parser: ", input.parser))
             table.addRow(("Created: ", stamp2date(input.timecreated)))
             table.addRow(("Last Modified: ", stamp2date(input.timemodified)))
-            table.addRow(("Text: ", conftext))
+            table.addRow(("Configuration: ", conftext))
 
 
     def __init__(self):

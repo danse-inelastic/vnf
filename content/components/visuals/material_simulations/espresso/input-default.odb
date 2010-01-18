@@ -39,7 +39,7 @@ def visual(actor, director):
 
     table.addRow(("Name:", fname))
     table.addRow(("Description:", description))
-    table.addRow(("Configuration:", text))
+    table.addRow(("Configuration: *", text))
     table.addRow(("", st.grid()))
 
     table.setColumnStyle(0, "qe-form-label")
@@ -48,7 +48,8 @@ def visual(actor, director):
     form.onsubmit   = select(element=form).submit(actor     = 'material_simulations/espresso/input-create',
                                                   routine   = 'createRecord',
                                                   taskid    = actor.taskid,
-                                                  id        = actor.id)
+                                                  id        = actor.id,
+                                                  type      = actor.type)
 
     return form
 
