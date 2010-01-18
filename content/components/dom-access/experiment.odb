@@ -134,34 +134,30 @@ class Accessor(base):
         return rs
 
 
-    def getMissingInformation(self, id=None, experiment=None):
-        if experiment:
-            e = experiment
-        else:
-            e = self.getExperiment(id)
-        if not e.instrument: return 'instrument'
-        if not e.instrument_configuration: return 'instrument configuration'
-        if not e.sample: return 'sample'
-        if not e.sample_configuration: return 'sample configuration'
-        if not e.sampleenvironment: return 'sample environment'
-        if e.ncount <= 0: return 'number of counts'
-        return 
+    def isConstructed(self, id=None, experiment=None, record=None):
+        return not self.getMissingInformation(id=id, experiment=experiment, record=record)
 
 
-    def isConstructued(self, id=None, experiment=None):
+    def getMissingInformation(self, id=None, experiment=None, record=None):
         'check if an experiment is constructed and ready to be run'
-        if experiment:
-            e = experiment
-        else:
-            e = self.getExperiment(id)
-        if not e.instrument: return False
-        if not e.instrument_configuration: return False
-        if e.instrument.hasSampleComponent():
-            if not e.sample: return False
-            if not e.sample_configuration: return False
-            if not e.sampleenvironment: return False
-        if e.ncount <= 0: return False
-        return True
+        if not record:
+            if id: record = self.getExperimentRecord(id)
+            elif experiment: record = self.orm(experiment)
+            else: raise RuntimeError
+        #
+        e = record
+        if not e.instrument or not e.instrument.id: return 'instrument'
+        if not e.instrument_configuration or not e.instrument_configuration.id:
+            return 'instrument configuration'
+        instrument = e.instrument.dereference(self.db)
+        if instrument.has_sample_component:
+            if not e.sample or not e.sample.id: return 'sample'
+            if not e.sample_configuration or not e.sample_configuration.id:
+                return 'sample configuration'
+            if not e.sampleenvironment or not e.sampleenvironment.id:
+                return 'sample environment'
+        if e.ncount <= 0: return 'number of counts'
+        return
 
 
     def isEditable(self, id=None):

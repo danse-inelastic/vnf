@@ -31,7 +31,12 @@ class Factory(object):
     
 
     def __call__(self, mode=None):
+        domaccess = self.domaccess
         experiment = self.experiment
+
+        missinginfo = domaccess.getMissingInformation(experiment=experiment)
+        if missinginfo:
+            return self._createNotReadyDocument(experiment, missinginfo)
 
         if mode is None:
             mode = 'configure'
@@ -44,11 +49,20 @@ class Factory(object):
         return doc
 
 
+    def _createNotReadyDocument(self, experiment, missinginfo):
+        doc = lc.document(title='Thie experiment is not ready.')
+        doc.paragraph(text=[
+            'This experiment is missing %s. ' % missinginfo,
+            'Please follow the wizard and provide necessary settings.',
+            ])
+        return doc
+
+
     def _createConfigurationDocument(self, experiment):
         doc = lc.document(title='Finish up')
 
         doc.paragraph(text=[
-            'We are almmost done! Please fill out the following form to finish up.'
+            'We are almost done! Please fill out the following form to finish up.'
             ])
 
         # form

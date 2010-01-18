@@ -133,9 +133,11 @@ border:3px dotted blue;
 }
 #component-chain-container .component-chain-button {
 border:3px solid #333333;
-padding:0.2em 0.5em;
+padding:0.5em 0.5em;
 background-color:white;
 cursor: pointer;
+-moz-border-radius: 9px;
+-webkit-border-radius: 9px;
 }
 #component-chain-container > h1 {
 text-decoration:underline;
