@@ -56,7 +56,7 @@ class QETask(QETable):
     label       = dsaw.db.varchar(name="label", length=128, default='Favorite')
     label.meta['tip'] = "Label associated with the simulation"
 
-    # Change type
+    # ???
     matter = dsaw.db.varchar(name="matter", length=128, default='')
     matter.meta['tip']  = "STUB"
 

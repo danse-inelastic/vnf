@@ -26,12 +26,14 @@ class QEInput:
 
     def getLink(self):      # simulation
         inputs  = self._director.clerk.getQEConfigurations(where="taskid='%s'" % self._taskid )
+        sim     = self._director.clerk.getQESimulations(id = self._id)
 
         link = Link(label="Add", 
                     onclick=load(actor      = "material_simulations/espresso/input-generate",
                                  id         = self._id,
                                  taskid     = self._taskid,
-                                 type       = self._type)   # Some more?
+                                 type       = self._type,
+                                 structureid    = sim.structureid)
                     )
 
         if inputs:

@@ -30,6 +30,7 @@ class Actor(base):
         id          = pyre.inventory.str('id', default='')          # Simulation Id
         taskid      = pyre.inventory.str('taskid', default='')
         type        = pyre.inventory.str('type', default='')        # Type of the configuration file
+        structureid = pyre.inventory.str('structureid', default='')
         fname       = pyre.inventory.str('fname', default='')
         description = pyre.inventory.str('description', default='')
         text        = pyre.inventory.str('text', default='')
@@ -51,7 +52,6 @@ class Actor(base):
                                                       id       = self.id,
                                                       taskid   = self.taskid,
                                                       type     = self.type)))
-
             path.append('Select Option')
             
             return director.retrieveVisual('view-indicator', path=path)
@@ -74,8 +74,9 @@ class Actor(base):
             visual  = "material_simulations/espresso/input-%s" % self.type.lower()
 
         return director.retrieveVisual(visual,
-                                       actor    = self.inventory,
-                                       director = director)
+                                       actor        = self.inventory,
+                                       director     = director,
+                                       structureid  = self.structureid)
 
 
     def __init__(self):
@@ -89,6 +90,7 @@ class Actor(base):
         self.id             = self.inventory.id
         self.taskid         = self.inventory.taskid
         self.type           = self.inventory.type
+        self.structureid    = self.inventory.structureid
         self.fname          = self.inventory.fname
         self.description    = self.inventory.description
         self.text           = self.inventory.text
