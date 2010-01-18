@@ -83,6 +83,17 @@ a.qe-action-structure {
     background-color: #48f640;
 }
 
+.qe-structure-label {
+    padding-top: 3px;
+
+}
+
+.qe-structure-label td {
+    padding-right: 15px;
+    padding-left: 10px;
+}
+
+
 #action-refresh-status {
     float: left;
     background-color: #abff8d;   /* #8aff61; */
