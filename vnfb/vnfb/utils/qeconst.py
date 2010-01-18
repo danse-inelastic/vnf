@@ -74,11 +74,11 @@ STATES = {
 
 PARSERS = ("qeinput",)
 
-# Settings specific to QE
+# Settings specific for QE and foxtrot
 SETTINGS  = {
                 "numproc":      8,
                 "numnodes":     8,
-                "npool":        8,
+                "npool":        999,
                 "executable":   "mpirun",
                 "params":       "--mca btl openib,sm,self",                       # Specific for foxtrot
                 "modules":      "openmpi acml/4.3.0_gfortran64_int32 espresso"    # Specific for foxtrot
@@ -122,7 +122,8 @@ SMEARING[_smearing[1]]  = "'mp'"
 SMEARING[_smearing[2]]  = "'mv'"
 SMEARING[_smearing[3]]  = "'fd'"
 
-
+PROCESSORS  = ( "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12",
+                "24", "36", "48", "60", "72")
 
 __date__ = "$Nov 3, 2009 3:12:34 PM$"
 

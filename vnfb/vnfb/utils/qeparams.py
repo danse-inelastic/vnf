@@ -27,6 +27,7 @@ class QEParams:
         settings  = self._director.clerk.getQESettings(where="simulationid='%s'" % id )
 
         link = Link(label="Add", Class="action-link",
+                    tip     = "Set simulation environment",
                     onclick=load(actor      = "material_simulations/espresso/settings-add",
                                  id         = id)
                     )
@@ -34,8 +35,8 @@ class QEParams:
         if settings:
             s = settings[0]
             if s:
-                link = Link(label=s.sname, Class="action-link",
-                            onclick=load(actor      = "material_simulations/espresso/settings-view",
+                link = Link(label   = s.sname, Class="action-link",
+                            onclick = load(actor    = "material_simulations/espresso/settings-view",
                                          id         = id,
                                          configid   = s.id)
                             )
