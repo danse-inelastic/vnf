@@ -1,0 +1,4 @@
+Bugs list for Quantum Espresso part of VNF
+==========================================
+
+- In "jobs/jobs-view-all" actor "Check" button retrieves results only for the first record in the table.

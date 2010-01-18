@@ -17,10 +17,13 @@ import journal
 debug = journal.debug( 'torque' )
 
 from pyre.units.time import hour, minute, second
+import math
 
 from vnf.clusterscheduler.torque import Scheduler as base
 from vnf.clusterscheduler.torque import _walltime_str
 from vnfb.utils.qeconst import NOPARALLEL
+
+PROC_PER_NODE   = 12    # Number of processors per node, specific for foxtrot
 
 class Scheduler(base):
 
@@ -38,13 +41,15 @@ class Scheduler(base):
         # Example:
         #   dir = "/home/dexity/espresso/qesimulations/MQDHXV7"
         #   str = "-V -N myjob -l nodes=8:ppn=12"
-        
+
         dir     = "%s/%s/%s" % (self._server.workdir, self._job.name, self._job.id)
-        str     = "-V -N %s -l nodes=%s:ppn=%s"  % (self._job.id, self._numnodes(), self._corespernode())
+        str     = "-V -N %s -l nodes=%s:ppn=%s"  % (self._job.id, self._nodes(), self._ppn())
         cmds    = [ r'echo \"%s\" | qsub -d %s -o %s -e %s %s -' % (
             cmd, dir, self.outfilename, self.errfilename, str) ]
 
+        # Launch job
         failed, output, error = self._launch( cmds )
+
         if failed:
             if error.find( 'check pbs_server daemon' ) != -1:
                 from exceptions import SchedulerDaemonNotStarted
@@ -55,22 +60,38 @@ class Scheduler(base):
         return output.strip()
 
 
-    def _numnodes(self):
+    def _nodes(self):
         "Returns number of nodes"
-        nn  = self._settings.numnodes
+        n  = self._getnodes()   
         if self._task.type in NOPARALLEL:
-            nn  = 1
+            n  = 1
 
-        return nn
+        return n
 
 
-    def _corespernode(self):
-        "Returns number of cores per node"
-        cpn = self._server.corespernode
+    def _getnodes(self):
+        "Calculates number of nodes (nodes) from number of processors"
+        numproc = self._settings.numproc
+        return int(math.ceil(numproc/float(PROC_PER_NODE)))
+
+
+    def _ppn(self):
+        "Returns number of processors per node"
+        ppn = self._getppn()   
         if self._task.type in NOPARALLEL:
-            cpn  = 1
+            ppn  = 1
 
-        return cpn
+        return ppn
+
+
+    def _getppn(self):
+        "Calculates number of processors per node (ppn) from number of processors"
+        numproc = self._settings.numproc
+        if numproc < PROC_PER_NODE:
+            return numproc
+
+        return PROC_PER_NODE
+
 
 __date__ = "$Dec 7, 2009 10:37:25 AM$"
 

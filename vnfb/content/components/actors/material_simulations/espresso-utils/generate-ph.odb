@@ -20,6 +20,8 @@ TR2_PH  = "1.0d-16"
 LDISP   = ".true."
 PREFIX  = "'default'"
 
+# TODO: Critical: Fix amass(...) - take from pw config
+
 # Requires simulation id,
 class Actor(base):
 
