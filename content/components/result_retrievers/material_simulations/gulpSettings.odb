@@ -33,8 +33,6 @@ class Retriever(base):
         self.declareProgress(0.6, """create necessary output data objects 
         (i.e. vibrations, motion, etc.)""")
         if runtype is 'phonons':
-            #extract the phonons from the output file
-
             #store the phonons and the dos results
             from vnfb.dom.material_simulations.PhononDOS import PhononDOSTable
             dos = self._make_result_holder(computation, PhononDOSTable)
