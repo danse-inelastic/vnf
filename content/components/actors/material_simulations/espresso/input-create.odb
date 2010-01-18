@@ -11,6 +11,15 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
+# TODO:
+
+# Remove (redefine) the following parameters:
+# PW:
+#   control.prefix
+
+#
+
+
 from vnf.dom.QEConfiguration import QEConfiguration
 
 from luban.content import select

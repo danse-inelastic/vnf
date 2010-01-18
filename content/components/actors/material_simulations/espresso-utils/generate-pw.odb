@@ -25,6 +25,8 @@ class Actor(base):
         import pyre.inventory
         id          = pyre.inventory.str('id', default='')          # Simulation Id
         taskid      = pyre.inventory.str('taskid', default='')
+        type        = pyre.inventory.str('type', default='')
+        
         ibrav       = pyre.inventory.int('ibrav', default=0)
         ecutwfc     = pyre.inventory.str('ecutwfc', default='')
         ecutrho     = pyre.inventory.str('ecutrho', default='')
@@ -62,38 +64,17 @@ class Actor(base):
                                 routine = 'default',
                                 text    = self._input(director),
                                 id      = self.inventory.id,
-                                taskid  = self.inventory.taskid)
+                                taskid  = self.inventory.taskid,
+                                type    = self.inventory.type)
 
     # TODO: Fix 'occupations' parameter
     def _input(self, director):
+        pwinput   = self._loadStructure(director)
+        return self._getInput(pwinput, director)
 
-        input      = QEInput(type='pw')
-        system  = Namelist("system")
-        system.add("ibrav", self.inventory.ibrav)
-        system.add("ecutwfc", self.inventory.ecutwfc)
-        system.add("ecutrho", self.inventory.ecutrho)
-        system.add("smearing", self._smearing())
 
-        atomic_species  = Card("atomic_species")
-        atomic_species.addLine("Ni 26.98 %s" % self.inventory.pseudo0)
 
-        domaccess   = director.retrieveDOMAccessor('atomicstructure')
-        structure   = domaccess.getAtomicStructure("6T4M6SSB")    # XXX Ni: 6NPTL72J, Cu4: 6T4M6SSB
-
-        masslist    = []
-        pseudolist  = []
-        for i in range(len(self._labels(structure))):
-            masslist.append(getattr(self, "mass%s" % i))
-            pseudolist.append(getattr(self, "pseudo%s" % i))
-
-        pw          = PWInput()
-        pw.structure.load(source    = 'diffpy',
-                          structure = structure,
-                          ibrav     = self.ibrav,
-                          massList  = masslist,
-                          psList    = pseudolist)
-
-        return pw.structure.toString()
+        #return pwinput.structure.toString()
 
 
 #        k_points   = Card("k_points")
@@ -104,11 +85,91 @@ class Actor(base):
 #        input.addCard(k_points)
 #        return input.toString()
 
+    def _getInput(self, input, director):
+        # CONTROL namelist
+        control = Namelist("control")
+        control.add("calculation", "'scf'")
+        control.add("restart_mode", "'from_scratch'")
+        control.add("tprnfor", ".true.")
+        #control.add("prefix", "???")   # Remove 'prefix'
+        input.addNamelist(control)
+
+        # SYSTEM namelist
+        system  = input.namelist("system")
+        system.add("degauss", "0.02")
+        system.add("smearing", self._smearing())
+        system.add("occupations", "'smearing'")
+        system.add("ecutwfc", self.inventory.ecutwfc)
+        system.add("ecutrho", self.inventory.ecutrho)
+        #system.add("nspin", "2")
+        #system.add("starting_magnetization(1)", "0.5")
+
+        # ELECTRONS, TODO: Suitable for phonon calculations?
+#        electrons   = Namelist("electrons")
+#        electrons.add("conv_thr", "1.0d-8")
+#        electrons.add("mixing_beta", "0.7")
+#        input.addNamelist(electrons)
+
+        # K_POINTS
+        k_points   = Card("k_points")
+        k_points.setArg("automatic")
+        k_points.addLine("%s %s %s 0 0 0" % (self.nk1, self.nk2, self.nk3))
+        input.addCard(k_points)
+
+        # HACK, Should work without setting
+        #input.removeCard("atomic_species")
+
+        #atomic_species  = Card("atomic_species")
+        atomic_species  = input.card("atomic_species")
+        #atomic_species.removeLines()
+
+        structure       = self._structure(director)
+        labels          = self._labels(structure)
+        for i in range(len(labels)):
+            mass    = getattr(self, "mass%s" % i)
+            pseudo  = getattr(self, "pseudo%s" % i)
+            #print mass, pseudo
+            atomic_species.addLine("%s %s %s" % (labels[i], mass, pseudo))    #self.inventory.pseudo0)
+
+        input.structure.parseInput()
+
+        return input.structure.toString()
+
+
+    def _loadStructure(self, director):
+        """Populates the geometry (structure) related parameters:
+            - SYSTEM
+            - ATOMIC_POSITIONS
+        """
+        structure   = self._structure(director)
+
+        masslist    = []
+        pseudolist  = []
+        for i in range(len(self._labels(structure))):
+            masslist.append(getattr(self, "mass%s" % i))
+            pseudolist.append(getattr(self, "pseudo%s" % i))
+
+        input          = PWInput()
+        input.structure.load(source    = 'diffpy',
+                              structure = structure,
+                              ibrav     = self.ibrav,
+                              massList  = masslist,
+                              psList    = pseudolist)
+                              
+        return input
+
+
+    def _structure(self, director):
+        domaccess   = director.retrieveDOMAccessor('atomicstructure')
+        return domaccess.getAtomicStructure("6T4M6SSB")    # XXX Ni: 6NPTL72J, Cu4: 6T4M6SSB
+        
 
     def _labels(self, structure):
         return list(set([e.symbol for e in structure]))
 
+
     def _smearing(self):
+        "Returns smearing parameter for PW config input"
         keys    = SMEARING.keys()
         name    = keys[int(self.inventory.smearing)]
 
@@ -124,6 +185,8 @@ class Actor(base):
         super(Actor, self)._configure()
         self.id             = self.inventory.id
         self.taskid         = self.inventory.taskid
+        self.type           = self.inventory.type
+        
         self.ibrav          = self.inventory.ibrav
         self.ecutwfc        = self.inventory.ecutwfc
         self.ecutrho        = self.inventory.ecutrho
