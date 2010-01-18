@@ -109,17 +109,18 @@ class Factory(object):
         items.append(('instrument', instrument.name))
 
         # sample
-        sample = experiment.sample
-        if sample is not None:
-            label = sample.__class__.__name__
-            samplerecord = orm(sample)
-            if label in ['Scatterer', 'SampleAssembly']:
-                label = '%s %s' % (label, samplerecord.short_description or samplerecord.id)
-            action = load(
-                actor='sample', routine='view',
-                type=samplerecord.getTableName(), id=samplerecord.id)
-            link = lc.link(label=label, onclick=action, tip='click to view the sample')
-            items.append(('sample', link))
+        if instrument.has_sample_component:
+            sample = experiment.sample
+            if sample is not None:
+                label = sample.__class__.__name__
+                samplerecord = orm(sample)
+                if label in ['Scatterer', 'SampleAssembly']:
+                    label = '%s %s' % (label, samplerecord.short_description or samplerecord.id)
+                action = load(
+                    actor='sample', routine='view',
+                    type=samplerecord.getTableName(), id=samplerecord.id)
+                link = lc.link(label=label, onclick=action, tip='click to view the sample')
+                items.append(('sample', link))
 
         # ncount
         items.append(('ncount', str(experiment.ncount)))

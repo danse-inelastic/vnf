@@ -67,3 +67,7 @@ Jan 17, 2010
 
 table 'neutronexperiments' added col "buffer_size". integer
 new table 'placeholdercomponents'
+
+
+Jan 18, 2010
+table "fermichoppers": column "nchans" renamed to "nchan"

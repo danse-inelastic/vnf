@@ -15,6 +15,7 @@
 class SNSModeratorMCSimulatedData(object):
 
     instrument = ''
+    short_description = ''
 
     pass
 
@@ -24,6 +25,7 @@ from dsaw.model.Inventory import Inventory as InvBase
 class Inventory(InvBase):
 
     instrument = InvBase.d.str(name='instrument')
+    short_description = InvBase.d.str(name='short_description')
 
     dbtablename = 'snsmoderatormcsimulateddata'
 
@@ -38,27 +40,6 @@ SNSModeratorMCSimulatedDataTable = o2t(
     SNSModeratorMCSimulatedData, {'subclassFrom': NeutronComponentTableBase})
 
 SNSModeratorMCSimulatedDataTable.datafiles = ['profile.dat']
-
-
-# obsolete...
-def inittable(db):
-
-    def data(id, instrument):
-        r = SNSModeratorMCSimulatedData()
-        r.id = id
-        r.instrument = instrument
-        return r
-    records = [
-        data('sct521_bu_17_1-ARCS', 'ARCS'),
-        ]
-    for r in records: db.insertRow( r )
-    return
-
-
-def initids():
-    return [
-        'sct521_bu_17_1-ARCS',
-        ]
 
 
 # version

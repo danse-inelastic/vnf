@@ -245,14 +245,13 @@ class Builder(base):
             'tc',
             'bw',
             'blader',
+            'nchan',
             ]
 
         for param in parameters:
             opts[ '%s.%s' %  (component.componentname,param) ] = getattr(component, param)
             continue
 
-        opts[ '%s.nchan' % (component.componentname,)] = component.nchans
-        
         self.cmdline_opts.update( opts )
         return
 
