@@ -17,6 +17,7 @@ import luban.content as lc
 from vnfb.utils.qeconst import RESULTS_ID
 from vnfb.utils.qeresults import QEResults
 from vnfb.utils.qetaskinfo import TaskInfo
+from vnfb.utils.qeutils import latestJob
 
 from luban.components.AuthorizedActor import AuthorizedActor as base
 
@@ -54,8 +55,9 @@ class Actor(base):
         if len(jobs) == 0:  # Empty list
             return link
 
+        job         = latestJob(jobs)
         taskinfo    = TaskInfo(self.id, self.taskid, task.type)
-        results     = QEResults(director, jobs[0], taskinfo)  # change 0-index to latest job
+        results     = QEResults(director, job, taskinfo)
 
         return results.retrieve()
 

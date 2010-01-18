@@ -15,6 +15,7 @@ import os
 from vnfb.utils.qeparser.qeinput import QEInput
 from vnfb.utils.qeparser.namelist import Namelist
 from vnfb.utils.qeconst import ZASR
+from vnfb.utils.qeutils import latestJob
 
 from luban.components.AuthorizedActor import AuthorizedActor as base
 
@@ -72,7 +73,7 @@ class Actor(base):
         jobs    = director.clerk.getQEJobs(where="taskid='%s'" % task.id)
         if len(jobs) > 0:
             # Find job of PH task
-            job = jobs[0]   # XXX
+            job = latestJob(jobs)
 
             if job:
                 server  = director.clerk.getServers(id=job.serverid)

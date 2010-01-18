@@ -130,6 +130,28 @@ def unpackname(string, id):
     return (id, name)
 
 
+def latestJob(jobs):
+    "Retruns latest job based on timesubmitted column"
+    if len(jobs) == 0:
+        return None
+
+    # Jobs should have at least one element
+    latest  = jobs[0]
+
+    for job in jobs:
+        if job.timesubmitted == "":
+            continue
+
+        if latest.timesubmitted == "":
+            latest = job
+
+        if float(job.timesubmitted) > float(latest.timesubmitted):
+            latest  = job
+
+    return latest
+    
+
+
 def testStamp():
     import time
     print stamp2date(time.time())

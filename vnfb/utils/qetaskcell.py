@@ -19,6 +19,7 @@ from vnfb.utils.qeresults import QEResults
 from vnfb.utils.qegrid import QEGrid
 from vnfb.utils.qeinput import QEInput
 from vnfb.utils.qetaskinfo import TaskInfo
+from vnfb.utils.qeutils import latestJob
 
 class QETaskCell:
 
@@ -104,8 +105,6 @@ class QETaskCell:
 
     def _input(self, table):
         # Suppose that self._task is not None
-
-
         qeinput = QEInput(self._director, self._simid, self._task.id, self._type)
         table.addRow(("Input:", qeinput.getLink(), ""))
 
@@ -123,7 +122,7 @@ class QETaskCell:
         link    = "Not Started"
         jobs    = self._director.clerk.getQEJobs(where="taskid='%s'" % self._task.id)
         if jobs:
-            job  = jobs[0]
+            job  = latestJob(jobs)
             link = job.status
 
         table.addRow(("Status:", link, ""))
@@ -135,7 +134,7 @@ class QETaskCell:
         action      = ""
         jobs        = self._director.clerk.getQEJobs(where="taskid='%s'" % self._task.id)
         if jobs:
-            self._job  = self._latest(jobs) 
+            self._job  = latestJob(jobs)
             link = lc.link(label=self._job.id,
                                onclick = load(actor     = 'jobs/jobs-view',
                                               id        = self._simid,
@@ -154,22 +153,22 @@ class QETaskCell:
         table.addRow(("Job:", link, action))
 
 
-    def _latest(self, jobs):
-        "Retruns latest job based on timesubmitted column"
-        # jobs have at least one element
-        latest  = jobs[0]
-        
-        for job in jobs:
-            if job.timesubmitted == "":
-                continue
-
-            if latest.timesubmitted == "":
-                latest = job
-
-            if float(job.timesubmitted) > float(latest.timesubmitted):
-                latest  = job
-
-        return latest
+#    def _latest(self, jobs):
+#        "Retruns latest job based on timesubmitted column"
+#        # jobs have at least one element
+#        latest  = jobs[0]
+#
+#        for job in jobs:
+#            if job.timesubmitted == "":
+#                continue
+#
+#            if latest.timesubmitted == "":
+#                latest = job
+#
+#            if float(job.timesubmitted) > float(latest.timesubmitted):
+#                latest  = job
+#
+#        return latest
 
     def _results(self, table):
         "Returns link to tar file for download. "
