@@ -98,7 +98,8 @@ class Factory(object):
 
             introduction = lc.document()
             short_description = instrument.short_description
-            introduction.paragraph(text=[short_description])
+            long_description = instrument.long_description
+            introduction.paragraph(text=[long_description])
 
             if currentinstrument_id and currentinstrument_id == instrument.id:
                 img.addClass('selected')
