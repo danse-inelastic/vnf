@@ -57,8 +57,6 @@ class Actor(base):
                                                       id       = self.inventory.id,
                                                       taskid   = self.inventory.taskid,
                                                       type     = self.inventory.type)))
-
-
             path.append('Create Input Configuration')
 
             return director.retrieveVisual('view-indicator', path=path)
@@ -83,17 +81,25 @@ class Actor(base):
 
     def createRecord(self, director):
         """Create configuration record"""
-        params  = {"taskid":        self.taskid,
-                   "filename":      self.fname,
-                   "description":   self.description,
-                   "text":          self.text,
-                   "type":          self.type
+        params  = {"taskid":        self.inventory.taskid,
+                   "filename":      self._fname(),
+                   "description":   self.inventory.description,
+                   "text":          self.inventory.text,
+                   "type":          self.inventory.type
                    }
         config  = QEConfiguration()
         config.setDirector(director)
         config.createRecord(params)
 
         return load(actor = 'material_simulations/espresso/sim-view', id = self.id)
+
+    def _fname(self):
+        # Filename is not set
+        if self.fname == '':
+            return "%s.in" % self.inventory.type.lower()
+
+        return self.fname
+
 
     def _verify(self):
         #Note:

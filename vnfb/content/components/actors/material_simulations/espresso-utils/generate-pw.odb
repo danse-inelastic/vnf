@@ -27,7 +27,8 @@ class Actor(base):
         id          = pyre.inventory.str('id', default='')          # Simulation Id
         taskid      = pyre.inventory.str('taskid', default='')
         type        = pyre.inventory.str('type', default='')
-        
+        structureid = pyre.inventory.str('structureid', default='')
+
         ibrav       = pyre.inventory.int('ibrav', default=0)
         ecutwfc     = pyre.inventory.str('ecutwfc', default='')
         ecutrho     = pyre.inventory.str('ecutrho', default='')
@@ -69,6 +70,7 @@ class Actor(base):
 
     
     def _input(self, director):
+        
         pwinput   = self._loadStructure(director)
         return self._getInput(pwinput, director)
 
@@ -140,6 +142,7 @@ class Actor(base):
             masslist.append(float(getattr(self, "mass%s" % i)))
             pseudolist.append(getattr(self, "pseudo%s" % i))
 
+        pseudolist     = ("Ni.pbe-nd-rrkjus.UPF",)    # XXX Hardcoded
         input          = PWInput()
         input.structure.load(source    = 'diffpy',
                               structure = structure,
@@ -154,7 +157,7 @@ class Actor(base):
 
     def _structure(self, director):
         domaccess   = director.retrieveDOMAccessor('atomicstructure')
-        return domaccess.getAtomicStructure("6T4M6SSB")    # XXX Ni: 6NPTL72J, Cu4: 6T4M6SSB
+        return domaccess.getAtomicStructure(self.structureid)    # XXX Ni: 6NPTL72J, Cu4: 6T4M6SSB
         
 
     def _labels(self, structure):
@@ -179,6 +182,7 @@ class Actor(base):
         self.id             = self.inventory.id
         self.taskid         = self.inventory.taskid
         self.type           = self.inventory.type
+        self.structureid    = self.inventory.structureid
         
         self.ibrav          = self.inventory.ibrav
         self.ecutwfc        = self.inventory.ecutwfc
