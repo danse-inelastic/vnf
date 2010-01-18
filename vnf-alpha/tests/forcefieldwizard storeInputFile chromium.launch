@@ -8,9 +8,8 @@
 </listAttribute>
 <stringAttribute key="org.eclipse.ui.externaltools.ATTR_LOCATION" value="${workspace_loc:vnfBetaLuban/vnfb/html/webmain.py}"/>
 <stringAttribute key="org.eclipse.ui.externaltools.ATTR_OTHER_WORKING_DIRECTORY" value="${workspace_loc:vnfBetaLuban/vnfb/html}"/>
-<stringAttribute key="org.eclipse.ui.externaltools.ATTR_TOOL_ARGUMENTS" value="--actor=dbObjToWeb --routine=getMaterial --cgihome=https://vnf.caltech.edu/cgi-bin/vnf/beta/main.cgi --sentry.passwd=demo --sentry.username=demo --actor.id=3S7U92L5"/>
+<stringAttribute key="org.eclipse.ui.externaltools.ATTR_TOOL_ARGUMENTS" value="--actor=material_simulations/forcefieldwizard --routine=storeInputFile  --actor.runtype=optimization --sentry.username=demo --sentry.passwd=demo --actor.structureId=3VZWPURM --actor.potential_name=suttonchen --actor.simulationId=LEST3HL --actor.inputFileContents=&quot;&#10;vectors&#10;4.07 0.0 0.0&#10;0.0 4.07 0.0&#10;0.0 0.0 4.07 &#10;fractional 4&#10;Au 0.0 0.0 0.0 &#10;Au 0.0 0.0 0.0 &#10;Au 0.0 0.0 0.0 &#10;Au 0.0 0.0 0.0 &#10;library suttonchen&quot;"/>
 <stringAttribute key="org.eclipse.ui.externaltools.ATTR_WORKING_DIRECTORY" value="${workspace_loc:vnfBetaLuban/vnfb/html}"/>
 <stringAttribute key="org.python.pydev.debug.ATTR_INTERPRETER" value="__default"/>
 <stringAttribute key="org.python.pydev.debug.ATTR_PROJECT" value="vnfBetaLuban"/>
-<intAttribute key="org.python.pydev.debug.ATTR_RESOURCE_TYPE" value="1"/>
 </launchConfiguration>
