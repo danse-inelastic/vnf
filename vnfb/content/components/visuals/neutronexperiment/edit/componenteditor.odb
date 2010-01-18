@@ -54,20 +54,23 @@ class Factory(object):
         doc = lc.document(Class='container', id='componenteditor')
 
         # widget to change type of component
-        from vnfb.dom.neutron_experiment_simulations.neutroncomponent_types import typenames
-        changecomponenttype = self._createChangeComponentTypeWidget(
-            componentuid, component, typenames)
-        doc.add(changecomponenttype)
+        from vnfb.dom.neutron_experiment_simulations.neutron_components.SampleComponent import SampleComponentTable
+        issaample = isinstance(component, SampleComponentTable)
+        if not issaample:
+            typenames = self._getComponentTypeNames()
+            changecomponenttype = self._createChangeComponentTypeWidget(
+                componentuid, component, typenames)
+            doc.add(changecomponenttype)
 
-        # delete link
-        deletelink = lc.button(
-            label = 'Delete this component',
-            onclick = load(actor='experiment/editor', routine='onDeleteComponent',
-                           id=self.id, component=componentuid),
-            id = 'delete-component',
-            )
-        #deletelink.Class='float-right'
-        doc.add(deletelink)
+            # delete link
+            deletelink = lc.button(
+                label = 'Delete this component',
+                onclick = load(actor='experiment/editor', routine='onDeleteComponent',
+                               id=self.id, component=componentuid),
+                id = 'delete-component',
+                )
+            #deletelink.Class='float-right'
+            doc.add(deletelink)
         
         # orm generated view of current component
         ormview = director.redirect(
@@ -106,6 +109,17 @@ class Factory(object):
         
         return link
 
+
+    def _getComponentTypeNames(self):
+        from vnfb.dom.neutron_experiment_simulations.neutroncomponent_types import typenames
+        from vnfb.dom.neutron_experiment_simulations.neutron_components.SampleBase import TableBase
+        from vnfb.dom.neutron_experiment_simulations.neutron_components.SampleComponent import SampleComponentTable
+        domaccess = self.domaccess
+        def isNotSampleTable(name):
+            t = domaccess._getTable(name)
+            return not issubclass(t, TableBase) and t != SampleComponentTable
+        return filter(isNotSampleTable, typenames)
+    
 
 def visual(
     id=None, director=None, domaccess=None, experiment=None,
