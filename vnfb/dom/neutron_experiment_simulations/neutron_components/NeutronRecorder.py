@@ -16,7 +16,7 @@
 from AbstractNeutronComponent import AbstractNeutronComponent as base
 class NeutronRecorder(base):
 
-    packetsize = 10000
+    packetsize = 1000
     
     def customizeLubanObjectDrawer(self, drawer):
         drawer.mold.sequence = [
@@ -30,7 +30,7 @@ class NeutronRecorder(base):
 InvBase=base.Inventory
 class Inventory(InvBase):
 
-    packetsize = InvBase.d.int(name='packetsize', default=10000, validator=InvBase.v.positive)
+    packetsize = InvBase.d.int(name='packetsize', default=1000, validator=InvBase.v.positive)
 
     dbtablename = 'neutronrecorders'
 

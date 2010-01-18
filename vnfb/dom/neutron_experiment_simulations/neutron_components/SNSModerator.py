@@ -47,7 +47,8 @@ class Inventory(InvBase):
     yh = InvBase.d.float(name='yh', default=0.1)
     Emin = InvBase.d.float(name='Emin', default=0)
     Emax = InvBase.d.float(name='Emax', default=100)
-    neutronprofile = InvBase.d.reference(name='neutronprofile', targettype=SNSModeratorMCSimulatedData)
+    neutronprofile = InvBase.d.reference(
+        name='neutronprofile', targettype=SNSModeratorMCSimulatedData, owned=False)
 
     dbtablename = 'snsmoderators'
 
