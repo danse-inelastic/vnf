@@ -31,13 +31,16 @@ fieldset {
     margin-right: 10px;
 }
 
+
+
 a.qe-action-back,
 a.qe-action-refresh,
 a.qe-action-new,
 a.qe-action-edit,
 a.qe-action-clone,
 a.qe-action-analyze,
-a.qe-action-delete {
+a.qe-action-delete,
+a.qe-action-structure {
     text-decoration: none;
 }
 
@@ -69,6 +72,16 @@ a.qe-action-delete {
     background-color: #c2d6f9; /* #FF7700 - light red */
 }
 
+.qe-action-structure {
+    font-weight: bold;
+    padding: 4px 20px;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    text-decoration: none;
+    margin-right: 10px;
+    margin-left: 2px;
+    background-color: #48f640;
+}
 
 #action-refresh-status {
     float: left;

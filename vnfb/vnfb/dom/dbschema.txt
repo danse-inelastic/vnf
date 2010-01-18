@@ -3,13 +3,14 @@ Displays dependencies in the database schema
 
 servers
 qesimulations:
-    -> servers
-    ? -> matter
+    -> servers      # TODO: Move to qesettings
+    -> atomicstructures
 qetasks:
     ? -> matter
 qeconfigurations:
     -> qetasks
 qesettings:
+    #-> servers
     -> qesimulations
 qejobs:
     -> qetasks

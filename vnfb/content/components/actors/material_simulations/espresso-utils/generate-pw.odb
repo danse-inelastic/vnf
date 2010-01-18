@@ -75,7 +75,7 @@ class Actor(base):
     def _getInput(self, input, director):
         self._control(input)
         self._system(input)
-        #self._electrons(input)         # TODO: Suitable for phonon calculations?
+        self._electrons(input)         # TODO: Suitable for phonon calculations?
         #self._atomic_species(input)    # QECalc sets it for you
         self._k_points(input)
 

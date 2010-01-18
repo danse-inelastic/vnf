@@ -17,8 +17,8 @@ from vnfb.utils.qegrid import QEGrid
 from vnfb.utils.serverlist import ServerList
 from vnf.dom.QESimulation import QESimulation
 
-from luban.content import select
-from luban.content import load
+from luban.content import select, load, alert
+
 from luban.content.FormSelectorField import FormSelectorField
 from luban.content.FormTextField import FormTextField
 from luban.content.FormSubmitButton import FormSubmitButton
@@ -40,7 +40,9 @@ class Actor(base):
         description = pyre.inventory.str('description', default='')
         label       = pyre.inventory.str('label', default='')
         server      = pyre.inventory.str('server', default='')
-        matter      = pyre.inventory.str('matter', default='')
+        structureid = pyre.inventory.str('structureid', default='')
+#        matter      = pyre.inventory.str('matter', default='')
+#        selected    = pyre.inventory.str('selected')
 
     def default(self, director):
         return select(id='main-display-area').replaceContent(self.content(director))
@@ -86,9 +88,9 @@ class Actor(base):
         description = FormTextField(name="description", value=self.description)   # Make as textarea
         label       = FormTextField(name="label", value=self.label)
         server      = FormSelectorField(name="server",
-                                        entries=enumerate(serversList))
-        matter      = FormSelectorField(name="matter",
-                                        entries=enumerate(["Not Available",]))
+                                        entries=enumerate(serversList)) # XXX Move to QESettings
+#        matter      = FormSelectorField(name="matter",
+#                                        entries=enumerate(["Not Available",]))
                                         
         submit      = FormSubmitButton(label="Create New Simulation")
         cancel      = lc.button(label="Cancel", onclick = load(actor = 'materialsimulation'))
@@ -96,12 +98,12 @@ class Actor(base):
         st          = QEGrid(lc.grid()) # Submit Table
         st.addRow((submit, cancel), ("qe-action-accept", "qe-action-cancel"))
 
-        table.addRow(("Name:", sname))
-        table.addRow(("Type:", simtype))
+        table.addRow(("Atomic Structure: *", self._structure()))
+        table.addRow(("Name: *", sname))
+        table.addRow(("Type: *", simtype))
+        table.addRow(("Server: *", server))
         table.addRow(("Description:", description))
         table.addRow(("Label:", label))
-        table.addRow(("Server:", server))
-        table.addRow(("Atomic Structure:", matter))
         table.addRow(("", st.grid()))
 
         table.setColumnStyle(0, "qe-form-label")
@@ -111,6 +113,22 @@ class Actor(base):
                                                       routine   = 'createRecord')
         
         return form
+
+
+    def _structure(self):
+        table   = QEGrid(lc.grid())
+        link    = lc.link(label="Select Atomic Structure",
+                        Class="qe-action-structure",
+                        onclick = load(actor=self.name, routine='showOptions')) #'material_simulations/espresso/sim-create'
+
+        change  = lc.link(label="Change")
+        table.addRow((link, change))
+
+        return table.grid()
+
+
+    def _description(self):
+        pass
 
 
     def createRecord(self, director):
@@ -147,6 +165,34 @@ class Actor(base):
         return 0
 
 
+    def showOptions(self, director):
+        # the overall document
+        doc = lc.document(title='Select Atomic Structure')
+        doc.Class = 'mastertable-as-selector-panel'
+
+        # the container of the atomicstructure selector
+        container = doc.document(id     = 'atomicstructure-selector-container',
+                                 Class  = 'master-table-wrapper')
+        container.oncreate = select(element=container).append(
+            load(actor='selectoneatomicstructure', routine='createListView')
+            )
+
+        # the button
+        b = lc.button(label='Select')
+        doc.add(b)
+        b.onclick = load(actor      = self.name,
+                         routine    = 'processSelection',
+                         selected   = select(id='atomicstructure-table').table(
+                                                        'getIdentifiersForSelectedRow',
+                                                        colname = 'selectone'),
+            )
+        return select(id='main-display-area').replaceContent(doc)
+
+
+    def processSelection(self, director):
+        return alert('selected structure %s' % self.inventory.selected)
+
+
     def __init__(self):
         super(Actor, self).__init__(name='material_simulations/espresso/sim-create')
 
@@ -161,6 +207,7 @@ class Actor(base):
         self.label       = self.inventory.label
         self.server      = self.inventory.server
         self.matter      = self.inventory.matter
+        self.selected    = self.inventory.selected
 
         return
 

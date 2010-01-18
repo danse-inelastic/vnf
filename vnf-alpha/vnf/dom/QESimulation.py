@@ -46,6 +46,10 @@ class QESimulation(QETable):    #, Computation): #):
     serverid.constraints = 'REFERENCES servers (id)'    # Important
     serverid.meta['tip'] = "Default server for the simulation"
 
+    structureid    = dsaw.db.varchar(name="structureid", length=64)
+    structureid.constraints = 'REFERENCES atomicstructures (id)'    # Important
+    structureid.meta['tip'] = "Atomic structure"
+
     sname = dsaw.db.varchar(name="sname", length=128, default='')
     sname.meta['tip'] = "Simulation name"
 
@@ -73,9 +77,9 @@ class QESimulation(QETable):    #, Computation): #):
     label       = dsaw.db.varchar(name="label", length=128, default='')
     label.meta['tip'] = "Label associated with the simulation"
 
-    # Change type
-    matter = dsaw.db.varchar(name="matter", length=128, default='')
-    matter.meta['tip']  = "STUB"
+#    # Change type
+#    matter = dsaw.db.varchar(name="matter", length=128, default='')
+#    matter.meta['tip']  = "STUB"
 
     @classmethod
     def getActorName(cls):
