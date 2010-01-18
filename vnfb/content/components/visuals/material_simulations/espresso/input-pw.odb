@@ -77,7 +77,7 @@ class Visual:
                                                       routine   = 'generateInput',
                                                       taskid    = self._actor.taskid,
                                                       id        = self._actor.id,
-                                                      )
+                                                      type      = self._actor.type)
 
         return form
 
