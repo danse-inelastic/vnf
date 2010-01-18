@@ -49,7 +49,7 @@ class Factory(object):
 
         #
         instrument = experiment.instrument.dereference(domaccess.db)
-        doc = lc.document(title='Configuring instrument %s' % instrument.name,
+        doc = lc.document(title='%s' % instrument.name,
                           id='instrument-configuration')
         doc.paragraph(text=[
             'to edit, please select a component from the following component chain',

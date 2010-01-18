@@ -141,7 +141,7 @@ class Actor(base):
         id = self.inventory.id
         
         domaccess = self._domaccess(director)
-        if not domaccess.isConstructued(id):
+        if not domaccess.isConstructed(id):
             view = self.createEditor(director)
         else:
             #view = self.createSimpleDisplay(director)

@@ -51,7 +51,8 @@ class Factory(object):
             componentuid = domaccess.db.getUniqueIdentifierStr(component)
 
         #
-        doc = lc.document(Class='container', id='componenteditor')
+        title = '%s: %s' % (component.componentname, component.__class__.__name__)
+        doc = lc.document(Class='container', id='componenteditor', title=title)
 
         # widget to change type of component
         from vnfb.dom.neutron_experiment_simulations.neutron_components.SampleComponent import SampleComponentTable
@@ -84,11 +85,11 @@ class Factory(object):
 
     def _createChangeComponentTypeWidget(self, componentuid, component, types):
         # document to change component type
-        doc1 = lc.document(title='change component type')
-        doc1.paragraph(text=[
-            'Careful! If you change the type of the component, ',
-            'all configuration of this component will be lost.',
-            ])
+        doc1 = lc.document()
+        label='change component type'
+        help = ('Note: If you change the type of the component, '\
+                'all configuration of this component will be lost.'\
+                )
         
         labels = [t.split('.')[-1] for t in types]
         entries = zip(types, labels)
@@ -96,7 +97,8 @@ class Factory(object):
         typename = '.'.join(t.__module__.split('.')[2:]) + '.' + t.__name__
         
         from luban.content.FormSelectorField import FormSelectorField
-        selector = FormSelectorField(entries = entries, value=typename)
+        selector = FormSelectorField(
+            label=label, help=help, entries = entries, value=typename)
         selected = select(element=selector).getAttr('value')
         selector.onchange = load(
             actor='experiment/editor', routine='onChangeComponentType',
