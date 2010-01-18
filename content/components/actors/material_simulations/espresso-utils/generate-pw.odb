@@ -36,7 +36,6 @@ class Actor(base):
         nk3         = pyre.inventory.str('nk3', default='')
 
         # HACK: population of inventory parameters for form submission
-
         mass0       = pyre.inventory.str('mass0', default='')
         mass1       = pyre.inventory.str('mass1', default='')
         mass2       = pyre.inventory.str('mass2', default='')
@@ -74,7 +73,17 @@ class Actor(base):
 
 
     def _getInput(self, input, director):
-        # CONTROL namelist
+        self._control(input)
+        self._system(input)
+        #self._electrons(input)         # TODO: Suitable for phonon calculations?
+        #self._atomic_species(input)    # QECalc sets it for you
+        self._k_points(input)
+
+        return input.structure.toString()
+
+
+    def _control(self, input):
+        "CONTROL namelist"
         control = Namelist("control")
         control.add("calculation", "'scf'")
         control.add("restart_mode", "'from_scratch'")
@@ -82,7 +91,9 @@ class Actor(base):
         #control.add("prefix", "???")   # Remove 'prefix'
         input.addNamelist(control)
 
-        # SYSTEM namelist
+
+    def _system(self, input):
+        "SYSTEM namelist"
         system  = input.namelist("system")
         system.add("degauss", "0.02")
         system.add("smearing", self._smearing())
@@ -92,24 +103,28 @@ class Actor(base):
         #system.add("nspin", "2")
         #system.add("starting_magnetization(1)", "0.5")
 
-        # ELECTRONS, TODO: Suitable for phonon calculations?
-#        electrons   = Namelist("electrons")
-#        electrons.add("conv_thr", "1.0d-8")
-#        electrons.add("mixing_beta", "0.7")
-#        input.addNamelist(electrons)
 
-        input.removeCard("atomic_species")
+    def _electrons(self, input):
+        "ELECTRONS namelist"
+        electrons   = Namelist("electrons")
+        electrons.add("conv_thr", "1.0d-8")
+        electrons.add("mixing_beta", "0.7")
+        input.addNamelist(electrons)
 
-        # K_POINTS
+
+    def _atomic_species(self, input):
+        "ATOMIC_SPECIES card"
+        input.removeCard("atomic_species")  # For testing
+        #input.structure.parseInput()    # XXX Updates QEInput
+        
+
+    def _k_points(self, input):
+        "K_POINTS card"
         k_points   = Card("k_points")
         k_points.setArg("automatic")
         k_points.addLine("%s %s %s 0 0 0" % (self.nk1, self.nk2, self.nk3))
         input.addCard(k_points)
 
-        return input.structure.toString()
-
-    def _controls(self):
-        pass
 
     def _loadStructure(self, director):
         """Populates the geometry (structure) related parameters:
@@ -131,7 +146,7 @@ class Actor(base):
                               massList  = masslist,
                               psList    = pseudolist)
 
-        input.structure.updatePWInput()
+        input.structure.updatePWInput() # XXX Updated QEStructure
         
         return input
 
