@@ -104,13 +104,15 @@ class QETaskCell:
 
     def _input(self, table):
         # Suppose that self._task is not None
+
+
         qeinput = QEInput(self._director, self._simid, self._task.id, self._type)
         table.addRow(("Input:", qeinput.getLink(), ""))
 
 
     def _output(self, table):
         action  = lc.link(label="Refresh",
-                          Class     = "qe-task-action",
+                          Class     = "qe-task-action"
                           #onclick   = load()
                          )
         table.addRow(("Output:", "None", action))

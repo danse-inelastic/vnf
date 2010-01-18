@@ -29,10 +29,11 @@ NK      = 4
 
 class Visual:
 
-    def __init__(self, actor, director):
-        self._actor     = actor
-        self._director  = director
-        self._labels    = self._labels()
+    def __init__(self, actor, director, structureid):
+        self._actor         = actor
+        self._director      = director
+        self._structureid   = structureid
+        self._labels        = self._labels()
 
     def render(self):
         return self._form()
@@ -83,7 +84,7 @@ class Visual:
 
 
     def _atoms(self):
-        "Atom mass name: <label>, atom pseudo potential name: <label>pseudo"
+        "Atom mass name: mass<number>, atom pseudo potential name: pseudo<number>"
         atoms    = QEGrid(lc.grid())
         atoms.addRow(("", "Mass (u)", "Pseudo Potential"))
 
@@ -105,7 +106,7 @@ class Visual:
     def _labels(self):
         "Returns list of unique atom labels. E.g.: ('Ni', 'Cu')"
         domaccess   = self._director.retrieveDOMAccessor('atomicstructure')
-        structure   = domaccess.getAtomicStructure("6T4M6SSB")    # XXX Ni: 6NPTL72J, Cu4: 6T4M6SSB
+        structure   = domaccess.getAtomicStructure(self._structureid)    # XXX Ni: 6NPTL72J, Cu4: 6T4M6SSB
         pw          = PWInput()
         pw.structure.load(source = 'diffpy', structure = structure)
         return pw.structure.atomLabels()
@@ -116,8 +117,8 @@ class Visual:
         pass
 
 
-def visual(actor, director):
-    v   = Visual(actor, director)
+def visual(actor, director, structureid):
+    v   = Visual(actor, director, structureid)
     return v.render()
 
 __date__ = "$Jan 12, 2010 5:48:06 PM$"
