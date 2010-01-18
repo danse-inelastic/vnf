@@ -18,7 +18,7 @@ from vnfb.utils.qegrid import QEGrid
 from luban.content.FormTextField import FormTextField
 from luban.content.FormSubmitButton import FormSubmitButton
 
-def visual(actor, director):
+def visual(actor, director, structureid):
     form    = lc.form()
 
     METHODS  = ("Phonon Density of States",
@@ -30,7 +30,8 @@ def visual(actor, director):
     form.onsubmit   = select(element=form).submit(actor     = 'material_simulations/espresso-utils/generate-matdyn',
                                                   id        = actor.id,
                                                   taskid    = actor.taskid,
-                                                  type      = actor.type)
+                                                  type      = actor.type,
+                                                  structureid   = structureid)
 
     submit      = FormSubmitButton(label="Select Option")
     cancel      = lc.button(label="Cancel")

@@ -20,7 +20,7 @@ from luban.content.FormSelectorField import FormSelectorField
 from luban.content.FormSubmitButton import FormSubmitButton
 
 
-def visual(actor, director):
+def visual(actor, director, structureid):
     form        = lc.form(id='create-simulation-form')
     table       = QEGrid(lc.grid(Class="qe-form"))
     form.add(table.grid())
@@ -45,7 +45,8 @@ def visual(actor, director):
     form.onsubmit   = select(element=form).submit(actor     = 'material_simulations/espresso-utils/generate-q2r',
                                                   routine   = 'generateInput',
                                                   taskid    = actor.taskid,
-                                                  id        = actor.id)
+                                                  id        = actor.id,
+                                                  structureid   = structureid)
 
     return form
 
