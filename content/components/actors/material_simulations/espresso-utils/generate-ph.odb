@@ -56,7 +56,7 @@ class Actor(base):
         nl.add("nq3", self.nq3)
         nl.add("tr2_ph", TR2_PH)
         nl.add("ldisp", LDISP)
-        #nl.add("prefix", QE_PREFIX)    # TODO: Handle prefix properly (should be same as in pw input)
+        #nl.add("prefix", QE_PREFIX)    # TODO:  Handle prefix properly (should be same as in pw input)
 
         # Add amasses
         list    = self._amasses(director)
