@@ -172,16 +172,18 @@ class ComputationResultRetriever(Component):
         # copy result file from job to the result holder
         server = self.db.dereference(job.server)
         filesisdict = isinstance(files, dict)
+        destinationFiles = []
         for f in files:
             finjobdir = f
             if filesisdict:
                 finresultholder = files[f]
             else:
                 finresultholder = f
+            destinationFiles.append(finresultholder)
             self.dds.copy(job, finjobdir, result_holder, finresultholder, server)
             
         # make copy of result holder in the master node
-        self.dds.make_available(result_holder)
+        self.dds.make_available(result_holder, files=destinationFiles)
         
         # add the result to the result list
         if not name:
