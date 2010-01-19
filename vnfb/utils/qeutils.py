@@ -164,12 +164,7 @@ def latestTask(tasks):
     return latestRecord(tasks, "date")
 
 
-# TODO: Test!!!
-def remoteResultsPath(director, simid, type):
-    """Returns the path of the jobs directory specified by simulation id (simid) and task type.
-    Example: /home/dexity/espresso/qejobs/5YWWTCQT/
-    """
-    path    = ""
+def qetask(director, simid, type):
     simtasks = director.clerk.getQESimulationTasks(where="simulationid='%s'" % simid)
     for st in simtasks:
         tasks   = director.clerk.getQETasks(where="id='%s' AND type='%s'" % (st.taskid, type))
@@ -177,15 +172,25 @@ def remoteResultsPath(director, simid, type):
             break
 
     if not tasks:
-        return path
+        return None
 
-    task    = latestTask(tasks)    # task    = tasks[0]
+    return latestTask(tasks)
+
+
+# TODO: Test!!!
+def remoteResultsPath(director, simid, type):
+    """Returns the path of the jobs directory specified by simulation id (simid) and task type.
+    Example: /home/dexity/espresso/qejobs/5YWWTCQT/
+    """
+    path    = ""
+    task    = qetask(director, simid, type)
+
     if not task:
         return path
 
     jobs    = director.clerk.getQEJobs(where="taskid='%s'" % task.id)
     if len(jobs) > 0:
-        # Find job of Q2R task
+        # Find latest job for the task
         job = latestJob(jobs)
 
         if job:
@@ -194,7 +199,20 @@ def remoteResultsPath(director, simid, type):
             path    = os.path.join(path, job.id)
 
     return path
-    
+
+
+def qeinput(director, simid, type):
+    task    = qetask(director, simid, type)
+
+    if not task:
+        return None
+
+    inputs  = director.clerk.getQEConfigurations(where="taskid='%s'" % task.id)
+    if len(inputs) > 0:
+        # Should be one config input for the task!
+        return inputs[0]
+
+    return None
 
 
 # *********** TESTS ******************************
@@ -209,4 +227,19 @@ if __name__ == "__main__":
 
 __date__ = "$Jul 30, 2009 12:08:31 PM$"
 
+
+# ********************* DEAD CODE ***************************
+
+#    simtasks = director.clerk.getQESimulationTasks(where="simulationid='%s'" % simid)
+#    for st in simtasks:
+#        tasks   = director.clerk.getQETasks(where="id='%s' AND type='%s'" % (st.taskid, type))
+#        if tasks:   # XXX First found tasks
+#            break
+#
+#    if not tasks:
+#        return path
+#
+#    task    = latestTask(tasks)    # task    = tasks[0]
+#    if not task:
+#        return path
 

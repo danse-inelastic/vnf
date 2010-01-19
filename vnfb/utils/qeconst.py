@@ -115,15 +115,17 @@ IBRAV       = ( "Not Specified",                    # 0
                 "Triclinic"                         # 14
                 )
 
-_smearing   = ("gaussian", "methfessel-paxton", "marzari-vanderbilt", "fermi-dirac")
+#_smearing   = ("gaussian", "methfessel-paxton", "marzari-vanderbilt", "fermi-dirac")
 SMEARING    = OrderedDict()
-SMEARING[_smearing[0]]  = "'gauss'"
-SMEARING[_smearing[1]]  = "'mp'"
-SMEARING[_smearing[2]]  = "'mv'"
-SMEARING[_smearing[3]]  = "'fd'"
+SMEARING["gaussian"]            = "'gauss'"
+SMEARING["methfessel-paxton"]   = "'mp'"
+SMEARING["marzari-vanderbilt"]  = "'mv'"
+SMEARING["fermi-dirac"]         = "'fd'"
 
 #PROCESSORS  = (1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 24, 36, 48, 60, 72) # ppn = 12
 PROCESSORS  = (1, 2, 3, 4, 5, 6, 7, 8, 16, 24, 32, 40, 48, 56, 64, 72, 80, 88, 96, 104, 112)    # ppn = 8
+
+QE_PREFIX   = "'default'"
 
 __date__ = "$Nov 3, 2009 3:12:34 PM$"
 

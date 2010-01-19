@@ -160,7 +160,7 @@ class Actor(base):
 
     def _structure(self, director):
         domaccess   = director.retrieveDOMAccessor('atomicstructure')
-        return domaccess.getAtomicStructure(self.structureid)    # XXX Ni: 6NPTL72J, Cu4: 6T4M6SSB
+        return domaccess.getAtomicStructure(self.structureid) 
         
 
     def _labels(self, structure):
