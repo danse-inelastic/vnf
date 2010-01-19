@@ -135,6 +135,8 @@ class Actor(base):
             - ATOMIC_POSITIONS
         """
         structure   = self._structure(director)
+#        print structure
+#        print structure.lattice.base
 
         masslist    = []
         pseudolist  = []
