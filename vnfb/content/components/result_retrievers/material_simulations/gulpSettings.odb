@@ -30,7 +30,7 @@ class Retriever(base):
         self.declareProgress(0.6, """create necessary output data objects 
         (i.e. vibrations, motion, etc.)""")
         #doOutputFiles = gulpSettings.getDOAndOutputFile() 
-        if runtype=='phonons':
+        if 'phonons' in runtype:
             #store the phonons and the dos results
 #            for key,val in doOutputFiles.iteritems():
 #                parts = key.split('.')
@@ -46,7 +46,7 @@ class Retriever(base):
             dos = self._make_result_holder(computation, PhononDOSTable)
             dos.matter = computation.matter
             db.updateRecord(dos)
-        if runtype=='molecular dynamics':
+        if 'molecular dynamics' in runtype:
             from vnfb.dom.material_simulations.Motion import Motion
             motion = self._make_result_holder(computation, Motion)
             motion.matter = computation.matter
