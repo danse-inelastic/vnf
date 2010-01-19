@@ -11,6 +11,45 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
+from vnfb.utils.qeutils import stamp2date
+from vnfb.utils.qegrid import QEGrid
+
+from luban.content import select
+from luban.content import load
+
+import luban.content as lc
+from luban.components.AuthorizedActor import AuthorizedActor as base
+
+# Requires simulation id, config id and config type: (id, configid, type)
+class Actor(base):
+
+    class Inventory(base.Inventory):
+        import pyre.inventory
+        id          = pyre.inventory.str('id', default='')          # Task Id
+
+
+    def create(self, director):
+        print "Phonon Dispersion"
+
+
+    def __init__(self):
+        super(Actor, self).__init__(name='material_simulations/espresso/phonons')
+
+        return
+
+
+    def _configure(self):
+        super(Actor, self)._configure()
+        self.id             = self.inventory.id
+
+
+    def _init(self):
+        super(Actor, self)._init()
+        return
+
+def actor():
+    return Actor()
+
 
 __date__ = "$Jan 18, 2010 10:30:39 PM$"
 

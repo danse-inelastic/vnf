@@ -142,8 +142,8 @@ class QETaskCell:
                                               jobid     = self._job.id,
                                               type      = self._type)
                                 )
-            action = lc.link(label    = "All",
-                              Class    = "qe-task-action",
+            action = lc.link(label    = "All Jobs",
+                              Class    = "qe-all-jobs", # Class = "qe-task-action"
                                onclick = load(actor     = 'jobs/jobs-view-all',
                                               id        = self._simid,
                                               taskid    = self._task.id,

@@ -84,14 +84,16 @@ class Actor(base):
 
         section.add(lc.link(label="Create Phonon DOS",
                             Class="qe-action-edit",
-                            onclick = load(actor      = 'material_simulations/espresso/phonondos',
-                                             id         = self.id))
+                            onclick = load(actor        = 'material_simulations/espresso/phonondos',
+                                            routine     = 'create',
+                                            id          = self.id))
                     )
 
         section.add(lc.link(label="Create Phonon Dispersion",
                             Class="qe-action-edit",
-                            onclick = load(actor      = 'material_simulations/espresso/phonons',
-                                             id         = self.id))
+                            onclick = load(actor        = 'material_simulations/espresso/phonons',
+                                            routine     = 'create',
+                                            id          = self.id))
                     )
 
 
