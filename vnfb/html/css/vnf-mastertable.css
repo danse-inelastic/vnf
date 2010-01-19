@@ -118,7 +118,7 @@ div.master-table-toptoolbar-container h1.luban-document-title {
 .master-table-filter-control-container {
     border-right:dotted 2px grey;
     padding: 0 7px;
-    min-width: 21em;
+    min-width: 22em;
 }
 .master-table-filter-control-container > div{
     font-size: 0.8em;
