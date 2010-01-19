@@ -14,7 +14,7 @@
 from vnfb.utils.qeparser.qeinput import QEInput
 from vnfb.utils.qeparser.namelist import Namelist
 from vnfb.utils.qeconst import QE_PREFIX
-from vnfb.utils.qeutils import qeinput
+from vnfb.utils.qeutils import inputRecord
 
 from luban.components.AuthorizedActor import AuthorizedActor as base
 
@@ -65,25 +65,36 @@ class Actor(base):
         input.addNamelist(nl)
         return input.toString()
 
-    # XXX Hack: We suppose that user will not change masses and take masses from Structure
-    # TODO: Need to take masses from PW input file
+
     def _amasses(self, director):
-        """Returns list of tuples with amass label and mass value
+        """Returns list of tuples with amass label and mass value from PW input configuration
         Example: [("amass(1)", "35.5"), ("amass(2)", "54.3")]
         """
-        list    = []
+        list    = []    # amass list
+        masses  = self._masses(director)
+        for l in range(len(masses)):
+            list.append(("amass(%s)" % str(l+1), masses[l][1]))
 
-        # PW configuration input
-        pwinput     = qeinput(director, self.inventory.id, "PW")
-        pwconfig    = pwinput.text
-        
-        #for i in :
-        return (("amass(1)", "35.5"), ("amass(2)", "54.3"))
+        return list
+
 
     def __init__(self):
         super(Actor, self).__init__(name='material_simulations/espresso-utils/generate-ph')
 
         return
+
+    def _masses(self, director):
+        # PW configuration input
+        pwinput     = inputRecord(director, self.inventory.id, "PW")
+        pw          = QEInput(config = pwinput.text)
+        pw.parse()
+
+        list        = []
+        atoms       = pw.structure()   # List of atom of format: [('Ni', '52.98', 'Ni.pbe-nd-rrkjus.UPF'), (...)]
+        for a in atoms:
+            list.append((a[0], a[1]))
+
+        return list
 
 
     def _configure(self):

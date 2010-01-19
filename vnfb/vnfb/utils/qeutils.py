@@ -201,7 +201,7 @@ def remoteResultsPath(director, simid, type):
     return path
 
 
-def qeinput(director, simid, type):
+def inputRecord(director, simid, type):
     task    = qetask(director, simid, type)
 
     if not task:
