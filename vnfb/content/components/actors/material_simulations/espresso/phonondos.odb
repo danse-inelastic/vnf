@@ -25,15 +25,16 @@ class Actor(base):
 
     class Inventory(base.Inventory):
         import pyre.inventory
-        id          = pyre.inventory.str('id', default='')          # Task Id
+        simid          = pyre.inventory.str('simid', default='')
 
 
     def create(self, director):
-        print "Phonon DOS"
+        job     = self._phononDosJob(director)
+        print self.simid
 
 
-    def _dosJob(self):
-        pass
+    def _phononDosJob(self, director):
+        jobs    = 
 
 
     def __init__(self):
@@ -44,7 +45,7 @@ class Actor(base):
 
     def _configure(self):
         super(Actor, self)._configure()
-        self.id             = self.inventory.id
+        self.simid             = self.inventory.simid
 
 
     def _init(self):

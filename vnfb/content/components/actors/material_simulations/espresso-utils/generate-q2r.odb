@@ -15,7 +15,7 @@ import os
 from vnfb.utils.qeparser.qeinput import QEInput
 from vnfb.utils.qeparser.namelist import Namelist
 from vnfb.utils.qeconst import ZASR
-from vnfb.utils.qeutils import latestJob
+from vnfb.utils.qeutils import resultsPath 
 
 from luban.components.AuthorizedActor import AuthorizedActor as base
 
@@ -42,7 +42,9 @@ class Actor(base):
         nl  = Namelist("input")
 
         # E.g.: /home/dexity/espresso/qejobs/5YWWTCQT/matdyn
-        path    = self._dynpath(director)   
+        # Get jobs directory of PH simulation task
+        path    = resultsPath(director, self.inventory.id, "PH")   #self._fcpath(director)
+
         fildyn  = os.path.join(path, "matdyn")  # "matdyn" - default value for PH fildyn
         zasr    = ZASR[ZASR.keys()[int(self.inventory.zasr)]]
 
@@ -53,34 +55,34 @@ class Actor(base):
         return input.toString()
 
 
-    # TODO: Test!!!
-    def _dynpath(self, director):
-        "Returns the path of the directory where dyn file is located. E.g.: phonon directory"
-        path    = ""
-        simtasks = director.clerk.getQESimulationTasks(where="simulationid='%s'" % self.id)
-        for st in simtasks:
-            tasks   = director.clerk.getQETasks(where="id='%s' AND type='PH'" % st.taskid)
-            if tasks:   # First found tasks
-                break
-        
-        if not tasks:
-            return path
-
-        task    = tasks[0]
-        if not task:
-            return path
-        
-        jobs    = director.clerk.getQEJobs(where="taskid='%s'" % task.id)
-        if len(jobs) > 0:
-            # Find job of PH task
-            job = latestJob(jobs)
-
-            if job:
-                server  = director.clerk.getServers(id=job.serverid)
-                path    = os.path.join(server.workdir, job.name)
-                path    = os.path.join(path, job.id)
-
-        return path
+#    # TODO: Test!!!
+#    def _dynpath(self, director):
+#        "Returns the path of the directory where dyn file is located. E.g.: phonon directory"
+#        path    = ""
+#        simtasks = director.clerk.getQESimulationTasks(where="simulationid='%s'" % self.id)
+#        for st in simtasks:
+#            tasks   = director.clerk.getQETasks(where="id='%s' AND type='PH'" % st.taskid)
+#            if tasks:   # First found tasks
+#                break
+#
+#        if not tasks:
+#            return path
+#
+#        task    = latestTask(tasks)     #task    = tasks[0]
+#        if not task:
+#            return path
+#
+#        jobs    = director.clerk.getQEJobs(where="taskid='%s'" % task.id)
+#        if len(jobs) > 0:
+#            # Find job of PH task
+#            job = latestJob(jobs)
+#
+#            if job:
+#                server  = director.clerk.getServers(id=job.serverid)
+#                path    = os.path.join(server.workdir, job.name)
+#                path    = os.path.join(path, job.id)
+#
+#        return path
 
     def __init__(self):
         super(Actor, self).__init__(name='material_simulations/espresso-utils/generate-q2r')
