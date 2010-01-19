@@ -23,7 +23,8 @@ from vnf.clusterscheduler.torque import Scheduler as base
 from vnf.clusterscheduler.torque import _walltime_str
 from vnfb.utils.qeconst import NOPARALLEL
 
-PROC_PER_NODE   = 12    # Number of processors per node, specific for foxtrot
+PROC_PER_NODE   = 8    # default = 12, Number of processors per node, specific for foxtrot
+#PROC_PER_NODE   = 12
 
 class Scheduler(base):
 
@@ -47,6 +48,7 @@ class Scheduler(base):
         cmds    = [ r'echo \"%s\" | qsub -d %s -o %s -e %s %s -' % (
             cmd, dir, self.outfilename, self.errfilename, str) ]
 
+        print cmds
         # Launch job
         failed, output, error = self._launch( cmds )
 
