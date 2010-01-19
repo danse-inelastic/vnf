@@ -15,6 +15,8 @@
 Contains little but useful itils!
 """
 
+import os
+
 def parseFile(filename):
     """Parses file consisting of at least 4 columns separated by space or tab
     Notes:
@@ -130,27 +132,71 @@ def unpackname(string, id):
     return (id, name)
 
 
-def latestJob(jobs):
-    "Retruns latest job based on timesubmitted column"
-    if len(jobs) == 0:
+def latestRecord(records, timefield):
+    """Retruns latest record based on timefield column
+        timefield   - string
+    """
+    if len(records) == 0:
         return None
 
     # Jobs should have at least one element
-    latest  = jobs[0]
+    latest  = records[0]
 
-    for job in jobs:
-        if job.timesubmitted == "":
+    for r in records:
+        if getattr(r, timefield) == "":
             continue
 
-        if latest.timesubmitted == "":
-            latest = job
+        if getattr(latest, timefield) == "":
+            latest = r
 
-        if float(job.timesubmitted) > float(latest.timesubmitted):
-            latest  = job
+        if float(getattr(r, timefield)) > float(getattr(latest, timefield)):
+            latest  = r
 
     return latest
+
+
+def latestJob(jobs):
+    "Retruns latest job based on timesubmitted column"
+    return latestRecord(jobs, "timesubmitted")
+
+
+def latestTask(tasks):
+    return latestRecord(tasks, "date")
+
+
+# TODO: Test!!!
+def resultsPath(director, simid, type):
+    """Returns the path of the jobs directory specified by simulation id (simid) and task type.
+    """
+    path    = ""
+    simtasks = director.clerk.getQESimulationTasks(where="simulationid='%s'" % simid)
+    for st in simtasks:
+        tasks   = director.clerk.getQETasks(where="id='%s' AND type='Q2R'" % st.taskid)
+        if tasks:   # XXX First found tasks
+            break
+
+    if not tasks:
+        return path
+
+    task    = latestTask(tasks)    # task    = tasks[0]
+    if not task:
+        return path
+
+    jobs    = director.clerk.getQEJobs(where="taskid='%s'" % task.id)
+    if len(jobs) > 0:
+        # Find job of Q2R task
+        job = latestJob(jobs)
+
+        if job:
+            server  = director.clerk.getServers(id=job.serverid)
+            path    = os.path.join(server.workdir, job.name)
+            path    = os.path.join(path, job.id)
+
+    return path
     
 
+
+# *********** TESTS ******************************
 
 def testStamp():
     import time
