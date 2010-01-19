@@ -34,7 +34,7 @@ class Actor(base):
     def createGraphicalView(self, director):
         id = self.inventory.id
 
-        title='View of neutron storage %s' % id
+        title='Neutron storage %s' % id
         doc = lc.document(title=title, collapsable=True)
         
         doc.paragraph(text=['This viewer is not yet implemnted'])
