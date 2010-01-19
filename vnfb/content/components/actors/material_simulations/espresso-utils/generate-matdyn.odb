@@ -94,7 +94,8 @@ class Actor(base):
         form.onsubmit   = select(element=form).submit(actor     = 'material_simulations/espresso-utils/generate-matdyn',
                                                       routine   = 'generateInput',
                                                       id        = self.id,
-                                                      taskid    = self.taskid)
+                                                      taskid    = self.taskid,
+                                                      type      = self.inventory.type)
 
         return form
 
