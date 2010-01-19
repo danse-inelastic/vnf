@@ -15,13 +15,19 @@ from _ import o2t
 
 
 # data object
-from vsat.Motion import Motion
+from vsat.Motion import Motion as MotionDO
+from vnfb.dom.AtomicStructure import StructureTable
 
 # orm
 
 # "Holder" in vnf
 from ComputationResult import ComputationResult
-MotionTable = o2t(Motion, {'subclassFrom': ComputationResult})
+Motion = o2t(MotionDO, {'subclassFrom': ComputationResult})
+
+import dsaw.db
+Motion.addColumn(
+    dsaw.db.reference(name='matter', table=StructureTable, backref='motion')
+    )
 
 #PhononDOSTable.datafiles = [
 #    'data.idf',
