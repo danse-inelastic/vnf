@@ -29,8 +29,8 @@ class Retriever(base):
         # create a phonon dos record to save dos
         self.declareProgress(0.6, """create necessary output data objects 
         (i.e. vibrations, motion, etc.)""")
-        doOutputFiles = gulpSettings.getDOAndOutputFile() 
-        if runtype is 'phonons':
+        #doOutputFiles = gulpSettings.getDOAndOutputFile() 
+        if runtype=='phonons':
             #store the phonons and the dos results
 #            for key,val in doOutputFiles.iteritems():
 #                parts = key.split('.')
@@ -46,23 +46,23 @@ class Retriever(base):
             dos = self._make_result_holder(computation, PhononDOSTable)
             dos.matter = computation.matter
             db.updateRecord(dos)
-        if runtype is 'molecular dynamics':
+        if runtype=='molecular dynamics':
             from vnfb.dom.material_simulations.Motion import Motion
             motion = self._make_result_holder(computation, Motion)
             motion.matter = computation.matter
             db.updateRecord(motion)
         # save the result from job to dos
         self.declareProgress(0.9, 'get result from server')
-        if runtype is 'phonons':
+        if 'phonons' in runtype:
             doOutputFiles = gulpSettings.getDOAndOutputFile()
             filesInJobDir = doOutputFiles['vsat.Phonons']
-            self._save_result(computation, job, filesInJobDir, phonons)
+            self._save_results(computation, job, filesInJobDir, phonons)
             filesInJobDir = doOutputFiles['vsat.PhononDOS']
-            self._save_result(computation, job, filesInJobDir, dos)
-        elif runtype is 'molecular dynamics':
+            self._save_results(computation, job, filesInJobDir, dos)
+        if 'molecular dynamics' in runtype:
             doOutputFiles = gulpSettings.getDOAndOutputFile()
             filesInJobDir = doOutputFiles['vsat.Motion']
-            self._save_result(computation, job, filesInJobDir, motion)
+            self._save_results(computation, job, filesInJobDir, motion)
 #        for key,val in doOutputFiles.iteritems():
 #            self._save_result(computation, job, va)
 
