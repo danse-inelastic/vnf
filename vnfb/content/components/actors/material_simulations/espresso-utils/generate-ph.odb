@@ -13,12 +13,14 @@
 
 from vnfb.utils.qeparser.qeinput import QEInput
 from vnfb.utils.qeparser.namelist import Namelist
+from vnfb.utils.qeconst import QE_PREFIX
+from vnfb.utils.qeutils import qeinput
 
 from luban.components.AuthorizedActor import AuthorizedActor as base
 
 TR2_PH  = "1.0d-16"
 LDISP   = ".true."
-PREFIX  = "'default'"
+#PREFIX  = "'default'"
 
 # TODO: Critical: Fix amass(...) - take from pw config
 
@@ -39,13 +41,13 @@ class Actor(base):
     def generateInput(self, director):
         return director.redirect(actor   = 'material_simulations/espresso/input-create',
                                 routine = 'default',
-                                text    = self._input(),
+                                text    = self._input(director),
                                 id      = self.inventory.id,
                                 taskid  = self.inventory.taskid,
                                 type    = self.inventory.type)
 
 
-    def _input(self):
+    def _input(self, director):
         input      = QEInput(type='ph')
         nl  = Namelist("inputph")
         nl.add("nq1", self.nq1)
@@ -53,10 +55,30 @@ class Actor(base):
         nl.add("nq3", self.nq3)
         nl.add("tr2_ph", TR2_PH)
         nl.add("ldisp", LDISP)
-        nl.add("prefix", PREFIX)
+        nl.add("prefix", QE_PREFIX)
+
+        # Add amasses
+        list    = self._amasses(director)
+        for m in list:
+            nl.add(m[0], m[1])
+
         input.addNamelist(nl)
         return input.toString()
 
+    # XXX Hack: We suppose that user will not change masses and take masses from Structure
+    # TODO: Need to take masses from PW input file
+    def _amasses(self, director):
+        """Returns list of tuples with amass label and mass value
+        Example: [("amass(1)", "35.5"), ("amass(2)", "54.3")]
+        """
+        list    = []
+
+        # PW configuration input
+        pwinput     = qeinput(director, self.inventory.id, "PW")
+        pwconfig    = pwinput.text
+        
+        #for i in :
+        return (("amass(1)", "35.5"), ("amass(2)", "54.3"))
 
     def __init__(self):
         super(Actor, self).__init__(name='material_simulations/espresso-utils/generate-ph')

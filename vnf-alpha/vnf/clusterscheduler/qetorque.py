@@ -23,8 +23,7 @@ from vnf.clusterscheduler.torque import Scheduler as base
 from vnf.clusterscheduler.torque import _walltime_str
 from vnfb.utils.qeconst import NOPARALLEL
 
-PROC_PER_NODE   = 8    # default = 12, Number of processors per node, specific for foxtrot
-#PROC_PER_NODE   = 12
+PROC_PER_NODE   = 8    # PROC_PER_NODE   = 12 (default), Number of processors per node, specific for foxtrot
 
 class Scheduler(base):
 
@@ -39,17 +38,22 @@ class Scheduler(base):
     def submit( self, cmd, walltime=1*hour ):
         walltime = _walltime_str(walltime)
 
-        # Example:
-        #   dir = "/home/dexity/espresso/qesimulations/MQDHXV7"
-        #   str = "-V -N myjob -l nodes=8:ppn=12"
+        """
+        Example:
+           dir  = "/home/dexity/espresso/qesimulations/MQDHXV7"
+           str  = "-V -N myjob -l nodes=8:ppn=12"
+           cmds = ['echo \\"cd /home/dexity/espresso/qejobs/7QMQYNWX && sh run.sh\\" | qsub
+                    -d /home/dexity/espresso/qejobs/7QMQYNWX -o STDOUT.log -e STDERR.log -V
+                    -N 7QMQYNWX -l nodes=1:ppn=12 -']
+        """
 
         dir     = "%s/%s/%s" % (self._server.workdir, self._job.name, self._job.id)
         str     = "-V -N %s -l nodes=%s:ppn=%s"  % (self._job.id, self._nodes(), self._ppn())
+        # Command executed on remote cluster
         cmds    = [ r'echo \"%s\" | qsub -d %s -o %s -e %s %s -' % (
             cmd, dir, self.outfilename, self.errfilename, str) ]
 
-        print cmds
-        # Launch job
+        # Actual launch of job
         failed, output, error = self._launch( cmds )
 
         if failed:
