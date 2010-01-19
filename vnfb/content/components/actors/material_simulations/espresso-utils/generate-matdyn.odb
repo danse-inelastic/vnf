@@ -17,7 +17,7 @@ from vnfb.utils.qeparser.namelist import Namelist
 from vnfb.utils.qegrid import QEGrid
 from luban.content.FormTextField import FormTextField
 from luban.content.FormSubmitButton import FormSubmitButton
-from vnfb.utils.qeutils import resultsPath 
+from vnfb.utils.qeutils import remoteResultsPath
 from luban.content import select
 from luban.content import load
 import luban.content as lc
@@ -111,7 +111,7 @@ class Actor(base):
     def _input(self, director):
         # E.g.: /home/dexity/espresso/qejobs/643E2QQI/ni.fc
         # Get jobs directory of Q2R simulation task
-        path    = resultsPath(director, self.inventory.id, "Q2R")   #self._fcpath(director)
+        path    = remoteResultsPath(director, self.inventory.id, "Q2R")   #self._fcpath(director)
         path    = os.path.join(path, "ni.fc")
 
         input      = QEInput(type='matdyn')
