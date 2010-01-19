@@ -26,7 +26,7 @@ class Retriever(base):
         orm = director.clerk.orm
         gulpSettings = orm.record2object(computation)
         runtype = gulpSettings.runtype
-        expected_results = gulpSettings.getOutputFiles()  
+        expected_results = gulpSettings.getDOAndOutputFile()  
         self._check_results_sanity(expected_results, job=job)
 
         # create a phonon dos record to save dos
@@ -50,7 +50,9 @@ class Retriever(base):
             
         # save the result from job to dos
         self.declareProgress(0.9, 'get result from server')
-        self._save_result(computation, job, expected_results)
+        for file in expected_results:
+            self._save_result(computation, job, expected_results)
+            
         return
 
 
