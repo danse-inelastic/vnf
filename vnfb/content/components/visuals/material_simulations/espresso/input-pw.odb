@@ -15,6 +15,7 @@ import luban.content as lc
 from luban.content import select
 from luban.content import load
 from vnfb.utils.qegrid import QEGrid
+from vnfb.utils.qeparser.pseudo.pseudo import PSEUDO
 from vnfb.utils.qeconst import SMEARING, IBRAV
 from luban.content.FormTextField import FormTextField
 from luban.content.FormSelectorField import FormSelectorField
@@ -89,14 +90,13 @@ class Visual:
         atoms    = QEGrid(lc.grid())
         atoms.addRow(("", "Mass (u)", "Pseudo Potential"))
 
-        PSEUDO      = ("Ni.pbe-nd-rrkjus.UPF", "Cu.pbe-nd-rrkjus.UPF") # Temp
-
         for l in range(len(self._labels)):
             label       = self._labels[l]
             atom        = Atom(label)
             mass        = FormTextField(name = "mass%s" % l, value = atom.mass, Class="mass-textfield")
-            pseudo      = FormSelectorField(name="pseudo%s" % l,
-                                            entries=enumerate(PSEUDO))
+            pseudo      = FormSelectorField(name    = "pseudo%s" % l,
+                                            Class   = "qe-selector-pseudo",
+                                            entries = enumerate(PSEUDO[label]))
             atoms.addRow((label, mass, pseudo))
             
         atoms.setRowStyle(0, "qe-atoms-header")
@@ -110,7 +110,7 @@ class Visual:
         structure   = domaccess.getAtomicStructure(self._structureid)    # XXX Ni: 6NPTL72J, Cu4: 6T4M6SSB
         pw          = PWInput()
         pw.structure.load(source = 'diffpy', structure = structure)
-        return pw.structure.atomLabels()
+        return pw.structure.atomLabels()    #("Ni", "Cu", "Al")   # 
 
 
     def _atomsdump(self):

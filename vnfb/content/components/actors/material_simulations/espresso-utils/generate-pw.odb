@@ -15,6 +15,7 @@ from vnfb.utils.qeparser.qeinput import QEInput
 from vnfb.utils.qeparser.namelist import Namelist
 from vnfb.utils.qeparser.card import Card
 from vnfb.utils.qeconst import SMEARING, IBRAV
+from vnfb.utils.qeparser.pseudo.pseudo import PSEUDO
 from qecalc.qetask.qeparser.pwinput import PWInput
 
 from luban.components.AuthorizedActor import AuthorizedActor as base
@@ -135,16 +136,16 @@ class Actor(base):
             - ATOMIC_POSITIONS
         """
         structure   = self._structure(director)
-#        print structure
-#        print structure.lattice.base
+        # For test print: structure, structure.lattice.base
 
         masslist    = []
         pseudolist  = []
-        for i in range(len(self._labels(structure))):
+        labels      = self._labels(structure)
+        for i in range(len(labels)):
             masslist.append(float(getattr(self, "mass%s" % i)))
-            pseudolist.append(getattr(self, "pseudo%s" % i))
+            pseudo  = PSEUDO[labels[i]][int(getattr(self, "pseudo%s" % i))]
+            pseudolist.append(pseudo)
 
-        pseudolist     = ("Ni.pbe-nd-rrkjus.UPF",)    # XXX Hardcoded
         input          = PWInput()
         input.structure.load(source    = 'diffpy',
                               structure = structure,

@@ -165,13 +165,14 @@ def latestTask(tasks):
 
 
 # TODO: Test!!!
-def resultsPath(director, simid, type):
+def remoteResultsPath(director, simid, type):
     """Returns the path of the jobs directory specified by simulation id (simid) and task type.
+    Example: /home/dexity/espresso/qejobs/5YWWTCQT/
     """
     path    = ""
     simtasks = director.clerk.getQESimulationTasks(where="simulationid='%s'" % simid)
     for st in simtasks:
-        tasks   = director.clerk.getQETasks(where="id='%s' AND type='Q2R'" % st.taskid)
+        tasks   = director.clerk.getQETasks(where="id='%s' AND type='%s'" % (st.taskid, type))
         if tasks:   # XXX First found tasks
             break
 

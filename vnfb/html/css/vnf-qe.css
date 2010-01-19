@@ -192,6 +192,15 @@ textarea {
     
 }
 
+select {
+    width: 200px;
+}
+
+/*
+.qe-selector-pseudo {
+    width: 200px;
+}
+*/
 
 .qe-atoms-header td{
     font-weight: bold;
