@@ -19,6 +19,7 @@ from vnfb.utils.qeutils import stamp2date
 from vnfb.utils.qeutils import parseFile
 from vnfb.utils.qegrid import QEGrid
 from vnfb.utils.qeresults import QEResults
+from vnfb.utils.qetaskinfo import TaskInfo
 from vnfb.utils.qeutils import latestJob
 
 from luban.content import select
@@ -81,17 +82,30 @@ class Actor(base):
                                              id         = self.id))
                     )
 
-        section.add(lc.link(label="Electrons",
+        section.add(lc.link(label="Create Phonon DOS",
                             Class="qe-action-edit",
-                            onclick = load(actor      = 'material_simulations/espresso/results',
+                            onclick = load(actor      = 'material_simulations/espresso/phonondos',
                                              id         = self.id))
                     )
 
-        section.add(lc.link(label="Phonons",
+        section.add(lc.link(label="Create Phonon Dispersion",
                             Class="qe-action-edit",
-                            onclick = load(actor      = 'material_simulations/espresso/results',
+                            onclick = load(actor      = 'material_simulations/espresso/phonons',
                                              id         = self.id))
                     )
+
+
+#        section.add(lc.link(label="Electrons",
+#                            Class="qe-action-edit",
+#                            onclick = load(actor      = 'material_simulations/espresso/results',
+#                                             id         = self.id))
+#                    )
+#
+#        section.add(lc.link(label="Phonons",
+#                            Class="qe-action-edit",
+#                            onclick = load(actor      = 'material_simulations/espresso/results',
+#                                             id         = self.id))
+#                    )
 
         section.add(lc.document(Class="clear-both"))
 
@@ -149,7 +163,8 @@ class Actor(base):
 
             if jit[1] is not None and jit[2].type == "DOS":   # DOS type
                 dataroot    = self._dataroot()
-                results      = QEResults(self._director, jit[0])
+                taskinfo    = TaskInfo(simid = self.id, type = "DOS")
+                results     = QEResults(self._director, jit[0], taskinfo)
                 if results.ready():
                     path        = os.path.join(results.tardir(), "ni.dos")  # dos name is hardcoded
                     filepath    = os.path.join(dataroot, path)
@@ -168,7 +183,8 @@ class Actor(base):
 
             if jit[1] is not None and jit[2].type == "PW":   # PW type
                 dataroot    = self._dataroot()
-                results      = QEResults(self._director, jit[0])
+                taskinfo    = TaskInfo(simid = self.id, type = "PW")
+                results     = QEResults(self._director, jit[0], taskinfo)
                 if results.ready():
                     file        = "%s%s.out" % (jit[1].id, jit[1].filename)
                     path        = os.path.join(results.tardir(), file)
