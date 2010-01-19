@@ -18,6 +18,8 @@ from vnfb.utils.qegrid import QEGrid
 from luban.content.FormTextField import FormTextField
 from luban.content.FormSubmitButton import FormSubmitButton
 from vnfb.utils.qeutils import remoteResultsPath
+from vnfb.utils.qeconst import PREFIX
+from vnfb.utils.qeutils import inputRecord
 from luban.content import select
 from luban.content import load
 import luban.content as lc
@@ -113,19 +115,54 @@ class Actor(base):
         # E.g.: /home/dexity/espresso/qejobs/643E2QQI/ni.fc
         # Get jobs directory of Q2R simulation task
         path    = remoteResultsPath(director, self.inventory.id, "Q2R")   #self._fcpath(director)
-        path    = os.path.join(path, "ni.fc")
+        path    = os.path.join(path, "%s.fc" % PREFIX)
 
         input      = QEInput(type='matdyn')
         nl  = Namelist("input")
-        nl.add("asr", "'crystal'")
-        nl.add("amass(1)", "26.98")
+        nl.add("asr", "'crystal'")      # TODO: Port from Q2R
         nl.add("dos", ".true.")
         nl.add("flfrc", "'%s'" % path)
         nl.add("nk1", self.nk1)
         nl.add("nk2", self.nk2)
         nl.add("nk3", self.nk3)
+
+        # Add amasses
+        list    = self._amasses(director)
+        for m in list:
+            nl.add(m[0], m[1])
+        
+        #nl.add("amass(1)", "26.98")
+
         input.addNamelist(nl)
         return input.toString()
+
+
+    # Copied from generate-q2r.py
+    def _amasses(self, director):
+        """Returns list of tuples with amass label and mass value from PW input configuration
+        Example: [("amass(1)", "35.5"), ("amass(2)", "54.3")]
+        """
+        list    = []    # amass list
+        masses  = self._masses(director)
+        for l in range(len(masses)):
+            list.append(("amass(%s)" % str(l+1), masses[l][1]))
+
+        return list
+
+    # Copied from generate-q2r.py
+    def _masses(self, director):
+        # PW configuration input
+        pwinput     = inputRecord(director, self.inventory.id, "PW")
+        pw          = QEInput(config = pwinput.text)
+        pw.parse()
+
+        list        = []
+        # List of atom of format: [('Ni', '52.98', 'Ni.pbe-nd-rrkjus.UPF'), (...)]
+        atoms       = pw.structure()
+        for a in atoms:
+            list.append((a[0], a[1]))
+
+        return list
 
 
     def __init__(self):
