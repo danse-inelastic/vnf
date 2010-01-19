@@ -286,6 +286,11 @@ a.qe-task-action {
     text-decoration: none;
 }
 
+.qe-all-jobs {
+    margin-left: 15px;
+}
+
+
 #qe-analyze-results {
     margin-left: 10px;
     background-color: #c2d6f9; /* yellow */
