@@ -39,7 +39,11 @@ class Actor(base):
         data = histogram.data
         dim = data.dimension()
 
-        doc = lc.document(Class='container')
+        title = 'Histogram %s: I(%s)' % (
+            id,
+            ','.join(['%s(%s)' % (axis.name(), axis.unit()) for axis in data.axes()]),
+            )
+        doc = lc.document(Class='container', title=title)
         
         if dim==1:
             p = lc.plot2d(); doc.add(p)
@@ -61,7 +65,7 @@ class Actor(base):
 
 
 def actor():
-    return Actor('orm/phonons')
+    return Actor('orm/histograms')
 
 
 # version

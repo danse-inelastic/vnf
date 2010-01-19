@@ -17,7 +17,9 @@ typenames = [
     ]
 
 
-deps_typenames = []
+deps_typenames = [
+    'neutron_experiment_simulations.NeutronStorage.NeutronStorage',
+    ]
 
 
 def getTypes():

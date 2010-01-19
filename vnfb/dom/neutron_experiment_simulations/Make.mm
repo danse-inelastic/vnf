@@ -42,6 +42,7 @@ EXPORT_PYTHON_MODULES = \
 	Instrument.py \
 	InstrumentConfiguration.py \
 	NeutronExperiment.py \
+	NeutronStorage.py \
 	SampleAssembly.py \
 	SampleEnvironment.py \
 	Scatterer.py \

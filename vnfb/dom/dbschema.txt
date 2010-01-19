@@ -71,3 +71,7 @@ new table 'placeholdercomponents'
 
 Jan 18, 2010
 table "fermichoppers": column "nchans" renamed to "nchan"
+
+
+Jan 19, 2010
+added table "neutronstorages"
