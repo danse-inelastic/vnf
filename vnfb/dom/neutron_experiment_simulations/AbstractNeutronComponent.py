@@ -14,7 +14,7 @@
 
 class AbstractNeutronComponent(object):
 
-    componentname = ''
+    componentname = 'name'
     position = [0.,0.,0.]
     orientation = [[1.,0.,0.],
                    [0.,1.,0.],
@@ -29,7 +29,8 @@ class AbstractNeutronComponent(object):
 from dsaw.model.Inventory import Inventory as InvBase
 class Inventory(InvBase):
 
-    componentname = InvBase.d.str(name='componentname')
+    componentname = InvBase.d.str(
+        name='componentname', default='name', validator = InvBase.v.variablename)
     componentname.label = 'name'
     componentname.help = 'name of the component'
 
