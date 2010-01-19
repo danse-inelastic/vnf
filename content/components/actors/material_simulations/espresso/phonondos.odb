@@ -18,6 +18,7 @@ from luban.content import select
 from luban.content import load
 
 import luban.content as lc
+from vnfb.utils.qeutils import remoteResultsPath
 from luban.components.AuthorizedActor import AuthorizedActor as base
 
 # Requires simulation id, config id and config type: (id, configid, type)
@@ -29,12 +30,30 @@ class Actor(base):
 
 
     def create(self, director):
+        # 1. Retrieve results: move matdyn jobs directory to local server
+        # 2. Create phonondoses record
+        # 3. Convert matdyn -> idf to phonondoses directory
+        #
         job     = self._phononDosJob(director)
         print self.simid
 
+    def _retrieveResults(self):
+        """
+        Retrieve results. Move matdyn jobs directory to local server
+        E.g.: dexity@foxtrot.danse.us:/home/dexity/espresso/qejobs/643E2QQI ->
+                /home/dexity/vnf/content/data/qejobs/643E2QQI/
+        """
+        pass
+
+    def _createRecord(self):
+        pass
+
+    def _convert(self):
+        pass
 
     def _phononDosJob(self, director):
-        jobs    = 
+        #jobs    =
+        return
 
 
     def __init__(self):

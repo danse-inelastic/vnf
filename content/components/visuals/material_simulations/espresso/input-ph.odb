@@ -18,15 +18,16 @@ from vnfb.utils.qegrid import QEGrid
 from luban.content.FormTextField import FormTextField
 from luban.content.FormSubmitButton import FormSubmitButton
 
+NQ  = 2
 
 def visual(actor, director, structureid):
     form        = lc.form(id='create-simulation-form')
     table       = QEGrid(lc.grid(Class="qe-form"))
     form.add(table.grid())
 
-    nq1         = FormTextField(name = "nq1", value = 2)
-    nq2         = FormTextField(name = "nq2", value = 2)
-    nq3         = FormTextField(name = "nq3", value = 2)
+    nq1         = FormTextField(name = "nq1", value = NQ)
+    nq2         = FormTextField(name = "nq2", value = NQ)
+    nq3         = FormTextField(name = "nq3", value = NQ)
 
     submit      = FormSubmitButton(label="Generate Input Configuration")
     cancel      = lc.button(label="Cancel")
