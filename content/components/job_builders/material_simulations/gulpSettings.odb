@@ -100,7 +100,7 @@ class Builder(base):
                      ] 
         if self.serializePhononArrays:
             cmds += [
-            'postProcessGulp.py -serializePhononArrays=True -historyFile=output.history -ncFile=output.nc',
+            'postProcessGulp.py -serializePhononArrays=True',
                      ] 
         if self.createPhononModesFile:
             cmds += [
