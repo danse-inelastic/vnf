@@ -19,7 +19,7 @@ from _ import o2t
 # each instance represents a data storage in which simulated neutrons are stored
 class NeutronStorage:
 
-    description = ''
+    short_description = ''
     
     pass
 
@@ -28,7 +28,7 @@ class NeutronStorage:
 from dsaw.model.Inventory import Inventory as InvBase
 class Inventory(InvBase):
 
-    description = InvBase.d.str(name='description', max_length=1024)
+    short_description = InvBase.d.str(name='short_description')
 
     dbtablename = 'neutronstorages'
 
