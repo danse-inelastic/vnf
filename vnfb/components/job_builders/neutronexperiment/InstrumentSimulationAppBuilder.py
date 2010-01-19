@@ -281,6 +281,36 @@ class Builder(base):
         return
 
 
+    def onNeutronPlayer(self, component):
+        kwds = {
+            'name': component.componentname,
+            'category': 'sources',
+            'type': 'NeutronFromStorage',
+            'supplier': 'mcni',
+            }
+        self.onNeutronComponent(**kwds)
+
+        # neutronstorage db record
+        storage = component.neutrons.dereference(self.db)
+        self.registerDependency(storage)
+        neutrondatapath = os.path.join('..', '..', self.dds.path(storage, 'data.idf'))
+        
+        opts = {
+            '%s.path' % component.componentname: neutrondatapath,
+            }
+
+        # map database record parameter names to parameters used in monte carlo components
+        parameters = [
+            ]
+
+        for param in parameters:
+            opts[ '%s.%s' %  (component.componentname,param) ] = getattr(component, param)
+            continue
+        
+        self.cmdline_opts.update( opts )
+        return
+
+
     def onSampleComponent(self, component):
         self._write(
             "sample = facility( 'sample', default = 'sample' )"

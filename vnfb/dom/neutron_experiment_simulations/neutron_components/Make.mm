@@ -37,6 +37,7 @@ EXPORT_PYTHON_MODULES = \
 	FermiChopper.py \
 	Monitor.py \
 	MonochromaticSource.py \
+	NeutronPlayer.py \
 	NeutronRecorder.py \
 	PlaceHolder.py \
 	QEMonitor.py \

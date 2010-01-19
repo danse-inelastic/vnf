@@ -33,10 +33,20 @@ class Inventory(InvBase):
     componentname.label = 'name'
     componentname.help = 'name of the component'
 
-    position = InvBase.d.array(name='position', elementtype='float', shape=3)
+    position = InvBase.d.array(
+        name='position',
+        elementtype='float',
+        shape=3,
+        default=AbstractNeutronComponent.position,
+        )
     position.help = 'position of this component relative to the reference component'
 
-    orientation = InvBase.d.array(name='orientation', elementtype='float', shape=(3,3))
+    orientation = InvBase.d.array(
+        name='orientation',
+        elementtype='float',
+        shape=(3,3),
+        default = AbstractNeutronComponent.orientation,
+        )
     orientation.help = 'orientation of this component relative to the reference component'
 
     referencename = InvBase.d.str(name='referencename')
