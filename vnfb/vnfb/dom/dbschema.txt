@@ -74,4 +74,4 @@ table "fermichoppers": column "nchans" renamed to "nchan"
 
 
 Jan 19, 2010
-added table "neutronstorages"
+added tables "neutronstorages", 'neutronplayers'

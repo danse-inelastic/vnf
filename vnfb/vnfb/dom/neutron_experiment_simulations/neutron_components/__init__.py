@@ -19,6 +19,7 @@ typenames = [
     'neutron_experiment_simulations.neutron_components.EMonitor.EMonitor',
     'neutron_experiment_simulations.neutron_components.FermiChopper.FermiChopper',
     'neutron_experiment_simulations.neutron_components.MonochromaticSource.MonochromaticSource',
+    'neutron_experiment_simulations.neutron_components.NeutronPlayer.NeutronPlayer',
     'neutron_experiment_simulations.neutron_components.NeutronRecorder.NeutronRecorder',
     'neutron_experiment_simulations.neutron_components.PlaceHolder.PlaceHolder',
     'neutron_experiment_simulations.neutron_components.QEMonitor.QEMonitor',
