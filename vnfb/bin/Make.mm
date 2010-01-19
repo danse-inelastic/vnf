@@ -37,6 +37,7 @@ EXPORT_DATAFILES = \
 	initdb.sh \
 	itaskapp.py \
 	launch-detached.py \
+	loaddataobject.py \
         packjobdir.py \
 	restorevnfdb.py \
 	retrieveresults.py \
