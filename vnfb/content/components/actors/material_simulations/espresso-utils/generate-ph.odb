@@ -49,13 +49,14 @@ class Actor(base):
 
     def _input(self, director):
         input      = QEInput(type='ph')
+        input.header = "phonon simulation\n"
         nl  = Namelist("inputph")
         nl.add("nq1", self.nq1)
         nl.add("nq2", self.nq2)
         nl.add("nq3", self.nq3)
         nl.add("tr2_ph", TR2_PH)
         nl.add("ldisp", LDISP)
-        nl.add("prefix", QE_PREFIX)
+        #nl.add("prefix", QE_PREFIX)    # TODO: Handle prefix properly
 
         # Add amasses
         list    = self._amasses(director)
