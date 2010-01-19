@@ -50,7 +50,6 @@ tplotmax=LM1/(sqrt(Emin)*SE2V)+toffset;
 
 from vnfb.dom.neutron_experiment_simulations.neutron_components.SNSModeratorMCSimulatedData\
      import SNSModeratorMCSimulatedData
-moderator_data = SNSModeratorMCSimulatedData()
 
 
 from vnfb.dom.neutron_experiment_simulations.neutron_components.SNSModerator import SNSModerator
@@ -70,7 +69,7 @@ def moderator():
     c.yh=0.12
     c.Emin=Emin
     c.Emax=Emax
-    c.neutronprofile = moderator_data
+    # c.neutronprofile = moderator_data
     return c
 
 
@@ -548,9 +547,16 @@ def neutron_recorder():
 
 
 def createInstrument(director):
+    mod = moderator()
+    # the default neutron profile is initd at content/components/initdb/snsmoderatormcsimulateddata.odb
+    # this means the snsmoderatormcsimulateddata table should be initd before instruments
+    # table
+    mod.neutronprofile = director.clerk.orm.load(
+        SNSModeratorMCSimulatedData, 'sct521_bu_17_1-ARCS')
+    
     from _utils import ccomp, cinstr
     components = [
-        ccomp('moderator', moderator(), ((0,0,0), (0,0,0), '')),
+        ccomp('moderator', mod, ((0,0,0), (0,0,0), '')),
         ccomp('core_ves', core_ves(), ((0,0,1.0106), (0,0,0), '')),
         ccomp('shutter_guide', shutter_guide(), ((0,0,2.26790), (0,0,0), '')),
         ccomp('guide_1_1_1', guide_1_1_1(), ((0,0,4.17230), (0,0,0), '')),
@@ -590,8 +596,12 @@ def createInstrument(director):
         date = '08/09/2008',
         components = components
         )
+    
+    return instrument
 
 
+# obsolete
+"""
     # set up neutron profile for moderator
     orm = director.clerk.orm
     datarecord = orm(moderator_data)
@@ -609,9 +619,7 @@ def createInstrument(director):
     for f in srcdata.datafiles:
         shutil.copyfile(os.path.join(src, f), os.path.join(dest, f))
         continue
-    
-    return instrument
-
+"""
 
 # version
 __id__ = "$Id$"

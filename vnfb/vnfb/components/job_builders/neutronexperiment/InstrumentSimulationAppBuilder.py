@@ -271,7 +271,6 @@ class Builder(base):
 
         # map database record parameter names to parameters used in monte carlo components
         parameters = [
-            'packetsize',
             ]
 
         for param in parameters:

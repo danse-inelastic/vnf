@@ -12,25 +12,20 @@
 #
 
 
-#from Monitor import Monitor as base
-from AbstractNeutronComponent import AbstractNeutronComponent as base
+from Monitor import Monitor as base, MonitorTableBase as TableBase
 class NeutronRecorder(base):
 
-    packetsize = 1000
     
     def customizeLubanObjectDrawer(self, drawer):
         drawer.mold.sequence = [
             'componentname', 'short_description',
             'referencename', 'position', 'orientation',
-            'packetsize',
             ]
     pass
 
 
 InvBase=base.Inventory
 class Inventory(InvBase):
-
-    packetsize = InvBase.d.int(name='packetsize', default=1000, validator=InvBase.v.positive)
 
     dbtablename = 'neutronrecorders'
 
@@ -40,8 +35,8 @@ NeutronRecorder.Inventory = Inventory
 del Inventory
 
 
-from _ import o2t, NeutronComponentTableBase
-NeutronRecorderTable = o2t(NeutronRecorder, {'subclassFrom':NeutronComponentTableBase})
+from _ import o2t
+NeutronRecorderTable = o2t(NeutronRecorder, {'subclassFrom':TableBase})
 
 
 # version

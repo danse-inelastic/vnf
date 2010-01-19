@@ -76,7 +76,7 @@ def cinstr(
     instrument.components = components
 
     orm = director.clerk.orm
-    orm.save(instrument)
+    orm.save(instrument, save_not_owned_referred_object=False)
 
     r = orm(instrument)
     r.name = name
