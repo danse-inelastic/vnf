@@ -57,7 +57,7 @@ class Actor(base):
 #        configdoc = doc.document(title = 'Configuration', collapsable = True)
 #        configdoc.oncreate = select(element=configdoc).append(
 #            load(
-#              actor='material_simulations/forcefieldwizard', routine='start',
+#              actor='material_simulations/forcefieldwizard', routine='default',
 #              id = c.id, editlink=False,
 #            ))
 

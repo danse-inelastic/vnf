@@ -51,7 +51,7 @@ def showSimulations(table):
         )
     packages.append((lc.link(label="MMTK", onclick=load(actor="material_simulations/mmtk", routine='new')),
                     "Open source molecular mechanics toolkit with Amber and Lennard Jones forcefields."))
-    packages.append((lc.link(label="GULP", onclick=load(actor="material_simulations/forcefieldwizard", routine='start')),
+    packages.append((lc.link(label="GULP", onclick=load(actor="material_simulations/forcefieldwizard")),
                     "Academically open source lattice and molecular dynamics code with a wide range of functionality and forcefields. See License."))
     packages.append((lc.link(label="MCViNE", onclick=load(actor="materialsimulation")),
                     "Neutron scattering instrument simulation."))

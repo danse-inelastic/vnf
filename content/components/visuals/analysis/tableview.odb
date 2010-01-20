@@ -75,9 +75,7 @@ def visual(
     #
     button = lc.button(label='New', tip='create new analysis', icon='new.png')
     toolbar.add(button)
-    button.onclick = select(id='main-display-area').replaceContent(
-        load(actor=name, routine='newAnalysisForm')
-        )
+    button.onclick = load(actor="analysis", routine='newAnalysisForm')
 
     return tableview
 

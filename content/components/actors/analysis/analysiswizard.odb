@@ -36,10 +36,13 @@ class Actor(base):
 #        runtype = pyre.inventory.str('runtype', default='')
 
     def default(self, director):
-        wizard = Document(id='analysiswizard-start', title='Analysis')
-        doc = self.selectComputation(director)
+        wizard = Document(id='analysiswizard', title='Analysis')
+        doc = self.selectAnalysisType(director)
         wizard.add(doc)
         return select(id='main-display-area').replaceContent(wizard)
+    
+    def selectAnalysisType(self, director):
+        return director.retrieveVisual('analysis/newAnalysisType', director = director)
     
     def selectComputation(self, director):
         doc = lc.document(id='matter-selector-doc')
@@ -69,11 +72,6 @@ class Actor(base):
                     'getIdentifiersForSelectedRow', colname='selectone'),
                 )
         return doc
-    
-    def selectAnalysisType(self, director):
-        return director.retrieveVisual('analysis/newAnalysisType', 
-                                computationId = self.inventory.computationId,
-                                director = director)
 
     def analysisSettings(self, director):
         doc         = lc.document(title = "")
@@ -118,7 +116,7 @@ class Actor(base):
 #                                 computation_type = 'material_simulations.GulpSettingsHolder.GulpSettingsHolder', 
 #                                 computation_id = self.inventory.simulationId)
         form.onsubmit = select(element=form).submit(
-            actor = 'material_simulations/forcefieldwizard',
+            actor = self.name,
             routine = 'configureSubmissionQueue',
             simulationId = self.inventory.simulationId,
             )
@@ -215,7 +213,7 @@ class Actor(base):
             for name, text in errors.iteritems()
             ]
     
-    def __init__(self, name='material_simulations/forcefieldwizard'):
+    def __init__(self, name='analysis/analysiswizard'):
         super(Actor, self).__init__(name)
         return
     

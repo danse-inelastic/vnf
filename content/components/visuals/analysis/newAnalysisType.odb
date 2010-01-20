@@ -64,9 +64,8 @@ def createDynamicsAnalysis():
     routines   = []
     routines.append(
                     (lc.link(label="DoPS", onclick=load(
-                actor='analysis/analysisWizard', routine='analysisSettings',
-                computationId=self.inventory.computationId,
-                analysisType=self.inventory.analysisType)),
+                actor='analysis/analysisWizard', routine='selectComputation',
+                computationId=self.inventory.computationId)),
                     "Density of Phonon States from an MD trajectory")
                     )
     routines.append(
