@@ -34,7 +34,7 @@ def visual(
         
     from vnfb.components.MasterTable import MasterTableFactory, filtercompiler
     def countrecords(filter, label=None):
-        return domaccess.countSamples(filter, label=label)
+        return domaccess.countDynamics(filter, label=label)
     def createtable(order_by, reverse_order, slice, filter, label=None):
         return createTable(
             director, domaccess,
