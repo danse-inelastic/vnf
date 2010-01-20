@@ -47,12 +47,11 @@ class Actor(base):
             text=['Please select one simulation from the following table:',
             ]
             )
-        # the container of the computation selector
-        container = lc.document(id='computation-selector-container')
+        container = lc.document(id='dynamics-selector-container')
         doc.add(container)
         container.oncreate = [
             select(element=container).append(
-              load(actor='selectonecomputation', routine='createListView')
+              load(actor='analysis/selectdynamics', routine='createListView')
               ),
             ]
         # cancel
