@@ -13,6 +13,7 @@
 
 
 import luban.content as lc
+from luban.content import select, load, alert
 
 class Factory(object):
 
@@ -25,38 +26,28 @@ class Factory(object):
 
 
     def create(self):
-        body = self.createBody()
         doc = lc.document(
-            id='atomicstructure-computed-props',
-            title='Computed properties',
-            collapsable = 1,
+            collapsable=1, collapsed = 1,
+            id='atomicstructure-computed-sqe',
+            title='Sqe',
             )
-        doc.add(body)
-        return doc
-    
-    
-    def createBody(self):
-        director = self.director
-        
-        doc = lc.document(id='computed-props')
-        types = [
-            'phonons',
-            'sqe',
-            #'trajectories',
-            ]
-        for t in types:
-            d = director.retrieveVisual(
-                'atomicstructure/computed-%s' % t,
-                director = director,
-                id=self.id)
-            doc.add(d)
-            continue
-        
+        loading = lc.paragraph(text=['loading ...'])
+        doc.add(loading)
+
+        loadsqe = select(element=doc).replaceContent(lc.load(
+            actor='material_simulations/getsqeresults',
+            routine='createSQEDocForAtomicStructure',
+            id = self.id,
+            ))
+        doc.onexpand = loadsqe
+
+        doc.oncollapse = select(element=doc).replaceContent(loading)
         return doc
 
 
 def visual(director, id):
     return Factory(director, id).create()
+
     
 # version
 __id__ = "$Id$"

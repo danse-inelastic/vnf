@@ -49,6 +49,7 @@ EXPORT_PYTHON_MODULES = \
 	_.py \
 	computation_types.py \
 	phonon_calculators.py \
+	sqe_calculators.py \
 	sqe_types.py \
 
 
