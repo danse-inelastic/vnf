@@ -18,8 +18,6 @@ from _ import o2t
 from vsat.Motion import Motion as MotionDO
 from vnfb.dom.AtomicStructure import StructureTable
 
-# orm
-
 # "Holder" in vnf
 from ComputationResult import ComputationResult
 Motion = o2t(MotionDO, {'subclassFrom': ComputationResult})

@@ -17,24 +17,8 @@ from _ import o2t
 # data object
 from vsat.Phonons import Phonons
 
-# holder
-from vnfb.dom.AtomicStructure import Structure, StructureTable
-
-from dsaw.model.Inventory import Inventory as InvBase
-class Inventory(InvBase):
-
-    matter = InvBase.d.reference(
-        name='matter', targettype=Structure, owned=0)
-
-    short_description = InvBase.d.str(name='short_description')
-
-    dbtablename = 'phonons'
-
-Phonons.Inventory = Inventory
-del Inventory
-
-
-# db table
+from vnfb.dom.AtomicStructure import StructureTable
+# vnf holder
 from ComputationResult import ComputationResult
 #PhononDispersionTable = o2t(PhononDispersion, {'subclassFrom': ComputationResult})
 PhononsTable = o2t(Phonons, {'subclassFrom': ComputationResult})

@@ -1,0 +1,53 @@
+# -*- Python -*-
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                   Jiao Lin
+#                      California Institute of Technology
+#                      (C) 2006-2009  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+from vnfb.components.DOMAccessor import DOMAccessor as base
+
+class Accessor(base):
+
+
+    def __init__(self):
+        super(Accessor, self).__init__('dynamics')
+        return
+
+
+    def _getOrm(self):
+        orm = self.director.clerk.orm
+        # build orm for all dynamics types--orm 
+        #registers and stores these internally
+#        from vnfb.dom.material_simulations.Phonons import PhononTable
+#        from vnfb.dom.material_simulations.Motion import Motion
+        from vsat.Phonons import Phonons
+        from vsat.Motion import Motion
+        orm(Phonons)
+        orm(Motion)
+        return orm
+    orm = property(_getOrm)
+
+
+    def getDynamicsRecord(self, type, id):
+        orm = self.orm
+        db = orm.db
+        table = db.getTable(type)
+        return db.query(table).filter_by(id=id).one()
+
+
+def accessor():
+    return Accessor()
+
+
+# version
+__id__ = "$Id$"
+
+# End of file 

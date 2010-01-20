@@ -40,7 +40,7 @@ class Actor(base):
         except FilterSyntaxError, msg:
             return alert('filter syntax error: %s' % msg)
         return [
-            select(id = 'computation-selector-container').replaceContent(view),
+            select(id = 'dynamics-selector-container').replaceContent(view),
             ]
     
     def createListView(self, director):
@@ -77,7 +77,7 @@ class Actor(base):
         return
 
 
-    def __init__(self, name='selectonecomputation'):
+    def __init__(self, name='selectdynamics'):
         super(Actor, self).__init__(name)
         return
 
