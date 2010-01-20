@@ -16,7 +16,7 @@ import luban.content as lc
 from luban.content import load, select
 
 def visual(director):
-    doc         = lc.document(title = "New Analysis")
+    doc         = lc.document(title = "")
     splitter    = doc.splitter(orientation="vertical")
     sA          = splitter.section()
     sA.add(viewIndicator(director))
@@ -24,20 +24,21 @@ def visual(director):
     sB          = splitter.section()
     sp = lc.splitter(); sB.add(sp)
     
-    left = sp.section()#title='Structure Analysis')
-    docLeft         = lc.document(title = "Structure")
-    left.add(docLeft)
-    left.add(createStructureAnalysis())
-             
+    scat = sp.section()#title='Scattering Analysis')
+    docScat = lc.document(title = 'Scattering')
+    scat.add(docScat)
+    scat.add(createScatteringAnalysis())
+
     middle = sp.section()#title='Dynamics Analysis')
     docMiddle        = lc.document(title = "Dynamics")
     middle.add(docMiddle)
     middle.add(createDynamicsAnalysis())
     
-    right = sp.section()#title='Scattering Analysis')
-    docRight = lc.document(title = 'Scattering')
-    right.add(docRight)
-    right.add(createScatteringAnalysis())
+    struct = sp.section()#title='Structure Analysis')
+    docStruct         = lc.document(title = "Structure")
+    struct.add(docStruct)
+    struct.add(createStructureAnalysis())
+
     
 #    table       = QEGrid(lc.grid(Class="qe-table"))
 #    sB.add(table.grid())
@@ -51,8 +52,8 @@ def createStructureAnalysis():
     
     routines   = []
     routines.append(
-                    (lc.link(label="RDF", 
-                             onclick=load(actor="orm/rdfcalc", routine='edit')),
+                    (lc.link(label="RDF", onclick=select(id='main-display-area'
+                            ).replaceContent(load(actor="orm/rdfcalc", routine='edit', id='2'))),
                     "Radial Distribution Function from an MD trajectory")
                     )
     
@@ -82,7 +83,8 @@ def createDynamicsAnalysis():
                     "Mean Squared Displacement from an MD trajectory")
                     )
     routines.append(
-                    (lc.link(label="Diffusion", onclick=load(actor="orm/diffusioncalc", routine='edit')),
+                    (lc.link(label="Diffusion", onclick=select(id='main-display-area'
+                            ).replaceContent(load(actor="orm/diffusioncalc", routine='edit', id='2'))),
                     "Generate a diffusion coefficient from an MD trajectory")
                     )
     
@@ -97,23 +99,28 @@ def createScatteringAnalysis():
     
     routines   = []
     routines.append(
-                    (lc.link(label="S(Q,E)", onclick=load(actor="orm/csfcalc", routine='edit')),
-                    "Generate coherent and incoherent portions of inelastic scattering through an MD trajectory"))
+                    (lc.link(label="S(Q,E)", onclick=select(id='main-display-area'
+                            ).replaceContent(load(actor="orm/csfcalc", routine='edit', id='2'))),
+                    "Generate coherent and incoherent portions of inelastic scattering through an MD trajectory")
+                    )
     routines.append(
-                    (lc.link(label="EISF", onclick=load(actor="orm/eisfcalc", routine='edit')
-                             ),
+                    (lc.link(label="EISF", onclick=select(id='main-display-area'
+                            ).replaceContent(load(actor="orm/eisfcalc", routine='edit', id='2'))),
                     "Elastic Incoherent Structure Factor from an MD trajectory")
                     )
     routines.append(
-                    (lc.link(label="Static S(Q)", onclick=load(actor="orm/staticsqcalc", routine='edit')),
+                    (lc.link(label="Static S(Q)", onclick=select(id='main-display-area'
+                            ).replaceContent(load(actor="orm/staticsqcalc", routine='edit', id='2'))),
                     "Static Structure Factor from an MD trajectory")
                     )
     routines.append(
-                    (lc.link(label="Dynamic S(Q)", onclick=load(actor="orm/dynamicsqcalc", routine='edit')),
+                    (lc.link(label="Dynamic S(Q)", onclick=select(id='main-display-area'
+                            ).replaceContent(load(actor="orm/dynamicsqcalc", routine='edit', id='2'))),               
                     "Dynamic Structure Factor from an MD trajectory")
                     )
     routines.append(
-                    (lc.link(label="Multiphonon Scattering", onclick=load(actor="orm/multiscatcalc", routine='edit')),
+                    (lc.link(label="Multiphonon Scattering", onclick=select(id='main-display-area'
+                            ).replaceContent(load(actor="orm/multiscatcalc", routine='edit', id='2'))),      
                     "Add multiphonon scattering corrections to an S(Q,E)")
                     )
     
@@ -129,8 +136,8 @@ def createScatteringAnalysis():
 
 def viewIndicator(director):
     path = []
-    path.append(('Simulations ', load(actor='materialsimulation', routine='edit')))
-    path.append('Create New Simulation')
+    path.append(('Analysis ', load(actor='analysis', routine='edit')))
+    path.append('Create New Analysis')
     
     return director.retrieveVisual('view-indicator', path=path)
 
