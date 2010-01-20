@@ -86,8 +86,8 @@ class Actor(base):
                                     labels
                                     )
 
-        order_by        = self.inventory.order_by
-        reverse_order   = self.inventory.reverse_order
+        order_by        = self.inventory.order_by = 'id'#'time_start'
+        reverse_order   = self.inventory.reverse_order = True
         number_records_per_page     = self.inventory.number_records_per_page
         page_number     = self.inventory.page_number
 
