@@ -18,7 +18,8 @@ from vnfb.dom.Computation import Computation
 
 from vsat.trajectory.MotionDosCalc import MotionDosCalc
 
-MotionDosCalcHolder = o2t(MotionDosCalc, {'subclassFrom': Computation, 'dbtablename':'motiondoscalc'})
+MotionDosCalcHolder = o2t(MotionDosCalc, {'subclassFrom': Computation, 
+                                          'dbtablename':'motiondoscalc'})
 MotionDosCalcHolder.job_builder = 'analysis/motiondoscalc'
 MotionDosCalcHolder.actor = 'analysis/motiondoscalc'
 MotionDosCalcHolder.result_retriever = 'analysis/motiondoscalc'

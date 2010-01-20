@@ -271,7 +271,7 @@ class DOMAccessor( base ):
             id, table.__name__)
 
     def _getAll(self, table, where = None):
-        index = {}
+        #index = {}
         all = self.db.fetchall(table, where=where)
         return all
 

@@ -13,6 +13,8 @@
 
 typenames = [
     'analysis.MotionDosCalcHolder.MotionDosCalcHolder',
+    'analysis.MotionDosCalcHolder.MotionDosCalcHolder',
+    'analysis.MotionDosCalcHolder.MotionDosCalcHolder',
     ]
 
 

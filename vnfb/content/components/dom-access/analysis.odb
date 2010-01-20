@@ -10,23 +10,17 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
-
 tablename='analysis'
-
-
 from vnfb.components.DOMAccessor import DOMAccessor as base
 
 class Accessor(base):
-
 
     def __init__(self):
         super(Accessor, self).__init__('analysis-accessor')
         return
 
-
     def getAnalysis(self, type, id):
         return self.getRecordByID(type, id)
-
 
     def countAnalyses(self, filter=None, label=None):
         db = self.db
