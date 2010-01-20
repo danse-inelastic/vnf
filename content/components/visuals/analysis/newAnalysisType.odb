@@ -63,8 +63,10 @@ def createDynamicsAnalysis():
     
     routines   = []
     routines.append(
-                    (lc.link(label="DoPS", onclick=select(id='main-display-area'
-                            ).replaceContent(load(actor="orm/motiondoscalc", routine='edit', id='2'))),
+                    (lc.link(label="DoPS", onclick=load(
+                actor='analysis/analysisWizard', routine='analysisSettings',
+                computationId=self.inventory.computationId,
+                analysisType=self.inventory.analysisType)),
                     "Density of Phonon States from an MD trajectory")
                     )
     routines.append(
