@@ -27,9 +27,9 @@ class Actor(base):
         '''
         selected = self.inventory.selected
         id, table = selected.split(',')
-        domaccess = director.retrieveDOMAccessor('computation')
-        computation = domaccess.getSample(table, id)
-        return domaccess.db.getUniqueIdentifierStr(computation)        
+        domaccess = director.retrieveDOMAccessor('dynamics')
+        dynamics = domaccess.getSample(table, id)
+        return domaccess.db.getUniqueIdentifierStr(dynamics)        
 
     def default(self, director):
         return self.showListView(director)
