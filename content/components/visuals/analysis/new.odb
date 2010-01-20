@@ -11,7 +11,7 @@
 #
 
 import luban.content as lc
-#from vnfb.utils.qegrid import QEGrid
+from vnfb.utils.qegrid import QEGrid
 
 from luban.content import load, select
 
@@ -22,33 +22,27 @@ def visual(director):
     sA.add(viewIndicator(director))
 
     sB          = splitter.section()
-    sp = lc.splitter(); sB.add(sp)
+    sp = lc.splitter(orientation="vertical"); sB.add(sp)
     
-    scat = sp.section()#title='Scattering Analysis')
+    scat = sp.section()
     docScat = lc.document(title = 'Scattering')
     scat.add(docScat)
     scat.add(createScatteringAnalysis())
 
-    middle = sp.section()#title='Dynamics Analysis')
+    middle = sp.section()
     docMiddle        = lc.document(title = "Dynamics")
     middle.add(docMiddle)
     middle.add(createDynamicsAnalysis())
     
-    struct = sp.section()#title='Structure Analysis')
+    struct = sp.section()
     docStruct         = lc.document(title = "Structure")
     struct.add(docStruct)
     struct.add(createStructureAnalysis())
-
-    
-#    table       = QEGrid(lc.grid(Class="qe-table"))
-#    sB.add(table.grid())
-#    showAnalyses(table)
-#
-#    table.setColumnStyle(0, "qe-cell-param")
     return doc
 
 def createStructureAnalysis():
-    grid = lc.grid()
+    qegrid = QEGrid(lc.grid(Class="qe-table"))
+    qegrid.setColumnStyle(0, "qe-cell-param")
     
     routines   = []
     routines.append(
@@ -58,13 +52,14 @@ def createStructureAnalysis():
                     )
     
     for link,desc in routines:
-        row = grid.row()
-        row.cell().add(link)
-        row.cell().add(desc)
-    return grid
+        qegrid.addRow((link,desc))
+#        row = grid.row()
+#        row.cell().add(link)
+#        row.cell().add(desc)
+    return qegrid.grid()
 
 def createDynamicsAnalysis():
-    grid = lc.grid()
+    qegrid = QEGrid(lc.grid(Class="qe-table"))
     
     routines   = []
     routines.append(
@@ -89,13 +84,14 @@ def createDynamicsAnalysis():
                     )
     
     for link,desc in routines:
-        row = grid.row()
-        row.cell().add(link)
-        row.cell().add(desc)
-    return grid
+        qegrid.addRow((link,desc))
+#        row = grid.row()
+#        row.cell().add(link)
+#        row.cell().add(desc)
+    return qegrid.grid()
 
 def createScatteringAnalysis():
-    grid = lc.grid()
+    qegrid = QEGrid(lc.grid(Class="qe-table"))
     
     routines   = []
     routines.append(
@@ -125,10 +121,11 @@ def createScatteringAnalysis():
                     )
     
     for link,desc in routines:
-        row = grid.row()
-        row.cell().add(link)
-        row.cell().add(desc)
-    return grid
+        qegrid.addRow((link,desc))
+#        row = grid.row()
+#        row.cell().add(link)
+#        row.cell().add(desc)
+    return qegrid.grid()
 
 
 
