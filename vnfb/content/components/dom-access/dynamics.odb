@@ -21,7 +21,6 @@ class Accessor(base):
         super(Accessor, self).__init__('dynamics')
         return
 
-
     def _getOrm(self):
         orm = self.director.clerk.orm
         # build orm for all dynamics types--orm 
@@ -35,13 +34,11 @@ class Accessor(base):
         return orm
     orm = property(_getOrm)
 
-
     def getDynamicsRecord(self, type, id):
         orm = self.orm
         db = orm.db
         table = db.getTable(type)
         return db.query(table).filter_by(id=id).one()
-
 
 def accessor():
     return Accessor()
