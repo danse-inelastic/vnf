@@ -17,6 +17,8 @@
 
 all = [
     'bvk',
+    'gulp',
+    'quantum espresso',
     ]
 
 # version
