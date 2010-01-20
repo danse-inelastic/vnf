@@ -2,7 +2,6 @@
 #
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
-#                                 Jiao Lin
 #                      California Institute of Technology
 #                      (C) 2006-2009  All Rights Reserved
 #
@@ -10,12 +9,8 @@
 #
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
-
-
 from luban.content import load, select, alert
 import luban.content as lc
-
-
 
 from vnfb.components.MasterTable import FilterSyntaxError, MasterTableActor as base
 
@@ -26,33 +21,28 @@ class Actor(base):
         import pyre.inventory
         selected = pyre.inventory.str(name='selected')
 
-
-
     def getSelectedSampleUniqueIdentifierStr(self, director):
         '''converts the "selected" string to the unique identifier string
         that can be decoded by db manager method fetchRecordUsingUniqueIdentifierStr
         '''
         selected = self.inventory.selected
         id, table = selected.split(',')
-        domaccess = director.retrieveDOMAccessor('sample')
-        sample = domaccess.getSample(table, id)
-        return domaccess.db.getUniqueIdentifierStr(sample)        
-
+        domaccess = director.retrieveDOMAccessor('computation')
+        computation = domaccess.getSample(table, id)
+        return domaccess.db.getUniqueIdentifierStr(computation)        
 
     def default(self, director):
         return self.showListView(director)
-
-
+    
     def showListView(self, director):
         try:
             view = self.createListView(director)
         except FilterSyntaxError, msg:
             return alert('filter syntax error: %s' % msg)
         return [
-            select(id = 'sample-selector-container').replaceContent(view),
+            select(id = 'computation-selector-container').replaceContent(view),
             ]
     
-            
     def createListView(self, director):
         order_by        = self.inventory.order_by
         reverse_order   = self.inventory.reverse_order
@@ -66,7 +56,7 @@ class Actor(base):
         label = self.inventory.label
         
         tableview = director.retrieveVisual(
-            'sample/tableview-selectone',
+            'analysis/tableview-selectone',
             director,
             self.name,
             label           = label,
@@ -87,7 +77,7 @@ class Actor(base):
         return
 
 
-    def __init__(self, name='selectonesample'):
+    def __init__(self, name='selectonecomputation'):
         super(Actor, self).__init__(name)
         return
 
