@@ -23,42 +23,30 @@ from luban.components.Actor import Actor as base
 
 class Actor(base):
 
-
     class Inventory(base.Inventory):
-
         import pyre.inventory
-
         analysisId = pyre.inventory.str('analysisId', default = '')
-        structureId = pyre.inventory.str('structureId', default = '')
+        computationId = pyre.inventory.str('computationId', default = '')
+        analysisType = pyre.inventory.str('analysisType', default='')
         short_description = pyre.inventory.str('short_description', default = '' )
         short_description.meta['tip'] = 'A short description'
-
         creator = pyre.inventory.str('creator', default='')
         description = pyre.inventory.str('description', default='')
-        
 #        inputFileContents = pyre.inventory.str('inputFileContents', default='')
 #        runtype = pyre.inventory.str('runtype', default='')
 
-    def start(self, director):
-        title = 'Analysis'
-        wizard = Document(id='analysiswizard-start', title=title)
-
-        
+    def default(self, director):
+        wizard = Document(id='analysiswizard-start', title='Analysis')
         doc = self.selectComputation(director)
         wizard.add(doc)
-        
         return select(id='main-display-area').replaceContent(wizard)
-    
     
     def selectComputation(self, director):
         doc = lc.document(id='matter-selector-doc')
-
         doc.paragraph(
-            text=[
-            'Please select one simulation from the following table,',
+            text=['Please select one simulation from the following table,',
             ]
             )
-
         # the container of the computation selector
         container = lc.document(id='computation-selector-container')
         doc.add(container)
@@ -76,22 +64,29 @@ class Actor(base):
         # select button
         b = lc.button(label='select'); doc.add(b)
         b.onclick = load(
-                actor=self.name, routine='',
+                actor=self.name, routine='analysisSettings',
                 computationId=select(id='computation-table').table(
                     'getIdentifiersForSelectedRow', colname='selectone'),
                 )
-
-lc.link(label="RDF", onclick=select(id='main-display-area'
-                            ).replaceContent(load(actor="orm/rdfcalc", routine='edit', id='2')))
-
         return doc
+    
+    def selectAnalysisType(self, director):
+        return director.retrieveVisual('analysis/newAnalysisType', 
+                                computationId = self.inventory.computationId,
+                                director = director)
 
-    def atomSimForm(self, director):
-        from luban.content.Splitter import Splitter
-        from luban.content.Form import Form
-        from luban.content.FormTextField import FormTextField
-        from luban.content.FormSelectorField import FormSelectorField
-        self.inventory.simulationId = director.getGUID()
+    def analysisSettings(self, director):
+        doc         = lc.document(title = "")
+        splitter    = doc.splitter(orientation="vertical")
+        sA          = splitter.section()
+        #sA.add(viewIndicator(director))
+        sA.add(viewIndicator(director))
+
+        sB          = splitter.section()
+
+        
+        lc.link(label="RDF", onclick=select(id='main-display-area'
+                ).replaceContent(load(actor="orm/rdfcalc", routine='edit', id='2')))
         
         form = Form(
             id='forcefield-wizard-startform',

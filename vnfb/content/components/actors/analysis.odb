@@ -104,10 +104,8 @@ class Actor(base):
         return tableview
 
     def newAnalysisForm(self, director):
-        return director.retrieveVisual('analysis/new', director = director)
-
-
-
+        return load(actor="analysis/analysiswizard", routine='start')
+        #return director.retrieveVisual('analysis/new', director = director)
 
     def editAnalysisForm(self, director):
         return director.retrieveVisual(
