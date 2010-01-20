@@ -10,10 +10,10 @@
 #
 
 
-# The table view to select one sample(assembly).
+# The table view to select one dynamics data object for later analysis.
 # This is the visual for the whole table view that includes a table and
 # many controls. 
-# it is different from sample/table-selectone which only is the table itself.
+# it is different from analysis/table-selectone which only is the table itself.
 
 
 from luban.content import load, select, alert
@@ -96,7 +96,7 @@ def createTable(
     cols = columns
     args = records, cols, director
     thetable = director.retrieveVisual(
-        'sample/table-selectone',
+        'analysis/table-selectone',
         samples = records,
         cols = cols,
         director = director)

@@ -40,32 +40,14 @@ def visual(director):
     struct.add(createStructureAnalysis())
     return doc
 
-def createStructureAnalysis():
-    qegrid = QEGrid(lc.grid(Class="qe-table"))
-    qegrid.setColumnStyle(0, "qe-cell-param")
-    
-    routines   = []
-    routines.append(
-                    (lc.link(label="RDF", onclick=select(id='main-display-area'
-                            ).replaceContent(load(actor="orm/rdfcalc", routine='edit', id='2'))),
-                    "Radial Distribution Function from an MD trajectory")
-                    )
-    
-    for link,desc in routines:
-        qegrid.addRow((link,desc))
-#        row = grid.row()
-#        row.cell().add(link)
-#        row.cell().add(desc)
-    return qegrid.grid()
-
 def createDynamicsAnalysis():
     qegrid = QEGrid(lc.grid(Class="qe-table"))
     
     routines   = []
     routines.append(
                     (lc.link(label="DoPS", onclick=load(
-                actor='analysis/analysisWizard', routine='selectComputation',
-                computationId=self.inventory.computationId)),
+                actor='analysis/analysisWizard', routine='selectDynamics',
+                analysisType='motionDosCalc')),
                     "Density of Phonon States from an MD trajectory")
                     )
     routines.append(
@@ -129,6 +111,23 @@ def createScatteringAnalysis():
     return qegrid.grid()
 
 
+def createStructureAnalysis():
+    qegrid = QEGrid(lc.grid(Class="qe-table"))
+    qegrid.setColumnStyle(0, "qe-cell-param")
+    
+    routines   = []
+    routines.append(
+                    (lc.link(label="RDF", onclick=select(id='main-display-area'
+                            ).replaceContent(load(actor="orm/rdfcalc", routine='edit', id='2'))),
+                    "Radial Distribution Function from an MD trajectory")
+                    )
+    
+    for link,desc in routines:
+        qegrid.addRow((link,desc))
+#        row = grid.row()
+#        row.cell().add(link)
+#        row.cell().add(desc)
+    return qegrid.grid()
 
 
 
