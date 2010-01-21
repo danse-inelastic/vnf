@@ -62,6 +62,8 @@ EXPORT_PYTHON_MODULES = \
         qestatus.py \
         qeutils.py \
 	safe_eval.py \
+	safe_eval_25.py \
+	safe_eval_26.py \
         serverlist.py \
         spawn.py \
 
