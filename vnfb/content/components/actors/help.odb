@@ -11,8 +11,12 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
-from luban.content import load, select
+
+from luban.content import load, select, alert
+import luban.content as lc
+
 from luban.components.AuthorizedActor import AuthorizedActor as base
+
 
 class Actor(base):
 
@@ -22,22 +26,22 @@ class Actor(base):
         import pyre.inventory
 
 
-    def greet(self, director):
-        actions = [select(id='dock').show()]
-        #
-        actions += director.redirect(
-            actor='atomicstructure', routine='replaceBodyFrameWithAtomicStructureList',
-            include_credential = False)
-        #
-        helpwindow = director.redirect(
-            actor='help', routine='createHelpWindow', include_credential=False)
-        actions.append( select(id='').append(helpwindow) )
-        #
-        return actions        
-        return director.redirect(actor='matter', routine='replaceBodyFrameWithMatterList')
+    def default(self, director):
+        # general help
+        return select(id='help').show()
 
 
-    def __init__(self, name='greeter'):
+    def createHelpWindow(self, director):
+        doc = lc.document(
+            id='help', title='help', collapsable=True, dockable=True, hidden=True)
+        
+        p = doc.paragraph()
+        p.text = ['help...']
+        
+        return doc
+
+
+    def __init__(self, name='help'):
         super(Actor, self).__init__(name)
         return
 

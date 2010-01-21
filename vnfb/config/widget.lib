@@ -28,6 +28,8 @@
         "jquery/jquery.tooltip.js",
         "jquery/jquery.dropshadow.js",
         "jquery/ui/ui.core.js",
+        "jquery/ui/ui.draggable.js",
+        "jquery/ui/ui.resizable.js",
         "luban/luban-core.js",
         "luban/luban-controller.js",
         "luban/luban-compiler-preloader.js",
@@ -42,9 +44,14 @@
      "stylesheets": [
         ],
      "jslibs":      [
-        "jquery/ui/ui.draggable.js",
-        "jquery/ui/ui.resizable.js",
         "jquery/ui/ui.dialog.js"
+        ]
+  },
+  "uploader": {
+     "stylesheets": [
+        ],
+     "jslibs":      [
+        "jquery/ajaxupload.3.0.js"
         ]
   },
   "table": {

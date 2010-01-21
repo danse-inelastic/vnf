@@ -30,40 +30,41 @@ body {
 .luban-document-title-text {
     font-size: 130%;
 }
-.luban-document.collapsable{
+.luban-document.panel{
     border: solid 1px lightgray;
 }
-.luban-document.collapsable > .luban-document-body{
+.luban-document.panel > .luban-document-body{
     margin-left:0;
     padding: 0.5em 0.2em 0.5em 1em;
 }
-.luban-document.collapsable > .luban-document-title {
+.luban-document.panel > .luban-document-title {
     margin-left:0;
     background-color: lightblue;
 }
-.luban-document.collapsable > .luban-document-title > table{
+.luban-document.panel > .luban-document-title > table{
     width: 100%;
     border-collapse:collapse;
 }
-.luban-document.collapsable > .luban-document-title > table .separator{
+.luban-document.panel > .luban-document-title > table .separator{
     width: 1em;
 }
-.luban-document.collapsable > .luban-document-title > table td > h1.luban-document-title-text {
+.luban-document.panel > .luban-document-title > table td > h1.luban-document-title-text {
     margin: 0;
     padding: 0.2em;
 }
-.luban-document.collapsable > .luban-document-title > table td.luban-document-title-controls{
+.luban-document.panel > .luban-document-title > table td.luban-document-title-controls{
     width: 2em;
     text-align: center;
 }
-.luban-document.collapsable > .luban-document-title > table td.luban-document-title-controls .collapse-expand{
+.luban-document.panel > .luban-document-title > table td.luban-document-title-controls a{
     color: blue;
     font-size: 150%;
+    padding: 0 0.3em;
 }
-.luban-document.collapsable > .luban-document-title > table td.luban-document-title-controls a.collapse-expand:hover{
+.luban-document.panel > .luban-document-title > table td.luban-document-title-controls a:hover{
     cursor: pointer;
 }
-.luban-document.collapsable > .luban-document-title > table td.luban-document-title-controls > table {
+.luban-document.panel > .luban-document-title > table td.luban-document-title-controls > table {
     border-collapse:collapse;
 }
 
@@ -172,7 +173,6 @@ a.luban-link:hover{
     background-repeat:no-repeat;
     width:30px;
     height:30px;
-    z-index: 1000000;
 /* 
    font-size:125%; 
    -moz-border-radius:9px;
@@ -291,6 +291,49 @@ textarea[disabled] {
 }
 
 
+/* dock */
+.luban-dock {
+background-color:lightGrey;
+min-height:1.5em;
+position:fixed;
+bottom:2px;
+left:0;
+right:0;
+z-index: 100000;
+
+filter:alpha(opacity=60);
+opacity:0.6;
+}
+.luban-dock table > tbody > tr > td {
+border:2px solid #777777;
+padding:0.2em 0.5em;
+-moz-border-radius:0.5em;
+-webkit-border-radius:0.5em;
+cursor:pointer;
+}
+
+
+.luban-document.dockable {
+    position: absolute;
+    left: 5em;
+    top: 5em;
+    width: 70%;
+    height: auto;
+    background-color: white;
+    overflow: hidden;
+/*
+filter:alpha(opacity=70);
+opacity:0.7;
+*/
+}
+
+.luban-document.dockable a.dock {
+    color: blue;
+    cursor: pointer;
+    padding: 0 0.5em 0 0.2em;
+}
+
+
 /* plot2d */
 .luban-plot2d {
     width: 300;
@@ -305,7 +348,7 @@ li {
 
 
 /* orm */
-.object-editor.luban-document.collapsable {
+.object-editor.luban-document.panel {
     border: 2px solid #555555;
     background-color:#E5E5E5;
 }

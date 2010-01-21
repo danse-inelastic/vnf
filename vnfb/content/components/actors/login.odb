@@ -13,6 +13,7 @@
 
 
 from luban.content import load, select, createCredential
+import luban.content as lc
 
 from luban.components.Actor import Actor as base
 
@@ -38,9 +39,11 @@ class Actor(base):
         form = director.retrieveVisual('login-form')
         right.add(form)
         
-        from luban.content.Page import Page
-        page = Page(title='Please login')
+        page = lc.page(title='Please login')
         page.add(visual)
+
+        dock = lc.dock(id='dock', hidden=True)
+        page.add(dock)
         
         return page
 
