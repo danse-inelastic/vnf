@@ -16,7 +16,7 @@ import os.path
 
 import os
 from vnfb.utils.qeutils import stamp2date
-from vnfb.utils.qeutils import parseFile
+from vnfb.utils.qeutils import parseFile, parsePHFile
 from vnfb.utils.qegrid import QEGrid
 from vnfb.utils.qeresults import QEResults
 from vnfb.utils.qetaskinfo import TaskInfo
@@ -70,7 +70,9 @@ class Actor(base):
         sC          = splitter.section()
         self._showData(sC)                  # Show data
         sD          = splitter.section()
-        self._showPlot(director, sD)        # Show plot
+        self._showPhononPlot(director, sD)
+        
+        #self._showPlot(director, sD)        # Show plot
 
         return doc
 
@@ -156,6 +158,25 @@ class Actor(base):
         section.add(plot)
 
 
+    def _showPhononPlot(self, director, section):
+        "Plot electron DOS"
+        dosfile      = self._phononDosFile()
+
+        if dosfile is None:
+            return
+
+        section.add(lc.paragraph(text="Phonon DOS", Class="qe-section"))
+
+        # Populate D(E) list from file
+        (e,  state) = parsePHFile(dosfile)
+
+        plot = lc.plot2d(Class="default-size-plot")
+        plot.curve(x=e, y=state, label='Phonon DOS')
+
+        section.add(plot)
+
+
+    # DOS simulation task. Should have ni.dos file
     def _dosFile(self):
         "Retruns absolute path of the DOS file"
         # Example: "/home/dexity/exports/vnf/vnfb/content/data/tmp/tmpVr7_LD/4IJW2PEI/ni.dos" v
@@ -173,6 +194,26 @@ class Actor(base):
                     #print filepath
                     return filepath
             
+        return None
+
+    # MATDYN simulation task. Should have matdyn.dos file
+    def _phononDosFile(self):
+        "Retruns absolute path of the MATDYN file"
+        # Example: "/home/dexity/exports/vnf/vnfb/content/data/tmp/tmpVr7_LD/4IJW2PEI/matdyn.dos" 
+        for jit in self._jitlist:
+            if jit[0] is None:   # If job is None
+                continue
+
+            if jit[1] is not None and jit[2].type == "MATDYN":   # MATDYN type
+                dataroot    = self._dataroot()
+                taskinfo    = TaskInfo(simid = self.id, type = "MATDYN")
+                results     = QEResults(self._director, jit[0], taskinfo)
+                if results.ready():
+                    path        = os.path.join(results.tardir(), "matdyn.dos")  # dos name is hardcoded
+                    filepath    = os.path.join(dataroot, path)
+                    #print filepath
+                    return filepath
+
         return None
 
 
