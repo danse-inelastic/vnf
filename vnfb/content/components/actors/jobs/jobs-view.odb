@@ -99,7 +99,7 @@ class Actor(base):
             table.addRow(('Server:',    server.address))
             table.addRow(("Status: ",   job.status))
             table.addRow(("Number of Processors: ", str(job.numberprocessors)))
-            table.addRow(("Time Submitted: ", job.timesubmitted))
+            table.addRow(("Time Submitted: ", stamp2date(job.timesubmitted)))
             table.addRow(("Time Completed: ", job.timecompleted))
             table.addRow(("Time Restarted: ", job.timestarted))
             table.addRow(("Status Message: ", job.statusmessage))

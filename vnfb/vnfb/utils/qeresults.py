@@ -114,7 +114,7 @@ class QEResults:
         "Returns link to results when ready or string with status"
         cid         = "%s-%s" % (RESULTS_ID, self._taskinfo.type()) # self._task.id?
         container   = lc.document(id=cid)
-        link    = lc.paragraph(text="None") # Default value
+        link        = lc.htmldocument(text="<div>None</div>")# lc.paragraph(text="None") # Default value
 
         if self._job:
             link    = self.status()
@@ -140,7 +140,7 @@ class QEResults:
 
 
     def _statusstring(self):
-        return self._status.string()#"div")#"p")
+        return self._status.string("div")
 
 
     def _norequest(self):
