@@ -31,7 +31,10 @@ EXPORT_PYTHON_MODULES = \
 	AST2DBSyntax.py \
 	expression.py \
 	parser.py \
+	parser_25.py \
+	parser_26.py \
 	__init__.py \
+	_logical_calls.py \
 
 
 EXPORT_BINS = \
