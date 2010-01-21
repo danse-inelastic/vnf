@@ -236,9 +236,22 @@ width:3em;
     border:none;
 }
 
+/* dock */
+.luban-dock {
+background-color:lightCyan;
+height:2em;
+}
+
 /* misc */
 .float-right {
     float: right;
+}
+#help{
+    width: 1020;
+}
+#help-container{
+    width: 1020;
+    height: 510;
 }
 
 /* version */
