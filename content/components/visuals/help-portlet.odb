@@ -1,0 +1,30 @@
+# -*- Python -*-
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                 Jiao Lin
+#                      California Institute of Technology
+#                      (C) 2006-2009  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+from luban.content.Portlet import Portlet
+from luban.content import load
+
+
+def visual(director):
+    portlet = Portlet(id='help-portlet', title='')
+
+    portlet.item(id='help-portlet-help', label='help', onclick=load(actor='help'))    
+    
+    return portlet
+
+    
+# version
+__id__ = "$Id$"
+
+# End of file 

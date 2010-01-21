@@ -171,7 +171,7 @@ border-collapse:collapse;
 }
 
 /* warning */
-.collapsable.luban-document.warning {
+.panel.luban-document.warning {
 border:1px solid #EEAAAA;
 }
 .luban-document.warning {
@@ -187,15 +187,53 @@ padding:0.5em 1em;
     font-size: 1.2em;
 }
 
-/* collapsable luban document */
-.luban-document.collapsable > .luban-document-title > table td.luban-document-title-controls .collapse-expand{
+/* panel luban document */
+/* panel */
+.panel.luban-document {
+-moz-border-radius:1em;
+-webkit-border-radius:1em;
+padding:0.3em;
+border:solid 1px #ccc;
+}
+.panel.luban-document .titlebar {
+-moz-border-radius:12px;
+-webkit-border-radius:12px;
+border-bottom:1px solid #ddd;
+}
+.panel.luban-document .titlebar table {
+border-collapse:collapse;
+}
+.panel.luban-document .titlebar table td {
+}
+.panel.luban-document .titlebar p {
+margin-left:0em;
+margin-top:0.2em;
+margin-bottom:0.2em;
+padding:0.1em 0.2em;
+-moz-border-radius:7px;
+-webkit-border-radius:7px;
+font-size:0.85em;
+}
+.panel.luban-document .titlebar a {
+margin:0.5em;
+}
+.panel.luban-document .titlebar .controls-container {
+width:3em;
+}
+
+.luban-document.panel > .luban-document-title > table td.luban-document-title-controls a{
     color: white;
     font-size: 1.7em;
     font-weight: bolder;
     text-decoration: none;
 }
-.luban-document.collapsable > .luban-document-title > table td.luban-document-title-controls a.collapse-expand:hover {
+.luban-document.panel > .luban-document-title > table td.luban-document-title-controls a:hover {
     text-decoration:underline;
+}
+
+/* dockable */
+.dockable.panel.luban-document > .luban-document-body  {
+    border:none;
 }
 
 /* misc */

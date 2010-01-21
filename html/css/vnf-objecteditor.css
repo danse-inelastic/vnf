@@ -30,15 +30,15 @@
     border: 1px solid red;
 }
 
-/* collapsable */
-.collapsable.luban-document {
+/* panel */
+.panel.luban-document {
 -moz-border-radius:1em;
 -webkit-border-radius:1em;
 padding:0;
 border:solid 1px #ccc;
 margin-bottom:0.5em;
 }
-.collapsable.luban-document > .luban-document-title {
+.panel.luban-document > .luban-document-title {
     -moz-border-radius: 1.2em 1.2em 0 0;
     -webkit-border-top-left-radius: 1.2em;
     -webkit-border-top-right-radius: 1.2em;
@@ -47,7 +47,7 @@ margin-bottom:0.5em;
     font-size: 0.73em;
     background-color: lightGrey;
 }
-.collapsable.luban-document > .luban-document-body {
+.panel.luban-document > .luban-document-body {
     -moz-border-radius-bottomleft:1em;
     -moz-border-radius-bottomright:1em;
     -moz-border-radius-topleft:0;
@@ -59,21 +59,21 @@ margin-bottom:0.5em;
     border: 1px solid lightgrey;
     border-top: none;
 }
-.collapsable.luban-document .collapsable.luban-document {
+.panel.luban-document .panel.luban-document {
 padding:0;
 border:none;
 }
-.collapsable.luban-document .titlebar {
+.panel.luban-document .titlebar {
 -moz-border-radius:12px;
 -webkit-border-radius:12px;
 border-bottom:1px solid #ddd;
 }
-.collapsable.luban-document .titlebar table {
+.panel.luban-document .titlebar table {
 border-collapse:collapse;
 }
-.collapsable.luban-document .titlebar table td {
+.panel.luban-document .titlebar table td {
 }
-.collapsable.luban-document .titlebar p {
+.panel.luban-document .titlebar p {
 margin-left:0em;
 margin-top:0.2em;
 margin-bottom:0.2em;
@@ -82,10 +82,10 @@ padding:0.1em 0.2em;
 -webkit-border-radius:7px;
 font-size:0.85em;
 }
-.collapsable.luban-document .titlebar a {
+.panel.luban-document .titlebar a {
 margin:0.5em;
 }
-.collapsable.luban-document .titlebar .controls-container {
+.panel.luban-document .titlebar .controls-container {
 width:3em;
 }
 
