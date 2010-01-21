@@ -49,8 +49,8 @@ class QETaskCell:
         if self._task:
             self._taskId(table)
             self._input(table)
-            self._output(table)
             self._status(table)
+            self._output(table)
             self._jobId(table)
             self._results(table)
 
@@ -110,22 +110,23 @@ class QETaskCell:
 
 
     def _output(self, table):
-        action  = lc.link(label="Refresh",
-                          Class     = "qe-task-action"
-                          #onclick   = load()
-                         )
-        table.addRow(("Output:", "None", action))
+        table.addRow(("Output:", "None", ""))
 
 
     def _status(self, table):
         "Displays status of the simulation"
+        action  = lc.link(label="Refresh",
+                          Class     = "qe-task-action"
+                          #onclick   = load()
+                         )
+
         link    = "Not Started"
         jobs    = self._director.clerk.getQEJobs(where="taskid='%s'" % self._task.id)
         if jobs:
             job  = latestJob(jobs)
             link = job.status
 
-        table.addRow(("Status:", link, ""))
+        table.addRow(("Status:", link, action))
 
 
     def _jobId(self, table):
@@ -152,23 +153,6 @@ class QETaskCell:
 
         table.addRow(("Job:", link, action))
 
-
-#    def _latest(self, jobs):
-#        "Retruns latest job based on timesubmitted column"
-#        # jobs have at least one element
-#        latest  = jobs[0]
-#
-#        for job in jobs:
-#            if job.timesubmitted == "":
-#                continue
-#
-#            if latest.timesubmitted == "":
-#                latest = job
-#
-#            if float(job.timesubmitted) > float(latest.timesubmitted):
-#                latest  = job
-#
-#        return latest
 
     def _results(self, table):
         "Returns link to tar file for download. "
