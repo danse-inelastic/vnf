@@ -117,8 +117,6 @@ class Actor(base):
                                             load(actor      = 'materialsimulation',
                                                  routine    = 'newSimulation')
                                                                       )
-
-
         return tableview
 
 

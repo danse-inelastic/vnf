@@ -78,7 +78,8 @@ def table(atomicstructures, cols, director):
     record2tuple = lambda record: [g(record) for g in value_generators]
     data = map(record2tuple, atomicstructures)
 
-    table = Table(model=model, data=data, view=view, id='atomicstructure-table')
+    table = Table(model=model, data=data, 
+                  view=view, id='atomicstructure-table')
 
     return table
 
