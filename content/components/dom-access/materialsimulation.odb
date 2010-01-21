@@ -92,17 +92,23 @@ class Accessor(base):
         
         sGP = db._tablemap.TableToSATable(global_pointer)
         st = db._tablemap.TableToSATable(table)
+
+        try:
+            q = sqlalchemy.select(
+                [st.c.id.label('id'),
+                 st.c.short_description.label('short_description'),
+                 sGP.c.type.label('type'),
+                 st.c.date.label('date'),
+                 st.c.matter.label('matter'),
+                 st.c.globalpointer.label('gptr'),
+                 ],
+                st.c.globalpointer==sGP.c.id,
+                )
+        except:
+            import traceback
+            raise RuntimeError, 'Failed to select required columns from simulation table %s.\n'\
+                  'Original exception was:\n%s' % (table.getTableName(), traceback.format_exc())
         
-        q = sqlalchemy.select(
-            [st.c.id.label('id'),
-             st.c.short_description.label('short_description'),
-             sGP.c.type.label('type'),
-             st.c.date.label('date'),
-             st.c.matter.label('matter'),
-             st.c.globalpointer.label('gptr'),
-             ],
-            st.c.globalpointer==sGP.c.id,
-            )
         if filter:
             q = sqlalchemy.select([q.alias('matsim')], whereclause=filter)
         return q
