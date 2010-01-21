@@ -2,7 +2,6 @@
 #
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
-#                                 Jiao Lin
 #                      California Institute of Technology
 #                      (C) 2006-2009  All Rights Reserved
 #
@@ -16,7 +15,7 @@ from luban.content import load, select, alert
 import luban.content as lc
 
 # common actions
-setpagetitle = select(id='').setAttr(title='Virtual neutron facility: analysis of structural/dynamical simulations')
+setpagetitle = select(id='').setAttr(title='Virtual neutron facility: Dynamics analysis and scattering kernel generation')
 
 from vnfb.components.MasterTable import FilterSyntaxError, MasterTableActor as base
 
@@ -25,17 +24,13 @@ class Actor(base):
     class Inventory(base.Inventory):
 
         import pyre.inventory
-
         id = pyre.inventory.str('id')
         description = pyre.inventory.str('description')
-        
         formids = pyre.inventory.list('formids')
         viewid = pyre.inventory.str('viewid')
 
-
     def default(self, director):
         return self.showListView(director)
-
 
     def replaceBodyFrameWithAnalysisList(self, director):
         body_frame          = select(id='body-frame')
@@ -57,7 +52,6 @@ class Actor(base):
             setpagetitle,
             ]
 
-
     def showListView(self, director):
         try:
             view = self.createListView(director)
@@ -68,7 +62,6 @@ class Actor(base):
             setpagetitle,
             ]
     
-            
     def createListView(self, director):
         order_by        = self.inventory.order_by
         reverse_order   = self.inventory.reverse_order
@@ -95,7 +88,6 @@ class Actor(base):
                                             page_number     = page_number
                                             )
         return tableview
-
 
     def newAnalysisForm(self, director):
         return select(id='main-display-area').replaceContent(

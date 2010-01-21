@@ -8,29 +8,24 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
-
 # The table to select one simulation
 # The table include a few columns such as id and type.
 # The first column is radio buttons.
 # This only creates the table itself, no filtering and sorting controls.
 # The full view with controls is in tableview-selectone.
 
-
 def visual(simulations, cols, director):
     from luban.content.table import Model, View, Table
     from luban.content import load
     from luban.content.Link import Link
-
     orm = director.clerk.orm
     
     class model(Model):
-
         selectone = Model.descriptors.radio_button(name='selectone')
         id = Model.descriptors.str(name='id')
         #description = Model.descriptors.str(name='description')
         type = Model.descriptors.str(name='type')
         #date = Model.descriptors.str(name='date')
-
         row_identifiers = ['id', 'type']
 
     columns = [
@@ -41,7 +36,6 @@ def visual(simulations, cols, director):
         #View.Column(label='Date created', measure='date'),
         ]
     columns = filter(lambda col: col.measure in cols, columns)
-
     view = View(columns=columns, editable=False)
     
     def getSelectone(record): return False
@@ -61,9 +55,8 @@ def visual(simulations, cols, director):
         for col in view.columns]
     record2tuple = lambda record: [g(record) for g in value_generators]
     data = map(record2tuple, simulations)
-
-    table = Table(model=model, data=data, view=view, id='dynamics-table')
-
+    table = Table(model=model, data=data, 
+                  view=view, id='dynamics-table')
     return table
 
 

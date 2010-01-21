@@ -83,7 +83,8 @@ def table(analyses, cols, director):
     record2tuple = lambda record: [g(record) for g in value_generators]
     data = map(record2tuple, analyses)
 
-    table = Table(model=model, data=data, view=view, id='analysis-table')
+    table = Table(model=model, data=data, 
+                  view=view, id='analysis-table')
 
     return table
 
