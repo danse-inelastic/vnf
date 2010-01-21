@@ -16,9 +16,9 @@
 # register it here
 
 all = [
-    'bvk',
-    'gulp',
-    'quantum espresso',
+    'BvK',
+    'Gulp',
+    'Quantum Espresso',
     ]
 
 # version
