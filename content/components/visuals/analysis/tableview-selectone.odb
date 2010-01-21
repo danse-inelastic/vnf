@@ -61,7 +61,6 @@ def visual(
         sorting_options = [
             ('id', 'ID'),
             ('short_description', 'Description'),
-            ('date', 'Date created'),
         ],
         createlabelstoolbar = False,
         )
@@ -85,7 +84,7 @@ def createTable(
     filter=None,
     label=None):
 
-    records = domaccess.getSamples(
+    records = domaccess.getDynamicsRecords(
         order_by=order_by,
         reverse_order=reverse_order,
         slice=slice,
@@ -97,7 +96,7 @@ def createTable(
     args = records, cols, director
     thetable = director.retrieveVisual(
         'analysis/table-selectone',
-        samples = records,
+        simulations = records,
         cols = cols,
         director = director)
     return thetable
@@ -108,8 +107,8 @@ columns = [
     'selectone',
     'id',
     'description',
-    'type',
-    'date']
+    'type',]
+    #'date']
 measure2dbcol = {
     'description': 'short_description',
     }
