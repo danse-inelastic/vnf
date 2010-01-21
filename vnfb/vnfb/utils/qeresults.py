@@ -21,6 +21,8 @@ from vnfb.utils.qeconst import RESULTS_ID
 import luban.content as lc
 from luban.content import load
 
+DELAY   = 60*3  # 3 minute delay
+
 class QEResults:
     """
     Handles complexity of job results
@@ -138,7 +140,7 @@ class QEResults:
 
 
     def _statusstring(self):
-        return self._status.string("p")
+        return self._status.string()#"div")#"p")
 
 
     def _norequest(self):
@@ -171,7 +173,7 @@ class QEResults:
         ptrmtime    = os.path.getmtime(self._ptrfilepath)  
         curtime     = time.time()
 
-        if curtime > ptrmtime + 60*3:  # 3 minute of delay
+        if curtime > ptrmtime + DELAY:  # 3 minute of delay
             return True
 
         return False
@@ -212,7 +214,7 @@ class QEResults:
         text    = self._tarfile()
         path    = self._tarpath()
         self._status.setHtmlLink(text, path)
-        return self._status.string("html")
+        return self._status.string("a")
 
 
     def _tarfile(self):
