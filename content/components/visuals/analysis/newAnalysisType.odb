@@ -48,7 +48,7 @@ def createDynamicsAnalysis():
                     (lc.link(label="DoPS", onclick=select(id='main-display-area'
                             ).replaceContent(load(
                 actor='analysis/analysiswizard', routine='selectDynamics',
-                analysisType='motionDosCalc'))),
+                analysisType='motiondoscalc'))),
                     "Density of Phonon States from an MD trajectory")
                     )
     routines.append(

@@ -36,6 +36,17 @@ class Accessor(base):
         table = db.getTable(type)
         return db.query(table).filter_by(id=id).one()
 
+    def getDynamics(self, id):
+        for table in self.dynamicsTables():
+            result = None
+            try:
+                result = db.query(table).filter_by(id=id).one()
+            except:
+                pass
+            if result:
+                dynamics = result
+        return dynamics
+
     def getDynamics(self, type, id):
         return self.getRecordByID(type, id)
 

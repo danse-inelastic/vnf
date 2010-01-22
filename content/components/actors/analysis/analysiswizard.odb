@@ -66,28 +66,39 @@ class Actor(base):
         b.onclick = load(
                 actor=self.name, routine='analysisSettings',
                 dynamicsId=select(id='dynamics-table').table(
-                    'getIdentifiersForSelectedRow', colname='selectone')
+                    'getIdentifiersForSelectedRow', colname='selectone'),
+                    analysisType = self.inventory.analysisType
                 )
         return doc
 
     def analysisSettings(self, director):
         doc         = lc.document(title = "")
-        splitter    = doc.splitter(orientation="vertical")
-        sA          = splitter.section()
+#        splitter    = doc.splitter(orientation="vertical")
+#        sA          = splitter.section(id='analysis-object-inspect')
         #sA.add(viewIndicator(director))
         
         #first get the type of the dynamics
-        domaccess = director.retrieveDOMAccessor('dynamics')
-        structure = domaccess.getAtomicStructure(self.inventory.structureId)
-        analysisType = select(id='dynamics-table').table(
-                    'getIdentifiersForSelectedRow', colname='selectone')
+#        domaccess = director.retrieveDOMAccessor('dynamics')
+#        dynamics = domaccess.getDynamics(self.inventory.dynamicsId)
+#        analysisType = dynamics.type
+        container = lc.document(id='analysis-settings-container')
+        doc.add(container)
         
         actorName = 'orm/'+self.inventory.analysisType
-        sA.add(load(actor=actorName, routine='edit', 
-                    id = self.inventory.dynamicsId))
-        sB          = splitter.section()
-        docSub      = lc.document(title = "")
-        b = lc.button(label='select'); docSub.add(b)
+        
+        container.oncreate = [
+            select(element=container).append(
+                                             
+              #load(actor='analysis/selectdynamics', routine='createListView')
+              load(actor=actorName, routine='edit', id = self.inventory.dynamicsId)
+              
+              ),
+            ]
+        
+#        sA.add(load(actor=actorName, routine='edit', id = self.inventory.dynamicsId))
+#        sB          = splitter.section()
+#        docSub      = lc.document(title = "")
+        b = lc.button(label='select'); doc.add(b)
         b.onclick = load(
                 actor=self.name, routine='configureSubmissionQueue'
                 )
