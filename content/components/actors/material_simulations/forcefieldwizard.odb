@@ -108,7 +108,6 @@ class Actor(base):
             'cgihome':cgihome,
             'sentry.username':director.sentry.username,
             'sentry.ticket':director.sentry.ticket,
-            'launchmode': 'vnf',
             }
         args.update(vnfArgs)
         
