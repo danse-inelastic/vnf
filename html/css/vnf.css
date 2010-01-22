@@ -237,20 +237,41 @@ width:3em;
 }
 
 /* dock */
-.luban-dock {
-background-color:lightCyan;
-height:2em;
+.luban-dock > table > tbody > tr > td:first-child {
+background-color: #555555;
+background-image: url(../images/vnf-logos/vnf.darker-color.27px.png) ;
+background-repeat: no-repeat;
+width:4.6em;
 }
+.luban-dock > table > tbody > tr > td {
+background-color:blue;
+color:white;
+font-weight:bold;
+border:2px solid white;
+}
+.luban-dock > table {
+height:2.5em;
+}
+.luban-dock {
+background-color:lightBlue;
+height:2.6em;
+border-top:1px solid #888888;
+border-bottom:1px solid #226666;
+
+filter:alpha(opacity=50);
+opacity:0.5;
+}
+
 
 /* misc */
 .float-right {
     float: right;
 }
 #help{
-    width: 1020;
+    width: 980;
 }
 #help-container{
-    width: 1020;
+    width: 980;
     height: 510;
 }
 
