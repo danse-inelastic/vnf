@@ -1,5 +1,0 @@
-from luban.content import select
-
-def visual(title='', director=None):
-    action = select(id='help-page-text').setAttr(value=title)
-    return action

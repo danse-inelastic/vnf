@@ -165,6 +165,14 @@ body {
 }
 */
 
+#help-portlet .luban-portlet-body {
+border:none;
+}
+#help-portlet {
+margin-top:6em;
+}
+
+
 /* main area */
 #main-display-area-frame {
     -moz-border-radius: 25px 25px 25px 25px;

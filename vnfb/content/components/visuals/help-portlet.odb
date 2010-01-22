@@ -16,12 +16,17 @@ from luban.content.Portlet import Portlet
 from luban.content import load, select, alert
 
 
-def visual(director):
+def visual(director=None, context=None):
     portlet = Portlet(id='help-portlet', title='')
 
+    # about...
     action = load(actor='help', routine='showHelpWindow',
                   page=select(id='help-page-text').getAttr('value'))
-    portlet.item(id='help-portlet-help', label='help', onclick=action)
+    if context:
+        about_label = 'about %s' % context
+    else:
+        about_label = 'help'
+    portlet.item(id='help-portlet-about-context', label=about_label, onclick=action)
     
     return portlet
 

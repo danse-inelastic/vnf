@@ -42,7 +42,7 @@ class Actor(base):
             id='help', title='help', dockable=True)#, hidden=True)
 
         hdoc = self.createHelpDocument(director)
-        doc.add(hdoc)
+        doc.document(id='help-window-interior').add(hdoc)
 
         b = lc.button(
             label='minimize',
@@ -65,8 +65,12 @@ class Actor(base):
         page: the page to show in the help window
         '''
         newdoc = self.createHelpDocument(director)
+        usenewdoc = select(id='help-window-interior').replaceContent(newdoc)
+        return select(id='dock').dock('release', select(id='help'), callback=usenewdoc)
+        #newwin = self.createHelpWindow(director)
         return [
-            select(id='help-container').replaceBy(newdoc),
+            #select(id='help-container').replaceBy(newdoc),
+            #select(id='help').replaceBy(newwin),
             select(id='dock').dock('release', select(id='help')),
             ]
 
