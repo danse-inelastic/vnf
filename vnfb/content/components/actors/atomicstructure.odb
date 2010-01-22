@@ -19,7 +19,9 @@ import luban.content as lc
 
 # common actions
 setpagetitle = select(id='').setAttr(title='Virtual neutron facility: atomic structures')
-
+sethelppage = load(
+    actor='loadvisual', visual='set-help-title', title='UserGuide-atomicstructures')
+#sethelppage = select(id='help-page-text').setAttr(value='UserGuide-atomicstructures')
 
 
 
@@ -63,9 +65,10 @@ class Actor(base):
 
         material_portlet    = body_skeleton.find(id='main-portlet-my-atomicstructures')
         material_portlet.selected = 1
-        
+
+        shownewframe = body_frame.replaceContent(body_skeleton)
         return [
-            body_frame.replaceContent(body_skeleton),
+            shownewframe,
             setpagetitle,
             ]
 
@@ -78,6 +81,7 @@ class Actor(base):
         return [
             select(id = 'main-display-area').replaceContent(view),
             setpagetitle,
+            sethelppage,
             ]
     
             

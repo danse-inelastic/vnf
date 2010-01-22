@@ -35,7 +35,6 @@ class Actor(base):
             if hasattr(self.Inventory, k): continue
             kwds[k] = v
             continue
-        
         return director.retrieveVisual(visual, director=director,**kwds)
 
 

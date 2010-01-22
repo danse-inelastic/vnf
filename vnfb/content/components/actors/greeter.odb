@@ -23,17 +23,22 @@ class Actor(base):
 
 
     def greet(self, director):
-        actions = [select(id='dock').show()]
+        showdock = select(id='dock').show()
         #
-        actions += director.redirect(
+        showmainview = director.redirect(
             actor='atomicstructure', routine='replaceBodyFrameWithAtomicStructureList',
             include_credential = False)
         #
         helpwindow = director.redirect(
-            actor='help', routine='createHelpWindow', include_credential=False)
-        actions.append( select(id='').append(helpwindow) )
+            actor='help', routine='createHelpWindow',
+            nextpagetoshow = 'UserGuide-atomicstructures',
+            include_credential=False)
+        addhelpwindow = select(id='').append(helpwindow)
+
         #
-        return actions        
+        actions = [showdock] + showmainview + [addhelpwindow]
+        
+        return actions
         return director.redirect(actor='matter', routine='replaceBodyFrameWithMatterList')
 
 
