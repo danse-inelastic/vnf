@@ -43,34 +43,27 @@ class Actor(base):
         potentialCreator = pyre.inventory.str('potentialCreator', default='')
         potentialDescription = pyre.inventory.str('potentialDescription', default='')
 
-    def start(self, director):
-        
+    def default(self, director):
 #        domaccess = director.retrieveDOMAccessor('atomicstructure')
 #        '3W4G7NUM'
 #        structure = domaccess.getAtomicStructureRecord(self.inventory.structureId)
 #        structurelabel = structure.chemical_formula or structure.id
-        
         #title = 'Forcefield simulation of %s' % (structurelabel,)
         title = 'Simulation with forcefields'
         wizard = Document(id='forcefieldwizard-start', title=title)
-
-        
         doc = self.selectMatter(director)
         wizard.add(doc)
-        
         return select(id='main-display-area').replaceContent(wizard)
     
     
     def selectMatter(self, director):
         doc = lc.document(id='matter-selector-doc')
-
         doc.paragraph(
             text=[
             'Please select one atomic structure from the following table,',
             'you can search for the structure using the filtering controls.',
             ]
             )
-
         # the container of the atomicstructure selector
         container = lc.document(id='atomicstructure-selector-container')
         doc.add(container)
@@ -79,14 +72,12 @@ class Actor(base):
               load(actor='selectoneatomicstructure', routine='createListView')
               ),
             ]
-
         # cancel
 #        c = lc.link(label='cancel', Class='float-right'); doc.add(c)
 #        c.onclick = select(id=self.matter_view_id).replaceBy(
 #            load(actor='scatterer/editor', routine='createMatterView',
 #                 id = self.id)
 #            )
-
         # select button
         b = lc.button(label='select'); doc.add(b)
         b.onclick = load(
@@ -94,7 +85,6 @@ class Actor(base):
                 structureId=select(id='atomicstructure-table').table(
                     'getIdentifiersForSelectedRow', colname='selectone'),
                 )
-
         return doc
 
     def atomSimForm(self, director):
