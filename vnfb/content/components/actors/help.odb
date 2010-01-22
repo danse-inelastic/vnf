@@ -33,11 +33,11 @@ class Actor(base):
 
     def createHelpWindow(self, director):
         doc = lc.document(
-            id='help', title='help', collapsable=True, dockable=True, hidden=True)
+            id='help', title='help', dockable=True)#, hidden=True)
 
         hdoc = lc.htmldocument(id='help-container')
         hdoc.text = [
-            '<iframe src="http://docs.danse.us/pyre/luban/sphinx/#getting-started"',
+            '<iframe src="http://docs.danse.us/VNET/UserGuide-Overview.html"',
             'width="900" height="500" frameborder="0">',
             '</iframe>',
             ]
