@@ -19,9 +19,9 @@ import luban.content as lc
 
 # common actions
 setpagetitle = select(id='').setAttr(title='Virtual neutron facility: atomic structures')
-sethelppage = load(
-    actor='loadvisual', visual='set-help-title', title='UserGuide-atomicstructures')
-#sethelppage = select(id='help-page-text').setAttr(value='UserGuide-atomicstructures')
+#sethelppage = load(
+#    actor='loadvisual', visual='set-help-title', title='UserGuide-atomicstructures')
+sethelppage = select(id='help-page-text').setAttr(value='UserGuide-atomicstructures')
 
 
 
