@@ -55,20 +55,26 @@ class Actor(base):
               load(actor='analysis/selectdynamics', routine='createListView')
               ),
             ]
+        
         # cancel
 #        c = lc.link(label='cancel', Class='float-right'); doc.add(c)
 #        c.onclick = select(id=self.matter_view_id).replaceBy(
 #            load(actor='scatterer/editor', routine='createMatterView',
 #                 id = self.id)
 #            )
+
+        def getInfoAndProceed(self):
+            dynamicsId, dynamicsType = select(id='dynamics-table').table(
+                        'getIdentifiersForSelectedRow', colname='selectone')
+            return load(actor = self.name, routine = 'analysisSettings',
+                    dynamicsId = select(id='dynamics-table').table(
+                        'getIdentifiersForSelectedRow', colname='selectone'),
+                    analysisType = self.inventory.analysisType,
+                    dynamicsType = self.inventory.dynamicsType)  
+
         # select button
         b = lc.button(label='select'); doc.add(b)
-        b.onclick = load(
-                actor=self.name, routine='analysisSettings',
-                dynamicsId=select(id='dynamics-table').table(
-                    'getIdentifiersForSelectedRow', colname='selectone'),
-                    analysisType = self.inventory.analysisType
-                )
+        b.onclick = getInfoAndProceed()
         return doc
 
     def analysisSettings(self, director):
@@ -83,18 +89,13 @@ class Actor(base):
 #        analysisType = dynamics.type
         container = lc.document(id='analysis-settings-container')
         doc.add(container)
-        
         actorName = 'orm/'+self.inventory.analysisType
-        
         container.oncreate = [
-            select(element=container).append(
-                                             
+            select(element=container).append(        
               #load(actor='analysis/selectdynamics', routine='createListView')
               load(actor=actorName, routine='edit', id = self.inventory.dynamicsId)
-              
               ),
             ]
-        
 #        sA.add(load(actor=actorName, routine='edit', id = self.inventory.dynamicsId))
 #        sB          = splitter.section()
 #        docSub      = lc.document(title = "")

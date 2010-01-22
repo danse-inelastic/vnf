@@ -191,9 +191,11 @@ class MasterTableFactory(object):
         #
 
         # toolbar right at the bottom of table
-        tablebottomtoolbar = Splitter(id='%s-table-tablebottomtoolbar'%name, Class='master-table-tablebottomtoolbar')
+        tablebottomtoolbar = Splitter(id='%s-table-tablebottomtoolbar'%name, 
+                                      Class='master-table-tablebottomtoolbar')
         view.add(tablebottomtoolbar)
-        lefttoolbar = tablebottomtoolbar.section(id='%s-table-tablebottomtoolbar-left' % name, Class='master-table-tablebottomtoolbar-left')
+        lefttoolbar = tablebottomtoolbar.section(id='%s-table-tablebottomtoolbar-left' % name, 
+                                                 Class='master-table-tablebottomtoolbar-left')
         if self.createlabelstoolbar:
             collections_toolbar = self.createLabelsToolbar(
                 name,
@@ -201,7 +203,8 @@ class MasterTableFactory(object):
                 )
             lefttoolbar.add(collections_toolbar)
         
-        righttoolbar = tablebottomtoolbar.section(id='%s-table-tablebottomtoolbar-right' % name, Class='master-table-tablebottomtoolbar-right')
+        righttoolbar = tablebottomtoolbar.section(id='%s-table-tablebottomtoolbar-right' % name, 
+                                                  Class='master-table-tablebottomtoolbar-right')
         # navigation bar (previous, next...)
         bar = self.createNavigationBar(
             name,

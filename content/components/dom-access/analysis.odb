@@ -45,7 +45,6 @@ class Accessor(base):
     def getAnalysisRecords(self, filter=None, order_by=None, 
                        reverse_order=None, slice=None, label=None):
         db = self.db
-
         self._debug.log('filter: %r, order_by: %r, slice: %r' % (filter, order_by, slice))
         tables = self.analysisTables()
         qf = lambda table: self.makeQuery(table, filter=filter, label=label)
