@@ -70,9 +70,9 @@ class Actor(base):
         sC          = splitter.section()
         self._showData(sC)                  # Show data
         sD          = splitter.section()
-        self._showPhononPlot(director, sD)
-        
-        #self._showPlot(director, sD)        # Show plot
+
+        self._showPlot(director, sD)        # Electron DOS
+        self._showPhononPlot(director, sD)  # Phonon DOS
 
         return doc
 
