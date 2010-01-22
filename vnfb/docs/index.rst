@@ -11,7 +11,10 @@ Contents:
 .. toctree::
 
    overview
-   discussion
+   UserGuide-Overview
+
+..   discussion
+
 
 Indices and tables
 ==================
