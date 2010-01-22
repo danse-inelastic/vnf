@@ -47,6 +47,11 @@ class Accessor(base):
         
         # the files
         datadir = director.dds.abspath(record)
+        # try subdir "data.idf" first
+        subdir = os.path.join(datadir, 'data.idf')
+        if os.path.exists(subdir):
+            datadir = subdir
+            
         from mccomponents.sample.idf import readDispersion
         nAtoms, dimension, Qaxes, polarizations, energies, dos = readDispersion(datadir)
         for k in ['nAtoms', 'dimension', 'Qaxes', 'polarizations', 'energies']:
