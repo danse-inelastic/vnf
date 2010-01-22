@@ -21,6 +21,13 @@ class Accessor(base):
 
     def getAnalysis(self, type, id):
         return self.getRecordByID(type, id)
+    
+    def getAnalysis(self, id):
+        for table in self.analysisTables():
+            result = db.query(table).filter_by(id=id).one()
+            if result:
+                analysis = result
+        return analysis
 
     def countAnalyses(self, filter=None, label=None):
         db = self.db

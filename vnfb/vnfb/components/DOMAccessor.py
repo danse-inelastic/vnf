@@ -129,14 +129,13 @@ class DOMAccessor( base ):
             self.db.deleteRow(TransientObject, where="id='%s'" % r.id)
             continue
         return
+    
         
-
     # access to proxy
     def makeProxy(self, record, factory):
         return factory(record, domaccess=self)
     
-
-
+    
     # generic accessing methods
     def updateRecordWithID(self, record):
         'update a record. assumes that it has a "id" column'

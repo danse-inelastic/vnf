@@ -30,7 +30,7 @@ class Actor(base):
 
     def view(self, director):
         domaccess = director.retrieveDOMAccessor('computation')
-        orm = domaccess.orm
+        orm = domaccess.orm # why is this here? to reinitialize orm?
         
         table = director.clerk.db.getTable(self.inventory.type)
         actor = table.getActorName()
@@ -45,7 +45,7 @@ class Actor(base):
 
     def restartResultsRetrieval(self, director):
         domaccess = director.retrieveDOMAccessor('computation')
-        orm = domaccess.orm
+        orm = domaccess.orm  # why is this here? to reinitialize orm?
         
         computation = domaccess.getRecordByID(self.inventory.type, id=self.inventory.id)
         
