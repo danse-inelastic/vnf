@@ -31,13 +31,14 @@ in VNF (e.g. gulpsimulations or bvkcomputations) which refer to the actual simul
 
 from vnfb.utils.qeconst import SIMULATIONS
 from vnfb.components.QETable import QETable
+from dsaw.db.GloballyReferrable import GloballyReferrable
 from vnfb.dom.Computation import Computation
 
 from MaterialSimulation import MaterialSimulation
 
 # WithID -> id
 
-class QESimulation(QETable):    #, Computation): #):
+class QESimulation(QETable, GloballyReferrable):    #, Computation): #):
 
     name = "qesimulations"
     import dsaw.db
@@ -79,6 +80,9 @@ class QESimulation(QETable):    #, Computation): #):
 
     matter = dsaw.db.integer(name="matter", default=0)
     matter.meta['tip']  = "(STUB) Refers to atomic group. Kind of useless but must have"
+
+    results = dsaw.db.referenceSet(name='computation_results')
+
 
     @classmethod
     def getActorName(cls):

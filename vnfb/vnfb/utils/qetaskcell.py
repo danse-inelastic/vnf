@@ -115,14 +115,15 @@ class QETaskCell:
 
     def _status(self, table):
         "Displays status of the simulation"
-        action  = lc.link(label="Refresh",
-                          Class     = "qe-task-action"
-                          #onclick   = load()
-                         )
-
+        action  = ""
         link    = "Not Started"
         jobs    = self._director.clerk.getQEJobs(where="taskid='%s'" % self._task.id)
         if jobs:
+            action  = lc.link(label="Refresh",
+                              Class     = "qe-task-action"
+                              #onclick   = load()
+                             )
+
             job  = latestJob(jobs)
             link = job.status
 
