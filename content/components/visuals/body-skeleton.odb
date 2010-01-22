@@ -18,12 +18,13 @@ from luban.content.Tabs import Tabs
 from luban.content.Tabs import Tab
 
 
-def visual(director):
+def visual(director=None, context=None):
     horizontal = Splitter(orientation='horizontal')
 
     portlets_frame = horizontal.section(id='portlets-frame')
     portlets_frame.add(director.retrieveVisual('main-portlet'))
-    portlets_frame.add(director.retrieveVisual('help-portlet'))
+    portlets_frame.add(
+        director.retrieveVisual('help-portlet', context=context, director=director))
     
     main_display_area_frame = horizontal.section(id='main-display-area-frame')
 

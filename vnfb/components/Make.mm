@@ -20,6 +20,7 @@ BUILD_DIRS = \
 	geometry \
 	job_builders \
 	scattering_kernels \
+	visuals \
 
 OTHER_DIRS = \
 

@@ -19,9 +19,11 @@ import luban.content as lc
 
 # common actions
 setpagetitle = select(id='').setAttr(title='Virtual neutron facility: atomic structures')
-#sethelppage = load(
-#    actor='loadvisual', visual='set-help-title', title='UserGuide-atomicstructures')
-sethelppage = select(id='help-page-text').setAttr(value='UserGuide-atomicstructures')
+
+
+from  vnfb.components.visuals import set_contextual_help
+sethelppage = set_contextual_help(
+    page='UserGuide-atomicstructures', label='about atomicstructure')
 
 
 
@@ -53,7 +55,8 @@ class Actor(base):
 
     def replaceBodyFrameWithAtomicStructureList(self, director):
         body_frame          = select(id='body-frame')
-        body_skeleton       = director.retrieveVisual('body-skeleton')
+        body_skeleton       = director.retrieveVisual(
+            'body-skeleton', context='atomicstructure', director=director)
         main_display_area   = body_skeleton.find(id='main-display-area')
 
         try:
@@ -81,8 +84,7 @@ class Actor(base):
         return [
             select(id = 'main-display-area').replaceContent(view),
             setpagetitle,
-            sethelppage,
-            ]
+            ] + sethelppage
     
             
     def createListView(self, director):
@@ -202,8 +204,14 @@ class Actor(base):
 
 
     def showOverview(self, director):
+        sethelppage = set_contextual_help(
+            page='UserGuide-atomicstructures.html#overview-of-an-atomic-structure',
+            )
+
         doc = self.createOverview(director)
-        return select(id='main-display-area').replaceContent(doc)
+        shownewdoc = select(id='main-display-area').replaceContent(doc)
+        
+        return sethelppage + [shownewdoc]
     
         
     def showDetailsview(self, director):
