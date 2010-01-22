@@ -33,9 +33,10 @@ class Actor(base):
         # 1. Retrieve results: move matdyn jobs directory to local server
         # 2. Create phonondoses record
         # 3. Convert matdyn -> idf to phonondoses directory
-        #
-        job     = self._phononDosJob(director)
-        print self.simid
+
+        self._createRecord(director)
+        #job     = self._phononDosJob(director)
+        #print self.simid
 
     def _retrieveResults(self):
         """
@@ -45,8 +46,23 @@ class Actor(base):
         """
         pass
 
-    def _createRecord(self):
-        pass
+    def _createRecord(self, director):
+        "Creates 'phonondoses' record (taken from: vnfb/components/ComputationResultRetriever.py)"
+        from vnfb.dom.material_simulations.PhononDOS import PhononDOSTable
+
+        domaccessor = director.retrieveDOMAccessor('material_simulations/phonondos')
+        orm         = domaccessor.orm
+        clerk       = director.clerk
+        computation = clerk.getQESimulations(id = self.simid)
+        record      = clerk.insertNewOwnedRecord(PhononDOSTable, owner = computation.creator)
+
+        # the result record should know where it comes from
+        #record.origin = computation
+        computation.results.add(record, clerk.db)
+        record.matter = computation.structureid
+        clerk.db.updateRecord(record)
+        print "PhononDOS record is created!"
+
 
     def _convert(self):
         pass
