@@ -104,13 +104,13 @@ class Actor(base):
         import urlparse as up
         parts = up.urlparse(director.weaver.htmlbase)
         cgihome = up.urljoin(parts.scheme+'://'+parts.netloc, director.weaver.controllerurl)
-        callbackArgs = {
+        vnfArgs = {
             'cgihome':cgihome,
             'sentry.username':director.sentry.username,
             'sentry.ticket':director.sentry.ticket,
-#            'actor': self.name,
+            'launchmode': 'vnf',
             }
-        args.update(callbackArgs)
+        args.update(vnfArgs)
         
         from vnfb.components.JnlpFile import JnlpFile
         jnlpFile = JnlpFile(
