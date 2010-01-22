@@ -25,6 +25,12 @@ class Actor(base):
 
         import pyre.inventory
 
+        # the page to show
+        page = pyre.inventory.str('page')
+
+        # the next page to show
+        nextpagetoshow = pyre.inventory.str('nextpagetoshow')
+
 
     def default(self, director):
         # general help
@@ -35,15 +41,53 @@ class Actor(base):
         doc = lc.document(
             id='help', title='help', dockable=True)#, hidden=True)
 
+        hdoc = self.createHelpDocument(director)
+        doc.add(hdoc)
+
+        b = lc.button(
+            label='minimize',
+            onclick=select(id='dock').dock('attach', select(element=doc)),
+            )
+        doc.add(b)
+
+        # hidden field to save the page string
+        from luban.content.FormTextField import FormTextField
+        field = FormTextField(id='help-page-text', hidden=True)
+        field.value = self.inventory.nextpagetoshow
+        doc.add(field)
+        
+        return doc
+
+
+    def showHelpWindow(self, director):
+        '''show the help window
+
+        page: the page to show in the help window
+        '''
+        newdoc = self.createHelpDocument(director)
+        return [
+            select(id='help-container').replaceBy(newdoc),
+            select(id='dock').dock('release', select(id='help')),
+            ]
+
+
+    def createHelpDocument(self, director):
+        page = self.inventory.page
+        if not page:
+            page = 'UserGuide-Overview.html'
+        if not page.startswith('http://'):
+            base = 'http://docs.danse.us/VNET'
+            import os
+            page = os.path.join(base, page)
+
         hdoc = lc.htmldocument(id='help-container')
         hdoc.text = [
-            '<iframe src="http://docs.danse.us/VNET/UserGuide-Overview.html"',
+            '<iframe src="%s"' % page,
             'width="900" height="500" frameborder="0">',
             '</iframe>',
             ]
-        doc.add(hdoc)
-        
-        return doc
+
+        return hdoc
 
 
     def __init__(self, name='help'):

@@ -13,13 +13,15 @@
 
 
 from luban.content.Portlet import Portlet
-from luban.content import load
+from luban.content import load, select, alert
 
 
 def visual(director):
     portlet = Portlet(id='help-portlet', title='')
 
-    portlet.item(id='help-portlet-help', label='help', onclick=load(actor='help'))    
+    action = load(actor='help', routine='showHelpWindow',
+                  page=select(id='help-page-text').getAttr('value'))
+    portlet.item(id='help-portlet-help', label='help', onclick=action)
     
     return portlet
 

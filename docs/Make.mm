@@ -52,6 +52,10 @@ EXPORT_DATADIRS = \
 	_static \
 
 
+$(SPHINX_BUILD_TMP):
+	mkdir -p $(SPHINX_BUILD_TMP)
+
+
 export-data: $(EXPORT_DATADIRS) $(SPHINX_BUILD_TMP)
 	for x in $(EXPORT_DATADIRS); do { \
 	  $(RSYNC_A) $$x/ $(SPHINX_BUILD_TMP)/$$x/; \

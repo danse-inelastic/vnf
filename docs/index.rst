@@ -12,6 +12,7 @@ Contents:
 
    overview
    UserGuide-Overview
+   UserGuide-atomicstructures
 
 ..   discussion
 
