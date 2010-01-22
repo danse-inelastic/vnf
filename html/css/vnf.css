@@ -257,6 +257,7 @@ background-color:lightBlue;
 height:2.6em;
 border-top:1px solid #888888;
 border-bottom:1px solid #226666;
+z-index: 100;
 
 filter:alpha(opacity=50);
 opacity:0.5;
@@ -269,6 +270,7 @@ opacity:0.5;
 }
 #help{
     width: 930;
+    z-index: 200;
 }
 #help-container{
     width: 930;

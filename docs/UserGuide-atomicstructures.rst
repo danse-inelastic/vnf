@@ -8,6 +8,10 @@ Table view
 
 In this tab, you will see a table of atomic structures.
 
+On the top, there is a tool bar that contains mostly filtering tools,
+and a "new" button to create new atomic struccture.
+
+
 
 
 Overview of an atomic structure
