@@ -165,13 +165,17 @@ body {
 }
 */
 
+#help-portlet {
+margin-top:10em;
+font-size: 0.8em;
+text-align: right;
+}
 #help-portlet .luban-portlet-body {
 border:none;
 }
-#help-portlet {
-margin-top:6em;
+#help-portlet .luban-portletitem-container {
+padding-right:0;
 }
-
 
 /* main area */
 #main-display-area-frame {
@@ -185,11 +189,12 @@ margin-top:6em;
     */
     padding: 0.6em 0.5em 1.2em;
     background-color: #cced8c;
+    vertical-align: top;
 }
 #main-display-area-frame > div.luban-splitsection-interior-container{
     -moz-border-radius: 25px 25px 25px 25px;
     -webkit-border-radius: 25px;
-    min-height: 300;
+    min-height: 500;
     width: 100%;
     background-color: white;
 }
