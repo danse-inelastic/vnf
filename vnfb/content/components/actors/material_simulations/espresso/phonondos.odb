@@ -57,11 +57,9 @@ class Actor(base):
         record      = clerk.insertNewOwnedRecord(PhononDOSTable, owner = computation.creator)
 
         # the result record should know where it comes from
-        #record.origin = computation
         computation.results.add(record, clerk.db)
         record.matter = computation.structureid
         clerk.db.updateRecord(record)
-        print "PhononDOS record is created!"
 
 
     def _convert(self):
