@@ -84,12 +84,16 @@ class Actor(base):
                                              id         = self.id))
                     )
 
-        section.add(lc.link(label="Create Phonon DOS",
+        linkDos     = lc.link(label="Create Phonon DOS",
                             Class="qe-action-edit",
-                            onclick = load(actor        = 'material_simulations/espresso/phonondos',
-                                            routine     = 'create',
+                            onclick = load(actor        = 'atomicstructure',
+                                            routine     = 'showOverview',
                                             simid       = self.id))
-                    )
+
+#                            onclick = load(actor        = 'material_simulations/espresso/phonondos',
+#                                            routine     = 'create',
+#                                            simid       = self.id))
+        section.add(linkDos)
 
         section.add(lc.link(label="Create Phonon Dispersion",
                             Class="qe-action-edit",
@@ -198,7 +202,7 @@ class Actor(base):
 
     # MATDYN simulation task. Should have matdyn.dos file
     def _phononDosFile(self):
-        "Retruns absolute path of the MATDYN file"
+        "Returns absolute path of the MATDYN file"
         # Example: "/home/dexity/exports/vnf/vnfb/content/data/tmp/tmpVr7_LD/4IJW2PEI/matdyn.dos" 
         for jit in self._jitlist:
             if jit[0] is None:   # If job is None
