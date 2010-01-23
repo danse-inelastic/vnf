@@ -30,20 +30,20 @@ class Actor(base):
 
 
     def create(self, director):
-        # 1. Retrieve results: move matdyn jobs directory to local server
-        # 2. Create phonondoses record
-        # 3. Convert matdyn -> idf to phonondoses directory
-
+        "Create phonon DOS in idf format"
         self._convertResults(director)
         self._createRecord(director)
         self._copyResults(director)
 
         #return director.redirect()
+
+        
         #job     = self._phononDosJob(director)
         #print self.simid
 
 
     def _convertResults(director):
+        "Convert matdyn.dos -> data.idf to phonondoses directory"
         pass
 
 
