@@ -165,6 +165,7 @@ def latestTask(tasks):
 
 
 def qetask(director, simid, type):
+    "Returns task object defined by simulation id and type"
     simtasks = director.clerk.getQESimulationTasks(where="simulationid='%s'" % simid)
     for st in simtasks:
         tasks   = director.clerk.getQETasks(where="id='%s' AND type='%s'" % (st.taskid, type))
@@ -175,6 +176,13 @@ def qetask(director, simid, type):
         return None
 
     return latestTask(tasks)
+
+
+def qejob(director, simid, type):
+    "Return latest job for the type"
+    task    = qetask(director, simid, type)
+    jobs    = director.clerk.getQEJobs(where="taskid='%s'" % task.id)
+    return latestJob(jobs)
 
 
 # TODO: Test!!!

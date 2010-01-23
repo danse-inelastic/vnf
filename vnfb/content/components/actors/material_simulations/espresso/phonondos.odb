@@ -34,24 +34,33 @@ class Actor(base):
         # 2. Create phonondoses record
         # 3. Convert matdyn -> idf to phonondoses directory
 
+        self._convertResults(director)
         self._createRecord(director)
+        self._copyResults(director)
+
+        #return director.redirect()
         #job     = self._phononDosJob(director)
         #print self.simid
 
-    def _retrieveResults(self):
-        """
-        Retrieve results. Move matdyn jobs directory to local server
-        E.g.: dexity@foxtrot.danse.us:/home/dexity/espresso/qejobs/643E2QQI ->
-                /home/dexity/vnf/content/data/qejobs/643E2QQI/
-        """
+
+    def _convertResults(director):
         pass
+
+
+#    def _retrieveResults(self):
+#        """
+#        Retrieve results. Move matdyn jobs directory to local server
+#        E.g.: dexity@foxtrot.danse.us:/home/dexity/espresso/qejobs/643E2QQI ->
+#                /home/dexity/vnf/content/data/qejobs/643E2QQI/
+#        """
+#        pass
 
     def _createRecord(self, director):
         "Creates 'phonondoses' record (taken from: vnfb/components/ComputationResultRetriever.py)"
         from vnfb.dom.material_simulations.PhononDOS import PhononDOSTable
 
         domaccessor = director.retrieveDOMAccessor('material_simulations/phonondos')
-        orm         = domaccessor.orm
+        orm         = domaccessor.orm   # ?
         clerk       = director.clerk
         computation = clerk.getQESimulations(id = self.simid)
         record      = clerk.insertNewOwnedRecord(PhononDOSTable, owner = computation.creator)
@@ -62,8 +71,12 @@ class Actor(base):
         clerk.db.updateRecord(record)
 
 
-    def _convert(self):
+    def _copyResults(self, director):
         pass
+
+
+#    def _convert(self):
+#        pass
 
     def _phononDosJob(self, director):
         #jobs    =
