@@ -18,6 +18,7 @@ PACKAGE = components
 
 BUILD_DIRS = \
 	geometry \
+	iworkers \
 	job_builders \
 	scattering_kernels \
 	visuals \
