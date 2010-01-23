@@ -71,6 +71,9 @@ body {
 .panel.luban-document.highlighted >.luban-document-title {
     background-color:#88b0bc;
 }
+.panel.luban-document.highlighted > .luban-document-body {
+border-color:#88B0BC;
+}
 
 
 a.luban-link {

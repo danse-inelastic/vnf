@@ -239,6 +239,15 @@ background-position:center;
 background-repeat:no-repeat;
 }
 
+/* highlighted */
+.panel.luban-document.highlighted > .luban-document-title {
+background-color:#88B0BC;
+}
+.panel.luban-document.highlighted > .luban-document-body {
+border-color:#88B0BC;
+}
+
+
 /* dockable */
 .dockable.panel.luban-document > .luban-document-body  {
     border:none;
