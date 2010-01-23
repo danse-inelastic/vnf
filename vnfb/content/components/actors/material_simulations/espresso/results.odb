@@ -110,9 +110,14 @@ class Actor(base):
 
     def _phononDosCreated(self, sim):
         job         = qejob(self._director, self.id, "MATDYN")
-        # matdyn.dos file exists: job is succefully completed and results are downloaded
+        # data.idf file exists:
+        #   - job is succefully completed
+        #   - results are downloaded (matdyn.dos)
+        #   - phonondoses record is created,
+        #   - dos is converted and copied to data.idf file
+        #
         path        = self._phononDosFile()
-        if job and os.path.exists(path):    # matdyn.dos file exists
+        if job and os.path.exists(path):    # data.idf exists
             return True
 
         return False
