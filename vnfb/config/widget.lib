@@ -23,7 +23,6 @@
      "jslibs":      [
         "jquery/jquery.js",
         "jquery/jquery.rightClick.js",
-        "jquery/jquery.dimensions.js",
         "jquery/jquery.bgiframe.js",
         "jquery/jquery.tooltip.js",
         "jquery/jquery.dropshadow.js",
