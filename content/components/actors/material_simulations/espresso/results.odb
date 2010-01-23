@@ -16,6 +16,7 @@ import os.path
 
 import os
 from vnfb.utils.qeutils import stamp2date
+from vnfb.utils.qeutils import qejob
 from vnfb.utils.qeutils import parseFile, parsePHFile
 from vnfb.utils.qegrid import QEGrid
 from vnfb.utils.qeresults import QEResults
@@ -66,7 +67,7 @@ class Actor(base):
         sA          = splitter.section()
         sA.add(viewIndicator(director))
         sB          = splitter.section(id="qe-section-actions")
-        self._showActions(sB)               # Show actions
+        self._showActions(sB, sim)               # Show actions
         sC          = splitter.section()
         self._showData(sC)                  # Show data
         sD          = splitter.section()
@@ -77,24 +78,47 @@ class Actor(base):
         return doc
 
 
-    def _showActions(self, section):  #, inputs
+    def _showActions(self, section, sim):  #, inputs
         section.add(lc.link(label="Back",
                             Class="qe-action-back",
                             onclick = load(actor      = 'material_simulations/espresso/sim-view',
                                              id         = self.id))
                     )
 
+        self._showPhononDos(section, sim)
+        self._showPhononDispersion(section, sim)
+        #self._showElectrons(section)
+        #self._showPhonons(section)
+        section.add(lc.document(Class="clear-both"))
+
+
+    def _showPhononDos(self, section, sim):
         linkDos     = lc.link(label="Create Phonon DOS",
                             Class="qe-action-edit",
-                            onclick = load(actor        = 'atomicstructure',
-                                            routine     = 'showOverview',
+                            onclick = load(actor        = 'material_simulations/espresso/phonondos',
+                                            routine     = 'create',
                                             simid       = self.id))
 
-#                            onclick = load(actor        = 'material_simulations/espresso/phonondos',
-#                                            routine     = 'create',
-#                                            simid       = self.id))
+        if self._phononDosCreated(sim):     # Check if DOS created
+            linkDos.label   = "Phonon DOS"
+            linkDos.onclick = load(actor        = 'atomicstructure',
+                                    routine     = 'showOverview',
+                                    id          = sim.structureid)  # matter id
+
         section.add(linkDos)
 
+
+    def _phononDosCreated(self, sim):
+        job         = qejob(self._director, self.id, "MATDYN")
+        # matdyn.dos file exists: job is succefully completed and results are downloaded
+        path        = self._phononDosFile()
+        if job and os.path.exists(path):    # matdyn.dos file exists
+            return True
+
+        return False
+        
+
+    def _showPhononDispersion(self, section, sim):
         section.add(lc.link(label="Create Phonon Dispersion",
                             Class="qe-action-edit",
                             onclick = load(actor        = 'material_simulations/espresso/phonons',
@@ -103,19 +127,21 @@ class Actor(base):
                     )
 
 
-#        section.add(lc.link(label="Electrons",
-#                            Class="qe-action-edit",
-#                            onclick = load(actor      = 'material_simulations/espresso/results',
-#                                             id         = self.id))
-#                    )
-#
-#        section.add(lc.link(label="Phonons",
-#                            Class="qe-action-edit",
-#                            onclick = load(actor      = 'material_simulations/espresso/results',
-#                                             id         = self.id))
-#                    )
+    def _showElectrons(self, section):
+        section.add(lc.link(label="Electrons",
+                            Class="qe-action-edit",
+                            onclick = load(actor      = 'material_simulations/espresso/results',
+                                             id         = self.id))
+                    )
+        
 
-        section.add(lc.document(Class="clear-both"))
+    def _showPhonons(self, section):
+        section.add(lc.link(label="Phonons",
+                            Class="qe-action-edit",
+                            onclick = load(actor      = 'material_simulations/espresso/results',
+                                             id         = self.id))
+                    )
+
 
 
     def _showData(self, section):
@@ -215,7 +241,6 @@ class Actor(base):
                 if results.ready():
                     path        = os.path.join(results.tardir(), "matdyn.dos")  # dos name is hardcoded
                     filepath    = os.path.join(dataroot, path)
-                    #print filepath
                     return filepath
 
         return None
@@ -261,7 +286,7 @@ class Actor(base):
             return None
 
         jobs    = self._director.clerk.getQEJobs(where="taskid='%s'" % task.id)
-        if jobs:    # Pick the first
+        if jobs:    # Pick the latest job
             return latestJob(jobs)
 
         return None
