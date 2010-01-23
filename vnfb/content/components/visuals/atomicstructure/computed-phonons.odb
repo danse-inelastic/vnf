@@ -28,11 +28,12 @@ class Factory(object):
     def create(self):
         doc = lc.document(
             collapsable=1, collapsed = 1,
+            dockable=1, closable = 1,
             id='atomicstructure-computed-phonons',
             title='Phonons',
             )
-        loading = lc.paragraph(text=['loading ...'])
-        doc.add(loading)
+        loading = doc.document(Class='container')
+        loading.paragraph(text=['loading ...'])
 
         loadphonons = select(element=doc).replaceContent(lc.load(
             actor='material_simulations/getphononresults',

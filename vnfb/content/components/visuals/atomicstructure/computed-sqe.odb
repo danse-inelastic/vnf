@@ -31,8 +31,8 @@ class Factory(object):
             id='atomicstructure-computed-sqe',
             title='Sqe',
             )
-        loading = lc.paragraph(text=['loading ...'])
-        doc.add(loading)
+        loading = doc.document(Class='container')
+        loading.paragraph(text=['loading ...'])
 
         loadsqe = select(element=doc).replaceContent(lc.load(
             actor='material_simulations/getsqeresults',
