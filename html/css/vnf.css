@@ -231,9 +231,19 @@ width:3em;
     text-decoration:underline;
 }
 
+.luban-document.panel > .luban-document-title > table td.luban-document-title-controls a.float {
+background-color:transparent;
+background-image:url(/images/icons/expand-arrow.16.png);
+color:transparent;
+background-position:center;
+background-repeat:no-repeat;
+}
+
 /* dockable */
 .dockable.panel.luban-document > .luban-document-body  {
     border:none;
+    max-height:92%;
+    overflow:scroll;
 }
 
 /* dock */

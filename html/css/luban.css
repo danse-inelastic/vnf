@@ -68,6 +68,11 @@ body {
     border-collapse:collapse;
 }
 
+.panel.luban-document.highlighted >.luban-document-title {
+    background-color:#88b0bc;
+}
+
+
 a.luban-link {
     color: blue;
 }
