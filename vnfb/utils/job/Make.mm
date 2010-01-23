@@ -28,6 +28,7 @@ all: export
 # export
 
 EXPORT_PYTHON_MODULES = \
+	packjobdir.py \
 	scheduler.py \
 	__init__.py \
 
