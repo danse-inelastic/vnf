@@ -190,12 +190,18 @@ class Actor(base):
         
         # download link
         # compdoc.paragraph(text=['To download the whole job directory to your local machine'])
-        link = lc.button(label = 'Download the whole working directory of job %s' % job.id)
-        link.onclick = load(
-            actor = 'job',
-            routine = 'download',
-            id = id,
-            )
+        # check if there is a tar ball available to download
+        label = 'Download the work directory of job %s' % job.id
+        if packutils.packingIsUpToDate(job, director):
+            # if the tar ball is good, we need to add the link to the tar ball
+            link = self.createDownloadLink(director, job=job)
+        else:
+            link = lc.button(id = 'job-download-link', label=label)
+            link.onclick = load(
+                actor = 'job',
+                routine = 'download',
+                id = id,
+                )
         compdoc.add(link)
 
         # status document
@@ -273,6 +279,36 @@ class Actor(base):
 
         return select(id='main-display-area').replaceContent(container)
 
+
+    def createDownloadLink(self, director, job=None):
+        '''create the download link. this assumes that a tar ball of the job directory
+        is already there.
+        '''
+        if job is None:
+            domaccess = self._domaccess(director)
+            id = self.inventory.id
+            job = domaccess.getJobRecord(id)
+            
+        url = packutils.downloadurl(job, director)
+        label = 'Download the work directory of job %s' % job.id
+
+        link = lc.htmldocument(id='job-download-link')
+        link.text = ['<a href="%s">%s</a>' % (url, label)]
+        
+        return link  
+
+
+    def download(self, director):
+        id = self.inventory.id
+        domaccess = self._domaccess(director)
+
+        #
+        job = domaccess.getJobRecord(id)
+        
+        view = director.retrieveVisual('job/downloading', job=job, director=director)
+
+        return select(id='job-download-link').replaceBy(view)        
+    
 
     def create(self, director):
         computation = self._getComputation(director)
@@ -469,7 +505,7 @@ class Actor(base):
             id = 'itask-%s-pbar' % task.id,
             status = 'Submitting job...',
             percentage = 0,
-            skip = 1000,
+            skip = 2000,
             )
         view.add(pbar)
         
@@ -647,6 +683,7 @@ def isPositiveInteger(candiate):
     return value > 0
 
 
+from vnfb.utils.job import packjobdir as packutils
 from vnf.dom.Job import Job
 
 def actor(): return Actor()

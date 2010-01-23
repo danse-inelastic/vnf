@@ -98,7 +98,8 @@ class ITaskApp(base):
         if fractional is not None and percentage is not None:
             raise RuntimeError, "both fractional and percentage are supplied"
         if fractional is not None: percentage = fractional * 100
-        
+
+        self._debug.log('%s: %s' % (percentage, message))
         task = self.getTask()
         task.progress_percentage = percentage
         task.progress_text = message
@@ -140,6 +141,9 @@ class ITaskApp(base):
         self.csaccessor = self.inventory.csaccessor
 
         self.iworker = self.inventory.iworker
+        if self.iworker.__class__.__name__ == 'Dummy':
+            dump = self._dumpCurator()
+            raise RuntimeError, 'iworker is not implemented right.\n%s' % dump
         self._info.log('end _configure')
         return
 

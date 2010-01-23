@@ -10,6 +10,9 @@
 #
 
 
+
+# this is obsolete. see vnfb.components.iworkers.PackJobDir
+
 from pyre.applications.Script import Script as base
 
 
