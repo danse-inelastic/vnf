@@ -191,7 +191,7 @@ class Actor(base):
         # download link
         # compdoc.paragraph(text=['To download the whole job directory to your local machine'])
         # check if there is a tar ball available to download
-        label = 'Download the work directory of job %s' % job.id
+        label = 'Pack the job directory for download'
         if packutils.packingIsUpToDate(job, director):
             # if the tar ball is good, we need to add the link to the tar ball
             link = self.createDownloadLink(director, job=job)
@@ -290,7 +290,8 @@ class Actor(base):
             job = domaccess.getJobRecord(id)
             
         url = packutils.downloadurl(job, director)
-        label = 'Download the work directory of job %s' % job.id
+        filename = url.split('/')[-1]
+        label = 'Download %s' % filename
 
         link = lc.htmldocument(id='job-download-link')
         link.text = ['<a href="%s">%s</a>' % (url, label)]
