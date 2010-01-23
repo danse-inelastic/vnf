@@ -29,7 +29,7 @@ class Factory(object):
         doc = lc.document(
             collapsable=1, collapsed = 1,
             dockable=1, closable = 1,
-            id='atomicstructure-computed-phonons',
+            Class='atomicstructure-computed-phonons',
             title='Phonons',
             )
         loading = doc.document(Class='container')
