@@ -62,25 +62,36 @@ class Actor(base):
         # Find matdyn.in (from "MATDYN" input), flfrc (from "Q2R" input)
         # Example: md   = "/home/dexity/exports/vnf/vnfb/content/data/tmp/tmpTRqFuy/8CNH5MUJ/8CHQEPAQmatdyn.in"
         #          fc  = "/home/dexity/exports/vnf/vnfb/content/data/tmp/tmpDtcnyM/8BUTMMFX/default.fc"
-        mdinp   = qeinput(director, self.simid, "MATDYN")
-        md      = packname(mdinp.id, "matdyn.in.out")
-        mddir   = resultsdir(director, self.simid, "MATDYN")
-        md      = os.path.join(mddir, md)
-        fcdir   = resultsdir(director, self.simid, "Q2R")
-        fc      = os.path.join(fcdir, "default.fc")
+        mdinput     = qeinput(director, self.simid, "MATDYN")       # Same for input and output
+        mddir       = resultsdir(director, self.simid, "MATDYN")    # Same for input and output
+        fcdir       = resultsdir(director, self.simid, "Q2R")
+        mdinp       = packname(mdinput.id, "matdyn.in")
+        mdout       = packname(mdinput.id, "matdyn.in.out")
+        
+        mdinp       = os.path.join(mddir, mdinp)
+        mdout       = os.path.join(mddir, mdout)
+        flfrc       = os.path.join(fcdir, "default.fc")
 
         #fcinp   = qeinput(director, self.simid, "Q2R")
         #fc      = packname(fcinp.id, "matdyn.in")
         #print fc
         #md  = "matdyn.in"   # Matdyn input file
         #fc  = "mgb2666.fc"  # Force constant file
-        settingString = "[matdyn.x]\nmatdynInput = %s\nflfrc = %s" % (md, fc)
+        #settingString = "[matdyn.x]\nmatdynInput = %s\nflfrc = %s" % (md, fc)
+        settingString = "[matdyn.x]\
+        matdynInput = %s\n\
+        matdynOutput = %s\n\
+        flfrc = %s\n\
+        flvec = \n\
+        flfrq = \n\
+        fldos = " % (mdinp, mdout, flfrc)
 
         matdyn = MatdynTask( configString = settingString)
         matdyn.syncSetting()
         matdyn.output.parse()
         axis, dos = matdyn.output.property('phonon dos')
 
+        #print axis, dos
 #        C       = 29979245800.0
 #        TWO_PI  = 2.*3.14159265
 #
