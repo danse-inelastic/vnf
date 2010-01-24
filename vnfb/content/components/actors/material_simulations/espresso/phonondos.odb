@@ -21,8 +21,12 @@ from luban.content import load
 import luban.content as lc
 from vnfb.utils.qeutils import remoteResultsPath
 import os
+import time
+import shutil
 from vnfb.utils.qeutils import qeinput, packname, resultsdir
 from luban.components.AuthorizedActor import AuthorizedActor as base
+
+CONVERT_DELAY = 5   # 5 sec
 
 # Requires simulation id, config id and config type: (id, configid, type)
 class Actor(base):
@@ -34,8 +38,10 @@ class Actor(base):
 
     def create(self, director):
         "Create phonon DOS in idf format"
-        #self._convertResults(director)
-        #self._createRecord(director)
+        #self._phonid    = "99A8GLY2"
+        self._convertResults(director)
+        self._createRecord(director)
+        self._createLocation(director)
         self._relocateResults(director)
 
         return director.redirect(actor   = 'material_simulations/espresso/results',
@@ -73,11 +79,14 @@ fldos = %s""" % (flvec, flfrq, fldos)
         axis, dos = matdyn.output.property('phonon dos')
         idf.DOS.write(axis*TO_THZ, dos, filename = outdos, comment = '')
 
-        # XXX: Wait for 5 sec before moving it to phonodoses location
-        
+        time.sleep(CONVERT_DELAY)   # Wait for a while to make sure that data.idf is created
+
 
     def _createRecord(self, director):
-        "Creates 'phonondoses' record (taken from: vnfb/components/ComputationResultRetriever.py)"
+        """Creates 'phonondoses' record (taken from: vnfb/components/ComputationResultRetriever.py)
+        Notes:
+            - Sets phonid
+        """
         from vnfb.dom.material_simulations.PhononDOS import PhononDOSTable
 
         domaccessor = director.retrieveDOMAccessor('material_simulations/phonondos')
@@ -85,11 +94,20 @@ fldos = %s""" % (flvec, flfrq, fldos)
         clerk       = director.clerk
         computation = clerk.getQESimulations(id = self.simid)
         record      = clerk.insertNewOwnedRecord(PhononDOSTable, owner = computation.creator)
+        self._phonid    = record.id
 
         # The result record should know where it comes from
         computation.results.add(record, clerk.db)
         record.matter = computation.structureid
         clerk.db.updateRecord(record)
+
+
+    def _createLocation(self, director):
+        "Creates directory to store DOS file (data.idf)"
+        phonpath    = self._phonpath(director)
+        if not os.path.exists(phonpath):
+            os.makedirs (phonpath)
+
 
     # XXX: Replace by correct phonondoses id
     def _relocateResults(self, director):
@@ -99,16 +117,17 @@ fldos = %s""" % (flvec, flfrq, fldos)
         #orm         = domaccessor.orm   # ?
         #path    = director.dds.abspath(self._job)
 
-        dataroot    = self._dataroot(director)
-        pid         = os.path.join("phonondoses", "4Z986WID") # Phonon DOS id
-        dest        = os.path.join(dataroot, pid)
-
         mddir       = resultsdir(director, self.simid, "MATDYN")
         src         = os.path.join(mddir, "data.idf")   # XXX Check if it exists
-
-        import shutil
-        print src, dest
+        dest        = self._phonpath(director)
         shutil.copy(src, dest)
+
+
+    def _phonpath(self, director):
+        "Returns phonondoses directory corresponding to id (set in _createRecord())"
+        dataroot    = self._dataroot(director)
+        pid         = os.path.join("phonondoses", self._phonid) # Phonon DOS id
+        return os.path.join(dataroot, pid)
 
 
     def _dataroot(self, director):
