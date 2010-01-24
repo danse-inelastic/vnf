@@ -282,11 +282,7 @@ filter:alpha(opacity=50);
 opacity:0.5;
 }
 
-
-/* misc */
-.float-right {
-    float: right;
-}
+/* help */
 #help{
     width: 930;
     z-index: 200;
@@ -295,6 +291,31 @@ opacity:0.5;
     width: 930;
     height: 510;
 }
+
+/* dialog */
+.luban-dialog .luban-button-container .luban-button {
+    color:#444444;
+}
+
+/* bug report dialog */
+.bug-body > .luban-document-body {
+margin-left:1em;
+}
+.traceback-container > .luban-document-body {
+margin-left:2em;
+margin-top:1em;
+}
+.traceback-doc {
+max-width:960;
+max-height:400;
+overflow:scroll;
+}
+
+/* misc */
+.float-right {
+    float: right;
+}
+
 
 /* version */
 /* $Id$ */
