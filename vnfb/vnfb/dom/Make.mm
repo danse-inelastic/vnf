@@ -43,6 +43,7 @@ EXPORT_PYTHON_MODULES = \
 	AbstractOwnedObjectBase.py \
 	Atom.py \
 	AtomicStructure.py \
+	Bug.py \
 	Computable.py \
 	Computation.py \
 	ComputationResult.py \

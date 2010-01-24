@@ -303,12 +303,26 @@ margin-left:1em;
 }
 .traceback-container > .luban-document-body {
 margin-left:2em;
-margin-top:1em;
 }
 .traceback-doc {
 max-width:960;
 max-height:400;
 overflow:scroll;
+}
+.bug-report-form fieldset {
+border:2px solid lightGrey;
+}
+.bug-report-form .luban-formtextarea {
+width:100%;
+}
+.bug-report-form .luban-formtextarea table {
+width:100%;
+}
+.bug-report-form .luban-formtextarea table td.input-container {
+width:100%;
+}
+.bug-report-form .luban-formtextarea table td.input-container textarea {
+width:100%;
 }
 
 /* misc */
