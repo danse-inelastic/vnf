@@ -69,19 +69,23 @@ class Factory(object):
         xtalsystemlink = lc.link(label=label, tip=tip)
         xtalsystemsection.add(xtalsystemlink)
         # dialog to show the crystal system image
-        dialog = lc.dialog(id="crystal-system-viewer", title='Crystal system'); doc.add(dialog)
+        dialog = lc.dialog(id="crystal-system-viewer", title='Crystal system', autoopen=True); 
         dialogbody = lc.document(); dialog.add(dialogbody)
-        dialogbody.oncreate = select(element=dialogbody).append(load(
+        director = self.director
+        latticeview = director.redirect(
             actor='lattice_system', routine='createView',
             crystal_system = xtalsystem,
             centering=atomicstructure.centering,
             centering_description=atomicstructure.centering_description,
-            ))
+            include_credential = 0
+            )
+        dialogbody.add(latticeview)
+        
         #okbutton = lc.button(label='ok', onclick=[
         #    select(element=dialog).dialog('close'),
         #    ])
         #dialog.add(okbutton)
-        xtalsystemlink.onclick = select(element=dialog).dialog('open')
+        xtalsystemlink.onclick = select(element=doc).append(dialog)
 
         # sg
         sg = atomicstructure.sg
