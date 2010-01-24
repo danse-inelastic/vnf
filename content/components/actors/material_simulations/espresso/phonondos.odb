@@ -54,42 +54,36 @@ class Actor(base):
 
     def _convertResults(self, director):
         "Convert matdyn.dos -> data.idf to phonondoses directory"
-        import idf.Polarizations, idf.Omega2, idf.DOS
+        import idf.DOS
         from qecalc.qetask.qeparser.pwinput import PWInput
         from qecalc.qetask.matdyntask import MatdynTask
-        #from qeutils import kmesh
+
+        TO_THZ  = 0.0299792458
 
         # Find matdyn.in (from "MATDYN" input), flfrc (from "Q2R" input)
         # Example: md   = "/home/dexity/exports/vnf/vnfb/content/data/tmp/tmpTRqFuy/8CNH5MUJ/8CHQEPAQmatdyn.in"
         #          fc  = "/home/dexity/exports/vnf/vnfb/content/data/tmp/tmpDtcnyM/8BUTMMFX/default.fc"
-        mdinput     = qeinput(director, self.simid, "MATDYN")       # Same for input and output
-        mddir       = resultsdir(director, self.simid, "MATDYN")    # Same for input and output
-        fcdir       = resultsdir(director, self.simid, "Q2R")
-        mdinp       = packname(mdinput.id, "matdyn.in")
-        mdout       = packname(mdinput.id, "matdyn.in.out")
-        
-        mdinp       = os.path.join(mddir, mdinp)
-        mdout       = os.path.join(mddir, mdout)
-        flfrc       = os.path.join(fcdir, "default.fc")
+        mddir       = resultsdir(director, self.simid, "MATDYN")    # tmp results directory
+        flvec       = os.path.join(mddir, "matdyn.modes")
+        flfrq       = os.path.join(mddir, "matdyn.freq")
+        fldos       = os.path.join(mddir, "matdyn.dos")
+        outdos      = os.path.join(mddir, "DOS")
 
-        #fcinp   = qeinput(director, self.simid, "Q2R")
-        #fc      = packname(fcinp.id, "matdyn.in")
-        #print fc
-        #md  = "matdyn.in"   # Matdyn input file
-        #fc  = "mgb2666.fc"  # Force constant file
-        #settingString = "[matdyn.x]\nmatdynInput = %s\nflfrc = %s" % (md, fc)
-        settingString = "[matdyn.x]\
-        matdynInput = %s\n\
-        matdynOutput = %s\n\
-        flfrc = %s\n\
-        flvec = \n\
-        flfrq = \n\
-        fldos = " % (mdinp, mdout, flfrc)
+        print mddir
+        settingString = """[matdyn.x]\
+flvec = %s
+flfrq = %s
+fldos = %s""" % (flvec, flfrq, fldos)
 
         matdyn = MatdynTask( configString = settingString)
-        matdyn.syncSetting()
+        #matdyn.syncSetting()
         matdyn.output.parse()
         axis, dos = matdyn.output.property('phonon dos')
+        idf.DOS.write(axis*TO_THZ, dos, filename = outdos, comment = '')
+
+        idfDOSData = idf.DOS.read('DOS')
+        print idfDOSData
+        print mddir
 
         #print axis, dos
 #        C       = 29979245800.0
