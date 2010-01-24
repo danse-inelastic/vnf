@@ -11,9 +11,9 @@
 
 
 def announcement(name, emails):
-    import vnf.content, time
+    import vnfb.content, time
 
-    msg = vnf.content.announcement()
+    msg = vnfb.content.announcement()
     msg.sender = "linjiao@caltech.edu"
     msg.subject = "Vnf account updated - %s. (%s)" % (name, time.ctime())
     msg.text = [

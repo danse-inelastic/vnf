@@ -11,9 +11,9 @@
 
 
 def announcement(registrant):
-    import vnf.content
+    import vnfb.content
 
-    msg = vnf.content.announcement()
+    msg = vnfb.content.announcement()
     msg.sender = "jiao.lin@gmail.com"
     msg.subject = "New registration alert: %s" % registrant.username
     msg.text = [

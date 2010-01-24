@@ -25,8 +25,6 @@ class Announcer(Component):
 
 
     def createEnvelop(self, source, destination, subject):
-        from email.MIMEMultipart import MIMEMultipart
-
         envelop = MIMEMultipart()
         envelop['From'] = source
         envelop['To'] = destination
@@ -36,14 +34,31 @@ class Announcer(Component):
         return envelop
 
 
-    def createBody(self, text):
-        from email.MIMEText import MIMEText
+    def createBody(self, text, html=None):
+        if not html:
+            return self._createPlainTextBody(text)
+        return self._createRichTextBody(text, html)
+
+
+
+    def _createRichTextBody(self, text, html):
+        body = MIMEMultipart('alternative')
+        
+        msgtext = MIMEText(_text=text, _charset='utf-8')
+        body.attach(msgtext)
+
+        msgtext = MIMEText(html, 'html')
+        body.attach(msgtext)
+        
+        return body
+
+
+    def _createPlainTextBody(self, text):
         body = MIMEText(_text=text, _charset='utf-8')
         return body
 
 
     def createAttachments(self, filenames):
-        from email.MIMEText import MIMEText
 
         attachments = []
 
@@ -68,6 +83,10 @@ class Announcer(Component):
     def _configure(self):
         super(Announcer, self)._configure()
         return
+
+
+from email.MIMEMultipart import MIMEMultipart
+from email.MIMEText import MIMEText
 
 
 # version
