@@ -38,7 +38,6 @@ class Actor(base):
 
     def create(self, director):
         "Create phonon DOS in idf format"
-        #self._phonid    = "99A8GLY2"
         self._convertResults(director)
         self._createRecord(director)
         self._createLocation(director)

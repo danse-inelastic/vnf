@@ -11,26 +11,208 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
-from vnfb.utils.qeutils import stamp2date
-from vnfb.utils.qegrid import QEGrid
-
-from luban.content import select
-from luban.content import load
-
-import luban.content as lc
+import os
+import time
+import shutil
+from vnfb.utils.qeutils import qeinput, packname, resultsdir
+import idf.DOS
+import idf.Polarizations
+import idf.Omega2
+from qecalc.qetask.qeparser.pwinput import PWInput
+from qecalc.qetask.matdyntask import MatdynTask
 from luban.components.AuthorizedActor import AuthorizedActor as base
+
+CONVERT_DELAY   = 7     # 7 sec
+C               = 29979245800.0
+TWO_PI          = 2.*3.14159265
+TO_THZ          = 0.0299792458
+A2B             = 1.889725989   # Angstroms to bohrs
+PI              = 3.14159265
 
 # Requires simulation id, config id and config type: (id, configid, type)
 class Actor(base):
 
     class Inventory(base.Inventory):
         import pyre.inventory
-        id          = pyre.inventory.str('id', default='')          # Task Id
+        simid          = pyre.inventory.str('simid', default='')
 
 
     def create(self, director):
-        print "Phonon Dispersion"
+        "Create Phonons on Grid in idf format"
+        #self._mddir = self._matdynpath(director)
+        self._convertResults(director)
+        #self._createRecord(director)
+        #self._createLocation(director)
+        #self._relocateResults(director)
 
+        return director.redirect(actor   = 'material_simulations/espresso/results',
+                                 routine = 'default',
+                                 id      = self.simid)
+
+
+    # XXX: Check if the DOS is converted correctly!
+    def _convertResults(self, director):
+        """Convert matdyn output (matdyn.modes, matdyn.freq, matdyn.dos) to
+        DOS, Polarizations, Omega2 file to jobs temp directory
+        """
+        settingString   = self._setSettings(director)
+        matdyn = MatdynTask( configString = settingString)
+        #matdyn.syncSetting()
+        matdyn.input.parse()
+        matdyn.output.parse()
+        Pols, Freqs, qPoints = matdyn.output.property('multi phonon')
+        
+        #self._createDOS(director, matdyn)
+        #self._createPolarizations(director, matdyn, Pols)
+        #self._createOmega2(director, matdyn, Freqs)
+        self._createQgridinfo(director, matdyn)
+
+        time.sleep(CONVERT_DELAY)   # Wait for a while to make sure that data.idf is created
+
+
+    def _setSettings(self, director):
+        "Returns settings string for MATDYN task"
+        mddir       = self._matdynpath(director)
+        # Get matdyn input file
+        mdinput     = qeinput(director, self.simid, "MATDYN")
+        mdinp       = packname(mdinput.id, "matdyn.in")
+        mdinp       = os.path.join(mddir, mdinp)
+        flvec       = os.path.join(mddir, "matdyn.modes")
+        flfrq       = os.path.join(mddir, "matdyn.freq")
+        fldos       = os.path.join(mddir, "matdyn.dos")
+        # Configuration setting for QECalc
+        settingString = """[matdyn.x]
+matdynInput = %s
+flvec = %s
+flfrq = %s
+fldos = %s""" % (mdinp, flvec, flfrq, fldos)
+
+        return settingString
+
+
+    def _createDOS(self, director, matdyn):
+        "Creates DOS file"
+        mddir       = self._matdynpath(director)
+        outdos      = os.path.join(mddir, "DOS")
+        axis, dos = matdyn.output.property('phonon dos')
+        idf.DOS.write(axis*TO_THZ, dos, filename = outdos, comment = '')
+        
+
+    def _createPolarizations(self, director, matdyn, pols):
+        "Creates Polarizations file"
+        mddir       = self._matdynpath(director)
+        pol         = os.path.join(mddir, "Polarizations")
+        idf.Polarizations.write(pols, pol, 'Polarizations')
+
+
+    def _createOmega2(self, director, matdyn, freqs):
+        "Creates Omega2 file"
+        mddir       = self._matdynpath(director)
+        omega2      = os.path.join(mddir, "Omega2")
+        idf.Omega2.write( (freqs*C*TWO_PI)**2, omega2, '')
+
+
+    def _createQgridinfo(self, director, matdyn):
+        "Creates Qgridinfo file"
+        mddir       = self._matdynpath(director)
+        qinfo       = os.path.join(mddir, "Qgridinfo")
+        nqGrid      = self._nqgrid(matdyn)
+        recipLattice    = self._recipLattice(director, matdyn)
+        self._genQgridinfo(qinfo, nqGrid, recipLattice)
+
+
+    def _nqgrid(self, matdyn):
+        "Returns list of nq values on grid. Example: [4, 4, 4]"
+        nl = matdyn.input.namelist("input") # Check if nk1, nk2, nk3 are present!
+        return [int(nl.param("nk1")), int(nl.param("nk2")), int(nl.param("nk3"))]
+        
+
+    def _recipLattice(self, director, matdyn):
+        "Returns reciprocal lattice"
+        pwdir       = self._pwpath(director)
+        pwinput     = qeinput(director, self.simid, "PW")
+        pwinp       = packname(pwinput.id, "pw.in")
+        pwinp       = os.path.join(pwdir, pwinp)
+        pwInput     = PWInput(filename = pwinp)
+        pwInput.parse()
+        return pwInput.structure.lattice.diffpy().reciprocal().base*2.0*PI*A2B
+
+
+    def _genQgridinfo(self, filename, nqGrid, recipLattice):
+        s = ''
+        for i in range(3):
+            s = s + 'b%d = %# .8f , %# .8f , %# .8f\nn%d = %d\n'%(i+1, \
+            recipLattice[i,0], recipLattice[i,1], recipLattice[i,2], i+1, nqGrid[i])
+
+        open(filename, 'w').write(s)
+
+
+    def _matdynpath(self, director):
+        # Example: mddir   = "/home/dexity/exports/vnf/vnfb/content/data/tmp/tmpTRqFuy/8CNH5MUJ"
+        return resultsdir(director, self.simid, "MATDYN")    # tmp results directory
+
+
+    def _pwpath(self, director):
+        # Example: pwdir   = "/home/dexity/exports/vnf/vnfb/content/data/tmp/tmpTRqFuy/8CNH5MUJ"
+        return resultsdir(director, self.simid, "PW")    # tmp results directory
+
+
+    def _createRecord(self, director):
+        """Creates 'phonondoses' record (taken from: vnfb/components/ComputationResultRetriever.py)
+        Notes:
+            - Sets phonid
+        """
+        from vnfb.dom.material_simulations.PhononDOS import PhononDOSTable
+
+        domaccessor = director.retrieveDOMAccessor('material_simulations/phonondos')
+        orm         = domaccessor.orm   # ?
+        clerk       = director.clerk
+        computation = clerk.getQESimulations(id = self.simid)
+        record      = clerk.insertNewOwnedRecord(PhononDOSTable, owner = computation.creator)
+        self._phonid    = record.id
+
+        # The result record should know where it comes from
+        computation.results.add(record, clerk.db)
+        record.matter = computation.structureid
+        clerk.db.updateRecord(record)
+
+
+    def _createLocation(self, director):
+        "Creates directory to store DOS file (data.idf)"
+        phonpath    = self._phonpath(director)
+        if not os.path.exists(phonpath):
+            os.makedirs (phonpath)
+
+
+    # XXX: Replace by correct phonondoses id
+    def _relocateResults(self, director):
+        "Copy from tmp/ directory to phonodoses directory"
+        # Making it in a "kosher" way will make your life hard
+        #domaccessor = director.retrieveDOMAccessor('material_simulations/phonondos')
+        #orm         = domaccessor.orm   # ?
+        #path    = director.dds.abspath(self._job)
+
+        mddir       = resultsdir(director, self.simid, "MATDYN")
+        src         = os.path.join(mddir, "data.idf")   # XXX Check if it exists
+        dest        = self._phonpath(director)
+        shutil.copy(src, dest)
+
+
+    def _phonpath(self, director):
+        "Returns phonondoses directory corresponding to id (set in _createRecord())"
+        dataroot    = self._dataroot(director)
+        pid         = os.path.join("phonondoses", self._phonid) # Phonon DOS id
+        return os.path.join(dataroot, pid)
+
+
+    def _dataroot(self, director):
+        "Returns data root path"
+        dds = director.dds
+        return os.path.abspath(dds.dataroot)
+
+
+    def _testIDF(self):
+        pass
 
     def __init__(self):
         super(Actor, self).__init__(name='material_simulations/espresso/phonons')
@@ -40,7 +222,7 @@ class Actor(base):
 
     def _configure(self):
         super(Actor, self)._configure()
-        self.id             = self.inventory.id
+        self.simid             = self.inventory.simid
 
 
     def _init(self):
