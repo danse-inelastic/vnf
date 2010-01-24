@@ -15,7 +15,7 @@
 # utilities to communicate with users, etc. eg emails
 
 
-def announce(director, announcement, *args):
+def announce(director, announcement, *args, **kwds):
     import vnfb.components
     
     # create the announcer
@@ -30,9 +30,14 @@ def announce(director, announcement, *args):
 
     # load the message template
     announcement = director.retrieveComponent(
-        announcement, factory="announcement", args=args,
+        announcement, factory="announcement", args=args, kwds=kwds,
         vault=['announcements'])
-    
+
+    #
+    if announcement is None:
+        curator_dump = director._dumpCurator()
+        raise RuntimeError, 'unable to retrieve announcement. Curator dump %s' % curator_dump
+
     # send the email
     announcement.announce(director, announcer=announcer, postman=postman)
     

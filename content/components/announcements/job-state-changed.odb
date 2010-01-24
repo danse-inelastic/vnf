@@ -11,9 +11,9 @@
 
 
 def announcement(job, user):
-    import vnf.content
+    import vnfb.content
 
-    msg = vnf.content.announcement()
+    msg = vnfb.content.announcement()
     msg.sender = "linjiao@caltech.edu"
     msg.subject = "VNF job #%s" % job.id
     msg.text = [

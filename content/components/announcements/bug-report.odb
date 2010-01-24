@@ -10,18 +10,24 @@
 #
 
 
-def announcement(user, bugid, comments, traceback):
-    import vnf.content
+def announcement(user, bugid, comment, traceback):
+    if isinstance(user, basestring):
+        username = useremail = user
+    else:
+        username = user.username
+        useremail = user.email
+        
+    import vnfb.content
 
-    msg = vnf.content.announcement()
-    msg.sender = user.email
+    msg = vnfb.content.announcement()
+    msg.sender = useremail
     #msg.sender = 'linjiao@caltech.edu'
     msg.subject = "Bug #%s" % (bugid,)
     msg.text = [
 """
-User %(username)s has left the following comments for bug #%(bugid)s
+User %(username)s has left the following comment for bug #%(bugid)s
 
-%(comments)s
+%(comment)s
 
 
 Trace back:
@@ -29,15 +35,27 @@ Trace back:
 %(traceback)s
 """,
         ]
+    msg.html = [
+        '<h2>User %(username)s has left the following comment for bug #%(bugid)s</h2>',
+        '<div>',
+        '<h4>Comment</h4>',
+        '%(comment)s',
+        '</div>',
+        '<div>',
+        '<h4>Trace back:</h4>',
+        '%(traceback)s',
+        '</div>',
+        ]
 
     subs = {
-        'username': user.username,
+        'username': username,
         'bugid': bugid,
-        'comments': comments,
+        'comment': comment,
         'traceback': traceback,
         }
 
     adminemail = 'vnf-dev@googlegroups.com'
+    #adminemail = 'linjiao@caltech.edu'
     msg.recipients[adminemail] = subs
 
     return msg
