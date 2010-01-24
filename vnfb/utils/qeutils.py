@@ -164,6 +164,10 @@ def latestTask(tasks):
     return latestRecord(tasks, "date")
 
 
+def latestInput(inputs):
+    return latestRecord(inputs, "timecreated")
+
+
 def qetask(director, simid, type):
     "Returns task object defined by simulation id and type"
     simtasks = director.clerk.getQESimulationTasks(where="simulationid='%s'" % simid)
@@ -183,6 +187,41 @@ def qejob(director, simid, type):
     task    = qetask(director, simid, type)
     jobs    = director.clerk.getQEJobs(where="taskid='%s'" % task.id)
     return latestJob(jobs)
+
+
+def qeinput(director, simid, type):
+    "Return input for the type"
+    task    = qetask(director, simid, type)
+    inputs  = director.clerk.getQEConfigurations(where="taskid='%s'" % task.id)
+    return latestInput(inputs)  # There should be a single input record!
+
+
+def resultsdir(director, simid, type):
+    "Returns results directory in data/tmp"
+    from vnfb.utils.qeresults import QEResults
+    from vnfb.utils.qetaskinfo import TaskInfo
+    
+    job     = qejob(director, simid, type)
+    if job:
+        dds         = director.dds
+        dataroot    = os.path.abspath(dds.dataroot)
+        taskinfo    = TaskInfo(simid = simid, type = type)
+        results     = QEResults(director, job, taskinfo)
+        if results.ready():
+            return os.path.join(dataroot, results.tardir())
+
+    return None
+
+#            if jit[1] is not None and jit[2].type == "MATDYN":   # MATDYN type
+#                dataroot    = self._dataroot()
+#                taskinfo    = TaskInfo(simid = self.id, type = "MATDYN")
+#                results     = QEResults(self._director, jit[0], taskinfo)
+#                if results.ready():
+#                    path        = os.path.join(results.tardir(), "matdyn.dos")  # dos name is hardcoded
+#                    filepath    = os.path.join(dataroot, path)
+#                    return filepath
+
+#        return None
 
 
 # TODO: Test!!!

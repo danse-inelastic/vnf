@@ -42,6 +42,7 @@ class Actor(base):
 
 
     def content(self, director):
+        self.id         = self.inventory.id
         self._director  = director
         sim         = director.clerk.getQESimulations(id=self.id)   # Not None
         self._simlist   = self._getSimlist(sim.type)
@@ -97,13 +98,14 @@ class Actor(base):
                             Class="qe-action-edit",
                             onclick = load(actor        = 'material_simulations/espresso/phonondos',
                                             routine     = 'create',
-                                            simid       = self.id))
+                                            simid       = self.inventory.id))
 
-        if self._phononDosCreated(sim):     # Check if DOS created
-            linkDos.label   = "Phonon DOS"
-            linkDos.onclick = load(actor        = 'atomicstructure',
-                                    routine     = 'showOverview',
-                                    id          = sim.structureid)  # matter id
+        # Uncomment
+#        if self._phononDosCreated(sim):     # Check if DOS created
+#            linkDos.label   = "Phonon DOS"
+#            linkDos.onclick = load(actor        = 'atomicstructure',
+#                                    routine     = 'showOverview',
+#                                    id          = sim.structureid)  # matter id
 
         section.add(linkDos)
 
@@ -117,7 +119,7 @@ class Actor(base):
         #   - dos is converted and copied to data.idf file
         #
         path        = self._phononDosFile()
-        if job and os.path.exists(path):    # data.idf exists
+        if job and os.path.exists(path):    # XXX (Wrong assumption) Change to: data.idf exists
             return True
 
         return False

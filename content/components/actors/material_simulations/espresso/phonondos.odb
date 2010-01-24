@@ -19,6 +19,8 @@ from luban.content import load
 
 import luban.content as lc
 from vnfb.utils.qeutils import remoteResultsPath
+import os
+from vnfb.utils.qeutils import qeinput, packname, resultsdir
 from luban.components.AuthorizedActor import AuthorizedActor as base
 
 # Requires simulation id, config id and config type: (id, configid, type)
@@ -32,19 +34,65 @@ class Actor(base):
     def create(self, director):
         "Create phonon DOS in idf format"
         self._convertResults(director)
-        self._createRecord(director)
-        self._copyResults(director)
+        #self._createRecord(director)
+        #self._copyResults(director)
 
-        #return director.redirect()
+        #print self.simid
+        return director.redirect(actor   = 'material_simulations/espresso/results',
+                                 routine = 'default',
+                                 id      = "7VEDXYDP")    #self.simid)
 
-        
+#actor   = 'material_simulations/espresso/input-create',
+#                                routine = 'default',
+#                                text    = self._input(director),
+#                                id      = self.inventory.id,
+#                                taskid  = self.inventory.taskid,
+#                                type    = self.inventory.type
         #job     = self._phononDosJob(director)
         #print self.simid
 
 
-    def _convertResults(director):
+    def _convertResults(self, director):
         "Convert matdyn.dos -> data.idf to phonondoses directory"
-        pass
+        import idf.Polarizations, idf.Omega2, idf.DOS
+        from qecalc.qetask.qeparser.pwinput import PWInput
+        from qecalc.qetask.matdyntask import MatdynTask
+        #from qeutils import kmesh
+
+        # Find matdyn.in (from "MATDYN" input), flfrc (from "Q2R" input)
+        # Example: md   = "/home/dexity/exports/vnf/vnfb/content/data/tmp/tmpTRqFuy/8CNH5MUJ/8CHQEPAQmatdyn.in"
+        #          fc  = "/home/dexity/exports/vnf/vnfb/content/data/tmp/tmpDtcnyM/8BUTMMFX/default.fc"
+        mdinp   = qeinput(director, self.simid, "MATDYN")
+        md      = packname(mdinp.id, "matdyn.in.out")
+        mddir   = resultsdir(director, self.simid, "MATDYN")
+        md      = os.path.join(mddir, md)
+        fcdir   = resultsdir(director, self.simid, "Q2R")
+        fc      = os.path.join(fcdir, "default.fc")
+
+        #fcinp   = qeinput(director, self.simid, "Q2R")
+        #fc      = packname(fcinp.id, "matdyn.in")
+        #print fc
+        #md  = "matdyn.in"   # Matdyn input file
+        #fc  = "mgb2666.fc"  # Force constant file
+        settingString = "[matdyn.x]\nmatdynInput = %s\nflfrc = %s" % (md, fc)
+
+        matdyn = MatdynTask( configString = settingString)
+        matdyn.syncSetting()
+        matdyn.output.parse()
+        axis, dos = matdyn.output.property('phonon dos')
+
+#        C       = 29979245800.0
+#        TWO_PI  = 2.*3.14159265
+#
+#        nqGrid = [10,10,10]
+#
+#        matdyn.input.qpoints.setAutomatic(nqGrid)
+#        matdyn.input.save()
+#        matdyn.launch()
+#        matdyn.output.parse()
+#
+#        axis, dos = matdyn.output.property('phonon dos')
+
 
 
 #    def _retrieveResults(self):
@@ -54,6 +102,7 @@ class Actor(base):
 #                /home/dexity/vnf/content/data/qejobs/643E2QQI/
 #        """
 #        pass
+
 
     def _createRecord(self, director):
         "Creates 'phonondoses' record (taken from: vnfb/components/ComputationResultRetriever.py)"
@@ -85,7 +134,6 @@ class Actor(base):
 
     def __init__(self):
         super(Actor, self).__init__(name='material_simulations/espresso/phonondos')
-
         return
 
 
