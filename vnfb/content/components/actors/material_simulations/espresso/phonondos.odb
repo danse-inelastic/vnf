@@ -37,37 +37,29 @@ class Actor(base):
         #self._createRecord(director)
         #self._copyResults(director)
 
-        #print self.simid
         return director.redirect(actor   = 'material_simulations/espresso/results',
                                  routine = 'default',
-                                 id      = "7VEDXYDP")    #self.simid)
+                                 id      = self.simid)
 
-#actor   = 'material_simulations/espresso/input-create',
-#                                routine = 'default',
-#                                text    = self._input(director),
-#                                id      = self.inventory.id,
-#                                taskid  = self.inventory.taskid,
-#                                type    = self.inventory.type
-        #job     = self._phononDosJob(director)
-        #print self.simid
+        #job     = self._phononDosJob(director) # ?
 
-
+    # XXX: Check if the DOS is converted correctly!
     def _convertResults(self, director):
-        "Convert matdyn.dos -> data.idf to phonondoses directory"
+        """Convert matdyn output (matdyn.modes, matdyn.freq, matdyn.dos) to
+        'data.idf' file to jobs temp directory
+        """
         import idf.DOS
         from qecalc.qetask.qeparser.pwinput import PWInput
         from qecalc.qetask.matdyntask import MatdynTask
 
         TO_THZ  = 0.0299792458
 
-        # Find matdyn.in (from "MATDYN" input), flfrc (from "Q2R" input)
-        # Example: md   = "/home/dexity/exports/vnf/vnfb/content/data/tmp/tmpTRqFuy/8CNH5MUJ/8CHQEPAQmatdyn.in"
-        #          fc  = "/home/dexity/exports/vnf/vnfb/content/data/tmp/tmpDtcnyM/8BUTMMFX/default.fc"
+        # Example: mddir   = "/home/dexity/exports/vnf/vnfb/content/data/tmp/tmpTRqFuy/8CNH5MUJ"
         mddir       = resultsdir(director, self.simid, "MATDYN")    # tmp results directory
         flvec       = os.path.join(mddir, "matdyn.modes")
         flfrq       = os.path.join(mddir, "matdyn.freq")
         fldos       = os.path.join(mddir, "matdyn.dos")
-        outdos      = os.path.join(mddir, "DOS")
+        outdos      = os.path.join(mddir, "data.idf")
 
         print mddir
         settingString = """[matdyn.x]\
@@ -81,23 +73,7 @@ fldos = %s""" % (flvec, flfrq, fldos)
         axis, dos = matdyn.output.property('phonon dos')
         idf.DOS.write(axis*TO_THZ, dos, filename = outdos, comment = '')
 
-        idfDOSData = idf.DOS.read('DOS')
-        print idfDOSData
-        print mddir
-
-        #print axis, dos
-#        C       = 29979245800.0
-#        TWO_PI  = 2.*3.14159265
-#
-#        nqGrid = [10,10,10]
-#
-#        matdyn.input.qpoints.setAutomatic(nqGrid)
-#        matdyn.input.save()
-#        matdyn.launch()
-#        matdyn.output.parse()
-#
-#        axis, dos = matdyn.output.property('phonon dos')
-
+        # XXX: Wait for some time before moving it to phonodoses location
 
 
 #    def _retrieveResults(self):
