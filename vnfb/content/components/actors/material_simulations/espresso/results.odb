@@ -202,11 +202,13 @@ class Actor(base):
         if dosfile is None:
             return
 
-        section.add(lc.paragraph(text="Phonon DOS", Class="qe-section"))
-
         # Populate D(E) list from file
-        (e,  state) = parsePHFile(dosfile)
+        data    = parsePHFile(dosfile)
+        if data is None:
+            return
 
+        section.add(lc.paragraph(text="Phonon DOS", Class="qe-section"))
+        (e,  state) = data
         plot = lc.plot2d(Class="default-size-plot")
         plot.curve(x=e, y=state, label='Phonon DOS')
 
