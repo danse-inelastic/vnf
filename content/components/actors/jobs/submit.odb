@@ -26,6 +26,7 @@ class Actor(base):
         import pyre.inventory
         id          = pyre.inventory.str('id', default='')      # Simulation Id
         taskid      = pyre.inventory.str('taskid', default='')
+        subtype     = pyre.inventory.str('subtype', default='')
 
 
     def default(self, director):
@@ -61,9 +62,10 @@ class Actor(base):
                    "status":        "Submitted",    # Fixed status
                    "timesubmitted": stamp(),
                    "creator":       director.sentry.username,
-                   "numberprocessors":   setting.numproc # -> take from QESettings
+                   "numberprocessors":   setting.numproc, # -> take from QESettings
+                   "description":   self.subtype
                    }
-                   
+
 #        debug   = False  # Debugging flag
 #        if debug:
 #            #self.taskid = "4FUNHMTP"
@@ -193,6 +195,7 @@ class Actor(base):
         super(Actor, self)._configure()
         self.id         = self.inventory.id
         self.taskid     = self.inventory.taskid
+        self.subtype    = self.inventory.subtype
 
 
     def _init(self):

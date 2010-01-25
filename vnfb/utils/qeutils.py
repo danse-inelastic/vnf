@@ -14,6 +14,7 @@
 """
 Contains little but useful itils!
 """
+import os.path
 
 import os
 from vnfb.utils.qeresults import QEResults
@@ -46,6 +47,9 @@ def parseFile(filename):
 
 
 def parsePHFile(filename):
+    if not os.path.exists(filename):
+        return None
+    
     e = []
     x = []
     f = open(filename,  "r")
@@ -190,9 +194,12 @@ def qetask(director, simid, type, subtype = None):
 
 def qejob(director, simid, type, subtype = None):
     "Return latest job for the type"
-    task    = qetask(director, simid, type, subtype)
+    task    = qetask(director, simid, type) # Let's not use 'subtype' for qetask()
     if task:
-        jobs    = director.clerk.getQEJobs(where="taskid='%s'" % task.id)
+        where   = "taskid='%s'" % task.id
+        if subtype:
+            where   = "%s AND description='%s'" % (where, subtype)
+        jobs    = director.clerk.getQEJobs(where=where)
         return latestJob(jobs)
     
     return None

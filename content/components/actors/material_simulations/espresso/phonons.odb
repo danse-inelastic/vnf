@@ -41,11 +41,12 @@ class Actor(base):
 
     def create(self, director):
         "Create Phonons on Grid in idf format"
-        #self._mddir = self._matdynpath(director)
-        self._convertResults(director)
-        self._createRecord(director)
-        self._createLocation(director)
-        self._relocateResults(director)
+        self._mddir = self._matdynpath(director)
+        print self._mddir
+#        self._convertResults(director)
+#        self._createRecord(director)
+#        self._createLocation(director)
+#        self._relocateResults(director)
 
         return director.redirect(actor   = 'material_simulations/espresso/results',
                                  routine = 'default',
@@ -81,14 +82,16 @@ class Actor(base):
         mdinp       = os.path.join(mddir, mdinp)
         flvec       = os.path.join(mddir, "matdyn.modes")
         flfrq       = os.path.join(mddir, "matdyn.freq")
-        fldos       = os.path.join(mddir, "matdyn.dos")
+        #fldos       = os.path.join(mddir, "matdyn.dos")
         # Configuration setting for QECalc
         settingString = """[matdyn.x]
 matdynInput = %s
 flvec = %s
 flfrq = %s
-fldos = %s""" % (mdinp, flvec, flfrq, fldos)
+""" % (mdinp, flvec, flfrq)
 
+#fldos = %s
+#, fldos
         return settingString
 
 
@@ -151,7 +154,7 @@ fldos = %s""" % (mdinp, flvec, flfrq, fldos)
 
     def _matdynpath(self, director):
         # Example: mddir   = "/home/dexity/exports/vnf/vnfb/content/data/tmp/tmpTRqFuy/8CNH5MUJ"
-        return resultsdir(director, self.simid, "MATDYN")    # tmp results directory
+        return resultsdir(director, self.simid, "MATDYN", subtype="dispersion")    # tmp results directory
 
 
     def _pwpath(self, director):

@@ -85,7 +85,8 @@ class QETaskCell:
                            onclick = load(actor     ='jobs/submit',    # 'jobs/checksubmit'
                                           routine   = 'submit',        # 'checkSubmit'
                                           id        = self._simid,
-                                          taskid    = self._task.id)
+                                          taskid    = self._task.id,
+                                          subtype   = self._task.short_description)
                             )
 
         return link
