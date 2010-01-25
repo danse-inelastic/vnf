@@ -15,6 +15,7 @@
 from Monitor import Monitor as base
 class QEMonitor(base):
 
+    Ei = 70.
     Emin = -50; Emax = 50.; nE = 100
     Qmin = 0; Qmax = 13.; nQ = 130
 
@@ -28,6 +29,7 @@ class QEMonitor(base):
         drawer.mold.sequence = [
             'componentname', 'short_description',
             'referencename', 'position', 'orientation',
+            'Ei',
             'Emin', 'Emax', 'nE',
             'Qmin', 'Qmax', 'nQ',
             'min_angle_in_plane', 'max_angle_in_plane',
@@ -40,6 +42,7 @@ class QEMonitor(base):
 InvBase=base.Inventory
 class Inventory(InvBase):
 
+    Ei = InvBase.d.float( name = 'Ei', default = 70. )
     Emin = InvBase.d.float( name = 'Emin', default = -50. )
     Emax = InvBase.d.float( name = 'Emax', default = 50. )
     nE = InvBase.d.int( name = 'nE', default = 100)
