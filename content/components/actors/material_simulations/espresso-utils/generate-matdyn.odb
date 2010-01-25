@@ -15,11 +15,17 @@ import os
 from vnfb.utils.qeparser.qeinput import QEInput
 from vnfb.utils.qeparser.namelist import Namelist
 from vnfb.utils.qegrid import QEGrid
+from vnfb.utils.qeutils import remoteResultsPath
+from vnfb.utils.qeconst import PREFIX, MATDYN_METHOD
+from vnfb.utils.qeutils import inputRecord
+from vnfb.utils.qeutils import qeinput, packname, resultsdir
+
+from qecalc.qetask.qeparser.pwinput import PWInput
+from qecalc.qetask.qeparser.matdyninput import MatdynInput
+from vnfb.utils.qecalcutils import kmesh
+
 from luban.content.FormTextField import FormTextField
 from luban.content.FormSubmitButton import FormSubmitButton
-from vnfb.utils.qeutils import remoteResultsPath
-from vnfb.utils.qeconst import PREFIX
-from vnfb.utils.qeutils import inputRecord
 from luban.content import select
 from luban.content import load
 import luban.content as lc
@@ -35,6 +41,7 @@ class Actor(base):
         taskid      = pyre.inventory.str('taskid', default='')
         type        = pyre.inventory.str('type', default='')
         structureid = pyre.inventory.str('structureid', default='')
+        method      = pyre.inventory.str('method', default='')      # dos, or dispersion
         nk1         = pyre.inventory.str('nk1', default='')        # Type of the configuration file
         nk2         = pyre.inventory.str('nk2', default='')
         nk3         = pyre.inventory.str('nk3', default='')
@@ -74,9 +81,9 @@ class Actor(base):
         table       = QEGrid(lc.grid(Class="qe-form"))
         form.add(table.grid())
 
-        nk1         = FormTextField(name = "nk1", value = 16)
-        nk2         = FormTextField(name = "nk2", value = 16)
-        nk3         = FormTextField(name = "nk3", value = 16)
+        nk1         = FormTextField(name = "nk1", value = 4)
+        nk2         = FormTextField(name = "nk2", value = 4)
+        nk3         = FormTextField(name = "nk3", value = 4)
 
         submit      = FormSubmitButton(label="Generate Input Configuration")
         cancel      = lc.button(label="Cancel")
@@ -97,7 +104,8 @@ class Actor(base):
                                                       routine   = 'generateInput',
                                                       id        = self.id,
                                                       taskid    = self.taskid,
-                                                      type      = self.inventory.type)
+                                                      type      = self.inventory.type,
+                                                      method    = self.inventory.method)    # Pass also method
 
         return form
 
@@ -111,17 +119,43 @@ class Actor(base):
                                 type    = self.inventory.type)
 
 
+    # XXX Generate proper input
     def _input(self, director):
-        # E.g.: /home/dexity/espresso/qejobs/643E2QQI/ni.fc
         # Get jobs directory of Q2R simulation task
+        matdynInput = self._matdynInput(director)
+        #matdyn      = MatdynTask( configString = "")
+
+        methods     = MATDYN_METHOD.keys()
+        option      = int(self.inventory.method)
+        if methods[option] == "dispersion":
+            qpoints = self._qpoints(director, matdynInput)
+            matdynInput.qpoints.set(qpoints)
+        
+#        if methods[self.inventory.method] == "dos":
+#            nl.add("dos", ".true.")
+#            nl.add("nk1", self.nk1)
+#            nl.add("nk2", self.nk2)
+#            nl.add("nk3", self.nk3)
+#        elif methods[self.inventory.method] == "dispersion":
+#            nl.remove("dos")
+#            nl.remove("nk1")
+#            nl.remove("nk2")
+#            nl.remove("nk3")
+
+
+        return matdynInput.toString()
+
+    def _matdynInput(self, director):
+        "Returns input object that can be later on used to add parameters"
+        # E.g.: /home/dexity/espresso/qejobs/643E2QQI/ni.fc
         path    = remoteResultsPath(director, self.inventory.id, "Q2R")   #self._fcpath(director)
         path    = os.path.join(path, "%s.fc" % PREFIX)
 
-        input      = QEInput(type='matdyn')
-        nl  = Namelist("input")
+        input   = MatdynInput()
+        nl      = Namelist("input")
         nl.add("asr", "'crystal'")      # TODO: Port from Q2R
-        nl.add("dos", ".true.")
         nl.add("flfrc", "'%s'" % path)
+        nl.add("dos", ".true.")
         nl.add("nk1", self.nk1)
         nl.add("nk2", self.nk2)
         nl.add("nk3", self.nk3)
@@ -130,11 +164,32 @@ class Actor(base):
         list    = self._amasses(director)
         for m in list:
             nl.add(m[0], m[1])
-        
-        #nl.add("amass(1)", "26.98")
 
         input.addNamelist(nl)
-        return input.toString()
+        return input
+
+
+    def _qpoints(self, director, mdinput):
+        "Returns qpoints"
+        pwdir       = self._pwpath(director)
+        pwfile     = qeinput(director, self.id, "PW")
+        pwpath       = packname(pwfile.id, "pw.in")
+        pwpath       = os.path.join(pwdir, pwpath)
+        pwInput     = PWInput(filename = pwpath)
+        pwInput.parse()
+
+        nl          = mdnput.namelist("input")
+        # Populate grid
+        nqGrid  = [int(nl.param("nk1")), int(nl.param("nk2")), int(nl.param("nk3"))]
+        # XXX Handle case when parameters are not are not set
+        qpoints = kmesh.kMeshCart(nqGrid, pwInput.structure.lattice.reciprocalBase())
+
+        return qpoints  #pwInput.structure.lattice.diffpy().reciprocal().base*2.0*PI*A2B
+
+
+    def _pwpath(self, director):
+        # Example: pwdir   = "/home/dexity/exports/vnf/vnfb/content/data/tmp/tmpTRqFuy/8CNH5MUJ"
+        return resultsdir(director, self.id, "PW")    # tmp results directory
 
 
     # Copied from generate-q2r.py
@@ -177,6 +232,7 @@ class Actor(base):
         self.taskid         = self.inventory.taskid
         self.type           = self.inventory.type
         self.structureid    = self.inventory.structureid
+        self.method         = self.inventory.method
         self.nk1            = self.inventory.nk1
         self.nk2            = self.inventory.nk2
         self.nk3            = self.inventory.nk3

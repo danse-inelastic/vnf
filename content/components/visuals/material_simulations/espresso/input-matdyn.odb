@@ -15,16 +15,13 @@ import luban.content as lc
 from luban.content import select
 from luban.content import load
 from vnfb.utils.qegrid import QEGrid
+from vnfb.utils.qeconst import MATDYN_METHOD
 from luban.content.FormTextField import FormTextField
 from luban.content.FormSubmitButton import FormSubmitButton
 
 def visual(actor, director, structureid):
     form    = lc.form()
-
-    METHODS  = ("Phonon Density of States",
-                "Phonon on Grid (Virtual Neutron Experiment)")
-
-    form.radio(name = "method", entries = enumerate(METHODS))
+    form.radio(name = "method", entries = enumerate(MATDYN_METHOD.values()))
     table       = QEGrid(lc.grid())
     form.add(table.grid())
     form.onsubmit   = select(element=form).submit(actor     = 'material_simulations/espresso-utils/generate-matdyn',

@@ -128,6 +128,11 @@ PROCESSORS  = (1, 2, 3, 4, 5, 6, 7, 8, 16, 24, 32, 40, 48, 56, 64, 72, 80, 88, 9
 QE_PREFIX   = "'default'"
 PREFIX      = "default"
 
+MATDYN_METHOD  = OrderedDict()
+MATDYN_METHOD["dos"]           = "Phonon Density of States (DOS)"
+MATDYN_METHOD["dispersion"]    = "Phonon on Grid (For Virtual Neutron Experiment)"
+
+
 __date__ = "$Nov 3, 2009 3:12:34 PM$"
 
 
