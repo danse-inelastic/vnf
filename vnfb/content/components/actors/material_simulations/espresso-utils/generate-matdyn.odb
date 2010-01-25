@@ -116,7 +116,8 @@ class Actor(base):
                                 text    = self._input(director),
                                 id      = self.inventory.id,
                                 taskid  = self.inventory.taskid,
-                                type    = self.inventory.type)
+                                type    = self.inventory.type,
+                                subtype = self._subtype())
 
 
     # XXX Generate proper input
@@ -124,13 +125,19 @@ class Actor(base):
         # Get jobs directory of Q2R simulation task
         matdynInput = self._matdynInput(director)
 
-        methods     = MATDYN_METHOD.keys()
-        option      = int(self.inventory.method)
-        if methods[option] == "dispersion":
+        method      = self._subtype()
+        if method == "dispersion":
             qpoints = self._qpoints(director, matdynInput)
             matdynInput.qpoints.set(qpoints)
         
         return matdynInput.toString()
+
+
+    def _subtype(self):
+        "Returns subtype of simulation: 'dos' or 'dispersion'"
+        methods     = MATDYN_METHOD.keys()
+        option      = int(self.inventory.method)
+        return methods[option]
 
 
     def _matdynInput(self, director):
@@ -160,17 +167,17 @@ class Actor(base):
     def _qpoints(self, director, mdinput):
         "Returns qpoints"
         pwdir       = self._pwpath(director)
-        pwfile     = qeinput(director, self.id, "PW")
-        pwpath       = packname(pwfile.id, "pw.in")
-        pwpath       = os.path.join(pwdir, pwpath)
+        pwfile      = qeinput(director, self.id, "PW")
+        pwpath      = packname(pwfile.id, "pw.in")
+        pwpath      = os.path.join(pwdir, pwpath)
         pwInput     = PWInput(filename = pwpath)
         pwInput.parse()
 
         nl          = mdinput.namelist("input")
         # Populate grid
-        nqGrid  = [int(nl.param("nk1")), int(nl.param("nk2")), int(nl.param("nk3"))]
+        nqGrid      = [int(nl.param("nk1")), int(nl.param("nk2")), int(nl.param("nk3"))]
         # XXX Handle case when parameters are not are not set
-        qpoints = kmesh.kMeshCart(nqGrid, pwInput.structure.lattice.reciprocalBase())
+        qpoints     = kmesh.kMeshCart(nqGrid, pwInput.structure.lattice.reciprocalBase())
 
         return qpoints
 

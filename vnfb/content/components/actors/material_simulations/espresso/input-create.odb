@@ -36,6 +36,7 @@ class Actor(base):
         id          = pyre.inventory.str('id', default='')          # Simulation Id
         taskid      = pyre.inventory.str('taskid', default='')
         type        = pyre.inventory.str('type', default='')        # Type of the configuration file
+        subtype     = pyre.inventory.str('subtype', default='')
         fname       = pyre.inventory.str('fname', default='')
         description = pyre.inventory.str('description', default='')
         text        = pyre.inventory.str('text', default='')
@@ -83,15 +84,23 @@ class Actor(base):
         """Create configuration record"""
         params  = {"taskid":        self.inventory.taskid,
                    "filename":      self._fname(),
-                   "description":   self.inventory.description,
+                   "description":   self._description(),
                    "text":          self.inventory.text,
                    "type":          self.inventory.type
                    }
+#        print params
         config  = QEConfiguration()
         config.setDirector(director)
         config.createRecord(params)
 
         return load(actor = 'material_simulations/espresso/sim-view', id = self.id)
+
+    # Hack that allows to use description field for subtype
+    def _description(self):
+        if self.inventory.subtype != "":
+            return self.inventory.subtype
+        
+        return self.inventory.description
 
     def _fname(self):
         # Filename is not set
@@ -121,6 +130,7 @@ class Actor(base):
         self.id             = self.inventory.id
         self.taskid         = self.inventory.taskid
         self.type           = self.inventory.type
+        self.subtype        = self.inventory.subtype
         self.fname          = self.inventory.fname
         self.description    = self.inventory.description
         self.text           = self.inventory.text

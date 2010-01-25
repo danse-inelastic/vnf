@@ -49,7 +49,8 @@ def visual(actor, director):
                                                   routine   = 'createRecord',
                                                   taskid    = actor.taskid,
                                                   id        = actor.id,
-                                                  type      = actor.type)
+                                                  type      = actor.type,
+                                                  subtype   = actor.subtype)
 
     return form
 
