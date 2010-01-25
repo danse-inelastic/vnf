@@ -41,10 +41,12 @@ class Retriever(base):
             from vnfb.dom.material_simulations.Phonons import PhononsTable
             phonons = self._make_result_holder(computation, PhononsTable)
             phonons.matter = computation.matter
+            computation.results.add(phonons, db)
             db.updateRecord(phonons)
             from vnfb.dom.material_simulations.PhononDOS import PhononDOSTable
             dos = self._make_result_holder(computation, PhononDOSTable)
             dos.matter = computation.matter
+            computation.results.add(dos, db)
             db.updateRecord(dos)
         if 'molecular dynamics' in runtype:
             from vnfb.dom.material_simulations.Motion import Motion
