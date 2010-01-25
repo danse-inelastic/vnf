@@ -123,7 +123,6 @@ class Actor(base):
     def _input(self, director):
         # Get jobs directory of Q2R simulation task
         matdynInput = self._matdynInput(director)
-        #matdyn      = MatdynTask( configString = "")
 
         methods     = MATDYN_METHOD.keys()
         option      = int(self.inventory.method)
@@ -131,19 +130,8 @@ class Actor(base):
             qpoints = self._qpoints(director, matdynInput)
             matdynInput.qpoints.set(qpoints)
         
-#        if methods[self.inventory.method] == "dos":
-#            nl.add("dos", ".true.")
-#            nl.add("nk1", self.nk1)
-#            nl.add("nk2", self.nk2)
-#            nl.add("nk3", self.nk3)
-#        elif methods[self.inventory.method] == "dispersion":
-#            nl.remove("dos")
-#            nl.remove("nk1")
-#            nl.remove("nk2")
-#            nl.remove("nk3")
-
-
         return matdynInput.toString()
+
 
     def _matdynInput(self, director):
         "Returns input object that can be later on used to add parameters"
@@ -178,13 +166,13 @@ class Actor(base):
         pwInput     = PWInput(filename = pwpath)
         pwInput.parse()
 
-        nl          = mdnput.namelist("input")
+        nl          = mdinput.namelist("input")
         # Populate grid
         nqGrid  = [int(nl.param("nk1")), int(nl.param("nk2")), int(nl.param("nk3"))]
         # XXX Handle case when parameters are not are not set
         qpoints = kmesh.kMeshCart(nqGrid, pwInput.structure.lattice.reciprocalBase())
 
-        return qpoints  #pwInput.structure.lattice.diffpy().reciprocal().base*2.0*PI*A2B
+        return qpoints
 
 
     def _pwpath(self, director):
