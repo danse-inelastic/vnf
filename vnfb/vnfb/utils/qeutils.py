@@ -182,29 +182,35 @@ def qetask(director, simid, type, subtype = None):
         if tasks:   # XXX First found tasks
             break
 
-    if not tasks:
-        return None
+    if tasks:
+        return latestTask(tasks)
 
-    return latestTask(tasks)
+    return None
 
 
-def qejob(director, simid, type):
+def qejob(director, simid, type, subtype = None):
     "Return latest job for the type"
-    task    = qetask(director, simid, type)
-    jobs    = director.clerk.getQEJobs(where="taskid='%s'" % task.id)
-    return latestJob(jobs)
+    task    = qetask(director, simid, type, subtype)
+    if task:
+        jobs    = director.clerk.getQEJobs(where="taskid='%s'" % task.id)
+        return latestJob(jobs)
+    
+    return None
 
 
 def qeinput(director, simid, type):
     "Return input for the type"
     task    = qetask(director, simid, type)
-    inputs  = director.clerk.getQEConfigurations(where="taskid='%s'" % task.id)
-    return latestInput(inputs)  # There should be a single input record!
+    if task:
+        inputs  = director.clerk.getQEConfigurations(where="taskid='%s'" % task.id)
+        return latestInput(inputs)  # There should be a single input record!
+
+    return None
 
 
-def resultsdir(director, simid, type):
+def resultsdir(director, simid, type, subtype = None):
     "Returns results directory in data/tmp"    
-    job     = qejob(director, simid, type)
+    job     = qejob(director, simid, type, subtype)
     if job:
         dds         = director.dds
         dataroot    = os.path.abspath(dds.dataroot)
@@ -214,13 +220,6 @@ def resultsdir(director, simid, type):
             return os.path.join(dataroot, results.tardir())
 
     return None
-
-
-def taskResultsDir(director, simid, type, subtype = None):
-    if not subtype:
-        return resultsdir(director, simid, type)
-
-    
 
 
 # TODO: Test!!!
