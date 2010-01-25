@@ -65,7 +65,11 @@ class Builder(base):
         sequence = []
         for name, component in components:
             self.dispatch( component )
-            sequence.append(component.componentname)
+            name = component.componentname
+            # for sample, the name is alwasy "sample"
+            if component.__class__.__name__ == 'SampleComponent':
+                name = 'sample'
+            sequence.append(name)
             continue
 
         #if 'sample' in sequence:
@@ -94,6 +98,9 @@ class Builder(base):
             value = '%s,%s' % (list(position), _formatOrientation(orientation))
 
             name = component.componentname
+            # for sample, the name is alwasy "sample"
+            if component.__class__.__name__ == 'SampleComponent':
+                name = 'sample'
             self.cmdline_opts[ 'geometer.%s' % name ] = value
 
             continue
@@ -326,9 +333,13 @@ class Builder(base):
             'supplier': 'mcstas2',
             }
         self.onNeutronComponent( **kwds )
-        
+
+        if hasattr(self, 'Ei'):
+            Ei = self.Ei
+        else:
+            Ei = m.Ei
         opts = {
-            '%s.Ei' % m.componentname: self.Ei,
+            '%s.Ei' % m.componentname: Ei,
             '%s.filename' % m.componentname: outputfilename(m),
             }
 
