@@ -29,6 +29,8 @@ TO_THZ          = 0.0299792458
 A2B             = 1.889725989   # Angstroms to bohrs
 PI              = 3.14159265
 
+PHONON_FILES    = ("DOS", "Polarizations", "Omega2", "Qgridinfo")
+
 # Requires simulation id, config id and config type: (id, configid, type)
 class Actor(base):
 
@@ -41,9 +43,9 @@ class Actor(base):
         "Create Phonons on Grid in idf format"
         #self._mddir = self._matdynpath(director)
         self._convertResults(director)
-        #self._createRecord(director)
-        #self._createLocation(director)
-        #self._relocateResults(director)
+        self._createRecord(director)
+        self._createLocation(director)
+        self._relocateResults(director)
 
         return director.redirect(actor   = 'material_simulations/espresso/results',
                                  routine = 'default',
@@ -62,9 +64,9 @@ class Actor(base):
         matdyn.output.parse()
         Pols, Freqs, qPoints = matdyn.output.property('multi phonon')
         
-        #self._createDOS(director, matdyn)
-        #self._createPolarizations(director, matdyn, Pols)
-        #self._createOmega2(director, matdyn, Freqs)
+        self._createDOS(director, matdyn)
+        self._createPolarizations(director, matdyn, Pols)
+        self._createOmega2(director, matdyn, Freqs)
         self._createQgridinfo(director, matdyn)
 
         time.sleep(CONVERT_DELAY)   # Wait for a while to make sure that data.idf is created
@@ -158,17 +160,16 @@ fldos = %s""" % (mdinp, flvec, flfrq, fldos)
 
 
     def _createRecord(self, director):
-        """Creates 'phonondoses' record (taken from: vnfb/components/ComputationResultRetriever.py)
+        """Creates 'phonons' record (taken from: vnfb/components/ComputationResultRetriever.py)
         Notes:
             - Sets phonid
         """
-        from vnfb.dom.material_simulations.PhononDOS import PhononDOSTable
-
-        domaccessor = director.retrieveDOMAccessor('material_simulations/phonondos')
+        from vnfb.dom.material_simulations.Phonons import PhononsTable
+        domaccessor = director.retrieveDOMAccessor('material_simulations/phonons')
         orm         = domaccessor.orm   # ?
         clerk       = director.clerk
         computation = clerk.getQESimulations(id = self.simid)
-        record      = clerk.insertNewOwnedRecord(PhononDOSTable, owner = computation.creator)
+        record      = clerk.insertNewOwnedRecord(PhononsTable, owner = computation.creator)
         self._phonid    = record.id
 
         # The result record should know where it comes from
@@ -184,24 +185,19 @@ fldos = %s""" % (mdinp, flvec, flfrq, fldos)
             os.makedirs (phonpath)
 
 
-    # XXX: Replace by correct phonondoses id
     def _relocateResults(self, director):
-        "Copy from tmp/ directory to phonodoses directory"
-        # Making it in a "kosher" way will make your life hard
-        #domaccessor = director.retrieveDOMAccessor('material_simulations/phonondos')
-        #orm         = domaccessor.orm   # ?
-        #path    = director.dds.abspath(self._job)
-
+        "Copy from tmp/ directory to phonons directory"
         mddir       = resultsdir(director, self.simid, "MATDYN")
-        src         = os.path.join(mddir, "data.idf")   # XXX Check if it exists
         dest        = self._phonpath(director)
-        shutil.copy(src, dest)
+        for file in PHONON_FILES:
+            src         = os.path.join(mddir, file)   # XXX Check if it exists
+            shutil.copy(src, dest)
 
 
     def _phonpath(self, director):
         "Returns phonondoses directory corresponding to id (set in _createRecord())"
         dataroot    = self._dataroot(director)
-        pid         = os.path.join("phonondoses", self._phonid) # Phonon DOS id
+        pid         = os.path.join("phonons", self._phonid) # Phonon DOS id
         return os.path.join(dataroot, pid)
 
 
