@@ -45,7 +45,7 @@ table.luban-splitter {
     width: 100%;
 }
 
-td.luban-splitter-section {
+td[luban-element-type=splitsection] {
     vertical-align: top;
 }
 
