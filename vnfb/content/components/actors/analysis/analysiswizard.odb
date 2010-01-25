@@ -18,12 +18,14 @@ from luban.content.Link import Link
 
 from luban.components.Actor import Actor as base
 
+import journal
+
 class Actor(base):
 
     class Inventory(base.Inventory):
         import pyre.inventory
         analysisId = pyre.inventory.str('analysisId', default = '')
-        dynamicsId = pyre.inventory.str('dynamicsId', default = '')
+        dynamicsIdAndType = pyre.inventory.str('dynamicsIdAndType', default = '')
         #dynamicsType = pyre.inventory.str('dynamicsType', default = '')
         analysisType = pyre.inventory.str('analysisType', default='')
         short_description = pyre.inventory.str('short_description', default = '' )
@@ -55,29 +57,31 @@ class Actor(base):
               load(actor='analysis/selectdynamics', routine='createListView')
               ),
             ]
-        
         # cancel
 #        c = lc.link(label='cancel', Class='float-right'); doc.add(c)
 #        c.onclick = select(id=self.matter_view_id).replaceBy(
 #            load(actor='scatterer/editor', routine='createMatterView',
 #                 id = self.id)
 #            )
-
-        def getInfoAndProceed(self):
-            dynamicsId, dynamicsType = select(id='dynamics-table').table(
-                        'getIdentifiersForSelectedRow', colname='selectone')
-            return load(actor = self.name, routine = 'analysisSettings',
-                    dynamicsId = select(id='dynamics-table').table(
-                        'getIdentifiersForSelectedRow', colname='selectone'),
-                    analysisType = self.inventory.analysisType,
-                    dynamicsType = self.inventory.dynamicsType)  
+#        def getInfoAndProceed():
+#            
+#            return load(actor = self.name, routine = 'analysisSettings',
+#                    dynamicsIdAndType = select(id='dynamics-table').table(
+#                        'getIdentifiersForSelectedRow', colname='selectone'),
+#                    analysisType = self.inventory.analysisType,
+#                    dynamicsType = dynamicsType)  
 
         # select button
         b = lc.button(label='select'); doc.add(b)
-        b.onclick = getInfoAndProceed()
+        #b.onclick = getInfoAndProceed()
+        b.onclick = load(actor = self.name, routine = 'analysisSettings',
+                    dynamicsIdAndType = select(id='dynamics-table').table(
+                        'getIdentifiersForSelectedRow', colname='selectone'),
+                    analysisType = self.inventory.analysisType)
         return doc
 
     def analysisSettings(self, director):
+        self.debug = journal.debug('analysisSettings')
         doc         = lc.document(title = "")
 #        splitter    = doc.splitter(orientation="vertical")
 #        sA          = splitter.section(id='analysis-object-inspect')
@@ -87,13 +91,15 @@ class Actor(base):
 #        domaccess = director.retrieveDOMAccessor('dynamics')
 #        dynamics = domaccess.getDynamics(self.inventory.dynamicsId)
 #        analysisType = dynamics.type
+        self.debug.log('dynamicsIdAndType:%s' % self.inventory.dynamicsIdAndType)
+        dynamicsId, dynamicsType = self.inventory.dynamicsIdAndType.split(',')
         container = lc.document(id='analysis-settings-container')
         doc.add(container)
         actorName = 'orm/'+self.inventory.analysisType
         container.oncreate = [
             select(element=container).append(        
               #load(actor='analysis/selectdynamics', routine='createListView')
-              load(actor=actorName, routine='edit', id = self.inventory.dynamicsId)
+              load(actor=actorName, routine='edit', id = dynamicsId)
               ),
             ]
 #        sA.add(load(actor=actorName, routine='edit', id = self.inventory.dynamicsId))
@@ -122,9 +128,6 @@ class Actor(base):
                 computation_id = self.inventory.simulationId)
 
 import os
-
-
-
 def actor(): return Actor()
 
 

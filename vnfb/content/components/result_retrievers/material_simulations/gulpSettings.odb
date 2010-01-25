@@ -52,6 +52,7 @@ class Retriever(base):
             from vnfb.dom.material_simulations.Motion import Motion
             motion = self._make_result_holder(computation, Motion)
             motion.matter = computation.matter
+            computation.results.add(motion, db)
             db.updateRecord(motion)
         # save the result from job to dos
         self.declareProgress(0.9, 'get result from server')
