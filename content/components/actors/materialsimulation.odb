@@ -11,15 +11,11 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
-
 from luban.content import load, select
 import luban.content as lc
-
 from vnfb.components.MasterTable import FilterSyntaxError, MasterTableActor as base
 
-
 class Actor(base):
-
 
     class Inventory(base.Inventory):
 
@@ -30,10 +26,8 @@ class Actor(base):
         type        = pyre.inventory.str('type')
         description = pyre.inventory.str('description')
 
-
     def default(self, director):
         return self.showListView(director)
-
 
     def debugListView(self, director):
         page = lc.page()
@@ -42,11 +36,9 @@ class Actor(base):
         doc.add(view)
         return  page
 
-
     def showListView(self, director):
         view = self.createListView(director)
         return select(id='main-display-area').replaceContent(view)
-
 
     def createListView(self, director):
         # TODO: I guess it needs to be refactored the same way as atomicstructure.odb was
@@ -119,12 +111,10 @@ class Actor(base):
                                                                       )
         return tableview
 
-
     def newSimulation(self, director):
         """Retrieves list of simulations"""
         return director.retrieveVisual('material_simulations/new',
                                         director    = director)
-
 
     def createTable(self,
                     director,
@@ -168,7 +158,6 @@ class Actor(base):
             routine='processRowChange')
         return thetable
     
-
     def view(self, director):
         matter = self._getMatter(director)
         
@@ -180,7 +169,6 @@ class Actor(base):
         
         return page
 
-
     def showMaterialSimulation(self, director):
         actor = 'computation'
         routine = 'view'
@@ -188,7 +176,6 @@ class Actor(base):
         type = self.inventory.type
         return director.redirect(actor=actor, routine=routine, id=id, type=type)
     
-        
     def createMatterDescriptionInputControl(self, director):
         from luban.content.Splitter import Splitter
         from luban.content.Link import Link
@@ -215,11 +202,9 @@ class Actor(base):
         left.onclick = [select(element=link).hide(), select(element=field).show()]
         return doc
 
-
     def changeDescriptionAndUpdateMatterView(self, director):
         self.changeDescription(director)
         return self.showMaterialView(director)
-
 
     def changeDescription(self, director):
         matter = self._getMatter(director)
@@ -227,12 +212,9 @@ class Actor(base):
         director.clerk.updateRecordWithID(matter)
         return
 
-
     def __init__(self, name='materialsimulation'):
         super(Actor, self).__init__(name)
         return
-
-
 
 columns = [ 'selected', 'id', 'description', 'type', 'matter', 'date']
 measure2dbcol = {
