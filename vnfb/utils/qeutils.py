@@ -16,6 +16,9 @@ Contains little but useful itils!
 """
 
 import os
+from vnfb.utils.qeresults import QEResults
+from vnfb.utils.qetaskinfo import TaskInfo
+
 
 def parseFile(filename):
     """Parses file consisting of at least 4 columns separated by space or tab
@@ -167,10 +170,13 @@ def latestTask(tasks):
 def latestInput(inputs):
     return latestRecord(inputs, "timecreated")
 
-
-def qetask(director, simid, type):
+# Includes *hack* by using short_description field for subtype
+def qetask(director, simid, type, subtype = None):
     "Returns task object defined by simulation id and type"
-    simtasks = director.clerk.getQESimulationTasks(where="simulationid='%s'" % simid)
+    where   = "simulationid='%s'" % simid
+    if subtype:
+        where   += "%s AND short_description='%s'" % (where, subtype)
+    simtasks = director.clerk.getQESimulationTasks(where=where)
     for st in simtasks:
         tasks   = director.clerk.getQETasks(where="id='%s' AND type='%s'" % (st.taskid, type))
         if tasks:   # XXX First found tasks
@@ -197,10 +203,7 @@ def qeinput(director, simid, type):
 
 
 def resultsdir(director, simid, type):
-    "Returns results directory in data/tmp"
-    from vnfb.utils.qeresults import QEResults
-    from vnfb.utils.qetaskinfo import TaskInfo
-    
+    "Returns results directory in data/tmp"    
     job     = qejob(director, simid, type)
     if job:
         dds         = director.dds
@@ -212,16 +215,12 @@ def resultsdir(director, simid, type):
 
     return None
 
-#            if jit[1] is not None and jit[2].type == "MATDYN":   # MATDYN type
-#                dataroot    = self._dataroot()
-#                taskinfo    = TaskInfo(simid = self.id, type = "MATDYN")
-#                results     = QEResults(self._director, jit[0], taskinfo)
-#                if results.ready():
-#                    path        = os.path.join(results.tardir(), "matdyn.dos")  # dos name is hardcoded
-#                    filepath    = os.path.join(dataroot, path)
-#                    return filepath
 
-#        return None
+def taskResultsDir(director, simid, type, subtype = None):
+    if not subtype:
+        return resultsdir(director, simid, type)
+
+    
 
 
 # TODO: Test!!!

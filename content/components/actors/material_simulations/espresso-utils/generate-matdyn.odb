@@ -120,9 +120,7 @@ class Actor(base):
                                 subtype = self._subtype())
 
 
-    # XXX Generate proper input
     def _input(self, director):
-        # Get jobs directory of Q2R simulation task
         matdynInput = self._matdynInput(director)
 
         method      = self._subtype()
@@ -140,6 +138,7 @@ class Actor(base):
         return methods[option]
 
 
+     # TODO: Port 'asr' parameter from Q2R
     def _matdynInput(self, director):
         "Returns input object that can be later on used to add parameters"
         # E.g.: /home/dexity/espresso/qejobs/643E2QQI/ni.fc
@@ -148,7 +147,7 @@ class Actor(base):
 
         input   = MatdynInput()
         nl      = Namelist("input")
-        nl.add("asr", "'crystal'")      # TODO: Port from Q2R
+        nl.add("asr", "'crystal'")     
         nl.add("flfrc", "'%s'" % path)
         nl.add("dos", ".true.")
         nl.add("nk1", self.nk1)
