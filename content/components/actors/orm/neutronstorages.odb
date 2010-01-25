@@ -30,6 +30,9 @@ class Actor(base):
 
         import pyre.inventory
 
+        start = pyre.inventory.int('start', default=0)
+        end = pyre.inventory.int('end', default=0)
+
 
     def createGraphicalView(self, director):
         id = self.inventory.id
@@ -38,7 +41,12 @@ class Actor(base):
         doc = lc.document(title=title, collapsable=True)
 
         # show 20 neutrons
-        viewneutrons = self._viewNeutrons(director, start=0, end=20)
+        si = self.inventory
+        start = si.start
+        end = si.end
+        if not end: end=20
+            
+        viewneutrons = self._viewNeutrons(director, start=start, end=end)
         doc.add(viewneutrons)
 
         propview = doc.document(title='Properties', collapsable=True)
