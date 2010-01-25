@@ -75,3 +75,7 @@ table "fermichoppers": column "nchans" renamed to "nchan"
 
 Jan 19, 2010
 added tables "neutronstorages", 'neutronplayers'
+
+
+Jan 25, 2010
+table "qemonitors" added column Ei. type: double, default: 70
