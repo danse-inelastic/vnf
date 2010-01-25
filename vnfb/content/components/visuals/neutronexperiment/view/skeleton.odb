@@ -37,6 +37,9 @@ class Factory(object):
         orm = domaccess.orm
         experiment_record = orm(experiment)
         db = orm.db
+
+        #
+        editable = domaccess.isEditable(id=id)
         
         doc = lc.document(Class='container')
 
@@ -50,7 +53,8 @@ class Factory(object):
         left.add(view_indicator)
         # right: toolbar
         toolbar = lc.toolbar(Class='topright-toolbar'); right.add(toolbar)
-        if domaccess.isEditable(id=id):
+        #
+        if editable:
             edit = lc.button(label='Edit')
             edit.onclick = select(id='main-display-area').replaceContent(
                 load(actor='experiment', routine='createEditor', id=id))
@@ -88,12 +92,16 @@ class Factory(object):
             )
 
         # results
-        resultsdoc = doc.document(title = 'Results', collapsable=True, collapsed=True)
-        resultsdoc.paragraph(text=['loading results. please wait...'])
-        resultsdoc.onexpand = select(element=resultsdoc).replaceContent(
-            load(actor='computation', routine='createResultsDoc',
-                 id=id, type=experiment_record.getTableName())
-            )
+        jobdone = False
+        if job:
+            jobdone = job.state in ['terminated', 'finished']
+        if jobdone:
+            resultsdoc = doc.document(title = 'Results', collapsable=True, collapsed=True)
+            resultsdoc.paragraph(text=['loading results. please wait...'])
+            resultsdoc.onexpand = select(element=resultsdoc).replaceContent(
+                load(actor='computation', routine='createResultsDoc',
+                     id=id, type=experiment_record.getTableName())
+                )
         return doc
 
 
