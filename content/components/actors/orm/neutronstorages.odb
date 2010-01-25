@@ -36,8 +36,10 @@ class Actor(base):
 
         title='Neutron storage %s' % id
         doc = lc.document(title=title, collapsable=True)
-        
-        doc.paragraph(text=['This viewer is not yet implemnted'])
+
+        # show 20 neutrons
+        viewneutrons = self._viewNeutrons(director, start=0, end=20)
+        doc.add(viewneutrons)
 
         propview = doc.document(title='Properties', collapsable=True)
         view = self.displayProperties(director)
@@ -46,6 +48,38 @@ class Actor(base):
         return doc
 
 
+    def _viewNeutrons(self, director, start=0, end=20):
+        # db record
+        ns = self._load(director)
+        orm = director.clerk.orm
+        record = orm(ns)
+
+        # neutron file
+        p = director.dds.abspath(record)
+        import os
+        f = os.path.join(p, 'data.idf')
+
+        # read neutrons
+        from mcni.neutron_storage.idf_usenumpy import read
+        neutrons = read(f, start=start, n=end-start)
+
+        # prepare document
+        title='Neutrons %s-%s' % (start, end)
+        doc = lc.document(title = title)
+
+        #
+        hdoc = lc.htmldocument()
+        doc.add(hdoc)
+
+        hdoc.text = ['<pre>'] +  [_str(n)+'\n' for n in neutrons] + ['</pre>']
+
+        return doc
+
+
+def _str(n):
+    x,y,z, vx,vy,vz, s1,s2, time, prob = n
+    return 'Neutron(\n\tr=%s, \n\tv=%s, \n\ttof=%s, \n\tp=%s, \n\ts=%s\n\t)' % (
+        (x,y,z), (vx,vy,vz), time, prob, (s1,s2))
 
 def actor():
     return Actor('orm/neutronstorages')
