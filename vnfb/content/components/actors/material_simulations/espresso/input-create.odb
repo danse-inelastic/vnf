@@ -88,19 +88,27 @@ class Actor(base):
                    "text":          self.inventory.text,
                    "type":          self.inventory.type
                    }
-#        print params
         config  = QEConfiguration()
         config.setDirector(director)
         config.createRecord(params)
+        if self.inventory.subtype != "":
+            self._updateTaskRecord(director)
 
         return load(actor = 'material_simulations/espresso/sim-view', id = self.id)
 
-    # Hack that allows to use description field for subtype
+
+    # Hack that allows to use description field of *task* for subtype
     def _description(self):
         if self.inventory.subtype != "":
             return self.inventory.subtype
         
         return self.inventory.description
+
+    def _updateTaskRecord(self, director):
+        task    = director.clerk.getQETasks(id = self.taskid)
+        params  = {"short_description": self._description(),}
+        task.setDirector(director)
+        task.updateRecord(params)
 
     def _fname(self):
         # Filename is not set
