@@ -46,24 +46,26 @@ def createDynamicsAnalysis():
     routines   = []
     routines.append(
                     (lc.link(label="DoPS", onclick=select(id='main-display-area'
-                            ).replaceContent(load(
-                actor='analysis/analysiswizard', routine='selectDynamics',
+                ).replaceContent(load(actor='analysis/analysiswizard', routine='selectDynamics',
                 analysisType='motiondoscalc'))),
                     "Density of Phonon States from an MD trajectory")
                     )
     routines.append(
                     (lc.link(label="VACF", onclick=select(id='main-display-area'
-                            ).replaceContent(load(actor="orm/vacfcalc", routine='edit', id='2'))),
+                ).replaceContent(load(actor='analysis/analysiswizard', routine='selectDynamics',
+                analysisType='vacfcalc'))),
                     "Velocity Autocorrelation Function from an MD trajectory")
                     )
     routines.append(
                     (lc.link(label="MSD", onclick=select(id='main-display-area'
-                            ).replaceContent(load(actor="orm/msdcalc", routine='edit', id='2'))),
+                ).replaceContent(load(actor='analysis/analysiswizard', routine='selectDynamics',
+                analysisType='msdcalc'))),
                     "Mean Squared Displacement from an MD trajectory")
                     )
     routines.append(
                     (lc.link(label="Diffusion", onclick=select(id='main-display-area'
-                            ).replaceContent(load(actor="orm/diffusioncalc", routine='edit', id='2'))),
+                ).replaceContent(load(actor='analysis/analysiswizard', routine='selectDynamics',
+                analysisType='diffusioncalc'))),
                     "Generate a diffusion coefficient from an MD trajectory")
                     )
     
@@ -77,30 +79,49 @@ def createDynamicsAnalysis():
 def createScatteringAnalysis():
     qegrid = QEGrid(lc.grid(Class="qe-table"))
     
+#    routines.append(
+#                    (lc.link(label="DoPS", onclick=select(id='main-display-area'
+#                            ).replaceContent(load(
+#                actor='analysis/analysiswizard', routine='selectDynamics',
+#                analysisType='motiondoscalc'))),
+#                    "Density of Phonon States from an MD trajectory")
+#                    )
+    
     routines   = []
     routines.append(
-                    (lc.link(label="S(Q,E)", onclick=select(id='main-display-area'
-                            ).replaceContent(load(actor="orm/csfcalc", routine='edit', id='2'))),
-                    "Generate coherent and incoherent portions of inelastic scattering through an MD trajectory")
+                    (lc.link(label="Coherent S(Q,E)", onclick=select(id='main-display-area'
+                    ).replaceContent(load(actor='analysis/analysiswizard', routine='selectDynamics',
+                    analysisType='csfcalc'))),
+                    "Generate coherent inelastic scattering from an MD trajectory")
+                    )
+    routines.append(
+                    (lc.link(label="Incoherent S(Q,E)", onclick=select(id='main-display-area'
+                    ).replaceContent(load(actor='analysis/analysiswizard', routine='selectDynamics',
+                    analysisType='isfcalc'))),
+                    "Generate incoherent inelastic scattering from an MD trajectory")
                     )
     routines.append(
                     (lc.link(label="EISF", onclick=select(id='main-display-area'
-                            ).replaceContent(load(actor="orm/eisfcalc", routine='edit', id='2'))),
+                    ).replaceContent(load(actor='analysis/analysiswizard', routine='selectDynamics',
+                    analysisType='eisfcalc'))),
                     "Elastic Incoherent Structure Factor from an MD trajectory")
                     )
     routines.append(
-                    (lc.link(label="Static S(Q)", onclick=select(id='main-display-area'
-                            ).replaceContent(load(actor="orm/staticsqcalc", routine='edit', id='2'))),
-                    "Static Structure Factor from an MD trajectory")
+                    (lc.link(label="F_k", onclick=select(id='main-display-area'
+                    ).replaceContent(load(actor='analysis/analysiswizard', routine='selectDynamics',
+                    analysisType='staticsqcalc'))),
+                    "Structure Factor from an MD trajectory")
                     )
     routines.append(
-                    (lc.link(label="Dynamic S(Q)", onclick=select(id='main-display-area'
-                            ).replaceContent(load(actor="orm/dynamicsqcalc", routine='edit', id='2'))),               
+                    (lc.link(label="Dynamic F_k", onclick=select(id='main-display-area'
+                    ).replaceContent(load(actor='analysis/analysiswizard', routine='selectDynamics',
+                    analysisType='dynamicsqcalc'))),              
                     "Dynamic Structure Factor from an MD trajectory")
                     )
     routines.append(
                     (lc.link(label="Multiphonon Scattering", onclick=select(id='main-display-area'
-                            ).replaceContent(load(actor="orm/multiscatcalc", routine='edit', id='2'))),      
+                    ).replaceContent(load(actor='analysis/analysiswizard', routine='selectDynamics',
+                    analysisType='multiscatcalc'))),                                                                               
                     "Add multiphonon scattering corrections to an S(Q,E)")
                     )
     
@@ -119,7 +140,8 @@ def createStructureAnalysis():
     routines   = []
     routines.append(
                     (lc.link(label="RDF", onclick=select(id='main-display-area'
-                            ).replaceContent(load(actor="orm/rdfcalc", routine='edit', id='2'))),
+                    ).replaceContent(load(actor='analysis/analysiswizard', routine='selectDynamics',
+                    analysisType='rdfcalc'))),   
                     "Radial Distribution Function from an MD trajectory")
                     )
     
