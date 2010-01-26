@@ -110,7 +110,10 @@ class Actor(base):
         analysisObj = analysisClass()
         #mdc = MotionDosCalc()
         orm.save(analysisObj, save_not_owned_referred_object=False)
-        self.inventory.analysisId = orm(analysisObj).id
+        analysisRecord = orm(analysisObj)
+        analysisRecord.motion = dynamicsId #HACK!!! replace motion with 'dynamics'
+        director.clerk.db.updateRecord(analysisRecord)
+        self.inventory.analysisId = analysisRecord.id
         drawer = director.painter.paintObj.drawers.getDrawer(analysisClass)
         editview = drawer(analysisObj)
         container.add(editview)
@@ -125,8 +128,10 @@ class Actor(base):
 #        docSub      = lc.document(title = "")
         b = lc.button(label='select'); doc.add(b)
         b.onclick = load(
-                actor=self.name, routine='runDirectly', 
+                actor='atomicstructure',
+                #actor=self.name, routine='runDirectly', 
                 analysisId = self.inventory.analysisId,
+                analysisType = self.inventory.analysisType,
                 #actor=self.name, routine='configureSubmissionQueue'
                 )
         return select(id='main-display-area').replaceContent(doc)
@@ -143,7 +148,8 @@ class Actor(base):
         return
     
     def runDirectly(self, director):
-        className = analysisPaths[self.inventory.analysisType].split()[-1]
+        orm = director.clerk.orm
+        className = analysisPaths[self.inventory.analysisType].split('.')[-1]
         exec('from '+analysisPaths[self.inventory.analysisType]+' import '+
              className)
         analysisClass = eval(className)
@@ -154,27 +160,27 @@ class Actor(base):
         doc = lc.document(title='analysis %s' % self.inventory.analysisId)
         p = lc.plot2d()
         p.curve(x=list(x), y=list(y))
-        return select(id='main-display-area').replaceContent(doc)
+        return select(id = 'main-display-area').replaceContent(doc)
 #        for i,y in enumerate(ys):
 #            p.curve(x=list(x), y=list(y), label=str(i))
         
     
     def configureSubmissionQueue(self, director):
-        className = analysisPaths[self.inventory.analysisType].split()[-1]
+        className = analysisPaths[self.inventory.analysisType].split('.')[-1]
         exec('from '+analysisPaths[self.inventory.analysisType]+' import '+
              className)
         analysisClass = eval(className)
-        analysisObj = orm.load(analysisClass, id=self.inventory.analysisId)
-        analysisResult = analysisObj.compute()
+        analysisObj = orm.load(analysisClass, id = self.inventory.analysisId)
+        analysisInputFileContents = analysisObj.getInputFile()
         #write the input file
-        datadir = director.dds.abspath(orm(gulpSettings))
+        datadir = director.dds.abspath(orm(analysisObj))
         if not os.path.exists(datadir): 
             os.makedirs(datadir)
 
-        inputFilePath = director.dds.abspath(orm(gulpSettings), filename=GulpSettings.inputFile)
-        open(inputFilePath, 'w').write(self.inventory.inputFileContents)
+        inputFilePath = director.dds.abspath(orm(analysisObj), 
+                        filename = self.inventory.analysisType+'.inp')
+        open(inputFilePath, 'w').write(analysisInputFileContents)
         
-        className = analysisPaths[self.inventory.analysisType].split()[-1]
         fullClassPath = analysisPaths[self.inventory.analysisType]+'.'+className
         return director.redirect(actor = 'job', routine = 'create', 
                 computation_type = fullClassPath, 
