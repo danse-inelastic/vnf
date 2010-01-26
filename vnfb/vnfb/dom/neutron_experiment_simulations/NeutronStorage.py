@@ -20,6 +20,9 @@ from _ import o2t
 class NeutronStorage:
 
     short_description = ''
+
+    def __str__(self):
+        return 'Neutron storage(%s)' % self.short_description
     
     pass
 
