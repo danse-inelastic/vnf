@@ -23,6 +23,11 @@ class Accessor(base):
         return
 
 
+    def getData(self, sqe):
+        director = self.director
+        return read(sqe, director)
+
+
     def getSQEs(self, atomicstructure):
         db = self.db
         return atomicstructure.sqes.dereference(db)
@@ -30,6 +35,45 @@ class Accessor(base):
 
 
 from vnfb.dom.material_simulations.SQE import SQE, SQETable
+
+
+def read(sqe, director):
+    """read data for a sqe dataobject
+    """
+    orm = director.clerk.orm
+    record = orm(sqe)
+
+    dds = director.dds
+
+    # the directory
+    dir = dds.abspath(record)
+    import os
+
+    # nc
+    ncfile = SQETable.ncfile
+    try:
+        dds.make_available(record, files=[ncfile])
+    except:
+        pass
+    else:
+        p = os.path.join(dir, ncfile)
+        if os.path.exists(p):
+            sqe.read(p)
+            return sqe
+
+    # histogram
+    histfile = SQETable.histogramh5
+    dds.make_available(record, files=[histfile])
+    from histogram.hdf import load, utils
+    entry = utils.getOnlyEntry(histfile)
+    h = hh.load(histfile, entry)
+    import numpy as npy
+    sqe.q = npy.array(h.axes[0].binCenters())
+    sqe.e = npy.array(h.axes[1].binCenters())
+    sqe.sqe = h.I
+    
+    return sqe
+        
 
 
 def accessor():
