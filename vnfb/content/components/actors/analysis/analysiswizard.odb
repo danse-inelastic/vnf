@@ -20,6 +20,9 @@ from luban.components.Actor import Actor as base
 
 import journal
 
+analysisImports = {'motiondoscalc':'vsat.trajectory.MotionDosCalc',
+                   'csfcalc':'vsat.trajectory.CsfCalc'}
+
 class Actor(base):
 
     class Inventory(base.Inventory):
@@ -37,12 +40,13 @@ class Actor(base):
 
     def default(self, director):
         wizard = Document(id='analysiswizard', title='Analysis')
-        doc = self.selectAnalysisType(director)
+        #doc = self.selectAnalysisType(director)
+        doc = director.retrieveVisual('analysis/newAnalysisType', director = director)
         wizard.add(doc)
         return select(id='main-display-area').replaceContent(wizard)
     
     def selectAnalysisType(self, director):
-        return director.retrieveVisual('analysis/newAnalysisType', director = director)
+        return 
     
     def selectDynamics(self, director):
         doc = lc.document(id='dynamics-selector-doc')
@@ -77,11 +81,13 @@ class Actor(base):
         b.onclick = load(actor = self.name, routine = 'analysisSettings',
                     dynamicsIdAndType = select(id='dynamics-table').table(
                         'getIdentifiersForSelectedRow', colname='selectone'),
-                    analysisType = self.inventory.analysisType)
+                    analysisType = self.inventory.analysisType
+                    )
         return doc
 
     def analysisSettings(self, director):
         self.debug = journal.debug('analysisSettings')
+        orm = directory.orm
         doc         = lc.document(title = "")
 #        splitter    = doc.splitter(orientation="vertical")
 #        sA          = splitter.section(id='analysis-object-inspect')
@@ -96,18 +102,32 @@ class Actor(base):
         container = lc.document(id='analysis-settings-container')
         doc.add(container)
         actorName = 'orm/'+self.inventory.analysisType
-        container.oncreate = [
-            select(element=container).append(        
-              #load(actor='analysis/selectdynamics', routine='createListView')
-              load(actor=actorName, routine='edit', id = dynamicsId)
-              ),
-            ]
+        #import the correct analysis
+        className = analysisPaths[self.inventory.analysisType].split()[-1]
+        exec('from '+analysisPaths[self.inventory.analysisType]+' import '+
+             className)
+        analysisClass = eval(className)
+        analysisObj = analysisClass()
+        #mdc = MotionDosCalc()
+        orm.save(obj, save_not_owned_referred_object=False)
+        self.inventory.simulationId = orm(analysisObj).id
+        drawer = director.painter.paintObj.drawers.getDrawer(analysisClass)
+        editview = drawer(analysisObj)
+        container.add(editview)
+        #container.oncreate = [
+        #    select(element=container).append(        
+        #      #load(actor='analysis/selectdynamics', routine='createListView')
+        #      load(actor=actorName, routine='edit')#, id = dynamicsId)
+        #      ),
+        #    ]
 #        sA.add(load(actor=actorName, routine='edit', id = self.inventory.dynamicsId))
 #        sB          = splitter.section()
 #        docSub      = lc.document(title = "")
         b = lc.button(label='select'); doc.add(b)
         b.onclick = load(
-                actor=self.name, routine='configureSubmissionQueue'
+                actor=self.name, routine='runDirectly', 
+                simulationId = self.inventory.simulationId,
+                #actor=self.name, routine='configureSubmissionQueue'
                 )
         return select(id='main-display-area').replaceContent(doc)
 
@@ -121,6 +141,22 @@ class Actor(base):
     def __init__(self, name='analysis/analysiswizard'):
         super(Actor, self).__init__(name)
         return
+    
+    def runDirectly(self, director):
+        className = analysisPaths[self.inventory.analysisType].split()[-1]
+        exec('from '+analysisPaths[self.inventory.analysisType]+' import '+
+             className)
+        analysisClass = eval(className)
+        analysisObj = orm.load(analysisClass, id=self.inventory.simulationId)
+        analysisResult = analysisObj.compute()
+        analysisResult.getXY()
+        x, y = disp.getDefaultDispersionPlot()
+        # plot
+        p = lc.plot2d()
+        p.curve(x=list(x), y=list(y))
+#        for i,y in enumerate(ys):
+#            p.curve(x=list(x), y=list(y), label=str(i))
+        
     
     def configureSubmissionQueue(self, director):
         return director.redirect(actor = 'job', routine = 'create', 
