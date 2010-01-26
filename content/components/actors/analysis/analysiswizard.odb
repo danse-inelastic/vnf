@@ -160,6 +160,14 @@ class Actor(base):
         
     
     def configureSubmissionQueue(self, director):
+        #write the input file
+        datadir = director.dds.abspath(orm(gulpSettings))
+        if not os.path.exists(datadir): 
+            os.makedirs(datadir)
+
+        inputFilePath = director.dds.abspath(orm(gulpSettings), filename=GulpSettings.inputFile)
+        open(inputFilePath, 'w').write(self.inventory.inputFileContents)
+        
         className = analysisPaths[self.inventory.analysisType].split()[-1]
         fullClassPath = analysisPaths[self.inventory.analysisType]+'.'+className
         return director.redirect(actor = 'job', routine = 'create', 

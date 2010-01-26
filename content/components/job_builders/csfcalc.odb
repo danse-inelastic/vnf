@@ -1,0 +1,107 @@
+# -*- Python -*-
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                   Jiao Lin
+#                      California Institute of Technology
+#                      (C) 2008-2010  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+import journal
+debug = journal.debug('atomsim')
+
+from vnfb.components.JobBuilder import JobBuilder as base
+
+class Builder(base):
+
+    def __init__(self, name, path):
+        base.__init__(self, name, path)
+
+    def render(self, computation, db=None, dds=None):
+        # find out the file name of the gulp library file
+        potential = computation.potential.dereference(db)
+        #libptr = dds.abspath(computation, filename=Computation.LIBPOINTER_FILE)
+        #libname = open(libptr).read().strip()
+
+        # two files need to be copied to job directory
+        # 1. gulp.gin
+        # 2. the library file
+        files = [computation.inputFile, potential.filename]
+
+        # copy files to job directory
+        job = computation.getJob(self.db)
+        for f in files:
+            dds.copy(computation, f, job, f)
+            
+        # if the job outputs in DL_POLY format (necessary for trajectory analysis), mandate
+        # conversion of the trajectory to netcdf format
+        # 1. open the input file
+        inputFilePath = dds.abspath(job, filename=computation.inputFile)
+        inputFileContents = open(inputFilePath).read()
+
+        # 3. add run.sh
+        files.append( self._make_script1(computation) )
+        files.append( self._make_script(computation) )
+        return files
+#        self._files = []
+#
+#        # make system
+#        self.domaccess = domaccess = self.director.retrieveDOMAccessor(
+#            'material_simulations/phonon_calculators/bvk')
+#        
+#        model = domaccess.getModel(computation.model.id)
+#        system = self._render_system(model)
+#        
+#        # make script
+#        self._make_script(computation)
+#
+#        #
+#        return self._files
+    
+    
+    def _make_script(self, computation):
+        job = computation.getJob(self.db)
+        np = job.numprocessors
+        cmds = [
+            '#!/usr/bin/env sh',
+            '. ~/.gulp-env',
+            'chmod +x %s' % self.shscript1name,
+            'mpirun -np %d ./%s' % (np, self.shscript1name),
+            '',
+            ]
+        script = self.shscriptname
+        path = self._path(script)
+        open(path, 'w').write('\n'.join(cmds))
+        return script
+    
+    
+    shscript1name = 'run1.sh'
+    def _make_script1(self, computation):     
+        cmds = [
+            '#!/usr/bin/env sh',
+            '. ~/.gulp-env',
+            'gulp < %s > %s' % (computation.inputFile, computation.output_filename),
+            '',
+            ]
+        script = self.shscript1name
+        path = self._path(script)
+        open(path, 'w').write('\n'.join(cmds))
+        return script
+    
+
+import os
+
+
+def job_builder(name, path):
+    return Builder(name, path)
+
+
+# version
+__id__ = "$Id$"
+
+# End of file 
