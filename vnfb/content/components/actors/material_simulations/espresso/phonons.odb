@@ -42,8 +42,8 @@ class Actor(base):
     def create(self, director):
         "Create Phonons on Grid in idf format"
         self._mddir = self._matdynpath(director)
-        print self._mddir
-#        self._convertResults(director)
+        #print self._mddir
+        self._convertResults(director)
 #        self._createRecord(director)
 #        self._createLocation(director)
 #        self._relocateResults(director)
