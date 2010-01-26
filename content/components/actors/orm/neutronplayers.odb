@@ -31,6 +31,30 @@ class Actor(base):
         import luban.inventory
 
 
+    def store(self, director):
+        # this is overloaded because the orm view of neutronplayer was overloaded
+        # please look at
+        # vnfb.dom.neutron_experiment_simulations.neutron_components.NeutronPlayer
+        # for details
+        
+        #
+        ret = super(Actor, self).store(director)
+
+        #
+        player = self._load(director)
+        orm = director.clerk.orm
+        record = orm(player)
+
+        #
+        neutrons = self.inventory.neutrons
+        neutrons = orm.db.fetchRecordUsingUniqueIdentifierStr(neutrons)
+
+        #
+        record.neutrons = neutrons
+        orm.db.updateRecord(record)
+        return ret
+    
+
 
 def actor():
     return Actor('orm/neutronplayers')
