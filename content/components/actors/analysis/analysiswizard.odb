@@ -20,7 +20,7 @@ from luban.components.Actor import Actor as base
 
 import journal
 
-analysisImports = {'motiondoscalc':'vsat.trajectory.MotionDosCalc',
+analysisPaths = {'motiondoscalc':'vsat.trajectory.MotionDosCalc',
                    'csfcalc':'vsat.trajectory.CsfCalc'}
 
 class Actor(base):
@@ -87,7 +87,7 @@ class Actor(base):
 
     def analysisSettings(self, director):
         self.debug = journal.debug('analysisSettings')
-        orm = directory.orm
+        orm = director.clerk.orm
         doc         = lc.document(title = "")
 #        splitter    = doc.splitter(orientation="vertical")
 #        sA          = splitter.section(id='analysis-object-inspect')
@@ -103,14 +103,14 @@ class Actor(base):
         doc.add(container)
         actorName = 'orm/'+self.inventory.analysisType
         #import the correct analysis
-        className = analysisPaths[self.inventory.analysisType].split()[-1]
+        className = analysisPaths[self.inventory.analysisType].split('.')[-1]
         exec('from '+analysisPaths[self.inventory.analysisType]+' import '+
              className)
         analysisClass = eval(className)
         analysisObj = analysisClass()
         #mdc = MotionDosCalc()
-        orm.save(obj, save_not_owned_referred_object=False)
-        self.inventory.simulationId = orm(analysisObj).id
+        orm.save(analysisObj, save_not_owned_referred_object=False)
+        self.inventory.analysisId = orm(analysisObj).id
         drawer = director.painter.paintObj.drawers.getDrawer(analysisClass)
         editview = drawer(analysisObj)
         container.add(editview)
@@ -126,7 +126,7 @@ class Actor(base):
         b = lc.button(label='select'); doc.add(b)
         b.onclick = load(
                 actor=self.name, routine='runDirectly', 
-                simulationId = self.inventory.simulationId,
+                analysisId = self.inventory.analysisId,
                 #actor=self.name, routine='configureSubmissionQueue'
                 )
         return select(id='main-display-area').replaceContent(doc)
@@ -147,19 +147,25 @@ class Actor(base):
         exec('from '+analysisPaths[self.inventory.analysisType]+' import '+
              className)
         analysisClass = eval(className)
-        analysisObj = orm.load(analysisClass, id=self.inventory.simulationId)
+        analysisObj = orm.load(analysisClass, id=self.inventory.analysisId)
         analysisResult = analysisObj.compute()
-        analysisResult.getXY()
-        x, y = disp.getDefaultDispersionPlot()
+        x, y = analysisResult.getXY()
         # plot
-        doc = lc.document(title='phonons %s' % record.id)
+        doc = lc.document(title='analysis %s' % self.inventory.analysisId)
         p = lc.plot2d()
         p.curve(x=list(x), y=list(y))
+        return select(id='main-display-area').replaceContent(doc)
 #        for i,y in enumerate(ys):
 #            p.curve(x=list(x), y=list(y), label=str(i))
         
     
     def configureSubmissionQueue(self, director):
+        className = analysisPaths[self.inventory.analysisType].split()[-1]
+        exec('from '+analysisPaths[self.inventory.analysisType]+' import '+
+             className)
+        analysisClass = eval(className)
+        analysisObj = orm.load(analysisClass, id=self.inventory.analysisId)
+        analysisResult = analysisObj.compute()
         #write the input file
         datadir = director.dds.abspath(orm(gulpSettings))
         if not os.path.exists(datadir): 
@@ -172,7 +178,7 @@ class Actor(base):
         fullClassPath = analysisPaths[self.inventory.analysisType]+'.'+className
         return director.redirect(actor = 'job', routine = 'create', 
                 computation_type = fullClassPath, 
-                computation_id = self.inventory.simulationId)
+                computation_id = self.inventory.analysisId)
 
 import os
 def actor(): return Actor()
