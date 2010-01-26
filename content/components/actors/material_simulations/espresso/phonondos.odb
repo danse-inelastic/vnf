@@ -60,7 +60,7 @@ class Actor(base):
         TO_THZ  = 0.0299792458
 
         # Example: mddir   = "/home/dexity/exports/vnf/vnfb/content/data/tmp/tmpTRqFuy/8CNH5MUJ"
-        mddir       = resultsdir(director, self.simid, "MATDYN")    # tmp results directory
+        mddir       = self._matdynpath(director)  # tmp results directory
         flvec       = os.path.join(mddir, "matdyn.modes")
         flfrq       = os.path.join(mddir, "matdyn.freq")
         fldos       = os.path.join(mddir, "matdyn.dos")
@@ -116,7 +116,7 @@ fldos = %s""" % (flvec, flfrq, fldos)
         #orm         = domaccessor.orm   # ?
         #path    = director.dds.abspath(self._job)
 
-        mddir       = resultsdir(director, self.simid, "MATDYN")
+        mddir       = self._matdynpath(director)  #resultsdir(director, self.simid, "MATDYN")
         src         = os.path.join(mddir, "data.idf")   # XXX Check if it exists
         dest        = self._phonpath(director)
         shutil.copy(src, dest)
@@ -133,6 +133,11 @@ fldos = %s""" % (flvec, flfrq, fldos)
         "Returns data root path"
         dds = director.dds
         return os.path.abspath(dds.dataroot)
+
+
+    def _matdynpath(self, director):
+        # Example: mddir   = "/home/dexity/exports/vnf/vnfb/content/data/tmp/tmpTRqFuy/8CNH5MUJ"
+        return resultsdir(director, self.simid, "MATDYN", subtype="dos")    # tmp results directory
 
 
     def __init__(self):

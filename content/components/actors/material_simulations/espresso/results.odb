@@ -207,11 +207,11 @@ class Actor(base):
         if data is None:
             return
 
-        section.add(lc.paragraph(text="Phonon DOS", Class="qe-section"))
         (e,  state) = data
         plot = lc.plot2d(Class="default-size-plot")
         plot.curve(x=e, y=state, label='Phonon DOS')
 
+        section.add(lc.paragraph(text="Phonon DOS", Class="qe-section"))
         section.add(plot)
 
 
@@ -230,7 +230,6 @@ class Actor(base):
                 if results.ready():
                     path        = os.path.join(results.tardir(), "ni.dos")  # dos name is hardcoded
                     filepath    = os.path.join(dataroot, path)
-                    #print filepath
                     return filepath
             
         return None
