@@ -91,18 +91,19 @@ class QESimulation(QETable, GloballyReferrable):    #, Computation): #):
 
 
 # Default records
-defaults    = ({"id": 1, "sname": 'MgB2_SP', "creator": "dexity", "package": 'Quantum Espresso',
-                "type": SIMULATIONS[4], "short_description": 'Single-Phonon simualtion'},
-                {"id": 2, "sname": 'MgB2_E', "creator": "dexity", "package": 'Quantum Espresso',
-                "type": SIMULATIONS[0], "short_description": 'Electron simualtion'},
-                {"id": 3, "sname": 'MgB2_MP', "creator": "dexity", "package": 'Quantum Espresso',
-                "type": SIMULATIONS[5], "short_description": 'Multy-Phonon simualtion'},
-                {"id": 4, "sname": 'Ni_Energy', "creator": "dexity", "package": 'Quantum Espresso',
-                "type": SIMULATIONS[0], "short_description": 'Total Energy simualtion'},
-                {"id": 5, "sname": 'Ni_E_DOS', "creator": "dexity", "package": 'Quantum Espresso',
-                "type": SIMULATIONS[1], "short_description": 'Electron DOS simualtion'},
-                {"id": 6, "sname": 'Ni_Ph_DOS', "creator": "dexity", "package": 'Quantum Espresso',
-                "type": SIMULATIONS[5], "short_description": 'Multy-Phonon DOS simualtion'})
+default     = None
+#defaults    = ({"id": 1, "sname": 'MgB2_SP', "creator": "dexity", "package": 'Quantum Espresso',
+#                "type": SIMULATIONS[4], "short_description": 'Single-Phonon simualtion'},
+#                {"id": 2, "sname": 'MgB2_E', "creator": "dexity", "package": 'Quantum Espresso',
+#                "type": SIMULATIONS[0], "short_description": 'Electron simualtion'},
+#                {"id": 3, "sname": 'MgB2_MP', "creator": "dexity", "package": 'Quantum Espresso',
+#                "type": SIMULATIONS[5], "short_description": 'Multy-Phonon simualtion'},
+#                {"id": 4, "sname": 'Ni_Energy', "creator": "dexity", "package": 'Quantum Espresso',
+#                "type": SIMULATIONS[0], "short_description": 'Total Energy simualtion'},
+#                {"id": 5, "sname": 'Ni_E_DOS', "creator": "dexity", "package": 'Quantum Espresso',
+#                "type": SIMULATIONS[1], "short_description": 'Electron DOS simualtion'},
+#                {"id": 6, "sname": 'Ni_Ph_DOS', "creator": "dexity", "package": 'Quantum Espresso',
+#                "type": SIMULATIONS[5], "short_description": 'Multy-Phonon DOS simualtion'})
 
 # Init tables
 def inittable(clerk):
