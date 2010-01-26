@@ -31,6 +31,7 @@ from luban.content import load
 import luban.content as lc
 
 from luban.components.AuthorizedActor import AuthorizedActor as base
+NK  = 16
 
 # Requires simulation id,
 class Actor(base):
@@ -81,9 +82,9 @@ class Actor(base):
         table       = QEGrid(lc.grid(Class="qe-form"))
         form.add(table.grid())
 
-        nk1         = FormTextField(name = "nk1", value = 4)
-        nk2         = FormTextField(name = "nk2", value = 4)
-        nk3         = FormTextField(name = "nk3", value = 4)
+        nk1         = FormTextField(name = "nk1", value = NK)
+        nk2         = FormTextField(name = "nk2", value = NK)
+        nk3         = FormTextField(name = "nk3", value = NK)
 
         submit      = FormSubmitButton(label="Generate Input Configuration")
         cancel      = lc.button(label="Cancel")
