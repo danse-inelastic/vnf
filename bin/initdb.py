@@ -46,7 +46,7 @@ class DbApp(base):
         if not tables:
             table = self.inventory.table
             if table:
-                tables = []
+                tables = [table]
 
         print "init tables"
         self.inittables(tables)

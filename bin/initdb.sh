@@ -14,3 +14,4 @@
 
 ./initdb.py --tables=snsmoderatormcsimulateddata,bvkmodels,instruments,vanadiumplates,servers
 
+./initdb.py --tables=sqe
