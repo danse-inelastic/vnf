@@ -16,7 +16,7 @@ It assumes that there is a symbolic link in html/ named "tmp" pointing
 to the directory content/data/tmp
 '''
 
-import os, tempfile, histogram.hdf as hh
+import sys, os, tempfile, histogram.hdf as hh
 
 
 # path of tmp directory in the http url
@@ -26,16 +26,10 @@ http_tmproot = 'tmp'
 tmproot = os.path.join('..', 'content', 'data', 'tmp')
 
 
-def visual(id, director):
+def visual(histogram, director):
     """
-    id: id of the histogram record I(x,y)
+    histogram: a histogram data object
     """
-    # path to the histogram data file
-    from vnfb.dom.Histogram import HistogramTable
-    h = HistogramTable(); h.id = id
-    histrecordpath = director.dds.abspath(h)
-    histpath = os.path.join(histrecordpath, 'data.h5')
-
     # matplotlib needs home to be writable
     os.environ['HOME'] = '/tmp'
 
@@ -49,15 +43,12 @@ def visual(id, director):
     filename = 'plot.png'
     filepath = os.path.join(tmpdirectory, filename)
 
-    # the command to launch
-    cmd = 'PlotHist.py %s --output=%s' % (histpath, filepath)
-
-    # launch
-    from vnfb.utils.spawn import spawn
-    fail, output, error = spawn(cmd)
-
-    if fail:
-        raise RuntimeError, 'out=%s, err=%s' % (output, error)
+    #
+    saveout = sys.stdout
+    sys.stdout = open(os.devnull, 'w')
+    from histogram import plot
+    plot(histogram, output=filepath)
+    sys.stdout = saveout
 
     # the url for the image
     pngurl = os.path.join(http_tmproot, subdir, filename)

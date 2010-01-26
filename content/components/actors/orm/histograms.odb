@@ -51,7 +51,11 @@ class Actor(base):
             y = list(data.I)
             p.curve(x=x,y=y)
         elif dim == 2:
-            p = director.retrieveVisual('histogram/imageplot', id=id, director=director)
+            p = director.retrieveVisual(
+                'histogram/imageplot',
+                histogram=data,
+                director=director,
+                )
             doc.add(p)
         else:
             raise NotImplementedError

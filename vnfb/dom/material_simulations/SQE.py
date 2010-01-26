@@ -24,10 +24,13 @@ SQETable.addColumn(
     )
 
 
-SQETable.histogramh5 = 'sqe.h5'
+SQETable.histogramh5 = 'data.h5'
+SQETable.ncfile = 'data.nc'
 SQETable.datafiles = [
-    SQETable.histogramh5
+    # SQETable.histogramh5
+    # SQETable.ncfile
     ]
+
 
 
 # version
