@@ -111,6 +111,7 @@ class Actor(base):
         sim     = QESimulation()
         sim.setDirector(director)
         sim.createRecord(params)
+        sim.establishGlobalPointer(director.clerk.db)
 
         return load(actor='material_simulations/espresso/sim-view', id = sim.id)  # Redirection to the page
 
