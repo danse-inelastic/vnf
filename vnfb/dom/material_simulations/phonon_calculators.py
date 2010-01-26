@@ -15,11 +15,16 @@
 # any time a new engine for computing phonons is added, need to
 # register it here
 
-all = [
-    'BvK',
-    'Gulp',
-    'Quantum Espresso',
-    ]
+all = [('bvk', 'BvK'),
+       ('gulp', 'Gulp'),
+       ('quantumespresso', 'Quantum Espresso')]
+
+
+#all = [
+#    'bvk',
+#    'gulp',
+#    'quantumespresso',
+#    ]
 
 # version
 __id__ = "$Id$"
