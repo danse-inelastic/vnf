@@ -221,14 +221,23 @@ margin:0.5em;
 width:3em;
 }
 
-.luban-document.panel > .luban-document-title > table td.luban-document-title-controls a{
+.luban-document.panel > .luban-document-title > table  td.luban-document-title-controls a{
     color: white;
     font-size: 1.7em;
     font-weight: bolder;
     text-decoration: none;
 }
-.luban-document.panel > .luban-document-title > table td.luban-document-title-controls a:hover {
+.luban-document.panel > .luban-document-title >table>tbody>tr>td.luban-document-title-controls > a.collapse-expand:hover {
     text-decoration:underline;
+    cursor: pointer;
+}
+.luban-document.panel > .luban-document-title >table>tbody>tr>td.luban-document-title-controls > a.float:hover {
+    text-decoration:underline;
+    cursor: pointer;
+}
+.luban-document.panel > .luban-document-title >table>tbody>tr>td.luban-document-title-controls > a.close:hover {
+    text-decoration:underline;
+    cursor: pointer;
 }
 
 .luban-document.panel > .luban-document-title > table td.luban-document-title-controls a.float {
