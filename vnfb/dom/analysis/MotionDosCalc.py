@@ -13,13 +13,11 @@
 
 from _ import o2t
 
-# still import from vnf-alpha dom. need to change
 from vnfb.dom.Computation import Computation
 
-from vsat.trajectory.MotionDosCalc import MotionDosCalc
+from vsat.trajectory.MotionDosCalc import MotionDosCalc as MotionDosCalcBase
 
-MotionDosCalc = o2t(MotionDosCalc, {'subclassFrom': Computation, 
-                                          'dbtablename':'motiondoscalc'})
+MotionDosCalc = o2t(MotionDosCalcBase, {'subclassFrom': Computation})
 MotionDosCalc.job_builder = 'analysis/motiondoscalc'
 MotionDosCalc.actor = 'analysis/motiondoscalc'
 MotionDosCalc.result_retriever = 'analysis/motiondoscalc'

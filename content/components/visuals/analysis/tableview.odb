@@ -103,8 +103,8 @@ def createAnalysisTable(
     return thetable
 
 
-
-columns = [ 'selected', 'id', 'description', 'chemical_formula', 'simulation', 'created']
+#columns = [ 'selected', 'id', 'description', 'chemical_formula', 'simulation', 'created']
+columns = [ 'selected', 'id', 'description', 'created']
 measure2dbcol = {
     'description': 'short_description',
     'created': 'date',

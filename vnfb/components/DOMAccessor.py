@@ -256,6 +256,7 @@ class DOMAccessor( base ):
 
     def _getTableByImportingFromDOM(self, name):
         Obj = self._getObjectByImportingFromDOM(name)
+        self.db.registerTable(Obj)
         if not issubclass(Obj, TableBase):
             orm = self.orm
             return orm(Obj)
