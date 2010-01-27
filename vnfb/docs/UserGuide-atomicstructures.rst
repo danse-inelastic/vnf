@@ -1,5 +1,5 @@
-User Guide - Atomic structures
-==============================
+Atomic structures
+=================
 
 
 Table view
