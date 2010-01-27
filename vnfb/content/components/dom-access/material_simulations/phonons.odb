@@ -44,6 +44,19 @@ class Accessor(base):
         record = orm(disp)
         
         director = self.director
+
+        # make sure files are on web server
+        if not director.dds.is_available(record):
+            try:
+                director.dds.make_available(record)
+            except:
+                import journal
+                debug = journal.debug('main')
+                debug.log('Unable to get data files for record %s' % record.id)
+                import traceback
+                debug.log(traceback.format_exc())
+                return
+            
         
         # the files
         datadir = director.dds.abspath(record)
@@ -51,7 +64,11 @@ class Accessor(base):
         subdir = os.path.join(datadir, 'data.idf')
         if os.path.exists(subdir):
             datadir = subdir
-            
+
+        # see if 'Qaxes" exist
+        if not os.path.exists(os.path.join(datadir, 'Qgridinfo')):
+            raise NotImplementedError, 'data files not in idf format'
+        
         from mccomponents.sample.idf import readDispersion
         nAtoms, dimension, Qaxes, polarizations, energies, dos = readDispersion(datadir)
         for k in ['nAtoms', 'dimension', 'Qaxes', 'polarizations', 'energies']:

@@ -90,7 +90,11 @@ class Actor(base):
         left = doc.section(); right = doc.section()
         
         domaccess = self._domaccess(director)
+        
         doslist = map(domaccess.getDataForDOS, self.inventory.ids)
+        doslist = filter(bool, doslist)
+        if not doslist:
+            return lc.paragraph(text=['Data missing'])
 
         #
         p = lc.plot2d(); left.add(p)

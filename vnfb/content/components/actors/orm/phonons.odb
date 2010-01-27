@@ -93,7 +93,13 @@ class Actor(base):
     def _createPlot1(self, disp, director):
         domaccess = self._domaccess(director)
 
-        disp = domaccess.getDataForPhonons(disp)
+        try:
+            disp = domaccess.getDataForPhonons(disp)
+        except NotImplementedError:
+            return lc.paragraph(text=['Parser for this data format is not yet implemented'])
+
+        if not disp: return lc.paragraph(text=['Data missing'])
+        
         x, ys = disp.getDefaultDispersionPlot()
         
         # plot
