@@ -39,6 +39,18 @@ class Accessor(base):
         record = self.orm(dos)
 
         director = self.director
+
+        # make sure file is at the web serveer
+        if not director.dds.is_available(record):
+            try:
+                director.dds.make_available(record)
+            except:
+                import journal
+                debug = journal.debug('main')
+                debug.log('Unable to get data files for record %s' % record.id)
+                import traceback
+                debug.log(traceback.format_exc())
+                return
         
         # the idf file
         path = director.dds.abspath(record)
