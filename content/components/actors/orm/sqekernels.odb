@@ -48,7 +48,7 @@ class Actor(helper(SQEKernel), base):
         else:
             sqeid = orm(sqe).id
             sqeview = director.redirect(
-                actor='orm/sqes', routine='createGraphicalView',
+                actor='orm/sqe', routine='createGraphicalView',
                 id = sqeid, include_credential=False)
             sqe_doc.add(sqeview)
         
