@@ -12,8 +12,8 @@
 
 
 typenames = [
-    'analysis.MotionDosCalc.MotionDosCalc',
-    'analysis.CsfCalc.CsfCalc',
+    'analysis.MotionDosCalc.MotionDosCalcBase',
+    'analysis.CsfCalc.CsfCalcBase',
     ]
 
 # refactor this!
