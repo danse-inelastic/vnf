@@ -19,7 +19,7 @@ from luban.content import load, select, alert
 def visual(director=None, context=None):
     portlet = Portlet(id='help-portlet', title='')
 
-    # about...
+    # about... within context
     action = load(actor='help', routine='showHelpWindow',
                   page=select(id='help-page-text').getAttr('value'))
     if context:
@@ -27,7 +27,17 @@ def visual(director=None, context=None):
     else:
         about_label = 'help'
     portlet.item(id='help-portlet-about-context', label=about_label, onclick=action)
-    
+
+    # about vnf
+    aboutvnf = load(actor='help', routine='showHelpWindow',
+                    page = 'UserGuide-Overview.html')
+    portlet.item(label='about vnf', onclick=aboutvnf)
+
+    # about danse
+    aboutdanse = load(actor='help', routine='showHelpWindow',
+                    page = 'http://danse.us')
+    portlet.item(label='about danse', onclick=aboutdanse)
+
     return portlet
 
     
