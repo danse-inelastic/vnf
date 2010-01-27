@@ -24,14 +24,16 @@ class Accessor(base):
 
     def _getOrm(self):
         orm = self.director.clerk.orm
-        
         # build orm for all computation types
         from vnfb.dom.computation_types import typenames, deps_typenames
         for name in typenames+deps_typenames:
-            type = self._getObjectByImportingFromDOM(name)
-            orm(type)
-            continue
-        #
+            objectClass = self._getObjectByImportingFromDOM(name)
+            from dsaw.db.Table import Table as TableBase
+            if not issubclass(objectClass, TableBase):
+                table = orm(objectClass)
+            else:
+                self.db.registerTable(table)
+            #orm(type) no longer necessary
         return orm
     orm = property(_getOrm)
 

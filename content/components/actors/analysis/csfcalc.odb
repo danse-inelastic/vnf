@@ -33,8 +33,9 @@ class Actor(base):
         domaccess = self._domaccess(director)
         db = domaccess.db
         c = self._getComputationRecord(director)
-        if not domaccess.isComputationConfigured(c):
-            return self.createConfigurationView(director)
+        #do this error checking later
+#        if not domaccess.isComputationConfigured(c):
+#            return self.createConfigurationView(director)
         
         path = self._pathToMe(director)
         view_indicator = director.retrieveVisual('view-indicator', path=path)
@@ -113,14 +114,15 @@ class Actor(base):
         if not id:
             raise RuntimeError
         domaccess = self._domaccess(director)
-        label = domaccess.getComputationLabel('csfcalc', id)
+        #label = domaccess.getComputationLabel('csfcalc', id)
         computation = self._getComputation(director)
         return [
             ('Analysis',
              lc.load(actor='analysis')),
             ('Coherent Scattering Function Calculations',
              lc.load(actor='analysis', filter_expr="type=='csfcalc'")),
-            ('%s %s' % (computation.__class__.__name__, label),
+            #('%s %s' % (computation.__class__.__name__, label),
+            ('%s' % (computation.__class__.__name__),
              lc.select(id='main-display-area').replaceContent(
             lc.load(actor='analysis/csfcalc',
                     routine = 'createView', id=id)
@@ -129,9 +131,11 @@ class Actor(base):
 
 
     def _getComputation(self, director):
-        domaccess = self._domaccess(director)
-        id = self.inventory.id
-        return domaccess.getComputation('csfcalc', id)
+        record = self._getComputationRecord(director)
+        return director.clerk.orm.record2object(record)
+#        domaccess = self._domaccess(director)
+#        id = self.inventory.id
+#        return domaccess.getComputation('csfcalc', id)
 
 
     def _getComputationRecord(self, director):
@@ -141,7 +145,8 @@ class Actor(base):
 
 
     def _domaccess(self, director):
-        return director.retrieveDOMAccessor('analysis')
+        #return director.retrieveDOMAccessor('analysis')
+        return director.retrieveDOMAccessor('computation')
 
 
     def __init__(self, name='analysis/csfcalc'):
