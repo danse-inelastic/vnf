@@ -31,6 +31,9 @@ Overview of an atomic structure
 In the overview of an atomic structure, the top portion displays basic
 information about this structure. 
 
+.. image:: shots/atomicstructure/overview-allcollapsed.png
+   :width: 720px
+
 The "computed properties" panel shows physical properties of
 this atomic structure that were calculated using various computation 
 techniuqes.
