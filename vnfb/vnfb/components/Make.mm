@@ -40,6 +40,7 @@ all: export
 # export
 
 EXPORT_PYTHON_MODULES = \
+	AccessControl.py \
 	Announcer.py \
 	AppExtension.py \
 	Clerk.py \
@@ -52,6 +53,7 @@ EXPORT_PYTHON_MODULES = \
 	MasterTable.py \
 	Postman.py \
         QETable.py \
+	SSHer.py \
 	UsersFromDB.py \
 	__init__.py \
 
