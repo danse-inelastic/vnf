@@ -9,6 +9,7 @@
 #
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
+tablename='dynamics'
 from vnfb.components.DOMAccessor import DOMAccessor as base
 
 class Accessor(base):

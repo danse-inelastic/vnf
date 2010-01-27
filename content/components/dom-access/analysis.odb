@@ -16,8 +16,25 @@ from vnfb.components.DOMAccessor import DOMAccessor as base
 class Accessor(base):
 
     def __init__(self):
-        super(Accessor, self).__init__('analysis-accessor')
+        super(Accessor, self).__init__('analysis')
         return
+
+    def _getOrm(self):
+        orm = self.director.clerk.orm
+        # build orm for all dynamics types--orm 
+        #registers and stores these internally
+        from vsat.trajectory.MotionDosCalc import MotionDosCalc
+        from vsat.trajectory.CsfCalc import CsfCalc
+        orm(MotionDosCalc)
+        orm(CsfCalc)
+        return orm
+    orm = property(_getOrm)
+
+    def getAnalysisRecord(self, type, id):
+        orm = self.orm
+        db = orm.db
+        table = db.getTable(type)
+        return db.query(table).filter_by(id=id).one()
 
     def getAnalysis(self, type, id):
         return self.getRecordByID(type, id)
@@ -82,7 +99,6 @@ class Accessor(base):
 
     def makeQuery(self, table, filter=None, label=None):
         'create a query for an analysis table with given filter'
-
         db = self.db
         
         if label:
@@ -95,8 +111,6 @@ class Accessor(base):
         q = sqlalchemy.select(
             [st.c.id.label('id'),
              sGP.c.type.label('type'),
-             st.c.date.label('date'),
-             st.c.motion.label('motion'),
              st.c.globalpointer.label('gptr'),
              ],
             st.c.globalpointer==sGP.c.id,
@@ -131,8 +145,6 @@ class Accessor(base):
         q = sqlalchemy.select(
             [st.c.id.label('id'),
              q1.c.type.label('type'),
-             st.c.date.label('date'),
-             st.c.motion.label('motion'),
              st.c.globalpointer.label('gptr'),
              ],
             st.c.globalpointer==q1.c.entity,
@@ -146,7 +158,7 @@ class Accessor(base):
     
 
     def analysisTables(self):
-        from vnfb.dom.analysis.computation_types import typenames
+        from vnfb.dom.analysis.analysis_types import typenames
         ormtables = map(self._getTable, typenames)
 
         return ormtables

@@ -599,7 +599,8 @@ class MasterTableFactory(object):
         ):
         
         # get a total count
-        totalcount = self.countrecords(filter=filter, label=label!=self.dummylabel and label in self.labels and label or None)
+        totalcount = self.countrecords(filter=filter, 
+                label=label!=self.dummylabel and label in self.labels and label or None)
         if slice[1] > totalcount: slice[1] = totalcount
         lastpage = (totalcount-1)/number_records_per_page
         # 
@@ -653,7 +654,7 @@ class MasterTableFactory(object):
                 filter_expr = filter_expr, filter_key=filter_key, filter_value=filter_value,
                 label=label,
                 )
-            right = bar.link(id=id,label='next',onclick=onclick)
+            right = bar.link(id=id, label='next', onclick=onclick)
 
             bar.paragraph(Class='splitter', text='|')
 

@@ -38,7 +38,8 @@ EXPORT_PYTHON_MODULES = \
 	__init__.py \
 	_.py \
 	analysis_types.py \
-	MotionDosCalcHolder.py \
+	CsfCalc.py \
+	MotionDosCalc.py \
 
 #include doxygen/default.def
 

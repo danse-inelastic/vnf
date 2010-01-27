@@ -88,8 +88,7 @@ def createAnalysisTable(
 
     records = domaccess.getAnalysisRecords(
         order_by=order_by, reverse_order=reverse_order, slice=slice,
-        filter=filter,
-        label=label,
+        filter=filter, label=label,
         )
 
     cols = columns
