@@ -11,6 +11,7 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
+
 def dds():
     from DistributedDataStorage import DistributedDataStorage
     return DistributedDataStorage('dds', 'dds')
@@ -21,10 +22,19 @@ def clerk():
     return Clerk('clerk', 'clerk')
 
 
+def ssher(name='ssher', facility='csaccessor'):
+    from SSHer import SSHer
+    return SSHer(name=name, facility=facility)
+
+
 def usersFromDB():
     from UsersFromDB import UsersFromDB
     return UsersFromDB('usersFromDB')
 
+
+def accesscontrol():
+    from AccessControl import AccessControl
+    return AccessControl()
 
 
 # communications
@@ -36,7 +46,6 @@ def announcer():
 def postman():
     from Postman import Postman
     return Postman()
-
 
 
 # version
