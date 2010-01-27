@@ -137,7 +137,7 @@ class Accessor(base):
                 modelrecord = self.orm(model)
             else:
                 modelrecord = self.getModelRecord(id)
-        return self.isModelReferred(modelrecord)
+        return not self.isModelReferred(modelrecord)
 
 
     def isModelReferred(self, modelrecord):
