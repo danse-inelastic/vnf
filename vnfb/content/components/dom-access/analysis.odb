@@ -19,22 +19,22 @@ class Accessor(base):
         super(Accessor, self).__init__('analysis')
         return
 
-    def _getOrm(self):
-        orm = self.director.clerk.orm
-        # build orm for all dynamics types--orm 
-        #registers and stores these internally
-        from vsat.trajectory.MotionDosCalc import MotionDosCalc
-        from vsat.trajectory.CsfCalc import CsfCalc
-        orm(MotionDosCalc)
-        orm(CsfCalc)
-        return orm
-    orm = property(_getOrm)
-
-    def getAnalysisRecord(self, type, id):
-        orm = self.orm
-        db = orm.db
-        table = db.getTable(type)
-        return db.query(table).filter_by(id=id).one()
+#    def _getOrm(self):
+#        orm = self.director.clerk.orm
+#        # build orm for all dynamics types--orm 
+#        #registers and stores these internally
+#        from vsat.trajectory.MotionDosCalc import MotionDosCalc
+#        from vsat.trajectory.CsfCalc import CsfCalc
+#        orm(MotionDosCalc)
+#        orm(CsfCalc)
+#        return orm
+#    orm = property(_getOrm)
+#
+#    def getAnalysisRecord(self, type, id):
+#        orm = self.orm
+#        db = orm.db
+#        table = db.getTable(type)
+#        return db.query(table).filter_by(id=id).one()
 
     def getAnalysis(self, type, id):
         return self.getRecordByID(type, id)
