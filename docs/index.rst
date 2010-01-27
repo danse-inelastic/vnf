@@ -5,14 +5,15 @@
 
 VNF: Virtual Neutron Facility
 ===============================
+Virtual Neutron Facility provides users easy, integrated access
+to computing tools for end-to-end simulation of neutron experiments.
 
-Contents:
 
-.. toctree::
+Links
+-----
 
-   overview
-   UserGuide-Overview
-   UserGuide-atomicstructures
+* :ref:`Overview <vnfoverview>`
+* :ref:`User Guide <vnfuserguide>`
 
 ..   discussion
 
@@ -21,6 +22,6 @@ Indices and tables
 ==================
 
 * :ref:`genindex`
-* :ref:`modindex`
 * :ref:`search`
 
+.. * :ref:`modindex`
