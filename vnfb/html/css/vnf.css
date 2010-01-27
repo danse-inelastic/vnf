@@ -158,6 +158,7 @@ fieldset{
     background-color:#f0f5f5;
     border: 1px solid #AAAAAA;
     -moz-border-radius:12px;
+    -webkit-border-radius:12px;
 }
 .topright-toolbar.luban-toolbar table {
 border-collapse:collapse;
@@ -165,6 +166,8 @@ border-collapse:collapse;
 .topright-toolbar.luban-toolbar .luban-toolbar-left-padding {
     -moz-border-radius-bottomleft:12px;
     -moz-border-radius-topleft:12px;
+    -webkit-border-bottom-left-radius:12px;
+    -webkit-border-top-left-radius:12px;
     width:8px;
     min-width:8px;
     background-color:gray;
@@ -255,7 +258,7 @@ width:3em;
 
 .luban-document.panel > .luban-document-title > table td.luban-document-title-controls a.float {
 background-color:transparent;
-background-image:url(/images/icons/expand-arrow.16.png);
+background-image:url(../images/icons/expand-arrow.16.png);
 color:transparent;
 background-position:center;
 background-repeat:no-repeat;
