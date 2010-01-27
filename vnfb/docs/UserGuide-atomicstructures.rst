@@ -34,7 +34,30 @@ information about this structure.
 .. image:: shots/atomicstructure/overview-allcollapsed.png
    :width: 720px
 
+Computed properties
+^^^^^^^^^^^^^^^^^^^
 The "computed properties" panel shows physical properties of
 this atomic structure that were calculated using various computation 
 techniuqes.
+
+There are several sub-panels, each of which corresponds to one type
+of physical property.
+
+
+Phonons
+!!!!!!!
+
+This panel displays the phonon-related properties for the current
+atomic structure.
+
+* Phonon density of states
+* Phonon dispersions
+
+.. image:: shots/atomicstructure/phonons.png
+   :width: 640px
+
+
+
+S(Q,E)
+!!!!!!
 
