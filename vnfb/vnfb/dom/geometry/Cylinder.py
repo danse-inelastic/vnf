@@ -29,8 +29,14 @@ class Inventory(InvBase):
     dbtablename = 'cylinders'
 
     height = InvBase.d.float( name = 'height', default = 0.1 )
+    height.tip = 'height. unit: meter'
+
     innerradius = InvBase.d.float( name = 'innerradius', default = 0.0 )
+    innerradius.tip = 'innerradius. unit: meter'
+
     outerradius = InvBase.d.float( name = 'outerradius', default = 0.002 )
+    outerradius.tip = 'outerradius. unit: meter'
+
 
 
 Cylinder.Inventory = Inventory

@@ -29,8 +29,13 @@ class Inventory(InvBase):
     dbtablename = 'blocks'
 
     width = InvBase.d.float( name = 'width', default = 0.05 )
+    width.tip = 'width. unit: meter'
+    
     height = InvBase.d.float( name = 'height', default = 0.1 )
+    height.tip = 'height. unit: meter'
+
     thickness = InvBase.d.float( name = 'thickness', default = 0.002 )
+    thickness.tip = 'thickness. unit: meter'
     
 
 Block.Inventory = Inventory
