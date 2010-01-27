@@ -255,12 +255,14 @@ class DOMAccessor( base ):
 
 
     def _getTableByImportingFromDOM(self, name):
-        Obj = self._getObjectByImportingFromDOM(name)
-        self.db.registerTable(Obj)
-        if not issubclass(Obj, TableBase):
+        table = self._getObjectByImportingFromDOM(name)
+        if not issubclass(table, TableBase):
             orm = self.orm
-            return orm(Obj)
-        return Obj
+            Obj = table
+            table = orm(Obj)
+        else:
+            self.db.registerTable(table)
+        return table
 
 
     def _getRecordByID(self, table, id ):
