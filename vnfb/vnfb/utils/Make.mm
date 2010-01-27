@@ -67,6 +67,7 @@ EXPORT_PYTHON_MODULES = \
 	safe_eval_26.py \
         serverlist.py \
         spawn.py \
+	upload.py \
 
 
 #include doxygen/default.def

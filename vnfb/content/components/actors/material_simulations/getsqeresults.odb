@@ -45,14 +45,14 @@ class Actor(base):
             doc1 = doc.document(Class='container')
             doc1.paragraph(text=['loading sqe. please wait...'])
             doc1.oncreate = select(element=doc1).replaceContent(
-                load(actor='orm/sqes', routine='createGraphicalView', id=sqe.id)
+                load(actor='orm/sqe', routine='createGraphicalView', id=sqe.id)
                 )
         else:
             doc1 = doc.document(Class='container')
             doc1.paragraph(text=['loading sqe curves. please wait...'])
             ids = [sqe.id for sqe in sqes]
             doc1.oncreate = select(element=doc1).replaceContent(
-                load(actor='orm/sqes', routine='createGraphicalView', ids=ids)
+                load(actor='orm/sqe', routine='createGraphicalView', ids=ids)
                 )
             
         newsqecomputation = lc.load(
@@ -62,6 +62,21 @@ class Actor(base):
         link = lc.link(label='Start a new sqe computation', onclick=newsqecomputation)
         doc.add(link)
 
+        doc.paragraph()
+        # create uploader document
+        uploadid = director.getGUID()
+        getuploaddoc = load(
+           actor='loadvisual',
+           visual='atomicstructure/upload-sqe-panel',
+           uploadid = uploadid,
+           structureid = structrecord.id,
+           )
+        link = lc.link(
+            label='Upload a sqe file',
+            onclick=select(id='main-display-area').replaceContent(getuploaddoc),
+            )
+        doc.add(link)
+        
         return doc
 
 

@@ -60,7 +60,7 @@ class SQEKernel(base):
             plotcontainer = right.document(Class='container')
             #
             loadplot = lambda uid: load(
-                actor='orm/sqes', routine='createGraphicalView',
+                actor='orm/sqe', routine='createGraphicalView',
                 uid=uid)
 
             # default selection
