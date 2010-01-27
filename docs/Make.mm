@@ -50,6 +50,7 @@ sphinx-build: Makefile $(EXPORT_DOCDIR)
 
 EXPORT_DATADIRS = \
 	_static \
+	shots \
 
 
 $(SPHINX_BUILD_TMP):
