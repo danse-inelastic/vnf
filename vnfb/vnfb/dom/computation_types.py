@@ -23,7 +23,10 @@ from material_simulations.computation_types import \
 typenames+=ts
 deps_typenames+=dts
 
-
+from analysis.analysis_types import \
+     typenames as ts, deps_typenames as dts
+typenames+=ts
+deps_typenames+=dts
 
 from neutron_experiment_simulations.computation_types import \
      typenames as ts, deps_typenames as dts

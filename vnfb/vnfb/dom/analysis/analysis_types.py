@@ -16,12 +16,11 @@ typenames = [
     'analysis.CsfCalc.CsfCalc',
     ]
 
-
-#deps_typenames = [
-#    'material_simulations.PhononDOS.PhononDOS',
-#    'material_simulations.Phonons.Phonons',
-#    'material_simulations.SQE.SQE',
-#    ]
+# refactor this!
+deps_typenames = [
+    'material_simulations.PhononDOS.PhononDOS',
+    'material_simulations.SQE.SQE',
+    ]
 
 
 # version
