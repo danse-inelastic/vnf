@@ -57,9 +57,16 @@ def table(analyses, cols, director):
         link = Link(
             label = label,
             onclick = load(
-                actor='analysis', routine='showOverview',
+                actor='computation', routine='view',
                 id = record.id,
+                type = record.getTableName(),
                 )
+            # no need for a redirection
+#            onclick = load(
+#                actor='materialsimulation', routine='showMaterialSimulation',
+#                id = matsim.id,
+#                type = matsim.getTableName(),
+#                )
             )
         return link
     def getDescription(record):

@@ -94,23 +94,6 @@ class Actor(base):
             load(actor="analysis/analysiswizard"))
         #return director.retrieveVisual('analysis/new', director = director)
 
-    def editAnalysisForm(self, director):
-        return director.retrieveVisual(
-                                        'analysis/edit-structure-form',
-                                        director    = director,
-                                        id          = self.inventory.id
-                                      )
-
-    def canceledit(self, director):
-        domaccess = self._domaccess(director)
-        id = self.inventory.id
-        if domaccess.isTransient(id=id):
-            s = domaccess.getAtomicStructure(id)
-            record = domaccess.orm(s)
-            domaccess.removeTransient(record=record)
-            domaccess.orm.destroy(s)
-        return self.showListView(director)
-
 
     def delete(self, director):
         domaccess = self._domaccess(director)
@@ -147,67 +130,14 @@ class Actor(base):
         domaccess.db.updateRecord(record)
         
         return self.showListView(director)
-
-
-    def debug_overview(self, director):
-        p       = lc.page()
-        doc     = p.document(id='main-display-area')
-        doc.add(self.createOverview(director))
-        return p
-
-
-    def showOverview(self, director):
-        doc = self.createOverview(director)
-        return select(id='main-display-area').replaceContent(doc)
     
-        
-    def showDetailsview(self, director):
-        doc = self.createDetailsview(director)
-        return select(id='main-display-area').replaceContent(doc)
-    
-        
-    def createOverview(self, director):
+
+    def showMaterialSimulation(self, director):
+        actor = 'computation'
+        routine = 'view'
         id = self.inventory.id
-        domaccess = self._domaccess(director)
-        
-        if not domaccess.isConstructued(id=id):
-            # structure not ready
-            doc = self.editAtomicStructureForm(director)
-            
-        else:
-            # structure good
-            doc = director.retrieveVisual(
-                'analysis/overview',
-                director  = director,
-                id        = self.inventory.id)
-            
-        return doc
-
-
-    def createDetailsview(self, director):
-        id = self.inventory.id
-        domaccess = self._domaccess(director)
-        
-        if not domaccess.isConstructued(id=id):
-            # structure not ready
-            doc = self.editAtomicStructureForm(director)
-            
-        else:
-            # structure good
-            doc = director.retrieveVisual(
-                'analysis/viewdetails',
-                director  = director,
-                id        = self.inventory.id)
-            
-        return doc
-
-
-    def changeDescriptionAndUpdateAtomicStructureView(self, director):
-        id = self.inventory.id
-        description = self.inventory.description
-        domaccess = self._domaccess(director)
-        domaccess.setDescription(id, description)
-        return self.showOverview(director)
+        type = self.inventory.type
+        return director.redirect(actor=actor, routine=routine, id=id, type=type)
 
 
     def _domaccess(self, director):
