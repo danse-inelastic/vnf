@@ -41,7 +41,7 @@ def visual(uploadid=None, structureid=None, director=None):
 
     uploader.oncomplete = lc.load(
         actor='atomicstructure/uploadsqe', routine='onUpload',
-        id = uploadid)
+        structureid=structureid, uploadid = uploadid)
 
     doc.add(uploader)
 
