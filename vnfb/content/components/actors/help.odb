@@ -87,7 +87,7 @@ class Actor(base):
         hdoc = lc.htmldocument(id='help-container')
         hdoc.text = [
             '<iframe src="%s"' % page,
-            'width="900" height="500" frameborder="0">',
+            'width="990" height="500" frameborder="0">',
             '</iframe>',
             ]
 

@@ -309,11 +309,11 @@ opacity:0.5;
 
 /* help */
 #help{
-    width: 930;
+    width: 1000;
     z-index: 200;
 }
 #help-container{
-    width: 930;
+    width: 1000;
     height: 510;
 }
 
