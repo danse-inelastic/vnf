@@ -26,13 +26,13 @@ class Actor(base):
 
         import luban.inventory
 
-        structid = luban.inventory.str('structid')
+        structureid = luban.inventory.str('structureid')
         uploadid = luban.inventory.str('uploadid')
 
 
     def onUpload(self, director):
         '''
-        structid: atomic structure id
+        structureid: atomic structure id
         uploadid: upload it
         '''
         
@@ -68,19 +68,22 @@ class Actor(base):
         from vnfb.dom.material_simulations.SQE import SQETable
         sqe = clerk.insertNewOwnedRecord(SQETable)
         #
-        sqe.matter = self.inventory.structid
+        sqe.matter = self.inventory.structureid
         db.updateRecord(sqe)
 
         # copy upload to new path
         ext = os.path.splitext(found)[-1]
         filename='data'+ext
-        newpath = director.dds.abspath(record, filename=filename)
+        newpath = director.dds.abspath(sqe, filename=filename)
+        newdir = os.path.dirname(newpath)
+        if not os.path.exists(newdir):
+            os.makedirs(newdir)
         import shutil
         shutil.copyfile(found, newpath)
-
+        
         return load(
             actor='atomicstructure', routine='showOverview',
-            id = self.inventory.structid,
+            id = self.inventory.structureid,
             )
 
 
