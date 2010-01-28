@@ -231,6 +231,7 @@ div.body {
     margin: 0;
     padding: 0.5em 20px 20px 20px;
     max-height: 1200;
+    min-height: 450px;
     /* overflow: scroll; */
 }
 
@@ -240,6 +241,10 @@ div.bodywrapper {
 }
 
 div.body a {
+    min-height: 3;
+    color: darkgreen;
+}
+div.body a:hover {
     text-decoration: underline;
 }
 
