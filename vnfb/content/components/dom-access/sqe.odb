@@ -52,7 +52,8 @@ def read(sqe, director):
     # nc
     ncfile = SQETable.ncfile
     try:
-        dds.make_available(record, files=[ncfile])
+        if not dds.is_available(record, files=[ncfile]):
+            dds.make_available(record, files=[ncfile])
     except:
         pass
     else:
@@ -63,7 +64,10 @@ def read(sqe, director):
 
     # histogram
     histfile = SQETable.histogramh5
-    dds.make_available(record, files=[histfile])
+    if not dds.is_available(record, files=[histfile]):
+        dds.make_available(record, files=[histfile])
+    if not os.path.exists(dds.abspath(record, histfile)):
+        return
     from histogram.hdf import load, utils
     entry = utils.getOnlyEntry(histfile)
     h = hh.load(histfile, entry)
