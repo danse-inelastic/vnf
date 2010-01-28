@@ -14,6 +14,7 @@ Links
 
 * :ref:`Overview <vnfoverview>`
 * :ref:`User Guide <vnfuserguide>`
+* :ref:`Developer Guide <vnfdeveloperguide>`
 
 ..   discussion
 
