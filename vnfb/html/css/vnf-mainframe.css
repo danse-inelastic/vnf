@@ -152,6 +152,7 @@ body {
     background-color: transparent;
     border-color: transparent;
     border: none;
+    color: green;
 }
 /* so that we can have new hover effect */
 #main-portlet div.luban-portletitem-content:hover{
