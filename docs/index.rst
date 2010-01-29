@@ -14,8 +14,11 @@ Links
 
 * :ref:`Overview <vnfoverview>`
 * :ref:`User Guide <vnfuserguide>`
-* :ref:`Tutorials <vnftutorials>`
+* :ref:`Tutorials for Users <vnftutorials-users>`
+* :ref:`Tutorials for Developers <vnftutorials-dev>`
 * :ref:`Developer Guide <vnfdeveloperguide>`
+   tutorials-users
+   tutorials-dev
 
 ..   discussion
 
