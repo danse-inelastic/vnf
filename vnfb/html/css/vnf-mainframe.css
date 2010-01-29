@@ -148,11 +148,12 @@ body {
 }
 
 /* override the existing hover effect */
-.luban-portletitem-content a:hover {
+.luban-portletitem-content a.luban-portletitem:hover {
     background-color: transparent;
     border-color: transparent;
     border: none;
     color: green;
+    cursor: pointer;
 }
 /* so that we can have new hover effect */
 #main-portlet div.luban-portletitem-content:hover{

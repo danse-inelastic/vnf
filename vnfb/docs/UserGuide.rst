@@ -9,7 +9,7 @@ Contents:
 
    UserGuide-Overview
    UserGuide-atomicstructures
-
+   
 ..   discussion
 
 
