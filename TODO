@@ -1,6 +1,7 @@
 High priority
 -------------
- * check fcc ni simulation. make sure one end-to-end work flow works
+ * phonons data object: read/write different formats...  need to think
+   of how make_available can work better for multiple data formats...
  * analytical sqe model
  * DetectorSytemFromXML component
  * Nuetron recorder, player
@@ -33,6 +34,8 @@ Neutron experiment
 ------------------
  * revise neutron experiment wizard (to make it more graphic and more
    intuitive)
+* fixed the bug that happens when selecting neutron storage and there
+  is no storage records in the system
 
 
 Atomicstructure
