@@ -14,7 +14,7 @@ There are two ways to create a new simulation. The first way is to go to the
 “Simulations” section, click on the “New” green cross like button.
 
 
-.. figure:: images/qe-phonon-dos/picture.png
+.. figure:: images/qe-phonon-dos/1.sim-table.png
    :width: 720px
 
    *Fig. 1 Material simulations table*
@@ -22,24 +22,24 @@ There are two ways to create a new simulation. The first way is to go to the
 Table of simulation packages will be displayed with short description. You will
 need to click on the “Quantum Espresso” link.
 
-.. figure:: images/qe-phonon-dos/picture.png
-   :width: 720px
+.. figure:: images/qe-phonon-dos/2.vnf-packages.png
+   :width: 450px
 
    *Fig. 2 Simulation packages supported by VNF*
 
 The “Create New Simulation” page will be displayed. You can first select the
 atomic structure.
 
-.. figure:: images/qe-phonon-dos/picture.png
-   :width: 720px
+.. figure:: images/qe-phonon-dos/3.select-structure.png
+   :width: 450px
 
    *Fig. 3 Select atomic structure*
 
 You can select the atomic structure from the list or create a new one from the
 “Atomic Structure” section.
 
-.. figure:: images/qe-phonon-dos/picture.png
-   :width: 720px
+.. figure:: images/qe-phonon-dos/4.list-structure.png
+   :width: 600px
 
    *Fig. 4 List of atomic structures to select from*
 
@@ -56,8 +56,8 @@ This tutorial covers only “Multiple Phonon” simulations. You then need to se
 the server on which to run the simulation. The star (*) sign specifies the required
 fields. Once you set the required fields, click on “Create New Simulation” button.
 
-.. figure:: images/qe-phonon-dos/picture.png
-   :width: 720px
+.. figure:: images/qe-phonon-dos/5.sim-create.png
+   :width: 450px
 
    *Fig. 5 Create new simulation*
 
@@ -281,13 +281,13 @@ Results”). The results will be packed in tarball and you can see its content:
 .. figure:: images/qe-phonon-dos/picture.png
    :width: 720px
 
-   *Fig. 25 PH results tar ball*
+   *Fig. 26 PH results tar ball*
 
 
 .. figure:: images/qe-phonon-dos/picture.png
    :width: 720px
 
-   *Fig. 26 PH output file*
+   *Fig. 27 PH output file*
 
 Running the Q2R Task
 
@@ -297,7 +297,7 @@ the configuration input for it. Q2R and MATDYN tasks are postprocessing tasks
 .. figure:: images/qe-phonon-dos/picture.png
    :width: 720px
 
-   *Fig. 27 Add Q2R configuration input*
+   *Fig. 28 Add Q2R configuration input*
 
 The form will be displayed where you can set acoustic sum rules. This parameter 
 will be different for metals and dielectrics.
@@ -305,7 +305,7 @@ will be different for metals and dielectrics.
 .. figure:: images/qe-phonon-dos/picture.png
    :width: 720px
 
-   *Fig. 28 Q2R configuration input form*
+   *Fig. 29 Q2R configuration input form*
 
 When you click on “Generate Input Configuration” the configuration form is
 displayed and you can edited the configuration text.
@@ -313,14 +313,14 @@ displayed and you can edited the configuration text.
 .. figure:: images/qe-phonon-dos/picture.png
    :width: 720px
 
-   *Fig. 29 Q2R configuration input form*
+   *Fig. 30 Q2R configuration input form*
 
 When the input is created we are ready to run task
 
 .. figure:: images/qe-phonon-dos/picture.png
    :width: 720px
 
-   *Fig. 30 Running Q2R task and retrieving results*
+   *Fig. 31 Running Q2R task and retrieving results*
 
 When the job is completed you can request the results. The results will be packed 
 in tarball and you can see its content:
@@ -328,7 +328,7 @@ in tarball and you can see its content:
 .. figure:: images/qe-phonon-dos/picture.png
    :width: 720px
 
-   *Fig. 31 Q2R results tarball.*
+   *Fig. 32 Q2R results tarball.*
 
 Force constants file (``default.fc``) will be used by the MATDYN task to create
 the phonon DOS, so make sure that it is present in the results.
@@ -342,7 +342,7 @@ file default.fc you can create a MATDYN task and set the configuration input for
 .. figure:: images/qe-phonon-dos/picture.png
    :width: 720px
 
-   *Fig. 32 Add MATDYN configuration input*
+   *Fig. 33 Add MATDYN configuration input*
 
 Here you can have two options:
 
@@ -354,14 +354,14 @@ For purpose of this tutorial we will pick the “Phonon Density of States”.
 .. figure:: images/qe-phonon-dos/picture.png
    :width: 720px
 
-   *Fig. 33 Phonon Density of States*
+   *Fig. 34 Phonon Density of States*
 
 The form will be displayed where you can set size of the uniform Q-point grid.
 
 .. figure:: images/qe-phonon-dos/picture.png
    :width: 720px
 
-   *Fig. 34 MATDYN configuration input form for setting Q-point grid*
+   *Fig. 35 MATDYN configuration input form for setting Q-point grid*
 
 When you click on “Generate Input Configuration” the configuration form is
 displayed and you can edited the configuration text.
@@ -369,14 +369,14 @@ displayed and you can edited the configuration text.
 .. figure:: images/qe-phonon-dos/picture.png
    :width: 720px
 
-   *Fig. 35 MATDYN configuration input form*
+   *Fig. 36 MATDYN configuration input form*
 
 When the input is created we are ready to run task.
 
 .. figure:: images/qe-phonon-dos/picture.png
    :width: 720px
 
-   *Fig. 36 Running MATDYN task and retrieving results*
+   *Fig. 37 Running MATDYN task and retrieving results*
 
 When the job is completed you can request the results. The results will be
 packed in tarball and you can see its content:
@@ -384,7 +384,7 @@ packed in tarball and you can see its content:
 .. figure:: images/qe-phonon-dos/picture.png
    :width: 720px
 
-   Fig. 37 MATDYN results tar ball with phonon DOS file (``matdyn.dos``). 
+   Fig. 38 MATDYN results tar ball with phonon DOS file (``matdyn.dos``).
 
 At this point we received phonon DOS (``matdyn.dos``) that can later be used to draw a plot.
 
@@ -400,7 +400,7 @@ button.
 .. figure:: images/qe-phonon-dos/picture.png
    :width: 720px
 
-   *Fig. 38 Simulation view after all of the tasks are completed. Time to analyze results!*
+   *Fig. 39 Simulation view after all of the tasks are completed. Time to analyze results!*
 
 The Results panel will displayed that consists of two parts:
 
@@ -416,7 +416,7 @@ Clicking this button will convert matdyn.dos to IDS (Inelastic Data Storage) for
 .. figure:: images/qe-phonon-dos/picture.png
    :width: 720px
 
-   *Fig. 39 Results view page*
+   *Fig. 40 Results view page*
 
 Wuala! The phonon DOS is created! Go to the simulation view page and click on the
 link for the Atomic Structure field. In the subsection “Phonons” you will see the
@@ -425,5 +425,5 @@ plot for density of states (DOS).
 .. figure:: images/qe-phonon-dos/picture.png
    :width: 720px
 
-   *Fig. 40 Phonon DOS on the Atomic Structures page*
+   *Fig. 41 Phonon DOS on the Atomic Structures page*
 
