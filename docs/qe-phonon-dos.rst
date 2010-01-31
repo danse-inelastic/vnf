@@ -39,7 +39,7 @@ You can select the atomic structure from the list or create a new one from the
 “Atomic Structure” section.
 
 .. figure:: images/qe-phonon-dos/4.list-structure.png
-   :width: 600px
+   :width: 720px
 
    *Fig. 4 List of atomic structures to select from*
 
@@ -62,7 +62,7 @@ fields. Once you set the required fields, click on “Create New Simulation” b
    *Fig. 5 Create new simulation*
 
 
-.. figure:: images/qe-phonon-dos/picture.png
+.. figure:: images/qe-phonon-dos/6.sim-view.png
    :width: 720px
 
    *Fig. 6 Simulation view page*
@@ -87,7 +87,7 @@ by clicking on the structure id in the “Atomic Structure” field.
 The second way to create the new simulation is to go to “Atomic Structures”
 section on the main panel and choose the atomic structure.
 
-.. figure:: images/qe-phonon-dos/picture.png
+.. figure:: images/qe-phonon-dos/7.structure-table.png
    :width: 720px
 
    *Fig. 7 Choose atomic structure for the simulation*
@@ -95,7 +95,7 @@ section on the main panel and choose the atomic structure.
 Then go to “Phonons” subsection and in the bottom click on the link Start a 
 new phonon computation.
 
-.. figure:: images/qe-phonon-dos/picture.png
+.. figure:: images/qe-phonon-dos/8.phonon-computation.png
    :width: 720px
 
    *Fig. 8 Start a new phonon computation*
@@ -103,7 +103,7 @@ new phonon computation.
 The page will be displayed where you can select computation engine to calculate
 phonon DOS or phonon dispersion.
 
-.. figure:: images/qe-phonon-dos/picture.png
+.. figure:: images/qe-phonon-dos/9.select-computation.png
    :width: 720px
 
    *Fig. 9 Select a computation engine*
@@ -114,22 +114,22 @@ Create Settings Configuration
 To set the simulation environment on the simulation view page click on Add link
 for “Simulation Settings”. You can choose the number of processors.
 
-.. figure:: images/qe-phonon-dos/picture.png
-   :width: 720px
+.. figure:: images/qe-phonon-dos/10.settings-create.png
+   :width: 450px
 
    *Fig 10 Create Settings Configuration page*
 
 
-.. figure:: images/qe-phonon-dos/picture.png
-   :width: 720px
+.. figure:: images/qe-phonon-dos/11.settings-hover.png
+   :width: 450px
 
    *Fig. 11 Simulation Settings is created*
 
 If you want to change the number of processors or delete the configuration, you
 can go to the Settings Configuration page and click on “Edit” or “Delete” button.
 
-.. figure:: images/qe-phonon-dos/picture.png
-   :width: 720px
+.. figure:: images/qe-phonon-dos/12.settings-view.png
+   :width: 450px
 
    *Fig. 12 Settings Configuration view*
 
@@ -142,16 +142,16 @@ In most cases you will need to run PW task first, and then run other tasks
 depending on the purpose of your simulation. To create the new simulation task,
 click on Create New Task link in “Simulation Tasks” subsection.
 
-.. figure:: images/qe-phonon-dos/picture.png
-   :width: 720px
+.. figure:: images/qe-phonon-dos/13.task-create.png
+   :width: 200px
 
    *Fig. 13 Create New Task field*
 
 Each task is required to have one configuration input. To set the input for the 
 task click on Add link.
 
-.. figure:: images/qe-phonon-dos/picture.png
-   :width: 720px
+.. figure:: images/qe-phonon-dos/14.pw-input-add.png
+   :width: 400px
 
    *Fig. 14 Add PW configuration input*
 
@@ -162,8 +162,8 @@ task click on Add link.
 
 When you click on the link, the form for PW input is displayed
 
-.. figure:: images/qe-phonon-dos/picture.png
-   :width: 720px
+.. figure:: images/qe-phonon-dos/15.pw-input-form.png
+   :width: 450px
 
    *Fig. 15 PW input form*
 
@@ -178,23 +178,23 @@ in the simulation. Feel free to copy and paste text that you want to use for the
 PW configuration, there are no further bindings of the atomic structure to the
 configuration input.
 
-.. figure:: images/qe-phonon-dos/picture.png
-   :width: 720px
+.. figure:: images/qe-phonon-dos/16.pw-input-generated.png
+   :width: 450px
 
    *Fig. 16 PW configuration input form*
 
 When the configuration input is created you can always edit it or delete.
 
-.. figure:: images/qe-phonon-dos/picture.png
-   :width: 720px
+.. figure:: images/qe-phonon-dos/17.pw-input-view.png
+   :width: 450px
 
    *Fig. 17 Configuration input view*
 
 Running Simulation Task
 -----------------------
 
-.. figure:: images/qe-phonon-dos/picture.png
-   :width: 720px
+.. figure:: images/qe-phonon-dos/18.pw-run-task.png
+   :width: 400px
 
    *Fig. 18 PW configuration input is created. Ready to run the task!*
 
@@ -213,8 +213,8 @@ and too few K-points which will affect the parallelization of the problem. To
 see what's wrong, just retrieve results and see the output and log files. To 
 see all jobs, click on the link All Jobs
 
-.. figure:: images/qe-phonon-dos/picture.png
-   :width: 720px
+.. figure:: images/qe-phonon-dos/19.pw-job-submitted.png
+   :width: 200px
 
    *Fig. 19 Job is submitted, results are not requested yet*
 
@@ -225,15 +225,15 @@ When the simulation job is completed it is nice to get the results of the
 simulation :). To retrieve the results, just click on the button “Check”. 
 The status of the results packing will be displayed
 
-.. figure:: images/qe-phonon-dos/picture.png
-   :width: 720px
+.. figure:: images/qe-phonon-dos/20.pw-job-completed.png
+   :width: 420px
 
    *Fig. 20 Retrieving simulation results*
 
 Here is the content of the results tarball:
 
-.. figure:: images/qe-phonon-dos/picture.png
-   :width: 720px
+.. figure:: images/qe-phonon-dos/21.pw-tarball.png
+   :width: 450px
 
    *Fig. 21 PW results tar ball*
 
@@ -247,30 +247,30 @@ Running the PH Task
 Once the PW task is successfully completed you can create PH task and set
 configuration input for it.
 
-.. figure:: images/qe-phonon-dos/picture.png
-   :width: 720px
+.. figure:: images/qe-phonon-dos/22.ph-input-add.png
+   :width: 600px
 
    *Fig. 22 Add PH configuration input*
 
 The form will be displayed where you can set the size of Q grid. All parameters 
 in this form are required.
 
-.. figure:: images/qe-phonon-dos/picture.png
-   :width: 720px
+.. figure:: images/qe-phonon-dos/23.ph-input-form.png
+   :width: 450px
 
    *Fig. 23 PH configuration input form*
 
 When you click on “Generate Input Configuration” the configuration form is displayed.
 As for PW input you can edited the configuration text.
 
-.. figure:: images/qe-phonon-dos/picture.png
-   :width: 720px
+.. figure:: images/qe-phonon-dos/24.ph-input-generated.png
+   :width: 450px
 
    *Fig. 24 PH configuration input form*
 
 When the input is created we are ready to run task.
 
-.. figure:: images/qe-phonon-dos/picture.png
+.. figure:: images/qe-phonon-dos/25.ph-job-completed.png
    :width: 720px
 
    *Fig. 25 Running PH task and retrieving results*
@@ -278,13 +278,13 @@ When the input is created we are ready to run task.
 When the job is completed you can request the results (see section “Retrieving
 Results”). The results will be packed in tarball and you can see its content:
 
-.. figure:: images/qe-phonon-dos/picture.png
-   :width: 720px
+.. figure:: images/qe-phonon-dos/26.ph-tarball.png
+   :width: 500px
 
    *Fig. 26 PH results tar ball*
 
 
-.. figure:: images/qe-phonon-dos/picture.png
+.. figure:: images/qe-phonon-dos/27.ph-output.png
    :width: 720px
 
    *Fig. 27 PH output file*
@@ -294,7 +294,7 @@ Running the Q2R Task
 Once the PH task is successfully completed, you can create a Q2R task and set 
 the configuration input for it. Q2R and MATDYN tasks are postprocessing tasks
 
-.. figure:: images/qe-phonon-dos/picture.png
+.. figure:: images/qe-phonon-dos/28.q2r-input-add.png
    :width: 720px
 
    *Fig. 28 Add Q2R configuration input*
@@ -302,22 +302,22 @@ the configuration input for it. Q2R and MATDYN tasks are postprocessing tasks
 The form will be displayed where you can set acoustic sum rules. This parameter 
 will be different for metals and dielectrics.
 
-.. figure:: images/qe-phonon-dos/picture.png
-   :width: 720px
+.. figure:: images/qe-phonon-dos/29.q2r-input-form.png
+   :width: 500px
 
    *Fig. 29 Q2R configuration input form*
 
 When you click on “Generate Input Configuration” the configuration form is
 displayed and you can edited the configuration text.
 
-.. figure:: images/qe-phonon-dos/picture.png
-   :width: 720px
+.. figure:: images/qe-phonon-dos/30.q2r-input-generated.png
+   :width: 500px
 
    *Fig. 30 Q2R configuration input form*
 
 When the input is created we are ready to run task
 
-.. figure:: images/qe-phonon-dos/picture.png
+.. figure:: images/qe-phonon-dos/31.q2r-job-completed.png
    :width: 720px
 
    *Fig. 31 Running Q2R task and retrieving results*
@@ -325,8 +325,8 @@ When the input is created we are ready to run task
 When the job is completed you can request the results. The results will be packed 
 in tarball and you can see its content:
 
-.. figure:: images/qe-phonon-dos/picture.png
-   :width: 720px
+.. figure:: images/qe-phonon-dos/32.q2r-tarball.png
+   :width: 500px
 
    *Fig. 32 Q2R results tarball.*
 
@@ -339,7 +339,7 @@ Running the MATDYN Task
 Once the Q2R task is successfully completed, and has created a force constants
 file default.fc you can create a MATDYN task and set the configuration input for it.
 
-.. figure:: images/qe-phonon-dos/picture.png
+.. figure:: images/qe-phonon-dos/33.matdyn-input-add.png
    :width: 720px
 
    *Fig. 33 Add MATDYN configuration input*
@@ -351,29 +351,29 @@ Here you can have two options:
 
 For purpose of this tutorial we will pick the “Phonon Density of States”.
 
-.. figure:: images/qe-phonon-dos/picture.png
-   :width: 720px
+.. figure:: images/qe-phonon-dos/34.matdyn-dos.png
+   :width: 500px
 
    *Fig. 34 Phonon Density of States*
 
 The form will be displayed where you can set size of the uniform Q-point grid.
 
-.. figure:: images/qe-phonon-dos/picture.png
-   :width: 720px
+.. figure:: images/qe-phonon-dos/35.matdyn-input-form.png
+   :width: 500px
 
    *Fig. 35 MATDYN configuration input form for setting Q-point grid*
 
 When you click on “Generate Input Configuration” the configuration form is
 displayed and you can edited the configuration text.
 
-.. figure:: images/qe-phonon-dos/picture.png
-   :width: 720px
+.. figure:: images/qe-phonon-dos/36.matdyn-input-generated.png
+   :width: 500px
 
    *Fig. 36 MATDYN configuration input form*
 
 When the input is created we are ready to run task.
 
-.. figure:: images/qe-phonon-dos/picture.png
+.. figure:: images/qe-phonon-dos/37.matdyn-job-completed.png
    :width: 720px
 
    *Fig. 37 Running MATDYN task and retrieving results*
@@ -381,7 +381,7 @@ When the input is created we are ready to run task.
 When the job is completed you can request the results. The results will be
 packed in tarball and you can see its content:
 
-.. figure:: images/qe-phonon-dos/picture.png
+.. figure:: images/qe-phonon-dos/38.matdyn-tarball.png
    :width: 720px
 
    Fig. 38 MATDYN results tar ball with phonon DOS file (``matdyn.dos``).
@@ -397,7 +397,7 @@ get the results tarballs retrieved for each of the tasks and use your favorite
 tools to analyze data. To do our results analysis of simulation, click on “Analyze”
 button.
 
-.. figure:: images/qe-phonon-dos/picture.png
+.. figure:: images/qe-phonon-dos/39.sim-view-completed.png
    :width: 720px
 
    *Fig. 39 Simulation view after all of the tasks are completed. Time to analyze results!*
@@ -413,7 +413,7 @@ To see the phonon DOS on the atomic structures page, you need to create the phon
 DOS explicitly on the results page by clicking on “Create Phonon DOS” button.
 Clicking this button will convert matdyn.dos to IDS (Inelastic Data Storage) format.
 
-.. figure:: images/qe-phonon-dos/picture.png
+.. figure:: images/qe-phonon-dos/40.results-view.png
    :width: 720px
 
    *Fig. 40 Results view page*
@@ -422,7 +422,7 @@ Wuala! The phonon DOS is created! Go to the simulation view page and click on th
 link for the Atomic Structure field. In the subsection “Phonons” you will see the
 plot for density of states (DOS).
 
-.. figure:: images/qe-phonon-dos/picture.png
+.. figure:: images/qe-phonon-dos/41.phonon-dos.png
    :width: 720px
 
    *Fig. 41 Phonon DOS on the Atomic Structures page*
