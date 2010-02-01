@@ -57,7 +57,7 @@ class Builder(base):
         if 'outputmovie.xyz' in inputFileContents:
             self.zipXyzTrajectory = True
         # scan for string 'output history' and signal conversion if found
-        if 'output history' in inputFileContents:
+        if 'output his' in inputFileContents:
             self.convertHistoryFile = True
         if 'eigenvectors' in inputFileContents:
             self.createPhononModesFile = True
@@ -96,7 +96,7 @@ class Builder(base):
             ]
         if self.convertHistoryFile:
             cmds += [
-            'postProcessGulp.py -convertHistoryFile=True -historyFile=output.history -ncFile=output.nc',
+            'postProcessGulp.py -convertHistoryFile=True -historyFile=gulp.his -ncFile=gulp.nc',
                      ] 
         if self.serializePhononArrays:
             cmds += [

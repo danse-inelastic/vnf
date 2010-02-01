@@ -70,6 +70,7 @@ class DistributedDataStorage(base):
         return self._copy(path1, path2, server=server)
 
 
+    # do we assume this is a sym link from filename1 to filename2?
     def symlink(self, dbrecord1, filename1, dbrecord2, filename2, server=None):
         path1 = self.path(dbrecord1, filename1)
         path2 = self.path(dbrecord2, filename2)

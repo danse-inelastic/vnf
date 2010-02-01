@@ -65,9 +65,8 @@ class Retriever(base):
         if 'molecular dynamics' in runtype:
             doOutputFiles = gulpSettings.getDOAndOutputFile()
             filesInJobDir = doOutputFiles['vsat.Motion']
-            self._save_results(computation, job, filesInJobDir, motion)
-#        for key,val in doOutputFiles.iteritems():
-#            self._save_result(computation, job, va)
+            self._save_and_move_results(computation, job, filesInJobDir, motion)
+            #self._save_results(computation, job, filesInJobDir, motion)
 
 def retriever():
     return Retriever('gulpSettings')
