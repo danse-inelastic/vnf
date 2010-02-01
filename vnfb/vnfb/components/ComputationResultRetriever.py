@@ -160,6 +160,73 @@ class ComputationResultRetriever(Component):
         self._mark_result_as_saved(computation, filenameinjobdir)
         return
 
+    def _symlink_results(self, computation, job, files, result_holder, name=None):
+        '''symlink computation result data files to a db record.
+
+        computation, job: the computation and the job db records
+        files: a list of file names or a dictionary of {filenameinjobdir: filenameinresultholder}
+        result_holder: the db record in which the result will be saved
+        name: name of this result in the result set (optional)
+        '''
+        # copy result file from job to the result holder
+        server = self.db.dereference(job.server)
+        filesisdict = isinstance(files, dict)
+        destinationFiles = []
+        for f in files:
+            finjobdir = f
+            if filesisdict:
+                finresultholder = files[f]
+            else:
+                finresultholder = f
+            destinationFiles.append(finresultholder)
+            #self.dds.copy(job, finjobdir, result_holder, finresultholder, server)
+            self.dds.symlink(job, finjobdir, result_holder, finresultholder, server)
+            
+        # remember where it is (i.e. on octopod)
+        self.dds.remember(result_holder, server)
+        
+        # add the result to the result list
+        if not name:
+            name = result_holder.getTableName()
+
+        computation.results.add(result_holder, self.db, name=name)
+        for f in files:
+            self._mark_result_as_saved(computation, f)
+        return
+
+    def _save_and_move_results(self, computation, job, files, result_holder, name=None):
+        '''symlink computation result data files to a db record.
+
+        computation, job: the computation and the job db records
+        files: a list of file names or a dictionary of {filenameinjobdir: filenameinresultholder}
+        result_holder: the db record in which the result will be saved
+        name: name of this result in the result set (optional)
+        '''
+        # copy result file from job to the result holder
+        server = self.db.dereference(job.server)
+        filesisdict = isinstance(files, dict)
+        destinationFiles = []
+        for f in files:
+            finjobdir = f
+            if filesisdict:
+                finresultholder = files[f]
+            else:
+                finresultholder = f
+            destinationFiles.append(finresultholder)
+            #self.dds.copy(job, finjobdir, result_holder, finresultholder, server)
+            self.dds.move(job, finjobdir, result_holder, finresultholder, server)
+            
+        # remember where it is (i.e. on octopod)
+        self.dds.remember(result_holder, server)
+        
+        # add the result to the result list
+        if not name:
+            name = result_holder.getTableName()
+
+        computation.results.add(result_holder, self.db, name=name)
+        for f in files:
+            self._mark_result_as_saved(computation, f)
+        return
 
     def _save_results(self, computation, job, files, result_holder, name=None):
         '''save computation result data files to a db record.
