@@ -1,0 +1,28 @@
+(x) Relaxation (fixed lattice parameters) - 'relax'
+( ) Variable cell relaxation - 'vc-relax'
+
+{relax}
+- Default parameters are generated
+
+{vc-relax}
+- Default parameters are generated
+
+{Default values for both}
+IONS
+	ion_dynamics = 'bfgs'
+	pot_extrapolation = 'atomic'
+	wfc_extrapolation = 'none'
+	upscale = 10.0
+	bfgs_ndim = 1
+	trust_radius_max = 0.8
+	trust_radius_min = 0.001
+
+CONTROL
+	forc_conv_thr = 0.001
+	etot_conv_thr = 0.0001
+
+{Default values for relax}
+
+{Default values for vc-relax}
+CELL
+	cell_dynamics = 'bfgs'
