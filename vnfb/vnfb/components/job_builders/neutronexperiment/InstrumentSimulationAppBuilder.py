@@ -48,6 +48,7 @@ class Builder(base):
     def onInstrumentConfiguration(self, configuration):
         
         components = configuration.components.dereference(self.db)
+        components = [c for n, c in components]
         
         self._write( 'import mccomponents.pyre_support' )
         self._write( 'from mcni.pyre_support.Instrument import Instrument as base' )
@@ -63,7 +64,7 @@ class Builder(base):
         self._write( 'from mcni.pyre_support import facility, componentfactory as component')
 
         sequence = []
-        for name, component in components:
+        for component in components:
             self.dispatch( component )
             name = component.componentname
             # for sample, the name is alwasy "sample"
@@ -87,7 +88,12 @@ class Builder(base):
 
         self.cmdline_opts[ 'sequence' ] = sequence
 
-        for name, component in components:
+        # calculate absolute coordinates of scatterers
+        from vnfb.utils.neutron_experiment_simulations.geometry \
+            import calculateComponentAbsoluteCoordinates
+        calculateComponentAbsoluteCoordinates(components)
+
+        for component in components:
             reference = component.referencename
             if reference is not None and reference != '' and reference != 'absolute':
                 raise NotImplementedError, 'reference=%r' % reference
