@@ -118,6 +118,8 @@ class MasterTableFactory(object):
         try:
             filter = self.compilefilter(filter_expr_tocompile)
         except:
+            import traceback
+            self.debug.log(traceback.format_exc())
             raise FilterSyntaxError, filter_expr_tocompile
         
         self.debug.log('compiled filter: %s' % filter)
