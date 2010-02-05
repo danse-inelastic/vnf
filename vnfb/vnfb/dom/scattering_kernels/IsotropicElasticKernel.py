@@ -23,6 +23,7 @@ class IsotropicElasticKernel(base):
 
     def customizeLubanObjectDrawer(self, drawer):
         drawer.sequence = ['properties']
+        drawer.mold.sequence = ['scattering_length']
         return
     
     pass 
