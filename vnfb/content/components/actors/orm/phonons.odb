@@ -72,16 +72,27 @@ class Actor(base):
         record = orm(obj)
 
         # the document to build
-        doc = lc.document(title='phonons %s' % record.id)
+        title='phonons %s' % record.id
+        short_description = record.short_description
+        if short_description:
+            title += ': %s' % short_description
+        doc = lc.document(title=title)
 
         # link to the computation
-        origin = record.getOrigin(db)
-        origin_link = lc.link(
-            label='computed from %s %s' % (origin.getTableName(), origin.id),
-            onclick = load(actor='computation', routine='view',
-                           type = origin.getTableName(), id = origin.id)
-            )
-        doc.add(origin_link)
+        try:
+            origin = record.getOrigin(db)
+        except:
+            import traceback
+            msg = traceback.format_exc()
+            self._debug.log(msg)
+            origin = None
+        if origin:
+            origin_link = lc.link(
+                label='computed from %s %s' % (origin.getTableName(), origin.id),
+                onclick = load(actor='computation', routine='view',
+                               type = origin.getTableName(), id = origin.id)
+                )
+            doc.add(origin_link)
         
         # plot
         p = self._createPlot1(obj, director)
