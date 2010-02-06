@@ -106,6 +106,9 @@ class Builder(base):
             cmds += [
             'postProcessGulp.py -historyFile=output.history -ncFile=output.nc',
                      ] 
+        # delete the enormous history file
+        if os.path.exists('gulp.nc'):
+            cmds += ['rm gulp.his']
         script = self.shscriptname
         path = self._path(script)
         open(path, 'w').write('\n'.join(cmds))
