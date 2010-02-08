@@ -678,13 +678,15 @@ class MasterTableFactory(object):
 class FilterSyntaxError(Exception): pass
 
 
-def filtercompiler(measures, measure2dbcol):
+def filtercompiler(measures, measure2dbcol, model=None):
     '''create a compiler that compiles filter expression entered by users to
     a db query expression.
 
     measures: measures that can be used in user filtering expression. should be a iterable
     measure2dbcol: mapping dictionary to map measure name (used in user filtering expression)
         to db col name.
+    model: collection of meta data of measures. for example, model.id must be a descriptor
+        describing the id column of the master table. actually this can be luban.content.table.Model instance
     '''
     def compilefilter(filter_expr):
         if not filter_expr: return
@@ -695,7 +697,9 @@ def filtercompiler(measures, measure2dbcol):
         context = {}
         for measure in measures:
             dbcol = measure2dbcol.get(measure) or measure
-            context[measure] = filtermeasure(dbcol)
+            measuredescriptor = model and getattr(model, measure)
+            measuretype = measuredescriptor and measuredescriptor.type
+            context[measure] = filtermeasure(dbcol, type=measuretype)
             continue
         context['expr2dbsyntax'] = expr2dbsyntax
         code = 'expr2dbsyntax(%s)' % filter_expr

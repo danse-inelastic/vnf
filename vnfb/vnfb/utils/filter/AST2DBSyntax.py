@@ -30,7 +30,7 @@ class AST2DBSyntax(object):
         v = expr.value
         v = v.replace('*', '%')
         measure = expr.measure
-        if measure.type == 'str':
+        if measure.type in ['str', 'link']:
             e = measure.name
         elif measure.type == 'date':
             e = "to_char(%s, '%s')" % (measure.name, self.dateformat)
