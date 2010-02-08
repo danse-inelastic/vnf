@@ -734,9 +734,9 @@ class MasterTableActor(base):
 
     def _init(self):
         super(MasterTableActor, self)._init()
-        si = self.inventory
-        self._debug.log('label=%s, filter_expr=%s, filter_key=%s, filter_value=%s' % (
-            si.label, si.filter_expr, si.filter_key, si.filter_value) )
+        # si = self.inventory
+        # self._debug.log('label=%s, filter_expr=%s, filter_key=%s, filter_value=%s' % (
+        #   si.label, si.filter_expr, si.filter_key, si.filter_value) )
         return
     
 
