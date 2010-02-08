@@ -14,22 +14,26 @@
 
 class measure:
 
-    def __init__(self, name):
+    def __init__(self, name, type='str'):
         self.name = name
+        self.type = type
         return
 
 
     def __eq__(self, s):
         factory = Equal
+        
+        # in some cases, == actually means "like"
+        # need a more robust implementation
         if isinstance(s, basestring):
             if s.find('*') != -1:
                 factory = Like
             
-        return factory(self.name, s)
+        return factory(self, s)
 
 
     def __str__(self):
-        return self.name
+        return "%s(%s)" % (self.name, self.type)
 
 
 class Operator(object):

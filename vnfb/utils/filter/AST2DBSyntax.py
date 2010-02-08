@@ -15,26 +15,38 @@
 class AST2DBSyntax(object):
 
 
+    dateformat = 'YYYY-MM-DD'
+
+
     def render(self, expr):
         return expr.identify(self)
 
 
     def onEqual(self, expr):
         return self._onCompareOperator(expr, '=')
+    
 
     def onLike(self, expr):
         v = expr.value
         v = v.replace('*', '%')
-        return '%s like %r' % (expr.measure, v)
+        measure = expr.measure
+        if measure.type == 'str':
+            e = measure.name
+        elif measure.type == 'date':
+            e = "to_char(%s, '%s')" % (measure.name, self.dateformat)
+        else:
+            raise NotImplementedError, 'type: %s' % measure.type
+        return '%s like %r' % (e, v)
 
 
     def _onCompareOperator(self, expr, op):
         return '%s %s %r' % (expr.measure, op, expr.value)
-
-
+    
+    
     def onAnd(self, expr):
         return self._onBinaryLogicalOperator(expr, 'and')
     
+
     def onOr(self, expr):
         return self._onBinaryLogicalOperator(expr, 'or')
 
@@ -61,6 +73,14 @@ def test():
     print renderer.render(parse('a==3 and b==4 and c==5', env))
     print renderer.render(parse('a==3 and b==4 or c==5', env))
     print renderer.render(parse('a==3 and (b==4 or c==5)', env))
+
+    # like
+    print renderer.render(parse('a=="*3*" and (b==4 or c==5)', env))
+
+    # date type
+    d = measure('d', type='date')
+    env['d'] = d
+    print renderer.render(parse('a=="*3*" and d=="*2010*"', env))
     return
 
 
