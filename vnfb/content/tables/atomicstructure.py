@@ -23,7 +23,7 @@ class model(Model):
     description = Model.descriptors.str(name='description')
     visualize = Model.descriptors.link(name='visualize')
     chemical_formula = Model.descriptors.str(name='chemical_formula')
-    created = Model.descriptors.str(name='created')
+    created = Model.descriptors.date(name='created')
 
     row_identifiers = ['id']
     

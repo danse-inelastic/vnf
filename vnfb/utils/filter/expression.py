@@ -14,7 +14,10 @@
 
 class measure:
 
-    def __init__(self, name, type='str'):
+    def __init__(self, name, type=None):
+        if type is None:
+            type = 'str'
+            
         self.name = name
         self.type = type
         return

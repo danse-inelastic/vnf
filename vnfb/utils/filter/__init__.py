@@ -12,10 +12,10 @@
 #
 
 
-def measure(name):
+def measure(name, **kwds):
     "create a measure to be used in a filter expression"
     from expression import measure
-    return measure(name)
+    return measure(name, **kwds)
 
 
 def parse(expr, context):
