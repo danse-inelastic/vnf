@@ -19,10 +19,11 @@
       <property name='forcefieldwizard'>off</property>
       <property name='main'>on</property>
       <property name='luban.weaver.web.prerenderer'>off</property>
-      <property name='MasterTableFactory'>off</property>
+      <property name='MasterTableFactory'>on</property>
       <property name='materialsimulation'>off</property>
       <property name='experiment-accessor'>off</property>
       <property name='experiment-table'>off</property>
+      <property name='atomicstructure'>off</property>
       <property name='atomicstructure-table'>off</property>
       <property name='job-table'>on</property>
       <property name='atomicstructure-accessor'>off</property>

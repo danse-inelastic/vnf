@@ -67,7 +67,7 @@ class Actor(base):
             # already labeled, skip
             if labelaccess.isLabeled(record, table, label): continue
 
-            labelaccess.createLabel(label=label, table=table, entity=record)
+            labelaccess.createLabel(label=label, targettable=table, entity=record)
             continue
         
         return

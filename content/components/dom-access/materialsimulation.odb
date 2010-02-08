@@ -89,62 +89,32 @@ class Accessor(base):
         if label:
             if filter: raise RuntimeError
             return self.makeLabeledQuery(label, table)
-        
-        sGP = db._tablemap.TableToSATable(global_pointer)
-        st = db._tablemap.TableToSATable(table)
 
-        try:
-            q = sqlalchemy.select(
-                [st.c.id.label('id'),
-                 st.c.short_description.label('short_description'),
-                 sGP.c.type.label('type'),
-                 st.c.date.label('date'),
-                 st.c.matter.label('matter'),
-                 st.c.globalpointer.label('gptr'),
-                 ],
-                st.c.globalpointer==sGP.c.id,
-                )
-        except:
-            import traceback
-            raise RuntimeError, 'Failed to select required columns from simulation table %s.\n'\
-                  'Original exception was:\n%s' % (table.getTableName(), traceback.format_exc())
+        q = self._select_simulation_withmatterdescription_clause(table, db)
         
         if filter:
             q = sqlalchemy.select([q.alias('matsim')], whereclause=filter)
+            
         return q
 
 
     def makeLabeledQuery(self, label, table):
         'create a query for a matter table with given filter'
         db = self.db
-        
-        sL = db._tablemap.TableToSATable(Label)
-        labelq = sqlalchemy.select(
-            [sL.c.entity.label('entity'),
-             sL.c.labelname.label('label'),
-             ],
-            whereclause="labelname='%s' and targettable='%s'" % (label, tablename))\
-            .alias('labelq')
-        
-        sGP = db._tablemap.TableToSATable(global_pointer)
-        st = db._tablemap.TableToSATable(table)
-        
-        q1 = sqlalchemy.select(
-            [labelq.c.entity.label('entity'),
-             sGP.c.type.label('type'),
-             ],
-            labelq.c.entity==sGP.c.id,
-            ).alias('q1')
+
+        labelq = self._select_labeled_entities_clause(label, tablename, db)
+        simq = self._select_simulation_withmatterdescription_clause(table, db)
+        simq = simq.alias('sims')
 
         q = sqlalchemy.select(
-            [st.c.id.label('id'),
-             st.c.short_description.label('short_description'),
-             q1.c.type.label('type'),
-             st.c.date.label('date'),
-             #st.c.matter.label('matter_gptr'),
-             st.c.globalpointer.label('gptr'),
+            [simq.c.id.label('id'),
+             simq.c.short_description.label('short_description'),
+             labelq.c.type.label('type'),
+             simq.c.date.label('date'),
+             simq.c.matter.label('matter'),
+             simq.c.gptr.label('gptr'),
              ],
-            st.c.globalpointer==q1.c.entity,
+            simq.c.gptr==labelq.c.entity,
             )
         
         return q
@@ -164,7 +134,115 @@ class Accessor(base):
         return tables + ormtables
 
 
+    def _select_labeled_entities_clause(self, name, type, db):
+        '''get the labeled entities for the given label (specified by name and type)
+
+        cols:
+          entity: global address of the entity
+          type: type of the entity
+        '''
+        sL = db._tablemap.TableToSATable(Label)
+        labelq = sqlalchemy.select(
+            [sL.c.entity.label('entity'),
+             sL.c.labelname.label('label'),
+             ],
+            whereclause="labelname='%s' and targettable='%s'" % (name, type))\
+            .alias('labelq')
+        
+        sGP = db._tablemap.TableToSATable(global_pointer)
+        
+        q1 = sqlalchemy.select(
+            [labelq.c.entity.label('entity'),
+             sGP.c.type.label('type'),
+             ],
+            labelq.c.entity==sGP.c.id,
+            ).alias('labeled')
+        
+        return q1
+
+
+    def _select_simulation_withmatterdescription_clause(self, table, db):
+        '''create a sqlalchemy select cluase for the the goven material simulation table
+
+        cols:
+          * id
+          * short_description
+          * type: type of the simulation (obtained from globaponter table)
+          * date
+          * matter: short_description of matter
+          * gptr
+        '''
+        simq = self._select_simulation_clause(table, db)
+        simq = simq.alias('simq')
+        
+        matterq = self._select_matter_clause(db)
+
+        q = sqlalchemy.select(
+            [simq.c.id.label('id'),
+             simq.c.short_description.label('short_description'),
+             simq.c.type.label('type'),
+             simq.c.date.label('date'),
+             simq.c.gptr.label('gptr'),
+             matterq.c.short_description.label('matter'),
+             ],
+            simq.c.matterid==matterq.c.id,
+            )
+        return q
+
+
+    def _select_matter_clause(self, db):
+        '''create a sqlalchemy select cluase for the atomicstructure(matter) table
+
+        columns:
+          * id
+          * short_description
+        '''
+        sM = db._tablemap.TableToSATable(StructureTable)
+        matterq = sqlalchemy.select(
+            [sM.c.short_description.label('short_description'),
+             sM.c.id.label('id'),
+             ]
+            ).alias('matterq')
+
+        return matterq
+
+
+    def _select_simulation_clause(self, table, db):
+        '''create a sqlalchemy select cluase for a material simulation table
+
+        cols:
+          * id
+          * short_description
+          * type: type of the simulation (obtained from globaponter table)
+          * date
+          * matterid
+          * gptr
+        '''
+
+        sGP = db._tablemap.TableToSATable(global_pointer)
+        st = db._tablemap.TableToSATable(table)
+
+        try:
+            simq = sqlalchemy.select(
+                [st.c.id.label('id'),
+                 st.c.short_description.label('short_description'),
+                 sGP.c.type.label('type'),
+                 st.c.date.label('date'),
+                 st.c.matter.label('matterid'),
+                 st.c.globalpointer.label('gptr'),
+                 ],
+                st.c.globalpointer==sGP.c.id,
+                )#.label('simq')
+        except:
+            import traceback
+            raise RuntimeError, 'Failed to select required columns from simulation table %s.\n'\
+                  'Original exception was:\n%s' % (table.getTableName(), traceback.format_exc())
+
+        return simq
+    
+
 from vnf.dom.Label import Label
+from vnfb.dom.AtomicStructure import StructureTable
 
 
 from dsaw.db.VersatileReference import global_pointer
