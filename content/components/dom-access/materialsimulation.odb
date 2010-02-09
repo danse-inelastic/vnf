@@ -141,24 +141,8 @@ class Accessor(base):
           entity: global address of the entity
           type: type of the entity
         '''
-        sL = db._tablemap.TableToSATable(Label)
-        labelq = sqlalchemy.select(
-            [sL.c.entity.label('entity'),
-             sL.c.labelname.label('label'),
-             ],
-            whereclause="labelname='%s' and targettable='%s'" % (name, type))\
-            .alias('labelq')
-        
-        sGP = db._tablemap.TableToSATable(global_pointer)
-        
-        q1 = sqlalchemy.select(
-            [labelq.c.entity.label('entity'),
-             sGP.c.type.label('type'),
-             ],
-            labelq.c.entity==sGP.c.id,
-            ).alias('labeled')
-        
-        return q1
+        from vnfb.utils.query.labels import select_labeled_entities_clause
+        return select_labeled_entities_clause(name, type, db).alias('labeled')
 
 
     def _select_simulation_withmatterdescription_clause(self, table, db):
@@ -197,14 +181,8 @@ class Accessor(base):
           * id
           * short_description
         '''
-        sM = db._tablemap.TableToSATable(StructureTable)
-        matterq = sqlalchemy.select(
-            [sM.c.short_description.label('short_description'),
-             sM.c.id.label('id'),
-             ]
-            ).alias('matterq')
-
-        return matterq
+        from vnfb.utils.query.atomicstructures import select_matter_clause
+        return select_matter_clause(db).alias('matterq')
 
 
     def _select_simulation_clause(self, table, db):
@@ -232,7 +210,7 @@ class Accessor(base):
                  st.c.globalpointer.label('gptr'),
                  ],
                 st.c.globalpointer==sGP.c.id,
-                )#.label('simq')
+                )
         except:
             import traceback
             raise RuntimeError, 'Failed to select required columns from simulation table %s.\n'\
@@ -240,10 +218,6 @@ class Accessor(base):
 
         return simq
     
-
-from vnf.dom.Label import Label
-from vnfb.dom.AtomicStructure import StructureTable
-
 
 from dsaw.db.VersatileReference import global_pointer
 import sqlalchemy

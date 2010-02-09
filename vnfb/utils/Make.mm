@@ -25,6 +25,7 @@ BUILD_DIRS = \
 	material_simulations \
         qecalcutils \
         qeparser \
+	query \
 	neutron_experiment_simulations \
         scripts \
 
