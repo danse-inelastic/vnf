@@ -216,9 +216,10 @@ class Actor(base):
         super(Actor, self).__init__(name)
         return
 
-columns = [ 'selected', 'id', 'description', 'type', 'matter', 'date']
+columns = [ 'selected', 'id', 'description', 'type', 'matter', 'created']
 measure2dbcol = {
     'description': 'short_description',
+    'created': 'date',
     }
 filtercols = columns[1:]
 
