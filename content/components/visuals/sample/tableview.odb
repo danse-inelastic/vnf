@@ -44,7 +44,8 @@ def visual(
             filter=filter,
             label=label
             )
-    compilefilter = filtercompiler(columns, measure2dbcol)
+    from vnfb.content.tables.sample import model
+    compilefilter = filtercompiler(columns, measure2dbcol, model=model)
 
     smartlabelaccess = director.retrieveDOMAccessor('smartlabel')
     def filterfromlabel(label):
@@ -67,6 +68,8 @@ def visual(
         sorting_options = [
             ('id', 'ID'),
             ('short_description', 'Description'),
+            ('type', 'Type'),
+            ('date', 'Date created'),
             ]
         )
 
