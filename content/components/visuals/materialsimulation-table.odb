@@ -35,7 +35,7 @@ def table(matsims, cols, director):
         description     = Model.descriptors.str(name='description')
         type            = Model.descriptors.str(name='type')
         matter          = Model.descriptors.str(name='matter')
-        date            = Model.descriptors.str(name='date')
+        created            = Model.descriptors.str(name='created')
 
         row_identifiers = ['id', 'type']
 
