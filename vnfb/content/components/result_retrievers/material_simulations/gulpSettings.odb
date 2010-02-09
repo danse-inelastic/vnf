@@ -55,17 +55,21 @@ class Retriever(base):
             computation.results.add(motion, db)
             db.updateRecord(motion)
         # save the result from job to dos
-        self.declareProgress(0.9, 'get result from server')
+        self.declareProgress(0.9, 'get result from computational server')
         if 'phonons' in runtype:
             doOutputFiles = gulpSettings.getDOAndOutputFile()
             filesInJobDir = doOutputFiles['vsat.Phonons']
             self._save_results(computation, job, filesInJobDir, phonons)
+            
             filesInJobDir = doOutputFiles['vsat.PhononDOS']
             self._save_results(computation, job, filesInJobDir, dos)
         if 'molecular dynamics' in runtype:
             doOutputFiles = gulpSettings.getDOAndOutputFile()
             filesInJobDir = doOutputFiles['vsat.Motion']
             self._save_and_move_results(computation, job, filesInJobDir, motion)
+            #copy a temporary copy to the web server
+            self.dds.make_available(motion, filesInJobDir, server)
+            
             #self._save_results(computation, job, filesInJobDir, motion)
 
 def retriever():

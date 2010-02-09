@@ -10,16 +10,10 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
-
-
-#
 import luban.content as lc
 from luban.content import select, load, alert
 
-
-#
 from vsat.Motion import Motion
-
 from luban.components.Actor import Actor
 import luban.orm
 base = luban.orm.object2actor(Motion)
@@ -29,10 +23,40 @@ class Actor(base):
 
         import luban.inventory
         
-    
-    def debug(self, director):
-        pass
+    def createGraphicalView(self, director):
+        motion = self._load(director)
         
+        orm = director.clerk.orm
+        motion = orm.load(Motion, self.inventory.id)
+        datadir = director.dds.abspath(orm(motion))
+        
+        link = lc.htmldocument(id='job-download-link')
+        link.text = ['<a href="%s">%s</a>' % (url, label)]
+        
+        return link  
+        
+#        domaccess = self._domaccess(director)
+#        sqe = domaccess.getData(motion)
+#
+#        from histogram import histogram
+#        qaxis = 'Q', sqe.q
+#        eaxis = 'E', sqe.e
+#        I = sqe.sqe
+#        h = histogram('S(Q,E)', [qaxis, eaxis], data=I)
+#        
+#        title = 'S(Q, E)' 
+#        doc = lc.document(Class='container', title=title, collapsable=True)
+#
+#        p = director.retrieveVisual(
+#            'histogram/imageplot',
+#            histogram=h,
+#            director=director,
+#            )
+#        doc.add(p)
+#        return doc
+
+    def _domaccess(self, director):
+        return director.retrieveDOMAccessor('motion')
 
 def actor():
     return Actor('orm/motion')

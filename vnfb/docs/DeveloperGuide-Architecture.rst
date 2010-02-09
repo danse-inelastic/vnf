@@ -39,8 +39,18 @@ User interface "language": luban
 --------------------------------
 
 
-Data provenance: dsaw.model/dds
----------------------------
+Data provenance and file transfer: dsaw.model/dds
+-------------------------------------------------
+Overview
+^^^^^^^^^^^^^^^^
+
+
+"How Tos" for various tasks with dds:
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+1) find the absolute path of files associated with a data object::
+	orm = director.clerk.orm
+	dataObject = DataObject()
+	datadir = director.dds.abspath(orm(dataObject))
 
 
 Managing computation jobs: job builders and results retrievers

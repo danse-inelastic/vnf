@@ -46,7 +46,7 @@ class Actor(base):
         matterview.add(link)
 
         # results
-        resultsdoc = doc.document(title = 'Results', collapsable=True, collapsed=True)
+        resultsdoc = doc.document(title = 'Results', collapsable=True, collapsed=False)
         resultsdoc.paragraph(text=['loading results. please wait...'])
         resultsdoc.onexpand = select(element=resultsdoc).replaceContent(
             load(actor=self.name, routine='createResultsDoc',
@@ -60,7 +60,6 @@ class Actor(base):
 #              actor='material_simulations/forcefieldwizard', routine='default',
 #              id = c.id, editlink=False,
 #            ))
-
         return doc
 
 
