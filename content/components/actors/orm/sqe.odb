@@ -30,7 +30,6 @@ class Actor(base):
 
         import pyre.inventory
 
-
     def createGraphicalView(self, director):
         sqe = self._load(director)
         
@@ -53,7 +52,6 @@ class Actor(base):
             )
         doc.add(p)
         return doc
-
 
     def _domaccess(self, director):
         return director.retrieveDOMAccessor('sqe')
