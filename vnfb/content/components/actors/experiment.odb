@@ -85,8 +85,8 @@ class Actor(base):
             polymorphic = False, dbtablename='neutronexperiments'
             )
 
-        order_by = self.inventory.order_by = 'date'
-        reverse_order = self.inventory.reverse_order = True
+        order_by = self.inventory.order_by
+        reverse_order = self.inventory.reverse_order
         number_records_per_page = self.inventory.number_records_per_page
         page_number = self.inventory.page_number
 
