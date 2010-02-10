@@ -96,8 +96,8 @@ class Actor(base):
 
 
     def createListView(self, director):
-        order_by        = self.inventory.order_by = 'time_start'
-        reverse_order   = self.inventory.reverse_order = True
+        order_by        = self.inventory.order_by
+        reverse_order   = self.inventory.reverse_order
         number_records_per_page     = self.inventory.number_records_per_page
         page_number     = self.inventory.page_number
 
@@ -665,6 +665,13 @@ class Actor(base):
         return director.clerk.getRecordByID(type, id)
 
 
+    def _defaults(self):
+        super(Actor, self)._defaults()
+        self.inventory.order_by = 'time_start'
+        self.inventory.reverse_order = True
+        return
+
+    
     def __init__(self, name='job'):
         super(Actor, self).__init__(name)
         return
