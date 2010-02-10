@@ -73,7 +73,7 @@ class Accessor(base):
             q = q.order_by(order_by)
         if slice:
             if reverse_order:
-                n = self.countSimulations(filter=filter, label=label)
+                n = self.countAnalyses(filter=filter, label=label)
                 slice = n-slice[1], n-slice[0]
             q = sqlalchemy.select(
                 [q.alias('tmptoslice')],
