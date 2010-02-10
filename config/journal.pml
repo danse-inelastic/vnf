@@ -27,6 +27,7 @@
       <property name='atomicstructure-table'>off</property>
       <property name='job-table'>on</property>
       <property name='atomicstructure-accessor'>off</property>
+      <property name='analyses-table'>off</property>
       <property name='create-structure-form'>on</property>
     </component>
   </component>
