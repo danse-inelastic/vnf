@@ -64,6 +64,7 @@ class QETasks:
 
         tc      = QETaskCell(self._director, self._type(colnum), colnum, self._simid, task)
         fields  = [tc.header(), tc.taskInfo(), tc.action()]
+        #fields  = [tc.header(), tc.header(), tc.header()]
         for i in range(len(rows)):
             rows[i] = fields[i]
         table.addColumn(rows)

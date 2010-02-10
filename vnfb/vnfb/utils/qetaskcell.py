@@ -69,7 +69,7 @@ class QETaskCell:
                                              tasktype   = self._type)
                              )
 
-            table.addRow((link, ))
+            table.addRow((link, ))   
             #table.addRow(("or", ))                 # Keep
             #table.addRow(("Use Existing Task", ))  # Keep
 
@@ -120,20 +120,25 @@ class QETaskCell:
         link    = "Not Started"
         jobs    = self._director.clerk.getQEJobs(where="taskid='%s'" % self._task.id)
         if jobs:
+            job  = latestJob(jobs)
             action  = lc.link(label="Refresh",
-                              Class     = "qe-task-action"
-                              #onclick   = load()
+                              Class     = "qe-task-action",
+                              onclick   = load(actor     = 'jobs/status',
+                                               routine   = 'retrieveStatus',
+                                              id        = self._simid,
+                                              taskid    = self._task.id,
+                                              jobid     = job.id)  #,type      = self._type
                              )
 
-            job  = latestJob(jobs)
             link = job.status
 
-        table.addRow(("Status:", link, action))
+        
+        table.addRow(("Status:", link, action)) # Replace: Status -> Job Status
 
 
     def _jobId(self, table):
-        "Displays id of the current job"
-        link        = "None"
+        "Displays id of the current job" 
+        link        = "None"  
         action      = ""
         jobs        = self._director.clerk.getQEJobs(where="taskid='%s'" % self._task.id)
         if jobs:
