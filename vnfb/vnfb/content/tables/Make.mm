@@ -36,6 +36,7 @@ all: export
 
 EXPORT_PYTHON_MODULES = \
 	atomicstructure.py \
+	experiment.py \
 	materialsimulation.py \
 	sample.py \
 	selectoneatomicstructure.py \
