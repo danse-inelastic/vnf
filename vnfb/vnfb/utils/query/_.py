@@ -13,6 +13,7 @@
 
 
 import sqlalchemy
+from dsaw.db.VersatileReference import global_pointer
 
 
 # version
