@@ -220,6 +220,29 @@ select {
 .mass-textfield input {
     width: 80px;
 }
+
+.qe-table-header {
+    font-weight: bold;
+    text-align: center;
+}
+
+tr td .qe-table-id {
+    width: 80px;
+}
+
+tr td .qe-table-time {
+    width: 300px;
+}
+
+tr td .qe-table-check {
+    width: 50px;
+}
+
+tr td .qe-table-delete {
+    width: 50px;
+}
+
+
 /*
 .qe-text-area {
     width: 200px;
