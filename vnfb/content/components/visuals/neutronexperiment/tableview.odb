@@ -12,7 +12,7 @@
 
 # this is the visual for the whole table view that includes a table and
 # many controls.
-# it is different from job/table which only is the table itself.
+# it is different from neutronexperiment/table which only is the table itself.
 
 
 from luban.content import load, select, alert
@@ -20,28 +20,30 @@ import luban.content as lc
 
 
 def visual(
-    director, name,
+    director, name='experiment',
     filter_expr=None, filter_key=None, filter_value=None,
     label=None,
     order_by=None, reverse_order=None,
     number_records_per_page=None, page_number=None,
     ):
-    # name: name of table view
-    # 
-    domaccess = director.retrieveDOMAccessor('job')
-        
+
+    domaccess = director.retrieveDOMAccessor(name)
+
     from vnfb.components.MasterTable import MasterTableFactory, filtercompiler
     def countrecords(filter, label=None):
-        return domaccess.countJobs(filter, label=label)
+        return domaccess.countExperiments(filter, label=label)
     def createtable(order_by, reverse_order, slice, filter, label=None):
-        return createJobTable(
-            director, domaccess,
+        return createExperimentTable(
+            director,
+            domaccess=domaccess,
             order_by=order_by,
             reverse_order=reverse_order,
             slice=slice,
             filter=filter,
-            label=label)
-    compilefilter = filtercompiler(columns, measure2dbcol)
+            label=label
+            )
+    from vnfb.content.tables.experiment import model
+    compilefilter = filtercompiler(columns, measure2dbcol, model=model)
 
     smartlabelaccess = director.retrieveDOMAccessor('smartlabel')
     def filterfromlabel(label):
@@ -59,51 +61,57 @@ def visual(
         sorting_options = [
             ('id', 'ID'),
             ('short_description', 'Description'),
-            ('time_start', 'Time started'),
-            ('state', 'Status'),
         ],
-        polymorphic = False, dbtablename='jobs'
+        polymorphic = False, dbtablename='neutronexperiments'
         )
 
     tableview = factory.create(
-        label = label,
+        label=label,
         filter_expr=filter_expr, filter_key=filter_key, filter_value=filter_value,
         order_by=order_by,
         reverse_order=reverse_order,
         number_records_per_page=number_records_per_page,
-        page_number=page_number)
+        page_number=page_number,
+        )
 
-    # add new button
-    # toolbar = tableview.find(id='job-table-toptoolbar')
+    # add some buttons to the left of navbar
+    toolbar = tableview.find(id='experiment-table-toptoolbar')
+    #
+    button = lc.button(label='New', tip='create new experiment', icon='new.png')
+    toolbar.add(button)
+    button.onclick = load(actor='experiment', routine='new')
+
     return tableview
 
 
-def createJobTable(
+    domaccess = director.retrieveDOMAccessor('experiment')
+
+def createExperimentTable(
     director, domaccess,
     order_by=None, reverse_order=None, slice=None,
     filter=None,
-    label=None):
+    label = None,
+    ):
 
-    records = domaccess.getJobRecords(
+    experiments = domaccess.getExperiments(
         order_by=order_by, reverse_order=reverse_order, slice=slice,
         filter=filter,
         label=label,
         )
 
     cols = columns
-    args = records, cols, director
+    args = experiments, cols, director
     thetable = director.retrieveVisual(
-        'job/table',
-        jobs = records,
-        cols = cols,
-        director = director)
+        'neutronexperiment/table',
+        experiments=experiments,
+        cols=cols,
+        director=director)
     thetable.oncellchanged = select(element=thetable).notify(
-        event='row-changed', actor='job/table', routine='processRowChange')
+        event='row-changed', actor='neutronexperiment/table', routine='processRowChange')
     return thetable
 
 
-
-columns = [ 'selected', 'id', 'description', 'state', 'time_start']
+columns = ['selected', 'id', 'description']
 measure2dbcol = {
     'description': 'short_description',
     }
