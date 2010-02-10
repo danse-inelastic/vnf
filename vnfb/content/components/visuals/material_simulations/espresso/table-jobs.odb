@@ -64,11 +64,18 @@ def visual(jobs, taskinfo, director):
         for j in jobs:
             table.addRow((jobid(j), submitted(j), status(j), results(j), check(j), delete(j)))
 
+    table.setColumnStyle(0, "qe-table-id")
+    table.setColumnStyle(1, "qe-table-time")
+    table.setColumnStyle(4, "qe-table-check")
+    table.setColumnStyle(5, "qe-table-delete")
+    table.setRowStyle(0, "qe-table-header")
 
     return table.grid()
     
 
 __date__ = "$Jan 14, 2010 6:09:10 AM$"
+
+
 
 # **************** DEAD CODE *****************
 

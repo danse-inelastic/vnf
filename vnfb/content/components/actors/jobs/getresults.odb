@@ -42,20 +42,23 @@ class Actor(base):
 
     def retrieveStatus(self, director):
         task    = director.clerk.getQETasks(id = self.taskid)
-        cid     = "%s-%s" % (RESULTS_ID, task.type) # results link
-        link    = self._retrieveResults(director, task)    #id = cid,
+        cid     = "%s-%s" % (RESULTS_ID, self._id(task.type))         # results link
+        link    = self._retrieveResults(director, task)     # id = cid,
         
         return select(id=cid).replaceContent(link)
 
 
     def _retrieveResults(self, director, task):   # Remove id?
-        jobs    = director.clerk.getQEJobs(where = "taskid='%s'" % self.taskid)
         link    = "None"
-        
-        if len(jobs) == 0:  # Empty list
-            return link
 
-        job         = latestJob(jobs)
+        if self.jobid != "":    # If job id passed
+            job     = director.clerk.getQEJobs(id=self.jobid)
+        else:                   # get latest job
+            jobs    = director.clerk.getQEJobs(where = "taskid='%s'" % self.taskid)
+            if len(jobs) == 0:  # Empty list
+                return link
+            job         = latestJob(jobs)
+            
         taskinfo    = TaskInfo(self.id, self.taskid, task.type)
         results     = QEResults(director, job, taskinfo)
 
@@ -68,6 +71,14 @@ class Actor(base):
                     for key, value in errors.iteritems()
                 ]
 
+    def _id(self, type):
+        id   = type             # Use type for default
+
+        if self.jobid != "":    # Otherwise use job id
+            id   = self.jobid
+
+        return id
+
     def __init__(self):
         super(Actor, self).__init__(name='jobs/getresults')
 
@@ -78,6 +89,7 @@ class Actor(base):
         super(Actor, self)._configure()
         self.id         = self.inventory.id
         self.taskid     = self.inventory.taskid
+        self.jobid      = self.inventory.jobid
 
 
     def _init(self):
