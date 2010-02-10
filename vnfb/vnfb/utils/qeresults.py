@@ -112,7 +112,7 @@ class QEResults:
     
     def link(self):
         "Returns link to results when ready or string with status"
-        cid         = "%s-%s" % (RESULTS_ID, self._taskinfo.type()) # self._task.id?
+        cid         = "%s-%s" % (RESULTS_ID, self._id()) # self._task.id?
         container   = lc.document(id=cid)
         link        = lc.htmldocument(text="<div>None</div>")# lc.paragraph(text="None") # Default value
 
@@ -133,7 +133,8 @@ class QEResults:
                                onclick=load(actor       = "jobs/getresults",
                                             routine     = "retrieveStatus",
                                             id          = self._taskinfo.simid(),
-                                            taskid      = self._taskinfo.taskid())    # No jobid at this time
+                                            taskid      = self._taskinfo.taskid(),
+                                            jobid       = self._job.id)
                           )
 
         return action
@@ -241,6 +242,14 @@ class QEResults:
         parts   = path.split(self._tarfile())
         tmp     = parts[0]
         return tmp                      # Example: "tmp/tmp31LUyu
+
+
+    def _id(self):
+        jobid   = self._taskinfo.type()
+        if self._job:
+            jobid   = self._job.id
+
+        return jobid    # self._taskinfo.type() #
 
 
     def _ptrfilepath(self):
