@@ -186,7 +186,7 @@ class Accessor(base):
 
 
     def _select_simulation_clause(self, table, db):
-        '''create a sqlalchemy select cluase for a material simulation table
+        '''create a sqlalchemy select clause for a material simulation table
 
         cols:
           * id
@@ -218,7 +218,6 @@ class Accessor(base):
 
         return simq
     
-
 from dsaw.db.VersatileReference import global_pointer
 import sqlalchemy
 

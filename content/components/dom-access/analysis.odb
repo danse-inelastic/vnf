@@ -110,7 +110,9 @@ class Accessor(base):
         
         q = sqlalchemy.select(
             [st.c.id.label('id'),
+             st.c.short_description.label('short_description'),
              sGP.c.type.label('type'),
+             st.c.date.label('date'),
              st.c.globalpointer.label('gptr'),
              ],
             st.c.globalpointer==sGP.c.id,
