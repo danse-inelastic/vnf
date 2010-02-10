@@ -1,0 +1,55 @@
+#!/usr/bin/env python
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                               Alex Dementsov
+#                      California Institute of Technology
+#                        (C) 2009  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+class Actor(base):
+    """
+    Actor for retrieving results from server
+    Notes:
+        - See also
+    """
+
+    class Inventory(base.Inventory):
+        import pyre.inventory
+        id          = pyre.inventory.str('id', default='')      # Simulation Id
+        taskid      = pyre.inventory.str('taskid', default='')
+        jobid       = pyre.inventory.str('jobid', default='')   # Not passed at this time
+
+    def retrieveStatus(self, director):
+        pass
+
+    def __init__(self):
+        super(Actor, self).__init__(name='jobs/getresults')
+
+        return
+
+
+    def _configure(self):
+        super(Actor, self)._configure()
+        self.id         = self.inventory.id
+        self.taskid     = self.inventory.taskid
+        self.jobid      = self.inventory.jobid
+
+
+    def _init(self):
+        super(Actor, self)._init()
+        self._files = []
+        return
+
+def actor():
+    return Actor()
+
+    
+
+__date__ = "$Feb 10, 2010 1:21:35 PM$"
+
+
