@@ -38,7 +38,8 @@ def visual(
             slice=slice,
             filter=filter,
             label=label)
-    compilefilter = filtercompiler(columns, measure2dbcol)
+    from vnfb.content.tables.analysis import model
+    compilefilter = filtercompiler(columns, measure2dbcol, model=model)
 
     smartlabelaccess = director.retrieveDOMAccessor('smartlabel')
     def filterfromlabel(label):
