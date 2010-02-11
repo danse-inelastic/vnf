@@ -84,13 +84,12 @@ RUNSCRIPT   = "run.sh"
 RESULTS_ID   = "results-link"
 
 # TODO: Move to parser/inputs
-_zasr       = ("crystal", "simple", "one-dim", "zero-dim", "no")
 ZASR        = OrderedDict()
-ZASR[_zasr[0]]  = "'crystal'"
-ZASR[_zasr[1]]  = "'simple'"
-ZASR[_zasr[2]]  = "'one-dim'"
-ZASR[_zasr[3]]  = "'zero-dim'"
-ZASR[_zasr[4]]  = "'no'"
+ZASR["crystal"]     = "'crystal'"
+ZASR["simple"]      = "'simple'"
+ZASR["one-dim"]     = "'one-dim'"
+ZASR["zero-dim"]    = "'zero-dim'"
+ZASR["no"]          = "'no'"
 
 IBRAV       = ( "Not Specified",                    # 0
                 "Cubic P (sc)",                     # 1
