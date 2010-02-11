@@ -13,7 +13,7 @@
 
 # OBSOLETE !!!
 
-from vinil.utils.const import STEPS, SIMULATIONS, PACKAGES
+from vinil.utils.const import STEPS, SIMCHAINS, PACKAGES
 from vinil.utils.simulationsteps import SimulationSteps
 from vinil.utils.stepper import Stepper
 from vinil.dom.Simulation import Simulation
@@ -57,7 +57,7 @@ class Actor(base):
         form        = Form(id="form-vinil")
         sname       = form.text(name="sname", label='Simulation Name', value=self.sname)
         package     = form.selector(name="package", label='Package', entries=enumerate(PACKAGES))
-        simtype     = form.selector(name="simtype", label='Simulation Type', entries=enumerate(SIMULATIONS))
+        simtype     = form.selector(name="simtype", label='Simulation Type', entries=enumerate(SIMCHAINS.keys()))
         description = form.text(name="description", label='Description', value=self.description)   # Make as textarea
         formula     = form.text(name="formula", label='Formula', value=self.formula)
         #isFavorite - All simulations are favorite at this moment!
@@ -81,7 +81,8 @@ class Actor(base):
         """Create simulation record"""
         self.verify()
         package = PACKAGES[int(self.package)]
-        simtype = SIMULATIONS[int(self.simtype)]
+        keys    = SIMCHAINS.keys()
+        simtype = keys[int(self.simtype)]
         
         params  = {"sname": self.sname, "package": package,
                    "type": simtype, "description": self.description,
