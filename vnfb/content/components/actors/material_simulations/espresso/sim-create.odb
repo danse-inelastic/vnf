@@ -12,7 +12,7 @@
 #
 
 
-from vnfb.utils.qeconst import SIMULATIONS
+from vnfb.utils.qeconst import SIMCHAINS
 from vnfb.utils.qegrid import QEGrid
 from vnfb.utils.serverlist import ServerList
 from vnf.dom.QESimulation import QESimulation
@@ -97,7 +97,8 @@ class Actor(base):
     def createRecord(self, director):
         """Create simulation record"""
         self._verify()
-        simtype = SIMULATIONS[int(self.simtype)]
+        keys    = SIMCHAINS.keys()
+        simtype = keys[int(self.simtype)]
         servers = ServerList(director)
 
         params  = {"sname":         self._sname(),
@@ -129,7 +130,7 @@ class Actor(base):
 
         sname       = FormTextField(name = "sname", value = self.sname)
         simtype     = FormSelectorField(name="simtype",
-                                        entries=enumerate(SIMULATIONS))
+                                        entries=enumerate(SIMCHAINS.keys()))
         description = FormTextField(name="description", value=self.description)   # Make as textarea
         label       = FormTextField(name="label", value=self.label)
         server      = FormSelectorField(name="server",
@@ -200,8 +201,9 @@ class Actor(base):
         pass
 
     def _simtypeValue(self, simtype):
-        for i in range(len(SIMULATIONS)):
-            if SIMULATIONS[i] == simtype:
+        keys    = SIMCHAINS.keys()
+        for i in range(len(keys)):
+            if keys[i] == simtype:
                 return i
 
         return 0

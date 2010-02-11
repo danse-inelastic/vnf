@@ -38,22 +38,14 @@ STEPS       = ("Create Simulation",
                "Review Simulation")
 
 
-
-SIMULATIONS = ("Total Energy",              # 0
-               "Electron DOS",              # 1
-               "Electron Dispersion",       # 2 pw.x -> pw.x -> bands.x -> plotbands.x
-               "Geometry Optimization",     # 3
-               "Single Phonon",             # 4
-               "Multiple Phonon")           # 5 DOS and Dispersion, See: example06
-
 # Types of simulations
 SIMCHAINS = OrderedDict()
-SIMCHAINS[SIMULATIONS[0]]   = ("PW",)
-SIMCHAINS[SIMULATIONS[1]]   = ("PW", "DOS")
-SIMCHAINS[SIMULATIONS[2]]   = ("PW", "DOS")
-SIMCHAINS[SIMULATIONS[3]]   = ("PW",)
-SIMCHAINS[SIMULATIONS[4]]   = ("PW", "PH", "DYNMAT")
-SIMCHAINS[SIMULATIONS[5]]   = ("PW", "PH", "Q2R", "MATDYN")
+SIMCHAINS["Total Energy"]           = ("PW",)
+SIMCHAINS["Electron DOS"]           = ("PW", "DOS")
+SIMCHAINS["Electron Dispersion"]    = ("PW", "DOS") # pw.x -> pw.x -> bands.x -> plotbands.x
+SIMCHAINS["Geometry Optimization"]  = ("PW",)
+SIMCHAINS["Single Phonon"]          = ("PW", "PH", "DYNMAT")
+SIMCHAINS["Multiple Phonon"]        = ("PW", "PH", "Q2R", "MATDYN") # DOS and Dispersion, See: example06
 
 
 # Available servers
