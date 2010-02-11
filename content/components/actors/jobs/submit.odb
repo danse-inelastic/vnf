@@ -20,6 +20,15 @@ from luban.content import load
 
 from luban.components.AuthorizedActor import AuthorizedActor as base
 
+"""
+Jobs submission steps:
+    - Creating job record
+    - Preparing configuration files
+    - Preparing control files
+    - Copying files to cluster
+    - Submitting to queue
+"""
+
 class Actor(base):
 
     class Inventory(base.Inventory):
