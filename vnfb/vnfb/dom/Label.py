@@ -4,7 +4,7 @@
 #
 #                                   Jiao Lin
 #                      California Institute of Technology
-#                      (C) 2006-2009  All Rights Reserved
+#                        (C) 2009  All Rights Reserved
 #
 # {LicenseText}
 #
@@ -12,10 +12,16 @@
 #
 
 
-from dsaw.model.visitors.Object2DBTable import Object2DBTable
-o2t = Object2DBTable()
+from OwnedObject import OwnedObject as base
+class Label(base):
 
-from dsaw.db.Table import Table
+    name = 'labels'
+
+    import dsaw.db
+    
+    labelname = dsaw.db.varchar(name='labelname', length=64)
+    entity = dsaw.db.versatileReference(name = 'entity')
+    targettable = dsaw.db.varchar(name='targettable', length=64)
 
 
 # version

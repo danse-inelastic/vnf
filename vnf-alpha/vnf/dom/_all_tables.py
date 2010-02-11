@@ -8,10 +8,10 @@ external_dom_extensions = []
 
 
 acl = [
-    'User',
-    'Role',
-    'ACL1',
-    'ACL2',
+    #'User',
+    #'Role',
+    #'ACL1',
+    #'ACL2',
     ]
 
 instrument = [
@@ -61,13 +61,13 @@ kernels = [
 
 
 other = [
-    'Registrant',
+    #'Registrant',
     #'Server',
     #'Job',
     #'ITask',
-    'Activity',
-    'SmartLabel',
-    'Label',
+    #'Activity',
+    #'SmartLabel',
+    #'Label',
     'TransientObject',
     ]
 

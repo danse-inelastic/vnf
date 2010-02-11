@@ -37,6 +37,7 @@ def tables_without_orm():
         'ITask.ITask',
         'Server.Server',
         'Job.Job',
+        'User.User',
         ]
     tables = map(importType, ts)
     return vnfalphatables + tables
