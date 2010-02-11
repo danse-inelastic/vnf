@@ -62,9 +62,9 @@ kernels = [
 
 other = [
     'Registrant',
-    'Server',
-    'Job',
-    'ITask',
+    #'Server',
+    #'Job',
+    #'ITask',
     'Activity',
     'SmartLabel',
     'Label',

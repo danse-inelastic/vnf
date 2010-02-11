@@ -94,11 +94,10 @@ class Clerk(base, ClerkBase):
 
 
 
-    # for compatibility with vnf-alpha. should eventually remove
-    def _registerVnfAlphaTables(self, db):
-        # register tables
-        from vnf.dom import alltables
-        for table in alltables():
+    # register tables that are not in orm
+    def _registerTables(self, db):
+        from vnfb.dom import tables_without_orm
+        for table in tables_without_orm():
             db.registerTable(table)
         return
 
@@ -132,7 +131,7 @@ class Clerk(base, ClerkBase):
         db = self.inventory.db
         from dsaw.db import connect
         db = connect(db=db, echo=self.inventory.echo)
-        self._registerVnfAlphaTables(db)
+        self._registerTables(db)
         return db
 
 

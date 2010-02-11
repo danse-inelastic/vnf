@@ -15,7 +15,7 @@ from luban.applications.UIApp import UIApp as base
 
 class ITaskApp(base):
 
-    from vnf.dom.ITask import ITask as Table
+    from vnfb.dom.ITask import ITask as Table
 
     class Inventory(base.Inventory):
 

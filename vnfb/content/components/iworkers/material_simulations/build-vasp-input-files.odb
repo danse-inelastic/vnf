@@ -67,7 +67,7 @@ class Worker(Component):
         director.declareProgress(0.5, 'Make temporary directory on server %s ...' % (server.short_description,))
         remotetmpdir = mkdtemp_remote(server, director)
 
-        from vnf.dom.Server import LocalHost
+        from vnfb.dom.Server import LocalHost
         director.declareProgress(0.6, 'Copy %s to server %s ...' % (runsh_fn, server.short_description))
         director.csaccessor.copyfile(LocalHost, localrunsh, server, remotetmpdir)
         

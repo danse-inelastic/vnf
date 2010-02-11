@@ -28,6 +28,20 @@ def _import(modulename):
     return __import__(m, {}, {}, [''])
 
 
+def tables_without_orm():
+    # for compatibility with vnf-alpha. should eventually remove
+    from vnf.dom import alltables
+    vnfalphatables = alltables()
+
+    ts = [
+        'ITask.ITask',
+        'Server.Server',
+        'Job.Job',
+        ]
+    tables = map(importType, ts)
+    return vnfalphatables + tables
+
+
 # version
 __id__ = "$Id$"
 

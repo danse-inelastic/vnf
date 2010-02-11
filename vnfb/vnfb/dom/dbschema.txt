@@ -80,3 +80,7 @@ added tables "neutronstorages", 'neutronplayers'
 Jan 25, 2010
 table "qemonitors" added column Ei. type: double, default: 70
 table 'sqes' renamed to 'sqe'
+
+
+Feb 10, 2010
+itasks: removed column "short_description"
