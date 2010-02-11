@@ -247,7 +247,7 @@ class Accessor(base):
         return q
         
 
-from vnf.dom.Label import Label
+from vnfb.dom.Label import Label
 from vnfb.dom.neutron_experiment_simulations.NeutronExperiment import \
      NeutronExperiment, NeutronExperimentTable
 from vnfb.dom.neutron_experiment_simulations.SampleEnvironment import SampleEnvironmentTable

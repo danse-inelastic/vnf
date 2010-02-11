@@ -1,0 +1,60 @@
+#!/usr/bin/env python
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                Jiao Lin
+#                      California Institute of Technology
+#                        (C) 2008  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+from pyre.components.Component import Component as base
+
+
+class Component(base):
+
+
+    class Inventory(base.Inventory):
+
+        import pyre.inventory
+
+
+    def initdb(self):
+        db = self.director.clerk.db
+        for r in registrants: db.insertRow( r )
+        return
+
+
+from vnfb.dom.Registrant import Registrant
+def registrant(firstname, lastname, username, pw, email, organization):
+    r = Registrant()
+    r.firstname = firstname
+    r.lastname = lastname
+    r.id = username
+    r.username = username
+    r.password = pw
+    r.email = email
+    r.organization = organization
+    return r
+
+
+registrants = [
+    registrant( 'Jiao', 'Lin', 'linjiao', '8cdd1ccd7f5a14d3e70c1fd0bb0b7198', 'linjiao@caltech.edu', 'Caltech'),
+    registrant( 'J Brandon', 'Keith', 'jbrkeith', '1015488bc40a5eedfd0795d4bd399973', 'jbrkeith@caltech.edu', 'Caltech' ),
+    registrant( 'Michael', 'Aivazis', 'aivazis', '1015488bc40a5eedfd0795d4bd399973',  'aivazis@caltech.edu', 'Caltech' ),
+    registrant( 'Brent', 'Fultz', 'btf', '1015488bc40a5eedfd0795d4bd399973', 'btf@caltech.edu', 'Caltech' ),
+    registrant( 'Michael', 'Mckerns', 'mmckerns', '1015488bc40a5eedfd0795d4bd399973', 'mmckerns@caltech.edu', 'Caltech' ),
+    ]
+
+
+def initdb(): return Component('initdb-registrants', 'initdb')
+
+
+# version
+__id__ = "$Id$"
+
+# End of file 

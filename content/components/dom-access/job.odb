@@ -138,7 +138,7 @@ class Accessor(base):
 
 
 
-from vnf.dom.Label import Label
+from vnfb.dom.Label import Label
 from vnfb.dom.Job import Job as JobTable
 
 

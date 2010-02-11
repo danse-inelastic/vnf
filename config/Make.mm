@@ -30,6 +30,7 @@ EXPORT_DATAFILES = \
 	createdataobject.pml \
 	clerk.odb \
 	createInstruments.pml \
+	getuserlist.pml \
 	guidfromidddaemon.odb \
 	idd-pickler.odb \
 	initdb.pml \

@@ -32,7 +32,7 @@ class Clerk(base, ClerkBase):
     # user table
     def indexUsers(self, where=None):
         """create an index of all users that meet the specified criteria"""
-        from vnf.dom.User import User
+        from vnfb.dom.User import User
         index = {}
         users = self.db.fetchall(User, where=where)
         for user in users:
@@ -46,7 +46,7 @@ class Clerk(base, ClerkBase):
 
 
     def getUser(self, username):
-        from vnf.dom.User import User
+        from vnfb.dom.User import User
         users = self.db.fetchall(User, where="username='%s'" % username)
         if not users: raise RuntimeError, "user %r not found" % username
         assert len(users) == 1
@@ -54,7 +54,7 @@ class Clerk(base, ClerkBase):
 
 
     def getUserInfo(self, username):
-        from vnf.dom.Registrant import Registrant
+        from vnfb.dom.Registrant import Registrant
         registrants = self.db.fetchall(Registrant, where="username='%s'"% username)
         if not registrants: raise RuntimeError, "user %r not found" % username
         assert len(registrants) == 1

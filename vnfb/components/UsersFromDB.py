@@ -56,7 +56,7 @@ class UsersFromDB(base):
 
 
     def save(self):
-        from vnf.dom.User import User
+        from vnfb.dom.User import User
         for name, pw in self._users.iteritems():
             assignments = [ ('password', pw) ]
             self.clerk.db.updateRow(User, assignments, where="username='%s'" % name)

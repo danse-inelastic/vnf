@@ -50,11 +50,15 @@ EXPORT_PYTHON_MODULES = \
 	Histogram.py \
 	ITask.py \
 	Job.py \
+	Label.py \
 	Lattice.py \
 	MaterialSimulation.py \
 	OwnedObject.py \
+	Registrant.py \
 	Server.py \
+	SmartLabel.py \
 	UnitCell.py \
+	User.py \
 	__init__.py \
 	_.py \
 	computation_types.py \

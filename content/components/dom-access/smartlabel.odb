@@ -12,7 +12,7 @@
 #
 
 
-from vnf.dom.SmartLabel import SmartLabel, getFilterExpr
+from vnfb.dom.SmartLabel import SmartLabel, getFilterExpr
 
 
 from vnfb.components.DOMAccessor import DOMAccessor as base
