@@ -29,7 +29,6 @@ in VNF (e.g. gulpsimulations or bvkcomputations) which refer to the actual simul
     - Has 'creator' field (owned table)
 """
 
-from vnfb.utils.qeconst import SIMULATIONS
 from vnfb.components.QETable import QETable
 from dsaw.db.GloballyReferrable import GloballyReferrable
 from vnfb.dom.Computation import Computation
