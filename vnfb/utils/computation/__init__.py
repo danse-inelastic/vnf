@@ -35,7 +35,7 @@ def start_results_retrieval(computation, director):
     # create an itask
     task = get_results_retrieval_task(computation, director.clerk.db)
     if not task:
-        from vnf.dom.ITask import createITask, ITask
+        from vnfb.dom.ITask import createITask, ITask
         task = director.clerk.insertNewOwnedRecord(ITask)
         task = createITask(
             task.id,

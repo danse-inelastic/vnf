@@ -360,7 +360,7 @@ class Actor(base):
             )
         field.help = meta['tip']
         
-        from vnf.dom.Server import Server
+        from vnfb.dom.Server import Server
         servers = director.clerk.db.fetchall(Server)
         entries = [ (server.id, server.short_description) for server in servers ]
         ids = [ s.id for s in servers ]
@@ -478,7 +478,7 @@ class Actor(base):
         # first check if there is itask running
         task = job.findPendingTask(director.clerk.db, iworker=iworker)
         if not task:
-            from vnf.dom.ITask import createITask, ITask
+            from vnfb.dom.ITask import createITask, ITask
             task = director.clerk.insertNewOwnedRecord(ITask)
             task = createITask(
                 task.id,
@@ -692,7 +692,7 @@ def isPositiveInteger(candiate):
 
 
 from vnfb.utils.job import packjobdir as packutils
-from vnf.dom.Job import Job
+from vnfb.dom.Job import Job
 
 def actor(): return Actor()
 

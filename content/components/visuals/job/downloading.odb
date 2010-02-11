@@ -23,7 +23,7 @@ def visual(job=None, director=None):
     # first check if there is itask running
     task = job.findPendingTask(director.clerk.db, iworker=iworker)
     if not task:
-        from vnf.dom.ITask import createITask, ITask
+        from vnfb.dom.ITask import createITask, ITask
         task = director.clerk.insertNewOwnedRecord(ITask)
         task = createITask(
             task.id,

@@ -219,7 +219,7 @@ class DistributedDataStorage(base):
             import tempfile
             f = tempfile.mktemp()
             open(f, 'w').write(content)
-            from vnf.dom.Server import LocalHost as localhost
+            from vnfb.dom.Server import LocalHost as localhost
             csaccessor.copyfile(localhost, f, server, path)
             os.remove(f)
             return
