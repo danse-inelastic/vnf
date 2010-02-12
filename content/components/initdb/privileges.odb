@@ -25,31 +25,27 @@ class Component(base):
 
     def initdb(self):
         db = self.director.clerk.db
-        for r in roles: db.insertRow( r )
+        for r in privileges: db.insertRow( r )
         return
 
 
-from vnfb.dom.Role import Role
-def role(name, context, description):
-    r = Role()
-    r.rolename = name
-    r.context = context
+from vnfb.dom.Privilege import Privilege
+def privilege(name, target, description):
+    r = Privilege()
+    r.name = name
+    r.target = target
     r.description = description
     return r
 
 
-roles = [
-    role('administrator', 'vnf', 'Administrator of the whole vnf project'),
-    role('core-developer', 'vnf', 'Core Developer of vnf'),
-    role('developer', 'vnf', 'vnf developer'),
-    role('internal-reviewer', 'vnf', 'Internal Reviewer of VNF'),
-    role('user', 'vnf',  'Normal vnf user'),
-    role('guest', 'vnf', 'Guest user of vnf'),
+privileges = [
+    privilege('run', 'vasp', 'privilege to run vasp'),
+    privilege('modify', 'bug', 'privilege to modify bugs'),
     ]
 
 
 
-def initdb(): return Component('initdb-roles', 'initdb')
+def initdb(): return Component('initdb-privileges', 'initdb')
 
 
 # version

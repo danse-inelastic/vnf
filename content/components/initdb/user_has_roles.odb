@@ -26,24 +26,23 @@ class Component(base):
     def initdb(self):
         db = self.director.clerk.db
         db.createAllTables()
-        for username, roles in assignments:
-            for role in roles:
-                assign(role, username, db)
-            continue
+        for username, role in assignments:
+            context, name = role
+            role = db.query(Role).filter_by(rolename=name, context=context).one()
+            assign(role, username, db)
         return
 
 
-from vnfb.dom.UserHasRole import assign
-from vnfb.dom.User import User
+from vnfb.dom.UserHasRole import assign, User, Role
 
 
 assignments = [
-    ('demo', ['vnf-guest']),
-    ('linjiao', ['vnf-coredeveloper']),
-    ('jbrkeith', ['vnf-coredeveloper']),
-    ('aivazis', ['vnf-internalreviewer']),
-    ('btf', ['vnf-internalreviewer']),
-    ('mmckerns', ['vnf-internalreviewer']),
+    ('demo', ('vnf', 'guest')),
+    ('linjiao', ('vnf', 'core-developer')),
+    ('jbrkeith', ('vnf', 'core-developer')),
+    ('aivazis', ('vnf', 'internal-reviewer')),
+    ('btf', ('vnf', 'internal-reviewer')),
+    ('mmckerns', ('vnf', 'internal-reviewer')),
     ]
 
 

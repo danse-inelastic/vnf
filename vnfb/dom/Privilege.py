@@ -13,29 +13,28 @@
 from _ import Table
 
 
-class Role(Table):
+class Privilege(Table):
     
     
     import dsaw.db
     
     
     # the table name
-    name = "roles"
+    pyredbtablename = "privileges"
     
     # the table columns
-    id = dsaw.db.integer(name='id')
+    id = dsaw.db.integer(name="id")
     id.constraints = "PRIMARY KEY"
 
-    # name of the role, like "admin", "user", "developer"
-    rolename = dsaw.db.varchar(name='rolename', length=64)
+    # target of the privilege. think of unix file system, target is like the diretory or file
+    target = dsaw.db.varchar(name='target', length=64)
     
-    # context of the role, like "mcvine", "vasp", "vnf"
-    context = dsaw.db.varchar(name='context', length=64)
-    
+    # name of the privilege. think of unix file system, name is sth like 'r', 'w', 'x'
+    name = dsaw.db.varchar(name='name', length=64)
+
+    #
     description = dsaw.db.varchar(name="description", length=255)
-    status = dsaw.db.char(name="status", length=1, default='l')
-    # "l": live
-    # "d": deleted
+    
 
 
 # version
