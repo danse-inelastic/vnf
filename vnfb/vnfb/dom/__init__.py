@@ -38,6 +38,7 @@ def tables_without_orm():
         'Server.Server',
         'Job.Job',
         'User.User',
+        'UserHasRole.UserHasRole',
         ]
     tables = map(importType, ts)
     return vnfalphatables + tables

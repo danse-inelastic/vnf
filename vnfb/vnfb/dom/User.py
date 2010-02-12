@@ -36,6 +36,10 @@ class User(base):
 
     email = dsaw.db.varchar(name='email', length=128)
 
+
+    def __str__(self):
+        return 'user(name=%s)' % self.username
+
     pass # end of User
 
 

@@ -84,3 +84,10 @@ table 'sqes' renamed to 'sqe'
 
 Feb 10, 2010
 itasks: removed column "short_description"
+
+
+Feb 11, 2010
+removed ACL1, ACL2 etc
+added column "context" to table "roles".
+added table "user_has_roles".
+
