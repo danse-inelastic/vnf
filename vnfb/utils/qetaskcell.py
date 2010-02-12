@@ -14,13 +14,14 @@
 import os
 import luban.content as lc
 from luban.content import load, select
-from luban.content.ProgressBar import ProgressBar
 
 from vnfb.utils.qeresults import QEResults
 from vnfb.utils.qegrid import QEGrid
 from vnfb.utils.qeinput import QEInput
 from vnfb.utils.qetaskinfo import TaskInfo
 from vnfb.utils.qeutils import latestJob
+
+RUN_TASK    = "run-task"
 
 class QETaskCell:
 
@@ -77,44 +78,20 @@ class QETaskCell:
 
     def action(self):
         "Displays simulation task action button: 'Run Task', 'Cancel'"
+        doc     = lc.document(id = "run-task-%s" % self._task.id)   # Example: run-task-BFDFX56
         link    = ""
         if self._task:
-            link    = ProgressBar(
-                                #id = 'itask-%s-pbar' % task.id,
-                                id = 'pbar-%s' % self._task.id,
-                                status = 'Submitting job...',
-                                percentage = 10,
-                                skip = 2000,
-                                )
+            link = lc.link(label    = "Run Task",
+                           Class    = "qe-run-task",
+                           onclick  = load(actor     ='jobs/submit',    # 'jobs/checksubmit'
+                                          routine   = 'submitProgress',        # 'checkSubmit'
+                                          id        = self._simid,
+                                          taskid    = self._task.id,
+                                          subtype   = self._task.short_description)
+                            )
 
-            selectpbar      = select(id='pbar-%s' % self._task.id)
-            link.onchecking = selectpbar.setAttr(
-                                                percentage=10,
-                                                status="Submitting job...",
-                                                )
-#            link.onchecking = load(
-#                actor='itask',
-#                routine='checkProgress',
-#                id = self._task.id,
-#                )
-            link.onfinished = [
-                #select(element=lc.paragraph('test')).show(),
-                load(actor = 'job',
-                     routine='view',
-                     id = self._simid),
-                ]
-
-            # Keep
-#            link = lc.link(label="Run Task",
-#                           Class="qe-run-task",
-#                           onclick = load(actor     ='jobs/submit',    # 'jobs/checksubmit'
-#                                          routine   = 'submit',        # 'checkSubmit'
-#                                          id        = self._simid,
-#                                          taskid    = self._task.id,
-#                                          subtype   = self._task.short_description)
-#                            )
-
-        return link
+        doc.add(link)
+        return doc
 
 
     def _taskId(self, table):
