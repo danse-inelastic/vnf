@@ -11,13 +11,14 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
+import time
 from vnf.dom.QEJob import QEJob
 from vnfb.utils.qeutils import makedirs, writefile, stamp
 from vnfb.utils.qeconst import STATES, RUNSCRIPT, TYPE, NOPARALLEL
 from vnfb.utils.qeutils import packname, unpackname
+from luban.content.ProgressBar import ProgressBar
 
-from luban.content import load
-
+from luban.content import load, select
 from luban.components.AuthorizedActor import AuthorizedActor as base
 
 """
@@ -27,6 +28,7 @@ Jobs submission steps:
     - Preparing control files
     - Copying files to cluster
     - Submitting to queue
+    - Done
 """
 
 class Actor(base):
@@ -52,13 +54,51 @@ class Actor(base):
         3. Submit Job
         """
         # Disable for now
-        self._createJob(director)
-        self._storeFiles(director)
-        self._moveFiles(director)
-        self._scheduleJob(director)
+        
+#        self._createJob(director)
+#        self._storeFiles(director)
+#        self._moveFiles(director)
+#        self._scheduleJob(director)
 
         return load(actor="material_simulations/espresso/sim-view",
                     id=self.id)
+
+
+    def traceStatus(self, director):
+        pass
+        
+    def submitProgress(self, director):
+        time.sleep(2)
+        return self._setProgressBar()
+
+
+    def _setProgressBar(self):
+        pbar    = ProgressBar(
+                            #id = 'itask-%s-pbar' % task.id,
+                            id = 'pbar-%s' % self.taskid,
+                            #status = 'Submitting job...',
+                            percentage = 10,
+                            skip = 2000,
+                            )
+
+        selectpbar      = select(id='pbar-%s' % self.taskid)
+        pbar.onchecking = selectpbar.setAttr(
+                                            percentage=10,
+                                            status="Submitting job...",
+                                            )
+#            link.onchecking = load(
+#                actor='itask',
+#                routine='checkProgress',
+#                id = self._task.id,
+#                )
+        pbar.onfinished = [
+            #select(element=lc.paragraph('test')).show(),
+            load(actor = 'job',
+                 routine='view',
+                 id = self.id),
+            ]
+        
+        return select(id="run-task-%s" % self.taskid).replaceContent(pbar)
 
 
     def _createJob(self, director):
