@@ -16,6 +16,8 @@
 
 
 from _ import Table as base
+from User import User
+from Role import Role
 
 
 class UserHasRole(base):
@@ -28,10 +30,8 @@ class UserHasRole(base):
     id.constraints = 'PRIMARY KEY'
     id.meta['tip'] = "the unique id"
 
-    from User import User
     user = dsaw.db.reference(name='user', table=User)
 
-    from Role import Role
     role = dsaw.db.reference(name='role', table=Role)
     
     pass # end of UserHasRole

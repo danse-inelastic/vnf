@@ -54,6 +54,7 @@ EXPORT_PYTHON_MODULES = \
 	Lattice.py \
 	MaterialSimulation.py \
 	OwnedObject.py \
+	Privilege.py \
 	Registrant.py \
 	Role.py \
 	Server.py \
