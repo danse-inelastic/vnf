@@ -55,10 +55,12 @@ EXPORT_PYTHON_MODULES = \
 	MaterialSimulation.py \
 	OwnedObject.py \
 	Registrant.py \
+	Role.py \
 	Server.py \
 	SmartLabel.py \
 	UnitCell.py \
 	User.py \
+	UserHasRole.py \
 	__init__.py \
 	_.py \
 	computation_types.py \
