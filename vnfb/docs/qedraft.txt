@@ -1,0 +1,29 @@
+
+Job status has format:
+
+<StatusName>[:<ProgressName>[:<Percentage>]]
+
+<StatusName>
+    submitting  (None)
+    submit-failed   (None)
+    finished    ('C')
+    running     ('R')
+    queued      ('Q')
+    exiting     ('E')
+    onhold      ('H')
+    waiting     ('W')
+    suspend     ('S')
+
+<StatusName> = submitting
+<ProgressName>:<Percentage>
+    create-job:10           # Creating job record
+    prepare-configs:20      # Preparing configuration files
+    prepare-controls:40     # Preparing control files
+    copy:60                 # Copying files to cluster
+    enqueue:80              # Submitting to queue
+    done: 100               # Done
+
+Example:
+
+Retrieving results:
+    

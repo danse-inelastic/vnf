@@ -76,7 +76,7 @@ class Actor(base):
         pbar    = ProgressBar(
                             #id = 'itask-%s-pbar' % task.id,
                             id = 'pbar-%s' % self.taskid,
-                            #status = 'Submitting job...',
+                            status = 'Submitting job...',
                             percentage = 10,
                             skip = 2000,
                             )
