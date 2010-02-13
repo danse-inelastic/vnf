@@ -34,7 +34,15 @@ class Privilege(Table):
 
     #
     description = dsaw.db.varchar(name="description", length=255)
-    
+
+
+    def findRoles(self, db):
+        '''find the roles that has this privilege
+        '''
+        from RoleHasPrivilege import RoleHasPrivilege
+        rs = db.query(RoleHasPrivilege).filter_by(privilege=self.id).all()
+        from Role import Role
+        return [db.query(Role).filter_by(id=r.role.id).one() for r in rs]
 
 
 # version
