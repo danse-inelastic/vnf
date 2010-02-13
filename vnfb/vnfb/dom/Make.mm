@@ -57,6 +57,7 @@ EXPORT_PYTHON_MODULES = \
 	Privilege.py \
 	Registrant.py \
 	Role.py \
+	RoleHasPrivilege.py \
 	Server.py \
 	SmartLabel.py \
 	UnitCell.py \

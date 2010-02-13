@@ -39,8 +39,8 @@ def privilege(name, target, description):
 
 
 privileges = [
-    privilege('run', 'vasp', 'privilege to run vasp'),
-    privilege('modify', 'bug', 'privilege to modify bugs'),
+    privilege('run', 'vasp', 'privilege to run vasp'), 
+    privilege('modify', 'bug', 'privilege to modify bugs'), 
     ]
 
 

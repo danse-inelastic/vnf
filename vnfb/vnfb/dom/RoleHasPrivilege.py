@@ -12,54 +12,53 @@
 #
 
 
-# user-role relation
+# role-privilege relation
 
 
 from _ import Table as base
-from User import User
 from Role import Role
+from Privilege import Privilege
 
 
-class UserHasRole(base):
+class RoleHasPrivilege(base):
 
-    pyredbtablename = "user_has_roles"
+    pyredbtablename = "role_has_privileges"
     
     import dsaw.db
     
     id = dsaw.db.integer(name="id")
     id.constraints = 'PRIMARY KEY'
-    id.meta['tip'] = "the unique id"
-
-    user = dsaw.db.reference(name='user', table=User)
 
     role = dsaw.db.reference(name='role', table=Role)
     
-    pass # end of UserHasRole
+    privilege = dsaw.db.reference(name='privilege', table=Privilege)
+
+    pass # end of RoleHasPrivilege
 
 
-def assign(role, user, db):
-    'assign a role to a user'
-    r = UserHasRole()
-    r.user = user
+def assign(privilege, role, db):
+    'assign a privilege to a role'
+    r = RoleHasPrivilege()
+    r.privilege = privilege
     r.role = role
     db.insertRow(r)
     return
 
 
-def remove(role, user, db):
-    'remove a role from a user'
-    # find the record
+def remove(privilege, role, db):
+    'remove a privilege assigment from a role'
+    
     try:
-        r = db.query(UserHasRole).filter_by(user=user.id, role=role.id).one()
+        r = db.query(RoleHasPrivilege).filter_by(role=role.id, privilege=privilege.id).one()
     except:
-        msg = "Could no find user/role relation: user: %s, role: %s.\n" % (
-            user, role)
+        msg = "Could no find role/privilege relation: role: %s, privilege: %s.\n" % (
+            role, privilege)
         import traceback
         msg += 'traceback: %s' % traceback.format_exc()
         raise RuntimeError, msg
     
     #
-    db.deleteRow(UserHasRole, where="id='%s'" % r.id)
+    db.deleteRow(RoleHasPrivilege, where="id='%s'" % r.id)
     return
 
 
