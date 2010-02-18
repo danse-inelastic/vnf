@@ -75,8 +75,9 @@ class Builder(base):
         # parallel computing
         db = self.db
         job = experiment.getJob(db)
-        np = job.numprocessors
-        self.options['mpirun.nodes'] = np
+        nn = job.numnodes
+        nc = job.numcores
+        self.options['mpirun.nodes'] = nn*nc
         
         #construct command line
         pyscriptname = self.pyscriptname

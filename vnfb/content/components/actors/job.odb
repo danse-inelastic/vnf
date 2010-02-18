@@ -63,14 +63,29 @@ class Actor(base):
         server.meta['tip'] = (
             'Please choose the server on which the job will be run'
             )
-        
-        numprocessors = pyre.inventory.str( 'numprocessors', default = 1 )
-        numprocessors.meta['label'] = 'Number of processors'
-        numprocessors.meta['tip'] = (
-            'Please input the number of processors'
+
+        numnodes = pyre.inventory.str( 'numnodes', default = 1 )
+        numnodes.meta['label'] = 'Number of nodes'
+        numnodes.meta['tip'] = (
+            'Please input the number of nodes'
             )
-        numprocessors.meta['tiponerror'] = (
-            'Please enter a positive integer'
+        numnodes.meta['rangeError'] = (
+            'Please enter a positive integer.'
+            )
+        numnodes.meta['capacityError'] = (
+            'Your request is larger than the number of nodes.'
+            )
+        
+        numcores = pyre.inventory.str( 'numcores', default = 1 )
+        numcores.meta['label'] = 'Number of cores'
+        numcores.meta['tip'] = (
+            'Please input the number of cores'
+            )
+        numcores.meta['rangeError'] = (
+            'Please enter a positive integer.'
+            )
+        numcores.meta['capacityError'] = (
+            'Your request is larger than the number of cores.'
             )
 
         walltime = pyre.inventory.str( 'walltime', default = 10)
@@ -231,11 +246,12 @@ class Actor(base):
         p = runinfodoc.paragraph()
         time_start = job.time_start
         cluster = job.server.dereference(director.clerk.db).short_description
-        nprocs = job.numprocessors
+        nnodes = job.numnodes
+        ncores = job.numcores
         walltime = job.walltime
         p.text = [
-            "This job was started at %s on %s processor(s) of cluster \"%s\" with time limit of %s hour(s)." % (
-            time_start, nprocs, cluster, walltime),
+            "This job was started at %s on %s nodes(s) %s core(s) of cluster \"%s\" with time limit of %s hour(s)." % (
+            time_start, nprocs, ncores, cluster, walltime),
             ]
 
         if job.state in ['finished', 'terminated', 'cancelled']:
@@ -383,20 +399,31 @@ class Actor(base):
         if False:#director.sentry.username == 'demo':
             # for demo user, we don't want them to use a lot of resources
             # so let us hide those fields for the resources
-            extra['numprocessors'] = 1,
+            extra['numcores'] = 1,
+            extra['numnodes'] = 1,
             extra['walltime'] = 1,
 
         else:
-            property = 'numprocessors'
+            property = 'numnodes'
             meta = getattr( self.Inventory, property ).meta
             field = form.text(
                 id = _input_widget_ID(property),
-                name = 'numprocessors',
+                name = 'numnodes',
                 label = meta['label'],
-                value = record.numprocessors,
+                value = record.numnodes,
                 )
             field.help = meta['tip']
 
+            property = 'numcores'
+            meta = getattr( self.Inventory, property ).meta
+            field = form.text(
+                id = _input_widget_ID(property),
+                name = 'walltime',
+                label = meta['label'],
+                value = record.numcores,
+                )
+            field.help = meta['tip']
+            
             property = 'walltime'
             meta = getattr( self.Inventory, property ).meta
             field = form.text(
@@ -406,6 +433,8 @@ class Actor(base):
                 value = record.walltime,
                 )
             field.help = meta['tip']
+            
+            
 
         form.submitbutton(label='submit')
 
@@ -421,11 +450,22 @@ class Actor(base):
         errors = {}
         
         short_description = self.inventory.short_description
-        server = self.inventory.server
+        serverId = self.inventory.server
+        #check to make sure user has not allocated more nodes/cores than server has
+        from vnfb.dom.Server import Server
+        serverRecord = self.db.fetchall(Server, where="id='%s'" % serverId)
         
-        numprocessors = self.inventory.numprocessors
-        if not isPositiveInteger(numprocessors):
-            errors['numprocessors'] = self.Inventory.numprocessors.meta['tiponerror']
+        numnodes = self.inventory.numnodes
+        if not isPositiveInteger(numnodes):
+            errors['numnodes'] = self.Inventory.numnodes.meta['rangeError']
+        if numnodes > serverRecord.nodes:
+            errors['numnodes'] = self.Inventory.numnodes.meta['capacityError']
+            
+        numcores = self.inventory.numcores
+        if not isPositiveInteger(numcores):
+            errors['numcores'] = self.Inventory.numcores.meta['rangeError']
+        if numcores > serverRecord.corespernode:
+            errors['numcores'] = self.Inventory.numcores.meta['capacityError']
             
         walltime = self.inventory.walltime
         if not isPositiveInteger(walltime):
@@ -437,8 +477,9 @@ class Actor(base):
         record = self._getJobRecord(director)
 
         record.short_description = short_description
-        record.server = server
-        record.numprocessors = numprocessors
+        record.server = serverId
+        record.numnodes = numnodes
+        record.numcores = numcores
         record.walltime = walltime
 
         director.clerk.updateRecordWithID(record)

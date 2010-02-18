@@ -2,7 +2,6 @@
 #
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
-#                                   Jiao Lin
 #                      California Institute of Technology
 #                      (C) 2007-2009  All Rights Reserved
 #
@@ -10,8 +9,6 @@
 #
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
-
-
 
 import journal
 info = journal.info( 'scheduler' )
@@ -26,17 +23,16 @@ def schedule( job, director ):
     server = job.server.dereference(director.clerk.db)
 
     # the scheduler 
-    Scheduler = schedulerfactory( server )
+    scheduler = schedulerfactory( server )
     launch = lambda cmd: director.csaccessor.execute(
         cmd, server, server_jobpath, suppressException=True)
-    scheduler = Scheduler(launch, prefix = 'source ~/.vnf')
+    scheduler = scheduler(launch, prefix = 'source ~/.vnf' )
 
     # submit job through scheduler
     walltime = job.walltime
     from pyre.units.time import hour
     walltime = walltime*hour
-    id1 = scheduler.submit( 'cd %s && sh run.sh' % server_jobpath, walltime=walltime,
-        jobid=job.id, numnodes = job.numnodes, corespernode = job.numcores )
+    id1 = scheduler.submit( 'cd %s && sh run.sh' % server_jobpath, walltime=walltime )
 
     # write id to the remote directory
     director.csaccessor.execute('echo "%s" > jobid' % id1, server, server_jobpath)
@@ -61,7 +57,7 @@ def check( job, director ):
     
     #scheduler
     server = director.clerk.dereference(job.server)
-    Scheduler = schedulerfactory( server )
+    scheduler = schedulerfactory( server )
 
     #remote job path
     server_jobpath = director.dds.abspath(job, server=server)
@@ -70,7 +66,7 @@ def check( job, director ):
     launch = lambda cmd: director.csaccessor.execute(
         cmd, server, server_jobpath, suppressException=True)
 
-    scheduler = Scheduler(launch, prefix = 'source ~/.vnf')
+    scheduler = scheduler(launch, prefix = 'source ~/.vnf' )
 
     jobstatus = scheduler.status( job.id_incomputingserver )
 
@@ -102,7 +98,7 @@ def cancel( job, director ):
     
     #scheduler
     server = director.clerk.dereference(job.server)
-    Scheduler = schedulerfactory( server )
+    scheduler = schedulerfactory( server )
 
     #remote job path
     server_jobpath = director.dds.abspath(job, server=server)
@@ -111,7 +107,7 @@ def cancel( job, director ):
     launch = lambda cmd: director.csaccessor.execute(
         cmd, server, server_jobpath, suppressException=True)
 
-    scheduler = Scheduler(launch, prefix = 'source ~/.vnf' )
+    scheduler = scheduler(launch, prefix = 'source ~/.vnf' )
 
     scheduler.delete( job.id_incomputingserver )
 
@@ -134,14 +130,14 @@ def cancel( job, director ):
 def schedulerfactory( server ):
     'obtain scheduler factory'
     #right now, scheduler info is saved in db record of the server
-    schedulerType = server.scheduler
-    if schedulerType in [ None, '', 'None' ]:
+    scheduler = server.scheduler
+    if scheduler in [ None, '', 'None' ]:
         raise RuntimeError, "scheduler not specified"
 
-    from vnfb.clusterscheduler import scheduler as factory
-    try: schedulerClass = factory(schedulerType)
-    except: raise NotImplementedError, 'scheduler %r' % schedulerClass
-    return schedulerClass
+    from vnf.clusterscheduler import scheduler as factory
+    try: scheduler = factory( scheduler )
+    except: raise NotImplementedError, 'scheduler %r' % scheduler
+    return scheduler
 
 
 from CSAccessor import RemoteAccessError

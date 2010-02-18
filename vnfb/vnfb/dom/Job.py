@@ -32,8 +32,11 @@ class Job(base):
     time_start = dsaw.db.timestamp(name='time_start')
     time_start.meta['tip'] = 'the time the job started'
     
-    numprocessors = dsaw.db.integer(name='numprocessors', default = 1)
-    numprocessors.meta['tip'] = 'the number of processors this job uses'
+    numnodes = dsaw.db.integer(name='numnodes', default = 1)
+    numnodes.meta['tip'] = 'the number of nodes this job uses'
+    
+    numcores = dsaw.db.integer(name='numcores', default = 1)
+    numcores.meta['tip'] = 'the number of cores this job uses'
 
     walltime = dsaw.db.integer(name='walltime', default = 1)
     walltime.meta['tip'] = 'limit of wall time. unit: hour'
@@ -68,6 +71,9 @@ class Job(base):
     computation.meta['tip'] = 'The type of computation'
 
     dependencies = dsaw.db.referenceSet(name='dependencies')
+    
+    def numprocessors(self):
+        return self.numcores*self.numnodes
 
     # pending internal-tasks to get this job going
     # pending_tasks = dsaw.db.referenceSet(name='pending_tasks')
