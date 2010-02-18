@@ -17,7 +17,7 @@ It is done by firing the commands and then parse the outputs.
 It is not a good implementation strategy because output formats
 could be changed constantly.
 Better way to do this is to use python bindings of torque.
-See several candidates at this moment, all without enoughh documentation:
+See several candidates at this moment, all without enough documentation:
 
 http://www-unix.mcs.anl.gov/openpbs/patches/pbs_python/README.txt
 https://subtrac.sara.nl/oss/pbs_python
@@ -45,11 +45,11 @@ class Scheduler:
     
     
     def submit( self, cmd, walltime=1*hour, jobid=1,
-        numnodes = 1, corespernode = 1):    
+        numnodes = 1, corespernode = 1, workingDirectory='.'):    
         walltime = _walltime_str(walltime)
         
-        cmds = [ r'echo \"%s\" | qsub -l walltime=%s -o %s -e %s -V -N %s -l nodes=%s:ppn=%s' % (
-            cmd, walltime, self.outfilename, self.errfilename, jobid, numnodes, corespernode) ]
+        cmds = [ r'echo \"%s\" | qsub -d %s -l walltime=%s -o %s -e %s -V -N %s -l nodes=%s:ppn=%s' % (
+            cmd, workingDirectory, walltime, self.outfilename, self.errfilename, jobid, numnodes, corespernode) ]
 
         failed, output, error = self._launch( cmds )
         if failed:
