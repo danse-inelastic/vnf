@@ -130,7 +130,6 @@ def new(director):
     server = servers[0]
     job.server = server
     
-    job.numprocessors = 1
     director.clerk.updateRecordWithID(job)
     
     return job

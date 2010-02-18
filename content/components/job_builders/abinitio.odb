@@ -45,7 +45,7 @@ class Builder(base):
         self._make_vasp_script1(computation)
 
         job = computation.getJob(self.db)
-        np = job.numprocessors
+        np = job.numprocessors()
         cmds = [
             '#!/usr/bin/env sh',
             '. ~/.abinitio-env',
