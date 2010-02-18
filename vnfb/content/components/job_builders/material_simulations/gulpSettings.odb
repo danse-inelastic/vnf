@@ -20,7 +20,6 @@ from vnfb.components.JobBuilder import JobBuilder as base
 
 class Builder(base):
 
-
     def __init__(self, name, path):
         base.__init__(self, name, path)
         self.convertHistoryFile = False
@@ -28,7 +27,6 @@ class Builder(base):
         self.zipXyzTrajectory = False
         self.createPhononModesFile = False
         return
-
 
     def render(self, computation, db=None, dds=None):
         # find out the file name of the gulp library file
@@ -65,35 +63,43 @@ class Builder(base):
             self.serializePhononArrays = True
 
         # 3. add run.sh
-        files.append( self._make_script1(computation) )
+        #files.append( self._make_script1(computation) )
         files.append( self._make_script(computation) )
         return files
-#        self._files = []
-#
-#        # make system
-#        self.domaccess = domaccess = self.director.retrieveDOMAccessor(
-#            'material_simulations/phonon_calculators/bvk')
-#        
-#        model = domaccess.getModel(computation.model.id)
-#        system = self._render_system(model)
-#        
-#        # make script
-#        self._make_script(computation)
-#
-#        #
-#        return self._files
-    
     
     def _make_script(self, computation):
         job = computation.getJob(self.db)
+        server_jobpath = director.dds.abspath(job, server=server)
         np = job.numprocessors()
-        cmds = [
-            '#!/usr/bin/env sh',
-            '. ~/.gulp-env',
-            'chmod +x %s' % self.shscript1name,
-            'mpirun -np %d ./%s' % (np, self.shscript1name),
-            '',
-            ]
+        #octopod
+        if job.server=='server000':
+            cmds = [
+                '#!/usr/bin/env bash',
+                '. ~/.gulp-env',
+                'mpirun -np %d gulp < %s > %s' % (np, computation.inputFile, computation.output_filename),
+                '',
+                ]
+        #octopod
+#        if job.server=='server000':
+#            cmds = [
+#                '#!/usr/bin/env bash',
+#                '. ~/.gulp-env',
+#                'chmod +x %s' % self.shscript1name,
+#                'mpirun -np %d ./%s' % (np, self.shscript1name),
+#                '',
+#                ]
+        #foxtrot
+        if job.server=='server002':
+            cmds = [
+                '#!/usr/sh',
+                '. ~/.gulp-env',
+                "export procs=`wc -l $PBS_NODEFILE | perl -ane 'print $F[0] . \"\n\"'`",
+                'mpirun --mca btl openib,sm,self --machinefile /home/jbrkeith/machinefile '+\
+                '-np %d gulp_openmpi < %s > %s' % (np, computation.inputFile, computation.output_filename),
+                '',
+                ]
+
+            
         if self.convertHistoryFile:
             cmds += [
             'postProcessGulp.py -convertHistoryFile=True -historyFile=gulp.his -ncFile=gulp.nc',
@@ -106,30 +112,25 @@ class Builder(base):
             cmds += [
             'postProcessGulp.py -historyFile=output.history -ncFile=output.nc',
                      ] 
-        # delete the enormous history file
-        if os.path.exists('gulp.nc'):
-            cmds += ['rm gulp.his']
         script = self.shscriptname
         path = self._path(script)
         open(path, 'w').write('\n'.join(cmds))
         return script
     
     
-    shscript1name = 'run1.sh'
-    def _make_script1(self, computation):     
-        cmds = [
-            '#!/usr/bin/env sh',
-            '. ~/.gulp-env',
-            'gulp < %s > %s' % (computation.inputFile, computation.output_filename),
-            '',
-            ]
-        script = self.shscript1name
-        path = self._path(script)
-        open(path, 'w').write('\n'.join(cmds))
-        return script
+#    shscript1name = 'run1.sh'
+#    def _make_script1(self, computation):     
+#        cmds = [
+#            '#!/usr/bin/env sh',
+#            '. ~/.gulp-env',
+#            'gulp < %s > %s' % (computation.inputFile, computation.output_filename),
+#            '',
+#            ]
+#        script = self.shscript1name
+#        path = self._path(script)
+#        open(path, 'w').write('\n'.join(cmds))
+#        return script
     
-
-import os
 
 
 def job_builder(name, path):

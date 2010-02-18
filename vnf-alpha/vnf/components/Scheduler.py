@@ -36,7 +36,8 @@ def schedule( job, director ):
     from pyre.units.time import hour
     walltime = walltime*hour
     id1 = scheduler.submit( 'cd %s && sh run.sh' % server_jobpath, walltime=walltime,
-        jobid=job.id, numnodes = job.numnodes, corespernode = job.numcores )
+        jobid=job.id, numnodes = job.numnodes, corespernode = job.numcores,
+        workingDirectory = server_jobpath)
 
     # write id to the remote directory
     director.csaccessor.execute('echo "%s" > jobid' % id1, server, server_jobpath)
