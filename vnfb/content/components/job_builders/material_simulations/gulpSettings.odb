@@ -64,15 +64,17 @@ class Builder(base):
 
         # 3. add run.sh
         #files.append( self._make_script1(computation) )
-        files.append( self._make_script(computation) )
+        files.append( self._make_script(computation, db, dds) )
         return files
     
-    def _make_script(self, computation):
+    def _make_script(self, computation, db=None, dds = None):
         job = computation.getJob(self.db)
-        server_jobpath = director.dds.abspath(job, server=server)
+        #server = director.clerk.dereference(job.server)
+        server = job.server.dereference(db)
+        server_jobpath = dds.abspath(job, server=server)
         np = job.numprocessors()
         #octopod
-        if job.server=='server000':
+        if job.server.id=='server000':
             cmds = [
                 '#!/usr/bin/env bash',
                 '. ~/.gulp-env',
@@ -89,7 +91,7 @@ class Builder(base):
 #                '',
 #                ]
         #foxtrot
-        if job.server=='server002':
+        if job.server.id=='server002':
             cmds = [
                 '#!/usr/sh',
                 '. ~/.gulp-env',

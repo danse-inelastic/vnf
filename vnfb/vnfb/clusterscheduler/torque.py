@@ -32,10 +32,8 @@ import math
 
 class Scheduler:
 
-
     outfilename = 'STDOUT.log'
     errfilename = 'STDERR.log'
-
     
     def __init__(self, launcher, prefix = None, outputstr_maxlen = 2048):
         self.prefix = prefix
