@@ -56,7 +56,7 @@ class Actor(base):
             'Please choose the server on which the job will be run'
             )
 
-        numnodes = pyre.inventory.str( 'numnodes', default = 1 )
+        numnodes = pyre.inventory.int( 'numnodes', default = 1 )
         numnodes.meta['label'] = 'Number of nodes'
         numnodes.meta['tip'] = (
             'Please input the number of nodes'
@@ -68,7 +68,7 @@ class Actor(base):
             'Your request is larger than the number of nodes.'
             )
         
-        numcores = pyre.inventory.str( 'numcores', default = 1 )
+        numcores = pyre.inventory.int( 'numcores', default = 1 )
         numcores.meta['label'] = 'Number of cores'
         numcores.meta['tip'] = (
             'Please input the number of cores'
@@ -450,7 +450,7 @@ class Actor(base):
         numnodes = self.inventory.numnodes
         if not isPositiveInteger(numnodes):
             errors['numnodes'] = self.Inventory.numnodes.meta['rangeError']
-        if numnodes > serverRecord.nodes:
+        if int(numnodes) > serverRecord.nodes:
             errors['numnodes'] = self.Inventory.numnodes.meta['capacityError']
             
         numcores = self.inventory.numcores
