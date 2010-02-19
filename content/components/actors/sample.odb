@@ -58,12 +58,14 @@ class Actor(base):
         filter_value    = self.inventory.filter_value
 
         label = self.inventory.label
+        mine = self.inventory.mine
         
         tableview = director.retrieveVisual(
             'sample/tableview',
             director,
             'sample',  # name of master table
             label           = label,
+            mine            = mine,
             filter_expr     = filter_expr,
             filter_key      = filter_key,
             filter_value    = filter_value,
@@ -76,7 +78,7 @@ class Actor(base):
         return tableview
         
 
-
+    # this is obsolete
     def createTable(self,
                     director,
                     order_by        = None,

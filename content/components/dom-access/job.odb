@@ -47,31 +47,31 @@ class Accessor(base):
         return t
 
 
-    def countJobs(self, filter=None, label=None):
-        q = self.makeQuery(filter=filter, label=label)
+    def countJobs(self, filter=None, label=None, mine=False):
+        q = self.makeQuery(filter=filter, label=label, mine=mine)
         return q.alias('tocount').count().execute().fetchone()[0]
     
-
+    
     def getJobIDs(
         self,
         filter=None, order_by=None, reverse_order=None, slice=None,
-        label=None,
+        label=None, mine=False,
         ):
         
         db = self.db
-        q = self.makeQuery(filter=filter, label=label)
+        q = self.makeQuery(filter=filter, label=label, mine=mine)
 
         if order_by:
             q = q.order_by(order_by)
         if slice:
             if reverse_order:
-                n = self.countJobs(filter=filter, label=label)
+                n = self.countJobs(filter=filter, label=label, mine=mine)
                 slice = n-slice[1], n-slice[0]
             q = sqlalchemy.select(
                 [q.alias('toslice')],
                 limit = slice[1]-slice[0],
                 offset = slice[0])
-
+            
         ret = q.execute().fetchall()
         
         if reverse_order:
@@ -82,35 +82,41 @@ class Accessor(base):
     def getJobRecords(
         self,
         filter=None, order_by=None, reverse_order=None, slice=None,
-        label=None,
+        label=None, mine=False,
         ):
         ids = self.getJobIDs(
             filter=filter, order_by=order_by, reverse_order=reverse_order, slice=slice,
-            label=label,
+            label=label, mine=mine,
             )
         return map(self.getJobRecord, ids)
 
 
-    def makeQuery(self, filter=None, label=None):
+    def makeQuery(self, filter=None, label=None, mine=False):
         if label:
             if filter: raise RuntimeError
-            return self.makeLabeledQuery(label)
+            return self.makeLabeledQuery(label, mine=mine)
         db = self.db
 
         st = db._tablemap.TableToSATable(JobTable)
-        q = sqlalchemy.select(
-            [st.c.id.label('id'),
-             st.c.short_description.label('short_description'),
-             st.c.state.label('state'),
-             st.c.time_start.label('time_start'),
-             ]
-            )
+        cols = [
+            st.c.id.label('id'),
+            st.c.short_description.label('short_description'),
+            st.c.state.label('state'),
+            st.c.time_start.label('time_start'),
+            ]
+        if mine:
+            username = self.director.sentry.username
+            where = st.c.creator == username
+            q = sqlalchemy.select(cols, where)
+        else:
+            q = sqlalchemy.select(cols)
+            
         if filter:
             q = sqlalchemy.select([q.alias('jobs')], whereclause=filter)
         return q
 
 
-    def makeLabeledQuery(self, label):
+    def makeLabeledQuery(self, label, mine=False):
         mastertablename = 'job'
         
         db = self.db
@@ -123,16 +129,22 @@ class Accessor(base):
             .alias('labelq')
         
         st = db._tablemap.TableToSATable(JobTable)
+
+        cols = [
+            st.c.id.label('id'),
+            st.c.short_description.label('short_description'),
+            st.c.state.label('state'),
+            st.c.time_start.label('time_start'),
+            labelq.c.entity.label('gptr'),
+            ]
         
-        q = sqlalchemy.select(
-            [st.c.id.label('id'),
-             st.c.short_description.label('short_description'),
-             st.c.state.label('state'),
-             st.c.time_start.label('time_start'),
-             labelq.c.entity.label('gptr'),
-             ],
-            st.c.globalpointer==labelq.c.entity,
-            )
+        # where = st.c.globalpointer==labelq.c.entity
+        where = 'globalpointer=labelq.entity'
+        if mine:
+            username = self.director.sentry.username
+            mine = "creator='%s'" % username
+            where = '%s and %s' % (where, mine)
+        q = sqlalchemy.select(cols, whereclause = where)
 
         return q
 

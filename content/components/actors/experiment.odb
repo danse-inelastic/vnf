@@ -57,12 +57,14 @@ class Actor(base):
         filter_value    = self.inventory.filter_value
 
         label = self.inventory.label
+        mine = self.inventory.mine
         
         tableview = director.retrieveVisual(
             'neutronexperiment/tableview',
             director,
             self.name,
             label           = label,
+            mine           = mine,
             filter_expr     = filter_expr,
             filter_key      = filter_key,
             filter_value    = filter_value,

@@ -46,12 +46,12 @@ class Accessor(base):
                 analysis = result
         return analysis
 
-    def countAnalyses(self, filter=None, label=None):
+    def countAnalyses(self, filter=None, label=None, mine=False):
         db = self.db
         
         tables = self.analysisTables()
         
-        qf = lambda table: self.makeQuery(table, filter=filter, label=label)
+        qf = lambda table: self.makeQuery(table, filter=filter, label=label, mine=mine)
 
         qs = map(qf, tables)
         
@@ -60,11 +60,11 @@ class Accessor(base):
 
 
     def getAnalysisRecords(self, filter=None, order_by=None, 
-                       reverse_order=None, slice=None, label=None):
+                       reverse_order=None, slice=None, label=None, mine=False):
         db = self.db
         self._debug.log('filter: %r, order_by: %r, slice: %r' % (filter, order_by, slice))
         tables = self.analysisTables()
-        qf = lambda table: self.makeQuery(table, filter=filter, label=label)
+        qf = lambda table: self.makeQuery(table, filter=filter, label=label, mine=mine)
 
         qs = map(qf, tables)
         q = sqlalchemy.union_all(*qs)
@@ -73,7 +73,7 @@ class Accessor(base):
             q = q.order_by(order_by)
         if slice:
             if reverse_order:
-                n = self.countAnalyses(filter=filter, label=label)
+                n = self.countAnalyses(filter=filter, label=label, mine=mine)
                 slice = n-slice[1], n-slice[0]
             q = sqlalchemy.select(
                 [q.alias('tmptoslice')],
@@ -97,32 +97,41 @@ class Accessor(base):
         return ret
 
 
-    def makeQuery(self, table, filter=None, label=None):
+    def makeQuery(self, table, filter=None, label=None, mine=False):
         'create a query for an analysis table with given filter'
         db = self.db
         
         if label:
             if filter: raise RuntimeError
-            return self.makeLabeledQuery(label, table)
+            return self.makeLabeledQuery(label, table, mine=mine)
         
-        sGP = db._tablemap.TableToSATable(global_pointer)
+        sGP = db._tablemap.TableToSATable(global_pointer).alias('gptrs')
         st = db._tablemap.TableToSATable(table)   
-        
-        q = sqlalchemy.select(
-            [st.c.id.label('id'),
-             st.c.short_description.label('short_description'),
-             sGP.c.type.label('type'),
-             st.c.date.label('date'),
-             st.c.globalpointer.label('gptr'),
-             ],
-            st.c.globalpointer==sGP.c.id,
-            )
+
+        #
+        cols = [
+            st.c.id.label('id'),
+            st.c.short_description.label('short_description'),
+            sGP.c.type.label('type'),
+            st.c.date.label('date'),
+            st.c.globalpointer.label('gptr'),
+            ]
+        # where = st.c.globalpointer==sGP.c.id
+        where = 'globalpointer=gptrs.id'
+        if mine:
+            username = self.director.sentry.username
+            mine = "creator='%s'" % username
+            where = '%s and %s' % (where, mine)
+        #
+        q = sqlalchemy.select(cols, where)
+
+        #
         if filter:
             q = sqlalchemy.select([q.alias('analysis')], whereclause=filter)
         return q
 
 
-    def makeLabeledQuery(self, label, table):
+    def makeLabeledQuery(self, label, table, mine=False):
         'create a query for an analysis table with a given filter'
         db = self.db
         
@@ -144,13 +153,20 @@ class Accessor(base):
             labelq.c.entity==sGP.c.id,
             ).alias('q1')
 
-        q = sqlalchemy.select(
-            [st.c.id.label('id'),
-             q1.c.type.label('type'),
-             st.c.globalpointer.label('gptr'),
-             ],
-            st.c.globalpointer==q1.c.entity,
-            )
+        cols = [
+            st.c.id.label('id'),
+            st.c.short_description.label('short_description'),
+            st.c.date.label('date'),
+            st.c.globalpointer.label('gptr'),
+            q1.c.type.label('type'),
+            ]
+        # where = st.c.globalpointer==q1.c.entity,
+        where = 'globalpointer=q1.entity'
+        if mine:
+            username = self.director.sentry.username
+            mine = "creator='%s'" % username
+            where = '%s and %s' % (where, mine)
+        q = sqlalchemy.select(cols, where)
         
         return q
 

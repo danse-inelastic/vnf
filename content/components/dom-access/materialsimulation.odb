@@ -23,18 +23,18 @@ class Accessor(base):
     def __init__(self):
         super(Accessor, self).__init__('materialsimulation-accessor')
         return
-
-
+    
+    
     def getMaterialSimulation(self, type, id):
         return self.getRecordByID(type, id)
-
-
-    def countSimulations(self, filter=None, label=None):
+    
+    
+    def countSimulations(self, filter=None, label=None, mine=False):
         db = self.db
         
         tables = self.simulationTables()
         
-        qf = lambda table: self.makeQuery(table, filter=filter, label=label)
+        qf = lambda table: self.makeQuery(table, filter=filter, label=label, mine=mine)
 
         qs = map(qf, tables)
         
@@ -43,12 +43,12 @@ class Accessor(base):
 
 
     def getSimulations(self, filter=None, order_by=None, 
-                       reverse_order=None, slice=None, label=None):
+                       reverse_order=None, slice=None, label=None, mine=False):
         db = self.db
 
         self._debug.log('filter: %r, order_by: %r, slice: %r' % (filter, order_by, slice))
         tables = self.simulationTables()
-        qf = lambda table: self.makeQuery(table, filter=filter, label=label)
+        qf = lambda table: self.makeQuery(table, filter=filter, label=label, mine=mine)
 
         qs = map(qf, tables)
         q = sqlalchemy.union_all(*qs)
@@ -57,7 +57,7 @@ class Accessor(base):
             q = q.order_by(order_by)
         if slice:
             if reverse_order:
-                n = self.countSimulations(filter=filter, label=label)
+                n = self.countSimulations(filter=filter, label=label, mine=mine)
                 slice = n-slice[1], n-slice[0]
             q = sqlalchemy.select(
                 [q.alias('tmptoslice')],
@@ -81,24 +81,32 @@ class Accessor(base):
         return ret
 
 
-    def makeQuery(self, table, filter=None, label=None):
+    def makeQuery(self, table, filter=None, label=None, mine=False):
         'create a query for a material simulation table with given filter'
 
         db = self.db
         
         if label:
             if filter: raise RuntimeError
-            return self.makeLabeledQuery(label, table)
+            return self.makeLabeledQuery(label, table, mine=mine)
 
         q = self._select_simulation_withmatterdescription_clause(table, db)
-        
+
+        if mine:
+            username = self.director.sentry.username
+            mine = "creator='%s'" % username
+            if filter:
+                filter = '(%s) and %s' % (filter, mine)
+            else:
+                filter = mine
+
         if filter:
             q = sqlalchemy.select([q.alias('matsim')], whereclause=filter)
             
         return q
 
 
-    def makeLabeledQuery(self, label, table):
+    def makeLabeledQuery(self, label, table, mine=False):
         'create a query for a matter table with given filter'
         db = self.db
 
@@ -106,16 +114,23 @@ class Accessor(base):
         simq = self._select_simulation_withmatterdescription_clause(table, db)
         simq = simq.alias('sims')
 
-        q = sqlalchemy.select(
-            [simq.c.id.label('id'),
-             simq.c.short_description.label('short_description'),
-             labelq.c.type.label('type'),
-             simq.c.date.label('date'),
-             simq.c.matter.label('matter'),
-             simq.c.gptr.label('gptr'),
-             ],
-            simq.c.gptr==labelq.c.entity,
-            )
+        cols = [
+            simq.c.id.label('id'),
+            simq.c.short_description.label('short_description'),
+            labelq.c.type.label('type'),
+            simq.c.date.label('date'),
+            simq.c.matter.label('matter'),
+            simq.c.gptr.label('gptr'),
+            simq.c.creator.label('creator'),
+            ]
+        # where = simq.c.gptr==labelq.c.entity
+        where = 'sims.gptr=labeled.entity'
+        if mine:
+            username = self.director.sentry.username
+            mine = "sims.creator='%s'" % username
+            where = '%s and %s' % (where, mine)
+        
+        q = sqlalchemy.select(cols, whereclause=where)
         
         return q
 
@@ -161,16 +176,17 @@ class Accessor(base):
         
         matterq = self._select_matter_clause(db)
 
-        q = sqlalchemy.select(
-            [simq.c.id.label('id'),
-             simq.c.short_description.label('short_description'),
-             simq.c.type.label('type'),
-             simq.c.date.label('date'),
-             simq.c.gptr.label('gptr'),
-             matterq.c.short_description.label('matter'),
-             ],
-            simq.c.matterid==matterq.c.id,
-            )
+        cols = [
+            simq.c.id.label('id'),
+            simq.c.short_description.label('short_description'),
+            simq.c.type.label('type'),
+            simq.c.date.label('date'),
+            simq.c.gptr.label('gptr'),
+            simq.c.creator.label('creator'),
+            matterq.c.short_description.label('matter'),
+            ]
+        where = simq.c.matterid==matterq.c.id
+        q = sqlalchemy.select(cols, where)
         return q
 
 
@@ -200,24 +216,26 @@ class Accessor(base):
         sGP = db._tablemap.TableToSATable(global_pointer)
         st = db._tablemap.TableToSATable(table)
 
+        cols = [
+            st.c.id.label('id'),
+            st.c.short_description.label('short_description'),
+            sGP.c.type.label('type'),
+            st.c.date.label('date'),
+            st.c.matter.label('matterid'),
+            st.c.creator.label('creator'),
+            st.c.globalpointer.label('gptr'),
+            ]
+        where = st.c.globalpointer==sGP.c.id
         try:
-            simq = sqlalchemy.select(
-                [st.c.id.label('id'),
-                 st.c.short_description.label('short_description'),
-                 sGP.c.type.label('type'),
-                 st.c.date.label('date'),
-                 st.c.matter.label('matterid'),
-                 st.c.globalpointer.label('gptr'),
-                 ],
-                st.c.globalpointer==sGP.c.id,
-                )
+            simq = sqlalchemy.select(cols, where)
         except:
             import traceback
             raise RuntimeError, 'Failed to select required columns from simulation table %s.\n'\
                   'Original exception was:\n%s' % (table.getTableName(), traceback.format_exc())
 
         return simq
-    
+
+
 from dsaw.db.VersatileReference import global_pointer
 import sqlalchemy
 
