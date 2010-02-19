@@ -19,11 +19,8 @@
 #   loads a job builder and than asks the job builder to render the job
 #   out of a computation. The job builder is dynamically loaded depending
 #   on the type of the computation.
-
-
 from luban.content import load, select
 import luban.content as lc
-
 
 from luban.content.Form import Form
 from luban.content.Document import Document
@@ -31,15 +28,10 @@ from luban.content.ProgressBar import ProgressBar
 from luban.content.Form import Form
 from luban.content.Link import Link
 
-
 from vnfb.utils.job import check
-
-
 from vnfb.components.MasterTable import FilterSyntaxError, MasterTableActor as base
 
-
 class Actor(base):
-
 
     class Inventory(base.Inventory):
 
@@ -418,7 +410,7 @@ class Actor(base):
             meta = getattr( self.Inventory, property ).meta
             field = form.text(
                 id = _input_widget_ID(property),
-                name = 'walltime',
+                name = 'numcores',
                 label = meta['label'],
                 value = record.numcores,
                 )
@@ -453,7 +445,7 @@ class Actor(base):
         serverId = self.inventory.server
         #check to make sure user has not allocated more nodes/cores than server has
         from vnfb.dom.Server import Server
-        serverRecord = self.db.fetchall(Server, where="id='%s'" % serverId)
+        serverRecord = director.clerk.db.fetchall(Server, where="id='%s'" % serverId)[0]
         
         numnodes = self.inventory.numnodes
         if not isPositiveInteger(numnodes):

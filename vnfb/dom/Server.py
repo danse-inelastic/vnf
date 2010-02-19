@@ -22,10 +22,10 @@ class Server(base):
     sname = dsaw.db.varchar( name='short_description', length = 128)
     sname.meta['tip'] = 'Server name'
 
-    nodes    = dsaw.db.integer( name='nodes', default=0)
+    nodes    = dsaw.db.integer( name='nodes', default=1)
     nodes.meta['tip'] = 'Number of nodes on the server'
 
-    corespernode = dsaw.db.integer( name='corespernode', default=0)
+    corespernode = dsaw.db.integer( name='corespernode', default=1)
     corespernode.meta['tip'] = 'Number of cores per node. It is approximate, if it is different on nodes'
 
     short_description = dsaw.db.varchar( name='short_description', length = 128)
