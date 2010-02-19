@@ -93,9 +93,10 @@ class Builder(base):
         #foxtrot
         if job.server.id=='server002':
             cmds = [
-                '#!/usr/sh',
+                '#!/bin/sh',
+                '. ~/.vnf',
                 '. ~/.gulp-env',
-                "export procs=`wc -l $PBS_NODEFILE | perl -ane 'print $F[0] . \"\n\"'`",
+                #"export procs=`wc -l $PBS_NODEFILE | perl -ane 'print $F[0] . \"\n\"'`",
                 'mpirun --mca btl openib,sm,self --machinefile /home/jbrkeith/machinefile '+\
                 '-np %d gulp_openmpi < %s > %s' % (np, computation.inputFile, computation.output_filename),
                 '',

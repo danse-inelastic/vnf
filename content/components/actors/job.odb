@@ -243,7 +243,7 @@ class Actor(base):
         walltime = job.walltime
         p.text = [
             "This job was started at %s on %s nodes(s) %s core(s) of cluster \"%s\" with time limit of %s hour(s)." % (
-            time_start, nprocs, ncores, cluster, walltime),
+            time_start, nnodes, ncores, cluster, walltime),
             ]
 
         if job.state in ['finished', 'terminated', 'cancelled']:
