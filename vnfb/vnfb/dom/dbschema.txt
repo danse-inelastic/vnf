@@ -91,3 +91,6 @@ removed ACL1, ACL2 etc
 added column "context" to table "roles".
 added table "user_has_roles".
 
+Feb 18, 2010
+"atomicstructures": added column "creator"
+"jobs": column numprocessors renamed to numnodes, added column numcores

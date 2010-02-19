@@ -22,7 +22,7 @@ import luban.content as lc
 def visual(
     director, name,
     filter_expr=None, filter_key=None, filter_value=None,
-    label=None,
+    label=None, mine=False,
     order_by=None, reverse_order=None,
     number_records_per_page=None, page_number=None,
     ):
@@ -31,17 +31,20 @@ def visual(
     domaccess = director.retrieveDOMAccessor('job')
         
     from vnfb.components.MasterTable import MasterTableFactory, filtercompiler
-    def countrecords(filter, label=None):
-        return domaccess.countJobs(filter, label=label)
-    def createtable(order_by, reverse_order, slice, filter, label=None):
+    def countrecords(filter, label=None, mine=False):
+        return domaccess.countJobs(filter, label=label, mine=mine)
+    def createtable(order_by, reverse_order, slice, filter, label=None, mine=False):
         return createJobTable(
             director, domaccess,
             order_by=order_by,
             reverse_order=reverse_order,
             slice=slice,
             filter=filter,
-            label=label)
-    compilefilter = filtercompiler(columns, measure2dbcol)
+            label=label,
+            mine=mine
+            )
+    from vnfb.content.visuals.table.job import model
+    compilefilter = filtercompiler(columns, measure2dbcol, model=model)
 
     smartlabelaccess = director.retrieveDOMAccessor('smartlabel')
     def filterfromlabel(label):
@@ -66,7 +69,7 @@ def visual(
         )
 
     tableview = factory.create(
-        label = label,
+        label = label, mine = mine,
         filter_expr=filter_expr, filter_key=filter_key, filter_value=filter_value,
         order_by=order_by,
         reverse_order=reverse_order,
@@ -82,12 +85,15 @@ def createJobTable(
     director, domaccess,
     order_by=None, reverse_order=None, slice=None,
     filter=None,
-    label=None):
+    label=None,
+    mine=False,
+    ):
 
     records = domaccess.getJobRecords(
         order_by=order_by, reverse_order=reverse_order, slice=slice,
         filter=filter,
         label=label,
+        mine=mine,
         )
 
     cols = columns

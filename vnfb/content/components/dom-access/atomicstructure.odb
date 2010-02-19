@@ -109,8 +109,8 @@ class Accessor(base):
         return self.isTransient(record=r)
 
 
-    def countAtomicStructures(self, filter=None, label=None):
-        q = self.makeQuery(filter=filter, label=label)
+    def countAtomicStructures(self, filter=None, label=None, mine=False):
+        q = self.makeQuery(filter=filter, label=label, mine=mine)
         return q.alias('tocount').count().execute().fetchone()[0]
     
 
@@ -118,16 +118,17 @@ class Accessor(base):
         self,
         filter=None, order_by=None, reverse_order=None, slice=None,
         label=None,
+        mine=False,
         ):
         
         db = self.db
-        q = self.makeQuery(filter=filter, label=label)
+        q = self.makeQuery(filter=filter, label=label, mine=mine)
 
         if order_by:
             q = q.order_by(order_by)
         if slice:
             if reverse_order:
-                n = self.countAtomicStructures(filter=filter, label=label)
+                n = self.countAtomicStructures(filter=filter, label=label, mine=mine)
                 slice = n-slice[1], n-slice[0]
             q = sqlalchemy.select(
                 [q.alias('toslice')],
@@ -145,34 +146,42 @@ class Accessor(base):
         self,
         filter=None, order_by=None, reverse_order=None, slice=None,
         label=None,
+        mine=False,
         ):
         ids = self.getAtomicStructureIDs(
             filter=filter, order_by=order_by, reverse_order=reverse_order, slice=slice,
-            label=label,
+            label=label, mine=mine,
             )
         return map(self.getAtomicStructureRecord, ids)
 
 
-    def makeQuery(self, filter=None, label=None):
+    def makeQuery(self, filter=None, label=None, mine=False):
         if label:
             if filter: raise RuntimeError
-            return self.makeLabeledQuery(label)
+            return self.makeLabeledQuery(label, mine=mine)
         db = self.db
 
+        # query
         st = db._tablemap.TableToSATable(StructureTable)
-        q = sqlalchemy.select(
-            [st.c.id.label('id'),
-             st.c.short_description.label('short_description'),
-             st.c.chemical_formula.label('chemical_formula'),
-             st.c.date.label('date'),
-             ]
-            )
+        cols = [
+            st.c.id.label('id'),
+            st.c.short_description.label('short_description'),
+            st.c.chemical_formula.label('chemical_formula'),
+            st.c.date.label('date'),
+            ]
+        if mine:
+            username = self.director.sentry.username
+            q = sqlalchemy.select(cols, st.c.creator==username)
+        else:
+            q = sqlalchemy.select(cols)
+
+        # filter query
         if filter:
             q = sqlalchemy.select([q.alias('atomicstructure')], whereclause=filter)
         return q
 
 
-    def makeLabeledQuery(self, label):
+    def makeLabeledQuery(self, label, mine=False):
         db = self.db
         sL = db._tablemap.TableToSATable(Label)
         labelq = sqlalchemy.select(
@@ -184,15 +193,20 @@ class Accessor(base):
         
         st = db._tablemap.TableToSATable(StructureTable)
         
-        q = sqlalchemy.select(
-            [st.c.id.label('id'),
-             st.c.short_description.label('short_description'),
-             st.c.chemical_formula.label('chemical_formula'),
-             st.c.date.label('date'),
-             labelq.c.entity.label('gptr'),
-             ],
-            st.c.globalpointer==labelq.c.entity,
-            )
+        cols = [
+            st.c.id.label('id'),
+            st.c.short_description.label('short_description'),
+            st.c.chemical_formula.label('chemical_formula'),
+            st.c.date.label('date'),
+            labelq.c.entity.label('gptr'),
+            ]
+        # where = st.c.globalpointer==labelq.c.entity
+        where = 'globalpointer=labelq.entity'
+        if mine:
+            username = self.director.sentry.username
+            mine = "creator='%s'" % username
+            where = '%s and %s' % (where, mine)
+        q = sqlalchemy.select(cols, where)
 
         return q
 

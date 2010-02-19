@@ -98,20 +98,22 @@ class Actor(base):
         filter_value    = self.inventory.filter_value
 
         label = self.inventory.label
+        mine = self.inventory.mine
         
         tableview = director.retrieveVisual(
-                                            'atomicstructure/tableview',
-                                            director,
-                                            self.name,
-                                            label           = label,
-                                            filter_expr     = filter_expr,
-                                            filter_key      = filter_key,
-                                            filter_value    = filter_value,
-                                            order_by        = order_by,
-                                            reverse_order   = reverse_order,
-                                            number_records_per_page = number_records_per_page,
-                                            page_number     = page_number
-                                            )
+            'atomicstructure/tableview',
+            director,
+            self.name,
+            label           = label,
+            mine            = mine,
+            filter_expr     = filter_expr,
+            filter_key      = filter_key,
+            filter_value    = filter_value,
+            order_by        = order_by,
+            reverse_order   = reverse_order,
+            number_records_per_page = number_records_per_page,
+            page_number     = page_number
+            )
         return tableview
 
 

@@ -40,10 +40,10 @@ columns = [
 
 
 
-def view(cols, editable=True):
+def view(cols, editable=False):
     global columns
     columns = filter(lambda col: col.measure in cols, columns)
-    return View(columns=columns, editable=False)
+    return View(columns=columns, editable=editable)
 
 
 class Formatter:

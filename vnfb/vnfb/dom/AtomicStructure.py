@@ -15,8 +15,8 @@ from Lattice import Lattice
 from matter.orm.Structure import Structure
 
 # db table
-from _ import o2t
-StructureTable = o2t(Structure)
+from _ import o2t, AbstractOwnedObjectBase
+StructureTable = o2t(Structure, {'subclassFrom': AbstractOwnedObjectBase})
 
 
 # view

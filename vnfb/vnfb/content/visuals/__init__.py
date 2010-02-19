@@ -4,21 +4,12 @@
 #
 #                                   Jiao Lin
 #                      California Institute of Technology
-#                      (C) 2006-2009  All Rights Reserved
+#                      (C) 2006-2010  All Rights Reserved
 #
 # {LicenseText}
 #
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
-
-
-from dsaw.model.visitors.Object2DBTable import Object2DBTable
-o2t = Object2DBTable()
-
-from dsaw.db.Table import Table
-
-from AbstractOwnedObjectBase import AbstractOwnedObjectBase
-
 
 # version
 __id__ = "$Id$"

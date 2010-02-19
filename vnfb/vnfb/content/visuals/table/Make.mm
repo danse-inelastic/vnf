@@ -11,7 +11,7 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 PROJECT = vnfb
-PACKAGE = content/tables
+PACKAGE = content/visuals/table
 
 
 # directory structure
@@ -38,9 +38,11 @@ EXPORT_PYTHON_MODULES = \
 	analysis.py \
 	atomicstructure.py \
 	experiment.py \
+	job.py \
 	materialsimulation.py \
 	sample.py \
 	selectoneatomicstructure.py \
+	selectonesample.py \
 	__init__.py \
 
 

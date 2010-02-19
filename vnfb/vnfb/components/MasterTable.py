@@ -90,6 +90,7 @@ class MasterTableFactory(object):
         filter_expr=None, filter_key=None, filter_value=None,
         order_by=None, reverse_order=None,
         number_records_per_page=None, page_number=None,
+        mine = False,
         ):
         name = self.name
         
@@ -134,15 +135,18 @@ class MasterTableFactory(object):
         view.add(titlebar)
 
         # view indicator
-        view_indicator = self.createViewIndicator(name, view_label)
-        titlebar.add(view_indicator)
+        left = titlebar.section(Class='master-table-titlebar')
+        view_indicator = self.createViewIndicator(name, view_label, mine=mine)
+        left.add(view_indicator)
+        if not mine:
+            left.add(self.createMineButton(name))
         
         # toolbar with widgets with actions that can change the items in the table
         # such as filtering and creating. sorting and navigating are not such actions
         right = titlebar.section(Class='master-table-toptoolbar-container')
         toolbar_changeview = self.createTopToolbar(
             name,
-            label,
+            label, mine,
             filter_expr, filter_key, filter_value,
             number_records_per_page,
             order_by, reverse_order,
@@ -157,7 +161,7 @@ class MasterTableFactory(object):
         self.addSortingControls(
             sortingtoolbar,
             name=name,
-            label=label,
+            label=label, mine=mine,
             filter_expr=filter_expr, filter_key=filter_key, filter_value=filter_value,
             order_by=order_by, reverse_order=reverse_order,
             number_records_per_page=number_records_per_page,
@@ -172,7 +176,7 @@ class MasterTableFactory(object):
         # navigation bar (previous, next...)
         bar = self.createNavigationBar(
             name,
-            label,
+            label, mine,
             filter_expr, filter_key, filter_value, filter,
             slice, number_records_per_page, page_number,
             order_by, reverse_order,
@@ -187,6 +191,7 @@ class MasterTableFactory(object):
             slice=slice,
             filter=filter,
             label=label in self.labels and label or None,
+            mine = mine,
             )
         table.addClass('master-table')
         view.add(table)
@@ -210,7 +215,7 @@ class MasterTableFactory(object):
         # navigation bar (previous, next...)
         bar = self.createNavigationBar(
             name,
-            label,
+            label, mine,
             filter_expr, filter_key, filter_value, filter,
             slice, number_records_per_page, page_number,
             order_by, reverse_order,
@@ -221,18 +226,40 @@ class MasterTableFactory(object):
         return view
 
 
-    def createViewIndicator(self, name, label):
-        view_indicator = SplitSection(id='view-indicator')
-        view_indicator.add(Link(label=name.capitalize()+'s', onclick=load(actor=name)))
-        view_indicator.paragraph(text=['/ '], Class='splitter')
-        view_indicator.paragraph(text=[label])
-        return view_indicator
+    def createMineButton(self, name):
+        label='show my %s only' % name
+        action = load(actor=name, mine=True)
+        b = Button(label=label, onclick=action, Class='show-my-records')
+        return b
+
+
+    def createViewIndicator(self, name, label, mine=False):
+        path = []
+
+        # root
+        rootlabel = name.capitalize()
+        rootaction = load(actor=name)
+        root = rootlabel, rootaction
+        path.append(root)
+
+        # "my ..."
+        if mine:
+            minelabel = 'my %s' % name
+            mineaction = load(actor=name, mine=True)
+            mine = minelabel, mineaction
+            path.append(mine)
+
+        # 
+        path.append(label)
+
+        from vnfb.content.visuals.view_indicator import visual
+        return visual(path)
 
 
     def createTopToolbar(
         self,
         name,
-        label,
+        label, mine,
         filter_expr, filter_key, filter_value,
         number_records_per_page,
         order_by, reverse_order,
@@ -249,6 +276,7 @@ class MasterTableFactory(object):
             filter_expr, filter_key, filter_value,
             number_records_per_page,
             order_by, reverse_order,
+            mine,
             )
         toolbar_changeview.add(filter_ctrl_container)
 
@@ -259,7 +287,7 @@ class MasterTableFactory(object):
         # labeled selector
         labeled_widget = self.createCollectionSelectorWidget(
             name,
-            label,
+            label, mine,
             number_records_per_page,
             reverse_order,
             )
@@ -320,7 +348,7 @@ class MasterTableFactory(object):
 
     def createCollectionSelectorWidget(
         self, name,
-        label,
+        label, mine,
         number_records_per_page,
         reverse_order,
         ):
@@ -348,6 +376,7 @@ class MasterTableFactory(object):
             order_by = select(id=self._orderByWidgetID(name)).getAttr('value'),
             reverse_order = reverse_order,
             label = select(element=field).getAttr('selection'),
+            mine = mine,
             )
 
         doc.add(field)
@@ -396,6 +425,7 @@ class MasterTableFactory(object):
         filter_expr, filter_key, filter_value,
         number_records_per_page,
         order_by, reverse_order,
+        mine,
         ):
 
         show_advanced_widget = bool(filter_expr)
@@ -414,6 +444,7 @@ class MasterTableFactory(object):
             number_records_per_page,
             order_by, reverse_order,
             filter_expr,
+            mine,
             )
         advanced.hidden = not show_advanced_widget
         filter_ctrl_container.add(advanced)
@@ -423,6 +454,7 @@ class MasterTableFactory(object):
             filter_key, filter_value,
             number_records_per_page,
             order_by, reverse_order,
+            mine,
             )
         basic.hidden = show_advanced_widget
         filter_ctrl_container.add(basic)
@@ -435,6 +467,7 @@ class MasterTableFactory(object):
         filter_key, filter_value,
         number_records_per_page,
         order_by, reverse_order,
+        mine,
         ):
         basic = Document(
             id=self._basicFilterWidgetID(name),
@@ -467,6 +500,7 @@ class MasterTableFactory(object):
             order_by = order_by,
             filter_key = select(element=selector).getAttr('value'),
             filter_value = select(element=field).getAttr('value'),
+            mine = mine,
             )
         selector.onchange = select(element=field).setAttr(value='')
 
@@ -484,6 +518,7 @@ class MasterTableFactory(object):
         number_records_per_page,
         order_by, reverse_order,
         filter_expr,
+        mine,
         ):
         
         advanced = Document(
@@ -505,6 +540,7 @@ class MasterTableFactory(object):
             reverse_order = reverse_order,
             order_by = order_by,
             filter_expr = select(element=field).formfield('getValue'),
+            mine = mine,
             )
         advanced.add(field)
 
@@ -520,7 +556,7 @@ class MasterTableFactory(object):
     def addSortingControls(
         self, toolbar,
         name=None,
-        label=None,
+        label=None, mine=False,
         filter_expr=None, filter_key=None, filter_value=None,
         order_by=None, reverse_order=None,
         number_records_per_page=None,
@@ -545,7 +581,7 @@ class MasterTableFactory(object):
             order_by = select(element=selector).getAttr('value'),
             reverse_order = reverse_order,
             filter_expr = filter_expr, filter_key=filter_key, filter_value=filter_value,
-            label=label,
+            label=label, mine=mine,
             )
         sorting_container.add(selector)
         
@@ -570,7 +606,7 @@ class MasterTableFactory(object):
             reverse_order = select(element=selector).getAttr('value'),
             order_by = order_by,
             filter_expr = filter_expr, filter_key=filter_key, filter_value=filter_value,
-            label=label,
+            label=label, mine=mine,
             )
         reverse_order_container.add(selector)
 
@@ -593,7 +629,7 @@ class MasterTableFactory(object):
 
     def createNavigationBar(
         self, name,
-        label,
+        label, mine,
         filter_expr, filter_key, filter_value, filter,
         slice, number_records_per_page, page_number,
         order_by, reverse_order,
@@ -601,8 +637,10 @@ class MasterTableFactory(object):
         ):
         
         # get a total count
-        totalcount = self.countrecords(filter=filter, 
-                label=label!=self.dummylabel and label in self.labels and label or None)
+        totalcount = self.countrecords(
+            filter=filter, 
+            label=label!=self.dummylabel and label in self.labels and label or None,
+            mine=mine)
         if slice[1] > totalcount: slice[1] = totalcount
         lastpage = (totalcount-1)/number_records_per_page
         # 
@@ -620,7 +658,7 @@ class MasterTableFactory(object):
                 order_by = order_by or '',
                 reverse_order = reverse_order,
                 filter_expr=filter_expr, filter_key=filter_key, filter_value=filter_value,
-                label=label,
+                label=label, mine=mine,
                 )
             first = bar.link(id=id, label='first',onclick=onclick)
 
@@ -634,7 +672,7 @@ class MasterTableFactory(object):
                 order_by = order_by or '',
                 reverse_order = reverse_order,
                 filter_expr=filter_expr, filter_key=filter_key, filter_value=filter_value,
-                label=label,
+                label=label, mine=mine,
                 )
             left = bar.link(id=id, label='previous',onclick=onclick)
         #
@@ -654,7 +692,7 @@ class MasterTableFactory(object):
                 order_by = order_by or '',
                 reverse_order = reverse_order,
                 filter_expr = filter_expr, filter_key=filter_key, filter_value=filter_value,
-                label=label,
+                label=label, mine=mine,
                 )
             right = bar.link(id=id, label='next', onclick=onclick)
 
@@ -668,7 +706,7 @@ class MasterTableFactory(object):
                 order_by = order_by or '',
                 reverse_order = reverse_order,
                 filter_expr=filter_expr, filter_key=filter_key, filter_value=filter_value,
-                label=label,
+                label=label, mine=mine,
                 )
             last = bar.link(id=id,label='last',onclick=onclick)
 
@@ -730,6 +768,8 @@ class MasterTableActor(base):
         filter_value = pyre.inventory.str(name='filter_value')
 
         label = pyre.inventory.str(name='label', default='')
+
+        mine = pyre.inventory.bool(name='mine', default=False)
         
 
     def showListView(self, *args, **kwds):

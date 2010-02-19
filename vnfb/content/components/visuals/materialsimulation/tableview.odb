@@ -10,10 +10,9 @@
 #
 
 
-# The table view to select one sample(assembly).
-# This is the visual for the whole table view that includes a table and
-# many controls. 
-# it is different from sample/table-selectone which only is the table itself.
+# this is the visual for the whole table view that includes a table and
+# many controls.
+# it is different from materialsimulation/table which only is the table itself.
 
 
 from luban.content import load, select, alert
@@ -29,12 +28,11 @@ def visual(
     ):
     # name: name of table view
     # 
-    domaccess = director.retrieveDOMAccessor('sample')
-    targettablename = 'sample'
-    
+    domaccess = director.retrieveDOMAccessor(name)
+        
     from vnfb.components.MasterTable import MasterTableFactory, filtercompiler
     def countrecords(filter, label=None, mine=False):
-        return domaccess.countSamples(filter, label=label, mine=mine)
+        return domaccess.countSimulations(filter, label=label, mine=mine)
     def createtable(order_by, reverse_order, slice, filter, label=None, mine=False):
         return createTable(
             director, domaccess,
@@ -43,19 +41,18 @@ def visual(
             slice=slice,
             filter=filter,
             label=label,
-            mine=mine,
-            )
-    from vnfb.content.visuals.table.selectonesample import model
+            mine=mine)
+    from vnfb.content.visuals.table.materialsimulation import model
     compilefilter = filtercompiler(columns, measure2dbcol, model=model)
 
     smartlabelaccess = director.retrieveDOMAccessor('smartlabel')
     def filterfromlabel(label):
         return smartlabelaccess.createFilterExprFromLabel(
-            label, targettable = targettablename)
-    smartlabels = smartlabelaccess.getLabelNames(targettable=targettablename)
+            label, name)
+    smartlabels = smartlabelaccess.getLabelNames(name)
 
     labelaccess = director.retrieveDOMAccessor('label')
-    labels = labelaccess.getLabelNames(targettable=targettablename)
+    labels = labelaccess.getLabelNames(name)
 
     factory = MasterTableFactory(
         name, countrecords, createtable,
@@ -66,34 +63,38 @@ def visual(
             ('short_description', 'Description'),
             ('date', 'Date created'),
         ],
-        createlabelstoolbar = False,
+        polymorphic = False, dbtablename='AtomicStructure.Structure'
         )
 
     tableview = factory.create(
-        label = label, mine = mine,
+        label = label, mine=mine,
         filter_expr=filter_expr, filter_key=filter_key, filter_value=filter_value,
         order_by=order_by,
         reverse_order=reverse_order,
         number_records_per_page=number_records_per_page,
         page_number=page_number)
 
+    # add new button
+    toolbar = tableview.find(id='materialsimulation-table-toptoolbar')
+    #
+    button = lc.button(label='New', tip='create new simulation', icon='new.png')
+    toolbar.add(button)
+    button.onclick = select(id='main-display-area').replaceContent(
+        load(actor='materialsimulation', routine='newSimulation')
+        )
+
     return tableview
 
 
 def createTable(
     director, domaccess,
-    order_by=None,
-    reverse_order=None,
-    slice=None,
+    order_by=None, reverse_order=None, slice=None,
     filter=None,
     label=None,
-    mine = False,
-    ):
+    mine=False):
 
-    records = domaccess.getSamples(
-        order_by=order_by,
-        reverse_order=reverse_order,
-        slice=slice,
+    records = domaccess.getSimulations(
+        order_by=order_by, reverse_order=reverse_order, slice=slice,
         filter=filter,
         label=label,
         mine=mine,
@@ -102,22 +103,20 @@ def createTable(
     cols = columns
     args = records, cols, director
     thetable = director.retrieveVisual(
-        'sample/table-selectone',
-        samples = records,
+        'materialsimulation/table',
+        matsims = records,
         cols = cols,
         director = director)
+    thetable.oncellchanged = select(element=thetable).notify(
+        event='row-changed', actor='materialsimulation/table', routine='processRowChange')
     return thetable
 
 
 
-columns = [
-    'selectone',
-    'id',
-    'description',
-    'type',
-    'date']
+columns = [ 'selected', 'id', 'description', 'type', 'matter', 'created']
 measure2dbcol = {
     'description': 'short_description',
+    'created': 'date',
     }
 filtercols = columns[1:]
 

@@ -168,27 +168,27 @@ class Accessor(base):
         return True
 
 
-    def countExperiments(self, filter=None, label=None):
-        q = self.makeQuery(filter=filter, label=label)
+    def countExperiments(self, filter=None, label=None, mine=False):
+        q = self.makeQuery(filter=filter, label=label, mine=mine)
         return q.alias('tocount').count().execute().fetchone()[0]
 
 
     def getExperiments(
         self,
         filter=None, order_by=None, reverse_order=None, slice=None,
-        label=None,
+        label=None, mine=False,
         ):
         
         self._debug.log('filter: %r, order_by: %r, slice: %r' % (filter, order_by, slice))
 
         db = self.db
-        q = self.makeQuery(filter=filter, label=label)
+        q = self.makeQuery(filter=filter, label=label, mine=mine)
 
         if order_by:
             q = q.order_by(order_by)
         if slice:
             if reverse_order:
-                n = self.countExperiments(filter=filter, label=label)
+                n = self.countExperiments(filter=filter, label=label, mine=mine)
                 slice = n-slice[1], n-slice[0]
             q = sqlalchemy.select(
                 [q.alias('toslice')],
@@ -204,25 +204,31 @@ class Accessor(base):
         return ret
 
 
-    def makeQuery(self, filter=None, label=None):
+    def makeQuery(self, filter=None, label=None, mine=False):
         if label:
             if filter: raise RuntimeError
-            return self.makeLabeledQuery(label)
+            return self.makeLabeledQuery(label, mine=mine)
         db = self.db
 
         st = db._tablemap.TableToSATable(NeutronExperimentTable)
-        q = sqlalchemy.select(
-            [st.c.id.label('id'),
-             st.c.short_description.label('short_description'),
-             st.c.date.label('date'),
-             ]
-            )
+        cols = [
+            st.c.id.label('id'),
+            st.c.short_description.label('short_description'),
+            st.c.date.label('date'),
+            ]
+        if mine:
+            username = self.director.sentry.username
+            where = st.c.creator == username
+            q = sqlalchemy.select(cols, where)
+        else:
+            q = sqlalchemy.select(cols)
+
         if filter:
             q = sqlalchemy.select([q.alias('experiment')], whereclause=filter)
         return q
 
 
-    def makeLabeledQuery(self, label):
+    def makeLabeledQuery(self, label, mine=False):
         'craete a uery for experiment table'
         db = self.db
         sL = db._tablemap.TableToSATable(Label)
@@ -235,14 +241,19 @@ class Accessor(base):
         
         st = db._tablemap.TableToSATable(NeutronExperimentTable)
         
-        q = sqlalchemy.select(
-            [st.c.id.label('id'),
-             st.c.short_description.label('short_description'),
-             st.c.date.label('date'),
-             labelq.c.entity.label('gptr'),
-             ],
-            st.c.globalpointer==labelq.c.entity,
-            )
+        cols = [
+            st.c.id.label('id'),
+            st.c.short_description.label('short_description'),
+            st.c.date.label('date'),
+            labelq.c.entity.label('gptr'),
+            ]
+        # st.c.globalpointer==labelq.c.entity
+        where = "globalpointer=labelq.entity"
+        if mine:
+            username = self.director.sentry.username
+            mine = "creator='%s'" % username
+            where = '%s and %s' % (where, mine)
+        q = sqlalchemy.select(cols, whereclause = where)
 
         return q
         
