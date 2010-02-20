@@ -4,7 +4,7 @@
 #
 #                                Jiao Lin
 #                      California Institute of Technology
-#                        (C) 2008  All Rights Reserved
+#                      (C) 2008-2010  All Rights Reserved
 #
 # {LicenseText}
 #
@@ -26,29 +26,33 @@ class Component(base):
     def initdb(self):
         db = self.director.clerk.db
         db.createAllTables()
-        for entry in assignments:
+        
+        for member, group in assignments:
 
-            role, privilege = entry
-            
-            context, name = role
-            role = db.query(Role).filter_by(rolename=name, context=context).one()
+            # member
+            context, name = member
+            member = _getRole(name, context, db)
 
-            target, name = privilege
-            privilege = db.query(Privilege).filter_by(target=target, name=name).one()
-            
-            grant(privilege, role, db)
-            
+            # group
+            context, name = group
+            group = _getRole(name, context, db)
+
+            #
+            member.join(group, db)
             continue
         
         return
 
 
-from vnfb.dom.RoleHasPrivilege import grant, Role, Privilege
+def _getRole(name, context, db):
+    return db.query(Role).filter_by(rolename=name, context=context).one()
+
+
+from vnfb.dom.RoleHasRole import join, Role
 
 
 assignments = [
-    (('vnf', 'core-developer'), ('bug', 'modify')), # vnf core developer can modify bug
-    (('vnf', 'user'), ('simulation', 'run')), # vnf user can run simulation
+    (('vnf', 'developer'), ('vnf', 'user')), # vnf developers are always also vnf users
     ]
 
 

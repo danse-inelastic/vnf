@@ -11,21 +11,79 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
-# test of User table. the user-related table must have been initialzied by
-#   bin/initdb.py --tables=users,roles,user_has_roles
+
+from vnfb.dom.User import User
+from vnfb.dom.Role import Role
+from vnfb.dom.Privilege import Privilege
+from vnfb.dom.UserHasRole import UserHasRole
+from vnfb.dom.RoleHasRole import RoleHasRole
+from vnfb.dom.RoleHasPrivilege import RoleHasPrivilege, grant
 
 
 import unittest
 class TestCase(unittest.TestCase):
 
     def test(self):
-        import dsaw.db
-        db = dsaw.db.connect(db='postgres:///vnfbeta')
-        
-        from vnfb.dom.User import User
-        user = db.query(User).filter_by(username='demo').one()
+        db = self.db
 
-        self.assert_(user.hasRole(('vnf', 'guest'), db))
+        linjiao = db.query(User).filter_by(id='linjiao').one()
+        self.assert_(linjiao.hasRole(('vnf', 'admin'), db))
+        self.assert_(linjiao.hasRole(('vnf', 'user'), db))
+
+        demo = db.query(User).filter_by(id='demo').one()
+        self.assert_(not demo.hasRole(('vnf', 'user'), db))
+        self.assert_(demo.hasRole(('vnf', 'guest'), db))
+
+        self.assert_(linjiao.hasPrivilege(('sample', 'write'), db))
+        self.assert_(not demo.hasPrivilege(('sample', 'write'), db))
+        return
+
+
+    def setUp(self):
+        import dsaw.db
+        db = dsaw.db.connect(db='sqlite://')
+
+        tables = [
+            User, Role, Privilege,
+            UserHasRole, RoleHasRole, RoleHasPrivilege,
+            ]
+        map(db.registerTable, tables)
+        db.createAllTables()
+
+        # users
+        linjiao = User(); linjiao.id = linjiao.username = 'linjiao'
+        db.insertRow(linjiao)
+
+        demo = User(); demo.id = demo.username = 'demo'
+        db.insertRow(demo)
+
+        # roles
+        vnfadmin = Role(); vnfadmin.rolename='admin'; vnfadmin.context='vnf'
+        db.insertRow(vnfadmin)
+        #
+        vnfuser = Role(); vnfuser.rolename='user'; vnfuser.context='vnf'
+        db.insertRow(vnfuser)
+        #
+        vnfguest = Role(); vnfguest.rolename='guest'; vnfguest.context='vnf'
+        db.insertRow(vnfguest)
+
+        # privileges
+        writesample = Privilege(); writesample.name='write'; writesample.target='sample'
+        db.insertRow(writesample)
+        
+        # linjiao is a vnf admin
+        linjiao.assignRole(vnfadmin, db)
+
+        # vnf admin can be vnf user
+        vnfadmin.becomeMember(vnfuser, db)
+
+        # demo is a guest
+        demo.assignRole(vnfguest, db)
+
+        # vnf user can write samples
+        grant(writesample, vnfuser, db)
+
+        self.db = db
         return
 
     
