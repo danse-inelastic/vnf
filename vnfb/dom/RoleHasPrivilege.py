@@ -36,8 +36,8 @@ class RoleHasPrivilege(base):
     pass # end of RoleHasPrivilege
 
 
-def assign(privilege, role, db):
-    'assign a privilege to a role'
+def grant(privilege, role, db):
+    'grant a privilege to a role'
     r = RoleHasPrivilege()
     r.privilege = privilege
     r.role = role
@@ -45,8 +45,8 @@ def assign(privilege, role, db):
     return
 
 
-def remove(privilege, role, db):
-    'remove a privilege assigment from a role'
+def revoke(privilege, role, db):
+    'revoke a privilege assigment from a role'
     
     try:
         r = db.query(RoleHasPrivilege).filter_by(role=role.id, privilege=privilege.id).one()
