@@ -40,6 +40,18 @@ class Actor(base):
         if not mid:
             return self.askForModel(director)
         return self.presentComputingTarget(director)
+
+
+    def askForAtomicStructure(self, director):
+        computation_id = self.inventory.computation_id
+        if computation_id:
+            raise NotImplementedError
+        target = self.inventory.target
+        view = director.retrieveVisual(
+            'material_simulations/phonon_calculators/bvk/matter-selector',
+            id = computation_id, target = target, director=director,
+            )
+        return select(id='main-display-area').replaceContent(view)
     
     
     def askForModel(self, director):

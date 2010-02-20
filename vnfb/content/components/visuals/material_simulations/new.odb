@@ -45,7 +45,7 @@ def showSimulations(table):
                     "Proprietary package for electronic-structure calculations using density-functional theory, plane waves, and pseudopotentials.  See License."))
     packages.append(
         (lc.link(label="BvK",
-                 onclick=load(actor="material_simulations/phonon_calculators/bvk/editor")),
+                 onclick=load(actor="material_simulations/phonon_calculators/bvk", routine='start')),
          "Born von Karman non-central forces lattice dynamics calculator.",
          )
         )
@@ -53,8 +53,7 @@ def showSimulations(table):
                     "Open source molecular mechanics toolkit with Amber and Lennard Jones forcefields."))
     packages.append((lc.link(label="GULP", onclick=load(actor="material_simulations/forcefieldwizard")),
                     "Academically open source lattice and molecular dynamics code with a wide range of functionality and forcefields. See License."))
-    packages.append((lc.link(label="MCViNE", onclick=load(actor="materialsimulation")),
-                    "Neutron scattering instrument simulation."))
+
     for p in packages:
         table.addRow((p[0], p[1]))
 
