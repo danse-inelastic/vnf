@@ -52,6 +52,7 @@ from vnfb.dom.RoleHasRole import join, Role
 
 
 assignments = [
+    (('vnf', 'ccre-developer'), ('vnf', 'developer')), # vnf core developers are vnf developers
     (('vnf', 'developer'), ('vnf', 'user')), # vnf developers are always also vnf users
     ]
 

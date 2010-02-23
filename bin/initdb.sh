@@ -10,7 +10,7 @@
 
 # create tables that are still in vnf-alpha
 ./initdb-alpha.py  --init-tables \
-    --tables=users
+    --tables=users,roles,privileges,user_has_roles,role_has_roles,role_has_privileges
 
 ./initdb.py --tables=snsmoderatormcsimulateddata,bvkmodels,instruments,vanadiumplates,servers
 
