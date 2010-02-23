@@ -18,7 +18,7 @@
 class ComputationResultInterface:
 
     def getOrigin(self, db):
-        'get the original computation that give this result (self)'
+        'get the original computation that gives this result (self)'
         # implementation: since Computation table uses "results" to
         # hold references to computation results, we can seach
         # the referenceset table to find the computation orgin

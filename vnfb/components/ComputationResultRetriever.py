@@ -195,7 +195,7 @@ class ComputationResultRetriever(Component):
         return
 
     def _save_and_move_results(self, computation, job, files, result_holder, name=None):
-        '''symlink computation result data files to a db record.
+        '''move computation result data files to a db record.
 
         computation, job: the computation and the job db records
         files: a list of file names or a dictionary of {filenameinjobdir: filenameinresultholder}

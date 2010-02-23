@@ -19,18 +19,20 @@ class Retriever(base):
         # must have a job
         self.declareProgress(0.1, 'look up job')
         job = computation.getJob(db)
+        
         # check result is available
         self.declareProgress(0.2, 'check if results exist')
         orm = director.clerk.orm
         gulpSettings = orm.record2object(computation)
         runtype = gulpSettings.runtype
         expected_results = gulpSettings.getOutputFiles()  
+        # treat trajectories differently: look for those in motion d.o. eventually
+        if 'gulp.nc' in expected_results:
+            expected_results.remove('gulp.nc')
         self._check_results_sanity(expected_results, job=job)
-        # create a phonon dos record to save dos
-        self.declareProgress(0.6, """create necessary output data objects 
-        (i.e. vibrations, motion, etc.)""")
-        #doOutputFiles = gulpSettings.getDOAndOutputFile() 
+    
         if 'phonons' in runtype:
+            self.declareProgress(0.6, """create phonon and/or dos data objects""")
             #store the phonons and the dos results
 #            for key,val in doOutputFiles.iteritems():
 #                parts = key.split('.')
@@ -48,29 +50,33 @@ class Retriever(base):
             dos.matter = computation.matter
             computation.results.add(dos, db)
             db.updateRecord(dos)
-        if 'molecular dynamics' in runtype:
-            from vnfb.dom.material_simulations.Motion import Motion
-            motion = self._make_result_holder(computation, Motion)
-            motion.matter = computation.matter
-            computation.results.add(motion, db)
-            db.updateRecord(motion)
-        # save the result from job to dos
-        self.declareProgress(0.9, 'get result from computational server')
-        if 'phonons' in runtype:
+            
+            self.declareProgress(0.9, 'get result from computational server')
             doOutputFiles = gulpSettings.getDOAndOutputFile()
             filesInJobDir = doOutputFiles['vsat.Phonons']
             self._save_results(computation, job, filesInJobDir, phonons)
             
             filesInJobDir = doOutputFiles['vsat.PhononDOS']
             self._save_results(computation, job, filesInJobDir, dos)
-        if 'molecular dynamics' in runtype:
-            doOutputFiles = gulpSettings.getDOAndOutputFile()
-            filesInJobDir = doOutputFiles['vsat.Motion']
-            self._save_and_move_results(computation, job, filesInJobDir, motion)
-            #copy a temporary copy to the web server
-            self.dds.make_available(motion, filesInJobDir, server)
             
-            #self._save_results(computation, job, filesInJobDir, motion)
+        if 'molecular dynamics' in runtype:
+            self.declareProgress(0.6, """create motion data object""")
+            doOutputFiles = gulpSettings.getDOAndOutputFile()
+            dataObjectFiles = doOutputFiles['vsat.Motion']
+            # if the computation already has the motion, skip this
+            motion = computation.results.getElementByKey('motion',db) #'motion' is class name
+            if not motion:
+                from vnfb.dom.material_simulations.Motion import Motion
+                motion = self._make_result_holder(computation, Motion)
+                motion.matter = computation.matter
+                computation.results.add(motion, db, key = 'motion')
+                db.updateRecord(motion)
+                self.declareProgress(0.9, 'get result from computational server')
+                self._save_and_move_results(computation, job, dataObjectFiles, motion)
+                #copy a temporary copy to the web server
+            if 
+                self.dds.make_available(motion, dataObjectFiles, server)
+
 
 def retriever():
     return Retriever('gulpSettings')
