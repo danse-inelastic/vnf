@@ -52,7 +52,8 @@ EXPORT_PYTHON_MODULES = \
 	JobBuilder.py \
 	MasterTable.py \
 	Postman.py \
-        QETable.py \
+    QETable.py \
+    Scheduler.py \
 	SSHer.py \
 	UsersFromDB.py \
 	__init__.py \
