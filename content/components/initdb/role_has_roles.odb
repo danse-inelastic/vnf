@@ -45,14 +45,24 @@ class Component(base):
 
 
 def _getRole(name, context, db):
-    return db.query(Role).filter_by(rolename=name, context=context).one()
+    try:
+        return db.query(Role).filter_by(
+            rolename = name, 
+            context = context)\
+            .one()
+    except:
+        import traceback
+        tb = traceback.format_exc()
+        msg = 'failed to find role (name=%r, context=%r)' % (name, context)
+        msg += '\nOriginal exception: %s' % tb
+        raise RuntimeError, msg
 
 
 from vnfb.dom.RoleHasRole import join, Role
 
 
 assignments = [
-    (('vnf', 'ccre-developer'), ('vnf', 'developer')), # vnf core developers are vnf developers
+    (('vnf', 'core-developer'), ('vnf', 'developer')), # vnf core developers are vnf developers
     (('vnf', 'developer'), ('vnf', 'user')), # vnf developers are always also vnf users
     ]
 
