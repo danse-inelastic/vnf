@@ -31,10 +31,7 @@ class Actor(base):
 
 
     def start(self, director):
-        username = director.sentry.username
-        user = director.clerk.getUser(username)
-        db = director.clerk.db
-        if not user.hasPrivilege(('simulation', 'run'), db):
+        if not director.accesscontrol.checkPrivilege(target='simulation', name='run'):
             return alert("You don't have access to run simulations.")
         
         sid = self.inventory.atomicstructure_id

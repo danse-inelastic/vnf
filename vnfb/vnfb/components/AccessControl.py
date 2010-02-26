@@ -18,9 +18,21 @@
 class AccessControl:
 
     # data member needed
-    db = None
+    sentry = None
+    clerk = None
 
 
+    def checkPrivilege(self, target, name, username=None):
+        if not username:
+            username = self.sentry.username
+        clerk = self.clerk
+        user = clerk.getUser(username)
+        db = clerk.db
+        privilege = target,name
+        return user.hasPrivilege(privilege, db)
+    
+
+    # this is obsolete. should use the new acl tables
     def checkInstrumentPrivilege(self, user, instrument):
         # if instrument is owned by user, fine
         if instrument.creator == user.username:
@@ -32,6 +44,7 @@ class AccessControl:
         return True
 
 
+    # this is obsolete. should use the new acl tables
     # temp hack to limit access to vasp
     def checkVASPPrivilege(self, user):
         caltechgroup = [
@@ -52,12 +65,6 @@ class AccessControl:
             ]
         whitelist = caltechgroup
         return user.username in whitelist
-    
-
-    def _checkPrivilege(self, user, privilege):
-        import vnf.dom.acl as acl
-        db = self.db
-        return acl.checkPrivilege(user, privilege, db)
     
 
 
