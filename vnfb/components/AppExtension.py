@@ -43,8 +43,8 @@ class AppExtension(Base):
                 name, curator_dump)
         r.director = director
         return r
-    
 
+    
     def _configure(self):
         super(AppExtension, self)._configure()
 
@@ -74,7 +74,8 @@ class AppExtension(Base):
         director.retrieveDOMAccessor = self.retrieveDOMAccessor
         
         # accesscontrol need to know the database
-        self.accesscontrol.db = director.clerk.db
+        self.accesscontrol.clerk = director.clerk
+        self.accesscontrol.sentry = director.sentry
         return
 
 

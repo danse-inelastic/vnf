@@ -88,9 +88,14 @@ itasks: removed column "short_description"
 
 Feb 11, 2010
 removed ACL1, ACL2 etc
-added column "context" to table "roles".
+table "roles": added column "context"  and change column "id" from
+varchar to integer.
 added table "user_has_roles".
 
 Feb 18, 2010
 "atomicstructures": added column "creator"
 "jobs": column numprocessors renamed to numnodes, added column numcores
+
+
+Feb 24, 2010
+added table "role_has_roles", "privileges", "role_has_privileges"
