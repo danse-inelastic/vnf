@@ -9,6 +9,7 @@ Contents:
 
    DeveloperGuide-Overview
    DeveloperGuide-Architecture
+   DeveloperGuide-AccessControl
 
 ..   discussion
 
