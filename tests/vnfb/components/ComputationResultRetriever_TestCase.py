@@ -12,6 +12,29 @@
 #
 
 
+'''
+Test of methods of base class vnfb.components.ComputationResultRetriever.ComputationResultRetriever.
+
+Test assumes that
+ 1. database. see parameter "dbname"
+ 2. there is a bvk_getdos record in the db that has finished. and in the data directory
+    for the job associated with the bvk_getdos computation, there is a data file "DOS".
+ 3. There is a table "phonondoses"
+ 4. This directory is writable.
+
+The test cases here will try to do things like retrieve results in the job directory
+to local data directory
+'''
+
+
+#
+dbname = 'postgres:///vnfbeta'
+
+
+#
+dataroot = 'content/data'
+
+
 # job id.
 jobid = "5WW9U3SR" 
 # the computation is of type bvk_getdos
@@ -61,13 +84,16 @@ class TestApp(base):
             
         result_holder.id = 'test-computationresultretriever'
 
+        subdir = 'subdir'
         retriever._save_results(
             computation, job, ['DOS'],
             result_holder,
-            result_subdir = 'subdir',
+            result_subdir = subdir,
             )
 
-        testFacility.assert_(os.path.exists('content/data/phonondoses/%s' % result_holder_id))
+        testFacility.assert_(os.path.exists(self.dds.abspath(result_holder)))
+        p = os.path.join(self.dds.abspath(result_holder), subdir)
+        testFacility.assert_(os.path.exists(p))
         return
 
 
@@ -77,7 +103,7 @@ class TestApp(base):
 
     def _configure(self):
         # db
-        self.inventory.clerk.inventory.db = 'postgres:///vnfbeta'
+        self.inventory.clerk.inventory.db = dbname
         self.inventory.clerk._configure()
         #
         super(TestApp, self)._configure()
@@ -88,7 +114,12 @@ class TestApp(base):
         #
         super(TestApp, self)._init()
         # data root
-        self.dds.dataroot = 'content/data'
+        self.dds.dataroot = dataroot
+
+        #
+        if os.path.exists(dataroot):
+            import shutil
+            shutil.rmtree(dataroot)
         return
 
 
