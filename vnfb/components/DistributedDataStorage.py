@@ -86,8 +86,10 @@ class DistributedDataStorage(base):
         return
 
 
-    def makedirs(self, dbrecord, server=None):
+    def makedirs(self, dbrecord, server=None, subdir=None):
         p = self.path(dbrecord)
+        if subdir:
+            p = os.path.join(p, subdir)
         self._makedirs(p, server=server)
 
 
