@@ -24,16 +24,7 @@ class ComputationResultRetriever(Component):
 
     def run(self, computation):
         director = self.director
-        # aliases
-        self.clerk = director.clerk
-        self.orm = self.clerk.orm
-        self.db = self.clerk.db
-        self.dds = director.dds
-        # this may be run in a itaskapp
-        if hasattr(director, 'declareProgress'):
-            self.declareProgress = director.declareProgress
-        else:
-            self.declareProgress = self._declareProgress
+        self._initFacilitiesFromDirector(director)
 
         self.declareProgress(0.05, 'check status of retrieval')
         # first check if it is necessary to run this component
@@ -79,6 +70,8 @@ class ComputationResultRetriever(Component):
 
 
     def _declareProgress(self, percentage, message):
+        # default implementation for declareProgress when no other machinery is
+        # available
         self._debug.log('%s: %s' % (percentage, message))
         return
 
@@ -159,6 +152,7 @@ class ComputationResultRetriever(Component):
         computation.results.add(result_holder, self.db, name=name)
         self._mark_result_as_saved(computation, filenameinjobdir)
         return
+    
 
     def _symlink_results(self, computation, job, files, result_holder, name=None):
         '''symlink computation result data files to a db record.
@@ -227,17 +221,24 @@ class ComputationResultRetriever(Component):
         for f in files:
             self._mark_result_as_saved(computation, f)
         return
+    
 
-    def _save_results(self, computation, job, files, result_holder, name=None):
+    def _save_results(self, computation, job, files, result_holder, name=None, result_subdir=None):
         '''save computation result data files to a db record.
 
         computation, job: the computation and the job db records
         files: a list of file names or a dictionary of {filenameinjobdir: filenameinresultholder}
         result_holder: the db record in which the result will be saved
         name: name of this result in the result set (optional)
+        result_subdir: the subdirectory in the result_holder directory where the files will be saved. (optional)
         '''
-        # copy result file from job to the result holder
+        import os
         server = self.db.dereference(job.server)
+        
+        # create directory in result_holder at the server
+        self.dds.makedirs(result_holder, server, subdir=result_subdir)
+        
+        # copy result file from job to the result holder
         filesisdict = isinstance(files, dict)
         destinationFiles = []
         for f in files:
@@ -246,6 +247,9 @@ class ComputationResultRetriever(Component):
                 finresultholder = files[f]
             else:
                 finresultholder = f
+            # if subdir is specified, need to adjust the path
+            if result_subdir:
+                finresultholder = os.path.join(result_subdir, finresultholder)
             destinationFiles.append(finresultholder)
             self.dds.copy(job, finjobdir, result_holder, finresultholder, server)
             
@@ -275,6 +279,22 @@ class ComputationResultRetriever(Component):
     def __init__(self, name):
         super(ComputationResultRetriever, self).__init__(
             name, facility='computation-result-retriever')
+        return
+
+
+    def _initFacilitiesFromDirector(self, director):
+        ''' result retriever needs a bunch of facilities to work properly.
+        they are obtained from the director
+        '''
+        self.clerk = director.clerk
+        self.orm = self.clerk.orm
+        self.db = self.clerk.db
+        self.dds = director.dds
+        # this may be run in a itaskapp
+        if hasattr(director, 'declareProgress'):
+            self.declareProgress = director.declareProgress
+        else:
+            self.declareProgress = self._declareProgress
         return
 
 
