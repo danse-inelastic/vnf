@@ -40,7 +40,7 @@ class TestApp(base):
         import pyre.inventory
 
 
-    def main(self, *args, **kwds):
+    def main(self, testFacility, *args, **kwds):
         retriever = Retriever('test-retriever')
         retriever._initFacilitiesFromDirector(self)
 
@@ -66,7 +66,8 @@ class TestApp(base):
             result_holder,
             result_subdir = 'subdir',
             )
-        
+
+        testFacility.assert_(os.path.exists('content/data/phonondoses/%s' % result_holder_id))
         return
 
 
@@ -89,7 +90,10 @@ class TestApp(base):
         # data root
         self.dds.dataroot = 'content/data'
         return
-    
+
+
+import os
+
 
 import unittest
 class TestCase(unittest.TestCase):
@@ -97,7 +101,7 @@ class TestCase(unittest.TestCase):
     def test1(self):
         import dsaw.db
         app = TestApp('main')
-        app.run()
+        app.run(self)
         return
 
     
