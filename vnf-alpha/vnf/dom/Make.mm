@@ -82,12 +82,6 @@ EXPORT_PYTHON_MODULES = \
 	OwnedObject.py \
 	PhononsFromAbinitio.py \
 	PolyCrystal.py \
-        QEConfiguration.py \
-        QEJob.py \
-        QESetting.py \
-        QESimulation.py \
-        QESimulationTask.py \
-        QETask.py \
 	ReferenceManager.py \
 	ReferenceSet.py \
 	Registrant.py \
