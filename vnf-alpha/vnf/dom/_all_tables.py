@@ -73,12 +73,12 @@ other = [
 
 # If error is returned, change order in the list
 qetables    = [
-               'QESimulation',
-               'QETask',
-               'QESimulationTask',
-               'QEJob',
-               'QEConfiguration',
-               'QESetting'
+#               'QESimulation',
+#               'QETask',
+#               'QESimulationTask',
+#               'QEJob',
+#               'QEConfiguration',
+#               'QESetting'
               ]
 
 tablemodules = \

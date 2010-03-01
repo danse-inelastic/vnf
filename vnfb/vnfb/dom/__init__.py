@@ -40,6 +40,14 @@ def tables_without_orm():
         'User.User',
         'UserHasRole.UserHasRole',
         'Privilege.Privilege',
+        
+        # QE Tables
+        'QESimulation.QESimulation',
+        'QETask.QETask',
+        'QESimulationTask.QESimulationTask',
+        'QEJob.QEJob',
+        'QEConfiguration.QEConfiguration',
+        'QESetting.QESetting',
         ]
     tables = map(importType, ts)
     return vnfalphatables + tables
