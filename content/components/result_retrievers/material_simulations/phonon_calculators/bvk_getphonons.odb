@@ -54,7 +54,7 @@ class Retriever(base):
 
         # save the result from job to phonons
         self.declareProgress(0.7, 'get result from server')
-        self._save_results(computation, job, expected_results, disp)
+        self._save_results(computation, job, expected_results, disp, result_subdir='data.idf')
         return
 
 
