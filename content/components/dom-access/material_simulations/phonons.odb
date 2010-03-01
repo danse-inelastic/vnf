@@ -39,43 +39,81 @@ class Accessor(base):
         return db.query(PhononsTable).filter_by(id=id).one()
 
 
-    def getDataForPhonons(self, disp):
+    def getDataForPhonons(self, phonons):
         orm  = self.orm
-        record = orm(disp)
+        record = orm(phonons)
         
         director = self.director
 
-        # make sure files are on web server
-        if not director.dds.is_available(record):
-            try:
-                director.dds.make_available(record)
-            except:
-                import journal
-                debug = journal.debug('main')
-                debug.log('Unable to get data files for record %s' % record.id)
-                import traceback
-                debug.log(traceback.format_exc())
-                return
-            
-        
-        # the files
-        datadir = director.dds.abspath(record)
-        # try subdir "data.idf" first
-        subdir = os.path.join(datadir, 'data.idf')
-        if os.path.exists(subdir):
-            datadir = subdir
+        # find out the data format of phonons data for this phonons db record
+        format = self._getDataFormat(record)
+        # if no format is found, we are in trouble
+        if not format:
+            self._debug.log(
+                "Unable to find data files of known formats for phonons record %s" \
+                % record.id)
+            import traceback
+            self._debug.log(traceback.format_exc())
+            return
 
-        # see if 'Qaxes" exist
-        if not os.path.exists(os.path.join(datadir, 'Qgridinfo')):
-            raise NotImplementedError, 'data files not in idf format'
+        if format.startswith('idf'):
+            return self._getIDFData(phonons, format)
+
+        # for other data format, more implementations here
         
-        from mccomponents.sample.idf import readDispersion
-        nAtoms, dimension, Qaxes, polarizations, energies, dos = readDispersion(datadir)
+        raise NotImplementedError, format
+
+
+    def _getIDFData(self, phonons, format):
+        record = self.orm(phonons)
+        
+        # make sure the data is at the server
+        director = self.director
+        dds = director.dds
+        if format == 'idf':
+            r = 'data.idf'
+            def _(f): return os.path.join(r, f)
+            files = [_(f) for f in idf_files]
+            datadir = dds.abspath(record, r)
+        else:
+            files = idf_files
+            datadir = dds.abspath(record)
+        dds.make_available(record, files)
+
+        # the atomic structure
+        matter = phonons.matter
+        # the primitive cell
+        primcell = matter.primitive_unitcell.base
+        # the reciprocal cell
+        from vnfb.utils.crystallattice import reciprocal
+        recicell = reciprocal(primcell)
+
+        from idf.phonons import read
+        nAtoms, dimension, Qaxes, polarizations, energies, dos = read(
+            datadir, reciprocal_unitcell = recicell)
         for k in ['nAtoms', 'dimension', 'Qaxes', 'polarizations', 'energies']:
-            setattr(disp, k, eval(k))
+            setattr(phonons, k, eval(k))
             continue
+
+        return phonons
+
+
+    def _getDataFormat(self, phonons):
+        director = self.director
+
+        dds = director.dds
+        if dds.existssomewhere(phonons, 'data.idf'): return 'idf'
+        # other file formats should be here
+        # ...
         
-        return disp
+        # last resort to idf format files in the directory
+        found = all([dds.existssomewhere(phonons, f) for f in idf_files])
+        if found:
+            import warnings
+            warnings.warn('It is obsolete to store idf data files directly in the directory for a phonons record. It should be in the "data.idf" subdir')
+            return 'idf-obsolete'
+
+        return None
 
 
     def getOrigin(self, id=None, phonons=None):
@@ -88,6 +126,13 @@ class Accessor(base):
         return origin
 
 
+idf_files = [
+    # 'DOS',
+    'Omega2',
+    'Polarizations',
+    'Qgridinfo',
+    ]
+    
 from vnfb.dom.material_simulations.Phonons import Phonons
 
 import os, numpy

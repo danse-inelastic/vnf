@@ -121,6 +121,28 @@ class DistributedDataStorage(base):
         return True
 
 
+    def existssomewhere(self, dbrecord, filename=None):
+        '''check if a file(directory) for a db record exists somewhere in
+        the storage.
+        
+        dbrecord: database record
+        filename: name of the file (directory) for the dbrecord
+        '''
+        p = self.path(dbrecord, filename)
+        r = bool(self._find_node(p))
+        if r: return r
+        # if not found, try to search all the servers
+        director = self.director
+        from vnfb.dom.Server import Server
+        servers = director.clerk.db.query(Server).all()
+        servers.append(None)
+        for server in servers:
+            if self.is_available(dbrecord, filename=filename, server=server):
+                return True
+            continue
+        return False
+
+
     def path(self, dbrecord, filename=None):
         d = os.path.join(dbrecord.getTableName(), dbrecord.id)
         if filename:
@@ -178,6 +200,10 @@ class DistributedDataStorage(base):
     def _is_available(self, path, server=None):
         node = _node(server)
         return self._engine().is_available(path, node=node)
+
+
+    def _find_node(self, path):
+        return self._engine().find_node(path)
 
 
     def _configure(self):
