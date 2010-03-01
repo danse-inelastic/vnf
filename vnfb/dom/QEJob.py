@@ -18,9 +18,6 @@ Notes:
     - Has 'creator' field (owned table)
 """
 
-from vnf.dom.QESimulation import QESimulation
-from vnf.dom.Server import Server
-
 from vnfb.utils.qeconst import STATES
 from vnfb.utils.qeutils import timestamp
 
