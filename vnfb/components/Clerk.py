@@ -61,7 +61,7 @@ class Clerk(base, ClerkBase):
         return registrants[0]
         
 
-    """QE methods for retrieving records using vnf.dom"""
+    """QE methods for retrieving records using vnfb.dom"""
 
     def getQEJobs(self, id=None, where=None):
         '''retrieve qejobs record specified by id'''

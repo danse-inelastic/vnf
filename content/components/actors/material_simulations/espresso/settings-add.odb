@@ -11,7 +11,7 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
-from vnf.dom.QESetting import QESetting
+from vnfb.dom.QESetting import QESetting
 from vnfb.utils.qegrid import QEGrid
 
 from luban.content import select

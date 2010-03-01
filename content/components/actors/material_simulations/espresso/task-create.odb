@@ -11,8 +11,8 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
-from vnf.dom.QETask import QETask
-from vnf.dom.QESimulationTask import QESimulationTask
+from vnfb.dom.QETask import QETask
+from vnfb.dom.QESimulationTask import QESimulationTask
 from luban.content import load
 from luban.components.AuthorizedActor import AuthorizedActor as base
 

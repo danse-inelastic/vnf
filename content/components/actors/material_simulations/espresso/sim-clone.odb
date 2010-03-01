@@ -20,7 +20,7 @@ TODO: Questions:
 from vnfb.utils.qeconst import SIMCHAINS
 from vnfb.utils.qegrid import QEGrid
 from vnfb.utils.serverlist import ServerList
-from vnf.dom.QESimulation import QESimulation
+from vnfb.dom.QESimulation import QESimulation
 
 from luban.content import select
 from luban.content import load

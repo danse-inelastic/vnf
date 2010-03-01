@@ -11,7 +11,7 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
-from vnf.dom.QEConfiguration import QEConfiguration
+from vnfb.dom.QEConfiguration import QEConfiguration
 from vnfb.utils.qeconst import PARSERS, TYPE
 from vnfb.utils.qegrid import QEGrid
 

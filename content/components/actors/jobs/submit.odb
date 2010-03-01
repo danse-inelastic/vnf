@@ -12,7 +12,7 @@
 #
 
 import time
-from vnf.dom.QEJob import QEJob
+from vnfb.dom.QEJob import QEJob
 from vnfb.utils.qeutils import makedirs, writefile, stamp
 from vnfb.utils.qeconst import STATES, RUNSCRIPT, TYPE, NOPARALLEL
 from vnfb.utils.qeutils import packname, unpackname
