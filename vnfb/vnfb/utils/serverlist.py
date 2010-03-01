@@ -18,8 +18,8 @@ class ServerList:
     ServerList - is a simple utility that helps to display servers list in the form
     """
     def __init__(self, director):
-        self._setServers(director)
-
+        #self._setServers(director)
+        self._setFixedServers(director)
 
     def list(self):
         "Returns list of server names"
@@ -49,6 +49,13 @@ class ServerList:
         for s in servers:
             self._servers[s.id]    = s.address
 
+        return self._servers
+
+    def _setFixedServers(self, director):
+        "Uses fixed server (in case if you don't need other servers)"
+        server     = director.clerk.getServers(id="server001")
+        self._servers = OrderedDict()
+        self._servers[server.id]    = server.address
         return self._servers
 
 

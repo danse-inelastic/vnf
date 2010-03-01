@@ -20,7 +20,7 @@
 #
 
 
-from vnf.dom.QEConfiguration import QEConfiguration
+from vnfb.dom.QEConfiguration import QEConfiguration
 
 from luban.content import select
 from luban.content import load

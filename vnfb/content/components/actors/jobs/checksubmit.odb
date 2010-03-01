@@ -11,7 +11,7 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
-from vnf.dom.QEJob import QEJob
+from vnfb.dom.QEJob import QEJob
 from vnfb.utils.qeconst import STATES
 from vnfb.utils.qeutils import packname, unpackname
 
