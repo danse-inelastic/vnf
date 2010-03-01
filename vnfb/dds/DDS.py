@@ -165,7 +165,9 @@ class DDS:
         if expired:
             l1 = filter(lambda n: n not in expired, l)
             self._update_availability_list(path, l1)
-        if ret is None: raise RuntimeError, "no node has the path %r" % path
+        if ret is None:
+            # raise RuntimeError, "no node has the path %r" % path
+            return
         return _node(ret)
 
 
