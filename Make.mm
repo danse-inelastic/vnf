@@ -8,6 +8,7 @@ RECURSE_DIRS = \
 	bin \
 	cgi-bin \
 	vnfb \
+	dds \
 	log \
 	content \
 	html \
