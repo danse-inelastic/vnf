@@ -55,6 +55,12 @@ EXPORT_PYTHON_MODULES = \
 	MaterialSimulation.py \
 	OwnedObject.py \
 	Privilege.py \
+        QEConfiguration.py \
+        QEJob.py \
+        QESetting.py \
+        QESimulation.py \
+        QESimulationTask.py \
+        QETask.py \
 	Registrant.py \
 	Role.py \
 	RoleHasPrivilege.py \

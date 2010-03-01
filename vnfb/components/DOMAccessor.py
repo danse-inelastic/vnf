@@ -282,7 +282,7 @@ class DOMAccessor( base ):
     
     def _getClass(self, classname):
         """Get class from classname"""
-        maindom = "vnf.dom"
+        maindom = "vnfb.dom"
         module  = _import("%s.%s" % (maindom, classname))
         return getattr(module, classname)
 
