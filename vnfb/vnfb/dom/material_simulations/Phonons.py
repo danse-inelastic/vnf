@@ -110,33 +110,12 @@ def computeDOS(phonons, N=10000):
         x = random(); y = random(); z=random()
         Q = x*b1 + y*b2 + z*b3
         for j in range(nbr):
-            es[i] = phonos.energy(Q, j)
+            es[i+j*N] = phonons.energy(Q, j)
             continue
         continue
-    I, e = numpy.histogram(es, bins=100, range=(0, es.max()))
+    I, e = numpy.histogram(es, bins=100, range=(0, es.max()*1.2), new=True)
     return e,I
 
-
-def writePhonons_inIDFFormat(phonons, path):
-    D = phonons.dimension
-    N_b = phonons.nAtoms
-    nbr = N_b*D
-
-    # energies
-    energies = phonons.energies
-    energies.shape = -1, nbr
-
-    # pols
-    polarizations = phonons.polarizations
-    polarizations.shape = -1, nbr, N_b, D
-
-    # dos
-    dos = computeDOS(phonons)
-    
-    from mccomponents.sample.idf import writeDipersions
-    writeDipersions(path, energies, polarizations, phonons.Qaxes, dos)
-    
-    return
 
 
 # version
