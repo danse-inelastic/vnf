@@ -78,7 +78,7 @@ class QETaskCell:
 
     def action(self):
         "Displays simulation task action button: 'Run Task', 'Cancel'"
-        doc     = lc.document(id = "run-task-%s" % self._task.id)   # Example: run-task-BFDFX56
+        doc     = lc.document()   # Example: run-task-BFDFX56
         link    = ""
         if self._task:
             link = lc.link(label    = "Run Task",
@@ -89,6 +89,7 @@ class QETaskCell:
                                           taskid    = self._task.id,
                                           subtype   = self._task.short_description)
                             )
+            doc.id = "run-task-%s" % self._task.id
 
         doc.add(link)
         return doc
