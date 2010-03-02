@@ -62,8 +62,9 @@ class QESimulation(QETable, GloballyReferrable):    #, Computation): #):
     short_description.meta['tip'] = "Description of the simulation"
 
     # in MS
-    date = dsaw.db.date( name='date' )
-    # date = dsaw.db.varchar(name="date", length=16, default='')
+    # Conflict
+    #date = dsaw.db.date( name='date' )
+    date = dsaw.db.varchar(name="date", length=16, default='')
     date.meta['tip'] = "timecreated"
 
     package = dsaw.db.varchar(name="package", length=128, default='Quantum Espresso')
