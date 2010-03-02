@@ -62,7 +62,8 @@ class QESimulation(QETable, GloballyReferrable):    #, Computation): #):
     short_description.meta['tip'] = "Description of the simulation"
 
     # in MS
-    date = dsaw.db.varchar(name="date", length=16, default='')
+    date = dsaw.db.date( name='date' )
+    # date = dsaw.db.varchar(name="date", length=16, default='')
     date.meta['tip'] = "timecreated"
 
     package = dsaw.db.varchar(name="package", length=128, default='Quantum Espresso')
@@ -77,7 +78,8 @@ class QESimulation(QETable, GloballyReferrable):    #, Computation): #):
     label       = dsaw.db.varchar(name="label", length=128, default='')
     label.meta['tip'] = "Label associated with the simulation"
 
-    matter = dsaw.db.integer(name="matter", default=0)
+    # matter = dsaw.db.integer(name="matter", length=16)
+    matter = dsaw.db.varchar(name="matter", length=16)
     matter.meta['tip']  = "(STUB) Refers to atomic group. Kind of useless but must have"
 
     results = dsaw.db.referenceSet(name='computation_results')
