@@ -188,8 +188,21 @@ class Accessor(base):
             matterq.c.short_description.label('matter'),
             ]
         where = simq.c.matterid==matterq.c.id
-        q = sqlalchemy.select(cols, where)
-        return q
+        q1 = sqlalchemy.select(cols, where)
+        
+        cols = [
+            simq.c.id.label('id'),
+            simq.c.short_description.label('short_description'),
+            simq.c.type.label('type'),
+            simq.c.date.label('date'),
+            simq.c.gptr.label('gptr'),
+            simq.c.creator.label('creator'),
+            simq.c.matterid.label('matter'),
+            ]
+        where = simq.c.matterid==None
+        q2 = sqlalchemy.select(cols, where)
+        
+        return sqlalchemy.union_all(q1,q2)
 
 
     def _select_matter_clause(self, db):
