@@ -146,7 +146,9 @@ class Accessor(base):
         from vnfb.dom.material_simulations.computation_types import typenames
         ormtables = map(self._getTable, typenames)
 
-        return tables + ormtables
+        from vnfb.dom import qesimtables
+
+        return tables + ormtables + qesimtables()
 
 
     def _select_labeled_entities_clause(self, name, type, db):
