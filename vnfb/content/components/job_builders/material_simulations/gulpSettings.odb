@@ -106,6 +106,7 @@ class Builder(base):
         if self.convertHistoryFile:
             cmds += [
             'postProcessGulp.py -convertHistoryFile=True -historyFile=gulp.his -ncFile=gulp.nc',
+            'rm gulp.his',
                      ] 
         if self.serializePhononArrays:
             cmds += [
