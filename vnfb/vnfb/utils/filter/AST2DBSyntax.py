@@ -40,7 +40,7 @@ class AST2DBSyntax(object):
 
 
     def _onCompareOperator(self, expr, op):
-        return '%s %s %r' % (expr.measure, op, expr.value)
+        return '%s %s %r' % (expr.measure.name, op, expr.value)
     
     
     def onAnd(self, expr):
