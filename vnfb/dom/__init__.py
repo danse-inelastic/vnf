@@ -28,6 +28,27 @@ def _import(modulename):
     return __import__(m, {}, {}, [''])
 
 
+def qetables():
+    "QE Tables"
+    ts  = [
+            'QESimulation.QESimulation',
+            'QETask.QETask',
+            'QESimulationTask.QESimulationTask',
+            'QEJob.QEJob',
+            'QEConfiguration.QEConfiguration',
+            'QESetting.QESetting',
+            ]
+
+    return map(importType, ts)
+
+def qesimtables():
+    "QE Simulations Tables"
+    ts  = ['QESimulation.QESimulation',]
+
+    return map(importType, ts)
+
+
+
 def tables_without_orm():
     # for compatibility with vnf-alpha. should eventually remove
     from vnf.dom import alltables
@@ -40,17 +61,9 @@ def tables_without_orm():
         'User.User',
         'UserHasRole.UserHasRole',
         'Privilege.Privilege',
-        
-        # QE Tables
-        'QESimulation.QESimulation',
-        'QETask.QETask',
-        'QESimulationTask.QESimulationTask',
-        'QEJob.QEJob',
-        'QEConfiguration.QEConfiguration',
-        'QESetting.QESetting',
         ]
     tables = map(importType, ts)
-    return vnfalphatables + tables
+    return vnfalphatables + tables + qetables()
 
 
 # version
