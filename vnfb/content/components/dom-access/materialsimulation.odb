@@ -163,7 +163,7 @@ class Accessor(base):
 
 
     def _select_simulation_withmatterdescription_clause(self, table, db):
-        '''create a sqlalchemy select cluase for the the goven material simulation table
+        '''create an sqlalchemy select clause for a given material simulation table
 
         cols:
           * id
