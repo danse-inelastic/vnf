@@ -26,6 +26,11 @@ import dsaw.db
 PhononsTable.addColumn(
     dsaw.db.reference(name='matter', table=StructureTable, backref='phonons')
     )
+# status
+#   'n': normal
+#   'd': deleted
+PhononsTable.addColumn(dsaw.db.varchar(name='status', length=1, default='n'))
+
 
 PhononsTable.datafiles = [
     'DOS',
