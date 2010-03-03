@@ -119,7 +119,7 @@ class Builder(base):
     def onSampleAssembly(self, sampleassembly):
         from McvineSampleAssemblyBuilder import Builder
         builder = Builder(self.path)
-        builder.render(sampleassembly, db = self.db, dds = self.dds, orm=self.orm)
+        builder.render(sampleassembly, director=self.director)
         self.dependencies += builder.getDependencies()
         self.filenames += builder.getFilenames()
         self.options.update(builder.getOptions())
@@ -129,7 +129,7 @@ class Builder(base):
     def onScatterer(self, scatterer):
         from McvineSampleAssemblyBuilder import Builder
         builder = Builder(self.path)
-        builder.render(scatterer, db = self.db, dds = self.dds, orm=self.orm)
+        builder.render(scatterer, director=self.director)
         self.dependencies += builder.getDependencies()
         self.filenames += builder.getFilenames()
         self.options.update(builder.getOptions())

@@ -29,9 +29,10 @@ class Builder(JobBuilder, XMLMill):
         return
     
 
-    def render(self, scatterer, db=None, dds=None):
-        self.db = db
-        self.dds = dds
+    def render(self, scatterer, director=None):
+        self.db = director.clerk.db
+        self.dds = director.dds
+        self.director = director
         
         self.dispatch(scatterer)
 
@@ -134,11 +135,18 @@ class Builder(JobBuilder, XMLMill):
 
     def onPhonons(self, phonons):
         self.dependencies.append(phonons)
-
+        
         # this is done by assuming the <table>/<id> directory structure for data storage
         # should be replaced later
         import os
-        relpath = os.path.join( '..', '..', self.dds.path(phonons))
+        relpath = os.path.join( '..', '..', self.dds.path(phonons), 'data.idf')
+
+        # somewhat hackish
+        # have to check the Qgridinfo file to make sure it is right etc
+        director = self.director
+        domaccess = director.retrieveDOMAccessor('material_simulations/phonons')
+        domaccess.standardizeDataInIDFFormat(phonons.id)
+        
         self._write( '<LinearlyInterpolatedDispersion idf-data-path="%s"/>' % relpath )
         return
 

@@ -51,13 +51,25 @@ class TestApp(base):
 
 
     def main(self, testFacility, *args, **kwds):
-        domaccess = self.retrieveDOMAccessor('material_simulations/phonons')
-        testFacility.assert_(domaccess is not None)
+        self.domaccess = self.retrieveDOMAccessor('material_simulations/phonons')
+        testFacility.assert_(self.domaccess is not None)
+        self.testFacility = testFacility
+        
+        self.test1()
+        self.test2()
+        return 
 
+
+    def test1(self):
+        domaccess = self.domaccess
         phonons = domaccess.getPhonons(phononsid)
         phonons = domaccess.getDataForPhonons(phonons)
+        return
 
-        print phonons
+
+    def test2(self):
+        domaccess = self.domaccess
+        domaccess.standardizeDataInIDFFormat(phononsid)
         return
 
 
