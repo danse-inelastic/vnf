@@ -32,7 +32,8 @@ from dsaw.db.WithID import WithID
 #from vnfb.dom.Computation import Computation
 
 NO_UPDATE   = ["timecreated", "date", "id"]
-STAMPED     = ["timecreated", "date", "timemodified"]
+STAMPED     = ["timecreated", "timemodified"]
+DATED       = ["date",]
 
 class QETable(WithID):
 
@@ -82,6 +83,10 @@ class QETable(WithID):
     def createRecord(self, params):
         """Tries to create record, otherwise complains"""
         for column in self.getColumnNames():
+            if self._date(column):
+                continue    # Creates automatically?
+
+
             if self._id(column):
                 setattr(self, column, ifelse(params.get(column), params.get(column), newid(self._director)))
                 continue
@@ -130,6 +135,12 @@ class QETable(WithID):
 
         return False
 
+    def _date(self, value):
+        """Value that should be time stamped"""
+        if value in DATED:
+            return True
+
+        return False
 
 __date__ = "$Nov 24, 2009 5:52:44 PM$"
 

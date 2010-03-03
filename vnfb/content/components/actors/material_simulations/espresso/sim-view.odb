@@ -117,7 +117,8 @@ class Actor(base):
             table.addRow(('Description: ', sim.short_description))
             table.addRow(('Package: ', sim.package))
             table.addRow(('Label: ', sim.label))
-            table.addRow(('Time Created: ', stamp2date(sim.date)))
+            table.addRow(('Time Created: ', str(sim.date)))
+            #table.addRow(('Time Created: ', stamp2date(sim.date)))
             #table.addRow(('Time Modified: ', stamp2date(sim.timemodified)))
 
     def _structure(self, sim):
