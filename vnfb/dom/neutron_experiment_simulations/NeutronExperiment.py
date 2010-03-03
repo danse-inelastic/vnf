@@ -60,7 +60,8 @@ class Inventory(InvBase):
 
     dbtablename = 'neutronexperiments'
 
-    instrument = InvBase.d.reference(name = 'instrument', targettype = Instrument, owned=0)
+    instrument = InvBase.d.reference(
+        name = 'instrument', targettype = Instrument, owned = 0)
     instrument_configuration = InvBase.d.reference(
         name = 'instrument_configuration',
         targettypes = instrument_configuration_types,

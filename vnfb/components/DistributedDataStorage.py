@@ -77,11 +77,20 @@ class DistributedDataStorage(base):
         return self._symlink(path1, path2, server=server)
 
 
-    def make_available(self, dbrecord, files=None, server=None):
+    def make_available(self, dbrecord, files=None, server=None, ignore_nonexisting_files=False):
         if files is None: files = _default_files(dbrecord)
         for f in files:
             p = self.path(dbrecord, f)
-            self._make_available(p, server=server)
+            try:
+                self._make_available(p, server=server)
+            except:
+                if ignore_nonexisting_files:
+                    import warnings, traceback
+                    warnings.warn(
+                        'unable to transfer file %r for record %r to server %r\n%s' % (
+                        f, dbrecord, server, traceback.format_exc()))
+                    continue
+                else: raise
             continue
         return
 

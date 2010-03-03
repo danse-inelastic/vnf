@@ -33,6 +33,10 @@ PhononsTable.datafiles = [
     'Polarizations',
     'Qgridinfo',
     'WeightedQ', # this is optional actually
+    'data.idf/DOS',
+    'data.idf/Omega2',
+    'data.idf/Polarizations',
+    'data.idf/Qgridinfo',
     ]
 
 

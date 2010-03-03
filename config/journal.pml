@@ -10,6 +10,7 @@
    </component>
     <component name="debug">
       <property name="ipa">off</property>
+      <property name="UserWarning">off</property>
       <property name="db">off</property>
       <property name="clerk">on</property>
       <property name="dds">on</property>

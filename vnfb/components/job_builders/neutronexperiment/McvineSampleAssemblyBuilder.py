@@ -21,7 +21,12 @@ class Builder:
         return
     
 
-    def render(self, target, db=None, dds=None, orm=None):
+    def render(self, target, director=None):
+        self.director = director
+        clerk = director.clerk
+        db = clerk.db; orm = clerk.orm
+        dds = director.dds
+        
         self.db = db; self.dds = dds; self.orm = orm
         handler = '_on%s' % target.__class__.__name__
         return getattr(self, handler)(target)
@@ -45,7 +50,7 @@ class Builder:
         # xml files for scatterers
         from McvineScattererXMLBuilder import Builder
         builder = Builder(self.path)
-        builder.render(scatterer, db=db, dds=dds)
+        builder.render(scatterer, director=self.director)
         self.dependencies += builder.getDependencies()
         self.filenames += builder.getFilenames()
 
@@ -74,7 +79,7 @@ class Builder:
         builder = Builder(self.path)
         scatterers = sampleassembly.scatterers.dereference(db)
         for name, scatterer in scatterers:
-            builder.render(scatterer, db=db, dds=dds)
+            builder.render(scatterer, director=self.director)
             continue
         self.dependencies += builder.getDependencies()
         self.filenames += builder.getFilenames()
