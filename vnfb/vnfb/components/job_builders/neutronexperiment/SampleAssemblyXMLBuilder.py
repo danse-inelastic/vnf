@@ -168,7 +168,9 @@ class Builder(ShapeRenderer, XMLMill):
         content = makeXYZfileContent(
             structure,
             use_primitive_unitcell=1,
-            use_fractional_coordinates=1)
+            use_fractional_coordinates=1,
+            latticeAsDescription = True,
+            )
         
         open( filepath, 'w' ).write( '\n'.join( content ) )
         return filename
