@@ -25,7 +25,7 @@ class Accessor(base):
 
     def getPhonons(self, atomicstructure):
         db = self.db
-        return atomicstructure.phonons.dereference(db)
+        return atomicstructure.phonons.dereference(db, status='n')
 
 
     def getDOSes(self, atomicstructure):
