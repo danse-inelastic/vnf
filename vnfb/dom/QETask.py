@@ -38,8 +38,11 @@ class QETask(QETable):
     short_description.meta['tip'] = ""
 
     # in MS
-    date = dsaw.db.varchar(name="date", length=16, default='')
-    date.meta['tip'] = "timecreated"
+    timecreated = dsaw.db.varchar(name="timecreated", length=16, default='')
+    timecreated.meta['tip'] = "timecreated"
+
+    #date = dsaw.db.varchar(name="date", length=16, default='')
+    #date.meta['tip'] = "timecreated"
 
     # ?
     package = dsaw.db.varchar(name="package", length=128, default='Quantum Espresso')
