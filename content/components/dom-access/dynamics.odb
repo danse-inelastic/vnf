@@ -51,20 +51,20 @@ class Accessor(base):
     def getDynamics(self, type, id):
         return self.getRecordByID(type, id)
 
-    def countDynamics(self, filter=None, label=None):
+    def countDynamics(self, filter=None, label=None, mine=False):
         db = self.db
         tables = self.dynamicsTables()
-        qf = lambda table: self.makeQuery(table, filter=filter, label=label)
+        qf = lambda table: self.makeQuery(table, filter=filter, label=label, mine=mine)
         qs = map(qf, tables)
         q = sqlalchemy.union_all(*qs)
         return q.alias('tocount').count().execute().fetchone()[0]
     
     def getDynamicsRecords(self, filter=None, order_by=None, 
-                       reverse_order=None, slice=None, label=None):
+                       reverse_order=None, slice=None, label=None, mine=False):
         db = self.db
         self._debug.log('filter: %r, order_by: %r, slice: %r' % (filter, order_by, slice))
         tables = self.dynamicsTables()
-        qf = lambda table: self.makeQuery(table, filter=filter, label=label)
+        qf = lambda table: self.makeQuery(table, filter=filter, label=label, mine=mine)
         qs = map(qf, tables)
         q = sqlalchemy.union_all(*qs)
 
@@ -72,7 +72,7 @@ class Accessor(base):
             q = q.order_by(order_by)
         if slice:
             if reverse_order:
-                n = self.countDynamics(filter=filter, label=label)
+                n = self.countDynamics(filter=filter, label=label, mine=mine)
                 slice = n-slice[1], n-slice[0]
             q = sqlalchemy.select(
                 [q.alias('tmptoslice')],
@@ -94,12 +94,22 @@ class Accessor(base):
             ret.reverse()
         return ret
 
-    def makeQuery(self, table, filter=None, label=None):
+    def makeQuery(self, table, filter=None, label=None, mine=False):
         'create a query for a dynamics table with given filter'
         db = self.db
+        
         if label:
             if filter: raise RuntimeError
-            return self.makeLabeledQuery(label, table)
+            return self.makeLabeledQuery(label, table, mine=mine)
+        
+        if mine:
+            username = self.director.sentry.username
+            mine = "creator='%s'" % username
+            if filter:
+                filter = '(%s) and %s' % (filter, mine)
+            else:
+                filter = mine
+        
         sGP = db._tablemap.TableToSATable(global_pointer)
         st = db._tablemap.TableToSATable(table)   
         q = sqlalchemy.select(
@@ -112,10 +122,11 @@ class Accessor(base):
             )
         if filter:
             q = sqlalchemy.select([q.alias('dynamics')], whereclause=filter)
+            
         return q
 
 
-    def makeLabeledQuery(self, label, table):
+    def makeLabeledQuery(self, label, table, mine=False):
         'create a query for a dynamics table with a given filter'
         db = self.db
         
@@ -136,6 +147,12 @@ class Accessor(base):
              ],
             labelq.c.entity==sGP.c.id,
             ).alias('q1')
+            
+        where = 'sims.gptr=labeled.entity'
+        if mine:
+            username = self.director.sentry.username
+            mine = "sims.creator='%s'" % username
+            where = '%s and %s' % (where, mine)
 
         q = sqlalchemy.select(
             [st.c.id.label('id'),

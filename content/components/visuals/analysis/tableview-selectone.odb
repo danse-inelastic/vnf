@@ -23,7 +23,7 @@ import luban.content as lc
 def visual(
     director, name,
     filter_expr=None, filter_key=None, filter_value=None,
-    label=None,
+    label=None, mine=False,
     order_by=None, reverse_order=None,
     number_records_per_page=None, page_number=None,
     ):
@@ -33,16 +33,17 @@ def visual(
     targettablename = 'dynamics'
         
     from vnfb.components.MasterTable import MasterTableFactory, filtercompiler
-    def countrecords(filter, label=None):
-        return domaccess.countDynamics(filter, label=label)
-    def createtable(order_by, reverse_order, slice, filter, label=None):
+    def countrecords(filter, label=None, mine=False):
+        return domaccess.countDynamics(filter, label=label, mine=mine)
+    def createtable(order_by, reverse_order, slice, filter, label=None, mine=False):
         return createTable(
             director, domaccess,
             order_by=order_by,
             reverse_order=reverse_order,
             slice=slice,
             filter=filter,
-            label=label)
+            label=label,
+            mine=mine,)
     compilefilter = filtercompiler(columns, measure2dbcol)
 
     smartlabelaccess = director.retrieveDOMAccessor('smartlabel')
@@ -66,7 +67,7 @@ def visual(
         )
 
     tableview = factory.create(
-        label = label,
+        label = label, mine = mine,
         filter_expr=filter_expr, filter_key=filter_key, filter_value=filter_value,
         order_by=order_by,
         reverse_order=reverse_order,
@@ -82,7 +83,8 @@ def createTable(
     reverse_order=None,
     slice=None,
     filter=None,
-    label=None):
+    label=None,
+    mine=False,):
 
     records = domaccess.getDynamicsRecords(
         order_by=order_by,
@@ -90,6 +92,7 @@ def createTable(
         slice=slice,
         filter=filter,
         label=label,
+        mine=mine,
         )
 
     cols = columns
