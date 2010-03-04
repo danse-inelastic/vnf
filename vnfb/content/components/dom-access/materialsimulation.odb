@@ -140,6 +140,11 @@ class Accessor(base):
     
 
     def simulationTables(self):
+        self._establishGlobalPointers()
+        return self._simulationTables()
+
+
+    def _simulationTables(self):
         from vnf.dom import materialsimulationtables, materialmodelingtables
         tables = materialsimulationtables()# + materialmodelingtables()
 
@@ -249,6 +254,19 @@ class Accessor(base):
                   'Original exception was:\n%s' % (table.getTableName(), traceback.format_exc())
 
         return simq
+
+
+    def _establishGlobalPointers(self):
+        # temp fix
+        # the current way of querying will omit the records without global pointers
+        # we have to establish global pointer for each reocrd without one
+        db = self.db
+        for table in self._simulationTables():
+            rs = db.query(table).filter_by(globalpointer=None).all()
+            for r in rs: r.establishGlobalPointer(db)
+            continue
+        return
+    
 
 
 from dsaw.db.VersatileReference import global_pointer
