@@ -31,7 +31,7 @@ all: export
 EXPORT_PYTHON_MODULES = \
 	__init__.py \
 	exceptions.py \
-    qetorque.old.py \
+        qetorque.py \
 	torque.py \
 
 
