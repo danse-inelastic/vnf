@@ -118,6 +118,7 @@ class Actor(base):
             table.addRow(('Package: ', sim.package))
             table.addRow(('Label: ', sim.label))
             table.addRow(('Time Created: ', str(sim.date)))
+            
             #table.addRow(('Time Created: ', stamp2date(sim.date)))
             #table.addRow(('Time Modified: ', stamp2date(sim.timemodified)))
 
