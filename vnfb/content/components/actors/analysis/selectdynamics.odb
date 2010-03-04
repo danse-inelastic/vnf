@@ -79,7 +79,7 @@ class Actor(base):
         return
 
 
-    def __init__(self, name='selectdynamics'):
+    def __init__(self, name='analysis/selectdynamics'):
         super(Actor, self).__init__(name)
         return
 
