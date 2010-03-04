@@ -55,10 +55,10 @@ class Actor(base):
         """
         # Disable for now
         
-#        self._createJob(director)
-#        self._storeFiles(director)
-#        self._moveFiles(director)
-#        self._scheduleJob(director)
+        self._createJob(director)
+        self._storeFiles(director)
+        self._moveFiles(director)
+        self._scheduleJob(director)
 
         return load(actor="material_simulations/espresso/sim-view",
                     id=self.id)
@@ -74,8 +74,8 @@ class Actor(base):
 
     def _setProgressBar(self):
         pbar    = ProgressBar(
-                            #id = 'itask-%s-pbar' % task.id,
-                            id = 'pbar-%s' % self.taskid,
+                            id = 'itask-%s-pbar' % task.id,
+                            #id = 'pbar-%s' % self.taskid,
                             status = 'Submitting job...',
                             percentage = 10,
                             skip = 2000,

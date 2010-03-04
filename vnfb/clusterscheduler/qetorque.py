@@ -14,7 +14,7 @@
 # Stub
 
 import journal
-debug = journal.debug( 'torque' )
+debug = journal.debug( 'qetorque' )
 
 from pyre.units.time import hour, minute, second
 import math
@@ -23,7 +23,7 @@ from vnf.clusterscheduler.torque import Scheduler as base
 from vnf.clusterscheduler.torque import _walltime_str
 from vnfb.utils.qeconst import NOPARALLEL
 
-PROC_PER_NODE   = 8    # PROC_PER_NODE   = 12 (default), Number of processors per node, specific for foxtrot
+PROC_PER_NODE   = 12    # PROC_PER_NODE   = 12 (default), Number of processors per node, specific for foxtrot
 
 class Scheduler(base):
 
@@ -93,7 +93,7 @@ class Scheduler(base):
     def _getppn(self):
         "Calculates number of processors per node (ppn) from number of processors"
         numproc = self._settings.numproc
-        if numproc < PROC_PER_NODE:
+        if numproc <= PROC_PER_NODE:
             return numproc
 
         return PROC_PER_NODE
