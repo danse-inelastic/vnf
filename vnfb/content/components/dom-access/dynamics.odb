@@ -22,12 +22,12 @@ class Accessor(base):
         orm = self.director.clerk.orm
         # build orm for all dynamics types--orm 
         #registers and stores these internally
-#        from vnfb.dom.material_simulations.Phonons import PhononTable
-#        from vnfb.dom.material_simulations.Motion import Motion
-        from vsat.Phonons import Phonons
-        from vsat.Motion import Motion
+        from vnfb.dom.material_simulations.Phonons import Phonons
+        from vnfb.dom.material_simulations.Motion import MotionDO
+        # from vsat.Phonons import Phonons
+        # from vsat.Motion import Motion
         orm(Phonons)
-        orm(Motion)
+        orm(MotionDO)
         return orm
     orm = property(_getOrm)
 
