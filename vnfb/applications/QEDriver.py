@@ -74,7 +74,7 @@ class QEDriver(base):
         self._storeFiles()
         self._moveFiles()
         self._scheduleJob()
-        self._updateStatus("done")
+        self._updateStatus("submitted")
 
 
     def _createJob(self):
