@@ -16,6 +16,8 @@ from luban.content.ProgressBar import ProgressBar
 from luban.content import load, select
 from luban.components.AuthorizedActor import AuthorizedActor as base
 from vnfb.utils import launch_detached, bindir
+from vnfb.utils.qeutils import latestJob
+from vnfb.utils.qeconst import JOB_STATE
 
 class Actor(base):
 
@@ -88,12 +90,18 @@ class Actor(base):
         
         return select(id="run-task-%s" % self.taskid).replaceContent(pbar)
 
-
+    # FIXME: Properly handle status and percentage
     def checkStatus(self, director):
         selectpbar      = select(id='pbar-%s' % self.taskid)
+        job     = None  
+        jobs    = director.clerk.getQEJobs(where="taskid='%s'" % self.taskid)
+        if jobs:
+            job  = latestJob(jobs)
+            
+        state   = JOB_STATE[job.status]
         return  selectpbar.setAttr(
-                                    percentage=100,
-                                    status="Submitting job...",
+                                    percentage  = state[0],
+                                    status      = state[1],
                                     )
 
     def __init__(self):
@@ -111,7 +119,6 @@ class Actor(base):
 
     def _init(self):
         super(Actor, self)._init()
-        self._files = []
         return
 
 def actor():

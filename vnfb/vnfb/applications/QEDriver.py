@@ -18,8 +18,8 @@
 #
 from vnfb.dom.QEJob import QEJob
 from vnfb.utils.qeutils import makedirs, writefile, stamp
-from vnfb.utils.qeconst import STATES, RUNSCRIPT, TYPE, NOPARALLEL
-from vnfb.utils.qeutils import packname, unpackname
+from vnfb.utils.qeconst import RUNSCRIPT, TYPE, NOPARALLEL#, JOB_STATE
+from vnfb.utils.qeutils import packname
 from luban.applications.UIApp import UIApp as base
 
 import pyre.idd
@@ -74,6 +74,7 @@ class QEDriver(base):
         self._storeFiles()
         self._moveFiles()
         self._scheduleJob()
+        self._updateStatus("done")
 
 
     def _createJob(self):
@@ -83,7 +84,7 @@ class QEDriver(base):
         setting     = settings[0]
         params  = {"taskid":        self.taskid,
                    "serverid":      self._sim.serverid,  # -> take from QESimulations
-                   "status":        "Submitted",    # Fixed status
+                   "status":        "Submitting",    # Fixed status
                    "timesubmitted": stamp(),
                    "creator":       self.sentry.username,
                    "numberprocessors":   setting.numproc, # -> take from QESettings
@@ -101,6 +102,8 @@ class QEDriver(base):
         self._job  = QEJob()
         self._job.setDirector(self)
         self._job.createRecord(params)
+        
+        self._updateStatus("create-job")
 
 
     def _storeFiles(self):
@@ -120,6 +123,8 @@ class QEDriver(base):
             self._write2file(dds, self._job, pfn, input.text)   # -> qejobs directory
             dds.remember(self._job, pfn)     # Change object and filename?
             self._files.append(pfn)
+
+        self._updateStatus("prepare-configs")
 
 
     def _createRunScript(self):
@@ -153,6 +158,8 @@ class QEDriver(base):
         self._write2file(dds, self._job, RUNSCRIPT, "\n".join(cmds))    # -> qejobs directory
         dds.remember(self._job, RUNSCRIPT)  # Important step during which the .__dds_nodelist* files are created
         self._files.append(RUNSCRIPT)
+
+        self._updateStatus("prepare-controls")
 
 
     def _npool(self, settings, type):
@@ -190,7 +197,8 @@ class QEDriver(base):
 
         # Create output directory (ESPRESSO_TEMPDIR) for QE
         dds.makedirs(self._sim, server=server)
-
+        self._updateStatus("copy")
+        
 
     def _test_makedirs(self):
         dds         = self.dds
@@ -204,6 +212,12 @@ class QEDriver(base):
         dds     = self.dds
         from vnfb.utils.qescheduler import schedule
         schedule(self._sim, self, self._job)
+        self._updateStatus("enqueue")
+
+
+    def _updateStatus(self, status):
+        self._job.setDirector(self)
+        self._job.updateRecord({"status": status})
 
 
     def __init__(self):
@@ -230,11 +244,6 @@ class QEDriver(base):
         self._files = []
 
 __date__ = "$Mar 3, 2010 11:04:10 PM$"
-
-
-#        sim = self.clerk.getQESimulations(id = self.id)
-#        sim.setClerk(self.clerk)
-#        sim.updateRecord({"label": "Hi",})
 
 
 
