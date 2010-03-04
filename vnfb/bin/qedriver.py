@@ -12,12 +12,12 @@
 #
 
 # Let there be light ... from the darkness of messy code! :)
-# If everyone is reinventing the wheel, why not to join them? :)
+# If everyone is reinventing the wheel, why not to join? :)
 
 def main():
     from vnfb.applications.QEDriver import QEDriver
 
-    class App(ITaskApp):
+    class App(QEDriver):
 
         def _getPrivateDepositoryLocations(self):
             return ['/tmp/luban-services', '../config', '../content/components']

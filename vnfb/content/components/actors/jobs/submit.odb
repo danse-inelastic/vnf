@@ -11,25 +11,11 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
-import time
-from vnfb.dom.QEJob import QEJob
-from vnfb.utils.qeutils import makedirs, writefile, stamp
-from vnfb.utils.qeconst import STATES, RUNSCRIPT, TYPE, NOPARALLEL
-from vnfb.utils.qeutils import packname, unpackname
+import os
 from luban.content.ProgressBar import ProgressBar
-
 from luban.content import load, select
 from luban.components.AuthorizedActor import AuthorizedActor as base
-
-"""
-Jobs submission steps:
-    - Creating job records          - 10%
-    - Preparing configuration files - 20%
-    - Preparing control files       - 40%
-    - Copying files to cluster      - 60%
-    - Submitting to queue           - 80%
-    - Done                          - 100%
-"""
+from vnfb.utils import launch_detached, bindir
 
 class Actor(base):
 
@@ -46,37 +32,29 @@ class Actor(base):
     
 
     def submit(self, director):
-        "Spawn process for job submissionReturn progress"
-        self.submitJob(director)    # Spawns process that submits job to the computing node
+        "Submit job to the computing nodes. Trace job status."
+        self.submitJob(director)    
 
         return self.progressBar(director)
 
-#        return load(actor="material_simulations/espresso/sim-view",
-#                    id=self.id)
-
 
     def submitJob(self, director):
-        """
-        Submit simulation job
-        The process of submission of simulation includes the following steps:
-        1. Store configuration inputs to local disk storage
-        2. Copy files to the computational cluster
-        3. Submit Job
-        """
-        
-        self._createJob(director)
-        self._storeFiles(director)
-        self._moveFiles(director)
-        self._scheduleJob(director)
+        "Spawns process that submits job to the computing nodes"
 
+        cmd = os.path.join(bindir, "qedriver.py")
 
-#    def traceStatus(self, director):
-#
-#        pass
-#
-#    def submitProgress(self, director):
-#        #time.sleep(2)
-#        return self._setProgressBar()
+        options =   {
+                    'id':       self.inventory.id,
+                    'taskid':   self.inventory.taskid,
+                    'subtype':  self.inventory.subtype,
+                    }
+
+        optstr = ' '.join([ '--%s="%s"' % (k,v) for k,v in options.iteritems() ])
+        cmd += ' ' + optstr
+
+        launch_detached(cmd)
+        return
+
 
 
     def progressBar(self, director):
@@ -87,160 +65,26 @@ class Actor(base):
                             skip = 2000,
                             )
 
-        selectpbar      = select(id='pbar-%s' % self.taskid)
-        pbar.onchecking = selectpbar.setAttr(
-                                            percentage=10,
-                                            status="Submitting job...",
-                                            )
-# id = 'itask-%s-pbar' % task.id,                                            )
-#            link.onchecking = load(
-#                actor='itask',
-#                routine='checkProgress',
-#                id = self._task.id,
-#                )
-# select(element=lc.paragraph('test')).show(),
+        pbar.onchecking = load(
+                                actor   = 'jobs/submit',
+                                routine = 'checkStatus',
+                                taskid  = self.taskid,
+                                )
 
-        pbar.onfinished = [
-            load(actor = "material_simulations/espresso/sim-view",
-                 id = self.id),
-            ]
+        pbar.onfinished  = [
+                            load(actor = "material_simulations/espresso/sim-view",
+                                 id = self.id),
+                            ]
         
         return select(id="run-task-%s" % self.taskid).replaceContent(pbar)
 
 
-    def _createJob(self, director):
-        "Create Job"
-        self._sim   = director.clerk.getQESimulations(id = self.id)     # Should exist
-        settings    = director.clerk.getQESettings(where = "simulationid='%s'" % self.id)   # Should exist
-        setting     = settings[0]
-        params  = {"taskid":        self.taskid,
-                   "serverid":      self._sim.serverid,  # -> take from QESimulations
-                   "status":        "Submitted",    # Fixed status
-                   "timesubmitted": stamp(),
-                   "creator":       director.sentry.username,
-                   "numberprocessors":   setting.numproc, # -> take from QESettings
-                   "description":   self.subtype
-                   }
-
-#        debug   = False  # Debugging flag
-#        if debug:
-#            #self.taskid = "4FUNHMTP"
-#            self.taskid = "46M3E9PE"
-#            jobs        = director.clerk.getQEJobs(where = "taskid='%s'" % self.taskid) # Temp
-#            self._job   = jobs[0]
-#        else:
-
-        self._job  = QEJob()
-        self._job.setDirector(director)
-        self._job.createRecord(params) # uncomment
-
-
-    def _storeFiles(self, director):
-        """TEMP SOLUTION: Stores files from configuration input strings """
-        self._storeConfigurations(director)
-        self._createRunScript(director)
-        self._prepareFiles()
-
-
-    def _storeConfigurations(self, director):
-        "Store Configuration files"
-        inputs  = director.clerk.getQEConfigurations(where = "taskid='%s'" % self.taskid)
-        dds     = director.dds
-        for input in inputs:
-            fn          = input.filename
-            pfn         = packname(input.id, fn)                # E.g. 44XXJJG2ni.scf.in
-            self._write2file(dds, input, fn, input.text)        # -> qeconfigurations directory
-            self._write2file(dds, self._job, pfn, input.text)   # -> qejobs directory
-            dds.remember(self._job, pfn)     # Change object and filename?
-            self._files.append(pfn)
-
-
-    def _createRunScript(self, director):
-        settingslist = director.clerk.getQESettings(where = "simulationid='%s'" % self.id)       # not None
-        inputs      = director.clerk.getQEConfigurations(where = "taskid='%s'" % self.taskid)
-        task        = director.clerk.getQETasks(id = self.taskid)
-        server      = director.clerk.getServers(id = self._job.serverid)
-        settings    = settingslist[0]
-        input       = inputs[0]
-
-        # mpirun --mca btl openib,sm,self pw.x -npool 8 -inp  PW > PW.out
-        words   = [ settings.executable,
-                    settings.params,
-                    TYPE[task.type],
-                    "-npool %s" % self._npool(settings, task.type),
-                    "-inp",
-                    packname(input.id, input.filename),       # replace
-                    ">",
-                    packname(input.id, "%s.out" % input.filename)    # replace
-        ]
-
-        # QE temp simulation directory is qesimulations/[simid] directory
-        # E.g.: /home/dexity/espresso/qesimulations/3YEQ8PNV    -> no trailing slash
-        qetempdir  = director.dds.abspath(self._sim, server=server)
-        cmds    = [ "#!/bin/env bash",   # Suppose there is bash available
-                    "export ESPRESSO_TMPDIR=%s/" % qetempdir,
-                    " ".join(words)
-        ]
-
-        dds     = director.dds
-        self._write2file(dds, self._job, RUNSCRIPT, "\n".join(cmds))    # -> qejobs directory
-        dds.remember(self._job, RUNSCRIPT)  # Important step during which the .__dds_nodelist* files are created
-        self._files.append(RUNSCRIPT)
-        
-
-    def _npool(self, settings, type):
-        "Returns npool depending on type of simulation task"
-        # suppose settings is not None
-        num = settings.npool
-        if type in NOPARALLEL:
-            num = 1
-        
-        return num
-
-
-    def _prepareFiles(self):
-        pass
-
-
-    def _write2file(self, dds, record, fname, content):
-        """Writes content of the configuration input to file"""
-        path        = dds.abspath(record)
-        absfilename = dds.abspath(record, filename = fname)
-        makedirs(path)
-        writefile(absfilename, content)
-
-
-    def _moveFiles(self, director):
-        """
-        Moves files from local server to the computational cluster.
-        Files that need to be moved:
-            - Configuration inputs
-            - Simulation Settings
-            - run.sh script (generate it first)
-        Notes:
-            - See also: submitjob.odb
-        """
-        dds     = director.dds
-        server  = director.clerk.getServers(id = self._job.serverid)
-        dds.make_available(self._job, server=server, files=self._files)
-
-        # Create output directory (ESPRESSO_TEMPDIR) for QE
-        dds.makedirs(self._sim, server=server)
-
-
-    def _test_makedirs(self, director):
-        dds         = director.dds
-        self._sim   = director.clerk.getQESimulations(id = self.id)
-        server      = director.clerk.getServers(id = self._sim.serverid)
-        dds.makedirs(self._sim, server=server)
-
-
-    def _scheduleJob(self, director):
-        "Schedule job"
-        dds     = director.dds
-        from vnfb.utils.qescheduler import schedule
-        schedule(self._sim, director, self._job)
-
+    def checkStatus(self, director):
+        selectpbar      = select(id='pbar-%s' % self.taskid)
+        return  selectpbar.setAttr(
+                                    percentage=10,
+                                    status="Submitting job...",
+                                    )
 
     def __init__(self):
         super(Actor, self).__init__(name='jobs/submit')
@@ -269,160 +113,28 @@ __date__ = "$Nov 4, 2009 9:27:51 AM$"
 
 # ********************** DEAD CODE ***********************
 
-
-#    def _storeSettings(self, director):
-#        # Store Settings files. I don't really need to store to files.
-#        # Instead use data to create run.sh
-#        settings  = director.clerk.getQESettings(where = "simulationid='%s'" % self.id)
-#        dds     = director.dds
-#        for s in settings:
-#            filename    = dds.abspath(s, filename = s.sname)
-#            dds.remember(s, s.sname)     # Change object and filename?
-#            self._write2file(dds, input, filename, input.text)
+#        extra_options = task.options
+#        for i in range(len(extra_options)/2):
+#            k = 'iworker.%s' % extra_options[2*i]
+#            v = extra_options[2*i+1]
+#            options[k] = v
+#            continue
 
 
-
-
-        #self.files  = []
-        #self.files.append(input.filename)       # ??? Relative path, e.g. ni.scf.in
-        #filename    = dds.abspath(input, filename = "run.sh")
-        #content     =
-        #self._writeContent(dds, input, filename, content)
-        # FIXME
-        #for f in self.files:
-        # Should be local filename
-        #dds.remember(inputs[0], 'PW')
-            # for f in files: dds.remember(job, f) #?
-
-
-# ********************** DEAD CODE ***********************
-
-#from luban.content.Plot2D import Plot2D
-
-#    def submit(self, director):
-#        self.verify()
-#        self.createRecord(director)
-#        self.runSimulation(director)
+# id = 'itask-%s-pbar' % task.id,                                            )
+#            link.onchecking = load(
+#                actor='itask',
+#                routine='checkProgress',
+#                id = self._task.id,
+#                )
+# select(element=lc.paragraph('test')).show(),
+#    def traceStatus(self, director):
 #
-#        return load(actor='jobs/submitted', routine='link')
-#
-#
-#    def verify(self):
-#        """Checks if all the components available to run the simulation"""
 #        pass
 #
-#    def content(self, director):
-#        document = Document(title='Job Submitted')
-#        document.add(Paragraph(text="Your jobs was successfully submitted!"))
-#        document.add(Link(label="All jobs", Class="action-link", onclick=load(actor="jobs/index", routine="link")))
-#
-#        return document
-#
-#
-#    def pathlist(self, director):
-#        self.pathlist = [("Home","greet","link"),
-#                         ("Jobs", "jobs/index", "link"),
-#                         ("Submitted", None, None) ]
-#
-#        return self.pathlist
-#
-#
-#    # Create Job
-#    def createRecord(self, director):
-#        params  = { "userId": 1, "simulationId": self.id,
-#                    "status": STATES["C"], "exitCode": 0,
-#                    "numberProcessors": 8}
-#        job     = Job()
-#        job.createRecord(director, params)
-#
-##        package = PACKAGES[int(self.package)]
-##        simtype = SIMULATIONS[int(self.simtype)]
-##
-##        params  = {"sname": self.sname, "package": package,
-##                   "type": simtype, "description": self.description,
-##                   "formula": self.formula, "isFavorite": True}
-##        sim     = Simulation()
-##        sim.createRecord(director, params)
-#
-#
-#
-#    # Temp methods for running simulation
-#    def runSimulation(self, director):
-#
-#        self.runPWSimulation(director)
-#        self.runPW_DOS(director)
-#        self.createPWPlot(director)
-#
-#
-#    # Run PW simulation
-#    def runPWSimulation(self, director):
-#        config      = director.clerk.getConfigurations(id=1)
-#        configtext  = config.text
-#
-#        #infile  = EXPORT_ROOT + "/content/data/ni.scf.in" # Uses database
-#        outfile = EXPORT_ROOT + "/output/ni.scf.out"
-#
-#        from vinil.utils import pw
-#        configmod = self.setPWConfig(config=configtext)
-#        pw.runPWSimulation(outfile, config=configmod)
-#
-#    # Sets pseudo_dir and outdir (hardcoded) and saves to the same file.
-#    def setPWConfig(self, filename=None, config=None):
-#        from vinil.utils.parser.qeinput import QEInput
-#        qe = QEInput(filename, config)
-#        qe.parse()
-#        pd = qe.namelist('control')
-#
-#        pseudo_dir  = EXPORT_ROOT + "/content/data/"
-#        outdir      = EXPORT_ROOT + "/content/temp/"
-#        pd.editParam('pseudo_dir', "'%s'" % pseudo_dir)
-#        pd.editParam('outdir',     "'%s'" % outdir)
-#
-#        if filename:
-#            qe.save()
-#            return
-#
-#        if config:
-#            return qe.toString()
-#
-#
-#    # Find electron DOS
-#    def runPW_DOS(self, director):
-#        config      = director.clerk.getConfigurations(id=4)
-#        configtext  = config.text
-#
-#        #infile  = EXPORT_ROOT + "/content/data/ni.scf.dos.in" # Uses database
-#
-#        configmod = self.setPW_DOSConfig(config=configtext)
-#        from vinil.utils import dos
-#        dos.runPW_DOS(config=configmod)
-#
-#
-#    def setPW_DOSConfig(self, filename=None, config=None):
-#        from vinil.utils.parser.qeinput import QEInput
-#        qe = QEInput(filename, config, type='dos')
-#        qe.parse()
-#        pd = qe.namelist('inputpp')
-#
-#        outdir      = EXPORT_ROOT + "/content/temp/"
-#        fildos      = EXPORT_ROOT + "/output/ni.scf.dos.out"
-#
-#        pd.editParam('outdir', "'%s'" % outdir)
-#        pd.editParam('fildos', "'%s'" % fildos)
-#
-#        if filename:
-#            qe.save()
-#            return
-#
-#        if config:
-#            return qe.toString()
-#
-#
-#
-#    # Plot electron DOS
-#    def createPWPlot(self, director):
-#        infile      = EXPORT_ROOT + "/output/ni.scf.dos.out"
-#        imagefile   = EXPORT_ROOT + "/html/images/plots/ni_scf_dos.png"
-#
-#        from vinil.utils import plot
-#        plot.createPWPlot(infile, imagefile)
+#    def submitProgress(self, director):
+#        #time.sleep(2)
+#        return self._setProgressBar()
+#        return load(actor="material_simulations/espresso/sim-view",
+#                    id=self.id)
+
