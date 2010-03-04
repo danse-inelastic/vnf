@@ -49,12 +49,22 @@ class Actor(base):
                     'subtype':  self.inventory.subtype,
                     }
 
-        optstr = ' '.join([ '--%s="%s"' % (k,v) for k,v in options.iteritems() ])
-        cmd += ' ' + optstr
+        options = self._refine(options)
+        optstr  = ' '.join([ '--%s="%s"' % (k,v) for k,v in options.iteritems() ])
+        cmd     += ' ' + optstr
 
         launch_detached(cmd)
         return
 
+
+    def _refine(self, opts):
+        "pyre complains about parameters like: '--subtype=', so we get rid of them"
+        options     = {}
+        for o in opts.keys():
+            if opts[o].strip() != '':   # option is not empty
+                options[o]  = opts[o]
+
+        return options
 
 
     def progressBar(self, director):
@@ -62,7 +72,7 @@ class Actor(base):
                             id = 'pbar-%s' % self.taskid,
                             status = 'Submitting job...',
                             percentage = 0,
-                            skip = 2000,
+                            skip = 2000,    # time interval?
                             )
 
         pbar.onchecking = load(
@@ -82,7 +92,7 @@ class Actor(base):
     def checkStatus(self, director):
         selectpbar      = select(id='pbar-%s' % self.taskid)
         return  selectpbar.setAttr(
-                                    percentage=10,
+                                    percentage=100,
                                     status="Submitting job...",
                                     )
 
