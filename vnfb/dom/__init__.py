@@ -37,6 +37,7 @@ def qetables():
             'QEJob.QEJob',
             'QEConfiguration.QEConfiguration',
             'QESetting.QESetting',
+            'QESimulation.QESimulation',
             ]
 
     return map(importType, ts)

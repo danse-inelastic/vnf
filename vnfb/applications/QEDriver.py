@@ -14,13 +14,17 @@
 # See also vnfb/applications/ITaskApp.py
 # XXX Fix me!!!
 
-import time
-
-from vnfb.dom.QEJob import QEJob
-from vnfb.utils.qeutils import makedirs, writefile, stamp
-from vnfb.utils.qeconst import STATES, RUNSCRIPT, TYPE, NOPARALLEL
-from vnfb.utils.qeutils import packname, unpackname
+#import time
+#
+#from vnfb.dom.QEJob import QEJob
+#from vnfb.utils.qeutils import makedirs, writefile, stamp
+#from vnfb.utils.qeconst import STATES, RUNSCRIPT, TYPE, NOPARALLEL
+#from vnfb.utils.qeutils import packname, unpackname
 from luban.applications.UIApp import UIApp as base
+
+import pyre.idd
+import pyre.inventory
+import vnfb.components
 
 """
 Jobs submission steps:
@@ -35,28 +39,30 @@ Jobs submission steps:
 class QEDriver(base):
 
     class Inventory(base.Inventory):
-        import pyre.inventory
         id          = pyre.inventory.str('id', default='')      # Simulation Id
         taskid      = pyre.inventory.str('taskid', default='')
         subtype     = pyre.inventory.str('subtype', default='')
-
-        import pyre.idd
+        
         idd = pyre.inventory.facility('idd-session', factory=pyre.idd.session, args=['idd-session'])
         idd.meta['tip'] = "access to the token server"
 
-        clerk = pyre.inventory.facility(name="clerk", default='clerk')
+        clerk = pyre.inventory.facility(name="clerk", factory=vnfb.components.clerk)
         clerk.meta['tip'] = "the component that retrieves data from the various database tables"
 
-        import vnfb.components
-        import vnf.components
         dds = pyre.inventory.facility(name="dds", factory=vnfb.components.dds)
         dds.meta['tip'] = "the component manages data files"
 
-        csaccessor = pyre.inventory.facility(name='csaccessor', factory = vnf.components.ssher)
+        csaccessor = pyre.inventory.facility(name='csaccessor', factory = vnfb.components.ssher)
         csaccessor.meta['tip'] = 'computing server accessor'
 
+
     def main(self):
-        print "Hi"
+
+        open("/tmp/qedriver.txt", "w").write("Hi")
+
+#        sim = self.clerk.getQESimulations(id = self.id)
+#        sim.setClerk(self.clerk)
+#        sim.updateRecord({"label": "Hi",})
 
 
 #    def submitJob(self, director):
@@ -215,6 +221,13 @@ class QEDriver(base):
         self.id         = self.inventory.id
         self.taskid     = self.inventory.taskid
         self.subtype    = self.inventory.subtype
+
+        self.idd        = self.inventory.idd
+        self.clerk      = self.inventory.clerk
+        self.dds        = self.inventory.dds
+        self.csaccessor = self.inventory.csaccessor
+        self.clerk.director     = self
+        self.dds.director       = self
 
 
     def _init(self):
