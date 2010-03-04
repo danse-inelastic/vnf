@@ -97,12 +97,19 @@ class Actor(base):
         jobs    = director.clerk.getQEJobs(where="taskid='%s'" % self.taskid)
         if jobs:
             job  = latestJob(jobs)
-            
-        state   = JOB_STATE[job.status]
+
+        state   = self._getStatus(job)
         return  selectpbar.setAttr(
                                     percentage  = state[0],
                                     status      = state[1],
                                     )
+
+    def _getStatus(self, job):
+        status  = (100, "Unknown status")
+        if not job or not job.status in JOB_STATE.keys():
+            return status
+
+        return JOB_STATE[job.status]
 
     def __init__(self):
         super(Actor, self).__init__(name='jobs/submit')
