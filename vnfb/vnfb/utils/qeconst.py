@@ -94,7 +94,7 @@ PARSERS = ("qeinput",)
 SETTINGS  = {
                 "numproc":      1,
                 "numnodes":     1,
-                "npool":        12,
+                "npool":        900,
                 "executable":   "mpirun",
                 "params":       "--mca btl openib,sm,self",                       # Specific for foxtrot
                 "modules":      "openmpi acml/4.3.0_gfortran64_int32 espresso"    # Specific for foxtrot

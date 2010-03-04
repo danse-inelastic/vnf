@@ -40,6 +40,7 @@ EXPORT_DATAFILES = \
 	launch-detached.py \
 	loaddataobject.py \
         packjobdir.py \
+        qedriver.py \
 	restorevnfdb.py \
 	retrieveresults.py \
 	startservices.sh \
