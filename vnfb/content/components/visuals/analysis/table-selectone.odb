@@ -24,7 +24,7 @@ def visual(simulations, cols, director):
         selectone = Model.descriptors.radio_button(name='selectone')
         id = Model.descriptors.str(name='id')
         #description = Model.descriptors.str(name='description')
-        type = Model.descriptors.str(name='type')
+        #type = Model.descriptors.str(name='type')
         #date = Model.descriptors.str(name='date')
         row_identifiers = ['id', 'type']
 
@@ -32,7 +32,7 @@ def visual(simulations, cols, director):
         View.Column(label='', measure='selectone'),
         View.Column(label='ID', measure='id'),
         #View.Column(label='Description', measure='description'),
-        View.Column(label='Type', measure='type'),
+        #View.Column(label='Type', measure='type'),
         #View.Column(label='Date created', measure='date'),
         ]
     columns = filter(lambda col: col.measure in cols, columns)
