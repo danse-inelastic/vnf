@@ -168,7 +168,7 @@ def latestJob(jobs):
 
 
 def latestTask(tasks):
-    return latestRecord(tasks, "date")
+    return latestRecord(tasks, "timecreated")
 
 
 def latestInput(inputs):

@@ -42,7 +42,6 @@ class Actor(base):
 
     def submitJob(self, director):
         "Spawns process that submits job to the computing nodes"
-
         cmd = os.path.join(bindir, "qedriver.py")
 
         options =   {
@@ -90,7 +89,7 @@ class Actor(base):
         
         return select(id="run-task-%s" % self.taskid).replaceContent(pbar)
 
-    # FIXME: Properly handle status and percentage
+
     def checkStatus(self, director):
         selectpbar      = select(id='pbar-%s' % self.taskid)
         job     = None  
@@ -110,6 +109,7 @@ class Actor(base):
             return status
 
         return JOB_STATE[job.status]
+
 
     def __init__(self):
         super(Actor, self).__init__(name='jobs/submit')

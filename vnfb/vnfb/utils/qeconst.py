@@ -80,12 +80,12 @@ STATES = {
 
 #(percentage, description)
 JOB_STATE   = OrderedDict()
-JOB_STATE["create-job"]         = (10, "Creating job record")
-JOB_STATE["prepare-configs"]    = (20, "Preparing configuration files")
-JOB_STATE["prepare-controls"]   = (40, "Preparing control files")
-JOB_STATE["copy"]               = (60, "Copying files to cluster")
-JOB_STATE["enqueue"]            = (80, "Submitting to queue")
-JOB_STATE["done"]               = (100, "Done")
+JOB_STATE["create-job"]         = (10, "Creating job record ...")
+JOB_STATE["prepare-configs"]    = (20, "Preparing configuration files ...")
+JOB_STATE["prepare-controls"]   = (40, "Preparing control files ...")
+JOB_STATE["copy"]               = (60, "Copying files to cluster ...")
+JOB_STATE["enqueue"]            = (80, "Submitting to queue ...")
+JOB_STATE["submitted"]          = (100, "Done")
 
 
 PARSERS = ("qeinput",)
