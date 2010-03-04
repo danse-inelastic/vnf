@@ -23,10 +23,6 @@ def schedule( sim, director, job ):
     settings        = settingslist[0]   # not None
     server_jobpath  = director.dds.abspath(job, server=server)
 
-#    import math
-#    PROC_PER_NODE   = 12
-#    print int(math.ceil(settings.numproc/float(PROC_PER_NODE)))
-    
     # the scheduler
     scheduler = schedulerfactory( server )
     launch = lambda cmd: director.csaccessor.execute(

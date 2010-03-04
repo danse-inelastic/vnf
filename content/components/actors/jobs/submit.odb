@@ -23,12 +23,12 @@ from luban.components.AuthorizedActor import AuthorizedActor as base
 
 """
 Jobs submission steps:
-    - Creating job record
-    - Preparing configuration files
-    - Preparing control files
-    - Copying files to cluster
-    - Submitting to queue
-    - Done
+    - Creating job records          - 10%
+    - Preparing configuration files - 20%
+    - Preparing control files       - 40%
+    - Copying files to cluster      - 60%
+    - Submitting to queue           - 80%
+    - Done                          - 100%
 """
 
 class Actor(base):
@@ -46,6 +46,16 @@ class Actor(base):
     
 
     def submit(self, director):
+        "Spawn process for job submissionReturn progress"
+        self.submitJob(director)    # Spawns process that submits job to the computing node
+
+        return self.progressBar(director)
+
+#        return load(actor="material_simulations/espresso/sim-view",
+#                    id=self.id)
+
+
+    def submitJob(self, director):
         """
         Submit simulation job
         The process of submission of simulation includes the following steps:
@@ -53,31 +63,27 @@ class Actor(base):
         2. Copy files to the computational cluster
         3. Submit Job
         """
-        # Disable for now
         
         self._createJob(director)
         self._storeFiles(director)
         self._moveFiles(director)
         self._scheduleJob(director)
 
-        return load(actor="material_simulations/espresso/sim-view",
-                    id=self.id)
+
+#    def traceStatus(self, director):
+#
+#        pass
+#
+#    def submitProgress(self, director):
+#        #time.sleep(2)
+#        return self._setProgressBar()
 
 
-    def traceStatus(self, director):
-        pass
-        
-    def submitProgress(self, director):
-        time.sleep(2)
-        return self._setProgressBar()
-
-
-    def _setProgressBar(self):
+    def progressBar(self, director):
         pbar    = ProgressBar(
-                            id = 'itask-%s-pbar' % task.id,
-                            #id = 'pbar-%s' % self.taskid,
+                            id = 'pbar-%s' % self.taskid,
                             status = 'Submitting job...',
-                            percentage = 10,
+                            percentage = 0,
                             skip = 2000,
                             )
 
@@ -86,15 +92,16 @@ class Actor(base):
                                             percentage=10,
                                             status="Submitting job...",
                                             )
+# id = 'itask-%s-pbar' % task.id,                                            )
 #            link.onchecking = load(
 #                actor='itask',
 #                routine='checkProgress',
 #                id = self._task.id,
 #                )
+# select(element=lc.paragraph('test')).show(),
+
         pbar.onfinished = [
-            #select(element=lc.paragraph('test')).show(),
-            load(actor = 'job',
-                 routine='view',
+            load(actor = "material_simulations/espresso/sim-view",
                  id = self.id),
             ]
         
@@ -122,6 +129,7 @@ class Actor(base):
 #            jobs        = director.clerk.getQEJobs(where = "taskid='%s'" % self.taskid) # Temp
 #            self._job   = jobs[0]
 #        else:
+
         self._job  = QEJob()
         self._job.setDirector(director)
         self._job.createRecord(params) # uncomment
