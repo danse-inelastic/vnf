@@ -23,6 +23,10 @@ def schedule( sim, director, job ):
     settings        = settingslist[0]   # not None
     server_jobpath  = director.dds.abspath(job, server=server)
 
+#    import math
+#    PROC_PER_NODE   = 12
+#    print int(math.ceil(settings.numproc/float(PROC_PER_NODE)))
+    
     # the scheduler
     scheduler = schedulerfactory( server )
     launch = lambda cmd: director.csaccessor.execute(
@@ -34,22 +38,11 @@ def schedule( sim, director, job ):
     scheduler.setSimulationParams(job, settings, server, task)
 
     from pyre.units.time import hour
-    walltime = 1*hour   # limit to one hour
+    walltime = 1*hour   # limit to one hour # Make it configurable
     id1 = scheduler.submit( 'cd %s && sh run.sh' % server_jobpath, walltime=walltime )
 
     # write id to the remote directory
     director.csaccessor.execute('echo "%s" > jobid' % id1, server, server_jobpath)
-
-
-    # submit job through scheduler
-    #walltime = job.walltime
-
-    # update job db record
-#    job.id_incomputingserver = id1
-#    job.state = 'submitted'
-#    import time
-#    job.time_start = time.ctime()
-#    director.clerk.updateRecordWithID(job)
 
     return
 
@@ -61,8 +54,7 @@ def schedulerfactory( server ):
     if scheduler in [ None, '', 'None' ]:
         raise RuntimeError, "scheduler not specified"
 
-    from vnf.clusterscheduler import scheduler as factory
-    #from vnf.clusterscheduler.qetorque import Scheduler as factory
+    from vnfb.clusterscheduler import scheduler as factory
     try: scheduler = factory( scheduler )
     except: raise NotImplementedError, 'scheduler %r' % scheduler
     return scheduler
@@ -71,3 +63,14 @@ def schedulerfactory( server ):
 __date__ = "$Dec 7, 2009 8:45:49 AM$"
 
 
+# ********************* DEAD CODE ********************* 
+
+    # submit job through scheduler
+    #walltime = job.walltime
+
+    # update job db record
+#    job.id_incomputingserver = id1
+#    job.state = 'submitted'
+#    import time
+#    job.time_start = time.ctime()
+#    director.clerk.updateRecordWithID(job)

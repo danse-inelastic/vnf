@@ -92,9 +92,9 @@ PARSERS = ("qeinput",)
 
 # Settings specific for QE and foxtrot
 SETTINGS  = {
-                "numproc":      8,
-                "numnodes":     8,
-                "npool":        8,
+                "numproc":      1,
+                "numnodes":     1,
+                "npool":        12,
                 "executable":   "mpirun",
                 "params":       "--mca btl openib,sm,self",                       # Specific for foxtrot
                 "modules":      "openmpi acml/4.3.0_gfortran64_int32 espresso"    # Specific for foxtrot
@@ -137,8 +137,8 @@ SMEARING["methfessel-paxton"]   = "'mp'"
 SMEARING["marzari-vanderbilt"]  = "'mv'"
 SMEARING["fermi-dirac"]         = "'fd'"
 
-#PROCESSORS  = (1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 24, 36, 48, 60, 72) # ppn = 12
-PROCESSORS  = (1, 2, 3, 4, 5, 6, 7, 8, 16, 24, 32, 40, 48, 56, 64, 72, 80, 88, 96, 104, 112)    # ppn = 8
+PROCESSORS  = (1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 24, 36, 48, 60, 72, 84, 96, 108, 120) # ppn = 12
+#PROCESSORS  = (1, 2, 3, 4, 5, 6, 7, 8, 16, 24, 32, 40, 48, 56, 64, 72, 80, 88, 96, 104, 112)    # ppn = 8
 
 QE_PREFIX   = "'default'"
 PREFIX      = "default"
