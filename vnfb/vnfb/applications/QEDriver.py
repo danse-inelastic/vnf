@@ -57,44 +57,38 @@ class QEDriver(base):
 
 
     def main(self):
-        open("/tmp/qedriver.txt", "w").write("Hello")
-#        sim = self.clerk.getQESimulations(id = self.id)
-#        sim.setClerk(self.clerk)
-#        sim.updateRecord({"label": "Hi",})
 
-#        self.submitJob()
+        self.submitJob()
 
 
-#    def submitJob(self):
-#        """
-#        Submit simulation job
-#        The process of submission of simulation includes the following steps:
-#        1. Store configuration inputs to local disk storage
-#        2. Copy files to the computational cluster
-#        3. Submit Job
-#        """
+    def submitJob(self):
+        """
+        Submit simulation job
+        The process of submission of simulation includes the following steps:
+        1. Store configuration inputs to local disk storage
+        2. Copy files to the computational cluster
+        3. Submit Job
+        """
 
-#        self._createJob()
-#        self._storeFiles()
-#        self._moveFiles()
-#        self._scheduleJob()
+        self._createJob()
+        self._storeFiles()
+        self._moveFiles()
+        self._scheduleJob()
 
 
-#    def _createJob(self):
-#        "Create Job"
-        
-#        sim = self.clerk.getQESimulations(id = self.id)
-#        self._sim   = self.clerk.getQESimulations(id = self.id)     # Should exist
-#        settings    = self.clerk.getQESettings(where = "simulationid='%s'" % self.id)   # Should exist
-#        setting     = settings[0]
-#        params  = {"taskid":        self.taskid,
-#                   "serverid":      self._sim.serverid,  # -> take from QESimulations
-#                   "status":        "Submitted",    # Fixed status
-#                   "timesubmitted": stamp(),
-#                   "creator":       self.sentry.username,
-#                   "numberprocessors":   setting.numproc, # -> take from QESettings
-#                   "description":   self.subtype
-#                   }
+    def _createJob(self):
+        "Create Job"
+        self._sim   = self.clerk.getQESimulations(id = self.id)     # Should exist
+        settings    = self.clerk.getQESettings(where = "simulationid='%s'" % self.id)   # Should exist
+        setting     = settings[0]
+        params  = {"taskid":        self.taskid,
+                   "serverid":      self._sim.serverid,  # -> take from QESimulations
+                   "status":        "Submitted",    # Fixed status
+                   "timesubmitted": stamp(),
+                   "creator":       self.sentry.username,
+                   "numberprocessors":   setting.numproc, # -> take from QESettings
+                   "description":   self.subtype
+                   }
 
 #        debug   = False  # Debugging flag
 #        if debug:
@@ -104,113 +98,112 @@ class QEDriver(base):
 #            self._job   = jobs[0]
 #        else:
 
-#        self._job  = QEJob()
-#        self._job.setDirector(self)
-#        #self._job.createRecord(params)
+        self._job  = QEJob()
+        self._job.setDirector(self)
+        self._job.createRecord(params)
 
 
-#    def _storeFiles(self):
-#        """TEMP SOLUTION: Stores files from configuration input strings """
-#        self._storeConfigurations()
-#        self._createRunScript()
-#        self._prepareFiles()
-#
-#
-#    def _storeConfigurations(self):
-#        "Store Configuration files"
-#        inputs  = self.clerk.getQEConfigurations(where = "taskid='%s'" % self.taskid)
-#        dds     = self.dds
-#        for input in inputs:
-#            fn          = input.filename
-#            pfn         = packname(input.id, fn)                # E.g. 44XXJJG2ni.scf.in
-#            self._write2file(dds, input, fn, input.text)        # -> qeconfigurations directory
-#            self._write2file(dds, self._job, pfn, input.text)   # -> qejobs directory
-#            dds.remember(self._job, pfn)     # Change object and filename?
-#            self._files.append(pfn)
-#
-#
-#    def _createRunScript(self):
-#        settingslist = self.clerk.getQESettings(where = "simulationid='%s'" % self.id)       # not None
-#        inputs      = self.clerk.getQEConfigurations(where = "taskid='%s'" % self.taskid)
-#        task        = self.clerk.getQETasks(id = self.taskid)
-#        server      = self.clerk.getServers(id = self._job.serverid)
-#        settings    = settingslist[0]
-#        input       = inputs[0]
-#
-#        # mpirun --mca btl openib,sm,self pw.x -npool 8 -inp  PW > PW.out
-#        words   = [ settings.executable,
-#                    settings.params,
-#                    TYPE[task.type],
-#                    "-npool %s" % self._npool(settings, task.type),
-#                    "-inp",
-#                    packname(input.id, input.filename),       # replace
-#                    ">",
-#                    packname(input.id, "%s.out" % input.filename)    # replace
-#        ]
-#
-#        # QE temp simulation directory is qesimulations/[simid] directory
-#        # E.g.: /home/dexity/espresso/qesimulations/3YEQ8PNV    -> no trailing slash
-#        qetempdir  = self.dds.abspath(self._sim, server=server)
-#        cmds    = [ "#!/bin/env bash",   # Suppose there is bash available
-#                    "export ESPRESSO_TMPDIR=%s/" % qetempdir,
-#                    " ".join(words)
-#        ]
-#
-#        dds     = self.dds
-#        self._write2file(dds, self._job, RUNSCRIPT, "\n".join(cmds))    # -> qejobs directory
-#        dds.remember(self._job, RUNSCRIPT)  # Important step during which the .__dds_nodelist* files are created
-#        self._files.append(RUNSCRIPT)
-#
-#
-#    def _npool(self, settings, type):
-#        "Returns npool depending on type of simulation task"
-#        # suppose settings is not None
-#        num = settings.npool
-#        if type in NOPARALLEL:
-#            num = 1
-#
-#        return num
-#
-#
-#
-#    def _write2file(self, dds, record, fname, content):
-#        """Writes content of the configuration input to file"""
-#        path        = dds.abspath(record)
-#        absfilename = dds.abspath(record, filename = fname)
-#        makedirs(path)
-#        writefile(absfilename, content)
-#
-#
-#    def _moveFiles(self):
-#        """
-#        Moves files from local server to the computational cluster.
-#        Files that need to be moved:
-#            - Configuration inputs
-#            - Simulation Settings
-#            - run.sh script (generate it first)
-#        Notes:
-#            - See also: submitjob.odb
-#        """
-#        dds     = self.dds
-#        server  = self.clerk.getServers(id = self._job.serverid)
-#        dds.make_available(self._job, server=server, files=self._files)
-#
-#        # Create output directory (ESPRESSO_TEMPDIR) for QE
-#        dds.makedirs(self._sim, server=server)
-#
-#
-#    def _test_makedirs(self):
-#        dds         = self.dds
-#        self._sim   = self.clerk.getQESimulations(id = self.id)
-#        server      = self.clerk.getServers(id = self._sim.serverid)
-#        dds.makedirs(self._sim, server=server)
-#
-#
-#    def _scheduleJob(self):
-#        "Schedule job"
-#        dds     = self.dds
-#        from vnfb.utils.qescheduler import schedule
-#        schedule(self._sim, self, self._job)
+    def _storeFiles(self):
+        """TEMP SOLUTION: Stores files from configuration input strings """
+        self._storeConfigurations()
+        self._createRunScript()
+
+
+    def _storeConfigurations(self):
+        "Store Configuration files"
+        inputs  = self.clerk.getQEConfigurations(where = "taskid='%s'" % self.taskid)
+        dds     = self.dds
+        for input in inputs:
+            fn          = input.filename
+            pfn         = packname(input.id, fn)                # E.g. 44XXJJG2ni.scf.in
+            self._write2file(dds, input, fn, input.text)        # -> qeconfigurations directory
+            self._write2file(dds, self._job, pfn, input.text)   # -> qejobs directory
+            dds.remember(self._job, pfn)     # Change object and filename?
+            self._files.append(pfn)
+
+
+    def _createRunScript(self):
+        settingslist = self.clerk.getQESettings(where = "simulationid='%s'" % self.id)       # not None
+        inputs      = self.clerk.getQEConfigurations(where = "taskid='%s'" % self.taskid)
+        task        = self.clerk.getQETasks(id = self.taskid)
+        server      = self.clerk.getServers(id = self._job.serverid)
+        settings    = settingslist[0]
+        input       = inputs[0]
+
+        # mpirun --mca btl openib,sm,self pw.x -npool 8 -inp  PW > PW.out
+        words   = [ settings.executable,
+                    settings.params,
+                    TYPE[task.type],
+                    "-npool %s" % self._npool(settings, task.type),
+                    "-inp",
+                    packname(input.id, input.filename),       # replace
+                    ">",
+                    packname(input.id, "%s.out" % input.filename)    # replace
+        ]
+
+        # QE temp simulation directory is qesimulations/[simid] directory
+        # E.g.: /home/dexity/espresso/qesimulations/3YEQ8PNV    -> no trailing slash
+        qetempdir  = self.dds.abspath(self._sim, server=server)
+        cmds    = [ "#!/bin/env bash",   # Suppose there is bash available
+                    "export ESPRESSO_TMPDIR=%s/" % qetempdir,
+                    " ".join(words)
+        ]
+
+        dds     = self.dds
+        self._write2file(dds, self._job, RUNSCRIPT, "\n".join(cmds))    # -> qejobs directory
+        dds.remember(self._job, RUNSCRIPT)  # Important step during which the .__dds_nodelist* files are created
+        self._files.append(RUNSCRIPT)
+
+
+    def _npool(self, settings, type):
+        "Returns npool depending on type of simulation task"
+        # suppose settings is not None
+        num = settings.npool
+        if type in NOPARALLEL:
+            num = 1
+
+        return num
+
+
+
+    def _write2file(self, dds, record, fname, content):
+        """Writes content of the configuration input to file"""
+        path        = dds.abspath(record)
+        absfilename = dds.abspath(record, filename = fname)
+        makedirs(path)
+        writefile(absfilename, content)
+
+
+    def _moveFiles(self):
+        """
+        Moves files from local server to the computational cluster.
+        Files that need to be moved:
+            - Configuration inputs
+            - Simulation Settings
+            - run.sh script (generate it first)
+        Notes:
+            - See also: submitjob.odb
+        """
+        dds     = self.dds
+        server  = self.clerk.getServers(id = self._job.serverid)
+        dds.make_available(self._job, server=server, files=self._files)
+
+        # Create output directory (ESPRESSO_TEMPDIR) for QE
+        dds.makedirs(self._sim, server=server)
+
+
+    def _test_makedirs(self):
+        dds         = self.dds
+        self._sim   = self.clerk.getQESimulations(id = self.id)
+        server      = self.clerk.getServers(id = self._sim.serverid)
+        dds.makedirs(self._sim, server=server)
+
+
+    def _scheduleJob(self):
+        "Schedule job"
+        dds     = self.dds
+        from vnfb.utils.qescheduler import schedule
+        schedule(self._sim, self, self._job)
 
 
     def __init__(self):
@@ -229,11 +222,12 @@ class QEDriver(base):
         self.csaccessor = self.inventory.csaccessor
         self.clerk.director     = self
         self.dds.director       = self
+        
 
 
     def _init(self):
         super(QEDriver, self)._init()
-
+        self._files = []
 
 __date__ = "$Mar 3, 2010 11:04:10 PM$"
 
