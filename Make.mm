@@ -1,5 +1,5 @@
 # -*- Makefile -*-
- 
+
 PROJECT = vnfb
 
 # directory structure
@@ -12,8 +12,8 @@ RECURSE_DIRS = \
 	log \
 	content \
 	html \
-	config
-
+	config \
+	tests \
 
 
 #--------------------------------------------------------------------------
