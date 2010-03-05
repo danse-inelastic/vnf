@@ -99,3 +99,7 @@ Feb 18, 2010
 
 Feb 24, 2010
 added table "role_has_roles", "privileges", "role_has_privileges"
+
+
+March 2, 2010
+table phonons added column "status"
