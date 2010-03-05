@@ -62,9 +62,11 @@ class Accessor(base):
     def getDynamicsRecords(self, filter=None, order_by=None, 
                        reverse_order=None, slice=None, label=None, mine=False):
         db = self.db
+        
         self._debug.log('filter: %r, order_by: %r, slice: %r' % (filter, order_by, slice))
         tables = self.dynamicsTables()
         qf = lambda table: self.makeQuery(table, filter=filter, label=label, mine=mine)
+        
         qs = map(qf, tables)
         q = sqlalchemy.union_all(*qs)
 
@@ -88,7 +90,8 @@ class Accessor(base):
 
         #and then map to records
         from dsaw.db.VersatileReference import vreference
-        def _(row): return db.dereference(vreference(row[0]))
+        def _(row): 
+            return db.dereference(vreference(row[0]))
         ret = map(_, rows)
         if reverse_order:
             ret.reverse()
@@ -101,15 +104,7 @@ class Accessor(base):
         if label:
             if filter: raise RuntimeError
             return self.makeLabeledQuery(label, table, mine=mine)
-        
-        if mine:
-            username = self.director.sentry.username
-            mine = "creator='%s'" % username
-            if filter:
-                filter = '(%s) and %s' % (filter, mine)
-            else:
-                filter = mine
-        
+
         sGP = db._tablemap.TableToSATable(global_pointer)
         st = db._tablemap.TableToSATable(table)   
         q = sqlalchemy.select(
@@ -120,6 +115,15 @@ class Accessor(base):
              ],
             st.c.globalpointer==sGP.c.id,
             )
+        
+        if mine:
+            username = self.director.sentry.username
+            mine = "creator='%s'" % username
+            if filter:
+                filter = '(%s) and %s' % (filter, mine)
+            else:
+                filter = mine
+        
         if filter:
             q = sqlalchemy.select([q.alias('dynamics')], whereclause=filter)
             
@@ -171,6 +175,40 @@ class Accessor(base):
         typenames = ['material_simulations.Motion.Motion','material_simulations.Phonons.PhononsTable']
         ormtables = map(self._getTable, typenames)
         return ormtables
+    
+#    def _select_simulation_clause(self, table, db):
+#        '''create a sqlalchemy select clause for a material simulation table
+#
+#        cols:
+#          * id
+#          * short_description
+#          * type: type of the simulation (obtained from globaponter table)
+#          * date
+#          * matterid
+#          * gptr
+#        '''
+#
+#        sGP = db._tablemap.TableToSATable(global_pointer)
+#        st = db._tablemap.TableToSATable(table)
+#
+#        cols = [
+#            st.c.id.label('id'),
+#            st.c.short_description.label('short_description'),
+#            sGP.c.type.label('type'),
+#            st.c.date.label('date'),
+#            st.c.matter.label('matterid'),
+#            st.c.creator.label('creator'),
+#            st.c.globalpointer.label('gptr'),
+#            ]
+#        where = st.c.globalpointer==sGP.c.id
+#        try:
+#            simq = sqlalchemy.select(cols, where)
+#        except:
+#            import traceback
+#            raise RuntimeError, 'Failed to select required columns from simulation table %s.\n'\
+#                  'Original exception was:\n%s' % (table.getTableName(), traceback.format_exc())
+#
+#        return simq
 
 from dsaw.db.VersatileReference import global_pointer
 import sqlalchemy
