@@ -28,11 +28,13 @@ to local data directory
 
 
 #
-dbname = 'postgres:///vnfbeta'
+from vnfb.testing import getDeploymentInfo
+deploymentinfo = getDeploymentInfo()
+dbname = deploymentinfo.dbname
 
 
 #
-dataroot = 'content/data'
+dataroot = deploymentinfo.dataroot
 
 
 # job id.
@@ -98,7 +100,7 @@ class TestApp(base):
 
 
     def _getPrivateDepositoryLocations(self):
-        return ['../../../config', '../../../content/components', '/tmp/luban-services']
+        return deploymentinfo.pyre_depositories
 
 
     def _configure(self):
