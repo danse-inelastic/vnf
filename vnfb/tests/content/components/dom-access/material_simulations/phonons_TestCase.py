@@ -22,18 +22,14 @@ Test assumes that
 '''
 
 
-#
-dbname = 'postgres:///vnfbeta'
-
-
-#
-projroot = '../../../../..'
+from vnfb.testing import getDeploymentInfo
+deploymentinfo = getDeploymentInfo()
+dbname = deploymentinfo.dbname
 
 
 #
 import os
-exportroot = os.environ['EXPORT_ROOT']
-dataroot = os.path.join(exportroot, 'vnfb/content/data')
+dataroot = deploymentinfo.dataroot
 
 
 # phonons id.
@@ -74,11 +70,7 @@ class TestApp(base):
 
 
     def _getPrivateDepositoryLocations(self):
-        return [
-            os.path.join(projroot, 'config'),
-            os.path.join(projroot, 'content/components'),
-            '/tmp/luban-services',
-            ]
+        return deploymentinfo.pyre_depositories
 
 
     def _configure(self):
