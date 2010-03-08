@@ -16,7 +16,12 @@ class MeasureCollector (type):
 
 
     def __init__(cls, name, bases, dict):
-        type.__init__(name, bases, dict)
+        import sys
+        vinfo = sys.version_info
+        if vinfo[0]< 2 or vinfo[0]==2 and  vinfo[1] < 6:
+            type.__init__(name, bases, dict)
+        else:
+            type.__init__(cls, name, bases, dict)
 
         measureRegistry = {}
 
