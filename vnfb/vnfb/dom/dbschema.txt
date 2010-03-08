@@ -103,3 +103,11 @@ added table "role_has_roles", "privileges", "role_has_privileges"
 
 March 2, 2010
 table phonons added column "status"
+
+
+March 8, 2010
+added table 'detectorsystemhierarchy_fromxml'
+ table "detectorsystem_fromxmls" rename to "detectorsystem_fromxml".
+table "detectorsystem_fromxml"  add new column "hierarchy": a
+reference to table 'detectorsystemhierarchy_fromxml'
+
