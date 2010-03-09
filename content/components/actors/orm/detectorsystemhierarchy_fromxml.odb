@@ -19,11 +19,11 @@ from luban.content import select, load, alert
 
 
 #
-from vnfb.dom.neutron_experiment_simulations.neutron_components.DetectorSystem_fromXML import DetectorSystem_fromXML
+from vnfb.dom.neutron_experiment_simulations.neutron_components.DetectorSystem_fromXML import DetectorSystemHierarchy_fromXML
 
 from luban.components.Actor import Actor
 import luban.orm
-base = luban.orm.object2actor(DetectorSystem_fromXML)
+base = luban.orm.object2actor(DetectorSystemHierarchy_fromXML)
 class Actor(base):
 
     class Inventory(base.Inventory):
@@ -33,7 +33,7 @@ class Actor(base):
 
 
 def actor():
-    return Actor('orm/detectorsystem_fromxmls')
+    return Actor('orm/detectorsystemhierarchy_fromxml')
 
 
 # version

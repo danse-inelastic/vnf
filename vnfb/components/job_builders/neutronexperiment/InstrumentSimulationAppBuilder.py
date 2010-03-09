@@ -457,11 +457,15 @@ class Builder(base):
     ### need further work here ###
     def onDetectorSystem_fromXML(self, ds):
         # first we need to get the detector system xml file
-        xmlfile_source = os.path.join(
-            self._datadir( ds ), self.detectorsystem_xmlfile)
-        xmlfile_target = os.path.join( self.path, self.detectorsystem_xmlfile)
-        self._link( xmlfile_source, xmlfile_target )
+        hierarchy = ds.hierarchy.dereference(self.db)
+        xmlfilepath = self.dds.path(hierarchy, hierarchy.xmlfilename)
+        # suppose that .. works
+        import os
+        xmlfilepath = os.path.join('..', '..', xmlfilepath)
 
+        # declare the hierarchy a dependency
+        self.registerDependency(hierarchy)
+        
         # then we need to build the options ( odb?)
         kwds = {
             'name': ds.componentname,
@@ -480,13 +484,12 @@ class Builder(base):
             tofmin, tofmax, (tofmax-tofmin)*1./ntofbins )
         opts = {
             '%s.eventsdat' % ds.componentname: outputfilename(ds),
-            '%s.instrumentxml' % ds.componentname: self.detectorsystem_xmlfile,
+            '%s.instrumentxml' % ds.componentname: xmlfilepath,
             '%s.tofparams' % ds.componentname: tofparams,
             }
-
+        
         self.cmdline_opts.update( opts )
         return
-    detectorsystem_xmlfile = 'detectorsystem.xml'
     ### need further work here ###
     
 
@@ -505,15 +508,6 @@ class Builder(base):
     def _write(self, s):
         self.appscript.append( '%s%s' % (self.indent_level * '  ', s) )
         return
-
-
-    ### need further work here ###
-    def _link(self, linked, link):
-        cmd = 'ln -s %s %s' % (linked, link )
-        from spawn import spawn
-        spawn( cmd )
-        return
-    ### need further work here ###
 
 
     def _datadir(self, obj):

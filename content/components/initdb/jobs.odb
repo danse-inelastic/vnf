@@ -21,34 +21,7 @@ class Component(base):
     def initdb(self):
         director = self.director
         self.domaccess = director.retrieveDOMAccessor('job')
-
-        self._createJob1()
         return
-
-
-    def _createJob1(self):
-        'a test job for bvk_getphonons'
-        
-        director = self.director
-        # computation
-        bvkaccess = director.retrieveDOMAccessor('material_simulations/phonon_calculators/bvk')
-        computation = bvkaccess.getComputationRecord('phonons', 'fortest')
-        
-        # server
-        serveraccess = director.retrieveDOMAccessor('server')
-        server = serveraccess.getServerRecord('server000')
-
-        # job
-        from vnfb.dom.Job import Job
-        job = Job()
-        job.id = 'job-bvk_getphonons-fortest'
-        job.short_description = 'job for testing the computation type bvk_getphonons'
-        job.server = server
-        job.computation = computation
-        self.domaccess.db.insertRow(job)
-        
-        return
-        
 
 
     def __init__(self):

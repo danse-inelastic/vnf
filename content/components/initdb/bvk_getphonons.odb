@@ -40,6 +40,19 @@ class Component(base):
         computation.model = model
         orm.db.insertRow(computation)
         
+        # server
+        serveraccess = director.retrieveDOMAccessor('server')
+        server = serveraccess.getServerRecord('server000')
+
+        # job
+        from vnfb.dom.Job import Job
+        job = Job()
+        job.id = 'job-bvk_getphonons-fortest'
+        job.short_description = 'job for testing the computation type bvk_getphonons'
+        job.server = server
+        job.computation = computation
+        orm.db.insertRow(job)
+        
         return
 
 
