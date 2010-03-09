@@ -22,79 +22,25 @@ Test assumes that
 '''
 
 
-#
-from vnfb.testing import getDeploymentInfo
-deploymentinfo = getDeploymentInfo()
-dbname = deploymentinfo.dbname
-
-
-#
-dataroot = deploymentinfo.dataroot
-
-
 # id for computation record.
 recordid = "fortest" 
 
 
 # application
-from luban.applications.UIApp import UIApp as base
+from vnfb.testing.job_builder import TestApp as base
 class TestApp(base):
 
 
-    class Inventory(base.Inventory):
+    def main(self, testFacility):
+        domaccess = self.retrieveDOMAccessor('material_simulations/phonon_calculators/bvk')
+        computation = domaccess.getComputationRecord('phonons', recordid)
+        return base.main(self, computation, testFacility)
 
-        import pyre.inventory
 
-
-    def main(self, testFacility, *args, **kwds):
-        self.domaccess = self.retrieveDOMAccessor('material_simulations/phonon_calculators/bvk')
-        testFacility.assert_(self.domaccess is not None)
-        self.testFacility = testFacility
-
-        #
-        computation = self.domaccess.getComputationRecord('phonons', recordid)
-        db = self.domaccess.db
-        job = computation.getJob(db)
-
-        # path
-        dds = self.dds
-        path = dds.abspath(job)
-
-        # remove the directory if it exists
-        if os.path.exists(path):
-            import shutil
-            shutil.rmtree(path)
-
-        # build job
-        from vnfb.utils.job import buildjob
-        buildjob(computation, db=db, dds=dds, path=path, director=self)
-
-        # confirm
-        testFacility.assert_(os.path.exists(os.path.join(path, 'system')))
-        testFacility.assert_(os.path.exists(os.path.join(path, 'run.sh')))
+    def _checkJobDir(self):
         return
-
-
-    def _getPrivateDepositoryLocations(self):
-        return deploymentinfo.pyre_depositories
-
-
-    def _configure(self):
-        # db
-        self.inventory.clerk.inventory.db = dbname
-        self.inventory.clerk._configure()
-        #
-        super(TestApp, self)._configure()
-        return
-
-
-    def _init(self):
-        #
-        super(TestApp, self)._init()
-        # data root
-        self.dds.dataroot = dataroot
-        return
-
+        
+        
 
 import os
 
