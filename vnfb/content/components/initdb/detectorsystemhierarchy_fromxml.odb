@@ -25,7 +25,11 @@ class Component(base):
 
     def initdb(self):
         db = self.director.clerk.db
-        for r in records: db.insertRow( r )
+        dds = self.director.dds
+        for r in records:
+            db.insertRow( r )
+            for f in r.datafiles:
+                dds.remember(r, f)
         return
 
 

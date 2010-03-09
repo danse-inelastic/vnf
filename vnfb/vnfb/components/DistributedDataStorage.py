@@ -190,6 +190,7 @@ class DistributedDataStorage(base):
 
 
     def _make_available(self, path, server=None):
+        self._debug.log('trying to make %s available at %s' % (path, server))
         node = _node(server)
         return self._engine().make_available(path, node=node)
 
@@ -303,14 +304,19 @@ class DistributedDataStorage(base):
             server, path = _decodeurl(url)
             self._debug.log('server=%r,path=%r'%(_surl(server),path))
             if _islocal(server):
-                return os.path.exists(path)
-            cmd = 'ls %s' % path
-            self._debug.log('cmd=%r'%cmd)
-            failed, out, err = csaccessor.execute(cmd, server, '', suppressException=True)
-            if failed:
-                self._debug.log('cmd %r failed\n - out %s\n - error %s\n' % (
-                    cmd, out, err))
-            return not failed
+                ret = os.path.exists(path)
+            else:
+                cmd = 'ls %s' % path
+                self._debug.log('cmd=%r'%cmd)
+                failed, out, err = csaccessor.execute(cmd, server, '', suppressException=True)
+                if failed:
+                    self._debug.log('cmd %r failed\n - out %s\n - error %s\n' % (
+                        cmd, out, err))
+                ret = not failed
+
+            msg = 'url %s does %s exist' % (url, !ret and 'not' or '')
+            self._debug.log(msg)
+            return ret
             
             
         def transferfile(url1, url2):

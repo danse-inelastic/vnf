@@ -80,6 +80,7 @@ class Component(base):
         job.short_description = 'job for testing the arcs detector system'
         job.server = server
         job.computation = exp
+        job.creator = 'demo'
         orm.db.insertRow(job)
         
         return

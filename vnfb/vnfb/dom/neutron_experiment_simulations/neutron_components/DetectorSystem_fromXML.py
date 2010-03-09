@@ -28,6 +28,7 @@ DetectorSystemHierarchy_fromXMLTable = o2t(
 # the real specification of the detector system.
 # it will be in the dedicated directory for the database record
 DetectorSystemHierarchy_fromXMLTable.xmlfilename = 'detectorsystem.xml'
+DetectorSystemHierarchy_fromXMLTable.datafiles = [DetectorSystemHierarchy_fromXMLTable.xmlfilename]
 
 
 from Monitor import Monitor as base
