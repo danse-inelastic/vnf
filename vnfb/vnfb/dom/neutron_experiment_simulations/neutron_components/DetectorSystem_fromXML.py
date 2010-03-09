@@ -42,6 +42,10 @@ class DetectorSystem_fromXML(base):
     # the detector system could be loaded from a xml file.
     
     def customizeLubanObjectDrawer(self, drawer):
+        drawer.sequence = [
+            'properties',
+            'hierarchy',
+            ]
         drawer.mold.sequence = [
             'componentname', 'short_description',
             'referencename', 'position', 'orientation',
@@ -62,6 +66,9 @@ class Inventory(InvBase):
     
     ntofbins = InvBase.d.int( name = 'ntofbins', default = 300, validator=InvBase.v.positive)
     ntofbins.tip = 'number of tof bins'
+
+    hierarchy = InvBase.d.reference(name='hierarchy', targettype=DetectorSystemHierarchy_fromXML, owned=False)
+    hierarchy.help = 'Detector system hierarchy'
     
 
 
