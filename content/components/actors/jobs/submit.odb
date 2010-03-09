@@ -134,31 +134,3 @@ def actor():
 
 __date__ = "$Nov 4, 2009 9:27:51 AM$"
 
-
-# ********************** DEAD CODE ***********************
-
-#        extra_options = task.options
-#        for i in range(len(extra_options)/2):
-#            k = 'iworker.%s' % extra_options[2*i]
-#            v = extra_options[2*i+1]
-#            options[k] = v
-#            continue
-
-
-# id = 'itask-%s-pbar' % task.id,                                            )
-#            link.onchecking = load(
-#                actor='itask',
-#                routine='checkProgress',
-#                id = self._task.id,
-#                )
-# select(element=lc.paragraph('test')).show(),
-#    def traceStatus(self, director):
-#
-#        pass
-#
-#    def submitProgress(self, director):
-#        #time.sleep(2)
-#        return self._setProgressBar()
-#        return load(actor="material_simulations/espresso/sim-view",
-#                    id=self.id)
-

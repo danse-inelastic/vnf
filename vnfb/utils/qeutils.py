@@ -100,20 +100,31 @@ def stamp2date(stamp):
 
     return ""
 
+
 def stamp():
     "Returns timestamp"
     import time
     return time.time()
 
+
 def makedirs(path):
-    """Recursively creates directory specified by path"""
+    "Recursively creates directory specified by path"
     import os
     if not os.path.exists(path):
         os.makedirs(path)
 
 
 def writefile(filename, content):
+    "Write content to file"
     open(filename, 'w').write(content)
+
+
+def writeRecordFile(dds, record, fname, content):
+    "Writes content to file which location specified by the record"
+    path        = dds.abspath(record)
+    absfilename = dds.abspath(record, filename = fname)
+    makedirs(path)      # Create directory is does not exist
+    writefile(absfilename, content)
 
 
 def packname(id, name):
