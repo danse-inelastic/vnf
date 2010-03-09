@@ -17,7 +17,7 @@
 #import time
 #
 from vnfb.dom.QEJob import QEJob
-from vnfb.utils.qeutils import makedirs, writefile, stamp
+from vnfb.utils.qeutils import stamp, writeRecordFile
 from vnfb.utils.qeconst import RUNSCRIPT, TYPE, NOPARALLEL#, JOB_STATE
 from vnfb.utils.qeutils import packname
 from luban.applications.UIApp import UIApp as base
@@ -119,8 +119,8 @@ class QEDriver(base):
         for input in inputs:
             fn          = input.filename
             pfn         = packname(input.id, fn)                # E.g. 44XXJJG2ni.scf.in
-            self._write2file(dds, input, fn, input.text)        # -> qeconfigurations directory
-            self._write2file(dds, self._job, pfn, input.text)   # -> qejobs directory
+            writeRecordFile(dds, input, fn, input.text)        # -> qeconfigurations directory
+            writeRecordFile(dds, self._job, pfn, input.text)   # -> qejobs directory
             dds.remember(self._job, pfn)     # Change object and filename?
             self._files.append(pfn)
 
@@ -155,7 +155,7 @@ class QEDriver(base):
         ]
 
         dds     = self.dds
-        self._write2file(dds, self._job, RUNSCRIPT, "\n".join(cmds))    # -> qejobs directory
+        writeRecordFile(dds, self._job, RUNSCRIPT, "\n".join(cmds))    # -> qejobs directory
         dds.remember(self._job, RUNSCRIPT)  # Important step during which the .__dds_nodelist* files are created
         self._files.append(RUNSCRIPT)
 
@@ -170,15 +170,6 @@ class QEDriver(base):
             num = 1
 
         return num
-
-
-
-    def _write2file(self, dds, record, fname, content):
-        """Writes content of the configuration input to file"""
-        path        = dds.abspath(record)
-        absfilename = dds.abspath(record, filename = fname)
-        makedirs(path)
-        writefile(absfilename, content)
 
 
     def _moveFiles(self):

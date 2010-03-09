@@ -29,6 +29,20 @@ TYPE        = {"PW":    "pw.x",
                }
                # Other types: "CPPP", "INITIAL_STATE", "GIPAW", "D1", "MATDYN", "PROJWFC", "PWCOND"
 
+INPUT_EXT   = ".in"
+
+INPUT           = OrderedDict()
+INPUT["pw"]     = "pw" + INPUT_EXT
+INPUT["ph"]     = "ph" + INPUT_EXT
+INPUT["bands"]  = "bands" + INPUT_EXT
+INPUT["pp"]     = "pp" + INPUT_EXT
+INPUT["dos"]    = "dos" + INPUT_EXT
+INPUT["q2r"]    = "q2r" + INPUT_EXT
+INPUT["matdyn"] = "matdyn" + INPUT_EXT
+INPUT["dynmat"] = "dynmat" + INPUT_EXT
+INPUT["d3"]     = "d3" + INPUT_EXT
+
+
 NOPARALLEL  = ("DOS", "MATDYN", "DYNMAT", "Q2R") # "BANDS"?, "PP"? #
 
 # Steps of job creation
@@ -46,6 +60,7 @@ SIMCHAINS["Electron Dispersion"]    = ("PW", "DOS") # pw.x -> pw.x -> bands.x ->
 SIMCHAINS["Geometry Optimization"]  = ("PW",)
 SIMCHAINS["Single Phonon"]          = ("PW", "PH", "DYNMAT")
 SIMCHAINS["Multiple Phonon"]        = ("PW", "PH", "Q2R", "MATDYN") # DOS and Dispersion, See: example06
+#SIMCHAINS["Molecular Dynamics"]     = ()   - Next step
 
 
 # Available servers

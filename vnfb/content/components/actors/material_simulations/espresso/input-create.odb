@@ -21,6 +21,8 @@
 
 
 from vnfb.dom.QEConfiguration import QEConfiguration
+from vnfb.utils.qeconst import INPUT
+from vnfb.utils.qeutils import writeRecordFile
 
 from luban.content import select
 from luban.content import load
@@ -81,20 +83,31 @@ class Actor(base):
 
 
     def createRecord(self, director):
-        """Create configuration record"""
+        "Create configuration record"
+        self.createDBRecord(director)
+        self.createFile(director)
+
+        return load(actor = 'material_simulations/espresso/sim-view', id = self.id)
+
+
+    def createDBRecord(self, director):
+        # 'text' field is not stored
         params  = {"taskid":        self.inventory.taskid,
                    "filename":      self._fname(),
                    "description":   self._description(),
-                   "text":          self.inventory.text,
                    "type":          self.inventory.type
                    }
-        config  = QEConfiguration()
-        config.setDirector(director)
-        config.createRecord(params)
+        self.input  = QEConfiguration()
+        self.input.setDirector(director)
+        self.input.createRecord(params)
         if self.inventory.subtype != "":
             self._updateTaskRecord(director)
 
-        return load(actor = 'material_simulations/espresso/sim-view', id = self.id)
+
+    def createFile(self, director):
+        type    = self.inventory.type.lower()     
+        fn      = INPUT[type]           # fn is fixed and doesn't depend on the filename record
+        writeRecordFile(director.dds, self.input, fn, self.inventory.text)
 
 
     # Hack that allows to use description field of *task* for subtype
@@ -104,16 +117,19 @@ class Actor(base):
         
         return self.inventory.description
 
+
     def _updateTaskRecord(self, director):
         task    = director.clerk.getQETasks(id = self.taskid)
         params  = {"short_description": self._description(),}
         task.setDirector(director)
         task.updateRecord(params)
 
+
     def _fname(self):
         # Filename is not set
         if self.fname == '':
-            return "%s.in" % self.inventory.type.lower()
+            type    = self.inventory.type.lower()
+            return INPUT[type]
 
         return self.fname
 
