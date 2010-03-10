@@ -99,7 +99,7 @@ class Actor(base):
 
         state   = self._getStatus(job)
         return  selectpbar.setAttr(
-                                    percentage  = 100, #state[0],
+                                    percentage  = state[0],
                                     status      = state[1],
                                     )
 
