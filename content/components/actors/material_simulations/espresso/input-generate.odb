@@ -11,11 +11,8 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
-from vnfb.dom.QEConfiguration import QEConfiguration
-from vnfb.utils.qeconst import PARSERS, TYPE
-from vnfb.utils.qegrid import QEGrid
+from vnfb.utils.qeconst import TYPE
 
-from luban.content.FormSubmitButton import FormSubmitButton
 from luban.content import select
 from luban.content import load
 
