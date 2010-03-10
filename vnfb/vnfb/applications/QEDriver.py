@@ -17,7 +17,7 @@
 #import time
 #
 from vnfb.dom.QEJob import QEJob
-from vnfb.utils.qeutils import stamp, writeRecordFile
+from vnfb.utils.qeutils import stamp, writeRecordFile, defaultInputName, readRecordFile
 from vnfb.utils.qeconst import RUNSCRIPT, TYPE, NOPARALLEL#, JOB_STATE
 from vnfb.utils.qeutils import packname
 from luban.applications.UIApp import UIApp as base
@@ -116,11 +116,22 @@ class QEDriver(base):
         "Store Configuration files"
         inputs  = self.clerk.getQEConfigurations(where = "taskid='%s'" % self.taskid)
         dds     = self.dds
-        for input in inputs:
-            fn          = input.filename
-            pfn         = packname(input.id, fn)                # E.g. 44XXJJG2ni.scf.in
-            writeRecordFile(dds, input, fn, input.text)        # -> qeconfigurations directory
-            writeRecordFile(dds, self._job, pfn, input.text)   # -> qejobs directory
+
+        if len(inputs) > 0:
+            input   = inputs[0]  # Take the first input record
+
+            fn          = defaultInputName(input.type)
+            pfn         = packname(input.id, fn)        # E.g. 44XXJJG2pw.in
+                        
+            # Read text and store it in different location.
+            # Not very efficient but will work for file of size < 1Mb
+
+            text        = readRecordFile(dds, input, fn)
+            
+#            job         = self.clerk.getQEJobs(id="BN7GV243")
+#            writeRecordFile(dds, job, pfn, text)
+
+            writeRecordFile(dds, self._job, pfn, text)   # -> qejobs directory
             dds.remember(self._job, pfn)     # Change object and filename?
             self._files.append(pfn)
 
