@@ -130,7 +130,10 @@ class Actor(base):
             qpoints = self._qpoints(director, matdynInput)
             matdynInput.qpoints.set(qpoints)
             # Add nk points?
-            #matdynInput.namelists["input"].
+            nl  = matdynInput.namelists["input"]
+            nl.add("nk1", self.nk1)
+            nl.add("nk2", self.nk2)
+            nl.add("nk3", self.nk3)
         
         return matdynInput.toString()
 
