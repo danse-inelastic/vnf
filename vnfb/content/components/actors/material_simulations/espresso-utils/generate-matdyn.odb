@@ -121,6 +121,7 @@ class Actor(base):
                                 subtype = self._subtype())
 
 
+    # XXX: nk points still should be present in the input file
     def _input(self, director):
         matdynInput = self._matdynInput(director)
 
@@ -128,6 +129,8 @@ class Actor(base):
         if method == "dispersion":
             qpoints = self._qpoints(director, matdynInput)
             matdynInput.qpoints.set(qpoints)
+            # Add nk points?
+            #matdynInput.namelists["input"].
         
         return matdynInput.toString()
 
@@ -139,7 +142,7 @@ class Actor(base):
         return methods[option]
 
 
-     # TODO: Port 'asr' parameter from Q2R
+     # TODO: Take 'asr' parameter from Q2R instead of setting it manually
     def _matdynInput(self, director):
         "Returns input object that can be later on used to add parameters"
         # E.g.: /home/dexity/espresso/qejobs/643E2QQI/ni.fc
