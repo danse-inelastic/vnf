@@ -136,9 +136,13 @@ def readFile(filename):
     return None
 
 
+def recordFileExists(dds, record, fname):
+    absfilename = dds.abspath(record, filename = fname)
+    return os.path.exists(absfilename)
+
+
 def readRecordFile(dds, record, fname):
     "Writes content to file which location specified by the record"
-    path        = dds.abspath(record)
     absfilename = dds.abspath(record, filename = fname)
     return readFile(absfilename)
 

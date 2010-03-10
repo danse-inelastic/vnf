@@ -13,6 +13,7 @@
 
 from vnfb.utils.qeconst import PARSERS
 from vnfb.utils.qegrid import QEGrid
+from vnfb.utils.qeutils import defaultInputName, recordFileExists, writeRecordFile, readRecordFile
 
 from luban.content import select
 from luban.content import load
@@ -70,12 +71,12 @@ class Actor(base):
         sA          = splitter.section()
         sA.add(viewIndicator(director))
         sB          = splitter.section()
-        sB.add(self._setForm(input))
+        sB.add(self._setForm(director, input))
 
         return doc
 
 
-    def _setForm(self, input):
+    def _setForm(self, director, input):
         "Sets create new settings form"
 
         form        = Form(id='create-simulation-form')
@@ -84,7 +85,7 @@ class Actor(base):
 
         fname           = FormTextField(name = "fname", value = input.filename)
         description     = FormTextField(name = "description", value=input.description)   # Make as textarea
-        text            = FormTextArea(name="text", value=input.text, Class="qe-text-area")
+        text            = FormTextArea(name="text", value=self._inputText(director, input), Class="qe-text-area")
 
         submit      = FormSubmitButton(label="Edit Configuration Input")
         cancel      = lc.button(label="Cancel")
@@ -95,8 +96,7 @@ class Actor(base):
 
         table.addRow(("Name:", fname))
         table.addRow(("Description:", description))
-        #table.addRow(("Parser:", parser))
-        table.addRow(("Configuration:", text))
+        table.addRow(("Configuration:", text ))
         table.addRow(("", st.grid()))
 
         table.setColumnStyle(0, "qe-form-label")
@@ -111,17 +111,38 @@ class Actor(base):
         return form
 
 
-    def updateRecord(self, director):
-        """Update configuration record"""
-        params  = {"filename":      self.fname,
-                   "description":   self.description,
-                   "text":          self.text}
+    def _inputText(self, director, input):
+        fname   = defaultInputName(input.type)
+        s       = readRecordFile(director.dds, input, fname)
+        if s:
+            return s
 
-        input     = director.clerk.getQEConfigurations(id=self.configid)
-        input.setDirector(director)
-        input.updateRecord(params)
+        return ""
+
+
+    def updateRecord(self, director):
+        "Update configuration record"
+        self.updateDBRecord(director)
+        self.updateFile(director)
 
         return load(actor='material_simulations/espresso/sim-view', id=self.id)
+
+
+    def updateDBRecord(self, director):
+        "Update db record"
+        params  = {"filename":      self.fname,
+                   "description":   self.description}
+
+        self.input     = director.clerk.getQEConfigurations(id=self.configid)
+        self.input.setDirector(director)
+        self.input.updateRecord(params)
+
+
+    def updateFile(self, director):
+        fname   = defaultInputName(self.input.type)
+        #if recordFileExists(director.dds, self.input, fname)
+        # Even if file does not exist, still write content to the file
+        writeRecordFile(director.dds, self.input, fname, self.text) 
 
 
     def _verify(self):
