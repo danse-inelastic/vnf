@@ -19,6 +19,7 @@ import os.path
 import os
 from vnfb.utils.qeresults import QEResults
 from vnfb.utils.qetaskinfo import TaskInfo
+from vnfb.utils.qeconst import INPUT
 
 
 def parseFile(filename):
@@ -114,7 +115,7 @@ def makedirs(path):
         os.makedirs(path)
 
 
-def writefile(filename, content):
+def writeFile(filename, content):
     "Write content to file"
     open(filename, 'w').write(content)
 
@@ -124,7 +125,26 @@ def writeRecordFile(dds, record, fname, content):
     path        = dds.abspath(record)
     absfilename = dds.abspath(record, filename = fname)
     makedirs(path)      # Create directory is does not exist
-    writefile(absfilename, content)
+    writeFile(absfilename, content)
+
+
+def readFile(filename):
+    "Read content of the file from absolute filename"
+    if os.path.exists(filename):
+        return open(filename).read()
+    
+    return None
+
+
+def readRecordFile(dds, record, fname):
+    "Writes content to file which location specified by the record"
+    path        = dds.abspath(record)
+    absfilename = dds.abspath(record, filename = fname)
+    return readFile(absfilename)
+
+
+def defaultInputName(type):
+    return INPUT[type.lower()]
 
 
 def packname(id, name):
@@ -289,20 +309,4 @@ if __name__ == "__main__":
     testStamp()
 
 __date__ = "$Jul 30, 2009 12:08:31 PM$"
-
-
-# ********************* DEAD CODE ***************************
-
-#    simtasks = director.clerk.getQESimulationTasks(where="simulationid='%s'" % simid)
-#    for st in simtasks:
-#        tasks   = director.clerk.getQETasks(where="id='%s' AND type='%s'" % (st.taskid, type))
-#        if tasks:   # XXX First found tasks
-#            break
-#
-#    if not tasks:
-#        return path
-#
-#    task    = latestTask(tasks)    # task    = tasks[0]
-#    if not task:
-#        return path
 
