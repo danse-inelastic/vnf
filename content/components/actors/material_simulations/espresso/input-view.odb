@@ -11,7 +11,7 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
-from vnfb.utils.qeutils import stamp2date
+from vnfb.utils.qeutils import stamp2date, defaultInputName, readRecordFile
 from vnfb.utils.qegrid import QEGrid
 
 from luban.content import select
@@ -19,6 +19,7 @@ from luban.content import load
 
 import luban.content as lc
 from luban.components.AuthorizedActor import AuthorizedActor as base
+from luban.content.HtmlDocument import HtmlDocument
 
 # Requires simulation id, config id and config type: (id, configid, type)
 class Actor(base):
@@ -65,7 +66,7 @@ class Actor(base):
         table       = QEGrid(lc.grid(Class = "qe-table"))
         sB.add(table.grid())
 
-        self._showInput(table, input)
+        self._showInput(director, table, input)
         # Should go after all of the rows are added!
         table.setColumnStyle(0, "qe-cell-param")
 
@@ -100,17 +101,23 @@ class Actor(base):
         section.add(lc.document(Class="clear-both"))
         
 
-    def _showInput(self, table, input):
+    def _showInput(self, director, table, input):
         if input:
-            from luban.content.HtmlDocument import HtmlDocument
-            conftext    = HtmlDocument(text="<pre>%s<pre>" % input.text)
             table.addRow(('Name:', input.filename))
             table.addRow(("Type: ", self.type))  # input.type
             table.addRow(("Description: ", input.description))
-            #table.addRow(("Parser: ", input.parser))
             table.addRow(("Created: ", stamp2date(input.timecreated)))
             table.addRow(("Last Modified: ", stamp2date(input.timemodified)))
-            table.addRow(("Configuration: ", conftext))
+            table.addRow(("Configuration: ", self._inputText(director, input)))
+
+
+    def _inputText(self, director, input):
+        fname   = defaultInputName(input.type)
+        s       = readRecordFile(director.dds, input, fname)
+        if s:
+            return HtmlDocument(text="<pre>%s<pre>" % s)
+
+        return ""
 
 
     def __init__(self):
