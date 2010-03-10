@@ -28,6 +28,8 @@ from luban.components.AuthorizedActor import AuthorizedActor as base
 
 CONVERT_DELAY = 5   # 5 sec
 
+# XXX: Let users know that the Phonon DOS is created!
+
 # Requires simulation id, config id and config type: (id, configid, type)
 class Actor(base):
 

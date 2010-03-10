@@ -234,7 +234,10 @@ def qetask(director, simid, type, subtype = None):
 
 
 def qejob(director, simid, type, subtype = None):
-    "Return latest job for the type"
+    """Return latest job for the type
+    For matdyn task subtype will be also used which can be "dos" or "dispersion".
+    The subtype uses QETask.short_description (should be removed from) and QEJob.description to store
+    the subtype"""
     task    = qetask(director, simid, type) # Let's not use 'subtype' for qetask()
     if task:
         where   = "taskid='%s'" % task.id
