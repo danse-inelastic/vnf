@@ -141,14 +141,20 @@ def recordFileExists(dds, record, fname):
     return os.path.exists(absfilename)
 
 
-def readRecordFile(dds, record, fname):
+def defaultInputName(type):
+    return INPUT[type.lower()]
+
+
+# XXX: Check if record has "type" attribute
+def readRecordFile(dds, record, fname=None):
     "Writes content to file which location specified by the record"
+#    if not fname:   #and record has attribute "type"
+#        fname   = defaultInputName[getattr(record, "type")]
+        
     absfilename = dds.abspath(record, filename = fname)
     return readFile(absfilename)
 
 
-def defaultInputName(type):
-    return INPUT[type.lower()]
 
 
 def packname(id, name):
