@@ -17,6 +17,7 @@ class DDS:
     def __init__(self, masternode, transferfile=None,
                  readfile=None, writefile=None, makedirs=None,
                  rename=None, symlink=None, fileexists=None,
+                 remove = None,
                  ):
         '''create a "distributed data storage"
 
@@ -28,6 +29,7 @@ class DDS:
         writefile: the facility to write a text file. writefile("server.address:/a/b/c", "contents")
         makedirs: the facility to make a directory. it should be able to make the intermediate directories automatically
         fileexists: the facility to check if a file exists on a node or not. fileexists("server.address:/a/b/c")
+        remove: the facility to remove a file
         '''
         self.masternode = masternode
         self.nodes = [masternode]
@@ -38,6 +40,7 @@ class DDS:
         self._fileexists = fileexists
         self._rename = rename
         self._symlink = symlink
+        self._remove = remove
         return
 
 
@@ -60,6 +63,13 @@ class DDS:
         self._rename(oldpath, newpath, node.address)
         self.forget(old, node)
         self.remember(new, node)
+        return
+
+
+    def remove(self, filename, node=None):
+        if node is None: node = self.masternode
+        path = '%s/%s' % (node.rootpath, filename)
+        self._remove(path, node.address)
         return
 
 

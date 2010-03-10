@@ -41,6 +41,7 @@ class DistributedDataStorage(base):
         files = _files(dbrecord, filename=filename, files=files)
         for f in files:
             path = self.path(dbrecord, f)
+            self._remove(path, server=server)
             self._forget(path, server=server)
             continue
         return
@@ -189,6 +190,11 @@ class DistributedDataStorage(base):
         return self._engine().forget(path, node=node)
 
 
+    def _remove(self, path, server=None):
+        node = _node(server)
+        return self._engine().remove(path, node=node)
+
+
     def _make_available(self, path, server=None):
         self._debug.log('trying to make %s available at %s' % (path, server))
         node = _node(server)
@@ -288,6 +294,18 @@ class DistributedDataStorage(base):
             csaccessor.execute(cmd, server, '')
             return
 
+        def remove(path, surl):
+            server = _decodesurl(surl)
+            if _islocal(server):
+                try:
+                    return os.remove(path)
+                except Exception, e:
+                    msg = 'Unable to remove path %r.\n%s' % (path, e)
+                    raise RuntimeError, msg
+            cmd = 'rm %s' % (path,)
+            csaccessor.execute(cmd, server, '')
+            return
+
         def symlink(path1, path2, surl):
             server = _decodesurl(surl)
             if _islocal(server):
@@ -311,11 +329,12 @@ class DistributedDataStorage(base):
                 failed, out, err = csaccessor.execute(cmd, server, '', suppressException=True)
                 if failed:
                     self._debug.log('cmd %r failed\n - out %s\n - error %s\n' % (
-                        cmd, out, err))
-                ret = not failed
-
-            msg = 'url %s does %s exist' % (url, !ret and 'not' or '')
+                            cmd, out, err))
+                    ret = not failed
+                    
+            msg = 'url %s does %s exist' % (url, not ret and 'not' or '')
             self._debug.log(msg)
+            
             return ret
             
             
@@ -335,6 +354,7 @@ class DistributedDataStorage(base):
             transferfile=transferfile,
             readfile=readfile, writefile=writefile, makedirs=makedirs,
             rename=rename, symlink=symlink, fileexists=fileexists,
+            remove = remove,
             )
 
     pass # end of DistributedDataStorage
