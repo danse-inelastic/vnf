@@ -118,7 +118,7 @@ class QEDriver(base):
         dds     = self.dds
 
         if len(inputs) > 0:
-            input   = inputs[0]  # Take the first input record
+            input   = inputs[0]     # Take the first input record
 
             fn          = defaultInputName(input.type)
             pfn         = packname(input.id, fn)        # E.g. 44XXJJG2pw.in
@@ -126,11 +126,7 @@ class QEDriver(base):
             # Read text and store it in different location.
             # Not very efficient but will work for file of size < 1Mb
 
-            text        = readRecordFile(dds, input, fn)
-            
-#            job         = self.clerk.getQEJobs(id="BN7GV243")
-#            writeRecordFile(dds, job, pfn, text)
-
+            text        = readRecordFile(dds, input, fn)            
             writeRecordFile(dds, self._job, pfn, text)   # -> qejobs directory
             dds.remember(self._job, pfn)     # Change object and filename?
             self._files.append(pfn)
