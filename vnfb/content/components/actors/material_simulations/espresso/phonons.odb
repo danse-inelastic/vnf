@@ -32,6 +32,7 @@ PI              = 3.14159265
 PHONON_FILES    = ("Polarizations", "Omega2", "Qgridinfo")
 
 # XXX: Let users know that the Phonons are created!
+# XXX: Input files for tasks are used. Gives error if they are missing or inappropriate
 
 # Requires simulation id, config id and config type: (id, configid, type)
 class Actor(base):
@@ -191,9 +192,12 @@ flfrq = %s
 
     def _phonpath(self, director):
         "Returns phonondoses directory corresponding to id (set in _createRecord())"
+        # Example: phonons/3TUHW54R/data.idf/
         dataroot    = self._dataroot(director)
         pid         = os.path.join("phonons", self._phonid) # Phonons id
-        return os.path.join(dataroot, pid)
+        dir         = os.path.join(dataroot, pid)
+        dir         = os.path.join(dir, "data.idf") # Specific for "dispersion"
+        return dir
 
 
     def _dataroot(self, director):

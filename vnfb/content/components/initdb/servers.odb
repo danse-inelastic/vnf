@@ -72,6 +72,8 @@ octopod = server(
     'torque',
     )
 
+#foxtrot_qe  = server(
+#)
 
 serverdict = {
     'octopod': octopod,
