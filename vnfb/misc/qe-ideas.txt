@@ -1,0 +1,9 @@
+
+Batch jobs
+----------
+
+- Vary parameters from PW configuration
+- Revise "Analyze" page
+
+Recommendation for users:
+- Run batch jobs after single simulation has been successfully run through

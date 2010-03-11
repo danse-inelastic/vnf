@@ -1,6 +1,12 @@
+
+{Page 1}
+See qe-general.txt
+
+{Page 2}
 (x) Relaxation (fixed lattice parameters) - 'relax'
 ( ) Variable cell relaxation - 'vc-relax'
 
+{Page 3} - Configuration form:
 {relax}
 - Default parameters are generated
 
@@ -26,3 +32,42 @@ CONTROL
 {Default values for vc-relax}
 CELL
 	cell_dynamics = 'bfgs'
+
+-> Configuration input generated
+-> Run PW simulation
+-> Generates output file
+-> Go to "Analyze" (See qe-analysis.txt: Electron System)
+
+
+{Tab "Analyze"}
+[Back]  Outputs: [PW]   [Export to Atomic Structure]
+
+System Summary
+--------------
+...
+# See qe-analysis.txt
+
+
+Input Geometry
+--------------
+Lattice: A     B     C     cosAB   cosBC
+         6.56  6.56  6.56  0.67    0.78
+
+#  Atom Positions
+1. Fe:  (0, 0, 0)
+2. Fe:  (0, 0.5, 0)
+3. V:
+
+
+Output Geometry
+--------------
+Number of iterations: 15
+
+Lattice: A     B     C     cosAB   cosBC
+         6.56  6.56  6.56  0.67    0.78
+
+#  Atom Positions
+1. Fe:  (0, 0, 0)
+2. Fe:  (0, 0.5, 0)
+3. V:
+
