@@ -32,7 +32,7 @@ class Accessor(base):
             if not issubclass(objectClass, TableBase):
                 table = orm(objectClass)
             else:
-                self.db.registerTable(table)
+                orm.db.registerTable(table)
             #orm(type) no longer necessary
         return orm
     orm = property(_getOrm)
