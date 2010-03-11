@@ -1,2 +1,19 @@
 
 [PW]
+# qe-general.txt
+
+[PH]
+Changes configuration field:
+
+(Metal)
+No change
+
+(Insulator)
+Add parameter:
+    epsil = .true.
+
+[Q2R]
+No change
+
+[MATDYN]
+No change
