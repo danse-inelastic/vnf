@@ -330,7 +330,7 @@ class DistributedDataStorage(base):
                 if failed:
                     self._debug.log('cmd %r failed\n - out %s\n - error %s\n' % (
                             cmd, out, err))
-                    ret = not failed
+                ret = not failed
                     
             msg = 'url %s does %s exist' % (url, not ret and 'not' or '')
             self._debug.log(msg)
