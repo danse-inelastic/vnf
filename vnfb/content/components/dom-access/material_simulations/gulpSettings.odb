@@ -12,7 +12,7 @@
 #
 
 from vnfb.components.DOMAccessor import DOMAccessor as base
-from vnfb.dom.material_simulations.GulpSettingsHolder import GulpSettingsHolder
+from vnfb.dom.material_simulations.GulpSettings import GulpSettings
 from memd.gulp.GulpSettings import GulpSettings
 import os, numpy
 
@@ -38,7 +38,7 @@ class Accessor(base):
 
     def getComputationRecord(self, id):
         db = self.db
-        return db.query(GulpSettingsHolder).filter_by(id=id).one()
+        return db.query(GulpSettings).filter_by(id=id).one()
 
 
     def getComputationLabel(self, computation_id):

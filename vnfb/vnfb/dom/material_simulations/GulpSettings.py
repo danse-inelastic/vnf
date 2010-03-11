@@ -20,11 +20,11 @@ from vnfb.dom.Computation import Computation
 
 #from dsaw.model.Inventory import Inventory as InvBase
 
-from memd.gulp.GulpSettings import GulpSettings
-GulpSettingsHolder = o2t(GulpSettings, {'subclassFrom': Computation, 'dbtablename':'gulpsettings'})
-GulpSettingsHolder.job_builder = 'material_simulations/gulpSettings'
-GulpSettingsHolder.actor = 'material_simulations/gulpSettings'
-GulpSettingsHolder.result_retriever = 'material_simulations/gulpSettings'
+from memd.gulp.GulpSettings import GulpSettings as GulpSettingsDO
+GulpSettings = o2t(GulpSettingsDO, {'subclassFrom': Computation, 'dbtablename':'gulpsettings'})
+GulpSettings.job_builder = 'material_simulations/gulpSettings'
+GulpSettings.actor = 'material_simulations/gulpSettings'
+GulpSettings.result_retriever = 'material_simulations/gulpSettings'
 
 
 
