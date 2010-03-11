@@ -1,9 +1,7 @@
 .. _vnfuserguide:
 
-Web Portal
-==============
-
-Contents:
+Web Portal Guide
+=================
 
 General:
 
