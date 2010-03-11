@@ -34,7 +34,7 @@ def schedule( sim, director, job ):
     scheduler.setSimulationParams(job, settings, server, task)
 
     from pyre.units.time import hour
-    walltime = 1*hour   # limit to one hour # Make it configurable
+    walltime = 999*hour   # limit to one hour # Make it configurable
     id1 = scheduler.submit( 'cd %s && sh run.sh' % server_jobpath, walltime=walltime )
 
     # write id to the remote directory
