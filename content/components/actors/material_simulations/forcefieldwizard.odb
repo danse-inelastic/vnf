@@ -138,7 +138,7 @@ class Actor(base):
         next = form.submitbutton(label="next")
         from luban.content import select
 #        form.onsubmit = director.redirect(actor = 'job', routine = 'create', 
-#                                 computation_type = 'material_simulations.GulpSettingsHolder.GulpSettingsHolder', 
+#                                 computation_type = 'material_simulations.GulpSettings.GulpSettings', 
 #                                 computation_id = self.inventory.simulationId)
         form.onsubmit = select(element=form).submit(
             actor = 'material_simulations/forcefieldwizard',
@@ -244,7 +244,7 @@ class Actor(base):
     
     def configureSubmissionQueue(self, director):
         return director.redirect(actor = 'job', routine = 'create', 
-                computation_type = 'material_simulations.GulpSettingsHolder.GulpSettingsHolder', 
+                computation_type = 'material_simulations.GulpSettings.GulpSettings', 
                 computation_id = self.inventory.simulationId)
 
 import os
