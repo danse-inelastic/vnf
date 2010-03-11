@@ -19,7 +19,7 @@
 #   loads a job builder and than asks the job builder to render the job
 #   out of a computation. The job builder is dynamically loaded depending
 #   on the type of the computation.
-from luban.content import load, select
+from luban.content import load, select, alert
 import luban.content as lc
 
 from luban.content.Form import Form
@@ -146,7 +146,9 @@ class Actor(base):
             return self.in_submission(director)
         
         #
-        assert (job.creator == director.sentry.username or job.creator == 'vnf' )
+        if not self._isowner(director):
+            # return alert('Permision denied')
+            pass
         
         # update job status
         state = check( job, director )
@@ -344,7 +346,11 @@ class Actor(base):
     def edit(self, director):
         domaccess = self._domaccess(director)
         orm = domaccess.orm
-        
+
+        job = domaccess.getJobRecord(self.inventory.id)
+        if not self._isowner(director):
+            return alert("You are not allowed to edit other users' job")
+
         form = self.createEditForm(director)
         
         doc = Document(title='Job\ %s' % self.inventory.id)
@@ -481,6 +487,8 @@ class Actor(base):
 
 
     def submit(self, director):
+        if not self._isowner(director):
+            return alert("permission denied")
         view = self.create_submitting_view(director)
         return select(id='main-display-area').replaceContent(view)
 
@@ -665,6 +673,15 @@ class Actor(base):
         
         return select(id='main-display-area').replaceContent(doc)
 
+
+    def _isowner(self, director):
+        "check if the requester is the owner of the job"
+        id = self.inventory.id
+        domaccess = self._domaccess(director)
+        job = domaccess.getJobRecord(id)
+        return job.creator == director.sentry.username
+    
+    
 
     def _viewIndicactor(self, path, director):
         return director.retrieveVisual('view-indicator', path=path)
