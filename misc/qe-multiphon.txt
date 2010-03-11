@@ -17,3 +17,23 @@ No change
 
 [MATDYN]
 No change
+
+{Tab "Analysis"}
+[Back] Outputs: [PW] [PH] [Q2R] [MATDYN]      [Export to Atomic Structure] [Generate Isosurface]
+
+# See qe-analysis.txt
+
+Phonon Isosurface
+-----------------
+
+# Data generated from "phonons on grid". Nikolay has code for that.
+
+To view the phonon isofurfaces please use XCrySDen tool (http://xcrysden.org)
+
+<XXXXXFermiSurface.bxsf> 
+<YYYYYFermiSurface.bxsf>
+
+{Tab "Analysis/Generate Isosurface"}
+
+
+
