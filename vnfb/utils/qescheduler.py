@@ -14,6 +14,7 @@
 # Temp solution for QE jobs submission. Hardcoded for the foxtrot cluster
 # param: job (input -> temp solution)
 
+# XXX: Make the wall time configurable
 def schedule( sim, director, job ):
     # TODO: Change status of jobs depending on the scheduling steps
     # copy local job directory to server
@@ -34,7 +35,7 @@ def schedule( sim, director, job ):
     scheduler.setSimulationParams(job, settings, server, task)
 
     from pyre.units.time import hour
-    walltime = 999*hour   # limit to one hour # Make it configurable
+    walltime = 999*hour   # limit to one hour?
     id1 = scheduler.submit( 'cd %s && sh run.sh' % server_jobpath, walltime=walltime )
 
     # write id to the remote directory
