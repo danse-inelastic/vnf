@@ -49,6 +49,7 @@ class Scheduler(base):
 
         dir     = "%s/%s/%s" % (self._server.workdir, self._job.name, self._job.id)
         str     = "-V -N %s -l nodes=%s:ppn=%s"  % (self._job.id, self._nodes(), self._ppn())
+        str     = str + " -l walltime=%s" % walltime    # Add walltime
         # Command executed on remote cluster
         cmds    = [ r'echo \"%s\" | qsub -d %s -o %s -e %s %s -' % (
             cmd, dir, self.outfilename, self.errfilename, str) ]
