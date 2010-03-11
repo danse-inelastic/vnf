@@ -32,16 +32,15 @@ class Actor(base):
 
 
     def default(self, director):
-        # general help
-        return select(id='help').show()
+        return select(id='mdPlan').show()
 
 
-    def createHelpWindow(self, director):
+    def createMdPlanWindow(self, director):
         doc = lc.document(
-            id='help', title='help', dockable=True)#, hidden=True)
+            id='mdPlan', title='md plan', dockable=True)#, hidden=True)
 
-        hdoc = self.createHelpDocument(director)
-        doc.document(id='help-window-interior').add(hdoc)
+        hdoc = self.createMdPlanDocument(director)
+        doc.document(id='mdPlan-window-interior').add(hdoc)
 
         b = lc.button(
             label='minimize',
@@ -51,30 +50,30 @@ class Actor(base):
 
         # hidden field to save the page string
         from luban.content.FormTextField import FormTextField
-        field = FormTextField(id='help-page-text', hidden=True)
+        field = FormTextField(id='mdPlan-page-text', hidden=True)
         field.value = self.inventory.nextpagetoshow
         doc.add(field)
         
         return doc
 
 
-    def showHelpWindow(self, director):
-        '''show the help window
+    def showMdPlanWindow(self, director):
+        '''show the mdPlan window
 
-        page: the page to show in the help window
+        page: the page to show in the MdPlan window
         '''
-        newdoc = self.createHelpDocument(director)
-        usenewdoc = select(id='help-window-interior').replaceContent(newdoc)
-        return select(id='dock').dock('release', select(id='help'), callback=usenewdoc)
+        newdoc = self.createMdPlanDocument(director)
+        usenewdoc = select(id='mdPlan-window-interior').replaceContent(newdoc)
+        return select(id='dock').dock('release', select(id='mdPlan'), callback=usenewdoc)
         #newwin = self.createHelpWindow(director)
         return [
             #select(id='help-container').replaceBy(newdoc),
             #select(id='help').replaceBy(newwin),
-            select(id='dock').dock('release', select(id='help')),
+            select(id='dock').dock('release', select(id='mdPlan')),
             ]
 
 
-    def createHelpDocument(self, director):
+    def createMdPlanDocument(self, director):
         page = self.inventory.page
         if not page:
             page = 'UserGuide-Overview.html'
@@ -83,7 +82,7 @@ class Actor(base):
             import os
             page = os.path.join(base, page)
 
-        hdoc = lc.htmldocument(id='help-container')
+        hdoc = lc.htmldocument(id='mdPlan-container')
         hdoc.text = [
             '<iframe src="%s"' % page,
             'width="990" height="500" frameborder="0">',
@@ -93,7 +92,7 @@ class Actor(base):
         return hdoc
 
 
-    def __init__(self, name='help'):
+    def __init__(self, name='mdPlan'):
         super(Actor, self).__init__(name)
         return
 
