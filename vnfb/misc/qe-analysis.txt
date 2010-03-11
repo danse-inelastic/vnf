@@ -1,0 +1,57 @@
+
+# TODO: Include job selection which is used for analysis
+
+{Page 1}
+[Back] Outputs: [PW] [PH] [Q2R] [MATDYN]        [Export to Atomic Structure]
+
+Electron System     # From PW
+---------------
+
+Total Energy: 0.0
+Fermi Energy: 0.0
+Forces: 
+        Fe: Position (bohr): (0, 0, 0)
+            Force    (Ry/bohr)
+        Fe: (0, 0.5, 0)
+        V:
+
+Stress (Ry/bohr^2): 0.0 0.0 0.0
+                    0.0 0.0 0.0
+                    0.0 0.0 0.0
+
+
+Phonons
+-------
+
+Phonon Grid: 0.0 0.0 0.0
+Phonon DOS: [plot]
+Phonon Dispersion: [plot]
+
+{Tab "PW"}
+
+PW Output
+
+<CRASH>   # If exists
++------------------------+
+|   CRASH text           |
+|                        |
++------------------------+
+
+<Save Output>
+-------------------------
+| Output text            |
+|                        |
+|                        |
+|                        |
+|                        |
+--------------------------
+
+{Tab "Export to Atomic Structure"}
+
+[Export Phonon DOS]         # If DOS jobs exist
+
+Phonon DOS Exported, Date, Number # (how many times), Link
+
+[Export Phonon Dispersion]  # If Dispersion jobs exist
+
+Phonon Dispersion Exported, Date, Number # (how many times) #, Link
