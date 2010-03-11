@@ -51,7 +51,6 @@ class Actor(base):
         wizard.add(doc)
         return select(id='main-display-area').replaceContent(wizard)
     
-    
     def selectMatter(self, director):
         doc = lc.document(id='matter-selector-doc')
         doc.paragraph(
@@ -145,6 +144,18 @@ class Actor(base):
             routine = 'configureSubmissionQueue',
             simulationId = self.inventory.simulationId,
             )
+        
+#        mdPlannerWindow = director.redirect(
+#            actor='mdPlan', routine='createHelpWindow',
+#            nextpagetoshow = 'UserGuide-atomicstructures',
+#            include_credential=False)
+#        addhelpwindow = select(id='').append(helpwindow)
+        
+        hdoc = lc.htmldocument(id='mdPlan')
+        hdoc.text = [
+        
+        <a href="http://www.pageresource.com/linkus.htm" target="_blank"> 
+        
         return select(id='main-display-area').replaceContent(form)
 
     def storeInputFile(self, director):
@@ -156,7 +167,8 @@ class Actor(base):
         
         #TODO: make it so it will load settings back in if restarting
         # then store the settings
-        from memd.gulp.GulpSettings import GulpSettings
+        #from memd.gulp.GulpSettings import GulpSettings
+        from vnfb.dom.material_simulations.GulpSettings import GulpSettings
         gulpSettings = GulpSettings()
         gulpSettings.creator = director.sentry.username
         gulpSettings.runtype = self.inventory.runtype

@@ -35,9 +35,7 @@ from AbstractOwnedObjectBase import AbstractOwnedObjectBase as base
 # base class for all computations (including simulations)
 class Computation(base):
 
-
     import dsaw.db
-    
     
     short_description = dsaw.db.varchar(name='short_description', length = 128, default='')
     short_description.meta['tip'] = 'short_description'
@@ -59,8 +57,6 @@ class Computation(base):
     # With this "results" set, we can create a generic "results" view
     # easily for all computations.
     results = dsaw.db.referenceSet(name='computation_results')
-    
-    
     
     def getJobs(self, db):
         from Job import Job
