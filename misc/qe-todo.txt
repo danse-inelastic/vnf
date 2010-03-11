@@ -1,0 +1,4 @@
+TODO list for Quantum Espresso
+
+- Allow users to upload pseudo-potentials on PW form page. Pseudo-potentials are
+stored in a user specific directory.
