@@ -14,13 +14,13 @@
 from vnfb.utils.qeparser.qeinput import QEInput
 from vnfb.utils.qeparser.namelist import Namelist
 from vnfb.utils.qeparser.card import Card
-from vnfb.utils.qeconst import SMEARING, IBRAV
+from vnfb.utils.qeconst import SMEARING, IBRAV, MATTER_TYPE
 from vnfb.utils.qeparser.pseudo.pseudo import PSEUDO
 from qecalc.qetask.qeparser.pwinput import PWInput
 
 from luban.components.AuthorizedActor import AuthorizedActor as base
 
-# TODO: The number atomic species is limited by 10 for now
+#XXX: The number atomic species is limited by 10 for now
 class Actor(base):
 
     class Inventory(base.Inventory):
@@ -34,11 +34,13 @@ class Actor(base):
         ecutwfc     = pyre.inventory.str('ecutwfc', default='')
         ecutrho     = pyre.inventory.str('ecutrho', default='')
         smearing    = pyre.inventory.str('smearing', default='')
+        degauss     = pyre.inventory.str('degauss', default='')
+        mattertype  = pyre.inventory.str('mattertype', default='')
         nk1         = pyre.inventory.str('nk1', default='')        # Type of the configuration file
         nk2         = pyre.inventory.str('nk2', default='')
         nk3         = pyre.inventory.str('nk3', default='')
 
-        # HACK: population of inventory parameters for form submission
+        #HACK: population of inventory parameters for form submission
         mass0       = pyre.inventory.str('mass0', default='')
         mass1       = pyre.inventory.str('mass1', default='')
         mass2       = pyre.inventory.str('mass2', default='')
@@ -99,13 +101,23 @@ class Actor(base):
     def _system(self, input):
         "SYSTEM namelist"
         system  = input.namelist("system")
-        system.add("degauss", "0.02")
-        system.add("smearing", self._smearing())
-        system.add("occupations", "'smearing'")     # TODO: Fix 'occupations' parameter
+        self._addSmearing(system)
         system.add("ecutwfc", self.inventory.ecutwfc)
         system.add("ecutrho", self.inventory.ecutrho)
         #system.add("nspin", "2")
         #system.add("starting_magnetization(1)", "0.5")
+
+
+    def _addSmearing(self, system):
+        types = MATTER_TYPE.keys()
+        
+        if types[int(self.mattertype)] == "metal":      # Metal case
+            system.add("degauss", self.degauss)
+            system.add("smearing", self._smearing())
+            system.add("occupations", "'smearing'")     
+
+        elif types[int(self.mattertype)] == "insulator": # Insulator
+            system.add("occupations", "'fixed'")
 
 
     def _electrons(self, input):
@@ -191,6 +203,8 @@ class Actor(base):
         self.ecutwfc        = self.inventory.ecutwfc
         self.ecutrho        = self.inventory.ecutrho
         self.smearing       = self.inventory.smearing
+        self.degauss        = self.inventory.degauss
+        self.mattertype     = self.inventory.mattertype
         self.nk1            = self.inventory.nk1
         self.nk2            = self.inventory.nk2
         self.nk3            = self.inventory.nk3

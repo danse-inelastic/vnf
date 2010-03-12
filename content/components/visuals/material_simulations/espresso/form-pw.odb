@@ -16,7 +16,7 @@ from luban.content import select
 from luban.content import load
 from vnfb.utils.qegrid import QEGrid
 from vnfb.utils.qeparser.pseudo.pseudo import PSEUDO
-from vnfb.utils.qeconst import SMEARING, IBRAV
+from vnfb.utils.qeconst import SMEARING, IBRAV, MATTER_TYPE
 from luban.content.FormTextField import FormTextField
 from luban.content.FormSelectorField import FormSelectorField
 from luban.content.FormSubmitButton import FormSubmitButton
@@ -27,19 +27,21 @@ from matter.Atom import Atom
 ECUTWFC = 27.0
 ECUTRHO = 300.0
 NK      = 4
+DEGAUSS = 0.02
 
 class Visual:
 
     def __init__(self, actor, director, structureid):
         self._actor         = actor
         self._director      = director
-        self._structureid   = structureid
+        self._structureid   = structureid   # Can be taken from "actor"
         self._labels        = self._labels()
 
     def render(self):
         return self._form()
 
     def _form(self):
+        #print self._actor.mattertype    # make s
         form        = lc.form(id='qe-atoms-form')
         table       = QEGrid(lc.grid(Class="qe-form"))
         form.add(table.grid())
@@ -48,8 +50,6 @@ class Visual:
                                         entries=enumerate(IBRAV)) # Take from atomic structure?
         ecutwfc     = FormTextField(name = "ecutwfc", value = ECUTWFC)
         ecutrho     = FormTextField(name = "ecutrho", value = ECUTRHO)
-        smearing    = FormSelectorField(name="smearing",
-                                        entries=enumerate(SMEARING.keys()))
 
         nk1         = FormTextField(name = "nk1", value = NK)
         nk2         = FormTextField(name = "nk2", value = NK)
@@ -64,9 +64,9 @@ class Visual:
 
         table.addRow(("Lattice Type:", ibrav))
         table.addRow(("Atomic Structure:", self._atoms()))
-        table.addRow(("Enertgy Cutoff (Ry):", ecutwfc))    # XXX Check name
-        table.addRow(("Density Cutoff (Ry):", ecutrho))    # XXX Check name
-        table.addRow(("Smearing:", smearing))    # XXX Check name
+        table.addRow(("Enertgy Cutoff (Ry):", ecutwfc))    
+        table.addRow(("Density Cutoff (Ry):", ecutrho))    
+        self._addSmearing(table)
         table.addRow(("nk1:", nk1))
         table.addRow(("nk2:", nk2))
         table.addRow(("nk3:", nk3))
@@ -80,10 +80,24 @@ class Visual:
                                                       taskid    = self._actor.taskid,
                                                       id        = self._actor.id,
                                                       type      = self._actor.type,
+                                                      mattertype    = self._actor.mattertype,
                                                       structureid   = self._structureid)
 
         return form
 
+
+    def _addSmearing(self, table):
+        types = MATTER_TYPE.keys()
+
+        # Smearing makes sence for structures with a band gap (metal)
+        if types[int(self._actor.mattertype)] == "metal":
+            smearing    = FormSelectorField(name="smearing",
+                                            entries=enumerate(SMEARING.keys()))
+            degauss     = FormTextField(name = "degauss", value = DEGAUSS)
+            
+            table.addRow(("Smearing Type:", smearing))
+            table.addRow(("Smearing Degree:", degauss))
+        
 
     def _atoms(self):
         "Atom mass name: mass<number>, atom pseudo potential name: pseudo<number>"
