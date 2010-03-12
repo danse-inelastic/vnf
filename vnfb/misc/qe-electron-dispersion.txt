@@ -16,17 +16,17 @@ type: "Electron Dispersion" as a subtype: "the Master's stuff", "QE stuff" (come
 
 [BANDS]
 Form:
-???
+[Finish] ???
 
 Configuration field:
-???
+[Finish] ???
 
 [PLOTBANDS]
 Form:
-???
+[Finish] ???
 
 Configuration field:
-???
+[Finish] ???
 
 {Tab "Analysis"}
 
