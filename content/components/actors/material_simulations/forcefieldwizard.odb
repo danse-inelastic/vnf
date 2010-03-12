@@ -20,6 +20,12 @@ from luban.components.Actor import Actor as base
 
 from luban.content.Splitter import Splitter, SplitSection
 
+from luban.content.Form import Form
+from luban.content.FormTextField import FormTextField
+from luban.content.FormSelectorField import FormSelectorField
+from luban.content.HtmlDocument import HtmlDocument
+#from luban.content import select
+
 class Actor(base):
 
     class Inventory(base.Inventory):
@@ -85,11 +91,9 @@ class Actor(base):
         return doc
 
     def atomSimForm(self, director):
-        from luban.content.Form import Form
-        from luban.content.FormTextField import FormTextField
-        from luban.content.FormSelectorField import FormSelectorField
-        self.inventory.simulationId = director.getGUID()
+        #from luban.content import select
         
+        self.inventory.simulationId = director.getGUID()
         showdock = select(id='dock').show()
         
         splitter = Splitter()
@@ -128,7 +132,7 @@ class Actor(base):
         forcefield fitting to experimental data,
         and crystal property calculation.''']
         
-        from luban.content.HtmlDocument import HtmlDocument
+        
         h = HtmlDocument()
         h.text = ['<br><center><a href="'+relativeLocationOfFile+
                   '"><img src="images/webstart.gif" alt="AtomSim"/></a></center>']
@@ -141,7 +145,7 @@ class Actor(base):
         the JVM from Sun Microsystems.  The OpenJDK (default on Ubuntu OS)
         does not work due to bugs in their webstart launcher.''']
         next = form.submitbutton(label="next")
-        from luban.content import select
+        #from luban.content import select
 #        form.onsubmit = director.redirect(actor = 'job', routine = 'create', 
 #                                 computation_type = 'material_simulations.GulpSettings.GulpSettings', 
 #                                 computation_id = self.inventory.simulationId)
@@ -165,59 +169,24 @@ class Actor(base):
 #        '<a href="http://www.pageresource.com/linkus.htm" target="_blank">Link to md help window</a>']
 #        rightSection.add(hdoc)
         doc = lc.document(id='mdPlan')
-        doc.text = ["""If performing an md simulation to calculate S(Q,E), the following
+        p = doc.paragraph()
+        p.text = ['',
+                  """If performing an md simulation to calculate S(Q,E), the following
         guide will help estimate the amount of time needed in the simulation.""",
-        '<a href="http://www.pageresource.com/linkus.htm" target="_blank">Link to md help window</a>']
-        rightSection.add(hdoc)
+        #'<a href="http://www.pageresource.com/linkus.htm" target="_blank">Link to md help window</a>'
+        ]
+        guideButton = lc.button(label = 'Guide')
+        
+        guideWindow = director.redirect(
+            actor='material_simulations/mdPlan', routine='default', structureId=self.inventory.structureId,
+            include_credential=False)
+        addGuideWindow = select(id='').append(guideWindow)
+        guideButton.onclick = addGuideWindow 
+        doc.add(guideButton)   
+        rightSection.add(doc)
 
-        return select(id='main-display-area').replaceContent(splitter)
+        return [showdock] + [select(id='main-display-area').replaceContent(splitter)] + [addGuideWindow]
     
-    def mdHelp(self, directory):
-        container = lc.document(Class='container')
-        #
-        pathtome = self._pathToMe(director)
-        view_indicator = self._viewIndicactor(pathtome, director)
-        container.add(view_indicator)
-        title = ''
-        document = container.document(title=title, Class='job-view')    
-        
-        property = 'numnodes'
-        meta = getattr( self.Inventory, property ).meta
-        field = form.text(
-            id = _input_widget_ID(property),
-            name = 'numnodes',
-            label = meta['label'],
-            value = record.numnodes,
-            )
-        field.help = meta['tip']
-        
-        property = 'numnodes'
-        meta = getattr( self.Inventory, property ).meta
-        field = form.text(
-            id = _input_widget_ID(property),
-            name = 'numnodes',
-            label = meta['label'],
-            value = record.numnodes,
-            )
-        field.help = meta['tip']
-        
-        property = 'numnodes'
-        meta = getattr( self.Inventory, property ).meta
-        field = form.text(
-            id = _input_widget_ID(property),
-            name = 'numnodes',
-            label = meta['label'],
-            value = record.numnodes,
-            )
-        field.help = meta['tip']
-            
-   
-        # refresh 
-        refreshbutton = lc.button(label = 'Refresh')
-        refreshbutton.onclick = load(actor = 'job', routine = 'view', id = id,)
-        document.add(refreshbutton)     
-        
-
     def storeInputFile(self, director):
         # this method is called by the java web start gui (AtomSim)
         orm = director.clerk.orm
@@ -318,8 +287,6 @@ class Actor(base):
                 computation_id = self.inventory.simulationId)
 
 import os
-
-
 
 def actor(): return Actor()
 
