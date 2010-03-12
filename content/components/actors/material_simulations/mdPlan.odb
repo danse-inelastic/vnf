@@ -16,7 +16,7 @@ from luban.content import load, select, alert
 import luban.content as lc
 
 from luban.components.AuthorizedActor import AuthorizedActor as base
-
+from vnfb.utils.qegrid import QEGrid
 
 class Actor(base):
 
@@ -71,9 +71,10 @@ class Actor(base):
         
 
     def default(self, director):
-        doc = lc.document(title='Guide', dockable=True, closable=True)
-        doc.document(title='content')
-        return select(id='').append(doc)
+#        doc = lc.document(title='Guide', dockable=True, closable=True)
+#        doc.document(title='content')
+#        return select(id='').append(doc)
+        return select(id='mdPlan').show()
     
 
     def createMdPlanWindow(self, director):
@@ -89,6 +90,7 @@ class Actor(base):
         doc.add(b)
         
         return doc
+
 
     def showMdPlanWindow(self, director):
         '''show the mdPlan window
@@ -108,9 +110,9 @@ class Actor(base):
     def createMdPlanDocument(self, director):    
         container = lc.document(Class='container')
         #
-        pathtome = self._pathToMe(director)
-        view_indicator = self._viewIndicactor(pathtome, director)
-        container.add(view_indicator)
+        #pathtome = self._pathToMe(director)
+        #view_indicator = self._viewIndicactor(pathtome, director)
+        #container.add(view_indicator)
         title = 'Md parameters for S(Q,E) resolution'
         form = container.form(title=title, Class='mdhelp')    
         
@@ -144,6 +146,12 @@ class Actor(base):
             )
         field.help = meta['tip']
             
+        supercellGrid       = QEGrid(lc.grid(Class="qe-table"))
+        form.add(supercellGrid.grid())
+        showSimulations(table)
+        supercellGrid.setColumnStyle(0, "qe-cell-param")
+            
+        #from luban
         box = form.box()
         self.ax = box.text(id='ax', name='%s.ax' % prefix, label='a: (x)', 
                       value = a[0]) 

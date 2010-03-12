@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head profile="http://selenium-ide.openqa.org/profiles/test-case">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link rel="selenium.base" href="http://localhost:8600/" />
+<title>doGulpSimulation</title>
+</head>
+<body>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">doGulpSimulation</td></tr>
+</thead><tbody>
+<tr>
+	<td>open</td>
+	<td>/cgi-bin/main.py</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>actor.username</td>
+	<td>demo</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>actor.password</td>
+	<td>demo</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>actor.FormSubmitButton163486860</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>//div[@id='3DD2VEYT']/a/span</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>//div[@id='main-portlet-my-simulations']/div/a/span</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>//div[@id='3DE4GB83']/a/img</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>//table[@id='atomicstructure-table']/tbody/tr[9]/td[1]/input</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>//div[@id='3DFM2VLV']/a/span</td>
+	<td></td>
+</tr>
+
+</tbody></table>
+</body>
+</html>
