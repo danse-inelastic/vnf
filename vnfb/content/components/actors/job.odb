@@ -89,7 +89,6 @@ class Actor(base):
             'Please enter a positive integer'
             )
 
-
         resubmission = pyre.inventory.bool('resubmission', default=0)
 
 

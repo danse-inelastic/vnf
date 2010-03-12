@@ -25,19 +25,56 @@ class Actor(base):
 
         import pyre.inventory
 
-        # the page to show
-        page = pyre.inventory.str('page')
-        # the next page to show
-        nextpagetoshow = pyre.inventory.str('nextpagetoshow')
-
+        #passed
+        structureId = pyre.inventory.str('structureId', default = '')
+        
+        #user input
+        energyCutoff = pyre.inventory.float('energyCutoff', default = 40.0)
+        energyCutoff.meta['label'] = 'Top of the energy axis on an S(Q,E) spectrum (meV)'
+        energyCutoff.meta['tip'] = (
+            'Please input an energy maximum'
+            )
+        energyCutoff.meta['rangeError'] = (
+            'Please enter a positive number.'
+            )
+        
+        #user input
+        energyResolution = pyre.inventory.float('energyResolution', default = 0.5)
+        energyResolution.meta['label'] = 'Spacing between data points on the S(Q,E) energy axis (meV)'
+        energyResolution.meta['tip'] = (
+            'Please input a resolution in energy of the S(Q,E) spectrum'
+            )
+        energyResolution.meta['rangeError'] = (
+            'Please enter a positive number.'
+            )
+        
+        #user input
+        timestep = pyre.inventory.float('timestep', default = '0.001')
+        timestep.meta['label'] = 'Simulation timestep (ps)'
+        timestep.meta['tip'] = (
+            'Please input a timestep'
+            )
+        timestep.meta['rangeError'] = (
+            'Please enter a positive number.'
+            )
+        
+        #user input
+        ax = pyre.inventory.str('ax',default = '1.0')
+        ay = pyre.inventory.str('ay',default = '0.0')
+        az = pyre.inventory.str('az',default = '0.0')
+        bx = pyre.inventory.str('bx',default = '0.0')
+        by = pyre.inventory.str('by',default = '1.0')
+        bz = pyre.inventory.str('bz',default = '0.0')
+        cx = pyre.inventory.str('cx',default = '0.0')
+        cy = pyre.inventory.str('cy',default = '0.0')
+        cz = pyre.inventory.str('cz',default = '1.0')
+        
 
     def default(self, director):
         return select(id='mdPlan').show()
 
-
     def createMdPlanWindow(self, director):
-        doc = lc.document(
-            id='mdPlan', title='md plan', dockable=True)#, hidden=True)
+        doc = lc.document(id='mdPlan', title='Md Planning Tools', dockable=True)#, hidden=True)
 
         hdoc = self.createMdPlanDocument(director)
         doc.document(id='mdPlan-window-interior').add(hdoc)
@@ -47,15 +84,8 @@ class Actor(base):
             onclick=select(id='dock').dock('attach', select(element=doc)),
             )
         doc.add(b)
-
-        # hidden field to save the page string
-        from luban.content.FormTextField import FormTextField
-        field = FormTextField(id='mdPlan-page-text', hidden=True)
-        field.value = self.inventory.nextpagetoshow
-        doc.add(field)
         
         return doc
-
 
     def showMdPlanWindow(self, director):
         '''show the mdPlan window
@@ -72,29 +102,83 @@ class Actor(base):
             select(id='dock').dock('release', select(id='mdPlan')),
             ]
 
+    def createMdPlanDocument(self, director):    
+        container = lc.document(Class='container')
+        #
+        pathtome = self._pathToMe(director)
+        view_indicator = self._viewIndicactor(pathtome, director)
+        container.add(view_indicator)
+        title = 'Md parameters for S(Q,E) resolution'
+        form = container.form(title=title, Class='mdhelp')    
+        
+        property = 'energyCutoff'
+        meta = getattr( self.Inventory, property ).meta
+        field = form.text(
+            id = _input_widget_ID(property),
+            name = property,
+            label = meta['label'],
+            #value = record.numnodes,
+            )
+        field.help = meta['tip']
+        
+        property = 'energyResolution'
+        meta = getattr( self.Inventory, property ).meta
+        field = form.text(
+            id = _input_widget_ID(property),
+            name = property,
+            label = meta['label'],
+            #value = record.numnodes,
+            )
+        field.help = meta['tip']
+        
+        property = 'timestep'
+        meta = getattr( self.Inventory, property ).meta
+        field = form.text(
+            id = _input_widget_ID(property),
+            name = property,
+            label = meta['label'],
+            #value = record.numnodes,
+            )
+        field.help = meta['tip']
+            
+        box = form.box()
+        self.ax = box.text(id='ax', name='%s.ax' % prefix, label='a: (x)', 
+                      value = a[0]) 
+        self.ay = box.text(id='ay', name='%s.ay' % prefix, label='(y)', 
+                      value = a[1]) 
+        self.az = box.text(id='az', name='%s.az' % prefix, label='(z)', 
+                      value = a[2]) 
+        box = form.box()
+        self.bx = box.text(id='bx', name='%s.bx' % prefix, label='b: (x)', 
+                      value = b[0])
+        self.by = box.text(id='by', name='%s.by' % prefix, label='(y)', 
+                      value = b[1])   
+        self.bz = box.text(id='bz', name='%s.bz' % prefix, label='(z)', 
+                      value = b[2])  
+        box = form.box()
+        self.cx = box.text(id='cx', name='%s.cx' % prefix, label='c: (x)', 
+                      value = c[0]) 
+        self.cy = box.text(id='cy', name='%s.cy' % prefix, label='(y)', 
+                      value = c[1]) 
+        self.cz = box.text(id='cz', name='%s.cz' % prefix, label='(z)', 
+                      value = c[2])
+   
+        # calculate
+        button = lc.button(label = 'Calculate')
+        button.onclick = self.calculateMdInfo()
+        form.add(button)   
 
-    def createMdPlanDocument(self, director):
-        page = self.inventory.page
-        if not page:
-            page = 'UserGuide-Overview.html'
-        if not page.startswith('http://'):
-            base = 'http://docs.danse.us/VNET'
-            import os
-            page = os.path.join(base, page)
+        #now add the plot and the info
+    
 
-        hdoc = lc.htmldocument(id='mdPlan-container')
-        hdoc.text = [
-            '<iframe src="%s"' % page,
-            'width="990" height="500" frameborder="0">',
-            '</iframe>',
-            ]
-
-        return hdoc
-
+        return container
 
     def __init__(self, name='mdPlan'):
         super(Actor, self).__init__(name)
         return
+
+def _input_widget_ID(name):
+    return '%s-input' % name
 
 
 def actor(): return Actor()
