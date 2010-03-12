@@ -15,111 +15,30 @@ import luban.content as lc
 from luban.content import select
 from luban.content import load
 from vnfb.utils.qegrid import QEGrid
-from vnfb.utils.qeparser.pseudo.pseudo import PSEUDO
-from vnfb.utils.qeconst import SMEARING, IBRAV
-from luban.content.FormTextField import FormTextField
-from luban.content.FormSelectorField import FormSelectorField
+from vnfb.utils.qeconst import MATTER_TYPE
 from luban.content.FormSubmitButton import FormSubmitButton
-from qecalc.qetask.qeparser.pwinput import PWInput
-from matter.Atom import Atom
-
-# Default values:
-ECUTWFC = 27.0
-ECUTRHO = 300.0
-NK      = 4
-
-class Visual:
-
-    def __init__(self, actor, director, structureid):
-        self._actor         = actor
-        self._director      = director
-        self._structureid   = structureid
-        self._labels        = self._labels()
-
-    def render(self):
-        return self._form()
-
-    def _form(self):
-        form        = lc.form(id='qe-atoms-form')
-        table       = QEGrid(lc.grid(Class="qe-form"))
-        form.add(table.grid())
-
-        ibrav       = FormSelectorField(name="ibrav",
-                                        entries=enumerate(IBRAV)) # Take from atomic structure?
-        ecutwfc     = FormTextField(name = "ecutwfc", value = ECUTWFC)
-        ecutrho     = FormTextField(name = "ecutrho", value = ECUTRHO)
-        smearing    = FormSelectorField(name="smearing",
-                                        entries=enumerate(SMEARING.keys()))
-
-        nk1         = FormTextField(name = "nk1", value = NK)
-        nk2         = FormTextField(name = "nk2", value = NK)
-        nk3         = FormTextField(name = "nk3", value = NK)
-
-        submit      = FormSubmitButton(label="Generate Input Configuration")
-        cancel      = lc.button(label="Cancel")
-        cancel.onclick  = load(actor = 'material_simulations/espresso/sim-view', id=self._actor.id)
-
-        st          = QEGrid(lc.grid()) # Submit Table
-        st.addRow((submit, cancel), ("qe-action-accept", "qe-action-cancel"))
-
-        table.addRow(("Lattice Type:", ibrav))
-        table.addRow(("Atomic Structure:", self._atoms())) 
-        table.addRow(("Enertgy Cutoff (Ry):", ecutwfc))    # XXX Check name
-        table.addRow(("Density Cutoff (Ry):", ecutrho))    # XXX Check name
-        table.addRow(("Smearing:", smearing))    # XXX Check name
-        table.addRow(("nk1:", nk1))
-        table.addRow(("nk2:", nk2))
-        table.addRow(("nk3:", nk3))
-        table.addRow(("", st.grid()))
-
-        table.setColumnStyle(0, "qe-form-label")
-        table.setColumnStyle(1, "qe-form-field")
-
-        form.onsubmit   = select(element=form).submit(actor     = 'material_simulations/espresso-utils/generate-pw',
-                                                      routine   = 'generateInput',
-                                                      taskid    = self._actor.taskid,
-                                                      id        = self._actor.id,
-                                                      type      = self._actor.type,
-                                                      structureid   = self._structureid)
-
-        return form
-
-
-    def _atoms(self):
-        "Atom mass name: mass<number>, atom pseudo potential name: pseudo<number>"
-        atoms    = QEGrid(lc.grid())
-        atoms.addRow(("", "Mass (u)", "Pseudo Potential"))
-
-        for l in range(len(self._labels)):
-            label       = self._labels[l]
-            atom        = Atom(label)
-            mass        = FormTextField(name = "mass%s" % l, value = atom.mass, Class="mass-textfield")
-            pseudo      = FormSelectorField(name    = "pseudo%s" % l,
-                                            Class   = "qe-selector-pseudo",
-                                            entries = enumerate(PSEUDO[label]))
-            atoms.addRow((label, mass, pseudo))
-            
-        atoms.setRowStyle(0, "qe-atoms-header")
-        atoms.setColumnStyle(0, "qe-atoms-label")
-        return atoms.grid()
-
-
-    def _labels(self):
-        "Returns list of unique atom labels. E.g.: ('Ni', 'Cu')"
-        domaccess   = self._director.retrieveDOMAccessor('atomicstructure')
-        structure   = domaccess.getAtomicStructure(self._structureid) 
-        pw          = PWInput()
-        pw.structure.load(source = 'diffpy', structure = structure)
-        return pw.structure.atomLabels()  
-
-
-    def _atomsdump(self):
-        pass
-
 
 def visual(actor, director, structureid):
-    v   = Visual(actor, director, structureid)
-    return v.render()
+    form    = lc.form()
+    form.radio(name = "mattertype", entries = enumerate(MATTER_TYPE.values()))
+    table       = QEGrid(lc.grid())
+    form.add(table.grid())
+    form.onsubmit   = select(element=form).submit(actor     = 'material_simulations/espresso-utils/form-pw',
+                                                  id        = actor.id,
+                                                  taskid    = actor.taskid,
+                                                  type      = actor.type,
+                                                  structureid   = structureid)
+
+    submit      = FormSubmitButton(label="Select Option")
+    cancel      = lc.button(label="Cancel")
+    cancel.onclick  = load(actor = 'material_simulations/espresso/sim-view', id=actor.id)
+
+    st          = QEGrid(lc.grid()) # Submit Table
+    st.addRow((submit, cancel), ("qe-action-accept", "qe-action-cancel"))
+    table.addRow((st.grid(),))
+
+    return form
+
 
 __date__ = "$Jan 12, 2010 5:48:06 PM$"
 
