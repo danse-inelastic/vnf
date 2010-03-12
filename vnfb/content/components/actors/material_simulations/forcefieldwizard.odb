@@ -92,9 +92,8 @@ class Actor(base):
 
     def atomSimForm(self, director):
         #from luban.content import select
-        
         self.inventory.simulationId = director.getGUID()
-        showdock = select(id='dock').show()
+        #showdock = select(id='dock').show()
         
         splitter = Splitter()
         splitter.orientation = 'horizontal'
@@ -131,7 +130,6 @@ class Actor(base):
         Its capabilities include phonon / molecular dynamics / optimization, 
         forcefield fitting to experimental data,
         and crystal property calculation.''']
-        
         
         h = HtmlDocument()
         h.text = ['<br><center><a href="'+relativeLocationOfFile+
@@ -170,7 +168,7 @@ class Actor(base):
 #        rightSection.add(hdoc)
         doc = lc.document(id='mdPlan')
         p = doc.paragraph()
-        p.text = ['',
+        p.text = ['','',
                   """If performing an md simulation to calculate S(Q,E), the following
         guide will help estimate the amount of time needed in the simulation.""",
         #'<a href="http://www.pageresource.com/linkus.htm" target="_blank">Link to md help window</a>'
@@ -178,14 +176,15 @@ class Actor(base):
         guideButton = lc.button(label = 'Guide')
         
         createGuideWindow = load(
-            actor='material_simulations/mdPlan', routine='default',
+            actor='material_simulations/mdPlan', routine='createMdPlanWindow',
             structureId=self.inventory.structureId,
             )
         guideButton.onclick = createGuideWindow
         doc.add(guideButton)   
         rightSection.add(doc)
 
-        return [showdock] + [select(id='main-display-area').replaceContent(splitter)]
+        #return [showdock] + [select(id='main-display-area').replaceContent(splitter)]
+        return select(id='main-display-area').replaceContent(splitter)
     
     def storeInputFile(self, director):
         # this method is called by the java web start gui (AtomSim)
