@@ -71,7 +71,10 @@ class Actor(base):
         
 
     def default(self, director):
-        return select(id='mdPlan').show()
+        doc = lc.document(title='Guide', dockable=True, closable=True)
+        doc.document(title='content')
+        return select(id='').append(doc)
+    
 
     def createMdPlanWindow(self, director):
         doc = lc.document(id='mdPlan', title='Md Planning Tools', dockable=True)#, hidden=True)

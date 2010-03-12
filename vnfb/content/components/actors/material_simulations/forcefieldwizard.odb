@@ -177,15 +177,15 @@ class Actor(base):
         ]
         guideButton = lc.button(label = 'Guide')
         
-        guideWindow = director.redirect(
-            actor='material_simulations/mdPlan', routine='default', structureId=self.inventory.structureId,
-            include_credential=False)
-        addGuideWindow = select(id='').append(guideWindow)
-        guideButton.onclick = addGuideWindow 
+        createGuideWindow = load(
+            actor='material_simulations/mdPlan', routine='default',
+            structureId=self.inventory.structureId,
+            )
+        guideButton.onclick = createGuideWindow
         doc.add(guideButton)   
         rightSection.add(doc)
 
-        return [showdock] + [select(id='main-display-area').replaceContent(splitter)] + [addGuideWindow]
+        return [showdock] + [select(id='main-display-area').replaceContent(splitter)]
     
     def storeInputFile(self, director):
         # this method is called by the java web start gui (AtomSim)
