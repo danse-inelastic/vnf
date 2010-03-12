@@ -24,9 +24,7 @@ A few example workflows are illustrated below to demonstrate the power of script
 User Cookbook
 ========================
 
-The scripting interface also allows users to develop "recipes" for accomplishing certain tasks and store them as scripts.  These can be downloaded along with all relevant packages by ....
-
-The following are links to some of these recipes:
+The scripting interface also allows users to develop "recipes" for accomplishing certain tasks and store them as scripts.  The following are links to some of these recipes:
 
 (under construction)
    
@@ -41,12 +39,19 @@ Framework and ORM
 
 `DSAW and DDS <http://docs.danse.us/pyre/sphinx/pyreLibraries.html#extending-the-capabilities-of-pyre-db-dsaw-db>`_
 
+Material data objects
+---------------------
+
+`matter <http://docs.danse.us/inelastic/matter/sphinx/>`_ package
+
 Engines
 --------
 
+`Qecalc <http://docs.danse.us/AbInitio/espresso/qecalc>`_
+
 `MEMD: Multi-Engine MD <http://docs.danse.us/MolDyn/sphinx>`_
 
-`Qecalc <http://docs.danse.us/AbInitio/espresso/qecalc>`_
+BvK phonon calculator
 
 Analysis and Scattering Kernel Generation
 -----------------------------------------
@@ -56,7 +61,7 @@ Analysis and Scattering Kernel Generation
 Plotting and Visualization
 ---------------------------
 
-`VIMM: Visual Interface for Materials Manipulation <http://docs.danse.us/common/vimm>`_
+`VIMM: Visual Interface for Materials Manipulation <http://docs.danse.us/ctrl/vimm/>`_
 
 Monte Carlo Instrument Simulation
 ---------------------------------

@@ -18,6 +18,8 @@ from luban.content.Link import Link
 
 from luban.components.Actor import Actor as base
 
+from luban.content.Splitter import Splitter, SplitSection
+
 class Actor(base):
 
     class Inventory(base.Inventory):
@@ -83,12 +85,16 @@ class Actor(base):
         return doc
 
     def atomSimForm(self, director):
-        from luban.content.Splitter import Splitter
         from luban.content.Form import Form
         from luban.content.FormTextField import FormTextField
         from luban.content.FormSelectorField import FormSelectorField
         self.inventory.simulationId = director.getGUID()
         
+        showdock = select(id='dock').show()
+        
+        splitter = Splitter()
+        splitter.orientation = 'horizontal'
+        leftSection = splitter.section()
         form = Form(
             id='forcefield-wizard-startform',
             title='')
@@ -151,20 +157,72 @@ class Actor(base):
 #            include_credential=False)
 #        addhelpwindow = select(id='').append(helpwindow)
         
-        hdoc = lc.htmldocument(id='mdPlan')
-        hdoc.text = [
+        leftSection.add(form)
+        rightSection = splitter.section()
+#        hdoc = lc.htmldocument(id='mdPlan')
+#        hdoc.text = ["""If performing an md simulation to calculate S(Q,E), the following
+#        guide will help estimate the amount of time needed in the simulation.""",
+#        '<a href="http://www.pageresource.com/linkus.htm" target="_blank">Link to md help window</a>']
+#        rightSection.add(hdoc)
+        doc = lc.document(id='mdPlan')
+        doc.text = ["""If performing an md simulation to calculate S(Q,E), the following
+        guide will help estimate the amount of time needed in the simulation.""",
+        '<a href="http://www.pageresource.com/linkus.htm" target="_blank">Link to md help window</a>']
+        rightSection.add(hdoc)
+
+        return select(id='main-display-area').replaceContent(splitter)
+    
+    def mdHelp(self, directory):
+        container = lc.document(Class='container')
+        #
+        pathtome = self._pathToMe(director)
+        view_indicator = self._viewIndicactor(pathtome, director)
+        container.add(view_indicator)
+        title = ''
+        document = container.document(title=title, Class='job-view')    
         
-        <a href="http://www.pageresource.com/linkus.htm" target="_blank"> 
+        property = 'numnodes'
+        meta = getattr( self.Inventory, property ).meta
+        field = form.text(
+            id = _input_widget_ID(property),
+            name = 'numnodes',
+            label = meta['label'],
+            value = record.numnodes,
+            )
+        field.help = meta['tip']
         
-        return select(id='main-display-area').replaceContent(form)
+        property = 'numnodes'
+        meta = getattr( self.Inventory, property ).meta
+        field = form.text(
+            id = _input_widget_ID(property),
+            name = 'numnodes',
+            label = meta['label'],
+            value = record.numnodes,
+            )
+        field.help = meta['tip']
+        
+        property = 'numnodes'
+        meta = getattr( self.Inventory, property ).meta
+        field = form.text(
+            id = _input_widget_ID(property),
+            name = 'numnodes',
+            label = meta['label'],
+            value = record.numnodes,
+            )
+        field.help = meta['tip']
+            
+   
+        # refresh 
+        refreshbutton = lc.button(label = 'Refresh')
+        refreshbutton.onclick = load(actor = 'job', routine = 'view', id = id,)
+        document.add(refreshbutton)     
+        
 
     def storeInputFile(self, director):
         # this method is called by the java web start gui (AtomSim)
         orm = director.clerk.orm
-        
         # first store the potential
         #self.storePotential(director)--> TODO: this is already stored by gulpUi so don't need to re-store
-        
         #TODO: make it so it will load settings back in if restarting
         # then store the settings
         #from memd.gulp.GulpSettings import GulpSettings

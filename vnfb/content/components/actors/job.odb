@@ -434,8 +434,6 @@ class Actor(base):
                 )
             field.help = meta['tip']
             
-            
-
         form.submitbutton(label='submit')
 
         extra['resubmission'] = self.inventory.resubmission
