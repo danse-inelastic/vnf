@@ -171,8 +171,18 @@ class Actor(base):
         tEnergy     = pw.output.property('total energy', withUnits=True)
         fEnergy     = pw.output.property('fermi energy', withUnits=True)
 
-        table.addRow(('Total Energy:', "%s %s" % (tEnergy[0][0], tEnergy[1])))
-        table.addRow(('Fermi Energy:', "%s %s" % (fEnergy[0][0], fEnergy[1])))
+        tEnergyStr  = "None"
+        fEnergyStr  = "None"
+
+        # Change interface?
+        if tEnergy == (None, None):
+            tEnergyStr  = "%s %s" % (tEnergy[0][0], tEnergy[1])
+
+        if fEnergy == (None, None):
+            fEnergyStr  = "%s %s" % (fEnergy[0][0], fEnergy[1])
+            
+        table.addRow(('Total Energy:', tEnergyStr))
+        table.addRow(('Fermi Energy:', fEnergyStr))
         table.setColumnStyle(0, "qe-cell-param")
 
 
