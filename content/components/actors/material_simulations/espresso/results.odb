@@ -175,10 +175,10 @@ class Actor(base):
         fEnergyStr  = "None"
 
         # Change interface?
-        if tEnergy == (None, None):
+        if tEnergy != (None, None):
             tEnergyStr  = "%s %s" % (tEnergy[0][0], tEnergy[1])
 
-        if fEnergy == (None, None):
+        if fEnergy != (None, None):
             fEnergyStr  = "%s %s" % (fEnergy[0][0], fEnergy[1])
             
         table.addRow(('Total Energy:', tEnergyStr))
