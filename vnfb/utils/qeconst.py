@@ -17,15 +17,16 @@ from vnfb.utils.orderedDict import OrderedDict
 PACKAGES    = ("Quantum Espresso",)  #, "VASP", "GULP"]  # Packages
 
 # Type of configuration files
-TYPE        = {"PW":    "pw.x",
-               "PH":    "ph.x",
-               "BANDS": "bands.x",
-               "PP":    "pp.x",
-               "DOS":   "dos.x",
-               "Q2R":   "q2r.x",
-               "MATDYN": "matdyn.x",
-               "DYNMAT": "dynmat.x",
-               "D3":    "d3.x"
+TYPE        = {"PW":        "pw.x",
+               "PH":        "ph.x",
+               "BANDS":     "bands.x",
+               "PLOTBAND":  "plotband.x",
+               "PP":        "pp.x",
+               "DOS":       "dos.x",
+               "Q2R":       "q2r.x",
+               "MATDYN":    "matdyn.x",
+               "DYNMAT":    "dynmat.x",
+               "D3":        "d3.x"
                }
                # Other types: "CPPP", "INITIAL_STATE", "GIPAW", "D1", "MATDYN", "PROJWFC", "PWCOND"
 
@@ -43,9 +44,9 @@ INPUT["dynmat"] = "dynmat" + INPUT_EXT
 INPUT["d3"]     = "d3" + INPUT_EXT
 
 
-NOPARALLEL  = ("DOS", "MATDYN", "DYNMAT", "Q2R") # "BANDS"?, "PP"? #
+NOPARALLEL  = ("DOS", "MATDYN", "DYNMAT", "Q2R", "BANDS", "PLOTBAND") # "BANDS"?, "PP"? # "PLOTBAND"?
 
-# Steps of job creation
+# Obsolete: Steps of job creation
 STEPS       = ("Create Simulation",
                "Create Configuration",
                "Set Simulation Parameters",
@@ -54,12 +55,12 @@ STEPS       = ("Create Simulation",
 
 # Types of simulations
 SIMCHAINS = OrderedDict()
-SIMCHAINS["Total Energy"]           = ("PW",)
-SIMCHAINS["Electron DOS"]           = ("PW", "DOS") # ("PW", "PW", "DOS")
-SIMCHAINS["Electron Dispersion"]    = ("PW", "DOS") # pw.x -> pw.x -> bands.x -> plotbands.x
-SIMCHAINS["Geometry Optimization"]  = ("PW",)
-SIMCHAINS["Single Phonon"]          = ("PW", "PH", "DYNMAT")
-SIMCHAINS["Multiple Phonon"]        = ("PW", "PH", "Q2R", "MATDYN") # DOS and Dispersion, See: example06
+SIMCHAINS["Electron Structure"]         = ("PW",)
+SIMCHAINS["Electron DOS"]               = ("PW", "PW", "DOS")
+SIMCHAINS["Electron Dispersion"]        = ("PW", "PW", "BANDS", "PLOTBAND") # pw.x -> pw.x -> bands.x -> plotbands.x
+SIMCHAINS["Geometry Optimization"]      = ("PW",)
+SIMCHAINS["Single Phonon"]              = ("PW", "PH", "DYNMAT")
+SIMCHAINS["Multiple Phonon"]            = ("PW", "PH", "Q2R", "MATDYN") # DOS and Dispersion, See: example06
 #SIMCHAINS["Molecular Dynamics"]     = ()   - Next step
 
 
@@ -111,7 +112,7 @@ SETTINGS  = {
                 "numnodes":     1,
                 "npool":        900,
                 "executable":   "mpirun",
-                "params":       "--mca btl openib,sm,self",                       # Specific for foxtrot
+                "params":       "",         # Set already on the foxtrot: "--mca btl openib,sm,self"
                 "modules":      "openmpi acml/4.3.0_gfortran64_int32 espresso"    # Specific for foxtrot
               }
 
@@ -153,7 +154,6 @@ SMEARING["marzari-vanderbilt"]  = "'mv'"
 SMEARING["fermi-dirac"]         = "'fd'"
 
 PROCESSORS  = (1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 24, 36, 48, 60, 72, 84, 96, 108, 120) # ppn = 12
-#PROCESSORS  = (1, 2, 3, 4, 5, 6, 7, 8, 16, 24, 32, 40, 48, 56, 64, 72, 80, 88, 96, 104, 112)    # ppn = 8
 
 QE_PREFIX   = "'default'"
 PREFIX      = "default"
@@ -162,6 +162,10 @@ MATDYN_METHOD  = OrderedDict()
 MATDYN_METHOD["dos"]           = "Phonon Density of States (DOS)"
 MATDYN_METHOD["dispersion"]    = "Phonon on Grid (For Virtual Neutron Experiment)"
 
+
+MATTER_TYPE = OrderedDict()
+MATTER_TYPE["metal"]        = "Metal (no band gap)"
+MATTER_TYPE["insulator"]    = "Insulator (with a band gap)"
 
 __date__ = "$Nov 3, 2009 3:12:34 PM$"
 
