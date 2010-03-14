@@ -14,6 +14,17 @@ fieldset {
     margin-bottom: 15px;
 }
 
+#qe-splitter-analysis {
+    
+}
+
+#qe-splitter-analysis .qe-section-back {
+    width: 80px;
+}
+
+#qe-splitter-analysis .qe-section-text-output {
+    width: 65px;
+}
 
 #action-refresh-status,
 .qe-action-back,
