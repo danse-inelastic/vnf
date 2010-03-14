@@ -28,6 +28,7 @@ from luban.content import select
 from luban.content import load
 
 import luban.content as lc
+from luban.content.HtmlDocument import HtmlDocument
 from luban.components.AuthorizedActor import AuthorizedActor as base
 
 # Requires simulation id, config id and config type: (id, configid, type)
@@ -82,19 +83,72 @@ class Actor(base):
 
 
     def _showActions(self, section, sim):  #, inputs
-        section.add(lc.link(label="Back",
-                            Class="qe-action-back",
-                            onclick = load(actor      = 'material_simulations/espresso/sim-view',
-                                             id         = self.id))
-                    )
+        container   = lc.splitter(orientation="horizontal") #"vertical")#
+        section.add(container)
+        self._backAction(container)
+        self._outputAction(container, sim)
+#        self._exportAction(section, sim)
 
+        section.add(lc.document(Class="clear-both"))
+
+
+    def _backAction(self, container):
+        "Back button"
+        s     = container.section()
+        s.add(lc.link(label="Back",
+                        Class="qe-action-back",
+                        onclick = load(actor      = 'material_simulations/espresso/sim-view',
+                                         id         = self.id))
+                )
+
+
+    def _outputAction(self, container, sim):
+        "Simulation output files"
+        #container   = lc.splitter(orientation="horizontal") #"vertical")#
+        sA          = container.section()
+        sA.add(HtmlDocument(text="Outputs: "))   # paragraph
+        sB          = container.section()
+        sB.add(lc.link(label="PW",
+                                Class="qe-action-edit",
+                                onclick = load(actor      = 'material_simulations/espresso/analysis',
+                                                 id         = self.id))
+                        )
+        sB.add(lc.link(label="PH",
+                                Class="qe-action-edit",
+                                onclick = load(actor      = 'material_simulations/espresso/analysis',
+                                                 id         = self.id))
+                        )
+
+
+#    def _backAction(self, section):
+#        "Back button"
+#        sA          = container.section()
+#        section.add(lc.link(label="Back",
+#                            Class="qe-action-back",
+#                            onclick = load(actor      = 'material_simulations/espresso/sim-view',
+#                                             id         = self.id))
+#                    )
+
+
+#    def _outputAction(self, section, sim):
+#        "Simulation output files"
+#        #container   = lc.splitter(orientation="horizontal") #"vertical")#
+#        sA          = section.section()
+#        sA.add(lc.paragraph(text="Outputs: "))
+#        sA.add(lc.link(label="PW",
+#                                Class="qe-action-edit",
+#                                onclick = load(actor      = 'material_simulations/espresso/analysis',
+#                                                 id         = self.id))
+#                        )
+        
+
+
+    def _exportAction(self, section, sim):
+        "Button related to export"
         if self._simtype    == "Multiple Phonon":
             self._showPhononDos(section, sim)
             self._showPhononDispersion(section, sim)
-        #self._showElectrons(section)
-        #self._showPhonons(section)
-        section.add(lc.document(Class="clear-both"))
-
+        
 
     def _showPhononDos(self, section, sim):
         linkDos     = lc.link(label="Create Phonon DOS",
@@ -137,20 +191,14 @@ class Actor(base):
        section.add(linkDisp)
 
 
-    def _showElectrons(self, section):
-        section.add(lc.link(label="Electrons",
-                            Class="qe-action-edit",
-                            onclick = load(actor      = 'material_simulations/espresso/analysis',
-                                             id         = self.id))
-                    )
         
 
-    def _showPhonons(self, section):
-        section.add(lc.link(label="Phonons",
-                            Class="qe-action-edit",
-                            onclick = load(actor      = 'material_simulations/espresso/analysis',
-                                             id         = self.id))
-                    )
+#    def _showPhonons(self, section):
+#        section.add(lc.link(label="Phonons",
+#                            Class="qe-action-edit",
+#                            onclick = load(actor      = 'material_simulations/espresso/analysis',
+#                                             id         = self.id))
+#                    )
 
 
 
