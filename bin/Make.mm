@@ -25,7 +25,6 @@ distclean::
 
 EXPORT_DATAFILES = \
 	announce.py \
-	createdefaultformulaformatters.py \
 	createdataobject.py \
 	createtable.py \
 	destroydb.py \
