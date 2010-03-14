@@ -108,8 +108,8 @@ class Actor(base):
         sA          = container.section(Class="qe-section-text-output")
         sA.add(HtmlDocument(text="Outputs: "))
         sB          = container.section()
-        testChain        = ("PW", "PH", "Q2R", "MATDYN")    # Test
-        for l in testChain:
+
+        for l in self._simlist:
             sB.add(lc.link(label=l,
                                     Class="qe-action-edit",
                                     onclick = load(actor      = 'material_simulations/espresso/analysis',
@@ -120,9 +120,9 @@ class Actor(base):
     def _exportAction(self, container, sim):
         "Button related to export"
         sA          = container.section()
-        #if self._simtype    == "Multiple Phonon":
-        self._showPhononDos(sA, sim)
-        self._showPhononDispersion(sA, sim)
+        if self._simtype    == "Multiple Phonon":   # Make sure that jobs exist with DOS or Dispersion
+            self._showPhononDos(sA, sim)
+            self._showPhononDispersion(sA, sim)
         
 
     def _showPhononDos(self, section, sim):
@@ -131,7 +131,8 @@ class Actor(base):
                             onclick = load(actor        = 'material_simulations/espresso/phonondos',
                                             routine     = 'create',
                                             simid       = self.inventory.id))
-
+        linkDos.tip = "Export Phonon DOS to Atomic Structure"
+        
         # Uncomment
 #        if self._phononDosCreated(sim):     # Check if DOS created
 #            linkDos.label   = "Phonon DOS"
@@ -148,6 +149,7 @@ class Actor(base):
                             onclick = load(actor        = 'material_simulations/espresso/phonons',
                                             routine     = 'create',
                                             simid       = self.inventory.id))
+       linkDisp.tip = "Export Phonon Dispersion to Atomic Structure"
        section.add(linkDisp)
 
 
@@ -165,19 +167,6 @@ class Actor(base):
 
         return False
         
-
-
-
-        
-
-#    def _showPhonons(self, section):
-#        section.add(lc.link(label="Phonons",
-#                            Class="qe-action-edit",
-#                            onclick = load(actor      = 'material_simulations/espresso/analysis',
-#                                             id         = self.id))
-#                    )
-
-
 
     def _showData(self, section):
         "Shows electron's data"
