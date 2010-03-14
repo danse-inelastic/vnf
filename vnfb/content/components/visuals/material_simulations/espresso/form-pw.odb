@@ -96,7 +96,7 @@ class Visual:
             degauss     = FormTextField(name = "degauss", value = DEGAUSS)
             
             table.addRow(("Smearing Type:", smearing))
-            table.addRow(("Smearing Degree:", degauss))
+            table.addRow(("Smearing Degree (Ry):", degauss))
         
 
     def _atoms(self):
