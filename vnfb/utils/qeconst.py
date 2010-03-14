@@ -54,7 +54,7 @@ STEPS       = ("Create Simulation",
 
 
 # Types of simulations
-SIMCHAINS = OrderedDict()
+SIMCHAINS   = OrderedDict()
 SIMCHAINS["Electron Structure"]         = ("PW",)
 SIMCHAINS["Electron DOS"]               = ("PW", "PW", "DOS")
 SIMCHAINS["Electron Dispersion"]        = ("PW", "PW", "BANDS", "PLOTBAND") # pw.x -> pw.x -> bands.x -> plotbands.x
@@ -63,6 +63,16 @@ SIMCHAINS["Single Phonon"]              = ("PW", "PH", "DYNMAT")
 SIMCHAINS["Multiple Phonon"]            = ("PW", "PH", "Q2R", "MATDYN") # DOS and Dispersion, See: example06
 #SIMCHAINS["Molecular Dynamics"]     = ()   - Next step
 
+SIMTYPE     = SIMCHAINS.keys()
+
+# Analysis actors
+ANALYSIS    = OrderedDict()
+ANALYSIS[SIMTYPE[0]]    = "electron"
+ANALYSIS[SIMTYPE[1]]    = "electron-dos"
+ANALYSIS[SIMTYPE[2]]    = "electron-dispersion"
+ANALYSIS[SIMTYPE[3]]    = "geometry"
+ANALYSIS[SIMTYPE[4]]    = "phonon-single"
+ANALYSIS[SIMTYPE[5]]    = "phonon-multiple"
 
 # Available servers
 SERVERS     = ("foxtrot.danse.us",)

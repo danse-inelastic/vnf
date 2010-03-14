@@ -17,8 +17,8 @@ class Actor(base):
     pass
 
 def actor():
-    return Actor(name='material_simulations/espresso-analysis/geometry')
+    return Actor(name='material_simulations/espresso-analysis/default')
 
-__date__ = "$Mar 14, 2010 10:29:08 AM$"
+__date__ = "$Mar 14, 2010 11:56:52 AM$"
 
 

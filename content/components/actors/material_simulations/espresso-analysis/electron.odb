@@ -11,6 +11,14 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
+from vnfb.components.QEAnalysis import Actor as base
+
+class Actor(base):
+    pass
+    
+def actor():
+    return Actor(name='material_simulations/espresso-analysis/electron')
+
 
 __date__ = "$Mar 14, 2010 9:37:05 AM$"
 

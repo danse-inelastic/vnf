@@ -16,15 +16,13 @@ from vnfb.utils.qetasks import QETasks
 from vnfb.utils.qegrid import QEGrid
 from vnfb.utils.qeparams import QEParams
 from vnfb.utils.qeserver import QEServer
-from vnfb.utils.qeconst import SIMCHAINS
+from vnfb.utils.qeconst import SIMCHAINS, ANALYSIS
 
 #from luban.content.Splitter import Splitter
 
 from luban.content import select
 from luban.content.Paragraph import Paragraph
-from luban.content.Document import Document
 from luban.content import load
-from luban.content.Link import Link
 
 import luban.content as lc
 from luban.components.AuthorizedActor import AuthorizedActor as base
@@ -60,7 +58,7 @@ class Actor(base):
         sA.add(viewIndicator(director))
 
         sC          = splitter.section(id="qe-section-actions")
-        self._showActions(sC)
+        self._showActions(sC, sim)
 
         # Area for errors
         splitter.section(id="input-error-area") # ?
@@ -80,7 +78,7 @@ class Actor(base):
         return doc
 
 
-    def _showActions(self, section):
+    def _showActions(self, section, sim):
         section.add(lc.link(label="Refresh",
                             Class="qe-action-refresh",
                             onclick = load(actor='material_simulations/espresso/sim-view',
@@ -97,10 +95,7 @@ class Actor(base):
                             Class="qe-action-clone",
                             onclick = load(actor='material_simulations/espresso/sim-clone',
                                            id=self.id)))
-        section.add(lc.link(label="Analysis",
-                            Class="qe-action-analyze",
-                            onclick = load(actor='material_simulations/espresso-analysis/analysis',
-                                           id=self.id)))
+        self._analysisAction(section, sim)
         section.add(lc.link(label="Delete",
                               Class="qe-action-delete",
                               onclick = load(actor='material_simulations/espresso/sim-delete',
@@ -108,6 +103,19 @@ class Actor(base):
 
         section.add(lc.document(Class="clear-both"))
 
+
+    def _analysisAction(self, section, sim):
+        name    = "default"
+
+        if sim.type in ANALYSIS.keys():
+            name    = ANALYSIS[sim.type]
+
+        actor   = 'material_simulations/espresso-analysis/%s' % name
+        section.add(lc.link(label="Analysis",
+                            Class="qe-action-analyze",
+                            onclick = load(actor=actor,
+                                           id=self.id)))
+        
 
     def _showSimulationInfo(self, table, sim):
         """Shows simulation data"""
