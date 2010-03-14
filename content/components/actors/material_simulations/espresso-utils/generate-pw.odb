@@ -14,7 +14,7 @@
 from vnfb.utils.qeparser.qeinput import QEInput
 from vnfb.utils.qeparser.namelist import Namelist
 from vnfb.utils.qeparser.card import Card
-from vnfb.utils.qeconst import SMEARING, IBRAV, MATTER_TYPE
+from vnfb.utils.qeconst import SIMCHAINS, SMEARING, MATTER_TYPE
 from vnfb.utils.qeparser.pseudo.pseudo import PSEUDO
 from qecalc.qetask.qeparser.pwinput import PWInput
 

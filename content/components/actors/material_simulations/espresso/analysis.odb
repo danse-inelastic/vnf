@@ -18,6 +18,7 @@ import os
 from vnfb.utils.qeutils import stamp2date
 from vnfb.utils.qeutils import qejob
 from vnfb.utils.qeutils import parseFile, parsePHFile
+from vnfb.utils.qeconst import SIMCHAINS
 from vnfb.utils.qegrid import QEGrid
 from vnfb.utils.qeresults import QEResults
 from vnfb.utils.qetaskinfo import TaskInfo
@@ -46,6 +47,7 @@ class Actor(base):
         self._director  = director
         sim         = director.clerk.getQESimulations(id=self.id)   # Not None
         self._simlist   = self._getSimlist(sim.type)
+        self._simtype   = self._getType(sim.type)
         simtasks        = director.clerk.getQESimulationTasks(where="simulationid='%s'" % self.id)
         taskslist       = self._tasksList(simtasks)
         jobslist        = self._jobsList(taskslist)
@@ -86,8 +88,9 @@ class Actor(base):
                                              id         = self.id))
                     )
 
-        self._showPhononDos(section, sim)
-        self._showPhononDispersion(section, sim)
+        if self._simtype    == "Multiple Phonon":
+            self._showPhononDos(section, sim)
+            self._showPhononDispersion(section, sim)
         #self._showElectrons(section)
         #self._showPhonons(section)
         section.add(lc.document(Class="clear-both"))
@@ -137,7 +140,7 @@ class Actor(base):
     def _showElectrons(self, section):
         section.add(lc.link(label="Electrons",
                             Class="qe-action-edit",
-                            onclick = load(actor      = 'material_simulations/espresso/results',
+                            onclick = load(actor      = 'material_simulations/espresso/analysis',
                                              id         = self.id))
                     )
         
@@ -145,7 +148,7 @@ class Actor(base):
     def _showPhonons(self, section):
         section.add(lc.link(label="Phonons",
                             Class="qe-action-edit",
-                            onclick = load(actor      = 'material_simulations/espresso/results',
+                            onclick = load(actor      = 'material_simulations/espresso/analysis',
                                              id         = self.id))
                     )
 
@@ -331,7 +334,7 @@ class Actor(base):
 
 
     def __init__(self):
-        super(Actor, self).__init__(name='material_simulations/espresso/results')
+        super(Actor, self).__init__(name='material_simulations/espresso/analysis')
 
         return
 
@@ -382,14 +385,17 @@ class Actor(base):
 
     # REFACTOR: Dumplicated from vnfb.utils.qetasks.py
     def _getSimlist(self, type):
-        from vnfb.utils.qeconst import SIMCHAINS
         if type in SIMCHAINS:
             return SIMCHAINS[type]
 
         return ()
 
 
+    def _getType(self, type):
+        if type in SIMCHAINS:   # Type exists
+            return type
 
+        return None
 
 def actor():
     return Actor()
