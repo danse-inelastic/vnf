@@ -11,7 +11,9 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
+from vnfb.utils.qeutils import latestJob
 from vnfb.utils.qeconst import SIMCHAINS
+
 
 class QERecords(object):
 
@@ -62,7 +64,7 @@ class SimulationRecord(QERecords):
         
 
     def simTaskList(self):
-        return self._director.clerk.getQESimulationTasks(where="simulationid='%s'" % sel._id) #  can be None
+        return self._director.clerk.getQESimulationTasks(where="simulationid='%s'" % self._id) #  can be None
 
 
     def jobList(self):
@@ -95,6 +97,31 @@ class SimulationRecord(QERecords):
 
     def jobInputTaskList(self):
         return zip(self._joblist, self._inputlist, self._tasklist)
+
+
+    # REFACTOR: Duplicated from vnfb.utils.qetasks.py
+    def typeList(self):
+        "Return list of simulation task types"
+        if not self._sim:
+            return None             # No simulation
+
+        simtype     = self.simType()
+        if simtype:
+            return SIMCHAINS[simtype]
+
+        return ()
+
+
+    def simType(self):
+        "Return simulation type"
+        if not self._sim:
+            return None         # No simulation
+
+        simtype     = self._sim.type
+        if simtype in SIMCHAINS:
+            return simtype
+
+        return None
 
 
     def _jobObject(self, task):
@@ -143,31 +170,6 @@ class SimulationRecord(QERecords):
     def _tasknum(self):
         "Returns number of tasks"
         return len(self._typelist)
-
-
-    # REFACTOR: Duplicated from vnfb.utils.qetasks.py
-    def typeList(self):
-        "Return list of simulation task types"
-        if not self._sim:
-            return None             # No simulation
-
-        simtype     = self.simType()
-        if simtype:
-            return SIMCHAINS[simtype]
-
-        return ()
-
-
-    def simType(self):
-        "Return simulation type"
-        if not self._sim:
-            return None         # No simulation
-
-        simtype     = self._sim.type
-        if simtype in SIMCHAINS:
-            return simtype
-
-        return None
 
 
 # Add additional classes?
