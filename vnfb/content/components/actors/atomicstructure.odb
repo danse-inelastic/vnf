@@ -194,6 +194,15 @@ class Actor(base):
         record = domaccess.orm(struct)
         record.chemical_formula = struct.getChemicalFormula()
         domaccess.db.updateRecord(record)
+
+        # make sure primitive unitcell is right
+        # this is OK only because right now we don't have a form to allow user
+        # to hand editing the primitive unitcell.
+        # need to revisit and improve this implementation when we
+        # add the form for editing primitive unitcell
+        struct.primitive_unitcell = None
+        struct.primitive_unitcell
+        domaccess.orm.save(struct)
         
         return self.showListView(director)
 
