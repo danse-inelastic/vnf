@@ -23,6 +23,7 @@ BUILD_DIRS = \
 	weaver \
 	inventory \
 	services \
+        qeutils \
 	testing \
 	utils \
 
