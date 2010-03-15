@@ -29,7 +29,10 @@ TO_THZ          = 0.0299792458
 A2B             = 1.889725989   # Angstroms to bohrs
 PI              = 3.14159265
 
-PHONON_FILES    = ("DOS", "Polarizations", "Omega2", "Qgridinfo")
+PHONON_FILES    = ("Polarizations", "Omega2", "Qgridinfo")
+
+# XXX: Let users know that the Phonons are created!
+# XXX: Input files for tasks are used. Gives error if they are missing or inappropriate
 
 # Requires simulation id, config id and config type: (id, configid, type)
 class Actor(base):
@@ -44,9 +47,9 @@ class Actor(base):
         self._mddir = self._matdynpath(director)
         #print self._mddir
         self._convertResults(director)
-#        self._createRecord(director)
-#        self._createLocation(director)
-#        self._relocateResults(director)
+        self._createRecord(director)
+        self._createLocation(director)
+        self._relocateResults(director)
 
         return director.redirect(actor   = 'material_simulations/espresso/results',
                                  routine = 'default',
@@ -65,7 +68,6 @@ class Actor(base):
         matdyn.output.parse()
         Pols, Freqs, qPoints = matdyn.output.property('multi phonon')
         
-        self._createDOS(director, matdyn)
         self._createPolarizations(director, matdyn, Pols)
         self._createOmega2(director, matdyn, Freqs)
         self._createQgridinfo(director, matdyn)
@@ -75,14 +77,14 @@ class Actor(base):
 
     def _setSettings(self, director):
         "Returns settings string for MATDYN task"
-        mddir       = self._matdynpath(director)
+        mddir       = self._matdynpath(director)    # Returns directory where the matdyn data are stored
         # Get matdyn input file
         mdinput     = qeinput(director, self.simid, "MATDYN")
         mdinp       = packname(mdinput.id, "matdyn.in")
         mdinp       = os.path.join(mddir, mdinp)
         flvec       = os.path.join(mddir, "matdyn.modes")
         flfrq       = os.path.join(mddir, "matdyn.freq")
-        #fldos       = os.path.join(mddir, "matdyn.dos")
+
         # Configuration setting for QECalc
         settingString = """[matdyn.x]
 matdynInput = %s
@@ -90,18 +92,8 @@ flvec = %s
 flfrq = %s
 """ % (mdinp, flvec, flfrq)
 
-#fldos = %s
-#, fldos
         return settingString
 
-
-    def _createDOS(self, director, matdyn):
-        "Creates DOS file"
-        mddir       = self._matdynpath(director)
-        outdos      = os.path.join(mddir, "DOS")
-        axis, dos = matdyn.output.property('phonon dos')
-        idf.DOS.write(axis*TO_THZ, dos, filename = outdos, comment = '')
-        
 
     def _createPolarizations(self, director, matdyn, pols):
         "Creates Polarizations file"
@@ -126,9 +118,10 @@ flfrq = %s
         self._genQgridinfo(qinfo, nqGrid, recipLattice)
 
 
+    #XXX: Check if nk1, nk2, nk3 are present in matdyn.in!
     def _nqgrid(self, matdyn):
         "Returns list of nq values on grid. Example: [4, 4, 4]"
-        nl = matdyn.input.namelist("input") # Check if nk1, nk2, nk3 are present!
+        nl = matdyn.input.namelist("input") 
         return [int(nl.param("nk1")), int(nl.param("nk2")), int(nl.param("nk3"))]
         
 
@@ -199,9 +192,12 @@ flfrq = %s
 
     def _phonpath(self, director):
         "Returns phonondoses directory corresponding to id (set in _createRecord())"
+        # Example: phonons/3TUHW54R/data.idf/
         dataroot    = self._dataroot(director)
-        pid         = os.path.join("phonons", self._phonid) # Phonon DOS id
-        return os.path.join(dataroot, pid)
+        pid         = os.path.join("phonons", self._phonid) # Phonons id
+        dir         = os.path.join(dataroot, pid)
+        dir         = os.path.join(dir, "data.idf") # Specific for "dispersion"
+        return dir
 
 
     def _dataroot(self, director):

@@ -14,7 +14,7 @@
 from vnfb.utils.qeparser.qeinput import QEInput
 from vnfb.utils.qeparser.namelist import Namelist
 #from vnfb.utils.qeconst import QE_PREFIX
-from vnfb.utils.qeutils import inputRecord
+from vnfb.utils.qeutils import inputRecord, readRecordFile, defaultInputName
 
 from luban.components.AuthorizedActor import AuthorizedActor as base
 
@@ -79,10 +79,13 @@ class Actor(base):
         return list
 
 
+    # XXX: Doesn't handle error when PW input file is not properly written (e.g. "atomic_species" is missing)
     def _masses(self, director):
         # PW configuration input
         pwinput     = inputRecord(director, self.inventory.id, "PW")
-        pw          = QEInput(config = pwinput.text)
+        fname       = defaultInputName(pwinput.type)
+        text        = readRecordFile(director.dds, pwinput, fname)
+        pw          = QEInput(config = text)
         pw.parse()
 
         list        = []

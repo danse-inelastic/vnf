@@ -32,6 +32,7 @@ in VNF (e.g. gulpsimulations or bvkcomputations) which refer to the actual simul
 from vnfb.components.QETable import QETable
 from dsaw.db.GloballyReferrable import GloballyReferrable
 from vnfb.dom.Computation import Computation
+from vnfb.dom.AtomicStructure import StructureTable
 
 from MaterialSimulation import MaterialSimulation
 
@@ -80,7 +81,9 @@ class QESimulation(QETable, GloballyReferrable):    #, Computation): #):
     label.meta['tip'] = "Label associated with the simulation"
 
     #matter = dsaw.db.integer(name="matter", length=16) # Original
-    matter = dsaw.db.varchar(name="matter", length=16)
+    #matter = dsaw.db.varchar(name="matter", length=16)
+    
+    matter = dsaw.db.reference(name='matter', table=StructureTable)
     matter.meta['tip']  = "(STUB) Refers to atomic group. Kind of useless but must have"
 
     results = dsaw.db.referenceSet(name='computation_results')

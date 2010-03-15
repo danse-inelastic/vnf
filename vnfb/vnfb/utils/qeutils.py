@@ -19,6 +19,7 @@ import os.path
 import os
 from vnfb.utils.qeresults import QEResults
 from vnfb.utils.qetaskinfo import TaskInfo
+from vnfb.utils.qeconst import INPUT
 
 
 def parseFile(filename):
@@ -100,20 +101,60 @@ def stamp2date(stamp):
 
     return ""
 
+
 def stamp():
     "Returns timestamp"
     import time
     return time.time()
 
+
 def makedirs(path):
-    """Recursively creates directory specified by path"""
+    "Recursively creates directory specified by path"
     import os
     if not os.path.exists(path):
         os.makedirs(path)
 
 
-def writefile(filename, content):
+def writeFile(filename, content):
+    "Write content to file"
     open(filename, 'w').write(content)
+
+
+def writeRecordFile(dds, record, fname, content):
+    "Writes content to file which location specified by the record"
+    path        = dds.abspath(record)
+    absfilename = dds.abspath(record, filename = fname)
+    makedirs(path)      # Create directory is does not exist
+    writeFile(absfilename, content)
+
+
+def readFile(filename):
+    "Read content of the file from absolute filename"
+    if os.path.exists(filename):
+        return open(filename).read()
+    
+    return None
+
+
+def recordFileExists(dds, record, fname):
+    absfilename = dds.abspath(record, filename = fname)
+    return os.path.exists(absfilename)
+
+
+def defaultInputName(type):
+    return INPUT[type.lower()]
+
+
+# XXX: Check if record has "type" attribute
+def readRecordFile(dds, record, fname=None):
+    "Writes content to file which location specified by the record"
+#    if not fname:   #and record has attribute "type"
+#        fname   = defaultInputName[getattr(record, "type")]
+        
+    absfilename = dds.abspath(record, filename = fname)
+    return readFile(absfilename)
+
+
 
 
 def packname(id, name):
@@ -193,7 +234,10 @@ def qetask(director, simid, type, subtype = None):
 
 
 def qejob(director, simid, type, subtype = None):
-    "Return latest job for the type"
+    """Return latest job for the type
+    For matdyn task subtype will be also used which can be "dos" or "dispersion".
+    The subtype uses QETask.short_description (should be removed from) and QEJob.description to store
+    the subtype"""
     task    = qetask(director, simid, type) # Let's not use 'subtype' for qetask()
     if task:
         where   = "taskid='%s'" % task.id
@@ -278,20 +322,4 @@ if __name__ == "__main__":
     testStamp()
 
 __date__ = "$Jul 30, 2009 12:08:31 PM$"
-
-
-# ********************* DEAD CODE ***************************
-
-#    simtasks = director.clerk.getQESimulationTasks(where="simulationid='%s'" % simid)
-#    for st in simtasks:
-#        tasks   = director.clerk.getQETasks(where="id='%s' AND type='%s'" % (st.taskid, type))
-#        if tasks:   # XXX First found tasks
-#            break
-#
-#    if not tasks:
-#        return path
-#
-#    task    = latestTask(tasks)    # task    = tasks[0]
-#    if not task:
-#        return path
 

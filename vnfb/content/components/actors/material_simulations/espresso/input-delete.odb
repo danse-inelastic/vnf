@@ -1,3 +1,4 @@
+import os.path
 #!/usr/bin/env python
 #
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -11,14 +12,15 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
+import os
 from vnfb.utils.qegrid import QEGrid
+from vnfb.utils.qeutils import defaultInputName
 
 from luban.content import select
 from luban.content.Paragraph import Paragraph
 from luban.content.Form import Form
 from luban.content.FormSubmitButton import FormSubmitButton
 from luban.content import load
-
 import luban.content as lc
 from luban.components.AuthorizedActor import AuthorizedActor as base
 
@@ -88,12 +90,25 @@ class Actor(base):
 
     # TODO: Delete also the directory
     def deleteRecord(self, director):
-        """Delete configuration record"""
-        input     = director.clerk.getQEConfigurations(id=self.configid)
-        input.setDirector(director)
-        input.deleteRecord()
+        "Delete configuration record"
+        self.deleteDBRecord(director)
+        self.deleteFile(director)
 
         return load(actor='material_simulations/espresso/sim-view', id=self.id)
+
+
+    def deleteDBRecord(self, director):
+        "Delete db record"
+        self.input     = director.clerk.getQEConfigurations(id=self.configid)
+        self.input.setDirector(director)
+        self.input.deleteRecord()
+
+
+    def deleteFile(self, director):
+        fname       = defaultInputName(self.input.type)
+        absfilename = director.dds.abspath(self.input, filename = fname)
+        if os.path.exists(absfilename):
+            os.remove(absfilename)
 
 
     def __init__(self):
