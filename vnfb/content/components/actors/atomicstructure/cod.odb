@@ -41,27 +41,21 @@ class Actor(base):
         
         id = luban.inventory.str('id', default='')
 
-        pass # end of Inventory
-
     def default(self, director):
         return director.retrieveVisual("cod/frame")     
          
-        
     def debug(self, director):
         page = lc.page(title='test cod')
         visual = director.retrieveVisual("cod/frame")
         page.add(visual)        
         return page
 
-
     def getTableView(self, director):
         data = self._getData(director)
         return director.retrieveVisual('cod/table', director=director, data=data)
 
-
     def store(self, director):
         return
-
 
     def _getInputErrors(self):
         errors = super(Actor, self)._getInputErrors()
@@ -89,7 +83,6 @@ class Actor(base):
             continue
 
         return errors
-
 
     def _getData(self, director):
         self._castInventoryProperties()
@@ -120,7 +113,6 @@ class Actor(base):
         fileName = "http://fireball.phys.wvu.edu/cod/" + db + "/" + fileNumbers[tblResult.getSelectedRow()] + ".cif";
         
         contents=Main.getFileContents(fileName);
-
 
 
 def actor():

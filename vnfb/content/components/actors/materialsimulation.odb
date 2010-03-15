@@ -189,7 +189,6 @@ class Actor(base):
         director.clerk.updateRecordWithID(matter)
         return
 
-
     def _defaults(self):
         super(Actor, self)._defaults()
         self.inventory.order_by = 'date'
