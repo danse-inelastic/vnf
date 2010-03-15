@@ -146,33 +146,36 @@ class Actor(base):
             )
         field.help = meta['tip']
             
-        supercellGrid       = QEGrid(lc.grid(Class="qe-table"))
+        p = form.paragraph()
+        
+        p.text = "Optional: input proposed supercell to see Q-space coverage"
+        supercellGrid       = QEGrid(lc.grid(Class="ff-table"))
         form.add(supercellGrid.grid())
-        supercellGrid.setColumnStyle(0, "qe-cell-param")
+        #supercellGrid.setColumnStyle(0, "qe-cell-param")
             
-            
+        formSC = lc.form()    
         prefix = 'input'
-        self.ax = form.text(id='ax', name='%s.ax' % prefix, label='a: (x)', 
+        self.ax = formSC.text(id='ax', name='%s.ax' % prefix, label='a: (x)', 
                       value = self.inventory.ax) 
-        self.ay = form.text(id='ay', name='%s.ay' % prefix, label='(y)', 
+        self.ay = formSC.text(id='ay', name='%s.ay' % prefix, label='(y)', 
                       value = self.inventory.ay) 
-        self.az = form.text(id='az', name='%s.az' % prefix, label='(z)', 
+        self.az = formSC.text(id='az', name='%s.az' % prefix, label='(z)', 
                       value = self.inventory.az) 
         supercellGrid.addRow((self.ax, self.ay, self.az))
         
-        self.bx = form.text(id='bx', name='%s.bx' % prefix, label='b: (x)', 
+        self.bx = formSC.text(id='bx', name='%s.bx' % prefix, label='b: (x)', 
                       value = self.inventory.bx)
-        self.by = form.text(id='by', name='%s.by' % prefix, label='(y)', 
+        self.by = formSC.text(id='by', name='%s.by' % prefix, label='(y)', 
                       value = self.inventory.by)   
-        self.bz = form.text(id='bz', name='%s.bz' % prefix, label='(z)', 
+        self.bz = formSC.text(id='bz', name='%s.bz' % prefix, label='(z)', 
                       value = self.inventory.bz)  
         supercellGrid.addRow((self.bx, self.by, self.bz))
         
-        self.cx = form.text(id='cx', name='%s.cx' % prefix, label='c: (x)', 
+        self.cx = formSC.text(id='cx', name='%s.cx' % prefix, label='c: (x)', 
                       value = self.inventory.cx) 
-        self.cy = form.text(id='cy', name='%s.cy' % prefix, label='(y)', 
+        self.cy = formSC.text(id='cy', name='%s.cy' % prefix, label='(y)', 
                       value = self.inventory.cy) 
-        self.cz = form.text(id='cz', name='%s.cz' % prefix, label='(z)', 
+        self.cz = formSC.text(id='cz', name='%s.cz' % prefix, label='(z)', 
                       value = self.inventory.cz)
         supercellGrid.addRow((self.cx, self.cy, self.cz))
         
@@ -182,7 +185,6 @@ class Actor(base):
         form.add(button)   
 
         #now add the plot and the info
-
         return container
     
     def calculateMdInfo(self):

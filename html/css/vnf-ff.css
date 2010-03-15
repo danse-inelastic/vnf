@@ -1,0 +1,384 @@
+/*
+This is CSS layout for forcefield pages
+*/
+
+fieldset {
+    border: 0px;
+    padding: 10px;
+    margin: 0px;
+    background-color: white;
+}
+
+
+#ff-section-actions {
+    margin-bottom: 15px;
+}
+
+
+#action-refresh-status,
+.ff-action-back,
+.ff-action-refresh,
+.ff-action-new,
+.ff-action-edit,
+.ff-action-clone,
+.ff-action-analyze,
+.ff-action-delete,
+.ff-run-task {
+    padding: 2px 15px;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    text-decoration: none;
+    margin-right: 10px;
+}
+
+
+
+a.ff-action-back,
+a.ff-action-refresh,
+a.ff-action-new,
+a.ff-action-edit,
+a.ff-action-clone,
+a.ff-action-analyze,
+a.ff-action-delete,
+a.ff-action-structure {
+    text-decoration: none;
+}
+
+.ff-action-back {
+    background-color: #dcf6db;
+}
+
+.ff-action-refresh {
+    background-color: #abff8d; /* #abff8d - light green, #dcf6db */
+}
+
+.ff-action-new {
+    background-color: #c2d6f9; /* #48f640 - deep green */
+}
+
+.ff-action-edit {
+    background-color: #c2d6f9; /* light blue */
+}
+
+.ff-action-clone {
+    background-color: #c2d6f9; /* #FFCC00 - orange */
+}
+
+.ff-action-analyze {
+    background-color: #c2d6f9; /* yellow */
+}
+
+.ff-action-delete {
+    background-color: #c2d6f9; /* #FF7700 - light red */
+}
+
+.ff-action-structure {
+    font-weight: bold;
+    padding: 3px 20px;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    text-decoration: none;
+    margin-right: 10px;
+    margin-left: 2px;
+    background-color: #48f640;
+}
+
+.ff-structure-label {
+    padding-top: 3px;
+
+}
+
+.ff-structure-label td {
+    padding-right: 15px;
+    padding-left: 10px;
+}
+
+
+#action-refresh-status {
+    float: left;
+    background-color: #abff8d;   /* #8aff61; */
+    margin: 30px 10px 10px 25px;
+}
+
+
+.button-green a{
+    background-color: #33DD33; /* deep green */
+}
+
+.ff-run-task {
+    background-color: #48f640; /* deep green #1fff1f*/
+}
+
+a.ff-run-task {
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.ff-tasks-table td.ff-action-task {
+    padding: 10px;
+}
+
+.ff-section,
+.ff-section-inline {
+    font-size: 1.1em;
+    font-weight: bold;
+    margin-top: 30px;
+    margin-bottom: 10px;
+}
+
+.ff-section-inline,
+.ff-section-inline a,
+.ff-section-inline p {
+    float: left;
+}
+
+#ff-tasks-label {
+    display: inline;
+}
+
+.ff-table {
+
+}
+
+.ff-table table{
+    border-collapse: collapse;
+    -moz-border-radius: 10px;
+    -webkit-border-radius: 10px;
+    width: 200px;
+    background-color: #f0f0f0;
+}
+
+.ff-table td,
+.ff-tasks-table td{
+    border: 2px solid white;
+    padding: 3px 10px 3px 10px;
+    vertical-align: top;
+}
+
+.ff-tasks-table table{
+    border-collapse: collapse;
+    -moz-border-radius: 10px;
+    -webkit-border-radius: 10px;
+    background-color: #f0f0f0;
+}
+
+.ff-tasks-table td{
+    width: 240px
+}
+
+.ff-grid table,
+.ff-tasks-info table {
+
+}
+
+.ff-grid td,
+.ff-tasks-info td {
+    border: 0px;
+    padding: 0px  5px 0px 0px;
+    vertical-align: top;
+}
+
+.ff-tasks-info td.ff-tasks-param {
+    width: 70px;
+}
+
+
+textarea {
+    width: 400px;
+    height: 200px;
+}
+
+#ff-atoms-form {
+    
+}
+
+select {
+    width: 200px;
+}
+
+/*
+.ff-selector-pseudo {
+    width: 200px;
+}
+*/
+
+.ff-atoms-header td{
+    font-weight: bold;
+    padding-top: 3px;
+    padding-left: 15px;
+
+}
+
+.ff-atoms-label{
+    font-weight: bold;
+}
+
+.mass-textfield {
+    width: 90px;
+}
+
+.mass-textfield input {
+    width: 80px;
+}
+
+.ff-table-header {
+    font-weight: bold;
+    text-align: center;
+}
+
+tr td .ff-table-id {
+    width: 80px;
+}
+
+tr td .ff-table-time {
+    width: 300px;
+}
+
+tr td .ff-table-check {
+    width: 50px;
+}
+
+tr td .ff-table-delete {
+    width: 50px;
+}
+
+
+/*
+.ff-text-area {
+    width: 200px;
+}
+
+.ff-tasks-info td.ff-tasks-value {
+    width: 100px;
+}
+.ff-tasks-results p {
+    display: inline;
+    float: left;
+}
+*/
+
+.ff-cell-param {
+    width: 170px;
+    font-weight: bold;
+}
+
+.ff-cell-value {
+    
+}
+
+/* Style for QE forms */
+
+.ff-form {
+    border-collapse: collapse;
+}
+
+.ff-form-label {
+    width: 170px;
+    font-weight: bold;
+    vertical-align: top;
+    text-align: right;
+    padding-top: 5px;
+    padding-right: 5px;
+}
+
+.ff-form-field div {
+    margin: -2px;
+}
+
+.ff-task-header-change {
+    text-align: right;
+}
+
+.ff-action-accept {
+
+}
+
+.ff-action-cancel {
+    padding-top: 5px;
+}
+
+
+/* Change? */
+#ff-check-results,
+#ff-analyze-results,
+.ff-task-action {
+    margin-left: 10px;
+    padding: 1px 10px;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    text-decoration: none;
+}
+
+#ff-check-results,
+.ff-task-action {
+    background-color: #abff8d; /* light green #8aff61*/
+}
+
+a.ff-task-action {
+    text-decoration: none;
+}
+
+.ff-all-jobs {
+    margin-left: 15px;
+}
+
+
+#ff-analyze-results {
+    margin-left: 10px;
+    background-color: #c2d6f9; /* yellow */
+}
+
+.ff-run-tasks {
+
+}
+
+.default-size-plot {
+    width: 500;
+    height: 350;
+}
+
+/* CSS from Vinil */
+
+/* overload the default behavior of luban for buttons */
+#error-area,
+#input-error-area {
+    color: red;
+}
+
+.clear-both {
+    clear: both;
+}
+
+.display-inline a,
+.display-inline p{
+    margin: 0px;
+    float: left;
+}
+
+.display-block,
+.display-block a,
+.display-block p{
+    display: block;
+}
+
+.text-bold {
+    font-weight: bold;
+}
+
+.text-green {
+    color: green;
+}
+
+.padding-left-20 {
+    padding-left: 20px;
+}
+
+
+.action-link {
+    border-color: #cced8c;
+    border-width: 2px;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    width:  50px;
+    padding: 0px 2px;
+}
