@@ -52,7 +52,6 @@ EXPORT_PYTHON_MODULES = \
         qestatus.py \
         qeutils.py \
 
-
 #include doxygen/default.def
 
 export:: export-package-python-modules 

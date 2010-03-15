@@ -1,0 +1,5 @@
+
+
+svn:external - pointer to the external espresso directory
+    qeparser svn://svn@danse.us/AbInitio/espresso/utils/parser
+    qecalcutils svn://svn@danse.us/AbInitio/espresso/qecalc/qeutils
