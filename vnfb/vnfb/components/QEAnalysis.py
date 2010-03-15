@@ -15,6 +15,8 @@ from vnfb.utils.qerecords import SimulationRecord
 
 import luban.content as lc
 from luban.content import select, load
+from luban.content.HtmlDocument import HtmlDocument
+
 from luban.components.AuthorizedActor import AuthorizedActor as base
 
 # Requires simulation id, config id and config type: (id, configid, type)
@@ -34,9 +36,11 @@ class Actor(base):
         splitter    = doc.splitter(orientation="vertical")
         sA          = splitter.section()                        # path indicator
         sB          = splitter.section(id="qe-section-actions") # actions
-        
+
+        simrecord   = SimulationRecord(director, self.id)
+        #sim         = simrecord.record()
         self._viewIndicator(director, sA)
-        self._showActions(sB)#, sim)               # Show actions
+        self._showActions(sB, simrecord)               # Show actions
 
         # - System Summary
         # - Electron System
@@ -59,10 +63,15 @@ class Actor(base):
         section.add(director.retrieveVisual('view-indicator', path=path))
 
 
-    def _showActions(self, section):#, sim):  #, inputs
+    def _showActions(self, section, sim):  #, inputs
+        # Action splitter
         container   = lc.splitter(orientation="horizontal", id="qe-splitter-analysis")
         section.add(container)
         self._backAction(container)
+        self._outputAction(container, sim)
+        self._exportAction(container, sim)
+
+        section.add(lc.document(Class="clear-both"))
 
 
     def _backAction(self, container):
@@ -74,6 +83,27 @@ class Actor(base):
                                          id         = self.id))
                 )
 
+
+    def _outputAction(self, container, simrecord):
+        "Simulation output files"
+        #container   = lc.splitter(orientation="horizontal") #"vertical")#
+        sA          = container.section(Class="qe-section-text-output")
+        sA.add(HtmlDocument(text="Outputs: "))
+        sB          = container.section()
+
+        typelist    = simrecord.typeList()
+
+        for l in typelist:
+            sB.add(lc.link(label=l,
+                            Class="qe-action-edit",
+                            onclick = load(actor      = 'material_simulations/espresso/analysis',
+                                             id         = self.id))
+                    )
+
+
+    def _exportAction(self, container, sim):
+        "Export actions. Needs to be overwritten by subclasses"
+        
 
     def _configure(self):
         super(Actor, self)._configure()
