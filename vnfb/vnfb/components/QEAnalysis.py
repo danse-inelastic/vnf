@@ -66,6 +66,14 @@ class Actor(base):
                 )
 
 
+    def _setSimRelations(self, director):
+        "Pulls out records related to the simulation specified by id"
+        self.id         = self.inventory.id     # Do I need it?
+
+
+
+
+
     def _configure(self):
         super(Actor, self)._configure()
         self.id             = self.inventory.id
