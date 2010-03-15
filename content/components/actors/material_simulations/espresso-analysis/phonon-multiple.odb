@@ -16,7 +16,7 @@ from vnfb.components.QEAnalysis import Actor as base
 class Actor(base):
 
 #    def content(self, director):
-#        self._showPlot(director, sD)        # Electron DOS
+#        self._showPhononPlot(director, sD)  # Phonon DOS
 
 
     def _showPhononPlot(self, director, section):

@@ -68,10 +68,12 @@ class Actor(base):
         sD          = splitter.section()
 
 
-        self._showPhononPlot(director, sD)  # Phonon DOS
+
 
         return doc
 
+
+#    def _
 
     def _showActions(self, section, sim):  #, inputs
         container   = lc.splitter(orientation="horizontal", id="qe-splitter-analysis") #"vertical")#
@@ -213,109 +215,9 @@ class Actor(base):
         return os.path.abspath(dds.dataroot)
 
 
-    def _jobsList(self, taskslist):
-        jobslist    = []
-        for t in taskslist:
-            jobslist.append(self._jobObject(t))
-
-        return jobslist
-
-
-    def _jobObject(self, task):
-        "Job object"
-        if task is None:
-            return None
-
-        jobs    = self._director.clerk.getQEJobs(where="taskid='%s'" % task.id)
-        if jobs:    # Pick the latest job
-            return latestJob(jobs)
-
-        return None
-
-
-    def _inputsList(self, taskslist):
-        inputslist    = []
-        for t in taskslist:
-            inputslist.append(self._inputObject(t))
-
-        return inputslist
-
-
-    def _inputObject(self, task):
-        "Input object"
-        if task is None:
-            return None
-
-        inputs    = self._director.clerk.getQEConfigurations(where="taskid='%s'" % task.id)
-        if inputs and inputs[0]:    # Pick the first
-            return inputs[0]
-
-        return None
-
-
-#    def __init__(self):
-#        super(Actor, self).__init__()
-#
-#        return
-
-
-#    def _configure(self):
-#        super(Actor, self)._configure()
-#        self.id             = self.inventory.id
-#
-#    def _init(self):
-#        super(Actor, self)._init()
-#        return
 
 
 
-    # REFACTOR: Duplicated from vnfb.utils.qetasks.py
-    def _type(self, colnum):
-        "Returns task type"
-        return self._simlist[colnum]
-
-    # REFACTOR: Duplicated from vnfb.utils.qetasks.py
-    def _tasknum(self):
-        "Returns number of tasks"
-        return len(self._simlist)
-
-
-    # REFACTOR: Duplicated from vnfb.utils.qetasks.py
-    def _tasksList(self, simtasks):
-        taskslist   = []
-        for type in self._simlist:
-            taskslist.append(self._taskObject(simtasks, type))
-
-        return taskslist
-
-
-    # REFACTOR: Duplicated from vnfb.utils.qetasks.py
-    def _taskObject(self, simtasks, type):
-        """
-        Return task object in simtasks of type 'type' or None otherwise
-        """
-        for st in simtasks:
-            if st.taskid != '': # Avoid dangling references
-                task    = self._director.clerk.getQETasks(id = st.taskid)
-                if task is not None and task.type    == type:
-                    return task
-
-        return None
-
-
-    # REFACTOR: Duplicated from vnfb.utils.qetasks.py
-    def _getSimlist(self, type):
-        if type in SIMCHAINS:
-            return SIMCHAINS[type]
-
-        return ()
-
-
-    def _getType(self, type):
-        if type in SIMCHAINS:   # Type exists
-            return type
-
-        return None
 
 def actor():
     return Actor(name='material_simulations/espresso-analysis/analysis')
