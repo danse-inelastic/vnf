@@ -107,8 +107,9 @@ class Actor(base):
             select(id='dock').dock('release', select(id='mdPlan')),
             ]
 
-    def createMdPlanDocument(self, director):    
-        container = lc.document(Class='container')
+    def createMdPlanDocument(self, director):  
+        page = lc.page(title="Md planning tools")  
+        container = page.document(Class='container')
         #
         #pathtome = self._pathToMe(director)
         #view_indicator = self._viewIndicactor(pathtome, director)
