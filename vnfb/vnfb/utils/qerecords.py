@@ -170,30 +170,14 @@ class SimulationRecord(QERecords):
         return None
 
 
-
-
-
-#def temp(self):
-#    sim             = director.clerk.getQESimulations(id=self.id)   # Not None
-#    simtasks        = director.clerk.getQESimulationTasks(where="simulationid='%s'" % self.id)
-#    taskslist       = self._taskList(simtasks)
-#    jobslist        = self._jobList(taskslist)
-#    inputslist      = self._inputList(taskslist)
-#
-#    # Set variables
-#    self._director  = director
-#    self._simlist   = self._getSimlist(sim.type)
-#    self._simtype   = self._getType(sim.type)
-#    self._jitlist    = zip(jobslist, inputslist, taskslist) # Jobs - Input - Task list
-
-
-class JobRecord(Record):
+# Add additional classes?
+class JobRecord(QERecords):
     pass
 
-class TaskRecord(Record):
+class TaskRecord(QERecords):
     pass
 
-class InputRecord(Record):
+class InputRecord(QERecords):
     pass
 
 
