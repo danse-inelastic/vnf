@@ -34,11 +34,16 @@ NOW
 
 CRITICAL FIXES
 ==============
+- Sanityze input file for qe simulations from Windows carriage return ('\15\32')
+See:
+    http://kb.iu.edu/data/data/acux.html
+    Command: awk '{ sub("\r$", ""); print }' winfile.txt > unixfile.txt
+
 - Recognize elements and populate psedo potentials depending on the elements in the structure
     (see input-pw.odb visual)
 - Don't allow to set config input unless the previous config input is set
 
-- Handle multiple jobs for the task
+- [DONE] Handle multiple jobs for the task
 - Fix database jobs status depending on the actual jobs status
 - Fix the formatting of config view and create
 
@@ -50,6 +55,8 @@ CRITICAL FIXES
 BUGS
 ====
 director.redirect() does not always pass parameters
+
+
 
 Simulations Types [Status]
 =================

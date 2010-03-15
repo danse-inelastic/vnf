@@ -155,6 +155,14 @@ def readRecordFile(dds, record, fname=None):
     return readFile(absfilename)
 
 
+def dataroot(director):
+    "Returns data root directory where the simulation results are exported"
+    if not director:
+        return None
+    
+    dds = director.dds
+    return os.path.abspath(dds.dataroot)
+
 
 
 def packname(id, name):

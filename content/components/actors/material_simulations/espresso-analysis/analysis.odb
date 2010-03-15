@@ -12,6 +12,8 @@ import os.path
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
+# Depricated file!!!
+
 # Use matplotlib and QECalc to analyze results
 
 import os
@@ -153,66 +155,66 @@ class Actor(base):
 
     def _showData(self, section):
         "Shows electron's data"
-        filename    = self._pwOutputFile()
-        if filename is None:
-            return
-
-        #self._
-        # output exists
-        section.add(lc.paragraph(text="Electron System", Class="qe-section"))
-        table       = QEGrid(lc.grid(Class = "qe-table"))
-        section.add(table.grid())
-
-        from qecalc.qetask.pwtask import PWTask
-        
-        config  = "[pw.x]\npwOutput: %s" % filename
-
-        pw = PWTask(configString=config)
-        pw.output.parse()
-        tEnergy     = pw.output.property('total energy', withUnits=True)
-        fEnergy     = pw.output.property('fermi energy', withUnits=True)
-
-        tEnergyStr  = "None"
-        fEnergyStr  = "None"
-
-        # Change interface?
-        if tEnergy != (None, None):
-            tEnergyStr  = "%s %s" % (tEnergy[0][0], tEnergy[1])
-
-        if fEnergy != (None, None):
-            fEnergyStr  = "%s %s" % (fEnergy[0][0], fEnergy[1])
-            
-        table.addRow(('Total Energy:', tEnergyStr))
-        table.addRow(('Fermi Energy:', fEnergyStr))
-        table.setColumnStyle(0, "qe-cell-param")
-
-
-
-
-    def _pwOutputFile(self):
-        "Retruns absolute path of the PW output file"
-        # Example: "/home/dexity/exports/vnf/vnfb/content/data/tmp/tmpTsdw21/4ICDAVNK/4I2NPMY4ni.scf.in.out"
-        for jit in self._jitlist:
-            if jit[0] is None:   # If job is None
-                continue
-
-            if jit[1] is not None and jit[2].type == "PW":   # PW type
-                dataroot    = self._dataroot()
-                taskinfo    = TaskInfo(simid = self.id, type = "PW")
-                results     = QEResults(self._director, jit[0], taskinfo)
-                if results.ready():
-                    file        = "%s%s.out" % (jit[1].id, jit[1].filename)
-                    path        = os.path.join(results.tardir(), file)
-                    filepath    = os.path.join(dataroot, path)
-                    return filepath
-
-        return None
-
-
-
-    def _dataroot(self):
-        dds = self._director.dds
-        return os.path.abspath(dds.dataroot)
+#        filename    = self._pwOutputFile()
+#        if filename is None:
+#            return
+#
+#        #self._
+#        # output exists
+#        section.add(lc.paragraph(text="Electron System", Class="qe-section"))
+#        table       = QEGrid(lc.grid(Class = "qe-table"))
+#        section.add(table.grid())
+#
+#        from qecalc.qetask.pwtask import PWTask
+#
+#        config  = "[pw.x]\npwOutput: %s" % filename
+#
+#        pw = PWTask(configString=config)
+#        pw.output.parse()
+#        tEnergy     = pw.output.property('total energy', withUnits=True)
+#        fEnergy     = pw.output.property('fermi energy', withUnits=True)
+#
+#        tEnergyStr  = "None"
+#        fEnergyStr  = "None"
+#
+#        # Change interface?
+#        if tEnergy != (None, None):
+#            tEnergyStr  = "%s %s" % (tEnergy[0][0], tEnergy[1])
+#
+#        if fEnergy != (None, None):
+#            fEnergyStr  = "%s %s" % (fEnergy[0][0], fEnergy[1])
+#
+#        table.addRow(('Total Energy:', tEnergyStr))
+#        table.addRow(('Fermi Energy:', fEnergyStr))
+#        table.setColumnStyle(0, "qe-cell-param")
+#
+#
+#
+#
+#    def _pwOutputFile(self):
+#        "Retruns absolute path of the PW output file"
+#        # Example: "/home/dexity/exports/vnf/vnfb/content/data/tmp/tmpTsdw21/4ICDAVNK/4I2NPMY4ni.scf.in.out"
+#        for jit in self._jitlist:
+#            if jit[0] is None:   # If job is None
+#                continue
+#
+#            if jit[1] is not None and jit[2].type == "PW":   # PW type
+#                dataroot    = self._dataroot()
+#                taskinfo    = TaskInfo(simid = self.id, type = "PW")
+#                results     = QEResults(self._director, jit[0], taskinfo)
+#                if results.ready():
+#                    file        = "%s%s.out" % (jit[1].id, jit[1].filename)
+#                    path        = os.path.join(results.tardir(), file)
+#                    filepath    = os.path.join(dataroot, path)
+#                    return filepath
+#
+#        return None
+#
+#
+#
+#    def _dataroot(self):
+#        dds = self._director.dds
+#        return os.path.abspath(dds.dataroot)
 
 
 
