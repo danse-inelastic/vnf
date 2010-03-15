@@ -11,6 +11,8 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
+from vnfb.utils.qerecords import SimulationRecord
+
 import luban.content as lc
 from luban.content import select, load
 from luban.components.AuthorizedActor import AuthorizedActor as base
@@ -30,15 +32,23 @@ class Actor(base):
     def content(self, director):
         doc         = lc.document(title="Analysis of Simulation Results")
         splitter    = doc.splitter(orientation="vertical")
-        sA          = splitter.section()
-        sA.add(self._viewIndicator(director))
-        sB          = splitter.section(id="qe-section-actions")
+        sA          = splitter.section()                        # path indicator
+        sB          = splitter.section(id="qe-section-actions") # actions
+        
+        self._viewIndicator(director, sA)
         self._showActions(sB)#, sim)               # Show actions
+
+        # - System Summary
+        # - Electron System
 
         return doc
 
 
-    def _viewIndicator(self, director):
+#    def _document(self, director):
+#        pass
+
+
+    def _viewIndicator(self, director, section):
         path = []
         path.append(('Simulations ', load(actor='materialsimulation')))
         path.append(('Quantum Espresso ', load(actor='materialsimulation')))
@@ -46,8 +56,7 @@ class Actor(base):
                                            id       = self.id)))
 
         path.append('Simulation Results')
-
-        return director.retrieveVisual('view-indicator', path=path)
+        section.add(director.retrieveVisual('view-indicator', path=path))
 
 
     def _showActions(self, section):#, sim):  #, inputs
@@ -64,14 +73,6 @@ class Actor(base):
                         onclick = load(actor      = 'material_simulations/espresso/sim-view',
                                          id         = self.id))
                 )
-
-
-    def _setSimRelations(self, director):
-        "Pulls out records related to the simulation specified by id"
-        self.id         = self.inventory.id     # Do I need it?
-
-
-
 
 
     def _configure(self):

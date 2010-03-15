@@ -16,6 +16,8 @@ from vnfb.components.QEAnalysis import Actor as base
 class Actor(base):
     pass
 
+    # + Electron Dispersion
+
 def actor():
     return Actor(name='material_simulations/espresso-analysis/electron-dispersion')
 

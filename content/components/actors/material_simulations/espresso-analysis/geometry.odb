@@ -16,6 +16,9 @@ from vnfb.components.QEAnalysis import Actor as base
 class Actor(base):
     pass
 
+    # + Input Geometry
+    # + Output Geometry
+
 def actor():
     return Actor(name='material_simulations/espresso-analysis/geometry')
 
