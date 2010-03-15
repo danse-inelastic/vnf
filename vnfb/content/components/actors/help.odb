@@ -45,6 +45,7 @@ class Actor(base):
 
         b = lc.button(
             label='minimize',
+            id = 'minimize-help-button',
             onclick=select(id='dock').dock('attach', select(element=doc)),
             )
         doc.add(b)
