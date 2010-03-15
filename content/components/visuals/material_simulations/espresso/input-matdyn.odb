@@ -14,8 +14,8 @@
 import luban.content as lc
 from luban.content import select
 from luban.content import load
-from vnfb.utils.qegrid import QEGrid
-from vnfb.utils.qeconst import MATDYN_METHOD
+from vnfb.qeutils.qegrid import QEGrid
+from vnfb.qeutils.qeconst import MATDYN_METHOD
 from luban.content.FormTextField import FormTextField
 from luban.content.FormSubmitButton import FormSubmitButton
 

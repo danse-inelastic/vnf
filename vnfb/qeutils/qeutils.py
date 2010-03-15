@@ -17,9 +17,9 @@ Contains little but useful itils!
 import os.path
 
 import os
-from vnfb.utils.qeresults import QEResults
-from vnfb.utils.qetaskinfo import TaskInfo
-from vnfb.utils.qeconst import INPUT
+from vnfb.qeutils.qeresults import QEResults
+from vnfb.qeutils.qetaskinfo import TaskInfo
+from vnfb.qeutils.qeconst import INPUT
 
 
 def parseFile(filename):

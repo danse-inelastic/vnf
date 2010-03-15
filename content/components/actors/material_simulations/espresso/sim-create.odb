@@ -12,8 +12,8 @@
 #
 
 
-from vnfb.utils.qeconst import SIMCHAINS
-from vnfb.utils.qegrid import QEGrid
+from vnfb.qeutils.qeconst import SIMCHAINS
+from vnfb.qeutils.qegrid import QEGrid
 from vnfb.utils.serverlist import ServerList
 from vnfb.dom.QESimulation import QESimulation
 

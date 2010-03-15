@@ -12,18 +12,18 @@ import os.path
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
-from vnfb.utils.qeutils import stamp2date
-from vnfb.utils.qegrid import QEGrid
+from vnfb.qeutils.qeutils import stamp2date
+from vnfb.qeutils.qegrid import QEGrid
 
 from luban.content import select
 from luban.content import load
 
 import luban.content as lc
-from vnfb.utils.qeutils import remoteResultsPath
+from vnfb.qeutils.qeutils import remoteResultsPath
 import os
 import time
 import shutil
-from vnfb.utils.qeutils import qeinput, packname, resultsdir
+from vnfb.qeutils.qeutils import qeinput, packname, resultsdir
 from luban.components.AuthorizedActor import AuthorizedActor as base
 
 CONVERT_DELAY = 5   # 5 sec

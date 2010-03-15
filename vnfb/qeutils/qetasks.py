@@ -11,9 +11,9 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
-from vnfb.utils.qeconst import SIMCHAINS
-from vnfb.utils.qetaskcell import QETaskCell
-from vnfb.utils.qegrid import QEGrid
+from vnfb.qeutils.qeconst import SIMCHAINS
+from vnfb.qeutils.qetaskcell import QETaskCell
+from vnfb.qeutils.qegrid import QEGrid
 
 import luban.content as lc
 from luban.content.Splitter import Splitter

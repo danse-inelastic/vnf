@@ -17,9 +17,9 @@
 #import time
 #
 from vnfb.dom.QEJob import QEJob
-from vnfb.utils.qeutils import stamp, writeRecordFile, defaultInputName, readRecordFile
-from vnfb.utils.qeconst import RUNSCRIPT, TYPE, NOPARALLEL#, JOB_STATE
-from vnfb.utils.qeutils import packname
+from vnfb.qeutils.qeutils import stamp, writeRecordFile, defaultInputName, readRecordFile
+from vnfb.qeutils.qeconst import RUNSCRIPT, TYPE, NOPARALLEL#, JOB_STATE
+from vnfb.qeutils.qeutils import packname
 from luban.applications.UIApp import UIApp as base
 
 import pyre.idd
@@ -208,7 +208,7 @@ class QEDriver(base):
     def _scheduleJob(self):
         "Schedule job"
         dds     = self.dds
-        from vnfb.utils.qescheduler import schedule
+        from vnfb.qeutils.qescheduler import schedule
         schedule(self._sim, self, self._job)
         self._updateStatus("enqueue")
 

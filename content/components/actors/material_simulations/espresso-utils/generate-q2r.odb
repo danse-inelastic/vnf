@@ -12,11 +12,11 @@
 #
 
 import os
-from vnfb.utils.qeparser.qeinput import QEInput
-from vnfb.utils.qeparser.namelist import Namelist
-from vnfb.utils.qeconst import ZASR
-from vnfb.utils.qeconst import PREFIX
-from vnfb.utils.qeutils import remoteResultsPath
+from vnfb.qeutils.qeparser.qeinput import QEInput
+from vnfb.qeutils.qeparser.namelist import Namelist
+from vnfb.qeutils.qeconst import ZASR
+from vnfb.qeutils.qeconst import PREFIX
+from vnfb.qeutils.qeutils import remoteResultsPath
 
 from luban.components.AuthorizedActor import AuthorizedActor as base
 

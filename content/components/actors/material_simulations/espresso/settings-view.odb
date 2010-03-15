@@ -11,8 +11,8 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
-from vnfb.utils.qeutils import stamp2date
-from vnfb.utils.qegrid import QEGrid
+from vnfb.qeutils.qeutils import stamp2date
+from vnfb.qeutils.qegrid import QEGrid
 
 from luban.content import select
 from luban.content import load

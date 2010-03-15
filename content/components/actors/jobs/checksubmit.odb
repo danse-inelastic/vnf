@@ -12,8 +12,8 @@
 #
 
 from vnfb.dom.QEJob import QEJob
-from vnfb.utils.qeconst import STATES
-from vnfb.utils.qeutils import packname, unpackname
+from vnfb.qeutils.qeconst import STATES
+from vnfb.qeutils.qeutils import packname, unpackname
 
 import os
 from luban.content import select

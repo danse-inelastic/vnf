@@ -11,8 +11,8 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
-from vnfb.utils.qeutils import latestJob
-from vnfb.utils.qeconst import SIMCHAINS
+from vnfb.qeutils.qeutils import latestJob
+from vnfb.qeutils.qeconst import SIMCHAINS
 
 
 class QERecords(object):
@@ -85,7 +85,7 @@ class SimulationRecord(QERecords):
         return inputlist
 
 
-    # REFACTOR: Duplicated from vnfb.utils.qetasks.py
+    # REFACTOR: Duplicated from vnfb.qeutils.qetasks.py
     def taskList(self):
         "Return list of task objects from list of simulation task objects"
         tasklist   = []
@@ -99,7 +99,7 @@ class SimulationRecord(QERecords):
         return zip(self._joblist, self._inputlist, self._tasklist)
 
 
-    # REFACTOR: Duplicated from vnfb.utils.qetasks.py
+    # REFACTOR: Duplicated from vnfb.qeutils.qetasks.py
     def typeList(self):
         "Return list of simulation task types"
         if not self._sim:
@@ -148,7 +148,7 @@ class SimulationRecord(QERecords):
         return None     # No input related to the task
 
 
-    # REFACTOR: Duplicated from vnfb.utils.qetasks.py
+    # REFACTOR: Duplicated from vnfb.qeutils.qetasks.py
     def _taskObject(self, type):
         "Return task object in simtasks of type 'type' or None otherwise"
         for st in self._simtasks:
@@ -160,13 +160,13 @@ class SimulationRecord(QERecords):
         return None
 
 
-    # REFACTOR: Duplicated from vnfb.utils.qetasks.py
+    # REFACTOR: Duplicated from vnfb.qeutils.qetasks.py
     def _type(self, colnum):
         "Returns task type"
         return self._typelist[colnum]
 
 
-    # REFACTOR: Duplicated from vnfb.utils.qetasks.py
+    # REFACTOR: Duplicated from vnfb.qeutils.qetasks.py
     def _tasknum(self):
         "Returns number of tasks"
         return len(self._typelist)

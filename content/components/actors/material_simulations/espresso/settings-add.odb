@@ -12,7 +12,7 @@
 #
 
 from vnfb.dom.QESetting import QESetting
-from vnfb.utils.qegrid import QEGrid
+from vnfb.qeutils.qegrid import QEGrid
 
 from luban.content import select
 from luban.content import load
@@ -20,7 +20,7 @@ from luban.content.Form import Form
 from luban.content.FormSelectorField import FormSelectorField
 from luban.content.FormTextField import FormTextField
 from luban.content.FormSubmitButton import FormSubmitButton
-from vnfb.utils.qeconst import SETTINGS, PROCESSORS
+from vnfb.qeutils.qeconst import SETTINGS, PROCESSORS
 
 import luban.content as lc
 from luban.components.AuthorizedActor import AuthorizedActor as base

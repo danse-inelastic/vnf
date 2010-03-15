@@ -11,12 +11,12 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
-from vnfb.utils.qeutils import stamp2date
-from vnfb.utils.qetasks import QETasks
-from vnfb.utils.qegrid import QEGrid
-from vnfb.utils.qeparams import QEParams
-from vnfb.utils.qeserver import QEServer
-from vnfb.utils.qeconst import SIMCHAINS, ANALYSIS
+from vnfb.qeutils.qeutils import stamp2date
+from vnfb.qeutils.qetasks import QETasks
+from vnfb.qeutils.qegrid import QEGrid
+from vnfb.qeutils.qeparams import QEParams
+from vnfb.qeutils.qeserver import QEServer
+from vnfb.qeutils.qeconst import SIMCHAINS, ANALYSIS
 
 #from luban.content.Splitter import Splitter
 

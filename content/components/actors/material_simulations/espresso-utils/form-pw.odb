@@ -11,7 +11,7 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
-from vnfb.utils.qeconst import TYPE
+from vnfb.qeutils.qeconst import TYPE
 
 from luban.content import select
 from luban.content import load

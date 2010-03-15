@@ -14,9 +14,9 @@
 import luban.content as lc
 from luban.content import select
 from luban.content import load
-from vnfb.utils.qegrid import QEGrid
-from vnfb.utils.qeparser.pseudo.pseudo import PSEUDO
-from vnfb.utils.qeconst import SMEARING, IBRAV, MATTER_TYPE
+from vnfb.qeutils.qegrid import QEGrid
+from vnfb.qeutils.qeparser.pseudo.pseudo import PSEUDO
+from vnfb.qeutils.qeconst import SMEARING, IBRAV, MATTER_TYPE
 from luban.content.FormTextField import FormTextField
 from luban.content.FormSelectorField import FormSelectorField
 from luban.content.FormSubmitButton import FormSubmitButton

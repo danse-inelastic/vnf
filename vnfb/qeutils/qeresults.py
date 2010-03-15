@@ -14,9 +14,9 @@ import os.path
 
 import os
 import time
-from vnfb.utils.qestatus import QEStatus
+from vnfb.qeutils.qestatus import QEStatus
 from vnf.applications.PackJobDir import PackJobDir
-from vnfb.utils.qeconst import RESULTS_ID
+from vnfb.qeutils.qeconst import RESULTS_ID
 
 import luban.content as lc
 from luban.content import load

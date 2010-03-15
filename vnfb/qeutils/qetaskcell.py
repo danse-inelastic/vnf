@@ -15,11 +15,11 @@ import os
 import luban.content as lc
 from luban.content import load, select
 
-from vnfb.utils.qeresults import QEResults
-from vnfb.utils.qegrid import QEGrid
-from vnfb.utils.qeinput import QEInput
-from vnfb.utils.qetaskinfo import TaskInfo
-from vnfb.utils.qeutils import latestJob
+from vnfb.qeutils.qeresults import QEResults
+from vnfb.qeutils.qegrid import QEGrid
+from vnfb.qeutils.qeinput import QEInput
+from vnfb.qeutils.qetaskinfo import TaskInfo
+from vnfb.qeutils.qeutils import latestJob
 
 RUN_TASK    = "run-task"
 
