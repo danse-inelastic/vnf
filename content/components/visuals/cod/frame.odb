@@ -1,9 +1,7 @@
 # -*- Python -*-
 
-
 from luban.content import select
 import luban.content as lc
-
 
 from luban.content.FormTextField import FormTextField
 from luban.content.FormTextArea import FormTextArea
@@ -33,9 +31,7 @@ def visual(director):
         formid = searchpanel.id,
         new_display_container_id=tablecontainer.id, new_display_creator='getTableView')
 
-
     return doc
-
 
 def createLeftSearchPanel():
     grid = lc.grid()

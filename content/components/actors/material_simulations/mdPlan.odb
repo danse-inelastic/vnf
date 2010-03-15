@@ -149,7 +149,7 @@ class Actor(base):
             
         p = form.paragraph()
         
-        p.text = "Optional: input proposed supercell to see Q-space coverage"
+        p.text = "Optional: inspect Q-space coverage from supercell"
         supercellGrid       = QEGrid(lc.grid(Class="ff-table"))
         form.add(supercellGrid.grid())
         #supercellGrid.setColumnStyle(0, "qe-cell-param")
@@ -186,14 +186,21 @@ class Actor(base):
         form.add(button)   
 
         #now add the plot and the info
-        return container
+        doc = container.document(title='Md sampling parameters', id='computedSampling')
+        
+        return page
     
     def calculateMdInfo(self):
-        pass
+        from vsat.MdPlan import MdPlan
+        mdPlan = MdPlan(self.inventory.energyCutoff, 
+                        self.inventory.energyResolution, 
+                        self.inventory.timestep)
+        resultsDoc = lc.document(title='Md sampling parameters')
+        resultsDoc.text = [mdPlan.getInfo()]
+        return select(id='computedSampling').replaceContent(resultsDoc)
 
     def __init__(self, name='mdPlan'):
         super(Actor, self).__init__(name)
-        return
 
 def _input_widget_ID(name):
     return '%s-input' % name
