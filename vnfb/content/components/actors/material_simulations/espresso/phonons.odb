@@ -14,7 +14,7 @@
 import os
 import time
 import shutil
-from vnfb.utils.qeutils import qeinput, packname, resultsdir
+from vnfb.qeutils.qeutils import qeinput, packname, resultsdir
 import idf.DOS
 import idf.Polarizations
 import idf.Omega2

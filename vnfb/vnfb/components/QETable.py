@@ -27,7 +27,7 @@ Notes on database classes implementation:
 3. Using QETable methods does not require passing director every time you use it.
 """
 
-from vnfb.utils.qeutils import timestamp, newid, setname, ifelse
+from vnfb.qeutils.qeutils import timestamp, newid, setname, ifelse
 from dsaw.db.WithID import WithID
 #from vnfb.dom.Computation import Computation
 

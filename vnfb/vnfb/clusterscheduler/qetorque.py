@@ -21,7 +21,7 @@ import math
 
 from vnf.clusterscheduler.torque import Scheduler as base
 from vnf.clusterscheduler.torque import _walltime_str
-from vnfb.utils.qeconst import NOPARALLEL
+from vnfb.qeutils.qeconst import NOPARALLEL
 
 PROC_PER_NODE   = 12    # PROC_PER_NODE   = 12 (default), Number of processors per node, specific for foxtrot
 

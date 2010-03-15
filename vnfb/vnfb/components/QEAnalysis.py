@@ -12,11 +12,11 @@
 #
 
 import os
-from vnfb.utils.qerecords import SimulationRecord
-from vnfb.utils.qeutils import dataroot, defaultInputName
-from vnfb.utils.qeresults import QEResults
-from vnfb.utils.qetaskinfo import TaskInfo
-from vnfb.utils.qegrid import QEGrid
+from vnfb.qeutils.qerecords import SimulationRecord
+from vnfb.qeutils.qeutils import dataroot, defaultInputName
+from vnfb.qeutils.qeresults import QEResults
+from vnfb.qeutils.qetaskinfo import TaskInfo
+from vnfb.qeutils.qegrid import QEGrid
 
 import luban.content as lc
 from luban.content import select, load

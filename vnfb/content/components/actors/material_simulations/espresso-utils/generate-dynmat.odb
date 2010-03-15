@@ -11,8 +11,8 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
-from vnfb.utils.qeparser.qeinput import QEInput
-from vnfb.utils.qeparser.namelist import Namelist
+from vnfb.qeutils.qeparser.qeinput import QEInput
+from vnfb.qeutils.qeparser.namelist import Namelist
 
 from luban.components.AuthorizedActor import AuthorizedActor as base
 

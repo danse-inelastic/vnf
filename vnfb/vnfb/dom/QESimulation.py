@@ -154,7 +154,7 @@ if __name__ == "__main__":
 
 
 
-#    from vnfb.utils.qeutils import stamp2date
+#    from vnfb.qeutils.qeutils import stamp2date
 #    timeCreated = dsaw.db.varchar(name="timeCreated", length=16, default='')
 #    timeCreated.meta['tip'] = "timeCreated - replaced by 'date'"
 #

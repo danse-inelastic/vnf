@@ -20,7 +20,7 @@ Notes:
 """
 
 from vnfb.components.QETable import QETable
-from vnfb.utils.qeconst import SETTINGS
+from vnfb.qeutils.qeconst import SETTINGS
 
 # Update column from QECalc
 

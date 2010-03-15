@@ -18,8 +18,8 @@ Notes:
     - Has 'creator' field (owned table)
 """
 
-from vnfb.utils.qeconst import STATES
-from vnfb.utils.qeutils import timestamp
+from vnfb.qeutils.qeconst import STATES
+from vnfb.qeutils.qeutils import timestamp
 
 from vnfb.components.QETable import QETable
 

@@ -12,17 +12,17 @@
 #
 
 import os
-from vnfb.utils.qeparser.qeinput import QEInput
-from vnfb.utils.qeparser.namelist import Namelist
-from vnfb.utils.qegrid import QEGrid
-from vnfb.utils.qeutils import remoteResultsPath
-from vnfb.utils.qeconst import PREFIX, MATDYN_METHOD
-from vnfb.utils.qeutils import inputRecord, readRecordFile, defaultInputName
-from vnfb.utils.qeutils import qeinput, packname, resultsdir
+from vnfb.qeutils.qeparser.qeinput import QEInput
+from vnfb.qeutils.qeparser.namelist import Namelist
+from vnfb.qeutils.qegrid import QEGrid
+from vnfb.qeutils.qeutils import remoteResultsPath
+from vnfb.qeutils.qeconst import PREFIX, MATDYN_METHOD
+from vnfb.qeutils.qeutils import inputRecord, readRecordFile, defaultInputName
+from vnfb.qeutils.qeutils import qeinput, packname, resultsdir
 
 from qecalc.qetask.qeparser.pwinput import PWInput
 from qecalc.qetask.qeparser.matdyninput import MatdynInput
-from vnfb.utils.qecalcutils import kmesh
+from vnfb.qeutils.qecalcutils import kmesh
 
 from luban.content.FormTextField import FormTextField
 from luban.content.FormSubmitButton import FormSubmitButton

@@ -12,9 +12,9 @@
 #
 
 
-from vnfb.utils.qeutils import stamp2date
-from vnfb.utils.qeresults import QEResults
-from vnfb.utils.qegrid import QEGrid
+from vnfb.qeutils.qeutils import stamp2date
+from vnfb.qeutils.qeresults import QEResults
+from vnfb.qeutils.qegrid import QEGrid
 #from luban.content.table import Model, View, Table
 from luban.content import load
 import luban.content as lc

@@ -21,7 +21,7 @@
 
 
 from vnfb.dom.QEConfiguration import QEConfiguration
-from vnfb.utils.qeutils import writeRecordFile, defaultInputName
+from vnfb.qeutils.qeutils import writeRecordFile, defaultInputName
 
 from luban.content import select
 from luban.content import load

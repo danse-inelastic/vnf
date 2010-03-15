@@ -11,9 +11,9 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
-from vnfb.utils.qeconst import PARSERS
-from vnfb.utils.qegrid import QEGrid
-from vnfb.utils.qeutils import defaultInputName, recordFileExists, writeRecordFile, readRecordFile
+from vnfb.qeutils.qeconst import PARSERS
+from vnfb.qeutils.qegrid import QEGrid
+from vnfb.qeutils.qeutils import defaultInputName, recordFileExists, writeRecordFile, readRecordFile
 
 from luban.content import select
 from luban.content import load
