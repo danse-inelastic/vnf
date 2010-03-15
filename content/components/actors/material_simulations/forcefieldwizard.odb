@@ -162,14 +162,15 @@ class Actor(base):
 #        hdoc.text = ["""If performing an md simulation to calculate S(Q,E), the following
 #        guide will help estimate the amount of time needed in the simulation.""",
 #        '<a href="http://www.pageresource.com/linkus.htm" target="_blank">Link to md help window</a>']
-#        rightSection.add(hdoc)
-        doc = lc.htmldocument(id='mdPlan')
-        p = doc.paragraph()
-        p.text = ["""<br><br>If performing an md simulation to calculate S(Q,E), 
-        <a href="""+ cgihome+'?actor=mdPlan&routine=createMdPlanDocument' +
-        """, rel="external">the following
-        guide</a> will help estimate the amount of time needed in the simulation.""",
-        """<script>
+#        rightSection.add(hdoc) 
+        hdoc = lc.htmldocument(id='mdPlan')
+        
+        urlArgs = {'actor':'material_simulations/mdPlan', 
+                   'routine':'createMdPlanDocument',
+                   'sentry.username':director.sentry.username,
+                   'sentry.ticket':director.sentry.ticket,}
+        
+        hdoc.text = ["""<script>
         $(document).ready(function() {
             $('a[rel="external"]').click( function() {
             window.open( $(this).attr('href'), 'mywindow','width=600,height=400');
@@ -177,16 +178,21 @@ class Actor(base):
             });
         });
         </script>
-        """
+        """,
+        """If performing an md simulation to calculate S(Q,E), 
+        <a href="""+ formUrl(cgihome, urlArgs) +
+        """, rel="external">the following
+        guide</a> will help estimate the amount of time needed in the simulation.""",
         ]
+        form.add(hdoc)
 #        guideButton = lc.button(label = 'guide')
         
-        createGuideWindow = load(
-            actor='material_simulations/mdPlan', routine='createMdPlanWindow',
-            structureId=self.inventory.structureId,
-            )
-        guideButton.onclick = createGuideWindow
-        doc.add(guideButton)   
+#        createGuideWindow = load(
+#            actor='material_simulations/mdPlan', routine='createMdPlanWindow',
+#            structureId=self.inventory.structureId,
+#            )
+#        guideButton.onclick = createGuideWindow
+#        doc.add(guideButton)   
         #rightSection.add(doc)
 
         next = form.submitbutton(label="next")
@@ -300,6 +306,12 @@ class Actor(base):
                 computation_id = self.inventory.simulationId)
 
 import os
+
+def formUrl(base, keyvals):
+    connectors = ['?'] + ['&']*(len(keyvals)-1)
+    for connector,keyvals in zip(connectors,keyvals.items()):
+        base = base+connector+keyvals[0]+'='+keyvals[1]
+    return base
 
 def actor(): return Actor()
 
