@@ -134,11 +134,11 @@ class Actor(base):
         table       = QEGrid(lc.grid(Class = "qe-table-analysis"))
         section.add(table.grid())
 
-        table.addRow(('Total Energy:', self._pwresult.totalEnergy(True)))
-        table.addRow(('Fermi Energy:', self._pwresult.fermiEnergy(True)))
-        table.addRow(("Forces:", "#  Atom Force (Ry/bohr)"))
-        table.addRow(("Stress (Ry/bohr^2):", "0.0 0.0 0.0"))
-#        table.addRow(("", ""))
+        table.addRow(('Total Energy:',          self._pwresult.totalEnergy(True)))
+        table.addRow(('Fermi Energy:',          self._pwresult.fermiEnergy(True)))
+        table.addRow(("Forces:",                self._pwresult.forces()))
+        table.addRow(("Stress (Ry/bohr^2):",    self._pwresult.stress()))
+
 
 #        Forces:
 #        #  Atom Force (Ry/bohr)

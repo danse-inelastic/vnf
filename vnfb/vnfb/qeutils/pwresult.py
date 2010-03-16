@@ -44,25 +44,7 @@ class PWResult(object):
         self._pwtask.output.parse()
         
 
-    def totalEnergy(self, formated=False):
-        "Return total energy"
-        energy  = self._energy('total energy')
-
-        if not formated:    # No formatting
-            return energy
-
-        return self._format(energy)        
-
-
-    def fermiEnergy(self, formated=False):
-        "Return fermi energy"
-        energy  = self._energy('fermi energy')
-
-        if not formated:    # No formatting
-            return energy
-
-        return self._format(energy)
-
+    # Input methods
     # STUB
     def atomicStructure(self):
         "Atom mass name: mass<number>, atom pseudo potential name: pseudo<number>"
@@ -113,6 +95,34 @@ class PWResult(object):
     def kPoints(self):
         return "(8, 8, 8)"
 
+
+    # Output methods
+    def totalEnergy(self, formated=False):
+        "Return total energy"
+        energy  = self._energy('total energy')
+
+        if not formated:    # No formatting
+            return energy
+
+        return self._format(energy)
+
+
+    def fermiEnergy(self, formated=False):
+        "Return fermi energy"
+        energy  = self._energy('fermi energy')
+
+        if not formated:    # No formatting
+            return energy
+
+        return self._format(energy)
+
+
+    def forces(self):
+        return "#  Atom Force (Ry/bohr)"
+
+
+    def stress():
+        return "0.0 0.0 0.0"
 
     def _energy(self, type):
         "Returns tuple (energy, unit) if energy is not None or None otherwise"
