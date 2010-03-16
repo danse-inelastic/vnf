@@ -151,7 +151,8 @@ a.qe-run-task {
 
 }
 
-.qe-table table{
+.qe-table table,
+.qe-table-analysis table {
     border-collapse: collapse;
     -moz-border-radius: 10px;
     -webkit-border-radius: 10px;
@@ -159,7 +160,12 @@ a.qe-run-task {
     background-color: #f0f0f0;
 }
 
+.qe-table-analysis table{
+    width: 550px;
+}
+
 .qe-table td,
+.qe-table-analysis td,
 .qe-tasks-table td{
     border: 2px solid white;
     padding: 3px 10px 3px 10px;
@@ -270,6 +276,11 @@ tr td .qe-table-delete {
 
 .qe-cell-param {
     width: 170px;
+    font-weight: bold;
+}
+
+.qe-cell-param-analysis {
+    width: 140px;
     font-weight: bold;
 }
 

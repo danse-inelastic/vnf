@@ -13,7 +13,7 @@
 
 
 from vnfb.qeutils.qerecords import SimulationRecord
-from vnfb.qeutils.pwoutput import PWOutput
+from vnfb.qeutils.pwresult import PWResult
 from vnfb.qeutils.qegrid import QEGrid
 
 import luban.content as lc
@@ -43,12 +43,13 @@ class Actor(base):
         sEle        = splitter.section()                        # electron structure
         
         self._simrecord   = SimulationRecord(director, self.id)
+        self._pwresult    = PWResult(director, self.id)
 
         self._viewIndicator(director, sInd)
-        self._showActions(director, sAct)  # Show actions
+        self._showActions(director, sAct)                 # Show actions
         self._summary(director, sSum)                     # System Summary
         self._electronStructure(director, sEle)           # Electron Structure
-        self._simData()                     # Simulation Specific data
+        self._simData()                                   # Simulation Specific data
 
         return doc
 
@@ -109,21 +110,20 @@ class Actor(base):
     def _summary(self, director, section):
         "System Summary"
         section.add(lc.paragraph(text="System Summary", Class="qe-section"))
-        table       = QEGrid(lc.grid(Class = "qe-table"))
+        table       = QEGrid(lc.grid(Class = "qe-table-analysis"))
         section.add(table.grid())
 
         # STUB
         table.addRow(("Material Type:", "Metal"))
         table.addRow(("Lattice Type:", "CubicP (FCC)"))
+        table.addRow(("Atomic Structure:", self._pwresult.atomicStructure()))   # "# Atom Position (bohr) Mass (u)  Pseudo-Potentials"
         table.addRow(("Energy Cutoff:", "27.0 Ry"))
         table.addRow(("Density Cutoff:", "300 Ry"))
         table.addRow(("Smearing Type:", "gaussian"))    # For metals only
-        table.addRow(("Smearing Degree:", "0.02"))          # For metals only
+        table.addRow(("Smearing Degree:", "0.02 Ry"))          # For metals only
         table.addRow(("K points:", "(8, 8, 8)"))
-        table.addRow(("Atomic Structure:", "# Atom Position (bohr) Mass (u)  Pseudo-Potentials"))
-#        table.addRow(("nk3:", "8"))
 
-        table.setColumnStyle(0, "qe-cell-param")
+        table.setColumnStyle(0, "qe-cell-param-analysis")
 
 
     def _electronStructure(self, director, section):
@@ -131,13 +131,11 @@ class Actor(base):
 
         # output exists
         section.add(lc.paragraph(text="Electron System", Class="qe-section"))
-        table       = QEGrid(lc.grid(Class = "qe-table"))
+        table       = QEGrid(lc.grid(Class = "qe-table-analysis"))
         section.add(table.grid())
 
-        pwoutput    = PWOutput(director, self.id)
-        
-        table.addRow(('Total Energy:', pwoutput.totalEnergy(True)))
-        table.addRow(('Fermi Energy:', pwoutput.fermiEnergy(True)))
+        table.addRow(('Total Energy:', self._pwresult.totalEnergy(True)))
+        table.addRow(('Fermi Energy:', self._pwresult.fermiEnergy(True)))
         table.addRow(("Forces:", "#  Atom Force (Ry/bohr)"))
         table.addRow(("Stress (Ry/bohr^2):", "0.0 0.0 0.0"))
 #        table.addRow(("", ""))
@@ -152,7 +150,7 @@ class Actor(base):
 #                            0.0 0.0 0.0
 #                            0.0 0.0 0.0
 
-        table.setColumnStyle(0, "qe-cell-param")
+        table.setColumnStyle(0, "qe-cell-param-analysis")
 
 
     def _simData(self):
