@@ -55,7 +55,11 @@ class Actor(base):
         return director.retrieveVisual('cod/table', director=director, data=data)
 
     def store(self, director):
-        return
+        form.onsubmit = select(element=form).submit(
+        actor='atomicstructure/create-structure-form',
+        routine = 'process',
+        id = id,
+        )
 
     def _getInputErrors(self):
         errors = super(Actor, self)._getInputErrors()

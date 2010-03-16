@@ -14,9 +14,11 @@
 
 from luban.content import load, select, alert
 import luban.content as lc
+from luban.content.Paragraph import Paragraph
 
-from luban.components.AuthorizedActor import AuthorizedActor as base
-from vnfb.qeutils.qegrid import QEGrid
+#from luban.components.AuthorizedActor import AuthorizedActor as base
+from luban.components.FormProcessor import FormProcessor as base
+#from vnfb.utils.qegrid import QEGrid
 
 class Actor(base):
 
@@ -57,6 +59,9 @@ class Actor(base):
         timestep.meta['rangeError'] = (
             'Please enter a positive number.'
             )
+        
+        #output
+        results = pyre.inventory.str('results', default = 'None')
         
         #user input
         ax = pyre.inventory.str('ax',default = '1.0')
@@ -108,14 +113,14 @@ class Actor(base):
             ]
 
     def createMdPlanDocument(self, director):  
-        page = lc.page(title="Md planning tools")  
-        container = page.document(Class='container')
+        page = lc.page(title="Md planning tools") 
+        title = 'Md parameters for S(Q,E) resolution' 
+        container = page.document(id='container', title=title)
         #
         #pathtome = self._pathToMe(director)
         #view_indicator = self._viewIndicactor(pathtome, director)
         #container.add(view_indicator)
-        title = 'Md parameters for S(Q,E) resolution'
-        form = container.form(title=title, Class='mdhelp')    
+        form = container.form(Class='mdhelp')    
         
         property = 'energyCutoff'
         meta = getattr( self.Inventory, property ).meta
@@ -123,7 +128,7 @@ class Actor(base):
             id = _input_widget_ID(property),
             name = property,
             label = meta['label'],
-            #value = record.numnodes,
+            value = getattr( self.inventory, property ),
             )
         field.help = meta['tip']
         
@@ -133,7 +138,7 @@ class Actor(base):
             id = _input_widget_ID(property),
             name = property,
             label = meta['label'],
-            #value = record.numnodes,
+            value = getattr( self.inventory, property ),
             )
         field.help = meta['tip']
         
@@ -143,61 +148,71 @@ class Actor(base):
             id = _input_widget_ID(property),
             name = property,
             label = meta['label'],
-            #value = record.numnodes,
+            value = getattr( self.inventory, property ),
             )
         field.help = meta['tip']
             
-        p = form.paragraph()
-        
-        p.text = "Optional: inspect Q-space coverage from supercell"
-        supercellGrid       = QEGrid(lc.grid(Class="ff-table"))
-        form.add(supercellGrid.grid())
+#        p = form.paragraph()
+#        p.text = "Optional: inspect Q-space coverage from supercell"
+#        supercellGrid       = QEGrid(lc.grid(Class="ff-table"))
+#        form.add(supercellGrid.grid())
         #supercellGrid.setColumnStyle(0, "qe-cell-param")
             
-        formSC = lc.form()    
-        prefix = 'input'
-        self.ax = formSC.text(id='ax', name='%s.ax' % prefix, label='a: (x)', 
-                      value = self.inventory.ax) 
-        self.ay = formSC.text(id='ay', name='%s.ay' % prefix, label='(y)', 
-                      value = self.inventory.ay) 
-        self.az = formSC.text(id='az', name='%s.az' % prefix, label='(z)', 
-                      value = self.inventory.az) 
-        supercellGrid.addRow((self.ax, self.ay, self.az))
-        
-        self.bx = formSC.text(id='bx', name='%s.bx' % prefix, label='b: (x)', 
-                      value = self.inventory.bx)
-        self.by = formSC.text(id='by', name='%s.by' % prefix, label='(y)', 
-                      value = self.inventory.by)   
-        self.bz = formSC.text(id='bz', name='%s.bz' % prefix, label='(z)', 
-                      value = self.inventory.bz)  
-        supercellGrid.addRow((self.bx, self.by, self.bz))
-        
-        self.cx = formSC.text(id='cx', name='%s.cx' % prefix, label='c: (x)', 
-                      value = self.inventory.cx) 
-        self.cy = formSC.text(id='cy', name='%s.cy' % prefix, label='(y)', 
-                      value = self.inventory.cy) 
-        self.cz = formSC.text(id='cz', name='%s.cz' % prefix, label='(z)', 
-                      value = self.inventory.cz)
-        supercellGrid.addRow((self.cx, self.cy, self.cz))
+#        formSC = lc.form()    
+#        prefix = 'input'
+#        self.ax = formSC.text(id='ax', name='%s.ax' % prefix, label='a: (x)', 
+#                      value = self.inventory.ax) 
+#        self.ay = formSC.text(id='ay', name='%s.ay' % prefix, label='(y)', 
+#                      value = self.inventory.ay) 
+#        self.az = formSC.text(id='az', name='%s.az' % prefix, label='(z)', 
+#                      value = self.inventory.az) 
+#        supercellGrid.addRow((self.ax, self.ay, self.az))
+#        
+#        self.bx = formSC.text(id='bx', name='%s.bx' % prefix, label='b: (x)', 
+#                      value = self.inventory.bx)
+#        self.by = formSC.text(id='by', name='%s.by' % prefix, label='(y)', 
+#                      value = self.inventory.by)   
+#        self.bz = formSC.text(id='bz', name='%s.bz' % prefix, label='(z)', 
+#                      value = self.inventory.bz)  
+#        supercellGrid.addRow((self.bx, self.by, self.bz))
+#        
+#        self.cx = formSC.text(id='cx', name='%s.cx' % prefix, label='c: (x)', 
+#                      value = self.inventory.cx) 
+#        self.cy = formSC.text(id='cy', name='%s.cy' % prefix, label='(y)', 
+#                      value = self.inventory.cy) 
+#        self.cz = formSC.text(id='cz', name='%s.cz' % prefix, label='(z)', 
+#                      value = self.inventory.cz)
+#        supercellGrid.addRow((self.cx, self.cy, self.cz))
         
         # calculate
-        button = lc.button(label = 'Calculate')
-        button.onclick = self.calculateMdInfo()
-        form.add(button)   
+        button = form.submitbutton(label="calculate")
+        form.onsubmit = select(element=form).submit(
+            actor = 'material_simulations/mdPlan',
+            routine = 'calculateMdInfo',
+#            structureId = self.inventory.structureId,
+            )
 
         #now add the plot and the info
-        doc = container.document(title='Md sampling parameters', id='computedSampling')
+        #doc = container.document(title='Md sampling parameters', id='computedSampling')
         
         return page
     
-    def calculateMdInfo(self):
+    def calculateMdInfo(self, director):
         from vsat.MdPlan import MdPlan
         mdPlan = MdPlan(self.inventory.energyCutoff, 
                         self.inventory.energyResolution, 
                         self.inventory.timestep)
-        resultsDoc = lc.document(title='Md sampling parameters')
-        resultsDoc.text = [mdPlan.getInfo()]
-        return select(id='computedSampling').replaceContent(resultsDoc)
+        return load(actor='material_simulations/mdPlan', routine='resultsPage', 
+                    results=mdPlan.getInfo())
+
+    
+    def resultsPage(self, director):
+        page = lc.page(title="Md planning parameters")  
+        title = 'Md and analysis parameters for S(Q,E) resolution'
+        container = page.document(id='container', title=title)
+        container.add(Paragraph(text='hi'))#self.inventory.results))
+        #select(id='container').append(resultsDoc)
+        return page
 
     def __init__(self, name='mdPlan'):
         super(Actor, self).__init__(name)

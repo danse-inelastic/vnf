@@ -172,7 +172,7 @@ class Actor(base):
         
         hdoc.text = ["""<script>
         $(document).ready(function() {
-            $('a[rel="external"]').click( function() {
+            $('a[rel=external]').click( function() {
             window.open( $(this).attr('href'), 'mywindow','width=600,height=400');
             return false;
             });
@@ -181,7 +181,7 @@ class Actor(base):
         """,
         """If performing an md simulation to calculate S(Q,E), 
         <a href="""+ formUrl(cgihome, urlArgs) +
-        """, rel="external">the following
+        """ rel=external>the following
         guide</a> will help estimate the amount of time needed in the simulation.""",
         ]
         form.add(hdoc)
