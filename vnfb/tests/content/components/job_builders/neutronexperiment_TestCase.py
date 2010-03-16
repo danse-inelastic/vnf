@@ -13,36 +13,30 @@
 
 
 '''
-Test of component job_builders/material_simulations/phonon_calculators/bvk_getphonons
+Test of component job_builders/neutronexperiment.odb
 
 Test assumes that
  1. database. see parameter "dbname"
- 2. there is a bvk_getphonons record and a job record for that computation
+ 2. there is a neutronexperiment db record (with all the necessary associated records)
+ 3. there is a job db record for the neutronexperiment record
 
 '''
 
 
-# id for computation record.
-recordid = "fortest" 
-
-
-# application
 from vnfb.testing.job_builder import TestApp as base
+
+
 class TestApp(base):
 
 
-    def main(self, testFacility):
-        domaccess = self.retrieveDOMAccessor('material_simulations/phonon_calculators/bvk')
-        computation = domaccess.getComputationRecord('phonons', recordid)
+    def main(self, expid, testFacility):
+        domaccess = self.retrieveDOMAccessor('experiment')
+        computation = domaccess.getExperimentRecord(expid)
         return base.main(self, computation, testFacility)
 
 
     def _checkJobDir(self):
         return
-        
-        
-
-import os
 
 
 import unittest
@@ -50,7 +44,7 @@ class TestCase(unittest.TestCase):
 
     def test1(self):
         app = TestApp('main')
-        app.run(self)
+        app.run('test-arcs-detector-system', self)
         return
 
     

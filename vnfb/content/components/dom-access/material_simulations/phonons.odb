@@ -108,7 +108,8 @@ class Accessor(base):
             servers = db.query(Server).all()
             filename = os.path.join(subdir, 'Qgridinfo')
             for server in servers:
-                dds.forget(record, filename=filename, server=server)
+                if dds.is_available(record, filename=filename, server=server):
+                    dds.forget(record, filename=filename, server=server)
                 continue
         
         return

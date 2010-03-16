@@ -103,6 +103,7 @@ class Actor(base):
 
     def _createPlot1(self, disp, director):
         domaccess = self._domaccess(director)
+        domaccess.standardizeDataInIDFFormat(domaccess.orm(disp).id)
 
         try:
             disp = domaccess.getDataForPhonons(disp)

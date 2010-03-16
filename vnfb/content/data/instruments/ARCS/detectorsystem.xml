@@ -75,6 +75,10 @@ Block
 
     <DetectorSystem guid="5" name="detSystem" id="4">
 
+    <Shape>
+      <hollowCylinder in_radius="2.9" out_radius="3.1" height="3.5"/>
+    </Shape>
+    
         <DetectorPack guid="6" name="pack1" id="1">
             <Shape>
 <!--

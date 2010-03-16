@@ -37,6 +37,7 @@ all: export
 EXPORT_PYTHON_MODULES = \
 	__init__.py \
 	_deploymentinfo.py \
+	job_builder.py \
 
 
 #include doxygen/default.def
