@@ -63,11 +63,14 @@ class PWResult(object):
 
         return self._format(energy)
 
-
+    # STUB
     def atomicStructure(self):
         "Atom mass name: mass<number>, atom pseudo potential name: pseudo<number>"
-        atoms    = QEGrid(lc.grid())
-        atoms.addRow((" ", "Atom", "Position (bohr)", "Mass (u)", "Pseudo-Potential"))
+        atoms    = QEGrid(lc.grid(Class="qe-table-atomic"))
+        atoms.addRow(("#", "Atom", "Position (bohr)", "Mass (u)", "Pseudo-Potential"))
+        atoms.addRow(("1", "Fe", "(0, 0, 0)", "26.8", "Fe-blah-blah-blah-UPF"))
+        atoms.addRow(("2", "V", "(0.5, 0.5, 0.5)", "26.8", "V-blah-UPF"))
+        atoms.addRow(("3", "V", "(0.75, 0.25, 0.35)", "26.8", "V-blah-UPF"))
 
 #        for l in range(len(self._labels)):
 #            label       = self._labels[l]
@@ -78,8 +81,8 @@ class PWResult(object):
 #                                            entries = enumerate(PSEUDO[label]))
 #            atoms.addRow((label, mass, pseudo))
 
-        atoms.setRowStyle(0, "qe-atoms-header")
-        atoms.setColumnStyle(0, "qe-atoms-label")
+        atoms.setRowStyle(0, "qe-table-header-atomic")
+        #atoms.setColumnStyle(0, "qe-atoms-label")
         return atoms.grid()
 
 

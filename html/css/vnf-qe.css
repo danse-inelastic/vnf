@@ -161,7 +161,7 @@ a.qe-run-task {
 }
 
 .qe-table-analysis table{
-    width: 550px;
+    width: 570px;
 }
 
 .qe-table td,
@@ -184,12 +184,14 @@ a.qe-run-task {
 }
 
 .qe-grid table,
-.qe-tasks-info table {
+.qe-tasks-info table,
+.qe-table-atomic table {
 
 }
 
 .qe-grid td,
-.qe-tasks-info td {
+.qe-tasks-info td,
+.qe-table-atomic td {
     border: 0px;
     padding: 0px  5px 0px 0px;
     vertical-align: top;
@@ -199,6 +201,24 @@ a.qe-run-task {
     width: 70px;
 }
 
+.qe-atomic-param {
+    
+}
+
+.qe-table-atomic td {
+    border: 0px;
+    padding: 2px;
+}
+
+.qe-table-atomic table {
+    border-collapse: collapse;
+    width: 380px
+}
+
+.qe-table-header-atomic {
+    font-weight: bold;
+
+}
 
 textarea {
     width: 400px;
