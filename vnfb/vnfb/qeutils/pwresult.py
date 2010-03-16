@@ -15,11 +15,14 @@ import os
 from vnfb.qeutils.qeutils import dataroot, defaultInputName
 from vnfb.qeutils.qeresults import QEResults
 from vnfb.qeutils.qetaskinfo import TaskInfo
+from vnfb.qeutils.qegrid import QEGrid
 from vnfb.qeutils.qerecords import SimulationRecord
 
 from qecalc.qetask.pwtask import PWTask
 
-class PWOutput(object):
+import luban.content as lc
+
+class PWResult(object):
 
     def __init__(self, director, simid):     # simulation id
         self._director      = director
@@ -59,6 +62,25 @@ class PWOutput(object):
             return energy
 
         return self._format(energy)
+
+
+    def atomicStructure(self):
+        "Atom mass name: mass<number>, atom pseudo potential name: pseudo<number>"
+        atoms    = QEGrid(lc.grid())
+        atoms.addRow((" ", "Atom", "Position (bohr)", "Mass (u)", "Pseudo-Potential"))
+
+#        for l in range(len(self._labels)):
+#            label       = self._labels[l]
+#            atom        = Atom(label)
+#            mass        = FormTextField(name = "mass%s" % l, value = atom.mass, Class="mass-textfield")
+#            pseudo      = FormSelectorField(name    = "pseudo%s" % l,
+#                                            Class   = "qe-selector-pseudo",
+#                                            entries = enumerate(PSEUDO[label]))
+#            atoms.addRow((label, mass, pseudo))
+
+        atoms.setRowStyle(0, "qe-atoms-header")
+        atoms.setColumnStyle(0, "qe-atoms-label")
+        return atoms.grid()
 
 
     def _energy(self, type):
