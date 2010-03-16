@@ -31,6 +31,7 @@ TYPE        = {"PW":        "pw.x",
                # Other types: "CPPP", "INITIAL_STATE", "GIPAW", "D1", "MATDYN", "PROJWFC", "PWCOND"
 
 INPUT_EXT   = ".in"
+OUTPUT_EXT  = ".out"
 
 INPUT           = OrderedDict()
 INPUT["pw"]     = "pw" + INPUT_EXT

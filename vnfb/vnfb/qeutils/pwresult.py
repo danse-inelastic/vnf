@@ -13,6 +13,7 @@
 
 import os
 from vnfb.qeutils.qeutils import dataroot, defaultInputName
+from vnfb.qeutils.qeconst import OUTPUT_EXT
 from vnfb.qeutils.qeresults import QEResults
 from vnfb.qeutils.qetaskinfo import TaskInfo
 from vnfb.qeutils.qegrid import QEGrid
@@ -35,13 +36,20 @@ class PWResult(object):
 
     def _init(self):
         "Retrieve output file and parse it"
-        filename    = self._outputFile()    # Get output file
-        if not filename:
+        input       = self._resultFile("input")    # Input file
+        output      = self._resultFile("output")   # Output file
+
+        # Important line! No output file, no results!
+        if not output: 
             return
 
-        config  = "[pw.x]\npwOutput: %s" % filename
-        self._pwtask = PWTask(configString=config)
-        self._pwtask.output.parse()
+        config          = "[pw.x]\npwInput: %s\npwOutput: %s" % (input, output)
+        self._pwtask    = PWTask(configString=config)  # Need pwtask?
+        self._pwinput   = self._pwtask.input
+        self._pwoutput  = self._pwtask.output
+        
+        self._pwinput.parse()
+        self._pwoutput.parse()
         
 
     # Input methods
@@ -64,12 +72,12 @@ class PWResult(object):
 #            atoms.addRow((label, mass, pseudo))
 
         atoms.setRowStyle(0, "qe-table-header") 
-        #atoms.setColumnStyle(0, "qe-atoms-label")
         return atoms.grid()
 
 
     def materialType(self):
-        return "Metal"
+        
+        return self._pwinput.namelist("system").param("occupations") # "Metal"
 
 
     def latticeType(self):
@@ -143,7 +151,7 @@ class PWResult(object):
         if not self._pwtask:
             return None
 
-        value   = self._pwtask.output.property(type, withUnits=True)
+        value   = self._pwoutput.property(type, withUnits=True)
 
         if value != (None, None):
             return (value[0][0], value[1])   # (energy, unit)
@@ -159,8 +167,8 @@ class PWResult(object):
         return "None"
 
 
-    def _outputFile(self):
-        "Retruns absolute path of the PW output file"
+    def _resultFile(self, type="input"):
+        "Retruns absolute path of the PW result file, e.g. output or input config files"
         # Example: "/home/dexity/exports/vnf/vnfb/content/data/tmp/tmpTsdw21/4ICDAVNK/4I2NPMY4pw.in.out"
         
         simrecord   = SimulationRecord(self._director, self._simid)
@@ -179,7 +187,9 @@ class PWResult(object):
                 taskinfo    = TaskInfo(simid = self._simid, type = "PW")
                 results     = QEResults(self._director, _job, taskinfo)
                 if results.ready():
-                    file        = "%s%s.out" % (_input.id, defaultInputName(_task.type))
+                    file        = "%s%s" % (_input.id, defaultInputName(_task.type))
+                    if type == "output":
+                        file    += OUTPUT_EXT   # .out
                     path        = os.path.join(results.tardir(), file)
                     return os.path.join(datadir, path)
 
