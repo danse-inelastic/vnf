@@ -194,7 +194,6 @@ class Actor(base):
 
         #now add the plot and the info
         #doc = container.document(title='Md sampling parameters', id='computedSampling')
-        
         return page
     
     def calculateMdInfo(self, director):

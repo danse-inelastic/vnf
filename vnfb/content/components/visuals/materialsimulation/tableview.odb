@@ -77,7 +77,7 @@ def visual(
     # add new button
     toolbar = tableview.find(id='materialsimulation-table-toptoolbar')
     #
-    button = lc.button(label='New', tip='create new simulation', icon='new.png')
+    button = lc.button(label='New', tip='create new simulation', icon='new.png', id='newSimulationButton')
     toolbar.add(button)
     button.onclick = select(id='main-display-area').replaceContent(
         load(actor='materialsimulation', routine='newSimulation')
