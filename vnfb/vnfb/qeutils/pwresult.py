@@ -63,7 +63,7 @@ class PWResult(object):
 #                                            entries = enumerate(PSEUDO[label]))
 #            atoms.addRow((label, mass, pseudo))
 
-        atoms.setRowStyle(0, "qe-table-header-atomic")
+        atoms.setRowStyle(0, "qe-table-header") 
         #atoms.setColumnStyle(0, "qe-atoms-label")
         return atoms.grid()
 
@@ -118,11 +118,25 @@ class PWResult(object):
 
 
     def forces(self):
-        return "#  Atom Force (Ry/bohr)"
+        table    = QEGrid(lc.grid(Class="qe-table-forces"))
+        table.addRow(("#", "Atom", "Force (Ry/bohr)"))
+        table.addRow(("1", "Fe", "(0, 0, 0)"))
+        table.addRow(("2", "V", "(0.5, 0.5, 0.5)"))
+        table.addRow(("3", "V", "(0.75, 0.25, 0.35)"))
+
+        table.setRowStyle(0, "qe-table-header")
+        return table.grid()
 
 
-    def stress():
-        return "0.0 0.0 0.0"
+    def stress(self):
+        table    = QEGrid(lc.grid(Class="qe-table-stress"))
+        table.addRow(("0.50000000", "0.50000000", "0.50000000"))
+        table.addRow(("0.50000000", "0.50000000", "0.50000000"))
+        table.addRow(("0.50000000", "0.50000000", "0.50000000"))
+
+        return table.grid()
+
+        #return "0.0 0.0 0.0"
 
     def _energy(self, type):
         "Returns tuple (energy, unit) if energy is not None or None otherwise"
