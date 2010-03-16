@@ -114,14 +114,14 @@ class Actor(base):
         section.add(table.grid())
 
         # STUB
-        table.addRow(("Material Type:", "Metal"))
-        table.addRow(("Lattice Type:", "CubicP (FCC)"))
-        table.addRow(("Atomic Structure:", self._pwresult.atomicStructure()))   # "# Atom Position (bohr) Mass (u)  Pseudo-Potentials"
-        table.addRow(("Energy Cutoff:", "27.0 Ry"))
-        table.addRow(("Density Cutoff:", "300 Ry"))
-        table.addRow(("Smearing Type:", "gaussian"))    # For metals only
-        table.addRow(("Smearing Degree:", "0.02 Ry"))          # For metals only
-        table.addRow(("K points:", "(8, 8, 8)"))
+        table.addRow(("Material Type:",     self._pwresult.materialType()))
+        table.addRow(("Lattice Type:",      self._pwresult.latticeType()))
+        table.addRow(("Atomic Structure:",  self._pwresult.atomicStructure()))   # "# Atom Position (bohr) Mass (u)  Pseudo-Potentials"
+        table.addRow(("Energy Cutoff:",     self._pwresult.energyCutoff()))
+        table.addRow(("Density Cutoff:",    self._pwresult.densityCutoff()))
+        table.addRow(("Smearing Type:",     self._pwresult.smearingType()))    # For metals only
+        table.addRow(("Smearing Degree:",   self._pwresult.smearingDegree()))          # For metals only
+        table.addRow(("K points:",          self._pwresult.kPoints()))
 
         table.setColumnStyle(0, "qe-cell-param-analysis")
 

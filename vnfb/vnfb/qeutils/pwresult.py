@@ -86,6 +86,34 @@ class PWResult(object):
         return atoms.grid()
 
 
+    def materialType(self):
+        return "Metal"
+
+
+    def latticeType(self):
+        return "CubicP (FCC)"
+
+
+    def energyCutoff(self):
+        return "27.0 Ry"
+
+
+    def densityCutoff(self):
+        return "300 Ry"
+
+
+    def smearingType(self):
+        "smearing"
+        return "gaussian"
+
+
+    def smearingDegree(self):
+        return "0.02 Ry"
+
+    def kPoints(self):
+        return "(8, 8, 8)"
+
+
     def _energy(self, type):
         "Returns tuple (energy, unit) if energy is not None or None otherwise"
         if not self._pwtask:
