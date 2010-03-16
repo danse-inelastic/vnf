@@ -38,6 +38,7 @@ all: export
 
 EXPORT_PYTHON_MODULES = \
 	__init__.py \
+        pwoutput.py \
         qetaskcell.py \
         qetaskinfo.py \
         qetasks.py \
