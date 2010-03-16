@@ -26,18 +26,13 @@ class PWOutput(object):
         self._simid         = simid
 
         # Attributes
-        self._pwtask         = None     # Will stay None if output file is not available
-#        self._totalEnergy   = None
-#        self._fermiEnergy   = None
-
+        self._pwtask         = None     # Will remain None if output file is not available
         self._init()
 
 
     def _init(self):
         "Retrieve output file and parse it"
-        simrecord = SimulationRecord(self._director, self._simid)
-
-        filename    = self._outputFile(simrecord)    # Get output file
+        filename    = self._outputFile()    # Get output file
         if not filename:
             return
 
@@ -87,10 +82,11 @@ class PWOutput(object):
         return "None"
 
 
-    def _outputFile(self, simrecord):
+    def _outputFile(self):
         "Retruns absolute path of the PW output file"
         # Example: "/home/dexity/exports/vnf/vnfb/content/data/tmp/tmpTsdw21/4ICDAVNK/4I2NPMY4pw.in.out"
-
+        
+        simrecord   = SimulationRecord(self._director, self._simid)
         jitlist     = simrecord.jobInputTaskList()
 
         for jit in jitlist:

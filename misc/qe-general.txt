@@ -1,3 +1,4 @@
+Status: DONE
 
 Add parameter metalic/non-metalic to PW simulation that is general for all of
 the simulations.
