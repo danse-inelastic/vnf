@@ -85,7 +85,7 @@ class Actor(base):
                                          id         = self.id))
                 )
 
-
+    # XXX: Finish
     def _outputAction(self, container):
         "Simulation output files"
         #container   = lc.splitter(orientation="horizontal") #"vertical")#
@@ -98,7 +98,7 @@ class Actor(base):
         for l in typelist:
             sB.add(lc.link(label=l,
                             Class="qe-action-edit",
-                            onclick = load(actor      = 'material_simulations/espresso/analysis',
+                            onclick = load(actor      = 'material_simulations/espresso-analysis/electron',
                                              id         = self.id))
                     )
 
