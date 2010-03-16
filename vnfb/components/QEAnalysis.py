@@ -11,11 +11,9 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
-import os
+
 from vnfb.qeutils.qerecords import SimulationRecord
-from vnfb.qeutils.qeutils import dataroot, defaultInputName
-from vnfb.qeutils.qeresults import QEResults
-from vnfb.qeutils.qetaskinfo import TaskInfo
+from vnfb.qeutils.pwoutput import PWOutput
 from vnfb.qeutils.qegrid import QEGrid
 
 import luban.content as lc
@@ -112,68 +110,19 @@ class Actor(base):
         "System Summary"
 
 
-    # XXX: Refactor
     def _electronStructure(self, director, section):
         "Electron Structure"
-
-        filename    = self._pwOutputFile(director)
-        if filename is None:
-            return
 
         # output exists
         section.add(lc.paragraph(text="Electron System", Class="qe-section"))
         table       = QEGrid(lc.grid(Class = "qe-table"))
         section.add(table.grid())
 
-        from qecalc.qetask.pwtask import PWTask
-
-        config  = "[pw.x]\npwOutput: %s" % filename
-
-        pw = PWTask(configString=config)
-        pw.output.parse()
-        tEnergy     = pw.output.property('total energy', withUnits=True)
-        fEnergy     = pw.output.property('fermi energy', withUnits=True)
-
-        tEnergyStr  = "None"
-        fEnergyStr  = "None"
-
-        # Change interface?
-        if tEnergy != (None, None):
-            tEnergyStr  = "%s %s" % (tEnergy[0][0], tEnergy[1])
-
-        if fEnergy != (None, None):
-            fEnergyStr  = "%s %s" % (fEnergy[0][0], fEnergy[1])
-
-        table.addRow(('Total Energy:', tEnergyStr))
-        table.addRow(('Fermi Energy:', fEnergyStr))
-        table.setColumnStyle(0, "qe-cell-param")
-
-
-    def _pwOutputFile(self, director):
-        "Retruns absolute path of the PW output file"
-        # Example: "/home/dexity/exports/vnf/vnfb/content/data/tmp/tmpTsdw21/4ICDAVNK/4I2NPMY4pw.in.out"
-
-        jitlist     = self._simrecord.jobInputTaskList()
+        pwoutput    = PWOutput(director, self.id)
         
-        for jit in jitlist:
-            # jit   = (job, input, task) = (jit[0], jit[1], jit[2])
-            _job     = jit[0]
-            _input   = jit[1]
-            _task    = jit[2]
-            if _job is None:   # If job is None
-                continue
-
-            if _input and _task.type == "PW":   # PW type
-                datadir     = dataroot(director)
-                taskinfo    = TaskInfo(simid = self.id, type = "PW")
-                results     = QEResults(director, _job, taskinfo)
-                if results.ready():
-                    file        = "%s%s.out" % (_input.id, defaultInputName(_task.type))
-                    path        = os.path.join(results.tardir(), file)
-                    filepath    = os.path.join(datadir, path)
-                    return filepath
-
-        return None
+        table.addRow(('Total Energy:', pwoutput.totalEnergy(True)))
+        table.addRow(('Fermi Energy:', pwoutput.fermiEnergy(True)))
+        table.setColumnStyle(0, "qe-cell-param")
 
 
     def _simData(self):
