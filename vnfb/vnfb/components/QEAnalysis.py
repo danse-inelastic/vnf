@@ -40,7 +40,7 @@ class Actor(base):
         sInd        = splitter.section()                        # path indicator
         sAct        = splitter.section(id="qe-section-actions") # actions
         sSum        = splitter.section()                        # system summary
-        sEle        = splitter.section()                        # system summary
+        sEle        = splitter.section()                        # electron structure
         
         self._simrecord   = SimulationRecord(director, self.id)
 
@@ -108,6 +108,22 @@ class Actor(base):
 
     def _summary(self, director, section):
         "System Summary"
+        section.add(lc.paragraph(text="System Summary", Class="qe-section"))
+        table       = QEGrid(lc.grid(Class = "qe-table"))
+        section.add(table.grid())
+
+        # STUB
+        table.addRow(("Material Type:", "Metal"))
+        table.addRow(("Lattice Type:", "CubicP (FCC)"))
+        table.addRow(("Energy Cutoff:", "27.0 Ry"))
+        table.addRow(("Density Cutoff:", "300 Ry"))
+        table.addRow(("Smearing Type:", "gaussian"))    # For metals only
+        table.addRow(("Smearing Degree:", "0.02"))          # For metals only
+        table.addRow(("K points:", "(8, 8, 8)"))
+        table.addRow(("Atomic Structure:", "# Atom Position (bohr) Mass (u)  Pseudo-Potentials"))
+#        table.addRow(("nk3:", "8"))
+
+        table.setColumnStyle(0, "qe-cell-param")
 
 
     def _electronStructure(self, director, section):
@@ -122,6 +138,20 @@ class Actor(base):
         
         table.addRow(('Total Energy:', pwoutput.totalEnergy(True)))
         table.addRow(('Fermi Energy:', pwoutput.fermiEnergy(True)))
+        table.addRow(("Forces:", "#  Atom Force (Ry/bohr)"))
+        table.addRow(("Stress (Ry/bohr^2):", "0.0 0.0 0.0"))
+#        table.addRow(("", ""))
+
+#        Forces:
+#        #  Atom Force (Ry/bohr)
+#        1. Fe:  (0, 0, 0)
+#        2. Fe:  (0, 0.5, 0)
+#        3. V:
+#
+#        Stress (Ry/bohr^2): 0.0 0.0 0.0
+#                            0.0 0.0 0.0
+#                            0.0 0.0 0.0
+
         table.setColumnStyle(0, "qe-cell-param")
 
 

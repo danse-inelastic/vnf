@@ -28,7 +28,8 @@ Electron System     # From PW
 
 Total Energy: 0.0
 Fermi Energy: 0.0
-Forces (Ry/bohr):
+Forces:
+#  Atom Force (Ry/bohr)
 1. Fe:  (0, 0, 0)
 2. Fe:  (0, 0.5, 0)
 3. V:
