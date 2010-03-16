@@ -13,7 +13,7 @@
 
 import os
 from vnfb.qeutils.qeutils import dataroot, defaultInputName
-from vnfb.qeutils.qeconst import OUTPUT_EXT
+from vnfb.qeutils.qeconst import OUTPUT_EXT, SMEARING, IBRAV
 from vnfb.qeutils.qeresults import QEResults
 from vnfb.qeutils.qetaskinfo import TaskInfo
 from vnfb.qeutils.qegrid import QEGrid
@@ -76,12 +76,23 @@ class PWResult(object):
 
 
     def materialType(self):
-        
-        return self._pwinput.namelist("system").param("occupations") # "Metal"
+        param   = self._pwinput.namelist("system").param("occupations", quotes = False)
+        if param == "fixed":
+            return "Isolator"
+
+        if param in SMEARING.keys():
+            return "Metal"  
+
+        return "None"   # default
 
 
     def latticeType(self):
-        return "CubicP (FCC)"
+        param   = self._pwinput.namelist("system").param("ibrav")
+        #param   = int(param)
+        if param is not None and param.isdigit() and int(param) in range(len(IBRAV)):
+            return IBRAV[int(param)]
+
+        return "None"   # default
 
 
     def energyCutoff(self):
