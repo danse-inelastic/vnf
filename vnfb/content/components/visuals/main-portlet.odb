@@ -22,7 +22,7 @@ def visual(director):
     # portlet.item(id='main-portlet-my-materials', label='materials', onclick=load(actor='matter'))
     portlet.item(id='main-portlet-my-atomicstructures', label='atomic structures', onclick=load(actor='atomicstructure'))    
     portlet.item(id='main-portlet-my-simulations', label='simulations', onclick=load(actor='materialsimulation'))
-    portlet.item(id='main-portlet-my-analysis', label='analysis', onclick=load(actor='analysis'))
+    # portlet.item(id='main-portlet-my-analysis', label='analysis', onclick=load(actor='analysis'))
     portlet.item(id='main-portlet-my-samples', label='samples', onclick=load(actor='sample'))
     portlet.item(id='main-portlet-my-experiments', label='experiments', onclick=load(actor='experiment'))
     portlet.item(id='main-portlet-my-jobs', label='jobs', onclick=load(actor='job'))
