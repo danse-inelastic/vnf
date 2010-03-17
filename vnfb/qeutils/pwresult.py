@@ -20,8 +20,12 @@ from vnfb.qeutils.qegrid import QEGrid
 from vnfb.qeutils.qerecords import SimulationRecord
 
 from qecalc.qetask.pwtask import PWTask
-
 import luban.content as lc
+
+# Simple validator for PW input 
+PWVALID    = {}
+PWVALID["atomic_species"]   = 3     # Number of items in the line
+PWVALID["atomic_positions"] = 4
 
 class PWResult(object):
 
@@ -56,20 +60,16 @@ class PWResult(object):
     # STUB
     def atomicStructure(self):
         "Atom mass name: mass<number>, atom pseudo potential name: pseudo<number>"
-        atoms    = QEGrid(lc.grid(Class="qe-table-atomic"))
-        atoms.addRow(("#", "Atom", "Position (bohr)", "Mass (u)", "Pseudo-Potential"))
-        atoms.addRow(("1", "Fe", "(0, 0, 0)", "26.8", "Fe-blah-blah-blah-UPF"))
-        atoms.addRow(("2", "V", "(0.5, 0.5, 0.5)", "26.8", "V-blah-UPF"))
-        atoms.addRow(("3", "V", "(0.75, 0.25, 0.35)", "26.8", "V-blah-UPF"))
+        atoms       = QEGrid(lc.grid(Class="qe-table-atomic"))
+        list        = self._atomsList()
 
-#        for l in range(len(self._labels)):
-#            label       = self._labels[l]
-#            atom        = Atom(label)
-#            mass        = FormTextField(name = "mass%s" % l, value = atom.mass, Class="mass-textfield")
-#            pseudo      = FormSelectorField(name    = "pseudo%s" % l,
-#                                            Class   = "qe-selector-pseudo",
-#                                            entries = enumerate(PSEUDO[label]))
-#            atoms.addRow((label, mass, pseudo))
+        if not list:
+            return "None"
+
+        atoms.addRow(("#", "Atom", "Position (bohr)", "Mass (u)", "Pseudo-Potential"))
+
+        for row in list:
+            atoms.addRow((row[0], row[1], row[2], row[3], row[4]))
 
         atoms.setRowStyle(0, "qe-table-header") 
         return atoms.grid()
@@ -88,7 +88,7 @@ class PWResult(object):
 
     def latticeType(self):
         param   = self._pwinput.namelist("system").param("ibrav")
-        #param   = int(param)
+
         if param is not None and param.isdigit() and int(param) in range(len(IBRAV)):
             return IBRAV[int(param)]
 
@@ -110,6 +110,7 @@ class PWResult(object):
 
     def smearingDegree(self):
         return "0.02 Ry"
+
 
     def kPoints(self):
         return "(8, 8, 8)"
@@ -155,7 +156,6 @@ class PWResult(object):
 
         return table.grid()
 
-        #return "0.0 0.0 0.0"
 
     def _energy(self, type):
         "Returns tuple (energy, unit) if energy is not None or None otherwise"
@@ -177,7 +177,65 @@ class PWResult(object):
 
         return "None"
 
+    # XXX: Work on a better validation of code!
+    def _atomsList(self):
+        "Returns list of atoms with format:"
+        # list.append(("1", "Fe", "(0.00, 0.00, 0.00)", "26.8", "Fe-blah-blah-blah-UPF"))
+        positions   = self._atomicCard("atomic_positions", PWVALID)
+        species     = self._atomicCard("atomic_species", PWVALID)
 
+        if not positions or not species:    # Check if cards are in a proper form
+            return None
+
+        list        = []
+        specDict    = self._speciesParams(species)
+
+        for i in range(len(positions)):
+            p       = positions[i]
+            params  = specDict[p[0]]
+            v   = ( str(i+1),
+                    p[0],           # Example: "Al"
+                    "(%.2f, %.2f, %.2f)" % (float(p[1]), float(p[2]), float(p[3])),
+                    params[0],      # Example: "26.8"
+                    params[1])      # Example: Al.blyp-n-van_ak.UPF
+            list.append(v)
+
+        return list
+
+
+    # Move to card.py code?
+    # XXX: Check if the validator has the name
+    def _atomicCard(self, name, validator):
+        items       = self._pwinput.card(name).lines()
+
+        if not items:
+            return None
+
+        itemlist       = []
+        for i in items:
+            v       = i.split()
+            if len(v) != validator[name]:     # Mulfunctioned input
+                return None
+            itemlist.append(v)
+
+        return itemlist
+
+
+    def _speciesParams(self, species):
+        "Returns dicionary of species parameters"
+        # Example: species = [("Al", "26.9815", "Al.blyp-n-van_ak.UPF"),]
+        dict    = {}
+        for s in species:
+            key     = s[0]          # Example: "Al"
+            if dict.has_key(key):   # Take only the first key
+                continue
+
+            dict[key]  = (s[1], s[2]) # Add key
+
+        return dict
+
+
+    # XXX: Refactor
     def _resultFile(self, type="input"):
         "Retruns absolute path of the PW result file, e.g. output or input config files"
         # Example: "/home/dexity/exports/vnf/vnfb/content/data/tmp/tmpTsdw21/4ICDAVNK/4I2NPMY4pw.in.out"
