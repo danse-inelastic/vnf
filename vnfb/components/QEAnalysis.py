@@ -43,8 +43,11 @@ class Actor(base):
         splitter    = doc.splitter(orientation="vertical")
         sInd        = splitter.section()                        # path indicator
         sAct        = splitter.section(id="qe-section-actions") # actions
+
+        docResults  = lc.document(id = ID_RESULTS)
+        doc.add(docResults)
         
-        resSplitter = doc.splitter(orientation="vertical", id = ID_RESULTS)
+        resSplitter = docResults.splitter(orientation="vertical")
         sSum        = resSplitter.section()                        # system summary
         sEle        = resSplitter.section()                        # electron structure
         
@@ -55,7 +58,7 @@ class Actor(base):
         self._showActions(director, sAct)                 # Show actions
         self._summary(director, sSum)                     # System Summary
         self._electronStructure(director, sEle)           # Electron Structure
-        self._simData(resSplitter)                                   # Simulation Specific data
+        self._simData(resSplitter)                        # Simulation Specific data
 
         return doc
 
@@ -65,9 +68,15 @@ class Actor(base):
 
 
     def contentOutput(self, director):
-        #material_simulations/espresso
+        doc = lc.document(title="Hi")#, id=ID_RESULTS)
         visual  = 'material_simulations/espresso-analysis/outputs'
-        return director.retrieveVisual(visual, director, self.id)#"Hello",
+        #doc.add(director.retrieveVisual(visual, director, self.id))
+        doc.add(lc.paragraph(text="System Summary"))
+        sp  = lc.splitter()
+        sec = sp.section()
+        sec.add("Hi")
+
+        return  doc #"Hi" #
 
 
     def _viewIndicator(self, director, section):
