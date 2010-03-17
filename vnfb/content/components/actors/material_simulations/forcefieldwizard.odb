@@ -221,6 +221,8 @@ class Actor(base):
         #from memd.gulp.GulpSettings import GulpSettings
         from vnfb.dom.material_simulations.GulpSettings import GulpSettings
         gulpSettings = GulpSettings()
+        import time
+        gulpSettings.date = time.ctime()
         gulpSettings.creator = director.sentry.username
         gulpSettings.runtype = self.inventory.runtype
         #gulpSettings.inputFileContents = self.inventory.inputFileContents
