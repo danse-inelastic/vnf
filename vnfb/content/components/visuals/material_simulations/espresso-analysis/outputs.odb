@@ -11,11 +11,15 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
+import luban.content as lc
 from vnfb.qeutils.qerecords import SimulationRecord
 
 def visual(director, simid):
-    simrecord   = SimulationRecord(director, simid)
-    return "Visual" # Should not be string
+#    splitter    = lc.splitter(orientation="vertical")
+#    sCra        = splitter.section()
+#    sCra.add(lc.link(label="Visual"))
+#    simrecord   = SimulationRecord(director, simid)
+    return  lc.paragraph(text="System Summary") #splitter # Should not be string
 
 __date__ = "$Mar 16, 2010 7:07:29 PM$"
 
