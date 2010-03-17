@@ -19,6 +19,7 @@ PACKAGE = qeutils/results
 
 EXPORT_PYTHON_MODULES = \
         pwresult.py \
+        qeresult.py \
         __init__.py \
 
 BUILD_DIRS = \

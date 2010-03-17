@@ -27,7 +27,7 @@ PWVALID    = {}
 PWVALID["atomic_species"]   = 3     # Number of items in the line
 PWVALID["atomic_positions"] = 4
 
-class PWResult(object):
+class PWResult(QEResult):
 
     def __init__(self, director, simid):     # simulation id
         self._director      = director
