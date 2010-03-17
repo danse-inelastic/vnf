@@ -14,11 +14,10 @@
 
 from luban.content import load, select, alert
 import luban.content as lc
-from luban.content.Paragraph import Paragraph
+from vnfb.qeutils.qegrid import QEGrid
 
-#from luban.components.AuthorizedActor import AuthorizedActor as base
-from luban.components.FormProcessor import FormProcessor as base
-#from vnfb.utils.qegrid import QEGrid
+from luban.components.AuthorizedActor import AuthorizedActor as base
+#from luban.components.FormProcessor import FormProcessor as base
 
 class Actor(base):
 
@@ -130,7 +129,7 @@ class Actor(base):
             label = meta['label'],
             value = getattr( self.inventory, property ),
             )
-        field.help = meta['tip']
+        #field.help = meta['tip']
         
         property = 'energyResolution'
         meta = getattr( self.Inventory, property ).meta
@@ -140,7 +139,7 @@ class Actor(base):
             label = meta['label'],
             value = getattr( self.inventory, property ),
             )
-        field.help = meta['tip']
+        #field.help = meta['tip']
         
         property = 'timestep'
         meta = getattr( self.Inventory, property ).meta
@@ -150,7 +149,7 @@ class Actor(base):
             label = meta['label'],
             value = getattr( self.inventory, property ),
             )
-        field.help = meta['tip']
+        #field.help = meta['tip']
             
 #        p = form.paragraph()
 #        p.text = "Optional: inspect Q-space coverage from supercell"
@@ -203,16 +202,18 @@ class Actor(base):
                         self.inventory.timestep)
 #        return load(actor='material_simulations/mdPlan', routine='resultsPage', 
 #                    results=mdPlan.getInfo(), include_credential = False)
-        title = 'Md and analysis parameters for S(Q,E) resolution'
-        resultsDoc = lc.document(id='results', title=title)
-        resultsDoc.add(Paragraph(text=mdPlan.getInfo()))
-        return select(id='container').append(resultsDoc)
+        resultsDoc = lc.document(id='results')
+        resultsDoc.paragraph()
+        #resultsDoc.text=['<br>', mdPlan.getHtmlInfo()]
+        analysisGrid = QEGrid(lc.grid(Class="qe-table"))
+        for desc,val in mdPlan.getTupleInfo():
+            analysisGrid.addRow((desc,str(val)))
+            
+        resultsDoc.add(analysisGrid.grid())
+        
+        #return select(id='container').append(resultsDoc)
+        return select(id='container').replaceContent(resultsDoc)
 
-    
-    def resultsPage(self, director):
-        page = lc.page(title="Md planning parameters")  
-
-        return page
 
     def __init__(self, name='mdPlan'):
         super(Actor, self).__init__(name)
