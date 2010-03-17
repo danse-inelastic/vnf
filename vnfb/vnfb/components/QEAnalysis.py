@@ -121,9 +121,25 @@ class Actor(base):
         sB          = container.section()
 
         docOutput   = lc.document(id=ID_OUTPUTS)    # Hook for output links
-        visual      = 'material_simulations/espresso-analysis/output-links'#'material_simulations/espresso-analysis/output-links'
-        docOutput.add(director.retrieveVisual(visual, director, self.id))
+        docOutput.add(self._outputLinks())
         sB.add(docOutput)
+
+
+    def _outputLinks(self):
+        doc         = lc.document()         # Container for links
+        #simrecord   = SimulationRecord(simid)
+        typelist    = ("PW", "PH", "Q2R")#self._simrecord.typeList()    # simulation tasks type list
+
+        for l in typelist:
+            doc.add(lc.link(label=l,
+                            Class="qe-action-edit",
+                            onclick = load(actor      = 'material_simulations/espresso-analysis/electron', # XXX
+                                           routine    = "outputs",
+                                           type       = l,
+                                           id         = self.id))
+                    )
+
+        return doc
 
 
     def _exportAction(self, container):
