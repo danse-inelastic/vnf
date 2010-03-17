@@ -11,13 +11,14 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
-import os
-from vnfb.qeutils.qeutils import dataroot, defaultInputName
-from vnfb.qeutils.qeconst import OUTPUT_EXT, SMEARING, IBRAV
-from vnfb.qeutils.qeresults import QEResults
-from vnfb.qeutils.qetaskinfo import TaskInfo
+#import os
+#from vnfb.qeutils.qeutils import dataroot, defaultInputName
+#from vnfb.qeutils.qeresults import QEResults
+#from vnfb.qeutils.qetaskinfo import TaskInfo
+from vnfb.qeutils.results.qeresult import QEResult
+from vnfb.qeutils.qeconst import SMEARING, IBRAV
 from vnfb.qeutils.qegrid import QEGrid
-from vnfb.qeutils.qerecords import SimulationRecord
+#from vnfb.qeutils.qerecords import SimulationRecord
 
 from qecalc.qetask.pwtask import PWTask
 import luban.content as lc
@@ -30,32 +31,14 @@ PWVALID["atomic_positions"] = 4
 class PWResult(QEResult):
 
     def __init__(self, director, simid):     # simulation id
-        self._director      = director
-        self._simid         = simid
-        self._simrecord     = SimulationRecord(director, simid)
-
-        # Attributes
-        self._pwtask         = None     # Will remain None if output file is not available
-        self._init()
+        super(PWResult, self).__init__(director, simid)
+        self._name  = "PW"  # Important attribute
 
 
-    def _init(self):
-        "Retrieve output file and parse it"
-        input       = self._resultFile("input")    # Input file
-        output      = self._resultFile("output")   # Output file
+    def _taskFactory(self, input, output):
+        config  = "[pw.x]\npwInput: %s\npwOutput: %s" % (input, output)
+        return PWTask(configString=config)
 
-        # Important line! No output file, no results!
-        if not output: 
-            return
-
-        config          = "[pw.x]\npwInput: %s\npwOutput: %s" % (input, output)
-        self._pwtask    = PWTask(configString=config)  # Need pwtask?
-        self._pwinput   = self._pwtask.input
-        self._pwoutput  = self._pwtask.output
-        
-        self._pwinput.parse()
-        self._pwoutput.parse()
-        
 
     # Input methods
     def atomicStructure(self):
@@ -76,7 +59,7 @@ class PWResult(QEResult):
 
 
     def materialType(self):
-        param   = self._pwinput.namelist("system").param("occupations", quotes = False)
+        param   = self._input.namelist("system").param("occupations", quotes = False)
         if param == "fixed":
             return "Isolator"
 
@@ -87,7 +70,7 @@ class PWResult(QEResult):
 
 
     def latticeType(self):
-        param   = self._pwinput.namelist("system").param("ibrav")
+        param   = self._input.namelist("system").param("ibrav")
 
         if param is not None and param.isdigit() and int(param) in range(len(IBRAV)):
             return IBRAV[int(param)]
@@ -117,7 +100,7 @@ class PWResult(QEResult):
 
     # XXX: Not complete! There might be other forms of K points
     def kPoints(self):
-        lines   = self._pwinput.card("k_points").lines()
+        lines   = self._input.card("k_points").lines()
 
         if len(lines) == 1:
             items   =  lines[0].split()
@@ -162,7 +145,7 @@ class PWResult(QEResult):
 
     def stress(self):
         table    = QEGrid(lc.grid(Class="qe-table-stress"))
-#        table.addRow((self._pwoutput.property("stress")))
+#        table.addRow((self._output.property("stress")))
         table.addRow(("0.50000000", "0.50000000", "0.50000000"))
         table.addRow(("0.50000000", "0.50000000", "0.50000000"))
         table.addRow(("0.50000000", "0.50000000", "0.50000000"))
@@ -172,10 +155,10 @@ class PWResult(QEResult):
 
     def _energy(self, type):
         "Returns tuple (energy, unit) if energy is not None or None otherwise"
-        if not self._pwtask:
+        if not self._task:
             return None
 
-        value   = self._pwoutput.property(type, withUnits=True)
+        value   = self._output.property(type, withUnits=True)
 
         if value != (None, None):
             return (value[0][0], value[1])   # (energy, unit)
@@ -185,12 +168,12 @@ class PWResult(QEResult):
 
     # XXX: Combine with param?
     def _energyParam(self, type):
-        param   = self._pwinput.namelist("system").param(type)
+        param   = self._input.namelist("system").param(type)
         return self._format((param, "Ry"))
 
 
     def _param(self, type, nl = "system"):
-        param   = self._pwinput.namelist(nl).param(type)
+        param   = self._input.namelist(nl).param(type)
         if param:
             return param
 
@@ -234,7 +217,7 @@ class PWResult(QEResult):
     # Move to card.py code?
     # XXX: Check if the validator has the name
     def _atomicCard(self, name, validator):
-        items       = self._pwinput.card(name).lines()
+        items       = self._input.card(name).lines()
 
         if not items:
             return None
@@ -263,40 +246,40 @@ class PWResult(QEResult):
         return dict
 
 
-    # XXX: Refactor
-    def _resultFile(self, type="input"):
-        "Retruns absolute path of the PW result file, e.g. output or input config files"
-        # Example: "/home/dexity/exports/vnf/vnfb/content/data/tmp/tmpTsdw21/4ICDAVNK/4I2NPMY4pw.in.out"
-        
-        #simrecord   = SimulationRecord(self._director, self._simid)
-        jitlist     = self._simrecord.jobInputTaskList()
-
-        for jit in jitlist:
-            (_job, _input, _task)   = (jit[0], jit[1], jit[2])
-            if _job is None:   # If job is None
-                continue
-
-            if _input and _task.type == "PW":   # PW type
-                datadir     = dataroot(self._director)
-                taskinfo    = TaskInfo(simid = self._simid, type = "PW")
-                results     = QEResults(self._director, _job, taskinfo)
-                if results.ready():
-                    file        = "%s%s" % (_input.id, defaultInputName(_task.type))
-                    if type == "output":
-                        file    += OUTPUT_EXT   # .out
-                    path        = os.path.join(results.tardir(), file)
-                    return os.path.join(datadir, path)
-
-        return None
-
-
-    def _resultPath(self, type):
-        "Each job for the task of type will have separate root path"
-        jit     = self._simrecord.jobInputTask(type)
-        if not jit:         # No jit, no path
-            return None
-
-        (_job, _input, _task)   = (jit[0], jit[1], jit[2])
+#    # XXX: Refactor
+#    def _resultFile(self, type="input"):
+#        "Retruns absolute path of the PW result file, e.g. output or input config files"
+#        # Example: "/home/dexity/exports/vnf/vnfb/content/data/tmp/tmpTsdw21/4ICDAVNK/4I2NPMY4pw.in.out"
+#
+#        #simrecord   = SimulationRecord(self._director, self._simid)
+#        jitlist     = self._simrecord.jobInputTaskList()
+#
+#        for jit in jitlist:
+#            (_job, _input, _task)   = (jit[0], jit[1], jit[2])
+#            if _job is None:   # If job is None
+#                continue
+#
+#            if _input and _task.type == "PW":   # PW type
+#                datadir     = dataroot(self._director)
+#                taskinfo    = TaskInfo(simid = self._simid, type = "PW")
+#                results     = QEResults(self._director, _job, taskinfo)
+#                if results.ready():
+#                    file        = "%s%s" % (_input.id, defaultInputName(_task.type))
+#                    if type == "output":
+#                        file    += OUTPUT_EXT   # .out
+#                    path        = os.path.join(results.tardir(), file)
+#                    return os.path.join(datadir, path)
+#
+#        return None
+#
+#
+#    def _resultPath(self, type):
+#        "Each job for the task of type will have separate root path"
+#        jit     = self._simrecord.jobInputTask(type)
+#        if not jit:         # No jit, no path
+#            return None
+#
+#        (_job, _input, _task)   = (jit[0], jit[1], jit[2])
 
 
 __date__ = "$Mar 15, 2010 2:45:52 PM$"
