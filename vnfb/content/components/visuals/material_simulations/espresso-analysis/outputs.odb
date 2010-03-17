@@ -1,0 +1,22 @@
+#!/usr/bin/env python
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                               Alex Dementsov
+#                      California Institute of Technology
+#                        (C) 2009  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+from vnfb.qeutils.qerecords import SimulationRecord
+
+def visual(director, simid):
+    simrecord   = SimulationRecord(director, simid)
+    return "Visual" # Should not be string
+
+__date__ = "$Mar 16, 2010 7:07:29 PM$"
+
+

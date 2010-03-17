@@ -146,7 +146,7 @@ class PWResult(object):
 
         return self._format(energy)
 
-
+    # XXX: Finish up forces and stress
     def forces(self):
         table    = QEGrid(lc.grid(Class="qe-table-forces"))
         table.addRow(("#", "Atom", "Force (Ry/bohr)"))
@@ -160,6 +160,7 @@ class PWResult(object):
 
     def stress(self):
         table    = QEGrid(lc.grid(Class="qe-table-stress"))
+#        table.addRow((self._pwoutput.property("stress")))
         table.addRow(("0.50000000", "0.50000000", "0.50000000"))
         table.addRow(("0.50000000", "0.50000000", "0.50000000"))
         table.addRow(("0.50000000", "0.50000000", "0.50000000"))

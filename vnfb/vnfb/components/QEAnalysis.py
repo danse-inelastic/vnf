@@ -22,12 +22,15 @@ from luban.content.HtmlDocument import HtmlDocument
 
 from luban.components.AuthorizedActor import AuthorizedActor as base
 
+ID_RESULTS  = "qe-splitter-results" # id for results container
+
 # Requires simulation id, config id and config type: (id, configid, type)
 class Actor(base):
 
     class Inventory(base.Inventory):
         import pyre.inventory
         id          = pyre.inventory.str('id', default='')          # Simulation Id
+        type        = pyre.inventory.str('type', default='')        # Task type
 
 
     def default(self, director):
@@ -35,12 +38,15 @@ class Actor(base):
 
 
     def content(self, director):
+        "Contains of two separate splitters: header and results"
         doc         = lc.document(title="Analysis of Simulation Results")
         splitter    = doc.splitter(orientation="vertical")
         sInd        = splitter.section()                        # path indicator
         sAct        = splitter.section(id="qe-section-actions") # actions
-        sSum        = splitter.section()                        # system summary
-        sEle        = splitter.section()                        # electron structure
+        
+        resSplitter = doc.splitter(orientation="vertical", id = ID_RESULTS)
+        sSum        = resSplitter.section()                        # system summary
+        sEle        = resSplitter.section()                        # electron structure
         
         self._simrecord   = SimulationRecord(director, self.id)
         self._pwresult    = PWResult(director, self.id)
@@ -49,9 +55,19 @@ class Actor(base):
         self._showActions(director, sAct)                 # Show actions
         self._summary(director, sSum)                     # System Summary
         self._electronStructure(director, sEle)           # Electron Structure
-        self._simData()                                   # Simulation Specific data
+        self._simData(resSplitter)                                   # Simulation Specific data
 
         return doc
+
+
+    def outputs(self, director):
+        return select(id=ID_RESULTS).replaceContent(self.contentOutput(director))
+
+
+    def contentOutput(self, director):
+        #material_simulations/espresso
+        visual  = 'material_simulations/espresso-analysis/outputs'
+        return director.retrieveVisual(visual, director, self.id)#"Hello",
 
 
     def _viewIndicator(self, director, section):
@@ -65,7 +81,7 @@ class Actor(base):
         section.add(director.retrieveVisual('view-indicator', path=path))
 
 
-    def _showActions(self, director, section):  #, inputs
+    def _showActions(self, director, section):
         # Action splitter
         container   = lc.splitter(orientation="horizontal", id="qe-splitter-analysis")
         section.add(container)
@@ -98,8 +114,10 @@ class Actor(base):
         for l in typelist:
             sB.add(lc.link(label=l,
                             Class="qe-action-edit",
-                            onclick = load(actor      = 'material_simulations/espresso-analysis/electron',
-                                             id         = self.id))
+                            onclick = load(actor      = 'material_simulations/espresso-analysis/electron', # XXX
+                                           routine    = "outputs",
+                                           type       = l,
+                                           id         = self.id))
                     )
 
 
@@ -113,13 +131,12 @@ class Actor(base):
         table       = QEGrid(lc.grid(Class = "qe-table-analysis"))
         section.add(table.grid())
 
-        # STUB
         table.addRow(("Material Type:",     self._pwresult.materialType()))
         table.addRow(("Lattice Type:",      self._pwresult.latticeType()))
         table.addRow(("Atomic Structure:",  self._pwresult.atomicStructure()))   # "# Atom Position (bohr) Mass (u)  Pseudo-Potentials"
         table.addRow(("Energy Cutoff:",     self._pwresult.energyCutoff()))
         table.addRow(("Density Cutoff:",    self._pwresult.densityCutoff()))
-        if self._pwresult.materialType() == "Metal":
+        if self._pwresult.materialType() == "Metal":    # Parameters specific for metals
             table.addRow(("Smearing Type:",     self._pwresult.smearingType()))    # For metals only
             table.addRow(("Smearing Degree:",   self._pwresult.smearingDegree()))  # For metals only
         table.addRow(("K points:",          self._pwresult.kPoints()))
@@ -140,27 +157,17 @@ class Actor(base):
         table.addRow(("Forces:",                self._pwresult.forces()))
         table.addRow(("Stress (Ry/bohr^2):",    self._pwresult.stress()))
 
-
-#        Forces:
-#        #  Atom Force (Ry/bohr)
-#        1. Fe:  (0, 0, 0)
-#        2. Fe:  (0, 0.5, 0)
-#        3. V:
-#
-#        Stress (Ry/bohr^2): 0.0 0.0 0.0
-#                            0.0 0.0 0.0
-#                            0.0 0.0 0.0
-
         table.setColumnStyle(0, "qe-cell-param-analysis")
 
 
-    def _simData(self):
+    def _simData(self, splitter):
         "Simulation specific data. Should be overwritten by subclass"
 
 
     def _configure(self):
         super(Actor, self)._configure()
         self.id             = self.inventory.id
+        self.type           = self.inventory.type
 
 
     def _init(self):
