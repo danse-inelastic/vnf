@@ -23,9 +23,24 @@ def visual(director, simid):
     pwoutput    = form.textarea()
     pwoutput.label  = "PW Output"
     pwoutput.value  = "pw output text"
-    
-    return   form 
 
-__date__ = "$Mar 16, 2010 7:07:29 PM$"
+    return   form
+
+#    doc         = lc.document()         # Container for links
+#    simrecord   = SimulationRecord(simid)
+#    typelist    = ("PW", "PH", "Q2R")#self._simrecord.typeList()    # simulation tasks type list
+#
+#    for l in typelist:
+#        doc.add(lc.link(label=l,
+#                        Class="qe-action-edit",
+#                        onclick = load(actor      = 'material_simulations/espresso-analysis/electron', # XXX
+#                                       routine    = "outputs",
+#                                       type       = l,
+#                                       id         = self.id))
+#                )
+#
+#    return doc
+
+__date__ = "$Mar 17, 2010 10:39:59 AM$"
 
 

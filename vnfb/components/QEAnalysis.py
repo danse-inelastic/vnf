@@ -23,6 +23,7 @@ from luban.content.HtmlDocument import HtmlDocument
 from luban.components.AuthorizedActor import AuthorizedActor as base
 
 ID_RESULTS  = "qe-splitter-results" # id for results container
+ID_OUTPUTS  = "qe-splitter-outputs"
 
 # Requires simulation id, config id and config type: (id, configid, type)
 class Actor(base):
@@ -68,13 +69,9 @@ class Actor(base):
 
 
     def contentOutput(self, director):
-        doc = lc.document()#, id=ID_RESULTS)
+        doc     = lc.document()
         visual  = 'material_simulations/espresso-analysis/outputs'
         doc.add(director.retrieveVisual(visual, director, self.id))
-#        doc.add(lc.paragraph(text="System Summary"))
-#        sp  = lc.splitter()
-#        sec = sp.section()
-#        sec.add("Hi")
 
         return  doc
 
@@ -95,7 +92,7 @@ class Actor(base):
         container   = lc.splitter(orientation="horizontal", id="qe-splitter-analysis")
         section.add(container)
         self._backAction(container)
-        self._outputAction(container)
+        self._outputAction(director, container)
         self._exportAction(container)
 
         section.add(lc.document(Class="clear-both"))
@@ -103,31 +100,30 @@ class Actor(base):
 
     def _backAction(self, container):
         "Back button"
-        s     = container.section(Class="qe-section-back")
-        s.add(lc.link(label="Back",
+        sBac     = container.section(Class="qe-section-back")
+        sBac.add(lc.link(label="Back",
                         Class="qe-action-back",
                         onclick = load(actor      = 'material_simulations/espresso/sim-view',
                                          id         = self.id))
                 )
+        sBac.add(lc.link(label="Refresh",
+                        Class="qe-action-edit",
+                        onclick = load(actor      = 'material_simulations/espresso-analysis/electron',
+                                         id         = self.id))
+                )
+
 
     # XXX: Finish
-    def _outputAction(self, container):
+    def _outputAction(self, director, container):
         "Simulation output files"
-        #container   = lc.splitter(orientation="horizontal") #"vertical")#
         sA          = container.section(Class="qe-section-text-output")
         sA.add(HtmlDocument(text="Outputs: "))
         sB          = container.section()
 
-        typelist    = self._simrecord.typeList()    # simulation tasks type list
-
-        for l in typelist:
-            sB.add(lc.link(label=l,
-                            Class="qe-action-edit",
-                            onclick = load(actor      = 'material_simulations/espresso-analysis/electron', # XXX
-                                           routine    = "outputs",
-                                           type       = l,
-                                           id         = self.id))
-                    )
+        docOutput   = lc.document(id=ID_OUTPUTS)    # Hook for output links
+        visual      = 'material_simulations/espresso-analysis/output-links'#'material_simulations/espresso-analysis/output-links'
+        docOutput.add(director.retrieveVisual(visual, director, self.id))
+        sB.add(docOutput)
 
 
     def _exportAction(self, container):
