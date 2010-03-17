@@ -68,15 +68,15 @@ class Actor(base):
 
 
     def contentOutput(self, director):
-        doc = lc.document(title="Hi")#, id=ID_RESULTS)
+        doc = lc.document()#, id=ID_RESULTS)
         visual  = 'material_simulations/espresso-analysis/outputs'
-        #doc.add(director.retrieveVisual(visual, director, self.id))
-        doc.add(lc.paragraph(text="System Summary"))
-        sp  = lc.splitter()
-        sec = sp.section()
-        sec.add("Hi")
+        doc.add(director.retrieveVisual(visual, director, self.id))
+#        doc.add(lc.paragraph(text="System Summary"))
+#        sp  = lc.splitter()
+#        sec = sp.section()
+#        sec.add("Hi")
 
-        return  doc #"Hi" #
+        return  doc
 
 
     def _viewIndicator(self, director, section):

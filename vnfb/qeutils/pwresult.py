@@ -65,7 +65,7 @@ class PWResult(object):
         if not list:
             return "None"
 
-        atoms.addRow(("#", "Atom", "Position (bohr)", "Mass (u)", "Pseudo-Potential"))
+        atoms.addRow((" ", "Atom", "Position (bohr)", "Mass (u)", "Pseudo-Potential"))
 
         for row in list:
             atoms.addRow((row[0], row[1], row[2], row[3], row[4]))
@@ -149,7 +149,7 @@ class PWResult(object):
     # XXX: Finish up forces and stress
     def forces(self):
         table    = QEGrid(lc.grid(Class="qe-table-forces"))
-        table.addRow(("#", "Atom", "Force (Ry/bohr)"))
+        table.addRow((" ", "Atom", "Force (Ry/bohr)"))
         table.addRow(("1", "Fe", "(0, 0, 0)"))
         table.addRow(("2", "V", "(0.5, 0.5, 0.5)"))
         table.addRow(("3", "V", "(0.75, 0.25, 0.35)"))

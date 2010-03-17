@@ -15,11 +15,16 @@ import luban.content as lc
 from vnfb.qeutils.qerecords import SimulationRecord
 
 def visual(director, simid):
-#    splitter    = lc.splitter(orientation="vertical")
-#    sCra        = splitter.section()
-#    sCra.add(lc.link(label="Visual"))
-#    simrecord   = SimulationRecord(director, simid)
-    return  lc.paragraph(text="System Summary") #splitter # Should not be string
+    form        = lc.form(id='create-simulation-form')
+    crash       = form.textarea()
+    crash.label = "CRASH"
+    crash.value = "crash text"
+
+    pwoutput    = form.textarea()
+    pwoutput.label  = "PW Output"
+    crash.value = "pw output text"
+    
+    return   form 
 
 __date__ = "$Mar 16, 2010 7:07:29 PM$"
 
