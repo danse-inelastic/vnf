@@ -19,6 +19,7 @@ PACKAGE = qeutils
 BUILD_DIRS = \
         qecalcutils \
         qeparser \
+        results \
 
 OTHER_DIRS = \
 
@@ -47,7 +48,6 @@ EXPORT_PYTHON_MODULES = \
         qeinput.py \
         qeparams.py \
         qerecords.py \
-        qeresults.py \
         qescheduler.py \
         qeserver.py \
         qestatus.py \

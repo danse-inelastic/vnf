@@ -99,6 +99,15 @@ class SimulationRecord(QERecords):
         return zip(self._joblist, self._inputlist, self._tasklist)
 
 
+    def jobInputTask(self, type):
+        "Returns Job-Input-Task tuple specified by type"
+        for jit in self._jitlist:
+            task    = jit[2]
+            if task.type == type:
+                return jit
+
+        return None
+
     # REFACTOR: Duplicated from vnfb.qeutils.qetasks.py
     def typeList(self):
         "Return list of simulation task types"
