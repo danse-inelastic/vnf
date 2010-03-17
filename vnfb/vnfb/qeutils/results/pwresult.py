@@ -32,6 +32,7 @@ class PWResult(object):
     def __init__(self, director, simid):     # simulation id
         self._director      = director
         self._simid         = simid
+        self._simrecord     = SimulationRecord(director, simid)
 
         # Attributes
         self._pwtask         = None     # Will remain None if output file is not available
@@ -145,6 +146,7 @@ class PWResult(object):
             return energy
 
         return self._format(energy)
+
 
     # XXX: Finish up forces and stress
     def forces(self):
@@ -266,14 +268,11 @@ class PWResult(object):
         "Retruns absolute path of the PW result file, e.g. output or input config files"
         # Example: "/home/dexity/exports/vnf/vnfb/content/data/tmp/tmpTsdw21/4ICDAVNK/4I2NPMY4pw.in.out"
         
-        simrecord   = SimulationRecord(self._director, self._simid)
-        jitlist     = simrecord.jobInputTaskList()
+        #simrecord   = SimulationRecord(self._director, self._simid)
+        jitlist     = self._simrecord.jobInputTaskList()
 
         for jit in jitlist:
-            # jit   = (job, input, task) = (jit[0], jit[1], jit[2])
-            _job     = jit[0]
-            _input   = jit[1]
-            _task    = jit[2]
+            (_job, _input, _task)   = (jit[0], jit[1], jit[2])
             if _job is None:   # If job is None
                 continue
 
@@ -289,6 +288,15 @@ class PWResult(object):
                     return os.path.join(datadir, path)
 
         return None
+
+
+    def _resultPath(self, type):
+        "Each job for the task of type will have separate root path"
+        jit     = self._simrecord.jobInputTask(type)
+        if not jit:         # No jit, no path
+            return None
+
+        (_job, _input, _task)   = (jit[0], jit[1], jit[2])
 
 
 __date__ = "$Mar 15, 2010 2:45:52 PM$"

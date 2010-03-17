@@ -13,7 +13,7 @@
 
 
 from vnfb.qeutils.qerecords import SimulationRecord
-from vnfb.qeutils.pwresult import PWResult
+from vnfb.qeutils.results.pwresult import PWResult
 from vnfb.qeutils.qegrid import QEGrid
 
 import luban.content as lc
