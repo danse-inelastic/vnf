@@ -65,7 +65,9 @@ class Actor(base):
 
 
     def outputs(self, director):
-        return select(id=ID_RESULTS).replaceContent(self.contentOutput(director))
+        return [select(id=ID_RESULTS).replaceContent(self.contentOutput(director)),
+                select(id=ID_OUTPUTS).replaceContent(self._outputLinks())
+                ]
 
 
     def contentOutput(self, director):
@@ -126,13 +128,15 @@ class Actor(base):
 
 
     def _outputLinks(self):
+        "Output links"
         doc         = lc.document()         # Container for links
         #simrecord   = SimulationRecord(simid)
         typelist    = ("PW", "PH", "Q2R")#self._simrecord.typeList()    # simulation tasks type list
 
+        classes     = self._typeClasses(self.type, typelist)
         for l in typelist:
             doc.add(lc.link(label=l,
-                            Class="qe-action-edit",
+                            Class=classes[l],
                             onclick = load(actor      = 'material_simulations/espresso-analysis/electron', # XXX
                                            routine    = "outputs",
                                            type       = l,
@@ -140,6 +144,24 @@ class Actor(base):
                     )
 
         return doc
+
+
+    def _typeClasses(self, type, typelist):
+        "Returns dictionary with class names for the specified type"
+        DEFAULT = "qe-action-default"  # Default class
+        ACTIVE  = "qe-color-blue"
+        ERROR   = "qe-color-red"
+        classes = {}
+
+        # Set default values first
+        for l in typelist:
+            classes[l]  = DEFAULT
+
+        if not type in typelist:    # type is not recognized
+            return classes
+
+        classes[type]   = ACTIVE + " " + classes[type]
+        return classes
 
 
     def _exportAction(self, container):

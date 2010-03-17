@@ -27,6 +27,7 @@ fieldset {
 }
 
 #action-refresh-status,
+.qe-action-default,
 .qe-action-back,
 .qe-action-refresh,
 .qe-action-new,
@@ -43,7 +44,7 @@ fieldset {
 }
 
 
-
+a.qe-action-default,
 a.qe-action-back,
 a.qe-action-refresh,
 a.qe-action-new,
@@ -67,6 +68,7 @@ a.qe-action-structure {
     background-color: #c2d6f9; /* #48f640 - deep green */
 }
 
+.qe-action-default,
 .qe-action-edit {
     background-color: #c2d6f9; /* light blue */
 }
@@ -81,6 +83,15 @@ a.qe-action-structure {
 
 .qe-action-delete {
     background-color: #c2d6f9; /* #FF7700 - light red */
+}
+
+/* Just Colors */
+.qe-color-blue {
+    background-color: #9bbcf8; /* more blue */
+}
+
+.qe-color-red {
+    background-color: #c2d6f9; /* red */
 }
 
 .qe-action-structure {
