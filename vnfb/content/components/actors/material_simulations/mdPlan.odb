@@ -201,16 +201,17 @@ class Actor(base):
         mdPlan = MdPlan(self.inventory.energyCutoff, 
                         self.inventory.energyResolution, 
                         self.inventory.timestep)
-        return load(actor='material_simulations/mdPlan', routine='resultsPage', 
-                    results=mdPlan.getInfo())
+#        return load(actor='material_simulations/mdPlan', routine='resultsPage', 
+#                    results=mdPlan.getInfo(), include_credential = False)
+        title = 'Md and analysis parameters for S(Q,E) resolution'
+        resultsDoc = lc.document(id='results', title=title)
+        resultsDoc.add(Paragraph(text=mdPlan.getInfo()))
+        return select(id='container').append(resultsDoc)
 
     
     def resultsPage(self, director):
         page = lc.page(title="Md planning parameters")  
-        title = 'Md and analysis parameters for S(Q,E) resolution'
-        container = page.document(id='container', title=title)
-        container.add(Paragraph(text='hi'))#self.inventory.results))
-        #select(id='container').append(resultsDoc)
+
         return page
 
     def __init__(self, name='mdPlan'):
