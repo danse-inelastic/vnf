@@ -119,8 +119,9 @@ class Actor(base):
         table.addRow(("Atomic Structure:",  self._pwresult.atomicStructure()))   # "# Atom Position (bohr) Mass (u)  Pseudo-Potentials"
         table.addRow(("Energy Cutoff:",     self._pwresult.energyCutoff()))
         table.addRow(("Density Cutoff:",    self._pwresult.densityCutoff()))
-        table.addRow(("Smearing Type:",     self._pwresult.smearingType()))    # For metals only
-        table.addRow(("Smearing Degree:",   self._pwresult.smearingDegree()))          # For metals only
+        if self._pwresult.materialType() == "Metal":
+            table.addRow(("Smearing Type:",     self._pwresult.smearingType()))    # For metals only
+            table.addRow(("Smearing Degree:",   self._pwresult.smearingDegree()))  # For metals only
         table.addRow(("K points:",          self._pwresult.kPoints()))
 
         table.setColumnStyle(0, "qe-cell-param-analysis")

@@ -57,7 +57,6 @@ class PWResult(object):
         
 
     # Input methods
-    # STUB
     def atomicStructure(self):
         "Atom mass name: mass<number>, atom pseudo potential name: pseudo<number>"
         atoms       = QEGrid(lc.grid(Class="qe-table-atomic"))
@@ -96,24 +95,35 @@ class PWResult(object):
 
 
     def energyCutoff(self):
-        return "27.0 Ry"
+        "system.ecutwfc"
+        return self._energyParam("ecutwfc")
 
 
     def densityCutoff(self):
-        return "300 Ry"
+        "system.ecutrho"
+        return self._energyParam("ecutrho")
 
 
     def smearingType(self):
         "smearing"
-        return "gaussian"
-
+        return self._param("smearing")
+    
 
     def smearingDegree(self):
-        return "0.02 Ry"
+        "degauss"
+        return self._energyParam("degauss")
 
 
+    # XXX: Not complete! There might be other forms of K points
     def kPoints(self):
-        return "(8, 8, 8)"
+        lines   = self._pwinput.card("k_points").lines()
+
+        if len(lines) == 1:
+            items   =  lines[0].split()
+            if len(items) == 6:
+                return "(%s, %s, %s)" % (items[0], items[1], items[2])
+            
+        return "None"
 
 
     # Output methods
@@ -170,12 +180,27 @@ class PWResult(object):
         return None
 
 
+    # XXX: Combine with param?
+    def _energyParam(self, type):
+        param   = self._pwinput.namelist("system").param(type)
+        return self._format((param, "Ry"))
+
+
+    def _param(self, type, nl = "system"):
+        param   = self._pwinput.namelist(nl).param(type)
+        if param:
+            return param
+
+        return "None"
+
+
     def _format(self, energy):
         # Do energy formatting
-        if energy:
+        if energy and len(energy) == 2 and energy[0]:
             return  "%s %s" % (energy[0], energy[1])
 
         return "None"
+
 
     # XXX: Work on a better validation of code!
     def _atomsList(self):
