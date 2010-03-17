@@ -55,10 +55,10 @@ STEPS       = ("Create Simulation",
 # Types of simulations
 SIMCHAINS = OrderedDict()
 SIMCHAINS["Total Energy"]           = ("PW",)
-SIMCHAINS["Electron DOS"]           = ("PW", "DOS") # ("PW", "PW", "DOS")
-SIMCHAINS["Electron Dispersion"]    = ("PW", "DOS") # pw.x -> pw.x -> bands.x -> plotbands.x
-SIMCHAINS["Geometry Optimization"]  = ("PW",)
-SIMCHAINS["Single Phonon"]          = ("PW", "PH", "DYNMAT")
+#SIMCHAINS["Electron DOS"]           = ("PW", "DOS") # ("PW", "PW", "DOS")
+#SIMCHAINS["Electron Dispersion"]    = ("PW", "DOS") # pw.x -> pw.x -> bands.x -> plotbands.x
+#SIMCHAINS["Geometry Optimization"]  = ("PW",)
+#SIMCHAINS["Single Phonon"]          = ("PW", "PH", "DYNMAT")
 SIMCHAINS["Multiple Phonon"]        = ("PW", "PH", "Q2R", "MATDYN") # DOS and Dispersion, See: example06
 #SIMCHAINS["Molecular Dynamics"]     = ()   - Next step
 
