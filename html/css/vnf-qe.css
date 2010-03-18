@@ -243,6 +243,10 @@ textarea {
     height: 200px;
 }
 
+.qe-textarea-outputs td textarea {
+    width: 600px
+}
+
 #qe-atoms-form {
     
 }

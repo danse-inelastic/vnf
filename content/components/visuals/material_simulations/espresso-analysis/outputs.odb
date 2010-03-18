@@ -19,7 +19,7 @@ def content(path):
     try:
         text = open(path).read()
     except:
-        text    = "File not accessible"
+        text    = "Ooops! File Not Accessible"
 
     return text
 
@@ -32,11 +32,11 @@ def visual(director, simid, ttype):
 
     # Show only if crash file exists
     if fcrash:
-        crash       = form.textarea()
+        crash       = form.textarea(Class="qe-textarea-outputs")
         crash.label = "CRASH"
         crash.value = content(fcrash)
 
-    pwoutput    = form.textarea()
+    pwoutput    = form.textarea(Class="qe-textarea-outputs")
     pwoutput.label  = "PW Output"
     pwoutput.value  = content(foutput)
     
