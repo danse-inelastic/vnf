@@ -12,7 +12,6 @@
 #
 
 import luban.content as lc
-#from vnfb.qeutils.results.pwresult import PWResult
 from vnfb.qeutils.results.resultpath import ResultPath
 
 def content(path):
@@ -27,11 +26,9 @@ def content(path):
 
 def visual(director, simid, ttype):
     form        = lc.form(id='create-simulation-form')
-    #pwresult    = PWResult(director, simid)
     resultpath  = ResultPath(director, simid, ttype)
     fcrash      = resultpath.resultFiles("crash")
     foutput     = resultpath.resultFiles("output")
-
 
     # Show only if crash file exists
     if fcrash:
@@ -41,7 +38,7 @@ def visual(director, simid, ttype):
 
     pwoutput    = form.textarea()
     pwoutput.label  = "PW Output"
-    pwoutput.value  = content(foutput)   #open(output).read()
+    pwoutput.value  = content(foutput)
     
     return   form 
 
