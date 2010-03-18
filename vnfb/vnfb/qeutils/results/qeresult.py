@@ -13,6 +13,7 @@ import os.path
 #
 
 import os
+import re
 from vnfb.qeutils.qeutils import dataroot, defaultInputName
 from vnfb.qeutils.qeconst import OUTPUT_EXT, INPUT_EXT
 from vnfb.qeutils.qeresults import QEResults
@@ -25,9 +26,11 @@ Note:
     - id is assumed to have alphanumeric values only
     - it is assumed that there are no two files matching the same pattern!
 """
-INPUT   = '[\w]+\.%s' % INPUT_EXT                   # Input file
-OUTPUT  = '[\w]+\.%s\.%s' % (INPUT_EXT, OUTPUT_EXT) # Output file
-CRASH   = 'CRASH'                                   # Crash file
+input_ext   = INPUT_EXT.strip(".")  # Refined input extention
+output_ext  = OUTPUT_EXT.strip(".") # Refined output extention
+INPUT   = '[\w]+\.%s$' % input_ext                      # Input file
+OUTPUT  = '[\w]+\.%s\.%s$' % (input_ext, output_ext)    # Output file
+CRASH   = 'CRASH'                                       # Crash file
 
 REEXP   = {}    # Dictionary of regular expressions
 REEXP["input"]  = INPUT
@@ -91,16 +94,30 @@ class QEResult(object):
         # Example: "/home/dexity/exports/vnf/vnfb/content/data/tmp/tmpTsdw21/4ICDAVNK/4I2NPMY4pw.in.out"
         # We should be able to identify input and output files without input record!
 
-        if not type:
+        if not type:                # all files in the result directory
             return self._allFiles()
-            
 
         files   = self.filesList()
+
         if not type in REEXP or not files:   # No entry, no file!
             return None
 
+        file    = self._matchCheck(files, type)
+        if file:
+            # path is not None (it was verified before!)
+            return os.path.join(self.resultPath(), file)
 
-        #re.compile(
+        return None     #
+
+    def _matchCheck(self, files, type):
+        "Find matching file. Single matching file if possible. Picks first otherwise"
+        for fname in files:
+            p   = re.compile(REEXP[type])
+            if p.match(fname):   # matches
+                return fname
+            
+        return None
+    
 
     def _allFiles(self):
         "Returns list of *absolute* file names"
