@@ -60,7 +60,7 @@ class PWResult(QEResult):
         if param == "'fixed'":
             return "Isolator"
 
-        # Check deeper
+        # Check deeper for smearing
         smparam = self._nlparam("system", "smearing")
         if smparam in SMEARING.values():
             return "Metal"  
