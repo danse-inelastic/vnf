@@ -133,6 +133,7 @@ class SimulationRecord(QERecords):
         return None
 
 
+    # Object methods
     def _jobObject(self, task):
         "Return *latest* job object from related task object"
         if not task:
@@ -169,16 +170,16 @@ class SimulationRecord(QERecords):
         return None
 
 
-    # REFACTOR: Duplicated from vnfb.qeutils.qetasks.py
-    def _type(self, colnum):
-        "Returns task type"
-        return self._typelist[colnum]
+#    # REFACTOR: Duplicated from vnfb.qeutils.qetasks.py
+#    def _type(self, colnum):
+#        "Returns task type"
+#        return self._typelist[colnum]
 
 
-    # REFACTOR: Duplicated from vnfb.qeutils.qetasks.py
-    def _tasknum(self):
-        "Returns number of tasks"
-        return len(self._typelist)
+#    # REFACTOR: Duplicated from vnfb.qeutils.qetasks.py
+#    def _tasknum(self):
+#        "Returns number of tasks"
+#        return len(self._typelist)
 
 
 # Add additional classes?

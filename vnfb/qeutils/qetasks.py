@@ -11,15 +11,11 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
-from vnfb.qeutils.qeconst import SIMCHAINS
 from vnfb.qeutils.qetaskcell import QETaskCell
 from vnfb.qeutils.qegrid import QEGrid
+from vnfb.qeutils.qerecords import SimulationRecord
 
 import luban.content as lc
-from luban.content.Splitter import Splitter
-from luban.content.Paragraph import Paragraph
-from luban.content import load
-from luban.content.Link import Link
 
 # TODO:
 # - Do not display action buttons "Run Task" or "Cancel" unless previous simulation
@@ -34,49 +30,52 @@ class QETasks:
         self._simid     = simid
         self._director  = director
         self._simtype   = type
-        self._simlist   = self._getSimlist(type)
 
 
     def tasks(self):
         container   = ""
-        if self._simid:
-            # At most one task for each simtask is possible
-            simtasks        = self._director.clerk.getQESimulationTasks(where="simulationid='%s'" % self._simid)
-            taskslist       = self._tasksList(simtasks)
 
-            table           = QEGrid(lc.grid(Class="qe-tasks-table"))
-            doshow          = self._showActions(taskslist)  # show "Run Task"?
+        simrecord   = SimulationRecord(self._director, self._simid)
+        tasklist    = simrecord.taskList()
 
-            for i in range(self._tasknum()):
-                rows    = self._list(doshow)
-                self._setTaskCell(table, i, taskslist[i], rows)
-                if doshow:
-                    # Special layout for action buttons (e.g. "Run Task")
-                    table.setCellStyle(2, i, "qe-action-task")
+        if not tasklist:
+            return container
 
-            container   = table.grid()
-            
+        self._types     = simrecord.typeList()
+        table           = QEGrid(lc.grid(Class="qe-tasks-table"))
+        doshow          = self._showActions(tasklist)  # show "Run Task"?
+
+        for i in range(len(tasklist)):   #self._tasknum()):
+            rows    = self._list(doshow)
+            self._setTaskCell(table, i, tasklist[i], rows)
+            if doshow:
+                # Special layout for action buttons (e.g. "Run Task")
+                table.setCellStyle(2, i, "qe-action-task")
+
+        container   = table.grid()
+
         return container
 
 
     def _setTaskCell(self, table, colnum, task, rows):
         "Populates the task's cell"
 
-        tc      = QETaskCell(self._director, self._type(colnum), colnum, self._simid, task)
+        tc      = QETaskCell(self._director, self._types[colnum], colnum, self._simid, task)
         fields  = [tc.header(), tc.taskInfo(), tc.action()]
-        #fields  = [tc.header(), tc.header(), tc.header()]
+
         for i in range(len(rows)):
             rows[i] = fields[i]
         table.addColumn(rows)
 
 
-    def _showActions(self, taskslist):
+    def _showActions(self, tasklist):
         doshow  = False
-        for t in taskslist:
+        for t in tasklist:
             if t:
                 doshow = True
 
         return doshow
+
 
     def _list(self, doshow):
         """Return list of size 'num' filled with None values
@@ -88,42 +87,10 @@ class QETasks:
 
         return [None for i in range(num)]
 
+
     def _type(self, colnum):
         "Returns task type"
         return self._simlist[colnum]
-
-
-    def _tasknum(self):
-        "Returns number of tasks"
-        return len(self._simlist)
-
-
-    def _tasksList(self, simtasks):
-        taskslist   = []
-        for type in self._simlist:
-            taskslist.append(self._taskObject(simtasks, type))
-            
-        return taskslist
-
-
-    def _taskObject(self, simtasks, type):
-        """
-        Return task object in simtasks of type 'type' or None otherwise
-        """
-        for st in simtasks:
-            if st.taskid != '': # Avoid dangling references
-                task    = self._director.clerk.getQETasks(id = st.taskid)
-                if task is not None and task.type    == type:
-                    return task
-
-        return None
-
-
-    def _getSimlist(self, type):
-        if type in SIMCHAINS:
-            return SIMCHAINS[type]
-
-        return ()
 
 
 if __name__ == "__main__":
