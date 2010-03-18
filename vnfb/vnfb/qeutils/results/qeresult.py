@@ -14,7 +14,7 @@ import os.path
 
 import os
 import re
-from vnfb.qeutils.qeutils import dataroot, defaultInputName
+from vnfb.qeutils.qeutils import dataroot
 from vnfb.qeutils.qeconst import OUTPUT_EXT, INPUT_EXT
 from vnfb.qeutils.qeresults import QEResults
 from vnfb.qeutils.qetaskinfo import TaskInfo
@@ -177,15 +177,7 @@ class QEResult(object):
 __date__ = "$Mar 17, 2010 12:21:27 PM$"
 
 
-
-
-#        #simrecord   = SimulationRecord(self._director, self._simid)
-#        jitlist     = self._simrecord.jobInputTaskList()
-#
-#        for jit in jitlist:
-#            (_job, _input, _task)   = (jit[0], jit[1], jit[2])
-#            if _job is None:   # If job is None
-#                continue
+# Keep the code in case if you want to use input (which is not very smart!)
 #
 #            if _input and _task.type == "PW":   # PW type
 #                datadir     = dataroot(self._director)
@@ -197,7 +189,5 @@ __date__ = "$Mar 17, 2010 12:21:27 PM$"
 #                        file    += OUTPUT_EXT   # .out
 #                    path        = os.path.join(results.tardir(), file)
 #                    return os.path.join(datadir, path)
-#
-#        return None
 
 

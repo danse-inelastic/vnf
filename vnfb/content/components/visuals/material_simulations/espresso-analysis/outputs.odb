@@ -12,17 +12,32 @@
 #
 
 import luban.content as lc
-from vnfb.qeutils.qerecords import SimulationRecord
+from vnfb.qeutils.results.pwresult import PWResult
+
+def content(path):
+    "Returns content of the file of path"
+    try:
+        text = open(path).read()
+    except:
+        text    = "File not accessible"
+
+    return text
+
 
 def visual(director, simid):
     form        = lc.form(id='create-simulation-form')
-    crash       = form.textarea()
-    crash.label = "CRASH"
-    crash.value = "crash text"
+    pwresult    = PWResult(director, simid)
+    fcrash      = pwresult.resultFiles("crash")
+    foutput     = pwresult.resultFiles("output")
+
+    if fcrash:
+        crash       = form.textarea()
+        crash.label = "CRASH"
+        crash.value = content(fcrash)
 
     pwoutput    = form.textarea()
     pwoutput.label  = "PW Output"
-    pwoutput.value  = "pw output text"
+    pwoutput.value  = content(foutput)   #open(output).read()
     
     return   form 
 
