@@ -39,6 +39,8 @@ class Actor(base):
         return select(id=ID_STATUS).replaceContent(lc.htmldocument(text=job.status))
 
 
+#    def 
+
     def __init__(self):
         super(Actor, self).__init__(name='jobs/getresults')
 

@@ -39,6 +39,8 @@ class Actor(base):
 
 
     def default(self, director):
+        # Redirection doesn't pass value to self.id, so I need to do it manually
+        self.id     = self.inventory.id
         return select(id='main-display-area').replaceContent(self.content(director))
 
 
@@ -99,7 +101,7 @@ class Actor(base):
         section.add(container)
         self._backAction(container)
         self._outputAction(director, container)
-        self._exportAction(container)
+        self._exportAction(director, container)
 
         section.add(lc.document(Class="clear-both"))
 
@@ -187,9 +189,50 @@ class Actor(base):
         return crash
 
 
-    def _exportAction(self, container):
-        "Export actions. Needs to be overwritten by subclasses"
-        
+#    def _exportAction(self, container):
+#        "Export actions. Needs to be overwritten by subclasses"
+
+    # XXX: Keep for presentation only
+    def _exportAction(self, director, container):
+        "Button related to export"
+        simrecord   = SimulationRecord(director, self.id)
+        sim         = simrecord.record()
+        sA          = container.section()
+
+        #if not sim and sim.type    == "Multiple Phonon":   # Make sure that jobs exist with DOS or Dispersion
+        self._showPhononDos(sA, sim)
+        self._showPhononDispersion(sA, sim)
+
+    # XXX: Keep for presentation only
+    def _showPhononDos(self, section, sim):
+        linkDos     = lc.link(label="Export Phonon DOS",
+                            Class="qe-action-edit",
+                            onclick = load(actor        = 'material_simulations/espresso/phonondos',
+                                            routine     = 'create',
+                                            simid       = self.inventory.id))
+        linkDos.tip = "Export Phonon DOS to Atomic Structure"
+
+        # Uncomment
+#        if self._phononDosCreated(sim):     # Check if DOS created
+#            linkDos.label   = "Phonon DOS"
+#            linkDos.onclick = load(actor        = 'atomicstructure',
+#                                    routine     = 'showOverview',
+#                                    id          = sim.structureid)  # matter id
+
+        section.add(linkDos)
+
+
+    # XXX: Keep for presentation only
+    def _showPhononDispersion(self, section, sim):
+       linkDisp     = lc.link(label="Export Phonon Dispersion",
+                            Class="qe-action-edit",
+                            onclick = load(actor        = 'material_simulations/espresso/phonons',
+                                            routine     = 'create',
+                                            simid       = self.inventory.id))
+       linkDisp.tip = "Export Phonon Dispersion to Atomic Structure"
+       section.add(linkDisp)
+
+
 
     def _summary(self, director, section):
         "System Summary"
