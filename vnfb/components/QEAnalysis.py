@@ -73,7 +73,7 @@ class Actor(base):
     def contentOutput(self, director):
         doc     = lc.document()
         visual  = 'material_simulations/espresso-analysis/outputs'
-        doc.add(director.retrieveVisual(visual, director, self.id))
+        doc.add(director.retrieveVisual(visual, director, self.id, self.type))
 
         return  doc
 
@@ -131,7 +131,9 @@ class Actor(base):
         "Output links"
         doc         = lc.document()         # Container for links
         #simrecord   = SimulationRecord(simid)
-        typelist    = ("PW", "PH", "Q2R")#self._simrecord.typeList()    # simulation tasks type list
+        typelist    = ("PW", "PH", "Q2R")   #self._simrecord.typeList()    # simulation tasks type list
+        #self._pwresult    = PWResult(director, self.id)
+
 
         classes     = self._typeClasses(self.type, typelist)
         for l in typelist:
