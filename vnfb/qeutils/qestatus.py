@@ -66,7 +66,11 @@ class QEStatus:
         self._message   = message
         self._onload    = onload
 
-    
+
+    def setClass(self, Class):
+        self._class = Class
+
+
     def message(self, message):
         "Set status message"
         self._message   = message

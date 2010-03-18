@@ -39,7 +39,6 @@ all: export
 
 EXPORT_PYTHON_MODULES = \
 	__init__.py \
-        pwresult.py \
         qetaskcell.py \
         qetaskinfo.py \
         qetasks.py \
@@ -48,6 +47,7 @@ EXPORT_PYTHON_MODULES = \
         qeinput.py \
         qeparams.py \
         qerecords.py \
+        qeresults.py \
         qescheduler.py \
         qeserver.py \
         qestatus.py \

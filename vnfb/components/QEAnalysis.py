@@ -19,7 +19,6 @@ from vnfb.qeutils.qegrid import QEGrid
 
 import luban.content as lc
 from luban.content import select, load
-from luban.content.HtmlDocument import HtmlDocument
 
 from luban.components.AuthorizedActor import AuthorizedActor as base
 
@@ -124,7 +123,7 @@ class Actor(base):
     def _outputAction(self, director, container):
         "Simulation output files"
         sA          = container.section(Class="qe-section-text-output")
-        sA.add(HtmlDocument(text="Outputs: "))
+        sA.add(lc.htmldocument(text="Outputs: "))
         sB          = container.section()
 
         docOutput   = lc.document(id=ID_OUTPUTS)    # Hook for output links

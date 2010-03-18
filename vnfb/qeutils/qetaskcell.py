@@ -22,6 +22,10 @@ from vnfb.qeutils.qetaskinfo import TaskInfo
 from vnfb.qeutils.qeutils import latestJob
 
 RUN_TASK    = "run-task"
+#CLASS_ERROR = 'qe-text-red'
+#CLASS_OK    = 'qe-text-blue'
+#CLASS_NA    = 'qe-text-black'
+
 
 class QETaskCell:
 

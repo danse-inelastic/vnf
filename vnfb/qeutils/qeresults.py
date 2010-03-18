@@ -21,7 +21,10 @@ from vnfb.qeutils.qeconst import RESULTS_ID
 import luban.content as lc
 from luban.content import load
 
-DELAY   = 60*3  # 3 minute delay
+DELAY   = 60*1  # 1 minute delay
+CLASS_ERROR = 'qe-text-red'
+CLASS_OK    = 'qe-text-blue'
+CLASS_NA    = 'qe-text-black'
 
 class QEResults:
     """
@@ -45,7 +48,7 @@ class QEResults:
         self._director  = director
         self._job       = job       # not None
         self._taskinfo  = taskinfo
-        self._status    = QEStatus(id = id)
+        self._status    = QEStatus()
         self._status.set("norequest", "Not Requested")
         self._ptrfilepath   = self._ptrfilepath()
 
@@ -84,6 +87,7 @@ class QEResults:
     def status(self):
         "Returns status of the simulation without any action (such as results retrieval)"
         # Packing was not requested before
+
         if self._norequest():
             self._status.set("norequest", "Not Requested")
             return self._statusstring()
@@ -109,16 +113,19 @@ class QEResults:
             return self._tarlink()
         
         return self._statusstring()
-    
+
+
     def link(self):
-        "Returns link to results when ready or string with status"
+        """
+        Returns link to results when ready or string with status
+        """
         cid         = "%s-%s" % (RESULTS_ID, self._id()) # self._task.id?
         container   = lc.document(id=cid)
-        link        = lc.htmldocument(text="<div>None</div>")# lc.paragraph(text="None") # Default value
+        link        = lc.htmldocument(text="None") # TEST! Default value
 
         if self._job:
             link    = self.status()
-
+            
         container.add(link)
         return container
 
@@ -141,6 +148,7 @@ class QEResults:
 
 
     def _statusstring(self):
+        self._status.setClass(CLASS_NA)     # Default class for status string
         return self._status.string("div")
 
 
@@ -168,13 +176,13 @@ class QEResults:
         It can trigger packing from remote server
         """
         server      = self._director.clerk.getServers(id = self._job.serverid)
-        # Don't understant what's the point
+        # Don't understand what's the point
         #jobmtime    = self._director.dds.getmtime(self._job, server = server)   # Requires getmtime.py
 
         ptrmtime    = os.path.getmtime(self._ptrfilepath)  
         curtime     = time.time()
 
-        if curtime > ptrmtime + DELAY:  # 3 minute of delay
+        if curtime > ptrmtime + DELAY:  # 1 minute of delay
             return True
 
         return False
@@ -182,6 +190,7 @@ class QEResults:
 
     def ready(self):
         "Results are delivered to the server"
+
         if self._ptrfilepath and os.path.exists(self._ptrfilepath):
             s       = open(self._ptrfilepath).read()
             ss      = s.split("tmp")
@@ -189,6 +198,23 @@ class QEResults:
                 return True
 
         return False
+
+
+    def _setResultClass(self):
+        """
+        When results are ready, check if there is error (e.g. crash file) and
+        change status class
+        """
+        # Import should be local
+        
+        Class       = CLASS_OK
+        from vnfb.qeutils.results.resultpath import ResultPath
+        resultpath  = ResultPath(self._director, self._taskinfo.simid(), self._taskinfo.type())
+        fcrash      = resultpath.resultFiles("crash")
+        if fcrash:
+            Class   = CLASS_ERROR
+            
+        self._status.setClass(Class)
 
 
     def _notuntarred(self):
@@ -214,6 +240,7 @@ class QEResults:
     def _tarlink(self):
         text    = self._tarfile()
         path    = self._tarpath()
+        self._setResultClass()
         self._status.setHtmlLink(text, path)
         return self._status.string("a")
 

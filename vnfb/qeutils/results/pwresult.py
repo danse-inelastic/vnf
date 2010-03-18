@@ -11,15 +11,9 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
-#import os
-#from vnfb.qeutils.qeutils import dataroot, defaultInputName
-#from vnfb.qeutils.qeresults import QEResults
-#from vnfb.qeutils.qetaskinfo import TaskInfo
-from vnfb.qeutils.qeutils import ifelse
 from vnfb.qeutils.results.qeresult import QEResult
 from vnfb.qeutils.qeconst import SMEARING, IBRAV
 from vnfb.qeutils.qegrid import QEGrid
-#from vnfb.qeutils.qerecords import SimulationRecord
 
 from qecalc.qetask.pwtask import PWTask
 import luban.content as lc
