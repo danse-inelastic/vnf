@@ -14,6 +14,7 @@
 
 from vnfb.qeutils.qerecords import SimulationRecord
 from vnfb.qeutils.results.pwresult import PWResult
+from vnfb.qeutils.results.resultpath import ResultPath
 from vnfb.qeutils.qegrid import QEGrid
 
 import luban.content as lc
@@ -22,8 +23,12 @@ from luban.content.HtmlDocument import HtmlDocument
 
 from luban.components.AuthorizedActor import AuthorizedActor as base
 
-ID_RESULTS  = "qe-splitter-results" # id for results container
-ID_OUTPUTS  = "qe-splitter-outputs"
+ID_RESULTS      = "qe-splitter-results" # id for results container
+ID_OUTPUTS      = "qe-splitter-outputs"
+CLASS_DEFAULT   = "qe-action-default"  # Default class
+CLASS_ACTIVE    = "qe-color-blue"
+CLASS_ERROR     = "qe-color-red"
+
 
 # Requires simulation id, config id and config type: (id, configid, type)
 class Actor(base):
@@ -52,7 +57,7 @@ class Actor(base):
         sSum        = resSplitter.section()                        # system summary
         sEle        = resSplitter.section()                        # electron structure
         
-        self._simrecord   = SimulationRecord(director, self.id)
+        #self._simrecord   = SimulationRecord(director, self.id)
         self._pwresult    = PWResult(director, self.id)
 
         self._viewIndicator(director, sInd)
@@ -66,7 +71,7 @@ class Actor(base):
 
     def outputs(self, director):
         return [select(id=ID_RESULTS).replaceContent(self.contentOutput(director)),
-                select(id=ID_OUTPUTS).replaceContent(self._outputLinks())
+                select(id=ID_OUTPUTS).replaceContent(self._outputLinks(director))
                 ]
 
 
@@ -123,19 +128,17 @@ class Actor(base):
         sB          = container.section()
 
         docOutput   = lc.document(id=ID_OUTPUTS)    # Hook for output links
-        docOutput.add(self._outputLinks())
+        docOutput.add(self._outputLinks(director))
         sB.add(docOutput)
 
 
-    def _outputLinks(self):
+    def _outputLinks(self, director):
         "Output links"
         doc         = lc.document()         # Container for links
-        #simrecord   = SimulationRecord(simid)
-        typelist    = ("PW", "PH", "Q2R")   #self._simrecord.typeList()    # simulation tasks type list
-        #self._pwresult    = PWResult(director, self.id)
+        simrecord   = SimulationRecord(director, self.id)
+        typelist    = simrecord.typeList()    # simulation tasks type list 
 
-
-        classes     = self._typeClasses(self.type, typelist)
+        classes     = self._typeClasses(director, self.type, typelist)
         for l in typelist:
             doc.add(lc.link(label=l,
                             Class=classes[l],
@@ -148,22 +151,41 @@ class Actor(base):
         return doc
 
 
-    def _typeClasses(self, type, typelist):
+    def _typeClasses(self, director, type, typelist):
         "Returns dictionary with class names for the specified type"
-        DEFAULT = "qe-action-default"  # Default class
-        ACTIVE  = "qe-color-blue"
-        ERROR   = "qe-color-red"
         classes = {}
+        crash   = self._crashCheck(director, typelist)
+
+        #assume(len(crash.keys()) == len(typelist))  # Assumption
 
         # Set default values first
-        for l in typelist:
-            classes[l]  = DEFAULT
+        for t in typelist:
+            classes[t]  = CLASS_DEFAULT
+            if crash[t]:
+                classes[t]   = "%s %s" % (CLASS_ERROR, classes[t])
 
         if not type in typelist:    # type is not recognized
             return classes
 
-        classes[type]   = ACTIVE + " " + classes[type]
+        if not crash[type]:     # Mark as active if it is not crashed only
+            classes[type]   = CLASS_ACTIVE + " " + classes[type]
+
         return classes
+
+
+    def _crashCheck(self, director, typelist):
+        "Returns dictionary of crash tasks specified by type"
+        crash   = {}
+        for t in typelist:
+            crash[t] = False # default to False (no crashed files)
+
+        for t in typelist:
+            resultpath  = ResultPath(director, self.id, t)
+            path        = resultpath.resultFiles("crash")
+            if path:    # has CRASH file
+                crash[t]  = True
+
+        return crash
 
 
     def _exportAction(self, container):
