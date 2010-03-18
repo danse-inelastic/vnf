@@ -108,7 +108,7 @@ class SimulationRecord(QERecords):
 
         return None
 
-    # REFACTOR: Duplicated from vnfb.qeutils.qetasks.py
+
     def typeList(self):
         "Return list of simulation task types"
         if not self._sim:
@@ -158,7 +158,6 @@ class SimulationRecord(QERecords):
         return None     # No input related to the task
 
 
-    # REFACTOR: Duplicated from vnfb.qeutils.qetasks.py
     def _taskObject(self, type):
         "Return task object in simtasks of type 'type' or None otherwise"
         for st in self._simtasks:
@@ -168,18 +167,6 @@ class SimulationRecord(QERecords):
                     return task
 
         return None
-
-
-#    # REFACTOR: Duplicated from vnfb.qeutils.qetasks.py
-#    def _type(self, colnum):
-#        "Returns task type"
-#        return self._typelist[colnum]
-
-
-#    # REFACTOR: Duplicated from vnfb.qeutils.qetasks.py
-#    def _tasknum(self):
-#        "Returns number of tasks"
-#        return len(self._typelist)
 
 
 # Add additional classes?

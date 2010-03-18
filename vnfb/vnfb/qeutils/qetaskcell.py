@@ -22,6 +22,9 @@ from vnfb.qeutils.qetaskinfo import TaskInfo
 from vnfb.qeutils.qeutils import latestJob
 
 RUN_TASK    = "run-task"
+ID_OUTPUT   = "qe-container-output"
+ID_STATUS   = "qe-container-status"
+
 #CLASS_ERROR = 'qe-text-red'
 #CLASS_OK    = 'qe-text-blue'
 #CLASS_NA    = 'qe-text-black'
@@ -119,13 +122,20 @@ class QETaskCell:
 
 
     def _output(self, table):
-        table.addRow(("Output:", "None", ""))
+        docOut  = lc.document(id=ID_OUTPUT)
+        docOut.add("None")
+        table.addRow(("Output:", docOut, ""))
 
 
+    # XXX: Refactor. Move to a separate directory
     def _status(self, table):
         "Displays status of the simulation"
+        docSta  = lc.document(id=ID_STATUS)
+        content = lc.htmldocument()
+
         action  = ""
-        link    = "Not Started"
+        content.text    = "Not Started"
+        #link    = "Not Started"
         jobs    = self._director.clerk.getQEJobs(where="taskid='%s'" % self._task.id)
         if jobs:
             job  = latestJob(jobs)
@@ -138,10 +148,11 @@ class QETaskCell:
                                               jobid     = job.id)  #,type      = self._type
                              )
 
-            link = job.status
+            content.text    = job.status
+            #link = job.status   # Fix the status
 
-        
-        table.addRow(("Status:", link, action)) # Replace: Status -> Job Status
+        docSta.add(content) #link)
+        table.addRow(("Status:", docSta, action)) # Replace: Status -> Job Status
 
 
     def _jobId(self, table):
@@ -151,13 +162,13 @@ class QETaskCell:
         jobs        = self._director.clerk.getQEJobs(where="taskid='%s'" % self._task.id)
         if jobs:
             self._job  = latestJob(jobs)
-            link = lc.link(label=self._job.id,
-                               onclick = load(actor     = 'jobs/jobs-view',
-                                              id        = self._simid,
-                                              taskid    = self._task.id,
-                                              jobid     = self._job.id,
-                                              type      = self._type)
-                                )
+            link = lc.link(label   = self._job.id,
+                           onclick = load(actor     = 'jobs/jobs-view',
+                                          id        = self._simid,
+                                          taskid    = self._task.id,
+                                          jobid     = self._job.id,
+                                          type      = self._type)
+                            )
             action = lc.link(label    = "All Jobs",
                               Class    = "qe-all-jobs", # Class = "qe-task-action"
                                onclick = load(actor     = 'jobs/jobs-view-all',

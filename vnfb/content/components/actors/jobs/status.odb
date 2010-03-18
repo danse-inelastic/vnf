@@ -11,6 +11,12 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
+import luban.content as lc
+from luban.content import load, select
+from luban.components.AuthorizedActor import AuthorizedActor as base
+
+ID_STATUS   = "qe-container-status"
+
 class Actor(base):
     """
     Actor for retrieving results from server
@@ -24,8 +30,14 @@ class Actor(base):
         taskid      = pyre.inventory.str('taskid', default='')
         jobid       = pyre.inventory.str('jobid', default='')   # Not passed at this time
 
+
     def retrieveStatus(self, director):
-        pass
+        job     = director.clerk.getQEJobs(id=self.jobid)
+        job.setDirector(director)
+        job.updateRecord({"status": "Hi",})
+
+        return select(id=ID_STATUS).replaceContent(lc.htmldocument(text=job.status))
+
 
     def __init__(self):
         super(Actor, self).__init__(name='jobs/getresults')

@@ -11,9 +11,6 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
-from luban.content import load
-from luban.content import select
-import luban.content as lc
 from luban.components.AuthorizedActor import AuthorizedActor as base
 
 class Actor(base):
