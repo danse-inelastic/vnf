@@ -52,17 +52,17 @@ class PWResult(QEResult):
         atoms.setRowStyle(0, "qe-table-header") 
         return atoms.grid()
 
-
+    # XXX: Fix issue with aliaces
     def materialType(self):
         "Material type"
-        param   = None
-        if self._input:
-            param   = self._input.namelist("system").param("occupations", quotes = False) # Special case
+        param   = self._nlparam("system", "occupations") 
 
-        if param == "fixed":
+        if param == "'fixed'":
             return "Isolator"
 
-        if param in SMEARING.keys():
+        # Check deeper
+        smparam = self._nlparam("system", "smearing")
+        if smparam in SMEARING.values():
             return "Metal"  
 
         return "None"   # default
