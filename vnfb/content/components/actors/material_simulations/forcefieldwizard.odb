@@ -221,47 +221,50 @@ class Actor(base):
         #from memd.gulp.GulpSettings import GulpSettings
         from vnfb.dom.material_simulations.GulpSettings import GulpSettings
         gulpSettings = GulpSettings()
+        gulpSettings.id = self.inventory.simulationId
         import time
         gulpSettings.date = time.ctime()
         gulpSettings.creator = director.sentry.username
         gulpSettings.runtype = self.inventory.runtype
+        gulpSettings.description = self.inventory.runtype
         #gulpSettings.inputFileContents = self.inventory.inputFileContents
         #gulpSettings.potential_name = self.inventory.potential_name
         domaccess = director.retrieveDOMAccessor('atomicstructure')
         structure = domaccess.getAtomicStructure(self.inventory.structureId)
-        gulpSettings.matter = structure
+        gulpSettings.matter = orm(structure) # this turns an object back into a table?
         #since the potential has already been stored, we just get it 
         from memd.gulp.GulpPotential import GulpPotential
         try:
-            record = orm.db.query(orm(GulpPotential)).filter_by(
+            potentialRecord = orm.db.query(orm(GulpPotential)).filter_by(
                         potential_name = self.inventory.potential_name).one()
         except Exception, err:
             print err
             self.storePotential(director)
-            record = orm.db.query(orm(GulpPotential)).filter_by(
+            potentialRecord = orm.db.query(orm(GulpPotential)).filter_by(
                         potential_name = self.inventory.potential_name).one()
-        gulpSettings.potential = orm.record2object(record)
+        #gulpSettings.potential = orm.record2object(record)
+        gulpSettings.potential = potentialRecord
 
         #save the settings
-        #from dsaw.db.GloballyReferrable import GloballyReferrable
-        orm.save(gulpSettings, save_not_owned_referred_object=0, 
-                 id = self.inventory.simulationId)
+        director.clerk.insertNewRecord(gulpSettings)
+#        orm.save(gulpSettings, save_not_owned_referred_object=0, 
+#                 id = self.inventory.simulationId)
         # these last few lines will eventually be taken care of by the orm
         #create data directory for the simulation if necessary
-        datadir = director.dds.abspath(orm(gulpSettings))
+        datadir = director.dds.abspath(gulpSettings)
         if not os.path.exists(datadir): 
             os.makedirs(datadir)
 
-        inputFilePath = director.dds.abspath(orm(gulpSettings), filename=GulpSettings.inputFile)
+        inputFilePath = director.dds.abspath(gulpSettings, filename=getattr(gulpSettings, "inputFile")) # this is a hack until we can fix db layer so it interacts correctly with dds
         open(inputFilePath, 'w').write(self.inventory.inputFileContents)
         
         #these lines should be executed right before the job is submitted
         #get the potential from the database
         gulpPotential = gulpSettings.potential
-        potentialPath = director.dds.abspath(orm(gulpPotential), filename=gulpPotential.filename)
+        potentialPath = director.dds.abspath(potentialRecord, filename = getattr(potentialRecord, "filename"))
         potentialContent = open(potentialPath).read()
         #write the potential in the simulation directory
-        simulationPotential = director.dds.abspath(orm(gulpSettings), filename=gulpPotential.filename)
+        simulationPotential = director.dds.abspath(gulpSettings, filename = getattr(potentialRecord, "filename"))
         open(simulationPotential, 'w').write(potentialContent)        
         return 'success'
     
