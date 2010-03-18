@@ -36,14 +36,16 @@ REEXP["crash"]  = CRASH
 
 class QEResult(object):
 
-    def __init__(self, director, simid):    # simulation id
-        self._name          = None          # type name. Example: "PW"
+    def __init__(self, director, simid, type):   # simulation id
+        self._type          = type               # type name. Example: "PW"
         self._director      = director
         self._simid         = simid
         self._simrecord     = SimulationRecord(director, simid)
 
         # Attributes
         self._task          = None     # Will remain None if output file is not available
+        self._input         = None
+        self._output        = None
         self._init()
 
 
@@ -65,7 +67,7 @@ class QEResult(object):
 
 
     def resultPath(self):
-        return self._resultPath(self._name)
+        return self._resultPath(self._type)
 
 
     def filesList(self):
@@ -94,7 +96,6 @@ class QEResult(object):
             
 
         files   = self.filesList()
-        print files
         if not type in REEXP or not files:   # No entry, no file!
             return None
 
@@ -127,7 +128,7 @@ class QEResult(object):
         entries = os.listdir(path)
 
         for e in entries:   # Filter files
-            if os.path.isfile(os.join(path, e)):
+            if os.path.isfile(os.path.join(path, e)):
                 files.append(e)
 
         return files
@@ -140,17 +141,15 @@ class QEResult(object):
         Note: Result path is assumed not to have child directories. 
         """
         jit     = self._simrecord.jobInputTask(type)
-        #print type
         if not jit:         # No jit, no path
             return None
 
         (_job, _input, _task)   = (jit[0], jit[1], jit[2])  # _input not used
-        #print (_job, _input, _task)
         if not _job or not _task:   # If job or task is None
             return None
 
         datadir     = dataroot(self._director)
-        taskinfo    = TaskInfo(simid = self._simid, type = self._name)
+        taskinfo    = TaskInfo(simid = self._simid, type = self._type)
         results     = QEResults(self._director, _job, taskinfo)
         if results.ready():
             return os.path.join(datadir, results.tardir())
