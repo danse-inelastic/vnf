@@ -26,6 +26,7 @@ CLASS_ERROR = 'qe-text-red'
 CLASS_OK    = 'qe-text-blue'
 CLASS_NA    = 'qe-text-black'
 
+# XXX: Needs severe refactoring
 class QEResults:
     """
     Handles complexity of job results
