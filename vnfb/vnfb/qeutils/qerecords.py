@@ -85,7 +85,6 @@ class SimulationRecord(QERecords):
         return inputlist
 
 
-    # REFACTOR: Duplicated from vnfb.qeutils.qetasks.py
     def taskList(self):
         "Return list of task objects from list of simulation task objects"
         tasklist   = []
@@ -103,7 +102,8 @@ class SimulationRecord(QERecords):
         "Returns Job-Input-Task tuple specified by type"
         for jit in self._jitlist:
             task    = jit[2]
-            if task.type == type:
+            
+            if task and task.type == type:
                 return jit
 
         return None

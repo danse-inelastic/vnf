@@ -51,7 +51,7 @@ class Actor(base):
         self._createLocation(director)
         self._relocateResults(director)
 
-        return director.redirect(actor   = 'material_simulations/espresso/analysis',
+        return director.redirect(actor   = 'material_simulations/espresso-analysis/electron', #XXX
                                  routine = 'default',
                                  id      = self.simid)
 
