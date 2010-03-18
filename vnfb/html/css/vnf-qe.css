@@ -94,6 +94,18 @@ a.qe-action-structure {
     background-color: #FF7700; /* red */
 }
 
+.qe-text-red {
+    color: red; /* red */
+}
+
+.qe-text-blue {
+    color: blue; /* blue */
+}
+
+.qe-text-black {
+    color: black; /* black */
+}
+
 .qe-action-structure {
     font-weight: bold;
     padding: 3px 20px;
