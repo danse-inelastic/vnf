@@ -132,11 +132,16 @@ class PWResult(QEResult):
 
     # XXX: Finish up forces and stress
     def forces(self):
+        "Returns force vector for each atom"
+        if not self._output:
+            return "None"
+
         table    = QEGrid(lc.grid(Class="qe-table-forces"))
         table.addRow((" ", "Atom", "Force (Ry/bohr)"))
-        table.addRow(("1", "Fe", "(0, 0, 0)"))
-        table.addRow(("2", "V", "(0.5, 0.5, 0.5)"))
-        table.addRow(("3", "V", "(0.75, 0.25, 0.35)"))
+
+        forces  = self._outputForces()
+        for f in forces:
+            table.addRow((f[0], f[1], "(%.2f, %.2f, %.2f)" % (f[2], f[3], f[4]) ))
 
         table.setRowStyle(0, "qe-table-header")
         return table.grid()
@@ -148,6 +153,8 @@ class PWResult(QEResult):
         table.addRow(("0.50000000", "0.50000000", "0.50000000"))
         table.addRow(("0.50000000", "0.50000000", "0.50000000"))
         table.addRow(("0.50000000", "0.50000000", "0.50000000"))
+
+#        print self._output.property("stress", withUnits=True)   # XXX
 
         return table.grid()
 
@@ -169,6 +176,20 @@ class PWResult(QEResult):
         param   = self._nlparam("system", type)  #self._input.namelist("system").param(type)
         return self._format((param, "Ry"))
 
+
+    def _outputForces(self):
+        "Returns output forces in format: (['1', 'Al', 0.00, 0.00, 0.00], [...])"
+        forces  = []
+        atoms   = self._atomLabels()
+        foutput = self._output.property("forces", withUnits=True)
+        fvector = foutput[0]    # Force vector. Example: ((0.0, 0.0, 0.0), (0.5, 0.5, 0.5))
+        assert len(atoms) == len(fvector)
+        for i in range(len(fvector)):
+            f   = fvector[i]
+            forces.append((str(i+1), atoms[i], f[0], f[1], f[2]))
+
+        return forces       # Example: [("1", "Al", 0.00, 0.00, 0.00),]
+        
 
     def _nlparam(self, nl, param, formatted=False):
         "Returns parameter of the namelist nl"
@@ -223,6 +244,15 @@ class PWResult(QEResult):
             list.append(v)
 
         return list
+
+
+    def _atomLabels(self):
+        atoms       = []
+        atomlist    = self._atomsList()
+        for a in atomlist:
+            atoms.append(a[1])
+
+        return atoms
 
 
     # Move to card.py code?
