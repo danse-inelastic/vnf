@@ -15,7 +15,7 @@ import os
 import luban.content as lc
 from luban.content import load, select
 
-from vnfb.qeutils.qeresults import QEResults
+from vnfb.qeutils.results.resultinfo import ResultInfo
 from vnfb.qeutils.qegrid import QEGrid
 from vnfb.qeutils.qeinput import QEInput
 from vnfb.qeutils.qetaskinfo import TaskInfo
@@ -183,7 +183,7 @@ class QETaskCell:
     def _results(self, table):
         "Returns link to tar file for download. "
         taskinfo    = TaskInfo(self._simid, self._task.id, self._type)
-        results     = QEResults(self._director, self._job, taskinfo)
+        results     = ResultInfo(self._director, self._job, taskinfo)
         container   = results.link()
         action      = results.action()
         

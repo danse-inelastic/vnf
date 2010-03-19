@@ -15,7 +15,7 @@ import os
 import re
 from vnfb.qeutils.qeutils import dataroot
 from vnfb.qeutils.qeconst import OUTPUT_EXT, INPUT_EXT
-from vnfb.qeutils.qeresults import QEResults
+from vnfb.qeutils.results.resultinfo import ResultInfo
 from vnfb.qeutils.qetaskinfo import TaskInfo
 from vnfb.qeutils.qerecords import SimulationRecord
 
@@ -140,7 +140,7 @@ class ResultPath(object):
 
         datadir     = dataroot(self._director)
         taskinfo    = TaskInfo(simid = self._simid, type = self._type)
-        results     = QEResults(self._director, _job, taskinfo)
+        results     = ResultInfo(self._director, _job, taskinfo)
         if results.ready():
             return os.path.join(datadir, results.tardir())
 

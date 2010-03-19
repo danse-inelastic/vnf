@@ -22,7 +22,7 @@ from vnfb.qeutils.qeutils import qejob
 from vnfb.qeutils.qeutils import parseFile, parsePHFile
 from vnfb.qeutils.qeconst import SIMCHAINS
 from vnfb.qeutils.qegrid import QEGrid
-from vnfb.qeutils.qeresults import QEResults
+from vnfb.qeutils.results.resultinfo import ResultInfo
 from vnfb.qeutils.qetaskinfo import TaskInfo
 from vnfb.qeutils.qeutils import latestJob
 
@@ -201,7 +201,7 @@ class Actor(base):
 #            if jit[1] is not None and jit[2].type == "PW":   # PW type
 #                dataroot    = self._dataroot()
 #                taskinfo    = TaskInfo(simid = self.id, type = "PW")
-#                results     = QEResults(self._director, jit[0], taskinfo)
+#                results     = ResultInfo(self._director, jit[0], taskinfo)
 #                if results.ready():
 #                    file        = "%s%s.out" % (jit[1].id, jit[1].filename)
 #                    path        = os.path.join(results.tardir(), file)

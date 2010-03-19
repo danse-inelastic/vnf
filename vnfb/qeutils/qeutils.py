@@ -17,7 +17,7 @@ Contains little but useful itils!
 import os.path
 
 import os
-from vnfb.qeutils.qeresults import QEResults
+from vnfb.qeutils.results.resultinfo import ResultInfo
 from vnfb.qeutils.qetaskinfo import TaskInfo
 from vnfb.qeutils.qeconst import INPUT
 
@@ -274,7 +274,7 @@ def resultsdir(director, simid, type, subtype = None):
         dds         = director.dds
         dataroot    = os.path.abspath(dds.dataroot)
         taskinfo    = TaskInfo(simid = simid, type = type)
-        results     = QEResults(director, job, taskinfo)
+        results     = ResultInfo(director, job, taskinfo)
         if results.ready():
             return os.path.join(dataroot, results.tardir())
 
