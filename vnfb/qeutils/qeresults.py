@@ -14,7 +14,7 @@ import os.path
 
 import os
 import time
-from vnfb.qeutils.qestatus import Message
+from vnfb.qeutils.message import Message
 from vnf.applications.PackJobDir import PackJobDir
 from vnfb.qeutils.qeconst import RESULTS_ID
 
