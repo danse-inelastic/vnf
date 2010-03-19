@@ -18,7 +18,6 @@ import os.path
 
 import os
 from vnfb.qeutils.results.resultinfo import ResultInfo
-from vnfb.qeutils.qetaskinfo import TaskInfo
 from vnfb.qeutils.qeconst import INPUT
 
 
@@ -273,8 +272,7 @@ def resultsdir(director, simid, type, subtype = None):
     if job:
         dds         = director.dds
         dataroot    = os.path.abspath(dds.dataroot)
-        taskinfo    = TaskInfo(simid = simid, type = type)
-        results     = ResultInfo(director, job, taskinfo)
+        results     = ResultInfo(director, simid, type)
         if results.ready():
             return os.path.join(dataroot, results.tardir())
 

@@ -59,8 +59,7 @@ class Actor(base):
                 return link
             job         = latestJob(jobs)
             
-        taskinfo    = TaskInfo(self.id, self.taskid, task.type)
-        results     = ResultInfo(director, job, taskinfo)
+        results     = ResultInfo(director, self.id, task.type)
 
         return results.retrieve()
 

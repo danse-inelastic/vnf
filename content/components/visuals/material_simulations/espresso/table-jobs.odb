@@ -13,26 +13,47 @@
 
 
 from vnfb.qeutils.qeutils import stamp2date
-from vnfb.qeutils.qeresults import QEResults
+from vnfb.qeutils.results.resultinfo import ResultInfo
 from vnfb.qeutils.qegrid import QEGrid
 #from luban.content.table import Model, View, Table
 from luban.content import load
 import luban.content as lc
 
 
-def visual(jobs, taskinfo, director):
-    """Returns the table of jobs related to QE task
-    taskinfo - object of class TaskInfo()"""
+#  director  = director,
+#  simid     = self.id,
+#  type      = self.type,
+#  jobs      = jobs
+
+def getTaskId(simid, type):
+    "Get task id "
+    from vnfb.qeutils.qerecords import SimulationRecord
+    simrecord   = SimulationRecord(simid, type)
+
+    if not simrecord:
+        return ""
+
+    task    = simrecord.task(type)
+    if not task:
+        return ""
+
+    return task.id
+
+def visual(director, simid, type, jobs):
+    """
+    Returns the table of jobs related to QE task
+    """
 
     table   = QEGrid(lc.grid(Class="qe-tasks-table"))
+    taskid  = getTaskId(simid, type)
 
     def jobid(job):
         return  lc.link(label   = job.id,
                        onclick = load(actor     = 'jobs/jobs-view',
-                                      id        = taskinfo.simid(),
-                                      taskid    = taskinfo.taskid(),
+                                      id        = simid,
+                                      taskid    = taskid,
                                       jobid     = job.id,
-                                      type      = taskinfo.type())
+                                      type      = type)
                         )
 
     def submitted(job):
@@ -42,21 +63,21 @@ def visual(jobs, taskinfo, director):
         return job.status
 
     def results(job):
-        results = QEResults(director, job, taskinfo)
+        results = ResultInfo(director, simid, type)
         return results.link()
 
     def check(job):
-        results = QEResults(director, job, taskinfo)
+        results = ResultInfo(director, simid, type)
         return results.action()
 
     def delete(job):
         return lc.link( label   = "Delete",
                         Class   = "qe-action-delete",
                         onclick = load(actor        = 'jobs/delete',
-                                         id         = taskinfo.simid(),
+                                         id         = simid,
                                          jobid      = job.id,
-                                         taskid     = taskinfo.taskid(),
-                                         type       = taskinfo.type())
+                                         taskid     = taskid,   
+                                         type       = type)
                        )
 
     if len(jobs):
