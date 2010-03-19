@@ -54,18 +54,8 @@ class QETaskCell:
 
     def taskInfo(self):
         table   = QEGrid(lc.grid(Class="qe-tasks-info"))
-        if self._task:
-            self._taskId(table)
-            self._input(table)
-            self._status(table)
-            self._jobId(table)
-            self._results(table)
 
-            table.setColumnStyle(0, "qe-tasks-param")
-            table.setColumnStyle(1, "qe-tasks-value")
-
-            table.setCellStyle(3, 1, "text-green")
-        else:
+        if not self._task:
             # May be it would be better to just replace content with task info?
             link    = lc.link(label="Create New Task",
                               onclick = load(actor      = 'material_simulations/espresso/task-create',
@@ -77,6 +67,10 @@ class QETaskCell:
             table.addRow((link, ))   
             #table.addRow(("or", ))                 # Keep
             #table.addRow(("Use Existing Task", ))  # Keep
+            return table.grid()
+
+
+        self._setTaskInfo(table)    # Main scenario
 
         return table.grid()
 
@@ -100,6 +94,20 @@ class QETaskCell:
         doc.add(link)
         return doc
 
+
+    def _setTaskInfo(self, table):
+        "Set fields for the task info"
+        self._taskId(table)
+        self._input(table)
+        self._status(table)
+        self._jobId(table)
+        self._results(table)
+
+        # Set style
+        table.setColumnStyle(0, "qe-tasks-param")
+        table.setColumnStyle(1, "qe-tasks-value")
+        table.setCellStyle(3, 1, "text-green")
+        
 
     def _taskId(self, table):
         tid     = self._task.id
@@ -154,12 +162,10 @@ class QETaskCell:
 
     def _results(self, table):
         "Returns link to tar file for download. "
-        taskinfo    = TaskInfo(self._simid, self._task.id, self._type)
-        results     = ResultInfo(self._director, self._job, taskinfo)
-        container   = results.link()
-        action      = results.action()
+        #taskinfo    = TaskInfo(self._simid, self._task.id, self._type) #self._job, taskinfo)
+        results     = ResultInfo(self._director, self._simid, self._type)
         
-        table.addRow(("Results: ", container, action))
+        table.addRow(("Results: ", results.link(), results.action() ))
 
 
 __date__ = "$Dec 12, 2009 3:21:13 PM$"

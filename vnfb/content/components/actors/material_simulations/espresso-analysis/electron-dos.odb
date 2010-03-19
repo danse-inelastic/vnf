@@ -49,8 +49,7 @@ class Actor(base):
 
             if jit[1] is not None and jit[2].type == "DOS":   # DOS type
                 dataroot    = self._dataroot()
-                taskinfo    = TaskInfo(simid = self.id, type = "DOS")
-                results     = ResultInfo(self._director, jit[0], taskinfo)
+                results     = ResultInfo(self._director, self.id, "DOS")
                 if results.ready():
                     path        = os.path.join(results.tardir(), "ni.dos")  # dos name is hardcoded
                     filepath    = os.path.join(dataroot, path)

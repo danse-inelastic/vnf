@@ -139,8 +139,7 @@ class ResultPath(object):
             return None
 
         datadir     = dataroot(self._director)
-        taskinfo    = TaskInfo(simid = self._simid, type = self._type)
-        results     = ResultInfo(self._director, _job, taskinfo)
+        results     = ResultInfo(self._director, self._simid, self._type) 
         if results.ready():
             return os.path.join(datadir, results.tardir())
 

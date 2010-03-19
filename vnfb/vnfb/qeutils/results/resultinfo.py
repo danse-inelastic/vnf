@@ -45,13 +45,29 @@ class ResultInfo:
         - Results link is specified by id
     """
 
-    def __init__(self, director, job, taskinfo):    #type,id = None
+    def __init__(self, director, simid, type):
         self._director  = director
-        self._job       = job       # not None
-        self._taskinfo  = taskinfo
+        self._simid     = simid
+        self._type      = type
+        self._job       = None
+        self._task      = None
+
+        self._init()
         self._status    = Message()
         self._status.set("norequest", "Not Requested")
         self._ptrfilepath   = self._ptrfilepath()
+
+
+
+    def _init(self):
+        "Additional init"
+        from vnfb.qeutils.qerecords import SimulationRecord # Local import
+        simrecord   = SimulationRecord(self._director, self._simid)
+        if not simrecord:
+            return
+
+        self._job   = simrecord.job(self._type)
+        self._task  = simrecord.task(self._type)
 
 
     def retrieve(self):
@@ -71,18 +87,19 @@ class ResultInfo:
             self._startPacking()
             self._status.set("packingagain", "Packing Again")
             return self._statusstring()
-            
-#        # Need to untar directory?
-#        if self._notuntarred():
-#            self._untar()
-#            #self._status.set("untarring", "Untarring Results")
-#            #return self._statusstring()
 
         if self.ready():
             self._untar()   # Always untar
             return self._tarlink()
             
         return self._statusstring()
+
+
+#        # Need to untar directory?
+#        if self._notuntarred():
+#            self._untar()
+#            #self._status.set("untarring", "Untarring Results")
+#            #return self._statusstring()
 
 
     def status(self):
@@ -98,22 +115,22 @@ class ResultInfo:
             self._status.set("packing", "Packing In Progress")
             return self._statusstring()
 
-#        # Outdated packing request # Don't need?
-#        if self._oldrequest():
-#            self._status.set("oldrequest", "Outdated Request")
-#            return self._statusstring()
-
-
-#        # Need to untar directory?
-#        if self._notuntarred():
-#            self._status.set("untarring", "Untarring Results")
-#            return self.status()
-
         if self.ready():
             self._status.set("ready", "Results Ready")
             return self._tarlink()
         
         return self._statusstring()
+
+
+#        # Outdated packing request # Don't need?
+#        if self._oldrequest():
+#            self._status.set("oldrequest", "Outdated Request")
+#            return self._statusstring()
+
+#        # Need to untar directory?
+#        if self._notuntarred():
+#            self._status.set("untarring", "Untarring Results")
+#            return self.status()
 
 
     def link(self):
@@ -122,7 +139,7 @@ class ResultInfo:
         """
         cid         = "%s-%s" % (RESULTS_ID, self._id()) # self._task.id?
         container   = lc.document(id=cid)
-        link        = lc.htmldocument(text="None") # TEST! Default value
+        link        = lc.htmldocument(text="None") # Default value
 
         if self._job:
             link    = self.status()
@@ -133,19 +150,24 @@ class ResultInfo:
 
     def action(self):
         "Returns link to action that refreshes the status of results"
-        action  = ""     # Default value
-        
-        if self._job:
-            action   = lc.link(label = "Check",
-                               id = "qe-check-results",
-                               onclick=load(actor       = "jobs/getresults",
-                                            routine     = "retrieveStatus",
-                                            id          = self._taskinfo.simid(),
-                                            taskid      = self._taskinfo.taskid(),
-                                            jobid       = self._job.id)
-                          )
+        if not self._job or not self._task:
+            return ""   # Default value
 
-        return action
+        return lc.link(label = "Check",
+                       id = "qe-check-results",
+                       onclick=load(actor       = "jobs/getresults",
+                                    routine     = "retrieveStatus",
+                                    id          = self._simid,
+                                    taskid      = self._task.id,
+                                    jobid       = self._job.id)
+                  )
+
+#
+#        action  = ""
+#
+#        if self._job:
+#            action   =
+#        return action
 
 
     def _statusstring(self):
@@ -210,7 +232,7 @@ class ResultInfo:
         
         Class       = CLASS_OK
         from vnfb.qeutils.results.resultpath import ResultPath
-        resultpath  = ResultPath(self._director, self._taskinfo.simid(), self._taskinfo.type())
+        resultpath  = ResultPath(self._director, self._simid, self._type)
         fcrash      = resultpath.resultFiles("crash")
         if fcrash:
             Class   = CLASS_ERROR
@@ -273,18 +295,18 @@ class ResultInfo:
 
 
     def _id(self):
-        jobid   = self._taskinfo.type()
+        jobid   = self._type
         if self._job:
             jobid   = self._job.id
 
-        return jobid    # self._taskinfo.type() #
+        return jobid   
 
 
     def _ptrfilepath(self):
         """Return pointer filename
         E.g.: /home/dexity/exports/vnf/vnfb/content/data/qejobs/44MTMA42..__dir__pack__ptr__
         """
-        if self._job is None:
+        if not self._job:
             return
         
         PTRFILEEXT = PackJobDir.PTRFILEEXT

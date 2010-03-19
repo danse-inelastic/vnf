@@ -77,9 +77,10 @@ class Actor(base):
 
     def _showJobs(self, director, section, jobs):
         jobstable   = director.retrieveVisual('material_simulations/espresso/table-jobs',
-                                              jobs      = jobs,
-                                              taskinfo  = TaskInfo(self.id, self.taskid, self.type),
-                                              director  = director
+                                              director  = director,
+                                              simid     = self.id,
+                                              type      = self.type,
+                                              jobs      = jobs
                                              )
 
         if jobstable is None:
