@@ -50,7 +50,7 @@ EXPORT_PYTHON_MODULES = \
         qeresults.py \
         qescheduler.py \
         qeserver.py \
-        qestatus.py \
+        message.py \
         qeutils.py \
 
 #include doxygen/default.def

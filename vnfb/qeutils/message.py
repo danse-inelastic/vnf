@@ -23,13 +23,13 @@ Added:
 import luban.content as lc
 OPTIONS = ["a", "div", "link", "p"]
 
-class QEStatus:
+class Message:
     """
     Data structure for job and delivery status.
     
     """
-    def __init__(self, message="", id = None, Class = None):
-        self._message   = message
+    def __init__(self, text="", id = None, Class = None):
+        self._text   = text
         self._id        = id        # CSS id            
         self._class     = Class     # CSS class         
         self._onload    = None
@@ -40,10 +40,10 @@ class QEStatus:
 
     def string(self, format=None):
         """
-        Returns formatted status message
+        Returns formatted status text
 
         Parameters:
-            format  - format in which to display the message
+            format  - format in which to display the text
                 None    - No format (string)
                 "a"     - luban HtmlDocument with <a> tag
                 "div"   - luban HtmlDocument with <div> tag
@@ -54,16 +54,16 @@ class QEStatus:
         if format in OPTIONS:
             return getattr(self, format)()
 
-        return self._message
+        return self._text
 
 
-    def setHtmlLink(self, message, link):       # Need to pass Class or id?
-        self._message   = message
+    def setHtmlLink(self, text, link):       # Need to pass Class or id?
+        self._text   = text
         self._htmllink  = link
 
 
-    def setLink(self, message, onload = None):  # Need to pass Class or id?
-        self._message   = message
+    def setLink(self, text, onload = None):  # Need to pass Class or id?
+        self._text   = text
         self._onload    = onload
 
 
@@ -71,16 +71,16 @@ class QEStatus:
         self._class = Class
 
 
-    def message(self, message):
-        "Set status message"
-        self._message   = message
+    def text(self, text):
+        "Set status text"
+        self._text   = text
         
 
-    def set(self, state, message=None):
+    def set(self, state, text=None):
         "Sets state of the status"
         self._state     = state
-        if message:
-            self._message   = message
+        if text:
+            self._text   = text
 
 
     def get(self, state):
@@ -100,7 +100,7 @@ class QEStatus:
             attr.append("id='%s'" % self._id)
 
         s   = " ".join(attr)
-        return lc.htmldocument(text="<%s %s>%s</%s>" % (name, s, self._message, name))
+        return lc.htmldocument(text="<%s %s>%s</%s>" % (name, s, self._text, name))
 
 
     def a(self):
@@ -110,7 +110,7 @@ class QEStatus:
         return self.tag("div")
 
     def link(self):
-        link    = lc.link(label=self._message)
+        link    = lc.link(label=self._text)
         if self._onload:
             link.onload = self._onload
 
@@ -121,7 +121,7 @@ class QEStatus:
 
 
     def p(self):
-        paragraph    = lc.paragraph(text=self._message)
+        paragraph    = lc.paragraph(text=self._text)
         if self._class:
             paragraph.Class  = self._class
 
@@ -129,7 +129,7 @@ class QEStatus:
 
 
 def test():
-    status  = QEStatus(message="Hello world", Class="cool", id="real")
+    status  = Message(text="Hello world", Class="cool", id="real")
     print status.string()
     print status.string("a").text
     print status.string("div").text

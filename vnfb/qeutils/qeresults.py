@@ -14,7 +14,7 @@ import os.path
 
 import os
 import time
-from vnfb.qeutils.qestatus import QEStatus
+from vnfb.qeutils.qestatus import Message
 from vnf.applications.PackJobDir import PackJobDir
 from vnfb.qeutils.qeconst import RESULTS_ID
 
@@ -49,7 +49,7 @@ class QEResults:
         self._director  = director
         self._job       = job       # not None
         self._taskinfo  = taskinfo
-        self._status    = QEStatus()
+        self._status    = Message()
         self._status.set("norequest", "Not Requested")
         self._ptrfilepath   = self._ptrfilepath()
 

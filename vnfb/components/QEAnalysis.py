@@ -203,6 +203,7 @@ class Actor(base):
         self._showPhononDos(sA, sim)
         self._showPhononDispersion(sA, sim)
 
+
     # XXX: Keep for presentation only
     def _showPhononDos(self, section, sim):
         linkDos     = lc.link(label="Export Phonon DOS",
