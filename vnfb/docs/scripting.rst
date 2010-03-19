@@ -1,4 +1,3 @@
-.. _scripting:
 
 Scripting access to VNF
 ========================
