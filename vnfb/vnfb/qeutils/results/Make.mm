@@ -20,6 +20,7 @@ PACKAGE = qeutils/results
 EXPORT_PYTHON_MODULES = \
         pwresult.py \
         qeresult.py \
+        resultinfo.py \
         resultpath.py \
         __init__.py \
 

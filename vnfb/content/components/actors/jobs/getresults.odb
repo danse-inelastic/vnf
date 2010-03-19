@@ -15,7 +15,7 @@ from luban.content import load
 from luban.content import select
 import luban.content as lc
 from vnfb.qeutils.qeconst import RESULTS_ID
-from vnfb.qeutils.qeresults import QEResults
+from vnfb.qeutils.results.resultinfo import ResultInfo
 from vnfb.qeutils.qetaskinfo import TaskInfo
 from vnfb.qeutils.qeutils import latestJob
 
@@ -60,7 +60,7 @@ class Actor(base):
             job         = latestJob(jobs)
             
         taskinfo    = TaskInfo(self.id, self.taskid, task.type)
-        results     = QEResults(director, job, taskinfo)
+        results     = ResultInfo(director, job, taskinfo)
 
         return results.retrieve()
 

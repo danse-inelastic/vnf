@@ -27,7 +27,7 @@ CLASS_OK    = 'qe-text-blue'
 CLASS_NA    = 'qe-text-black'
 
 # XXX: Needs severe refactoring
-class QEResults:
+class ResultInfo:
     """
     Handles complexity of job results
     There are the following supported states:
