@@ -109,6 +109,24 @@ class SimulationRecord(QERecords):
         return None
 
 
+    def job(self, type):
+        "Convenience method for getting job record"
+        jit = self.jobInputTask(type)
+        return jit[0]
+
+
+    def input(self, type):
+        "Convenience method for getting input record"
+        jit = self.jobInputTask(type)
+        return jit[1]
+
+
+    def task(self, type):
+        "Convenience method for getting task record"
+        jit = self.jobInputTask(type)
+        return jit[2]
+
+
     def typeList(self):
         "Return list of simulation task types"
         if not self._sim:

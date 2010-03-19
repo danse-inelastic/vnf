@@ -11,6 +11,8 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
+# XXX: Should be removed or redone to have more meaning
+
 class TaskInfo:
     "TaskInfo - holds information about the simulation task"
     def __init__(self, simid = None, taskid = None, type = None):
