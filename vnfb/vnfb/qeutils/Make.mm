@@ -51,7 +51,7 @@ EXPORT_PYTHON_MODULES = \
         qeserver.py \
         message.py \
         qeutils.py \
-        status.py \
+        jobstatus.py \
 
 #include doxygen/default.def
 

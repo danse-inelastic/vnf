@@ -15,6 +15,7 @@ import os
 import luban.content as lc
 from luban.content import load, select
 
+from vnfb.qeutils.jobstatus import JobStatus
 from vnfb.qeutils.results.resultinfo import ResultInfo
 from vnfb.qeutils.qegrid import QEGrid
 from vnfb.qeutils.qeinput import QEInput
@@ -22,8 +23,6 @@ from vnfb.qeutils.qetaskinfo import TaskInfo
 from vnfb.qeutils.qeutils import latestJob
 
 RUN_TASK    = "run-task"
-ID_OUTPUT   = "qe-container-output"
-ID_STATUS   = "qe-container-status"
 
 #CLASS_ERROR = 'qe-text-red'
 #CLASS_OK    = 'qe-text-blue'
@@ -59,7 +58,6 @@ class QETaskCell:
             self._taskId(table)
             self._input(table)
             self._status(table)
-            self._output(table)
             self._jobId(table)
             self._results(table)
 
@@ -121,38 +119,12 @@ class QETaskCell:
         table.addRow(("Input:", qeinput.getLink(), ""))
 
 
-    def _output(self, table):
-        docOut  = lc.document(id=ID_OUTPUT)
-        docOut.add("None")
-        table.addRow(("Output:", docOut, ""))
-
-
-    # XXX: Refactor. Move to a separate directory
     def _status(self, table):
-        "Displays status of the simulation"
-        docSta  = lc.document(id=ID_STATUS)
-        content = lc.htmldocument()
+        "Displays status of the simulation and output file"
+        status      = JobStatus(self._director, self._simid, self._type)
 
-        action  = ""
-        content.text    = "Not Started"
-        #link    = "Not Started"
-        jobs    = self._director.clerk.getQEJobs(where="taskid='%s'" % self._task.id)
-        if jobs:
-            job  = latestJob(jobs)
-            action  = lc.link(label="Refresh",
-                              Class     = "qe-task-action",
-                              onclick   = load(actor     = 'jobs/status',
-                                               routine   = 'retrieveStatus',
-                                              id        = self._simid,
-                                              taskid    = self._task.id,
-                                              jobid     = job.id)  #,type      = self._type
-                             )
-
-            content.text    = job.status
-            #link = job.status   # Fix the status
-
-        docSta.add(content) #link)
-        table.addRow(("Status:", docSta, action)) # Replace: Status -> Job Status
+        table.addRow(("Status:", status.message(), status.action()))
+        table.addRow(("Output:", status.output(), ""))
 
 
     def _jobId(self, table):
