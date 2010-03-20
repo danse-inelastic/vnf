@@ -19,9 +19,10 @@ from qecalc.qetask.pwtask import PWTask
 import luban.content as lc
 
 # Simple validator for PW input 
-PWVALID    = {}
+PWVALID     = {}
 PWVALID["atomic_species"]   = 3     # Number of items in the line
 PWVALID["atomic_positions"] = 4
+NONE        = "None"
 
 class PWResult(QEResult):
 
@@ -51,6 +52,7 @@ class PWResult(QEResult):
 
         atoms.setRowStyle(0, "qe-table-header") 
         return atoms.grid()
+
 
     # XXX: Fix issue with aliaces
     def materialType(self):
@@ -130,16 +132,18 @@ class PWResult(QEResult):
         return self._format(energy)
 
 
-    # XXX: Finish up forces and stress
     def forces(self):
-        "Returns force vector for each atom"
-        if not self._output:
-            return "None"
-
-        table    = QEGrid(lc.grid(Class="qe-table-forces"))
-        table.addRow((" ", "Atom", "Force (Ry/bohr)"))
+        "Returns formatted force vector for each atom"
+        if not self._output:    # No output
+            return NONE
 
         forces  = self._outputForces()
+        if not forces:          # No forces in the output
+            return NONE
+        
+        table    = QEGrid(lc.grid(Class="qe-table-forces"))
+        table.addRow((" ", "Atom", "Force (Ry/bohr)"))
+        
         for f in forces:
             table.addRow((f[0], f[1], "(%.2f, %.2f, %.2f)" % (f[2], f[3], f[4]) ))
 
@@ -148,13 +152,17 @@ class PWResult(QEResult):
 
 
     def stress(self):
-        table    = QEGrid(lc.grid(Class="qe-table-stress"))
-#        table.addRow((self._output.property("stress")))
-        table.addRow(("0.50000000", "0.50000000", "0.50000000"))
-        table.addRow(("0.50000000", "0.50000000", "0.50000000"))
-        table.addRow(("0.50000000", "0.50000000", "0.50000000"))
+        "Returns formatted stress"
+        if not self._output:    # No output
+            return NONE
 
-#        print self._output.property("stress", withUnits=True)   # XXX
+        stress  = self._outputStress()
+        if not stress:          # No stress in the output
+            return NONE
+
+        table    = QEGrid(lc.grid(Class="qe-table-stress"))
+        for s in stress:
+            table.addRow(("%.2f %.2f %.2f" % (s[0], s[1], s[2]) ))
 
         return table.grid()
 
@@ -173,23 +181,32 @@ class PWResult(QEResult):
 
 
     def _energyParam(self, type):
-        param   = self._nlparam("system", type)  #self._input.namelist("system").param(type)
+        param   = self._nlparam("system", type)
         return self._format((param, "Ry"))
 
 
     def _outputForces(self):
-        "Returns output forces in format: (['1', 'Al', 0.00, 0.00, 0.00], [...])"
+        "Returns output forces"
         forces  = []
         atoms   = self._atomLabels()
         foutput = self._output.property("forces", withUnits=True)
         fvector = foutput[0]    # Force vector. Example: ((0.0, 0.0, 0.0), (0.5, 0.5, 0.5))
-        assert len(atoms) == len(fvector)
+        assert len(atoms) == len(fvector)   # validate?
         for i in range(len(fvector)):
             f   = fvector[i]
             forces.append((str(i+1), atoms[i], f[0], f[1], f[2]))
 
-        return forces       # Example: [("1", "Al", 0.00, 0.00, 0.00),]
+        if len(forces) == 0:
+            return None     # Keep interface similar to stress
         
+        return forces       # Example: [("1", "Al", 0.00, 0.00, 0.00), [...]]
+
+
+    def _outputStress(self):
+        "Returns output stress in format 3x3: ([0.00, 0.00, 0.00], [...])"
+        soutput = self._output.property("stress", withUnits=True)
+        return soutput[0]   # ([0.0, 0.0, 0.0], [...], [...])
+
 
     def _nlparam(self, nl, param, formatted=False):
         "Returns parameter of the namelist nl"
