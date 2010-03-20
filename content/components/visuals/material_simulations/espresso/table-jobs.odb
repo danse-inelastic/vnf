@@ -15,20 +15,14 @@
 from vnfb.qeutils.qeutils import stamp2date
 from vnfb.qeutils.results.resultinfo import ResultInfo
 from vnfb.qeutils.qegrid import QEGrid
-#from luban.content.table import Model, View, Table
 from luban.content import load
 import luban.content as lc
 
 
-#  director  = director,
-#  simid     = self.id,
-#  type      = self.type,
-#  jobs      = jobs
-
-def getTaskId(simid, type):
+def getTaskId(director, simid, type):
     "Get task id "
     from vnfb.qeutils.qerecords import SimulationRecord
-    simrecord   = SimulationRecord(simid, type)
+    simrecord   = SimulationRecord(director, simid)
 
     if not simrecord:
         return ""
@@ -39,13 +33,14 @@ def getTaskId(simid, type):
 
     return task.id
 
+# XXX: Bug in check and results display
 def visual(director, simid, type, jobs):
     """
     Returns the table of jobs related to QE task
     """
 
     table   = QEGrid(lc.grid(Class="qe-tasks-table"))
-    taskid  = getTaskId(simid, type)
+    taskid  = getTaskId(director, simid, type)
 
     def jobid(job):
         return  lc.link(label   = job.id,
