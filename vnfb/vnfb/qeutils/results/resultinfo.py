@@ -45,11 +45,11 @@ class ResultInfo:
         - Results link is specified by id
     """
 
-    def __init__(self, director, simid, type):
+    def __init__(self, director, simid, type, job = None):
         self._director  = director
         self._simid     = simid
         self._type      = type
-        self._job       = None
+        self._job       = job
         self._task      = None
 
         self._init()
@@ -66,7 +66,10 @@ class ResultInfo:
         if not simrecord:
             return
 
-        self._job   = simrecord.job(self._type)
+        if not self._job:
+            # Get the latest job from simrecord only if no job is passed
+            self._job   = simrecord.job(self._type) 
+
         self._task  = simrecord.task(self._type)
 
 

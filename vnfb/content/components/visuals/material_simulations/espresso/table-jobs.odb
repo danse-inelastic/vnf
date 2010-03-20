@@ -58,11 +58,11 @@ def visual(director, simid, type, jobs):
         return job.status
 
     def results(job):
-        results = ResultInfo(director, simid, type)
+        results = ResultInfo(director, simid, type, job) # XXX
         return results.link()
 
     def check(job):
-        results = ResultInfo(director, simid, type)
+        results = ResultInfo(director, simid, type, job) # XXX
         return results.action()
 
     def delete(job):
