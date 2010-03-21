@@ -77,7 +77,17 @@ class Actor(base):
         return director.retrieveVisual(visual,
                                        actor        = self.inventory,
                                        director     = director,
-                                       structureid  = self.structureid)
+                                       structureid  = self.structureid,
+                                       simtype      = self._simType(director))
+
+
+    def _simType(self, director):
+        "Returns simulation type"
+        sim     = director.clerk.getQESimulations(id=self.id)
+        if not sim:
+            return ""
+
+        return sim.type
 
 
     def __init__(self):
