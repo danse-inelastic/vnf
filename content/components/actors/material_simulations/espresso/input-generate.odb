@@ -68,6 +68,7 @@ class Actor(base):
         visual  = "material_simulations/espresso/input-default"
 
         if self.type in TYPE:
+            #  Not a very flexible way retrieving visuals
             visual  = "material_simulations/espresso/input-%s" % self.type.lower()
 
         #XXX: Consider special case for PW2
