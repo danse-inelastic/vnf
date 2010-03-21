@@ -14,9 +14,10 @@
 from vnfb.qeutils.qeparser.qeinput import QEInput
 from vnfb.qeutils.qeparser.namelist import Namelist
 from vnfb.qeutils.qeparser.card import Card
-from vnfb.qeutils.qeconst import SIMCHAINS, SMEARING, MATTER_TYPE
+from vnfb.qeutils.qeconst import SMEARING, MATTER_TYPE
 from vnfb.qeutils.qeparser.pseudo.pseudo import PSEUDO
 from qecalc.qetask.qeparser.pwinput import PWInput
+from vnfb.qeutils.generator.pwgenerator import PWGenerator
 
 from luban.components.AuthorizedActor import AuthorizedActor as base
 
@@ -73,7 +74,7 @@ class Actor(base):
 
     
     def _input(self, director):
-        
+        self._generator = PWGenerator(self.inventory)   # 
         pwinput   = self._loadStructure(director)
         return self._getInput(pwinput, director)
 
