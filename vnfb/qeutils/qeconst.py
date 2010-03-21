@@ -175,12 +175,13 @@ MATDYN_METHOD["dispersion"]    = "Phonon on Grid (For Virtual Neutron Experiment
 
 
 MATTER_TYPE = OrderedDict()
-MATTER_TYPE["metal"]        = "Metal (no band gap)"
-MATTER_TYPE["insulator"]    = "Insulator (with a band gap)"
+MATTER_TYPE["metal"]        = "Metal (no gap)"
+MATTER_TYPE["insulator"]    = "Insulator (with a gap)"
 
 RELAX       = OrderedDict()
-RELAX["relax"]      = "relax"
-RELAX["vc-relax"]   = "vc-relax"
+RELAX["relax"]      = "Relaxation (Fixed lattice parameters)"
+RELAX["vc-relax"]   = "Variable cell relaxation"
+
 
 __date__ = "$Nov 3, 2009 3:12:34 PM$"
 
