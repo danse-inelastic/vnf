@@ -16,7 +16,7 @@ from luban.content import select
 from luban.content import load
 from vnfb.qeutils.qegrid import QEGrid
 from vnfb.qeutils.qeparser.pseudo.pseudo import PSEUDO
-from vnfb.qeutils.qeconst import SMEARING, IBRAV, MATTER_TYPE, RELAX
+from vnfb.qeutils.qeconst import SMEARING, IBRAV, MATTER_TYPE, RELAX, SIMTYPE
 from luban.content.FormTextField import FormTextField
 from luban.content.FormSelectorField import FormSelectorField
 from luban.content.FormSubmitButton import FormSubmitButton
@@ -32,18 +32,20 @@ DEGAUSS = 0.02
 
 class Visual:
 
-    def __init__(self, actor, director, structureid):
+    def __init__(self, actor, director, structureid, simtype):
         self._actor         = actor
         self._director      = director
         self._structureid   = structureid   # Can be taken from "actor"
         self._labels        = self._labels()
+        self._simtype       = simtype
+
 
     def render(self):
         return self._form()
 
 
     def _form(self):
-        #print self._actor.mattertype    # make s
+        # Parameter elements 
         form        = lc.form(id='qe-atoms-form')
         table       = QEGrid(lc.grid(Class="qe-form"))
         form.add(table.grid())
@@ -63,11 +65,14 @@ class Visual:
         cancel      = lc.button(label="Cancel")
         cancel.onclick  = load(actor = 'material_simulations/espresso/sim-view', id=self._actor.id)
 
+        # Parameters attachment
         st          = QEGrid(lc.grid()) # Submit Table
         st.addRow((submit, cancel), ("qe-action-accept", "qe-action-cancel"))
 
         table.addRow(("Material Type:", mattertype))
-        table.addRow(("Relaxation:", relax))    # XXX: Refactor, visible for geometry optimization only
+        # Add relaxation parameter for geometry simulation type
+        if self._simtype == SIMTYPE["geometry"]:    
+            table.addRow(("Relaxation:", relax))    
         table.addRow(("Lattice Type:", ibrav))
         table.addRow(("Atomic Structure:", self._atoms()))
         table.addRow(("Enertgy Cutoff (Ry):", ecutwfc))
@@ -137,8 +142,8 @@ class Visual:
         pass
 
 
-def visual(actor, director, structureid):
-    v   = Visual(actor, director, structureid)
+def visual(actor, director, structureid, simtype):
+    v   = Visual(actor, director, structureid, simtype)
     return v.render()
 
 

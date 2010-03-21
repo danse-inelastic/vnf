@@ -53,27 +53,34 @@ STEPS       = ("Create Simulation",
                "Set Simulation Parameters",
                "Review Simulation")
 
+SIMTYPE     = OrderedDict()
+SIMTYPE["scf"]                  = "Electron Structure"
+SIMTYPE["electron-dos"]         = "Electron DOS"
+SIMTYPE["electron-dispersion"]  = "Electron Dispersion"
+SIMTYPE["geometry"]             = "Geometry Optimization"
+SIMTYPE["single-phonon"]        = "Single Phonon"
+SIMTYPE["multiple-phonon"]      = "Multiple Phonon"
 
 # Types of simulations
 SIMCHAINS   = OrderedDict()
-SIMCHAINS["Electron Structure"]         = ("PW",)
-SIMCHAINS["Electron DOS"]               = ("PW", "PW", "DOS")
-SIMCHAINS["Electron Dispersion"]        = ("PW", "PW", "BANDS", "PLOTBAND") # pw.x -> pw.x -> bands.x -> plotbands.x
-SIMCHAINS["Geometry Optimization"]      = ("PW",)
-SIMCHAINS["Single Phonon"]              = ("PW", "PH", "DYNMAT")
-SIMCHAINS["Multiple Phonon"]            = ("PW", "PH", "Q2R", "MATDYN") # DOS and Dispersion, See: example06
+SIMCHAINS[SIMTYPE["scf"]]                   = ("PW",)
+SIMCHAINS[SIMTYPE["electron-dos"]]          = ("PW", "PW", "DOS")
+SIMCHAINS[SIMTYPE["electron-dispersion"]]   = ("PW", "PW", "BANDS", "PLOTBAND") # pw.x -> pw.x -> bands.x -> plotbands.x
+SIMCHAINS[SIMTYPE["geometry"]]              = ("PW",)
+SIMCHAINS[SIMTYPE["single-phonon"]]         = ("PW", "PH", "DYNMAT")
+SIMCHAINS[SIMTYPE["multiple-phonon"]]       = ("PW", "PH", "Q2R", "MATDYN") # DOS and Dispersion, See: example06
 #SIMCHAINS["Molecular Dynamics"]     = ()   - Next step
 
-SIMTYPE     = SIMCHAINS.keys()
+SIMLIST     = SIMTYPE.values()  #SIMCHAINS.keys()
 
 # Analysis actors
 ANALYSIS    = OrderedDict()
-ANALYSIS[SIMTYPE[0]]    = "electron"
-ANALYSIS[SIMTYPE[1]]    = "electron-dos"
-ANALYSIS[SIMTYPE[2]]    = "electron-dispersion"
-ANALYSIS[SIMTYPE[3]]    = "geometry"
-ANALYSIS[SIMTYPE[4]]    = "phonon-single"
-ANALYSIS[SIMTYPE[5]]    = "phonon-multiple"
+ANALYSIS[SIMLIST[0]]    = "electron"
+ANALYSIS[SIMLIST[1]]    = "electron-dos"
+ANALYSIS[SIMLIST[2]]    = "electron-dispersion"
+ANALYSIS[SIMLIST[3]]    = "geometry"
+ANALYSIS[SIMLIST[4]]    = "phonon-single"
+ANALYSIS[SIMLIST[5]]    = "phonon-multiple"
 
 # Available servers
 SERVERS     = ("foxtrot.danse.us",)
