@@ -16,10 +16,11 @@ from luban.content import select
 from luban.content import load
 from vnfb.qeutils.qegrid import QEGrid
 from vnfb.qeutils.qeparser.pseudo.pseudo import PSEUDO
-from vnfb.qeutils.qeconst import SMEARING, IBRAV, MATTER_TYPE
+from vnfb.qeutils.qeconst import SMEARING, IBRAV, MATTER_TYPE, RELAX
 from luban.content.FormTextField import FormTextField
 from luban.content.FormSelectorField import FormSelectorField
 from luban.content.FormSubmitButton import FormSubmitButton
+from luban.content.FormRadioBox import FormRadioBox
 from qecalc.qetask.qeparser.pwinput import PWInput
 from matter.Atom import Atom
 
@@ -40,12 +41,15 @@ class Visual:
     def render(self):
         return self._form()
 
+
     def _form(self):
         #print self._actor.mattertype    # make s
         form        = lc.form(id='qe-atoms-form')
         table       = QEGrid(lc.grid(Class="qe-form"))
         form.add(table.grid())
 
+        mattertype  = FormRadioBox(name = "mattertype", entries = enumerate(MATTER_TYPE.values()))
+        relax       = FormRadioBox(name = "relax", entries = enumerate(RELAX.values()))
         ibrav       = FormSelectorField(name="ibrav",
                                         entries=enumerate(IBRAV)) # Take from atomic structure?
         ecutwfc     = FormTextField(name = "ecutwfc", value = ECUTWFC)
@@ -62,6 +66,8 @@ class Visual:
         st          = QEGrid(lc.grid()) # Submit Table
         st.addRow((submit, cancel), ("qe-action-accept", "qe-action-cancel"))
 
+        table.addRow(("Material Type:", mattertype))
+        table.addRow(("Relaxation:", relax))    # XXX: Refactor, visible for geometry optimization only
         table.addRow(("Lattice Type:", ibrav))
         table.addRow(("Atomic Structure:", self._atoms()))
         table.addRow(("Enertgy Cutoff (Ry):", ecutwfc))    

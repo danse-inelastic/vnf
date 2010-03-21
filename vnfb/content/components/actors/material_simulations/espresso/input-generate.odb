@@ -31,6 +31,7 @@ class Actor(base):
         fname       = pyre.inventory.str('fname', default='')
         description = pyre.inventory.str('description', default='')
         text        = pyre.inventory.str('text', default='')
+        mattertype  = pyre.inventory.str('mattertype', default='0')  # From input-pw visual
 
 
     def default(self, director):
@@ -94,6 +95,7 @@ class Actor(base):
         self.fname          = self.inventory.fname
         self.description    = self.inventory.description
         self.text           = self.inventory.text
+        self.mattertype     = self.inventory.mattertype
 
 
     def _init(self):
