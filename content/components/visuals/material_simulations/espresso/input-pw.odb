@@ -63,7 +63,7 @@ def visualGeomtry(actor, director, structureid):
 
 
 def visual(actor, director, structureid):
-    sim     = director.clerk.QESimulations(id=actor.id) # get sim somewhere else?
+    sim     = director.clerk.getQESimulations(id=actor.id) # get sim somewhere else?
 
     if not sim:         # No simulation, no visual
         return lc.form()
