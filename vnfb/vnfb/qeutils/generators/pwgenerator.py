@@ -40,8 +40,9 @@ MIXING_BETA     = "0.7"
 class PWGenerator:
 
     def __init__(self, inventory, input):
-        self._inv   = inventory
-        self._input =  input
+        self._inv       = inventory
+        self._input     =  input
+        self._simtype   = inventory.simtype     # Special case
 
 
     def control(self):

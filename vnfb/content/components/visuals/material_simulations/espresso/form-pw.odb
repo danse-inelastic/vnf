@@ -69,10 +69,10 @@ class Visual:
         st          = QEGrid(lc.grid()) # Submit Table
         st.addRow((submit, cancel), ("qe-action-accept", "qe-action-cancel"))
 
-
         # Add relaxation parameter for geometry simulation type
         if self._simtype == SIMTYPE["geometry"]:
             table.addRow(("Relaxation:", relax))
+            
         table.addRow(("Lattice Type:", ibrav))
         table.addRow(("Atomic Structure:", self._atoms()))
         table.addRow(("Enertgy Cutoff (Ry):", ecutwfc))
@@ -95,7 +95,8 @@ class Visual:
                                                       id        = self._actor.id,
                                                       type      = self._actor.type,
                                                       mattertype    = self._actor.mattertype,
-                                                      structureid   = self._structureid)
+                                                      structureid   = self._structureid,
+                                                      simtype   = self._simtype)
 
         return form
 
