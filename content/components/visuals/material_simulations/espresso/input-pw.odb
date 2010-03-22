@@ -12,7 +12,7 @@
 #
 
 import luban.content as lc
-from luban.content import select
+from luban.content import select, alert
 from luban.content import load
 from vnfb.qeutils.qegrid import QEGrid
 from vnfb.qeutils.qeparser.pseudo.pseudo import PSEUDO
@@ -40,17 +40,35 @@ class Visual:
         self._simtype       = simtype
 
 
-    def render(self):
-        return self._form()
+    def _test(self):
+        self.mattertype.selection = self.mattertype.value
+        return select(id="hello-world").replaceContent(lc.htmldocument(text=self.mattertype.value))
 
 
-    def _form(self):
+    def form(self):
         # Parameter elements 
         form        = lc.form(id='qe-atoms-form')
         table       = QEGrid(lc.grid(Class="qe-form"))
         form.add(table.grid())
 
-        mattertype  = FormRadioBox(name = "mattertype", entries = enumerate(MATTER_TYPE.values()))
+        self.mattertype  = FormRadioBox(name = "mattertype")
+        self.mattertype.entries      = enumerate(MATTER_TYPE.values())
+        #self.mattertype.selection    = self._actor.mattertype
+        self.mattertype.onclick = self._test()
+
+#        mattertype.hidden = True
+        #alert("Matter Type: %s" % self._actor.mattertype)
+        #print dir(mattertype)
+        #mattertype.onclick = select(id='main-display-area').replaceContent(lc.document(title=mattertype.value))
+        #alert("Matter Type:" + mattertype.value)
+#        mattertype.onchange = load(actor      = "material_simulations/espresso/input-generate",
+#                                 id         = self._actor.id,
+#                                 taskid     = self._actor.taskid,
+#                                 type       = self._actor.type,
+#                                 structureid    = self._structureid,
+#                                 mattertype = mattertype.value)
+
+
         relax       = FormRadioBox(name = "relax", entries = enumerate(RELAX.values()))
         ibrav       = FormSelectorField(name="ibrav",
                                         entries=enumerate(IBRAV)) # Take from atomic structure?
@@ -69,7 +87,7 @@ class Visual:
         st          = QEGrid(lc.grid()) # Submit Table
         st.addRow((submit, cancel), ("qe-action-accept", "qe-action-cancel"))
 
-        table.addRow(("Material Type:", mattertype))
+        table.addRow(("Material Type:", self.mattertype))
         # Add relaxation parameter for geometry simulation type
         if self._simtype == SIMTYPE["geometry"]:    
             table.addRow(("Relaxation:", relax))    
@@ -86,6 +104,9 @@ class Visual:
         table.setColumnStyle(0, "qe-form-label")
         table.setColumnStyle(1, "qe-form-field")
 
+        # Test:
+        table.setRowStyle(3, id="hello-world")
+
         form.onsubmit   = select(element=form).submit(actor     = 'material_simulations/espresso-utils/generate-pw',
                                                       routine   = 'generateInput',
                                                       taskid    = self._actor.taskid,
@@ -101,13 +122,13 @@ class Visual:
         types = MATTER_TYPE.keys()
 
         # Smearing makes sence for structures with a band gap (metal)
-        if types[int(self._actor.mattertype)] == "metal":
-            smearing    = FormSelectorField(name="smearing",
-                                            entries=enumerate(SMEARING.keys()))
-            degauss     = FormTextField(name = "degauss", value = DEGAUSS)
-
-            table.addRow(("Smearing Type:", smearing))
-            table.addRow(("Smearing Degree (Ry):", degauss))
+#        if types[int(self._actor.mattertype)] == "metal":
+#            smearing    = FormSelectorField(name="smearing",
+#                                            entries=enumerate(SMEARING.keys()))
+#            degauss     = FormTextField(name = "degauss", value = DEGAUSS)
+#
+#            table.addRow(("Smearing Type:", smearing))
+#            table.addRow(("Smearing Degree (Ry):", degauss))
 
 
     def _atoms(self):
@@ -144,7 +165,7 @@ class Visual:
 
 def visual(actor, director, structureid, simtype):
     v   = Visual(actor, director, structureid, simtype)
-    return v.render()
+    return v.form()
 
 
 
