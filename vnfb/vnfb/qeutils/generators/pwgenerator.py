@@ -21,7 +21,7 @@ Notes:
 
 from vnfb.qeutils.qeparser.namelist import Namelist
 from vnfb.qeutils.qeparser.card import Card
-from vnfb.qeutils.qeconst import SMEARING, MATTER_TYPE
+from vnfb.qeutils.qeconst import SMEARING, MATTER_TYPE, SIMTYPE, RELAXLIST
 
 # Default Control params
 CALCULATION     = "'scf'"
@@ -36,21 +36,35 @@ OCCUP_ISO       = "'fixed'"
 CONV_THR        = "1.0d-8"
 MIXING_BETA     = "0.7"
 
+# Geometry: control
+FORC_CONV_THR   = "0.001"
+ETOT_CONV_THR   = "0.0001"
+
+# Geometry: ions
+ION_DYNAMICS        = "'bfgs'"
+POT_EXTRAPOLATION   = "'atomic'"
+WFC_EXTRAPOLATION   = "'none'"
+UPSCALE             = "10.0"
+BFGS_NDIM           = "1"
+TRUST_RADIUS_MAX    = "0.8"
+TRUST_RADIUS_MIN    = "0.001"
+
 
 class PWGenerator:
 
     def __init__(self, inventory, input):
         self._inv       = inventory
-        self._input     =  input
+        self._input     = input
         self._simtype   = inventory.simtype     # Special case
 
 
     def control(self):
         "CONTROL namelist"
         control = Namelist("control")
-        control.add("calculation", CALCULATION)
+        self._addCalculation(control)
         control.add("restart_mode", RESTART_MODE)
         control.add("tprnfor", TPRNFOR)
+        self._addConvParams(control)
         #control.add("prefix", "???")   # Remove 'prefix'
         self._input.addNamelist(control)
 
@@ -105,6 +119,32 @@ class PWGenerator:
         return SMEARING[name]
 
 
+    def _addCalculation(self, control):
+        "Add calculation parameter to control namelist"
+        # Geometry optimization specific
+        if self._isGeometry() and self._isRelax():
+            calculation     = "'%s'" % RELAXLIST[self._inv.relax]    # Oh, these weird apostrophes
+            control.add("calculation", calculation)
+            return
+        
+        control.add("calculation", CALCULATION) # Default
+
+
+    def _addConvParams(self, control):
+        if self._isGeometry():  # Geometry optimization specific
+            control.add("forc_conv_thr", FORC_CONV_THR)
+            control.add("etot_conv_thr", ETOT_CONV_THR)
+
+
+    def _isGeometry(self):
+        "Checks if simulation type is geometry"
+        return self._simtype == SIMTYPE["geometry"]
+
+
+    def _isRelax(self):
+        "Checks if relaxation parameter is in range"
+        # Example: self._inv.relax == 1 for 'vc-relax'
+        return self._inv.relax in range(len(RELAXLIST))
 
 
 __date__ = "$Mar 21, 2010 8:03:26 AM$"
