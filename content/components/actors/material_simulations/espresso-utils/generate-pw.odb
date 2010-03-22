@@ -86,6 +86,8 @@ class Actor(base):
         self._generator.control()
         self._generator.system()
         self._generator.electrons()         # TODO: Suitable for phonon calculations?
+        self._generator.ions()      # For geometry optimization only
+        self._generator.cell()      # Can be already created
         self._generator.k_points()
 
         return self._generator.toString()   #input.structure.toString()

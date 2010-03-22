@@ -48,6 +48,7 @@ UPSCALE             = "10.0"
 BFGS_NDIM           = "1"
 TRUST_RADIUS_MAX    = "0.8"
 TRUST_RADIUS_MIN    = "0.001"
+CELL_DYNAMICS       = "'bfgs'"
 
 
 class PWGenerator:
@@ -61,12 +62,12 @@ class PWGenerator:
     def control(self):
         "CONTROL namelist"
         control = Namelist("control")
+        self._input.addNamelist(control)
         self._addCalculation(control)
         control.add("restart_mode", RESTART_MODE)
-        control.add("tprnfor", TPRNFOR)
+        control.add("tprnfor",      TPRNFOR)
         self._addConvParams(control)
         #control.add("prefix", "???")   # Remove 'prefix'
-        self._input.addNamelist(control)
 
 
     def system(self):
@@ -82,10 +83,43 @@ class PWGenerator:
     def electrons(self):         # TODO: Suitable for phonon calculations?
         "ELECTRONS namelist"
         electrons   = Namelist("electrons")
-        electrons.add("conv_thr", CONV_THR)
-        electrons.add("mixing_beta", MIXING_BETA)
+        electrons.add("conv_thr",       CONV_THR)
+        electrons.add("mixing_beta",    MIXING_BETA)
         self._input.addNamelist(electrons)
 
+
+    def ions(self):
+        if not self._isGeometry():
+            return
+        
+        ions        = Namelist("ions")
+        self._input.addNamelist(ions)
+        ions.add("ion_dynamics",        ION_DYNAMICS)
+        ions.add("pot_extrapolation",   POT_EXTRAPOLATION)
+        ions.add("wfc_extrapolation",   WFC_EXTRAPOLATION)
+        ions.add("upscale",             UPSCALE)
+        ions.add("bfgs_ndim",           BFGS_NDIM )
+        ions.add("trust_radius_max",    TRUST_RADIUS_MAX)
+        ions.add("trust_radius_min",    TRUST_RADIUS_MIN)
+
+
+    def cell(self):
+        if not self._isGeometry():
+            return
+
+        if self._relax() != "vc-relax":
+            return
+
+        # Add cell param for vc-relax only
+        nls     = self._input.namelists
+        if nls.has_key("cell"):         # Addressing issues in outdated parser in QECalc
+            cell    = self._input.namelist("cell")
+        else:
+            cell    = Namelist("cell")
+            self._input.addNamelist(cell)
+
+        cell.add("cell_dynamics", CELL_DYNAMICS)
+        
 
     def k_points(self):
         "K_POINTS card"
@@ -123,10 +157,9 @@ class PWGenerator:
         "Add calculation parameter to control namelist"
         # Geometry optimization specific
         if self._isGeometry() and self._isRelax():
-            calculation     = "'%s'" % RELAXLIST[self._inv.relax]    # Oh, these weird apostrophes
-            control.add("calculation", calculation)
+            control.add("calculation", "'%s'" % self._relax()) # Oh, these weird apostrophes
             return
-        
+
         control.add("calculation", CALCULATION) # Default
 
 
@@ -144,8 +177,14 @@ class PWGenerator:
     def _isRelax(self):
         "Checks if relaxation parameter is in range"
         # Example: self._inv.relax == 1 for 'vc-relax'
-        return self._inv.relax in range(len(RELAXLIST))
+        return int(self._inv.relax) in range(len(RELAXLIST))
 
+
+    def _relax(self):
+        if self._isRelax():
+            return RELAXLIST[int(self._inv.relax)]
+
+        return None
 
 __date__ = "$Mar 21, 2010 8:03:26 AM$"
 
