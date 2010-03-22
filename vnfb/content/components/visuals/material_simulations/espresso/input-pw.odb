@@ -42,7 +42,7 @@ class Visual:
 
     def _test(self):
         self.mattertype.selection = self.mattertype.value
-        return select(id="hello-world").replaceContent(lc.htmldocument(text=self.mattertype.value))
+        return 
 
 
     def form(self):
@@ -51,23 +51,10 @@ class Visual:
         table       = QEGrid(lc.grid(Class="qe-form"))
         form.add(table.grid())
 
-        self.mattertype  = FormRadioBox(name = "mattertype")
-        self.mattertype.entries      = enumerate(MATTER_TYPE.values())
-        #self.mattertype.selection    = self._actor.mattertype
-        self.mattertype.onclick = self._test()
-
-#        mattertype.hidden = True
-        #alert("Matter Type: %s" % self._actor.mattertype)
-        #print dir(mattertype)
-        #mattertype.onclick = select(id='main-display-area').replaceContent(lc.document(title=mattertype.value))
-        #alert("Matter Type:" + mattertype.value)
-#        mattertype.onchange = load(actor      = "material_simulations/espresso/input-generate",
-#                                 id         = self._actor.id,
-#                                 taskid     = self._actor.taskid,
-#                                 type       = self._actor.type,
-#                                 structureid    = self._structureid,
-#                                 mattertype = mattertype.value)
-
+#        self.mattertype  = FormRadioBox(name = "mattertype")
+#        self.mattertype.entries      = enumerate(MATTER_TYPE.values())
+#        self.mattertype.onchange = select(id="hello-world").replaceContent(lc.htmldocument(text=self.mattertype.value))
+#        table.addRow(("Material Type:", self.mattertype))
 
         relax       = FormRadioBox(name = "relax", entries = enumerate(RELAX.values()))
         ibrav       = FormSelectorField(name="ibrav",
@@ -87,7 +74,7 @@ class Visual:
         st          = QEGrid(lc.grid()) # Submit Table
         st.addRow((submit, cancel), ("qe-action-accept", "qe-action-cancel"))
 
-        table.addRow(("Material Type:", self.mattertype))
+        
         # Add relaxation parameter for geometry simulation type
         if self._simtype == SIMTYPE["geometry"]:    
             table.addRow(("Relaxation:", relax))    
@@ -122,13 +109,13 @@ class Visual:
         types = MATTER_TYPE.keys()
 
         # Smearing makes sence for structures with a band gap (metal)
-#        if types[int(self._actor.mattertype)] == "metal":
-#            smearing    = FormSelectorField(name="smearing",
-#                                            entries=enumerate(SMEARING.keys()))
-#            degauss     = FormTextField(name = "degauss", value = DEGAUSS)
-#
-#            table.addRow(("Smearing Type:", smearing))
-#            table.addRow(("Smearing Degree (Ry):", degauss))
+        if types[int(self._actor.mattertype)] == "metal":
+            smearing    = FormSelectorField(name="smearing",
+                                            entries=enumerate(SMEARING.keys()))
+            degauss     = FormTextField(name = "degauss", value = DEGAUSS)
+
+            table.addRow(("Smearing Type:", smearing))
+            table.addRow(("Smearing Degree (Ry):", degauss))
 
 
     def _atoms(self):
