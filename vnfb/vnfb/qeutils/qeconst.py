@@ -189,6 +189,7 @@ RELAX       = OrderedDict()
 RELAX["relax"]      = "Relaxation (Fixed lattice parameters)"
 RELAX["vc-relax"]   = "Variable cell relaxation"
 
+RELAXLIST   = RELAX.keys()
 
 __date__ = "$Nov 3, 2009 3:12:34 PM$"
 
