@@ -66,21 +66,30 @@ class QEGrid:
             cell.add(rows[r])
         
 
-    def setCellStyle(self, row, col, cls):
+    def setCellStyle(self, row, col, cls = None, id = None):
         "Sets style for the cells (row, col)"
         # Check range
-        self._dgrid[row][col].Class    = cls
+        if cls:                                     # class
+            self._dgrid[row][col].Class    = cls
+
+        if id:                                      # id
+            self._dgrid[row][col].id        = id
 
 
     def setColumnStyle(self, col, cls):
         "Sets style for the column: col"
+        # Note: No id because it can be assigned to a single element only
         for r in range(len(self._dgrid)):
             self._dgrid[r][col].Class    = cls
 
 
-    def setRowStyle(self, row, cls):
+    def setRowStyle(self, row, cls = None, id = None):
         "Sets style for the row: row"
-        self._gridrows[row].Class    = cls
+        if cls:                                     # class
+            self._gridrows[row].Class   = cls
+
+        if id:                                      # id
+            self._gridrows[row].id      = id
 
 
     def setGridStyle(self, cls = None, id = None):
