@@ -29,6 +29,7 @@ class Actor(base):
         import pyre.inventory
         id          = pyre.inventory.str('id', default='')          # Simulation Id
         taskid      = pyre.inventory.str('taskid', default='')
+        simtype     = pyre.inventory.str('simtype', default='')     # Simulation type (for convenience)
         type        = pyre.inventory.str('type', default='')
         structureid = pyre.inventory.str('structureid', default='')
 
@@ -37,7 +38,8 @@ class Actor(base):
         ecutrho     = pyre.inventory.str('ecutrho', default='')
         smearing    = pyre.inventory.str('smearing', default='')
         degauss     = pyre.inventory.str('degauss', default='')
-        mattertype  = pyre.inventory.str('mattertype', default='')
+        mattertype  = pyre.inventory.str('mattertype', default='0')
+        relax       = pyre.inventory.str('relax', default='0')     # Geometry optimization
         nk1         = pyre.inventory.str('nk1', default='')        # Type of the configuration file
         nk2         = pyre.inventory.str('nk2', default='')
         nk3         = pyre.inventory.str('nk3', default='')
@@ -137,6 +139,7 @@ class Actor(base):
     def _configure(self):
         super(Actor, self)._configure()
         self.id             = self.inventory.id
+        self.simtype        = self.inventory.simtype
         self.taskid         = self.inventory.taskid
         self.type           = self.inventory.type
         self.structureid    = self.inventory.structureid
@@ -147,6 +150,7 @@ class Actor(base):
         self.smearing       = self.inventory.smearing
         self.degauss        = self.inventory.degauss
         self.mattertype     = self.inventory.mattertype
+        self.relax          = self.inventory.relax
         self.nk1            = self.inventory.nk1
         self.nk2            = self.inventory.nk2
         self.nk3            = self.inventory.nk3
