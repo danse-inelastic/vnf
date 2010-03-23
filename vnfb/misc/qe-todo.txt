@@ -2,3 +2,11 @@ TODO list for Quantum Espresso
 
 - Allow users to upload pseudo-potentials on PW form page. Pseudo-potentials are
 stored in a user specific directory.
+
+
+SIMCHAINS[SIMTYPE["scf"]]                   = ("PW",)
+SIMCHAINS[SIMTYPE["electron-dos"]]          = ("PW", "PW", "DOS")
+SIMCHAINS[SIMTYPE["electron-dispersion"]]   = ("PW", "PW", "BANDS", "PLOTBAND")
+SIMCHAINS[SIMTYPE["geometry"]]              = ("PW",)   # Need to get lattice params
+SIMCHAINS[SIMTYPE["single-phonon"]]         = ("PW", "PH", "DYNMAT")
+SIMCHAINS[SIMTYPE["multiple-phonon"]]       = ("PW", "PH", "Q2R", "MATDYN") 

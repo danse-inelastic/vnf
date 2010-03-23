@@ -14,6 +14,7 @@
 from vnfb.qeutils.results.qeresult import QEResult
 from vnfb.qeutils.qeconst import SMEARING, IBRAV
 from vnfb.qeutils.qegrid import QEGrid
+from vnfb.qeutils.qeutils import fstr
 
 from qecalc.qetask.pwtask import PWTask
 import luban.content as lc
@@ -31,8 +32,8 @@ class PWResult(QEResult):
         super(PWResult, self).__init__(director, simid, self._type)
 
 
-    def _taskFactory(self, input, output):
-        config  = "[pw.x]\npwInput: %s\npwOutput: %s" % (input, output)
+    def _taskFactory(self):
+        config  = "[pw.x]\npwInput: %s\npwOutput: %s" % (self._inputFile, self._outputFile)
         return PWTask(configString=config)
 
 
@@ -173,9 +174,13 @@ class PWResult(QEResult):
         if not self._output:    # No output
             return NONE
 
+        lp   = self._inputLatticeParams()
+        #print self._outputLatticeParams()
+        # lattice params
+        
         table    = QEGrid(lc.grid(Class="qe-table-forces"))
-        table.addRow(("A", "B", "C", "cosAB", "cosBC"))
-        table.addRow(("6.56", "6.56", "6.56", "0.67", "0.78"))
+        table.addRow(("A", "B", "C", "cosAB", "cosAC", "cosBC"))
+        table.addRow(self._fstr(lp))
         table.setRowStyle(0, "qe-table-header-left")
         return table.grid()
 
@@ -186,9 +191,10 @@ class PWResult(QEResult):
         if not self._output:    # No output
             return NONE
 
+        lp   = self._outputLatticeParams()
         table    = QEGrid(lc.grid(Class="qe-table-forces"))
-        table.addRow(("A", "B", "C", "cosAB", "cosBC"))
-        table.addRow(("6.56", "6.56", "6.56", "0.67", "0.78"))
+        table.addRow(("A", "B", "C", "cosAB", "cosAC", "cosBC"))
+        table.addRow(self._fstr(lp))
         table.setRowStyle(0, "qe-table-header-left")
         return table.grid()
 
@@ -326,7 +332,7 @@ class PWResult(QEResult):
     # Move to card.py code?
     # XXX: Check if the validator has the name
     def _atomicCard(self, name, validator):
-        items       = self._cardlines(name) #self._input.card(name).lines()
+        items       = self._cardlines(name)
 
         if not items:
             return None
@@ -354,6 +360,47 @@ class PWResult(QEResult):
 
         return dict
 
+
+    def _inputLatticeParams(self):
+        "Return input lattice parameters"
+        self._input.parse() # Populate lattice from input config file
+        return self._latticeParams()
+
+
+    def _outputLatticeParams(self):
+        "Return output lattice parameters"
+        # Weird interface
+        self._input.structure.parseOutput(self._outputFile) # Populate lattice from output config file
+        return self._latticeParams()
+
+        
+    def _latticeParams(self):
+        "Returns tuple of float lattice parameters for input and output config files"
+        l   = self._lattice()
+        if not l:
+            return None
+
+        return (l.a, l.b, l.c, l.cAB, l.cAC, l.cBC)
+
+
+    def _lattice(self):
+        "Returns QELattice object composed of diffpyStructure/matter lattice"
+        # See qecalc.qetask.qeparser.qelattice.py
+        try:
+            lattice = self._input.structure.lattice
+        except AttributeError:
+            lattice = None
+
+        return lattice
+
+
+    def _fstr(self, flist):
+        "Takes list of float numbers and converts them to formatted string"
+        lp  = []
+        for l in flist:
+            lp.append(fstr(l))
+
+        return lp
 
 __date__ = "$Mar 15, 2010 2:45:52 PM$"
 

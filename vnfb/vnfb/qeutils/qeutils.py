@@ -88,6 +88,11 @@ Used mostly on database classes (vnfb.dom)
 setname = lambda params, obj, name: ifelse(params.has_key(name), params.get(name), getattr(obj, name))
 
 
+def fstr(num):
+    "Takes float number and returns formated string"
+    return "%.2f" % num
+
+
 def stamp2date(stamp):
     """Converts stamp to date"""
     import time
