@@ -30,7 +30,9 @@ class QEResult(object):
         self._simid         = simid
 
         # Attributes
-        self._task          = None     # Will remain None if output file is not available
+        self._inputFile     = None  # Input file
+        self._outputFile    = None  # Output file
+        self._task          = None  # Will remain None if output file is not available
         self._input         = None
         self._output        = None
         self._init()
@@ -40,14 +42,14 @@ class QEResult(object):
         "Retrieve output file and parse it"
         resultPath  = ResultPath(self._director, self._simid, self._type)
 
-        input       = resultPath.resultFiles("input")    # Input file
-        output      = resultPath.resultFiles("output")   # Output file
+        self._inputFile     = resultPath.resultFiles("input")    # Input file
+        self._outputFile    = resultPath.resultFiles("output")   # Output file
 
         # Important line! No output file, no results!
-        if not output:
+        if not self._outputFile:
             return
 
-        self._task    = self._taskFactory(input, output)
+        self._task    = self._taskFactory()
         self._input   = self._task.input
         self._output  = self._task.output
 
