@@ -72,7 +72,7 @@ class Actor(base):
 
 
     def outputs(self, director):
-        #print self.inventory.simtype
+        "Displays the content of output files"
         return [select(id=ID_RESULTS).replaceContent(self.contentOutput(director)),
                 select(id=ID_OUTPUTS).replaceContent(self._outputLinks(director))
                 ]
