@@ -126,7 +126,6 @@ class Actor(base):
                 )
 
 
-    # XXX: Finish
     def _outputAction(self, director, container):
         "Simulation output files"
         sA          = container.section(Class="qe-section-text-output")
