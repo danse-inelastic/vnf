@@ -167,6 +167,21 @@ class PWResult(QEResult):
         return table.grid()
 
 
+    # Specific for geometry optimization
+    def latticeInput(self):
+        "Lattice structure"
+        if not self._output:    # No output
+            return NONE
+
+        table    = QEGrid(lc.grid(Class="qe-table-forces"))
+        table.addRow(("A", "B", "C", "cosAB", "cosBC"))
+        table.addRow(("6.56", "6.56", "6.56", "0.67", "0.78"))
+        table.setRowStyle(0, "qe-table-header")
+
+        return table.grid()
+
+
+    # Auxiliary methods
     def _energy(self, type):
         "Returns tuple (energy, unit) if energy is not None or None otherwise"
         if not self._task:
