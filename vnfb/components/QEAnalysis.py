@@ -103,7 +103,6 @@ class Actor(base):
         section.add(container)
         self._backAction(container)
         self._outputAction(director, container)
-        self._exportAction(director, container)
 
         section.add(lc.document(Class="clear-both"))
 
@@ -129,7 +128,7 @@ class Actor(base):
         "Simulation output files"
         sA          = container.section(Class="qe-section-text-output")
         sA.add(lc.htmldocument(text="Outputs: "))
-        sB          = container.section()
+        sB          = container.section(Class="qe-section-output")
 
         docOutput   = lc.document(id=ID_OUTPUTS)    # Hook for output links
         docOutput.add(self._outputLinks(director))
@@ -191,10 +190,6 @@ class Actor(base):
                 crash[t]  = True
 
         return crash
-
-
-    def _exportAction(self, director, container):
-        "Export actions. Needs to be overwritten by subclasses"
 
 
     def _summary(self, director, section):

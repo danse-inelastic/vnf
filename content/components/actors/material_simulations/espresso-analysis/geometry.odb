@@ -31,6 +31,7 @@ class Actor(base):
         table       = QEGrid(lc.grid(Class = "qe-table-analysis"))
         section.add(table.grid())
         table.addRow(("Lattice:", self._pwresult.latticeInput()))
+        table.addRow(("Positions:", self._pwresult.positionInput()))
         table.setColumnStyle(0, "qe-cell-param-analysis")
 
 
@@ -39,6 +40,7 @@ class Actor(base):
         table       = QEGrid(lc.grid(Class = "qe-table-analysis"))
         section.add(table.grid())
         table.addRow(("Lattice:", self._pwresult.latticeOutput()))
+        table.addRow(("Positions:", self._pwresult.positionOutput()))
         table.setColumnStyle(0, "qe-cell-param-analysis")
 
 
