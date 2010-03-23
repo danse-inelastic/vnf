@@ -30,7 +30,7 @@ class Actor(base):
         section.add(lc.paragraph(text="Input Geometry", Class="qe-section"))
         table       = QEGrid(lc.grid(Class = "qe-table-analysis"))
         section.add(table.grid())
-        table.addRow(("Lattice:", self._pwresult.latticeInput()))    #"A     B     C     cosAB   cosBC"
+        table.addRow(("Lattice:", self._pwresult.latticeInput()))
         table.setColumnStyle(0, "qe-cell-param-analysis")
 
 
@@ -38,7 +38,7 @@ class Actor(base):
         section.add(lc.paragraph(text="Output Geometry", Class="qe-section"))
         table       = QEGrid(lc.grid(Class = "qe-table-analysis"))
         section.add(table.grid())
-        table.addRow(("Lattice:", "A     B     C     cosAB   cosBC"))
+        table.addRow(("Lattice:", self._pwresult.latticeOutput()))
         table.setColumnStyle(0, "qe-cell-param-analysis")
 
 

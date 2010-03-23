@@ -45,10 +45,10 @@ class PWResult(QEResult):
         if not list:
             return "None"
 
-        atoms.addRow((" ", "Atom", "Position (bohr)", "Mass (u)", "Pseudo-Potential"))
+        atoms.addRow(("Atom", "Position (bohr)", "Mass (u)", "Pseudo-Potential"))
 
         for row in list:
-            atoms.addRow((row[0], row[1], row[2], row[3], row[4]))
+            atoms.addRow((row[1], row[2], row[3], row[4]))
 
         atoms.setRowStyle(0, "qe-table-header") 
         return atoms.grid()
@@ -142,10 +142,10 @@ class PWResult(QEResult):
             return NONE
         
         table    = QEGrid(lc.grid(Class="qe-table-forces"))
-        table.addRow((" ", "Atom", "Force (Ry/bohr)"))
+        table.addRow(("Atom", "Force (Ry/bohr)"))
         
         for f in forces:
-            table.addRow((f[0], f[1], "(%.2f, %.2f, %.2f)" % (f[2], f[3], f[4]) ))
+            table.addRow((f[1], "(%.2f, %.2f, %.2f)" % (f[2], f[3], f[4]) ))
 
         table.setRowStyle(0, "qe-table-header")
         return table.grid()
@@ -177,7 +177,19 @@ class PWResult(QEResult):
         table.addRow(("A", "B", "C", "cosAB", "cosBC"))
         table.addRow(("6.56", "6.56", "6.56", "0.67", "0.78"))
         table.setRowStyle(0, "qe-table-header")
+        return table.grid()
 
+
+    # Specific for geometry optimization
+    def latticeOutput(self):
+        "Lattice structure"
+        if not self._output:    # No output
+            return NONE
+
+        table    = QEGrid(lc.grid(Class="qe-table-forces"))
+        table.addRow(("A", "B", "C", "cosAB", "cosBC"))
+        table.addRow(("6.56", "6.56", "6.56", "0.67", "0.78"))
+        table.setRowStyle(0, "qe-table-header")
         return table.grid()
 
 
