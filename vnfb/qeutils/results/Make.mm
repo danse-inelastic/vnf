@@ -18,11 +18,19 @@ PACKAGE = qeutils/results
 #
 
 EXPORT_PYTHON_MODULES = \
+        bandsresult.py \
+        dosresult.py \
+        dynmatresult.py \
+        __init__.py \
+        matdynresult.py \
+        phresult.py \
+        plotbandresult.py \
         pwresult.py \
+        q2rresult.py \
         qeresult.py \
         resultinfo.py \
         resultpath.py \
-        __init__.py \
+
 
 BUILD_DIRS = \
 
