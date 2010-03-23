@@ -133,7 +133,7 @@ class Actor(base):
         if not sim:
             return
 
-        table.addRow(('Type: ', sim.type))
+        table.addRow(('Simulation Type: ', sim.type))
         table.addRow(('Atomic Structure: ', self._structure(sim)))
         table.addRow(('Description: ', sim.short_description))
         table.addRow(('Package: ', sim.package))

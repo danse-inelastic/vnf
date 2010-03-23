@@ -26,7 +26,7 @@ NONE        = "None"
 
 class PWResult(QEResult):
 
-    def __init__(self, director, simid):     # simulation id
+    def __init__(self, director, simid):
         self._type  = "PW"  # Important attribute
         super(PWResult, self).__init__(director, simid, self._type)
 

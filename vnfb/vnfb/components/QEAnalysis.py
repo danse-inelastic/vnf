@@ -55,18 +55,21 @@ class Actor(base):
         docResults  = lc.document(id = ID_RESULTS)
         doc.add(docResults)
         
-        resSplitter = docResults.splitter(orientation="vertical")
-        sSum        = resSplitter.section()                        # system summary
-        sEle        = resSplitter.section()                        # electron structure
-        
         #self._simrecord   = SimulationRecord(director, self.id)
         self._pwresult    = PWResult(director, self.id)
 
         self._viewIndicator(director, sInd)
         self._showActions(director, sAct)                 # Show actions
+
+        # Simulation Data
+        resSplitter = docResults.splitter(orientation="vertical")
+        self._simData(director, resSplitter)              # Simulation Specific data
+
+        # System Summary and Electron Structure
+        sSum        = resSplitter.section()                        # system summary
+        sEle        = resSplitter.section()                        # electron structure
         self._summary(director, sSum)                     # System Summary
         self._electronStructure(director, sEle)           # Electron Structure
-        self._simData(director, resSplitter)                        # Simulation Specific data
 
         return doc
 
