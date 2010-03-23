@@ -43,6 +43,7 @@ import thread, time
 
 # Toggle module level debugging mode.
 DEBUG = False
+#DEBUG = True
 
 # List of all AST node classes in ast.py.
 all_ast_nodes = \
@@ -229,13 +230,14 @@ class SafeEvalVisitor(ast.NodeVisitor):
         self.errors = []
         for ast_name in all_ast_nodes:
             # Don't reset any overridden callbacks.
-            if getattr(self, 'visit' + ast_name, None): continue
+            if getattr(self, 'visit_' + ast_name, None):
+                continue
             if is_unallowed_ast_node(ast_name):
-                setattr(self, 'visit' + ast_name, self.fail)
+                setattr(self, 'visit_' + ast_name, self.fail)
             else:
-                setattr(self, 'visit' + ast_name, self.ok)
+                setattr(self, 'visit_' + ast_name, self.ok)
 
-                
+        
     def walk(self, ast):
         "Validate each node in AST and return True if AST is 'safe'."
         self.visit(ast)
@@ -246,7 +248,7 @@ class SafeEvalVisitor(ast.NodeVisitor):
         "Recursively validate node and all of its children."
         if DEBUG: self.trace(node)
         return ast.NodeVisitor.visit(self, node)
-    
+
 
     def visit_Name(self, node):
         "Disallow any attempts to access a restricted builtin/attr."
@@ -266,10 +268,12 @@ class SafeEvalVisitor(ast.NodeVisitor):
         if is_unallowed_attr(name):
             self.errors.append(SafeEvalAttrError( \
                 "access to attribute '%s' is denied" % name, lineno))
-            
+
+
     def ok(self, node, *args):
         "Default callback for 'harmless' AST nodes."
-        pass
+        return self.generic_visit(node, *args)
+        
     
     def fail(self, node, *args):
         "Default callback for unallowed AST nodes."
@@ -413,6 +417,12 @@ def safe_eval(code, context = {}, timeout_secs = 5, check_only=False):
 import unittest
 
 class TestSafeEval(unittest.TestCase):
+
+    def test_import(self):
+        # attempt to import
+        self.assertRaises(SafeEvalException,
+            safe_eval, "import sys")
+        
     def test_builtin(self):
         # attempt to access a unsafe builtin
         self.assertRaises(SafeEvalException,
