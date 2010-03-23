@@ -23,10 +23,12 @@ from vnfb.qeutils.qeutils import remoteResultsPath
 import os
 import time
 import shutil
+from vnfb.qeutils.qeutils import analyseActor
 from vnfb.qeutils.qeutils import qeinput, packname, resultsdir
 from luban.components.AuthorizedActor import AuthorizedActor as base
 
 CONVERT_DELAY = 5   # 5 sec
+TO_THZ  = 0.0299792458
 
 # XXX: Let users know that the Phonon DOS is created!
 
@@ -35,7 +37,8 @@ class Actor(base):
 
     class Inventory(base.Inventory):
         import pyre.inventory
-        simid          = pyre.inventory.str('simid', default='')
+        simid       = pyre.inventory.str('simid', default='')
+        simtype     = pyre.inventory.str('simtype', default='')
 
 
     def create(self, director):
@@ -45,9 +48,10 @@ class Actor(base):
         self._createLocation(director)
         self._relocateResults(director)
 
-        return director.redirect(actor   = 'material_simulations/espresso-analysis/electron',
-                                 routine = 'default',
-                                 id      = self.simid)
+        return director.redirect(actor      = analyseActor(self.simtype),
+                                 routine    = 'default',
+                                 simtype    = self.simtype,
+                                 id         = self.simid)
 
 
     # XXX: Check if the DOS is converted correctly!
@@ -58,8 +62,6 @@ class Actor(base):
         import idf.DOS
         from qecalc.qetask.qeparser.pwinput import PWInput
         from qecalc.qetask.matdyntask import MatdynTask
-
-        TO_THZ  = 0.0299792458
 
         # Example: mddir   = "/home/dexity/exports/vnf/vnfb/content/data/tmp/tmpTRqFuy/8CNH5MUJ"
         mddir       = self._matdynpath(director)  # tmp results directory
@@ -149,7 +151,8 @@ fldos = %s""" % (flvec, flfrq, fldos)
 
     def _configure(self):
         super(Actor, self)._configure()
-        self.simid             = self.inventory.simid
+        self.simid       = self.inventory.simid
+        self.simtype     = self.inventory.simtype
 
 
     def _init(self):

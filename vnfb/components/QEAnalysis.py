@@ -11,7 +11,7 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
-
+from vnfb.qeutils.qeutils import analyseActor
 from vnfb.qeutils.qerecords import SimulationRecord
 from vnfb.qeutils.results.pwresult import PWResult
 from vnfb.qeutils.results.resultpath import ResultPath
@@ -35,6 +35,7 @@ class Actor(base):
     class Inventory(base.Inventory):
         import pyre.inventory
         id          = pyre.inventory.str('id', default='')          # Simulation Id
+        simtype     = pyre.inventory.str('simtype', default='')
         type        = pyre.inventory.str('type', default='')        # Task type
 
 
@@ -65,12 +66,13 @@ class Actor(base):
         self._showActions(director, sAct)                 # Show actions
         self._summary(director, sSum)                     # System Summary
         self._electronStructure(director, sEle)           # Electron Structure
-        self._simData(resSplitter)                        # Simulation Specific data
+        self._simData(director, resSplitter)                        # Simulation Specific data
 
         return doc
 
 
     def outputs(self, director):
+        #print self.inventory.simtype
         return [select(id=ID_RESULTS).replaceContent(self.contentOutput(director)),
                 select(id=ID_OUTPUTS).replaceContent(self._outputLinks(director))
                 ]
@@ -112,12 +114,13 @@ class Actor(base):
         sBac.add(lc.link(label="Back",
                         Class="qe-action-back",
                         onclick = load(actor      = 'material_simulations/espresso/sim-view',
-                                         id         = self.id))
+                                         id       = self.id))
                 )
         sBac.add(lc.link(label="Refresh",
                         Class="qe-action-edit",
-                        onclick = load(actor      = 'material_simulations/espresso-analysis/electron',
-                                         id         = self.id))
+                        onclick = load(actor    = analyseActor(self.simtype),
+                                       simtype  = self.simtype,     # pass simtype
+                                       id       = self.id))
                 )
 
 
@@ -143,9 +146,10 @@ class Actor(base):
         for l in typelist:
             doc.add(lc.link(label=l,
                             Class=classes[l],
-                            onclick = load(actor      = 'material_simulations/espresso-analysis/electron', # XXX
+                            onclick = load(actor      = analyseActor(self.simtype),
                                            routine    = "outputs",
                                            type       = l,
+                                           simtype    = self.simtype,
                                            id         = self.id))
                     )
 
@@ -157,7 +161,7 @@ class Actor(base):
         classes = {}
         crash   = self._crashCheck(director, typelist)
 
-        #assume(len(crash.keys()) == len(typelist))  # Assumption
+        assert(len(crash.keys()) == len(typelist))  # Assumption
 
         # Set default values first
         for t in typelist:
@@ -189,50 +193,8 @@ class Actor(base):
         return crash
 
 
-#    def _exportAction(self, container):
-#        "Export actions. Needs to be overwritten by subclasses"
-
-    # XXX: Keep for presentation only
     def _exportAction(self, director, container):
-        "Button related to export"
-        simrecord   = SimulationRecord(director, self.id)
-        sim         = simrecord.record()
-        sA          = container.section()
-
-        #if not sim and sim.type    == "Multiple Phonon":   # Make sure that jobs exist with DOS or Dispersion
-        self._showPhononDos(sA, sim)
-        self._showPhononDispersion(sA, sim)
-
-
-    # XXX: Keep for presentation only
-    def _showPhononDos(self, section, sim):
-        linkDos     = lc.link(label="Export Phonon DOS",
-                            Class="qe-action-edit",
-                            onclick = load(actor        = 'material_simulations/espresso/phonondos',
-                                            routine     = 'create',
-                                            simid       = self.inventory.id))
-        linkDos.tip = "Export Phonon DOS to Atomic Structure"
-
-        # Uncomment
-#        if self._phononDosCreated(sim):     # Check if DOS created
-#            linkDos.label   = "Phonon DOS"
-#            linkDos.onclick = load(actor        = 'atomicstructure',
-#                                    routine     = 'showOverview',
-#                                    id          = sim.structureid)  # matter id
-
-        section.add(linkDos)
-
-
-    # XXX: Keep for presentation only
-    def _showPhononDispersion(self, section, sim):
-       linkDisp     = lc.link(label="Export Phonon Dispersion",
-                            Class="qe-action-edit",
-                            onclick = load(actor        = 'material_simulations/espresso/phonons',
-                                            routine     = 'create',
-                                            simid       = self.inventory.id))
-       linkDisp.tip = "Export Phonon Dispersion to Atomic Structure"
-       section.add(linkDisp)
-
+        "Export actions. Needs to be overwritten by subclasses"
 
 
     def _summary(self, director, section):
@@ -270,7 +232,7 @@ class Actor(base):
         table.setColumnStyle(0, "qe-cell-param-analysis")
 
 
-    def _simData(self, splitter):
+    def _simData(self, director, splitter):
         "Simulation specific data. Should be overwritten by subclass"
 
 
@@ -278,6 +240,7 @@ class Actor(base):
         super(Actor, self)._configure()
         self.id             = self.inventory.id
         self.type           = self.inventory.type
+        self.simtype        = self.inventory.simtype
 
 
     def _init(self):
