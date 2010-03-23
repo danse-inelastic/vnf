@@ -364,8 +364,9 @@ def exec_timed(code, context, timeout_secs):
         signal_finished = True
     except KeyboardInterrupt:
         raise SafeEvalTimeoutException(timeout_secs)
+    
 
-def safe_eval(code, context = {}, timeout_secs = 5, check_only=False):
+def safe_eval(code, context = None, timeout_secs = 5, check_only=False):
     """
     Validate source code and make sure it contains no unauthorized
     expression/statements as configured via 'unallowed_ast_nodes' and
@@ -388,7 +389,12 @@ def safe_eval(code, context = {}, timeout_secs = 5, check_only=False):
         SafeEvalTimeoutException
 
     check_only: if check_only is true, only check whether the expression is safe.
-    """   
+    """
+
+    # this is intentionally so that malicious code cannot change the default
+    # value of context. thanks to reminder from Paul Kienzle
+    context = context or {}
+    
     ctx_errkeys, ctx_errors = [], []
     for (key, obj) in context.items():
         if inspect.isbuiltin(obj):
@@ -422,7 +428,8 @@ class TestSafeEval(unittest.TestCase):
         # attempt to import
         self.assertRaises(SafeEvalException,
             safe_eval, "import sys")
-        
+
+
     def test_builtin(self):
         # attempt to access a unsafe builtin
         self.assertRaises(SafeEvalException,
@@ -451,7 +458,7 @@ class TestSafeEval(unittest.TestCase):
 
     def test_timeout_exceed(self):
         # attempt to exectute code which never teminates
-        self.assertRaises(SafeEvalException, \
+        self.assertRaises(SafeEvalTimeoutException, \
             safe_eval, "while 1: pass")
 
     def test_invalid_context(self):
@@ -468,6 +475,42 @@ class TestSafeEval(unittest.TestCase):
         safe_eval("test()", env)
         self.assertEqual(self.value, 1)
 
+
+    # mote test cases from Paul Kienzle
+    def test_sleep(self):
+        code = [
+            'import time',
+            'for i in range(5):',
+            '  try: time.sleep(1)',
+            '  except: pass',
+            '  print i',
+            ]
+        self.assertRaises(SafeEvalException, safe_eval, '\n'.join(code), {}, 3)
+        import time
+        self.assertRaises(SafeEvalException, safe_eval, '\n'.join(code[1:]), {'time':time}, 3)
+        return
+
+
+    def test_pickledump(self):
+        code = [
+            'import pickle',
+            'print pickle.dumps("3")',
+            ]
+        self.assertRaises(SafeEvalException, safe_eval, '\n'.join(code))
+        return
+
+
+    def test_importbuiltin(self):
+        code = [
+            'import __builtin__ as b',
+            'f = b.open("test.txt","w")',
+            'f.write("pwnd")',
+            'f.close()',
+            ]
+        self.assertRaises(SafeEvalException, safe_eval, '\n'.join(code))
+        return
+    
+        
 if __name__ == "__main__":
     unittest.main()
 
