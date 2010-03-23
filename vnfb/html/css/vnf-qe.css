@@ -297,6 +297,12 @@ select {
     text-align: center;
 }
 
+.qe-table-header-left {
+    font-weight: bold;
+    text-align: left;
+}
+
+
 tr td .qe-table-id {
     width: 80px;
 }

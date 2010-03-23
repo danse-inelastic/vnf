@@ -43,14 +43,14 @@ class PWResult(QEResult):
         list        = self._atomsList()
 
         if not list:
-            return "None"
+            return NONE
 
         atoms.addRow(("Atom", "Position (bohr)", "Mass (u)", "Pseudo-Potential"))
 
         for row in list:
             atoms.addRow((row[1], row[2], row[3], row[4]))
 
-        atoms.setRowStyle(0, "qe-table-header") 
+        atoms.setRowStyle(0, "qe-table-header-left")
         return atoms.grid()
 
 
@@ -67,7 +67,7 @@ class PWResult(QEResult):
         if smparam in SMEARING.values():
             return "Metal"  
 
-        return "None"   # default
+        return NONE   # default
 
 
     def latticeType(self):
@@ -76,7 +76,7 @@ class PWResult(QEResult):
         if param is not None and param.isdigit() and int(param) in range(len(IBRAV)):
             return IBRAV[int(param)]
 
-        return "None"   # default
+        return NONE   # default
 
 
     def energyCutoff(self):
@@ -108,7 +108,7 @@ class PWResult(QEResult):
             if len(items) == 6:
                 return "(%s, %s, %s)" % (items[0], items[1], items[2])
             
-        return "None"
+        return NONE
 
 
     # Output methods
@@ -147,7 +147,7 @@ class PWResult(QEResult):
         for f in forces:
             table.addRow((f[1], "(%.2f, %.2f, %.2f)" % (f[2], f[3], f[4]) ))
 
-        table.setRowStyle(0, "qe-table-header")
+        table.setRowStyle(0, "qe-table-header-left")
         return table.grid()
 
 
@@ -176,7 +176,7 @@ class PWResult(QEResult):
         table    = QEGrid(lc.grid(Class="qe-table-forces"))
         table.addRow(("A", "B", "C", "cosAB", "cosBC"))
         table.addRow(("6.56", "6.56", "6.56", "0.67", "0.78"))
-        table.setRowStyle(0, "qe-table-header")
+        table.setRowStyle(0, "qe-table-header-left")
         return table.grid()
 
 
@@ -189,7 +189,31 @@ class PWResult(QEResult):
         table    = QEGrid(lc.grid(Class="qe-table-forces"))
         table.addRow(("A", "B", "C", "cosAB", "cosBC"))
         table.addRow(("6.56", "6.56", "6.56", "0.67", "0.78"))
-        table.setRowStyle(0, "qe-table-header")
+        table.setRowStyle(0, "qe-table-header-left")
+        return table.grid()
+
+
+    def positionInput(self):
+        if not self._output:    # No output
+            return NONE
+
+        table    = QEGrid(lc.grid(Class="qe-table-forces"))
+        table.addRow(("Atom", "Positions"))
+        table.addRow(("Fe", "(0, 0, 0)"))
+        table.addRow(("Fe", "(0, 0.5, 0)"))
+        table.setRowStyle(0, "qe-table-header-left")
+        return table.grid()
+
+
+    def positionOutput(self):
+        if not self._output:    # No output
+            return NONE
+
+        table    = QEGrid(lc.grid(Class="qe-table-forces"))
+        table.addRow(("Atom", "Positions"))
+        table.addRow(("Fe", "(0, 0, 0)"))
+        table.addRow(("Fe", "(0, 0.5, 0)"))
+        table.setRowStyle(0, "qe-table-header-left")
         return table.grid()
 
 
@@ -243,7 +267,7 @@ class PWResult(QEResult):
                 return p
 
         if formatted:
-            return "None"
+            return NONE
 
         return None
 
@@ -261,7 +285,7 @@ class PWResult(QEResult):
         if energy and len(energy) == 2 and energy[0]:
             return  "%s %s" % (energy[0], energy[1])
 
-        return "None"
+        return NONE
 
 
     # XXX: Work on a better validation of code!
