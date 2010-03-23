@@ -11,6 +11,14 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
+from vnfb.qeutils.results.qeresult import QEResult
+
+NONE        = "None"
+class DOSResult(QEResult):
+
+    def __init__(self, director, simid):
+        self._type  = "DOS"  # Important attribute
+        super(DOSResult, self).__init__(director, simid, self._type)
 
 __date__ = "$Mar 22, 2010 11:40:10 PM$"
 
