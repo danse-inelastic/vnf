@@ -18,7 +18,7 @@ import os.path
 
 import os
 from vnfb.qeutils.results.resultinfo import ResultInfo
-from vnfb.qeutils.qeconst import INPUT
+from vnfb.qeutils.qeconst import INPUT, ANALYSIS
 
 
 def parseFile(filename):
@@ -315,6 +315,16 @@ def inputRecord(director, simid, type):
         return inputs[0]
 
     return None
+
+
+def analyseActor(simtype):
+    "Returns analysis actor based on simulation type"
+    name    = "default"
+
+    if simtype in ANALYSIS.keys():
+        name    = ANALYSIS[simtype]
+
+    return 'material_simulations/espresso-analysis/%s' % name
 
 
 # *********** TESTS ******************************

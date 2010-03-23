@@ -14,6 +14,7 @@
 import os
 import time
 import shutil
+from vnfb.qeutils.qeutils import analyseActor
 from vnfb.qeutils.qeutils import qeinput, packname, resultsdir
 import idf.DOS
 import idf.Polarizations
@@ -33,13 +34,15 @@ PHONON_FILES    = ("Polarizations", "Omega2", "Qgridinfo")
 
 # XXX: Let users know that the Phonons are created!
 # XXX: Input files for tasks are used. Gives error if they are missing or inappropriate
+# XXX: Make sure that simtype is passed!
 
 # Requires simulation id, config id and config type: (id, configid, type)
 class Actor(base):
 
     class Inventory(base.Inventory):
         import pyre.inventory
-        simid          = pyre.inventory.str('simid', default='')
+        simid       = pyre.inventory.str('simid', default='')
+        simtype     = pyre.inventory.str('simtype', default='')
 
 
     def create(self, director):
@@ -51,9 +54,10 @@ class Actor(base):
         self._createLocation(director)
         self._relocateResults(director)
 
-        return director.redirect(actor   = 'material_simulations/espresso-analysis/electron', #XXX
+        return director.redirect(actor   = analyseActor(self.simtype),
                                  routine = 'default',
-                                 id      = self.simid)
+                                 id      = self.simid,
+                                 simtype = self.simtype)
 
 
     # XXX: Check if the DOS is converted correctly!
@@ -217,7 +221,8 @@ flfrq = %s
 
     def _configure(self):
         super(Actor, self)._configure()
-        self.simid             = self.inventory.simid
+        self.simid       = self.inventory.simid
+        self.simtype     = self.inventory.simtype
 
 
     def _init(self):

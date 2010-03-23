@@ -11,13 +11,34 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
+import luban.content as lc
+from vnfb.qeutils.qegrid import QEGrid
 from vnfb.components.QEAnalysis import Actor as base
 
 class Actor(base):
-    pass
 
-    # + Input Geometry
-    # + Output Geometry
+    def _simData(self, director, splitter):
+        "Simulation specific data. Should be overwritten by subclass"
+        sInp    = splitter.section()
+        sOut    = splitter.section()
+
+        self._inputGeometry(director, sInp)
+        self._outputGeometry(director, sOut)
+
+
+    def _inputGeometry(self, director, section):
+        section.add(lc.paragraph(text="Input Geometry", Class="qe-section"))
+        table       = QEGrid(lc.grid(Class = "qe-table-analysis"))
+        section.add(table.grid())
+        table.addRow(("Lattice:", "A     B     C     cosAB   cosBC"))
+
+
+    def _outputGeometry(self, director, section):
+        section.add(lc.paragraph(text="Output Geometry", Class="qe-section"))
+        table       = QEGrid(lc.grid(Class = "qe-table-analysis"))
+        section.add(table.grid())
+        table.addRow(("Lattice:", "A     B     C     cosAB   cosBC"))
+
 
 def actor():
     return Actor(name='material_simulations/espresso-analysis/geometry')
