@@ -213,6 +213,14 @@ class PWResult(QEResult):
         poslist = zip(struct.symbols, struct.xyz)
         return self._position(poslist)
 
+#   Cartesian axes
+#
+#     site n.     atom                  positions (a_0 units)
+#         1           Al  tau(  1) = (   0.0000000   0.0000000   0.0000000  )
+#         2           Al  tau(  2) = (   2.0200000   3.2320000   0.0000000  )
+#         3           Al  tau(  3) = (   2.0200000   0.0000000   2.0200000  )
+#         4           Al  tau(  4) = (   0.0000000   2.0200000   2.0200000  )
+
 
     def _position(self, poslist):
         "Returns formatted structure of atomic positions"
@@ -221,7 +229,7 @@ class PWResult(QEResult):
             return NONE
 
         table    = QEGrid(lc.grid(Class="qe-table-forces"))
-        table.addRow(("Atom", "Positions"))
+        table.addRow(("Atom", "Coordinates"))
         for pl in poslist:
             table.addRow((pl[0], "(%.2f, %.2f, %.2f)" % (pl[1][0], pl[1][1], pl[1][2])))
         

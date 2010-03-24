@@ -4,9 +4,9 @@ TODO list for Quantum Espresso
 stored in a user specific directory.
 
 
-SIMCHAINS[SIMTYPE["scf"]]                   = ("PW",)
+SIMCHAINS[SIMTYPE["scf"]]                   = ("PW",)                           # done, test
 SIMCHAINS[SIMTYPE["electron-dos"]]          = ("PW", "PW", "DOS")
 SIMCHAINS[SIMTYPE["electron-dispersion"]]   = ("PW", "PW", "BANDS", "PLOTBAND")
-SIMCHAINS[SIMTYPE["geometry"]]              = ("PW",)   # Need to get lattice params
+SIMCHAINS[SIMTYPE["geometry"]]              = ("PW",)                           # export structure, test
 SIMCHAINS[SIMTYPE["single-phonon"]]         = ("PW", "PH", "DYNMAT")
 SIMCHAINS[SIMTYPE["multiple-phonon"]]       = ("PW", "PH", "Q2R", "MATDYN") 

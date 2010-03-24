@@ -51,7 +51,7 @@ TRUST_RADIUS_MIN    = "0.001"
 CELL_DYNAMICS       = "'bfgs'"
 
 
-class PWGenerator:
+class PWGenerator(object):
 
     def __init__(self, inventory, input):
         self._inv       = inventory
