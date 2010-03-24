@@ -19,7 +19,7 @@ from vnfb.qeutils.qeconst import MATDYN_METHOD
 from luban.content.FormTextField import FormTextField
 from luban.content.FormSubmitButton import FormSubmitButton
 
-def visual(actor, director, structureid):
+def visual(actor, director, structureid, simtype):
     form    = lc.form()
     form.radio(name = "method", entries = enumerate(MATDYN_METHOD.values()))
     table       = QEGrid(lc.grid())
