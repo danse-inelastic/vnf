@@ -94,7 +94,8 @@ unallowed_ast_nodes = [
 #   'ExceptHandler',
     'Exec',
 #   'Expr', 'Expression',
-#   'ExtSlice', 'FloorDiv', 'For', 'FunctionDef', 'GeneratorExp', 'Global',
+#   'ExtSlice', 'FloorDiv', 'For', 'FunctionDef', 'GeneratorExp',
+    'Global',
 #    'Gt', 'GtE', 'If', 'IfExp',
     'Import', 'ImportFrom',
 #   'In', 'Index',
@@ -113,7 +114,9 @@ unallowed_ast_nodes = [
 unallowed_builtins = [
     '__import__',
 #   'abs', 'apply', 'basestring', 'bool', 'buffer',
-#   'callable', 'chr', 'classmethod', 'cmp', 'coerce',
+#   'callable', 'chr',
+    'classmethod',
+#   'cmp', 'coerce',
     'compile',
 #   'complex',
     'delattr',
@@ -128,22 +131,29 @@ unallowed_builtins = [
 #   'int', 'intern', 'isinstance', 'issubclass', 'iter',
 #   'len', 'list',
     'locals',
-#   'long', 'map', 'max', 'min', 'object', 'oct',
+#   'long', 'map', 'max', 'min',
+    'object',
+#   'oct',
     'open',
-#   'ord', 'pow', 'property', 'range',
+#   'ord', 'pow',
+    'property',
+#   'range',
     'raw_input',
 #   'reduce',
     'reload',
 #   'repr', 'reversed', 'round', 'set',
     'setattr',
-#   'slice', 'sorted', 'staticmethod',  'str', 'sum', 'super',
+#   'slice', 'sorted',
+    'staticmethod',
+    #'str', 'sum',
+    'super',
 #   'tuple', 'type', 'unichr', 'unicode',
     'vars',
 #    'xrange', 'zip'
 ]
 
 for ast_name in unallowed_ast_nodes:
-    assert(is_valid_ast_node(ast_name)), 'invalide ast node: %s' % (ast_name,)
+    assert(is_valid_ast_node(ast_name)), 'invalid ast node: %s' % (ast_name,)
 for name in unallowed_builtins:
     assert(is_valid_builtin(name)), 'invalid builtin: %s' % (name,)
 
@@ -339,6 +349,8 @@ class SafeEvalTimeoutException(SafeEvalException):
     def __str__(self):
         return "Timeout limit execeeded (%s secs) during exec" % self.timeout
 
+    
+
 def exec_timed(code, context, timeout_secs):
     """
     Dynamically execute 'code' using 'context' as the global enviroment.
@@ -347,24 +359,19 @@ def exec_timed(code, context, timeout_secs):
     """
     assert(timeout_secs > 0)
 
-    signal_finished = False
-    
-    def alarm(secs):
-        def wait(secs):
-            for n in xrange(timeout_secs):
-                time.sleep(1)
-                if signal_finished: break
-            else:
-                thread.interrupt_main()
-        thread.start_new_thread(wait, (secs,))
+    import signal
 
-    try:
-        alarm(timeout_secs)
-        exec code in context
-        signal_finished = True
-    except KeyboardInterrupt:
-        raise SafeEvalTimeoutException(timeout_secs)
+    class OutOfTime(Exception): pass
+
+    def signal_handler(signum, frame):
+        raise SafeEvalTimeoutException, timeout_secs
     
+    signal.signal(signal.SIGALRM, signal_handler)
+    signal.alarm(timeout_secs)
+    exec code in context
+    return
+
+
 
 def safe_eval(code, context = None, timeout_secs = 5, check_only=False):
     """
@@ -434,6 +441,8 @@ class TestSafeEval(unittest.TestCase):
         # attempt to access a unsafe builtin
         self.assertRaises(SafeEvalException,
             safe_eval, "open('test.txt', 'w')")
+        self.assertRaises(SafeEvalException,
+            safe_eval, "file('test.txt', 'w')")
 
     def test_getattr(self):
         # attempt to get arround direct attr access
@@ -454,7 +463,7 @@ class TestSafeEval(unittest.TestCase):
         # attempt to exectute 'slow' code which finishes within timelimit
         def test(): time.sleep(2)
         env = {'test':test}
-        safe_eval("test()", env, timeout_secs = 5)
+        safe_eval("test()", env, timeout_secs = 3)
 
     def test_timeout_exceed(self):
         # attempt to exectute code which never teminates
@@ -508,6 +517,28 @@ class TestSafeEval(unittest.TestCase):
             'f.close()',
             ]
         self.assertRaises(SafeEvalException, safe_eval, '\n'.join(code))
+        return
+
+
+    def test_exec(self):
+        code = """exec 'print getattr(int, "__abs__")'"""
+        self.assertRaises(SafeEvalException, safe_eval, code)
+        return
+    
+        
+    def test_help(self):
+        code = "help(None)"
+        def help(*args, **kwds): raise SafeEvalException
+        context = {'help': help}
+        self.assertRaises(SafeEvalException, safe_eval, code, context)
+        return
+    
+        
+    def test_exit(self):
+        code = "exit(0)"
+        def exit(*args, **kwds): raise SafeEvalException
+        context = {'exit': exit}
+        self.assertRaises(SafeEvalException, safe_eval, code, context)
         return
     
         
