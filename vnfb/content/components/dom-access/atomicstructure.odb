@@ -47,6 +47,13 @@ class Accessor(base):
         orm = self.orm
         s = Structure()
         orm.save(s)
+
+        # assign creator
+        creator = self.director.sentry.username
+        r = orm(s)
+        r.creator = creator
+        orm.db.updateRecord(r)
+        
         return s
 
 
