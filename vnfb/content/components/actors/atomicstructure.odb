@@ -215,6 +215,16 @@ class Actor(base):
 
 
     def showOverview(self, director):
+        domaccess = self._domaccess(director)
+        id = self.inventory.id
+        constructed = domaccess.isConstructued(id=id)
+        owned = domaccess.isOwnedByUser(id=id)
+        if not constructed and not owned:
+            # if the atomic structutre is not yet constructed, and
+            # it is not owned by the user, should just alert user
+            # he is not allowed to edit it
+            return alert("You cannot edit a structure created by others")
+
         sethelppage = set_contextual_help(
             page='UserGuide-atomicstructures.html#overview-of-an-atomic-structure',
             )

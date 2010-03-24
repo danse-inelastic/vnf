@@ -87,6 +87,14 @@ class Accessor(base):
         return
 
 
+    def isOwnedByUser(self, id):
+        'check if a structure is owned by the current user'
+        director = self.director
+        username = director.sentry.username
+        r = self.getAtomicStructureRecord(id)
+        return r.creator == username
+
+
     def isConstructued(self, id):
         'check if a structure is constructed and ready to be used'
         s = self.getAtomicStructure(id)
