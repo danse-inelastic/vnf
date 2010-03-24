@@ -90,7 +90,7 @@ setname = lambda params, obj, name: ifelse(params.has_key(name), params.get(name
 
 def fstr(num):
     "Takes float number and returns formated string"
-    return "%.2f" % num
+    return "%# .2f" % num   # use "%.2f" instead?
 
 
 def stamp2date(stamp):
