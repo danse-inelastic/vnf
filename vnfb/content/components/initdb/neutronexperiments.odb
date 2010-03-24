@@ -45,6 +45,9 @@ class Component(base):
         source = MonochromaticSource()
         source.componentname = 'source'
         source.energy = 70
+        from vnfb.utils.neutron_experiment_simulations.geometry import tomatrix
+        orientation = tomatrix(0, 30, 0)
+        source.orientation = orientation
         ic.components.append(source)
         # det system
         detsystem = DetectorSystem_fromXML()
