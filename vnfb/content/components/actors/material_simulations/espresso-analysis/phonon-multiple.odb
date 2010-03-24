@@ -101,7 +101,7 @@ class Actor(base):
        section.add(linkDisp)
 
 
-    def _simData(self, splitter):
+    def _simData(self, director, splitter):
         "Simulation specific data. Should be overwritten by subclass"
 
 

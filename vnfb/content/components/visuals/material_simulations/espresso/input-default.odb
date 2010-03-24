@@ -21,7 +21,7 @@ from luban.content.FormTextArea import FormTextArea
 from luban.content.FormSubmitButton import FormSubmitButton
 
 
-def visual(actor, director):
+def visual(actor, director, structureid, simtype):
     form        = lc.form(id='create-simulation-form')
     table       = QEGrid(lc.grid(Class="qe-form"))
     form.add(table.grid())

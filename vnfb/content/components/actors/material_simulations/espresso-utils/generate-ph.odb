@@ -11,15 +11,13 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
-from vnfb.qeutils.qeparser.qeinput import QEInput
-from vnfb.qeutils.qeparser.namelist import Namelist
+#from vnfb.qeutils.qeparser.qeinput import QEInput
+#from vnfb.qeutils.qeparser.namelist import Namelist
 #from vnfb.qeutils.qeconst import QE_PREFIX
 from vnfb.qeutils.qeutils import inputRecord, readRecordFile, defaultInputName
 
 from luban.components.AuthorizedActor import AuthorizedActor as base
 
-TR2_PH  = "1.0d-16"
-LDISP   = ".true."
 #PREFIX  = "'default'"
 
 # TODO: Critical: Fix amass(...) - take from pw config
@@ -48,53 +46,57 @@ class Actor(base):
 
 
     def _input(self, director):
-        input      = QEInput(type='ph')
-        input.header = "phonon simulation\n"
-        nl  = Namelist("inputph")
-        nl.add("nq1", self.nq1)
-        nl.add("nq2", self.nq2)
-        nl.add("nq3", self.nq3)
-        nl.add("tr2_ph", TR2_PH)
-        nl.add("ldisp", LDISP)
-        #nl.add("prefix", QE_PREFIX)    # TODO:  Handle prefix properly (should be same as in pw input)
-
-        # Add amasses
-        list    = self._amasses(director)
-        for m in list:
-            nl.add(m[0], m[1])
-
-        input.addNamelist(nl)
-        return input.toString()
-
-
-    def _amasses(self, director):
-        """Returns list of tuples with amass label and mass value from PW input configuration
-        Example: [("amass(1)", "35.5"), ("amass(2)", "54.3")]
-        """
-        list    = []    # amass list
-        masses  = self._masses(director)
-        for l in range(len(masses)):
-            list.append(("amass(%s)" % str(l+1), masses[l][1]))
-
-        return list
-
-
-    # XXX: Doesn't handle error when PW input file is not properly written (e.g. "atomic_species" is missing)
-    def _masses(self, director):
-        # PW configuration input
-        pwinput     = inputRecord(director, self.inventory.id, "PW")
-        fname       = defaultInputName(pwinput.type)
-        text        = readRecordFile(director.dds, pwinput, fname)
-        pw          = QEInput(config = text)
-        pw.parse()
-
-        list        = []
-        # List of atom of format: [('Ni', '52.98', 'Ni.pbe-nd-rrkjus.UPF'), (...)]
-        atoms       = pw.structure()
-        for a in atoms:
-            list.append((a[0], a[1]))
-
-        return list
+        gen = PHGenerator(director, self.inventory)
+        get.inputph()
+        return gen.toString()
+    
+#        input      = QEInput(type='ph')
+#        input.header = "phonon simulation\n"
+#        nl  = Namelist("inputph")
+#        nl.add("nq1", self.nq1)
+#        nl.add("nq2", self.nq2)
+#        nl.add("nq3", self.nq3)
+#        nl.add("tr2_ph", TR2_PH)
+#        nl.add("ldisp", LDISP)
+#        #nl.add("prefix", QE_PREFIX)    # TODO:  Handle prefix properly (should be same as in pw input)
+#
+#        # Add amasses
+#        list    = self._amasses(director)
+#        for m in list:
+#            nl.add(m[0], m[1])
+#
+#        input.addNamelist(nl)
+#        return input.toString()
+#
+#
+#    def _amasses(self, director):
+#        """Returns list of tuples with amass label and mass value from PW input configuration
+#        Example: [("amass(1)", "35.5"), ("amass(2)", "54.3")]
+#        """
+#        list    = []    # amass list
+#        masses  = self._masses(director)
+#        for l in range(len(masses)):
+#            list.append(("amass(%s)" % str(l+1), masses[l][1]))
+#
+#        return list
+#
+#
+#    # XXX: Doesn't handle error when PW input file is not properly written (e.g. "atomic_species" is missing)
+#    def _masses(self, director):
+#        # PW configuration input
+#        pwinput     = inputRecord(director, self.inventory.id, "PW")
+#        fname       = defaultInputName(pwinput.type)
+#        text        = readRecordFile(director.dds, pwinput, fname)
+#        pw          = QEInput(config = text)
+#        pw.parse()
+#
+#        list        = []
+#        # List of atom of format: [('Ni', '52.98', 'Ni.pbe-nd-rrkjus.UPF'), (...)]
+#        atoms       = pw.structure()
+#        for a in atoms:
+#            list.append((a[0], a[1]))
+#
+#        return list
 
 
     def __init__(self):
