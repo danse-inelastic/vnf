@@ -200,25 +200,31 @@ class PWResult(QEResult):
 
 
     def positionInput(self):
-        if not self._output:    # No output
-            return NONE
-
-        table    = QEGrid(lc.grid(Class="qe-table-forces"))
-        table.addRow(("Atom", "Positions"))
-        table.addRow(("Fe", "(0, 0, 0)"))
-        table.addRow(("Fe", "(0, 0.5, 0)"))
-        table.setRowStyle(0, "qe-table-header-left")
-        return table.grid()
+        self._input.structure.parseInput()
+        struct  = self._input.structure.structure
+        poslist = zip(struct.symbols, struct.xyz)
+        return self._position(poslist)
 
 
     def positionOutput(self):
+        #poslist = [("Fe", 0, 0, 0), ("Fe", 0, 0.5, 0)]
+        self._input.structure.parseOutput(self._outputFile)
+        struct  = self._input.structure.structure
+        poslist = zip(struct.symbols, struct.xyz)
+        return self._position(poslist)
+
+
+    def _position(self, poslist):
+        "Returns formatted structure of atomic positions"
+        # Example: poslist = [('a', [0, 0, 0]), ('b', [1, 1, 1])]
         if not self._output:    # No output
             return NONE
 
         table    = QEGrid(lc.grid(Class="qe-table-forces"))
         table.addRow(("Atom", "Positions"))
-        table.addRow(("Fe", "(0, 0, 0)"))
-        table.addRow(("Fe", "(0, 0.5, 0)"))
+        for pl in poslist:
+            table.addRow((pl[0], "(%.2f, %.2f, %.2f)" % (pl[1][0], pl[1][1], pl[1][2])))
+        
         table.setRowStyle(0, "qe-table-header-left")
         return table.grid()
 
