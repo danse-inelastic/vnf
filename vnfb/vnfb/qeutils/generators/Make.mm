@@ -18,8 +18,15 @@ PACKAGE = qeutils/generators
 #
 
 EXPORT_PYTHON_MODULES = \
-        pwgenerator.py \
-        __init__.py \
+    bandsgenerator.py \
+    dosgenerator.py \
+    dynmatgenerator.py \
+    __init__.py \
+    matdyngenerator.py \
+    phgenerator.py \
+    plotbandgenerator.py \
+    pwgenerator.py \
+    q2rgenerator.py \
 
 
 BUILD_DIRS = \
