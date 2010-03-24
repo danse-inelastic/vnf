@@ -47,6 +47,13 @@ class Accessor(base):
         orm = self.orm
         s = Structure()
         orm.save(s)
+
+        # assign creator
+        creator = self.director.sentry.username
+        r = orm(s)
+        r.creator = creator
+        orm.db.updateRecord(r)
+        
         return s
 
 
@@ -78,6 +85,14 @@ class Accessor(base):
         record.short_description = description
         self.db.updateRecord(record)
         return
+
+
+    def isOwnedByUser(self, id):
+        'check if a structure is owned by the current user'
+        director = self.director
+        username = director.sentry.username
+        r = self.getAtomicStructureRecord(id)
+        return r.creator == username
 
 
     def isConstructued(self, id):
