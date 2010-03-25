@@ -87,7 +87,7 @@ class MATDYNGenerator(object):
         if not self._subtype:
             return ""
 
-        return self._subtype:
+        return self._subtype
 
 
     def toString(self):
