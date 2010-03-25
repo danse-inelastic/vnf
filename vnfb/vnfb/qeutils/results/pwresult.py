@@ -170,33 +170,40 @@ class PWResult(QEResult):
 
     # Specific for geometry optimization
     def latticeInput(self):
-        "Lattice structure"
-        if not self._output:    # No output
-            return NONE
-
+        "Lattice output structure"
         lp   = self._inputLatticeParams()
-        #print self._outputLatticeParams()
-        # lattice params
-        
-        table    = QEGrid(lc.grid(Class="qe-table-forces"))
-        table.addRow(("A", "B", "C", "cosAB", "cosAC", "cosBC"))
-        table.addRow(self._fstr(lp))
-        table.setRowStyle(0, "qe-table-header-left")
-        return table.grid()
+        return self._latticeTable(lp)
+
+#        "Lattice structure"
+#        if not self._output:    # No output
+#            return NONE
+#
+#        lp   = self._inputLatticeParams()
+#        #print self._outputLatticeParams()
+#        # lattice params
+#
+#        table    = QEGrid(lc.grid(Class="qe-table-forces"))
+#        table.addRow(("A", "B", "C", "cosAB", "cosAC", "cosBC"))
+#        table.addRow(self._fstr(lp))
+#        table.setRowStyle(0, "qe-table-header-left")
+#        return table.grid()
 
 
     # Specific for geometry optimization
     def latticeOutput(self):
-        "Lattice structure"
-        if not self._output:    # No output
-            return NONE
-
+        "Lattice output structure"
         lp   = self._outputLatticeParams()
-        table    = QEGrid(lc.grid(Class="qe-table-forces"))
-        table.addRow(("A", "B", "C", "cosAB", "cosAC", "cosBC"))
-        table.addRow(self._fstr(lp))
-        table.setRowStyle(0, "qe-table-header-left")
-        return table.grid()
+        return self._latticeTable(lp)
+    
+#        if not self._output:    # No output
+#            return NONE
+#
+#        lp   = self._outputLatticeParams()
+#        table    = QEGrid(lc.grid(Class="qe-table-forces"))
+#        table.addRow(("A", "B", "C", "cosAB", "cosAC", "cosBC"))
+#        table.addRow(self._fstr(lp))
+#        table.setRowStyle(0, "qe-table-header-left")
+#        return table.grid()
 
 
     def positionInput(self):
@@ -225,6 +232,19 @@ class PWResult(QEResult):
     def species(self):
         "Returns list of species in format: [('Al', '26.9815', 'Al.blyp-n-van_ak.UPF'),]"
         return self._atomicCard("atomic_species", PWVALID)
+
+
+    # Specific for geometry optimization
+    def _latticeTable(self, lp):
+        "Takes lattice parameters and returns formatted table of lattice structure"
+        if not self._output:    # No output
+            return NONE
+
+        table    = QEGrid(lc.grid(Class="qe-table-forces"))
+        table.addRow(("A", "B", "C", "cosAB", "cosAC", "cosBC"))
+        table.addRow(self._fstr(lp))
+        table.setRowStyle(0, "qe-table-header-left")
+        return table.grid()
 
 
     def _position(self, poslist):
