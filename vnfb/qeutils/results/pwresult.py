@@ -101,15 +101,28 @@ class PWResult(QEResult):
 
 
     # XXX: Not complete! There might be other forms of K points
-    def kPoints(self):
+    def kPoints(self, formatted=True):
+        "Returns list of k-points if formatted == True, string - otherwise"
         lines   = self._cardlines("k_points")
+        kp      = None    # k-points
 
         if lines and len(lines) == 1:
             items   =  lines[0].split()
-            if len(items) == 6:
-                return "(%s, %s, %s)" % (items[0], items[1], items[2])
-            
-        return NONE
+            assert len(items) == 6  # Example: item = ["4", "4", "4", "0", "0", "0"]
+            kp  = (int(items[0]), int(items[1]), int(items[2]))
+
+        if not formatted:   # no formatting, return just list of k-points
+            return kp
+
+        # Formatting
+        if not kp:
+            return NONE
+
+        return "(%s, %s, %s)" % (kp[0], kp[1], kp[2])
+##                return "(%s, %s, %s)" % (items[0], items[1], items[2])
+#
+#        return NONE
+#
 
 
     # Output methods

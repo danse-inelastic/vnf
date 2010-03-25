@@ -17,13 +17,14 @@ from vnfb.qeutils.qeconst import MATDYN_METHOD_LIST
 from vnfb.qeutils.qeutils import qeinput, packname, resultsdir
 
 from qecalc.qetask.qeparser.pwinput import PWInput
-from vnfb.qeutils.qeparser.qeinput import QEInput
 from vnfb.qeutils.qeparser.namelist import Namelist
+from vnfb.qeutils.results.pwresult import PWResult
 from vnfb.qeutils.generators.phgenerator import PHGenerator
 
-#from qecalc.qetask.qeparser.matdyninput import MatdynInput
+from qecalc.qetask.qeparser.matdyninput import MatdynInput
 from vnfb.qeutils.qecalcutils import kmesh
 
+#from vnfb.qeutils.qeparser.qeinput import QEInput
 #from vnfb.qeutils.qeutils import remoteResultsPath
 #from vnfb.qeutils.qeutils import inputRecord, readRecordFile, defaultInputName
 
@@ -54,8 +55,9 @@ class MATDYNGenerator(object):
         "Populate 'input' namelist"
         q2rresult       = Q2RResult(self._director, self._inv.id)
         phgen           = PHGenerator(self._director, self._inv)
-        self._input     = QEInput(type='matdyn')
-        nl              = self._input.namelist("input") # Create namelist
+        self._input     = MatdynInput()
+        nl              = Namelist("input") # Create namelist
+        self._input.addNamelist(nl)
 
         nl.add("asr",   q2rresult.zasr())   # from Q2R result
         nl.add("flfrc", q2rresult.flfrc())  # from Q2R result
@@ -74,6 +76,67 @@ class MATDYNGenerator(object):
         for m in masses:
             nl.add(m[0], m[1])
 
+        if not self._subtype:   # No subtype, no additional parameters
+            return  
+
+        # Generate k-points
+        if self._subtype == "dispersion":
+            self._input.qpoints.set(self._qpoints())
+            # Force adding nk1, nk2, nk3 to input
+            # This will later be used for exporting dispersion to atomic structure
+            nl  = self._input.namelist("input")
+            nl.add("nk1",   self._inv.nk1)
+            nl.add("nk2",   self._inv.nk2)
+            nl.add("nk3",   self._inv.nk3)
+
+
+    def toString(self):
+        return self._input.toString()
+
+
+    def _qpoints(self):
+        "Returns qpoints"
+        pwresult    = PWResult(self._director, self._inv.id)
+        kp          = pwresult.kPoints(formatted=False)
+        if not kp:      # No k-points, no q-points
+            return
+
+        nqGrid      = [kp[0], kp[1], kp[2]]
+        pwinput     = pwresult.input()
+        return kmesh.kMeshCart(nqGrid, pwinput.structure.lattice.reciprocalBase())
+
+
+__date__ = "$Mar 24, 2010 9:59:39 AM$"
+
+
+    #    # XXX: Take 'asr' parameter from Q2R instead of setting it manually
+#    def _asr(self, director):
+#        return "'crystal'"
+
+
+#        pwdir       = self._pwpath(director)
+#        pwfile      = qeinput(director, self._inv.id, "PW")
+#        pwpath      = packname(pwfile.id, ".in")
+#        pwpath      = os.path.join(pwdir, pwpath)
+#        pwInput     = PWInput(filename = pwpath)
+#        pwInput.parse()
+
+#        nl          = mdinput.namelist("input")
+#        # Populate grid
+#        nqGrid      = [int(nl.param("nk1")), int(nl.param("nk2")), int(nl.param("nk3"))]
+        # XXX Handle case when parameters are not set
+#        qpoints     = kmesh.kMeshCart(nqGrid, pwInput.structure.lattice.reciprocalBase())
+#
+#        return qpoints
+
+
+#    def _pwpath(self, director):
+#        # Example: pwdir   = "/home/dexity/exports/vnf/vnfb/content/data/tmp/tmpTRqFuy/8CNH5MUJ"
+#        return resultsdir(director, self._inv.id, "PW")    # tmp results directory
+
+
+
+
 
 #        method      = self._subtype()
 #        if method == "dispersion":
@@ -88,12 +151,12 @@ class MATDYNGenerator(object):
 
 
 
-    def _subtype(self):
-        "Returns subtype of simulation: 'dos' or 'dispersion'"
-        methods     = MATDYN_METHOD.keys()
-#        option      = int(self._inv.method)
-        return methods[int(self._subtype)]
-
+#    def _subtype(self):
+#        "Returns subtype of simulation: 'dos' or 'dispersion'"
+#        methods     = MATDYN_METHOD.keys()
+##        option      = int(self._inv.method)
+#        return methods[int(self._subtype)]
+#
 
 #    def _matdynInput(self):
 #        "Returns input object that can be later on used to add parameters"
@@ -116,37 +179,6 @@ class MATDYNGenerator(object):
 ##            nl.add(m[0], m[1])
 #
 #        return self._input
-
-
-    def toString(self):
-        return self._input.toString()
-
-#    # XXX: Take 'asr' parameter from Q2R instead of setting it manually
-#    def _asr(self, director):
-#        return "'crystal'"
-
-    def _qpoints(self, director, mdinput):
-        "Returns qpoints"
-        pwdir       = self._pwpath(director)
-        pwfile      = qeinput(director, self.id, "PW")
-        pwpath      = packname(pwfile.id, "pw.in")
-        pwpath      = os.path.join(pwdir, pwpath)
-        pwInput     = PWInput(filename = pwpath)
-        pwInput.parse()
-
-        nl          = mdinput.namelist("input")
-        # Populate grid
-        nqGrid      = [int(nl.param("nk1")), int(nl.param("nk2")), int(nl.param("nk3"))]
-        # XXX Handle case when parameters are not are not set
-        qpoints     = kmesh.kMeshCart(nqGrid, pwInput.structure.lattice.reciprocalBase())
-
-        return qpoints
-
-
-    def _pwpath(self, director):
-        # Example: pwdir   = "/home/dexity/exports/vnf/vnfb/content/data/tmp/tmpTRqFuy/8CNH5MUJ"
-        return resultsdir(director, self.id, "PW")    # tmp results directory
-
 
 #    # Copied from generate-phr.py
 #    def _amasses(self, director):
@@ -178,9 +210,4 @@ class MATDYNGenerator(object):
 #            list.append((a[0], a[1]))
 #
 #        return list
-
-
-
-__date__ = "$Mar 24, 2010 9:59:39 AM$"
-
 

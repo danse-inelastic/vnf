@@ -73,6 +73,16 @@ class QEResult(object):
         self._output.parse()
     
 
+    def input(self):
+        "Returns input object (QEInput)"
+        return self._input
+
+
+    def output(self):
+        "Returns output object (QEInput)"
+        return self._output
+
+
     def _taskFactory(self):
         "Task factory, should be subclassed"
 
