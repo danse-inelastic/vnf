@@ -34,7 +34,7 @@ class Actor(base):
         gen.setInputph()    
         return director.redirect(actor   = 'material_simulations/espresso/input-create',
                                 routine = 'default',
-                                text    = gen.toString(),   
+                                text    = gen.toString(),
                                 id      = self.inventory.id,
                                 taskid  = self.inventory.taskid,
                                 type    = self.inventory.type)
