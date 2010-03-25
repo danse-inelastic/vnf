@@ -21,7 +21,7 @@ from vnfb.qeutils.qeconst import RESULTS_ID
 import luban.content as lc
 from luban.content import load
 
-DELAY   = 60*1  # 1 minute delay
+DELAY       = 60*1  # 1 minute delay
 CLASS_ERROR = 'qe-text-red'
 CLASS_OK    = 'qe-text-blue'
 CLASS_NA    = 'qe-text-black'
@@ -61,13 +61,13 @@ class ResultInfo:
 
     def _init(self):
         "Additional init"
-        from vnfb.qeutils.qerecords import SimulationRecord # Local import
+        from vnfb.qeutils.qerecords import SimulationRecord     # Local import
         simrecord   = SimulationRecord(self._director, self._simid)
         if not simrecord:
             return
 
         if not self._job:
-            # Get the latest job from simrecord only if no job is passed
+            # If no job set, get the latest job from simrecord only
             self._job   = simrecord.job(self._type) 
 
         self._task  = simrecord.task(self._type)

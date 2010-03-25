@@ -194,6 +194,9 @@ RELAX["vc-relax"]   = "Variable cell relaxation"
 
 RELAXLIST   = RELAX.keys()
 
+# Example of error message:
+# ERROR: masses not defined in PW input file!
+
 __date__ = "$Nov 3, 2009 3:12:34 PM$"
 
 

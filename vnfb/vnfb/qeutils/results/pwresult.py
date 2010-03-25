@@ -174,36 +174,12 @@ class PWResult(QEResult):
         lp   = self._inputLatticeParams()
         return self._latticeTable(lp)
 
-#        "Lattice structure"
-#        if not self._output:    # No output
-#            return NONE
-#
-#        lp   = self._inputLatticeParams()
-#        #print self._outputLatticeParams()
-#        # lattice params
-#
-#        table    = QEGrid(lc.grid(Class="qe-table-forces"))
-#        table.addRow(("A", "B", "C", "cosAB", "cosAC", "cosBC"))
-#        table.addRow(self._fstr(lp))
-#        table.setRowStyle(0, "qe-table-header-left")
-#        return table.grid()
-
 
     # Specific for geometry optimization
     def latticeOutput(self):
         "Lattice output structure"
         lp   = self._outputLatticeParams()
         return self._latticeTable(lp)
-    
-#        if not self._output:    # No output
-#            return NONE
-#
-#        lp   = self._outputLatticeParams()
-#        table    = QEGrid(lc.grid(Class="qe-table-forces"))
-#        table.addRow(("A", "B", "C", "cosAB", "cosAC", "cosBC"))
-#        table.addRow(self._fstr(lp))
-#        table.setRowStyle(0, "qe-table-header-left")
-#        return table.grid()
 
 
     def positionInput(self):
