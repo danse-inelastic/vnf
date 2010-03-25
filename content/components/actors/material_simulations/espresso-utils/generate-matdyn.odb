@@ -101,20 +101,17 @@ class Actor(base):
 
 
     def generateInput(self, director):
-        return director.redirect(actor   = 'material_simulations/espresso/input-create',
-                                routine = 'default',
-                                text    = self._input(director),
-                                id      = self.inventory.id,
-                                taskid  = self.inventory.taskid,
-                                type    = self.inventory.type)
-                                #subtype = self._subtype())
-
-
-    def _input(self, director):
         gen     = MATDYNGenerator(director, self.inventory)
         gen.setInput()
-        return gen.toString()
-
+        
+        return director.redirect(actor   = 'material_simulations/espresso/input-create',
+                                routine = 'default',
+                                text    = gen.toString(),
+                                id      = self.inventory.id,
+                                taskid  = self.inventory.taskid,
+                                type    = self.inventory.type,
+                                subtype = gen.subtype())
+        
 
     def __init__(self):
         super(Actor, self).__init__(name='material_simulations/espresso-utils/generate-matdyn')
