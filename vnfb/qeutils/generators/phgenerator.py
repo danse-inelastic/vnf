@@ -35,12 +35,13 @@ class PHGenerator(object):
         self._input.header = "phonon simulation\n"
         nl  = Namelist("inputph")
         self._input.addNamelist(nl)
-        nl.add("nq1", self._inv.nq1)
-        nl.add("nq2", self._inv.nq2)
-        nl.add("nq3", self._inv.nq3)
-        nl.add("tr2_ph", TR2_PH)
-        nl.add("ldisp", LDISP)
-        #nl.add("prefix", QE_PREFIX)    
+        
+        nl.add("nq1",       self._inv.nq1)
+        nl.add("nq2",       self._inv.nq2)
+        nl.add("nq3",       self._inv.nq3)
+        nl.add("tr2_ph",    TR2_PH)
+        nl.add("ldisp",     LDISP)
+        #nl.add("prefix",   QE_PREFIX)
 
         # Add amasses
         masses    = self._amasses()
