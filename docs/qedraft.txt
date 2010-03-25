@@ -26,4 +26,14 @@ Job status has format:
 Example:
 
 Retrieving results:
-    
+
+
+Input Generators
+----------------
+
+
+Results Path
+------------
+There are two types of result paths: local and remote. Local result path is available
+when results are retrieved to the local machine only.
+

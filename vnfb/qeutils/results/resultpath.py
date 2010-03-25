@@ -36,8 +36,14 @@ class ResultPath(object):
         self._director      = director
         self._simid         = simid     # Simulation id
         self._type          = type      # Task type
-        self._simrecord     = SimulationRecord(director, simid)
+        self._init()
 
+
+    def _init(self):
+        "Additional initialization"
+        simrecord   = SimulationRecord(director, simid)   # Have as an attribute instead?
+        self._jit   = simrecord.jobInputTask(self._type)
+        
 
     def resultFiles(self, ftype = None):
         """
@@ -59,14 +65,14 @@ class ResultPath(object):
         file    = self._matchCheck(files, ftype)
         if file:
             # path is not None (was verified before!)
-            return os.path.join(self.resultPath(), file)
+            return os.path.join(self.localPath(), file)
 
         return None
 
 
     def filesList(self):
         "Returns list of file names"
-        path    = self.resultPath()
+        path    = self.localPath()
         if not path:
             return None
 
@@ -88,7 +94,7 @@ class ResultPath(object):
 
     def _allFiles(self):
         "Returns list of *absolute* file names"
-        path    = self.resultPath()
+        path    = self.localPath()
         if os.path.exists(path):
             return self._files(path)
 
@@ -118,11 +124,30 @@ class ResultPath(object):
         return files
 
 
-    def resultPath(self):
-        return self._resultPath(self._type)
+    def remotePath(director, simid, type):
+        """Returns the path of the jobs directory on the remote server.
+        Example: /home/dexity/espresso/qejobs/5YWWTCQT/
+        """
+        path    = ""
+        task    = qetask(director, simid, type)
+
+        if not task:
+            return path
+
+        jobs    = director.clerk.getQEJobs(where="taskid='%s'" % task.id)
+        if len(jobs) > 0:
+            # Find latest job for the task
+            job = latestJob(jobs)
+
+            if job:
+                server  = director.clerk.getServers(id=job.serverid)
+                path    = os.path.join(server.workdir, job.name)
+                path    = os.path.join(path, job.id)
+
+        return path
 
 
-    def _resultPath(self, ttype):
+    def _localPath(self):
         """
         Each job for the task of type will have separate root path specified by
         task type (ttype)
@@ -130,20 +155,28 @@ class ResultPath(object):
         Example: "/home/dexity/exports/vnf/vnfb/content/data/tmp/tmpTsdw21/4ICDAVNK/
         Note: Result path is assumed not to have child directories.
         """
-        jit     = self._simrecord.jobInputTask(ttype)
-        if not jit:         # No jit, no path
-            return None
 
-        (_job, _input, _task)   = (jit[0], jit[1], jit[2])  # _input not used
-        if not _job or not _task:   # If job or task is None
+        if not self._recordsOK():
             return None
-
-        datadir     = dataroot(self._director)
+        
         results     = ResultInfo(self._director, self._simid, self._type) 
         if results.ready():
+            datadir     = dataroot(self._director)
             return os.path.join(datadir, results.tardir())
 
         return None     # default case
+
+
+    def _recordsOK(self):
+        "Checks if the proper records exist"
+        if not self._jit:         # No jit, no path
+            return False
+
+        (job_, input_, task_)   = (self._jit[0], self._jit[1], self._jit[2])  # input_ not used
+        if not job_ or not task_:   # If job or task is None
+            return False
+
+        return True
 
 
 __date__ = "$Mar 17, 2010 9:05:14 PM$"

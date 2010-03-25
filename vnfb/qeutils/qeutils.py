@@ -271,6 +271,17 @@ def qeinput(director, simid, type):
     return None
 
 
+def analyseActor(simtype):
+    "Returns analysis actor based on simulation type"
+    name    = "default"
+
+    if simtype in ANALYSIS.keys():
+        name    = ANALYSIS[simtype]
+
+    return 'material_simulations/espresso-analysis/%s' % name
+
+
+# Status: Depricated
 def resultsdir(director, simid, type, subtype = None):
     "Returns results directory in data/tmp"    
     job     = qejob(director, simid, type, subtype)
@@ -285,6 +296,7 @@ def resultsdir(director, simid, type, subtype = None):
 
 
 # TODO: Test!!!
+# Status: Depricated
 def remoteResultsPath(director, simid, type):
     """Returns the path of the jobs directory specified by simulation id (simid) and task type.
     Example: /home/dexity/espresso/qejobs/5YWWTCQT/
@@ -307,7 +319,7 @@ def remoteResultsPath(director, simid, type):
 
     return path
 
-
+# Status: Depricated
 def inputRecord(director, simid, type):
     task    = qetask(director, simid, type)
 
@@ -320,16 +332,6 @@ def inputRecord(director, simid, type):
         return inputs[0]
 
     return None
-
-
-def analyseActor(simtype):
-    "Returns analysis actor based on simulation type"
-    name    = "default"
-
-    if simtype in ANALYSIS.keys():
-        name    = ANALYSIS[simtype]
-
-    return 'material_simulations/espresso-analysis/%s' % name
 
 
 # *********** TESTS ******************************

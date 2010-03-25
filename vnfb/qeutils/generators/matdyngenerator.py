@@ -11,12 +11,27 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
+import os
+from vnfb.qeutils.qeparser.qeinput import QEInput
+from vnfb.qeutils.qeparser.namelist import Namelist
+
+from vnfb.qeutils.qeutils import remoteResultsPath
+from vnfb.qeutils.qeconst import PREFIX, MATDYN_METHOD
+from vnfb.qeutils.qeutils import inputRecord, readRecordFile, defaultInputName
+from vnfb.qeutils.qeutils import qeinput, packname, resultsdir
+
+from qecalc.qetask.qeparser.pwinput import PWInput
+from qecalc.qetask.qeparser.matdyninput import MatdynInput
+from vnfb.qeutils.qecalcutils import kmesh
+
+DOS     = ".true."
+
 class MATDYNGenerator(object):
 
     def __init__(self, director, inventory):
         self._director  = director
         self._inv       = inventory
-        #self._simtype   = inventory.simtype     # Special case
+        self._subtype   = inventory.method     # Special case
         self._input     = input
 
     # XXX: nk points still should be present in the input file
@@ -45,15 +60,14 @@ class MATDYNGenerator(object):
 
     def _matdynInput(self, director):
         "Returns input object that can be later on used to add parameters"
-        # E.g.: /home/dexity/espresso/qejobs/643E2QQI/ni.fc
-        path    = remoteResultsPath(director, self.inventory.id, "Q2R")   #self._fcpath(director)
-        path    = os.path.join(path, "%s.fc" % PREFIX)
+        # E.g.: /home/dexity/espresso/qejobs/643E2QQI/default.fc
+        q2rresult  = Q2RResult(director, self._inv.id)
 
         input   = MatdynInput()
         nl      = Namelist("input")
         nl.add("asr", self._asr(director))
-        nl.add("flfrc", "'%s'" % path)
-        nl.add("dos", ".true.")
+        nl.add("flfrc", q2rresult.flfrc())   #"'%s'" % path
+        nl.add("dos", DOS)
         nl.add("nk1", self.nk1)
         nl.add("nk2", self.nk2)
         nl.add("nk3", self.nk3)

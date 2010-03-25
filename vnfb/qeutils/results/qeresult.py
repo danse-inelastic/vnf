@@ -31,12 +31,15 @@ class QEResult(object):
         self._simid         = simid
 
         # Attributes
-        self._inputFile     = None  # Input file
-        self._outputFile    = None  # Output file
         self._task          = None  # Will remain None if output file is not available
         self._input         = None
         self._output        = None
         self._init()
+
+
+    def localPath(self):
+        "Result directory"
+        return self._localPath
 
 
     def _init(self):
@@ -45,6 +48,7 @@ class QEResult(object):
 
         self._inputFile     = resultPath.resultFiles("input")    # Input file
         self._outputFile    = resultPath.resultFiles("output")   # Output file
+        self._localPath     = resultPath.localPath() # Directory where results are stored
 
         # Important line! No output file, no results!
         if not self._outputFile:
