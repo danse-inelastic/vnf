@@ -36,6 +36,7 @@ class Actor(base):
         nk2         = pyre.inventory.str('nk2', default='')
         nk3         = pyre.inventory.str('nk3', default='')
 
+
     def default(self, director):
         return select(id='main-display-area').replaceContent(self.content(director))
 
@@ -103,7 +104,6 @@ class Actor(base):
     def generateInput(self, director):
         gen     = MATDYNGenerator(director, self.inventory)
         gen.setInput()
-        
         return director.redirect(actor   = 'material_simulations/espresso/input-create',
                                 routine = 'default',
                                 text    = gen.toString(),

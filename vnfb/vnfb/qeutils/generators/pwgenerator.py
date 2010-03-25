@@ -60,7 +60,7 @@ class PWGenerator(object):
         self._simtype   = inventory.simtype     # Special case
 
 
-    def control(self):
+    def setControl(self):
         "CONTROL namelist"
         control = Namelist("control")
         self._input.addNamelist(control)
@@ -71,7 +71,7 @@ class PWGenerator(object):
         #control.add("prefix", "???")   # Remove 'prefix'
 
 
-    def system(self):
+    def setSystem(self):
         "SYSTEM namelist"
         system  = self._input.namelist("system")  # System namelist already exists
         self._addSmearing(system)
@@ -81,7 +81,7 @@ class PWGenerator(object):
         #system.add("starting_magnetization(1)", "0.5")
 
     
-    def electrons(self):         # TODO: Suitable for phonon calculations?
+    def setElectrons(self):         # TODO: Suitable for phonon calculations?
         "ELECTRONS namelist"
         electrons   = Namelist("electrons")
         electrons.add("conv_thr",       CONV_THR)
@@ -89,7 +89,7 @@ class PWGenerator(object):
         self._input.addNamelist(electrons)
 
 
-    def ions(self):
+    def setIons(self):
         if not self._isGeometry():
             return
         
@@ -104,7 +104,7 @@ class PWGenerator(object):
         ions.add("trust_radius_min",    TRUST_RADIUS_MIN)
 
 
-    def cell(self):
+    def setCell(self):
         if not self._isGeometry():
             return
 
@@ -122,7 +122,7 @@ class PWGenerator(object):
         cell.add("cell_dynamics", CELL_DYNAMICS)
         
 
-    def k_points(self):
+    def setKPoints(self):
         "K_POINTS card"
         k_points   = Card("k_points")
         k_points.setArg("automatic")
