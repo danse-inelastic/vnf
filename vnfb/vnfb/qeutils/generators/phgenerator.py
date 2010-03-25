@@ -29,7 +29,7 @@ class PHGenerator(object):
         self._input     = None
 
     # XXX:  Handle prefix properly (should be same as in pw input)
-    def inputph(self):
+    def setInputph(self):
         self._input      = QEInput(type='ph')
         self._input.header = "phonon simulation\n"
         nl  = Namelist("inputph")
@@ -41,16 +41,7 @@ class PHGenerator(object):
         nl.add("tr2_ph",    TR2_PH)
         nl.add("ldisp",     LDISP)
         #nl.add("prefix",   QE_PREFIX)
-
-        # Add amasses
-        masses    = self.amasses()
-
-        if not masses:  # In case if not masses are found in PW input
-            nl.add("amass", "ERROR: masses not defined in PW input file!")
-            return
-
-        for m in masses:
-            nl.add(m[0], m[1])
+        self._addAmasses(nl)
 
 
     def toString(self):
@@ -74,6 +65,19 @@ class PHGenerator(object):
             list.append(("amass(%s)" % str(l+1), species[l][1]))
 
         return list
+
+
+    def _addAmasses(self, nl):
+        "Takes namelist and adds amasses"
+        masses    = self.amasses()
+
+        if not masses:  # In case if not masses are found in PW input
+            nl.add("amass", "ERROR: masses not defined in PW input file!")
+            return
+
+        for m in masses:
+            nl.add(m[0], m[1])
+        
 
 
 __date__ = "$Mar 24, 2010 9:59:39 AM$"
