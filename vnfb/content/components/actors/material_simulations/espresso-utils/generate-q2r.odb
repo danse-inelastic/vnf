@@ -39,27 +39,10 @@ class Actor(base):
         gen     = Q2RGenerator(director, self.inventory)
         gen.setInput()
         return gen.toString()
-    
-#        input      = QEInput(type='q2r')
-#        nl  = Namelist("input")
-#
-#        # E.g.: /home/dexity/espresso/qejobs/5YWWTCQT/matdyn
-#        # Get jobs directory of PH simulation task
-#        path    = remoteResultsPath(director, self.inventory.id, "PH")
-#        fildyn  = os.path.join(path, "matdyn")  # "matdyn" - default value for PH fildyn
-#        zasr    = ZASR[ZASR.keys()[int(self.inventory.zasr)]]
-#
-#        nl.add("fildyn", "'%s'" % fildyn)
-#        nl.add("zasr", zasr)
-#        nl.add("flfrc", "'%s.fc'" % PREFIX)  # XXX
-#        input.addNamelist(nl)
-#        return input.toString()
 
 
     def __init__(self):
         super(Actor, self).__init__(name='material_simulations/espresso-utils/generate-q2r')
-
-        return
 
 
     def _configure(self):

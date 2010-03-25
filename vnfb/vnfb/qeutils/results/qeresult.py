@@ -22,6 +22,7 @@ Note:
     - assumed that there are no two files matching the same pattern!
 """
 
+# XXX: Handle the case when the results files might not have read access
 class QEResult(object):
 
     def __init__(self, director, simid, type):   # simulation id
