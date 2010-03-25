@@ -146,7 +146,7 @@ class PWResult(QEResult):
         table.addRow(("Atom", "Force (Ry/bohr)"))
         
         for f in forces:
-            table.addRow((f[1], "(%.2f, %.2f, %.2f)" % (f[2], f[3], f[4]) ))
+            table.addRow((f[1], "%.2f, %.2f, %.2f" % (f[2], f[3], f[4]) ))
 
         table.setRowStyle(0, "qe-table-header-left")
         return table.grid()
@@ -222,6 +222,11 @@ class PWResult(QEResult):
 #         4           Al  tau(  4) = (   0.0000000   2.0200000   2.0200000  )
 
 
+    def species(self):
+        "Returns list of species in format: [('Al', '26.9815', 'Al.blyp-n-van_ak.UPF'),]"
+        return self._atomicCard("atomic_species", PWVALID)
+
+
     def _position(self, poslist):
         "Returns formatted structure of atomic positions"
         # Example: poslist = [('a', [0, 0, 0]), ('b', [1, 1, 1])]
@@ -231,7 +236,7 @@ class PWResult(QEResult):
         table    = QEGrid(lc.grid(Class="qe-table-forces"))
         table.addRow(("Atom", "Coordinates"))
         for pl in poslist:
-            table.addRow((pl[0], "(%.2f, %.2f, %.2f)" % (pl[1][0], pl[1][1], pl[1][2])))
+            table.addRow((pl[0], "%.2f, %.2f, %.2f" % (pl[1][0], pl[1][1], pl[1][2])))
         
         table.setRowStyle(0, "qe-table-header-left")
         return table.grid()
@@ -311,7 +316,7 @@ class PWResult(QEResult):
     # XXX: Work on a better validation of code!
     def _atomsList(self):
         "Returns list of atoms with format:"
-        # list.append(("1", "Fe", "(0.00, 0.00, 0.00)", "26.8", "Fe-blah-blah-blah-UPF"))
+        # list.append(("1", "Fe", "0.00, 0.00, 0.00", "26.8", "Fe-blah-blah-blah-UPF"))
         positions   = self._atomicCard("atomic_positions", PWVALID)
         species     = self._atomicCard("atomic_species", PWVALID)
 
@@ -326,7 +331,7 @@ class PWResult(QEResult):
             params  = specDict[p[0]]
             v   = ( str(i+1),
                     p[0],           # Example: "Al"
-                    "(%.2f, %.2f, %.2f)" % (float(p[1]), float(p[2]), float(p[3])),
+                    "%.2f, %.2f, %.2f" % (float(p[1]), float(p[2]), float(p[3])),
                     params[0],      # Example: "26.8"
                     params[1])      # Example: Al.blyp-n-van_ak.UPF
             list.append(v)
@@ -415,6 +420,8 @@ class PWResult(QEResult):
             lp.append(fstr(l))
 
         return lp
+
+
 
 __date__ = "$Mar 15, 2010 2:45:52 PM$"
 

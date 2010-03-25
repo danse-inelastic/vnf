@@ -16,9 +16,9 @@ Generates PH configuration file from scratch
 """
 from vnfb.qeutils.qeparser.qeinput import QEInput
 from vnfb.qeutils.qeparser.namelist import Namelist
-from vnfb.qeutils.results.resultpath import ResultPath
+from vnfb.qeutils.results.pwresult import PWResult
 
-TR2_PH  = "1.0d-16"
+TR2_PH  = "1.0d-12"
 LDISP   = ".true."
 
 class PHGenerator(object):
@@ -47,7 +47,7 @@ class PHGenerator(object):
         masses    = self._amasses()
 
         if not masses:  # In case if not masses are found in PW input
-            nl.add("amass", "ERROR: masses not defined in PW input file")
+            nl.add("amass", "ERROR: masses not defined in PW input file!")
             return
 
         for m in masses:
@@ -65,35 +65,14 @@ class PHGenerator(object):
         """Returns list of tuples with amass label and mass value from PW input configuration
         Example: [("amass(1)", "35.5"), ("amass(2)", "54.3")]
         """
-        masses  = self._masses()
-        if not masses:
+        pwresult    = PWResult(self._director, self._inv.id)
+        species     = pwresult.species()    # Example: masses = [("Al", "29.7"), ("Ni", "56.7") ...]
+        if not species:
             return None # No masses, no amasses :)
         
         list    = []    # amass list
-        for l in range(len(masses)):
-            list.append(("amass(%s)" % str(l+1), masses[l][1]))
-
-        return list
-
-
-    # XXX: Doesn't handle error when PW input file is not properly written (e.g. "atomic_species" is missing)
-    def _masses(self):
-        # PW configuration input
-        resultpath  = ResultPath(self._director, self._inv.id, "PW")
-        fname       = resultpath.resultFiles("input")   # PW input file from results
-        try:
-            text    = open(fname).read()    # Try read the file
-        except:
-            return None     # File not read, no masses list returned
-
-        pw          = QEInput(config = text)
-        pw.parse()
-
-        list        = []
-        # List of atom of format: [('Ni', '52.98', 'Ni.pbe-nd-rrkjus.UPF'), (...)]
-        atoms       = pw.structure()
-        for a in atoms:
-            list.append((a[0], a[1]))
+        for l in range(len(species)):
+            list.append(("amass(%s)" % str(l+1), species[l][1]))
 
         return list
 
