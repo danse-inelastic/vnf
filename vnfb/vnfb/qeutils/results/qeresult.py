@@ -31,7 +31,7 @@ class QEResult(object):
         self._simid         = simid
 
         # Attributes
-        self._task          = None  # Will remain None if output file is not available
+        self._task          = None  # None if output file is not available or task factory not implemented
         self._input         = None
         self._output        = None
         self._init()
@@ -61,7 +61,9 @@ class QEResult(object):
             return
 
         self._task    = self._taskFactory()
-        if not self._task:      # Sometimes I don't need task object and don't implement task factor
+
+        # Sometimes I don't need task object and don't implement task factory
+        if not self._task:      
             return
 
         self._input   = self._task.input

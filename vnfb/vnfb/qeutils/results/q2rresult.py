@@ -11,11 +11,13 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
-#from qecalc.qetask.q2rtask import Q2RTask  # Use Q2RTask?
-from vnfb.qeutils.qeconst import PREFIX
+import os
+from qecalc.qetask.q2rtask import Q2RTask
 from vnfb.qeutils.results.qeresult import QEResult
 
-NONE        = "None"
+NONE    = "None"
+FLFRC   = "default.fc"
+
 class Q2RResult(QEResult):
 
     def __init__(self, director, simid):
@@ -23,13 +25,34 @@ class Q2RResult(QEResult):
         super(Q2RResult, self).__init__(director, simid, self._type)
 
 
-    def flfrc(self):
-        "Returns force constants file (default.fc) from local results directory"
-        if not self.localPath():
-            return "ERROR: Q2R local results directory is not available!"
+    def zasr(self):
+        if not self._input: # No input file
+            return "ERROR: Q2R input file is not available!"
+        
+        zasr    = self._input.namelist("input").param("zasr")
+        if not zasr:        # No zasr parameter
+            return "ERROR: Parameter 'zasr' is not in the Q2R input file!"
 
-        path    = os.path.join(self.localPath(), "%s.fc" % PREFIX)
-        return "'%s'" % path
+        return zasr
+        
+
+    def flfrc(self):
+        return "'%s'" % self._flfrc()
+
+
+    def _flfrc(self):
+        "Returns force constants path (default.fc) from remote results directory"
+        if not self.remotePath():
+            return "ERROR: Q2R remote results directory is not available!"
+
+        return os.path.join(self.remotePath(), FLFRC)
+
+
+    def _taskFactory(self):
+        "Factory for q2r task"
+        config  = "[q2r.x]\nq2rInput: %s\nq2rOutput: %s" % (self._inputFile, self._outputFile)
+        return Q2RTask(configString=config)
+
 
 __date__ = "$Mar 22, 2010 11:40:10 PM$"
 

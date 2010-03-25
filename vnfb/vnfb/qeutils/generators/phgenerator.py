@@ -26,7 +26,6 @@ class PHGenerator(object):
     def __init__(self, director, inventory):
         self._director  = director
         self._inv       = inventory
-        self._simtype   = inventory.simtype     # Special case
         self._input     = None
 
     # XXX:  Handle prefix properly (should be same as in pw input)
@@ -44,7 +43,7 @@ class PHGenerator(object):
         #nl.add("prefix",   QE_PREFIX)
 
         # Add amasses
-        masses    = self._amasses()
+        masses    = self.amasses()
 
         if not masses:  # In case if not masses are found in PW input
             nl.add("amass", "ERROR: masses not defined in PW input file!")
@@ -61,7 +60,7 @@ class PHGenerator(object):
         return self._input.toString()
 
 
-    def _amasses(self):
+    def amasses(self):
         """Returns list of tuples with amass label and mass value from PW input configuration
         Example: [("amass(1)", "35.5"), ("amass(2)", "54.3")]
         """

@@ -118,25 +118,6 @@ class ResultPath(object):
         return os.path.join(path, job.id)
 
 
-#        path    = ""
-#        task    = qetask(director, simid, type)
-#
-#        if not task:
-#            return path
-
-#        jobs    = director.clerk.getQEJobs(where="taskid='%s'" % task.id)
-#        if len(jobs) > 0:
-#            # Find latest job for the task
-#            job = latestJob(jobs)
-#
-#            if job:
-#                server  = director.clerk.getServers(id=job.serverid)
-#                path    = os.path.join(server.workdir, job.name)
-#                path    = os.path.join(path, job.id)
-#
-#        return path
-
-
     def _matchCheck(self, files, ftype):
         "Find matching file. Single matching file if possible. Picks first otherwise"
         for fname in files:
