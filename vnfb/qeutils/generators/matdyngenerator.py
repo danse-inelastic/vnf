@@ -14,13 +14,13 @@
 class MATDYNGenerator(object):
 
     def __init__(self, director, inventory):
+        self._director  = director
         self._inv       = inventory
-
         #self._simtype   = inventory.simtype     # Special case
         self._input     = input
 
     # XXX: nk points still should be present in the input file
-    def _input(self, director):
+    def setInput(self, director):
         matdynInput = self._matdynInput(director)
 
         method      = self._subtype()
@@ -106,24 +106,24 @@ class MATDYNGenerator(object):
 
         return list
 
-    # Copied from generate-q2r.py
-    def _masses(self, director):
-        # PW configuration input
-        pwinput     = inputRecord(director, self.inventory.id, "PW")
-        fname       = defaultInputName(pwinput.type)
-        text        = readRecordFile(director.dds, pwinput, fname)
-        pw          = QEInput(config = text)
-        pw.parse()
-
-        list        = []
-        # List of atom of format: [('Ni', '52.98', 'Ni.pbe-nd-rrkjus.UPF'), (...)]
-        atoms       = pw.structure()
-        for a in atoms:
-            list.append((a[0], a[1]))
-
-        return list
-
-    
+#    # Copied from generate-q2r.py
+#    def _masses(self, director):
+#        # PW configuration input
+#        pwinput     = inputRecord(director, self.inventory.id, "PW")
+#        fname       = defaultInputName(pwinput.type)
+#        text        = readRecordFile(director.dds, pwinput, fname)
+#        pw          = QEInput(config = text)
+#        pw.parse()
+#
+#        list        = []
+#        # List of atom of format: [('Ni', '52.98', 'Ni.pbe-nd-rrkjus.UPF'), (...)]
+#        atoms       = pw.structure()
+#        for a in atoms:
+#            list.append((a[0], a[1]))
+#
+#        return list
+#
+#
 
 __date__ = "$Mar 24, 2010 9:59:39 AM$"
 
