@@ -40,6 +40,14 @@ class Actor(base):
                                 type    = self.inventory.type)
 
 
+    def genMultiPhon(self, director):
+        pass
+
+
+    def genSinglePhon(self, director):
+        pass
+
+
     def __init__(self):
         super(Actor, self).__init__(name='material_simulations/espresso-utils/generate-ph')
 

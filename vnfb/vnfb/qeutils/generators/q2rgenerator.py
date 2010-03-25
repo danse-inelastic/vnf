@@ -37,10 +37,10 @@ class Q2RGenerator(object):
         nl              = Namelist("input")
         self._input.addNamelist(nl)
 
-        phresults   = PHResult(self._director, self._inv.id)
+        phresults       = PHResult(self._director, self._inv.id)
         zasr    = ZASR[ZASRLIST[int(self._inv.zasr)]]
 
-        nl.add("fildyn",    phresults.fildyn())
+        nl.add("fildyn",    phresults.fildyn()) # from PH results
         nl.add("zasr",      zasr)
         nl.add("flfrc",     FLFRC_F)
         

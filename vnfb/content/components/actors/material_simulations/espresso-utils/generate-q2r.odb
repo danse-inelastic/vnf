@@ -28,17 +28,14 @@ class Actor(base):
 
 
     def generateInput(self, director):
+        gen     = Q2RGenerator(director, self.inventory)
+        gen.setInput()
         return director.redirect(actor   = 'material_simulations/espresso/input-create',
                                 routine = 'default',
-                                text    = self._input(director),
+                                text    = gen.toString(),
                                 id      = self.inventory.id,
                                 taskid  = self.inventory.taskid,
                                 type    = self.inventory.type)
-
-    def _input(self, director):
-        gen     = Q2RGenerator(director, self.inventory)
-        gen.setInput()
-        return gen.toString()
 
 
     def __init__(self):
