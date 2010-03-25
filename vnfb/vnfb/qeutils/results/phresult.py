@@ -11,6 +11,8 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
+import os
+from vnfb.qeutils.qeconst import FILDYN
 from vnfb.qeutils.results.qeresult import QEResult
 
 NONE        = "None"
@@ -20,6 +22,19 @@ class PHResult(QEResult):
         self._type  = "PH"  # Important attribute
         super(PHResult, self).__init__(director, simid, self._type)
 
-__date__ = "$Mar 22, 2010 11:40:10 PM$"
 
+    def fildyn(self):
+        "Returns formatted fildyn path"
+        return "'%s'" % self._fildynPath()
+
+
+    def _fildynPath(self):
+        "Returns fildyn parameter which is the remote absolute base for matdyn files"
+        # E.g.: /home/dexity/espresso/qejobs/5YWWTCQT/matdyn
+        if not self.remotePath():
+            return "ERROR: PH remote results directory is not available!"
+
+        return os.path.join(self.remotePath(), FILDYN)
+    
+__date__ = "$Mar 22, 2010 11:40:10 PM$"
 

@@ -24,8 +24,9 @@ class Q2RResult(QEResult):
 
 
     def flfrc(self):
+        "Returns force constants file (default.fc) from local results directory"
         if not self.localPath():
-            return "ERROR: Force field file (default.fc) is not available!"
+            return "ERROR: Q2R local results directory is not available!"
 
         path    = os.path.join(self.localPath(), "%s.fc" % PREFIX)
         return "'%s'" % path

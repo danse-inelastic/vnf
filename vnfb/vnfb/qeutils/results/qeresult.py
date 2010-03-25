@@ -38,8 +38,13 @@ class QEResult(object):
 
 
     def localPath(self):
-        "Result directory"
+        "Local results directory"
         return self._localPath
+
+
+    def remotePath(self):
+        "Remote results directory"
+        return self._remotePath
 
 
     def _init(self):
@@ -48,13 +53,17 @@ class QEResult(object):
 
         self._inputFile     = resultPath.resultFiles("input")    # Input file
         self._outputFile    = resultPath.resultFiles("output")   # Output file
-        self._localPath     = resultPath.localPath() # Directory where results are stored
+        self._localPath     = resultPath.localPath()    # Local results directory
+        self._remotePath    = resultPath.remotePath()   # Remote results directory
 
         # Important line! No output file, no results!
         if not self._outputFile:
             return
 
         self._task    = self._taskFactory()
+        if not self._task:      # Sometimes I don't need task object and don't implement task factor
+            return
+
         self._input   = self._task.input
         self._output  = self._task.output
 
@@ -62,7 +71,7 @@ class QEResult(object):
         self._output.parse()
     
 
-    def _taskFactory(self, input, output):
+    def _taskFactory(self):
         "Task factory, should be subclassed"
 
 
