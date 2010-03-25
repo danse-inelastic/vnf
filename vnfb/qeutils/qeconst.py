@@ -184,6 +184,8 @@ MATDYN_METHOD["dos"]           = "Phonon Density of States (DOS)"
 MATDYN_METHOD["dispersion"]    = "Phonon on Grid (For Virtual Neutron Experiment)"
 
 
+MATDYN_METHOD_LIST  = MATDYN_METHOD.keys()
+
 MATTER_TYPE = OrderedDict()
 MATTER_TYPE["metal"]        = "Metal (no gap)"
 MATTER_TYPE["insulator"]    = "Insulator (with a gap)"

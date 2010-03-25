@@ -15,12 +15,13 @@ import os
 from vnfb.qeutils.results.phresult import PHResult
 from vnfb.qeutils.qeparser.qeinput import QEInput
 from vnfb.qeutils.qeparser.namelist import Namelist
-from vnfb.qeutils.qeconst import ZASR, ZASRLIST, PREFIX, FILDYN
-from vnfb.qeutils.results.resultpath import ResultPath
+from vnfb.qeutils.qeconst import ZASR, ZASRLIST
 
 """
 Q2RGenerator - input generator class for Q2R task
 """
+
+FLFRC_F   = "'default.fc'"    # formatted!
 
 class Q2RGenerator(object):
 
@@ -41,7 +42,7 @@ class Q2RGenerator(object):
 
         nl.add("fildyn",    phresults.fildyn())
         nl.add("zasr",      zasr)
-        nl.add("flfrc",     "'%s.fc'" % PREFIX)  # XXX
+        nl.add("flfrc",     FLFRC_F)
         
 
     def toString(self):
