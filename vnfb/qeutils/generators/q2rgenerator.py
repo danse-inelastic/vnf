@@ -12,6 +12,7 @@
 #
 
 import os
+from vnfb.qeutils.results.phresult import PHResult
 from vnfb.qeutils.qeparser.qeinput import QEInput
 from vnfb.qeutils.qeparser.namelist import Namelist
 from vnfb.qeutils.qeconst import ZASR, ZASRLIST, PREFIX, FILDYN
@@ -35,14 +36,10 @@ class Q2RGenerator(object):
         nl              = Namelist("input")
         self._input.addNamelist(nl)
 
-        # Get jobs directory of PH simulation task
-        resultpath  = ResultPath(self._director, self._inv.id, "PH")
-        path        = resultpath.resultPath()
-        # E.g.: /home/dexity/espresso/qejobs/5YWWTCQT/matdyn
-        fildyn  = os.path.join(path, FILDYN)  # "matdyn" - default value for PH fildyn
+        phresults   = PHResult(self._director, self._inv.id)
         zasr    = ZASR[ZASRLIST[int(self._inv.zasr)]]
 
-        nl.add("fildyn",    "'%s'" % fildyn)
+        nl.add("fildyn",    phresults.fildyn())
         nl.add("zasr",      zasr)
         nl.add("flfrc",     "'%s.fc'" % PREFIX)  # XXX
         

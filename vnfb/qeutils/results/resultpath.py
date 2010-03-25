@@ -41,7 +41,7 @@ class ResultPath(object):
 
     def _init(self):
         "Additional initialization"
-        simrecord   = SimulationRecord(director, simid)   # Have as an attribute instead?
+        simrecord   = SimulationRecord(self._director, self._simid)   # Have as an attribute instead?
         self._jit   = simrecord.jobInputTask(self._type)
         
 
@@ -80,6 +80,61 @@ class ResultPath(object):
             return self._filesList(path)
 
         return None
+
+
+    def localPath(self):
+        """
+        Each job for the task of type will have separate root path specified by
+        task type (ttype)
+
+        Example: "/home/dexity/exports/vnf/vnfb/content/data/tmp/tmpTsdw21/4ICDAVNK/
+        Note: Result path is assumed not to have child directories.
+        """
+        if not self._recordsOK():
+            return None
+
+        results     = ResultInfo(self._director, self._simid, self._type)
+        if results.ready():
+            datadir     = dataroot(self._director)
+            return os.path.join(datadir, results.tardir())
+
+        return None     # default case
+
+
+    def remotePath(self):
+        """Returns the path of the jobs directory on the remote server.
+        Example: /home/dexity/espresso/qejobs/5YWWTCQT/
+        """
+        if not self._recordsOK():
+            return None
+
+        job     = self._jit[0]
+
+        server  = self._director.clerk.getServers(id=job.serverid)
+        if not server:
+            return None     # No server, no remote directory
+
+        path    = os.path.join(server.workdir, job.name)
+        return os.path.join(path, job.id)
+
+
+#        path    = ""
+#        task    = qetask(director, simid, type)
+#
+#        if not task:
+#            return path
+
+#        jobs    = director.clerk.getQEJobs(where="taskid='%s'" % task.id)
+#        if len(jobs) > 0:
+#            # Find latest job for the task
+#            job = latestJob(jobs)
+#
+#            if job:
+#                server  = director.clerk.getServers(id=job.serverid)
+#                path    = os.path.join(server.workdir, job.name)
+#                path    = os.path.join(path, job.id)
+#
+#        return path
 
 
     def _matchCheck(self, files, ftype):
@@ -122,49 +177,6 @@ class ResultPath(object):
                 files.append(e)
 
         return files
-
-
-    def remotePath(director, simid, type):
-        """Returns the path of the jobs directory on the remote server.
-        Example: /home/dexity/espresso/qejobs/5YWWTCQT/
-        """
-        path    = ""
-        task    = qetask(director, simid, type)
-
-        if not task:
-            return path
-
-        jobs    = director.clerk.getQEJobs(where="taskid='%s'" % task.id)
-        if len(jobs) > 0:
-            # Find latest job for the task
-            job = latestJob(jobs)
-
-            if job:
-                server  = director.clerk.getServers(id=job.serverid)
-                path    = os.path.join(server.workdir, job.name)
-                path    = os.path.join(path, job.id)
-
-        return path
-
-
-    def _localPath(self):
-        """
-        Each job for the task of type will have separate root path specified by
-        task type (ttype)
-
-        Example: "/home/dexity/exports/vnf/vnfb/content/data/tmp/tmpTsdw21/4ICDAVNK/
-        Note: Result path is assumed not to have child directories.
-        """
-
-        if not self._recordsOK():
-            return None
-        
-        results     = ResultInfo(self._director, self._simid, self._type) 
-        if results.ready():
-            datadir     = dataroot(self._director)
-            return os.path.join(datadir, results.tardir())
-
-        return None     # default case
 
 
     def _recordsOK(self):
