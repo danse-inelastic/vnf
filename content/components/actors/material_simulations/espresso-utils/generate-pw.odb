@@ -78,12 +78,12 @@ class Actor(base):
 
     def _getInput(self, input, director):
         gen = PWGenerator(self.inventory, input)
-        gen.control()
-        gen.system()
-        gen.electrons()         # TODO: Suitable for phonon calculations?
-        gen.ions()      # For geometry optimization only
-        gen.cell()      # Can be already created
-        gen.k_points()
+        gen.setControl()
+        gen.setSystem()
+        gen.setElectrons()
+        gen.setIons()      # For geometry optimization only
+        gen.setCell()      
+        gen.setKPoints()
 
         return gen.toString()   #input.structure.toString()
 
