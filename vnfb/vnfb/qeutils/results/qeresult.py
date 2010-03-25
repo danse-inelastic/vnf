@@ -74,12 +74,12 @@ class QEResult(object):
     
 
     def input(self):
-        "Returns input object (QEInput)"
+        "Returns input object (subclass of QEInput)"
         return self._input
 
 
     def output(self):
-        "Returns output object (QEInput)"
+        "Returns output object (subclass of QEInput)"
         return self._output
 
 
