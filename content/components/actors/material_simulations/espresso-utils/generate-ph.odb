@@ -12,12 +12,7 @@
 #
 
 from vnfb.qeutils.generators.phgenerator import PHGenerator
-
 from luban.components.AuthorizedActor import AuthorizedActor as base
-
-#PREFIX  = "'default'"
-
-# TODO: Critical: Fix amass(...) - take from pw config
 
 # Requires simulation id,
 class Actor(base):
@@ -35,18 +30,14 @@ class Actor(base):
 
 
     def generateInput(self, director):
+        gen     = PHGenerator(director, self.inventory)
+        gen.setInputph()    
         return director.redirect(actor   = 'material_simulations/espresso/input-create',
                                 routine = 'default',
-                                text    = self._input(director),
+                                text    = gen.toString(),   
                                 id      = self.inventory.id,
                                 taskid  = self.inventory.taskid,
                                 type    = self.inventory.type)
-
-
-    def _input(self, director):
-        gen = PHGenerator(director, self.inventory)
-        gen.inputph()
-        return gen.toString()
 
 
     def __init__(self):
