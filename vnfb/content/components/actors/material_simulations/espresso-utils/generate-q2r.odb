@@ -11,12 +11,7 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
-import os
-from vnfb.qeutils.qeparser.qeinput import QEInput
-from vnfb.qeutils.qeparser.namelist import Namelist
-from vnfb.qeutils.qeconst import ZASR
-from vnfb.qeutils.qeconst import PREFIX
-from vnfb.qeutils.qeutils import remoteResultsPath
+from vnfb.qeutils.generators.q2rgenerator import Q2RGenerator
 
 from luban.components.AuthorizedActor import AuthorizedActor as base
 
@@ -31,6 +26,7 @@ class Actor(base):
         structureid = pyre.inventory.str('structureid', default='')
         zasr        = pyre.inventory.str('zasr', default='')        # Type of the configuration file
 
+
     def generateInput(self, director):
         return director.redirect(actor   = 'material_simulations/espresso/input-create',
                                 routine = 'default',
@@ -40,20 +36,24 @@ class Actor(base):
                                 type    = self.inventory.type)
 
     def _input(self, director):
-        input      = QEInput(type='q2r')
-        nl  = Namelist("input")
-
-        # E.g.: /home/dexity/espresso/qejobs/5YWWTCQT/matdyn
-        # Get jobs directory of PH simulation task
-        path    = remoteResultsPath(director, self.inventory.id, "PH")
-        fildyn  = os.path.join(path, "matdyn")  # "matdyn" - default value for PH fildyn
-        zasr    = ZASR[ZASR.keys()[int(self.inventory.zasr)]]
-
-        nl.add("fildyn", "'%s'" % fildyn)
-        nl.add("zasr", zasr)
-        nl.add("flfrc", "'%s.fc'" % PREFIX)  # XXX
-        input.addNamelist(nl)
-        return input.toString()
+        gen     = Q2RGenerator(director, self.inventory)
+        gen.setInput()
+        return gen.toString()
+    
+#        input      = QEInput(type='q2r')
+#        nl  = Namelist("input")
+#
+#        # E.g.: /home/dexity/espresso/qejobs/5YWWTCQT/matdyn
+#        # Get jobs directory of PH simulation task
+#        path    = remoteResultsPath(director, self.inventory.id, "PH")
+#        fildyn  = os.path.join(path, "matdyn")  # "matdyn" - default value for PH fildyn
+#        zasr    = ZASR[ZASR.keys()[int(self.inventory.zasr)]]
+#
+#        nl.add("fildyn", "'%s'" % fildyn)
+#        nl.add("zasr", zasr)
+#        nl.add("flfrc", "'%s.fc'" % PREFIX)  # XXX
+#        input.addNamelist(nl)
+#        return input.toString()
 
 
     def __init__(self):

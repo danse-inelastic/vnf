@@ -16,13 +16,13 @@ import re
 from vnfb.qeutils.qeutils import dataroot
 from vnfb.qeutils.qeconst import OUTPUT_EXT, INPUT_EXT
 from vnfb.qeutils.results.resultinfo import ResultInfo
-from vnfb.qeutils.qetaskinfo import TaskInfo
+#from vnfb.qeutils.qetaskinfo import TaskInfo
 from vnfb.qeutils.qerecords import SimulationRecord
 
 input_ext   = INPUT_EXT.strip(".")  # Refined input extention
 output_ext  = OUTPUT_EXT.strip(".") # Refined output extention
-INPUT   = '[\w]+\.%s$' % input_ext                      # Input file
-OUTPUT  = '[\w]+\.%s\.%s$' % (input_ext, output_ext)    # Output file
+INPUT   = '[\w]+\.%s$' % input_ext                      # Input file,  Example: "AAAAA.in"
+OUTPUT  = '[\w]+\.%s\.%s$' % (input_ext, output_ext)    # Output file, Example: "AAAAA.in.out"
 CRASH   = 'CRASH'                                       # Crash file
 
 REEXP   = {}    # Dictionary of regular expressions for file types
@@ -58,7 +58,7 @@ class ResultPath(object):
 
         file    = self._matchCheck(files, ftype)
         if file:
-            # path is not None (it was verified before!)
+            # path is not None (was verified before!)
             return os.path.join(self.resultPath(), file)
 
         return None

@@ -147,6 +147,8 @@ ZASR["one-dim"]     = "'one-dim'"
 ZASR["zero-dim"]    = "'zero-dim'"
 ZASR["no"]          = "'no'"
 
+ZASRLIST            = ZASR.keys()
+
 IBRAV       = ( "Not Specified",                    # 0
                 "Cubic P (sc)",                     # 1
                 "Cubic F (fcc)",                    # 2
@@ -175,6 +177,7 @@ PROCESSORS  = (1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 24, 36, 48, 60, 72, 84, 96
 
 QE_PREFIX   = "'default'"
 PREFIX      = "default"
+FILDYN      = "matdyn"      # Default name for PH fildyn
 
 MATDYN_METHOD  = OrderedDict()
 MATDYN_METHOD["dos"]           = "Phonon Density of States (DOS)"

@@ -11,11 +11,6 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
-#from vnfb.qeutils.qeparser.qeinput import QEInput
-#from vnfb.qeutils.qeparser.namelist import Namelist
-#from vnfb.qeutils.qeparser.card import Card
-#from vnfb.qeutils.qeconst import SMEARING, MATTER_TYPE
-
 from vnfb.qeutils.qeparser.pseudo.pseudo import PSEUDO
 from qecalc.qetask.qeparser.pwinput import PWInput
 from vnfb.qeutils.generators.pwgenerator import PWGenerator
