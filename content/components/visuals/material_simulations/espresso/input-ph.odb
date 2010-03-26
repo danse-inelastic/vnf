@@ -23,6 +23,7 @@ NQ      = 2
 KX      = 0
 
 def phonForm(actor, structureid, simtype, fields, routine):
+    "General form suitable both for single and multiple simulation types"
     form        = lc.form(id='create-simulation-form')
     table       = QEGrid(lc.grid(Class="qe-form"))
     form.add(table.grid())
@@ -58,6 +59,7 @@ def singlePhonForm(actor, structureid, simtype):
     "Form for multiple phonon simulation type"
     routine = "genSinglePhon"  # 'generateInput'
     fields  = []
+    fields.append(("Phonon coordinate", ""))
     fields.append(("Kx:", FormTextField(name = "kx", value = KX)))
     fields.append(("Ky:", FormTextField(name = "ky", value = KX)))
     fields.append(("Kz:", FormTextField(name = "kz", value = KX)))
@@ -69,6 +71,7 @@ def multiPhonForm(actor, structureid, simtype):
     "Form for multiple phonon simulation type"
     routine = "genMultiPhon"  # 'generateInput'
     fields  = []
+    fields.append(("Q-Points", ""))
     fields.append(("nq1:", FormTextField(name = "nq1", value = NQ)))
     fields.append(("nq2:", FormTextField(name = "nq2", value = NQ)))
     fields.append(("nq3:", FormTextField(name = "nq3", value = NQ)))
