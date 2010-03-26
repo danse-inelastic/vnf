@@ -37,7 +37,7 @@ class PHGenerator(object):
 
     # XXX:  Handle prefix properly (should be same as in pw input)
     def setInputph(self):
-        "Set inputph"
+        "Sets inputph depending on the simulation type"
         self._input      = QEInput(type='ph')
         self._input.header = "phonon simulation\n"
         nl  = Namelist("inputph")
@@ -65,7 +65,6 @@ class PHGenerator(object):
         """Returns list of tuples with amass label and mass value from PW input configuration
         Example: [("amass(1)", "35.5"), ("amass(2)", "54.3")]
         """
-        #pwresult    = PWResult(self._director, self._inv.id)
         species     = self._pwresult.species()    # Example: masses = [("Al", "29.7"), ("Ni", "56.7") ...]
         if not species:
             return None # No masses, no amasses :)
@@ -77,6 +76,16 @@ class PHGenerator(object):
         return list
 
 
+    def isGammaPoint(self):
+        "Checks if phonon point is gamma point"
+        # Rudimentary filter
+        if self._inv.kx == '' or self._inv.ky == '' or self._inv.kz == '':
+            return False
+
+        return float(self._inv.kx) == 0.0 and float(self._inv.ky) == 0.0 and float(self._inv.kz) == 0.0
+
+
+    # XXX: Reset parameters 'prefix', 'outdir', 'fildyn'
     def _singlePhonInput(self):
         "Takes namelist and populates inputph for single phonon"
         nl  = self._input.namelist("inputph")
@@ -87,7 +96,6 @@ class PHGenerator(object):
         self._addLnscf(nl)  # for non-Gamma point
         self._input.addAttach("%s %s %s" % (self._inv.kx, self._inv.ky, self._inv.kz))
 
-    # XXX: Make sure that fildyn = 'matdyn'
 
     def _multiPhonInput(self):
         "Takes namelist and populates inputph for multiple phonons"
@@ -136,12 +144,5 @@ class PHGenerator(object):
         return simtype
 
 
-    def isGammaPoint(self):
-        "Checks if phonon point is gamma point"
-        # Rudimentary filter
-        if self._inv.kx == '' or self._inv.ky == '' or self._inv.kz == '': 
-            return False
-
-        return float(self._inv.kx) == 0.0 and float(self._inv.ky) == 0.0 and float(self._inv.kz) == 0.0
 
 __date__ = "$Mar 24, 2010 9:59:39 AM$"
