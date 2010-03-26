@@ -14,18 +14,19 @@
 from vnfb.qeutils.qeparser.pseudo.pseudo import PSEUDO
 from qecalc.qetask.qeparser.pwinput import PWInput
 from vnfb.qeutils.generators.pwgenerator import PWGenerator
+from vnfb.components.QEGenerator import QEGenerator as base
 
-from luban.components.AuthorizedActor import AuthorizedActor as base
+#from luban.components.AuthorizedActor import AuthorizedActor as base
 
 #XXX: The number atomic species is limited by 10 for now
 class Actor(base):
 
     class Inventory(base.Inventory):
         import pyre.inventory
-        id          = pyre.inventory.str('id', default='')          # Simulation Id
-        taskid      = pyre.inventory.str('taskid', default='')
+        #id          = pyre.inventory.str('id', default='')          # Simulation Id
+        #taskid      = pyre.inventory.str('taskid', default='')
         simtype     = pyre.inventory.str('simtype', default='')     # Simulation type (for convenience)
-        type        = pyre.inventory.str('type', default='')
+        #type        = pyre.inventory.str('type', default='')
         structureid = pyre.inventory.str('structureid', default='')
 
         ibrav       = pyre.inventory.int('ibrav', default=0)
@@ -61,6 +62,16 @@ class Actor(base):
         pseudo8     = pyre.inventory.str('pseudo8', default='')
         pseudo9     = pyre.inventory.str('pseudo9', default='')
 
+
+    def content(self, director):
+        "Populates the content for creation of input configuration"
+        title   = "PW Configuration Input: %s" % self.type
+        label   = "PW Form"
+        return self._document(director, title, label)
+
+
+#    def _setForm(self):
+#
 
     def generateInput(self, director):
         return director.redirect(actor   = 'material_simulations/espresso/input-create',
@@ -135,10 +146,10 @@ class Actor(base):
 
     def _configure(self):
         super(Actor, self)._configure()
-        self.id             = self.inventory.id
+#        self.id             = self.inventory.id
         self.simtype        = self.inventory.simtype
-        self.taskid         = self.inventory.taskid
-        self.type           = self.inventory.type
+#        self.taskid         = self.inventory.taskid
+#        self.type           = self.inventory.type
         self.structureid    = self.inventory.structureid
         
         self.ibrav          = self.inventory.ibrav

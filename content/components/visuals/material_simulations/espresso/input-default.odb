@@ -47,10 +47,9 @@ def visual(actor, director):
 
     form.onsubmit   = select(element=form).submit(actor     = 'material_simulations/espresso/input-create',
                                                   routine   = 'createRecord',
-                                                  taskid    = actor.taskid,
                                                   id        = actor.id,
-                                                  type      = actor.type,
-                                                  subtype   = actor.subtype)
+                                                  taskid    = actor.taskid,
+                                                  type      = actor.type)
 
     return form
 
