@@ -18,7 +18,7 @@ from luban.content import load, select
 from vnfb.qeutils.jobstatus import JobStatus
 from vnfb.qeutils.results.resultinfo import ResultInfo
 from vnfb.qeutils.qegrid import QEGrid
-from vnfb.qeutils.qeinput import QEInput
+from vnfb.qeutils.inputinfo import InputInfo
 from vnfb.qeutils.qetaskinfo import TaskInfo
 from vnfb.qeutils.qeutils import latestJob
 
@@ -103,10 +103,7 @@ class QETaskCell:
         self._jobId(table)
         self._results(table)
 
-        # Set style
-        table.setColumnStyle(0, "qe-tasks-param")
-        table.setColumnStyle(1, "qe-tasks-value")
-        table.setCellStyle(3, 1, "text-green")
+        self._setStyle(table)   # beautify table :)
         
 
     def _taskId(self, table):
@@ -123,7 +120,7 @@ class QETaskCell:
 
     def _input(self, table):
         # Suppose that self._task is not None
-        qeinput = QEInput(self._director, self._simid, self._task.id, self._type)
+        qeinput = InputInfo(self._director, self._simid, self._task.id, self._type)
         table.addRow(("Input:", qeinput.getLink(), ""))
 
 
@@ -166,6 +163,13 @@ class QETaskCell:
         results     = ResultInfo(self._director, self._simid, self._type)
         
         table.addRow(("Results: ", results.link(), results.action() ))
+
+
+    def _setStyle(self, table):
+        "Set style for the talbe"
+        table.setColumnStyle(0, "qe-tasks-param")
+        table.setColumnStyle(1, "qe-tasks-value")
+        table.setCellStyle(3, 1, "text-green")
 
 
 __date__ = "$Dec 12, 2009 3:21:13 PM$"

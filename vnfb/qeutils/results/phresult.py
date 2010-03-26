@@ -42,7 +42,7 @@ class PHResult(QEResult):
             return False
 
         kp      = line.split()
-        if len(kp) != 3:  # Should have 3 items
+        if len(kp) != 3:  # Should have 3 elements
             return False
 
         return float(kp[0]) == 0.0 and float(kp[1]) == 0.0 and float(kp[2]) == 0.0

@@ -13,7 +13,7 @@
 
 from vnfb.qeutils.qeutils import stamp2date
 from vnfb.qeutils.qegrid import QEGrid
-from vnfb.qeutils.qeinput import QEInput
+from vnfb.qeutils.inputinfo import InputInfo
 
 from luban.content import select
 from luban.content import load
@@ -108,7 +108,7 @@ class Actor(base):
 
     def _input(self, director):
         "Show input"
-        qeinput = QEInput(director, self.id, self.taskid, self.type)
+        qeinput = InputInfo(director, self.id, self.taskid, self.type)
         return qeinput.getLink()
 
 
