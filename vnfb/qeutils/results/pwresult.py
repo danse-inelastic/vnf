@@ -119,10 +119,6 @@ class PWResult(QEResult):
             return NONE
 
         return "(%s, %s, %s)" % (kp[0], kp[1], kp[2])
-##                return "(%s, %s, %s)" % (items[0], items[1], items[2])
-#
-#        return NONE
-#
 
 
     # Output methods
@@ -221,6 +217,12 @@ class PWResult(QEResult):
     def species(self):
         "Returns list of species in format: [('Al', '26.9815', 'Al.blyp-n-van_ak.UPF'),]"
         return self._atomicCard("atomic_species", PWVALID)
+
+
+    # XXX: Finish!!!
+    def isIsolator(self):
+        "Checks if material is isolator looking into the 'occupation' parameter"
+        return False
 
 
     # Specific for geometry optimization
