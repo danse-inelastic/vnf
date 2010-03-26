@@ -24,42 +24,29 @@ class Actor(base):
         taskid      = pyre.inventory.str('taskid', default='')
         type        = pyre.inventory.str('type', default='')
         structureid = pyre.inventory.str('structureid', default='')
-        nq1         = pyre.inventory.str('nq1', default='')        # Type of the configuration file
+        
+        # Q-points, for multiple phonons
+        nq1         = pyre.inventory.str('nq1', default='')        
         nq2         = pyre.inventory.str('nq2', default='')
         nq3         = pyre.inventory.str('nq3', default='')
+
+        # Phonon coordinates, for single phonons
+        kx          = pyre.inventory.str('kx', default='')
+        ky          = pyre.inventory.str('ky', default='')
+        kz          = pyre.inventory.str('kz', default='')
 
 
     def generateInput(self, director):
         "Redirects PH input text to input form"
         return director.redirect(actor   = 'material_simulations/espresso/input-create',
                                 routine = 'default',
-                                text    = self._input(),
+                                text    = self._input(director),
                                 id      = self.inventory.id,
                                 taskid  = self.inventory.taskid,
                                 type    = self.inventory.type)
 
 
-#    def genMultiPhon(self, director):
-#        "Redirects PH input text for multiple phonon simulation type to input form"
-#        return director.redirect(actor   = 'material_simulations/espresso/input-create',
-#                                routine = 'default',
-#                                text    = self._input(),
-#                                id      = self.inventory.id,
-#                                taskid  = self.inventory.taskid,
-#                                type    = self.inventory.type)
-#
-#
-#
-#    def genSinglePhon(self, director):
-#        "Redirects PH input text for single phonon simulation type to input form"
-#        return director.redirect(actor   = 'material_simulations/espresso/input-create',
-#                                routine = 'default',
-#                                text    = self._input(),
-#                                id      = self.inventory.id,
-#                                taskid  = self.inventory.taskid,
-#                                type    = self.inventory.type)
-
-    def _input(self):
+    def _input(self, director):
         "Generates PH input text"
         gen     = PHGenerator(director, self.inventory)
         gen.setInputph()
@@ -69,7 +56,6 @@ class Actor(base):
     def __init__(self):
         super(Actor, self).__init__(name='material_simulations/espresso-utils/generate-ph')
 
-        return
 
     def _configure(self):
         super(Actor, self)._configure()
@@ -78,9 +64,14 @@ class Actor(base):
         self.taskid         = self.inventory.taskid
         self.type           = self.inventory.type
         self.structureid    = self.inventory.structureid
+        
         self.nq1            = self.inventory.nq1
         self.nq2            = self.inventory.nq2
         self.nq3            = self.inventory.nq3
+
+        self.kx             = self.inventory.kx
+        self.ky             = self.inventory.ky
+        self.kz             = self.inventory.kz
 
 
     def _init(self):
