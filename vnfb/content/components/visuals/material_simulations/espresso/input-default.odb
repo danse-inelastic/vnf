@@ -26,20 +26,22 @@ def visual(actor, director):
     table       = QEGrid(lc.grid(Class="qe-form"))
     form.add(table.grid())
 
-    fname           = FormTextField(name = "fname", value = actor.fname)
-    description     = FormTextField(name = "description", value=actor.description)   # Make as textarea
-    text            = FormTextArea(name="text", value=actor.text, Class="qe-text-area")
-
     submit      = FormSubmitButton(label="Create Input Configuration")
     cancel      = lc.button(label="Cancel")
     cancel.onclick  = load(actor = 'material_simulations/espresso/sim-view', id=actor.id)
-
     st          = QEGrid(lc.grid()) # Submit Table
     st.addRow((submit, cancel), ("qe-action-accept", "qe-action-cancel"))
 
+    # Create form fields
+    text            = FormTextArea(name="text", value=actor.text, Class="qe-text-area")
+    fname           = FormTextField(name = "fname", value = actor.fname)
+    description     = FormTextField(name = "description", value=actor.description)   # Make as textarea
+
+    # Add form fields to the table
+    table.addRow(("Configuration: *", text))
     table.addRow(("Name:", fname))
     table.addRow(("Description:", description))
-    table.addRow(("Configuration: *", text))
+    
     table.addRow(("", st.grid()))
 
     table.setColumnStyle(0, "qe-form-label")
