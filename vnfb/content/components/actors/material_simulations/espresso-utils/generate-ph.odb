@@ -30,22 +30,40 @@ class Actor(base):
 
 
     def generateInput(self, director):
-        gen     = PHGenerator(director, self.inventory)
-        gen.setInputph()    
+        "Redirects PH input text to input form"
         return director.redirect(actor   = 'material_simulations/espresso/input-create',
                                 routine = 'default',
-                                text    = gen.toString(),
+                                text    = self._input(),
                                 id      = self.inventory.id,
                                 taskid  = self.inventory.taskid,
                                 type    = self.inventory.type)
 
 
-    def genMultiPhon(self, director):
-        pass
+#    def genMultiPhon(self, director):
+#        "Redirects PH input text for multiple phonon simulation type to input form"
+#        return director.redirect(actor   = 'material_simulations/espresso/input-create',
+#                                routine = 'default',
+#                                text    = self._input(),
+#                                id      = self.inventory.id,
+#                                taskid  = self.inventory.taskid,
+#                                type    = self.inventory.type)
+#
+#
+#
+#    def genSinglePhon(self, director):
+#        "Redirects PH input text for single phonon simulation type to input form"
+#        return director.redirect(actor   = 'material_simulations/espresso/input-create',
+#                                routine = 'default',
+#                                text    = self._input(),
+#                                id      = self.inventory.id,
+#                                taskid  = self.inventory.taskid,
+#                                type    = self.inventory.type)
 
-
-    def genSinglePhon(self, director):
-        pass
+    def _input(self):
+        "Generates PH input text"
+        gen     = PHGenerator(director, self.inventory)
+        gen.setInputph()
+        return gen.toString()
 
 
     def __init__(self):
