@@ -43,8 +43,9 @@ EXPORT_DATAFILES = \
 	retrieveresults.pml \
 	updatejobstatus.pml \
 	usersFromDB.odb \
-	widget.lib
+	web-weaver-library.pml \
 
+#	widget.lib
 #	web-weaver.pml \
 # 	clerk.pml \
 # 	ssher.pml \
