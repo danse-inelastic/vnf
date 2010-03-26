@@ -37,16 +37,6 @@ class QEResult(object):
         self._init()
 
 
-    def localPath(self):
-        "Local results directory"
-        return self._localPath
-
-
-    def remotePath(self):
-        "Remote results directory"
-        return self._remotePath
-
-
     def _init(self):
         "Retrieve output file and parse it"
         resultPath  = ResultPath(self._director, self._simid, self._type)
@@ -72,6 +62,16 @@ class QEResult(object):
         self._input.parse()
         self._output.parse()
     
+
+    def localPath(self):
+        "Local results directory"
+        return self._localPath
+
+
+    def remotePath(self):
+        "Remote results directory"
+        return self._remotePath
+
 
     def input(self):
         "Returns input object (subclass of QEInput)"
