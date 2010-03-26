@@ -36,7 +36,8 @@ class Actor(baseActor):
         materialInfo = {'cartesian_lattice':lattice.base.tolist(), 
                "cartesian_coordinates":structure.xyz_cartn,
                "fractional_coordinates":structure.xyz,
-               "atom_symbols":structure.symbols}
+               "atom_symbols":structure.symbols,
+               "space_group":structure.sg.number}
         # don't need to encode because json takes care of that
         #ans = self.encoder(materialInfo)
         return materialInfo
