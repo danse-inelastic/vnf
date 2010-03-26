@@ -44,13 +44,13 @@ class QEGenerator(base):
         return self._document(director, title, label)
 
 
-    def _document(self, director, title, label):
+    def _document(self, director, title, label, formMethod = "defaultForm", visual = None):
         doc         = lc.document(title = title)
         splitter    = doc.splitter(orientation = "vertical")
         sA          = splitter.section()
         sB          = splitter.section()
         sA.add(self._viewIndicator(director, label))
-        sB.add(self._setForm(director))
+        sB.add(getattr(self, formMethod)(director, visual))
 
         return doc
 
@@ -69,7 +69,7 @@ class QEGenerator(base):
         return director.retrieveVisual('view-indicator', path=path)
 
 
-    def _setForm(self, director, visual = None):
+    def defaultForm(self, director, visual):
         "Default implementation of input form"
         visual_     = "material_simulations/espresso/input-default"
         if visual:      # set visual if passed
