@@ -51,6 +51,14 @@ class InputInfo:
     def _linkAdd(self):
         "Returns link 'Add'"
         sim     = self._director.clerk.getQESimulations(id = self._id)
+        base    = "material_simulations/espresso-utils/"
+
+#        visual  = "material_simulations/espresso/input-default"
+#
+#        if self.type in TYPE:
+#            #  Not a very flexible way retrieving visuals
+#            visual  = "material_simulations/espresso/input-%s" % self.type.lower()
+
 
         link = Link(label="Add",
                     onclick=load(actor      = "material_simulations/espresso/input-generate",
@@ -60,6 +68,15 @@ class InputInfo:
                                  structureid    = sim.structureid)
                     )
         return link
+
+#    def _simType(self, director):
+#        "Returns simulation type"
+#        sim     = director.clerk.getQESimulations(id=self.id)
+#        if not sim:
+#            return ""
+#
+#        return sim.type
+
 
 if __name__ == "__main__":
     pass

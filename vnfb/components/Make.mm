@@ -53,6 +53,7 @@ EXPORT_PYTHON_MODULES = \
 	MasterTable.py \
 	Postman.py \
         QEAnalysis.py \
+        QEGenerator.py \
         QETable.py \
         Scheduler.py \
 	SSHer.py \
