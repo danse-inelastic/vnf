@@ -11,8 +11,6 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
-from vnfb.qeutils.qeconst import TYPE
-
 import luban.content as lc
 from luban.content import select
 from luban.content import load
@@ -20,7 +18,7 @@ from luban.content import load
 from luban.components.AuthorizedActor import AuthorizedActor as base
 
 # Requires simulation id,
-class Actor(base):
+class QEGenerator(base):
 
     class Inventory(base.Inventory):
         import pyre.inventory
@@ -41,17 +39,23 @@ class Actor(base):
 
     def content(self, director):
         "Populates the content for creation of input configuration"
-        doc         = lc.document(title   = "Create Input Configuration: %s" % self.type)
-        splitter    = doc.splitter(orientation="vertical")
+        title   = "Create Input Configuration: %s" % self.type
+        label   = "Select Option"
+        return self._document(director, title, label)
+
+
+    def _document(self, director, title, label):
+        doc         = lc.document(title = title)
+        splitter    = doc.splitter(orientation = "vertical")
         sA          = splitter.section()
         sB          = splitter.section()
-        sA.add(self._viewIndicator(director))
+        sA.add(self._viewIndicator(director, label))
         sB.add(self._setForm(director))
 
         return doc
 
 
-    def _viewIndicator(self, director):
+    def _viewIndicator(self, director, label):
         path = []
         path.append(('Simulations ', load(actor='materialsimulation')))
         path.append(('Quantum Espresso ', load(actor='materialsimulation')))
@@ -61,30 +65,30 @@ class Actor(base):
                                                   id       = self.id,
                                                   taskid   = self.taskid,
                                                   type     = self.type)))
-        path.append('Select Option')
-
+        path.append(label)
         return director.retrieveVisual('view-indicator', path=path)
 
 
-    #XXX: Consider special case for PW2
-    def _setForm(self, director):
+    def _setForm(self, director, visual = None):
         "Default implementation of input form"
-        visual  = "material_simulations/espresso/input-default"
+        visual_     = "material_simulations/espresso/input-default"
+        if visual:      # set visual if passed
+            visual_ = visual
 
-        return director.retrieveVisual(visual,
+        return director.retrieveVisual(visual_,
                                        actor        = self.inventory,
                                        director     = director)
 
 
-    def __init__(self, name):
+    def __init__(self, name = None):
         actorname   = name
-        if not name:
+        if not name:    # No name, use default
             actorname    = "material_simulations/espresso-utils/generate-default"
-        super(Actor, self).__init__(name=actorname)
+        super(QEGenerator, self).__init__(name=actorname)
 
 
     def _configure(self):
-        super(Actor, self)._configure()
+        super(QEGenerator, self)._configure()
         self.id             = self.inventory.id
 
         self.taskid         = self.inventory.taskid
@@ -96,11 +100,8 @@ class Actor(base):
 
 
     def _init(self):
-        super(Actor, self)._init()
-        return
+        super(QEGenerator, self)._init()
 
-def actor():
-    return Actor()
 
 
 __date__ = "$Mar 26, 2010 12:00:39 PM$"

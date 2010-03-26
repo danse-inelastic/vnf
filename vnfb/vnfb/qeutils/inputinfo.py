@@ -11,11 +11,14 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
+from vnfb.qeutils.qeconst import TYPE
 from vnfb.qeutils.qeutils import latestInput
 
 from luban.content import load
 from luban.content.Link import Link
 
+BASE        = "material_simulations/espresso-utils/"
+GEN_DEFAULT = BASE + "generate-default" # Default generator actor
 
 class InputInfo:
     """Displays input for simulation task"""
@@ -51,23 +54,63 @@ class InputInfo:
     def _linkAdd(self):
         "Returns link 'Add'"
         sim     = self._director.clerk.getQESimulations(id = self._id)
-        base    = "material_simulations/espresso-utils/"
+        actor   = GEN_DEFAULT
 
-#        visual  = "material_simulations/espresso/input-default"
-#
-#        if self.type in TYPE:
-#            #  Not a very flexible way retrieving visuals
-#            visual  = "material_simulations/espresso/input-%s" % self.type.lower()
-
+        if self._type in TYPE:      # If task type is QE types
+            actor   = getattr(self, "actor" + self._type)()  # Example: self._actorPW()
 
         link = Link(label="Add",
-                    onclick=load(actor      = "material_simulations/espresso/input-generate",
+                    onclick=load(actor      = actor, #"material_simulations/espresso/input-generate",
                                  id         = self._id,
                                  taskid     = self._taskid,
                                  type       = self._type,
                                  structureid    = sim.structureid)
                     )
         return link
+
+
+    def actorPW(self):
+        return BASE + "generate-pw"
+
+    def actorPH(self):
+        pass
+
+    def actorBANDS(self):
+        pass
+
+    def actorPLOTBAND(self):
+        pass
+
+    def actorPP(self):
+        pass
+
+    def actorDOS(self):
+        pass
+
+    def actorQ2R(self):
+        pass
+
+    def actorMATDYN(self):
+        pass
+
+    def actorDYNMAT(self):
+        pass
+
+    def actorD3(self):
+        pass
+
+
+
+#TYPE        = {"PW":        "pw.x",
+#               "PH":        "ph.x",
+#               "BANDS":     "bands.x",
+#               "PLOTBAND":  "plotband.x",
+#               "PP":        "pp.x",
+#               "DOS":       "dos.x",
+#               "Q2R":       "q2r.x",
+#               "MATDYN":    "matdyn.x",
+#               "DYNMAT":    "dynmat.x",
+#               "D3":        "d3.x"
 
 #    def _simType(self, director):
 #        "Returns simulation type"
