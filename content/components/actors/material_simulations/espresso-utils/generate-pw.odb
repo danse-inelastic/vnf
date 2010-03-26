@@ -67,6 +67,7 @@ class Actor(base):
         "Populates the content for creation of input configuration"
         title   = "PW Configuration Input: %s" % self.type
         label   = "PW Form"
+#        visual  = "material_simulations/espresso/input-pw"
         return self._document(director, title, label)
 
 
