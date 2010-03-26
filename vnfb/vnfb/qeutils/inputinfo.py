@@ -15,7 +15,7 @@ from luban.content import load
 from luban.content.Link import Link
 
 
-class QEInput:
+class InputInfo:
     """Displays input for simulation task"""
 
     def __init__(self, director, id, taskid, type):

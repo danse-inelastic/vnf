@@ -58,7 +58,16 @@ def visualGamma(actor, director, structureid):
 
 def visual(actor, director, structureid, simtype):
     phresult    = PHResult(director, actor.id)
-    phresult.isGammaPoint()
+    
+#    if phresult.isGammaPoint(): # Show form for gamma point
+#        return visualGamma(actor, director, structureid)
+
+    return director.redirect(actor   = 'material_simulations/espresso/input-create',
+                            routine = 'default',
+                            text    = "Hi",
+                            id      = actor.id,
+                            taskid  = actor.taskid,
+                            type    = actor.type)
 
 
 __date__ = "$Jan 12, 2010 5:50:54 PM$"
