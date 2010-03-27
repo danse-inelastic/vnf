@@ -15,8 +15,8 @@
 QESimulation - table that holds data for sequence (or chain) of Quantum Espresso
 simulation steps (e.g. PW, PH)
     Total Energy:               PW
-    Electron DOS:               PW -> DOS
-    Electron Dispersion:        PW -> DOS
+    Electron DOS:               PW -> PW -> DOS
+    Electron Dispersion:        PW -> PW -> BANDS -> PLOTBAND
     Geometry Optimization:      PW
     Single-Phonon:              PW -> PH -> DYNMAT
     Multi-Phonon DOS:           PW -> PH -> Q2R -> MATDYN

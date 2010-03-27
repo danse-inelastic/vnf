@@ -12,19 +12,13 @@
 #
 
 from vnfb.qeutils.generators.phgenerator import PHGenerator
-from luban.components.AuthorizedActor import AuthorizedActor as base
 
+from vnfb.components.QEGenerator import QEGenerator as base
 # Requires simulation id,
 class Actor(base):
 
     class Inventory(base.Inventory):
-        import pyre.inventory
-        id          = pyre.inventory.str('id', default='')          # Simulation Id
-        simtype     = pyre.inventory.str('simtype', default='')     # Simulation type (for convenience)
-        taskid      = pyre.inventory.str('taskid', default='')
-        type        = pyre.inventory.str('type', default='')
-        structureid = pyre.inventory.str('structureid', default='')
-        
+        import pyre.inventory        
         # Q-points, for multiple phonons
         nq1         = pyre.inventory.str('nq1', default='')        
         nq2         = pyre.inventory.str('nq2', default='')
@@ -59,12 +53,6 @@ class Actor(base):
 
     def _configure(self):
         super(Actor, self)._configure()
-        self.id             = self.inventory.id
-        self.simtype        = self.inventory.simtype
-        self.taskid         = self.inventory.taskid
-        self.type           = self.inventory.type
-        self.structureid    = self.inventory.structureid
-        
         self.nq1            = self.inventory.nq1
         self.nq2            = self.inventory.nq2
         self.nq3            = self.inventory.nq3
