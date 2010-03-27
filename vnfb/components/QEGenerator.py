@@ -31,6 +31,8 @@ class QEGenerator(base):
         import pyre.inventory
         # Simulation attributes
         id          = pyre.inventory.str('id', default='')          # Simulation id
+        simtype     = pyre.inventory.str('simtype', default='')     # Simulation type
+        structureid = pyre.inventory.str('structureid', default='') # Atomic structure id
         # Task attributes
         taskid      = pyre.inventory.str('taskid', default='')      # Task id
         type        = pyre.inventory.str('type', default='')        # Task type
@@ -91,7 +93,9 @@ class QEGenerator(base):
 
         return director.retrieveVisual(visual_,
                                        actor        = self.inventory,
-                                       director     = director)
+                                       director     = director,
+                                       simtype      = self.simtype,
+                                       structureid  = self.structureid)
 
 
     def __init__(self, name = None):
@@ -104,6 +108,8 @@ class QEGenerator(base):
     def _configure(self):
         super(QEGenerator, self)._configure()
         self.id             = self.inventory.id
+        self.simtype        = self.inventory.simtype
+        self.structureid    = self.inventory.structureid
 
         self.taskid         = self.inventory.taskid
         self.type           = self.inventory.type

@@ -13,19 +13,16 @@
 
 from vnfb.qeutils.qeparser.pseudo.pseudo import PSEUDO
 from vnfb.qeutils.generators.pwgenerator import PWGenerator
-from vnfb.components.QEGenerator import QEGenerator as base
-
 from qecalc.qetask.qeparser.pwinput import PWInput
 from luban.content import select
+
+from vnfb.components.QEGenerator import QEGenerator as base
 
 #XXX: The number atomic species is limited by 10 for now
 class Actor(base):
 
     class Inventory(base.Inventory):
         import pyre.inventory
-        simtype     = pyre.inventory.str('simtype', default='')     # Simulation type (for convenience)
-        structureid = pyre.inventory.str('structureid', default='')
-
         # Matter type
         mattertype  = pyre.inventory.str('mattertype', default='0')
 
@@ -65,21 +62,14 @@ class Actor(base):
     # Form A: Material type form
     def content(self, director):
         "Populates the content for creation of input configuration"
-        title   = "PW Configuration Input: %s" % self.type
-        label   = "PW Form"
-        visual  = "material_simulations/espresso/input-pw"
-        return self._document(director, title, label, "materialTypeForm", visual)
+        title   = "Material Type Selection (%s)" % self.type
+        label   = "Material Type Selection"
 
+        # XXX: This form will stay until formradiobox.onchange() is implemented
+        # See: http://dev.danse.us/trac/luban/browser/trunk/luban/weaver/web/javascripts/luban/widgets/formradiobox.js
+        visual  = "material_simulations/espresso/input-pw"  # Material type form
+        return self._document(director, title, label, visual = visual)
 
-    # XXX: This form will stay until formradiobox.onchange() is implemented
-    # See: http://dev.danse.us/trac/luban/browser/trunk/luban/weaver/web/javascripts/luban/widgets/formradiobox.js
-    def materialTypeForm(self, director, visual):
-        "Retrieves Material Type form"
-        return director.retrieveVisual(visual,
-                                       actor        = self.inventory,
-                                       director     = director,
-                                       structureid  = "3VZ32RGL",
-                                       simtype      = "Single Phonon")
 
     # Form B: PW parameters form
     def params(self, director):
@@ -91,19 +81,11 @@ class Actor(base):
         "Populates the content for creation of input configuration"
         title   = "PW Configuration Input: %s" % self.type
         label   = "PW Form"
-        visual  = "material_simulations/espresso/form-pw"
-        return self._document(director, title, label, "paramsForm", visual)
+        visual  = "material_simulations/espresso/form-pw"   # PW parameters form visual
+        return self._document(director, title, label, visual = visual)
 
 
-    def paramsForm(self, director, visual):
-        "PW parameters form visual"
-        return director.retrieveVisual(visual,
-                                       actor        = self.inventory,
-                                       director     = director,
-                                       structureid  = self.structureid,
-                                       simtype      = self.simtype)
-
-    # Generator
+    # Redirector
     def generateInput(self, director):
         return director.redirect(actor   = 'material_simulations/espresso/input-create',
                                 routine = 'default',
@@ -112,7 +94,7 @@ class Actor(base):
                                 taskid  = self.inventory.taskid,
                                 type    = self.inventory.type)
 
-    
+    # Generator
     def _input(self, director):
         pwinput   = self._loadStructure(director)   # Initial structure loading from atomic structure
         return self._getInput(pwinput, director)
@@ -153,7 +135,7 @@ class Actor(base):
                               massList  = masslist,
                               psList    = pseudolist)
 
-        input.structure.updatePWInput() # XXX Updated QEStructure. Not sure why?
+        input.structure.updatePWInput() # XXX Updates QEStructure. Not sure why?
         
         return input
 
@@ -174,13 +156,7 @@ class Actor(base):
 
 
     def _configure(self):
-        super(Actor, self)._configure()
-#        self.id             = self.inventory.id
-        self.simtype        = self.inventory.simtype
-#        self.taskid         = self.inventory.taskid
-#        self.type           = self.inventory.type
-        self.structureid    = self.inventory.structureid
-        
+        super(Actor, self)._configure()       
         self.ibrav          = self.inventory.ibrav
         self.ecutwfc        = self.inventory.ecutwfc
         self.ecutrho        = self.inventory.ecutrho

@@ -41,6 +41,15 @@ class Actor(base):
         return self._document(director, title, label)
 
 
+    def defaultForm(self, director, visual):
+        "Default implementation of input form"
+        visual_     = "material_simulations/espresso/input-default"
+
+        return director.retrieveVisual(visual_,
+                                       actor        = self.inventory,
+                                       director     = director)
+
+
     def createRecord(self, director):
         "Create configuration record"
         self.createDBRecord(director)
@@ -63,8 +72,9 @@ class Actor(base):
             self._updateTaskRecord(director)
 
 
-    def createFile(self, director): 
-        fn      = defaultInputName(self.inventory.type)  # fn is fixed and doesn't depend on the filename record
+    def createFile(self, director):
+        # fn is fixed and doesn't depend on the filename record
+        fn      = defaultInputName(self.inventory.type)  
         writeRecordFile(director.dds, self.input, fn, self.inventory.text)
 
 

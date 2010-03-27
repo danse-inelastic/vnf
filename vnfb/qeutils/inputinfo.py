@@ -18,7 +18,7 @@ from luban.content import load
 from luban.content.Link import Link
 
 BASE        = "material_simulations/espresso-utils/"
-GEN_DEFAULT = BASE + "generate-default" # Default generator actor
+DEFAULT_GEN = BASE + "generate-default" # Default generator actor
 
 class InputInfo:
     """Displays input for simulation task"""
@@ -28,6 +28,7 @@ class InputInfo:
         self._id        = id
         self._taskid    = taskid
         self._type      = type
+        self._sim       = director.clerk.getQESimulations(id=id)
 
 
     def getLink(self):      # simulation
@@ -53,18 +54,18 @@ class InputInfo:
     # XXX: Make it more flexible
     def _linkAdd(self):
         "Returns link 'Add'"
-        sim     = self._director.clerk.getQESimulations(id = self._id)
-        actor   = GEN_DEFAULT
+        actor   = DEFAULT_GEN
 
         if self._type in TYPE:      # If task type is QE types
             actor   = getattr(self, "actor" + self._type)()  # Example: self._actorPW()
 
         link = Link(label="Add",
-                    onclick=load(actor      = actor, #"material_simulations/espresso/input-generate",
+                    onclick=load(actor      = actor, 
                                  id         = self._id,
                                  taskid     = self._taskid,
                                  type       = self._type,
-                                 structureid    = sim.structureid)
+                                 simtype    = self._simType(),
+                                 structureid    = self._structureId())
                     )
         return link
 
@@ -73,52 +74,51 @@ class InputInfo:
         return BASE + "generate-pw"
 
     def actorPH(self):
-        pass
-
-    def actorBANDS(self):
-        pass
-
-    def actorPLOTBAND(self):
-        pass
-
-    def actorPP(self):
-        pass
+        return BASE + "generate-ph"
 
     def actorDOS(self):
-        pass
+        return BASE + "generate-dos"
 
     def actorQ2R(self):
-        pass
+        return BASE + "generate-q2r"
 
     def actorMATDYN(self):
-        pass
+        return BASE + "generate-matdyn"
 
     def actorDYNMAT(self):
-        pass
+        return BASE + "generate-dynmat"
+
+    def actorBANDS(self):
+        #return BASE + "generate-bands" # Not implemented
+        return DEFAULT_GEN
+
+    def actorPLOTBAND(self):
+        #return BASE + "generate-plotbands"  # Not implemented
+        return DEFAULT_GEN
+
+    def actorPP(self):
+        #return BASE + "generate-pp"    # Not implemented
+        return DEFAULT_GEN
 
     def actorD3(self):
-        pass
+        #return BASE + "generate-d3" # Not implemented
+        return DEFAULT_GEN
 
 
+    def _simType(self):
+        "Returns simulation type"
+        if not self._sim:
+            return ""
 
-#TYPE        = {"PW":        "pw.x",
-#               "PH":        "ph.x",
-#               "BANDS":     "bands.x",
-#               "PLOTBAND":  "plotband.x",
-#               "PP":        "pp.x",
-#               "DOS":       "dos.x",
-#               "Q2R":       "q2r.x",
-#               "MATDYN":    "matdyn.x",
-#               "DYNMAT":    "dynmat.x",
-#               "D3":        "d3.x"
+        return self._sim.type
 
-#    def _simType(self, director):
-#        "Returns simulation type"
-#        sim     = director.clerk.getQESimulations(id=self.id)
-#        if not sim:
-#            return ""
-#
-#        return sim.type
+
+    def _structureId(self):
+        "Returns atomic structure id"
+        if not self._sim:
+            return ""
+
+        return self._sim.structureid
 
 
 if __name__ == "__main__":
