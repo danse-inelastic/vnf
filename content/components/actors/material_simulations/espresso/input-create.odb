@@ -23,62 +23,22 @@
 from vnfb.dom.QEConfiguration import QEConfiguration
 from vnfb.qeutils.qeutils import writeRecordFile, defaultInputName
 
-from luban.content import select
 from luban.content import load
-
-import luban.content as lc
-from luban.components.AuthorizedActor import AuthorizedActor as base
+from vnfb.components.QEGenerator import QEGenerator as base
 
 # Requires simulation id,
 class Actor(base):
 
     class Inventory(base.Inventory):
         import pyre.inventory
-        id          = pyre.inventory.str('id', default='')          # Simulation Id
-        taskid      = pyre.inventory.str('taskid', default='')
-        type        = pyre.inventory.str('type', default='')        # Type of the configuration file
         subtype     = pyre.inventory.str('subtype', default='')
-        fname       = pyre.inventory.str('fname', default='')
-        description = pyre.inventory.str('description', default='')
-        text        = pyre.inventory.str('text', default='')
-
-
-    def default(self, director):
-        return select(id='main-display-area').replaceContent(self.content(director))
 
 
     def content(self, director):
-
-        def viewIndicator(director):
-            path = []
-            path.append(('Simulations ', load(actor='materialsimulation')))
-            path.append(('Quantum Espresso ', load(actor='materialsimulation')))
-            path.append(('%s ' % self.inventory.id, load(actor    = 'material_simulations/espresso/sim-view',
-                                               id       = self.inventory.id)))
-            path.append(('%s Task ' % self.inventory.type, load(actor    = 'material_simulations/espresso/task-view',
-                                                      id       = self.inventory.id,
-                                                      taskid   = self.inventory.taskid,
-                                                      type     = self.inventory.type)))
-            path.append('Create Input Configuration')
-
-            return director.retrieveVisual('view-indicator', path=path)
-
-        doc         = lc.document(title   = "Create Input Configuration: %s" % self.inventory.type)
-        splitter    = doc.splitter(orientation="vertical")
-        sA          = splitter.section()
-        sA.add(viewIndicator(director))
-        sB          = splitter.section()
-        sB.add(self._setForm(director))
-
-        return doc
-
-    def _setForm(self, director):
-        "Sets create new settings form"
-
-        visual  = "material_simulations/espresso/input-default"
-        return director.retrieveVisual(visual,
-                                       actor    = self.inventory,
-                                       director = director)
+        "Populates the content for creation of input configuration"
+        title   = "Create Input Configuration: %s" % self.inventory.type
+        label   = "Create Input Configuration"
+        return self._document(director, title, label)
 
 
     def createRecord(self, director):
@@ -143,18 +103,10 @@ class Actor(base):
     def __init__(self):
         super(Actor, self).__init__(name='material_simulations/espresso/input-create')
 
-        return
-
 
     def _configure(self):
         super(Actor, self)._configure()
-        self.id             = self.inventory.id
-        self.taskid         = self.inventory.taskid
-        self.type           = self.inventory.type
         self.subtype        = self.inventory.subtype
-        self.fname          = self.inventory.fname
-        self.description    = self.inventory.description
-        self.text           = self.inventory.text
 
 
     def _init(self):
