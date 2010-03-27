@@ -17,6 +17,13 @@ from luban.content import load
 
 from luban.components.AuthorizedActor import AuthorizedActor as base
 
+"""
+
+Notes:
+    - Inventory for parameters is used in methods (e.g. self.inventory.id) to properly
+    pass parameters with director.redirect()
+"""
+
 # Requires simulation id,
 class QEGenerator(base):
 
@@ -34,6 +41,7 @@ class QEGenerator(base):
 
 
     def default(self, director):
+        "Default routine"
         return select(id='main-display-area').replaceContent(self.content(director))
 
 
@@ -56,11 +64,17 @@ class QEGenerator(base):
 
 
     def _viewIndicator(self, director, label):
+        "Displays the navigation path on the top"
+        # director.redirect() does not pass variables. Get them from inventory instead
+        self.id     = self.inventory.id
+        self.taskid = self.inventory.taskid
+        self.type   = self.inventory.type
+
         path = []
-        path.append(('Simulations ', load(actor='materialsimulation')))
-        path.append(('Quantum Espresso ', load(actor='materialsimulation')))
-        path.append(('%s ' % self.id, load(actor    = 'material_simulations/espresso/sim-view',
-                                           id       = self.id)))
+        path.append(('Simulations ',        load(actor='materialsimulation')))
+        path.append(('Quantum Espresso ',   load(actor='materialsimulation')))
+        path.append(('%s ' % self.id,       load(actor    = 'material_simulations/espresso/sim-view',
+                                                id       = self.id)))
         path.append(('%s Task ' % self.type, load(actor    = 'material_simulations/espresso/task-view',
                                                   id       = self.id,
                                                   taskid   = self.taskid,

@@ -28,7 +28,8 @@ def visual(actor, director, structureid, simtype):
     form.radio(name = "mattertype", entries = enumerate(MATTER_TYPE.values()))
     table       = QEGrid(lc.grid())
     form.add(table.grid())
-    form.onsubmit   = select(element=form).submit(actor     = 'material_simulations/espresso-utils/form-pw',
+    form.onsubmit   = select(element=form).submit(actor     = 'material_simulations/espresso-utils/generate-pw', #'material_simulations/espresso-utils/form-pw',
+                                                  routine   = "params",
                                                   id        = actor.id,
                                                   taskid    = actor.taskid,
                                                   type      = actor.type,

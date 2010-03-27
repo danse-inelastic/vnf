@@ -12,29 +12,29 @@
 #
 
 from vnfb.qeutils.qeparser.pseudo.pseudo import PSEUDO
-from qecalc.qetask.qeparser.pwinput import PWInput
 from vnfb.qeutils.generators.pwgenerator import PWGenerator
 from vnfb.components.QEGenerator import QEGenerator as base
 
-#from luban.components.AuthorizedActor import AuthorizedActor as base
+from qecalc.qetask.qeparser.pwinput import PWInput
+from luban.content import select
 
 #XXX: The number atomic species is limited by 10 for now
 class Actor(base):
 
     class Inventory(base.Inventory):
         import pyre.inventory
-        #id          = pyre.inventory.str('id', default='')          # Simulation Id
-        #taskid      = pyre.inventory.str('taskid', default='')
         simtype     = pyre.inventory.str('simtype', default='')     # Simulation type (for convenience)
-        #type        = pyre.inventory.str('type', default='')
         structureid = pyre.inventory.str('structureid', default='')
 
+        # Matter type
+        mattertype  = pyre.inventory.str('mattertype', default='0')
+
+        # PW params
         ibrav       = pyre.inventory.int('ibrav', default=0)
         ecutwfc     = pyre.inventory.str('ecutwfc', default='')
         ecutrho     = pyre.inventory.str('ecutrho', default='')
         smearing    = pyre.inventory.str('smearing', default='')
         degauss     = pyre.inventory.str('degauss', default='')
-        mattertype  = pyre.inventory.str('mattertype', default='0')
         relax       = pyre.inventory.str('relax', default='0')     # Geometry optimization
         nk1         = pyre.inventory.str('nk1', default='')        # Type of the configuration file
         nk2         = pyre.inventory.str('nk2', default='')
@@ -62,18 +62,48 @@ class Actor(base):
         pseudo8     = pyre.inventory.str('pseudo8', default='')
         pseudo9     = pyre.inventory.str('pseudo9', default='')
 
-
+    # Form A: Material type form
     def content(self, director):
         "Populates the content for creation of input configuration"
         title   = "PW Configuration Input: %s" % self.type
         label   = "PW Form"
-#        visual  = "material_simulations/espresso/input-pw"
-        return self._document(director, title, label)
+        visual  = "material_simulations/espresso/input-pw"
+        return self._document(director, title, label, "materialTypeForm", visual)
 
 
-#    def _setForm(self):
-#
+    # XXX: This form will stay until formradiobox.onchange() is implemented
+    # See: http://dev.danse.us/trac/luban/browser/trunk/luban/weaver/web/javascripts/luban/widgets/formradiobox.js
+    def materialTypeForm(self, director, visual):
+        "Retrieves Material Type form"
+        return director.retrieveVisual(visual,
+                                       actor        = self.inventory,
+                                       director     = director,
+                                       structureid  = "3VZ32RGL",
+                                       simtype      = "Single Phonon")
 
+    # Form B: PW parameters form
+    def params(self, director):
+        "Routine for displaying PW parameters form"
+        return select(id='main-display-area').replaceContent(self.paramsContent(director))
+
+
+    def paramsContent(self, director):
+        "Populates the content for creation of input configuration"
+        title   = "PW Configuration Input: %s" % self.type
+        label   = "PW Form"
+        visual  = "material_simulations/espresso/form-pw"
+        return self._document(director, title, label, "paramsForm", visual)
+
+
+    def paramsForm(self, director, visual):
+        "PW parameters form visual"
+        return director.retrieveVisual(visual,
+                                       actor        = self.inventory,
+                                       director     = director,
+                                       structureid  = self.structureid,
+                                       simtype      = self.simtype)
+
+    # Generator
     def generateInput(self, director):
         return director.redirect(actor   = 'material_simulations/espresso/input-create',
                                 routine = 'default',
@@ -141,8 +171,6 @@ class Actor(base):
 
     def __init__(self):
         super(Actor, self).__init__(name='material_simulations/espresso-utils/generate-pw')
-
-        return
 
 
     def _configure(self):
