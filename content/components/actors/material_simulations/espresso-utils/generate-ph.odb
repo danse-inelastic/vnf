@@ -30,6 +30,15 @@ class Actor(base):
         kz          = pyre.inventory.str('kz', default='')
 
 
+    def content(self, director):
+        "Populates the content for creation of input configuration"
+        title   = "PH Configuration Input"
+        label   = "PH Form"
+        visual  = "material_simulations/espresso/input-ph"  # PH parameters form
+        return self._document(director, title, label, visual = visual)
+
+
+    # Redirector
     def generateInput(self, director):
         "Redirects PH input text to input form"
         return director.redirect(actor   = 'material_simulations/espresso/input-create',
@@ -39,7 +48,7 @@ class Actor(base):
                                 taskid  = self.inventory.taskid,
                                 type    = self.inventory.type)
 
-
+    # Generator
     def _input(self, director):
         "Generates PH input text"
         gen     = PHGenerator(director, self.inventory)

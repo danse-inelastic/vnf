@@ -79,9 +79,9 @@ class Actor(base):
 
     def paramsContent(self, director):
         "Populates the content for creation of input configuration"
-        title   = "PW Configuration Input: %s" % self.type
+        title   = "PW Configuration Input"
         label   = "PW Form"
-        visual  = "material_simulations/espresso/form-pw"   # PW parameters form visual
+        visual  = "material_simulations/espresso/form-pw"   # PW parameters form
         return self._document(director, title, label, visual = visual)
 
 
