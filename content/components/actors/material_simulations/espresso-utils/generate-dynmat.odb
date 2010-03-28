@@ -19,7 +19,7 @@ class Actor(base):
 
     class Inventory(base.Inventory):
         import pyre.inventory
-        zasr        = pyre.inventory.str('zasr', default='')
+        asr        = pyre.inventory.str('asr', default='')
 
 
     def content(self, director):
@@ -52,7 +52,7 @@ class Actor(base):
 
     def _configure(self):
         super(Actor, self)._configure()
-        self.zasr           = self.inventory.zasr
+        self.asr           = self.inventory.asr
 
 
     def _init(self):
