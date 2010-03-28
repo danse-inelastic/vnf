@@ -11,49 +11,48 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
-from vnfb.qeutils.qeparser.qeinput import QEInput
-from vnfb.qeutils.qeparser.namelist import Namelist
+from vnfb.qeutils.generators.dynmatgenerator import DYNMATGenerator
 
-from luban.components.AuthorizedActor import AuthorizedActor as base
+from vnfb.components.QEGenerator import QEGenerator as base
 
 class Actor(base):
 
     class Inventory(base.Inventory):
         import pyre.inventory
-        id          = pyre.inventory.str('id', default='')          # Simulation Id
-        taskid      = pyre.inventory.str('taskid', default='')
-        type        = pyre.inventory.str('type', default='')
-        structureid = pyre.inventory.str('structureid', default='')
+        zasr        = pyre.inventory.str('zasr', default='')
+
+
+    def content(self, director):
+        "Populates the content for creation of input configuration"
+        title   = "DYNMAT Configuration Input"
+        label   = "DYNMAT Form"
+        visual  = "material_simulations/espresso/input-dynmat"  # DYNMAT parameters form
+        return self._document(director, title, label, visual = visual)
 
 
     def generateInput(self, director):
         return director.redirect(actor   = 'material_simulations/espresso/input-create',
                                 routine = 'default',
-                                text    = self._input(),
+                                text    = self._input(director),
                                 id      = self.inventory.id,
                                 taskid  = self.inventory.taskid,
                                 type    = self.inventory.type)
 
 
-    def _input(self):
-        input      = QEInput(type='dynmat')
-        nl  = Namelist("input")
-        input.addNamelist(nl)
-        return input.toString()
+    def _input(self, director):
+        "Generates PH input text"
+        gen     = DYNMATGenerator(director, self.inventory)
+        gen.setInput()
+        return gen.toString()
 
 
     def __init__(self):
         super(Actor, self).__init__(name='material_simulations/espresso-utils/generate-dynmat')
 
-        return
-
 
     def _configure(self):
         super(Actor, self)._configure()
-        self.id             = self.inventory.id
-        self.taskid         = self.inventory.taskid
-        self.type           = self.inventory.type
-        self.structureid    = self.inventory.structureid
+        self.zasr           = self.inventory.zasr
 
 
     def _init(self):

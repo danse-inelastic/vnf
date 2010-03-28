@@ -13,19 +13,21 @@
 
 from vnfb.qeutils.qeconst import TYPE
 from vnfb.qeutils.qeutils import latestInput
+from vnfb.qeutils.results.phresult import PHResult
 
 from luban.content import load
 from luban.content.Link import Link
 
 BASE        = "material_simulations/espresso-utils/"
-DEFAULT_GEN = BASE + "generate-default" # Default generator actor
+GENERATOR   = BASE + "generate-default"     # Default generator actor
+ROUTINE     = "default"                     # Default routine
 
 class InputInfo:
     """Displays input for simulation task"""
 
     def __init__(self, director, id, taskid, type):
         self._director  = director
-        self._id        = id
+        self._id        = id            # simulation id
         self._taskid    = taskid
         self._type      = type
         self._sim       = director.clerk.getQESimulations(id=id)
@@ -54,13 +56,14 @@ class InputInfo:
     # XXX: Make it more flexible
     def _linkAdd(self):
         "Returns link 'Add'"
-        actor   = DEFAULT_GEN
+        (actor, routine)   = (GENERATOR, ROUTINE)
 
         if self._type in TYPE:      # If task type is QE types
-            actor   = getattr(self, "actor" + self._type)()  # Example: self._actorPW()
+            (actor, routine)   = getattr(self, "locator" + self._type)()  # Example: self.locatorPW()
 
         link = Link(label="Add",
-                    onclick=load(actor      = actor, 
+                    onclick=load(actor      = actor,
+                                 routine    = routine,
                                  id         = self._id,
                                  taskid     = self._taskid,
                                  type       = self._type,
@@ -70,39 +73,49 @@ class InputInfo:
         return link
 
 
-    def actorPW(self):
-        return BASE + "generate-pw"
+    def locatorPW(self):
+        return (BASE + "generate-pw", ROUTINE)
 
-    def actorPH(self):
-        return BASE + "generate-ph"
+    def locatorPH(self):
+        return (BASE + "generate-ph", ROUTINE)
 
-    def actorDOS(self):
-        return BASE + "generate-dos"
+    def locatorDOS(self):
+        return (BASE + "generate-dos", ROUTINE)
 
-    def actorQ2R(self):
-        return BASE + "generate-q2r"
+    def locatorQ2R(self):
+        return (BASE + "generate-q2r", ROUTINE)
 
-    def actorMATDYN(self):
-        return BASE + "generate-matdyn"
+    def locatorMATDYN(self):
+        return (BASE + "generate-matdyn", ROUTINE)
 
-    def actorDYNMAT(self):
-        return BASE + "generate-dynmat"
+    def locatorDYNMAT(self):
+        routine     = ROUTINE
+        phresult    = PHResult(self._director, self._id)
+        if phresult.isGammaPoint():     # For gamma point go directly to input creation form
+            routine = "generateInput"
 
-    def actorBANDS(self):
+        return (BASE + "generate-dynmat", routine)
+
+    def locatorBANDS(self):
         #return BASE + "generate-bands" # Not implemented
-        return DEFAULT_GEN
+        return self._locatorDefault()
 
-    def actorPLOTBAND(self):
+    def locatorPLOTBAND(self):
         #return BASE + "generate-plotbands"  # Not implemented
-        return DEFAULT_GEN
+        return self._locatorDefault()
 
-    def actorPP(self):
+    def locatorPP(self):
         #return BASE + "generate-pp"    # Not implemented
-        return DEFAULT_GEN
+        return self._locatorDefault()
 
-    def actorD3(self):
+    def locatorD3(self):
         #return BASE + "generate-d3" # Not implemented
-        return DEFAULT_GEN
+        return self._locatorDefault()
+
+
+    def _locatorDefault(self):
+        "Default locator"
+        return (GENERATOR, ROUTINE)
 
 
     def _simType(self):
