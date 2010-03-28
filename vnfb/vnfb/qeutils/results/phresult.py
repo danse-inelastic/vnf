@@ -37,15 +37,24 @@ class PHResult(QEResult):
 
     def isGammaPoint(self):
         "Checks if point is gamma point"
+        kp  = self.kCoord()
+        if not kp:
+            return False
+
+        return kp[0] == 0.0 and kp[1] == 0.0 and kp[2] == 0.0
+
+
+    def kCoord(self):
+        "Returns K coordinate of phonon in single phonon simulation type"
         line    = self.firstAttachLine()
         if not line:        # If no line
-            return False
+            return None
 
         kp      = line.split()
         if len(kp) != 3:  # Should have 3 elements
-            return False
+            return None
 
-        return float(kp[0]) == 0.0 and float(kp[1]) == 0.0 and float(kp[2]) == 0.0
+        return (float(kp[0]), float(kp[1]), float(kp[2]))
 
 
     def _fildyn(self):
