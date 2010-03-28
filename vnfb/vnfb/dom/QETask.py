@@ -51,6 +51,9 @@ class QETask(QETable):
     type = dsaw.db.varchar(name="type", length=128, default='')
     type.meta['tip'] = "Type of simulation task"
 
+    linkorder = dsaw.db.integer(name="linkorder", default=0)
+    linkorder.meta['tip'] = "Link order that defines order in which job is started and displayed in the simulation chain"
+
     timemodified = dsaw.db.varchar(name="timemodified", length=16, default='')
     timemodified.meta['tip'] = "timemodified"
 

@@ -166,7 +166,7 @@ class QETaskCell:
 
 
     def _setStyle(self, table):
-        "Set style for the talbe"
+        "Set style for the table"
         table.setColumnStyle(0, "qe-tasks-param")
         table.setColumnStyle(1, "qe-tasks-value")
         table.setCellStyle(3, 1, "text-green")

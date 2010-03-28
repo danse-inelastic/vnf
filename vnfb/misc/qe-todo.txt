@@ -8,5 +8,5 @@ SIMCHAINS[SIMTYPE["scf"]]                   = ("PW",)                           
 SIMCHAINS[SIMTYPE["electron-dos"]]          = ("PW", "PW", "DOS")
 SIMCHAINS[SIMTYPE["electron-dispersion"]]   = ("PW", "PW", "BANDS", "PLOTBAND")
 SIMCHAINS[SIMTYPE["geometry"]]              = ("PW",)                           # export structure, test
-SIMCHAINS[SIMTYPE["single-phonon"]]         = ("PW", "PH", "DYNMAT")
+SIMCHAINS[SIMTYPE["single-phonon"]]         = ("PW", "PH", "DYNMAT")    # wrong results, test
 SIMCHAINS[SIMTYPE["multiple-phonon"]]       = ("PW", "PH", "Q2R", "MATDYN") # analysis, export, test
