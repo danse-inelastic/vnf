@@ -91,7 +91,8 @@ class InputInfo:
     def locatorDYNMAT(self):
         routine     = ROUTINE
         phresult    = PHResult(self._director, self._id)
-        if not phresult.isGammaPoint():     # For gamma point go directly to input creation form
+
+        if not phresult.isGammaPoint():     # For not gamma point go directly to input creation form
             routine = "generateInput"
 
         return (BASE + "generate-dynmat", routine)

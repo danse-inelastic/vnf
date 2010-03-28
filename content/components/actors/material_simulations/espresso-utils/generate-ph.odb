@@ -14,7 +14,6 @@
 from vnfb.qeutils.generators.phgenerator import PHGenerator
 
 from vnfb.components.QEGenerator import QEGenerator as base
-# Requires simulation id,
 class Actor(base):
 
     class Inventory(base.Inventory):
