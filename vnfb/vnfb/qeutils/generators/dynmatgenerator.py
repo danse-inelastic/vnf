@@ -11,12 +11,24 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
+from vnfb.qeutils.qeparser.qeinput import QEInput
+from vnfb.qeutils.qeparser.namelist import Namelist
+
 class DYNMATGenerator(object):
 
     def __init__(self, inventory, input):
         self._inv       = inventory
         self._input     = input
-        self._simtype   = inventory.simtype     # Special case
+
+
+    def setInput(self):
+        self._input      = QEInput(type='dynmat')
+        nl  = Namelist("input")
+        self._input.addNamelist(nl)
+
+
+    def toString(self):
+        return self._input.toString()
 
 
 __date__ = "$Mar 24, 2010 9:59:39 AM$"

@@ -20,10 +20,9 @@ from vnfb.qeutils.qegrid import QEGrid
 from vnfb.qeutils.qeconst import ZASR
 from luban.content.FormSelectorField import FormSelectorField
 from luban.content.FormSubmitButton import FormSubmitButton
-from vnfb.qeutils.results.phresult import PHResult
 
 
-def visualGamma(actor, director, structureid):
+def visual(actor, director, structureid, simtype):
     "Display form for Gamma point"
     form        = lc.form(id='create-simulation-form')
     table       = QEGrid(lc.grid(Class="qe-form"))
@@ -54,20 +53,6 @@ def visualGamma(actor, director, structureid):
                                                   structureid   = structureid)
 
     return form
-
-
-def visual(actor, director, structureid, simtype):
-    phresult    = PHResult(director, actor.id)
-    
-#    if phresult.isGammaPoint(): # Show form for gamma point
-#        return visualGamma(actor, director, structureid)
-
-    return director.redirect(actor   = 'material_simulations/espresso/input-create',
-                            routine = 'default',
-                            text    = "Hi",
-                            id      = actor.id,
-                            taskid  = actor.taskid,
-                            type    = actor.type)
 
 
 __date__ = "$Jan 12, 2010 5:50:54 PM$"
