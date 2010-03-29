@@ -27,10 +27,10 @@ DEFAULT_MESSAGE = "Not Started"
 
 class JobStatus(object):
 
-    def __init__(self, director, simid, type):
+    def __init__(self, director, simid, linkorder):
         self._director  = director
         self._simid     = simid
-        self._type      = type
+        self._linkorder = linkorder
         self._job       = None
         self._task      = None
 
@@ -39,11 +39,11 @@ class JobStatus(object):
 
     def _init(self):
         simrecord   = SimulationRecord(self._director, self._simid)
-        if not simrecord:
+        if not simrecord:   # No record, no init
             return
 
-        self._job   = simrecord.job(self._type)
-        self._task  = simrecord.task(self._type)
+        self._job   = simrecord.job(self._linkorder)
+        self._task  = simrecord.task(self._linkorder)
 
 
     def message(self):

@@ -45,10 +45,11 @@ class ResultInfo:
         - Results link is specified by id
     """
 
-    def __init__(self, director, simid, type, job = None):
+    def __init__(self, director, simid, linkorder, job = None):
         self._director  = director
         self._simid     = simid
-        self._type      = type
+        self._linkorder = linkorder
+#        self._type      = type
         self._job       = job
         self._task      = None
 
@@ -68,9 +69,9 @@ class ResultInfo:
 
         if not self._job:
             # If no job set, get the latest job from simrecord only
-            self._job   = simrecord.job(self._type) 
+            self._job   = simrecord.job(self._linkorder)
 
-        self._task  = simrecord.task(self._type)
+        self._task  = simrecord.task(self._linkorder)
 
 
     def retrieve(self):
@@ -235,7 +236,7 @@ class ResultInfo:
         
         Class       = CLASS_OK
         from vnfb.qeutils.results.resultpath import ResultPath
-        resultpath  = ResultPath(self._director, self._simid, self._type)
+        resultpath  = ResultPath(self._director, self._simid, self._linkorder)
         fcrash      = resultpath.resultFiles("crash")
         if fcrash:
             Class   = CLASS_ERROR
@@ -298,7 +299,7 @@ class ResultInfo:
 
 
     def _id(self):
-        jobid   = self._type
+        jobid   = self._linkorder
         if self._job:
             jobid   = self._job.id
 
