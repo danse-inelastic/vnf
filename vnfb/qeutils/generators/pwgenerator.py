@@ -54,10 +54,10 @@ CELL_DYNAMICS       = "'bfgs'"
 
 class PWGenerator(object):
 
-    def __init__(self, inventory, input):
+    def __init__(self, director, inventory, input = None):
+        self._director  = director
         self._inv       = inventory
         self._input     = input
-        self._simtype   = inventory.simtype     # Special case
 
 
     def setControl(self):
@@ -130,6 +130,12 @@ class PWGenerator(object):
         self._input.addCard(k_points)
 
 
+    def nscfInput(self):
+        "Returns input text for nscf calculation"
+        return "Hi"
+        #self._input =
+
+
     def toString(self):
         return self._input.structure.toString()
 
@@ -172,7 +178,7 @@ class PWGenerator(object):
 
     def _isGeometry(self):
         "Checks if simulation type is geometry"
-        return self._simtype == SIMTYPE["geometry"]
+        return self._inv.simtype == SIMTYPE["geometry"]
 
 
     def _isRelax(self):

@@ -25,10 +25,11 @@ Note:
 # XXX: Handle the case when the results files might not have read access
 class QEResult(object):
 
-    def __init__(self, director, simid, type):   # simulation id
-        self._type          = type               # type name. Example: "PW"
+    def __init__(self, director, simid, type, linkorder = None):   # simulation id
         self._director      = director
         self._simid         = simid
+        self._type          = type               # type name. Example: "PW"
+        self._linkorder     = linkorder
 
         # Attributes
         self._task          = None  # None if output file is not available or task factory not implemented
@@ -39,7 +40,7 @@ class QEResult(object):
 
     def _init(self):
         "Retrieve output file and parse it"
-        resultPath  = ResultPath(self._director, self._simid, self._type)
+        resultPath  = ResultPath(self._director, self._simid, self._type, self._linkorder)
 
         self._inputFile     = resultPath.resultFiles("input")    # Input file
         self._outputFile    = resultPath.resultFiles("output")   # Output file

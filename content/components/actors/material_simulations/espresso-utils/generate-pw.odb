@@ -85,7 +85,7 @@ class Actor(base):
         return self._document(director, title, label, visual = visual)
 
 
-    # Redirector
+    # Redirector for scf
     def generateInput(self, director):
         return director.redirect(actor   = 'material_simulations/espresso/input-create',
                                 routine = 'default',
@@ -94,10 +94,27 @@ class Actor(base):
                                 taskid  = self.inventory.taskid,
                                 type    = self.inventory.type)
 
-    # Generator
+
+    # Redirector for nscf
+    def generateNscfInput(self, director):
+        return director.redirect(actor   = 'material_simulations/espresso/input-create',
+                                routine = 'default',
+                                text    = self._nscfInput(director),
+                                id      = self.inventory.id,
+                                taskid  = self.inventory.taskid,
+                                type    = self.inventory.type)
+
+
     def _input(self, director):
+        "Generator scf calculation"
         pwinput   = self._loadStructure(director)   # Initial structure loading from atomic structure
         return self._getInput(pwinput, director)
+
+
+    def _nscfInput(self, director):
+        "Generator nscf calculation"
+        gen     = PWGenerator(director, self.inventory)
+        return gen.nscfInput()
 
 
     def _getInput(self, input, director):

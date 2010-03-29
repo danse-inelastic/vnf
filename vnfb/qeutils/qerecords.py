@@ -29,7 +29,7 @@ class QERecords(object):
 class SimulationRecord(QERecords):
     "Retrieves records related to various qe database tables: QESimulation, "
 
-    def __init__(self, director, id):     
+    def __init__(self, director, id):
         super(SimulationRecord, self).__init__(director)
 
         # Additional attributes
