@@ -37,6 +37,7 @@ class Actor(base):
         id          = pyre.inventory.str('id', default='')          # Simulation Id
         simtype     = pyre.inventory.str('simtype', default='')
         type        = pyre.inventory.str('type', default='')        # Task type
+        linkorder   = pyre.inventory.str('linkorder', default='')
 
 
     def default(self, director):
@@ -238,6 +239,7 @@ class Actor(base):
         self.id             = self.inventory.id
         self.type           = self.inventory.type
         self.simtype        = self.inventory.simtype
+        self.linkorder      = self.inventory.linkorder
 
 
     def _init(self):

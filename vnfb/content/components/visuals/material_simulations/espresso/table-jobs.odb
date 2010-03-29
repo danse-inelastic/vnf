@@ -19,7 +19,7 @@ from luban.content import load
 import luban.content as lc
 
 
-def getTaskId(director, simid, type):
+def getTaskId(director, simid, linkorder): #, type
     "Get task id "
     from vnfb.qeutils.qerecords import SimulationRecord
     simrecord   = SimulationRecord(director, simid)
@@ -27,14 +27,14 @@ def getTaskId(director, simid, type):
     if not simrecord:
         return ""
 
-    task    = simrecord.task(type)
+    task    = simrecord.task(linkorder)
     if not task:
         return ""
 
     return task.id
 
 # XXX: Bug in check and results display
-def visual(director, simid, type, jobs):
+def visual(director, simid, type, jobs, linkorder):
     """
     Returns the table of jobs related to QE task
     """
@@ -58,11 +58,11 @@ def visual(director, simid, type, jobs):
         return job.status
 
     def results(job):
-        results = ResultInfo(director, simid, type, job) # XXX
+        results = ResultInfo(director, simid, linkorder, job) # XXX
         return results.link()
 
     def check(job):
-        results = ResultInfo(director, simid, type, job) # XXX
+        results = ResultInfo(director, simid, linkorder, job) # XXX
         return results.action()
 
     def delete(job):

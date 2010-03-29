@@ -98,32 +98,32 @@ class SimulationRecord(QERecords):
         return zip(self._joblist, self._inputlist, self._tasklist)
 
 
-    def jobInputTask(self, type):
-        "Returns Job-Input-Task tuple specified by type"
+    def jobInputTask(self, linkorder):
+        "Returns Job-Input-Task tuple specified by linkorder"
         for jit in self._jitlist:
             task    = jit[2]
             
-            if task and task.type == type:
+            if task and task.linkorder == linkorder:
                 return jit
 
         return None
 
 
-    def job(self, type):
-        "Convenience method for getting job record"
-        jit = self.jobInputTask(type)
+    def job(self, linkorder):
+        "Convenience method for getting job record specified by linkorder"
+        jit = self.jobInputTask(linkorder)
         return jit[0]
 
 
-    def input(self, type):
-        "Convenience method for getting input record"
-        jit = self.jobInputTask(type)
+    def input(self, linkorder):
+        "Convenience method for getting input record specified by linkorder"
+        jit = self.jobInputTask(linkorder)
         return jit[1]
 
 
-    def task(self, type):
-        "Convenience method for getting task record"
-        jit = self.jobInputTask(type)
+    def task(self, linkorder):
+        "Convenience method for getting task record specified by linkorder"
+        jit = self.jobInputTask(linkorder)
         return jit[2]
 
 

@@ -31,10 +31,10 @@ REEXP["crash"]  = CRASH
 
 
 class ResultPath(object):
-    def __init__(self, director, simid, type, linkorder = None):
+    def __init__(self, director, simid, linkorder):  #type,
         self._director      = director
         self._simid         = simid     # Simulation id
-        self._type          = type      # Task type
+#        self._type          = type      # Task type
         self._linkorder     = linkorder
         self._init()
 
@@ -42,7 +42,7 @@ class ResultPath(object):
     def _init(self):
         "Additional initialization"
         simrecord   = SimulationRecord(self._director, self._simid)   # Have as an attribute instead?
-        self._jit   = simrecord.jobInputTask(self._type)
+        self._jit   = simrecord.jobInputTask(self._linkorder)
         
 
     def resultFiles(self, ftype = None):
@@ -93,7 +93,7 @@ class ResultPath(object):
         if not self._recordsOK():
             return None
 
-        results     = ResultInfo(self._director, self._simid, self._type)
+        results     = ResultInfo(self._director, self._simid, self._linkorder) #self._type
         if results.ready():
             datadir     = dataroot(self._director)
             return os.path.join(datadir, results.tardir())

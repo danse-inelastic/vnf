@@ -42,7 +42,7 @@ class Actor(base):
 
     def retrieveStatus(self, director):
         task    = director.clerk.getQETasks(id = self.taskid)
-        cid     = "%s-%s" % (RESULTS_ID, self._id(task.type))         # results link
+        cid     = "%s-%s" % (RESULTS_ID, self._id(task.linkorder))         # results link
         link    = self._retrieveResults(director, task)     # id = cid,
         
         return select(id=cid).replaceContent(link)
@@ -59,7 +59,7 @@ class Actor(base):
                 return link
             job         = latestJob(jobs)
             
-        results     = ResultInfo(director, self.id, task.type, job)
+        results     = ResultInfo(director, self.id, task.linkorder, job)
 
         return results.retrieve()
 
@@ -70,8 +70,8 @@ class Actor(base):
                     for key, value in errors.iteritems()
                 ]
 
-    def _id(self, type):
-        id   = type             # Use type for default
+    def _id(self, linkorder):
+        id   = linkorder             # Use linkorder for default
 
         if self.jobid != "":    # Otherwise use job id
             id   = self.jobid

@@ -127,7 +127,7 @@ class TaskCell:
 
     def _status(self, table):
         "Displays status of the simulation and output file"
-        status      = JobStatus(self._director, self._simid, self._type)
+        status      = JobStatus(self._director, self._simid, self._linkorder)
 
         table.addRow(("Status:", status.message(), status.action()))
         table.addRow(("Output:", status.output(), ""))
@@ -161,7 +161,7 @@ class TaskCell:
     def _results(self, table):
         "Returns link to tar file for download. "
         #taskinfo    = TaskInfo(self._simid, self._task.id, self._type) #self._job, taskinfo)
-        results     = ResultInfo(self._director, self._simid, self._type)
+        results     = ResultInfo(self._director, self._simid, self._linkorder)
         
         table.addRow(("Results: ", results.link(), results.action() ))
 
