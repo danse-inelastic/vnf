@@ -295,45 +295,6 @@ def resultsdir(director, simid, linkorder, subtype = None):
     return None
 
 
-# TODO: Test!!!
-# Status: Depricated
-def remoteResultsPath(director, simid, linkorder):
-    """Returns the path of the jobs directory specified by simulation id (simid) and task type.
-    Example: /home/dexity/espresso/qejobs/5YWWTCQT/
-    """
-    path    = ""
-    task    = qetask(director, simid, linkorder)
-
-    if not task:
-        return path
-
-    jobs    = director.clerk.getQEJobs(where="taskid='%s'" % task.id)
-    if len(jobs) > 0:
-        # Find latest job for the task
-        job = latestJob(jobs)
-
-        if job:
-            server  = director.clerk.getServers(id=job.serverid)
-            path    = os.path.join(server.workdir, job.name)
-            path    = os.path.join(path, job.id)
-
-    return path
-
-# Status: Depricated
-def inputRecord(director, simid, linkorder):
-    task    = qetask(director, simid, linkorder)
-
-    if not task:
-        return None
-
-    inputs  = director.clerk.getQEConfigurations(where="taskid='%s'" % task.id)
-    if len(inputs) > 0:
-        # Should be one config input for the task!
-        return inputs[0]
-
-    return None
-
-
 # *********** TESTS ******************************
 
 def testStamp():
@@ -346,3 +307,41 @@ if __name__ == "__main__":
 
 __date__ = "$Jul 30, 2009 12:08:31 PM$"
 
+
+## TODO: Test!!!
+## Status: Depricated
+#def remoteResultsPath(director, simid, linkorder):
+#    """Returns the path of the jobs directory specified by simulation id (simid) and task type.
+#    Example: /home/dexity/espresso/qejobs/5YWWTCQT/
+#    """
+#    path    = ""
+#    task    = qetask(director, simid, linkorder)
+#
+#    if not task:
+#        return path
+#
+#    jobs    = director.clerk.getQEJobs(where="taskid='%s'" % task.id)
+#    if len(jobs) > 0:
+#        # Find latest job for the task
+#        job = latestJob(jobs)
+#
+#        if job:
+#            server  = director.clerk.getServers(id=job.serverid)
+#            path    = os.path.join(server.workdir, job.name)
+#            path    = os.path.join(path, job.id)
+#
+#    return path
+#
+## Status: Depricated
+#def inputRecord(director, simid, linkorder):
+#    task    = qetask(director, simid, linkorder)
+#
+#    if not task:
+#        return None
+#
+#    inputs  = director.clerk.getQEConfigurations(where="taskid='%s'" % task.id)
+#    if len(inputs) > 0:
+#        # Should be one config input for the task!
+#        return inputs[0]
+#
+#    return None

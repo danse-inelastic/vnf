@@ -14,6 +14,7 @@
 import os
 import time
 import shutil
+from vnfb.qeutils.qeconst import LINKORDER
 from vnfb.qeutils.qeutils import analyseActor
 from vnfb.qeutils.qeutils import qeinput, packname, resultsdir
 import idf.DOS
@@ -83,7 +84,7 @@ class Actor(base):
         "Returns settings string for MATDYN task"
         mddir       = self._matdynpath(director)    # Returns directory where the matdyn data are stored
         # Get matdyn input file
-        mdinput     = qeinput(director, self.simid, "MATDYN")
+        mdinput     = qeinput(director, self.simid, LINKORDER["MATDYN"])
         mdinp       = packname(mdinput.id, "matdyn.in")
         mdinp       = os.path.join(mddir, mdinp)
         flvec       = os.path.join(mddir, "matdyn.modes")
@@ -132,7 +133,7 @@ flfrq = %s
     def _recipLattice(self, director, matdyn):
         "Returns reciprocal lattice"
         pwdir       = self._pwpath(director)
-        pwinput     = qeinput(director, self.simid, "PW")
+        pwinput     = qeinput(director, self.simid, 0)  # "PW"
         pwinp       = packname(pwinput.id, "pw.in")
         pwinp       = os.path.join(pwdir, pwinp)
         pwInput     = PWInput(filename = pwinp)
@@ -151,12 +152,12 @@ flfrq = %s
 
     def _matdynpath(self, director):
         # Example: mddir   = "/home/dexity/exports/vnf/vnfb/content/data/tmp/tmpTRqFuy/8CNH5MUJ"
-        return resultsdir(director, self.simid, "MATDYN", subtype="dispersion")    # tmp results directory
+        return resultsdir(director, self.simid, LINKORDER["MATDYN"], subtype="dispersion")    # tmp results directory
 
 
     def _pwpath(self, director):
         # Example: pwdir   = "/home/dexity/exports/vnf/vnfb/content/data/tmp/tmpTRqFuy/8CNH5MUJ"
-        return resultsdir(director, self.simid, "PW")    # tmp results directory
+        return resultsdir(director, self.simid, 0)    # "PW" tmp results directory
 
 
     def _createRecord(self, director):
@@ -187,7 +188,7 @@ flfrq = %s
 
     def _relocateResults(self, director):
         "Copy from tmp/ directory to phonons directory"
-        mddir       = resultsdir(director, self.simid, "MATDYN")
+        mddir       = resultsdir(director, self.simid, LINKORDER["MATDYN"])
         dest        = self._phonpath(director)
         for file in PHONON_FILES:
             src         = os.path.join(mddir, file)   # XXX Check if it exists

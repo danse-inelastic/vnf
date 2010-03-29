@@ -34,18 +34,30 @@ INPUT_EXT   = ".in"
 OUTPUT_EXT  = ".out"
 
 INPUT           = OrderedDict()
-INPUT["pw"]     = "pw" + INPUT_EXT
-INPUT["ph"]     = "ph" + INPUT_EXT
-INPUT["bands"]  = "bands" + INPUT_EXT
-INPUT["pp"]     = "pp" + INPUT_EXT
-INPUT["dos"]    = "dos" + INPUT_EXT
-INPUT["q2r"]    = "q2r" + INPUT_EXT
-INPUT["matdyn"] = "matdyn" + INPUT_EXT
-INPUT["dynmat"] = "dynmat" + INPUT_EXT
-INPUT["d3"]     = "d3" + INPUT_EXT
+INPUT["pw"]     = "pw"      + INPUT_EXT
+INPUT["ph"]     = "ph"      + INPUT_EXT
+INPUT["bands"]  = "bands"   + INPUT_EXT
+INPUT["pp"]     = "pp"      + INPUT_EXT
+INPUT["dos"]    = "dos"     + INPUT_EXT
+INPUT["q2r"]    = "q2r"     + INPUT_EXT
+INPUT["matdyn"] = "matdyn"  + INPUT_EXT
+INPUT["dynmat"] = "dynmat"  + INPUT_EXT
+INPUT["d3"]     = "d3"      + INPUT_EXT
 
 
 NOPARALLEL  = ("DOS", "MATDYN", "DYNMAT", "Q2R", "BANDS", "PLOTBAND") # "BANDS"?, "PP"? # "PLOTBAND"?
+
+# List of possible orders
+LINKORDER               = OrderedDict()
+LINKORDER["PW"]         = None  # No definitive order (can be 0 and 1)
+LINKORDER["PH"]         = 1
+LINKORDER["DYNMAT"]     = 2
+LINKORDER["Q2R"]        = 2
+LINKORDER["DOS"]        = 2
+LINKORDER["BANDS"]      = 2
+LINKORDER["MATDYN"]     = 3
+LINKORDER["PLOTBAND"]   = 3
+
 
 # Obsolete: Steps of job creation
 STEPS       = ("Create Simulation",
