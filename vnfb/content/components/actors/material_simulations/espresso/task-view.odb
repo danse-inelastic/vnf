@@ -26,9 +26,10 @@ class Actor(base):
 
     class Inventory(base.Inventory):
         import pyre.inventory
-        id      = pyre.inventory.str('id', default='')    # Simulation Id
-        taskid  = pyre.inventory.str('taskid', default='')
-        type    = pyre.inventory.str('type', default='')
+        id          = pyre.inventory.str('id', default='')    # Simulation Id
+        taskid      = pyre.inventory.str('taskid', default='')
+        type        = pyre.inventory.str('type', default='')
+        linkorder   = pyre.inventory.str('linkorder', default='')
 
 
     def default(self, director):
@@ -69,12 +70,24 @@ class Actor(base):
 
 
     def _showActions(self, section):  #, inputs
+        self._actionBack(section)
+        self._actionEdit(section)
+        self._actionDelete(section)
+
+        section.add(lc.document(Class="clear-both"))
+
+
+    def _actionBack(self, section):
+        "Back action"
         section.add(lc.link(label="Back",
                             Class="qe-action-back",
                             onclick = load(actor      = 'material_simulations/espresso/sim-view',
                                              id         = self.id))
                     )
 
+
+    def _actionEdit(self, section):
+        "Edit action"
         section.add(lc.link(label="Edit",
                             Class="qe-action-edit",
                             onclick = load(actor      = 'material_simulations/espresso/task-edit',
@@ -83,6 +96,9 @@ class Actor(base):
                                              type       = self.type))
                     )
 
+
+    def _actionDelete(self, section):
+        "Delete action"
         section.add(lc.link(label="Delete",
                             Class="qe-action-delete",
                             onclick = load(actor      = 'material_simulations/espresso/task-delete',
@@ -91,19 +107,19 @@ class Actor(base):
                                              type       = self.type))
                     )
 
-        section.add(lc.document(Class="clear-both"))
-
-
+                    
     def _showTask(self, director, table, task):
-        if task:
-            table.addRow(('Type:', task.type))
-            table.addRow(("Package: ", task.package ))
-            table.addRow(("Input: ", self._input(director) ))
-            table.addRow(('Description:', task.short_description))
-            table.addRow(('Label: ', task.label))
-            table.addRow(('Time Created: ', stamp2date(task.timecreated)))
-            table.addRow(('Current Job: ', 'None'))
-            #table.addRow(('All Jobs: ', 'None'))   # Keep. Disable option to run same task multiple times
+        if not task:    # No task, no rows
+            return
+        
+        table.addRow(('Type:', task.type))
+        table.addRow(("Package: ", task.package ))
+        table.addRow(("Input: ", self._input(director) ))
+        table.addRow(('Description:', task.short_description))
+        table.addRow(('Label: ', task.label))
+        table.addRow(('Time Created: ', stamp2date(task.timecreated)))
+        table.addRow(('Current Job: ', 'None'))
+        #table.addRow(('All Jobs: ', 'None'))   # Keep. Disable option to run same task multiple times
 
 
     def _input(self, director):
@@ -115,19 +131,18 @@ class Actor(base):
     def __init__(self):
         super(Actor, self).__init__(name='material_simulations/espresso/task-view')
 
-        return
-
 
     def _configure(self):
         super(Actor, self)._configure()
         self.id         = self.inventory.id
         self.taskid     = self.inventory.taskid
         self.type       = self.inventory.type
+        self.linkorder  = self.inventory.linkorder
 
 
     def _init(self):
         super(Actor, self)._init()
-        return
+
 
 def actor():
     return Actor()

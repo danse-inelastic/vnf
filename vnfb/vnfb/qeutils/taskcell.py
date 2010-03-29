@@ -110,10 +110,10 @@ class TaskCell:
     def _taskId(self, table):
         tid     = self._task.id
         link    = lc.link(label    = tid,
-                           onclick  = load(actor    = 'material_simulations/espresso/task-view',
-                                           id       = self._simid,
-                                           taskid   = tid,
-                                           type     = self._type)
+                           onclick  = load(actor     = 'material_simulations/espresso/task-view',
+                                           id        = self._simid,
+                                           taskid    = tid,
+                                           type      = self._type)
                             )
 
         table.addRow(("Task:", link, ""))
