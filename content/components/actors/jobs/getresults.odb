@@ -16,7 +16,7 @@ from luban.content import select
 import luban.content as lc
 from vnfb.qeutils.qeconst import RESULTS_ID
 from vnfb.qeutils.results.resultinfo import ResultInfo
-from vnfb.qeutils.qetaskinfo import TaskInfo
+#from vnfb.qeutils.taskinfo import TaskInfo
 from vnfb.qeutils.qeutils import latestJob
 
 from luban.components.AuthorizedActor import AuthorizedActor as base

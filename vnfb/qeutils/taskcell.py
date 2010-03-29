@@ -19,7 +19,7 @@ from vnfb.qeutils.jobstatus import JobStatus
 from vnfb.qeutils.results.resultinfo import ResultInfo
 from vnfb.qeutils.qegrid import QEGrid
 from vnfb.qeutils.inputinfo import InputInfo
-from vnfb.qeutils.qetaskinfo import TaskInfo
+#from vnfb.qeutils.taskinfo import TaskInfo
 from vnfb.qeutils.qeutils import latestJob
 
 RUN_TASK    = "run-task"
@@ -29,7 +29,7 @@ RUN_TASK    = "run-task"
 #CLASS_NA    = 'qe-text-black'
 
 
-class QETaskCell:
+class TaskCell:
 
     def __init__(self, director, type, colnum, simid, task):
         self._type      = type

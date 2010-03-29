@@ -11,7 +11,7 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
-from vnfb.qeutils.qetaskcell import QETaskCell
+from vnfb.qeutils.taskcell import TaskCell
 from vnfb.qeutils.qegrid import QEGrid
 from vnfb.qeutils.qerecords import SimulationRecord
 
@@ -60,7 +60,7 @@ class QETasks:
     def _setTaskCell(self, table, colnum, task, rows):
         "Populates the task's cell"
 
-        tc      = QETaskCell(self._director, self._types[colnum], colnum, self._simid, task)
+        tc      = TaskCell(self._director, self._types[colnum], colnum, self._simid, task)
         fields  = [tc.header(), tc.taskInfo(), tc.action()]
 
         for i in range(len(rows)):

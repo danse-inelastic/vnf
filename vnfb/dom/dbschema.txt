@@ -112,5 +112,5 @@ table "detectorsystem_fromxml"  add new column "hierarchy": a
 reference to table 'detectorsystemhierarchy_fromxml'
 
 March 28, 2010
-Added column QETask.linkorder that defines order in which jobs are started
-and displayed in the simulation chain.
+Added column qetasks.linkorder (QETask.linkorder) that defines order in which jobs are started
+and displayed in the simulation chain. The linkorder is zero-based sequence number

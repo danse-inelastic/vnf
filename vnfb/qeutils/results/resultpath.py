@@ -16,7 +16,6 @@ import re
 from vnfb.qeutils.qeutils import dataroot
 from vnfb.qeutils.qeconst import OUTPUT_EXT, INPUT_EXT
 from vnfb.qeutils.results.resultinfo import ResultInfo
-#from vnfb.qeutils.qetaskinfo import TaskInfo
 from vnfb.qeutils.qerecords import SimulationRecord
 
 input_ext   = INPUT_EXT.strip(".")  # Refined input extention
