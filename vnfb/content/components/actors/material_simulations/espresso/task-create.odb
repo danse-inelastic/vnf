@@ -23,6 +23,7 @@ class Actor(base):
         import pyre.inventory
         simid       = pyre.inventory.str('simid', default='')
         tasktype    = pyre.inventory.str('tasktype', default='')
+        linkorder   = pyre.inventory.str('linkorder', default='')
 
 
     def default(self, director):
@@ -42,6 +43,7 @@ class Actor(base):
         "Creates task"
         params  = {"type":          self.tasktype,
                    "package":       "Quantum Espresso",
+                   "linkorder":     self.linkorder
                    #"matter":        self.matter    # Doesn't work at this moment
                    }
         task     = QETask()
@@ -104,6 +106,7 @@ class Actor(base):
         super(Actor, self)._configure()
         self.simid       = self.inventory.simid
         self.tasktype    = self.inventory.tasktype
+        self.linkorder   = self.inventory.linkorder
 
         return
 
