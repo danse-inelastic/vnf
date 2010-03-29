@@ -228,14 +228,14 @@ def latestInput(inputs):
     return latestRecord(inputs, "timecreated")
 
 # Includes *hack* by using short_description field for subtype
-def qetask(director, simid, type, subtype = None):
-    "Returns task object defined by simulation id and type"
+def qetask(director, simid, linkorder, subtype = None):
+    "Returns task object specified by simulation id and linkorder"
     where   = "simulationid='%s'" % simid
     if subtype:
         where   += "%s AND short_description='%s'" % (where, subtype)
     simtasks = director.clerk.getQESimulationTasks(where=where)
     for st in simtasks:
-        tasks   = director.clerk.getQETasks(where="id='%s' AND type='%s'" % (st.taskid, type))
+        tasks   = director.clerk.getQETasks(where="id='%s' AND linkorder='%s'" % (st.taskid, linkorder))
         if tasks:   # XXX First found tasks
             break
 
@@ -245,12 +245,12 @@ def qetask(director, simid, type, subtype = None):
     return None
 
 
-def qejob(director, simid, type, subtype = None):
-    """Return latest job for the type
+def qejob(director, simid, linkorder, subtype = None):
+    """Return latest job for the linkorder
     For matdyn task subtype will be also used which can be "dos" or "dispersion".
     The subtype uses QETask.short_description (should be removed from) and QEJob.description to store
     the subtype"""
-    task    = qetask(director, simid, type) # Let's not use 'subtype' for qetask()
+    task    = qetask(director, simid, linkorder) # Let's not use 'subtype' for qetask()
     if task:
         where   = "taskid='%s'" % task.id
         if subtype:
@@ -261,9 +261,9 @@ def qejob(director, simid, type, subtype = None):
     return None
 
 
-def qeinput(director, simid, type):
-    "Return input for the type"
-    task    = qetask(director, simid, type)
+def qeinput(director, simid, linkorder):
+    "Return input for the linkorder"
+    task    = qetask(director, simid, linkorder)
     if task:
         inputs  = director.clerk.getQEConfigurations(where="taskid='%s'" % task.id)
         return latestInput(inputs)  # There should be a single input record!
@@ -282,13 +282,13 @@ def analyseActor(simtype):
 
 
 # Status: Depricated
-def resultsdir(director, simid, type, subtype = None):
+def resultsdir(director, simid, linkorder, subtype = None):
     "Returns results directory in data/tmp"    
-    job     = qejob(director, simid, type, subtype)
+    job     = qejob(director, simid, linkorder, subtype)
     if job:
         dds         = director.dds
         dataroot    = os.path.abspath(dds.dataroot)
-        results     = ResultInfo(director, simid, type)
+        results     = ResultInfo(director, simid, linkorder)
         if results.ready():
             return os.path.join(dataroot, results.tardir())
 
@@ -297,12 +297,12 @@ def resultsdir(director, simid, type, subtype = None):
 
 # TODO: Test!!!
 # Status: Depricated
-def remoteResultsPath(director, simid, type):
+def remoteResultsPath(director, simid, linkorder):
     """Returns the path of the jobs directory specified by simulation id (simid) and task type.
     Example: /home/dexity/espresso/qejobs/5YWWTCQT/
     """
     path    = ""
-    task    = qetask(director, simid, type)
+    task    = qetask(director, simid, linkorder)
 
     if not task:
         return path
@@ -320,8 +320,8 @@ def remoteResultsPath(director, simid, type):
     return path
 
 # Status: Depricated
-def inputRecord(director, simid, type):
-    task    = qetask(director, simid, type)
+def inputRecord(director, simid, linkorder):
+    task    = qetask(director, simid, linkorder)
 
     if not task:
         return None
