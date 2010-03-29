@@ -40,8 +40,8 @@ all: export
 
 EXPORT_PYTHON_MODULES = \
 	__init__.py \
-        qetaskcell.py \
-        qetaskinfo.py \
+        taskcell.py \
+        taskinfo.py \
         qetasks.py \
         qeconst.py \
         qegrid.py \
