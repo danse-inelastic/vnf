@@ -121,7 +121,7 @@ class TaskCell:
 
     def _input(self, table):
         # Suppose that self._task is not None
-        qeinput = InputInfo(self._director, self._simid, self._task.id, self._type)
+        qeinput = InputInfo(self._director, self._simid, self._task.id, self._type, self._linkorder)
         table.addRow(("Input:", qeinput.getLink(), ""))
 
 

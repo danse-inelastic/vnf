@@ -25,11 +25,12 @@ ROUTINE     = "default"                     # Default routine
 class InputInfo:
     """Displays input for simulation task"""
 
-    def __init__(self, director, id, taskid, type):
+    def __init__(self, director, id, taskid, type, linkorder):
         self._director  = director
         self._id        = id            # simulation id
         self._taskid    = taskid
         self._type      = type
+        self._linkorder = linkorder
         self._sim       = director.clerk.getQESimulations(id=id)
 
 
@@ -74,7 +75,11 @@ class InputInfo:
 
 
     def locatorPW(self):
-        return (BASE + "generate-pw", ROUTINE)
+        routine = ROUTINE
+        if self._linkorder == 1:        # For the second PW go directly to input creation form
+            routine = "generateNscfInput"
+
+        return (BASE + "generate-pw", routine)
 
     def locatorPH(self):
         return (BASE + "generate-ph", ROUTINE)

@@ -31,10 +31,11 @@ REEXP["crash"]  = CRASH
 
 
 class ResultPath(object):
-    def __init__(self, director, simid, type):
+    def __init__(self, director, simid, type, linkorder = None):
         self._director      = director
         self._simid         = simid     # Simulation id
         self._type          = type      # Task type
+        self._linkorder     = linkorder
         self._init()
 
 
