@@ -23,6 +23,7 @@ from vnfb.qeutils.qeutils import remoteResultsPath
 import os
 import time
 import shutil
+from vnfb.qeutils.qeconst import LINKORDER
 from vnfb.qeutils.qeutils import analyseActor
 from vnfb.qeutils.qeutils import qeinput, packname, resultsdir
 from luban.components.AuthorizedActor import AuthorizedActor as base
@@ -120,7 +121,7 @@ fldos = %s""" % (flvec, flfrq, fldos)
         #orm         = domaccessor.orm   # ?
         #path    = director.dds.abspath(self._job)
 
-        mddir       = self._matdynpath(director)  #resultsdir(director, self.simid, "MATDYN")
+        mddir       = self._matdynpath(director)  #resultsdir(director, self.simid, LINKORDER["MATDYN"])
         src         = os.path.join(mddir, "data.idf")   # XXX Check if it exists
         dest        = self._phonpath(director)
         shutil.copy(src, dest)
@@ -141,7 +142,7 @@ fldos = %s""" % (flvec, flfrq, fldos)
 
     def _matdynpath(self, director):
         # Example: mddir   = "/home/dexity/exports/vnf/vnfb/content/data/tmp/tmpTRqFuy/8CNH5MUJ"
-        return resultsdir(director, self.simid, "MATDYN", subtype="dos")    # tmp results directory
+        return resultsdir(director, self.simid, LINKORDER["MATDYN"], subtype="dos")    # tmp results directory
 
 
     def __init__(self):
