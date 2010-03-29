@@ -88,8 +88,8 @@ class SimulationRecord(QERecords):
     def taskList(self):
         "Return list of task objects from list of simulation task objects"
         tasklist   = []
-        for type in self._typelist:
-            tasklist.append(self._taskObject(type))
+        for lo in range(len(self._typelist)):   # loop over linkorder's
+            tasklist.append(self._taskLinkObject(lo))
 
         return tasklist
 
@@ -179,10 +179,23 @@ class SimulationRecord(QERecords):
     def _taskObject(self, type):
         "Return task object in simtasks of type 'type' or None otherwise"
         for st in self._simtasks:
-            if st.taskid != '': # Avoid dangling references
-                task    = self._director.clerk.getQETasks(id = st.taskid)
-                if task and task.type == type:
-                    return task
+            if st.taskid == '': # Avoid dangling references
+                continue
+            task    = self._director.clerk.getQETasks(id = st.taskid)
+            if task and task.type == type:
+                return task
+
+        return None
+
+
+    def _taskLinkObject(self, linkorder):
+        "Return task object in simtasks specified by 'linkorder' or None otherwise"
+        for st in self._simtasks:
+            if st.taskid == '': # Avoid dangling references
+                continue
+            task    = self._director.clerk.getQETasks(id = st.taskid)
+            if task and task.linkorder == linkorder:
+                return task
 
         return None
 
