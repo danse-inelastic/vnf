@@ -31,8 +31,6 @@ from luban.content import select, load
 from luban.content.HtmlDocument import HtmlDocument
 
 from vnfb.components.QEAnalysis import QEAnalysis as base
-
-# Requires simulation id, config id and config type: (id, configid, type)
 class Actor(base):
 
     class Inventory(base.Inventory):
