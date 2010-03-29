@@ -31,18 +31,18 @@ RUN_TASK    = "run-task"
 
 class TaskCell:
 
-    def __init__(self, director, type, colnum, simid, task):
+    def __init__(self, director, type, linkorder, simid, task):
         self._type      = type
         self._simid     = simid
         self._task      = task
-        self._colnum    = colnum
+        self._linkorder = linkorder
         self._job       = None
         self._director  = director
 
 
     def header(self):
         "Shows the header for the simulation task"
-        type    = lc.paragraph(text="Step %s: %s" % (self._colnum+1 , self._type), Class="text-bold")
+        type    = lc.paragraph(text="Step %s: %s" % (self._linkorder+1 , self._type), Class="text-bold")
         link    = lc.paragraph(text="")     # Task cannot be changed at this time
         #link    = lc.link(label="Change")  # Keep
 
@@ -55,23 +55,24 @@ class TaskCell:
     def taskInfo(self):
         table   = QEGrid(lc.grid(Class="qe-tasks-info"))
 
-        if not self._task:
-            # May be it would be better to just replace content with task info?
-            link    = lc.link(label="Create New Task",
-                              onclick = load(actor      = 'material_simulations/espresso/task-create',
-                                             routine    = 'createRecord',
-                                             simid      = self._simid,
-                                             tasktype   = self._type)
-                             )
-
-            table.addRow((link, ))   
-            #table.addRow(("or", ))                 # Keep
-            #table.addRow(("Use Existing Task", ))  # Keep
+        if self._task:  # If task exists
+            self._setTaskInfo(table)    # Main scenario
             return table.grid()
 
 
-        self._setTaskInfo(table)    # Main scenario
+        # No task created, show link "Create New Task"
+        # May be it would be better to just replace content with task info?
+        link    = lc.link(label="Create New Task",
+                          onclick = load(actor      = 'material_simulations/espresso/task-create',
+                                         routine    = 'createRecord',
+                                         simid      = self._simid,
+                                         tasktype   = self._type,
+                                         linkorder  = self._linkorder)
+                         )
 
+        table.addRow((link, ))
+        #table.addRow(("or", ))                 # Keep
+        #table.addRow(("Use Existing Task", ))  # Keep
         return table.grid()
 
 

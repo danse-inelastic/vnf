@@ -88,8 +88,8 @@ class SimulationRecord(QERecords):
     def taskList(self):
         "Return list of task objects from list of simulation task objects"
         tasklist   = []
-        for lo in range(len(self._typelist)):   # loop over linkorder's
-            tasklist.append(self._taskLinkObject(lo))
+        for lo in range(len(self._typelist)):   # Loop over linkorder's
+            tasklist.append(self._taskLinkObject(lo))   # Important line
 
         return tasklist
 

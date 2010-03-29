@@ -57,10 +57,10 @@ class QETasks:
         return container
 
 
-    def _setTaskCell(self, table, colnum, task, rows):
+    def _setTaskCell(self, table, linkorder, task, rows):
         "Populates the task's cell"
 
-        tc      = TaskCell(self._director, self._types[colnum], colnum, self._simid, task)
+        tc      = TaskCell(self._director, self._types[linkorder], linkorder, self._simid, task)
         fields  = [tc.header(), tc.taskInfo(), tc.action()]
 
         for i in range(len(rows)):
@@ -88,9 +88,9 @@ class QETasks:
         return [None for i in range(num)]
 
 
-    def _type(self, colnum):
+    def _type(self, linkorder):
         "Returns task type"
-        return self._simlist[colnum]
+        return self._simlist[linkorder]
 
 
 if __name__ == "__main__":
