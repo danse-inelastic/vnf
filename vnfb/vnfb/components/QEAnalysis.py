@@ -147,7 +147,7 @@ class Actor(base):
         chainsize   = len(typelist)
 
         classes     = self._typeClasses(director, self.linkorder, chainsize)
-        for i in chainsize:
+        for i in range(chainsize):
             doc.add(lc.link(label   = typelist[i], 
                             Class   = classes[i],
                             onclick = load(actor      = analyseActor(self.simtype), # XXX
@@ -161,15 +161,14 @@ class Actor(base):
 
 
     def _typeClasses(self, director, linkorder, chainsize):
-        "Returns dictionary with class names for the specified linkorder"
-        classes = {}
+        "Returns list with class names for the specified linkorder"
+        classes = [CLASS_DEFAULT for i in range(chainsize)] # Set default values first
         crash   = self._crashCheck(director, chainsize)
 
-        assert(len(crash.keys()) == chainsize)  # Assumption
+        assert(len(crash) == chainsize)  # Assumption
 
-        # Set default values first
-        for i in range(chainsize):
-            classes[i]  = CLASS_DEFAULT
+        
+        for i in range(len(classes)):
             if crash[i]:
                 classes[i]   = "%s %s" % (CLASS_ERROR, classes[i])
 
@@ -183,12 +182,10 @@ class Actor(base):
 
 
     def _crashCheck(self, director, chainsize):
-        "Returns dictionary of crash tasks specified"
-        crash   = {}
-        for i in range(chainsize):
-            crash[i] = False # default to False (no crashed files)
+        "Returns list of crash tasks specified"
+        crash   = [False for i in range(chainsize)]    # default to False (no crashed files)
 
-        for i in range(chainsize):
+        for i in range(len(crash)):
             resultpath  = ResultPath(director, self.id, i)
             path        = resultpath.resultFiles("crash")
             if path:    # has CRASH file
