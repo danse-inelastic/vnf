@@ -19,7 +19,7 @@ from luban.content import load
 import luban.content as lc
 
 
-def getTaskId(director, simid, linkorder): #, type
+def getTaskId(director, simid, linkorder):
     "Get task id "
     from vnfb.qeutils.qerecords import SimulationRecord
     simrecord   = SimulationRecord(director, simid)
@@ -40,7 +40,7 @@ def visual(director, simid, type, jobs, linkorder):
     """
 
     table   = QEGrid(lc.grid(Class="qe-tasks-table"))
-    taskid  = getTaskId(director, simid, type)
+    taskid  = getTaskId(director, simid, linkorder)
 
     def jobid(job):
         return  lc.link(label   = job.id,

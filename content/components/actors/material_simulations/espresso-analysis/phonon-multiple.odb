@@ -11,6 +11,7 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
+from vnfb.qeutils.qeconst import LINKORDER
 from vnfb.components.QEAnalysis import Actor as base
 
 class Actor(base):
@@ -58,9 +59,9 @@ class Actor(base):
             if jit[0] is None:   # If job is None
                 continue
 
-            if jit[1] is not None and jit[2].type == "MATDYN":   # MATDYN type
+            if jit[1] is not None and jit[2].linkorder == LINKORDER["MATDYN"]:   # MATDYN type
                 dataroot    = self._dataroot()
-                results     = ResultInfo(self._director, self.id, "MATDYN")
+                results     = ResultInfo(self._director, self.id, LINKORDER["MATDYN"])
                 if results.ready():
                     path        = os.path.join(results.tardir(), "matdyn.dos")  # dos name is hardcoded
                     filepath    = os.path.join(dataroot, path)

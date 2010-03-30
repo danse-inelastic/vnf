@@ -24,9 +24,9 @@ def content(path):
     return text
 
 
-def visual(director, simid, ttype):
+def visual(director, simid, ttype, linkorder):
     form        = lc.form(id='create-simulation-form')
-    resultpath  = ResultPath(director, simid, ttype)
+    resultpath  = ResultPath(director, simid, linkorder)
     fcrash      = resultpath.resultFiles("crash")
     foutput     = resultpath.resultFiles("output")
 

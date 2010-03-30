@@ -85,7 +85,7 @@ class Actor(base):
     def contentOutput(self, director):
         doc     = lc.document()
         visual  = 'material_simulations/espresso-analysis/outputs'
-        doc.add(director.retrieveVisual(visual, director, self.id, self.type))
+        doc.add(director.retrieveVisual(visual, director, self.id, self.type, self.linkorder))
 
         return  doc
 
@@ -142,15 +142,16 @@ class Actor(base):
         "Output links"
         doc         = lc.document()         # Container for links
         simrecord   = SimulationRecord(director, self.id)
-        typelist    = simrecord.typeList()    # simulation tasks type list 
+        typelist    = simrecord.typeList()  # simulation tasks type list, populated from SIMCHAINS
+        chainsize   = len(typelist)
 
-        classes     = self._typeClasses(director, self.type, typelist)
-        for l in typelist:
-            doc.add(lc.link(label=l,
-                            Class=classes[l],
-                            onclick = load(actor      = analyseActor(self.simtype),
+        classes     = self._typeClasses(director, self.linkorder, chainsize)
+        for i in chainsize:
+            doc.add(lc.link(label   = typelist[i], 
+                            Class   = classes[i],
+                            onclick = load(actor      = analyseActor(self.simtype), # XXX
                                            routine    = "outputs",
-                                           type       = l,
+                                           type       = typelist[i],
                                            simtype    = self.simtype,
                                            id         = self.id))
                     )
@@ -158,39 +159,39 @@ class Actor(base):
         return doc
 
 
-    def _typeClasses(self, director, type, typelist):
-        "Returns dictionary with class names for the specified type"
+    def _typeClasses(self, director, linkorder, chainsize):
+        "Returns dictionary with class names for the specified linkorder"
         classes = {}
-        crash   = self._crashCheck(director, typelist)
+        crash   = self._crashCheck(director, chainsize)
 
-        assert(len(crash.keys()) == len(typelist))  # Assumption
+        assert(len(crash.keys()) == chainsize)  # Assumption
 
         # Set default values first
-        for t in typelist:
-            classes[t]  = CLASS_DEFAULT
-            if crash[t]:
-                classes[t]   = "%s %s" % (CLASS_ERROR, classes[t])
+        for i in range(chainsize):
+            classes[i]  = CLASS_DEFAULT
+            if crash[i]:
+                classes[i]   = "%s %s" % (CLASS_ERROR, classes[i])
 
-        if not type in typelist:    # type is not recognized
+        if not linkorder in range(chainsize):    # linkorder is out of range
             return classes
 
-        if not crash[type]:     # Mark as active if it is not crashed only
-            classes[type]   = CLASS_ACTIVE + " " + classes[type]
+        if not crash[linkorder]:     # Mark as active if it is not crashed only
+            classes[linkorder]   = CLASS_ACTIVE + " " + classes[linkorder]
 
         return classes
 
 
-    def _crashCheck(self, director, typelist):
-        "Returns dictionary of crash tasks specified by type"
+    def _crashCheck(self, director, chainsize):
+        "Returns dictionary of crash tasks specified"
         crash   = {}
-        for t in typelist:
-            crash[t] = False # default to False (no crashed files)
+        for i in range(chainsize):
+            crash[i] = False # default to False (no crashed files)
 
-        for t in typelist:
-            resultpath  = ResultPath(director, self.id, t)
+        for i in range(chainsize):
+            resultpath  = ResultPath(director, self.id, i)
             path        = resultpath.resultFiles("crash")
             if path:    # has CRASH file
-                crash[t]  = True
+                crash[i]  = True
 
         return crash
 

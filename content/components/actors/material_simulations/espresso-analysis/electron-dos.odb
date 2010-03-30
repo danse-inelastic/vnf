@@ -11,6 +11,7 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
+from vnfb.qeutils.qeconst import LINKORDER
 from vnfb.components.QEAnalysis import Actor as base
 
 class Actor(base):
@@ -47,9 +48,9 @@ class Actor(base):
             if jit[0] is None:   # If job is None
                 continue
 
-            if jit[1] is not None and jit[2].linkorder == 2:   # DOS type
+            if jit[1] is not None and jit[2].linkorder == LINKORDER["DOS"]:   # DOS type
                 dataroot    = self._dataroot()
-                results     = ResultInfo(self._director, self.id, 2)
+                results     = ResultInfo(self._director, self.id, LINKORDER["DOS"])
                 if results.ready():
                     path        = os.path.join(results.tardir(), "ni.dos")  # dos name is hardcoded
                     filepath    = os.path.join(dataroot, path)
