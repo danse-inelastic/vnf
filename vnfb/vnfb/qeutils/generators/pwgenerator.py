@@ -133,9 +133,13 @@ class PWGenerator(object):
 
     def nscfInput(self):
         "Returns input text for nscf calculation"
-        pwresult    = PWResult(director, self._inv.id)
+        pwresult    = PWResult(self._director, self._inv.id)
         self._input = pwresult.input()
 
+        if not self._input:     # No input, no 
+            return "ERROR: scf PW (first PW) task has no results available"
+
+        self._input.namelist("control").set("calculation", "'nscf'")    # Non self-consistent calculation
         return self._input.toString()
         
 
