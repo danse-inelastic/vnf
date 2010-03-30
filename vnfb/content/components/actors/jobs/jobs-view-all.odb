@@ -29,6 +29,7 @@ class Actor(base):
         id          = pyre.inventory.str('id', default='')          # Task Id
         taskid      = pyre.inventory.str('taskid', default='')
         type        = pyre.inventory.str('type', default='')        # Type of the configuration file
+        linkorder   = pyre.inventory.int('linkorder', default=0)
 
 
     def default(self, director):
@@ -80,8 +81,9 @@ class Actor(base):
                                               director  = director,
                                               simid     = self.id,
                                               type      = self.type,
-                                              jobs      = jobs
-                                             )
+                                              jobs      = jobs,
+                                              linkorder = self.linkorder
+                                              )
 
         if jobstable is None:
             raise RuntimeError, 'Failed to load visual jobs table'
@@ -100,6 +102,7 @@ class Actor(base):
         self.id             = self.inventory.id
         self.taskid         = self.inventory.taskid
         self.type           = self.inventory.type
+        self.linkorder      = self.inventory.linkorder
 
 
     def _init(self):

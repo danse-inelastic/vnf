@@ -113,7 +113,8 @@ class TaskCell:
                            onclick  = load(actor     = 'material_simulations/espresso/task-view',
                                            id        = self._simid,
                                            taskid    = tid,
-                                           type      = self._type)
+                                           type      = self._type,
+                                           linkorder = self._linkorder)
                             )
 
         table.addRow(("Task:", link, ""))
@@ -152,7 +153,8 @@ class TaskCell:
                                onclick = load(actor     = 'jobs/jobs-view-all',
                                               id        = self._simid,
                                               taskid    = self._task.id,
-                                              type      = self._type)
+                                              type      = self._type,
+                                              linkorder = self._linkorder)
                                 )
 
         table.addRow(("Job:", link, action))

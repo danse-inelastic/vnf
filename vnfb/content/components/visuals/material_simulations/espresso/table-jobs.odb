@@ -33,6 +33,7 @@ def getTaskId(director, simid, linkorder):
 
     return task.id
 
+
 # XXX: Bug in check and results display
 def visual(director, simid, type, jobs, linkorder):
     """
@@ -71,7 +72,7 @@ def visual(director, simid, type, jobs, linkorder):
                         onclick = load(actor        = 'jobs/delete',
                                          id         = simid,
                                          jobid      = job.id,
-                                         taskid     = taskid,   
+                                         taskid     = taskid,
                                          type       = type)
                        )
 
