@@ -277,6 +277,10 @@ class PWResult(QEResult):
         atoms   = self._atomLabels()
         foutput = self._output.property("forces", withUnits=True)
         fvector = foutput[0]    # Force vector. Example: ((0.0, 0.0, 0.0), (0.5, 0.5, 0.5))
+
+        if not fvector: # No force vector, no output forces!
+            return None
+        
         assert len(atoms) == len(fvector)   # validate?
         for i in range(len(fvector)):
             f   = fvector[i]
