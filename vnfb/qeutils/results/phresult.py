@@ -13,6 +13,7 @@
 
 import os
 from vnfb.qeutils.qeconst import FILDYN
+from vnfb.qeutils.qeconst import LINKORDER
 from vnfb.qeutils.results.qeresult import QEResult
 from qecalc.qetask.phtask import PHTask
 
@@ -21,8 +22,7 @@ NONE        = "None"
 class PHResult(QEResult):
 
     def __init__(self, director, simid):
-        self._type  = "PH"  # Important attribute
-        super(PHResult, self).__init__(director, simid, self._type)
+        super(PHResult, self).__init__(director, simid, linkorder = LINKORDER["PH"])
 
 
     def _taskFactory(self):

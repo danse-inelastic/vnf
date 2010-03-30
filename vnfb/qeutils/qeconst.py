@@ -49,7 +49,7 @@ NOPARALLEL  = ("DOS", "MATDYN", "DYNMAT", "Q2R", "BANDS", "PLOTBAND") # "BANDS"?
 
 # List of possible orders
 LINKORDER               = OrderedDict()
-LINKORDER["PW"]         = None  # No definitive order (can be 0 and 1)
+LINKORDER["PW"]         = None  # No definitive order (can be 0 or 1)
 LINKORDER["PH"]         = 1
 LINKORDER["DYNMAT"]     = 2
 LINKORDER["Q2R"]        = 2
