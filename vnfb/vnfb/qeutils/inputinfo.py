@@ -54,7 +54,6 @@ class InputInfo:
                     )
 
 
-    # XXX: Make it more flexible
     def _linkAdd(self):
         "Returns link 'Add'"
         (actor, routine)   = (GENERATOR, ROUTINE)

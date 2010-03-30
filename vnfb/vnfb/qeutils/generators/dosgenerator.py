@@ -11,13 +11,25 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
+from vnfb.qeutils.qeparser.qeinput import QEInput
+
 class DOSGenerator(object):
 
-    def __init__(self, inventory, input):
+    def __init__(self, director, inventory):
+        self._director  = director
         self._inv       = inventory
-        self._input     = input
-        self._simtype   = inventory.simtype     # Special case
+        self._input     = None
 
+    def setInputpp(self):
+        self._input     = QEInput(type="dos")
+        nl      = self._input.namelist("inputpp")
+        nl.add("Emin",      self._inv.emin)
+        nl.add("Emax",      self._inv.emax)
+        nl.add("DeltaE",    self._inv.deltae)
+
+
+    def toString(self):
+        return self._input.toString()
 
 __date__ = "$Mar 24, 2010 9:59:39 AM$"
 
