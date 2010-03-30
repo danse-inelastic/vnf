@@ -37,12 +37,13 @@ class Actor(base):
         id          = pyre.inventory.str('id', default='')          # Simulation Id
         simtype     = pyre.inventory.str('simtype', default='')
         type        = pyre.inventory.str('type', default='')        # Task type
-        linkorder   = pyre.inventory.str('linkorder', default='')
+        linkorder   = pyre.inventory.int('linkorder', default=0)
 
 
     def default(self, director):
         # Redirection doesn't pass value to self.id, so I need to do it manually
-        self.id     = self.inventory.id
+        self.id         = self.inventory.id
+        self.linkorder  = self.inventory.linkorder
         return select(id='main-display-area').replaceContent(self.content(director))
 
 

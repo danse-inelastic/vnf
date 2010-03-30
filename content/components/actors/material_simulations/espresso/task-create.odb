@@ -23,7 +23,7 @@ class Actor(base):
         import pyre.inventory
         simid       = pyre.inventory.str('simid', default='')
         tasktype    = pyre.inventory.str('tasktype', default='')
-        linkorder   = pyre.inventory.str('linkorder', default='')
+        linkorder   = pyre.inventory.int('linkorder', default=0)
 
 
     def default(self, director):

@@ -176,6 +176,7 @@ class SimulationRecord(QERecords):
         return None     # No input related to the task
 
 
+    # Not very useful. Depricate?
     def _taskObject(self, type):
         "Return task object in simtasks of type 'type' or None otherwise"
         for st in self._simtasks:

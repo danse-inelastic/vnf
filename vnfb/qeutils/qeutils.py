@@ -235,7 +235,7 @@ def qetask(director, simid, linkorder, subtype = None):
         where   += "%s AND short_description='%s'" % (where, subtype)
     simtasks = director.clerk.getQESimulationTasks(where=where)
     for st in simtasks:
-        tasks   = director.clerk.getQETasks(where="id='%s' AND linkorder='%s'" % (st.taskid, linkorder))
+        tasks   = director.clerk.getQETasks(where="id='%s' AND linkorder=%s" % (st.taskid, linkorder))
         if tasks:   # XXX First found tasks
             break
 
