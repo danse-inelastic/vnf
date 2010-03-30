@@ -23,6 +23,7 @@ Notes:
 from vnfb.qeutils.qeparser.namelist import Namelist
 from vnfb.qeutils.qeparser.card import Card
 from vnfb.qeutils.qeconst import SMEARING, MATTER_TYPE, SIMTYPE, RELAXLIST
+from vnfb.qeutils.results.pwresult import PWResult
 
 # Default Control params
 CALCULATION     = "'scf'"
@@ -132,9 +133,11 @@ class PWGenerator(object):
 
     def nscfInput(self):
         "Returns input text for nscf calculation"
-        #pwresult    = PWResult()
-        return "Hi"
-        #self._input =
+        pwresult    = PWResult(director, self._inv.id)
+        self._input = pwresult.input()
+
+        return self._input.toString()
+        
 
 
     def toString(self):
