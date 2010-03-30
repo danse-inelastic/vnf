@@ -45,7 +45,7 @@ INPUT["dynmat"] = "dynmat"  + INPUT_EXT
 INPUT["d3"]     = "d3"      + INPUT_EXT
 
 
-NOPARALLEL  = ("DOS", "MATDYN", "DYNMAT", "Q2R", "BANDS", "PLOTBAND") # "BANDS"?, "PP"? # "PLOTBAND"?
+NOPARALLEL  = ("DOS", "MATDYN", "DYNMAT", "Q2R", "PLOTBAND") # "BANDS"?, "PP"? # "PLOTBAND"?
 
 # List of possible orders
 LINKORDER               = OrderedDict()
@@ -207,6 +207,8 @@ RELAX["relax"]      = "Relaxation (Fixed lattice parameters)"
 RELAX["vc-relax"]   = "Variable cell relaxation"
 
 RELAXLIST   = RELAX.keys()
+
+FILBAND     = "'bands.dat'"  # Default value for 'filband' parameter of bands.x calculation
 
 # Example of error message:
 # ERROR: masses not defined in PW input file!
