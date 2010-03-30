@@ -65,13 +65,8 @@ class Actor(base):
         self._showData(sC)                  # Show data
         sD          = splitter.section()
 
-
-
-
         return doc
 
-
-#    def _
 
     def _showActions(self, section, sim):  #, inputs
         container   = lc.splitter(orientation="horizontal", id="qe-splitter-analysis") #"vertical")#
