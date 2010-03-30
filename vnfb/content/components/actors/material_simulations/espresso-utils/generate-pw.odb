@@ -108,7 +108,7 @@ class Actor(base):
     def _input(self, director):
         "Generator scf calculation"
         pwinput   = self._loadStructure(director)   # Initial structure loading from atomic structure
-        return self._getInput(pwinput, director)
+        return self._getInput(director, pwinput)
 
 
     def _nscfInput(self, director):
@@ -117,8 +117,8 @@ class Actor(base):
         return gen.nscfInput()
 
 
-    def _getInput(self, input, director):
-        gen = PWGenerator(self.inventory, input)
+    def _getInput(self, director, input):
+        gen = PWGenerator(director, self.inventory, input)
         gen.setControl()
         gen.setSystem()
         gen.setElectrons()
