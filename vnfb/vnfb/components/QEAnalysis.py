@@ -58,7 +58,7 @@ class Actor(base):
         doc.add(docResults)
         
         #self._simrecord   = SimulationRecord(director, self.id)
-        self._pwresult    = PWResult(director, self.id)
+        self._pwresult    = PWResult(director, self.id, linkorder=0)
 
         self._viewIndicator(director, sInd)
         self._showActions(director, sAct)                 # Show actions

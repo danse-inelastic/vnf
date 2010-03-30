@@ -25,10 +25,9 @@ Note:
 # XXX: Handle the case when the results files might not have read access
 class QEResult(object):
 
-    def __init__(self, director, simid, type, linkorder = None):   # simulation id
+    def __init__(self, director, simid, linkorder):   # simulation idtype, 
         self._director      = director
         self._simid         = simid
-        self._type          = type               # type name. Example: "PW"
         self._linkorder     = linkorder
 
         # Attributes
@@ -82,6 +81,11 @@ class QEResult(object):
     def output(self):
         "Returns output object (subclass of QEInput)"
         return self._output
+
+
+    def setLinkOrder(self, linkorder):
+        "Sets link order"
+        self._linkorder   = linkorder
 
 
     def _taskFactory(self):

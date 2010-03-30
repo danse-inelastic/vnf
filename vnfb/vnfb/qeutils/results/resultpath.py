@@ -34,7 +34,6 @@ class ResultPath(object):
     def __init__(self, director, simid, linkorder):  #type,
         self._director      = director
         self._simid         = simid     # Simulation id
-#        self._type          = type      # Task type
         self._linkorder     = linkorder
         self._init()
 
@@ -58,7 +57,7 @@ class ResultPath(object):
             return self._allFiles()
 
         files   = self.filesList()
-
+        
         if not ftype in REEXP or not files:   # No entry, no file!
             return None
 

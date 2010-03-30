@@ -27,9 +27,8 @@ NONE        = "None"
 
 class PWResult(QEResult):
 
-    def __init__(self, director, simid, linkorder = None):
-        self._type  = "PW"  # Important attribute
-        super(PWResult, self).__init__(director, simid, self._type, linkorder)
+    def __init__(self, director, simid, linkorder = 0):
+        super(PWResult, self).__init__(director, simid, linkorder)
 
 
     def _taskFactory(self):
