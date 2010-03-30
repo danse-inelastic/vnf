@@ -5,7 +5,7 @@ stored in a user specific directory.
 
 
 SIMCHAINS[SIMTYPE["scf"]]                   = ("PW",)                           # test
-SIMCHAINS[SIMTYPE["electron-dos"]]          = ("PW", "PW", "DOS")
+SIMCHAINS[SIMTYPE["electron-dos"]]          = ("PW", "PW", "DOS")           # analysis, test
 SIMCHAINS[SIMTYPE["electron-dispersion"]]   = ("PW", "PW", "BANDS", "PLOTBAND")
 SIMCHAINS[SIMTYPE["geometry"]]              = ("PW",)                           # export structure, test
 SIMCHAINS[SIMTYPE["single-phonon"]]         = ("PW", "PH", "DYNMAT")    # wrong results, test

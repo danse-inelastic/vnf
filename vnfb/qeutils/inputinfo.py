@@ -80,17 +80,22 @@ class InputInfo:
 
         return (BASE + "generate-pw", routine)
 
+
     def locatorPH(self):
         return (BASE + "generate-ph", ROUTINE)
+
 
     def locatorDOS(self):
         return (BASE + "generate-dos", ROUTINE)
 
+
     def locatorQ2R(self):
         return (BASE + "generate-q2r", ROUTINE)
 
+
     def locatorMATDYN(self):
         return (BASE + "generate-matdyn", ROUTINE)
+
 
     def locatorDYNMAT(self):
         routine     = ROUTINE
@@ -101,17 +106,20 @@ class InputInfo:
 
         return (BASE + "generate-dynmat", routine)
 
+
     def locatorBANDS(self):
-        #return BASE + "generate-bands" # Not implemented
-        return self._locatorDefault()
+        return (BASE + "generate-bands",  "generateInput")# Not implemented
+
 
     def locatorPLOTBAND(self):
         #return BASE + "generate-plotbands"  # Not implemented
         return self._locatorDefault()
 
+
     def locatorPP(self):
         #return BASE + "generate-pp"    # Not implemented
         return self._locatorDefault()
+
 
     def locatorD3(self):
         #return BASE + "generate-d3" # Not implemented
