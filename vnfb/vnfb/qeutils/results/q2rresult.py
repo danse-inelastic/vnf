@@ -13,6 +13,7 @@
 
 import os
 from qecalc.qetask.q2rtask import Q2RTask
+from vnfb.qeutils.qeconst import LINKORDER
 from vnfb.qeutils.results.qeresult import QEResult
 
 NONE    = "None"
@@ -21,8 +22,7 @@ FLFRC   = "default.fc"
 class Q2RResult(QEResult):
 
     def __init__(self, director, simid):
-        self._type  = "Q2R"  # Important attribute
-        super(Q2RResult, self).__init__(director, simid, self._type)
+        super(Q2RResult, self).__init__(director, simid, linkorder = LINKORDER["Q2R"])
 
 
     def zasr(self):

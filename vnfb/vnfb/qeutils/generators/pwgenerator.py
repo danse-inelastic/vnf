@@ -132,6 +132,7 @@ class PWGenerator(object):
 
     def nscfInput(self):
         "Returns input text for nscf calculation"
+        #pwresult    = PWResult()
         return "Hi"
         #self._input =
 
