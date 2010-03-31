@@ -32,7 +32,7 @@ def visual(director, simid, ttype, linkorder):
 
     # Show only if crash file exists
     if fcrash:
-        crash       = form.textarea(Class="qe-textarea-outputs")
+        crash       = form.textarea(Class="qe-textarea-crash")
         crash.label = "CRASH"
         crash.value = content(fcrash)
 

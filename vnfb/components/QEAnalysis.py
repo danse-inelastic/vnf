@@ -78,15 +78,28 @@ class Actor(base):
 
     def outputs(self, director):
         "Displays the content of output files"
-        return [select(id=ID_RESULTS).replaceContent(self.contentOutput(director)),
+        return [select(id=ID_RESULTS).replaceContent(self._contentOutput(director)),
                 select(id=ID_OUTPUTS).replaceContent(self._outputLinks(director))
                 ]
 
 
-    def contentOutput(self, director):
+    def export(self, director):
+        "Displays exports page"
+        return select(id=ID_RESULTS).replaceContent(self._contentExport(director))
+
+
+    def _contentOutput(self, director):
         doc     = lc.document()
         visual  = 'material_simulations/espresso-analysis/outputs'
         doc.add(director.retrieveVisual(visual, director, self.id, self.type, self.linkorder))
+
+        return  doc
+
+
+    def _contentExport(self, director):
+        "Export content. "
+        doc     = lc.document()
+        doc.add("Nothing no export for %s" % self.simtype)
 
         return  doc
 
@@ -138,9 +151,10 @@ class Actor(base):
         "Export button"
         link     = lc.link(label="Export",
                             Class="qe-action-edit",
-                            onclick = load(actor        = 'material_simulations/espresso-analysis/exports',
-                                            simid       = self.id,
-                                            simtype     = self.simtype),
+                            onclick = load(actor    = analyseActor(self.simtype), #'material_simulations/espresso-analysis/exports',
+                                            routine = "export",
+                                            id      = self.id,
+                                            simtype = self.simtype),
                            tip = "Export Parameters of the Simulation"                 
                            )
         section.add(link)
@@ -172,7 +186,8 @@ class Actor(base):
                                            routine    = "outputs",
                                            type       = typelist[i],
                                            simtype    = self.simtype,
-                                           id         = self.id))
+                                           id         = self.id,
+                                           linkorder  = self.linkorder))
                     )
 
         return doc
