@@ -30,6 +30,36 @@ class PHResult(QEResult):
         return PHTask(configString=config)
 
 
+    def grid(self, formatted=False):
+        "Returns phonon grid"
+        list    = self._grid()
+
+        if not formatted:
+            return list
+
+        # Formatting grid
+        if not list:
+            return NONE
+
+        return "(%s, %s, %s)" % (list[0], list[1], list[2])
+
+
+    def _grid(self):
+        "Returns non-formatted list of grid"
+        if not self._input:
+            return None
+
+        nl  = self._input.namelist("inputph")
+        try:
+            # Try if parameters exist
+            nq1     = nl.param("nq1")
+            nq2     = nl.param("nq2")
+            nq3     = nl.param("nq3")
+            return (nq1, nq2, nq3)
+        except:
+            return None
+
+
     def fildyn(self):
         "Returns formatted fildyn path"
         return "'%s'" % self._fildyn()
