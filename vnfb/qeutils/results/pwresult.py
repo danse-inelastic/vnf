@@ -57,9 +57,7 @@ class PWResult(QEResult):
     # XXX: Fix issue with aliaces
     def materialType(self):
         "Material type"
-        param   = self._nlparam("system", "occupations") 
-
-        if param == "'fixed'":
+        if self.isIsolator():
             return "Isolator"
 
         # Check deeper for smearing
@@ -218,9 +216,17 @@ class PWResult(QEResult):
         return self._atomicCard("atomic_species", PWVALID)
 
 
-    # XXX: Finish!!!
     def isIsolator(self):
-        "Checks if material is isolator looking into the 'occupation' parameter"
+        "Checks if material is isolator looking into the 'occupations' parameter"
+        try:
+            # If no parameters found, it raises exception. Fix Namelist class
+            occupations   = self._input.namelist("system").param("occupations", quotes=False)
+        except:
+            return False
+
+        if occupations == "fixed":  # "fixed" value is used for isolators only!
+            return True
+        
         return False
 
 
