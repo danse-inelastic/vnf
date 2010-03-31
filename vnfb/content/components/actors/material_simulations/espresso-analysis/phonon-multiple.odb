@@ -38,12 +38,12 @@ class Actor(base):
 
 
     def _phononDos(self, director, splitter):
-        pass
+        section    = splitter.section()
 
 
     def _phononDispersion(self, director, splitter):
-        pass
-
+        section    = splitter.section()
+        
 
     def _contentExport(self, director):
         "Export content for phonons"
