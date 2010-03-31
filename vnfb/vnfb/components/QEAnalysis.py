@@ -37,7 +37,7 @@ class Actor(base):
         id          = pyre.inventory.str('id', default='')          # Simulation Id
         simtype     = pyre.inventory.str('simtype', default='')
         type        = pyre.inventory.str('type', default='')        # Task type
-        linkorder   = pyre.inventory.int('linkorder', default=0)
+        linkorder   = pyre.inventory.int('linkorder', default=-1)   
 
 
     def default(self, director):
@@ -85,7 +85,9 @@ class Actor(base):
 
     def export(self, director):
         "Displays exports page"
-        return select(id=ID_RESULTS).replaceContent(self._contentExport(director))
+        return [select(id=ID_RESULTS).replaceContent(self._contentExport(director)),
+                select(id=ID_OUTPUTS).replaceContent(self._outputLinks(director))
+                ]
 
 
     def _contentOutput(self, director):
@@ -179,6 +181,7 @@ class Actor(base):
         chainsize   = len(typelist)
 
         classes     = self._typeClasses(director, self.linkorder, chainsize)
+
         for i in range(chainsize):
             doc.add(lc.link(label   = typelist[i], 
                             Class   = classes[i],
@@ -187,7 +190,7 @@ class Actor(base):
                                            type       = typelist[i],
                                            simtype    = self.simtype,
                                            id         = self.id,
-                                           linkorder  = self.linkorder))
+                                           linkorder  = i))
                     )
 
         return doc
