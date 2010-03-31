@@ -255,8 +255,15 @@ textarea {
     height: 200px;
 }
 
+.qe-textarea-crash td textarea {
+    width: 600px;
+    height: 200px;
+}
+
+
 .qe-textarea-outputs td textarea {
-    width: 600px
+    width: 600px;
+    height: 400px;
 }
 
 #qe-atoms-form {
