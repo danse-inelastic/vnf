@@ -18,16 +18,21 @@ from vnfb.qeutils.qeconst import OUTPUT_EXT, INPUT_EXT
 from vnfb.qeutils.results.resultinfo import ResultInfo
 from vnfb.qeutils.qerecords import SimulationRecord
 
+DOS_EXT     = "dos"
 input_ext   = INPUT_EXT.strip(".")  # Refined input extention
 output_ext  = OUTPUT_EXT.strip(".") # Refined output extention
-INPUT   = '[\w]+\.%s$' % input_ext                      # Input file,  Example: "AAAAA.in"
-OUTPUT  = '[\w]+\.%s\.%s$' % (input_ext, output_ext)    # Output file, Example: "AAAAA.in.out"
-CRASH   = 'CRASH'                                       # Crash file
+INPUT       = '[\w]+\.%s$' % input_ext                      # Input file,  Example: "AAAAA.in"
+OUTPUT      = '[\w]+\.%s\.%s$' % (input_ext, output_ext)    # Output file, Example: "AAAAA.in.out"
+CRASH       = 'CRASH'                                       # Crash file
+PHONONDOS   = '[\w]+\.%s$' % DOS_EXT
+ELECTRONDOS = '[\w]+\.%s$' % DOS_EXT
 
 REEXP   = {}    # Dictionary of regular expressions for file types
-REEXP["input"]  = INPUT
-REEXP["output"] = OUTPUT
-REEXP["crash"]  = CRASH
+REEXP["input"]          = INPUT
+REEXP["output"]         = OUTPUT
+REEXP["crash"]          = CRASH
+REEXP["phonon-dos"]     = PHONONDOS     # Default: matdyn.dos
+REEXP["electron-dos"]   = ELECTRONDOS   # Default: pwscf.dos
 
 
 class ResultPath(object):

@@ -46,7 +46,7 @@ def parseFile(filename):
     return (e,  x,  y,  z)
 
 
-def parsePHFile(filename):
+def parsePhononDos(filename):
     if not os.path.exists(filename):
         return None
     

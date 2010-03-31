@@ -26,6 +26,10 @@ fieldset {
     width: 65px;
 }
 
+.qe-splitter-export-phonon {
+    width: 380px;
+}
+
 #action-refresh-status,
 .qe-action-default,
 .qe-action-back,
