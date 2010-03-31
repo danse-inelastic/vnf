@@ -57,8 +57,7 @@ class Actor(base):
         docResults  = lc.document(id = ID_RESULTS)
         doc.add(docResults)
         
-        #self._simrecord   = SimulationRecord(director, self.id)
-        self._pwresult    = PWResult(director, self.id, linkorder=0)
+        self._pwresult    = PWResult(director, self.id, linkorder = 0)
 
         self._viewIndicator(director, sInd)
         self._showActions(director, sAct)                 # Show actions
@@ -279,7 +278,7 @@ class Actor(base):
 
     def _init(self):
         super(Actor, self)._init()
-        return
+
 
     def __init__(self, name):
         super(Actor, self).__init__(name=name)

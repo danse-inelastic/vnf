@@ -18,7 +18,7 @@ from vnfb.components.QEAnalysis import Actor as base
 class Actor(base):
 
     def _simData(self, director, splitter):
-        "Simulation specific data. Should be overwritten by subclass"
+        "Displayed input and output geometry"
         sInp    = splitter.section()
         sOut    = splitter.section()
 

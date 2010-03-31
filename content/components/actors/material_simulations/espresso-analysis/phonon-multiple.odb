@@ -12,20 +12,49 @@
 #
 
 import luban.content as lc
+from vnfb.qeutils.qegrid import QEGrid
+from vnfb.qeutils.results.phresult import PHResult
 from vnfb.qeutils.qeconst import LINKORDER
 from vnfb.components.QEAnalysis import Actor as base
 
 class Actor(base):
 
-#    def content(self, director):
-#        self._showPhononPlot(director, sD)  # Phonon DOS
+    def _simData(self, director, splitter):
+        "Shows phonon specific data (phonon DOS, dispersion)"
+        self._phresult    = PHResult(director, self.id)
+
+        self._phonons(director, splitter)
+        self._phononDos(director, splitter)
+        self._phononDispersion(director, splitter)
+
+
+    def _phonons(self, director, splitter):
+        section    = splitter.section()
+        section.add(lc.paragraph(text="Phonons", Class="qe-section"))
+        table       = QEGrid(lc.grid(Class = "qe-table-analysis"))
+        section.add(table.grid())
+        table.addRow(("Phonon Grid:", self._phresult.grid(formatted=True)))
+        table.setColumnStyle(0, "qe-cell-param-analysis")
+
+
+    def _phononDos(self, director, splitter):
+        pass
+
+
+    def _phononDispersion(self, director, splitter):
+        pass
+
 
     def _contentExport(self, director):
-        "Export content. "
+        "Export content for phonons"
         doc     = lc.document()
         doc.add("%s" % self.simtype)
 
         return  doc
+
+
+#    def content(self, director):
+#        self._showPhononPlot(director, sD)  # Phonon DOS
 
 
 #    def _exportAction(self, director, container):
