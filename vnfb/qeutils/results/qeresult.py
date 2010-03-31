@@ -29,6 +29,7 @@ class QEResult(object):
         self._director      = director
         self._simid         = simid
         self._linkorder     = linkorder
+        self._resultPath    = ResultPath(director, simid, linkorder)
 
         # Attributes
         self._task          = None  # None if output file is not available or task factory not implemented
@@ -39,12 +40,10 @@ class QEResult(object):
 
     def _init(self):
         "Retrieve output file and parse it"
-        resultPath  = ResultPath(self._director, self._simid, self._linkorder)
-
-        self._inputFile     = resultPath.resultFiles("input")    # Input file
-        self._outputFile    = resultPath.resultFiles("output")   # Output file
-        self._localPath     = resultPath.localPath()    # Local results directory
-        self._remotePath    = resultPath.remotePath()   # Remote results directory
+        self._inputFile     = self._resultPath.resultFiles("input")    # Input file
+        self._outputFile    = self._resultPath.resultFiles("output")   # Output file
+        self._localPath     = self._resultPath.localPath()    # Local results directory
+        self._remotePath    = self._resultPath.remotePath()   # Remote results directory
 
         # Important line! No output file, no results!
         if not self._outputFile:
