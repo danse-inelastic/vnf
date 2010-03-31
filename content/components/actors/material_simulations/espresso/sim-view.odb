@@ -84,7 +84,6 @@ class Actor(base):
         self._editAction(section, sim)
         self._cloneAction(section, sim)
         self._analysisAction(section, sim)
-        self._exportAction(section, sim)
         self._deleteAction(section, sim)
 
         section.add(lc.document(Class="clear-both"))
@@ -138,17 +137,6 @@ class Actor(base):
                                            simtype  = sim.type
                                            ))
         link.tip    = "Analyze the Simulation Results"
-        section.add(link)
-
-
-    def _exportAction(self, section, sim):
-        "Export action"
-        link     = lc.link(label="Export",
-                            Class="qe-action-edit",
-                            onclick = load(actor        = 'material_simulations/espresso-analysis/exports',
-                                            simid       = self.id,
-                                            simtype     = sim.type))
-        link.tip = "Export Parameters of the Simulation"
         section.add(link)
 
 

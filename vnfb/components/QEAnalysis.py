@@ -105,27 +105,45 @@ class Actor(base):
     def _showActions(self, director, section):
         # Action splitter
         container   = lc.splitter(orientation="horizontal", id="qe-splitter-analysis")
+        sMain        = container.section(Class="qe-section-back")    # Left actions
         section.add(container)
-        self._backAction(container)
+        self._backAction(sMain)
+        self._refreshAction(sMain)
+        self._exportAction(sMain)
         self._outputAction(director, container)
 
         section.add(lc.document(Class="clear-both"))
 
 
-    def _backAction(self, container):
+    def _backAction(self, section):
         "Back button"
-        sBac     = container.section(Class="qe-section-back")
-        sBac.add(lc.link(label="Back",
-                        Class="qe-action-back",
-                        onclick = load(actor      = 'material_simulations/espresso/sim-view',
-                                         id       = self.id))
-                )
-        sBac.add(lc.link(label="Refresh",
-                        Class="qe-action-edit",
-                        onclick = load(actor    = analyseActor(self.simtype),
-                                       simtype  = self.simtype,     # pass simtype
-                                       id       = self.id))
-                )
+        section.add(lc.link(label="Back",
+                            Class="qe-action-back",
+                            onclick = load(actor      = 'material_simulations/espresso/sim-view',
+                                             id       = self.id))
+                    )
+
+    def _refreshAction(self, section):
+        "Refresh button"
+        section.add(lc.link(label="Refresh",
+                            Class="qe-action-edit",
+                            onclick = load(actor    = analyseActor(self.simtype),
+                                           simtype  = self.simtype,     # pass simtype
+                                           id       = self.id))
+                    )
+
+
+
+    def _exportAction(self, section):
+        "Export button"
+        link     = lc.link(label="Export",
+                            Class="qe-action-edit",
+                            onclick = load(actor        = 'material_simulations/espresso-analysis/exports',
+                                            simid       = self.id,
+                                            simtype     = self.simtype),
+                           tip = "Export Parameters of the Simulation"                 
+                           )
+        section.add(link)
 
 
     def _outputAction(self, director, container):
