@@ -21,7 +21,7 @@ from luban.content import load
 import luban.content as lc
 from luban.components.AuthorizedActor import AuthorizedActor as base
 
-# Requires simulation id, config id and config type: (id, configid, type)
+
 class Actor(base):
 
     class Inventory(base.Inventory):
