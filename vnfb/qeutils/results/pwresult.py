@@ -19,6 +19,10 @@ from vnfb.qeutils.qeutils import fstr
 from qecalc.qetask.pwtask import PWTask
 import luban.content as lc
 
+# Constants
+A2B             = 1.889725989   # Angstroms to bohrs
+PI              = 3.14159265
+
 # Simple validator for PW input 
 PWVALID     = {}
 PWVALID["atomic_species"]   = 3     # Number of items in the line
@@ -228,6 +232,14 @@ class PWResult(QEResult):
             return True
         
         return False
+
+
+    def recipLattice(self):
+        "Returns reciprocal lattice"
+        if not self._input:
+            return None     # No PW input, not reciprocal lattice
+
+        return self._input.structure.lattice.diffpy().reciprocal().base*2.0*PI*A2B
 
 
     # Specific for geometry optimization
