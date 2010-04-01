@@ -13,7 +13,7 @@
 
 
 import luban.content as lc
-from luban.content import load, select
+from luban.content import load, select, alert
 
 from luban.components.AuthorizedActor import AuthorizedActor as base
 
@@ -31,6 +31,7 @@ class Actor(base):
 
 
     def start(self, director):
+        return alert("This feature is not yet implemented. It is coming in the next release. In the mean time, you can run a virtual experiment to obtain virtually experimental I(Q,E)")
         sid = self.inventory.atomicstructure_id
         if not sid:
             return self.askForAtomicStructure(director)

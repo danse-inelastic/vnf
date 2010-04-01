@@ -122,7 +122,12 @@ class Actor(base):
     def _createPlot1(self, director):
         domaccess = self._domaccess(director)
 
-        dos = domaccess.getDataForDOS(id=self.inventory.id)
+        id = self.inventory.id
+        dos = domaccess.getDataForDOS(id=id)
+        if not dos:
+            p = lc.paragraph()
+            p.text = ['ploting of dos %s failed: data missing or malformed' % id]
+            return p
         
         # plot
         p = lc.plot2d()
