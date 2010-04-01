@@ -114,3 +114,9 @@ reference to table 'detectorsystemhierarchy_fromxml'
 March 28, 2010
 Added column qetasks.linkorder (QETask.linkorder) that defines order in which jobs are started
 and displayed in the simulation chain. The linkorder is zero-based sequence number
+TODO: Write converter script
+
+March 31, 2010
+Added column qetasks.subtype (QETask.subtype) that defines subtype of the simulation task.
+Sometime you need finer granularity. Example: task = "matdyn", subtype = "dos". Not in QE standard
+TODO: Write converter script
