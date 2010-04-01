@@ -24,7 +24,7 @@ class MATDYNResult(QEResult):
 
     def dosFile(self):
         "Returns path of .dos file if it exists"
-        dosfile = self._resultPath.resultFiles("phonon-dos")   # phonon dos file
+        dosfile = self._resultPath.resultFiles("dos")   # phonon dos file
 
         if dosfile and os.path.exists(dosfile): # Check if file exists
             return dosfile
