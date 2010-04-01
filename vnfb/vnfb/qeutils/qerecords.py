@@ -25,7 +25,7 @@ class QERecords(object):
         self._inputlist = []      # input
         self._jitlist   = []      # job-input-task
 
-
+# XXX: Need testing: Make sure that proper job is retrieved based on subtype
 class SimulationRecord(QERecords):
     "Retrieves records related to various qe database tables: QESimulation, "
 
@@ -164,7 +164,7 @@ class SimulationRecord(QERecords):
         if subtype:
             where   = "%s AND description='%s'" % (where, subtype)
 
-        jobs    = director.clerk.getQEJobs(where=where)
+        jobs    = self._director.clerk.getQEJobs(where=where)
         if not jobs:
             return None
 
