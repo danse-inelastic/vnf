@@ -82,6 +82,11 @@ class QEResult(object):
         return self._output
 
 
+    def resultPath(self):
+        "Returns object of ResultPath class"
+        return self._resultPath
+
+
     def setLinkOrder(self, linkorder):
         "Sets link order"
         self._linkorder   = linkorder

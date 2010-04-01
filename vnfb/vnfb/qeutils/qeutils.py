@@ -281,7 +281,7 @@ def analyseActor(simtype):
     return 'material_simulations/espresso-analysis/%s' % name
 
 
-# Status: Depricated
+# Status: Depricated (Keep for now - used in phonondos.py and phonons.py)
 def resultsdir(director, simid, linkorder, subtype = None):
     "Returns results directory in data/tmp"    
     job     = qejob(director, simid, linkorder, subtype)
