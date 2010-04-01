@@ -52,6 +52,12 @@ class MATDYNResult(QEResult):
         return (int(nl.param("nk1")), int(nl.param("nk2")), int(nl.param("nk3")))
 
 
+    def pols(self):
+        "Polarization. Rename and implement!"
+
+    def freqs(self):
+        "Frequencies. Rename and implement!"
+
 __date__ = "$Mar 22, 2010 11:40:10 PM$"
 
 
