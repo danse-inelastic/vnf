@@ -98,13 +98,17 @@ class SimulationRecord(QERecords):
         return zip(self._joblist, self._inputlist, self._tasklist)
 
 
-    def jobInputTask(self, linkorder):
+    def jobInputTask(self, linkorder, subtype = None):
         "Returns Job-Input-Task tuple specified by linkorder"
         for jit in self._jitlist:
             task    = jit[2]
             
             if task and task.linkorder == linkorder:
-                return jit
+                if subtype is None:         # if no subtype passed, return jit
+                    return jit
+
+                if task.subtype == subtype:  # if subtype passed, check if it matches
+                   return jit
 
         return None
 
