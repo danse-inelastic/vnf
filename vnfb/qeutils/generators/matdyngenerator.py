@@ -35,11 +35,11 @@ class MATDYNGenerator(object):
 
     def _init(self):
         "Additional init"
-        method  = int(self._inv.method) # 0, 1
-        if not method in range(len(MATDYN_METHOD_LIST)):  # if out of range
+        subtype  = int(self._inv.subtype) # 0, 1
+        if not subtype in range(len(MATDYN_METHOD_LIST)):  # if out of range
             return
 
-        self._subtype   = MATDYN_METHOD_LIST[method]
+        self._subtype   = MATDYN_METHOD_LIST[subtype]
 
 
     # XXX: nk points still should be present in the input file

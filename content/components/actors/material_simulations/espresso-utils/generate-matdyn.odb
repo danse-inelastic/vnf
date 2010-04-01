@@ -67,34 +67,3 @@ def actor():
 
 __date__ = "$Jan 13, 2010 4:29:22 AM$"
 
-
-#    def default(self, director):
-#        return select(id='main-display-area').replaceContent(self.content(director))
-#
-#
-#    def content(self, director):
-#        def viewIndicator(director):
-#            path = []
-#            path.append(('Simulations ', load(actor='materialsimulation')))
-#            path.append(('Quantum Espresso ', load(actor='materialsimulation')))
-#            path.append(('%s ' % self.id, load(actor    = 'material_simulations/espresso/sim-view',
-#                                               id       = self.id)))
-#
-#            path.append(('%s Task ' % self.type, load(actor    = 'material_simulations/espresso/task-view',
-#                                                      id       = self.id,
-#                                                      taskid   = self.taskid,
-#                                                      type     = self.type)))
-#            path.append("Set Parameters")
-#
-#            return director.retrieveVisual('view-indicator', path=path)
-#
-#        doc         = lc.document(title   = "Create Input Configuration: %s" % self.type)
-#        splitter    = doc.splitter(orientation="vertical")
-#        sA          = splitter.section()
-#        sA.add(viewIndicator(director))
-#        sB          = splitter.section()
-#        sB.add(self._setForm(director))
-#
-#        return doc
-#
-
