@@ -30,6 +30,10 @@ fieldset {
     width: 380px;
 }
 
+#qe-export-status div {
+    padding: 20px 10px;
+}
+
 #action-refresh-status,
 .qe-action-default,
 .qe-action-back,
@@ -90,16 +94,25 @@ a.qe-action-structure {
 }
 
 /* Just Colors */
-.qe-color-blue {
-    background-color: #9bbcf8; /* more blue */
-}
-
 .qe-color-red {
     background-color: #FF7700; /* red */
 }
 
 .qe-text-red {
     color: red; /* red */
+}
+
+.qe-color-green {
+    background-color: green; /* change? */
+}
+
+.qe-text-green {
+    color: green; /* green */
+}
+
+
+.qe-color-blue {
+    background-color: #9bbcf8; /* more blue */
 }
 
 .qe-text-blue {
