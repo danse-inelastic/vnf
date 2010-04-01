@@ -51,11 +51,12 @@ class SimulationRecord(QERecords):
 
         self._typelist  = self.typeList()
         self._simtype   = self.simType()
-        self._tasklist  = self.taskList()
-        self._joblist   = self.jobList()
+        self._tasklist  = self.taskList()           # List of task objects,
+                                                    # Shoud be initialized before inputlist and joblist!
+        self._joblist   = self.jobList()            # Latest jobs
         self._inputlist = self.inputList()
 
-        self._jitlist   = self.jobInputTaskList() # Jobs-Input - Task list
+        self._jitlist   = self.jobInputTaskList()   # Default Jobs-Input - Task list
         
 
     def record(self):
@@ -67,11 +68,11 @@ class SimulationRecord(QERecords):
         return self._director.clerk.getQESimulationTasks(where="simulationid='%s'" % self._id) #  can be None
 
 
-    def jobList(self):
+    def jobList(self, subtype = None):
         "Return list of job objects from list of task objects"
         joblist    = []
         for t in self._tasklist:
-            joblist.append(self._jobObject(t))
+            joblist.append(self._jobObject(t, subtype))
 
         return joblist
 
@@ -94,28 +95,25 @@ class SimulationRecord(QERecords):
         return tasklist
 
 
-    def jobInputTaskList(self):
-        return zip(self._joblist, self._inputlist, self._tasklist)
+    def jobInputTaskList(self, subtype = None):
+        return zip(self.jobList(subtype), self._inputlist, self._tasklist)
 
 
     def jobInputTask(self, linkorder, subtype = None):
         "Returns Job-Input-Task tuple specified by linkorder"
+        self._jitlist   = self.jobInputTaskList(subtype)    # set jitlist according to subtype
         for jit in self._jitlist:
             task    = jit[2]
             
             if task and task.linkorder == linkorder:
-                if subtype is None:         # if no subtype passed, return jit
-                    return jit
-
-                if task.subtype == subtype:  # if subtype passed, check if it matches
-                   return jit
+                return jit
 
         return None
 
 
-    def job(self, linkorder):
+    def job(self, linkorder, subtype = None):
         "Convenience method for getting job record specified by linkorder"
-        jit = self.jobInputTask(linkorder)
+        jit = self.jobInputTask(linkorder, subtype)
         return jit[0]
 
 
@@ -156,16 +154,28 @@ class SimulationRecord(QERecords):
 
 
     # Object methods
-    def _jobObject(self, task):
+    def _jobObject(self, task, subtype = None):
         "Return *latest* job object from related task object"
         if not task:
             return None
 
-        jobs    = self._director.clerk.getQEJobs(where="taskid='%s'" % task.id)
-        if jobs:        
-            return latestJob(jobs)  # Pick the latest job
+        where   = "taskid='%s'" % task.id
+        if subtype:
+            where   = "%s AND description='%s'" % (where, subtype)
 
-        return None     # No job related to the task
+        jobs    = director.clerk.getQEJobs(where=where)
+        if not jobs:
+            return None
+
+        return latestJob(jobs)
+#
+#        jobs    = self._director.clerk.getQEJobs(where="taskid='%s'" % task.id)
+#        if jobs:
+#            return latestJob(jobs)  # Pick the latest job
+#
+#
+#
+#        return None     # No job related to the task
 
 
     def _inputObject(self, task):
