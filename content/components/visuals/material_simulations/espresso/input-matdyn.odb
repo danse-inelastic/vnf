@@ -17,19 +17,28 @@ from luban.content import load
 from vnfb.qeutils.qegrid import QEGrid
 from vnfb.qeutils.qeconst import MATDYN_METHOD
 from luban.content.FormTextField import FormTextField
+from luban.content.FormRadioBox import FormRadioBox
 from luban.content.FormSubmitButton import FormSubmitButton
 
+NK      = 16
 
 def visual(actor, director, structureid, simtype):
     form    = lc.form()
-    form.radio(name = "method", entries = enumerate(MATDYN_METHOD.values()))
     table       = QEGrid(lc.grid())
     form.add(table.grid())
+
+    subtype     = FormRadioBox(name = "subtype", entries = enumerate(MATDYN_METHOD.values()))
+    nk1         = FormTextField(name = "nk1", value = NK)
+    nk2         = FormTextField(name = "nk2", value = NK)
+    nk3         = FormTextField(name = "nk3", value = NK)
+    
     form.onsubmit   = select(element=form).submit(actor     = 'material_simulations/espresso-utils/generate-matdyn',
+                                                  routine   = "generateInput",
                                                   id        = actor.id,
                                                   taskid    = actor.taskid,
                                                   type      = actor.type,
-                                                  structureid   = structureid)
+                                                  structureid   = structureid,
+                                                  simtype   = simtype)
 
     submit      = FormSubmitButton(label="Select Option")
     cancel      = lc.button(label="Cancel")
@@ -37,7 +46,15 @@ def visual(actor, director, structureid, simtype):
 
     st          = QEGrid(lc.grid()) # Submit Table
     st.addRow((submit, cancel), ("qe-action-accept", "qe-action-cancel"))
-    table.addRow((st.grid(),))
+
+    table.addRow(("Task Subtype:", subtype))
+    table.addRow(("nk1:", nk1))
+    table.addRow(("nk2:", nk2))
+    table.addRow(("nk3:", nk3))
+    table.addRow(("",st.grid()))
+    
+    table.setColumnStyle(0, "qe-form-label")
+    table.setColumnStyle(1, "qe-form-field")
 
     return form
 

@@ -57,9 +57,9 @@ class Actor(base):
 
         try:            # Try export phonon dispersion to idf format
             self._convertResults(director)
-            self._createRecord(director)
-            self._createLocation(director)
-            self._relocateResults(director)
+#            self._createRecord(director)
+#            self._createLocation(director)
+#            self._relocateResults(director)
             export  = EXPORT["success"]
         except:
             export  = EXPORT["error"]
@@ -85,6 +85,7 @@ class Actor(base):
         self._createPolarizations(Pols)
         self._createOmega2(Freqs)
         self._createQgridinfo()
+        print self._matdynpath
 
         time.sleep(CONVERT_DELAY)   # Wait for a while to make sure that file are created
 
@@ -124,14 +125,6 @@ flfrq = %s
         nqGrid          = self._matdynresult.nqGrid()
         recipLattice    = self._pwresult.recipLattice()
         self._generateQgridinfo(filename, nqGrid, recipLattice)
-
-
-#    def _recipLattice(self):    #, director, matdyn
-#        "Returns reciprocal lattice"
-#        if not self._pwinput:
-#            return None     # No PW input, not reciprocal lattice
-#
-#        return self._pwinput.structure.lattice.diffpy().reciprocal().base*2.0*PI*A2B
 
 
     def _generateQgridinfo(self, filename, nqGrid, recipLattice):
