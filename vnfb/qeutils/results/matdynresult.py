@@ -19,8 +19,8 @@ from qecalc.qetask.matdyntask import MatdynTask
 NONE        = "None"
 class MATDYNResult(QEResult):
 
-    def __init__(self, director, simid):
-        super(MATDYNResult, self).__init__(director, simid, linkorder = LINKORDER["MATDYN"])
+    def __init__(self, director, simid, subtype = None):
+        super(MATDYNResult, self).__init__(director, simid, linkorder = LINKORDER["MATDYN"], subtype = subtype)
 
 
     def _taskFactory(self):
