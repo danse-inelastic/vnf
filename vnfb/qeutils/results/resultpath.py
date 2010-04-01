@@ -18,21 +18,35 @@ from vnfb.qeutils.qeconst import OUTPUT_EXT, INPUT_EXT
 from vnfb.qeutils.results.resultinfo import ResultInfo
 from vnfb.qeutils.qerecords import SimulationRecord
 
+def ending(ext):
+    return '[\w]+\.%s$' % ext
+
+# Extensions
 DOS_EXT     = "dos"
+FLVEC_EXT   = "modes"
+FLFRQ_EXT   = "freq"
+FLDOS_EXT   = "dos"     # aliase to DOS_EXT
 input_ext   = INPUT_EXT.strip(".")  # Refined input extention
 output_ext  = OUTPUT_EXT.strip(".") # Refined output extention
-INPUT       = '[\w]+\.%s$' % input_ext                      # Input file,  Example: "AAAAA.in"
-OUTPUT      = '[\w]+\.%s\.%s$' % (input_ext, output_ext)    # Output file, Example: "AAAAA.in.out"
-CRASH       = 'CRASH'                                       # Crash file
-PHONONDOS   = '[\w]+\.%s$' % DOS_EXT
-ELECTRONDOS = '[\w]+\.%s$' % DOS_EXT
 
-REEXP   = {}    # Dictionary of regular expressions for file types
+# Regular expressions
+INPUT       = ending(input_ext)                      # Input file,  Example: "AAAAA.in"
+OUTPUT      = ending(input_ext + "\." + output_ext)    # Output file, Example: "AAAAA.in.out"
+CRASH       = 'CRASH'                                       # Crash file
+DOS         = ending(DOS_EXT)   # Valid both for phonons and electrons
+FLVEC       = ending(FLVEC_EXT)
+FLFRQ       = ending(FLFRQ_EXT)
+FLDOS       = ending(FLDOS_EXT)
+
+# Dictionary of regular expressions for file types
+REEXP   = {}    
 REEXP["input"]          = INPUT
 REEXP["output"]         = OUTPUT
 REEXP["crash"]          = CRASH
-REEXP["phonon-dos"]     = PHONONDOS     # Default: matdyn.dos
-REEXP["electron-dos"]   = ELECTRONDOS   # Default: pwscf.dos
+REEXP["dos"]            = DOS     # Examples: matdyn.dos, pwscf.dos
+REEXP["flvec"]          = FLVEC
+REEXP["flfrq"]          = FLFRQ
+REEXP["fldos"]          = FLDOS   # Aliase to "dos"
 
 
 class ResultPath(object):

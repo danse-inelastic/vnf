@@ -32,7 +32,6 @@ Status code:
     1 - error
 """
 
-#from vnfb.components.QEAnalysis import ID_RESULTS, ID_OUTPUTS
 from vnfb.components.QEAnalysis import Actor as base
 class Actor(base):
 
@@ -42,16 +41,9 @@ class Actor(base):
         statuscode  = pyre.inventory.int('statuscode', default=0)    # Status code
 
 
-#    def export(self, director):
-#        "Displays exports page"
-#        return [select(id=ID_RESULTS).replaceContent(self._contentExport(director)),
-#                select(id=ID_OUTPUTS).replaceContent(self._outputLinks(director)),
-#                select(id=ID_EXPORT_STATUS).replaceContent(self._exportStatus())
-#                ]
-
     def exportStatus(self, director):
         "Updated the export status"
-        
+        # Nice that I just can replace small part of document!
         return select(id=ID_EXPORT_STATUS).replaceContent(self._exportStatus())
 
 
