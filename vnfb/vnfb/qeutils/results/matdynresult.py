@@ -38,14 +38,19 @@ class MATDYNResult(QEResult):
         return None
 
 
+    # XXX: nk1, nk2, nk3 should be in matdyn.in!
+    # XXX: Doesn't check if nk1, nk2, nk3 are digits
     def nqGrid(self):
-        "Returns tuple of nq grid"
-#    #XXX: Check if nk1, nk2, nk3 are present in matdyn.in!
-#    def _nqgrid(self, matdyn):
-#        "Returns list of nq values on grid. Example: [4, 4, 4]"
-#        nl = matdyn.input.namelist("input")
-#        return [int(nl.param("nk1")), int(nl.param("nk2")), int(nl.param("nk3"))]
-#
+        "Returns tuple of nq grid. No formatting"
+        if not self._input:
+            return None     # No input, no nq grid
+
+        nl  = self._input.namelist("input")
+        if not nl:
+            return None     # No "input" namelist, no nq grid
+
+        return (int(nl.param("nk1")), int(nl.param("nk2")), int(nl.param("nk3")))
+
 
 __date__ = "$Mar 22, 2010 11:40:10 PM$"
 
