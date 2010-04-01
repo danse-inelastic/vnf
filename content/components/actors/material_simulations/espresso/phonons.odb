@@ -14,17 +14,18 @@
 import os
 import time
 import shutil
-from vnfb.qeutils.qeconst import LINKORDER
-from vnfb.qeutils.qeutils import analyseActor
-from vnfb.qeutils.qeutils import qeinput, packname, resultsdir
+from vnfb.qeutils.qeutils import analyseActor, dataroot
+from vnfb.qeutils.results.matdynresult import MATDYNResult
+from vnfb.qeutils.results.pwresult import PWResult
+#from vnfb.qeutils.qeutils import qeinput, packname, resultsdir
+from vnfb.dom.material_simulations.Phonons import PhononsTable
 import idf.DOS
 import idf.Polarizations
 import idf.Omega2
-from qecalc.qetask.qeparser.pwinput import PWInput
+#from qecalc.qetask.qeparser.pwinput import PWInput
 from qecalc.qetask.matdyntask import MatdynTask
-from luban.components.AuthorizedActor import AuthorizedActor as base
 
-CONVERT_DELAY   = 7     # 7 sec
+CONVERT_DELAY   = 5     # 5 sec
 C               = 29979245800.0
 TWO_PI          = 2.*3.14159265
 TO_THZ          = 0.0299792458
@@ -32,12 +33,17 @@ A2B             = 1.889725989   # Angstroms to bohrs
 PI              = 3.14159265
 
 PHONON_FILES    = ("Polarizations", "Omega2", "Qgridinfo")
+EXPORT              = {}
+EXPORT["success"]   = (0, "Success: Phonon Dispersion is exported!")
+EXPORT["error"]     = (1, "Error: Phonon Dispersion export failed! :(")
+SUBTYPE             = "dispersion"
 
 # XXX: Let users know that the Phonons are created!
 # XXX: Input files for tasks are used. Gives error if they are missing or inappropriate
 # XXX: Make sure that simtype is passed!
 
-# Requires simulation id, config id and config type: (id, configid, type)
+# XXX: Hide MatdynTask in MATDYNResult()
+from luban.components.AuthorizedActor import AuthorizedActor as base
 class Actor(base):
 
     class Inventory(base.Inventory):
@@ -48,100 +54,132 @@ class Actor(base):
 
     def create(self, director):
         "Create Phonons on Grid in idf format"
-        self._mddir = self._matdynpath(director)
-        #print self._mddir
-        self._convertResults(director)
-        self._createRecord(director)
-        self._createLocation(director)
-        self._relocateResults(director)
+        self._matdynresult  = MATDYNResult(director, self.simid, SUBTYPE)
+        self._pwresult      = PWResult(director, self.simid)
+        
+        self._matdynpath    = self._matdynpath()
+        self._pwinput       = self._pwresult.input()
+        self._matdyninput   = self._matdynresult.input()
 
-        return director.redirect(actor   = analyseActor(self.simtype),
-                                 routine = 'default',
-                                 id      = self.simid,
-                                 simtype = self.simtype)
+        try:            # Try export phonon dispersion to idf format
+            self._convertResults(director)
+            self._createRecord(director)
+            self._createLocation(director)
+            self._relocateResults(director)
+            export  = EXPORT["success"]
+        except:
+            export  = EXPORT["error"]
+
+        return director.redirect(actor      = analyseActor(self.simtype),
+                                 routine    = "exportStatus",
+                                 statuscode = export[0],
+                                 status     = export[1],
+                                 simtype    = self.simtype,
+                                 id         = self.simid)
+
+#        self._mddir = self._matdynpath(director)
+#        #print self._mddir
+#        self._convertResults(director)
+#        self._createRecord(director)
+#        self._createLocation(director)
+#        self._relocateResults(director)
+#
+#        return director.redirect(actor   = analyseActor(self.simtype),
+#                                 routine = 'default',
+#                                 id      = self.simid,
+#                                 simtype = self.simtype)
 
 
-    # XXX: Check if the DOS is converted correctly!
     def _convertResults(self, director):
         """Convert matdyn output (matdyn.modes, matdyn.freq, matdyn.dos) to
         DOS, Polarizations, Omega2 file to jobs temp directory
         """
-        settingString   = self._setSettings(director)
-        matdyn = MatdynTask( configString = settingString)
-        #matdyn.syncSetting()
-        matdyn.input.parse()
+#        settingString   = self._setSettings(director)
+        matdyn = MatdynTask( configString = self._configString(director))
+        #matdyn.syncSetting()   # ?
+#        matdyn.input.parse()
         matdyn.output.parse()
         Pols, Freqs, qPoints = matdyn.output.property('multi phonon')
         
-        self._createPolarizations(director, matdyn, Pols)
-        self._createOmega2(director, matdyn, Freqs)
+        self._createPolarizations(Pols)
+        self._createOmega2(Freqs)
         self._createQgridinfo(director, matdyn)
 
         time.sleep(CONVERT_DELAY)   # Wait for a while to make sure that file are created
 
 
-    def _setSettings(self, director):
+    def _configString(self, director):
         "Returns settings string for MATDYN task"
-        mddir       = self._matdynpath(director)    # Returns directory where the matdyn data are stored
-        # Get matdyn input file
-        mdinput     = qeinput(director, self.simid, LINKORDER["MATDYN"])
-        mdinp       = packname(mdinput.id, "matdyn.in")
-        mdinp       = os.path.join(mddir, mdinp)
-        flvec       = os.path.join(mddir, "matdyn.modes")
-        flfrq       = os.path.join(mddir, "matdyn.freq")
+        path        = self._matdynresult.resultPath()   # Result path object
+
+        flvec       = path.resultFiles("flvec")
+        flfrq       = path.resultFiles("flfrq")
+        
+#        mddir       = self._matdynpath(director)    # Returns directory where the matdyn data are stored
+#        # Get matdyn input file
+#        mdinput     = qeinput(director, self.simid, LINKORDER["MATDYN"])
+#        mdinp       = packname(mdinput.id, "matdyn.in")
+#        mdinp       = os.path.join(mddir, mdinp)
+#        flvec       = os.path.join(mddir, "matdyn.modes")
+#        flfrq       = os.path.join(mddir, "matdyn.freq")
 
         # Configuration setting for QECalc
         settingString = """[matdyn.x]
 matdynInput = %s
 flvec = %s
 flfrq = %s
-""" % (mdinp, flvec, flfrq)
+""" % (self._matdyninput, flvec, flfrq)
 
         return settingString
 
 
-    def _createPolarizations(self, director, matdyn, pols):
+    def _createPolarizations(self, pols):
         "Creates Polarizations file"
-        mddir       = self._matdynpath(director)
-        pol         = os.path.join(mddir, "Polarizations")
+#        mddir       = self._matdynpath(director)
+        pol         = os.path.join(self._matdynpath, "Polarizations")
         idf.Polarizations.write(pols, pol, 'Polarizations')
 
 
-    def _createOmega2(self, director, matdyn, freqs):
+    def _createOmega2(self, freqs):
         "Creates Omega2 file"
-        mddir       = self._matdynpath(director)
-        omega2      = os.path.join(mddir, "Omega2")
+#        mddir       = self._matdynpath(director)
+        omega2      = os.path.join(self._matdynpath, "Omega2")
         idf.Omega2.write( (freqs*C*TWO_PI)**2, omega2, '')
 
 
     def _createQgridinfo(self, director, matdyn):
         "Creates Qgridinfo file"
-        mddir       = self._matdynpath(director)
-        qinfo       = os.path.join(mddir, "Qgridinfo")
-        nqGrid      = self._nqgrid(matdyn)
-        recipLattice    = self._recipLattice(director, matdyn)
-        self._genQgridinfo(qinfo, nqGrid, recipLattice)
+#        mddir       = self._matdynpath(director)
+        filename       = os.path.join(self._matdynpath, "Qgridinfo")
+        nqGrid      = self._matdynresult.nqGrid() #self._nqgrid(matdyn)
+        recipLattice    = self._recipLattice()  #director, matdyn
+        self._generateQgridinfo(filename, nqGrid, recipLattice)
 
 
-    #XXX: Check if nk1, nk2, nk3 are present in matdyn.in!
-    def _nqgrid(self, matdyn):
-        "Returns list of nq values on grid. Example: [4, 4, 4]"
-        nl = matdyn.input.namelist("input") 
-        return [int(nl.param("nk1")), int(nl.param("nk2")), int(nl.param("nk3"))]
+#    #XXX: Check if nk1, nk2, nk3 are present in matdyn.in!
+#    def _nqgrid(self, matdyn):
+#        "Returns list of nq values on grid. Example: [4, 4, 4]"
+#        nl = matdyn.input.namelist("input")
+#        return [int(nl.param("nk1")), int(nl.param("nk2")), int(nl.param("nk3"))]
         
 
-    def _recipLattice(self, director, matdyn):
+    def _recipLattice(self):    #, director, matdyn
         "Returns reciprocal lattice"
-        pwdir       = self._pwpath(director)
-        pwinput     = qeinput(director, self.simid, 0)  # "PW"
-        pwinp       = packname(pwinput.id, "pw.in")
-        pwinp       = os.path.join(pwdir, pwinp)
-        pwInput     = PWInput(filename = pwinp)
-        pwInput.parse()
-        return pwInput.structure.lattice.diffpy().reciprocal().base*2.0*PI*A2B
+        if not self._pwinput:
+            return None     # No PW input, not reciprocal lattice
+#        pwinput     =
+#        pwdir       = self._pwpath(director)
+#        pwinput     = qeinput(director, self.simid, 0)  # "PW"
+#        pwinp       = packname(pwinput.id, "pw.in")
+#        pwinp       = os.path.join(pwdir, pwinp)
+#        pwInput     = PWInput(filename = pwinp)
+#        pwInput.parse()
+        return self._pwinput.structure.lattice.diffpy().reciprocal().base*2.0*PI*A2B
 
 
-    def _genQgridinfo(self, filename, nqGrid, recipLattice):
+    def _generateQgridinfo(self, filename, nqGrid, recipLattice):
+        if not filename or not nqGrid or not recipLattice:
+            raise       # If some of the parameters are not set, complain!
         s = ''
         for i in range(3):
             s = s + 'b%d = %# .8f , %# .8f , %# .8f\nn%d = %d\n'%(i+1, \
@@ -150,14 +188,24 @@ flfrq = %s
         open(filename, 'w').write(s)
 
 
-    def _matdynpath(self, director):
-        # Example: mddir   = "/home/dexity/exports/vnf/vnfb/content/data/tmp/tmpTRqFuy/8CNH5MUJ"
-        return resultsdir(director, self.simid, LINKORDER["MATDYN"], subtype="dispersion")    # tmp results directory
+    def _matdynpath(self):
+        "Returns matdyn results path of 'dispersion' subtype"
+        # Example: "/home/dexity/exports/vnf/vnfb/content/data/tmp/tmpTRqFuy/8CNH5MUJ"
+        path    = self._matdynresult.localPath()
+        if not path:
+            return ""   # empty string
+
+        return path
 
 
-    def _pwpath(self, director):
-        # Example: pwdir   = "/home/dexity/exports/vnf/vnfb/content/data/tmp/tmpTRqFuy/8CNH5MUJ"
-        return resultsdir(director, self.simid, 0)    # "PW" tmp results directory
+#    def _matdynpath(self, director):
+#        # Example: mddir   = "/home/dexity/exports/vnf/vnfb/content/data/tmp/tmpTRqFuy/8CNH5MUJ"
+#        return resultsdir(director, self.simid, LINKORDER["MATDYN"], subtype="dispersion")    # tmp results directory
+
+
+#    def _pwpath(self, director):
+#        # Example: pwdir   = "/home/dexity/exports/vnf/vnfb/content/data/tmp/tmpTRqFuy/8CNH5MUJ"
+#        return resultsdir(director, self.simid, 0)    # "PW" tmp results directory
 
 
     def _createRecord(self, director):
@@ -165,7 +213,7 @@ flfrq = %s
         Notes:
             - Sets phonid
         """
-        from vnfb.dom.material_simulations.Phonons import PhononsTable
+        
         domaccessor = director.retrieveDOMAccessor('material_simulations/phonons')
         orm         = domaccessor.orm   # ?
         clerk       = director.clerk
@@ -188,7 +236,7 @@ flfrq = %s
 
     def _relocateResults(self, director):
         "Copy from tmp/ directory to phonons directory"
-        mddir       = resultsdir(director, self.simid, LINKORDER["MATDYN"])
+#        mddir       = resultsdir(director, self.simid, LINKORDER["MATDYN"])
         dest        = self._phonpath(director)
         for file in PHONON_FILES:
             src         = os.path.join(mddir, file)   # XXX Check if it exists
@@ -198,17 +246,17 @@ flfrq = %s
     def _phonpath(self, director):
         "Returns phonondoses directory corresponding to id (set in _createRecord())"
         # Example: phonons/3TUHW54R/data.idf/
-        dataroot    = self._dataroot(director)
+        dataroot    = dataroot(director)
         pid         = os.path.join("phonons", self._phonid) # Phonons id
         dir         = os.path.join(dataroot, pid)
         dir         = os.path.join(dir, "data.idf") # Specific for "dispersion"
         return dir
 
 
-    def _dataroot(self, director):
-        "Returns data root path"
-        dds = director.dds
-        return os.path.abspath(dds.dataroot)
+#    def _dataroot(self, director):
+#        "Returns data root path"
+#        dds = director.dds
+#        return os.path.abspath(dds.dataroot)
 
 
     def _testIDF(self):

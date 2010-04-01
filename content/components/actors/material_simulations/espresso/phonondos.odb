@@ -21,7 +21,6 @@ import shutil
 from vnfb.qeutils.qeutils import analyseActor, dataroot
 from vnfb.qeutils.results.matdynresult import MATDYNResult
 from vnfb.dom.material_simulations.PhononDOS import PhononDOSTable
-from luban.components.AuthorizedActor import AuthorizedActor as base
 
 CONVERT_DELAY       = 5   # 5 sec
 TO_THZ              = 0.0299792458
@@ -30,6 +29,8 @@ EXPORT["success"]   = (0, "Success: Phonon DOS is exported!")
 EXPORT["error"]     = (1, "Error: Phonon DOS export failed! :(")
 SUBTYPE             = "dos"
 
+# XXX: Hide MatdynTask in MATDYNResult()
+from luban.components.AuthorizedActor import AuthorizedActor as base
 class Actor(base):
 
     class Inventory(base.Inventory):
