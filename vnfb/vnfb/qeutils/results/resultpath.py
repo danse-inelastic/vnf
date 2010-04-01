@@ -51,17 +51,18 @@ REEXP["fldos"]          = FLDOS   # Aliase to "dos"
 
 # XXX: Address issue with subtypes!
 class ResultPath(object):
-    def __init__(self, director, simid, linkorder):  #type,
+    def __init__(self, director, simid, linkorder, subtype = None):
         self._director      = director
-        self._simid         = simid     # Simulation id
+        self._simid         = simid     
         self._linkorder     = linkorder
+        self._subtype       = subtype
         self._init()
 
 
     def _init(self):
         "Additional initialization"
         simrecord   = SimulationRecord(self._director, self._simid)   # Have as an attribute instead?
-        self._jit   = simrecord.jobInputTask(self._linkorder)
+        self._jit   = simrecord.jobInputTask(self._linkorder, self._subtype)
         
 
     def resultFiles(self, ftype = None):
@@ -112,7 +113,7 @@ class ResultPath(object):
         if not self._recordsOK():
             return None
 
-        results     = ResultInfo(self._director, self._simid, self._linkorder) #self._type
+        results     = ResultInfo(self._director, self._simid, self._linkorder)
         if results.ready():
             datadir     = dataroot(self._director)
             return os.path.join(datadir, results.tardir())

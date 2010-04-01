@@ -52,7 +52,7 @@ class QETask(QETable):
     type.meta['tip'] = "Type of simulation task"
 
     subtype = dsaw.db.varchar(name="subtype", length=128, default='')
-    subtype.meta['tip'] = "Subtype of simulation task. Reserved for finer granularity"
+    subtype.meta['tip'] = "Subtype of simulation task. Not in QE standard"
 
     linkorder = dsaw.db.integer(name="linkorder", default=0)
     linkorder.meta['tip'] = "Link order that defines order in which job is started and displayed in the simulation chain"
