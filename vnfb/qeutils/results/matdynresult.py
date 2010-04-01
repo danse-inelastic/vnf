@@ -14,12 +14,18 @@
 import os
 from vnfb.qeutils.qeconst import LINKORDER
 from vnfb.qeutils.results.qeresult import QEResult
+from qecalc.qetask.matdyntask import MatdynTask
 
 NONE        = "None"
 class MATDYNResult(QEResult):
 
     def __init__(self, director, simid):
         super(MATDYNResult, self).__init__(director, simid, linkorder = LINKORDER["MATDYN"])
+
+
+    def _taskFactory(self):
+        config  = "[matdyn.x]\nmatdynInput: %s\nmatdynOutput: %s" % (self._inputFile, self._outputFile)
+        return MatdynTask(configString=config)
 
 
     def dosFile(self):

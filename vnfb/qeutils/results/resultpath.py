@@ -49,6 +49,7 @@ REEXP["flfrq"]          = FLFRQ
 REEXP["fldos"]          = FLDOS   # Aliase to "dos"
 
 
+# XXX: Address issue with subtypes!
 class ResultPath(object):
     def __init__(self, director, simid, linkorder):  #type,
         self._director      = director
