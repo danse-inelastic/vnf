@@ -160,6 +160,7 @@ class SimulationRecord(QERecords):
             return None
 
         where   = "taskid='%s'" % task.id
+        # *Hack* - storing subtype for the job in 'description' column
         if subtype:
             where   = "%s AND description='%s'" % (where, subtype)
 
@@ -168,14 +169,6 @@ class SimulationRecord(QERecords):
             return None
 
         return latestJob(jobs)
-#
-#        jobs    = self._director.clerk.getQEJobs(where="taskid='%s'" % task.id)
-#        if jobs:
-#            return latestJob(jobs)  # Pick the latest job
-#
-#
-#
-#        return None     # No job related to the task
 
 
     def _inputObject(self, task):
@@ -190,17 +183,17 @@ class SimulationRecord(QERecords):
         return None     # No input related to the task
 
 
-    # Not very useful. Depricate?
-    def _taskObject(self, type):
-        "Return task object in simtasks of type 'type' or None otherwise"
-        for st in self._simtasks:
-            if st.taskid == '': # Avoid dangling references
-                continue
-            task    = self._director.clerk.getQETasks(id = st.taskid)
-            if task and task.type == type:
-                return task
-
-        return None
+#    # Not very useful. Depricate?
+#    def _taskObject(self, type):
+#        "Return task object in simtasks of type 'type' or None otherwise"
+#        for st in self._simtasks:
+#            if st.taskid == '': # Avoid dangling references
+#                continue
+#            task    = self._director.clerk.getQETasks(id = st.taskid)
+#            if task and task.type == type:
+#                return task
+#
+#        return None
 
 
     def _taskLinkObject(self, linkorder):
