@@ -12,18 +12,48 @@
 #
 
 import luban.content as lc
-from luban.content import load
+from luban.content import load, select
 
 from vnfb.qeutils.qegrid import QEGrid
 from vnfb.qeutils.results.phresult import PHResult
 from vnfb.qeutils.results.matdynresult import MATDYNResult
 from vnfb.qeutils.qeutils import parsePhononDos
 from vnfb.qeutils.qerecords import SimulationRecord
+from vnfb.utils.orderedDict import OrderedDict
+
+NONE                = "None"
+ID_EXPORT_STATUS    = "qe-export-status"
+CODE                = ["success", "error"]              # List of status codes
+CLASS               = ["qe-text-green", "qe-text-red"]  # CSS classes corresponding to the status code
+
+"""
+Status code:
+    0 - success
+    1 - error
+"""
+
+#from vnfb.components.QEAnalysis import ID_RESULTS, ID_OUTPUTS
 from vnfb.components.QEAnalysis import Actor as base
-
-NONE    = "None"
-
 class Actor(base):
+
+    class Inventory(base.Inventory):
+        import pyre.inventory
+        status      = pyre.inventory.str('status', default='')      # Status message
+        statuscode  = pyre.inventory.int('statuscode', default=0)    # Status code
+
+
+#    def export(self, director):
+#        "Displays exports page"
+#        return [select(id=ID_RESULTS).replaceContent(self._contentExport(director)),
+#                select(id=ID_OUTPUTS).replaceContent(self._outputLinks(director)),
+#                select(id=ID_EXPORT_STATUS).replaceContent(self._exportStatus())
+#                ]
+
+    def exportStatus(self, director):
+        "Updated the export status"
+        
+        return select(id=ID_EXPORT_STATUS).replaceContent(self._exportStatus())
+
 
     def _simData(self, director, splitter):
         "Shows phonon specific data (phonon DOS, dispersion)"
@@ -84,6 +114,10 @@ class Actor(base):
         splAct      = lc.splitter(Class="qe-splitter-export-phonon")
         sDos        = splAct.section()
         sDis        = splAct.section()
+        sSta        = splitter.section()
+        statusdoc   = lc.document(id=ID_EXPORT_STATUS)
+#        statusdoc.add(lc.document(text="Hi"))
+        sSta.add(statusdoc)
         doc.add(splitter)
         
         sTit.add(lc.paragraph(text="Export Phonon Results", Class="qe-section"))
@@ -94,6 +128,7 @@ class Actor(base):
         return  doc
 
 
+    # XXX: Show the "Export Phonon DOS" button only if dos simulation has been run
     def _exportDosAction(self, section, sim):
         linkDos     = lc.link(label="Export Phonon DOS",
                             Class="qe-action-edit",
@@ -112,7 +147,7 @@ class Actor(base):
 
         section.add(linkDos)
 
-
+    # XXX: Show the "Export Phonon Dispersion" button only if dispersion simulation has been run
     def _exportDispersionAction(self, section, sim):
        linkDisp     = lc.link(label="Export Phonon Dispersion",
                             Class="qe-action-edit",
@@ -122,6 +157,34 @@ class Actor(base):
                                             simtype     = self.simtype))
        linkDisp.tip = "Export Phonon Dispersion to Atomic Structure"
        section.add(linkDisp)
+
+
+    def _exportStatus(self):
+        "Returns status element"
+        # Use inventory because it doesn't properly redirects attributes!
+        doc         = lc.htmldocument(Class=self._exportClass())
+        doc.text    = self.inventory.status
+
+        return doc
+
+
+    def _exportClass(self):
+        "Returns CSS class names specified by the statuscode"
+        code    = self.inventory.statuscode
+        if not code in range(len(CLASS)):
+            return ""   # No proper code, no class
+
+        return CLASS[code]
+
+
+    def _configure(self):
+        super(Actor, self)._configure()
+        self.status     = self.inventory.status
+        self.statuscode = self.inventory.statuscode
+
+
+    def _init(self):
+        super(Actor, self)._init()
 
 
 def actor():
