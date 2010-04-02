@@ -142,15 +142,19 @@ class QEDriver(base):
         settings    = settingslist[0]
         input       = inputs[0]
 
+        fn          = defaultInputName(input.type)
+        inputFile   = packname(input.id, fn)        # E.g. 44XXJJG2pw.in
+        outputFile  = inputFile + ".out"
+
         # mpirun --mca btl openib,sm,self pw.x -npool 8 -inp  PW > PW.out
         words   = [ settings.executable,
                     settings.params,
                     TYPE[task.type],
                     "-npool %s" % self._npool(settings, task.type),
                     "-inp",
-                    packname(input.id, input.filename),       # replace
+                    inputFile,
                     ">",
-                    packname(input.id, "%s.out" % input.filename)    # replace
+                    outputFile
         ]
 
         # QE temp simulation directory is qesimulations/[simid] directory
