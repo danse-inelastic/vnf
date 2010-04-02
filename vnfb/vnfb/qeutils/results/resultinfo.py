@@ -17,6 +17,7 @@ import time
 from vnfb.qeutils.message import Message
 from vnf.applications.PackJobDir import PackJobDir
 from vnfb.qeutils.qeconst import RESULTS_ID
+from vnfb.qeutils.qerecords import SimulationRecord
 
 import luban.content as lc
 from luban.content import load
@@ -45,13 +46,14 @@ class ResultInfo:
         - Results link is specified by id
     """
 
-    def __init__(self, director, simid, linkorder, job = None):
+    def __init__(self, director, simid, linkorder, job = None, subtype = None):
         self._director  = director
         self._simid     = simid
         self._linkorder = linkorder
-#        self._type      = type
         self._job       = job
+        self._subtype   = subtype
         self._task      = None
+        self._simrecord = None
 
         self._init()
         self._status    = Message()
@@ -59,19 +61,19 @@ class ResultInfo:
         self._ptrfilepath   = self._ptrfilepath()
 
 
-
     def _init(self):
         "Additional init"
-        from vnfb.qeutils.qerecords import SimulationRecord     # Local import
-        simrecord   = SimulationRecord(self._director, self._simid)
-        if not simrecord:
-            return
+#        from vnfb.qeutils.qerecords import SimulationRecord     # Local import
+        self._simrecord   = SimulationRecord(self._director, self._simid)#, self._subtype)
+        self._task          = self._simrecord.task(self._linkorder)     # init task
 
-        if not self._job:
+        if not self._job:                                               # init job
             # If no job set, get the latest job from simrecord only
-            self._job   = simrecord.job(self._linkorder)
+            self._job   = self._simrecord.job(self._linkorder, self._subtype)
 
-        self._task  = simrecord.task(self._linkorder)
+
+    def simrecord(self):
+        return self._simrecord
 
 
     def retrieve(self):

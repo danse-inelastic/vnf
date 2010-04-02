@@ -17,7 +17,6 @@ Contains little but useful itils!
 import os.path
 
 import os
-from vnfb.qeutils.results.resultinfo import ResultInfo
 from vnfb.qeutils.qeconst import INPUT, ANALYSIS, SUBTYPE_MATDYN
 
 

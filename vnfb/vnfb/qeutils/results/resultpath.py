@@ -16,7 +16,7 @@ import re
 from vnfb.qeutils.qeutils import dataroot
 from vnfb.qeutils.qeconst import OUTPUT_EXT, INPUT_EXT
 from vnfb.qeutils.results.resultinfo import ResultInfo
-from vnfb.qeutils.qerecords import SimulationRecord
+#from vnfb.qeutils.qerecords import SimulationRecord
 
 def ending(ext):
     return '[\w]+\.%s$' % ext
@@ -62,8 +62,9 @@ class ResultPath(object):
 
     def _init(self):
         "Additional initialization"
-        simrecord   = SimulationRecord(self._director, self._simid)   # Have as an attribute instead?
-        self._jit   = simrecord.jobInputTask(self._linkorder, self._subtype)
+        self._results     = ResultInfo(self._director, self._simid, self._linkorder, self._subtype)
+#        simrecord   = SimulationRecord(self._director, self._simid)   # Have as an attribute instead?
+        self._jit   = self._results.simrecord().jobInputTask(self._linkorder, self._subtype)
 #        print self._subtype
 #        print self._jit[0].id
         
@@ -116,10 +117,10 @@ class ResultPath(object):
         if not self._recordsOK():
             return None
 
-        results     = ResultInfo(self._director, self._simid, self._linkorder)
-        if results.ready():
+#        results     = ResultInfo(self._director, self._simid, self._linkorder, self.subtype)
+        if self._results.ready():
             datadir     = dataroot(self._director)
-            return os.path.join(datadir, results.tardir())
+            return os.path.join(datadir, self._results.tardir())
 
         return None     # default case
 
