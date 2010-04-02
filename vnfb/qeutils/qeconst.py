@@ -45,7 +45,11 @@ INPUT["dynmat"] = "dynmat"  + INPUT_EXT
 INPUT["d3"]     = "d3"      + INPUT_EXT
 
 
-NOPARALLEL  = ("DOS", "MATDYN", "DYNMAT", "Q2R", "PLOTBAND") # "BANDS"?, "PP"? # "PLOTBAND"?
+NOPARALLEL  = ("DOS", "MATDYN", "DYNMAT", "Q2R", "PLOTBAND") # "PP"? # "PLOTBAND"?
+
+# Notes:
+#   - "BANDS" is a parallel program (should run on the same number of cores as PW task)
+#   - "DYNMAT" is not a parallel program
 
 # List of possible orders
 LINKORDER               = OrderedDict()
