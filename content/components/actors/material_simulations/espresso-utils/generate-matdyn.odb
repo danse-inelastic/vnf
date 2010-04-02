@@ -18,10 +18,10 @@ class Actor(base):
 
     class Inventory(base.Inventory):
         import pyre.inventory
-        subtype     = pyre.inventory.str('subtype', default='')      # dos, or dispersion
-        nk1         = pyre.inventory.str('nk1', default='')        # Type of the configuration file
-        nk2         = pyre.inventory.str('nk2', default='')
-        nk3         = pyre.inventory.str('nk3', default='')
+        subtype     = pyre.inventory.str('subtype', default='')    # dos, or dispersion
+        nk1         = pyre.inventory.int('nk1', default=0)        # Change to float?
+        nk2         = pyre.inventory.int('nk2', default=0)
+        nk3         = pyre.inventory.int('nk3', default=0)
 
 
     def content(self, director):

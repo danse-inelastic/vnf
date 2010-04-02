@@ -88,12 +88,9 @@ class MATDYNGenerator(object):
 
     def _qpoints(self):
         "Returns qpoints"
-        pwresult    = PWResult(self._director, self._inv.id)
-        kp          = pwresult.kPoints(formatted=False)
-        if not kp:      # No k-points, no q-points
-            return
+        nqGrid      = [int(self._inv.nk1), int(self._inv.nk2), int(self._inv.nk3)]
 
-        nqGrid      = [kp[0], kp[1], kp[2]]
+        pwresult    = PWResult(self._director, self._inv.id)        
         pwinput     = pwresult.input()
         return kmesh.kMeshCart(nqGrid, pwinput.structure.lattice.reciprocalBase())
 

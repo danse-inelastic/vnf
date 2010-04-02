@@ -18,12 +18,12 @@ class Actor(base):
 
     class Inventory(base.Inventory):
         import pyre.inventory        
-        # Q-points, for multiple phonons
+        # Multiple phonons. Q-points
         nq1         = pyre.inventory.str('nq1', default='')        
         nq2         = pyre.inventory.str('nq2', default='')
         nq3         = pyre.inventory.str('nq3', default='')
 
-        # Phonon coordinates, for single phonons
+        # Single phonons. Phonon coordinates 
         kx          = pyre.inventory.str('kx', default='')
         ky          = pyre.inventory.str('ky', default='')
         kz          = pyre.inventory.str('kz', default='')
