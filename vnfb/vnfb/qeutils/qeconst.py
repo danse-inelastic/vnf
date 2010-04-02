@@ -191,6 +191,9 @@ QE_PREFIX   = "'default'"
 PREFIX      = "default"
 FILDYN      = "matdyn"      # Default name for PH fildyn
 
+SUBTYPE_MATDYN  = ("dos", "dispersion")
+
+# Depricate?
 MATDYN_METHOD  = OrderedDict()
 MATDYN_METHOD["dos"]           = "Phonon Density of States (DOS)"
 MATDYN_METHOD["dispersion"]    = "Phonon on Grid (For Virtual Neutron Experiment)"

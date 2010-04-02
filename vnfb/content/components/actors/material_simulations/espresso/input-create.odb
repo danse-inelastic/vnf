@@ -21,7 +21,7 @@
 
 
 from vnfb.dom.QEConfiguration import QEConfiguration
-from vnfb.qeutils.qeutils import writeRecordFile, defaultInputName
+from vnfb.qeutils.qeutils import writeRecordFile, defaultInputName, subtypeMatdyn
 
 from luban.content import load
 from vnfb.components.QEGenerator import QEGenerator as base
@@ -52,43 +52,38 @@ class Actor(base):
 
     def createRecord(self, director):
         "Create configuration record"
-        self.createDBRecord(director)
-        self.createFile(director)
+#        print subtypeMatdyn(self.inventory.subtype)
+        self._createDBRecord(director)
+        self._updateTaskRecord(director)    # For matdyn mostly
+        self._createFile(director)
 
         return load(actor = 'material_simulations/espresso/sim-view', id = self.id)
 
 
-    def createDBRecord(self, director):
+    def _createDBRecord(self, director):
         # 'text' field is not stored
         params  = {"taskid":        self.inventory.taskid,
-                   "filename":      self._fname(),
-                   "description":   self._description(),
+                   "filename":      self._fname(),          # Set default name if not filename specified
+                   "description":   subtypeMatdyn(self.inventory.subtype), # Store subtype for description
                    "type":          self.inventory.type
                    }
         self.input  = QEConfiguration()
         self.input.setDirector(director)
         self.input.createRecord(params)
-        if self.inventory.subtype != "":
-            self._updateTaskRecord(director)
 
 
-    def createFile(self, director):
+    def _createFile(self, director):
         # fn is fixed and doesn't depend on the filename record
         fn      = defaultInputName(self.inventory.type)  
         writeRecordFile(director.dds, self.input, fn, self.inventory.text)
 
 
-    # Hack that allows to use description field of *task* for subtype
-    def _description(self):
-        if self.inventory.subtype != "":
-            return self.inventory.subtype
-        
-        return self.inventory.description
-
-
     def _updateTaskRecord(self, director):
+        if self.inventory.subtype == "":
+            return      # No update for empty subtype
+
         task    = director.clerk.getQETasks(id = self.taskid)
-        params  = {"short_description": self._description(),}
+        params  = {"subtype": subtypeMatdyn(self.inventory.subtype),}
         task.setDirector(director)
         task.updateRecord(params)
 

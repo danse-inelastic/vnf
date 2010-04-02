@@ -82,14 +82,6 @@ class MATDYNGenerator(object):
             nl.add("nk3",   self._inv.nk3)
 
 
-    def subtype(self):
-        "Return subtype"
-        if not self._subtype:
-            return ""
-
-        return self._subtype
-
-
     def toString(self):
         return self._input.toString()
 
