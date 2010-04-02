@@ -90,6 +90,7 @@ class Actor(base):
         return select(id="run-task-%s" % self.taskid).replaceContent(pbar)
 
 
+    # XXX: Might be potential error
     def checkStatus(self, director):
         selectpbar      = select(id='pbar-%s' % self.taskid)
         job     = None  

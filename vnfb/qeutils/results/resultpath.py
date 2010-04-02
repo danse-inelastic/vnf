@@ -63,6 +63,8 @@ class ResultPath(object):
         "Additional initialization"
         simrecord   = SimulationRecord(self._director, self._simid)   # Have as an attribute instead?
         self._jit   = simrecord.jobInputTask(self._linkorder, self._subtype)
+#        print self._subtype
+#        print self._jit[0].id
         
 
     def resultFiles(self, ftype = None):

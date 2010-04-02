@@ -18,7 +18,7 @@ import os.path
 
 import os
 from vnfb.qeutils.results.resultinfo import ResultInfo
-from vnfb.qeutils.qeconst import INPUT, ANALYSIS
+from vnfb.qeutils.qeconst import INPUT, ANALYSIS, SUBTYPE_MATDYN
 
 
 def parseFile(filename):
@@ -280,6 +280,17 @@ def analyseActor(simtype):
 
     return 'material_simulations/espresso-analysis/%s' % name
 
+
+# Subtype is relevant for matdyn mostly. So I don't care about other types
+def subtypeMatdyn(subtype):
+    if subtype == "":
+        return ""   # Empty subtype
+
+    subtype = int(subtype)  # Convert to integer, if possible
+    if not subtype in range(len(SUBTYPE_MATDYN)):
+        return ""   # subtype is out of range
+
+    return SUBTYPE_MATDYN[subtype]
 
 # Status: Depricated, use classes that use SimulationRecord: ResultPath, subclasses of QEResult
 def resultsdir(director, simid, linkorder, subtype = None):

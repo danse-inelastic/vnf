@@ -84,11 +84,10 @@ class TaskCell:
             link = lc.link(label    = "Run Task",
                            Class    = "qe-run-task",
                            onclick  = load(actor     ='jobs/submit',    # 'jobs/checksubmit'
-                                          #routine   = 'submitProgress',        # 'checkSubmit'
                                           routine   = 'submit',
                                           id        = self._simid,
                                           taskid    = self._task.id,
-                                          subtype   = self._task.short_description)
+                                          subtype   = self._task.subtype)
                             )
             doc.id = "run-task-%s" % self._task.id
 

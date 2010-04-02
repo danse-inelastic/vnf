@@ -42,7 +42,7 @@ class Actor(base):
                                 id      = self.inventory.id,
                                 taskid  = self.inventory.taskid,
                                 type    = self.inventory.type,
-                                subtype = gen.subtype())
+                                subtype = self.inventory.subtype)
         
 
     def __init__(self):
