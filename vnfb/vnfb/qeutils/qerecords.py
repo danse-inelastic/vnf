@@ -25,15 +25,17 @@ class QERecords(object):
         self._inputlist = []      # input
         self._jitlist   = []      # job-input-task
 
-# XXX: Need testing: Make sure that proper job is retrieved based on subtype
+
+# XXX: BAD to pass subtype. But it is a simple way improve load page time!
 class SimulationRecord(QERecords):
     "Retrieves records related to various qe database tables: QESimulation, "
 
-    def __init__(self, director, id):
+    def __init__(self, director, id, subtype = None):
         super(SimulationRecord, self).__init__(director)
 
         # Additional attributes
         self._id        = id        # simulation id
+        self._subtype   = subtype   # EVIL
         self._sim       = None      # simulation object
         self._simtasks  = []        # simulation-task
         self._typelist  = []        # simulation tasks type list
@@ -53,10 +55,10 @@ class SimulationRecord(QERecords):
         self._simtype   = self.simType()
         self._tasklist  = self.taskList()           # List of task objects,
                                                     # Shoud be initialized before inputlist and joblist!
-        self._joblist   = self.jobList()            # Latest jobs
+        self._joblist   = self.jobList(self._subtype)            # Latest jobs
         self._inputlist = self.inputList()
 
-        self._jitlist   = self.jobInputTaskList()   # Default Jobs-Input - Task list
+        self._jitlist   = self.jobInputTaskList(self._subtype)   # Default Jobs-Input - Task list
         
 
     def record(self):
@@ -95,10 +97,12 @@ class SimulationRecord(QERecords):
         return tasklist
 
 
+    # subtype is not very useful here
     def jobInputTaskList(self, subtype = None):
-        return zip(self.jobList(subtype), self._inputlist, self._tasklist)
+        return zip(self._joblist, self._inputlist, self._tasklist)
 
 
+    # subtype is not very useful here
     def jobInputTask(self, linkorder, subtype = None):
         "Returns Job-Input-Task tuple specified by linkorder"
         self._jitlist   = self.jobInputTaskList(subtype)    # set jitlist according to subtype
