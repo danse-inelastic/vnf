@@ -34,6 +34,12 @@ Jobs submission steps:
     - Copying files to cluster      - 60%
     - Submitting to queue           - 80%
     - Done                          - 100%
+
+Important Note:
+    - Depending on cluster "<" control character on command line might not be recognized
+     (see _createRunScript() method) in this case try to use "-inp".
+    - Dynmat task IS NOT a parallel program (no mpirun)
+    - Both "<" and "-inp" work on foxtrot.danse.us
 """
 
 class QEDriver(base):
@@ -57,7 +63,7 @@ class QEDriver(base):
 
 
     def main(self):
-
+        "Main method"
         self.submitJob()
 
 
@@ -135,34 +141,15 @@ class QEDriver(base):
 
 
     def _createRunScript(self):
-        settingslist = self.clerk.getQESettings(where = "simulationid='%s'" % self.id)       # not None
-        inputs      = self.clerk.getQEConfigurations(where = "taskid='%s'" % self.taskid)
-        task        = self.clerk.getQETasks(id = self.taskid)
         server      = self.clerk.getServers(id = self._job.serverid)
-        settings    = settingslist[0]
-        input       = inputs[0]
-
-        fn          = defaultInputName(input.type)
-        inputFile   = packname(input.id, fn)        # E.g. 44XXJJG2pw.in
-        outputFile  = inputFile + ".out"
-
-        # mpirun --mca btl openib,sm,self pw.x -npool 8 -inp  PW > PW.out
-        words   = [ settings.executable,
-                    settings.params,
-                    TYPE[task.type],
-                    "-npool %s" % self._npool(settings, task.type),
-                    "-inp",
-                    inputFile,
-                    ">",
-                    outputFile
-        ]
-
+        args    = self._commandArgs()
+        
         # QE temp simulation directory is qesimulations/[simid] directory
         # E.g.: /home/dexity/espresso/qesimulations/3YEQ8PNV    -> no trailing slash
         qetempdir  = self.dds.abspath(self._sim, server=server)
         cmds    = [ "#!/bin/env bash",   # Suppose there is bash available
                     "export ESPRESSO_TMPDIR=%s/" % qetempdir,
-                    " ".join(words)
+                    " ".join(args)
         ]
 
         dds     = self.dds
@@ -171,6 +158,41 @@ class QEDriver(base):
         self._files.append(RUNSCRIPT)
 
         self._updateStatus("prepare-controls")
+
+
+    def _commandArgs(self):
+        "Returns list of command arguments (will be later on concatenated)"
+        task        = self.clerk.getQETasks(id = self.taskid)
+        settingslist = self.clerk.getQESettings(where = "simulationid='%s'" % self.id)       # not None
+        settings    = settingslist[0]
+        inputs      = self.clerk.getQEConfigurations(where = "taskid='%s'" % self.taskid)
+        input       = inputs[0]
+
+        fn          = defaultInputName(input.type)
+        inputFile   = packname(input.id, fn)        # E.g. 44XXJJG2pw.in
+        outputFile  = inputFile + ".out"
+
+        if input.type == "DYNMAT":      # Specific for dynmat
+            args    = [ TYPE[task.type],
+                        "<",
+                        inputFile,
+                        ">",
+                        outputFile
+                        ]
+            return args
+
+        # Example: mpirun --mca btl openib,sm,self pw.x -npool 8 -inp  PW > PW.out
+        args   = [ settings.executable,
+                    settings.params,
+                    TYPE[task.type],
+                    "-npool %s" % self._npool(settings, task.type),
+                    "-inp",        # Options: "-inp" or "<"
+                    inputFile,
+                    ">",
+                    outputFile
+                    ]
+
+        return args
 
 
     def _npool(self, settings, type):
