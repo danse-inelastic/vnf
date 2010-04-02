@@ -57,9 +57,9 @@ class Actor(base):
 
         try:            # Try export phonon dispersion to idf format
             self._convertResults(director)
-#            self._createRecord(director)
-#            self._createLocation(director)
-#            self._relocateResults(director)
+            self._createRecord(director)
+            self._createLocation(director)
+            self._relocateResults(director)
             export  = EXPORT["success"]
         except:
             export  = EXPORT["error"]
@@ -85,7 +85,7 @@ class Actor(base):
         self._createPolarizations(Pols)
         self._createOmega2(Freqs)
         self._createQgridinfo()
-        print self._matdynpath
+        
 
         time.sleep(CONVERT_DELAY)   # Wait for a while to make sure that file are created
 
@@ -124,12 +124,14 @@ flfrq = %s
         filename        = os.path.join(self._matdynpath, "Qgridinfo")
         nqGrid          = self._matdynresult.nqGrid()
         recipLattice    = self._pwresult.recipLattice()
+#        print filename, nqGrid, recipLattice # XXX
         self._generateQgridinfo(filename, nqGrid, recipLattice)
 
 
     def _generateQgridinfo(self, filename, nqGrid, recipLattice):
-        if not filename or not nqGrid or not recipLattice:
-            raise       # If some of the parameters are not set, complain!
+        # XXX: Check if parameters are set
+        #if not filename or not nqGrid or not recipLattice:
+        #    raise       # If some of the parameters are not set, complain!
 
         s = ''
         for i in range(3):
@@ -154,7 +156,6 @@ flfrq = %s
         Notes:
             - Sets phonid
         """
-        
         domaccessor = director.retrieveDOMAccessor('material_simulations/phonons')
         orm         = domaccessor.orm   # ?
         clerk       = director.clerk
