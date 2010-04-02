@@ -61,13 +61,13 @@ class ResultInfo:
 
     def _init(self):
         "Additional init"
-        self._simrecord   = SimulationRecord(self._director, self._simid)
+        self._simrecord   = SimulationRecord(self._director, self._simid, self._subtype)
         self._task        = self._simrecord.task(self._linkorder)       # init task
         self._input       = self._simrecord.input(self._linkorder)      # init input
 
         if not self._job:                                               # init job
             # If no job set, get the latest job from simrecord only
-            self._job   = self._simrecord.job(self._linkorder, self._subtype)
+            self._job   = self._simrecord.job(self._linkorder)
 
 
     def simrecord(self):

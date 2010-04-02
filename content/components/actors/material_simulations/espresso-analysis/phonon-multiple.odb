@@ -55,10 +55,6 @@ class Actor(base):
         self._matdynresult  = MATDYNResult(director, self.id)   # Latest results
         self._mddosresult   = MATDYNResult(director, self.id, SUBTYPE_DOS)   # DOS results
         # Add dispersion results?
-##        print self._mddosresult.localPath()
-#        print self._mddosresult.resultPath().resultFiles("dos")
-#        # /home/dexity/exports/vnf/vnfb/content/data/tmp/tmpT6ltv8/GBHS29FX
-
 
         self._phonons(director, splitter)
         self._phononDos(director, splitter)
@@ -80,10 +76,8 @@ class Actor(base):
         section    = splitter.section()
         section.add(lc.paragraph(text="Phonon DOS", Class="qe-section"))
         dosfile    = self._mddosresult.dosFile()   # dos file path
-#        self._mddosresult
-        #print dosfile
 
-        if not dosfile:     # "No DOS file!"
+        if not dosfile:     # "No DOS file!" # if no DOS file, notify user!
             section.add(lc.htmldocument(text="No Phonon DOS", Class="qe-text-blue"))
             return
 
@@ -118,7 +112,6 @@ class Actor(base):
         sDis        = splAct.section()
         sSta        = splitter.section()
         statusdoc   = lc.document(id=ID_EXPORT_STATUS)
-#        statusdoc.add(lc.document(text="Hi"))
         sSta.add(statusdoc)
         doc.add(splitter)
         
