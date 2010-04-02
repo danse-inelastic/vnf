@@ -57,7 +57,7 @@ class Actor(base):
         docResults  = lc.document(id = ID_RESULTS)
         doc.add(docResults)
         
-        self._pwresult    = PWResult(director, self.id, linkorder = 0)
+        self._pwresult    = PWResult(director, self.id, linkorder = 0)  # From first "PW" task
 
         self._viewIndicator(director, sInd)
         self._showActions(director, sAct)                 # Show actions
