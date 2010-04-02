@@ -193,14 +193,22 @@ class PWResult(QEResult):
 
 
     def positionInput(self):
-        self._input.structure.parseInput()
-        struct  = self._input.structure.structure
-        poslist = zip(struct.symbols, struct.xyz)
+        "Returns input positions"
+         # From ATOMIC_POSITIONS card of input file
+        poslist     = []
+        positions   = self._atomicCard("atomic_positions", PWVALID)
+        for p in positions:
+            poslist.append((p[0], [float(p[1]), float(p[2]), float(p[3])]))
+
+        # XXX: Not sure if the code is correct
+        #self._input.structure.parseInput()
+        #struct  = self._input.structure.structure
+        #poslist = zip(struct.symbols, struct.xyz)
         return self._position(poslist)
 
 
     def positionOutput(self):
-        #poslist = [("Fe", 0, 0, 0), ("Fe", 0, 0.5, 0)]
+        #poslist = [("Fe", [0, 0, 0]), ("Fe", [0, 0.5, 0])]
         self._input.structure.parseOutput(self._outputFile)
         struct  = self._input.structure.structure
         poslist = zip(struct.symbols, struct.xyz)

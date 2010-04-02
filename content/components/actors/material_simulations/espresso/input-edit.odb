@@ -83,9 +83,9 @@ class Actor(base):
         table       = QEGrid(lc.grid(Class="qe-form"))
         form.add(table.grid())
 
+        text            = FormTextArea(name="text", value=self._inputText(director, input), Class="qe-text-area")
         fname           = FormTextField(name = "fname", value = input.filename)
         description     = FormTextField(name = "description", value=input.description)   # Make as textarea
-        text            = FormTextArea(name="text", value=self._inputText(director, input), Class="qe-text-area")
 
         submit      = FormSubmitButton(label="Edit Configuration Input")
         cancel      = lc.button(label="Cancel")
@@ -94,9 +94,9 @@ class Actor(base):
         st          = QEGrid(lc.grid()) # Submit Table
         st.addRow((submit, cancel), ("qe-action-accept", "qe-action-cancel"))
 
+        table.addRow(("Configuration: *", text ))
         table.addRow(("Name:", fname))
         table.addRow(("Description:", description))
-        table.addRow(("Configuration:", text ))
         table.addRow(("", st.grid()))
 
         table.setColumnStyle(0, "qe-form-label")
