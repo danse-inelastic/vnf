@@ -52,8 +52,6 @@ class ResultInfo:
         self._linkorder = linkorder
         self._job       = job
         self._subtype   = subtype
-        self._task      = None
-        self._simrecord = None
 
         self._init()
         self._status    = Message()
@@ -63,9 +61,9 @@ class ResultInfo:
 
     def _init(self):
         "Additional init"
-#        from vnfb.qeutils.qerecords import SimulationRecord     # Local import
-        self._simrecord   = SimulationRecord(self._director, self._simid)#, self._subtype)
-        self._task          = self._simrecord.task(self._linkorder)     # init task
+        self._simrecord   = SimulationRecord(self._director, self._simid)
+        self._task        = self._simrecord.task(self._linkorder)       # init task
+        self._input       = self._simrecord.input(self._linkorder)      # init input
 
         if not self._job:                                               # init job
             # If no job set, get the latest job from simrecord only
@@ -73,7 +71,13 @@ class ResultInfo:
 
 
     def simrecord(self):
+        "Returns simulation record object"
         return self._simrecord
+
+
+    def jit(self):
+        "Returns (job, input, task) tuple"
+        return (self._job, self._input, self._task)
 
 
     def retrieve(self):
