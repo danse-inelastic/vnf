@@ -292,19 +292,6 @@ def subtypeMatdyn(subtype):
 
     return SUBTYPE_MATDYN[subtype]
 
-# Status: Depricated, use classes that use SimulationRecord: ResultPath, subclasses of QEResult
-def resultsdir(director, simid, linkorder, subtype = None):
-    "Returns results directory in data/tmp"    
-    job     = qejob(director, simid, linkorder, subtype)
-    if job:
-        dds         = director.dds
-        dataroot    = os.path.abspath(dds.dataroot)
-        results     = ResultInfo(director, simid, linkorder)
-        if results.ready():
-            return os.path.join(dataroot, results.tardir())
-
-    return None
-
 
 # *********** TESTS ******************************
 

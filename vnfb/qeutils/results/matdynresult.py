@@ -20,7 +20,7 @@ NONE        = "None"
 class MATDYNResult(QEResult):
 
     def __init__(self, director, simid, subtype = None):
-        super(MATDYNResult, self).__init__(director, simid, linkorder = LINKORDER["MATDYN"], subtype = subtype)
+        super(MATDYNResult, self).__init__(director, simid, LINKORDER["MATDYN"], subtype)
 
 
     def _taskFactory(self):
@@ -30,7 +30,7 @@ class MATDYNResult(QEResult):
 
     def dosFile(self):
         "Returns path of .dos file if it exists"
-        dosfile = self._resultPath.resultFiles("dos")   # phonon dos file
+        dosfile = self._resultPath.resultFiles()   # phonon dos file
 
         if dosfile and os.path.exists(dosfile): # Check if file exists
             return dosfile

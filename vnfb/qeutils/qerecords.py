@@ -153,6 +153,7 @@ class SimulationRecord(QERecords):
         return None
 
 
+    # For some reason it calls _jobObject too often. Performance degradation?
     # Object methods
     def _jobObject(self, task, subtype = None):
         "Return *latest* job object from related task object"

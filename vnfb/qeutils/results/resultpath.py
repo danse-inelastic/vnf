@@ -48,8 +48,9 @@ REEXP["flvec"]          = FLVEC
 REEXP["flfrq"]          = FLFRQ
 REEXP["fldos"]          = FLDOS   # Aliase to "dos"
 
-
-# XXX: Address issue with subtypes!
+"""
+ResultPath - class that is responsible for results files
+"""
 class ResultPath(object):
     def __init__(self, director, simid, linkorder, subtype = None):
         self._director      = director
@@ -193,6 +194,9 @@ class ResultPath(object):
 
         return True
 
+    # Test methods
+    def testJit(self):
+        return self._jit
 
 __date__ = "$Mar 17, 2010 9:05:14 PM$"
 

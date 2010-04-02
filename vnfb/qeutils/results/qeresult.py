@@ -93,6 +93,10 @@ class QEResult(object):
         self._linkorder   = linkorder
 
 
+    def subtype(self):
+        "Returns the subtype of simulation task"
+        return self._subtype
+
     def _taskFactory(self):
         "Task factory, should be subclassed"
 
