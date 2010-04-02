@@ -55,9 +55,9 @@ class Actor(base):
         self._matdynresult  = MATDYNResult(director, self.id)   # Latest results
         self._mddosresult   = MATDYNResult(director, self.id, SUBTYPE_DOS)   # DOS results
         # Add dispersion results?
-#        print self._mddosresult.localPath()
-        print self._mddosresult.resultPath().resultFiles("dos")
-        # /home/dexity/exports/vnf/vnfb/content/data/tmp/tmpT6ltv8/GBHS29FX
+##        print self._mddosresult.localPath()
+#        print self._mddosresult.resultPath().resultFiles("dos")
+#        # /home/dexity/exports/vnf/vnfb/content/data/tmp/tmpT6ltv8/GBHS29FX
 
 
         self._phonons(director, splitter)

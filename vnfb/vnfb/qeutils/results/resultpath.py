@@ -62,12 +62,9 @@ class ResultPath(object):
 
     def _init(self):
         "Additional initialization"
-        self._results     = ResultInfo(self._director, self._simid, self._linkorder, self._subtype)
-#        simrecord   = SimulationRecord(self._director, self._simid)   # Have as an attribute instead?
-        self._jit   = self._results.simrecord().jobInputTask(self._linkorder, self._subtype)
-#        print self._subtype
-#        print self._jit[0].id
-        
+        self._resultinfo    = ResultInfo(self._director, self._simid, self._linkorder, subtype = self._subtype)
+        self._jit           = self._resultinfo.jit() #simrecord.jobInputTask(self._linkorder, self._subtype)
+
 
     def resultFiles(self, ftype = None):
         """
@@ -118,9 +115,9 @@ class ResultPath(object):
             return None
 
 #        results     = ResultInfo(self._director, self._simid, self._linkorder, self.subtype)
-        if self._results.ready():
+        if self._resultinfo.ready():
             datadir     = dataroot(self._director)
-            return os.path.join(datadir, self._results.tardir())
+            return os.path.join(datadir, self._resultinfo.tardir())
 
         return None     # default case
 
@@ -164,9 +161,9 @@ class ResultPath(object):
     def _files(self, path):
         "Returns list of full file names"
         files       = []
-        fileslist   = self.filesList(path)
+        fileslist   = self._filesList(path)
         for f in fileslist:
-            files.append(os.join(path, f))
+            files.append(os.path.join(path, f))
 
         return files
 
