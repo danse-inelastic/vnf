@@ -63,16 +63,6 @@ class QEResult(object):
         self._output.parse()
     
 
-    def localPath(self):
-        "Local results directory"
-        return self._localPath
-
-
-    def remotePath(self):
-        "Remote results directory"
-        return self._remotePath
-
-
     def input(self):
         "Returns input object (subclass of QEInput)"
         return self._input
@@ -81,6 +71,31 @@ class QEResult(object):
     def output(self):
         "Returns output object (subclass of QEInput)"
         return self._output
+
+
+    def inputFile(self):
+        "Returns absolute file name of input file"
+        return self._inputFile
+
+
+    def outputFile(self):
+        "Returns absolute file name of output file"
+        return self._outputFile
+
+
+    def dosFile(self):
+        "Returns absolute file name of DOS file"
+        return self._resultPath.resultFiles("dos")
+
+
+    def localPath(self):
+        "Local results directory"
+        return self._localPath
+
+
+    def remotePath(self):
+        "Remote results directory"
+        return self._remotePath
 
 
     def resultPath(self):

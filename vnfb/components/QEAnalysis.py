@@ -100,7 +100,7 @@ class Actor(base):
     def _contentExport(self, director):
         "Export content. "
         doc     = lc.document()
-        doc.add("Nothing no export for %s" % self.simtype)
+        doc.add("Nothing to export for %s" % self.simtype)
 
         return  doc
 

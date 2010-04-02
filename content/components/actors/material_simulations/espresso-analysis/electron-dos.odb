@@ -16,10 +16,17 @@ from vnfb.components.QEAnalysis import Actor as base
 
 class Actor(base):
 
-#    def content(self, director):
-#        self._showPlot(director, sD)        # Electron DOS
 
-    # + Electron DOS
+    def _simData(self, director, splitter):
+        "Shows phonon specific data (phonon DOS, dispersion)"
+        self._dosresult      = DOSResult(director, self.id)
+        self._matdynresult  = MATDYNResult(director, self.id)   # Latest results
+        self._mddosresult   = MATDYNResult(director, self.id, SUBTYPE_DOS)   # DOS results
+        # Add dispersion results?
+
+
+        self._phononDos(director, splitter)
+
 
     def _showPlot(self, director, section):
         "Plot electron DOS"

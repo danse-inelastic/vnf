@@ -28,16 +28,6 @@ class MATDYNResult(QEResult):
         return MatdynTask(configString=config)
 
 
-    def dosFile(self):
-        "Returns path of .dos file if it exists"
-        dosfile = self._resultPath.resultFiles("dos")   # phonon dos file
-
-        if dosfile and os.path.exists(dosfile): # Check if file exists
-            return dosfile
-
-        return None
-
-
     # XXX: nk1, nk2, nk3 should be in matdyn.in!
     # XXX: Doesn't check if nk1, nk2, nk3 are digits
     def nqGrid(self):
