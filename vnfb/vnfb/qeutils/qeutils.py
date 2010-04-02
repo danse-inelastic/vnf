@@ -19,8 +19,10 @@ import os.path
 import os
 from vnfb.qeutils.qeconst import INPUT, ANALYSIS, SUBTYPE_MATDYN
 
-
-def parseFile(filename):
+# Issue: number of columns depends on magnetism of the material
+#   Margetic:       (e, up, down, cum)
+#   Non-magnetic:   (e, dos, cum)
+def parseElectronDos(filename):
     """Parses file consisting of at least 4 columns separated by space or tab
     Notes:
         - First line is the description
@@ -39,10 +41,11 @@ def parseFile(filename):
         e.append(float(list[0]))
         x.append(float(list[1]))
         y.append(float(list[2]))
-        z.append(float(list[3]))
+#        z.append(float(list[3]))
         line = f.readline()
     f.close()
-    return (e,  x,  y,  z)
+    return (e,  x,  y)
+#    return (e,  x,  y,  z)
 
 
 def parsePhononDos(filename):

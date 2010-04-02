@@ -11,59 +11,45 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
-from vnfb.qeutils.qeconst import LINKORDER
+import luban.content as lc
+from vnfb.qeutils.qeutils import parseElectronDos
+from vnfb.qeutils.results.dosresult import DOSResult
 from vnfb.components.QEAnalysis import Actor as base
 
 class Actor(base):
 
-
     def _simData(self, director, splitter):
-        "Shows phonon specific data (phonon DOS, dispersion)"
+        "Shows electron DOS specific data"
         self._dosresult      = DOSResult(director, self.id)
-        self._matdynresult  = MATDYNResult(director, self.id)   # Latest results
-        self._mddosresult   = MATDYNResult(director, self.id, SUBTYPE_DOS)   # DOS results
-        # Add dispersion results?
+        self._electronDos(director, splitter)
 
 
-        self._phononDos(director, splitter)
+    # XXX: Issue: For magnetic materials it gives tuple (e, up, down, cum)
+    # For non-magnetic material it gives tuple (e, dos, cum?): E (eV), dos(E), Int dos(E)
+    def _electronDos(self, director, splitter):
+        "Display electron DOS plot"
+        # Not displayed if no file exist or data are not in proper format
+        section    = splitter.section()
+        section.add(lc.paragraph(text="Electron DOS", Class="qe-section"))
+        dosfile    = self._dosresult.dosFile()   # dos file path
 
-
-    def _showPlot(self, director, section):
-        "Plot electron DOS"
-        dosfile      = self._dosFile()
-
-        if dosfile is None:
+        if not dosfile:     # "No DOS file!" # if no DOS file, notify user!
+            section.add(lc.htmldocument(text="No Electron DOS", Class="qe-text-blue"))
             return
 
-        section.add(lc.paragraph(text="Electron DOS", Class="qe-section"))
+        # Populate D(E) list from file
+        data    = parseElectronDos(dosfile)
+        if not data:        # "DOS file contains non-proper data!"
+            section.add(lc.htmldocument(text="No Electron DOS", Class="qe-text-blue"))
+            return
 
-        # Populate 'x', 'y' and 'z' (cumulative) lists from file
-        (e,  up,  down,  cum) = parseFile(dosfile)
+        (e,  up,  down) = data 
 
         plot = lc.plot2d(Class="default-size-plot")
-        plot.curve(x=e, y=up, label='Spin Up')
-        plot.curve(x=e, y=down, label='Spin Down')
+        plot.curve(x=e, y=up, label="Record A")   # 'Spin Up'
+        plot.curve(x=e, y=down, label="Record B") # 'Spin Down'
 
         section.add(plot)
-
-
-    # DOS simulation task. Should have ni.dos file
-    def _dosFile(self):
-        "Retruns absolute path of the DOS file"
-        # Example: "/home/dexity/exports/vnf/vnfb/content/data/tmp/tmpVr7_LD/4IJW2PEI/ni.dos" v
-        for jit in self._jitlist:
-            if jit[0] is None:   # If job is None
-                continue
-
-            if jit[1] is not None and jit[2].linkorder == LINKORDER["DOS"]:   # DOS type
-                dataroot    = self._dataroot()
-                results     = ResultInfo(self._director, self.id, LINKORDER["DOS"])
-                if results.ready():
-                    path        = os.path.join(results.tardir(), "ni.dos")  # dos name is hardcoded
-                    filepath    = os.path.join(dataroot, path)
-                    return filepath
-
-        return None
 
 
 def actor():

@@ -11,6 +11,8 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
+# OUTDATED !!! Not used
+
 import os
 from vinil.utils.const import STEPS
 from vinil.utils.utils import stamp2date
