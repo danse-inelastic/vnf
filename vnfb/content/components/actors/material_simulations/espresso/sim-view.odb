@@ -80,10 +80,10 @@ class Actor(base):
 
     def _showActions(self, section, sim):
         self._refreshAction(section, sim)
+        self._analysisAction(section, sim)
         self._newAction(section, sim)
         self._editAction(section, sim)
         self._cloneAction(section, sim)
-        self._analysisAction(section, sim)
         self._deleteAction(section, sim)
 
         section.add(lc.document(Class="clear-both"))
