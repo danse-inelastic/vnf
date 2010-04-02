@@ -69,7 +69,7 @@ class ResultPath(object):
     def resultFiles(self, ftype = None):
         """
         Retruns absolute path of the result file(s) specified by file type (ftype), e.g.
-        output or input config files
+        output or input config files, that exist on the file system
 
         Example: "/home/dexity/exports/vnf/vnfb/content/data/tmp/tmpTsdw21/4ICDAVNK/4I2NPMY4pw.in.out"
         We should be able to identify input and output files without input record!
@@ -78,21 +78,22 @@ class ResultPath(object):
         if not ftype:                # all files in the result directory
             return self._allFiles()
 
-        files   = self.filesList()
+        files   = self.filesList()  # Files that exist on the file system
         
         if not ftype in REEXP or not files:   # No entry, no file!
             return None
 
         file    = self._matchCheck(files, ftype)
         if file:
-            # path is not None (was verified before!)
+            # path is not None (verified before!)
             return os.path.join(self.localPath(), file)
 
         return None
 
 
     def filesList(self):
-        "Returns list of file names"
+        "Returns list of file names that actually exist on the file system "
+        # Example: ["4I2NPMY4pw.in", "4I2NPMY4pw.in.out", "run.sh", ...]
         path    = self.localPath()
         if not path:
             return None
@@ -114,7 +115,6 @@ class ResultPath(object):
         if not self._recordsOK():
             return None
 
-#        results     = ResultInfo(self._director, self._simid, self._linkorder, self.subtype)
         if self._resultinfo.ready():
             datadir     = dataroot(self._director)
             return os.path.join(datadir, self._resultinfo.tardir())
@@ -151,6 +151,7 @@ class ResultPath(object):
 
     def _allFiles(self):
         "Returns list of *absolute* file names"
+        # Example: ["/path/to/results/4I2NPMY4pw.in", "/path/to/results/4I2NPMY4pw.in.out", ...]
         path    = self.localPath()
         if os.path.exists(path):
             return self._files(path)
@@ -170,7 +171,7 @@ class ResultPath(object):
 
     def _filesList(self, path):
         "Filters files only and returns list of file names"
-        # Example: ["4I2NPMY4pw.in", "4I2NPMY4pw.in.out", "run.sh"]
+        # Example: ["4I2NPMY4pw.in", "4I2NPMY4pw.in.out", "run.sh", ...]
         files   = []
         entries = os.listdir(path)
 
