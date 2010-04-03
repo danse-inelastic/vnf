@@ -172,6 +172,7 @@ class QEDriver(base):
         inputFile   = packname(input.id, fn)        # E.g. 44XXJJG2pw.in
         outputFile  = inputFile + ".out"
 
+        # Without this IF statement dynmat task will not run!
         if input.type == "DYNMAT":      # Specific for dynmat
             args    = [ TYPE[task.type],
                         "<",
