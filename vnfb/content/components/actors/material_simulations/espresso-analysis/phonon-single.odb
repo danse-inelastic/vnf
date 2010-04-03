@@ -15,14 +15,14 @@ import luban.content as lc
 from vnfb.qeutils.qegrid import QEGrid
 from vnfb.qeutils.results.dynmatresult import DYNMATResult
 
+NONE    = "None"
+
 from vnfb.components.QEAnalysis import Actor as base
 class Actor(base):
     
     def _simData(self, director, splitter):
         "Shows phonon specific data (phonon DOS, dispersion)"
         self._dynmatresult      = DYNMATResult(director, self.id)
-        #print self._dynmatresult.output().'single phonon'#output.dynmat_modes()
-        print self._dynmatresult.output().property('single phonon')
 
         self._freqs(director, splitter)
 
@@ -33,9 +33,22 @@ class Actor(base):
         section.add(lc.paragraph(text="Phonon", Class="qe-section"))
         table       = QEGrid(lc.grid(Class = "qe-table-analysis"))
         section.add(table.grid())
-        table.addRow(("Phonon Frequencies (1/cm):", "Hi"))
+        table.addRow(("Phonon Frequencies (1/cm):", self._freqsColumn()))
         table.setColumnStyle(0, "qe-cell-param-analysis")
-        #self._phresult.grid(formatted=True)
+
+
+    def _freqsColumn(self):
+        "Creates formatted column of phonon frequencies"
+        output  = self._dynmatresult.output()
+        if not output:
+            return NONE
+
+        freqs   = output.property('single phonon')
+        table   = QEGrid(lc.grid(Class="qe-table-freqs"))
+        for f in freqs:
+            table.addRow(("%f" % f,))
+
+        return table.grid()
 
 
 def actor():
