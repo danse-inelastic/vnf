@@ -11,6 +11,7 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
+from qecalc.qetask.dynmattask import DynmatTask
 from vnfb.qeutils.qeconst import LINKORDER
 from vnfb.qeutils.results.qeresult import QEResult
 
@@ -19,6 +20,12 @@ class DYNMATResult(QEResult):
 
     def __init__(self, director, simid):
         super(DYNMATResult, self).__init__(director, simid, linkorder = LINKORDER["DYNMAT"])
+
+
+    def _taskFactory(self):
+        config  = "[dynmat.x]\ndynmatInput: %s\ndynmatOutput: %s" % (self._inputFile, self._outputFile)
+        return DynmatTask(configString=config)
+
 
 __date__ = "$Mar 22, 2010 11:40:10 PM$"
 

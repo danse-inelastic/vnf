@@ -11,10 +11,32 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
-from vnfb.components.QEAnalysis import Actor as base
+import luban.content as lc
+from vnfb.qeutils.qegrid import QEGrid
+from vnfb.qeutils.results.dynmatresult import DYNMATResult
 
+from vnfb.components.QEAnalysis import Actor as base
 class Actor(base):
-    pass
+    
+    def _simData(self, director, splitter):
+        "Shows phonon specific data (phonon DOS, dispersion)"
+        self._dynmatresult      = DYNMATResult(director, self.id)
+        #print self._dynmatresult.output().'single phonon'#output.dynmat_modes()
+        print self._dynmatresult.output().property('single phonon')
+
+        self._freqs(director, splitter)
+
+
+    def _freqs(self, director, splitter):
+        "Displays phonon frequencies"
+        section    = splitter.section()
+        section.add(lc.paragraph(text="Phonon", Class="qe-section"))
+        table       = QEGrid(lc.grid(Class = "qe-table-analysis"))
+        section.add(table.grid())
+        table.addRow(("Phonon Frequencies (1/cm):", "Hi"))
+        table.setColumnStyle(0, "qe-cell-param-analysis")
+        #self._phresult.grid(formatted=True)
+
 
 def actor():
     return Actor(name='material_simulations/espresso-analysis/phonon-single')
