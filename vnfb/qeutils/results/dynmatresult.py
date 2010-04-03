@@ -26,7 +26,9 @@ class DYNMATResult(QEResult):
         config  = """[dynmat.x]
 dynmatInput: %s
 dynmatOutput: %s
-filout: %s""" % (self._inputFile, self._outputFile, self._resultPath.resultFiles("filout"))
+filout: %s""" % (self._inputFile,
+                 self._outputFile,
+                 self._resultPath.resultFiles("filout"))
         return DynmatTask(configString=config)
 
 

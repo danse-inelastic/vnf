@@ -245,7 +245,8 @@ a.qe-run-task {
 
 .qe-table-atomic td,
 .qe-table-forces td,
-.qe-table-stress td {
+.qe-table-stress td,
+.qe-table-freqs td{
     border: 0px;
     padding: 2px;
     vertical-align: top;
@@ -266,6 +267,10 @@ a.qe-run-task {
     width: 200px
 }
 
+.qe-table-freqs table {
+    border-collapse: collapse;
+    width: 200px
+}
 
 textarea {
     width: 400px;
