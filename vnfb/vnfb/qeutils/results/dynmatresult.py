@@ -23,7 +23,10 @@ class DYNMATResult(QEResult):
 
 
     def _taskFactory(self):
-        config  = "[dynmat.x]\ndynmatInput: %s\ndynmatOutput: %s" % (self._inputFile, self._outputFile)
+        config  = """[dynmat.x]
+dynmatInput: %s
+dynmatOutput: %s
+filout: %s""" % (self._inputFile, self._outputFile, self._resultPath.resultFiles("filout"))
         return DynmatTask(configString=config)
 
 

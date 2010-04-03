@@ -37,6 +37,7 @@ DOS         = ending(DOS_EXT)   # Valid both for phonons and electrons
 FLVEC       = ending(FLVEC_EXT)
 FLFRQ       = ending(FLFRQ_EXT)
 FLDOS       = ending(FLDOS_EXT)
+FILOUT      = "dynmat.out"      # dynmat file with friequencies
 
 # Dictionary of regular expressions for file types
 REEXP   = {}    
@@ -47,6 +48,7 @@ REEXP["dos"]            = DOS     # Examples: matdyn.dos, pwscf.dos
 REEXP["flvec"]          = FLVEC
 REEXP["flfrq"]          = FLFRQ
 REEXP["fldos"]          = FLDOS   # Aliase to "dos"
+REEXP["filout"]         = FILOUT
 
 """
 ResultPath - class that is responsible for results files
