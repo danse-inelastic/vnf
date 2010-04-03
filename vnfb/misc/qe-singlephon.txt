@@ -86,3 +86,5 @@ Frequencies (1/cm):
 000.0
 000.0
 
+(3 frequencies for each atom)
+
