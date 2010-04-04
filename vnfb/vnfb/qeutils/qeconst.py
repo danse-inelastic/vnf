@@ -47,6 +47,8 @@ INPUT["d3"]     = "d3"      + INPUT_EXT
 
 NOPARALLEL  = ("DOS", "MATDYN", "DYNMAT", "Q2R", "PLOTBAND") # "PP"? # "PLOTBAND"?
 
+NOPARALSIM  = ("single-phonon",)    # List of simulation types each of the tasks should run on single core
+
 # Notes:
 #   - "BANDS" is a parallel program (should run on the same number of cores as PW task)
 #   - "DYNMAT" is not a parallel program

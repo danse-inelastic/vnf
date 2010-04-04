@@ -19,12 +19,11 @@ from luban.content.Form import Form
 from luban.content.FormSelectorField import FormSelectorField
 from luban.content.FormTextField import FormTextField
 from luban.content.FormSubmitButton import FormSubmitButton
-from vnfb.qeutils.qeconst import PROCESSORS
+from vnfb.qeutils.qeconst import PROCESSORS, NOPARALSIM, SIMTYPE
 
 import luban.content as lc
 from luban.components.AuthorizedActor import AuthorizedActor as base
 
-# Requires simulation id,
 class Actor(base):
 
     class Inventory(base.Inventory):
@@ -62,20 +61,20 @@ class Actor(base):
         sA          = splitter.section()
         sA.add(viewIndicator(director))
         sB          = splitter.section()
-        sB.add(self._setForm(settings))
+        sB.add(self._setForm(sim, settings))
 
         return doc
 
 
-    def _setForm(self, settings):
+    def _setForm(self, sim, settings):
         "Edit settings form"
         form        = Form(id='create-simulation-form')
         table       = QEGrid(lc.grid(Class="qe-form"))
         form.add(table.grid())
 
         numproc         = FormSelectorField(name        = "numproc",
-                                            entries     = enumerate(PROCESSORS),
-                                            selection   = self._proc(settings))
+                                            entries     = self._procOptions(sim),
+                                            selection   = self._procSelected(settings))
         sname           = FormTextField(name = "sname", value = settings.sname)
         description     = FormTextField(name = "description", value=settings.description)   # Make as textarea
 
@@ -102,15 +101,37 @@ class Actor(base):
         return form
     
 
-    def _proc(self, settings):
+    def _procSelected(self, settings):
         "Return selected order"
-        selected    = 1
-        for i in range(len(PROCESSORS)):
-            if PROCESSORS[i] == settings.numproc:
-                return i+1
+        return settings.numproc
+#        selected    = 0
+#        for i in range(len(PROCESSORS)):
+#            if PROCESSORS[i] == settings.numproc:
+##                print i+1
+##                print PROCESSORS[i]
+##                print settings.numproc
+#                return i+1
+#
+#        return selected
 
-        return selected
 
+    def _procOptions(self, sim):
+        "Available options for number of cores"
+        #BB  = ("5", "4", "1", "3", "2", "1")
+        #("1a", "2b", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "24", "36", "p", "r")
+        #("a", "b", "c", "d", "e", "f", "g", "h", "j", "k", "l", "m", "n", "o", "p", "r")
+        #(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 24, 14)
+#        DEFAULT     = enumerate(BB)
+        DEFAULT     = enumerate(PROCESSORS)
+#        if not sim:
+#            return DEFAULT
+#
+#        for k in SIMTYPE.keys():
+#            if SIMTYPE[k] == sim.type and k in NOPARALSIM:
+#                return enumerate((1,))  # Single core
+                
+        return DEFAULT
+    
 
     def updateRecord(self, director):
         """Update settings record"""

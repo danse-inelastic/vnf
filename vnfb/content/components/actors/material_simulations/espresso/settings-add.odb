@@ -107,8 +107,6 @@ class Actor(base):
                    "executable":    SETTINGS["executable"], # Set from constants?
                    "params":        SETTINGS["params"],     # Set from constants?
                    "modules":       SETTINGS["modules"]     # Set from constants?
-                   #"numnodes":      self.numnodes, # Not Set. Calculated from numproc
-                   #"procpernode":   12,            # Not Set. Calculated from numproc
                   }
         settings     = QESetting()
         settings.setDirector(director)
