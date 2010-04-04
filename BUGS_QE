@@ -9,6 +9,6 @@ Bugs list for Quantum Espresso part of VNF
     In the middle of job submission (with progress bar) you click on any other link
 to get off the page. Progress bar still checking the progress (looking for the proper ID)
 which is gone.
-- Fix setting-edit (number of processors default selection)
-- For "Single Phonon" simulatin type allow user to pick only 1 processor (settings-edit,
+- [FIXED] Fix setting-edit (number of processors default selection)
+- [FIXED] For "Single Phonon" simulatin type allow user to pick only 1 processor (settings-edit,
   settings-create)

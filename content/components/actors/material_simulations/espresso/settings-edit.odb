@@ -103,32 +103,19 @@ class Actor(base):
 
     def _procSelected(self, settings):
         "Return selected order"
+        # Because of the bug in FormSelectorField we will just return the number of cores
         return settings.numproc
-#        selected    = 0
-#        for i in range(len(PROCESSORS)):
-#            if PROCESSORS[i] == settings.numproc:
-##                print i+1
-##                print PROCESSORS[i]
-##                print settings.numproc
-#                return i+1
-#
-#        return selected
 
 
     def _procOptions(self, sim):
         "Available options for number of cores"
-        #BB  = ("5", "4", "1", "3", "2", "1")
-        #("1a", "2b", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "24", "36", "p", "r")
-        #("a", "b", "c", "d", "e", "f", "g", "h", "j", "k", "l", "m", "n", "o", "p", "r")
-        #(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 24, 14)
-#        DEFAULT     = enumerate(BB)
         DEFAULT     = enumerate(PROCESSORS)
-#        if not sim:
-#            return DEFAULT
-#
-#        for k in SIMTYPE.keys():
-#            if SIMTYPE[k] == sim.type and k in NOPARALSIM:
-#                return enumerate((1,))  # Single core
+        if not sim:
+            return DEFAULT
+
+        for k in SIMTYPE.keys():
+            if SIMTYPE[k] == sim.type and k in NOPARALSIM:
+                return enumerate((1,))  # Single core
                 
         return DEFAULT
     
