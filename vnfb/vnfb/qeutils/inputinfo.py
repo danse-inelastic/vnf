@@ -128,7 +128,7 @@ class InputInfo:
 
     def _locatorDefault(self):
         "Default locator"
-        return (GENERATOR, ROUTINE)
+        return (GENERATOR, "generateInput")
 
 
     def _simType(self):
