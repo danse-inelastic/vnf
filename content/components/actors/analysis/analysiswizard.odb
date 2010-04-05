@@ -75,6 +75,8 @@ class Actor(base):
 #                    analysisType = self.inventory.analysisType,
 #                    dynamicsType = dynamicsType)  
 
+    
+
         # select button
         b = lc.button(label='select'); doc.add(b)
         #b.onclick = getInfoAndProceed()
@@ -84,6 +86,10 @@ class Actor(base):
                     analysisType = self.inventory.analysisType
                     )
         return doc
+    
+#    def getTrajectoryInfo(self, director):
+#        
+#        director.clerk.db.updateRecord(analysisRecord)
 
     def analysisSettings(self, director):
         self.debug = journal.debug('analysisSettings')

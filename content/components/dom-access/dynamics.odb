@@ -23,11 +23,12 @@ class Accessor(base):
         # build orm for all dynamics types--orm 
         #registers and stores these internally
         from vnfb.dom.material_simulations.Phonons import Phonons
-        from vnfb.dom.material_simulations.Motion import MotionDO
+        #from vnfb.dom.material_simulations.Motion import MotionDO
+        from vnfb.dom.material_simulations.Trajectory import TrajectoryDO
         # from vsat.Phonons import Phonons
         # from vsat.Motion import Motion
         orm(Phonons)
-        orm(MotionDO)
+        orm(TrajectoryDO)
         return orm
     orm = property(_getOrm)
 
@@ -172,7 +173,8 @@ class Accessor(base):
         return self.dynamicsTables()
     
     def dynamicsTables(self):
-        typenames = ['material_simulations.Motion.Motion','material_simulations.Phonons.PhononsTable']
+        typenames = ['material_simulations.Trajectory.Trajectory',
+                     'material_simulations.Phonons.PhononsTable']
         ormtables = map(self._getTable, typenames)
         return ormtables
     
