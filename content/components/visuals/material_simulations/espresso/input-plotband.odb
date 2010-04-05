@@ -11,13 +11,7 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
-class PLOTBANDGenerator(object):
 
-    def __init__(self, inventory, input):
-        self._inv       = inventory
-        self._input     = input
-
-
-__date__ = "$Mar 24, 2010 9:59:39 AM$"
+__date__ = "$Apr 5, 2010 11:50:24 AM$"
 
 
