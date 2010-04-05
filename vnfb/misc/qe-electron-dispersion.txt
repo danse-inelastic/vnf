@@ -23,10 +23,20 @@ Configuration field:
 
 [PLOTBANDS]
 Form:
-[Finish] ???
+
+Emin (eV): [0]
+Emax (eV): [25]
+Delta E (eV): [0.1]
+
 
 Configuration field:
-[Finish] ???
+
+{bands.dat}
+{Emin} {Emax}
+{bands.xmgr}
+{bands.ps}
+{Efermi}
+{DeltaE} {Efermi}
 
 {Tab "Analysis"}
 
