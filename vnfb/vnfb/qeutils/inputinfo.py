@@ -108,12 +108,11 @@ class InputInfo:
 
 
     def locatorBANDS(self):
-        return (BASE + "generate-bands",  "generateInput")# Not implemented
+        return (BASE + "generate-bands",  "generateInput")
 
 
     def locatorPLOTBAND(self):
-        #return BASE + "generate-plotbands"  # Not implemented
-        return self._locatorDefault()
+        return (BASE + "generate-plotband", ROUTINE)
 
 
     def locatorPP(self):
