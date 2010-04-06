@@ -39,6 +39,7 @@ FLFRQ       = ending(FLFRQ_EXT)
 FLDOS       = ending(FLDOS_EXT)
 FILOUT      = "dynmat.out"      # dynmat file with friequencies
 FILBAND     = "bands.dat"
+PSBAND      = "bands.ps"    # .ps file from plotband.x results
 
 # Dictionary of regular expressions for file types
 REEXP   = {}    
@@ -51,6 +52,7 @@ REEXP["flfrq"]          = FLFRQ
 REEXP["fldos"]          = FLDOS   # Aliase to "dos"
 REEXP["filout"]         = FILOUT
 REEXP["filband"]        = FILBAND
+REEXP["psband"]         = PSBAND
 
 """
 ResultPath - class that is responsible for results files
@@ -70,13 +72,23 @@ class ResultPath(object):
         self._jit           = self._resultinfo.jit() #simrecord.jobInputTask(self._linkorder, self._subtype)
 
 
-    def resultFiles(self, ftype = None, islocal = True):
+    def resultFiles(self, ftype = None, relative = False):
         """
         Retruns absolute path of the result file(s) specified by file type (ftype), e.g.
         output or input config files, that exist on the file system
 
         Example: "/home/dexity/exports/vnf/vnfb/content/data/tmp/tmpTsdw21/4ICDAVNK/4I2NPMY4pw.in.out"
         We should be able to identify input and output files without input record!
+
+        relative - flag that affects path of returned string. If True, returns
+                   results path with respect to dataroot. Used for downloading
+                   content.
+        Examples:
+            relative = True
+            returns: "tmp/tmpTsdw21/4ICDAVNK/4I2NPMY4pw.in.out"
+
+            relative = False
+            returns: "/home/dexity/exports/vnf/vnfb/content/data/tmp/tmpTsdw21/4ICDAVNK/4I2NPMY4pw.in.out"
         """
 
         if not ftype:                # all files in the result directory
@@ -89,6 +101,9 @@ class ResultPath(object):
 
         file    = self._matchCheck(files, ftype)
         if file:
+            if relative:    # Results directory relative to dataroot
+                return os.path.join(self._resultinfo.tardir(), file)
+            
             # path is not None (verified before!)
             return os.path.join(self.localPath(), file)
 

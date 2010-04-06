@@ -11,12 +11,53 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
+import luban.content as lc
+from vnfb.qeutils.qegrid import QEGrid
+from vnfb.qeutils.results.plotbandresult import PLOTBANDResult
+from vnfb.qeutils.message import Message
 from vnfb.components.QEAnalysis import Actor as base
 
 class Actor(base):
-    pass
 
-    # + Electron Dispersion
+    def _simData(self, director, splitter):
+        "Shows electron DOS specific data"
+        self._plotbandresult      = PLOTBANDResult(director, self.id)
+        self._electronDispersion(director, splitter)
+
+
+    def _electronDispersion(self, director, splitter):
+        "Display electron dispersion plot"
+        # Not displayed if no file exist or data are not in proper format
+        section    = splitter.section()
+        table       = QEGrid(lc.grid(Class = "qe-table-analysis"))
+        section.add(lc.paragraph(text="Electron Dispersion", Class="qe-section"))
+        section.add(table.grid())
+
+        message     = Message()
+        message.setHtmlLink("bands.ps", self._plotbandresult.bandsPS())
+        table.addRow(("Files:",     message.string("a")))
+        table.setColumnStyle(0, "qe-cell-param-analysis")
+        
+#        dosfile    = self._dosresult.dosFile()   # dos file path
+#
+#        if not dosfile:     # "No DOS file!" # if no DOS file, notify user!
+#            section.add(lc.htmldocument(text="No Electron DOS", Class="qe-text-blue"))
+#            return
+#
+#        # Populate D(E) list from file
+#        data    = parseElectronDos(dosfile)
+#        if not data:        # "DOS file contains non-proper data!"
+#            section.add(lc.htmldocument(text="No Electron DOS", Class="qe-text-blue"))
+#            return
+#
+#        (e,  up,  down) = data
+#
+#        plot = lc.plot2d(Class="default-size-plot")
+#        plot.curve(x=e, y=up, label="Record A")   # 'Spin Up'
+#        plot.curve(x=e, y=down, label="Record B") # 'Spin Down'
+#
+#        section.add(plot)
+
 
 def actor():
     return Actor(name='material_simulations/espresso-analysis/electron-dispersion')

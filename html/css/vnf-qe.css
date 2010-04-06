@@ -371,6 +371,7 @@ tr td .qe-table-delete {
 .qe-cell-param-analysis {
     width: 140px;
     font-weight: bold;
+    background-color: #ddd;
 }
 
 .qe-cell-value {
