@@ -28,30 +28,32 @@ class PLOTBANDResult(QEResult):
         return self._resultPath.resultFiles("psband", relative)
 
 
-    def bandsPNG(self):
+    def bandsPNG(self, relative = False):
         "Returns bands.png file converted from bands.ps"
-        pngfile     = self._resultPath.resultFiles("pngband")
+        pngfile     = self._resultPath.resultFiles("pngband")   # Absolute
         if pngfile:    # If file exists, just return it
-            return pngfile
+            fpngfile     = self._resultPath.resultFiles("pngband", relative)
+            return fpngfile
 
         # Otherwise try to convert: ps -> png
         psfile      = self._resultPath.resultFiles("psband")
-        return self._ps2png(psfile)
+        return self._ps2png(psfile, relative)
 
 
-    def _ps2png(self, filename):
+    def _ps2png(self, filename, relative):
         "Try to converts bands.ps -> bands.png and returns absolute filename"
         try:
             pspath  = self.bandsPS()
-            pngpath = os.path.join(self._resultPath.localPath(), PNGBAND)
+            pngpath = os.path.join(self._resultPath.localPath(), PNGBAND)   # Absolute
 
             # Rotate 90 degrees and convert .ps -> .png
             from PythonMagick import Image
             img     = Image(pspath)
             img.rotate(90)          # For some reason plotband.x rotates image
-            img.write(pngpath)
+            img.write(pngpath)      # Write to .png file
 
-            return pngpath          # If success, return path to .png file
+            fpngpath = os.path.join(self._resultPath.localPath(relative), PNGBAND) # Format dependent
+            return fpngpath         # If success, return path to .png file
         except:
             return None
 

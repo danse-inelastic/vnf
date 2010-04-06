@@ -34,15 +34,14 @@ class Actor(base):
         section.add(table.grid())
 
         psfile      = self._plotbandresult.bandsPS(relative = True)
-        pngfile     = self._plotbandresult.bandsPNG()
+        pngfile     = self._plotbandresult.bandsPNG(relative = True)
         message     = Message()
         message.setHtmlLink("bands.ps", psfile)
         table.addRow(("Files:",     message.string("a")))
         table.setColumnStyle(0, "qe-cell-param-analysis")
-        
-        section.add(lc.htmldocument(text="<img src='%s' />" % self._plotbandresult.bandsPS()))
-        
 
+        if pngfile:
+            section.add(lc.htmldocument(text="<img src='%s' width='700'/>" % pngfile))
 
 
 def actor():
