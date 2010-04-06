@@ -43,7 +43,7 @@ INPUT["q2r"]    = "q2r"     + INPUT_EXT
 INPUT["matdyn"] = "matdyn"  + INPUT_EXT
 INPUT["dynmat"] = "dynmat"  + INPUT_EXT
 INPUT["d3"]     = "d3"      + INPUT_EXT
-
+INPUT["plotband"]   = "plotband"    + INPUT_EXT
 
 NOPARALLEL  = ("DOS", "MATDYN", "DYNMAT", "Q2R", "PLOTBAND") # "PP"? # "PLOTBAND"?
 
