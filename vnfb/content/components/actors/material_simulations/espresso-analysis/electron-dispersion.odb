@@ -33,10 +33,10 @@ class Actor(base):
         section.add(lc.paragraph(text="Electron Dispersion", Class="qe-section"))
         section.add(table.grid())
 
-        relativeFile    = self._plotbandresult.bandsPS(relative = True)
-        #print self._plotbandresult.bandsPNG()
+        psfile      = self._plotbandresult.bandsPS(relative = True)
+        pngfile     = self._plotbandresult.bandsPNG()
         message     = Message()
-        message.setHtmlLink("bands.ps", relativeFile)
+        message.setHtmlLink("bands.ps", psfile)
         table.addRow(("Files:",     message.string("a")))
         table.setColumnStyle(0, "qe-cell-param-analysis")
         

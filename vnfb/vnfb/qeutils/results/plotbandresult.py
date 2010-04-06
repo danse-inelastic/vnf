@@ -11,8 +11,10 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
+import os
 from vnfb.qeutils.qeconst import LINKORDER
 from vnfb.qeutils.results.qeresult import QEResult
+from vnfb.qeutils.results.resultpath import PNGBAND
 
 NONE        = "None"
 class PLOTBANDResult(QEResult):
@@ -33,13 +35,26 @@ class PLOTBANDResult(QEResult):
             return pngfile
 
         # Otherwise try to convert: ps -> png
-        psfile     = self._resultPath.resultFiles("psband")
+        psfile      = self._resultPath.resultFiles("psband")
         return self._ps2png(psfile)
 
 
     def _ps2png(self, filename):
-        "Converts bands.ps -> bands.png and returns absolute filename"
-        return None
+        "Try to converts bands.ps -> bands.png and returns absolute filename"
+        try:
+            pspath  = self.bandsPS()
+            pngpath = os.path.join(self._resultPath.localPath(), PNGBAND)
+
+            # Rotate 90 degrees and convert .ps -> .png
+            from PythonMagick import Image
+            img     = Image(pspath)
+            img.rotate(90)          # For some reason plotband.x rotates image
+            img.write(pngpath)
+
+            return pngpath          # If success, return path to .png file
+        except:
+            return None
+
 
 __date__ = "$Mar 22, 2010 11:40:10 PM$"
 

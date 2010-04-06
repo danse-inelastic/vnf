@@ -3,6 +3,7 @@ List of Dependencies:
 ...
 - PythonMagick, Version: > 0.8, Python wrapper for ImageMagick,
     http://www.imagemagick.org/download/python/
+    http://sourceforge.net/projects/pylab/files/
 
 
 
