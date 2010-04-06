@@ -33,30 +33,16 @@ class Actor(base):
         section.add(lc.paragraph(text="Electron Dispersion", Class="qe-section"))
         section.add(table.grid())
 
+        relativeFile    = self._plotbandresult.bandsPS(relative = True)
+        #print self._plotbandresult.bandsPNG()
         message     = Message()
-        message.setHtmlLink("bands.ps", self._plotbandresult.bandsPS())
+        message.setHtmlLink("bands.ps", relativeFile)
         table.addRow(("Files:",     message.string("a")))
         table.setColumnStyle(0, "qe-cell-param-analysis")
         
-#        dosfile    = self._dosresult.dosFile()   # dos file path
-#
-#        if not dosfile:     # "No DOS file!" # if no DOS file, notify user!
-#            section.add(lc.htmldocument(text="No Electron DOS", Class="qe-text-blue"))
-#            return
-#
-#        # Populate D(E) list from file
-#        data    = parseElectronDos(dosfile)
-#        if not data:        # "DOS file contains non-proper data!"
-#            section.add(lc.htmldocument(text="No Electron DOS", Class="qe-text-blue"))
-#            return
-#
-#        (e,  up,  down) = data
-#
-#        plot = lc.plot2d(Class="default-size-plot")
-#        plot.curve(x=e, y=up, label="Record A")   # 'Spin Up'
-#        plot.curve(x=e, y=down, label="Record B") # 'Spin Down'
-#
-#        section.add(plot)
+        section.add(lc.htmldocument(text="<img src='%s' />" % self._plotbandresult.bandsPS()))
+        
+
 
 
 def actor():
