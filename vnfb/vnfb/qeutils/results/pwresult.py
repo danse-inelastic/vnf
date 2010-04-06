@@ -123,21 +123,21 @@ class PWResult(QEResult):
 
 
     # Output methods
-    def totalEnergy(self, formated=False):
+    def totalEnergy(self, formatted=False):
         "Return total energy"
         energy  = self._energy('total energy')
 
-        if not formated:    # No formatting
+        if not formatted:    # No formatting
             return energy
 
         return self._format(energy)
 
 
-    def fermiEnergy(self, formated=False):
+    def fermiEnergy(self, formatted=False):
         "Return fermi energy"
         energy  = self._energy('fermi energy')
 
-        if not formated:    # No formatting
+        if not formatted:    # No formatting
             return energy
 
         return self._format(energy)

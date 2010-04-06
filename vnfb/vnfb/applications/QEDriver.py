@@ -18,7 +18,7 @@
 #
 from vnfb.dom.QEJob import QEJob
 from vnfb.qeutils.qeutils import stamp, writeRecordFile, defaultInputName, readRecordFile
-from vnfb.qeutils.qeconst import RUNSCRIPT, TYPE, NOPARALLEL#, JOB_STATE
+from vnfb.qeutils.qeconst import RUNSCRIPT, TYPE, NOPARALLEL
 from vnfb.qeutils.qeutils import packname
 from luban.applications.UIApp import UIApp as base
 
@@ -173,7 +173,7 @@ class QEDriver(base):
         outputFile  = inputFile + ".out"
 
         # Without this IF statement dynmat task will not run!
-        if input.type == "DYNMAT":      # Specific for dynmat
+        if input.type in NOPARALLEL:      # Specific for dynmat
             args    = [ TYPE[task.type],
                         "<",
                         inputFile,
@@ -199,11 +199,7 @@ class QEDriver(base):
     def _npool(self, settings, type):
         "Returns npool depending on type of simulation task"
         # suppose settings is not None
-        num = settings.npool
-        if type in NOPARALLEL:
-            num = 1
-
-        return num
+        return settings.npool
 
 
     def _moveFiles(self):
