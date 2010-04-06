@@ -39,7 +39,8 @@ FLFRQ       = ending(FLFRQ_EXT)
 FLDOS       = ending(FLDOS_EXT)
 FILOUT      = "dynmat.out"      # dynmat file with friequencies
 FILBAND     = "bands.dat"
-PSBAND      = "bands.ps"    # .ps file from plotband.x results
+PSBAND      = "bands.ps"        # .ps file from plotband.x results
+PNGBAND     = "bands.png"       # .png file converted from bands.ps
 
 # Dictionary of regular expressions for file types
 REEXP   = {}    
@@ -53,6 +54,7 @@ REEXP["fldos"]          = FLDOS   # Aliase to "dos"
 REEXP["filout"]         = FILOUT
 REEXP["filband"]        = FILBAND
 REEXP["psband"]         = PSBAND
+REEXP["pngband"]        = PNGBAND
 
 """
 ResultPath - class that is responsible for results files
@@ -91,7 +93,7 @@ class ResultPath(object):
             returns: "/home/dexity/exports/vnf/vnfb/content/data/tmp/tmpTsdw21/4ICDAVNK/4I2NPMY4pw.in.out"
         """
 
-        if not ftype:                # all files in the result directory
+        if not ftype:                # All files in the result directory
             return self._allFiles()
 
         files   = self.filesList()  # Files that exist on the file system
