@@ -13,9 +13,8 @@
 
 from vnfb.qeutils.results.pwresult import PWResult
 from vnfb.qeutils.results.bandsresult import BANDSResult
+from vnfb.qeutils.results.resultpath import PSBAND, XMGRBAND
 
-DEFAULT_XMGR    = "bands.xmgr"
-DEFAULT_PS      = "bands.ps"
 
 class PLOTBANDGenerator(object):
 
@@ -31,13 +30,6 @@ class PLOTBANDGenerator(object):
         self._bandsresult   = BANDSResult(self._director, self._inv.id)
         self._pwresult      = PWResult(self._director, self._inv.id, linkorder = 1)
 
-#{bands.dat}
-#{Emin} {Emax}
-#{bands.xmgr}
-#{bands.ps}
-#{Efermi}
-#{DeltaE} {Efermi}
-
 
     def setInput(self):
         bandsdat    = self._bandsresult.bandsFile() # 
@@ -45,8 +37,8 @@ class PLOTBANDGenerator(object):
         efermi      = efermi[0]
         self._input.append(bandsdat)
         self._input.append("%f %f" % (self._inv.emin, self._inv.emax))
-        self._input.append(DEFAULT_XMGR)
-        self._input.append(DEFAULT_PS)
+        self._input.append(XMGRBAND)
+        self._input.append(PSBAND)
         self._input.append("%f" % efermi)
         self._input.append("%f %f" % (self._inv.deltae, efermi) )
 

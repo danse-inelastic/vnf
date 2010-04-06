@@ -41,6 +41,7 @@ FILOUT      = "dynmat.out"      # dynmat file with friequencies
 FILBAND     = "bands.dat"
 PSBAND      = "bands.ps"        # .ps file from plotband.x results
 PNGBAND     = "bands.png"       # .png file converted from bands.ps
+XMGRBAND    = "bands.xmgr"
 
 # Dictionary of regular expressions for file types
 REEXP   = {}    
