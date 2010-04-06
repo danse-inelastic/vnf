@@ -172,13 +172,6 @@ class ResultInfo:
                                     jobid       = self._job.id)
                   )
 
-#
-#        action  = ""
-#
-#        if self._job:
-#            action   =
-#        return action
-
 
     def _statusstring(self):
         self._status.setClass(CLASS_NA)     # Default class for status string
@@ -291,6 +284,7 @@ class ResultInfo:
 
 
     def tardir(self):
+        "Returns path to untarred directory with results"
         path    = self._tarpath()
         parts   = path.split(".tgz")
         dir     = parts[0]

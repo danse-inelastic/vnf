@@ -20,6 +20,11 @@ class PLOTBANDResult(QEResult):
     def __init__(self, director, simid):
         super(PLOTBANDResult, self).__init__(director, simid, linkorder = LINKORDER["PLOTBAND"])
 
+
+    def bandsPS(self):
+        "Returns plotbands ps file"
+        return self._resultPath.resultFiles("psband", relative = True)
+
 __date__ = "$Mar 22, 2010 11:40:10 PM$"
 
 

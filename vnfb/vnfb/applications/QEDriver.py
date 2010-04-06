@@ -172,8 +172,8 @@ class QEDriver(base):
         inputFile   = packname(input.id, fn)        # E.g. 44XXJJG2pw.in
         outputFile  = inputFile + ".out"
 
-        # Without this IF statement dynmat task will not run!
-        if input.type in NOPARALLEL:      # Specific for dynmat
+        # No "mpirun" for single core simulations
+        if input.type in NOPARALLEL:      
             args    = [ TYPE[task.type],
                         "<",
                         inputFile,
@@ -197,7 +197,7 @@ class QEDriver(base):
 
 
     def _npool(self, settings, type):
-        "Returns npool depending on type of simulation task"
+        "Returns npool"
         # suppose settings is not None
         return settings.npool
 
