@@ -126,7 +126,7 @@ class ResultPath(object):
         return None
 
 
-    def localPath(self):
+    def localPath(self, relative = False):
         """
         Each job for the task of type will have separate root path specified by
         task type (ttype)
@@ -138,6 +138,9 @@ class ResultPath(object):
             return None
 
         if self._resultinfo.ready():
+            if relative:                # If relative path to dataroot
+                return self._resultinfo.tardir()
+
             datadir     = dataroot(self._director)
             return os.path.join(datadir, self._resultinfo.tardir())
 
