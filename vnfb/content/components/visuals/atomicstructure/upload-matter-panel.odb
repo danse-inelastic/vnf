@@ -24,8 +24,8 @@ def visual(uploadid=None, structureid=None, director=None):
     doc = lc.document(title='', Class='container')
 
     # view indicator
-    vi = viewindicator(structureid, director)
-    doc.add(vi)
+#    vi = viewindicator(structureid, director)
+#    doc.add(vi)
 
     # uploader
     uploader = lc.uploader(

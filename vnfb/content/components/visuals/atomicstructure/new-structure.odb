@@ -47,7 +47,7 @@ def visual(director, id):
                            ).replaceContent(
         director.retrieveVisual('atomicstructure/upload-matter-panel',
                                 director=director,
-                                id = id))
+                                uploadid = id))
     decideInput.add(btnUpload)
     doc.add(decideInput)
 
