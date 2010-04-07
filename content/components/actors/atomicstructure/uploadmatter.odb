@@ -14,7 +14,7 @@
 
 from luban.content import load, select, alert
 import luban.content as lc
-
+import os
 
 from luban.components.AuthorizedActor import AuthorizedActor as base
 
@@ -41,32 +41,36 @@ class Actor(base):
 
         # check the upload
         uploadid = self.inventory.uploadid
-        from vnfb.utils.upload import abspath
-        dir = abspath(uploadid)
-        import os
-        entries = os.listdir(dir); found = None
-        for entry in entries:
-            if entry.startswith('.'): 
-                continue
-            if entry.endswith('.xyz') or entry.endswith('.pdb') or \
-                                                entry.endswith('.cif'): 
-                found = entry; 
-                break
+        #from vnfb.utils.upload import abspath
+        #dir = abspath(uploadid)
+        if os.path.isdir(uploadid):
+            #eventually enable uploading multiple files...for now just pick out one
+            dir = os.path.abspath(uploadid)
+            
+            entries = os.listdir(dir); found = None
+            for entry in entries:
+                if entry.startswith('.'): 
+                    continue
+                if entry.endswith('.xyz') or entry.endswith('.pdb') or \
+                                                    entry.endswith('.cif'): 
+                    found = entry
+                    break
+            # nothing uploaded
+            if not found: return alert('Invalid file')
+
+            # path to the file
+            found = os.path.join(dir, found)
+        else:
+            found = None
+            if uploadid.endswith('.xyz') or uploadid.endswith('.pdb') or \
+                                                uploadid.endswith('.cif'): 
+                found = os.path.abspath(uploadid)
 
         # XXXX
         # should check if the files are sane and are not hostile
         # ....
 
-        # nothing uploaded
-        if not found: return alert('Invalid file')
-
-        # path to the file
-        found = os.path.join(dir, found)
-
         # create a new record
-        clerk = director.clerk
-        db = clerk.db
-        #structure.read(found)
         domaccess = director.retrieveDOMAccessor('atomicstructure')
         structure = domaccess.newAtomicStructure()
         ext = os.path.splitext(found)[-1]
