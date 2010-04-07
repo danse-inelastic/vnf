@@ -29,8 +29,8 @@ def visual(uploadid=None, structureid=None, director=None):
 
     # uploader
     uploader = lc.uploader(
-        name = 'sqe',
-        label='Click here to browse the S(Q,E) file to upload',
+        name = 'structureUploader',
+        label='Click here to browse for the structural file to upload',
         )
     
     saveuploadfile = lc.load(
@@ -40,7 +40,7 @@ def visual(uploadid=None, structureid=None, director=None):
     uploader.onsubmit=saveuploadfile
 
     uploader.oncomplete = lc.load(
-        actor='atomicstructure/uploadsqe', routine='onUpload',
+        actor='atomicstructure/uploadmatter', routine='onUpload',
         structureid=structureid, uploadid = uploadid)
 
     doc.add(uploader)
@@ -70,7 +70,7 @@ def viewindicator(id, director):
     action = lc.load(actor=actor, routine='showOverview', id = id)
     path.append((label,action))
 
-    path.append('Upload S(Q,E)')
+    path.append('Upload structure')
 
     return director.retrieveVisual('view-indicator', path=path)
 
