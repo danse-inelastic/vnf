@@ -26,15 +26,15 @@ def visual(director, id):
     doc = lc.document()
     doc.add(viewIndicator(director, id))
     
-#    sp = lc.splitter(orientation='vertical'); doc.add(sp)
-#    top = sp.section()
-#    bottom = sp.section()
+    sp = lc.splitter(orientation='vertical'); doc.add(sp)
+    top = sp.section()
+    bottom = sp.section()
 
     decideInput = Document(Class='decideInputMethod')
     btnDb = Button(label='Load from database', tip='load from database')
     btnDb.onclick = select(id='new-structure-form'
                            ).replaceContent(load(actor='cod', routine='default', id = id))
-    #decideInput.add(btnDb)
+    decideInput.add(btnDb)
     btnMan = Button(label='Create manually', tip='input coordinates by hand')
     btnMan.onclick = select(id='new-structure-form'
                             ).replaceContent(
@@ -46,11 +46,11 @@ def visual(director, id):
 
     formdoc = Document(id='new-structure-form', Class='new-structure-container')
     formdoc.oncreate = select(element=formdoc).replaceContent(
-#        load(actor='cod', routine='default', id = id)
-#        )
-        director.retrieveVisual('atomicstructure/edit-structure-view',
-                                director=director,
-                                id = id))
+        load(actor='atomicstructure/cod', routine='default', id = id)
+        )
+#        director.retrieveVisual('atomicstructure/edit-structure-view',
+#                                director=director,
+#                                id = id))
     doc.add(formdoc)
    
     return doc
