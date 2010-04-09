@@ -22,7 +22,9 @@ from luban.content.FormSubmitButton import FormSubmitButton
 from luban.content.Button import Button
 from luban.content.Document import Document
 
-def visual(director, id):
+def visual(director, id = None):
+#    if not id:
+#        id = director.getGUID()
     doc = lc.document()
     doc.add(viewIndicator(director, id))
     
