@@ -95,8 +95,8 @@ class Actor(base):
         ext = os.path.splitext(found)[-1]
         structure.read(found)
         #
-        self.inventory.structureid = structure.id
         orm = director.clerk.orm
+        self.inventory.structureid = orm(structure).id
         orm.save(structure)
 
 #        # copy upload to new path
