@@ -21,15 +21,8 @@ Must Have
 
 NOW
 ===
-
-- [PART] Display simulation results and plot with 
-- [DONE] Fix retrieving results again (fix getmtime.py)
-- Run "Multiple Phonon" simulation
-- Run "Single Phonon" simulation
-- Phonon DOS ("Analyze" button)
-- Phonon Dispersion ("Analyze" button)
 - Add progress bar for jobs with steps description
-- Generate QE config file from atomic structure !!!
+- Move "servers" reference from qesimulations to qesettings
 
 
 CRITICAL FIXES
@@ -39,7 +32,7 @@ See:
     http://kb.iu.edu/data/data/acux.html
     Command: awk '{ sub("\r$", ""); print }' winfile.txt > unixfile.txt
 
-- Recognize elements and populate psedo potentials depending on the elements in the structure
+- [DONE] Recognize elements and populate psedo potentials depending on the elements in the structure
     (see input-pw.odb visual)
 - Don't allow to set config input unless the previous config input is set
 
@@ -73,6 +66,16 @@ Minor:
 
 TODO Steps
 ==========
+
+
+
+- [DONE] Display simulation results and plot with
+- [DONE] Fix retrieving results again (fix getmtime.py)
+- [DONE] Run "Multiple Phonon" simulation
+- [DONE] Run "Single Phonon" simulation
+- [DONE] Phonon DOS ("Analyze" button)
+- [DONE] Phonon Dispersion ("Analyze" button)
+- [DONE] Generate QE config file from atomic structure !!!
 
 1. [DONE] Run simulation with vnf created bash script (no qeapp.py)
 2. [DONE] Get results with "Check" link
