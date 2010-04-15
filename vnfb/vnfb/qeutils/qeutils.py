@@ -194,6 +194,12 @@ def unpackname(string, id):
     return (id, name)
 
 
+def key2str(key):
+    "Takes key in form 'create-job' and returns 'Create job'"
+    # words are separated by "-" character
+    return " ".join(key.split("-")).capitalize()
+
+
 def latestRecord(records, timefield):
     """Retruns latest record based on timefield column
         timefield   - string

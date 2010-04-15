@@ -15,6 +15,7 @@
 Displays the status of the job
 """
 
+from vnfb.qeutils.qeutils import key2str
 from vnfb.qeutils.qerecords import SimulationRecord
 
 import luban.content as lc
@@ -55,7 +56,7 @@ class JobStatus(object):
         if not self._job:
             return doc
         
-        content.text    = self._job.status
+        content.text    = key2str(self._job.status)
         return doc
 
 

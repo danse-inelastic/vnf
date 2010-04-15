@@ -218,7 +218,7 @@ class QEDriver(base):
 
         # Create output directory (ESPRESSO_TEMPDIR) for QE
         dds.makedirs(self._sim, server=server)
-        self._updateStatus("copy")
+        self._updateStatus("copy-files")
         
 
     def _test_makedirs(self):
@@ -237,7 +237,7 @@ class QEDriver(base):
 
 
     def _updateStatus(self, status):
-        self._job.setDirector(self)
+        #self._job.setDirector(self)    # Don't need it?
         self._job.updateRecord({"status": status})
 
 
