@@ -15,14 +15,15 @@
 Displays the status of the job
 """
 
+from vnfb.qeutils.qeconst import ID_OUTPUT, ID_STATUS
 from vnfb.qeutils.qeutils import key2str
 from vnfb.qeutils.qerecords import SimulationRecord
 
 import luban.content as lc
 from luban.content import load
 
-ID_OUTPUT       = "qe-container-output"
-ID_STATUS       = "qe-container-status"
+#ID_OUTPUT       = "qe-container-output"
+#ID_STATUS       = "qe-container-status"
 
 DEFAULT_MESSAGE = "Not Started"
 
@@ -49,7 +50,7 @@ class JobStatus(object):
 
     def message(self):
         "Returns status message"
-        doc     = lc.document(id = ID_STATUS)
+        doc     = lc.document(id = self._statusId())
         content = lc.htmldocument(text = DEFAULT_MESSAGE)
         doc.add(content)
 
@@ -71,15 +72,25 @@ class JobStatus(object):
                                        routine   = 'retrieveStatus',
                                       id        = self._simid,
                                       taskid    = self._task.id,
-                                      jobid     = self._job.id)
+                                      jobid     = self._job.id,
+                                      linkorder = self._linkorder)
                      )
 
 
     def output(self):
-        doc     = lc.document(id=ID_OUTPUT)
-        doc.add("None")
+        doc     = lc.document(id=self._outputId())
+        content = lc.htmldocument(text = "None")
+        doc.add(content)
+        
         return doc
 
+
+    def _statusId(self):
+        return "%s-%s" % (ID_STATUS, self._linkorder)
+
+
+    def _outputId(self):
+        return "%s-%s" % (ID_OUTPUT, self._linkorder)
 
 __date__ = "$Mar 18, 2010 11:05:41 PM$"
 

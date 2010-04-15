@@ -11,11 +11,13 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
+from vnfb.qeutils.qeconst import ID_OUTPUT, ID_STATUS
+
 import luban.content as lc
 from luban.content import load, select
 from luban.components.AuthorizedActor import AuthorizedActor as base
 
-ID_STATUS   = "qe-container-status"
+#ID_STATUS   = "qe-container-status"
 
 class Actor(base):
     """
@@ -29,17 +31,17 @@ class Actor(base):
         id          = pyre.inventory.str('id', default='')      # Simulation Id
         taskid      = pyre.inventory.str('taskid', default='')
         jobid       = pyre.inventory.str('jobid', default='')   # Not passed at this time
+        linkorder   = pyre.inventory.str('linkorder', default='')
 
 
     def retrieveStatus(self, director):
-        job     = director.clerk.getQEJobs(id=self.jobid)
-        job.setDirector(director)
-        job.updateRecord({"status": "Hi",})
+#        job     = director.clerk.getQEJobs(id=self.jobid)
+#        job.setDirector(director)
+#        job.updateRecord({"status": "Hi",})
 
-        return select(id=ID_STATUS).replaceContent(lc.htmldocument(text=job.status))
+        return [select(id=self._statusId()).replaceContent(lc.htmldocument(text="Status")),#job.status)),
+                select(id=self._outputId()).replaceContent(lc.htmldocument(text="Output"))]
 
-
-#    def 
 
     def __init__(self):
         super(Actor, self).__init__(name='jobs/getresults')
@@ -47,11 +49,20 @@ class Actor(base):
         return
 
 
+    def _statusId(self):
+        return "%s-%s" % (ID_STATUS, self.linkorder)
+
+
+    def _outputId(self):
+        return "%s-%s" % (ID_OUTPUT, self.linkorder)
+
+
     def _configure(self):
         super(Actor, self)._configure()
         self.id         = self.inventory.id
         self.taskid     = self.inventory.taskid
         self.jobid      = self.inventory.jobid
+        self.linkorder  = self.inventory.linkorder
 
 
     def _init(self):

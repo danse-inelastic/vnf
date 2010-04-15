@@ -162,6 +162,9 @@ SETTINGS  = {
 RUNSCRIPT   = "run.sh"
 
 RESULTS_ID   = "results-link"
+ID_OUTPUT    = "qe-container-output"
+ID_STATUS    = "qe-container-status"
+
 
 # TODO: Move to parser/inputs
 ZASR        = OrderedDict()

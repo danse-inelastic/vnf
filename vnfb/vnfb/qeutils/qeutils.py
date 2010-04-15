@@ -195,7 +195,7 @@ def unpackname(string, id):
 
 
 def key2str(key):
-    "Takes key in form 'create-job' and returns 'Create job'"
+    "Takes key in form, like 'create-job' and returns 'Create job'"
     # words are separated by "-" character
     return " ".join(key.split("-")).capitalize()
 
