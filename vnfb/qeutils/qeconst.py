@@ -106,39 +106,43 @@ SERVERS     = ("foxtrot.danse.us",)
                #"upgrayedd.danse.us",
                #"teragrid"
 
-# States of a job
-STATES = {
+# Torque states
+TORQUE_STATES = {
         'C': 'finished',
         'R': 'running',
         'Q': 'queued',
         'E': 'exiting', # intermediate state, Running -> Exiting -> Completed
         'H': 'onhold',  # cancelled
+        'T': 'moved',
         'W': 'waiting',
         'S': 'suspend', # stopped
         }
 
 
-#    submitting  (None)
-#    submit-failed   (None)
-#    finished    ('C')
-#    running     ('R')
-#    queued      ('Q')
-#    exiting     ('E')
-#    onhold      ('H')
-#    waiting     ('W')
-#    suspend     ('S')
-
-
-
-#(percentage, description)
+# Job states
 JOB_STATE   = OrderedDict()
+
+# Job submitting to cluster:      (percentage, description)
 JOB_STATE["create-job"]         = (10, "Creating job record ...")
 JOB_STATE["prepare-configs"]    = (20, "Preparing configuration files ...")
 JOB_STATE["prepare-controls"]   = (40, "Preparing control files ...")
-JOB_STATE["copy"]               = (60, "Copying files to cluster ...")
+JOB_STATE["copy-files"]         = (60, "Copying files to cluster ...")
 JOB_STATE["enqueue"]            = (80, "Submitting to queue ...")
-JOB_STATE["submitted"]          = (100, "Done")
+JOB_STATE["submitted"]          = (100, "Done!")
+JOB_STATE["submit-failed"]      = (100, "Submit failed! :(")
 
+# Job on cluster (Torque states: taken from vnfb.clusterscheduler.torque._states)
+JOB_STATE["finished"]           = "finished"
+JOB_STATE["running"]            = "running"
+JOB_STATE["queued"]             = "queued"
+JOB_STATE["exiting"]            = "exiting"
+JOB_STATE["onhold"]             = "onhold"
+JOB_STATE["moved"]              = "moved"
+JOB_STATE["waiting"]            = "waiting"
+JOB_STATE["suspend"]            = "suspend"
+
+# Misc
+JOB_STATE["none"]               = "None"
 
 PARSERS = ("qeinput",)
 
