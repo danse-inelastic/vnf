@@ -43,11 +43,12 @@ EXPORT_DATAFILES = \
 	retrieveresults.pml \
 	updatejobstatus.pml \
 	usersFromDB.odb \
-	web-weaver.pml \
+	web-weaver-library.pml \
 	widget.lib
 
 # 	clerk.pml \
 # 	ssher.pml \
+#	web-weaver.pml \
 
 #CP_F = rsync -r --copy-unsafe-links
 
