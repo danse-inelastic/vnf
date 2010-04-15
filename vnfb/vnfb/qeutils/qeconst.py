@@ -78,6 +78,7 @@ SIMTYPE["electron-dispersion"]  = "Electron Dispersion"
 SIMTYPE["geometry"]             = "Geometry Optimization"
 SIMTYPE["single-phonon"]        = "Single Phonon"
 SIMTYPE["multiple-phonon"]      = "Multiple Phonon"
+SIMTYPE["molecular-dynamics"]   = "Molecular Dynamics"
 
 # Types of simulations
 SIMCHAINS   = OrderedDict()
@@ -87,7 +88,8 @@ SIMCHAINS[SIMTYPE["electron-dispersion"]]   = ("PW", "PW", "BANDS", "PLOTBAND")
 SIMCHAINS[SIMTYPE["geometry"]]              = ("PW",)
 SIMCHAINS[SIMTYPE["single-phonon"]]         = ("PW", "PH", "DYNMAT")
 SIMCHAINS[SIMTYPE["multiple-phonon"]]       = ("PW", "PH", "Q2R", "MATDYN") # DOS and Dispersion, See: example06
-#SIMCHAINS["Molecular Dynamics"]     = ()   - Next step
+SIMCHAINS[SIMTYPE["molecular-dynamics"]]    = ("CP", "PP")  # ?
+
 
 SIMLIST     = SIMTYPE.values()  #SIMCHAINS.keys()
 
