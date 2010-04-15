@@ -237,6 +237,7 @@ _states = {
     'Q': 'queued',
     'E': 'exiting', #after having run
     'H': 'onhold',
+    'T': 'moved',
     'W': 'waiting',
     'S': 'suspend',
     }
