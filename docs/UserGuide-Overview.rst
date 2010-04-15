@@ -3,9 +3,7 @@
 Overview
 ========
 
-Virtual neutron facility is a web service where you can plan and run
-virtual neutron experiments, and collect virtual experiemnt data for
-your virtual sample. 
+Virtual neutron facility is a web service where you can plan and run virtual neutron experiments, and collect virtual experimental data for your virtual sample.
 In a virtual neutron experiment, virtual neutrons are generated from a
 virtual neutron source, guided by virtual neutron guides, scattered by
 a virtual sample and sample environment, and intercepted by virtual detectors.
