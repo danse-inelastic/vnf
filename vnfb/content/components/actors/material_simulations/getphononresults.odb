@@ -25,7 +25,7 @@ class Actor(base):
     class Inventory(base.Inventory):
 
         import pyre.inventory
-
+        
         id = pyre.inventory.str('id')
 
 
@@ -82,7 +82,7 @@ class Actor(base):
         disps = phononaccess.getPhonons(atomicstructure=structrecord)
         
         if not disps:
-            doc.paragraph(text=['There is no phonons calculated.'])
+            doc.paragraph(text=['There are no phonons calculated.'])
         elif len(disps)==1:
             disp = disps[0]
             doc1 = doc.document(Class='container')
