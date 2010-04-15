@@ -31,6 +31,8 @@ EXPORT_DATAFILES = \
 	destroydb.py \
 	destroydataobject.py \
 	establishglobalpointers.py \
+	establish-ssh-tunnels.py \
+	establish-ssh-tunnels.sh \
 	findreferrals.py \
 	getuserlist.py \
 	initdb-alpha.py \
