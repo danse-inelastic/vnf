@@ -54,6 +54,7 @@ EXPORT_PYTHON_MODULES = \
 	Label.py \
 	Lattice.py \
 	MaterialSimulation.py \
+	News.py \
 	OwnedObject.py \
 	Privilege.py \
         QEConfiguration.py \

@@ -36,7 +36,13 @@ class Actor(base):
         addhelpwindow = select(id='').append(helpwindow)
 
         #
-        actions = [showdock] + showmainview + [addhelpwindow]
+        newsticker = director.redirect(
+            actor='news', routine = 'createTicker',
+            include_credential = False)
+        addnewsticker = select(id='header-news-container').append(newsticker)
+
+        #
+        actions = [showdock] + showmainview + [addhelpwindow, addnewsticker]
         
         return actions
         return director.redirect(actor='matter', routine='replaceBodyFrameWithMatterList')

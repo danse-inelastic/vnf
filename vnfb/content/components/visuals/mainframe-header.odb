@@ -40,7 +40,7 @@ def visual(director):
     logoff = load(actor='logoff')
     link = lc.link(label='logoff', onclick=logoff)
     userinfo_doc.add(link)
-    
+
     return horizontal
 
     
