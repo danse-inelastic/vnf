@@ -19,8 +19,8 @@ debug = journal.debug( 'qetorque' )
 from pyre.units.time import hour, minute, second
 import math
 
-from vnf.clusterscheduler.torque import Scheduler as base
-from vnf.clusterscheduler.torque import _walltime_str
+from vnfb.clusterscheduler.torque import Scheduler as base
+from vnfb.clusterscheduler.torque import _walltime_str
 from vnfb.qeutils.qeconst import NOPARALLEL
 
 PROC_PER_NODE   = 12    # Number of processors per node, specific for foxtrot

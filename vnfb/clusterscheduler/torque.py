@@ -82,7 +82,8 @@ class Scheduler:
         
         lines = output.split( '\n' )
         lines = lines[1:] # first line removed
-        if len(lines) == 0: return self.statusByTracejob( jobid )
+        if len(lines) == 0:
+            return self.statusByTracejob( jobid )
         d = {}
         for line in lines:
             try:
@@ -111,8 +112,13 @@ class Scheduler:
             'remote_errorfilename': errorfilename,
             'state': _state( state ),
             'time_start': start_time,
+            'blah': "Hi"
+            #'resources_used.walltime': d['resources_used.walltime'] # Fix?
             }
 
+        #print d # XXX
+        #print lines
+        
         if ret['state'] == 'finished':
             output, error = self._readoutputerror(
                 outputfilename, errorfilename )
@@ -127,24 +133,31 @@ class Scheduler:
         return ret
 
 
+    # XXX: Tracing job state after it is completed is very system dependent!
     def statusByTracejob( self, jobid ):
-
+        ""
         d = {}
         
-        tag = 'Exit_status'
         try:
+            tag = 'Exit_status'
             words = self._tracejob_search( jobid, tag )
         except self.TracejobFailed:
             # this job must have been terminated for a long time
             return self.unknownTerminatedStatus(jobid)
-            
+
+        print words # XXX
         status = words[3]
         key, value = status.split( '=' )
         assert key.lower() == 'exit_status'
         d [ 'exit_code' ] =  value
 
-        tag = 'job was terminated'
-        words = self._tracejob_search( jobid, tag )
+        try:
+            tag = 'job was terminated'
+            words = self._tracejob_search( jobid, tag )
+        except self.TracejobFailed:
+            # this job must have been terminated for a long time
+            return self.unknownTerminatedStatus(jobid)
+
         d[ 'time_completion' ] = ' '.join( words[0:2] )
 
         output, error = self._readoutputerror(
@@ -192,7 +205,7 @@ class Scheduler:
     def _tracejob_search(self, jobid, tag):
         jobid = jobid.strip()
         cmds = [ 'tracejob %s | grep %r' % (jobid, tag) ]
-        
+
         failed, output, error = self._launch( cmds )
 
         if failed:
