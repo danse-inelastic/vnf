@@ -33,6 +33,19 @@ class DbApp(base):
         name = pyre.inventory.str(name='name')
 
 
+    def help(self):
+        print
+        print
+        print "create a db table"
+        print " * typical usage:"
+        print "   $ createtable.py --name=<tablename>"
+        print
+        print " * table name is the name of the table class in vnfb.dom namespace. For example"
+        print "   - News.News"
+        print
+        print
+
+
     def main(self, *args, **kwds):
         clerk = self.inventory.clerk
         name = self.inventory.name
