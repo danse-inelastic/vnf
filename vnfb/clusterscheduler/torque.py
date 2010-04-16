@@ -112,13 +112,9 @@ class Scheduler:
             'remote_errorfilename': errorfilename,
             'state': _state( state ),
             'time_start': start_time,
-            'blah': "Hi"
-            #'resources_used.walltime': d['resources_used.walltime'] # Fix?
+            'runtime': d['resources_used.walltime']
             }
 
-        #print d # XXX
-        #print lines
-        
         if ret['state'] == 'finished':
             output, error = self._readoutputerror(
                 outputfilename, errorfilename )
@@ -145,7 +141,6 @@ class Scheduler:
             # this job must have been terminated for a long time
             return self.unknownTerminatedStatus(jobid)
 
-        print words # XXX
         status = words[3]
         key, value = status.split( '=' )
         assert key.lower() == 'exit_status'
