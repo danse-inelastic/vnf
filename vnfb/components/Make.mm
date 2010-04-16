@@ -49,6 +49,7 @@ EXPORT_PYTHON_MODULES = \
 	DistributedDataStorage.py \
 	DOMAccessor.py \
 	JnlpFile.py \
+        Job.py \
 	JobBuilder.py \
 	MasterTable.py \
 	Postman.py \

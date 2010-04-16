@@ -135,33 +135,34 @@ class TaskCell:
 
     def _jobId(self, table):
         "Displays id of the current job" 
-        link        = "None"  
-        action      = ""
         jobs        = self._director.clerk.getQEJobs(where="taskid='%s'" % self._task.id)
-        if jobs:
-            self._job  = latestJob(jobs)
-            link = lc.link(label   = self._job.id,
-                           onclick = load(actor     = 'jobs/jobs-view',
+
+        if not jobs:
+            table.addRow(("Job:", "None", ""))
+
+
+        self._job  = latestJob(jobs)
+        link = lc.link(label   = self._job.id,
+                       onclick = load(actor     = 'jobs/jobs-view',
+                                      id        = self._simid,
+                                      taskid    = self._task.id,
+                                      jobid     = self._job.id,
+                                      type      = self._type)
+                        )
+        action = lc.link(label    = "All Jobs",
+                          Class    = "qe-all-jobs", # Class = "qe-task-action"
+                           onclick = load(actor     = 'jobs/jobs-view-all',
                                           id        = self._simid,
                                           taskid    = self._task.id,
-                                          jobid     = self._job.id,
-                                          type      = self._type)
+                                          type      = self._type,
+                                          linkorder = self._linkorder)
                             )
-            action = lc.link(label    = "All Jobs",
-                              Class    = "qe-all-jobs", # Class = "qe-task-action"
-                               onclick = load(actor     = 'jobs/jobs-view-all',
-                                              id        = self._simid,
-                                              taskid    = self._task.id,
-                                              type      = self._type,
-                                              linkorder = self._linkorder)
-                                )
 
         table.addRow(("Job:", link, action))
 
 
     def _results(self, table):
         "Returns link to tar file for download. "
-        #taskinfo    = TaskInfo(self._simid, self._task.id, self._type) #self._job, taskinfo)
         results     = ResultInfo(self._director, self._simid, self._linkorder)
         
         table.addRow(("Results: ", results.link(), results.action() ))

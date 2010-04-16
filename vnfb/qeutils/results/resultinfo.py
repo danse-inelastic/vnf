@@ -14,8 +14,9 @@ import os.path
 
 import os
 import time
+from vnfb.components.Job import pack
 from vnfb.qeutils.message import Message
-from vnf.applications.PackJobDir import PackJobDir
+from vnfb.applications.PackJobDir import PackJobDir
 from vnfb.qeutils.qeconst import RESULTS_ID
 from vnfb.qeutils.qerecords import SimulationRecord
 
@@ -318,7 +319,6 @@ class ResultInfo:
 
 
     def _startPacking(self):
-        from vnf.components.Job import pack
         pack(self._job, self._director, debug=False)
         
 

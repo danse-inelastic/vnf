@@ -24,7 +24,7 @@ https://subtrac.sara.nl/oss/pbs_python
 http://code.google.com/p/py-pbs/
 '''
 
-JOBID   = "jobid"   # Filename where the job id is stored
+JOBID   = "jobid"   # Filename where the job id string is stored
 
 import journal
 debug = journal.debug( 'torque' )
