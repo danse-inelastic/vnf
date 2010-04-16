@@ -24,6 +24,8 @@ https://subtrac.sara.nl/oss/pbs_python
 http://code.google.com/p/py-pbs/
 '''
 
+JOBID   = "jobid"   # Filename where the job id is stored
+
 import journal
 debug = journal.debug( 'torque' )
 
@@ -127,6 +129,23 @@ class Scheduler:
             pass
 
         return ret
+
+
+    def jobId(self):
+        "Tries to find file 'jobid' in that directory passed to launcher and parse job id"
+        cmds = [ 'cat %s' % JOBID]
+        failed, output, error  = self._launch( cmds )
+        if failed:
+            return None # No jobid found
+
+        try:
+            # output has format like: 7919.foxtrot.danse.us
+            list    = output.split(".")
+            jobid   = int(list[0])
+        except:     # Format is different from integer
+            return None
+
+        return jobid
 
 
     # XXX: Tracing job state after it is completed is very system dependent!
