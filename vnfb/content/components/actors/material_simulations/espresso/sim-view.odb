@@ -17,9 +17,6 @@ from vnfb.qeutils.qegrid import QEGrid
 from vnfb.qeutils.qeparams import QEParams
 from vnfb.qeutils.qeserver import QEServer
 
-#from vnfb.qeutils.qeconst import SIMCHAINS, ANALYSIS
-#from luban.content.Splitter import Splitter
-
 ID_SIMTASKS = "qe-simchain"
 
 from luban.content import select
@@ -84,7 +81,7 @@ class Actor(base):
         container   = lc.document()
         container.add(self._taskTable(director))
 
-        return select(id = ID_SIMCHAIN).replaceContent(container)
+        return select(id = ID_SIMTASKS).replaceContent(container)
 
 
     def _showActions(self, section, sim):
