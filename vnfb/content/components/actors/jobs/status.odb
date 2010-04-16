@@ -83,6 +83,7 @@ class Actor(base):
     def _retrieveOutput(self, director):
         "Retrieve output file"
         
+        
         return "Output"
 
     def __init__(self):
