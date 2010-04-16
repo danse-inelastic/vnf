@@ -58,7 +58,7 @@ class Actor(base):
                                                         suppressException=True)
 
         torque  = torqueFactory(launch)
-        status  = torque.status("9552")
+        status  = torque.status(torque.jobId())
 
         if status["state"] == "terminated":
             return "Finished"
