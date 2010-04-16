@@ -50,11 +50,11 @@ class Actor(base):
         job     = director.clerk.getQEJobs(id = self.jobid)
         server  = director.clerk.getServers(id = job.serverid)
         torqueFactory   = schedulerfactory(server)    # vnfb.clusterscheduler.qetorque.Scheduler
-        server_jobpath  = director.dds.abspath(job, server=server)
+        jobpath = director.dds.abspath(job, server=server)
         launch  = lambda cmd: director.csaccessor.execute(
                                                         cmd,
                                                         server,
-                                                        server_jobpath,
+                                                        jobpath,
                                                         suppressException=True)
 
         torque  = torqueFactory(launch)
