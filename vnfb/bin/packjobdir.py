@@ -14,8 +14,6 @@
 # Specific for QE at this moment
 def main():
 
-    # !!! When you get to this point please let me know, Alex :)
-    
     #from vnfb.applications.PackJobDir import PackJobDir as base
     from vnfb.applications.QEPackJobDir import PackJobDir as base
 

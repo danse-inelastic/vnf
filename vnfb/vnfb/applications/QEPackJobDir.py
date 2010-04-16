@@ -26,7 +26,6 @@ class PackJobDir(base):
         id = pyre.inventory.str('id')   # job id
 
         import vnfb.components
-        import vnf.components
         clerk = pyre.inventory.facility(name="clerk", factory=vnfb.components.clerk)
         clerk.meta['tip'] = "the component that retrieves data from the various database tables"
 
@@ -34,7 +33,7 @@ class PackJobDir(base):
         dds.meta['tip'] = "the component manages data files"
 
         # Leave in vnf-alpha at this moment
-        csaccessor = pyre.inventory.facility(name='csaccessor', factory = vnf.components.ssher)
+        csaccessor = pyre.inventory.facility(name='csaccessor', factory = vnfb.components.ssher)
         csaccessor.meta['tip'] = 'computing server accessor'
 
         debug = pyre.inventory.bool(name='debug', default=False)
@@ -189,7 +188,7 @@ class PackJobDir(base):
 
 
 import os, tempfile, shutil
-from vnf.utils.misc import isnewer
+#from vnf.utils.misc import isnewer
 
 
 temproot = os.path.join('..', 'content', 'data', 'tmp')
