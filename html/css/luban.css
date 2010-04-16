@@ -363,6 +363,21 @@ opacity:0.7;
 }
 
 
+/* news ticker */
+.newsticker  {
+    background: none repeat scroll 0 0 #eeffee;
+    border: 1px dashed #555555;
+    list-style-type: none;
+    margin: 0;
+    padding: 3px;
+    font-size: 0.85em;
+    cursor: pointer;
+    max-width:22em;
+    margin-right:2em;
+    margin-left:auto;
+}
+
+
 /* misc */
 li {
     margin: 4px 1px;
