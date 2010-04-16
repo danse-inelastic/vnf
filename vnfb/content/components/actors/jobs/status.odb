@@ -58,19 +58,27 @@ class Actor(base):
                                                         suppressException=True)
 
         torque  = torqueFactory(launch)
-        status  = torque.status("9551")
-        # XXX: Check if attributes exist!
-        # XXX: Fix torque.py
-        print status
-        #str     = "%s (%s)" % (key2str(status["state"]), status["resources_used.walltime"])
-        str = "Hi"
+        status  = torque.status("9552")
+
+        if status["state"] == "terminated":
+            return "Finished"
         
-#        job     = director.clerk.getQEJobs(id=self.jobid)
-#        job.setDirector(director)
-#        job.updateRecord({"status": "Hi",})
+        str     = key2str(status["state"])
+        if status.has_key("runtime") and status["state"] == "running":
+            str     += " (%s) " % status["runtime"]
+
+        self._updateJobStatus(director, str)
+
         return str
 
+    
+    def _updateJobStatus(self, director, str):
+        "Updates job status"
 
+        job     = director.clerk.getQEJobs(id=self.jobid)
+        job.setDirector(director)
+        job.updateRecord({"status": str,})
+        
 
     def _retrieveOutput(self, director):
         "Retrieve output file"
