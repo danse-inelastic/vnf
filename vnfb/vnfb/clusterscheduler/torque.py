@@ -110,11 +110,12 @@ class Scheduler:
         start_time = d.get('start_time') or time.ctime()
         
         ret = {
-            'remote_outputfilename': outputfilename,
-            'remote_errorfilename': errorfilename,
-            'state': _state( state ),
-            'time_start': start_time,
-            'runtime': d['resources_used.walltime']
+            'remote_outputfilename':    outputfilename,
+            'remote_errorfilename':     errorfilename,
+            'state':                    _state( state ),
+            'time_start':               start_time,
+            # Right after start there is no key: resources_used.walltime
+            'runtime':                  d.get('resources_used.walltime') or "00:00:00"
             }
 
         if ret['state'] == 'finished':
@@ -145,7 +146,7 @@ class Scheduler:
         except:     # Format is different from integer
             return None
 
-        return jobid
+        return str(jobid)
 
 
     # XXX: Tracing job state after it is completed is very system dependent!
