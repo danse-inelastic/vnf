@@ -81,7 +81,7 @@ class ResultPath(object):
         output or input config files, that exist on the file system
 
         Example: "/home/dexity/exports/vnf/vnfb/content/data/tmp/tmpTsdw21/4ICDAVNK/4I2NPMY4pw.in.out"
-        We should be able to identify input and output files without input record!
+        Identifies type of file (e.g. input and output file) based on regular expression (not input record)!
 
         relative - flag that affects path of returned string. If True, returns
                    results path with respect to dataroot. Used for downloading
