@@ -11,10 +11,12 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
+from vnfb.qeutils.qeutils import key2str
+from vnfb.qeutils.qescheduler import schedulerfactory
 from vnfb.qeutils.qeconst import ID_OUTPUT, ID_STATUS
 
 import luban.content as lc
-from luban.content import load, select
+from luban.content import select
 from luban.components.AuthorizedActor import AuthorizedActor as base
 
 #ID_STATUS   = "qe-container-status"
@@ -34,17 +36,45 @@ class Actor(base):
         linkorder   = pyre.inventory.str('linkorder', default='')
 
 
-    def retrieveStatus(self, director):
+    def refreshStatus(self, director):
+        "Refresh job status and output file"
+        status  = lc.htmldocument(text=self._retrieveStatus(director))
+        output  = lc.htmldocument(text=self._retrieveOutput(director))
+
+        return [select(id=self._statusId()).replaceContent(status),
+                select(id=self._outputId()).replaceContent(output)]
+
+
+    def _retrieveStatus(self, director):
+        "Retrieve job status from cluster"
+        job     = director.clerk.getQEJobs(id = self.jobid)
+        server  = director.clerk.getServers(id = job.serverid)
+        torqueFactory   = schedulerfactory(server)    # vnfb.clusterscheduler.qetorque.Scheduler
+        server_jobpath  = director.dds.abspath(job, server=server)
+        launch  = lambda cmd: director.csaccessor.execute(
+                                                        cmd,
+                                                        server,
+                                                        server_jobpath,
+                                                        suppressException=True)
+
+        torque  = torqueFactory(launch)
+        status  = torque.status("1234")
+
+        
 #        job     = director.clerk.getQEJobs(id=self.jobid)
 #        job.setDirector(director)
 #        job.updateRecord({"status": "Hi",})
+        return key2str(status["state"])
 
-        return [select(id=self._statusId()).replaceContent(lc.htmldocument(text="Status")),
-                select(id=self._outputId()).replaceContent(lc.htmldocument(text="Output"))]
 
+
+    def _retrieveOutput(self, director):
+        "Retrieve output file"
+        
+        return "Output"
 
     def __init__(self):
-        super(Actor, self).__init__(name='jobs/getresults')
+        super(Actor, self).__init__(name='jobs/status')
 
         return
 

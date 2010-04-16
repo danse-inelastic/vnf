@@ -69,7 +69,7 @@ class JobStatus(object):
         return lc.link(label="Refresh",
                       Class     = "qe-task-action",
                       onclick   = load(actor     = 'jobs/status',
-                                       routine   = 'retrieveStatus',
+                                       routine   = 'refreshStatus',
                                       id        = self._simid,
                                       taskid    = self._task.id,
                                       jobid     = self._job.id,
