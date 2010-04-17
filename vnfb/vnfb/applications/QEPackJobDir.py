@@ -32,7 +32,6 @@ class PackJobDir(base):
         dds = pyre.inventory.facility(name="dds", factory=vnfb.components.dds)
         dds.meta['tip'] = "the component manages data files"
 
-        # Leave in vnf-alpha at this moment
         csaccessor = pyre.inventory.facility(name='csaccessor', factory = vnfb.components.ssher)
         csaccessor.meta['tip'] = 'computing server accessor'
 

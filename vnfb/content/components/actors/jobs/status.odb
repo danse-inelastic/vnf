@@ -11,7 +11,10 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
+import os
+import re
 from vnfb.qeutils.qeutils import key2str
+from vnfb.qeutils.message import Message
 from vnfb.qeutils.qescheduler import schedulerfactory
 from vnfb.qeutils.qeconst import ID_OUTPUT, ID_STATUS
 
@@ -19,7 +22,7 @@ import luban.content as lc
 from luban.content import select
 from luban.components.AuthorizedActor import AuthorizedActor as base
 
-#ID_STATUS   = "qe-container-status"
+NONE    = "None"
 
 class Actor(base):
     """
@@ -38,24 +41,29 @@ class Actor(base):
 
     def refreshStatus(self, director):
         "Refresh job status and output file"
-        status  = lc.htmldocument(text=self._retrieveStatus(director))
-        output  = lc.htmldocument(text=self._retrieveOutput(director))
+        job     = director.clerk.getQEJobs(id = self.jobid)
+        server  = director.clerk.getServers(id = job.serverid)
+        job.setDirector(director)
+
+        status  = lc.htmldocument(text=self._retrieveStatus(director, job, server))
+        output  = lc.document()
+        output.add(self._retrieveOutput(director, job, server))
 
         return [select(id=self._statusId()).replaceContent(status),
                 select(id=self._outputId()).replaceContent(output)]
 
 
-    def _retrieveStatus(self, director):
+    def _retrieveStatus(self, director, job, server):
         "Retrieve job status from cluster"
-        job     = director.clerk.getQEJobs(id = self.jobid)
-        server  = director.clerk.getServers(id = job.serverid)
+        return "Hi" # XXX: For now
+
         torqueFactory   = schedulerfactory(server)    # vnfb.clusterscheduler.qetorque.Scheduler
         jobpath = director.dds.abspath(job, server=server)
         launch  = lambda cmd: director.csaccessor.execute(
                                                         cmd,
                                                         server,
                                                         jobpath,
-                                                        suppressException=True)
+                                                        suppressException = True)
 
         torque  = torqueFactory(launch)
         status  = torque.status(torque.jobId())
@@ -67,24 +75,61 @@ class Actor(base):
         if status.has_key("runtime") and status["state"] == "running":
             str     += " (%s) " % status["runtime"]
 
-        self._updateJobStatus(director, str)
+        self._updateJobStatus(job, str)
 
         return str
 
     
-    def _updateJobStatus(self, director, str):
+    def _updateJobStatus(self, job, str):
         "Updates job status"
-
-        job     = director.clerk.getQEJobs(id=self.jobid)
-        job.setDirector(director)
         job.updateRecord({"status": str,})
         
 
-    def _retrieveOutput(self, director):
+    # XXX: Refactor! Integrate with ResultPath class later!
+    def _retrieveOutput(self, director, job, server):
         "Retrieve output file"
+        jobpath     = director.dds.abspath(job, server=server)
+        localpath   = director.dds.abspath(job)     # Example: ../content/data/qejobs/EXSWTYTK
+        cmd         = "ls %s" % jobpath  # list current job directory
+
+        failed, output, error = director.csaccessor.execute(cmd, server, jobpath, suppressException = True)
+        if failed:      # Something went wrong
+            return NONE
+
+        filelist    = output.split()    # List of files, Example: ["4I2NPMY4pw.in", "4I2NPMY4pw.in.out", "run.sh", ...]
+        file        = self._matchCheck(filelist)
+
+        if not file:    # No output file
+            return NONE
+
+        try:
+            outputfile  = os.path.join(jobpath, file)
+            director.csaccessor.getfile(server, outputfile, localpath)
+        except:
+            return NONE
+
+        parts       = localpath.split("../content/data/")
+        outputpath  = os.path.join(parts[1], file)
         
-        
-        return "Output"
+        status  = Message()
+        status.setHtmlLink(file, outputpath)
+
+        # http://localhost/vnf/qejobs/EXSWTYTK/EXLZ89CJpw.in.out
+        return status.string("a")
+
+
+    # Borrowed from ResultPath class
+    # XXX: Fix cardcoded pattern for output file
+    def _matchCheck(self, files):
+        "Find matching file. Single matching file if possible. Picks first otherwise"
+        REEXP   = '[\w]+\.in\.out$'
+        for fname in files:
+            p   = re.compile(REEXP)
+            if p.match(fname):   # matches
+                return fname
+
+        return None
+
 
     def __init__(self):
         super(Actor, self).__init__(name='jobs/status')
