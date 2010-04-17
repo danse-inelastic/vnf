@@ -364,17 +364,31 @@ opacity:0.7;
 
 
 /* news ticker */
-.newsticker  {
-    background: none repeat scroll 0 0 #eeffee;
-    border: 1px dashed #555555;
-    list-style-type: none;
-    margin: 0;
-    padding: 3px;
-    font-size: 0.85em;
-    cursor: pointer;
+
+.luban-newsticker {
+    border:1px dashed #555555;
+    background:#eeffee;
     max-width:22em;
     margin-right:2em;
     margin-left:auto;
+}
+.luban-newsticker table {
+    border-collapse:collapse;
+}
+.luban-newsticker table td {
+    padding:0;
+}
+.luban-newsticker .title {
+    font-size:0.85em;
+    padding:0 1em;
+    color:#ff9999;
+}
+.luban-newsticker .newsticker {
+    cursor:pointer;
+    font-size:0.75em;
+    list-style-type:none;
+    margin:0;
+    padding:3px;
 }
 
 
