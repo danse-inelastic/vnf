@@ -98,25 +98,25 @@ class Scheduler:
         #errorpath = d['Error_Path']
         #dummy, errorfilename = os.path.split(errorpath)
         #assert errorfilename == self.errfilename, '%r != %r' % (errorfilename, self.errfilename)
-        errorfilename = self.errfilename
+        #errorfilename = self.errfilename
 
         #outputpath = d['Output_Path']
         #dummy, outputfilename = os.path.split(outputpath)
         #assert outputfilename == self.outfilename, '%r != %r' % (outputfilename, self.outfilename)
-        outputfilename = self.outfilename
+        #outputfilename = self.outfilename
 
-        state = d['job_state']
         import time
-        start_time = d.get('start_time') or time.ctime()
         
         ret = {
-            'remote_outputfilename':    outputfilename,
-            'remote_errorfilename':     errorfilename,
-            'state':                    _state( state ),
-            'time_start':               start_time,
-            # Right after start there is no key: resources_used.walltime
-            'runtime':                  d.get('resources_used.walltime') or "00:00:00"
+            'remote_outputfilename':    self.errfilename,
+            'remote_errorfilename':     self.outfilename,
+            'state':                    _state( d['job_state'] ),
+            'time_start':               d.get('start_time') or time.ctime()
             }
+
+        # Right after start there is no key: resources_used.walltime
+        ret['runtime']  = d.get('resources_used.walltime') or "00:00:00"
+
 
         if ret['state'] == 'finished':
             output, error = self._readoutputerror(
