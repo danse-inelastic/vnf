@@ -23,9 +23,9 @@ class Accessor(base):
 #        orm = self.director.clerk.orm
 #        # build orm for all dynamics types--orm 
 #        #registers and stores these internally
-#        from vsat.trajectory.MotionDosCalc import MotionDosCalc
+#        from vsat.trajectory.MdDosCalc import MdDosCalc
 #        from vsat.trajectory.CsfCalc import CsfCalc
-#        orm(MotionDosCalc)
+#        orm(MdDosCalc)
 #        orm(CsfCalc)
 #        return orm
 #    orm = property(_getOrm)
