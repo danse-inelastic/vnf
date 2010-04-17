@@ -34,10 +34,14 @@ def visual(id=None, info=None, director=None):
         title='Traceback', collapsable = True, collapsed=True)
     tracebackcontainer.Class='traceback-container'
     
-    traceback = lc.htmldocument(Class='traceback-doc'); tracebackcontainer.add(traceback)
+    traceback = lc.htmldocument(Class='traceback-doc'); 
+    tracebackcontainer.add(traceback)
     
     import sys, cgitb
-    tbtext = cgitb.html((sys.exc_type, sys.exc_value, sys.exc_traceback))
+    #print sys.exc_info()
+    vals = sys.exc_info()
+#    tbtext = cgitb.html((sys.exc_type, '', sys.exc_traceback))
+    tbtext = cgitb.html(vals[0], '', vals[2])
     traceback.text = tbtext.splitlines()
     #traceback.text=['<pre>'+info['traceback']+'</pre>']
 
