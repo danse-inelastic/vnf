@@ -27,8 +27,9 @@ class Actor(base):
 
         id = pyre.inventory.str('id')
 
+
     def createTicker(self, director):
-        newsticker = luban.content.newsticker()
+        newsticker = luban.content.newsticker(title = 'news', delay = 4, id='vnfnews')
 
         domaccess = director.retrieveDOMAccessor('news')
         newslist = domaccess.getLatestNewsRecords()
@@ -38,9 +39,17 @@ class Actor(base):
                 onclick=load(actor=self.name, routine='showNewsDialog', id=news.id),
                 )
             continue
+
+        newsticker.refreshtime = 60*5 # refresh every 5 min
+        newsticker.onrefresh = load(actor=self.name, routine='replaceTicker')
         
         return newsticker
 
+
+    def replaceTicker(self, director):
+        newticker = self.createTicker(director)
+        return select(id='vnfnews').replaceBy(newticker)
+        
 
     def showNewsDialog(self, director):
         id = self.inventory.id
