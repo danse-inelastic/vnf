@@ -41,7 +41,7 @@ class Retriever(base):
 
 
 def retriever():
-    return Retriever('motionDosCalc')
+    return Retriever('mddoscalc')
 
 
 # version

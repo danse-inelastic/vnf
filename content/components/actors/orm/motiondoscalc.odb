@@ -18,11 +18,11 @@ from luban.content import select, load, alert
 
 
 #
-from vsat.trajectory.MotionDosCalc import MotionDosCalc
+from vsat.trajectory.MdDosCalc import MdDosCalc
 
 from luban.components.Actor import Actor
 import luban.orm
-base = luban.orm.object2actor(MotionDosCalc)
+base = luban.orm.object2actor(MdDosCalc)
 class Actor(base):
 
     class Inventory(base.Inventory):

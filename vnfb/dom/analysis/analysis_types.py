@@ -12,7 +12,7 @@
 
 
 typenames = [
-    'analysis.MotionDosCalc.MotionDosCalcBase',
+    'analysis.MdDosCalc.MdDosCalcBase',
     'analysis.CsfCalc.CsfCalcBase',
     ]
 
