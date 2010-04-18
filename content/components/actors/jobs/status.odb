@@ -89,7 +89,8 @@ class Actor(base):
     def _retrieveOutput(self, director, job, server):
         "Retrieve output file"
         jobpath     = director.dds.abspath(job, server=server)
-        localpath   = director.dds.abspath(job)     # Example: ../content/data/qejobs/EXSWTYTK
+        #localpath   = director.dds.abspath(job)     # Example: ../content/data/qejobs/EXSWTYTK
+        localpath   = "../content/data/tmp" # Let's store output file to tmp/ directory
         cmd         = "ls %s" % jobpath  # list current job directory
 
         failed, output, error = director.csaccessor.execute(cmd, server, jobpath, suppressException = True)
@@ -115,6 +116,7 @@ class Actor(base):
         status.setHtmlLink(file, outputpath)
 
         # http://localhost/vnf/qejobs/EXSWTYTK/EXLZ89CJpw.in.out
+        # http://localhost/vnf/tmp/tmpRJTdzR/EXSWTYTK.tgz
         return status.string("a")
 
 
