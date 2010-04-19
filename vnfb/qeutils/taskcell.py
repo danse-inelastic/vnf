@@ -99,15 +99,6 @@ class TaskCell:
                 doc.add(link)
                 return doc
 
-#        link = lc.link(label    = "Cancel",
-#                       Class    = "qe-cancel-task",
-#                       onclick  = load(actor    ='jobs/cancel',
-#                                      routine   = 'cancel',
-#                                      jobid     = self._job.id)
-#                        )
-#        doc.add(link)
-#        return doc
-
 
         # If not job created or is not running
         link = lc.link(label    = "Run Task",
