@@ -14,16 +14,17 @@
 import os
 import luban.content as lc
 from luban.content import load, select
-from vnfb.qeutils.qeutils import jobStatus
 from vnfb.qeutils.jobstatus import JobStatus
 from vnfb.qeutils.results.resultinfo import ResultInfo
 from vnfb.qeutils.qegrid import QEGrid
 from vnfb.qeutils.inputinfo import InputInfo
-#from vnfb.qeutils.taskinfo import TaskInfo
+from vnfb.qeutils.qeconst import TASK_ACTION
 from vnfb.qeutils.qeutils import latestJob
+from vnfb.qeutils.taskaction import TaskAction
 
-RUN_TASK    = "run-task"
-
+#from vnfb.qeutils.qeutils import jobStatus
+#RUN_TASK    = "run-task"
+#from vnfb.qeutils.taskinfo import TaskInfo
 #CLASS_ERROR = 'qe-text-red'
 #CLASS_OK    = 'qe-text-blue'
 #CLASS_NA    = 'qe-text-black'
@@ -83,34 +84,10 @@ class TaskCell:
         if not self._task:
             return doc
 
-        doc.id = "%s-%s" % (RUN_TASK, self._task.id)
-        
-        if self._job:   # If job exists, check if it is running
-            server  = self._director.clerk.getServers(id = self._job.serverid)
-            status  = jobStatus(self._director, self._job, server)
+        doc.id = "%s-%s" % (TASK_ACTION, self._task.id)
+        action  = TaskAction(self._director, self._simid, self._job, self._task)
 
-            if status["state"] == "running":
-                link = lc.link(label    = "Cancel",
-                               Class    = "qe-cancel-task",
-                               onclick  = load(actor    ='jobs/cancel',
-                                              routine   = 'cancel',
-                                              jobid     = self._job.id)
-                                )
-                doc.add(link)
-                return doc
-
-
-        # If not job created or is not running
-        link = lc.link(label    = "Run Task",
-                       Class    = "qe-run-task",
-                       onclick  = load(actor     ='jobs/submit',    # 'jobs/checksubmit'
-                                      routine   = 'submit',
-                                      id        = self._simid,
-                                      taskid    = self._task.id,
-                                      subtype   = self._task.subtype)
-                        )
-
-        doc.add(link)
+        doc.add(action.link())
         return doc
 
 

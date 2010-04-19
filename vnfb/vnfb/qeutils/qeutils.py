@@ -297,11 +297,17 @@ def torqueFactory(director, job, server):
 
 
 def deleteJob(director, job, server):
+    "Deletes job on the server"
     torque  = torqueFactory(director, job, server)
     if not torque:
         return None
 
-    return torque.delete(torque.jobId())
+    try:
+        result  = torque.delete(torque.jobId())
+    except:
+        return None
+
+    return result
 
 
 def jobStatus(director, job, server):
@@ -310,7 +316,12 @@ def jobStatus(director, job, server):
     if not torque:
         return None
 
-    return torque.status(torque.jobId())
+    try:
+        status  = torque.status(torque.jobId())
+    except:
+        return None
+
+    return status
 
 
 def analyseActor(simtype):

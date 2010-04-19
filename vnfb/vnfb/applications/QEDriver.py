@@ -237,7 +237,7 @@ class QEDriver(base):
 
 
     def _updateStatus(self, status):
-        #self._job.setDirector(self)    # Don't need it?
+        "Update job status"
         self._job.updateRecord({"status": status})
 
 
