@@ -11,10 +11,13 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
+import time
 from luban.content import select
 from vnfb.qeutils.qeconst import TASK_ACTION
 from vnfb.qeutils.qeutils import deleteJob
 from vnfb.qeutils.taskaction import TaskAction
+
+UPDATE_TIME = 1 # 1 sec
 
 from luban.components.AuthorizedActor import AuthorizedActor as base
 class Actor(base):
@@ -38,11 +41,9 @@ class Actor(base):
         server  = director.clerk.getServers(id = job.serverid)
         deleteJob(director, job, server)
 
+        time.sleep(UPDATE_TIME)   # Give about 1 second to update the state
         action  = TaskAction(director, self.simid, job, task)
 
-#        print "%s-%s" % (TASK_ACTION, self.taskid)
-#        print select(id="%s-%s" % (TASK_ACTION, self.taskid))
-        #print action.link()
         return select(id="%s-%s" % (TASK_ACTION, self.taskid) ).replaceContent(action.link())
 
 
