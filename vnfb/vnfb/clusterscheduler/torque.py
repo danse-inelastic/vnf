@@ -96,16 +96,6 @@ class Scheduler:
             d[ k.strip() ] = v.strip()
             continue
 
-        #errorpath = d['Error_Path']
-        #dummy, errorfilename = os.path.split(errorpath)
-        #assert errorfilename == self.errfilename, '%r != %r' % (errorfilename, self.errfilename)
-        #errorfilename = self.errfilename
-
-        #outputpath = d['Output_Path']
-        #dummy, outputfilename = os.path.split(outputpath)
-        #assert outputfilename == self.outfilename, '%r != %r' % (outputfilename, self.outfilename)
-        #outputfilename = self.outfilename
-
         import time
         
         ret = {
@@ -122,10 +112,10 @@ class Scheduler:
         if ret['state'] == 'finished':
             output, error = self._readoutputerror( self.outfilename, self.errfilename )
             ret.update(
-                { 'exit_code': d['exit_status'],
-                  'time_completion': d['mtime'],
-                  'output': output,
-                  'error': error,
+                { 'exit_code':          d['exit_status'],
+                  'time_completion':    d['mtime'],
+                  'output':             output,
+                  'error':              error,
                   } )
             pass
 
