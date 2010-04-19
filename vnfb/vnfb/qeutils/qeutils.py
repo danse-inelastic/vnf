@@ -18,6 +18,7 @@ import os.path
 
 import os
 from vnfb.qeutils.qeconst import INPUT, ANALYSIS, SUBTYPE_MATDYN
+from vnfb.qeutils.qescheduler import schedulerfactory
 
 # Issue: number of columns depends on magnetism of the material
 #   Margetic:       (e, up, down, cum)
@@ -277,6 +278,39 @@ def qeinput(director, simid, linkorder):
         return latestInput(inputs)  # There should be a single input record!
 
     return None
+
+
+def torqueFactory(director, job, server):
+    "Set up torque and return object"
+    if not director or not job or not server:   # If one of them is None return None
+        return None
+
+    factory = schedulerfactory(server)    # vnfb.clusterscheduler.qetorque.Scheduler
+    jobpath = director.dds.abspath(job, server=server)
+    launch  = lambda cmd: director.csaccessor.execute(
+                                                    cmd,
+                                                    server,
+                                                    jobpath,
+                                                    suppressException = True)
+
+    return factory(launch)
+
+
+def deleteJob(director, job, server):
+    torque  = torqueFactory(director, job, server)
+    if not torque:
+        return None
+
+    return torque.delete(torque.jobId())
+
+
+def jobStatus(director, job, server):
+    "Returns job status on the remote cluster"
+    torque  = torqueFactory(director, job, server)
+    if not torque:
+        return None
+
+    return torque.status(torque.jobId())
 
 
 def analyseActor(simtype):

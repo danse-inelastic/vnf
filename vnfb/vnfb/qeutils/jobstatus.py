@@ -81,7 +81,6 @@ class JobStatus(object):
                                       linkorder = self._linkorder)
                      )
 
-    # XXX: Give link to the actual resource!
     def output(self):
         doc     = lc.document(id=self._outputId())
         content = lc.document()
