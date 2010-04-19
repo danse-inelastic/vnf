@@ -11,7 +11,7 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
-import luban.content as select
+from luban.content import select
 from vnfb.qeutils.qeconst import TASK_ACTION
 from vnfb.qeutils.qeutils import deleteJob
 from vnfb.qeutils.taskaction import TaskAction
@@ -40,6 +40,9 @@ class Actor(base):
 
         action  = TaskAction(director, self.simid, job, task)
 
+#        print "%s-%s" % (TASK_ACTION, self.taskid)
+#        print select(id="%s-%s" % (TASK_ACTION, self.taskid))
+        #print action.link()
         return select(id="%s-%s" % (TASK_ACTION, self.taskid) ).replaceContent(action.link())
 
 
