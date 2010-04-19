@@ -55,8 +55,6 @@ class Actor(base):
 
     def _retrieveStatus(self, director, job, server):
         "Retrieve job status from cluster"
-        return "Hi" # XXX: For now
-
         torqueFactory   = schedulerfactory(server)    # vnfb.clusterscheduler.qetorque.Scheduler
         jobpath = director.dds.abspath(job, server=server)
         launch  = lambda cmd: director.csaccessor.execute(
