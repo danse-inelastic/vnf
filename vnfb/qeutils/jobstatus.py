@@ -15,6 +15,8 @@
 Displays the status of the job
 """
 
+import os
+from vnfb.qeutils.message import Message
 from vnfb.qeutils.qeconst import ID_OUTPUT, ID_STATUS
 from vnfb.qeutils.qeutils import key2str
 from vnfb.qeutils.qerecords import SimulationRecord
@@ -25,6 +27,7 @@ from luban.content import load
 #ID_OUTPUT       = "qe-container-output"
 #ID_STATUS       = "qe-container-status"
 
+NONE    = "None"
 DEFAULT_MESSAGE = "Not Started"
 
 class JobStatus(object):
@@ -35,6 +38,7 @@ class JobStatus(object):
         self._linkorder = linkorder
         self._job       = None
         self._task      = None
+        self._input     = None
 
         self._init()
 
@@ -46,6 +50,7 @@ class JobStatus(object):
 
         self._job   = simrecord.job(self._linkorder)
         self._task  = simrecord.task(self._linkorder)
+        self._input = simrecord.input(self._linkorder)
 
 
     def message(self):
@@ -76,12 +81,35 @@ class JobStatus(object):
                                       linkorder = self._linkorder)
                      )
 
-
+    # XXX: Give link to the actual resource!
     def output(self):
         doc     = lc.document(id=self._outputId())
-        content = lc.htmldocument(text = "None")
+        content = lc.document()
         doc.add(content)
-        
+
+        # XXX: It will show output for current input only! When you delete input 
+        # record no output is displayed
+
+        if not self._input or not self._task:     # No input record, no output can be found
+            content.add(NONE)
+            return doc
+
+        localpath   = "../content/data/tmp" # Let's store output file to tmp/ directory
+        file        = "%s%s.in.out" % (self._input.id, self._task.type.lower())
+        outputfile  = os.path.join(localpath, file)
+
+        if not os.path.exists(outputfile):    # No output file
+            content.add(NONE)
+            return doc
+
+        parts       = localpath.split("../content/data/")
+        outputpath  = os.path.join(parts[1], file)
+
+        status  = Message()
+        status.setHtmlLink(file, outputpath)
+
+        content.add(status.string("a"))
+
         return doc
 
 
