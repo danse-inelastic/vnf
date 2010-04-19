@@ -11,6 +11,8 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
+from vnfb.qeutils.qeutils import deleteJob
+
 from luban.components.AuthorizedActor import AuthorizedActor as base
 class Actor(base):
 
@@ -18,6 +20,37 @@ class Actor(base):
         import pyre.inventory
         jobid          = pyre.inventory.str('jobid', default='')      # Job Id
 
+
+    def default(self, director):
+        "Not implemented"
+        pass
+
+
+    def cancel(self, director):
+        "Cancel running job"
+        job     = director.clerk.getQEJobs(id = self.jobid)
+        server  = director.clerk.getServers(id = job.serverid)
+        deleteJob(director, job, server)
+        
+
+
+    def __init__(self):
+        super(Actor, self).__init__(name='jobs/cancel')
+
+        return
+
+
+    def _configure(self):
+        super(Actor, self)._configure()
+        self.jobid      = self.inventory.jobid
+
+
+    def _init(self):
+        super(Actor, self)._init()
+        return
+
+def actor():
+    return Actor()
 
 
 

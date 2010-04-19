@@ -43,7 +43,8 @@ fieldset {
 .qe-action-clone,
 .qe-action-analyze,
 .qe-action-delete,
-.qe-run-task {
+.qe-run-task,
+.qe-cancel-task {
     padding: 2px 15px;
     -moz-border-radius: 5px;
     -webkit-border-radius: 5px;
@@ -160,10 +161,16 @@ a.qe-action-structure {
     background-color: #48f640; /* deep green #1fff1f*/
 }
 
-a.qe-run-task {
+a.qe-run-task,
+a.qe-cancel-task {
     text-decoration: none;
     font-weight: bold;
 }
+
+.qe-cancel-task {
+    background-color: #FF7700; /* red */
+}
+
 
 .qe-tasks-table td.qe-action-task {
     padding: 10px;

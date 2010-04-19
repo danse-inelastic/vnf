@@ -14,7 +14,7 @@
 import os
 import luban.content as lc
 from luban.content import load, select
-
+from vnfb.qeutils.qeutils import jobStatus
 from vnfb.qeutils.jobstatus import JobStatus
 from vnfb.qeutils.results.resultinfo import ResultInfo
 from vnfb.qeutils.qegrid import QEGrid
@@ -79,17 +79,45 @@ class TaskCell:
     def action(self):
         "Displays simulation task action button: 'Run Task', 'Cancel'"
         doc     = lc.document()   # Example: run-task-BFDFX56
-        link    = ""
-        if self._task:
-            link = lc.link(label    = "Run Task",
-                           Class    = "qe-run-task",
-                           onclick  = load(actor     ='jobs/submit',    # 'jobs/checksubmit'
-                                          routine   = 'submit',
-                                          id        = self._simid,
-                                          taskid    = self._task.id,
-                                          subtype   = self._task.subtype)
-                            )
-            doc.id = "run-task-%s" % self._task.id
+
+        if not self._task:
+            return doc
+
+        doc.id = "%s-%s" % (RUN_TASK, self._task.id)
+        
+        if self._job:   # If job exists, check if it is running
+            server  = self._director.clerk.getServers(id = self._job.serverid)
+            status  = jobStatus(self._director, self._job, server)
+
+            if status["state"] == "running":
+                link = lc.link(label    = "Cancel",
+                               Class    = "qe-cancel-task",
+                               onclick  = load(actor    ='jobs/cancel',
+                                              routine   = 'cancel',
+                                              jobid     = self._job.id)
+                                )
+                doc.add(link)
+                return doc
+
+#        link = lc.link(label    = "Cancel",
+#                       Class    = "qe-cancel-task",
+#                       onclick  = load(actor    ='jobs/cancel',
+#                                      routine   = 'cancel',
+#                                      jobid     = self._job.id)
+#                        )
+#        doc.add(link)
+#        return doc
+
+
+        # If not job created or is not running
+        link = lc.link(label    = "Run Task",
+                       Class    = "qe-run-task",
+                       onclick  = load(actor     ='jobs/submit',    # 'jobs/checksubmit'
+                                      routine   = 'submit',
+                                      id        = self._simid,
+                                      taskid    = self._task.id,
+                                      subtype   = self._task.subtype)
+                        )
 
         doc.add(link)
         return doc

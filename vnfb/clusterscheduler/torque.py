@@ -69,7 +69,8 @@ class Scheduler:
             msg = "error in executing cmds %s. output: %s, error: %s" % (
                 cmds, output, error )
             raise RuntimeError, msg
-        return
+
+        return failed   # returns if job was successfully deleted
     
 
     def status( self, jobid ):
@@ -119,8 +120,7 @@ class Scheduler:
 
 
         if ret['state'] == 'finished':
-            output, error = self._readoutputerror(
-                outputfilename, errorfilename )
+            output, error = self._readoutputerror( self.outfilename, self.errfilename )
             ret.update(
                 { 'exit_code': d['exit_status'],
                   'time_completion': d['mtime'],
