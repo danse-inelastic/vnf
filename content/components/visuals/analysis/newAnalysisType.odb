@@ -47,7 +47,7 @@ def createScatteringAnalysis():
 #                    (lc.link(label="DoPS", onclick=select(id='main-display-area'
 #                            ).replaceContent(load(
 #                actor='analysis/analysiswizard', routine='selectDynamics',
-#                analysisType='motiondoscalc'))),
+#                analysisType='mddoscalc'))),
 #                    "Density of Phonon States from an md trajectory")
 #                    )
     
@@ -115,7 +115,7 @@ def createDynamicsAnalysis():
     routines.append(
                     (lc.link(label="DoPS", onclick=select(id='main-display-area'
                 ).replaceContent(load(actor='analysis/analysiswizard', routine='selectDynamics',
-                analysisType='motiondoscalc'))),
+                analysisType='mddoscalc'))),
                     "Density of Phonon States from an md trajectory")
                     )
     routines.append(

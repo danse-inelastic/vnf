@@ -35,7 +35,7 @@ class Actor(base):
         
 
 def actor():
-    return Actor('orm/motiondoscalc')
+    return Actor('orm/mddoscalc')
 
 
 # version
