@@ -13,9 +13,8 @@
 
 import os
 import re
-from vnfb.qeutils.qeutils import key2str
+from vnfb.qeutils.qeutils import key2str, jobStatus
 from vnfb.qeutils.message import Message
-from vnfb.qeutils.qescheduler import schedulerfactory
 from vnfb.qeutils.qeconst import ID_OUTPUT, ID_STATUS
 
 import luban.content as lc
@@ -27,8 +26,7 @@ NONE    = "None"
 class Actor(base):
     """
     Actor for retrieving results from server
-    Notes:
-        - See also
+
     """
 
     class Inventory(base.Inventory):
@@ -55,16 +53,10 @@ class Actor(base):
 
     def _retrieveStatus(self, director, job, server):
         "Retrieve job status from cluster"
-        torqueFactory   = schedulerfactory(server)    # vnfb.clusterscheduler.qetorque.Scheduler
-        jobpath = director.dds.abspath(job, server=server)
-        launch  = lambda cmd: director.csaccessor.execute(
-                                                        cmd,
-                                                        server,
-                                                        jobpath,
-                                                        suppressException = True)
+        status  = jobStatus(director, job, server)
 
-        torque  = torqueFactory(launch)
-        status  = torque.status(torque.jobId())
+        if not status:
+            return "Unknown"
 
         if status["state"] == "terminated":
             return "Finished"
