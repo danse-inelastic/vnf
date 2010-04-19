@@ -70,7 +70,7 @@ class Actor(base):
         settingsdoc = doc.document(title = 'Settings', collapsable = True)
         settingsdoc.oncreate = select(element=settingsdoc).append(
             load(
-              actor='orm/motiondoscalc', routine='displayProperties',
+              actor='orm/mddoscalc', routine='displayProperties',
               id = c.id, editlink=False,
             ))
         return doc
@@ -119,7 +119,7 @@ class Actor(base):
             ('Analysis',
              lc.load(actor='analysis')),
             ('Motion Dos Calculations',
-             lc.load(actor='analysis', filter_expr="type=='motiondoscalc'")),
+             lc.load(actor='analysis', filter_expr="type=='mddoscalc'")),
             ('%s %s' % (computation.__class__.__name__, label),
              lc.select(id='main-display-area').replaceContent(
             lc.load(actor='analysis/motionDosCalc',
@@ -131,13 +131,13 @@ class Actor(base):
     def _getComputation(self, director):
         domaccess = self._domaccess(director)
         id = self.inventory.id
-        return domaccess.getComputation('motiondoscalc', id)
+        return domaccess.getComputation('mddoscalc', id)
 
 
     def _getComputationRecord(self, director):
         domaccess = self._domaccess(director)
         id = self.inventory.id
-        return domaccess.getComputationRecord('motiondoscalc', id)
+        return domaccess.getComputationRecord('mddoscalc', id)
 
 
     def _domaccess(self, director):
