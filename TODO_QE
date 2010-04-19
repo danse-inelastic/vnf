@@ -23,7 +23,7 @@ NOW
 ===
 - Add progress bar for jobs with steps description
 - Move "servers" reference from qesimulations to qesettings
-
+- Dialog widget
 
 CRITICAL FIXES
 ==============

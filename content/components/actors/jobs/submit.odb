@@ -16,7 +16,7 @@ from luban.content.ProgressBar import ProgressBar
 from luban.content import load, select
 from vnfb.utils import launch_detached, bindir
 from vnfb.qeutils.qeutils import latestJob
-from vnfb.qeutils.qeconst import JOB_STATE
+from vnfb.qeutils.qeconst import JOB_STATE, TASK_ACTION
 
 from luban.components.AuthorizedActor import AuthorizedActor as base
 class Actor(base):
@@ -87,7 +87,7 @@ class Actor(base):
                                  id = self.id),
                             ]
         
-        return select(id="run-task-%s" % self.taskid).replaceContent(pbar)
+        return select(id="%s-%s" % (TASK_ACTION, self.taskid) ).replaceContent(pbar)
 
 
     # XXX: Might be potential error

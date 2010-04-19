@@ -45,7 +45,8 @@ class Scheduler:
     
     
     def submit( self, cmd, walltime=1*hour, jobid=1,
-        numnodes = 1, corespernode = 1, workingDirectory='.'):    
+        numnodes = 1, corespernode = 1, workingDirectory='.'):
+        "Submits job. Can raise exception"
         walltime = _walltime_str(walltime)
         
         cmds = [ r'echo \"%s\" | qsub -d %s -l walltime=%s -o %s -e %s -V -N %s -l nodes=%s:ppn=%s' % (
@@ -63,6 +64,7 @@ class Scheduler:
     
 
     def delete(self, jobid):
+        "Deletes job specified by jobid. Can raise exception"
         cmds = ['qdel %s' % jobid]
         failed, output, error  = self._launch( cmds )
         if failed:
@@ -74,6 +76,7 @@ class Scheduler:
     
 
     def status( self, jobid ):
+        "Returns job status specified by jobid. Can raise exception"
         cmds = [ 'qstat -f %s' % (jobid,) ]
         failed, output, error  = self._launch( cmds )
         if failed:
@@ -123,7 +126,9 @@ class Scheduler:
 
 
     def jobId(self):
-        "Tries to find file 'jobid' in that directory passed to launcher and parse job id"
+        """
+        Returns job id. Tries to find file 'jobid' in that directory passed to launcher and parse job id
+        """
         cmds = [ 'cat %s' % JOBID]
         failed, output, error  = self._launch( cmds )
         if failed:

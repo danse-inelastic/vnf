@@ -26,7 +26,6 @@ NONE    = "None"
 class Actor(base):
     """
     Actor for retrieving results from server
-
     """
 
     class Inventory(base.Inventory):
@@ -59,14 +58,15 @@ class Actor(base):
             return "Unknown"
 
         if status["state"] == "terminated":
-            return "Finished"
+            state   = "Finished"
+            self._updateJobStatus(job, state)
+            return state
         
         str     = key2str(status["state"])
         if status.has_key("runtime") and status["state"] == "running":
             str     += " (%s) " % status["runtime"]
 
         self._updateJobStatus(job, str)
-
         return str
 
     

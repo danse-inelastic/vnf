@@ -11,8 +11,65 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
+import luban.content as lc
+from luban.content import load
+from vnfb.qeutils.qeutils import jobStatus
+
+
 class TaskAction(object):
-    pass
+    """
+    TaskAction - class that return task action link ("Run Task", "Cancel", "No Connection")
+    """
+    def __init__(self, director, simid, job, task):
+        self._director  = director
+        self._simid     = simid
+        self._job       = job
+        self._task      = task
+
+
+    def link(self):
+        if not self._director or not self._task:
+            return "None"
+
+        return self._cancelLink()   # XXX
+
+        if self._job:
+            server  = self._director.clerk.getServers(id = self._job.serverid)
+            status  = jobStatus(self._director, self._job, server)
+
+            if status["state"] == "running":
+                return self._cancelLink()
+
+        return self._runLink()
+
+
+    def _runLink(self):
+        "Returns 'Run Task' link"
+        # If not job created or is not running
+        link = lc.link(label    = "Run Task",
+                       Class    = "qe-run-task",
+                       onclick  = load(actor     ='jobs/submit',    # 'jobs/checksubmit'
+                                      routine   = 'submit',
+                                      id        = self._simid,
+                                      taskid    = self._task.id,
+                                      subtype   = self._task.subtype)
+                        )
+        return link
+
+
+    def _cancelLink(self):
+        "Returns 'Cancel' link"
+        link = lc.link(label    = "Cancel",
+                       Class    = "qe-cancel-task",
+                       onclick  = load(actor    ='jobs/cancel',
+                                      routine   = 'cancel',
+                                      simid     = self._simid,
+                                      jobid     = self._job.id,
+                                      taskid    = self._task.id)
+                        )
+        return link
+
+
 
 __date__ = "$Apr 19, 2010 9:53:34 AM$"
 
