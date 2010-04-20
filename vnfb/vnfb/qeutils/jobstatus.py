@@ -102,8 +102,9 @@ class JobStatus(object):
         # XXX: It will show output for current input only! When you delete input 
         # record no output is displayed
 
-        dialog = lc.dialog(title='Output for %s' % self._input.id, autoopen=True, Class="qe-dialog-output")
-        dialog.paragraph(text=open(outputfile).read())  # Text
+        dialog  = lc.dialog(title='Output for %s' % self._input.id, autoopen=True, Class="qe-dialog-output")
+        text    = lc.htmldocument(text="<pre>%s<pre>" % open(outputfile).read())
+        dialog.add(text)   # Text
         okbutton = lc.button( label     = 'OK',
                               onclick   = select(element=dialog).destroy())
         dialog.add(okbutton)
@@ -112,16 +113,6 @@ class JobStatus(object):
 
         content.add(link)
         
-# Keep code!
-#
-#        parts       = localpath.split("../content/data/")
-#        outputpath  = os.path.join(parts[1], file)
-#
-#        status  = Message()
-#        status.setHtmlLink(file, outputpath)
-#
-#        content.add(status.string("a"))
-
         return doc
 
 
