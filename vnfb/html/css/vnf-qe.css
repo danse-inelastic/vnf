@@ -501,3 +501,11 @@ a.qe-task-action {
     width:  50px;
     padding: 0px 2px;
 }
+
+.qe-dialog-output {
+    width: 500px;
+    max-height: 400px;
+    overflow-y: scroll;
+    overflow-x: scroll;
+}
+
