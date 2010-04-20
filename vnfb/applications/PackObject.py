@@ -2,7 +2,6 @@
 #
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
-#                                  Jiao Lin
 #                     California Institute of Technology
 #                       (C) 2009  All Rights Reserved
 #
@@ -18,7 +17,7 @@ TODO:
 
 """
 
-class PackJobDir(base):
+class PackDir(base):
 
     class Inventory(base.Inventory):
 
@@ -34,27 +33,44 @@ class PackJobDir(base):
 
         csaccessor = pyre.inventory.facility(name='csaccessor', factory = vnfb.components.ssher)
         csaccessor.meta['tip'] = 'computing server accessor'
+        
+        tableName = pyre.inventory.str(name='dir')
+        dir.meta['tip'] = 'directory to be packed'
 
         debug = pyre.inventory.bool(name='debug', default=False)
-        pass # end of Inventory
 
 
     PTRFILEEXT = '.__dir__pack__ptr__'
     PACKINGINPROCESS = '***packing in process***'
     
+#    def retrieveDOMAccessor(self, name):
+#        db = self.clerk.db
+#        r = self.retrieveComponent(
+#            name,
+#            factory="accessor", args=[],
+#            vault=['dom-access'])
+##        if r is None:
+##            curator_dump = director._dumpCurator()
+##            raise RuntimeError, "could not locate dom accessor %r. curator dump: %s" % (
+##                name, curator_dump)
+#        r.director = self
+#        return r
 
     def main(self):
         id = self.id
-        try:
-            job  = self.clerk.getQEJobs(id = self.id)
+        self.clerk._getEntry(object, id=self.id, where=where)
+        self.retrieveDOMAccessor('job')
+#        try:
+#            job  = self.clerk.getQEJobs(id = self.id)
+#
+#        except:
+#            if self.debug: raise
+#            self._debug.log("Job %s: not found in db." % id)
+#            return
 
-        except:
-            if self.debug: raise
-            self._debug.log("Job %s: not found in db." % id)
-            return
-
-        if self._packingInProcess(job):
-            msg = "Job %s: packing already in process." % id
+        
+        if self._packingInProcess(dir):
+            msg = "Data object %s: packing already in process." % id
             if self.debug: raise RuntimeError, msg
             self._debug.log(msg)
             return
@@ -67,8 +83,8 @@ class PackJobDir(base):
         #            self._debug.log(msg)
         #            return
 
-        self._removeOldTarBall(job)
-        self._declarePackingInProcess(job)
+        self._removeOldTarBall(dir)
+        self._declarePackingInProcess(dir)
 
         server  = self.clerk.getServers(id=job.serverid)
 

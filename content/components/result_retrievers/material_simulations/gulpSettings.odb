@@ -74,8 +74,9 @@ class Retriever(base):
                 self.declareProgress(0.9, 'get result from computational server')
                 self._save_and_move_results(computation=computation, job=job, 
                                 files=dataObjectFiles, result_holder=trajectory)
-                #copy a temporary copy to the web server
+                #copy a temporary copy of the job to the web server
                 self.dds.make_available(trajectory, dataObjectFiles, server)
+                #copy a temporary version of the trajectory to the web server in the same directory
 #            if 
 #                self.dds.make_available(trajectory, dataObjectFiles, server)
 
