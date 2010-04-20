@@ -39,7 +39,7 @@ class AppExtension(Base):
             vault=['dom-access'])
         if r is None:
             curator_dump = director._dumpCurator()
-            raise RuntimeError, "could not locate dom acceossr %r. curator dump: %s" % (
+            raise RuntimeError, "could not locate dom accessor %r. curator dump: %s" % (
                 name, curator_dump)
         r.director = director
         return r
