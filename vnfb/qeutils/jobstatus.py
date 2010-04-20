@@ -87,33 +87,32 @@ class JobStatus(object):
         content = lc.document()
         doc.add(content)
 
+        if not self._input or not self._task:     # No input record, no output can be found
+            content.add(NONE)
+            return doc
+
+        localpath   = "../content/data/tmp" # Let's store output file to tmp/ directory
+        file        = "%s%s.in.out" % (self._input.id, self._task.type.lower())
+        outputfile  = os.path.join(localpath, file)
+
+        if not os.path.exists(outputfile):    # No output file
+            content.add(NONE)
+            return doc
+
         # XXX: It will show output for current input only! When you delete input 
         # record no output is displayed
 
-        dialog = lc.dialog(title='title of dialog', autoopen=True)
-
-        # add a paragraph
-        dialog.paragraph(text='content of dialog')
-        # add a button
+        dialog = lc.dialog(title='Output for %s' % self._input.id, autoopen=True, Class="qe-dialog-output")
+        dialog.paragraph(text=open(outputfile).read())  # Text
         okbutton = lc.button( label     = 'OK',
                               onclick   = select(element=dialog).destroy())
         dialog.add(okbutton)
-        link    = lc.link(label     = 'output',
+        link    = lc.link(label     = 'Output',
                           onclick   = select(element=content).append(dialog))  #id = self._outputId()
 
         content.add(link)
+        
 # Keep code!
-#        if not self._input or not self._task:     # No input record, no output can be found
-#            content.add(NONE)
-#            return doc
-#
-#        localpath   = "../content/data/tmp" # Let's store output file to tmp/ directory
-#        file        = "%s%s.in.out" % (self._input.id, self._task.type.lower())
-#        outputfile  = os.path.join(localpath, file)
-#
-#        if not os.path.exists(outputfile):    # No output file
-#            content.add(NONE)
-#            return doc
 #
 #        parts       = localpath.split("../content/data/")
 #        outputpath  = os.path.join(parts[1], file)
