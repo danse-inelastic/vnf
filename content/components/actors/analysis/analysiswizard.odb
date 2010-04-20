@@ -75,8 +75,6 @@ class Actor(base):
 #                    analysisType = self.inventory.analysisType,
 #                    dynamicsType = dynamicsType)  
 
-    
-
         # select button
         b = lc.button(label='select'); doc.add(b)
         #b.onclick = getInfoAndProceed()
@@ -170,7 +168,6 @@ class Actor(base):
 #        for i,y in enumerate(ys):
 #            p.curve(x=list(x), y=list(y), label=str(i))
         
-    
     def configureSubmissionQueue(self, director):
         className = analysisPaths[self.inventory.analysisType].split('.')[-1]
         exec('from '+analysisPaths[self.inventory.analysisType]+' import '+
