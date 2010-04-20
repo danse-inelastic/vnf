@@ -22,6 +22,7 @@ from vnfb.qeutils.qeutils import key2str
 from vnfb.qeutils.qerecords import SimulationRecord
 
 import luban.content as lc
+from luban.content import select
 from luban.content import load
 
 #ID_OUTPUT       = "qe-container-output"
@@ -82,32 +83,45 @@ class JobStatus(object):
                      )
 
     def output(self):
-        doc     = lc.document(id=self._outputId())
+        doc     = lc.document(id = self._outputId())
         content = lc.document()
         doc.add(content)
 
         # XXX: It will show output for current input only! When you delete input 
         # record no output is displayed
 
-        if not self._input or not self._task:     # No input record, no output can be found
-            content.add(NONE)
-            return doc
+        dialog = lc.dialog(title='title of dialog', autoopen=True)
 
-        localpath   = "../content/data/tmp" # Let's store output file to tmp/ directory
-        file        = "%s%s.in.out" % (self._input.id, self._task.type.lower())
-        outputfile  = os.path.join(localpath, file)
+        # add a paragraph
+        dialog.paragraph(text='content of dialog')
+        # add a button
+        okbutton = lc.button( label     = 'OK',
+                              onclick   = select(element=dialog).destroy())
+        dialog.add(okbutton)
+        link    = lc.link(label     = 'output',
+                          onclick   = select(element=content).append(dialog))  #id = self._outputId()
 
-        if not os.path.exists(outputfile):    # No output file
-            content.add(NONE)
-            return doc
-
-        parts       = localpath.split("../content/data/")
-        outputpath  = os.path.join(parts[1], file)
-
-        status  = Message()
-        status.setHtmlLink(file, outputpath)
-
-        content.add(status.string("a"))
+        content.add(link)
+# Keep code!
+#        if not self._input or not self._task:     # No input record, no output can be found
+#            content.add(NONE)
+#            return doc
+#
+#        localpath   = "../content/data/tmp" # Let's store output file to tmp/ directory
+#        file        = "%s%s.in.out" % (self._input.id, self._task.type.lower())
+#        outputfile  = os.path.join(localpath, file)
+#
+#        if not os.path.exists(outputfile):    # No output file
+#            content.add(NONE)
+#            return doc
+#
+#        parts       = localpath.split("../content/data/")
+#        outputpath  = os.path.join(parts[1], file)
+#
+#        status  = Message()
+#        status.setHtmlLink(file, outputpath)
+#
+#        content.add(status.string("a"))
 
         return doc
 
