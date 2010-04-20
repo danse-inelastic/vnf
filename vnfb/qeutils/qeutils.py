@@ -162,12 +162,19 @@ def readRecordFile(dds, record, fname=None):
     return readFile(absfilename)
 
 
-def dataroot(director):
+def dataroot(director, relative = False):
     "Returns data root directory where the simulation results are exported"
+    # Example:
+    #    relative = False: "/home/dexity/exports/vnf/vnfb/content/data"
+    #    relative = True:  "../content/data"
+
     if not director:
         return None
     
     dds = director.dds
+    if relative:
+        return dds.dataroot
+    
     return os.path.abspath(dds.dataroot)
 
 

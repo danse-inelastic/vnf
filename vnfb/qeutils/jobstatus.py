@@ -16,9 +16,10 @@ Displays the status of the job
 """
 
 import os
+import re
 from vnfb.qeutils.message import Message
 from vnfb.qeutils.qeconst import ID_OUTPUT, ID_STATUS
-from vnfb.qeutils.qeutils import key2str
+from vnfb.qeutils.qeutils import key2str, dataroot
 from vnfb.qeutils.qerecords import SimulationRecord
 
 import luban.content as lc
@@ -87,22 +88,13 @@ class JobStatus(object):
         content = lc.document()
         doc.add(content)
 
-        if not self._input or not self._task:     # No input record, no output can be found
+        outputfile  = self._outputFile(self._director, self._job)   # Output file
+
+        if not outputfile or not os.path.exists(outputfile):    # No output file
             content.add(NONE)
             return doc
 
-        localpath   = "../content/data/tmp" # Let's store output file to tmp/ directory
-        file        = "%s%s.in.out" % (self._input.id, self._task.type.lower())
-        outputfile  = os.path.join(localpath, file)
-
-        if not os.path.exists(outputfile):    # No output file
-            content.add(NONE)
-            return doc
-
-        # XXX: It will show output for current input only! When you delete input 
-        # record no output is displayed
-
-        dialog  = lc.dialog(title='Output for %s' % self._input.id, autoopen=True, Class="qe-dialog-output")
+        dialog  = lc.dialog(title='Output for %s task' % self._task.id, autoopen=True, Class="qe-dialog-output")
         text    = lc.htmldocument(text="<pre>%s<pre>" % open(outputfile).read())
         dialog.add(text)   # Text
         okbutton = lc.button( label     = 'OK',
@@ -112,9 +104,39 @@ class JobStatus(object):
                           onclick   = select(element=content).append(dialog))  #id = self._outputId()
 
         content.add(link)
-        
+
         return doc
 
+
+    # Partially borrowed from actors/jobs/status.odb
+    def _outputFile(self, director, job):
+        "Returns otuput file"
+        if not job:     # No job, no output
+            return None
+
+        tmpbase     = os.path.join(dataroot(director, relative=True), "tmp") # Example: ../content/data/tmp
+        jobpath     = os.path.join(tmpbase, job.name)   # ../content/data/tmp/qejobs
+        jobpath     = os.path.join(jobpath, job.id)     # ../content/data/tmp/qejobs/EXSWTYTK
+
+        if not os.path.exists(jobpath):
+            return None
+
+        files       = os.listdir(jobpath)
+        file        = self._matchCheck(files)
+        return os.path.join(jobpath, file)   # Example: ../content/data/tmp/qejobs/EXSWTYTK/EYWKUYI3q2r.in.out
+
+
+    # Borrowed from ResultPath class
+    # XXX: Fix cardcoded pattern for output file
+    def _matchCheck(self, files):
+        "Find matching file. Single matching file if possible. Picks first otherwise"
+        REEXP   = '[\w]+\.in\.out$'
+        for fname in files:
+            p   = re.compile(REEXP)
+            if p.match(fname):   # matches
+                return fname
+
+        return None
 
     def _statusId(self):
         return "%s-%s" % (ID_STATUS, self._linkorder)
