@@ -8,21 +8,22 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
-
 from pyre.applications.Script import Script as base
 """
 TODO:
     Considering that time on the remote cluster and local machine are syncronized
     is WRONG!
-
 """
 
-class PackDir(base):
+class PackObject(base):
 
     class Inventory(base.Inventory):
 
         import pyre.inventory
         id = pyre.inventory.str('id')   # job id
+        tableName = pyre.inventory.str(name='tableName', default='job')
+        where = pyre.inventory.str(name='where')
+        serverid = pyre.inventory.str(name='serverid')
 
         import vnfb.components
         clerk = pyre.inventory.facility(name="clerk", factory=vnfb.components.clerk)
@@ -34,11 +35,7 @@ class PackDir(base):
         csaccessor = pyre.inventory.facility(name='csaccessor', factory = vnfb.components.ssher)
         csaccessor.meta['tip'] = 'computing server accessor'
         
-        tableName = pyre.inventory.str(name='dir')
-        dir.meta['tip'] = 'directory to be packed'
-
         debug = pyre.inventory.bool(name='debug', default=False)
-
 
     PTRFILEEXT = '.__dir__pack__ptr__'
     PACKINGINPROCESS = '***packing in process***'
@@ -58,8 +55,7 @@ class PackDir(base):
 
     def main(self):
         id = self.id
-        self.clerk._getEntry(object, id=self.id, where=where)
-        self.retrieveDOMAccessor('job')
+        object = self.clerk._getEntry(self.inventory.tableName, id=self.id, where=self.inventory.where)
 #        try:
 #            job  = self.clerk.getQEJobs(id = self.id)
 #
@@ -68,8 +64,7 @@ class PackDir(base):
 #            self._debug.log("Job %s: not found in db." % id)
 #            return
 
-        
-        if self._packingInProcess(dir):
+        if self._packingInProcess(object):
             msg = "Data object %s: packing already in process." % id
             if self.debug: raise RuntimeError, msg
             self._debug.log(msg)
@@ -83,13 +78,13 @@ class PackDir(base):
         #            self._debug.log(msg)
         #            return
 
-        self._removeOldTarBall(dir)
-        self._declarePackingInProcess(dir)
+        self._removeOldTarBall(object)
+        self._declarePackingInProcess(object)
 
-        server  = self.clerk.getServers(id=job.serverid)
+        server  = self.clerk.getServers(id=self.inventory.serverid)
 
         dds = self.dds
-        remotejobpath = dds.abspath(job, server = server)
+        remotejobpath = dds.abspath(object, server = server)
         assert os.path.basename(remotejobpath) == id
 
         # temporary directory
@@ -111,43 +106,43 @@ class PackDir(base):
         csaccessor = self.csaccessor
         csaccessor.execute(cmd, server, remotejobroot)
         
-        # copy job tarball to the temporary dir
+        # copy object tarball to the temporary dir
         csaccessor.getfile(server, remotejobtarball, tmpdirectory)
 
-        # leave a pointer in the job directory
+        # leave a pointer in the object directory
         ptr = os.path.join(subdir, tarball)
-        self._establishPtr(job, ptr)
+        self._establishPtr(object, ptr)
         return
 
 
-    def _establishPtr(self,job, ptr):
-        path = self._ptrFilePath(job)
+    def _establishPtr(self, object, ptr):
+        path = self._ptrFilePath(object)
         f = open(path, 'w')
         f.write(ptr)
         return
 
 
-    def _packingIsUpToDate(self, job):
-        path = self._ptrFilePath(job)
+    def _packingIsUpToDate(self, object):
+        path = self._ptrFilePath(object)
         if not os.path.exists(path):
             return
         packtime = os.path.getmtime(path)
 
-        server  = self.clerk.getServers(id=job.serverid)
-        mtime = self.dds.getmtime(job, server=server)
+        server  = self.clerk.getServers(id = self.inventory.serverid)
+        mtime = self.dds.getmtime(object, server=server)
         return packtime > mtime
     
 
-    def _packingInProcess(self, job):
-        path = self._ptrFilePath(job)
+    def _packingInProcess(self, object):
+        path = self._ptrFilePath(object)
         if not os.path.exists(path): return
         f = open(path)
         s = f.read().strip()
         return s == self.PACKINGINPROCESS
 
 
-    def _removeOldTarBall(self, job):
-        path = self._ptrFilePath(job)
+    def _removeOldTarBall(self, object):
+        path = self._ptrFilePath(object)
         if not os.path.exists(path): return
         
         oldptr = open(path).read()
@@ -159,25 +154,25 @@ class PackDir(base):
         return
     
 
-    def _declarePackingInProcess(self, job):
-        path = self._ptrFilePath(job)
+    def _declarePackingInProcess(self, object):
+        path = self._ptrFilePath(object)
 
         f = open(path, 'w')
         f.write(self.PACKINGINPROCESS)
         return
 
 
-    def _ptrFilePath(self, job):
-        return '.'.join( [self.dds.abspath(job), self.PTRFILEEXT] )
+    def _ptrFilePath(self, object):
+        return '.'.join( [self.dds.abspath(object), self.PTRFILEEXT] )
 
 
-    def __init__(self, name='packjobdir'):
-        super(PackJobDir, self).__init__(name)
+    def __init__(self, name='packobject'):
+        super(PackObject, self).__init__(name)
         return
 
 
     def _configure(self):
-        super(PackJobDir, self)._configure()
+        super(PackObject, self)._configure()
         self._info.log('start _configure')
         self.id = self.inventory.id
 
@@ -193,7 +188,7 @@ class PackDir(base):
 
 
     def _init(self):
-        super(PackJobDir, self)._init()
+        super(PackObject, self)._init()
 
         # initialize table registry
         #import vnf.dom
