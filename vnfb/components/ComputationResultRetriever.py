@@ -29,9 +29,9 @@ class ComputationResultRetriever(Component):
         self.declareProgress(0.05, 'check status of retrieval')
         # first check if it is necessary to run this component
         states = [
-            #'retrieved',
+            'retrieved',
             #'retrieval failed',
-            #'retrieving',
+            'retrieving',
             ]
         state = computation.getResultRetrievalStatus(self.db)
         if state in states:
