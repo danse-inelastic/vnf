@@ -13,7 +13,7 @@
 
 import os
 import re
-from vnfb.qeutils.qeutils import key2str, jobStatus
+from vnfb.qeutils.qeutils import key2str, jobStatus, dataroot, makedirs
 from vnfb.qeutils.message import Message
 from vnfb.qeutils.qeconst import ID_OUTPUT, ID_STATUS
 
@@ -42,9 +42,10 @@ class Actor(base):
         server  = director.clerk.getServers(id = job.serverid)
         job.setDirector(director)
 
-        status  = lc.htmldocument(text=self._retrieveStatus(director, job, server))
-        output  = lc.document()
-        output.add(self._retrieveOutput(director, job, server))
+        status      = lc.htmldocument()
+        status.text = self._retrieveStatus(director, job, server)
+        output      = lc.document()
+        output.add(self._retrieveOutput(director, job, server, output))
 
         return [select(id=self._statusId()).replaceContent(status),
                 select(id=self._outputId()).replaceContent(output)]
@@ -76,15 +77,17 @@ class Actor(base):
         
 
     # XXX: Refactor! Integrate with ResultPath class later!
-    def _retrieveOutput(self, director, job, server):
+    def _retrieveOutput(self, director, job, server, content):
         "Retrieve output file"
+        if not job:     # No job, no output
+            return NONE
+        
         jobpath     = director.dds.abspath(job, server=server)
-        #localpath   = director.dds.abspath(job)     # Example: ../content/data/qejobs/EXSWTYTK
-        localpath   = "../content/data/tmp" # Let's store output file to tmp/ directory
+        localpath   = self._localpath(director, job)
         cmd         = "ls %s" % jobpath  # list current job directory
 
         failed, output, error = director.csaccessor.execute(cmd, server, jobpath, suppressException = True)
-        if failed:      # Something went wrong
+        if failed or not localpath:      # Something went wrong
             return NONE
 
         filelist    = output.split()    # List of files, Example: ["4I2NPMY4pw.in", "4I2NPMY4pw.in.out", "run.sh", ...]
@@ -94,21 +97,39 @@ class Actor(base):
             return NONE
 
         try:
-            outputfile  = os.path.join(jobpath, file)
-            director.csaccessor.getfile(server, outputfile, localpath)
+            remotefile  = os.path.join(jobpath, file)   # File on remote server
+            director.csaccessor.getfile(server, remotefile, localpath)
         except:
             return NONE
 
-        parts       = localpath.split("../content/data/")
-        outputpath  = os.path.join(parts[1], file)
+        outputfile  = os.path.join(localpath, file)
+        if not os.path.exists(outputfile):  # No file on local server
+            return NONE
+
+        dialog  = lc.dialog(title='Output for %s' % self.taskid, autoopen=True, Class="qe-dialog-output")
+        text    = lc.htmldocument(text="<pre>%s<pre>" % open(outputfile).read())
+        dialog.add(text)   # Text
+        okbutton = lc.button( label     = 'OK',
+                              onclick   = select(element=dialog).destroy())
+        dialog.add(okbutton)
+        return lc.link(label     = 'Output',
+                       onclick   = select(element=content).append(dialog))
+
+
+    def _localpath(self, director, job):
+        "Returns path to where the file will be transferred, create directory, if necessary"
+        # The reason to copy output file to tmp/ directory is that tmp/ is the only one that exposed for public
+        if not job:     # No job, no output
+            return None
+
+        tmpbase     = os.path.join(dataroot(director, relative=True), "tmp") # Example: ../content/data/tmp
+        jobpath     = os.path.join(tmpbase, job.name)   # ../content/data/tmp/qejobs
+        jobpath     = os.path.join(jobpath, job.id)     # ../content/data/tmp/qejobs/EXSWTYTK
+        if not os.path.exists(jobpath): # create directory, if necessary
+            makedirs(jobpath)
+            
+        return jobpath  # Example: ../content/data/tmp/qejobs/EXSWTYTK
         
-        status  = Message()
-        status.setHtmlLink(file, outputpath)
-
-        # http://localhost/vnf/qejobs/EXSWTYTK/EXLZ89CJpw.in.out
-        # http://localhost/vnf/tmp/tmpRJTdzR/EXSWTYTK.tgz
-        return status.string("a")
-
 
     # Borrowed from ResultPath class
     # XXX: Fix cardcoded pattern for output file

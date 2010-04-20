@@ -2,6 +2,10 @@
 This is CSS layout for Quantum Espresso pages
 */
 
+pre {
+    font-size: 12px
+}
+
 fieldset {
     border: 0px;
     padding: 10px;
