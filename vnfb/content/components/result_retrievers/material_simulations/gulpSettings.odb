@@ -60,23 +60,24 @@ class Retriever(base):
             self._save_results(computation, job, filesInJobDir, dos)
             
         if 'molecular dynamics' in runtype:
-            self.declareProgress(0.6, """create motion data object""")
+            self.declareProgress(0.6, """create trajectory data object""")
             doOutputFiles = gulpSettings.getDOAndOutputFile()
-            dataObjectFiles = doOutputFiles['vsat.Motion']
-            # if the computation already has the motion, skip this
-            motion = computation.results.getElementByKey('motion',db) #'motion' is class name
-            if not motion:
-                from vnfb.dom.material_simulations.Motion import Motion
-                motion = self._make_result_holder(computation, Motion)
-                motion.matter = computation.matter
-                computation.results.add(motion, db, key = 'motion')
-                db.updateRecord(motion)
+            dataObjectFiles = doOutputFiles['vsat.Trajectory']
+            # if the computation already has the trajectory, skip this
+            trajectory = computation.results.getElementByKey('trajectory', db) #'trajectory' is class name
+            if not trajectory:
+                from vnfb.dom.material_simulations.Trajectory import Trajectory
+                trajectory = self._make_result_holder(computation, Trajectory)
+                #trajectory.matter = computation.trajectory
+                computation.results.add(trajectory, db, key = 'trajectory')
+                db.updateRecord(trajectory)
                 self.declareProgress(0.9, 'get result from computational server')
-                self._save_and_move_results(computation, job, dataObjectFiles, motion)
+                self._save_and_move_results(computation=computation, job=job, 
+                                files=dataObjectFiles, result_holder=trajectory)
                 #copy a temporary copy to the web server
-            if 
-                self.dds.make_available(motion, dataObjectFiles, server)
-
+                self.dds.make_available(trajectory, dataObjectFiles, server)
+#            if 
+#                self.dds.make_available(trajectory, dataObjectFiles, server)
 
 def retriever():
     return Retriever('gulpSettings')
