@@ -34,7 +34,7 @@ class JobStatus(object):
         self._director  = director
         self._simid     = simid
         self._linkorder = linkorder
-        self._job       = job
+        self._job       = job       # specified job
         self._task      = None
         self._input     = None
         self._server    = None
@@ -43,14 +43,15 @@ class JobStatus(object):
 
 
     def _init(self):
-        # XXX: Fix if job is passed
         simrecord       = SimulationRecord(self._director, self._simid)
-
-        (self._job, self._input, self._task)  = simrecord.jobInputTask(self._linkorder)
+        self._input     = simrecord.input(self._linkorder)
+        self._task      = simrecord.task(self._linkorder)
+        if not self._job:   # If no job is set take from simrecord
+            self._job   = simrecord.job(self._linkorder)
 
         if not self._job:   # Job is None
             return
-        
+
         self._job.setDirector(self._director)
         self._server    = self._director.clerk.getServers(id = self._job.serverid)
 
@@ -93,17 +94,27 @@ class JobStatus(object):
 
     def action(self):
         "Return action link"
+        return self._action("refreshStatusOutput")
+
+
+    def actionStatus(self):
+        "Return status action"
+        return self._action("refreshStatus")
+
+
+    def _action(self, routine):
+        "General action that calls specific routine"
         if not self._job or not self._task:
             return ""
 
         return lc.link(label="Refresh",
                       Class     = "qe-task-action",
                       onclick   = load(actor     = 'jobs/status',
-                                       routine   = 'refreshStatus',
-                                      id        = self._simid,
-                                      taskid    = self._task.id,
-                                      jobid     = self._job.id,
-                                      linkorder = self._linkorder)
+                                       routine   = routine,
+                                       id        = self._simid,
+                                       taskid    = self._task.id,
+                                       jobid     = self._job.id,
+                                       linkorder = self._linkorder)
                      )
 
     def output(self):
@@ -263,11 +274,18 @@ class JobStatus(object):
         return None
 
     def _statusId(self):
-        return "%s-%s" % (ID_STATUS, self._linkorder)
+        return "%s-%s" % (ID_STATUS, self._job.id)
 
 
     def _outputId(self):
-        return "%s-%s" % (ID_OUTPUT, self._linkorder)
+        return "%s-%s" % (ID_OUTPUT, self._job.id)
+
+#    def _statusId(self):
+#        return "%s-%s" % (ID_STATUS, self._linkorder)
+#
+#
+#    def _outputId(self):
+#        return "%s-%s" % (ID_OUTPUT, self._linkorder)
 
 __date__ = "$Mar 18, 2010 11:05:41 PM$"
 

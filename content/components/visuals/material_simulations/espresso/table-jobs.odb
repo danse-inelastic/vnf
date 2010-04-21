@@ -12,6 +12,7 @@
 #
 
 from vnfb.qeutils.qeutils import stamp2date
+from vnfb.qeutils.jobstatus import JobStatus
 from vnfb.qeutils.results.resultinfo import ResultInfo
 from vnfb.qeutils.qegrid import QEGrid
 from luban.content import load
@@ -37,8 +38,11 @@ def visual(director, simid, type, jobs, taskid, linkorder):
     def submitted(job):
         return stamp2date(job.timesubmitted)
 
-    def status(job):
-        return job.status
+    def status(jobstatus):
+        return jobstatus.status()
+
+    def refresh(jobstatus):
+        return jobstatus.actionStatus()
 
     def results(result):
         return result.link()
@@ -57,15 +61,17 @@ def visual(director, simid, type, jobs, taskid, linkorder):
                        )
 
     if len(jobs):
-        table.addRow(("Id", "Time Submitted", "Status", "Results", "", ""))
+        table.addRow(("Id", "Time Submitted", "Status", "", "Results", "", ""))
         for j in jobs:
-            result  = ResultInfo(director, simid, linkorder, j)
-            table.addRow((jobid(j), submitted(j), status(j), results(result), check(result), delete(j)))
+            result      = ResultInfo(director, simid, linkorder, j)
+            jobstatus   = JobStatus(director, simid, linkorder, j)
+            table.addRow((jobid(j), submitted(j), status(jobstatus), refresh(jobstatus), results(result), check(result), delete(j)))
 
     table.setColumnStyle(0, "qe-table-id")
     table.setColumnStyle(1, "qe-table-time")
-    table.setColumnStyle(4, "qe-table-check")
-    table.setColumnStyle(5, "qe-table-delete")
+    table.setColumnStyle(3, "qe-table-check")
+    table.setColumnStyle(5, "qe-table-check")
+    table.setColumnStyle(6, "qe-table-delete")
     table.setRowStyle(0, "qe-table-header")
 
     return table.grid()
