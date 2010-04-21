@@ -31,6 +31,13 @@ class TaskAction(object):
         if not self._director or not self._task:
             return "None"
 
+        return self._runLink()
+
+    # Rename to link()
+    def linkUpdated(self):
+        if not self._director or not self._task:
+            return "None"
+
         if self._job:
             server  = self._director.clerk.getServers(id = self._job.serverid)
             status  = jobStatus(self._director, self._job, server)

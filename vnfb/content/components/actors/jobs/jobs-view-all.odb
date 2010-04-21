@@ -84,7 +84,7 @@ class Actor(base):
 
     def _refreshAction(self, section):
         "Refresh action"
-        link    = lc.link(label="Refresh",
+        link    = lc.link(label="Refresh List",
                             Class="qe-action-refresh",
                             onclick = load(actor     = 'jobs/jobs-view-all',
                                           id        = self.id,
