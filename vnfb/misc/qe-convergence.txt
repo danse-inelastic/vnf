@@ -1,3 +1,22 @@
 
 Convergence Tests
 =================
+
+[Simulation Name]
+"Electron Structure"
+"Single Phonon"
+
+[Parameters] [Start value]  [Step]                      [Tolerance]     [Max Steps]
+'nbnd'                      (int)     {add}
+'degauss'                   (float)   {add} # metall
+'ecutwfc'                   (float)   {add}
+'ecutrho'                   (float)   {add}
+'conv_thr'                  (float)   {multiple}
+'kpoints'                   (int vector) {add vector}
+
+
+Notes:
+    - Store the converged value to the data base
+    - If the value does not converge
+
+
