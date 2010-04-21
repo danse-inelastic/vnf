@@ -14,6 +14,7 @@
 """
 Displays the status of the job
 """
+import os.path
 import os
 import re
 from vnfb.qeutils.qeconst import ID_OUTPUT, ID_STATUS
@@ -180,7 +181,7 @@ class JobStatus(object):
         "Returns file link"
         assert filename != None
         # Contruct dialog
-        title   = 'Output for %s task' % self._task.id
+        title   = '%s bytes. Output for %s task' % (os.path.getsize(filename), self._task.id)
         text    = lc.htmldocument(text="<pre>%s<pre>" % open(filename).read())
         dialog  = self._dialog(title, text) # dialog to pop up
 

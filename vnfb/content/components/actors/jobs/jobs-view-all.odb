@@ -82,6 +82,7 @@ class Actor(base):
                                               simid     = self.id,
                                               type      = self.type,
                                               jobs      = jobs,
+                                              taskid    = self.taskid,
                                               linkorder = self.linkorder
                                               )
 
