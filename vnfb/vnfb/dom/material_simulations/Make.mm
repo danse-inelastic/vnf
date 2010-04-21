@@ -45,6 +45,7 @@ EXPORT_PYTHON_MODULES = \
 	Phonons.py \
 	SimulationBase.py \
 	SQE.py \
+	Trajectory.py \
 	__init__.py \
 	_.py \
 	computation_types.py \

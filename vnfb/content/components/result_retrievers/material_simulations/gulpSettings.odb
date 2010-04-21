@@ -72,10 +72,11 @@ class Retriever(base):
                 #trajectory.matter = computation.trajectory
                 computation.results.add(trajectory, db, key = 'trajectory')
                 db.updateRecord(trajectory)
-            self.declareProgress(0.9, 'get result from computational server')
-            self._save_and_move_results(computation=computation, job=job, 
-                            files=dataObjectFiles, result_holder=trajectory)
+                #move results from job directory to dedicated trajectories data object directory
+                self._save_and_move_results(computation=computation, job=job, 
+                                files=dataObjectFiles, result_holder=trajectory)
             #copy a temporary copy of the job to the web server (for the job page)
+            self.declareProgress(0.9, 'get result from computational server')
             self.dds.make_available(trajectory, dataObjectFiles, server)
             #copy a temporary version of the trajectory to the web server (for the results page)
 #            if 
