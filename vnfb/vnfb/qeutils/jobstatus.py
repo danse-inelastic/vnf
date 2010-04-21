@@ -137,47 +137,6 @@ class JobStatus(object):
         return self._fileLink(outputfile, content)
 
 
-#        # Contruct dialog
-#        title   = 'Output for %s task' % self._task.id
-#        text    = lc.htmldocument(text="<pre>%s<pre>" % open(outputfile).read())
-#        dialog  = self._dialog(title, text) # dialog to pop up
-#
-#        link    = lc.link(label     = 'Output',
-#                          onclick   = select(element=content).append(dialog))
-
-#        jobpath     = director.dds.abspath(job, server=server)
-#        localpath   = self._localpath(director, job)
-#        cmd         = "ls %s" % jobpath  # list current job directory
-#
-#        failed, output, error = director.csaccessor.execute(cmd, server, jobpath, suppressException = True)
-#        if failed or not localpath:      # Something went wrong
-#            return NONE
-#
-#        filelist    = output.split()    # List of files, Example: ["4I2NPMY4pw.in", "4I2NPMY4pw.in.out", "run.sh", ...]
-#        file        = self._matchCheck(filelist)
-#
-#        if not file:    # No output file
-#            return NONE
-#
-#        try:
-#            remotefile  = os.path.join(jobpath, file)   # File on remote server
-#            director.csaccessor.getfile(server, remotefile, localpath)
-#        except:
-#            return NONE
-#        filename    = self._retrieveFile(localpath)
-#
-#        outputfile  = os.path.join(localpath, filename)
-
-#        dialog  = lc.dialog(title='Output for %s' % self.taskid, autoopen=True, Class="qe-dialog-output")
-#        text    = lc.htmldocument(text="<pre>%s<pre>" % open(outputfile).read())
-#        dialog.add(text)   # Text
-#        okbutton = lc.button( label     = 'OK',
-#                              onclick   = select(element=dialog).destroy())
-#        dialog.add(okbutton)
-#        return lc.link(label     = 'Output',
-#                       onclick   = select(element=content).append(dialog))
-        
-
     def _retrieveFile(self):
         """
         Retrieves file from remote to local server and returns filename if file 
@@ -310,15 +269,4 @@ class JobStatus(object):
         return "%s-%s" % (ID_OUTPUT, self._linkorder)
 
 __date__ = "$Mar 18, 2010 11:05:41 PM$"
-
-
-#        if not job:     # No job, no output
-#            return None
-#
-#        tmpbase     = os.path.join(dataroot(director, relative=True), "tmp") # Example: ../content/data/tmp
-#        jobpath     = os.path.join(tmpbase, job.name)   # ../content/data/tmp/qejobs
-#        jobpath     = os.path.join(jobpath, job.id)     # ../content/data/tmp/qejobs/EXSWTYTK
-
-# or not os.path.exists(outputfile)
-
 
