@@ -11,6 +11,7 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
+# Status: DEPRICATED for now
 # XXX: Should be removed or redone to have more meaning
 
 class TaskInfo:

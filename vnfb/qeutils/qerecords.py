@@ -108,11 +108,12 @@ class SimulationRecord(QERecords):
         self._jitlist   = self.jobInputTaskList(subtype)    # set jitlist according to subtype
         for jit in self._jitlist:
             task    = jit[2]
-            
-            if task and task.linkorder == linkorder:
+
+            # Important: linkorder is integer!
+            if task and task.linkorder == linkorder:    
                 return jit
 
-        return None
+        return (None, None, None)
 
 
     def job(self, linkorder, subtype = None):
