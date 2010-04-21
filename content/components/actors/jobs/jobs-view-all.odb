@@ -37,7 +37,8 @@ class Actor(base):
 
 
     def content(self, director):
-        jobs     = director.clerk.getQEJobs(where="taskid='%s'" % self.taskid)
+        # Get jobs
+        jobs     = director.clerk.getQEJobs(where="taskid='%s' ORDER BY timesubmitted DESC" % self.taskid)
 
         def viewIndicator(director):
             path = []
