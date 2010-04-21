@@ -27,10 +27,15 @@ class Actor(base):
         trajectory = self._load(director)
         
         orm = director.clerk.orm
-        trajectory = orm.load(Trajectory, self.inventory.id)
-        datadir = director.dds.abspath(orm(trajectory))
+#        trajectory = orm.load(Trajectory, self.inventory.id)
+        #datadir = director.dds.abspath(orm(trajectory))
         
-        link = lc.htmldocument(id='job-download-link')
+        from vnfb.utils.job import packobjectdir as packutils
+        url = packutils.downloadurl(orm(trajectory), director)
+        filename = url.split('/')[-1]
+        label = 'Download %s' % filename
+        
+        link = lc.htmldocument(id='trajectory-download-link')
         link.text = ['<a href="%s">%s</a>' % (url, label)]
         
         return link  
