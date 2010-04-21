@@ -79,8 +79,8 @@ class Retriever(base):
             self.declareProgress(0.9, 'get result from computational server')
             #should probably first check to see if they are available on vnf server, then if not do below
             #i.e. fileexists()
-            computing_server = self.clerk.dereference(job.server)
-            if self.dds.is_available(trajectory, dataObjectFiles, server = computing_server):
+            computing_server = self.director.clerk.dereference(job.server)
+            if self.dds.is_available(trajectory, dataObjectFiles[0], server = computing_server):
                 self.dds.make_available(trajectory, dataObjectFiles)
             #copy a temporary version of the trajectory to the web server (for the results page)
 #            if 
