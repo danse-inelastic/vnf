@@ -11,7 +11,6 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
-
 from vnfb.qeutils.qeutils import stamp2date
 from vnfb.qeutils.results.resultinfo import ResultInfo
 from vnfb.qeutils.qegrid import QEGrid
@@ -19,29 +18,12 @@ from luban.content import load
 import luban.content as lc
 
 
-def getTaskId(director, simid, linkorder):
-    "Get task id "
-    from vnfb.qeutils.qerecords import SimulationRecord
-    simrecord   = SimulationRecord(director, simid)
-
-    if not simrecord:
-        return ""
-
-    task    = simrecord.task(linkorder)
-    if not task:
-        return ""
-
-    return task.id
-
-
 # XXX: Bug in check and results display
-def visual(director, simid, type, jobs, linkorder):
+def visual(director, simid, type, jobs, taskid, linkorder):
     """
     Returns the table of jobs related to QE task
     """
-
     table   = QEGrid(lc.grid(Class="qe-tasks-table"))
-    taskid  = getTaskId(director, simid, linkorder)
 
     def jobid(job):
         return  lc.link(label   = job.id,
@@ -58,13 +40,11 @@ def visual(director, simid, type, jobs, linkorder):
     def status(job):
         return job.status
 
-    def results(job):
-        results = ResultInfo(director, simid, linkorder, job) # XXX
-        return results.link()
+    def results(result):
+        return result.link()
 
-    def check(job):
-        results = ResultInfo(director, simid, linkorder, job) # XXX
-        return results.action()
+    def check(result):
+        return result.action()
 
     def delete(job):
         return lc.link( label   = "Delete",
@@ -79,7 +59,8 @@ def visual(director, simid, type, jobs, linkorder):
     if len(jobs):
         table.addRow(("Id", "Time Submitted", "Status", "Results", "", ""))
         for j in jobs:
-            table.addRow((jobid(j), submitted(j), status(j), results(j), check(j), delete(j)))
+            result  = ResultInfo(director, simid, linkorder, j)
+            table.addRow((jobid(j), submitted(j), status(j), results(result), check(result), delete(j)))
 
     table.setColumnStyle(0, "qe-table-id")
     table.setColumnStyle(1, "qe-table-time")
@@ -91,16 +72,4 @@ def visual(director, simid, type, jobs, linkorder):
     
 
 __date__ = "$Jan 14, 2010 6:09:10 AM$"
-
-
-
-# **************** DEAD CODE *****************
-
-#    try: return table(jobs, cols, tinfo, director)
-#    except:
-#        import journal
-#        debug = journal.debug('qe-task-jobs-table')
-#        import traceback
-#        debug.log(traceback.format_exc())
-#        return
 
