@@ -46,8 +46,10 @@ class ITaskApp(base):
     def main(self):
         task = self.getTask()
         
-        # only if a task was just created, we can start running
-        if not self.isCreated():
+        # only if a task was created or previously created can we start running
+        if self.isCreated() or self.isFailed():
+            pass
+        else:
             self._debug.log('This task is %s.' % task.state)
             return
 
@@ -110,6 +112,11 @@ class ITaskApp(base):
     def isCreated(self):
         task = self.getTask()
         return task.state == 'created'
+
+
+    def isFailed(self):
+        task = self.getTask()
+        return task.state == 'failed'
     
         
     def isFinished(self):
