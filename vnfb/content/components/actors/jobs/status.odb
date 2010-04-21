@@ -20,6 +20,7 @@ from luban.components.AuthorizedActor import AuthorizedActor as base
 
 NONE    = "None"
 
+# XXX: Set jobstatus in self._init()?
 class Actor(base):
     """
     Actor for retrieving results from server
@@ -33,16 +34,44 @@ class Actor(base):
         linkorder   = pyre.inventory.int('linkorder', default=0)
 
 
+    def refreshStatusOutput(self, director):
+        """
+        Refresh job status and output file
+        Notes:
+            Used mostly for simulation view (latest job)
+        """
+        jobstatus   = self._jobStatus(director)
+        return [select(id=self._statusId()).replaceContent(self._getStatus(jobstatus)),
+                select(id=self._outputId()).replaceContent(self._getOutput(jobstatus))]
+
+
     def refreshStatus(self, director):
-        "Refresh job status and output file"
-        jobstatus   = JobStatus(director, self.id, self.linkorder)
+        """
+        Refresh job status and output file
+        Notes:
+            Used mostly for job list (specific job)
+        """
+        jobstatus   = self._jobStatus(director)
+        return select(id=self._statusId()).replaceContent(self._getStatus(jobstatus))
+
+
+    def _getStatus(self, jobstatus):
+        "Returns job status"
         status      = lc.htmldocument()
         status.text = jobstatus.updatedStatus()
+        return status
+
+
+    def _getOutput(self, jobstatus):
+        "Returns output"
         output      = lc.document()
         output.add(jobstatus.updatedOutput(output))
+        return output
 
-        return [select(id=self._statusId()).replaceContent(status),
-                select(id=self._outputId()).replaceContent(output)]
+
+    def _jobStatus(self, director):
+        job         = director.clerk.getQEJobs(id=self.jobid)
+        return JobStatus(director, self.id, self.linkorder, job)
 
 
     def __init__(self):
@@ -52,11 +81,11 @@ class Actor(base):
 
 
     def _statusId(self):
-        return "%s-%s" % (ID_STATUS, self.linkorder)
+        return "%s-%s" % (ID_STATUS, self.jobid) 
 
 
     def _outputId(self):
-        return "%s-%s" % (ID_OUTPUT, self.linkorder)
+        return "%s-%s" % (ID_OUTPUT, self.jobid) 
 
 
     def _configure(self):
