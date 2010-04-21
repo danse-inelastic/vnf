@@ -253,6 +253,9 @@ class JobStatus(object):
 
         files       = os.listdir(localpath)
         file        = self._matchCheck(files)
+        if not file:    # No file,
+            return None
+
         filename    = os.path.join(localpath, file)
         
         if os.path.exists(filename):    # Check filename again
