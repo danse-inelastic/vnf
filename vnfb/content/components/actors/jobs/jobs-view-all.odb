@@ -68,13 +68,32 @@ class Actor(base):
         return doc
 
 
-    def _showActions(self, section):  #, inputs
-        section.add(lc.link(label="Back",
+    def _showActions(self, section):
+        self._backAction(section)
+        self._refreshAction(section)
+        section.add(lc.document(Class="clear-both"))
+
+
+    def _backAction(self, section):
+        link    = lc.link(label="Back",
                             Class="qe-action-back",
                             onclick = load(actor      = 'material_simulations/espresso/sim-view',
                                              id         = self.id))
-                    )
-        section.add(lc.document(Class="clear-both"))
+        section.add(link)
+
+
+    def _refreshAction(self, section):
+        "Refresh action"
+        link    = lc.link(label="Refresh",
+                            Class="qe-action-refresh",
+                            onclick = load(actor     = 'jobs/jobs-view-all',
+                                          id        = self.id,
+                                          taskid    = self.taskid,
+                                          type      = self.type,
+                                          linkorder = self.linkorder))
+        link.tip    = "Refresh Job List"
+        section.add(link)
+
 
 
     def _showJobs(self, director, section, jobs):
