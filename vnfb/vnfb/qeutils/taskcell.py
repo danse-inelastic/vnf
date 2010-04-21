@@ -123,10 +123,10 @@ class TaskCell:
 
     def _status(self, table):
         "Displays status of the simulation and output file"
-        status      = JobStatus(self._director, self._simid, self._linkorder)
+        jobstatus      = JobStatus(self._director, self._simid, self._linkorder)
 
-        table.addRow(("Status:", status.message(), status.action()))
-        table.addRow(("Output:", status.output(), ""))
+        table.addRow(("Status:", jobstatus.status(), jobstatus.action()))
+        table.addRow(("Output:", jobstatus.output(), ""))
 
 
     def _jobId(self, table):

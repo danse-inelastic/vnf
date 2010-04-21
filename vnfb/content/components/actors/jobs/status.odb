@@ -11,10 +11,12 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
-import os
-import re
-from vnfb.qeutils.qeutils import key2str, jobStatus, dataroot, makedirs
-from vnfb.qeutils.message import Message
+#import os
+#import re
+#from vnfb.qeutils.qeutils import key2str, jobStatus, dataroot, makedirs
+#from vnfb.qeutils.message import Message
+
+from vnfb.qeutils.jobstatus import JobStatus
 from vnfb.qeutils.qeconst import ID_OUTPUT, ID_STATUS
 
 import luban.content as lc
@@ -33,115 +35,116 @@ class Actor(base):
         id          = pyre.inventory.str('id', default='')      # Simulation Id
         taskid      = pyre.inventory.str('taskid', default='')
         jobid       = pyre.inventory.str('jobid', default='')   # Not passed at this time
-        linkorder   = pyre.inventory.str('linkorder', default='')
+        linkorder   = pyre.inventory.int('linkorder', default=0)
 
 
     def refreshStatus(self, director):
         "Refresh job status and output file"
-        job     = director.clerk.getQEJobs(id = self.jobid)
-        server  = director.clerk.getServers(id = job.serverid)
-        job.setDirector(director)
+#        job     = director.clerk.getQEJobs(id = self.jobid)
+#        server  = director.clerk.getServers(id = job.serverid)
+#        job.setDirector(director)
 
+        jobstatus   = JobStatus(director, self.id, self.linkorder)
         status      = lc.htmldocument()
-        status.text = self._retrieveStatus(director, job, server)
+        status.text = jobstatus.updatedStatus() #self._retrieveStatus(director, job, server)
         output      = lc.document()
-        output.add(self._retrieveOutput(director, job, server, output))
+        output.add(jobstatus.updatedOutput(output))    #self._retrieveOutput(director, job, server, output))
 
         return [select(id=self._statusId()).replaceContent(status),
                 select(id=self._outputId()).replaceContent(output)]
 
 
-    def _retrieveStatus(self, director, job, server):
-        "Retrieve job status from cluster"
-        status  = jobStatus(director, job, server)
-
-        if not status:
-            return "Unknown"
-
-        if status["state"] == "terminated":
-            state   = "Finished"
-            self._updateJobStatus(job, state)
-            return state
-        
-        str     = key2str(status["state"])
-        if status.has_key("runtime") and status["state"] == "running":
-            str     += " (%s) " % status["runtime"]
-
-        self._updateJobStatus(job, str)
-        return str
-
-    
-    def _updateJobStatus(self, job, str):
-        "Updates job status"
-        job.updateRecord({"status": str,})
-        
-
-    # XXX: Refactor! Integrate with ResultPath class later!
-    def _retrieveOutput(self, director, job, server, content):
-        "Retrieve output file"
-        if not job:     # No job, no output
-            return NONE
-        
-        jobpath     = director.dds.abspath(job, server=server)
-        localpath   = self._localpath(director, job)
-        cmd         = "ls %s" % jobpath  # list current job directory
-
-        failed, output, error = director.csaccessor.execute(cmd, server, jobpath, suppressException = True)
-        if failed or not localpath:      # Something went wrong
-            return NONE
-
-        filelist    = output.split()    # List of files, Example: ["4I2NPMY4pw.in", "4I2NPMY4pw.in.out", "run.sh", ...]
-        file        = self._matchCheck(filelist)
-
-        if not file:    # No output file
-            return NONE
-
-        try:
-            remotefile  = os.path.join(jobpath, file)   # File on remote server
-            director.csaccessor.getfile(server, remotefile, localpath)
-        except:
-            return NONE
-
-        outputfile  = os.path.join(localpath, file)
-        if not os.path.exists(outputfile):  # No file on local server
-            return NONE
-
-        dialog  = lc.dialog(title='Output for %s' % self.taskid, autoopen=True, Class="qe-dialog-output")
-        text    = lc.htmldocument(text="<pre>%s<pre>" % open(outputfile).read())
-        dialog.add(text)   # Text
-        okbutton = lc.button( label     = 'OK',
-                              onclick   = select(element=dialog).destroy())
-        dialog.add(okbutton)
-        return lc.link(label     = 'Output',
-                       onclick   = select(element=content).append(dialog))
-
-
-    def _localpath(self, director, job):
-        "Returns path to where the file will be transferred, create directory, if necessary"
-        # The reason to copy output file to tmp/ directory is that tmp/ is the only one that exposed for public
-        if not job:     # No job, no output
-            return None
-
-        tmpbase     = os.path.join(dataroot(director, relative=True), "tmp") # Example: ../content/data/tmp
-        jobpath     = os.path.join(tmpbase, job.name)   # ../content/data/tmp/qejobs
-        jobpath     = os.path.join(jobpath, job.id)     # ../content/data/tmp/qejobs/EXSWTYTK
-        if not os.path.exists(jobpath): # create directory, if necessary
-            makedirs(jobpath)
-            
-        return jobpath  # Example: ../content/data/tmp/qejobs/EXSWTYTK
+#    def _retrieveStatus(self, director, job, server):
+#        "Retrieve job status from cluster"
+#        status  = jobStatus(director, job, server)
+#
+#        if not status:
+#            return "Unknown"
+#
+#        if status["state"] == "terminated":
+#            state   = "Finished"
+#            self._updateJobStatus(job, state)
+#            return state
+#
+#        str     = key2str(status["state"])
+#        if status.has_key("runtime") and status["state"] == "running":
+#            str     += " (%s) " % status["runtime"]
+#
+#        self._updateJobStatus(job, str)
+#        return str
+#
+#
+#    def _updateJobStatus(self, job, str):
+#        "Updates job status"
+#        job.updateRecord({"status": str,})
         
 
-    # Borrowed from ResultPath class
-    # XXX: Fix cardcoded pattern for output file
-    def _matchCheck(self, files):
-        "Find matching file. Single matching file if possible. Picks first otherwise"
-        REEXP   = '[\w]+\.in\.out$'
-        for fname in files:
-            p   = re.compile(REEXP)
-            if p.match(fname):   # matches
-                return fname
-
-        return None
+#    # XXX: Refactor! Integrate with ResultPath class later!
+#    def _retrieveOutput(self, director, job, server, content):
+#        "Retrieve output file"
+#        if not job:     # No job, no output
+#            return NONE
+#
+#        jobpath     = director.dds.abspath(job, server=server)
+#        localpath   = self._localpath(director, job)
+#        cmd         = "ls %s" % jobpath  # list current job directory
+#
+#        failed, output, error = director.csaccessor.execute(cmd, server, jobpath, suppressException = True)
+#        if failed or not localpath:      # Something went wrong
+#            return NONE
+#
+#        filelist    = output.split()    # List of files, Example: ["4I2NPMY4pw.in", "4I2NPMY4pw.in.out", "run.sh", ...]
+#        file        = self._matchCheck(filelist)
+#
+#        if not file:    # No output file
+#            return NONE
+#
+#        try:
+#            remotefile  = os.path.join(jobpath, file)   # File on remote server
+#            director.csaccessor.getfile(server, remotefile, localpath)
+#        except:
+#            return NONE
+#
+#        outputfile  = os.path.join(localpath, file)
+#        if not os.path.exists(outputfile):  # No file on local server
+#            return NONE
+#
+#        dialog  = lc.dialog(title='Output for %s' % self.taskid, autoopen=True, Class="qe-dialog-output")
+#        text    = lc.htmldocument(text="<pre>%s<pre>" % open(outputfile).read())
+#        dialog.add(text)   # Text
+#        okbutton = lc.button( label     = 'OK',
+#                              onclick   = select(element=dialog).destroy())
+#        dialog.add(okbutton)
+#        return lc.link(label     = 'Output',
+#                       onclick   = select(element=content).append(dialog))
+#
+#
+#    def _localpath(self, director, job):
+#        "Returns path to where the file will be transferred, create directory, if necessary"
+#        # The reason to copy output file to tmp/ directory is that tmp/ is the only one that exposed for public
+#        if not job:     # No job, no output
+#            return None
+#
+#        tmpbase     = os.path.join(dataroot(director, relative=True), "tmp") # Example: ../content/data/tmp
+#        jobpath     = os.path.join(tmpbase, job.name)   # ../content/data/tmp/qejobs
+#        jobpath     = os.path.join(jobpath, job.id)     # ../content/data/tmp/qejobs/EXSWTYTK
+#        if not os.path.exists(jobpath): # create directory, if necessary
+#            makedirs(jobpath)
+#
+#        return jobpath  # Example: ../content/data/tmp/qejobs/EXSWTYTK
+#
+#
+#    # Borrowed from ResultPath class
+#    # XXX: Fix cardcoded pattern for output file
+#    def _matchCheck(self, files):
+#        "Find matching file. Single matching file if possible. Picks first otherwise"
+#        REEXP   = '[\w]+\.in\.out$'
+#        for fname in files:
+#            p   = re.compile(REEXP)
+#            if p.match(fname):   # matches
+#                return fname
+#
+#        return None
 
 
     def __init__(self):
