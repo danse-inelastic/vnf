@@ -38,11 +38,13 @@ from MaterialSimulation import MaterialSimulation
 
 # WithID -> id
 
-class QESimulation(QETable, GloballyReferrable):    #, Computation): #):
+class QESimulation(QETable, GloballyReferrable):
 
     name = "qesimulations"
     import dsaw.db
 
+    # XXX: Temp solution. Server should be referenced by qesettings
+    # See: vnfb/misc/espresso/design/dbschema.png
     serverid    = dsaw.db.varchar(name="serverid", length=64)
     serverid.constraints = 'REFERENCES servers (id)'    # Important
     serverid.meta['tip'] = "Default server for the simulation"

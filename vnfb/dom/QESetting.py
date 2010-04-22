@@ -32,7 +32,7 @@ class QESetting(QETable):
     # Should refer to qetasks? Yes, eventually! Keep it here for now
     simulationid    = dsaw.db.varchar(name="simulationid", length=64)
     simulationid.constraints = 'REFERENCES qesimulations (id)'    # Important
-    simulationid.meta['tip'] = "Task id"
+    simulationid.meta['tip'] = "Simulation id"
 
     # Later on can be tranformed to a separate File table
     sname    = dsaw.db.varchar(name="sname", length=1024, default='')
