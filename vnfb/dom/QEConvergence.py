@@ -44,7 +44,9 @@ class QEConvergence(QETable):
     label       = dsaw.db.varchar(name="label", length=128, default='')
     label.meta['tip'] = "Label associated with the simulation"
 
-    # Status
+    progress    = dsaw.db.varchar(name="progress", length=128, default='')
+    progress.meta['tip'] = "Current job id "
+
 
 __date__ = "$Apr 21, 2010 5:23:35 PM$"
 
