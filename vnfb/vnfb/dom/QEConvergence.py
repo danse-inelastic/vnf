@@ -26,12 +26,6 @@ class QEConvergence(QETable):
     simulationid.constraints = 'REFERENCES qesimulations (id)'    # Important
     simulationid.meta['tip'] = "Simulation id"
 
-    # XXX: Temp solution. Server should be referenced by qesettings
-    # See: vnfb/misc/espresso/design/dbschema.png
-    serverid    = dsaw.db.varchar(name="serverid", length=64)
-    serverid.constraints = 'REFERENCES servers (id)'    # Important
-    serverid.meta['tip'] = "Default server for the simulation"
-
     cname = dsaw.db.varchar(name="cname", length=128, default='')
     cname.meta['tip'] = "Convergence test name"
 

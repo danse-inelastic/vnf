@@ -22,7 +22,7 @@ class QEConvParam(QETable):
     import dsaw.db
 
     convergenceid    = dsaw.db.varchar(name="convergenceid", length=64)
-    convergenceid.constraints = 'REFERENCES qesimulations (id)'    # Important
+    convergenceid.constraints = 'REFERENCES qeconvergences (id)'    # Important
     convergenceid.meta['tip'] = "Convergence id"
 
     pname = dsaw.db.varchar(name="pname", length=128, default='')

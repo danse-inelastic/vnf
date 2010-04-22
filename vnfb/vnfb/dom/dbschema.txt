@@ -1,27 +1,38 @@
 
-Displays dependencies in the database schema
+Database Schema Dependencies and Updates
+========================================
+
+Quantum Espresso Database Schema
+---------------------------------
 
 servers
 qesimulations:
-    -> servers      # TODO: Move to qesettings
+    -> servers      # Remove
     -> atomicstructures
 qetasks:
     ? -> matter
 qeconfigurations:
     -> qetasks
 qesettings:
-    #-> servers
     -> qesimulations
+    #-> servers     # Add
 qejobs:
     -> qetasks
-    -> servers
+    -> servers      # ?
 qesimulationtasks:
     -> qesimulations
     -> qetasks
+qeconvergences:
+    -> qesimulations
+qeconvparams:
+    -> qeconvergences
+qeconvergencetasks:
+    -> qeconvergences
+    -> qetasks
 
 
-
-Migration of schema:
+Database Schema Updates
+-----------------------
 
 Jan 7, 2010
 changed reference to "matter" from polymorphic to nonpolymorphic:
@@ -123,3 +134,6 @@ TODO: Write converter script
 
 April 16, 2010
 Added table "news"
+
+April 21, 2010
+Added table "qeconvergences" and "qeconvparams"

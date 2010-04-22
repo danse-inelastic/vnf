@@ -72,7 +72,7 @@ class ResultPath(object):
     def _init(self):
         "Additional initialization"
         self._resultinfo    = ResultInfo(self._director, self._simid, self._linkorder, subtype = self._subtype)
-        self._jit           = self._resultinfo.jit() #simrecord.jobInputTask(self._linkorder, self._subtype)
+        self._jit           = self._resultinfo.jit()
 
 
     def resultFiles(self, ftype = None, relative = False):
