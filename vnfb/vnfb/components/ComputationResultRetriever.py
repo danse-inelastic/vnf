@@ -213,6 +213,9 @@ class ComputationResultRetriever(Component):
         # remember where it is (i.e. on octopod)
         self.dds.remember(result_holder, server)
         
+        # make copy of result holder in the master node
+        self.dds.make_available(result_holder, files=destinationFiles)
+        
         # add the result to the result list
         if not name:
             name = result_holder.getTableName()
