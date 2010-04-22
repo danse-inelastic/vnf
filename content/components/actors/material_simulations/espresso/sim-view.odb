@@ -139,7 +139,7 @@ class Actor(base):
         "Adds analysis action"
         link        = lc.link(label="Convergence",
                             Class="qe-action-analyze",
-                            onclick = load(actor    = 'material_simulations/espresso/sim-view',
+                            onclick = load(actor    = 'material_simulations/espresso-convergence/view',
                                            id       = self.id))
         link.tip    = "Convergence Tests for Simulation Parameters"
         section.add(link)
