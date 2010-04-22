@@ -60,7 +60,7 @@ EXPORT_PYTHON_MODULES = \
         QEConfiguration.py \
         QEConvergence.py \
         QEJob.py \
-        QEParam.py \
+        QEConvParam.py \
         QESetting.py \
         QESimulation.py \
         QESimulationTask.py \
