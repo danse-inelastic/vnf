@@ -58,6 +58,7 @@ EXPORT_PYTHON_MODULES = \
 	OwnedObject.py \
 	Privilege.py \
         QEConfiguration.py \
+        QEConvergence.py \
         QEJob.py \
         QESetting.py \
         QESimulation.py \
