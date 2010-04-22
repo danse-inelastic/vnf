@@ -29,7 +29,7 @@ class Actor(base):
         parentdir = packjobdir.temproot
         parentdir = os.path.abspath(parentdir)
         tmpdirectory = tempfile.mkdtemp(dir=parentdir)
-        if not os.path.exists(tmpdirectory): os.makedirs(tmpdirectory)
+        #if not os.path.exists(tmpdirectory): os.makedirs(tmpdirectory)
         subdir = os.path.basename(tmpdirectory)
 
         # create symlink to current trajectory location
@@ -38,7 +38,8 @@ class Actor(base):
         trajectory = self._load(director)
         orm = director.clerk.orm
         Trajectory = orm(trajectory)
-        trajRealPath = director.dds.abspath(Trajectory)
+        trajDir = director.dds.abspath(Trajectory)
+        trajRealPath = os.path.abspath(os.path.join(trajDir, trajName))
         os.symlink(trajRealPath, trajSymPath)
         
 #        trajectory = orm.load(Trajectory, self.inventory.id)
@@ -49,8 +50,10 @@ class Actor(base):
 #        filename = url.split('/')[-1]
 #        label = 'Download %s' % filename
         
+        #trajDownloadPath = os.path.join(director.weaver.htmlbase, 'tmp', subdir, 'gulp.nc.tgz')
+        trajDownloadPath = os.path.join('tmp', subdir, 'gulp.nc')
         link = lc.htmldocument(id='trajectory-download-link')
-        link.text = ['<a href="%s">Download trajectory</a>' % (trajSymPath,)]
+        link.text = ['<a href="%s">Right click to download trajectory </a>' % (trajDownloadPath,)]
         
         return link  
         
