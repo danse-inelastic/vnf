@@ -91,7 +91,7 @@ SIMCHAINS[SIMTYPE["multiple-phonon"]]       = ("PW", "PH", "Q2R", "MATDYN") # DO
 SIMCHAINS[SIMTYPE["molecular-dynamics"]]    = ("CP", "PP")  # ?
 
 
-SIMLIST     = SIMTYPE.values()  #SIMCHAINS.keys()
+SIMLIST     = SIMTYPE.values()
 
 # Analysis actors
 ANALYSIS    = OrderedDict()
@@ -230,6 +230,21 @@ FILBAND     = "'bands.dat'"  # Default value for 'filband' parameter of bands.x 
 
 # Example of error message:
 # ERROR: masses not defined in PW input file!
+
+# Convergence parameters (from PW config input)
+CONVPARAM   = OrderedDict()
+CONVPARAM["nbnd"]       = ("add", "int")
+CONVPARAM["degauss"]    = ("add", "double")
+CONVPARAM["ecutwfc"]    = ("add", "double")
+CONVPARAM["ecutrho"]    = ("add", "double")
+CONVPARAM["conv_thr"]   = ("multiply", "double")
+CONVPARAM["kpoints"]    = ("add", "vector")
+
+# Criteria according to which the the convergence occurs
+CONVTYPE    = OrderedDict()
+CONVTYPE["total-energy"]    = "Total Energy"
+CONVTYPE["fermi-energy"]    = "Fermi Energy"
+CONVTYPE["frequency"]       = "Single Phonon Frequencies"
 
 __date__ = "$Nov 3, 2009 3:12:34 PM$"
 

@@ -10,10 +10,10 @@ Convergence Tests
 
 [Parameters] [Start value]  [Step]                      [Tolerance]     [Max Steps]
 'nbnd'                      (int)     {add}
-'degauss'                   (float)   {add} # metall
-'ecutwfc'                   (float)   {add}
-'ecutrho'                   (float)   {add}
-'conv_thr'                  (float)   {multiple}
+'degauss'                   (double)   {add} # metall
+'ecutwfc'                   (double)   {add}
+'ecutrho'                   (double)   {add}
+'conv_thr'                  (double)   {multiply}
 'kpoints'                   (int vector) {add vector}
 
 
