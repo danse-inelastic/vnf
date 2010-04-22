@@ -109,7 +109,7 @@ class Actor(base):
     def _newAction(self, section, sim):
         "New action"
         link    = lc.link(label="New",
-                            Class="qe-action-new",
+                            Class="qe-action-edit",
                             onclick = load(actor='material_simulations/espresso/sim-create'))
         link.tip    = "Create New Simulation"
         section.add(link)
