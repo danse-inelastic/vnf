@@ -46,8 +46,8 @@ class QEConvParam(QETable):
     startvalue  = dsaw.db.varchar(name="startvalue", length=512, default='')
     startvalue.meta['tip'] = "Starting value of the parameter. Handles int, float and vector (e.g. [a, b, c])"
 
-    step  = dsaw.db.varchar(name="startvalue", length=512, default='')
-    startvalue.meta['tip'] = "Starting value of the parameter. Handles int, float and vector"
+    step  = dsaw.db.varchar(name="step", length=512, default='')
+    step.meta['tip'] = "Step of parameter. Handles int, float and vector"
 
 
 __date__ = "$Apr 21, 2010 6:02:30 PM$"
