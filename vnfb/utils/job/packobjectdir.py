@@ -4,14 +4,25 @@ PTRFILEEXT = '.__dir__pack__ptr__'
 PACKINGINPROCESS = 'in progress'
 
 
-import os, tempfile, shutil
+import os, shutil
 temproot = os.path.join('..', 'content', 'data', 'tmp')
 
 
 def downloadurl(object, director):
-    ptr = readPtr(object, director)
+    ptr = readObject(object, director)
     return os.path.join('tmp', ptr)
 
+def readObject(object, director):
+    path = objectFilePath(object, director)
+    f = open(path, 'r')
+    return f.read()
+
+def objectFilePath(object, director):
+    return director.dds.abspath(object)
+
+#def downloadurl(object, director):
+#    ptr = readPtr(object, director)
+#    return os.path.join('tmp', ptr)
 
 def ptrFilePath(object, director):
     return '.'.join( [director.dds.abspath(object), PTRFILEEXT] )

@@ -11,10 +11,8 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
-
 import luban.content as lc
 from luban.content import load, select, alert
-
 
 def visual(computation, actor, director):
     domaccess = director.retrieveDOMAccessor('computation')
@@ -108,7 +106,6 @@ def visual(computation, actor, director):
         continue
     
     return doc
-
 
 # version
 __id__ = "$Id$"

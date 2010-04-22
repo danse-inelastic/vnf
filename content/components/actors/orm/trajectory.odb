@@ -9,7 +9,7 @@
 #
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
-
+import os, tempfile
 import luban.content as lc
 from luban.content import select, load, alert
 
@@ -24,19 +24,33 @@ class Actor(base):
         import luban.inventory
         
     def createGraphicalView(self, director):
+        # create temporary directory
+        from vnfb.utils.job import packjobdir
+        parentdir = packjobdir.temproot
+        parentdir = os.path.abspath(parentdir)
+        tmpdirectory = tempfile.mkdtemp(dir=parentdir)
+        if not os.path.exists(tmpdirectory): os.makedirs(tmpdirectory)
+        subdir = os.path.basename(tmpdirectory)
+
+        # create symlink to current trajectory location
+        trajName = 'gulp.nc' #should replace this with name in gulp d.o.
+        trajSymPath = os.path.join(tmpdirectory, trajName)
         trajectory = self._load(director)
-        
         orm = director.clerk.orm
+        Trajectory = orm(trajectory)
+        trajRealPath = director.dds.abspath(Trajectory)
+        os.symlink(trajRealPath, trajSymPath)
+        
 #        trajectory = orm.load(Trajectory, self.inventory.id)
         #datadir = director.dds.abspath(orm(trajectory))
         
-        from vnfb.utils.job import packobjectdir as packutils
-        url = packutils.downloadurl(orm(trajectory), director)
-        filename = url.split('/')[-1]
-        label = 'Download %s' % filename
+#        from vnfb.utils.job import packobjectdir as packutils
+#        url = packutils.downloadurl(orm(trajectory), director)
+#        filename = url.split('/')[-1]
+#        label = 'Download %s' % filename
         
         link = lc.htmldocument(id='trajectory-download-link')
-        link.text = ['<a href="%s">%s</a>' % (url, label)]
+        link.text = ['<a href="%s">Download trajectory</a>' % (trajSymPath,)]
         
         return link  
         
