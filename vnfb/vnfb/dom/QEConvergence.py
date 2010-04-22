@@ -19,7 +19,37 @@ Convergence - table that stores records for convergence tests
 from vnfb.components.QETable import QETable
 
 class QEConvergence(QETable):
-    pass
+    name = "qeconvergences"
+    import dsaw.db
+
+    simulationid    = dsaw.db.varchar(name="simulationid", length=64)
+    simulationid.constraints = 'REFERENCES qesimulations (id)'    # Important
+    simulationid.meta['tip'] = "Simulation id"
+
+    # XXX: Temp solution. Server should be referenced by qesettings
+    # See: vnfb/misc/espresso/design/dbschema.png
+    serverid    = dsaw.db.varchar(name="serverid", length=64)
+    serverid.constraints = 'REFERENCES servers (id)'    # Important
+    serverid.meta['tip'] = "Default server for the simulation"
+
+    cname = dsaw.db.varchar(name="cname", length=128, default='')
+    cname.meta['tip'] = "Convergence test name"
+
+    description = dsaw.db.varchar(name="description", length=1024, default='')
+    description.meta['tip'] = "Description of the convergence test"
+
+    timecreated = dsaw.db.varchar(name="timecreated", length=16, default='')
+    timecreated.meta['tip'] = "timecreated"
+
+    type = dsaw.db.varchar(name="type", length=128, default='')
+    type.meta['tip'] = "Convergence type (criteria): 'total-energy', 'frequency', later 'fermi-energy'"
+
+    timemodified = dsaw.db.varchar(name="timemodified", length=16, default='')
+    timemodified.meta['tip'] = "timemodified"
+
+    label       = dsaw.db.varchar(name="label", length=128, default='')
+    label.meta['tip'] = "Label associated with the simulation"
+
 
 __date__ = "$Apr 21, 2010 5:23:35 PM$"
 
