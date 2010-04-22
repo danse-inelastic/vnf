@@ -50,6 +50,7 @@ class QEConvergence(QETable):
     label       = dsaw.db.varchar(name="label", length=128, default='')
     label.meta['tip'] = "Label associated with the simulation"
 
+    # Status
 
 __date__ = "$Apr 21, 2010 5:23:35 PM$"
 
