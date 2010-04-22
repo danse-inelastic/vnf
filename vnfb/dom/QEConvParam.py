@@ -28,10 +28,10 @@ class QEConvParam(QETable):
     pname = dsaw.db.varchar(name="pname", length=128, default='')
     pname.meta['tip'] = "Parameter name"
 
-    tolerance   = dsaw.db.float(name="tolerance", default=1.0)
+    tolerance   = dsaw.db.double(name="tolerance", default=1.0)
     tolerance.meta['tip'] = "Error in percents"
 
-    maxsteps    = dsaw.db.int(name="maxsteps", default=2)
+    maxsteps    = dsaw.db.integer(name="maxsteps", default=2)
     maxsteps.meta['tip'] = "Max number of steps"
 
     value       = dsaw.db.varchar(name="value", length=512, default='')
@@ -41,13 +41,13 @@ class QEConvParam(QETable):
     optimal.meta['tip'] = "Optimal value"
 
     type        = dsaw.db.varchar(name="type", length=64, default='')
-    type.meta['tip'] = "Type of parameter: int, float, vector"
+    type.meta['tip'] = "Type of parameter: int, double, vector"
 
     startvalue  = dsaw.db.varchar(name="startvalue", length=512, default='')
-    startvalue.meta['tip'] = "Starting value of the parameter. Handles int, float and vector (e.g. [a, b, c])"
+    startvalue.meta['tip'] = "Starting value of the parameter. Handles int, double and vector (e.g. [a, b, c])"
 
     step  = dsaw.db.varchar(name="step", length=512, default='')
-    step.meta['tip'] = "Step of parameter. Handles int, float and vector"
+    step.meta['tip'] = "Step of parameter. Handles int, double and vector"
 
 
 __date__ = "$Apr 21, 2010 6:02:30 PM$"
