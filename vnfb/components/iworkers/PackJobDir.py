@@ -46,7 +46,6 @@ class PackJobDir(base):
             self._debug.log(msg)
             return
 
-        # 
 ##         if self._packingInProcess(job):
 ##             msg = "Job %s: packing already in process." % id
 ##             if self.debug: raise RuntimeError, msg
