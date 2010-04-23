@@ -11,13 +11,39 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
+from vnfb.qeutils.qegrid import QEGrid
+
+import luban.content as lc
+from vnfb.qeutils.qeutils import defaultInputName, readRecordFile
+from luban.content.FormTextArea import FormTextArea
+
 from vnfb.components.QEConvergence import QEConvergence as base
 
 class Actor(base):
     class Inventory(base.Inventory):
         import pyre.inventory
-        inputid      = pyre.inventory.str('inputid', default='')      # Status message
+        inputid      = pyre.inventory.str('inputid', default='')
 
+
+    def _mainContent(self, director, splitter):
+        content     = splitter.section()
+        table       = QEGrid(lc.grid())
+        content.add(table.grid())
+
+        text        = FormTextArea( name    = "text",
+                                    value   = self._inputText(director, self._input),
+                                    Class   = "qe-textarea-inputs")
+        table.addRow((text,))
+
+
+    # Taken from actors/material_simulations/espresso/input-edit.odb
+    def _inputText(self, director, input):
+        fname   = defaultInputName(input.type)
+        s       = readRecordFile(director.dds, input, fname)
+        if s:
+            return s
+
+        return ""
 
 
     def _configure(self):

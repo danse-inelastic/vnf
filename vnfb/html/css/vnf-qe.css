@@ -299,6 +299,12 @@ textarea {
     height: 400px;
 }
 
+.qe-textarea-inputs td textarea {
+    width: 500px;
+    height: 400px;
+}
+
+
 #qe-atoms-form {
     
 }
