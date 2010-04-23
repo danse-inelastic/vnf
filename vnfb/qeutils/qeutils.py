@@ -243,12 +243,12 @@ def latestTask(tasks):
 def latestInput(inputs):
     return latestRecord(inputs, "timecreated")
 
-# Includes *hack* by using short_description field for subtype
+
 def qetask(director, simid, linkorder, subtype = None):
     "Returns task object specified by simulation id and linkorder"
     where   = "simulationid='%s'" % simid
     if subtype:
-        where   += "%s AND short_description='%s'" % (where, subtype)
+        where   += "%s AND subtype='%s'" % (where, subtype)
     simtasks = director.clerk.getQESimulationTasks(where=where)
     for st in simtasks:
         tasks   = director.clerk.getQETasks(where="id='%s' AND linkorder=%s" % (st.taskid, linkorder))
