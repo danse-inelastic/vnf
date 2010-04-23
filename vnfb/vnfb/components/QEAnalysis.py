@@ -20,17 +20,19 @@ from vnfb.qeutils.qegrid import QEGrid
 import luban.content as lc
 from luban.content import select, load
 
-from luban.components.AuthorizedActor import AuthorizedActor as base
-
 ID_RESULTS      = "qe-splitter-results" # id for results container
 ID_OUTPUTS      = "qe-splitter-outputs"
 CLASS_DEFAULT   = "qe-action-default"  # Default class
 CLASS_ACTIVE    = "qe-color-blue"
 CLASS_ERROR     = "qe-color-red"
 
+"""
+QEAnalysis - base actor class for Quantum Espresso analysis pages
+"""
 
-# Requires simulation id, config id and config type: (id, configid, type)
-class Actor(base):
+from luban.components.AuthorizedActor import AuthorizedActor as base
+
+class QEAnalysis(base):
 
     class Inventory(base.Inventory):
         import pyre.inventory

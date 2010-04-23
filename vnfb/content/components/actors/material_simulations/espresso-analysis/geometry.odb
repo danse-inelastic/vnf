@@ -13,7 +13,7 @@
 
 import luban.content as lc
 from vnfb.qeutils.qegrid import QEGrid
-from vnfb.components.QEAnalysis import Actor as base
+from vnfb.components.QEAnalysis import QEAnalysis as base
 
 class Actor(base):
 

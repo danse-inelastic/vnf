@@ -15,7 +15,7 @@ import luban.content as lc
 from vnfb.qeutils.qegrid import QEGrid
 from vnfb.qeutils.results.plotbandresult import PLOTBANDResult
 from vnfb.qeutils.message import Message
-from vnfb.components.QEAnalysis import Actor as base
+from vnfb.components.QEAnalysis import QEAnalysis as base
 
 class Actor(base):
 
