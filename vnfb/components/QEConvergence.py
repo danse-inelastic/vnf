@@ -35,7 +35,7 @@ class QEConvergence(base):
 
     def content(self, director):
         "Contains of two separate splitters: header and results"
-        doc         = lc.document(title="Analysis of Simulation Results")
+        doc         = lc.document(title="Convergence Tests")
         splitter    = doc.splitter(orientation="vertical")
         sInd        = splitter.section()                        # path indicator
         sAct        = splitter.section(id="qe-section-actions") # actions
@@ -69,6 +69,7 @@ class QEConvergence(base):
         self._refreshAction(section)
         self._newTestAction(section)
         self._pwInputAction(section)
+        self._runAction(section)
 
         section.add(lc.document(Class="clear-both"))
 
@@ -101,6 +102,17 @@ class QEConvergence(base):
                             onclick = load(actor      = 'material_simulations/espresso/sim-view',
                                              id         = self.id))
                     )
+
+    # Temp
+    def _runAction(self, section):
+        "Shows PW input action button"
+        section.add(lc.link(label="Run Test",
+                            Class="qe-action-default", 
+                            onclick = load(actor    = 'material_simulations/espresso-convergence/view',
+                                           routine  = "runTest",
+                                           id       = self.id))
+                    )
+
 
 
     def _mainContent(self, director, splitter):

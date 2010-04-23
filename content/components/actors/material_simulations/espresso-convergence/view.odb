@@ -19,31 +19,42 @@ from luban.content import load, select
 from vnfb.components.QEConvergence import QEConvergence as base
 
 class Actor(base):
-    pass
+
+    def _mainContent(self, director, splitter):
+        # Area for errors
+        splitter.section(id="input-error-area") # ?
+        sB          = splitter.section()
+        table       = QEGrid(lc.grid(Class = "qe-table"))
+        sB.add(table.grid())
+
+        self._showTestTable(table)
+
+        # Should go after all of the rows are added!
+        table.setColumnStyle(0, "qe-cell-param")
+
+
+    def _showTestTable(self, table):
+        "Convergence Tests Table"
+        table.addRow((lc.paragraph(text="Convergence Tests Table"), ) )
+
+
+    def runTest(self, director):
+        from vnfb.qeutils.qecalcutils.converger import Converger
+        configString    = """
+[pw.x]
+pwInput: /tmp/convergence/pw.in
+pwOutput: /tmp/convergence/pw.out
+"""
+
+        task = Converger(configString = configString, taskName = 'total energy', tolerance = 1)
+        opt_ecutwfc = task.converge(what = 'ecutwfc', startValue = 18, step = 4)
+        print opt_ecutwfc
+
+
 
 def actor():
     return Actor(name='material_simulations/espresso-convergence/view')
 
-#
-#        # Area for errors
-#        splitter.section(id="input-error-area") # ?
-#        sB          = splitter.section()
-#        table       = QEGrid(lc.grid(Class = "qe-table"))
-#        sB.add(table.grid())
-#
-#        self._showTestTable(table)
-#
-#        # Should go after all of the rows are added!
-#        table.setColumnStyle(0, "qe-cell-param")
-#
-#        return doc
-#
-
-#
-#    def _showTestTable(self, table):
-#        "Convergence Tests Table"
-#        table.addRow((lc.paragraph(text="Convergence Tests Table"), ) )
-#
 
 
 __date__ = "$Apr 21, 2010 7:36:30 PM$"
