@@ -47,7 +47,7 @@ class ITaskApp(base):
         task = self.getTask()
         
         # only if a task was created or previously created can we start running
-        if self.isCreated() or self.isFailed():
+        if self.isCreated() or self.isFailed() or self.isFinished():
             pass
         else:
             self._debug.log('This task is %s.' % task.state)
