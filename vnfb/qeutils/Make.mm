@@ -40,6 +40,7 @@ all: export
 
 EXPORT_PYTHON_MODULES = \
 	__init__.py \
+        converger.py \
         taskaction.py \
         taskcell.py \
         taskinfo.py \
