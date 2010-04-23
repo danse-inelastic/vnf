@@ -20,7 +20,7 @@ def spawn(command, dry_run = 0, env = None):
     """
     command: command to run
     env: environment variables to pass to the process in which the command will be executed
-    dry_run: if true, only print the command to be excuted
+    dry_run: if true, only print the command to be executed
     
     return: fail(bool), out(str), error(str)
     """

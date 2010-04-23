@@ -141,9 +141,9 @@ class ComputationResultRetriever(Component):
         '''
         # copy result file from job to the result holder
         server = self.db.dereference(job.server)
-        self.dds.copy(job,filenameinjobdir, result_holder,newfilename, server)
+        self.dds.copy(job,filenameinjobdir, result_holder, newfilename, server)
         # make copy of result holder in the master node
-        self.dds.make_available(result_holder)
+        self.dds.make_available(result_holder, [newfilename])
 
         # add the result to the result list
         if not name:
