@@ -214,15 +214,15 @@ class Computation(base):
             # create a new entry
             r = _ComputationResultRetrievals()
             r.computation = self
-            db.insertRow(r)
-            r.filename = filename
-            db.updateRecord(r)
+            #db.insertRow(r)
             r.status = status
-            db.updateRecord(r)
+            #db.updateRecord(r)
+            r.filename = filename
+            #db.updateRecord(r)
             if message is not None:
                 r.message = message[:message_len]
-            db.updateRecord(r)
-            #db.insertRow(r)
+            #db.updateRecord(r)
+            db.insertRow(r)
             return
 
         # update entry

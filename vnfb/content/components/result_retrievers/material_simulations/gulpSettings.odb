@@ -9,7 +9,7 @@
 #
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
-import time
+import time, os
 from vnfb.components.ComputationResultRetriever import ComputationResultRetriever as base
 class Retriever(base):
 
@@ -63,7 +63,7 @@ class Retriever(base):
         if 'molecular dynamics' in runtype:
             self.declareProgress(0.6, """create trajectory data object""")
             doOutputFiles = gulpSettings.getDOAndOutputFile()
-            dataObjectFiles = doOutputFiles['vsat.Trajectory']
+            dataObjectFile = doOutputFiles['vsat.Trajectory'][0] #this should get gulp.nc
             # if the computation already has the trajectory, skip this
             from sqlalchemy.orm.exc import NoResultFound
             try:
@@ -71,23 +71,24 @@ class Retriever(base):
             except: #if not trajectory:
                 db._sasession.rollback()
                 from vnfb.dom.material_simulations.Trajectory import Trajectory
-                trajectory = self._make_result_holder(computation, Trajectory)
-                trajectory.creator = computation.creator
-                trajectory.date = time.ctime()
-                computation.results.add(trajectory, db, key = 'trajectory')
-                db.updateRecord(trajectory)
+                trajectoryRecord = self._make_result_holder(computation, Trajectory)
+                trajectoryRecord.creator = computation.creator
+                trajectoryRecord.date = time.ctime()
+                computation.results.add(trajectoryRecord, db, key = 'trajectory')
+                db.updateRecord(trajectoryRecord)
                 #move results from job directory to dedicated trajectories data object directory
                 self.declareProgress(0.9, 'get result from computational server')
                 #self._save_and_move_results(computation=computation, job=job, 
-                #                files=dataObjectFiles, result_holder=trajectory)
-                db.commit()
-                self._save_results(computation=computation, job=job, 
-                                files=dataObjectFiles, result_holder=trajectory)
-                #now populate the fields of trajectory
+                #                files=dataObjectFiles, result_holder=trajectoryRecord)
+                self._save_result(computation=computation, job=job, filenameinjobdir=str(dataObjectFile),
+                                 result_holder=trajectoryRecord, newfilename=str(dataObjectFile))
+                #now populate the fields of trajectoryRecord
                 #Trajectory = orm(trajectory)
-                trajectory.trajectory_path = os.path.join(self.dds.abspath(trajectory), 'gulp.nc')
+                trajectoryRecord.trajectory_path = os.path.join(self.dds.abspath(trajectoryRecord), 'gulp.nc')
+                trajectory=orm.record2object(trajectoryRecord)
                 trajectory.loadNetcdfTrajectory()
-                db.updateRecord(trajectory)
+                trajectoryRecord = orm(trajectory)
+                db.updateRecord(trajectoryRecord)
             #copy a temporary copy of the job to the web server (for the job page)
             #self.declareProgress(0.9, 'get result from computational server')
             #should probably first check to see if they are available on vnf server, then if not do below
