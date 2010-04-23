@@ -17,6 +17,8 @@ QEConvergence - base actor class for Quantum Espresso convergence pages
 
 ID_CONVERGENCE  = "qe-container-convergence"
 
+from vnfb.qeutils.qeutils import qeinput
+
 import luban.content as lc
 from luban.content import select, load
 
@@ -37,6 +39,8 @@ class QEConvergence(base):
 
     def content(self, director):
         "Contains of two separate splitters: header and results"
+        self._setup(director)
+
         doc         = lc.document(title="Convergence Tests")
         splitter    = doc.splitter(orientation="vertical")
         sInd        = splitter.section()                        # path indicator
@@ -53,6 +57,11 @@ class QEConvergence(base):
         self._mainContent(director, resSplitter)              # Simulation Specific data
 
         return doc
+
+
+    def _setup(self, director):
+        "Init actor attributes"
+        self._input = qeinput(director, self.id, linkorder=0)
 
 
     def _viewIndicator(self, director, section):
@@ -99,11 +108,22 @@ class QEConvergence(base):
 
     def _pwInputAction(self, section):
         "Shows PW input action button"
-        section.add(lc.link(label="Create PW Input",
-                            Class="qe-action-new",  # qe-action-default
-                            onclick = load(actor      = 'material_simulations/espresso/sim-view',
-                                             id         = self.id))
+        if not self._input: # No input created
+            section.add(lc.link(label="Create PW Input",
+                                Class="qe-action-new",  
+                                onclick = load(actor      = 'material_simulations/espresso/sim-view',
+                                                 id         = self.id))
+                        )
+            return
+
+        # Otherwise show PW link
+        section.add(lc.link(label="PW",
+                            Class="qe-action-default",  
+                            onclick = load(actor    = 'material_simulations/espresso-convergence/input-view',
+                                           inputid  = self._input.id,
+                                           id       = self.id))
                     )
+
 
     # Temp
     def _runAction(self, section):

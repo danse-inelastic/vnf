@@ -1,0 +1,33 @@
+#!/usr/bin/env python
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                               Alex Dementsov
+#                      California Institute of Technology
+#                        (C) 2009  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+from vnfb.components.QEConvergence import QEConvergence as base
+
+class Actor(base):
+    class Inventory(base.Inventory):
+        import pyre.inventory
+        inputid      = pyre.inventory.str('inputid', default='')      # Status message
+
+
+
+    def _configure(self):
+        super(Actor, self)._configure()
+        self.inputid     = self.inventory.inputid
+
+def actor():
+    return Actor(name='material_simulations/espresso-convergence/input-view')
+
+
+__date__ = "$Apr 23, 2010 12:22:43 PM$"
+
+
