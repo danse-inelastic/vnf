@@ -11,6 +11,28 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
+from vnfb.qeutils.qegrid import QEGrid
+
+import luban.content as lc
+from luban.content import load, select
+
+from vnfb.components.QEConvergence import QEConvergence as base
+
+class Actor(base):
+    
+    def _mainContent(self, director, splitter):
+        content     = splitter.section()
+        visual      = 'material_simulations/espresso-convergence/form-test-create'
+        content.add(director.retrieveVisual(visual,
+                                            director,
+                                            id = self.id))
+
+
+
+
+def actor():
+    return Actor(name='material_simulations/espresso-convergence/test-create')
+
 
 __date__ = "$Apr 21, 2010 7:59:45 PM$"
 
