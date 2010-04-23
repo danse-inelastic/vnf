@@ -17,7 +17,7 @@ from vnfb.qeutils.results.dynmatresult import DYNMATResult
 
 NONE    = "None"
 
-from vnfb.components.QEAnalysis import Actor as base
+from vnfb.components.QEAnalysis import QEAnalysis as base
 class Actor(base):
     
     def _simData(self, director, splitter):

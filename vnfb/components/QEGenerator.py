@@ -18,6 +18,7 @@ from luban.content import load
 from luban.components.AuthorizedActor import AuthorizedActor as base
 
 """
+QEGenerator - base actor class for Quantum Espresso generator pages
 
 Notes:
     - Inventory for parameters is used in methods (e.g. self.inventory.id) to properly

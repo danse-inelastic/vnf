@@ -34,7 +34,7 @@ Status code:
 SUBTYPE_DOS     = "dos"
 SUBTYPE_DISP    = "dispersion"
 
-from vnfb.components.QEAnalysis import Actor as base
+from vnfb.components.QEAnalysis import QEAnalysis as base
 class Actor(base):
 
     class Inventory(base.Inventory):
