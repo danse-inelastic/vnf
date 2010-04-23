@@ -271,7 +271,7 @@ class QEAnalysis(base):
 
 
     def _configure(self):
-        super(Actor, self)._configure()
+        super(QEAnalysis, self)._configure()
         self.id             = self.inventory.id
         self.type           = self.inventory.type
         self.simtype        = self.inventory.simtype
@@ -279,11 +279,11 @@ class QEAnalysis(base):
 
 
     def _init(self):
-        super(Actor, self)._init()
+        super(QEAnalysis, self)._init()
 
 
     def __init__(self, name):
-        super(Actor, self).__init__(name=name)
+        super(QEAnalysis, self).__init__(name=name)
 
 
 __date__ = "$Mar 14, 2010 10:28:08 AM$"
