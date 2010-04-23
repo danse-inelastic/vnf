@@ -266,7 +266,7 @@ class ComputationResultRetriever(Component):
         computation.results.add(result_holder, self.db, name=name)
         for f in files:
             pass
-            #self._mark_result_as_saved(computation, f)
+            self._mark_result_as_saved(computation, f)
         return
 
 
