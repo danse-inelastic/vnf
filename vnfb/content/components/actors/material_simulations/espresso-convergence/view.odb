@@ -16,113 +16,122 @@ from vnfb.qeutils.qegrid import QEGrid
 import luban.content as lc
 from luban.content import load, select
 
-from luban.components.AuthorizedActor import AuthorizedActor as base
+from vnfb.components.QEConvergence import QEConvergence as base
 
 class Actor(base):
-
-    class Inventory(base.Inventory):
-        import pyre.inventory
-        id          = pyre.inventory.str('id', default='')          # Simulation Id
-
-
-    def default(self, director):
-        return select(id='main-display-area').replaceContent(self.content(director))
-
-
-    def content(self, director):
-#        self._sim       = director.clerk.getQESimulations(id=self.id)
-#        self._settings  = director.clerk.getQESettings(id=self.configid)    # type=settings
-
-        def viewIndicator(director):
-            path = []
-            path.append(('Simulations ', load(actor='materialsimulation')))
-            path.append(('Quantum Espresso ', load(actor='materialsimulation')))
-            path.append(('%s ' % self.id, load(actor    = 'material_simulations/espresso/sim-view',
-                                               id       = self.id)))
-            path.append('Convergence Tests')
-
-            return director.retrieveVisual('view-indicator', path=path)
-
-        doc         = lc.document(title="Convergence Tests")
-        splitter    = doc.splitter(orientation="vertical")
-        sA          = splitter.section()
-        sA.add(viewIndicator(director))
-        sC          = splitter.section(id="qe-section-actions")
-        self._showActions(sC)
-
-        # Area for errors
-        splitter.section(id="input-error-area") # ?
-        sB          = splitter.section()
-        table       = QEGrid(lc.grid(Class = "qe-table"))
-        sB.add(table.grid())
-        
-        self._showTestTable(table)
-
-        # Should go after all of the rows are added!
-        table.setColumnStyle(0, "qe-cell-param")
-
-        return doc
-
-
-    def _showActions(self, section):
-        self._backAction(section)
-        self._refreshAction(section)
-        self._newTestAction(section)
-        self._pwInputAction(section)
-
-        section.add(lc.document(Class="clear-both"))
-
-
-    def _backAction(self, section):
-        section.add(lc.link(label="Back",
-                            Class="qe-action-back",
-                            onclick = load(actor      = 'material_simulations/espresso/sim-view',
-                                             id         = self.id))
-                    )
-
-    def _refreshAction(self, section):
-        section.add(lc.link(label="Refresh",
-                            Class="qe-action-back",
-                            onclick = load(actor      = 'material_simulations/espresso-convergence/view',
-                                             id       = self.id))
-                    )
-
-    def _newTestAction(self, section):
-        section.add(lc.link(label="Create New Test",
-                            Class="qe-action-new",
-                            onclick = load(actor      = 'material_simulations/espresso-convergence/test-create',
-                                             id         = self.id))
-                    )
-
-    def _pwInputAction(self, section):
-        "Shows PW input action button"
-        section.add(lc.link(label="Create PW Input",
-                            Class="qe-action-new",  # qe-action-default
-                            onclick = load(actor      = 'material_simulations/espresso/sim-view',
-                                             id         = self.id))
-                    )
-
-
-    def _showTestTable(self, table):
-        "Convergence Tests Table"
-        table.addRow((lc.paragraph(text="Convergence Tests Table"), ) )
-
-
-    def __init__(self):
-        super(Actor, self).__init__(name='material_simulations/espresso-convergence/view')
-
-
-    def _configure(self):
-        super(Actor, self)._configure()
-        self.id             = self.inventory.id
-
-
-    def _init(self):
-        super(Actor, self)._init()
-        return
+    pass
 
 def actor():
-    return Actor()
+    return Actor(name='material_simulations/espresso-convergence/view')
+
+
+#from luban.components.AuthorizedActor import AuthorizedActor as base
+#
+#class Actor(base):
+#
+#    class Inventory(base.Inventory):
+#        import pyre.inventory
+#        id          = pyre.inventory.str('id', default='')          # Simulation Id
+#
+#
+#    def default(self, director):
+#        return select(id='main-display-area').replaceContent(self.content(director))
+#
+#
+#    def content(self, director):
+##        self._sim       = director.clerk.getQESimulations(id=self.id)
+##        self._settings  = director.clerk.getQESettings(id=self.configid)    # type=settings
+#
+#        def viewIndicator(director):
+#            path = []
+#            path.append(('Simulations ', load(actor='materialsimulation')))
+#            path.append(('Quantum Espresso ', load(actor='materialsimulation')))
+#            path.append(('%s ' % self.id, load(actor    = 'material_simulations/espresso/sim-view',
+#                                               id       = self.id)))
+#            path.append('Convergence Tests')
+#
+#            return director.retrieveVisual('view-indicator', path=path)
+#
+#        doc         = lc.document(title="Convergence Tests")
+#        splitter    = doc.splitter(orientation="vertical")
+#        sA          = splitter.section()
+#        sA.add(viewIndicator(director))
+#        sC          = splitter.section(id="qe-section-actions")
+#        self._showActions(sC)
+#
+#        # Area for errors
+#        splitter.section(id="input-error-area") # ?
+#        sB          = splitter.section()
+#        table       = QEGrid(lc.grid(Class = "qe-table"))
+#        sB.add(table.grid())
+#
+#        self._showTestTable(table)
+#
+#        # Should go after all of the rows are added!
+#        table.setColumnStyle(0, "qe-cell-param")
+#
+#        return doc
+#
+#
+#    def _showActions(self, section):
+#        self._backAction(section)
+#        self._refreshAction(section)
+#        self._newTestAction(section)
+#        self._pwInputAction(section)
+#
+#        section.add(lc.document(Class="clear-both"))
+#
+#
+#    def _backAction(self, section):
+#        section.add(lc.link(label="Back",
+#                            Class="qe-action-back",
+#                            onclick = load(actor      = 'material_simulations/espresso/sim-view',
+#                                             id         = self.id))
+#                    )
+#
+#    def _refreshAction(self, section):
+#        section.add(lc.link(label="Refresh",
+#                            Class="qe-action-back",
+#                            onclick = load(actor      = 'material_simulations/espresso-convergence/view',
+#                                             id       = self.id))
+#                    )
+#
+#    def _newTestAction(self, section):
+#        section.add(lc.link(label="Create New Test",
+#                            Class="qe-action-new",
+#                            onclick = load(actor      = 'material_simulations/espresso-convergence/test-create',
+#                                             id         = self.id))
+#                    )
+#
+#    def _pwInputAction(self, section):
+#        "Shows PW input action button"
+#        section.add(lc.link(label="Create PW Input",
+#                            Class="qe-action-new",  # qe-action-default
+#                            onclick = load(actor      = 'material_simulations/espresso/sim-view',
+#                                             id         = self.id))
+#                    )
+#
+#
+#    def _showTestTable(self, table):
+#        "Convergence Tests Table"
+#        table.addRow((lc.paragraph(text="Convergence Tests Table"), ) )
+#
+#
+#    def __init__(self):
+#        super(Actor, self).__init__(name='material_simulations/espresso-convergence/view')
+#
+#
+#    def _configure(self):
+#        super(Actor, self)._configure()
+#        self.id             = self.inventory.id
+#
+#
+#    def _init(self):
+#        super(Actor, self)._init()
+#        return
+#
+#def actor():
+#    return Actor()
 
 
 __date__ = "$Apr 21, 2010 7:36:30 PM$"
