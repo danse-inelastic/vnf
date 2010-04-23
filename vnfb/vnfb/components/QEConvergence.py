@@ -15,6 +15,8 @@
 QEConvergence - base actor class for Quantum Espresso convergence pages
 """
 
+ID_CONVERGENCE  = "qe-container-convergence"
+
 import luban.content as lc
 from luban.content import select, load
 
@@ -40,7 +42,7 @@ class QEConvergence(base):
         sInd        = splitter.section()                        # path indicator
         sAct        = splitter.section(id="qe-section-actions") # actions
 
-        docResults  = lc.document() #id = ID_RESULTS
+        docResults  = lc.document(id = ID_CONVERGENCE)
         doc.add(docResults)
 
         self._viewIndicator(director, sInd)
