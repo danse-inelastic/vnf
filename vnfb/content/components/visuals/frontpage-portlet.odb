@@ -21,7 +21,7 @@ def visual(director):
 
     portlet.item(
         id='frontpage-portlet-signup', label='sign up',
-        onclick=select(id='front-page-central-display').replaceContent(load(actor='signup'))
+        onclick=select(id='body-frame').replaceContent(load(actor='registrar', routine='createInterviewDocument'))
         )
     portlet.item(
         id='frontpage-portlet-about', label='about',
