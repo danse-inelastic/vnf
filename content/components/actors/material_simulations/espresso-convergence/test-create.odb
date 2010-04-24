@@ -27,7 +27,8 @@ class Actor(base):
                                             director,
                                             id = self.id))
 
-
+    def createRecord(self):
+        pass
 
 
 def actor():
