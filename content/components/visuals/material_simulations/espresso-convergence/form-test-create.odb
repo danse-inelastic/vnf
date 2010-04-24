@@ -12,7 +12,7 @@
 #
 
 from vnfb.qeutils.qegrid import QEGrid
-from vnfb.qeutils.qeconst import CONVTYPE, CONVPARAM
+from vnfb.qeutils.qeconst import CONVTYPE, CONVPARAM, MAX_STEPS, TOLERANCE
 
 import luban.content as lc
 from luban.content import load, select
@@ -21,8 +21,6 @@ from luban.content.FormSubmitButton import FormSubmitButton
 from luban.content.FormSelectorField import FormSelectorField
 from luban.content.Form import Form
 
-MAX_STEPS   = 10
-TOLERANCE   = 1
 
 def defaultsDialog(title, content):
     "Returns the dialog widget"

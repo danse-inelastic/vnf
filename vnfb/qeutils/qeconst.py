@@ -247,6 +247,11 @@ CONVTYPE["total-energy"]    = "Total Energy"
 CONVTYPE["fermi-energy"]    = "Fermi Energy"
 CONVTYPE["frequency"]       = "Single Phonon Frequencies"
 
+# Convergence default parameters
+MAX_STEPS   = 10
+TOLERANCE   = 1.0
+
+
 __date__ = "$Nov 3, 2009 3:12:34 PM$"
 
 

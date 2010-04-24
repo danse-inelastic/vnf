@@ -16,10 +16,21 @@ from vnfb.qeutils.qegrid import QEGrid
 import luban.content as lc
 from luban.content import load, select
 
+from vnfb.qeutils.qeconst import MAX_STEPS, TOLERANCE
 from vnfb.components.QEConvergence import QEConvergence as base
 
 class Actor(base):
-    
+    class Inventory(base.Inventory):
+        import pyre.inventory
+        convtype        = pyre.inventory.str('convtype', default='')
+        param           = pyre.inventory.str('param', default='')
+        start           = pyre.inventory.str('start', default='')
+        step            = pyre.inventory.str('step', default='')
+        tolerance       = pyre.inventory.float('tolerance', default=TOLERANCE)
+        maxsteps        = pyre.inventory.int('maxsteps', default=MAX_STEPS)
+        description     = pyre.inventory.str('description', default='')
+
+
     def _mainContent(self, director, splitter):
         content     = splitter.section()
         visual      = 'material_simulations/espresso-convergence/form-test-create'
@@ -27,9 +38,19 @@ class Actor(base):
                                             director,
                                             id = self.id))
 
-    def createRecord(self):
-        pass
+    def createRecord(self, director):
+        print self.start
 
+
+    def _configure(self):
+        super(Actor, self)._configure()
+        self.convtype       = self.inventory.convtype
+        self.param          = self.inventory.param
+        self.start          = self.inventory.start
+        self.step           = self.inventory.step
+        self.tolerance      = self.inventory.tolerance
+        self.maxsteps       = self.inventory.maxsteps
+        self.description    = self.inventory.description
 
 def actor():
     return Actor(name='material_simulations/espresso-convergence/test-create')
