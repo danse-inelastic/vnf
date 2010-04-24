@@ -20,6 +20,7 @@ font-size:1.7em;
 #login-form {
     text-align: right;
     font-size: 0.8em;
+    min-width: 30em;
 }
 #login-form fieldset {
 padding:1em 0 0em 1em;
@@ -80,6 +81,31 @@ color:gray;
 
 #header-userinfo a.luban-link.invisible {
     color: transparent;
+}
+
+#frontpage-portlet .luban-portlet-body {
+    border:medium none;
+    font-size:0.8em;
+    text-align:right;
+}
+
+#frontpage-portlet .luban-portletitem-container {
+    padding:0.2em 0 0.1em 0;
+}
+
+#frontpage-portlet .luban-portletitem-content a  {
+    color:#004455;
+}
+
+#front-page-vnf-intro-container .luban-document-title {
+    color:#229999;
+}
+
+#front-page-vnf-intro-container .luban-document-body {
+    font-size:0.8em;
+    font-family:Helvetica;
+    color:#555555;
+    line-height:1.6em;
 }
 
 /* version */
