@@ -19,11 +19,11 @@ def visual(director):
     form = Form(id='login-form', title='Sign in to your vnf account')
     username = form.text(
         name='username', label='Username', value='', id='login-username-input')
-    username.help = 'Usernames are case sensitive; make sure your caps lock key is not enabled.'
+    username.tip = 'Usernames are case sensitive; make sure your caps lock key is not enabled.'
 
     password = form.password(
         name='password', label='Password', value='', id='login-password-input')
-    password.help = 'Passwords are also case sensitive.'
+    password.tip = 'Passwords are also case sensitive.'
     
     submit = form.submitbutton(label="login")
 

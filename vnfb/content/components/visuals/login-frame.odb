@@ -38,7 +38,14 @@ def visual(director):
     bodydoc.add(splitter)
     
     left = splitter.section(id='login-body-left')
+    left.document(id='login-form-container')
+    portletcontainer = left.document(id='front-page-portlet-container')
+    portlet = director.retrieveVisual('frontpage-portlet')
+    portletcontainer.add(portlet)
+    
     right = splitter.section(id='login-body-right')
+    right.document(id='front-page-vnf-intro-container')
+    right.document(id='front-page-central-display')
     
     footer = director.retrieveVisual('mainframe-footer')
     footer_frame.add(footer)
