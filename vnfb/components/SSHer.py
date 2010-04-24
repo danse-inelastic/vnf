@@ -90,6 +90,9 @@ class SSHer(base):
         self._info.log( 'execute: %s' % cmd )
 
         failed, output, error = spawn( cmd )
+        
+        self._info.log( 'spawn: failed: %s; output: %s; error: %s' % (failed, output, error) )
+        
         if failed:
             msg = '%r failed: %s' % (
                 cmd, error )
