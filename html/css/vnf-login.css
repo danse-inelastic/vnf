@@ -116,6 +116,13 @@ color:gray;
     line-height:1.6em;
 }
 
+/* registration */
+#registration-form {
+    margin-top: 1em;
+}
+#registration-doc-description {
+    color: #555555;
+}
 /* version */
 /* $Id$ */
 
