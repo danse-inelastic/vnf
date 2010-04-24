@@ -1,0 +1,32 @@
+# -*- Python -*-
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                 Jiao Lin
+#                      California Institute of Technology
+#                      (C) 2006-2010  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+import luban.content as lc
+
+
+def visual(director=None):
+    doc = lc.document(id='about-document')
+    img = lc.image(path='vnf-logos/vnf.bw.png', id='about-vnflogo'); doc.add(img)
+    
+    from vnfb import version, copyright
+    doc.paragraph(text=['Version %s' % version])
+    doc.paragraph(text=['Copyright (C) %s' % copyright])
+    doc.paragraph(text=['All rights reserved.'])
+    return doc
+
+    
+# version
+__id__ = "$Id$"
+
+# End of file 
