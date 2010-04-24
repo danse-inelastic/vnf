@@ -283,12 +283,6 @@ class JobStatus(object):
     def _outputId(self):
         return "%s-%s" % (ID_OUTPUT, self._job.id)
 
-#    def _statusId(self):
-#        return "%s-%s" % (ID_STATUS, self._linkorder)
-#
-#
-#    def _outputId(self):
-#        return "%s-%s" % (ID_OUTPUT, self._linkorder)
 
 __date__ = "$Mar 18, 2010 11:05:41 PM$"
 
