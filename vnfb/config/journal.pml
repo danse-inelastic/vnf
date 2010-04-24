@@ -7,11 +7,13 @@
       <property name="force-constant-form-onebond">off</property>
       <property name="scheduler">on</property>
       <property name="job">on</property>
+      <property name="ssher">on</property>
+      <property name="dds">on</property>
    </component>
     <component name="debug">
       <property name="ipa">off</property>
       <property name="UserWarning">off</property>
-      <property name="db">off</property>
+      <property name="db">on</property>
       <property name="clerk">on</property>
       <property name="dds">on</property>
       <property name="pyre.inventory.curator">off</property>
@@ -28,7 +30,7 @@
       <property name='atomicstructure-table'>off</property>
       <property name='job-table'>on</property>
       <property name='atomicstructure-accessor'>off</property>
-      <property name='analyses-table'>off</property>
+      <property name='analyses-table'>on</property>
       <property name='create-structure-form'>on</property>
     </component>
   </component>
