@@ -1,0 +1,61 @@
+# -*- Python -*-
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                 Jiao Lin
+#                      California Institute of Technology
+#                      (C) 2006-2009  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+import luban.content
+from luban.content import load, select
+
+
+def visual(director):
+    portlet = luban.content.portlet(id='frontpage-portlet', title='')
+
+    portlet.item(
+        id='frontpage-portlet-signup', label='sign up',
+        onclick=select(id='front-page-central-display').replaceContent(load(actor='signup'))
+        )
+    portlet.item(
+        id='frontpage-portlet-about', label='about',
+        onclick=select(id='front-page-central-display').replaceContent(load(actor='about'))
+        )
+    portlet.item(
+        id='frontpage-portlet-personel', label='personel',
+        onclick=select(id='front-page-central-display').replaceContent(load(actor='personel'))
+        )
+    portlet.item(
+        id='frontpage-portlet-technology', label='technology',
+        onclick=select(id='front-page-central-display').replaceContent(load(actor='technology'))
+        )
+    portlet.item(
+        id='frontpage-portlet-documents', label='documents',
+        onclick=select(id='front-page-central-display').replaceContent(load(actor='documents'))
+        )
+    portlet.item(
+        id='frontpage-portlet-screencasts', label='screencasts',
+        onclick=select(id='front-page-central-display').replaceContent(load(actor='screencasts'))
+        )
+    portlet.item(
+        id='frontpage-portlet-tutorials', label='tutorials',
+        onclick=select(id='front-page-central-display').replaceContent(load(actor='tutorials'))
+        )
+    portlet.item(
+        id='frontpage-portlet-news', label='news',
+        onclick=select(id='front-page-central-display').replaceContent(load(actor='news'))
+        )
+    
+    return portlet
+
+    
+# version
+__id__ = "$Id$"
+
+# End of file 

@@ -32,20 +32,20 @@ class Actor(base):
     def default(self, director):
         visual = director.retrieveVisual('login-frame')
 
-        left = visual.find(id='login-body-left')
-        left.paragraph().text = 'The Virtual Neutron Facility provides online computation tools for simulating neutron scattering experiments.'
+        introcontainer = visual.find(id='front-page-vnf-intro-container')
+        introcontainer.paragraph().text = 'The Virtual Neutron Facility provides online computation tools for simulating neutron scattering experiments.'
 
-        right = visual.find('login-body-right')
+        formcontainer = visual.find(id='login-form-container')
         form = director.retrieveVisual('login-form')
-        right.add(form)
+        formcontainer.add(form)
         
-        page = lc.page(title='Please login')
-        page.add(visual)
+        frame = lc.frame(title='Virtual neutron facility: please login')
+        frame.add(visual)
 
         dock = lc.dock(id='dock', hidden=True)
-        page.add(dock)
+        frame.add(dock)
         
-        return page
+        return frame
 
 
     def verify(self, director):
