@@ -30,14 +30,7 @@ class Actor(base):
 
 
     def default(self, director):
-        visual = director.retrieveVisual('login-frame')
-
-        introcontainer = visual.find(id='front-page-vnf-intro-container')
-        introcontainer.paragraph().text = 'The Virtual Neutron Facility provides online computation tools for simulating neutron scattering experiments.'
-
-        formcontainer = visual.find(id='login-form-container')
-        form = director.retrieveVisual('login-form')
-        formcontainer.add(form)
+        visual = self.createLoginFrameContent(director)
         
         frame = lc.frame(title='Virtual neutron facility: please login')
         frame.add(visual)
@@ -46,6 +39,24 @@ class Actor(base):
         frame.add(dock)
         
         return frame
+
+
+    def createLoginFrameContent(self, director):
+        visual = director.retrieveVisual('login-frame')
+
+        introcontainer = visual.find(id='front-page-vnf-intro-container')
+        intro = lc.htmldocument(); introcontainer.add(intro)
+        intro.text = [
+            #'The Virtual Neutron Facility (VNF) provides online computation tools for simulating neutron scattering experiments.',
+            '<p>The Virtual Neutron Facility (VNF) is a web service that integrates scientific software packages for material simulations and Monte-Carlo simulations of neutron scattering. VNF is an online tool that allows users to perform end-to-end, full simulations of neutron scattering experiments. It can be useful to gain insights into material properties by comparing simulation results to experimental results.</p>',
+            '<p>The VNF is a product of the <a href="http://danse.us>DANSE</a> project. The DANSE project aims to build a software system that enables new and more sophisticated science to be performed with neutron scattering experiments, makes the data analysis easier for all scientists, and provides a robust software infrastructure that can be maintained in the future.</p>'
+            ]
+
+        formcontainer = visual.find(id='login-form-container')
+        form = director.retrieveVisual('login-form')
+        formcontainer.add(form)
+        
+        return visual
 
 
     def verify(self, director):

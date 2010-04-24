@@ -33,7 +33,7 @@ def visual(director):
 
     # to be added: topmenu
     
-    bodydoc = body_frame.document(id='login-body-doc', title='Welcome to the Virtual Neutron Facility')
+    bodydoc = body_frame.document(id='login-body-doc')
     splitter = Splitter(id='login-body-splitter')
     bodydoc.add(splitter)
     
@@ -44,7 +44,10 @@ def visual(director):
     portletcontainer.add(portlet)
     
     right = splitter.section(id='login-body-right')
-    right.document(id='front-page-vnf-intro-container')
+    right.document(
+        id='front-page-vnf-intro-container',
+        title='Welcome to the Virtual Neutron Facility',
+        )
     right.document(id='front-page-central-display')
     
     footer = director.retrieveVisual('mainframe-footer')
