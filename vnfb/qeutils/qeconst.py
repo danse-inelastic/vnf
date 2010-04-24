@@ -232,13 +232,14 @@ FILBAND     = "'bands.dat'"  # Default value for 'filband' parameter of bands.x 
 # ERROR: masses not defined in PW input file!
 
 # Convergence parameters (from PW config input)
+# Format: (OPERAND, TYPE, START, STEP)
 CONVPARAM   = OrderedDict()
-CONVPARAM["nbnd"]       = ("add", "int")
-CONVPARAM["degauss"]    = ("add", "double")
-CONVPARAM["ecutwfc"]    = ("add", "double")
-CONVPARAM["ecutrho"]    = ("add", "double")
-CONVPARAM["conv_thr"]   = ("multiply", "double")
-CONVPARAM["kpoints"]    = ("add", "vector")
+#CONVPARAM["nbnd"]       = ("add", "int", 2, 1)
+CONVPARAM["degauss"]    = ("add", "double", 0.05, -0.005)
+CONVPARAM["ecutwfc"]    = ("add", "double", 16, 4)
+CONVPARAM["ecutrho"]    = ("add", "double", 64, 16)
+CONVPARAM["conv_thr"]   = ("multiply", "double", 1e-6, 0.1)
+CONVPARAM["kpoints"]    = ("add", "vector", "8, 8, 8", "2, 2, 2")
 
 # Criteria according to which the the convergence occurs
 CONVTYPE    = OrderedDict()
