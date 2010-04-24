@@ -39,6 +39,10 @@ background-color: lightYellow;
 #login-username-input table * {
     padding:0;
 }
+#login-username-input .error {
+    padding:0.4em 0.5em;
+    opacity:1;
+}
 
 #login-password-input table {
     margin-left:auto;
@@ -46,6 +50,10 @@ background-color: lightYellow;
 }
 #login-password-input table * {
     padding:0;
+}
+#login-password-input .error {
+    padding:0.4em 0.5em;
+    opacity:1;
 }
 
 #login-form input {
