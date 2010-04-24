@@ -13,7 +13,7 @@
 
 
 import luban.content
-from luban.content import load, select
+from luban.content import load, select, alert
 
 
 def visual(director):
@@ -25,7 +25,7 @@ def visual(director):
         )
     portlet.item(
         id='frontpage-portlet-about', label='about',
-        onclick=select(id='front-page-central-display').replaceContent(load(actor='about'))
+        onclick=load(actor='about', routine='showAboutDialog'),
         )
     portlet.item(
         id='frontpage-portlet-personel', label='personel',

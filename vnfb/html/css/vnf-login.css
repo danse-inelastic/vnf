@@ -123,6 +123,18 @@ color:gray;
 #registration-doc-description {
     color: #555555;
 }
+
+/* about */
+#about-dialog {
+    font-family: lucida sans;
+    font-size: 0.9em;
+    text-align: center;
+    width: 30em;
+}
+#about-dialog .luban-button {
+    border:1px solid #bbbbbb;
+}
+
 /* version */
 /* $Id$ */
 
