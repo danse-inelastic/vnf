@@ -113,11 +113,11 @@ class Actor(base):
         analysisClass = eval(className)
         analysisObj = analysisClass()
         #mdc = MdDosCalc()
-        orm.save(analysisObj, save_not_owned_referred_object=False)
         analysisRecord = orm(analysisObj)
-        analysisRecord.motion = dynamicsId #HACK!!! replace motion with 'dynamics'
-        director.clerk.db.updateRecord(analysisRecord)
+        analysisRecord.trajectory = dynamicsId #HACK!!! replace motion with 'dynamics'
         self.inventory.analysisId = analysisRecord.id
+        orm.save(analysisObj, save_not_owned_referred_object=False)
+        #director.clerk.db.updateRecord(analysisRecord)
         drawer = director.painter.paintObj.drawers.getDrawer(analysisClass)
         editview = drawer(analysisObj)
         container.add(editview)
