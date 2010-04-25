@@ -84,10 +84,6 @@ class Actor(base):
                     analysisType = self.inventory.analysisType
                     )
         return doc
-    
-#    def getTrajectoryInfo(self, director):
-#        
-#        director.clerk.db.updateRecord(analysisRecord)
 
     def analysisSettings(self, director):
         self.debug = journal.debug('analysisSettings')
@@ -103,6 +99,7 @@ class Actor(base):
 #        analysisType = dynamics.type
         self.debug.log('dynamicsIdAndType:%s' % self.inventory.dynamicsIdAndType)
         dynamicsId, dynamicsType = self.inventory.dynamicsIdAndType.split(',')
+        self.inventory.dynamicsId = dynamicsId
         container = lc.document(id='analysis-settings-container')
         doc.add(container)
         actorName = 'orm/'+self.inventory.analysisType
@@ -112,9 +109,12 @@ class Actor(base):
              className)
         analysisClass = eval(className)
         analysisObj = analysisClass()
+        #load trajectory
+        from vsat.Trajectory import Trajectory
+        trajectory = orm.load(Trajectory, id = self.inventory.dynamicsId)
+        analysisObj.trajectory = trajectory #HACK!!! replace motion with 'dynamics'
         #mdc = MdDosCalc()
         analysisRecord = orm(analysisObj)
-        analysisRecord.trajectory = dynamicsId #HACK!!! replace motion with 'dynamics'
         self.inventory.analysisId = analysisRecord.id
         orm.save(analysisObj, save_not_owned_referred_object=False)
         #director.clerk.db.updateRecord(analysisRecord)
@@ -132,43 +132,16 @@ class Actor(base):
 #        docSub      = lc.document(title = "")
         b = lc.button(label='select'); doc.add(b)
         b.onclick = load(
-                actor='atomicstructure',
+                #actor='atomicstructure',
                 #actor=self.name, routine='runDirectly', 
                 analysisId = self.inventory.analysisId,
                 analysisType = self.inventory.analysisType,
-                #actor=self.name, routine='configureSubmissionQueue'
+                actor=self.name, routine='configureSubmissionQueue'
                 )
         return select(id='main-display-area').replaceContent(doc)
-
-    def startFormShowError(self, director, errors=None):
-        from luban.content import select
-        return [
-            select(id='%s-input' % name).showError(text)
-            for name, text in errors.iteritems()
-            ]
     
-    def __init__(self, name='analysis/analysiswizard'):
-        super(Actor, self).__init__(name)
-        return
-    
-    def runDirectly(self, director):
-        orm = director.clerk.orm
-        className = analysisPaths[self.inventory.analysisType].split('.')[-1]
-        exec('from '+analysisPaths[self.inventory.analysisType]+' import '+
-             className)
-        analysisClass = eval(className)
-        analysisObj = orm.load(analysisClass, id=self.inventory.analysisId)
-        analysisResult = analysisObj.compute()
-        x, y = analysisResult.getXY()
-        # plot
-        doc = lc.document(title='analysis %s' % self.inventory.analysisId)
-        p = lc.plot2d()
-        p.curve(x=list(x), y=list(y))
-        return select(id = 'main-display-area').replaceContent(doc)
-#        for i,y in enumerate(ys):
-#            p.curve(x=list(x), y=list(y), label=str(i))
-        
     def configureSubmissionQueue(self, director):
+        orm = director.clerk.orm
         className = analysisPaths[self.inventory.analysisType].split('.')[-1]
         exec('from '+analysisPaths[self.inventory.analysisType]+' import '+
              className)
@@ -188,6 +161,34 @@ class Actor(base):
         return director.redirect(actor = 'job', routine = 'create', 
                 computation_type = fullClassPath, 
                 computation_id = self.inventory.analysisId)
+        
+    def runDirectly(self, director):
+        orm = director.clerk.orm
+        className = analysisPaths[self.inventory.analysisType].split('.')[-1]
+        exec('from '+analysisPaths[self.inventory.analysisType]+' import '+
+             className)
+        analysisClass = eval(className)
+        analysisObj = orm.load(analysisClass, id=self.inventory.analysisId)
+        analysisResult = analysisObj.compute()
+        x, y = analysisResult.getXY()
+        # plot
+        doc = lc.document(title='analysis %s' % self.inventory.analysisId)
+        p = lc.plot2d()
+        p.curve(x=list(x), y=list(y))
+        return select(id = 'main-display-area').replaceContent(doc)
+#        for i,y in enumerate(ys):
+#            p.curve(x=list(x), y=list(y), label=str(i))
+
+    def startFormShowError(self, director, errors=None):
+        from luban.content import select
+        return [
+            select(id='%s-input' % name).showError(text)
+            for name, text in errors.iteritems()
+            ]
+    
+    def __init__(self, name='analysis/analysiswizard'):
+        super(Actor, self).__init__(name)
+        return
 
 import os
 def actor(): return Actor()
