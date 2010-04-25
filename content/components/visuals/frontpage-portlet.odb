@@ -28,8 +28,9 @@ def visual(director):
         onclick=load(actor='about', routine='showAboutDialog'),
         )
     portlet.item(
-        id='frontpage-portlet-personel', label='personel',
-        onclick=select(id='front-page-central-display').replaceContent(load(actor='personel'))
+        id='frontpage-portlet-personnel', label='personnel',
+        onclick=select(id='front-page-central-display').replaceContent(
+            load(actor='personnel', routine='createPersonnelDocument'))
         )
     portlet.item(
         id='frontpage-portlet-technology', label='technology',
