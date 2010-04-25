@@ -12,6 +12,9 @@ to computing tools for end-to-end simulation of neutron experiments.
 Links
 -----
 
+Getting started
+"""""""""""""""
+
 .. * :ref:`Overview <vnfoverview>` 
 
 .. UserGuide.rst: this is where we put screenshots, etc.
@@ -21,6 +24,12 @@ Links
 .. * :ref:`Tutorials for Developers <vnftutorials-dev>`
 .. DeveloperGuide.rst: this is where we discuss the api for VNF and give recommendations for volunteer work
 * :ref:`Extending VNF <vnfdeveloperguide>`
+
+
+More
+""""
+* `DANSE <http://danse.us>`_
+* `The VNF project <http://danse.us/trac/VNET>`_
 
 ..   tutorials-users
 ..   tutorials-dev

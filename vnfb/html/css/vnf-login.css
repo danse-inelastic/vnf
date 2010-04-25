@@ -139,16 +139,16 @@ color:gray;
     border:1px solid #bbbbbb;
 }
 
-/* personnel */
-#personnel-document {
+/* frontpage documents (from rst) */
+.frontpage-document {
     font-size:0.85em;
 }
-#personnel-document > h1 {
+.frontpage-document > h1 {
     font-size:1.2em;
     color:#00aa00;
     text-transform:uppercase;
 }
-#personnel-document > div > h1 {
+.frontpage-document > div > h1 {
     font-size:1.2em;
     font-style:italic;
 }

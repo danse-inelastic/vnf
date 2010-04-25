@@ -12,39 +12,7 @@
 #
 
 
-rstdoc = '''
-personnel
-=========
-
-Authors
--------
-
-Principle Investigaters:
-
-* `Brent Fultz <http://www.its.caltech.edu/~matsci/btf/Fultz1.html>`_
-* Ken Herwig
-* `Michael Aivazis <http://www.cacr.caltech.edu/~aivazis/>`_
-
-Project Manager:
-
-* `Michael Mckerns <http://www.its.caltech.edu/~mmckerns/>`_
-
-Developers:
-
-* `Jiao Lin <http://www.its.caltech.edu/~linjiao/>`_
-* J Brandon Keith
-* Alexander Dementsov
-* Nikolay Markovskiy
-* Xiaoli Tang
-
-Contributers
-------------
-
-* Olivier Delaire
-* Max Kresch
-* Chen Li
-'''
-
+docsroot = '../content/documents/frontpage'
 
 
 from luban.content import load, select, alert
@@ -60,9 +28,18 @@ class Actor(base):
         
         import pyre.inventory
 
+        # name of the document
+        name = pyre.inventory.str('name')
 
-    def createPersonnelDocument(self, director):
-        doc = luban.content.restructuredtextdocument(id='personnel-document')
+
+    def createDocument(self, director):
+        name = self.inventory.name
+        import os
+        rstpath = os.path.join(docsroot, '%s.rst' % name)
+        rstdoc = open(rstpath).read()
+
+        doc = luban.content.restructuredtextdocument(id='%s-document' % name)
+        doc.Class = 'frontpage-document'
         doc.text = rstdoc.splitlines()
         return doc
         
