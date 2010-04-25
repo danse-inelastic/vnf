@@ -131,9 +131,28 @@ color:gray;
     text-align: center;
     width: 30em;
 }
+#about-dialog .luban-document-title {
+    font-size:1.5em;
+    font-weight:bold;
+}
 #about-dialog .luban-button {
     border:1px solid #bbbbbb;
 }
+
+/* personnel */
+#personnel-document {
+    font-size:0.85em;
+}
+#personnel-document > h1 {
+    font-size:1.2em;
+    color:#00aa00;
+    text-transform:uppercase;
+}
+#personnel-document > div > h1 {
+    font-size:1.2em;
+    font-style:italic;
+}
+
 
 /* version */
 /* $Id$ */
