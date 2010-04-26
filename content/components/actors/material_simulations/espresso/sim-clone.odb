@@ -148,8 +148,8 @@ class Actor(base):
                    "serverid":      servers.id(self.server)
                    #"matter":        self.matter    # Doesn't work at this moment
                    }
-        sim     = QESimulation()
-        sim.setDirector(director)
+        sim     = QESimulation(director)
+#        sim.setDirector(director)
         sim.createRecord(params)
 
         return load(actor='material_simulations/espresso/sim-view', id = sim.id)  # Redirection to the page

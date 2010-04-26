@@ -108,8 +108,8 @@ class Actor(base):
                    "params":        SETTINGS["params"],     # Set from constants?
                    "modules":       SETTINGS["modules"]     # Set from constants?
                   }
-        settings     = QESetting()
-        settings.setDirector(director)
+        settings     = QESetting(director)
+#        settings.setDirector(director)
         settings.createRecord(params)
         
         return load(actor='material_simulations/espresso/sim-view', id=self.id)

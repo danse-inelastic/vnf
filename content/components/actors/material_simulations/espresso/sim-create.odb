@@ -109,8 +109,8 @@ class Actor(base):
                    "serverid":      servers.id(self.server),
                    "structureid":   self.structureid
                    }
-        sim     = QESimulation()
-        sim.setDirector(director)
+        sim     = QESimulation(director)
+#        sim.setDirector(director)
         sim.createRecord(params)
         sim.establishGlobalPointer(director.clerk.db)
 
