@@ -51,11 +51,15 @@ features = [
     feature('coherentinelasticphononkernel', 'Coherent-inelastic phonon scattering kernel',
             'active', 'linjiao'),
     feature('quantumespresso',
-            'The Quantum Espresso (QE) DFT package',
+            'The Quantum Espresso DFT package',
             'active', 'alex'),
     feature('quantumespresso-phonon',
-            'The phonon calculator using the Quantum Espresso (QE) DFT package',
+            'The Quantum Espresso phonon calculator',
             'active', 'alex'),
+    feature('quantumespresso-md',
+            'The Quantum Espresso molecular dynamics',
+            'inactive', 'alex'),
+
     ]
 
 

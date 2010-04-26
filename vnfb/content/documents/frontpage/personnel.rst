@@ -22,7 +22,7 @@ VNF Developers
 
 * `Jiao Lin <http://www.its.caltech.edu/~linjiao/>`_
 * J Brandon Keith
-* `Alexander Dementsov <www.dementsov.com>`_
+* `Alexander Dementsov <http://www.dementsov.com>`_
 * Nikolay Markovskiy
 * Xiaoli Tang
 
