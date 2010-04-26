@@ -55,6 +55,8 @@ class Actor(base):
 
         hardware = doc.document(title='Hardware')
         hardware.Class = 'section'
+        server_status_grid = director.retrieveVisual('server/status')
+        hardware.add(server_status_grid)
         
         return doc
         
