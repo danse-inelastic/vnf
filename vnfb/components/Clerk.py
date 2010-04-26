@@ -87,6 +87,20 @@ class Clerk(base, ClerkBase):
         '''retrieve task specified by id'''
         return self._getEntry('QETask', id=id, where=where)
 
+    def getQEConvergences(self, id=None, where=None):
+        '''retrieve convergence tests specified by id'''
+        return self._getEntry('QEConvergence', id=id, where=where)
+
+    def getQEConvParams(self, id=None, where=None):
+        '''retrieve convergence parameters specified by id'''
+        return self._getEntry('QEConvParam', id=id, where=where)
+
+    def getQEConvergenceTasks(self, id=None, where=None):
+        '''retrieve convergence tasks specified by id'''
+        return self._getEntry('QEConvergenceTask', id=id, where=where)
+
+
+
     # Temp solution
     def getServers(self, id=None, where=None):
         '''retrieve server data specified by id'''
