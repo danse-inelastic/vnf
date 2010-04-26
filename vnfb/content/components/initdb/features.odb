@@ -1,0 +1,68 @@
+#!/usr/bin/env python
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                Jiao Lin
+#                      California Institute of Technology
+#                        (C) 2008  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+from pyre.components.Component import Component as base
+
+
+class Component(base):
+
+
+    class Inventory(base.Inventory):
+
+        import pyre.inventory
+
+
+    def initdb(self):
+        db = self.director.clerk.db
+        for r in features: db.insertRow( r )
+        return
+
+
+from vnfb.dom.Feature import FeatureTable as Table
+def feature(id, description, status, developer):
+    r = Table()
+    r.id = id
+    r.description = description
+    r.status = status
+    r.developer = developer
+    return r
+
+
+features = [
+    feature('mcvine', 'The Monte Carlo instrument simulation package',
+            'active', 'linjiao'),
+    feature('bvk', 'The Born-von Karman (bvk) package',
+            'active', 'linjiao'),
+    feature('gulp', 'The GULP classical molecular dynamics package',
+            'active', 'brandon'),
+    feature('gulp-sqe', 'The S(Q,E) calculator for GULP',
+            'inactive', 'brandon'),
+    feature('coherentinelasticphononkernel', 'Coherent-inelastic phonon scattering kernel',
+            'active', 'linjiao'),
+    feature('quantumespresso',
+            'The Quantum Espresso (QE) DFT package',
+            'active', 'alex'),
+    feature('quantumespresso-phonon',
+            'The phonon calculator using the Quantum Espresso (QE) DFT package',
+            'active', 'alex'),
+    ]
+
+
+def initdb(): return Component('initdb-features', 'initdb')
+
+
+# version
+__id__ = "$Id$"
+
+# End of file 

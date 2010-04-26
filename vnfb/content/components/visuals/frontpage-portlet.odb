@@ -34,9 +34,14 @@ def visual(director):
             load(actor='frontpage', routine='createDocument', name='tutorials')),
         )
     portlet.item(
-        id='frontpage-portlet-news', label='news',
-        onclick=select(id='front-page-central-display').replaceContent(load(actor='news'))
+        id='frontpage-portlet-status', label='status',
+        onclick=select(id='front-page-central-display').replaceContent(
+            load(actor='frontpage', routine='createStatusDocument')),
         )
+##     portlet.item(
+##         id='frontpage-portlet-news', label='news',
+##         onclick=select(id='front-page-central-display').replaceContent(load(actor='news'))
+##         )
 ##     portlet.item(
 ##         id='frontpage-portlet-documents', label='documents',
 ##         onclick=select(id='front-page-central-display').replaceContent(load(actor='documents'))

@@ -48,6 +48,7 @@ EXPORT_PYTHON_MODULES = \
 	Computation.py \
 	ComputationResult.py \
         Export.py \
+	Feature.py \
 	Histogram.py \
 	ITask.py \
 	Job.py \
