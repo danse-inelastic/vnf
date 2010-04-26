@@ -66,8 +66,7 @@ class Actor(base):
                    "description":   subtypeMatdyn(self.inventory.subtype), # Store subtype for description
                    "type":          self.inventory.type
                    }
-        self.input  = QEConfiguration()
-        self.input.setDirector(director)
+        self.input  = QEConfiguration(director)
         self.input.createRecord(params)
 
 

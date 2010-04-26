@@ -105,8 +105,8 @@ class QEDriver(base):
 #            self._job   = jobs[0]
 #        else:
 
-        self._job  = QEJob()
-        self._job.setDirector(self)
+        self._job  = QEJob(self)
+#        self._job.setDirector(self)
         self._job.createRecord(params)
         
         self._updateStatus("create-job")
