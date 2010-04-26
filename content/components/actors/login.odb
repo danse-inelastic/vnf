@@ -89,6 +89,19 @@ class Actor(base):
             '<p>The VNF is a product of the <a href="http://danse.us>DANSE</a> project. The DANSE project aims to build a software system that enables new and more sophisticated science to be performed with neutron scattering experiments, makes the data analysis easier for all scientists, and provides a robust software infrastructure that can be maintained in the future.</p>'
             ]
 
+        initialviewdocuments = [
+            'screencasts',
+            #'tutorials',
+            'status',
+            'technology',
+            #'personnel',
+            ]
+        for idoc in initialviewdocuments:
+            doc = director.redirect(
+                actor='frontpage', routine='createDocument', name=idoc,
+                include_credential=False)
+            ctrldisplay.add(doc)
+
         form = director.retrieveVisual('login-form')
         formcontainer.add(form)
         

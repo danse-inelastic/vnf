@@ -3,22 +3,22 @@
 personnel
 =========
 
-Principle Investigaters
------------------------
+DANSE Principle Investigaters
+-----------------------------
 
 * `Brent Fultz <http://www.its.caltech.edu/~matsci/btf/Fultz1.html>`_
 * Ken Herwig
 * `Michael Aivazis <http://www.cacr.caltech.edu/~aivazis/>`_
 
 
-Project Manager
----------------
+DANSE Project Manager
+---------------------
 
 * `Michael Mckerns <http://www.its.caltech.edu/~mmckerns/>`_
 
 
-Developers
-----------
+VNF Developers
+--------------
 
 * `Jiao Lin <http://www.its.caltech.edu/~linjiao/>`_
 * J Brandon Keith
@@ -27,8 +27,8 @@ Developers
 * Xiaoli Tang
 
 
-Contributers
-------------
+VNF Contributers
+----------------
 
 * Olivier Delaire
 * Max Kresch

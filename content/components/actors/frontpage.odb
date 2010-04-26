@@ -34,6 +34,10 @@ class Actor(base):
 
     def createDocument(self, director):
         name = self.inventory.name
+        handler = 'create%sDocument' % name.capitalize()
+        if hasattr(self, handler):
+            return getattr(self, handler)(director)
+        
         import os
         rstpath = os.path.join(docsroot, '%s.rst' % name)
         rstdoc = open(rstpath).read()
