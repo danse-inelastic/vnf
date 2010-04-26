@@ -24,18 +24,10 @@ class Actor(base):
         # Area for errors
         splitter.section(id="input-error-area") # ?
         sB          = splitter.section()
-        table       = QEGrid(lc.grid(Class = "qe-table"))
-        sB.add(table.grid())
-
-        self._showTestTable(table)
-
-        # Should go after all of the rows are added!
-        table.setColumnStyle(0, "qe-cell-param")
-
-
-    def _showTestTable(self, table):
-        "Convergence Tests Table"
-        table.addRow((lc.paragraph(text="Convergence Tests Table"), ) )
+        visual      = 'material_simulations/espresso-convergence/table-conv'
+        sB.add(director.retrieveVisual(visual,
+                                        director,
+                                        id = self.id))
 
 
     def runTest(self, director):

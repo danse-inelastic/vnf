@@ -1,0 +1,30 @@
+#!/usr/bin/env python
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                               Alex Dementsov
+#                      California Institute of Technology
+#                        (C) 2009  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+from vnfb.qeutils.qegrid import QEGrid
+
+import luban.content as lc
+
+def visual(director, id):
+    table       = QEGrid(lc.grid(Class="qe-tasks-table"))
+    table.addRow(("Test Id", "Time Created", "Type", "Parameter", "Tolerance", "Optimal Value") )
+    table.setColumnStyle(0, "qe-table-id")
+    table.setColumnStyle(1, "qe-table-time")
+
+    table.setRowStyle(0, "qe-table-header")
+
+    return table.grid()
+
+__date__ = "$Apr 25, 2010 11:19:29 PM$"
+
+
