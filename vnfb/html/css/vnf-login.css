@@ -163,6 +163,7 @@ color:gray;
     width: 1em;
 }
 #vnf-webportal-status .luban-grid table {
+    margin-left: 2em;
     width:80%;
 }
 #vnf-webportal-status .luban-grid table td.icon {
