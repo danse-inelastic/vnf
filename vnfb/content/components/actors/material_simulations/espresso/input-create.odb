@@ -52,7 +52,6 @@ class Actor(base):
 
     def createRecord(self, director):
         "Create configuration record"
-#        print subtypeMatdyn(self.inventory.subtype)
         self._createDBRecord(director)
         self._updateTaskRecord(director)    # For matdyn mostly
         self._createFile(director)

@@ -16,6 +16,8 @@ from vnfb.qeutils.qegrid import QEGrid
 import luban.content as lc
 from luban.content import load, select
 
+from vnfb.dom.QEConvergence import QEConvergence
+from vnfb.dom.QEConvParam import QEConvParam
 from vnfb.qeutils.qeconst import MAX_STEPS, TOLERANCE
 from vnfb.components.QEConvergence import QEConvergence as base
 
@@ -38,8 +40,34 @@ class Actor(base):
                                             director,
                                             id = self.id))
 
+
     def createRecord(self, director):
-        print self.start
+        "Create convergence and convergence param records"
+        self._createConvergence(director)
+        self._createConvParam(director)
+
+        return load(actor   = 'material_simulations/espresso-convergence/view',
+                    id      = self.id)
+        
+
+    def _createConvergence(self, director):
+        "Create convergence record"
+        params  = {"simulationid":  self.inventory.id,
+                   "description":   self.inventory.description,
+                   "type":          self.inventory.convtype,
+                   "progress":      "Created"
+                   }
+        self.conv  = QEConvergence(director)
+#        self.conv.setDirector(director)
+        self.conv.createRecord(params)
+
+
+    def _createConvParam(self, director):
+        "Create convergence param record"
+#        self.conv  = QEConvergence(director)
+#        self.conv.setDirector(director)
+#        self.conv.createRecord(params)
+        
 
 
     def _configure(self):
