@@ -51,6 +51,7 @@ class DOMAccessor( base ):
 
         #
         def _importallmodules(dir, pkg):
+            imported = []
             for entry in os.listdir(dir):
                 # private, skip
                 if entry.startswith('_'): continue
@@ -61,8 +62,10 @@ class DOMAccessor( base ):
                     _importallmodules(p, pkg+'.'+entry)
                     continue
                 # python module
-                if not entry.endswith('.py'): continue
+                if not entry.endswith('.py') and not entry.endswith('.pyc'): continue
                 m = pkg + '.' + entry[:-3]
+                if m in imported: continue
+                else: imported.append(m)
                 m = _imp(m)
                 import inspect
                 for symbol, entity in m.__dict__.iteritems():
