@@ -37,19 +37,13 @@ DATED       = ["date",]
 
 class QETable(WithID):
 
-    def __init__(self, director, clerk):
-        """
-        clerk     - is set for actual managing database records
-        """
+    def __init__(self, director = None):
         super(QETable, self).__init__()
-        self._clerk     = clerk
-        self._director  = director
-
-
-    def __init__(self):
-        super(QETable, self).__init__()
-        self._clerk     = None
-        self._director  = None
+        self._director      = director
+        if director:
+            self._clerk     = director.clerk
+        else:
+            self._clerk     = None
 
 
     def setClerk(self, clerk):
