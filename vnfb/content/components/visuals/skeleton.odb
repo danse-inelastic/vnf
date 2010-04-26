@@ -4,7 +4,7 @@
 #
 #                                 Jiao Lin
 #                      California Institute of Technology
-#                      (C) 2006-2009  All Rights Reserved
+#                      (C) 2006-2010  All Rights Reserved
 #
 # {LicenseText}
 #
@@ -12,33 +12,21 @@
 #
 
 
-from luban.content.Document import Document
-from luban.content.Splitter import Splitter
-from luban.content.Splitter import SplitSection
-from luban.content.Tabs import Tabs
-from luban.content.Tabs import Tab
+import luban.content
 
 
 def visual(director):
-    vertical = Splitter(orientation='vertical')
+    vertical = luban.content.splitter(orientation='vertical')
     header_frame = vertical.section(id='header-frame')
+    news_container = vertical.section(id='header-news-container')
     topmenu_frame = vertical.section(id='topmenu-frame')
     body_frame = vertical.section(id='body-frame')#, Class='has-shadow')
     footer_frame = vertical.section(id='footer-frame')
     credits_frame = vertical.section(id='credits-frame')
 
-    header = director.retrieveVisual('login-mainframe-header')
+    header = director.retrieveVisual('mainframe-header')
     header_frame.add(header)
 
-    # to be added: topmenu
-    
-    bodydoc = body_frame.document(id='login-body-doc', title='Welcome to the Virtual Neutron Facility')
-    splitter = Splitter(id='login-body-splitter')
-    bodydoc.add(splitter)
-    
-    left = splitter.section(id='login-body-left')
-    right = splitter.section(id='login-body-right')
-    
     footer = director.retrieveVisual('mainframe-footer')
     footer_frame.add(footer)
 

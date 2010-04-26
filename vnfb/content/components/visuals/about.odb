@@ -1,0 +1,33 @@
+# -*- Python -*-
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                 Jiao Lin
+#                      California Institute of Technology
+#                      (C) 2006-2010  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+import luban.content as lc
+
+
+def visual(director=None):
+    doc = lc.document(id='about-document')
+    img = lc.image(path='vnf-logos/vnf.bw.png', id='about-vnflogo'); doc.add(img)
+
+    doc1 = doc.document(title='Virtual Neutron Facility')
+    from vnfb import version, copyright
+    doc1.paragraph(text=['Version %s' % version])
+    doc1.paragraph(text=['Copyright (C) %s' % copyright])
+    doc1.paragraph(text=['All rights reserved.'])
+    return doc
+
+    
+# version
+__id__ = "$Id$"
+
+# End of file 

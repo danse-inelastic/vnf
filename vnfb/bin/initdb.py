@@ -30,6 +30,21 @@ class DbApp(base):
 
         table = pyre.inventory.str(name='table')
         tables = pyre.inventory.list(name='tables')
+
+
+    def help(self):
+        print
+        print 'initializate db table(s)'
+        print 
+        print " * typical usage:"
+        print "   $ initdb.py --table=<tablename>"
+        print "   $ initdb.py --tables=<table1,table2>"
+        print
+        print " * table name is the name of the table. For example"
+        print "   - news"
+        print "   - users"
+        print
+        print
         
 
     def main(self, *args, **kwds):

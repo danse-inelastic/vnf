@@ -1,0 +1,48 @@
+# -*- Python -*-
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                 Jiao Lin
+#                      California Institute of Technology
+#                      (C) 2006-2010  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+import luban.content
+from luban.content import load
+
+
+def visual(director):
+    grid = luban.content.grid()
+
+    from vnfb.dom.Server import Server as Table
+    db = director.clerk.db
+    servers = db.query(Table).all()
+
+    onlineicon = luban.content.image(path='icons/green-tick.png')
+    offlineicon = luban.content.image(path='icons/red-cross.png')
+    onlineicon.Class = offlineicon.Class = 'icon'
+    
+    for server in servers:
+        row = grid.row()
+        row.cell().add(server.short_description)
+
+        cell2 = row.cell(); cell2.Class='icon'
+        status = server.status
+        if status == 'online':
+            cell2.add(onlineicon)
+        else:
+            cell2.add(offlineicon)
+        continue
+    
+    return grid
+
+    
+# version
+__id__ = "$Id$"
+
+# End of file 
