@@ -140,3 +140,9 @@ Added table "qeconvergences" and "qeconvparams"
 
 April 22, 2010
 Added table "qeconvergencetasks"
+
+
+April 25, 2010
+Added table "features"
+Added column "status" to table "servers": var char of size 8
+

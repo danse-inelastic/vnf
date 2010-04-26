@@ -52,7 +52,9 @@ class Server(base):
     scheduler = dsaw.db.varchar( name='scheduler', length = 64)
     scheduler.meta['tip'] = 'scheduler to use on the server'
 
-
+    status = dsaw.db.varchar(name='status', length=8, default='online')
+    # online
+    # offline
 
 
 class LocalHost:

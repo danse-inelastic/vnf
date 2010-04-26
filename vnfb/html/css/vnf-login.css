@@ -162,6 +162,12 @@ color:gray;
 #vnf-webportal-status .icon > .luban-image {
     width: 1em;
 }
+#vnf-webportal-status .luban-grid table {
+    width:80%;
+}
+#vnf-webportal-status .luban-grid table td.icon {
+    width: 1.1em;
+}
 
 /* version */
 /* $Id$ */
