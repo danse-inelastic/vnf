@@ -16,9 +16,10 @@ from vnfb.qeutils.qegrid import QEGrid
 import luban.content as lc
 from luban.content import load, select
 
+
 from vnfb.dom.QEConvergence import QEConvergence
 from vnfb.dom.QEConvParam import QEConvParam
-from vnfb.qeutils.qeconst import MAX_STEPS, TOLERANCE
+from vnfb.qeutils.qeconst import MAX_STEPS, TOLERANCE, CONVPARAMLIST, CONVPARAM, CONVTYPELIST
 from vnfb.components.QEConvergence import QEConvergence as base
 
 class Actor(base):
@@ -54,20 +55,45 @@ class Actor(base):
         "Create convergence record"
         params  = {"simulationid":  self.inventory.id,
                    "description":   self.inventory.description,
-                   "type":          self.inventory.convtype,
+                   "type":          self._convType(),
                    "progress":      "Created"
                    }
-        self.conv  = QEConvergence(director)
-#        self.conv.setDirector(director)
-        self.conv.createRecord(params)
+        self._conv  = QEConvergence(director)
+        self._conv.createRecord(params)
 
 
     def _createConvParam(self, director):
         "Create convergence param record"
-#        self.conv  = QEConvergence(director)
-#        self.conv.setDirector(director)
-#        self.conv.createRecord(params)
+        if not self._conv:  # If no convergence created, don't create convergence param
+            return
+
+        params  = {"convergenceid": self._conv.id,
+                   "pname":         self._param(),
+                   "tolerance":     self.inventory.tolerance,
+                   "maxsteps":      self.inventory.maxsteps,
+                   "value":         self.inventory.start,
+                   "type":          self._paramType(),
+                   "startvalue":    self.inventory.start,
+                   "step":          self.inventory.step
+                   }
+        self._convparam  = QEConvParam(director)
+        self._convparam.createRecord(params)
         
+
+    def _convType(self):
+        return CONVTYPELIST[int(self.inventory.convtype)]
+
+
+    def _param(self):
+        return CONVPARAMLIST[int(self.inventory.param)]
+
+
+    def _paramType(self):
+        paramkey   = self._param()
+        if CONVPARAM.has_key(paramkey):
+            return CONVPARAM[paramkey][1]
+
+        return ""
 
 
     def _configure(self):
