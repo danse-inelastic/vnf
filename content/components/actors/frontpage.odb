@@ -42,6 +42,21 @@ class Actor(base):
         doc.Class = 'frontpage-document'
         doc.text = rstdoc.splitlines()
         return doc
+
+
+    def createStatusDocument(self, director):
+        doc = luban.content.document(id='vnf-webportal-status', title='Status')
+        doc.Class = 'frontpage-document'
+
+        software = doc.document(title='Software')
+        software.Class = 'section'
+        feature_status_grid = director.retrieveVisual('feature/status')
+        software.add(feature_status_grid)
+
+        hardware = doc.document(title='Hardware')
+        hardware.Class = 'section'
+        
+        return doc
         
 
     def __init__(self, name=None):

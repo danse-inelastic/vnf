@@ -148,11 +148,20 @@ color:gray;
     color:#00aa00;
     text-transform:uppercase;
 }
-.frontpage-document > div > h1 {
+.frontpage-document > div > h1{
+    font-size:1.2em;
+    font-style:italic;
+}
+.luban-document.section > h1{
     font-size:1.2em;
     font-style:italic;
 }
 
+
+/* status */
+#vnf-webportal-status .icon > .luban-image {
+    width: 1em;
+}
 
 /* version */
 /* $Id$ */
