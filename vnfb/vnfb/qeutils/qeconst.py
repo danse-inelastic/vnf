@@ -234,18 +234,22 @@ FILBAND     = "'bands.dat'"  # Default value for 'filband' parameter of bands.x 
 # Convergence parameters (from PW config input)
 # Format: (OPERAND, TYPE, START, STEP)
 CONVPARAM   = OrderedDict()
-#CONVPARAM["nbnd"]       = ("add", "int", 2, 1)
+#CONVPARAM["nbnd"]       = ("add", "int", 2, 1) # Subtle parameter
 CONVPARAM["degauss"]    = ("add", "double", 0.05, -0.005)
 CONVPARAM["ecutwfc"]    = ("add", "double", 16, 4)
 CONVPARAM["ecutrho"]    = ("add", "double", 64, 16)
 CONVPARAM["conv_thr"]   = ("multiply", "double", 1e-6, 0.1)
 CONVPARAM["kpoints"]    = ("add", "vector", "8, 8, 8", "2, 2, 2")
 
+CONVPARAMLIST   = CONVPARAM.keys()
+
 # Criteria according to which the the convergence occurs
 CONVTYPE    = OrderedDict()
 CONVTYPE["total-energy"]    = "Total Energy"
 CONVTYPE["fermi-energy"]    = "Fermi Energy"
 CONVTYPE["frequency"]       = "Single Phonon Frequencies"
+
+CONVTYPELIST    = CONVTYPE.keys()
 
 # Convergence default parameters
 MAX_STEPS   = 10
