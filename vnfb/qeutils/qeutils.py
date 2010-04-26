@@ -231,6 +231,7 @@ def latestRecord(records, timefield):
     return latest
 
 
+# Refactor to a more general function?
 def latestJob(jobs):
     "Retruns latest job based on timesubmitted column"
     return latestRecord(jobs, "timesubmitted")
@@ -244,12 +245,24 @@ def latestInput(inputs):
     return latestRecord(inputs, "timecreated")
 
 
-def qetask(director, simid, linkorder, subtype = None):
+def latestParam(params):
+    return latestRecord(params, "timecreated")
+
+
+simTask = {
+            "simulationid":     "getQESimulationTasks",
+            "convergenceid":    "getQEConvergenceTasks"
+          }
+
+def qetask(director, simid, linkorder, subtype = None, refid = "simulationid"):
     "Returns task object specified by simulation id and linkorder"
-    where   = "simulationid='%s'" % simid
+    if not refid in simTask.keys(): # Don't understand refid
+        return None
+    
+    where   = "%s='%s'" % (refid, simid)
     if subtype:
         where   += "%s AND subtype='%s'" % (where, subtype)
-    simtasks = director.clerk.getQESimulationTasks(where=where)
+    simtasks = getattr(director.clerk, simTask[refid])(where=where)
     for st in simtasks:
         tasks   = director.clerk.getQETasks(where="id='%s' AND linkorder=%s" % (st.taskid, linkorder))
         if tasks:   # XXX First found tasks
@@ -261,12 +274,12 @@ def qetask(director, simid, linkorder, subtype = None):
     return None
 
 
-def qejob(director, simid, linkorder, subtype = None):
+def qejob(director, simid, linkorder, subtype = None, refid = "simulationid"):
     """Return latest job for the linkorder
     For matdyn task subtype will be also used which can be "dos" or "dispersion".
     The subtype uses QETask.short_description (should be removed from) and QEJob.description to store
     the subtype"""
-    task    = qetask(director, simid, linkorder) # Let's not use 'subtype' for qetask()
+    task    = qetask(director, simid, linkorder, refid = refid) # Let's not use 'subtype' for qetask()
     if task:
         where   = "taskid='%s'" % task.id
         if subtype:
@@ -277,9 +290,9 @@ def qejob(director, simid, linkorder, subtype = None):
     return None
 
 
-def qeinput(director, simid, linkorder):
+def qeinput(director, simid, linkorder, refid = "simulationid"):
     "Return input for the linkorder"
-    task    = qetask(director, simid, linkorder)
+    task    = qetask(director, simid, linkorder, refid = refid)
     if task:
         inputs  = director.clerk.getQEConfigurations(where="taskid='%s'" % task.id)
         return latestInput(inputs)  # There should be a single input record!
@@ -364,42 +377,3 @@ if __name__ == "__main__":
     testStamp()
 
 __date__ = "$Jul 30, 2009 12:08:31 PM$"
-
-
-## TODO: Test!!!
-## Status: Depricated
-#def remoteResultsPath(director, simid, linkorder):
-#    """Returns the path of the jobs directory specified by simulation id (simid) and task type.
-#    Example: /home/dexity/espresso/qejobs/5YWWTCQT/
-#    """
-#    path    = ""
-#    task    = qetask(director, simid, linkorder)
-#
-#    if not task:
-#        return path
-#
-#    jobs    = director.clerk.getQEJobs(where="taskid='%s'" % task.id)
-#    if len(jobs) > 0:
-#        # Find latest job for the task
-#        job = latestJob(jobs)
-#
-#        if job:
-#            server  = director.clerk.getServers(id=job.serverid)
-#            path    = os.path.join(server.workdir, job.name)
-#            path    = os.path.join(path, job.id)
-#
-#    return path
-#
-## Status: Depricated
-#def inputRecord(director, simid, linkorder):
-#    task    = qetask(director, simid, linkorder)
-#
-#    if not task:
-#        return None
-#
-#    inputs  = director.clerk.getQEConfigurations(where="taskid='%s'" % task.id)
-#    if len(inputs) > 0:
-#        # Should be one config input for the task!
-#        return inputs[0]
-#
-#    return None

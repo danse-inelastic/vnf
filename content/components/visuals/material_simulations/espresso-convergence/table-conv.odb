@@ -11,6 +11,7 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
+from vnfb.qeutils.qeutils import latestParam
 from vnfb.qeutils.qegrid import QEGrid
 
 import luban.content as lc
@@ -19,7 +20,9 @@ def visual(director, id):
     table       = QEGrid(lc.grid(Class="qe-tasks-table"))
     table.addRow(("Test Id", "Time Created", "Type", "Parameter", "Tolerance", "Optimal Value") )
 
-    #convs       = director.clerk.getQEConvergence
+    convs       = director.clerk.getQEConvergences(where="simulationid='%s'" % id)
+    for c in convs:
+        table.addRow((c.id, "", "", "", "", ""))
 
     table.setColumnStyle(0, "qe-table-id")
     table.setColumnStyle(1, "qe-table-time")
