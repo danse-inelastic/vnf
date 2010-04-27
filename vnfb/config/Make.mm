@@ -39,7 +39,6 @@ EXPORT_DATAFILES = \
 	journal.pml \
 	librarian.pml \
 	main.pml \
-	postman.pml \
 	retrieveresults.pml \
 	updatejobstatus.pml \
 	usersFromDB.odb \
@@ -47,6 +46,7 @@ EXPORT_DATAFILES = \
 	widget.lib
 
 # 	clerk.pml \
+#	postman.pml \
 # 	ssher.pml \
 #	web-weaver.pml \
 
