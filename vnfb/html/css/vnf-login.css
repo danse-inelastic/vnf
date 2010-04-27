@@ -186,6 +186,14 @@ color:gray;
     font-style:italic;
 }
 
+/* footnote */
+#front-page-footnote-container {
+    margin-top: 1em;
+    font-size:0.8em;
+    font-family:Helvetica;
+    color:#555555;
+    line-height:1.6em;
+}
 
 /* status */
 #vnf-webportal-status .icon > .luban-image {
