@@ -39,7 +39,7 @@ class Actor(base):
     
     
     def createInterviewDocument(self, director):
-        document = lc.document( title = 'Create a VNF Account' )
+        document = lc.document( title = 'Create a VNF Account', id='registration-document' )
         #
         p = document.paragraph(Class='inline-display', id='registration-doc-description')
         p.text = [

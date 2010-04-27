@@ -96,10 +96,12 @@ class Actor(base):
             'technology',
             #'personnel',
             ]
-        for idoc in initialviewdocuments:
+        for i, idoc in enumerate(initialviewdocuments):
             doc = director.redirect(
                 actor='frontpage', routine='createDocument', name=idoc,
                 include_credential=False)
+            doc.Class += ' alternating-bg'
+            if not i%2: doc.Class += ' even'
             ctrldisplay.add(doc)
 
         form = director.retrieveVisual('login-form')

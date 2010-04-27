@@ -3,7 +3,7 @@
 personnel
 =========
 
-DANSE Principle Investigaters
+DANSE Principal Investigaters
 -----------------------------
 
 * `Brent Fultz <http://www.its.caltech.edu/~matsci/btf/Fultz1.html>`_
@@ -27,9 +27,14 @@ VNF Developers
 * Xiaoli Tang
 
 
-VNF Contributers
+VNF Contributors
 ----------------
 
 * Olivier Delaire
 * Max Kresch
 * Chen Li
+
+
+Graphical Designer
+------------------
+* `Santiago Lombeyda <http://www.cacr.caltech.edu/~slombey>`_
