@@ -16,6 +16,8 @@ from vnfb.qeutils.qeconst import CONVTYPE, CONVTYPELIST
 from vnfb.qeutils.qegrid import QEGrid
 
 import luban.content as lc
+from luban.content import load, select
+
 
 def visual(director, id):
     table       = QEGrid(lc.grid(Class="qe-tasks-table"))
@@ -38,23 +40,36 @@ def visual(director, id):
         return stamp2date(conv.timecreated)
 
     def convType(conv):
-        if conv.type in CONVTYPELIST
+        if conv.type in CONVTYPELIST:
             return CONVTYPE[conv.type]
 
         return conv.type
 
     def convDescription(conv):
-        return "convDescription"
+        return conv.description
 
     def convProgress(conv):
-        return "convProgress"
+        return conv.progress
 
     def check(conv):
-        return "check"
+        actor   = ""
+        return lc.link(label  = "Check",
+                       id     = "qe-check-results",
+                       onclick=load(actor       = actor,
+                                    routine     = "",
+                                    id          = id,
+                                    convid     = conv.id)
+                    )
 
     def delete(conv):
-        return "delete"
-
+        actor   = "material_simulations/espresso-convergence/test-delete"
+        return lc.link( label   = "Delete",
+                        Class   = "qe-action-delete",
+                        onclick = load(actor        = actor,
+                                         id         = id,
+                                         convid     = conv.id)
+                       )
+                       
     for c in convs:
         #params  = director.clerk.getQEConvParams(where="convergenceid='%s'" % c.id)
         table.addRow((convId(c), convTime(c), convType(c), convDescription(c),
