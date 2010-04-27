@@ -10,7 +10,7 @@ font-size:1.7em;
 
 #login-body-left {
     vertical-align: top;
-    padding: 2em 1em 1em 0;
+    padding: 2em 4em 1em 0;
 }
 
 #login-body-right {
@@ -21,10 +21,13 @@ font-size:1.7em;
     text-align: right;
     font-size: 0.8em;
     min-width: 30em;
+    background-color: #ccffcc;
+    margin-bottom: 0;
+    padding-top: 1em;
 }
 #login-form fieldset {
-padding:1em 0 0em 1em;
-background-color: lightYellow;
+padding: 0 1em;
+background-color: transparent;
 }
 
 #login-form legend {
@@ -74,11 +77,12 @@ background-color: lightYellow;
 }
 #login-form input[type=submit] {
     height: 2.5em;
-    width: 8em;
+    width: 7em;
     border-style: outset;
     border-width: 1px;
     background-color: lightGray;
-    font-size: 1.1em;
+    font-size: 1.2em;
+    font-weight: bold;
     margin-right: 1em;
     text-align: center;
 }
@@ -91,6 +95,13 @@ color:gray;
     color: transparent;
 }
 
+#frontpage-document > div.luban-document-body {
+    margin-left:4em;
+}
+
+#frontpage-portlet  {
+    padding:0;
+}
 #frontpage-portlet .luban-portlet-body {
     border:medium none;
     font-size:0.8em;
@@ -116,7 +127,20 @@ color:gray;
     line-height:1.6em;
 }
 
+/*#front-page-central-display > div.luban-document-body > div.alternating-bg:nth-child(odd) { */
+#front-page-central-display > div.luban-document-body > div.alternating-bg.even{
+    background-color:e0eeff;
+    padding:0 1em 1em;
+}
+#front-page-central-display > div.luban-document-body > div {
+    background-color:white;
+    padding:0 1em 1em;
+}
+
 /* registration */
+#registration-document{
+    margin-left: 1em;
+}
 #registration-form {
     margin-top: 1em;
 }
@@ -144,13 +168,19 @@ color:gray;
     font-size:0.85em;
 }
 .frontpage-document > h1 {
-    font-size:1.2em;
-    color:#00aa00;
-    text-transform:uppercase;
+    font-size:0.9em;
+    text-transform:lowercase;
+    font-weight:bold;
+}
+.frontpage-document > ul {
+    padding-left:5em;
 }
 .frontpage-document > div > h1{
     font-size:1.2em;
     font-style:italic;
+}
+.frontpage-document > div {
+    margin-left:4em;
 }
 .luban-document.section > h1{
     font-size:1.2em;
