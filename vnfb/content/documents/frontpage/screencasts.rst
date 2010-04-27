@@ -16,5 +16,5 @@ screencasts
   Use Quantum Espresso (QE) to calculate electronic structure and phonon properties
   of a material including density of states and dispersion within the Density
   Functional Theory (DFT) approach. The results can be used to get I(Q,E) through
-  VNF virtual experiment. Use the package also to perform Convergence tests and
+  VNF virtual experiment. Use the package also to perform convergence tests and
   Car-Parrinello molecular dynamics calculations.
