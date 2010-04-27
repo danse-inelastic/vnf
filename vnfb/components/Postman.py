@@ -22,12 +22,24 @@ class Postman(Component):
 
         host = pyre.inventory.str(name="host", default="localhost")
         host.meta['tip'] = "the smtp relay hostname"
+        port = pyre.inventory.int(name="port", default=0)
+
+        username = pyre.inventory.str(name="username")
+        password = pyre.inventory.str(name="password")
 
 
     def send(self, sender, recipient, msg):
 
         import smtplib
-        server = smtplib.SMTP(self.host)
+        port = self.port
+        if port:
+            server = smtplib.SMTP(self.host, port=port)
+        else: 
+            server = smtplib.SMTP(self.host)
+        username = self.username
+        password = self.password
+        if username and password: server.login(username, password)
+        
         # server.set_debuglevel(9)
         server.sendmail(sender, recipient, msg.as_string())
         server.quit()
@@ -48,6 +60,9 @@ class Postman(Component):
     def _configure(self):
         super(Postman, self)._configure()
         self.host = self.inventory.host
+        self.port = self.inventory.port
+        self.username = self.inventory.username
+        self.password = self.inventory.password
         return
 
 
