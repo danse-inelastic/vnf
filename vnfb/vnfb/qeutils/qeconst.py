@@ -26,7 +26,9 @@ TYPE        = {"PW":        "pw.x",
                "Q2R":       "q2r.x",
                "MATDYN":    "matdyn.x",
                "DYNMAT":    "dynmat.x",
-               "D3":        "d3.x"
+               "D3":        "d3.x",
+               "CP":        "cp.x",
+               "CPPP":      "cppp.x"
                }
                # Other types: "CPPP", "INITIAL_STATE", "GIPAW", "D1", "MATDYN", "PROJWFC", "PWCOND"
 
@@ -43,6 +45,8 @@ INPUT["q2r"]    = "q2r"     + INPUT_EXT
 INPUT["matdyn"] = "matdyn"  + INPUT_EXT
 INPUT["dynmat"] = "dynmat"  + INPUT_EXT
 INPUT["d3"]     = "d3"      + INPUT_EXT
+INPUT["cp"]     = "cp"      + INPUT_EXT
+INPUT["cppp"]   = "cppp"    + INPUT_EXT
 INPUT["plotband"]   = "plotband"    + INPUT_EXT
 
 NOPARALLEL  = ("DOS", "MATDYN", "DYNMAT", "Q2R", "PLOTBAND") # "PP"? # "PLOTBAND"?
@@ -56,6 +60,8 @@ NOPARALSIM  = ("single-phonon",)    # List of simulation types each of the tasks
 # List of possible orders
 LINKORDER               = OrderedDict()
 LINKORDER["PW"]         = None  # No definitive order (can be 0 or 1)
+LINKORDER["CP"]         = 0
+LINKORDER["CPPP"]       = 1
 LINKORDER["PH"]         = 1
 LINKORDER["DYNMAT"]     = 2
 LINKORDER["Q2R"]        = 2
@@ -88,7 +94,7 @@ SIMCHAINS[SIMTYPE["electron-dispersion"]]   = ("PW", "PW", "BANDS", "PLOTBAND")
 SIMCHAINS[SIMTYPE["geometry"]]              = ("PW",)
 SIMCHAINS[SIMTYPE["single-phonon"]]         = ("PW", "PH", "DYNMAT")
 SIMCHAINS[SIMTYPE["multiple-phonon"]]       = ("PW", "PH", "Q2R", "MATDYN") # DOS and Dispersion, See: example06
-SIMCHAINS[SIMTYPE["molecular-dynamics"]]    = ("CP", "PP")  # ?
+SIMCHAINS[SIMTYPE["molecular-dynamics"]]    = ("CP", "CPPP")  # ?
 
 
 SIMLIST     = SIMTYPE.values()
@@ -101,6 +107,7 @@ ANALYSIS[SIMLIST[2]]    = "electron-dispersion"
 ANALYSIS[SIMLIST[3]]    = "geometry"
 ANALYSIS[SIMLIST[4]]    = "phonon-single"
 ANALYSIS[SIMLIST[5]]    = "phonon-multiple"
+ANALYSIS[SIMLIST[6]]    = "molecular-dynamics"
 
 # Available servers
 SERVERS     = ("foxtrot.danse.us",)
@@ -146,7 +153,7 @@ JOB_STATE["suspend"]            = "suspend"
 # Misc
 JOB_STATE["none"]               = "None"
 
-PARSERS = ("qeinput",)
+PARSERS   = ("qeinput",)
 
 # Settings specific for QE and foxtrot
 SETTINGS  = {
@@ -154,7 +161,7 @@ SETTINGS  = {
                 "numnodes":     1,
                 "npool":        900,
                 "executable":   "mpirun",
-                "params":       "",         # Set already on the foxtrot: "--mca btl openib,sm,self"
+                "params":       "",    
                 "modules":      "openmpi acml/4.3.0_gfortran64_int32 espresso"    # Specific for foxtrot
               }
 
