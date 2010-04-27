@@ -5,7 +5,7 @@ PACKAGE = config
 #--------------------------------------------------------------------------
 #
 
-all: export-data-files
+all: export-data-files init-data-files
 	BLD_ACTION="all" $(MM) recurse
 
 tidy::
@@ -36,19 +36,21 @@ EXPORT_DATAFILES = \
 	initdb.pml \
 	ipa.pml \
 	itask-manager.odb \
-	journal.pml \
 	librarian.pml \
 	main.pml \
-	postman.pml \
 	retrieveresults.pml \
 	updatejobstatus.pml \
 	usersFromDB.odb \
 	web-weaver-library.pml \
 
-#	widget.lib
-#	web-weaver.pml \
-# 	clerk.pml \
-# 	ssher.pml \
+
+INIT_DATAFILES = \
+	clerk.pml \
+	journal.pml \
+	postman.pml \
+	ssher.pml \
+	web-weaver.pml \
+
 
 #CP_F = rsync -r --copy-unsafe-links
 
@@ -61,3 +63,12 @@ export-data-files::
 	  $(CP_F) $$x $(EXPORT_DATA_PATH)/ ; \
 	} done
 
+
+# copy the data files over only if they do not exist
+init-data-files:
+	mkdir -p $(EXPORT_DATA_PATH); \
+	for x in $(INIT_DATAFILES); do { \
+            if [ -e $$x -a ! -e $(EXPORT_DATA_PATH)/$$x ]; then { \
+	        $(CP_F) $$x $(EXPORT_DATA_PATH)/ ; \
+            } fi; \
+        } done
