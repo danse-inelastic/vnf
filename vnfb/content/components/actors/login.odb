@@ -70,10 +70,10 @@ class Actor(base):
         bodydoc.add(splitter)
 
         left = splitter.section(id='login-body-left')
-        formcontainer = left.document(id='login-form-container')
         portletcontainer = left.document(id='front-page-portlet-container')
         portlet = director.retrieveVisual('frontpage-portlet')
         portletcontainer.add(portlet)
+        formcontainer = left.document(id='login-form-container')
 
         right = splitter.section(id='login-body-right')
         introcontainer = right.document(
@@ -100,6 +100,7 @@ class Actor(base):
             doc = director.redirect(
                 actor='frontpage', routine='createDocument', name=idoc,
                 include_credential=False)
+            doc.Class += ' alternating-bg'
             ctrldisplay.add(doc)
 
         form = director.retrieveVisual('login-form')
