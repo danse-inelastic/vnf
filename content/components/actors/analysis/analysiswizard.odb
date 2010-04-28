@@ -20,8 +20,8 @@ from luban.components.Actor import Actor as base
 
 import journal
 
-analysisPaths = {'mddoscalc':'vsat.trajectory.MdDosCalc',
-                   'csfcalc':'vsat.trajectory.CsfCalc'}
+#analysisPaths = {'mddoscalc':'vsat.trajectory.MdDosCalc',
+#                   'csfcalc':'vsat.trajectory.CsfCalc'}
 
 class Actor(base):
 
