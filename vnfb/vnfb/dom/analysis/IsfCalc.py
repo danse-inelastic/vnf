@@ -15,12 +15,12 @@ from _ import o2t
 
 # still import from vnf-alpha dom. need to change
 from vnfb.dom.Computation import Computation
-from vsat.trajectory.CsfCalc import CsfCalc as CsfCalcBase
+from vsat.trajectory.IsfCalc import IsfCalc as IsfCalcBase
 
-CsfCalc = o2t(CsfCalcBase, {'subclassFrom': Computation, 'dbtablename':'csfcalc'})
-CsfCalc.job_builder = 'analysis/csfcalc'
-CsfCalc.actor = 'analysis/csfcalc'
-CsfCalc.result_retriever = 'analysis/csfcalc'
+IsfCalc = o2t(IsfCalcBase, {'subclassFrom': Computation})
+IsfCalc.job_builder = 'analysis/isfcalc'
+IsfCalc.actor = 'analysis/isfcalc'
+IsfCalc.result_retriever = 'analysis/isfcalc'
 
 
 # version
