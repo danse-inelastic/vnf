@@ -30,7 +30,7 @@ TYPE        = {"PW":        "pw.x",
                "CP":        "cp.x",
                "CPPP":      "cppp.x"
                }
-               # Other types: "CPPP", "INITIAL_STATE", "GIPAW", "D1", "MATDYN", "PROJWFC", "PWCOND"
+               # Other types: "INITIAL_STATE", "GIPAW", "D1", "MATDYN", "PROJWFC", "PWCOND"
 
 INPUT_EXT   = ".in"
 OUTPUT_EXT  = ".out"

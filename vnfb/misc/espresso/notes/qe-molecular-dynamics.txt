@@ -1,3 +1,11 @@
 
 Molecular dynamics calculations
 ===============================
+
+- Phonon DOS
+- S(Q,E)        # After DANSE meeting
+
+Chain:
+cp.x    -> cppp.x
+
+
