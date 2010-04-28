@@ -142,6 +142,13 @@ class Actor(base):
         return director.retrieveDOMAccessor('experiment')
     
 
+    def _defaults(self):
+        super(Actor, self)._defaults()
+        self.inventory.order_by = 'date'
+        self.inventory.reverse_order = True
+        return
+
+
     def __init__(self, name='experiment'):
         super(Actor, self).__init__(name)
         return
