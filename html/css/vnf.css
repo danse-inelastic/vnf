@@ -277,7 +277,7 @@ border-color:#88B0BC;
 .dockable.panel.luban-document > .luban-document-body  {
     border:none;
     max-height:92%;
-    overflow:scroll;
+    /*overflow:scroll;*/
 }
 
 /* dock */
@@ -309,12 +309,23 @@ opacity:0.5;
 
 /* help */
 #help{
-    width: 1000;
+    width: 990px;
     z-index: 200;
+    background-color: lightYellow;
 }
 #help-container{
-    width: 1000;
-    height: 510;
+    border-bottom:1px solid lightGrey;
+    border-top:1px solid lightGrey;
+    margin:0 0 8px;
+}
+#help.dockable.panel.luban-document > .luban-document-body {
+    padding: 0px;
+}
+#help .luban-button-container  {
+text-align:center;
+}
+#help .luban-button-container a {
+border:2px solid #99bb99;
 }
 
 /* dialog */
