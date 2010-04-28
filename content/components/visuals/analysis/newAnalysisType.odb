@@ -55,49 +55,49 @@ def createScatteringAnalysis():
     routines.append(
                     (lc.link(label="Coherent trajectory S(Q,E)", onclick=select(id='main-display-area'
                     ).replaceContent(load(actor='analysis/analysiswizard', routine='selectDynamics',
-                    analysisType='csfcalc'))),
+                    analysisType='CsfCalc'))),
                     "Generate coherent inelastic scattering from an md trajectory")
                     )
     routines.append(
                     (lc.link(label="Incoherent trajectory S(Q,E)", onclick=select(id='main-display-area'
                     ).replaceContent(load(actor='analysis/analysiswizard', routine='selectDynamics',
-                    analysisType='isfcalc'))),
+                    analysisType='IsfCalc'))),
                     "Generate incoherent inelastic scattering from an md trajectory")
                     )
     routines.append(
                     (lc.link(label="Coherent phonon S(Q,E)", onclick=select(id='main-display-area'
                     ).replaceContent(load(actor='analysis/analysiswizard', routine='selectDynamics',
-                    analysisType='csfcalcPhonon'))),
+                    analysisType='CsfCalcPhonon'))),
                     "Generate coherent inelastic scattering from phonons")
                     )
     routines.append(
                     (lc.link(label="Incoherent phonon S(Q,E)", onclick=select(id='main-display-area'
                     ).replaceContent(load(actor='analysis/analysiswizard', routine='selectDynamics',
-                    analysisType='isfcalc'))),
+                    analysisType='IsfCalcPhonon'))),
                     "Generate incoherent inelastic scattering from phonons")
                     )
     routines.append(
                     (lc.link(label="EISF", onclick=select(id='main-display-area'
                     ).replaceContent(load(actor='analysis/analysiswizard', routine='selectDynamics',
-                    analysisType='eisfcalc'))),
+                    analysisType='EisfCalc'))),
                     "Elastic Incoherent Structure Factor from an md trajectory")
                     )
     routines.append(
                     (lc.link(label="F_k", onclick=select(id='main-display-area'
                     ).replaceContent(load(actor='analysis/analysiswizard', routine='selectDynamics',
-                    analysisType='staticsqcalc'))),
+                    analysisType='SqCalc'))),
                     "Structure Factor from an md trajectory")
                     )
     routines.append(
                     (lc.link(label="S(Q,E)", onclick=select(id='main-display-area'
                     ).replaceContent(load(actor='analysis/analysiswizard', routine='selectDynamics',
-                    analysisType='sqecalc'))),              
+                    analysisType='SqeCalc'))),              
                     "Dynamic Structure Factor from an md trajectory.  This is the sum of coherent and incoherent S(Q,E) parts.")
                     )
     routines.append(
                     (lc.link(label="Multiphonon Scattering", onclick=select(id='main-display-area'
                     ).replaceContent(load(actor='analysis/analysiswizard', routine='selectDynamics',
-                    analysisType='multiscatcalc'))),                                                                               
+                    analysisType='MultiScatCalc'))),                                                                               
                     "Add multiphonon scattering to an S(Q,E)")
                     )
     

@@ -104,9 +104,10 @@ class Actor(base):
         doc.add(container)
         actorName = 'orm/'+self.inventory.analysisType
         #import the correct analysis
-        className = analysisPaths[self.inventory.analysisType].split('.')[-1]
-        exec('from '+analysisPaths[self.inventory.analysisType]+' import '+
-             className)
+        className = self.inventory.analysisType
+        exec('from vnfb.dom.analysis.'+className+' import '+className)
+#        exec('from '+analysisPaths[self.inventory.analysisType]+' import '+
+#             className)
         analysisClass = eval(className)
         analysisObj = analysisClass()
         #load trajectory
@@ -157,11 +158,9 @@ class Actor(base):
         datadir = director.dds.abspath(orm(analysisObj))
         if not os.path.exists(datadir): 
             os.makedirs(datadir)
-
         inputFilePath = director.dds.abspath(orm(analysisObj), 
                         filename = self.inventory.analysisType+'.inp')
         open(inputFilePath, 'w').write(analysisInputFileContents)
-        
         #fullClassPath = analysisPaths[self.inventory.analysisType]+'.'+className
         domPath = 'analysis.'+className+'.'+className
         return director.redirect(actor = 'job', routine = 'create', 
