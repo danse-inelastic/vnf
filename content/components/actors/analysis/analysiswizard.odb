@@ -150,15 +150,23 @@ class Actor(base):
 #        exec('from '+analysisPaths[self.inventory.analysisType]+' import '+
 #             className)
         className = self.inventory.analysisType
-        exec('from vnfb.dom.analysis.'+className+' import '+className)
-        analysisTable = eval(className)
-        analysisObj = orm.load(analysisTable, id = self.inventory.analysisId)
+#        exec('from vsat.trajectory.'+className+' import '+className)
+#        analysisTable = eval(className)
+#        analysisObj = orm.load(analysisTable, id = self.inventory.analysisId)
+#        exec('from vnfb.dom.analysis.'+className+' import '+className)
+#        analysisTable = eval(className)
+#        analysisObj = orm.load(analysisTable, id = self.inventory.analysisId)
+        analysisRecord = director.clerk._getEntry(className, id = self.inventory.analysisId,
+                                                  maindom = 'vnfb.dom.analysis')
+        #note the code below makes a slightly different object than the vsat one..
+        #..it has Computation as superclass
+        analysisObj = orm.record2object(analysisRecord)
         analysisInputFileContents = analysisObj.getInputFile()
         #write the input file
-        datadir = director.dds.abspath(orm(analysisObj))
+        datadir = director.dds.abspath(analysisRecord)
         if not os.path.exists(datadir): 
             os.makedirs(datadir)
-        inputFilePath = director.dds.abspath(orm(analysisObj), 
+        inputFilePath = director.dds.abspath(analysisRecord, 
                         filename = self.inventory.analysisType+'.inp')
         open(inputFilePath, 'w').write(analysisInputFileContents)
         #fullClassPath = analysisPaths[self.inventory.analysisType]+'.'+className

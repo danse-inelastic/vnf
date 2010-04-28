@@ -283,16 +283,15 @@ class DOMAccessor( base ):
     
     """Auxiliary classes"""
     
-    def _getClass(self, classname):
+    def _getClass(self, classname, maindom = "vnfb.dom"):
         """Get class from classname"""
-        maindom = "vnfb.dom"
         module  = _import("%s.%s" % (maindom, classname))
         return getattr(module, classname)
 
 
-    def _getEntry(self, classname, id=None, where=None):
+    def _getEntry(self, classname, id=None, where=None, maindom="vnfb.dom"):
         """Get entry specified by id or where clause"""
-        table = self._getClass(classname)
+        table = self._getClass(classname, maindom)
         if id is not None:
             return self._getRecordByID( table, id )
 
