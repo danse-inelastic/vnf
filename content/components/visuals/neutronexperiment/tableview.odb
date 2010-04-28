@@ -62,6 +62,7 @@ def visual(
         sorting_options = [
             ('id', 'ID'),
             ('short_description', 'Description'),
+            ('date', 'Date created'),
         ],
         polymorphic = False, dbtablename='neutronexperiments'
         )
@@ -114,9 +115,10 @@ def createExperimentTable(
     return thetable
 
 
-columns = ['selected', 'id', 'description']
+columns = ['selected', 'id', 'description', 'created']
 measure2dbcol = {
     'description': 'short_description',
+    'created': 'date',
     }
 filtercols = columns[1:]
 

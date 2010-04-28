@@ -19,6 +19,7 @@ class model(Model):
     selected = Model.descriptors.bool(name='selected')
     id = Model.descriptors.link(name='id')
     description = Model.descriptors.str(name='description')
+    created = Model.descriptors.date(name='created')
 
     row_identifiers = ['id']
 
@@ -27,6 +28,7 @@ columns = [
     View.Column(label='', measure='selected'),
     View.Column(label='ID', measure='id'),
     View.Column(label='Description', measure='description', editable=True),
+    View.Column(label='Date created', measure='created'),
     ]
 
 def view(cols, editable=True):
@@ -48,6 +50,9 @@ def getId(experiment):
     return link
 def getDescription(experiment):
     return experiment.short_description
+def getCreated(record):
+    date = record.date
+    return str(date)
 
 
 
