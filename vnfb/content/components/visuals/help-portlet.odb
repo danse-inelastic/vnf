@@ -38,6 +38,11 @@ def visual(director=None, context=None):
                     page = 'http://danse.us')
     portlet.item(label='about danse', onclick=aboutdanse)
 
+    # server load
+    serverload = select(id='').append(load(actor='server/load', routine='createDialog'))
+    portlet.item(label='server load', tip='show the load of computing servers',
+                 onclick = serverload)
+    
     return portlet
 
     

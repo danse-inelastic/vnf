@@ -328,14 +328,25 @@ text-align:center;
 border:2px solid #99bb99;
 }
 
-/* server-load */
-#server-load-dialog{
-    width: 1005px;
+/* server load */
+#server-load-window{
+    width: 990px;
+    z-index: 200;
+    background-color: lightYellow;
 }
 #ganglia-page-container{
     border-bottom:1px solid lightGrey;
     border-top:1px solid lightGrey;
     margin:0 0 8px;
+}
+#server-load-window > .luban-document-body {
+    padding: 0px;
+}
+#server-load-window .luban-button-container  {
+text-align:center;
+}
+#server-load-window .luban-button-container a {
+border:2px solid #99bb99;
 }
 
 /* dialog */
