@@ -115,25 +115,25 @@ def createDynamicsAnalysis():
     routines.append(
                     (lc.link(label="DoPS", onclick=select(id='main-display-area'
                 ).replaceContent(load(actor='analysis/analysiswizard', routine='selectDynamics',
-                analysisType='mddoscalc'))),
+                analysisType='MdDosCalc'))),
                     "Density of Phonon States from an md trajectory")
                     )
     routines.append(
                     (lc.link(label="VACF", onclick=select(id='main-display-area'
                 ).replaceContent(load(actor='analysis/analysiswizard', routine='selectDynamics',
-                analysisType='vacfcalc'))),
+                analysisType='VacfCalc'))),
                     "Velocity Autocorrelation Function from an md trajectory")
                     )
     routines.append(
                     (lc.link(label="MSD", onclick=select(id='main-display-area'
                 ).replaceContent(load(actor='analysis/analysiswizard', routine='selectDynamics',
-                analysisType='msdcalc'))),
+                analysisType='MsdCalc'))),
                     "Mean Squared Displacement from an md trajectory")
                     )
     routines.append(
                     (lc.link(label="Diffusion", onclick=select(id='main-display-area'
                 ).replaceContent(load(actor='analysis/analysiswizard', routine='selectDynamics',
-                analysisType='diffusioncalc'))),
+                analysisType='DiffusionCalc'))),
                     "Generate a diffusion coefficient from an md trajectory")
                     )
     
@@ -153,7 +153,7 @@ def createStructureAnalysis():
     routines.append(
                     (lc.link(label="RDF", onclick=select(id='main-display-area'
                     ).replaceContent(load(actor='analysis/analysiswizard', routine='selectDynamics',
-                    analysisType='rdfcalc'))),   
+                    analysisType='RdfCalc'))),   
                     "Radial Distribution Function from an md trajectory")
                     )
     
