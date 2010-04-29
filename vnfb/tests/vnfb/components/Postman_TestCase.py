@@ -18,13 +18,13 @@ class TestCase(unittest.TestCase):
     def test1(self):
         from vnfb.components.Postman import Postman
         postman = Postman()
-        postman.host = 'localhost'
-        postman.port = '50587'
-        postman.username = 'linjiao'
-        postman.password = 'qiu10-19shi'
+        postman.host = 'smtp-server.cco.caltech.edu'
+        postman.port = ''
+        postman.username = ''
+        postman.password = ''
         class Msg:
             def as_string(self): return 'test'
-        postman.send('linjiao@caltech.edu', 'linjiao@caltech.edu', Msg())
+        postman.send('linjiao@caltech.edu', 'testvnf.vnf@gmail.com', Msg())
         return
 
     

@@ -24,8 +24,9 @@ class TestCase(unittest.TestCase):
                     ('E', arange(-50,50, 1.), 'meV')],
             fromfunction = lambda q,e: q**2+e**2,
             )
-        from histogram.plotter import defaultPlotter
-        defaultPlotter.plot(sqe)
+        if interactive:
+            from histogram.plotter import defaultPlotter
+            defaultPlotter.plot(sqe)
         return
         
     
@@ -38,13 +39,16 @@ class TestCase(unittest.TestCase):
                     ('E', arange(-50,50, 1.), 'meV')],
             )
         sqe.I[:] = 1
-        from histogram.plotter import defaultPlotter
-        defaultPlotter.plot(sqe)
+        if interactive:
+            from histogram.plotter import defaultPlotter
+            defaultPlotter.plot(sqe)
         return
         
     
-
+interactive = False
 def main():
+    global interactive
+    interactive = True
     unittest.main()
     return
 
