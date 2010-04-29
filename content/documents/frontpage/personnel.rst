@@ -35,6 +35,6 @@ VNF Contributors
 * Chen Li
 
 
-Graphical Designer
-------------------
+Graphic/interaction/usability consultant
+----------------------------------------
 * `Santiago Lombeyda <http://www.cacr.caltech.edu/~slombey>`_
