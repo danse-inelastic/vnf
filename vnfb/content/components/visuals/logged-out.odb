@@ -1,0 +1,33 @@
+# -*- Python -*-
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                 Jiao Lin
+#                      California Institute of Technology
+#                      (C) 2006-2010  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+import luban.content as lc
+from luban.content import select, load, alert
+
+
+def visual(director):
+    doc = lc.document(id='logged-out', title='Logged out')
+    doc.paragraph(text='You are now logged out of the VNF')
+
+    b = lc.button(id='log-back-in', label='log back in'); doc.add(b)
+    show_login_page = load(actor='login', routine='recreate')
+    b.onclick = show_login_page
+    
+    return doc
+
+    
+# version
+__id__ = "$Id$"
+
+# End of file 
