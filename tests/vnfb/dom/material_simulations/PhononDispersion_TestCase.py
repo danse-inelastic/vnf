@@ -45,16 +45,17 @@ class TestCase(unittest.TestCase):
 
     def test2(self):
         disp = self.disp
-        x,y = disp.getDispersionsCurve((0,0,0), (0,0,3.08), branch=0, npoints=20)
-        import pylab
-        pylab.plot(x,y)
-        pylab.show()
+        x,y = disp.getDispersionCurve((0,0,0), (0,0,3.08), branch=0, npoints=20)
+        if interactive:
+            import pylab
+            pylab.plot(x,y)
+            pylab.show()
         return
 
     
     def test3(self):
         disp = self.disp
-        x,ys = disp.getDispersionsPlot(
+        x,ys = disp.getDispersionPlot(
             [ (0,0,0),
               (0,0,1.54),
               (0,1.54,1.54),
@@ -68,16 +69,19 @@ class TestCase(unittest.TestCase):
 ##              (1.54, 2.31, 0.77),
 ##              ],
              branches=range(3), npointspersegment=31)
-        import pylab
-        for y in ys:
-            pylab.plot(x,y)
-        pylab.show()
-        raw_input('press ENTER to continue')
+        if interactive:
+            import pylab
+            for y in ys:
+                pylab.plot(x,y)
+            pylab.show()
+            raw_input('press ENTER to continue')
         return
 
     
-
+interactive = False
 def main():
+    global interactive
+    interactive = True
     unittest.main()
     return
 
