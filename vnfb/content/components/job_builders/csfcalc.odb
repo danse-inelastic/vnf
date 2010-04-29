@@ -12,8 +12,8 @@
 #
 
 
-import journal
-debug = journal.debug('atomsim')
+import journal, os
+debug = journal.debug('analysis')
 
 from vnfb.components.JobBuilder import JobBuilder as base
 
@@ -23,78 +23,44 @@ class Builder(base):
         base.__init__(self, name, path)
 
     def render(self, computation, db=None, dds=None):
-        # find out the file name of the gulp library file
-        potential = computation.potential.dereference(db)
-        #libptr = dds.abspath(computation, filename=Computation.LIBPOINTER_FILE)
-        #libname = open(libptr).read().strip()
-
-        # two files need to be copied to job directory
-        # 1. gulp.gin
-        # 2. the library file
-        files = [computation.inputFile, potential.filename]
-
+        # one file needs to be copied to job directory
+        # 1. csf.inp
+        files = [computation.inputFileName]
         # copy files to job directory
         job = computation.getJob(self.db)
         for f in files:
             dds.copy(computation, f, job, f)
-            
-        # if the job outputs in DL_POLY format (necessary for trajectory analysis), mandate
-        # conversion of the trajectory to netcdf format
-        # 1. open the input file
-        inputFilePath = dds.abspath(job, filename=computation.inputFile)
-        inputFileContents = open(inputFilePath).read()
 
         # 3. add run.sh
-        files.append( self._make_script1(computation) )
         files.append( self._make_script(computation) )
-        return files
-#        self._files = []
-#
-#        # make system
-#        self.domaccess = domaccess = self.director.retrieveDOMAccessor(
-#            'material_simulations/phonon_calculators/bvk')
-#        
-#        model = domaccess.getModel(computation.model.id)
-#        system = self._render_system(model)
-#        
-#        # make script
-#        self._make_script(computation)
-#
-#        #
-#        return self._files
-    
+        return files    
     
     def _make_script(self, computation):
         job = computation.getJob(self.db)
         np = job.numprocessors()
-        cmds = [
-            '#!/usr/bin/env sh',
-            '. ~/.gulp-env',
-            'chmod +x %s' % self.shscript1name,
-            'mpirun -np %d ./%s' % (np, self.shscript1name),
-            '',
-            ]
+        #octopod
+        if job.server.id=='server000':
+            cmds = [
+                '#!/usr/bin/env bash',
+                '. ~/.analysis-env',
+                'mpirun -np %d parnasis --%s --inp %s' % (np, computation.abbrev, computation.inputFileName),
+                '',
+                ]
+        #foxtrot
+        elif job.server.id=='server002':
+            cmds = [
+                '#!/bin/sh',
+                '. ~/.vnf',
+                '. ~/.analysis-env',
+                #"export procs=`wc -l $PBS_NODEFILE | perl -ane 'print $F[0] . \"\n\"'`",
+                'mpirun --mca btl openib,sm,self --machinefile /home/jbrkeith/machinefile '+\
+                '-np %d parnasis --%s --inp %s' % (np, computation.abbrev, computation.inputFileName),
+                '',
+                ]
         script = self.shscriptname
         path = self._path(script)
         open(path, 'w').write('\n'.join(cmds))
-        return script
-    
-    
-    shscript1name = 'run1.sh'
-    def _make_script1(self, computation):     
-        cmds = [
-            '#!/usr/bin/env sh',
-            '. ~/.gulp-env',
-            'gulp < %s > %s' % (computation.inputFile, computation.output_filename),
-            '',
-            ]
-        script = self.shscript1name
-        path = self._path(script)
-        open(path, 'w').write('\n'.join(cmds))
-        return script
-    
-
-import os
+        return script 
 
 
 def job_builder(name, path):

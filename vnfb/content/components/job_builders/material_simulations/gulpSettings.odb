@@ -81,17 +81,8 @@ class Builder(base):
                 'mpirun -np %d gulp < %s > %s' % (np, computation.inputFile, computation.output_filename),
                 '',
                 ]
-        #octopod
-#        if job.server=='server000':
-#            cmds = [
-#                '#!/usr/bin/env bash',
-#                '. ~/.gulp-env',
-#                'chmod +x %s' % self.shscript1name,
-#                'mpirun -np %d ./%s' % (np, self.shscript1name),
-#                '',
-#                ]
         #foxtrot
-        if job.server.id=='server002':
+        elif job.server.id=='server002':
             cmds = [
                 '#!/bin/sh',
                 '. ~/.vnf',

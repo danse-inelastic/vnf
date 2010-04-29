@@ -168,29 +168,27 @@ class Actor(base):
                 computation_type = domPath, 
                 computation_id = self.inventory.analysisId)
         
-    def runDirectly(self, director):
-        orm = director.clerk.orm
-        className = analysisPaths[self.inventory.analysisType].split('.')[-1]
-        exec('from '+analysisPaths[self.inventory.analysisType]+' import '+
-             className)
-        analysisClass = eval(className)
-        analysisObj = orm.load(analysisClass, id=self.inventory.analysisId)
-        analysisResult = analysisObj.compute()
-        x, y = analysisResult.getXY()
-        # plot
-        doc = lc.document(title='analysis %s' % self.inventory.analysisId)
-        p = lc.plot2d()
-        p.curve(x=list(x), y=list(y))
-        return select(id = 'main-display-area').replaceContent(doc)
+#    def runDirectly(self, director):
+#        orm = director.clerk.orm
+#        className = analysisPaths[self.inventory.analysisType].split('.')[-1]
+#        exec('from '+analysisPaths[self.inventory.analysisType]+' import '+
+#             className)
+#        analysisClass = eval(className)
+#        analysisObj = orm.load(analysisClass, id=self.inventory.analysisId)
+#        analysisResult = analysisObj.compute()
+#        x, y = analysisResult.getXY()
+#        # plot
+#        doc = lc.document(title='analysis %s' % self.inventory.analysisId)
+#        p = lc.plot2d()
+#        p.curve(x=list(x), y=list(y))
+#        return select(id = 'main-display-area').replaceContent(doc)
 #        for i,y in enumerate(ys):
 #            p.curve(x=list(x), y=list(y), label=str(i))
 
     def startFormShowError(self, director, errors=None):
         from luban.content import select
-        return [
-            select(id='%s-input' % name).showError(text)
-            for name, text in errors.iteritems()
-            ]
+        return [select(id='%s-input' % name).showError(text)
+            for name, text in errors.iteritems()]
     
     def __init__(self, name='analysis/analysiswizard'):
         super(Actor, self).__init__(name)
