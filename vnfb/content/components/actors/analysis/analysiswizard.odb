@@ -102,24 +102,24 @@ class Actor(base):
         self.inventory.dynamicsId = dynamicsId
         container = lc.document(id='analysis-settings-container')
         doc.add(container)
-        actorName = 'orm/'+self.inventory.analysisType
+        #actorName = 'orm/'+self.inventory.analysisType
         #import the correct analysis
-        className = self.inventory.analysisType
+        className = self.inventory.analysisType        
         exec('from vnfb.dom.analysis.'+className+' import '+className)
 #        exec('from '+analysisPaths[self.inventory.analysisType]+' import '+
 #             className)
-        analysisClass = eval(className)
-        analysisObj = analysisClass()
-        #load trajectory
-        from vsat.Trajectory import Trajectory
-        trajectory = orm.load(Trajectory, id = self.inventory.dynamicsId)
-        analysisObj.trajectory = trajectory #HACK!!! replace motion with 'dynamics'
-        #mdc = MdDosCalc()
-        analysisRecord = orm(analysisObj)
-        self.inventory.analysisId = analysisRecord.id
-        orm.save(analysisObj, save_not_owned_referred_object=False)
-        #director.clerk.db.updateRecord(analysisRecord)
-        drawer = director.painter.paintObj.drawers.getDrawer(analysisClass)
+        analysisDbClass = eval(className)
+        analysisDbObj = director.clerk.insertNewRecordWithID(analysisDbClass)
+        
+        #load trajectory      
+        trajectoryDbObj = director.clerk._getEntry('Trajectory', 
+            id = self.inventory.dynamicsId, maindom = 'vnfb.dom.material_simulations')
+        analysisDbObj.trajectory = trajectoryDbObj
+        self.inventory.analysisId = analysisDbObj.id
+        #orm.save(analysisObj, save_not_owned_referred_object=False)
+        director.clerk.db.updateRecord(analysisDbObj)
+        analysisObj = orm.record2object(analysisDbObj)
+        drawer = director.painter.paintObj.drawers.getDrawer(analysisObj.__class__)
         editview = drawer(analysisObj)
         container.add(editview)
         #container.oncreate = [
@@ -133,22 +133,15 @@ class Actor(base):
 #        docSub      = lc.document(title = "")
         b = lc.button(label='select'); doc.add(b)
         b.onclick = load(
-                #actor='atomicstructure',
-                #actor=self.name, routine='runDirectly', 
-                analysisId = self.inventory.analysisId,
-                analysisType = self.inventory.analysisType,
-                actor=self.name, routine='configureSubmissionQueue'
-                )
+            #actor='atomicstructure',
+            #actor=self.name, routine='runDirectly', 
+            analysisId = self.inventory.analysisId,
+            analysisType = self.inventory.analysisType,
+            actor=self.name, routine='configureSubmissionQueue')
         return select(id='main-display-area').replaceContent(doc)
-    
-#    def type2Class(self,type):
-#        type[-]
     
     def configureSubmissionQueue(self, director):
         orm = director.clerk.orm
-#        className = analysisPaths[self.inventory.analysisType].split('.')[-1]
-#        exec('from '+analysisPaths[self.inventory.analysisType]+' import '+
-#             className)
         className = self.inventory.analysisType
 #        exec('from vsat.trajectory.'+className+' import '+className)
 #        analysisTable = eval(className)
@@ -156,8 +149,8 @@ class Actor(base):
 #        exec('from vnfb.dom.analysis.'+className+' import '+className)
 #        analysisTable = eval(className)
 #        analysisObj = orm.load(analysisTable, id = self.inventory.analysisId)
-        analysisRecord = director.clerk._getEntry(className, id = self.inventory.analysisId,
-                                                  maindom = 'vnfb.dom.analysis')
+        analysisRecord = director.clerk._getEntry(className, 
+                id = self.inventory.analysisId, maindom = 'vnfb.dom.analysis')
         #note the code below makes a slightly different object than the vsat one..
         #..it has Computation as superclass
         analysisObj = orm.record2object(analysisRecord)
