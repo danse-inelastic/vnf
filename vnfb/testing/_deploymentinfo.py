@@ -15,7 +15,9 @@
 dbname = 'postgres:///vnfbeta'
 
 import os
-exportroot = os.environ['EXPORT_ROOT']
+exportroot = os.environ.get('EXPORT_ROOT') or os.environ.get('PYRE_DIR')
+if not exportroot:
+    raise RuntimeError, "cannot figure out export root directory"
 
 
 vnfbexportroot = os.path.join(exportroot, 'vnfb')
