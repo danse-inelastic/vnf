@@ -25,6 +25,8 @@ EXPORT_SYMLINKS = \
 	cgi-bin \
 	tmp \
 
+INIT_DATAFILES = \
+	index.html
 
 OTHERS = \
 
@@ -49,7 +51,7 @@ RSYNC_A = rsync -a --copy-unsafe-links
 EXPORT_DATA_PATH = $(EXPORT_ROOT)/$(PROJECT)/$(PACKAGE)
 
 
-export-package-data: export-package-data-dirs export-package-symlinks
+export-package-data: export-package-data-dirs export-package-symlinks init-data-files
 
 export-package-data-dirs:: $(EXPORT_DATADIRS) 
 	mkdir -p $(EXPORT_DATA_PATH); \
@@ -64,6 +66,16 @@ export-package-symlinks:: $(EXPORT_SYMLINKS)
 	mkdir -p $(EXPORT_DATA_PATH); \
 	for x in $(EXPORT_SYMLINKS); do { \
 	        $(CP_SYMLINK) $$x $(EXPORT_DATA_PATH)/ ; \
+        } done
+
+
+# copy the data files over only if they do not exist
+init-data-files:: $(INIT_DATAFILES)
+	mkdir -p $(EXPORT_DATA_PATH); \
+	for x in $(INIT_DATAFILES); do { \
+            if [ -e $$x -a ! -e $(EXPORT_DATA_PATH)/$$x ]; then { \
+	        $(CP_F) $$x $(EXPORT_DATA_PATH)/ ; \
+            } fi; \
         } done
 
 
