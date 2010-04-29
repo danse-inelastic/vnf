@@ -34,6 +34,11 @@ class Actor(base):
             nextpagetoshow = 'UserGuide-atomicstructures',
             include_credential=False)
         addhelpwindow = select(id='').append(helpwindow)
+        #
+        serverloadwindow = director.redirect(
+            actor='server/load', routine='createWindow',
+            include_credential=False)
+        addserverloadwindow = select(id='').append(serverloadwindow)
 
         #
         newsticker = director.redirect(
@@ -44,6 +49,7 @@ class Actor(base):
         #
         actions = [showdock] + showmainview + \
                   [addhelpwindow,
+                   addserverloadwindow,
                    addnewsticker]
         
         return actions
