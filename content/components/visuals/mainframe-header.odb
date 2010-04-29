@@ -22,10 +22,12 @@ def visual(director):
     
     logo = lc.image(path='vnf-logo.png')
     logo_container.add(logo)
-    
-    # title_container = horizontal.section(id='header-title-container')
-    userinfo_container = horizontal.section(id='header-userinfo-container')
 
+    # title_container = horizontal.section(id='header-title-container')
+
+    newsticker_container = horizontal.section(id='header-news-container')
+    
+    userinfo_container = horizontal.section(id='header-userinfo-container')
     #
     # logo_container.document(id='header-logo')
     # link = lc.link(label='home', onclick=load(actor='vnf'))
@@ -37,9 +39,9 @@ def visual(director):
 
     #
     userinfo_doc = userinfo_container.document(id='header-userinfo')
-    logoff = load(actor='logoff')
-    link = lc.link(label='logoff', onclick=logoff)
-    userinfo_doc.add(link)
+    #logoff = load(actor='logoff')
+    #link = lc.link(label='logoff', onclick=logoff)
+    #userinfo_doc.add(link)
 
     return horizontal
 

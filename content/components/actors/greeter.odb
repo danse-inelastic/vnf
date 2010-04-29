@@ -12,6 +12,9 @@
 #
 
 from luban.content import load, select
+import luban.content as lc
+
+
 from luban.components.AuthorizedActor import AuthorizedActor as base
 
 class Actor(base):
@@ -42,12 +45,19 @@ class Actor(base):
         addnewsticker = select(id='header-news-container').append(newsticker)
 
         #
-        actions = [showdock] + showmainview + \
-                  [addhelpwindow,
-                   addnewsticker]
+        logoff = load(actor='logoff')
+        link = lc.link(label='logoff', onclick=logoff)
+        addlogoff = select(id='header-userinfo').append(link)
+
+        #
+        actions = [showdock] \
+                  + showmainview \
+                  +[addhelpwindow,
+                    addnewsticker,
+                    addlogoff,
+                   ]
         
         return actions
-        return director.redirect(actor='matter', routine='replaceBodyFrameWithMatterList')
 
 
     def __init__(self, name='greeter'):

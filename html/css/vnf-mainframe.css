@@ -47,9 +47,24 @@ body {
     color: #d0d0d0;
 }
 
+/* news */
+#header-news-container {
+    vertical-align: middle;
+    width: 21em;
+}
+#vnfnews {
+    margin-left:auto;
+    margin-right:0;
+    width:20em;
+    background: transparent;
+    border: none;
+    border-right: 1px solid;
+}
+
 /* user info, logoff */
 #header-userinfo-container {
-    vertical-align: bottom;
+    vertical-align: middle;
+    width: 2.5em;
 }
 #header-userinfo-container a{
     font-size: 0.8em;

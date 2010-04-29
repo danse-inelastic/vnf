@@ -48,9 +48,9 @@ class Actor(base):
         skeleton = director.retrieveVisual('skeleton')
 
         # hide userinfo
-        header = skeleton.find(id='mainframe-header')
-        userinfo = header.find(id='header-userinfo')
-        userinfo.hidden = True
+##         header = skeleton.find(id='mainframe-header')
+##         userinfo = header.find(id='header-userinfo')
+##         userinfo.hidden = True
 
         # the content
         body_frame = skeleton.find(id='body-frame')
