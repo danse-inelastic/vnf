@@ -45,16 +45,16 @@ class Actor(base):
         addnewsticker = select(id='header-news-container').append(newsticker)
 
         #
-        logoff = load(actor='logoff')
-        link = lc.link(label='logoff', onclick=logoff)
-        addlogoff = select(id='header-userinfo').append(link)
+        logout = load(actor='logout')
+        link = lc.link(label='logout', onclick=logout)
+        addlogout = select(id='header-userinfo').append(link)
 
         #
         actions = [showdock] \
                   + showmainview \
                   +[addhelpwindow,
                     addnewsticker,
-                    addlogoff,
+                    addlogout,
                    ]
         
         return actions

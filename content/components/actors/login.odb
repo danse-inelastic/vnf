@@ -41,6 +41,11 @@ class Actor(base):
         return frame
 
 
+    def recreate(self, director):
+        newframe = self.default(director)
+        return select(id='').replaceBy(newframe)
+
+
     def createFrontPageContent(self, director):
         '''create the content of the front page (frame)
         add it to a frame then we have the login frame
