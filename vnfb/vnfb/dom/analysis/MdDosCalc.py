@@ -18,7 +18,7 @@ from vnfb.dom.Computation import Computation
 from vsat.trajectory.MdDosCalc import MdDosCalc as MdDosCalcBase
 
 MdDosCalc = o2t(MdDosCalcBase, {'subclassFrom': Computation})
-MdDosCalc.job_builder = 'analysis/mddoscalc'
+MdDosCalc.job_builder = 'analysiscalc'
 MdDosCalc.actor = 'analysis/mddoscalc'
 MdDosCalc.result_retriever = 'analysis/mddoscalc'
 

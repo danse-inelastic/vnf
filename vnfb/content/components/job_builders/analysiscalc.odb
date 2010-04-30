@@ -23,9 +23,12 @@ class Builder(base):
         base.__init__(self, name, path)
 
     def render(self, computation, db=None, dds=None):
-        # one file needs to be copied to job directory
-        # 1. csf.inp
-        files = [computation.inputFileName]
+        # one file needs to be copied to job directory   
+        orm = self.director.clerk.orm  
+        analysisObj = orm.record2object(computation)   
+#        basename = str(computation.__class__.__name__)
+#        files = [+'.inp']
+        files = [analysisObj.inputFileName]
         # copy files to job directory
         job = computation.getJob(self.db)
         for f in files:
@@ -37,13 +40,15 @@ class Builder(base):
     
     def _make_script(self, computation):
         job = computation.getJob(self.db)
+        orm = self.director.clerk.orm  
+        analysisObj = orm.record2object(computation)
         np = job.numprocessors()
         #octopod
         if job.server.id=='server000':
             cmds = [
                 '#!/usr/bin/env bash',
                 '. ~/.analysis-env',
-                'mpirun -np %d parnasis --%s --inp %s' % (np, computation.abbrev, computation.inputFileName),
+                'mpirun -np %d parnasis --%s --inp %s' % (np, analysisObj.abbrev, analysisObj.inputFileName),
                 '',
                 ]
         #foxtrot
@@ -54,7 +59,7 @@ class Builder(base):
                 '. ~/.analysis-env',
                 #"export procs=`wc -l $PBS_NODEFILE | perl -ane 'print $F[0] . \"\n\"'`",
                 'mpirun --mca btl openib,sm,self --machinefile /home/jbrkeith/machinefile '+\
-                '-np %d parnasis --%s --inp %s' % (np, computation.abbrev, computation.inputFileName),
+                '-np %d parnasis --%s --inp %s' % (np, analysisObj.abbrev, analysisObj.inputFileName),
                 '',
                 ]
         script = self.shscriptname
