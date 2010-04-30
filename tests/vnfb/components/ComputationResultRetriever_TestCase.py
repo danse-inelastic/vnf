@@ -27,6 +27,9 @@ to local data directory
 '''
 
 
+skip = True # temporarily let auto testing to skip over this test.
+
+
 #
 from vnfb.testing import getDeploymentInfo
 deploymentinfo = getDeploymentInfo()
