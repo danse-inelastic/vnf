@@ -12,6 +12,8 @@
 #
 
 
+standalone = True
+
 from vnfb.dom.User import User
 from vnfb.dom.Role import Role
 from vnfb.dom.Privilege import Privilege
