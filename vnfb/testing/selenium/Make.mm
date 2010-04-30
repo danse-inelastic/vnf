@@ -11,13 +11,13 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 PROJECT = vnfb
-PACKAGE = testing
+PACKAGE = testing/selenium
 
 
 # directory structure
 
 BUILD_DIRS = \
-	selenium \
+	fixtures \
 
 OTHER_DIRS = \
 
@@ -37,8 +37,6 @@ all: export
 
 EXPORT_PYTHON_MODULES = \
 	__init__.py \
-	_deploymentinfo.py \
-	job_builder.py \
 
 
 #include doxygen/default.def
