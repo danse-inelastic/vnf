@@ -16,9 +16,7 @@ from pyre.components.Component import Component as base
 class Worker(base):
 
     class Inventory(base.Inventory):
-
         pass # end of Inventory
-    
 
     def run(self, task):
 
@@ -61,13 +59,10 @@ class Worker(base):
             errmsg = '%s: %s' % (e.__class__.__name__, e)
             job.error = errmsg
             domaccess.updateRecordWithID(job)
-
             import traceback
             self._debug.log('submission of Job %s failed. %s' % (
                 id, traceback.format_exc()) )
-
             raise
-            
         return
 
 
@@ -102,9 +97,7 @@ class Worker(base):
         dds = director.dds
         domaccess = self.domaccess
         db = domaccess.db
-        
         if dds.is_available(dep): dds.remember(dep)
-        
         server = db.dereference(job.server)
         director.declareProgress(0.65, 'Preparing: setting up dependency %s###%s ...' % (dep.__class__.__name__, dep.id) )
         dds.make_available(dep, server=server, ignore_nonexisting_files=True)
