@@ -47,18 +47,21 @@ class Builder(base):
         if job.server.id=='server000':
             cmds = [
                 '#!/usr/bin/env bash',
-                '. ~/.analysis-env',
+                '. /home/linjiao/.analysis-env',
                 'mpirun -np %d parnasis --%s --inp %s' % (np, analysisObj.abbrev, analysisObj.inputFileName),
                 '',
                 ]
         #foxtrot
         elif job.server.id=='server002':
             cmds = [
-                '#!/bin/sh',
-                '. ~/.vnf',
-                '. ~/.analysis-env',
+                '#!/usr/bin/env bash',
+                'python -V',
+                'source /home/jbrkeith/.bash_profile',
+                #'python=python2.6'
+                'echo $PYTHONPATH',
+                'python -V',
                 #"export procs=`wc -l $PBS_NODEFILE | perl -ane 'print $F[0] . \"\n\"'`",
-                'mpirun -np %d parnasis --%s --inp %s' % (np, analysisObj.abbrev, analysisObj.inputFileName),
+                'mpirun -np %d python parnasis --%s --inp %s' % (np, analysisObj.abbrev, analysisObj.inputFileName),
                 '',
                 ]
         script = self.shscriptname
