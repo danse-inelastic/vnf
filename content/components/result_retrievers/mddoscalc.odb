@@ -18,27 +18,27 @@ class Retriever(base):
     def _retrieveResultsFor(self, computation):
         director = self.director
         db = director.clerk.db
+        orm = director.clerk.orm
 
         # must have a job
         self.declareProgress(0.1, 'look up job')
         job = computation.getJob(db)
 
-        # check result is available
-        self.declareProgress(0.2, 'check if results exist')
-        self._check_results_sanity(expected_results=['dos'], job=job)
+#        # check result is available
+#        self.declareProgress(0.2, 'check if results exist')
+#        self._check_results_sanity(expected_results=['dos'], job=job)
 
         # create a phonon dos record to save dos
-        self.declareProgress(0.4, 'create an AtomSim simulation to store the result')
+        self.declareProgress(0.4, 'create a DOS data object to store the result')
         from vnfb.dom.material_simulations.PhononDOS import PhononDOSTable
         dos = self._make_result_holder(computation, PhononDOSTable)
-        dos.matter = computation.matter
+        #dos.matter = computation.matter
         db.updateRecord(dos)
 
         # save the result from job to dos
+        analysisObj = orm.record2object(computation)
         self.declareProgress(0.5, 'get result from server')
-        self._save_result(computation, job, 'dos', dos, 'data.idf')
-        return
-
+        self._save_result(computation, job, analysisObj.inputFileName, dos, analysisObj.dosFile)
 
 def retriever():
     return Retriever('mddoscalc')

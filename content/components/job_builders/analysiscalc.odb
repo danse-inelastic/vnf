@@ -58,8 +58,7 @@ class Builder(base):
                 '. ~/.vnf',
                 '. ~/.analysis-env',
                 #"export procs=`wc -l $PBS_NODEFILE | perl -ane 'print $F[0] . \"\n\"'`",
-                'mpirun --mca btl openib,sm,self --machinefile /home/jbrkeith/machinefile '+\
-                '-np %d parnasis --%s --inp %s' % (np, analysisObj.abbrev, analysisObj.inputFileName),
+                'mpirun -np %d parnasis --%s --inp %s' % (np, analysisObj.abbrev, analysisObj.inputFileName),
                 '',
                 ]
         script = self.shscriptname
