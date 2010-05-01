@@ -11,7 +11,7 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
-from vnfb.qeutils.qeutils import stamp2date, latestParam, ifelse
+from vnfb.qeutils.qeutils import stamp2date, latestParam, ifelse, key2val
 from vnfb.qeutils.qeconst import CONVTYPE, CONVTYPELIST
 from vnfb.qeutils.qegrid import QEGrid
 
@@ -40,10 +40,8 @@ def visual(director, id):
         return stamp2date(conv.timecreated)
 
     def convType(conv):
-        if conv.type in CONVTYPELIST:
-            return CONVTYPE[conv.type]
+        return key2val(conv.type, CONVTYPE, conv.type)
 
-        return conv.type
 
     def parameter(param):
         if not param:

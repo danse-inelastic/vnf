@@ -30,6 +30,7 @@ class Actor(base):
                                         id = self.id))
 
 
+    # TEMP
     def runTest(self, director):
         from vnfb.qeutils.qecalcutils.converger import Converger
         configString    = """

@@ -208,6 +208,15 @@ def key2str(key):
     return " ".join(key.split("-")).capitalize()
 
 
+def key2val(key, dict, default=""):
+    "Returns value specified by key, or default - otherwise"
+    if key in dict.keys():
+        return dict[key]
+
+    return default
+
+
+
 def latestRecord(records, timefield):
     """Retruns latest record based on timefield column
         timefield   - string
@@ -352,6 +361,9 @@ def analyseActor(simtype):
         name    = ANALYSIS[simtype]
 
     return 'material_simulations/espresso-analysis/%s' % name
+
+
+    
 
 
 # Subtype is relevant for matdyn mostly. So I don't care about other types
