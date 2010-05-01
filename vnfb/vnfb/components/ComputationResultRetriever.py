@@ -128,7 +128,7 @@ class ComputationResultRetriever(Component):
         return record
         
 
-    def _save_result(self, computation, job, filenameinjobdir, result_holder, newfilename, name=None):
+    def _save_result(self, computation, job, filenameinjobdir, result_holder, newfilename=None, name=None):
         '''save a computation result data file as a data file for a db record.
 
         computation, job: the computation and the job db records
@@ -140,10 +140,14 @@ class ComputationResultRetriever(Component):
         name: name of this result in the result set (optional)
         '''
         # copy result file from job to the result holder
+        if newfilename:
+            resultFileName = newfilename
+        else:
+            resultFileName = filenameinjobdir
         server = self.db.dereference(job.server)
-        self.dds.copy(job,filenameinjobdir, result_holder, newfilename, server)
+        self.dds.copy(job, filenameinjobdir, result_holder, resultFileName, server)
         # make copy of result holder in the master node
-        self.dds.make_available(result_holder, [newfilename])
+        self.dds.make_available(result_holder, [resultFileName])
 
         # add the result to the result list
         if not name:
