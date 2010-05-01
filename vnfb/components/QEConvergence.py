@@ -102,7 +102,7 @@ class QEConvergence(base):
     def _newTestAction(self, section):
         section.add(lc.link(label="Create New Test",
                             Class="qe-action-new",
-                            onclick = load(actor      = 'material_simulations/espresso-convergence/test-create',
+                            onclick = load(actor      = 'material_simulations/espresso-convergence/conv-create',
                                              id         = self.id))
                     )
 
