@@ -12,7 +12,7 @@
 #
 
 from vnfb.qeutils.qegrid import QEGrid
-from vnfb.qeutils.qeutils import qetask, stamp2date, ifelse
+from vnfb.qeutils.qeutils import qetask, stamp2date, ifelse, latestInput, qedialog
 from vnfb.qeutils.qeconst import CONVTYPE
 
 import luban.content as lc
@@ -92,7 +92,7 @@ class Actor(base):
             return
 
         self._showTaskTitle(splitter)
-        self._taskTable(splitter, task)
+        self._taskTable(director, splitter, task)
 
 
     def _showTaskTitle(self, splitter):
@@ -103,12 +103,15 @@ class Actor(base):
 
     # XXX: Borrowed from qetasks.py and taskcell.py. Refactor?
     # XXX: Hardcoded to PW simulation
-    def _taskTable(self, splitter, task):
+    def _taskTable(self, director, splitter, task):
+        inputs  = director.clerk.getQEConfigurations(where="taskid='%s'" % task.id)
+        input   = latestInput(inputs)
+
         sT          = splitter.section()
         table       = QEGrid(lc.grid(Class="qe-tasks-table"))
         table.addColumn((self._taskHeader(task),
-                         self._taskInfo(task),
-                         self._taskAction(task)))
+                         self._taskInfo(task, input),
+                         self._taskAction(task, input)))
         sT.add(table.grid())
 
         table.setCellStyle(2, 0, "qe-action-task")
@@ -121,28 +124,39 @@ class Actor(base):
 
 
     def _taskHeader(self, task):
-        return lc.paragraph(text="Step 1: %s" % task.id, Class="text-bold")
+        return lc.paragraph(text="Step 1: %s" % task.type, Class="text-bold")
 
 
-    def _taskInfo(self, task):
+    def _taskInfo(self, task, input):
         table   = QEGrid(lc.grid(Class="qe-tasks-info"))
-        table.addRow(("Input:", self._inputLink(task)))
+        table.addRow(("Input:", self._inputLink(task, input)))
 
         return table.grid()
 
 
-    def _inputLink(self, task):
-        actor   = "material_simulations/espresso-convergence/input-create"
-        link    = lc.link(label     = "Add",
-                          onclick   = load(actor    = actor,
-                                           id       = self.id,
-                                           convid   = self.convid,
-                                           paramid  = self.paramid,
-                                           paramname = self._param.pname,
-                                           taskid   = task.id))
-        return link
+    def _inputLink(self, task, input):
+        if not input:
+            actor   = "material_simulations/espresso-convergence/input-create"
+            return    lc.link(label     = "Add",
+                              onclick   = load(actor    = actor,
+                                               id       = self.id,
+                                               convid   = self.convid,
+                                               paramid  = self.paramid,
+                                               paramname    = self._param.pname,
+                                               taskid   = task.id))
 
-    def _taskAction(self, task):
+#        title   = 'Output for %s task. %s bytes' % (os.path.getsize(filename), self._task.id)
+#        text    = lc.htmldocument(text="<pre>%s<pre>" % open(filename).read())
+
+        content = lc.document()
+        dialog  = qedialog("Hello", "world!") # dialog to pop up
+        content.add(lc.link(label     = 'Output',
+                       onclick   = select(element=content).append(dialog)) )
+
+        return content
+
+
+    def _taskAction(self, task, input):
         "Displays simulation task action button: 'Run Task', 'Cancel'"
         doc     = lc.document()   # Example: run-task-BFDFX56
 
