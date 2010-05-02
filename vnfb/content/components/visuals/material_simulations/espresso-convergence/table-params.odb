@@ -18,9 +18,8 @@ from vnfb.qeutils.qegrid import QEGrid
 import luban.content as lc
 from luban.content import load, select
 
-def visual(director, convid, id):
+def visual(director, id, convid):
     table       = QEGrid(lc.grid(Class="qe-tasks-table"))
-
     params       = director.clerk.getQEConvParams(where="convergenceid='%s'" % convid)
     if not params:           # No convergence tests found
         return table.grid()
