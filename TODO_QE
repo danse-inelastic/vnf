@@ -27,7 +27,7 @@ NOW
 
 CRITICAL FIXES
 ==============
-- Sanityze input file for qe simulations from Windows carriage return ('\15\32')
+- !!! Sanityze input file for qe simulations from Windows carriage return ('\15\32')
 See:
     http://kb.iu.edu/data/data/acux.html
     Command: awk '{ sub("\r$", ""); print }' winfile.txt > unixfile.txt
