@@ -5,7 +5,7 @@
 
 VNF: Virtual Neutron Facility
 ===============================
-Virtual Neutron Facility provides users easy, integrated access
+Virtual Neutron Facility provides users with easy, integrated access
 to computing tools for end-to-end simulation of neutron experiments.
 
 
