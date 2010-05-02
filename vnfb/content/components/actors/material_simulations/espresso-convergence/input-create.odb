@@ -80,8 +80,15 @@ class Actor(base):
         content.add(director.retrieveVisual(visual,
                                             director,
                                             self.inventory,
-                                            self._inputText(director, self._input)))
+                                            self._revisedInput(director)))
         
+
+    def _revisedInput(self, director):
+        "Changes varying parameter in the input file"
+
+        # Change input
+        return self._inputText(director, self._input)
+
 
     def _paramLink(self):
         s   = "Parameter"

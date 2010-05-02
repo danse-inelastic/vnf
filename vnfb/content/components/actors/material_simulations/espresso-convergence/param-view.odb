@@ -13,6 +13,7 @@
 
 from vnfb.qeutils.qegrid import QEGrid
 from vnfb.qeutils.qeutils import qetask, stamp2date, ifelse, latestInput, qedialog
+from vnfb.qeutils.qeutils import defaultInputName, readRecordFile
 from vnfb.qeutils.qeconst import CONVTYPE
 
 import luban.content as lc

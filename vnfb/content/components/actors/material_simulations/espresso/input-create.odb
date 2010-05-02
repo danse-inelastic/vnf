@@ -26,12 +26,15 @@ from vnfb.qeutils.qeutils import writeRecordFile, defaultInputName, subtypeMatdy
 from luban.content import load
 from vnfb.components.QEGenerator import QEGenerator as base
 
-# Requires simulation id,
 class Actor(base):
 
     class Inventory(base.Inventory):
         import pyre.inventory
         subtype     = pyre.inventory.str('subtype', default='')
+
+        # Specific for convergence tests
+        convid      = pyre.inventory.str('convid', default='')
+        paramid     = pyre.inventory.str('paramid', default='')
 
 
     def content(self, director):
@@ -56,8 +59,13 @@ class Actor(base):
         self._updateTaskRecord(director)    # For matdyn mostly
         self._createFile(director)
 
-        return load(actor = 'material_simulations/espresso/sim-view', id = self.id)
+        if self.paramid != "":  # Specific for convergence tests
+            return load( actor    = 'material_simulations/espresso-convergence/param-view',
+                         id       = self.id,
+                         convid   = self.convid,
+                         paramid  = self.paramid)
 
+        return load(actor = 'material_simulations/espresso/sim-view', id = self.id)
 
     def _createDBRecord(self, director):
         # 'text' field is not stored
@@ -110,6 +118,9 @@ class Actor(base):
     def _configure(self):
         super(Actor, self)._configure()
         self.subtype        = self.inventory.subtype
+
+        self.convid         = self.inventory.convid
+        self.paramid        = self.inventory.paramid
 
 
     def _init(self):
