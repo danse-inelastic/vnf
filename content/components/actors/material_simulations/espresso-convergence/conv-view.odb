@@ -72,8 +72,8 @@ class Actor(base):
         visual      = 'material_simulations/espresso-convergence/table-params'
         sT.add(director.retrieveVisual( visual,
                                         director,
-                                        convid  = self.convid,
-                                        id      = self.id))
+                                        id      = self.id,
+                                        convid  = self.convid))
 
 
     def _configure(self):

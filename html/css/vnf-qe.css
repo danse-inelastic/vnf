@@ -365,6 +365,22 @@ tr td .qe-table-delete {
     width: 50px;
 }
 
+tr td .qe-table-task-type {
+    width: 70px;
+}
+
+tr td .qe-table-job-status {
+    width: 400px;
+}
+
+
+tr td .qe-table-tar {
+    width: 100px;
+}
+
+tr td .qe-table-param {
+    width: 100px;
+}
 
 /*
 .qe-text-area {

@@ -71,11 +71,12 @@ class Actor(base):
 
     def _showJobTable(self, director, splitter):
         sT          = splitter.section()
-#        visual      = 'material_simulations/espresso-convergence/table-jobs'
-#        sT.add(director.retrieveVisual( visual,
-#                                        director,
-#                                        convid  = self.convid,
-#                                        id      = self.id))
+        visual      = 'material_simulations/espresso-convergence/table-jobs'
+        sT.add(director.retrieveVisual( visual,
+                                        director,
+                                        id      = self.id,
+                                        convid  = self.convid,
+                                        paramid = self.paramid))
 
     def _optimal(self):
         return ifelse(self._param.optimal, self._param.optimal, "None")

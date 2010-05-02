@@ -86,14 +86,14 @@ class QEConvergence(base):
 
 
     def _backAction(self, section):
-        section.add(lc.link(label="Back",
+        section.add(lc.link(label="Simulation",
                             Class="qe-action-back",
                             onclick = load(actor      = 'material_simulations/espresso/sim-view',
                                              id         = self.id))
                     )
 
     def _refreshAction(self, section):
-        section.add(lc.link(label="Refresh",
+        section.add(lc.link(label="Convergence",
                             Class="qe-action-back",
                             onclick = load(actor      = 'material_simulations/espresso-convergence/view',
                                              id       = self.id))

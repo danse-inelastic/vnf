@@ -11,6 +11,27 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
+from vnfb.qeutils.qegrid import QEGrid
+import luban.content as lc
+
+def visual(director, id, convid, paramid):
+    table       = QEGrid(lc.grid(Class="qe-tasks-table"))
+#    jobs       = director.clerk.getQEConvParams(where="convergenceid='%s'" % convid)
+#    if not params:           # No convergence tests found
+#        return table.grid()
+
+    table.addRow(("Job Id", "Task", "Status", "Result", "Optimal") )
+    table.addRow(("AAA", "PW", "[..........]", "ZZZZZ.tgz", "24") )
+
+    table.setColumnStyle(0, "qe-table-id")
+    table.setColumnStyle(1, "qe-table-task-type")
+    table.setColumnStyle(2, "qe-table-job-status")
+    table.setColumnStyle(3, "qe-table-tar")
+    table.setColumnStyle(4, "qe-table-param")
+    table.setRowStyle(0, "qe-table-header")
+
+    return table.grid()
+
 
 __date__ = "$May 1, 2010 9:42:20 PM$"
 
