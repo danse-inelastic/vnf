@@ -64,17 +64,17 @@ class Actor(base):
         splitter.section(id="input-error-area") # Area for errors?
 
         self._showParamInfo(splitter)
-        self._showTaskTitle(splitter)
         self._showTasks(splitter)
         self._showJobTable(director, splitter)
+        self._optimalTitle(director, splitter)
 
 
     def _showParamInfo(self, splitter):
         sC          = splitter.section()
         table       = QEGrid(lc.grid(Class = "qe-table"))
         sC.add(table.grid())
-        table.addRow(("Parameter Id: ",     self._param.id))
         table.addRow(("Parameter Name: ",   self._param.pname))
+        table.addRow(("Parameter Id: ",     self._param.id))
         table.addRow(("Start Value: ",      self._param.startvalue))
         table.addRow(("Current Value: ",    self._param.value))
         table.addRow(("Step: ",             self._param.step))
@@ -85,17 +85,76 @@ class Actor(base):
         table.setColumnStyle(0, "qe-cell-param")
 
 
+    def _showTasks(self, splitter):
+        self._showTaskTitle(splitter)
+        self._taskTable(splitter)
+
+
     def _showTaskTitle(self, splitter):
         sP          = splitter.section(id="qe-tasks-label")
         sP.add(Paragraph(text="Simulation Tasks", Class="qe-section-inline"))
         sP.add(lc.document(Class="clear-both"))
 
 
-    def _showTasks(self, splitter):
-        pass
+    # XXX: Borrowed from qetasks.py and taskcell.py. Refactor?
+    def _taskTable(self, splitter):
+        sT          = splitter.section()
+        table       = QEGrid(lc.grid(Class="qe-tasks-table"))
+        table.addColumn((self._taskHeader(), self._taskInfo(), self._taskAction()))
+        sT.add(table.grid())
+
+        table.setCellStyle(2, 0, "qe-action-task")
+
+
+    def _taskHeader(self):
+        return lc.paragraph(text="Step 1: PW", Class="text-bold")
+
+
+    def _taskInfo(self):
+        table   = QEGrid(lc.grid(Class="qe-tasks-info"))
+        link    = lc.link(label="Add")
+        table.addRow(("Input:", link))
+
+        return table.grid()
+
+
+    def _taskAction(self):
+        "Displays simulation task action button: 'Run Task', 'Cancel'"
+        doc     = lc.document()   # Example: run-task-BFDFX56
+
+#        if not self._task:
+#            return doc
+#
+#        doc.id = "%s-%s" % (TASK_ACTION, self._task.id)
+
+        doc.add(self._runLink())
+        return doc
+
+        
+    def _runLink(self):
+        "Returns 'Run Test' link"
+        # If not job created or is not running
+        link = lc.link(label    = "Run Test",
+                       Class    = "qe-run-task",
+                       onclick  = load(actor     ='jobs/submit',
+                                      routine   = 'submit'
+#                                      id        = self._simid,
+#                                      taskid    = self._task.id,
+#                                      subtype   = self._task.subtype
+                                      ))
+        return link
+
+
+
+    def _jobTitle(self, splitter):
+        sP          = splitter.section(id="qe-tasks-label")
+        sP.add(Paragraph(text="Convergence Jobs", Class="qe-section-inline"))
+        sP.add(lc.document(Class="clear-both"))
 
 
     def _showJobTable(self, director, splitter):
+        self._jobTitle(splitter)
+
         sT          = splitter.section()
         visual      = 'material_simulations/espresso-convergence/table-jobs'
         sT.add(director.retrieveVisual( visual,
@@ -103,6 +162,22 @@ class Actor(base):
                                         id      = self.id,
                                         convid  = self.convid,
                                         paramid = self.paramid))
+
+    # Fix load()
+    def _optimalTitle(self, director, splitter):
+        value       = "24"
+        sP          = splitter.section(id="qe-tasks-label")
+        sP.add(Paragraph(text="Optimal Value: %s" % value, Class="qe-section-inline"))
+
+        # Show refresh status button
+        sP.add(lc.link( label   ="Export to PW",
+                        id      = "action-refresh-status",
+                        onclick = load(actor   = 'material_simulations/espresso-convergence/param-create',
+                                        routine = "refreshStatus",
+                                        id      = self.id)
+                        ))
+        sP.add(lc.document(Class="clear-both"))
+
 
     def _optimal(self):
         return ifelse(self._param.optimal, self._param.optimal, "None")
