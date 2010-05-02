@@ -110,7 +110,7 @@ class Actor(base):
         sT          = splitter.section()
         table       = QEGrid(lc.grid(Class="qe-tasks-table"))
         table.addColumn((self._taskHeader(task),
-                         self._taskInfo(task, input),
+                         self._taskInfo(director, task, input),
                          self._taskAction(task, input)))
         sT.add(table.grid())
 
@@ -127,14 +127,14 @@ class Actor(base):
         return lc.paragraph(text="Step 1: %s" % task.type, Class="text-bold")
 
 
-    def _taskInfo(self, task, input):
+    def _taskInfo(self, director, task, input):
         table   = QEGrid(lc.grid(Class="qe-tasks-info"))
-        table.addRow(("Input:", self._inputLink(task, input)))
+        table.addRow(("Input:", self._inputLink(director, task, input)))
 
         return table.grid()
 
 
-    def _inputLink(self, task, input):
+    def _inputLink(self, director, task, input):
         if not input:
             actor   = "material_simulations/espresso-convergence/input-create"
             return    lc.link(label     = "Add",
@@ -145,12 +145,15 @@ class Actor(base):
                                                paramname    = self._param.pname,
                                                taskid   = task.id))
 
-#        title   = 'Output for %s task. %s bytes' % (os.path.getsize(filename), self._task.id)
-#        text    = lc.htmldocument(text="<pre>%s<pre>" % open(filename).read())
+        fname       = defaultInputName(input.type)
+        inputText   = readRecordFile(director.dds, input, fname)
+
+        title   = '%s Input' % task.type
+        text    = lc.htmldocument(text="<pre>%s<pre>" % inputText)
 
         content = lc.document()
-        dialog  = qedialog("Hello", "world!") # dialog to pop up
-        content.add(lc.link(label     = 'Output',
+        dialog  = qedialog(title, text) # dialog to pop up
+        content.add(lc.link(label     = 'pw.in',
                        onclick   = select(element=content).append(dialog)) )
 
         return content
