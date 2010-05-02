@@ -112,7 +112,12 @@ class Actor(base):
 
     def _taskInfo(self):
         table   = QEGrid(lc.grid(Class="qe-tasks-info"))
-        link    = lc.link(label="Add")
+        actor   = "material_simulations/espresso-convergence/input-create"
+        link    = lc.link(label     = "Add",
+                          onclick   = load(actor    = actor,
+                                           id       = self.id,
+                                           convid   = self.convid,
+                                           paramid  = self.paramid))
         table.addRow(("Input:", link))
 
         return table.grid()
