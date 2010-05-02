@@ -260,7 +260,7 @@ def latestParam(params):
 
 simTask = {
             "simulationid":     "getQESimulationTasks",
-            "convergenceid":    "getQEConvergenceTasks"
+            "convparamid":      "getQEConvParamTasks"
           }
 
 def qetask(director, simid, linkorder, subtype = None, refid = "simulationid"):

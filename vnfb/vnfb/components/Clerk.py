@@ -95,9 +95,9 @@ class Clerk(base, ClerkBase):
         '''retrieve convergence parameters specified by id'''
         return self._getEntry('QEConvParam', id=id, where=where)
 
-    def getQEConvergenceTasks(self, id=None, where=None):
+    def getQEConvParamTasks(self, id=None, where=None):
         '''retrieve convergence tasks specified by id'''
-        return self._getEntry('QEConvergenceTask', id=id, where=where)
+        return self._getEntry('QEConvParamTask', id=id, where=where)
 
 
 
