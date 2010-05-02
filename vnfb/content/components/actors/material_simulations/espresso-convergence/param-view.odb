@@ -14,7 +14,7 @@
 from vnfb.qeutils.qegrid import QEGrid
 from vnfb.qeutils.qeutils import qetask, stamp2date, ifelse, latestInput, qedialog
 from vnfb.qeutils.qeutils import defaultInputName, readRecordFile
-from vnfb.qeutils.qeconst import CONVTYPE
+from vnfb.qeutils.qeconst import CONVTYPE, ID_CONV_JOBS
 
 import luban.content as lc
 from luban.content import load, select
@@ -75,7 +75,7 @@ class Actor(base):
         table       = QEGrid(lc.grid(Class = "qe-table"))
         sC.add(table.grid())
         table.addRow(("Parameter Name: ",   self._param.pname))
-        #table.addRow(("Parameter Id: ",     self._param.id))
+        table.addRow(("Parameter Id: ",     self._param.id))
         table.addRow(("Start Value: ",      self._param.startvalue))
         table.addRow(("Current Value: ",    self._param.value))
         table.addRow(("Step: ",             self._param.step))
@@ -125,7 +125,6 @@ class Actor(base):
 
 
     def _taskHeader(self, task):
-
         return lc.paragraph(text="Step 1: %s" % task.type, Class="text-bold")
 
 
@@ -196,6 +195,7 @@ class Actor(base):
 
 
     def _showJobTable(self, director, splitter):
+        content     = lc.document(id = ID_CONV_JOBS)
         self._jobTitle(splitter)
 
         sT          = splitter.section()

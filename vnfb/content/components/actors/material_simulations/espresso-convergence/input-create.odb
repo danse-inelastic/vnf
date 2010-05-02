@@ -32,10 +32,6 @@ class Actor(base):
         description     = pyre.inventory.str('description', default='')
 
 
-    def createRecord(self, director):
-        print "Hello"
-
-
     # XXX: Extend "PW" to task type
     def _viewIndicator(self, director, section):
         path = []

@@ -171,6 +171,7 @@ RUNSCRIPT   = "run.sh"
 RESULTS_ID      = "results-link"
 ID_OUTPUT       = "qe-container-output"
 ID_STATUS       = "qe-container-status"
+ID_CONV_JOBS    = "qe-convergence-jobs"
 TASK_ACTION     = "task-action"
 
 # TODO: Move to parser/inputs
