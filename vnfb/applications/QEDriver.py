@@ -42,6 +42,8 @@ Important Note:
     - Both "<" and "-inp" work on foxtrot.danse.us
 """
 
+# XXX: Change name to JobDriver
+
 class QEDriver(base):
 
     class Inventory(base.Inventory):
