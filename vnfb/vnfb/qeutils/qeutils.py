@@ -19,6 +19,7 @@ import os.path
 import os
 from vnfb.qeutils.qeconst import INPUT, ANALYSIS, SUBTYPE_MATDYN
 from vnfb.qeutils.qescheduler import schedulerfactory
+from vnfb.qeutils.qeparser.qeinput import QEInput
 import luban.content as lc
 from luban.content import load, select
 
@@ -374,6 +375,15 @@ def qedialog(title, text, Class="qe-dialog-output"):
     dialog.add(okbutton)
     return dialog
     
+
+def setInputParam(text, param, value):
+    "Gets input string, sets param value and returns updated string"
+    # XXX: Parameters should be from "SYSTEM" namelist (extend for K-points)
+    input   = QEInput(config=text)
+    input.parse()
+    nl      = input.namelist("system")
+    nl.set(param, value)
+    return input.toString()
 
 
 # Subtype is relevant for matdyn mostly. So I don't care about other types
