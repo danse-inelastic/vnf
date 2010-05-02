@@ -37,13 +37,13 @@ class Actor(base):
 
         self._showConvInfo(splitter)
         self._showParamTitle(splitter)
-        self._showParamTable(splitter)
+        self._showParamTable(director, splitter)
 
 
     def _showConvInfo(self, splitter):
-        sT          = splitter.section()
+        sC          = splitter.section()
         table       = QEGrid(lc.grid(Class = "qe-table"))
-        sT.add(table.grid())
+        sC.add(table.grid())
         table.addRow(("Test Id: ",      self._conv.id))
         table.addRow(("Type: ",         key2val(self._conv.type, CONVTYPE, self._conv.type)))
         table.addRow(("Description: ",  self._conv.description))
@@ -54,21 +54,26 @@ class Actor(base):
 
 
     def _showParamTitle(self, splitter):
-        sC          = splitter.section(id="qe-tasks-label")
-        sC.add(Paragraph(text="Varying Parameters", Class="qe-section-inline"))
+        sP          = splitter.section(id="qe-tasks-label")
+        sP.add(Paragraph(text="Varying Parameters", Class="qe-section-inline"))
 
         # Show refresh status button
-        sC.add(lc.link( label   ="New Parameter",
+        sP.add(lc.link( label   ="New Parameter",
                         id      = "action-refresh-status",
                         onclick = load(actor   = 'material_simulations/espresso-convergence/param-create',
                                         routine = "refreshStatus",
                                         id      = self.id)
                         ))
-        sC.add(lc.document(Class="clear-both"))
+        sP.add(lc.document(Class="clear-both"))
 
 
-    def _showParamTable(self, splitter):
-        pass
+    def _showParamTable(self, director, splitter):
+        sT          = splitter.section()
+        visual      = 'material_simulations/espresso-convergence/table-params'
+        sT.add(director.retrieveVisual( visual,
+                                        director,
+                                        convid  = self.convid,
+                                        id      = self.id))
 
 
     def _configure(self):
