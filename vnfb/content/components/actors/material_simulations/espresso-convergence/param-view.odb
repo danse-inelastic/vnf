@@ -11,6 +11,84 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
+from vnfb.qeutils.qegrid import QEGrid
+from vnfb.qeutils.qeutils import stamp2date, ifelse
+from vnfb.qeutils.qeconst import CONVTYPE
+
+import luban.content as lc
+from luban.content import load, select
+from luban.content.Paragraph import Paragraph
+
+from vnfb.components.QEConvergence import QEConvergence as base
+
+class Actor(base):
+    class Inventory(base.Inventory):
+        import pyre.inventory
+        convid          = pyre.inventory.str('convid', default='')
+        paramid         = pyre.inventory.str('paramid', default='')
+
+
+    def _mainContent(self, director, splitter):
+        "Main content"
+        #self._conv    = director.clerk.getQEConvergences(id = self.convid) # ?
+        self._param     = director.clerk.getQEConvParams(id = self.paramid)
+        if not self._param:    # No parameter found
+            return
+
+        splitter.section(id="input-error-area") # Area for errors?
+
+        self._showParamInfo(splitter)
+        self._showTaskTitle(splitter)
+        self._showTasks(splitter)
+        self._showJobTable(director, splitter)
+
+
+    def _showParamInfo(self, splitter):
+        sC          = splitter.section()
+        table       = QEGrid(lc.grid(Class = "qe-table"))
+        sC.add(table.grid())
+        table.addRow(("Parameter Id: ",     self._param.id))
+        table.addRow(("Parameter Name: ",   self._param.pname))
+        table.addRow(("Start Value: ",      self._param.startvalue))
+        table.addRow(("Current Value: ",    self._param.value))
+        table.addRow(("Step: ",             self._param.step))
+        table.addRow(("Tolerance, %: ",     str(self._param.tolerance)))
+        table.addRow(("Max Steps: ",        str(self._param.maxsteps)))
+        table.addRow(("Optimal Value: ",    self._optimal()))
+        table.addRow(("Time Created: ",     stamp2date(self._param.timecreated) ))
+        table.setColumnStyle(0, "qe-cell-param")
+
+
+    def _showTaskTitle(self, splitter):
+        sP          = splitter.section(id="qe-tasks-label")
+        sP.add(Paragraph(text="Simulation Tasks", Class="qe-section-inline"))
+        sP.add(lc.document(Class="clear-both"))
+
+
+    def _showTasks(self, splitter):
+        pass
+
+
+    def _showJobTable(self, director, splitter):
+        sT          = splitter.section()
+#        visual      = 'material_simulations/espresso-convergence/table-jobs'
+#        sT.add(director.retrieveVisual( visual,
+#                                        director,
+#                                        convid  = self.convid,
+#                                        id      = self.id))
+
+    def _optimal(self):
+        return ifelse(self._param.optimal, self._param.optimal, "None")
+
+
+    def _configure(self):
+        super(Actor, self)._configure()
+        self.convid       = self.inventory.convid
+        self.paramid      = self.inventory.paramid
+
+
+def actor():
+    return Actor(name='material_simulations/espresso-convergence/param-view')
 
 __date__ = "$May 1, 2010 7:49:07 AM$"
 
