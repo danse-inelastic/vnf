@@ -21,14 +21,14 @@ Notes:
 
 from vnfb.components.QETable import QETable
 
-class QEConvergenceTask(QETable):
+class QEConvParamTask(QETable):
 
-    name = "qeconvergencetasks"
+    name = "qeconvparamtasks"
     import dsaw.db
 
-    convergenceid    = dsaw.db.varchar(name="convergenceid", length=64)
-    convergenceid.constraints = 'REFERENCES qeconvergences (id)'    # Important
-    convergenceid.meta['tip'] = "convergenceid"
+    convparamid    = dsaw.db.varchar(name="convparamid", length=64)
+    convparamid.constraints = 'REFERENCES qeconvparams (id)'    # Important
+    convparamid.meta['tip'] = "convparamid"
 
     taskid    = dsaw.db.varchar(name="taskid", length=64)
     taskid.constraints = 'REFERENCES qetasks (id)'    # Important
