@@ -60,7 +60,7 @@ EXPORT_PYTHON_MODULES = \
 	Privilege.py \
         QEConfiguration.py \
         QEConvergence.py \
-        QEConvergenceTask.py \
+        QEConvParamTask.py \
         QEJob.py \
         QEConvParam.py \
         QESetting.py \

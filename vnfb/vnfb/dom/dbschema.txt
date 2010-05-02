@@ -26,8 +26,8 @@ qeconvergences:
     -> qesimulations
 qeconvparams:
     -> qeconvergences
-qeconvergencetasks:
-    -> qeconvergences
+qeconvparamtasks:
+    -> qeconvparams
     -> qetasks
 
 
@@ -145,4 +145,8 @@ Added table "qeconvergencetasks"
 April 25, 2010
 Added table "features"
 Added column "status" to table "servers": var char of size 8
+
+May 2, 2010
+Changed table qeconvergencetasks -> qeconvparamtasks. This also affects column:
+convergenceid -> convparamid
 
