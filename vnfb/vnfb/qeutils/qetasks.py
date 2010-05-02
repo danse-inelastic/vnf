@@ -52,9 +52,7 @@ class QETasks:
                 # Special layout for action buttons (e.g. "Run Task")
                 table.setCellStyle(2, i, "qe-action-task")
 
-        container   = table.grid()
-
-        return container
+        return table.grid()
 
 
     def _setTaskCell(self, table, linkorder, task, rows):
