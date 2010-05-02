@@ -25,11 +25,14 @@ class Actor(base):
         import pyre.inventory
         convid          = pyre.inventory.str('convid', default='')
         paramid         = pyre.inventory.str('paramid', default='')
+        paramname       = pyre.inventory.str('paramname', default='')
+        taskid          = pyre.inventory.str('taskid', default='')
+
 
     # XXX: Extend "PW" to task type
     def _viewIndicator(self, director, section):
         #self._conv    = director.clerk.getQEConvergences(id = self.convid) # ?
-        self._param     = director.clerk.getQEConvParams(id = self.paramid)
+        #self._param     = director.clerk.getQEConvParams(id = self.paramid)
 
         path = []
         path.append(('Simulations ', load(actor='materialsimulation')))
@@ -81,10 +84,10 @@ class Actor(base):
 
     def _paramLink(self):
         s   = "Parameter"
-        if not self._param:
+        if self.paramname == "":    # no paramname is passed
             return s
 
-        s   += ": %s" % self._param.pname
+        s   += ": %s" % self.paramname
         return s
 
 
@@ -92,6 +95,8 @@ class Actor(base):
         super(Actor, self)._configure()
         self.convid       = self.inventory.convid
         self.paramid      = self.inventory.paramid
+        self.paramname    = self.inventory.paramname
+        self.taskid       = self.inventory.taskid
 
 def actor():
     return Actor(name='material_simulations/espresso-convergence/input-create')

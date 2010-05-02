@@ -12,7 +12,7 @@
 #
 
 from vnfb.qeutils.qegrid import QEGrid
-from vnfb.qeutils.qeutils import stamp2date, ifelse
+from vnfb.qeutils.qeutils import qetask, stamp2date, ifelse
 from vnfb.qeutils.qeconst import CONVTYPE
 
 import luban.content as lc
@@ -64,7 +64,7 @@ class Actor(base):
         splitter.section(id="input-error-area") # Area for errors?
 
         self._showParamInfo(splitter)
-        self._showTasks(splitter)
+        self._showTasks(director, splitter)
         self._showJobTable(director, splitter)
         self._optimalTitle(director, splitter)
 
@@ -85,9 +85,14 @@ class Actor(base):
         table.setColumnStyle(0, "qe-cell-param")
 
 
-    def _showTasks(self, splitter):
+    def _showTasks(self, director, splitter):
+        task  = qetask(director, self.paramid, linkorder=0, refid="convparamid")
+        if not task:
+            self._noTasks(splitter)
+            return
+
         self._showTaskTitle(splitter)
-        self._taskTable(splitter)
+        self._taskTable(splitter, task)
 
 
     def _showTaskTitle(self, splitter):
@@ -97,33 +102,46 @@ class Actor(base):
 
 
     # XXX: Borrowed from qetasks.py and taskcell.py. Refactor?
-    def _taskTable(self, splitter):
+    # XXX: Hardcoded to PW simulation
+    def _taskTable(self, splitter, task):
         sT          = splitter.section()
         table       = QEGrid(lc.grid(Class="qe-tasks-table"))
-        table.addColumn((self._taskHeader(), self._taskInfo(), self._taskAction()))
+        table.addColumn((self._taskHeader(task),
+                         self._taskInfo(task),
+                         self._taskAction(task)))
         sT.add(table.grid())
 
         table.setCellStyle(2, 0, "qe-action-task")
 
 
-    def _taskHeader(self):
-        return lc.paragraph(text="Step 1: PW", Class="text-bold")
+    def _noTasks(self, splitter):
+        sP          = splitter.section(id="qe-tasks-label")
+        sP.add(lc.paragraph(text="Simulation Tasks: None", Class="qe-section-inline"))
+        sP.add(lc.document(Class="clear-both"))        
 
 
-    def _taskInfo(self):
+    def _taskHeader(self, task):
+        return lc.paragraph(text="Step 1: %s" % task.id, Class="text-bold")
+
+
+    def _taskInfo(self, task):
         table   = QEGrid(lc.grid(Class="qe-tasks-info"))
+        table.addRow(("Input:", self._inputLink(task)))
+
+        return table.grid()
+
+
+    def _inputLink(self, task):
         actor   = "material_simulations/espresso-convergence/input-create"
         link    = lc.link(label     = "Add",
                           onclick   = load(actor    = actor,
                                            id       = self.id,
                                            convid   = self.convid,
-                                           paramid  = self.paramid))
-        table.addRow(("Input:", link))
+                                           paramid  = self.paramid,
+                                           paramname = self._param.pname))
+        return link
 
-        return table.grid()
-
-
-    def _taskAction(self):
+    def _taskAction(self, task):
         "Displays simulation task action button: 'Run Task', 'Cancel'"
         doc     = lc.document()   # Example: run-task-BFDFX56
 
@@ -132,17 +150,17 @@ class Actor(base):
 #
 #        doc.id = "%s-%s" % (TASK_ACTION, self._task.id)
 
-        doc.add(self._runLink())
+        doc.add(self._runLink(task))
         return doc
 
         
-    def _runLink(self):
+    def _runLink(self, task):
         "Returns 'Run Test' link"
         # If not job created or is not running
         link = lc.link(label    = "Run Test",
                        Class    = "qe-run-task",
-                       onclick  = load(actor     ='jobs/submit',
-                                      routine   = 'submit'
+                       onclick  = load(actor     ='jobs/conv-run',
+                                      routine   = 'run'
 #                                      id        = self._simid,
 #                                      taskid    = self._task.id,
 #                                      subtype   = self._task.subtype
@@ -168,7 +186,7 @@ class Actor(base):
                                         convid  = self.convid,
                                         paramid = self.paramid))
 
-    # Fix load()
+    # XXX: Fix load()
     def _optimalTitle(self, director, splitter):
         value       = "24"
         sP          = splitter.section(id="qe-tasks-label")
