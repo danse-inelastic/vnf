@@ -14,7 +14,6 @@
 from vnfb.qeutils.qegrid import QEGrid
 
 import luban.content as lc
-from vnfb.qeutils.qeutils import defaultInputName, readRecordFile
 from luban.content import load, select
 from luban.content.FormTextArea import FormTextArea
 
@@ -59,7 +58,9 @@ class Actor(base):
                             onclick = load(actor      = 'material_simulations/espresso-convergence/input-create',
                                              id       = self.id,
                                              convid   = self.convid,
-                                             paramid  = self.paramid)))
+                                             paramid  = self.paramid,
+                                             paramname = self.paramname,
+                                             taskid   = self.taskid)))
 
 
     def _mainContent(self, director, splitter):
@@ -68,19 +69,10 @@ class Actor(base):
         content.add(table.grid())
 
         text        = FormTextArea( name    = "text",
-                                    value   = "Hi", #self._inputText(director, self._input),
+                                    value   = self._inputText(director, self._input),
                                     Class   = "qe-textarea-inputs")
         table.addRow((text,))
 
-
-    # Taken from actors/material_simulations/espresso/input-edit.odb
-#    def _inputText(self, director, input):
-#        fname   = defaultInputName(input.type)
-#        s       = readRecordFile(director.dds, input, fname)
-#        if s:
-#            return s
-#
-#        return ""
 
     def _paramLink(self):
         s   = "Parameter"

@@ -17,7 +17,7 @@ QEConvergence - base actor class for Quantum Espresso convergence pages
 
 ID_CONVERGENCE  = "qe-container-convergence"
 
-from vnfb.qeutils.qeutils import qeinput
+from vnfb.qeutils.qeutils import qeinput, defaultInputName, readRecordFile
 
 import luban.content as lc
 from luban.content import select, load
@@ -122,6 +122,15 @@ class QEConvergence(base):
                                            inputid  = self._input.id,
                                            id       = self.id))
                     )
+
+    # Taken from actors/material_simulations/espresso/input-edit.odb
+    def _inputText(self, director, input):
+        fname   = defaultInputName(input.type)
+        s       = readRecordFile(director.dds, input, fname)
+        if s:
+            return s
+
+        return ""
 
 
     # Temp

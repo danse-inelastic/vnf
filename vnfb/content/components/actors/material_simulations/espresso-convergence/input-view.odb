@@ -56,16 +56,6 @@ class Actor(base):
         table.addRow((text,))
 
 
-    # Taken from actors/material_simulations/espresso/input-edit.odb
-    def _inputText(self, director, input):
-        fname   = defaultInputName(input.type)
-        s       = readRecordFile(director.dds, input, fname)
-        if s:
-            return s
-
-        return ""
-
-
     def _configure(self):
         super(Actor, self)._configure()
         self.inputid     = self.inventory.inputid
