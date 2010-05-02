@@ -138,7 +138,8 @@ class Actor(base):
                                            id       = self.id,
                                            convid   = self.convid,
                                            paramid  = self.paramid,
-                                           paramname = self._param.pname))
+                                           paramname = self._param.pname,
+                                           taskid   = task.id))
         return link
 
     def _taskAction(self, task):
