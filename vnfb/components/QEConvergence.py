@@ -70,13 +70,12 @@ class QEConvergence(base):
         path.append(('Quantum Espresso ', load(actor='materialsimulation')))
         path.append(('%s ' % self.id, load(actor    = 'material_simulations/espresso/sim-view',
                                            id       = self.id)))
-
         path.append('Convergence Tests')
         section.add(director.retrieveVisual('view-indicator', path=path))
 
 
     def _showActions(self, director, section):
-        self._backAction(section)
+#        self._backAction(section)
         self._refreshAction(section)
         self._newTestAction(section)
         self._pwInputAction(section)
@@ -85,15 +84,15 @@ class QEConvergence(base):
         section.add(lc.document(Class="clear-both"))
 
 
-    def _backAction(self, section):
-        section.add(lc.link(label="Simulation",
-                            Class="qe-action-back",
-                            onclick = load(actor      = 'material_simulations/espresso/sim-view',
-                                             id         = self.id))
-                    )
+#    def _backAction(self, section):
+#        section.add(lc.link(label="Simulation",
+#                            Class="qe-action-back",
+#                            onclick = load(actor      = 'material_simulations/espresso/sim-view',
+#                                             id         = self.id))
+#                    )
 
     def _refreshAction(self, section):
-        section.add(lc.link(label="Convergence",
+        section.add(lc.link(label="Refresh",
                             Class="qe-action-back",
                             onclick = load(actor      = 'material_simulations/espresso-convergence/view',
                                              id       = self.id))

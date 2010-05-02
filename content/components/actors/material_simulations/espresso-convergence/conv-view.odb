@@ -25,7 +25,28 @@ class Actor(base):
     class Inventory(base.Inventory):
         import pyre.inventory
         convid          = pyre.inventory.str('convid', default='')
+
+
+    def _viewIndicator(self, director, section):
+        path = []
+        path.append(('Simulations ', load(actor='materialsimulation')))
+        path.append(('Quantum Espresso ', load(actor='materialsimulation')))
+        path.append(('%s ' % self.id, load(actor    = 'material_simulations/espresso/sim-view',
+                                           id       = self.id)))
+        path.append(('Convergence Tests', load(actor    = 'material_simulations/espresso-convergence/view',
+                                            id       = self.id)))
+        path.append("Test: %s" % self.convid)
+        section.add(director.retrieveVisual('view-indicator', path=path))
+
     
+    def _refreshAction(self, section):
+        section.add(lc.link(label="Refresh",
+                            Class="qe-action-back",
+                            onclick = load(actor      = 'material_simulations/espresso-convergence/conv-view',
+                                             id       = self.id,
+                                             convid   = self.convid))
+                    )
+
 
     def _mainContent(self, director, splitter):
         "Main content"
