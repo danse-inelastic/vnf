@@ -47,7 +47,6 @@ class Actor(base):
                    #"matter":        self.matter    # Doesn't work at this moment
                    }
         task     = QETask(director)
-#        task.setDirector(director)
         task.createRecord(params)
         self._taskid    = task.id
 
@@ -92,7 +91,6 @@ class Actor(base):
                    "taskid":        self._taskid
                   }
         simtask = QESimulationTask(director)
-#        simtask.setDirector(director)
         simtask.createRecord(params)
 
 
