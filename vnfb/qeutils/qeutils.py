@@ -19,6 +19,8 @@ import os.path
 import os
 from vnfb.qeutils.qeconst import INPUT, ANALYSIS, SUBTYPE_MATDYN
 from vnfb.qeutils.qescheduler import schedulerfactory
+import luban.content as lc
+from luban.content import load, select
 
 # Issue: number of columns depends on magnetism of the material
 #   Margetic:       (e, up, down, cum)
@@ -363,6 +365,14 @@ def analyseActor(simtype):
     return 'material_simulations/espresso-analysis/%s' % name
 
 
+def qedialog(title, text, Class="qe-dialog-output"):
+    "Returns the dialog widget"
+    dialog  = lc.dialog(title=title, autoopen=True, Class=Class)
+    dialog.add(text)   # Text
+    okbutton = lc.button( label     = 'OK',
+                          onclick   = select(element=dialog).destroy())
+    dialog.add(okbutton)
+    return dialog
     
 
 

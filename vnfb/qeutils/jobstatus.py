@@ -18,12 +18,11 @@ import os.path
 import os
 import re
 from vnfb.qeutils.qeconst import ID_OUTPUT, ID_STATUS
-from vnfb.qeutils.qeutils import key2str, dataroot, jobStatus, makedirs
+from vnfb.qeutils.qeutils import key2str, dataroot, jobStatus, makedirs, qedialog
 from vnfb.qeutils.qerecords import SimulationRecord
 
 import luban.content as lc
-from luban.content import select
-from luban.content import load
+from luban.content import load, select
 
 NONE    = "None"
 DEFAULT_MESSAGE = "Not Started"
@@ -192,23 +191,12 @@ class JobStatus(object):
         "Returns file link"
         assert filename != None
         # Contruct dialog
-        title   = '%s bytes. Output for %s task' % (os.path.getsize(filename), self._task.id)
+        title   = 'Output for %s task. %s bytes' % (os.path.getsize(filename), self._task.id)
         text    = lc.htmldocument(text="<pre>%s<pre>" % open(filename).read())
-        dialog  = self._dialog(title, text) # dialog to pop up
+        dialog  = qedialog(title, text) # dialog to pop up
 
         return lc.link(label     = 'Output',
                        onclick   = select(element=content).append(dialog))
-        
-
-
-    def _dialog(self, title, text):
-        "Returns the dialog widget"
-        dialog  = lc.dialog(title=title, autoopen=True, Class="qe-dialog-output")
-        dialog.add(text)   # Text
-        okbutton = lc.button( label     = 'OK',
-                              onclick   = select(element=dialog).destroy())
-        dialog.add(okbutton)
-        return dialog
 
 
     def _jobStatus(self):

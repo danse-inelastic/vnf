@@ -28,6 +28,9 @@ class Actor(base):
         taskid          = pyre.inventory.str('taskid', default='')
 
 
+    def createRecord(self, director):
+        pass
+
     # XXX: Extend "PW" to task type
     def _viewIndicator(self, director, section):
         #self._conv    = director.clerk.getQEConvergences(id = self.convid) # ?
@@ -73,6 +76,9 @@ class Actor(base):
                                     Class   = "qe-textarea-inputs")
         table.addRow((text,))
 
+
+    def _form(self):
+        
 
     def _paramLink(self):
         s   = "Parameter"
