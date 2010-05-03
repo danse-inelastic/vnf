@@ -39,6 +39,7 @@ EXPORT_PYTHON_MODULES = \
 	_.py \
 	analysis_types.py \
 	CsfCalc.py \
+	IsfCalc.py \
 	MdDosCalc.py \
 
 #include doxygen/default.def

@@ -88,7 +88,7 @@ class Actor(base):
     def analysisSettings(self, director):
         self.debug = journal.debug('analysisSettings')
         orm = director.clerk.orm
-        doc         = lc.document(title = "")
+        doc = lc.document(title = "")
 #        splitter    = doc.splitter(orientation="vertical")
 #        sA          = splitter.section(id='analysis-object-inspect')
         #sA.add(viewIndicator(director))
@@ -154,6 +154,7 @@ class Actor(base):
         #note the code below makes a slightly different object than the vsat one..
         #..it has Computation as superclass
         analysisObj = orm.record2object(analysisRecord)
+        analysisObj.trajectory.trajectory_path = 'gulp.nc' #reinitialize path to current directory
         analysisInputFileContents = analysisObj.getInputFile()
         #write the input file
         datadir = director.dds.abspath(analysisRecord)
@@ -162,6 +163,8 @@ class Actor(base):
         inputFilePath = director.dds.abspath(analysisRecord, 
                         filename = self.inventory.analysisType+'.inp')
         open(inputFilePath, 'w').write(analysisInputFileContents)
+        
+        
         #fullClassPath = analysisPaths[self.inventory.analysisType]+'.'+className
         domPath = 'analysis.'+className+'.'+className
         return director.redirect(actor = 'job', routine = 'create', 
