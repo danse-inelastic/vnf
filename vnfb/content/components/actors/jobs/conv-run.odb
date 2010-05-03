@@ -19,12 +19,20 @@ import os
 from luban.content.ProgressBar import ProgressBar
 from luban.content import load, select
 from vnfb.utils import launch_detached, bindir
-from vnfb.qeutils.qeutils import latestJob
+from vnfb.qeutils.qeutils import latestJob, jobStatus, key2str
 from vnfb.qeutils.qeconst import JOB_STATE
 
 import luban.content as lc
 from vnfb.qeutils.qeconst import ID_CONV_JOBS
 from vnfb.qeutils.qeutils import convJobId, convJobRowId
+
+# Fraction out of total job progress
+SUBMIT_FRACTION     = 0.3   # Job submission
+RUN_FRACTION        = 0.4   # Job run
+PACKING_FRACTION    = 0.3   # Results packing 
+RUN_PERC            = 50
+FINISHED_PERC       = 100 #70
+
 
 from luban.components.AuthorizedActor import AuthorizedActor as base
 class Actor(base):
@@ -180,7 +188,7 @@ class Actor(base):
     def progressBar(self, director):
         pbar    = ProgressBar( id           = self.pbarId(self.rownum),
                                 status      = 'Submitting job ...',
-                                percentage  = 30,
+                                percentage  = 0,
                                 skip        = 2000,    # time interval?
                             )
 
@@ -216,6 +224,7 @@ class Actor(base):
         return select(id=convJobId(self.rownum, 4) ).replaceContent("None")
 
 
+    # XXX: Too long. Refactor!
     def checkStatus(self, director):
         selectpbar      = select(id = self.pbarId(self.rownum))
         job     = None
@@ -223,15 +232,89 @@ class Actor(base):
         if jobs:
             job  = latestJob(jobs)
 
-        state   = self._getStatus(job)
-        return  selectpbar.setAttr( percentage  = state[0],
-                                    status      = state[1],
-                                    )
+
+        if self._isSubmitting(job):                 # job.description == ""
+            state       = self._getStatus(job)
+            jperc     = state[0]*SUBMIT_FRACTION
+            jstatus   = state[1]
+            return self._pbarAttr(selectpbar, jperc, jstatus)
+
+        if self._isSubmitted(director, job):      # job.status == "submitted"
+            jperc     = 40
+            jstatus   = "Submitted ..."
+            self._updateJobStatus(director, job, jstatus)
+            self._updateJobStage(director, job, "submitted")
+            return self._pbarAttr(selectpbar, jperc, jstatus)
+
+        if self._isRunning(job):                  # job.description == "submitted"
+            server  = director.clerk.getServers(id = job.serverid)
+            status  = jobStatus(director, job, server)  # Get status from remote server
+            if not status:
+                jperc     = 100
+                jstatus   = "Unknown state"
+                return self._pbarAttr(selectpbar, jperc, jstatus)
+
+            if status["state"] == "terminated" or status["state"] == "finished":
+                jperc     = FINISHED_PERC    
+                jstatus   = "Finished Run"
+                self._updateJobStatus(director, job, jstatus)
+                self._updateJobStage(director, job, "finished")
+                return self._pbarAttr(selectpbar, jperc, jstatus)
+
+            str     = key2str(status["state"])
+            if status.has_key("runtime") and status["state"] == "running":
+                str     += " (%s) " % status["runtime"]
+
+            jperc     = RUN_PERC
+            jstatus   = str
+            self._updateJobStatus(director, job, jstatus)
+            return self._pbarAttr(selectpbar, jperc, jstatus)
+
+        if self._isFinished(job):
+            jperc     = FINISHED_PERC    
+            jstatus   = job.status
+            return self._pbarAttr(selectpbar, jperc, jstatus)
+
+        return self._pbarAttr(selectpbar, 100, "Unknown state") # Default value
+
+
+    def _pbarAttr(self, selectpbar, percentage, status):
+        return selectpbar.setAttr( percentage   = percentage,
+                                    status      = status)
+
+
+    def _updateJobStage(self, director, job, str):
+        "Updates job stage, currently stored in 'description' field"
+        job.setDirector(director)
+        job.updateRecord({"description": str,})
+
+
+    def _updateJobStatus(self, director, job, str):
+        "Updates job stage, currently stored in 'description' field"
+        job.setDirector(director)
+        job.updateRecord({"status": str,})
+
+
+    def _isSubmitting(self, job):
+        return job.description == "" and job.status != "submitted"
+
+
+    def _isSubmitted(self, director, job):
+        return job.status == "submitted"
+
+
+    def _isRunning(self, job):
+        return job.description == "submitted"
+
+
+    def _isFinished(self, job):
+        return job.description == "finished"
+
 
     def checkResults(self, director):
         # If optimal value, show the value
         # Otherwise add row and submit the job again!
-        print "I am done!"
+        pass
 
 
     def pbarId(self, rownum):
