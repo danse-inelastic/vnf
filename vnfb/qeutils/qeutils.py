@@ -398,10 +398,15 @@ def subtypeMatdyn(subtype):
     return SUBTYPE_MATDYN[subtype]
 
 
-CONV_JOB_BASE   = "convjob"
+CONV_JOB_BASE       = "convjob"
+CONV_JOB_ROW_BASE   = "convjob-row"
 
 def convJobId(row, col):
     return "%s-%s-%s" % (CONV_JOB_BASE, row, col)
+
+def convJobRowId(row):
+    return "%s-%s" % (CONV_JOB_ROW_BASE, row)
+
 
 
 # *********** TESTS ******************************
