@@ -135,9 +135,11 @@ class TaskCell:
 
         if not jobs:
             table.addRow(("Job:", "None", ""))
+            return
 
 
         self._job  = latestJob(jobs)
+
         link = lc.link(label   = self._job.id,
                        onclick = load(actor     = 'jobs/jobs-view',
                                       id        = self._simid,

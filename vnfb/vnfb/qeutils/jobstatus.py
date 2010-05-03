@@ -45,6 +45,10 @@ class JobStatus(object):
         simrecord       = SimulationRecord(self._director, self._simid)
         self._input     = simrecord.input(self._linkorder)
         self._task      = simrecord.task(self._linkorder)
+
+#        if not self._job and not self._job:
+#            return
+
         if not self._job:   # If no job is set take from simrecord
             self._job   = simrecord.job(self._linkorder)
 
@@ -265,10 +269,16 @@ class JobStatus(object):
         return None
 
     def _statusId(self):
+        if not self._job:
+            return ""
+
         return "%s-%s" % (ID_STATUS, self._job.id)
 
 
     def _outputId(self):
+        if not self._job:
+            return ""
+        
         return "%s-%s" % (ID_OUTPUT, self._job.id)
 
 

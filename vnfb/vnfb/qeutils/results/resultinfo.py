@@ -67,9 +67,19 @@ class ResultInfo:
     def _init(self):
         "Additional init"
         self._simrecord   = SimulationRecord(self._director, self._simid, self._subtype)
-        ifelse(self._task, self._task, self._simrecord.task(self._linkorder))
-        ifelse(self._input, self._input, self._simrecord.input(self._linkorder))
-        ifelse(self._job, self._job, self._simrecord.job(self._linkorder))
+        if not self._task:
+            self._task = self._simrecord.task(self._linkorder)
+
+        if not self._input:
+            self._input = self._simrecord.input(self._linkorder)
+            
+        if not self._job:
+            self._job   = self._simrecord.job(self._linkorder)
+
+#        ifelse(self._task, self._task, self._simrecord.task(self._linkorder))
+#        ifelse(self._input, self._input, self._simrecord.input(self._linkorder))
+
+#        ifelse(self._job, self._job, self._simrecord.job(self._linkorder))
 
 
     def simrecord(self):
@@ -165,7 +175,7 @@ class ResultInfo:
 
     def action(self):
         "Returns link to action that refreshes the status of results"
-        if not self._job or not self._task:
+        if not self._job: #or not self._task:
             return ""   # Default value
 
         return lc.link(label = "Check",
