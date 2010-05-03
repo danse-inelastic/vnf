@@ -11,6 +11,8 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
+# XXX: Much of the functionality is borrowed from "jobs/submit" actor. Refactor!
+
 import time
 
 import os
@@ -18,7 +20,7 @@ from luban.content.ProgressBar import ProgressBar
 from luban.content import load, select
 from vnfb.utils import launch_detached, bindir
 from vnfb.qeutils.qeutils import latestJob
-from vnfb.qeutils.qeconst import JOB_STATE, TASK_ACTION
+from vnfb.qeutils.qeconst import JOB_STATE
 
 import luban.content as lc
 from vnfb.qeutils.qeconst import ID_CONV_JOBS
@@ -30,6 +32,8 @@ class Actor(base):
     class Inventory(base.Inventory):
         import pyre.inventory
         id          = pyre.inventory.str('id', default='')      # Simulation Id
+        taskid      = pyre.inventory.str('taskid', default='')
+        convid      = pyre.inventory.str('convid', default='')
         paramid     = pyre.inventory.str('paramid', default='')
 
         rownum      = pyre.inventory.int('rownum', default=0)
@@ -52,6 +56,7 @@ class Actor(base):
                 load(actor      ='jobs/conv-run',
                       routine   = 'addRow',
                       id        = self.id,
+                      taskid    = self.taskid,
                       paramid   = self.paramid)]
 
 
@@ -84,6 +89,7 @@ class Actor(base):
         action.append(load(actor    ='jobs/conv-run',
                           routine   = 'runJob',
                           id        = self.id,
+                          taskid    = self.taskid,
                           paramid   = self.paramid,
                           rownum    = self.rownum))
 
@@ -92,6 +98,7 @@ class Actor(base):
 
     def runJob(self, director):
         self.submitJob(director)
+        time.sleep(0.2)     # Give a bit time to generate job record
 
         return self.populateRow(director)
 
@@ -113,12 +120,10 @@ class Actor(base):
 
     def submitJob(self, director):
         "Spawns process that submits job to the computing nodes"
-        cmd = os.path.join(bindir, "convjobdriver.py")
+        cmd = os.path.join(bindir, "qedriver.py")
 
-        options =   {
-                    'id':       self.inventory.id,
-                    'taskid':   self.inventory.taskid,
-                    'subtype':  self.inventory.subtype,
+        options =   { 'id':       self.inventory.id,
+                      'taskid':   self.inventory.taskid,
                     }
 
         options = self._refine(options)
@@ -126,6 +131,17 @@ class Actor(base):
         cmd     += ' ' + optstr
 
         launch_detached(cmd)
+
+
+    def _refine(self, opts):
+        "pyre complains about parameters like: '--subtype=', so we get rid of them"
+        options     = {}
+        for o in opts.keys():
+            if opts[o].strip() != '':   # option is not empty
+                options[o]  = opts[o]
+
+        return options
+
 
 
     def populateRow(self, director):
@@ -157,16 +173,22 @@ class Actor(base):
         pbar.onchecking = load( actor    = 'jobs/conv-run',
                                 routine  = 'checkStatus',
                                 id        = self.id,
+                                taskid    = self.taskid,
                                 paramid   = self.paramid,
                                 rownum    = self.rownum)
 
-        pbar.onfinished  = [
-                            load(actor      = "jobs/conv-run",
-                                 routine    = "checkResults",
-                                 id         = self.id,
-                                 paramid    = self.paramid,
-                                 rownum     = self.rownum)
-                            ]
+        # Temp
+        pbar.onfinished  = [load(actor    = 'material_simulations/espresso-convergence/param-view',
+                                 id       = self.id,
+                                 convid   = self.convid,
+                                 paramid  = self.paramid)]
+                                 
+#        pbar.onfinished  = [load(actor      = "jobs/conv-run",
+#                                 routine    = "checkResults",
+#                                 id         = self.id,
+#                                 taskid     = self.taskid,
+#                                 paramid    = self.paramid,
+#                                 rownum     = self.rownum)]
 
         return select(id=convJobId(self.rownum, 2) ).replaceContent(pbar)
 
@@ -182,26 +204,34 @@ class Actor(base):
 
     def checkStatus(self, director):
         selectpbar      = select(id = self.pbarId(self.rownum))
-#        job     = None
-#        jobs    = director.clerk.getQEJobs(where="taskid='%s'" % self.taskid)
-#        if jobs:
-#            job  = latestJob(jobs)
-#
-#        state   = self._getStatus(job)
-        return  selectpbar.setAttr( percentage  = 40,#state[0],
-                                    status      = "Running",#state[1],
+        job     = None
+        jobs    = director.clerk.getQEJobs(where="taskid='%s'" % self.taskid)
+        if jobs:
+            job  = latestJob(jobs)
+
+        state   = self._getStatus(job)
+        return  selectpbar.setAttr( percentage  = state[0],
+                                    status      = state[1],
                                     )
 
     def checkResults(self, director):
         # If optimal value, show the value
         # Otherwise add row and submit the job again!
-        pass
+        print "I am done!"
 
 
     def pbarId(self, rownum):
         PBAR_BASE   = "pbar"
         return '%s-%s' % (PBAR_BASE, rownum)
+
     
+    def _getStatus(self, job):
+        status  = (100, "Unknown status")
+        if not job or not job.status in JOB_STATE.keys():
+            return status
+
+        return JOB_STATE[job.status]
+
 
     def __init__(self):
         super(Actor, self).__init__(name='jobs/submit')
@@ -210,12 +240,13 @@ class Actor(base):
     def _configure(self):
         super(Actor, self)._configure()
         self.id         = self.inventory.id
+        self.taskid     = self.inventory.taskid
+        self.convid     = self.inventory.convid
         self.paramid    = self.inventory.paramid
 
         self.rownum     = self.inventory.rownum
         self.colnum     = self.inventory.colnum
 
-#        self.number     = self.inventory.number
 
     def _init(self):
         super(Actor, self)._init()
