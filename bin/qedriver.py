@@ -15,9 +15,9 @@
 # If everyone is reinventing the wheel, why not to join? :)
 
 def main():
-    from vnfb.applications.QEDriver import QEDriver
+    from vnfb.applications.JobDriver import JobDriver
 
-    class App(QEDriver):
+    class App(JobDriver):
 
         def _getPrivateDepositoryLocations(self):
             return ['/tmp/luban-services', '../config', '../content/components']

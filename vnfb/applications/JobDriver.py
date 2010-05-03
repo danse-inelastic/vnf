@@ -44,7 +44,7 @@ Important Note:
 
 # XXX: Change name to JobDriver
 
-class QEDriver(base):
+class JobDriver(base):
 
     class Inventory(base.Inventory):
         id          = pyre.inventory.str('id', default='')      # Simulation Id
@@ -99,16 +99,7 @@ class QEDriver(base):
                    "description":   self.subtype
                    }
 
-#        debug   = False  # Debugging flag
-#        if debug:
-#            #self.taskid = "4FUNHMTP"
-#            self.taskid = "46M3E9PE"
-#            jobs        = self.clerk.getQEJobs(where = "taskid='%s'" % self.taskid) # Temp
-#            self._job   = jobs[0]
-#        else:
-
         self._job  = QEJob(self)
-#        self._job.setDirector(self)
         self._job.createRecord(params)
         
         self._updateStatus("create-job")
@@ -244,11 +235,11 @@ class QEDriver(base):
 
 
     def __init__(self):
-        super(QEDriver, self).__init__( 'qedriver')
+        super(JobDriver, self).__init__( 'qedriver')
 
 
     def _configure(self):
-        super(QEDriver, self)._configure()
+        super(JobDriver, self)._configure()
         self.id         = self.inventory.id
         self.taskid     = self.inventory.taskid
         self.subtype    = self.inventory.subtype
@@ -263,7 +254,7 @@ class QEDriver(base):
 
 
     def _init(self):
-        super(QEDriver, self)._init()
+        super(JobDriver, self)._init()
         self._files = []
 
 __date__ = "$Mar 3, 2010 11:04:10 PM$"
