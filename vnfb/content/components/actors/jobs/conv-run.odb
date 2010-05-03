@@ -24,7 +24,7 @@ from vnfb.qeutils.results.resultinfo import ResultInfo
 from vnfb.qeutils.qeconst import JOB_STATE
 
 import luban.content as lc
-from vnfb.qeutils.qeconst import ID_CONV_JOBS
+from vnfb.qeutils.qeconst import ID_CONV_JOBS, ID_CONV_OPT
 from vnfb.qeutils.qeutils import convJobId, convJobRowId
 
 # Fraction out of total job progress
@@ -350,6 +350,25 @@ class Actor(base):
         # If optimal value, show the value
         # Otherwise add row and submit the job again!
         pass
+
+    # XXX: Fix load()
+    def showOptimal(self, director):
+        container       = lc.document()
+        #splitter        = container.splitter(orientation="vertical")
+
+        value       = "24"
+        sP          = container #splitter.section(id="qe-tasks-label")
+        sP.add(lc.paragraph(text="Optimal Value: %s" % value, Class="qe-section-inline"))
+
+        # Show refresh status button
+        sP.add(lc.link( label   ="Export to PW",
+                        id      = "action-refresh-status",
+                        onclick = load(actor   = 'material_simulations/espresso-convergence/param-create',
+                                        routine = "refreshStatus",
+                                        id      = self.id)
+                        ))
+        sP.add(lc.document(Class="clear-both"))
+        return select(id = ID_CONV_OPT).replaceContent(sP)
 
 
     def pbarId(self, rownum):
