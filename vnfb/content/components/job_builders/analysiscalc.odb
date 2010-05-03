@@ -23,19 +23,22 @@ class Builder(base):
         base.__init__(self, name, path)
 
     def render(self, computation, db=None, dds=None):
-        # one file needs to be copied to job directory   
+        # two files need to be copied to job directory
+        # 1. input file
+        # 2. trajectory file   
         orm = self.director.clerk.orm  
         analysisObj = orm.record2object(computation)   
 #        basename = str(computation.__class__.__name__)
 #        files = [+'.inp']
-        files = [analysisObj.inputFileName]
         # copy files to job directory
         job = computation.getJob(self.db)
-        for f in files:
-            dds.copy(computation, f, job, f)
-
+        dds.copy(computation, analysisObj.inputFileName, job, analysisObj.inputFileName)
+        trajectoryObj = analysisObj.trajectory
+        trajectoryDbObj = orm(trajectoryObj)
+        dds.copy(trajectoryDbObj, 'gulp.nc', job, 'gulp.nc')
         # 3. add run.sh
-        files.append( self._make_script(computation) )
+        files = [analysisObj.inputFileName, 'gulp.nc']
+        files.append(self._make_script(computation) )
         return files    
     
     def _make_script(self, computation):
