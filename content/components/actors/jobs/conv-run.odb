@@ -64,18 +64,24 @@ class Actor(base):
         table       = director.retrieveVisual( visual,
                                                 director,
                                                 id      = self.id,
-                                                paramid = self.paramid)
+                                                paramid = self.paramid,
+                                                part    = "header")
         sT.add(table)
 
 
     def testReplace(self, director):
+        visual      = 'material_simulations/espresso-convergence/table-jobs'
+        row       = director.retrieveVisual( visual,
+                                                director,
+                                                id      = self.id,
+                                                paramid = self.paramid)
+
         import time
         time.sleep(5)
-        return select(id=convJobId(0,1)).replaceContent("Hi")
 
-#        time.sleep(10)
-#        table.addRow(("a", "b", "c", "d", "e"))
-
+        return select(id="hello").replaceContent(row)
+    
+        #return select(id=convJobId(0,1)).replaceContent("Hi")
 
     def __init__(self):
         super(Actor, self).__init__(name='jobs/submit')
