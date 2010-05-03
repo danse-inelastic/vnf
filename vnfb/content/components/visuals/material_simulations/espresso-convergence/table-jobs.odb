@@ -12,6 +12,7 @@
 #
 
 from vnfb.qeutils.qegrid import QEGrid
+from vnfb.qeutils.qeutils import convJobId
 import luban.content as lc
 
 MAX_STEPS   = 30    # Max number of rows in the table
@@ -34,9 +35,13 @@ def tableHeader():
     return table.grid()
 
 
-def tableRow():
+def tableRow(rownum):
+    "Return table of one row (inserts row). First after the header row has index 0"
     table       = QEGrid(lc.grid(Class="qe-table-conv-jobs"))
-    table.addRow(("a", "b", "c", "d", "e") )
+    row     = []
+    for colnum in range(NUM_COLUMNS):
+        row.append(lc.document(id=convJobId(rownum, colnum)))
+    table.addRow(row)
 
     setColumnStyle(table)
     return table.grid()
@@ -45,7 +50,7 @@ def tableRow():
 def visual(director, id, paramid):
     content = lc.document()
     content.add(tableHeader())
-    content.add(tableRow())
+    content.add(tableRow(0))
 
     return content
 

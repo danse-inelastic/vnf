@@ -190,6 +190,7 @@ class Actor(base):
         content     = lc.document(id = ID_CONV_JOBS)
         sJ          = splitter.section()
         sJ.add(content)
+
      
 # Keep! Show if jobs exist
 #        jobSplitter = content.splitter(orientation="vertical")

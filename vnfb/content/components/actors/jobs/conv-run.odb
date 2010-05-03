@@ -22,6 +22,7 @@ from vnfb.qeutils.qeconst import JOB_STATE, TASK_ACTION
 
 import luban.content as lc
 from vnfb.qeutils.qeconst import ID_CONV_JOBS
+from vnfb.qeutils.qeutils import convJobId
 
 from luban.components.AuthorizedActor import AuthorizedActor as base
 class Actor(base):
@@ -44,7 +45,11 @@ class Actor(base):
         self._jobTitle(splitter)
         self._jobTable(director, splitter)
 
-        return select(id=ID_CONV_JOBS).replaceContent(jTable)
+        return [select(id=ID_CONV_JOBS).replaceContent(jTable),
+                load(actor     ='jobs/conv-run',
+                      routine   = 'testReplace',
+                      id        = self.id,
+                      paramid   = self.paramid)]
 
 
     def _jobTitle(self, splitter):
@@ -61,6 +66,13 @@ class Actor(base):
                                                 id      = self.id,
                                                 paramid = self.paramid)
         sT.add(table)
+
+
+    def testReplace(self, director):
+        import time
+        time.sleep(5)
+        return select(id=convJobId(0,1)).replaceContent("Hi")
+
 #        time.sleep(10)
 #        table.addRow(("a", "b", "c", "d", "e"))
 
