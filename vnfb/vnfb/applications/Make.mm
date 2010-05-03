@@ -35,7 +35,6 @@ all: export
 # export
 
 EXPORT_PYTHON_MODULES = \
-        ConvJobDriver.py \
 	ITaskApp.py \
 	EstablishGlobalPointers.py \
         PackJobDir.py \
