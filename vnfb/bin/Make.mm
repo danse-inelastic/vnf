@@ -39,7 +39,7 @@ EXPORT_DATAFILES = \
 	launch-detached.py \
 	loaddataobject.py \
         packjobdir.py \
-        qedriver.py \
+        jobdriver.py \
 	restorevnfdb.py \
 	retrieveresults.py \
 	startservices.sh \
