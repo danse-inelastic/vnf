@@ -234,6 +234,22 @@ a.qe-cancel-task {
     width: 240px
 }
 
+.qe-table-conv-jobs td {
+    border-width: 0px 2px 2px 2px;
+    border-style: solid;
+    border-color: white;
+    padding: 3px 10px 3px 10px;
+    vertical-align: top;
+    width: 800px;
+}
+
+.qe-table-conv-jobs table {
+    border-collapse: collapse;
+    -moz-border-radius: 10px;
+    -webkit-border-radius: 10px;
+    background-color: #f0f0f0;
+}
+
 .qe-grid table,
 .qe-tasks-info table {
 

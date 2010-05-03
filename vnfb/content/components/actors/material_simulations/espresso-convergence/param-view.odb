@@ -66,7 +66,7 @@ class Actor(base):
 
         self._showParamInfo(splitter)
         self._showTasks(director, splitter)
-        self._showJobTable(director, splitter)
+        self._showJobSection(director, splitter)
         self._optimalTitle(director, splitter)
 
 
@@ -179,32 +179,38 @@ class Actor(base):
         link = lc.link(label    = "Run Test",
                        Class    = "qe-run-task",
                        onclick  = load(actor     ='jobs/conv-run',
-                                      routine   = 'run'
-#                                      id        = self._simid,
-#                                      taskid    = self._task.id,
-#                                      subtype   = self._task.subtype
-                                      ))
+                                      routine   = 'run',
+                                      id        = self.id,
+                                      paramid   = self.paramid))
         return link
 
 
 
-    def _jobTitle(self, splitter):
-        sP          = splitter.section(id="qe-tasks-label")
-        sP.add(Paragraph(text="Convergence Jobs", Class="qe-section-inline"))
-        sP.add(lc.document(Class="clear-both"))
-
-
-    def _showJobTable(self, director, splitter):
+    def _showJobSection(self, director, splitter):
         content     = lc.document(id = ID_CONV_JOBS)
-        self._jobTitle(splitter)
-
-        sT          = splitter.section()
-        visual      = 'material_simulations/espresso-convergence/table-jobs'
-        sT.add(director.retrieveVisual( visual,
-                                        director,
-                                        id      = self.id,
-                                        convid  = self.convid,
-                                        paramid = self.paramid))
+        sJ          = splitter.section()
+        sJ.add(content)
+     
+# Keep! Show if jobs exist
+#        jobSplitter = content.splitter(orientation="vertical")
+#
+#        self._jobTitle(jobSplitter)
+#        self._jobTable(director, jobSplitter)
+#
+#
+#    def _jobTitle(self, splitter):
+#        sP          = splitter.section(id="qe-tasks-label")
+#        sP.add(Paragraph(text="Convergence Jobs", Class="qe-section-inline"))
+#        sP.add(lc.document(Class="clear-both"))
+#
+#
+#    def _jobTable(self, director, splitter):
+#        sT          = splitter.section()                        # path indicator
+#        visual      = 'material_simulations/espresso-convergence/table-jobs'
+#        sT.add(director.retrieveVisual( visual,
+#                                        director,
+#                                        id      = self.id,
+#                                        paramid = self.paramid))
 
     # XXX: Fix load()
     def _optimalTitle(self, director, splitter):
