@@ -91,12 +91,9 @@ class Actor(base):
 
 
     def runJob(self, director):
-        action      = []
-        action.append(self.jobId())
-        action.append(self.taskType())
-        action.append(self.progressBar(director))
-        action.append(self.results())
-        action.append(self.optimal())
+        self.submitJob(director)
+
+        return self.populateRow(director)
 
 #        if self.colnum < 4:
 #            action.append(load(actor    ='jobs/conv-run',
@@ -113,6 +110,32 @@ class Actor(base):
 #                              paramid   = self.paramid,
 #                              rownum    = self.rownum + 1))
 
+
+    def submitJob(self, director):
+        "Spawns process that submits job to the computing nodes"
+        cmd = os.path.join(bindir, "convjobdriver.py")
+
+        options =   {
+                    'id':       self.inventory.id,
+                    'taskid':   self.inventory.taskid,
+                    'subtype':  self.inventory.subtype,
+                    }
+
+        options = self._refine(options)
+        optstr  = ' '.join([ '--%s="%s"' % (k,v) for k,v in options.iteritems() ])
+        cmd     += ' ' + optstr
+
+        launch_detached(cmd)
+
+
+    def populateRow(self, director):
+        action      = []
+        action.append(self.jobId())
+        action.append(self.taskType())
+        action.append(self.progressBar(director))
+        action.append(self.results())
+        action.append(self.optimal())
+        
         return action
 
 
@@ -126,7 +149,7 @@ class Actor(base):
 
     def progressBar(self, director):
         pbar    = ProgressBar( id           = self.pbarId(self.rownum),
-                                status      = 'Submitting job...',
+                                status      = 'Submitting job ...',
                                 percentage  = 30,
                                 skip        = 2000,    # time interval?
                             )

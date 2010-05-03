@@ -39,7 +39,7 @@ EXPORT_PYTHON_MODULES = \
 	ITaskApp.py \
 	EstablishGlobalPointers.py \
         PackJobDir.py \
-        QEDriver.py \
+        JobDriver.py \
         QEPackJobDir.py \
 	RestoreVNFDB.py \
 	RetrieveResults.py \
