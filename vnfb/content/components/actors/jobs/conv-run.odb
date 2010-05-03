@@ -87,6 +87,7 @@ class Actor(base):
                           routine   = 'setCell',
                           id        = self.id,
                           paramid   = self.paramid,
+                          number    = self.number + 1,
                           rownum    = self.rownum))
 
         return action
@@ -94,7 +95,7 @@ class Actor(base):
 
     def setCell(self, director):
         action      = []
-        action.append(select(id=convJobId(0,self.colnum)).replaceContent(str(self.number+1)))
+        action.append(select(id=convJobId(self.rownum, self.colnum)).replaceContent(str(self.number)))
         if self.colnum < 4:
             action.append(load(actor    ='jobs/conv-run',
                               routine   = 'setCell',
@@ -104,13 +105,13 @@ class Actor(base):
                               number    = self.number + 1,
                               rownum    = self.rownum))
 
-#        if self.colnum % 4 == 0 and self.rownum < 1:
-#            action.append(load(actor      ='jobs/conv-run',
-#                              routine   = 'addRow',
-#                              id        = self.id,
-#                              paramid   = self.paramid,
-#                              number    = self.number,
-#                              rownum    = self.rownum + 1))
+        if (self.colnum + 1) % 5 == 0 and self.rownum < 1:
+            action.append(load(actor      ='jobs/conv-run',
+                              routine   = 'addRow',
+                              id        = self.id,
+                              paramid   = self.paramid,
+                              number    = self.number,
+                              rownum    = self.rownum + 1))
 
         return action
 
