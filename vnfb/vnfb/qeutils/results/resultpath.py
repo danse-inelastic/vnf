@@ -218,7 +218,8 @@ class ResultPath(object):
             return False
 
         (job_, input_, task_)   = (self._jit[0], self._jit[1], self._jit[2])  # input_ not used
-        if not job_ or not task_:   # If job or task is None
+        # XXX: Return back task_
+        if not job_: #or not task_:   # If job or task is None
             return False
 
         return True

@@ -386,6 +386,14 @@ def setInputParam(text, param, value):
     return input.toString()
 
 
+def getInputParam(text, param):
+    "Gets input string, sets param value and returns updated string"
+    # XXX: Parameters should be from "SYSTEM" namelist (extend for K-points)
+    input   = QEInput(config=text)
+    input.parse()
+    nl      = input.namelist("system")
+    return nl.param(param)
+
 # Subtype is relevant for matdyn mostly. So I don't care about other types
 def subtypeMatdyn(subtype):
     if subtype == "":

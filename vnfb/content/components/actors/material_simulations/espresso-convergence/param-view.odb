@@ -102,7 +102,7 @@ class Actor(base):
 #        from vnfb.qeutils.results.pwresult import PWResult
 ##        jobs    = director.clerk.getQEJobs(where="taskid='%s'" % task.id)
 ##        job     = latestJob(jobs)
-#        job     = director.clerk.getQEJobs(id="JBJSDE4T")
+#        job     = director.clerk.getQEJobs(id="JCDDBWPC")
 #        result  = PWResult(director, self.id, job = job)
 #        print job.id
 #        print result.totalEnergy()
