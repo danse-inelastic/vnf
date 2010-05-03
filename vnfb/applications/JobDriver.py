@@ -233,7 +233,7 @@ class JobDriver(base):
 
 
     def __init__(self):
-        super(JobDriver, self).__init__( 'qedriver')
+        super(JobDriver, self).__init__( 'jobdriver')
 
 
     def _configure(self):
