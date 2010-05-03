@@ -34,8 +34,6 @@ class Actor(base):
 
         rownum      = pyre.inventory.int('rownum', default=0)
         colnum      = pyre.inventory.int('colnum', default=0)
-        # Temp
-        number      = pyre.inventory.int('number', default=0)
 
 
     def default(self, director):
@@ -75,7 +73,7 @@ class Actor(base):
 
     
     def addRow(self, director):
-        visual   = 'material_simulations/espresso-convergence/table-jobs'
+        visual      = 'material_simulations/espresso-convergence/table-jobs'
         row         = director.retrieveVisual(  visual,
                                                 director,
                                                 id      = self.id,
@@ -84,49 +82,103 @@ class Actor(base):
         action      = []
         action.append(select(id=convJobRowId(self.rownum)).replaceContent(row))
         action.append(load(actor    ='jobs/conv-run',
-                          routine   = 'setCell',
+                          routine   = 'runJob',
                           id        = self.id,
                           paramid   = self.paramid,
-                          number    = self.number + 1,
                           rownum    = self.rownum))
 
         return action
 
 
-    def setCell(self, director):
+    def runJob(self, director):
         action      = []
-        action.append(select(id=convJobId(self.rownum, self.colnum)).replaceContent(str(self.number)))
-        if self.colnum < 4:
-            action.append(load(actor    ='jobs/conv-run',
-                              routine   = 'setCell',
-                              id        = self.id,
-                              paramid   = self.paramid,
-                              colnum    = self.colnum + 1,
-                              number    = self.number + 1,
-                              rownum    = self.rownum))
+        action.append(self.jobId())
+        action.append(self.taskType())
+        action.append(self.progressBar(director))
+        action.append(self.results())
+        action.append(self.optimal())
 
-        if (self.colnum + 1) % 5 == 0 and self.rownum < 1:
-            action.append(load(actor      ='jobs/conv-run',
-                              routine   = 'addRow',
-                              id        = self.id,
-                              paramid   = self.paramid,
-                              number    = self.number,
-                              rownum    = self.rownum + 1))
+#        if self.colnum < 4:
+#            action.append(load(actor    ='jobs/conv-run',
+#                              routine   = 'setCell',
+#                              id        = self.id,
+#                              paramid   = self.paramid,
+#                              colnum    = self.colnum + 1,
+#                              rownum    = self.rownum))
+#
+#        if (self.colnum + 1) % 5 == 0 and self.rownum < 1:
+#            action.append(load(actor      ='jobs/conv-run',
+#                              routine   = 'addRow',
+#                              id        = self.id,
+#                              paramid   = self.paramid,
+#                              rownum    = self.rownum + 1))
 
         return action
 
 
-    def testReplace(self, director):
-        row       = director.retrieveVisual(    self._tVisual,
-                                                director,
-                                                id      = self.id,
-                                                paramid = self.paramid)
+    def jobId(self):
+        return select(id=convJobId(self.rownum, 0)).replaceContent("AAAAAA")
 
-        import time
-        time.sleep(5)
+        
+    def taskType(self):
+        return select(id=convJobId(self.rownum, 1)).replaceContent("PW")
 
-        return select(id="hello").replaceContent(row)
 
+    def progressBar(self, director):
+        pbar    = ProgressBar( id           = self.pbarId(self.rownum),
+                                status      = 'Submitting job...',
+                                percentage  = 30,
+                                skip        = 2000,    # time interval?
+                            )
+
+        pbar.onchecking = load( actor    = 'jobs/conv-run',
+                                routine  = 'checkStatus',
+                                id        = self.id,
+                                paramid   = self.paramid,
+                                rownum    = self.rownum)
+
+        pbar.onfinished  = [
+                            load(actor      = "jobs/conv-run",
+                                 routine    = "checkResults",
+                                 id         = self.id,
+                                 paramid    = self.paramid,
+                                 rownum     = self.rownum)
+                            ]
+
+        return select(id=convJobId(self.rownum, 2) ).replaceContent(pbar)
+
+
+    def results(self):
+        link    = "None"    #lc.link(label="ZZZZZ.tgz")
+        return select(id=convJobId(self.rownum, 3) ).replaceContent(link)
+
+
+    def optimal(self):
+        return select(id=convJobId(self.rownum, 4) ).replaceContent("None")
+
+
+    def checkStatus(self, director):
+        selectpbar      = select(id = self.pbarId(self.rownum))
+#        job     = None
+#        jobs    = director.clerk.getQEJobs(where="taskid='%s'" % self.taskid)
+#        if jobs:
+#            job  = latestJob(jobs)
+#
+#        state   = self._getStatus(job)
+        return  selectpbar.setAttr( percentage  = 40,#state[0],
+                                    status      = "Running",#state[1],
+                                    )
+
+    def checkResults(self, director):
+        # If optimal value, show the value
+        # Otherwise add row and submit the job again!
+        pass
+
+
+    def pbarId(self, rownum):
+        PBAR_BASE   = "pbar"
+        return '%s-%s' % (PBAR_BASE, rownum)
+    
 
     def __init__(self):
         super(Actor, self).__init__(name='jobs/submit')
@@ -140,7 +192,7 @@ class Actor(base):
         self.rownum     = self.inventory.rownum
         self.colnum     = self.inventory.colnum
 
-        self.number     = self.inventory.number
+#        self.number     = self.inventory.number
 
     def _init(self):
         super(Actor, self)._init()
