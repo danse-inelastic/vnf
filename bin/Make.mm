@@ -25,7 +25,6 @@ distclean::
 
 EXPORT_DATAFILES = \
 	announce.py \
-        convjobdriver.py \
 	createdataobject.py \
 	createtable.py \
 	destroydb.py \
