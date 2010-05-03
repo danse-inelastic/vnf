@@ -19,9 +19,11 @@ import os
 from luban.content.ProgressBar import ProgressBar
 from luban.content import load, select
 from vnfb.utils import launch_detached, bindir
-from vnfb.qeutils.qeutils import latestJob, jobStatus, key2str
+from vnfb.qeutils.qeutils import latestJob, jobStatus, key2str, latestInput
+from vnfb.qeutils.qeutils import defaultInputName, readRecordFile, setInputParam, getInputParam, writeRecordFile
 from vnfb.qeutils.results.resultinfo import ResultInfo
 from vnfb.qeutils.qeconst import JOB_STATE
+from vnfb.qeutils.results.pwresult import PWResult
 
 import luban.content as lc
 from vnfb.qeutils.qeconst import ID_CONV_JOBS, ID_CONV_OPT
@@ -33,6 +35,10 @@ RUN_FRACTION        = 0.4   # Job run
 PACKING_FRACTION    = 0.3   # Results packing 
 RUN_PERC            = 50
 FINISHED_PERC       = 70
+
+# <job secquence> <energy> <degauss>. Example: 0 -12.400754729999999 0.05
+# rownum = <job secquence>
+FILENAME            = "/tmp/convlist"   
 
 
 from luban.components.AuthorizedActor import AuthorizedActor as base
@@ -382,38 +388,91 @@ class Actor(base):
 
     def checkResults(self, director):
         "Checks varying parameter and desides if start new job or show optimal value"
-        # If optimal value, show the value
-        # Otherwise add row and submit the job again!
-#                        load(actor      = "jobs/conv-run",
-#                                 routine    = "showOptimal", #"checkResults",
-#                                 id         = self.id,
-#                                 taskid     = self.taskid,
-#                                 paramid    = self.paramid,
-#                                 rownum     = self.rownum)
+        (energy, degauss)   = self.energyDegauss(director)
+        self.appendToFile(energy, degauss)
 
-        #return self.optimal()
-        link = load(actor      ='jobs/conv-run',
+        records     = self.loadRecords()
+        self.editInput(director)
+
+        linkA = load(actor      ='jobs/conv-run',
                       routine   = 'addRow',
                       id        = self.id,
                       taskid    = self.taskid,
                       rownum    = self.rownum + 1,
                       paramid   = self.paramid)
-        
-        if self.rownum < 1: # Submit job again!
-            return link
 
-        return load (actor      = "jobs/conv-run",
-                     routine    = "showOptimal", 
+        linkB = load (actor      = "jobs/conv-run",
+                     routine    = "showOptimal",
                      id         = self.id,
                      taskid     = self.taskid,
                      paramid    = self.paramid,
                      rownum     = self.rownum)
 
+        if len(records) < 3:
+            return linkA
+
+        if self.isConverged(records):
+            return linkB
+        
+        if self.rownum < 9: # Submit job again!
+            return linkA
+
+        return linkB    # Default
+
+
+    def isConverged(self, records):
+        tol1    = abs(float(records[self.rownum][1]/records[self.rownum-1][1]) - 1.0)
+        tol2    = abs(float(records[self.rownum-1][1]/records[self.rownum-2][1]) - 1.0)
+        return tol1 < 0.01 and tol2 < 0.01
+
+
+    def energyDegauss(self, director):
+        job     = self._latestJob(director)
+        result  = PWResult(director, self.id, job = job)
+        estr    = result.totalEnergy()      # (-12.400754729999999, 'Ry')
+        dstr    = result.smearingDegree()   # "0.05 Ry"
+        energy  = estr[0]
+        d       = dstr.split()
+        degauss = float(d[0])
+        return (energy, degauss)
+
+
+    def appendToFile(self, energy, degauss):
+        if self.rownum == 0:
+            open(FILENAME, "w").write("")   # flush first
+
+        open(FILENAME, "a").write("%s %s %s\n" % (self.rownum, energy, degauss))
+
+    
+    def loadRecords(self):
+        "Parses data from file and returns list"
+        file    = open(FILENAME)
+        records = []
+        for line in file:
+            r   = line.split()
+            records.append((int(r[0]), float(r[1]), float(r[2])))
+
+        return records
+
+
+    def editInput(self, director):
+        inputs  = director.clerk.getQEConfigurations(where="taskid='%s'" % self.taskid)
+        input   = latestInput(inputs)
+        fname   = defaultInputName(input.type)
+        str     = readRecordFile(director.dds, input, fname)
+
+        degauss = getInputParam(str, "degauss")
+        degauss = float(degauss)
+        newstr  = setInputParam(str, "degauss", "%s" % (degauss-0.01)) # 0.005
+        writeRecordFile(director.dds, input, fname, newstr)
+
+
     # XXX: Fix load()
     def showOptimal(self, director):
         container       = lc.document()
-
-        value       = "24"
+        (energy, degauss)   = self.energyDegauss(director)
+        
+        value       = "%s" % degauss
         container.add(lc.paragraph(text="Optimal Value: %s" % value, Class="qe-section-inline"))
 
         # Show refresh status button
