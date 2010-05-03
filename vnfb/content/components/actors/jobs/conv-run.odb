@@ -291,9 +291,12 @@ class Actor(base):
             jstatus   = "Complete!"
             self._updateJobStatus(director, job, jstatus)
             self._updateJobStage(director, job, "complete")
-
             return self._pbarAttr(selectpbar, jperc, jstatus)
-            
+
+        if self._isDone(job):
+            jperc     = 100
+            jstatus   = "Complete!"
+            return self._pbarAttr(selectpbar, jperc, jstatus)
 
         return self._pbarAttr(selectpbar, 100, "Unknown state") # Default value
 
@@ -337,6 +340,10 @@ class Actor(base):
 
     def _isComplete(self, job):
         return job.status == "ready"
+
+
+    def _isDone(self, job):
+        return job.description == "complete"
 
 
     def checkResults(self, director):
