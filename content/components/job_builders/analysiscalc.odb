@@ -23,13 +23,29 @@ class Builder(base):
         base.__init__(self, name, path)
 
     def render(self, computation, db=None, dds=None):
-        # two files need to be copied to job directory
-        # 1. input file
-        # 2. trajectory file   
+        """to render this we get the trajectory object from the analysis object, 
+        copy over the trajectory file, reinitialize the trajectory object 
+        based on the new location of the trajectory.
+        
+        After that we write out the analysis input file and return. 
+        """
         orm = self.director.clerk.orm  
-        analysisObj = orm.record2object(computation)   
-#        basename = str(computation.__class__.__name__)
-#        files = [+'.inp']
+        analysisObj = orm.record2object(computation)  
+        
+        
+#        trajectoryObj = analysisObj.trajectory
+#        trajectoryDbObj = orm(trajectoryObj)
+#        dds.copy(trajectoryDbObj, 'gulp.nc', job, 'gulp.nc')
+#        
+#        
+#        analysisInputFileContents = analysisObj.getInputFile()
+#        datadir = director.dds.abspath(computation)
+#        if not os.path.exists(datadir): 
+#            os.makedirs(datadir)
+#        inputFilePath = director.dds.abspath(computation, 
+#            filename = self.inventory.analysisType+'.inp')
+#        open(inputFilePath, 'w').write(analysisInputFileContents)        
+        
         # copy files to job directory
         job = computation.getJob(self.db)
         dds.copy(computation, analysisObj.inputFileName, job, analysisObj.inputFileName)
