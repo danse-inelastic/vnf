@@ -61,17 +61,22 @@ REEXP["pngband"]        = PNGBAND
 ResultPath - class that is responsible for results files
 """
 class ResultPath(object):
-    def __init__(self, director, simid, linkorder, subtype = None):
+    def __init__(self, director, simid, linkorder, subtype = None, job = None):
         self._director      = director
         self._simid         = simid     
         self._linkorder     = linkorder
         self._subtype       = subtype
+        self._job           = job
         self._init()
 
 
     def _init(self):
         "Additional initialization"
-        self._resultinfo    = ResultInfo(self._director, self._simid, self._linkorder, subtype = self._subtype)
+        self._resultinfo    = ResultInfo(self._director,
+                                         self._simid,
+                                         self._linkorder,
+                                         subtype = self._subtype,
+                                         job = self._job)
         self._jit           = self._resultinfo.jit()
 
 

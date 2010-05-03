@@ -25,12 +25,12 @@ Note:
 # XXX: Handle the case when the results files might not have read access
 class QEResult(object):
 
-    def __init__(self, director, simid, linkorder, subtype = None):   # simulation idtype,
+    def __init__(self, director, simid, linkorder, subtype = None, job = None):   # simulation idtype,
         self._director      = director
         self._simid         = simid
         self._linkorder     = linkorder
         self._subtype       = subtype
-        self._resultPath    = ResultPath(director, simid, linkorder, subtype)
+        self._resultPath    = ResultPath(director, simid, linkorder, subtype, job)
 
         # Attributes
         self._task          = None  # None if output file is not available or task factory not implemented

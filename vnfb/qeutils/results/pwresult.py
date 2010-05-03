@@ -31,8 +31,8 @@ NONE        = "None"
 
 class PWResult(QEResult):
 
-    def __init__(self, director, simid, linkorder = 0):
-        super(PWResult, self).__init__(director, simid, linkorder)
+    def __init__(self, director, simid, linkorder = 0, job = None):
+        super(PWResult, self).__init__(director, simid, linkorder, job=job)
 
 
     def _taskFactory(self):

@@ -67,6 +67,7 @@ class Actor(base):
                       routine   = 'addRow',
                       id        = self.id,
                       taskid    = self.taskid,
+                      rownum    = self.rownum,
                       paramid   = self.paramid)]
 
 
@@ -108,7 +109,7 @@ class Actor(base):
 
     def runJob(self, director):
         self.submitJob(director)
-        time.sleep(0.2)     # Give a bit time to generate job record
+        time.sleep(0.7)     # Give a bit time to generate job record
 
         return self.populateRow(director)
 
@@ -390,8 +391,23 @@ class Actor(base):
 #                                 paramid    = self.paramid,
 #                                 rownum     = self.rownum)
 
-        return self.optimal()
+        #return self.optimal()
+        link = load(actor      ='jobs/conv-run',
+                      routine   = 'addRow',
+                      id        = self.id,
+                      taskid    = self.taskid,
+                      rownum    = self.rownum + 1,
+                      paramid   = self.paramid)
+        
+        if self.rownum < 1: # Submit job again!
+            return link
 
+        return load (actor      = "jobs/conv-run",
+                     routine    = "showOptimal", 
+                     id         = self.id,
+                     taskid     = self.taskid,
+                     paramid    = self.paramid,
+                     rownum     = self.rownum)
 
     # XXX: Fix load()
     def showOptimal(self, director):

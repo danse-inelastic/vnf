@@ -70,6 +70,7 @@ class Actor(base):
         self._showOptimalTitle(director, splitter)
 
 
+
     def _showParamInfo(self, splitter):
         sC          = splitter.section()
         table       = QEGrid(lc.grid(Class = "qe-table"))
@@ -94,6 +95,18 @@ class Actor(base):
 
         self._showTaskTitle(splitter)
         self._taskTable(director, splitter, task)
+
+        # !!! Test
+
+#        from vnfb.qeutils.qeutils import latestJob
+#        from vnfb.qeutils.results.pwresult import PWResult
+##        jobs    = director.clerk.getQEJobs(where="taskid='%s'" % task.id)
+##        job     = latestJob(jobs)
+#        job     = director.clerk.getQEJobs(id="JBJSDE4T")
+#        result  = PWResult(director, self.id, job = job)
+#        print job.id
+#        print result.totalEnergy()
+#        print result.smearingDegree()
 
 
     def _showTaskTitle(self, splitter):
