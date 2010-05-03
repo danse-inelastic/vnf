@@ -27,17 +27,21 @@ def setColumnStyle(table):
 
 
 def tableHeader():
+    content     = lc.document()
     table       = QEGrid(lc.grid(Class="qe-table-conv-jobs"))
     table.addRow(("Job Id", "Task", "Status", "Result", "Optimal") )
 
     setColumnStyle(table)
     table.setRowStyle(0, "qe-table-header")
-    return table.grid()
+    content.add(table.grid())
+    content.add(lc.document(id="hello"))
+    return content
+    #return table.grid()
 
 
 def tableRow(rownum):
     "Return table of one row (inserts row). First after the header row has index 0"
-    table       = QEGrid(lc.grid(Class="qe-table-conv-jobs"))
+    table   = QEGrid(lc.grid(Class="qe-table-conv-jobs"))
     row     = []
     for colnum in range(NUM_COLUMNS):
         row.append(lc.document(id=convJobId(rownum, colnum)))
@@ -47,12 +51,19 @@ def tableRow(rownum):
     return table.grid()
 
 
-def visual(director, id, paramid):
-    content = lc.document()
-    content.add(tableHeader())
-    content.add(tableRow(0))
+def visual(director, id, paramid, part="row"):
+    if part == "header":
+        return tableHeader()
 
-    return content
+    return tableRow(0)  # Fix!!!
+
+#    content = lc.document()
+#    content.add(tableHeader())
+#    content.add(tableRow(0))
+#
+#    return content
+
+
 
 #    table       = QEGrid(lc.grid(Class="qe-tasks-table"))
 ##    jobs       = director.clerk.getQEConvParams(where="convergenceid='%s'" % convid)
