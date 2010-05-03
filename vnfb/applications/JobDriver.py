@@ -42,8 +42,6 @@ Important Note:
     - Both "<" and "-inp" work on foxtrot.danse.us
 """
 
-# XXX: Change name to JobDriver
-
 class JobDriver(base):
 
     class Inventory(base.Inventory):
@@ -91,7 +89,7 @@ class JobDriver(base):
         settings    = self.clerk.getQESettings(where = "simulationid='%s'" % self.id)   # Should exist
         setting     = settings[0]
         params  = {"taskid":        self.taskid,
-                   "serverid":      self._sim.serverid,  # -> take from QESimulations
+                   "serverid":      self._sim.serverid,
                    "status":        "Submitting",    # Fixed status
                    "timesubmitted": stamp(),
                    "creator":       self.sentry.username,
@@ -134,7 +132,7 @@ class JobDriver(base):
 
 
     def _createRunScript(self):
-        server      = self.clerk.getServers(id = self._job.serverid)
+        server  = self.clerk.getServers(id = self._job.serverid)
         args    = self._commandArgs()
         
         # QE temp simulation directory is qesimulations/[simid] directory

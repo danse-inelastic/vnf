@@ -10,7 +10,10 @@
 #
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
+from vnfb.applications.JobDriver import JobDriver as base
 
+class ConvJobDriver(base):
+    pass
 
 __date__ = "$May 2, 2010 3:49:18 PM$"
 

@@ -178,9 +178,11 @@ class Actor(base):
         # If not job created or is not running
         link = lc.link(label    = "Run Test",
                        Class    = "qe-run-task",
-                       onclick  = load(actor     ='jobs/conv-run',
+                       onclick  = load(actor    ='jobs/conv-run',
                                       routine   = 'run',
                                       id        = self.id,
+                                      taskid    = task.id,
+                                      convid    = self.convid,  # Just in case
                                       paramid   = self.paramid))
         return link
 
