@@ -398,6 +398,12 @@ def subtypeMatdyn(subtype):
     return SUBTYPE_MATDYN[subtype]
 
 
+CONV_JOB_BASE   = "convjob"
+
+def convJobId(row, col):
+    return "%s-%s-%s" % (CONV_JOB_BASE, row, col)
+
+
 # *********** TESTS ******************************
 
 def testStamp():
