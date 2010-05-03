@@ -44,6 +44,7 @@ class Actor(base):
         taskid      = pyre.inventory.str('taskid', default='')
         convid      = pyre.inventory.str('convid', default='')
         paramid     = pyre.inventory.str('paramid', default='')
+        state       = pyre.inventory.str('state', default='')
 
         rownum      = pyre.inventory.int('rownum', default=0)
         colnum      = pyre.inventory.int('colnum', default=0)
@@ -158,7 +159,7 @@ class Actor(base):
         action.append(self.jobId(director))
         action.append(self.taskType())
         action.append(self.progressBar(director))
-        action.append(self.results())
+        action.append(self.results(director))
         action.append(self.optimal())
         
         return action
@@ -187,6 +188,9 @@ class Actor(base):
 
 
     def progressBar(self, director):
+        if self.state == "complete":
+            return select(id=convJobId(self.rownum, 2) ).replaceContent("Complete")
+        
         pbar    = ProgressBar( id           = self.pbarId(self.rownum),
                                 status      = 'Submitting job ...',
                                 percentage  = 0,
@@ -200,29 +204,49 @@ class Actor(base):
                                 paramid   = self.paramid,
                                 rownum    = self.rownum)
 
-#        # Temp
-#        pbar.onfinished  = [load(actor    = 'material_simulations/espresso-convergence/param-view',
-#                                 id       = self.id,
-#                                 convid   = self.convid,
-#                                 paramid  = self.paramid)]
                                  
-        pbar.onfinished  = [load(actor      = "jobs/conv-run",
-                                 routine    = "showOptimal", #"checkResults",
+        pbar.onfinished  = []
+        pbar.onfinished.append(load(actor      = "jobs/conv-run",
+                                 routine    = "updateFields",
                                  id         = self.id,
                                  taskid     = self.taskid,
                                  paramid    = self.paramid,
-                                 rownum     = self.rownum)]
+                                 state      = "complete",
+                                 rownum     = self.rownum))
+                                 
+        pbar.onfinished.append(load(actor      = "jobs/conv-run",
+                                 routine    = "checkResults",
+                                 id         = self.id,
+                                 taskid     = self.taskid,
+                                 paramid    = self.paramid,
+                                 rownum     = self.rownum))
 
         return select(id=convJobId(self.rownum, 2) ).replaceContent(pbar)
 
 
-    def results(self):
-        link    = "None"    #lc.link(label="ZZZZZ.tgz")
+    def updateFields(self, director):
+        action  = []
+        action.append(self.results(director))
+        action.append(self.progressBar(director))
+        
+        return action
+
+
+    def results(self, director):
+        link   = lc.document()
+        link.add("None")
+        if self.state == "complete":
+            job     = self._latestJob(director)
+            results = ResultInfo(director, self.id, 0, job)
+            link    = results.status()
+
         return select(id=convJobId(self.rownum, 3) ).replaceContent(link)
 
 
     def optimal(self):
-        return select(id=convJobId(self.rownum, 4) ).replaceContent("None")
+        link   = lc.document()
+        link.add("None")
+        return select(id=convJobId(self.rownum, 4) ).replaceContent(link)
 
 
     # XXX: Too long. Refactor!
@@ -346,11 +370,28 @@ class Actor(base):
         return job.description == "complete"
 
 
+    def _latestJob(self, director):
+        jobs        = director.clerk.getQEJobs(where="taskid='%s'" % self.taskid)
+
+        if not jobs:
+            return None
+
+        return latestJob(jobs)
+
+
     def checkResults(self, director):
         "Checks varying parameter and desides if start new job or show optimal value"
         # If optimal value, show the value
         # Otherwise add row and submit the job again!
-        pass
+#                        load(actor      = "jobs/conv-run",
+#                                 routine    = "showOptimal", #"checkResults",
+#                                 id         = self.id,
+#                                 taskid     = self.taskid,
+#                                 paramid    = self.paramid,
+#                                 rownum     = self.rownum)
+
+        return self.optimal()
+
 
     # XXX: Fix load()
     def showOptimal(self, director):
@@ -393,6 +434,7 @@ class Actor(base):
         self.taskid     = self.inventory.taskid
         self.convid     = self.inventory.convid
         self.paramid    = self.inventory.paramid
+        self.state      = self.inventory.state
 
         self.rownum     = self.inventory.rownum
         self.colnum     = self.inventory.colnum
