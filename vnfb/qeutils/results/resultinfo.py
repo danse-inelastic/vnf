@@ -19,6 +19,7 @@ from vnfb.qeutils.message import Message
 from vnfb.applications.PackJobDir import PackJobDir
 from vnfb.qeutils.qeconst import RESULTS_ID
 from vnfb.qeutils.qerecords import SimulationRecord
+from vnfb.qeutils.qeutils import ifelse
 
 import luban.content as lc
 from luban.content import load
@@ -47,10 +48,13 @@ class ResultInfo:
         - Results link is specified by id
     """
 
-    def __init__(self, director, simid, linkorder, job = None, subtype = None):
+    # XXX: Remove task or input?
+    def __init__(self, director, simid, linkorder, job = None, subtype = None, task = None, input = None):
         self._director  = director
         self._simid     = simid
         self._linkorder = linkorder
+        self._task      = task
+        self._input     = input
         self._job       = job
         self._subtype   = subtype
 
@@ -63,12 +67,9 @@ class ResultInfo:
     def _init(self):
         "Additional init"
         self._simrecord   = SimulationRecord(self._director, self._simid, self._subtype)
-        self._task        = self._simrecord.task(self._linkorder)       # init task
-        self._input       = self._simrecord.input(self._linkorder)      # init input
-
-        if not self._job:                                               # init job
-            # If no job set, get the latest job from simrecord only
-            self._job   = self._simrecord.job(self._linkorder)
+        ifelse(self._task, self._task, self._simrecord.task(self._linkorder))
+        ifelse(self._input, self._input, self._simrecord.input(self._linkorder))
+        ifelse(self._job, self._job, self._simrecord.job(self._linkorder))
 
 
     def simrecord(self):
@@ -132,6 +133,9 @@ class ResultInfo:
         
         return self._statusstring()
 
+
+    def stateLabel(self):
+        return self._status.stateLabel()
 
 #        # Outdated packing request # Don't need?
 #        if self._oldrequest():
