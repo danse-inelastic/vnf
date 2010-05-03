@@ -83,9 +83,14 @@ class Message:
             self._text   = text
 
 
-    def get(self, state):
+    def get(self, state=None):
         "Returns state of the status"
         return self._state
+
+
+    def stateLabel(self):
+        "Returns state and corresponding description"
+        return (self._state, self._text)
 
 
     def tag(self, name):

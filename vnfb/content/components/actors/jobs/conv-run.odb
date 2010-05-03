@@ -20,6 +20,7 @@ from luban.content.ProgressBar import ProgressBar
 from luban.content import load, select
 from vnfb.utils import launch_detached, bindir
 from vnfb.qeutils.qeutils import latestJob, jobStatus, key2str
+from vnfb.qeutils.results.resultinfo import ResultInfo
 from vnfb.qeutils.qeconst import JOB_STATE
 
 import luban.content as lc
@@ -31,7 +32,7 @@ SUBMIT_FRACTION     = 0.3   # Job submission
 RUN_FRACTION        = 0.4   # Job run
 PACKING_FRACTION    = 0.3   # Results packing 
 RUN_PERC            = 50
-FINISHED_PERC       = 100 #70
+FINISHED_PERC       = 70
 
 
 from luban.components.AuthorizedActor import AuthorizedActor as base
@@ -273,7 +274,26 @@ class Actor(base):
         if self._isFinished(job):
             jperc     = FINISHED_PERC    
             jstatus   = job.status
+            self._updateJobStage(director, job, "packing")
             return self._pbarAttr(selectpbar, jperc, jstatus)
+
+        if self._isPacking(job):
+            results     = ResultInfo(director, self.id, 0, job)
+            results.retrieve()
+            (state, label)  = results.stateLabel()
+            jperc     = 80      # Can later discretize finer
+            jstatus   = label
+            self._updateJobStatus(director, job, state)
+            return self._pbarAttr(selectpbar, jperc, jstatus)
+
+        if self._isComplete(job):
+            jperc     = 100
+            jstatus   = "Complete!"
+            self._updateJobStatus(director, job, jstatus)
+            self._updateJobStage(director, job, "complete")
+
+            return self._pbarAttr(selectpbar, jperc, jstatus)
+            
 
         return self._pbarAttr(selectpbar, 100, "Unknown state") # Default value
 
@@ -309,6 +329,14 @@ class Actor(base):
 
     def _isFinished(self, job):
         return job.description == "finished"
+
+
+    def _isPacking(self, job):
+        return job.description == "packing" and job.status != "ready"
+
+
+    def _isComplete(self, job):
+        return job.status == "ready"
 
 
     def checkResults(self, director):

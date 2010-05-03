@@ -58,7 +58,8 @@ class Actor(base):
             if len(jobs) == 0:  # Empty list
                 return link
             job         = latestJob(jobs)
-            
+
+        # Weird line. See ResultInfo!
         results     = ResultInfo(director, self.id, task.linkorder, job)
 
         return results.retrieve()
