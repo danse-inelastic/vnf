@@ -12,7 +12,7 @@
 #
 
 from vnfb.qeutils.qegrid import QEGrid
-from vnfb.qeutils.qeutils import convJobId
+from vnfb.qeutils.qeutils import convJobId, convJobRowId
 import luban.content as lc
 
 MAX_STEPS   = 30    # Max number of rows in the table
@@ -34,28 +34,31 @@ def tableHeader():
     setColumnStyle(table)
     table.setRowStyle(0, "qe-table-header")
     content.add(table.grid())
-    content.add(lc.document(id="hello"))
+    content.add(lc.document(id=convJobRowId(0)))
     return content
-    #return table.grid()
 
 
 def tableRow(rownum):
     "Return table of one row (inserts row). First after the header row has index 0"
+    content     = lc.document()
     table   = QEGrid(lc.grid(Class="qe-table-conv-jobs"))
     row     = []
     for colnum in range(NUM_COLUMNS):
         row.append(lc.document(id=convJobId(rownum, colnum)))
     table.addRow(row)
-
     setColumnStyle(table)
-    return table.grid()
+    
+    content.add(table.grid())
+    content.add(lc.document(id=convJobRowId(rownum+1)))
+    return content
 
 
-def visual(director, id, paramid, part="row"):
+
+def visual(director, id, paramid, part="row", rownum=0):
     if part == "header":
         return tableHeader()
 
-    return tableRow(0)  # Fix!!!
+    return tableRow(rownum)
 
 #    content = lc.document()
 #    content.add(tableHeader())

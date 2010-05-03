@@ -22,7 +22,7 @@ from vnfb.qeutils.qeconst import JOB_STATE, TASK_ACTION
 
 import luban.content as lc
 from vnfb.qeutils.qeconst import ID_CONV_JOBS
-from vnfb.qeutils.qeutils import convJobId
+from vnfb.qeutils.qeutils import convJobId, convJobRowId
 
 from luban.components.AuthorizedActor import AuthorizedActor as base
 class Actor(base):
@@ -34,6 +34,8 @@ class Actor(base):
 
         rownum      = pyre.inventory.int('rownum', default=0)
         colnum      = pyre.inventory.int('colnum', default=0)
+        # Temp
+        number      = pyre.inventory.int('number', default=0)
 
 
     def default(self, director):
@@ -77,26 +79,39 @@ class Actor(base):
         row         = director.retrieveVisual(  visual,
                                                 director,
                                                 id      = self.id,
-                                                paramid = self.paramid)
+                                                paramid = self.paramid,
+                                                rownum  = self.rownum)
         action      = []
-        action.append(select(id="hello").replaceContent(row))
+        action.append(select(id=convJobRowId(self.rownum)).replaceContent(row))
         action.append(load(actor    ='jobs/conv-run',
                           routine   = 'setCell',
                           id        = self.id,
-                          paramid   = self.paramid))
+                          paramid   = self.paramid,
+                          rownum    = self.rownum))
 
         return action
 
 
     def setCell(self, director):
         action      = []
-        action.append(select(id=convJobId(0,self.colnum)).replaceContent(str(self.colnum+1)))
+        action.append(select(id=convJobId(0,self.colnum)).replaceContent(str(self.number+1)))
         if self.colnum < 4:
             action.append(load(actor    ='jobs/conv-run',
                               routine   = 'setCell',
                               id        = self.id,
                               paramid   = self.paramid,
-                              colnum    = self.colnum + 1))
+                              colnum    = self.colnum + 1,
+                              number    = self.number + 1,
+                              rownum    = self.rownum))
+
+#        if self.colnum % 4 == 0 and self.rownum < 1:
+#            action.append(load(actor      ='jobs/conv-run',
+#                              routine   = 'addRow',
+#                              id        = self.id,
+#                              paramid   = self.paramid,
+#                              number    = self.number,
+#                              rownum    = self.rownum + 1))
+
         return action
 
 
@@ -110,8 +125,7 @@ class Actor(base):
         time.sleep(5)
 
         return select(id="hello").replaceContent(row)
-    
-        #return select(id=convJobId(0,1)).replaceContent("Hi")
+
 
     def __init__(self):
         super(Actor, self).__init__(name='jobs/submit')
@@ -121,9 +135,11 @@ class Actor(base):
         super(Actor, self)._configure()
         self.id         = self.inventory.id
         self.paramid    = self.inventory.paramid
+
         self.rownum     = self.inventory.rownum
         self.colnum     = self.inventory.colnum
 
+        self.number     = self.inventory.number
 
     def _init(self):
         super(Actor, self)._init()
