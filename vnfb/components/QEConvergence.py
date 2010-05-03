@@ -79,7 +79,6 @@ class QEConvergence(base):
         self._refreshAction(section)
         self._newTestAction(section)
         self._pwInputAction(section)
-        self._runAction(section)
 
         section.add(lc.document(Class="clear-both"))
 
@@ -131,18 +130,6 @@ class QEConvergence(base):
             return s
 
         return ""
-
-
-    # Temp
-    def _runAction(self, section):
-        "Shows PW input action button"
-        section.add(lc.link(label="Run Test",
-                            Class="qe-action-default", 
-                            onclick = load(actor    = 'material_simulations/espresso-convergence/view',
-                                           routine  = "runTest",
-                                           id       = self.id))
-                    )
-
 
 
     def _mainContent(self, director, splitter):

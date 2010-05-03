@@ -33,6 +33,7 @@ class TaskAction(object):
             return "None"
 
         return self._runLink()
+
  
     # Rename to link()
     def linkUpdated(self):

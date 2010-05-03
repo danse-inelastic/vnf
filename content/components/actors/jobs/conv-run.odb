@@ -11,6 +11,76 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
+import time
+
+import os
+from luban.content.ProgressBar import ProgressBar
+from luban.content import load, select
+from vnfb.utils import launch_detached, bindir
+from vnfb.qeutils.qeutils import latestJob
+from vnfb.qeutils.qeconst import JOB_STATE, TASK_ACTION
+
+import luban.content as lc
+from vnfb.qeutils.qeconst import ID_CONV_JOBS
+
+from luban.components.AuthorizedActor import AuthorizedActor as base
+class Actor(base):
+
+    class Inventory(base.Inventory):
+        import pyre.inventory
+        id          = pyre.inventory.str('id', default='')      # Simulation Id
+        paramid     = pyre.inventory.str('paramid', default='')
+
+
+    def default(self, director):
+        "Not implemented"
+        pass
+
+
+    def run(self, director):
+        "Submit job to the computing nodes. Trace job status."
+        jTable      = lc.document()
+        splitter    = jTable.splitter(orientation="vertical")
+        self._jobTitle(splitter)
+        self._jobTable(director, splitter)
+
+        return select(id=ID_CONV_JOBS).replaceContent(jTable)
+
+
+    def _jobTitle(self, splitter):
+        sP          = splitter.section(id="qe-tasks-label")
+        sP.add(lc.paragraph(text="Convergence Jobs", Class="qe-section-inline"))
+        sP.add(lc.document(Class="clear-both"))
+
+
+    def _jobTable(self, director, splitter):
+        sT          = splitter.section()                        # path indicator
+        visual      = 'material_simulations/espresso-convergence/table-jobs'
+        table       = director.retrieveVisual( visual,
+                                                director,
+                                                id      = self.id,
+                                                paramid = self.paramid)
+        sT.add(table)
+#        time.sleep(10)
+#        table.addRow(("a", "b", "c", "d", "e"))
+
+
+    def __init__(self):
+        super(Actor, self).__init__(name='jobs/submit')
+
+
+    def _configure(self):
+        super(Actor, self)._configure()
+        self.id         = self.inventory.id
+        self.paramid    = self.inventory.paramid
+
+
+    def _init(self):
+        super(Actor, self)._init()
+
+def actor():
+    return Actor()
+
 
 __date__ = "$May 2, 2010 10:42:56 AM$"
 

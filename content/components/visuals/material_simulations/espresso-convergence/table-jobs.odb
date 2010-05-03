@@ -14,24 +14,63 @@
 from vnfb.qeutils.qegrid import QEGrid
 import luban.content as lc
 
-def visual(director, id, convid, paramid):
-    table       = QEGrid(lc.grid(Class="qe-tasks-table"))
-#    jobs       = director.clerk.getQEConvParams(where="convergenceid='%s'" % convid)
-#    if not params:           # No convergence tests found
-#        return table.grid()
+MAX_STEPS   = 30    # Max number of rows in the table
+NUM_COLUMNS = 5
 
-    table.addRow(("Job Id", "Task", "Status", "Result", "Optimal") )
-    table.addRow(("AAA", "PW", "[..........]", "ZZZZZ.tgz", "24") )
-
+def setColumnStyle(table):
     table.setColumnStyle(0, "qe-table-id")
     table.setColumnStyle(1, "qe-table-task-type")
     table.setColumnStyle(2, "qe-table-job-status")
     table.setColumnStyle(3, "qe-table-tar")
     table.setColumnStyle(4, "qe-table-param")
-    table.setRowStyle(0, "qe-table-header")
 
+
+def tableHeader():
+    table       = QEGrid(lc.grid(Class="qe-table-conv-jobs"))
+    table.addRow(("Job Id", "Task", "Status", "Result", "Optimal") )
+
+    setColumnStyle(table)
+    table.setRowStyle(0, "qe-table-header")
     return table.grid()
 
+
+def tableRow():
+    table       = QEGrid(lc.grid(Class="qe-table-conv-jobs"))
+    table.addRow(("a", "b", "c", "d", "e") )
+
+    setColumnStyle(table)
+    return table.grid()
+
+
+def visual(director, id, paramid):
+    content = lc.document()
+    content.add(tableHeader())
+    content.add(tableRow())
+
+    return content
+
+#    table       = QEGrid(lc.grid(Class="qe-tasks-table"))
+##    jobs       = director.clerk.getQEConvParams(where="convergenceid='%s'" % convid)
+##    if not params:           # No convergence tests found
+##        return table.grid()
+#
+#    table.addRow(("Job Id", "Task", "Status", "Result", "Optimal") )
+##    for s in range(MAX_STEPS):
+##        row     = []
+##        for c in range(NUM_COLUMNS):
+##            row.append(lc.document(id=""))
+##        table.addRow(row)
+#
+#    table.setColumnStyle(0, "qe-table-id")
+#    table.setColumnStyle(1, "qe-table-task-type")
+#    table.setColumnStyle(2, "qe-table-job-status")
+#    table.setColumnStyle(3, "qe-table-tar")
+#    table.setColumnStyle(4, "qe-table-param")
+#    table.setRowStyle(0, "qe-table-header")
+#
+#    return table.grid()
+
+# table.addRow(("AAA", "PW", "[..........]", "ZZZZZ.tgz", "24") )
 
 __date__ = "$May 1, 2010 9:42:20 PM$"
 
