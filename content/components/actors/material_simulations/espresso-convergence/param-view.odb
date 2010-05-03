@@ -179,7 +179,7 @@ class Actor(base):
         link = lc.link(label    = "Run Test",
                        Class    = "qe-run-task",
                        onclick  = load(actor    ='jobs/conv-run',
-                                      routine   = "showOptimal", #'run',
+                                      routine   = 'run',
                                       id        = self.id,
                                       taskid    = task.id,
                                       convid    = self.convid,  # Just in case
