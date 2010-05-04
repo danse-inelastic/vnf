@@ -36,26 +36,15 @@ class Accessor(base):
 #        table = db.getTable(type)
 #        return db.query(table).filter_by(id=id).one()
 
-    def getAnalysisRecord(self, type, id):
+    def getAnalysis(self, type, id):
         return self.getRecordByID(type, id)
     
-    def getAnalysisRecord(self, id):
-        orm = self.director.clerk.orm
-        db = orm.db
+    def getAnalysis(self, id):
         for table in self.analysisTables():
-            try:
-                result = db.query(table).filter_by(id=id).one()
-            except:
-                pass
+            result = db.query(table).filter_by(id=id).one()
             if result:
                 analysis = result
-                break #assume only one record exists w/id
         return analysis
-    
-    def getAnalysis(self, id):
-        orm = self.director.clerk.orm
-        record = self.getAnalysisRecord(id)
-        return orm.record2object(record)
 
     def countAnalyses(self, filter=None, label=None, mine=False):
         db = self.db
@@ -68,6 +57,7 @@ class Accessor(base):
         
         q = sqlalchemy.union_all(*qs)
         return q.alias('tocount').count().execute().fetchone()[0]
+
 
     def getAnalysisRecords(self, filter=None, order_by=None, 
                        reverse_order=None, slice=None, label=None, mine=False):
@@ -106,15 +96,18 @@ class Accessor(base):
             ret.reverse()
         return ret
 
+
     def makeQuery(self, table, filter=None, label=None, mine=False):
         'create a query for an analysis table with given filter'
         db = self.db
+        
         if label:
             if filter: raise RuntimeError
             return self.makeLabeledQuery(label, table, mine=mine)
         
         sGP = db._tablemap.TableToSATable(global_pointer).alias('gptrs')
         st = db._tablemap.TableToSATable(table)   
+
         #
         cols = [
             st.c.id.label('id'),
@@ -131,10 +124,12 @@ class Accessor(base):
             where = '%s and %s' % (where, mine)
         #
         q = sqlalchemy.select(cols, where)
+
         #
         if filter:
             q = sqlalchemy.select([q.alias('analysis')], whereclause=filter)
         return q
+
 
     def makeLabeledQuery(self, label, table, mine=False):
         'create a query for an analysis table with a given filter'
@@ -174,23 +169,25 @@ class Accessor(base):
         q = sqlalchemy.select(cols, where)
         
         return q
-    
-    def getComputationLabel(self, computation_id):
-        computation = self.getAnalysis(computation_id)
-        record = self.orm(computation)
-        return record.short_description or record.id
+
 
     def getTables(self):
         return self.analysisTables()
+    
 
     def analysisTables(self):
         from vnfb.dom.analysis.analysis_types import typenames
         ormtables = map(self._getTable, typenames)
+
         return ormtables
 
+
 from vnfb.dom.Label import Label
+
+
 from dsaw.db.VersatileReference import global_pointer
 import sqlalchemy
+
 
 def accessor():
     return Accessor()
