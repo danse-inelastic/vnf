@@ -28,7 +28,7 @@ class Retriever(base):
 #        self.declareProgress(0.2, 'check if results exist')
 #        self._check_results_sanity(expected_results=['dos'], job=job)
 
-        # create a phonon dos record to save dos
+        # create a dos record to save dos
         self.declareProgress(0.4, 'create a DOS data object to store the result')
         from vnfb.dom.material_simulations.PhononDOS import PhononDOSTable
         dos = self._make_result_holder(computation, PhononDOSTable)
