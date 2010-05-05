@@ -40,7 +40,7 @@ class Accessor(base):
 
         director = self.director
 
-        # make sure file is at the web serveer
+        # make sure file is at the web server
         if not director.dds.is_available(record):
             try:
                 director.dds.make_available(record)
