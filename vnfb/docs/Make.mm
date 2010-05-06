@@ -21,7 +21,6 @@ RECURSE_DIRS = \
 # sphinx export directory
 EXPORT_DATADIRS = \
 	_static \
-	shots \
 
 
 # vars for sphinx build command 

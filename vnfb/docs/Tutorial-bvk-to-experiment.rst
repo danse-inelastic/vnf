@@ -77,7 +77,7 @@ Point your browser to https://vnf.caltech.edu/vnf/beta
 
 Then login with your username and password.
 
-.. image:: shots/login.png
+.. image:: /shots/login.png
    :width: 400px
 
 
@@ -91,7 +91,7 @@ Minmize help window
 A help window could show up with the main vnf view. You can minimize
 it by clicking the minimize button:
 
-.. image:: shots/minimize.png
+.. image:: /shots/minimize.png
    :width: 100px
 
 
@@ -100,7 +100,7 @@ Atomic structure
 
 In the "atomic structure" tab, you will see a table of atomic structures.
 
-.. image:: shots/atomicstructure/table-top.png
+.. image:: /shots/atomicstructure/table-top.png
    :width: 720px
 
 
@@ -110,13 +110,13 @@ Select Al at 300K
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ 
 First we search for "Al*" for "chemical_formula"
 
-.. image:: shots/atomicstructure/search-Al.png
+.. image:: /shots/atomicstructure/search-Al.png
    :width: 720px
 
 
 then we choose "fcc Al at 300":
 
-.. image:: shots/atomicstructure/select-Al300K.png
+.. image:: /shots/atomicstructure/select-Al300K.png
    :width: 720px
 
 
@@ -127,7 +127,7 @@ Atomic structure "Al at 300K"
 
 We are now in the view of the atomic structure "Al at 300K":
 
-.. image:: shots/atomicstructure/overview-allcollapsed.png
+.. image:: /shots/atomicstructure/overview-allcollapsed.png
    :width: 720px
 
 In which there is a panel for computed properties for this material.
@@ -139,7 +139,7 @@ Expand "Phonons" panel
 ^^^^^^^^^^^^^^^^^^^^^^
 Click on the "V" to show the "Phonons" panel:
 
-.. image:: shots/atomicstructure/Al300K-expand-phonons-panel.png
+.. image:: /shots/atomicstructure/Al300K-expand-phonons-panel.png
    :width: 720px
 
 
@@ -149,7 +149,7 @@ Start a new phonons simulation
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 In the "Phonons" panel,
 
-.. image:: shots/atomicstructure/Al-phonons-highlight-new-phonon-computation-link.png
+.. image:: /shots/atomicstructure/Al-phonons-highlight-new-phonon-computation-link.png
    :width: 600px
 
 click on "Start a new phonon computation", and we will be led into a
@@ -168,7 +168,7 @@ Select bvk engine
 
 In the starting page of the phonon simulation wizard:
 
-.. image:: shots/bvk/phonon-wizard-start.png
+.. image:: /shots/bvk/phonon-wizard-start.png
    :width: 480px
 
 please select "bvk" as the engine, and click "OK" to continue.
@@ -181,7 +181,7 @@ Choose a bvk model
 Please choose the bvk model from literature (you could expand the
 model panel for details about the model if you like):
 
-.. image:: shots/bvk/selectmodel.png
+.. image:: /shots/bvk/selectmodel.png
    :width: 700px
 
 
@@ -191,7 +191,7 @@ Choose a computation target
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 Please choose to calculate "Phonons on a grid" and click "OK" button
 
-.. image:: shots/bvk/select-computation-target.png
+.. image:: /shots/bvk/select-computation-target.png
    :width: 460px
 
 
@@ -202,7 +202,7 @@ Input parameters for bvk phonons computation
 
 Please input parameters for bvk phonons computation as shown below:
 
-.. image:: shots/bvk/phonons-computation-params.png
+.. image:: /shots/bvk/phonons-computation-params.png
    :width: 460px
 
 After this step, a computation job is created for you.
@@ -217,12 +217,12 @@ Job submission
 ^^^^^^^^^^^^^^
 In the following form you can configure the computation job:
 
-.. image:: shots/bvk/submit-job.png
+.. image:: /shots/bvk/submit-job.png
 
 here we don't actually need to change anything, just click "submit",
 and you will see the progress of the job submission:
 
-.. image:: shots/bvk/submitting-job.png
+.. image:: /shots/bvk/submitting-job.png
 
 
 .. _tut-bvk2exp-packjobdir:
@@ -231,14 +231,14 @@ Pack job directory
 ^^^^^^^^^^^^^^^^^^
 In the job view
 
-.. image:: shots/bvk/job-finished.png
+.. image:: /shots/bvk/job-finished.png
    :width: 460px
 
 Click "Pack the job ..." button to watch the job being packed for
 download.
 After job packing is done, a download link will show up
 
-.. image:: shots/bvk/download-link.png
+.. image:: /shots/bvk/download-link.png
 
 click the link to download the file; 
 it contains the job directory
@@ -247,7 +247,7 @@ where the computation was run.
 
 Now, back to the job view,
 
-.. image:: shots/bvk/job-results-toswitchtobvkcomputationview.png
+.. image:: /shots/bvk/job-results-toswitchtobvkcomputationview.png
 
 click on the button "switch to view of ..." to see the details of the
 bvk computation.
@@ -260,13 +260,13 @@ BvK Computation View
 We are now presented with a view of the bvk computation we just
 performed:
 
-.. image:: shots/bvk/bvk-computation-view.png
+.. image:: /shots/bvk/bvk-computation-view.png
 
 as shown above, expand the "Results" panel, and vnf will be retrieving
 computation results from server, and soon you will see a plot
 of phonon dispersions of fcc Al:
 
-.. image:: shots/bvk/bvk-computation-result-plot.png
+.. image:: /shots/bvk/bvk-computation-result-plot.png
 
 .. _tut-bvk2exp-backtoatomicstructure:
 
@@ -274,7 +274,7 @@ Back to atomic structure of fcc Al
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 Now click on the atomic structure link in the "material" panel:
 
-.. image:: shorts/bvk/bvk-computation-view-togobacktoatomicstructure.png
+.. image:: /shots/bvk/bvk-computation-view-togobacktoatomicstructure.png
 
 to go back to the view of atomic structure  "Al at 300K", in which you
 could expand the "phonons" panel again to see the new computation
@@ -286,11 +286,11 @@ Create a sample
 ---------------
 On the main menu on the left side:
 
-.. image:: shots/bvk/main-portlet-select-samples.png
+.. image:: /shots/bvk/main-portlet-select-samples.png
 
 Click on "samples" to view a table of samples in the system:
 
-.. image:: shots/bvk/samples-new.png
+.. image:: /shots/bvk/samples-new.png
 
 Then click the "new" button on the top toolbar to create a new sample.
 
@@ -302,7 +302,7 @@ Sample description
 In the new sample creation form, the first step is to give the sample
 a description:
 
-.. image:: shots/bvk/new-sample-description.png
+.. image:: /shots/bvk/new-sample-description.png
 
 Please input a description of the new sample, such as "fcc Al plate",
 and click "save" button.
@@ -315,7 +315,7 @@ Select atomic structure
 
 The next step is to select the atomic structure for the sample:
 
-.. image:: shots/bvk/new-sample-select-material.png
+.. image:: /shots/bvk/new-sample-select-material.png
 
 Here you could filter the list of atomic structures by looking for
 "\*Al\*" for "description", and then select the "fcc Al at 300"
@@ -330,7 +330,7 @@ Select and configure shape
 To configure the shape of the sample, click the "box" button
 and input the dimensions, and then click the "save" button:
 
-.. image:: shots/bvk/new-sample-configure-shape.png
+.. image:: /shots/bvk/new-sample-configure-shape.png
 
 
 .. _tut-bvk2exp-newsample-kernel:
@@ -341,11 +341,11 @@ To give the sample scattering properties, please add a kernel.
 
 First, click on the "add a kernel" button
 
-.. image:: shots/bvk/new-sample-configure-kernel-addakernel.png
+.. image:: /shots/bvk/new-sample-configure-kernel-addakernel.png
 
 Then you can edit the new kernel:
 
-.. image:: shots/bvk/new-sample-configure-kernel-editkernel.png
+.. image:: /shots/bvk/new-sample-configure-kernel-editkernel.png
 
 Here, we start with clicking the button that looks like a phonon
 dispersion near the top, and then choose a computed phonon 
@@ -356,13 +356,14 @@ for the atomic structure we choose earlier), and then click the
 When the following panel shows up, we are done with editing this
 sample:
 
-.. image:: shots/bvk/new-sample-configure-kernel-done.png
+.. image:: /shots/bvk/new-sample-configure-kernel-done.png
 
 
 .. _tut-bvk2exp-experiment:
 
 Run a virtual neutron experiment using the new sample
 -----------------------------------------------------
+
 
 * start new
 * instrument
