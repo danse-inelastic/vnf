@@ -31,23 +31,22 @@ In phonons simulation wizard:
 
 * :ref:`select bvk engine <tut-bvk2exp-selectphononengine-bvk>`
 * :ref:`choose the bvk model from literature <tut-bvk2exp-selectbvkmodel>`
-* ref:`input N1 and df for bvk phonons computation
-  <tut-bvk2exp-inputbvkparams>`
+* :ref:`input N1 and df for bvk phonons computation <tut-bvk2exp-inputbvkparams>`
 
-Computatio job:
+Computation job:
 
 * :ref:`submit job <tut-bvk2exp-submitjob>`
 * :ref:`pack job dir <tut-bvk2exp-packjobdir>`
-* switch to bvk computation. load results. load computed phonons
-* switch to atomic structure (fcc Al). see new results there
+* :ref:`switch to bvk computation view and load results <tut-bvk2exp-bvkcomputation-view>`
+* :ref:`switch to atomic structure (fcc Al) <tut-bvk2exp-backtoatomicstructure>`
 
 
 Sample
-* create new sample
-* input basic info
-* select atomic structure (table can also be sorted and filtered)
-* select and configure shape
-* add a phonon kernel
+
+* :ref:`create new sample <tut-bvk2exp-newsample-description>`
+* :ref:`select atomic structure (table can also be sorted and filtered) <tut-bvk2exp-newsample-atomicstructure>`
+* :ref:`select and configure shape <tut-bvk2exp-newsample-shape>`
+* :ref:`add a phonon kernel <tut-bvk2exp-newsample-kernel>`
 
 
 experiment
@@ -241,34 +240,130 @@ After job packing is done, a download link will show up
 
 .. image:: shots/bvk/download-link.png
 
-click the link to download the file;
-
-.. _tut-bvk2exp-bvkcomputation-view
-
+click the link to download the file; 
 it contains the job directory
 where the computation was run.
 
-Click on the button "switch to view of ..." to see the details of the
-bvk computation:
+
+Now, back to the job view,
 
 .. image:: shots/bvk/job-results-toswitchtobvkcomputationview.png
 
+click on the button "switch to view of ..." to see the details of the
+bvk computation.
+
+
+.. _tut-bvk2exp-bvkcomputation-view:
+
 BvK Computation View
 ^^^^^^^^^^^^^^^^^^^^
+We are now presented with a view of the bvk computation we just
+performed:
 
-* switch to bvk computation. load results. load computed phonons
-* switch to atomic structure (fcc Al). see new results there
+.. image:: shots/bvk/bvk-computation-view.png
+
+as shown above, expand the "Results" panel, and vnf will be retrieving
+computation results from server, and soon you will see a plot
+of phonon dispersions of fcc Al:
+
+.. image:: shots/bvk/bvk-computation-result-plot.png
+
+.. _tut-bvk2exp-backtoatomicstructure:
+
+Back to atomic structure of fcc Al
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Now click on the atomic structure link in the "material" panel:
+
+.. image:: shorts/bvk/bvk-computation-view-togobacktoatomicstructure.png
+
+to go back to the view of atomic structure  "Al at 300K", in which you
+could expand the "phonons" panel again to see the new computation
+results show up.
 
 
-Sample
-* create new sample
-* input basic info
-* select atomic structure (table can also be sorted and filtered)
-* select and configure shape
-* add a phonon kernel
+
+Create a sample
+---------------
+On the main menu on the left side:
+
+.. image:: shots/bvk/main-portlet-select-samples.png
+
+Click on "samples" to view a table of samples in the system:
+
+.. image:: shots/bvk/samples-new.png
+
+Then click the "new" button on the top toolbar to create a new sample.
 
 
-experiment
+.. _tut-bvk2exp-newsample-description:
+
+Sample description
+^^^^^^^^^^^^^^^^^^
+In the new sample creation form, the first step is to give the sample
+a description:
+
+.. image:: shots/bvk/new-sample-description.png
+
+Please input a description of the new sample, such as "fcc Al plate",
+and click "save" button.
+
+
+.. _tut-bvk2exp-newsample-atomicstructure:
+
+Select atomic structure
+^^^^^^^^^^^^^^^^^^^^^^^
+
+The next step is to select the atomic structure for the sample:
+
+.. image:: shots/bvk/new-sample-select-material.png
+
+Here you could filter the list of atomic structures by looking for
+"\*Al\*" for "description", and then select the "fcc Al at 300"
+structure, and then click the "select" button.
+
+
+.. _tut-bvk2exp-newsample-shape:
+
+Select and configure shape
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+To configure the shape of the sample, click the "box" button
+and input the dimensions, and then click the "save" button:
+
+.. image:: shots/bvk/new-sample-configure-shape.png
+
+
+.. _tut-bvk2exp-newsample-kernel:
+
+Add a phonon kernel
+^^^^^^^^^^^^^^^^^^^
+To give the sample scattering properties, please add a kernel.
+
+First, click on the "add a kernel" button
+
+.. image:: shots/bvk/new-sample-configure-kernel-addakernel.png
+
+Then you can edit the new kernel:
+
+.. image:: shots/bvk/new-sample-configure-kernel-editkernel.png
+
+Here, we start with clicking the button that looks like a phonon
+dispersion near the top, and then choose a computed phonon 
+(each choice represented a computed full-phonon-dispersion-set
+for the atomic structure we choose earlier), and then click the
+"save" button.
+
+When the following panel shows up, we are done with editing this
+sample:
+
+.. image:: shots/bvk/new-sample-configure-kernel-done.png
+
+
+.. _tut-bvk2exp-experiment:
+
+Run a virtual neutron experiment using the new sample
+-----------------------------------------------------
+
 * start new
 * instrument
  * select ARCS, show large number of components
