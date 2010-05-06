@@ -1,0 +1,54 @@
+# -*- Python -*-
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                      California Institute of Technology
+#                      (C) 2006-2009  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+import numpy
+
+import luban.content as lc
+from luban.content import select, load, alert
+from luban.content.FormTextField import FormTextField
+from luban.content.FormTextArea import FormTextArea
+
+
+class Factory(object):
+
+    def __init__(self, director, id):
+        self.director = director
+        self.id = id
+        self.domaccess = director.retrieveDOMAccessor('atomicstructure')
+        self.atomicstructure = self.domaccess.getAtomicStructure(id)
+        self.record = self.domaccess.orm(self.atomicstructure)
+        self.actor = 'atomicstructure'
+
+    def show(self):
+        doc = lc.document(title='')
+        from luban.content.science.MatterBuilder import MatterBuilder
+        mb = MatterBuilder()  
+        mb.atoms = [
+            {'element': 'H',
+             'position': [0,1,2]
+             },
+            {'element': 'O',
+             'position': [2,1,0]
+             },
+            ]
+        doc.add(mb)  
+        return doc       
+
+
+def visual(director, id):
+    return Factory(director, id).create()
+    
+# version
+__id__ = "$Id$"
+
+# End of file 

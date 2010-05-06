@@ -2,7 +2,6 @@
 #
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
-#                                 Jiao Lin
 #                      California Institute of Technology
 #                      (C) 2006-2009  All Rights Reserved
 #
@@ -48,6 +47,12 @@ class Factory(object):
         # info
         atomicstructureinfo = self.director.retrieveVisual(
             'atomicstructure/overview-structureinfo',
+            director =self.director, id = self.id)
+        view.add(atomicstructureinfo)
+
+        # pic
+        atomicstructurepic = self.director.retrieveVisual(
+            'atomicstructure/viewer',
             director =self.director, id = self.id)
         view.add(atomicstructureinfo)
 
