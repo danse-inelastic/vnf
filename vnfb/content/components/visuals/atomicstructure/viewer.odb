@@ -33,20 +33,21 @@ class Factory(object):
         doc = lc.document(title='')
         from luban.content.science.MatterBuilder import MatterBuilder
         mb = MatterBuilder()  
-        mb.atoms = [
-            {'element': 'H',
-             'position': [0,1,2]
-             },
-            {'element': 'O',
-             'position': [2,1,0]
-             },
-            ]
+        mb.atoms = [[10,0,0],[0,10,0],[0,0,10]]
+#        mb.atoms = [
+#            {'element': 'H',
+#             'position': [0,1,2]
+#             },
+#            {'element': 'O',
+#             'position': [2,1,0]
+#             },
+#            ]
         doc.add(mb)  
         return doc       
 
 
 def visual(director, id):
-    return Factory(director, id).create()
+    return Factory(director, id).show()
     
 # version
 __id__ = "$Id$"

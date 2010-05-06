@@ -54,7 +54,7 @@ class Factory(object):
         atomicstructurepic = self.director.retrieveVisual(
             'atomicstructure/viewer',
             director =self.director, id = self.id)
-        view.add(atomicstructureinfo)
+        view.add(atomicstructurepic)
 
         director = self.director
         # props
