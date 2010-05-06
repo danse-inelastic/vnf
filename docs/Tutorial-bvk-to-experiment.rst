@@ -28,41 +28,42 @@ In the :ref:`overview of atomic structure for Al at 300K
 
 
 In phonons simulation wizard:
- * select bvk engine
- * choose the bvk model from literature (expand/shrink different panels)
- * input N1 and df for bvk phonons computation
- * submite job. watch job to be submitted
- * job is finished.
 
+* :ref:`select bvk engine <tut-bvk2exp-selectphononengine-bvk>`
+* :ref:`choose the bvk model from literature <tut-bvk2exp-selectbvkmodel>`
+* ref:`input N1 and df for bvk phonons computation
+  <tut-bvk2exp-inputbvkparams>`
 
-In job view of bvk computation:
- * pack job dir, download. take a look
- * switch to bvk computation. load results. load computed phonons
- * switch to atomic structure (fcc Al). see new results there
+Computatio job:
+
+* :ref:`submit job <tut-bvk2exp-submitjob>`
+* :ref:`pack job dir <tut-bvk2exp-packjobdir>`
+* switch to bvk computation. load results. load computed phonons
+* switch to atomic structure (fcc Al). see new results there
 
 
 Sample
- * create new sample
- * input basic info
- * select atomic structure (table can also be sorted and filtered)
- * select and configure shape
- * add a phonon kernel
+* create new sample
+* input basic info
+* select atomic structure (table can also be sorted and filtered)
+* select and configure shape
+* add a phonon kernel
 
 
 experiment
- * start new
- * instrument
-  * select ARCS, show large number of components
-  * show we can change component
-  * back to select Ideal INS.
-  * change source to neutrons saved at just before ARCS sample position
-  * change sample position and monitor position to 0,0,0
-  * change IQEmonitor to use Ei=60
- * sample configuration
-  * select a sample
-  * further configuration of kernel. make sure ei=60
- * sampele environment
- * review and finish up
+* start new
+* instrument
+ * select ARCS, show large number of components
+ * show we can change component
+ * back to select Ideal INS.
+ * change source to neutrons saved at just before ARCS sample position
+ * change sample position and monitor position to 0,0,0
+ * change IQEmonitor to use Ei=60
+* sample configuration
+ * select a sample
+ * further configuration of kernel. make sure ei=60
+* sampele environment
+* review and finish up
 
 
 
@@ -161,48 +162,123 @@ wizard for simulating phonons.
 Phonons simulation wizard
 -------------------------
 
+.. _tut-bvk2exp-selectphononengine-bvk:
+
 Select bvk engine
 ^^^^^^^^^^^^^^^^^
 
 In the starting page of the phonon simulation wizard:
 
 .. image:: shots/bvk/phonon-wizard-start.png
-   :width: 600px
+   :width: 480px
 
 please select "bvk" as the engine, and click "OK" to continue.
 
+.. _tut-bvk2exp-selectbvkmodel:
 
- * choose the bvk model from literature (expand/shrink different panels)
- * input N1 and df for bvk phonons computation
- * submite job. watch job to be submitted
- * job is finished.
+Choose a bvk model
+^^^^^^^^^^^^^^^^^^
+
+Please choose the bvk model from literature (you could expand the
+model panel for details about the model if you like):
+
+.. image:: shots/bvk/selectmodel.png
+   :width: 700px
 
 
-In job view of bvk computation:
- * pack job dir, download. take a look
- * switch to bvk computation. load results. load computed phonons
- * switch to atomic structure (fcc Al). see new results there
+.. _tut-bvk2exp-selectcomputationtarget:
+
+Choose a computation target
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Please choose to calculate "Phonons on a grid" and click "OK" button
+
+.. image:: shots/bvk/select-computation-target.png
+   :width: 460px
+
+
+.. _tut-bvk2exp-inputbvkparams:
+
+Input parameters for bvk phonons computation
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Please input parameters for bvk phonons computation as shown below:
+
+.. image:: shots/bvk/phonons-computation-params.png
+   :width: 460px
+
+After this step, a computation job is created for you.
+
+Computation job
+---------------
+
+
+.. _tut-bvk2exp-submitjob:
+
+Job submission
+^^^^^^^^^^^^^^
+In the following form you can configure the computation job:
+
+.. image:: shots/bvk/submit-job.png
+
+here we don't actually need to change anything, just click "submit",
+and you will see the progress of the job submission:
+
+.. image:: shots/bvk/submitting-job.png
+
+
+.. _tut-bvk2exp-packjobdir:
+
+Pack job directory
+^^^^^^^^^^^^^^^^^^
+In the job view
+
+.. image:: shots/bvk/job-finished.png
+   :width: 460px
+
+Click "Pack the job ..." button to watch the job being packed for
+download.
+After job packing is done, a download link will show up
+
+.. image:: shots/bvk/download-link.png
+
+click the link to download the file;
+
+.. _tut-bvk2exp-bvkcomputation-view
+
+it contains the job directory
+where the computation was run.
+
+Click on the button "switch to view of ..." to see the details of the
+bvk computation:
+
+.. image:: shots/bvk/job-results-toswitchtobvkcomputationview.png
+
+BvK Computation View
+^^^^^^^^^^^^^^^^^^^^
+
+* switch to bvk computation. load results. load computed phonons
+* switch to atomic structure (fcc Al). see new results there
 
 
 Sample
- * create new sample
- * input basic info
- * select atomic structure (table can also be sorted and filtered)
- * select and configure shape
- * add a phonon kernel
+* create new sample
+* input basic info
+* select atomic structure (table can also be sorted and filtered)
+* select and configure shape
+* add a phonon kernel
 
 
 experiment
- * start new
- * instrument
-  * select ARCS, show large number of components
-  * show we can change component
-  * back to select Ideal INS.
-  * change source to neutrons saved at just before ARCS sample position
-  * change sample position and monitor position to 0,0,0
-  * change IQEmonitor to use Ei=60
- * sample configuration
-  * select a sample
-  * further configuration of kernel. make sure ei=60
- * sampele environment
- * review and finish up
+* start new
+* instrument
+ * select ARCS, show large number of components
+ * show we can change component
+ * back to select Ideal INS.
+ * change source to neutrons saved at just before ARCS sample position
+ * change sample position and monitor position to 0,0,0
+ * change IQEmonitor to use Ei=60
+* sample configuration
+ * select a sample
+ * further configuration of kernel. make sure ei=60
+* sampele environment
+* review and finish up
