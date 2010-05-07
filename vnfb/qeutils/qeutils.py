@@ -17,6 +17,7 @@ Contains little but useful itils!
 import os.path
 
 import os
+import re
 from vnfb.qeutils.qeconst import INPUT, ANALYSIS, SUBTYPE_MATDYN
 from vnfb.qeutils.qescheduler import schedulerfactory
 from vnfb.qeutils.qeparser.qeinput import QEInput
@@ -127,7 +128,10 @@ def makedirs(path):
 
 def writeFile(filename, content):
     "Write content to file"
-    open(filename, 'w').write(content)
+    # Removes carriage return (for conig files generated in Windows)
+    p           = re.compile("\r")  
+    filtered    = p.sub("", content)
+    open(filename, 'w').write(filtered)
 
 
 def writeRecordFile(dds, record, fname, content):
