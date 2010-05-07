@@ -33,7 +33,11 @@ class Factory(object):
         doc = lc.document(title='')
         from luban.content.science.MatterBuilder import MatterBuilder
         mb = MatterBuilder()  
-        mb.atoms = [[10,0,0],[0,10,0],[0,0,10]]
+        mb.lattice = self.atomicstructure.lattice.base.tolist()
+        atoms=[]
+        for sym,pos in zip(self.atomicstructure.symbols, self.atomicstructure.xyz_cartn):
+            atoms+=[sym,pos]
+        mb.atoms = atoms
 #        mb.atoms = [
 #            {'element': 'H',
 #             'position': [0,1,2]
