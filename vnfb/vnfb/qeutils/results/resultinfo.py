@@ -76,11 +76,6 @@ class ResultInfo:
         if not self._job:
             self._job   = self._simrecord.job(self._linkorder)
 
-#        ifelse(self._task, self._task, self._simrecord.task(self._linkorder))
-#        ifelse(self._input, self._input, self._simrecord.input(self._linkorder))
-
-#        ifelse(self._job, self._job, self._simrecord.job(self._linkorder))
-
 
     def simrecord(self):
         "Returns simulation record object"
