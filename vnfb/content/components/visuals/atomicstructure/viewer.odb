@@ -36,7 +36,7 @@ class Factory(object):
         mb.lattice = self.atomicstructure.lattice.base.tolist()
         atoms=[]
         for sym,pos in zip(self.atomicstructure.symbols, self.atomicstructure.xyz_cartn):
-            atoms+=[sym,pos]
+            atoms.append([sym,pos])
         mb.atoms = atoms
 #        mb.atoms = [
 #            {'element': 'H',
