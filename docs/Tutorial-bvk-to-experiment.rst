@@ -33,7 +33,7 @@ In phonons simulation wizard:
 * :ref:`choose the bvk model from literature <tut-bvk2exp-selectbvkmodel>`
 * :ref:`input N1 and df for bvk phonons computation <tut-bvk2exp-inputbvkparams>`
 
-Computation job:
+BvK computation job:
 
 * :ref:`submit job <tut-bvk2exp-submitjob>`
 * :ref:`pack job dir <tut-bvk2exp-packjobdir>`
@@ -49,31 +49,24 @@ Sample
 * :ref:`add a phonon kernel <tut-bvk2exp-newsample-kernel>`
 
 
-experiment
-* start new
-* instrument
- * select ARCS, show large number of components
- * show we can change component
- * back to select Ideal INS.
- * change source to neutrons saved at just before ARCS sample position
- * change sample position and monitor position to 0,0,0
- * change IQEmonitor to use Ei=60
-* sample configuration
- * select a sample
- * further configuration of kernel. make sure ei=60
-* sampele environment
-* review and finish up
+Experiment
+
+* :ref:`start a new experiment <tut-bvk2exp-experiment-new>`
+* :ref:`configure instrument <tut-bvk2exp-experiment-selectinstrument>`
+* :ref:`configure sample <tut-bvk2exp-experiment-selectsample>`
+* :ref:`configure sample environment <tut-bvk2exp-experiment-sampleenvironement>`
+* :ref:`review and finish up <tut-bvk2exp-experiment-finish>`
 
 
 
-We start from log in.
+We start with logging in.
 
 .. _tut-bvk2exp-login:
 
 Log in
 ------
 
-Point your browser to https://vnf.caltech.edu/vnf/beta
+Point your browser to https://vnf.caltech.edu
 
 Then login with your username and password.
 
@@ -207,8 +200,8 @@ Please input parameters for bvk phonons computation as shown below:
 
 After this step, a computation job is created for you.
 
-Computation job
----------------
+BvK Computation job
+-------------------
 
 
 .. _tut-bvk2exp-submitjob:
@@ -364,17 +357,155 @@ sample:
 Run a virtual neutron experiment using the new sample
 -----------------------------------------------------
 
+Select on the "experiments" of the main menu on the left side:
 
-* start new
-* instrument
- * select ARCS, show large number of components
- * show we can change component
- * back to select Ideal INS.
- * change source to neutrons saved at just before ARCS sample position
- * change sample position and monitor position to 0,0,0
- * change IQEmonitor to use Ei=60
-* sample configuration
- * select a sample
- * further configuration of kernel. make sure ei=60
-* sampele environment
-* review and finish up
+.. image:: /shots/bvk/main-portlet-select-experiments.png
+
+
+.. _tut-bvk2exp-experiment-new:
+
+Start a new experiment
+^^^^^^^^^^^^^^^^^^^^^^
+
+Let us create a new experiment by clicking the "new" button 
+on the toolbar near the top:
+
+.. image:: /shots/bvk/experiments-new.png
+
+
+.. _tut-bvk2exp-experiment-selectinstrument:
+
+Choose and Configure instrument
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Select the "Ideal Inelastic Neutron Scattering Instrument ..." and
+click the "continue" button:
+
+.. image:: /shots/bvk/experiment-select-idealins.png
+
+In the configuration panel for the source component of this
+instrument,
+click on the "change component type" selector and choose
+"NeutronPlayer" from the list:
+
+.. image:: /shots/bvk/experiment-instrument-change-source-type.png
+
+Now click the "edit" link in the new panel for the neutron player:
+
+.. image:: /shots/bvk/experiment-instrument-source-edit.png
+
+Near the bottom of the form for configuring the neutron player, click 
+on the selector for "Neutrons"  to select the item
+"neutrons at sample position of ARCS instrument. Ei~60meV".
+
+.. image:: /shots/bvk/experiment-instrument-neutronplayer-choose-neutrons.png
+
+A panel with information of first few neutrons in the neutron storage
+will show up. Click the "save" button to continue.
+
+.. image:: /shots/bvk/experiment-instrument-neutronplayer-selected-neutrons-and-save.png
+
+Now select the "sample" component from the component chain:
+
+.. image:: /shots/bvk/experiment-instrument-to-select-samplecomponent.png
+
+Again, click the "edit" link, and in the form for the sample
+component, make sure to change position of the sample to (0,0,0),
+and then click the "save" button.
+
+.. image:: /shots/bvk/experiment-instrument-sample-position.png
+
+Next, let us turn to the last component, "monitor":
+
+.. image:: /shots/bvk/experiment-instrument-to-select-monitorcomponent.png
+
+Click the "edit" link and make sure to change the position of the
+monitor to (0,0,0) and Ei to 60.0 meV.
+
+.. image:: /shots/bvk/experiment-instrument-monitor-config.png
+
+and click the "save" button to save your changes
+
+.. image:: /shots/bvk/experiment-instrument-monitor-saveconfig.png
+
+Now we are done with configuration of the instrument, just click the
+"continue" button
+
+.. image:: /shots/bvk/experiment-instrument-done.png
+
+
+.. _tut-bvk2exp-experiment-selectsample:
+
+Choose and Configure Sample
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Please select the sample you created earlier and click the "continue"
+button.
+Again, you can use the filter control to find your sample.
+
+.. image:: /shots/bvk/experiment-select-sample.png
+
+We need to slightly change the kernel configuration. Click the "edit"
+button
+as shown below:
+
+.. image:: /shots/bvk/experiment-sample-toeditkernel.png
+
+and change Ei to 60 meV and click the "save" button.
+
+.. image:: /shots/bvk/experiment-sample-editkernel.png
+
+Now we are done with configuration of the sample, just click the
+"continue" button 
+
+.. image:: /shots/bvk/experiment-sample-done.png
+
+.. _tut-bvk2exp-experiment-sampleenvironement:
+
+Configure sample environment
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+There is not much to do with sample environment at this point;
+just click the "save" button and then the "continue" button:
+
+.. image:: /shots/bvk/experiment-sampleenv-done.png
+
+
+.. _tut-bvk2exp-experiment-finish:
+
+Review and finish up
+^^^^^^^^^^^^^^^^^^^^
+
+This is the last step for setting up an experiment.
+Please give the experiment a description and click the
+"save" button and then the "continue" button.
+
+.. image:: /shots/bvk/experiment-finish-config.png
+
+You will be presented with a summary of the experiment.
+Click on the "^" symbol on the left top corner of the panel
+to shrink the panel down
+
+.. image:: /shots/bvk/experiment-finish-summary.png
+
+Click the "create job" button to create the computation job for 
+this experiment.
+
+.. image:: /shots/bvk/experiment-finish-tocreatejob.png
+
+The job configuration form shows up; please give the computation
+job a description and then click the "submit" button
+
+.. image:: /shots/bvk/experiment-job-config.png
+
+This job will take a moment to submit. After submission, 
+a panel for the job will show up. You can click the "refresh"
+button to update that view. 
+When the job is done, click on 
+the button "switch to the view of ..." to view the neutron experiment.
+
+.. image:: /shots/bvk/experiment-jobview-toswitchtoexp.png
+
+In the neutron experiment view, expand the "results" panel
+and then the "histogram" panel inside, you will get a view of the 
+I(Q,E) spectrum recorded by the virtual monitor:
+
+.. image:: /shots/bvk/experiment-view-results-expanded.png
+
