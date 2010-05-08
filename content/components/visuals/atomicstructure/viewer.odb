@@ -38,14 +38,6 @@ class Factory(object):
         for sym,pos in zip(self.atomicstructure.symbols, self.atomicstructure.xyz_cartn):
             atoms.append([sym,pos])
         mb.atoms = atoms
-#        mb.atoms = [
-#            {'element': 'H',
-#             'position': [0,1,2]
-#             },
-#            {'element': 'O',
-#             'position': [2,1,0]
-#             },
-#            ]
         doc.add(mb)  
         return doc       
 
