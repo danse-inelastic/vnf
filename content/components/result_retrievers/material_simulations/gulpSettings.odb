@@ -81,7 +81,7 @@ class Retriever(base):
                 #self._save_and_move_results(computation=computation, job=job, 
                 #                files=dataObjectFiles, result_holder=trajectoryRecord)
                 self._save_result(computation=computation, job=job, filenameinjobdir=str(dataObjectFile),
-                                 result_holder=trajectoryRecord, newfilename=str(dataObjectFile))
+                                 result_holder=trajectoryRecord, newfilename='data.txt')
                 #now populate the fields of trajectoryRecord
                 #Trajectory = orm(trajectory)
                 trajectoryRecord.trajectory_path = os.path.join(self.dds.abspath(trajectoryRecord), 'gulp.nc')
