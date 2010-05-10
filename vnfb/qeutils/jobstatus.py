@@ -195,7 +195,7 @@ class JobStatus(object):
         "Returns file link"
         assert filename != None
         # Contruct dialog
-        title   = 'Output for %s task. %s bytes' % (os.path.getsize(filename), self._task.id)
+        title   = 'Output for %s task. %s bytes' % (self._task.id, os.path.getsize(filename))
         text    = lc.htmldocument(text="<pre>%s<pre>" % open(filename).read())
         dialog  = qedialog(title, text) # dialog to pop up
 
