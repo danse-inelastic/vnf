@@ -17,7 +17,7 @@ screencasts
   of a material including density of states and dispersion within the Density
   Functional Theory (DFT) approach.
   
-* `Forcefield simulation and S(Q,E) generation--setup <http://docs.danse.us/VNET/movies/st_screencast.mov>`_ (Mar 2010, 6 min)
+* `Forcefield simulation and S(Q,E) generation--setup (with audio) <http://docs.danse.us/VNET/movies/st_screencast.mov>`_ (Mar 2010, 8 min)
 
   Use AtomSim to do a full MD simulation using forcefields.  Input settings to compute
   an S(Q,E).
