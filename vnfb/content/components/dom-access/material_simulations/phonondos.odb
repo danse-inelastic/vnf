@@ -52,20 +52,15 @@ class Accessor(base):
                 debug.log(traceback.format_exc())
                 return
         
-        # the idf file
+        # the data file
         path = director.dds.abspath(record)
         import os
-        f = os.path.join(path, 'data.idf')
-        
         # check path
-        if not os.path.exists(f): return
-
-        # read
-        from idf import DOS
-        (t,version,comment), e, i = DOS.read(f)
-
-        dos.e = e
-        dos.i = i
+        if os.path.exists(os.path.join(path, 'data.idf')): 
+            dos.read('data.idf')
+        elif os.path.exists(os.path.join(path, 'data.txt')): 
+            dos.read('data.txt')
+        else: return
         return dos
 
 
