@@ -84,16 +84,14 @@ class Builder(base):
         #foxtrot
         elif job.server.id=='server002':
             cmds = [
-                '#!/bin/sh',
-                '. ~/.vnf',
-                '. ~/.gulp-env',
-                #"export procs=`wc -l $PBS_NODEFILE | perl -ane 'print $F[0] . \"\n\"'`",
-                'mpirun --mca btl openib,sm,self --machinefile /home/jbrkeith/machinefile '+\
-                '-np %d gulp_openmpi < %s > %s' % (np, computation.inputFile, computation.output_filename),
+                '#!/usr/bin/env bash',
+                'source /home/jbrkeith/.bash_profile',
+                #'. ~/.vnf',
+                #'. ~/.gulp-env',
+                'mpirun -np %d gulp_openmpi < %s > %s' % (np, computation.inputFile, computation.output_filename),
                 '',
                 ]
 
-            
         if self.convertHistoryFile:
             cmds += [
             'postProcessGulp.py -convertHistoryFile=True -historyFile=gulp.his -ncFile=gulp.nc',
