@@ -20,6 +20,8 @@ Gulp:
 
 .. toctree::
 
+   md-sqe.rst
+
 Quantum Espresso:
 
 .. toctree::

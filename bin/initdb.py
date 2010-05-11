@@ -34,7 +34,7 @@ class DbApp(base):
 
     def help(self):
         print
-        print 'initializate db table(s)'
+        print 'initialize db table(s)'
         print 
         print " * typical usage:"
         print "   $ initdb.py --table=<tablename>"
