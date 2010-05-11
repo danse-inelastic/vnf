@@ -418,7 +418,7 @@ Clicking this button will convert matdyn.dos to IDS (Inelastic Data Storage) for
 
    *Fig. 40 Results view page*
 
-Wuala! The phonon DOS is created! Go to the simulation view page and click on the
+Voila! The phonon DOS is created! Go to the simulation view page and click on the
 link for the Atomic Structure field. In the subsection “Phonons” you will see the
 plot for density of states (DOS).
 
