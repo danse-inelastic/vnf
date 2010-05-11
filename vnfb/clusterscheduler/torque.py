@@ -30,7 +30,6 @@ import journal
 debug = journal.debug( 'torque' )
 
 from pyre.units.time import hour, minute, second
-import math
 
 class Scheduler:
 
