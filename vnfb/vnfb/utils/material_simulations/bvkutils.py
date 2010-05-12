@@ -97,58 +97,6 @@ class VarFromSympySymbol(constraints.Variable):
 
 
         
-
-import unittest
-class TestCase(unittest.TestCase):
-
-    def test4(self):
-        # fcc
-        import matter
-        lattice = matter.Lattice(a=1, b=1, c=1, alpha=90, beta=90, gamma=90)
-
-        #
-        from matter.SpaceGroups import sg225
-        
-        # 110
-        vector = [0.5, 0.5, 0]
-        print 'bond 110 for fcc lattice'
-        for constraint in  findForceContantTensorConstraints(vector, lattice, sg225):
-            print constraint
-            
-        # 200
-        vector = [1,0,0]
-        print 'bond 200 for fcc lattice'
-        for constraint in  findForceContantTensorConstraints(vector, lattice, sg225):
-            print constraint
-
-        # 211
-        vector = [1,0.5,0.5]
-        print 'bond 211 for fcc lattice'
-        for constraint in  findForceContantTensorConstraints(vector, lattice, sg225):
-            print constraint
-            
-        # 220
-        vector = [1,1,0]
-        print 'bond 220 for fcc lattice'
-        for constraint in  findForceContantTensorConstraints(vector, lattice, sg225):
-            print constraint
-            
-        # 310
-        vector = [1.5,0.5,0]
-        print 'bond 310 for fcc lattice'
-        for constraint in  findForceContantTensorConstraints(vector, lattice, sg225):
-            print constraint
-            
-        return
-
-
-def main():
-    unittest.main()
-    return
-
-if __name__ == '__main__': main()
-
-
 # version
 __id__ = "$Id$"
 
