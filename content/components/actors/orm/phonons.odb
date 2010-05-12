@@ -103,7 +103,17 @@ class Actor(base):
 
     def _createPlot1(self, disp, director):
         domaccess = self._domaccess(director)
-        domaccess.standardizeDataInIDFFormat(domaccess.orm(disp).id)
+        record = domaccess.orm(disp)
+        try:
+            domaccess.standardizeDataInIDFFormat(record.id)
+        except NotImplementedError:
+            p = lc.paragraph()
+            p.text = [
+                'Plotting for phonons#%s failed: data missing or in wrong format' % (
+                    record.id,),
+                ]
+            return p
+
 
         try:
             disp = domaccess.getDataForPhonons(disp)

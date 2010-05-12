@@ -51,7 +51,13 @@ class Accessor(base):
         record = orm(phonons)
         
         #
+        director = self.director
+        dds = director.dds
+        
+        #
         format = self._getDataFormat(record)
+        if not format:
+            raise NotImplementedError
         if not format.startswith('idf'):
             raise NotImplementedError
         
