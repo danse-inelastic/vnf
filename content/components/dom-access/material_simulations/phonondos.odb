@@ -57,9 +57,9 @@ class Accessor(base):
         import os
         # check path
         if os.path.exists(os.path.join(path, 'data.idf')): 
-            dos.read('data.idf')
-        elif os.path.exists(os.path.join(path, 'data.txt')): 
-            dos.read('data.txt')
+            dos.read(os.path.join(path, 'data.idf'))
+#        elif os.path.exists(os.path.join(path, 'data.txt')): 
+#            dos.read(os.path.join(path, 'data.txt'))
         else: return
         return dos
 
