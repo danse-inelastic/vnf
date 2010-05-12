@@ -1,0 +1,18 @@
+
+Brandon:
+- Put the QE trajectories to DB.
+
+"trajectory" table -> Trajetory class
+
+Path to the trajectory data (just one file in netCDF format):
+    data/trajectories/XXXX/<name>.nc
+
+Example for GULP:
+    ../content/data/trajectory/3W3H6IWA/gulp.nc
+
+Data object:
+    http://dev.danse.us/trac/VNET/browser/vnf/branches/beta-useluban/vnfb/vnfb/dom/material_simulations/Trajectory.py
+
+Notes:
+    global_pointer keeps relation between trajectory and <simulation> tables.
+
