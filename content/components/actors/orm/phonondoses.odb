@@ -10,17 +10,9 @@
 #
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
-
-
-
-#
 import luban.content as lc
 from luban.content import select, load, alert
-
-
-#
 from vnfb.dom.material_simulations.PhononDOS import PhononDOS
-
 from luban.components.Actor import Actor
 import luban.orm
 base = luban.orm.object2actor(PhononDOS)
@@ -29,7 +21,6 @@ class Actor(base):
     class Inventory(base.Inventory):
 
         import pyre.inventory
-
         ids = pyre.inventory.list(name='ids')
 
 
