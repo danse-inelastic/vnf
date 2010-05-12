@@ -6,6 +6,30 @@ Molecular dynamics calculations
 - S(Q,E)        # After DANSE meeting
 
 Chain:
-cp.x    -> cppp.x
+cp.x
+
+CP molecular dynamics uses cp.x. I don't see much value in cppp.x
+
+The schema looks like:
+[Step 1. Electronic ground state] -> [Step 2. Molecular Dynamics] -> [Step 3. DOS from Trajectory Analysis]
+
+TODO:
+
+1. Converter from velocity/position to NetCDF format (MMTK format) for nMOLDYN
+2. 
 
 
+Form for Step 1
+---------------
+
+
+
+Form for Step 2
+---------------
+
+
+Form for Step 3
+---------------
+
+Notes:
+    - Trajectory to netCDF format conversion seems to be correct (See: qe2nmol.py)!
