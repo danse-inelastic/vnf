@@ -19,16 +19,7 @@ from vnfb.dom.AtomicStructure import StructureTable
 
 # "Holder" in vnf
 from ComputationResult import ComputationResult
-Trajectory = o2t(TrajectoryDO, {'subclassFrom': ComputationResult})
-
-#import dsaw.db
-#Motion.addColumn(
-#    dsaw.db.reference(name='matter', table=StructureTable, backref='motion')
-#    )
-
-#PhononDOSTable.datafiles = [
-#    'data.idf',
-#    ]
+Trajectory = o2t(TrajectoryDO, {'subclassFrom': ComputationResult}) 
 
 
 
