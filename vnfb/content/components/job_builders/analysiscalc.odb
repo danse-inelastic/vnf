@@ -69,6 +69,9 @@ class Builder(base):
                 'mpirun -np %d parnasis --%s --inp %s' % (np, analysisObj.abbrev, analysisObj.inputFileName),
                 '',
                 ]
+            #check to see if it is an MdDosCalc:
+            if analysisObj.__class__.__name__=='MdDosCalc':
+                cmds += ['conversionTasks.py --convertDosFile=True --textFile='+analysisObj.dosFile,]
         #foxtrot
         elif job.server.id=='server002':
             cmds = [
@@ -82,9 +85,10 @@ class Builder(base):
                 'mpirun -np %d /usr/local/python-2.6.2/bin/python2.6 /home/jbrkeith/dv/tools/pythia-0.8/bin/parnasis --%s --inp %s' % (np, analysisObj.abbrev, analysisObj.inputFileName),
                 '',
                 ]
-        #check to see if it is an MdDosCalc:
-        if analysisObj.__class__=='MdDosCalc':
-            cmds += ['conversionTasks.py --convertDosFile=True --textFile='+analysisObj.dosFile,]
+            #check to see if it is an MdDosCalc:
+            if analysisObj.__class__.__name__=='MdDosCalc':
+                cmds += ['/usr/local/python-2.6.2/bin/python2.6 /home/jbrkeith/dv/tools/pythia-0.8/bin/conversionTasks.py --convertDosFile=True --textFile='+analysisObj.dosFile,]
+
         script = self.shscriptname
         path = self._path(script)
         open(path, 'w').write('\n'.join(cmds))
