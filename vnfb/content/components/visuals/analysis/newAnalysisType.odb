@@ -18,81 +18,75 @@ from luban.content import load, select
 def visual(director):
     doc         = lc.document(title = "")
     splitter    = doc.splitter(orientation="vertical")
-    sA          = splitter.section()
-    sA.add(viewIndicator(director))
-
-    sB          = splitter.section()
-    sp = lc.splitter(orientation="vertical"); sB.add(sp)
+    # view indicator
+    topLinkSection          = splitter.section()
+    topLinkSection.add(viewIndicator(director))
+    # page section
+    # create horizontal splitter and add to rest of page; create two dynamics sections
+    pageSection          = splitter.section()
+    twoDynamicsSplitter = lc.splitter(orientation="horizontal"); pageSection.add(twoDynamicsSplitter)
+    trajSection = twoDynamicsSplitter.section();
+    phonSection = twoDynamicsSplitter.section();
     
-    scat = sp.section()
-    docScat = lc.document(title = 'Scattering')
-    scat.add(docScat)
-    scat.add(createScatteringAnalysis())
-
-    middle = sp.section()
-    docMiddle        = lc.document(title = "Dynamics")
-    middle.add(docMiddle)
-    middle.add(createDynamicsAnalysis())
+    #create md splitter and sections
+    mdSplitter = lc.splitter(orientation="vertical"); trajSection.add(sp)
     
-    struct = sp.section()
-    docStruct         = lc.document(title = "Structure")
+    mdScat = mdSplitter.section()
+    docMdScat = lc.document(title = 'Md-based Scattering Analysis')
+    mdScat.add(docMdScat)
+    mdScat.add(createMdScatteringAnalysis())
+
+    mdDyn = mdSplitter.section()
+    docMdDyn = lc.document(title = "Md-based Dynamics Analysis")
+    mdDyn.add(docMdDyn)
+    mdDyn.add(createDynamicsAnalysis())
+    
+    mdStruct = mdSplitter.section()
+    docStruct         = lc.document(title = "Md-based Structure Analysis")
     struct.add(docStruct)
     struct.add(createStructureAnalysis())
+    
+    #create phonon splitter and sections
+    #phononTypesSplitter = lc.splitter(orientation="vertical"); 
+    phonSection.add(sp)
+    docPhonScat = lc.document(title = 'Phonon-based Scattering Analysis')
+    phonSection.add(docPhonScat)
+    phonSection.add(createPhonScatteringAnalysis())
+    
     return doc
 
-def createScatteringAnalysis():
-    qegrid = QEGrid(lc.grid(Class="qe-table"))
-    
-#    routines.append(
-#                    (lc.link(label="DoPS", onclick=select(id='main-display-area'
-#                            ).replaceContent(load(
-#                actor='analysis/analysiswizard', routine='selectDynamics',
-#                analysisType='mddoscalc'))),
-#                    "Density of Phonon States from an md trajectory")
-#                    )
-    
+def createMdScatteringAnalysis():
+    qegrid = QEGrid(lc.grid(Class="qe-table"))   
     routines   = []
     routines.append(
-                    (lc.link(label="Coherent trajectory S(Q,E)", onclick=select(id='main-display-area'
+                    (lc.link(label="S(Q,E)_coh", onclick=select(id='main-display-area'
                     ).replaceContent(load(actor='analysis/analysiswizard', routine='selectDynamics',
                     analysisType='CsfCalc'))),
-                    "Generate coherent inelastic scattering from an md trajectory")
+                    "Coherent inelastic scattering from md")
                     )
     routines.append(
-                    (lc.link(label="Incoherent trajectory S(Q,E)", onclick=select(id='main-display-area'
+                    (lc.link(label="S(Q,E)_incoh", onclick=select(id='main-display-area'
                     ).replaceContent(load(actor='analysis/analysiswizard', routine='selectDynamics',
                     analysisType='IsfCalc'))),
-                    "Generate incoherent inelastic scattering from an md trajectory")
-                    )
-    routines.append(
-                    (lc.link(label="Coherent phonon S(Q,E)", onclick=select(id='main-display-area'
-                    ).replaceContent(load(actor='analysis/analysiswizard', routine='selectDynamics',
-                    analysisType='CsfCalcPhonon'))),
-                    "Generate coherent inelastic scattering from phonons")
-                    )
-    routines.append(
-                    (lc.link(label="Incoherent phonon S(Q,E)", onclick=select(id='main-display-area'
-                    ).replaceContent(load(actor='analysis/analysiswizard', routine='selectDynamics',
-                    analysisType='IsfCalcPhonon'))),
-                    "Generate incoherent inelastic scattering from phonons")
+                    "Incoherent inelastic scattering from md")
                     )
     routines.append(
                     (lc.link(label="EISF", onclick=select(id='main-display-area'
                     ).replaceContent(load(actor='analysis/analysiswizard', routine='selectDynamics',
                     analysisType='EisfCalc'))),
-                    "Elastic Incoherent Structure Factor from an md trajectory")
+                    "Elastic Incoherent Structure Factor from md")
                     )
     routines.append(
                     (lc.link(label="F_k", onclick=select(id='main-display-area'
                     ).replaceContent(load(actor='analysis/analysiswizard', routine='selectDynamics',
                     analysisType='SqCalc'))),
-                    "Structure Factor from an md trajectory")
+                    "Structure Factor from md")
                     )
     routines.append(
                     (lc.link(label="S(Q,E)", onclick=select(id='main-display-area'
                     ).replaceContent(load(actor='analysis/analysiswizard', routine='selectDynamics',
                     analysisType='SqeCalc'))),              
-                    "Dynamic Structure Factor from an md trajectory.  This is the sum of coherent and incoherent S(Q,E) parts.")
+                    "Dynamic Structure Factor from md.  This is the sum of coherent and incoherent S(Q,E) parts.")
                     )
     routines.append(
                     (lc.link(label="Multiphonon Scattering", onclick=select(id='main-display-area'
@@ -100,17 +94,12 @@ def createScatteringAnalysis():
                     analysisType='MultiScatCalc'))),                                                                               
                     "Add multiphonon scattering to an S(Q,E)")
                     )
-    
     for link,desc in routines:
         qegrid.addRow((link,desc))
-#        row = grid.row()
-#        row.cell().add(link)
-#        row.cell().add(desc)
     return qegrid.grid()
 
 def createDynamicsAnalysis():
     qegrid = QEGrid(lc.grid(Class="qe-table"))
-    
     routines   = []
     routines.append(
                     (lc.link(label="DoPS", onclick=select(id='main-display-area'
@@ -136,19 +125,14 @@ def createDynamicsAnalysis():
                 analysisType='DiffusionCalc'))),
                     "Generate a diffusion coefficient from an md trajectory")
                     )
-    
     for link,desc in routines:
         qegrid.addRow((link,desc))
-#        row = grid.row()
-#        row.cell().add(link)
-#        row.cell().add(desc)
     return qegrid.grid()
 
 
 def createStructureAnalysis():
     qegrid = QEGrid(lc.grid(Class="qe-table"))
     qegrid.setColumnStyle(0, "qe-cell-param")
-    
     routines   = []
     routines.append(
                     (lc.link(label="RDF", onclick=select(id='main-display-area'
@@ -156,15 +140,34 @@ def createStructureAnalysis():
                     analysisType='RdfCalc'))),   
                     "Radial Distribution Function from an md trajectory")
                     )
-    
     for link,desc in routines:
         qegrid.addRow((link,desc))
-#        row = grid.row()
-#        row.cell().add(link)
-#        row.cell().add(desc)
     return qegrid.grid()
 
-
+def createPhonScatteringAnalysis():
+    qegrid = QEGrid(lc.grid(Class="qe-table"))  
+    routines   = []
+    routines.append(
+                    (lc.link(label="Coherent phonon S(Q,E)", onclick=select(id='main-display-area'
+                    ).replaceContent(load(actor='analysis/analysiswizard', routine='selectDynamics',
+                    analysisType='CsfCalcPhonon'))),
+                    "Generate coherent inelastic scattering from phonons")
+                    )
+    routines.append(
+                    (lc.link(label="Incoherent phonon S(Q,E)", onclick=select(id='main-display-area'
+                    ).replaceContent(load(actor='analysis/analysiswizard', routine='selectDynamics',
+                    analysisType='IsfCalcPhonon'))),
+                    "Generate incoherent inelastic scattering from phonons")
+                    )
+    routines.append(
+                    (lc.link(label="Multiphonon Scattering", onclick=select(id='main-display-area'
+                    ).replaceContent(load(actor='analysis/analysiswizard', routine='selectDynamics',
+                    analysisType='MultiScatCalc'))),                                                                               
+                    "Add multiphonon scattering to an S(Q,E)")
+                    )
+    for link,desc in routines:
+        qegrid.addRow((link,desc))
+    return qegrid.grid()
 
 def viewIndicator(director):
     path = []

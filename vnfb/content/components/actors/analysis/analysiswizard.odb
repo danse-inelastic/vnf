@@ -48,6 +48,80 @@ class Actor(base):
     def selectAnalysisType(self, director):
         return 
     
+    def selectTrajectory(self, director):
+        doc = lc.document(id='trajectory-selector-doc')
+        doc.paragraph(
+            text=['Please select a trajectory:',
+            ]
+            )
+        container = lc.document(id='dynamics-selector-container')
+        doc.add(container)
+        container.oncreate = [
+            select(element=container).append(
+              load(actor='analysis/selectdynamics', routine='createListView')
+              ),
+            ]
+        # cancel
+#        c = lc.link(label='cancel', Class='float-right'); doc.add(c)
+#        c.onclick = select(id=self.matter_view_id).replaceBy(
+#            load(actor='scatterer/editor', routine='createMatterView',
+#                 id = self.id)
+#            )
+#        def getInfoAndProceed():
+#            
+#            return load(actor = self.name, routine = 'analysisSettings',
+#                    dynamicsIdAndType = select(id='dynamics-table').table(
+#                        'getIdentifiersForSelectedRow', colname='selectone'),
+#                    analysisType = self.inventory.analysisType,
+#                    dynamicsType = dynamicsType)  
+
+        # select button
+        b = lc.button(label='select'); doc.add(b)
+        #b.onclick = getInfoAndProceed()
+        b.onclick = load(actor = self.name, routine = 'analysisSettings',
+                    dynamicsIdAndType = select(id='dynamics-table').table(
+                        'getIdentifiersForSelectedRow', colname='selectone'),
+                    analysisType = self.inventory.analysisType
+                    )
+        return doc
+    
+    def selectPhonons(self, director):
+        doc = lc.document(id='dynamics-selector-doc')
+        doc.paragraph(
+            text=['Please select a dynamics object:',
+            ]
+            )
+        container = lc.document(id='dynamics-selector-container')
+        doc.add(container)
+        container.oncreate = [
+            select(element=container).append(
+              load(actor='analysis/selectdynamics', routine='createListView')
+              ),
+            ]
+        # cancel
+#        c = lc.link(label='cancel', Class='float-right'); doc.add(c)
+#        c.onclick = select(id=self.matter_view_id).replaceBy(
+#            load(actor='scatterer/editor', routine='createMatterView',
+#                 id = self.id)
+#            )
+#        def getInfoAndProceed():
+#            
+#            return load(actor = self.name, routine = 'analysisSettings',
+#                    dynamicsIdAndType = select(id='dynamics-table').table(
+#                        'getIdentifiersForSelectedRow', colname='selectone'),
+#                    analysisType = self.inventory.analysisType,
+#                    dynamicsType = dynamicsType)  
+
+        # select button
+        b = lc.button(label='select'); doc.add(b)
+        #b.onclick = getInfoAndProceed()
+        b.onclick = load(actor = self.name, routine = 'analysisSettings',
+                    dynamicsIdAndType = select(id='dynamics-table').table(
+                        'getIdentifiersForSelectedRow', colname='selectone'),
+                    analysisType = self.inventory.analysisType
+                    )
+        return doc
+    
     def selectDynamics(self, director):
         doc = lc.document(id='dynamics-selector-doc')
         doc.paragraph(
