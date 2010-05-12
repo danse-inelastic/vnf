@@ -19,26 +19,34 @@ class Retriever(base):
         director = self.director
         db = director.clerk.db
         orm = director.clerk.orm
+        analysisObj = orm.record2object(computation)
 
         # must have a job
         self.declareProgress(0.1, 'look up job')
         job = computation.getJob(db)
 
-#        # check result is available
-#        self.declareProgress(0.2, 'check if results exist')
-#        self._check_results_sanity(expected_results=['dos'], job=job)
+        # check result is available
+        self.declareProgress(0.2, 'check if results exist')
+        self._check_results_sanity(expected_results=[analysisObj.dosFile], job=job)
 
         # create a dos record to save dos
         self.declareProgress(0.4, 'create a DOS data object to store the result')
         from vnfb.dom.material_simulations.PhononDOS import PhononDOSTable
         dos = self._make_result_holder(computation, PhononDOSTable)
-        #dos.matter = computation.matter
+        dos.matter = computation.matter
         db.updateRecord(dos)
 
         # save the result from job to dos
-        analysisObj = orm.record2object(computation)
+        
+        dosObj = orm.record2object(dos)
+        server = self.db.dereference(job.server)
+        is_available = self.dds.is_available
+        dosObj.read(analysisObj.dosFile)
+        from idf import DOS
+        DOS.write(dosObj.e, dosObj.i, 'data.idf')
         self.declareProgress(0.5, 'get result from server')
-        self._save_result(computation, job, analysisObj.inputFileName, dos, analysisObj.dosFile)
+        #self._save_result(computation, job, analysisObj.dosFile, dos, 'data.txt')
+        self._save_result(computation, job, analysisObj.dosFile, dos, 'data.idf')
 
 def retriever():
     return Retriever('mddoscalc')

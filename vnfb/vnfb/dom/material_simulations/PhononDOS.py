@@ -25,9 +25,7 @@ PhononDOSTable.addColumn(
     dsaw.db.reference(name='matter', table=StructureTable, backref='phonondoses')
     )
 
-PhononDOSTable.datafiles = [
-    'data.idf',
-    ]
+PhononDOSTable.datafiles = ['data.idf']
 
 
 
