@@ -14,7 +14,7 @@ DANSE Principal Investigaters
 DANSE Project Manager
 ---------------------
 
-* `Michael Mckerns <http://www.its.caltech.edu/~mmckerns/>`_
+* `Michael McKerns <http://www.its.caltech.edu/~mmckerns/>`_
 
 
 VNF Developers
