@@ -96,8 +96,16 @@ SIMCHAINS[SIMTYPE["single-phonon"]]         = ("PW", "PH", "DYNMAT")
 SIMCHAINS[SIMTYPE["multiple-phonon"]]       = ("PW", "PH", "Q2R", "MATDYN") # DOS and Dispersion, See: example06
 SIMCHAINS[SIMTYPE["molecular-dynamics"]]    = ("CP", "CPPP")  # ?
 
-
 SIMLIST     = SIMTYPE.values()
+
+MDSTEPS     = OrderedDict()
+MDSTEPS["electron-min"] = "Electronic Minimization"
+MDSTEPS["ion-min"]      = "Ion Minimization"
+MDSTEPS["ion-random"]   = "Ions Randomization"
+MDSTEPS["quenching"]    = "Electrons and Ions Quenching"
+MDSTEPS["dynamics"]     = "Electron and Ion Dynamics"
+MDSTEPS["thermostat"]   = "Electron and Ion Dynamics with Nose Thermostat"
+
 
 # Analysis actors
 ANALYSIS    = OrderedDict()

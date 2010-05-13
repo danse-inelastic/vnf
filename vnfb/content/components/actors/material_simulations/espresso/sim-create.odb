@@ -13,19 +13,10 @@
 
 
 from vnfb.qeutils.qeconst import SIMCHAINS
-from vnfb.qeutils.qegrid import QEGrid
 from vnfb.utils.serverlist import ServerList
 from vnfb.dom.QESimulation import QESimulation
 
-from luban.content import select, load, alert
-
-from luban.content.FormSelectorField import FormSelectorField
-from luban.content.FormTextField import FormTextField
-from luban.content.FormSubmitButton import FormSubmitButton
-from luban.content.FormRadioBox import FormRadioBox
-from luban.content.Form import Form
-
-#from vnfb.utils.orderedDict import OrderedDict
+from luban.content import select, load
 
 import luban.content as lc
 from luban.components.AuthorizedActor import AuthorizedActor as base
@@ -65,7 +56,8 @@ class Actor(base):
         sA          = splitter.section()
         sA.add(viewIndicator(director))
         sB          = splitter.section()
-        sB.add(self._setForm(director))
+        visual  = 'material_simulations/espresso/form-sim-create'
+        sB.add(director.retrieveVisual(visual, self.inventory, director))
 
         return doc
 
@@ -110,75 +102,10 @@ class Actor(base):
                    "structureid":   self.structureid
                    }
         sim     = QESimulation(director)
-#        sim.setDirector(director)
         sim.createRecord(params)
         sim.establishGlobalPointer(director.clerk.db)
 
         return load(actor='material_simulations/espresso/sim-view', id = sim.id)  # Redirection to the page
-
-
-    def _setForm(self, director):
-        "Sets create new simulation form"
-
-        # Set servers first
-        servers     = ServerList(director)
-        serversList = servers.list()
-
-        form        = Form(id='create-simulation-form') 
-        table       = QEGrid(lc.grid(Class="qe-form"))
-        form.add(table.grid())
-
-        sname       = FormTextField(name = "sname", value = self.sname)
-        simtype     = FormSelectorField(name="simtype",
-                                        entries=enumerate(SIMCHAINS.keys()))
-        description = FormTextField(name="description", value=self.description)   # Make as textarea
-        label       = FormTextField(name="label", value=self.label)
-        server      = FormSelectorField(name="server",
-                                        entries=enumerate(serversList)) # XXX Move to QESettings
-                                        
-        submit      = FormSubmitButton(label="Create New Simulation")
-        cancel      = lc.button(label="Cancel", onclick = load(actor = 'materialsimulation'))
-
-        st          = QEGrid(lc.grid()) # Submit Table
-        st.addRow((submit, cancel), ("qe-action-accept", "qe-action-cancel"))
-
-        table.addRow(("Atomic Structure: *", self._structure(director)))
-        table.addRow(("Type: *", simtype))
-        table.addRow(("Server: *", server))
-        table.addRow(("Name:", sname))
-        table.addRow(("Description:", description))
-        table.addRow(("Label:", label))
-        table.addRow(("", st.grid()))
-
-        table.setColumnStyle(0, "qe-form-label")
-        table.setColumnStyle(1, "qe-form-field")
-
-        form.onsubmit   = select(element=form).submit(actor         = 'material_simulations/espresso/sim-create',
-                                                      routine       = 'createRecord',
-                                                      structureid   = self.structureid)
-        
-        return form
-
-
-    def _structure(self, director):
-        link        = lc.link(label="Select Atomic Structure",
-                              Class="qe-action-structure")
-        link.onclick = load(actor=self.name, routine='showOptions')
-        section     = link
-
-        if self.structureid != '':
-            domaccess   = director.retrieveDOMAccessor('atomicstructure')
-            structure   = domaccess.getAtomicStructureRecord(id=self.structureid)
-
-            table   = QEGrid(lc.grid(Class="qe-structure-label"))
-            change  = lc.link( label="Change",
-                                onclick  = load(actor = self.name, routine = 'showOptions'))
-            matter   = "%s (%s)" % (structure.chemical_formula, self.structureid)
-            
-            table.addRow((matter, change))
-            section   = table.grid()
-
-        return section
 
 
     def _description(self):
@@ -207,9 +134,6 @@ class Actor(base):
                 return i
 
         return 0
-
-
-
 
 
     def __init__(self):
