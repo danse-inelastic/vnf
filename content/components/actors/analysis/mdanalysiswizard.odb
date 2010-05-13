@@ -28,55 +28,31 @@ class Actor(base):
     class Inventory(base.Inventory):
         import pyre.inventory
         analysisId = pyre.inventory.str('analysisId', default = '')
-        dynamicsIdAndType = pyre.inventory.str('dynamicsIdAndType', default = '')
+        trajectoryId = pyre.inventory.str('trajectoryId', default = '')
         #dynamicsType = pyre.inventory.str('dynamicsType', default = '')
         analysisType = pyre.inventory.str('analysisType', default='')
         short_description = pyre.inventory.str('short_description', default = '' )
-        short_description.meta['tip'] = 'A short description'
         creator = pyre.inventory.str('creator', default='')
         description = pyre.inventory.str('description', default='')
-#        inputFileContents = pyre.inventory.str('inputFileContents', default='')
-#        runtype = pyre.inventory.str('runtype', default='')
-
-    def default(self, director):
-        wizard = Document(id='analysiswizard', title='Analysis')
-        #doc = self.selectAnalysisType(director)
-        doc = director.retrieveVisual('analysis/newAnalysisType', director = director)
-        wizard.add(doc)
-        return select(id='main-display-area').replaceContent(wizard)
     
-    def selectDynamics(self, director):
-        doc = lc.document(id='dynamics-selector-doc')
+    def selectTrajectory(self, director):
+        doc = lc.document(id='trajectory-selector-doc')
         doc.paragraph(
-            text=['Please select a dynamics object:',
-            ]
+            text=['Please select a trajectory:',]
             )
-        container = lc.document(id='dynamics-selector-container')
+        container = lc.document(id='trajectory-selector-container')
         doc.add(container)
         container.oncreate = [
             select(element=container).append(
-              load(actor='analysis/selectdynamics', routine='createListView')
+              load(actor='analysis/selecttrajectory', routine='createListView')
               ),
             ]
-        # cancel
-#        c = lc.link(label='cancel', Class='float-right'); doc.add(c)
-#        c.onclick = select(id=self.matter_view_id).replaceBy(
-#            load(actor='scatterer/editor', routine='createMatterView',
-#                 id = self.id)
-#            )
-#        def getInfoAndProceed():
-#            
-#            return load(actor = self.name, routine = 'analysisSettings',
-#                    dynamicsIdAndType = select(id='dynamics-table').table(
-#                        'getIdentifiersForSelectedRow', colname='selectone'),
-#                    analysisType = self.inventory.analysisType,
-#                    dynamicsType = dynamicsType)  
 
         # select button
         b = lc.button(label='select'); doc.add(b)
         #b.onclick = getInfoAndProceed()
-        b.onclick = load(actor = self.name, routine = 'analysisSettings',
-                    dynamicsIdAndType = select(id='dynamics-table').table(
+        b.onclick = load(actor = 'analysis/mdanalysiswizard', routine = 'analysisSettings',
+                    dynamicsIdAndType = select(id='trajectory-table').table(
                         'getIdentifiersForSelectedRow', colname='selectone'),
                     analysisType = self.inventory.analysisType
                     )
@@ -94,9 +70,7 @@ class Actor(base):
 #        domaccess = director.retrieveDOMAccessor('dynamics')
 #        dynamics = domaccess.getDynamics(self.inventory.dynamicsId)
 #        analysisType = dynamics.type
-        self.debug.log('dynamicsIdAndType:%s' % self.inventory.dynamicsIdAndType)
-        dynamicsId, dynamicsType = self.inventory.dynamicsIdAndType.split(',')
-        self.inventory.dynamicsId = dynamicsId
+        self.debug.log('trajectory:%s' % self.inventory.trajectoryId)
         container = lc.document(id='analysis-settings-container')
         doc.add(container)
         #actorName = 'orm/'+self.inventory.analysisType
@@ -110,7 +84,7 @@ class Actor(base):
         
         #load trajectory      
         trajectoryDbObj = director.clerk._getEntry('Trajectory', 
-            id = self.inventory.dynamicsId, maindom = 'vnfb.dom.material_simulations')
+            id = self.inventory.trajectoryId, maindom = 'vnfb.dom.material_simulations')
         analysisDbObj.trajectory = trajectoryDbObj
         self.inventory.analysisId = analysisDbObj.id
         #orm.save(analysisObj, save_not_owned_referred_object=False)
@@ -190,7 +164,7 @@ class Actor(base):
         return [select(id='%s-input' % name).showError(text)
             for name, text in errors.iteritems()]
     
-    def __init__(self, name='analysis/analysiswizard'):
+    def __init__(self, name='analysis/mdanalysiswizard'):
         super(Actor, self).__init__(name)
         return
 
