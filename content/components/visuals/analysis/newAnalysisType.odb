@@ -26,30 +26,35 @@ def visual(director):
     pageSection          = splitter.section()
     twoDynamicsSplitter = lc.splitter(orientation="horizontal"); pageSection.add(twoDynamicsSplitter)
     trajSection = twoDynamicsSplitter.section();
+    mdTitle = lc.document(title = 'Md-based')
+    trajSection.add(mdTitle)
+    
     phonSection = twoDynamicsSplitter.section();
+    phonTitle = lc.document(title = 'Phonon-based')
+    phonSection.add(phonTitle)
     
     #create md splitter and sections
-    mdSplitter = lc.splitter(orientation="vertical"); trajSection.add(sp)
+    mdSplitter = lc.splitter(orientation="vertical"); trajSection.add(mdSplitter)
     
     mdScat = mdSplitter.section()
-    docMdScat = lc.document(title = 'Md-based Scattering Analysis')
+    docMdScat = lc.document(title = 'Scattering Analysis')
     mdScat.add(docMdScat)
     mdScat.add(createMdScatteringAnalysis())
 
     mdDyn = mdSplitter.section()
-    docMdDyn = lc.document(title = "Md-based Dynamics Analysis")
+    docMdDyn = lc.document(title = "Dynamics Analysis")
     mdDyn.add(docMdDyn)
     mdDyn.add(createDynamicsAnalysis())
     
     mdStruct = mdSplitter.section()
-    docStruct         = lc.document(title = "Md-based Structure Analysis")
-    struct.add(docStruct)
-    struct.add(createStructureAnalysis())
+    docMdStruct         = lc.document(title = "Structure Analysis")
+    mdStruct.add(docMdStruct)
+    mdStruct.add(createStructureAnalysis())
     
     #create phonon splitter and sections
     #phononTypesSplitter = lc.splitter(orientation="vertical"); 
-    phonSection.add(sp)
-    docPhonScat = lc.document(title = 'Phonon-based Scattering Analysis')
+    #phonSection.add(sp)
+    docPhonScat = lc.document(title = 'Scattering Analysis')
     phonSection.add(docPhonScat)
     phonSection.add(createPhonScatteringAnalysis())
     
@@ -102,10 +107,10 @@ def createDynamicsAnalysis():
     qegrid = QEGrid(lc.grid(Class="qe-table"))
     routines   = []
     routines.append(
-                    (lc.link(label="DoPS", onclick=select(id='main-display-area'
-                ).replaceContent(load(actor='analysis/analysiswizard', routine='selectDynamics',
+                    (lc.link(label="DOS", onclick=select(id='main-display-area'
+                ).replaceContent(load(actor='analysis/analysiswizard', routine='selectTrajectory',
                 analysisType='MdDosCalc'))),
-                    "Density of Phonon States from an md trajectory")
+                    "Density of States from an md trajectory")
                     )
     routines.append(
                     (lc.link(label="VACF", onclick=select(id='main-display-area'

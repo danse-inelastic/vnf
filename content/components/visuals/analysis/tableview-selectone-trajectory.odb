@@ -26,12 +26,11 @@ def visual(
     label=None, mine=False,
     order_by=None, reverse_order=None,
     number_records_per_page=None, page_number=None,
-    dynamics_type = 'trajectory'
     ):
     # name: name of table view
     # 
     domaccess = director.retrieveDOMAccessor(dynamics_type)
-    targettablename = dynamics_type #'dynamics'
+    targettablename = 'trajectory'
         
     from vnfb.components.MasterTable import MasterTableFactory, filtercompiler
     def countrecords(filter, label=None, mine=False):
@@ -99,7 +98,7 @@ def createTable(
     cols = columns
     args = records, cols, director
     thetable = director.retrieveVisual(
-        'analysis/table-selectone',
+        'analysis/table-selectone-trajectory',
         simulations = records,
         cols = cols,
         director = director)

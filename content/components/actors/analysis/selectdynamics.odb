@@ -20,6 +20,7 @@ class Actor(base):
 
         import pyre.inventory
         selected = pyre.inventory.str(name='selected')
+        dynamicsType = pyre.inventory.str(name='dynamicsType')
 
     def getSelectedSampleUniqueIdentifierStr(self, director):
         '''converts the "selected" string to the unique identifier string
@@ -27,7 +28,7 @@ class Actor(base):
         '''
         selected = self.inventory.selected
         id, table = selected.split(',')
-        domaccess = director.retrieveDOMAccessor('dynamics')
+        domaccess = director.retrieveDOMAccessor(self.inventory.dynamicsType)
         dynamics = domaccess.getSample(table, id)
         return domaccess.db.getUniqueIdentifierStr(dynamics)        
 
