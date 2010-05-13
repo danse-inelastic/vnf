@@ -12,7 +12,7 @@
 #
 
 import luban.content as lc
-from vnfb.qeutils.qeconst import SIMCHAINS, ID_MD_OPTIONS
+from vnfb.qeutils.qeconst import SIMCHAINS, ID_MD_LABEL, ID_MD_OPTIONS
 from vnfb.qeutils.qegrid import QEGrid
 from vnfb.utils.serverlist import ServerList
 
@@ -80,7 +80,7 @@ def visual(actor, director):
     table.addRow(("Atomic Structure: *", atomicStructure(actor, director)))
     table.addRow(("Type: *", simtype))
     table.addRow(("Server: *", server))
-    table.addRow(("", lc.document(id=ID_MD_OPTIONS)))
+    table.addRow((lc.document(id=ID_MD_LABEL), lc.document(id=ID_MD_OPTIONS)))
     table.addRow(("Name:", sname))
     table.addRow(("Description:", description))
     table.addRow(("Label:", label))

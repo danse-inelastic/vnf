@@ -182,6 +182,7 @@ ID_STATUS       = "qe-container-status"
 ID_CONV_JOBS    = "qe-convergence-jobs"
 ID_CONV_OPT     = "qe-convergence-optimal"
 ID_MD_OPTIONS   = "qe-md-options"
+ID_MD_LABEL     = "qe-md-label"
 TASK_ACTION     = "task-action"
 
 # TODO: Move to parser/inputs
