@@ -51,14 +51,13 @@ class Actor(base):
     def selectTrajectory(self, director):
         doc = lc.document(id='trajectory-selector-doc')
         doc.paragraph(
-            text=['Please select a trajectory:',
-            ]
+            text=['Please select a trajectory:',]
             )
         container = lc.document(id='dynamics-selector-container')
         doc.add(container)
         container.oncreate = [
             select(element=container).append(
-              load(actor='analysis/selectdynamics', routine='createListView')
+              load(actor='analysis/selecttrajectory', routine='createListView')
               ),
             ]
         # cancel
@@ -79,7 +78,7 @@ class Actor(base):
         b = lc.button(label='select'); doc.add(b)
         #b.onclick = getInfoAndProceed()
         b.onclick = load(actor = self.name, routine = 'analysisSettings',
-                    dynamicsIdAndType = select(id='dynamics-table').table(
+                    dynamicsIdAndType = select(id='trajectory-table').table(
                         'getIdentifiersForSelectedRow', colname='selectone'),
                     analysisType = self.inventory.analysisType
                     )

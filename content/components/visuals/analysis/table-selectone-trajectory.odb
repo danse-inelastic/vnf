@@ -23,17 +23,23 @@ def visual(simulations, cols, director):
     class model(Model):
         selectone = Model.descriptors.radio_button(name='selectone')
         id = Model.descriptors.str(name='id')
+        initial_chemical_formula = Model.descriptors.str(name='initial_chemical_formula')
+        total_time = Model.descriptors.str(name='total_time')
+        time_step_interval = Model.descriptors.str(name='time_step_interval')
         #description = Model.descriptors.str(name='description')
-        type = Model.descriptors.str(name='type')
-        #date = Model.descriptors.str(name='date')
+        #type = Model.descriptors.str(name='type')
+        date = Model.descriptors.str(name='date')
         row_identifiers = ['id', 'type']
 
     columns = [
         View.Column(label='', measure='selectone'),
         View.Column(label='ID', measure='id'),
+        View.Column(label='Initial chemical formula', measure='initial_chemical_formula'),
+        View.Column(label='Total time', measure='total_time'),
+        View.Column(label='Time step interval', measure='time_step_interval'),
         #View.Column(label='Description', measure='description'),
-        View.Column(label='Type', measure='type'),
-        #View.Column(label='Date created', measure='date'),
+        #View.Column(label='Type', measure='type'),
+        View.Column(label='Date created', measure='date'),
         ]
     columns = filter(lambda col: col.measure in cols, columns)
     view = View(columns=columns, editable=False)
@@ -41,13 +47,19 @@ def visual(simulations, cols, director):
     def getSelectone(record): return False
     def getId(record):
         return record.id
-    def getDescription(record):
-        return record.short_description
+    def getInitial_chemical_formula(record):
+        return record.initial_chemical_formula
+    def getTotal_time(record):
+        return record.total_time
+    def getTime_step_interval(record):
+        return record.time_step_interval
+#    def getDescription(record):
+#        return record.short_description
     def getDate(record):
         date = record.date
         return str(date)
-    def getType(record):
-        return record.getTableName()
+#    def getType(record):
+#        return record.getTableName()
                 
     import operator
     value_generators = [
@@ -56,7 +68,7 @@ def visual(simulations, cols, director):
     record2tuple = lambda record: [g(record) for g in value_generators]
     data = map(record2tuple, simulations)
     table = Table(model=model, data=data, 
-                  view=view, id='dynamics-table')
+                  view=view, id='trajectory-table')
     return table
 
 
