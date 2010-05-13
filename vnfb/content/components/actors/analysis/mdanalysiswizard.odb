@@ -47,12 +47,12 @@ class Actor(base):
               load(actor='analysis/selecttrajectory', routine='createListView')
               ),
             ]
-
         # select button
         b = lc.button(label='select'); doc.add(b)
         #b.onclick = getInfoAndProceed()
-        b.onclick = load(actor = 'analysis/mdanalysiswizard', routine = 'analysisSettings',
-                    dynamicsIdAndType = select(id='trajectory-table').table(
+        b.onclick = load(actor = 'analysis/mdanalysiswizard', 
+                         routine = 'analysisSettings',
+                    trajectoryId = select(id='trajectory-table').table(
                         'getIdentifiersForSelectedRow', colname='selectone'),
                     analysisType = self.inventory.analysisType
                     )
@@ -61,18 +61,29 @@ class Actor(base):
     def analysisSettings(self, director):
         self.debug = journal.debug('analysisSettings')
         orm = director.clerk.orm
-        doc = lc.document(title = "")
+        #doc = lc.document(title = "")
+        container = lc.document(title = "")
+        #first put in the md planning tools
+        container.oncreate = [
+            select(element=container).append(
+              load(actor='material_simulations/mdPlan', routine='createMdPlanDocument')
+              ),
+            ]
+        #now put in the Q vector planning tool
+        #now put in the trajectory
+        #now put in the analysis data object configuration
 #        splitter    = doc.splitter(orientation="vertical")
 #        sA          = splitter.section(id='analysis-object-inspect')
         #sA.add(viewIndicator(director))
-        
         #first get the type of the dynamics
 #        domaccess = director.retrieveDOMAccessor('dynamics')
 #        dynamics = domaccess.getDynamics(self.inventory.dynamicsId)
 #        analysisType = dynamics.type
-        self.debug.log('trajectory:%s' % self.inventory.trajectoryId)
-        container = lc.document(id='analysis-settings-container')
-        doc.add(container)
+
+#        self.debug.log('trajectory:%s' % self.inventory.trajectoryId)
+#        container = lc.document(id='analysis-settings-container')
+#        doc.add(container)
+        
         #actorName = 'orm/'+self.inventory.analysisType
         #import the correct analysis
         className = self.inventory.analysisType        
@@ -81,7 +92,6 @@ class Actor(base):
 #             className)
         analysisDbClass = eval(className)
         analysisDbObj = director.clerk.insertNewRecordWithID(analysisDbClass)
-        
         #load trajectory      
         trajectoryDbObj = director.clerk._getEntry('Trajectory', 
             id = self.inventory.trajectoryId, maindom = 'vnfb.dom.material_simulations')
