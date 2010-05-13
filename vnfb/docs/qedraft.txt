@@ -50,6 +50,8 @@ to a particular state. The following steps are implemented:
     electron_dynamics = 'sd'        # ELECTRONS
     ion_dynamics = 'none'           # IONS
 
+Label: Electronic Minimization
+
 Performs steepest descent electron dynamics
 
 - Ion Minimization (with Damped Electron Dynamics and Fixed Cells)
@@ -61,6 +63,7 @@ Performs steepest descent electron dynamics
     ion_damping = 0.02
     ion_velocities = 'zero'
 
+Label: Ion Minimization
 
 Performs both damped phonon dynamics and electron damping. It is supposed
 that atoms are located near equalibrium, that is interatomic forces are small 
@@ -78,11 +81,15 @@ Performs randomization of ions in case if your system is very close to equalibri
 Notes:
     To be strict after ions randomization you should also do the "Electron Minimization" again
 
+Label: Ions Randomization
+
 - Electrons and Ions Quenching
     electron_dynamics = 'verlet'
     electron_velocities = 'zero'
     ion_dynamics = 'verlet'
     ion_velocities = 'zero'
+
+Label: Electrons and Ions Quenching
 
 - Electron and Ion Dynamics
     electron_dynamics = 'verlet'
@@ -92,6 +99,8 @@ Notes:
 Notes:
     - First CP run of "Electron and Ion Dynamics" should be performed with
 
+Label: Electron and Ion Dynamics
+
 - Electron and Ion Dynamics with Nose Thermostat    # Essential
     electron_dynamics = 'verlet'
     electron_temperature = 'zero'
@@ -100,6 +109,9 @@ Notes:
     tempw = 300
     fnosep = 60
 
+Label: Electrons and Ions with Thermostat
+
+Analysis Page:
 
 
 

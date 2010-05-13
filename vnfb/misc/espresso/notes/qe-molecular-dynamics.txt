@@ -6,22 +6,29 @@ Molecular dynamics calculations
 - S(Q,E)        # After DANSE meeting
 
 Chain:
-{cp.x} -> [qe2netcdf.py + nMOLDYN]
+[cp.x]{2-6} -> [qe2nc.py + nMOLDYN]
 
 Note:
-    qe2netcdf.py script is the adapted dl...
+    qe2nc.py script is the adapted dl...
 
-CP molecular dynamics uses cp.x. cppp.x postprocessing is just processes the
+Car-Parrinello molecular dynamics uses cp.x binary. Some runs are performed to prepare
+system to a particular state, some perform actual molecular dynamics. 
+cppp.x binary performs postprocessing and basically just processes the
 trajectories provided by CP simulation and extracts them in a more convenient form.
 I can do the parsing by myself.
 
-
+User goes to "Create New Simulation" page and selects "Molecular Dynamics", the
+following steps show up in the end.
 
 Steps:
-    [ ] Electronic Minimization # Essential (Tip: With Fixed Ions and Cells)
+    [x] Electronic Minimization # Essential (Tip: With Fixed Ions and Cells)
     [ ] Ion Minimization (Tip: With Damped Electron Dynamics and Fixed Cells)
     [ ] Ions Randomization
-    [ ] 
+    [ ] Electrons and Ions Quenching
+    [ ] Electron and Ion Dynamics
+    [x] Electron and Ion Dynamics with Nose Thermostat
+
+
 
 Description:
 
