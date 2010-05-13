@@ -53,6 +53,7 @@ EXPORT_PYTHON_MODULES = \
         qescheduler.py \
         qeserver.py \
         message.py \
+        qe2nc.py \
         qeutils.py \
         jobstatus.py \
 
