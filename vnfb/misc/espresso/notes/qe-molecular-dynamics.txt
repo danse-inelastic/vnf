@@ -6,9 +6,95 @@ Molecular dynamics calculations
 - S(Q,E)        # After DANSE meeting
 
 Chain:
-cp.x
+{cp.x} -> [qe2netcdf.py + nMOLDYN]
 
-CP molecular dynamics uses cp.x. I don't see much value in cppp.x
+Note:
+    qe2netcdf.py script is the adapted dl...
+
+CP molecular dynamics uses cp.x. cppp.x postprocessing is just processes the
+trajectories provided by CP simulation and extracts them in a more convenient form.
+I can do the parsing by myself.
+
+
+
+Steps:
+    [ ] Electronic Minimization # Essential (Tip: With Fixed Ions and Cells)
+    [ ] Ion Minimization (Tip: With Damped Electron Dynamics and Fixed Cells)
+    [ ] Ions Randomization
+    [ ] 
+
+Description:
+
+- Electronic Minimization (with Fixed Ions and Cells) # Essential
+
+    restart_mode = 'from_scratch'   # SYSTEM
+    electron_dynamics = 'sd'        # ELECTRONS
+    ion_dynamics = 'none'           # IONS
+
+Label: Electronic Minimization
+
+Performs steepest descent electron dynamics
+
+- Ion Minimization (with Damped Electron Dynamics and Fixed Cells)
+
+    restart_mode = 'restart'        # SYSTEM
+    electron_dynamics = 'damp'      # ELECTRONS
+    electron_damping = 0.2
+    ion_dynamics = 'damp'           # IONS
+    ion_damping = 0.02
+    ion_velocities = 'zero'
+
+Label: Ion Minimization
+
+Performs both damped phonon dynamics and electron damping. It is supposed
+that atoms are located near equalibrium, that is interatomic forces are small
+(< 1 atomic units). If your system is far from equalibrium (forces > 1 atomic units)
+you need to use steepest descent phonon dynamics.
+    ion_dynamics = 'sd'
+
+- Ions Randomization
+    ion_dynamics = 'none'           # IONS, for each species
+    tranp(1) = .TRUE.
+    amprp(1) = 0.02
+
+Performs randomization of ions in case if your system is very close to equalibrium.
+
+Notes:
+    To be strict after ions randomization you should also do the "Electron Minimization" again
+
+Label: Ions Randomization
+
+- Electrons and Ions Quenching
+    electron_dynamics = 'verlet'
+    electron_velocities = 'zero'
+    ion_dynamics = 'verlet'
+    ion_velocities = 'zero'
+
+Label: Electrons and Ions Quenching
+
+- Electron and Ion Dynamics
+    electron_dynamics = 'verlet'
+    electron_temperature = 'not_controlled'
+    ion_dynamics = 'verlet'
+
+Notes:
+    - First CP run of "Electron and Ion Dynamics" should be performed with
+
+Label: Electron and Ion Dynamics
+
+- Electron and Ion Dynamics with Nose Thermostat    # Essential
+    electron_dynamics = 'verlet'
+    electron_temperature = 'zero'
+    ion_dynamics = 'verlet'
+    ion_temperature = 'nose'
+    tempw = 300
+    fnosep = 60
+
+Label: Electrons and Ions with Thermostat
+
+Analysis Page:
+
+
 
 Available steps:
 - Electronic minimization (with fixed ions and cells)
