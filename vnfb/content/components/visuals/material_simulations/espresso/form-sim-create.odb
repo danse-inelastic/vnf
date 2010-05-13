@@ -12,7 +12,7 @@
 #
 
 import luban.content as lc
-from vnfb.qeutils.qeconst import SIMCHAINS
+from vnfb.qeutils.qeconst import SIMCHAINS, ID_MD_OPTIONS
 from vnfb.qeutils.qegrid import QEGrid
 from vnfb.utils.serverlist import ServerList
 
@@ -48,18 +48,6 @@ def atomicStructure(actor, director):
     return section
 
 
-def showMDOptions(selector):
-    content = lc.document()
-    value   = select(element=selector).getAttr('value')
-    content.add(value)
-    action  = select(element=selector).getAttr("selection")#.getAttr('value')
-    #.params.keys()
-    print dir(action)
-    #print action.element.value
-    #print selection
-    return alert(value) #select(id="hello").replaceContent(value)
-
-
 def visual(actor, director):
     "Sets create new simulation form"
     
@@ -74,7 +62,10 @@ def visual(actor, director):
     sname       = FormTextField(name = "sname", value = actor.sname)
     simtype     = FormSelectorField(name        = "simtype",
                                     entries     = enumerate(SIMCHAINS.keys()))
-    simtype.onchange    = showMDOptions(simtype)
+    actorName   = "material_simulations/espresso/sim-create"
+    simtype.onchange    = load( actor   = actorName,
+                                routine = "showMDOptions",
+                                simtype = select(element=simtype).getAttr("value"))
     description = FormTextField(name="description", value=actor.description)   # Make as textarea
     label       = FormTextField(name="label", value=actor.label)
     server      = FormSelectorField(name    = "server",
@@ -89,7 +80,7 @@ def visual(actor, director):
     table.addRow(("Atomic Structure: *", atomicStructure(actor, director)))
     table.addRow(("Type: *", simtype))
     table.addRow(("Server: *", server))
-    table.addRow(("", lc.document(id="hello")))
+    table.addRow(("", lc.document(id=ID_MD_OPTIONS)))
     table.addRow(("Name:", sname))
     table.addRow(("Description:", description))
     table.addRow(("Label:", label))
