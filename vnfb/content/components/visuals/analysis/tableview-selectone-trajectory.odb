@@ -29,7 +29,7 @@ def visual(
     ):
     # name: name of table view
     # 
-    domaccess = director.retrieveDOMAccessor(dynamics_type)
+    domaccess = director.retrieveDOMAccessor('trajectory')
     targettablename = 'trajectory'
         
     from vnfb.components.MasterTable import MasterTableFactory, filtercompiler
@@ -109,9 +109,12 @@ def createTable(
 columns = [
     'selectone',
     'id',
-    'description',
-    'type',]
-    #'date']
+    'initial_chemical_formula',
+    'total_time',
+    'time_step_interval',
+    #'description',
+    #'type',]
+    'date']
 measure2dbcol = {
     'description': 'short_description',
     }
