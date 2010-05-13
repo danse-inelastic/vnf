@@ -37,3 +37,70 @@ Results Path
 There are two types of result paths: local and remote. Local result path is available
 when results are retrieved to the local machine only.
 
+
+Car-Parrinello molecular dynamics
+---------------------------------
+
+In order to caclculate CP molecular dynamics simulation you need to bring your system. 
+to a particular state. The following steps are implemented:
+
+- Electronic Minimization (with Fixed Ions and Cells) # Essential
+
+    restart_mode = 'from_scratch'   # SYSTEM
+    electron_dynamics = 'sd'        # ELECTRONS
+    ion_dynamics = 'none'           # IONS
+
+Performs steepest descent electron dynamics
+
+- Ion Minimization (with Damped Electron Dynamics and Fixed Cells)
+
+    restart_mode = 'restart'        # SYSTEM
+    electron_dynamics = 'damp'      # ELECTRONS
+    electron_damping = 0.2
+    ion_dynamics = 'damp'           # IONS
+    ion_damping = 0.02
+    ion_velocities = 'zero'
+
+
+Performs both damped phonon dynamics and electron damping. It is supposed
+that atoms are located near equalibrium, that is interatomic forces are small 
+(< 1 atomic units). If your system is far from equalibrium (forces > 1 atomic units)
+you need to use steepest descent phonon dynamics.
+    ion_dynamics = 'sd'
+
+- Ions Randomization
+    ion_dynamics = 'none'           # IONS, for each species
+    tranp(1) = .TRUE.               
+    amprp(1) = 0.02
+
+Performs randomization of ions in case if your system is very close to equalibrium.
+
+Notes:
+    To be strict after ions randomization you should also do the "Electron Minimization" again
+
+- Electrons and Ions Quenching
+    electron_dynamics = 'verlet'
+    electron_velocities = 'zero'
+    ion_dynamics = 'verlet'
+    ion_velocities = 'zero'
+
+- Electron and Ion Dynamics
+    electron_dynamics = 'verlet'
+    electron_temperature = 'not_controlled'
+    ion_dynamics = 'verlet'
+
+Notes:
+    - First CP run of "Electron and Ion Dynamics" should be performed with
+
+- Electron and Ion Dynamics with Nose Thermostat    # Essential
+    electron_dynamics = 'verlet'
+    electron_temperature = 'zero'
+    ion_dynamics = 'verlet'
+    ion_temperature = 'nose'
+    tempw = 300
+    fnosep = 60
+
+
+
+
+

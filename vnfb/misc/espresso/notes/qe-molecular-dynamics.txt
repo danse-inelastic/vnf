@@ -11,7 +11,9 @@ cp.x
 CP molecular dynamics uses cp.x. I don't see much value in cppp.x
 
 Available steps:
-- 
+- Electronic minimization (with fixed ions and cells)
+- Ions randomization
+- Geometry optimization
 
 The schema looks like:
 [Step 1. Electronic ground state] -> [Step 2. Molecular Dynamics] -> [Step 3. DOS from Trajectory Analysis]
