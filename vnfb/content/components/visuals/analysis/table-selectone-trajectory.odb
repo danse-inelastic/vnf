@@ -29,14 +29,14 @@ def visual(simulations, cols, director):
         #description = Model.descriptors.str(name='description')
         #type = Model.descriptors.str(name='type')
         date = Model.descriptors.str(name='date')
-        row_identifiers = ['id', 'type']
+        row_identifiers = ['id']
 
     columns = [
         View.Column(label='', measure='selectone'),
         View.Column(label='ID', measure='id'),
         View.Column(label='Initial chemical formula', measure='initial_chemical_formula'),
-        View.Column(label='Total time', measure='total_time'),
-        View.Column(label='Time step interval', measure='time_step_interval'),
+        View.Column(label='Total time (ps)', measure='total_time'),
+        View.Column(label='Time step interval (ps)', measure='time_step_interval'),
         #View.Column(label='Description', measure='description'),
         #View.Column(label='Type', measure='type'),
         View.Column(label='Date created', measure='date'),
