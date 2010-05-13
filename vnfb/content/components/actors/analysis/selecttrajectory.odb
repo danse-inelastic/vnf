@@ -27,7 +27,7 @@ class Actor(base):
         '''
         selected = self.inventory.selected
         id, table = selected.split(',')
-        domaccess = director.retrieveDOMAccessor('dynamics')
+        domaccess = director.retrieveDOMAccessor('trajectory')
         dynamics = domaccess.getSample(table, id)
         return domaccess.db.getUniqueIdentifierStr(dynamics)        
 
@@ -57,7 +57,7 @@ class Actor(base):
         mine = self.inventory.mine
         
         tableview = director.retrieveVisual(
-            'analysis/tableview-selectone',
+            'analysis/tableview-selectone-trajectory',
             director,
             self.name,
             label           = label,
@@ -79,7 +79,7 @@ class Actor(base):
         return
 
 
-    def __init__(self, name='analysis/selectdynamics'):
+    def __init__(self, name='analysis/selecttrajectory'):
         super(Actor, self).__init__(name)
         return
 
