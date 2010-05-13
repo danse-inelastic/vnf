@@ -18,7 +18,7 @@ import os.path
 
 import os
 import re
-from vnfb.qeutils.qeconst import INPUT, ANALYSIS, SUBTYPE_MATDYN
+from vnfb.qeutils.qeconst import INPUT, ANALYSIS, SUBTYPE_MATDYN, SIMTYPE
 from vnfb.qeutils.qescheduler import schedulerfactory
 from vnfb.qeutils.qeparser.qeinput import QEInput
 import luban.content as lc
@@ -222,6 +222,17 @@ def key2val(key, dict, default=""):
 
     return default
 
+
+def selection2simtype(selection):
+    "Returns key if simulation type based on selection"
+    # Example: 
+    #   Input: 6, Returns: molecular-dynamics
+    keys        = SIMTYPE.keys()
+    selected    = int(selection)
+    if not selected in range(len(keys)):
+        return ""
+
+    return keys[selected]
 
 
 def latestRecord(records, timefield):

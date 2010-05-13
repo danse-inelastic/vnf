@@ -12,9 +12,11 @@
 #
 
 
-from vnfb.qeutils.qeconst import SIMTYPE, SIMCHAINS, ID_MD_OPTIONS
+from vnfb.qeutils.qeconst import SIMCHAINS, ID_MD_OPTIONS
+from vnfb.qeutils.qeutils import selection2simtype
 from vnfb.utils.serverlist import ServerList
 from vnfb.dom.QESimulation import QESimulation
+
 
 from luban.content import select, load
 
@@ -89,10 +91,13 @@ class Actor(base):
 
 
     def showMDOptions(self, director):
-        keys    = SIMTYPE.keys()
         content = lc.document()
-        if keys[int(self.simtype)] == "molecular-dynamics":
+        if selection2simtype(self.simtype) == "molecular-dynamics":
             content.add("Hi")
+#        keys    = SIMTYPE.keys()
+#        content = lc.document()
+#        if keys[int(self.simtype)] == "molecular-dynamics":
+#            content.add("Hi")
 
         return select(id=ID_MD_OPTIONS).replaceContent(content)
 
@@ -137,17 +142,6 @@ class Actor(base):
     def _verify(self):
         """Verify data first """
         pass
-
-
-
-
-    def _simtypeValue(self, simtype):
-        keys    = SIMCHAINS.keys()
-        for i in range(len(keys)):
-            if keys[i] == simtype:
-                return i
-
-        return 0
 
 
     def __init__(self):
