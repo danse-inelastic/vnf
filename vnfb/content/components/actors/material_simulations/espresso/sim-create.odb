@@ -11,14 +11,13 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
-
-from vnfb.qeutils.qeconst import SIMCHAINS, ID_MD_OPTIONS
+from luban.content import select, load
+from vnfb.qeutils.qegrid import QEGrid
+from vnfb.qeutils.qeconst import SIMCHAINS, MDSTEPS, ID_MD_LABEL, ID_MD_OPTIONS
 from vnfb.qeutils.qeutils import selection2simtype
+from luban.content.FormCheckBox import FormCheckBox
 from vnfb.utils.serverlist import ServerList
 from vnfb.dom.QESimulation import QESimulation
-
-
-from luban.content import select, load
 
 import luban.content as lc
 from luban.components.AuthorizedActor import AuthorizedActor as base
@@ -35,6 +34,16 @@ class Actor(base):
         server      = pyre.inventory.str('server', default='')
         structureid = pyre.inventory.str('structureid', default='')
 
+        # Molecular dynamics steps
+        electronmin    = pyre.inventory.bool(name='electronmin', default=False)
+
+#MDSTEPS["electron-min"] = "Electronic Minimization"
+#MDSTEPS["ion-min"]      = "Ion Minimization"
+#MDSTEPS["ion-random"]   = "Ions Randomization"
+#MDSTEPS["quenching"]    = "Electrons and Ions Quenching"
+#MDSTEPS["dynamics"]     = "Electron and Ion Dynamics"
+#MDSTEPS["thermostat"]   = "Electron and Ion Dynamics with Nose Thermostat"
+
 
     def default(self, director):
         return select(id='main-display-area').replaceContent(self.content(director))
@@ -50,7 +59,6 @@ class Actor(base):
                                                           ))
                         )
             path.append('Quantum Espresso')
-            
             return director.retrieveVisual('view-indicator', path=path)
 
         doc         = lc.document(title   = "Create New Simulation")
@@ -91,37 +99,82 @@ class Actor(base):
 
 
     def showMDOptions(self, director):
-        content = lc.document()
+        label   = lc.document()
+        options = lc.document()
+        actions = []
+        
         if selection2simtype(self.simtype) == "molecular-dynamics":
-            content.add("Hi")
-#        keys    = SIMTYPE.keys()
-#        content = lc.document()
-#        if keys[int(self.simtype)] == "molecular-dynamics":
-#            content.add("Hi")
+            label.add("Steps: *")
+            options.add(self._mdOptions(director))
 
-        return select(id=ID_MD_OPTIONS).replaceContent(content)
+        actions.append(select(id=ID_MD_LABEL).replaceContent(label))
+        actions.append(select(id=ID_MD_OPTIONS).replaceContent(options))
+
+        return actions
+
+
+    def _mdOptions(self, director):
+        "Displays molecular dynamics steps"
+        table       = QEGrid(lc.grid())
+        
+
+#        box     = FormCheckBox(name="electronmin", checked = True)
+#        print self._noHyphen("hello-world-blah")
+#        label   = "Hi"
+#        table.addRow((box, label))
+
+        #print dir(box)
+        for s in MDSTEPS.keys():
+            box     = FormCheckBox(name=self._noHyphen(s), checked = self._checked(s))
+            label   = MDSTEPS[s]
+            table.addRow((box, label))
+
+        return table.grid()
+
+
+    def _noHyphen(self, str):
+        "Removes hyphen from a string"
+        # Input: hello-world, Output: helloworld
+        list    = str.split("-")
+        s       = ""
+        for l in list:
+            s   += l
+
+        return s
+
+
+    def _checked(self, step):
+        "Takes molecular dynamics step and decides if to check them"
+        CHECKED = ["electron-min", "thermostat"]
+        if step in CHECKED:
+            return True
+
+        return False
 
 
     def createRecord(self, director):
         """Create simulation record"""
-        self._verify()
-        keys    = SIMCHAINS.keys()
-        simtype = keys[int(self.simtype)]
-        servers = ServerList(director)
-
-        params  = {"sname":         self._sname(),
-                   "type":          simtype,
-                   "creator":       director.sentry.username,
-                   "short_description":   self._description(),
-                   "label":         self.label,
-                   "serverid":      servers.id(self.server),
-                   "structureid":   self.structureid
-                   }
-        sim     = QESimulation(director)
-        sim.createRecord(params)
-        sim.establishGlobalPointer(director.clerk.db)
-
-        return load(actor='material_simulations/espresso/sim-view', id = sim.id)  # Redirection to the page
+        print self.electronmin
+        print self.simtype
+        
+#        self._verify()
+#        keys    = SIMCHAINS.keys()
+#        simtype = keys[int(self.simtype)]
+#        servers = ServerList(director)
+#
+#        params  = {"sname":         self._sname(),
+#                   "type":          simtype,
+#                   "creator":       director.sentry.username,
+#                   "short_description":   self._description(),
+#                   "label":         self.label,
+#                   "serverid":      servers.id(self.server),
+#                   "structureid":   self.structureid
+#                   }
+#        sim     = QESimulation(director)
+#        sim.createRecord(params)
+#        sim.establishGlobalPointer(director.clerk.db)
+#
+#        return load(actor='material_simulations/espresso/sim-view', id = sim.id)
 
 
     def _description(self):
@@ -159,7 +212,7 @@ class Actor(base):
         self.server      = self.inventory.server
         self.structureid = self.inventory.structureid
 
-        return
+        self.electronmin = self.inventory.electronmin
 
 
     def _init(self):
