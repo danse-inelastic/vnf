@@ -12,7 +12,7 @@
 #
 
 
-from vnfb.qeutils.qeconst import SIMCHAINS
+from vnfb.qeutils.qeconst import SIMTYPE, SIMCHAINS, ID_MD_OPTIONS
 from vnfb.utils.serverlist import ServerList
 from vnfb.dom.QESimulation import QESimulation
 
@@ -86,6 +86,17 @@ class Actor(base):
         return select(id='main-display-area').replaceContent(doc)
 
 
+
+
+    def showMDOptions(self, director):
+        keys    = SIMTYPE.keys()
+        content = lc.document()
+        if keys[int(self.simtype)] == "molecular-dynamics":
+            content.add("Hi")
+
+        return select(id=ID_MD_OPTIONS).replaceContent(content)
+
+
     def createRecord(self, director):
         """Create simulation record"""
         self._verify()
@@ -126,6 +137,9 @@ class Actor(base):
     def _verify(self):
         """Verify data first """
         pass
+
+
+
 
     def _simtypeValue(self, simtype):
         keys    = SIMCHAINS.keys()
