@@ -112,14 +112,16 @@ class Actor(base):
 #        sA.add(load(actor=actorName, routine='edit', id = self.inventory.dynamicsId))
 #        sB          = splitter.section()
 #        docSub      = lc.document(title = "")
-        b = lc.button(label='select'); doc.add(b)
+        b = lc.button(label='select'); 
+        #doc.add(b);
+        container.add(b)
         b.onclick = load(
             #actor='atomicstructure',
             #actor=self.name, routine='runDirectly', 
             analysisId = self.inventory.analysisId,
             analysisType = self.inventory.analysisType,
             actor=self.name, routine='configureSubmissionQueue')
-        return select(id='main-display-area').replaceContent(doc)
+        return select(id='main-display-area').replaceContent(container)
     
     def configureSubmissionQueue(self, director):
         orm = director.clerk.orm

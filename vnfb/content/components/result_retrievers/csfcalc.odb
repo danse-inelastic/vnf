@@ -38,7 +38,7 @@ class Retriever(base):
 
         # save the result from job to dos
         self.declareProgress(0.5, 'get result from server')
-        self._save_result(computation, job, 'dos', sqe, 'data.nc')
+        self._save_result(computation, job, analysisObj.sqeFile, sqe, 'data.nc')
         return
 
 
