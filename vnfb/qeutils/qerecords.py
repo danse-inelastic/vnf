@@ -11,7 +11,7 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
-from vnfb.qeutils.qeutils import latestJob
+from vnfb.qeutils.qeutils import latestJob, simchain
 from vnfb.qeutils.qeconst import SIMCHAINS
 
 
@@ -44,20 +44,24 @@ class SimulationRecord(QERecords):
 
 
     def _init(self):
-        "Init class attributes"
+        """Init class attributes
+        Notes:
+            - It is important to set _typelist and _tasklist attributes
+        """
         if not self._director:  # No director, no init
             return
 
+        # Should be set before typelist and tasklist
         self._sim       = self.record()
+        self._simtype   = self.simType()
         self._simtasks  = self.simTaskList()
 
-        self._typelist  = self.typeList()
-        self._simtype   = self.simType()
-        self._tasklist  = self.taskList()           # List of task objects,
-                                                    # Shoud be initialized before inputlist and joblist!
+        # Shoud be set before inputlist and joblist!
+        self._typelist  = self.typeList()           # Important! List of types
+        self._tasklist  = self.taskList()           # Important! List of task objects,
+                                                    
         self._joblist   = self.jobList(self._subtype)            # Latest jobs
         self._inputlist = self.inputList()
-
         self._jitlist   = self.jobInputTaskList(self._subtype)   # Default Jobs-Input - Task list
         
 
@@ -68,6 +72,43 @@ class SimulationRecord(QERecords):
 
     def simTaskList(self):
         return self._director.clerk.getQESimulationTasks(where="simulationid='%s'" % self._id) #  can be None
+
+
+    def simType(self):
+        "Return simulation type"
+        if not self._sim:
+            return None         # No simulation
+
+        simtype     = self._sim.type
+        if simtype in SIMCHAINS:
+            return simtype
+
+        return None
+
+
+    # XXX: Get type list from qesimulations.simchain record, instead of SIMCHAINS
+    def typeList(self):
+        "Return list of simulation task types"
+        if not self._sim:
+            return None             # No simulation
+
+        # XXX: Fix reference to the actual simulation type
+        if self._simtype == "Molecular Dynamics": # Special case for molecular dynamics
+            return simchain(self._sim.simchain)
+
+        if self._simtype:
+            return SIMCHAINS[self._simtype]
+
+        return ()
+
+
+    def taskList(self):
+        "Return list of task objects from list of simulation task objects"
+        tasklist   = []
+        for lo in range(len(self._typelist)):   # Loop over linkorder's
+            tasklist.append(self._taskLinkObject(lo))   # Important line
+
+        return tasklist
 
 
     def jobList(self, subtype = None):
@@ -88,13 +129,6 @@ class SimulationRecord(QERecords):
         return inputlist
 
 
-    def taskList(self):
-        "Return list of task objects from list of simulation task objects"
-        tasklist   = []
-        for lo in range(len(self._typelist)):   # Loop over linkorder's
-            tasklist.append(self._taskLinkObject(lo))   # Important line
-
-        return tasklist
 
 
     # subtype is not very useful here
@@ -132,30 +166,6 @@ class SimulationRecord(QERecords):
         "Convenience method for getting task record specified by linkorder"
         jit = self.jobInputTask(linkorder)
         return jit[2]
-
-
-    def typeList(self):
-        "Return list of simulation task types"
-        if not self._sim:
-            return None             # No simulation
-
-        simtype     = self.simType()
-        if simtype:
-            return SIMCHAINS[simtype]
-
-        return ()
-
-
-    def simType(self):
-        "Return simulation type"
-        if not self._sim:
-            return None         # No simulation
-
-        simtype     = self._sim.type
-        if simtype in SIMCHAINS:
-            return simtype
-
-        return None
 
 
     # For some reason it calls _jobObject too often. Performance degradation?

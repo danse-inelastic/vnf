@@ -235,6 +235,15 @@ def selection2simtype(selection):
     return keys[selected]
 
 
+def simchain(csvstr):
+    "Takes comma-separated value and returns list"
+    list    = csvstr.split(",")
+    for i in range(len(list)):
+        list[i] = list[i].strip()   # In case if there are spaces
+        
+    return list
+
+
 def latestRecord(records, timefield):
     """Retruns latest record based on timefield column
         timefield   - string

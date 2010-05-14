@@ -171,11 +171,13 @@ class Actor(base):
     def _simChain(self):
         "Returns comma-separated simulation chain string of tasks"
         # Output example: "PW,PW,DOS" or "electron-min,thermostat"
+        # Important: Keep the order!
         typekey = selection2simtype(self.simtype)
         if typekey != "molecular-dynamics": # Use standard chain from qeconst.py
             return self._nonMDChain(typekey)
 
         return self._mdChain()
+
 
     def _nonMDChain(self, typekey):
         "Returns non-molecular dynamics chain from qeconst.py"
@@ -185,8 +187,8 @@ class Actor(base):
         chain   = SIMCHAINS[SIMTYPE[typekey]]   # list
         s   = ""
         for c in chain:
-            s   += "%s," % c    # Create string
-        s   = s.rstrip(",")   # Get rid of last comma
+            s   += "%s," % c    # Create simulation chain string
+        s   += "trajectory" # Add trajectory analysis step
         return s
 
 
