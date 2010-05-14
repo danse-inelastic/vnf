@@ -16,8 +16,7 @@ from vnfb.qeutils.qetasks import QETasks
 from vnfb.qeutils.qegrid import QEGrid
 from vnfb.qeutils.qeparams import QEParams
 from vnfb.qeutils.qeserver import QEServer
-
-ID_SIMTASKS = "qe-simchain"
+from vnfb.qeutils.qeconst import ID_SIMTASKS
 
 from luban.content import select
 from luban.content.Paragraph import Paragraph
