@@ -81,6 +81,11 @@ class Builder(base):
                 'mpirun -np %d gulp < %s > %s' % (np, computation.inputFile, computation.output_filename),
                 '',
                 ]
+            if self.convertHistoryFile:
+                cmds += [
+                'postProcessGulp.py -convertHistoryFile=True -historyFile=gulp.his -ncFile=gulp.nc',
+                'if [ -e gulp.nc ]; then rm gulp.his; fi',
+                         ] 
         #foxtrot
         elif job.server.id=='server002':
             cmds = [
@@ -91,12 +96,13 @@ class Builder(base):
                 'mpirun -np %d gulp_openmpi < %s > %s' % (np, computation.inputFile, computation.output_filename),
                 '',
                 ]
-
-        if self.convertHistoryFile:
-            cmds += [
-            'postProcessGulp.py -convertHistoryFile=True -historyFile=gulp.his -ncFile=gulp.nc',
-            'rm gulp.his',
-                     ] 
+            if self.convertHistoryFile:
+                cmds += [
+                '/usr/local/python-2.6.2/bin/python2.6 /home/jbrkeith/dv/tools/pythia-0.8/bin/conversionTasks.py -convertHistoryFile=True -historyFile=gulp.his -ncFile=gulp.nc',
+                'if [ -e gulp.nc ]; then rm gulp.his; fi',
+                #"""/usr/local/python-2.6.2/bin/python2.6 -c "import os; if os.path.exists('gulp.nc'): os.remove('gulp.his')" """,
+                         ] 
+                
         if self.serializePhononArrays:
             cmds += [
             'postProcessGulp.py -serializePhononArrays=True',
