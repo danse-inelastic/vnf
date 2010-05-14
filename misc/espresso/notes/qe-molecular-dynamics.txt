@@ -99,8 +99,15 @@ Label: Electron and Ion Dynamics
 
 Label: Electrons and Ions with Thermostat
 
-Analysis Page:
+Analysis Page
+-------------
 
+Possible dependencies:
+    Temperature as a function of time
+    Velocity distribution
+    Mean squared displacement
+    Radial distribution function
+    * Potential energy and constant of motion as a function of time
 
 
 Available steps:

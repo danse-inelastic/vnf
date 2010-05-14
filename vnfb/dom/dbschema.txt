@@ -150,3 +150,6 @@ May 2, 2010
 Changed table qeconvergencetasks -> qeconvparamtasks. This also affects column:
 convergenceid -> convparamid
 
+May 14, 2010
+Added column "simchain" to qesimulations table
+

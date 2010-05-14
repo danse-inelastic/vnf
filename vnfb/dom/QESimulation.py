@@ -82,6 +82,9 @@ class QESimulation(QETable, GloballyReferrable):
     label       = dsaw.db.varchar(name="label", length=128, default='')
     label.meta['tip'] = "Label associated with the simulation"
 
+    simchain    = dsaw.db.varchar(name="simchain", length=1024, default='')
+    simchain.meta['tip'] = "Specifies chain sequence in comma-separated values. Example: PW,PW,DOS"
+
     #matter = dsaw.db.integer(name="matter", length=16) # Original
     #matter = dsaw.db.varchar(name="matter", length=16)
     
