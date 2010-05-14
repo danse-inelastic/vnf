@@ -51,6 +51,7 @@ class Actor(base):
         # create a new item
         bond = BvKBond()
         bond.matter = model.matter
+        bond.uses_primitive_unitcell = model.uses_primitive_unitcell
         orm.save(bond, save_not_owned_referred_object=0)
         
         # add to the refset
