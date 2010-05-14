@@ -35,14 +35,12 @@ class Actor(base):
         structureid = pyre.inventory.str('structureid', default='')
 
         # Molecular dynamics steps
-        electronmin    = pyre.inventory.bool(name='electronmin', default=False)
-
-#MDSTEPS["electron-min"] = "Electronic Minimization"
-#MDSTEPS["ion-min"]      = "Ion Minimization"
-#MDSTEPS["ion-random"]   = "Ions Randomization"
-#MDSTEPS["quenching"]    = "Electrons and Ions Quenching"
-#MDSTEPS["dynamics"]     = "Electron and Ion Dynamics"
-#MDSTEPS["thermostat"]   = "Electron and Ion Dynamics with Nose Thermostat"
+        electronmin = pyre.inventory.bool(name='electronmin', default=False)
+        ionmin      = pyre.inventory.bool(name='ionmin', default=False)
+        ionrandom   = pyre.inventory.bool(name='ionrandom', default=False)
+        quenching   = pyre.inventory.bool(name='quenching', default=False)
+        dynamics    = pyre.inventory.bool(name='dynamics', default=False)
+        thermostat  = pyre.inventory.bool(name='thermostat', default=False)
 
 
     def default(self, director):
@@ -115,15 +113,8 @@ class Actor(base):
 
     def _mdOptions(self, director):
         "Displays molecular dynamics steps"
-        table       = QEGrid(lc.grid())
+        table       = QEGrid(lc.grid(Class="qe-table-md"))
         
-
-#        box     = FormCheckBox(name="electronmin", checked = True)
-#        print self._noHyphen("hello-world-blah")
-#        label   = "Hi"
-#        table.addRow((box, label))
-
-        #print dir(box)
         for s in MDSTEPS.keys():
             box     = FormCheckBox(name=self._noHyphen(s), checked = self._checked(s))
             label   = MDSTEPS[s]
@@ -145,6 +136,7 @@ class Actor(base):
 
     def _checked(self, step):
         "Takes molecular dynamics step and decides if to check them"
+        # List of checkboxes which need to be checked
         CHECKED = ["electron-min", "thermostat"]
         if step in CHECKED:
             return True
@@ -153,28 +145,25 @@ class Actor(base):
 
 
     def createRecord(self, director):
-        """Create simulation record"""
-        print self.electronmin
-        print self.simtype
-        
-#        self._verify()
-#        keys    = SIMCHAINS.keys()
-#        simtype = keys[int(self.simtype)]
-#        servers = ServerList(director)
-#
-#        params  = {"sname":         self._sname(),
-#                   "type":          simtype,
-#                   "creator":       director.sentry.username,
-#                   "short_description":   self._description(),
-#                   "label":         self.label,
-#                   "serverid":      servers.id(self.server),
-#                   "structureid":   self.structureid
-#                   }
-#        sim     = QESimulation(director)
-#        sim.createRecord(params)
-#        sim.establishGlobalPointer(director.clerk.db)
-#
-#        return load(actor='material_simulations/espresso/sim-view', id = sim.id)
+        "Create simulation record"
+        self._verify()
+        keys    = SIMCHAINS.keys()
+        simtype = keys[int(self.simtype)]
+        servers = ServerList(director)
+
+        params  = {"sname":         self._sname(),
+                   "type":          simtype,
+                   "creator":       director.sentry.username,
+                   "short_description":   self._description(),
+                   "label":         self.label,
+                   "serverid":      servers.id(self.server),
+                   "structureid":   self.structureid
+                   }
+        sim     = QESimulation(director)
+        sim.createRecord(params)
+        sim.establishGlobalPointer(director.clerk.db)
+
+        return load(actor='material_simulations/espresso/sim-view', id = sim.id)
 
 
     def _description(self):
@@ -212,7 +201,13 @@ class Actor(base):
         self.server      = self.inventory.server
         self.structureid = self.inventory.structureid
 
+        # Molecular dynamics options
         self.electronmin = self.inventory.electronmin
+        self.ionmin      = self.inventory.ionmin
+        self.ionrandom   = self.inventory.ionrandom
+        self.quenching   = self.inventory.quenching
+        self.dynamics    = self.inventory.dynamics
+        self.thermostat  = self.inventory.thermostat
 
 
     def _init(self):
