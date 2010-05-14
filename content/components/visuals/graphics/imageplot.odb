@@ -2,7 +2,6 @@
 #
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
-#                                  Jiao Lin
 #                     California Institute of Technology
 #                     (C) 2006-2010  All Rights Reserved
 #
@@ -26,9 +25,9 @@ http_tmproot = 'tmp'
 tmproot = os.path.join('..', 'content', 'data', 'tmp')
 
 
-def visual(histogram, director):
+def visual(plotObj, director):
     """
-    histogram: a histogram data object
+    plotObj: either an ncPlottable instance or a histogram data object
     """
     # matplotlib needs home to be writable
     os.environ['HOME'] = '/tmp'
@@ -46,8 +45,13 @@ def visual(histogram, director):
     #
     saveout = sys.stdout
     sys.stdout = open(os.devnull, 'w')
-    from histogram import plot
-    plot(histogram, output=filepath)
+    sqe.
+    try:
+        plotObj.plotType(imageX=True) #nc plottable
+        plotObj.savefig(filepath)
+    except:
+        from histogram import plot #histogram
+        plot(plotObj, output=filepath)
     sys.stdout = saveout
 
     # the url for the image
