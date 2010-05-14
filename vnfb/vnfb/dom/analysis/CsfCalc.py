@@ -20,7 +20,7 @@ from vsat.trajectory.CsfCalc import CsfCalc as CsfCalcBase
 CsfCalc = o2t(CsfCalcBase, {'subclassFrom': Computation, 'dbtablename':'csfcalc'})
 CsfCalc.job_builder = 'analysiscalc'
 CsfCalc.actor = 'analysis/csfcalc'
-CsfCalc.result_retriever = 'analysis/csfcalc'
+CsfCalc.result_retriever = 'csfcalc'
 
 
 # version

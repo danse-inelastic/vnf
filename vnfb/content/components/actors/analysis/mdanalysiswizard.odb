@@ -121,6 +121,11 @@ class Actor(base):
             analysisId = self.inventory.analysisId,
             analysisType = self.inventory.analysisType,
             actor=self.name, routine='configureSubmissionQueue')
+#        container.oncreate = [
+#            select(element=container).append(
+#              load(actor='material_simulations/mdPlan', routine='createMdPlanDocument')
+#              ),
+#            ]
         return select(id='main-display-area').replaceContent(container)
     
     def configureSubmissionQueue(self, director):
