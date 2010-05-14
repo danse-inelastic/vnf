@@ -11,9 +11,11 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
-from luban.content import select, load
+MD_STEPS_CHECKED = ["electron-min", "thermostat"]
+
+from luban.content import select, load, alert
 from vnfb.qeutils.qegrid import QEGrid
-from vnfb.qeutils.qeconst import SIMCHAINS, MDSTEPS, ID_MD_LABEL, ID_MD_OPTIONS
+from vnfb.qeutils.qeconst import SIMCHAINS, SIMTYPE, MDSTEPS, ID_MD_LABEL, ID_MD_OPTIONS
 from vnfb.qeutils.qeutils import selection2simtype
 from luban.content.FormCheckBox import FormCheckBox
 from vnfb.utils.serverlist import ServerList
@@ -100,7 +102,7 @@ class Actor(base):
         label   = lc.document()
         options = lc.document()
         actions = []
-        
+
         if selection2simtype(self.simtype) == "molecular-dynamics":
             label.add("Steps: *")
             options.add(self._mdOptions(director))
@@ -137,8 +139,7 @@ class Actor(base):
     def _checked(self, step):
         "Takes molecular dynamics step and decides if to check them"
         # List of checkboxes which need to be checked
-        CHECKED = ["electron-min", "thermostat"]
-        if step in CHECKED:
+        if step in MD_STEPS_CHECKED:
             return True
 
         return False
@@ -153,6 +154,7 @@ class Actor(base):
 
         params  = {"sname":         self._sname(),
                    "type":          simtype,
+                   "simchain":      self._simChain(),
                    "creator":       director.sentry.username,
                    "short_description":   self._description(),
                    "label":         self.label,
@@ -166,16 +168,50 @@ class Actor(base):
         return load(actor='material_simulations/espresso/sim-view', id = sim.id)
 
 
+    def _simChain(self):
+        "Returns comma-separated simulation chain string of tasks"
+        # Output example: "PW,PW,DOS" or "electron-min,thermostat"
+        typekey = selection2simtype(self.simtype)
+        if typekey != "molecular-dynamics": # Use standard chain from qeconst.py
+            return self._nonMDChain(typekey)
+
+        return self._mdChain()
+
+    def _nonMDChain(self, typekey):
+        "Returns non-molecular dynamics chain from qeconst.py"
+        # Output example: "PW,PW,DOS"
+        if typekey == "":   # Empty typekey
+            return ""
+        chain   = SIMCHAINS[SIMTYPE[typekey]]   # list
+        s   = ""
+        for c in chain:
+            s   += "%s," % c    # Create string
+        s   = s.rstrip(",")   # Get rid of last comma
+        return s
+
+
+    def _mdChain(self):
+        "Returns molecular dynamics chain based on user selection"
+        # Output example: "electron-min,thermostat"
+        s   = ""
+        for key in MDSTEPS.keys():
+            if getattr(self, self._noHyphen(key)):
+                s   += "%s," % key
+
+        s   = s.rstrip(",")
+        return s
+
+
     def _description(self):
-        # Description is not set
-        if self.description == '':
+        "Returns description"
+        if self.description == '':  # Description is not set
             return "QE simulation"
 
         return self.description
 
     def _sname(self):
-        # Simulation name is not set
-        if self.sname == '':
+        "Returns simulation name"
+        if self.sname == '':    # Simulation name is not set
             return "Default"
 
         return self.sname
@@ -188,8 +224,6 @@ class Actor(base):
 
     def __init__(self):
         super(Actor, self).__init__(name='material_simulations/espresso/sim-create')
-
-        return
 
 
     def _configure(self):
