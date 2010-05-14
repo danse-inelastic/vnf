@@ -45,7 +45,7 @@ class QETasks:
         table           = QEGrid(lc.grid(Class="qe-tasks-table"))
         doshow          = self._showActions(tasklist)  # show "Run Task"?
 
-        for i in range(len(tasklist)):   #self._tasknum()):
+        for i in range(len(tasklist)):
             rows    = self._list(doshow)
             self._setTaskCell(table, i, tasklist[i], rows)
             if doshow:

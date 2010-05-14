@@ -30,7 +30,7 @@ TYPE        = {"PW":        "pw.x",
                "CP":        "cp.x",
                "CPPP":      "cppp.x"
                }
-               # Other types: "INITIAL_STATE", "GIPAW", "D1", "MATDYN", "PROJWFC", "PWCOND"
+               # Other types: "INITIAL_STATE", "GIPAW", "D1", "PROJWFC", "PWCOND"
 
 INPUT_EXT   = ".in"
 OUTPUT_EXT  = ".out"
@@ -59,9 +59,9 @@ NOPARALSIM  = ("single-phonon",)    # List of simulation types each of the tasks
 
 # List of possible orders
 LINKORDER               = OrderedDict()
-LINKORDER["PW"]         = None  # No definitive order (can be 0 or 1)
-LINKORDER["CP"]         = 0
-LINKORDER["CPPP"]       = 1
+LINKORDER["PW"]         = None  # No definitive order (options: 0, 1)
+LINKORDER["CP"]         = None  # No definitive order (options: 0, 1, 2, 3, 4, 5)
+LINKORDER["CPPP"]       = None
 LINKORDER["PH"]         = 1
 LINKORDER["DYNMAT"]     = 2
 LINKORDER["Q2R"]        = 2
@@ -84,7 +84,7 @@ SIMTYPE["electron-dispersion"]  = "Electron Dispersion"
 SIMTYPE["geometry"]             = "Geometry Optimization"
 SIMTYPE["single-phonon"]        = "Single Phonon"
 SIMTYPE["multiple-phonon"]      = "Multiple Phonon"
-SIMTYPE["molecular-dynamics"]   = "Molecular Dynamics"
+SIMTYPE["molecular-dynamics"]   = "Molecular Dynamics"  # Don't change for now!
 
 # Types of simulations
 SIMCHAINS   = OrderedDict()
@@ -94,10 +94,11 @@ SIMCHAINS[SIMTYPE["electron-dispersion"]]   = ("PW", "PW", "BANDS", "PLOTBAND")
 SIMCHAINS[SIMTYPE["geometry"]]              = ("PW",)
 SIMCHAINS[SIMTYPE["single-phonon"]]         = ("PW", "PH", "DYNMAT")
 SIMCHAINS[SIMTYPE["multiple-phonon"]]       = ("PW", "PH", "Q2R", "MATDYN") # DOS and Dispersion, See: example06
-SIMCHAINS[SIMTYPE["molecular-dynamics"]]    = ("CP", "CPPP")  # ?
+SIMCHAINS[SIMTYPE["molecular-dynamics"]]    = ("CP", "CPPP")  # Default chain, user defined chain is normally used
 
 SIMLIST     = SIMTYPE.values()
 
+# For cp.x (Car-Parrinello molecular dynamics) simulation only
 MDSTEPS     = OrderedDict()
 MDSTEPS["electron-min"] = "Electronic Minimization"
 MDSTEPS["ion-min"]      = "Ion Minimization"
@@ -105,7 +106,7 @@ MDSTEPS["ion-random"]   = "Ions Randomization"
 MDSTEPS["quenching"]    = "Electrons and Ions Quenching"
 MDSTEPS["dynamics"]     = "Electron and Ion Dynamics"
 MDSTEPS["thermostat"]   = "Electron and Ion Dynamics with Nose Thermostat"
-
+# MDSTEPS["trajectory"]  = "Trajectory Analysis"
 
 # Analysis actors
 ANALYSIS    = OrderedDict()
