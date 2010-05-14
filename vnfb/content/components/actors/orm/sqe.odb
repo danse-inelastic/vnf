@@ -32,50 +32,26 @@ class Actor(base):
 
     def createGraphicalView(self, director):
         sqe = self._load(director)
-        
         domaccess = self._domaccess(director)
         sqe = domaccess.getData(sqe)
-
-        from plotlib.NcPlottable import NcPlottable
-        from histogram import histogram
         qaxis = 'Q', sqe.q
         eaxis = 'E', sqe.e
         I = sqe.sqe
-        h = histogram('S(Q,E)', [qaxis, eaxis], data=I)
-        
+        try:
+            from plotlib.NcPlottable import NcPlottable
+            plotableObj = NcPlottable(sqe=sqe)
+        except:
+            from histogram import histogram
+            h = histogram('S(Q,E)', [qaxis, eaxis], data=I)
         title = 'S(Q, E)' 
         doc = lc.document(Class='container', title=title, collapsable=True)
-
         p = director.retrieveVisual(
-            'histogram/imageplot',
-            histogram=h,
+            'graphics/imageplot',
+            plotObj=plotableObj,
             director=director,
             )
         doc.add(p)
         return doc
-
-#    def createGraphicalView(self, director):
-#        sqe = self._load(director)
-#        
-#        domaccess = self._domaccess(director)
-#        sqe = domaccess.getData(sqe)
-#
-#        from histogram import histogram
-#        qaxis = 'Q', sqe.q
-#        eaxis = 'E', sqe.e
-#        I = sqe.sqe
-#        h = histogram('S(Q,E)', [qaxis, eaxis], data=I)
-#        
-#        title = 'S(Q, E)' 
-#        doc = lc.document(Class='container', title=title, collapsable=True)
-#
-#        p = director.retrieveVisual(
-#            'histogram/imageplot',
-#            histogram=h,
-#            director=director,
-#            )
-#        doc.add(p)
-#        return doc
 
     def _domaccess(self, director):
         return director.retrieveDOMAccessor('sqe')

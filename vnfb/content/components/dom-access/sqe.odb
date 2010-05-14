@@ -74,7 +74,7 @@ def read(sqe, director):
         sqe.e = npy.array(h.axes[1].binCenters())
         sqe.sqe = h.I
         return sqe        
-    else:
+    else: # i think this third use case is for scripting so it doesn't belong here
         p = os.path.join(dir, ncfile)
         if os.path.exists(p):
             sqe.read(p)
