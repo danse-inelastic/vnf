@@ -36,6 +36,7 @@ class Actor(base):
         domaccess = self._domaccess(director)
         sqe = domaccess.getData(sqe)
 
+        from plotlib.NcPlottable import NcPlottable
         from histogram import histogram
         qaxis = 'Q', sqe.q
         eaxis = 'E', sqe.e
@@ -52,6 +53,29 @@ class Actor(base):
             )
         doc.add(p)
         return doc
+
+#    def createGraphicalView(self, director):
+#        sqe = self._load(director)
+#        
+#        domaccess = self._domaccess(director)
+#        sqe = domaccess.getData(sqe)
+#
+#        from histogram import histogram
+#        qaxis = 'Q', sqe.q
+#        eaxis = 'E', sqe.e
+#        I = sqe.sqe
+#        h = histogram('S(Q,E)', [qaxis, eaxis], data=I)
+#        
+#        title = 'S(Q, E)' 
+#        doc = lc.document(Class='container', title=title, collapsable=True)
+#
+#        p = director.retrieveVisual(
+#            'histogram/imageplot',
+#            histogram=h,
+#            director=director,
+#            )
+#        doc.add(p)
+#        return doc
 
     def _domaccess(self, director):
         return director.retrieveDOMAccessor('sqe')
