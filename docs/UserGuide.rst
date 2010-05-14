@@ -27,6 +27,7 @@ Quantum Espresso:
 .. toctree::
 
     qe-phonon-dos
+    qe-car-parrinello
    
 ..   discussion
 
