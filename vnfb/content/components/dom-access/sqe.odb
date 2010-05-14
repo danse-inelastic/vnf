@@ -49,34 +49,38 @@ def read(sqe, director):
     dir = dds.abspath(record)
     import os
 
-    # nc
-    ncfile = SQETable.ncfile
     try:
+        # nc
+        ncfile = SQETable.ncfile
         if not dds.is_available(record, files=[ncfile]):
             dds.make_available(record, files=[ncfile])
+        ncPath = dds.abspath(record, ncfile)
+        if not os.path.exists():
+            return
+        sqe.read(ncPath)
+        return sqe           
     except:
-        pass
+        # histogram
+        histfile = SQETable.histogramh5
+        if not dds.is_available(record, files=[histfile]):
+            dds.make_available(record, files=[histfile])
+        if not os.path.exists(dds.abspath(record, histfile)):
+            return
+        from histogram.hdf import load, utils
+        entry = utils.getOnlyEntry(histfile)
+        h = hh.load(histfile, entry)
+        import numpy as npy
+        sqe.q = npy.array(h.axes[0].binCenters())
+        sqe.e = npy.array(h.axes[1].binCenters())
+        sqe.sqe = h.I
+        return sqe        
     else:
         p = os.path.join(dir, ncfile)
         if os.path.exists(p):
             sqe.read(p)
             return sqe
 
-    # histogram
-    histfile = SQETable.histogramh5
-    if not dds.is_available(record, files=[histfile]):
-        dds.make_available(record, files=[histfile])
-    if not os.path.exists(dds.abspath(record, histfile)):
-        return
-    from histogram.hdf import load, utils
-    entry = utils.getOnlyEntry(histfile)
-    h = hh.load(histfile, entry)
-    import numpy as npy
-    sqe.q = npy.array(h.axes[0].binCenters())
-    sqe.e = npy.array(h.axes[1].binCenters())
-    sqe.sqe = h.I
-    
-    return sqe
+
         
 
 
