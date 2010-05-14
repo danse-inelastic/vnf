@@ -27,7 +27,7 @@ class Retriever(base):
 
         # check result is available
         self.declareProgress(0.2, 'check if results exist')
-        self._check_results_sanity(expected_results=['dos'], job=job)
+        self._check_results_sanity(expected_results=[analysisObj.sqeFile], job=job)
 
         # create a sqe record
         self.declareProgress(0.4, 'create a data object to store the result')
@@ -43,7 +43,7 @@ class Retriever(base):
 
 
 def retriever():
-    return Retriever('csfCalc')
+    return Retriever('csfcalc')
 
 
 # version
