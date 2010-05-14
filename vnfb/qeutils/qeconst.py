@@ -16,6 +16,7 @@ from vnfb.utils.orderedDict import OrderedDict
 # Available packages
 PACKAGES    = ("Quantum Espresso",)  #, "VASP", "GULP"]  # Packages
 
+# XXX: Refactor TYPE dictionary to extend associated information
 # Type of configuration files
 TYPE        = {"PW":        "pw.x",
                "PH":        "ph.x",
@@ -31,6 +32,22 @@ TYPE        = {"PW":        "pw.x",
                "CPPP":      "cppp.x"
                }
                # Other types: "INITIAL_STATE", "GIPAW", "D1", "PROJWFC", "PWCOND"
+
+# XXX: Revise the tips according to
+TYPETIP     = {"PW":        "Plane wave calculation",
+               "PH":        "Phonon calculation",
+               "BANDS":     "Bands structure calculation",
+               "PLOTBAND":  "Plot bands post processing",
+               "PP":        "Post processing",
+               "DOS":       "Electronic Density of States (DOS) calculation",
+               "Q2R":       "Fourier transform to real space",
+               "MATDYN":    "Dynamical matrix calculation",
+               "DYNMAT":    "Dynamical matrix calculation",
+               "D3":        "Third-order derivative calculation",
+               "CP":        "Car-Parrinello molecular dynamics",
+               "CPPP":      "Car-Parrinello molecular dynamics post processing"
+               }
+
 
 INPUT_EXT   = ".in"
 OUTPUT_EXT  = ".out"
@@ -108,6 +125,16 @@ MDSTEPS["dynamics"]     = "Electron and Ion Dynamics"
 MDSTEPS["thermostat"]   = "Electron and Ion Dynamics with Nose Thermostat"
 # MDSTEPS["trajectory"]  = "Trajectory Analysis"
 
+# XXX: Get rid of repetition
+MDLABEL     = OrderedDict()
+MDLABEL["electron-min"] = ("Electronic Minimization", "Electronic minimization with fixed ions and cells")
+MDLABEL["ion-min"]      = ("Ion Minimization", "Ion minimization with damped electron dynamics and fixed cells")
+MDLABEL["ion-random"]   = ("Ions Randomization", "Ions randomization")
+MDLABEL["quenching"]    = ("Quenching", "Electrons and ions quenching")
+MDLABEL["dynamics"]     = ("Electron and Ion Dynamics", "Electron and ion dynamics with fixed cells")
+MDLABEL["thermostat"]   = ("Dynamics with Thermostat", "Electrons and ions with Nose thermostat")
+MDLABEL["trajectory"]   = ("Trajectory Analysis", "Trajectory analysis")
+
 # Analysis actors
 ANALYSIS    = OrderedDict()
 ANALYSIS[SIMLIST[0]]    = "electron"
@@ -178,6 +205,7 @@ SETTINGS  = {
 RUNSCRIPT   = "run.sh"
 
 RESULTS_ID      = "results-link"
+ID_SIMTASKS     = "qe-simchain"
 ID_OUTPUT       = "qe-container-output"
 ID_STATUS       = "qe-container-status"
 ID_CONV_JOBS    = "qe-convergence-jobs"

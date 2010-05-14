@@ -231,7 +231,7 @@ a.qe-cancel-task {
 }
 
 .qe-tasks-table td{
-    width: 220px
+    width: 240px
 }
 
 .qe-table-conv-jobs td {
@@ -534,10 +534,32 @@ a.qe-task-action {
     color: green;
 }
 
+.text-blue {
+    color: blue; /* blue */
+}
+
+
 .padding-left-20 {
     padding-left: 20px;
 }
 
+
+a.link-text-hack {
+    text-decoration:none;
+}
+
+a.link-text-hack:hover {
+    cursor:text;
+    text-decoration:none;
+}
+
+#qe-simchain a.link-text-hack {
+    color: blue;
+}
+
+#qe-simchain a.link-text-hack:hover {
+    color: blue;
+}
 
 .action-link {
     border-color: #cced8c;

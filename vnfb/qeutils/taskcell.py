@@ -18,7 +18,7 @@ from vnfb.qeutils.jobstatus import JobStatus
 from vnfb.qeutils.results.resultinfo import ResultInfo
 from vnfb.qeutils.qegrid import QEGrid
 from vnfb.qeutils.inputinfo import InputInfo
-from vnfb.qeutils.qeconst import TASK_ACTION
+from vnfb.qeutils.qeconst import TASK_ACTION, MDLABEL, TYPETIP
 from vnfb.qeutils.qeutils import latestJob
 from vnfb.qeutils.taskaction import TaskAction
 
@@ -43,14 +43,36 @@ class TaskCell:
 
     def header(self):
         "Shows the header for the simulation task"
-        type    = lc.paragraph(text="Step %s: %s" % (self._linkorder+1 , self._type), Class="text-bold")
-        link    = lc.paragraph(text="")     # Task cannot be changed at this time
-        #link    = lc.link(label="Change")  # Keep
+        # Because "tip" attribute is not implemented for any text widget (luban limitation)
+        # I will choose link widget instead
+        type        = lc.link(Class="link-text-hack text-blue text-bold")
+        type.label  = "Step %s: %s" % (self._linkorder+1 , self._taskLabel())
+        type.tip    = self._taskTip()
+        return type
 
-        table   = QEGrid(lc.grid(Class="qe-grid"))
-        table.addRow((type, link), (None, "qe-task-header-change"))
+        # KEEP: Changes task
+        #link    = lc.paragraph(text="")     # Task cannot be changed at this time
+        #link    = lc.link(label="Change")  
+        #table   = QEGrid(lc.grid(Class="qe-grid"))
+        #table.addRow((type, link), (None, "qe-task-header-change"))
+        #table.grid()
 
-        return table.grid()
+
+    def _taskLabel(self):
+        if self._type in MDLABEL.keys():
+            return MDLABEL[self._type][0]
+
+        return self._type   # No special label
+
+
+    def _taskTip(self):
+        if self._type in MDLABEL.keys():
+            return MDLABEL[self._type][1]
+
+        if self._type in TYPETIP.keys():
+            return TYPETIP[self._type]
+        
+        return self._type   # No special tip
 
 
     def taskInfo(self):
