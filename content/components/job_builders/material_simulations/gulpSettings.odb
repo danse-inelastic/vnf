@@ -83,7 +83,7 @@ class Builder(base):
                 ]
             if self.convertHistoryFile:
                 cmds += [
-                'postProcessGulp.py -convertHistoryFile=True -historyFile=gulp.his -ncFile=gulp.nc',
+                'conversionTasks.py -convertHistoryFile=True -historyFile=gulp.his -ncFile=gulp.nc',
                 'if [ -e gulp.nc ]; then rm gulp.his; fi',
                          ] 
         #foxtrot
