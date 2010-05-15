@@ -43,6 +43,7 @@ EXPORT_PYTHON_MODULES = \
         converger.py \
         taskaction.py \
         taskcell.py \
+        taskcreator.py \
         taskinfo.py \
         qetasks.py \
         qeconst.py \

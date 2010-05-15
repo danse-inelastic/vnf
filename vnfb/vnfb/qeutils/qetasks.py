@@ -59,7 +59,7 @@ class QETasks:
     def _setTaskCell(self, table, linkorder, task, rows):
         "Populates the task's cell"
 
-        tc      = TaskCell(self._director, self._types[linkorder], linkorder, self._simid, self._simchain, task)
+        tc      = TaskCell(self._director, self._types[linkorder], linkorder, self._simid, task)
         fields  = [tc.header(), tc.taskInfo(), tc.action()]
 
         for i in range(len(rows)):
