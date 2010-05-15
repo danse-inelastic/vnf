@@ -50,9 +50,9 @@ class BvK_GetDos(BvKComputation):
     class Inventory(BvKComputation.Inventory):
 
         df = InvBase.d.float(name='df', default = 0.1) # unit THz
-        df.tip = 'Frequency axis bin size. unit: THz'
+        df.help = 'Frequency axis bin size. unit: THz'
         N1 = InvBase.d.int(name='N1', default = 10)
-        N1.tip = 'number of sampling points in Q space(in 1 dimension)'
+        N1.help = 'number of sampling points in Q space(in 1 dimension)'
 
 
     def isConfigured(self):
