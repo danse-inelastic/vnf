@@ -132,7 +132,7 @@ MDLABEL["ion-min"]      = ("Ion Minimization", "Ion minimization with damped ele
 MDLABEL["ion-random"]   = ("Ions Randomization", "Ions randomization")
 MDLABEL["quenching"]    = ("Quenching", "Electrons and ions quenching")
 MDLABEL["dynamics"]     = ("Electron and Ion Dynamics", "Electron and ion dynamics with fixed cells")
-MDLABEL["thermostat"]   = ("Dynamics with Thermostat", "Electrons and ions with Nose thermostat")
+MDLABEL["thermostat"]   = ("Dynamics with Thermostat", "Electrons and ions dynamics with Nose thermostat")
 MDLABEL["trajectory"]   = ("Trajectory Analysis", "Trajectory analysis")
 
 # Analysis actors
