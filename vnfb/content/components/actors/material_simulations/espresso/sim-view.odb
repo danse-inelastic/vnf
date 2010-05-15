@@ -229,7 +229,7 @@ class Actor(base):
     def _taskTable(self, director):
         "Returns task table section"
         sim         = director.clerk.getQESimulations(id=self.id)
-        taskstable  = QETasks(director, sim.type, self.id)
+        taskstable  = QETasks(director, sim.id, sim.type, sim.simchain)
         return taskstable.tasks()
 
 

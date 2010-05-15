@@ -32,10 +32,10 @@ from vnfb.qeutils.taskaction import TaskAction
 
 class TaskCell:
 
-    def __init__(self, director, type, linkorder, simid, simtype, task):
+    def __init__(self, director, type, linkorder, simid, simchain, task):
         self._type      = type
         self._simid     = simid
-        self._simtype   = simtype
+        self._simchain  = simchain  # Example: "electron-min,ion-min"
         self._task      = task
         self._linkorder = linkorder
         self._job       = None
@@ -77,6 +77,14 @@ class TaskCell:
 
 
     def _taskType(self):
+        "Returns task type"
+        if self._simchain == ""
+            return self._type
+
+        list    = self._simchain.split(",")
+        if self._linkorder in range(len(list)):
+            return list[self._linkorder]
+
         return self._type
 
 
@@ -84,11 +92,9 @@ class TaskCell:
         table   = QEGrid(lc.grid(Class="qe-tasks-info"))
         
         if not self._task:
-
             return load( actor      = 'material_simulations/espresso/task-create',
                          routine    = 'createRecord',
                          simid      = self._simid,
-                         simtype    = self._simtype,
                          tasktype   = self._taskType(),
                          linkorder  = self._linkorder)
 

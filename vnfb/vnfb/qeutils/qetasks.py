@@ -26,10 +26,11 @@ import luban.content as lc
 class QETasks:
     """Displays the chain of QE simulation steps"""
 
-    def __init__(self, director, type, simid = None):
-        self._simid     = simid
+    def __init__(self, director, simid, simtype, simchain):
         self._director  = director
-        self._simtype   = type
+        self._simid     = simid
+        self._simtype   = simtype
+        self._simchain  = simchain
 
 
     def tasks(self):
@@ -58,7 +59,7 @@ class QETasks:
     def _setTaskCell(self, table, linkorder, task, rows):
         "Populates the task's cell"
 
-        tc      = TaskCell(self._director, self._types[linkorder], linkorder, self._simid, self._simtype, task)
+        tc      = TaskCell(self._director, self._types[linkorder], linkorder, self._simid, self._simchain, task)
         fields  = [tc.header(), tc.taskInfo(), tc.action()]
 
         for i in range(len(rows)):
