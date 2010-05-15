@@ -125,7 +125,11 @@ class Actor(base):
         x, ys, xticks = disp.getDefaultDispersionPlot()
         
         # plot
-        p = lc.plot2d(xticks=xticks)
+        caption = (
+            'Horizontal axis: high-symmetry points in the reciprocal space. '
+            'Vertical axis: energy in meV'
+            )
+        p = lc.plot2d(xticks=xticks, caption=caption)
         for i,y in enumerate(ys):
             p.curve(x=list(x), y=list(y), label=str(i))
             continue
