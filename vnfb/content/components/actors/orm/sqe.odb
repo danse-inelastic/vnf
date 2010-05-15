@@ -29,6 +29,7 @@ class Actor(base):
     class Inventory(base.Inventory):
 
         import pyre.inventory
+        id = pyre.inventory.str(name='id')
 
     def createGraphicalView(self, director):
         sqe = self._load(director)

@@ -15,7 +15,7 @@ It assumes that there is a symbolic link in html/ named "tmp" pointing
 to the directory content/data/tmp
 '''
 
-import sys, os, tempfile, histogram.hdf as hh
+import sys, os, tempfile
 
 
 # path of tmp directory in the http url
@@ -45,11 +45,11 @@ def visual(plotObj, director):
     #
     saveout = sys.stdout
     sys.stdout = open(os.devnull, 'w')
-    sqe.
     try:
         plotObj.plotType(imageX=True) #nc plottable
         plotObj.savefig(filepath)
     except:
+        #import histogram.hdf as hh
         from histogram import plot #histogram
         plot(plotObj, output=filepath)
     sys.stdout = saveout
