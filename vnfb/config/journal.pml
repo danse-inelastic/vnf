@@ -32,6 +32,7 @@
       <property name='atomicstructure-accessor'>off</property>
       <property name='analyses-table'>on</property>
       <property name='create-structure-form'>on</property>
+      <property name='sqe-accessor'>on</property>
     </component>
   </component>
 </inventory>

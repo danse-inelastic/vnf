@@ -2,7 +2,6 @@
 #
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
-#                                   Jiao Lin
 #                      California Institute of Technology
 #                      (C) 2006-2009  All Rights Reserved
 #
@@ -25,7 +24,9 @@ class Accessor(base):
 
     def getData(self, sqe):
         director = self.director
-        return read(sqe, director)
+        sqe = read(sqe, director)
+        self._debug.log('sqe.__dict__:'+str(sqe.__dict__))
+        return sqe
 
 
     def getSQEs(self, atomicstructure):
