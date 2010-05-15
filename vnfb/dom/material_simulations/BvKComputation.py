@@ -92,9 +92,9 @@ class BvK_GetPhonons(BvKComputation):
     class Inventory(BvKComputation.Inventory):
 
         df = InvBase.d.float(name='df', default = 0.1) # unit THz
-        df.tip = 'Bin size of frequency axis of density of states curve. unit: THz'
+        df.help = 'Bin size of frequency axis of density of states curve. unit: THz'
         N1 = InvBase.d.int(name='N1', default = 10)
-        N1.tip = 'Number of sampling points in Q space(in 1 dimension)'
+        N1.help = 'Number of sampling points in Q space(in 1 dimension)'
 
 
     def isConfigured(self):
