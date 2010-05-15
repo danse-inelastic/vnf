@@ -12,6 +12,7 @@
 #
 
 from vnfb.qeutils.qeutils import stamp2date, analyseActor
+from vnfb.qeutils.taskcreator import TaskCreator
 from vnfb.qeutils.qetasks import QETasks
 from vnfb.qeutils.qegrid import QEGrid
 from vnfb.qeutils.qeparams import QEParams
@@ -32,30 +33,30 @@ class Actor(base):
 
 
     def default(self, director):
+        self._checkTasks(director)
         return select(id='main-display-area').replaceContent(self.content(director))
 
 
-    def content(self, director):
+    def _checkTasks(self, director):
         self.id     = self.inventory.id
-        sim         = director.clerk.getQESimulations(id=self.id)
-        self.type   = sim.type
+        self._sim   = director.clerk.getQESimulations(id=self.id)
+        creator     = TaskCreator(director, self.id)
+        creator.createMissingRecords()
 
-        def viewIndicator(director):
-            path = []
-            path.append(('Simulations ', load(actor='materialsimulation')))
-             # Stub, should filter by simulation type
-            path.append(('Quantum Espresso ', load(actor='materialsimulation')))
-            path.append(self.id)
 
-            return director.retrieveVisual('view-indicator', path=path)
+    def content(self, director):
+        "Main content"
+        if not self._sim:   # No simulation, return empty document
+            return lc.document()
 
-        doc         = lc.document(title   = 'Simulation Name: %s' % sim.sname)
+
+        doc         = lc.document(title   = 'Simulation Name: %s' % self._sim.sname)
         splitter    = doc.splitter(orientation="vertical")
         sA          = splitter.section()
-        sA.add(viewIndicator(director))
+        sA.add(self._viewIndicator(director))
 
         sC          = splitter.section(id="qe-section-actions")
-        self._showActions(sC, sim)
+        self._showActions(sC, self._sim)
 
         # Area for errors
         splitter.section(id="input-error-area") # ?
@@ -64,7 +65,7 @@ class Actor(base):
 
         table       = QEGrid(lc.grid(Class = "qe-table"))
         sB.add(table.grid())
-        self._showSimulationInfo(table, sim)
+        self._showSimulationInfo(table, self._sim)
         self._showSettings(director, table)
         self._showServer(director, table)
         self._showTasks(director, splitter)
@@ -73,6 +74,16 @@ class Actor(base):
         table.setColumnStyle(0, "qe-cell-param")
         
         return doc
+
+
+    def _viewIndicator(self, director):
+        path = []
+        path.append(('Simulations ', load(actor='materialsimulation')))
+         # Stub, should filter by simulation type
+        path.append(('Quantum Espresso ', load(actor='materialsimulation')))
+        path.append(self.id)
+
+        return director.retrieveVisual('view-indicator', path=path)
 
 
     def refreshStatus(self, director):
