@@ -1,5 +1,5 @@
-Car-Parrinello Molecular Dynamics Calculation Using Quantum Espresso with VNF
-=============================================================================
+Phonon DOS from Car-Parrinello Molecular Dynamics Calculation 
+=============================================================
 
 Introduction
 ------------
