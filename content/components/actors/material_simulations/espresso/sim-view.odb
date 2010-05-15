@@ -39,16 +39,16 @@ class Actor(base):
 
     def _checkTasks(self, director):
         self.id     = self.inventory.id
-        self._sim   = director.clerk.getQESimulations(id=self.id)
         creator     = TaskCreator(director, self.id)
         creator.createMissingRecords()
 
 
     def content(self, director):
         "Main content"
+        self.id     = self.inventory.id
+        self._sim   = director.clerk.getQESimulations(id=self.id)
         if not self._sim:   # No simulation, return empty document
             return lc.document()
-
 
         doc         = lc.document(title   = 'Simulation Name: %s' % self._sim.sname)
         splitter    = doc.splitter(orientation="vertical")
