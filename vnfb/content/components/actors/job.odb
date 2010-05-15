@@ -565,6 +565,10 @@ class Actor(base):
                  routine='view',
                  id = self.inventory.id),
             ]
+
+        #
+        msg = 'Job submission for job #%s was cancelled. An alert has been sent to vnf administractors and we will try to solve this problem as soon as possible. In the mean time, please try out other functionalities of vnf.' % job.id
+        pbar.oncanceled = [alert(msg), load(actor='job')]
         
         return view
 
