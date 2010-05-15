@@ -39,9 +39,26 @@ class Actor(base):
                 status=itask.progress_text,
                 )
         if itask.state in ['failed', 'cancelled']:
+            # alert developers that an itask failed
+            username = director.sentry.username
+            user = director.clerk.getUser(username)
+            from vnfb.utils.communications import announce
+            announce(director, 'itask-failed', itask, user)
+            # error message for user
+            msg = 'itask #%s %s' % (itask.id, itask.state)
+            try:
+                beneficiary = itask.beneficiary and \
+                              itask.beneficiary.dereference(director.clerk.db)
+            except:
+                beneficiary = None
+            if beneficiary:
+                msg += ' for %s#%s' % (beneficiary.__class__.__name__, beneficiary.id)
+            if itask.progress_text:
+                msg += ' at %s' % itask.progress_text
+            #
             return [
+                alert(msg),
                 selectpbar.progressbar('cancel'),
-                alert('itask %s %s:\n%s' % (itask.id, itask.state, itask.error)),
                 ]
 
         raise RuntimeError, "Unknown itask state: %s" % itask.state
