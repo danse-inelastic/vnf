@@ -122,10 +122,10 @@ class Actor(base):
 
         if not disp: return lc.paragraph(text=['Data missing'])
         
-        x, ys = disp.getDefaultDispersionPlot()
+        x, ys, xticks = disp.getDefaultDispersionPlot()
         
         # plot
-        p = lc.plot2d()
+        p = lc.plot2d(xticks=xticks)
         for i,y in enumerate(ys):
             p.curve(x=list(x), y=list(y), label=str(i))
             continue
