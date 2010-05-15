@@ -2,7 +2,6 @@
 #
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
-#                                 Jiao Lin
 #                      California Institute of Technology
 #                      (C) 2006-2009  All Rights Reserved
 #
@@ -35,22 +34,22 @@ class Actor(base):
         sqe = self._load(director)
         domaccess = self._domaccess(director)
         sqe = domaccess.getData(sqe)
-        qaxis = 'Q', sqe.q
-        eaxis = 'E', sqe.e
-        I = sqe.sqe
         try:
             from plotlib.NcPlottable import NcPlottable
             plotableObj = NcPlottable(sqe=sqe)
         except:
+            qaxis = 'Q', sqe.q
+            eaxis = 'E', sqe.e
+            I = sqe.sqe
             from histogram import histogram
             h = histogram('S(Q,E)', [qaxis, eaxis], data=I)
         title = 'S(Q, E)' 
-        doc = lc.document(Class='container', title=title, collapsable=True)
+        doc = lc.document(Class='container', title=title, 
+                          collapsable=True)
         p = director.retrieveVisual(
             'graphics/imageplot',
             plotObj=plotableObj,
-            director=director,
-            )
+            director=director,)
         doc.add(p)
         return doc
 

@@ -45,13 +45,18 @@ def visual(plotObj, director):
     #
     saveout = sys.stdout
     sys.stdout = open(os.devnull, 'w')
-    try:
-        plotObj.plotType(imageX=True) #nc plottable
-        plotObj.savefig(filepath)
-    except:
-        #import histogram.hdf as hh
-        from histogram import plot #histogram
-        plot(plotObj, output=filepath)
+    plotObj.plotType(imageX=True) #nc plottable
+    plotObj.savefig(filepath)
+#    try:
+#        plotObj.plotType(imageX=True) #nc plottable
+#        plotObj.savefig(filepath)
+#    except Exception, err:
+#        #import histogram.hdf as hh
+#        import journal
+#        debug = journal.debug('imageplot')
+#        debug.log(err)
+#        from histogram import plot #histogram
+#        plot(plotObj, output=filepath)
     sys.stdout = saveout
 
     # the url for the image
