@@ -22,6 +22,7 @@ class Actor(base):
     class Inventory(base.Inventory):
         import pyre.inventory
         simid       = pyre.inventory.str('simid', default='')
+        simtype     = pyre.inventory.str('simtype', default='') # Need it?
         tasktype    = pyre.inventory.str('tasktype', default='')
         linkorder   = pyre.inventory.int('linkorder', default=0)
 
@@ -41,7 +42,7 @@ class Actor(base):
 
     def _createTask(self, director):
         "Creates task"
-        params  = {"type":          self.tasktype,
+        params  = {"type":          self.tasktype, 
                    "package":       "Quantum Espresso",
                    "linkorder":     self.linkorder
                    #"matter":        self.matter    # Doesn't work at this moment
@@ -50,7 +51,17 @@ class Actor(base):
         task.createRecord(params)
         self._taskid    = task.id
 
-        
+
+#self._taskType(),
+#    def _taskType(self):
+#        "Returns task type"
+#        if self.simtype != "Molecular Dynamics": #
+#            return self.tasktype
+#
+#        sim     = director.clerk.getQESimulations(
+#        return
+
+
     def _referenceSimulationTask(self, director):
         """Creates simulation task
         If dangling record (QESimulationTask with the same simulation id and taskid = '') 
@@ -103,6 +114,7 @@ class Actor(base):
     def _configure(self):
         super(Actor, self)._configure()
         self.simid       = self.inventory.simid
+        self.simtype     = self.inventory.simtype
         self.tasktype    = self.inventory.tasktype
         self.linkorder   = self.inventory.linkorder
 

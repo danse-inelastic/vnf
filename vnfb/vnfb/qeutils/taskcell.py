@@ -32,9 +32,10 @@ from vnfb.qeutils.taskaction import TaskAction
 
 class TaskCell:
 
-    def __init__(self, director, type, linkorder, simid, task):
+    def __init__(self, director, type, linkorder, simid, simtype, task):
         self._type      = type
         self._simid     = simid
+        self._simtype   = simtype
         self._task      = task
         self._linkorder = linkorder
         self._job       = None
@@ -75,8 +76,21 @@ class TaskCell:
         return self._type   # No special tip
 
 
+    def _taskType(self):
+        return self._type
+
+
     def taskInfo(self):
         table   = QEGrid(lc.grid(Class="qe-tasks-info"))
+        
+        if not self._task:
+
+            return load( actor      = 'material_simulations/espresso/task-create',
+                         routine    = 'createRecord',
+                         simid      = self._simid,
+                         simtype    = self._simtype,
+                         tasktype   = self._taskType(),
+                         linkorder  = self._linkorder)
 
         if self._task:  # If task exists
             self._setTaskInfo(table)    # Main scenario
@@ -85,13 +99,13 @@ class TaskCell:
 
         # No task created, show link "Create New Task"
         # May be it would be better to just replace content with task info?
-        link    = lc.link(label="Create New Task",
-                          onclick = load(actor      = 'material_simulations/espresso/task-create',
-                                         routine    = 'createRecord',
-                                         simid      = self._simid,
-                                         tasktype   = self._type,
-                                         linkorder  = self._linkorder)
-                         )
+#        link    = lc.link(label="Create New Task",
+#                          onclick = load(actor      = 'material_simulations/espresso/task-create',
+#                                         routine    = 'createRecord',
+#                                         simid      = self._simid,
+#                                         tasktype   = self._type,
+#                                         linkorder  = self._linkorder)
+#                         )
 
         table.addRow((link, ))
         #table.addRow(("or", ))                 # Keep
