@@ -33,8 +33,9 @@ class Actor(base):
 
     def createRecord(self, director):
         """Create simulation record"""
-        self._createTask(director)
-        self._referenceSimulationTask(director)
+        print self.tasktype
+        #self._createTask(director)
+        #self._referenceSimulationTask(director)
 
         return load(actor   ='material_simulations/espresso/sim-view',
                     id      = self.simid)
