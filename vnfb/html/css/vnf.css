@@ -133,9 +133,19 @@ fieldset{
 
 
 /* plot2d default size */
-.luban-plot2d {
+.luban-plot2d  {
+    border:2px solid #eeeeff;
+    margin:0.5em;
+    padding:0.5em 2em;
+    width:480px;
+}
+.luban-plot2d div.plot{
     width: 480;
     height: 320;
+}
+.luban-plot2d div.caption{
+    font-family: Times new roman;
+    margin-top:0.5em;
 }
 
 
