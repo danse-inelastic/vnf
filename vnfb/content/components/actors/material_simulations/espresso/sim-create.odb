@@ -15,8 +15,8 @@ MD_STEPS_CHECKED = ["electron-min", "thermostat"]
 
 from luban.content import select, load, alert
 from vnfb.qeutils.qegrid import QEGrid
-from vnfb.qeutils.qeconst import SIMCHAINS, SIMTYPE, MDSTEPS, ID_MD_LABEL, ID_MD_OPTIONS
-from vnfb.qeutils.qeutils import selection2simtype
+from vnfb.qeutils.qeconst import SIMCHAINS, MDSTEPS, ID_MD_LABEL, ID_MD_OPTIONS
+from vnfb.qeutils.qeutils import selection2typekey, nonMDChain
 from luban.content.FormCheckBox import FormCheckBox
 from vnfb.utils.serverlist import ServerList
 from vnfb.dom.QESimulation import QESimulation
@@ -103,7 +103,7 @@ class Actor(base):
         options = lc.document()
         actions = []
 
-        if selection2simtype(self.simtype) == "molecular-dynamics":
+        if selection2typekey(self.simtype) == "molecular-dynamics":
             label.add("Steps: *")
             options.add(self._mdOptions(director))
 
@@ -172,24 +172,11 @@ class Actor(base):
         "Returns comma-separated simulation chain string of tasks"
         # Output example: "PW,PW,DOS" or "electron-min,thermostat"
         # Important: Keep the order!
-        typekey = selection2simtype(self.simtype)
+        typekey = selection2typekey(self.simtype)
         if typekey != "molecular-dynamics": # Use standard chain from qeconst.py
-            return self._nonMDChain(typekey)
+            return nonMDChain(typekey)
 
         return self._mdChain()
-
-
-    def _nonMDChain(self, typekey):
-        "Returns non-molecular dynamics chain from qeconst.py"
-        # Output example: "PW,PW,DOS"
-        if typekey == "":   # Empty typekey
-            return ""
-        chain   = SIMCHAINS[SIMTYPE[typekey]]   # list
-        s   = ""
-        for c in chain:
-            s   += "%s," % c    # Create simulation chain string
-        s   += "trajectory" # Add trajectory analysis step
-        return s
 
 
     def _mdChain(self):
@@ -200,7 +187,7 @@ class Actor(base):
             if getattr(self, self._noHyphen(key)):
                 s   += "%s," % key
 
-        s   = s.rstrip(",")
+        s   += "trajectory" # Add trajectory analysis step
         return s
 
 
