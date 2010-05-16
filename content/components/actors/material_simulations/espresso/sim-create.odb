@@ -16,7 +16,7 @@ MD_STEPS_CHECKED = ["electron-min", "thermostat"]
 from luban.content import select, load, alert
 from vnfb.qeutils.qegrid import QEGrid
 from vnfb.qeutils.qeconst import SIMCHAINS, MDSTEPS, ID_MD_LABEL, ID_MD_OPTIONS
-from vnfb.qeutils.qeutils import selection2typekey, nonMDChain
+from vnfb.qeutils.qeutils import selection2typekey, nonMDChain, noHyphen
 from luban.content.FormCheckBox import FormCheckBox
 from vnfb.utils.serverlist import ServerList
 from vnfb.dom.QESimulation import QESimulation
@@ -118,22 +118,11 @@ class Actor(base):
         table       = QEGrid(lc.grid(Class="qe-table-md"))
         
         for s in MDSTEPS.keys():
-            box     = FormCheckBox(name=self._noHyphen(s), checked = self._checked(s))
+            box     = FormCheckBox(name=noHyphen(s), checked = self._checked(s))
             label   = MDSTEPS[s]
             table.addRow((box, label))
 
         return table.grid()
-
-
-    def _noHyphen(self, str):
-        "Removes hyphen from a string"
-        # Input: hello-world, Output: helloworld
-        list    = str.split("-")
-        s       = ""
-        for l in list:
-            s   += l
-
-        return s
 
 
     def _checked(self, step):
@@ -184,7 +173,7 @@ class Actor(base):
         # Output example: "electron-min,thermostat"
         s   = ""
         for key in MDSTEPS.keys():
-            if getattr(self, self._noHyphen(key)):
+            if getattr(self, noHyphen(key)):
                 s   += "%s," % key
 
         s   += "trajectory" # Add trajectory analysis step

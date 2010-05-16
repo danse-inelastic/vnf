@@ -250,6 +250,8 @@ def label2typekey(label):
 
 def simChain(csvstr):
     "Takes comma-separated value and returns list"
+    if not csvstr:
+        return ()
     list    = csvstr.split(",")
     for i in range(len(list)):
         list[i] = list[i].strip()   # In case if there are spaces
@@ -270,6 +272,20 @@ def nonMDChain(typekey):
         s   += "%s," % c    # Create simulation chain string
 
     s   = s.rstrip(",")
+    return s
+
+
+def noHyphen(str):
+    "Removes hyphen from a string"
+    # Example:
+    #   Input: "hello-world"
+    #   Output: "helloworld"
+    HYPHEN  = "-"
+    list    = str.split(HYPHEN)
+    s       = ""
+    for l in list:
+        s   += l
+
     return s
 
 
