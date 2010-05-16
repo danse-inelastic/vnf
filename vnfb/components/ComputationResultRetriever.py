@@ -49,16 +49,29 @@ class ComputationResultRetriever(Component):
         except Exception, e:
             # the error message
             import traceback
-            error = 'retrieval failed. %s: %s\n%s' % (
-                e.__class__.__name__, e, traceback.format_exc())
+            if hasattr(computation, 'creator'):
+                creator = computation.creator
+            else:
+                creator = 'unknown'
+            subject = 'computation result retrieval failed: user=%s, computation=%s#%s' % (
+                creator, computation.__class__.__name__, computation.id)
+            body = [
+                "%s: %s\n%s" % (e.__class__.__name__, e, traceback.format_exc()),
+                ]
 
-            #
+            # send an alert email
+            from vnfb.utils.communications import announce
+            announce(director, 'alert-to-vnf-developers',
+                     message=body, subject=subject)
+            
+            # also send to journal
+            error = '\n'.join([subject] + body)
             self._debug.log(error)
 
             # save to db
             computation.setResultRetrievalStatusAndErrorMessage(
                 'retrieval failed', error, db=self.db)
-
+            
             raise RetrievalFailed, error
 
         else:
