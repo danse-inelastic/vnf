@@ -33,20 +33,17 @@ class Actor(base):
 
 
     def default(self, director):
-        self._sim   = director.clerk.getQESimulations(id=self.id)
-        self._checkTasks(director)
         return select(id='main-display-area').replaceContent(self.content(director))
 
 
     def _checkTasks(self, director):
-        self.id     = self.inventory.id
         creator     = TaskCreator(director, self.id)
-        creator.createMissingRecords(self._chainString())
+        creator.createRecords(self._chainString())
 
 
     def _chainString(self):
         "Returns comma-separated string of tasks"
-        # Example: "electron-min,thermostat" or "PW,PW,DOS"
+        # Example of output: "electron-min,thermostat" or "PW,PW,DOS"
 
         # Molecular dynamics case
         if self._sim.type == SIMTYPE["molecular-dynamics"]:
@@ -58,10 +55,13 @@ class Actor(base):
     def content(self, director):
         "Main content"
         self.id     = self.inventory.id
-        #self._sim   = director.clerk.getQESimulations(id=self.id)
+        self._sim   = director.clerk.getQESimulations(id=self.id)
+
         if not self._sim:   # No simulation, return empty document
             return lc.document()
 
+        self._checkTasks(director)  # Checks tasks if they exist, otherwise creates missing
+        
         doc         = lc.document(title   = 'Simulation Name: %s' % self._sim.sname)
         splitter    = doc.splitter(orientation="vertical")
         sA          = splitter.section()
