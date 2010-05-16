@@ -17,7 +17,7 @@ from vnfb.qeutils.qetasks import QETasks
 from vnfb.qeutils.qegrid import QEGrid
 from vnfb.qeutils.qeparams import QEParams
 from vnfb.qeutils.qeserver import QEServer
-from vnfb.qeutils.qeconst import ID_SIMTASKS
+from vnfb.qeutils.qeconst import ID_SIMTASKS, SIMTYPE
 
 from luban.content import select
 from luban.content.Paragraph import Paragraph
@@ -33,6 +33,7 @@ class Actor(base):
 
 
     def default(self, director):
+        self._sim   = director.clerk.getQESimulations(id=self.id)
         self._checkTasks(director)
         return select(id='main-display-area').replaceContent(self.content(director))
 
@@ -40,13 +41,22 @@ class Actor(base):
     def _checkTasks(self, director):
         self.id     = self.inventory.id
         creator     = TaskCreator(director, self.id)
-        creator.createMissingRecords()
+        creator.createMissingRecords(self._chainString())
 
+
+    def _chainString(self):
+        "Returns comma-separated string of tasks"
+        # Example: "electron-min,thermostat" or "PW,PW,DOS"
+
+        # Molecular dynamics case
+        if self._sim.type == SIMTYPE["molecular-dynamics"]:
+            return self._sim.simchain
+        
 
     def content(self, director):
         "Main content"
         self.id     = self.inventory.id
-        self._sim   = director.clerk.getQESimulations(id=self.id)
+        #self._sim   = director.clerk.getQESimulations(id=self.id)
         if not self._sim:   # No simulation, return empty document
             return lc.document()
 

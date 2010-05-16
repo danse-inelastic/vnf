@@ -18,7 +18,7 @@ import os.path
 
 import os
 import re
-from vnfb.qeutils.qeconst import INPUT, ANALYSIS, SUBTYPE_MATDYN, SIMTYPE
+from vnfb.qeutils.qeconst import INPUT, ANALYSIS, SUBTYPE_MATDYN, SIMTYPE, SIMCHAINS
 from vnfb.qeutils.qescheduler import schedulerfactory
 from vnfb.qeutils.qeparser.qeinput import QEInput
 import luban.content as lc
@@ -223,16 +223,29 @@ def key2val(key, dict, default=""):
     return default
 
 
-def selection2simtype(selection):
-    "Returns key if simulation type based on selection"
+def selection2typekey(selection):
+    "Returns key of simulation type based on selection"
     # Example: 
-    #   Input: 6, Returns: molecular-dynamics
+    #   Input: 6
+    #   Output: "molecular-dynamics"
     keys        = SIMTYPE.keys()
     selected    = int(selection)
     if not selected in range(len(keys)):
         return ""
 
     return keys[selected]
+
+
+def label2typekey(label):
+    "Returns key of simulation type from label"
+    # Example:
+    #   Input: "Molecular Dynamics"
+    #   Output: "molecular-dynamics"
+    for type in SIMTYPE.keys():
+        if SIMTYPE[type] == label:
+            return type
+
+    return ""
 
 
 def simchain(csvstr):
@@ -242,6 +255,22 @@ def simchain(csvstr):
         list[i] = list[i].strip()   # In case if there are spaces
         
     return list
+
+
+def nonMDChain(typekey):
+    "Returns non-molecular dynamics chain from qeconst.py"
+    # Example:
+    #   Input: "electron-dos"
+    #   Output: "PW,PW,DOS"
+    if typekey == "":   # Empty typekey
+        return ""
+    chain   = SIMCHAINS[SIMTYPE[typekey]]   # list
+    s   = ""
+    for c in chain:
+        s   += "%s," % c    # Create simulation chain string
+
+    s   = s.rstrip(",")
+    return s
 
 
 def latestRecord(records, timefield):
