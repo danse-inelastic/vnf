@@ -105,10 +105,10 @@ Forms
 
 Atomic Structure: *     Mass (u)    Pseudo Potential
                     Au [196.9665]  [Au.blyp-van_ak.UPF] # Example (similar for each specie)
-Energy Cutoff (Ry): *  [ecutwfc = 27]
-Effective Electron Mass (a.u.): * [emass = 400]   # 1 a.u. of mass = 1/1822.9 a.m.u. = 9.10939 * 10^-31 kg
-Time Step (a.u.): *     [dt = 4.0]                # 1 a.u. = 2.4189*10^-5 ps ~ 0.000024 ps
-Number of Steps: * [nstep = 100]
+Energy Cutoff (Ry): *  [ecutwfc = 27.0]
+Effective Electron Mass (a.u.): * [emass = 400.0]   # 1 a.u. of mass = 1/1822.9 a.m.u. = 9.10939 * 10^-31 kg
+Time Step (a.u.): *     [dt = 5.0]                # 1 a.u. = 2.4189*10^-5 ps ~ 0.000024 ps
+Number of Steps: *      [nstep = 100]
 
 
 [ion-min]
