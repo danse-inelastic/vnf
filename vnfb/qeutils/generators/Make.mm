@@ -27,6 +27,13 @@ EXPORT_PYTHON_MODULES = \
     plotbandgenerator.py \
     pwgenerator.py \
     q2rgenerator.py \
+    emgenerator.py \
+    imgenerator.py \
+    irgenerator.py \
+    qugenerator.py \
+    dygenerator.py \
+    thgenerator.py \
+    trgenerator.py \
 
 
 BUILD_DIRS = \
