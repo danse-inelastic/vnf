@@ -12,7 +12,7 @@
 #
 
 from vnfb.qeutils.qeparser.pseudo.pseudo import PSEUDO
-#from vnfb.qeutils.generators.emgenerator import EMGenerator
+from vnfb.qeutils.generators.emgenerator import EMGenerator
 from qecalc.qetask.qeparser.pwinput import PWInput
 from luban.content import select
 
@@ -80,16 +80,13 @@ class Actor(base):
 
 
     def _getInput(self, director, input):
-        return input.toString()
-#        gen = EMGenerator(director, self.inventory, input)
-#        gen.setControl()
-#        gen.setSystem()
+        gen = EMGenerator(director, self.inventory, input)
+        gen.setControl()
+        gen.setSystem()
 #        gen.setElectrons()
 #        gen.setIons()      # For geometry optimization only
-#        gen.setCell()
-#        gen.setKPoints()
-#
-#        return gen.toString()   #input.structure.toString()
+
+        return gen.toString()   #input.structure.toString()
 
 
     def _loadStructure(self, director):
