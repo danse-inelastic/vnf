@@ -219,10 +219,11 @@ class Actor(base):
         # if job is running, add a "cancel" link
         if job.state == 'running':
             statusdoc.paragraph(text=['Your job #%s is running.' % job.id])
-            link = Link(label = 'Cancel the job')
+            link = lc.button(label = 'If you don\'t want it running anymore, click me to cancel it')
+            statusdoc.add(link)
             link.onclick = load(
                 actor = 'job',
-                routine = 'If you don\'t want it running anymore, please cancel it.',
+                routine = 'cancel',
                 id = job.id,
                 )
         else:
@@ -572,7 +573,7 @@ class Actor(base):
         
         return view
 
-
+    #XXX: obsolete
     def showErrors(self, director, errors=None):
         from luban.content import select
         return [
@@ -673,6 +674,25 @@ class Actor(base):
         document.add(resubmitlink)
         
         return select(id='main-display-area').replaceContent(doc)
+
+
+    def cancel(self, director):
+        # get job
+        job = self._getJobRecord(director)
+
+        # check job status
+        if job.state != 'running':
+            raise RuntimeError, "Job %s is not running" % id
+
+        # cancel the job
+        from vnfb.utils.job.scheduler import cancel
+        cancel(job, director)
+
+        #
+        return [
+            alert('job %s canceled' % job.id),
+            load(actor='job', routine= 'view', id=job.id),
+            ]
 
 
     def _isowner(self, director):
