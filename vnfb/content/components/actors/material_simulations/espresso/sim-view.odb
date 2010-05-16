@@ -11,7 +11,7 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
-from vnfb.qeutils.qeutils import stamp2date, analyseActor
+from vnfb.qeutils.qeutils import stamp2date, analyseActor, label2typekey, nonMDChain
 from vnfb.qeutils.taskcreator import TaskCreator
 from vnfb.qeutils.qetasks import QETasks
 from vnfb.qeutils.qegrid import QEGrid
@@ -51,7 +51,9 @@ class Actor(base):
         # Molecular dynamics case
         if self._sim.type == SIMTYPE["molecular-dynamics"]:
             return self._sim.simchain
-        
+
+        return nonMDChain(label2typekey(self._sim.type))
+
 
     def content(self, director):
         "Main content"
