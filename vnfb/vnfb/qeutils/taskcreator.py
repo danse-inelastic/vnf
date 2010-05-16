@@ -24,7 +24,7 @@ class TaskCreator:
         self._taskid    = ""
 
 
-    def createMissingRecords(self, chain):
+    def createRecords(self, chain):
         "Create non existing records for some simulation"
         # Example of input: "electron-min,ion-min"
         tasktypes   = simchain(chain)
@@ -33,10 +33,11 @@ class TaskCreator:
 
 
     def createRecord(self, tasktype, linkorder):
-        "Create simulation record"
-        print tasktype
-#        self._createTask(tasktype, linkorder)
-#        self._referenceSimulationTask()
+        "Creates task and simulationtask records if they not exist only"
+        task    = self._taskRecord(linkorder)
+        if not task:    # No task exist, create one!
+            self._createTask(tasktype, linkorder)
+            self._referenceSimulationTask()
 
 
     def _createTask(self, tasktype, linkorder):
@@ -49,6 +50,18 @@ class TaskCreator:
         task     = QETask(self._director)
         task.createRecord(params)
         self._taskid    = task.id
+
+
+    def _taskRecord(self, linkorder):
+        "Returns task object corresponding to the linkorder, or None otherwise"
+        simtasks    = self._director.clerk.getQESimulationTasks(where="simulationid='%s'" % self._simid)
+        for st in simtasks:
+            if st:
+                task    = self._director.clerk.getQETasks(id = st.taskid)
+                if task and task.linkorder == linkorder:
+                    return task
+
+        return None
 
 
     def _referenceSimulationTask(self):
@@ -66,6 +79,7 @@ class TaskCreator:
         self._createSimulationTask()
 
 
+    # Not tested!!!
     def _getDanglingReference(self):
         """Get QESimulationTask that has taskid = ''. Make sure that there are no side effects, like
         stored results
