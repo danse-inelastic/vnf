@@ -11,7 +11,7 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
-from vnfb.qeutils.qeutils import latestJob, simchain
+from vnfb.qeutils.qeutils import latestJob, simChain
 from vnfb.qeutils.qeconst import SIMCHAINS
 
 
@@ -94,7 +94,7 @@ class SimulationRecord(QERecords):
 
         # XXX: Fix reference to the actual simulation type
         if self._simtype == "Molecular Dynamics": # Special case for molecular dynamics
-            return simchain(self._sim.simchain)
+            return simChain(self._sim.simchain)
 
         if self._simtype:
             return SIMCHAINS[self._simtype]

@@ -75,18 +75,6 @@ class TaskCell:
         return self._type   # No special tip
 
 
-#    def _taskType(self):
-#        "Returns task type"
-#        if self._simchain == "":
-#            return self._type
-#
-#        list    = self._simchain.split(",")
-#        if self._linkorder in range(len(list)):
-#            return list[self._linkorder]
-#
-#        return self._type
-
-
     def taskInfo(self):
         table   = QEGrid(lc.grid(Class="qe-tasks-info"))
         

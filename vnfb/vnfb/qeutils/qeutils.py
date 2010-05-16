@@ -248,7 +248,7 @@ def label2typekey(label):
     return ""
 
 
-def simchain(csvstr):
+def simChain(csvstr):
     "Takes comma-separated value and returns list"
     list    = csvstr.split(",")
     for i in range(len(list)):

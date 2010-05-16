@@ -11,7 +11,7 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
-from vnfb.qeutils.qeutils import simchain
+from vnfb.qeutils.qeutils import simChain
 from vnfb.dom.QETask import QETask
 from vnfb.dom.QESimulationTask import QESimulationTask
 
@@ -27,7 +27,7 @@ class TaskCreator:
     def createRecords(self, chain):
         "Create non existing records for some simulation"
         # Example of input: "electron-min,ion-min"
-        tasktypes   = simchain(chain)
+        tasktypes   = simChain(chain)
         for i in range(len(tasktypes)):
             self.createRecord(tasktypes[i], i)
 

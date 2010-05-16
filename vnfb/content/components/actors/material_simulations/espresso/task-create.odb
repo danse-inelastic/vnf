@@ -39,64 +39,6 @@ class Actor(base):
                     id      = self.simid)
 
 
-#        self._createTask(director)
-#        self._referenceSimulationTask(director)
-
-#    def _createTask(self, director):
-#        "Creates task"
-#        params  = {"type":          self.tasktype,
-#                   "package":       "Quantum Espresso",
-#                   "linkorder":     self.linkorder
-#                   #"matter":        self.matter    # Doesn't work at this moment
-#                   }
-#        task     = QETask(director)
-#        task.createRecord(params)
-#        self._taskid    = task.id
-#
-#
-#    def _referenceSimulationTask(self, director):
-#        """Creates simulation task
-#        If dangling record (QESimulationTask with the same simulation id and taskid = '')
-#        already exists - USE IT
-#        """
-#        simtask = self._getDanglingReference(director)
-#
-#        if simtask:     # Dereference (attach to dangling record)
-#            self._updateSimulationTask(director, simtask)
-#            return
-#
-#        # There are no dangling records
-#        self._createSimulationTask(director)
-#
-#
-#    def _getDanglingReference(self, director):
-#        """Get QESimulationTask that has taskid = ''. Make sure that there are no side effects, like
-#        stored results
-#        """
-#        simtasks    = director.clerk.getQESimulationTasks(where="simulationid='%s'" % self.simid)
-#        if simtasks:
-#            simtask     = simtasks[0]   # Pick the first one
-#            if simtask.taskid == '':    # Reference is dangling
-#                return simtask
-#
-#        return None
-#
-#
-#    def _updateSimulationTask(self, director, simtask):
-#        params  = {"taskid":        self._taskid, }
-#        simtask.setDirector(director)
-#        simtask.updateRecord(params)
-#
-#
-#    def _createSimulationTask(self, director):
-#        "Creates new QESimulationTask"
-#        params  = {"simulationid":  self.simid,
-#                   "taskid":        self._taskid
-#                  }
-#        simtask = QESimulationTask(director)
-#        simtask.createRecord(params)
-
-
     def __init__(self):
         super(Actor, self).__init__(name='material_simulations/espresso/task-create')
 
