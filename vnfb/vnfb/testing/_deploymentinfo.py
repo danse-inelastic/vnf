@@ -25,7 +25,7 @@ contentroot = os.path.join(vnfbexportroot, 'content')
 componentsroot = os.path.join(contentroot, 'components')
 dataroot = os.path.join(contentroot, 'data')
 configdir = os.path.join(vnfbexportroot, 'config')
-
+guid_datastore_path = os.path.join(configdir, 'guid.dat')
 
 lubanserviceshome = '/tmp/luban-services'
 
