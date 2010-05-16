@@ -13,8 +13,6 @@
 
 from vnfb.qeutils.qeparser.namelist import Namelist
 from vnfb.qeutils.qeparser.card import Card
-from vnfb.qeutils.qeconst import SMEARING, MATTER_TYPE, SIMTYPE, RELAXLIST
-from vnfb.qeutils.results.pwresult import PWResult
 
 # Default Control params
 CALCULATION     = "'cp'"
@@ -33,20 +31,17 @@ EKIN_CONV_THR   = "1.d-6"
 CELLDM          = "10.2"
 
 # Default Electron params
-CONV_THR        = "1.0d-8"
-MIXING_BETA     = "0.7"
+EMASS_CUTOFF            = "2.5"
+ORTHOGONALIZATION       = "'ortho'"
+ELECTRON_DYNAMICS       = "'sd'"
+ELECTRON_TEMPERATURE    = "'not_controlled'"
 
-# Geometry: ions
-ION_DYNAMICS        = "'bfgs'"
-POT_EXTRAPOLATION   = "'atomic'"
-WFC_EXTRAPOLATION   = "'none'"
-UPSCALE             = "10.0"
-BFGS_NDIM           = "1"
-TRUST_RADIUS_MAX    = "0.8"
-TRUST_RADIUS_MIN    = "0.001"
-CELL_DYNAMICS       = "'bfgs'"
+# Default Ion params
+ION_DYNAMICS        = "'none'"
+ION_TEMPERATURE     = "'not_controlled'"
 
-
+# Default Cell params
+CELL_DYNAMICS       = "'none'"
 
 # XXX: Critical: celldm(1) is created incorrectly from atomic structure
 #   Quick fix: set fixed value!
@@ -84,33 +79,32 @@ class EMGenerator(object):
         system.set("celldm(1)", CELLDM) # XXX: Hack
 
 
-#    def setElectrons(self):         # TODO: Suitable for phonon calculations?
-#        "ELECTRONS namelist"
-#        electrons   = Namelist("electrons")
-#        electrons.add("conv_thr",       CONV_THR)
-#        electrons.add("mixing_beta",    MIXING_BETA)
-#        self._input.addNamelist(electrons)
-#
-#
-#    def setIons(self):
-#        ions        = Namelist("ions")
-#        self._input.addNamelist(ions)
-#        ions.add("ion_dynamics",        ION_DYNAMICS)
-#        ions.add("pot_extrapolation",   POT_EXTRAPOLATION)
-#        ions.add("wfc_extrapolation",   WFC_EXTRAPOLATION)
-#        ions.add("upscale",             UPSCALE)
-#        ions.add("bfgs_ndim",           BFGS_NDIM )
-#        ions.add("trust_radius_max",    TRUST_RADIUS_MAX)
-#        ions.add("trust_radius_min",    TRUST_RADIUS_MIN)
-#
-#
-#    def setCell(self):
-#        cell    = Namelist("cell")
-#        self._input.addNamelist(cell)
-#
+    def setElectrons(self):         # TODO: Suitable for phonon calculations?
+        "ELECTRONS namelist"
+        electrons   = Namelist("electrons")
+        self._input.addNamelist(electrons)
+        electrons.add("emass",                  self._inv.emass)
+        electrons.add("emass_cutoff",           EMASS_CUTOFF)
+        electrons.add("orthogonalization",      ORTHOGONALIZATION)
+        electrons.add("electron_dynamics",      ELECTRON_DYNAMICS)
+        electrons.add("electron_temperature",   ELECTRON_TEMPERATURE)
+
+
+    def setIons(self):
+        ions        = Namelist("ions")
+        self._input.addNamelist(ions)
+        ions.add("ion_dynamics",        ION_DYNAMICS)
+        ions.add("ion_temperature",     ION_TEMPERATURE)
+
+
+    def setCell(self):
+        cell    = Namelist("cell")
+        self._input.addNamelist(cell)
+        cell.add("cell_dynamics",   CELL_DYNAMICS)
+
 
     def toString(self):
-        return self._input.toString()#structure.toString()
+        return self._input.toString()
 
 
     
