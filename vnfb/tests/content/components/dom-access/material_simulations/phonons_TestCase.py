@@ -21,29 +21,14 @@ Test assumes that
 
 '''
 
-
-from vnfb.testing import getDeploymentInfo
-deploymentinfo = getDeploymentInfo()
-dbname = deploymentinfo.dbname
-
-
-#
-import os
-dataroot = deploymentinfo.dataroot
-
-
 # phonons id.
 phononsid = "8XHEBPN" 
 
 
+
 # application
-from luban.applications.UIApp import UIApp as base
+from vnfb.testing.TestAppBase import Application as base
 class TestApp(base):
-
-
-    class Inventory(base.Inventory):
-
-        import pyre.inventory
 
 
     def main(self, testFacility, *args, **kwds):
@@ -69,30 +54,6 @@ class TestApp(base):
         return
 
 
-    def _getPrivateDepositoryLocations(self):
-        return deploymentinfo.pyre_depositories
-
-
-    def _configure(self):
-        # db
-        self.inventory.clerk.inventory.db = dbname
-        self.inventory.clerk._configure()
-        #
-        super(TestApp, self)._configure()
-        return
-
-
-    def _init(self):
-        #
-        super(TestApp, self)._init()
-        # data root
-        self.dds.dataroot = dataroot
-        return
-
-
-import os
-
-
 import unittest
 class TestCase(unittest.TestCase):
 
@@ -101,13 +62,9 @@ class TestCase(unittest.TestCase):
         app.run(self)
         return
 
-    
-
 def main():
     unittest.main()
     return
-
-
 
 if __name__ == '__main__': main()
 

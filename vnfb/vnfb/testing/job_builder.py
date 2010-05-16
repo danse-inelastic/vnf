@@ -12,24 +12,9 @@
 #
 
 
-from vnfb.testing import getDeploymentInfo
-deploymentinfo = getDeploymentInfo()
-dbname = deploymentinfo.dbname
-
-
-#
-dataroot = deploymentinfo.dataroot
-
-
-
 # application
-from luban.applications.UIApp import UIApp as base
+from TestAppBase import Application as base
 class TestApp(base):
-
-
-    class Inventory(base.Inventory):
-
-        import pyre.inventory
 
 
     def main(self, computation, testFacility):
@@ -156,28 +141,6 @@ class TestApp(base):
         return itask
     
             
-    # following methods ensure to mimic the running environment of vnf application
-    def _getPrivateDepositoryLocations(self):
-        return deploymentinfo.pyre_depositories
-
-
-    def _configure(self):
-        # db
-        self.inventory.clerk.inventory.db = dbname
-        self.inventory.clerk._configure()
-        #
-        super(TestApp, self)._configure()
-        return
-
-
-    def _init(self):
-        #
-        super(TestApp, self)._init()
-        # data root
-        self.dds.dataroot = dataroot
-        return
-
-
 import os
 
 
