@@ -29,7 +29,6 @@ Steps:
     [x] Electron and Ion Dynamics with Nose Thermostat
 
 
-
 Description:
 
 - Electronic Minimization (with Fixed Ions and Cells) # Essential
@@ -98,6 +97,35 @@ Label: Electron and Ion Dynamics
     fnosep = 60
 
 Label: Electrons and Ions with Thermostat
+
+Forms
+-----
+
+[electron-min]
+
+Atomic Structure: *     Mass (u)    Pseudo Potential
+                    Au [196.9665]  [Au.blyp-van_ak.UPF] # Example (similar for each specie)
+Energy Cutoff (Ry): *  [ecutwfc = 27]
+Effective Electron Mass (a.u.): * [emass = 400]   # 1 a.u. of mass = 1/1822.9 a.m.u. = 9.10939 * 10^-31 kg
+Time Step (a.u.): *     [dt = 4.0]                # 1 a.u. = 2.4189*10^-5 ps ~ 0.000024 ps
+Number of Steps: * [nstep = 100]
+
+
+[ion-min]
+
+[ion-random]
+
+[quenching]
+
+[dynamics]
+
+[thermostat]
+
+[trajectory]
+
+
+Generators
+----------
 
 Analysis Page
 -------------

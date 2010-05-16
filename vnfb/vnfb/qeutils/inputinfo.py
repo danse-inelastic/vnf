@@ -11,8 +11,8 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
-from vnfb.qeutils.qeconst import TYPE
-from vnfb.qeutils.qeutils import latestInput
+from vnfb.qeutils.qeconst import QETYPES
+from vnfb.qeutils.qeutils import latestInput, noHyphen
 from vnfb.qeutils.results.phresult import PHResult
 
 from luban.content import load
@@ -58,8 +58,8 @@ class InputInfo:
         "Returns link 'Add'"
         (actor, routine)   = (GENERATOR, ROUTINE)
 
-        if self._type in TYPE:      # If task type is QE types
-            (actor, routine)   = getattr(self, "locator" + self._type)()  # Example: self.locatorPW()
+        if self._type in QETYPES:      # If task type is QE types
+            (actor, routine)   = getattr(self, "locator" + self._routineExt())()  # Example: self.locatorPW()
 
         link = Link(label="Add",
                     onclick=load(actor      = actor,
@@ -71,6 +71,10 @@ class InputInfo:
                                  structureid    = self._structureId())
                     )
         return link
+
+
+    def _routineExt(self):
+        return noHyphen(self._type)
 
 
     def locatorPW(self):
@@ -123,6 +127,35 @@ class InputInfo:
     def locatorD3(self):
         #return BASE + "generate-d3" # Not implemented
         return self._locatorDefault()
+
+
+    # Molecular dynamics specific locators
+    def locatorelectronmin(self):
+        return (BASE + "generate-electron-min", ROUTINE)
+
+
+    def locatorionmin(self):
+        return (BASE + "generate-ion-min", ROUTINE)
+
+
+    def locatorionrandom(self):
+        return (BASE + "generate-ion-random", ROUTINE)
+
+
+    def locatorquenching(self):
+        return (BASE + "generate-quenching", ROUTINE)
+
+
+    def locatordynamics(self):
+        return (BASE + "generate-dynamics", ROUTINE)
+
+
+    def locatorthermostat(self):
+        return (BASE + "generate-thermostat", ROUTINE)
+
+
+    def locatortrajectory(self):
+        return (BASE + "generate-trajectory", ROUTINE)
 
 
     def _locatorDefault(self):

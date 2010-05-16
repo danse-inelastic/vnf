@@ -11,6 +11,12 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
+import luban.content as lc
+
+def visual(actor, director, structureid, simtype):
+    form        = lc.form(id='create-simulation-form')
+
+    return form
 
 __date__ = "$Apr 30, 2010 12:20:21 PM$"
 

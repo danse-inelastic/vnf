@@ -135,6 +135,8 @@ MDLABEL["dynamics"]     = ("Electron and Ion Dynamics", "Electron and ion dynami
 MDLABEL["thermostat"]   = ("Dynamics with Thermostat", "Electrons and ions dynamics with Nose thermostat")
 MDLABEL["trajectory"]   = ("Trajectory Analysis", "Trajectory analysis")
 
+QETYPES = TYPE.keys() + MDSTEPS.keys()
+
 # Analysis actors
 ANALYSIS    = OrderedDict()
 ANALYSIS[SIMLIST[0]]    = "electron"
