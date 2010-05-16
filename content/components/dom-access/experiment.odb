@@ -38,6 +38,10 @@ class Accessor(base):
         exp = NeutronExperiment()
         orm = self.orm
         orm.save(exp)
+        # set creator
+        r = orm(exp)
+        r.creator = self.director.sentry.username
+        self.updateRecordWithID(r)
         return exp
 
 
