@@ -11,7 +11,7 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
-MD_STEPS_CHECKED = ["electron-min", "thermostat"]
+MD_STEPS_CHECKED = ["electron-min", "thermostat", "trajectory"]
 
 from luban.content import select, load, alert
 from vnfb.qeutils.qegrid import QEGrid

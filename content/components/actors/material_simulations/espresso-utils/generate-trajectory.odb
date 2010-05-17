@@ -11,6 +11,66 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
+from vnfb.qeutils.generators.trgenerator import TRGenerator
+from vnfb.components.QEGenerator import QEGenerator as base
+
+class Actor(base):
+
+    class Inventory(base.Inventory):
+        import pyre.inventory
+        start       = pyre.inventory.str('start', default='')
+        end         = pyre.inventory.str('end', default='')
+        vdos        = pyre.inventory.str('vdos', default='')
+        vdist       = pyre.inventory.str('vdist', default='')
+        msd         = pyre.inventory.str('msd', default='')
+        rdf         = pyre.inventory.str('rdf', default='')
+        temptime    = pyre.inventory.str('temptime', default='')
+        dt          = pyre.inventory.str('dt', default='')
+        nstep       = pyre.inventory.str('nstep', default='')
+
+
+    def content(self, director):
+        "Populates the content for creation of input configuration"
+        title   = "Trajectory Analysis Configuration Input"
+        label   = "Trajectory Analysis Form"
+        visual  = "material_simulations/espresso/input-trajectory"  # parameters form
+        return self._document(director, title, label, visual = visual)
+
+
+    def generateInput(self, director):
+        gen     = TRGenerator(director, self.inventory)
+        #gen.setInput()
+        return director.redirect(actor   = 'material_simulations/espresso/input-create',
+                                routine = 'default',
+                                text    = "Hi",#gen.toString(),
+                                id      = self.inventory.id,
+                                taskid  = self.inventory.taskid,
+                                type    = self.inventory.type)
+
+
+    def __init__(self):
+        super(Actor, self).__init__(name='material_simulations/espresso-utils/generate-trajectory')
+
+
+    def _configure(self):
+        super(Actor, self)._configure()
+        self.start          = self.inventory.start
+        self.end            = self.inventory.end
+        self.vdos           = self.inventory.vdos
+        self.vdist          = self.inventory.vdist
+        self.msd            = self.inventory.msd
+        self.rdf            = self.inventory.rdf
+        self.temptime       = self.inventory.temptime
+        self.dt             = self.inventory.dt
+        self.nstep          = self.inventory.nstep
+
+
+    def _init(self):
+        super(Actor, self)._init()
+        return
+
+def actor():
+    return Actor()
 
 __date__ = "$May 15, 2010 8:33:01 AM$"
 
