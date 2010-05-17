@@ -28,6 +28,8 @@ Steps:
     [ ] Electron and Ion Dynamics
     [x] Electron and Ion Dynamics with Nose Thermostat
 
+Types:
+    electron-min,ion-min,ion-random,quenching,dynamics,thermostat,trajectory
 
 Description:
 
@@ -145,7 +147,7 @@ End Time: * []
 [x] Velocity Distribution
 [x] Mean-Square Displacement
 [x] Radial Distribution Function
-[x] Temperature Evolution
+[x] Temperature Dependence on Time
 
 Generators
 ----------
