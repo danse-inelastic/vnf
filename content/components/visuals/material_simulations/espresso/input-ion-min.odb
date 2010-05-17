@@ -43,7 +43,7 @@ def visual(actor, director, structureid, simtype):
     table.setColumnStyle(0, "qe-form-label")
     table.setColumnStyle(1, "qe-form-field")
 
-    submitActor   = 'material_simulations/espresso-utils/generate-electron-min'
+    submitActor   = 'material_simulations/espresso-utils/generate-ion-min'
     form.onsubmit   = select(element=form).submit(actor     = submitActor,
                                                   routine   = 'generateInput',
                                                   taskid    = actor.taskid,
