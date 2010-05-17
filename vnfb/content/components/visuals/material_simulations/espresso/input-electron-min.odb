@@ -23,9 +23,9 @@ from qecalc.qetask.qeparser.pwinput import PWInput
 from matter.Atom import Atom
 
 # Default values:
-ECUTWFC = 30.0
+ECUTWFC = 27.0
 EMASS   = 400.0
-DT      = 5.0
+DT      = 2.0   # 5.0
 NSTEP   = 100
 
 class Visual:
@@ -61,7 +61,7 @@ class Visual:
         table.addRow(("Enertgy Cutoff (Ry): *", ecutwfc))
         table.addRow(("Effective Electron Mass (a.u.): *", emass))
         table.addRow(("Time Step (a.u.): *", dt))
-        table.addRow(("Number of MD Steps: *", nstep))
+        table.addRow(("Number of Steps: *", nstep))
         table.addRow(("", st.grid()))
 
         table.setColumnStyle(0, "qe-form-label")

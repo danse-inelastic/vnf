@@ -107,22 +107,45 @@ Atomic Structure: *     Mass (u)    Pseudo Potential
                     Au [196.9665]  [Au.blyp-van_ak.UPF] # Example (similar for each specie)
 Energy Cutoff (Ry): *  [ecutwfc = 27.0]
 Effective Electron Mass (a.u.): * [emass = 400.0]   # 1 a.u. of mass = 1/1822.9 a.m.u. = 9.10939 * 10^-31 kg
-Time Step (a.u.): *     [dt = 5.0]                # 1 a.u. = 2.4189*10^-5 ps ~ 0.000024 ps
+Time Step (a.u.): *     [dt = 2.0]                # 1 a.u. = 2.4189*10^-5 ps ~ 0.000024 ps
 Number of Steps: *      [nstep = 100]
 
 
 [ion-min]
+Time Step (a.u.): *     [dt = 2.0]                # 1 a.u. = 2.4189*10^-5 ps ~ 0.000024 ps
+Number of Steps: *      [nstep = 200]
+
 
 [ion-random]
+Randomization Amplitude: * [amprp(1) = 0.02]      # For each specie!
+Time Step (a.u.): *     [dt = 5.0]                # 1 a.u. = 2.4189*10^-5 ps ~ 0.000024 ps
+Number of Steps: *      [nstep = 100]
+
 
 [quenching]
+Time Step (a.u.): *     [dt = 5.0]                # 1 a.u. = 2.4189*10^-5 ps ~ 0.000024 ps
+Number of Steps: *      [nstep = 100]
+
 
 [dynamics]
+Time Step (a.u.): *     [dt = 5.0]                # 1 a.u. = 2.4189*10^-5 ps ~ 0.000024 ps
+Number of Steps: *      [nstep = 200]
+
 
 [thermostat]
+Temperature (K): *      [tempw = 300.0]
+Oscillation Frequency (THz): *  [fnosep = 60]
+Time Step (a.u.): *     [dt = 10.0]                # 1 a.u. = 2.4189*10^-5 ps ~ 0.000024 ps
+Number of Steps: *      [nstep = 1000]
 
 [trajectory]
-
+Start Time: * []    # Currently for thermostat step only!
+End Time: * []
+[x] Vibrational Density of States (DOS)
+[x] Velocity Distribution
+[x] Mean-Square Displacement
+[x] Radial Distribution Function
+[x] Temperature Evolution
 
 Generators
 ----------
