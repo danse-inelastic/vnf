@@ -19,6 +19,7 @@ PACKAGE = qeutils/results
 
 EXPORT_PYTHON_MODULES = \
         bandsresult.py \
+        cpresult.py \
         dosresult.py \
         dynmatresult.py \
         __init__.py \
