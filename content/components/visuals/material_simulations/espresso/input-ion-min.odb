@@ -10,7 +10,17 @@
 #
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
+import luban.content as lc
+from luban.content import select
+from luban.content import load
+from vnfb.qeutils.qegrid import QEGrid
+from vnfb.qeutils.qeconst import ZASR
+from luban.content.FormSelectorField import FormSelectorField
+from luban.content.FormSubmitButton import FormSubmitButton
 
+def visual(actor, director, structureid, simtype):
+    form        = lc.form(id='create-simulation-form')
+    return form
 
 __date__ = "$May 15, 2010 8:19:57 AM$"
 
