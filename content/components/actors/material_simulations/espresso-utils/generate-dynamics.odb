@@ -24,8 +24,8 @@ class Actor(base):
 
     def content(self, director):
         "Populates the content for creation of input configuration"
-        title   = "Dynamics Configuration Input"
-        label   = "Dynamics Form"
+        title   = "Electron and Ion Dynamics Configuration Input"
+        label   = "Electron and Ion Dynamics Form"
         visual  = "material_simulations/espresso/input-dynamics"  # parameters form
         return self._document(director, title, label, visual = visual)
 
