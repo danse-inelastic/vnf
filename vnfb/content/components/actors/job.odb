@@ -22,6 +22,15 @@
 from luban.content import load, select, alert
 import luban.content as lc
 
+
+# common actions
+setpagetitle = select(id='').setAttr(title='Virtual neutron facility: jobs')
+from  vnfb.components.visuals import set_contextual_help
+sethelppage = set_contextual_help(
+    page='UserGuide-jobs', label='about jobs')
+
+
+#
 from luban.content.Form import Form
 from luban.content.Document import Document
 from luban.content.ProgressBar import ProgressBar
@@ -29,8 +38,9 @@ from luban.content.Form import Form
 from luban.content.Link import Link
 
 from vnfb.utils.job import check
-from vnfb.components.MasterTable import FilterSyntaxError, MasterTableActor as base
 
+#
+from vnfb.components.MasterTable import FilterSyntaxError, MasterTableActor as base
 class Actor(base):
 
     class Inventory(base.Inventory):
@@ -97,8 +107,14 @@ class Actor(base):
 
 
     def showListView(self, director):
-        view = self.createListView(director)
-        return select(id='main-display-area').replaceContent(view)
+        try:
+            view = self.createListView(director)
+        except FilterSyntaxError, msg:
+            return alert('filter syntax error: %s' % msg)
+        return [
+            select(id = 'main-display-area').replaceContent(view),
+            setpagetitle,
+            ] + sethelppage
 
 
     def createListView(self, director):

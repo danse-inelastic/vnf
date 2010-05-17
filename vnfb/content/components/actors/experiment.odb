@@ -20,9 +20,15 @@ from luban.content.Button import Button
 from luban.content.Paragraph import Paragraph
 
 
+# common actions
+setpagetitle = select(id='').setAttr(title='Virtual neutron facility: experiments')
+from  vnfb.components.visuals import set_contextual_help
+sethelppage = set_contextual_help(
+    page='UserGuide-experiments', label='about experiments')
+
+
+#
 from vnfb.components.MasterTable import FilterSyntaxError, MasterTableActor as base
-
-
 class Actor(base):
 
 
@@ -42,8 +48,14 @@ class Actor(base):
 
 
     def showListView(self, director):
-        view = self.createListView(director)
-        return select(id='main-display-area').replaceContent(view)
+        try:
+            view = self.createListView(director)
+        except FilterSyntaxError, msg:
+            return alert('filter syntax error: %s' % msg)
+        return [
+            select(id = 'main-display-area').replaceContent(view),
+            setpagetitle,
+            ] + sethelppage
 
 
     def createListView(self, director):
