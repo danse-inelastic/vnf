@@ -11,6 +11,7 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
+from vnfb.qeutils.results.cpresults import CPResult
 from vnfb.qeutils.generators.imgenerator import IMGenerator
 from vnfb.components.QEGenerator import QEGenerator as base
 
@@ -24,6 +25,9 @@ class Actor(base):
 
     def content(self, director):
         "Populates the content for creation of input configuration"
+
+        result  = CPResult(director, self.id, linkorder)
+        print result.input()
         title   = "Ion Minimization Configuration Input"
         label   = "Ion Minimization Form"
         visual  = "material_simulations/espresso/input-ion-min"  # parameters form

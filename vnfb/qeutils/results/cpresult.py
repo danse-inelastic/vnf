@@ -17,7 +17,7 @@ from vnfb.qeutils.results.qeresult import QEResult
 NONE        = "None"
 class CPResult(QEResult):
 
-    def __init__(self, director, simid, tasktype, linkorder):
+    def __init__(self, director, simid, linkorder):
         super(CPResult, self).__init__(director, simid, linkorder = linkorder)
 
 __date__ = "$May 17, 2010 11:47:17 AM$"
