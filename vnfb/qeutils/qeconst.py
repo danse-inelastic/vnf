@@ -136,6 +136,13 @@ MDLABEL["dynamics"]     = ("Electron and Ion Dynamics", "Electron and ion dynami
 MDLABEL["thermostat"]   = ("Dynamics with Thermostat", "Electrons and ions dynamics with Nose thermostat")
 MDLABEL["trajectory"]   = ("Trajectory Analysis", "Trajectory analysis")
 
+MDPLOT      = OrderedDict()
+MDPLOT["vdos"]          = "Vibrational Density of States (VDOS)"
+MDPLOT["vdist"]         = "Velocity Distribution"
+MDPLOT["msd"]           = "Mean-Square Displacement"
+MDPLOT["rdf"]           = "Radial Distribution Function"
+MDPLOT["temptime"]      = "Temperature Dependence on Time"
+
 QETYPES = TYPE.keys() + MDSTEPS.keys()
 
 # Analysis actors
@@ -147,6 +154,7 @@ ANALYSIS[SIMLIST[3]]    = "geometry"
 ANALYSIS[SIMLIST[4]]    = "phonon-single"
 ANALYSIS[SIMLIST[5]]    = "phonon-multiple"
 ANALYSIS[SIMLIST[6]]    = "molecular-dynamics"
+
 
 # Available servers
 SERVERS     = ("foxtrot.danse.us",)
