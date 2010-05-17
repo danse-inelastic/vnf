@@ -9,6 +9,8 @@ General:
 
    UserGuide-Overview
    UserGuide-atomicstructures
+   UserGuide-materialsimulations
+   UserGuide-analysis
    
 Born-von Karman (BvK):
 
