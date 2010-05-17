@@ -18,7 +18,7 @@ import os.path
 
 import os
 import re
-from vnfb.qeutils.qeconst import INPUT, ANALYSIS, SUBTYPE_MATDYN, SIMTYPE, SIMCHAINS
+from vnfb.qeutils.qeconst import INPUT, INPUT_DEFAULT, ANALYSIS, SUBTYPE_MATDYN, SIMTYPE, SIMCHAINS
 from vnfb.qeutils.qescheduler import schedulerfactory
 from vnfb.qeutils.qeparser.qeinput import QEInput
 import luban.content as lc
@@ -156,7 +156,11 @@ def recordFileExists(dds, record, fname):
 
 
 def defaultInputName(type):
-    return INPUT[type.lower()]
+    t   = type.lower()
+    if t in INPUT.keys():
+        return INPUT[type.lower()]
+
+    return INPUT_DEFAULT
 
 
 # XXX: Check if record has "type" attribute

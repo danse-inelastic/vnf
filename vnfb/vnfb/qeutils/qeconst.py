@@ -65,6 +65,7 @@ INPUT["d3"]     = "d3"      + INPUT_EXT
 INPUT["cp"]     = "cp"      + INPUT_EXT
 INPUT["cppp"]   = "cppp"    + INPUT_EXT
 INPUT["plotband"]   = "plotband"    + INPUT_EXT
+INPUT_DEFAULT   = "default" + INPUT_EXT
 
 NOPARALLEL  = ("DOS", "MATDYN", "DYNMAT", "Q2R", "PLOTBAND") # "PP"? # "PLOTBAND"?
 
