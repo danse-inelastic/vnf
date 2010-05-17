@@ -12,7 +12,7 @@
 #
 
 class IMGenerator(object):
-    "Generator for CP Electronic Minimization task"
+    "Generator for CP Ion Minimization task"
 
     def __init__(self, director, inventory, input = None):
         self._director  = director
