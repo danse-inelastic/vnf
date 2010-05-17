@@ -61,17 +61,16 @@ class Actor(base):
         orm = director.clerk.orm
         doc = lc.document(id='trajectory-selector-doc')
         doc.paragraph(
-            text=['Use the following planning tools to configure the analysis calculation:',]
-            )
+            text=['Use the following planning tools to configure the analysis calculation:',])
         #doc = lc.document(title = "")
         container = lc.document(title = "")
-        doc.add(container)
+        #container.add(load(actor='material_simulations/mdPlan', routine='createMdPlanForm'))
         #first put in the md planning tools
         container.oncreate = [
             select(element=container).append(
-              load(actor='material_simulations/mdPlan', routine='createMdPlanDocument')
-              ),
+              load(actor='material_simulations/mdPlan', routine='createMdPlanForm')),
             ]
+        doc.add(container)
         #now put in the Q vector planning tool
         #now put in the trajectory
         #now put in the analysis data object configuration

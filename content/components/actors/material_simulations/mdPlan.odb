@@ -114,10 +114,10 @@ class Actor(base):
     def createMdPlanPage(self, director):  
         page = lc.page(title="Md planning tools") 
         title = 'Md parameters for S(Q,E) resolution' 
-        page.add(self.createdMdPlanForm(director))
+        page.add(self.createMdPlanForm(director))
         return page
 
-    def createMdPlanDocument(self, director):  
+    def createMdPlanForm(self, director):  
 
         form = lc.form(id='energyAxisPanel', title='Determine energy axis')
         
@@ -207,23 +207,24 @@ class Actor(base):
         #resultsDoc.text=['<br>', mdPlan.getHtmlInfo()]
         analysisGrid = QEGrid(lc.grid(Class="qe-table"))
         for desc,val in mdPlan.getTupleInfo():
-            analysisGrid.addRow((desc,str(val)))
+            analysisGrid.addRow((desc, str(val)))
             
         resultsDoc.add(analysisGrid.grid())
         
         button = lc.button(label="redo")
-        button.onclick = select(id='energyAxisPanel').replaceContent(
+        button.onclick = select(id='energyAxisPanel').replaceContent(load(
             actor = 'material_simulations/mdPlan',
-            routine = 'createMdPlanDocument',
+            routine = 'createMdPlanForm',
             energyCutoff = self.inventory.energyCutoff,
             energyResolution = self.inventory.energyResolution,
             timestep = self.inventory.timestep,
 #            structureId = self.inventory.structureId,
-            )
+            ))
         resultsDoc.add(button)
         
-        #return select(id='container').append(resultsDoc)
-        return resultsDoc
+        #return select(id='energyAxisPanel').append(resultsDoc)
+        return select(id='energyAxisPanel').replaceContent(resultsDoc)
+        #return resultsDoc
 
 
     def __init__(self, name='mdPlan'):
