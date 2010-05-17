@@ -166,7 +166,7 @@ class Actor(base):
         hdoc = lc.htmldocument(id='mdPlan')
         
         urlArgs = {'actor':'material_simulations/mdPlan', 
-                   'routine':'createMdPlanDocument',
+                   'routine':'createMdPlanPage',
                    'sentry.username':director.sentry.username,
                    'sentry.ticket':director.sentry.ticket,}
         

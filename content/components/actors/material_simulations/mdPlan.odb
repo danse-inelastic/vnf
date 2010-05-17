@@ -110,16 +110,16 @@ class Actor(base):
             #select(id='help').replaceBy(newwin),
             select(id='dock').dock('release', select(id='mdPlan')),
             ]
-
-    def createMdPlanDocument(self, director):  
+        
+    def createMdPlanPage(self, director):  
         page = lc.page(title="Md planning tools") 
         title = 'Md parameters for S(Q,E) resolution' 
-        container = page.document(id='container', title=title)
-        #
-        #pathtome = self._pathToMe(director)
-        #view_indicator = self._viewIndicactor(pathtome, director)
-        #container.add(view_indicator)
-        form = container.form(Class='mdhelp')    
+        page.add(self.createdMdPlanForm(director))
+        return page
+
+    def createMdPlanDocument(self, director):  
+
+        form = lc.form(id='energyAxisPanel', title='Determine energy axis')
         
         property = 'energyCutoff'
         meta = getattr( self.Inventory, property ).meta
@@ -185,7 +185,7 @@ class Actor(base):
         
         # calculate
         button = form.submitbutton(label="calculate")
-        form.onsubmit = select(element=form).submit(
+        form.onsubmit = select(id='energyAxisPanel').submit(
             actor = 'material_simulations/mdPlan',
             routine = 'calculateMdInfo',
 #            structureId = self.inventory.structureId,
@@ -193,7 +193,7 @@ class Actor(base):
 
         #now add the plot and the info
         #doc = container.document(title='Md sampling parameters', id='computedSampling')
-        return page
+        return form
     
     def calculateMdInfo(self, director):
         from vsat.MdPlan import MdPlan
@@ -211,8 +211,19 @@ class Actor(base):
             
         resultsDoc.add(analysisGrid.grid())
         
+        button = lc.button(label="redo")
+        button.onclick = select(id='energyAxisPanel').replaceContent(
+            actor = 'material_simulations/mdPlan',
+            routine = 'createMdPlanDocument',
+            energyCutoff = self.inventory.energyCutoff,
+            energyResolution = self.inventory.energyResolution,
+            timestep = self.inventory.timestep,
+#            structureId = self.inventory.structureId,
+            )
+        resultsDoc.add(button)
+        
         #return select(id='container').append(resultsDoc)
-        return select(id='container').replaceContent(resultsDoc)
+        return resultsDoc
 
 
     def __init__(self, name='mdPlan'):
