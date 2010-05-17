@@ -12,7 +12,7 @@
 #
 
 class DYGenerator(object):
-    "Generator for CP Dynamics task"
+    "Generator for CP Electron and Ion Dynamics task"
 
     def __init__(self, director, inventory, input = None):
         self._director  = director
