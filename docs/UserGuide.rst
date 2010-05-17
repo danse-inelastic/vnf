@@ -11,7 +11,11 @@ General:
    UserGuide-atomicstructures
    UserGuide-materialsimulations
    UserGuide-analysis
-   
+   UserGuide-samples
+   UserGuide-experiments
+   UserGuide-jobs
+
+  
 Born-von Karman (BvK):
 
 .. toctree::
