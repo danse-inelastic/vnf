@@ -96,8 +96,6 @@ class Actor(base):
         return select(id='main-display-area').replaceContent(doc)
 
 
-
-
     def showMDOptions(self, director):
         label   = lc.document()
         options = lc.document()

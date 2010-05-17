@@ -46,6 +46,7 @@ class Visual:
         table       = QEGrid(lc.grid(Class="qe-form"))
         form.add(table.grid())
 
+# Keep!
 #        mattertype  = FormRadioBox(name = "mattertype")
 #        mattertype.entries      = enumerate(MATTER_TYPE.values())
 #        mattertype.onchange = select(id="hello-world").replaceContent(lc.htmldocument(text=mattertype.value))
