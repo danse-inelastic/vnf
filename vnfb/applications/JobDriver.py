@@ -18,7 +18,7 @@
 #
 from vnfb.dom.QEJob import QEJob
 from vnfb.qeutils.qeutils import stamp, writeRecordFile, defaultInputName, readRecordFile
-from vnfb.qeutils.qeconst import RUNSCRIPT, TYPE, NOPARALLEL
+from vnfb.qeutils.qeconst import RUNSCRIPT, TYPE, MDSTEPS, NOPARALLEL
 from vnfb.qeutils.qeutils import packname
 from luban.applications.UIApp import UIApp as base
 
@@ -165,7 +165,7 @@ class JobDriver(base):
 
         # No "mpirun" for single core simulations
         if input.type in NOPARALLEL:      
-            args    = [ TYPE[task.type],
+            args    = [ self._qeExec(task.type),
                         "<",
                         inputFile,
                         ">",
@@ -176,7 +176,7 @@ class JobDriver(base):
         # Example: mpirun --mca btl openib,sm,self pw.x -npool 8 -inp  PW > PW.out
         args   = [ settings.executable,
                     settings.params,
-                    TYPE[task.type],
+                    self._qeExec(task.type),
                     "-npool %s" % self._npool(settings, task.type),
                     "-inp",        # Options: "-inp" or "<"
                     inputFile,
@@ -186,6 +186,15 @@ class JobDriver(base):
 
         return args
 
+
+    def _qeExec(self, type):
+        if type in TYPE.keys():
+            return TYPE[task.type]
+
+        if type in MDSTEPS.keys():  # Molecular dynamics
+            return TYPE["CP"]
+
+        return ""
 
     def _npool(self, settings, type):
         "Returns npool"

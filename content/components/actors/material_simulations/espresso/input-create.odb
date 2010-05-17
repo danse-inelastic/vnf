@@ -98,7 +98,7 @@ class Actor(base):
         # Filename is not set
         if self.fname == '':
             return defaultInputName(self.inventory.type)
-
+        
         return self.fname
 
 
