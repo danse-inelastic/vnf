@@ -19,24 +19,18 @@ from luban.components.AuthorizedActor import AuthorizedActor as base
 
 class Actor(base):
 
-
     class Inventory(base.Inventory):
-
         import pyre.inventory
-
         id = pyre.inventory.str(name='id')
-
 
     def createView(self, director):
         doc = lc.document(Class='container')
-
         domaccess = self._domaccess(director)
         db = domaccess.db
         c = self._getComputationRecord(director)
         #do this error checking later
 #        if not domaccess.isComputationConfigured(c):
 #            return self.createConfigurationView(director)
-        
         path = self._pathToMe(director)
         view_indicator = director.retrieveVisual('view-indicator', path=path)
         doc.add(view_indicator)
@@ -48,7 +42,6 @@ class Actor(base):
 #                          id = matter.id)
 #        link = lc.link(label=matter.short_description, onclick=viewmatter)
 #        matterview.add(link)
-
         # model view
 #        model = c.model.dereference(db)
 #        modelview = doc.document(title='model', collapsable=True, collapsed=False)
@@ -58,7 +51,6 @@ class Actor(base):
 #            )
 #        link = lc.link(label=model.short_description, onclick=viewmodel)
 #        modelview.add(link)
-
         # results
         resultsdoc = doc.document(title = 'Results', collapsable=True, collapsed=True)
         resultsdoc.paragraph(text=['loading results. please wait...'])
@@ -66,7 +58,6 @@ class Actor(base):
             load(actor=self.name, routine='createResultsDoc',
                  id=self.inventory.id)
             )
-
         # settings
         settingsdoc = doc.document(title = 'Settings', collapsable = True)
         settingsdoc.oncreate = select(element=settingsdoc).append(
@@ -76,13 +67,11 @@ class Actor(base):
             ))
         return doc
 
-
     def createResultsDoc(self, director):
         record = self._getComputationRecord(director)
         return director.retrieveVisual(
             'computation-results',
             computation=record, actor=self.name, director=director)
-
 
     def createConfigurationView(self, director):
         c = self._getComputation(director)
@@ -129,7 +118,6 @@ class Actor(base):
             )),
             ]
 
-
     def _getComputation(self, director):
         record = self._getComputationRecord(director)
         return director.clerk.orm.record2object(record)
@@ -137,22 +125,18 @@ class Actor(base):
 #        id = self.inventory.id
 #        return domaccess.getComputation('csfcalc', id)
 
-
     def _getComputationRecord(self, director):
         domaccess = self._domaccess(director)
         id = self.inventory.id
         return domaccess.getComputationRecord('csfcalc', id)
 
-
     def _domaccess(self, director):
         #return director.retrieveDOMAccessor('analysis')
         return director.retrieveDOMAccessor('computation')
 
-
     def __init__(self, name='analysis/csfcalc'):
         super(Actor, self).__init__(name)
         return
-
 
 def actor(): return Actor()
 
