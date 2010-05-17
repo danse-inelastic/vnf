@@ -39,13 +39,20 @@ InvBase=base.Inventory
 class Inventory(InvBase):
 
     tmin = InvBase.d.float( name = 'tmin', default = 3000e-6 )
+    tmin.help = 'lower t bound of detector (s) '
     tmax = InvBase.d.float( name = 'tmax', default = 6000e-6  )
+    tmax.help = 'upper t bound of detector (s) '
     x_min = InvBase.d.float( name = 'x_min', default = -0.1 )
+    x_min.help = 'Lower x bound of detector opening (m) '
     x_max = InvBase.d.float( name = 'x_max', default = 0.1 )
+    x_max.help = 'Upper x bound of detector opening (m) '
     y_min = InvBase.d.float( name = 'y_min', default = -0.1 )
+    y_min.help = 'Lower y bound of detector opening (m) '
     y_max = InvBase.d.float( name = 'y_max', default = 0.1 )
+    y_max.help = 'Upper y bound of detector opening (m) '
     
     nchan = InvBase.d.int( name = 'nchan', default = 100, validator=InvBase.v.positive)
+    nchan.help = 'number of time bins (1) '
 
     dbtablename = 'tofmonitors'
 
