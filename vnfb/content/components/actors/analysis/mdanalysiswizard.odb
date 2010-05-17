@@ -51,18 +51,21 @@ class Actor(base):
         b = lc.button(label='select'); doc.add(b)
         #b.onclick = getInfoAndProceed()
         b.onclick = load(actor = 'analysis/mdanalysiswizard', 
-                         routine = 'analysisSettings',
-                    trajectoryId = select(id='trajectory-table').table(
-                        'getIdentifiersForSelectedRow', colname='selectone'),
-                    analysisType = self.inventory.analysisType
-                    )
+                       routine = 'analysisSettings',
+                  trajectoryId = select(id='trajectory-table').table('getIdentifiersForSelectedRow', colname='selectone'),
+                  analysisType = self.inventory.analysisType)
         return doc
 
     def analysisSettings(self, director):
         self.debug = journal.debug('analysisSettings')
         orm = director.clerk.orm
+        doc = lc.document(id='trajectory-selector-doc')
+        doc.paragraph(
+            text=['Use the following planning tools to configure the analysis calculation:',]
+            )
         #doc = lc.document(title = "")
         container = lc.document(title = "")
+        doc.add(container)
         #first put in the md planning tools
         container.oncreate = [
             select(element=container).append(
@@ -102,7 +105,7 @@ class Actor(base):
         analysisObj = orm.record2object(analysisDbObj)
         drawer = director.painter.paintObj.drawers.getDrawer(analysisObj.__class__)
         editview = drawer(analysisObj)
-        container.add(editview)
+        doc.add(editview)
         #container.oncreate = [
         #    select(element=container).append(        
         #      #load(actor='analysis/selectdynamics', routine='createListView')
@@ -113,8 +116,7 @@ class Actor(base):
 #        sB          = splitter.section()
 #        docSub      = lc.document(title = "")
         b = lc.button(label='select'); 
-        #doc.add(b);
-        container.add(b)
+        doc.add(b)
         b.onclick = load(
             #actor='atomicstructure',
             #actor=self.name, routine='runDirectly', 
@@ -126,7 +128,7 @@ class Actor(base):
 #              load(actor='material_simulations/mdPlan', routine='createMdPlanDocument')
 #              ),
 #            ]
-        return select(id='main-display-area').replaceContent(container)
+        return select(id='main-display-area').replaceContent(doc)
     
     def configureSubmissionQueue(self, director):
         orm = director.clerk.orm
