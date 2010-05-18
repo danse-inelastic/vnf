@@ -39,6 +39,7 @@ class Actor(base):
     def generateInput(self, director):
         gen     = TRGenerator(director, self.inventory)
         gen.setSystem()
+        gen.setSteps()
         gen.setAnalysis()
         return director.redirect(actor   = 'material_simulations/espresso/input-create',
                                 routine = 'default',
