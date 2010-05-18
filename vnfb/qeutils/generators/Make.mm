@@ -19,6 +19,7 @@ PACKAGE = qeutils/generators
 
 EXPORT_PYTHON_MODULES = \
     bandsgenerator.py \
+    cpgenerator.py \
     dosgenerator.py \
     dynmatgenerator.py \
     __init__.py \
