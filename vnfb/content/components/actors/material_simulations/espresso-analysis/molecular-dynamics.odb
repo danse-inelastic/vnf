@@ -27,6 +27,8 @@ CLASS_DEFAULT   = "qe-action-default"  # Default class
 CLASS_ACTIVE    = "qe-color-blue"
 CLASS_ERROR     = "qe-color-red"
 
+TRAJ_LINKORDER  = 2 # XXX: fix it!
+
 """
 QEAnalysis - base actor class for Quantum Espresso analysis pages
 """
@@ -128,7 +130,7 @@ class Actor(base):
 
     def _simData(self, director, splitter):
         "Shows vibrational DOS "
-        #self._dosresult      = DOSResult(director, self.id)
+        self._resultpath    = ResultPath(director, self.id, linkorder = TRAJ_LINKORDER)
         self._vDos(director, splitter)
 
 
@@ -137,8 +139,7 @@ class Actor(base):
         # Not displayed if no file exist or data are not in proper format
         section    = splitter.section()
         section.add(lc.paragraph(text="Vibrational DOS", Class="qe-section"))
-        #dosfile    = self._dosresult.dosFile()   # dos file path
-        dosfile = "/home/dexity/temp/si-dos.txt"  # Temp
+        dosfile     = self._resultpath.resultFiles("dos")
 
         if not dosfile:     # "No DOS file!" # if no DOS file, notify user!
             section.add(lc.htmldocument(text="No Vibrational DOS", Class="qe-text-blue"))
