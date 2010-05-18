@@ -28,7 +28,7 @@ EKIN_CONV_THR   = "1.d-6"
 
 
 # Default System params
-CELLDM          = "10.2"    # 20.52 ?
+CELLDM          = "20.52" #"10.2"
 
 # Default Electron params
 EMASS_CUTOFF            = "2.5"

@@ -118,7 +118,9 @@ class Actor(base):
         for s in MDSTEPS.keys():
             box     = FormCheckBox(name=noHyphen(s), checked = self._checked(s))
             label   = MDSTEPS[s]
-            table.addRow((box, label))
+            # Don't include trajectory, it will be created automatically
+            if s != "trajectory":   
+                table.addRow((box, label))
 
         return table.grid()
 
@@ -171,7 +173,8 @@ class Actor(base):
         # Output example: "electron-min,thermostat"
         s   = ""
         for key in MDSTEPS.keys():
-            if getattr(self, noHyphen(key)):
+            # Don't include trajectory, it will be created automatically
+            if key != "trajectory" and getattr(self, noHyphen(key)):
                 s   += "%s," % key
 
         s   += "trajectory" # Add trajectory analysis step

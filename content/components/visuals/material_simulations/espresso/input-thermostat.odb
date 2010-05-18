@@ -20,8 +20,8 @@ from luban.content.FormTextField import FormTextField
 
 TEMPW   = 300.0
 FNOSEP  = 60.0
-DT      = 2.0
-NSTEP   = 200
+DT      = 10.0
+NSTEP   = 400
 
 def visual(actor, director, structureid, simtype):
     form        = lc.form(id='create-simulation-form')
