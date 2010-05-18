@@ -13,6 +13,8 @@
 
 from vnfb.qeutils.results.cpresult import CPResult
 from vnfb.qeutils.qeparser.qeinput import QEInput
+from vnfb.qeutils.qeutils import defaultInputName, readRecordFile
+
 
 EM_LINKORDER    = 0 # Electron minimization should exist!
 
@@ -24,23 +26,54 @@ class IMGenerator(object):
         self._inv       = inventory
         self._input     = input
 
-        self._init(director)
+        self._init()
 
 
-    def _init(self, director):
+    def _init(self):
+        self._inputFromRecord()
+        # Note: Change to _inputFromResult() if you want to get input from result!
+
+
+    def _inputFromRecord(self):
+        "Set input object from input configuration"
+        inputs  = self._director.clerk.getQEConfigurations(where="taskid='%s'" % self._emTaskId())
+        if len(inputs) == 0:    # No input created
+            return
+
+        input       = inputs[0]
+        fname       = defaultInputName(input.type)
+        inputStr    = readRecordFile(self._director.dds, input, fname)
+        self._input = QEInput(config = inputStr, type = "cp")
+        self._input.parse()
+
+
+    def _inputFromResult(self):
+        "Set input object from electron-min result"
         if not self._input:
-            self._input = self._cpInput(director)
+            self._input = self._cpInput()
+    
 
-
-    def _cpInput(self, director):
+    def _cpInput(self):
         "Take input file from results and create QEInput object"
-        result      = CPResult(director, self._inv.id, linkorder = EM_LINKORDER)
+        result      = CPResult(self._director, self._inv.id, linkorder = EM_LINKORDER)
         return result.input()
+
+
+    def _emTaskId(self):
+        "Returns electron-min task id"
+        simtasks    = self._director.clerk.getQESimulationTasks(where="simulationid='%s'" % self._inv.id)
+        for st in simtasks:
+            if st:
+                task    = self._director.clerk.getQETasks(id=st.taskid)
+                if task.linkorder == 0:
+                    return task.id
+
+        return None
 
 
     def toString(self):
         if not self._input:
-            return "IMGenerator"
+            return "IMGenerator: Electronic Minimization input is not created!"
 
         return self._input.toString()
 
