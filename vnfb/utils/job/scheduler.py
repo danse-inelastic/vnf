@@ -96,7 +96,7 @@ def schedulerfactory( server ):
     if scheduler in [ None, '', 'None' ]:
         raise RuntimeError, "scheduler not specified"
 
-    from vnf.clusterscheduler import scheduler as factory
+    from vnfb.clusterscheduler import scheduler as factory
     try: scheduler = factory( scheduler )
     except: raise NotImplementedError, 'scheduler %r' % scheduler
     return scheduler
