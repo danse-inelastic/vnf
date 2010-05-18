@@ -71,6 +71,28 @@ def parsePhononDos(filename):
     return (e,  x)
 
 
+def parseVDos(filename):
+    """Parses file consisting of 2 columns separated by space or tab
+    to parse vibrational dos
+    Notes:
+        - First line is the description
+    """
+    e = []
+    x = []
+
+    f = open(filename)
+    line = f.readline() # Skip the first line with header
+    line = f.readline()
+    while line:
+        list = line.split()
+        #Convert strings to float and append to the list
+        e.append(float(list[0]))
+        x.append(float(list[1]))
+        line = f.readline()
+    f.close()
+    return (e,  x)
+
+
 def newid(director):
     "Id generator "
     id  = ''

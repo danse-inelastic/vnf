@@ -11,8 +11,7 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
-from vnfb.components.QEAnalysis import QEAnalysis as base
-
+from vnfb.qeutils.qeutils import parseVDos
 from vnfb.qeutils.qeutils import analyseActor
 from vnfb.qeutils.qerecords import SimulationRecord
 from vnfb.qeutils.results.cpresult import CPResult
@@ -61,22 +60,16 @@ class Actor(base):
         docResults  = lc.document(id = ID_RESULTS)
         doc.add(docResults)
 
-        self._pwresult    = CPResult(director, self.id, linkorder = 0)  # From first "PW" task
+        #self._pwresult    = CPResult(director, self.id, linkorder = 0)  # From first "PW" task
 
         self._viewIndicator(director, sInd)
         self._showActions(director, sAct)                 # Show actions
 
-#        # Simulation Data
-#        resSplitter = docResults.splitter(orientation="vertical")
-#        self._simData(director, resSplitter)              # Simulation Specific data
-#
-#        # System Summary and Electron Structure
-#        sSum        = resSplitter.section()                        # system summary
-#        sEle        = resSplitter.section()                        # electron structure
-#        self._summary(director, sSum)                     # System Summary
-#        self._electronStructure(director, sEle)           # Electron Structure
-
+        # Simulation Data
+        resSplitter = docResults.splitter(orientation="vertical")
+        self._simData(director, resSplitter)              # Simulation Specific data
         return doc
+
 
     def _viewIndicator(self, director, section):
         path = []
@@ -120,22 +113,49 @@ class Actor(base):
                     )
 
 
-
     def _exportAction(self, section):
         "Export button"
         link     = lc.link(label="Export",
                             Class="qe-action-edit",
-                            onclick = load(actor    = analyseActor(self.simtype), #'material_simulations/espresso-analysis/exports',
-                                            routine = "export",
-                                            id      = self.id,
-                                            simtype = self.simtype),
+#                            onclick = load(actor    = analyseActor(self.simtype), #'material_simulations/espresso-analysis/exports',
+#                                            routine = "export",
+#                                            id      = self.id,
+#                                            simtype = self.simtype),
                            tip = "Export Parameters of the Simulation"
                            )
         section.add(link)
 
 
     def _simData(self, director, splitter):
-        "Simulation specific data. Should be overwritten by subclass"
+        "Shows vibrational DOS "
+        #self._dosresult      = DOSResult(director, self.id)
+        self._vDos(director, splitter)
+
+
+    def _vDos(self, director, splitter):
+        "Display vibrational DOS plot"
+        # Not displayed if no file exist or data are not in proper format
+        section    = splitter.section()
+        section.add(lc.paragraph(text="Electron DOS", Class="qe-section"))
+        #dosfile    = self._dosresult.dosFile()   # dos file path
+        dosfile = ""
+
+        if not dosfile:     # "No DOS file!" # if no DOS file, notify user!
+            section.add(lc.htmldocument(text="No Electron DOS", Class="qe-text-blue"))
+            return
+
+        # Populate D(f) list from file
+        data    = parseVDos(dosfile)
+        if not data:        # "DOS file contains non-proper data!"
+            section.add(lc.htmldocument(text="No Electron DOS", Class="qe-text-blue"))
+            return
+
+        (f,  dos) = data
+
+        plot = lc.plot2d(Class="default-size-plot")
+        plot.curve(x=f, y=dos, label="Vibrational DOS")   # 'Spin Up'
+
+        section.add(plot)
 
 
     def _configure(self):
