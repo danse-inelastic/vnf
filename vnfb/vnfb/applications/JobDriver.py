@@ -191,16 +191,23 @@ class JobDriver(base):
                 str   += " %s %s %s\n" % (atom[0], atom[1], atom[2])
 
         str = str.rstrip("\n")
-        writeRecordFile(self.dds, self._job, VELFILE, str)    # -> qejobs directory
-        self.dds.remember(self._job, VELFILE)  # Important step during which the .__dds_nodelist* files are created
+        writeRecordFile(self.dds, self._job, VELFILE, str)   
+        self.dds.remember(self._job, VELFILE)  # Important step 
         self._files.append(VELFILE)
 
 
-    # XXX: Fix
     def _storePosFile(self):
         "Stores positions to cp.pos file"
-        pass
+        str     = ""
+        for ts in range(len(self._pos)):
+            str += "     %s  %s\n" % (self._step[ts], self._time[ts])
+            for atom in self._pos[ts]:
+                str   += " %s %s %s\n" % (atom[0], atom[1], atom[2])
 
+        str = str.rstrip("\n")
+        writeRecordFile(self.dds, self._job, POSFILE, str)
+        self.dds.remember(self._job, POSFILE)  # Important step 
+        self._files.append(POSFILE)
 
 
     def _commandArgs(self):
