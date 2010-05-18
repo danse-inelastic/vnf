@@ -3,7 +3,6 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 #                             Michael A.G. Aivazis
-#                               Orthologue, Ltd.
 #                      (C) 2004-2006  All Rights Reserved
 #
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -11,7 +10,7 @@
 
 
 from pyre.components.Component import Component
-
+import os
 
 class Announcer(Component):
 
