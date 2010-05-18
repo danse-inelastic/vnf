@@ -186,7 +186,7 @@ class JobDriver(base):
         "Stores velocities to cp.vel file"
         str     = ""
         for ts in range(len(self._vel)):
-            str += "     %s  %s\n" % ()
+            str += "     %s  %s\n" % (self._step[ts], self._time[ts])
             for atom in self._vel[ts]:
                 str   += " %s %s %s\n" % (atom[0], atom[1], atom[2])
 
