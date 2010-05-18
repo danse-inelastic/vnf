@@ -9,8 +9,6 @@
 # See also:
 #   http://dev.danse.us/trac/common/browser/kernelGenerator/src/vsat/trajectory/ConvertFromGulpDLPOLY.py
 
-import sys
-import getopt
 import string
 import numpy
 from Scientific import N
@@ -142,9 +140,9 @@ def generateDos():
        end = len(trajectory.time)
 
     timeinfo =  '%d:%d:%d' % (begin, end, step)
-    log     += 'The complete trajectory size is', len(trajectory.time), ' elements'
+    log     += 'The complete trajectory size is %d elements' % len(trajectory.time)
     log     += "\nAnalysing trajectory from position %d to postion %d with step %d:\n" % (begin, end, step)
-    log     += 'Temperature = ',temperature
+    log     += 'Temperature = %s' % temperature
 
     parameters = {
                    'trajectory': trajectory,
@@ -174,13 +172,13 @@ def generateDos():
     exponent = numpy.exp(arg)
 
     F = temperature*( 0.5*arg + numpy.log(1.0 - 1.0/exponent ))*DOS[1:]
-    log     += 'Free Energy: ', F.sum()
+    log     += 'Free Energy: %s' % F.sum()
 
     n = 1.0/(exponent - 1.0)
     s_osc =  (1.0 + n[:])*numpy.log(1.0 + n[:]) - n[:]*numpy.log(n[:])
     entropy1 = (DOS[1:]*(numpy.log(temperature*KelvinToTeraHz/frequencies[1:])+1.0)).sum()
     entropy2 = (DOS[1:]*s_osc).sum()
-    log     += 'entropy = ', entropy2
+    log     += 'entropy = %s' % entropy2
 
     open(OUTPUT, 'w').write(log)    # Store log to output file
 
