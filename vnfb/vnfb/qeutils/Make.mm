@@ -53,6 +53,7 @@ EXPORT_PYTHON_MODULES = \
         qerecords.py \
         qescheduler.py \
         qeserver.py \
+        nc2dos.py \
         message.py \
         qe2nc.py \
         qeutils.py \

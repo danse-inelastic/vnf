@@ -34,11 +34,13 @@ class IMGenerator(object):
 
     def _cpInput(self, director):
         "Take input file from results and create QEInput object"
-        result      = CPResult(director, self.id, linkorder = EM_LINKORDER)
+        result      = CPResult(director, self._inv.id, linkorder = EM_LINKORDER)
         inputFile   = result.inputFile()
         input = QEInput(filename = inputFile, type = "cp")
         input.parse()
         return input
+
+#        return result.input()
 
 
     def toString(self):
