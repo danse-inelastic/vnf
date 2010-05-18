@@ -155,6 +155,7 @@ ANALYSIS[SIMLIST[4]]    = "phonon-single"
 ANALYSIS[SIMLIST[5]]    = "phonon-multiple"
 ANALYSIS[SIMLIST[6]]    = "molecular-dynamics"
 
+#ANALYSIS_ACTORS = ANALYSIS
 
 # Available servers
 SERVERS     = ("foxtrot.danse.us",)
