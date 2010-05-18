@@ -35,12 +35,7 @@ class IMGenerator(object):
     def _cpInput(self, director):
         "Take input file from results and create QEInput object"
         result      = CPResult(director, self._inv.id, linkorder = EM_LINKORDER)
-        inputFile   = result.inputFile()
-        input = QEInput(filename = inputFile, type = "cp")
-        input.parse()
-        return input
-
-#        return result.input()
+        return result.input()
 
 
     def toString(self):
@@ -48,7 +43,14 @@ class IMGenerator(object):
             return "IMGenerator"
 
         return self._input.toString()
-        
+
+
+# Keep the code in case if CPTask works incorrectly
+#        inputFile   = result.inputFile()
+#        input = QEInput(filename = inputFile, type = "cp")
+#        input.parse()
+#        return input
+
 
 __date__ = "$May 16, 2010 10:01:45 AM$"
 
