@@ -11,13 +11,11 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
-class QUGenerator(object):
+from vnfb.qeutils.generators.cpgenerator import CPGenerator as base
+
+class QUGenerator(base):
     "Generator for CP Quenching task"
 
-    def __init__(self, director, inventory, input = None):
-        self._director  = director
-        self._inv       = inventory
-        self._input     = input
 
 __date__ = "$May 16, 2010 10:03:18 AM$"
 

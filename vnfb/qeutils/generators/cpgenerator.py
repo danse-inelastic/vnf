@@ -29,6 +29,32 @@ class CPGenerator(object):
         self._init()
 
 
+    # Methods which should be overwritten in subclasses!
+    def setControl(self):
+        "CONTROL namelist"
+        pass
+
+
+    def setSystem(self):
+        "SYSTEM namelist"
+        pass
+
+
+    def setElectrons(self):
+        "ELECTRONS namelist"
+        pass
+
+
+    def setIons(self):
+        "IONS namelist"
+        pass
+
+
+    def setCell(self):
+        "CELL namelist"
+        pass
+
+
     def _init(self):
         self._inputFromRecord()
         # Note:

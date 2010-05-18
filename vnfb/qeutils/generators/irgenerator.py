@@ -11,13 +11,10 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
-class IRGenerator(object):
-    "Generator for CP Ion Randomization task"
+from vnfb.qeutils.generators.cpgenerator import CPGenerator as base
 
-    def __init__(self, director, inventory, input = None):
-        self._director  = director
-        self._inv       = inventory
-        self._input     = input
+class IRGenerator(base):
+    "Generator for CP Ion Randomization task"
 
 __date__ = "$May 16, 2010 10:02:07 AM$"
 

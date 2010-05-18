@@ -18,7 +18,11 @@ class TRGenerator(object):
         self._director  = director
         self._inv       = inventory
         self._input     = input
-        
+
+
+    def toString(self):
+        return "Hi"
+
 __date__ = "$May 16, 2010 10:04:49 AM$"
 
 
