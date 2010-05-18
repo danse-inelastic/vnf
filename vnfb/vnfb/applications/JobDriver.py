@@ -103,9 +103,8 @@ class JobDriver(base):
 
         self._job  = QEJob(self)
         self._job.createRecord(params)
-        
         self._updateStatus("create-job")
-
+        
 
     def _storeFiles(self):
         """TEMP SOLUTION: Stores files from configuration input strings """
@@ -116,6 +115,8 @@ class JobDriver(base):
 
     def _storeConfigurations(self):
         "Store Configuration files"
+        self._updateStatus("prepare-configs")
+
         inputs  = self.clerk.getQEConfigurations(where = "taskid='%s'" % self.taskid)
         dds     = self.dds
 
@@ -133,10 +134,11 @@ class JobDriver(base):
             dds.remember(self._job, pfn)     # Change object and filename?
             self._files.append(pfn)
 
-        self._updateStatus("prepare-configs")
-
 
     def _createRunScript(self):
+        "Creates run script"
+        self._updateStatus("prepare-controls")
+
         server      = self.clerk.getServers(id = self._job.serverid)
         self._task  = self.clerk.getQETasks(id = self.taskid)
         if self._task.type  == "trajectory":    # Special case for trajectory task
@@ -155,8 +157,6 @@ class JobDriver(base):
         writeRecordFile(self.dds, self._job, RUNSCRIPT, "\n".join(cmds))    # -> qejobs directory
         self.dds.remember(self._job, RUNSCRIPT)  # Important step during which the .__dds_nodelist* files are created
         self._files.append(RUNSCRIPT)
-
-        self._updateStatus("prepare-controls")
 
 
     def _storeExtraFiles(self):
@@ -276,14 +276,15 @@ class JobDriver(base):
         Notes:
             - See also: submitjob.odb
         """
+        self._updateStatus("copy-files")
+        
         dds     = self.dds
         server  = self.clerk.getServers(id = self._job.serverid)
         dds.make_available(self._job, server=server, files=self._files)
 
         # Create output directory (ESPRESSO_TEMPDIR) for QE
         dds.makedirs(self._sim, server=server)
-        self._updateStatus("copy-files")
-        
+       
 
     def _test_makedirs(self):
         dds         = self.dds
@@ -294,10 +295,11 @@ class JobDriver(base):
 
     def _scheduleJob(self):
         "Schedule job"
+        self._updateStatus("enqueue")
+
         dds     = self.dds
         from vnfb.qeutils.qescheduler import schedule
         schedule(self._sim, self, self._job)
-        self._updateStatus("enqueue")
 
 
     def _updateStatus(self, status):
