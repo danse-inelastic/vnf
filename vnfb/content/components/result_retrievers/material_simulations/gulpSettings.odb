@@ -87,6 +87,8 @@ class Retriever(base):
                 trajectoryRecord.trajectory_path = os.path.join(self.dds.abspath(trajectoryRecord), 'gulp.nc')
                 trajectory=orm.record2object(trajectoryRecord)
                 trajectory.loadNetcdfTrajectory()
+                #reset the trajectory path to what it will be in the working directory
+                trajectory.trajectory_path = 'gulp.nc'
                 trajectoryRecord = orm(trajectory)
                 db.updateRecord(trajectoryRecord)
             #copy a temporary copy of the job to the web server (for the job page)
