@@ -136,18 +136,18 @@ class Actor(base):
         "Display vibrational DOS plot"
         # Not displayed if no file exist or data are not in proper format
         section    = splitter.section()
-        section.add(lc.paragraph(text="Electron DOS", Class="qe-section"))
+        section.add(lc.paragraph(text="Vibrational DOS", Class="qe-section"))
         #dosfile    = self._dosresult.dosFile()   # dos file path
-        dosfile = ""
+        dosfile = "/home/dexity/temp/show-dos.txt"
 
         if not dosfile:     # "No DOS file!" # if no DOS file, notify user!
-            section.add(lc.htmldocument(text="No Electron DOS", Class="qe-text-blue"))
+            section.add(lc.htmldocument(text="No Vibrational DOS", Class="qe-text-blue"))
             return
 
         # Populate D(f) list from file
         data    = parseVDos(dosfile)
         if not data:        # "DOS file contains non-proper data!"
-            section.add(lc.htmldocument(text="No Electron DOS", Class="qe-text-blue"))
+            section.add(lc.htmldocument(text="No Vibrational DOS", Class="qe-text-blue"))
             return
 
         (f,  dos) = data
