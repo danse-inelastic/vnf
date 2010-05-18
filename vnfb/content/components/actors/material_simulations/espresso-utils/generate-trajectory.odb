@@ -20,13 +20,12 @@ class Actor(base):
         import pyre.inventory
         start       = pyre.inventory.str('start', default='')
         end         = pyre.inventory.str('end', default='')
-        vdos        = pyre.inventory.str('vdos', default='')
-        vdist       = pyre.inventory.str('vdist', default='')
-        msd         = pyre.inventory.str('msd', default='')
-        rdf         = pyre.inventory.str('rdf', default='')
-        temptime    = pyre.inventory.str('temptime', default='')
-        dt          = pyre.inventory.str('dt', default='')
-        nstep       = pyre.inventory.str('nstep', default='')
+        
+        vdos        = pyre.inventory.bool('vdos', default=False)
+        vdist       = pyre.inventory.bool('vdist', default=False)
+        msd         = pyre.inventory.bool('msd', default=False)
+        rdf         = pyre.inventory.bool('rdf', default=False)
+        temptime    = pyre.inventory.bool('temptime', default=False)
 
 
     def content(self, director):
@@ -39,7 +38,8 @@ class Actor(base):
 
     def generateInput(self, director):
         gen     = TRGenerator(director, self.inventory)
-        #gen.setInput()
+        gen.setSystem()
+        gen.setAnalysis()
         return director.redirect(actor   = 'material_simulations/espresso/input-create',
                                 routine = 'default',
                                 text    = gen.toString(),
@@ -56,13 +56,12 @@ class Actor(base):
         super(Actor, self)._configure()
         self.start          = self.inventory.start
         self.end            = self.inventory.end
+
         self.vdos           = self.inventory.vdos
         self.vdist          = self.inventory.vdist
         self.msd            = self.inventory.msd
         self.rdf            = self.inventory.rdf
         self.temptime       = self.inventory.temptime
-        self.dt             = self.inventory.dt
-        self.nstep          = self.inventory.nstep
 
 
     def _init(self):
