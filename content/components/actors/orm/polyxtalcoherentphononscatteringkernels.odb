@@ -44,7 +44,7 @@ class Actor(helper(PolyXtalCoherentPhononScatteringKernel), base):
         disp_doc = right.document(title='Phonons')
         phonons = kernel.phonons
         if phonons is None:
-            disp_doc.paragraph('this kernel does not have a phonons yet!')
+            disp_doc.paragraph(text=['this kernel does not have a phonons yet!'])
         else:
             dispid = orm(phonons).id
             dispview = director.redirect(
