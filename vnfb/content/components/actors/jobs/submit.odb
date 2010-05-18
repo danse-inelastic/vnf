@@ -35,7 +35,7 @@ class Actor(base):
 
     def submit(self, director):
         "Submit job to the computing nodes. Trace job status."
-        self.submitJob(director)    
+        self.submitJob(director)
 
         return self.progressBar(director)
 

@@ -67,7 +67,7 @@ INPUT["cppp"]   = "cppp"    + INPUT_EXT
 INPUT["plotband"]   = "plotband"    + INPUT_EXT
 INPUT_DEFAULT   = "default" + INPUT_EXT
 
-NOPARALLEL  = ("DOS", "MATDYN", "DYNMAT", "Q2R", "PLOTBAND") # "PP"? # "PLOTBAND"?
+NOPARALLEL  = ("DOS", "MATDYN", "DYNMAT", "Q2R", "PLOTBAND", "trajectory") # "PP"? # "PLOTBAND"?
 
 NOPARALSIM  = ("single-phonon",)    # List of simulation types each of the tasks should run on single core
 

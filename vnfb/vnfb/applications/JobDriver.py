@@ -11,12 +11,15 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
-# See also vnfb/applications/ITaskApp.py
-# XXX Fix me!!!
+# Borrowed from TRGenerator class
+TRAJSCRIPT  = "qe2dos.py"
+VELFILE     = "cp.vel"
+POSFILE     = "cp.pos"
+NCFILE      = "cp.nc"
+DOSFILE     = "vdos.dos"
 
-#import time
-#
 from vnfb.dom.QEJob import QEJob
+from vnfb.qeutils.results.cpresult import CPResult
 from vnfb.qeutils.qeutils import stamp, writeRecordFile, defaultInputName, readRecordFile
 from vnfb.qeutils.qeconst import RUNSCRIPT, TYPE, MDSTEPS, NOPARALLEL
 from vnfb.qeutils.qeutils import packname
@@ -40,6 +43,7 @@ Important Note:
      (see _createRunScript() method) in this case try to use "-inp".
     - Dynmat task IS NOT a parallel program (no mpirun)
     - Both "<" and "-inp" work on foxtrot.danse.us
+    - See also vnfb/applications/ITaskApp.py
 """
 
 class JobDriver(base):
@@ -107,6 +111,7 @@ class JobDriver(base):
         """TEMP SOLUTION: Stores files from configuration input strings """
         self._storeConfigurations()
         self._createRunScript()
+        self._storeExtraFiles()     # Useful for trajectories
 
 
     def _storeConfigurations(self):
@@ -132,8 +137,12 @@ class JobDriver(base):
 
 
     def _createRunScript(self):
-        server  = self.clerk.getServers(id = self._job.serverid)
-        args    = self._commandArgs()
+        server      = self.clerk.getServers(id = self._job.serverid)
+        self._task  = self.clerk.getQETasks(id = self.taskid)
+        if self._task.type  == "trajectory":    # Special case for trajectory task
+            args        = self._trajectoryArgs()
+        else:
+            args        = self._commandArgs()
         
         # QE temp simulation directory is qesimulations/[simid] directory
         # E.g.: /home/dexity/espresso/qesimulations/3YEQ8PNV    -> no trailing slash
@@ -143,17 +152,59 @@ class JobDriver(base):
                     " ".join(args)
         ]
 
-        dds     = self.dds
-        writeRecordFile(dds, self._job, RUNSCRIPT, "\n".join(cmds))    # -> qejobs directory
-        dds.remember(self._job, RUNSCRIPT)  # Important step during which the .__dds_nodelist* files are created
+        writeRecordFile(self.dds, self._job, RUNSCRIPT, "\n".join(cmds))    # -> qejobs directory
+        self.dds.remember(self._job, RUNSCRIPT)  # Important step during which the .__dds_nodelist* files are created
         self._files.append(RUNSCRIPT)
 
         self._updateStatus("prepare-controls")
 
 
+    def _storeExtraFiles(self):
+        "Store some other files. Useful for trajectory task"
+        if self._task.type  != "trajectory":  # Special case for trajectory task
+            return
+
+        self._setResultOutput()
+        self._storeVelFile()
+        self._storePosFile()
+
+
+    def _setResultOutput(self):
+        "Sets results output"
+        trajLO          = self._task.linkorder  # Trajectory linkorder
+        resLO           = int(trajLO) - 1       # Result linkorder
+        assert resLO >= 0   # Should not be negative!
+        result          = CPResult(self, self.id, linkorder = resLO)
+        self._output    = result.output()
+        self._step      = self._output.property('trajectory')['step']
+        self._time      = self._output.property('trajectory')['time']
+        self._vel       = self._output.property('trajectory')['vel']
+        self._pos       = self._output.property('trajectory')['pos']
+
+
+    def _storeVelFile(self):
+        "Stores velocities to cp.vel file"
+        str     = ""
+        for ts in range(len(self._vel)):
+            str += "     %s  %s\n" % ()
+            for atom in self._vel[ts]:
+                str   += " %s %s %s\n" % (atom[0], atom[1], atom[2])
+
+        str = str.rstrip("\n")
+        writeRecordFile(self.dds, self._job, VELFILE, str)    # -> qejobs directory
+        self.dds.remember(self._job, VELFILE)  # Important step during which the .__dds_nodelist* files are created
+        self._files.append(VELFILE)
+
+
+    # XXX: Fix
+    def _storePosFile(self):
+        "Stores positions to cp.pos file"
+        pass
+
+
+
     def _commandArgs(self):
         "Returns list of command arguments (will be later on concatenated)"
-        task        = self.clerk.getQETasks(id = self.taskid)
         settingslist = self.clerk.getQESettings(where = "simulationid='%s'" % self.id)       # not None
         settings    = settingslist[0]
         inputs      = self.clerk.getQEConfigurations(where = "taskid='%s'" % self.taskid)
@@ -165,7 +216,7 @@ class JobDriver(base):
 
         # No "mpirun" for single core simulations
         if input.type in NOPARALLEL:      
-            args    = [ self._qeExec(task.type),
+            args    = [ self._qeExec(self._task.type),
                         "<",
                         inputFile,
                         ">",
@@ -176,14 +227,20 @@ class JobDriver(base):
         # Example: mpirun --mca btl openib,sm,self pw.x -npool 8 -inp  PW > PW.out
         args   = [ settings.executable,
                     settings.params,
-                    self._qeExec(task.type),
-                    "-npool %s" % self._npool(settings, task.type),
+                    self._qeExec(self._task.type),
+                    "-npool %s" % self._npool(settings, self._task.type),
                     "-inp",        # Options: "-inp" or "<"
                     inputFile,
                     ">",
                     outputFile
                     ]
 
+        return args
+
+
+    def _trajectoryArgs(self):
+        "Arguments for trajectory analysis"
+        args    = [TRAJSCRIPT, ]
         return args
 
 
