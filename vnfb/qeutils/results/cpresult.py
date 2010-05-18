@@ -26,8 +26,8 @@ class CPResult(QEResult):
     def _taskFactory(self):
         "Factory for cp task"
         # Uncomment when the CPTask is fixed
-#        config  = "[cp.x]\ncpInput: %s\ncpOutput: %s" % (self._inputFile, self._outputFile)
-#        return CPTask(configString=config)
+        config  = "[cp.x]\ncpInput: %s\ncpOutput: %s" % (self._inputFile, self._outputFile)
+        return CPTask(configString=config)
 
 
 __date__ = "$May 17, 2010 11:47:17 AM$"
