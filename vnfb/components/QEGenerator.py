@@ -41,6 +41,7 @@ class QEGenerator(base):
         fname       = pyre.inventory.str('fname', default='')
         description = pyre.inventory.str('description', default='')
         text        = pyre.inventory.str('text', default='')
+        linkorder   = pyre.inventory.str('linkorder', default='')   # Linkorder, if not set from qeconst.py
 
 
     def default(self, director):
@@ -118,6 +119,7 @@ class QEGenerator(base):
         self.fname          = self.inventory.fname
         self.description    = self.inventory.description
         self.text           = self.inventory.text
+        self.linkorder      = self.inventory.linkorder
 
 
     def _init(self):
