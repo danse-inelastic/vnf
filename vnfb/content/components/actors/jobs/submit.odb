@@ -135,3 +135,26 @@ def actor():
 
 __date__ = "$Nov 4, 2009 9:27:51 AM$"
 
+
+#    def _testVel(self, director):
+#        from vnfb.qeutils.results.cpresult import CPResult
+#        result          = CPResult(director, self.id, linkorder = 1)
+#        self._output    = result.output()
+#        self._step      = self._output.property('trajectory')['step']
+#        self._time      = self._output.property('trajectory')['time']
+#        self._vel       = self._output.property('trajectory')['vel']
+#        self._pos       = self._output.property('trajectory')['pos']
+#
+#        self._storeVelFile()
+#
+#
+#    def _storeVelFile(self):
+#        "Stores velocities to cp.vel file"
+#        str     = ""
+#        for ts in range(len(self._vel)):
+#            str += "     %s  %s\n" % (self._step[ts], self._time[ts])
+#            for atom in self._vel[ts]:
+#                str   += " %s %s %s\n" % (atom[0], atom[1], atom[2])
+#
+#        str = str.rstrip("\n")
+#        print str
