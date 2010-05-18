@@ -68,6 +68,7 @@ class InputInfo:
                                  taskid     = self._taskid,
                                  type       = self._type,
                                  simtype    = self._simType(),
+                                 linkorder  = self._linkorder,
                                  structureid    = self._structureId())
                     )
         return link
