@@ -31,7 +31,7 @@ class Actor(base):
         
         #user input
         energyCutoff = pyre.inventory.float('energyCutoff', default = 40.0)
-        energyCutoff.meta['label'] = 'Top of the energy axis on an S(Q,E) spectrum (meV)'
+        energyCutoff.meta['label'] = 'Top of the energy axis (meV)'
         energyCutoff.meta['tip'] = (
             'Please input an energy maximum'
             )
@@ -41,9 +41,9 @@ class Actor(base):
         
         #user input
         energyResolution = pyre.inventory.float('energyResolution', default = 0.5)
-        energyResolution.meta['label'] = 'Spacing between data points on the S(Q,E) energy axis (meV)'
+        energyResolution.meta['label'] = 'Spacing between data points on the energy axis (meV)'
         energyResolution.meta['tip'] = (
-            'Please input a resolution in energy of the S(Q,E) spectrum'
+            'Please input a resolution in energy'
             )
         energyResolution.meta['rangeError'] = (
             'Please enter a positive number.'
@@ -82,7 +82,7 @@ class Actor(base):
     
 
     def createMdPlanWindow(self, director):
-        doc = lc.document(id='mdPlan', title='Md Planning Tools', dockable=True)#, hidden=True)
+        doc = lc.document(id='mdPlan', title='Md and Analysis Planning Tools', dockable=True)#, hidden=True)
 
         hdoc = self.createMdPlanDocument(director)
         doc.document(id='mdPlan-window-interior').add(hdoc)
@@ -113,7 +113,7 @@ class Actor(base):
         
     def createMdPlanPage(self, director):  
         page = lc.page(title="Md planning tools") 
-        title = 'Md parameters for S(Q,E) resolution' 
+        title = 'Md and analysis parameters for energy axis resolution' 
         page.add(self.createMdPlanForm(director))
         return page
 
