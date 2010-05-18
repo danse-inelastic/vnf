@@ -104,8 +104,10 @@ class EMGenerator(object):
 
 
     def toString(self):
-        return self._input.toString()
+        if self._input:
+            return self._input.toString()
 
+        return "EMGenerator"
 
     
 __date__ = "$May 16, 2010 10:01:22 AM$"
