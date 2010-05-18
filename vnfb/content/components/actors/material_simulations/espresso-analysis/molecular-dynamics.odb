@@ -138,7 +138,7 @@ class Actor(base):
         section    = splitter.section()
         section.add(lc.paragraph(text="Vibrational DOS", Class="qe-section"))
         #dosfile    = self._dosresult.dosFile()   # dos file path
-        dosfile = "/home/dexity/temp/show-dos.txt"
+        dosfile = "/home/dexity/temp/show-dos.txt"  # Temp
 
         if not dosfile:     # "No DOS file!" # if no DOS file, notify user!
             section.add(lc.htmldocument(text="No Vibrational DOS", Class="qe-text-blue"))
