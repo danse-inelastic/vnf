@@ -1,6 +1,10 @@
+.. _atomic-structures:
+
 Atomic structures
 =================
 
+
+.. _atomic-structures-tableview:
 
 Table view
 ----------
