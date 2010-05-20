@@ -94,7 +94,9 @@ def visual(computation, actor, director):
 ##             r.getTableName(), r.id)]
 ##             )
         title = '%s %s: expand for details' % (r.__class__.__name__, r.id)
-        doc1 = doc.document(Class='container', title=title, collapsable=True, collapsed=True)
+        doc1 = doc.document(
+            id = 'resultdoc-%s' % r.id,
+            Class='container', title=title, collapsable=True, collapsed=True)
         doc1.onexpand = [
             #select(element=alertdoc).hide(),
             select(element=doc1).replaceBy(
