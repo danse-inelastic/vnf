@@ -21,9 +21,10 @@ Scripting Examples:
 * `Phonon and md trajectory analysis <http://docs.danse.us/inelastic/vsat/tutorial.html#data-objects>`_
    
 * visualization 
+
   * vimm
-  * matplotlib
-  * mayavi2
+  * plotlib (wrapper to matplotlib and mayavi2)
+  * histogram viewer
 
 .. put in many ase examples as potential use cases  
 

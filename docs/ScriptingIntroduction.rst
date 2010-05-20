@@ -8,22 +8,26 @@ VNF is based on a number of underlying components which are all easily accessibl
 Download
 ==========
 
-Currently the best way to script is directly from the svn repositories.  All relevant repositories, examples, and cookbook scripts (see below) maybe downloaded by::
+Currently the best way to script is directly from the svn repositories.  A single egg will be available in the near future. 
 
-	easy_install -U vnf
+.. All relevant repositories, examples, and cookbook scripts (see below) maybe downloaded by::
 
-Example workflows
-========================
+..	easy_install -U vnf
 
-A few example workflows are illustrated in the :ref:`Scripting Examples <scripting>` to demonstrate the power of scripting within the VNF framework.
+Quickstart
+=============
+
+Here is an example of how to use VNF libraries to perform a temperature series of DOS calculations for NaCl:
 
 
-User Cookbook
-========================
 
-The scripting interface also allows users to develop "recipes" for accomplishing certain tasks and store them as scripts.  The following are links to some of these recipes:
 
-(under construction)
+..	User Cookbook
+	===================
+	
+	The scripting interface also allows users to develop "recipes" for accomplishing certain tasks and store them as scripts.  The following are links to some of these recipes:
+	
+	(under construction)
    
    
 
