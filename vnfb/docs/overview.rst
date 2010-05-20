@@ -10,7 +10,7 @@ two main parts: 1) instruments, which uses the subpackage MCViNE, and
 2) samples, which uses the subpackages for scattering kernels  based
 on modern methods from the theory of materials structure and dynamics.
 
-.. image:: VNET_fig_a.jpg
+.. image:: Vimages/common/NET_fig_a.jpg
 	:width: 400
 
 Many of these capabilities within vnf have been available for a number
@@ -42,7 +42,7 @@ for the scattering function, S(Q,E), which can describe experimental
 results such as the S(Q,E) in the figure below, and could include
 multiphonon scattering if so desired.
 
-.. image:: VNET_figure_2.jpg
+.. image:: images/common/VNET_figure_2.jpg
 	:width: 330
 
 
@@ -73,7 +73,7 @@ underlying theory is termed the "scattering kernel." The kernels can
 be as simple as quick functions to generate an arbitrary S(Q,E) -- a
 constant background may be useful, for example.
 
-.. image:: FeNi_S(QE)_labels_3.jpg
+.. image:: images/common/FeNi_S(QE)_labels_3.jpg
 	:width: 352
 
 More sophisticated kernels implement physical models of scattering.

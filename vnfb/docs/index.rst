@@ -83,23 +83,6 @@ for the scattering function, S(Q,E), which can describe experimental
 results such as the S(Q,E) in the figure below, and could include
 multiphonon scattering if so desired.
 
-MCViNE (Monte Carlo Virtual Neutron Experiment)
---------------------------------------------------------------------------------
-
-The simulations are based on Monte Carlo simulations of instruments,
-which can be configured by the user at runtime. Instrument components
-(some of them come from `python bindings of McStas <http://danse.us/trac/MCViNE>`_, for example) are
-assembled together to form an virtual instrument, and a simulation
-engine passes groups of neutrons through them. Datasets from the
-primary flight path (neutrons on sample) can be recorded, and used
-later for an experiment on a particular instrument with a specific
-incident energy and energy resolution. These pre-recorded neutron
-fluxes on sample can then be used for interaction with the sample to
-produce a scattered beam of neutrons to the detectors. Interface to
-the sample is through the scattering function, S(Q,E), which contains
-the scattering law as a function of momentum transfer, Q, and energy
-transfer, E.
-
 Dynamics Engines, Analysis, and Scattering Kernel Generation
 ------------------------------------------------------------------------
 
@@ -128,7 +111,22 @@ are forward computational chains. In the middle, however, are
 simulations such as molecular dynamics simulations, which have some
 ab-initio characteristics, but some parametric behavior. 
 
+MCViNE (Monte Carlo Virtual Neutron Experiment)
+--------------------------------------------------------------------------------
 
+The simulations are based on Monte Carlo simulations of instruments,
+which can be configured by the user at runtime. Instrument components
+(some of them come from `python bindings of McStas <http://danse.us/trac/MCViNE>`_, for example) are
+assembled together to form an virtual instrument, and a simulation
+engine passes groups of neutrons through them. Datasets from the
+primary flight path (neutrons on sample) can be recorded, and used
+later for an experiment on a particular instrument with a specific
+incident energy and energy resolution. These pre-recorded neutron
+fluxes on sample can then be used for interaction with the sample to
+produce a scattered beam of neutrons to the detectors. Interface to
+the sample is through the scattering function, S(Q,E), which contains
+the scattering law as a function of momentum transfer, Q, and energy
+transfer, E.
 
 Indices and tables
 ==================
