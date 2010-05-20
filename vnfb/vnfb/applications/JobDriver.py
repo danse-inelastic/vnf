@@ -253,7 +253,7 @@ class JobDriver(base):
 
     def _qeExec(self, type):
         if type in TYPE.keys():
-            return TYPE[task.type]
+            return TYPE[self._task.type]
 
         if type in MDSTEPS.keys():  # Molecular dynamics
             return TYPE["CP"]

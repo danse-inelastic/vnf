@@ -180,7 +180,7 @@ def recordFileExists(dds, record, fname):
 def defaultInputName(type):
     t   = type.lower()
     if t in INPUT.keys():
-        return INPUT[type.lower()]
+        return INPUT[t]
 
     return INPUT_DEFAULT
 
