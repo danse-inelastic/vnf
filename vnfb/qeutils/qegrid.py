@@ -34,7 +34,7 @@ class QEGrid:
         Parameters:
             columns - tuple of columns in the row
             rowclass - class applied to row
-            colclass - tupple of classes applied to the column
+            colclass - tuple of classes applied to the column
         """
 
         (row, drow)  = self._addRow()   #**kwds
@@ -143,7 +143,7 @@ class QEGrid:
 
 
     def _getStyle(self, col, colclass):
-        """Returns CSS class name if column number is less than the size of the class tupple
+        """Returns CSS class name if column number is less than the size of the class tuple
         or None otherwise"""
 
         if colclass is None:

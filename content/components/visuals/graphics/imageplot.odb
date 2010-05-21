@@ -8,7 +8,6 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
-
 '''
 This implementation needs improvements.
 It assumes that there is a symbolic link in html/ named "tmp" pointing
@@ -16,60 +15,55 @@ to the directory content/data/tmp
 '''
 
 import sys, os, tempfile
+import luban.content as lc
+from luban.content import load, select
+from vnfb.qeutils.qegrid import QEGrid
 
-
-# path of tmp directory in the http url
-http_tmproot = 'tmp'
-
-# path to the tmp directory in the file system
-tmproot = os.path.join('..', 'content', 'data', 'tmp')
-
-
-def visual(plotObj, director):
+def visual(imageDoc, director):
     """
-    plotObj: either an ncPlottable instance or a histogram data object
     """
     # matplotlib needs home to be writable
     os.environ['HOME'] = '/tmp'
-
-    # find the temporary directory to write the png file
-    tmpdirectory = tempfile.mkdtemp(dir=tmproot)
-    if not os.path.exists(tmpdirectory): os.makedirs(tmpdirectory)
-
-    subdir = os.path.split(tmpdirectory)[1]
-
-    # png filename
-    filename = 'plot.png'
-    filepath = os.path.join(tmpdirectory, filename)
-
     #
-    saveout = sys.stdout
-    sys.stdout = open(os.devnull, 'w')
-    plotObj.plotType(imageX=True) #nc plottable
-    plotObj.savefig(filepath)
-#    try:
-#        plotObj.plotType(imageX=True) #nc plottable
-#        plotObj.savefig(filepath)
-#    except Exception, err:
-#        #import histogram.hdf as hh
-#        import journal
-#        debug = journal.debug('imageplot')
-#        debug.log(err)
-#        from histogram import plot #histogram
-#        plot(plotObj, output=filepath)
-    sys.stdout = saveout
+    doc      = lc.document(title = "S(Q,E) Viewer")
+    splitter = doc.splitter(orientation="horizontal")
+    # pass initial doc
+    #imageDoc = generateImageDoc()
 
-    # the url for the image
-    pngurl = os.path.join(http_tmproot, subdir, filename)
-
-    #
-    import luban.content as lc
-    doc = lc.htmldocument()
-    doc.text = [
-        '<img src="%s" />' % pngurl
-        ]
+    imageSection = splitter.section()
+    imageSection.add(imageDoc)
+    controlsSection = splitter.section()
+     
+    controlsDoc      = lc.document()
+    controlsDoc.text = ['Please input upper and lower bounds for the vertical axis.']
+    form = controlsDoc.form()
+    form.text(label='top', name='topZAxis')
+    form.text(label='bottom', name='bottomZAxis')
+    
+#    form = lc.form()
+#    buttonTable = QEGrid(lc.grid(Class="qe-table"))
+#    
+#    buttonTable.addRow((form.text(label='top', name='topZAxis'), 
+#                        form.text(label='bottom', name='bottomZAxis')))
+#    form.add(buttonTable.grid())
+    
+    submit = form.submitbutton(label='change', tip='a tip')
+    # action when form is submitted
+    # Note: The routine "process" is already defined in
+    # base class FormProcessorInterface,
+    # here we just need to override "_postProcessing".
+    form.onsubmit = select(element=form).submit(
+            actor = 'orm/sqe', routine = 'process')#,
+            #zBottom = self.inventory.zBottom, 
+            #zTop = self.inventory.zTop)
+    #form.onsubmit = select(element=form).submit(actor = self.name, routine = 'process')
+#    changeButton = luban.content.button(
+#            label = 'change',
+#            onclick = select(id='imageDoc').replaceContent(self.generateImage())
+#            )
+#    controlsDoc.add
+    controlsSection.add(controlsDoc)
     return doc
-
 
 
 # version
