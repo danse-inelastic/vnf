@@ -18,8 +18,8 @@
 <inventory>
 
   <component name='clerk'>
-     <property name='db'>postgres:///vnfa2b</property>
-     <property name='echo'>on</property>
+     <property name='db'>postgres:///vnf-dev</property>
+     <property name='echo'>off</property>
   </component>
 
 </inventory>

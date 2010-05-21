@@ -9,26 +9,29 @@
 #
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
-
-
-
 #
+import sys, os, tempfile
 import luban.content as lc
 from luban.content import select, load, alert
-
-
-#
-from vnfb.dom.material_simulations.SQE import SQE
-
 from luban.components.Actor import Actor
+from vnfb.dom.material_simulations.SQE import SQE
 import luban.orm
 base = luban.orm.object2actor(SQE)
+
+# path of tmp directory in the http url
+http_tmproot = 'tmp'
+
+# path to the tmp directory in the file system
+tmproot = os.path.join('..', 'content', 'data', 'tmp')
+
 class Actor(base):
 
     class Inventory(base.Inventory):
 
         import pyre.inventory
         id = pyre.inventory.str(name='id')
+        zBottom = pyre.inventory.str(name='zBottom')
+        zTop = pyre.inventory.str(name='zTop')
 
     def createGraphicalView(self, director):
         sqe = self._load(director)
@@ -37,26 +40,59 @@ class Actor(base):
         try:
             from plotlib.NcPlottable import NcPlottable
             plotableObj = NcPlottable(sqe=sqe)
-        except:
+        except Exception, err:
             qaxis = 'Q', sqe.q
             eaxis = 'E', sqe.e
             I = sqe.sqe
             from histogram import histogram
             h = histogram('S(Q,E)', [qaxis, eaxis], data=I)
         title = 'S(Q, E)' 
-        doc = lc.document(Class='container', title=title, 
-                          collapsable=True)
+        doc = lc.document(Class='container', title=title, collapsable=True)
         p = director.retrieveVisual(
             'graphics/imageplot',
-            plotObj=plotableObj,
+            imageDoc = self.generateImageDoc(plotableObj),
             director=director,)
         doc.add(p)
         return doc
 
+    def _postProcessing(self, director):
+        select(id='imageDoc').replaceContent(
+         self.generateImageDoc(self.inventory.zBottom, self.inventory.zTop))
+
+    def generateImageDoc(self, plotObj, bottom=None, top=None):
+        # find the temporary directory to write the png file
+        tmpdirectory = tempfile.mkdtemp(dir=tmproot)
+        if not os.path.exists(tmpdirectory): os.makedirs(tmpdirectory)
+        subdir = os.path.split(tmpdirectory)[1]
+        # png filename
+        filename = 'plot.png'
+        filepath = os.path.join(tmpdirectory, filename)
+        #
+        saveout = sys.stdout
+        sys.stdout = open(os.devnull, 'w')
+    #    plotObj.plotType(imageX=True) #nc plottable
+    #    plotObj.savefig(filepath)
+        try:
+            if bottom and top:
+                plotObj.clip = [bottom, top]
+            plotObj.plotType(imageX=True) #nc plottable
+            plotObj.savefig(filepath)
+        except Exception, err:
+            #import histogram.hdf as hh
+            import journal
+            debug = journal.debug('imageplot')
+            debug.log(err)
+            from histogram import plot #histogram
+            plot(plotObj, output=filepath)
+        sys.stdout = saveout
+        # the url for the image
+        pngurl = os.path.join(http_tmproot, subdir, filename)
+        imageDoc = lc.htmldocument(id='imageDoc')
+        imageDoc.text = ['<img src="%s" />' % pngurl]
+        return imageDoc
+
     def _domaccess(self, director):
         return director.retrieveDOMAccessor('sqe')
-
-
 
 def actor():
     return Actor('orm/sqe')
