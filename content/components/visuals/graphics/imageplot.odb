@@ -19,7 +19,7 @@ import luban.content as lc
 from luban.content import load, select
 from vnfb.qeutils.qegrid import QEGrid
 
-def visual(imageDoc, director):
+def visual(imageDoc, sqeId, director):
     """
     """
     # matplotlib needs home to be writable
@@ -29,39 +29,42 @@ def visual(imageDoc, director):
     splitter = doc.splitter(orientation="horizontal")
     # pass initial doc
     #imageDoc = generateImageDoc()
-
     imageSection = splitter.section()
     imageSection.add(imageDoc)
     controlsSection = splitter.section()
-     
     controlsDoc      = lc.document()
     controlsDoc.text = ['Please input upper and lower bounds for the vertical axis.']
     form = controlsDoc.form()
-    form.text(label='top', name='topZAxis')
-    form.text(label='bottom', name='bottomZAxis')
     
+    #property = 
+    form.text(label='top of z axis', 
+              name='zTop',
+              value = 5)
+    form.text(label='bottom of z axis', 
+              name='zBottom',
+              value = 0)
+
 #    form = lc.form()
 #    buttonTable = QEGrid(lc.grid(Class="qe-table"))
 #    
 #    buttonTable.addRow((form.text(label='top', name='topZAxis'), 
 #                        form.text(label='bottom', name='bottomZAxis')))
 #    form.add(buttonTable.grid())
-    
     submit = form.submitbutton(label='change', tip='a tip')
     # action when form is submitted
     # Note: The routine "process" is already defined in
     # base class FormProcessorInterface,
     # here we just need to override "_postProcessing".
     form.onsubmit = select(element=form).submit(
-            actor = 'orm/sqe', routine = 'process')#,
-            #zBottom = self.inventory.zBottom, 
-            #zTop = self.inventory.zTop)
+            actor = 'orm/sqe', routine = 'replaceWithImageDoc',
+            id= sqeId)
     #form.onsubmit = select(element=form).submit(actor = self.name, routine = 'process')
 #    changeButton = luban.content.button(
 #            label = 'change',
 #            onclick = select(id='imageDoc').replaceContent(self.generateImage())
 #            )
 #    controlsDoc.add
+
     controlsSection.add(controlsDoc)
     return doc
 
