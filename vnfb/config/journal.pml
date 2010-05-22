@@ -33,6 +33,8 @@
       <property name='analyses-table'>on</property>
       <property name='create-structure-form'>on</property>
       <property name='sqe-accessor'>on</property>
+      <property name='orm/sqe'>on</property>
+      <property name='sqe'>on</property>
     </component>
   </component>
 </inventory>
