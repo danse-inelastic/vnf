@@ -22,7 +22,7 @@ typenames = [
 deps_typenames = [
     'material_simulations.PhononDOS.PhononDOS',
     'material_simulations.SQE.SQE',
-    'material_simulations.EISF.EISF',
+    'material_simulations.Eisf.Eisf',
     ]
 
 
