@@ -14,12 +14,15 @@
 typenames = [
     'analysis.MdDosCalc.MdDosCalcBase',
     'analysis.CsfCalc.CsfCalcBase',
+    'analysis.IsfCalc.IsfCalcBase',
+    'analysis.EisfCalc.EisfCalcBase',
     ]
 
 # refactor this!
 deps_typenames = [
     'material_simulations.PhononDOS.PhononDOS',
     'material_simulations.SQE.SQE',
+    'material_simulations.EISF.EISF',
     ]
 
 
