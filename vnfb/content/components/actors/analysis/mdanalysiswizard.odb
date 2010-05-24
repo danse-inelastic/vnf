@@ -12,17 +12,12 @@
 
 from luban.content import load, select
 import luban.content as lc
-
 from luban.content.Document import Document
 from luban.content.Link import Link
-
 from luban.components.Actor import Actor as base
-
 import journal
-
 #analysisPaths = {'mddoscalc':'vsat.trajectory.MdDosCalc',
 #                   'csfcalc':'vsat.trajectory.CsfCalc'}
-
 class Actor(base):
 
     class Inventory(base.Inventory):
