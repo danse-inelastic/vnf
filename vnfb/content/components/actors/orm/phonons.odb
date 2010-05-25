@@ -114,7 +114,8 @@ class Actor(base):
                 'Plotting for phonons#%s failed: data missing or in wrong format' % (
                     record.id,),
                 ]
-            return p
+            h = lc.htmldocument()
+            return p,h
 
 
         try:
@@ -139,7 +140,7 @@ class Actor(base):
         #write data to file
         parentdir = os.path.join('..', 'content', 'data', 'tmp')
         tmpdirectory = tempfile.mkdtemp(dir=parentdir)
-        filename = 'energies.txt'
+        filename = 'dispersions.txt'
         f = file(os.path.join(tmpdirectory, filename),'w')
         for xval,yvals in zip(x, np.array(ys).transpose()):
             line = str(xval)+' '
