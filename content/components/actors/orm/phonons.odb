@@ -147,8 +147,10 @@ class Actor(base):
             f.write(line+'\n')
         f.close()
         path = os.path.join(director.weaver.htmlbase, 'tmp', os.path.split(tmpdirectory)[1], filename)
-        downloadLink = lc.link(path)
-        return p, downloadLink
+        #downloadLink = lc.link(path)
+        h = lc.htmlDocument()
+        h.text = ['<a href="'+path+'">Download dispersions</a>']
+        return p, h
         
 
     def _initComputationOrm(self, director):
