@@ -95,13 +95,14 @@ class Actor(base):
             doc.add(origin_link)
         
         # plot
-        p = self._createPlot1(obj, director)
+        p, link = self._createPlotAndDataLink(obj, director)
         doc.add(p)
+        doc.add(link)
         
         return doc
 
 
-    def _createPlot1(self, disp, director):
+    def _createPlotAndDataLink(self, disp, director):
         domaccess = self._domaccess(director)
         record = domaccess.orm(disp)
         try:
@@ -133,8 +134,21 @@ class Actor(base):
         for i,y in enumerate(ys):
             p.curve(x=list(x), y=list(y), label=str(i))
             continue
-
-        return p
+        
+        #write data to file
+        parentdir = os.path.join('..', 'content', 'data', 'tmp')
+        tmpdirectory = tempfile.mkdtemp(dir=parentdir)
+        filename = 'energies.txt'
+        f = file(os.path.join(tmpdirectory, filename),'w')
+        for xval,yvals in zip(x,ys.transpose()):
+            line = str(xval)+' '
+            for yval in yvals:
+                line+=str(yval)+' '
+            f.write(line+'\n')
+        f.close()
+        path = os.path.join(director.weaver.htmlbase, 'tmp', os.path.split(tmpdirectory)[1], filename)
+        downloadLink = lc.link(path)
+        return p, downloadLink
         
 
     def _initComputationOrm(self, director):
