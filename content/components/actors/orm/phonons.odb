@@ -17,6 +17,7 @@
 import luban.content as lc
 from luban.content import select, load, alert
 import os, tempfile
+import numpy as np
 
 #
 from vnfb.dom.material_simulations.Phonons import Phonons
@@ -140,7 +141,7 @@ class Actor(base):
         tmpdirectory = tempfile.mkdtemp(dir=parentdir)
         filename = 'energies.txt'
         f = file(os.path.join(tmpdirectory, filename),'w')
-        for xval,yvals in zip(x,ys.transpose()):
+        for xval,yvals in zip(x, np.array(ys).transpose()):
             line = str(xval)+' '
             for yval in yvals:
                 line+=str(yval)+' '
