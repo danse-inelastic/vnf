@@ -149,7 +149,7 @@ class Actor(base):
         f.close()
         path = os.path.join(director.weaver.htmlbase, 'tmp', os.path.split(tmpdirectory)[1], filename)
         #downloadLink = lc.link(path)
-        h = lc.htmlDocument()
+        h = lc.htmldocument()
         h.text = ['<a href="'+path+'">Download dispersions</a>']
         return p, h
         
