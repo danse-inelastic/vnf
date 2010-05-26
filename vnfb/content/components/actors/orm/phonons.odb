@@ -69,16 +69,13 @@ class Actor(base):
         if not obj: return
         orm = domaccess.orm
         db = orm.db
-        
         record = orm(obj)
-
         # the document to build
         title='phonons %s' % record.id
         short_description = record.short_description
         if short_description:
             title += ': %s' % short_description
         doc = lc.document(title=title)
-
         # link to the computation
         try:
             origin = record.getOrigin(db)
@@ -94,14 +91,11 @@ class Actor(base):
                                type = origin.getTableName(), id = origin.id)
                 )
             doc.add(origin_link)
-        
         # plot
         p, link = self._createPlotAndDataLink(obj, director)
         doc.add(p)
         doc.add(link)
-        
         return doc
-
 
     def _createPlotAndDataLink(self, disp, director):
         domaccess = self._domaccess(director)
@@ -116,17 +110,12 @@ class Actor(base):
                 ]
             h = lc.htmldocument()
             return p,h
-
-
         try:
             disp = domaccess.getDataForPhonons(disp)
         except NotImplementedError:
             return lc.paragraph(text=['Parser for this data format is not yet implemented'])
-
         if not disp: return lc.paragraph(text=['Data missing'])
-        
         x, ys, xticks = disp.getDefaultDispersionPlot()
-        
         # plot
         caption = (
             'Horizontal axis: high-symmetry points in the reciprocal space. '
@@ -135,8 +124,6 @@ class Actor(base):
         p = lc.plot2d(xticks=xticks, caption=caption)
         for i,y in enumerate(ys):
             p.curve(x=list(x), y=list(y), label=str(i))
-            continue
-        
         #write data to file
         parentdir = os.path.join('..', 'content', 'data', 'tmp')
         tmpdirectory = tempfile.mkdtemp(dir=parentdir)
