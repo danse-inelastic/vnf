@@ -43,7 +43,7 @@ class Retriever(base):
 
 
 def retriever():
-    return Retriever('csfcalc')
+    return Retriever('isfcalc')
 
 
 # version
