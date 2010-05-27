@@ -130,7 +130,7 @@ class Actor(base):
         filename = 'dispersions.plot'
         f = file(os.path.join(tmpdirectory, filename),'w')
         for point,label in xticks:
-            f.write('# '+str(point)+' is '+label)
+            f.write('# '+str(point)+' is '+label+'\n')
         for xval,yvals in zip(x, np.array(ys).transpose()):
             line = str(xval)+' '
             for yval in yvals:
