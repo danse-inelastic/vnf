@@ -127,8 +127,10 @@ class Actor(base):
         #write data to file
         parentdir = os.path.join('..', 'content', 'data', 'tmp')
         tmpdirectory = tempfile.mkdtemp(dir=parentdir)
-        filename = 'dispersions.txt'
+        filename = 'dispersions.plot'
         f = file(os.path.join(tmpdirectory, filename),'w')
+        for point,label in xticks:
+            f.write('# '+str(point)+' is '+label)
         for xval,yvals in zip(x, np.array(ys).transpose()):
             line = str(xval)+' '
             for yval in yvals:
