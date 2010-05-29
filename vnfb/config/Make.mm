@@ -1,3 +1,4 @@
+# -*- Makefile -*-
 
 PROJECT = vnfb
 PACKAGE = config
@@ -5,7 +6,7 @@ PACKAGE = config
 #--------------------------------------------------------------------------
 #
 
-all: export-data-files init-data-files
+all: export-data-files init-data-files init-guid-dat
 	BLD_ACTION="all" $(MM) recurse
 
 tidy::
@@ -72,3 +73,15 @@ init-data-files:
 	        $(CP_F) $$x $(EXPORT_DATA_PATH)/ ; \
             } fi; \
         } done
+
+
+# init guid.dat
+GUID_DAT = guid.dat
+# HTTP_SERVER_USER = www-data
+# HTTP_SERVER_GROUP = www-data
+init-guid-dat:
+	if [ ! -e $(EXPORT_DATA_PATH)/$(GUID_DAT) ]; then { \
+	  $(CP_F) $(GUID_DAT) $(EXPORT_DATA_PATH)/ ; \
+	  sudo chown $(HTTP_SERVER_USER) $(EXPORT_DATA_PATH)/$(GUID_DAT) ; \
+	  sudo chgrp $(HTTP_SERVER_GROUP) $(EXPORT_DATA_PATH)/$(GUID_DAT) ; \
+	} fi;
