@@ -16,6 +16,8 @@ typenames = [
     'analysis.CsfCalc.CsfCalcBase',
     'analysis.IsfCalc.IsfCalcBase',
     'analysis.EisfCalc.EisfCalcBase',
+    'analysis.VacfCalc.VacfCalcBase',
+    'analysis.SqCalc.SqCalcBase',
     ]
 
 # refactor this!
