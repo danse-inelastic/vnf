@@ -25,6 +25,8 @@ deps_typenames = [
     'material_simulations.PhononDOS.PhononDOS',
     'material_simulations.SQE.SQE',
     'material_simulations.Eisf.Eisf',
+    'material_simulations.Vacf.Vacf',
+    'material_simulations.Sq.Sq',
     ]
 
 
