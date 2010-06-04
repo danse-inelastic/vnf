@@ -10,19 +10,19 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
-from vsat.Eisf import Eisf
+from vsat.Sq import Sq
 from vnfb.dom.AtomicStructure import StructureTable
 
 # db table
 from ComputationResult import ComputationResult
 from _ import o2t
-EisfTable = o2t(Eisf, {'subclassFrom': ComputationResult})
+SqTable = o2t(Sq, {'subclassFrom': ComputationResult})
 import dsaw.db
-EisfTable.addColumn(
+SqTable.addColumn(
     dsaw.db.reference(name='matter', table=StructureTable)#, backref='')
     )
 
-#EisfTable.datafiles = [
+#SqTable.datafiles = [
 #    'data.plot'
 #    ]
 
