@@ -29,11 +29,12 @@ class Announcement(Component):
         for recipient, subs in self.recipients.iteritems():
             self._debug.log("sending email to %s" % recipient)
 
-            # create the evelop
+            # create the envelop
             envelop = announcer.createEnvelop(self.sender, recipient, self.subject)
             
             # attach the message body
-            text = "\n".join([ line % subs for line in self.text ])
+            #text = "\n".join([ line % subs for line in self.text ])
+            text = "\n".join(self.text)
             if hasattr(self, 'html'):
                 html = "\n".join([ line % subs for line in self.html ])
             else:
