@@ -42,6 +42,8 @@ EXPORT_PYTHON_MODULES = \
 	EisfCalc.py \
 	IsfCalc.py \
 	MdDosCalc.py \
+	SqCalc.py \
+	VacfCalc.py \
 
 #include doxygen/default.def
 
