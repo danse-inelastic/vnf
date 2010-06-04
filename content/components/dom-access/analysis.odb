@@ -42,15 +42,20 @@ class Accessor(base):
     def getAnalysisRecord(self, id):
         orm = self.director.clerk.orm
         db = orm.db
+        result = None
         for table in self.analysisTables():
             try:
                 result = db.query(table).filter_by(id=id).one()
-            except:
+            except Exception as e:
+                import traceback
+                self._debug.log(traceback.format_exc())
+                self._debug.log(e)
+                #print e
                 pass
             if result:
-                analysis = result
                 break #assume only one record exists w/id
-        return analysis
+        if result==None: raise Exception("No analysis result found for id "+id)
+        return result
     
     def getAnalysis(self, id):
         orm = self.director.clerk.orm
