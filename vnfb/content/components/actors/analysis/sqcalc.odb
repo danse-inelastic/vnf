@@ -55,7 +55,7 @@ class Actor(base):
         settingsdoc = doc.document(title = 'Settings', collapsable = True)
         settingsdoc.oncreate = select(element=settingsdoc).append(
             load(
-              actor='orm/mddoscalc', routine='displayProperties',
+              actor='orm/sqcalc', routine='displayProperties',
               id = c.id, editlink=False,
             ))
         return doc
@@ -103,11 +103,11 @@ class Actor(base):
         return [
             ('Analysis',
              lc.load(actor='analysis')),
-            ('Trajectory Dos Calculations',
-             lc.load(actor='analysis', filter_expr="type=='mddoscalc'")),
+            ('Sq Calculations',
+             lc.load(actor='analysis', filter_expr="type=='sqcalc'")),
             ('%s %s' % (computation.__class__.__name__, label),
              lc.select(id='main-display-area').replaceContent(
-            lc.load(actor='analysis/mddoscalc',
+            lc.load(actor='analysis/sqcalc',
                     routine = 'createView', id=id)
             )),
             ]
@@ -129,7 +129,7 @@ class Actor(base):
         return director.retrieveDOMAccessor('analysis')
 
 
-    def __init__(self, name='analysis/mddoscalc'):
+    def __init__(self, name='analysis/sqcalc'):
         super(Actor, self).__init__(name)
         return
 
