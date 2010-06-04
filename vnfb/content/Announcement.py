@@ -33,8 +33,11 @@ class Announcement(Component):
             envelop = announcer.createEnvelop(self.sender, recipient, self.subject)
             
             # attach the message body
-            #text = "\n".join([ line % subs for line in self.text ])
-            text = "\n".join(self.text)
+            try:
+                text = "\n".join([ line % subs for line in self.text ])
+            except:
+                text = self.text + ['subs: ' + str(subs)]
+                text = '\n'.join(text)
             if hasattr(self, 'html'):
                 html = "\n".join([ line % subs for line in self.html ])
             else:
