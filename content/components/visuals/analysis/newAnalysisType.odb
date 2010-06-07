@@ -82,7 +82,7 @@ def createMdScatteringAnalysis():
                     "Elastic Incoherent Structure Factor from md")
                     )
     routines.append(
-                    (lc.link(label="F_k", onclick=select(id='main-display-area'
+                    (lc.link(label="S(Q)", onclick=select(id='main-display-area'
                     ).replaceContent(load(actor='analysis/mdanalysiswizard', routine='selectTrajectory',
                     analysisType='SqCalc'))),
                     "Structure Factor from md")
