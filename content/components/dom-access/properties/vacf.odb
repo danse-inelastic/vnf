@@ -28,14 +28,14 @@ class Accessor(base):
     orm = property(_getOrm)
 
 
-    def getVacf(self, id):
+    def getProperty(self, id):
         orm = self.orm
         return orm.load(Vacf, id)
 
 
-    def getDataForVacf(self, id):
-        vacf = self.getSq(id)
-        record = self.orm(vacf)
+    def getDataForProperty(self, id):
+        property = self.getProperty(id)
+        record = self.orm(property)
 
         director = self.director
 
@@ -56,16 +56,16 @@ class Accessor(base):
         import os
         # check path
         if os.path.exists(os.path.join(path, 'data.plot')): 
-            vacf.read(os.path.join(path, 'data.plot'))
+            property.read(os.path.join(path, 'data.plot'))
 #        elif os.path.exists(os.path.join(path, 'data.txt')): 
 #            dos.read(os.path.join(path, 'data.txt'))
         else: return
-        return vacf
+        return property
 
 
     def getOrigin(self, id=None, dos=None):
         if sq is None:
-            sq = self.getVacf(id)
+            sq = self.getProperty(id)
         orm = self.orm
         r = orm(sq)
         origin = r.getOrigin(orm.db)
