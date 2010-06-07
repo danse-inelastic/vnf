@@ -20,7 +20,7 @@ from vsat.trajectory.EisfCalc import EisfCalc as EisfCalcBase
 EisfCalc = o2t(EisfCalcBase, {'subclassFrom': Computation})
 EisfCalc.job_builder = 'analysiscalc'
 EisfCalc.actor = 'analysis/eisfcalc'
-EisfCalc.result_retriever = 'analysis/eisfcalc'
+EisfCalc.result_retriever = 'eisfcalc'
 
 
 # version
