@@ -30,6 +30,13 @@ class Actor(base):
         creator = pyre.inventory.str('creator', default='')
         description = pyre.inventory.str('description', default='')
     
+    def default(self, director):
+        wizard = Document(id='analysiswizard', title='Analysis')
+        #doc = self.selectAnalysisType(director)
+        doc = director.retrieveVisual('analysis/newAnalysisType', director = director)
+        wizard.add(doc)
+        return select(id='main-display-area').replaceContent(wizard)
+    
     def selectTrajectory(self, director):
         doc = lc.document(id='trajectory-selector-doc')
         doc.paragraph(
