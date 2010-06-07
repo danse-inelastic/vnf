@@ -12,10 +12,10 @@
 #
 import luban.content as lc
 from luban.content import select, load, alert
-from vnfb.dom.material_simulations.PhononDOS import PhononDOS
+from vnfb.dom.material_simulations.Sq import Sq
 from luban.components.Actor import Actor
 import luban.orm
-base = luban.orm.object2actor(PhononDOS)
+base = luban.orm.object2actor(Sq)
 class Actor(base):
 
     class Inventory(base.Inventory):
@@ -82,18 +82,18 @@ class Actor(base):
         
         domaccess = self._domaccess(director)
         
-        doslist = map(domaccess.getDataForDOS, self.inventory.ids)
-        doslist = filter(bool, doslist)
-        if not doslist:
+        propertylist = map(domaccess.getDataForProperty, self.inventory.ids)
+        propertylist = filter(bool, propertylist)
+        if not propertylist:
             return lc.paragraph(text=['Data missing'])
 
         #
         p = lc.plot2d(); left.add(p)
         g = lc.grid(); right.add(g)
-        for dos in doslist:
-            origin = domaccess.getOrigin(dos=dos)
+        for property in propertylist:
+            origin = domaccess.getOrigin(property=property)
             label='%s %s' % (origin.getTableName(), origin.id)
-            p.curve(x=list(dos.e), y=list(dos.i), label=label)
+            p.curve(x=list(property.x), y=list(property.y), label=label)
 
             row = g.row()
             # left cell shows label
@@ -113,11 +113,11 @@ class Actor(base):
     def _createPlot1(self, director):
         domaccess = self._domaccess(director)
 
-        dos = domaccess.getDataForDOS(id=self.inventory.id)
+        property = domaccess.getDataForProperty(id=self.inventory.id)
         
         # plot
         p = lc.plot2d()
-        p.curve(x=list(dos.e), y=list(dos.i), label='Density of states')
+        p.curve(x=list(property.x), y=list(property.y), label='S(Q)')
 
         return p
         
@@ -129,11 +129,11 @@ class Actor(base):
 
     def _domaccess(self, director):
         self._initComputationOrm(director)
-        return director.retrieveDOMAccessor('material_simulations/phonondos')
+        return director.retrieveDOMAccessor('properties/sq')
             
 
 def actor():
-    return Actor('orm/phonondoses')
+    return Actor('orm/sq')
 
 
 # version
