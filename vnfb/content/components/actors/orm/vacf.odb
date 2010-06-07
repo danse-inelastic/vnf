@@ -11,10 +11,10 @@
 #
 import luban.content as lc
 from luban.content import select, load, alert
-from vnfb.dom.material_simulations.Sq import Sq
+from vnfb.dom.material_simulations.Vacf import Vacf
 from luban.components.Actor import Actor
 import luban.orm
-base = luban.orm.object2actor(Sq)
+base = luban.orm.object2actor(Vacf)
 class Actor(base):
 
     class Inventory(base.Inventory):
@@ -33,7 +33,7 @@ class Actor(base):
         domaccess = self._domaccess(director)
         
         # the document to build
-        doc = lc.document(title='Structure Factor S(Q)')
+        doc = lc.document(title='Velocity Autocorrelation Function (VACF)')
 
         # plot
         p = self._createPlotM(director)
@@ -51,7 +51,7 @@ class Actor(base):
         record = orm(obj)
 
         # the document to build
-        doc = lc.document(title='Structure Factor S(Q) %s' % record.id)
+        doc = lc.document(title='Velocity Autocorrelation Function (VACF) %s' % record.id)
 
         # link to the computation
         origin = record.getOrigin(db)
@@ -116,7 +116,7 @@ class Actor(base):
         
         # plot
         p = lc.plot2d()
-        p.curve(x=list(property.x), y=list(property.y), label='S(Q)')
+        p.curve(x=list(property.x), y=list(property.y), label='VACF')
 
         return p
         
@@ -128,11 +128,11 @@ class Actor(base):
 
     def _domaccess(self, director):
         self._initComputationOrm(director)
-        return director.retrieveDOMAccessor('properties/sq')
+        return director.retrieveDOMAccessor('properties/vacf')
             
 
 def actor():
-    return Actor('orm/sq')
+    return Actor('orm/vacf')
 
 
 # version
