@@ -96,7 +96,7 @@ class Actor(base):
 
     def newAnalysisForm(self, director):
         return select(id='main-display-area').replaceContent(
-            load(actor="analysis/analysiswizard"))
+            load(actor="analysis/mdanalysiswizard"))
         #return director.retrieveVisual('analysis/new', director = director)
 
 
