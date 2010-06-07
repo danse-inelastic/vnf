@@ -54,34 +54,21 @@ class Actor(base):
     def analysisSettings(self, director):
         self.debug = journal.debug('analysisSettings')
         orm = director.clerk.orm
-        doc = lc.document(id='trajectory-selector-doc')
-        doc.paragraph(
-            text=['Use the following planning tools to configure the analysis calculation:',])
-        #doc = lc.document(title = "")
-        container = lc.document(title = "")
-        #container.add(load(actor='material_simulations/mdPlan', routine='createMdPlanForm'))
-        #first put in the md planning tools
-        container.oncreate = [
-            select(element=container).append(
-              load(actor='material_simulations/mdPlan', routine='createMdPlanForm')),
-            ]
-        doc.add(container)
+        doc = lc.document(id='analysis-configuration-doc')
+        #if appropriate, put in the md planning tools
+        if self.inventory.analysisType in ['csfcalc','isfcalc','dos',]:
+            doc.paragraph(
+                text=['Use the following planning tools to configure the analysis calculation:',])
+            #doc = lc.document(title = "")
+            container = lc.document(title = "")
+            #container.add(load(actor='material_simulations/mdPlan', routine='createMdPlanForm'))
+            container.oncreate = [
+                select(element=container).append(
+                  load(actor='material_simulations/mdPlan', routine='createMdPlanForm')),
+                ]
+            doc.add(container)
         #now put in the Q vector planning tool
-        #now put in the trajectory
-        #now put in the analysis data object configuration
-#        splitter    = doc.splitter(orientation="vertical")
-#        sA          = splitter.section(id='analysis-object-inspect')
-        #sA.add(viewIndicator(director))
-        #first get the type of the dynamics
-#        domaccess = director.retrieveDOMAccessor('dynamics')
-#        dynamics = domaccess.getDynamics(self.inventory.dynamicsId)
-#        analysisType = dynamics.type
-
-#        self.debug.log('trajectory:%s' % self.inventory.trajectoryId)
-#        container = lc.document(id='analysis-settings-container')
-#        doc.add(container)
         
-        #actorName = 'orm/'+self.inventory.analysisType
         #import the correct analysis
         className = self.inventory.analysisType        
         exec('from vnfb.dom.analysis.'+className+' import '+className)
