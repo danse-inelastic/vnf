@@ -28,13 +28,13 @@ class Accessor(base):
     orm = property(_getOrm)
 
 
-    def getEisf(self, id):
+    def getProperty(self, id):
         orm = self.orm
         return orm.load(Eisf, id)
 
 
-    def getDataForEisf(self, id):
-        eisf = self.getEisf(id)
+    def getDataForProperty(self, id):
+        eisf = self.getProperty(id)
         record = self.orm(eisf)
 
         director = self.director
@@ -65,7 +65,7 @@ class Accessor(base):
 
     def getOrigin(self, id=None, dos=None):
         if eisf is None:
-            eisf = self.getEisf(id)
+            eisf = self.getProperty(id)
         orm = self.orm
         r = orm(sq)
         origin = r.getOrigin(orm.db)
