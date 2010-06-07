@@ -50,6 +50,7 @@ class Accessor(base):
                 import traceback
                 self._debug.log(traceback.format_exc())
                 self._debug.log(e)
+                db._sasession.rollback()
                 #print e
                 pass
             if result:

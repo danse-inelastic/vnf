@@ -28,13 +28,13 @@ class Accessor(base):
     orm = property(_getOrm)
 
 
-    def getSq(self, id):
+    def getProperty(self, id):
         orm = self.orm
         return orm.load(Sq, id)
 
 
-    def getDataForSq(self, id):
-        sq = self.getSq(id)
+    def getDataForProperty(self, id):
+        sq = self.getProperty(id)
         record = self.orm(sq)
 
         director = self.director
