@@ -40,12 +40,14 @@ class Accessor(base):
             potentialNames.append(entry.potential_name)
         return potentialNames
 
-    def getDataForPotential(self, id):
-        potential = self.getPotential(id)
-        record = self.orm(potential)
-
+    def getDataForPotential(self, potential_name):
+#        potential = self.getPotential(id)
+#        record = self.orm(potential)
+        records = self.director.clerk._getEntry('GulpPotential', 
+            where="potential_name='"+potential_name+"'", maindom='vnfb.dom.material_simulations')
+        # assume the first one is correct
+        record = records[0]
         director = self.director
-
         # make sure file is at the web server
         if not director.dds.is_available(record):
             try:
@@ -60,14 +62,15 @@ class Accessor(base):
         
         # the data file
         path = director.dds.abspath(record)
+        
+        potentialFileName = record.filename
+        
         import os
         # check path
-        if os.path.exists(os.path.join(path, 'data.plot')): 
-            eisf.read(os.path.join(path, 'data.plot'))
-#        elif os.path.exists(os.path.join(path, 'data.txt')): 
-#            dos.read(os.path.join(path, 'data.txt'))
-        else: return
-        return potential
+        if os.path.exists(os.path.join(path, potentialFileName)): 
+            potentialContent = open(os.path.join(path, potentialFileName)).read()
+        else: potentialContent = ''
+        return potentialContent
 
 
 from memd.gulp.GulpPotential import GulpPotential

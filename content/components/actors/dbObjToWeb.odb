@@ -17,7 +17,7 @@ class Actor(baseActor):
         id = pyre.inventory.str('id')
         creator = pyre.inventory.str('creator', default = 'currentUser')
         #filename_variable = pyre.inventory.str('filename_variable')
-        #potential_name = pyre.inventory.str('potential_name')
+        potential_name = pyre.inventory.str('potential_name')
 
     def get(self, director):
         if 'all' in self.columns:
@@ -44,6 +44,11 @@ class Actor(baseActor):
         domaccess = director.retrieveDOMAccessor('gulppotential')
         names = domaccess.getPotentialNames()
         return names
+
+    def getPotentialContent(self, director):
+        domaccess = director.retrieveDOMAccessor('gulppotential')
+        content = domaccess.getDataForPotential(self.inventory.potential_name)
+        return content
 
     def _getRecords(self, director, tables, where):
         results=[]
