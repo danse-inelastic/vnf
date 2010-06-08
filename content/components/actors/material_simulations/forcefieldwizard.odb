@@ -276,8 +276,8 @@ class Actor(base):
                                 potential_name = self.inventory.potential_name).one()
             gulpPotential = orm.record2object(record)
         except Exception, err:
-            print err
-            print 'creating new potential'
+            #print err
+            #print 'creating new potential'
             gulpPotential = GulpPotential()
         gulpPotential.filename = self.inventory.potential_filename
         gulpPotential.creator = self.inventory.potentialCreator
