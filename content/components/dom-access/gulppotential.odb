@@ -23,19 +23,25 @@ class Accessor(base):
 
     def _getOrm(self):
         orm = self.director.clerk.orm
-        orm(Eisf)
+        orm(GulpPotential)
         return orm
     orm = property(_getOrm)
 
 
-    def getProperty(self, id):
+    def getPotential(self, id):
         orm = self.orm
-        return orm.load(Eisf, id)
+        return orm.load(GulpPotential, id)
 
+    def getPotentialNames(self):
+        results = self.director.clerk._getEntry('GulpPotential', maindom='memd.gulp')
+        potentialNames=[]
+        for entry in results:
+            potentialNames.append(entry['potential_name'])
+        return potentialNames
 
-    def getDataForProperty(self, id):
-        eisf = self.getProperty(id)
-        record = self.orm(eisf)
+    def getDataForPotential(self, id):
+        potential = self.getPotential(id)
+        record = self.orm(potential)
 
         director = self.director
 
@@ -60,19 +66,10 @@ class Accessor(base):
 #        elif os.path.exists(os.path.join(path, 'data.txt')): 
 #            dos.read(os.path.join(path, 'data.txt'))
         else: return
-        return eisf
+        return potential
 
 
-    def getOrigin(self, id=None, dos=None):
-        if eisf is None:
-            eisf = self.getProperty(id)
-        orm = self.orm
-        r = orm(sq)
-        origin = r.getOrigin(orm.db)
-        return origin
-
-
-from vnfb.dom.material_simulations.Eisf import Eisf
+from memd.gulp.GulpPotential import GulpPotential
 
 import os, numpy
 
