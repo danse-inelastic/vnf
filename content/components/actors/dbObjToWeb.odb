@@ -48,7 +48,7 @@ class Actor(baseActor):
     def getPotentialContent(self, director):
         domaccess = director.retrieveDOMAccessor('gulppotential')
         content = domaccess.getDataForPotential(self.inventory.potential_name)
-        return content
+        return [content]
 
     def _getRecords(self, director, tables, where):
         results=[]
