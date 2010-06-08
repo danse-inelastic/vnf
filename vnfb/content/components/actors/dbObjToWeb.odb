@@ -41,17 +41,9 @@ class Actor(baseActor):
         return materialInfo
 
     def getPotentialNames(self, director):
-        domaccess = director.retrieveDOMAccessor('atomicstructure')
-        structure = domaccess.getAtomicStructure(self.inventory.id)
-        lattice = structure.lattice
-        materialInfo = {'cartesian_lattice':lattice.base.tolist(), 
-               "cartesian_coordinates":structure.xyz_cartn,
-               "fractional_coordinates":structure.xyz,
-               "atom_symbols":structure.symbols,
-               "space_group":structure.sg.number}
-        # don't need to encode because json takes care of that
-        #ans = self.encoder(materialInfo)
-        return materialInfo
+        domaccess = director.retrieveDOMAccessor('gulppotential')
+        names = domaccess.getPotentialNames()
+        return names
 
     def _getRecords(self, director, tables, where):
         results=[]
@@ -63,16 +55,16 @@ class Actor(baseActor):
             if table.lower() in disallowed or table.lower().startswith('acl'):
                 #print "Not allowed to access table %r" % table
                 continue
-            
-            results = director.clerk._getEntry(table, where=where)
-#            table = director.clerk._getTable(table) 
-#            from vnf.dom.OwnedObject import OwnedObject
-#            if issubclass(table, OwnedObject):
-#                if self.creator=='currentUser':
-#                    where = wrapIfPresent(where, "(creator='%s' or creator='vnf')" % (director.sentry.username))
-#
-#            records = director.clerk.db.fetchall(table, where=where)
-#            results += records
+
+#            results = director.clerk._getEntry(table, where=where)
+            table = director.clerk._getTable(table) 
+            from vnf.dom.OwnedObject import OwnedObject
+            if issubclass(table, OwnedObject):
+                if self.creator=='currentUser':
+                    where = wrapIfPresent(where, "(creator='%s' or creator='vnf')" % (director.sentry.username))
+
+            records = director.clerk.db.fetchall(table, where=where)
+            results += records
         return results
     
 
