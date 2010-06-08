@@ -33,10 +33,11 @@ class Accessor(base):
         return orm.load(GulpPotential, id)
 
     def getPotentialNames(self):
-        results = self.director.clerk._getEntry('GulpPotential', maindom='memd.gulp')
+        #results = self.director.clerk._getEntry('GulpPotential', maindom='memd.gulp')
+        results = self.director.clerk._getEntry('GulpPotential', maindom='vnfb.dom.material_simulations')
         potentialNames=[]
         for entry in results:
-            potentialNames.append(entry['potential_name'])
+            potentialNames.append(entry.potential_name)
         return potentialNames
 
     def getDataForPotential(self, id):
