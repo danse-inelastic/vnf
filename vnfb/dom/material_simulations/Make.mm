@@ -40,6 +40,7 @@ EXPORT_PYTHON_MODULES = \
 	BvKModel.py \
 	ComputationResult.py \
 	Eisf.py \
+	GulpPotential.py \
 	GulpSettings.py \
 	PhononDOS.py \
 	Phonons.py \
