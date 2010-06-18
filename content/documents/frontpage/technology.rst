@@ -11,3 +11,4 @@ Technology
   `javascript <http://en.wikipedia.org/wiki/JavaScript>`_, 
   `ajax  <http://en.wikipedia.org/wiki/Ajax_(programming)>`_,
   and `json <http://www.json.org>`_.
+* The 3D viewer is implemented using `plugin-o3d <http://code.google.com/apis/o3d/>`_ and will be migrated to `webgl-o3d <http://code.google.com/p/o3d/>`_.
