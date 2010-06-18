@@ -17,3 +17,8 @@ tutorials
   Functional Theory (DFT) approach. The results can be used to get I(Q,E) through
   VNF virtual experiment. Use the package also to perform convergence tests and
   Car-Parrinello molecular dynamics calculations.
+  
+* `Creating forcefield-physics dynamics and processing them into scattering and dynamical measurements <http://docs.danse.us/VNET/md-sqe.html>`_
+
+  Use Gulp engine to create either phonon or md dynamics objects.  Use 'Analysis' tab to calculate
+  S(Q,E), DOS, EISF, VACF, diffusion coefficient, etc. from the dynamics.
