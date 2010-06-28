@@ -35,4 +35,4 @@ Plotting and Visualization
 Monte Carlo Instrument Simulation
 ---------------------------------
 
-McVine (pending)
+`MCViNE: Monte Carlo VItural Neutron Experiment <http://docs.danse.us/MCViNE/>`_
