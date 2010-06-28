@@ -10,6 +10,7 @@ Contents:
    DeveloperGuide-Overview
    DeveloperGuide-Architecture
    DeveloperGuide-AccessControl
+   DeveloperGuide-Utilities
    DeveloperGuide-VolunteersNeeded
 
 ..   discussion
