@@ -35,6 +35,7 @@ all: export
 # export
 
 EXPORT_PYTHON_MODULES = \
+	ApproveUser.py \
 	ITaskApp.py \
 	EstablishGlobalPointers.py \
         PackJobDir.py \
