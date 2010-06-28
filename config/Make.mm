@@ -27,6 +27,7 @@ EXPORT_DATAFILES = \
 	SimpleHttpServer.pml \
 	addbvkmodelstodb.pml \
 	app-extension.odb \
+	approveUser.pml \
 	itaskapp.pml \
 	createdataobject.pml \
 	clerk.odb \

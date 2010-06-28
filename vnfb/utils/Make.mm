@@ -26,6 +26,7 @@ BUILD_DIRS = \
 	query \
 	neutron_experiment_simulations \
         scripts \
+        services \
 
 OTHER_DIRS = \
 
