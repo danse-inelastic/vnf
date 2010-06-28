@@ -8,6 +8,7 @@ General:
 .. toctree::
 
    UserGuide-Overview
+   UserGuide-screencasts
    UserGuide-atomicstructures
    UserGuide-materialsimulations
    UserGuide-analysis
