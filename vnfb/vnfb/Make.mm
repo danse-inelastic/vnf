@@ -51,6 +51,7 @@ distclean::
 
 EXPORT_PYTHON_MODULES = \
 	__init__.py \
+	deployment.py \
 
 
 export:: export-python-modules
