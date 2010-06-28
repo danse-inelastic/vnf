@@ -42,7 +42,7 @@ class ApproveUser(base):
         # send an acknowlegement to user
         announce(self, 'user-approval', user)
         # alert administrators
-        announce(self, 'user-approval-alert', user)
+        # announce(self, 'user-approval-alert', user)
 
         from vnfb.utils.services.ipad import askIpadToReload
         askIpadToReload(self)

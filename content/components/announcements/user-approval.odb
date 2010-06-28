@@ -26,7 +26,7 @@ Your user name is %(username)s.
 
 Please visit https://vnf.caltech.edu and start planning your experiments.
 
-Here are some useful links of vnf documentations:
+Here are some VNF documentation links:
 
 * Documentation home: http://docs.danse.us/VNET/index.html
 * Web portal guide: http://docs.danse.us/VNET/UserGuide.html#vnfuserguide
@@ -43,6 +43,10 @@ DANSE-vnf team
         }
 
     msg.recipients[user.email] = subs
+
+    # send email copy to vnf admins as well
+    adminemail = 'vnf-administrators@googlegroups.com'
+    msg.recipients[adminemail] = subs
 
     return msg
 
