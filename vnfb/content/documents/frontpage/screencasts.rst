@@ -4,22 +4,22 @@ screencasts
 ===========
 
 * `login <http://www.youtube.com/watch?v=IfkPWLznpdA&fmt=22>`_ (June
-  27, 18 seconds)
+  2010, 18 seconds)
 
   Login into vnf
 
-* `virtual experiment: inelastic scattering of lead plate <http://www.youtube.com/watch?v=puHiA4qcL7U&fmt=22>`_ (June 27, 3min)
+* `virtual experiment: inelastic scattering of lead plate <http://www.youtube.com/watch?v=puHiA4qcL7U&fmt=22>`_ (June 2010, 3min)
 
   A virtual neutron experiment that consists a monochromatic neutron
   source at 12meV incident energy, a lead plate, and an ideal S(Q,E) monitor.
 
 * `create sample  <http://www.youtube.com/watch?v=wqy4HwkAqro&fmt=22>`_ (June
-  27, 1min)
+  2010, 1min)
 
   Create a lead rod sample with a coherent inelast neutron scattering
   kernel from phonons
 
-* `lead phonon dispersions: bvk  <http://www.youtube.com/watch?v=3BYNlvENz_k&fmt=22>`_ (June 27, 1min)
+* `lead phonon dispersions: bvk  <http://www.youtube.com/watch?v=3BYNlvENz_k&fmt=22>`_ (June 2010, 1min)
 
   Compute phonon dispersion for lead from a bvk model 
 
