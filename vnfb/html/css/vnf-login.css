@@ -116,6 +116,22 @@ color:gray;
     color:#004455;
 }
 
+#frontpage-portlet .luban-portlet {
+    margin-bottom: 0;
+}
+
+/* link "documentation" */
+#front-page-portlet-container div[luban-element-type="htmldocument"] {
+    text-align:right;
+    font-size:0.85em;
+}
+
+#front-page-portlet-container div[luban-element-type="htmldocument"] a {
+    color:#004455;
+    text-decoration:none;
+    padding-right:0.3em;
+}
+
 #front-page-vnf-intro-container .luban-document-title {
     color:#229999;
 }
