@@ -3,10 +3,26 @@
 screencasts
 ===========
 
+* `Front page <http://www.youtube.com/watch?v=dzMWwTTNhvI&fmt=22>`_
+  (June 2010, 1min)
+
+  Navigating the vnf front page
+
 * `login <http://www.youtube.com/watch?v=IfkPWLznpdA&fmt=22>`_ (June
   2010, 18 seconds)
 
   Login into vnf
+
+* `tables: using filters
+  <http://www.youtube.com/watch?v=pMXEvcci1lA&fmt=22>`_ (June
+  2010, 41 seconds)
+
+  You can use filters to find your records easily
+
+* `bug report <http://www.youtube.com/watch?v=3-_tNSaXi8k&fmt=22>`_
+  (June 2010, 25 seconds)
+
+  VNF is in beta test phase. Your input is invaluable!
 
 * `virtual experiment: inelastic scattering of lead plate <http://www.youtube.com/watch?v=puHiA4qcL7U&fmt=22>`_ (June 2010, 3min)
 
