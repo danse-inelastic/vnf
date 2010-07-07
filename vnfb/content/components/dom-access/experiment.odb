@@ -246,6 +246,7 @@ class Accessor(base):
             expq.c.date.label('date'),
             expq.c.sample.label('sample'),
             labelq.c.entity.label('gptr'),
+            expq.c.samplegptr,
             ]
         # expq.c.globalpointer==labelq.c.entity
         where = "exp.gptr=labeled.entity"
@@ -290,6 +291,7 @@ class Accessor(base):
             expq.c.date.label('date'),
             expq.c.gptr,
             sampleq.c.short_description.label('sample'),
+            sampleq.c.gptr.label('samplegptr'),
             ]
         where = expq.c.samplegptr==sampleq.c.gptr
         q1 = sqlalchemy.select(cols, where)
@@ -301,7 +303,7 @@ class Accessor(base):
             expq.c.date.label('date'),
             expq.c.gptr,
             "cast('NOT DEFINED' as varchar(32)) as sample",
-            # expq.c.samplegptr.label('sample'),
+            expq.c.samplegptr.label('samplegptr'),
             ]
         where = expq.c.samplegptr == None
         q2 = sqlalchemy.select(cols, whereclause=where)

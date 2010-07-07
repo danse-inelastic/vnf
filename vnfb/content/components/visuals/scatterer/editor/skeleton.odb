@@ -33,9 +33,8 @@ class Factory(object):
 
         doc = lc.document(Class='container')
 
-        # view indicator
-        viewindicator = self._createViewIndicator()
-        doc.add(viewindicator)
+        # top
+        doc.add(self._createTopPanel())
 
         # basic info
         view = self._createBasicInfoView()
@@ -52,8 +51,27 @@ class Factory(object):
         # kernels
         view = self._createKernelsView()
         doc.add(view)
-        return doc
 
+        # experiments on this sample
+        if self.domaccess.isConstructed(self.id):
+            doc.add(self._createExperimentsView())
+        return doc
+    
+    
+    def _createTopPanel(self):
+        sp = lc.splitter()
+        left = sp.section(); right = sp.section()
+        # view indicator
+        left.add(self._createViewIndicator())
+        # toolbar
+        # right.add(self._createTopToolbar())
+        return sp
+
+
+    def _createTopToolbar(self):
+        toolbar = lc.toolbar(Class='topright-toolbar')
+        return toolbar
+    
 
     def _createBasicInfoView(self):
         return self.director.retrieveVisual(
@@ -88,6 +106,15 @@ class Factory(object):
         path.append((label,action))
 
         return self.director.retrieveVisual('view-indicator', path=path)
+
+
+    def _createExperimentsView(self):
+        doc = lc.document(collapsable=True, collapsed=True, title="Experiments")
+        doc.onexpand = select(element=doc).replaceContent(
+            load(actor='loadvisual', visual='scatterer/experiment-table',
+                 id=self.id)
+            )
+        return doc
     
     
 def visual(id, director):
