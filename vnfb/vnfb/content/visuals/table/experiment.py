@@ -10,6 +10,10 @@
 #
 
 
+import journal
+debug = journal.debug('experiment-table')
+
+
 from luban.content.table import Model, View, Table
 from luban.content import load
 from luban.content.Link import Link
@@ -19,6 +23,7 @@ class model(Model):
     selected = Model.descriptors.bool(name='selected')
     id = Model.descriptors.link(name='id')
     description = Model.descriptors.str(name='description')
+    sample = Model.descriptors.str(name='sample')
     created = Model.descriptors.date(name='created')
 
     row_identifiers = ['id']
@@ -28,6 +33,7 @@ columns = [
     View.Column(label='', measure='selected'),
     View.Column(label='ID', measure='id'),
     View.Column(label='Description', measure='description', editable=True),
+    View.Column(label='Sample', measure='sample'),
     View.Column(label='Date created', measure='created'),
     ]
 
@@ -37,22 +43,34 @@ def view(cols, editable=True):
     return View(columns=columns, editable=True)
 
 
-def getSelected(matter): return False
-def getId(experiment):
-    label = experiment.id
-    link = Link(
-        label = label,
-        onclick = load(
-            actor='experiment', routine='showExperimentView',
-            id = experiment.id,
+class Formatter:
+
+    def __init__(self, db):
+        self.db = db
+        return
+
+    def getSelected(self, matter): return False
+    
+    def getId(self, experiment):
+        label = experiment.id
+        link = Link(
+            label = label,
+            onclick = load(
+                actor='experiment', routine='showExperimentView',
+                id = experiment.id,
+                )
             )
-        )
-    return link
-def getDescription(experiment):
-    return experiment.short_description
-def getCreated(record):
-    date = record.date
-    return str(date)
+        return link
+    
+    def getDescription(self, experiment):
+        return experiment.short_description
+    
+    def getSample(self, experiment):
+        return experiment.sample 
+        
+    def getCreated(self, record):
+        date = record.date
+        return str(date)
 
 
 
@@ -60,9 +78,11 @@ def table(experiments, cols, director, editable=True):
     global view
     view = view(cols, editable=editable)
     
+    formatter = Formatter(director.clerk.db)
+
     import operator
     value_generators = [
-        eval('get'+col.measure[0].upper()+col.measure[1:])
+        getattr(formatter, 'get'+col.measure.capitalize())
         for col in view.columns]
     record2tuple = lambda record: [g(record) for g in value_generators]
     data = map(record2tuple, experiments)

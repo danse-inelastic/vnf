@@ -204,6 +204,7 @@ class Accessor(base):
         if reverse_order:
             ret.reverse()
 
+        # ret = [self.getExperimentRecord(r.id) for r in ret]
         self._debug.log('experiments: %s' % (ret,))
         return ret
 
@@ -214,53 +215,167 @@ class Accessor(base):
             return self.makeLabeledQuery(label, mine=mine)
         db = self.db
 
-        st = db._tablemap.TableToSATable(NeutronExperimentTable)
-        cols = [
-            st.c.id.label('id'),
-            st.c.short_description.label('short_description'),
-            st.c.date.label('date'),
-            ]
+        q = self._select_experiment_withsampledescription_clause(db)
+
         if mine:
             username = self.director.sentry.username
-            where = st.c.creator == username
-            q = sqlalchemy.select(cols, where)
-        else:
-            q = sqlalchemy.select(cols)
+            mine = "creator='%s'" % username
+            if filter:
+                filter = '(%s) and %s' % (filter, mine)
+            else:
+                filter = mine
 
         if filter:
             q = sqlalchemy.select([q.alias('experiment')], whereclause=filter)
+            
         return q
 
 
     def makeLabeledQuery(self, label, mine=False):
         'craete a uery for experiment table'
         db = self.db
-        sL = db._tablemap.TableToSATable(Label)
-        labelq = sqlalchemy.select(
-            [sL.c.entity.label('entity'),
-             sL.c.labelname.label('label'),
-             ],
-            whereclause="labelname='%s' and targettable='%s'" % (label, tablename))\
-            .alias('labelq')
         
-        st = db._tablemap.TableToSATable(NeutronExperimentTable)
+        labelq = self._select_labeled_entities_clause(label, tablename, db)
+        expq = self._select_experiment_withsampledescription_clause(db)
+        expq = expq.alias('exp')
         
         cols = [
-            st.c.id.label('id'),
-            st.c.short_description.label('short_description'),
-            st.c.date.label('date'),
+            expq.c.id.label('id'),
+            expq.c.short_description.label('short_description'),
+            expq.c.creator.label('creator'),
+            expq.c.date.label('date'),
+            expq.c.sample.label('sample'),
             labelq.c.entity.label('gptr'),
             ]
-        # st.c.globalpointer==labelq.c.entity
-        where = "globalpointer=labelq.entity"
+        # expq.c.globalpointer==labelq.c.entity
+        where = "exp.gptr=labeled.entity"
         if mine:
             username = self.director.sentry.username
             mine = "creator='%s'" % username
-            where = '%s and %s' % (where, mine)
+            where = '(%s) and %s' % (where, mine)
         q = sqlalchemy.select(cols, whereclause = where)
 
         return q
         
+
+    def _select_labeled_entities_clause(self, name, type, db):
+        '''get the labeled entities for the given label (specified by name and type)
+
+        cols:
+          entity: global address of the entity
+          type: type of the entity
+        '''
+        from vnfb.utils.query.labels import select_labeled_entities_clause
+        return select_labeled_entities_clause(name, type, db).alias('labeled')
+
+
+    def _select_experiment_withsampledescription_clause(self, db):
+        '''create an sqlalchemy select clause for a given experiment table
+
+        cols:
+          * id
+          * short_description of experiment
+          * sample: short_description of sample
+          * date: date created
+        '''
+        expq = self._select_experiment_clause(db)
+        expq = expq.alias('expq')
+        
+        sampleq = self._select_samples(db).alias('sampleq')
+
+        cols = [
+            expq.c.id.label('id'),
+            expq.c.short_description.label('short_description'),
+            expq.c.creator.label('creator'),
+            expq.c.date.label('date'),
+            expq.c.gptr,
+            sampleq.c.short_description.label('sample'),
+            ]
+        where = expq.c.samplegptr==sampleq.c.gptr
+        q1 = sqlalchemy.select(cols, where)
+        
+        cols = [
+            expq.c.id.label('id'),
+            expq.c.short_description.label('short_description'),
+            expq.c.creator.label('creator'),
+            expq.c.date.label('date'),
+            expq.c.gptr,
+            "cast('NOT DEFINED' as varchar(32)) as sample",
+            # expq.c.samplegptr.label('sample'),
+            ]
+        where = expq.c.samplegptr == None
+        q2 = sqlalchemy.select(cols, whereclause=where)
+        
+        return sqlalchemy.union_all(q1,q2)
+
+
+    def _select_samples(self, db):
+        '''create a sqlalchemy select clause for all sample tables.
+        
+        columns:
+          * gptr
+          * short_description
+        '''
+        tables = self._sample_tables()
+        qf = lambda table: self._select_sample_clause(table, db)
+        qs = map(qf, tables)
+        return sqlalchemy.union_all(*qs)
+
+
+    def _select_sample_clause(self, table, db):
+        '''create a sqlalchemy select cluase for the given sample table
+        sample tables are scatterers, sampleassemblies, and samplecomponents
+        
+        columns:
+          * gptr
+          * short_description
+        '''
+        st = db._tablemap.TableToSATable(table)
+        cols = [
+            st.c.globalpointer.label('gptr'),
+            st.c.short_description,
+            ]
+        return sqlalchemy.select(cols)
+
+
+    def _select_experiment_clause(self, db):
+        '''create a sqlalchemy select clause for a experiment table
+
+        cols:
+          * id
+          * short_description
+          * creator
+          * date
+          * samplegptr
+          * gtpr
+        '''
+
+        st = db._tablemap.TableToSATable(NeutronExperimentTable)
+
+        cols = [
+            st.c.id.label('id'),
+            st.c.short_description.label('short_description'),
+            st.c.creator.label('creator'),
+            st.c.date.label('date'),
+            st.c.sample.label('samplegptr'),
+            st.c.globalpointer.label('gptr'),
+            ]
+        try:
+            expq = sqlalchemy.select(cols)
+        except:
+            import traceback
+            raise RuntimeError, 'Failed to select required columns from experiment table %s.\n'\
+                  'Original exception was:\n%s' % (table.getTableName(), traceback.format_exc())
+
+        return expq
+
+
+    def _sample_tables(self):
+        from vnfb.dom.neutron_experiment_simulations.sample_types import getTypes
+        types = getTypes()
+        return [self.orm(t) for t in types]
+
+
 
 from vnfb.dom.Label import Label
 from vnfb.dom.neutron_experiment_simulations.NeutronExperiment import \
