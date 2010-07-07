@@ -128,7 +128,7 @@ class Accessor(base):
         if mine:
             username = self.director.sentry.username
             mine = "sims.creator='%s'" % username
-            where = '%s and %s' % (where, mine)
+            where = '(%s) and %s' % (where, mine)
         
         q = sqlalchemy.select(cols, whereclause=where)
         
