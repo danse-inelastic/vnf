@@ -83,8 +83,21 @@ class Factory(object):
         overview = doc.document(title="Overview", collapsable=True)
         overview.add(self._createOverview(experiment))
 
+        # sample
+        sample_configuration = experiment.sample_configuration
+        if sample_configuration:
+            screcord = orm(sample_configuration)
+            scid = screcord.id
+            sctype = screcord.getTableName()
+            sampledetails = doc.document(title='Sample details', collapsable=True, collapsed=True)
+            sampledetails.paragraph(text='loading. please wait ...')
+            sampledetails.onexpand = select(element=sampledetails).replaceContent(
+                load(actor='loadvisual', visual='sample/details',
+                     id = scid, type = sctype, editlink=False)
+                )
+
         # details
-        details = doc.document(title="Details", collapsable=True, collapsed=True)
+        details = doc.document(title="Experiment details", collapsable=True, collapsed=True)
         details.paragraph(text='loading. please wait ...')
         details.onexpand = select(element=details).replaceContent(
             load(actor='orm/neutronexperiments', routine='display',
