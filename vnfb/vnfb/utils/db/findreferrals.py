@@ -101,6 +101,12 @@ def findreferrals(record, clerk):
     return
 
 
+def hasreferral(record, clerk):
+    for t in findreferrals(record, clerk):
+        return True
+    return False
+
+
 # version
 __id__ = "$Id$"
 

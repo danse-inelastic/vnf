@@ -63,7 +63,7 @@ def visual(
             ('short_description', 'Description'),
             ('date', 'Date created'),
         ],
-        polymorphic = False, dbtablename='AtomicStructure.Structure'
+        polymorphic = True#, dbtablename='AtomicStructure.Structure'
         )
 
     tableview = factory.create(

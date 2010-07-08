@@ -33,7 +33,8 @@ from luban.content.Button import Button
 from luban.content.Splitter import Splitter, SplitSection
 from luban.content.Toolbar import Toolbar
 from luban.content.Link import Link
-from luban.content import load, select
+from luban.content import load, select, alert
+import luban.content
 
 
 import journal
@@ -203,6 +204,8 @@ class MasterTableFactory(object):
         view.add(tablebottomtoolbar)
         lefttoolbar = tablebottomtoolbar.section(id='%s-table-tablebottomtoolbar-left' % name, 
                                                  Class='master-table-tablebottomtoolbar-left')
+
+        lefttoolbar.add(self.createDeleteButton(table=table))
         if self.createlabelstoolbar:
             collections_toolbar = self.createLabelsToolbar(
                 name,
@@ -294,6 +297,20 @@ class MasterTableFactory(object):
         toolbar_changeview.add(labeled_widget)
         
         return toolbar_changeview
+
+
+    def createDeleteButton(self, table=None):
+        button = luban.content.button(label='Delete')
+        button.Class = 'delete-checked-rows-button'
+        button.onclick = load(
+            actor=self.name, routine='deleterows', 
+            entities = select(element=table).table(
+                'getIdentifiersForCheckedRows',
+                colname='selected'),
+            entity_has_type=self.polymorphic,
+            type = self.dbtablename,
+            )
+        return button
     
 
     def createLabelsToolbar(
@@ -301,6 +318,7 @@ class MasterTableFactory(object):
         table=None,
         ):
         doc = Document(title='Labels:')
+        doc.Class = 'labels-toolbar'
 
         labels = self.labels
         entries = zip(labels,labels)
@@ -770,10 +788,66 @@ class MasterTableActor(base):
         label = pyre.inventory.str(name='label', default='')
 
         mine = pyre.inventory.bool(name='mine', default=False)
+
+        entities = pyre.inventory.list(name='entities')
+        entity_has_type = pyre.inventory.bool(name='entity_has_type')
+        type = pyre.inventory.str(name='type')
         
 
     def showListView(self, *args, **kwds):
         raise NotImplementedError
+
+
+    def deleterows(self, director):
+        #
+        clerk = director.clerk
+        clerk.importAllDataObjects()
+        
+        entities = self.inventory.entities
+        if not entities: return alert('please select some items to delete')
+
+        entity_has_type = self.inventory.entity_has_type
+        if entity_has_type:
+            assert len(entities)%2==0
+
+        records = []
+        if entity_has_type:
+            for i in range(len(entities)/2):
+                id = entities[2*i]
+                type = entities[2*i+1]
+                records.append(director.clerk.getRecordByID(type, id))
+        else:
+            type = self.inventory.type
+            for id in entities:
+                records.append(director.clerk.getRecordByID(type, id))
+
+        #
+        username = director.sentry.username
+
+        from vnfb.utils.db.findreferrals import hasreferral
+        orm = clerk.orm
+        stillinuse = []; notowned = []
+        for record in records:
+            if hasreferral(record, clerk):
+                stillinuse.append(record)
+                continue
+            if hasattr(record, 'creator') and record.creator != username:
+                notowned.append(record)
+                continue
+            obj = orm.record2object(record)
+            orm.destroy(obj)
+            continue
+        actions = []
+        if stillinuse:
+            msg = 'Following rows are in use by some computations: %s' % (
+                ', '.join([r.id for r in stillinuse]))
+            actions.append(alert(msg))
+        if notowned:
+            msg = 'Following rows belong to others: %s' % (
+                ', '.join([r.id for r in notowned]))
+            actions.append(alert(msg))
+        actions.append(load(actor=self.name))
+        return actions
 
 
     def _init(self):
