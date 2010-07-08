@@ -34,6 +34,8 @@ def customizeLubanObjectDrawer(self, drawer):
     drawer.readonly_view_sequence = ['matter', 'properties', 'bonds']
 BvKModel.customizeLubanObjectDrawer = customizeLubanObjectDrawer
 
+from _ import o2t
+BvKModel_Table = o2t(BvKModel)
 
 
 # version

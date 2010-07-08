@@ -98,6 +98,9 @@ def customizeLubanObjectDrawer(self, drawer):
 BvKBond.customizeLubanObjectDrawer = customizeLubanObjectDrawer
 
 
+from _ import o2t
+BvKBond_Table = o2t(BvKBond)
+
 
 # version
 __id__ = "$Id$"

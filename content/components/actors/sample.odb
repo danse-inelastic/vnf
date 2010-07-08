@@ -176,7 +176,7 @@ class Actor(base):
         return
 
 
-    def __init__(self, name='materialsimulation'):
+    def __init__(self, name='sample'):
         super(Actor, self).__init__(name)
         return
 

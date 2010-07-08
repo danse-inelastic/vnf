@@ -271,6 +271,17 @@ margin-top:4px;
     border-right:1px solid #444;
     padding:0 5px;
 }
+
+.delete-checked-rows-button a {
+    border-right:1px solid lightgreen;
+}
+.delete-checked-rows-button {
+    border-right:1px solid #777777;
+}
+.labels-toolbar  {
+    margin-left:1em;
+}
+
 .master-table-tablebottomtoolbar-left div {
     display:inline;
 }
