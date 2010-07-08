@@ -19,6 +19,7 @@ PACKAGE = utils
 BUILD_DIRS = \
 	communications \
 	computation \
+	db \
 	filter \
 	itask \
 	job \
