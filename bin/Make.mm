@@ -28,9 +28,11 @@ EXPORT_DATAFILES = \
 	approveUser.py \
 	createdataobject.py \
 	createtable.py \
+	deleterecord.py \
 	destroydb.py \
 	destroydataobject.py \
 	establishglobalpointers.py \
+	findchildrenofdataobject.py \
 	findreferrals.py \
 	getuserlist.py \
 	initdb-alpha.py \
