@@ -3,6 +3,10 @@ Samples
 
 In this tab, a table of virtual samples are presented.
 
+Samples are the core of neutron experiments. In this tab,
+you can create a new sample, and also search and learn details
+of previously created samples.
+
 .. image:: shots/samples/table-top.png
    :width: 720px
 
