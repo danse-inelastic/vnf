@@ -1,3 +1,5 @@
+.. _matsim-tab:
+
 Material Simulations and Modelings
 ==================================
 

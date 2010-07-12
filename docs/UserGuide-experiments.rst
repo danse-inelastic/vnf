@@ -1,3 +1,5 @@
+.. _exps-tab:
+
 Experiments
 ===========
 

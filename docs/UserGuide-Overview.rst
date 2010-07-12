@@ -28,9 +28,9 @@ When you start a virtual experiment, or a material simulation, they
 became computational jobs submitted to computing resources. 
 You can monitor their progress by clicking "Jobs".
 
-* Atomic structures
-* Material simulations
-* Analysis
-* Samples
-* Experiments
-* Jobs
+* :ref:`Atomic structures <atomic-structures>`
+* :ref:`Material simulations <matsim-tab>`
+* :ref:`Analysis <analysis-tab>`
+* :ref:`Samples <samples-tab>`
+* :ref:`Experiments <exps-tab>`
+* :ref:`Jobs <jobs-tab>`
