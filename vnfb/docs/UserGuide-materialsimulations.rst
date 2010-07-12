@@ -1,8 +1,11 @@
-Material Simulations
-====================
+Material Simulations and Modelings
+==================================
 
 
-In this tab, a table of material simulations are presented.
+In this tab, a table of material simulations/modelings are presented.
+
+Material simulations of ab initio type and molecular dynamics type
+can be created and monitored here.
 
 .. image:: shots/matsim/table-top.png
    :width: 720px
