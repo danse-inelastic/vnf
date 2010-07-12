@@ -1,3 +1,5 @@
+.. _samples-tab:
+
 Samples
 =======
 

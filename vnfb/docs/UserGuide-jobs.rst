@@ -1,3 +1,5 @@
+.. _jobs-tab:
+
 Jobs
 ====
 
