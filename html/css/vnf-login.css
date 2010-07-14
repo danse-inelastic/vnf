@@ -122,8 +122,9 @@ color:gray;
 
 /* link "documentation" */
 #front-page-portlet-container div[luban-element-type="htmldocument"] {
+    font-size:0.8em;
+    padding-bottom:0.6em;
     text-align:right;
-    font-size:0.85em;
 }
 
 #front-page-portlet-container div[luban-element-type="htmldocument"] a {

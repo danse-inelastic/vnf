@@ -81,12 +81,9 @@ class Actor(base):
         form = director.retrieveVisual('login-form')
         formcontainer.add(form)
         # portlet
-        portletcontainer = left.document(id='front-page-portlet-container')
         portlet = director.retrieveVisual('frontpage-portlet')
-        portletcontainer.add(portlet)
+        left.add(portlet)
         #
-        htmldoc = lc.htmldocument(); portletcontainer.add(htmldoc)
-        htmldoc.text = ['<a href="http://docs.danse.us/VNET">documentation</a>']
 
         # right
         right = splitter.section(id='login-body-right')
