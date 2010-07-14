@@ -14,4 +14,4 @@ which is gone.
 - [FIXED] Fix setting-edit (number of processors default selection)
 - [FIXED] For "Single Phonon" simulatin type allow user to pick only 1 processor (settings-edit,
   settings-create)
-- When the QE configuration file is not present on the local machine it returns error
+- [FIXED] When the QE configuration file is not present on the local machine it returns error
