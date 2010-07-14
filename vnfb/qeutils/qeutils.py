@@ -151,7 +151,8 @@ def makedirs(path):
 def writeFile(filename, content):
     "Write content to file"
     # Removes carriage return (for conig files generated in Windows)
-    p           = re.compile("\r")  
+    p           = re.compile("\r")
+#    print "Content: %s" % content   # XXX
     filtered    = p.sub("", content)
     open(filename, 'w').write(filtered)
 

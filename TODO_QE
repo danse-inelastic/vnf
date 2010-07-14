@@ -1,8 +1,20 @@
 TODO List for Quantum Espresso
 ==============================
 
+
+
 Problem: How to define similarity for simulation tasks? Settings? Matter?
 Solution:
+
+
+
+- Electron Structure
+- Electron DOS
+- Electron Dispersion
+- Geometry Optimization
+- Single Phonon
+- Multiple Phonon (1. On-host run)
+- Molecular Dynamics
 
 Nice To Have
 ============
@@ -21,13 +33,15 @@ Must Have
 
 NOW
 ===
-- Add progress bar for jobs with steps description
+- [DONE] Add progress bar for jobs with steps description
 - Move "servers" reference from qesimulations to qesettings
-- Dialog widget
+- [DONE] Dialog widget
 
 CRITICAL FIXES
 ==============
-- !!! Sanityze input file for qe simulations from Windows carriage return ('\15\32')
+- Figure out what diskspace the QE is currently using. In case of NFS measure the performace
+degradation in comparison with scratch space
+- [DONE] Sanityze input file for qe simulations from Windows carriage return ('\15\32')
 See:
     http://kb.iu.edu/data/data/acux.html
     Command: awk '{ sub("\r$", ""); print }' winfile.txt > unixfile.txt
@@ -37,8 +51,8 @@ See:
 - Don't allow to set config input unless the previous config input is set
 
 - [DONE] Handle multiple jobs for the task
-- Fix database jobs status depending on the actual jobs status
-- Fix the formatting of config view and create
+- [DONE] Fix database jobs status depending on the actual jobs status
+- [DONE] Fix the formatting of config view and create
 
 - Display and refresh output file
 - Hide "Run Task" button unless the previous simulation task is completed

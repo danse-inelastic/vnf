@@ -11,7 +11,7 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
-# Stub
+# DEPRICATED: Use torque.py instead!
 
 import journal
 debug = journal.debug( 'qetorque' )

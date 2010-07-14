@@ -12,9 +12,13 @@
 #
 
 from vnfb.qeutils.qeconst import NOPARALLEL
+from pyre.units.time import hour
 import math
+import os
 
-PROC_PER_NODE   = 12    # Number of processors per node, specific for foxtrot
+PROC_PER_NODE   = 12        # Number of processors per node, specific for foxtrot
+TEMP_DIR        = "/tmp"    # Temp default directory
+
 
 # Temp solution for QE jobs submission. Hardcoded for the foxtrot cluster
 # param: job (input -> temp solution)
@@ -37,11 +41,8 @@ def schedule( sim, director, job ):
                                                     server_jobpath,
                                                     suppressException=True)
     scheduler = scheduler(launch, prefix = 'source ~/.vnf' )
-#    scheduler.setSimulationParams(job, settings, server, task)
-#    dir     = ""    # Working directory
-
-    from pyre.units.time import hour
     walltime = 999*hour   # limit to one hour?
+
     id1 = scheduler.submit( 'cd %s && sh run.sh' % server_jobpath,
                             walltime        = walltime,
                             jobid           = jobid(job),
@@ -54,14 +55,6 @@ def schedule( sim, director, job ):
 
     return
 
-
-## Specific for Quantum Espresso
-#def setSimulationParams(self, job, settings, server, task):
-#    "Set simulation objects"
-#    self._job       = job       # not None
-#    self._settings  = settings  # not None
-#    self._server    = server    # not None
-#    self._task      = task      # not None
 
 def jobid(job):
     "Returns job id"
@@ -112,11 +105,11 @@ def getppn(settings):
 
 
 def workDir(server, job):
-    "Returns working directory (where the outputs are stored)"
+    "Returns working directory (where the outputs are stored) which is qejobs"
     if not server or not job:
-        return "/tmp"   # Default directory
+        return TEMP_DIR   # Default directory
 
-    return "%s/%s/%s" % (server.workdir, job.name, job.id)
+    return os.path.join(server.workdir, job.name, job.id) # "%s/%s/%s" % (server.workdir, job.name, job.id)
 
 
 def schedulerfactory( server ):
@@ -133,16 +126,3 @@ def schedulerfactory( server ):
 
 
 __date__ = "$Dec 7, 2009 8:45:49 AM$"
-
-
-# ********************* DEAD CODE ********************* 
-
-    # submit job through scheduler
-    #walltime = job.walltime
-
-    # update job db record
-#    job.id_incomputingserver = id1
-#    job.state = 'submitted'
-#    import time
-#    job.time_start = time.ctime()
-#    director.clerk.updateRecordWithID(job)
