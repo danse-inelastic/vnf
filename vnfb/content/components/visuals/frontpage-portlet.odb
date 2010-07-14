@@ -17,7 +17,10 @@ from luban.content import load, select, alert
 
 
 def visual(director):
-    portlet = luban.content.portlet(id='frontpage-portlet', title='')
+    portletcontainer = luban.content.document(id='front-page-portlet-container')
+    
+    portlet = luban.content.portlet(id='frontpage-portlet', title='');
+    portletcontainer.add(portlet)
 
     portlet.item(
         id='frontpage-portlet-signup', label='sign up',
@@ -66,7 +69,15 @@ def visual(director):
         onclick=load(actor='about', routine='showAboutDialog'),
         )
     
-    return portlet
+    htmldoc = luban.content.htmldocument(); portletcontainer.add(htmldoc)
+    htmldoc.Class = 'portletitem'
+    htmldoc.text = ['<a href="http://docs.danse.us/VNET">documentation</a>']
+    
+    htmldoc = luban.content.htmldocument(); portletcontainer.add(htmldoc)
+    htmldoc.Class = 'portletitem'
+    htmldoc.text = ['<a href="http://docs.danse.us/VNET/contactus.html">contact us</a>']
+    
+    return portletcontainer
 
     
 # version
