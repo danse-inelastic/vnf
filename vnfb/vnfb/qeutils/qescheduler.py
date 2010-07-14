@@ -11,6 +11,11 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
+from vnfb.qeutils.qeconst import NOPARALLEL
+import math
+
+PROC_PER_NODE   = 12    # Number of processors per node, specific for foxtrot
+
 # Temp solution for QE jobs submission. Hardcoded for the foxtrot cluster
 # param: job (input -> temp solution)
 
@@ -32,16 +37,86 @@ def schedule( sim, director, job ):
                                                     server_jobpath,
                                                     suppressException=True)
     scheduler = scheduler(launch, prefix = 'source ~/.vnf' )
-    scheduler.setSimulationParams(job, settings, server, task)
+#    scheduler.setSimulationParams(job, settings, server, task)
+#    dir     = ""    # Working directory
 
     from pyre.units.time import hour
     walltime = 999*hour   # limit to one hour?
-    id1 = scheduler.submit( 'cd %s && sh run.sh' % server_jobpath, walltime=walltime )
+    id1 = scheduler.submit( 'cd %s && sh run.sh' % server_jobpath,
+                            walltime        = walltime,
+                            jobid           = jobid(job),
+                            numnodes        = nodes(settings, task),
+                            corespernode    = ppn(settings, task),
+                            workingDirectory = workDir(server, job))
 
     # write id to the remote directory
     director.csaccessor.execute('echo "%s" > jobid' % id1, server, server_jobpath)
 
     return
+
+
+## Specific for Quantum Espresso
+#def setSimulationParams(self, job, settings, server, task):
+#    "Set simulation objects"
+#    self._job       = job       # not None
+#    self._settings  = settings  # not None
+#    self._server    = server    # not None
+#    self._task      = task      # not None
+
+def jobid(job):
+    "Returns job id"
+    if not job:
+        return ""
+
+    return job.id
+
+
+def nodes(settings, task):
+    "Returns number of nodes"
+    n  = getnodes(settings)
+
+    if task and task.type in NOPARALLEL:
+        n  = 1
+
+    return n
+
+
+def getnodes(settings):
+    "Calculates number of nodes (nodes) from number of processors"
+    if not settings:
+        return 1
+    
+    numproc = settings.numproc
+    return int(math.ceil(numproc/float(PROC_PER_NODE)))
+
+
+def ppn(settings, task):
+    "Returns number of processors per node"
+    ppn = getppn(settings)
+    if task and task.type in NOPARALLEL:
+        ppn  = 1
+
+    return ppn
+
+
+def getppn(settings):
+    "Calculates number of processors per node (ppn) from number of processors"
+    if not settings:
+        return 1
+    
+    numproc = settings.numproc
+    if numproc <= PROC_PER_NODE:
+        return numproc
+
+    return PROC_PER_NODE
+
+
+def workDir(server, job):
+    "Returns working directory (where the outputs are stored)"
+    if not server or not job:
+        return "/tmp"   # Default directory
+
+    return "%s/%s/%s" % (server.workdir, job.name, job.id)
 
 
 def schedulerfactory( server ):
