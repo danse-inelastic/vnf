@@ -43,15 +43,24 @@ class Scheduler:
         return
     
     
-    def submit( self, cmd, walltime=1*hour, jobid=1,
-        numnodes = 1, corespernode = 1, workingDirectory='.'):
+    def submit( self, cmd, walltime=1*hour, jobid=1, numnodes = 1, corespernode = 1, workingDirectory='.'):
         "Submits job. Can raise exception"
         walltime = _walltime_str(walltime)
-        
+
+        """
+        Example:
+           cmds = ['echo \\"cd /home/danse-vnf-admin/vnf/qesimulations/MQDHXV7 && sh run.sh\\" | qsub
+                    -d /home/danse-vnf-admin/vnf/qejobs/7QMQYNWX -o STDOUT.log -e STDERR.log -V
+                    -N 7QMQYNWX -l nodes=1:ppn=12 -']
+        """
+
+        # Command executed on remote cluster
         cmds = [ r'echo \"%s\" | qsub -d %s -l walltime=%s -o %s -e %s -V -N %s -l nodes=%s:ppn=%s' % (
             cmd, workingDirectory, walltime, self.outfilename, self.errfilename, jobid, numnodes, corespernode) ]
 
+        # Actual launch of job
         failed, output, error = self._launch( cmds )
+        
         if failed:
             if error.find( 'check pbs_server daemon' ) != -1:
                 from exceptions import SchedulerDaemonNotStarted
@@ -237,6 +246,7 @@ class Scheduler:
         return self.launcher( ' && '.join( cmds ) )
 
     pass # end of Scheduler
+
 
 import os
 
