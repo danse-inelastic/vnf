@@ -49,7 +49,7 @@ class Scheduler:
 
         """
         Example:
-           cmds = ['echo \\"cd /home/danse-vnf-admin/vnf/qesimulations/MQDHXV7 && sh run.sh\\" | qsub
+           cmds = ['echo \\"cd /home/danse-vnf-admin/vnf/qejobs/7QMQYNWX && sh run.sh\\" | qsub
                     -d /home/danse-vnf-admin/vnf/qejobs/7QMQYNWX -o STDOUT.log -e STDERR.log -V
                     -N 7QMQYNWX -l nodes=1:ppn=12 -']
         """
