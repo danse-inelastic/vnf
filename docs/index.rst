@@ -30,6 +30,7 @@ More
 """"
 * `DANSE <http://danse.us>`_
 * `The VNF project <http://danse.us/trac/VNET>`_
+* :ref:`Contact us <contactus>`
 
 ..   tutorials-users
 ..   tutorials-dev
