@@ -1,0 +1,12 @@
+
+Directory Stucture
+------------------
+
+Root directory: /home/danse-vnf-admin/vnf stores VNF related data (not necessarily
+job related data )
+
+Working directory (stored in "servers" database): /home/danse-vnf-admin/vnf/data
+
+Adding New Pseudo-Potential
+---------------------------
+

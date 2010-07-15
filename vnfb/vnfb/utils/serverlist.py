@@ -13,6 +13,8 @@
 
 from vnfb.utils.orderedDict import OrderedDict
 
+FOXTROT_ID  = "server003"
+
 class ServerList:
     """
     ServerList - is a simple utility that helps to display servers list in the form
@@ -53,7 +55,7 @@ class ServerList:
 
     def _setFixedServers(self, director):
         "Uses fixed server (in case if you don't need other servers)"
-        server     = director.clerk.getServers(id="server001")
+        server     = director.clerk.getServers(id=FOXTROT_ID)
         self._servers = OrderedDict()
         self._servers[server.id]    = server.address
         return self._servers
