@@ -18,7 +18,8 @@ import os
 
 PROC_PER_NODE   = 12        # Number of processors per node, specific for foxtrot
 TEMP_DIR        = "/tmp"    # Temp default directory
-
+VAR_SET_FILE    = "~/.vnf"  # File for setting environmental variables and adding modules
+JOB_ID          = "jobid"   # File where the job id is stored
 
 # Temp solution for QE jobs submission. Hardcoded for the foxtrot cluster
 # param: job (input -> temp solution)
@@ -40,7 +41,7 @@ def schedule( sim, director, job ):
                                                     server,
                                                     server_jobpath,
                                                     suppressException=True)
-    scheduler = scheduler(launch, prefix = 'source ~/.vnf' )
+    scheduler = scheduler(launch, prefix = "source %s" % VAR_SET_FILE )
     walltime = 999*hour   # limit to one hour?
 
     id1 = scheduler.submit( 'cd %s && sh run.sh' % server_jobpath,
@@ -51,7 +52,7 @@ def schedule( sim, director, job ):
                             workingDirectory = workDir(server, job))
 
     # write id to the remote directory
-    director.csaccessor.execute('echo "%s" > jobid' % id1, server, server_jobpath)
+    director.csaccessor.execute('echo "%s" > %s' % (id1, JOB_ID) , server, server_jobpath)
 
     return
 
