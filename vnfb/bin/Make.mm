@@ -31,6 +31,7 @@ EXPORT_DATAFILES = \
 	deleterecord.py \
 	destroydb.py \
 	destroydataobject.py \
+	dumpdb.py \
 	establishglobalpointers.py \
 	findchildrenofdataobject.py \
 	findreferrals.py \
