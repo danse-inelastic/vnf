@@ -22,24 +22,24 @@ class DbApp(base):
 
         import pyre.inventory
 
-        outputdir = pyre.inventory.str(name='outputdir', default='db-pickle')
-
-
+        inputdir = pyre.inventory.str(name='inputdir', default='db-pickle')
+        
+        
     def main(self, *args, **kwds):
         clerk = self.inventory.clerk
         clerk.importAllDataObjects()
 
         tables = list(clerk.db.iterAllTables())
         
-        from dsaw.db.Pickler import Pickler
-        outputdir = self.inventory.outputdir
-        pickler = Pickler(clerk.db, outputdir)
-        pickler.dump(tables=tables)
+        from dsaw.db.Unpickler import Unpickler
+        inputdir = self.inventory.inputdir
+        unpickler = Unpickler(clerk.db, inputdir)
+        unpickler.load(tables)
         return
 
 
     def __init__(self):
-        base.__init__(self, 'dumpdb')
+        base.__init__(self, 'restoredb')
         return
 
 
