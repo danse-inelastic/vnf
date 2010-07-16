@@ -38,6 +38,9 @@ class DOMAccessor( base ):
         '''in some circumstances, it is useful to know of all the data objects
         in the system. this is done by importing all modules in vnfb.dom
         '''
+        # actually some dom must be imported earlier than others
+        from vnfb.dom import AtomicStructure
+        
         def _imp(m): return __import__(m, {}, {}, [''])
 
         #

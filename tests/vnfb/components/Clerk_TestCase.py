@@ -23,7 +23,16 @@ class TestCase(unittest.TestCase):
         clerk.importAllDataObjects()
         db = clerk.db
         tablenames = [t.getTableName() for t in db._tableregistry.itertables()]
+
+        # check some tables
+        # bvk
         self.assert_('bvkbonds' in tablenames)
+
+        # atomic structure
+        structuretable = db.getTable('atomicstructures')
+        from vnfb.dom.AtomicStructure import StructureTable, AbstractOwnedObjectBase
+        self.assertEqual(StructureTable, structuretable)
+        AbstractOwnedObjectBase.creator
         return
 
     
