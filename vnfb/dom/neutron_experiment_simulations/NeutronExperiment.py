@@ -92,7 +92,9 @@ class Inventory(InvBase):
     ncount = InvBase.d.float(name = 'ncount', default = 1e6)
     buffer_size = InvBase.d.int(name = 'buffer_size', default = 100000)
     short_description = InvBase.d.str(
-        name='short_description', default='experiment description', validator=InvBase.v.notempty)
+        name='short_description', default='experiment description',
+        max_length = 128,
+        validator=InvBase.v.notempty)
 
     # constructed = InvBase.d.varchar( name = 'constructed', length = 4, default = '' )
 

@@ -41,7 +41,6 @@ EXPORT_PYTHON_MODULES = \
         PackJobDir.py \
         JobDriver.py \
         QEPackJobDir.py \
-	RestoreVNFDB.py \
 	RetrieveResults.py \
 	UpdateJobStatus.py \
 	__init__.py \

@@ -44,7 +44,7 @@ EXPORT_DATAFILES = \
 	loaddataobject.py \
         packjobdir.py \
         jobdriver.py \
-	restorevnfdb.py \
+	restoredb.py \
 	retrieveresults.py \
 	startservices.sh \
 	timer.py \
