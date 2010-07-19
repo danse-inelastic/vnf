@@ -29,6 +29,7 @@ EXPORT_DATAFILES = \
 	app-extension.odb \
 	approveUser.pml \
 	itaskapp.pml \
+	checkservers.pml \
 	createdataobject.pml \
 	clerk.odb \
 	createInstruments.pml \

@@ -26,6 +26,7 @@ distclean::
 EXPORT_DATAFILES = \
 	announce.py \
 	approveUser.py \
+	checkservers.py \
 	createdataobject.py \
 	createtable.py \
 	deleterecord.py \
