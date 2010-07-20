@@ -140,9 +140,10 @@ class Actor(base):
         masslist    = []
         pseudolist  = []
         labels      = self._labels(structure)
+
         for i in range(len(labels)):
             masslist.append(float(getattr(self, "mass%s" % i)))
-            pseudo  = PSEUDO[labels[i]][int(getattr(self, "pseudo%s" % i))]
+            pseudo  = PSEUDO[labels[i]][int(getattr(self, "pseudo%s" % i))] # BUG: the order of labels is not the same as in form
             pseudolist.append(pseudo)
 
         input          = PWInput()

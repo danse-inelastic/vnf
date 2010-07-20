@@ -137,10 +137,15 @@ class Visual:
     def _labels(self):
         "Returns list of unique atom labels. E.g.: ('Ni', 'Cu')"
         domaccess   = self._director.retrieveDOMAccessor('atomicstructure')
-        structure   = domaccess.getAtomicStructure(self._structureid)
-        pw          = PWInput()
-        pw.structure.load(source = 'diffpy', structure = structure)
-        return pw.structure.atomLabels()
+        structure   = domaccess.getAtomicStructure(self._structureid) 
+        return list(set([e.symbol for e in structure]))
+
+#   def _labels(self):
+#        domaccess   = self._director.retrieveDOMAccessor('atomicstructure')
+#        structure   = domaccess.getAtomicStructure(self._structureid)
+#        pw          = PWInput()
+#        pw.structure.load(source = 'diffpy', structure = structure)
+#        return pw.structure.atomLabels()
 
 
     def _atomsdump(self):
