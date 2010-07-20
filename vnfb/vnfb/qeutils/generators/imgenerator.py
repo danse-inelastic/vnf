@@ -25,10 +25,11 @@ class IMGenerator(base):
         super(IMGenerator, self).__init__(director, inventory, input)
 
     def setControl(self):
-        nl  = self._input.namelist("control")
-        nl.set("dt", self._inv.dt)
-        nl.set("nstep", self._inv.nstep)
-    
+        control  = self._input.namelist("control")
+        control.set("dt", self._inv.dt)
+        control.set("nstep", self._inv.nstep)
+        control.set("restart_mode", "'restart'")
+        
         
 
 

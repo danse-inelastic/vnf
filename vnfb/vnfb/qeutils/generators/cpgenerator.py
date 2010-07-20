@@ -25,10 +25,11 @@ class CPGenerator(object):
         self._director  = director
         self._inv       = inventory
         self._input     = input
-
         self._init()
 
+
     def setInput(self):
+        "Update input"
         self.setControl()
         self.setSystem()
         self.setElectrons()
