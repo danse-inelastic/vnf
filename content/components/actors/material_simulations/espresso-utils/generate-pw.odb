@@ -166,7 +166,9 @@ class Actor(base):
 
     def _labels(self, structure):
         "Atom labels"
-        return list(set([e.symbol for e in structure]))
+        pw          = PWInput() # Not efficient!
+        pw.structure.load(source = 'diffpy', structure = structure)
+        return pw.structure.atomLabels()
 
 
     def __init__(self):
