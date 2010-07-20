@@ -28,6 +28,14 @@ class CPGenerator(object):
 
         self._init()
 
+    def setInput(self):
+        self.setControl()
+        self.setSystem()
+        self.setElectrons()
+        self.setIons()
+        self.setCell()
+        self.setExtra()
+
 
     # Methods which should be overwritten in subclasses!
     def setControl(self):
@@ -54,6 +62,10 @@ class CPGenerator(object):
         "CELL namelist"
         pass
 
+
+    def setExtra(self):
+        "Extra parameters not specified by other namelists or cards"
+        pass
 
     def _init(self):
         self._inputFromRecord()
