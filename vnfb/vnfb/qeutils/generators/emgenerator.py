@@ -80,7 +80,7 @@ class EMGenerator(object):
         system.add("ecutwfc", self._inv.ecutwfc)
 
         # BUG: When creating atomic structure from .xyz file within VNF
-        # you need to specify the lattice parameters in the comment line as below:
+        # you need to specify the lattice parameters in the comment line as follows:
         # [si64.xyz]
         #   64
         #20.52 0 0 0 20.52 0 0 0 20.52
@@ -124,6 +124,7 @@ class EMGenerator(object):
 
         return "EMGenerator"
 
+    # DEPRICATED
     def _celldm(self):
         return CELLDM   # XXX: Hack
 
