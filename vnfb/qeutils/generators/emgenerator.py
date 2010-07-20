@@ -11,6 +11,9 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
+# XXX: Critical: celldm(1) is created incorrectly from atomic structure
+#   Quick fix: set fixed value CELLDM!
+
 from vnfb.qeutils.qeparser.namelist import Namelist
 from vnfb.qeutils.qeparser.card import Card
 
@@ -43,8 +46,7 @@ ION_TEMPERATURE     = "'not_controlled'"
 # Default Cell params
 CELL_DYNAMICS       = "'none'"
 
-# XXX: Critical: celldm(1) is created incorrectly from atomic structure
-#   Quick fix: set fixed value!
+
 class EMGenerator(object):
     "Generator for CP Electronic Minimization task"
     
@@ -76,7 +78,20 @@ class EMGenerator(object):
         "SYSTEM namelist"
         system  = self._input.namelist("system")  # System namelist already exists
         system.add("ecutwfc", self._inv.ecutwfc)
-        system.set("celldm(1)", CELLDM) # XXX: Hack
+
+        # BUG: When creating atomic structure from .xyz file within VNF
+        # you need to specify the lattice parameters in the comment line as below:
+        # [si64.xyz]
+        #   64
+        #20.52 0 0 0 20.52 0 0 0 20.52
+        #Si  -0.102600E+02 -0.102600E+02 -0.102600E+02
+        #Si  -0.769499E+01 -0.769501E+01 -0.769498E+01
+        # ...
+        # 
+        # WARNING: This is a non-standard .xyz format, and the only way to create
+        # a correct atomic structure with .xyz file.
+        # 
+        #system.set("celldm(1)", self._celldm())
 
 
     def setElectrons(self):         # TODO: Suitable for phonon calculations?
@@ -108,6 +123,9 @@ class EMGenerator(object):
             return self._input.toString()
 
         return "EMGenerator"
+
+    def _celldm(self):
+        return CELLDM   # XXX: Hack
 
     
 __date__ = "$May 16, 2010 10:01:22 AM$"
