@@ -58,7 +58,7 @@ class Visual:
         st.addRow((submit, cancel), ("qe-action-accept", "qe-action-cancel"))
 
         table.addRow(("Atomic Structure: *", self._atoms()))
-        table.addRow(("Enertgy Cutoff (Ry): *", ecutwfc))
+        table.addRow(("Energy Cutoff (Ry): *", ecutwfc))
         table.addRow(("Effective Electron Mass (a.u.): *", emass))
         table.addRow(("Time Step (a.u.): *", dt))
         table.addRow(("Number of Steps: *", nstep))
