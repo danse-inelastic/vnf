@@ -41,6 +41,11 @@ when results are retrieved to the local machine only.
 Car-Parrinello molecular dynamics
 ---------------------------------
 
+"NVT" - Canonical ensemble with Nose Thermostat. At this point Quantum Espresso
+within VNF does not directly support variable-cell molecular dynamics (or stress
+calculation) - "NPT". But you are still can do variable-cell molecular dynamics
+by editing files appropriately.
+
 In order to caclculate CP molecular dynamics simulation you need to bring your system. 
 to a particular state. The following steps are implemented:
 

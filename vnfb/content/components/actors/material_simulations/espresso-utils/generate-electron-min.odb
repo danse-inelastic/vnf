@@ -28,6 +28,7 @@ class Actor(base):
         mattertype  = pyre.inventory.str('mattertype', default='0')
 
         ecutwfc     = pyre.inventory.str('ecutwfc', default='')
+        ecutrho     = pyre.inventory.str('ecutrho', default='')
         emass       = pyre.inventory.str('emass', default='')
         dt          = pyre.inventory.str('dt', default='')
         nstep       = pyre.inventory.str('nstep', default='')
@@ -137,6 +138,7 @@ class Actor(base):
         super(Actor, self)._configure()
         self.mattertype     = self.inventory.mattertype
         self.ecutwfc        = self.inventory.ecutwfc
+        self.ecutrho        = self.inventory.ecutrho
         self.emass          = self.inventory.emass
         self.dt             = self.inventory.dt
         self.nstep          = self.inventory.nstep
