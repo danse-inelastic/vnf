@@ -74,9 +74,13 @@ class QEGenerator(base):
         self.taskid = self.inventory.taskid
         self.type   = self.inventory.type
 
+        qelink  = load( actor           = 'materialsimulation',
+                        filter_key      = 'type',
+                        filter_value    = 'qesimulations')
+
         path = []
         path.append(('Simulations ',        load(actor='materialsimulation')))
-        path.append(('Quantum Espresso ',   load(actor='materialsimulation')))
+        path.append(('Quantum Espresso ',   qelink))
         path.append(('%s ' % self.id,       load(actor    = 'material_simulations/espresso/sim-view',
                                                 id       = self.id)))
         path.append(('%s Task ' % self.type, load(actor    = 'material_simulations/espresso/task-view',
