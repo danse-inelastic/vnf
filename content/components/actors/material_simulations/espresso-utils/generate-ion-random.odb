@@ -33,7 +33,7 @@ class Actor(base):
 
     def generateInput(self, director):
         gen     = IRGenerator(director, self.inventory)
-        #gen.setInput()
+        gen.setInput()
         return director.redirect(actor   = 'material_simulations/espresso/input-create',
                                 routine = 'default',
                                 text    = gen.toString(),
