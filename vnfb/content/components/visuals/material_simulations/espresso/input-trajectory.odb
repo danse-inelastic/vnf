@@ -48,6 +48,7 @@ def visual(actor, director, structureid, simtype):
     st          = QEGrid(lc.grid()) # Submit Table
     st.addRow((submit, cancel), ("qe-action-accept", "qe-action-cancel"))
 
+    table.addRow(("SHOW TIME SPENT AT EACH STEP", ""))
     table.addRow(("Start Time: *", start))
     table.addRow(("End Time: *", end))
     table.addRow(("Analysis Plots: *", plotOptions(director)))
