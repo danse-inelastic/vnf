@@ -76,7 +76,7 @@ class Visual:
             
         table.addRow(("Lattice Type:", ibrav))
         table.addRow(("Atomic Structure:", self._atoms()))
-        table.addRow(("Enertgy Cutoff (Ry):", ecutwfc))
+        table.addRow(("Energy Cutoff (Ry):", ecutwfc))
         table.addRow(("Density Cutoff (Ry):", ecutrho))
         self._addSmearing(table)
         table.addRow(("nk1:", nk1))
