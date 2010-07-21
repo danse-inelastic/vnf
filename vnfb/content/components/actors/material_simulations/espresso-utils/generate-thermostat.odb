@@ -34,9 +34,7 @@ class Actor(base):
 
     def generateInput(self, director):
         gen     = THGenerator(director, self.inventory)
-        gen.setControl()
-        gen.setElectrons()
-        gen.setIons()
+        gen.setInput()
         return director.redirect(actor   = 'material_simulations/espresso/input-create',
                                 routine = 'default',
                                 text    = gen.toString(),

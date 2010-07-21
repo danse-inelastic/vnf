@@ -14,8 +14,7 @@
 from vnfb.qeutils.generators.cpgenerator import CPGenerator as base
 
 # Control namelist
-#RESTART_MODE    = "'restart'"
-RESTART_MODE    = "'reset_counters'"
+RESTART_MODE    = "'restart'"
 NDW             = "52"
 
 # Electrons namelist
@@ -26,8 +25,6 @@ ION_DYNAMICS    = "'verlet'"
 ION_TEMPERATURE = "'nose'"
 
 
-# XXX: Revise defaults!
-
 class THGenerator(base):
     "Generator for CP Dynamics with Thermostat task"
 
@@ -35,9 +32,10 @@ class THGenerator(base):
         "CONTROL namelist"
         control = self._input.namelist("control")
         control.set("restart_mode", RESTART_MODE)
-        control.set("ndw",          NDW)
         control.set("dt",           self._inv.dt)
         control.set("nstep",        self._inv.nstep)
+        self._setNd(control, "ndw")
+        self._setNd(control, "ndr")
 
 
     def setElectrons(self):
@@ -54,6 +52,19 @@ class THGenerator(base):
         ions.add("ion_temperature", ION_TEMPERATURE)
         ions.add("tempw",           self._inv.tempw)
         ions.add("fnosep",          self._inv.fnosep)
+
+
+    def _setNd(self, control, name):
+        "Sets 'ndw' and 'ndr' parameter"
+        if not control:
+            return
+
+        nd         = control.param(name)
+        if nd:
+            control.set(name, str(int(nd)+1))
+            return
+
+        control.set(name, NDW)
 
 
 __date__ = "$May 16, 2010 10:04:32 AM$"
