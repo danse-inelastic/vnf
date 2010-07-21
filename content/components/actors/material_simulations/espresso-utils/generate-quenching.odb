@@ -32,7 +32,7 @@ class Actor(base):
 
     def generateInput(self, director):
         gen     = QUGenerator(director, self.inventory)
-        #gen.setInput()
+        gen.setInput()
         return director.redirect(actor   = 'material_simulations/espresso/input-create',
                                 routine = 'default',
                                 text    = gen.toString(),
