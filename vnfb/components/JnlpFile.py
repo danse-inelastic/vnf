@@ -29,7 +29,7 @@ class JnlpFile:
         if not director: 
             codebase = 'http://vnf.caltech.edu'
         else: 
-            codebase = director.weaver.htmlbase
+            codebase = director.weaver.inventory.htmlbase
         self.jnlpString = '''<?xml version="1.0" encoding="UTF-8"?>
 <jnlp spec="1.0+"
       codebase="'''+codebase+'''/java">
@@ -66,7 +66,7 @@ class JnlpFile:
         f = file(os.path.join(tmpdirectory, self.fileName + '.jnlp'),'w')
         f.write(self.jnlpString)
         f.close()
-        return os.path.join(director.weaver.htmlbase, 'tmp', os.path.split(tmpdirectory)[1], self.fileName + '.jnlp')
+        return os.path.join(director.weaver.inventory.htmlbase, 'tmp', os.path.split(tmpdirectory)[1], self.fileName + '.jnlp')
         
     
     
