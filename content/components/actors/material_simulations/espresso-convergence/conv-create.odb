@@ -21,7 +21,7 @@ from vnfb.dom.QEConvergence import QEConvergence
 from vnfb.dom.QEConvParam import QEConvParam
 from vnfb.dom.QETask import QETask
 from vnfb.dom.QEConvParamTask import QEConvParamTask
-from vnfb.qeutils.qeconst import MAX_STEPS, TOLERANCE, CONVPARAMLIST, CONVPARAM, CONVTYPELIST
+from vnfb.qeutils.qeconst import MAX_STEPS, TOLERANCE, CONVPARAMLIST, CONVPARAM, CONVTYPELIST, ID_START, ID_STEP, ID_PARAM
 from vnfb.components.QEConvergence import QEConvergence as base
 
 class Actor(base):
@@ -123,74 +123,25 @@ class Actor(base):
         return ""
 
 
-#def textValue(param, index):
-#    "Returns text value specified by param and index"
-##    selector    = select(id=ID_PARAM)
-##    if selector:
-###        print(selector)
-###        selected    = int(selector.getAttr("value"))
-###        key         = convkeys[selected]
-##
-##        key = selector.getAttr("selection")
-#    key   = param
-#    if not param in CONVPARAM.keys():
-#        keys    = CONVPARAM.keys()
-#        key     = keys[0]
-#
-#    if not index in range(len(CONVPARAM[key])):
-#        return ""
-#
-#    return str(CONVPARAM[key][index])
-#
-#
-#def setDefaults(director):
-#    # Note:
-#    #   "selection" refers to value of the selected entry, e.g. "dgauss"
-#    #   "value" refers to ordered number of the selected entry, e.g. 0
-#    #
-#    # Alternative way:
-#    #    selected    = int(select(id=ID_PARAM).getAttr("value"))
-#    #    key         = convkeys[selected]
-#
-#    keys    = CONVPARAM.keys()
-#    key     = keys[0]
-#
-##    for p in CONVPARAM.keys():
-##        table.addRow(("%s:" % p, str(CONVPARAM[p][index]) ))
-#
-##    convkeys    = CONVPARAM.keys()
-#
-##    selected    = int(select(id=ID_PARAM).getAttr("value"))
-##    key         = convkeys[selected]
-#
-#    print director
-#
-#    selector    = select(id=ID_PARAM)
-#    if selector:
-##        print(selector)
-##        selected    = int(selector.getAttr("value"))
-##        key         = convkeys[selected]
-#
-#        key = selector.getAttr("selection")
-##        key = selector.getAttr("value")
-#        print dir(selector)
-#        print key
-##
-##    print selector, key
-##
-##    print textValue("degauss", 2)
-#    #print CONVPARAM[key]
-#
-##    startForm   =
-#
-#    startField          = select(id=ID_START).setAttr(value=textValue(key, 2))
-#    stepField           = select(id=ID_STEP).setAttr(value=textValue(key, 3))
-#    actions = []
-#    actions.append(startField)
-#    actions.append(stepField)
-#
-#    return actions
+    def setDefaults(self, director):
+        # Note:
+        #   "selection" refers to value of the selected entry, e.g. "dgauss"
+        #   "value" refers to ordered number of the selected entry, e.g. 0
+        #
 
+        keys    = CONVPARAM.keys()
+        if self.param   == "":
+            self.param = "0"
+            
+        key     = keys[int(self.param)]
+
+        startField          = select(id=ID_START).setAttr(value=CONVPARAM[key][2])   # textValue(key, 2)
+        stepField           = select(id=ID_STEP).setAttr(value=CONVPARAM[key][3])    #textValue(key, 3)
+        actions = []
+        actions.append(startField)
+        actions.append(stepField)
+
+        return actions
 
 
     def _configure(self):
