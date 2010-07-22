@@ -226,6 +226,12 @@ ID_MD_OPTIONS   = "qe-md-options"
 ID_MD_LABEL     = "qe-md-label"
 TASK_ACTION     = "task-action"
 
+# Convergence parameter ids
+ID_START    = "formtextfield-start"
+ID_STEP     = "formtextfield-step"
+ID_PARAM    = "formselectorfield-param"
+
+
 # TODO: Move to parser/inputs
 ZASR        = OrderedDict()
 ZASR["crystal"]     = "'crystal'"
