@@ -69,6 +69,7 @@ class SSHer(base):
             '|',
             'ssh',
             "-o 'StrictHostKeyChecking=no'",
+            "-o 'BatchMode=yes'",
             ]
 
         if port:
@@ -111,6 +112,7 @@ class SSHer(base):
         pieces = [
             'scp',
             "-o 'StrictHostKeyChecking=no'",
+            "-o 'BatchMode=yes'",
             ]
         
         if port:
@@ -154,6 +156,7 @@ class SSHer(base):
         pieces = [
             'scp',
             "-o 'StrictHostKeyChecking=no'",
+            "-o 'BatchMode=yes'",
             ]
         
         if port:
@@ -198,6 +201,7 @@ class SSHer(base):
         pieces = [
             'ssh',
             "-o 'StrictHostKeyChecking=no'",
+            "-o 'BatchMode=yes'",
             ]
         
         if port:
@@ -266,6 +270,7 @@ class SSHer(base):
         pieces = [
             'scp',
             "-o 'StrictHostKeyChecking=no'",
+            "-o 'BatchMode=yes'",
             ]
         
         if port:
