@@ -1,0 +1,14 @@
+Welcome to the VNF user group!
+
+VNF, the Virtual Neutron Facility (https://vnf.caltech.edu), is a web service for simulating neutron scattering experiments.
+
+Thank you for your subscription to the VNF service, and the VNF user group here at http://groups.google.com/group/vnf-users is the discussion forum for the VNF users, and your questions, comments, and bug reports about VNF are very welcome.
+
+The VNF project (http://docs.danse.us/VNET) is being developed as part of the Distributed Data Analysis of Neutron Scattering Experiments (DANSE) project (http://danse.us) funded by the US National Science Foundation (http://www.nsf.gov/) under grant DMR-0520547.
+
+You can modify your subscription of VNF user group here: http://groups.google.com/group/vnf-users/subscribe?hl=en
+
+Thank you!
+
+DANSE-vnf team
+
