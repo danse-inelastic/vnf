@@ -38,16 +38,18 @@ class App(base):
         csa = self.csaccessor
         failed, output, error = csa.execute('ls', server, '/tmp', suppressException=True)
         if failed:
-            self._offline(server)
+            self._offline(server, error)
         return
 
 
-    def _offline(self, server):
+    def _offline(self, server, error):
         db = self.clerk.db
 
         server.status = 'offline'
         db.updateRecord(server)
-        
+
+        from vnfb.utils.communications import announce
+        announce(self, 'computing-server-down', server, error)
         return
 
 
