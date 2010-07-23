@@ -28,13 +28,14 @@ class App(base):
         clerk = self.inventory.clerk
 
         from vnfb.dom.Server import Server
-        servers = clerk.db.query(Server).all()
-
+        servers = clerk.db.query(Server).filter_by(status='online').all()
+        
         map(self._check, servers)
         return
 
 
     def _check(self, server):
+        print "checking server %r ..." % server.short_description
         csa = self.csaccessor
         failed, output, error = csa.execute('ls', server, '/tmp', suppressException=True)
         if failed:
