@@ -25,6 +25,7 @@ distclean::
 
 EXPORT_DATAFILES = \
 	SimpleHttpServer.pml \
+	activateserver.pml \
 	addbvkmodelstodb.pml \
 	app-extension.odb \
 	approveUser.pml \

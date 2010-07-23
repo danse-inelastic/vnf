@@ -24,6 +24,7 @@ distclean::
 # export
 
 EXPORT_DATAFILES = \
+	activateserver.py \
 	announce.py \
 	approveUser.py \
 	checkservers.py \
@@ -52,7 +53,6 @@ EXPORT_DATAFILES = \
 	startservices.sh \
 	timer.py \
 	updatejobstatus.py \
-	updatejobstatus.sh \
 
 
 
