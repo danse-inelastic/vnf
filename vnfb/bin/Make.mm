@@ -47,6 +47,8 @@ EXPORT_DATAFILES = \
         jobdriver.py \
 	restoredb.py \
 	retrieveresults.py \
+	runmonitors.sh \
+	startmonitors.sh \
 	startservices.sh \
 	timer.py \
 	updatejobstatus.py \

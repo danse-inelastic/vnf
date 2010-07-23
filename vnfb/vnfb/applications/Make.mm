@@ -36,12 +36,14 @@ all: export
 
 EXPORT_PYTHON_MODULES = \
 	ApproveUser.py \
-	ITaskApp.py \
 	EstablishGlobalPointers.py \
-        PackJobDir.py \
+	ITaskApp.py \
         JobDriver.py \
+	LaunchDetached.py \
+        PackJobDir.py \
         QEPackJobDir.py \
 	RetrieveResults.py \
+	Timer.py \
 	UpdateJobStatus.py \
 	__init__.py \
 
