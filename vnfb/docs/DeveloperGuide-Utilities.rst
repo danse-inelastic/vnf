@@ -36,6 +36,33 @@ does something. For example, command "checkservers.py" check the
 computing servers to see if they are working correctly.
 
 
+
+Computing servers
+-----------------
+
+checkservers.py
+"""""""""""""""
+
+Check computing servers that are currently online.
+If a computing server is not accessible, take it down.
+
+To run it::
+
+ $ cd $EXPORT_ROOT/vnfb/bin
+ $ ./checkservers.py
+
+
+activateserver.py
+"""""""""""""""""
+
+Activate a computing server.
+
+To run it::
+
+ $ cd $EXPORT_ROOT/vnfb/bin
+ $ ./activateserver.py -id=<server id>
+
+
 Communication
 -------------
 
