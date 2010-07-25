@@ -45,7 +45,8 @@ class TestCase(unittest.TestCase):
 
     def test2(self):
         disp = self.disp
-        x,y = disp.getDispersionCurve((0,0,0), (0,0,3.08), branch=0, npoints=20)
+        x,y = disp.getDispersionCurve((0,0,0), (0,0,3.08), branch=0, trialstep=0.001)
+        #x,y = disp.getDispersionCurve((0,0,0), (0,0,3.08), branch=0, npoints=20)
         if interactive:
             import pylab
             pylab.plot(x,y)
@@ -68,7 +69,7 @@ class TestCase(unittest.TestCase):
 ##              (1.54, 1.54, 1.54),
 ##              (1.54, 2.31, 0.77),
 ##              ],
-             branches=range(3), npointspersegment=31)
+             branches=range(3), trialstep=0.001)
         if interactive:
             import pylab
             for y in ys:
