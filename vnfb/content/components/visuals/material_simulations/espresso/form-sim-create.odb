@@ -14,7 +14,6 @@
 import luban.content as lc
 from vnfb.qeutils.qeconst import SIMCHAINS, ID_MD_LABEL, ID_MD_OPTIONS
 from vnfb.qeutils.qegrid import QEGrid
-from vnfb.utils.serverlist import ServerList
 
 from luban.content import select, load, alert
 
@@ -51,10 +50,6 @@ def atomicStructure(actor, director):
 def visual(actor, director):
     "Sets create new simulation form"
     
-    # Set servers first
-    servers     = ServerList(director)
-    serversList = servers.list()
-
     form        = Form(id = 'create-simulation-form')
     table       = QEGrid(lc.grid(Class="qe-form"))
     form.add(table.grid())
@@ -68,9 +63,6 @@ def visual(actor, director):
                                 simtype = select(element=simtype).getAttr("value"))
     description = FormTextField(name="description", value=actor.description)   # Make as textarea
     label       = FormTextField(name="label", value=actor.label)
-    server      = FormSelectorField(name    = "server",
-                                    entries = enumerate(serversList)) # XXX Move to QESettings
-
     submit      = FormSubmitButton(label="Create New Simulation")
     cancel      = lc.button(label="Cancel", onclick = load(actor = 'materialsimulation'))
 
@@ -79,7 +71,6 @@ def visual(actor, director):
 
     table.addRow(("Atomic Structure: *", atomicStructure(actor, director)))
     table.addRow(("Type: *", simtype))
-    table.addRow(("Server: *", server))
     table.addRow((lc.document(id=ID_MD_LABEL), lc.document(id=ID_MD_OPTIONS)))
     table.addRow(("Name:", sname))
     table.addRow(("Description:", description))
