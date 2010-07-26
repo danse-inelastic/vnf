@@ -39,17 +39,14 @@ class TestCaseBase(base):
         s.waitForElementPresent(minimize)
         s.click(minimize)
 
-        select = self.formfield('atomicstructure-table-basic-filter-key', 'select')
+        select = s.lh.formfield('atomicstructure-table-basic-filter-key', 'select')
         s.select(select, 'description')
-        s.type(self.formfield('atomicstructure-table-basic-filter-value', 'input'), 'bcc Fe*')
+        s.type(s.lh.formfield('atomicstructure-table-basic-filter-value', 'input'),
+               'bcc Fe*')
         
-        self.sleep(2)
+        s.lh.sleep(2)
         return
 
-
-    def formfield(self, id, type):
-        return "//div[@id='%s']/table/tbody/tr/td[1]/%s" % (id, type)
-    
 
 def pysuite():
     from vnfb.testing import getDeploymentInfo
