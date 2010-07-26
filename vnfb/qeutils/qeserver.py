@@ -25,20 +25,26 @@ class QEServer:
  
     def getLink(self, id):      # simulation id
         server = None
-        sim     = self._director.clerk.getQESimulations(id = id )
-        if sim:
-            server = self._director.clerk.getServers(id = sim.serverid )
-
         link = Paragraph(text="None")
 
-        if server:
-            link = Link(label   = server.address,
-                        Class   = "action-link",
-                        tip     = "Show details of computational cluster",
-                        onclick = load(actor      = "server",
-                                         routine    = "view",
-                                         id         = server.id)
-                        )
+        settings    = self._director.clerk.getQESettings(where="simulationid='%s'" % id )
+        if not settings:# or not settings[0]:
+            return link
+
+        setting     = settings[0]
+        server = self._director.clerk.getServers(id = setting.serverid )
+
+        if not server:
+            return link
+
+        
+        link = Link(label   = server.address,
+                    Class   = "action-link",
+                    tip     = "Show details of computational cluster",
+                    onclick = load(actor      = "server",
+                                     routine    = "view",
+                                     id         = server.id)
+                    )
 
         return link
 
