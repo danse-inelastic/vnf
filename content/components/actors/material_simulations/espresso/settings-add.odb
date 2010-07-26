@@ -22,6 +22,7 @@ from luban.content.FormTextField import FormTextField
 from luban.content.FormCheckBox import FormCheckBox
 from luban.content.FormSubmitButton import FormSubmitButton
 from vnfb.qeutils.qeconst import SETTINGS, PROCESSORS, NOPARALSIM, SIMTYPE
+from vnfb.utils.serverlist import ServerList
 
 import luban.content as lc
 from luban.components.AuthorizedActor import AuthorizedActor as base
@@ -32,6 +33,7 @@ class Actor(base):
     class Inventory(base.Inventory):
         import pyre.inventory
         id          = pyre.inventory.str('id', default='')          # Simulation Id
+        server      = pyre.inventory.str('server', default='')
         sname       = pyre.inventory.str('sname', default='')
         description = pyre.inventory.str('description', default='') # Not used
         numproc     = pyre.inventory.int('numproc', default=1)
@@ -64,7 +66,7 @@ class Actor(base):
         sA          = splitter.section()
         sA.add(viewIndicator(director))
         sB          = splitter.section()
-        sB.add(self._setForm(sim))
+        sB.add(self._setForm(sim, director))
 
         return doc
 
@@ -85,7 +87,7 @@ class Actor(base):
         It is used to boost simulation performance. \
         But it normally has some issues that simulation \
         is not allocated to the same nodes which you ran your \
-        previous simulation on. Check it if noone is using the cluster . \
+        previous simulation on. Check it if no one is using the cluster . \
         When not checked, it will run safely on NFS but a slower than on scratch space."
         dialog          = self._showDialog(title, text)
         explainlink     = lc.link( label    = "Explain",
@@ -93,13 +95,20 @@ class Actor(base):
         return explainlink
 
 
-    def _setForm(self, sim):
+    def _setForm(self, sim, director):
         "Sets create new settings form"
         
         form        = Form(id='create-simulation-form')
         table       = QEGrid(lc.grid(Class="qe-form"))
         form.add(table.grid())
 
+        # Set servers first
+        servers     = ServerList(director)
+        serversList = servers.list()
+
+
+        server          = FormSelectorField(name    = "server",
+                                            entries = enumerate(serversList))
         numproc         = FormSelectorField(name="numproc", entries = self._procOptions(sim))
         localdisk       = FormCheckBox(name="localdisk", value = False)
         sname           = FormTextField(name = "sname", value = self.sname)
@@ -115,6 +124,7 @@ class Actor(base):
         st          = QEGrid(lc.grid()) # Submit Table
         st.addRow((submit, cancel), ("qe-action-accept", "qe-action-cancel"))
 
+        table.addRow(("Server: *", server))
         table.addRow(("Number of Processors: *", numproc))
         table.addRow(("Scratch Space: *", diskgrid.grid()))
         table.addRow(("Name:", sname))
@@ -133,9 +143,12 @@ class Actor(base):
 
     def createRecord(self, director):
         """Create settings record"""
+        servers = ServerList(director)
+        
         params  = {"simulationid":  self.id,
                    "sname":         self._sname(),
                    "description":   self.description,
+                    "serverid":     servers.id(self.server),
                    "numproc":       PROCESSORS[self.numproc],
                    "npool":         SETTINGS["npool"],      # Set from constants?
                    "executable":    SETTINGS["executable"], # Set from constants?
@@ -143,7 +156,6 @@ class Actor(base):
                    "modules":       SETTINGS["modules"]     # Set from constants?
                   }
         settings     = QESetting(director)
-#        settings.setDirector(director)
         settings.createRecord(params)
         
         return load(actor='material_simulations/espresso/sim-view', id=self.id)
@@ -179,6 +191,7 @@ class Actor(base):
         super(Actor, self)._configure()
         self.id             = self.inventory.id
         self.sname          = self.inventory.sname
+        self.server         = self.inventory.server
         self.description    = self.inventory.description
         self.numproc        = self.inventory.numproc
 
