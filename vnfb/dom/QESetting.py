@@ -34,6 +34,10 @@ class QESetting(QETable):
     simulationid.constraints = 'REFERENCES qesimulations (id)'    # Important
     simulationid.meta['tip'] = "Simulation id"
 
+    serverid    = dsaw.db.varchar(name="serverid", length=64)
+    serverid.constraints = 'REFERENCES servers (id)'    # Important
+    serverid.meta['tip'] = "Default server for the simulation"
+
     # Later on can be tranformed to a separate File table
     sname    = dsaw.db.varchar(name="sname", length=1024, default='')
     sname.meta['tip'] = "Filename assiciated with this configuration"
