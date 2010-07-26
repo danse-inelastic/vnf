@@ -148,7 +148,7 @@ class Actor(base):
         params  = {"simulationid":  self.id,
                    "sname":         self._sname(),
                    "description":   self.description,
-                    "serverid":     servers.id(self.server),
+                   "serverid":      servers.id(self.server),
                    "numproc":       PROCESSORS[self.numproc],
                    "npool":         SETTINGS["npool"],      # Set from constants?
                    "executable":    SETTINGS["executable"], # Set from constants?

@@ -45,9 +45,9 @@ class QESimulation(QETable, GloballyReferrable):
 
     # XXX: Temp solution. Server should be referenced by qesettings
     # See: vnfb/misc/espresso/design/dbschema.png
-    serverid    = dsaw.db.varchar(name="serverid", length=64)
-    serverid.constraints = 'REFERENCES servers (id)'    # Important
-    serverid.meta['tip'] = "Default server for the simulation"
+#    serverid    = dsaw.db.varchar(name="serverid", length=64)
+#    serverid.constraints = 'REFERENCES servers (id)'    # Important
+#    serverid.meta['tip'] = "Default server for the simulation"
 
     structureid    = dsaw.db.varchar(name="structureid", length=64)
     structureid.constraints = 'REFERENCES atomicstructures (id)'    # Important
