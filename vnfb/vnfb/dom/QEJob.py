@@ -72,17 +72,6 @@ class QEJob(QETable):
 
 # Default records
 defaults    = ({})
-#from vnfb.qeutils.qeconst import STATES
-#from vnfb.qeutils.qeutils import timestamp
-#defaults    = ({"id": 1, "creator": "dexity", "taskid": 4, "serverid": 1,
-#               "status": STATES["C"], "timecompleted": timestamp() + 60, "exitcode": 0,
-#                "numberprocessors": 8},
-#               {"id": 2, "creator": "dexity", "taskid": 5, "serverid": 1,
-#               "status": STATES["C"], "timecompleted": timestamp() + 60, "exitcode": 0,
-#                "numberprocessors": 8},
-#               {"id": 3, "creator": "dexity", "taskid": 6, "serverid": 1,
-#               "status": STATES["R"], "timecompleted": timestamp() + 60, "exitcode": 0,
-#                "numberprocessors": 8})
 
 # Init tables
 def inittable(clerk):

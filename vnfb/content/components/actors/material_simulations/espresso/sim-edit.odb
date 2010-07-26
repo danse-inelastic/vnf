@@ -23,7 +23,7 @@ Question:
     - What happens to tasks?
 """
 
-from vnfb.utils.serverlist import ServerList
+#from vnfb.utils.serverlist import ServerList
 from vnfb.qeutils.qegrid import QEGrid
 from vnfb.qeutils.qeconst import SIMCHAINS
 
@@ -48,7 +48,7 @@ class Actor(base):
         simtype     = pyre.inventory.str('simtype', default='')
         description = pyre.inventory.str('description', default='')
         label       = pyre.inventory.str('label', default='')
-        server      = pyre.inventory.str('server', default='')
+#        server      = pyre.inventory.str('server', default='')
 
 
     def default(self, director):
@@ -81,8 +81,8 @@ class Actor(base):
     
     def _setForm(self, director, sim):
         # Set servers first
-        servers     = ServerList(director)
-        serversList = servers.list()
+#        servers     = ServerList(director)
+#        serversList = servers.list()
         form        = Form()
         table       = QEGrid(lc.grid(Class="qe-form"))
         form.add(table.grid())
@@ -92,16 +92,16 @@ class Actor(base):
                                         selection=self.simtypeValue(sim.type))
         description = FormTextField(name="description", value=sim.short_description)   # Make as textarea
         label       = FormTextField(name="label", value=sim.label)
-        server      = FormSelectorField(name="server",
-                                        entries=enumerate(serversList),
-                                        selection=servers.selected(sim.serverid))
+#        server      = FormSelectorField(name="server",
+#                                        entries=enumerate(serversList),
+#                                        selection=servers.selected(sim.serverid))
         submit      = FormSubmitButton(label="Save Changes")
         cancel      = lc.button(label="Cancel")
         cancel.onclick = load(actor = 'material_simulations/espresso/sim-view', id=self.id)
         st          = QEGrid(lc.grid()) # Submit Table
         st.addRow((submit, cancel), ("qe-action-accept", "qe-action-cancel"))
         table.addRow(("Type:", simtype))
-        table.addRow(("Server:", server))
+#        table.addRow(("Server:", server))
         table.addRow(("Name:", sname))
         table.addRow(("Description:", description))
         table.addRow(("Label:", label))
@@ -125,14 +125,14 @@ class Actor(base):
         self._verify()
         keys        = SIMCHAINS.keys()
         simtype     = keys[int(self.simtype)]
-        servers     = ServerList(director)
+#        servers     = ServerList(director)
         sim             = director.clerk.getQESimulations(id=self.id)   # ?
         if sim:
             params  = {"sname":         self.sname,
                        "type":          simtype, # Type cannot be updated
                        "short_description":   self.description,
                        "label":         self.label,
-                       "serverid":      servers.id(self.server)
+#                       "serverid":      servers.id(self.server)
                        }
             sim.setDirector(director)
             sim.updateRecord(params)
@@ -151,7 +151,7 @@ class Actor(base):
         self.simtype     = self.inventory.simtype
         self.description = self.inventory.description
         self.label       = self.inventory.label
-        self.server      = self.inventory.server
+#        self.server      = self.inventory.server
 
         return
 

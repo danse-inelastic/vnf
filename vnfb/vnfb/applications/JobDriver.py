@@ -93,7 +93,7 @@ class JobDriver(base):
         settings    = self.clerk.getQESettings(where = "simulationid='%s'" % self.id)   # Should exist
         setting     = settings[0]
         params  = {"taskid":        self.taskid,
-                   "serverid":      self._sim.serverid,
+                   "serverid":      setting.serverid,
                    "status":        "Submitting",    # Fixed status
                    "timesubmitted": stamp(),
                    "creator":       self.sentry.username,
@@ -285,13 +285,6 @@ class JobDriver(base):
         # Create output directory (ESPRESSO_TEMPDIR) for QE
         dds.makedirs(self._sim, server=server)
        
-
-    def _test_makedirs(self):
-        dds         = self.dds
-        self._sim   = self.clerk.getQESimulations(id = self.id)
-        server      = self.clerk.getServers(id = self._sim.serverid)
-        dds.makedirs(self._sim, server=server)
-
 
     def _scheduleJob(self):
         "Schedule job"

@@ -19,7 +19,6 @@ TODO: Questions:
 
 from vnfb.qeutils.qeconst import SIMCHAINS
 from vnfb.qeutils.qegrid import QEGrid
-from vnfb.utils.serverlist import ServerList
 from vnfb.dom.QESimulation import QESimulation
 
 from luban.content import select
@@ -44,7 +43,6 @@ class Actor(base):
         simtype     = pyre.inventory.str('simtype', default='')
         description = pyre.inventory.str('description', default='')
         label       = pyre.inventory.str('label', default='')
-        server      = pyre.inventory.str('server', default='')
         matter      = pyre.inventory.str('matter', default='')
 
 
@@ -82,10 +80,6 @@ class Actor(base):
 
     def _setForm(self, director, sim):
 
-        # Set servers first
-        servers     = ServerList(director)
-        serversList = servers.list()
-
         form        = Form()
         table       = QEGrid(lc.grid(Class="qe-form"))
         form.add(table.grid())
@@ -96,9 +90,6 @@ class Actor(base):
                                         selection=self.simtypeValue(sim.type))
         description = FormTextField(name="description", value=sim.short_description)   # Make as textarea
         label       = FormTextField(name="label", value=sim.label)
-        server      = FormSelectorField(name="server",
-                                        entries=enumerate(serversList),
-                                        selection=servers.selected(sim.serverid))
         matter      = FormSelectorField(name="matter",
                                         entries=enumerate(["Not Available",]))  # ?
 
@@ -113,7 +104,6 @@ class Actor(base):
         table.addRow(("Type:", simtype))
         table.addRow(("Description:", description))
         table.addRow(("Label:", label))
-        table.addRow(("Server:", server))
         table.addRow(("Atomic Structure:", matter))
         table.addRow(("", st.grid()))
 
@@ -148,7 +138,7 @@ class Actor(base):
                    "creator":       director.sentry.username,
                    "short_description":   self.description,
                    "label":         self.label,
-                   "serverid":      servers.id(self.server)
+#                   "serverid":      servers.id(self.server)
                    #"matter":        self.matter    # Doesn't work at this moment
                    }
         sim     = QESimulation(director)
@@ -171,7 +161,7 @@ class Actor(base):
         self.simtype     = self.inventory.simtype
         self.description = self.inventory.description
         self.label       = self.inventory.label
-        self.server      = self.inventory.server
+#        self.server      = self.inventory.server
         self.matter      = self.inventory.matter
 
         return
