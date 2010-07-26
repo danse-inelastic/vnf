@@ -22,23 +22,25 @@ class TestCaseBase(base):
     def test1(self):
         'vnf: login'
         s = self.selenium
-
+        
         s.open(self.appaddress)
 
-        username = "//div[@id='login-username-input']"
-        password = "//div[@id='login-password-input']"
-        inputsubelem = '/table/tbody/tr/td[1]/input'
-        s.waitForElementPresent(username)
-        s.type(username+inputsubelem, 'demo')
-        s.type(password+inputsubelem, 'demo')
+        from workflows.basic import login
+        login(s)
+        return
 
-        submit = "//input[@type='submit']"
-        s.click(submit)
 
-        minimize = "//div[@id='minimize-help-button']/a/span"
-        s.waitForElementPresent(minimize)
-        s.click(minimize)
+    def test2(self):
+        'vnf: filter by description to find bcc Fe*'
+        s = self.selenium
+        
+        s.open(self.appaddress)
 
+        from workflows.basic import login, basic_filter
+        login(s)
+        basic_filter(s, table='atomicstructure', key='description', value='bcc Fe*')
+
+        s.lh.sleep(3)
         return
 
 
