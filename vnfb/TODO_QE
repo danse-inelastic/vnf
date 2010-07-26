@@ -2,6 +2,8 @@ TODO List for Quantum Espresso
 ==============================
 
 
+- Add link next to the plot to download the DOS file. Open the file in a new browser window.
+- Add links to documentation for QE.
 
 Problem: How to define similarity for simulation tasks? Settings? Matter?
 Solution:
