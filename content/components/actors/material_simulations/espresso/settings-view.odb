@@ -13,6 +13,7 @@
 
 from vnfb.qeutils.qeutils import stamp2date
 from vnfb.qeutils.qegrid import QEGrid
+from vnfb.qeutils.qeserver import QEServer
 
 from luban.content import select
 from luban.content import load
@@ -64,7 +65,7 @@ class Actor(base):
         sB          = splitter.section()
         table       = QEGrid(lc.grid(Class = "qe-table"))
         sB.add(table.grid())
-        self._showSettings(table, self._settings)
+        self._showSettings(director, table, self._settings)
 
         # Should go after all of the rows are added!
         table.setColumnStyle(0, "qe-cell-param")
@@ -96,18 +97,28 @@ class Actor(base):
         section.add(lc.document(Class="clear-both"))
         
                     
-    def _showSettings(self, table, settings):
+    def _showSettings(self, director, table, settings):
         #(self._parser, fp)    = self.parser(settings)
 
         if settings:
+            self._showServer(director, table)
             table.addRow(("Number of Processors: ", str(settings.numproc) ))
             table.addRow(('Name:', settings.sname))
             table.addRow(('Description:', settings.description))
+
+            # Additional parameters
 #            table.addRow(("Number of Nodes: ", str(settings.numnodes)))
 #            table.addRow(("Npool: ", str(settings.npool)))
 #            table.addRow(("Executable: ", settings.executable))
 #            table.addRow(("Additional Parameters: ", settings.params))
 #            table.addRow(("Modules: ", settings.modules))
+
+
+    def _showServer(self, director, table):
+        server  = QEServer(director)
+        link    = server.getLink(self.id)
+
+        table.addRow(("Server: ", link))
 
 
     def __init__(self):

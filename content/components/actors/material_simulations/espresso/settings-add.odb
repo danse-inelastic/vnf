@@ -106,7 +106,6 @@ class Actor(base):
         servers     = ServerList(director)
         serversList = servers.list()
 
-
         server          = FormSelectorField(name    = "server",
                                             entries = enumerate(serversList))
         numproc         = FormSelectorField(name="numproc", entries = self._procOptions(sim))
