@@ -74,6 +74,8 @@ class QESetting(QETable):
     text.meta['tip'] = "text"
 
 
+
+
 #    # Should be moved Server???
 #    procpernode = dsaw.db.integer(name='procpernode', default = 0)
 #    procpernode.meta['tip'] = "Number of processes per node"
