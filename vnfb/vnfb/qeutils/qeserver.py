@@ -13,7 +13,7 @@
 
 from luban.content.Splitter import Splitter
 from luban.content.Paragraph import Paragraph
-from luban.content import load
+from luban.content import load, select
 from luban.content.Link import Link
 
 # Stub at this point
@@ -41,9 +41,7 @@ class QEServer:
         link = Link(label   = server.address,
                     Class   = "action-link",
                     tip     = "Show details of computational cluster",
-                    onclick = load(actor      = "server",
-                                     routine    = "view",
-                                     id         = server.id)
+                    onclick = select(id='').append(load(actor='server/load', routine='createDialog'))
                     )
 
         return link
