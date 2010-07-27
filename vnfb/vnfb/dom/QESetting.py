@@ -73,6 +73,8 @@ class QESetting(QETable):
     text = dsaw.db.varchar(name="text", length=8192, default='')
     text.meta['tip'] = "text"
 
+    optlevel    = dsaw.db.integer(name='optlevel', default = 0)
+    optlevel.meta['tip'] = "Optimization level. 0 - no optimization"
 
 
 
