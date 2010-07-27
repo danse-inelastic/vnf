@@ -153,3 +153,5 @@ convergenceid -> convparamid
 May 14, 2010
 Added column "simchain" to qesimulations table
 
+July 27, 2010
+Added column "optlevel" to qesettings table
