@@ -37,7 +37,7 @@ def visual(structureid=None, director=None):
     
     doc.paragraph(text=['2) pdb'])
     
-    doc.paragraph(text=['3) xyz--if 9 floats are given on the comment line, these are take as the flattened lattice vectors'])
+    doc.paragraph(text=['3) xyz--if 9 floats are given on the comment line, these are used as the lattice vectors (a_x a_y a_z b_x b_y b_z c_x c_y c_z)'])
     
     # spacer
     doc.paragraph()
