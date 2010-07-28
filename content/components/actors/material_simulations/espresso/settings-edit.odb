@@ -18,8 +18,9 @@ from luban.content import load
 from luban.content.Form import Form
 from luban.content.FormSelectorField import FormSelectorField
 from luban.content.FormTextField import FormTextField
+from luban.content.FormCheckBox import FormCheckBox
 from luban.content.FormSubmitButton import FormSubmitButton
-from vnfb.qeutils.qeconst import PROCESSORS, NOPARALSIM, SIMTYPE
+from vnfb.qeutils.qeconst import PROCESSORS, NOPARALSIM, SIMTYPE, OPT_DEFAULT
 from vnfb.utils.serverlist import ServerList
 
 import luban.content as lc
@@ -35,6 +36,7 @@ class Actor(base):
         description = pyre.inventory.str('description', default='') # Not used
         server      = pyre.inventory.str('server', default='')
         numproc     = pyre.inventory.int('numproc', default=0)
+        localdisk   = pyre.inventory.bool('localdisk', default=False)
 
 
     def default(self, director):
@@ -86,6 +88,7 @@ class Actor(base):
         numproc     = FormSelectorField(name        = "numproc",
                                         entries     = self._procOptions(sim),
                                         selection   = self._procSelected(settings))
+        localdisk   = FormCheckBox(name="localdisk", value = self._optLevelChecked(settings))
         sname       = FormTextField(name = "sname", value = settings.sname)
         description = FormTextField(name = "description", value=settings.description)   # Make as textarea
 
@@ -97,6 +100,7 @@ class Actor(base):
         st.addRow((submit, cancel), ("qe-action-accept", "qe-action-cancel"))
         table.addRow(("Server:", server))
         table.addRow(("Number of Processors: *", numproc))
+        table.addRow(("Optimization: *", localdisk))
         table.addRow(("Name:", sname))
         table.addRow(("Description:", description))
         table.addRow(("", st.grid()))
@@ -110,7 +114,18 @@ class Actor(base):
                                                       configid  = self.configid)
 
         return form
-    
+
+
+    def _optLevelChecked(self, settings):
+        "Returns optlevel"
+        if not settings:
+            return OPT_DEFAULT
+
+        if settings.optlevel:
+            return True
+
+        return False
+        
 
     def _procSelected(self, settings):
         "Return selected order"
@@ -140,11 +155,24 @@ class Actor(base):
         params  = {"sname":         self.sname,
                    "description":   self.description,  # I don't really need description at this point!
                    "serverid":      servers.id(self.server),
+                   "optlevel":      self._optLevel(),
                    "numproc":       PROCESSORS[int(self.numproc)],
                   }                   
         settings.updateRecord(params)
         
         return load(actor = 'material_simulations/espresso/sim-view', id=self.id)
+
+
+    def _optLevel(self):
+        """
+        Returns optimization level depending on 'scratch space' checkbox
+            0 - NFS file system
+            1 - Scratch space (local disk on each node)
+        """
+        if self.localdisk:
+            return 1
+
+        return 0
 
 
     def __init__(self):
@@ -161,6 +189,7 @@ class Actor(base):
         self.description    = self.inventory.description
         self.server         = self.inventory.server
         self.numproc        = self.inventory.numproc
+        self.localdisk      = self.inventory.localdisk
 
 
     def _init(self):

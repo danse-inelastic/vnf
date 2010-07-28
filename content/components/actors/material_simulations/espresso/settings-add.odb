@@ -21,7 +21,7 @@ from luban.content.FormSelectorField import FormSelectorField
 from luban.content.FormTextField import FormTextField
 from luban.content.FormCheckBox import FormCheckBox
 from luban.content.FormSubmitButton import FormSubmitButton
-from vnfb.qeutils.qeconst import SETTINGS, PROCESSORS, NOPARALSIM, SIMTYPE
+from vnfb.qeutils.qeconst import SETTINGS, PROCESSORS, NOPARALSIM, SIMTYPE, OPT_DEFAULT
 from vnfb.utils.serverlist import ServerList
 
 import luban.content as lc
@@ -37,6 +37,7 @@ class Actor(base):
         sname       = pyre.inventory.str('sname', default='')
         description = pyre.inventory.str('description', default='') # Not used
         numproc     = pyre.inventory.int('numproc', default=1)
+        localdisk   = pyre.inventory.bool('localdisk', default=False)
 
 
     def default(self, director):
@@ -82,8 +83,9 @@ class Actor(base):
 
 
     def dialogLink(self, content):
-        title           = "Scratch Space"
-        text            = "Scratch space is the local disk on each computational node. \
+        title           = "Optimization"
+        text            = "Optimization here means running simulations on a \
+        scratch space. Scratch space is the local disk on each computational node. \
         It is used to boost simulation performance. \
         But it normally has some issues that simulation \
         is not allocated to the same nodes which you ran your \
@@ -109,7 +111,7 @@ class Actor(base):
         server          = FormSelectorField(name    = "server",
                                             entries = enumerate(serversList))
         numproc         = FormSelectorField(name="numproc", entries = self._procOptions(sim))
-        localdisk       = FormCheckBox(name="localdisk", value = False)
+        localdisk       = FormCheckBox(name="localdisk", value = OPT_DEFAULT)
         sname           = FormTextField(name = "sname", value = self.sname)
         description     = FormTextField(name = "description", value=self.description)   # Make as textarea
 
@@ -125,7 +127,7 @@ class Actor(base):
 
         table.addRow(("Server: *", server))
         table.addRow(("Number of Processors: *", numproc))
-        table.addRow(("Scratch Space: *", diskgrid.grid()))
+        table.addRow(("Optimization: *", diskgrid.grid()))
         table.addRow(("Name:", sname))
         table.addRow(("Description:", description))
         table.addRow(("", st.grid()))
@@ -149,6 +151,7 @@ class Actor(base):
                    "description":   self.description,
                    "serverid":      servers.id(self.server),
                    "numproc":       PROCESSORS[self.numproc],
+                   "optlevel":      self._optLevel(),
                    "npool":         SETTINGS["npool"],      # Set from constants?
                    "executable":    SETTINGS["executable"], # Set from constants?
                    "params":        SETTINGS["params"],     # Set from constants?
@@ -158,6 +161,18 @@ class Actor(base):
         settings.createRecord(params)
         
         return load(actor='material_simulations/espresso/sim-view', id=self.id)
+
+
+    def _optLevel(self):
+        """
+        Returns optimization level depending on 'scratch space' checkbox
+            0 - NFS file system
+            1 - Scratch space (local disk on each node)
+        """
+        if self.localdisk:
+            return 1
+
+        return 0
 
 
     def _procOptions(self, sim):
@@ -193,6 +208,7 @@ class Actor(base):
         self.server         = self.inventory.server
         self.description    = self.inventory.description
         self.numproc        = self.inventory.numproc
+        self.localdisk      = self.inventory.localdisk
 
 
     def _init(self):

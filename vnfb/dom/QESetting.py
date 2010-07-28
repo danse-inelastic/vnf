@@ -74,13 +74,8 @@ class QESetting(QETable):
     text.meta['tip'] = "text"
 
     optlevel    = dsaw.db.integer(name='optlevel', default = 0)
-    optlevel.meta['tip'] = "Optimization level. 0 - no optimization"
+    optlevel.meta['tip'] = "Optimization level. Definition depends on the cluster. 0 - no optimization"
 
-
-
-#    # Should be moved Server???
-#    procpernode = dsaw.db.integer(name='procpernode', default = 0)
-#    procpernode.meta['tip'] = "Number of processes per node"
 
 
 __date__ = "$Dec 10, 2009 10:08:22 PM$"
