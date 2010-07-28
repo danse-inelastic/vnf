@@ -29,7 +29,7 @@ class Actor(base):
         c_min = luban.inventory.float('c_min', validator=luban.inventory.nonnegative, default=None)
         c_max = luban.inventory.float('c_max', validator=luban.inventory.nonnegative, default=None)
 
-        anglelimit = luban.inventory.range(0,180,brackets='()')
+        anglelimit = luban.inventory.range(0, 180, brackets='()')
         alpha_min = luban.inventory.float('alpha_min', validator=anglelimit, default=None)
         alpha_max = luban.inventory.float('alpha_max', validator=anglelimit, default=None)
 
@@ -56,9 +56,9 @@ class Actor(base):
 
     def store(self, director):
         form.onsubmit = select(element=form).submit(
-        actor='atomicstructure/create-structure-form',
-        routine = 'process',
-        id = id,
+            actor='atomicstructure/create-structure-form',
+            routine = 'process',
+            id = id,
         )
 
     def _getInputErrors(self):
