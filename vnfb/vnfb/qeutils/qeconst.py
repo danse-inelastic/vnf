@@ -321,6 +321,8 @@ CONVTYPELIST    = CONVTYPE.keys()
 MAX_STEPS   = 10
 TOLERANCE   = 1.0
 
+# Optimization parameters
+OPT_DEFAULT = False
 
 __date__ = "$Nov 3, 2009 3:12:34 PM$"
 

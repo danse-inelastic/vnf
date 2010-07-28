@@ -21,6 +21,8 @@ from luban.content import load
 import luban.content as lc
 from luban.components.AuthorizedActor import AuthorizedActor as base
 
+OPT_LEVEL   = "Scratch space"
+
 # Requires simulation id, config id and config type: (id, configid, type)
 class Actor(base):
 
@@ -103,6 +105,7 @@ class Actor(base):
         if settings:
             self._showServer(director, table)
             table.addRow(("Number of Processors: ", str(settings.numproc) ))
+            table.addRow(("Optimization: ", self._optimization(settings) ))
             table.addRow(('Name:', settings.sname))
             table.addRow(('Description:', settings.description))
 
@@ -112,6 +115,18 @@ class Actor(base):
 #            table.addRow(("Executable: ", settings.executable))
 #            table.addRow(("Additional Parameters: ", settings.params))
 #            table.addRow(("Modules: ", settings.modules))
+
+
+    def _optimization(self, settings):
+        "Returns optimization level message"
+        optlevel    = "None"
+        if not settings:
+            return optlevel
+
+        if settings.optlevel:
+            return OPT_LEVEL
+
+        return optlevel
 
 
     def _showServer(self, director, table):
