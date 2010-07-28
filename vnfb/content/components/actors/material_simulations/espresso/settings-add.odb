@@ -90,7 +90,7 @@ class Actor(base):
         But it normally has some issues that simulation \
         is not allocated to the same nodes which you ran your \
         previous simulation on. Check it if no one is using the cluster . \
-        When not checked, it will run safely on NFS but a slower than on scratch space."
+        When not checked, it will run safely on NFS but slower than on scratch space."
         dialog          = self._showDialog(title, text)
         explainlink     = lc.link( label    = "Explain",
 	 	                   onclick  = select(element=content).append(dialog))

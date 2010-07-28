@@ -10,3 +10,14 @@ Working directory (stored in "servers" database): /home/danse-vnf-admin/vnf/data
 Adding New Pseudo-Potential
 ---------------------------
 
+Optimization
+------------
+
+When a user checks "Optimization" checkbox, the simulation will use scratch space
+as it's temporary directory. Example:
+
+/scratch/M56XLZEX
+
+where 'M56XLZEX' is the id of qesimulations. The directories are created and 
+never deleted by VNF. Though they can be cleaned up by system administrator
+any time without any warning.

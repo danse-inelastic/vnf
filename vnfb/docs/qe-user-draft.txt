@@ -116,8 +116,34 @@ Label: Electron and Ion Dynamics
 
 Label: Electrons and Ions with Thermostat
 
-Analysis Page:
+Analysis Page
+-------------
 
 
+Configuration Input
+-------------------
 
+- Users cannot control parameters, these parameters are handled by VNF:
+General (PW, PH, Q2R, MATDYN, etc...):
+    outdir  (**/qesimulations - NFS, /scratch - scratch space)
+    prefix  (docs default values)
+
+PH:
+    fildyn (docs default value: 'matdyn')
+
+Q2R (see doc in PH/q2r.f90):
+    fildyn (path to PH fildyn directory), Example: '/home/danse-vnf-admin/vnf/data/qejobs/9DDA4RS/matdyn'
+    flfrc  ('default.fc', not in docs default values) , Example: 'default.fc'
+
+MATDYN (see doc in PH/matdyn.f90):
+    flfrc   (path do Q2R flfrc directory), Example: '/home/danse-vnf-admin/vnf/data/qejobs/9S2EA6Z/default.fc'
+    fldos   (docs default value: 'matdyn.dos'),
+    flfrq   (docs default value: 'matdyn.freq'),
+    flvec   (docs default value: 'matdyn.modes'),
+
+DYNMAT (see doc in PH/dynmat.f90):
+    [?] fildyn (path to PH fildyn directory), Example: '/home/danse-vnf-admin/vnf/data/qejobs/9DDA4RS/matdyn'
+    filout   (docs default value: 'dynmat.out'),
+    filmol   (docs default value: 'dynmat.mold'),
+    filxsf   (docs default value: 'dynmat.axsf'),
 
