@@ -17,7 +17,7 @@ from luban.content import select, load, alert
 
 
 
-def visual(uploadid=None, structureid=None, director=None):
+def visual(structureid=None, director=None):
     '''
     uploadid: unique id for this upload
     '''
@@ -33,9 +33,10 @@ def visual(uploadid=None, structureid=None, director=None):
         label='Click here to browse for the structural file to upload',
         )
     
+    uploadid = director.getGUID() # identifier of this upload
     saveuploadfile = lc.load(
         actor='upload', routine='receive_file',
-        id=uploadid, # identifier of this upload
+        id=uploadid, 
         )
     uploader.onsubmit=saveuploadfile
 
