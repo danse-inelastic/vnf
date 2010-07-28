@@ -2,7 +2,6 @@
 #
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
-#                                 Jiao Lin
 #                      California Institute of Technology
 #                      (C) 2006-2009  All Rights Reserved
 #
@@ -26,12 +25,12 @@ class Actor(base):
         import pyre.inventory
 
 
-    def showAboutDialog(self, director):
+    def default(self, director):
         # create dialog
-        dialog = luban.content.dialog(title='about', autoopen=True, id='about-dialog')
+        dialog = luban.content.dialog(title='licenses', autoopen=True, id='license-dialog')
 
         # add content
-        content = director.retrieveVisual('about')
+        content = director.retrieveVisual('licenses')
         dialog.add(content)
 
         # add a button
@@ -46,7 +45,7 @@ class Actor(base):
 
     def __init__(self, name=None):
         if name is None:
-            name = "about"
+            name = "licenses"
         super(Actor, self).__init__(name)
         return
 
