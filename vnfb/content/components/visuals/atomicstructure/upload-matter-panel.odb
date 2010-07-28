@@ -27,6 +27,21 @@ def visual(structureid=None, director=None):
 #    vi = viewindicator(structureid, director)
 #    doc.add(vi)
 
+    # spacer
+    doc.paragraph()
+    
+    # 
+    doc.paragraph(text=['Choose a file to upload.  Supported formats are:'])
+    
+    doc.paragraph(text=['1) cif'])
+    
+    doc.paragraph(text=['2) pdb'])
+    
+    doc.paragraph(text=['3) xyz--if 9 floats are given on the comment line, these are take as the flattened lattice vectors'])
+    
+    # spacer
+    doc.paragraph()
+
     # uploader
     uploader = lc.uploader(
         name = 'structureUploader',
