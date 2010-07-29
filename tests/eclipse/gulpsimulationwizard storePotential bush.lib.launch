@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<launchConfiguration type="org.python.pydev.debug.regularLaunchConfigurationType">
+<listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_PATHS"/>
+<listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_TYPES"/>
+<stringAttribute key="org.eclipse.debug.ui.ATTR_CAPTURE_IN_FILE" value="${workspace_loc:/pyreDv/vnf/html/test.html}"/>
+<stringAttribute key="org.eclipse.ui.externaltools.ATTR_LOCATION" value="${workspace_loc:pyreDv/vnf/cgi/main.py}"/>
+<stringAttribute key="org.eclipse.ui.externaltools.ATTR_OTHER_WORKING_DIRECTORY" value="${workspace_loc:pyreDv/vnf/cgi}"/>
+<stringAttribute key="org.eclipse.ui.externaltools.ATTR_TOOL_ARGUMENTS" value="--actor=gulpsimulationwizard  --routine=storePotential --actor.librarycontent=&quot;test potential resembling bush.lib&quot; --actor.potential_name=bushlibtest --actor.potential_filename=bush.test.lib --actor.description=&quot;a test&quot; --actor.creator=&quot;me&quot; --sentry.username=jbrkeith --sentry.passwd=678yui --cgihome=http://trueblue.caltech.edu/cgi-bin/vnf/main.cgi"/>
+<stringAttribute key="org.eclipse.ui.externaltools.ATTR_WORKING_DIRECTORY" value="${workspace_loc:pyreDv/vnf/cgi}"/>
+<stringAttribute key="org.python.pydev.debug.ATTR_INTERPRETER" value="__default"/>
+<stringAttribute key="org.python.pydev.debug.ATTR_PROJECT" value="pyreDv"/>
+</launchConfiguration>
