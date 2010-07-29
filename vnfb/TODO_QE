@@ -1,9 +1,13 @@
 TODO List for Quantum Espresso
 ==============================
 
-
+NOW
+===
 - Implement Filter class in qeparser
 - Update qeparser interface and write unit tests!
+- Finish up the qeparser!
+
+
 - Implement scratch space
 - Implement progress bar for results
 - Handle important parameters so that users could run simulations using example config files
@@ -38,8 +42,7 @@ Must Have
 
 - Generate QE config file from atomic structure
 
-NOW
-===
+
 - [DONE] Add progress bar for jobs with steps description
 - Move "servers" reference from qesimulations to qesettings
 - [DONE] Dialog widget
