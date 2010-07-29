@@ -81,17 +81,15 @@ class DistributedDataStorage(base):
     def make_available(self, dbrecord, files=None, server=None, ignore_nonexisting_files=False):
         if files is None: files = _default_files(dbrecord)
         for f in files:
-            p = self.path(dbrecord, f)
-            try:
-                self._make_available(p, server=server)
-            except:
+            if not self.existssomewhere(dbrecord, f):
                 if ignore_nonexisting_files:
                     import warnings, traceback
                     warnings.warn(
                         'unable to transfer file %r for record %r to server %r\n%s' % (
                         f, dbrecord, server, traceback.format_exc()))
                     continue
-                else: raise
+            p = self.path(dbrecord, f)
+            self._make_available(p, server=server)
             continue
         return
 
@@ -342,6 +340,7 @@ class DistributedDataStorage(base):
             server1, path1 = _decodeurl(url1)
             server2, path2 = _decodeurl(url2)
             if _islocal(server1) and _islocal(server2):
+                self._debug.log('local copy: %s -> %s' % (path1, path2))
                 import shutil
                 shutil.copy(path1, path2)
                 return
