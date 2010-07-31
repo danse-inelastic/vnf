@@ -12,17 +12,17 @@
 #
 
 
-## Initialize vnf db to have necessary tables. This will remove all
-## existing tables, so be careful!
+## Destroy vnf db.
+## This will remove all existing tables, so be careful!
 
 
-from pyre.applications.Script import Script
+from luban.applications.UIApp import UIApp as base
 
 
-class DbApp(Script):
+class DbApp(base):
 
 
-    class Inventory(Script.Inventory):
+    class Inventory(base.Inventory):
 
         import pyre.inventory
 
@@ -32,40 +32,32 @@ class DbApp(Script):
 
 
     def main(self, *args, **kwds):
+        msg = '\n\n'
+        msg += '  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n'
+        msg += '  !!! This is going to destroy the database !!!\n'
+        msg += '  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n'
+        msg += '\n'
+        msg += ' * Are you really sure you want to do that !? (YeS/no) '
+        response = raw_input(msg)
+        if response != 'YeS':
+            print 'exit'
+            return
+        
+        clerk = self.clerk
+        clerk.importAllDataObjects()
 
-        from vnf.dom import alltables
-        tables = alltables()
-
-        for table in tables:
-            self.db.registerTable(table)
-            continue
-
-        self.db.destroyAllTables()
-
+        clerk.db.destroyAllTables()
         return
 
 
     def __init__(self):
-        Script.__init__(self, 'destroydb')
-        self.db = None
-        return
-
-
-    def _configure(self):
-        Script._configure(self)
-        self.clerk = self.inventory.clerk
-        self.clerk.director = self
-        return
-
-
-    def _init(self):
-        Script._init(self)
-        self.db = self.clerk.db
+        base.__init__(self, 'destroydb')
         return
 
 
     def _getPrivateDepositoryLocations(self):
-        return ['../config']
+        from vnfb.deployment import pyre_depositories
+        return pyre_depositories
     
 
 
@@ -76,10 +68,7 @@ def main():
     return app.run()
 
 
-# main
-if __name__ == '__main__':
-    # invoke the application shell
-    main()
+if __name__ == '__main__': main()
 
 
 # version
