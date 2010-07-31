@@ -24,7 +24,7 @@ class TestApp(base):
 
 
     def main(self, testFacility, *args, **kwds):
-        self.test1(testFacility)
+        #self.test1(testFacility)
         self.test2(testFacility)
         return
 
