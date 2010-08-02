@@ -33,6 +33,10 @@ class DbApp(base):
 
         create_tables_only = pyre.inventory.bool(name='create-tables-only', default=False)
         create_tables_only.meta['tip'] = "when true, only create the tables. won't try to create initial records"
+
+        all = pyre.inventory.bool(name='all', default=False)
+        all.meta['tip'] = 'if true, init tables using all availabe table initalizers'
+        
         
     def help(self):
         print
@@ -66,6 +70,8 @@ class DbApp(base):
             table = self.inventory.table
             if table:
                 tables = [table]
+        if self.inventory.all:
+            tables = self.getInitializerList()
 
         print "init tables"
         self.inittables(tables)
@@ -98,6 +104,12 @@ class DbApp(base):
             raise RuntimeError, 'initdb component for table %s does not implement the required interface' % table
 
         return
+
+
+    def getInitializerList(self):
+        component = self.retrieveComponent(
+            'getinitializers', factory='initdb', vault=['initdb'])
+        return component.get()
 
 
     def retrieveInitalizer(self, name):
