@@ -31,7 +31,9 @@ class DbApp(base):
         table = pyre.inventory.str(name='table')
         tables = pyre.inventory.list(name='tables')
 
-
+        create_tables_only = pyre.inventory.bool(name='create-tables-only', default=False)
+        create_tables_only.meta['tip'] = "when true, only create the tables. won't try to create initial records"
+        
     def help(self):
         print
         print 'initialize db table(s)'
@@ -56,6 +58,8 @@ class DbApp(base):
         print
         print "create all tables"
         clerk.db.createAllTables()
+        if self.inventory.create_tables_only:
+            return
         
         tables = self.inventory.tables
         if not tables:
