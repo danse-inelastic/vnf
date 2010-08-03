@@ -3,16 +3,19 @@ TODO List for Quantum Espresso
 
 NOW
 ===
-- Implement Filter class in qeparser
-- Update qeparser interface and write unit tests!
-- Finish up the qeparser!
-
-
 - Implement scratch space
 - Implement progress bar for results
 - Handle important parameters so that users could run simulations using example config files
 - Add link next to the plot to download the DOS file. Open the file in a new browser window.
 - Add links to documentation for QE.
+- Write documentation for qeinput
+
+COMPLETED
+=========
+- [DONE] Implement Filter class in qeinput
+- [DONE] Update qeparser interface and write unit tests!
+- [DONE] Finish up the qeinput!
+
 
 Problem: How to define similarity for simulation tasks? Settings? Matter?
 Solution:
