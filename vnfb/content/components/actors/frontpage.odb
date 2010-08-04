@@ -41,10 +41,17 @@ class Actor(base):
         import os
         rstpath = os.path.join(docsroot, '%s.rst' % name)
         rstdoc = open(rstpath).read()
+        from luban.utils.rst import rest2html
+        lines = rest2html(rstdoc)
+        # !!! this is not robust !!!
+        lines = [l.replace('href=', 'target="_blank" href=') for l in lines]
 
-        doc = luban.content.restructuredtextdocument(id='%s-document' % name)
+        # doc = luban.content.restructuredtextdocument(id='%s-document' % name)
+        id='%s-document' % name
+        doc = luban.content.htmldocument(id=id)
         doc.Class = 'frontpage-document'
-        doc.text = rstdoc.splitlines()
+        # doc.text = rstdoc.splitlines()
+        doc.text = lines
         return doc
 
 
