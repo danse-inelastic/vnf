@@ -11,17 +11,14 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
-from luban.content import load
-
-from luban.content.Splitter import Splitter 
-from luban.content.Link import Link
-from luban.content.Document import Document
+import luban.content as lc
 
 def visual(director):
-    doc = Document(id='credits')
-    doc.paragraph().text = [
-        'Powered by pyre/luban',
-        ]
+    doc = lc.document(id='credits')
+    hdoc = lc.htmldocument(); doc.add(hdoc)
+    pyre = '<a target="_blank" href="http://docs.danse.us/pyre/sphinx">pyre</a>'
+    luban = '<a target="_blank" href="http://docs.danse.us/pyre/luban/sphinx">luban</a>'
+    hdoc.text = 'Powered by %s/%s' % (pyre, luban)
     return doc
 
     

@@ -261,14 +261,22 @@ padding-right:0;
 
 /* ------------------------------------------------------------ */
 /*   4. credits */
-#credits p {
+#credits-frame {
     text-align:center;
     font-family:Times,"Times New Roman",serif;
     font-size:0.8em;
     margin: 5px;
-    color: #333333;
+    margin-bottom: 4em;
+    color: #444444;
 }
-
+#credits-frame a:hover {
+    text-decoration:underline;
+    color: blue;
+}
+#credits-frame a {
+    color:#3333aa;
+    text-decoration:none;
+}
 
 
 /* inside main area */
