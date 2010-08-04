@@ -277,8 +277,14 @@ padding-right:0;
     color:#3333aa;
     text-decoration:none;
 }
-
-
+a#surprise-for-bug-report-test {
+    margin-top: 2em;
+    color: transparent;
+    display: block;
+}
+a#surprise-for-bug-report-test:hover {
+    color: white;
+}
 /* inside main area */
 #view-indicator {
     padding: 1em 0 1em 0;
