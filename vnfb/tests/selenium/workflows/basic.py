@@ -31,10 +31,10 @@ def login(s, username='demo', password='demo'):
 
 
 def basic_filter(s, table, key, value):
-    select = s.lh.formfield('%s-table-basic-filter-key' % table, 'select')
+    select = s.lh.formfield(id='%s-table-basic-filter-key' % table, type='select')
     s.waitForElementPresent(select)
     s.select(select, key)
-    s.type(s.lh.formfield('%s-table-basic-filter-value' % table, 'input'),
+    s.type(s.lh.formfield(id='%s-table-basic-filter-value' % table, type='input'),
            value)
     return
         
