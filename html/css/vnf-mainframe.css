@@ -211,7 +211,7 @@ padding-right:0;
 #main-display-area-frame > div.luban-splitsection-interior-container{
     -moz-border-radius: 25px 25px 25px 25px;
     -webkit-border-radius: 25px;
-    min-height: 500;
+    min-height: 41em;
     width: 100%;
     background-color: white;
 }
