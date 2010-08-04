@@ -3,24 +3,75 @@ TODO List for Quantum Espresso
 
 NOW
 ===
+
+Part 1
+------
 - Implement scratch space
+- Handle important parameters so that users could run simulations using example
+  config files
 - Implement progress bar for results
-- Handle important parameters so that users could run simulations using example config files
+
+
+Part 2
+------
+- Convergence tests
+- Simulation Clone
+- Simulation Delete
+- Delete Job(s)
+
+
+Part 3
+------
+- Storing optimized structure to atomic structure
+- Don't allow to set config input unless the previous config input is set
+
+
+Part 4
+-------
+Molecular Dynamics:
+- Implement converters for molecular dynamics:
+    scripts/nc2dos.py
+    scripts/qe2dos.py
+    scripts/qe2nc.py
+
+- Implement display of major trajectory parameters for each task: VDOS, 
+- Implement convenient selection of time frame
+- Create trajectory and store it to the database (including charge?)
+
+
+Part 5
+------
+Go through the types of simulation and make sure they work as they should:
+
+- Electron Structure
+- Electron DOS
+- Electron Dispersion
+- Geometry Optimization
+- Single Phonon
+- Multiple Phonon
+- Molecular Dynamics
+
+
+Part 6
+------
+- Write documentation for QE [MUST]
+- Write implementation notes for developers [MUST]
+- Write documentation for qeinput and make it a python egg
 - Add link next to the plot to download the DOS file. Open the file in a new browser window.
 - Add links to documentation for QE.
-- Write documentation for qeinput
 
-COMPLETED
-=========
-- [DONE] Implement Filter class in qeinput
-- [DONE] Update qeparser interface and write unit tests!
-- [DONE] Finish up the qeinput!
+
+Minor
+-----
+- Fix plot sizes on analysis page
 
 
 Problem: How to define similarity for simulation tasks? Settings? Matter?
 Solution:
 
 
+Simulation Types
+================
 
 - Electron Structure
 - Electron DOS
@@ -30,72 +81,46 @@ Solution:
 - Multiple Phonon (1. On-host run)
 - Molecular Dynamics
 
+
 Nice To Have
 ============
 
-- Move some of the qe stuff from vnfb/vnfb/utils -> vnfb/content/components/visuals
+- [PARTIALLY] Move some of the qe stuff from vnfb/vnfb/utils -> vnfb/content/components/visuals
  because they look like visuals :)
-- Do not display action buttons "Run Task" or "Cancel" unless previous simulation
-    is running or completed
-- Change action buttom depending on the status of the job:
-    "Run Task" -> "Cancel" -> "Run Task"
+
 
 Must Have
 =========
+    NONE
 
-- Generate QE config file from atomic structure
-
-
-- [DONE] Add progress bar for jobs with steps description
-- Move "servers" reference from qesimulations to qesettings
-- [DONE] Dialog widget
 
 CRITICAL FIXES
 ==============
-- Figure out what diskspace the QE is currently using. In case of NFS measure the performace
-degradation in comparison with scratch space
-- [DONE] Sanityze input file for qe simulations from Windows carriage return ('\15\32')
-See:
-    http://kb.iu.edu/data/data/acux.html
-    Command: awk '{ sub("\r$", ""); print }' winfile.txt > unixfile.txt
+    NONE
 
+
+COMPLETED
+=========
+
+- [DONE] Generate QE config file from atomic structure
+- [DONE] Add progress bar for jobs with steps description
+- [DONE] Move "servers" reference from qesimulations to qesettings
+- [DONE] Dialog widget
+- [DONE] Implement Filter class in qeinput
+- [DONE] Update qeinput interface and write unit tests!
+- [DONE] Finish up the qeinput!
+- [DONE] Figure out what diskspace the QE is currently using. In case of NFS measure the performace
+        degradation in comparison with scratch space
+- [DONE] Sanityze input file for qe simulations from Windows carriage return ('\15\32')
+    See:
+        http://kb.iu.edu/data/data/acux.html
+        Command: awk '{ sub("\r$", ""); print }' winfile.txt > unixfile.txt
 - [DONE] Recognize elements and populate psedo potentials depending on the elements in the structure
     (see input-pw.odb visual)
-- Don't allow to set config input unless the previous config input is set
-
 - [DONE] Handle multiple jobs for the task
 - [DONE] Fix database jobs status depending on the actual jobs status
 - [DONE] Fix the formatting of config view and create
-
-- Display and refresh output file
-- Hide "Run Task" button unless the previous simulation task is completed
-- Display jobs
-
-
-BUGS
-====
-director.redirect() does not always pass parameters
-
-
-
-Simulations Types [Status]
-=================
-[IN PROGRESS] Electron Structure
-- Electron DOS
-- Electron Dispersion
-- Geometry Optimization
-- Single Phonon
-- Multiple Phonon (1. On-host run)
-
-Minor:
-- Update only simulation task field (revise visuals)
-
-
-TODO Steps
-==========
-
-
-
+- [DONE] Display and refresh output file
 - [DONE] Display simulation results and plot with
 - [DONE] Fix retrieving results again (fix getmtime.py)
 - [DONE] Run "Multiple Phonon" simulation
@@ -103,11 +128,15 @@ TODO Steps
 - [DONE] Phonon DOS ("Analyze" button)
 - [DONE] Phonon Dispersion ("Analyze" button)
 - [DONE] Generate QE config file from atomic structure !!!
-
-1. [DONE] Run simulation with vnf created bash script (no qeapp.py)
-2. [DONE] Get results with "Check" link
-3. Make "Status" string and action buttons ("Run Task", "Cancel", "Run Task Again") work properly
-4. Hook up QECalc (use qeapp.py?)
+- [DONE] Update only simulation task field (revise visuals)
+- [DONE] Run simulation with vnf created bash script (no qeapp.py)
+- [DONE] Get results with "Check" link
+- [DONE] Make "Status" string and action buttons ("Run Task", "Cancel", "Run Task Again") work properly
+- [DONE] Hook up QECalc (use qeapp.py?)
+- [DONE] Do not display action buttons "Run Task" or "Cancel" unless previous simulation
+    is running or completed
+- [DONE] Change action buttom depending on the status of the job:
+    "Run Task" -> "Cancel" -> "Run Task"
 
 
 *** Alpha Release of QE simulations ***

@@ -53,6 +53,7 @@ class JobDriver(base):
         taskid      = pyre.inventory.str('taskid', default='')
         subtype     = pyre.inventory.str('subtype', default='')
         
+        
         idd = pyre.inventory.facility('idd-session', factory=pyre.idd.session, args=['idd-session',])
         idd.meta['tip'] = "access to the token server"
 
@@ -101,9 +102,9 @@ class JobDriver(base):
                    "description":   self.subtype
                    }
 
+        self._updateStatus("create-job")
         self._job  = QEJob(self)
         self._job.createRecord(params)
-        self._updateStatus("create-job")
         
 
     def _storeFiles(self):
