@@ -266,6 +266,9 @@ margin-top:4px;
     font-size:0.8em;
     margin-top:8px;
 }
+div.master-table-tablebottomtoolbar-left-interior > table.luban-splitter{
+    width: auto;
+}
 .master-table-tablebottomtoolbar-left a {
     /*border-left:solid 1px;*/
     border-right:1px solid #444;
@@ -293,9 +296,11 @@ margin-top:4px;
 }
 .master-table-tablebottomtoolbar-left select {
     width:90px;
+    height: 18px;
 }
 .master-table-tablebottomtoolbar-left input {
-    width:70px;
+    width: 70px;
+    height: 18px;
 }
 .master-table-tablebottomtoolbar-left .luban-formfield {
     margin-left: 5px;

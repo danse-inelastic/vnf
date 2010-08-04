@@ -205,13 +205,15 @@ class MasterTableFactory(object):
         lefttoolbar = tablebottomtoolbar.section(id='%s-table-tablebottomtoolbar-left' % name, 
                                                  Class='master-table-tablebottomtoolbar-left')
 
-        lefttoolbar.add(self.createDeleteButton(table=table))
         if self.createlabelstoolbar:
+            lefttoolbar_interior = Splitter(); lefttoolbar.add(lefttoolbar_interior)
+            lefttoolbar_interior.Class = 'master-table-tablebottomtoolbar-left-interior'
+            lefttoolbar_interior.section().add(self.createDeleteButton(table=table))
             collections_toolbar = self.createLabelsToolbar(
                 name,
                 table=table
                 )
-            lefttoolbar.add(collections_toolbar)
+            lefttoolbar_interior.section().add(collections_toolbar)
         
         righttoolbar = tablebottomtoolbar.section(id='%s-table-tablebottomtoolbar-right' % name, 
                                                   Class='master-table-tablebottomtoolbar-right')
@@ -317,8 +319,11 @@ class MasterTableFactory(object):
         self, name,
         table=None,
         ):
-        doc = Document(title='Labels:')
+        #doc = Document(title='Labels:')
+        doc = luban.content.splitter()
         doc.Class = 'labels-toolbar'
+        
+        doc.section().add('Labels')
 
         labels = self.labels
         entries = zip(labels,labels)
@@ -329,10 +334,10 @@ class MasterTableFactory(object):
             Class='master-table-applylabel-selector',
             entries = entries,
             )
-        doc.add(field)
+        doc.section().add(field)
             
         link = Link(label="apply", tip='apply the label to the items you checked')
-        doc.add(link)
+        doc.section().add(link)
         
         link.onclick = load(
             actor='label', routine='addEntities', table=self.labeltargettablename,
@@ -345,10 +350,10 @@ class MasterTableFactory(object):
             )
 
         field = FormTextField(tip='input the name of a new label')
-        doc.add(field)
+        doc.section().add(field)
         
         link = Link(label='new', tip='click to create a new label')
-        doc.add(link)
+        doc.section().add(link)
 
         link.onclick = load(
             actor='label', routine='new',
@@ -357,7 +362,7 @@ class MasterTableFactory(object):
             )
             
         link = Link(label='manage', tip='manage my labels')
-        doc.add(link)
+        doc.section().add(link)
         link.onclick = load(
             actor='label', routine='manage', table=self.labeltargettablename,
             )
@@ -487,7 +492,8 @@ class MasterTableFactory(object):
         order_by, reverse_order,
         mine,
         ):
-        basic = Document(
+        #basic = Document(
+        basic = luban.content.splitter(
             id=self._basicFilterWidgetID(name),
             Class='master-table-basic-filter-widget',
             )
@@ -501,7 +507,7 @@ class MasterTableFactory(object):
             entries=entries,
             value=filter_key,
             )
-        basic.add(selector)
+        basic.section().add(selector)
 
         field = FormTextField(
             label = 'value:',
@@ -509,7 +515,7 @@ class MasterTableFactory(object):
             id = self._filterBasicInputFieldID(name),
             value = filter_value,
             )
-        basic.add(field)
+        basic.section().add(field)
         field.onchange =  load(
             actor=name, routine='showListView',
             number_records_per_page = number_records_per_page,
@@ -523,7 +529,7 @@ class MasterTableFactory(object):
         selector.onchange = select(element=field).setAttr(value='')
 
         link = Link(label='advanced')
-        basic.add(link)
+        basic.section().add(link)
         link.onclick = [
             select(id = self._basicFilterWidgetID(name)).hide(),
             select(id = self._advancedFilterWidgetID(name)).show(),
@@ -539,10 +545,13 @@ class MasterTableFactory(object):
         mine,
         ):
         
-        advanced = Document(
+        # advanced = Document(
+        advanced = luban.content.splitter(
             id=self._advancedFilterWidgetID(name),
             Class='master-table-advanced-filter-widget',
         )
+        left = advanced.section()
+        right = advanced.section()
         
         field = FormTextField(
             label = '',
@@ -560,14 +569,15 @@ class MasterTableFactory(object):
             filter_expr = select(element=field).formfield('getValue'),
             mine = mine,
             )
-        advanced.add(field)
+        left.add(field)
 
         link = Link(label='basic')
-        advanced.add(link)
+        right.add(link)
         link.onclick = [
             select(id = self._basicFilterWidgetID(name)).show(),
             select(id = self._advancedFilterWidgetID(name)).hide(),
             ]
+        
         return advanced
 
 
