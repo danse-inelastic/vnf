@@ -44,6 +44,31 @@ class TestCaseBase(base):
         return
 
 
+    def test3(self):
+        'vnf: bug report dialog'
+        s = self.selenium
+        
+        s.open(self.appaddress)
+
+        from workflows.basic import login
+        login(s)
+
+        link = s.lh.selector(tag='a', id='surprise-for-bug-report-test')
+        print link
+        s.waitForElementPresent(link)
+        s.click(link)
+
+        ta = s.lh.formfield(id='bug-comment', type='textarea')
+        s.waitForElementPresent(ta)
+        s.type(ta, 'selenium test of bug report')
+
+        
+        submit = s.lh.selector(tag='input', type='submit', name='actor.bug-submit')
+        s.click(submit)
+        return
+    
+
+
 def pysuite():
     from vnfb.testing import getDeploymentInfo
     info = getDeploymentInfo()

@@ -50,12 +50,13 @@ def visual(id=None, info=None, director=None):
     
     form.textarea(
         name='comment',
+        id = 'bug-comment',
         label='Comment',
         help='Please let us know the situation in which this bug was triggered',
         )
     # okbutton = lc.button(label='ok', onclick=lc.select(element=visual).destroy())
     # visual.add(okbutton)
-    form.submitbutton(label='Submit')
+    form.submitbutton(label='Submit', name='bug-submit')
     import urllib;  tbtext = urllib.quote(tbtext)
     form.onsubmit = select(element=form).submit(
         actor='bug-report', routine='process', traceback=tbtext, id=id)
