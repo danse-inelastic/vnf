@@ -59,10 +59,20 @@ class TaskAction(object):
                                       routine   = 'submit',
                                       id        = self._simid,
                                       taskid    = self._task.id,
-                                      subtype   = self._task.subtype)
-                                      # XXX: Pass "optlevel" param from qesettings
+                                      subtype   = self._task.subtype,
+                                      optlevel  = self._optlevel())
                         )
         return link
+
+
+    def _optlevel(self):
+        "Returns optlevel from qesettings"
+        settingslist    = self._director.clerk.getQESettings(where="simulationid = '%s'" % self._simid)
+        if not settingslist:
+            return "0"
+
+        settings = settingslist[0]
+        return str(settings.optlevel)
 
 
     def _cancelLink(self):
