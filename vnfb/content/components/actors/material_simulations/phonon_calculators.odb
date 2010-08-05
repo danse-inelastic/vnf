@@ -63,7 +63,7 @@ class Actor(base):
         selector = form.radio(name='engine', entries=entries)
 
         #
-        form.submitbutton(label='OK')
+        form.submitbutton(label='OK', id='phonons-select-engine-submit-button')
         form.onsubmit = lc.select(element=form).submit(
             actor=self.name, routine='onSelectComputingEngine',
             atomicstructure_id=self.inventory.atomicstructure_id,

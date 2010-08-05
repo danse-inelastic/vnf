@@ -168,7 +168,7 @@ class Actor(base):
         selector = form.radio(name='target', entries=entries)
 
         #
-        form.submitbutton(label='OK')
+        form.submitbutton(label='OK', id='bvk-select-target-submit-button')
         form.onsubmit = lc.select(element=form).submit(
             actor=self.name, routine='onSelectComputingTarget',
             model_id = self.inventory.model_id,

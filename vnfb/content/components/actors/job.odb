@@ -204,8 +204,9 @@ class Actor(base):
         # link to computation
         #compdoc.paragraph(text=['To view the results of this computation job, '])
         computation = job.computation.dereference(director.clerk.db)
-        link = lc.button(label = 'switch to view of computation %s %s' % (
-            computation.__class__.__name__, computation.id))
+        label = 'switch to view of computation %s %s' % (
+            computation.__class__.__name__, computation.id)
+        link = lc.button(label=label, id='job-switch-to-computation-link')
         link.onclick = load(
             actor = 'computation',
             routine = 'view',
