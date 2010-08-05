@@ -182,7 +182,8 @@ class DDS:
 
 
     def makedirs(self, path, node):
-        """Recursively creates directories on destination node 'node', which can also be remote node
+        """Recursively creates directories on destination node 'node',
+        which can also be remote node
         Issues:
             - Doesn't check if the node already exists
         """

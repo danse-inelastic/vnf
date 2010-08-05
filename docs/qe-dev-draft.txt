@@ -7,6 +7,9 @@ job related data )
 
 Working directory (stored in "servers" database): /home/danse-vnf-admin/vnf/data
 
+
+
+
 Adding New Pseudo-Potential
 ---------------------------
 
@@ -21,3 +24,14 @@ as it's temporary directory. Example:
 where 'M56XLZEX' is the id of qesimulations. The directories are created and 
 never deleted by VNF. Though they can be cleaned up by system administrator
 any time without any warning.
+
+Job Submission
+--------------
+Steps of job submission:
+- Create database record for job
+- Copy configuration file from qeconfigurations to qejobs directory: self._storeConfigurations()
+- Generate run.sh script and save in qejobs directory: self._createRunScript()
+- Save extra file in qejobs directory (for "trajectory" task type): self._storeExtraFiles()
+- Move files to remote directory (create if not exists): self._moveFiles()
+- Submit job to queue: self._scheduleJob()
+

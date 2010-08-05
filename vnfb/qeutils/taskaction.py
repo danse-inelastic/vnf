@@ -60,6 +60,7 @@ class TaskAction(object):
                                       id        = self._simid,
                                       taskid    = self._task.id,
                                       subtype   = self._task.subtype)
+                                      # XXX: Pass "optlevel" param from qesettings
                         )
         return link
 

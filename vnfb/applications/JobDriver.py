@@ -23,6 +23,8 @@ from vnfb.qeutils.results.cpresult import CPResult
 from vnfb.qeutils.qeutils import stamp, writeRecordFile, defaultInputName, readRecordFile
 from vnfb.qeutils.qeconst import RUNSCRIPT, TYPE, MDSTEPS, NOPARALLEL
 from vnfb.qeutils.qeutils import packname
+from vnfb.qeutils.qescheduler import schedule
+from vnfb.qeutils.servers import outdir, createOutdir
 from luban.applications.UIApp import UIApp as base
 
 import pyre.idd
@@ -38,7 +40,7 @@ Jobs submission steps:
     - Submitting to queue           - 80%
     - Done                          - 100%
 
-Important Note:
+Important Notes:
     - Depending on cluster "<" control character on command line might not be recognized
      (see _createRunScript() method) in this case try to use "-inp".
     - Dynmat task IS NOT a parallel program (no mpirun)
@@ -52,7 +54,7 @@ class JobDriver(base):
         id          = pyre.inventory.str('id', default='')      # Simulation Id
         taskid      = pyre.inventory.str('taskid', default='')
         subtype     = pyre.inventory.str('subtype', default='')
-        
+        optlevel    = pyre.inventory.str('optlevel', default="0")
         
         idd = pyre.inventory.facility('idd-session', factory=pyre.idd.session, args=['idd-session',])
         idd.meta['tip'] = "access to the token server"
@@ -89,7 +91,7 @@ class JobDriver(base):
 
 
     def _createJob(self):
-        "Create Job"
+        "Create Job"       
         self._sim   = self.clerk.getQESimulations(id = self.id)     # Should exist
         settings    = self.clerk.getQESettings(where = "simulationid='%s'" % self.id)   # Should exist
         setting     = settings[0]
@@ -102,9 +104,9 @@ class JobDriver(base):
                    "description":   self.subtype
                    }
 
-        self._updateStatus("create-job")
         self._job  = QEJob(self)
         self._job.createRecord(params)
+        self._updateStatus("create-job")    # Should go after job creation
         
 
     def _storeFiles(self):
@@ -121,19 +123,21 @@ class JobDriver(base):
         inputs  = self.clerk.getQEConfigurations(where = "taskid='%s'" % self.taskid)
         dds     = self.dds
 
-        if len(inputs) > 0:
-            input   = inputs[0]     # Take the first input record
+        if len(inputs) <= 0:
+            return
 
-            fn          = defaultInputName(input.type)
-            pfn         = packname(input.id, fn)        # E.g. 44XXJJG2pw.in
-                        
-            # Read text and store it in different location.
-            # Not very efficient but will work for file of size < 1Mb
+        input   = inputs[0]     # Take the first input record
 
-            text        = readRecordFile(dds, input, fn)            
-            writeRecordFile(dds, self._job, pfn, text)   # -> qejobs directory
-            dds.remember(self._job, pfn)     # Change object and filename?
-            self._files.append(pfn)
+        fn          = defaultInputName(input.type)
+        pfn         = packname(input.id, fn)        # E.g. 44XXJJG2pw.in
+
+        # Read text and store it in different location.
+        # Not very efficient but will work for file of size < 1Mb
+
+        text        = readRecordFile(dds, input, fn)
+        writeRecordFile(dds, self._job, pfn, text)   # -> qejobs directory
+        dds.remember(self._job, pfn)     # Change object and filename?
+        self._files.append(pfn)
 
 
     def _createRunScript(self):
@@ -147,11 +151,8 @@ class JobDriver(base):
         else:
             args        = self._commandArgs()
         
-        # QE temp simulation directory is qesimulations/[simid] directory
-        # E.g.: /home/dexity/espresso/qesimulations/3YEQ8PNV    -> no trailing slash
-        qetempdir  = self.dds.abspath(self._sim, server=server)
         cmds    = [ "#!/bin/env bash",   # Suppose there is bash available
-                    "export ESPRESSO_TMPDIR=%s/" % qetempdir,
+                    "export ESPRESSO_TMPDIR=%s/" % self._outdir(server),
                     " ".join(args)
         ]
 
@@ -160,6 +161,7 @@ class JobDriver(base):
         self._files.append(RUNSCRIPT)
 
 
+    # XXX: Fix?
     def _storeExtraFiles(self):
         "Store some other files. Useful for trajectory task"
         if self._task.type  != "trajectory":  # Special case for trajectory task
@@ -261,15 +263,17 @@ class JobDriver(base):
 
         return ""
 
+
     def _npool(self, settings, type):
         "Returns npool"
         # suppose settings is not None
         return settings.npool
 
 
+    # XXX: Extend to scratch
     def _moveFiles(self):
         """
-        Moves files from local server to the computational cluster.
+        Moves files from local server to the computational cluster (normally, head node).
         Files that need to be moved:
             - Configuration inputs
             - Simulation Settings
@@ -279,22 +283,33 @@ class JobDriver(base):
         """
         self._updateStatus("copy-files")
         
-        dds     = self.dds
         server  = self.clerk.getServers(id = self._job.serverid)
-        dds.make_available(self._job, server=server, files=self._files)
+        self.dds.make_available(self._job, server=server, files=self._files) # NFS
 
-        # Create output directory (ESPRESSO_TEMPDIR) for QE
-        dds.makedirs(self._sim, server=server)
+        self._createOutdir(server)
        
 
     def _scheduleJob(self):
         "Schedule job"
         self._updateStatus("enqueue")
 
-        dds     = self.dds
-        from vnfb.qeutils.qescheduler import schedule
         schedule(self._sim, self, self._job)
 
+
+    def _outdir(self, server):
+        """
+        Retruns output directory for QE: ESPRESSO_TEMPDIR
+
+        QE temp simulation directory is qesimulations/[simid] directory
+        E.g.: /home/dexity/espresso/qesimulations/3YEQ8PNV    -> no trailing slash
+        """    
+        return outdir(self, self._sim, server, self.optlevel)
+
+
+    def _createOutdir(self, server):
+        "Create output directory for QE: ESPRESSO_TEMPDIR"
+        createOutdir(self, self._sim, server, self.optlevel)
+        
 
     def _updateStatus(self, status):
         "Update job status"
@@ -310,6 +325,7 @@ class JobDriver(base):
         self.id         = self.inventory.id
         self.taskid     = self.inventory.taskid
         self.subtype    = self.inventory.subtype
+        self.optlevel   = self.inventory.optlevel
 
         self.idd        = self.inventory.idd
         self.clerk      = self.inventory.clerk

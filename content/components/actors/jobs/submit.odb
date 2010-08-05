@@ -26,6 +26,7 @@ class Actor(base):
         id          = pyre.inventory.str('id', default='')      # Simulation Id
         taskid      = pyre.inventory.str('taskid', default='')
         subtype     = pyre.inventory.str('subtype', default='')
+        optlevel    = pyre.inventory.str('optlevel', default="0")
 
 
     def default(self, director):
@@ -48,6 +49,7 @@ class Actor(base):
                     'id':       self.inventory.id,
                     'taskid':   self.inventory.taskid,
                     'subtype':  self.inventory.subtype,
+                    "optlevel": self.inventory.optlevel
                     }
 
         options = self._refine(options)
@@ -123,6 +125,7 @@ class Actor(base):
         self.id         = self.inventory.id
         self.taskid     = self.inventory.taskid
         self.subtype    = self.inventory.subtype
+        self.optlevel   = self.inventory.optlevel
 
 
     def _init(self):
