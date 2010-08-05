@@ -11,6 +11,8 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
+# XXX: Refactor
+
 from luban.content.Splitter import Splitter
 from luban.content.Paragraph import Paragraph
 from luban.content import load, select
