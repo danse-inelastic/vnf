@@ -17,6 +17,7 @@ Server specific configurations
 Attempt to keep server specific settings in one place: probably will need
 refactoring to a database or configuration files (e.g.: .pml)
 """
+import os
 
 serverlist = {"foxtrot": {  "address":      "foxtrot.danse.us",
                             "username":     "danse-vnf-admin",
@@ -32,25 +33,48 @@ serverlist = {"foxtrot": {  "address":      "foxtrot.danse.us",
                          },
 }
 
+DEFAULT = ""
+
 # XXX: foxtrot specific
+# XXX: Can through an exception, handle?
 def outdir(director, sim, server, optlevel="0"):
-    "Returns temp directory for QE"
+    """
+    Returns temp directory for QE
+    
+    opt = 0: /home/danse-vnf-admin/vnf/data/qesimulations/3YEQ8PNV
+    opt = 1: /scratch/vnf/3YEQ8PNV
+    """
+    if not sim:     # No None simulation
+        return DEFAULT
+
     dds     = director.dds
     if int(optlevel) == 0:
         return dds.abspath(sim, server=server)  # Can through exception, handle?
 
-    return ""   # empty string
-    #self.
+    if int(optlevel) == 1:
+        basedir = serverlist["foxtrot"]["outdir"]
+        return os.path.join(basedir, sim.id)
+
+    return DEFAULT   # empty string
 
 
 # XXX: foxtrot specific
+# XXX: Can through an exception, handle?
 def createOutdir(director, sim, server, optlevel=0):
     "Returns temp directory for QE"
+    if not sim:     # No None simulation
+        return DEFAULT
+
     dds     = director.dds
     if int(optlevel) == 0:
-        dds.makedirs(sim, server=server)  # Can through exception, handle?
+        dds.makedirs(sim, server=server)  
 
-    #  director.csaccessor.execute('echo "%s" > %s'
+    if int(optlevel) == 1:
+        basedir = serverlist["foxtrot"]["outdir"]
+        dir     = os.path.join(basedir, sim.id)
+        command = "bpsh -a bash -c \"if [ ! -d '%s' ]; then mkdir -p '%s'; fi;\"" % (dir, dir)
+        director.csaccessor.execute(command, server, "")
+
 
 #class Server:
 #

@@ -196,7 +196,9 @@ class SSHer(base):
         known_hosts = self.inventory.known_hosts
         private_key = self.inventory.private_key
 
-        rmtcmd = 'cd %s && %s' % (remotepath, cmd)
+        # cmd string can have " character. Need to escape it
+        cmd     = cmd.replace('"', '\\\"')
+        rmtcmd  = 'cd %s && %s' % (remotepath, cmd)
         
         pieces = [
             'ssh',
@@ -215,7 +217,7 @@ class SSHer(base):
             
         pieces += [
             '%s@%s' % (username, address),
-            '"%s"' % rmtcmd,
+            '"%s"' % rmtcmd,    # Fixed "" can be a problem
             ]
 
         cmd = ' '.join(pieces)
