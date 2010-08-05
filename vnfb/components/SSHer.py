@@ -196,7 +196,8 @@ class SSHer(base):
         known_hosts = self.inventory.known_hosts
         private_key = self.inventory.private_key
 
-        # cmd string can have " character. Need to escape it
+        # Escaping " (and \") character from cmd string:
+        cmd     = cmd.replace('\\\"', '"')  # Make sure that there are no already escaped "
         cmd     = cmd.replace('"', '\\\"')
         rmtcmd  = 'cd %s && %s' % (remotepath, cmd)
         

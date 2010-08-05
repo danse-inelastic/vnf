@@ -72,8 +72,8 @@ def createOutdir(director, sim, server, optlevel=0):
     if int(optlevel) == 1:
         basedir = serverlist["foxtrot"]["outdir"]
         dir     = os.path.join(basedir, sim.id)
-        command = "bpsh -a bash -c \"if [ ! -d '%s' ]; then mkdir -p '%s'; fi;\"" % (dir, dir)
-        director.csaccessor.execute(command, server, "")
+        cmd     = "bpsh -a bash -c \"if [ ! -d '%s' ]; then mkdir -p '%s'; fi;\"" % (dir, dir)
+        director.csaccessor.execute(cmd, server, "")
 
 
 #class Server:
