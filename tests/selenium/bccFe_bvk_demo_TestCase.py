@@ -12,9 +12,6 @@
 #
 
 
-skip = True
-
-
 from luban.testing.selenium.TestCaseBase import TestCaseBase as base, makePySuite
 
 class TestCaseBase(base):
@@ -22,68 +19,32 @@ class TestCaseBase(base):
     targetapp = 'vnf'
 
 
-    def test2(self):
-        'vnf: bvk for bcc Fe (real user)'
-        from realuser import username, password
-        
+    def test1(self):
+        'vnf: bvk for bcc Fe (demo user)'
         s = self.selenium
         lh = s.lh
         
         s.open(self.appaddress)
-
+        
         from workflows.basic import login, basic_filter
-        login(s, username=username, password=password)
-
+        login(s)
+        
         basic_filter(s, table='atomicstructure', key='description', value='bcc Fe*')
-
+        
         table = lh.selector('table', id='atomicstructure-table')
         structlink = table + '/tbody/tr[1]/td[2]/a'
         s.waitForElementPresent(structlink)
         s.click(structlink)
-
+        
         lh.expandDocument(id = 'atomicstructure-computed-phonons')
-
+        
         startnew_link = lh.selector('a', id='start-new-phonon-computation-link')
         s.waitForElementPresent(startnew_link)
         s.click(startnew_link)
-
-        bvk_radiobutton = lh.selector('input', type='radio', value='bvk')
-        s.waitForElementPresent(bvk_radiobutton)
-        s.click(bvk_radiobutton)
-
-        submit_button = lh.selector('div', id='phonons-select-engine-submit-button')
-        submit_button += '/input'
-        s.waitForElementPresent(submit_button)
-        s.click(submit_button)
-
-        selectmodel_link = 'link=select this model'
-        s.waitForElementPresent(selectmodel_link)
-        s.click(selectmodel_link)
         
-        dos_radiobutton = lh.selector('input', type='radio', value='dos')
-        s.waitForElementPresent(dos_radiobutton)
-        s.click(dos_radiobutton)
-
-        submit_button = lh.selector('div', id='bvk-select-target-submit-button')
-        submit_button += '/input'
-        s.waitForElementPresent(submit_button)
-        s.click(submit_button)
-
-        save_button = lh.selector('input', type='submit', value='Save')
-        s.waitForElementPresent(save_button)
-        s.click(save_button)
-
-        submitjob_button = lh.selector('input', type='submit', value='submit')
-        s.waitForElementPresent(submitjob_button)
-        s.click(submitjob_button)
-
-        lh.sleep(5)
-        switch_link = lh.selector('div', id='job-switch-to-computation-link')
-        switch_link += '/a'
-        s.waitForElementPresent(switch_link)
-        s.click(switch_link)
+        lh.sleep(4)
+        self.assert_(s.get_alert())
         
-        lh.sleep(5)
         return
         
 
