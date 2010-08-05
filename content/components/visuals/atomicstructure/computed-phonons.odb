@@ -27,11 +27,13 @@ class Factory(object):
 
     def create(self):
         doc = lc.document(
+            id = 'atomicstructure-computed-phonons',
             collapsable=1, collapsed = 1,
             dockable=1, closable = 1,
-            Class='atomicstructure-computed-phonons',
             title='Phonons',
             )
+        doc.Class = 'atomicstructure-computed-phonons'
+
         loading = doc.document(Class='container')
         loading.paragraph(text=['loading ...'])
 

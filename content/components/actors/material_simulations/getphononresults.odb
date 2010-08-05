@@ -66,7 +66,9 @@ class Actor(base):
             actor='material_simulations/phonon_calculators', routine='start',
             atomicstructure_id = self.inventory.id
             )
-        link = lc.link(label='Start a new phonon computation', onclick=newphononcomputation)
+        link = lc.link(
+            label='Start a new phonon computation', onclick=newphononcomputation,
+            id = 'start-new-phonon-computation-link')
         doc.add(link)
 
         return doc
