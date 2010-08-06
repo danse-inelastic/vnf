@@ -14,8 +14,16 @@
 # Supported filter types
 TYPES   = ("pw",)
 
-def filter(type):
-    package = type.lower()+"filter"
+
+
+def filterFactory(type):
+    package     = type.lower()+"filter"
+    filterClass = type.upper()+"Filter"
+    module      = _import(package)
+    return getattr(module, filterClass)()
+
+
+def _import(package):
     return __import__(package, globals(), locals(), [''], -1)
 
 
