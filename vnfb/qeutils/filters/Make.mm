@@ -18,6 +18,7 @@ PACKAGE = qeutils/filters
 #
 
 EXPORT_PYTHON_MODULES = \
+        filter.py \
         pwfilter.py \
 
 
