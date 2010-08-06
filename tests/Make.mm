@@ -18,6 +18,7 @@ RECURSE_DIRS = \
 EXPORT_DATADIRS = \
 	vnfb \
 	content \
+	selenium \
 
 
 EXPORT_DATAFILES = \
