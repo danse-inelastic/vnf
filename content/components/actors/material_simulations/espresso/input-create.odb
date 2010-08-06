@@ -79,9 +79,12 @@ class Actor(base):
 
 
     def _createFile(self, director):
-        # fn is fixed and doesn't depend on the filename record
-        fn      = defaultInputName(self.inventory.type)  
-        writeRecordFile(director.dds, self.input, fn, self.inventory.text)
+        "Writes configuration to file"
+        # fn (file name) is fixed and doesn't depend on the filename record
+        fn      = defaultInputName(self.inventory.type)
+        # Use self.type
+        ftext    = self.inventory.text  # Filtered text
+        writeRecordFile(director.dds, self.input, fn, ftext)
 
 
     def _updateTaskRecord(self, director):

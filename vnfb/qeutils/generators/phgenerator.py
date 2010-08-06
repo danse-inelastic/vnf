@@ -25,7 +25,6 @@ EPSIL       = ".true."  # For isolators only
 TRANS       = ".true."
 LNSCF       = ".true."
 
-# XXX: Generate "epsil = .true." for dielectrics
 class PHGenerator(object):
 
     def __init__(self, director, inventory):

@@ -35,3 +35,11 @@ Steps of job submission:
 - Move files to remote directory (create if not exists): self._moveFiles()
 - Submit job to queue: self._scheduleJob()
 
+
+Configuration Generation
+------------------------
+
+Configuration Filtering
+-----------------------
+- Filtering is done when the config file is created only
+- There is no filtering when config file is edited!

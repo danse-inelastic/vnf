@@ -143,9 +143,9 @@ class Actor(base):
 
     def updateFile(self, director):
         fname   = defaultInputName(self.input.type)
-        #if recordFileExists(director.dds, self.input, fname)
         # Even if file does not exist, still write content to the file
-        writeRecordFile(director.dds, self.input, fname, self.text) 
+        # Important Note: There is no filtering when config file is edited!
+        writeRecordFile(director.dds, self.input, fname, self.text)  # XXX Filter config
 
 
     def _verify(self):
