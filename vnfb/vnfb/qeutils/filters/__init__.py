@@ -12,13 +12,13 @@
 #
 
 # Supported filter types
-TYPES   = ("pw",)
+TYPES   = ("pw", "ph", "q2r", "dos", "dynmat", "matdyn", "bands", "plotband", "cp")
 
 
 def filterFactory(type):
     type        = type.lower()
     # Set to default class
-    package     = "filter"
+    package     = "filter"  # no filtering
     filterClass = "Filter"
 
     if type in TYPES:
