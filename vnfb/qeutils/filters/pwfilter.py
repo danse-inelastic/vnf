@@ -22,23 +22,13 @@ PWFilter - configuration input filter for pw task type.
 
 class PWFilter(Filter):
 
-#    def __init__(self):
-#        Filter.__init__(self, TYPE)
-
-
     def _setPlusFilter(self):
-        
+        self._plus.setParam("control", "prefix", "'pwscf'")
 
 
     def _setMinusFilter(self):
-        
-
-        
-
-# Remove: pseudo_dir
-# Remove: outdir
-# Set prefix = 'pwscf'
-
+        self._minus.setParam("control", "pseudo_dir")   # Set by $ESPRESSO_PSEUDO
+        self._minus.setParam("control", "outdir")       # Set by $ESPRESSO_TMPDIR
 
 
 __date__ = "$Aug 6, 2010 12:16:13 PM$"
