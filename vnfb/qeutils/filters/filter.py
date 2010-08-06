@@ -27,11 +27,11 @@ class Filter(object):
 
 
     def _setPlusFilter(self):
-        print "WARNING: This class is not for direct use. Please subclass"
+        pass    # No implementation
 
 
     def _setMinusFilter(self):
-        print "WARNING: This class is not for direct use. Please subclass"
+        pass    # No implementation
 
 
     def apply(self, input):
