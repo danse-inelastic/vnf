@@ -14,6 +14,7 @@
 from vnfb.qeutils.qeparser.qeinput import QEInput
 from vnfb.dom.QEConfiguration import QEConfiguration
 from vnfb.qeutils.qeutils import writeRecordFile, defaultInputName, subtypeMatdyn
+import vnfb.qeutils.filters as filterdir
 
 from luban.content import load
 from vnfb.components.QEGenerator import QEGenerator as base
@@ -73,17 +74,14 @@ class Actor(base):
     def _createFile(self, director):
         "Writes configuration to file"
         # fn (file name) is fixed and doesn't depend on the filename record
-        fn      = defaultInputName(self.inventory.type)
-        
+        fn      = defaultInputName(self.inventory.type)        
         input   = QEInput(config=self.inventory.text, type=self.inventory.type)
 
-        import vnfb.qeutils.filters as filterdir
-        module  = filterdir.filter("pw")
-        filter  = getattr(module, "PWFilter")()
-        #print filter.test()
-        ftext   = input.toString()
-        print ftext  # XXX
-        writeRecordFile(director.dds, self.input, fn, ftext)
+        # Create proper filter object
+        filter  = filterdir.filterFactory(self.inventory.type)
+        filter.apply(input)             # Apply filter to input
+        fconfig = input.toString()      # Filtered config input
+        writeRecordFile(director.dds, self.input, fn, fconfig)
 
 
     def _updateTaskRecord(self, director):
