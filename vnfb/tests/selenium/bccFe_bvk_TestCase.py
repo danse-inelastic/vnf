@@ -35,6 +35,7 @@ class TestCaseBase(base):
         login(s, username=username, password=password)
 
         basic_filter(s, table='atomicstructure', key='description', value='bcc Fe*')
+        lh.sleep(5)
 
         table = lh.selector('table', id='atomicstructure-table')
         structlink = table + '/tbody/tr[1]/td[2]/a'
@@ -82,6 +83,13 @@ class TestCaseBase(base):
         switch_link += '/a'
         s.waitForElementPresent(switch_link)
         s.click(switch_link)
+
+        lh.expandDocument(id='bvk_getdos-view-results-doc')
+
+        resultsdoc_div = lh.selector('div', id='bvk_getdos-view-results-doc')
+        hist_expandctrl = resultsdoc_div + '/div[2]/div[1]/div[1]/div[1]/div[1]/table/tbody/tr/td[1]/a'
+        s.waitForElementPresent(hist_expandctrl)
+        s.click(hist_expandctrl)
         
         lh.sleep(5)
         return
