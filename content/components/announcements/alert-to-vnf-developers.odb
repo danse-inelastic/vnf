@@ -10,7 +10,8 @@
 #
 
 
-adminemail = 'vnf-dev@googlegroups.com'
+# adminemail = 'vnf-dev@googlegroups.com'
+adminemail = 'linjiao@caltech.edu'
 
 
 def announcement(message='', subject='alert', sender=None):
