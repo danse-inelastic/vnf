@@ -30,6 +30,7 @@ class TestCaseBase(base):
         login(s)
         
         basic_filter(s, table='atomicstructure', key='description', value='bcc Fe*')
+        lh.sleep(4)
         
         table = lh.selector('table', id='atomicstructure-table')
         structlink = table + '/tbody/tr[1]/td[2]/a'
