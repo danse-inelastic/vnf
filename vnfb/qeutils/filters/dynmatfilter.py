@@ -14,15 +14,16 @@
 from filter import Filter
 
 """
-PWFilter - configuration input filter for pw task type. 
+DYNMATFilter - configuration input filter for dynmat task type.
 """
 
-class PWFilter(Filter):
+class DYNMATFilter(Filter):
+    pass
 
-    def _setMinusFilter(self):
-        self._minus.setParam("control", "prefix")        # Will be set to default ('pwscf')
-        self._minus.setParam("control", "pseudo_dir")   # Will be set to $ESPRESSO_PSEUDO
-        self._minus.setParam("control", "outdir")       # Will be set to $ESPRESSO_TMPDIR
+#    def _setMinusFilter(self):
+#        self._minus.setParam("control", "prefix")        # Will be set to default ('pwscf')
+#        self._minus.setParam("control", "pseudo_dir")   # Will be set to $ESPRESSO_PSEUDO
+#        self._minus.setParam("control", "outdir")       # Will be set to $ESPRESSO_TMPDIR
 
 
 __date__ = "$Aug 6, 2010 12:16:13 PM$"

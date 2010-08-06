@@ -14,7 +14,8 @@
 from vnfb.qeutils.qeparser.filter import Filter as InputFilter
 
 """
-Filter - base class for all filters
+Filter - base class for all filters. Performs no filtering
+         It combines positive and negative input filters
 """
 
 class Filter(object):

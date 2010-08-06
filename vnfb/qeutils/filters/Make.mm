@@ -19,8 +19,16 @@ PACKAGE = qeutils/filters
 
 EXPORT_PYTHON_MODULES = \
     __init__.py \
+    bandsfilter.py \
+    cpfilter.py \
+    dosfilter.py \
+    dynmatfilter.py \
     filter.py \
+    matdynfilter.py \
+    phfilter.py \
+    plotbandfilter.py \
     pwfilter.py \
+    q2rfilter.py \
 
 
 BUILD_DIRS = \
