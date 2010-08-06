@@ -15,10 +15,16 @@
 TYPES   = ("pw",)
 
 
-
 def filterFactory(type):
-    package     = type.lower()+"filter"
-    filterClass = type.upper()+"Filter"
+    type        = type.lower()
+    # Set to default class
+    package     = "filter"
+    filterClass = "Filter"
+
+    if type in TYPES:
+        package     = type+"filter"
+        filterClass = type.upper()+"Filter"
+
     module      = _import(package)
     return getattr(module, filterClass)()
 
