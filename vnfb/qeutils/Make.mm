@@ -17,6 +17,7 @@ PACKAGE = qeutils
 # directory structure
 
 BUILD_DIRS = \
+        filters \
         generators \
         qecalcutils \
         qeparser \

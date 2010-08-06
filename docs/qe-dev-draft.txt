@@ -41,5 +41,10 @@ Configuration Generation
 
 Configuration Filtering
 -----------------------
+
+The purpose of filters is to make sure that some of the parameters are correctly
+set, depending on system settings (e.g. parameter of simulation refers to the
+correct location of previously run simulation)
+
 - Filtering is done when the config file is created only
 - There is no filtering when config file is edited!
