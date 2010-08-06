@@ -6,7 +6,7 @@ NOW
 
 Part 1
 ------
-- Implement scratch space
+- [DONE] Implement scratch space
 - Handle important parameters so that users could run simulations using example
   config files
 - Implement progress bar for results
@@ -43,6 +43,12 @@ Molecular Dynamics:
 
 Part 5
 ------
+- Implement batch job submission
+- Fix status bar
+
+
+Part 6
+------
 Go through the types of simulation and make sure they work as they should:
 
 - Electron Structure
@@ -54,7 +60,7 @@ Go through the types of simulation and make sure they work as they should:
 - Molecular Dynamics
 
 
-Part 6
+Part 7
 ------
 - Write documentation for QE [MUST]
 - Write implementation notes for developers [MUST]
