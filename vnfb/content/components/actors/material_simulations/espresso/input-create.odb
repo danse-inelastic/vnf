@@ -11,15 +11,7 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
-# TODO:
-
-# Remove (redefine) the following parameters:
-# PW:
-#   control.prefix
-
-#
-
-
+from vnfb.qeutils.qeparser.qeinput import QEInput
 from vnfb.dom.QEConfiguration import QEConfiguration
 from vnfb.qeutils.qeutils import writeRecordFile, defaultInputName, subtypeMatdyn
 
@@ -82,8 +74,15 @@ class Actor(base):
         "Writes configuration to file"
         # fn (file name) is fixed and doesn't depend on the filename record
         fn      = defaultInputName(self.inventory.type)
-        # Use self.type
-        ftext    = self.inventory.text  # Filtered text
+        
+        input   = QEInput(config=self.inventory.text, type=self.inventory.type)
+
+        import vnfb.qeutils.filters as filterdir
+        module  = filterdir.filter("pw")
+        filter  = getattr(module, "PWFilter")()
+        #print filter.test()
+        ftext   = input.toString()
+        print ftext  # XXX
         writeRecordFile(director.dds, self.input, fn, ftext)
 
 

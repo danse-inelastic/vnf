@@ -18,8 +18,9 @@ PACKAGE = qeutils/filters
 #
 
 EXPORT_PYTHON_MODULES = \
-        filter.py \
-        pwfilter.py \
+    __init__.py \
+    filter.py \
+    pwfilter.py \
 
 
 BUILD_DIRS = \
