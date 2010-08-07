@@ -62,6 +62,14 @@ class Visual:
         nk2         = FormTextField(name = "nk2", value = NK)
         nk3         = FormTextField(name = "nk3", value = NK)
 
+        skiplink    = lc.link(label="Skip Input Generator")
+        skiplink.onclick    = load( actor   = 'material_simulations/espresso/input-create',
+                                    routine = 'default',
+                                    text    = "",
+                                    id      = self._actor.id,
+                                    taskid  = self._actor.taskid,
+                                    type    = self._actor.type)
+
         submit      = FormSubmitButton(label="Generate Input Configuration")
         cancel      = lc.button(label="Cancel")
         cancel.onclick  = load(actor = 'material_simulations/espresso/sim-view', id=self._actor.id)
@@ -82,6 +90,7 @@ class Visual:
         table.addRow(("nk1:", nk1))
         table.addRow(("nk2:", nk2))
         table.addRow(("nk3:", nk3))
+        table.addRow(("", skiplink))
         table.addRow(("", st.grid()))
 
         table.setColumnStyle(0, "qe-form-label")
