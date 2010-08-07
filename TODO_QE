@@ -68,8 +68,9 @@ Part 7
 - Write implementation notes for developers [MUST]
 - Write documentation for qeinput and make it a python egg
 - Add link next to the plot to download the DOS file. Open the file in a new browser window.
-- Add links to documentation for QE.
-
+- Add links to documentation for QE (inputs: pw, ph, q2r).
+- [IN PROGRESS] Format text for some tesk types (e.g. q2r doc is in PH/q2r.f90 file of espresso source code)
+    Note: Could not find docs for "plotband" task type
 
 Minor
 -----
