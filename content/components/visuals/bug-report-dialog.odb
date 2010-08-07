@@ -39,9 +39,9 @@ def visual(id=None, info=None, director=None):
     
     import sys, cgitb
     # print sys.exc_info()
-    # vals = sys.exc_info()
-    # tbtext = cgitb.html(vals[0], '', vals[2])
-    tbtext = cgitb.html((sys.exc_type, '', sys.exc_traceback))
+    vals = sys.exc_info()
+    tbtext = cgitb.html(vals[0], '', vals[2])
+    #tbtext = cgitb.html((sys.exc_type, '', sys.exc_traceback))
     traceback.text = tbtext.splitlines()
     # traceback.text=['<pre>'+info['traceback']+'</pre>']
 

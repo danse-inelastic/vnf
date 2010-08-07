@@ -18,23 +18,27 @@ def visual(director):
     middle = sp.section()
     middle.add(createMiddleSearchPanel())
     
-    right = sp.section()
-    right.add(createRightSearchPanel())
+#    right = sp.section()
+#    right.add(createRightSearchPanel())
 
     searchpanel.submitbutton(label='search')
 
     tablecontainer = doc.document(id='cod-table-container')
     tablecontainer.add(director.retrieveVisual('cod/table', data=[], director=director))
     
+#    searchpanel.onsubmit = select(element=searchpanel).submit(
+#        actor = 'atomicstructure/cod', routine = 'process',
+#        formid = searchpanel.id,
+#        new_display_container_id=tablecontainer.id, new_display_creator='getTableView')
+    
     searchpanel.onsubmit = select(element=searchpanel).submit(
-        actor = 'cod', routine = 'process',
-        formid = searchpanel.id,
-        new_display_container_id=tablecontainer.id, new_display_creator='getTableView')
+        actor = 'atomicstructure/cod', routine = 'process')
 
     return doc
 
 def createLeftSearchPanel():
     grid = lc.grid()
+    field = _limit_field
 
     row = grid.row()
     row.cell().add('Text'); row.cell().add(FormTextField(name='text'))
@@ -49,13 +53,22 @@ def createLeftSearchPanel():
     row.cell().add('Volume');
     cell = row.cell()
     sp = lc.splitter(); cell.add(sp)
-
-    field = _limit_field
     sp.section().add(field('volume', 'min'))
     sp.section().add(field('volume', 'max'))
 
+#    row = grid.row()
+#    row.cell().add('# of elements'); 
+#    cell = row.cell()
+#    sp = lc.splitter(); cell.add(sp)
+#    sp.section().add(field('nelements', 'min'))
+#    sp.section().add(field('nelements', 'max'))
+#    #row.cell().add(FormTextField(name='nelements'))
+    
     row = grid.row()
     row.cell().add('# of elements'); row.cell().add(FormTextField(name='nelements'))
+    
+    row = grid.row()
+    row.cell().add('space group'); row.cell().add(FormTextField(name='sg'))
     return grid
 
 
