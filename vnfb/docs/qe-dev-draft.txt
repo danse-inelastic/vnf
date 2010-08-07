@@ -39,6 +39,7 @@ Steps of job submission:
 Configuration Generation
 ------------------------
 
+
 Configuration Filtering
 -----------------------
 
@@ -48,3 +49,9 @@ correct location of previously run simulation)
 
 - Filtering is done when the config file is created only
 - There is no filtering when config file is edited!
+
+Filters for QE are located in the directory:
+
+vnfb/qeutils/filters/
+
+You can edit filters that you think are appropriate

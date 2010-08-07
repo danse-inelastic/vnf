@@ -81,7 +81,6 @@ class Actor(base):
         filter  = filterdir.filterFactory(self.inventory.type)
         filter.apply(input)             # Apply filter to input
         fconfig = input.toString()      # Filtered config input
-        print fconfig
         writeRecordFile(director.dds, self.input, fn, fconfig)
 
 
