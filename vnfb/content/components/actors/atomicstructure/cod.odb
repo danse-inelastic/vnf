@@ -3,8 +3,8 @@
 from luban.content import select, load, alert
 import luban.content as lc
 
-from luban.components.FormProcessor import FormProcessor as base
-
+#from luban.components.FormProcessor import FormProcessor as base
+from luban.components.AuthorizedActor import AuthorizedActor as base
 class Actor(base):
 
 
@@ -16,6 +16,7 @@ class Actor(base):
         elements = luban.inventory.str('elements', default=None)
         notelements = luban.inventory.str('notelements', default=None)
         nelements = luban.inventory.int('nelements', validator=luban.inventory.positive, default=None)
+        sg = luban.inventory.str('sg', default=None)
         
         volume_min = luban.inventory.float('volume_min', validator=luban.inventory.nonnegative, default=None)
         volume_max = luban.inventory.float('volume_max', validator=luban.inventory.nonnegative, default=None)
@@ -54,12 +55,17 @@ class Actor(base):
         data = self._getData(director)
         return director.retrieveVisual('cod/table', director=director, data=data)
 
-    def store(self, director):
-        form.onsubmit = select(element=form).submit(
-            actor='atomicstructure/create-structure-form',
-            routine = 'process',
-            id = id,
-        )
+    def process(self, director):
+        """ """
+        from luban.content import select
+        return select(id='cod-table-container').replaceBy(self.getTableView(director))
+
+#    def store(self, director):
+#        form.onsubmit = select(element=form).submit(
+#            actor='atomicstructure/create-structure-form',
+#            routine = 'process',
+#            id = id,
+#        )
 
     def _getInputErrors(self):
         errors = super(Actor, self)._getInputErrors()
@@ -95,6 +101,7 @@ class Actor(base):
         elements = si.elements
         notelements = si.notelements
         nelements = si.nelements
+        sg = si.sg
         volume = si.volume_min, si.volume_max
         a = si.a_min, si.a_max
         b = si.b_min, si.b_max
@@ -102,22 +109,92 @@ class Actor(base):
         alpha = si.alpha_min, si.alpha_max
         beta = si.beta_min, si.beta_max
         gamma = si.gamma_min, si.gamma_max
+        
+        query = "SELECT * FROM data WHERE";
+        if text!=None:
+           words = text.split()    
+           for word in words:
+               query += " AND (text LIKE '% " + word + " %')"
+        if sg!=None:
+            query += " AND (sg LIKE '% " + sg + " %')"
+        if nelements!=None:
+            query += " AND (nel LIKE '% " + nelements + " %')"
+        if elements!=None:
+           words = elements.split()    
+           for element in words:
+               query += " AND (formula LIKE '% " + element + " %')"
+        if notelements!=None:
+           words = notelements.split()    
+           for notelement in words:
+               query += " AND (formula NOT LIKE '% " + notelement + " %')"
+        #try:
+        query += self.between(volume, "vol");
+        #query += between(nelements, "nel");
+        query += self.between(a, "a");
+        query += self.between(b, "b");
+        query += self.between(c, "c");
+        query += self.between(alpha, "alpha");
+        query += self.between(beta, "beta");
+        query += self.between(gamma, "gamma");
+        query = query.replace("WHERE AND", "WHERE");
+        #catch NumberFormatException nfe:
+        #    JOptionPane.showMessageDialog(null, "Please enter numbers in the numeric fields.");
+        if query[-6:]==" WHERE":
+            query = "SELECT * FROM data";
+        query += " ORDER BY file LIMIT 100";
+
+        import MySQLdb as m
+        db = m.connect(host="localhost",user="root",passwd="chem88",db='cod')
+        c = db.cursor()
+        c.execute(query)
+        results = c.fetchall()
+        return results
 
         # the list returned here should be calculated from the parameters above
-        return [
-            (False, '3XFABC', 1.0, 2.0, 3.0, 88, 89., 91., 6.0, 5, 'symmetry', 'formula...', 'text...'),
-            (True, '3ER4VC', 2.0, 3.0, 1.0, 99, 88., 90., 6.0, 3, 'P-1', 'formula...', 'text...'),
-            (False, 'XXX', str(a), str(b), str(c), str(alpha), str(beta), str(gamma),
-             str(volume), str(nelements), 'symmetry', 'formula', 'text',),
-            ]
+#        return [
+#            (False, '3XFABC', 1.0, 2.0, 3.0, 88, 89., 91., 6.0, 5, 'symmetry', 'formula...', 'text...'),
+#            (True, '3ER4VC', 2.0, 3.0, 1.0, 99, 88., 90., 6.0, 3, 'P-1', 'formula...', 'text...'),
+#            (False, 'XXX', str(a), str(b), str(c), str(alpha), str(beta), str(gamma),
+#             str(volume), str(nelements), 'symmetry', 'formula', 'text',),
+#            ]
+        
+    def between(self, field, name):
+        line = ""
+        min,max = field
+        if min!=None:
+            if max!=None:
+                line += " AND (" + name + " BETWEEN " + min + " AND " + max + ")";
+            else:
+                line += " AND (" + name + " >= " + min + ")";
+        elif max!=None:
+            line += " AND (" + name + " <= " + max + ")";
+        return line;
         
     def getFile(self):
-        db = "cod";
+        db = "/home/jbk/cod";
 
         fileName = "http://fireball.phys.wvu.edu/cod/" + db + "/" + fileNumbers[tblResult.getSelectedRow()] + ".cif";
         
         contents=Main.getFileContents(fileName);
 
+    def _castInventoryProperties(self):
+        """luban inventor items are not casted immediately. this is the place
+        where casting happens. This method is not necessary for actors that store
+        user inputs to db, because the db column descriptors will do the casting.
+        """
+        from luban.inventory.properties.PropertyInterface import PropertyInterface
+        from luban.inventory.properties.PropertySet import PropertySet
+        for name in dir(self.Inventory):
+            trait = getattr(self.Inventory, name)
+            if not isinstance(trait, PropertyInterface): continue
+            if isinstance(trait, PropertySet):
+                # use inventory.<name>.getValues() to get casted values
+                continue
+            value = getattr(self.inventory, name)
+            value = trait.convertValue(value)
+            setattr(self.inventory, name, value)
+            continue
+        return
 
 def actor():
-    return Actor("cod")
+    return Actor("atomicstructure/cod")
