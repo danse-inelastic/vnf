@@ -7,9 +7,9 @@ NOW
 Part 1
 ------
 - [DONE] Implement scratch space
-- Handle important parameters so that users could run simulations using example
+- [IN PROGRESS] Handle important parameters so that users could run simulations using example
   config files
-- Able to skip generator forms: "Skip Input Generator"
+- [IN PROGRESS] Able to skip generator forms: "Skip Input Generator"
 - Add "Explain" link to simulation edit
 - Implement progress bar for results
 - Add "octopod" server and implement module that handles server configurations
