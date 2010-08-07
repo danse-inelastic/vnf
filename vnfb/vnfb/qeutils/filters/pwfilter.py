@@ -19,8 +19,11 @@ PWFilter - configuration input filter for pw task type.
 
 class PWFilter(Filter):
 
+    def _setPlusFilter(self):
+        self._plus.setParam("control", "prefix", "'pwscf'")
+
+
     def _setMinusFilter(self):
-        self._minus.setParam("control", "prefix")        # Will be set to default ('pwscf')
         self._minus.setParam("control", "pseudo_dir")   # Will be set to $ESPRESSO_PSEUDO
         self._minus.setParam("control", "outdir")       # Will be set to $ESPRESSO_TMPDIR
 
