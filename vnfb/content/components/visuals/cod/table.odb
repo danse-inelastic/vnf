@@ -15,18 +15,19 @@ def visual(data, director, cols=None):
         selected = Model.descriptors.bool(name='selected')
         
         #id = Model.descriptors.link(name='id')
-        id = Model.descriptors.str(name='id')
+        #id = Model.descriptors.str(name='id')
         
-        a = Model.descriptors.str(name='a')
-        b = Model.descriptors.str(name='b')
-        c = Model.descriptors.str(name='c')
-        alpha = Model.descriptors.str(name='alpha')
-        beta = Model.descriptors.str(name='beta')
-        gamma = Model.descriptors.str(name='gamma')
+        lattice = Model.descriptors.str(name='lattice')
+        #a = Model.descriptors.str(name='a')
+        #b = Model.descriptors.str(name='b')
+        #c = Model.descriptors.str(name='c')
+        #alpha = Model.descriptors.str(name='alpha')
+        #beta = Model.descriptors.str(name='beta')
+        #gamma = Model.descriptors.str(name='gamma')
 
-        volume = Model.descriptors.str(name='volume')
+        #volume = Model.descriptors.str(name='volume')
 
-        nelements = Model.descriptors.str(name='nelements')
+        #nelements = Model.descriptors.str(name='nelements')
 
         spacegroup = Model.descriptors.str(name='spacegroup')
 
@@ -34,21 +35,21 @@ def visual(data, director, cols=None):
 
         text = Model.descriptors.str(name='text')
 
-        row_identifiers = ['id']
+        #row_identifiers = ['id']
 
     columns = [
         View.Column(label='', measure='selected'),
-        View.Column(label='ID', measure='id'),
+        #View.Column(label='ID', measure='id'),
+        View.Column(label='Lattice', measure='lattice'),
+        #View.Column(label='a', measure='a'),
+        #View.Column(label='b', measure='b'),
+        #View.Column(label='c', measure='c'),
+        #View.Column(label='alpha', measure='alpha'),
+        #View.Column(label='beta', measure='beta'),
+        #View.Column(label='gamma', measure='gamma'),
         
-        View.Column(label='a', measure='a'),
-        View.Column(label='b', measure='b'),
-        View.Column(label='c', measure='c'),
-        View.Column(label='alpha', measure='alpha'),
-        View.Column(label='beta', measure='beta'),
-        View.Column(label='gamma', measure='gamma'),
-        
-        View.Column(label='Volume', measure='volume'),
-        View.Column(label='# of elements', measure='nelements'),
+        #View.Column(label='Volume', measure='volume'),
+        #View.Column(label='# of elements', measure='nelements'),
 
         View.Column(label='Space group', measure='spacegroup'),
         View.Column(label='Formula', measure='formula'),
