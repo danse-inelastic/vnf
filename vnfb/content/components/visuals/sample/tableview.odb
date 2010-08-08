@@ -88,7 +88,10 @@ def visual(
     # add new button
     toolbar         = tableview.find(id='sample-table-toptoolbar')
 
-    button          = lc.button(label='New', tip='create new sample', icon='new.png')
+    button          = lc.button(
+        label='New', tip='create new sample', icon='new.png',
+        id = 'new-sample-button',
+        )
     toolbar.add(button)
     button.onclick  = select(id='main-display-area').replaceContent(
         load(actor      = 'sample',
