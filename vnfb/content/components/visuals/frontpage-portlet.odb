@@ -71,11 +71,11 @@ def visual(director):
     
     htmldoc = luban.content.htmldocument(); portletcontainer.add(htmldoc)
     htmldoc.Class = 'portletitem'
-    htmldoc.text = ['<a href="http://docs.danse.us/VNET">documentation</a>']
+    htmldoc.text = ['<a href="http://docs.danse.us/VNET" target="_blank">documentation</a>']
     
     htmldoc = luban.content.htmldocument(); portletcontainer.add(htmldoc)
     htmldoc.Class = 'portletitem'
-    htmldoc.text = ['<a href="http://docs.danse.us/VNET/contactus.html">contact us</a>']
+    htmldoc.text = ['<a href="http://docs.danse.us/VNET/contactus.html" target="_blank">contact us</a>']
     
     return portletcontainer
 
