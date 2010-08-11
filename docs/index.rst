@@ -5,8 +5,15 @@
 
 VNF: Virtual Neutron Facility
 ===============================
-Virtual Neutron Facility provides users with easy, integrated access
-to computing tools for end-to-end simulation of neutron experiments.
+This is the documentation site for vnf, the `Virtual Neutron Facility
+<https://vnf.caltech.edu>`_.
+The vnf service gives users an easy,
+integrated access to computing tools for end-to-end simulations 
+of neutron scattering experiments. 
+These include modern methods of simulating the structure and 
+dynamics of the materials under study. 
+This `link <https://vnf.caltech.edu>`_ will take you to the login page of the 
+`Virtual Neutron Facility <https://vnf.caltech.edu>`_.
 
 
 Links
