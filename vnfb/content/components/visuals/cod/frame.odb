@@ -1,6 +1,6 @@
 # -*- Python -*-
 
-from luban.content import select
+from luban.content import load, select
 import luban.content as lc
 
 from luban.content.FormTextField import FormTextField
@@ -27,46 +27,23 @@ def visual(director):
         actor = 'atomicstructure/cod', routine = 'process')
 
     tablecontainer = doc.document(id='cod-table-container')
-    cols= [
-        'selectone',
-        'lattice',
-        'spacegroup'
-        'formula',
-        'description']
-    tablecontainer.add(director.retrieveVisual('cod/table', data=[], director=director, cols=cols))
-
+    sp2 = lc.splitter(orientation='vertical')
+    tablecontainer.add(sp2)
+    
+    top = sp2.section()
     # select button
-    b = lc.button(label='import to VNF'); tablecontainer.add(b)
-#    b.onclick = load(
-#            actor='atomicstructure', routine='editAtomicStructureForm',
-#            id=select(id='cod-table').table(
-#                'getIdentifiersForSelectedRow', colname='selectone'),
-#            )
-    b.onclick = loadStructure(director)
-
+    b = lc.button(label='import to VNF')
+    b.onclick =  load(actor='atomicstructure/cod', routine='loadStructure', 
+                      id=select(id='cod-table').table('getIdentifiersForSelectedRow', 
+                                              colname='selectone'))
+    top.add(b)
+    # table
+    bottom = sp2.section()
+    bottom.add(director.retrieveVisual('cod/table', 
+                                               data=[], 
+                                               director=director))
     return doc
 
-def loadStructure(director):
-    #retrieve cif file and load into data object
-    db = "/home/jbk/cod"
-
-    fileId = select(id='cod-table').table('getIdentifiersForSelectedRow', colname='selectone')
-    #use a hack for now
-    import os
-    folder = fileId[0]
-    filePath = os.path.join(db, folder, fileId+".cif")
-    # create a new record
-    domaccess = director.retrieveDOMAccessor('atomicstructure')
-    structure = domaccess.newAtomicStructure()
-    structure.read(filePath)
-    #
-    orm = director.clerk.orm
-    self.inventory.structureid = orm(structure).id
-    orm.save(structure)
-    #call data object viewer
-    select(id='main-display-area').replaceContent(load(actor='atomicstructure',
-                                                       routine='editAtomicStructureForm',
-                                                       id = structure.id))
 
 def createLeftSearchPanel():
     grid = lc.grid()
@@ -87,14 +64,6 @@ def createLeftSearchPanel():
     sp = lc.splitter(); cell.add(sp)
     sp.section().add(field('volume', 'min'))
     sp.section().add(field('volume', 'max'))
-
-#    row = grid.row()
-#    row.cell().add('# of elements'); 
-#    cell = row.cell()
-#    sp = lc.splitter(); cell.add(sp)
-#    sp.section().add(field('nelements', 'min'))
-#    sp.section().add(field('nelements', 'max'))
-#    #row.cell().add(FormTextField(name='nelements'))
     
     row = grid.row()
     row.cell().add('# of elements'); row.cell().add(FormTextField(name='nelements'))

@@ -62,8 +62,22 @@ class Actor(base):
         """process search inputs and return results in nice table """
         from luban.content import select
         tablecontainer = lc.document(id='cod-table-container')
+        sp2 = lc.splitter(orientation='vertical')
+        tablecontainer.add(sp2)
+        
+        top = sp2.section()
+        # select button
+        b = lc.button(label='import to VNF')
+        b.onclick =  load(actor='atomicstructure/cod', routine='loadStructure', 
+                          director = director,
+                          fileId=select(id='cod-table').table('getIdentifiersForSelectedRow', colname='selectone'))
+        top.add(b)
+        # table
+        bottom = sp2.section()
         data = self._getData(director)
-        tablecontainer.add(director.retrieveVisual('cod/table', data=data, director=director))
+        bottom.add(director.retrieveVisual('cod/table', 
+                                                   data=data, 
+                                                   director=director))
         
         return select(id='cod-table-container').replaceBy(tablecontainer)
 
@@ -152,16 +166,33 @@ class Actor(base):
         
         #process the results so only useful information is returned
         results = []
+        unicodeErrorStrategy = 'ignore'
+        import json
+        dumps = json.dumps
         for r in rawresults:
-            lattice = '(%4.2f, %4.2f, %4.2f, %4.2f, %4.2f, %4.2f)' % (r[1], r[3], r[5], r[7], r[9], r[11])
-            spacegroup = r[26]
-            calculated_formula = r[31]
+            fileId = unicode(str(r[0]), 'utf-8', errors=unicodeErrorStrategy)
+            dumps(fileId)
+            prelattice = '(%4.2f, %4.2f, %4.2f, %4.2f, %4.2f, %4.2f)' % (r[1], r[3], r[5], r[7], r[9], r[11])
+            lattice = unicode(prelattice, 'utf-8', errors=unicodeErrorStrategy)
+            dumps(lattice)
+            spacegroup = unicode(r[26], 'utf-8', errors=unicodeErrorStrategy)
+            dumps(spacegroup)
+                
+            if r[30]==None:
+                prefomula = 'None'
+            else:
+                preformula = r[30]
             try:
-                description = unicode(r[45],'utf-8',errors='replace')
+                formula = unicode(preformula, 'utf-8', errors=unicodeErrorStrategy)
+                dumps(formula)
+                description = unicode(r[45], 'utf-8', errors=unicodeErrorStrategy) 
+                dumps(description)
             except:
-                description = st(r[45])
-                pass               
-            results.append(('',str(lattice), spacegroup, calculated_formula, description))
+                import traceback
+                traceback.print_exc()
+                raise
+                #description = str(r[45])         
+            results.append(('', str(fileId), str(lattice), str(spacegroup), str(formula), str(description)))
         return results
 
         # the list returned here should be calculated from the parameters above
@@ -202,6 +233,26 @@ class Actor(base):
             setattr(self.inventory, name, value)
             continue
         return
+
+    def loadStructure(self, director, fileId):
+        #retrieve cif file and load into data object
+        #use a hack for now
+        db = "/home/jbk/cod/cif"
+        import os
+        folder = fileId[0]
+        filePath = os.path.join(db, folder, fileId+".cif")
+        # create a new record
+        domaccess = director.retrieveDOMAccessor('atomicstructure')
+        structure = domaccess.newAtomicStructure()
+        structure.read(filePath)
+        #
+        orm = director.clerk.orm
+        self.inventory.structureid = orm(structure).id
+        orm.save(structure)
+        #call data object viewer
+        select(id='main-display-area').replaceContent(load(actor='atomicstructure',
+                                                           routine='editAtomicStructureForm',
+                                                           id = structure.id))
 
 def actor():
     return Actor("atomicstructure/cod")
