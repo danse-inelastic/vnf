@@ -41,6 +41,9 @@ class Actor(base):
         gamma_max = luban.inventory.float('gamma_max', validator=anglelimit, default=None)
         
         id = luban.inventory.str('id', default='')
+        
+        # 
+        fileId = luban.inventory.str('fileId')
 
     def default(self, director):
         return director.retrieveVisual("cod/frame")     
@@ -68,9 +71,10 @@ class Actor(base):
         top = sp2.section()
         # select button
         b = lc.button(label='import to VNF')
-        b.onclick =  load(actor='atomicstructure/cod', routine='loadStructure', 
-                          director = director,
-                          fileId=select(id='cod-table').table('getIdentifiersForSelectedRow', colname='selectone'))
+        b.onclick =  load(actor='atomicstructure/cod', 
+                          routine='loadStructure', 
+                          fileId=select(id='cod-table').table('getIdentifiersForCheckedRows', 
+                                                              colname='selectone'))
         top.add(b)
         # table
         bottom = sp2.section()
@@ -78,7 +82,6 @@ class Actor(base):
         bottom.add(director.retrieveVisual('cod/table', 
                                                    data=data, 
                                                    director=director))
-        
         return select(id='cod-table-container').replaceBy(tablecontainer)
 
 
@@ -234,24 +237,27 @@ class Actor(base):
             continue
         return
 
-    def loadStructure(self, director, fileId):
+    def loadStructure(self, director):
         #retrieve cif file and load into data object
         #use a hack for now
+        fileId = self.inventory.fileId
         db = "/home/jbk/cod/cif"
         import os
         folder = fileId[0]
         filePath = os.path.join(db, folder, fileId+".cif")
         # create a new record
-        domaccess = director.retrieveDOMAccessor('atomicstructure')
-        structure = domaccess.newAtomicStructure()
+        #domaccess = director.retrieveDOMAccessor('atomicstructure')
+        #structure = domaccess.newAtomicStructure()
+        from vnfb.dom.BigStructure import Structure
+        structure = Structure()
         structure.read(filePath)
         #
         orm = director.clerk.orm
-        self.inventory.structureid = orm(structure).id
+        #self.inventory.structureid = orm(structure).id
         orm.save(structure)
         #call data object viewer
-        select(id='main-display-area').replaceContent(load(actor='atomicstructure',
-                                                           routine='editAtomicStructureForm',
+        return select(id='main-display-area').replaceContent(load(actor='atomicstructure',
+                                                           routine='default',
                                                            id = structure.id))
 
 def actor():
