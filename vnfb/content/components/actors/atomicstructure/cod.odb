@@ -248,7 +248,9 @@ class Actor(base):
         # create a new record
         #domaccess = director.retrieveDOMAccessor('atomicstructure')
         #structure = domaccess.newAtomicStructure()
-        from vnfb.dom.BigStructure import Structure
+        
+        #from vnfb.dom.BigStructure import Structure
+        from vnfb.dom.AtomicStructure import Structure
         structure = Structure()
         structure.read(filePath)
         #
@@ -257,8 +259,8 @@ class Actor(base):
         orm.save(structure)
         #call data object viewer
         return select(id='main-display-area').replaceContent(load(actor='atomicstructure',
-                                                           routine='default',
-                                                           id = structure.id))
+                                                           routine='default'))#,
+                                                           #id = structure.id))
 
 def actor():
     return Actor("atomicstructure/cod")
