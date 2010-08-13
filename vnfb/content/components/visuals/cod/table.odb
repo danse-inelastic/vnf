@@ -27,7 +27,7 @@ def visual(data, director, cols=None):
         spacegroup = Model.descriptors.str(name='spacegroup')
         formula = Model.descriptors.str(name='formula')
         text = Model.descriptors.str(name='text')
-        #row_identifiers = ['id']
+        row_identifiers = ['id']
 
     possibleColumns = [
         View.Column(label='', measure='selectone'),
