@@ -13,9 +13,9 @@
 
 
 Fermi_nu = 600
-T0_nu = 60
+T0_nu = 120
 nrad = 0.5801
-nchans = 32
+nchans = 31
 T0_off = 0
 Edes = 60
 
@@ -428,16 +428,16 @@ def fermi_chopp():
     c = FermiChopper()
     c.short_description = 'Fermi chopper'
     c.len=0.10
-    c.w=0.06
+    c.w=0.060364
     c.ymin=-.0325
     c.ymax=.0325
     c.nu=Fermi_nu
     c.delta=0.0
     c.tc=phasefc1
     c.nchan=nchans
-    c.bw=0.0005
+    c.bw=0.00041
     c.blader=nrad
-    return  c
+    return c
 
 
 def tofmonitor1():
@@ -575,11 +575,11 @@ def createInstrument(director):
         ccomp('guide_2_4', guide_2_4(), ((0,0,10.68131), (0,0,0), '')),
         ccomp('guide_2_5', guide_2_5(), ((0,0,11.08340), (0,0,0), '')),
         ccomp('fermi_chopp', fermi_chopp(), ((0,0,11.61), (0,0,0), '')),
-        ccomp('tofmonitor1', tofmonitor1(), ((0,0,11.82), (0,0,0), '')),
+        ccomp('tofmonitor1', tofmonitor1(), ((0,0,11.831), (0,0,0), '')),
         ccomp('guide_3', guide_3(), ((0,0,11.84975), (0,0,0), '')),
         ccomp('guide_4_1', guide_4_1(), ((0,0,12.08825), (0,0,0), '')),
         ccomp('guide_4_2', guide_4_2(), ((0,0,12.55105), (0,0,0), '')),
-        ccomp('guide_5', guide_5(), ((0,0,13.01830), (0,0,0), '')),
+        # ccomp('guide_5', guide_5(), ((0,0,13.01830), (0,0,0), '')),
         ccomp('neutron_recorder', neutron_recorder(), ((0,0,13.5), (0,0,0), '')),
         ]
 
