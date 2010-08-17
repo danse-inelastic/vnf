@@ -29,7 +29,7 @@ def visual(actor, director, structureid, simtype):
                                           taskid    = actor.taskid,
                                           type      = actor.type)                                          
 
-    form.radio(name = "mattertype", entries = enumerate(MATTER_TYPE.values()))
+    form.radio(name = "mattertype", entries = enumerate(MATTER_TYPE.values()), selection=0) # selection doesn't work in Chrome
     table       = QEGrid(lc.grid(Class="qe-form"))
     form.add(skipLink)
     form.add(table.grid())
