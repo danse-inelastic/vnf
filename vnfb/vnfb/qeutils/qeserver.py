@@ -26,7 +26,7 @@ class QEServer:
  
     def getLink(self, id):      # simulation id
         server = None
-        link = Paragraph(text="None")
+        link = "None"
 
         settings    = self._director.clerk.getQESettings(where="simulationid='%s'" % id )
         if not settings:# or not settings[0]:

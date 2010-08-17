@@ -1,0 +1,46 @@
+# -*- Python -*-
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                               Alex Dementsov
+#                      California Institute of Technology
+#                        (C) 2010  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+import luban.content as lc
+from luban.content import load
+from luban.content import select
+
+
+def showDialog(title, content):
+    "Returns the dialog widget"
+    dialog  = lc.dialog(title=title, autoopen=True)
+    dialog.add(content)   # Text
+    okbutton = lc.button( label     = 'OK',
+                          onclick   = select(element=dialog).destroy())
+    dialog.add(okbutton)
+    return dialog
+
+
+def visual(form):   #id):  director,  #id, taskid, type):
+    title           = "Optimization"
+    text            = "Optimization here means running simulations on a \
+    scratch space. Scratch space is the local disk on each computational node. \
+    It is used to boost simulation performance. \
+    But it normally has some issues that simulation \
+    is not allocated to the same nodes which you ran your \
+    previous simulation on. Check it if no one is using the cluster . \
+    When not checked, it will run safely on NFS but slower than on scratch space."
+    dialog          = showDialog(title, text)
+    explainlink     = lc.link( label = "Explain")
+    explainlink.onclick = select(element=form).append(dialog)   #explainlink
+
+    return explainlink
+
+__date__ = "$Aug 17, 2010 1:44:57 PM$"
+
+

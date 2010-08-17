@@ -72,31 +72,6 @@ class Actor(base):
         return doc
 
 
-    def _showDialog(self, title, content):
-        "Returns the dialog widget" 
-        dialog  = lc.dialog(title=title, autoopen=True) 
-        dialog.add(content)   # Text 
-        okbutton = lc.button( label     = 'OK', 
-                              onclick   = select(element=dialog).destroy()) 
-        dialog.add(okbutton) 
-        return dialog
-
-
-    def dialogLink(self, content):
-        title           = "Optimization"
-        text            = "Optimization here means running simulations on a \
-        scratch space. Scratch space is the local disk on each computational node. \
-        It is used to boost simulation performance. \
-        But it normally has some issues that simulation \
-        is not allocated to the same nodes which you ran your \
-        previous simulation on. Check it if no one is using the cluster . \
-        When not checked, it will run safely on NFS but slower than on scratch space."
-        dialog          = self._showDialog(title, text)
-        explainlink     = lc.link( label    = "Explain",
-	 	                   onclick  = select(element=content).append(dialog))
-        return explainlink
-
-
     def _setForm(self, sim, director):
         "Sets create new settings form"
         
@@ -115,12 +90,16 @@ class Actor(base):
         sname           = FormTextField(name = "sname", value = self.sname)
         description     = FormTextField(name = "description", value=self.description)   # Make as textarea
 
+        # Explain link
+        visual_     = "material_simulations/espresso/link-opt"
+        explLink    = director.retrieveVisual(visual_, form=form)
+
         submit      = FormSubmitButton(label="Create Settings Configuration")
         cancel      = lc.button(label="Cancel")
         cancel.onclick  = load(actor = 'material_simulations/espresso/sim-view', id=self.id)
 
         diskgrid    = QEGrid(lc.grid())
-        diskgrid.addRow((localdisk, self.dialogLink(form)))
+        diskgrid.addRow((localdisk, explLink))#self.dialogLink(form)
 
         st          = QEGrid(lc.grid()) # Submit Table
         st.addRow((submit, cancel), ("qe-action-accept", "qe-action-cancel"))
