@@ -28,6 +28,12 @@ def visual(actor, director, structureid, simtype):
     # zasr
     zasr          = FormSelectorField(name="zasr",
                                       entries=enumerate(ZASR.keys()))
+    # Skip link
+    visual_     = "material_simulations/espresso/link-skip"
+    skipLink    = director.retrieveVisual(visual_,
+                                          id        = actor.id,
+                                          taskid    = actor.taskid,
+                                          type      = actor.type)
 
     submit      = FormSubmitButton(label="Generate Input Configuration")
     cancel      = lc.button(label="Cancel")
@@ -37,6 +43,7 @@ def visual(actor, director, structureid, simtype):
     st.addRow((submit, cancel), ("qe-action-accept", "qe-action-cancel"))
 
     table.addRow(("Acoustic Sum Rules:", zasr))
+    table.addRow(("", skipLink))
     table.addRow(("", st.grid()))
 
     table.setColumnStyle(0, "qe-form-label")

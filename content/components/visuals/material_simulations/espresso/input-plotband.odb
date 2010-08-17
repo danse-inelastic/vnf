@@ -32,6 +32,12 @@ def visual(actor, director, structureid, simtype):
     emin        = FormTextField(name="emin", value = EMIN)
     emax        = FormTextField(name="emax", value = EMAX)
     deltae      = FormTextField(name="deltae", value = DELTAE)
+    # Skip link
+    visual_     = "material_simulations/espresso/link-skip"
+    skipLink    = director.retrieveVisual(visual_,
+                                          id        = actor.id,
+                                          taskid    = actor.taskid,
+                                          type      = actor.type)
 
     submit      = FormSubmitButton(label="Generate Input Configuration")
     cancel      = lc.button(label="Cancel")
@@ -43,6 +49,7 @@ def visual(actor, director, structureid, simtype):
     table.addRow(("Emin (eV): *", emin))
     table.addRow(("Emax (eV): *", emax))
     table.addRow(("Delta E (eV): *", deltae))
+    table.addRow(("", skipLink))
     table.addRow(("", st.grid()))
 
     table.setColumnStyle(0, "qe-form-label")

@@ -31,6 +31,12 @@ def visual(actor, director, structureid, simtype):
     nk1         = FormTextField(name = "nk1", value = NK)
     nk2         = FormTextField(name = "nk2", value = NK)
     nk3         = FormTextField(name = "nk3", value = NK)
+    # Skip link
+    visual_     = "material_simulations/espresso/link-skip"
+    skipLink    = director.retrieveVisual(visual_,
+                                          id        = actor.id,
+                                          taskid    = actor.taskid,
+                                          type      = actor.type)
     
     form.onsubmit   = select(element=form).submit(actor     = 'material_simulations/espresso-utils/generate-matdyn',
                                                   routine   = "generateInput",
@@ -51,6 +57,7 @@ def visual(actor, director, structureid, simtype):
     table.addRow(("nk1:", nk1))
     table.addRow(("nk2:", nk2))
     table.addRow(("nk3:", nk3))
+    table.addRow(("", skipLink))
     table.addRow(("",st.grid()))
     
     table.setColumnStyle(0, "qe-form-label")
