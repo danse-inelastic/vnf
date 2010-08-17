@@ -123,6 +123,8 @@ Analysis Page
 Configuration Input
 -------------------
 
+- Can skip generation forms and copy and paste the configuration input
+
 - Users cannot control parameters, these parameters are handled by VNF:
 General (PW, PH, Q2R, MATDYN, etc...):
     outdir  (**/qesimulations - NFS, /scratch - scratch space)
