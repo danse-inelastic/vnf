@@ -13,7 +13,6 @@
 
 import luban.content as lc
 from luban.content import load
-from vnfb.qeutils.qegrid import QEGrid
 
 def visual(id, taskid, type):
     "Returns formatted skip link"
@@ -26,6 +25,8 @@ def visual(id, taskid, type):
                               type    = type)
 
     return linkContent
+
+#from vnfb.qeutils.qegrid import QEGrid
 
 #    table       = QEGrid(lc.grid())
 #    table.addRow(("", linkContent))
