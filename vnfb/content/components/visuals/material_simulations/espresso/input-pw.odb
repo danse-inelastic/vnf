@@ -11,10 +11,6 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
-
-
-
-
 import luban.content as lc
 from luban.content import select
 from luban.content import load
@@ -22,14 +18,22 @@ from vnfb.qeutils.qegrid import QEGrid
 from vnfb.qeutils.qeconst import MATTER_TYPE
 from luban.content.FormSubmitButton import FormSubmitButton
 
-
+# XXX: Break radio button!
 def visual(actor, director, structureid, simtype):
     form    = lc.form()
-    # XXX: Break radio button!
+
+    # Skip link
+    visual_     = "material_simulations/espresso/link-skip"
+    skipLink    = director.retrieveVisual(visual_,
+                                          id        = actor.id,
+                                          taskid    = actor.taskid,
+                                          type      = actor.type)                                          
+
     form.radio(name = "mattertype", entries = enumerate(MATTER_TYPE.values()))
-    table       = QEGrid(lc.grid())
+    table       = QEGrid(lc.grid(Class="qe-form"))
+    form.add(skipLink)
     form.add(table.grid())
-    form.onsubmit   = select(element=form).submit(actor     = 'material_simulations/espresso-utils/generate-pw', 
+    form.onsubmit   = select(element=form).submit(actor     = 'material_simulations/espresso-utils/generate-pw',
                                                   routine   = "params",
                                                   id        = actor.id,
                                                   taskid    = actor.taskid,

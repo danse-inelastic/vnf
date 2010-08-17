@@ -1,0 +1,31 @@
+# -*- Python -*-
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                               Alex Dementsov
+#                      California Institute of Technology
+#                        (C) 2010  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+import luban.content as lc
+from luban.content import load
+
+def visual(id, taskid, type):
+
+    linkContent = lc.link(label="Skip To Configuration Form")
+    linkContent.onclick = load(actor   = 'material_simulations/espresso/input-create',
+                              routine = 'default',
+                              text    = "",
+                              id      = id,
+                              taskid  = taskid,
+                              type    = type)
+    return linkContent
+    
+
+__date__ = "$Aug 16, 2010 1:26:58 PM$"
+
+

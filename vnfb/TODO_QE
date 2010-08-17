@@ -7,7 +7,7 @@ NOW
 Part 1
 ------
 - [DONE] Implement scratch space
-- [IN PROGRESS] Handle important parameters so that users could run simulations using example
+- [IN PROGRESS] Handle important parameters (e.g. outdir, prefix ...) so that users could run simulations using example
   config files
 - [IN PROGRESS] Able to skip generator forms: "Skip Input Generator"
 - Add "Explain" link to simulation edit
