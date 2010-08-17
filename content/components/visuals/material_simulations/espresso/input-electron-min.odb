@@ -48,6 +48,13 @@ class Visual:
         emass       = FormTextField(name = "emass",   value = EMASS)
         dt          = FormTextField(name = "dt",    value = DT)
         nstep       = FormTextField(name = "nstep", value = NSTEP)
+        # Skip link
+        visual_     = "material_simulations/espresso/link-skip"
+        skipLink    = self._director.retrieveVisual(visual_,
+                                                  id        = self._actor.id,
+                                                  taskid    = self._actor.taskid,
+                                                  type      = self._actor.type)
+
 
         submit      = FormSubmitButton(label="Generate Input Configuration")
         cancel      = lc.button(label="Cancel")
@@ -62,6 +69,7 @@ class Visual:
         table.addRow(("Effective Electron Mass (a.u.): *", emass))
         table.addRow(("Time Step (a.u.): *", dt))
         table.addRow(("Number of Steps: *", nstep))
+        table.addRow(("", skipLink))
         table.addRow(("", st.grid()))
 
         table.setColumnStyle(0, "qe-form-label")
