@@ -27,6 +27,13 @@ def visual(actor, director, structureid, simtype):
 
     dt          = FormTextField(name = "dt",    value = DT)
     nstep       = FormTextField(name = "nstep", value = NSTEP)
+    # Skip link
+    visual_     = "material_simulations/espresso/link-skip"
+    skipLink    = director.retrieveVisual(visual_,
+                                          id        = actor.id,
+                                          taskid    = actor.taskid,
+                                          type      = actor.type)
+
 
     submit      = FormSubmitButton(label="Generate Input Configuration")
     cancel      = lc.button(label="Cancel")
@@ -38,6 +45,7 @@ def visual(actor, director, structureid, simtype):
 
     table.addRow(("Time Step (a.u.): *", dt))
     table.addRow(("Number of Steps: *", nstep))
+    table.addRow(("", skipLink))
     table.addRow(("", st.grid()))
 
     table.setColumnStyle(0, "qe-form-label")
