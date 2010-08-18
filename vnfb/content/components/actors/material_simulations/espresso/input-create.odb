@@ -77,10 +77,11 @@ class Actor(base):
         fn      = defaultInputName(self.inventory.type)        
         input   = QEInput(config=self.inventory.text, type=self.inventory.type)
 
-        # Create proper filter object
+        # Filter input (depends on task type)
         filter  = filterdir.filterFactory(self.inventory.type)
         filter.apply(input)             # Apply filter to input
         fconfig = input.toString()      # Filtered config input
+
         writeRecordFile(director.dds, self.input, fn, fconfig)
 
 

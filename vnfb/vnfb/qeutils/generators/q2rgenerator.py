@@ -21,7 +21,7 @@ from vnfb.qeutils.qeconst import ZASR, ZASRLIST
 Q2RGenerator - input generator class for Q2R task
 """
 
-FLFRC_F   = "'default.fc'"    # formatted!
+FLFRC   = "'default.fc'"    # formatted!
 
 class Q2RGenerator(object):
 
@@ -34,15 +34,14 @@ class Q2RGenerator(object):
     def setInput(self):
         "Set namelist 'input'"
         self._input     = QEInput(type='q2r')
-        nl              = Namelist("input")
-        self._input.addNamelist(nl)
+        nl              = self._input.namelist("input")
 
         phresults       = PHResult(self._director, self._inv.id)
         zasr    = ZASR[ZASRLIST[int(self._inv.zasr)]]
 
-        nl.add("fildyn",    phresults.fildyn()) # from PH results
-        nl.add("zasr",      zasr)
-        nl.add("flfrc",     FLFRC_F)
+        nl.set("fildyn",    phresults.fildyn()) # from PH results
+        nl.set("zasr",      zasr)
+        nl.set("flfrc",     FLFRC)
         
 
     def toString(self):
@@ -50,4 +49,15 @@ class Q2RGenerator(object):
 
 __date__ = "$Mar 24, 2010 9:59:39 AM$"
 
+
+#        self._input     = QEInput(type='q2r')
+#        nl              = Namelist("input")
+#        self._input.addNamelist(nl)
+#
+#        phresults       = PHResult(self._director, self._inv.id)
+#        zasr    = ZASR[ZASRLIST[int(self._inv.zasr)]]
+#
+#        nl.add("fildyn",    phresults.fildyn()) # from PH results
+#        nl.add("zasr",      zasr)
+#        nl.add("flfrc",     FLFRC_F)
 
