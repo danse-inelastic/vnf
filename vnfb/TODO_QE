@@ -72,6 +72,10 @@ Part 7
 - [IN PROGRESS] Format text for some tesk types (e.g. q2r doc is in PH/q2r.f90 file of espresso source code)
     Note: Could not find docs for "plotband" task type
 
+Part 8: Cleaning
+----------------
+- Implement PLOTBAND filter (non-standard config file)
+
 Minor
 -----
 - Fix plot sizes on analysis page

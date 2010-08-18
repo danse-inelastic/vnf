@@ -125,27 +125,57 @@ Configuration Input
 
 - Can skip generation forms and copy and paste the configuration input
 
-- Users cannot control parameters, these parameters are handled by VNF:
+- Users cannot control parameters, these parameters are handled by VNF.
+  Parameters are not filtered when user edits configuration input.
+
 General (PW, PH, Q2R, MATDYN, etc...):
     outdir  (**/qesimulations - NFS, /scratch - scratch space)
     prefix  (docs default values)
 
+In more details:
+
+PW:
+    + control.prefix = 'pwscf'
+    - control.outdir
+    - control.pseudo_dir
+
 PH:
-    fildyn (docs default value: 'matdyn')
+    + inputph.fildyn = 'matdyn' (docs default value)
+    + inputph.prefix = 'pwscf'
+    - inputph.outdir
 
 Q2R (see doc in PH/q2r.f90):
-    fildyn (path to PH fildyn directory), Example: '/home/danse-vnf-admin/vnf/data/qejobs/9DDA4RS/matdyn'
-    flfrc  ('default.fc', not in docs default values) , Example: 'default.fc'
+    + fildyn = {path to PH fildyn directory}, Example: '/home/danse-vnf-admin/vnf/data/qejobs/9DDA4RS/matdyn'
+    + flfrc = 'default.fc' (no docs default value)
 
 MATDYN (see doc in PH/matdyn.f90):
-    flfrc   (path do Q2R flfrc directory), Example: '/home/danse-vnf-admin/vnf/data/qejobs/9S2EA6Z/default.fc'
-    fldos   (docs default value: 'matdyn.dos'),
-    flfrq   (docs default value: 'matdyn.freq'),
-    flvec   (docs default value: 'matdyn.modes'),
+    + flfrc = {path do Q2R flfrc directory}, Example: '/home/danse-vnf-admin/vnf/data/qejobs/9S2EA6Z/default.fc'
+    + fldos = 'matdyn.dos' (docs default value),
+    + flfrq = 'matdyn.freq' (docs default value),
+    + flvec = 'matdyn.modes' (docs default value),
 
 DYNMAT (see doc in PH/dynmat.f90):
-    [?] fildyn (path to PH fildyn directory), Example: '/home/danse-vnf-admin/vnf/data/qejobs/9DDA4RS/matdyn'
-    filout   (docs default value: 'dynmat.out'),
-    filmol   (docs default value: 'dynmat.mold'),
-    filxsf   (docs default value: 'dynmat.axsf'),
+    + fildyn = {path to PH fildyn directory}, Example: '/home/danse-vnf-admin/vnf/data/qejobs/9DDA4RS/matdyn'
+    + filout = 'dynmat.out' (docs default value),
+    + filmol = 'dynmat.mold' (docs default value),
+    + filxsf = 'dynmat.axsf' (docs default value),
+
+BANDS
+    + inputpp.prefix = 'pwscf'
+    + filband = 'bands.dat' (no docs default value)
+    - inputpp.outdir
+
+DOS
+    + inputpp.prefix = 'pwscf'
+    + inputpp.fildos = pwscf.dos    # No apostrophe
+    - inputpp.outdir
+    
+CP
+    + control.prefix = 'cp'
+    - control.outdir
+    - control.pseudo_dir
+
+PLOTBAND (non standard config file, no documentation available)
+    Line #
+    [0]     {path to BANDS filband}, Example: /home/danse-vnf-admin/vnf/data/qejobs/FXWTH4WT/bands.dat
 
