@@ -86,6 +86,9 @@ class TestCaseBase(base):
 
         lh.expandDocument(id='bvk_getdos-view-results-doc')
 
+        # temporary disable the following
+        #
+        return
         resultsdoc_div = lh.selector('div', id='bvk_getdos-view-results-doc')
         hist_expandctrl = resultsdoc_div + '/div[2]/div[1]/div[1]/div[1]/div[1]/table/tbody/tr/td[1]/a'
         s.waitForElementPresent(hist_expandctrl)
