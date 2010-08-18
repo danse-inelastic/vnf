@@ -160,6 +160,7 @@ class Accessor(base):
         else:
             files = idf_files
             datadir = dds.abspath(record)
+        
         dds.make_available(record, files)
 
         # the atomic structure
