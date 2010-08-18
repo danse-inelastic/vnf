@@ -17,13 +17,18 @@ from filter import Filter
 BANDSFilter - configuration input filter for bands task type.
 """
 
-class BANDSFilter(Filter):
-    pass
+PREFIX  = "'pwscf'"
+FILBAND = "'bands.dat'"
 
-#    def _setMinusFilter(self):
-#        self._minus.setParam("control", "prefix")        # Will be set to default ('pwscf')
-#        self._minus.setParam("control", "pseudo_dir")   # Will be set to $ESPRESSO_PSEUDO
-#        self._minus.setParam("control", "outdir")       # Will be set to $ESPRESSO_TMPDIR
+class BANDSFilter(Filter):
+
+    def _setPlusFilter(self):
+        self._plus.setParam("inputpp", "prefix", PREFIX)
+        self._plus.setParam("inputpp", "filband", FILBAND)
+
+
+    def _setMinusFilter(self):
+        self._minus.setParam("inputpp", "outdir")       # Will be set to $ESPRESSO_TMPDIR
 
 
 __date__ = "$Aug 6, 2010 12:16:13 PM$"
