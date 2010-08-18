@@ -55,3 +55,53 @@ Filters for QE are located in the directory:
 vnfb/qeutils/filters/
 
 You can edit filters that you think are appropriate
+
+Chain of calls for config input generation
+--------------------------------------------
+
+Format of the sequence diagrams:
+
+<short actor name>.<routine> (visual: <short visual name>) [<operation type>] ->
+
+Example: generate-q2r.default (visual: input-q2r) [form] ->
+
+"generate-q2r"  - short name for actor "material_simulations/espresso-utils/generate-q2r"
+"default"       - routine called in the "generate-q2r" actor
+"input-q2r"     - short name for visual "material_simulations/espresso/input-q2r"
+                  there might be several visuals used for one actor
+"form"          - Display form. Can be: "form", "redirect"
+"->"            - Refers to the next call
+
+Notes:
+    - Base directory names can change, but they should be in one of the
+      "material_simulations/espresso*/" directory.
+
+Click on <Input: Add>
+
+[PW]
+
+
+
+[PH]
+
+[Q2R]
+
+generate-q2r.default (visual: input-q2r) [form] ->
+    generate-q2r.generateInput [redirect] ->
+        input-create.default (visual: input-default) [form] ->  # User modifies parameters in config form
+            generate-q2r.filterInput [redirect] ->
+                sim-view.default
+
+[MATDYN]
+
+[DYNMAT]
+
+[BANDS]
+
+[DOS]
+
+[CP]
+
+[PLOTBAND]
+
+
