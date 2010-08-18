@@ -145,24 +145,24 @@ PH:
     - inputph.outdir
 
 Q2R (see doc in PH/q2r.f90):
-    + fildyn = {path to PH fildyn directory}, Example: '/home/danse-vnf-admin/vnf/data/qejobs/9DDA4RS/matdyn'
-    + flfrc = 'default.fc' (no docs default value)
+    + input.fildyn = {path to PH fildyn directory}, Example: '/home/danse-vnf-admin/vnf/data/qejobs/9DDA4RS/matdyn'
+    + input.flfrc = 'default.fc' (no docs default value)
 
 MATDYN (see doc in PH/matdyn.f90):
-    + flfrc = {path do Q2R flfrc directory}, Example: '/home/danse-vnf-admin/vnf/data/qejobs/9S2EA6Z/default.fc'
-    + fldos = 'matdyn.dos' (docs default value),
-    + flfrq = 'matdyn.freq' (docs default value),
-    + flvec = 'matdyn.modes' (docs default value),
+    + input.flfrc = {path do Q2R flfrc directory}, Example: '/home/danse-vnf-admin/vnf/data/qejobs/9S2EA6Z/default.fc'
+    + input.fldos = 'matdyn.dos' (docs default value),
+    + input.flfrq = 'matdyn.freq' (docs default value),
+    + input.flvec = 'matdyn.modes' (docs default value),
 
 DYNMAT (see doc in PH/dynmat.f90):
-    + fildyn = {path to PH fildyn directory}, Example: '/home/danse-vnf-admin/vnf/data/qejobs/9DDA4RS/matdyn'
-    + filout = 'dynmat.out' (docs default value),
-    + filmol = 'dynmat.mold' (docs default value),
-    + filxsf = 'dynmat.axsf' (docs default value),
+    + input.fildyn = {path to PH fildyn directory}, Example: '/home/danse-vnf-admin/vnf/data/qejobs/9DDA4RS/matdyn'
+    + input.filout = 'dynmat.out' (docs default value),
+    + input.filmol = 'dynmat.mold' (docs default value),
+    + input.filxsf = 'dynmat.axsf' (docs default value),
 
 BANDS
     + inputpp.prefix = 'pwscf'
-    + filband = 'bands.dat' (no docs default value)
+    + inputpp.filband = 'bands.dat' (no docs default value)
     - inputpp.outdir
 
 DOS

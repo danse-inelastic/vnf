@@ -17,13 +17,15 @@ from filter import Filter
 Q2RFilter - configuration input filter for q2r task type.
 """
 
-class Q2RFilter(Filter):
-    pass
+FLFRC   = "'default.fc'"
 
-#    def _setMinusFilter(self):
-#        self._minus.setParam("control", "prefix")        # Will be set to default ('pwscf')
-#        self._minus.setParam("control", "pseudo_dir")   # Will be set to $ESPRESSO_PSEUDO
-#        self._minus.setParam("control", "outdir")       # Will be set to $ESPRESSO_TMPDIR
+class Q2RFilter(Filter):
+
+    def _setPlusFilter(self):
+        self._plus.setParam("input", "flfrc", FLFRC)
+        
+        #{path to PH fildyn directory}, Example: '/home/danse-vnf-admin/vnf/data/qejobs/9DDA4RS/matdyn'
+        #self._plus.setParam("input", "fildyn", "XXX")
 
 
 __date__ = "$Aug 6, 2010 12:16:13 PM$"

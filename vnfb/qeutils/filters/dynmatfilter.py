@@ -17,13 +17,19 @@ from filter import Filter
 DYNMATFilter - configuration input filter for dynmat task type.
 """
 
-class DYNMATFilter(Filter):
-    pass
+FILOUT  = "'dynmat.out'"
+FILMOL  = "'dynmat.mold'"
+FILXSF  = "'dynmat.axsf'"
 
-#    def _setMinusFilter(self):
-#        self._minus.setParam("control", "prefix")        # Will be set to default ('pwscf')
-#        self._minus.setParam("control", "pseudo_dir")   # Will be set to $ESPRESSO_PSEUDO
-#        self._minus.setParam("control", "outdir")       # Will be set to $ESPRESSO_TMPDIR
+class DYNMATFilter(Filter):
+    
+    def _setPlusFilter(self):
+        self._plus.setParam("input", "filout", FILOUT)
+        self._plus.setParam("input", "filmol", FILMOL)
+        self._plus.setParam("input", "filxsf", FILXSF)
+
+        #{path to PH fildyn directory}, Example: '/home/danse-vnf-admin/vnf/data/qejobs/9DDA4RS/matdyn'
+        #self._plus.setParam("input", "fildyn", "XXX")
 
 
 __date__ = "$Aug 6, 2010 12:16:13 PM$"

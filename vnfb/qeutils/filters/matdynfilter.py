@@ -17,13 +17,19 @@ from filter import Filter
 MATDYNFilter - configuration input filter for matdyn task type.
 """
 
-class MATDYNFilter(Filter):
-    pass
+FLDOS   = "'matdyn.dos'"
+FLFRQ   = "'matdyn.freq'"
+FLVEC   = "'matdyn.modes'"
 
-#    def _setMinusFilter(self):
-#        self._minus.setParam("control", "prefix")        # Will be set to default ('pwscf')
-#        self._minus.setParam("control", "pseudo_dir")   # Will be set to $ESPRESSO_PSEUDO
-#        self._minus.setParam("control", "outdir")       # Will be set to $ESPRESSO_TMPDIR
+class MATDYNFilter(Filter):
+    
+    def _setPlusFilter(self):
+        self._plus.setParam("input", "fldos", FLDOS)
+        self._plus.setParam("input", "flfrq", FLFRQ)
+        self._plus.setParam("input", "flvec", FLVEC)
+
+        #{path do Q2R flfrc directory}, Example: '/home/danse-vnf-admin/vnf/data/qejobs/9S2EA6Z/default.fc'
+        #self._plus.setParam("input", "flfrc", "XXX")
 
 
 __date__ = "$Aug 6, 2010 12:16:13 PM$"
