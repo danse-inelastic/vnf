@@ -25,14 +25,17 @@ def visual(director):
         name='password', label='Password', value='', id='login-password-input')
     password.tip = 'Passwords are also case sensitive.'
     
-    submit = form.submitbutton(label="login")
+    submit = form.submitbutton(label="login", id='login-submitbutton')
 
     # action when form is submitted
     from luban.content import select
-    form.onsubmit = select(element=form).submit(
-        actor = 'login',
-        routine = 'verify',
-        )
+    form.onsubmit = [
+        select(element=form).submit(
+            actor = 'login',
+            routine = 'verify',
+            ),
+        select(element=form).disable(),
+        ]
 
     p = form.paragraph()
     p.text = [

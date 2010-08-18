@@ -172,7 +172,7 @@ class Actor(base):
 
     def formError(self, director, errors=None):
         from luban.content import select
-        return [
+        return [select(id='login-form').enable()] + [
             select(id='login-%s-input' % name).formfield('showError', message=text)
             for name, text in errors.iteritems()
             ]
