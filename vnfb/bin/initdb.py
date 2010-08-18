@@ -45,6 +45,7 @@ class DbApp(base):
         print " * typical usage:"
         print "   $ initdb.py --table=<tablename>"
         print "   $ initdb.py --tables=<table1,table2>"
+        print "   $ initdb.py --all"
         print
         print " * table name is the name of the table. For example"
         print "   - news"

@@ -30,6 +30,9 @@ class DbApp(base):
         clerk = pyre.inventory.facility(name="clerk", default='clerk')
         clerk.meta['tip'] = "the component that retrieves data from the various database tables"
 
+        force = pyre.inventory.bool(name='FORCE')
+        force.meta['tip'] = "if true, the script won't prommpt user for permission"
+
 
     def main(self, *args, **kwds):
         msg = '\n\n'
@@ -37,11 +40,15 @@ class DbApp(base):
         msg += '  !!! This is going to destroy the database !!!\n'
         msg += '  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n'
         msg += '\n'
-        msg += ' * Are you really sure you want to do that !? (YeS/no) '
-        response = raw_input(msg)
-        if response != 'YeS':
-            print 'exit'
-            return
+        print msg
+
+        force = self.inventory.force
+        if not force:
+            msg = ' * Are you really sure you want to do that !? (YeS/no) '
+            response = raw_input(msg)
+            if response != 'YeS':
+                print 'exit'
+                return
         
         clerk = self.clerk
         clerk.importAllDataObjects()
