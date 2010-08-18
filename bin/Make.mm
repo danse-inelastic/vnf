@@ -51,6 +51,7 @@ EXPORT_DATAFILES = \
 	runmonitors.sh \
 	startmonitors.sh \
 	startservices.sh \
+	stopservices.sh \
 	timer.py \
 	updatejobstatus.py \
 
