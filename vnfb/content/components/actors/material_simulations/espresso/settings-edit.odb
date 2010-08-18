@@ -92,6 +92,13 @@ class Actor(base):
         sname       = FormTextField(name = "sname", value = settings.sname)
         description = FormTextField(name = "description", value=settings.description)   # Make as textarea
 
+        # Explain link
+        visual_     = "material_simulations/espresso/link-opt"
+        explLink    = director.retrieveVisual(visual_, form=form)
+
+        diskgrid    = QEGrid(lc.grid())
+        diskgrid.addRow((localdisk, explLink))
+
         submit      = FormSubmitButton(label="Edit Settings Configuration")
         cancel      = lc.button(label="Cancel")
         cancel.onclick  = load(actor = 'material_simulations/espresso/sim-view', id=self.id)
@@ -100,7 +107,7 @@ class Actor(base):
         st.addRow((submit, cancel), ("qe-action-accept", "qe-action-cancel"))
         table.addRow(("Server:", server))
         table.addRow(("Number of Processors: *", numproc))
-        table.addRow(("Optimization: *", localdisk))
+        table.addRow(("Optimization: *", diskgrid.grid()))
         table.addRow(("Name:", sname))
         table.addRow(("Description:", description))
         table.addRow(("", st.grid()))
