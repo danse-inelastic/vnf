@@ -73,7 +73,7 @@ class PWResult(QEResult):
 
 
     def latticeType(self):
-        param   = self._nlparam("system", "ibrav")
+        param   = str(self._nlparam("system", "ibrav"))
 
         if param is not None and param.isdigit() and int(param) in range(len(IBRAV)):
             return IBRAV[int(param)]
@@ -327,7 +327,7 @@ class PWResult(QEResult):
     def _nlparam(self, nl, param, formatted=False):
         "Returns parameter of the namelist nl"
         if self._input:
-            p   = self._input.namelist(nl).param(param)
+            p   = self._input.namelist(nl).get(param)
             if p:
                 return p
 

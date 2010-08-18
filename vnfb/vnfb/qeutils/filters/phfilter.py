@@ -17,11 +17,14 @@ from filter import Filter
 PHFilter - configuration input filter for ph task type.
 """
 
+PREFIX  = "'pwscf'"
+FILDYN  = "'matdyn'"
+
 class PHFilter(Filter):
 
     def _setPlusFilter(self):
-        self._plus.setParam("inputph", "prefix", "'pwscf'")
-        self._plus.setParam("inputph", "fildyn", "'matdyn'")
+        self._plus.setParam("inputph", "prefix", PREFIX)
+        self._plus.setParam("inputph", "fildyn", FILDYN)
 
 
     def _setMinusFilter(self):

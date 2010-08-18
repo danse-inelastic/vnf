@@ -17,10 +17,12 @@ from filter import Filter
 PWFilter - configuration input filter for pw task type. 
 """
 
+PREFIX  = "'pwscf'"
+
 class PWFilter(Filter):
 
     def _setPlusFilter(self):
-        self._plus.setParam("control", "prefix", "'pwscf'")
+        self._plus.setParam("control", "prefix", PREFIX)
 
 
     def _setMinusFilter(self):

@@ -18,7 +18,7 @@ TYPES   = ("pw", "ph", "q2r", "dos", "dynmat", "matdyn", "bands", "plotband", "c
 def filterFactory(type):
     type        = type.lower()
     # Set to default class
-    package     = "filter"  # no filtering
+    package     = "filter"  # no filtering (do nothing)
     filterClass = "Filter"
 
     if type in TYPES:
