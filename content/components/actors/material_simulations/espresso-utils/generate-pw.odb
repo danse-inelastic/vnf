@@ -147,13 +147,11 @@ class Actor(base):
             pseudolist.append(pseudo)
 
         input          = PWInput()
-        input.structure.load(source    = 'diffpy',
+        input.structure.load(source    = 'matter',
                               structure = structure,
                               ibrav     = self.ibrav,
                               massList  = masslist,
                               psList    = pseudolist)
-
-        input.structure.updatePWInput() # XXX Updates QEStructure. Not sure why?
         
         return input
 
