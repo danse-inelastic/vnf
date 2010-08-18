@@ -61,6 +61,9 @@ Go through the types of simulation and make sure they work as they should:
 - Multiple Phonon
 - Molecular Dynamics
 
+- Test filters for task types: 
+    "pw", "ph", "q2r", "dos", "dynmat", "matdyn", "bands", "plotband", "cp"
+
 
 Part 7
 ------
@@ -75,10 +78,8 @@ Part 7
 Part 8: Cleaning
 ----------------
 - Implement PLOTBAND filter (non-standard config file)
+- Fix plot sizes on analysis page (see vnf.css: .luban-plot2d)
 
-Minor
------
-- Fix plot sizes on analysis page
 
 
 Problem: How to define similarity for simulation tasks? Settings? Matter?
