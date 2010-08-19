@@ -132,19 +132,19 @@ class Actor(base):
         if text!=None:
            words = text.split()    
            for word in words:
-               query += " AND (text LIKE '% " + word + " %')"
+               query += " AND (text LIKE '%" + word + "%')"
         if sg!=None:
-            query += " AND (sg LIKE '% " + sg + " %')"
+            query += " AND (sg='" + sg + "')"
         if nelements!=None:
-            query += " AND (nel LIKE '% " + str(nelements) + " %')"
+            query += " AND (nel='" + str(nelements) + "')"
         if elements!=None:
            words = elements.split()    
            for element in words:
-               query += " AND (formula LIKE '% " + element + " %')"
+               query += " AND (formula LIKE '%" + element + "%')"
         if notelements!=None:
            words = notelements.split()    
            for notelement in words:
-               query += " AND (formula NOT LIKE '% " + notelement + " %')"
+               query += " AND (formula NOT LIKE '%" + notelement + "%')"
         #try:
         query += self.between(volume, "vol");
         #query += between(nelements, "nel");
