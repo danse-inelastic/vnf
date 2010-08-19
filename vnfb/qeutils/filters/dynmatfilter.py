@@ -28,8 +28,11 @@ class DYNMATFilter(Filter):
         self._plus.setParam("input", "filmol", FILMOL)
         self._plus.setParam("input", "filxsf", FILXSF)
 
-        #{path to PH fildyn directory}, Example: '/home/danse-vnf-admin/vnf/data/qejobs/9DDA4RS/matdyn'
-        #self._plus.setParam("input", "fildyn", "XXX")
+
+    def setFildyn(self, fildyn):
+        "Dynamically sets filter for fildyn"
+        # Path to PH fildyn directory. Example: '/home/danse-vnf-admin/vnf/data/qejobs/9DDA4RS/matdyn'
+        self._plus.setParam("input", "fildyn", fildyn)
 
 
 __date__ = "$Aug 6, 2010 12:16:13 PM$"

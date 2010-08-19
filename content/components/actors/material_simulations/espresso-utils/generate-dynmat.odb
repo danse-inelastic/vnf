@@ -12,6 +12,8 @@
 #
 
 from vnfb.qeutils.generators.dynmatgenerator import DYNMATGenerator
+from vnfb.qeutils.qeparser.qeinput import QEInput
+import vnfb.qeutils.filters as filters
 
 from vnfb.components.QEGenerator import QEGenerator as base
 
@@ -37,6 +39,27 @@ class Actor(base):
                                 id      = self.inventory.id,
                                 taskid  = self.inventory.taskid,
                                 type    = self.inventory.type)
+
+
+    def filterInput(self, director):
+        "Takes parameters from input-default form and filters text"
+        gen     = DYNMATGenerator(director, self.inventory)
+        input   = QEInput(config=self.inventory.text, type=self.inventory.type)
+
+        filter  = filters.filterFactory(self.inventory.type)  # DYNMATFilter()
+        filter.setFildyn(gen.fildyn())          # Set dynamic variable
+        filter.apply(input)                     # Apply filter to input
+        fconfig = input.toString()              # Filtered config input
+
+        return director.redirect(actor   = 'material_simulations/espresso/input-create',
+                                routine = 'createRecord',
+                                text    = fconfig,
+                                id      = self.inventory.id,
+                                taskid  = self.inventory.taskid,
+                                type    = self.inventory.type,
+                                subtype = self.inventory.subtype,
+                                fname   = self.inventory.fname,
+                                description = self.inventory.description)
 
 
     def _input(self, director):
