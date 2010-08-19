@@ -12,8 +12,10 @@
 #
 
 import luban.content as lc
-from luban.content import select
-from luban.content import load
+from luban.content import select, load
+from vnfb.qeutils.qeparser.qeinput import QEInput
+import vnfb.qeutils.filters as filters
+
 
 from luban.components.AuthorizedActor import AuthorizedActor as base
 
@@ -105,11 +107,15 @@ class QEGenerator(base):
 
 
     def filterInput(self, director):
-        "Default behaviour has no filtering - just redirection!"
+        "Default behaviour: standard filtering"
+        input   = QEInput(config=self.inventory.text, type=self.inventory.type)
+        filter  = filters.filterFactory(self.inventory.type)  # Creating filter
+        filter.apply(input)                     # Apply filter to input
+        fconfig = input.toString()              # Filtered config input
 
         return director.redirect(actor   = 'material_simulations/espresso/input-create',
                                 routine = 'createRecord',
-                                text    = self.inventory.text,
+                                text    = fconfig,
                                 id      = self.inventory.id,
                                 taskid  = self.inventory.taskid,
                                 type    = self.inventory.type,
