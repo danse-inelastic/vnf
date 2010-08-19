@@ -1,3 +1,4 @@
+import os.path
 #!/usr/bin/env python
 #
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -11,7 +12,7 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
-
+import os
 import luban.content as lc
 from luban.content import select
 from luban.content import load
@@ -19,6 +20,31 @@ from vnfb.qeutils.qegrid import QEGrid
 from luban.content.FormTextField import FormTextField
 from luban.content.FormTextArea import FormTextArea
 from luban.content.FormSubmitButton import FormSubmitButton
+from vnfb.qeutils.qeconst import GENERATOR_TYPES
+
+BASE    = "material_simulations/espresso-utils"
+
+def actorname(type):
+    "Returns actor name depending if filtering is needed or not"
+    actor   = "material_simulations/espresso/input-create"  # No filtering
+    ltype    = type.lower()
+
+    if ltype in GENERATOR_TYPES:
+        generator   = "generate-%s" % ltype
+        actor       = os.path.join(BASE, generator)
+
+    return actor
+
+
+def routinename(type):
+    "Returns routine name depending if filtering is needed or not"
+    name    = "createRecord"
+    ltype    = type.lower()
+
+    if ltype in GENERATOR_TYPES:
+        name    = "filterInput"
+
+    return name
 
 
 def visual(actor, director):
@@ -47,12 +73,14 @@ def visual(actor, director):
     table.setColumnStyle(0, "qe-form-label")
     table.setColumnStyle(1, "qe-form-field")
 
-    form.onsubmit   = select(element=form).submit(actor     = 'material_simulations/espresso/input-create',
-                                                  routine   = 'createRecord',
+
+    form.onsubmit   = select(element=form).submit(actor     = actorname(actor.type),
+                                                  routine   = routinename(actor.type), #'createRecord',
                                                   id        = actor.id,
                                                   taskid    = actor.taskid,
                                                   type      = actor.type,
                                                   subtype   = actor.subtype)
+
 
     return form
 

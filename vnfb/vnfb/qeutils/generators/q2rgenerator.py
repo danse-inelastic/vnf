@@ -35,14 +35,18 @@ class Q2RGenerator(object):
         "Set namelist 'input'"
         self._input     = QEInput(type='q2r')
         nl              = self._input.namelist("input")
+        zasr            = ZASR[ZASRLIST[int(self._inv.zasr)]]
 
-        phresults       = PHResult(self._director, self._inv.id)
-        zasr    = ZASR[ZASRLIST[int(self._inv.zasr)]]
-
-        nl.set("fildyn",    phresults.fildyn()) # from PH results
+        nl.set("fildyn",    self.fildyn()) # from PH results
         nl.set("zasr",      zasr)
         nl.set("flfrc",     FLFRC)
-        
+
+
+    def fildyn(self):
+        "Returns fildyn parameter from PH results"
+        phresults       = PHResult(self._director, self._inv.id)
+        return phresults.fildyn()
+
 
     def toString(self):
         return self._input.toString()

@@ -12,6 +12,8 @@
 #
 
 from vnfb.qeutils.generators.q2rgenerator import Q2RGenerator
+from vnfb.qeutils.qeparser.qeinput import QEInput
+import vnfb.qeutils.filters as filters
 
 from vnfb.components.QEGenerator import QEGenerator as base
 
@@ -39,6 +41,44 @@ class Actor(base):
                                 id      = self.inventory.id,
                                 taskid  = self.inventory.taskid,
                                 type    = self.inventory.type)
+
+
+    def filterInput(self, director):
+        "Takes parameters from input-default form and filter text"
+        gen     = Q2RGenerator(director, self.inventory)
+        input   = QEInput(config=self.inventory.text, type="q2r")
+
+        filter  = filters.filterFactory("q2r")  # Q2RFilter()
+        filter.setFildyn(gen.fildyn())          # Set dynamic variable
+        filter.apply(input)                     # Apply filter to input
+        fconfig = input.toString()              # Filtered config input
+
+        return director.redirect(actor   = 'material_simulations/espresso/input-create',
+                                routine = 'createRecord',
+                                text    = fconfig,
+                                id      = self.inventory.id,
+                                taskid  = self.inventory.taskid,
+                                type    = self.inventory.type,
+                                subtype = self.inventory.subtype,
+                                fname   = self.inventory.fname,
+                                description = self.inventory.description)
+
+
+#id        = actor.id,
+#taskid    = actor.taskid,
+#type      = actor.type,
+#subtype   = actor.subtype
+#text
+#fname
+#description
+
+#    form.onsubmit   = select(element=form).submit(actor     = 'material_simulations/espresso/input-create',
+#                                                  routine   = 'createRecord',
+#                                                  id        = actor.id,
+#                                                  taskid    = actor.taskid,
+#                                                  type      = actor.type,
+#                                                  subtype   = actor.subtype)
+#
 
 
     def __init__(self):

@@ -25,7 +25,6 @@ Notes:
     pass parameters with director.redirect()
 """
 
-# Requires simulation id,
 class QEGenerator(base):
 
     class Inventory(base.Inventory):
@@ -37,6 +36,7 @@ class QEGenerator(base):
         # Task attributes
         taskid      = pyre.inventory.str('taskid', default='')      # Task id
         type        = pyre.inventory.str('type', default='')        # Task type
+        subtype     = pyre.inventory.str('subtype', default='')
         # Input attributes
         fname       = pyre.inventory.str('fname', default='')
         description = pyre.inventory.str('description', default='')
@@ -119,6 +119,7 @@ class QEGenerator(base):
 
         self.taskid         = self.inventory.taskid
         self.type           = self.inventory.type
+        self.subtype        = self.inventory.subtype
 
         self.fname          = self.inventory.fname
         self.description    = self.inventory.description

@@ -128,54 +128,28 @@ Configuration Input
 - Users cannot control parameters, these parameters are handled by VNF.
   Parameters are not filtered when user edits configuration input.
 
-General (PW, PH, Q2R, MATDYN, etc...):
-    outdir  (**/qesimulations - NFS, /scratch - scratch space)
-    prefix  (docs default values)
 
-In more details:
 
-PW:
-    + control.prefix = 'pwscf'
-    - control.outdir
-    - control.pseudo_dir
+Example of Q2R filtering
+------------------------
 
-PH:
-    + inputph.fildyn = 'matdyn' (docs default value)
-    + inputph.prefix = 'pwscf'
-    - inputph.outdir
+Say, user entered config file to the config form
 
-Q2R (see doc in PH/q2r.f90):
-    + input.fildyn = {path to PH fildyn directory}, Example: '/home/danse-vnf-admin/vnf/data/qejobs/9DDA4RS/matdyn'
-    + input.flfrc = 'default.fc' (no docs default value)
+&INPUT
+    fildyn = hello
+    zasr = 'crystal'
+    flfrc = world
+/
 
-MATDYN (see doc in PH/matdyn.f90):
-    + input.flfrc = {path do Q2R flfrc directory}, Example: '/home/danse-vnf-admin/vnf/data/qejobs/9S2EA6Z/default.fc'
-    + input.fldos = 'matdyn.dos' (docs default value),
-    + input.flfrq = 'matdyn.freq' (docs default value),
-    + input.flvec = 'matdyn.modes' (docs default value),
+VNF knows that "fildyn" and "flfrc" are special parameters that need to be set
+according to the system convention. They will be set to proper parameters even
+if they are not present in the first place. When you click on the "Submit" button
+you get the following config text:
 
-DYNMAT (see doc in PH/dynmat.f90):
-    + input.fildyn = {path to PH fildyn directory}, Example: '/home/danse-vnf-admin/vnf/data/qejobs/9DDA4RS/matdyn'
-    + input.filout = 'dynmat.out' (docs default value),
-    + input.filmol = 'dynmat.mold' (docs default value),
-    + input.filxsf = 'dynmat.axsf' (docs default value),
+&INPUT
+    fildyn = '/home/danse-vnf-admin/vnf/data/qejobs/EYGFTV94/matdyn'
+    zasr = 'crystal'
+    flfrc = 'default.fc'
+/
 
-BANDS
-    + inputpp.prefix = 'pwscf'
-    + inputpp.filband = 'bands.dat' (no docs default value)
-    - inputpp.outdir
-
-DOS
-    + inputpp.prefix = 'pwscf'
-    + inputpp.fildos = pwscf.dos    # No apostrophe
-    - inputpp.outdir
-    
-CP
-    + control.prefix = 'cp'
-    - control.outdir
-    - control.pseudo_dir
-
-PLOTBAND (non standard config file, no documentation available)
-    Line #
-    [0]     {path to BANDS filband}, Example: /home/danse-vnf-admin/vnf/data/qejobs/FXWTH4WT/bands.dat
 
