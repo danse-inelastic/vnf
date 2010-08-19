@@ -92,8 +92,11 @@ class Actor(base):
         # create a new record
         domaccess = director.retrieveDOMAccessor('atomicstructure')
         structure = domaccess.newAtomicStructure()
-        ext = os.path.splitext(found)[-1]
+        filepath, ext = os.path.splitext(found)
         structure.read(found)
+        #make special description that includes the COD id
+        path,filename = os.path.split(filepath)
+        structure.description = 'COD structure '+filename+' '+structure.generateDescription()
         #
         orm = director.clerk.orm
         self.inventory.structureid = orm(structure).id
