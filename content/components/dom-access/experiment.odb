@@ -81,6 +81,21 @@ class Accessor(base):
         return sc
 
 
+    def getInstrumentConfiguration(self, experiment):
+        '''get instrument configuration. if None, create it
+
+        experiment: a row in neutronexperiments table
+        return: a db row for instrument configuration
+        '''
+        ic = experiment.instrument_configuration
+        ic = ic and ic.id and ic.dereference(self.db)
+        if not ic:
+            orm = self.orm
+            ic = self.createInstrumentConfiguration(orm.record2object(experiment))
+            ic = self.orm(ic)
+        return ic
+
+
     def destroyInstrumentConfiguration(self, id):
         # destroy an instrument configuration given its id (not the experiment id)
         orm = self.orm
