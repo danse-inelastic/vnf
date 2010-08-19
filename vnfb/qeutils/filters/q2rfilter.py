@@ -23,7 +23,7 @@ class Q2RFilter(Filter):
 
     def setFildyn(self, fildyn):
         "Dynamically sets filter for fildyn"
-        # Path to PH fildyn directory, Example: '/home/danse-vnf-admin/vnf/data/qejobs/9DDA4RS/matdyn'
+        # Path to PH fildyn directory. Example: '/home/danse-vnf-admin/vnf/data/qejobs/9DDA4RS/matdyn'
         self._plus.setParam("input", "fildyn", fildyn)
 
 
