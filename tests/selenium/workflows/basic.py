@@ -12,7 +12,7 @@
 #
 
 
-def login(s, username='demo', password='demo'):
+def login(s, username='selenium', password='demo'):
     usernamei = "//div[@id='login-username-input']"
     passwordi = "//div[@id='login-password-input']"
     inputsubelem = '/table/tbody/tr/td[1]/input'

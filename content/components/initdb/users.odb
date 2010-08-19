@@ -42,6 +42,7 @@ def user(name, pw, fullname, email):
 
 users = [
     user( 'demo', 'fe01ce2a7fbac8fafaed7c982a04e229', 'demo user', 'vnfdemo@hotmail.com' ),
+    user( 'selenium', 'fe01ce2a7fbac8fafaed7c982a04e229', 'selenium user', 'vnf-selenium@gmail.com' ),
     user( '__method__', 'md5', 'not a real user', '' ),
     user( 'linjiao', '8cdd1ccd7f5a14d3e70c1fd0bb0b7198', 'Jiao Lin', 'linjiao@caltech.edu' ),
     user( 'jbrkeith', '1015488bc40a5eedfd0795d4bd399973', 'J Brandon Keith', 'jbrkeith@caltech.edu' ),
