@@ -25,7 +25,6 @@ class DYNMATGenerator(object):
         self._phresults = PHResult(self._director, self._inv.id)
 
 
-    # XXX: Force parameters: "fildyn", "filout"
     def setInput(self):
         "Set namelist 'input'"
         self._input      = QEInput(type='dynmat')
@@ -35,6 +34,11 @@ class DYNMATGenerator(object):
         nl.add("fildyn",    self._phresults.fildyn()) # from PH results
         self._addAsr(nl)
         self._addQPoint(nl)
+
+
+    def fildyn(self):
+        "Returns fildyn parameter from PH results"
+        return self._phresults.fildyn()
 
 
     def _addAsr(self, nl):
