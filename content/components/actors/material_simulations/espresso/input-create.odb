@@ -14,7 +14,7 @@
 from vnfb.qeutils.qeparser.qeinput import QEInput
 from vnfb.dom.QEConfiguration import QEConfiguration
 from vnfb.qeutils.qeutils import writeRecordFile, defaultInputName, subtypeMatdyn
-import vnfb.qeutils.filters as filterdir
+#import vnfb.qeutils.filters as filterdir
 
 from luban.content import load
 from vnfb.components.QEGenerator import QEGenerator as base
@@ -52,13 +52,13 @@ class Actor(base):
         self._updateTaskRecord(director)    # For matdyn mostly
         self._createFile(director)
 
-        if self.paramid != "":  # Specific for convergence tests
+        if self.inventory.paramid != "":  # Specific for convergence tests
             return load( actor    = 'material_simulations/espresso-convergence/param-view',
-                         id       = self.id,
-                         convid   = self.convid,
-                         paramid  = self.paramid)
+                         id       = self.inventory.id,
+                         convid   = self.inventory.convid,
+                         paramid  = self.inventory.paramid)
 
-        return load(actor = 'material_simulations/espresso/sim-view', id = self.id)
+        return load(actor = 'material_simulations/espresso/sim-view', id = self.inventory.id)
 
     def _createDBRecord(self, director):
         # 'text' field is not stored
@@ -75,21 +75,15 @@ class Actor(base):
         "Writes configuration to file"
         # fn (file name) is fixed and doesn't depend on the filename record
         fn      = defaultInputName(self.inventory.type)        
-        input   = QEInput(config=self.inventory.text, type=self.inventory.type)
 
-        # Filter input (depends on task type)
-        filter  = filterdir.filterFactory(self.inventory.type)
-        filter.apply(input)             # Apply filter to input
-        fconfig = input.toString()      # Filtered config input
-
-        writeRecordFile(director.dds, self.input, fn, fconfig)
+        writeRecordFile(director.dds, self.input, fn, self.inventory.text)
 
 
     def _updateTaskRecord(self, director):
         if self.inventory.subtype == "":
             return      # No update for empty subtype
 
-        task    = director.clerk.getQETasks(id = self.taskid)
+        task    = director.clerk.getQETasks(id = self.inventory.taskid)
         params  = {"subtype": subtypeMatdyn(self.inventory.subtype),}
         task.setDirector(director)
         task.updateRecord(params)

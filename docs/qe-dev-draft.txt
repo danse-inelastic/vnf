@@ -105,3 +105,54 @@ generate-q2r.default (visual: input-q2r) [form] ->
 [PLOTBAND]
 
 
+General (PW, PH, Q2R, MATDYN, etc...):
+    outdir  (**/qesimulations - NFS, /scratch - scratch space)
+    prefix  (docs default values)
+
+In more details:
+
+PW:
+    + control.prefix = 'pwscf'
+    - control.outdir
+    - control.pseudo_dir
+
+PH:
+    + inputph.fildyn = 'matdyn' (docs default value)
+    + inputph.prefix = 'pwscf'
+    - inputph.outdir
+
+Q2R (see doc in PH/q2r.f90):
+    + input.fildyn = {path to PH fildyn directory}, Example: '/home/danse-vnf-admin/vnf/data/qejobs/9DDA4RS/matdyn'
+    + input.flfrc = 'default.fc' (no docs default value)
+
+MATDYN (see doc in PH/matdyn.f90):
+    + input.flfrc = {path do Q2R flfrc directory}, Example: '/home/danse-vnf-admin/vnf/data/qejobs/9S2EA6Z/default.fc'
+    + input.fldos = 'matdyn.dos' (docs default value),
+    + input.flfrq = 'matdyn.freq' (docs default value),
+    + input.flvec = 'matdyn.modes' (docs default value),
+
+DYNMAT (see doc in PH/dynmat.f90):
+    + input.fildyn = {path to PH fildyn directory}, Example: '/home/danse-vnf-admin/vnf/data/qejobs/9DDA4RS/matdyn'
+    + input.filout = 'dynmat.out' (docs default value),
+    + input.filmol = 'dynmat.mold' (docs default value),
+    + input.filxsf = 'dynmat.axsf' (docs default value),
+
+BANDS
+    + inputpp.prefix = 'pwscf'
+    + inputpp.filband = 'bands.dat' (no docs default value)
+    - inputpp.outdir
+
+DOS
+    + inputpp.prefix = 'pwscf'
+    + inputpp.fildos = pwscf.dos    # No apostrophe
+    - inputpp.outdir
+
+CP
+    + control.prefix = 'cp'
+    - control.outdir
+    - control.pseudo_dir
+
+PLOTBAND (non standard config file, no documentation available)
+    Line #
+    [0]     {path to BANDS filband}, Example: /home/danse-vnf-admin/vnf/data/qejobs/FXWTH4WT/bands.dat
+

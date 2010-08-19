@@ -324,6 +324,24 @@ TOLERANCE   = 1.0
 # Optimization parameters
 OPT_DEFAULT = False
 
+# Generator types 
+GENERATOR_TYPES  = ("pw",
+                    "ph",
+                    "bands",
+                    "plotband",
+                    "dos",
+                    "q2r",
+                    "matdyn",
+                    "dynmat",
+                    "electron-min",
+                    "ion-min",
+                    "ion-random",
+                    "quenching",
+                    "dynamics",
+                    "thermostat",
+                    "trajectory")
+
+
 __date__ = "$Nov 3, 2009 3:12:34 PM$"
 
 
