@@ -80,7 +80,16 @@ Click on <Input: Add>
 
 [PW]
 
+generate-pw.default (visual: input-pw) [form] ->
+    generate-pw.params (visual: form-pw) [form] ->
+        generate-pw.generateInput [redirect] ->
+            input-create.default (visual: input-default) [form] ->  # User modifies parameters in config form
+                generate-pw.filterInput [redirect] ->
+                    sim-view.default
 
+Note:
+    - Depending on scf (self-consistent) or nscf (non self-consistent) input will be
+      generated using different routines: generateInput and generateNscfInput correspondingly 
 
 [PH]
 
@@ -104,6 +113,9 @@ generate-q2r.default (visual: input-q2r) [form] ->
 
 [PLOTBAND]
 
+
+Filter Parameters
+-----------------
 
 General (PW, PH, Q2R, MATDYN, etc...):
     outdir  (**/qesimulations - NFS, /scratch - scratch space)

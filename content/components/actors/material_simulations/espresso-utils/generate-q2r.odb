@@ -64,23 +64,6 @@ class Actor(base):
                                 description = self.inventory.description)
 
 
-#id        = actor.id,
-#taskid    = actor.taskid,
-#type      = actor.type,
-#subtype   = actor.subtype
-#text
-#fname
-#description
-
-#    form.onsubmit   = select(element=form).submit(actor     = 'material_simulations/espresso/input-create',
-#                                                  routine   = 'createRecord',
-#                                                  id        = actor.id,
-#                                                  taskid    = actor.taskid,
-#                                                  type      = actor.type,
-#                                                  subtype   = actor.subtype)
-#
-
-
     def __init__(self):
         super(Actor, self).__init__(name='material_simulations/espresso-utils/generate-q2r')
 
