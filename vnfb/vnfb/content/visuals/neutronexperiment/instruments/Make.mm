@@ -11,14 +11,12 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 PROJECT = vnfb
-PACKAGE = content/visuals
+PACKAGE = content/visuals/neutronexperiment/instruments
 
 
 # directory structure
 
 BUILD_DIRS = \
-	neutronexperiment \
-	table \
 
 OTHER_DIRS = \
 
@@ -37,9 +35,8 @@ all: export
 # export
 
 EXPORT_PYTHON_MODULES = \
-	view_indicator.py \
+	ARCS_beam.py \
 	__init__.py \
-
 
 
 export:: export-package-python-modules 

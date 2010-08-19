@@ -36,21 +36,17 @@ class Factory(object):
         #
         domaccess = self.domaccess
         director = self.director
-
-        # check if configuration exists
+        
         experiment = self.experiment
-        ic = experiment.instrument_configuration
-        ic = ic and ic.id and ic.dereference(domaccess.db)
-        if not ic:
-            orm = domaccess.orm
-            ic = domaccess.createInstrumentConfiguration(orm.record2object(experiment))
-            ic = domaccess.orm(ic)
+        # check if configuration exists
         # now ic is the db record of the configuration
-
+        ic = self._get_instrument_configuration(experiment)
+        
         #
         instrument = experiment.instrument.dereference(domaccess.db)
         doc = lc.document(title='%s' % instrument.name,
                           id='instrument-configuration')
+
         doc.paragraph(text=[
             'to edit, please select a component from the following component chain',
             ])
@@ -101,6 +97,17 @@ class Factory(object):
         continuebutton = lc.button(label='continue', onclick=switch)
         doc.add(continuebutton)
         return doc
+
+
+    def _get_instrument_configuration(self, experiment):
+        domaccess = self.domaccess
+        ic = experiment.instrument_configuration
+        ic = ic and ic.id and ic.dereference(domaccess.db)
+        if not ic:
+            orm = domaccess.orm
+            ic = domaccess.createInstrumentConfiguration(orm.record2object(experiment))
+            ic = domaccess.orm(ic)
+        return ic
 
 
     def _createComponentChainView(self, components, refreshconfigurationpanel, component=None):

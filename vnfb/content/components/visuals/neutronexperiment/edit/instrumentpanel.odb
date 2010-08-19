@@ -76,8 +76,34 @@ class Factory(object):
 
     def _createConfigurationDoc(self):
         director = self.director
+        domaccess = self.domaccess
+
+        experiment = self.experiment
+
+        # instrument configuration
+        instrumentrecord = experiment.instrument.dereference(domaccess.db)
+        ic = domaccess.getInstrumentConfiguration(experiment)
+        # try to find if there is a wizard factory
+        m = 'vnfb.content.visuals.neutronexperiment.instruments.%s' % instrumentrecord.name
+        try:
+            m = __import__(m, {}, {}, [''])
+            wizard_factory = getattr(m, 'configuration_wizard')
+        except ImportError:
+            wizard_factory = None
+
+        # if there is a wizard factory, use it
+        if wizard_factory:
+            wizard = wizard_factory(experiment)
+            return wizard
+
+        # otherwise
+        return self._createManualconfigurationDoc()
+
+
+    def _createManualconfigurationDoc(self):
+        director = self.director
         
-        doc = lc.document(Class='container')
+        container = lc.document(Class='container')
 
         # button to change to instrument selector
         selectinstrumentbutton = lc.button(
@@ -87,14 +113,14 @@ class Factory(object):
             onclick=select(id='instrumentpanel').replaceBy(self(mode='selector'))
             )
         selectinstrumentbutton.Class = 'float-right'
-        doc.add(selectinstrumentbutton)
+        container.add(selectinstrumentbutton)
 
         configdoc = director.retrieveVisual(
             'neutronexperiment/edit/instrumentconfiguration',
             id = self.id, director=director)
-        doc.add(configdoc)
+        container.add(configdoc)
         
-        return doc
+        return container
 
 
 
