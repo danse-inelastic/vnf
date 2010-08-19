@@ -104,6 +104,21 @@ class QEGenerator(base):
                                        structureid  = self.structureid)
 
 
+    def filterInput(self, director):
+        "Default behaviour has no filtering - just redirection!"
+
+        return director.redirect(actor   = 'material_simulations/espresso/input-create',
+                                routine = 'createRecord',
+                                text    = self.inventory.text,
+                                id      = self.inventory.id,
+                                taskid  = self.inventory.taskid,
+                                type    = self.inventory.type,
+                                subtype = self.inventory.subtype,
+                                fname   = self.inventory.fname,
+                                description = self.inventory.description)
+
+
+
     def __init__(self, name = None):
         actorname   = name
         if not name:    # No name, use default
