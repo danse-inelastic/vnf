@@ -253,13 +253,15 @@ class Actor(base):
         from vnfb.dom.AtomicStructure import Structure
         structure = Structure()
         structure.read(filePath)
+        #make special description that includes the COD id
+        structure.description = 'COD structure '+fileId+' '+structure.generateDescription()
         #
         orm = director.clerk.orm
         #self.inventory.structureid = orm(structure).id
         orm.save(structure)
         #call data object viewer
         return select(id='main-display-area').replaceContent(load(actor='atomicstructure',
-                                                           routine='default'))#,
+                                                           routine='createListView'))#,
                                                            #id = structure.id))
 
 def actor():
