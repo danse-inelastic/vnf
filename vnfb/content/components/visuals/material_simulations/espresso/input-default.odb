@@ -75,7 +75,7 @@ def visual(actor, director):
 
 
     form.onsubmit   = select(element=form).submit(actor     = actorname(actor.type),
-                                                  routine   = routinename(actor.type), #'createRecord',
+                                                  routine   = routinename(actor.type), 
                                                   id        = actor.id,
                                                   taskid    = actor.taskid,
                                                   type      = actor.type,

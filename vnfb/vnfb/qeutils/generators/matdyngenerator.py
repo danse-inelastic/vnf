@@ -82,6 +82,12 @@ class MATDYNGenerator(object):
             nl.add("nk3",   self._inv.nk3)
 
 
+    def flfrc(self):
+        "Returns flfrc parameter from Q2R results"
+        q2rresult       = Q2RResult(self._director, self._inv.id)
+        return q2rresult.flfrc()
+
+
     def toString(self):
         return self._input.toString()
 
