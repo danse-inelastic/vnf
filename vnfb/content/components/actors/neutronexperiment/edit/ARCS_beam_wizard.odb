@@ -48,6 +48,8 @@ class Actor(base):
         T0_nu = self.inventory.T0_nu
         E = self.inventory.E
         emission_time = self.inventory.emission_time
+
+        LM1 = 11.82 # distance from moderator to monitor 1
         
         Emin = E*0.8
         Emax = E*1.2
@@ -58,6 +60,11 @@ class Actor(base):
         from mcvine.instruments.ARCS import t0chopper, fermichopper
         t0phase = t0chopper.phase(E, 8.77, emission_time=emission_time)
         fermiphase = fermichopper.phase(E, 11.61, emission_time=emission_time)
+        # monitor tof range
+        SE2V = 437.3949
+        from math import sqrt
+        tofmonmin=LM1/(sqrt(Emax*1.1)*SE2V)
+        tofmonmax=LM1/(sqrt(Emin*0.9)*SE2V)
 
         #
         domaccess = director.retrieveDOMAccessor('experiment')
@@ -77,6 +84,8 @@ class Actor(base):
         d['t0_chopp'].tc = t0phase
         d['moderator'].Emin = Emin
         d['moderator'].Emax = Emax
+        d['tofmonitor1'].tmin = tofmonmin
+        d['tofmonitor1'].tmax = tofmonmax
         domaccess.orm.save(ic, save_not_owned_referred_object=0)
 
         from vnfb.content.visuals.neutronexperiment.instruments import load_manual_instrument_configuration
