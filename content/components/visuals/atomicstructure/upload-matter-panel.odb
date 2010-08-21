@@ -33,12 +33,20 @@ def visual(structureid=None, director=None):
     # 
     doc.paragraph(text=['Choose a file to upload.  Supported formats are:'])
     
-    doc.paragraph(text=['1) cif'])
+    doc.paragraph(text=['1) .cif'])
     
-    doc.paragraph(text=['2) pdb'])
-    
-    doc.paragraph(text=['3) xyz--if 9 floats are given on the comment line, these are used as the lattice vectors (a_x a_y a_z b_x b_y b_z c_x c_y c_z)'])
-    
+    doc.paragraph(text=['2) .pdb'])
+    doc.paragraph(text=['3) .pdffit'])
+    doc.paragraph(text=['4) .xyz',
+     'Each line must contain an atom symbol followed by its position.',    
+     'If 9 floats are given on the comment line, these are used as the lattice vectors.',
+     'Format: a_x a_y a_z b_x b_y b_z c_x c_y c_z'])
+    doc.paragraph(text=['5) .xyz (VNF format)',
+     'All previous xyz rules apply, except an additional charge (in electron units) may be given following each position triplet.'])
+    doc.paragraph(text=['6) .xyz (raw)',
+     'Each line must contain an atom symbol followed by its position.',
+     'No total number of atoms is required.'])
+
     # spacer
     doc.paragraph()
 

@@ -35,8 +35,6 @@ class Actor(base):
         structureid: atomic structure id
         uploadid: upload it
         '''
-        
-        # need to create a new sqe and save the file appropriately
         # assumption: only one file uploaded
 
         # check the upload
@@ -58,32 +56,6 @@ class Actor(base):
 
         # path to the file
         found = os.path.join(dir, found)
-        
-        
-#        if os.path.isdir(uploadid):
-#            #eventually enable uploading multiple files...for now just pick out one
-#            dir = os.path.abspath(uploadid)
-#            
-#            entries = os.listdir(dir); found = None
-#            for entry in entries:
-#                if entry.startswith('.'): 
-#                    continue
-#                if entry.endswith('.xyz') or entry.endswith('.pdb') or \
-#                                                    entry.endswith('.cif'): 
-#                    found = entry
-#                    break
-#            # nothing uploaded
-#            if not found: return alert('Invalid file')
-#
-#            # path to the file
-#            found = os.path.join(dir, found)
-#        else:
-#            found = None
-#            if uploadid.endswith('.xyz') or uploadid.endswith('.pdb') or \
-#                                                uploadid.endswith('.cif'): 
-#                found = os.path.abspath(uploadid)
-#            # nothing uploaded
-#            if not found: return alert('Invalid file')
 
         # XXXX
         # should check if the files are sane and are not hostile
@@ -98,16 +70,6 @@ class Actor(base):
         orm = director.clerk.orm
         self.inventory.structureid = orm(structure).id
         orm.save(structure)
-
-#        # copy upload to new path
-#        ext = os.path.splitext(found)[-1]
-#        filename='data'+ext
-#        newpath = director.dds.abspath(sqe, filename=filename)
-#        newdir = os.path.dirname(newpath)
-#        if not os.path.exists(newdir):
-#            os.makedirs(newdir)
-#        import shutil
-#        shutil.copyfile(found, newpath)
         
         return load(
             actor='atomicstructure', routine='showOverview',
