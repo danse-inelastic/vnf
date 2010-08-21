@@ -59,9 +59,52 @@ class Actor(base):
             doc.add(p)
         else:
             raise NotImplementedError
-        
+
+        url = '%s?content=attachment&actor=orm/histograms&routine=download&actor.id=%s&sentry.username=%s&sentry.ticket=%s' % (
+            director.weaver.controllerurl,
+            id,
+            director.sentry.username,
+            director.sentry.ticket,
+            )
+        download_link = lc.htmldocument()
+        download_link.text = [
+            '<a href="%s" target="_blank">download</a>' % url
+            ]
+        doc.add(download_link)
+
         return doc
 
+    
+    def download(self, director):
+        id = self.inventory.id
+        domaccess = self._domaccess(director)
+        histogram = domaccess.getRecord(id)
+        histogram = domaccess.getData(histogram)
+        data = histogram.data
+        dim = data.dimension()
+
+        filepath = '%s.dat' % data.name()
+        filepath = 'h.dat'
+        header = [
+            "Content-Type: application/octet-stream\r\n",
+            'Content-Disposition: attachment; filename=%s\r\n' % filepath,
+            ]
+        header = ''.join(header) + '\n'
+
+        content = []
+        if dim == 1:
+            xs = data.axes()[0].binCenters()
+            ys = data.I
+            for x,y in zip(xs, ys):
+                content.append('%s\t%s' % (x,y))
+                continue
+        else:
+            content.append('not implemented')
+        
+        content = '\n'.join(content)
+        
+        return header + content
+    
 
     def _domaccess(self, director):
         return director.retrieveDOMAccessor('histogram')
