@@ -60,17 +60,13 @@ class Actor(base):
         else:
             raise NotImplementedError
 
-        url = '%s?content=attachment&actor=orm/histograms&routine=download&actor.id=%s&sentry.username=%s&sentry.ticket=%s' % (
-            director.weaver.controllerurl,
-            id,
-            director.sentry.username,
-            director.sentry.ticket,
+        downloader = lc.downloader(
+            label = 'download data', 
+            ondownload = load(
+                actor = self.name, routine='download',
+                id = id)
             )
-        download_link = lc.htmldocument()
-        download_link.text = [
-            '<a href="%s" target="_blank">download</a>' % url
-            ]
-        doc.add(download_link)
+        doc.add(downloader)
 
         return doc
 
@@ -84,12 +80,6 @@ class Actor(base):
         dim = data.dimension()
 
         filepath = '%s.dat' % data.name()
-        filepath = 'h.dat'
-        header = [
-            "Content-Type: application/octet-stream\r\n",
-            'Content-Disposition: attachment; filename=%s\r\n' % filepath,
-            ]
-        header = ''.join(header) + '\n'
 
         content = []
         if dim == 1:
@@ -103,7 +93,7 @@ class Actor(base):
         
         content = '\n'.join(content)
         
-        return header + content
+        return lc.file(filename=filepath, content=content)
     
 
     def _domaccess(self, director):
