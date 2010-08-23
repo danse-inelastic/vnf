@@ -63,8 +63,9 @@ class Actor(base):
         # monitor tof range
         SE2V = 437.3949
         from math import sqrt
-        tofmonmin=LM1/(sqrt(Emax*1.1)*SE2V)
-        tofmonmax=LM1/(sqrt(Emin*0.9)*SE2V)
+        tofmonmin=roundToMicroSeconds(LM1/(sqrt(Emax*1.1)*SE2V))
+        tofmonmax=roundToMicroSeconds(LM1/(sqrt(Emin*0.9)*SE2V))
+        tofmonnchan = int((tofmonmax-tofmonmin)/1e-6+0.5)
 
         #
         domaccess = director.retrieveDOMAccessor('experiment')
@@ -86,6 +87,7 @@ class Actor(base):
         d['moderator'].Emax = Emax
         d['tofmonitor1'].tmin = tofmonmin
         d['tofmonitor1'].tmax = tofmonmax
+        d['tofmonitor1'].nchan = tofmonnchan
         domaccess.orm.save(ic, save_not_owned_referred_object=0)
 
         from vnfb.content.visuals.neutronexperiment.instruments import load_manual_instrument_configuration
@@ -97,6 +99,11 @@ class Actor(base):
         super(Actor, self).__init__(name)
         return
 
+
+
+def roundToMicroSeconds(t):
+    t1 = int(t*1e6)
+    return t1*1.e-6
 
 
 def actor(): return Actor()
