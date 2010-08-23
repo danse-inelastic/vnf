@@ -601,14 +601,14 @@ def createInstrument(director):
 
     instrument = cinstr(
         director,
-        name = 'ARCS_beam',
+        name = 'ARCS_beam_withmonitor2',
         short_description = 'ARCS instrument down to the sample position',
         long_description = '''ARCS is a wide Angular-Range, direct-geometry, time-of-flight Chopper Spectrometer at the Spallation Neutron Source. It is optimized to provide a high neutron flux at the sample, and a large solid angle of detector coverage.
         This virtual instrument simulates neutrons being emitted from moderator and going through neutron optics of ARCS until they reach the sample position. Those neutrons are then saved and can be used to study inelastic neutron scattering of samples later.
         ''',
         category = 'ins',
         creator = 'vnf',
-        date = '08/09/2008',
+        date = '08/09/2010',
         components = components
         )
     
