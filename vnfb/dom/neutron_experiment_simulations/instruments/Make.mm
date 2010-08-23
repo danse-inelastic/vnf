@@ -32,6 +32,7 @@ all: export
 EXPORT_PYTHON_MODULES = \
 	Any.py \
 	ARCS_beam.py \
+	ARCS_beam_withmonitor2.py \
 	IdealPowderINS.py \
 	Pharos.py \
 	Powgen3.py \
