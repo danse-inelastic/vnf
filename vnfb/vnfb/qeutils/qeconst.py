@@ -157,11 +157,13 @@ ANALYSIS[SIMLIST[6]]    = "molecular-dynamics"
 
 #ANALYSIS_ACTORS = ANALYSIS
 
-# Available servers
-SERVERS     = ("foxtrot.danse.us",)
-               #"octopod.danse.us",
+# XXX: hardcoded so far
+# Manually set available servers
+SERVERS     = {"server003": "foxtrot.danse.us",
+               "server001": "octopod.danse.us"}
                #"upgrayedd.danse.us",
                #"teragrid"
+
 
 # Torque states
 TORQUE_STATES = {
@@ -203,6 +205,7 @@ JOB_STATE["none"]               = "None"
 
 PARSERS   = ("qeinput",)
 
+# XXX: Server specific
 # Settings specific for QE and foxtrot
 SETTINGS  = {
                 "numproc":      1,
@@ -210,7 +213,7 @@ SETTINGS  = {
                 "npool":        900,
                 "executable":   "mpirun",
                 "params":       "",    
-                "modules":      "openmpi acml/4.3.0_gfortran64_int32 espresso"    # Specific for foxtrot
+                "modules":      ""    
               }
 
 # Default name of script that runs simulation of computing cluster
@@ -266,7 +269,10 @@ SMEARING["methfessel-paxton"]   = "'mp'"
 SMEARING["marzari-vanderbilt"]  = "'mv'"
 SMEARING["fermi-dirac"]         = "'fd'"
 
-PROCESSORS  = (1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 24, 36, 48, 60, 72, 84, 96, 108, 120) # ppn = 12
+# List of number of cores available
+PROCESSORS  =  {"foxtrot": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 24, 36, 48, 60, 72, 84, 96, 108, 120], # ppn = 12
+                "octopod": [i for i in range(1,33)] # 1..32, ppn=32
+                }
 
 QE_PREFIX   = "'default'"
 PREFIX      = "default"
