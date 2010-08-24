@@ -23,7 +23,7 @@ AtomTable = o2t(Atom)
 
 # view
 def customizeLubanObjectDrawer(self, drawer):
-    drawer.mold.sequence = ['element', 'xyz', 'label', 'occupancy',]
+    drawer.mold.sequence = ['element', 'xyz', 'label', 'charge', 'occupancy',]
 Atom.customizeLubanObjectDrawer = customizeLubanObjectDrawer
 
 
