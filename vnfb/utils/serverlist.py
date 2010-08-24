@@ -12,8 +12,7 @@
 #
 
 from vnfb.utils.orderedDict import OrderedDict
-
-FOXTROT_ID  = "server003"
+from vnfb.qeutils.qeconst import SERVERS
 
 class ServerList:
     """
@@ -46,6 +45,7 @@ class ServerList:
 
     def _setServers(self, director):
         "Set servers dictionary {id: short_description} from the database"
+        # This doesn't really work because there might be garbage in the database
         servers     = director.clerk.getServers()
         self._servers = OrderedDict()
         for s in servers:
@@ -53,11 +53,12 @@ class ServerList:
 
         return self._servers
 
+
     def _setFixedServers(self, director):
         "Uses fixed server (in case if you don't need other servers)"
-        server     = director.clerk.getServers(id=FOXTROT_ID)
         self._servers = OrderedDict()
-        self._servers[server.id]    = server.address
+        for k,v in SERVERS.iteritems():
+            self._servers[k]    = v
         return self._servers
 
 

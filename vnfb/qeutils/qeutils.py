@@ -515,6 +515,23 @@ def convJobRowId(row):
     return "%s-%s" % (CONV_JOB_ROW_BASE, row)
 
 
+def serverName(address):
+    """
+    Takes server address and returns short name
+
+    Example:
+        foxtrot.danse.us -> foxtrot
+    """
+    default = ""
+    if not address:
+        return default
+
+    parts   = address.split(".")
+    if len(parts) > 0:
+        return parts[0]
+
+    return default
+
 
 # *********** TESTS ******************************
 
