@@ -64,7 +64,7 @@ class Actor(base):
         # create a new record
         domaccess = director.retrieveDOMAccessor('atomicstructure')
         structure = domaccess.newAtomicStructure()
-        filepath, ext = os.path.splitext(found)
+        #filepath, ext = os.path.splitext(found)
         structure.read(found)
         #
         orm = director.clerk.orm

@@ -37,7 +37,8 @@ class Actor(baseActor):
                "cartesian_coordinates":structure.xyz_cartn,
                "fractional_coordinates":structure.xyz,
                "atom_symbols":structure.symbols,
-               "space_group":structure.sg.number}
+               "space_group":structure.sg.number,
+               "charges":structure.charges}
         return materialInfo
 
     def getPotentialNames(self, director):
