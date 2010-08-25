@@ -55,7 +55,7 @@ class ServerList:
 
 
     def _setFixedServers(self, director):
-        "Uses fixed server (in case if you don't need other servers)"
+        "Takes list of servers from qeconst (temp solution)"
         self._servers = OrderedDict()
         for k,v in SERVERS.iteritems():
             self._servers[k]    = v

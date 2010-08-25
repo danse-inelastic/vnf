@@ -56,6 +56,7 @@ EXPORT_PYTHON_MODULES = \
         QEAnalysis.py \
         QEConvergence.py \
         QEGenerator.py \
+        QESettings.py \
         QETable.py \
         Scheduler.py \
 	SSHer.py \

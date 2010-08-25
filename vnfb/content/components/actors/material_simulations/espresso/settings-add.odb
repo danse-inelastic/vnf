@@ -22,26 +22,27 @@ from luban.content.FormTextField import FormTextField
 from luban.content.FormCheckBox import FormCheckBox
 from luban.content.FormSubmitButton import FormSubmitButton
 from vnfb.qeutils.qeconst import SETTINGS, PROCESSORS, NOPARALSIM, SIMTYPE, OPT_DEFAULT
+from vnfb.qeutils.qeutils import serverName
 from vnfb.utils.serverlist import ServerList
 
 import luban.content as lc
-from luban.components.AuthorizedActor import AuthorizedActor as base
+#from luban.components.AuthorizedActor import AuthorizedActor as base
+from vnfb.components.QESettings import Actor as base
 
-# Requires simulation id,
 class Actor(base):
 
-    class Inventory(base.Inventory):
-        import pyre.inventory
-        id          = pyre.inventory.str('id', default='')          # Simulation Id
-        server      = pyre.inventory.str('server', default='')
-        sname       = pyre.inventory.str('sname', default='')
-        description = pyre.inventory.str('description', default='') # Not used
-        numproc     = pyre.inventory.int('numproc', default=1)
-        localdisk   = pyre.inventory.bool('localdisk', default=False)
+#    class Inventory(base.Inventory):
+#        import pyre.inventory
+#        id          = pyre.inventory.str('id', default='')          # Simulation Id
+#        server      = pyre.inventory.str('server', default='')
+#        sname       = pyre.inventory.str('sname', default='')
+#        description = pyre.inventory.str('description', default='') # Not used
+#        numproc     = pyre.inventory.int('numproc', default=1)
+#        localdisk   = pyre.inventory.bool('localdisk', default=False)
 
 
-    def default(self, director):
-        return select(id='main-display-area').replaceContent(self.content(director))
+#    def default(self, director):
+#        return select(id='main-display-area').replaceContent(self.content(director))
 
 
     def content(self, director):
@@ -83,9 +84,16 @@ class Actor(base):
         servers     = ServerList(director)
         serversList = servers.list()
 
+        # XXX: Fix: Change cores list depending on server selection
         server          = FormSelectorField(name    = "server",
                                             entries = enumerate(serversList))
-        numproc         = FormSelectorField(name="numproc", entries = self._procOptions(sim))
+        actorName       = "material_simulations/espresso/settings-add"
+        server.onchange = load( actor   = actorName,
+                                routine = "setCoresList",
+                                simtype = select(element=server).getAttr("value"))
+
+
+        numproc         = FormSelectorField(name="numproc", entries = self._procOptions(sim, serversList, 0))
         localdisk       = FormCheckBox(name="localdisk", value = OPT_DEFAULT)
         sname           = FormTextField(name = "sname", value = self.sname)
         description     = FormTextField(name = "description", value=self.description)   # Make as textarea
@@ -105,7 +113,7 @@ class Actor(base):
         st.addRow((submit, cancel), ("qe-action-accept", "qe-action-cancel"))
 
         table.addRow(("Server: *", server))
-        table.addRow(("Number of Processors: *", numproc))
+        table.addRow(("Number of Cores: *", numproc))
         table.addRow(("Optimization: *", diskgrid.grid()))
         table.addRow(("Name:", sname))
         table.addRow(("Description:", description))
@@ -123,6 +131,9 @@ class Actor(base):
 
     def createRecord(self, director):
         """Create settings record"""
+
+        return #XXX
+
         servers = ServerList(director)
         
         params  = {"simulationid":  self.id,
@@ -142,57 +153,9 @@ class Actor(base):
         return load(actor='material_simulations/espresso/sim-view', id=self.id)
 
 
-    def _optLevel(self):
-        """
-        Returns optimization level depending on 'scratch space' checkbox
-            0 - NFS file system
-            1 - Scratch space (local disk on each node)
-        """
-        if self.localdisk:
-            return 1
-
-        return 0
-
-
-    def _procOptions(self, sim):
-        "Available options for number of cores"
-        DEFAULT     = enumerate(PROCESSORS)
-        if not sim:
-            return DEFAULT
-
-        for k in SIMTYPE.keys():
-            if SIMTYPE[k] == sim.type and k in NOPARALSIM:
-                return enumerate((1,))  # Single core
-
-        return DEFAULT
-
-
-    def _sname(self):
-        # Settings name is not set
-        if self.sname == '':
-            return "settings.conf"
-
-        return self.sname
-
     def __init__(self):
         super(Actor, self).__init__(name='material_simulations/espresso/settings-add')
 
-        return
-
-
-    def _configure(self):
-        super(Actor, self)._configure()
-        self.id             = self.inventory.id
-        self.sname          = self.inventory.sname
-        self.server         = self.inventory.server
-        self.description    = self.inventory.description
-        self.numproc        = self.inventory.numproc
-        self.localdisk      = self.inventory.localdisk
-
-
-    def _init(self):
-        super(Actor, self)._init()
-        return
 
 def actor():
     return Actor()
