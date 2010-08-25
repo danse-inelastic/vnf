@@ -10,7 +10,6 @@ Part 1
 - [DONE] Handle important parameters (e.g. outdir, prefix ...) so that users could run simulations using example
   config files
     Problematic types: MATDYN, DYNMAT, Q2R
-
 - [DONE] Able to skip generator forms: "Skip Input Generator"
 - [DONE] Add "Explain" link to simulation edit
 - Implement progress bar for results
@@ -83,6 +82,11 @@ Part 8: Cleaning
 - Implement PLOTBAND filter (non-standard config file)
 - Fix plot sizes on analysis page (see vnf.css: .luban-plot2d)
 - Delete directory when configuration is deleted
+
+
+Part 9: TeraGrid
+-------------------------------------------
+- Add TeraGrid to the list of servers
 
 
 Problem: How to define similarity for simulation tasks? Settings? Matter?

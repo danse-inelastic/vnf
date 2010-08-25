@@ -22,25 +22,21 @@ from luban.content.FormCheckBox import FormCheckBox
 from luban.content.FormSubmitButton import FormSubmitButton
 from vnfb.qeutils.qeconst import PROCESSORS, NOPARALSIM, SIMTYPE, OPT_DEFAULT
 from vnfb.utils.serverlist import ServerList
+from vnfb.qeutils.qeutils import serverName
 
 import luban.content as lc
-from luban.components.AuthorizedActor import AuthorizedActor as base
+from vnfb.components.QESettings import Actor as base
+#from luban.components.AuthorizedActor import AuthorizedActor as base
 
 class Actor(base):
 
     class Inventory(base.Inventory):
         import pyre.inventory
-        id          = pyre.inventory.str('id', default='')          # Simulation Id
         configid    = pyre.inventory.str('configid', default='')
-        sname       = pyre.inventory.str('sname', default='')
-        description = pyre.inventory.str('description', default='') # Not used
-        server      = pyre.inventory.str('server', default='')
-        numproc     = pyre.inventory.int('numproc', default=0)
-        localdisk   = pyre.inventory.bool('localdisk', default=False)
 
 
-    def default(self, director):
-        return select(id='main-display-area').replaceContent(self.content(director))
+#    def default(self, director):
+#        return select(id='main-display-area').replaceContent(self.content(director))
 
 
     def content(self, director):
@@ -106,7 +102,7 @@ class Actor(base):
         st          = QEGrid(lc.grid()) # Submit Table
         st.addRow((submit, cancel), ("qe-action-accept", "qe-action-cancel"))
         table.addRow(("Server:", server))
-        table.addRow(("Number of Processors: *", numproc))
+        table.addRow(("Number of Cores: *", numproc))
         table.addRow(("Optimization: *", diskgrid.grid()))
         table.addRow(("Name:", sname))
         table.addRow(("Description:", description))
@@ -140,17 +136,17 @@ class Actor(base):
         return settings.numproc
 
 
-    def _procOptions(self, sim):
-        "Available options for number of cores"
-        DEFAULT     = enumerate(PROCESSORS)
-        if not sim:
-            return DEFAULT
-
-        for k in SIMTYPE.keys():
-            if SIMTYPE[k] == sim.type and k in NOPARALSIM:
-                return enumerate((1,))  # Single core
-                
-        return DEFAULT
+#    def _procOptions(self, sim):
+#        "Available options for number of cores"
+#        DEFAULT     = enumerate(PROCESSORS) #PROCESSORS["foxtrot"]
+#        if not sim:
+#            return DEFAULT
+#
+#        for k in SIMTYPE.keys():
+#            if SIMTYPE[k] == sim.type and k in NOPARALSIM:
+#                return enumerate((1,))  # Single core
+#
+#        return DEFAULT
     
 
     def updateRecord(self, director):
@@ -170,16 +166,16 @@ class Actor(base):
         return load(actor = 'material_simulations/espresso/sim-view', id=self.id)
 
 
-    def _optLevel(self):
-        """
-        Returns optimization level depending on 'scratch space' checkbox
-            0 - NFS file system
-            1 - Scratch space (local disk on each node)
-        """
-        if self.localdisk:
-            return 1
-
-        return 0
+#    def _optLevel(self):
+#        """
+#        Returns optimization level depending on 'scratch space' checkbox
+#            0 - NFS file system
+#            1 - Scratch space (local disk on each node)
+#        """
+#        if self.localdisk:
+#            return 1
+#
+#        return 0
 
 
     def __init__(self):
@@ -190,13 +186,7 @@ class Actor(base):
 
     def _configure(self):
         super(Actor, self)._configure()
-        self.id             = self.inventory.id
         self.configid       = self.inventory.configid
-        self.sname          = self.inventory.sname
-        self.description    = self.inventory.description
-        self.server         = self.inventory.server
-        self.numproc        = self.inventory.numproc
-        self.localdisk      = self.inventory.localdisk
 
 
     def _init(self):

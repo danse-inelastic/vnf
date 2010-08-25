@@ -164,6 +164,11 @@ SERVERS     = {"server003": "foxtrot.danse.us",
                #"upgrayedd.danse.us",
                #"teragrid"
 
+# List of number of cores available
+PROCESSORS  =  {"foxtrot": [i for i in range(1,13)]+[i*12 for i in range(2,11)], # 1..120, ppn = 12
+                "octopod": [i for i in range(1,33)] # 1..32, ppn=32
+                }
+
 
 # Torque states
 TORQUE_STATES = {
@@ -268,11 +273,6 @@ SMEARING["gaussian"]            = "'gauss'"
 SMEARING["methfessel-paxton"]   = "'mp'"
 SMEARING["marzari-vanderbilt"]  = "'mv'"
 SMEARING["fermi-dirac"]         = "'fd'"
-
-# List of number of cores available
-PROCESSORS  =  {"foxtrot": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 24, 36, 48, 60, 72, 84, 96, 108, 120], # ppn = 12
-                "octopod": [i for i in range(1,33)] # 1..32, ppn=32
-                }
 
 QE_PREFIX   = "'default'"
 PREFIX      = "default"
