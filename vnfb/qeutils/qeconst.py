@@ -239,6 +239,8 @@ ID_START    = "formtextfield-start"
 ID_STEP     = "formtextfield-step"
 ID_PARAM    = "formselectorfield-param"
 
+# Settings form
+ID_SELECTOR_CORES   = "selector-cores"
 
 # TODO: Move to parser/inputs
 ZASR        = OrderedDict()

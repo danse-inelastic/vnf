@@ -22,28 +22,14 @@ from luban.content.FormTextField import FormTextField
 from luban.content.FormCheckBox import FormCheckBox
 from luban.content.FormSubmitButton import FormSubmitButton
 from vnfb.qeutils.qeconst import SETTINGS, PROCESSORS, NOPARALSIM, SIMTYPE, OPT_DEFAULT
+from vnfb.qeutils.qeconst import ID_SELECTOR_CORES
 from vnfb.qeutils.qeutils import serverName
 from vnfb.utils.serverlist import ServerList
 
 import luban.content as lc
-#from luban.components.AuthorizedActor import AuthorizedActor as base
 from vnfb.components.QESettings import Actor as base
 
 class Actor(base):
-
-#    class Inventory(base.Inventory):
-#        import pyre.inventory
-#        id          = pyre.inventory.str('id', default='')          # Simulation Id
-#        server      = pyre.inventory.str('server', default='')
-#        sname       = pyre.inventory.str('sname', default='')
-#        description = pyre.inventory.str('description', default='') # Not used
-#        numproc     = pyre.inventory.int('numproc', default=1)
-#        localdisk   = pyre.inventory.bool('localdisk', default=False)
-
-
-#    def default(self, director):
-#        return select(id='main-display-area').replaceContent(self.content(director))
-
 
     def content(self, director):
         sim       = director.clerk.getQESimulations(id=self.id)
@@ -90,10 +76,14 @@ class Actor(base):
         actorName       = "material_simulations/espresso/settings-add"
         server.onchange = load( actor   = actorName,
                                 routine = "setCoresList",
-                                simtype = select(element=server).getAttr("value"))
+                                server  = select(element=server).getAttr("value"))
+
+        numproc         = lc.document(id=ID_SELECTOR_CORES)
+        procfield       = FormSelectorField(name="numproc", entries = self._procOptions(sim, serversList, 0))
+        numproc.add(procfield)
+        #numproc         = FormSelectorField(name="numproc", entries = self._procOptions(sim, serversList, 0))
 
 
-        numproc         = FormSelectorField(name="numproc", entries = self._procOptions(sim, serversList, 0))
         localdisk       = FormCheckBox(name="localdisk", value = OPT_DEFAULT)
         sname           = FormTextField(name = "sname", value = self.sname)
         description     = FormTextField(name = "description", value=self.description)   # Make as textarea
