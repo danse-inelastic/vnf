@@ -1,4 +1,4 @@
-TODO List for Quantum Espresso
+ TODO List for Quantum Espresso
 ==============================
 
 NOW
@@ -13,7 +13,7 @@ Part 1
 - [DONE] Able to skip generator forms: "Skip Input Generator"
 - [DONE] Add "Explain" link to simulation edit
 - Implement progress bar for results
-- Add "octopod" server and implement module that handles server configurations
+- [IN PROGRESS] Add "octopod" server and implement module that handles server configurations
   and settings
 
 

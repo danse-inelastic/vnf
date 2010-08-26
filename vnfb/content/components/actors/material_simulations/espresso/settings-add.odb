@@ -54,12 +54,12 @@ class Actor(base):
         sA          = splitter.section()
         sA.add(viewIndicator(director))
         sB          = splitter.section()
-        sB.add(self._setForm(sim, director))
+        sB.add(self._setForm(director))
 
         return doc
 
 
-    def _setForm(self, sim, director):
+    def _setForm(self, director):
         "Sets create new settings form"
         
         form        = Form(id='create-simulation-form')
@@ -77,12 +77,6 @@ class Actor(base):
         server.onchange = load( actor   = actorName,
                                 routine = "setCoresList",
                                 server  = select(element=server).getAttr("value"))
-
-        numproc         = lc.document(id=ID_SELECTOR_CORES)
-        procfield       = FormSelectorField(name="numproc", entries = self._procOptions(sim, serversList, 0))
-        numproc.add(procfield)
-        #numproc         = FormSelectorField(name="numproc", entries = self._procOptions(sim, serversList, 0))
-
 
         localdisk       = FormCheckBox(name="localdisk", value = OPT_DEFAULT)
         sname           = FormTextField(name = "sname", value = self.sname)
@@ -103,7 +97,7 @@ class Actor(base):
         st.addRow((submit, cancel), ("qe-action-accept", "qe-action-cancel"))
 
         table.addRow(("Server: *", server))
-        table.addRow(("Number of Cores: *", numproc))
+        table.addRow(("Number of Cores: *", self._selectorCores(serversList)))
         table.addRow(("Optimization: *", diskgrid.grid()))
         table.addRow(("Name:", sname))
         table.addRow(("Description:", description))
