@@ -157,17 +157,42 @@ ANALYSIS[SIMLIST[6]]    = "molecular-dynamics"
 
 #ANALYSIS_ACTORS = ANALYSIS
 
-# XXX: hardcoded so far
-# Manually set available servers
-SERVERS     = {"server003": "foxtrot.danse.us",
-               "server001": "octopod.danse.us"}
-               #"upgrayedd.danse.us",
-               #"teragrid"
+def coresList(cpn, nodes):
+    """
+    Populates list of available number of cores based on number of nodes
+    and cores per node
+    
+    General formula:
+    servers   = dds.getServers(id=<someid>)   # Get server record
+    cpn       = servers.corespernode  # Cores per node
+    nodes     = servers.nodes         # Number of nodes
+    """
+    return [i for i in range(1,cpn+1)]+[i*cpn for i in range(2,nodes+1)]
 
+
+
+# XXX: Move to configuration file
 # List of number of cores available
-PROCESSORS  =  {"foxtrot": [i for i in range(1,13)]+[i*12 for i in range(2,11)], # 1..120, ppn = 12
-                "octopod": [i for i in range(1,33)] # 1..32, ppn=32
+#PROCESSORS
+SERVERS     =  {"foxtrot": {"id":           "server003",
+                            "name":         "foxtrot.danse.us",
+                            "coreslist":    coresList(12, 34),
+                            "opt":          True,
+                            "optmsg":       "Foxtrot message"},
+                            
+                "octopod": {"id":           "server001",
+                            "name":         "octopod.danse.us",
+                            "coreslist":    coresList(32, 1),
+                            "opt":          False,   # No optimization
+                            "optmsg":       "Octopod message"
+                        }
                 }
+
+# [i for i in range(1,33)] # 1..32, ppn=32
+#    [i for i in range(1,13)]+[i*12 for i in range(2,35)]}, # 1..120, ppn = 12
+
+
+# numcores  = [i for i in range(1,cpn+1)]+[i*cpn for i in range(2,nodes+1)]
 
 
 # Torque states

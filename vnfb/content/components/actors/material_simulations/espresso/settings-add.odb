@@ -21,9 +21,9 @@ from luban.content.FormSelectorField import FormSelectorField
 from luban.content.FormTextField import FormTextField
 from luban.content.FormCheckBox import FormCheckBox
 from luban.content.FormSubmitButton import FormSubmitButton
-from vnfb.qeutils.qeconst import SETTINGS, PROCESSORS, NOPARALSIM, SIMTYPE, OPT_DEFAULT
-from vnfb.qeutils.qeconst import ID_SELECTOR_CORES
-from vnfb.qeutils.qeutils import serverName
+from vnfb.qeutils.qeconst import SETTINGS, SERVERS, NOPARALSIM, SIMTYPE, OPT_DEFAULT
+#from vnfb.qeutils.qeconst import ID_SELECTOR_CORES
+#from vnfb.qeutils.qeutils import serverName
 from vnfb.utils.serverlist import ServerList
 
 import luban.content as lc
@@ -66,7 +66,6 @@ class Actor(base):
         table       = QEGrid(lc.grid(Class="qe-form"))
         form.add(table.grid())
 
-        # XXX: Fix: Change cores list depending on server selection
         server          = FormSelectorField(name    = "server",
                                             entries = enumerate(self._serverList(director)))
         actorName       = "material_simulations/espresso/settings-add"
@@ -74,27 +73,18 @@ class Actor(base):
                                 routine = "setCoresList",
                                 server  = select(element=server).getAttr("value"))
 
-        localdisk       = FormCheckBox(name="localdisk", value = OPT_DEFAULT)
         sname           = FormTextField(name = "sname", value = self.sname)
         description     = FormTextField(name = "description", value=self.description)   # Make as textarea
-
-        # Explain link
-        visual_     = "material_simulations/espresso/link-opt"
-        explLink    = director.retrieveVisual(visual_, form=form)
-
-        submit      = FormSubmitButton(label="Create Settings Configuration")
-        cancel      = lc.button(label="Cancel")
+        submit          = FormSubmitButton(label="Create Settings Configuration")
+        cancel          = lc.button(label="Cancel")
         cancel.onclick  = load(actor = 'material_simulations/espresso/sim-view', id=self.id)
-
-        diskgrid    = QEGrid(lc.grid())
-        diskgrid.addRow((localdisk, explLink))
 
         st          = QEGrid(lc.grid()) # Submit Table
         st.addRow((submit, cancel), ("qe-action-accept", "qe-action-cancel"))
 
         table.addRow(("Server: *", server))
         table.addRow(("Number of Cores: *", self._selectorCores(director)))
-        table.addRow(("Optimization: *", diskgrid.grid()))
+        self._setOptimField(director, table, form)
         table.addRow(("Name:", sname))
         table.addRow(("Description:", description))
         table.addRow(("", st.grid()))
@@ -114,13 +104,15 @@ class Actor(base):
 
         return #XXX
 
-        servers = ServerList(director)
-        
+        servers     = ServerList(director)
+        #servlistservers.list()
+        shortname   = self._serverShortName(director)
+
         params  = {"simulationid":  self.id,
                    "sname":         self._sname(),
                    "description":   self.description,
-                   "serverid":      servers.id(self.server),
-                   "numproc":       PROCESSORS[self.numproc],
+                   "serverid":      servers.id(self.server),    # XXX: Fix 
+                   "numproc":       SERVERS[shortname]["coreslist"][self.numproc],
                    "optlevel":      self._optLevel(),
                    "npool":         SETTINGS["npool"],      # Set from constants?
                    "executable":    SETTINGS["executable"], # Set from constants?

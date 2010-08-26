@@ -58,7 +58,7 @@ class ServerList:
         "Takes list of servers from qeconst (temp solution)"
         self._servers = OrderedDict()
         for k,v in SERVERS.iteritems():
-            self._servers[k]    = v
+            self._servers[k]    = v["name"] # v
         return self._servers
 
 
