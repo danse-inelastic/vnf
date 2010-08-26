@@ -16,12 +16,13 @@ from vnfb.qeutils.qegrid import QEGrid
 from luban.content.FormSelectorField import FormSelectorField
 from luban.content import select
 
-from vnfb.qeutils.qeconst import SETTINGS, PROCESSORS, NOPARALSIM, SIMTYPE, OPT_DEFAULT
+from vnfb.qeutils.qeconst import SETTINGS, SERVERS, NOPARALSIM, SIMTYPE, OPT_DEFAULT
 from vnfb.qeutils.qeconst import ID_SELECTOR_CORES
 from vnfb.qeutils.qeutils import serverName
 from vnfb.utils.serverlist import ServerList
 
 import luban.content as lc
+from luban.content.FormCheckBox import FormCheckBox
 from luban.components.AuthorizedActor import AuthorizedActor as base
 
 class Actor(base):
@@ -48,6 +49,7 @@ class Actor(base):
 
 
     def _selectorCores(self, director):
+        "Special field: number of cores"
         cores           = lc.document(id=ID_SELECTOR_CORES)
         procfield       = FormSelectorField(name="numproc", entries = self._procOptions(director))
         cores.add(procfield)
@@ -68,12 +70,11 @@ class Actor(base):
 
     def _procOptions(self, director):
         "Available options for number of cores"
-        servlist    = self._serverList(director)
-        DEFAULT     = enumerate((1,))
+#        servlist    = self._serverList(director)
+#        servname    = servlist[int(self.server)] #serverName(servname)
 
-        servname    = servlist[int(self.server)]
-        shortname   = serverName(servname)
-        DEFAULT     = enumerate(PROCESSORS[shortname])
+        shortname   = self._serverShortName(director)   
+        DEFAULT     = enumerate(SERVERS[shortname]["coreslist"])
 
         for k in SIMTYPE.keys():
             if SIMTYPE[k] == self.type and k in NOPARALSIM:
@@ -88,8 +89,31 @@ class Actor(base):
         return servers.list()
 
 
+    def _serverShortName(self, director):
+        "Returns short name of the server"
+        servlist    = self._serverList(director)
+        servname    = servlist[int(self.server)]
+        return serverName(servname)
+
+
+
+    def _setOptimField(self, director, table, form):
+        "Special field: Optimization - depends on server"
+        # Explain link
+        visual_     = "material_simulations/espresso/link-opt"
+        explLink    = director.retrieveVisual(visual_, form=form)
+
+        localdisk       = FormCheckBox(name="localdisk", value = OPT_DEFAULT)
+
+        diskgrid    = QEGrid(lc.grid())
+        diskgrid.addRow((localdisk, explLink))
+
+
+        table.addRow(("Optimization: *", diskgrid.grid()))
+
+
     def _sname(self):
-        # Settings name is not set
+        "Settings name is not set"
         if self.sname == '':
             return "settings.conf"
 
