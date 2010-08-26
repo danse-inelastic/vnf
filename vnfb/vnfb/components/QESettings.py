@@ -30,7 +30,7 @@ class Actor(base):
         import pyre.inventory
         id          = pyre.inventory.str('id', default='')
         type        = pyre.inventory.str('type', default='')
-        server      = pyre.inventory.str('server', default='')
+        server      = pyre.inventory.int('server', default=0)
         sname       = pyre.inventory.str('sname', default='')
         description = pyre.inventory.str('description', default='') # Not used
         numproc     = pyre.inventory.int('numproc', default=1)
@@ -43,13 +43,13 @@ class Actor(base):
 
     def setCoresList(self, director):
         "Sets cores list depending on server selection"
-        procfield   = "Hello"
+        procfield       = FormSelectorField(name="numproc", entries = self._procOptions(director))
         return select(id=ID_SELECTOR_CORES).replaceContent(procfield)
 
 
-    def _selectorCores(self, servlist):
+    def _selectorCores(self, director):
         cores           = lc.document(id=ID_SELECTOR_CORES)
-        procfield       = FormSelectorField(name="numproc", entries = self._procOptions(servlist, 0))
+        procfield       = FormSelectorField(name="numproc", entries = self._procOptions(director))
         cores.add(procfield)
         return cores
 
@@ -66,15 +66,12 @@ class Actor(base):
         return 0
 
 
-    def _procOptions(self, servlist, servorder):
+    def _procOptions(self, director):
         "Available options for number of cores"
+        servlist    = self._serverList(director)
         DEFAULT     = enumerate((1,))
 
-        # servorder is out of range
-        if not servorder in range(len(servlist)):
-            return DEFAULT
-
-        servname    = servlist[servorder]
+        servname    = servlist[int(self.server)]
         shortname   = serverName(servname)
         DEFAULT     = enumerate(PROCESSORS[shortname])
 
@@ -83,6 +80,12 @@ class Actor(base):
                 return enumerate((1,))  # Single core
 
         return DEFAULT
+
+
+    def _serverList(self, director):
+        "Returns list of available servers"
+        servers     = ServerList(director)
+        return servers.list()
 
 
     def _sname(self):

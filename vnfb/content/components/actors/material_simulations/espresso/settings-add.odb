@@ -66,13 +66,9 @@ class Actor(base):
         table       = QEGrid(lc.grid(Class="qe-form"))
         form.add(table.grid())
 
-        # Set servers first
-        servers     = ServerList(director)
-        serversList = servers.list()
-
         # XXX: Fix: Change cores list depending on server selection
         server          = FormSelectorField(name    = "server",
-                                            entries = enumerate(serversList))
+                                            entries = enumerate(self._serverList(director)))
         actorName       = "material_simulations/espresso/settings-add"
         server.onchange = load( actor   = actorName,
                                 routine = "setCoresList",
@@ -97,7 +93,7 @@ class Actor(base):
         st.addRow((submit, cancel), ("qe-action-accept", "qe-action-cancel"))
 
         table.addRow(("Server: *", server))
-        table.addRow(("Number of Cores: *", self._selectorCores(serversList)))
+        table.addRow(("Number of Cores: *", self._selectorCores(director)))
         table.addRow(("Optimization: *", diskgrid.grid()))
         table.addRow(("Name:", sname))
         table.addRow(("Description:", description))
