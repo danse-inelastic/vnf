@@ -20,23 +20,18 @@ from luban.content.FormSelectorField import FormSelectorField
 from luban.content.FormTextField import FormTextField
 from luban.content.FormCheckBox import FormCheckBox
 from luban.content.FormSubmitButton import FormSubmitButton
-from vnfb.qeutils.qeconst import PROCESSORS, NOPARALSIM, SIMTYPE, OPT_DEFAULT
+from vnfb.qeutils.qeconst import SERVERS, NOPARALSIM, SIMTYPE, OPT_DEFAULT
 from vnfb.utils.serverlist import ServerList
 from vnfb.qeutils.qeutils import serverName
 
 import luban.content as lc
 from vnfb.components.QESettings import Actor as base
-#from luban.components.AuthorizedActor import AuthorizedActor as base
 
 class Actor(base):
 
     class Inventory(base.Inventory):
         import pyre.inventory
         configid    = pyre.inventory.str('configid', default='')
-
-
-#    def default(self, director):
-#        return select(id='main-display-area').replaceContent(self.content(director))
 
 
     def content(self, director):
@@ -136,46 +131,24 @@ class Actor(base):
         return settings.numproc
 
 
-#    def _procOptions(self, sim):
-#        "Available options for number of cores"
-#        DEFAULT     = enumerate(PROCESSORS) #PROCESSORS["foxtrot"]
-#        if not sim:
-#            return DEFAULT
-#
-#        for k in SIMTYPE.keys():
-#            if SIMTYPE[k] == sim.type and k in NOPARALSIM:
-#                return enumerate((1,))  # Single core
-#
-#        return DEFAULT
-    
-
+    # XXX: Fix
     def updateRecord(self, director):
         """Update settings record"""
         settings     = director.clerk.getQESettings(id=self.configid)
         settings.setDirector(director)
         servers     = ServerList(director)
 
+        shortname   = self._serverShortName(director)
+
         params  = {"sname":         self.sname,
                    "description":   self.description,  # I don't really need description at this point!
                    "serverid":      servers.id(self.server),
                    "optlevel":      self._optLevel(),
-                   "numproc":       PROCESSORS[int(self.numproc)],
+                   "numproc":       SERVERS[shortname]["coreslist"][int(self.numproc)],
                   }                   
         settings.updateRecord(params)
         
         return load(actor = 'material_simulations/espresso/sim-view', id=self.id)
-
-
-#    def _optLevel(self):
-#        """
-#        Returns optimization level depending on 'scratch space' checkbox
-#            0 - NFS file system
-#            1 - Scratch space (local disk on each node)
-#        """
-#        if self.localdisk:
-#            return 1
-#
-#        return 0
 
 
     def __init__(self):

@@ -22,8 +22,6 @@ from luban.content.FormTextField import FormTextField
 from luban.content.FormCheckBox import FormCheckBox
 from luban.content.FormSubmitButton import FormSubmitButton
 from vnfb.qeutils.qeconst import SETTINGS, SERVERS, NOPARALSIM, SIMTYPE, OPT_DEFAULT
-#from vnfb.qeutils.qeconst import ID_SELECTOR_CORES
-#from vnfb.qeutils.qeutils import serverName
 from vnfb.utils.serverlist import ServerList
 
 import luban.content as lc
@@ -99,13 +97,10 @@ class Actor(base):
         return form
 
 
+    # XXX: Fix
     def createRecord(self, director):
         """Create settings record"""
-
-        return #XXX
-
         servers     = ServerList(director)
-        #servlistservers.list()
         shortname   = self._serverShortName(director)
 
         params  = {"simulationid":  self.id,

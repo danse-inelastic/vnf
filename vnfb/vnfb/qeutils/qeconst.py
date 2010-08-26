@@ -170,7 +170,6 @@ def coresList(cpn, nodes):
     return [i for i in range(1,cpn+1)]+[i*cpn for i in range(2,nodes+1)]
 
 
-
 # XXX: Move to configuration file
 # List of number of cores available
 SERVERS     = OrderedDict()
