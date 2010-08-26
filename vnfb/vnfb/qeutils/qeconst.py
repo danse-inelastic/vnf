@@ -173,26 +173,18 @@ def coresList(cpn, nodes):
 
 # XXX: Move to configuration file
 # List of number of cores available
-#PROCESSORS
-SERVERS     =  {"foxtrot": {"id":           "server003",
-                            "name":         "foxtrot.danse.us",
-                            "coreslist":    coresList(12, 34),
-                            "opt":          True,
-                            "optmsg":       "Foxtrot message"},
-                            
-                "octopod": {"id":           "server001",
-                            "name":         "octopod.danse.us",
-                            "coreslist":    coresList(32, 1),
-                            "opt":          False,   # No optimization
-                            "optmsg":       "Octopod message"
-                        }
-                }
-
-# [i for i in range(1,33)] # 1..32, ppn=32
-#    [i for i in range(1,13)]+[i*12 for i in range(2,35)]}, # 1..120, ppn = 12
-
-
-# numcores  = [i for i in range(1,cpn+1)]+[i*cpn for i in range(2,nodes+1)]
+SERVERS     = OrderedDict()
+SERVERS["foxtrot"] = {  "id":           "server003",
+                        "name":         "foxtrot.danse.us",
+                        "coreslist":    coresList(12, 34),
+                        "opt":          True,
+                        "optmsg":       "Foxtrot message"}
+                        
+SERVERS["octopod"] = {  "id":           "server001",
+                        "name":         "octopod.danse.us",
+                        "coreslist":    coresList(32, 1),
+                        "opt":          False,   # No optimization
+                        "optmsg":       "Octopod message"}
 
 
 # Torque states
