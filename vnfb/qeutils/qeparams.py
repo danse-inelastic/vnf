@@ -20,8 +20,10 @@ from luban.content.Link import Link
 class QEParams:
     """Displays parameters of the simulation"""
 
-    def __init__(self, director):
+    def __init__(self, sim, director):
+        self._sim     = sim
         self._director  = director
+
 
     def getLink(self, id):      # simulation
         settings  = self._director.clerk.getQESettings(where="simulationid='%s'" % id )
@@ -29,7 +31,9 @@ class QEParams:
         link = Link(label="Add", Class="action-link",
                     tip     = "Set simulation environment",
                     onclick=load(actor      = "material_simulations/espresso/settings-add",
-                                 id         = id)
+                                 type       = self._sim.type,
+                                 id         = id,
+                                 )
                     )
 
         if settings:
