@@ -89,6 +89,13 @@ Part 9: TeraGrid
 - Add TeraGrid to the list of servers
 
 
+Issues:
+- Was thinking about definition of failed job for QE. Currently, when CRASH file
+exists, it marked as failed. But sometimes when STDERR.log is not empty, but no
+CRASH file job can also be failed. Add check is STDERR.log is not empty? The reason
+why not add this check at this time is that there might be warnings that are
+system related and nothing user can do about it.
+
 Problem: How to define similarity for simulation tasks? Settings? Matter?
 Solution:
 
