@@ -12,7 +12,7 @@
 #
 
 
-skip = True
+# skip = True
 
 
 from luban.testing.selenium.TestCaseBase import TestCaseBase as base, makePySuite
@@ -22,59 +22,55 @@ class TestCaseBase(base):
     targetapp = 'vnf'
 
 
+    def initSelenium(self):
+        sele = super(TestCaseBase, self).initSelenium()
+        sele.open(self.appaddress)
+        return sele
+
+
     def test2(self):
         'vnf: bvk for bcc Fe (real user)'
-        s = self.selenium
-        lh = s.lh
+        actor = self.actor
         
-        s.open(self.appaddress)
-
         from workflows.basic import login
-        login(s)
+        login(actor)
 
-        samples_link = 'link=samples'
-        s.waitForElementPresent(samples_link)
-        s.click(samples_link)
+        samples_link = actor.select(type='link', label='samples')
+        samples_link.click()
 
-        new_link = lh.selector('div', id='new-sample-button')
-        new_link += '/a'
-        s.waitForElementPresent(new_link)
-        s.click(new_link)
-
-        desc_input = lh.selector('input', name='actor.short_description')
-        s.waitForElementPresent(desc_input)
-        s.type(desc_input, 'selenium test sample')
-
-        save_button = lh.selector('input', type='submit', value='save')
-        s.waitForElementPresent(save_button)
-        s.click(save_button)
+        new_button = actor.select(type='button', id='new-sample-button')
+        new_button.click()
+        
+        desc_input = actor.select(type='formtextfield', name='actor.short_description')
+        desc_input.type('selenium test sample')
+        
+        save_button = actor.select(type='formsubmitbutton', label='save')
+        save_button.click()
 
         from workflows.basic import basic_filter
-        basic_filter(s, table='selectoneatomicstructure', key='description', value='bcc Fe*')
+        basic_filter(actor, table='selectoneatomicstructure', key='description', value='bcc Fe*')
         
-        lh.sleep(5)
+        actor.sleep(5)
         
-        table = lh.selector('table', id='atomicstructure-table')
+        # !!! hack to work on table
+        table = actor.selenium.lh.selector('table', id='atomicstructure-table')
         radiobutton = table + '/tbody/tr[1]/td[1]/input'
-        s.waitForElementPresent(radiobutton)
-        s.click(radiobutton)
-        lh.sleep(3)
+        actor.selenium.waitForElementPresent(radiobutton)
+        actor.selenium.click(radiobutton)
+        actor.sleep(3)
         
-        select_button = 'link=select'
-        s.click(select_button)
-        lh.sleep(3)
+        select_button = actor.select(type='button', label='select')
+        select_button.click()
+        actor.sleep(3)
 
-        box_button = lh.selector('div', id='scatterer-shape-button-block')
-        box_button += '/a'
-        s.waitForElementPresent(box_button)
-        s.click(box_button)
-        lh.sleep(3)
+        box_button = actor.select(type='button', id='scatterer-shape-button-block')
+        box_button.click()
+        actor.sleep(3)
 
-        save_button = lh.selector('input', type='submit', value='Save')
-        s.waitForElementPresent(save_button)
-        s.click(save_button)
+        save_button = actor.select(type='formsubmitbutton', label='Save')
+        save_button.click()
         
-        lh.sleep(5)
+        actor.sleep(5)
         return
         
 
@@ -86,6 +82,9 @@ def pysuite():
 
 
 def main():
+    from luban.testing.selenium.Selector import debug
+    debug.activate()
+
     pytests = pysuite()
     import unittest
     alltests = unittest.TestSuite( (pytests, ) )
