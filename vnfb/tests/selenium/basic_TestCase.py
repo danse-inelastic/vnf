@@ -11,6 +11,7 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
+skip = True
 
 from luban.testing.selenium.TestCaseBase import TestCaseBase as base, makePySuite
 
