@@ -11,7 +11,7 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
-skip = True
+# skip = True
 
 from luban.testing.selenium.TestCaseBase import TestCaseBase as base, makePySuite
 
@@ -20,32 +20,37 @@ class TestCaseBase(base):
     targetapp = 'vnf'
 
 
+    def initSelenium(self):
+        sele = super(TestCaseBase, self).initSelenium()
+        sele.open(self.appaddress)
+        return sele
+
+
     def test1(self):
         'vnf: bvk for bcc Fe (demo user)'
-        s = self.selenium
-        lh = s.lh
-        
-        s.open(self.appaddress)
+        actor = self.actor
         
         from workflows.basic import login, basic_filter
-        login(s)
+        login(actor)
         
-        basic_filter(s, table='atomicstructure', key='description', value='bcc Fe*')
-        lh.sleep(4)
+        basic_filter(actor, table='atomicstructure', key='description', value='bcc Fe*')
+        actor.sleep(4)
         
-        table = lh.selector('table', id='atomicstructure-table')
+        # !!! 
+        # hack
+        table = actor.selenium.lh.selector('table', id='atomicstructure-table')
         structlink = table + '/tbody/tr[1]/td[2]/a'
-        s.waitForElementPresent(structlink)
-        s.click(structlink)
+        actor.selenium.waitForElementPresent(structlink)
+        actor.selenium.click(structlink)
         
-        lh.expandDocument(id = 'atomicstructure-computed-phonons')
+        doc = actor.select(type='document', id = 'atomicstructure-computed-phonons')
+        doc.expand()
         
-        startnew_link = lh.selector('a', id='start-new-phonon-computation-link')
-        s.waitForElementPresent(startnew_link)
-        s.click(startnew_link)
+        startnew_link = actor.select(type='link', id='start-new-phonon-computation-link')
+        startnew_link.click()
         
-        lh.sleep(4)
-        self.assert_(s.get_alert())
+        actor.sleep(4)
+        self.assert_(actor.getAlert())
         
         return
         

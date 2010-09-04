@@ -11,7 +11,7 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
-skip = True
+# skip = True
 
 from luban.testing.selenium.TestCaseBase import TestCaseBase as base, makePySuite
 
@@ -20,28 +20,34 @@ class TestCaseBase(base):
     targetapp = 'vnf'
 
 
+    def initSelenium(self):
+        sele = super(TestCaseBase, self).initSelenium()
+        sele.open(self.appaddress)
+        return sele
+
+
     def test1(self):
         'vnf: login'
-        s = self.selenium
-        
-        s.open(self.appaddress)
-
         from workflows.basic import login
-        login(s)
+        login(self.actor)
         return
 
 
     def test2(self):
         'vnf: filter by description to find bcc Fe*'
-        s = self.selenium
-        
-        s.open(self.appaddress)
+
+        actor = self.actor
 
         from workflows.basic import login, basic_filter
-        login(s)
-        basic_filter(s, table='atomicstructure', key='description', value='bcc Fe*')
+        login(actor)
+        basic_filter(
+            actor, 
+            table='atomicstructure', 
+            key='description', 
+            value='bcc Fe*',
+            )
 
-        s.lh.sleep(3)
+        actor.sleep(3)
         return
 
 

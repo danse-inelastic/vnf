@@ -12,7 +12,7 @@
 #
 
 
-skip = True
+# skip = True
 
 from luban.testing.selenium.TestCaseBase import TestCaseBase as base, makePySuite
 
@@ -21,27 +21,31 @@ class TestCaseBase(base):
     targetapp = 'vnf'
 
 
+    def initSelenium(self):
+        sele = super(TestCaseBase, self).initSelenium()
+        sele.open(self.appaddress)
+        return sele
+
+
     def test3(self):
         'vnf: bug report dialog'
-        s = self.selenium
-        
-        s.open(self.appaddress)
+        actor = self.actor
 
         from workflows.basic import login
-        login(s)
+        login(actor)
 
-        link = s.lh.selector(tag='a', id='surprise-for-bug-report-test')
-        print link
-        s.waitForElementPresent(link)
-        s.click(link)
+        l = actor.select(type='link', id='surprise-for-bug-report-test')
+        l.click()
 
-        ta = s.lh.formfield(id='bug-comment', type='textarea')
-        s.waitForElementPresent(ta)
-        s.type(ta, 'selenium test of bug report')
+        ta = actor.select(type='formtextarea', id='bug-comment')
+        ta.type('selenium test of bug report')
+        actor.sleep(2)
 
+        actor.selenium.focus("//form[@id='bug-submit-form']")
+        submit = actor.select(type='formsubmitbutton', id='bug-submit-button')
+
+        actor.sleep(2)
         
-        submit = s.lh.selector(tag='input', type='submit', name='actor.bug-submit')
-        s.click(submit)
         return
     
 
@@ -54,6 +58,9 @@ def pysuite():
 
 
 def main():
+    from luban.testing.selenium.Selector import debug
+    # debug.activate()
+    
     pytests = pysuite()
     import unittest
     alltests = unittest.TestSuite( (pytests, ) )

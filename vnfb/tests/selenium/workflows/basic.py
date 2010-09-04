@@ -12,30 +12,36 @@
 #
 
 
-def login(s, username='selenium', password='demo'):
-    usernamei = "//div[@id='login-username-input']"
-    passwordi = "//div[@id='login-password-input']"
-    inputsubelem = '/table/tbody/tr/td[1]/input'
-    s.waitForElementPresent(usernamei)
-    s.type(usernamei+inputsubelem, username)
-    s.type(passwordi+inputsubelem, password)
-
-    submit = "//input[@type='submit']"
-    s.click(submit)
-
-    minimize = "//div[@id='minimize-help-button']/a/span"
-    s.waitForElementPresent(minimize)
-    s.click(minimize)
+def login(actor, username='selenium', password='demo'):
+    
+    usernamei = actor.select(type = 'formtextfield', id='login-username-input')
+    passwordi = actor.select(type = 'formtextfield', id='login-password-input')
+    
+    usernamei.type(username)
+    passwordi.type(password)
+    
+    submit = actor.select(type = 'formsubmitbutton', id='login-submitbutton')
+    submit.click()
+    
+    minimize = actor.select(type='button', id='minimize-help-button')
+    minimize.click()
+    
     return
 
 
 
-def basic_filter(s, table, key, value):
-    select = s.lh.formfield(id='%s-table-basic-filter-key' % table, type='select')
-    s.waitForElementPresent(select)
-    s.select(select, key)
-    s.type(s.lh.formfield(id='%s-table-basic-filter-value' % table, type='input'),
-           value)
+def basic_filter(actor, table, key, value):
+    select = actor.select(
+        type='formselectorfield', 
+        id='%s-table-basic-filter-key' % table,
+        )
+    select.select(key)
+
+    filterexpr_input = actor.select(
+        type = 'formtextfield',
+        id = '%s-table-basic-filter-value' % table,
+        )
+    filterexpr_input.type(value)
     return
         
 
