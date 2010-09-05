@@ -12,7 +12,7 @@
 #
 
 
-# skip = True
+skip = True
 
 from luban.testing.selenium.TestCaseBase import TestCaseBase as base, makePySuite
 
@@ -41,10 +41,10 @@ class TestCaseBase(base):
         ta.type('selenium test of bug report')
         actor.sleep(2)
 
-        actor.selenium.focus("//form[@id='bug-submit-form']")
         submit = actor.select(type='formsubmitbutton', id='bug-submit-button')
+        submit.click()
 
-        actor.sleep(2)
+        actor.sleep(3)
         
         return
     
