@@ -411,8 +411,6 @@ class Builder(base):
             'Emin': m.Emin,
             'Emax': m.Emax,
             'nchan': m.nchan,
-            'xwidth': 0,
-            'yheight': 0,
             }
         for k,v in parameters.iteritems():
             opts['%s.%s' % (m.componentname, k)] = v
