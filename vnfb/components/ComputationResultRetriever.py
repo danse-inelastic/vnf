@@ -60,9 +60,9 @@ class ComputationResultRetriever(Component):
                 ]
 
             # send an alert email
-            # from vnfb.utils.communications import announce
-            # announce(director, 'alert-to-vnf-developers',
-            #         message=body, subject=subject)
+            from vnfb.utils.communications import announce
+            announce(director, 'alert-to-vnf-developers',
+                     message=body, subject=subject)
             
             # also send to journal
             error = '\n'.join([subject] + body)
