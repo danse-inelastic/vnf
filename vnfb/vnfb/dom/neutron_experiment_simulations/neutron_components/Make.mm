@@ -35,6 +35,7 @@ EXPORT_PYTHON_MODULES = \
 	DetectorSystem_fromXML.py \
 	EMonitor.py \
 	FermiChopper.py \
+	LMonitor.py \
 	Monitor.py \
 	MonochromaticSource.py \
 	NeutronPlayer.py \
