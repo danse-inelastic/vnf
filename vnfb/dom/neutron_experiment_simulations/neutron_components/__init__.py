@@ -17,6 +17,7 @@ typenames = [
     'neutron_experiment_simulations.neutron_components.ChanneledGuide.ChanneledGuide',
     'neutron_experiment_simulations.neutron_components.DetectorSystem_fromXML.DetectorSystem_fromXML',
     'neutron_experiment_simulations.neutron_components.EMonitor.EMonitor',
+    'neutron_experiment_simulations.neutron_components.LMonitor.LMonitor',
     'neutron_experiment_simulations.neutron_components.FermiChopper.FermiChopper',
     'neutron_experiment_simulations.neutron_components.MonochromaticSource.MonochromaticSource',
     'neutron_experiment_simulations.neutron_components.NeutronPlayer.NeutronPlayer',
