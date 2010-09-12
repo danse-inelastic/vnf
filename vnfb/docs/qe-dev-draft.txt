@@ -91,7 +91,6 @@ Note:
     - Depending on scf (self-consistent) or nscf (non self-consistent) input will be
       generated using different routines: generateInput and generateNscfInput correspondingly 
 
-[PH]
 
 [Q2R]
 
@@ -101,17 +100,10 @@ generate-q2r.default (visual: input-q2r) [form] ->
             generate-q2r.filterInput [redirect] ->
                 sim-view.default
 
-[MATDYN]
+Sequence diagrams for other simulation tasks (PH, MATDYN, DYNMAT, BANDS, DOS, PLOTBAND, etc.)
+can be obtained by raplacing "q2r" to lower cased task label. E.g. for PH
+"generate-q2r" will become "generate-ph".
 
-[DYNMAT]
-
-[BANDS]
-
-[DOS]
-
-[CP]
-
-[PLOTBAND]
 
 
 Filter Parameters

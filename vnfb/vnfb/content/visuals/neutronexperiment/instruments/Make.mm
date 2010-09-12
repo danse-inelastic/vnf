@@ -37,7 +37,6 @@ all: export
 EXPORT_PYTHON_MODULES = \
 	ARCS_beam.py \
 	ARCS_beam_withmonitor2.py \
-	VULCAN.py \
 	__init__.py \
 
 
