@@ -50,6 +50,7 @@ class Builder(base):
         components = configuration.components.dereference(self.db)
         components = [c for n, c in components]
         
+        self._write( 'import mcvine' )
         self._write( 'import mccomponents.pyre_support' )
         self._write( 'from mcni.pyre_support.Instrument import Instrument as base' )
         self._write( 'class Instrument(base):' )
