@@ -1,0 +1,50 @@
+# -*- Python -*-
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                              Alex Dementsov
+#                      California Institute of Technology
+#                        (C) 2010  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+# This is a raw implementation of initdb for lmonitor
+# XXX: Extend later on to "mcvinecomponents"
+
+from pyre.components.Component import Component as base
+
+class Component(base):
+
+
+    def initdb(self):        
+        module  = self._importComponentModule("LMonitor")
+
+        # No foreign key is implied at this moment
+
+        componentFactory = getattr(module, "LMonitor")
+        orm = self.director.clerk.orm
+
+        component   = componentFactory()
+        orm.save(component)
+
+
+    def _importComponentModule(self, name):
+        n = 'neutron_experiment_simulations.neutron_components.%s' % name
+        from vnfb.dom import _import
+        return _import(n)
+
+
+    def __init__(self):
+        base.__init__(self, 'lmonitor', 'initdb')
+        return
+
+
+
+def initdb(): return Component()
+
+__date__ = "$Sep 12, 2010 8:02:52 AM$"
+
+
