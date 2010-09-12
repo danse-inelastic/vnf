@@ -364,6 +364,8 @@ class Builder(base):
         return
 
 
+
+
     def onSphericalPSD(self, m):
         kwds = {
             'name': m.componentname,
@@ -416,6 +418,38 @@ class Builder(base):
             opts['%s.%s' % (m.componentname, k)] = v
             continue
         
+        self.cmdline_opts.update( opts )
+        return
+
+
+    def onLMonitor(self, m):
+        kwds = {
+            'name': m.componentname,
+            'category': 'monitors',
+            'type': 'L_monitor',
+            'supplier': 'mcstas2',
+            }
+        self.onNeutronComponent( **kwds )
+
+        opts = {
+            }
+
+        parameters = {
+            'filename': outputfilename(m),
+            'xmin': m.x_min,
+            'xmax': m.x_max,
+            'ymin': m.y_min,
+            'ymax': m.y_max,
+            'xwidth': m.x_width,
+            'ywidth': m.y_width,
+            'Lmin': m.Lmin,
+            'Lmax': m.Lmax,
+            'nchan': m.nchan,
+            }
+        for k,v in parameters.iteritems():
+            opts['%s.%s' % (m.componentname, k)] = v
+            continue
+
         self.cmdline_opts.update( opts )
         return
 
