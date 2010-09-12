@@ -26,7 +26,7 @@ class LMonitor(base):
         drawer.mold.sequence = [
             'componentname', 'short_description',
             'referencename', 'position', 'orientation',
-            'Emin', 'Emax', 'nchan',
+            'Lmin', 'Lmax', 'nchan',
             'x_min', 'x_max',
             'y_min', 'y_max',
             'x_width', 'y_width',
