@@ -579,6 +579,7 @@ class _ComponentOutputfiles:
         klass = component.__class__.__name__
         if klass in [
             'EMonitor',
+            'LMonitor',
             'QEMonitor',
             'TofMonitor',
             'SphericalPSD',
