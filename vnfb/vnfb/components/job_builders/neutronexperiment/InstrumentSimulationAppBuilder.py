@@ -442,7 +442,7 @@ class Builder(base):
             'ymin': m.y_min,
             'ymax': m.y_max,
             'xwidth': m.x_width,
-            'ywidth': m.y_width,
+            'yheight': m.y_height,
             'Lmin': m.Lmin,
             'Lmax': m.Lmax,
             'nchan': m.nchan,
