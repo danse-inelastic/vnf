@@ -19,7 +19,7 @@ class LMonitor(base):
     Lmax = 10.
     x_min = y_min = -0.1
     x_max = y_max = 0.1
-    x_width = y_width = 0.15
+    x_width = y_height = 0.15
     nchan = 100
 
     def customizeLubanObjectDrawer(self, drawer):
@@ -29,7 +29,7 @@ class LMonitor(base):
             'Lmin', 'Lmax', 'nchan',
             'x_min', 'x_max',
             'y_min', 'y_max',
-            'x_width', 'y_width',
+            'x_width', 'y_height',
             ]
     pass
 
@@ -52,8 +52,8 @@ class Inventory(InvBase):
     y_max.help = 'Upper y bound of detector opening (m) '
     x_width = InvBase.d.float( name = 'x_width', default = 0.15, validator=InvBase.v.positive )
     x_width.help = 'Width/diameter of detector (x). Overrides xmin,xmax. (m) '
-    y_width = InvBase.d.float( name = 'y_width', default = 0.15, validator=InvBase.v.positive )
-    y_width.help = 'Height of detector (y). Overrides ymin,ymax. (m) '
+    y_height = InvBase.d.float( name = 'y_height', default = 0.15, validator=InvBase.v.positive )
+    y_height.help = 'Height of detector (y). Overrides ymin,ymax. (m) '
 
 
     nchan = InvBase.d.int( name = 'nchan', default = 100, validator=InvBase.v.positive)
