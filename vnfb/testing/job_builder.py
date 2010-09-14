@@ -116,6 +116,8 @@ class TestApp(base):
         
 
     def _resetITask(self):
+        itask = None
+
         job = self.job
         db = self.db
         testFacility = self.testFacility
@@ -132,7 +134,8 @@ class TestApp(base):
                 # mark task as failed
                 itask.state = 'failed'
                 db.updateRecord(itask)
-        else:
+
+        if not itask:
             # or create the itask
             itask = ITask()
             itask.id = 'itask-for-job-%s' % job.id
