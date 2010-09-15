@@ -13,6 +13,9 @@
 #
 from AbstractNeutronComponent import AbstractNeutronComponent as base
 class ChanneledGuide(base):
+
+    abstract = False
+    
     w1 = 0.10000000000000001
     h1 = 0.12
     w2 = 0.02

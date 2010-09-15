@@ -13,6 +13,8 @@
 
 
 class AbstractNeutronComponent(object):
+    
+    abstract = True
 
     componentname = 'name'
     position = [0.,0.,0.]

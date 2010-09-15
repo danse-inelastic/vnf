@@ -13,6 +13,9 @@
 #
 from AbstractNeutronComponent import AbstractNeutronComponent as base
 class T0Chopper(base):
+
+    abstract = False
+
     len = 0.0
     w1 = 0.0
     w2 = 0.0

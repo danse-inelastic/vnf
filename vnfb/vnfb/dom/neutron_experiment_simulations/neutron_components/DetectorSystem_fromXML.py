@@ -34,6 +34,8 @@ DetectorSystemHierarchy_fromXMLTable.datafiles = [DetectorSystemHierarchy_fromXM
 from Monitor import Monitor as base
 class DetectorSystem_fromXML(base):
 
+    abstract = False
+
     tofmin = 3000.
     tofmax = 6000.
     ntofbins = 300

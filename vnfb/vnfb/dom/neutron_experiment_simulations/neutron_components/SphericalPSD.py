@@ -15,6 +15,8 @@
 from Monitor import Monitor as base
 class SphericalPSD(base):
 
+    abstract = False
+
     radius = 3.
     ncolumns = 100
     nrows = 100

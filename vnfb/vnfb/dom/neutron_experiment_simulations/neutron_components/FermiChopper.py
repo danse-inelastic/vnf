@@ -13,6 +13,9 @@
 #
 from AbstractNeutronComponent import AbstractNeutronComponent as base
 class FermiChopper(base):
+
+    abstract = False
+
     len = 0.10000000000000001
     w = 0.059999999999999998
     nu = 600.0
