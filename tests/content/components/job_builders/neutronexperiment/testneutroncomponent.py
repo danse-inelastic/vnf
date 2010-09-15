@@ -160,9 +160,13 @@ def main():
     return
 if __name__ == '__main__': main()
     ''' % (comp.__module__, comp.__name__, comp.__name__)
-    filename = '%s_TestCase.py' % comp.__name__
+    filename = getTestCasePyFilename(comp)
     open(filename, 'w').write(code)
     return filename
+
+
+def getTestCasePyFilename(comp):
+    return '%s_TestCase.py' % comp.__name__
 
 
 
@@ -188,6 +192,10 @@ def createTestCasePyFiles():
     comps = findComponents()
     return map(createTestCasePy, [c for c in comps if c not in skipComponents()])
 
+def getTestCasePyFiles():
+    from vnfb.dom.neutron_experiment_simulations.neutron_components import findComponents
+    comps = findComponents()
+    return map(getTestCasePyFilename, [c for c in comps if c not in skipComponents()])
 
 
 def runTestCases(files):
@@ -209,9 +217,14 @@ class App(Script):
         import pyre.inventory
         component = pyre.inventory.str('component')
         all = pyre.inventory.bool('all')
+        clean = pyre.inventory.bool('clean')
 
     
     def main(self):
+        if self.inventory.clean:
+            self.clean()
+            return
+
         if self.inventory.all:
             files = createTestCasePyFiles()
         else:
@@ -225,6 +238,16 @@ class App(Script):
             files = [file]
         
         runTestCases(files)
+        return
+
+    
+    def clean(self):
+        files = getTestCasePyFiles()
+        import os
+        for f in files:
+            if os.path.exists(f):
+                os.remove(f)
+            continue
         return
 
 
