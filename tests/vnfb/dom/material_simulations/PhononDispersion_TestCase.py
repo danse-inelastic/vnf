@@ -20,7 +20,10 @@ class TestCase(unittest.TestCase):
         
         from vnfb.dom.material_simulations.Phonons import Phonons
         from mccomponents.sample.idf import readDispersion
+        import os
         datadir = '../../../../content/data/phonons/bvk-fccAgAt293-N20-df0.2'
+        if os.path.exists(os.path.join(datadir, 'data.idf')):
+            datadir = os.path.join(datadir, 'data.idf')
         nAtoms, dimension, Qaxes, polarizations, energies, dos = readDispersion(datadir)
         disp = Phonons(
             nAtoms = nAtoms,
