@@ -14,6 +14,7 @@ PROJECT = vnfb
 PACKAGE = tests
 
 RECURSE_DIRS = \
+	content \
 
 EXPORT_DATADIRS = \
 	vnfb \
@@ -49,7 +50,7 @@ EXPORT_DATA_PATH = $(EXPORT_ROOT)/$(PROJECT)/$(PACKAGE)
 export-package-data:: export-package-datadirs export-package-datafiles
 
 
-export-package-datadirs:: $(EXPORT_DATADIRS) 
+export-package-datadirs:: $(EXPORT_DATADIRS) tidy
 	mkdir -p $(EXPORT_DATA_PATH); \
 	for x in $(EXPORT_DATADIRS); do { \
             if [ -d $$x ]; then { \
