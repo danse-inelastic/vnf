@@ -73,7 +73,7 @@ import unittest
 class TestCase(unittest.TestCase):
 
     def test(self):
-        app = TestApp('test')
+        app = TestApp('main')
         app.run(self)
         return
     
