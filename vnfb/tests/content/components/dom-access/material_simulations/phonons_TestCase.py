@@ -22,7 +22,7 @@ Test assumes that
 '''
 
 # phonons id.
-phononsid = "8XHEBPN" 
+phononsid = "bvk-fccAgAt293-N20-df0.2"
 
 
 
