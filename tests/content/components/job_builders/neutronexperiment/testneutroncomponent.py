@@ -54,6 +54,7 @@ def createTestApp(Component):
             source = MonochromaticSource()
             source.componentname = 'source'
             source.energy = 70
+            ic.components.append(source)
 
             # component to test
             comp2 = Component()
@@ -81,7 +82,7 @@ def createTestApp(Component):
             from vnfb.dom.Job import Job
             job = Job()
             job.id = self.getGUID()
-            job.short_description = 'job for testing the arcs detector system'
+            job.short_description = 'job for test experiment for job builder of component %s' % Component.__name__
             job.server = server
             job.computation = exprecord
             job.creator = 'demo'
@@ -110,6 +111,85 @@ def createTestCase(Component):
 
     return TestCase
 
+
+def createTestCasePy(comp):
+    'comp: component class'
+    code = '''
+standalone = True
+from testneutroncomponent import createTestCase
+from %s import %s
+TestCase = createTestCase(%s)
+def main():
+    import unittest
+    unittest.main()
+    return
+if __name__ == '__main__': main()
+    ''' % (comp.__module__, comp.__name__, comp.__name__)
+    filename = '%s_TestCase.py' % comp.__name__
+    open(filename, 'w').write(code)
+    return filename
+
+
+
+def skipComponents():
+    from vnfb.dom.neutron_experiment_simulations.neutron_components.DetectorSystem_fromXML import DetectorSystem_fromXML
+    from vnfb.dom.neutron_experiment_simulations.neutron_components.SNSModerator import SNSModerator
+    from vnfb.dom.neutron_experiment_simulations.neutron_components.NeutronPlayer import NeutronPlayer
+    from vnfb.dom.neutron_experiment_simulations.neutron_components.PlaceHolder import PlaceHolder
+    from vnfb.dom.neutron_experiment_simulations.neutron_components.VanadiumPlate import VanadiumPlate
+    from vnfb.dom.neutron_experiment_simulations.neutron_components.QMonitor import QMonitor
+    return [
+        DetectorSystem_fromXML,
+        SNSModerator,
+        NeutronPlayer,
+        PlaceHolder,
+        QMonitor
+        ]
+
+
+def createTestCasePyFiles():
+    from vnfb.dom.neutron_experiment_simulations.neutron_components import findComponents
+    comps = findComponents()
+    return map(createTestCasePy, [c for c in comps if c not in skipComponents()])
+
+
+from pyre.applications.Script import Script
+class App(Script):
+
+    class Inventory(Script.Inventory):
+        
+        import pyre.inventory
+        component = pyre.inventory.str('component')
+        all = pyre.inventory.bool('all')
+
+    
+    def main(self):
+        if self.inventory.all:
+            files = createTestCasePyFiles()
+        else:
+            component = self.inventory.component
+            if not component:
+                raise RuntimeError, 'component type is not specified'
+            m = 'vnfb.dom.neutron_experiment_simulations.neutron_components.%s' % component
+            m = __import__(m, {}, {}, [''])
+            C = getattr(m, component)
+            file = createTestCasePy(C)
+            files = [file]
+
+        import os
+        for f in files:
+            cmd = 'python %s' % f
+            if os.system(cmd):
+                raise RuntimeError, "%s failed" % f
+            continue
+        return
+
+def main():
+    app = App('test')
+    app.run()
+    return
+
+if __name__ == '__main__': main()
 
 # version
 __id__ = "$Id$"
