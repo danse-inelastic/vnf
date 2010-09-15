@@ -1,0 +1,12 @@
+Run individual test:
+
+ $ python testneutroncomponent.py --component=<name>
+
+e.g.
+
+ $ python testneutroncomponent.py --component=EMonitor
+
+
+Run tests for all components
+
+ $ python testneutroncomponent.py --all
