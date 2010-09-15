@@ -12,7 +12,9 @@
 #
 
 
-# application
+# application to test a job builder
+
+
 from TestAppBase import Application as base
 class TestApp(base):
 
@@ -138,7 +140,12 @@ class TestApp(base):
         if not itask:
             # or create the itask
             itask = ITask()
-            itask.id = 'itask-for-job-%s' % job.id
+            # use a readable id if possible
+            itaskid = 'itask-for-job-%s' % job.id
+            # otherwise create using guid generator
+            if len(itaskid) > ITask.id.length:
+                itaskid = self.getGUID()
+            itask.id = itaskid
             itask.beneficiary = job
             db.insertRow(itask)
         return itask
