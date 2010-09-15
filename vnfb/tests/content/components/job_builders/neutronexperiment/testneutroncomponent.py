@@ -30,11 +30,33 @@ def createTestApp(Component):
 
 
         def main(self, testFacility):
-            computation = self.createExp()
+            # get the test experiment
+            computation = self.getExp()
+            #
             return base.main(self, computation, testFacility)
 
 
-        def createExp(self):
+        def getExp(self):
+            director = self
+            domaccess = self.retrieveDOMAccessor('experiment')
+            orm = domaccess.orm
+            db = orm.db
+            
+            # see if the experiment is already in db
+            expid = 'testjobbuilder-component-%s' % Component.__name__
+            from vnfb.dom.neutron_experiment_simulations.NeutronExperiment import NeutronExperimentTable
+            exps = db.query(NeutronExperimentTable).filter_by(id=expid).all()
+
+            if not exps:
+                # no test experiment for this component yet, create a new experiment
+                exp = self.createExp(expid, db)
+            else:
+                if len(exps)>1: raise RuntimeError, 'should not happen: more than one exps'
+                exp = exps[0]
+            return exp
+
+
+        def createExp(self, expid, db):
             director = self
             domaccess = self.retrieveDOMAccessor('experiment')
             orm = domaccess.orm
@@ -70,26 +92,39 @@ def createTestApp(Component):
             exp.ncount = 10
             exp.buffer_size = 10
             exp.short_description = 'experiment for testing job builder of component %s' % Component.__name__
-            orm.save(exp, save_not_owned_referred_object=0)
+            orm.save(exp, save_not_owned_referred_object=0, id=expid)
             exprecord = orm(exp)
             
-            #
-            # server
-            serveraccess = director.retrieveDOMAccessor('server')
-            server = serveraccess.getServerRecord('server000')
-
             # job
+            jobid = 'testjobbuilder-neutroncomponent-%s' % Component.__name__
+            from vnfb.dom.Job import Job
+            jobs = orm.db.query(Job).filter_by(id=jobid).all()
+            if not jobs:
+                job = self.createJob(jobid, exprecord, orm.db)
+            else:
+                if len(jobs)>1: raise RuntimeError, 'should not happen: more than one jobs'
+                job = jobs[0]
+                job.computation = exprecord
+                orm.db.updateRecord(job)
+                
+            return exprecord
+
+        
+        def createJob(self, id, exprecord, db):
+            # server
+            serveraccess = self.retrieveDOMAccessor('server')
+            server = serveraccess.getServerRecord('server000')
+            
             from vnfb.dom.Job import Job
             job = Job()
-            job.id = self.getGUID()
+            job.id = id
             job.short_description = 'job for test experiment for job builder of component %s' % Component.__name__
             job.server = server
             job.computation = exprecord
             job.creator = 'demo'
-            orm.db.insertRow(job)
-
-            return exprecord
-        
+            db.insertRow(job)
+            return
+            
 
         def _checkJobDir(self):
             return
@@ -143,6 +178,7 @@ def skipComponents():
         SNSModerator,
         NeutronPlayer,
         PlaceHolder,
+        VanadiumPlate,
         QMonitor
         ]
 
@@ -151,6 +187,18 @@ def createTestCasePyFiles():
     from vnfb.dom.neutron_experiment_simulations.neutron_components import findComponents
     comps = findComponents()
     return map(createTestCasePy, [c for c in comps if c not in skipComponents()])
+
+
+
+def runTestCases(files):
+    import os
+    for f in files:
+        print 'running test %s' % f
+        cmd = 'python %s' % f
+        if os.system(cmd):
+            raise RuntimeError, "%s failed" % f
+        continue
+    return
 
 
 from pyre.applications.Script import Script
@@ -175,14 +223,10 @@ class App(Script):
             C = getattr(m, component)
             file = createTestCasePy(C)
             files = [file]
-
-        import os
-        for f in files:
-            cmd = 'python %s' % f
-            if os.system(cmd):
-                raise RuntimeError, "%s failed" % f
-            continue
+        
+        runTestCases(files)
         return
+
 
 def main():
     app = App('test')
