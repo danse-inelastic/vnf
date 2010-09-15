@@ -12,6 +12,7 @@ Contents:
    DeveloperGuide-Tests
    DeveloperGuide-AccessControl
    DeveloperGuide-Utilities
+   DeveloperGuide-NeutronExperimentSimulation
    DeveloperGuide-VolunteersNeeded
 
 ..   discussion
