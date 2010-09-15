@@ -14,13 +14,8 @@
 
 
 # application
-from luban.applications.UIApp import UIApp as base
+from vnfb.testing.TestAppBase import Application as base
 class TestApp(base):
-
-
-    class Inventory(base.Inventory):
-
-        import pyre.inventory
 
 
     def main(self, testFacility, *args, **kwds):
@@ -72,23 +67,6 @@ class TestApp(base):
         tf.assertEqual(StructureTable, structuretable)
         AbstractOwnedObjectBase.creator
         return
-
-
-    def _defaults(self):
-        super(TestApp, self)._defaults()
-        from vnfb.components.AppExtension import AppExtension
-        self.inventory.extension = AppExtension('app-extension')
-        from vnfb.components.Clerk import Clerk
-        self.inventory.clerk = Clerk()
-        return
-
-
-    def _getPrivateDepositoryLocations(self):
-        from vnfb import deployment
-        print deployment.pyre_depositories
-        return deployment.pyre_depositories
-
-
 
 
 import unittest
