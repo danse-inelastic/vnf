@@ -25,6 +25,7 @@ initializers = [
     'features',
     'bvkmodels',
     'bvk_getphonons',
+    'phonons',
     'sqe',
     'vanadiumplates',
     'snsmoderatormcsimulateddata',
