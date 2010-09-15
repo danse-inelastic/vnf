@@ -4,7 +4,7 @@ from AbstractNeutronComponent import AbstractNeutronComponent as base, NeutronCo
 class Monitor(base):
 
     category = 'monitors'
-
+    
     pass # end of Monitor
 
 

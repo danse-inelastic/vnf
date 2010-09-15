@@ -15,6 +15,8 @@
 from SampleBase import SampleBase as base, TableBase
 class VanadiumPlate(base):
     
+    abstract = False
+
     width = 0.05; height = 0.10; thickness = 0.002
 
     target_radius = 0

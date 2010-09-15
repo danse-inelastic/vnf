@@ -18,6 +18,8 @@
 from AbstractNeutronComponent import AbstractNeutronComponent as base
 class PlaceHolder(base):
 
+    abstract = False
+
     pass
 
 

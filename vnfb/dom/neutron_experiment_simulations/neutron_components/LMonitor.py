@@ -15,6 +15,8 @@
 from Monitor import Monitor as base
 class LMonitor(base):
 
+    abstract = False
+
     Lmin = 2.
     Lmax = 10.
     x_min = y_min = -0.1

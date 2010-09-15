@@ -15,6 +15,8 @@
 from AbstractNeutronComponent import AbstractNeutronComponent as base
 class NeutronPlayer(base):
 
+    abstract = False
+
     neutrons = None
     
     def customizeLubanObjectDrawer(self, drawer):

@@ -15,6 +15,8 @@
 from AbstractNeutronComponent import AbstractNeutronComponent as base
 class MonochromaticSource(base):
 
+    abstract = False
+
     energy = 70.
     
     def customizeLubanObjectDrawer(self, drawer):

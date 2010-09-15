@@ -15,6 +15,7 @@
 from Monitor import Monitor as base, MonitorTableBase as TableBase
 class NeutronRecorder(base):
 
+    abstract = False
     
     def customizeLubanObjectDrawer(self, drawer):
         drawer.mold.sequence = [

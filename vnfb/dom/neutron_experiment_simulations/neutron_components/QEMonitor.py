@@ -13,6 +13,9 @@
 #
 from Monitor import Monitor as base
 class QEMonitor(base):
+
+    abstract = False
+
     Ei = 60.0
     Qmin = 0.0
     Qmax = 10.0
