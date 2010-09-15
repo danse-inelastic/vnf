@@ -204,7 +204,19 @@ def runTestCases(files):
         print 'running test %s' % f
         cmd = 'python %s' % f
         if os.system(cmd):
+            cleanTestCases()
             raise RuntimeError, "%s failed" % f
+        continue
+    cleanTestCases()
+    return
+
+
+def cleanTestCases():
+    files = getTestCasePyFiles()
+    import os
+    for f in files:
+        if os.path.exists(f):
+            os.remove(f)
         continue
     return
 
@@ -242,12 +254,7 @@ class App(Script):
 
     
     def clean(self):
-        files = getTestCasePyFiles()
-        import os
-        for f in files:
-            if os.path.exists(f):
-                os.remove(f)
-            continue
+        cleanTestCases()
         return
 
 

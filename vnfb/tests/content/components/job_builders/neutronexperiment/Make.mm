@@ -26,7 +26,7 @@ RECURSE_DIRS = $(BUILD_DIRS) $(OTHER_DIRS)
 #--------------------------------------------------------------------------
 #
 
-all: test
+all: 
 	BLD_ACTION="all" $(MM) recurse
 
 tidy:: clean-component-testcases
