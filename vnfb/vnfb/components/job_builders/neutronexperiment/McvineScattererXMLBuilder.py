@@ -85,6 +85,16 @@ class Builder(JobBuilder, XMLMill):
         return
 
 
+    def onIsotropicElasticKernel(self, kernel):
+        attrs = {
+            }
+
+        self._write( '<IsotropicKernel %s>' %
+                     attribs_str( attrs ) )
+        self._write( '</IsotropicKernel>' )
+        return 
+
+
     def onSQEKernel(self, kernel):
         attrs = {
             'Q-range': '%s*angstrom**-1,%s*angstrom**-1' % (kernel.Qmin, kernel.Qmax),

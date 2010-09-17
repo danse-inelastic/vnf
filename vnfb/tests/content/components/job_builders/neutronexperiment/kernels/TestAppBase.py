@@ -87,7 +87,7 @@ class TestAppBase(base):
         matter = orm.record2object(struct)
         scatterer.matter = matter
         # create a kernel
-        kernel = self.getKernel()
+        kernel = self.getKernel(); kernel.matter = matter
         scatterer.kernels = [kernel]
 
         # experiment

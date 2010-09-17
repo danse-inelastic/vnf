@@ -66,7 +66,7 @@ class Builder(ShapeRenderer, XMLMill):
 
         # calculate absolute coordinates of scatterers
         from vnfb.utils.neutron_experiment_simulations.geometry \
-             import calculateComponentAbsoluteCoordinates
+             import calculateComponentAbsoluteCoordinates, toangles
         calculateComponentAbsoluteCoordinates(
             scatterers, 
             getname = lambda s: s.scatterername
@@ -83,8 +83,8 @@ class Builder(ShapeRenderer, XMLMill):
             name = scatterer.short_description.replace( ' ', '_' )
             attrs = {
                 'name': name,
-                'position': scatterer.position,
-                'orientation': scatterer.orientation,
+                'position': tuple(scatterer.position),
+                'orientation': tuple(toangles(scatterer.orientation)),
                 }
             self._write( '<Register %s/>' % attribs_str( attrs ) )
             continue

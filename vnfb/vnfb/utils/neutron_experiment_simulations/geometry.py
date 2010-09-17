@@ -77,35 +77,21 @@ def calculateAbsoluteCoordinates(relative_coordinates):
     The whole set of relative_coordinates specification must be complete enough
     to resolve the absolute coordinates of all elements.
     '''
-    class _solver:
-
-        def __init__(self):
-            # container of absolte coords
-            self.result = {}
-            return
-
-        def solve(self, relative_coordinates):
-            self.relative_coordinates = relative_coordinates
-            for element in relative_coordinates:
-                if element in self.result:
-                    continue
-                self.result[element] = self._resolve(element)
-                continue
-            return self.result
-
-        def _resolve(self, element):
-            reference, position, orientation = self.relative_coordinates[element]
-            orientation = tomatrix(orientation)
-            if not reference:
-                self.result[element] = position, orientation
-                return position, orientation
-            refabspos, refabsorientation = self._resolve(reference)
-            abspos = refabspos + np.dot(refabsorientation.T, position)
-            absorientation = np.dot(orientation, refabsorientation)
-            r = self.result[element] = abspos, absorientation
-            return r
-        
-    return _solver().solve(relative_coordinates)
+    from mcni.Geometer2 import Geometer, RelativeCoord as rel, AbsoluteCoord as abs
+    geometer = Geometer()
+    
+    for element in relative_coordinates:
+        reference, position, orientation = relative_coordinates[element]
+        if reference:
+            geometer.register(element, rel(position, reference), rel(orientation, reference))
+        else:
+            geometer.register(element, abs(position), abs(orientation))
+        continue
+    
+    d = {}
+    for element in relative_coordinates:
+        d[element] = geometer.position(element), geometer.orientation(element)
+    return d
 
 
 
