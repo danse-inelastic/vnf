@@ -17,7 +17,6 @@ PACKAGE = tests
 # directory structure
 
 BUILD_DIRS = \
-	kernels \
 
 OTHER_DIRS = \
 
@@ -30,12 +29,8 @@ RECURSE_DIRS = $(BUILD_DIRS) $(OTHER_DIRS)
 all: 
 	BLD_ACTION="all" $(MM) recurse
 
-tidy:: clean-component-testcases
+tidy::
 	BLD_ACTION="tidy" $(MM) recurse
-
-
-clean-component-testcases:
-	python testneutroncomponent.py -clean
 
 
 # version
