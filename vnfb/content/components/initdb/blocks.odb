@@ -1,0 +1,56 @@
+#!/usr/bin/env python
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                Jiao Lin
+#                      California Institute of Technology
+#                        (C) 2008  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+from pyre.components.Component import Component as base
+
+
+class Component(base):
+
+
+    def initdb(self):
+        director = self.director
+        db = director.clerk.db
+        for b in blocks:
+            db.insertRow(b)
+            continue
+        return
+
+
+    def __init__(self):
+        base.__init__(self, 'blocks', 'initdb')
+        return
+    
+
+    
+from vnfb.dom.geometry.Block import BlockTable as Block
+def block(id, width, height, thickness):
+    r = Block()
+    r.id = id
+    r.width = width
+    r.thickness = thickness
+    r.height = height
+    return r
+
+
+blocks = [
+    block( 'default-sample-plate-1', 0.1, 0.12, 0.01),
+    ]
+
+def initdb(): return Component()
+    
+    
+# version
+__id__ = "$Id$"
+
+# End of file 
