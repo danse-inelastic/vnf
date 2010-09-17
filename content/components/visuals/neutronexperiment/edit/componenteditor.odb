@@ -117,7 +117,7 @@ class Factory(object):
 
 
     def _getComponentTypeNames(self):
-        from vnfb.dom.neutron_experiment_simulations.neutroncomponent_types import typenames
+        from vnfb.dom.neutron_experiment_simulations.neutron_components import typenames
         from vnfb.dom.neutron_experiment_simulations.neutron_components.SampleBase import TableBase
         from vnfb.dom.neutron_experiment_simulations.neutron_components.SampleComponent import SampleComponentTable
         domaccess = self.domaccess
