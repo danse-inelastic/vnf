@@ -12,6 +12,9 @@
 #
 
 
+standalone = True
+
+
 from TestCaseBase import createTestCase, TestAppBase
 
 class TestApp(TestAppBase):
