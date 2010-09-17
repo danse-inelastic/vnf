@@ -19,11 +19,11 @@ from AbstractScatteringKernel import AbstractScatteringKernel as base, TableBase
 
 class IsotropicElasticKernel(base):
 
-    scattering_length = 1.0
+    # scattering_length = 1.0
 
     def customizeLubanObjectDrawer(self, drawer):
         drawer.sequence = ['properties']
-        drawer.mold.sequence = ['scattering_length']
+        # drawer.mold.sequence = ['scattering_length']
         return
     
     pass 
@@ -33,7 +33,7 @@ class IsotropicElasticKernel(base):
 InvBase = base.Inventory
 class Inventory(InvBase):
 
-    scattering_length = InvBase.d.float(name = 'scattering_length', default = 1.)
+    # scattering_length = InvBase.d.float(name = 'scattering_length', default = 1.)
     
     dbtablename = 'isotropicelastickernels'
     
