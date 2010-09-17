@@ -18,9 +18,30 @@ class TestApp(TestAppBase):
     
     from vnfb.dom.scattering_kernels.ins.PolyXtalCoherentPhononScatteringKernel import PolyXtalCoherentPhononScatteringKernel as Kernel
 
+
+    kernelid = 'bvk-bccFeAt295-N40-df0.2-testjobbuilder'
     def getKernel(self):
         orm = self.clerk.orm
-        return orm.load(self.Kernel, id='bvk-bccFeAt295-N40-df0.2-example1')
+        db = orm.db
+        KernelTable = orm(self.Kernel)
+        ks = db.query(KernelTable).filter_by(id=self.kernelid).all()
+        if not ks:
+            return self.createKernel()
+        return orm.record2object(ks[0])
+
+
+    def createKernel(self):
+        orm = self.clerk.orm
+        db = orm.db
+        KernelTable = orm(self.Kernel)
+        r = KernelTable()
+        r.id = self.kernelid
+        r.Ei = 70
+        r.phonons = 'bvk-bccFeAt295-N40-df0.2'
+        r.max_energy_transfer = 55
+        r.max_momentum_transfer = 12.5
+        db.insertRow(r)
+        return orm.record2object(r)
 
 
 TestCase = createTestCase(TestApp)

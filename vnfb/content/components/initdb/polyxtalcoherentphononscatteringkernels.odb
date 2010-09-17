@@ -25,30 +25,8 @@ class Component(base):
 
     def initdb(self):
         db = self.director.clerk.db
-        for r in records:
-            db.insertRow(r)
         return
 
-
-from vnfb.dom.scattering_kernels.ins.PolyXtalCoherentPhononScatteringKernel import PolyXtalCoherentPhononScatteringKernelTable as Kernel
-def k(id, phonons, Ei, max_energy_transfer, max_momentum_transfer):
-    r = Kernel()
-    r.id = id
-    r.Ei = Ei
-    r.phonons = phonons
-    r.max_energy_transfer = max_energy_transfer
-    r.max_momentum_transfer = max_momentum_transfer
-    return r
-
-
-records = [
-    k('bvk-bccFeAt295-N40-df0.2-example1',
-      'bvk-bccFeAt295-N40-df0.2',
-      70.,
-      55.,
-      12.5,
-      ),
-    ]
 
 def initdb(): return Component('initdb-polyxtalcoherentphononscatteringkernels', 'initdb')
 
