@@ -60,7 +60,7 @@ class Builder:
 
 
     def _onSampleAssembly(self, sampleassembly):
-        db = self.db; dds = self.dds
+        orm = self.orm; db = self.db; dds = self.dds
         self.dependencies = []
         self.filenames = []
         
@@ -69,7 +69,7 @@ class Builder:
         filename = self.sampleassemblyxmlfilename
         filepath = self._path(filename)
         builder = Builder(filepath)
-        builder.render(sampleassembly, db=db, dds=dds)
+        builder.render(sampleassembly, db=db, dds=dds, orm=orm)
         self.filenames.append(filename)
         self.filenames += builder.getFilenames()
         del builder

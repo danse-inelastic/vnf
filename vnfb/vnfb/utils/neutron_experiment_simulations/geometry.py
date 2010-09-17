@@ -115,20 +115,28 @@ I = numpy.array(
      [0,1,0],
      [0,0,1],
      ])
-def calculateComponentAbsoluteCoordinates(components):
+def calculateComponentAbsoluteCoordinates(components, getname=None):
     """calculate the absolute coordinates of all components.
 
     The given components might have relative coords. This method
     calculates the absolute coordinates and assign that back to
     the components.
 
-    All components must be instances of vnfb.dom.neutron_experiment_simulations.AbstractNeutronComponent
+    All components must be instances of vnfb.dom.neutron_experiment_simulations.AbstractNeutronComponent or vnfb.dom.neutron_experiment_simulations.Scatterer
+
+    getname: method to get name attribute of a component.
+        when the components are instances of AbstractNeutronComponent, use default
+        when the components are scatterers (instances of Scatterer), use a method to return scatterer.scatterername
     """
+    if not getname:
+        getname = lambda c: c.componentname
+
     # prepare to call calculateAbsoluteCoordinates
     componentdict = {}
     relative_coords = {}
     for c in components:
-        componentdict[c.componentname] = c
+        name = getname(c)
+        componentdict[name] = c
         
         # c is a db record. c.position and c.orientation both could be None
         pos = c.position
@@ -137,7 +145,7 @@ def calculateComponentAbsoluteCoordinates(components):
         if ori is None: ori = I
 
         #
-        relative_coords[c.componentname] = c.referencename, pos, ori
+        relative_coords[name] = c.referencename, pos, ori
         continue
 
     # call calculateAbsoluteCoordinates
