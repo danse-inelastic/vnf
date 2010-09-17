@@ -67,7 +67,10 @@ class Builder(ShapeRenderer, XMLMill):
         # calculate absolute coordinates of scatterers
         from vnfb.utils.neutron_experiment_simulations.geometry \
              import calculateComponentAbsoluteCoordinates
-        calculateComponentAbsoluteCoordinates(scatterers)
+        calculateComponentAbsoluteCoordinates(
+            scatterers, 
+            getname = lambda s: s.scatterername
+            )
         
         for scatterer in scatterers:
             self.dispatch( scatterer )

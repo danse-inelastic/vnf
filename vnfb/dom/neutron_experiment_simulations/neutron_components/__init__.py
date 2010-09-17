@@ -38,8 +38,13 @@ def findComponents(package='vnfb.dom.neutron_experiment_simulations.neutron_comp
     return comps
 
 
-typenames = ['%s.%s' % (kls.__module__, kls.__name__) 
-             for kls in findComponents()]
+
+def _typename(kls):
+    pre = '.'.join(kls.__module__.split('.')[2:])
+    post = kls.__name__
+    return '%s.%s' % (pre, post)
+typenames = [_typename(kls) for kls in findComponents()]
+
 
 '''
 obsolete:
