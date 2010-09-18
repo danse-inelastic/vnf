@@ -144,6 +144,17 @@ class Builder(ShapeRenderer, XMLMill):
         return
 
 
+    def onCylinder(self, cylinder):
+        # the cylinder here is actually called hollowcylinder in instrument package
+        # convert to "HollowCylinder" that instrument xml renderer recognizes
+        class HollowCylinder: pass
+        hc = HollowCylinder()
+        hc.in_radius = cylinder.innerradius
+        hc.out_radius = cylinder.outerradius
+        hc.height = cylinder.height
+        return self.onHollowCylinder(hc)
+    
+
     def _preElement(self, element, attributes):
         self._write( '' )
         t = element.__class__.__name__
