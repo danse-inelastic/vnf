@@ -25,14 +25,24 @@ class Component(base):
 
 
     def initdb(self):
-        from vnfb.dom.material_simulations.SQE import SQETable
-        r = SQETable()
-        r.id = 'test-netcdf'
-
         db = self.director.clerk.db
-        db.insertRow(r)
-        
+        create('test-netcdf', db=db)
+        create('histogram-example', matter_description='%bcc Fe at 295%', db=db)
         return
+
+
+from vnfb.dom.material_simulations.SQE import SQETable
+from vnfb.dom.AtomicStructure import StructureTable
+def create(id, matter_description=None, creator=None, db=None):
+    r = SQETable()
+    r.id = id
+    if matter_description:
+        r.matter = db.query(StructureTable)\
+            .filter("short_description like '%s'" % matter_description).all()[0]
+    if creator is None: creator = 'vnf'
+    r.creator = creator
+    db.insertRow(r)
+    return
 
 
 def initdb(): return Component('initdb-sqe', 'initdb')
