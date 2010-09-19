@@ -35,6 +35,8 @@ class Accessor(base):
 
 
 
+import journal
+debug = journal.debug('sqe-accessor')
 from vnfb.dom.material_simulations.SQE import SQE, SQETable
 
 
@@ -57,19 +59,23 @@ def read(sqe, director):
             return
         sqe.read(ncPath)
     except Exception, err:
-        print err
+        debug.log(err)
         # histogram
         histfile = SQETable.histogramh5
         if not dds.is_available(record, files=[histfile]):
             dds.make_available(record, files=[histfile])
         if not os.path.exists(dds.abspath(record, histfile)):
             return
+        histpath = dds.abspath(record, histfile)
         from histogram.hdf import load, utils
-        entry = utils.getOnlyEntry(histfile)
-        h = hh.load(histfile, entry)
+        try:
+            entry = utils.getOnlyEntry(histpath)
+        except:
+            entry = 'S(Q,E)'
+        h = load(histpath, entry)
         import numpy as npy
-        sqe.q = npy.array(h.axes[0].binCenters())
-        sqe.e = npy.array(h.axes[1].binCenters())
+        sqe.q = npy.array(h.axes()[0].binCenters())
+        sqe.e = npy.array(h.axes()[1].binCenters())
         sqe.sqe = h.I     
 #    else: # i think this third use case is for scripting so it doesn't belong here
 #        p = os.path.join(dir, ncfile)

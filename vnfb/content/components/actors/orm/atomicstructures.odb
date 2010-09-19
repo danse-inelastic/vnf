@@ -90,7 +90,8 @@ class Actor(base):
             entries = []
             
         entries += [(db.getUniqueIdentifierStr(sqe),
-                     sqe.short_description or sqe.id)
+                     #sqe.short_description or sqe.id)
+                     sqe.id)
                     for sqe in sqes]
         self.inventory.include_credential = 0
         return entries
