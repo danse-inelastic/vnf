@@ -54,6 +54,8 @@ class Actor(base):
         sqe = self._load(director)
         domaccess = self._domaccess(director)
         #import matplotlib first and declare the backend
+        # matplotlib needs home to be writable
+        os.environ['HOME'] = tmphome = tempfile.mkdtemp()
         import matplotlib
         matplotlib.use('Agg')
         sqe = domaccess.getData(sqe) 
@@ -99,6 +101,7 @@ class Actor(base):
         pngurl = os.path.join(http_tmproot, subdir, filename)
         imageDoc = lc.htmldocument(id='imageDoc')
         imageDoc.text = ['<img src="%s" />' % pngurl]
+        import shutil; shutil.rmtree(tmphome)
         return imageDoc
 
     def _domaccess(self, director):

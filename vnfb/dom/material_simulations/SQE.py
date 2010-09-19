@@ -27,8 +27,8 @@ SQETable.addColumn(
 SQETable.histogramh5 = 'data.h5'
 SQETable.ncfile = 'data.nc'
 SQETable.datafiles = [
-    # SQETable.histogramh5
-    # SQETable.ncfile
+    SQETable.histogramh5,
+    SQETable.ncfile,
     ]
 
 
