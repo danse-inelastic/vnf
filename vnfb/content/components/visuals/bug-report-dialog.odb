@@ -45,7 +45,7 @@ def visual(id=None, info=None, director=None):
     traceback.text = tbtext.splitlines()
     # traceback.text=['<pre>'+info['traceback']+'</pre>']
 
-    form = body.form(title="Bug #%s" % id)
+    form = body.form(title="Bug #%s" % id, id='bug-submit-form')
     form.Class='bug-report-form'
     
     form.textarea(
@@ -56,7 +56,7 @@ def visual(id=None, info=None, director=None):
         )
     # okbutton = lc.button(label='ok', onclick=lc.select(element=visual).destroy())
     # visual.add(okbutton)
-    form.submitbutton(label='Submit', name='bug-submit')
+    form.submitbutton(label='Submit', id='bug-submit-button', name='bug-submit')
     import urllib;  tbtext = urllib.quote(tbtext)
     form.onsubmit = select(element=form).submit(
         actor='bug-report', routine='process', traceback=tbtext, id=id)
