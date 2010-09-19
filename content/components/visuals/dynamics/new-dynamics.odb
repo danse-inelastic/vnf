@@ -1,0 +1,84 @@
+#!/usr/bin/env python
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                     California Institute of Technology
+#                       (C) 2009  All Rights Reserved
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+# a simple form to create a atomic structure
+# it collaborates with actor atomicstructure/create-structure-form
+
+
+from luban.content import load, select, alert
+import luban.content as lc
+
+from luban.content.FormTextField import FormTextField
+from luban.content.FormSelectorField import FormSelectorField
+from luban.content.FormSubmitButton import FormSubmitButton
+from luban.content.Button import Button
+from luban.content.Document import Document
+
+def visual(director, id = None):
+#    if not id:
+#        id = director.getGUID()
+    doc = lc.document()
+    doc.add(viewIndicator(director, id))
+    
+# need to put these three buttons on a grid
+
+    decideInput = Document(Class='decideInputMethod')
+    
+    btnDb = Button(label='Create from simulation', tip='simulate')
+    btnDb.onclick = select(id='new-dynamics-form'
+                           ).replaceContent(
+        load(actor='materialsimulation', 
+                                routine='newSimulation'))#, 
+                                #id = id))
+    decideInput.add(btnDb)
+    
+#    btnMan = Button(label='Create manually', tip='input coordinates by hand')
+#    btnMan.onclick = select(id='new-structure-form'
+#                            ).replaceContent(
+#        director.retrieveVisual('atomicstructure/edit-structure-view',
+#                                director=director,
+#                                id = id))
+#    decideInput.add(btnMan)
+    
+    btnUpload = Button(label='Upload', tip='upload from file')
+    btnUpload.onclick = select(id='new-dynamics-form'
+                           ).replaceContent(
+        director.retrieveVisual('dynamics/upload-dynamics-panel',
+                                director=director))#,
+                                #uploadid = id))
+    decideInput.add(btnUpload)
+    
+    doc.add(decideInput)
+
+    formdoc = Document(id='new-dynamics-form', Class='new-dynamics-container')
+    formdoc.oncreate = select(element=formdoc).replaceContent(
+        load(actor='atomicstructure/cod', routine='default')#, id = id)
+        )
+    doc.add(formdoc)
+   
+    return doc
+
+def viewIndicator(director, id):
+    path = []
+    path.append(('dynamics', load(actor='dynamics/dynamics')))
+
+    if id:
+        label = 'dynamics %s' % id
+    else:
+        label = 'new dynamics'
+    path.append(label)
+    return director.retrieveVisual('view-indicator', path=path)
+
+
+# version
+__id__ = "$Id$"
+
+# End of file 
