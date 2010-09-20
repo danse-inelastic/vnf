@@ -66,11 +66,28 @@ class Actor(base):
         return directory
 
 
+    def test(self, director):        
+        frame = lc.frame(title='test uploader')
+        document = frame.document(title='test uploader', id='maindoc')
+        
+        # create uploader
+        uploader = lc.uploader(
+            name = 'uploaded',
+            label='Upload',
+            onsubmit=lc.load(actor=self.name, routine='receive_file', id='uploadid-111')
+            )
+        document.add(uploader)
+        return frame
+            
+            
+
+
+
 import os
 
 
 def actor():
-    return Actor('uploader')
+    return Actor('upload')
 
 
 # version
