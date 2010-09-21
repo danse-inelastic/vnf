@@ -57,8 +57,10 @@ class ServerList:
     def _setFixedServers(self, director):
         "Takes list of servers from qeconst (temp solution)"
         self._servers = OrderedDict()
-        for k,v in SERVERS.iteritems():
-            self._servers[k]    = v["name"] # v
+        for v in SERVERS.values():
+            self._servers[v["id"]] = v["name"]
+            # Example: v = "foxtrot.danse.us", k = "server003"
+            #self._servers[k]    = v["name"] 
         return self._servers
 
 
