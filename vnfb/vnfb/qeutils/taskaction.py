@@ -44,7 +44,6 @@ class TaskAction(object):
             server  = self._director.clerk.getServers(id = self._job.serverid)
             status  = jobStatus(self._director, self._job, server)
 
-            #if status["state"] == "running" or status["state"] == :
             if status and status["state"] != "finished":
                 return self._cancelLink()
 
