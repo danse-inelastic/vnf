@@ -45,7 +45,7 @@ class TaskAction(object):
             status  = jobStatus(self._director, self._job, server)
 
             #if status["state"] == "running" or status["state"] == :
-            if status["state"] != "finished":
+            if status and status["state"] != "finished":
                 return self._cancelLink()
 
         return self._runLink()
