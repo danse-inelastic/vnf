@@ -28,15 +28,15 @@ class TaskAction(object):
 
 
     # Temp solution to speed up sim-view load
-    def link(self):
-        if not self._director or not self._task:
-            return "None"
-
-        return self._runLink()
+#    def link(self):
+#        if not self._director or not self._task:
+#            return "None"
+#
+#        return self._runLink()
 
  
     # Rename to link()
-    def linkUpdated(self):
+    def link(self): #linkUpdated(self):
         if not self._director or not self._task:
             return "None"
 
