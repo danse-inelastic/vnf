@@ -32,26 +32,33 @@ class Factory(object):
     def show(self):
         doc = lc.document(title='')
         tabs = lc.tabs()
-        
-
-        from vnfb.components.JnlpFile import JnlpFile
-        args = {
-                'cgihome':director.cgihome,
-                'sentry.username':director.sentry.username,
-                'sentry.ticket':director.sentry.ticket,
-                'matterId':matter.id,
-                'displayType':'structure',
-                }
-        jnlpFile = JnlpFile(
-                resources=('jmolVnf.jar', 'Jmol.jar','pg74.216.jdbc3.jar'),
-                mainClass='jmolVnf.JmolVnf',
-                programArguments = args,
-                fileName='jmolVnfLauncher',
-                )
-        relativeLocationOfFile = jnlpFile.writeJnlp(director)
-        text = '<script type="text/javascript" src="'+JmolFolder+'/Jmol.js"></script>'
-        text += '<a href="'+relativeLocationOfFile+'">view</a>'
-        hdoc = lc.htmldocument(text) 
+        #jmol
+#        from vnfb.components.JnlpFile import JnlpFile
+#        director = self.director
+#        args = {
+#                'cgihome':director.cgihome,
+#                'sentry.username':director.sentry.username,
+#                'sentry.ticket':director.sentry.ticket,
+#                'matterId':matter.id,
+#                'displayType':'structure',
+#                }
+#        jnlpFile = JnlpFile(
+#                resources=('jmolVnf.jar', 'Jmol.jar','pg74.216.jdbc3.jar'),
+#                mainClass='jmolVnf.JmolVnf',
+#                programArguments = args,
+#                fileName='jmolVnfLauncher',
+#                )
+#        relativeLocationOfFile = jnlpFile.writeJnlp(director)
+#        codebase = director.weaver.inventory.htmlbase
+        text = '<script type="text/javascript" src="jmol/Jmol.js"></script>'
+        text += """<script> 
+        jmolInitialize("jmol", useSignedApplet);
+        //jmolCheckBrowser("popup", "browsercheck", "onClick");
+        </script> 
+        <script> 
+        jmolApplet(400, "load caffeine.xyz");
+        </script>"""
+        hdoc = lc.htmldocument(text=text) 
         tabs.tab('java viewer').add(hdoc)
         # matter builder
         from luban.content.science.MatterBuilder import MatterBuilder
