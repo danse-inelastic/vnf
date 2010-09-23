@@ -12,6 +12,8 @@
 #
 
 
+standalone = True
+
 
 # application
 from vnfb.testing.TestAppBase import Application as base
