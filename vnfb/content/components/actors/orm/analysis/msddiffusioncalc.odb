@@ -2,7 +2,6 @@
 #
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
-#                                 Jiao Lin
 #                      California Institute of Technology
 #                      (C) 2006-2009  All Rights Reserved
 #
@@ -11,32 +10,29 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
-
-
 #
 import luban.content as lc
 from luban.content import select, load, alert
 
 
 #
-from vsat.trajectory.MsdCalc import MsdCalc
+from vsat.trajectory.MsdDiffusionCalc import MsdDiffusionCalc
 
 from luban.components.Actor import Actor
 import luban.orm
-base = luban.orm.object2actor(MsdCalc)
+base = luban.orm.object2actor(MsdDiffusionCalc)
 class Actor(base):
 
     class Inventory(base.Inventory):
 
         import luban.inventory
         
-    
     def debug(self, director):
         pass
         
 
 def actor():
-    return Actor('orm/msdcalc')
+    return Actor('orm/analysis/msddiffusioncalc')
 
 
 # version
