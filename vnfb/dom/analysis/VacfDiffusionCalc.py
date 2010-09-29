@@ -15,12 +15,12 @@ from _ import o2t
 
 from vnfb.dom.Computation import Computation
 
-from vsat.trajectory.VacfCalc import VacfCalc as VacfCalcBase
+from vsat.trajectory.VacfDiffusionCalc import VacfDiffusionCalc as VacfDiffusionCalcBase
 
-VacfCalc = o2t(VacfCalcBase, {'subclassFrom': Computation})
-VacfCalc.job_builder = 'analysiscalc'
-VacfCalc.actor = 'analysis/vacfcalc'
-VacfCalc.result_retriever = 'vacfcalc'
+VacfDiffusionCalc = o2t(VacfDiffusionCalcBase, {'subclassFrom': Computation})
+VacfDiffusionCalc.job_builder = 'analysiscalc'
+VacfDiffusionCalc.actor = 'analysis/vacfdiffusioncalc'
+VacfDiffusionCalc.result_retriever = 'vacfdiffusioncalc'
 
 
 
