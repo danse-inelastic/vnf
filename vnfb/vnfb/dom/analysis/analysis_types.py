@@ -16,7 +16,8 @@ typenames = [
     'analysis.CsfCalc.CsfCalcBase',
     'analysis.IsfCalc.IsfCalcBase',
     'analysis.EisfCalc.EisfCalcBase',
-    'analysis.VacfCalc.VacfCalcBase',
+    'analysis.MsdDiffusionCalc.MsdDiffusionCalcBase',
+    'analysis.VacfDiffusionCalc.VacfDiffusionCalcBase',
     'analysis.SqCalc.SqCalcBase',
     ]
 

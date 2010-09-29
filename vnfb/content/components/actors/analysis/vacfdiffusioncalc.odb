@@ -55,7 +55,7 @@ class Actor(base):
         settingsdoc = doc.document(title = 'Settings', collapsable = True)
         settingsdoc.oncreate = select(element=settingsdoc).append(
             load(
-              actor='orm/vacfcalc', routine='displayProperties',
+              actor='orm/vacfdiffusioncalc', routine='displayProperties',
               id = c.id, editlink=False,
             ))
         return doc
@@ -104,10 +104,10 @@ class Actor(base):
             ('Analysis',
              lc.load(actor='analysis')),
             ('Trajectory Dos Calculations',
-             lc.load(actor='analysis', filter_expr="type=='vacfcalc'")),
+             lc.load(actor='analysis', filter_expr="type=='vacfdiffusioncalc'")),
             ('%s %s' % (computation.__class__.__name__, label),
              lc.select(id='main-display-area').replaceContent(
-            lc.load(actor='analysis/vacfcalc',
+            lc.load(actor='analysis/vacfdiffusioncalc',
                     routine = 'createView', id=id)
             )),
             ]
@@ -129,7 +129,7 @@ class Actor(base):
         return director.retrieveDOMAccessor('analysis')
 
 
-    def __init__(self, name='analysis/vacfcalc'):
+    def __init__(self, name='analysis/vacfdiffusioncalc'):
         super(Actor, self).__init__(name)
         return
 
