@@ -113,9 +113,9 @@ def createDynamicsAnalysis():
                     "Density of States from md")
                     )
     routines.append(
-                    (lc.link(label="VACF", onclick=select(id='main-display-area'
+                    (lc.link(label="VACF and VACF-generated diffusion coefficient", onclick=select(id='main-display-area'
                 ).replaceContent(load(actor='analysis/mdanalysiswizard', routine='selectTrajectory',
-                analysisType='VacfCalc'))),
+                analysisType='VacfDiffusionCalc'))),
                     "Velocity Autocorrelation Function from md")
                     )
     routines.append(
