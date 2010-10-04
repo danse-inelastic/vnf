@@ -38,8 +38,11 @@ EXPORT_PYTHON_MODULES = \
 	LMonitor.py \
 	Monitor.py \
 	MonochromaticSource.py \
+        NDMonitor.py \
 	NeutronPlayer.py \
 	NeutronRecorder.py \
+        PSDMonitor.py \
+        PSD_TEWMonitor.py \
 	PlaceHolder.py \
 	QEMonitor.py \
 	QMonitor.py \

@@ -30,20 +30,22 @@ class NDMonitor(base):
     bins = 0.0
     min = -1e+40
     max = 1e+40
+    
     def customizeLubanObjectDrawer(self, drawer):
         drawer.mold.sequence = ['componentname', 'short_description', 'referencename', 'position', 'orientation', 'options', 'user1', 'user2', 'username1', 'username2', 'xwidth', 'yheight', 'zthick', 'xmin', 'xmax', 'ymin', 'ymax', 'zmin', 'zmax', 'bins', 'min', 'max']
+
 InvBase=base.Inventory
 class Inventory(InvBase):
     options = InvBase.d.str(name='options', default='')
     options.help = '[str]  String that specifies the configuration of the monitor'
     user1 = InvBase.d.float(name='user1', default=0)
-    user1.help = ''
+    user1.help = '[variable] Variable assigned to User1'
     user2 = InvBase.d.float(name='user2', default=0)
-    user2.help = ''
+    user2.help = '[variable] Variable assigned to User2'
     username1 = InvBase.d.str(name='username1', default='')
-    username1.help = ''
+    username1.help = '[str] Name assigned to User1'
     username2 = InvBase.d.str(name='username2', default='')
-    username2.help = ''
+    username2.help = '[str] Name assigned to User2'
     xwidth = InvBase.d.float(name='xwidth', default=0.10000000000000001)
     xwidth.help = '[m]  Width/diameter of detector (x). Default is 10 cm.'
     yheight = InvBase.d.float(name='yheight', default=0.10000000000000001)
