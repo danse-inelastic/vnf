@@ -1424,7 +1424,7 @@ def psd_xscan_L():
     c.short_description = "psd_xscan_L"
     c.xwidth = 0.1
     c.yheight = 0.1
-    c.options = "square
+    c.options = "square"
     c.file = "Vulcan_asbuilt_xscan.txt"
     return c
 
@@ -1433,7 +1433,7 @@ def psd_yscan_L():
     c.short_description = "psd_yscan_L"
     c.xwidth = 0.1
     c.yheight = 0.1
-    c.options = "square
+    c.options = "square"
     c.file = "Vulcan_asbuilt_yscan.txt"
     return c
 
