@@ -36,7 +36,7 @@ EXPORT_PYTHON_MODULES = \
 	EMonitor.py \
 	FermiChopper.py \
 	LMonitor.py \
-	Monitor.py \
+	MonitorBase.py \
 	MonochromaticSource.py \
         NDMonitor.py \
 	NeutronPlayer.py \

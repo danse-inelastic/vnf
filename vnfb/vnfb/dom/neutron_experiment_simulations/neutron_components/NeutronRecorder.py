@@ -12,7 +12,7 @@
 #
 
 
-from Monitor import Monitor as base, MonitorTableBase as TableBase
+from MonitorBase import MonitorBase as base, MonitorTableBase as TableBase
 class NeutronRecorder(base):
 
     abstract = False

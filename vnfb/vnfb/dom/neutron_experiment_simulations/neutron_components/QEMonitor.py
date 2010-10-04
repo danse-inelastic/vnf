@@ -11,7 +11,7 @@
 #
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
-from Monitor import Monitor as base
+from MonitorBase import MonitorBase as base
 class QEMonitor(base):
 
     abstract = False

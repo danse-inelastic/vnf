@@ -11,8 +11,10 @@
 #
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
-from Monitor import Monitor as base
+from MonitorBase import MonitorBase as base
 class NDMonitor(base):
+
+    abstract = False
     options = ''
     user1 = 0
     user2 = 0
