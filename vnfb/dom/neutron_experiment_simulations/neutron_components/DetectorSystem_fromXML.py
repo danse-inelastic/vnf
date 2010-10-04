@@ -31,7 +31,7 @@ DetectorSystemHierarchy_fromXMLTable.xmlfilename = 'detectorsystem.xml'
 DetectorSystemHierarchy_fromXMLTable.datafiles = [DetectorSystemHierarchy_fromXMLTable.xmlfilename]
 
 
-from Monitor import Monitor as base
+from MonitorBase import MonitorBase as base
 class DetectorSystem_fromXML(base):
 
     abstract = False

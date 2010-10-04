@@ -12,7 +12,7 @@
 #
 
 
-from Monitor import Monitor as base
+from MonitorBase import MonitorBase as base
 class TofMonitor(base):
 
     abstract = False
