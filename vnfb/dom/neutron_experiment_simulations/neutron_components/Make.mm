@@ -32,22 +32,29 @@ all: export
 EXPORT_PYTHON_MODULES = \
 	AbstractNeutronComponent.py \
 	ChanneledGuide.py \
+	CollimatorLinear.py \
+	CollimatorRadial.py \
 	DetectorSystem_fromXML.py \
+	DiskChopper.py \
 	EMonitor.py \
 	FermiChopper.py \
+	Guide.py \
+	GuideGravity.py \
 	LMonitor.py \
+	Monitor.py \
 	MonitorBase.py \
 	MonochromaticSource.py \
-        NDMonitor.py \
+	NDMonitor.py \
 	NeutronPlayer.py \
 	NeutronRecorder.py \
-        PSDMonitor.py \
-        PSD_TEWMonitor.py \
+	PSDMonitor.py \
+	PSD_TEWMonitor.py \
 	PlaceHolder.py \
 	QEMonitor.py \
 	QMonitor.py \
 	SampleBase.py \
 	SampleComponent.py \
+	Slit.py \
 	SNSModerator.py \
 	SNSModeratorMCSimulatedData.py \
 	SphericalPSD.py \
