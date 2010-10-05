@@ -41,9 +41,9 @@ class Inventory(InvBase):
     format = InvBase.d.str(name='format', default='table')
     format.help = '"table"- binned values on ascii file; "detector_out"- McStas format ascii'
     xwidth = InvBase.d.float(name='xwidth', default=0.0)
-    xwidth.help = 'Width/diameter of detector (x). Overrides xmin,xmax. (m)'
+    xwidth.help = 'Width/diameter of detector (x). Overrides x_min,x_max. (m)'
     yheight = InvBase.d.float(name='yheight', default=0.0)
-    yheight.help = 'Height of detector (y). Overrides ymin,ymax. (m)'
+    yheight.help = 'Height of detector (y). Overrides y_min,y_max. (m)'
     bmin = InvBase.d.float(name='bmin', default=0.0)
     bmin.help = 'Lower time/energy/wavelength limit (ms/meV/AA)'
     bmax = InvBase.d.float(name='bmax', default=0.0)

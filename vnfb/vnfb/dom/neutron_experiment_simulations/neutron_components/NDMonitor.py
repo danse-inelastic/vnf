@@ -23,10 +23,10 @@ class NDMonitor(base):
     xwidth = 0.10000000000000001
     yheight = 0.10000000000000001
     zthick = 0.0
-    xmin = 0.0
-    xmax = 0.0
-    ymin = 0.0
-    ymax = 0.0
+    x_min = 0.0
+    x_max = 0.0
+    y_min = 0.0
+    y_max = 0.0
     zmin = 0.0
     zmax = 0.0
     bins = 0.0
@@ -34,7 +34,7 @@ class NDMonitor(base):
     max = 1e+40
     
     def customizeLubanObjectDrawer(self, drawer):
-        drawer.mold.sequence = ['componentname', 'short_description', 'referencename', 'position', 'orientation', 'options', 'user1', 'user2', 'username1', 'username2', 'xwidth', 'yheight', 'zthick', 'xmin', 'xmax', 'ymin', 'ymax', 'zmin', 'zmax', 'bins', 'min', 'max']
+        drawer.mold.sequence = ['componentname', 'short_description', 'referencename', 'position', 'orientation', 'options', 'user1', 'user2', 'username1', 'username2', 'xwidth', 'yheight', 'zthick', 'x_min', 'x_max', 'y_min', 'y_max', 'zmin', 'zmax', 'bins', 'min', 'max']
 
 InvBase=base.Inventory
 class Inventory(InvBase):
@@ -54,14 +54,14 @@ class Inventory(InvBase):
     yheight.help = '[m]  Height of detector (y). Default is 10 cm.'
     zthick = InvBase.d.float(name='zthick', default=0.0)
     zthick.help = '[m]  Thichness of detector (z).'
-    xmin = InvBase.d.float(name='xmin', default=0.0)
-    xmin.help = '[m]    Lower x bound of opening'
-    xmax = InvBase.d.float(name='xmax', default=0.0)
-    xmax.help = '[m]    Upper x bound of opening'
-    ymin = InvBase.d.float(name='ymin', default=0.0)
-    ymin.help = '[m]    Lower y bound of opening'
-    ymax = InvBase.d.float(name='ymax', default=0.0)
-    ymax.help = '[m]    Upper y bound of opening'
+    x_min = InvBase.d.float(name='x_min', default=0.0)
+    x_min.help = '[m]    Lower x bound of opening'
+    x_max = InvBase.d.float(name='x_max', default=0.0)
+    x_max.help = '[m]    Upper x bound of opening'
+    y_min = InvBase.d.float(name='y_min', default=0.0)
+    y_min.help = '[m]    Lower y bound of opening'
+    y_max = InvBase.d.float(name='y_max', default=0.0)
+    y_max.help = '[m]    Upper y bound of opening'
     zmin = InvBase.d.float(name='zmin', default=0.0)
     zmin.help = '[m]    Lower z bound of opening'
     zmax = InvBase.d.float(name='zmax', default=0.0)

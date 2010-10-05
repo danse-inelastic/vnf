@@ -19,7 +19,7 @@ from pyre.components.Component import Component as base
 class Component(base):
 
 
-    def initdb(self):        
+    def initdb(self):
         module  = self._importComponentModule("LMonitor")
 
         # No foreign key is implied at this moment

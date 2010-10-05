@@ -14,26 +14,26 @@
 from AbstractNeutronComponent import AbstractNeutronComponent as base
 class Slit(base):
     abstract = False
-    xmin = 0.0
-    xmax = 0.0
-    ymin = 0.0
-    ymax = 0.0
+    x_min = 0.0
+    x_max = 0.0
+    y_min = 0.0
+    y_max = 0.0
     radius = 0.0
     cut = 0.0
     width = 0.0
     height = 0.0
     def customizeLubanObjectDrawer(self, drawer):
-        drawer.mold.sequence = ['componentname', 'short_description', 'referencename', 'position', 'orientation', 'xmin', 'xmax', 'ymin', 'ymax', 'radius', 'cut', 'width', 'height']
+        drawer.mold.sequence = ['componentname', 'short_description', 'referencename', 'position', 'orientation', 'x_min', 'x_max', 'y_min', 'y_max', 'radius', 'cut', 'width', 'height']
 InvBase=base.Inventory
 class Inventory(InvBase):
-    xmin = InvBase.d.float(name='xmin', default=0.0)
-    xmin.help = 'Lower x bound (m)'
-    xmax = InvBase.d.float(name='xmax', default=0.0)
-    xmax.help = 'Upper x bound (m)'
-    ymin = InvBase.d.float(name='ymin', default=0.0)
-    ymin.help = 'Lower y bound (m)'
-    ymax = InvBase.d.float(name='ymax', default=0.0)
-    ymax.help = 'Upper y bound (m)'
+    x_min = InvBase.d.float(name='x_min', default=0.0)
+    x_min.help = 'Lower x bound (m)'
+    x_max = InvBase.d.float(name='x_max', default=0.0)
+    x_max.help = 'Upper x bound (m)'
+    y_min = InvBase.d.float(name='y_min', default=0.0)
+    y_min.help = 'Lower y bound (m)'
+    y_max = InvBase.d.float(name='y_max', default=0.0)
+    y_max.help = 'Upper y bound (m)'
     radius = InvBase.d.float(name='radius', default=0.0)
     radius.help = 'Radius of slit in the z=0 plane, centered at Origo (m)'
     cut = InvBase.d.float(name='cut', default=0.0)
