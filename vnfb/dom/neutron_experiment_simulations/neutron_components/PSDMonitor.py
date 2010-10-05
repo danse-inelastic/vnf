@@ -17,32 +17,32 @@ class PSDMonitor(base):
     abstract = False
     nx = 90.0
     ny = 90.0
-    xmin = 0.0
-    xmax = 0.0
-    ymin = 0.0
-    ymax = 0.0
+    x_min = 0.0
+    x_max = 0.0
+    y_min = 0.0
+    y_max = 0.0
     xwidth = 0.0
     yheight = 0.0
     def customizeLubanObjectDrawer(self, drawer):
-        drawer.mold.sequence = ['componentname', 'short_description', 'referencename', 'position', 'orientation', 'nx', 'ny', 'xmin', 'xmax', 'ymin', 'ymax', 'xwidth', 'yheight']
+        drawer.mold.sequence = ['componentname', 'short_description', 'referencename', 'position', 'orientation', 'nx', 'ny', 'x_min', 'x_max', 'y_min', 'y_max', 'xwidth', 'yheight']
 InvBase=base.Inventory
 class Inventory(InvBase):
     nx = InvBase.d.float(name='nx', default=90.0)
     nx.help = 'Number of pixel columns (1)'
     ny = InvBase.d.float(name='ny', default=90.0)
     ny.help = 'Number of pixel rows (1)'
-    xmin = InvBase.d.float(name='xmin', default=0.0)
-    xmin.help = 'Lower x bound of detector opening (m)'
-    xmax = InvBase.d.float(name='xmax', default=0.0)
-    xmax.help = 'Upper x bound of detector opening (m)'
-    ymin = InvBase.d.float(name='ymin', default=0.0)
-    ymin.help = 'Lower y bound of detector opening (m)'
-    ymax = InvBase.d.float(name='ymax', default=0.0)
-    ymax.help = 'Upper y bound of detector opening (m)'
+    x_min = InvBase.d.float(name='x_min', default=0.0)
+    x_min.help = 'Lower x bound of detector opening (m)'
+    x_max = InvBase.d.float(name='x_max', default=0.0)
+    x_max.help = 'Upper x bound of detector opening (m)'
+    y_min = InvBase.d.float(name='y_min', default=0.0)
+    y_min.help = 'Lower y bound of detector opening (m)'
+    y_max = InvBase.d.float(name='y_max', default=0.0)
+    y_max.help = 'Upper y bound of detector opening (m)'
     xwidth = InvBase.d.float(name='xwidth', default=0.0)
-    xwidth.help = 'Width/diameter of detector (x). Overrides xmin,xmax. (m)'
+    xwidth.help = 'Width/diameter of detector (x). Overrides x_min,x_max. (m)'
     yheight = InvBase.d.float(name='yheight', default=0.0)
-    yheight.help = 'Height of detector (y). Overrides ymin,ymax. (m)'
+    yheight.help = 'Height of detector (y). Overrides y_min,y_max. (m)'
     dbtablename = 'psdmonitors'
 PSDMonitor.Inventory = Inventory
 del Inventory

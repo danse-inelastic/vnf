@@ -1674,10 +1674,10 @@ def createInstrument(director):
 
     instrument = cinstr(
         director,
-        name = "",
-        short_description = "",
-        long_description = "",
-        category = "",
+        name = "VULCAN",
+        short_description = "SNS diffractometer",
+        long_description = "VULCAN is a diffractometer at the Spallation Neutron Source intended for measurements of deformation, residual stress related studies, spatial mapping of chemistry, microstructure, and texture.",
+        category = "engineering diffraction",
         creator = "VNF",
         date = "01 Oct 2010 19:26",
         components = components

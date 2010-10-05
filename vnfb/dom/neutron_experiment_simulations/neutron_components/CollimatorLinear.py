@@ -14,26 +14,26 @@
 from AbstractNeutronComponent import AbstractNeutronComponent as base
 class CollimatorLinear(base):
     abstract = False
-    xmin = 0
-    xmax = 0
-    ymin = 0
-    ymax = 0
+    x_min = 0
+    x_max = 0
+    y_min = 0
+    y_max = 0
     len = 0
     divergence = 40.0
     transmission = 1.0
     divergenceV = 0.0
     def customizeLubanObjectDrawer(self, drawer):
-        drawer.mold.sequence = ['componentname', 'short_description', 'referencename', 'position', 'orientation', 'xmin', 'xmax', 'ymin', 'ymax', 'len', 'divergence', 'transmission', 'divergenceV']
+        drawer.mold.sequence = ['componentname', 'short_description', 'referencename', 'position', 'orientation', 'x_min', 'x_max', 'y_min', 'y_max', 'len', 'divergence', 'transmission', 'divergenceV']
 InvBase=base.Inventory
 class Inventory(InvBase):
-    xmin = InvBase.d.float(name='xmin', default=0)
-    xmin.help = '(m)              Lower x bound on slits'
-    xmax = InvBase.d.float(name='xmax', default=0)
-    xmax.help = '(m)              Upper x bound on slits'
-    ymin = InvBase.d.float(name='ymin', default=0)
-    ymin.help = '(m)              Lower y bound on slits'
-    ymax = InvBase.d.float(name='ymax', default=0)
-    ymax.help = '(m)              Upper y bound on slits'
+    x_min = InvBase.d.float(name='x_min', default=0)
+    x_min.help = '(m)              Lower x bound on slits'
+    x_max = InvBase.d.float(name='x_max', default=0)
+    x_max.help = '(m)              Upper x bound on slits'
+    y_min = InvBase.d.float(name='y_min', default=0)
+    y_min.help = '(m)              Lower y bound on slits'
+    y_max = InvBase.d.float(name='y_max', default=0)
+    y_max.help = '(m)              Upper y bound on slits'
     len = InvBase.d.float(name='len', default=0)
     len.help = '(m)              Distance between slits'
     divergence = InvBase.d.float(name='divergence', default=40.0)
