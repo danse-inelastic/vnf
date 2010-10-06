@@ -22,6 +22,7 @@ class App(base):
 
         import pyre.inventory
 
+        checksoftwares = pyre.inventory.bool('check-softwares')
 
 
     def main(self, *args, **kwds):
@@ -40,6 +41,10 @@ class App(base):
         failed, output, error = csa.execute('ls', server, '/tmp', suppressException=True)
         if failed:
             self._offline(server, error)
+
+        if self.inventory.checksoftwares:
+            from vnfb.utils.servers.check_software_installation import check
+            check(server, csa)
         return
 
 
