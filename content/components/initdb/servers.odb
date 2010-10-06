@@ -64,10 +64,11 @@ def server(
     return r
 
 
+# this is the octopod server forwarded to localhost port 50022
 octopod = server(
-    'server000', 'default server',
+    'server000', 'default server (octopod)',
     'localhost', '50022',
-    'linjiao', '/home/linjiao/vnfjobs', 
+    'danse-vnf-admin', '/home/danse-vnf-admin/vnf/data', 
     '',
     'torque',
     )
