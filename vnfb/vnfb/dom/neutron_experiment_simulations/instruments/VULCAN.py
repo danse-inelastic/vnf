@@ -1437,125 +1437,125 @@ def psd_yscan_L():
     c.file = "Vulcan_asbuilt_yscan.txt"
     return c
 
-def sample():
-    c = VanadiumPlate()
-    c.short_description = "sample"
-    c.focus_yh = 1.30
-    c.h = 0.05
-    c.target_z = 0
-    c.target_x = -2
-    c.target_y = 0
-    c.focus_xw = 0.780
-    c.frac = 1
-    c.radius_i = 0.015
-    c.radius_o = 0.02
-    c.pack = 1
-    return c
-
-def detector_90tc():
-    c = PSD_TEWMonitor()
-    c.short_description = "detector_90tc"
-    c.nxchan = 1
-    c.format = out_format
-    c.bmax = 100
-    c.yheight = 0.385
-    c.restore_neutron = 1
-    c.filename = "Vulcan_asbuilt_Ldetector_l90tc.txt"
-    c.nychan = 1
-    c.bmin = 0
-    c.nbchan = 100
-    c.xwidth = 0.770
-    c.type = "time"
-    return c
-
-def detector_90wc():
-    c = PSD_TEWMonitor()
-    c.short_description = "detector_90wc"
-    c.nxchan = 1
-    c.format = out_format
-    c.bmax = 10
-    c.yheight = 0.385
-    c.restore_neutron = 1
-    c.filename = "Vulcan_asbuilt_Ldetector_l90wc.txt"
-    c.nychan = 1
-    c.bmin = 0
-    c.nbchan = 100
-    c.xwidth = 0.770
-    c.type = "wavelength"
-    return c
-
-def detector_90tt():
-    c = PSD_TEWMonitor()
-    c.short_description = "detector_90tt"
-    c.nxchan = 1
-    c.format = out_format
-    c.bmax = 100
-    c.yheight = 0.385
-    c.restore_neutron = 1
-    c.filename = "Vulcan_asbuilt_Ldetector_l90tt.txt"
-    c.nychan = 1
-    c.bmin = 0
-    c.nbchan = 100
-    c.xwidth = 0.770
-    c.type = "time"
-    return c
-
-def detector_90wt():
-    c = PSD_TEWMonitor()
-    c.short_description = "detector_90wt"
-    c.nxchan = 1
-    c.format = out_format
-    c.bmax = 10
-    c.yheight = 0.385
-    c.restore_neutron = 1
-    c.filename = "Vulcan_asbuilt_Ldetector_l90wt.txt"
-    c.nychan = 1
-    c.bmin = 0
-    c.nbchan = 100
-    c.xwidth = 0.770
-    c.type = "wavelength"
-    return c
-
-def detector_90tb():
-    c = PSD_TEWMonitor()
-    c.short_description = "detector_90tb"
-    c.nxchan = 1
-    c.format = out_format
-    c.bmax = 100
-    c.yheight = 0.385
-    c.restore_neutron = 1
-    c.filename = "Vulcan_asbuilt_Ldetector_l90tb.txt"
-    c.nychan = 1
-    c.bmin = 0
-    c.nbchan = 100
-    c.xwidth = 0.770
-    c.type = "time"
-    return c
-
-def detector_90wb():
-    c = PSD_TEWMonitor()
-    c.short_description = "detector_90wb"
-    c.nxchan = 1
-    c.format = out_format
-    c.bmax = 10
-    c.yheight = 0.385
-    c.restore_neutron = 1
-    c.filename = "Vulcan_asbuilt_Ldetector_l90wb.txt"
-    c.nychan = 1
-    c.bmin = 0
-    c.nbchan = 100
-    c.xwidth = 0.770
-    c.type = "wavelength"
-    return c
-
-def monitor_beamstop():
-    c = Monitor()
-    c.short_description = "monitor_beamstop"
-    c.xmin = -1
-    c.ymin = -1
-    c.ymax = 1
-    c.xmax = 1
-    return c
+#def sample():
+#    c = VanadiumPlate()
+#    c.short_description = "sample"
+#    c.focus_yh = 1.30
+#    c.h = 0.05
+#    c.target_z = 0
+#    c.target_x = -2
+#    c.target_y = 0
+#    c.focus_xw = 0.780
+#    c.frac = 1
+#    c.radius_i = 0.015
+#    c.radius_o = 0.02
+#    c.pack = 1
+#    return c
+#
+#def detector_90tc():
+#    c = PSD_TEWMonitor()
+#    c.short_description = "detector_90tc"
+#    c.nxchan = 1
+#    c.format = out_format
+#    c.bmax = 100
+#    c.yheight = 0.385
+#    c.restore_neutron = 1
+#    c.filename = "Vulcan_asbuilt_Ldetector_l90tc.txt"
+#    c.nychan = 1
+#    c.bmin = 0
+#    c.nbchan = 100
+#    c.xwidth = 0.770
+#    c.type = "time"
+#    return c
+#
+#def detector_90wc():
+#    c = PSD_TEWMonitor()
+#    c.short_description = "detector_90wc"
+#    c.nxchan = 1
+#    c.format = out_format
+#    c.bmax = 10
+#    c.yheight = 0.385
+#    c.restore_neutron = 1
+#    c.filename = "Vulcan_asbuilt_Ldetector_l90wc.txt"
+#    c.nychan = 1
+#    c.bmin = 0
+#    c.nbchan = 100
+#    c.xwidth = 0.770
+#    c.type = "wavelength"
+#    return c
+#
+#def detector_90tt():
+#    c = PSD_TEWMonitor()
+#    c.short_description = "detector_90tt"
+#    c.nxchan = 1
+#    c.format = out_format
+#    c.bmax = 100
+#    c.yheight = 0.385
+#    c.restore_neutron = 1
+#    c.filename = "Vulcan_asbuilt_Ldetector_l90tt.txt"
+#    c.nychan = 1
+#    c.bmin = 0
+#    c.nbchan = 100
+#    c.xwidth = 0.770
+#    c.type = "time"
+#    return c
+#
+#def detector_90wt():
+#    c = PSD_TEWMonitor()
+#    c.short_description = "detector_90wt"
+#    c.nxchan = 1
+#    c.format = out_format
+#    c.bmax = 10
+#    c.yheight = 0.385
+#    c.restore_neutron = 1
+#    c.filename = "Vulcan_asbuilt_Ldetector_l90wt.txt"
+#    c.nychan = 1
+#    c.bmin = 0
+#    c.nbchan = 100
+#    c.xwidth = 0.770
+#    c.type = "wavelength"
+#    return c
+#
+#def detector_90tb():
+#    c = PSD_TEWMonitor()
+#    c.short_description = "detector_90tb"
+#    c.nxchan = 1
+#    c.format = out_format
+#    c.bmax = 100
+#    c.yheight = 0.385
+#    c.restore_neutron = 1
+#    c.filename = "Vulcan_asbuilt_Ldetector_l90tb.txt"
+#    c.nychan = 1
+#    c.bmin = 0
+#    c.nbchan = 100
+#    c.xwidth = 0.770
+#    c.type = "time"
+#    return c
+#
+#def detector_90wb():
+#    c = PSD_TEWMonitor()
+#    c.short_description = "detector_90wb"
+#    c.nxchan = 1
+#    c.format = out_format
+#    c.bmax = 10
+#    c.yheight = 0.385
+#    c.restore_neutron = 1
+#    c.filename = "Vulcan_asbuilt_Ldetector_l90wb.txt"
+#    c.nychan = 1
+#    c.bmin = 0
+#    c.nbchan = 100
+#    c.xwidth = 0.770
+#    c.type = "wavelength"
+#    return c
+#
+#def monitor_beamstop():
+#    c = Monitor()
+#    c.short_description = "monitor_beamstop"
+#    c.xmin = -1
+#    c.ymin = -1
+#    c.ymax = 1
+#    c.xmax = 1
+#    return c
 
 
 def neutron_recorder():
@@ -1661,14 +1661,14 @@ def createInstrument(director):
         ccomp("psd_sample_position", psd_sample_position(), ((0.00000, 0.00000, 43.73476), (0.00000, 0.41980, 0.00000), '')),
         ccomp("psd_xscan_L", psd_xscan_L(), ((0.00000, 0.00000, 43.73576), (0.00000, 0.41980, 0.00000), '')),
         ccomp("psd_yscan_L", psd_yscan_L(), ((0.00000, 0.00000, 43.73676), (0.00000, 0.41980, 0.00000), '')),
-        ccomp("sample", sample(), ((0.00000, 0.00000, 43.76176), (0.00000, 0.41980, 0.00000), '')),
-        ccomp("detector_90tc", detector_90tc(), ((-2.00000, 0.00000, 43.76176), (0.00000, 90.41980, 0.00000), '')),
-        ccomp("detector_90wc", detector_90wc(), ((-2.00000, 0.00000, 43.76176), (0.00000, 90.41980, 0.00000), '')),
-        ccomp("detector_90tt", detector_90tt(), ((-1.95900, 0.40300, 43.76176), (11.60000, 90.41980, 0.00000), '')),
-        ccomp("detector_90wt", detector_90wt(), ((-1.95900, 0.40300, 43.76176), (11.60000, 90.41980, 0.00000), '')),
-        ccomp("detector_90tb", detector_90tb(), ((-1.95900, -0.40300, 43.76176), (-11.60000, 90.41980, 0.00000), '')),
-        ccomp("detector_90wb", detector_90wb(), ((-1.95900, -0.40300, 43.76176), (-11.60000, 90.41980, 0.00000), '')),
-        ccomp("monitor_beamstop", monitor_beamstop(), ((0.00000, 0.00000, 48.76176), (0.00000, 0.41980, 0.00000), '')),
+#        ccomp("sample", sample(), ((0.00000, 0.00000, 43.76176), (0.00000, 0.41980, 0.00000), '')),
+#        ccomp("detector_90tc", detector_90tc(), ((-2.00000, 0.00000, 43.76176), (0.00000, 90.41980, 0.00000), '')),
+#        ccomp("detector_90wc", detector_90wc(), ((-2.00000, 0.00000, 43.76176), (0.00000, 90.41980, 0.00000), '')),
+#        ccomp("detector_90tt", detector_90tt(), ((-1.95900, 0.40300, 43.76176), (11.60000, 90.41980, 0.00000), '')),
+#        ccomp("detector_90wt", detector_90wt(), ((-1.95900, 0.40300, 43.76176), (11.60000, 90.41980, 0.00000), '')),
+#        ccomp("detector_90tb", detector_90tb(), ((-1.95900, -0.40300, 43.76176), (-11.60000, 90.41980, 0.00000), '')),
+#        ccomp("detector_90wb", detector_90wb(), ((-1.95900, -0.40300, 43.76176), (-11.60000, 90.41980, 0.00000), '')),
+#        ccomp("monitor_beamstop", monitor_beamstop(), ((0.00000, 0.00000, 48.76176), (0.00000, 0.41980, 0.00000), '')),
         ]
 
 
