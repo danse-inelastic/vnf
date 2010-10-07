@@ -30,8 +30,8 @@ class NDMonitor(base):
     zmin = 0.0
     zmax = 0.0
     bins = 0.0
-    min = -1e+40
-    max = 1e+40
+    min = -1000.0    #-1e+40
+    max = 1000.0    #1e+40
     
     def customizeLubanObjectDrawer(self, drawer):
         drawer.mold.sequence = ['componentname', 'short_description', 'referencename', 'position', 'orientation', 'options', 'user1', 'user2', 'username1', 'username2', 'xwidth', 'yheight', 'zthick', 'x_min', 'x_max', 'y_min', 'y_max', 'zmin', 'zmax', 'bins', 'min', 'max']
@@ -68,9 +68,9 @@ class Inventory(InvBase):
     zmax.help = '[m]    Upper z bound of opening'
     bins = InvBase.d.float(name='bins', default=0.0)
     bins.help = '[1]    Number of bins to force for all variables.'
-    min = InvBase.d.float(name='min', default=-1e+40)
+    min = InvBase.d.float(name='min', default=-1000.0)  #-1e+40)
     min.help = '[u]    Minimum range value to force for all variables'
-    max = InvBase.d.float(name='max', default=1e+40)
+    max = InvBase.d.float(name='max', default=1000.0)  #1e+40)
     max.help = '[u]    Maximum range value to force for all variables'
     dbtablename = 'ndmonitors'
 NDMonitor.Inventory = Inventory
