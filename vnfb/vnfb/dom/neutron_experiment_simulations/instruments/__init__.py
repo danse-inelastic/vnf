@@ -19,7 +19,7 @@ instrument_names = [
     'SEQUOIA',
     'Pharos',
     'Powgen3',
-    'VULCAN',
+    # 'VULCAN',
     'Test',
     ]
 
