@@ -523,6 +523,36 @@ class Builder(base):
         return
 
 
+    def onPSDMonitor(self, m):
+        kwds = {
+            'name': m.componentname,
+            'category': 'monitors',
+            'type': 'PSD_monitor',
+            'supplier': 'mcstas2',
+            }
+        self.onNeutronComponent( **kwds )
+
+        opts = {
+            }
+
+        parameters = {
+            'filename': outputfilename(m),
+            'xmin': m.x_min,
+            'xmax': m.x_max,
+            'ymin': m.y_min,
+            'ymax': m.y_max,
+            'xwidth': m.xwidth,
+            'yheight': m.yheight,
+            'nx': m.nx,
+            'ny': m.ny,
+            }
+        for k,v in parameters.iteritems():
+            opts['%s.%s' % (m.componentname, k)] = v
+            continue
+
+        self.cmdline_opts.update( opts )
+        return
+
 
     def onTofMonitor(self, m):
         kwds = {
