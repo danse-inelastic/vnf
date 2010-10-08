@@ -455,6 +455,35 @@ class Builder(base):
         return
 
 
+    def onMonitor(self, m):
+        kwds = {
+            'name': m.componentname,
+            'category': 'monitors',
+            'type': 'Monitor',
+            'supplier': 'mcstas2',
+            }
+        self.onNeutronComponent( **kwds )
+
+        opts = {
+            }
+
+        parameters = {
+            'xmin': m.x_min,
+            'xmax': m.x_max,
+            'ymin': m.y_min,
+            'ymax': m.y_max,
+            'xwidth': m.xwidth,
+            'yheight': m.yheight,
+            }
+        for k,v in parameters.iteritems():
+            opts['%s.%s' % (m.componentname, k)] = v
+            continue
+
+        self.cmdline_opts.update( opts )
+        return
+
+
+
     def onTofMonitor(self, m):
         kwds = {
             'name': m.componentname,
