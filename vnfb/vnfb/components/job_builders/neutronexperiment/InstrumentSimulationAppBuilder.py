@@ -483,6 +483,46 @@ class Builder(base):
         return
 
 
+    def onNDMonitor(self, m):
+        kwds = {
+            'name': m.componentname,
+            'category': 'monitors',
+            'type': 'Monitor_nD',
+            'supplier': 'mcstas2',
+            }
+        self.onNeutronComponent( **kwds )
+
+        opts = {
+            }
+
+        parameters = {
+            'filename': outputfilename(m),
+            'xmin': m.x_min,
+            'xmax': m.x_max,
+            'ymin': m.y_min,
+            'ymax': m.y_max,
+            'xwidth': m.xwidth,
+            'yheight': m.yheight,
+            'options': m.options,
+            'user1': m.user1,
+            'user2': m.user2,
+            'username1': m.username1,
+            'username2': m.username2,
+            'zthick': m.zthick,
+            'zmin': m.zmin,
+            'zmax': m.zmax,
+            'bins': m.bins,
+            'min': m.min,
+            'max': m.max,
+            }
+        for k,v in parameters.iteritems():
+            opts['%s.%s' % (m.componentname, k)] = v
+            continue
+
+        self.cmdline_opts.update( opts )
+        return
+
+
 
     def onTofMonitor(self, m):
         kwds = {
