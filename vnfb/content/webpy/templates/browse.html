@@ -1,0 +1,19 @@
+$def with (host, path, files)
+$code:
+	if path and path != '/':
+		files = ['../'] + files
+<html>
+<head>
+	<title>Directory listing for $host/$path</title>
+</head>
+<body>
+	<div>
+		<table>
+		$for f in files:
+			<tr>
+				<td><a href="$(("/browse/%s/%s" % (path, f)).replace('//','/'))">$f</a></td>
+			</tr>
+		</table>
+	</div>
+</body>
+</html>
