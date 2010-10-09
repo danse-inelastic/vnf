@@ -624,6 +624,214 @@ class Builder(base):
         return
 
 
+    def onGuideGravity(self, m):
+        kwds = {
+            'name': m.componentname,
+            'category': 'optics',
+            'type': 'Guide_gravity',
+            'supplier': 'mcstas2',
+            }
+        self.onNeutronComponent( **kwds )
+
+        opts = {}
+
+        parameters = {
+            'w1': m.w1,
+            'h1': m.h1,
+            'w2': m.w2,
+            'h2': m.h2,
+            'l': m.l,
+            'R0': m.R0,
+            'Qc': m.Qc,
+            'alpha': m.alpha,
+            'm': m.m,
+            'W': m.W,
+            'k': m.k,
+            'd': m.d,
+            'mleft': m.mleft,
+            'mright': m.mright,
+            'mtop': m.mtop,
+            'mbottom': m.mbottom,
+            'kh': m.kh,
+            'G': m.G,
+            'wavy': m.wavy,
+            'wavy_z': m.wavy_z,
+            'wavy_tb': m.wavy_tb,
+            'wavy_lr': m.wavy_lr,
+            'chamfers': m.chamfers,
+            'chamfers_z': m.chamfers_z,
+            'chamfers_lr': m.chamfers_lr,
+            'chamfers_tb': m.chamfers_tb,
+            'nelements': m.nelements,
+            'nu': m.nu,
+            'phase': m.phase,
+            'reflect': m.reflect,
+            }
+        for k,v in parameters.iteritems():
+            opts['%s.%s' % (m.componentname, k)] = v
+
+        self.cmdline_opts.update( opts )
+
+
+    def onGuide(self, m):
+        kwds = {
+            'name': m.componentname,
+            'category': 'optics',
+            'type': 'Guide',
+            'supplier': 'mcstas2',
+            }
+        self.onNeutronComponent( **kwds )
+
+        opts = {}
+
+        parameters = {
+            'w1': m.w1,
+            'h1': m.h1,
+            'w2': m.w2,
+            'h2': m.h2,
+            'l': m.l,
+            'R0': m.R0,
+            'Qc': m.Qc,
+            'alpha': m.alpha,
+            'm': m.m,
+            'W': m.W,
+            'reflect': m.reflect,
+            }
+        for k,v in parameters.iteritems():
+            opts['%s.%s' % (m.componentname, k)] = v
+
+        self.cmdline_opts.update( opts )
+
+
+    def onSlit(self, m):
+        kwds = {
+            'name': m.componentname,
+            'category': 'optics',
+            'type': 'Slit',
+            'supplier': 'mcstas2',
+            }
+        self.onNeutronComponent( **kwds )
+
+        opts = {}
+
+        parameters = {
+            'xmin': m.x_min,
+            'xmax': m.x_max,
+            'ymin': m.y_min,
+            'ymax': m.y_max,
+            'radius': m.radius,
+            'cut': m.cut,
+            'width': m.width,
+            'height': m.height,
+            }
+        for k,v in parameters.iteritems():
+            opts['%s.%s' % (m.componentname, k)] = v
+
+        self.cmdline_opts.update( opts )
+
+
+    def onCollimatorLinear(self, m):
+        kwds = {
+            'name': m.componentname,
+            'category': 'optics',
+            'type': 'Collimator_linear',
+            'supplier': 'mcstas2',
+            }
+        self.onNeutronComponent( **kwds )
+
+        opts = {}
+
+        parameters = {
+            'xmin': m.x_min,
+            'xmax': m.x_max,
+            'ymin': m.y_min,
+            'ymax': m.y_max,
+            'len': m.len,
+            'divergence': m.divergence,
+            'transmission': m.transmission,
+            'divergenceV': m.divergenceV,
+            }
+        for k,v in parameters.iteritems():
+            opts['%s.%s' % (m.componentname, k)] = v
+
+        self.cmdline_opts.update( opts )
+
+
+    def onDiskChopper(self, m):
+        kwds = {
+            'name': m.componentname,
+            'category': 'optics',
+            'type': 'DiskChopper',
+            'supplier': 'mcstas2',
+            }
+        self.onNeutronComponent( **kwds )
+
+        opts = {}
+
+        parameters = {
+            'theta_0': m.theta_0,
+            'R': m.R,
+            'h': m.h,
+            'omega': m.omega,
+            'n': m.n,
+            'j': m.j,
+            'theta_1': m.theta_1,
+            't_0': m.t_0,
+            'IsFirst': m.IsFirst,
+            'n_pulse': m.n_pulse,
+            'abs_out': m.abs_out,
+            'phi_0': m.phi_0,
+            'w': m.w,
+            'wc': m.wc,
+            'compat': m.compat,
+            }
+        for k,v in parameters.iteritems():
+            opts['%s.%s' % (m.componentname, k)] = v
+
+        self.cmdline_opts.update( opts )
+
+
+#    def onVanadiumPlate(self, m):
+#        kwds = {
+#            'name': m.componentname,
+#            'category': 'samples',
+#            'type': 'V_sample',
+#            'supplier': 'mcstas2',
+#            }
+#        self.onNeutronComponent( **kwds )
+#
+#        opts = {}
+#
+#        parameters = {
+#            'radius_i': m.radius_i,
+#            'radius_o': m.radius_o,
+#            'h': m.h,
+#            'focus_r': m.focus_r,
+#            'pack': m.pack,
+#            'frac': m.frac,
+#            'f_QE': m.f_QE,
+#            'gamma': m.gamma,
+#            'target_x': m.target_x,
+#            'target_y': m.target_y,
+#            'target_z': m.target_z,
+#            'focus_xw': m.focus_xw,
+#            'focus_yh': m.focus_yh,
+#            'focus_aw': m.focus_aw,
+#            'focus_ah': m.focus_ah,
+#            'xwidth': m.xwidth,
+#            'yheight': m.yheight,
+#            'zthick': m.zthick,
+#            'sig_a': m.sig_a,
+#            'sig_i': m.sig_i,
+#            'V0': m.V0,
+#            'target_index': m.target_index,
+#            }
+#        for k,v in parameters.iteritems():
+#            opts['%s.%s' % (m.componentname, k)] = v
+#
+#        self.cmdline_opts.update( opts )
+
+
     ### need further work here ###
     def onDetectorSystem_fromXML(self, ds):
         # first we need to get the detector system xml file
