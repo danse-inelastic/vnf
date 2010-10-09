@@ -456,6 +456,7 @@ class Builder(base):
 
 
     def onMonitor(self, m):
+        # Monitor
         kwds = {
             'name': m.componentname,
             'category': 'monitors',
@@ -484,6 +485,7 @@ class Builder(base):
 
 
     def onNDMonitor(self, m):
+        # NDMonitor
         kwds = {
             'name': m.componentname,
             'category': 'monitors',
@@ -524,6 +526,7 @@ class Builder(base):
 
 
     def onPSDMonitor(self, m):
+        # PSDMonitor
         kwds = {
             'name': m.componentname,
             'category': 'monitors',
@@ -545,6 +548,41 @@ class Builder(base):
             'yheight': m.yheight,
             'nx': m.nx,
             'ny': m.ny,
+            }
+        for k,v in parameters.iteritems():
+            opts['%s.%s' % (m.componentname, k)] = v
+            continue
+
+        self.cmdline_opts.update( opts )
+        return
+
+
+    def onPSD_TEWMonitor(self, m):
+        # PSD_TEWMonitor
+        kwds = {
+            'name': m.componentname,
+            'category': 'monitors',
+            'type': 'PSD_TEW_monitor',
+            'supplier': 'mcstas2',
+            }
+        self.onNeutronComponent( **kwds )
+
+        opts = {
+            }
+
+        parameters = {
+            'filename': outputfilename(m),
+            'xwidth': m.xwidth,
+            'yheight': m.yheight,
+            'nxchan': m.nxchan,
+            'nychan': m.nychan,
+            'nbchan': m.nbchan,
+            'type': m.type,
+            'format': m.format,
+            'bmin': m.bmin,
+            'bmax': m.bmax,
+            'deltab': m.deltab,
+            'restore_neutron': m.restore_neutron,
             }
         for k,v in parameters.iteritems():
             opts['%s.%s' % (m.componentname, k)] = v
