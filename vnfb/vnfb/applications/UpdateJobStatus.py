@@ -36,6 +36,9 @@ class UpdateJobStatus(base):
         csaccessor.meta['tip'] = 'computing server accessor'
 
 
+        logdir = pyre.inventory.str(name='logdir', default='../log')
+
+
     def main(self, *args, **kwds):
         self._check()
         return
@@ -59,21 +62,41 @@ class UpdateJobStatus(base):
         self.dds.director = self
 
         self.csaccessor = self.inventory.csaccessor
+        
+        logdir = self.inventory.logdir
+        today = str(datetime.date.today())
+        filename = '%s-update-job-status.log' % today
+        logfile = os.path.join(logdir, filename)
+        self.ostream = open(logfile, 'a')
         return
 
 
     def _check(self):
+        self.ostream.write('\n')
+        now = str(datetime.datetime.now())
+        self.ostream.write('Updating job status: started at %s\n' % now)
+        
         where = "state='submitted' or state='running' or state='onhold'"
         domaccess = self.retrieveDOMAccessor('job')
         jobs = domaccess.getJobRecords(filter=where)
         
         from vnfb.utils.job import check
         for job in jobs:
-            check(job, self)
+            self.ostream.write('Checking job %s\n' % job.id)
+            self.ostream.write(' - before chechking, status=%s\n' % job.state)
+            try:
+                check(job, self)
+            except:
+                import traceback
+                self.ostream.write(' - **** error in checking **** \m')
+                self.ostream.write(traceback.format_exc())
+                self.ostream.write(' - *************************** \m')
+            self.ostream.write(' - after checking, status=%s\n' % job.state)
             continue
         return
 
 
+import os, datetime
 
 # version
 __id__ = "$Id$"
