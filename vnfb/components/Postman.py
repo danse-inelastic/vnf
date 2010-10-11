@@ -36,6 +36,9 @@ class Postman(Component):
             server = smtplib.SMTP(self.host, port=port)
         else: 
             server = smtplib.SMTP(self.host)
+        
+        self._prepare(server)
+
         username = self.username
         password = self.password
         if username and password: server.login(username, password)
@@ -46,6 +49,13 @@ class Postman(Component):
                    
         return
 
+
+    def _prepare(self, server):
+        require_tls = ['smtp.gmail.com']
+        if self.host in require_tls:
+            server.starttls()
+        return
+        
 
     def __init__(self, name=None):
         if name is None:
