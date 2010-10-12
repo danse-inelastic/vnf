@@ -41,6 +41,7 @@ EXPORT_DATAFILES = \
 	ipa.pml \
 	itask-manager.odb \
 	librarian.pml \
+	listservers.pml \
 	main.pml \
 	retrieveresults.pml \
 	updatejobstatus.pml \

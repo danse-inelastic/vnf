@@ -43,6 +43,7 @@ EXPORT_DATAFILES = \
 	initdb.sh \
 	itaskapp.py \
 	launch-detached.py \
+	listservers.py \
 	loaddataobject.py \
         packjobdir.py \
         jobdriver.py \
