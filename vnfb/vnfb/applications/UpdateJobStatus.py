@@ -36,9 +36,6 @@ class UpdateJobStatus(base):
         csaccessor.meta['tip'] = 'computing server accessor'
 
 
-        logdir = pyre.inventory.str(name='logdir', default='../log')
-
-
     def main(self, *args, **kwds):
         self._check()
         return

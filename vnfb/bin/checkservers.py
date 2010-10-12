@@ -36,11 +36,18 @@ class App(base):
 
 
     def _check(self, server):
-        print "checking server %r ..." % server.short_description
+        self.ostream.write('\n')
+        now = str(datetime.datetime.now())
+        self.ostream.write('Check server %s: started at %s\n' % (
+                (server.short_description, now) ) )
+        
         csa = self.csaccessor
         failed, output, error = csa.execute('ls', server, '/tmp', suppressException=True)
         if failed:
             self._offline(server, error)
+            self.ostream.write('server unreachable: %s\n' % error)
+        else:
+            self.ostream.write('server reachable\n')
 
         if self.inventory.checksoftwares:
             from vnfb.utils.servers.check_software_installation import check
@@ -64,10 +71,23 @@ class App(base):
         return
 
 
+    def _configure(self):
+        super(App, self)._configure()
+        
+        logdir = self.inventory.logdir
+        today = str(datetime.date.today())
+        filename = '%s-checkservers.log' % today
+        logfile = os.path.join(logdir, filename)
+        self.ostream = open(logfile, 'a')
+        return
+    
+
     def _getPrivateDepositoryLocations(self):
         from vnfb.deployment import pyre_depositories
         return pyre_depositories
 
+
+import os, datetime
 
 
 def main():
