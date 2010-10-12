@@ -76,6 +76,7 @@ EXPORT_PYTHON_MODULES = \
 	UnitCell.py \
 	User.py \
 	UserHasRole.py \
+	UserSetting.py \
 	__init__.py \
 	_.py \
 	computation_types.py \
