@@ -21,7 +21,7 @@ class UserSetting:
 from dsaw.model.Inventory import Inventory as InvBase
 class Inventory(InvBase):
 
-    show_help_on_login = InvBase.d.str(name='show_help_on_login', max_length = 128)
+    show_help_on_login = InvBase.d.bool(name='show_help_on_login', max_length = 128)
     dbtablename = 'usersettings'
 
 

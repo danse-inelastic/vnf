@@ -55,6 +55,10 @@ class Actor(base):
         field = FormTextField(id='help-page-text', hidden=True)
         field.value = self.inventory.nextpagetoshow
         doc.add(field)
+
+        user_settings = self._getUserSettings(director)
+        if not user_settings.show_help_on_login:
+            doc.oncreate = select(id='dock').dock('attach', select(element=doc))
         
         return doc
 
@@ -92,6 +96,12 @@ class Actor(base):
             ]
 
         return hdoc
+
+
+    def _getUserSettings(self, director):
+        domaccess = director.retrieveDOMAccessor('usersettings')
+        username = director.sentry.username
+        return domaccess.getUserSettingRecord(username)
 
 
     def __init__(self, name='help'):

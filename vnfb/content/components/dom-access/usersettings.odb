@@ -1,0 +1,61 @@
+# -*- Python -*-
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                   Jiao Lin
+#                      California Institute of Technology
+#                      (C) 2006-2009  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+tablename = 'usersettings'
+
+
+from vnfb.components.DOMAccessor import DOMAccessor as base
+
+class Accessor(base):
+
+
+    def __init__(self):
+        super(Accessor, self).__init__('usersettings-accessor')
+        return
+
+
+    def _getOrm(self):
+        orm = self.director.clerk.orm
+        orm(UserSetting)
+        return orm
+    orm = property(_getOrm)
+
+
+    def getUserSettingRecord(self, username):
+        rows = self.db.query(UserSettingTable).filter_by(user=username).all()
+        if not rows:
+            return self.createUserSettingRecord(username)
+        assert len(rows) == 1
+	return rows[0]
+
+
+    def createUserSettingRecord(self, username):
+        obj = UserSetting()
+        self.orm.save(obj)
+        row = self.orm(obj)
+        row.user = username
+        self.db.updateRecord(row)
+        return row
+    
+
+from vnfb.dom.UserSetting import UserSettingTable, UserSetting
+        
+def accessor():
+    return Accessor()
+
+
+# version
+__id__ = "$Id$"
+
+# End of file 
