@@ -35,6 +35,7 @@ EXPORT_DATAFILES = \
 	destroydataobject.py \
 	dumpdb.py \
 	establishglobalpointers.py \
+	establish_ssh_tunnels.py \
 	findchildrenofdataobject.py \
 	findreferrals.py \
 	getuserlist.py \
