@@ -6,23 +6,15 @@ import psycopg2
 import time
 
 #
-#CREATE SEQUENCE fileID START 0;
-#CREATE TABLE downloadedFiles (
-#    id integer PRIMARY KEY DEFAULT nextval('fileID'),
-#    name UNIQUE text,
-#    owner text,
-#    inserted timestamp,
-#    original_path text,
-#    data OID
-#)
-#CREATE TABLE downloadedFiles (
-#    id integer PRIMARY KEY DEFAULT nextval('fileID'),
-#    name text,
-#    owner text,
-#    inserted timestamp,
-#    original_path text,
-#    data OID
-#);
+# CREATE SEQUENCE fileID START 0;
+# CREATE TABLE downloadedFiles (
+#     id integer PRIMARY KEY DEFAULT nextval('fileID'),
+#     name UNIQUE text,
+#     owner text,
+#     inserted timestamp,
+#     original_path text,
+#     data OID
+# )
 # 
 
 class DBFile(object):
@@ -74,8 +66,8 @@ class FileStore(object):
     def __init__(self, conn_str):
         self.conn = psycopg2.connect(conn_str)
     
-    def new(self, name):
-        blob = self.conn.lobject()
+    def new(self, name, filename=None):
+        blob = self.conn.lobject(0, 'w', 0, filename)
         csr = self.conn.cursor()
         csr.execute("INSERT INTO downloadedFiles (id, name, inserted, data)" +
                     "VALUES (DEFAULT, %s, %s, %s) RETURNING id",
@@ -83,6 +75,11 @@ class FileStore(object):
         id_ = csr.fetchone()[0]
         self.conn.commit()
         return DBFile(self.conn, id_)
+    
+    def name_exists(self, name):
+        csr = self.conn.cursor()
+        csr.execute("SELECT 1 FROM downloadedFiles WHERE name=%s", (name,))
+        return csr.rowcount > 0
     
     def get(self, id_):
         return DBFile(self.conn, id_)
