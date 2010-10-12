@@ -30,6 +30,9 @@ class Actor(base):
         # the next page to show
         nextpagetoshow = pyre.inventory.str('nextpagetoshow')
 
+        #
+        show_help_on_login = pyre.inventory.bool('show_help_on_login')
+
 
     def default(self, director):
         # general help
@@ -43,12 +46,29 @@ class Actor(base):
         hdoc = self.createHelpDocument(director)
         doc.document(id='help-window-interior').add(hdoc)
 
+        # minimize button
         b = lc.button(
             label='minimize',
             id = 'minimize-help-button',
-            onclick=select(id='dock').dock('attach', select(element=doc)),
             )
         doc.add(b)
+
+        # checkbox: show help on login
+        user_settings = self._getUserSettings(director)
+        from luban.content.FormCheckBox import FormCheckBox
+        cb = FormCheckBox(
+            id = 'show-help-window-on-login-cb',
+            label='Show this help window when log in',
+            value=user_settings.show_help_on_login
+            )
+        doc.add(cb)
+
+        #
+        b.onclick=[
+            select(id='dock').dock('attach', select(element=doc)),
+            load(actor='help', routine='setShowHelpOnLogin',
+                 show_help_on_login=select(element=cb).getAttr('value')),
+            ]
 
         # hidden field to save the page string
         from luban.content.FormTextField import FormTextField
@@ -56,11 +76,18 @@ class Actor(base):
         field.value = self.inventory.nextpagetoshow
         doc.add(field)
 
-        user_settings = self._getUserSettings(director)
         if not user_settings.show_help_on_login:
             doc.oncreate = select(id='dock').dock('attach', select(element=doc))
         
         return doc
+
+
+    def setShowHelpOnLogin(self, director):
+        value = self.inventory.show_help_on_login
+        user_settings = self._getUserSettings(director)
+        user_settings.show_help_on_login = value
+        director.clerk.db.updateRecord(user_settings)
+        return
 
 
     def showHelpWindow(self, director):
