@@ -80,6 +80,22 @@ height:1.5em;
 }
 
 
+/* new structure forms */
+.decideInputMethod[luban-element-type=splitter] > table {
+    width:auto;
+}
+.decideInputMethod[luban-element-type=splitter] .luban-button {
+    border:none;
+}
+#new-structure-form {
+    background-color:#eeeeee;
+    padding:0.3em;
+    -moz-border-radius:1em;
+}
+.decideInputMethod[luban-element-type="splitter"] .luban-button-container.selected .luban-button {
+    border:solid 1px lightGreen;
+}
+
 /* editor */
 #edit-atomic-structure-form  .master-controls {
 text-align:right;

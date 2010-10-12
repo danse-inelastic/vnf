@@ -16,11 +16,6 @@
 from luban.content import load, select, alert
 import luban.content as lc
 
-from luban.content.FormTextField import FormTextField
-from luban.content.FormSelectorField import FormSelectorField
-from luban.content.FormSubmitButton import FormSubmitButton
-from luban.content.Button import Button
-from luban.content.Document import Document
 
 def visual(director, id = None):
 #    if not id:
@@ -30,35 +25,40 @@ def visual(director, id = None):
     
 # need to put these three buttons on a grid
 
-    decideInput = Document(Class='decideInputMethod')
+    decideInput = lc.splitter(id='input-method-selectors-container', Class='decideInputMethod')
+    doc.add(decideInput)
+
+    dehighlightbuttons = select(element=decideInput).find(type='button').removeClass('selected')
+    highlightbutton = lambda b: [dehighlightbuttons, select(element=b).addClass('selected')]
     
-    btnDb = Button(label='Load from database', tip='load from database')
-    btnDb.onclick = select(id='new-structure-form'
-                           ).replaceContent(
-        load(actor='atomicstructure/cod', 
-                                routine='default'))#, 
-                                #id = id))
-    decideInput.add(btnDb)
+    btnDb = lc.button(label='Load from database', tip='load from database')
+    btnDb.onclick = [
+        select(id='new-structure-form').replaceContent(
+            load(actor='atomicstructure/cod', 
+                 routine='default')  #, #id = id))
+            )
+        ] +  highlightbutton(btnDb)
+    btnDb.Class = 'selected'
+    decideInput.section().add(btnDb)
     
-#    btnMan = Button(label='Create manually', tip='input coordinates by hand')
+#    btnMan = lc.button(label='Create manually', tip='input coordinates by hand')
 #    btnMan.onclick = select(id='new-structure-form'
 #                            ).replaceContent(
 #        director.retrieveVisual('atomicstructure/edit-structure-view',
 #                                director=director,
 #                                id = id))
-#    decideInput.add(btnMan)
+#    decideInput.section().add(btnMan)
     
-    btnUpload = Button(label='Upload', tip='upload from file')
-    btnUpload.onclick = select(id='new-structure-form'
-                           ).replaceContent(
-        director.retrieveVisual('atomicstructure/upload-matter-panel',
-                                director=director))#,
-                                #uploadid = id))
-    decideInput.add(btnUpload)
+    btnUpload = lc.button(label='Upload', tip='upload from file')
+    btnUpload.onclick = [
+        select(id='new-structure-form').replaceContent(
+            director.retrieveVisual('atomicstructure/upload-matter-panel',
+                                    director=director)
+            ), #, #uploadid = id))
+        ] + highlightbutton(btnUpload)
+    decideInput.section().add(btnUpload)
     
-    doc.add(decideInput)
-
-    formdoc = Document(id='new-structure-form', Class='new-structure-container')
+    formdoc = lc.document(id='new-structure-form', Class='new-structure-container')
     formdoc.oncreate = select(element=formdoc).replaceContent(
         load(actor='atomicstructure/cod', routine='default')#, id = id)
         )
