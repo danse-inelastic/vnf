@@ -87,14 +87,30 @@ height:1.5em;
 .decideInputMethod[luban-element-type=splitter] .luban-button {
     border:none;
 }
+#body-frame .decideInputMethod[luban-element-type="splitter"] > table.luban-splitter > tbody > tr > td {
+    margin:0;
+    padding:0;
+}
+#body-frame .decideInputMethod[luban-element-type="splitter"] > table.luban-splitter > tbody > tr > td > div .luban-button-container, .luban-button-container a {
+    margin-bottom:0;
+    padding-bottom:0;
+    -moz-border-radius:0;
+    -webkit-border-radius:0;
+}
+.decideInputMethod[luban-element-type="splitter"] .luban-button-container .luban-button {
+    background-color:#f5f8fa;
+}
+.decideInputMethod[luban-element-type="splitter"] .luban-button-container.selected .luban-button {
+    background-color:#eeeeee;
+}
+
 #new-structure-form {
     background-color:#eeeeee;
     padding:0.3em;
     -moz-border-radius:1em;
+    -webkit-border-radius: 1em;
 }
-.decideInputMethod[luban-element-type="splitter"] .luban-button-container.selected .luban-button {
-    border:solid 1px lightGreen;
-}
+
 
 /* editor */
 #edit-atomic-structure-form  .master-controls {
