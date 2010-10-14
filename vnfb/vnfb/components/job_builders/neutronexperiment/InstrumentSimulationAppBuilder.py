@@ -423,175 +423,6 @@ class Builder(base):
         return
 
 
-    def onLMonitor(self, m):
-        kwds = {
-            'name': m.componentname,
-            'category': 'monitors',
-            'type': 'L_monitor',
-            'supplier': 'mcstas2',
-            }
-        self.onNeutronComponent( **kwds )
-
-        opts = {
-            }
-
-        parameters = {
-            'filename': outputfilename(m),
-            'xmin': m.x_min,
-            'xmax': m.x_max,
-            'ymin': m.y_min,
-            'ymax': m.y_max,
-            'xwidth': m.x_width,
-            'yheight': m.y_height,
-            'Lmin': m.Lmin,
-            'Lmax': m.Lmax,
-            'nchan': m.nchan,
-            }
-        for k,v in parameters.iteritems():
-            opts['%s.%s' % (m.componentname, k)] = v
-            continue
-
-        self.cmdline_opts.update( opts )
-        return
-
-
-    def onMonitor(self, m):
-        # Monitor
-        kwds = {
-            'name': m.componentname,
-            'category': 'monitors',
-            'type': 'Monitor',
-            'supplier': 'mcstas2',
-            }
-        self.onNeutronComponent( **kwds )
-
-        opts = {
-            }
-
-        parameters = {
-            'xmin': m.x_min,
-            'xmax': m.x_max,
-            'ymin': m.y_min,
-            'ymax': m.y_max,
-            'xwidth': m.xwidth,
-            'yheight': m.yheight,
-            }
-        for k,v in parameters.iteritems():
-            opts['%s.%s' % (m.componentname, k)] = v
-            continue
-
-        self.cmdline_opts.update( opts )
-        return
-
-
-    def onNDMonitor(self, m):
-        # NDMonitor
-        kwds = {
-            'name': m.componentname,
-            'category': 'monitors',
-            'type': 'Monitor_nD',
-            'supplier': 'mcstas2',
-            }
-        self.onNeutronComponent( **kwds )
-
-        opts = {
-            }
-
-        parameters = {
-            'filename': outputfilename(m),
-            'xmin': m.x_min,
-            'xmax': m.x_max,
-            'ymin': m.y_min,
-            'ymax': m.y_max,
-            'xwidth': m.xwidth,
-            'yheight': m.yheight,
-            'options': m.options,
-            'user1': m.user1,
-            'user2': m.user2,
-            'username1': m.username1,
-            'username2': m.username2,
-            'zthick': m.zthick,
-            'zmin': m.zmin,
-            'zmax': m.zmax,
-            'bins': m.bins,
-            'min': m.min,
-            'max': m.max,
-            }
-        for k,v in parameters.iteritems():
-            opts['%s.%s' % (m.componentname, k)] = v
-            continue
-
-        self.cmdline_opts.update( opts )
-        return
-
-
-    def onPSDMonitor(self, m):
-        # PSDMonitor
-        kwds = {
-            'name': m.componentname,
-            'category': 'monitors',
-            'type': 'PSD_monitor',
-            'supplier': 'mcstas2',
-            }
-        self.onNeutronComponent( **kwds )
-
-        opts = {
-            }
-
-        parameters = {
-            'filename': outputfilename(m),
-            'xmin': m.x_min,
-            'xmax': m.x_max,
-            'ymin': m.y_min,
-            'ymax': m.y_max,
-            'xwidth': m.xwidth,
-            'yheight': m.yheight,
-            'nx': m.nx,
-            'ny': m.ny,
-            }
-        for k,v in parameters.iteritems():
-            opts['%s.%s' % (m.componentname, k)] = v
-            continue
-
-        self.cmdline_opts.update( opts )
-        return
-
-
-    def onPSD_TEWMonitor(self, m):
-        # PSD_TEWMonitor
-        kwds = {
-            'name': m.componentname,
-            'category': 'monitors',
-            'type': 'PSD_TEW_monitor',
-            'supplier': 'mcstas2',
-            }
-        self.onNeutronComponent( **kwds )
-
-        opts = {
-            }
-
-        parameters = {
-            'filename': outputfilename(m),
-            'xwidth': m.xwidth,
-            'yheight': m.yheight,
-            'nxchan': m.nxchan,
-            'nychan': m.nychan,
-            'nbchan': m.nbchan,
-            'type': m.type,
-            'format': m.format,
-            'bmin': m.bmin,
-            'bmax': m.bmax,
-            'deltab': m.deltab,
-            'restore_neutron': m.restore_neutron,
-            }
-        for k,v in parameters.iteritems():
-            opts['%s.%s' % (m.componentname, k)] = v
-            continue
-
-        self.cmdline_opts.update( opts )
-        return
-
-
     def onTofMonitor(self, m):
         kwds = {
             'name': m.componentname,
@@ -622,139 +453,6 @@ class Builder(base):
         
         self.cmdline_opts.update( opts )
         return
-
-
-    def onGuideGravity(self, m):
-        kwds = {
-            'name': m.componentname,
-            'category': 'optics',
-            'type': 'Guide_gravity',
-            'supplier': 'mcstas2',
-            }
-        self.onNeutronComponent( **kwds )
-
-        opts = {}
-
-        parameters = {
-            'w1': m.w1,
-            'h1': m.h1,
-            'w2': m.w2,
-            'h2': m.h2,
-            'l': m.l,
-            'R0': m.R0,
-            'Qc': m.Qc,
-            'alpha': m.alpha,
-            'm': m.m,
-            'W': m.W,
-            'k': m.k,
-            'd': m.d,
-            'mleft': m.mleft,
-            'mright': m.mright,
-            'mtop': m.mtop,
-            'mbottom': m.mbottom,
-            'kh': m.kh,
-            'G': m.G,
-            'wavy': m.wavy,
-            'wavy_z': m.wavy_z,
-            'wavy_tb': m.wavy_tb,
-            'wavy_lr': m.wavy_lr,
-            'chamfers': m.chamfers,
-            'chamfers_z': m.chamfers_z,
-            'chamfers_lr': m.chamfers_lr,
-            'chamfers_tb': m.chamfers_tb,
-            'nelements': m.nelements,
-            'nu': m.nu,
-            'phase': m.phase,
-            'reflect': m.reflect,
-            }
-        for k,v in parameters.iteritems():
-            opts['%s.%s' % (m.componentname, k)] = v
-
-        self.cmdline_opts.update( opts )
-
-
-    def onGuide(self, m):
-        kwds = {
-            'name': m.componentname,
-            'category': 'optics',
-            'type': 'Guide',
-            'supplier': 'mcstas2',
-            }
-        self.onNeutronComponent( **kwds )
-
-        opts = {}
-
-        parameters = {
-            'w1': m.w1,
-            'h1': m.h1,
-            'w2': m.w2,
-            'h2': m.h2,
-            'l': m.l,
-            'R0': m.R0,
-            'Qc': m.Qc,
-            'alpha': m.alpha,
-            'm': m.m,
-            'W': m.W,
-            'reflect': m.reflect,
-            }
-        for k,v in parameters.iteritems():
-            opts['%s.%s' % (m.componentname, k)] = v
-
-        self.cmdline_opts.update( opts )
-
-
-    def onSlit(self, m):
-        kwds = {
-            'name': m.componentname,
-            'category': 'optics',
-            'type': 'Slit',
-            'supplier': 'mcstas2',
-            }
-        self.onNeutronComponent( **kwds )
-
-        opts = {}
-
-        parameters = {
-            'xmin': m.x_min,
-            'xmax': m.x_max,
-            'ymin': m.y_min,
-            'ymax': m.y_max,
-            'radius': m.radius,
-            'cut': m.cut,
-            'width': m.width,
-            'height': m.height,
-            }
-        for k,v in parameters.iteritems():
-            opts['%s.%s' % (m.componentname, k)] = v
-
-        self.cmdline_opts.update( opts )
-
-
-    def onCollimatorLinear(self, m):
-        kwds = {
-            'name': m.componentname,
-            'category': 'optics',
-            'type': 'Collimator_linear',
-            'supplier': 'mcstas2',
-            }
-        self.onNeutronComponent( **kwds )
-
-        opts = {}
-
-        parameters = {
-            'xmin': m.x_min,
-            'xmax': m.x_max,
-            'ymin': m.y_min,
-            'ymax': m.y_max,
-            'len': m.len,
-            'divergence': m.divergence,
-            'transmission': m.transmission,
-            'divergenceV': m.divergenceV,
-            }
-        for k,v in parameters.iteritems():
-            opts['%s.%s' % (m.componentname, k)] = v
-
-        self.cmdline_opts.update( opts )
 
 
     def onDiskChopper(self, m):
@@ -791,9 +489,270 @@ class Builder(base):
         self.cmdline_opts.update( opts )
 
 
-#    def onVanadiumPlate(self, m):
+    def onCollimatorLinear(self, component):
+        kwds = {
+            'name': component.componentname,
+            'category': 'optics',
+            'type': 'Collimator_linear',
+            'supplier': 'mcstas2',
+            }
+        self.onNeutronComponent( **kwds )
+
+        opts = {}
+
+        parameters = {
+            'xmin': component.x_min,
+            'xmax': component.x_max,
+            'ymin': component.y_min,
+            'ymax': component.y_max,
+            'len': component.len,
+            'divergence': component.divergence,
+            'transmission': component.transmission,
+            'divergenceV': component.divergenceV,
+            }
+        for k,v in parameters.iteritems():
+            opts['%s.%s' % (component.componentname, k)] = v
+
+        self.cmdline_opts.update( opts )
+
+
+    def onSlit(self, component):
+        kwds = {
+            'name': component.componentname,
+            'category': 'optics',
+            'type': 'Slit',
+            'supplier': 'mcstas2',
+            }
+        self.onNeutronComponent( **kwds )
+
+        opts = {}
+
+        parameters = {
+            'xmin': component.x_min,
+            'xmax': component.x_max,
+            'ymin': component.y_min,
+            'ymax': component.y_max,
+            'radius': component.radius,
+            'cut': component.cut,
+            'width': component.width,
+            'height': component.height,
+            }
+        for k,v in parameters.iteritems():
+            opts['%s.%s' % (component.componentname, k)] = v
+
+        self.cmdline_opts.update( opts )
+
+
+    def onLMonitor(self, component):
+        kwds = {
+            'name': component.componentname,
+            'category': 'monitors',
+            'type': 'L_monitor',
+            'supplier': 'mcstas2',
+            }
+        self.onNeutronComponent( **kwds )
+
+        opts = {}
+
+        parameters = {
+            'xmin': component.x_min,
+            'xmax': component.x_max,
+            'ymin': component.y_min,
+            'ymax': component.y_max,
+            'xwidth': component.xwidth,
+            'yheight': component.yheight,
+            'Lmin': component.Lmin,
+            'Lmax': component.Lmax,
+            'nchan': component.nchan,
+            'filename': outputfilename(component),
+            }
+        for k,v in parameters.iteritems():
+            opts['%s.%s' % (component.componentname, k)] = v
+
+        self.cmdline_opts.update( opts )
+
+
+    def onGuide(self, component):
+        kwds = {
+            'name': component.componentname,
+            'category': 'optics',
+            'type': 'Guide',
+            'supplier': 'mcstas2',
+            }
+        self.onNeutronComponent( **kwds )
+
+        opts = {}
+
+        parameters = {
+            'w1': component.w1,
+            'h1': component.h1,
+            'w2': component.w2,
+            'h2': component.h2,
+            'l': component.l,
+            'R0': component.R0,
+            'Qc': component.Qc,
+            'alpha': component.alpha,
+            'm': component.m,
+            'W': component.W,
+            'reflect': component.reflect,
+            }
+        for k,v in parameters.iteritems():
+            opts['%s.%s' % (component.componentname, k)] = v
+
+        self.cmdline_opts.update( opts )
+
+
+    def onDiskChopper(self, component):
+        kwds = {
+            'name': component.componentname,
+            'category': 'optics',
+            'type': 'DiskChopper',
+            'supplier': 'mcstas2',
+            }
+        self.onNeutronComponent( **kwds )
+
+        opts = {}
+
+        parameters = {
+            'theta_0': component.theta_0,
+            'R': component.R,
+            'h': component.h,
+            'omega': component.omega,
+            'n': component.n,
+            'j': component.j,
+            'theta_1': component.theta_1,
+            't_0': component.t_0,
+            'IsFirst': component.IsFirst,
+            'n_pulse': component.n_pulse,
+            'abs_out': component.abs_out,
+            'phi_0': component.phi_0,
+            'w': component.w,
+            'wc': component.wc,
+            'compat': component.compat,
+            }
+        for k,v in parameters.iteritems():
+            opts['%s.%s' % (component.componentname, k)] = v
+
+        self.cmdline_opts.update( opts )
+
+
+    def onGuideGravity(self, component):
+        kwds = {
+            'name': component.componentname,
+            'category': 'optics',
+            'type': 'Guide_gravity',
+            'supplier': 'mcstas2',
+            }
+        self.onNeutronComponent( **kwds )
+
+        opts = {}
+
+        parameters = {
+            'reflect': component.reflect,
+            'w1': component.w1,
+            'h1': component.h1,
+            'w2': component.w2,
+            'h2': component.h2,
+            'l': component.l,
+            'R0': component.R0,
+            'Qc': component.Qc,
+            'alpha': component.alpha,
+            'm': component.m,
+            'W': component.W,
+            'k': component.k,
+            'd': component.d,
+            'mleft': component.mleft,
+            'mright': component.mright,
+            'mtop': component.mtop,
+            'mbottom': component.mbottom,
+            'kh': component.kh,
+            'G': component.G,
+            'wavy': component.wavy,
+            'wavy_z': component.wavy_z,
+            'wavy_tb': component.wavy_tb,
+            'wavy_lr': component.wavy_lr,
+            'chamfers': component.chamfers,
+            'chamfers_z': component.chamfers_z,
+            'chamfers_lr': component.chamfers_lr,
+            'chamfers_tb': component.chamfers_tb,
+            'nelements': component.nelements,
+            'nu': component.nu,
+            'phase': component.phase,
+            }
+        for k,v in parameters.iteritems():
+            opts['%s.%s' % (component.componentname, k)] = v
+
+        self.cmdline_opts.update( opts )
+
+
+    def onPSDMonitor(self, component):
+        kwds = {
+            'name': component.componentname,
+            'category': 'monitors',
+            'type': 'PSD_monitor',
+            'supplier': 'mcstas2',
+            }
+        self.onNeutronComponent( **kwds )
+
+        opts = {}
+
+        parameters = {
+            'xmin': component.x_min,
+            'xmax': component.x_max,
+            'ymin': component.y_min,
+            'ymax': component.y_max,
+            'xwidth': component.xwidth,
+            'yheight': component.yheight,
+            'nx': component.nx,
+            'ny': component.ny,
+            'filename': outputfilename(component),
+            }
+        for k,v in parameters.iteritems():
+            opts['%s.%s' % (component.componentname, k)] = v
+
+        self.cmdline_opts.update( opts )
+
+
+    def onNDMonitor(self, component):
+        kwds = {
+            'name': component.componentname,
+            'category': 'monitors',
+            'type': 'Monitor_nD',
+            'supplier': 'mcstas2',
+            }
+        self.onNeutronComponent( **kwds )
+
+        opts = {}
+
+        parameters = {
+            'xwidth': component.xwidth,
+            'yheight': component.yheight,
+            'zthick': component.zthick,
+            'xmin': component.x_min,
+            'xmax': component.x_max,
+            'ymin': component.y_min,
+            'ymax': component.y_max,
+            'zmin': component.zmin,
+            'zmax': component.zmax,
+            'bins': component.bins,
+            'min': component.min,
+            'max': component.max,
+            'options': component.options,
+            'filename': outputfilename(component),
+            'user1': component.user1,
+            'user2': component.user2,
+            'username1': component.username1,
+            'username2': component.username2,
+            }
+        for k,v in parameters.iteritems():
+            opts['%s.%s' % (component.componentname, k)] = v
+
+        self.cmdline_opts.update( opts )
+
+
+#    def onVanadiumPlate(self, component):
 #        kwds = {
-#            'name': m.componentname,
+#            'name': component.componentname,
 #            'category': 'samples',
 #            'type': 'V_sample',
 #            'supplier': 'mcstas2',
@@ -803,33 +762,89 @@ class Builder(base):
 #        opts = {}
 #
 #        parameters = {
-#            'radius_i': m.radius_i,
-#            'radius_o': m.radius_o,
-#            'h': m.h,
-#            'focus_r': m.focus_r,
-#            'pack': m.pack,
-#            'frac': m.frac,
-#            'f_QE': m.f_QE,
-#            'gamma': m.gamma,
-#            'target_x': m.target_x,
-#            'target_y': m.target_y,
-#            'target_z': m.target_z,
-#            'focus_xw': m.focus_xw,
-#            'focus_yh': m.focus_yh,
-#            'focus_aw': m.focus_aw,
-#            'focus_ah': m.focus_ah,
-#            'xwidth': m.xwidth,
-#            'yheight': m.yheight,
-#            'zthick': m.zthick,
-#            'sig_a': m.sig_a,
-#            'sig_i': m.sig_i,
-#            'V0': m.V0,
-#            'target_index': m.target_index,
+#            'radius_i': component.radius_i,
+#            'radius_o': component.radius_o,
+#            'h': component.h,
+#            'focus_r': component.focus_r,
+#            'pack': component.pack,
+#            'frac': component.frac,
+#            'f_QE': component.f_QE,
+#            'gamma': component.gamma,
+#            'target_x': component.target_x,
+#            'target_y': component.target_y,
+#            'target_z': component.target_z,
+#            'focus_xw': component.focus_xw,
+#            'focus_yh': component.focus_yh,
+#            'focus_aw': component.focus_aw,
+#            'focus_ah': component.focus_ah,
+#            'xwidth': component.xwidth,
+#            'yheight': component.yheight,
+#            'zthick': component.zthick,
+#            'sig_a': component.sig_a,
+#            'sig_i': component.sig_i,
+#            'V0': component.V0,
+#            'target_index': component.target_index,
 #            }
 #        for k,v in parameters.iteritems():
-#            opts['%s.%s' % (m.componentname, k)] = v
+#            opts['%s.%s' % (component.componentname, k)] = v
 #
 #        self.cmdline_opts.update( opts )
+
+
+    def onPSD_TEWMonitor(self, component):
+        kwds = {
+            'name': component.componentname,
+            'category': 'monitors',
+            'type': 'PSD_TEW_monitor',
+            'supplier': 'mcstas2',
+            }
+        self.onNeutronComponent( **kwds )
+
+        opts = {}
+
+        parameters = {
+            'xwidth': component.xwidth,
+            'yheight': component.yheight,
+            'bmin': component.bmin,
+            'bmax': component.bmax,
+            'deltab': component.deltab,
+            'restore_neutron': component.restore_neutron,
+            'nxchan': component.nxchan,
+            'nychan': component.nychan,
+            'nbchan': component.nbchan,
+            'type': component.type,
+            'filename': outputfilename(component),
+            'format': component.format,
+            }
+        for k,v in parameters.iteritems():
+            opts['%s.%s' % (component.componentname, k)] = v
+
+        self.cmdline_opts.update( opts )
+
+
+    def onMonitor(self, component):
+        kwds = {
+            'name': component.componentname,
+            'category': 'monitors',
+            'type': 'Monitor',
+            'supplier': 'mcstas2',
+            }
+        self.onNeutronComponent( **kwds )
+
+        opts = {}
+
+        parameters = {
+            'xmin': component.x_min,
+            'xmax': component.x_max,
+            'ymin': component.y_min,
+            'ymax': component.y_max,
+            'xwidth': component.xwidth,
+            'yheight': component.yheight,
+            }
+        for k,v in parameters.iteritems():
+            opts['%s.%s' % (component.componentname, k)] = v
+
+        self.cmdline_opts.update( opts )
 
 
     ### need further work here ###
