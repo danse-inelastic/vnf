@@ -45,6 +45,10 @@ class Actor(base):
         # 
         fileId = luban.inventory.str('fileId')
 
+        import pyre.inventory
+        datastore = pyre.inventory.str('datastore', default='/home/jbk/cod/cif')
+        
+
     def default(self, director):
         return director.retrieveVisual("cod/frame")     
          
@@ -243,7 +247,7 @@ class Actor(base):
         #retrieve cif file and load into data object
         #use a hack for now
         fileId = self.inventory.fileId
-        db = "/home/jbk/cod/cif"
+        db = self.inventory.datastore
         import os
         folder = fileId[0]
         filePath = os.path.join(db, folder, fileId+".cif")
@@ -267,4 +271,4 @@ class Actor(base):
                                                            #id = structure.id))
 
 def actor():
-    return Actor("atomicstructure/cod")
+    return Actor("atomicstructure-cod")
