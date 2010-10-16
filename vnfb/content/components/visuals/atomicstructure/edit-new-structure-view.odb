@@ -16,6 +16,9 @@ def visual(director=None, id=None):
 	s = domaccess.newAtomicStructure()
 	record = domaccess.orm(s)
 	id = record.id
+        # touch short description
+        record.short_description = ''
+        domaccess.db.updateRecord(record)
     
     return director.retrieveVisual(
 	    'atomicstructure/edit-structure-view', director=director, id=id)
