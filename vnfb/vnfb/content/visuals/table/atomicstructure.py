@@ -19,9 +19,9 @@ from luban.content.Link import Link
 class model(Model):
 
     selected = Model.descriptors.bool(name='selected')
-    id = Model.descriptors.link(name='id')
-    description = Model.descriptors.str(name='description')
-    visualize = Model.descriptors.link(name='visualize')
+    id = Model.descriptors.str(name='id')
+    description = Model.descriptors.link(name='description')
+    visualize = Model.descriptors.str(name='visualize')
     chemical_formula = Model.descriptors.str(name='chemical_formula')
     created = Model.descriptors.date(name='created')
 
@@ -30,10 +30,10 @@ class model(Model):
 
 columns = [
     View.Column(label='', measure='selected'),
-    View.Column(label='ID', measure='id'),
-    View.Column(label='Description', measure='description', editable=True),
-    View.Column(label='Visualize', measure='visualize'),
+    View.Column(label='ID', measure='id', hidden=True),
+    View.Column(label='Description', measure='description'), # editable=True),
     View.Column(label='Chemical_formula', measure='chemical_formula'),
+    View.Column(label='Visualize', measure='visualize'),
     View.Column(label='Date created', measure='created'),
     ]
 
@@ -47,7 +47,9 @@ def view(cols, editable=True):
 
 def getSelected(record): return False
 def getId(record):
-    label = record.id
+    return record.id
+def getDescription(record):
+    label = record.short_description
     link = Link(
         label = label,
         onclick = load(
@@ -56,8 +58,6 @@ def getId(record):
             )
         )
     return link
-def getDescription(record):
-    return record.short_description
 def getVisualize(record):
     return 'not implemented'
 def getCreated(record):
@@ -65,7 +65,6 @@ def getCreated(record):
     return str(date)
 def getChemical_formula(record):
     return record.chemical_formula
-
 
 def table(atomicstructures, cols, director, editable=True):
     view1 = view(cols, editable=editable)
