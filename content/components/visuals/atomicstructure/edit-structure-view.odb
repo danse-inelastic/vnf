@@ -16,7 +16,6 @@ from luban.content.FormSelectorField import FormSelectorField
 from luban.content.FormSubmitButton import FormSubmitButton
 
 def visual(director=None, id=None):
-    
     container = lc.document(id='edit-atomic-structure-form', Class='container')
 
     cancel = load(actor='atomicstructure', routine='canceledit', id = id)
