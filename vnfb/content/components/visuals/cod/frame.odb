@@ -34,7 +34,7 @@ def visual(director):
     # select button
     b = lc.button(label='import to VNF')
     b.onclick =  load(actor='atomicstructure/cod', routine='loadStructure', 
-                      id=select(id='cod-table').table('getIdentifiersForSelectedRow', 
+                      id=select(id='cod-table').table('getIdentifierForSelectedRow', 
                                               colname='selectone'))
     top.add(b)
     # table

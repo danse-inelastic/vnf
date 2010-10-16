@@ -51,7 +51,7 @@ class Factory(object):
         #
         b = lc.button(label="continue"); doc.add(b)
         selectedsample = select(id='sample-table').table(
-            'getIdentifiersForSelectedRow', colname='selectone')
+            'getIdentifierForSelectedRow', colname='selectone')
         selecteduid = load(
             actor='selectonesample',
             routine='getSelectedSampleUniqueIdentifierStr',

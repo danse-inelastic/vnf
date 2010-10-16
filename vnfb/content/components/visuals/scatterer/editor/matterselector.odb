@@ -60,7 +60,7 @@ class Factory(object):
         # select button
         b = lc.button(label='select'); doc.add(b)
         selected_matter = select(id='atomicstructure-table').table(
-            'getIdentifiersForSelectedRow', colname='selectone')
+            'getIdentifierForSelectedRow', colname='selectone')
         updatematter = load(
             actor='scatterer/editor', routine='selectMatter',
             id = self.id,

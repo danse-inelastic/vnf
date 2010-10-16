@@ -86,7 +86,7 @@ class Actor(base):
         b.onclick = load(
                 actor=self.name, routine='atomSimForm',
                 structureId=select(id='atomicstructure-table').table(
-                    'getIdentifiersForSelectedRow', colname='selectone'),
+                    'getIdentifierForSelectedRow', colname='selectone'),
                 )
         return doc
 
