@@ -31,7 +31,28 @@ class Actor(base):
         import luban.inventory
 
 
-        
+    def _reportErrors(self, errors):
+        sum = errors.get('sum')
+        if not sum:
+            actions = super(Actor, self)._reportErrors(errors)
+        else:
+            actions = [alert(sum)]
+        return actions
+
+
+    def _getInputErrors(self):
+        errors = super(Actor, self)._getInputErrors()
+        if not errors:
+            self._castInventoryProperties()
+            alpha = self.inventory.alpha
+            beta = self.inventory.beta
+            gamma = self.inventory.gamma
+            max1 = max(alpha, beta, gamma)
+            sum_of_smaller_numbers = alpha+beta+gamma - max1
+            if sum_of_smaller_numbers <= max1:
+                errors['sum'] = "The angles must satisfy angle1+angle2>angle3"
+        return errors
+
 
 def actor():
     return Actor('orm/lattices')

@@ -237,7 +237,17 @@ class Actor(base):
     def showOverview(self, director):
         domaccess = self._domaccess(director)
         id = self.inventory.id
-        constructed = domaccess.isConstructued(id=id)
+        try:
+            constructed = domaccess.isConstructued(id=id)
+        except:
+            import traceback
+            msg = 'Failed to test structure %s. Traceback: \n%s' % (
+                id, traceback.format_exc())
+            self._debug.log(msg)
+            msg = 'Failed to load structure %r. It may have been deleted.'%(
+                id,)
+            return alert(msg)
+
         owned = domaccess.isOwnedByUser(id=id)
         if not constructed and not owned:
             # if the atomic structutre is not yet constructed, and

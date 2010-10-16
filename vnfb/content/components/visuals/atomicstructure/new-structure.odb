@@ -41,14 +41,6 @@ def visual(director, id = None):
     btnDb.Class = 'selected'
     decideInput.section().add(btnDb)
     
-#    btnMan = lc.button(label='Create manually', tip='input coordinates by hand')
-#    btnMan.onclick = select(id='new-structure-form'
-#                            ).replaceContent(
-#        director.retrieveVisual('atomicstructure/edit-structure-view',
-#                                director=director,
-#                                id = id))
-#    decideInput.section().add(btnMan)
-    
     btnUpload = lc.button(label='Upload', tip='upload from file')
     btnUpload.onclick = [
         select(id='new-structure-form').replaceContent(
@@ -57,6 +49,16 @@ def visual(director, id = None):
             ), #, #uploadid = id))
         ] + highlightbutton(btnUpload)
     decideInput.section().add(btnUpload)
+    
+    btnMan = lc.button(label='Create manually', tip='input coordinates by hand')
+    btnMan.onclick = [
+        select(id='new-structure-form').replaceContent(
+            load(actor='loadvisual', 
+                 visual='atomicstructure/edit-new-structure-view',
+                 id = id)
+            )
+        ] + highlightbutton(btnMan)
+    decideInput.section().add(btnMan)
     
     formdoc = lc.document(id='new-structure-form', Class='new-structure-container')
     formdoc.oncreate = select(element=formdoc).replaceContent(
