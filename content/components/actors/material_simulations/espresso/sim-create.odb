@@ -88,7 +88,7 @@ class Actor(base):
         doc.add(b)
         b.onclick = load(actor          = self.name,
                          structureid    = select(id='atomicstructure-table').table(
-                                                        'getIdentifiersForSelectedRow',
+                                                        'getIdentifierForSelectedRow',
                                                         colname = 'selectone')
             )
         return select(id='main-display-area').replaceContent(doc)

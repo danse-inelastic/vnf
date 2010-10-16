@@ -54,7 +54,7 @@ class Actor(base):
         #b.onclick = getInfoAndProceed()
         b.onclick = load(actor = 'analysis/mdanalysiswizard', 
                        routine = 'analysisSettings',
-                  trajectoryId = select(id='trajectory-table').table('getIdentifiersForSelectedRow', colname='selectone'),
+                  trajectoryId = select(id='trajectory-table').table('getIdentifierForSelectedRow', colname='selectone'),
                   analysisType = self.inventory.analysisType)
         return doc
 
