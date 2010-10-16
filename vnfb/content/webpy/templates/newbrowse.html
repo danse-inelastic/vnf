@@ -1,0 +1,97 @@
+$def with (host)
+<html>
+<head>
+	<title>Browsing remote filesystem at $host</title>
+	<link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css" rel="stylesheet" type="text/css"/>
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>
+	<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js"></script>
+	<script type="text/javascript" src="static/jquery.jstree.js"></script>
+	
+<script type="text/javascript">
+Object.size = function(obj) {
+    var size = 0, key;
+    for (key in obj) {
+        if (obj.hasOwnProperty(key)) size++;
+    }
+    return size;
+};
+
+var bars = new Object();
+function new_bar(name, data) {
+	chunks = data.split("|")
+	if (chunks[0] == 'error') {
+		alert(chunks[1]);
+		return;
+	}
+	else {
+		bars[chunks[0]] = 0.0;
+	}
+	\$("#bars").append("<center><strong>"+name+"</strong></center>")
+	\$("#bars").append("<div id='bar"+chunks[0]+"'></div>");
+	\$("#bar"+chunks[0]).progressbar({value: 0});
+}
+function update_bars() {
+	for (var i in bars) {
+		\$.ajax({
+			url:'progress/'+i,
+			success:function(data) {
+				var p = parseFloat(data);
+				\$("#bar"+i).progressbar("option", "value", p);
+				if (p > 99) {
+					delete bars[i];
+				}
+			}
+		});
+	}
+}
+setInterval("update_bars()",1000);
+update_bars();
+\$(document).ready(function() {
+	\$("#tree").jstree({
+		"json_data":{
+			"ajax":{
+				"url":function(n) {
+					return "dir/" + (n.attr ? n.attr("id") : "");
+				}
+			}
+		},
+		"plugins":["themes","json_data","ui"]
+	});
+	\$("#tree").bind("select_node.jstree", function(e, data) {
+		var node = data.rslt.obj;
+		if (node.attr("folder") == true) {
+			return;
+		}
+		var basename = node.attr("id").replace(/.*\//,'');
+		\$.ajax({
+			url:'download',
+			data: {"path":node.attr("id"),
+				   "dest":basename},
+			type:'POST',
+			success:function (data) {
+				new_bar(basename, data);
+			}
+		});
+	});
+});
+</script>
+<style type="text/css">
+#tree {
+	float:left;
+	border:solid 1px;
+	width:59%;
+}
+#bars {
+	float:right;
+	border:solid 1px;
+	width:39%;
+}
+</style>
+</head>
+<body>
+	<div id="tree">
+	</div>
+	<div id="bars">
+	</div>
+</body>
+</html>
