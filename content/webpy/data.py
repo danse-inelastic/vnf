@@ -29,7 +29,11 @@ class DataSource(object):
     def isfile(self, path):
         raise NotImplementedError()
     
-    def download(self, path, dest):
+    def download(self, path, dest, callback):
+        '''
+        callback should accept one parameter - progress, as a number
+        between zero and one
+        '''
         raise NotImplementedError()
     
     def name(self):
@@ -56,8 +60,12 @@ class FTPSource(DataSource):
     def isfile(self, path):
         return self.ftp.path.isfile(path)
     
-    def download(self, path, dest):
-        return self.ftp.download(path, dest, 'b')
+    def download(self, path, dest, callback):
+        sz = float(self.ftp.stat(path)[6]) # st_size
+        def cb(c, p=[0]):
+            p[0] += len(c)
+            callback(p[0] / sz)
+        return self.ftp.download(path, dest, 'b', cb)
     
     def name(self):
         return self._args[0]
@@ -107,10 +115,12 @@ class OrbiterSource(DataSource):
     def isfile(self, path):
         return not self.isdir(path)
     
-    def download(self, path, dest):
+    def download(self, path, dest, callback):
         node = self.path_to_node(path)
         url = self.orb.fileurl(node)
-        return urllib.urlretrieve(url, dest)
+        def cb(blocks, bs, total):
+            callback(blocks*bs / float(total))
+        return urllib.urlretrieve(url, dest, cb)
     
     def name(self):
         return 'ORNL'
