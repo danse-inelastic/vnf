@@ -5,6 +5,8 @@ Light abstraction layer for data sources
 '''
 
 import ftputil
+import time
+import os
 import orbiter
 import urllib
 
@@ -66,7 +68,6 @@ class FTPSource(DataSource):
             p[0] += len(c)
             callback(p[0] / sz)
         return self.ftp.download(path, dest, 'b', cb)
-    
     def name(self):
         return self._args[0]
 
@@ -125,5 +126,27 @@ class OrbiterSource(DataSource):
     def name(self):
         return 'ORNL'
 
+class LocalSource(DataSource):
+    def __init__(self, base, usn, pwd):
+        self.base = base
+        super(LocalSource, self).__init__(base, usn, pwd)
+    def listdir(self, path=''):
+        return os.listdir(self.base+path)
+    
+    def isdir(self, path):
+        return os.path.isdir(self.base+path)
+    
+    def isfile(self, path):
+        return os.path.isfile(self.base+path)
+    
+    def download(self, path, dest, callback):
+        open(dest,'wb').write(open(self.base+path,'rb').read())
+        callback(1.0)
+    
+    def name(self):
+        return "localhost"
+
 sources = {'NIST': lambda usn,pwd: FTPSource('ftp.ncnr.nist.gov',usn,pwd),
-           'ORNL': OrbiterSource}
+           'ORNL': OrbiterSource,
+           'DANSE Folder':lambda usn,pwd: LocalSource('/Volumes/DANSE/',usn,pwd),
+           'Root Folder':lambda usn,pwd: LocalSource('/',usn,pwd)}

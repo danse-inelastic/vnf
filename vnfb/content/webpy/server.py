@@ -33,25 +33,36 @@ urls = (
 
 app = web.application(urls, globals())
 
-def fetchd_req(req):
-    s = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
-    try:
-        s.connect('/tmp/cg_fetchd')
-    except socket.error:
-        os.unlink('/tmp/cg_fetchd')
-        subprocess.Popen(['python','fetchd.py'])
-        while not os.path.exists('/tmp/cg_fetchd'):
-            time.sleep(1.0)
-        s.connect('/tmp/cg_fetchd')
-    s.send(req)
-    return s.recv(0xFFFF).split("\x00")
-
 # Workaround to make sessions work in debug mode
 if web.config.get('_session') is None:
     session = web.session.Session(app, web.session.DiskStore('sessions'))
     web.config._session = session
 else:
     session = web.config._session
+
+def fetchd_req(req):
+    s = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
+    try:
+        s.connect('/tmp/cg_fetchd')
+    except socket.error:
+        try:
+            os.unlink('/tmp/cg_fetchd')
+        except OSError:
+            pass
+        subprocess.Popen(['python','fetchd.py'])
+        while not os.path.exists('/tmp/cg_fetchd'):
+            time.sleep(1.0)
+        s.connect('/tmp/cg_fetchd')
+    s.send(req)
+    buf = ['']
+    while True:
+        data = s.recv(1024)
+        if not data:
+            raise Exception('socket broken')
+        buf.append(data)
+        if buf and buf[-1] and buf[-1][-1] == '\x01':
+            break
+    return (''.join(buf)[:-1]).split("\x00")
 
 class DownloadPage:
     def GET(self):
@@ -61,7 +72,7 @@ class DownloadPage:
         source = session.source
         path = i.path
         dest = i.dest
-        ret = fetchd_req("download\x00%s\x00%s\x00%s"%(source, path, dest))
+        ret = fetchd_req("download\x00%s\x00%s\x00%s\x01"%(source, path, dest))
         if ret[0] == 'download':
             return ret[1]
         return '|'.join(ret)
@@ -69,7 +80,7 @@ class DownloadPage:
 
 class DirPage:
     def _children(self, path, source):
-        ret = fetchd_req("dir\x00%s\x00%s"%(source,path))
+        ret = fetchd_req("dir\x00%s\x00%s\x01"%(source,path))
         if ret[0] == 'dir':
             dirs = cPickle.loads(ret[3])
         else:
@@ -92,7 +103,7 @@ class DirPage:
 
 class ProgressPage:
     def GET(self, path):
-        ret = fetchd_req("progress\x00%s"%(path,))
+        ret = fetchd_req("progress\x00%s\x01"%(path,))
         if ret[0] == 'progress':
             return int(float(ret[2])*100)
         return str(ret)

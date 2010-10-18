@@ -6,10 +6,10 @@ import psycopg2
 import time
 
 #
-# CREATE SEQUENCE fileID START 0;
+# CREATE SEQUENCE fileID START 1;
 # CREATE TABLE downloadedFiles (
 #     id integer PRIMARY KEY DEFAULT nextval('fileID'),
-#     name UNIQUE text,
+#     name text UNIQUE,
 #     owner text,
 #     inserted timestamp,
 #     original_path text,
