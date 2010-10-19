@@ -34,6 +34,7 @@ serverlist = {"foxtrot": {  "address":      "foxtrot.danse.us",
 }
 
 DEFAULT = ""
+MKDIR   = "%s bash -c \"if [ ! -d '%s' ]; then mkdir -p '%s'; fi;\""
 
 # XXX: foxtrot specific
 # XXX: Can through an exception, handle?
@@ -58,10 +59,17 @@ def outdir(director, sim, server, optlevel="0"):
     return DEFAULT   # empty string
 
 
-# XXX: foxtrot specific
+
 # XXX: Can through an exception, handle?
-def createOutdir(director, sim, server, optlevel=0):
-    "Returns temp directory for QE"
+def createOutdir(director, sim, server, optlevel=0, cmd=MKDIR, shell="bpsh -a"):
+    """Returns temp directory for QE
+    
+    Example:
+        cmd     = "bpsh -a bash -c \"if [ ! -d '%s' ]; then mkdir -p '%s'; fi;\"" % (dir, dir)
+    Notes:
+        - Set either cmd or shell
+        
+    """
     if not sim:     # No None simulation
         return DEFAULT
 
@@ -73,8 +81,10 @@ def createOutdir(director, sim, server, optlevel=0):
         basedir = serverlist["foxtrot"]["outdir"]
         dir     = os.path.join(basedir, sim.id)
         # Magic line for checking is directory exists and creating one, if not
-        cmd     = "bpsh -a bash -c \"if [ ! -d '%s' ]; then mkdir -p '%s'; fi;\"" % (dir, dir)
-        director.csaccessor.execute(cmd, server, "")
+        cmdstr  = ""
+        if cmd:
+            cmdstr  = cmd % (shell, dir, dir)
+        director.csaccessor.execute(cmdstr, server, "")
 
 
 #class Server:

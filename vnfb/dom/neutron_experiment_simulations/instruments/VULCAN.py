@@ -27,8 +27,8 @@ out_format  = "table"
 PI          = 3.14159265
 
 # INITIALIZE section
-dc_tphase = 6.529/3960*vlambda
-dc_omega  = 2*PI*frequency
+dc_tphase = 6.529/3960*vlambda  #
+dc_omega  = 2*PI*frequency      # 377.0
 
 if mode == "hint":
     tg_w11= 0.016473;  tg_h11= 0.068046;  tg_alpha1= 2.800;
