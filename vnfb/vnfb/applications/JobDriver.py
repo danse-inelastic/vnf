@@ -308,7 +308,7 @@ class JobDriver(base):
 
     def _createOutdir(self, server):
         "Create output directory for QE: ESPRESSO_TEMPDIR"
-        createOutdir(self, self._sim, server, self.optlevel)
+        createOutdir(self, self._sim, server, self.optlevel) # (foxtrot: shell="bpsh -a", octopod: shell="")
         
 
     def _updateStatus(self, status):
