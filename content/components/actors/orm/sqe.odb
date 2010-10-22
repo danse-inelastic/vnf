@@ -82,7 +82,7 @@ class Actor(base):
             plotObj = histogram('S(Q,E)', [qaxis, eaxis], data=I)
         if bottom!=None and top!=None:
             plotObj.clip = [bottom, top]
-        plotObj.plotType(imageX=True) #nc plottable
+        plotObj.plotType(image=True) #nc plottable
         plotObj.savefig(filepath)
 #        try:
 #            if bottom and top:
