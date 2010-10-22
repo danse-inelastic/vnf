@@ -140,8 +140,8 @@ class Actor(base):
         a Java Virtual Machine (JVM) installed.  If you do not, clicking 
         "Launch" will likely cause your browser to alert you to this
         and install one automatically.  It is recommended to use 
-        the JVM from Sun Microsystems.  The OpenJDK (default on Ubuntu OS)
-        does not work due to bugs in their webstart launcher.''']
+        the JVM from Sun Microsystems.  <b>The OpenJDK (default on Ubuntu OS)
+        does not work due to bugs in their webstart launcher.</b>''']
 
         hdoc = lc.htmldocument(id='mdPlan')
         
