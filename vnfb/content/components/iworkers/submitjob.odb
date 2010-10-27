@@ -57,11 +57,11 @@ class Worker(base):
         except Exception, e:
             job.state = 'submissionfailed'
             errmsg = '%s: %s' % (e.__class__.__name__, e)
-            job.error = errmsg
-            domaccess.updateRecordWithID(job)
             import traceback
             self._debug.log('submission of Job %s failed. %s' % (
                 id, traceback.format_exc()) )
+            job.error = errmsg[:job.__class__.error.length]
+            domaccess.updateRecordWithID(job)
             raise
         return
 
@@ -105,7 +105,7 @@ class Worker(base):
 
 
     def schedule(self, job):
-        from vnf.components.Scheduler import schedule
+        from vnfb.utils.job.scheduler import schedule
         return schedule(job, self.director)
 
 

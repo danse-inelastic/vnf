@@ -53,9 +53,16 @@ class TestApp(TestAppBase):
 TestCase = createTestCase(TestApp)
 
 
+import unittest
+def pysuite():
+    suite1 = unittest.makeSuite(TestCase)
+    return unittest.TestSuite( (suite1,) )
+
+
 def main():
-    import unittest
-    unittest.main()
+    import journal
+    pytests = pysuite()
+    unittest.TextTestRunner(verbosity=2).run(pytests)
     return
 
 

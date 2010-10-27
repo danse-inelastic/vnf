@@ -16,6 +16,14 @@ from vnfb.testing.job_builder import TestApp as base
 class TestAppBase(base):
 
     Kernel = None
+
+
+    class Inventory(base.Inventory):
+
+        import pyre.inventory
+        
+        server = pyre.inventory.str('server')
+        
     
     def getKernel(self):
         raise Notimplementedactor
@@ -47,6 +55,10 @@ class TestAppBase(base):
         else:
             if len(exps)>1: raise RuntimeError, 'should not happen: more than one exps'
             exp = exps[0]
+        
+        if self.inventory.server:
+            self.updateJobServer(exp)
+
         return exp
 
 
@@ -130,11 +142,26 @@ class TestAppBase(base):
         return job
 
 
+    def updateJobServer(self, exprecord):
+        director = self
+        domaccess = self.retrieveDOMAccessor('experiment')
+        orm = domaccess.orm
+        
+        # job record
+        job = exprecord.getJob(orm.db)
+        
+        # update
+        job.server = self._getServer()
+        orm.db.updateRecord(job)
+        
+        return
+        
+
     def createJob(self, id, exprecord, db):
         # server
-        serveraccess = self.retrieveDOMAccessor('server')
-        server = serveraccess.getServerRecord('server000')
-
+        server = self._getServer()
+        
+        #
         from vnfb.dom.Job import Job
         job = Job()
         job.id = id
@@ -144,6 +171,12 @@ class TestAppBase(base):
         job.creator = 'demo'
         db.insertRow(job)
         return job
+
+
+    def _getServer(self):
+        serveraccess = self.retrieveDOMAccessor('server')
+        server = self.inventory.server or 'server000'
+        return serveraccess.getServerRecord(server)
 
 
     def _checkJobDir(self):
