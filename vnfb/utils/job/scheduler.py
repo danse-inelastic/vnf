@@ -29,7 +29,7 @@ def schedule( job, director ):
     scheduler = schedulerfactory( server )
     launch = lambda cmd: director.csaccessor.execute(
         cmd, server, server_jobpath, suppressException=True)
-    scheduler = scheduler(launch, prefix = 'source ~/.vnf' )
+    scheduler = scheduler(launch, prefix = 'source ~/.vnf > /dev/null' )
 
     # submit job through scheduler
     walltime = job.walltime
@@ -41,6 +41,11 @@ def schedule( job, director ):
     director.csaccessor.execute('echo "%s" > jobid' % id1, server, server_jobpath)
 
     # update job db record
+    maxidlen = job.__class__.id_incomputingserver.length
+    if len(id1) > maxidlen:
+        msg = "The job id returned from scheduler exceeds the maximum length %s: id='%s'" %(
+            maxidlen, id1)
+        raise RuntimeError, msg
     job.id_incomputingserver = id1
     job.state = 'submitted'
     import time
