@@ -201,10 +201,16 @@ class SSHer(base):
         cmd     = cmd.replace('"', '\\\"')
         rmtcmd  = 'cd %s && %s' % (remotepath, cmd)
         
-        pieces = [
+        pieces = []
+        if private_key:
+            pieces.append('eval `ssh-agent`  > /dev/null; ')
+            pieces.append('ssh-add "%s" > /dev/null; ' % private_key)
+
+        pieces += [
             'ssh',
             "-o 'StrictHostKeyChecking=no'",
             "-o 'BatchMode=yes'",
+            "-A", 
             ]
         
         if port:
@@ -213,13 +219,20 @@ class SSHer(base):
         if known_hosts:
             pieces.append( "-o 'UserKnownHostsFile=%s'" % known_hosts )
 
-        if private_key:
-            pieces.append( "-i %s" % private_key )
+        # if private_key:
+        #    pieces.append( "-i %s" % private_key )
             
+        if username:
+            pieces.append('%s@%s' % (username, address))
+        else:
+            pieces.append('%s' % (address,))
         pieces += [
-            '%s@%s' % (username, address),
             '"%s"' % rmtcmd,    # Fixed "" can be a problem
             ]
+
+        if private_key:
+            pieces.append(';')
+            pieces.append('kill -9 $SSH_AGENT_PID > /dev/null')
 
         cmd = ' '.join(pieces)
 
@@ -232,33 +245,82 @@ class SSHer(base):
         return failed, output, error
 
 
+    def _isdirectory(self, server, path):
+        if _localhost(server):
+            return os.path.isdir(path)
+        cmd = '''python -c "import os; print int(os.path.isdir('%s'))"''' % path
+        failed, out, err = self.execute(cmd, server, '')
+        return int(out)
+        
+        
     def _copyfile_rr(self, server1, path1, server2, path2):
         'push a remote file to another remote server'
+        # basic idea is to ssh into a remote host (server1 or server2)
+        # and run a scp command there.
+        # this assumes that scp is available on that host
+        # "rhost" will be the chosen remote host
+
+        def url(server, path):
+            rt = '%s@%s:%s/%s' % (
+                server.username, server.address, server.port, path)
+            if self._isdirectory(server, path):
+                rt += '/'
+            return rt
+
+        if not path1.endswith('/') and self._isdirectory(server1, path1):
+            path1 += '/'
+        if not path2.endswith('/') and self._isdirectory(server2, path2):
+            path2 += '/'
+
         if server1 == server2:
             pieces = [
-                'cp -r',
+                'rsync -a',
                 path1,
                 path2,
                 ]
-        elif _tunneled_remote_host(server1) or _tunneled_remote_host(server2):
+            rhost = server1
+
+        elif _tunneled_remote_host(server1) and _tunneled_remote_host(server2):
             raise NotImplementedError, 'server1: %s, server2: %s' % (server1, server2)
-        else:
+
+        # the implementation here is not the best. We should have used rsync
+        # but rsync does not work with tunneled ssh port directly (could use
+        # rsync port but that is no guarantee).
+        elif not _tunneled_remote_host(server2):
+            # server2 is not tunneled and universally accessible
+            # so we can ssh to server1 and then scp to server2
             address2 = server2.address
             port2 = server2.port
             username2 = server2.username
 
             pieces = [
-                'scp',
+                'scp -r',
                 ]
             if port2:
                 pieces.append('-P %s' % port2)
             pieces.append('-r %s' % path1)
             pieces.append('%s@%s:%s' % (username2, address2, path2))
+            rhost = server1
+
+        else:
+            # server2 is tunneled
+            # we need to ssh to server2 and get stuff from server1
+            address1 = server1.address
+            port1 = server1.port
+            username1 = server1.username
             
+            pieces = [
+                'scp -r',
+                ]
+            if port1:
+                pieces.append('-P %s' % port1)
+            pieces.append('%s@%s:%s' % (username1, address1, path1))
+            pieces.append('%s' % path2)
+            rhost = server2
 
         cmd = ' '.join(pieces)
         
-        self.execute(cmd, server1, '')
+        self.execute(cmd, rhost, '')
         return
     
 

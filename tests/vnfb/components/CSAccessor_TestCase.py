@@ -26,8 +26,8 @@ class TestApp(base):
     class Inventory(base.Inventory):
 
         import pyre.inventory
-        server1 = pyre.inventory.str('server1', default='linjiao@login.cacr.caltech.edu')
-        server2 = pyre.inventory.str('server2', default='linjiao@foxtrot.danse.us')
+        server1 = pyre.inventory.str('server1', default='danse-vnf-admin@localhost(50022)')
+        server2 = pyre.inventory.str('server2', default='danse-vnf-admin@foxtrot.danse.us')
 
 
     def main(self, testFacility, *args, **kwds):
