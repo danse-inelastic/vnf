@@ -201,10 +201,13 @@ class SSHer(base):
         cmd     = cmd.replace('"', '\\\"')
         rmtcmd  = 'cd %s && %s' % (remotepath, cmd)
         
-        pieces = []
         if private_key:
-            pieces.append('eval `ssh-agent`  > /dev/null; ')
-            pieces.append('ssh-add "%s" > /dev/null; ' % private_key)
+            socket, pid = self._create_agent_with_key(private_key)
+
+        pieces = []
+
+        if private_key:
+            pieces += ['SSH_AUTH_SOCK=%s' % socket]
 
         pieces += [
             'ssh',
@@ -230,19 +233,55 @@ class SSHer(base):
             '"%s"' % rmtcmd,    # Fixed "" can be a problem
             ]
 
-        if private_key:
-            pieces.append(';')
-            pieces.append('kill -9 $SSH_AGENT_PID > /dev/null')
 
         cmd = ' '.join(pieces)
 
         self._info.log( 'execute: %s' % cmd )
         failed, output, error = spawn( cmd )
+
+        if private_key:
+            self._kill_agent(pid)
+
         if failed and not suppressException:
             msg = '%r failed: %s' % (
                 cmd, error )
             raise RemoteAccessError, msg
         return failed, output, error
+
+
+    def _create_agent(self):
+        cmd = 'eval `ssh-agent`  > /dev/null; echo $SSH_AUTH_SOCK; echo $SSH_AGENT_PID'
+        failed, output, error = spawn( cmd )
+        if failed:
+            msg = '%r failed: %s' % (
+                cmd, error )
+            raise RuntimeError, msg
+        lines = output.splitlines()
+        socket = lines[0].strip()
+        pid = lines[1].strip()
+        return socket, pid
+    
+
+    def _create_agent_with_key(self, private_key):
+        socket, pid = self._create_agent()
+        cmd = 'SSH_AUTH_SOCK=%s ssh-add "%s" > /dev/null; ' % (
+            socket, private_key)
+        failed, output, error = spawn( cmd )
+        if failed:
+            msg = '%r failed: %s' % (
+                cmd, error )
+            raise RuntimeError, msg
+        return socket, pid
+
+
+    def _kill_agent(self, pid):
+        cmd = 'kill -9 %s' % pid
+        failed, output, error = spawn( cmd )
+        if failed:
+            msg = '%r failed: %s' % (
+                cmd, error )
+            raise RuntimeError, msg
+        return
 
 
     def _isdirectory(self, server, path):
