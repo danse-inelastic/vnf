@@ -15,8 +15,9 @@ try:
 except ImportError:
     import simplejson as json
 
-import db
-import data
+import fetchd as fetchd
+import fetchd.db as db
+import fetchd.data as data
 
 import web
 import ftputil
@@ -28,7 +29,7 @@ urls = (
         '/browse', 'BrowsePage',
         '/download', 'DownloadPage',
         '/dir/(.*)', 'DirPage',
-        '/progress/(.*)', 'ProgressPage',
+        '/status/(.*)', 'StatusPage',
         )
 
 app = web.application(urls, globals())
@@ -40,30 +41,6 @@ if web.config.get('_session') is None:
 else:
     session = web.config._session
 
-def fetchd_req(req):
-    s = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
-    try:
-        s.connect('/tmp/cg_fetchd')
-    except socket.error:
-        try:
-            os.unlink('/tmp/cg_fetchd')
-        except OSError:
-            pass
-        subprocess.Popen(['python','fetchd.py'])
-        while not os.path.exists('/tmp/cg_fetchd'):
-            time.sleep(1.0)
-        s.connect('/tmp/cg_fetchd')
-    s.send(req)
-    buf = ['']
-    while True:
-        data = s.recv(1024)
-        if not data:
-            raise Exception('socket broken')
-        buf.append(data)
-        if buf and buf[-1] and buf[-1][-1] == '\x01':
-            break
-    return (''.join(buf)[:-1]).split("\x00")
-
 class DownloadPage:
     def GET(self):
         return 'POST only'
@@ -72,7 +49,7 @@ class DownloadPage:
         source = session.source
         path = i.path
         dest = i.dest
-        ret = fetchd_req("download\x00%s\x00%s\x00%s\x01"%(source, path, dest))
+        ret = fetchd.request(fetchd.Message(['download', source, path, dest]))
         if ret[0] == 'download':
             return ret[1]
         return '|'.join(ret)
@@ -80,9 +57,9 @@ class DownloadPage:
 
 class DirPage:
     def _children(self, path, source):
-        ret = fetchd_req("dir\x00%s\x00%s\x01"%(source,path))
+        ret = fetchd.request(fetchd.Message(['dir', source, path]))
         if ret[0] == 'dir':
-            dirs = cPickle.loads(ret[3])
+            dirs = cPickle.loads(ret[1])
         else:
             return str(ret)
         ret = []
@@ -101,19 +78,17 @@ class DirPage:
     def GET(self, path):
         return json.dumps(self._children(path, session.source))
 
-class ProgressPage:
+class StatusPage:
     def GET(self, path):
-        ret = fetchd_req("progress\x00%s\x01"%(path,))
-        if ret[0] == 'progress':
-            return int(float(ret[2])*100)
-        return str(ret)
+        ret = fetchd.request(fetchd.Message(['status', path]))
+        return '|'.join(map(str,ret))
 
 class BrowsePage:
     def GET(self):
         if not hasattr(session, 'source'):
             raise web.seeother("/login")
         source = cPickle.loads(session.source)
-        print source#, path
+        #print source#, path
         #if source.isdir(path):
             #dir = source.listdir(path)
         return render.newbrowse(source[0])

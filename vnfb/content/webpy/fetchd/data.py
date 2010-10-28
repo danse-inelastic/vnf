@@ -5,9 +5,8 @@ Light abstraction layer for data sources
 '''
 
 import ftputil
-import time
 import os
-import orbiter
+#import orbiter
 import urllib
 
 class LoginError(IOError):
@@ -21,6 +20,9 @@ class DataSource(object):
         return self._args
     def __setstate__(self, state):
         self.__init__(*state)
+    
+    def clone(self):
+        return type(self)(*self._args)
     
     def listdir(self, path=''):
         raise NotImplementedError()
@@ -86,7 +88,7 @@ class OrbiterSource(DataSource):
         '''Translate a path passed to the script to a node.'''
         chunks = path.split('/')
         volume = chunks.pop(0)
-        cur = filter(lambda ap:ap.path==volume)[0]
+        cur = filter(lambda ap:ap.path==volume, self.orb.volumes())[0]
         while chunks:
             next = chunks.pop(0)
             dirs = self.orb.directories(cur)
@@ -147,6 +149,6 @@ class LocalSource(DataSource):
         return "localhost"
 
 sources = {'NIST': lambda usn,pwd: FTPSource('ftp.ncnr.nist.gov',usn,pwd),
-           'ORNL': OrbiterSource,
-           'DANSE Folder':lambda usn,pwd: LocalSource('/Volumes/DANSE/',usn,pwd),
-           'Root Folder':lambda usn,pwd: LocalSource('/',usn,pwd)}
+           'ORNL': OrbiterSource}#,
+#           'DANSE Folder':lambda usn,pwd: LocalSource('/Volumes/DANSE/',usn,pwd),
+#           'Root Folder':lambda usn,pwd: LocalSource('/',usn,pwd)}
