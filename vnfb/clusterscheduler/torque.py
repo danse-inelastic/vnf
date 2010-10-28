@@ -68,7 +68,9 @@ class Scheduler:
             msg = "error in executing cmds %s. output: %s, error: %s" % (
                 cmds, output, error )
             raise RuntimeError, msg
-        return output.strip()
+        rt =  output.strip()
+        debug.log('torque job id: %s' % rt)
+        return rt
     
 
     def delete(self, jobid):

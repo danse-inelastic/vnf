@@ -35,6 +35,7 @@
       <property name='sqe-accessor'>on</property>
       <property name='orm/sqe'>on</property>
       <property name='sqe'>on</property>
+      <property name='torque'>on</property>
     </component>
   </component>
 </inventory>
