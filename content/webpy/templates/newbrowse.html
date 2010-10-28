@@ -8,14 +8,6 @@ $def with (host)
 	<script type="text/javascript" src="static/jquery.jstree.js"></script>
 	
 <script type="text/javascript">
-Object.size = function(obj) {
-    var size = 0, key;
-    for (key in obj) {
-        if (obj.hasOwnProperty(key)) size++;
-    }
-    return size;
-};
-
 var bars = new Object();
 function new_bar(name, data) {
 	chunks = data.split("|")
@@ -26,25 +18,46 @@ function new_bar(name, data) {
 	else {
 		bars[chunks[0]] = 0.0;
 	}
-	\$("#bars").append("<center><strong>"+name+"</strong></center>")
-	\$("#bars").append("<div id='bar"+chunks[0]+"'></div>");
+	\$("#bars").append("<div id='container"+chunks[0]+"'></div>");
+	\$("#container"+chunks[0]).append("<center><strong>"+name+"</strong></center>");
+	\$("#container"+chunks[0]).append("<div id='bar"+chunks[0]+"'></div>");
 	\$("#bar"+chunks[0]).progressbar({value: 0});
+}
+function remove_bar(num) {
+	\$("#bar"+num).progressbar("option", "value", 100);
+	\$("#container"+num).fadeOut(600, function() {
+		\$("#container"+num).remove();
+	});
 }
 function update_bars() {
 	for (var i in bars) {
 		\$.ajax({
-			url:'progress/'+i,
+			url:'status/'+i,
 			success:function(data) {
-				var p = parseFloat(data);
-				\$("#bar"+i).progressbar("option", "value", p);
-				if (p > 99) {
+				chunks = data.split("|");
+				if (chunks[0] == 'error') {
+					alert(chunks[1]);
 					delete bars[i];
+				}
+				
+				var status = parseInt(chunks[1]);
+				var completion = parseFloat(chunks[2]);
+				
+				\$("#bar"+chunks[0]).progressbar("option", "value", completion);
+				if (status == 2) {
+					delete bars[i];
+					setTimeout("remove_bar("+i+")", 4000);
+				}
+				else if (status == 3) {
+					alert(chunks[3]);
+					delete bars[i];
+					setTimeout("remove_bar("+i+")", 4000);
 				}
 			}
 		});
 	}
 }
-setInterval("update_bars()",1000);
+setInterval("update_bars()",700);
 update_bars();
 \$(document).ready(function() {
 	\$("#tree").jstree({
@@ -59,6 +72,7 @@ update_bars();
 	});
 	\$("#tree").bind("select_node.jstree", function(e, data) {
 		var node = data.rslt.obj;
+		if (!data.inst.is_leaf(node)) return;
 		if (node.attr("folder") == true) {
 			return;
 		}

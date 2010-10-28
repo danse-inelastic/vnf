@@ -17,6 +17,9 @@ import time
 # )
 # 
 
+# STILL TODO: Fix this.
+connection_str = "dbname=test user=postgres password=TzjUvh"
+
 class DBFile(object):
     '''A thin caching wrapper over a row in the database.'''
     fields = ['name', 'owner', 'inserted', 'original_path', 'data']
@@ -54,6 +57,10 @@ class DBFile(object):
         sqlbase = "UPDATE downloadedFiles SET "+field+"=%s WHERE id=%s"
         csr = self.db.cursor()
         csr.execute(sqlbase, (value, self.id))
+
+    def __delattr__(self, field):
+        if field in self._cache:
+            del self._cache[field]
     
     def data(self):
         '''
@@ -63,7 +70,7 @@ class DBFile(object):
         return self.db.lobject(self.__getattr__('data'), 'rw')
 
 class FileStore(object):
-    def __init__(self, conn_str):
+    def __init__(self, conn_str=connection_str):
         self.conn = psycopg2.connect(conn_str)
     
     def new(self, name, filename=None):
