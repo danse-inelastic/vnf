@@ -18,6 +18,8 @@ def announcement(server, error):
     msg.subject = 'Computing server "%s" is down' % (server.short_description, )
     msg.text = [
 """
+From: vnf web server %(hostanme)s
+
 Computing Server %(servername)r is down.
 
 Server detail:
@@ -30,11 +32,15 @@ When attempting to connect, following error was reported:
  
 """,
         ]
-
+    
+    import socket
+    hostname = socket.gethostname()
+    
     subs = {
         'server': server,
         'servername': server.short_description,
         'error': error,
+        'hostname': hostname,
         }
 
     adminemail = 'vnf-dev@googlegroups.com'
