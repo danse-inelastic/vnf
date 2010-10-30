@@ -18,7 +18,7 @@ def announcement(server, error):
     msg.subject = 'Computing server "%s" is down' % (server.short_description, )
     msg.text = [
 """
-From: vnf web server %(hostanme)s
+From: vnf web server %(hostname)s
 
 Computing Server %(servername)r is down.
 
