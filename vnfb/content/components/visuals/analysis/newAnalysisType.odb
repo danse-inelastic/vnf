@@ -67,13 +67,13 @@ def createMdScatteringAnalysis():
                     (lc.link(label="S(Q,E)_coh", onclick=select(id='main-display-area'
                     ).replaceContent(load(actor='analysis/mdanalysiswizard', routine='selectTrajectory',
                     analysisType='CsfCalc'))),
-                    "Coherent inelastic scattering from md")
+                    "Coherent inelastic scattering from md using Fourier transforms")
                     )
     routines.append(
                     (lc.link(label="S(Q,E)_incoh", onclick=select(id='main-display-area'
                     ).replaceContent(load(actor='analysis/mdanalysiswizard', routine='selectTrajectory',
                     analysisType='IsfCalc'))),
-                    "Incoherent inelastic scattering from md")
+                    "Incoherent inelastic scattering from md using Fourier transforms")
                     )
     routines.append(
                     (lc.link(label="EISF", onclick=select(id='main-display-area'
@@ -113,22 +113,16 @@ def createDynamicsAnalysis():
                     "Density of States from md")
                     )
     routines.append(
-                    (lc.link(label="VACF and VACF-generated diffusion coefficient", onclick=select(id='main-display-area'
+                    (lc.link(label="VACF Diffusion", onclick=select(id='main-display-area'
                 ).replaceContent(load(actor='analysis/mdanalysiswizard', routine='selectTrajectory',
                 analysisType='VacfDiffusionCalc'))),
-                    "Velocity Autocorrelation Function from md")
+                    "Diffusion coeffcieint from Velocity Autocorrelation Function")
                     )
     routines.append(
-                    (lc.link(label="MSD", onclick=select(id='main-display-area'
+                    (lc.link(label="MSD Diffusion", onclick=select(id='main-display-area'
                 ).replaceContent(load(actor='analysis/mdanalysiswizard', routine='selectTrajectory',
                 analysisType='MsdCalc'))),
-                    "Mean Squared Displacement from md")
-                    )
-    routines.append(
-                    (lc.link(label="Diffusion", onclick=select(id='main-display-area'
-                ).replaceContent(load(actor='analysis/mdanalysiswizard', routine='selectTrajectory',
-                analysisType='DiffusionCalc'))),
-                    "Diffusion coefficient from md")
+                    "Diffusion coefficient from Mean Squared Displacement analysis of trajectory")
                     )
     for link,desc in routines:
         qegrid.addRow((link,desc))
