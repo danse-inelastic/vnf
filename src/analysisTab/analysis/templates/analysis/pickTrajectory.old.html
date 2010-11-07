@@ -1,0 +1,106 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <meta http-equiv="Content-Style-Type" content="text/css" />
+    <meta name="keywords" content="javascript framework, RIA, SPA, client SOA, linb, jsLinb, RAD, IDE, Web IDE, widgets, javascript OOP, opensource, open-source, Ajax, cross-browser, prototype, web2.0, platform-independent, language-independent" />
+    <meta name="description" content="Web application created by Visual JS, powered by LINB framework" />
+    <meta name="copyright" content="copyright@www.linb.net" />
+    <meta http-equiv="imagetoolbar" content="no" />
+    <meta content="IE=EmulateIE7" http-equiv="X-UA-Compatible">
+    <title>Web application powered by LINB framework</title>
+</head>
+    <body>
+        <div id='loading'>
+        	<img src="http://www.linb.net/runtime/loading.gif" alt="Loading..." />
+		</div>
+
+        <script type="text/javascript" src="http://www.linb.net/runtime/jsLinb/js/linb-all.js"></script>
+        <script type="text/javascript" src="http://www.linb.net/runtime/jsLinb/js/adv-all.js"></script>
+		<script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>
+<!--
+        <script type="text/javascript" src="runtime/jsLinb/js/linb-all.js"></script>
+        <script type="text/javascript" src="runtime/jsLinb/js/adv-all.js"></script>
+        <script type="text/javascript" src="linb-all.js"></script>
+        <script type="text/javascript" src="adv-all.js"></script>-->
+        <script type="text/javascript">
+//		columnHeaders = [{"id":"col1", "width":80, "type":"label", "caption":"col1"}, {"id":"col2", "width":80, "type":"label", "caption":"col2"}, {"id":"col3", "width":80, "type":"label", "caption":"col3"}, {"id":"col4", "width":80, "type":"label", "caption":"col4"}]
+//		data = [{"cells":[{"value":"row1 col1", "id":"c_a", "oValue":"row1 col1"}, {"value":"row1 col2", "id":"c_b", "oValue":"row1 col2"}, {"value":"row1 col3", "id":"c_c", "oValue":"row1 col3"}, {"value":"row1 col4", "id":"c_d", "oValue":"row1 col4"}], "id":"a"}, 
+//		{"cells":[{"value":"row2 col1", "id":"c_e", "oValue":"row2 col1"}, {"value":"row2 col2", "id":"c_f", "oValue":"row2 col2"}, {"value":"row2 col3", "id":"c_g", "oValue":"row2 col3"}, {"value":"row2 col4", "id":"c_h", "oValue":"row2 col4"}], "id":"b"}, 
+//		{"cells":[{"value":"row3 col1", "id":"c_i", "oValue":"row3 col1"}, {"value":"row3 col2", "id":"c_j", "oValue":"row3 col2"}, {"value":"row3 col3", "id":"c_k", "oValue":"row3 col3"}, {"value":"row3 col4", "id":"c_l", "oValue":"row3 col4"}], 
+//		"sub":[["sub1", "sub2", "sub3", "sub4"]], "id":"c"}]
+
+		columnHeaders =[{"id":"col1", "width":80, "type":"label", "caption":"description"}, 
+		{"id":"col2", "width":80, "type":"label", "caption":"initial chemical formula"}, 
+		{"id":"col3", "width":80, "type":"label", "caption":"total time"}, 
+		{"id":"col4", "width":80, "type":"label", "caption":"creator"},
+		{"id":"col5", "width":80, "type":"label", "caption":"timestamp"}]
+		data = 
+		
+		[{"cells":[{"value":"row1 col1", "id":"c_a", "oValue":"row1 col1"}, {"value":"row1 col2", "id":"c_b", "oValue":"row1 col2"}, {"value":"row1 col3", "id":"c_c", "oValue":"row1 col3"}, {"value":"row1 col4", "id":"c_d", "oValue":"row1 col4"}], "id":"a"}, 
+		{"cells":[{"value":"row2 col1", "id":"c_e", "oValue":"row2 col1"}, {"value":"row2 col2", "id":"c_f", "oValue":"row2 col2"}, {"value":"row2 col3", "id":"c_g", "oValue":"row2 col3"}, {"value":"row2 col4", "id":"c_h", "oValue":"row2 col4"}], "id":"b"}, 
+		{"cells":[{"value":"row3 col1", "id":"c_i", "oValue":"row3 col1"}, {"value":"row3 col2", "id":"c_j", "oValue":"row3 col2"}, {"value":"row3 col3", "id":"c_k", "oValue":"row3 col3"}, {"value":"row3 col4", "id":"c_l", "oValue":"row3 col4"}], 
+		"sub":[["sub1", "sub2", "sub3", "sub4"]], "id":"c"}]
+			
+// The default code is a com class (inherited from linb.Com)
+Class('App', 'linb.Com',{
+    // Ensure that all the value of "key/value pair" does not refer to external variables
+    Instance:{
+        // To initialize instance(e.g. properties)
+        initialize : function(){
+            // To determine whether or not the com will be destroyed, when the first UI control be destroyed
+            this.autoDestroy = true;
+            // To initialize properties
+            this.properties = {};
+        },
+        // To initialize internal components (mostly UI controls)
+        // *** If you're not a skilled, dont modify this function manually ***
+        iniComponents : function(){
+            // [[code created by jsLinb UI Builder
+            var host=this, children=[], append=function(child){children.push(child.get(0))};
+            append(
+                (new linb.DataBinder)
+                .setHost(host,"databinder_1")
+                .setName("databinder_1")
+            );
+            append(
+                (new linb.UI.SButton)
+                .setHost(host,"ctl_sbutton1")
+                .setLeft(130)
+                .setTop(70)
+                .setCaption("click me")
+                .onClick("_ctl_sbutton1_onclick")
+            );
+            append(
+                (new linb.UI.TreeGrid)
+                .setHost(host,"ctl_treegrid2")
+                .setRowNumbered(true)
+                .setHeader(columnHeaders)
+                .setRows(data)
+            );
+            return children;
+            // ]]code created by jsLinb UI Builder
+        },
+        // Give a chance to load other com
+        iniExComs : function(com, threadid){
+        },
+        // Give a chance to determine which UI controls will be appended to parent container
+        customAppend : function(parent, subId, left, top){
+            // "return false" will cause all the internal UI controls will be added to the parent panel
+            return false;
+        },
+        // This instance's events
+        events : {},
+        _ctl_sbutton1_onclick : function (profile, e, src, value) {
+            var uictrl = profile.boxing();
+            linb.alert("hi","I'm " + uictrl.getAlias());
+        }
+    }
+});
+
+//linb.setAppLangKey('app');
+linb.UI.setTheme('default');
+linb.Com.load('App', function(){linb('loading').remove()}, 'en');
+</script>
+</body>
+</html>
