@@ -16,12 +16,32 @@ More details of the "tests" directory structure:
 * eclipse: tests based on eclipse
 
 
-buildbot
-""""""""
-A buildbot system will run tests automatically. Currently tests in the
+Automatic test system
+"""""""""""""""""""""
+Testing software products for quality assurance is essental for software
+projects. VNF is a complex project involving multiple software packages,
+and its automatic test system helps reduce tedious work of running 
+repetitive tests.
+
+We deployed a buildbot system that will run tests automatically whenever 
+there are new check-ins to VNF code base.
+
+The following packages are included in the buildbot system:
+
+* luban
+* histogram
+* bvk
+* vnf
+
+For vnf package, currently the
 following test directories are included in the buildbot system:
 
 * tests/vnfb
+* tests/content
 * tests/selenium
+
+VNF computing nodes makes heavy use of the MCViNE (http://docs.danse.us/MCViNE).
+MCViNE is itself a fairly complex package and has its own
+buildbot system: http://bagua.cacr.caltech.edu:50082
 
 
