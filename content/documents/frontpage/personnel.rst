@@ -32,7 +32,7 @@ VNF Contributors
 
 * Olivier Delaire
 * Max Kresch
-* Chen Li
+* `Chen Li <http://www.chenwli.com>`_
 
 
 Graphic/interaction/usability consultant
