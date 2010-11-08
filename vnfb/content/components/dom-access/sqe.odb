@@ -11,16 +11,13 @@
 #
 
 
-
 from vnfb.components.DOMAccessor import DOMAccessor as base
 
 class Accessor(base):
 
-
     def __init__(self):
         super(Accessor, self).__init__('sqe-accessor')
         return
-
 
     def getData(self, sqe):
         director = self.director
@@ -28,12 +25,9 @@ class Accessor(base):
         self._debug.log('sqe.__dict__:'+str(sqe.__dict__))
         return sqe
 
-
     def getSQEs(self, atomicstructure):
         db = self.db
         return atomicstructure.sqes.dereference(db)
-
-
 
 import journal
 debug = journal.debug('sqe-accessor')
@@ -41,7 +35,7 @@ from vnfb.dom.material_simulations.SQE import SQE, SQETable
 
 
 def read(sqe, director):
-    """read data for a sqe dataobject
+    """read data for a sqe data object
     """
     orm = director.clerk.orm
     record = orm(sqe)
