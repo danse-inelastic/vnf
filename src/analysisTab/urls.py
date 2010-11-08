@@ -7,7 +7,7 @@ admin.autodiscover()
 
 urlpatterns = patterns('',
     #(r'^site_media/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.MEDIA_ROOT }),
-    (r'^site_media/(?P<path>.*)$', 'django.views.static.serve', {'document_root': '/home/jbk/workspace/analysis/src/analysisTab/media' }),
+    (r'^site_media/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.STATIC_DOC_ROOT }),
     (r'^analysis/menu/$', 'analysis.views.menu'),
     (r'^analysis/sqeCoh/getTrajectory/$', 'analysis.views.getTrajectory'),
     (r'^analysis/sqeCoh/pickTrajectory/$', 'analysis.views.pickTrajectory'),

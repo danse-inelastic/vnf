@@ -58,6 +58,8 @@ MEDIA_ROOT = os.path.join(ROOT_PATH, 'media')
 # Examples: "http://foo.com/media/", "/media/".
 #ADMIN_MEDIA_PREFIX = '/media/'
 
+STATIC_DOC_ROOT = '/home/jbk/workspace/analysis/src/analysisTab/media'
+
 # Make this unique, and don't share it with anybody.
 SECRET_KEY = '53j^zhgduo_li9*6_%mfgh!orh6n2f3v$*walku0#xd$a'
 
