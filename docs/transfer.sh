@@ -9,7 +9,8 @@ fi
 
 svn up
 make html
-rsync -a _build/html/* jbrkeith@login.cacr.caltech.edu:projects/danse/docs.danse.us/docroot/VNET
+scp -r _build/html/* jbrkeith@login.cacr.caltech.edu:projects/danse/docs.danse.us/docroot/VNET
+#rsync -a _build/html/* jbrkeith@login.cacr.caltech.edu:projects/danse/docs.danse.us/docroot/VNET
 
 
 #if [[ $USER -eq jbk ]] then 
@@ -21,4 +22,4 @@ rsync -a _build/html/* jbrkeith@login.cacr.caltech.edu:projects/danse/docs.danse
 #	su jbk #become someone with permission to move the docs 
 #fi
 
-ssh jbrkeith@login.cacr.caltech.edu:docroot/VNET 'chgrp -R danse *'
+ssh jbrkeith@login.cacr.caltech.edu 'chgrp -R danse projects/danse/docs.danse.us/docroot/VNET/*'
