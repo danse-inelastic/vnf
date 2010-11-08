@@ -5,13 +5,14 @@ from django.conf.urls.defaults import *
 from django.contrib import admin
 admin.autodiscover()
 
-urlpatterns = patterns('analysis.views',
-    #(r'^media/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.MEDIA_ROOT }),
-    (r'^analysis/menu/$', 'menu'),
-    (r'^analysis/sqeCoh/getTrajectory/$', 'getTrajectory'),
-    (r'^analysis/sqeCoh/pickTrajectory/$', 'pickTrajectory'),
-    (r'^analysis/(?P<type>.*)/pickTrajectory/$', 'pickTrajectory'),
-    (r'^analysis/(?P<type>.*)/settings/$', 'settings'),
+urlpatterns = patterns('',
+    #(r'^site_media/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.MEDIA_ROOT }),
+    (r'^site_media/(?P<path>.*)$', 'django.views.static.serve', {'document_root': '/home/jbk/workspace/analysis/src/analysisTab/media' }),
+    (r'^analysis/menu/$', 'analysis.views.menu'),
+    (r'^analysis/sqeCoh/getTrajectory/$', 'analysis.views.getTrajectory'),
+    (r'^analysis/sqeCoh/pickTrajectory/$', 'analysis.views.pickTrajectory'),
+    (r'^analysis/(?P<type>.*)/pickTrajectory/$', 'analysis.views.pickTrajectory'),
+    (r'^analysis/(?P<type>.*)/settings/$', 'analysis.views.settings'),
     # Example:
     # (r'^analysisTab/', include('analysisTab.foo.urls')),
 
