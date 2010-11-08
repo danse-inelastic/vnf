@@ -46,17 +46,18 @@ def visual(director):
     mdDyn.add(docMdDyn)
     mdDyn.add(createDynamicsAnalysis())
     
-    mdStruct = mdSplitter.section()
-    docMdStruct         = lc.document(title = "Structure Analysis")
-    mdStruct.add(docMdStruct)
-    mdStruct.add(createStructureAnalysis())
+#    mdStruct = mdSplitter.section()
+#    docMdStruct         = lc.document(title = "Structure Analysis")
+#    mdStruct.add(docMdStruct)
+#    mdStruct.add(createStructureAnalysis())
     
     #create phonon splitter and sections
     #phononTypesSplitter = lc.splitter(orientation="vertical"); 
     #phonSection.add(sp)
-    docPhonScat = lc.document(title = 'Scattering Analysis')
-    phonSection.add(docPhonScat)
-    phonSection.add(createPhonScatteringAnalysis())
+    
+#    docPhonScat = lc.document(title = 'Scattering Analysis')
+#    phonSection.add(docPhonScat)
+#    phonSection.add(createPhonScatteringAnalysis())
     
     return doc
 
@@ -93,12 +94,12 @@ def createMdScatteringAnalysis():
                     analysisType='SqeCalc'))),              
                     "Dynamic Structure Factor from md.  This is the sum of coherent and incoherent S(Q,E) parts.")
                     )
-    routines.append(
-                    (lc.link(label="Multiphonon Scattering", onclick=select(id='main-display-area'
-                    ).replaceContent(load(actor='analysis/mdanalysiswizard', routine='selectTrajectory',
-                    analysisType='MultiScatCalc'))),                                                                               
-                    "Add multiphonon scattering to an S(Q,E)")
-                    )
+#    routines.append(
+#                    (lc.link(label="Multiphonon Scattering", onclick=select(id='main-display-area'
+#                    ).replaceContent(load(actor='analysis/mdanalysiswizard', routine='selectTrajectory',
+#                    analysisType='MultiScatCalc'))),                                                                               
+#                    "Add multiphonon scattering to an S(Q,E)")
+#                    )
     for link,desc in routines:
         qegrid.addRow((link,desc))
     return qegrid.grid()
