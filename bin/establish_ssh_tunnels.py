@@ -5,7 +5,7 @@
 
 tunnels = [
     # 50022 -- octopod:22
-    ('octopod.danse.us:22', 50022, 'login.cacr.caltech.edu'),
+    ('octopod.danse.us:22', 50022, 'danse-vnf-admin@foxtrot.danse.us'),
     #('octopod.danse.us:22', 50022, 'upgrayedd.danse.us'),
     # 55432 -- octopod 5432
     # ('localhost:5432', 55432, 'localhost:50022'),
