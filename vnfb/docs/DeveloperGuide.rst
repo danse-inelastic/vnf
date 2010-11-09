@@ -9,6 +9,7 @@ Contents:
 
    DeveloperGuide-Overview
    DeveloperGuide-Architecture
+   DeveloperGuide-Monitoring
    DeveloperGuide-Tests
    DeveloperGuide-AccessControl
    DeveloperGuide-Utilities
