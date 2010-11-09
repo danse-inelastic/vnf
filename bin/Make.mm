@@ -30,6 +30,8 @@ EXPORT_DATAFILES = \
 	checkservers.py \
 	createdataobject.py \
 	createtable.py \
+	cron-daemons.sh \
+	cron-monitors.sh \
 	deleterecord.py \
 	destroydb.py \
 	destroydataobject.py \
@@ -50,8 +52,8 @@ EXPORT_DATAFILES = \
         jobdriver.py \
 	restoredb.py \
 	retrieveresults.py \
-	runmonitors.sh \
-	startmonitors.sh \
+	run-daemons.sh \
+	run-monitors.sh \
 	startservices.sh \
 	stopservices.sh \
 	timer.py \
