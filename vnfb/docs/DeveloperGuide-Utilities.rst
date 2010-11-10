@@ -4,6 +4,17 @@ Utilities
 =========
 
 
+User approval
+-------------
+To approve a user::
+
+ $ cd $EXPORT_ROOT/vnfb/bin
+ $ ./approveUser.py -username=<username>
+
+Simply run approveUser without username will reload the
+authentication service daemon.
+
+
 Communication
 -------------
 
