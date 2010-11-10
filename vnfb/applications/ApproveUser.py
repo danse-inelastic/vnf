@@ -25,6 +25,15 @@ class ApproveUser(base):
 
     def main(self):
         username = self.username
+        if username:
+            self.approve(username)
+
+        from vnfb.utils.services.ipad import askIpadToReload
+        askIpadToReload(self)
+        return
+
+
+    def approve(self, username):
         from vnfb.dom.Registrant import Registrant
         where = "username='%s'" % username
         registrant = self.clerk.db.query(Registrant).filter_by(username=username).one()
@@ -43,10 +52,6 @@ class ApproveUser(base):
         announce(self, 'user-approval', user)
         # alert administrators
         # announce(self, 'user-approval-alert', user)
-
-        from vnfb.utils.services.ipad import askIpadToReload
-        askIpadToReload(self)
-        return
 
 
     def _configure(self):
