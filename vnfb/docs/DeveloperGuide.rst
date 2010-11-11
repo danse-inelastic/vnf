@@ -14,6 +14,7 @@ Contents:
    DeveloperGuide-AccessControl
    DeveloperGuide-Utilities
    DeveloperGuide-DOM
+   DeveloperGuide-Include-Simple-Computation-Engine
    DeveloperGuide-NeutronExperimentSimulation
    DeveloperGuide-VolunteersNeeded
 
