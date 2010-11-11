@@ -188,6 +188,10 @@ color:gray;
     text-transform:lowercase;
     font-weight:bold;
 }
+.frontpage-document > div h2 {
+    font-size:1em;
+    font-weight:bold;
+}
 .frontpage-document > ul {
     padding-left:5em;
 }
