@@ -81,7 +81,7 @@ class Builder(base):
         
         #construct command line
         pyscriptname = self.pyscriptname
-        command = '. ~/.mcvine && python %s %s' % (pyscriptname, '\\\n\t'.join(
+        command = '. ~/.mcvine && mpdboot -f ~/mpd.hosts && python %s %s' % (pyscriptname, '\\\n\t'.join(
             ['--%s="%s"' % (item, self.options.get(item))
              for item in self.options ] ) )
 
