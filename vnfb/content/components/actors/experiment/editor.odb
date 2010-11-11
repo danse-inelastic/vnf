@@ -211,10 +211,8 @@ class Actor(base):
 
         # create a new component
         newtype = self.inventory.newtype
-        table = domaccess._getTable(newtype)
-        newcomponent = domaccess.insertNewRecordWithID(table)
-        newcomponent.componentname = component.componentname
-        domaccess.db.updateRecord(newcomponent)
+        newcomponent = domaccess.initComponentRecord(
+            newtype, componentname=component.componentname)
         
         # replace the old component with the newcomponent
         index = ic.components.getIndex(component, db=domaccess.db)
