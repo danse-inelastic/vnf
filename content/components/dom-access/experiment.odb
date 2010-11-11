@@ -34,6 +34,32 @@ class Accessor(base):
     orm = property(_getOrm)
 
 
+    def initComponentRecord(self, typename, componentname=None):
+        r = self.createComponentRecord(typename)
+        if componentname:
+            r.componentname = componentname
+            self.db.updateRecord(r)
+        typename = typename.split('.')[-1]
+        handler = getattr(self, '_init%sRecord' % typename, None)
+        if handler:
+            handler(r)
+        return r
+
+    
+    def _initSNSModeratorRecord(self, record):
+        # need to find a default profile
+        from vnfb.dom.neutron_experiment_simulations.neutron_components.SNSModeratorMCSimulatedData import SNSModeratorMCSimulatedDataTable as ProfileTable
+        profile = self.db.query(ProfileTable).first()
+        record.neutronprofile = profile
+        self.db.updateRecord(record)
+        return record
+        
+    
+    def createComponentRecord(self, typename):
+        table = self._getTable(typename)
+        return self.insertNewRecordWithID(table)
+        
+
     def createExperiment(self):
         exp = NeutronExperiment()
         orm = self.orm
