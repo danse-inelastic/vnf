@@ -75,7 +75,7 @@ class Actor(base):
 
     def _defaults(self):
         super(Actor, self)._defaults()
-        self.inventory.number_records_per_page = 10
+        self.inventory.number_records_per_page = 20
         return
 
 
