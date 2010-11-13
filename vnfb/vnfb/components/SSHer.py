@@ -268,6 +268,7 @@ class SSHer(base):
             socket, private_key)
         failed, output, error = spawn( cmd )
         if failed:
+            self._kill_agent(pid)
             msg = '%r failed: %s' % (
                 cmd, error )
             raise RuntimeError, msg
