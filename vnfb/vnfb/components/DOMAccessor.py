@@ -255,8 +255,9 @@ class DOMAccessor( base ):
             exec 'from %s import %s as Obj' % (module, domains[-1])
         except ImportError:
             import traceback
+            error = traceback.format_exc()
             raise RuntimeError, 'failed to resolve data object type %s by importing.\n%s' % (
-                name, traceback.format_exc())
+                name, error)
         return Obj
 
 
