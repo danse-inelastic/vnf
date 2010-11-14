@@ -20,12 +20,16 @@ def getTrajectory(request, *a, **kw):
         trajs = Trajectory.objects.all()
         trajList=[]
         for traj in trajs:
-            trajList.append([traj.short_description, traj.initial_chemical_formula, 
-                         traj.total_time, traj.creator, traj.timestamp])
-        response = {'data':trajList}
-        assert isinstance(response, dict)
-        if 'result' not in response:
-            response['result'] = 'ok'
+            trajList.append({'description':traj.short_description, 
+                'initial_chemical_formula':traj.initial_chemical_formula, 
+                'total_time':traj.total_time, 
+                'creator':traj.creator, 
+                'timestamp':traj.timestamp.isoformat()})
+#        response = {'data':trajList}
+#        assert isinstance(response, dict)
+#        if 'result' not in response:
+#            response['result'] = 'ok'
+        response = trajList
     except KeyboardInterrupt:
         # Allow keyboard interrupts through for debugging.
         raise
