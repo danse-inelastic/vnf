@@ -1,0 +1,58 @@
+<html>  
+<head>  
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />  
+<meta http-equiv="Pragma" content="no-cache" />  
+<meta http-equiv="Expires" content="-1" />  
+<meta http-equiv="Cache-Control" content="no-cache" />  
+<title>Trajectories</title>  
+<link rel="stylesheet" type="text/css" href="grid/gt_grid.css" />  
+<script type="text/javascript" src="grid/gt_msg_en.js"></script>  
+<!--<script type="text/javascript" src="grid/gt_grid_all.js"></script>-->
+<script type="text/javascript" src="src/gt_base.js"></script>
+<script type="text/javascript" src="src/gt_ajax.js"></script>
+<script type="text/javascript" src="src/gt_chart.js"></script>
+<script type="text/javascript" src="src/gt_column.js"></script>
+<script type="text/javascript" src="src/gt_const.js"></script>
+<script type="text/javascript" src="src/gt_dataset.js"></script>
+<script type="text/javascript" src="src/gt_dialog.js"></script>
+<script type="text/javascript" src="src/gt_editor.js"></script>
+<script type="text/javascript" src="src/gt_grid.js"></script>
+<script type="text/javascript" src="src/gt_template.js"></script>
+<script type="text/javascript" src="src/gt_tool.js"></script>
+<script type="text/javascript" src="src/gt_validator.js"></script>
+<script type="text/javascript" >
+var data1 = [
+{"initial_chemical_formula": "Fe_2", "total_time": 0.10000000000000001, 
+"description": "demo trajectory", "timestamp": "2010-11-14T16:13:21.482552", 
+"creator": "jbk"}]
+var data1 = {data:[{description:'demo trajectory',initial_chemical_formula:'Fe_2',total_time:0.1,creator:'jbk',timestamp:"2010-11-14T16:13:21.482552"}]}
+var dsOption= {
+    fields :[
+        {name:"description"},
+        {name:"initial_chemical_formula"},
+        {name:"total_time", type:'float'},
+        {name:"creator"},
+        {name:'timestamp', type: 'date'}],
+    recordType : 'object',
+	data : data1}
+var colsOption = [
+     {id:'description', header:"Description", width:100},
+     {id:'initial_chemical_formula', header:"Initial Chemical Formula", width:100},
+     {id:'total_time', header:"Total Time", width:100},
+     {id:'creator', header:"Creator", width:100},
+     {id:'timestamp', header:"Timestamp", width:100}];
+var gridOptions={
+    id : "grid1",
+	loadURL : "http://localhost:9000/analysis/sqeCoh/getTrajectory/",
+    container : 'trajectoryTable',
+    dataset : dsOption ,
+    columns : colsOption};
+var mygrid=new Sigma.Grid(gridOptions);
+Sigma.Util.onLoad( Sigma.Grid.render(mygrid));
+</script>  
+</head>  
+<body>
+<div id="trajectoryTable" style="width:700px;height:300px">  
+</div>  
+</body>  
+</html>
