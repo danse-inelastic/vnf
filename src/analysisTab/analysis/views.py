@@ -18,18 +18,29 @@ def getTrajectory(request, *a, **kw):
         response = None
         from analysisTab.analysis.models import Trajectory
         trajs = Trajectory.objects.all()
-        trajList=[]
+        
+#        trajList=''
+#        template = """{description:'%s',initial_chemical_formula:'%s',total_time:%s,creator:'%s',timestamp:%s}"""
+#        for traj in trajs:
+#            entry = template % (traj.short_description,traj.initial_chemical_formula,
+#                                traj.total_time, traj.creator, traj.timestamp.isoformat())
+#            trajList+=entry
+#        trajList='['+trajList+']'
+#        response = "{data:"+trajList+"}"
+        
+        trajList=''
+        template = """{description:'%s',initial_chemical_formula:'%s',total_time:%s,creator:'%s',timestamp:'%s'}"""
         for traj in trajs:
-            trajList.append({'description':traj.short_description, 
-                'initial_chemical_formula':traj.initial_chemical_formula, 
-                'total_time':traj.total_time, 
-                'creator':traj.creator, 
-                'timestamp':traj.timestamp.isoformat()})
+            entry = template % (traj.short_description,traj.initial_chemical_formula,
+                                traj.total_time, traj.creator, traj.timestamp.isoformat())
+            trajList+=entry
+        trajList='['+trajList+']'
+        response = trajList
 #        response = {'data':trajList}
 #        assert isinstance(response, dict)
 #        if 'result' not in response:
 #            response['result'] = 'ok'
-        response = trajList
+        
     except KeyboardInterrupt:
         # Allow keyboard interrupts through for debugging.
         raise
@@ -55,7 +66,8 @@ def getTrajectory(request, *a, **kw):
         response = {'result': 'error',
                     'text': msg}
     json = simplejson.dumps(response)
-    return HttpResponse(json, mimetype='application/json')
+    #return HttpResponse(json, mimetype='application/json')
+    return HttpResponse(json, mimetype='text/javascript')
 
 def pickTrajectory(request):        
     return render_to_response('analysis/pickTrajectory.html')
