@@ -28,7 +28,7 @@ def visual(simulations, cols, director):
         time_step_interval = Model.descriptors.str(name='time_step_interval')
         #description = Model.descriptors.str(name='description')
         #type = Model.descriptors.str(name='type')
-        date = Model.descriptors.str(name='date')
+        timestamp = Model.descriptors.str(name='timestamp')
         row_identifiers = ['id']
 
     columns = [
@@ -39,7 +39,7 @@ def visual(simulations, cols, director):
         View.Column(label='Time step interval (ps)', measure='time_step_interval'),
         #View.Column(label='Description', measure='description'),
         #View.Column(label='Type', measure='type'),
-        View.Column(label='Date created', measure='date'),
+        View.Column(label='Timestamp', measure='timstamp'),
         ]
     columns = filter(lambda col: col.measure in cols, columns)
     view = View(columns=columns, editable=False)
@@ -55,9 +55,9 @@ def visual(simulations, cols, director):
         return record.time_step_interval
 #    def getDescription(record):
 #        return record.short_description
-    def getDate(record):
-        date = record.date
-        return str(date)
+    def getTimestamp(record):
+        timestamp = record.timestamp
+        return str(timestamp)
 #    def getType(record):
 #        return record.getTableName()
                 
