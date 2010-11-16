@@ -26,6 +26,7 @@ def visual(simulations, cols, director):
         initial_chemical_formula = Model.descriptors.str(name='initial_chemical_formula')
         total_time = Model.descriptors.str(name='total_time')
         time_step_interval = Model.descriptors.str(name='time_step_interval')
+        creator = Model.descriptors.str(name='creator')
         #description = Model.descriptors.str(name='description')
         #type = Model.descriptors.str(name='type')
         timestamp = Model.descriptors.str(name='timestamp')
@@ -39,7 +40,8 @@ def visual(simulations, cols, director):
         View.Column(label='Time step interval (ps)', measure='time_step_interval'),
         #View.Column(label='Description', measure='description'),
         #View.Column(label='Type', measure='type'),
-        View.Column(label='Timestamp', measure='timstamp'),
+        View.Column(label='Creator', measure='creator'),
+        View.Column(label='Timestamp', measure='timestamp'),
         ]
     columns = filter(lambda col: col.measure in cols, columns)
     view = View(columns=columns, editable=False)
@@ -55,6 +57,9 @@ def visual(simulations, cols, director):
         return record.time_step_interval
 #    def getDescription(record):
 #        return record.short_description
+    def getCreator(record):
+        creator = record.creator
+        return str(creator)
     def getTimestamp(record):
         timestamp = record.timestamp
         return str(timestamp)

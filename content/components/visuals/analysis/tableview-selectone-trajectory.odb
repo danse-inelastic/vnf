@@ -111,9 +111,10 @@ columns = [
     'initial_chemical_formula',
     'total_time',
     'time_step_interval',
+    'creator',
     #'description',
     #'type',]
-    'date']
+    'timestamp']
 measure2dbcol = {
     'description': 'short_description',
     }
