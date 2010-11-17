@@ -59,7 +59,7 @@ class Actor(base):
         settingsdoc = doc.document(title = 'Settings', collapsable = True)
         settingsdoc.oncreate = select(element=settingsdoc).append(
             load(
-              actor='orm/isfcalc', routine='displayProperties',
+              actor='orm/analysis/isfcalc', routine='displayProperties',
               id = c.id, editlink=False,
             ))
         return doc

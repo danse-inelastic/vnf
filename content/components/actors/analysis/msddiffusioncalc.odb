@@ -10,8 +10,10 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
+
 import luban.content as lc
 from luban.content import load, select
+
 from luban.components.AuthorizedActor import AuthorizedActor as base
 
 class Actor(base):
@@ -22,12 +24,13 @@ class Actor(base):
 
     def createView(self, director):
         doc = lc.document(Class='container')
+
         domaccess = self._domaccess(director)
         db = domaccess.db
         c = self._getComputationRecord(director)
-        #do this error checking later
 #        if not domaccess.isComputationConfigured(c):
 #            return self.createConfigurationView(director)
+        
         path = self._pathToMe(director)
         view_indicator = director.retrieveVisual('view-indicator', path=path)
         doc.add(view_indicator)
@@ -39,36 +42,31 @@ class Actor(base):
 #                          id = matter.id)
 #        link = lc.link(label=matter.short_description, onclick=viewmatter)
 #        matterview.add(link)
-        # model view
-#        model = c.model.dereference(db)
-#        modelview = doc.document(title='model', collapsable=True, collapsed=False)
-#        viewmodel = select(id='main-display-area').replaceContent(
-#            load(actor='orm/bvkmodels', routine='display',
-#                 id = model.id, editlink=False)
-#            )
-#        link = lc.link(label=model.short_description, onclick=viewmodel)
-#        modelview.add(link)
+
         # results
-        resultsdoc = doc.document(title = 'Results', collapsable=True, collapsed=True)
+        resultsdoc = doc.document(title = 'Results', collapsable=True)#, collapsed=True)
         resultsdoc.paragraph(text=['loading results. please wait...'])
         resultsdoc.onexpand = select(element=resultsdoc).replaceContent(
             load(actor=self.name, routine='createResultsDoc',
                  id=self.inventory.id)
             )
+
         # settings
         settingsdoc = doc.document(title = 'Settings', collapsable = True)
         settingsdoc.oncreate = select(element=settingsdoc).append(
             load(
-              actor='orm/analysis/eisfcalc', routine='displayProperties',
+              actor='orm/analysis/msddiffusioncalc', routine='displayProperties',
               id = c.id, editlink=False,
             ))
         return doc
+
 
     def createResultsDoc(self, director):
         record = self._getComputationRecord(director)
         return director.retrieveVisual(
             'computation-results',
             computation=record, actor=self.name, director=director)
+
 
     def createConfigurationView(self, director):
         c = self._getComputation(director)
@@ -80,14 +78,18 @@ class Actor(base):
         form.onsubmit.params.update({
             'poststoring_routine': 'createJob',
             })
+        
         # the container
         doc = lc.document()
+
         # path
         path = self._pathToMe(director)
         view_indicator = director.retrieveVisual('view-indicator', path=path)
         doc.add(view_indicator)
+
         # 
         doc.add(computation_doc)
+
         return doc
 
 
@@ -96,40 +98,41 @@ class Actor(base):
         if not id:
             raise RuntimeError
         domaccess = self._domaccess(director)
-        #label = domaccess.getComputationLabel('csfcalc', id)
+        label = domaccess.getComputationLabel(id)
         computation = self._getComputation(director)
         return [
             ('Analysis',
              lc.load(actor='analysis')),
-            ('EISF',
-             lc.load(actor='analysis', filter_expr="type=='eisfcalc'")),
-            #('%s %s' % (computation.__class__.__name__, label),
-            ('%s' % (computation.__class__.__name__),
+            ('Trajectory Dos Calculations',
+             lc.load(actor='analysis', filter_expr="type=='msddiffusioncalc'")),
+            ('%s %s' % (computation.__class__.__name__, label),
              lc.select(id='main-display-area').replaceContent(
-            lc.load(actor='analysis/eisfcalc',
+            lc.load(actor='analysis/msddiffusioncalc',
                     routine = 'createView', id=id)
             )),
             ]
 
+
     def _getComputation(self, director):
-        record = self._getComputationRecord(director)
-        return director.clerk.orm.record2object(record)
-#        domaccess = self._domaccess(director)
-#        id = self.inventory.id
-#        return domaccess.getComputation('csfcalc', id)
+        domaccess = self._domaccess(director)
+        id = self.inventory.id
+        return domaccess.getAnalysis(id)
+
 
     def _getComputationRecord(self, director):
         domaccess = self._domaccess(director)
         id = self.inventory.id
-        return domaccess.getComputationRecord('eisfcalc', id)
+        return domaccess.getAnalysisRecord(id)
+
 
     def _domaccess(self, director):
-        #return director.retrieveDOMAccessor('analysis')
-        return director.retrieveDOMAccessor('computation')
+        return director.retrieveDOMAccessor('analysis')
 
-    def __init__(self, name='analysis/eisfcalc'):
+
+    def __init__(self, name='analysis/vacfdiffusioncalc'):
         super(Actor, self).__init__(name)
         return
+
 
 def actor(): return Actor()
 

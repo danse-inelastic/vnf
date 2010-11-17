@@ -55,7 +55,7 @@ class Actor(base):
         settingsdoc = doc.document(title = 'Settings', collapsable = True)
         settingsdoc.oncreate = select(element=settingsdoc).append(
             load(
-              actor='orm/mddoscalc', routine='displayProperties',
+              actor='orm/analysis/mddoscalc', routine='displayProperties',
               id = c.id, editlink=False,
             ))
         return doc

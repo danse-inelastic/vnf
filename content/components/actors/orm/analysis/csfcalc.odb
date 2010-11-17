@@ -36,7 +36,7 @@ class Actor(base):
         
 
 def actor():
-    return Actor('orm/csfcalc')
+    return Actor('orm/analysis/csfcalc')
 
 
 # version

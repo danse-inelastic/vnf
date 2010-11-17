@@ -36,7 +36,7 @@ class Actor(base):
         
 
 def actor():
-    return Actor('orm/eisfcalc')
+    return Actor('orm/analysis/eisfcalc')
 
 
 # version
