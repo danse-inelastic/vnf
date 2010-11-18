@@ -54,9 +54,11 @@ def visual(actor, director):
     table       = QEGrid(lc.grid(Class="qe-form"))
     form.add(table.grid())
 
+    options     = SIMCHAINS.keys()
+    options.pop()   # Remove "Molecular Dynamics" simulation type
     sname       = FormTextField(name = "sname", value = actor.sname)
     simtype     = FormSelectorField(name        = "simtype",
-                                    entries     = enumerate(SIMCHAINS.keys()))
+                                    entries     = enumerate(options))
     actorName   = "material_simulations/espresso/sim-create"
     simtype.onchange    = load( actor   = actorName,
                                 routine = "showMDOptions",
