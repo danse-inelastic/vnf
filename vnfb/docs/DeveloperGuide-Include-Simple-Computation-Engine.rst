@@ -1,3 +1,5 @@
+.. _vnfdeveloperguidenewcomputationtype:
+
 Support a new type of computation
 =================================
 
