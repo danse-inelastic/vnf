@@ -124,7 +124,7 @@ MDSTEPS["ion-random"]   = "Ions Randomization"
 MDSTEPS["quenching"]    = "Electrons and Ions Quenching"
 MDSTEPS["dynamics"]     = "Electron and Ion Dynamics"
 MDSTEPS["thermostat"]   = "Electron and Ion Dynamics with Nose Thermostat"
-MDSTEPS["trajectory"]  = "Trajectory Analysis"
+MDSTEPS["trajectory"]   = "Trajectory Analysis"
 
 # XXX: Get rid of repetition
 MDLABEL     = OrderedDict()
