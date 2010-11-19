@@ -45,8 +45,9 @@ class TaskAction(object):
             status  = jobStatus(self._director, self._job, server)
 
             # Still can through an exception
-            if status and type(status["state"]) == str and status["state"].lower() != "finished":
-                return self._cancelLink()
+            # XXX: No "Cancel" button
+            #if status and type(status["state"]) == str and status["state"].lower() != "finished":
+            #    return self._cancelLink()
 
         return self._runLink()
 
