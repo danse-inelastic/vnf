@@ -44,7 +44,8 @@ class TaskAction(object):
             server  = self._director.clerk.getServers(id = self._job.serverid)
             status  = jobStatus(self._director, self._job, server)
 
-            if status and status["state"] != "finished":
+            # Still can through an exception
+            if status and type(status["state"]) == str and status["state"].lower() != "finished":
                 return self._cancelLink()
 
         return self._runLink()
