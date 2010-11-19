@@ -63,6 +63,11 @@ class QEResult(object):
         self._output.parse()
     
 
+    def task(self):
+        "Returns task object"
+        return self._task
+
+
     def input(self):
         "Returns input object (subclass of QEInput)"
         return self._input
