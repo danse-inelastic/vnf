@@ -72,10 +72,6 @@ class Actor(base):
         outdos      = os.path.join(self._matdynpath, "data.idf")
 
         # Configuration setting for QECalc
-#        settingString = """[matdyn.x]
-#flvec = %s
-#flfrq = %s
-#fldos = %s""" % (flvec, flfrq, fldos)
 
         settingString = """[matdyn.x]
 matdynInput: %s
@@ -86,7 +82,7 @@ fldos = %s""" % (self._matdynresult.inputFile(),
                 self._matdynresult.outputFile(),
                 flvec, flfrq, fldos)
 
-        # Not efficient as it 
+        # XXX: Not efficient, look into self._matdynresult
         matdyn = MatdynTask( configString = settingString)
         #matdyn.syncSetting()   # ?
         matdyn.output.parse()

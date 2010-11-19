@@ -77,8 +77,8 @@ class Actor(base):
         DOS, Polarizations, Omega2 file to jobs temp directory
         """
         # XXX: Refactor. Take Pols, Freq ... from MATDYNResult
+        # XXX: Not efficient, look into self._matdynresult
         matdyn = MatdynTask( configString = self._configString(director))
-        #matdyn.syncSetting()   # ?
         matdyn.output.parse()
         Pols, Freqs, qPoints = matdyn.output.property('multi phonon')
         
@@ -93,16 +93,18 @@ class Actor(base):
     def _configString(self, director):
         "Returns settings string for MATDYN task"
         path        = self._matdynresult.resultPath()   # Result path object
-        input       = path.resultFiles("input")
         flvec       = path.resultFiles("flvec")
         flfrq       = path.resultFiles("flfrq")
 
         # Configuration setting for QECalc
         settingString = """[matdyn.x]
-matdynInput = %s
+matdynInput: %s
+matdynOutput: %s
 flvec = %s
 flfrq = %s
-""" % (input, flvec, flfrq)
+""" % ( self._matdynresult.inputFile(),
+        self._matdynresult.outputFile(),
+        flvec, flfrq)
 
         return settingString
 
