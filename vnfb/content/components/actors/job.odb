@@ -413,7 +413,7 @@ class Actor(base):
         selector.help = meta['tip']
         
         extra = {}
-        if False:#director.sentry.username == 'demo':
+        if director.sentry.username == 'demo':
             # for demo user, we don't want them to use a lot of resources
             # so let us hide those fields for the resources
             extra['numcores'] = 1,
