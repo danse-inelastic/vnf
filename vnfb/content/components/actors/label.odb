@@ -62,15 +62,20 @@ class Actor(base):
             type = self.inventory.type
             for id in entities:
                 records.append(director.clerk.getRecordByID(type, id))
-                
+        
+        actions = []
         for record in records:
             # already labeled, skip
             if labelaccess.isLabeled(record, table, label): continue
 
-            labelaccess.createLabel(label=label, targettable=table, entity=record)
+            try:
+                labelaccess.createLabel(label=label, targettable=table, entity=record)
+            except RuntimeError, msg:
+                e = 'Failed to apply label %r: %s' % (label, msg)
+                actions.append(alert(e))
             continue
         
-        return
+        return actions or None
 
 
     def new(self, director):

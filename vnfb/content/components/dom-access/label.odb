@@ -12,7 +12,7 @@
 #
 
 
-from vnfb.dom.Label import Label
+from vnfb.dom.Label import Label, common_labels
 
 
 from vnfb.components.DOMAccessor import DOMAccessor as base
@@ -41,7 +41,9 @@ class Accessor(base):
         if creator is None:
             creator = self._getUsername()
         labels = self.getLabels(targettable, creator=creator, entity=None)
-        return [l.labelname for l in labels]
+        rt = [l.labelname for l in labels]
+        rt += common_labels
+        return rt
     
 
     def isLabeled(self, entity, targettable, label, creator=None):
@@ -64,6 +66,27 @@ class Accessor(base):
 
 
     def createLabel(self, label, targettable, entity=None):
+        if label in common_labels:
+            return self.createCommonLabel(label, targettable, entity=entity)
+        return self._createLabel(label, targettable, entity)
+
+
+    def createCommonLabel(self, label, targettable, entity=None):
+        if label == 'private':
+            return self.markAsPrivate(entity)
+        raise NotImplementedError, label
+
+    
+    def markAsPrivate(self, entity):
+        if entity is None: 
+            raise ValueError, "Cannot mark None as private"
+        username = self.director.sentry.username
+        if entity.creator != username:
+            raise RuntimeError, "Cannot mark records owned by others as private"
+        return self._createLabel('private', '', entity=entity)
+        
+
+    def _createLabel(self, label, targettable, entity=None):
         record = self.insertNewOwnedRecord(Label)
         record.labelname = label
         record.targettable = targettable
@@ -71,6 +94,7 @@ class Accessor(base):
             record.entity = entity
         self.updateRecordWithID(record)
         return record
+
 
 
 def accessor():
