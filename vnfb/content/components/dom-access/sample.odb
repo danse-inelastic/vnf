@@ -154,7 +154,7 @@ class Accessor(base):
             q = sqlalchemy.select([q.alias('sample')], whereclause=filter)
 
         from vnfb.utils.query.accesscontrol import select_public_and_owned_records
-        q1 = q.alias('toselectpublic')
+        q1 = q.alias('toselectpubrecs')
         cols = [
             q1.c.id,
             q1.c.short_description,

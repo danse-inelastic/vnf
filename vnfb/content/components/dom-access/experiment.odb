@@ -286,11 +286,11 @@ class Accessor(base):
             expq.c.creator.label('creator'),
             expq.c.date.label('date'),
             expq.c.sample.label('sample'),
-            labelq.c.entity.label('gptr'),
+            labelq.c.entity.label('globalpointer'),
             expq.c.samplegptr,
             ]
         # expq.c.globalpointer==labelq.c.entity
-        where = "exp.gptr=labeled.entity"
+        where = "exp.globalpointer=labeled.entity"
         if mine:
             username = self.director.sentry.username
             mine = "creator='%s'" % username
@@ -330,11 +330,11 @@ class Accessor(base):
             expq.c.short_description.label('short_description'),
             expq.c.creator.label('creator'),
             expq.c.date.label('date'),
-            expq.c.gptr,
+            expq.c.globalpointer,
             sampleq.c.short_description.label('sample'),
-            sampleq.c.gptr.label('samplegptr'),
+            sampleq.c.globalpointer.label('samplegptr'),
             ]
-        where = expq.c.samplegptr==sampleq.c.gptr
+        where = expq.c.samplegptr==sampleq.c.globalpointer
         q1 = sqlalchemy.select(cols, where)
         
         cols = [
@@ -342,21 +342,36 @@ class Accessor(base):
             expq.c.short_description.label('short_description'),
             expq.c.creator.label('creator'),
             expq.c.date.label('date'),
-            expq.c.gptr,
+            expq.c.globalpointer,
             "cast('NOT DEFINED' as varchar(32)) as sample",
             expq.c.samplegptr.label('samplegptr'),
             ]
         where = expq.c.samplegptr == None
         q2 = sqlalchemy.select(cols, whereclause=where)
         
-        return sqlalchemy.union_all(q1,q2)
+        u = sqlalchemy.union_all(q1,q2)
+        
+        from vnfb.utils.query.accesscontrol import select_public_and_owned_records
+        q1 = u.alias('toselectpubrecs')
+        cols = [
+            q1.c.id,
+            q1.c.short_description,
+            q1.c.creator,
+            q1.c.date,
+            q1.c.globalpointer,
+            q1.c.sample,
+            q1.c.samplegptr,
+            ]
+        username = self.director.sentry.username
+        q = select_public_and_owned_records(cols, q1, username, db)
+        return q
 
 
     def _select_samples(self, db):
         '''create a sqlalchemy select clause for all sample tables.
         
         columns:
-          * gptr
+          * globalpointer
           * short_description
         '''
         tables = self._sample_tables()
@@ -370,12 +385,12 @@ class Accessor(base):
         sample tables are scatterers, sampleassemblies, and samplecomponents
         
         columns:
-          * gptr
+          * globalpointer
           * short_description
         '''
         st = db._tablemap.TableToSATable(table)
         cols = [
-            st.c.globalpointer.label('gptr'),
+            st.c.globalpointer.label('globalpointer'),
             st.c.short_description,
             ]
         return sqlalchemy.select(cols)
@@ -401,7 +416,7 @@ class Accessor(base):
             st.c.creator.label('creator'),
             st.c.date.label('date'),
             st.c.sample.label('samplegptr'),
-            st.c.globalpointer.label('gptr'),
+            st.c.globalpointer.label('globalpointer'),
             ]
         try:
             expq = sqlalchemy.select(cols)

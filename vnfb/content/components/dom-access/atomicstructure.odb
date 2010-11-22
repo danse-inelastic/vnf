@@ -229,7 +229,7 @@ class Accessor(base):
             mine = "creator='%s'" % username
             where = '%s and %s' % (where, mine)
         q = sqlalchemy.select(cols, where)
-
+        
         return q
 
 
