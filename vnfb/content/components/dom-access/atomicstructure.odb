@@ -189,24 +189,8 @@ class Accessor(base):
         if mine:
             q = sqlalchemy.select(cols, st.c.creator==username)
         else:
-            sL = db._tablemap.TableToSATable(Label)
-            qL = sqlalchemy.select(
-                [sL.c.entity], 
-                whereclause=sL.c.labelname=='private',
-                ).alias('labelq')
-            onclause = st.c.globalpointer == qL.c.entity
-            cols2 = [qL.c.entity]
-            q1 = sqlalchemy.select(
-                cols+cols2,
-                from_obj=[st.outerjoin(qL, onclause=onclause)],
-                # distinct=True
-                )
-            
-            where = "creator='%s' OR creator!='%s' AND entity IS NULL" % (username, username)
-            q = sqlalchemy.select(
-                [q1.alias('oj')], 
-                whereclause = where,
-                )
+            from vnfb.utils.query.accesscontrol import select_public_and_owned_records
+            q = select_public_and_owned_records(cols, st, username, db)
 
         # filter query
         if filter:

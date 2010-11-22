@@ -28,6 +28,7 @@ all: export
 # export
 
 EXPORT_PYTHON_MODULES = \
+	accesscontrol.py \
 	atomicstructures.py \
 	labels.py \
 	__init__.py \
