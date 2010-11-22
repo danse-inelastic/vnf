@@ -19,7 +19,10 @@ from vnfb.dom.Label import Label, common_labels
 def select_public_and_owned_records(cols, table, username, db):
     '''
     cols must be columns of the given table.
-    table must have "globalpointer" column.
+    table must have the following columns
+      * globalpointer
+      * creator
+    table must have a name. if it is a query itself, alias it.
     '''
     sL = db._tablemap.TableToSATable(Label)
     qL = sqlalchemy.select(
