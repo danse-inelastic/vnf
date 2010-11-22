@@ -41,7 +41,7 @@ all: export
 
 EXPORT_PYTHON_MODULES = \
 	AbstractOwnedObjectBase.py \
-	AbstractOwnedObjectBaseTs.py \
+	AbstractOwnedObjectTsBase.py \
 	Atom.py \
 	AtomicStructure.py \
 	Bug.py \
