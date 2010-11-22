@@ -183,12 +183,30 @@ class Accessor(base):
             st.c.short_description.label('short_description'),
             st.c.chemical_formula.label('chemical_formula'),
             st.c.date.label('date'),
+            st.c.creator,
             ]
+        username = self.director.sentry.username
         if mine:
-            username = self.director.sentry.username
             q = sqlalchemy.select(cols, st.c.creator==username)
         else:
-            q = sqlalchemy.select(cols)
+            sL = db._tablemap.TableToSATable(Label)
+            qL = sqlalchemy.select(
+                [sL.c.entity], 
+                whereclause=sL.c.labelname=='private',
+                ).alias('labelq')
+            onclause = st.c.globalpointer == qL.c.entity
+            cols2 = [qL.c.entity]
+            q1 = sqlalchemy.select(
+                cols+cols2,
+                from_obj=[st.outerjoin(qL, onclause=onclause)],
+                # distinct=True
+                )
+            
+            where = "creator='%s' OR creator!='%s' AND entity IS NULL" % (username, username)
+            q = sqlalchemy.select(
+                [q1.alias('oj')], 
+                whereclause = where,
+                )
 
         # filter query
         if filter:
