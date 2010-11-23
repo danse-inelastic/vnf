@@ -44,14 +44,14 @@ class BvKComputation(object):
 
 class BvK_GetDos(BvKComputation):
 
-    df = 0.1
-    N1 = 10
+    df = 0.02
+    N1 = 40
 
     class Inventory(BvKComputation.Inventory):
 
-        df = InvBase.d.float(name='df', default = 0.1) # unit THz
+        df = InvBase.d.float(name='df', default = 0.02) # unit THz
         df.help = 'Frequency axis bin size. unit: THz'
-        N1 = InvBase.d.int(name='N1', default = 10)
+        N1 = InvBase.d.int(name='N1', default = 40)
         N1.help = 'number of sampling points in Q space(in 1 dimension)'
 
 
@@ -86,14 +86,14 @@ BvK_GetDos_Table.__str__ = getShortDescription
 
 class BvK_GetPhonons(BvKComputation):
 
-    df = 0.1
-    N1 = 10
+    df = 0.02
+    N1 = 40
 
     class Inventory(BvKComputation.Inventory):
 
-        df = InvBase.d.float(name='df', default = 0.1) # unit THz
+        df = InvBase.d.float(name='df', default = 0.02) # unit THz
         df.help = 'Bin size of frequency axis of density of states curve. unit: THz'
-        N1 = InvBase.d.int(name='N1', default = 10)
+        N1 = InvBase.d.int(name='N1', default = 40)
         N1.help = 'Number of sampling points in Q space(in 1 dimension)'
 
 
