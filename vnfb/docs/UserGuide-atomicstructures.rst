@@ -29,6 +29,30 @@ Sorting
 .. image:: shots/atomicstructure/sorting.png
 
 
+Labels
+^^^^^^
+In VNF, you can assign labels to records, so that you can arrange
+records according to your needs. 
+
+The toolbar for labels is positioned at the left-side of the
+bottom of the table view:
+
+.. image:: shots/atomicstructure/position-of-labels-toolbar.png
+
+A close-up view of the toolbar is here:
+
+.. image:: shots/atomicstructure/labels-toolbar.png
+
+* You can select a label and click the "apply" link to apply the
+  label to the selected records (select records using check boxes
+  for the rows of interest)
+* You can input the name of a new label and click the "new" link
+  to create a new label
+
+.. note::
+   The label "private" is special. Apply it to those of your records
+   that you want to keep private.
+
 Overview of an atomic structure
 -------------------------------
 
