@@ -55,6 +55,10 @@ class Actor(base):
             id = computation_id, target = target, director=director,
             )
         return select(id='main-display-area').replaceContent(view)
+
+    
+    def onCancelMatterSelector(self, director):
+        return load(actor='materialsimulation')
     
     
     def askForModel(self, director):
