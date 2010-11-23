@@ -40,6 +40,10 @@ class Accessor(base):
         return db.query(ServerTable).all()
 
 
+    def getAliveServerRecords(self):
+        db = self.db
+        return db.query(ServerTable).filter_by(status='online').all()
+
 
 
 from vnfb.dom.Server import Server as ServerTable
