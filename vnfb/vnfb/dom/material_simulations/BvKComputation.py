@@ -51,8 +51,11 @@ class BvK_GetDos(BvKComputation):
 
         df = InvBase.d.float(name='df', default = 0.02) # unit THz
         df.help = 'Frequency axis bin size. unit: THz'
+        df.tip = 'A smaller df means a finer resolution for DOS. You will need a larger N1 to support finer resolution.'
+        
         N1 = InvBase.d.int(name='N1', default = 40)
         N1.help = 'number of sampling points in Q space(in 1 dimension)'
+        N1.tip = 'DOS is computed from sampling the Brillouin zone. N1**3 is the number of total samples. If you increase N1, you will get a better sampling, but the computation is also more demanding'
 
 
     def isConfigured(self):
@@ -93,8 +96,11 @@ class BvK_GetPhonons(BvKComputation):
 
         df = InvBase.d.float(name='df', default = 0.02) # unit THz
         df.help = 'Bin size of frequency axis of density of states curve. unit: THz'
+        df.tip = 'A smaller df means a finer resolution for DOS. You will need a larger N1 to support finer resolution.'
+        
         N1 = InvBase.d.int(name='N1', default = 40)
         N1.help = 'Number of sampling points in Q space(in 1 dimension)'
+        N1.tip = 'DOS is computed from sampling the Brillouin zone. N1**3 is the number of total samples. If you increase N1, you will get a better sampling, but the computation is also more demanding'
 
 
     def isConfigured(self):
@@ -134,6 +140,11 @@ targets = [
 
 def getComputationClass(target):
     return eval('BvK_Get%s' % target.capitalize())
+
+
+def getComputations():
+    'return a list of bvk computation types'
+    return [getComputationClass(t) for t, d in targets]
 
 
 # version
