@@ -16,6 +16,7 @@ Contents:
    DeveloperGuide-DOM
    DeveloperGuide-Include-Simple-Computation-Engine
    DeveloperGuide-NeutronExperimentSimulation
+   DeveloperGuide-UserInterface
    DeveloperGuide-FAQ
    DeveloperGuide-VolunteersNeeded
 
