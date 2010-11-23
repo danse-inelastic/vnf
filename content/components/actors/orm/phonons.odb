@@ -124,25 +124,40 @@ class Actor(base):
         p = lc.plot2d(xticks=xticks, caption=caption)
         for i,y in enumerate(ys):
             p.curve(x=list(x), y=list(y), label=str(i))
-        #write data to file
-        parentdir = os.path.join('..', 'content', 'data', 'tmp')
-        tmpdirectory = tempfile.mkdtemp(dir=parentdir)
-        filename = 'dispersions.plot'
-        f = file(os.path.join(tmpdirectory, filename),'w')
+
+        # download link
+        label = 'Download dispersions'
+        ondownload = load(
+            actor=self.name, routine='getfile', id=self.inventory.id)
+        downloadLink = lc.downloader(label=label, ondownload=ondownload)
+        return p, downloadLink
+
+
+    def getfile(self, director):
+        disp = self._load(director)
+        content = self._createDownloadContent(disp, director)
+        return lc.file(filename='dispersions.plot', content=content)
+        
+
+    def _createDownloadContent(self, disp, director):
+        domaccess = self._domaccess(director)
+        record = domaccess.orm(disp)
+        domaccess.standardizeDataInIDFFormat(record.id)
+        disp = domaccess.getDataForPhonons(disp)
+        if not disp: 
+            raise RuntimeError, "Dispersion data missing"
+        x, ys, xticks = disp.getDefaultDispersionPlot()
+        #
+        content = []
         for point,label in xticks:
-            f.write('# '+str(point)+' is '+label+'\n')
+            content.append('# '+str(point)+' is '+label)
         for xval,yvals in zip(x, np.array(ys).transpose()):
             line = str(xval)+' '
             for yval in yvals:
                 line+=str(yval)+' '
-            f.write(line+'\n')
-        f.close()
-        path = os.path.join(director.weaver.htmlbase, 'tmp', os.path.split(tmpdirectory)[1], filename)
-        #downloadLink = lc.link(path)
-        h = lc.htmldocument()
-        h.text = ['<a href="'+path+'">Download dispersions</a>']
-        return p, h
-        
+            content.append(line)
+        return '\n'.join(content)
+
 
     def _initComputationOrm(self, director):
         domaccess = director.retrieveDOMAccessor('computation')
