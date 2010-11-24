@@ -59,7 +59,7 @@ class Factory(object):
         jmolApplet(400, "load caffeine.xyz");
         </script>"""
         hdoc = lc.htmldocument(text=text) 
-        tabs.tab('java viewer').add(hdoc)
+        #tabs.tab('java viewer').add(hdoc)
         # matter builder
         from luban.content.science.MatterBuilder import MatterBuilder
         mb = MatterBuilder()  
