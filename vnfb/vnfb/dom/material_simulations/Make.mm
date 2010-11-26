@@ -39,6 +39,7 @@ EXPORT_PYTHON_MODULES = \
 	BvKComputation.py \
 	BvKModel.py \
 	ComputationResult.py \
+	ComputationResultTs.py \
 	Eisf.py \
 	GulpPotential.py \
 	GulpSettings.py \

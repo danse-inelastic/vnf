@@ -55,10 +55,10 @@ class Factory(object):
 
         # cancel
         c = lc.link(label='cancel'); c.Class='float-right'; doc.add(c)
-        c.onclick = select(id=self.matter_view_id).replaceBy(
-            load(actor='material_simulations/phonon_calculators/bvk',
-                 routine='onCancelMatterSelector',
-                 computation_id = self.id, target = self.target)
+        c.onclick = load(
+            actor='material_simulations/phonon_calculators/bvk',
+            routine='onCancelMatterSelector',
+            computation_id = self.id, target = self.target,
             )
 
         # select button

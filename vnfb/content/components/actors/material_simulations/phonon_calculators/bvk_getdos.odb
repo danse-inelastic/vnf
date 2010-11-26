@@ -36,10 +36,19 @@ class Actor(base):
         c = self._getComputationRecord(director)
         if not domaccess.isComputationConfigured(c):
             return self.createConfigurationView(director)
-        
+
+        # where am I indicator
         path = self._pathToMe(director)
         view_indicator = director.retrieveVisual('view-indicator', path=path)
         doc.add(view_indicator)
+
+        # has a job?
+        jobs = c.getJobs(db)
+        hasjob = bool(jobs)
+        # job submitted?
+        if hasjob:
+            job = jobs[0]
+            jobjustcreated = job.state == 'created'
 
         # matter view
         matter = c.matter.dereference(db)
@@ -78,17 +87,41 @@ class Actor(base):
         configdoc.oncreate = select(element=configdoc).append(
             load(
               actor='orm/bvk_getdos', routine='displayProperties',
-              id = c.id, editlink=False,
+              id = c.id, editlink=not hasjob,
             ))
 
-        # results
-        resultsdoc = doc.document(title = 'Results', collapsable=True, collapsed=True)
-        resultsdoc.id = 'bvk_getdos-view-results-doc'
-        resultsdoc.paragraph(text=['loading results. please wait...'])
-        resultsdoc.onexpand = select(element=resultsdoc).replaceContent(
-            load(actor=self.name, routine='createResultsDoc',
-                 id=self.inventory.id)
-            )
+        if hasjob:
+            if jobjustcreated:
+                editjob = load(
+                    actor='job', routine='edit',
+                    id = job.id
+                    )
+                l = lc.link(
+                    label='You have not submit the job for this compution. Submit?',
+                    onclick=editjob,
+                    )
+                doc.add(l)
+            else:
+                # results
+                resultsdoc = doc.document(title = 'Results', collapsable=True, collapsed=True)
+                resultsdoc.id = 'bvk_getdos-view-results-doc'
+                resultsdoc.paragraph(text=['loading results. please wait...'])
+                resultsdoc.onexpand = select(element=resultsdoc).replaceContent(
+                    load(actor=self.name, routine='createResultsDoc',
+                         id=self.inventory.id)
+                    )
+        else:
+            createjob = load(
+                actor='job', routine='create',
+                computation_type = 'material_simulations.BvKComputation.BvK_GetDos',
+                computation_id = self.inventory.id
+                )
+            l = lc.link(
+                label='You have not create a job for this compution. Create?',
+                onclick=createjob,
+                )
+            doc.add(l)
+
         return doc
 
 

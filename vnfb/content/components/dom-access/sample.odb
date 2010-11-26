@@ -106,7 +106,7 @@ class Accessor(base):
 
         # only need gpointers to be returned
         q = q.alias('tmp')
-        q1 = sqlalchemy.select(columns=['gptr'], from_obj=[q])
+        q1 = sqlalchemy.select(columns=['globalpointer'], from_obj=[q])
 
         #db._saengine.echo = True
         rows = q1.execute().fetchall()
@@ -138,12 +138,13 @@ class Accessor(base):
             sGP.c.type.label('type'),
             st.c.date.label('date'),
             st.c.isconfiguration.label('isconfiguration'),
-            st.c.globalpointer.label('gptr'),
+            st.c.globalpointer.label('globalpointer'),
+            st.c.creator,
             ]
         # where = st.c.globalpointer==sGP.c.id,
         where = 'globalpointer=gptrs.id'
+        username = self.director.sentry.username
         if mine:
-            username = self.director.sentry.username
             mine = "creator='%s'" % username
             where = '%s and %s' % (where, mine)
         q = sqlalchemy.select(cols, where)
@@ -151,6 +152,19 @@ class Accessor(base):
         filter = self._normalizeFilter(filter)
         if filter:
             q = sqlalchemy.select([q.alias('sample')], whereclause=filter)
+
+        from vnfb.utils.query.accesscontrol import select_public_and_owned_records
+        q1 = q.alias('toselectpubrecs')
+        cols = [
+            q1.c.id,
+            q1.c.short_description,
+            q1.c.type,
+            q1.c.date,
+            q1.c.isconfiguration,
+            q1.c.globalpointer,
+            q1.c.creator,
+            ]
+        q = select_public_and_owned_records(cols, q1, username, db)
         return q
 
 
@@ -163,8 +177,13 @@ class Accessor(base):
             sL.c.entity.label('entity'),
             sL.c.labelname.label('label'),
             ]
-        where="labelname='%s' and targettable='%s'" % (label, tablename)
-        labelq = sqlalchemy.select(cols, whereclause=where).alias('labelq')
+        if label in common_labels:
+            whereclause="labelname='%s'" % (label,)
+        else:
+            whereclause="labelname='%s' and targettable='%s'" % (
+                label, tablename)
+        labelq = sqlalchemy.select(cols, whereclause=whereclause)\
+            .alias('labelq')
         
         sGP = db._tablemap.TableToSATable(global_pointer)
         st = db._tablemap.TableToSATable(table)
@@ -182,7 +201,7 @@ class Accessor(base):
             q1.c.type.label('type'),
             st.c.date.label('date'),
             st.c.isconfiguration.label('isconfiguration'),
-            st.c.globalpointer.label('gptr'),
+            st.c.globalpointer.label('globalpointer'),
             ]
         # where = st.c.globalpointer==q1.c.entity
         where = "globalpointer=q1.entity"
@@ -237,7 +256,7 @@ class Accessor(base):
         return
 
 
-from vnfb.dom.Label import Label
+from vnfb.dom.Label import Label, common_labels
 
 from vnfb.dom.neutron_experiment_simulations.Scatterer import Scatterer, ScattererTable
 from vnfb.dom.neutron_experiment_simulations.SampleAssembly import SampleAssembly, SampleAssemblyTable

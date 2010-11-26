@@ -393,8 +393,8 @@ class Actor(base):
             )
         field.help = meta['tip']
         
-        from vnfb.dom.Server import Server
-        servers = director.clerk.db.fetchall(Server)
+        serverdomaccessor = director.retrieveDOMAccessor('server')
+        servers = serverdomaccessor.getAliveServerRecords()
         entries = [ (server.id, server.short_description) for server in servers ]
         ids = [ s.id for s in servers ]
         

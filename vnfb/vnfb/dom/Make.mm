@@ -41,13 +41,15 @@ all: export
 
 EXPORT_PYTHON_MODULES = \
 	AbstractOwnedObjectBase.py \
+	AbstractOwnedObjectTsBase.py \
 	Atom.py \
 	AtomicStructure.py \
 	Bug.py \
 	Computable.py \
 	Computation.py \
 	ComputationResult.py \
-        Export.py \
+	ComputationResultTs.py \
+    Export.py \
 	Feature.py \
 	Histogram.py \
 	ITask.py \
@@ -57,16 +59,17 @@ EXPORT_PYTHON_MODULES = \
 	MaterialSimulation.py \
 	News.py \
 	OwnedObject.py \
+	OwnedObjectTs.py \
 	Privilege.py \
-        QEConfiguration.py \
-        QEConvergence.py \
-        QEConvParamTask.py \
-        QEJob.py \
-        QEConvParam.py \
-        QESetting.py \
-        QESimulation.py \
-        QESimulationTask.py \
-        QETask.py \
+    QEConfiguration.py \
+    QEConvergence.py \
+    QEConvParamTask.py \
+    QEJob.py \
+    QEConvParam.py \
+    QESetting.py \
+    QESimulation.py \
+    QESimulationTask.py \
+    QETask.py \
 	Registrant.py \
 	Role.py \
 	RoleHasPrivilege.py \

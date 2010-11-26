@@ -103,13 +103,16 @@ class Accessor(base):
             st.c.short_description.label('short_description'),
             st.c.state.label('state'),
             st.c.time_start.label('time_start'),
+            st.c.creator,
+            st.c.globalpointer,
             ]
+        username = self.director.sentry.username
         if mine:
-            username = self.director.sentry.username
             where = st.c.creator == username
             q = sqlalchemy.select(cols, where)
         else:
-            q = sqlalchemy.select(cols)
+            from vnfb.utils.query.accesscontrol import select_public_and_owned_records
+            q = select_public_and_owned_records(cols, st, username, db)
             
         if filter:
             q = sqlalchemy.select([q.alias('jobs')], whereclause=filter)
@@ -121,12 +124,17 @@ class Accessor(base):
         
         db = self.db
         sL = db._tablemap.TableToSATable(Label)
+        if label in common_labels:
+            whereclause="labelname='%s'" % (label,)
+        else:
+            whereclause="labelname='%s' and targettable='%s'" % (
+                label, mastertablename)
         labelq = sqlalchemy.select(
             [sL.c.entity.label('entity'),
              sL.c.labelname.label('label'),
              ],
-            whereclause="labelname='%s' and targettable='%s'" % (label, mastertablename))\
-            .alias('labelq')
+            whereclause=whereclause,
+            ).alias('labelq')
         
         st = db._tablemap.TableToSATable(JobTable)
 
@@ -150,7 +158,7 @@ class Accessor(base):
 
 
 
-from vnfb.dom.Label import Label
+from vnfb.dom.Label import Label, common_labels
 from vnfb.dom.Job import Job as JobTable
 
 

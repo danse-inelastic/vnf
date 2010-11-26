@@ -1,18 +1,1 @@
-<html >
- <head >
-<script>
-function redirect(url) {
-  self.close();
-  window.open(url, 'popup', 'toolbar=no,scrollbars=yes,location=no,resizable=yes,directories=no,status=yes,copyhistory=no');
-}
-</script>
-</head>
-
-<body onload="redirect('/cgi-bin/vnfb/main.cgi');">
-<!-- the following is necessary because mozilla does not allow to -->
-<!-- close window if the window was not created using a window.open -->
-<!-- javascript code -->
-The VNF application has started. You can now close this window.
-</body>
-
-</html>
+<meta http-equiv="Refresh" content="0; url=https://vnf.caltech.edu/cgi-bin/vnf/1.0/main.cgi">

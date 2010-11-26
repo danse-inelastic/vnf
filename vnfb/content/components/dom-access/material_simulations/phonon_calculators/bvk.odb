@@ -142,63 +142,20 @@ class Accessor(base):
 
     def isModelReferred(self, modelrecord):
         'check if this model is referred by someone'
-        return modelrecord.globalpointer is not None
-
-
-# obsolete ...    
-class BvKModelProxy(object):
-
-
-    def __init__(self, model, domaccessor):
-        self.model = model
-        self.domaccessor = domaccessor
-        self.db = domaccessor.db
-        self.matter = self.model.matter.dereference(self.db)
-        return
-
-
-    def __getattr__(self, name):
-        return getattr(self.model, name)
-
-
-    def getForceConstantMatrixConstraints(self):
-        if not hasattr(self, '_fcm_constraints'):
-            finder = FCMConstraintsFinder(self.matter)
-            self._fcm_constraints = finder.findall()
-        return self._fcm_constraints
-    
-
-    def getFractionalCoordinates(self):
-        matter = self.matter
-        atomsrefset = matter.atoms
-        c = [r.xyz for k,r in atomsrefset.dereference(self.db)]
-        c = numpy.array(c)
-        c.shape = -1, 3
-        return c
-
-
-    def countBonds(self):
-        return self.model.bonds.count(self.db)
-
-
-    def newBond(self):
-        b = newBond(
-            self.domaccessor,
-            A=0, B=0, Boffset=[0,0,0], force_constant_matrix=m0,
-            )
         
-        self.setBond(self.countBonds(), b)
-        return b
-    
-
-    def getBond(self, index):
-        return self.model.bonds.getElement(str(index), self.db)
-    
-
-    def setBond(self, index, bond):
-        self.model.bonds.setElement(str(index), bond, self.db)
+        db = self.db
+        orm = self.orm
+        import sqlalchemy
+        def queryComputation(C):
+            T = orm(C)
+            st = db._tablemap.TableToSATable(T)
+            return sqlalchemy.select(
+                [st.c.id], whereclause=st.c.model==modelrecord.id)
+        Computations = BvKComputation.getComputations()
+        qs = [queryComputation(C) for C in Computations]
+        u = sqlalchemy.union_all(*qs).alias('tocount')
+        return bool(u.count().execute().fetchone()[0])
         
-
 
 from vnfb.dom.material_simulations.BvKModel import BvKModel
 from vnfb.dom.material_simulations.BvKBond import BvKBond

@@ -66,7 +66,7 @@ class Accessor(base):
 
         # only need gpointers to be returned
         q = q.alias('tmp')
-        q1 = sqlalchemy.select(columns=['gptr'], from_obj=[q])
+        q1 = sqlalchemy.select(columns=['globalpointer'], from_obj=[q])
 
         #db._saengine.echo = True
         rows = q1.execute().fetchall()
@@ -92,8 +92,8 @@ class Accessor(base):
 
         q = self._select_simulation_withmatterdescription_clause(table, db)
 
+        username = self.director.sentry.username
         if mine:
-            username = self.director.sentry.username
             mine = "creator='%s'" % username
             if filter:
                 filter = '(%s) and %s' % (filter, mine)
@@ -120,11 +120,11 @@ class Accessor(base):
             labelq.c.type.label('type'),
             simq.c.date.label('date'),
             simq.c.matter.label('matter'),
-            simq.c.gptr.label('gptr'),
+            simq.c.globalpointer.label('globalpointer'),
             simq.c.creator.label('creator'),
             ]
-        # where = simq.c.gptr==labelq.c.entity
-        where = 'sims.gptr=labeled.entity'
+        # where = simq.c.globalpointer==labelq.c.entity
+        where = 'sims.globalpointer=labeled.entity'
         if mine:
             username = self.director.sentry.username
             mine = "sims.creator='%s'" % username
@@ -176,7 +176,7 @@ class Accessor(base):
           * type: type of the simulation (obtained from globaponter table)
           * date
           * matter: short_description of matter
-          * gptr
+          * globalpointer
         '''
         simq = self._select_simulation_clause(table, db)
         simq = simq.alias('simq')
@@ -188,7 +188,7 @@ class Accessor(base):
             simq.c.short_description.label('short_description'),
             simq.c.type.label('type'),
             simq.c.date.label('date'),
-            simq.c.gptr.label('gptr'),
+            simq.c.globalpointer.label('globalpointer'),
             simq.c.creator.label('creator'),
             matterq.c.short_description.label('matter'),
             ]
@@ -200,14 +200,20 @@ class Accessor(base):
             simq.c.short_description.label('short_description'),
             simq.c.type.label('type'),
             simq.c.date.label('date'),
-            simq.c.gptr.label('gptr'),
+            simq.c.globalpointer.label('globalpointer'),
             simq.c.creator.label('creator'),
             simq.c.matterid.label('matter'),
             ]
         where = simq.c.matterid==None
         q2 = sqlalchemy.select(cols, where)
         
-        return sqlalchemy.union_all(q1,q2)
+        u = sqlalchemy.union_all(q1,q2)
+        u = u.alias('uq1q2')
+        cols = [u.c.id, u.c.short_description, u.c.type, u.c.date,
+                u.c.globalpointer, u.c.creator, u.c.matter]
+        from vnfb.utils.query.accesscontrol import select_public_and_owned_records
+        username = self.director.sentry.username
+        return select_public_and_owned_records(cols, u, username, db)
 
 
     def _select_matter_clause(self, db):
@@ -230,7 +236,7 @@ class Accessor(base):
           * type: type of the simulation (obtained from globaponter table)
           * date
           * matterid
-          * gptr
+          * globalpointer
         '''
 
         sGP = db._tablemap.TableToSATable(global_pointer)
@@ -243,7 +249,7 @@ class Accessor(base):
             st.c.date.label('date'),
             st.c.matter.label('matterid'),
             st.c.creator.label('creator'),
-            st.c.globalpointer.label('gptr'),
+            st.c.globalpointer.label('globalpointer'),
             ]
         where = st.c.globalpointer==sGP.c.id
         try:

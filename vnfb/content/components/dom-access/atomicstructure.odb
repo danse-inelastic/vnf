@@ -183,12 +183,14 @@ class Accessor(base):
             st.c.short_description.label('short_description'),
             st.c.chemical_formula.label('chemical_formula'),
             st.c.date.label('date'),
+            st.c.creator,
             ]
+        username = self.director.sentry.username
         if mine:
-            username = self.director.sentry.username
             q = sqlalchemy.select(cols, st.c.creator==username)
         else:
-            q = sqlalchemy.select(cols)
+            from vnfb.utils.query.accesscontrol import select_public_and_owned_records
+            q = select_public_and_owned_records(cols, st, username, db)
 
         # filter query
         if filter:
@@ -199,12 +201,17 @@ class Accessor(base):
     def makeLabeledQuery(self, label, mine=False):
         db = self.db
         sL = db._tablemap.TableToSATable(Label)
+        if label in common_labels:
+            whereclause="labelname='%s'" % (label,)
+        else:
+            whereclause="labelname='%s' and targettable='%s'" % (
+                label, tablename)
         labelq = sqlalchemy.select(
             [sL.c.entity.label('entity'),
              sL.c.labelname.label('label'),
              ],
-            whereclause="labelname='%s' and targettable='%s'" % (label, tablename))\
-            .alias('labelq')
+            whereclause=whereclause,
+            ).alias('labelq')
         
         st = db._tablemap.TableToSATable(StructureTable)
         
@@ -222,7 +229,7 @@ class Accessor(base):
             mine = "creator='%s'" % username
             where = '%s and %s' % (where, mine)
         q = sqlalchemy.select(cols, where)
-
+        
         return q
 
 
@@ -250,7 +257,7 @@ class Accessor(base):
 
 
 
-from vnfb.dom.Label import Label
+from vnfb.dom.Label import Label, common_labels
 from vnfb.dom.AtomicStructure import StructureTable, Structure
 from vnfb.dom.Atom import AtomTable, Atom
 from vnfb.dom.Lattice import LatticeTable, Lattice
