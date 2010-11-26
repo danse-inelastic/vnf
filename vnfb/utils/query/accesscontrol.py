@@ -36,8 +36,7 @@ def select_public_and_owned_records(cols, table, username, db):
         from_obj=[table.outerjoin(qL, onclause=onclause)],
         )
             
-    where = "creator='%s' OR creator!='%s' AND entity IS NULL" % (
-        username, username)
+    where = "creator is NULL OR creator='%s' OR creator!='%s' AND entity IS NULL" % (username, username)
     q = sqlalchemy.select(
         [q1.alias('privatelabeloj')], 
         whereclause = where,
