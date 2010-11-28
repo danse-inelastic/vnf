@@ -18,7 +18,7 @@ def announcement(server, error):
     msg.subject = 'Computing server "%s" is down' % (server.short_description, )
     msg.text = [
 """
-From: vnf web server %(hostname)s
+From: vnf web server %(hostname)r
 
 Computing Server %(servername)r is down.
 
@@ -43,7 +43,7 @@ When attempting to connect, following error was reported:
         'hostname': hostname,
         }
 
-    adminemail = 'vnf-dev@googlegroups.com'
+    adminemail = 'vnf-administrators@googlegroups.com'
     # adminemail = 'jiao.lin@gmail.com'
     msg.recipients[adminemail] = subs
 
