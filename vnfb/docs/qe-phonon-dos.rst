@@ -1,3 +1,5 @@
+.. _qe-phonon-dos:
+
 Phonon DOS Calculation Using Quantum Espresso with VNF
 ======================================================
 
