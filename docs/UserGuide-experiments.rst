@@ -34,8 +34,13 @@ In an experiment, you choose or set up a neutron instrument,
 and (optionally) choose and configure a sample,
 and let a specific number of neutrons run through the instrument.
 
+
+.. _exp-tutorials:
+
 How to setup and run an experiment
 ----------------------------------
+
+.. _exp-tut-simple-src-mon:
 
 Tutorial 1: a simple test experiment
 """"""""""""""""""""""""""""""""""""
