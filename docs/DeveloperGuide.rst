@@ -6,17 +6,19 @@ VNF Developer Guide
 Contents:
 
 .. toctree::
+   :maxdepth: 2
 
-   DeveloperGuide-Overview
-   DeveloperGuide-Architecture
-   DeveloperGuide-Monitoring
-   DeveloperGuide-Tests
-   DeveloperGuide-AccessControl
-   DeveloperGuide-Utilities
-   DeveloperGuide-DOM
+   DeveloperGuide-Introduction
+   DeveloperGuide-DevelopmentPhilosophy
    DeveloperGuide-Include-Simple-Computation-Engine
    DeveloperGuide-NeutronExperimentSimulation
+   DeveloperGuide-Architecture
    DeveloperGuide-UserInterface
+   DeveloperGuide-DOM
+   DeveloperGuide-AccessControl
+   DeveloperGuide-Utilities
+   DeveloperGuide-Tests
+   DeveloperGuide-Monitoring
    DeveloperGuide-FAQ
    DeveloperGuide-VolunteersNeeded
 
