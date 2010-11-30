@@ -74,15 +74,11 @@ class Factory(object):
             continue
 
         #
-        instrument = experiment.instrument
-        instrument = instrument and instrument.id and instrument.dereference(domaccess.db)
-        if instrument:
-            if not instrument.has_sample_component:
-                hidesamplepanels = director.retrieveVisual(
-                    'neutronexperiment/edit/hidesamplepanels')\
-                    .get()
-                wizard_container.oncreate = hidesamplepanels
-            
+        wizard_container.oncreate = load(
+            actor='experiment/editor',
+            routine='hideSamplePanelsIfNecessary',
+            id = self.id,
+            )
         return doc
 
 
