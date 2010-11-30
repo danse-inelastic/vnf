@@ -43,27 +43,34 @@ class Actor(base):
         uploadid = self.inventory.uploadid
         from vnfb.utils.upload import abspath
         path = abspath(uploadid)
+
+        # find the file
+        exts = ['.h5', '.nc']
+        found = None
         import os
         if os.path.isdir(path):
-            entries = os.listdir(path); found = None
-            for entry in entries:
-                if entry.startswith('.'): continue
-                if entry.endswith('.h5'): found = entry; break
-                if entry.endswith('.nc'): found = entry; break
-            # path to the file
-            found = os.path.join(path, found)
+            patterns = ['*'+e for e in exts]
+            found = find(path, patterns) or None
+            if found:
+                found = found[0]
         else:
-            if path.endswith('.h5'): 
-                found = path
-            elif path.endswith('.nc'): 
-                found = path
-
+            for e in exts:
+                if path.endswith(e): 
+                    found = path
+        if not found:
+            msg = "The uploaded file does not have correct extension: "
+            msg += ' '.join(exts)
+            return alert(msg)
         # XXXX
-        # should check if the files are sane and are not hostile
-        # ....
-
-        # nothing uploaded
-        if not found: return alert('Invalid file')
+        # should check if the files are sane
+        try:
+            checksqe(found)
+        except Exception, e:
+            import traceback
+            tb = traceback.format_exc()
+            msg = 'The uploaded file is not in correct format: %s\n\n%s' % (
+                e, tb)
+            return alert(msg)
 
         # create a new record
         clerk = director.clerk
@@ -93,6 +100,44 @@ class Actor(base):
     def __init__(self, name='atomicstructure/uploadsqe'):
         super(Actor, self).__init__(name)
         return
+
+
+
+def find(dir, patterns):
+    "find files in the given directory using the given pattern"
+    import os, glob
+    for p in patterns:
+        l = glob.glob(os.path.join(dir, p))
+        if l: return l
+        continue
+    return
+
+
+def checksqe(path):
+    import os
+    if not os.path.exists(path): 
+        raise RuntimeError, "path %s does not exist" % path
+
+    ext = os.path.splitext(path)[-1][1:]
+    h = 'checksqe_'+ext
+    return eval(h)(path)
+
+
+def checksqe_h5(path):
+    from histogram.hdf import load, utils
+    try:
+        entry = utils.getOnlyEntry(histpath)
+    except:
+        entry = 'S(Q,E)'
+    h = load(path, entry)
+    return
+
+
+def checksqe_nc(path):
+    from vnfb.dom.material_simulations.SQE import SQE
+    sqe = SQE()
+    sqe.read(path)
+    return
 
 
 def actor(): return Actor()
