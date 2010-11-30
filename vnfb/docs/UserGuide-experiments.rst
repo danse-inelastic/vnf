@@ -174,3 +174,9 @@ Expand this only histogram panel there you will see a plot!
 
 And you can download the data for the plot by clicking the 
 "download data" link.
+
+
+Tutorial 2: an experiment with a powder sample with inelastic phonon scattering kernel
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+`A video demo for this tutorial <http://www.youtube.com/watch_popup?v=puHiA4qcL7U&vq=hd720>`_
