@@ -1,3 +1,5 @@
+.. _forcefield-and-analysis-workflows:
+
 Tour of forcefield and analysis workflows in VNF
 ======================================================
 

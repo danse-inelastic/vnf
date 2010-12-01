@@ -34,8 +34,13 @@ In an experiment, you choose or set up a neutron instrument,
 and (optionally) choose and configure a sample,
 and let a specific number of neutrons run through the instrument.
 
+
+.. _exp-tutorials:
+
 How to setup and run an experiment
 ----------------------------------
+
+.. _exp-tut-simple-src-mon:
 
 Tutorial 1: a simple test experiment
 """"""""""""""""""""""""""""""""""""
@@ -125,10 +130,53 @@ You can then minimize the summary by clicking on the
 arrow-up icon to collapse the document, and we end up with:
 
 .. image:: shots/experiments/experiment-finish-prepare-to-submit.png
-   :width: 450px
+   :width: 400px
 
 Click the "create job" button allows us to create
 a computation job  for this experiment:
 
 .. image:: shots/experiments/job-submission.png
-   :width: 400px
+   :width: 300px
+
+Click the "submit" button will submit job to the job queue
+at the computing server you have chosen:
+
+.. image:: shots/experiments/job-queued.png
+   :width: 450px
+
+You will see the job is queued (in some cases, it might be 
+already "running", or even "finished").
+Click the "Refresh" button will update the status of your job.
+For this example, your job should be done fairly quickly.
+If not, please wait for email alerts from the vnf system
+for change of status. Anyway, after a while, your job should be 
+done:
+
+.. image:: shots/experiments/job-finished.png
+   :width: 450px
+
+Click the "switch to view of computation..." button in the "Results" section
+will bring you to a view of the experiment:
+
+.. image:: shots/experiments/exp-view-after-job-finished.png
+
+
+Expand the "results" section, we will see VNF retrieving results
+for you, and for this particular experiment, one histogram panel will
+show up inside the results panel:
+
+.. image:: shots/experiments/exp-view-expand-results-panel.png
+
+
+Expand this only histogram panel there you will see a plot!
+
+.. image:: shots/experiments/exp-view-expand-histogram-inside-results-panel.png
+
+And you can download the data for the plot by clicking the 
+"download data" link.
+
+
+Tutorial 2: an experiment with a powder sample with inelastic phonon scattering kernel
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+`A video demo for this tutorial <http://www.youtube.com/watch_popup?v=puHiA4qcL7U&vq=hd720>`_

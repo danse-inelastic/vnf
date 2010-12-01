@@ -79,7 +79,7 @@ class Factory(object):
         domaccess = self.domaccess
 
         experiment = self.experiment
-
+        
         # instrument configuration
         instrumentrecord = experiment.instrument.dereference(domaccess.db)
         ic = domaccess.getInstrumentConfiguration(experiment)

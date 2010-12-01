@@ -3,12 +3,12 @@
 Web Portal Guide
 =================
 
-General:
-
 .. toctree::
-
+   :maxdepth: 2
+   
    UserGuide-Overview
    UserGuide-screencasts
+   UserGuide-Tutorials
    UserGuide-atomicstructures
    UserGuide-materialsimulations
    UserGuide-analysis
@@ -16,26 +16,26 @@ General:
    UserGuide-experiments
    UserGuide-jobs
 
-  
-Born-von Karman (BvK):
 
-.. toctree::
+.. Born-von Karman (BvK):
 
-   Tutorial-bvk-to-experiment
+.. .. toctree::
 
-Gulp:
+..    Tutorial-bvk-to-experiment
 
-.. toctree::
+.. Gulp:
 
-   md-sqe.rst
+.. .. toctree::
 
-Quantum Espresso:
+..    md-sqe.rst
 
-.. toctree::
+.. Quantum Espresso:
 
-    qe-phonon-dos
-    qe-car-parrinello
+.. .. toctree::
+
+..     qe-phonon-dos
+..     qe-car-parrinello
    
-..   discussion
+.. ..   discussion
 
 

@@ -134,6 +134,27 @@ class Actor(base):
         return instrument
 
 
+    def hideSamplePanelsIfNecessary(self, director): 
+        domaccess = self._domaccess(director)
+
+        # experiment
+        id = self.inventory.id
+        exp = domaccess.getExperimentRecord(id=id)
+        
+        # instrument
+        instrument = exp.instrument
+        instrument = instrument and instrument.id and instrument.dereference(domaccess.db)
+
+        # if instrument does not have a sample component
+        # hide the sample panels
+        if instrument:
+            if not instrument.has_sample_component:
+                hidesamplepanels = director.retrieveVisual(
+                    'neutronexperiment/edit/hidesamplepanels') .get()
+                return hidesamplepanels
+        return
+
+
     def onInsertComponent(self, director):
         """
         id: id of experiment

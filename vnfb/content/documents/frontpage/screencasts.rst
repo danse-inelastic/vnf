@@ -1,6 +1,6 @@
 .. _screencasts:
  
-screencasts
+Screencasts
 ===========
 
 * `Front page <http://www.youtube.com/watch?v=dzMWwTTNhvI&fmt=22>`_
