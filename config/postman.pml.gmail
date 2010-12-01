@@ -19,6 +19,7 @@
   <component name="postman">
 
     <property name="host">smtp.gmail.com</property>
+    <property name="port">587</property>
     <property name="username">UUUUUUUU</property>
     <property name="password">PPPPPPPP</property>
 
