@@ -53,3 +53,22 @@ to the component factory method
      ...
 
 
+Misc.
+-----
+
+Run a command in a subprocess and detach it from the current process
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+It is very useful in UI to launch a separate process that runs on its
+own so we can get back to user quickly with a response. ::
+ 
+ $ cd $EXPORT_ROOT/vnfb/bin
+ $ ./launch-detached.py --home=<workdir> --cmd=<command> --output-log=<outputlogfile> --error-log=<errorlogfile>
+
+You can get help by::
+
+ $ ./launch-detached.py -h
+
+Debugging::
+
+ $ ./launch-detached.py <...options...> debug
