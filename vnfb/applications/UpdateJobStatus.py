@@ -22,19 +22,6 @@ class UpdateJobStatus(base):
 
         import pyre.inventory
 
-        import vnf.components
-        clerk = pyre.inventory.facility(name="clerk", factory=vnf.components.clerk)
-        clerk.meta['tip'] = "the component that retrieves data from the various database tables"
-
-        from vnf.components import dds
-        dds = pyre.inventory.facility(name="dds", factory=dds)
-        dds.meta['tip'] = "the component manages data files"
-
-        from vnf.components.SSHer import SSHer
-        csaccessor = pyre.inventory.facility(
-            name='csaccessor', factory = SSHer, args = ['jsu-ssher', 'ssher'])
-        csaccessor.meta['tip'] = 'computing server accessor'
-
 
     def main(self, *args, **kwds):
         self._check()
@@ -51,14 +38,6 @@ class UpdateJobStatus(base):
 
     def _configure(self):
         super(UpdateJobStatus, self)._configure()
-        
-        self.clerk = self.inventory.clerk
-        self.clerk.director = self
-        
-        self.dds = self.inventory.dds
-        self.dds.director = self
-
-        self.csaccessor = self.inventory.csaccessor
         
         logdir = self.inventory.logdir
         today = str(datetime.date.today())
