@@ -22,22 +22,54 @@ class Launch(Application, Stager):
         import pyre.inventory
         home = pyre.inventory.str('home', default = '/tmp')
         cmd = pyre.inventory.str('cmd', default = '')
-        #logfile = pyre.inventory.str('logfile', default = '')
-        
+
+
+    def execute(self, *args, **kwds):
+        options = self._parseOutputOptions()
+        kwds['stdout'] = options.outputlog
+        kwds['stderr'] = options.errorlog
+        super(Launch, self).execute(*args, **kwds)
+        return
+
+
+    def _parseOutputOptions(self):
+        import optparse
+        parser = optparse.OptionParser()
+        parser.add_option('', '--output-log', dest='outputlog', default='/dev/null')
+        parser.add_option('', '--error-log', dest='errorlog', default='/dev/null')
+        import sys
+        args = [sys.argv[0]]
+        keys = ['--output-log', '--error-log']
+        for arg in sys.argv[1:]:
+            for key in keys:
+                if arg.startswith(key):
+                    args.append(arg)
+        (options, args) = parser.parse_args(args)
+        return options
+
+
+    def help(self):
+        import sys
+        cmd = sys.argv[0]
+        print
+        print ' $ %s \\' % cmd
+        print '   --home=<work-directory-for-the-command> \\'
+        print '   --cmd=<command> \\'
+        print '   --output-log=<output log file> \\'
+        print '   --error-log=<error log file> \\'
+        return
+
 
     def main(self, *args, **kwds):
         #self.configureJournal(self.logfile)
         cmd = self.inventory.cmd
         self._debug.log( 'cmd=%r' % cmd )
         #print cmd
-        from vnf.utils.spawn import spawn
-        import os
+        import os, shlex
         self._debug.log( 'curdir=%r' % os.path.abspath(os.curdir))
-        ret, out, err = spawn(cmd, env=os.environ)
-        if ret:
-            self._debug.log( 'out: %s' % out )
-            self._debug.log( 'err: %s' % err )
-            raise RuntimeError, '%r failed. Enable journal debug channel %r to see error messages' % (cmd, self.name)
+        all = shlex.split(cmd)
+        program = all[0]
+        os.execvp(program, all)
         return
 
 
@@ -54,11 +86,17 @@ class Launch(Application, Stager):
         return
 
 
+    def _defaults(self):
+        super(Launch, self)._defaults()
+        self.inventory.typos = 'relaxed'
+        return
+
+
     def _configure(self):
         Application._configure(self)
-        self.home = self.inventory.home
+        import os
+        self.home = os.path.abspath(self.inventory.home)
         self.cmd = self.inventory.cmd
-        #self.logfile = self.inventory.logfile
         return
 
 
