@@ -10,12 +10,12 @@ material properties and simulate neutron scattering experiments.
 
 Ab initio physics
 """"""""""""""""""
-*Quantum Espresso provides electronic structure, atomistic optimization, density functional perturbation theory phonons, etc.
+* Quantum Espresso provides electronic structure, atomistic optimization, density functional perturbation theory phonons, etc.
 
 Forcefield and forceconstant physics
 """"""""""""""""""""""""""""""""""""""
-*BvK Engine provides a tensorial style forceconstant lattice dynamics engine capable of calculating and fitting phonon eigenmodes and densities of state
-*GULP provides atomistic optimization, Monte Carlo thermodynamics, lattice dynamics, molecular dynamics, crystal structure prediction, transition state prediction, etc.
+* BvK Engine provides a tensorial style forceconstant lattice dynamics engine capable of calculating and fitting phonon eigenmodes and densities of state
+* GULP provides atomistic optimization, Monte Carlo thermodynamics, lattice dynamics, molecular dynamics, crystal structure prediction, transition state prediction, etc.
 
 Monte Carlo simulation of neutron scattering
 """"""""""""""""""""""""""""""""""""""""""""
