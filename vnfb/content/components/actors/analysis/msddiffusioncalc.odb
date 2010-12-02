@@ -129,7 +129,7 @@ class Actor(base):
         return director.retrieveDOMAccessor('analysis')
 
 
-    def __init__(self, name='analysis/vacfdiffusioncalc'):
+    def __init__(self, name='analysis/msddiffusioncalc'):
         super(Actor, self).__init__(name)
         return
 
