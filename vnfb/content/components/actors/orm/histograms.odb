@@ -30,6 +30,8 @@ class Actor(base):
 
         import pyre.inventory
 
+        format = pyre.inventory.str('format', default='txt')
+
 
     def createGraphicalView(self, director):
         domaccess = self._domaccess(director)
@@ -73,25 +75,19 @@ class Actor(base):
     
     def download(self, director):
         id = self.inventory.id
-        domaccess = self._domaccess(director)
-        histogram = domaccess.getRecord(id)
-        histogram = domaccess.getData(histogram)
-        data = histogram.data
-        dim = data.dimension()
-
-        filepath = '%s.dat' % data.name()
-
-        content = []
-        if dim == 1:
-            xs = data.axes()[0].binCenters()
-            ys = data.I
-            for x,y in zip(xs, ys):
-                content.append('%s\t%s' % (x,y))
-                continue
-        else:
-            content.append('not implemented')
+        format = self.inventory.format
         
-        content = '\n'.join(content)
+        domaccess = self._domaccess(director)
+        record = domaccess.getRecord(id)
+        if format == 'h5':
+            p = domaccess.getH5FilePath(record)
+            content = open(p).read()
+        elif format == 'txt':
+            content = domaccess.getDataAsTxt(record)
+
+        ext = format
+        domaccess.getData(record); name = record.data.name()
+        filepath = '%s.%s' % (name, ext)
         
         return lc.file(filename=filepath, content=content)
     
