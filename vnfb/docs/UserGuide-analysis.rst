@@ -3,7 +3,7 @@
 Analysis
 ========
 
-In this tab, a table of post-simulation analysis are presented.
+In this tab a user can calculate various scattering and dynamical functions from either a phonon or a molecular dynamics calculation.  The list of current analyses are shown below:
 
 .. image:: shots/analysis/table-top.png
    :width: 720px
@@ -15,4 +15,6 @@ To see how to sort, filter, and how to use labels, please read
 functionalities of the table view here is the same as the one
 for atomic structures.
 
-
+A brief tutorial about how to calculate a density of phonon states or an S(Q,E) is shown below:
+* :ref:`analysis-tutorial`
+Other examples of analysis calculations include elastic incoherent structure factors, velocity autocorrelation function and the resulting diffusion coefficient, mean squared displacement and its resulting diffusion coefficient, etc.
