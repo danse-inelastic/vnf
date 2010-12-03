@@ -22,4 +22,4 @@ scp -r _build/html/* jbrkeith@login.cacr.caltech.edu:projects/danse/docs.danse.u
 #	su jbk #become someone with permission to move the docs 
 #fi
 
-ssh jbrkeith@login.cacr.caltech.edu 'chgrp -R danse projects/danse/docs.danse.us/docroot/VNET/*'
+#ssh jbrkeith@login.cacr.caltech.edu 'chgrp -R danse projects/danse/docs.danse.us/docroot/VNET/*'
