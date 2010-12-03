@@ -504,6 +504,19 @@ class Actor(base):
     def submit(self, director):
         if not self._isowner(director):
             return alert("permission denied")
+        # if server is not active anymore, let the user 
+        # edit the submission again
+        id = self.inventory.id
+        job = self._getJobRecord(director)
+        server = job.server.dereference(director.clerk.db)
+        if server.status != 'online':
+            msg = 'server %s is no longer available, please resubmit' % (
+                server.sname,)
+            return [
+                alert(msg),
+                load(actor='job', routine='edit', id=id),
+                ]
+        
         view = self.create_submitting_view(director)
         return select(id='main-display-area').replaceContent(view)
 
