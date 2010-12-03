@@ -47,6 +47,7 @@ Molecular Dynamics:
 Part 5
 ------
 - Implement batch job submission
+- Implement status bar for batch job submission
 - Fix status bar
 
 
