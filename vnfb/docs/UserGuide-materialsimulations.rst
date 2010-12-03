@@ -1,6 +1,6 @@
 .. _matsim-tab:
 
-Material Simulations and Modelings
+Material Simulations and Modeling
 ==================================
 
 
@@ -19,10 +19,13 @@ functionalities of the table view here is the same as the one
 for atomic structures.
 
 There are tutorials on how to use the quantum espresso engine for the following workflows:
-* :ref:`qe-phonon-dos`
-* :ref:`qe-car-parrinello`
+ * :ref:`qe-phonon-dos`
+ * :ref:`qe-car-parrinello`
+
 Tutorials also exist for the Born-von Karman calculator:
-* :ref:`tutorial-bvk-to-experiment`
+ * :ref:`tutorial-bvk-to-experiment`
+
 and the GULP engine:
-* :ref:`forcefield-and-analysis-workflows`
+ * :ref:`forcefield-and-analysis-workflows`
+
 which are both forcefield/forceconstant engines.
