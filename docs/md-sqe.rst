@@ -115,6 +115,8 @@ After inputting server choice (octopod or foxtrot) and time estimations, we subm
    
 Eventually the job terminates and we refresh to view the trajectory (trajectory viewer under construction).
 
+.. _analysis-tutorial:
+
 Creating scattering kernels and analyses
 -----------------------------------------
 
