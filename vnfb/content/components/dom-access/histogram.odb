@@ -35,9 +35,7 @@ class Accessor(base):
 
 
     def getData(self, record):
-        directory = self.director.dds.abspath(record)
-        import os
-        p = os.path.join(directory, 'data.h5')
+        p = self.getH5FilePath(record)
         import histogram.hdf as hh
         from histogram.hdf.utils import getOnlyEntry
         entry = getOnlyEntry(p)
@@ -45,6 +43,68 @@ class Accessor(base):
         record.data = h
         return record
 
+
+    def getH5FilePath(self, record):
+        directory = self.director.dds.abspath(record)
+        return os.path.join(directory, 'data.h5')
+
+
+    def getDataAsTxt(self, record):
+        p = self.getTxtDataFilePath(record)
+        if not os.path.exists(p):
+            self.makeTxtDataFile(record)
+        return open(p).read()
+
+
+    def getTxtDataFilePath(self, record):
+        directory = self.director.dds.abspath(record)
+        p = os.path.join(directory, 'data.txt')
+        return p
+    
+
+    def makeTxtDataFile(self, record):
+        record = self.getData(record)
+        hist = record.data
+        ndims = hist.dimension()
+        h = 'make%sDTxtData' % ndims
+        h = getattr(self, h, None)
+        if h is None:
+            raise NotImplementedError, "ndims=%s" % ndims
+        txt = h(hist)
+        p = self.getTxtDataFilePath(record)
+        s = open(p, 'w')
+        s.write(txt)
+        s.close()
+        return
+
+
+    def make1DTxtData(self, Ix):
+        content = []
+        xs = Ix.axes()[0].binCenters()
+        ys = Ix.I
+        for x,y in zip(xs, ys):
+            content.append('%s\t%s' % (x,y))
+            continue
+        return '\n'.join(content)
+
+
+    def make2DTxtData(self, Ixy):
+        content = []
+        
+        # axes
+        xs = Ixy.axes()[0].binCenters()
+        content.append('\t'.join([str(x) for x in xs]))
+        content.append('')
+        ys = Ixy.axes()[1].binCenters()
+        content.append('\t'.join([str(y) for y in ys]))
+        content.append('')
+        
+        # I
+        I = Ixy.I
+        for row in I:
+            content.append('\t'.join([str(e) for e in row]))
+            continue
+        return '\n'.join(content)
 
 
 from vnfb.dom.Histogram import Histogram, HistogramTable
