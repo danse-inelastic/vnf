@@ -31,7 +31,7 @@ User interface organization
 ---------------------------
 
 .. image:: shots/main-interface-example-exptable.png
-   :width: 780px
+   :width: 95%
 
 
 The user interface of VNF has an overall uniform structure:
@@ -139,8 +139,8 @@ computation; in a view of a computation job, there will be a link
 that can bring you to the view of the computation that job is about.
 
 
-More details
-------------
+Links
+-----
 At this moment, you may want to explore VNF a little bit.
 For example, you
 can review past experiments by clicking 
