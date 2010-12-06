@@ -20,13 +20,43 @@ def visual(director):
     portlet = Portlet(id='main-portlet', title='')
 
     # portlet.item(id='main-portlet-my-materials', label='materials', onclick=load(actor='matter'))
-    portlet.item(id='main-portlet-my-atomicstructures', label='atomic structures', onclick=load(actor='atomicstructure'))    
-    portlet.item(id='main-portlet-my-simulations', label='simulations', onclick=load(actor='materialsimulation'))
+    portlet.item(
+        id='main-portlet-my-atomicstructures',
+        label='atomic structures',
+        onclick=load(actor='atomicstructure'),
+        tip = 'atomic structures of materials of interests',
+        )
+    portlet.item(
+        id='main-portlet-my-simulations', 
+        label='simulations', 
+        onclick=load(actor='materialsimulation'),
+        tip = 'material simulations (ab inito/molecular dynamics) and modelings',
+        )
     #portlet.item(id='main-portlet-my-simulations', label='dynamics', onclick=load(actor='dynamics/materialsimulation'))
-    portlet.item(id='main-portlet-my-analysis', label='analysis', onclick=load(actor='analysis'))
-    portlet.item(id='main-portlet-my-samples', label='samples', onclick=load(actor='sample'))
-    portlet.item(id='main-portlet-my-experiments', label='experiments', onclick=load(actor='experiment'))
-    portlet.item(id='main-portlet-my-jobs', label='jobs', onclick=load(actor='job'))
+    portlet.item(
+        id='main-portlet-my-analysis', 
+        label='analysis', 
+        onclick=load(actor='analysis'),
+        tip = 'analyze results of simulations and modelings to obtain neutron scattering properties of materials, such as I(Q,E), I(Q), or I(E)',
+        )
+    portlet.item(
+        id='main-portlet-my-samples', 
+        label='samples', 
+        onclick=load(actor='sample'),
+        tip = 'virtual samples for your virtual neutron experiments',
+        )
+    portlet.item(
+        id='main-portlet-my-experiments', 
+        label='experiments', 
+        onclick=load(actor='experiment'),
+        tip = 'virtual neutron scattering experiments',
+        )
+    portlet.item(
+        id='main-portlet-my-jobs', 
+        label='jobs', 
+        onclick=load(actor='job'),
+        tip = 'computational jobs for your simulations, modelings, and virtual experiments',
+        )
     
     return portlet
 
