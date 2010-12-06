@@ -34,6 +34,76 @@ and to tag entities with labels for easier organization
 (More details of these controls are explained
 :ref:`using the "atomic structures" tab as the example <atomic-structures>`).
 
+The sequence of the tabs is arranged to roughly follow a typical
+chain of simulation/analysis steps, leading users 
+to start from an atomic structure to end with performing virtual
+neutron experiments on the atomic structure.
+
+**Atomic structures**
+An atomic structure is the target of your research. 
+You always start your virtual experiment by first creating 
+an atomic structure or find it in the database.
+Neutron scattering experiments are ways to probe its physical properties.
+
+.. figure:: shots/an-atomic-structure.png
+
+   *An example of atomic structure*
+
+
+**Simulations**
+The "Simulations" tab is for material simulations and modelings
+that compute from
+atomic structure (and additional information)
+things like electronic ground state, 
+trajectories, phonon modes, etc.
+Shown in the above figure is one typical workflow of
+a first principle simulation.
+The goal of these simulations are creating
+details of physical properties of the atomic structure
+which later can be (directly or indirectly) used to create scattering kernels
+of virtual samples.
+
+.. figure:: images/Example-Ab-Initio-Workflow.png
+   :width: 80%   
+
+   *A typical workflow of Ab Initio simulation*
+
+
+**Analysis**
+The purpose of analysis is to obtain data that are more easily understandable
+(than things like wave-functions and md trajectories). 
+For example, shown in the figure above is an elastic incoherent
+structure factor resulted from an analysis of a md trajectory.
+Some of the analysis results here can be directly compared
+to data reduced from real data (for example, phonon DOS are computed
+from some analysis and can be compared to phonon DOS reduced from
+real experiments), and some can be used in futher simulations
+of neutron experiments as inputs to scattering kernels of samples.
+
+.. figure:: images/differingEisfs2d.png
+   :width: 60%
+
+   *An example of Elastic incoherent structure factor resulted from an analysis of a molecular dynamics trajectory*
+
+
+**Samples**
+In this tab, you will create and manage virtual samples for virtual experiments.
+
+.. figure:: images/instrument-and-sample.png
+   :width: 90%
+
+   *Instrument and sample in VNF virtual experiments*
+
+
+**Experiments**
+In this tab, you will create and manage virtual experiments.
+
+**Jobs**
+In this tab, you can monitor the computational jobs for the material
+simulations/modelings, and also virtual experiments.
+
+
+
 Another principle of the VNF user interface is to show the interconnections
 of entities. For example, in the view of an atomic structure, you 
 should be able to see (links to) entities related this atomic structure,
