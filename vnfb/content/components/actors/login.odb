@@ -121,8 +121,8 @@ class Actor(base):
             ]
         htmldoc = lc.htmldocument(); footnotecontainer.add(htmldoc)
         htmldoc.text = [        
-            # 'You are presently at the stable release site of VNF; the version under development is <a href="https://vnf-dev.caltech.edu">here</a>.',
-            'You are presently at the development site of VNF; the release sites of vnf are available at <a href="https://vnf.caltech.edu">caltech</a> and <a href="https://vnf.sns.gov">SNS</a> (the latter is only accessible from inside ORNL)',
+            'You are presently at the 1.0 release site of VNF; the version under development is <a href="https://vnf-dev.caltech.edu">here</a>.',
+            # 'You are presently at the development site of VNF; the release sites of vnf are available at <a href="https://vnf.caltech.edu">caltech</a> and <a href="https://vnf.sns.gov">SNS</a> (the latter is only accessible from inside ORNL)',
             ]
         return bodydoc
 
