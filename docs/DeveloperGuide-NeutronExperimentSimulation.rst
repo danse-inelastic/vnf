@@ -26,3 +26,25 @@ Run test by::
 
 
 
+Instrument
+----------
+
+
+Create an instrument
+^^^^^^^^^^^^^^^^^^^^
+Developers and sys admins can create instruments from script.
+
+
+
+
+How to upgrade an instrument?
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Sometimes, you will find a better implementation of an instrument
+(for example, inserting a new component into the component chain
+that was ignored previously), and want to upgrade an instrument.
+The way to do it is to create a new instrument and call it 
+with the same name as before, and take the old instrument offline
+(unless you really want to have more than one versions of
+the same instrument shown to users of VNF, which might be confusing).
+
