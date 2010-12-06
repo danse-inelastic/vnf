@@ -3,6 +3,14 @@
 Overview
 ========
 
+Here we give an overview of the VNF service, including
+introductions of the most
+fundamental concepts of VNF, 
+and a discusssion of the basic design philosophy 
+of the VNF user interface, 
+and then present links to more detailed
+discussions, tutorials, examples, and user guides.
+
 Virtual neutron facility is a web service where you can plan 
 and run virtual neutron experiments, 
 and collect virtual experiment data for your virtual sample.
@@ -19,8 +27,12 @@ material behaviors calculated by ab initio or molecular dynamics
 methods become scattering kernels that can be used in the sample
 simulation part of your virtual experiment.
 
+User interface organization
+---------------------------
+
 .. image:: shots/main-interface-example-exptable.png
    :width: 780px
+
 
 The user interface of VNF has an overall uniform structure:
 the main interface is organized as tabs, of which several 
@@ -34,10 +46,13 @@ and to tag entities with labels for easier organization
 (More details of these controls are explained
 :ref:`using the "atomic structures" tab as the example <atomic-structures>`).
 
+
+Sequence of tabs
+^^^^^^^^^^^^^^^^
 The sequence of the tabs is arranged to roughly follow a typical
 chain of simulation/analysis steps, leading users 
-to start from an atomic structure to end with performing virtual
-neutron experiments on the atomic structure.
+to start from an atomic structure, and to end with performing virtual
+neutron experiments on samples of this atomic structure.
 
 **Atomic structures**
 An atomic structure is the target of your research. 
@@ -56,7 +71,7 @@ that compute from
 atomic structure (and additional information)
 things like electronic ground state, 
 trajectories, phonon modes, etc.
-Shown in the above figure is one typical workflow of
+Shown in the figure below is one typical workflow of
 a first principle simulation.
 The goal of these simulations are creating
 details of physical properties of the atomic structure
@@ -70,12 +85,13 @@ of virtual samples.
 
 
 **Analysis**
-The purpose of analysis is to obtain data that are more easily understandable
+The purpose of analysis is to obtain from results of simulations/modelings
+data that are more easily understandable
 (than things like wave-functions and md trajectories). 
-For example, shown in the figure above is an elastic incoherent
+For example, shown in the figure below is an elastic incoherent
 structure factor resulted from an analysis of a md trajectory.
 Some of the analysis results here can be directly compared
-to data reduced from real data (for example, phonon DOS are computed
+to data reduced from real data (for example, phonon DOS can be computed
 from some analysis and can be compared to phonon DOS reduced from
 real experiments), and some can be used in futher simulations
 of neutron experiments as inputs to scattering kernels of samples.
@@ -83,11 +99,19 @@ of neutron experiments as inputs to scattering kernels of samples.
 .. figure:: images/differingEisfs2d.png
    :width: 60%
 
-   *An example of Elastic incoherent structure factor resulted from an analysis of a molecular dynamics trajectory*
+   *An example of Elastic incoherent structure factors resulted from analysis of molecular dynamics trajectories*
 
 
 **Samples**
 In this tab, you will create and manage virtual samples for virtual experiments.
+Virtual samples are probably the most important piece in a virtual neutron
+experiment. Shown in the figure below is diagram depicting the structural
+representation of a neutron instrument and a sample.
+As you can see, an instrument consists of a sequence of neutron
+components, one of which being the sample component.
+Inside the sample component, a sample assembly is represented
+by a tree-like structure including neutron scatterers and scattering
+kernels.
 
 .. figure:: images/instrument-and-sample.png
    :width: 90%
@@ -97,20 +121,26 @@ In this tab, you will create and manage virtual samples for virtual experiments.
 
 **Experiments**
 In this tab, you will create and manage virtual experiments.
+A virtual neutron experiment is in essential a Monte Carlo
+simulation of neutrons going through a neutron instrument.
 
 **Jobs**
 In this tab, you can monitor the computational jobs for the material
 simulations/modelings, and also virtual experiments.
 
 
-
+Interconnectivity
+^^^^^^^^^^^^^^^^^
 Another principle of the VNF user interface is to show the interconnections
-of entities. For example, in the view of an atomic structure, you 
+of information. For example, in the view of an atomic structure, you 
 should be able to see (links to) entities related this atomic structure,
 for example, its phonon density of states computed from a bvk
 computation; in a view of a computation job, there will be a link 
 that can bring you to the view of the computation that job is about.
 
+
+More details
+------------
 At this moment, you may want to explore VNF a little bit.
 For example, you
 can review past experiments by clicking 
