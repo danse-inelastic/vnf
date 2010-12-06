@@ -15,6 +15,7 @@ Web Portal Guide
    UserGuide-samples
    UserGuide-experiments
    UserGuide-jobs
+   UserGuide-FAQ
 
 
 .. Born-von Karman (BvK):
