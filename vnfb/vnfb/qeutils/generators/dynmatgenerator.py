@@ -51,8 +51,8 @@ class DYNMATGenerator(object):
     def _addQPoint(self, nl):
         "Adds q point"
         kp          = self._phresults.kCoord()
-        if not kp:
-            nl.add("q(#)", "ERROR: Phonon coordinate (Kx, Ky, Kz) are not set on PH input")
+        if not kp or type(kp) != list:
+            nl.add("q(#)", "ERROR: Phonon coordinate (Kx, Ky, Kz) are not set in PH input")
 
         for i in range(len(kp)):
             nl.add("q(%s)" % str(i+1), kp[i])
