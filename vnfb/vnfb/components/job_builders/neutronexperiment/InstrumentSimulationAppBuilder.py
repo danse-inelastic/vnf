@@ -96,13 +96,20 @@ class Builder(base):
 
         for component in components:
             reference = component.referencename
-            if reference is not None and reference != '' and reference != 'absolute':
-                raise NotImplementedError, 'reference=%r' % reference
-            
-            position = component.position
+                        
+            position    = component.position
             orientation = component.orientation
 
-            value = '%s,%s' % (list(position), _formatOrientation(orientation))
+            if reference is not None and reference != '' and reference != 'absolute':
+                # Relative vectors
+                value = 'relative(%s, to="%s"),relative(%s, to="%s")' % (
+                                                    list(position),
+                                                    reference,
+                                                    _formatOrientation(orientation),
+                                                    reference)
+            else:
+                # Absolute vectors
+                value = '%s,%s' % (list(position), _formatOrientation(orientation))
 
             name = component.componentname
             # for sample, the name is alwasy "sample"
