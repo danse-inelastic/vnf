@@ -127,7 +127,7 @@ def L_monitor1():
     c.filename = "Vulcan_asbuilt_L_monitor1.txt"
     c.Lmax = 14.0
     c.x_width = 0.1
-    c.Lmin = 0.0
+    c.Lmin = 0.1    #0.0
     return c
 
 def bulk_shield_insert1():
@@ -169,7 +169,7 @@ def L_monitor2():
     c.filename = "Vulcan_asbuilt_L_monitor2.txt"
     c.Lmax = 14.0
     c.x_width = 0.1
-    c.Lmin = 0.0
+    c.Lmin = 0.1   #0.0
     c.referencename = "previous"
     return c
 
@@ -229,7 +229,7 @@ def L_monitor3():
     c.filename = "Vulcan_asbuilt_L_monitor3.txt"
     c.Lmax = 14.0
     c.x_width = 0.1
-    c.Lmin = 0.0
+    c.Lmin = 0.1    #0.0
     c.referencename = "previous"
     return c
 
@@ -348,7 +348,7 @@ def L_monitor4():
     c.filename = "Vulcan_asbuilt_L_monitor4.txt"
     c.Lmax = 14.0
     c.x_width = 0.1
-    c.Lmin = 0.0
+    c.Lmin = 0.1    #0.0
     c.referencename = "previous"
     return c
 
@@ -936,7 +936,7 @@ def L_monitor5():
     c.filename = "Vulcan_asbuilt_L_monitor5.txt"
     c.Lmax = 14.0
     c.x_width = 0.1
-    c.Lmin = 0.0
+    c.Lmin = 0.1    #0.0
     c.referencename = "previous"
     return c
 
@@ -996,7 +996,7 @@ def L_monitor6():
     c.filename = "Vulcan_asbuilt_L_monitor6.txt"
     c.Lmax = 14.0
     c.x_width = 0.1
-    c.Lmin = 0.0
+    c.Lmin = 0.1    #0.0
     c.referencename = "previous"
     return c
 
@@ -1316,7 +1316,7 @@ def L_monitor7():
     c.filename = "Vulcan_asbuilt_L_monitor7.txt"
     c.Lmax = 14.0
     c.x_width = 0.1
-    c.Lmin = 0.0
+    c.Lmin = 0.1    #0.0
     c.referencename = "previous"
     return c
 
@@ -1516,7 +1516,7 @@ def L_monitor8():
     c.filename = "Vulcan_asbuilt_L_monitor8.txt"
     c.Lmax = 14.0
     c.x_width = 0.1
-    c.Lmin = 0.0
+    c.Lmin = 0.1    #0.0
     c.referencename = "previous"
     return c
 
@@ -1529,7 +1529,7 @@ def L_monitor9():
     c.filename = "Vulcan_asbuilt_L_monitor9.txt"
     c.Lmax = 14.0
     c.x_width = 0.15
-    c.Lmin = 0.0
+    c.Lmin = 0.1    #0.0
     c.referencename = "previous"
     return c
 
@@ -1542,7 +1542,7 @@ def L_monitor10():
     c.filename = "Vulcan_asbuilt_L_monitor10.txt"
     c.Lmax = 14.0
     c.x_width = 0.002
-    c.Lmin = 0.0
+    c.Lmin = 0.1    #0.0
     c.referencename = "previous"
     return c
 
@@ -1707,10 +1707,11 @@ def psd_yscan_L():
 #    return c
 
 
-#def neutron_recorder():
-#    c = NeutronRecorder()
-#    c.short_description = "Neutron recorder at sample position"
-#    return c
+def neutron_recorder():
+    c = NeutronRecorder()
+    c.short_description = "Neutron recorder at sample position"
+    c.referencename = "previous"
+    return c
 
 from _utils import ccomp, cinstr
 
@@ -1810,6 +1811,7 @@ def createInstrument(director):
         ccomp("psd_sample_position", psd_sample_position(), ((0.00000, 0.00000, 0.97300), (0.00000, 0.00000, 0.00000), '')),
         ccomp("psd_xscan_L", psd_xscan_L(), ((0.00000, 0.00000, 0.97400), (0.00000, 0.00000, 0.00000), '')),
         ccomp("psd_yscan_L", psd_yscan_L(), ((0.00000, 0.00000, 0.97500), (0.00000, 0.00000, 0.00000), '')),
+        ccomp('neutron_recorder', neutron_recorder(), ((0.00000, 0.00000, 1.00000), (0.00000, 0.00000, 0.00000), '')),
 #        ccomp("sample", sample(), ((0.00000, 0.00000, 1.00000), (0.00000, 0.00000, 0.00000), '')),
 #        ccomp("detector_90tc", detector_90tc(), ((0.00000, 0.00000, 0.00000), (0.00000, 0.00000, 0.00000), '')),
 #        ccomp("detector_90wc", detector_90wc(), ((0.00000, 0.00000, 0.00000), (0.00000, 0.00000, 0.00000), '')),
@@ -1823,10 +1825,10 @@ def createInstrument(director):
 
     instrument = cinstr(
         director,
-        name = "",
-        short_description = "",
-        long_description = "",
-        category = "",
+        name = "VULCAN",
+        short_description = "SNS diffractometer",
+        long_description = "VULCAN is a diffractometer at the Spallation Neutron Source intended for measurements of deformation, residual stress related studies, spatial mapping of chemistry, microstructure, and texture.",
+        category = "engineering diffraction",
         creator = "VNF",
         date = "08 Dec 2010 08:42",
         components = components
