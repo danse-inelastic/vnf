@@ -54,7 +54,7 @@ def toangles(orientation):
     return tuple(orientation)
 
 
-def calculateAbsoluteCoordinates(relative_coordinates):
+def calculateAbsoluteCoordinates(relative_coordinates, component_sequence):
     '''calculate the "absolute coordindates" of elements out of the "relative coordinates"
 
     The so-called "relative coordinates" are used to describe the geometrical
@@ -79,6 +79,7 @@ def calculateAbsoluteCoordinates(relative_coordinates):
     '''
     from mcni.Geometer2 import Geometer, RelativeCoord as rel, AbsoluteCoord as abs
     geometer = Geometer()
+    geometer.element_sequence = component_sequence
     
     for element in relative_coordinates:
         reference, position, orientation = relative_coordinates[element]
@@ -120,8 +121,10 @@ def calculateComponentAbsoluteCoordinates(components, getname=None):
     # prepare to call calculateAbsoluteCoordinates
     componentdict = {}
     relative_coords = {}
+    component_sequence = []
     for c in components:
         name = getname(c)
+        component_sequence.append(name)
         componentdict[name] = c
         
         # c is a db record. c.position and c.orientation both could be None
@@ -135,7 +138,7 @@ def calculateComponentAbsoluteCoordinates(components, getname=None):
         continue
 
     # call calculateAbsoluteCoordinates
-    abscoords = calculateAbsoluteCoordinates(relative_coords)
+    abscoords = calculateAbsoluteCoordinates(relative_coords, component_sequence)
 
     # assign coords back to component
     for name, (pos, ori) in abscoords.iteritems():
