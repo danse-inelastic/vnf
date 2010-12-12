@@ -34,14 +34,15 @@ def visual(id=None, info=None, director=None):
         title='Traceback', collapsable = True, collapsed=True)
     tracebackcontainer.Class='traceback-container'
     
-    traceback = lc.htmldocument(Class='traceback-doc'); 
-    tracebackcontainer.add(traceback)
+    tracebackhtmldoc = lc.htmldocument(Class='traceback-doc'); 
+    tracebackcontainer.add(tracebackhtmldoc)
     
     import sys, cgitb
-    # print sys.exc_info()
-    tbtext = cgitb.html((sys.exc_type, '', sys.exc_traceback))
-    traceback.text = tbtext.splitlines()
-    # traceback.text=['<pre>'+info['traceback']+'</pre>']
+    exc_info = sys.exc_info()
+    tbtext = cgitb.html(exc_info)
+    tracebackhtmldoc.text = tbtext.splitlines()
+    
+    # tracebackhtmldoc.text += ['<pre>'+info['traceback']+'</pre>']
 
     form = body.form(title="Bug #%s" % id, id='bug-submit-form')
     form.Class='bug-report-form'
