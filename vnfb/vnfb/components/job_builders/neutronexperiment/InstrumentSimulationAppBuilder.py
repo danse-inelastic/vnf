@@ -708,8 +708,8 @@ class Builder(base):
             'xmax': component.x_max,
             'ymin': component.y_min,
             'ymax': component.y_max,
-            'xwidth': component.xwidth,
-            'yheight': component.yheight,
+            'xwidth': component.x_width,
+            'yheight': component.y_height,
             'nx': component.nx,
             'ny': component.ny,
             'filename': outputfilename(component),
@@ -732,8 +732,8 @@ class Builder(base):
         opts = {}
 
         parameters = {
-            'xwidth': component.xwidth,
-            'yheight': component.yheight,
+            'xwidth': component.x_width,
+            'yheight': component.y_height,
             'zthick': component.zthick,
             'xmin': component.x_min,
             'xmax': component.x_max,
@@ -784,8 +784,8 @@ class Builder(base):
 #            'focus_yh': component.focus_yh,
 #            'focus_aw': component.focus_aw,
 #            'focus_ah': component.focus_ah,
-#            'xwidth': component.xwidth,
-#            'yheight': component.yheight,
+#            'xwidth': component.x_width,
+#            'yheight': component.y_height,
 #            'zthick': component.zthick,
 #            'sig_a': component.sig_a,
 #            'sig_i': component.sig_i,
@@ -810,8 +810,8 @@ class Builder(base):
         opts = {}
 
         parameters = {
-            'xwidth': component.xwidth,
-            'yheight': component.yheight,
+            'xwidth': component.x_width,
+            'yheight': component.y_height,
             'bmin': component.bmin,
             'bmax': component.bmax,
             'deltab': component.deltab,
@@ -845,8 +845,8 @@ class Builder(base):
             'xmax': component.x_max,
             'ymin': component.y_min,
             'ymax': component.y_max,
-            'xwidth': component.xwidth,
-            'yheight': component.yheight,
+            'xwidth': component.x_width,
+            'yheight': component.y_height,
             }
         for k,v in parameters.iteritems():
             opts['%s.%s' % (component.componentname, k)] = v
