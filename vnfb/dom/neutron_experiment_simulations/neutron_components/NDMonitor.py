@@ -20,8 +20,8 @@ class NDMonitor(base):
     user2 = 0
     username1 = ''
     username2 = ''
-    xwidth = 0.10000000000000001
-    yheight = 0.10000000000000001
+    x_width = 0.10000000000000001
+    y_height = 0.10000000000000001
     zthick = 0.0
     x_min = 0.0
     x_max = 0.0
@@ -34,7 +34,7 @@ class NDMonitor(base):
     max = 1000.0    #1e+40
     
     def customizeLubanObjectDrawer(self, drawer):
-        drawer.mold.sequence = ['componentname', 'short_description', 'referencename', 'position', 'orientation', 'options', 'user1', 'user2', 'username1', 'username2', 'xwidth', 'yheight', 'zthick', 'x_min', 'x_max', 'y_min', 'y_max', 'zmin', 'zmax', 'bins', 'min', 'max']
+        drawer.mold.sequence = ['componentname', 'short_description', 'referencename', 'position', 'orientation', 'options', 'user1', 'user2', 'username1', 'username2', 'x_width', 'y_height', 'zthick', 'x_min', 'x_max', 'y_min', 'y_max', 'zmin', 'zmax', 'bins', 'min', 'max']
 
 InvBase=base.Inventory
 class Inventory(InvBase):
@@ -48,10 +48,10 @@ class Inventory(InvBase):
     username1.help = '[str] Name assigned to User1'
     username2 = InvBase.d.str(name='username2', default='')
     username2.help = '[str] Name assigned to User2'
-    xwidth = InvBase.d.float(name='xwidth', default=0.10000000000000001)
-    xwidth.help = '[m]  Width/diameter of detector (x). Default is 10 cm.'
-    yheight = InvBase.d.float(name='yheight', default=0.10000000000000001)
-    yheight.help = '[m]  Height of detector (y). Default is 10 cm.'
+    x_width = InvBase.d.float(name='x_width', default=0.10000000000000001)
+    x_width.help = '[m]  Width/diameter of detector (x). Default is 10 cm.'
+    y_height = InvBase.d.float(name='y_height', default=0.10000000000000001)
+    y_height.help = '[m]  Height of detector (y). Default is 10 cm.'
     zthick = InvBase.d.float(name='zthick', default=0.0)
     zthick.help = '[m]  Thichness of detector (z).'
     x_min = InvBase.d.float(name='x_min', default=0.0)
