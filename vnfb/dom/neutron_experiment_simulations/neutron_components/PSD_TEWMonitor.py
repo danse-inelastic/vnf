@@ -20,14 +20,14 @@ class PSD_TEWMonitor(base):
     nbchan = 20.0
     type = 'time'
     format = 'table'
-    xwidth = 0.0
-    yheight = 0.0
+    x_width = 0.0
+    y_height = 0.0
     bmin = 0.0
     bmax = 0.0
     deltab = 0.0
     restore_neutron = 0.0
     def customizeLubanObjectDrawer(self, drawer):
-        drawer.mold.sequence = ['componentname', 'short_description', 'referencename', 'position', 'orientation', 'nxchan', 'nychan', 'nbchan', 'type', 'format', 'xwidth', 'yheight', 'bmin', 'bmax', 'deltab', 'restore_neutron']
+        drawer.mold.sequence = ['componentname', 'short_description', 'referencename', 'position', 'orientation', 'nxchan', 'nychan', 'nbchan', 'type', 'format', 'x_width', 'y_height', 'bmin', 'bmax', 'deltab', 'restore_neutron']
 InvBase=base.Inventory
 class Inventory(InvBase):
     nxchan = InvBase.d.float(name='nxchan', default=20.0)
@@ -40,10 +40,10 @@ class Inventory(InvBase):
     type.help = 'detector type "time"/"energy"/"wavelength" (string)'
     format = InvBase.d.str(name='format', default='table')
     format.help = '"table"- binned values on ascii file; "detector_out"- McStas format ascii'
-    xwidth = InvBase.d.float(name='xwidth', default=0.0)
-    xwidth.help = 'Width/diameter of detector (x). Overrides x_min,x_max. (m)'
-    yheight = InvBase.d.float(name='yheight', default=0.0)
-    yheight.help = 'Height of detector (y). Overrides y_min,y_max. (m)'
+    x_width = InvBase.d.float(name='x_width', default=0.0)
+    x_width.help = 'Width/diameter of detector (x). Overrides x_min,x_max. (m)'
+    y_height = InvBase.d.float(name='y_height', default=0.0)
+    y_height.help = 'Height of detector (y). Overrides y_min,y_max. (m)'
     bmin = InvBase.d.float(name='bmin', default=0.0)
     bmin.help = 'Lower time/energy/wavelength limit (ms/meV/AA)'
     bmax = InvBase.d.float(name='bmax', default=0.0)
