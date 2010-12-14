@@ -18,6 +18,7 @@ PACKAGE = dom/neutron_experiment_simulations
 
 BUILD_DIRS = \
 	instruments \
+	integrated \
 	neutron_components \
 
 OTHER_DIRS = \

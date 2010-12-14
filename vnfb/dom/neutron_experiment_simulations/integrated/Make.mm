@@ -11,7 +11,7 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 PROJECT = vnfb
-PACKAGE = dom/neutron_experiment_simulations/instruments
+PACKAGE = dom/neutron_experiment_simulations/integrated
 
 
 BUILD_DIRS = \
@@ -31,19 +31,8 @@ all: export
 # export
 
 EXPORT_PYTHON_MODULES = \
-	Any.py \
-	ARCS_beam.py \
-	ARCS_beam_withmonitor2.py \
-	IdealPowderINS.py \
-	Pharos.py \
-	Powgen3.py \
-	SANS_NG7.py \
-	SEQUOIA.py \
-	Test.py \
-	VULCAN.py \
 	__init__.py \
-	_utils.py \
-	_.py \
+	computation_types.py \
 
 
 export:: export-package-python-modules
@@ -51,6 +40,6 @@ export:: export-package-python-modules
 
 
 # version
-# $Id: Make.mm,v 1.1.1.1 2006-11-27 00:09:19 aivazis Exp $
+# $Id$
 
 # End of file
