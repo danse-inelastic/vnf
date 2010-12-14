@@ -92,6 +92,7 @@ class Actor(base):
         director.clerk.db.updateRecord(analysisDbObj)
         analysisObj = orm.record2object(analysisDbObj)
         drawer = director.painter.paintObj.drawers.getDrawer(analysisObj.__class__)
+        drawer.actor = 'orm/analysis/%s' % analysisObj.__class__.__name__.lower()
         editview = drawer(analysisObj)
         doc.add(editview)
         #container.oncreate = [
