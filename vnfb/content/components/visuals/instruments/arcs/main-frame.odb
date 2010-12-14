@@ -1,0 +1,30 @@
+# -*- Python -*-
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                 Jiao Lin
+#                      California Institute of Technology
+#                      (C) 2006-2010  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+# the main frame of the arcs application UI
+
+from luban.content import load
+import luban.content as lc
+
+def visual(director):
+    visual = lc.document(
+        id='arcs-main-frame', 
+        title='ARCS instrument applications')
+    visual.addClass('app-main-frame')
+    return visual
+
+
+# version
+__id__ = "$Id$"
+
+# End of file 

@@ -1,0 +1,68 @@
+# -*- Python -*-
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                 Jiao Lin
+#                      California Institute of Technology
+#                      (C) 2006-2010  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+# the panel to show at start of arcs UI
+# this should be inserted into the main-frame
+
+from luban.content import load, select, alert
+import luban.content as lc
+
+def visual(director):
+    visual = lc.document(id='arcs-beam-profile-panel', title="Beam profile at sample")
+    reload = load(actor='instruments/arcs', routine='loadApp', app='beam-profile')
+    link = lc.link(label='reload', onclick=reload)
+    visual.add(link)
+
+    grid = lc.grid(); visual.add(grid)
+    grid.addClass('align-top')
+    row = grid.row()
+    # cell for user input
+    inputcell = row.cell()
+    # cell for id holder
+    idholdercell = row.cell()
+    # cell for update button
+    updatecell = row.cell()
+    # cell for plots
+    plotscell = row.cell(Class='align-top')
+    
+    # input form
+    inputcell.oncreate = select(element=inputcell).append(
+        load(actor='orm/arcsbeamconfigurations', routine='edit')
+        )
+
+    #
+    idholder = lc.paragraph(id='idholder', hidden=True)
+    idholdercell.add(idholder)
+
+    # update button
+    update = load(
+        actor='instruments/arcs/beam-profile', 
+        routine='update',
+        id = select(element=idholder).getAttr('text'),
+        formids = select(element=inputcell).findDescendentIDs(type='form'),
+        )
+    b = lc.button(label='Update', onclick=update)
+    updatecell.add(b)
+
+    # output region
+    doc = lc.document(id='output', title='Outputs')
+    plotscell.add(doc)
+    doc.paragraph(text='Plots go here')
+    
+    return visual
+
+
+# version
+__id__ = "$Id$"
+
+# End of file 
