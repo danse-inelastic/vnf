@@ -361,6 +361,11 @@ class Actor(base):
     
     
     def edit(self, director):
+        doc = self.createEditPanel(director)
+        return select(id='main-display-area').replaceContent(doc)
+    
+    
+    def createEditPanel(self, director):
         domaccess = self._domaccess(director)
         orm = domaccess.orm
 
@@ -373,7 +378,7 @@ class Actor(base):
         doc = Document(title='Job\ %s' % self.inventory.id)
         doc.add(form)
         
-        return select(id='main-display-area').replaceContent(doc)
+        return doc
     
     
     def createEditForm(self, director):
