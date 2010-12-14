@@ -13,15 +13,11 @@
 
 
 typenames = [
-    'neutron_experiment_simulations.NeutronExperiment.NeutronExperiment',
+    'neutron_experiment_simulations.integrated.arcs.ARCSbeam.ARCSbeam',
     ]
-
-from integrated.computation_types import typenames as ts
-typenames += ts
 
 
 deps_typenames = [
-    'neutron_experiment_simulations.NeutronStorage.NeutronStorage',
     ]
 
 
