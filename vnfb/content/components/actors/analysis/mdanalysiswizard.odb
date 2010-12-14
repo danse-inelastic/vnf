@@ -104,7 +104,7 @@ class Actor(base):
 #        sA.add(load(actor=actorName, routine='edit', id = self.inventory.dynamicsId))
 #        sB          = splitter.section()
 #        docSub      = lc.document(title = "")
-        b = lc.button(label='select'); 
+        b = lc.button(label='Create job'); 
         doc.add(b)
         b.onclick = load(
             #actor='atomicstructure',
