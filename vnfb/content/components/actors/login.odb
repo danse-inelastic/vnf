@@ -28,6 +28,9 @@ class Actor(base):
         username = pyre.inventory.str('username')
         password = pyre.inventory.str('password')
 
+        post_authorization_action = pyre.inventory.str(
+            'post_authorization_action')
+
 
     def default(self, director):
         visual = self.createFrontPageContent(director)
@@ -78,7 +81,9 @@ class Actor(base):
         left = splitter.section(id='login-body-left')
         # form
         formcontainer = left.document(id='login-form-container')
-        form = director.retrieveVisual('login-form')
+        form = director.retrieveVisual(
+            'login-form', 
+            post_authorization_action=self.inventory.post_authorization_action)
         formcontainer.add(form)
         # portlet
         portlet = director.retrieveVisual('frontpage-portlet')
@@ -160,13 +165,18 @@ class Actor(base):
                     return alert('Thanks for your interests in vnf. You probably just signed up for vnf but are not yet approved. Please wait for the approval email, and your patience is very much appreciated.')
             return self.formError(director, errors=errors)
 
-        self._debug.log('redirect to greeter.greet')
+        post_authorization_action = self.inventory.post_authorization_action
+        if not post_authorization_action:
+            post_authorization_action = load(actor='greeter', routine='greet')
+        else:
+            from vnfb.content import safe_eval_action
+            post_authorization_action = safe_eval_action(post_authorization_action)
         return [
             createCredential(
                 username=director.sentry.username,
                 ticket=director.sentry.ticket,
                 ),
-            load(actor='greeter', routine='greet'),
+            post_authorization_action,
             ]
 
 

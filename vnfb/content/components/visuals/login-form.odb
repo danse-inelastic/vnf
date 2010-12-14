@@ -15,7 +15,7 @@
 from luban.content.Form import Form
 
 
-def visual(director):
+def visual(director=None, post_authorization_action=None):
     form = Form(id='login-form', title='Sign in to your vnf account')
     username = form.text(
         name='username', label='Username', value='', id='login-username-input')
@@ -33,6 +33,7 @@ def visual(director):
         select(element=form).submit(
             actor = 'login',
             routine = 'verify',
+            post_authorization_action = post_authorization_action or '',
             ),
         select(element=form).disable(),
         ]
