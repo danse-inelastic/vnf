@@ -32,6 +32,15 @@ def launch_detached(cmd, home='.', debug=False):
     return
 
 
+def exec_detached(code, home='.'):
+    import tempfile
+    f = tempfile.mktemp()
+    open(f, 'w').write(code)
+    cmd = 'python %s; rm -f %s' % (f,f)
+    launch_detached(cmd, home=home)
+    return
+
+
 # version
 __id__ = "$Id$"
 

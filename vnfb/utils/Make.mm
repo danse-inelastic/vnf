@@ -55,8 +55,6 @@ EXPORT_PYTHON_MODULES = \
 	math.py \
         orderedDict.py \
 	safe_eval.py \
-	safe_eval_25.py \
-	safe_eval_26.py \
         serverlist.py \
         spawn.py \
 	upload.py \
