@@ -40,6 +40,23 @@ def customizeLubanObjectDrawer(self, drawer):
         fields['A'] = _createatomfield('A', obj)
         fields['B'] = _createatomfield('B', obj)
 
+        # don't allow user to fiddle around Boffset_is_fractional
+        fields['Boffset_is_fractional'].hidden = True
+
+        # Boffset
+        helpelem = fields['Boffset'].getDescendentByName('Boffset-help')
+        helpelem.paragraph(
+            text=['The offset is on the following base vectors:']
+            )
+        from vnfb.content.visuals.atomicstructure import getBaseVectorsDoc
+        basedoc = getBaseVectorsDoc(
+            matter = obj.matter,
+            primitive_unitcell = obj.uses_primitive_unitcell,
+            title='base vectors',
+            id='base-for-bond',
+            )
+        helpelem.add(basedoc)
+
         return fields
 
 
