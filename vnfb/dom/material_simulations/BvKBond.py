@@ -32,6 +32,44 @@ def customizeLubanObjectDrawer(self, drawer):
     # this is modified from luban.orm.views.ObjectPropertiesMold
     # we need a special field for force constant matrix
     def _createfields(obj):
+        # create the fields as usual
+        fields = drawer.mold.o2f(obj)
+        
+        # replace the force constant matrix field
+        fields['force_constant_matrix'] = _createFCMfield(obj)
+        fields['A'] = _createatomfield('A', obj)
+        fields['B'] = _createatomfield('B', obj)
+
+        return fields
+
+
+    def _createatomfield(atomlabel, obj):
+        # index of atom -- A:1, B:2
+        index = ord(atomlabel) - ord('A') + 1
+
+        # matter
+        matter = obj.matter
+        # the atoms (depending on whether we choose primitive cell or note
+        if obj.uses_primitive_unitcell:
+            atoms = matter.primitive_unitcell.atoms
+        else:
+            atoms = list(matter)
+        
+        # entries
+        entries = [str(a) for a in atoms]
+
+        # 
+        from luban.content.FormSelectorField import FormSelectorField
+        return FormSelectorField(
+            label = 'Atom %s' % index,
+            name = atomlabel,
+            entries = enumerate(entries),
+            tip = 'Select atom %s for the bond' % index,
+            selection = getattr(obj, atomlabel),
+            )
+
+
+    def _createFCMfield(obj):
         # a new field for force_constant_matrix
         doc = lc.document(title='force constant matrix', Class='force-constant-matrix-input-container')
         from luban.content.FormTextField import FormTextField
@@ -56,11 +94,7 @@ def customizeLubanObjectDrawer(self, drawer):
         # right is the container for constraints
         cdoc = right.document(name='force-constant-matrix-constraints', title='constraints')
 
-        # replace the force constant matrix field
-        fields = drawer.mold.o2f(obj)
-        fields['force_constant_matrix'] = doc
-
-        return fields
+        return doc
     
 
     def _form(obj):
@@ -69,6 +103,7 @@ def customizeLubanObjectDrawer(self, drawer):
         # a form for the attributes
         form = lc.form(Class='bvkbond-form')
         #
+
         self._addfieldstoform(form, obj)
         #
         # make sure when A, or B, or Boffset changes, reload constraints
