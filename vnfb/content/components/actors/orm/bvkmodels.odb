@@ -74,6 +74,12 @@ class Actor(base):
             orm.db.updateRecord(record)
             continue
         
+        return load(
+            actor='material_simulations/phonon_calculators/bvk',
+            routine = 'editModel',
+            model_id = orm(model).id,
+            display_model_properties = True,
+            )
         return super(Actor, self)._postStoringUserInputs(director)
             
 

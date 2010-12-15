@@ -37,6 +37,7 @@ all: export
 # export
 
 EXPORT_PYTHON_MODULES = \
+	atomicstructure.py \
 	view_indicator.py \
 	__init__.py \
 
