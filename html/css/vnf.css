@@ -388,7 +388,28 @@ width:100%;
 .inline-display {
     display: inline;
 }
+.align-top {
+    vertical-align: top;
+}
 
+/* applications */
+.app-main-frame.panel.luban-document {
+    width: 95%;
+    height: 90%;
+    position: fixed;
+    top: 0;
+    left: 0;
+}
+.app-launch-button {
+    border: 2px solid silver;
+    -moz-border-radius: 1em;
+}
+.app-launch-button img{
+    height: 50px;
+}
+.app-launch-button a {
+    border: none;
+}
 
 /* version */
 /* $Id$ */

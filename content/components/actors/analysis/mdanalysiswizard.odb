@@ -92,6 +92,7 @@ class Actor(base):
         director.clerk.db.updateRecord(analysisDbObj)
         analysisObj = orm.record2object(analysisDbObj)
         drawer = director.painter.paintObj.drawers.getDrawer(analysisObj.__class__)
+        drawer.actor = 'orm/analysis/%s' % analysisObj.__class__.__name__.lower()
         editview = drawer(analysisObj)
         doc.add(editview)
         #container.oncreate = [
@@ -103,7 +104,7 @@ class Actor(base):
 #        sA.add(load(actor=actorName, routine='edit', id = self.inventory.dynamicsId))
 #        sB          = splitter.section()
 #        docSub      = lc.document(title = "")
-        b = lc.button(label='select'); 
+        b = lc.button(label='Create job'); 
         doc.add(b)
         b.onclick = load(
             #actor='atomicstructure',
