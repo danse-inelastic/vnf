@@ -34,6 +34,8 @@ class Actor(base):
         formids = pyre.inventory.list('formids')
         viewid = pyre.inventory.str('viewid')
 
+        display_model_properties = pyre.inventory.bool('display_model_properties')
+
 
     def start(self, director):
         sid = self.inventory.atomicstructure_id
@@ -131,6 +133,18 @@ class Actor(base):
         drawer = director.painter.paintObj.drawers.getDrawer(model.__class__)
         editview = drawer(model)
         doc.add(editview)
+
+        # adjust editview if display_model_properties is true
+        display_model_properties = self.inventory.display_model_properties
+        if display_model_properties:
+            propdoc = lc.document(title='Properties', collapsable=True)
+            propdoc.add(director.redirect(
+                actor='orm/bvkmodels', 
+                routine='displayProperties',
+                id=model_id,
+                include_credential=False,
+                ))
+            editview.contents[0] = propdoc
         
         done = load(
             actor=self.name, routine='doneEditingModel',
