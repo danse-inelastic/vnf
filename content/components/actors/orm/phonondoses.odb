@@ -114,13 +114,40 @@ class Actor(base):
         domaccess = self._domaccess(director)
 
         dos = domaccess.getDataForDOS(id=self.inventory.id)
+
+        #
+        container = lc.document()
         
         # plot
-        p = lc.plot2d()
+        p = lc.plot2d(); container.add(p)
         p.curve(x=list(dos.e), y=list(dos.i), label='Density of states')
 
-        return p
+        downloader = lc.downloader(
+            label = 'download data', 
+            ondownload = load(
+                actor = self.name, routine='download',
+                id = self.inventory.id)
+            )
+        container.add(downloader)
         
+        return container
+        
+
+    def download(self, director):
+        id = self.inventory.id
+        domaccess = self._domaccess(director)
+        dos = domaccess.getDataForDOS(id=id)
+
+        content = []
+        content.append('# Frequency(TeraHz)\tDOS')
+        for x,y in zip(dos.e, dos.i):
+            content.append('%s\t%s' % (x,y))
+            continue
+        content = '\n'.join(content)
+        
+        filename = 'phonondos-%s.txt' % id
+        return lc.file(filename=filename, content=content)
+    
 
     def _initComputationOrm(self, director):
         domaccess = director.retrieveDOMAccessor('computation')
