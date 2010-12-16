@@ -136,7 +136,8 @@ class Actor(base):
     def getfile(self, director):
         disp = self._load(director)
         content = self._createDownloadContent(disp, director)
-        return lc.file(filename='dispersions.plot', content=content)
+        filename = 'phonon-dispersions-%s.plot' % self.inventory.id
+        return lc.file(filename=filename, content=content)
         
 
     def _createDownloadContent(self, disp, director):
