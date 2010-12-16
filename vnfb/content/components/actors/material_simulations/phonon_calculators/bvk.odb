@@ -107,7 +107,7 @@ class Actor(base):
         return self.presentComputingTarget(director)
 
 
-    def editModel(self, director):
+    def createModelEditor(self, director):
         model_id = self.inventory.model_id
         domaccess = self._domaccess(director)
         model = domaccess.getModel(id=model_id)
@@ -155,7 +155,31 @@ class Actor(base):
         donebutton = lc.button(label='I am done', onclick=done)
         doc.add(donebutton)
 
-        return select(id='main-display-area').replaceContent(doc)
+        return doc
+
+
+    def editModel(self, director):
+        doc = self.createModelEditor(director)
+        action = select(id='main-display-area').replaceContent(doc)
+        return action
+
+
+    def createAfterLoginFrameAndEditModel(self, director):
+        '''
+        this routine can be used for "post_authorization_action" 
+        parameter of login page. for example, this url works:
+
+        https://vnf.caltech.edu/cgi-bin/....../main.cgi?actor=login&actor.post_authorization_action=load(actor='material_simulations/phonon_calculators/bvk',routine='createAfterLoginFrameAndEditModel',model_id='3DIKUS7R')
+        '''
+        body_frame          = select(id='body-frame')
+        body_skeleton       = director.retrieveVisual(
+            'body-skeleton', context='atomicstructure', director=director)
+        main_display_area   = body_skeleton.find(id='main-display-area')
+        
+        doc = self.createModelEditor(director)
+        main_display_area.add(doc)
+        
+        return body_frame.replaceContent(body_skeleton)
 
 
     def doneEditingModel(self, director):

@@ -60,6 +60,14 @@ class Actor(base):
         return actions
 
 
+    def showAfterLoginMainFrame(self, director):
+        body_frame          = select(id='body-frame')
+        body_skeleton       = director.retrieveVisual(
+            'body-skeleton', context='atomicstructure', director=director)
+        shownewframe = body_frame.replaceContent(body_skeleton)
+        return shownewframe
+
+
     def __init__(self, name='greeter'):
         super(Actor, self).__init__(name)
         return
