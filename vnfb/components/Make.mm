@@ -43,6 +43,7 @@ EXPORT_PYTHON_MODULES = \
 	AccessControl.py \
 	Announcer.py \
 	AppExtension.py \
+	AuthorizedActor.py \
 	Clerk.py \
 	ComputationResultRetriever.py \
 	CSAccessor.py \
