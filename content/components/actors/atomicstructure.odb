@@ -28,6 +28,7 @@ sethelppage = set_contextual_help(
 
 
 from vnfb.components.MasterTable import FilterSyntaxError, MasterTableActor as base
+from vnfb.components.AuthorizedActor import portal
 
 class Actor(base):
 
@@ -106,7 +107,7 @@ class Actor(base):
             setpagetitle,
             ] + sethelppage
     
-            
+    
     def createListView(self, director):
         order_by        = self.inventory.order_by
         reverse_order   = self.inventory.reverse_order
@@ -135,6 +136,10 @@ class Actor(base):
             page_number     = page_number
             )
         return tableview
+
+    P_createListView = portal(
+        createListView, 
+        title='Virtual neutron facility: atomic structures')
 
 
     def debug_newAtomicStructureForm(self, director):
