@@ -26,6 +26,10 @@ class Actor(base):
 
 
     def greet(self, director):
+        return load(actor='atomicstructure', routine='P_createListView')
+
+
+    def greet1(self, director):
         showdock = select(id='dock').show()
         #
         showmainview = director.redirect(

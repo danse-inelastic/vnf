@@ -48,6 +48,9 @@ def portal(func, title, portlet=None):
         doc = func(self, director)
         main_display_area.add(doc)
         
+        # set portlet
+        body_skeleton.find(id='main-portlet-%s' % portlet).selected = 1
+
         # set page title
         setpagetitle = select(id='').setAttr(title=title)
         
