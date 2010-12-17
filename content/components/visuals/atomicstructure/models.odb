@@ -1,0 +1,62 @@
+# -*- Python -*-
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                 Jiao Lin
+#                      California Institute of Technology
+#                      (C) 2006-2010  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+import luban.content as lc
+
+class Factory(object):
+
+    def __init__(self, director, id):
+        self.director = director
+        self.id = id
+        self.actor = 'atomicstructure'
+        return
+    
+
+    def create(self):
+        body = self.createBody()
+        doc = lc.document(
+            id='atomicstructure-models',
+            title='Models',
+            collapsable = 1,
+            )
+        doc.add(body)
+        return doc
+    
+    
+    def createBody(self):
+        director = self.director
+        
+        doc = lc.document(id='atomicstructure-models-body')
+        types = [
+            'bvk',
+            ]
+        for t in types:
+            d = director.retrieveVisual(
+                'atomicstructure/models-%s' % t,
+                director = director,
+                id=self.id)
+            doc.add(d)
+            continue
+        
+        return doc
+
+
+def visual(director, id):
+    return Factory(director, id).create()
+
+    
+# version
+__id__ = "$Id$"
+
+# End of file 

@@ -62,6 +62,12 @@ class Factory(object):
             'atomicstructure/computed-props',
             director, self.id)
         view.add(propsdoc)
+
+        # models
+        modelsdoc = director.retrieveVisual(
+            'atomicstructure/models',
+            director, self.id)
+        view.add(modelsdoc)
         
         return view
 
