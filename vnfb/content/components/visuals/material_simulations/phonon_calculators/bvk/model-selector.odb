@@ -16,7 +16,17 @@ import luban.content as lc
 from luban.content import select, load, alert
 
 
-def visual(models, director):
+def visual(models=None, director=None, matter_id=None):
+    if matter_id:
+        domaccess = director.retrieveDOMAccessor('material_simulations/phonon_calculators/bvk')    
+        models = domaccess.getModels(matter_id)
+
+    if not models:
+        raise ValueError, "Neither models nor matter_id were specified"
+    return _visual(models, director)
+
+
+def _visual(models, director):
     painter = director.painter
     domaccess = director.retrieveDOMAccessor('material_simulations/phonon_calculators/bvk')
     orm = domaccess.orm
