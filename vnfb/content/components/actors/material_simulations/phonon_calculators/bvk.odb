@@ -171,6 +171,26 @@ class Actor(base):
         return action
 
 
+    def deleteModel(self, director):
+        model_id = self.inventory.model_id
+        domaccess = self._domaccess(director)
+        model = domaccess.getModel(id=model_id)
+        
+        from vnfb.utils.db import destroy
+        destroy(domaccess.orm(model), domaccess, director.sentry.username)
+        return select(id='bvk-model-row-%s' % model_id).destroy()
+
+
+    def cloneModel(self, director):
+        model_id = self.inventory.model_id
+        domaccess = self._domaccess(director)
+        model = domaccess.getModel(id=model_id)
+        clone = model.copy()
+        domaccess.orm.save(clone, save_not_owned_referred_object=False)
+        record = domaccess.orm(clone)
+        return load(actor=self.name, routine='editModel', model_id=record.id)
+
+
     def doneEditingModel(self, director):
         actions = []; messages = []
 
