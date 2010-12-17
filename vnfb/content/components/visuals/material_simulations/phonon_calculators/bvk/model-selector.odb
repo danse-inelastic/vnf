@@ -16,7 +16,17 @@ import luban.content as lc
 from luban.content import select, load, alert
 
 
-def visual(models, director):
+def visual(models=None, director=None, matter_id=None):
+    if matter_id:
+        domaccess = director.retrieveDOMAccessor('material_simulations/phonon_calculators/bvk')    
+        models = domaccess.getModels(matter_id)
+
+    if not models:
+        raise ValueError, "Neither models nor matter_id were specified"
+    return _visual(models, director)
+
+
+def _visual(models, director):
     painter = director.painter
     domaccess = director.retrieveDOMAccessor('material_simulations/phonon_calculators/bvk')
     orm = domaccess.orm
@@ -26,7 +36,8 @@ def visual(models, director):
     grid = lc.grid(Class='bvk-models-selector-grid'); doc.add(grid)
 
     for model in models:
-        row = grid.row()
+        model_id = orm(model).id
+        row = grid.row(id='bvk-model-row-%s' % model_id)
 
         # model
         modelcell = row.cell(); modelcell.add(modelView(model, domaccess, painter))
@@ -35,16 +46,37 @@ def visual(models, director):
         selectlinkcell = row.cell();
         link = lc.link(label='select this model', onclick=load(
             actor='material_simulations/phonon_calculators/bvk', routine='selectModel',
-            model_id = orm(model).id))
+            model_id = model_id))
         selectlinkcell.add(link)
 
-        # edit link
-        editlinkcell = row.cell();
+        # clone
+        clonelinkcell = row.cell();
+        link = lc.link(
+            label='clone', 
+            onclick=load(
+                actor='material_simulations/phonon_calculators/bvk',
+                routine='cloneModel',
+                model_id = model_id),
+            )
+        clonelinkcell.add(link)
+
         if domaccess.isModelEditable(model=model):
+            # edit link
+            editlinkcell = row.cell();
             link = lc.link(label='edit', onclick=load(
-                actor='material_simulations/phonon_calculators/bvk', routine='editModel',
-                model_id = orm(model).id))
+                actor='material_simulations/phonon_calculators/bvk', 
+                routine='editModel',
+                model_id = model_id))
             editlinkcell.add(link)
+
+            # delete link
+            deletelinkcell = row.cell();
+            link = lc.link(label='delete', onclick=load(
+                actor='material_simulations/phonon_calculators/bvk', 
+                routine='deleteModel',
+                model_id = model_id))
+            deletelinkcell.add(link)
+
 
     return doc
 

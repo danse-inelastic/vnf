@@ -1,0 +1,59 @@
+# -*- Python -*-
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                 Jiao Lin
+#                      California Institute of Technology
+#                      (C) 2006-2010  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+import luban.content as lc
+from luban.content import select, load, alert
+
+class Factory(object):
+
+    def __init__(self, director, id):
+        self.director = director
+        self.id = id
+        self.actor = 'atomicstructure'
+        return
+
+
+    def create(self):
+        doc = lc.document(
+            id = 'atomicstructure-models-bvk',
+            collapsable=1, collapsed = 1,
+            dockable=1, closable = 1,
+            title='BvK models',
+            )
+        doc.Class = 'atomicstructure-models-bvk'
+
+        loading = doc.document(Class='container')
+        loading.paragraph(text=['loading ...'])
+
+        loadbvkmodels = select(element=doc).replaceContent(
+            load(
+                actor='loadvisual',
+                visual='material_simulations/phonon_calculators/bvk/model-selector',
+                matter_id=self.id,
+                )
+            )
+        doc.onexpand = loadbvkmodels
+
+        doc.oncollapse = select(element=doc).replaceContent(loading)
+        return doc
+
+
+def visual(director, id):
+    return Factory(director, id).create()
+
+    
+# version
+__id__ = "$Id$"
+
+# End of file 
