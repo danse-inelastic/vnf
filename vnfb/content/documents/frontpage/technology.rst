@@ -10,12 +10,12 @@ material properties and simulate neutron scattering experiments.
 
 Ab initio physics
 """"""""""""""""""
-*Quantum Espresso provides electronic structure, atomistic optimization, density functional perturbation theory phonons, etc.
+* Quantum Espresso (http://www.pwscf.org) provides electronic structure, atomistic optimization, density functional perturbation theory phonons, etc.
 
 Forcefield and forceconstant physics
 """"""""""""""""""""""""""""""""""""""
-*BvK Engine provides a tensorial style forceconstant lattice dynamics engine capable of calculating and fitting phonon eigenmodes and densities of state
-*GULP provides atomistic optimization, Monte Carlo thermodynamics, lattice dynamics, molecular dynamics, crystal structure prediction, transition state prediction, etc.
+* BvK (http://danse.us/trac/DynModels) Engine provides a tensorial style forceconstant lattice dynamics engine capable of calculating and fitting phonon eigenmodes and densities of state
+* GULP (http://projects.ivec.org/gulp) provides atomistic optimization, Monte Carlo thermodynamics, lattice dynamics, molecular dynamics, crystal structure prediction, transition state prediction, etc.
 
 Monte Carlo simulation of neutron scattering
 """"""""""""""""""""""""""""""""""""""""""""
@@ -32,11 +32,13 @@ User interface
   is rendered by luban into html,
   `javascript <http://en.wikipedia.org/wiki/JavaScript>`_, 
   `ajax  <http://en.wikipedia.org/wiki/Ajax_(programming)>`_,
-  and `json <http://www.json.org>`_.
+  and `json <http://www.json.org>`_
+  with the help of
+  `jquery <http://jquery.comd>`_.
 * The 3D viewer is implemented using `plugin-o3d <http://code.google.com/apis/o3d/>`_ and will be migrated to `webgl-o3d <http://code.google.com/p/o3d/>`_.
 
 Infrastructure
 --------------
-* `python <http://www.python.org>`_: The VNF web application is implemented by using python
 * `pyre <http://docs.danse.us/pyre/sphinx/>`_, a large-scale, high-performance scientific-computing framework, is the backbone of the VNF.
+* `python <http://www.python.org>`_: The VNF web application is implemented by using python
 
