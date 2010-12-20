@@ -4,7 +4,7 @@ from django.template import Context, loader
 from django.utils import simplejson
 from django.core.mail import mail_admins
 from django.utils.translation import ugettext as _
-import sys
+import sys, math
 
 def menu(request):
     #return HttpResponse("testing...")
@@ -13,11 +13,28 @@ def menu(request):
     #return HttpResponse(t.render(c))
     return render_to_response('analysis/newMeAnalysis.html')
 
-def getTrajectory(request, *a, **kw):
+def dbPrep(request, *a, **kw):
+    json = request.POST['_gt_json']
+    pageNo = json['pageInfo']['pageNum']
+    pageSize = json['pageInfo']['pageSize']
     try:
         response = None
         from analysisTab.analysis.models import Trajectory
         trajs = Trajectory.objects.all()
+        
+    except:
+        raise 'unable to connect to db'
+    totalRec = len(trajs)
+    if pageNo<1 or pageNo > math.ceil(totalRec/pageSize):
+        pageNo=1
+    return json, totalRec,
+
+def getTrajectory(request, *a, **kw):
+    json, totalRec = dbPrep(request, *a, **kw)
+    if json['action']=='load':
+        #pageno starts with 1 instead of 0
+        from analysisTab.analysis.models import Trajectory
+        data = Trajectory.objects.all()
         
 #        trajList=''
 #        template = """{description:'%s',initial_chemical_formula:'%s',total_time:%s,creator:'%s',timestamp:%s}"""
@@ -27,7 +44,7 @@ def getTrajectory(request, *a, **kw):
 #            trajList+=entry
 #        trajList='['+trajList+']'
 #        response = "{data:"+trajList+"}"
-        
+
         trajList=''
         template = """{description:'%s',initial_chemical_formula:'%s',total_time:%s,creator:'%s',timestamp:'%s'}"""
         for traj in trajs:
@@ -36,6 +53,48 @@ def getTrajectory(request, *a, **kw):
             trajList+=entry
         trajList='['+trajList+']'
         response = trajList
+        
+        ret = "{data:" + data +",\n"
+        ret += "pageInfo:{totalRowNum:" + totalRec + "},\n"
+        ret += "recordType : 'object'}"
+        return ret
+    elif json['action'] == 'save':
+        sql = ""
+        params = []
+        errors = ""
+        #deal with those deleted
+        deletedRecords = json['deletedRecords']
+        for value in deletedRecords:
+            params = value.order_no
+        sql = "delete from orders where order_no in (" . join(",", $params) . ")";
+        if(mysql_query(sql)==FALSE):
+            errors += mysql_error();
+        #deal with those updated
+        sql = ""
+        updatedRecords = json['updatedRecords']
+        for value in updatedRecords:
+          $sql = "update `orders` set ".
+            "`employee`='".$value->employee . "', ".
+            "`country`='".$value->country . "', ".
+            "`customer`='".$value->customer . "', ".
+            "`order2005`=".$value->order2005 . ", ".
+            "`order2006`=".$value->order2006 . ", ".
+            "`order2007`=".$value->order2007 . ", ".
+            "`order2008`=".$value->order2008 . ", ".
+            "`delivery_date`='".$value->delivery_date . "' ".
+            "where `order_no`=".$value->order_no;
+            if(mysql_query($sql)==FALSE)
+              $errors += mysql_error();
+        #deal with those inserted
+        sql = ""
+        insertedRecords = $json->{'insertedRecords'};
+        foreach ($insertedRecords as $value){
+          $sql = "insert into orders (`employee`, `country`, `customer`, `order2005`,`order2006`, `order2007`, `order2008`, `delivery_date`) VALUES ('".
+            $value->employee."', '".$value->country."', '".$value->customer."', '".$value->order2005."', '".$value->order2006."', '".$value->order2007."', '".$value->order2008."',  '".$value->delivery_date."')";
+          if(mysql_query($sql)==FALSE){
+            $errors .= mysql_error();
+        $ret = "{success : true,exception:''}";
+        return ret
 #        response = {'data':trajList}
 #        assert isinstance(response, dict)
 #        if 'result' not in response:
