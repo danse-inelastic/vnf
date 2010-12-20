@@ -12,7 +12,7 @@
 #
 
 
-version = 'beta'
+version = '1.0'
 copyright = '2008-2010 California Institute of Technology'
 
 
