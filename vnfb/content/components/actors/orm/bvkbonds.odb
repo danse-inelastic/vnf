@@ -22,10 +22,12 @@ select_constraint_alert = lambda formid:\
 
 #
 from vnfb.dom.material_simulations.BvKBond import BvKBond
+descriptors = BvKBond.Inventory.getDescriptors()
+descriptors = [d for d in descriptors if d.name != 'uses_primitive_unitcell']
 
 from luban.components.Actor import Actor
 import luban.orm
-base = luban.orm.object2actor(BvKBond)
+base = luban.orm.object2actor(BvKBond, descriptors=descriptors)
 class Actor(base):
 
     class Inventory(base.Inventory):

@@ -220,10 +220,34 @@ class Actor(base):
             actions.append(alert('\n\n'.join(messages)))
             return actions
 
+        try:
+            self._checkModelIntegrity(model, director)
+        except Exception, msg:
+            return alert('BvK model %s is damaged. Please contact vnf administrators at vnf-administrators@googlegroups.com\n%s' % (model_id, msg))
+
         return load(
             actor=self.name, routine='presentComputingTarget',
             model_id = model_id,
             )
+
+
+    def _checkModelIntegrity(self, model, director):
+        domaccess = self._domaccess(director)
+        orm = domaccess.orm
+        
+        bonds = model.bonds
+        for bond in bonds:
+            if orm(bond.matter).id != orm(model.matter).id:
+                msg = "bond %s: matter %s does not match matter %s of model %s" % (
+                    orm(bond).id, orm(bond.matter).id, 
+                    orm(model.matter).id, orm(model).id)
+                raise RuntimeError, msg
+            if bond.uses_primitive_unitcell != model.uses_primitive_unitcell:
+                msg = "bond %s: uses_primitive_unitcell %s does not match model %s" % (
+                    orm(bond).id, bond.uses_primitive_unitcell, orm(model).id)
+                raise RuntimeError, msg
+            continue
+        return True
     
 
     def presentComputingTarget(self, director):
