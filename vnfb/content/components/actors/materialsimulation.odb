@@ -11,7 +11,7 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
-from luban.content import load, select
+from luban.content import load, select, alert
 import luban.content as lc
 
 
