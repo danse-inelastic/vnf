@@ -92,7 +92,6 @@ def parseVDos(filename):
     f.close()
     return (e,  x)
 
-
 def newid(director):
     "Id generator "
     id  = ''
@@ -360,6 +359,28 @@ def latestParam(params):
     return latestRecord(params, "timecreated")
 
 
+def getResult(director, id, sim, linkorder):
+    "Returns result object specified by parameters"
+    if not sim or not director or linkorder < 0:     # No simulation object, no result
+        return None
+
+    assert sim.id   == id
+    if not sim.type in SIMCHAINS.keys():
+        return None     # Don't recognize simulatin type
+
+    if linkorder >= len(SIMCHAINS[sim.type]):       # Exceed number of tasks
+        return None
+
+    tasktype    = SIMCHAINS[sim.type][linkorder]    # Get the task type
+    assert type(tasktype) == str
+    modfile     = tasktype.lower()+"result"
+    modclass    = tasktype.upper()+"Result"
+    module      = _import("vnfb.qeutils.results.%s" % modfile)
+    # from vnfb.qeutils.results.phresult import PHResult
+    result      = getattr(module, modclass)(director, id)
+    return result
+
+
 simTask = {
             "simulationid":     "getQESimulationTasks",
             "convparamid":      "getQEConvParamTasks"
@@ -531,6 +552,10 @@ def serverName(address):
         return parts[0]
 
     return default
+
+
+def _import(package):
+    return __import__(package, globals(), locals(), [''], -1)
 
 
 # *********** TESTS ******************************
