@@ -11,11 +11,11 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
-from vnfb.qeutils.qeconst import QETYPES
-from vnfb.qeutils.qeutils import latestInput, noHyphen
+from vnfb.qeutils.qeconst import QETYPES, SIMCHAINS
+from vnfb.qeutils.qeutils import latestInput, noHyphen, getResult
 from vnfb.qeutils.results.phresult import PHResult
 
-from luban.content import load
+from luban.content import load, alert
 from luban.content.Link import Link
 
 BASE        = "material_simulations/espresso-utils/"
@@ -61,16 +61,33 @@ class InputInfo:
         if self._type in QETYPES:      # If task type is QE types
             (actor, routine)   = getattr(self, "locator" + self._routineExt())()  # Example: self.locatorPW()
 
-        link = Link(label="Add",
-                    onclick=load(actor      = actor,
-                                 routine    = routine,
-                                 id         = self._id,
-                                 taskid     = self._taskid,
-                                 type       = self._type,
-                                 simtype    = self._simType(),
-                                 linkorder  = self._linkorder,
-                                 structureid    = self._structureId())
-                    )
+        try:
+            linkorder   = int(self._linkorder)  # should be int, but just in case
+        except:
+            linkorder   = -1
+
+        result  = getResult(self._director, self._id, self._sim, linkorder-1)  # Previous result
+
+        if linkorder == 0 or (result != None and result.outputFile()):  # First task or results are retrieved!
+            link = Link(label="Add",
+                        onclick=load(actor      = actor,
+                                     routine    = routine,
+                                     id         = self._id,
+                                     taskid     = self._taskid,
+                                     type       = self._type,
+                                     simtype    = self._simType(),
+                                     linkorder  = self._linkorder,
+                                     structureid    = self._structureId())
+                        )
+        else:
+            prevtask    = ""
+            if self._sim and self._sim.type in SIMCHAINS.keys() and linkorder >= 1:
+                prevtask    = SIMCHAINS[self._sim.type][linkorder-1]  # Find type of previous task
+
+            link  = Link(label="Add",
+                         onclick=alert('Please run simulation or retrieve (check) result for previous %s task. When result is retrieved, make sure to click on "Refresh Status"' % prevtask))
+
+
         return link
 
 
