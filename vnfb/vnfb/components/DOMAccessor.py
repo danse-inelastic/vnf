@@ -239,6 +239,32 @@ class DOMAccessor( base ):
 
 
     def _getTable(self, name):
+        '''return the table given a specifier of the table
+        
+        If the table is already registered with db manager,
+        you can specify the table by its name. E.g.
+
+          >>> class A(Table):
+            name = 'a'
+            ...
+          >>> domaccess.db.registerTable(A)
+          >>> domaccess._getTable('a')  # return A
+
+        If the table is not yet registered, you can specify 
+        it by its place in vnfb.dom namespace. 
+
+        For example, there is a class ATable which is a table and
+        is defined in vnfb.dom.subpkg.A module. Then
+
+          >>> domaccess._getTable('subpkg.A.ATable')
+
+        You could also just specify the place of a data object
+        instead of a table. Suppose class A is the class of a
+        data object (not a table), and is defined in 
+        vnfb.dom.subpkg.A module, then
+
+          >>> domaccess._getTable('subpkg.A.A')
+        '''
         try:
             return self.db.getTable(name)
         except:
