@@ -109,7 +109,7 @@ class Actor(base):
         diskgrid.addRow((localdisk, explLink))
 
 
-        table.addRow(("Optimization: *", diskgrid.grid()))
+        table.addRow(("Optimization:", diskgrid.grid()))
 
 
     def _sname(self):
