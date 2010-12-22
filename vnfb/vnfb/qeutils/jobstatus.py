@@ -236,6 +236,10 @@ class JobStatus(object):
         return localpath  # Example: ../content/data/tmp/qejobs/EXSWTYTK
 
 
+    def outputFile(self):
+        return self._outputFile()
+
+
     def _outputFile(self):
         "Returns otuput file"
         localpath = self._localPath()
