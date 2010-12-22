@@ -611,6 +611,10 @@ class Actor(base):
         return view
 
 
+    def deleterows(self, director):
+        return alert("Deleting jobs is not yet supported.")
+
+
     #XXX: obsolete
     def showErrors(self, director, errors=None):
         from luban.content import select
