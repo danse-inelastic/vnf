@@ -39,7 +39,7 @@ class Accessor(base):
     def getAnalysisRecord(self, type, id):
         return self.getRecordByID(type, id)
     
-    def getAnalysisRecord(self, id):
+    def getGeneralAnalysisRecord(self, id):
         orm = self.director.clerk.orm
         db = orm.db
         result = None
@@ -60,7 +60,7 @@ class Accessor(base):
     
     def getAnalysis(self, id):
         orm = self.director.clerk.orm
-        record = self.getAnalysisRecord(id)
+        record = self.getGeneralAnalysisRecord(id)
         return orm.record2object(record)
 
     def countAnalyses(self, filter=None, label=None, mine=False):
