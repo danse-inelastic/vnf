@@ -377,7 +377,7 @@ def getResult(director, id, sim, linkorder):
     modclass    = tasktype.upper()+"Result"
     module      = _import("vnfb.qeutils.results.%s" % modfile)
     # from vnfb.qeutils.results.phresult import PHResult
-    result      = getattr(module, modclass)(director, id)
+    result      = getattr(module, modclass)(director, id)   # instance
     return result
 
 
