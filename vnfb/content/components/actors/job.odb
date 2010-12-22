@@ -361,6 +361,14 @@ class Actor(base):
     
     
     def edit(self, director):
+        if not self._getServers(director):
+            return alert("no computing server available. please submit later.")
+        
+        doc = self.createEditPanel(director)
+        return select(id='main-display-area').replaceContent(doc)
+    
+    
+    def createEditPanel(self, director):
         domaccess = self._domaccess(director)
         orm = domaccess.orm
 
@@ -372,10 +380,9 @@ class Actor(base):
         
         doc = Document(title='Job\ %s' % self.inventory.id)
         doc.add(form)
-        
-        return select(id='main-display-area').replaceContent(doc)
-    
-    
+        return doc
+
+
     def createEditForm(self, director):
         record = self._getJobRecord(director)
         
@@ -393,9 +400,9 @@ class Actor(base):
             )
         field.help = meta['tip']
         
-        serverdomaccessor = director.retrieveDOMAccessor('server')
-        servers = serverdomaccessor.getAliveServerRecords()
-        entries = [ (server.id, server.short_description) for server in servers ]
+        servers = self._getServers(director)
+        entries = [ (server.id, server.short_description) 
+                    for server in servers ]
         ids = [ s.id for s in servers ]
         
         selected_server = record.server and record.server.id
@@ -603,6 +610,7 @@ class Actor(base):
         
         return view
 
+
     #XXX: obsolete
     def showErrors(self, director, errors=None):
         from luban.content import select
@@ -725,6 +733,11 @@ class Actor(base):
             ]
 
 
+    def _getServers(self, director):
+        serverdomaccessor = director.retrieveDOMAccessor('server')
+        return serverdomaccessor.getAliveServerRecords()
+    
+    
     def _isowner(self, director):
         "check if the requester is the owner of the job"
         id = self.inventory.id
