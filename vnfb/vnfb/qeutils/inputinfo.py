@@ -66,6 +66,10 @@ class InputInfo:
         except:
             linkorder   = -1
 
+        # NEEDS TESTING!!!
+        # There might be a problem that result.outputFile() is empty although
+        # the results are retrieved. This happened (for some reason).
+        # If it continues to fail fix outputFile() or try to use JobStatus instead
         result  = getResult(self._director, self._id, self._sim, linkorder-1)  # Previous result
 
         if linkorder == 0 or (result != None and result.outputFile()):  # First task or results are retrieved!
