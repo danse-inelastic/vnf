@@ -22,13 +22,18 @@ New registrant:
 
 %(firstname)s %(lastname)s 
 
+Email: %(email)s
+
+Organization: %(organization)s
+
 """
         ]
 
-    subs = {
-        'firstname': registrant.firstname,
-        'lastname': registrant.lastname,
-        }
+    subs = {}
+    keys = ['firstname', 'lastname', 'email', 'organization']
+    for k in keys:
+        subs[k] = getattr(registrant, k)
+        continue
 
     adminemail = 'vnf-administrators@googlegroups.com'
     msg.recipients[adminemail] = subs
