@@ -13,6 +13,7 @@
 
 
 from luban.content import load, select, alert
+import luban.content as lc
 
 from luban.components.AuthorizedActor import AuthorizedActor as base
 
@@ -36,6 +37,13 @@ class Actor(base):
             kwds[k] = v
             continue
         return director.retrieveVisual(visual, director=director,**kwds)
+
+
+    def debug(self, director):
+        frame = lc.frame()
+        vis = self.default(director)
+        frame.add(vis)
+        return frame
 
 
     def __init__(self, name='loadvisual'):
