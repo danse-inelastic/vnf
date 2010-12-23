@@ -17,6 +17,7 @@ Contents:
    DeveloperGuide-DOM
    DeveloperGuide-AccessControl
    DeveloperGuide-Utilities
+   DeveloperGuide-Daemons
    DeveloperGuide-Tests
    DeveloperGuide-Monitoring
    DeveloperGuide-FAQ
