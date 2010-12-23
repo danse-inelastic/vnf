@@ -1,0 +1,36 @@
+# -*- Python -*-
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                 Jiao Lin
+#                      California Institute of Technology
+#                      (C) 2006-2010  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+import luban.content as lc
+from luban.content.FormCheckBox import FormCheckBox
+
+
+def visual(director=None, username=None):
+    doc = lc.document(id='user-has-roles')
+    domaccess = director.retrieveDOMAccessor('acl')
+    db = domaccess.db
+    user = domaccess.getUser(username)
+    roles = domaccess.getAllRoles()
+    for role in roles:
+        hasrole = user.hasRole(role, db)
+        b = FormCheckBox(name=role.id, value=hasrole, label=role.description)
+        doc.add(b)
+        continue
+    return doc
+
+    
+# version
+__id__ = "$Id$"
+
+# End of file 
