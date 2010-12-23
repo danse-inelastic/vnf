@@ -28,6 +28,7 @@ EXPORT_DATAFILES = \
 	announce.py \
 	approveUser.py \
 	checkservers.py \
+	checkcod.py \
 	createdataobject.py \
 	createtable.py \
 	cron-daemons.sh \
