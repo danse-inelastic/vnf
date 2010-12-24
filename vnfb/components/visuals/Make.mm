@@ -28,6 +28,7 @@ all: export
 # export
 
 EXPORT_PYTHON_MODULES = \
+	AdminVisualFactory.py \
 	__init__.py \
 
 
