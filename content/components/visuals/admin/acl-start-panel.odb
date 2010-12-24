@@ -1,0 +1,34 @@
+# -*- Python -*-
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                 Jiao Lin
+#                      California Institute of Technology
+#                      (C) 2006-2010  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+# the panel to show at start of acl UI
+
+from luban.content import load, select, alert
+import luban.content as lc
+
+from vnfb.components.visuals.AdminVisualFactory import AdminVisualFactory as bas
+class Factory(base):
+
+    def create(self, director=None):
+        return director.retrieveVisual(
+            'acl/edit_user_roles', 
+            username=director.sentry.username,
+            director=director)
+
+visual = Factory()
+
+
+# version
+__id__ = "$Id$"
+
+# End of file 
