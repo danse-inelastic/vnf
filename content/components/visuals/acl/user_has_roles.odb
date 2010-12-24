@@ -13,29 +13,34 @@
 
 
 import luban.content as lc
+from vnfb.components.visuals.AdminVisualFactory import AdminVisualFactory as base
+
+class Factory(base):
+
+    def create(self, director=None, username=None):
+        # container
+        title = 'Roles for user %r' % username
+        doc = lc.document(id='user-has-roles', title=title)
+
+        # 
+        domaccess = director.retrieveDOMAccessor('acl')
+        db = domaccess.db
+        user = domaccess.getUser(username)
+        roles = domaccess.getAllRoles()
+
+        #
+        text = []
+        for role in roles:
+            hasrole = user.hasRole(role, db)
+            if hasrole:
+                text.append('* %s' % role.description)
+            continue
+        rstdoc = lc.rstdoc(text=text); doc.add(rstdoc)
+
+        return doc
 
 
-def visual(director=None, username=None):
-    # container
-    title = 'Roles for user %r' % username
-    doc = lc.document(id='user-has-roles', title=title)
-
-    # 
-    domaccess = director.retrieveDOMAccessor('acl')
-    db = domaccess.db
-    user = domaccess.getUser(username)
-    roles = domaccess.getAllRoles()
-    
-    #
-    text = []
-    for role in roles:
-        hasrole = user.hasRole(role, db)
-        if hasrole:
-            text.append('* %s' % role.description)
-        continue
-    rstdoc = lc.rstdoc(text=text); doc.add(rstdoc)
-    
-    return doc
+visual = Factory()
 
     
 # version

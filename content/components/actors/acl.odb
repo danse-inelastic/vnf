@@ -17,7 +17,7 @@ import luban.content as lc
 
 from vnfb.dom.UserHasRole import remove as removeRole
 
-from luban.components.AuthorizedActor import AuthorizedReceptionist as base
+from vnfb.components.AdminActor import AdminActor as base, portal
 class Actor(base):
 
 
@@ -26,8 +26,8 @@ class Actor(base):
         import pyre.inventory
 
         username = pyre.inventory.str(name='username')
-        
-        
+
+
     def setRoles(self, director):
         domaccess = director.retrieveDOMAccessor('acl')
         db = domaccess.db
@@ -55,6 +55,14 @@ class Actor(base):
                  visual='acl/user_has_roles',
                  username=username,
                  )
+            )
+
+
+    def editRoles(self, director):
+        return director.retrieveVisual(
+            'acl/edit_user_roles', 
+            director = director,
+            username = self.inventory.username,
             )
     
     
