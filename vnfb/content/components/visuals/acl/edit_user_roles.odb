@@ -12,7 +12,12 @@
 #
 
 
+# debug: http://localhost/cgi-bin/vnf/beta.cgi?sentry.username=xxxx&sentry.passwd=xxxx&actor=loadvisual&routine=debug&actor.visual=acl/edit_user_roles&actor.username=linjiao
+
+
+from luban.content import load, alert, select
 import luban.content as lc
+from luban.content.FormCheckBox import FormCheckBox
 
 
 def visual(director=None, username=None):
@@ -26,14 +31,23 @@ def visual(director=None, username=None):
     user = domaccess.getUser(username)
     roles = domaccess.getAllRoles()
     
-    #
-    text = []
+    # form
+    form = doc.form(id='user-has-roles-form')
+    # submit action
+    form.onsubmit = select(element=form).submit(
+        actor='acl', routine='setRoles',
+        username=username)
+    
+    # add checkboxes
     for role in roles:
         hasrole = user.hasRole(role, db)
-        if hasrole:
-            text.append('* %s' % role.description)
+        name = 'r%s' % role.id
+        b = FormCheckBox(name=name, value=hasrole, label=role.description)
+        form.add(b)
         continue
-    rstdoc = lc.rstdoc(text=text); doc.add(rstdoc)
+
+    # submit
+    form.submitbutton(label='Set roles')
     
     return doc
 
