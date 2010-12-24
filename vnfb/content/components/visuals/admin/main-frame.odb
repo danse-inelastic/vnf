@@ -1,0 +1,35 @@
+# -*- Python -*-
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                 Jiao Lin
+#                      California Institute of Technology
+#                      (C) 2006-2010  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+# the main frame of the arcs application UI
+
+from luban.content import load
+import luban.content as lc
+
+from vnfb.components.visuals.AdminVisualFactory import AdminVisualFactory as base
+class Factory(base):
+
+    def create(self, director=None):
+        visual = lc.document(
+            id='admin-main-frame', 
+            title='VNF administration')
+        visual.addClass('app-main-frame')
+        return visual
+
+
+visual = Factory()
+
+# version
+__id__ = "$Id$"
+
+# End of file 
