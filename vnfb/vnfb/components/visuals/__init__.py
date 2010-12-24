@@ -36,7 +36,7 @@ class VisualFactory(object):
 class VisualFactory_withAcessControl(VisualFactory):
 
 
-    def create(self, *args, **kwds):
+    def create(self, **kwds):
         raise NotImplementedError
 
 
@@ -44,7 +44,13 @@ class VisualFactory_withAcessControl(VisualFactory):
         raise NotImplementedError
 
 
-    def __call__(self, **kwds):
+    def __call__(self, *args, **kwds):
+        # there might be one argument that is the director
+        if len(args) > 1:
+            raise ValueError, "args: %s, kwds: %s" % (args, kwds)
+        if len(args):
+            kwds['director'] = args[0]
+        #
         director = kwds['director']
         self.director = director
         if self.checkPrivilege():
