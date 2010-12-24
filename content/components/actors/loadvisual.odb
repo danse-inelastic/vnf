@@ -15,7 +15,7 @@
 from luban.content import load, select, alert
 import luban.content as lc
 
-from luban.components.AuthorizedActor import AuthorizedActor as base
+from luban.components.AuthorizedActor import AuthorizedReceptionist as base
 
 
 class Actor(base):
@@ -45,34 +45,10 @@ class Actor(base):
         frame.add(vis)
         return frame
 
-
+    
     def __init__(self, name='loadvisual'):
         super(Actor, self).__init__(name)
         return
-
-
-    # the actor can now accept arbitrary inputs
-    def updateConfiguration(self, registry):
-        listing = self._listing(registry)
-        if listing:
-            for k, v in listing:
-                setattr(self.inventory, k, v)        
-        return []
-
-    
-    def _listing(self, registry):
-        if not registry: return []
-        listing = [
-            (name, descriptor.value) for name, descriptor in registry.properties.iteritems()
-            ]
-
-        listing += [
-            ("%s.%s" % (nodename, name), value)
-            for nodename, node in registry.facilities.iteritems()
-            for name, value in self._listing(node)
-            ]
-
-        return listing
 
 
 def actor(): return Actor()
