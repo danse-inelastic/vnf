@@ -41,6 +41,7 @@ all: export
 
 EXPORT_PYTHON_MODULES = \
 	AccessControl.py \
+	AdminActor.py \
 	Announcer.py \
 	AppExtension.py \
 	AuthorizedActor.py \

@@ -12,6 +12,8 @@
 #
 
 from luban.content import select, load, alert
+import luban.content as lc
+
 
 def set_contextual_help(page='', label=''):
     actions = []
@@ -23,6 +25,47 @@ def set_contextual_help(page='', label=''):
         actions.append(changelabel)
         
     return actions
+
+
+class VisualFactory(object):
+
+    def __call__(self, *args, **kwds):
+        raise NotImplementedError
+
+
+class VisualFactory_withAcessControl(VisualFactory):
+
+
+    def create(self, *args, **kwds):
+        raise NotImplementedError
+
+
+    def checkPrivilege(self):
+        raise NotImplementedError
+
+
+    def __call__(self, **kwds):
+        director = kwds['director']
+        self.director = director
+        if self.checkPrivilege():
+            return lc.document(title='not enough privilege')
+
+        return self.create(**kwds)
+
+
+class VisualFactory_withPrivilegeRequirement(VisualFactory_withAcessControl):
+
+    # required
+    privilege = None
+
+    def checkPrivilege(self):
+        director = self.director
+        username = director.sentry.username
+        user = director.clerk.getUser(username)
+        privilege = self.privilege
+        db = director.clerk.db
+        return not user.hasPrivilege(privilege, db)
+
 
 # version
 __id__ = "$Id$"
