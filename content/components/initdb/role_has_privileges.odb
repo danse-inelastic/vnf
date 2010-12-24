@@ -49,6 +49,7 @@ from vnfb.dom.RoleHasPrivilege import grant, Role, Privilege
 assignments = [
     (('vnf', 'core-developer'), ('bug', 'modify')), # vnf core developer can modify bug
     (('vnf', 'user'), ('simulation', 'run')), # vnf user can run simulation
+    (('vnf', 'administrator'), ('administrate', 'system')), # vnf admin can admin vnf
     ]
 
 
