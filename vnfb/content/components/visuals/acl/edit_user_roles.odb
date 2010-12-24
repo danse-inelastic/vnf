@@ -15,43 +15,51 @@
 # debug: http://localhost/cgi-bin/vnf/beta.cgi?sentry.username=xxxx&sentry.passwd=xxxx&actor=loadvisual&routine=debug&actor.visual=acl/edit_user_roles&actor.username=linjiao
 
 
+import luban.content as lc
+from vnfb.components.visuals.AdminVisualFactory import AdminVisualFactory as base
+
 from luban.content import load, alert, select
 import luban.content as lc
 from luban.content.FormCheckBox import FormCheckBox
 
 
-def visual(director=None, username=None):
-    # container
-    title = 'Roles for user %r' % username
-    doc = lc.document(id='user-has-roles', title=title)
+class Factory(base):
 
-    # 
-    domaccess = director.retrieveDOMAccessor('acl')
-    db = domaccess.db
-    user = domaccess.getUser(username)
-    roles = domaccess.getAllRoles()
-    
-    # form
-    form = doc.form(id='user-has-roles-form')
-    # submit action
-    form.onsubmit = select(element=form).submit(
-        actor='acl', routine='setRoles',
-        username=username)
-    
-    # add checkboxes
-    for role in roles:
-        hasrole = user.hasRole(role, db)
-        name = 'r%s' % role.id
-        b = FormCheckBox(name=name, value=hasrole, label=role.description)
-        form.add(b)
-        continue
+    def create(self, director=None, username=None):
+        # container
+        title = 'Roles for user %r' % username
+        doc = lc.document(id='user-has-roles', title=title)
 
-    # submit
-    form.submitbutton(label='Set roles')
-    
-    return doc
+        # 
+        domaccess = director.retrieveDOMAccessor('acl')
+        db = domaccess.db
+        user = domaccess.getUser(username)
+        roles = domaccess.getAllRoles()
+
+        # form
+        form = doc.form(id='user-has-roles-form')
+        # submit action
+        form.onsubmit = select(element=form).submit(
+            actor='acl', routine='setRoles',
+            username=username)
+
+        # add checkboxes
+        for role in roles:
+            hasrole = user.hasRole(role, db)
+            name = 'r%s' % role.id
+            b = FormCheckBox(name=name, value=hasrole, label=role.description)
+            form.add(b)
+            continue
+
+        # submit
+        form.submitbutton(label='Set roles')
+
+        return doc
 
     
+visual = Factory()
+
+
 # version
 __id__ = "$Id$"
 
