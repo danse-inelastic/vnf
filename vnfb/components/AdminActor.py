@@ -36,6 +36,13 @@ class AdminActor(base):
 
 
 
+from luban.components.Actor import AcceptArbitraryInput
+class AdminReceptionist(AcceptArbitraryInput, AdminActor):
+    
+    pass
+
+
+
 # version
 __id__ = "$Id$"
 
