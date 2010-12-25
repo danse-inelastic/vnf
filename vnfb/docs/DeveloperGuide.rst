@@ -15,6 +15,7 @@ Contents:
    DeveloperGuide-Architecture
    DeveloperGuide-UserInterface
    DeveloperGuide-DOM
+   DeveloperGuide-ThirdPartyDbs
    DeveloperGuide-AccessControl
    DeveloperGuide-Utilities
    DeveloperGuide-Daemons
