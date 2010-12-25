@@ -17,7 +17,7 @@ import luban.content as lc
 
 from vnfb.dom.UserHasRole import remove as removeRole
 
-from vnfb.components.AdminActor import AdminActor as base, portal
+from vnfb.components.AdminActor import AdminReceptionist as base, portal
 class Actor(base):
 
 
@@ -52,7 +52,7 @@ class Actor(base):
 
         return select(id='user-has-roles').replaceBy(
             load(actor='loadvisual',
-                 visual='acl/user_has_roles',
+                 visual='admin/acl/user_has_roles',
                  username=username,
                  )
             )
@@ -60,7 +60,7 @@ class Actor(base):
 
     def editRoles(self, director):
         return director.retrieveVisual(
-            'acl/edit_user_roles', 
+            'admin/acl/edit_user_roles', 
             director = director,
             username = self.inventory.username,
             )
