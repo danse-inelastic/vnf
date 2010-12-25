@@ -59,7 +59,7 @@ def visual(
         sorting_options = [
             ('id', 'ID'),
             ('short_description', 'Description'),
-            ('timestamp', 'When created'),
+            ('date', 'Date created'),
         ],
         polymorphic = False, dbtablename='analysis'
         )

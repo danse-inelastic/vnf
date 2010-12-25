@@ -28,8 +28,9 @@ class Actor(base):
         domaccess = self._domaccess(director)
         db = domaccess.db
         c = self._getComputationRecord(director)
-        if not domaccess.isComputationConfigured(c):
-            return self.createConfigurationView(director)
+        # i don't think this is necessary for an analysis
+#        if not domaccess.isComputationConfigured(c):
+#            return self.createConfigurationView(director)
         
         # where am I indicator
         path = self._pathToMe(director)
@@ -147,7 +148,8 @@ class Actor(base):
     def _getComputationRecord(self, director):
         domaccess = self._domaccess(director)
         id = self.inventory.id
-        return domaccess.getAnalysisRecord('csfcalc', id)
+        #return domaccess.getAnalysisRecord('csfcalc', id)
+        return domaccess.getAnalysisRecord('analysis.CsfCalc.CsfCalc', id)
 
     def _domaccess(self, director):
         return director.retrieveDOMAccessor('analysis')
