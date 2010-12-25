@@ -16,12 +16,12 @@
 from luban.content import load, select, alert
 import luban.content as lc
 
-from vnfb.components.visuals.AdminVisualFactory import AdminVisualFactory as bas
+from vnfb.components.visuals.AdminVisualFactory import AdminVisualFactory as base
 class Factory(base):
 
     def create(self, director=None):
         return director.retrieveVisual(
-            'acl/edit_user_roles', 
+            'admin/acl/edit_user_roles',
             username=director.sentry.username,
             director=director)
 
