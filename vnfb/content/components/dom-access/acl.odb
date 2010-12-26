@@ -45,8 +45,8 @@ class Accessor(base):
         roles = db.fetchall(Role, where="rolename='%s'" % rolename)
         if not roles: raise RuntimeError, "role %r not found" % rolename
         assert len(roles) == 1
-        return roles[0]
-    
+        return roles[0]\
+
 
     def getAllRoles(self):
         db = self.db
@@ -54,14 +54,26 @@ class Accessor(base):
         return roles
 
 
+    def getAllPrivileges(self):
+        db = self.db
+        privileges = db.query(Privilege).all()
+        return privileges
+
+
 
 from vnfb.dom.User import User
 from vnfb.dom.Role import Role
+from vnfb.dom.Privilege import Privilege
 from vnfb.dom.UserHasRole import UserHasRole
+from vnfb.dom.RoleHasRole import RoleHasRole
+from vnfb.dom.RoleHasPrivilege import RoleHasPrivilege
 tables = [
     User,
     Role,
+    Privilege,
     UserHasRole,
+    RoleHasRole,
+    RoleHasPrivilege,
     ]
 
         

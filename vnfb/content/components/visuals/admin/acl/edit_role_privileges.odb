@@ -17,45 +17,40 @@ from vnfb.components.visuals.AdminVisualFactory import AdminVisualFactory as bas
 
 from luban.content import load, alert, select
 import luban.content as lc
+from luban.content.FormCheckBox import FormCheckBox
 
 
 class Factory(base):
 
     def create(self, director=None, rolename=None):
         # container
-        title = 'Role %r' % rolename
-        doc = lc.document(id='role', title=title)
+        title = 'Privileges for role %r' % rolename
+        doc = lc.document(id='role-has-privileges', title=title)
         
         # 
         domaccess = director.retrieveDOMAccessor('acl')
         db = domaccess.db
         role = domaccess.getRole(rolename)
+        privileges = domaccess.getAllPrivileges()
         
-        #
-        props = ['context', 'description', 'status']
-        for p in props:
-            v = getattr(role, p)
-            text='%s: %s' % (p, v)
-            doc.paragraph(text=[text])
+        # form
+        form = doc.form(id='role-has-privileges-form')
+        # submit action
+        form.onsubmit = select(element=form).submit(
+            actor='acl', routine='setPrivileges',
+            rolename=rolename)
+
+        # add checkboxes
+        for privilege in privileges:
+            hasprivilege = role.hasPrivilege(privilege, db)
+            name = 'r%s' % privilege.id
+            b = FormCheckBox(name=name, value=hasprivilege, label=privilege.description)
+            form.add(b)
             continue
-        
-        # roles
-        rolesdoc = director.retrieveVisual(
-            'admin/acl/edit_role_roles',
-            rolename=rolename,
-            director=director,
-            )
-        doc.add(rolesdoc)
 
+        # submit
+        form.submitbutton(label='Set privileges')
 
-        # privileges
-        privilegesdoc = director.retrieveVisual(
-            'admin/acl/edit_role_privileges',
-            rolename=rolename,
-            director=director,
-            )
-        doc.add(privilegesdoc)
-        
         return doc
 
     

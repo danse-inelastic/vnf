@@ -17,6 +17,7 @@ import luban.content as lc
 
 from vnfb.dom.UserHasRole import remove as removeRole
 from vnfb.dom.RoleHasRole import join as joinGroup, leave as leaveGroup
+from vnfb.dom.RoleHasPrivilege import grant as grantPrivilege, revoke as revokePrivilege
 
 from vnfb.components.AdminActor import AdminReceptionist as base, portal
 class Actor(base):
@@ -84,6 +85,36 @@ class Actor(base):
         return select(id='role-has-roles').replaceBy(
             load(actor='loadvisual',
                  visual='admin/acl/role_has_roles',
+                 rolename=rolename,
+                 )
+            )
+
+
+    def setPrivileges(self, director):
+        domaccess = director.retrieveDOMAccessor('acl')
+        db = domaccess.db
+
+        rolename = self.inventory.rolename
+        role = domaccess.getRole(rolename)
+        privileges = domaccess.getAllPrivileges()
+    
+        #
+        for privilege in privileges:
+            privilegeid = privilege.id
+            name = 'r%s' % privilegeid
+            hasprivilege = getattr(self.inventory, name, None)
+            hasprivilege = bool(hasprivilege)
+            if hasprivilege:
+                if not role._hasPrivilegeDirectly(privilege, db):
+                    grantPrivilege(privilege, role, db)
+            else:
+                if role._hasPrivilegeDirectly(privilege, db):
+                    revokePrivilege(privilege, role, db)
+            continue
+
+        return select(id='role-has-privileges').replaceBy(
+            load(actor='loadvisual',
+                 visual='admin/acl/role_has_privileges',
                  rolename=rolename,
                  )
             )
