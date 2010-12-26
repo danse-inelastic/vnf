@@ -16,6 +16,7 @@ from luban.content import load, select, alert
 import luban.content as lc
 
 from vnfb.dom.UserHasRole import remove as removeRole
+from vnfb.dom.RoleHasRole import join as joinGroup, leave as leaveGroup
 
 from vnfb.components.AdminActor import AdminReceptionist as base, portal
 class Actor(base):
@@ -54,6 +55,36 @@ class Actor(base):
             load(actor='loadvisual',
                  visual='admin/acl/user_has_roles',
                  username=username,
+                 )
+            )
+
+
+    def setRoleRoles(self, director):
+        domaccess = director.retrieveDOMAccessor('acl')
+        db = domaccess.db
+
+        rolename = self.inventory.rolename
+        therole = domaccess.getRole(rolename)
+        roles = domaccess.getAllRoles()
+    
+        #
+        for role in roles:
+            roleid = role.id
+            name = 'r%s' % roleid
+            hasrole = getattr(self.inventory, name, None)
+            hasrole = bool(hasrole)
+            if hasrole:
+                if not therole._hasRoleDirectly(role, db):
+                    joinGroup(therole, role, db)
+            else:
+                if therole._hasRoleDirectly(role, db):
+                    leaveGroup(therole, role, db)
+            continue
+
+        return select(id='role-has-roles').replaceBy(
+            load(actor='loadvisual',
+                 visual='admin/acl/role_has_roles',
+                 rolename=rolename,
                  )
             )
 

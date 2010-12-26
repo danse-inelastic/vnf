@@ -33,7 +33,9 @@ class Factory(base):
         doc = lc.document(id='acl-users', title='Users')
         sp = lc.splitter(id='acl-users-splitter'); doc.add(sp)
         left = sp.section(id='acl-users-userlist-container')
+        left.addClass('admin-portlet-container')
         right = sp.section(id='acl-user-roles-section')
+        right.addClass('admin-main-panel')
 
         usermenu = lc.portlet(id='acl-users-userlist')
         left.add(usermenu)
@@ -55,7 +57,28 @@ class Factory(base):
     
 
     def _createRolesView(self, director):
-        doc = lc.document()
+        doc = lc.document(id='acl-roles', title='Roles')
+        sp = lc.splitter(id='acl-roles-splitter'); doc.add(sp)
+        left = sp.section(id='acl-roles-rolelist-container')
+        left.addClass('admin-portlet-container')
+        right = sp.section(id='acl-role-section')
+        right.addClass('admin-main-panel')
+
+        rolemenu = lc.portlet(id='acl-roles-rolelist')
+        left.add(rolemenu)
+        
+        domaccess = director.retrieveDOMAccessor('acl')
+        roles = domaccess.getAllRoles()
+        for role in roles:
+            rolename = role.rolename
+            editrole = select(element=right).replaceContent(
+                load(
+                    actor='loadvisual', 
+                    visual='admin/acl/edit_role',
+                    rolename=rolename)
+                )
+            rolemenu.item(label=rolename, onclick=editrole)
+            continue
         return doc
 
 
