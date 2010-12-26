@@ -22,9 +22,11 @@ class Factory(base):
         tabs = lc.tabs(id='acl-container')
         userstab = tabs.tab(id='acl-users', label='users')
         rolestab = tabs.tab(id='acl-roles', label='roles')
+        privilegestab = tabs.tab(id='acl-privileges', label='privileges')
 
         userstab.add(self._createUsersView(director))
         rolestab.add(self._createRolesView(director))
+        privilegestab.add(self._createPrivilegesView(director))
                      
         return tabs
     
@@ -81,6 +83,33 @@ class Factory(base):
             continue
         return doc
 
+
+    def _createPrivilegesView(self, director):
+        doc = lc.document(id='acl-privileges', title='Privileges')
+        sp = lc.splitter(id='acl-privileges-splitter'); doc.add(sp)
+        left = sp.section(id='acl-privileges-privilegelist-container')
+        left.addClass('admin-portlet-container')
+        right = sp.section(id='acl-privilege-section')
+        right.addClass('admin-main-panel')
+        
+        privilegemenu = lc.portlet(id='acl-privileges-privilegelist')
+        left.add(privilegemenu)
+        
+        domaccess = director.retrieveDOMAccessor('acl')
+        privileges = domaccess.getAllPrivileges()
+        for privilege in privileges:
+            editprivilege = select(element=right).replaceContent(
+                load(
+                    actor='loadvisual', 
+                    visual='admin/acl/edit_privilege',
+                    privilegeid=privilege.id)
+                )
+            privilegemenu.item(
+                label=privilege.description, 
+                onclick=editprivilege)
+            continue
+        return doc
+    
 
 visual = Factory()
 

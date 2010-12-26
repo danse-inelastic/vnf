@@ -48,6 +48,11 @@ class Accessor(base):
         return roles[0]\
 
 
+    def getPrivilege(self, id):
+        db = self.db
+        return db.query(Privilege).filter_by(id=id).one()
+    
+
     def getAllRoles(self):
         db = self.db
         roles = db.query(Role).all()

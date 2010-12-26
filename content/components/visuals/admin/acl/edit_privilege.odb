@@ -1,0 +1,51 @@
+# -*- Python -*-
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                 Jiao Lin
+#                      California Institute of Technology
+#                      (C) 2006-2010  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+import luban.content as lc
+from vnfb.components.visuals.AdminVisualFactory import AdminVisualFactory as base
+
+from luban.content import load, alert, select
+import luban.content as lc
+
+
+class Factory(base):
+
+    def create(self, director=None, privilegeid=None):
+        # 
+        domaccess = director.retrieveDOMAccessor('acl')
+        db = domaccess.db
+        privilege = domaccess.getPrivilege(privilegeid)
+        
+        # container
+        title = 'Privilege %r: %s' % (privilegeid, privilege.description)
+        doc = lc.document(id='privilege', title=title)
+        
+        #
+        props = ['target', 'name', 'description']
+        for p in props:
+            v = getattr(privilege, p)
+            text='%s: %s' % (p, v)
+            doc.paragraph(text=[text])
+            continue
+        
+        return doc
+
+    
+visual = Factory()
+
+
+# version
+__id__ = "$Id$"
+
+# End of file 
