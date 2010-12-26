@@ -43,13 +43,13 @@ class Factory(base):
         for username, user in users.iteritems():
             # XXXX
             if username.startswith('_'): continue
-            edituserroles = select(element=right).replaceContent(
+            edituser = select(element=right).replaceContent(
                 load(
                     actor='loadvisual', 
-                    visual='admin/acl/edit_user_roles',
+                    visual='admin/acl/edit_user',
                     username=username)
                 )
-            usermenu.item(label=username, onclick=edituserroles)
+            usermenu.item(label=username, onclick=edituser)
             continue
         return doc
     
