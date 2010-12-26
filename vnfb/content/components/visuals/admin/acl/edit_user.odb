@@ -1,0 +1,58 @@
+# -*- Python -*-
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                 Jiao Lin
+#                      California Institute of Technology
+#                      (C) 2006-2010  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+import luban.content as lc
+from vnfb.components.visuals.AdminVisualFactory import AdminVisualFactory as base
+
+from luban.content import load, alert, select
+import luban.content as lc
+
+
+class Factory(base):
+
+    def create(self, director=None, username=None):
+        # container
+        title = 'User %r' % username
+        doc = lc.document(id='user', title=title)
+        
+        # 
+        domaccess = director.retrieveDOMAccessor('acl')
+        db = domaccess.db
+        user = domaccess.getUser(username)
+        
+        #
+        props = ['fullname', 'email']
+        for p in props:
+            text='%s: %s' % (p, getattr(user, p))
+            doc.paragraph(text=[text])
+            continue
+        
+        # roles
+        rolesdoc = director.retrieveVisual(
+            'admin/acl/edit_user_roles',
+            username=username,
+            director=director,
+            )
+        doc.add(rolesdoc)
+        
+        return doc
+
+    
+visual = Factory()
+
+
+# version
+__id__ = "$Id$"
+
+# End of file 
