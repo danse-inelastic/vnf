@@ -22,15 +22,26 @@ import luban.content as lc
 class Factory(base):
 
     def create(self, director=None, privilegeid=None):
-        title = 'Privilege %s' % privilegeid
-        doc = lc.document(id='privilege-editor', title=title)
-        form = director.retrieveVisual(
-            'admin/acl/privilege_form',
-            director=director,
-            id=privilegeid,
-            post_process_action='select(id=%r).replaceContent(load(actor="loadvisual", visual="admin/acl/privilege",privilegeid="%s"))' % (doc.id, privilegeid),
-            )
-        doc.add(form)
+        # 
+        domaccess = director.retrieveDOMAccessor('acl')
+        db = domaccess.db
+        privilege = domaccess.getPrivilege(privilegeid)
+        
+        # container
+        doc = lc.document()
+        
+        # content
+        text = []
+        doc1 = lc.rstdoc(id='privilege-props', text=text)
+        doc.add(doc1)
+        
+        #
+        props = ['target', 'name', 'description']
+        for p in props:
+            v = getattr(privilege, p)
+            text.append('* %s: %s' % (p, v))
+            continue
+        
         return doc
 
     

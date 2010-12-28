@@ -104,8 +104,9 @@ class Factory(base):
                     visual='admin/acl/edit_privilege',
                     privilegeid=privilege.id)
                 )
+            label = '%s: %s' % (privilege.target, privilege.name)
             privilegemenu.item(
-                label=privilege.description, 
+                label=label, 
                 onclick=editprivilege)
             continue
         return doc
