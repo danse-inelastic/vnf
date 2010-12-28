@@ -1,0 +1,53 @@
+# -*- Python -*-
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                 Jiao Lin
+#                      California Institute of Technology
+#                      (C) 2006-2010  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+import luban.content as lc
+from luban.content import load, select, alert
+from vnfb.components.visuals.AdminVisualFactory import AdminVisualFactory as base
+
+class Factory(base):
+
+    def create(self, director=None, id=None, post_process_action=None):
+        domaccess = director.retrieveDOMAccessor('acl')
+        user = domaccess.getUser(id)
+        
+        form = lc.form(id='user-form')
+        form.onsubmit = select(element=form).submit(
+            actor = 'admin/acl/user_form',
+            routine = 'process',
+            id = id,
+            post_process_action = post_process_action,
+            )
+        
+        props = [
+            'fullname',
+            'email',
+            ]
+
+        for p in props:
+            v = getattr(user, p)
+            f = form.text(label=p, value=v, name=p)
+            continue
+        
+        form.submitbutton(label='Set')
+        return form
+    
+
+visual = Factory()
+
+    
+# version
+__id__ = "$Id$"
+
+# End of file 
