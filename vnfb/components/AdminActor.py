@@ -13,10 +13,7 @@
 
 
 from luban.content import load, select, alert
-
-
-from AuthorizedActor import AuthorizedActor as base, portal
-class AdminActor(base):
+class AdminActorAddOn(object):
 
     privilege = ('system', 'administrate')
 
@@ -24,7 +21,7 @@ class AdminActor(base):
     def perform(self, director, **kwds):
         if self._checkPrivilege(director):
             return alert("You don't have enough privilege")
-        return super(AdminActor, self).perform(director, **kwds)
+        return super(AdminActorAddOn, self).perform(director, **kwds)
 
 
     def _checkPrivilege(self, director):
@@ -36,11 +33,22 @@ class AdminActor(base):
 
 
 
+from AuthorizedActor import AuthorizedActor as base, portal
+class AdminActor(AdminActorAddOn, base):
+
+    pass
+
+
 from luban.components.Actor import AcceptArbitraryInput
 class AdminReceptionist(AcceptArbitraryInput, AdminActor):
     
     pass
 
+
+from luban.components.FormProcessor import FormProcessor
+class AdminFormProcessor(AdminActorAddOn, FormProcessor):
+    
+    pass
 
 
 # version
