@@ -1,0 +1,54 @@
+# -*- Python -*-
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                 Jiao Lin
+#                      California Institute of Technology
+#                      (C) 2006-2010  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+import luban.content as lc
+from vnfb.components.visuals.AdminVisualFactory import AdminVisualFactory as base
+
+from luban.content import load, alert, select
+import luban.content as lc
+
+
+class Factory(base):
+
+    def create(self, director=None, id=None):
+        # 
+        domaccess = director.retrieveDOMAccessor('acl')
+        db = domaccess.db
+        user = domaccess.getUser(id)
+        
+        # container
+        doc = lc.document()
+        
+        # content
+        text = []
+        doc1 = lc.rstdoc(id='user-props', text=text)
+        doc.add(doc1)
+        
+        #
+        props = ['fullname', 'email']
+        for p in props:
+            v = getattr(user, p)
+            text.append('* %s: %s' % (p, v))
+            continue
+        
+        return doc
+
+    
+visual = Factory()
+
+
+# version
+__id__ = "$Id$"
+
+# End of file 

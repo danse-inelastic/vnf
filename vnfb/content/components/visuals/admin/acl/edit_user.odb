@@ -30,13 +30,17 @@ class Factory(base):
         domaccess = director.retrieveDOMAccessor('acl')
         db = domaccess.db
         user = domaccess.getUser(username)
-        
+
         #
-        props = ['fullname', 'email']
-        for p in props:
-            text='%s: %s' % (p, getattr(user, p))
-            doc.paragraph(text=[text])
-            continue
+        propsdoc = doc.document(id='user-props-container', title='Properties')
+        form = director.retrieveVisual(
+            'admin/acl/user_form',
+            director=director,
+            id=username,
+            post_process_action='select(id=%r).replaceContent(load(actor="loadvisual", visual="admin/acl/user",id="%s"))' % (
+                propsdoc.id, username),
+            )
+        propsdoc.add(form)
         
         # roles
         rolesdoc = director.retrieveVisual(
