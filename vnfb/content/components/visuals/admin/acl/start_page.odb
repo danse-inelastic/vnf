@@ -73,11 +73,12 @@ class Factory(base):
         roles = domaccess.getAllRoles()
         for role in roles:
             rolename = role.rolename
+            roleid = role.id
             editrole = select(element=right).replaceContent(
                 load(
                     actor='loadvisual', 
                     visual='admin/acl/edit_role',
-                    rolename=rolename)
+                    id=roleid)
                 )
             rolemenu.item(label=rolename, onclick=editrole)
             continue

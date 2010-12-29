@@ -17,15 +17,15 @@ from vnfb.components.visuals.AdminVisualFactory import AdminVisualFactory as bas
 
 class Factory(base):
 
-    def create(self, director=None, rolename=None):
+    def create(self, director=None, id=None):
         # container
-        title = 'Roles for role %r' % rolename
+        title = 'Roles for role %r' % id
         doc = lc.document(id='role-has-roles', title=title)
 
         # 
         domaccess = director.retrieveDOMAccessor('acl')
         db = domaccess.db
-        therole = domaccess.getRole(rolename)
+        therole = domaccess.getRole(id)
         roles = domaccess.getAllRoles()
 
         #
