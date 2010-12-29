@@ -137,6 +137,23 @@ class Actor(base):
             ]
 
 
+    def newRole(self, director):
+        domaccess = director.retrieveDOMAccessor('acl')
+        p = domaccess.newRole()
+        roles_panel = director.retrieveVisual('admin/acl/roles')
+        editrole = select(id='acl-role-section').replaceContent(
+            load(
+                actor='loadvisual', 
+                visual='admin/acl/edit_role',
+                id=p.id)
+            )
+        return [
+            select(id='acl-roles').replaceContent(roles_panel),
+            select(id='rolemenu-%s' % p.id).portletitem('select'),
+            editrole,
+            ]
+
+
     def editRoles(self, director):
         return director.retrieveVisual(
             'admin/acl/edit_user_roles', 

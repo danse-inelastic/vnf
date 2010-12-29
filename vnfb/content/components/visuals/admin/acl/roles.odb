@@ -1,0 +1,64 @@
+# -*- Python -*-
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                 Jiao Lin
+#                      California Institute of Technology
+#                      (C) 2006-2010  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+from luban.content import load, alert, select
+import luban.content as lc
+
+
+from vnfb.components.visuals.AdminVisualFactory import AdminVisualFactory as base
+class Factory(base):
+
+    def create(self, director=None):
+        doc = lc.document(id='acl-roles', title='Roles')
+        sp = lc.splitter(id='acl-roles-splitter'); doc.add(sp)
+        left = sp.section(id='acl-roles-rolelist-container')
+        left.addClass('admin-portlet-container')
+        right = sp.section(id='acl-role-section')
+        right.addClass('admin-main-panel')
+
+        rolemenu = lc.portlet(id='acl-roles-rolelist')
+        left.add(rolemenu)
+        
+        domaccess = director.retrieveDOMAccessor('acl')
+        roles = domaccess.getAllRoles()
+        for role in roles:
+            rolename = role.rolename
+            roleid = role.id
+            editrole = select(element=right).replaceContent(
+                load(
+                    actor='loadvisual', 
+                    visual='admin/acl/edit_role',
+                    id=roleid)
+                )
+            rolemenu.item(
+                id='rolemenu-%s' % role.id,
+                label=rolename, 
+                onclick=editrole, 
+                )
+            continue
+
+        new_role = load(actor='acl', routine='newRole')
+        b = lc.button(label='Create', tip='create new role', onclick=new_role)
+        left.add(b)
+        
+        return doc
+
+    
+visual = Factory()
+
+
+# version
+__id__ = "$Id$"
+
+# End of file 

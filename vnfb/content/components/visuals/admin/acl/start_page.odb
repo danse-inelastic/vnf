@@ -32,57 +32,11 @@ class Factory(base):
     
     
     def _createUsersView(self, director):
-        doc = lc.document(id='acl-users', title='Users')
-        sp = lc.splitter(id='acl-users-splitter'); doc.add(sp)
-        left = sp.section(id='acl-users-userlist-container')
-        left.addClass('admin-portlet-container')
-        right = sp.section(id='acl-user-roles-section')
-        right.addClass('admin-main-panel')
-
-        usermenu = lc.portlet(id='acl-users-userlist')
-        left.add(usermenu)
-        
-        clerk = director.clerk
-        users = clerk.indexActiveUsers()
-        for username, user in users.iteritems():
-            # XXXX
-            if username.startswith('_'): continue
-            edituser = select(element=right).replaceContent(
-                load(
-                    actor='loadvisual', 
-                    visual='admin/acl/edit_user',
-                    username=username)
-                )
-            usermenu.item(label=username, onclick=edituser)
-            continue
-        return doc
+        return director.retrieveVisual('admin/acl/users')
     
 
     def _createRolesView(self, director):
-        doc = lc.document(id='acl-roles', title='Roles')
-        sp = lc.splitter(id='acl-roles-splitter'); doc.add(sp)
-        left = sp.section(id='acl-roles-rolelist-container')
-        left.addClass('admin-portlet-container')
-        right = sp.section(id='acl-role-section')
-        right.addClass('admin-main-panel')
-
-        rolemenu = lc.portlet(id='acl-roles-rolelist')
-        left.add(rolemenu)
-        
-        domaccess = director.retrieveDOMAccessor('acl')
-        roles = domaccess.getAllRoles()
-        for role in roles:
-            rolename = role.rolename
-            roleid = role.id
-            editrole = select(element=right).replaceContent(
-                load(
-                    actor='loadvisual', 
-                    visual='admin/acl/edit_role',
-                    id=roleid)
-                )
-            rolemenu.item(label=rolename, onclick=editrole)
-            continue
-        return doc
+        return director.retrieveVisual('admin/acl/roles')
 
 
     def _createPrivilegesView(self, director):
