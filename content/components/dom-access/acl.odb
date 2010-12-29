@@ -50,6 +50,16 @@ class Accessor(base):
         return db.query(Privilege).filter_by(id=id).one()
 
 
+    def newRole(self):
+        p = Role()
+        p.rolename = 'name of the role. e.g. user'
+        p.context = 'context of the role. e.g. ARCS instrument'
+        p.description = 'full description of the role'
+        p.status = 'l'
+        self.db.insertRow(p)
+        return p
+    
+
     def newPrivilege(self):
         p = Privilege()
         p.target = 'target'
