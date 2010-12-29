@@ -64,8 +64,8 @@ class Actor(base):
         domaccess = director.retrieveDOMAccessor('acl')
         db = domaccess.db
 
-        rolename = self.inventory.rolename
-        therole = domaccess.getRole(rolename)
+        theroleid = self.inventory.roleid
+        therole = domaccess.getRole(theroleid)
         roles = domaccess.getAllRoles()
     
         #
@@ -85,7 +85,7 @@ class Actor(base):
         return select(id='role-has-roles').replaceBy(
             load(actor='loadvisual',
                  visual='admin/acl/role_has_roles',
-                 rolename=rolename,
+                 id=theroleid,
                  )
             )
 
@@ -93,11 +93,11 @@ class Actor(base):
     def setPrivileges(self, director):
         domaccess = director.retrieveDOMAccessor('acl')
         db = domaccess.db
-
-        rolename = self.inventory.rolename
-        role = domaccess.getRole(rolename)
+        
+        roleid = self.inventory.roleid
+        role = domaccess.getRole(roleid)
         privileges = domaccess.getAllPrivileges()
-    
+        
         #
         for privilege in privileges:
             privilegeid = privilege.id
@@ -115,7 +115,7 @@ class Actor(base):
         return select(id='role-has-privileges').replaceBy(
             load(actor='loadvisual',
                  visual='admin/acl/role_has_privileges',
-                 rolename=rolename,
+                 id=roleid,
                  )
             )
 

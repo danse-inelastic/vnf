@@ -22,15 +22,15 @@ from luban.content.FormCheckBox import FormCheckBox
 
 class Factory(base):
 
-    def create(self, director=None, rolename=None):
+    def create(self, director=None, id=None):
         # container
-        title = 'Roles for role %r' % rolename
+        title = 'Roles for role %r' % id
         doc = lc.document(id='role-has-roles', title=title)
 
         # 
         domaccess = director.retrieveDOMAccessor('acl')
         db = domaccess.db
-        therole = domaccess.getRole(rolename)
+        therole = domaccess.getRole(id)
         roles = domaccess.getAllRoles()
 
         # form
@@ -38,7 +38,7 @@ class Factory(base):
         # submit action
         form.onsubmit = select(element=form).submit(
             actor='acl', routine='setRoleRoles',
-            rolename=rolename)
+            roleid=id)
 
         # add checkboxes
         for role in roles:

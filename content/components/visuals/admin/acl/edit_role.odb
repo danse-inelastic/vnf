@@ -21,28 +21,31 @@ import luban.content as lc
 
 class Factory(base):
 
-    def create(self, director=None, rolename=None):
+    def create(self, director=None, id=None):
         # container
-        title = 'Role %r' % rolename
+        title = 'Role %r' % id
         doc = lc.document(id='role', title=title)
         
         # 
         domaccess = director.retrieveDOMAccessor('acl')
         db = domaccess.db
-        role = domaccess.getRole(rolename)
+        role = domaccess.getRole(id)
         
         #
-        props = ['context', 'description', 'status']
-        for p in props:
-            v = getattr(role, p)
-            text='%s: %s' % (p, v)
-            doc.paragraph(text=[text])
-            continue
+        propsdoc = doc.document(id='role-props-container', title='Properties')
+        form = director.retrieveVisual(
+            'admin/acl/role_form',
+            director=director,
+            id=id,
+            post_process_action='select(id=%r).replaceContent(load(actor="loadvisual", visual="admin/acl/role",id="%s"))' % (
+                propsdoc.id, role.id),
+            )
+        propsdoc.add(form)
         
         # roles
         rolesdoc = director.retrieveVisual(
             'admin/acl/edit_role_roles',
-            rolename=rolename,
+            id=id,
             director=director,
             )
         doc.add(rolesdoc)
@@ -51,7 +54,7 @@ class Factory(base):
         # privileges
         privilegesdoc = director.retrieveVisual(
             'admin/acl/edit_role_privileges',
-            rolename=rolename,
+            id=id,
             director=director,
             )
         doc.add(privilegesdoc)

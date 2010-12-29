@@ -40,12 +40,9 @@ class Accessor(base):
         return users[0]
     
 
-    def getRole(self, rolename):
+    def getRole(self, id):
         db = self.db
-        roles = db.fetchall(Role, where="rolename='%s'" % rolename)
-        if not roles: raise RuntimeError, "role %r not found" % rolename
-        assert len(roles) == 1
-        return roles[0]\
+        return db.query(Role).filter_by(id=id).one()
 
 
     def getPrivilege(self, id):
