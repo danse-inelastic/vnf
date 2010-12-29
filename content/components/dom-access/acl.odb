@@ -48,6 +48,15 @@ class Accessor(base):
     def getPrivilege(self, id):
         db = self.db
         return db.query(Privilege).filter_by(id=id).one()
+
+
+    def newPrivilege(self):
+        p = Privilege()
+        p.target = 'target'
+        p.name = 'name'
+        p.description = 'description'
+        self.db.insertRow(p)
+        return p
     
 
     def getAllRoles(self):
