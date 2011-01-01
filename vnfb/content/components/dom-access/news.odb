@@ -50,7 +50,9 @@ class Accessor(base):
             )
         
         #
-        return q.execute().fetchall()
+        all = q.execute().fetchall()
+        all.reverse()
+        return all
 
 
     def getNewsRecord(self, id):
