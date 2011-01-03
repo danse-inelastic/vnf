@@ -22,7 +22,7 @@ def visual(id=None, info=None, director=None):
     body = visual.document(title='Please help us improve vnf' , Class='bug-body')
     p = body.paragraph(Class='bug-report-intro')
     p.text = [
-        'Vnf is in beta-test phase and you may enounter bugs.',
+        'You may enounter bugs occasionally in VNF.',
         'It would be helpful if you can provide some details of',
         'how this bug was triggered.',
         'If you don\'t have time to fill out a detailed report',
