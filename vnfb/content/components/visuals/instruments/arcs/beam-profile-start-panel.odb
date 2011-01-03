@@ -24,14 +24,14 @@ def visual(director):
     visual.add(link)
 
     grid = lc.grid(); visual.add(grid)
-    grid.addClass('align-top')
+    # grid.addClass('align-top')
     row = grid.row()
     # cell for user input
-    inputcell = row.cell()
+    inputcell = row.cell(Class='align-top')
     # cell for id holder
     idholdercell = row.cell()
     # cell for update button
-    updatecell = row.cell()
+    updatecell = row.cell(Class='align-top update-button-cell')
     # cell for plots
     plotscell = row.cell(Class='align-top')
     
@@ -57,7 +57,8 @@ def visual(director):
     # output region
     doc = lc.document(id='output', title='Outputs')
     plotscell.add(doc)
-    doc.paragraph(text='Plots go here')
+    # doc.paragraph(text='Plots go here')
+    doc.document(id='main-display-area')
     
     return visual
 
