@@ -1,0 +1,45 @@
+# -*- Python -*-
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                   Jiao Lin
+#                      California Institute of Technology
+#                        (C) 2008  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+from vnfb.components.ComputationResultRetriever import ComputationResultRetriever as base
+class Retriever(base):
+
+    def _retrieveResultsFor(self, computation):
+        director = self.director
+        db = director.clerk.db
+
+        # must have a job
+        self.declareProgress(0.1, 'look up job')
+        job = computation.getJob(db)
+
+        # check result is available
+        self.declareProgress(0.2, 'check if results exist')
+        self._check_results_sanity(expected_results=['out/mon1-tof.h5'], job=job)
+        
+        h = self._make_result_holder(computation, HistogramTable)
+        # save the result from job to dos
+        self.declareProgress(0.5, 'get result from server')
+        self._save_result(computation, job, 'out/mon1-tof.h5', h, 'data.h5')
+        return
+
+from vnfb.dom.Histogram import HistogramTable
+
+def retriever():
+    return Retriever('arcs-beam-profile')
+
+
+# version
+__id__ = "$Id$"
+
+# End of file 
