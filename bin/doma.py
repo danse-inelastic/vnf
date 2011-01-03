@@ -37,6 +37,28 @@ class DOMAApp(AcceptArbitraryInput, base):
 
 
     def help(self):
+        import sys
+        cmdname = sys.argv[0]
+        print 70*'-'
+        print 'Execute methods of domaccessor components using this script'
+        print 70*'-'
+        print
+        print '>>> Usage 1:'
+        print ' $ %s -name=<domaccessor>: list methods of the given domaccessor' % cmdname
+        print
+        print 'E.g.'
+        print
+        print ' $ %s -name=job' % cmdname
+        print
+        print '>>> Usage 2:'
+        print ' $ %s -name=<domaccessor> -action=<methodname> ...: call the given method of the given domaccessor' % cmdname
+        print
+        print 'E.g.'
+        print
+        print ' $ %s -name=job -action=resetJob -id=abcdef' % cmdname
+        print
+        print 'Calls method resetJob(id="abcdef") of domaccessor "job"'
+        print
         return 
 
 
@@ -58,6 +80,7 @@ class DOMAApp(AcceptArbitraryInput, base):
 
 
     def printAvailableActions(self, domaccess):
+        print "domaccessor %r" % domaccess.name
         import inspect
         for p in dir(domaccess):
             if p.startswith('_'):
@@ -69,7 +92,7 @@ class DOMAApp(AcceptArbitraryInput, base):
                 continue
             sig = getmethodsig(m)
             sig = sig[6:]
-            print '%s(%s)' % (p, sig)
+            print ' -- %s(%s)' % (p, sig)
             continue
         return
 
