@@ -50,8 +50,8 @@ class Actor(base):
 
 
     def prepareSimulation(self, director):
-        #
-        loadjobeditor = lambda id: select(id='output').replaceContent(
+        # The action to load the job-editor panel
+        loadjobeditor = lambda id: select(id='main-display-area').replaceContent(
             load(
                 actor='job', 
                 routine='createEditPanel',
@@ -59,7 +59,7 @@ class Actor(base):
                 )
             )
         
-        #
+        # load the computation from db
         id = self.inventory.id
         from vnfb.dom.neutron_experiment_simulations.integrated.arcs.ARCSbeam import ARCSbeam_Table
         computation = director.clerk.db.query(ARCSbeam_Table).filter_by(id=id).one()

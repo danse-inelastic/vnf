@@ -1,0 +1,66 @@
+# -*- Python -*-
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                   Jiao Lin
+#                      California Institute of Technology
+#                      (C) 2008-2010  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+import journal
+debug = journal.debug('arcs-beam-porfile-jobbuilder')
+
+
+from vnfb.components.JobBuilder import JobBuilder as base
+
+class Builder(base):
+
+    from vnfb.dom.neutron_experiment_simulations.integrated.arcs.ARCSbeam import ARCSbeam as Computation
+
+    def render(self, computation, db=None, dds=None):
+        self._files = []
+
+        # make script
+        self._make_script(computation)
+
+        #
+        return self._files
+
+
+    def _make_script(self, computation):
+        # build the script
+        props = self.Computation.key_props
+        kwds = {}
+        for k in props:
+            v = getattr(computation, k)
+            kwds[k] = v
+            continue
+        cmd = ['arcs_beam']
+        cmd += ['-%s="%s"' % (k,v) for k,v in kwds.iteritems()]
+        cmd = ' '.join(cmd)
+        cmds = ['source ~/.mcvine', cmd]
+
+        # write to file
+        path = self._path(self.shscriptname)
+        open(path, 'w').write('\n'.join(cmds))
+        #
+        self._files.append(self.shscriptname)
+        return
+    
+
+import os
+
+
+def job_builder(name, path):
+    return Builder(name, path)
+
+
+# version
+__id__ = "$Id$"
+
+# End of file 
