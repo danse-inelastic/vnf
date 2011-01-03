@@ -30,10 +30,11 @@ Class attributes of a computation table inherited from this base class:
 from Job import Job
 
 
+from ITask import HasTask
 from AbstractOwnedObjectBase import AbstractOwnedObjectBase as base
 
 # base class for all computations (including simulations)
-class Computation(base):
+class Computation(HasTask, base):
 
     import dsaw.db
     

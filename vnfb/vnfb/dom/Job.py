@@ -14,8 +14,9 @@
 
 from Server import Server
 
+from ITask import HasTask
 from AbstractOwnedObjectBase import AbstractOwnedObjectBase as base
-class Job(base):
+class Job(HasTask, base):
 
     name = 'jobs'
 
@@ -74,6 +75,7 @@ class Job(base):
     
     def numprocessors(self):
         return self.numcores*self.numnodes
+
 
     # pending internal-tasks to get this job going
     # pending_tasks = dsaw.db.referenceSet(name='pending_tasks')
