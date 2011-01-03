@@ -47,6 +47,23 @@ class Accessor(base):
         return t
 
 
+    def resetJob(self, id):
+        "reset job to 'initial' status, which allows someone to resubmit the job"
+        r = self.getJobRecord(id)
+        db = self.db
+        # itasks
+        from vnfb.dom.ITask import ITask
+        tasks = r.getReferences(db, ITask, 'beneficiary')
+        for task in tasks:
+            task.state = 'failed'
+            db.updateRecord(task)
+            continue
+        # job itself
+        r.state = 'submissionfailed'
+        db.updateRecord(r)
+        return
+    
+
     def countJobs(self, filter=None, label=None, mine=False):
         q = self.makeQuery(filter=filter, label=label, mine=mine)
         return q.alias('tocount').count().execute().fetchone()[0]
