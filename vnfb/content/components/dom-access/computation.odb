@@ -45,6 +45,33 @@ class Accessor(base):
         return db.query(table).filter_by(id=id).one()
 
 
+    def getResultRetrievalTask(self, type=None, id=None):
+        r = self.getComputationRecord(type, id)
+        db = self.db
+        return r.getOnlyTask(db, iworker='retrieve_computation_results')
+    
+
+    def isComputationResultsRetrieved(self, type, id):
+        task = self.getResultRetrievalTask(type, id)
+        if not task:
+            return False
+        return task == 'finished'
+
+
+    def getJob(self, type, id):
+        db = self.db
+        r = self.getComputationRecord(type, id)
+        job = r.getJob(db)
+        return job
+
+
+    def isJobDone(self, type, id):
+        job = self.getJob(type, id)
+        if not job:
+            return False
+        return job.state in ['finished', 'terminated']
+
+    
 def accessor():
     return Accessor()
 
