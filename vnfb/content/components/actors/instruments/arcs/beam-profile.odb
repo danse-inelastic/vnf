@@ -41,28 +41,45 @@ class Actor(base):
         # check if we have results, if yes, show them
         if self._hasResults(director):
             return self.showResults(director)
+
+        if self._jobIsDone(director):
+            return self.getResults(director)
         
         return self.prepareSimulation(director)
+
+
+    def createView(self, director):
+        return lc.document()
+
+
+    def getResults(self, director):
+        id = self.inventory.id
+        vis = load(actor='computation', routine='createResultsDoc',
+                   type='arcsbeamconfigurations', id=id)
+        return select(id='main-display-area').replaceContent(vis)
 
 
     def _hasResults(self, director):
         return False
 
 
+    def _jobIsDone(self, director):
+        domaccess = director.retrieveDOMAccessor('computation')
+        id = self.inventory.id
+        return domaccess.isJobDone('arcsbeamconfigurations', id)
+
+
     def prepareSimulation(self, director):
         # The action to load the job-editor panel
-        loadjobeditor = lambda id: select(id='main-display-area').replaceContent(
-            load(
-                actor='job', 
-                routine='createEditPanel',
-                id = id,
-                )
+        # select(id='main-display-area').replaceContent(...)
+        loadjobeditor = lambda id: load(
+            actor='job', 
+            routine='view',
+            id = id,
             )
         
         # load the computation from db
-        id = self.inventory.id
-        from vnfb.dom.neutron_experiment_simulations.integrated.arcs.ARCSbeam import ARCSbeam_Table
-        computation = director.clerk.db.query(ARCSbeam_Table).filter_by(id=id).one()
+        computation = self._getComputation(director)
         
         # if there is already a job, just edit it
         job = computation.getJob(director.clerk.db)
@@ -80,6 +97,14 @@ class Actor(base):
         director.clerk.updateRecordWithID(job)
         
         return loadjobeditor(job.id)
+
+    
+    def _getComputation(self, director):
+        # load the computation from db
+        id = self.inventory.id
+        from vnfb.dom.neutron_experiment_simulations.integrated.arcs.ARCSbeam import ARCSbeam_Table
+        computation = director.clerk.db.query(ARCSbeam_Table).filter_by(id=id).one()
+        return computation
     
 
     def _checkForms(self, director):
