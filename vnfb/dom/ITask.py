@@ -53,6 +53,26 @@ class ITask(base):
     error = dsaw.db.varchar(name='error', length=8192)
 
 
+
+# interface for db tables that have tasks
+class HasTask(object):
+
+    
+    def getOnlyTask(self, db, iworker=None):
+        "get the only itask for the given iworker. if none found, return none"
+        from ITask import ITask
+        tasks = self.getReferences(db, ITask, 'beneficiary')
+        tasks = [t for t in tasks if t.worker == iworker]
+        if len(tasks) > 1:
+            # XXX should be integrity error
+            raise RuntimeError, "more than 1 tasks found for retrieving results: %s" % (
+                [t.id for t in tasks], )
+        if not tasks: return
+        return tasks[0]
+
+
+
+
 def createITask(id, beneficiary, worker, type='', state='created', **options):
     t = ITask()
     t.id = id
