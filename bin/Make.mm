@@ -36,6 +36,7 @@ EXPORT_DATAFILES = \
 	deleterecord.py \
 	destroydb.py \
 	destroydataobject.py \
+	doma.py \
 	dumpdb.py \
 	establishglobalpointers.py \
 	establish_ssh_tunnels.py \

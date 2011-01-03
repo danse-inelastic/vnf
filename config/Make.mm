@@ -34,6 +34,7 @@ EXPORT_DATAFILES = \
 	createdataobject.pml \
 	clerk.odb \
 	createInstruments.pml \
+	doma.pml \
 	getuserlist.pml \
 	guidfromidddaemon.odb \
 	idd-pickler.odb \
