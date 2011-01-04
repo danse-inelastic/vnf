@@ -43,14 +43,11 @@ class Actor(base):
         id = luban.inventory.str('id', default='')
         fileId = luban.inventory.str('fileId')
 
-        #import pyre.inventory
         datastore = luban.inventory.str('datastore', default='/home/jbk/cod/cif')
         host = luban.inventory.str('host', default="vnf-dev.caltech.edu")
         codUser = luban.inventory.str('codUser', default=None)
         codPassword = luban.inventory.str('codPassword', default=None)
         
-        
-
     def default(self, director):
         return director.retrieveVisual("cod/frame")     
          
@@ -178,11 +175,6 @@ class Actor(base):
         results = []
         unicodeErrorStrategy = 'ignore'
         import json
-#        print dir(json)
-#        import sys
-#        print sys.path
-#        print json.__file__
-#        print json.__path__
         dumps = json.dumps
         for r in rawresults:
             fileId = unicode(str(r[0]), 'utf-8', errors=unicodeErrorStrategy)
@@ -257,22 +249,19 @@ class Actor(base):
         fileId = self.inventory.fileId
         db = self.inventory.datastore
         import os
-        folder = fileId[0]
-        filePath = os.path.join(db, folder, fileId+".cif")
-        # create a new record
-        #domaccess = director.retrieveDOMAccessor('atomicstructure')
-        #structure = domaccess.newAtomicStructure()
-        
-        #from vnfb.dom.BigStructure import Structure
-        from vnfb.dom.AtomicStructure import Structure
-        structure = Structure()
-        structure.read(filePath)
-        #make special description that includes the COD id
-        structure.description = 'COD structure '+fileId+' '+structure.generateDescription()
-        #
-        orm = director.clerk.orm
-        #self.inventory.structureid = orm(structure).id
-        orm.save(structure)
+        fileIds=fileId.split(',')
+        for id in fileIds:
+            folder = fileId[0]
+            filePath = os.path.join(db, folder, id+".cif")
+            # create a new record
+            #from vnfb.dom.BigStructure import Structure
+            from vnfb.dom.AtomicStructure import Structure
+            structure = Structure()
+            structure.read(filePath)
+            #make special description that includes the COD id
+            structure.description = 'COD structure '+id+' '+structure.generateDescription()
+            orm = director.clerk.orm
+            orm.save(structure)
         #call data object viewer
         return select(id='main-display-area').replaceContent(load(actor='atomicstructure',
                                                            routine='createListView'))#,
