@@ -41,12 +41,14 @@ class Actor(base):
         gamma_max = luban.inventory.float('gamma_max', validator=anglelimit, default=None)
         
         id = luban.inventory.str('id', default='')
-        
-        # 
         fileId = luban.inventory.str('fileId')
 
-        import pyre.inventory
-        datastore = pyre.inventory.str('datastore', default='/home/jbk/cod/cif')
+        #import pyre.inventory
+        datastore = luban.inventory.str('datastore', default='/home/jbk/cod/cif')
+        host = luban.inventory.str('host', default="vnf-dev.caltech.edu")
+        codUser = luban.inventory.str('codUser', default=None)
+        codPassword = luban.inventory.str('codPassword', default=None)
+        
         
 
     def default(self, director):
@@ -166,7 +168,8 @@ class Actor(base):
         query += " ORDER BY file LIMIT 100";
 
         import MySQLdb as m
-        db = m.connect(host="vnf-dev.caltech.edu",user="vnf",passwd="vnf",db='cod')
+        db = m.connect(host=self.inventory.host, user=self.inventory.codUser, 
+            passwd=self.inventory.codPassword, db='cod')
         c = db.cursor()
         c.execute(query)
         rawresults = c.fetchall()
@@ -175,6 +178,11 @@ class Actor(base):
         results = []
         unicodeErrorStrategy = 'ignore'
         import json
+#        print dir(json)
+#        import sys
+#        print sys.path
+#        print json.__file__
+#        print json.__path__
         dumps = json.dumps
         for r in rawresults:
             fileId = unicode(str(r[0]), 'utf-8', errors=unicodeErrorStrategy)
