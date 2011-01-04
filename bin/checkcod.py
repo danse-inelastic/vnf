@@ -22,9 +22,9 @@ class App(base):
 
         import pyre.inventory
 
-        host = self.inventory.str('host')
-        user = self.inventory.str('user')
-        passwd = self.inventory.str('passwd')
+        host = pyre.inventory.str('host')
+        user = pyre.inventory.str('user')
+        passwd = pyre.inventory.str('passwd')
 
 
     def main(self, *args, **kwds):
@@ -41,13 +41,13 @@ class App(base):
                 db = 'cod',
                 )
         except:
-            self._sendAlert()
+            self._sendAlert('cod', sys.exc_info()[0])
         return
 
     
-    def _sendAlert(self):
+    def _sendAlert(self, server, error):
         from vnfb.utils.communications import announce
-        announce(director, 'cod-server-down')
+        announce(self, 'cod-server-down', server, error)
         return
     
     
@@ -56,7 +56,7 @@ class App(base):
         return
 
 
-import os, datetime
+import sys
 
 
 def main():
