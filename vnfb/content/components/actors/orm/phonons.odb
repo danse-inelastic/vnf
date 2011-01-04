@@ -103,6 +103,9 @@ class Actor(base):
         try:
             domaccess.standardizeDataInIDFFormat(record.id)
         except NotImplementedError:
+            import traceback
+            tb = traceback.format_exc()
+            self._debug.log(tb)
             p = lc.paragraph()
             p.text = [
                 'Plotting for phonons#%s failed: data missing or in wrong format' % (
