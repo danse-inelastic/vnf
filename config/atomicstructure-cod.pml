@@ -2,8 +2,6 @@
 <!--
 ! ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 !
-!                             Michael A.G. Aivazis
-!                               Orthologue, Ltd.
 !                      (C) 2004-2006  All Rights Reserved
 !
 ! {LicenseText}
@@ -17,11 +15,10 @@
 <inventory>
 
   <component name='atomicstructure-cod'>
-
-<!--
-    <property name='datastore'></property>
--->
-
+    <property name='datastore'>/home/jbk/cod/cif</property>
+    <property name='host'>vnf-dev.caltech.edu</property>
+    <property name='codUser'>vnf</property>
+    <property name='codPassword'>vnfvnf</property>
   </component>
 
 </inventory>
