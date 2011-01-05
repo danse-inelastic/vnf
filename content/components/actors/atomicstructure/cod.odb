@@ -44,9 +44,9 @@ class Actor(base):
         fileId = luban.inventory.str('fileId')
 
         datastore = luban.inventory.str('datastore', default='/home/jbk/cod/cif')
-        host = luban.inventory.str('host', default="vnf-dev.caltech.edu")
-        codUser = luban.inventory.str('codUser', default=None)
-        codPassword = luban.inventory.str('codPassword', default=None)
+        
+        import pyre.inventory
+        codmanager = pyre.inventory.facility('codmanager', default='cod')
         
     def default(self, director):
         return director.retrieveVisual("cod/frame")     
@@ -66,6 +66,13 @@ class Actor(base):
 
     def process(self, director):
         """process search inputs and return results in nice table """
+        codmanager = self.inventory.codmanager
+        try: 
+            codmanager.connect()
+        except:
+            import traceback; tb = traceback.format_exc()
+            codmanager.sendServerDownAlert(tb, director=self)
+            return alert("Database down temporarily. VNF admin is alerted and will get to that soon.")
         from luban.content import select
         tablecontainer = lc.document(id='cod-table-container')
         sp2 = lc.splitter(orientation='vertical')
@@ -164,9 +171,7 @@ class Actor(base):
             query = "SELECT * FROM data";
         query += " ORDER BY file LIMIT 100";
 
-        import MySQLdb as m
-        db = m.connect(host=self.inventory.host, user=self.inventory.codUser, 
-            passwd=self.inventory.codPassword, db='cod')
+        db = self.inventory.codmanager.connect()
         c = db.cursor()
         c.execute(query)
         rawresults = c.fetchall()
