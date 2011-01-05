@@ -21,37 +21,20 @@ class App(base):
     class Inventory(base.Inventory):
 
         import pyre.inventory
-
-        host = pyre.inventory.str('host')
-        user = pyre.inventory.str('user')
-        passwd = pyre.inventory.str('passwd')
+        cod = pyre.inventory.facility(name='cod', default='cod')
 
 
     def main(self, *args, **kwds):
-        host = self.inventory.host
-        user = self.inventory.user
-        passwd = self.inventory.passwd
-        
-        import MySQLdb
+        cod = self.inventory.cod
         try:
-            conn = MySQLdb.connect(
-                host = host,
-                user = user,
-                passwd = passwd,
-                db = 'cod',
-                )
+            cod.connect()
+            print "Good"
         except:
             import traceback
             tb = traceback.format_exc()
-            self._sendAlert(tb)
+            cod.sendServerDownAlert(tb, director=self)
         return
 
-    
-    def _sendAlert(self, traceback):
-        from vnfb.utils.communications import announce
-        announce(self, 'cod-server-down', traceback)
-        return
-    
     
     def _getPrivateDepositoryLocations(self):
         return ['../config', '../content/components', '/tmp/luban-services']

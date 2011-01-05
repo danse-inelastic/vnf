@@ -15,9 +15,6 @@
 <inventory>
   <component name='atomicstructure-cod'>
     <property name='datastore'>/path/to/data/store</property>
-    <property name='host'>mysqldbhost</property>
-    <property name='codUser'>user</property>
-    <property name='codPassword'>password</property>
   </component>
 </inventory>
 
