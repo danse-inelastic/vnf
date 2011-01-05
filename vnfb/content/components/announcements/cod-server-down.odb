@@ -10,7 +10,7 @@
 #
 
 
-def announcement():
+def announcement(traceback):
     import vnfb.content
     import socket
     
@@ -19,7 +19,7 @@ def announcement():
     msg = vnfb.content.announcement()
     msg.sender = 'linjiao@caltech.edu'
     msg.subject = 'From vnf host %r: COD server is down' % hostname
-    msg.text = []
+    msg.text = [traceback]
     
     subs = {}
     
