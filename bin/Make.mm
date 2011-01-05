@@ -27,6 +27,7 @@ EXPORT_DATAFILES = \
 	activateserver.py \
 	announce.py \
 	approveUser.py \
+	checkcod.py \
 	checkservers.py \
 	checkcod.py \
 	createdataobject.py \
