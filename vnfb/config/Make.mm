@@ -51,6 +51,7 @@ EXPORT_DATAFILES = \
 
 INIT_DATAFILES = \
 	atomicstructure-cod.pml \
+	checkcod.pml \
 	clerk.pml \
 	journal.pml \
 	postman.pml \

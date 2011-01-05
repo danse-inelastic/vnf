@@ -41,16 +41,22 @@ class App(base):
                 db = 'cod',
                 )
         except:
-            self._sendAlert('cod', sys.exc_info()[0])
+            import traceback
+            tb = traceback.format_exc()
+            self._sendAlert(tb)
         return
 
     
-    def _sendAlert(self, server, error):
+    def _sendAlert(self, traceback):
         from vnfb.utils.communications import announce
-        announce(self, 'cod-server-down', server, error)
+        announce(self, 'cod-server-down', traceback)
         return
     
     
+    def _getPrivateDepositoryLocations(self):
+        return ['../config', '../content/components', '/tmp/luban-services']
+
+
     def __init__(self):
         base.__init__(self, 'checkcod')
         return
