@@ -411,16 +411,19 @@ width:100%;
 .app-launch-button a {
     border: none;
 }
+.update-button-cell {
+    padding-top: 3em;
+}
 
 /* admin */
-#acl-users-userlist-container {
+.admin-portlet-container {
     width: 16em;
 }
-#acl-users-userlist .luban-portlet-body {
+.admin-portlet-container .luban-portlet-body {
     -moz-border-radius: 0.4em;
     -webkit-border-radius: 0.4em;
 }
-#acl-user-roles-section {
+.admin-main-panel {
     padding-left: 1em;
 }
 
