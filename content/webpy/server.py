@@ -1,7 +1,5 @@
 #!/usr/bin/python
 # 9/30/10
-# Charles O. Goddard
-
 
 import socket
 import cPickle
@@ -28,6 +26,7 @@ urls = (
         '/login', 'LoginPage',
         '/browse', 'BrowsePage',
         '/download', 'DownloadPage',
+        '/getcif/(.*)', 'GetCif',
         '/dir/(.*)', 'DirPage',
         '/status/(.*)', 'StatusPage',
         )
@@ -53,7 +52,14 @@ class DownloadPage:
         if ret[0] == 'download':
             return ret[1]
         return '|'.join(ret)
-        
+
+class GetCif:
+    def GET(self, fileId):
+        fileRepository = '/home/jbk/cod/cif'
+        folder = fileId[0]
+        filePath = os.path.join(fileRepository, folder, fileId+".cif")
+        fileContents = file(filePath).read()
+        return json.dumps(fileContents)     
 
 class DirPage:
     def _children(self, path, source):
