@@ -257,14 +257,18 @@ class Actor(base):
         fileIds=fileId.split(',')
         for id in fileIds:
             folder = fileId[0]
-            filePath = os.path.join(db, folder, id+".cif")
+            #filePath = os.path.join(db, folder, id+".cif")
+            import urllib2
+            f = urllib2.urlopen('http://vnf-dev.caltech.edu:8080/getcif/'+fileId)
+            cifFileContents = f.read()
+
             # create a new record
             #from vnfb.dom.BigStructure import Structure
             from vnfb.dom.AtomicStructure import Structure
             structure = Structure()
-            structure.read(filePath)
+            structure.readStr(cifFileContents, 'cif')
             #make special description that includes the COD id
-            structure.description = 'COD structure '+id+' '+structure.generateDescription()
+            structure.description = 'COD '+id+' '+structure.generateDescription()
             orm = director.clerk.orm
             orm.save(structure)
         #call data object viewer
