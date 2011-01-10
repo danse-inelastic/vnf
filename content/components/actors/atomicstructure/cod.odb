@@ -261,7 +261,6 @@ class Actor(base):
             import urllib2
             f = urllib2.urlopen('http://vnf-dev.caltech.edu:8080/getcif/'+fileId)
             cifFileContents = f.read()
-
             # create a new record
             #from vnfb.dom.BigStructure import Structure
             from vnfb.dom.AtomicStructure import Structure
