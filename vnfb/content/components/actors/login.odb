@@ -100,7 +100,7 @@ class Actor(base):
         intro = lc.htmldocument(); introcontainer.add(intro)
         intro.text = [
             #'The Virtual Neutron Facility (VNF) provides online computation tools for simulating neutron scattering experiments.',
-            '<p>The Virtual Neutron Facility (VNF) is a web service that integrates scientific software packages for material simulations and Monte-Carlo simulations of neutron scattering. VNF is an online tool that allows users to perform end-to-end, full simulations of neutron scattering experiments. It can be useful to gain insights into material properties by comparing simulation results to experimental results.</p>',
+            '<p>The Virtual Neutron Facility (VNF) is an online tool that allows users to perform end-to-end, full simulations of neutron scattering experiments. It integrates scientific software packages for material simulations with Monte-Carlo simulations of neutron scattering to gain insights into material properties.</p>',
             ]
         # central display
         ctrldisplay = right.document(id='front-page-central-display')
@@ -122,12 +122,12 @@ class Actor(base):
         footnotecontainer = right.document(id='front-page-footnote-container')
         htmldoc = lc.htmldocument(); footnotecontainer.add(htmldoc)
         htmldoc.text = [
-            'The VNF is a product of the <a href="http://danse.us">DANSE</a> project, which is bringing computational materials science and instrument simulations to neutron scattering experiments. The  DANSE project is funded by the US National Science Foundation under grant DMR-0520547.',
+            'The VNF is a product of the <a target="_blank" href="http://danse.us">DANSE</a> project, which is bringing computational materials science and instrument simulations to neutron scattering experiments. The  DANSE project is funded by the US National Science Foundation under grant DMR-0520547.',
             ]
         htmldoc = lc.htmldocument(); footnotecontainer.add(htmldoc)
         htmldoc.text = [        
-            # 'You are presently at the stable release site of VNF; the version under development is <a href="https://vnf-dev.caltech.edu">here</a>.',
-            'You are presently at the development site of VNF; the release sites of vnf are available at <a href="https://vnf.caltech.edu">caltech</a> and <a href="https://vnf.sns.gov">SNS</a> (the latter is only accessible from inside ORNL)',
+            # 'You are presently at the stable release site of VNF; the version under development is <a target="_blank" href="https://vnf-dev.caltech.edu">here</a>.',
+            'You are presently at the development site of VNF; the release sites of vnf are available at <a target="_blank" href="https://vnf.caltech.edu">caltech</a> and <a target="_blank" href="https://vnf.sns.gov">SNS</a> (the latter is only accessible from inside ORNL)',
             ]
         return bodydoc
 
