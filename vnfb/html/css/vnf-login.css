@@ -99,6 +99,14 @@ color:gray;
     margin-left:4em;
 }
 
+.frontpage-document p.first {
+    margin-top:1em;
+}
+.frontpage-document p {
+    margin-bottom:0.3em;
+    margin-top:0.3em;
+}
+
 #frontpage-portlet  {
     padding:0;
 }
