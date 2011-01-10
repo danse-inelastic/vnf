@@ -56,7 +56,7 @@ class Actor(base):
 
 
     def createStatusDocument(self, director):
-        doc = luban.content.document(id='vnf-webportal-status', title='Status')
+        doc = luban.content.document(id='vnf-webportal-status', title='Status today')
         doc.Class = 'frontpage-document'
 
         software = doc.document(title='Software')

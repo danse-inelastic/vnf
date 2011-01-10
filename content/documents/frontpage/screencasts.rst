@@ -1,7 +1,7 @@
 .. _screencasts:
  
-Screencasts
-===========
+Tutorial videos
+===============
 
 * `Front page <http://www.youtube.com/watch?v=dzMWwTTNhvI&fmt=22>`_
   (June 2010, 1min)
@@ -22,7 +22,7 @@ Screencasts
 * `bug report <http://www.youtube.com/watch?v=3-_tNSaXi8k&fmt=22>`_
   (June 2010, 25 seconds)
 
-  VNF is in beta test phase. Your input is invaluable!
+  Your input is invaluable!
 
 * `virtual experiment: inelastic scattering of lead plate <http://www.youtube.com/watch?v=puHiA4qcL7U&fmt=22>`_ (June 2010, 3min)
 
