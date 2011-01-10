@@ -259,7 +259,8 @@ class Actor(base):
             folder = fileId[0]
             #filePath = os.path.join(db, folder, id+".cif")
             import urllib2
-            f = urllib2.urlopen('http://vnf-dev.caltech.edu:8080/getcif/'+fileId)
+            #f = urllib2.urlopen('http://vnf-dev.caltech.edu:8080/getcif/'+fileId)
+            f = urllib2.urlopen('http://vnf-dev.caltech.edu/cod/cif/'+folder+'/'+fileId+'.cif')
             cifFileContents = f.read()
             # create a new record
             #from vnfb.dom.BigStructure import Structure
