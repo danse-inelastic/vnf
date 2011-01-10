@@ -42,9 +42,7 @@ class Actor(base):
         
         id = luban.inventory.str('id', default='')
         fileId = luban.inventory.str('fileId')
-
-        datastore = luban.inventory.str('datastore', default='/home/jbk/cod/cif')
-        
+        #datastore = luban.inventory.str('datastore', default='/home/jbk/cod/cif')
         import pyre.inventory
         codmanager = pyre.inventory.facility('codmanager', default='cod')
         
@@ -250,17 +248,16 @@ class Actor(base):
 
     def loadStructure(self, director):
         #retrieve cif file and load into data object
-        #use a hack for now
         fileId = self.inventory.fileId
-        db = self.inventory.datastore
+        #db = self.inventory.datastore
         import os
         fileIds=fileId.split(',')
         for id in fileIds:
-            folder = fileId[0]
+            folder = id[0]
             #filePath = os.path.join(db, folder, id+".cif")
             import urllib2
             #f = urllib2.urlopen('http://vnf-dev.caltech.edu:8080/getcif/'+fileId)
-            f = urllib2.urlopen('http://vnf-dev.caltech.edu/cod/cif/'+folder+'/'+fileId+'.cif')
+            f = urllib2.urlopen('http://vnf-dev.caltech.edu/cod/cif/'+folder+'/'+id+'.cif')
             cifFileContents = f.read()
             # create a new record
             #from vnfb.dom.BigStructure import Structure
