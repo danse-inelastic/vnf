@@ -32,7 +32,24 @@ class DbApp(base):
         idcol = pyre.inventory.str('idcol', default='id')
         
         tables = pyre.inventory.list(name='tables')
-        
+
+
+    def help(self):
+        import sys
+        cmdname = sys.argv[0]
+        print '-'*70
+        print "Restore db from files saved by dumpdb.py" 
+        print '-'*70
+        print '%s -inputdir=<input-data-directory> -strategy=<strategy> -tables=<tables> -idcol=<idcol>' % cmdname
+        print
+        print " --strategy: strategy of restoring when records already exist"
+        print "   * overwrite"
+        print "   * skip"
+        print "   * prompt"
+        print 
+        print " --idcol: name of the column that is the primary key. by default it is 'id'"
+        print 
+        print '-'*70
         
         
     def main(self, *args, **kwds):
