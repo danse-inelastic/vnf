@@ -23,18 +23,35 @@ class DbApp(base):
         import pyre.inventory
 
         inputdir = pyre.inventory.str(name='inputdir', default='db-pickle')
+
+        strategy = pyre.inventory.str(
+            name='strategy', default='', 
+            validator=pyre.inventory.choice(['', 'overwrite', 'skip', 'prompt'])
+            )
+
+        idcol = pyre.inventory.str('idcol', default='id')
+        
+        tables = pyre.inventory.list(name='tables')
+        
         
         
     def main(self, *args, **kwds):
         clerk = self.inventory.clerk
         clerk.importAllDataObjects()
 
-        tables = list(clerk.db.iterAllTables())
+        tables = self.inventory.tables
+        if not tables:
+            tables = list(clerk.db.iterAllTables())
+        else:
+            tables = map(clerk._getTable, tables)
         
         from dsaw.db.Unpickler import Unpickler
         inputdir = self.inventory.inputdir
         unpickler = Unpickler(clerk.db, inputdir)
-        unpickler.load(tables)
+
+        strategy = self.inventory.strategy or None
+        idcol = self.inventory.idcol
+        unpickler.load(tables, strategy=strategy, idcol=idcol)
         return
 
 
