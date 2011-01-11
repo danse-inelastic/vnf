@@ -24,12 +24,18 @@ class DbApp(base):
 
         outputdir = pyre.inventory.str(name='outputdir', default='db-pickle')
 
+        tables = pyre.inventory.list(name='tables')
+
 
     def main(self, *args, **kwds):
         clerk = self.inventory.clerk
         clerk.importAllDataObjects()
 
-        tables = list(clerk.db.iterAllTables())
+        tables = self.inventory.tables
+        if not tables:
+            tables = list(clerk.db.iterAllTables())
+        else:
+            tables = map(clerk._getTable, tables)
         
         from dsaw.db.Pickler import Pickler
         outputdir = self.inventory.outputdir
