@@ -49,13 +49,30 @@ class Accessor(base):
         r = self.getComputationRecord(type, id)
         db = self.db
         return r.getOnlyTask(db, iworker='retrieve_computation_results')
+
+
+    def resetResultRetrievalTask(self, type=None, id=None):
+        db = self.db
+        t = self.getResultRetrievalTask(type, id)
+        if t:
+            t.state = 'failed'
+            db.updateRecord(t)
+        c = self.getComputationRecord(type, id)
+        c.resetResultRetrievalStatus(db)
+        # also remove all the previously retrieved results
+        results = c.results.dereference(db)
+        c.results.clear(db)
+        for k, r in results:
+            db.deleteRecord(r)
+            continue
+        return
     
 
     def isComputationResultsRetrieved(self, type, id):
         task = self.getResultRetrievalTask(type, id)
         if not task:
             return False
-        return task == 'finished'
+        return task.state == 'finished'
 
 
     def getJob(self, type, id):
