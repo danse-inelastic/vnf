@@ -137,6 +137,14 @@ class Computation(HasTask, base):
             return entry.status
 
 
+    def resetResultRetrievalStatus(self, db):
+        entry = self.getResultRetrievalEntry(filename='', db=db)
+        if entry:
+            entry.status = 'failed'
+            db.updateRecord(entry)
+        return
+
+
     def getResultRetrievalErrorMessage(self, db):
         entry = self.getResultRetrievalEntry(filename='', db=db)
         if entry:

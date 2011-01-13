@@ -44,6 +44,7 @@ NeutronStorageTable = o2t(NeutronStorage, {'subclassFrom': ComputationResult})
 NeutronStorageTable.datafiles = [
     'data.idf',
     ]
+NeutronStorageTable.short_description.length = 1024
 
 
 
