@@ -34,6 +34,9 @@ class Builder(base):
 
     def _make_script(self, computation):
         # build the script
+        cmds = ['source ~/.mcvine']
+
+        #
         props = self.Computation.key_props
         kwds = {}
         for k in props:
@@ -43,8 +46,8 @@ class Builder(base):
         cmd = ['arcs_beam']
         cmd += ['-%s="%s"' % (k,v) for k,v in kwds.iteritems()]
         cmd = ' '.join(cmd)
-        cmds = ['source ~/.mcvine', cmd]
-
+        cmds.append(cmd)
+        
         # write to file
         path = self._path(self.shscriptname)
         open(path, 'w').write('\n'.join(cmds))

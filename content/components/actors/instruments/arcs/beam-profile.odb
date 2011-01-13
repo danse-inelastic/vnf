@@ -48,6 +48,19 @@ class Actor(base):
         return self.prepareSimulation(director)
 
 
+    def showResults(self, director):
+        doc = self.createResultsView(director)
+        return load(id='main-display-area').replaceContent(doc)
+
+
+    def createResultsView(self, director):
+        tabs = lc.tabs()
+        hists = [
+            ''
+            ]
+        return
+
+
     def createView(self, director):
         return lc.document()
 
@@ -60,7 +73,10 @@ class Actor(base):
 
 
     def _hasResults(self, director):
-        return False
+        domaccess = director.retrieveDOMAccessor('computation')
+        id = self.inventory.id
+        return domaccess.isComputationResultsRetrieved(
+            'arcsbeamconfigurations', id)        
 
 
     def _jobIsDone(self, director):

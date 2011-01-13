@@ -12,28 +12,103 @@
 #
 
 
+expected_histogram_files = [
+    'mon1-itof-focused.h5',
+    'mon2-itof-focused.h5',
+    'ienergy.h5',
+    'itof.h5',
+    'ix_y.h5',
+    'ix_divx.h5',
+    'ix_divy.h5',
+    'iy_divx.h5',
+    'iy_divy.h5',
+    ]
+
+expected_others = [
+    'props.json'
+    ]
+
+expected_files = expected_histogram_files + expected_others
+
+
 from vnfb.components.ComputationResultRetriever import ComputationResultRetriever as base
 class Retriever(base):
 
     def _retrieveResultsFor(self, computation):
         director = self.director
         db = director.clerk.db
+        dds = self.dds
 
         # must have a job
         self.declareProgress(0.1, 'look up job')
         job = computation.getJob(db)
+        server = job.server.dereference(db)
 
         # check result is available
         self.declareProgress(0.2, 'check if results exist')
-        self._check_results_sanity(expected_results=['out/mon1-tof.h5'], job=job)
+        self._check_results_sanity(
+            expected_results=[
+                os.path.join('out', 'props.json'),
+                ], 
+            job=job)
+
+        # save "neutrons"
+        self._save_neutrons('out/neutrons', 0.3, computation, job, db)
         
-        h = self._make_result_holder(computation, HistogramTable)
-        # save the result from job to dos
-        self.declareProgress(0.5, 'get result from server')
-        self._save_result(computation, job, 'out/mon1-tof.h5', h, 'data.h5')
+        # move jobs/<id>/out to <computation>/<id>/out
+        self.declareProgress(0.4, 'move output directory from job to computation')
+        dds.move(job, 'out', computation, 'out', server=server)
+        
+        # make "out" available in main server
+        self.declareProgress(0.5, 'copy output directory back to vnf')
+        dds.make_available(
+            computation, 
+            [os.path.join('out', f) for f in expected_files],
+            )
+        
+        return
+    
+    
+    def _t(self):
+        # progress = start = 0.3
+        end = 1.0
+        step = (end-start)/len(histogram_files)
+        for filename in histogram_files:
+            progress += step
+            self._save_histogram(filename, progress, computation, job)
+            continue
+        
         return
 
+
+    def _save_histogram(self, filepath_in_job, progress, computation, job):
+        h = self._make_result_holder(computation, HistogramTable)
+        self.declareProgress(progress, 'get %s from server' % filepath_in_job)
+        self._save_result(computation, job, filepath_in_job, h, 'data.h5')
+        return
+
+
+    def _save_neutrons(self, path, progress, computation, job, db):
+        s = self._make_result_holder(computation, NeutronStorageTable)
+
+        metadata = {}
+        for k in ARCSbeam.key_props:
+            metadata[k] = getattr(computation, k)
+            continue
+        metadata = str(metadata)
+        s.short_description = "ARCS at sample: " + metadata
+        db.updateRecord(s)
+        
+        self.declareProgress(progress, 'get %s from server' % path)
+        self._save_result(computation, job, path, s, 'data.idf')
+        return
+        
+
 from vnfb.dom.Histogram import HistogramTable
+from vnfb.dom.neutron_experiment_simulations.NeutronStorage import NeutronStorageTable, NeutronStorage
+from vnfb.dom.neutron_experiment_simulations.integrated.arcs.ARCSbeam import ARCSbeam
+import os
+
 
 def retriever():
     return Retriever('arcs-beam-profile')
