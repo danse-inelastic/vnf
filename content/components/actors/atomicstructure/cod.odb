@@ -257,12 +257,20 @@ class Actor(base):
             #filePath = os.path.join(db, folder, id+".cif")
             import urllib2
             #f = urllib2.urlopen('http://vnf-dev.caltech.edu:8080/getcif/'+fileId)
-            f = urllib2.urlopen('http://vnf-dev.caltech.edu/cod/cif/'+folder+'/'+id+'.cif')
-            cifFileContents = f.read()
+            try:
+                f = urllib2.urlopen('http://vnf-dev.caltech.edu/cod/cif/'+folder+'/'+id+'.cif')
+                cifFileContents = f.read()
+            except:
+                # it means the server might not be available at this time
+                return alert("COD data server is temporarily down. Please try again in a minute")
             # create a new record
             #from vnfb.dom.BigStructure import Structure
             from vnfb.dom.AtomicStructure import Structure
             structure = Structure()
+            # avoid access deny problem for python egg cache
+            import os
+            os.environ['PYTHON_EGG_CACHE'] = '/tmp/pythoneggcache'
+            # read 
             structure.readStr(cifFileContents, 'cif')
             #make special description that includes the COD id
             structure.description = 'COD '+id+' '+structure.generateDescription()
