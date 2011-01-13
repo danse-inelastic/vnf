@@ -61,6 +61,12 @@ class Accessor(base):
         # job itself
         r.state = 'submissionfailed'
         db.updateRecord(r)
+        # also reset the computation so that the job retrieval looks like failed
+        computation = r.computation.dereference(db)
+        domaccess = self.director.retrieveDOMAccessor('computation')
+        domaccess.resetResultRetrievalTask(
+            type=computation.getTableName(),
+            id=computation.id)
         return
     
 
