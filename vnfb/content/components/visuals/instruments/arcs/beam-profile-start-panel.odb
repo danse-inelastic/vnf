@@ -51,7 +51,7 @@ def visual(director):
         id = select(element=idholder).getAttr('text'),
         formids = select(element=inputcell).findDescendentIDs(type='form'),
         )
-    b = lc.button(label='Update', onclick=update)
+    b = lc.button(label='Run', onclick=update)
     updatecell.add(b)
 
     # output region
