@@ -1,0 +1,41 @@
+# -*- Python -*-
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                 Jiao Lin
+#                      California Institute of Technology
+#                      (C) 2006-2011  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+import luban.content as lc
+
+
+def visual(director=None, histogram=None):
+    dim = histogram.dimension()
+
+    if dim==1:
+        p = lc.plot2d()
+        x = list(histogram.axes()[0].binCenters())
+        y = list(histogram.I)
+        p.curve(x=x,y=y)
+    elif dim == 2:
+        p = director.retrieveVisual(
+            'histogram/imageplot',
+            histogram=histogram,
+            director=director,
+            )
+    else:
+        raise NotImplementedError
+
+    return p
+
+    
+# version
+__id__ = "$Id$"
+
+# End of file 

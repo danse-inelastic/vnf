@@ -69,18 +69,6 @@ class Retriever(base):
         return
     
     
-    def _t(self):
-        # progress = start = 0.3
-        end = 1.0
-        step = (end-start)/len(histogram_files)
-        for filename in histogram_files:
-            progress += step
-            self._save_histogram(filename, progress, computation, job)
-            continue
-        
-        return
-
-
     def _save_histogram(self, filepath_in_job, progress, computation, job):
         h = self._make_result_holder(computation, HistogramTable)
         self.declareProgress(progress, 'get %s from server' % filepath_in_job)

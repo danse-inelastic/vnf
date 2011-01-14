@@ -38,40 +38,15 @@ class Actor(base):
         id = self.inventory.id
         histogram = domaccess.getRecord(id)
         histogram = domaccess.getData(histogram)
-        data = histogram.data
-        dim = data.dimension()
-
-        title = 'Histogram %s: I(%s)' % (
-            id,
-            ','.join(['%s(%s)' % (axis.name(), axis.unit()) for axis in data.axes()]),
-            )
-        doc = lc.document(Class='container', title=title, collapsable=True)
-        
-        if dim==1:
-            p = lc.plot2d(); doc.add(p)
-            x = list(data.axes()[0].binCenters())
-            y = list(data.I)
-            p.curve(x=x,y=y)
-        elif dim == 2:
-            p = director.retrieveVisual(
-                'histogram/imageplot',
-                histogram=data,
-                director=director,
-                )
-            doc.add(p)
-        else:
-            raise NotImplementedError
-
-        downloader = lc.downloader(
-            label = 'download data', 
-            ondownload = load(
+        return director.retrieveVisual(
+            'histogram/view',
+            histogram = histogram.data,
+            director = director,
+            downloadaction = load(
                 actor = self.name, routine='download',
                 id = id)
             )
-        doc.add(downloader)
-
-        return doc
-
+    
     
     def download(self, director):
         id = self.inventory.id

@@ -31,6 +31,8 @@ class Actor(base):
         
         formids = pyre.inventory.list('formids')
         viewid = pyre.inventory.str('viewid')
+
+        histogram = pyre.inventory.str('histogram')
         
 
     def update(self, director):
@@ -49,20 +51,31 @@ class Actor(base):
 
 
     def showResults(self, director):
-        doc = self.createResultsView(director)
-        return load(id='main-display-area').replaceContent(doc)
+        doc = self.createView(director)
+        return select(id='main-display-area').replaceContent(doc)
 
 
-    def createResultsView(self, director):
-        tabs = lc.tabs()
-        hists = [
-            ''
-            ]
-        return
+    def downloadHistogram(self, director):
+        id = self.inventory.id
+        dds = director.dds
+        domaccess = director.retrieveDOMAccessor('computation')
+        computation = domaccess.getComputationRecord(
+            'arcsbeamconfigurations', id)
+
+        histogram = self.inventory.histogram
+        f = '%s.h5' % histogram
+        p = dds.abspath(computation, 'out/%s' % f)
+        
+        content = open(p, 'rb').read()
+        return lc.file(filename=f, content=content)
 
 
     def createView(self, director):
-        return lc.document()
+        return director.retrieveVisual(
+            'instruments/arcs/beam-profile-results-view', 
+            id = self.inventory.id,
+            director = director,
+            )
 
 
     def getResults(self, director):
