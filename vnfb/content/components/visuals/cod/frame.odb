@@ -53,7 +53,8 @@ def createLeftSearchPanel():
     row.cell().add('description'); row.cell().add(FormTextField(name='text'))
 
     row = grid.row()
-    row.cell().add('elements'); row.cell().add(FormTextField(name='elements'))
+    row.cell().add('elements'); row.cell().add(
+        FormTextField(name='elements', tip='space delmited list of elements. e.g. Fe O F'))
 
     row = grid.row()
     row.cell().add('not elements'); row.cell().add(FormTextField(name='notelements'))
