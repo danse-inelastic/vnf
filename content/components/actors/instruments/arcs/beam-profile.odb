@@ -16,10 +16,16 @@ from luban.content import load, select, alert
 import luban.content as lc
 
 
+# The action to load the job-editor panel
+# select(id='main-display-area').replaceContent(...)
+loadjobeditor = lambda id: load(
+    actor='job', 
+    routine='view',
+    id = id,
+    )
+        
 
 from luban.components.AuthorizedActor import AuthorizedActor as base
-
-
 class Actor(base):
 
 
@@ -83,11 +89,16 @@ class Actor(base):
             id = self.inventory.id
             domaccess = director.retrieveDOMAccessor('computation')
             computation = domaccess.getComputationRecord('arcsbeamconfigurations', id)
+            # when results are retrieved, load this actor
+            on_all_results_retrieved = "load(actor=%r, routine='update', id=%r)" % (
+                self.name, id)
             vis = director.retrieveVisual(
                 'computation-results',
                 computation=computation,
                 actor='computation', 
-                director=director)
+                on_all_results_retrieved = on_all_results_retrieved,
+                director=director,
+                )
             return vis
         
         doc = lc.document()
@@ -109,21 +120,13 @@ class Actor(base):
 
 
     def prepareSimulation(self, director):
-        # The action to load the job-editor panel
-        # select(id='main-display-area').replaceContent(...)
-        loadjobeditor = lambda id: load(
-            actor='job', 
-            routine='view',
-            id = id,
-            )
-        
         # load the computation from db
         computation = self._getComputation(director)
         
-        # if there is already a job, just edit it
+        # if there is already a job, just present it
         job = computation.getJob(director.clerk.db)
         if job: 
-            return loadjobeditor(job.id)
+            return self.presentJobStatus(director)
         
         # create new job
         from vnfb.utils.job import new
@@ -136,6 +139,27 @@ class Actor(base):
         director.clerk.updateRecordWithID(job)
         
         return loadjobeditor(job.id)
+
+    
+    def presentJobStatus(self, director):
+        # load the computation from db
+        computation = self._getComputation(director)
+        
+        # if there should be a job already
+        job = computation.getJob(director.clerk.db)
+        
+        #
+        doc = lc.document()
+        text = [
+            'There is a computation job for this simulation. ',
+            'It is now %s' % job.state,
+            ]
+        doc.paragraph(text=text)
+        
+        link = lc.link(label='View the job details', onclick=loadjobeditor(job.id))
+        doc.add(link)
+        
+        return select(id='main-display-area').replaceContent(doc)
 
     
     def _hasResults(self, director):

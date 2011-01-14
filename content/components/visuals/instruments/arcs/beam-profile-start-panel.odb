@@ -30,14 +30,19 @@ def visual(director):
     whereami = view_indicator.visual(path)
     container.add(whereami)
 
-    #
+    # the main visual
     visual = lc.document(id='arcs-beam-profile-panel', title="Beam profile")
     visual.Class = 'app-container'
     container.add(visual)
     
+    # toolbar
+    toolbar = lc.toolbar(id='arcs-beam-toolbar', Class='app-toolbar')
+    visual.add(toolbar)
+    
+    # reload button in toolbar
     reload = load(actor='instruments/arcs', routine='loadApp', app='beam-profile')
-    link = lc.button(label='Calculate a different profile', onclick=reload)
-    visual.add(link)
+    button = lc.button(label='Calculate a profile', onclick=reload)
+    toolbar.add(button)
 
     grid = lc.grid(); visual.add(grid)
     # grid.addClass('align-top')
@@ -68,7 +73,9 @@ def visual(director):
         id = select(element=idholder).getAttr('text'),
         formids = select(element=inputcell).findDescendentIDs(type='form'),
         )
-    b = lc.button(label='Run', onclick=update)
+    b = lc.button(label='===>>', onclick=update)
+    b.tip = 'Run simulation or get simulation results'
+    b.Class = 'run-button'
     updatecell.add(b)
 
     # output region
