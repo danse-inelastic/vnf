@@ -71,11 +71,34 @@ class Actor(base):
 
 
     def createView(self, director):
-        return director.retrieveVisual(
-            'instruments/arcs/beam-profile-results-view', 
-            id = self.inventory.id,
-            director = director,
-            )
+        # check if we have results, if yes, show them
+        if self._hasResults(director):
+            return director.retrieveVisual(
+                'instruments/arcs/beam-profile-results-view', 
+                id = self.inventory.id,
+                director = director,
+                )
+
+        if self._jobIsDone(director):
+            id = self.inventory.id
+            domaccess = director.retrieveDOMAccessor('computation')
+            computation = domaccess.getComputationRecord('arcsbeamconfigurations', id)
+            vis = director.retrieveVisual(
+                'computation-results',
+                computation=computation,
+                actor='computation', 
+                director=director)
+            return vis
+        
+        doc = lc.document()
+        doc.paragraph(text=[
+                'This simulation is running and is not done yet. ',
+                'Please check back in a moment, or wait for the email notification.',
+                ])
+        refresh=load(actor=self.name, routine='update', id=self.inventory.id)
+        link = lc.link(label='refresh', onclick=refresh)
+        doc.add(link)
+        return doc
 
 
     def getResults(self, director):
@@ -83,19 +106,6 @@ class Actor(base):
         vis = load(actor='computation', routine='createResultsDoc',
                    type='arcsbeamconfigurations', id=id)
         return select(id='main-display-area').replaceContent(vis)
-
-
-    def _hasResults(self, director):
-        domaccess = director.retrieveDOMAccessor('computation')
-        id = self.inventory.id
-        return domaccess.isComputationResultsRetrieved(
-            'arcsbeamconfigurations', id)        
-
-
-    def _jobIsDone(self, director):
-        domaccess = director.retrieveDOMAccessor('computation')
-        id = self.inventory.id
-        return domaccess.isJobDone('arcsbeamconfigurations', id)
 
 
     def prepareSimulation(self, director):
@@ -128,6 +138,19 @@ class Actor(base):
         return loadjobeditor(job.id)
 
     
+    def _hasResults(self, director):
+        domaccess = director.retrieveDOMAccessor('computation')
+        id = self.inventory.id
+        return domaccess.isComputationResultsRetrieved(
+            'arcsbeamconfigurations', id)        
+
+
+    def _jobIsDone(self, director):
+        domaccess = director.retrieveDOMAccessor('computation')
+        id = self.inventory.id
+        return domaccess.isJobDone('arcsbeamconfigurations', id)
+
+
     def _getComputation(self, director):
         # load the computation from db
         id = self.inventory.id
