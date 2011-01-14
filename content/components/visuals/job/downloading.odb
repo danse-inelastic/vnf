@@ -10,6 +10,11 @@
 #
 
 
+"""
+visual show the packing procedure and when done, show the download link
+"""
+
+
 import luban.content as lc
 from luban.content import load, select, alert
 
