@@ -58,6 +58,12 @@ class Actor(base):
             select(id='idholder').setAttr(text= self.inventory.id),
             ]
         return actions
+
+
+    def _defaults(self):
+        super(Actor, self)._defaults()
+        self.inventory.editlink = False
+        return
         
 
 

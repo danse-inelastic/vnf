@@ -91,7 +91,8 @@ height:1.5em;
     margin:0;
     padding:0;
 }
-#body-frame .decideInputMethod[luban-element-type="splitter"] > table.luban-splitter > tbody > tr > td > div .luban-button-container, .luban-button-container a {
+/* #body-frame .decideInputMethod[luban-element-type="splitter"] > table.luban-splitter > tbody > tr > td > div .luban-button-container, .luban-button-container a {*/
+#body-frame .decideInputMethod[luban-element-type="splitter"] > table.luban-splitter > tbody > tr > td > div .luban-button-container a {
     margin-bottom:0;
     padding-bottom:0;
     -moz-border-radius:0;
