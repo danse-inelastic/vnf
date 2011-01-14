@@ -421,11 +421,22 @@ width:100%;
 }
 .app-container > .luban-document-body {
     border-top:3px solid white;
-    padding-top:1em;
+    padding-top:0.2em;
     background-color: #fefafa;
 }
 .app-container .luban-document.panel > .luban-document-body {
     padding-right:1em;
+}
+.app-container > .luban-document-body > .luban-toolbar {
+    border-top:2px solid white;
+    border-bottom:1px solid lightBlue;
+    margin-bottom:0.3em;
+    -moz-border-radius:0.5em;
+    -webkit-border-radius: 0.5em;
+}
+.app-container > .luban-document-body > .luban-toolbar .luban-button {
+    background-color:gray;
+    color:white;
 }
 .app-container .object-editor.luban-document.panel {
     border-width:1px;
@@ -436,6 +447,21 @@ width:100%;
     padding:0;
     margin:0;
 }
+/* center the whole application panel */
+.app-container .luban-grid > table {
+    margin-right:auto;
+    margin-left:auto;
+}
+/* button to start running an application */
+.app-container .run-button > .luban-button:hover {
+    color:red;
+}
+.app-container .run-button > .luban-button {
+    border:medium none;
+    font-size:large;
+    color:#555599;
+}
+
 .app-container .app-output-cell {
     min-width: 50em;
     min-height: 30em;
@@ -443,7 +469,7 @@ width:100%;
     -moz-border-radius: 1em;
     -webkit-border-radius: 1em;
 }
-
+/* big buttons for launching applications */
 .app-launch-button {
     border: 2px solid silver;
     -moz-border-radius: 1em;

@@ -15,7 +15,8 @@ from luban.content import load, alert, select
 import luban.content as lc
 
 def visual(director=None, id=None):
-    tabs = lc.tabs()
+    container = lc.document(id='beam-profile-results-container')
+    tabs = lc.tabs(); container.add(tabs)
 
     # first tab
     tab = createOverview(tabs, director=director, id=id)
@@ -36,7 +37,7 @@ def visual(director=None, id=None):
                  )
             )
         continue
-    return tabs
+    return container
 
 
 def createOverview(tabs, director, id):
