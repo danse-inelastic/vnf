@@ -36,8 +36,8 @@ class PackJobDir(base):
 
         # check job status
         state = job.state
-        if state not in ['finished', 'terminated']:
-            raise RuntimeError, "Job %s not suitable for submission: %s" % (id, state)
+        if state not in ['finished', 'terminated', 'running']:
+            raise RuntimeError, "Job %s not suitable for packing: %s" % (id, state)
         
         # check there is server
         server = job.server
