@@ -27,6 +27,8 @@ class Actor(base):
         id = pyre.inventory.str('id')
         type = pyre.inventory.str('type')
 
+        posterior_action = pyre.inventory.str('posterior_action')
+
 
     def view(self, director):
         domaccess = director.retrieveDOMAccessor('computation')
@@ -51,7 +53,11 @@ class Actor(base):
         
         from vnfb.utils.computation import start_results_retrieval
         start_results_retrieval(computation, director)
-        return
+
+        posterior_action = self.inventory.posterior_action
+        if posterior_action:
+            from vnfb.content import safe_eval_action
+            return safe_eval_action(posterior_action)
 
 
     def createResultsDoc(self, director):
