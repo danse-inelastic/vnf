@@ -14,10 +14,21 @@
 import luban.content as lc
 from luban.content import load, select, alert
 
-def visual(computation, actor, director):
+def visual(computation=None, actor=None, director=None, 
+           type = None, id = None,
+           on_all_results_retrieved=None):
+
+    # utilities
     domaccess = director.retrieveDOMAccessor('computation')
     orm = domaccess.orm
     db = orm.db
+    
+    # computation, type, id
+    if not computation:
+        computation = domaccess.getComputationRecord(type, id)
+    else:
+        id = computation.id
+        type = computation.getTableName()
 
     # the job
     job = computation.getJob(db)
@@ -26,7 +37,7 @@ def visual(computation, actor, director):
     check(job, director)
 
     # the document to build
-    doc = lc.document(Class='container')
+    doc = lc.document(Class='container', id='computation-results-container')
 
     # depending on retrieval status, we need to add some extra things to the document
     result_retrieval_status = computation.getResultRetrievalStatus(db)
@@ -37,8 +48,10 @@ def visual(computation, actor, director):
         result_retrieval_status = 'retrieving'
         
     refresh = select(element=doc).replaceBy(
-        load(actor=actor, routine='createResultsDoc',
-             id=computation.id, type=computation.getTableName())
+        load(actor='loadvisual', visual='computation-results',
+             id=id, type=type,
+             on_all_results_retrieved = on_all_results_retrieved,
+             )
         )
     
     if result_retrieval_status == 'retrieving':
@@ -61,19 +74,27 @@ def visual(computation, actor, director):
             routine='checkProgress',
             id = task.id,
             )
-        
-        pbar.onfinished = refresh
+        if on_all_results_retrieved:
+            from vnfb.content import safe_eval_action
+            onfinished = safe_eval_action(on_all_results_retrieved)
+        else:
+            onfinished = refresh
+        pbar.onfinished = onfinished
         pbar.oncanceled = refresh
         doc.add(pbar)
 
     elif result_retrieval_status.find('failed') != -1:
         p = doc.paragraph(text=['failed to retrieve results'])
+        # the action to load this visual (type: string)
+        refresh_action_in_str = 'select(id="computation-results-container").replaceBy(load(actor="loadvisual", visual="computation-results", id="%s", type="%s", on_all_results_retrieved = "%s"' % (id, type, on_all_results_retrieved or '')
+        # link to restart retrieval
         l = lc.link(
             label = 'restart results retrieval',
             onclick = [
               load(actor='computation', routine='restartResultsRetrieval',
-                   type = computation.getTableName(), id = computation.id),
-              refresh,
+                   type = type, id = id,
+                   posterior_action = refresh_action_in_str,
+                   )
               ],
             )
         doc.add(l)
@@ -84,7 +105,7 @@ def visual(computation, actor, director):
 
     else:
         raise NotImplementedError, 'computation: %s, retrieval status: %s' % (
-            computation.getTableName(), result_retrieval_status)
+            type, result_retrieval_status)
 
     # display results 
     results = computation.results.dereference(db)
@@ -100,7 +121,7 @@ def visual(computation, actor, director):
         doc1.onexpand = [
             #select(element=alertdoc).hide(),
             select(element=doc1).replaceBy(
-            load(actor='orm/%s' % r.getTableName(),
+            load(actor='orm/%s' % type,
                  routine='createGraphicalView',
                  id = r.id)
             )
