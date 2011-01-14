@@ -223,6 +223,12 @@ class Actor(base):
             # if the tar ball is good, we need to add the link to the tar ball
             link = self.createDownloadLink(director, job=job)
         else:
+            # reset packing task if it exists.
+            packingtask = job.getOnlyTask(db=director.clerk.db, iworker='packjobdir')
+            if packingtask:
+                packingtask.state = 'failed'
+                director.clerk.db.updateRecord(packingtask)
+            # now the link to start packing
             link = lc.button(id = 'job-download-link', label=label)
             link.onclick = load(
                 actor = 'job',
@@ -323,12 +329,14 @@ class Actor(base):
         label = 'Download %s' % filename
 
         link = lc.htmldocument(id='job-download-link')
-        link.text = ['<a href="%s">%s</a>' % (url, label)]
+        link.text = ['<a target="_blank" href="%s">%s</a>' % (url, label)]
         
         return link  
 
 
     def download(self, director):
+        # create the packing progressbar and replace the download button
+        # with that
         id = self.inventory.id
         domaccess = self._domaccess(director)
 
