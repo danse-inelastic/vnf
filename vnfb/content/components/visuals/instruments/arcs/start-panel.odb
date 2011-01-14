@@ -20,7 +20,7 @@ import luban.content as lc
 def visual(director):
     visual = lc.document(id='arcs-panel')
     reload = load(actor='instruments/arcs', routine='reloadStartPanel')
-    link = lc.link(label='reload', onclick=reload)
+    link = lc.link(label='Refresh', onclick=reload, Class='debug')
     visual.add(link)
 
     ncols = 4

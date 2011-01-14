@@ -391,8 +391,12 @@ width:100%;
 .align-top {
     vertical-align: top;
 }
+.luban-link.debug {
+    color: lightBlue;
+}
 
-/* applications */
+/* portal applications */
+/* frame of portal application */
 .app-main-frame.panel.luban-document {
     width: 95%;
     height: 90%;
@@ -403,6 +407,7 @@ width:100%;
 .app-main-frame.luban-document {
     margin-left:1em;
     margin-right:1em;
+    min-height: 25em;
 }
 .app-main-frame > .luban-document-title {
     text-align:right;
@@ -413,6 +418,12 @@ width:100%;
 .app-main-frame #view-indicator {
     padding:0;
 }
+/* center the portal application grid */
+.app-main-frame .luban-grid > table {
+    margin-right:auto;
+    margin-left:auto;
+}
+/* container of one application */
 .app-container > .luban-document-title {
     padding-top: 0;
     font-size: large;
