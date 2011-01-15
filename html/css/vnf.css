@@ -424,11 +424,12 @@ width:100%;
     margin-left:auto;
 }
 /* container of one application */
+/* application title */
 .app-container > .luban-document-title {
     padding-top: 0;
     font-size: large;
     text-align: center;
-    border-bottom:1px solid #888888;
+    /* border-bottom:1px solid #888888; */
 }
 .app-container .luban-document.panel > .luban-document-title > table td > h1.luban-document-title-text {
     color:#7f9fff;
@@ -440,9 +441,10 @@ width:100%;
 }
 /* application body */
 .app-container > .luban-document-body {
-    border-top:3px solid white;
-    padding-top:0.2em;
-    background-color: #fefafa;
+    padding: 0.5em 1em;
+    background-color: #d0d0d0;
+    -moz-border-radius: 1em;
+    -webkit-border-radius: 1em;
 }
 /* center the whole application panel */
 .app-container .luban-grid > table {
@@ -451,15 +453,26 @@ width:100%;
 }
 /* app body: toolbar */
 .app-container > .luban-document-body > .luban-toolbar {
-    border-top:2px solid white;
-    border-bottom:1px solid lightBlue;
-    margin-bottom:0.3em;
+    border: 1px solid #e5e5f5;
+    margin-bottom:1em;
+    background-color: #e0e0e0;
     -moz-border-radius:0.5em;
     -webkit-border-radius: 0.5em;
 }
+/* app body: toolbar button */
 .app-container > .luban-document-body > .luban-toolbar .luban-button {
     background-color:gray;
     color:white;
+}
+.app-container > .luban-document-body > .luban-toolbar .luban-button-container {
+    margin:1px;
+}
+.app-container > .luban-document-body > .luban-toolbar .luban-button-container a {
+    border:1px solid gray;
+}
+.app-container > .luban-document-body > .luban-toolbar .luban-button-container a:hover {
+    color:#4b5ea6;
+    background-color:#f0f0f0;
 }
 /* app body: form */
 .app-container .object-editor.luban-document.panel {

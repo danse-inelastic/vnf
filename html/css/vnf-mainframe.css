@@ -84,7 +84,10 @@ body {
     border-width: 2;
     border-color: #d0d0d0;
     */
-    padding: 0.5em 1em 0.5em 0;
+    padding: 0.5em 0em 0.5em 0;
+}
+#body-frame > div > div[luban-element-type="splitter"] {
+    margin-right:1em;
 }
 /* so that portlet is next to the display area */
 #body-frame table.luban-splitter {
