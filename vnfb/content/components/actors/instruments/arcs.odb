@@ -59,6 +59,7 @@ class Actor(base):
             addlogout,
             # select(id='body-frame').append(frame),
             select(id='body-frame').replaceContent(frame),
+            select(id='').setAttr(title='VNF ARCS portal'),
             ]
 
 
