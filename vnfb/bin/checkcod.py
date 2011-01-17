@@ -40,6 +40,7 @@ class App(base):
                 passwd = passwd,
                 db = 'cod',
                 )
+            print "OK"
         except:
             import traceback
             tb = traceback.format_exc()
