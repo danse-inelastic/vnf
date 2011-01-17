@@ -22,8 +22,20 @@ def visual(models=None, director=None, matter_id=None):
         models = domaccess.getModels(matter_id)
 
     if not models:
-        raise ValueError, "Neither models nor matter_id were specified"
-    return _visual(models, director)
+        doc = lc.document()
+        doc.paragraph(text='no bvk models')
+    else:
+        doc = _visual(models, director)
+
+    if matter_id:
+        new_model = load(
+            actor='material_simulations/phonon_calculators/bvk',
+            routine='newModel',
+            atomicstructure_id=matter_id
+            )
+        link = lc.link(label='create a new model', onclick=new_model)
+        doc.add(link)
+    return doc
 
 
 def _visual(models, director):
