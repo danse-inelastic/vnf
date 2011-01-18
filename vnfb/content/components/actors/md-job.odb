@@ -1,0 +1,824 @@
+#!/usr/bin/env python
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                 Jiao Lin
+#                      California Institute of Technology
+#                      (C) 2006-2009  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+# this is the actor that perform actions on jobs
+#
+# job submission:
+#   job submission is done by calling a iworker "submitjob", which in turn
+#   loads a job builder and than asks the job builder to render the job
+#   out of a computation. The job builder is dynamically loaded depending
+#   on the type of the computation.
+from luban.content import load, select, alert
+import luban.content as lc
+
+
+# common actions
+setpagetitle = select(id='').setAttr(title='Virtual neutron facility: jobs')
+from  vnfb.components.visuals import set_contextual_help
+sethelppage = set_contextual_help(
+    page='UserGuide-jobs', label='about jobs')
+
+
+#
+from luban.content.Form import Form
+from luban.content.Document import Document
+from luban.content.ProgressBar import ProgressBar
+from luban.content.Form import Form
+from luban.content.Link import Link
+
+from vnfb.utils.job import check
+
+#
+from vnfb.components.MasterTable import FilterSyntaxError, MasterTableActor as base
+class Actor(base):
+
+    class Inventory(base.Inventory):
+
+        import pyre.inventory
+
+        # the computation this job is for
+        computation_type = pyre.inventory.str(name='computation_type')
+        computation_id = pyre.inventory.str(name='computation_id')
+
+        # job itself
+        id = pyre.inventory.str(name='id')
+
+        short_description = pyre.inventory.str(name = 'short_description', default = 1e6 )
+        short_description.meta['label'] = 'Job description'
+        short_description.meta['tip'] = (
+            'Please give a short description for this job'
+            )
+        
+        server = pyre.inventory.str( 'server', default = 'server000' )
+        server.meta['label'] = 'Computation server'
+        server.meta['tip'] = (
+            'Please choose the server on which the job will be run'
+            )
+
+        numnodes = pyre.inventory.int( 'numnodes', default = 1 )
+        numnodes.meta['label'] = 'Number of nodes'
+        numnodes.meta['tip'] = (
+            'Please input the number of nodes'
+            )
+        numnodes.meta['rangeError'] = (
+            'Please enter a positive integer.'
+            )
+        numnodes.meta['capacityError'] = (
+            'Your request is larger than the number of nodes.'
+            )
+        
+        numcores = pyre.inventory.int( 'numcores', default = 1 )
+        numcores.meta['label'] = 'Number of cores'
+        numcores.meta['tip'] = (
+            'Please input the number of cores'
+            )
+        numcores.meta['rangeError'] = (
+            'Please enter a positive integer.'
+            )
+        numcores.meta['capacityError'] = (
+            'Your request is larger than the number of cores.'
+            )
+
+        walltime = pyre.inventory.str( 'walltime', default = 10)
+        walltime.meta['label'] = 'Time limit (hours)'
+        walltime.meta['tip'] = (
+            'Please input a limit on the time your job will run. (Unit: hours)'
+            )
+        walltime.meta['tiponerror'] = (
+            'Please enter a positive integer'
+            )
+
+        resubmission = pyre.inventory.bool('resubmission', default=0)
+
+
+    def default(self, director):
+        return self.showListView(director)
+
+
+    def showListView(self, director):
+        try:
+            view = self.createListView(director)
+        except FilterSyntaxError, msg:
+            return alert('filter syntax error: %s' % msg)
+        return [
+            select(id = 'main-display-area').replaceContent(view),
+            setpagetitle,
+            ] + sethelppage
+
+
+    def createListView(self, director):
+        order_by        = self.inventory.order_by
+        reverse_order   = self.inventory.reverse_order
+        number_records_per_page     = self.inventory.number_records_per_page
+        page_number     = self.inventory.page_number
+
+        filter_expr     = self.inventory.filter_expr
+        filter_key      = self.inventory.filter_key
+        filter_value    = self.inventory.filter_value
+
+        label = self.inventory.label
+        mine = self.inventory.mine
+        
+        tableview = director.retrieveVisual(
+            'job/tableview',
+            director,
+            'job',  # name of master table
+            label           = label,
+            mine           = mine,
+            filter_expr     = filter_expr,
+            filter_key      = filter_key,
+            filter_value    = filter_value,
+            order_by        = order_by,
+            reverse_order   = reverse_order,
+            number_records_per_page = number_records_per_page,
+            page_number     = page_number
+            )
+
+        return tableview
+
+
+    def view(self, director):
+        id = self.inventory.id
+        job = self._getJobRecord(director)
+        
+        # if job has not been submitted, present the submission form
+        if job.state in ['created']:
+            return self.edit(director)
+        if job.state in ['submissionfailed']:
+            return self.view_failed_submission(director)
+        if job.state in ['submitting']:
+            return self.in_submission(director)
+        
+        #
+        if not self._isowner(director):
+            # return alert('Permision denied')
+            pass
+        
+        # update job status
+        state = check( job, director )
+        
+        # prepare page
+        container = lc.document(Class='container')
+
+        #
+        pathtome = self._pathToMe(director)
+        view_indicator = self._viewIndicactor(pathtome, director)
+        container.add(view_indicator)
+
+        title = 'Job # %s: %s' % (job.id, job.state ) 
+        document = container.document(title=title, Class='job-view')
+        
+        # refresh 
+        refreshbutton = lc.button(label = 'Refresh')
+        refreshbutton.onclick = load(actor = 'job', routine = 'view', id = id,)
+        document.add(refreshbutton)
+
+        # key information section
+        keyinfos = {
+            'ID': job.id,
+            'Description': job.short_description,
+            'Status': job.state,
+            }
+        from luban.content.HtmlDocument import HtmlDocument
+        l = HtmlDocument()
+        l.text = ['<ul>']
+        for k,v in keyinfos.iteritems():
+            l.text.append('<li><em>%s:</em> %s </li>' % (k,v))
+            continue
+        l.text.append('</ul>')
+        document.add(l)
+        
+        # Results
+        compdoc = document.document(title='Results')
+        # link to computation
+        #compdoc.paragraph(text=['To view the results of this computation job, '])
+        computation = job.computation.dereference(director.clerk.db)
+        label = 'switch to view of computation %s %s' % (
+            computation.__class__.__name__, computation.id)
+        link = lc.button(label=label, id='job-switch-to-computation-link')
+        link.onclick = load(
+            actor = 'computation',
+            routine = 'view',
+            id = computation.id,
+            type = computation.getTableName(),
+            )
+        compdoc.add(link)
+        
+        # download link
+        # compdoc.paragraph(text=['To download the whole job directory to your local machine'])
+        # check if there is a tar ball available to download
+        label = 'Pack the job directory for download'
+        if packutils.packingIsUpToDate(job, director):
+            # if the tar ball is good, we need to add the link to the tar ball
+            link = self.createDownloadLink(director, job=job)
+        else:
+            link = lc.button(id = 'job-download-link', label=label)
+            link.onclick = load(
+                actor = 'job',
+                routine = 'download',
+                id = id,
+                )
+        compdoc.add(link)
+
+        # status document
+        statusdoc = document.document(title='Status')
+        # if job is running, add a "cancel" link
+        if job.state == 'running':
+            statusdoc.paragraph(text=['Your job #%s is running.' % job.id])
+            link = lc.button(label = 'If you don\'t want it running anymore, click me to cancel it')
+            statusdoc.add(link)
+            link.onclick = load(
+                actor = 'job',
+                routine = 'cancel',
+                id = job.id,
+                )
+        else:
+            statusdoc.paragraph(text=[
+                'Your job #%s is %s.' % (job.id, job.state),
+                ])
+
+            if job.state in ['finished', 'terminated', 'cancelled']:
+                p = statusdoc.paragraph()
+                p.text = [
+                    'The job exited with code %s.' % job.exit_code
+                    ]
+
+        # runinfo document
+        runinfodoc = document.document(title='Run information')
+        p = runinfodoc.paragraph()
+        time_start = job.time_start
+        cluster = job.server.dereference(director.clerk.db).short_description
+        nnodes = job.numnodes
+        ncores = job.numcores
+        walltime = job.walltime
+        p.text = [
+            "This job was started at %s on %s nodes(s) %s core(s) of cluster \"%s\" with time limit of %s hour(s)." % (
+            time_start, nnodes, ncores, cluster, walltime),
+            ]
+
+        if job.state in ['finished', 'terminated', 'cancelled']:
+            p = runinfodoc.paragraph()
+            p.text = [
+                'This job was %s at %s.' % (job.state, job.time_completion),
+                ]
+
+#        # output document
+#        outputdoc = document.document(title='Output')
+#        outputdoc.paragraph().text = ['stdout']
+#        l = outputdoc.literal()
+#        l.text = [
+#            '<pre>',
+#            job.output,
+#            '</pre>',
+#            ]
+#        outputdoc.paragraph().text = ['stderr']
+#        l = outputdoc.literal()
+#        l.text = [
+#            '<pre>',
+#            job.error,
+#            '</pre>',
+#            ]
+
+        # Misc
+        miscdoc = document.document(title='Misc.')
+        # put up all other info about the job
+        record = job
+        props = [
+            'creator',
+            'remote_outputfilename',
+            'remote_errorfilename',
+            'id_incomputingserver',
+            ]
+        lines = ['%s=%s' % (prop, getattr(record, prop) ) for prop in props]
+        for line in lines:
+            p = miscdoc.paragraph()
+            p.text = [line]
+            continue
+
+        return select(id='main-display-area').replaceContent(container)
+
+
+    def createDownloadLink(self, director, job=None):
+        '''create the download link. this assumes that a tar ball of the job directory
+        is already there.
+        '''
+        if job is None:
+            domaccess = self._domaccess(director)
+            id = self.inventory.id
+            job = domaccess.getJobRecord(id)
+            
+        url = packutils.downloadurl(job, director)
+        filename = url.split('/')[-1]
+        label = 'Download %s' % filename
+
+        link = lc.htmldocument(id='job-download-link')
+        link.text = ['<a href="%s">%s</a>' % (url, label)]
+        
+        return link  
+
+
+    def download(self, director):
+        id = self.inventory.id
+        domaccess = self._domaccess(director)
+
+        #
+        job = domaccess.getJobRecord(id)
+        
+        view = director.retrieveVisual('job/downloading', job=job, director=director)
+
+        return select(id='job-download-link').replaceBy(view)        
+    
+
+    def create(self, director):
+        computation = self._getComputation(director)
+        # if there is already a job, we have a problem
+        job = computation.getJob(director.clerk.db)
+        if job: raise RuntimeError, "computation %s already has a job" % computation.id
+
+        # create new job
+        from vnfb.utils.job import new
+        job = new(director)
+        
+        # assign computation
+        job.computation = computation
+        
+        # update
+        director.clerk.updateRecordWithID(job)
+        
+        self.inventory.id = job.id
+        return self.edit(director)
+    
+    
+    def edit(self, director):
+        if not self._getServers(director):
+            return alert("no computing server available. please submit later.")
+        
+        doc = self.createEditPanel(director)
+        return select(id='main-display-area').replaceContent(doc)
+    
+    
+    def createEditPanel(self, director):
+        domaccess = self._domaccess(director)
+        orm = domaccess.orm
+
+        job = domaccess.getJobRecord(self.inventory.id)
+        if not self._isowner(director):
+            return alert("You are not allowed to edit other users' job")
+
+        form = self.createEditForm(director)
+        
+        doc = Document(title='Job\ %s' % self.inventory.id)
+        doc.add(form)
+        return doc
+
+
+    def createEditForm(self, director):
+        record = self._getJobRecord(director)
+        
+        form = Form(id='job-edit-form')
+        
+        property = 'short_description'
+        meta = getattr( self.Inventory, property ).meta
+        field = form.text(
+            id = 'short_description',
+            name = 'short_description',
+            label = meta['label'],
+            value = record.short_description or \
+            'job for %s' % _describe_computation
+            (director.clerk.dereference(record.computation))
+            )
+        field.help = meta['tip']
+        
+        servers = self._getServers(director)
+        entries = [ (server.id, server.short_description) 
+                    for server in servers ]
+        ids = [ s.id for s in servers ]
+        
+        selected_server = record.server and record.server.id
+        if selected_server not in ids: selected_server = entries[0][0]
+        
+        property = 'server'
+        meta = getattr( self.Inventory, property ).meta
+        selector = form.selector(
+            id = _input_widget_ID(property),
+            name = 'server',
+            entries = entries,
+            label = meta['label'],
+            selection = selected_server,
+            )
+        selector.help = meta['tip']
+        
+        extra = {}
+        if director.sentry.username == 'demo':
+            # for demo user, we don't want them to use a lot of resources
+            # so let us hide those fields for the resources
+            extra['numcores'] = 1,
+            extra['numnodes'] = 1,
+            extra['walltime'] = 1,
+
+        else:
+            property = 'numnodes'
+            meta = getattr( self.Inventory, property ).meta
+            field = form.text(
+                id = _input_widget_ID(property),
+                name = 'numnodes',
+                label = meta['label'],
+                value = record.numnodes,
+                )
+            field.help = meta['tip']
+
+            property = 'numcores'
+            meta = getattr( self.Inventory, property ).meta
+            field = form.text(
+                id = _input_widget_ID(property),
+                name = 'numcores',
+                label = meta['label'],
+                value = record.numcores,
+                )
+            field.help = meta['tip']
+            
+            property = 'walltime'
+            meta = getattr( self.Inventory, property ).meta
+            field = form.text(
+                id = _input_widget_ID(property),
+                name = 'walltime',
+                label = meta['label'],
+                value = record.walltime,
+                )
+            field.help = meta['tip']
+            
+        form.submitbutton(label='submit')
+
+        extra['resubmission'] = self.inventory.resubmission
+        form.onsubmit = select(element=form).submit(
+            actor = 'job', routine = 'verify',
+            id = self.inventory.id, **extra)
+
+        return form
+
+
+    def verify(self, director):
+        errors = {}
+        
+        short_description = self.inventory.short_description
+        serverId = self.inventory.server
+        #check to make sure user has not allocated more nodes/cores than server has
+        from vnfb.dom.Server import Server
+        serverRecord = director.clerk.db.fetchall(Server, where="id='%s'" % serverId)[0]
+        
+        numnodes = self.inventory.numnodes
+        if not isPositiveInteger(numnodes):
+            errors['numnodes'] = self.Inventory.numnodes.meta['rangeError']
+        if int(numnodes) > serverRecord.nodes:
+            errors['numnodes'] = self.Inventory.numnodes.meta['capacityError']
+            
+        numcores = self.inventory.numcores
+        if not isPositiveInteger(numcores):
+            errors['numcores'] = self.Inventory.numcores.meta['rangeError']
+        if numcores > serverRecord.corespernode:
+            errors['numcores'] = self.Inventory.numcores.meta['capacityError']
+            
+        walltime = self.inventory.walltime
+        if not isPositiveInteger(walltime):
+            errors['walltime'] = self.Inventory.walltime.meta['tiponerror']
+
+        if errors:
+            return self.showErrors(director, errors=errors)
+        
+        record = self._getJobRecord(director)
+
+        record.short_description = short_description
+        record.server = serverId
+        record.numnodes = numnodes
+        record.numcores = numcores
+        record.walltime = walltime
+
+        director.clerk.updateRecordWithID(record)
+        return self.submit(director)
+
+
+    def submit(self, director):
+        if not self._isowner(director):
+            return alert("permission denied")
+        # if server is not active anymore, let the user 
+        # edit the submission again
+        id = self.inventory.id
+        job = self._getJobRecord(director)
+        server = job.server.dereference(director.clerk.db)
+        if server.status != 'online':
+            msg = 'server %s is no longer available, please resubmit' % (
+                server.sname,)
+            return [
+                alert(msg),
+                load(actor='job', routine='edit', id=id),
+                ]
+        
+        view = self.create_submitting_view(director)
+        return select(id='main-display-area').replaceContent(view)
+
+
+    def debug_submit(self, director):
+        from luban.content.Page import Page
+        page = Page()
+
+        document = page.document(id='main-display-area')
+        
+        view = self.create_submitting_view(director)
+        document.add(view)
+
+        return page
+    
+
+    def create_submitting_view(self, director):
+        view = lc.document(title='submitting job %s' % self.inventory.id)
+        
+        job = self._getJobRecord(director)
+
+        if job.state in ['submitted', 'running', 'onhold',
+                         'finished', 'terminated', 'cancelled']:
+            return self.already_submitted(director)
+        if job.state in ['submitting']:
+            return self.in_submission(director)
+        
+        iworker = 'submitjob'
+        
+        # first check if there is itask running
+        task = job.findPendingTask(director.clerk.db, iworker=iworker)
+        if not task:
+            from vnfb.dom.ITask import createITask, ITask
+            task = director.clerk.insertNewOwnedRecord(ITask)
+            task = createITask(
+                task.id,
+                beneficiary = job,
+                worker = iworker,
+                type = iworker,
+                )
+            director.clerk.updateRecordWithID(task)
+        else:
+            if task.state not in ['failed', 'cancelled']:
+                # should not reach here
+                raise RuntimeError, \
+                      "failed to generate submission view for job %s. itask is %s" % (
+                    job.id, task.id)
+            # reopen the task
+            task.state = 'created'
+            director.clerk.updateRecordWithID(task)
+            
+        # start the task
+        from vnfb.utils.itask import start
+        start(task)
+        
+        # build the progress bar and return
+        pbar = ProgressBar(
+            id = 'itask-%s-pbar' % task.id,
+            status = 'Submitting job...',
+            percentage = 0,
+            skip = 2000,
+            )
+        view.add(pbar)
+        
+        loadingjobview_alert = view.paragraph(
+            text=['job submission done. reloading...'])
+        loadingjobview_alert.hidden = True
+
+        pbar.onchecking = load(
+            actor='itask',
+            routine='checkProgress',
+            id = task.id,
+            )
+        pbar.onfinished = [
+            select(element=loadingjobview_alert).show(),
+            load(actor = 'job',
+                 routine='view',
+                 id = self.inventory.id),
+            ]
+
+        #
+        msg = 'Job submission for job #%s was cancelled. An alert has been sent to vnf administractors and we will try to solve this problem as soon as possible. In the mean time, please try out other functionalities of vnf.' % job.id
+        pbar.oncanceled = [alert(msg), load(actor='job')]
+        
+        return view
+
+
+    def deleterows(self, director):
+        return alert("Deleting jobs is not yet supported.")
+
+
+    #XXX: obsolete
+    def showErrors(self, director, errors=None):
+        from luban.content import select
+        return [
+            select(id=_input_widget_ID(name)).showError(text)
+            for name, text in errors.iteritems()
+            ]
+
+
+        job = director.clerk.getJob(self.inventory.id)
+        main = page._body._content._main
+        document = main.document( title = 'Job already submitted: %s' % job.id )
+        
+        p = document.paragraph()
+        link = action_link(
+            actionRequireAuthentication
+            ( actor = 'job',
+              sentry = director.sentry,
+              routine = 'view',
+              label = 'here',
+              id = self.inventory.id,
+              ),
+            director.cgihome
+            )
+        p.text = [
+            'This job has already been submitted. To view its status, please click %s' % link
+            ]
+        return page
+
+
+    def already_submitted(self, director):
+        job = self._getJobRecord(director)
+
+        document = Document( title = 'Job already submitted: %s' % job.id )
+        
+        p = document.paragraph()
+        p.text = [
+            'This job has already been submitted.'
+            ]
+        
+        link = Link(label = 'To view its status, please click here')
+        link.onclick = load (
+            actor = 'job', routine = 'view',
+            id = self.inventory.id,
+            )
+        document.add(link)
+        
+        return document
+
+    
+    def in_submission(self, director):
+        job = self._getJobRecord(director)
+        document = Document( title = 'Job is being submmitted: %s' % job.id )
+        
+        p = document.paragraph()
+        p.text = ['This job is being submitted.']
+        
+        link = Link(label='To check its status, please click here')
+        link.onclick = load(
+            actor = 'job',
+            routine = 'view',
+            id = id,
+            )
+        document.add(link)
+        
+        return document
+
+
+    def view_failed_submission(self, director):
+        job = self._getJobRecord(director)
+        
+        doc = lc.document(Class='container')
+        
+        #
+        pathtome = self._pathToMe(director)
+        view_indicator = self._viewIndicactor(pathtome, director)
+        doc.add(view_indicator)
+
+        #
+        document = doc.document( title = 'Job %s: submission failed' % job.id )
+        
+        p = document.paragraph()
+        p.text = [
+            'This job was not submitted successfully. ',
+            ]
+
+        #p = document.paragraph()
+        #p.text = ['The error was:']
+        #p = document.paragraph()
+        #p.text = [job.error]
+
+        p = document.paragraph()
+        p.text = [
+            'If you are sure the error was fixed, please'
+            ]
+        
+        resubmit = load(actor='job', routine='edit', id=job.id, resubmission=1)
+        resubmitlink = lc.link(label='resubmit', onclick=resubmit)
+        document.add(resubmitlink)
+        
+        return select(id='main-display-area').replaceContent(doc)
+
+
+    def cancel(self, director):
+        # get job
+        job = self._getJobRecord(director)
+
+        # check job status
+        if job.state != 'running':
+            raise RuntimeError, "Job %s is not running" % id
+
+        # cancel the job
+        from vnfb.utils.job.scheduler import cancel
+        cancel(job, director)
+
+        #
+        return [
+            alert('job %s canceled' % job.id),
+            load(actor='job', routine= 'view', id=job.id),
+            ]
+
+
+    def _getServers(self, director):
+        serverdomaccessor = director.retrieveDOMAccessor('server')
+        return serverdomaccessor.getAliveServerRecords()    
+    
+    
+    def _isowner(self, director):
+        "check if the requester is the owner of the job"
+        id = self.inventory.id
+        domaccess = self._domaccess(director)
+        job = domaccess.getJobRecord(id)
+        return job.creator == director.sentry.username
+    
+    
+
+    def _viewIndicactor(self, path, director):
+        return director.retrieveVisual('view-indicator', path=path)
+
+
+    def _pathToMe(self, director):
+        id = self.inventory.id
+        if not id:
+            raise RuntimeError, 'no job id'
+        domaccess = self._domaccess(director)
+        job_label = domaccess.getJobLabel(id)
+        return [
+            ('Jobs',
+             lc.load(actor='job')), 
+            (job_label,
+             lc.load(actor='job', routine='view', id=id)),
+            ]
+
+
+    def _domaccess(self, director):
+        return director.retrieveDOMAccessor('job')
+
+
+    def _getJobRecord(self, director):
+        domaccess = self._domaccess(director)
+        id = self.inventory.id
+        return domaccess.getJobRecord(id)
+    
+
+    def _getComputation(self, director):
+        type = self.inventory.computation_type
+        id = self.inventory.computation_id
+        return director.clerk.getRecordByID(type, id)
+
+
+    def _defaults(self):
+        super(Actor, self)._defaults()
+        self.inventory.order_by = 'time_start'
+        self.inventory.reverse_order = True
+        return
+
+    
+    def __init__(self, name='job'):
+        super(Actor, self).__init__(name)
+        return
+
+
+def _input_widget_ID(name):
+    return '%s-input' % name
+
+
+def _describe_computation(computation):
+    return '%s %s' % (computation.getTableName(), computation.id)
+
+
+def isPositiveInteger(candiate):
+    try: value = int(candiate)
+    except: return False
+    return value > 0
+
+
+from vnfb.utils.job import packjobdir as packutils
+from vnfb.dom.Job import Job
+
+def actor(): return Actor()
+
+
+# version
+__id__ = "$Id$"
+
+# End of file 
+

@@ -80,7 +80,7 @@ class Builder(base):
                 'source /home/jbrkeith/.bash_profile',
                 'echo $PYTHONPATH',
                 'python -V',
-                'mpirun -np %d /usr/local/python-2.6.2/bin/python2.6 /home/jbrkeith/dv/tools/pythia-0.8/bin/parnasis --%s --inp %s' % (np, analysisObj.abbrev, analysisObj.inputFileName),
+                'mpirun -np %d /usr/local/python-2.6.2/bin/python2.6 /home/jbrkeith/dv/tools/pythia-0.8/bin/parnasis --%s --inp %s' % (np, analysisObj._type, analysisObj._inputFileName),
                 '',
                 ]
             #check to see if it is an MdDosCalc:
