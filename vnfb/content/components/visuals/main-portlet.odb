@@ -37,7 +37,7 @@ def visual(director):
         id='main-portlet-my-analysis', 
         label='analysis', 
         onclick=load(actor='analysis'),
-        tip = 'analyze results of simulations and modelings to obtain neutron scattering properties of materials, such as I(Q,E), I(Q), or I(E)',
+        tip = '** THIS FEATURE IS STILL EXPERIMENTAL **  ananalyze results of simulations and modelings to obtain neutron scattering properties of materials, such as I(Q,E), I(Q), or I(E)',
         )
     portlet.item(
         id='main-portlet-my-samples', 

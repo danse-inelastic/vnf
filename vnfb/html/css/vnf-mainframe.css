@@ -175,6 +175,21 @@ body {
     background-color: #cced8c;
     cursor: pointer; cursor: hand;
 }
+
+/* special treatment for "analysis" */
+#main-portlet #main-portlet-my-analysis .luban-portletitem-content {
+    background-color: #EEEEEE;
+}
+#main-portlet #main-portlet-my-analysis .luban-portletitem-content a {
+    color: #886677;
+}
+p.alert {
+    color: #ff7777;
+    font-family: Times New Roman;
+    font-style: italic;
+    font-size: 1.2em;
+}
+
 /*
 #main-portlet div.luban-portletitem-container:hover{
     background-color: #f5c073;

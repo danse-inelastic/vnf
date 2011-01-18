@@ -60,6 +60,11 @@ class Actor(base):
             view = self.createListView(director)
         except FilterSyntaxError, msg:
             return alert('filter syntax error: %s' % msg)
+        # temp hack to alert users that "analysis" tab is experimetnal
+        c = lc.document()
+        c.paragraph(text='This feature is experimental', Class='alert')
+        c.add(view)
+        view = c
         return [
             select(id = 'main-display-area').replaceContent(view),
             setpagetitle,
