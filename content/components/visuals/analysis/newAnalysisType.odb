@@ -82,18 +82,18 @@ def createMdScatteringAnalysis():
                     analysisType='EisfCalc'))),
                     "Elastic incoherent structure factor from md")
                     )
-    routines.append(
-                    (lc.link(label="S(Q)", onclick=select(id='main-display-area'
-                    ).replaceContent(load(actor='analysis/mdanalysiswizard', routine='selectTrajectory',
-                    analysisType='SqCalc'))),
-                    "Structure factor from md")
-                    )
-    routines.append(
-                    (lc.link(label="S(Q,E)", onclick=select(id='main-display-area'
-                    ).replaceContent(load(actor='analysis/mdanalysiswizard', routine='selectTrajectory',
-                    analysisType='SqeCalc'))),              
-                    "Dynamic structure factor from md.  This is the sum of coherent and incoherent S(Q,E) parts.")
-                    )
+#    routines.append(
+#                    (lc.link(label="S(Q)", onclick=select(id='main-display-area'
+#                    ).replaceContent(load(actor='analysis/mdanalysiswizard', routine='selectTrajectory',
+#                    analysisType='SqCalc'))),
+#                    "Structure factor from md")
+#                    )
+#    routines.append(
+#                    (lc.link(label="S(Q,E)", onclick=select(id='main-display-area'
+#                    ).replaceContent(load(actor='analysis/mdanalysiswizard', routine='selectTrajectory',
+#                    analysisType='SqeCalc'))),              
+#                    "Dynamic structure factor from md.  This is the sum of coherent and incoherent S(Q,E) parts.")
+#                    )
 #    routines.append(
 #                    (lc.link(label="Multiphonon Scattering", onclick=select(id='main-display-area'
 #                    ).replaceContent(load(actor='analysis/mdanalysiswizard', routine='selectTrajectory',
@@ -117,7 +117,7 @@ def createDynamicsAnalysis():
                     (lc.link(label="VACF Diffusion", onclick=select(id='main-display-area'
                 ).replaceContent(load(actor='analysis/mdanalysiswizard', routine='selectTrajectory',
                 analysisType='VacfDiffusionCalc'))),
-                    "Diffusion coeffcieint from the velocity autocorrelation function")
+                    "Diffusion coefficient from the velocity autocorrelation function")
                     )
     routines.append(
                     (lc.link(label="MSD Diffusion", onclick=select(id='main-display-area'
