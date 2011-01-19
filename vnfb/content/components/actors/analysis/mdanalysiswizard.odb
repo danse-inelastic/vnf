@@ -112,29 +112,18 @@ class Actor(base):
             analysisId = self.inventory.analysisId,
             analysisType = self.inventory.analysisType,
             actor=self.name, routine='configureSubmissionQueue')
-#        container.oncreate = [
-#            select(element=container).append(
-#              load(actor='material_simulations/mdPlan', routine='createMdPlanDocument')
-#              ),
-#            ]
         return select(id='main-display-area').replaceContent(doc)
     
     def configureSubmissionQueue(self, director):
         orm = director.clerk.orm
         className = self.inventory.analysisType
-#        exec('from vsat.trajectory.'+className+' import '+className)
-#        analysisTable = eval(className)
-#        analysisObj = orm.load(analysisTable, id = self.inventory.analysisId)
-#        exec('from vnfb.dom.analysis.'+className+' import '+className)
-#        analysisTable = eval(className)
-#        analysisObj = orm.load(analysisTable, id = self.inventory.analysisId)
         analysisRecord = director.clerk._getEntry(className, 
                 id = self.inventory.analysisId, maindom = 'vnfb.dom.analysis')
         #note the code below makes a slightly different object than the vsat one..
         #..it has Computation as superclass
         analysisObj = orm.record2object(analysisRecord)
         analysisObj.trajectory.trajectory_path = 'gulp.nc' #reinitialize path to current directory
-        analysisInputFileContents = analysisObj.getInputFile()
+        analysisInputFileContents = analysisObj._getInputFile()
         #write the input file
         datadir = director.dds.abspath(analysisRecord)
         if not os.path.exists(datadir): 
@@ -142,9 +131,7 @@ class Actor(base):
         inputFilePath = director.dds.abspath(analysisRecord, 
                         filename = self.inventory.analysisType+'.inp')
         open(inputFilePath, 'w').write(analysisInputFileContents)
-        
-        
-        #fullClassPath = analysisPaths[self.inventory.analysisType]+'.'+className
+        #
         domPath = 'analysis.'+className+'.'+className
         return director.redirect(actor = 'job', routine = 'create', 
                 computation_type = domPath, 
