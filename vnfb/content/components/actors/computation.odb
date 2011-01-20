@@ -11,39 +11,27 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
-
 from luban.content import load, select
-
 from luban.components.AuthorizedActor import AuthorizedActor as base
-
 
 class Actor(base):
 
-
     class Inventory(base.Inventory):
-
         import pyre.inventory
-
         id = pyre.inventory.str('id')
         type = pyre.inventory.str('type')
-
         posterior_action = pyre.inventory.str('posterior_action')
-
 
     def view(self, director):
         domaccess = director.retrieveDOMAccessor('computation')
         orm = domaccess.orm # why is this here? to reinitialize orm?
-        
         table = director.clerk.db.getTable(self.inventory.type)
         actor = table.getActorName()
         #print actor
-
         return select(id='main-display-area').replaceContent(
             load(actor=actor, routine='createView',
-                 id=self.inventory.id,
-                 )
+                 id=self.inventory.id,)
             )
-
 
     def restartResultsRetrieval(self, director):
         domaccess = director.retrieveDOMAccessor('computation')
@@ -59,7 +47,6 @@ class Actor(base):
             from vnfb.content import safe_eval_action
             return safe_eval_action(posterior_action)
 
-
     def createResultsDoc(self, director):
         record = self._getComputationRecord(director)
         return director.retrieveVisual(
@@ -68,22 +55,18 @@ class Actor(base):
             actor=self.name, director=director
             )
 
-
     def _getComputationRecord(self, director):
         domaccess = self._domaccess(director)
         return domaccess.getComputationRecord(self.inventory.type, self.inventory.id)
-
 
     def _domaccess(self, director):
         domaccess = director.retrieveDOMAccessor('computation')
         orm = domaccess.orm
         return domaccess
     
-
     def __init__(self, name='computation'):
         super(Actor, self).__init__(name)
         return
-
 
 def actor(): return Actor()
 
