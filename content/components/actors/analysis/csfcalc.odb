@@ -84,7 +84,6 @@ class Actor(base):
                 onclick=createjob,
                 )
             doc.add(l)
-        
         return doc
 
     def createResultsDoc(self, director):
@@ -95,28 +94,21 @@ class Actor(base):
 
     def createConfigurationView(self, director):
         c = self._getComputation(director)
-        
         drawer = director.painter.paintObj.drawers.getDrawer(c.__class__)
         computation_doc = drawer(c)
-        
         form = computation_doc.getDescendentByName('properties-form')
         form.onsubmit.params.update({
             'poststoring_routine': 'createJob',
             })
-        
         # the container
         doc = lc.document()
-
         # path
         path = self._pathToMe(director)
         view_indicator = director.retrieveVisual('view-indicator', path=path)
         doc.add(view_indicator)
-
         # 
         doc.add(computation_doc)
-
         return doc
-
 
     def _pathToMe(self, director):
         id = self.inventory.id

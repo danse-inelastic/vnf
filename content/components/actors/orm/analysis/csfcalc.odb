@@ -27,7 +27,6 @@ base = luban.orm.object2actor(CsfCalc)
 class Actor(base):
 
     class Inventory(base.Inventory):
-
         import luban.inventory
         
     

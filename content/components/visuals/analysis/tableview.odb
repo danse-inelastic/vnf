@@ -15,7 +15,6 @@
 from luban.content import load, select, alert
 import luban.content as lc
 
-
 def visual(
     director, name,
     filter_expr=None, filter_key=None, filter_value=None,

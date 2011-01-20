@@ -25,7 +25,6 @@ from vnfb.components.MasterTable import FilterSyntaxError, MasterTableActor as b
 class Actor(base):
 
     class Inventory(base.Inventory):
-
         import pyre.inventory
         id = pyre.inventory.str('id')
         description = pyre.inventory.str('description')
@@ -46,8 +45,7 @@ class Actor(base):
             return alert('filter syntax error: %s' % msg)
             
         main_display_area.add(analysislist)
-
-        analysis_portlet    = body_skeleton.find(id='main-portlet-my-analysis')
+        analysis_portlet = body_skeleton.find(id='main-portlet-my-analysis')
         analysis_portlet.selected = 1
         
         return [
@@ -68,7 +66,7 @@ class Actor(base):
     def createListView(self, director):
         order_by        = self.inventory.order_by 
         reverse_order   = self.inventory.reverse_order
-        number_records_per_page     = self.inventory.number_records_per_page
+        number_records_per_page = self.inventory.number_records_per_page
         page_number     = self.inventory.page_number
 
         filter_expr     = self.inventory.filter_expr
@@ -99,14 +97,12 @@ class Actor(base):
             load(actor="analysis/mdanalysiswizard"))
         #return director.retrieveVisual('analysis/new', director = director)
 
-
     def delete(self, director):
         domaccess = self._domaccess(director)
         id = self.inventory.id
         s = domaccess.getAtomicStructure(id)
         domaccess.orm.destroy(s)
         return
-
 
     def doneediting(self, director):
         actions = []; messages = []
@@ -133,17 +129,14 @@ class Actor(base):
         record = domaccess.orm(struct)
         record.chemical_formula = struct.getChemicalFormula()
         domaccess.db.updateRecord(record)
-        
         return self.showListView(director)
     
-
-    def showMaterialSimulation(self, director):
-        actor = 'computation'
-        routine = 'view'
-        id = self.inventory.id
-        type = self.inventory.type
-        return director.redirect(actor=actor, routine=routine, id=id, type=type)
-
+#    def showMaterialSimulation(self, director):
+#        actor = 'computation'
+#        routine = 'view'
+#        id = self.inventory.id
+#        type = self.inventory.type
+#        return director.redirect(actor=actor, routine=routine, id=id, type=type)
 
     def _domaccess(self, director):
         return director.retrieveDOMAccessor(self.name)
