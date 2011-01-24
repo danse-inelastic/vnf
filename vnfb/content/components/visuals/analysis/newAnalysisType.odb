@@ -122,7 +122,7 @@ def createDynamicsAnalysis():
     routines.append(
                     (lc.link(label="MSD Diffusion", onclick=select(id='main-display-area'
                 ).replaceContent(load(actor='analysis/mdanalysiswizard', routine='selectTrajectory',
-                analysisType='MsdCalc'))),
+                analysisType='MsdDiffusionCalc'))),
                     "Diffusion coefficient from a mean squared displacement analysis of the trajectory")
                     )
     for link,desc in routines:
