@@ -62,7 +62,7 @@ def visual(
             ('creator', 'Creator'),
             ('date', 'Date created'),
         ],
-        polymorphic = False, dbtablename='analysis'
+        polymorphic = True, dbtablename='analysis'
         )
 
     tableview = factory.create(
