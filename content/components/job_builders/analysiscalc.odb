@@ -30,7 +30,6 @@ class Builder(base):
         """
         orm = self.director.clerk.orm  
         analysisObj = orm.record2object(computation)  
-           
 #        trajectoryObj = analysisObj.trajectory
 #        trajectoryDbObj = orm(trajectoryObj)
 #        dds.copy(trajectoryDbObj, 'gulp.nc', job, 'gulp.nc')
