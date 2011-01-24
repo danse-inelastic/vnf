@@ -37,7 +37,7 @@ def visual(director):
         id='main-portlet-my-analysis', 
         label='analysis', 
         onclick=load(actor='analysis'),
-        tip = 'calculate scattering and dynamical functions from raw dynamisc (phonons or md) such as S(Q,E), DOS, etc.',
+        tip = 'calculate scattering and dynamical functions from raw dynamics (phonons or md) such as S(Q,E), DOS, etc.',
         )
     portlet.item(
         id='main-portlet-my-samples', 

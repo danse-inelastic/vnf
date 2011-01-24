@@ -176,7 +176,7 @@ body {
     cursor: pointer; cursor: hand;
 }
 
-/* special treatment for "analysis" */
+/* special treatment for "analysis" 
 #main-portlet #main-portlet-my-analysis .luban-portletitem-content {
     background-color: #EEEEEE;
 }
@@ -188,7 +188,7 @@ p.alert {
     font-family: Times New Roman;
     font-style: italic;
     font-size: 1.2em;
-}
+}*/
 
 /*
 #main-portlet div.luban-portletitem-container:hover{
