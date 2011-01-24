@@ -37,7 +37,7 @@ def visual(director):
         id='main-portlet-my-analysis', 
         label='analysis', 
         onclick=load(actor='analysis'),
-        tip = '** THIS FEATURE IS STILL EXPERIMENTAL **  ananalyze results of simulations and modelings to obtain neutron scattering properties of materials, such as I(Q,E), I(Q), or I(E)',
+        tip = 'calculate scattering and dynamical functions from raw dynamisc (phonons or md) such as S(Q,E), DOS, etc.',
         )
     portlet.item(
         id='main-portlet-my-samples', 
