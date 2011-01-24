@@ -2,7 +2,6 @@
 #
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
-#                                   Jiao Lin
 #                      California Institute of Technology
 #                      (C) 2008-2010  All Rights Reserved
 #
@@ -71,7 +70,7 @@ class Builder(base):
                 ]
             #check to see if it is an MdDosCalc:
             if analysisObj.__class__.__name__=='MdDosCalc':
-                cmds += ['conversionTasks.py --convertDosFile=True --textFile='+analysisObj.dosFile,]
+                cmds += ['conversionTasks.py --convertDosFile=True --textFile='+analysisObj._dosFile,]
         #foxtrot
         elif job.server.id=='server002':
             cmds = [
