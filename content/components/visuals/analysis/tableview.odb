@@ -61,7 +61,7 @@ def visual(
             ('creator', 'Creator'),
             ('date', 'Date created'),
         ],
-        polymorphic = False, dbtablename='analysis'
+        polymorphic = True, dbtablename='analysis'
         )
 
     tableview = factory.create(
@@ -108,7 +108,7 @@ def createAnalysisTable(
 
 
 #columns = [ 'selected', 'id', 'description', 'chemical_formula', 'simulation', 'created']
-columns = [ 'selected', 'id', 'description', 'creator', 'created']
+columns = [ 'selected', 'id', 'type', 'description', 'creator', 'created']
 measure2dbcol = {
     'description': 'short_description',
     'created': 'date',
