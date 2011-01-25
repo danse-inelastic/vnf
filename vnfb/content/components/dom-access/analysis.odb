@@ -152,40 +152,29 @@ class Accessor(base):
         'create a query for an analysis table with a given filter'
         db = self.db
         
-        sL = db._tablemap.TableToSATable(Label)
-        labelq = sqlalchemy.select(
-            [sL.c.entity.label('entity'),
-             sL.c.labelname.label('label'),
-             ],
-            whereclause="labelname='%s' and targettable='%s'" % (label, tablename))\
-            .alias('labelq')
-        
-        sGP = db._tablemap.TableToSATable(global_pointer)
-        st = db._tablemap.TableToSATable(table)
-        
-        q1 = sqlalchemy.select(
-            [labelq.c.entity.label('entity'),
-             sGP.c.type.label('type'),
-             ],
-            labelq.c.entity==sGP.c.id,
-            ).alias('q1')
+        labelq = self._select_labeled_entities_clause(label, tablename, db)
+        simq = self._select_analysis_clause(table, db)
+        simq = simq.alias('sims')
 
         cols = [
-            st.c.id.label('id'),
-            st.c.short_description.label('short_description'),
-            st.c.date.label('date'),
-            st.c.globalpointer.label('gptr'),
-            q1.c.type.label('type'),
+            simq.c.id.label('id'),
+            simq.c.short_description.label('short_description'),
+            labelq.c.type.label('type'),
+            simq.c.date.label('date'),
+            simq.c.globalpointer.label('globalpointer'),
+            simq.c.creator.label('creator'),
             ]
-        # where = st.c.globalpointer==q1.c.entity,
-        where = 'globalpointer=q1.entity'
+        # where = simq.c.globalpointer==labelq.c.entity
+        where = 'sims.globalpointer=labeled.entity'
         if mine:
             username = self.director.sentry.username
-            mine = "creator='%s'" % username
-            where = '%s and %s' % (where, mine)
-        q = sqlalchemy.select(cols, where)
+            mine = "sims.creator='%s'" % username
+            where = '(%s) and %s' % (where, mine)
+        
+        q = sqlalchemy.select(cols, whereclause=where)
         
         return q
+    
     
     def getComputationLabel(self, computation_id):
         computation = self.getAnalysis(computation_id)
@@ -199,6 +188,52 @@ class Accessor(base):
         from vnfb.dom.analysis.analysis_types import typenames
         ormtables = map(self._getTable, typenames)
         return ormtables
+
+
+    def _select_labeled_entities_clause(self, name, type, db):
+        '''get the labeled entities for the given label (specified by name and type)
+
+        cols:
+          entity: global address of the entity
+          type: type of the entity
+        '''
+        from vnfb.utils.query.labels import select_labeled_entities_clause
+        return select_labeled_entities_clause(name, type, db).alias('labeled')
+
+
+    def _select_analysis_clause(self, table, db):
+        '''create a sqlalchemy select clause for a material analysis table
+
+        cols:
+          * id
+          * short_description
+          * type: type of the analysis (obtained from globaponter table)
+          * date
+          * globalpointer
+        '''
+
+        sGP = db._tablemap.TableToSATable(global_pointer)
+        st = db._tablemap.TableToSATable(table)
+
+        cols = [
+            st.c.id.label('id'),
+            st.c.short_description.label('short_description'),
+            sGP.c.type.label('type'),
+            st.c.date.label('date'),
+            st.c.creator.label('creator'),
+            st.c.globalpointer.label('globalpointer'),
+            ]
+        where = st.c.globalpointer==sGP.c.id
+        try:
+            simq = sqlalchemy.select(cols, where)
+        except:
+            import traceback
+            raise RuntimeError, 'Failed to select required columns from analysis table %s.\n'\
+                  'Original exception was:\n%s' % (table.getTableName(), traceback.format_exc())
+
+        return simq
+
+
 
 from vnfb.dom.Label import Label
 from dsaw.db.VersatileReference import global_pointer
