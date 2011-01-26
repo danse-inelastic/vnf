@@ -35,11 +35,17 @@ class Accessor(base):
 #        db = orm.db
 #        table = db.getTable(type)
 #        return db.query(table).filter_by(id=id).one()
-
-    def getAnalysisRecord(self, type, id):
-        return self.getRecordByID(type, id)
     
-    def getAnalysisRecord(self, id):
+    def getAnalysisRecord(self, type, id):
+        orm = self.director.clerk.orm
+        db = orm.db
+        table = self._getTable(type)
+        return db.query(table).filter_by(id=id).one()
+
+#    def getAnalysisRecord(self, type, id):
+#        return self.getRecordByID(type, id)
+    
+    def getGeneralAnalysisRecord(self, id):
         orm = self.director.clerk.orm
         db = orm.db
         result = None
@@ -60,7 +66,7 @@ class Accessor(base):
     
     def getAnalysis(self, id):
         orm = self.director.clerk.orm
-        record = self.getAnalysisRecord(id)
+        record = self.getGeneralAnalysisRecord(id)
         return orm.record2object(record)
 
     def countAnalyses(self, filter=None, label=None, mine=False):
