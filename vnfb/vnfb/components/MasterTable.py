@@ -51,8 +51,10 @@ class MasterTableFactory(object):
                  polymorphic=True, dbtablename=None,
                  labeltargettablename=None,
                  createlabelstoolbar = True,
+                 actorname = None,
                  ):
         self.name = name
+        self.actorname = actorname or name
         self.countrecords = countrecords
         #self.fetchrecords = fetchrecords
         self.createtable = createtable
@@ -94,6 +96,7 @@ class MasterTableFactory(object):
         mine = False,
         ):
         name = self.name
+        actorname = self.actorname
         
         view_label = 'View all'
 
@@ -140,7 +143,7 @@ class MasterTableFactory(object):
         view_indicator = self.createViewIndicator(name, view_label, mine=mine)
         left.add(view_indicator)
         if not mine:
-            left.add(self.createMineButton(name))
+            left.add(self.createMineButton())
         
         # toolbar with widgets with actions that can change the items in the table
         # such as filtering and creating. sorting and navigating are not such actions
@@ -231,9 +234,9 @@ class MasterTableFactory(object):
         return view
 
 
-    def createMineButton(self, name):
-        label='show my %s only' % name
-        action = load(actor=name, mine=True)
+    def createMineButton(self):
+        label='show my %s only' % self.name
+        action = load(actor=self.actorname, mine=True)
         b = Button(label=label, onclick=action, Class='show-my-records')
         return b
 
@@ -243,14 +246,14 @@ class MasterTableFactory(object):
 
         # root
         rootlabel = name.capitalize()
-        rootaction = load(actor=name)
+        rootaction = load(actor=self.actorname)
         root = rootlabel, rootaction
         path.append(root)
 
         # "my ..."
         if mine:
             minelabel = 'my %s' % name
-            mineaction = load(actor=name, mine=True)
+            mineaction = load(actor=self.actorname, mine=True)
             mine = minelabel, mineaction
             path.append(mine)
 
@@ -305,7 +308,7 @@ class MasterTableFactory(object):
         button = luban.content.button(label='Delete')
         button.Class = 'delete-checked-rows-button'
         button.onclick = load(
-            actor=self.name, routine='deleterows', 
+            actor=self.actorname, routine='deleterows', 
             entities = select(element=table).table(
                 'getIdentifiersForCheckedRows',
                 colname='selected'),
@@ -393,7 +396,7 @@ class MasterTableFactory(object):
             selection = label,
             )
         field.onchange = load(
-            actor=name, routine='showListView',
+            actor=self.actorname, routine='showListView',
             number_records_per_page = number_records_per_page,
             page_number = 0,
             order_by = select(id=self._orderByWidgetID(name)).getAttr('value'),
@@ -517,7 +520,7 @@ class MasterTableFactory(object):
             )
         basic.section().add(field)
         field.onchange =  load(
-            actor=name, routine='showListView',
+            actor=self.actorname, routine='showListView',
             number_records_per_page = number_records_per_page,
             page_number = 0,
             reverse_order = reverse_order,
@@ -561,7 +564,7 @@ class MasterTableFactory(object):
             Class='master-table-advanced-filter',
             )
         field.onchange = load(
-            actor=name, routine='showListView',
+            actor=self.actorname, routine='showListView',
             number_records_per_page = number_records_per_page,
             page_number = 0,
             reverse_order = reverse_order,
@@ -603,7 +606,7 @@ class MasterTableFactory(object):
             id=self._orderByWidgetID(name),
             )
         selector.onchange = load(
-            actor=name, routine='showListView',
+            actor=self.actorname, routine='showListView',
             number_records_per_page = number_records_per_page,
             page_number = 0,
             order_by = select(element=selector).getAttr('value'),
@@ -628,7 +631,7 @@ class MasterTableFactory(object):
             selection=reverse_order,
             id='%s-table-reverse_order' % name)
         selector.onchange = load(
-            actor=name, routine='showListView',
+            actor=self.actorname, routine='showListView',
             number_records_per_page = number_records_per_page,
             page_number = 0,
             reverse_order = select(element=selector).getAttr('value'),
@@ -680,7 +683,7 @@ class MasterTableFactory(object):
         if page_number>0:
             id='%s-table-%s-navigation-bar-first'%(name, position)
             onclick=load(
-                actor=name, routine='showListView',
+                actor=self.actorname, routine='showListView',
                 page_number=0,
                 number_records_per_page = number_records_per_page,
                 order_by = order_by or '',
@@ -694,7 +697,7 @@ class MasterTableFactory(object):
             
             id='%s-table-%s-navigation-bar-left'%(name, position)
             onclick=load(
-                actor=name, routine='showListView',
+                actor=self.actorname, routine='showListView',
                 page_number=page_number-1,
                 number_records_per_page = number_records_per_page,
                 order_by = order_by or '',
@@ -714,7 +717,7 @@ class MasterTableFactory(object):
         if page_number < lastpage:
             id='%s-table-%s-navigation-bar-right' % (name, position)
             onclick=load(
-                actor=name, routine='showListView',
+                actor=self.actorname, routine='showListView',
                 page_number=page_number+1,
                 number_records_per_page = number_records_per_page,
                 order_by = order_by or '',
@@ -728,7 +731,7 @@ class MasterTableFactory(object):
 
             id='%s-table-%s-navigation-bar-last'%(name, position)
             onclick=load(
-                actor=name, routine='showListView',
+                actor=self.actorname, routine='showListView',
                 page_number=lastpage,
                 number_records_per_page = number_records_per_page,
                 order_by = order_by or '',
