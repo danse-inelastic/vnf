@@ -81,6 +81,10 @@ class SympyExpression2ConstraintExpression(object):
 
     def onNegativeone(self, symbol):
         return -1
+
+
+    def onReal(self, symbol):
+        return float(symbol)
     
 
 # special var to represent sympy symbol
