@@ -185,6 +185,11 @@ class Accessor(base):
         return self.analysisTables()
 
     def analysisTables(self):
+        self._establishGlobalPointers()
+        return self._analysisTables()
+
+
+    def _analysisTables(self):
         from vnfb.dom.analysis.analysis_types import typenames
         ormtables = map(self._getTable, typenames)
         return ormtables
@@ -233,6 +238,18 @@ class Accessor(base):
 
         return simq
 
+
+
+    def _establishGlobalPointers(self):
+        # temp fix
+        # the current way of querying will omit the records without global pointers
+        # we have to establish global pointer for each reocrd without one
+        db = self.db
+        for table in self._analysisTables():
+            rs = db.query(table).filter_by(globalpointer=None).all()
+            for r in rs: r.establishGlobalPointer(db)
+            continue
+        return
 
 
 from vnfb.dom.Label import Label
