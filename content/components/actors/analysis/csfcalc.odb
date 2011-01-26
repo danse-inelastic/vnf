@@ -10,12 +10,9 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
-
 import luban.content as lc
 from luban.content import load, select
-
 from luban.components.AuthorizedActor import AuthorizedActor as base
-
 
 class Actor(base):
 
@@ -120,7 +117,7 @@ class Actor(base):
         return [
             ('Analysis',
              lc.load(actor='analysis')),
-            ('Coherent Scattering Function Calculations',
+            ('Coherent Scattering Function',
              lc.load(actor='analysis', filter_expr="type=='csfcalc'")),
             #('%s %s' % (computation.__class__.__name__, label),
             ('%s' % (computation.__class__.__name__),
@@ -129,6 +126,7 @@ class Actor(base):
                     routine = 'createView', id=id)
             )),
             ]
+
 
     def _getComputation(self, director):
         record = self._getComputationRecord(director)
@@ -140,16 +138,17 @@ class Actor(base):
     def _getComputationRecord(self, director):
         domaccess = self._domaccess(director)
         id = self.inventory.id
-        #return domaccess.getAnalysisRecord('csfcalc', id)
-        return domaccess.getAnalysisRecord('analysis.CsfCalc.CsfCalc', id)
+        #return domaccess.getAnalysisRecord(id)
+		return domaccess.getAnalysisRecord('analysis.CsfCalc.CsfCalc', id)
 
     def _domaccess(self, director):
-        return director.retrieveDOMAccessor('analysis')
-        #return director.retrieveDOMAccessor('computation')
+        #return director.retrieveDOMAccessor('analysis')
+        return director.retrieveDOMAccessor('computation')
 
     def __init__(self, name='analysis/csfcalc'):
         super(Actor, self).__init__(name)
         return
+
 
 def actor(): return Actor()
 
