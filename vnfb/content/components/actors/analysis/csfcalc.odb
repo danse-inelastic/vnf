@@ -28,43 +28,62 @@ class Actor(base):
         domaccess = self._domaccess(director)
         db = domaccess.db
         c = self._getComputationRecord(director)
-        #do this error checking later
+        # i don't think this is necessary for an analysis
 #        if not domaccess.isComputationConfigured(c):
 #            return self.createConfigurationView(director)
+        
+        # where am I indicator
         path = self._pathToMe(director)
         view_indicator = director.retrieveVisual('view-indicator', path=path)
         doc.add(view_indicator)
 
-        # structure view
-#        matter = c.matter.dereference(db)
-#        matterview = doc.document(title='material', collapsable=True, collapsed=False)
-#        viewmatter = load(actor='atomicstructure', routine='showOverview',
-#                          id = matter.id)
-#        link = lc.link(label=matter.short_description, onclick=viewmatter)
-#        matterview.add(link)
-        # model view
-#        model = c.model.dereference(db)
-#        modelview = doc.document(title='model', collapsable=True, collapsed=False)
-#        viewmodel = select(id='main-display-area').replaceContent(
-#            load(actor='orm/bvkmodels', routine='display',
-#                 id = model.id, editlink=False)
-#            )
-#        link = lc.link(label=model.short_description, onclick=viewmodel)
-#        modelview.add(link)
-        # results
-        resultsdoc = doc.document(title = 'Results', collapsable=True, collapsed=True)
-        resultsdoc.paragraph(text=['loading results. please wait...'])
-        resultsdoc.onexpand = select(element=resultsdoc).replaceContent(
-            load(actor=self.name, routine='createResultsDoc',
-                 id=self.inventory.id)
-            )
+        # has a job?
+        jobs = c.getJobs(db)
+        hasjob = bool(jobs)
+        # job submitted?
+        if hasjob:
+            job = jobs[0]
+            jobjustcreated = job.state == 'created'
+
         # settings
         settingsdoc = doc.document(title = 'Settings', collapsable = True)
         settingsdoc.oncreate = select(element=settingsdoc).append(
             load(
               actor='orm/analysis/csfcalc', routine='displayProperties',
-              id = c.id, editlink=False,
+              id = c.id, editlink=not hasjob,
             ))
+        
+        if hasjob:
+            if jobjustcreated:
+                editjob = load(
+                    actor='job', routine='edit',
+                    id = job.id
+                    )
+                l = lc.link(
+                    label='You have not submitted the job for this computation. Submit?',
+                    onclick=editjob,
+                    )
+                doc.add(l)
+            else:
+                # results
+                resultsdoc = doc.document(title = 'Results', collapsable=True, collapsed=True)
+                resultsdoc.id = 'csfcalc-view-results-doc'
+                resultsdoc.paragraph(text=['loading results. please wait...'])
+                resultsdoc.onexpand = select(element=resultsdoc).replaceContent(
+                    load(actor=self.name, routine='createResultsDoc',
+                         id=self.inventory.id)
+                    )
+        else:
+            createjob = load(
+                actor='job', routine='create',
+                computation_type = 'analysis.CsfCalc.CsfCalc',
+                computation_id = self.inventory.id
+                )
+            l = lc.link(
+                label='You have not created a job for this computation. Create?',
+                onclick=createjob,
+                )
+            doc.add(l)
         return doc
 
     def createResultsDoc(self, director):
@@ -75,28 +94,21 @@ class Actor(base):
 
     def createConfigurationView(self, director):
         c = self._getComputation(director)
-        
         drawer = director.painter.paintObj.drawers.getDrawer(c.__class__)
         computation_doc = drawer(c)
-        
         form = computation_doc.getDescendentByName('properties-form')
         form.onsubmit.params.update({
             'poststoring_routine': 'createJob',
             })
-        
         # the container
         doc = lc.document()
-
         # path
         path = self._pathToMe(director)
         view_indicator = director.retrieveVisual('view-indicator', path=path)
         doc.add(view_indicator)
-
         # 
         doc.add(computation_doc)
-
         return doc
-
 
     def _pathToMe(self, director):
         id = self.inventory.id
@@ -128,11 +140,12 @@ class Actor(base):
     def _getComputationRecord(self, director):
         domaccess = self._domaccess(director)
         id = self.inventory.id
-        return domaccess.getComputationRecord('csfcalc', id)
+        #return domaccess.getAnalysisRecord('csfcalc', id)
+        return domaccess.getAnalysisRecord('analysis.CsfCalc.CsfCalc', id)
 
     def _domaccess(self, director):
-        #return director.retrieveDOMAccessor('analysis')
-        return director.retrieveDOMAccessor('computation')
+        return director.retrieveDOMAccessor('analysis')
+        #return director.retrieveDOMAccessor('computation')
 
     def __init__(self, name='analysis/csfcalc'):
         super(Actor, self).__init__(name)

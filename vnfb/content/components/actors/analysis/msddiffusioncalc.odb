@@ -10,10 +10,8 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
-
 import luban.content as lc
 from luban.content import load, select
-
 from luban.components.AuthorizedActor import AuthorizedActor as base
 
 class Actor(base):
@@ -24,42 +22,66 @@ class Actor(base):
 
     def createView(self, director):
         doc = lc.document(Class='container')
-
         domaccess = self._domaccess(director)
         db = domaccess.db
         c = self._getComputationRecord(director)
+        # i don't think this is necessary for an analysis
 #        if not domaccess.isComputationConfigured(c):
 #            return self.createConfigurationView(director)
         
+        # where am I indicator
         path = self._pathToMe(director)
         view_indicator = director.retrieveVisual('view-indicator', path=path)
         doc.add(view_indicator)
 
-        # structure view
-#        matter = c.matter.dereference(db)
-#        matterview = doc.document(title='material', collapsable=True, collapsed=False)
-#        viewmatter = load(actor='atomicstructure', routine='showOverview',
-#                          id = matter.id)
-#        link = lc.link(label=matter.short_description, onclick=viewmatter)
-#        matterview.add(link)
-
-        # results
-        resultsdoc = doc.document(title = 'Results', collapsable=True)#, collapsed=True)
-        resultsdoc.paragraph(text=['loading results. please wait...'])
-        resultsdoc.onexpand = select(element=resultsdoc).replaceContent(
-            load(actor=self.name, routine='createResultsDoc',
-                 id=self.inventory.id)
-            )
+        # has a job?
+        jobs = c.getJobs(db)
+        hasjob = bool(jobs)
+        # job submitted?
+        if hasjob:
+            job = jobs[0]
+            jobjustcreated = job.state == 'created'
 
         # settings
         settingsdoc = doc.document(title = 'Settings', collapsable = True)
         settingsdoc.oncreate = select(element=settingsdoc).append(
             load(
               actor='orm/analysis/msddiffusioncalc', routine='displayProperties',
-              id = c.id, editlink=False,
+              id = c.id, editlink=not hasjob,
             ))
+        
+        if hasjob:
+            if jobjustcreated:
+                editjob = load(
+                    actor='job', routine='edit',
+                    id = job.id
+                    )
+                l = lc.link(
+                    label='You have not submitted the job for this computation. Submit?',
+                    onclick=editjob,
+                    )
+                doc.add(l)
+            else:
+                # results
+                resultsdoc = doc.document(title = 'Results', collapsable=True, collapsed=True)
+                resultsdoc.id = 'csfcalc-view-results-doc'
+                resultsdoc.paragraph(text=['loading results. please wait...'])
+                resultsdoc.onexpand = select(element=resultsdoc).replaceContent(
+                    load(actor=self.name, routine='createResultsDoc',
+                         id=self.inventory.id)
+                    )
+        else:
+            createjob = load(
+                actor='job', routine='create',
+                computation_type = 'analysis.MsdDiffusionCalc.MsdDiffusionCalc',
+                computation_id = self.inventory.id
+                )
+            l = lc.link(
+                label='You have not created a job for this computation. Create?',
+                onclick=createjob,
+                )
+            doc.add(l)
         return doc
-
 
     def createResultsDoc(self, director):
         record = self._getComputationRecord(director)
@@ -67,72 +89,64 @@ class Actor(base):
             'computation-results',
             computation=record, actor=self.name, director=director)
 
-
     def createConfigurationView(self, director):
         c = self._getComputation(director)
-        
         drawer = director.painter.paintObj.drawers.getDrawer(c.__class__)
         computation_doc = drawer(c)
-        
         form = computation_doc.getDescendentByName('properties-form')
         form.onsubmit.params.update({
             'poststoring_routine': 'createJob',
             })
-        
         # the container
         doc = lc.document()
-
         # path
         path = self._pathToMe(director)
         view_indicator = director.retrieveVisual('view-indicator', path=path)
         doc.add(view_indicator)
-
         # 
         doc.add(computation_doc)
-
         return doc
-
 
     def _pathToMe(self, director):
         id = self.inventory.id
         if not id:
             raise RuntimeError
         domaccess = self._domaccess(director)
-        label = domaccess.getComputationLabel(id)
+        #label = domaccess.getComputationLabel('msddiffusioncalc', id)
         computation = self._getComputation(director)
         return [
             ('Analysis',
              lc.load(actor='analysis')),
-            ('Trajectory Dos Calculations',
+            ('Msd Diffusion Calculations',
              lc.load(actor='analysis', filter_expr="type=='msddiffusioncalc'")),
-            ('%s %s' % (computation.__class__.__name__, label),
+            #('%s %s' % (computation.__class__.__name__, label),
+            ('%s' % (computation.__class__.__name__),
              lc.select(id='main-display-area').replaceContent(
             lc.load(actor='analysis/msddiffusioncalc',
                     routine = 'createView', id=id)
             )),
             ]
 
-
     def _getComputation(self, director):
-        domaccess = self._domaccess(director)
-        id = self.inventory.id
-        return domaccess.getAnalysis(id)
-
+        record = self._getComputationRecord(director)
+        return director.clerk.orm.record2object(record)
+#        domaccess = self._domaccess(director)
+#        id = self.inventory.id
+#        return domaccess.getComputation('msddiffusionfcalc', id)
 
     def _getComputationRecord(self, director):
         domaccess = self._domaccess(director)
         id = self.inventory.id
-        return domaccess.getAnalysisRecord(id)
-
+        #return domaccess.getComputationRecord('msddiffusioncalc', id)
+        return domaccess.getAnalysisRecord('analysis.MsdDiffusionCalc.MsdDiffusionCalc', id)
 
     def _domaccess(self, director):
-        return director.retrieveDOMAccessor('analysis')
-
+        #return director.retrieveDOMAccessor('analysis')
+        return director.retrieveDOMAccessor('computation')
 
     def __init__(self, name='analysis/msddiffusioncalc'):
         super(Actor, self).__init__(name)
         return
-
 
 def actor(): return Actor()
 
