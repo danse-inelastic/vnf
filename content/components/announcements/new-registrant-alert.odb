@@ -13,9 +13,13 @@
 def announcement(registrant):
     import vnfb.content
 
+    import socket
+    hostname = socket.gethostname()
+    
     msg = vnfb.content.announcement()
     msg.sender = "jiao.lin@gmail.com"
-    msg.subject = "New registration alert: %s" % registrant.username
+    msg.subject = "New registration alert at %r: %s" % (
+        hostname, registrant.username)
     msg.text = [
 """
 New registrant:
