@@ -249,6 +249,8 @@ class Actor(base):
     def loadStructure(self, director):
         #retrieve cif file and load into data object
         fileId = self.inventory.fileId
+        if not fileId:
+            return alert("Please select a struture to import")
         #db = self.inventory.datastore
         import os
         fileIds=fileId.split(',')
@@ -276,10 +278,15 @@ class Actor(base):
             structure.description = 'COD '+id+' '+structure.generateDescription()
             orm = director.clerk.orm
             orm.save(structure)
+            record = orm(structure)
+            record.creator = director.sentry.username
+            orm.db.updateRecord(record)
+
         #call data object viewer
-        return select(id='main-display-area').replaceContent(load(actor='atomicstructure',
-                                                           routine='createListView'))#,
-                                                           #id = structure.id))
+        return select(id='main-display-area').replaceContent(
+            load(actor='atomicstructure',
+                 routine='createListView')
+            )
 
 def actor():
     return Actor("atomicstructure-cod")
