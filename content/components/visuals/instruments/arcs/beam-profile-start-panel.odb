@@ -43,8 +43,15 @@ def visual(director):
     reload = load(actor='instruments/arcs', routine='loadApp', app='beam-profile')
     button = lc.button(label='Calculate a profile', onclick=reload)
     toolbar.add(button)
+    # button to load profiles table
+    loadprofilestable = load(
+        actor='instruments/arcs/beam-profile',
+        routine='showProfilesTable')
+    b = lc.button(label='Existing profiles', onclick=loadprofilestable)
+    toolbar.add(b)
 
-    grid = lc.grid(); visual.add(grid)
+    doc = lc.document(id='arcs-beam-work-panel'); visual.add(doc)
+    grid = lc.grid(id='arcs-beam-compute-profile-panel'); doc.add(grid)
     # grid.addClass('align-top')
     row = grid.row()
     # cell for user input
