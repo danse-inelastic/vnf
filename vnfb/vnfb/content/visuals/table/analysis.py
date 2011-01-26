@@ -18,6 +18,7 @@ class model(Model):
 
     selected = Model.descriptors.bool(name='selected')
     id = Model.descriptors.link(name='id')
+    type            = Model.descriptors.str(name='type')
     description = Model.descriptors.str(name='description')
     #        visualize = Model.descriptors.link(name='visualize')
     #        chemical_formula = Model.descriptors.str(name='chemical_formula')
@@ -25,11 +26,12 @@ class model(Model):
     creator = Model.descriptors.str(name='creator')
     created = Model.descriptors.date(name='created')
 
-    row_identifiers = ['id']
+    row_identifiers = ['id', 'type']
 
 columns = [
     View.Column(label='', measure='selected'),
     View.Column(label='ID', measure='id'),
+    View.Column(label='Type', measure='type'),
     View.Column(label='Description', measure='description', editable=True),
     #        View.Column(label='Visualize', measure='visualize'),
     #        View.Column(label='Chemical_formula', measure='chemical_formula'),
@@ -63,6 +65,8 @@ def getId(record):
         #        )
         )
     return link
+def getType(analysis):
+    return analysis.getTableName()
 def getDescription(record):
     return record.short_description
 ## def getVisualize(record):
