@@ -35,6 +35,7 @@ all: export
 # export
 
 EXPORT_PYTHON_MODULES = \
+	arcsbeamprofile.py \
 	analysis.py \
 	atomicstructure.py \
 	experiment.py \

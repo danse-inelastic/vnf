@@ -39,6 +39,33 @@ class Actor(base):
         viewid = pyre.inventory.str('viewid')
 
         histogram = pyre.inventory.str('histogram')
+
+
+    def showProfilesTable(self, director):
+        workpanel = select(id='arcs-beam-work-panel')
+        tableview = load(
+            actor='instruments/arcs/beam-profiles', routine='createListView')
+        return workpanel.replaceContent(tableview)
+
+
+    def view(self, director):
+        title = 'ARCS beam profile #%s' % self.inventory.id
+        doc = lc.document(title=title)
+        
+        sp = lc.splitter(); doc.add(sp)
+        propsdoc = director.redirect(
+            actor='orm/arcsbeamconfigurations',
+            routine = 'displayProperties',
+            id = self.inventory.id,
+            editlink=False,
+            include_credential=False,
+            )
+        sp.section().add(propsdoc)
+        
+        v = self.createView(director)
+        sp.section().add(v)
+        
+        return select(id='arcs-beam-work-panel').replaceContent(doc)
         
 
     def update(self, director):
