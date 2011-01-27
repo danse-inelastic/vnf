@@ -127,7 +127,6 @@ class Actor(base):
             )),
             ]
 
-
     def _getComputation(self, director):
         record = self._getComputationRecord(director)
         return director.clerk.orm.record2object(record)
@@ -138,17 +137,16 @@ class Actor(base):
     def _getComputationRecord(self, director):
         domaccess = self._domaccess(director)
         id = self.inventory.id
+        return domaccess.getAnalysisRecord('analysis.CsfCalc.CsfCalc', id)
         #return domaccess.getAnalysisRecord(id)
-		return domaccess.getAnalysisRecord('analysis.CsfCalc.CsfCalc', id)
 
     def _domaccess(self, director):
-        #return director.retrieveDOMAccessor('analysis')
-        return director.retrieveDOMAccessor('computation')
+        return director.retrieveDOMAccessor('analysis')
+        #return director.retrieveDOMAccessor('computation')
 
     def __init__(self, name='analysis/csfcalc'):
         super(Actor, self).__init__(name)
         return
-
 
 def actor(): return Actor()
 

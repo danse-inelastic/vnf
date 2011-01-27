@@ -2,7 +2,6 @@
 #
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
-#                                   Jiao Lin
 #                      California Institute of Technology
 #                        (C) 2008  All Rights Reserved
 #
@@ -27,23 +26,23 @@ class Retriever(base):
 
         # check result is available
         self.declareProgress(0.2, 'check if results exist')
-        self._check_results_sanity(expected_results=[analysisObj._sqeFile], job=job)
+        self._check_results_sanity(expected_results=[analysisObj._msdFile], job=job)
 
         # create a sqe record
         self.declareProgress(0.4, 'create a data object to store the result')
-        from vnfb.dom.material_simulations.SQE import SQETable
-        sqe = self._make_result_holder(computation, SQETable)
-        #sqe.matter = computation.matter
-        db.updateRecord(sqe)
+        from vnfb.dom.material_simulations.Msd import MsdTable
+        msd = self._make_result_holder(computation, MsdTable)
+        msd.matter = computation.matter
+        db.updateRecord(msd)
 
         # save the result from job to dos
         self.declareProgress(0.5, 'get result from server')
-        self._save_result(computation, job, analysisObj._sqeFile, sqe, 'data.nc')
+        self._save_result(computation, job, analysisObj._msdFile, msd, 'data.plot')
         return
 
 
 def retriever():
-    return Retriever('csfcalc')
+    return Retriever('vacfdiffusioncalc')
 
 
 # version

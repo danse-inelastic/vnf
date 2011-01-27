@@ -43,6 +43,7 @@ EXPORT_PYTHON_MODULES = \
 	Eisf.py \
 	GulpPotential.py \
 	GulpSettings.py \
+	Msd.py \
 	PhononDOS.py \
 	Phonons.py \
 	SimulationBase.py \
