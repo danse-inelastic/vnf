@@ -26,7 +26,7 @@ class Retriever(base):
 
         # check result is available
         self.declareProgress(0.2, 'check if results exist')
-        self._check_results_sanity(expected_results=[analysisObj.dosFile], job=job)
+        self._check_results_sanity(expected_results=[analysisObj._dosFile], job=job)
 
         # create a dos record to save dos
         self.declareProgress(0.4, 'create a DOS data object to store the result')

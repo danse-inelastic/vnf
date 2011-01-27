@@ -141,8 +141,8 @@ class Actor(base):
         return domaccess.getAnalysisRecord('analysis.VacfDiffusionCalc.VacfDiffusionCalc', id)
 
     def _domaccess(self, director):
-        #return director.retrieveDOMAccessor('analysis')
-        return director.retrieveDOMAccessor('computation')
+        return director.retrieveDOMAccessor('analysis')
+        #return director.retrieveDOMAccessor('computation')
 
 
     def __init__(self, name='analysis/vacfdiffusioncalc'):

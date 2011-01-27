@@ -91,10 +91,8 @@ class Actor(base):
 
     def createConfigurationView(self, director):
         c = self._getComputation(director)
-        
         drawer = director.painter.paintObj.drawers.getDrawer(c.__class__)
-        computation_doc = drawer(c)
-        
+        computation_doc = drawer(c)    
         form = computation_doc.getDescendentByName('properties-form')
         form.onsubmit.params.update({
             'poststoring_routine': 'createJob',
@@ -109,7 +107,6 @@ class Actor(base):
         doc.add(computation_doc)
         return doc
 
-
     def _pathToMe(self, director):
         id = self.inventory.id
         if not id:
@@ -120,7 +117,7 @@ class Actor(base):
         return [
             ('Analysis',
              lc.load(actor='analysis')),
-            ('ISF',
+            ('Incoherent Scattering Function',
              lc.load(actor='analysis', filter_expr="type=='isfcalc'")),
             #('%s %s' % (computation.__class__.__name__, label),
             ('%s' % (computation.__class__.__name__),
@@ -140,12 +137,12 @@ class Actor(base):
     def _getComputationRecord(self, director):
         domaccess = self._domaccess(director)
         id = self.inventory.id
-        return domaccess.getComputationRecord('isfcalc', id)
+        #return domaccess.getComputationRecord('isfcalc', id)
         return domaccess.getAnalysisRecord('analysis.IsfCalc.IsfCalc', id)
 
     def _domaccess(self, director):
-        #return director.retrieveDOMAccessor('analysis')
-        return director.retrieveDOMAccessor('computation')
+        return director.retrieveDOMAccessor('analysis')
+        #return director.retrieveDOMAccessor('computation')
 
     def __init__(self, name='analysis/isfcalc'):
         super(Actor, self).__init__(name)
