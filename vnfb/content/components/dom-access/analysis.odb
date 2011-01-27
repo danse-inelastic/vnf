@@ -239,7 +239,6 @@ class Accessor(base):
         return simq
 
 
-
     def _establishGlobalPointers(self):
         # temp fix
         # the current way of querying will omit the records without global pointers
