@@ -86,7 +86,7 @@ def visual(computation=None, actor=None, director=None,
     elif result_retrieval_status.find('failed') != -1:
         p = doc.paragraph(text=['failed to retrieve results'])
         # the action to load this visual (type: string)
-        refresh_action_in_str = 'select(id="computation-results-container").replaceBy(load(actor="loadvisual", visual="computation-results", id="%s", type="%s", on_all_results_retrieved = "%s"' % (id, type, on_all_results_retrieved or '')
+        refresh_action_in_str = 'select(id="computation-results-container").replaceBy(load(actor="loadvisual", visual="computation-results", id="%s", type="%s", on_all_results_retrieved = "%s"))' % (id, type, on_all_results_retrieved or '')
         # link to restart retrieval
         l = lc.link(
             label = 'restart results retrieval',
