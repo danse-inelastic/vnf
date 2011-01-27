@@ -111,11 +111,11 @@ class Actor(base):
                 id = self.inventory.id,
                 director = director,
                 )
-
+        
+        id = self.inventory.id
+        domaccess = director.retrieveDOMAccessor('computation')
+        computation = domaccess.getComputationRecord('arcsbeamconfigurations', id)
         if self._jobIsDone(director):
-            id = self.inventory.id
-            domaccess = director.retrieveDOMAccessor('computation')
-            computation = domaccess.getComputationRecord('arcsbeamconfigurations', id)
             # when results are retrieved, load this actor
             on_all_results_retrieved = "load(actor=%r, routine='update', id=%r)" % (
                 self.name, id)
@@ -128,14 +128,8 @@ class Actor(base):
                 )
             return vis
         
-        doc = lc.document()
-        doc.paragraph(text=[
-                'This simulation is running and is not done yet. ',
-                'Please check back in a moment, or wait for the email notification.',
-                ])
-        refresh=load(actor=self.name, routine='update', id=self.inventory.id)
-        link = lc.link(label='refresh', onclick=refresh)
-        doc.add(link)
+        doc = lc.document(id='main-display-area')
+        doc.add(self.createJobStatusView(director))
         return doc
 
 
@@ -154,6 +148,19 @@ class Actor(base):
         job = computation.getJob(director.clerk.db)
         if job: 
             return self.presentJobStatus(director)
+
+        job = self._createJob(director, computation=computation)
+        
+        return loadjobeditor(job.id)
+
+
+    def _createJob(self, director, computation=None):
+        # load the computation from db
+        computation = computation or self._getComputation(director)
+        
+        job = computation.getJob(director.clerk.db)
+        if job: 
+            raise RuntimeError, "should not reach here: job already exists. computation: %s, job: %s" % (computation.id, job.id)
         
         # create new job
         from vnfb.utils.job import new
@@ -165,16 +172,18 @@ class Actor(base):
         # update
         director.clerk.updateRecordWithID(job)
         
-        return loadjobeditor(job.id)
+        return job
 
     
-    def presentJobStatus(self, director):
+    def createJobStatusView(self, director):
         # load the computation from db
         computation = self._getComputation(director)
         
-        # if there should be a job already
+        # there should be a job already
         job = computation.getJob(director.clerk.db)
-        
+        if not job: 
+            raise RuntimeError, "should not reach here: job does not exist. computation: %s" % (computation.id, )
+
         #
         doc = lc.document()
         text = [
@@ -185,7 +194,12 @@ class Actor(base):
         
         link = lc.link(label='View the job details', onclick=loadjobeditor(job.id))
         doc.add(link)
-        
+
+        return doc
+
+    
+    def presentJobStatus(self, director):
+        doc = self.createJobStatusView(director)
         return select(id='main-display-area').replaceContent(doc)
 
     
