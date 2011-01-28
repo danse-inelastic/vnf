@@ -55,26 +55,26 @@ class Inventory(InvBase):
     fermi_chopper.validator = InvBase.v.choice(fc_choices)
 
     fermi_nu = InvBase.d.float(name='fermi_nu', default=600)
-    fermi_nu.label = 'Fermi chopper frequency'
+    fermi_nu.label = 'Fermi chopper frequency (Hz)'
     fermi_nu.validator = InvBase.v.choice([600,480,300])
     
     T0_nu = InvBase.d.float(name='T0_nu', default=60)
     T0_nu.validator = InvBase.v.positive
-    T0_nu.label = 'T0 chopper frequency'
+    T0_nu.label = 'T0 chopper frequency (Hz)'
     T0_nu.expert = True
     
     E = InvBase.d.float(name='E', default=70)
-    E.label = 'Norminal incident energy'
+    E.label = 'Norminal incident energy (meV)'
     E.validator = InvBase.v.isBoth(InvBase.v.greaterEqual(0.1), InvBase.v.less(1e5))
     
     emission_time = InvBase.d.float(name='emission_time', default=-1)
-    emission_time.label = 'Emission time'
+    emission_time.label = 'Emission time (microsecond)'
     emission_time.expert = True
     
     ncount = InvBase.d.int(name='ncount', default=10000000,
                            validator = InvBase.v.greaterEqual(1000000),
                            )
-    ncount.label = 'number of neutron counts'
+    ncount.label = 'number of Monte Carlo simulation runs. Each MC run corresponds to 34kJ energy.'
     ncount.expert = True
     
     dbtablename = 'arcsbeamconfigurations'
