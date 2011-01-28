@@ -64,7 +64,7 @@ class Builder(base):
             cmds = [
                 '#!/usr/bin/env bash',
                 '. /home/linjiao/.analysis-env',
-                'mpirun -np %d parnasis --%s --inp %s' % (np, analysisObj.abbrev, analysisObj.inputFileName),
+                'mpirun -np %d parnasis --%s --inp %s' % (np, analysisObj._type, analysisObj.inputFileName),
                 '',
                 ]
             #check to see if it is an MdDosCalc:
