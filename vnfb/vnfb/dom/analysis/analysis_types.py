@@ -28,6 +28,7 @@ deps_typenames = [
     'material_simulations.Eisf.Eisf',
     'material_simulations.Vacf.Vacf',
     'material_simulations.Sq.Sq',
+    'material_simulations.Msd.Msd',
     ]
 
 
