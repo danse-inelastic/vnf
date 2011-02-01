@@ -156,7 +156,14 @@ class Actor(base):
         actions returned:
           * change the kernel view to a kernel editor
         """
+        # scatterer record
+        domaccess = self._domaccess(director)
         id = self.inventory.id
+        scatterer_record = domaccess.getRecord(id)
+        # if matter is not assigned, we have a problem
+        if not scatterer_record.matter:
+            return alert("You have not defined the atomic structure (matter) for this scatterer")
+        
         view = director.retrieveVisual(
             'scatterer/editor/kerneleditor',
             id =id, director=director, kernel=None)
@@ -254,6 +261,14 @@ class Actor(base):
         kerneltype: the type name string of kernel that user selected.
         kernel: the unique id of the kernel being edited
         '''
+        # scatterer record
+        domaccess = self._domaccess(director)
+        id = self.inventory.id
+        scatterer_record = domaccess.getRecord(id)
+        # if matter is not assigned, we have a problem
+        if not scatterer_record.matter:
+            return alert("You have not defined the atomic structure (matter) for this scatterer")
+        
         from vnfb.dom.scattering_kernels import getKernelTypes
         types = getKernelTypes()
         #
