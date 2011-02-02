@@ -112,9 +112,14 @@ class Actor(base):
                 director = director,
                 )
         
+        # the view 
+        doc = lc.document(id='main-display-area')
+
+        #
         id = self.inventory.id
         domaccess = director.retrieveDOMAccessor('computation')
         computation = domaccess.getComputationRecord('arcsbeamconfigurations', id)
+        # if job is done, show the computation result retrieval view
         if self._jobIsDone(director):
             # when results are retrieved, load this actor
             on_all_results_retrieved = "load(actor=%r, routine='update', id=%r)" % (
@@ -126,10 +131,12 @@ class Actor(base):
                 on_all_results_retrieved = on_all_results_retrieved,
                 director=director,
                 )
-            return vis
+        else:
+            # otherwise, the job status view
+            vis = self.createJobStatusView(director)
         
-        doc = lc.document(id='main-display-area')
-        doc.add(self.createJobStatusView(director))
+        #
+        doc.add(vis)
         return doc
 
 
