@@ -44,10 +44,18 @@ class Actor(base):
 
         # settings
         settingsdoc = doc.document(title = 'Settings', collapsable = True)
+        if not hasjob:
+            editaction = load(actor='analysis/mdanalysiswizard',
+                              routine='edit',
+                              analysisId = c.id,
+                              analysisType = c.__class__.__name__,
+                              )
+            editlink = lc.link(label='edit', onclick=editaction)
+            settingsdoc.add(editlink)
         settingsdoc.oncreate = select(element=settingsdoc).append(
             load(
               actor='orm/analysis/csfcalc', routine='displayProperties',
-              id = c.id, editlink=not hasjob,
+              id = c.id, editlink=False, #not hasjob,
             ))
         
         if hasjob:

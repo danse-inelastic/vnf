@@ -94,6 +94,37 @@ class Actor(base):
         #orm.save(analysisObj, save_not_owned_referred_object=False)
         director.clerk.db.updateRecord(analysisDbObj)
         analysisObj = orm.record2object(analysisDbObj)
+        editpanel = self._createEditPanel(
+            id = analysisDbObj.id,
+            analysisObj = analysisObj,
+            director = director)
+        doc.add(editpanel)
+        return select(id='main-display-area').replaceContent(doc)
+
+
+    def edit(self, director):
+        orm = director.clerk.orm
+
+        className = self.inventory.analysisType
+        analysisId = self.inventory.analysisId
+        analysisRecord = director.clerk._getEntry(
+            className, 
+            id = analysisId, 
+            maindom = 'vnfb.dom.analysis')
+        #note the code below makes a slightly different object than the vsat one..
+        #..it has Computation as superclass
+        analysisObj = orm.record2object(analysisRecord)
+        
+        #
+        panel = self._createEditPanel(
+            id=analysisId, 
+            analysisObj = analysisObj,
+            director=director)
+        return select(id='main-display-area').replaceContent(panel)
+
+
+    def _createEditPanel(self, id, analysisObj, director):
+        doc = lc.document(id='edit-%s-panel' % id)
         drawer = director.painter.paintObj.drawers.getDrawer(analysisObj.__class__)
         drawer.actor = 'orm/analysis/%s' % analysisObj.__class__.__name__.lower()
         editview = drawer(analysisObj)
@@ -114,7 +145,8 @@ class Actor(base):
             analysisId = self.inventory.analysisId,
             analysisType = self.inventory.analysisType,
             actor=self.name, routine='configureSubmissionQueue')
-        return select(id='main-display-area').replaceContent(doc)
+        return doc
+    
     
     def configureSubmissionQueue(self, director):
         orm = director.clerk.orm
