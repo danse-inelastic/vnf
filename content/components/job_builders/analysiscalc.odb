@@ -70,7 +70,7 @@ class Builder(base):
             #check to see if it is an MdDosCalc:
             if analysisObj.__class__.__name__=='MdDosCalc':
                 cmds += ['conversionTasks.py --convertDosFile=True --textFile='+analysisObj._dosFile,]
-        #foxtrot
+        #foxtrot md
         elif job.server.id=='server002':
             cmds = [
                 '#!/usr/bin/env bash',
@@ -84,6 +84,21 @@ class Builder(base):
             #check to see if it is an MdDosCalc:
             if analysisObj.__class__.__name__ in ['MdDosCalc']:
                 cmds += ["""/usr/local/python-2.6.2/bin/python2.6 /home/jbrkeith/dv/tools/pythia-0.8/bin/conversionTasks.py --convertDosFile=True --textFile="""+analysisObj._dosFile+' --idfFile=data.idf',]
+        
+        #foxtrot
+        elif job.server.id=='server003':
+            cmds = [
+                '#!/usr/bin/env bash',
+                'python -V',
+                'source /home/danse-vnf-admin/.vnf',
+                'echo $PYTHONPATH',
+                'python -V',
+                'mpirun -np %d /usr/local/python-2.6.2/bin/python2.6 /home/danse-vnf-admin/dv/tools/pythia-0.8/bin/parnasis --%s --inp %s' % (np, analysisObj._type, analysisObj._inputFileName),
+                '',
+                ]
+            #check to see if it is an MdDosCalc:
+            if analysisObj.__class__.__name__ in ['MdDosCalc']:
+                cmds += ["""/usr/local/python-2.6.2/bin/python2.6 /home/danse-vnf-admin/dv/tools/pythia-0.8/bin/conversionTasks.py --convertDosFile=True --textFile="""+analysisObj._dosFile+' --idfFile=data.idf',]
 
         script = self.shscriptname
         path = self._path(script)
