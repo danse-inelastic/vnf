@@ -86,7 +86,7 @@ class Builder(base):
                 'conversionTasks.py -convertHistoryFile=True -historyFile=gulp.his -ncFile=gulp.nc',
                 'if [ -e gulp.nc ]; then rm gulp.his; fi',
                          ] 
-        #foxtrot
+        #foxtrot md
         elif job.server.id=='server002':
             cmds = [
                 '#!/usr/bin/env bash',
@@ -102,6 +102,23 @@ class Builder(base):
                 'if [ -e gulp.nc ]; then rm gulp.his; fi',
                 #"""/usr/local/python-2.6.2/bin/python2.6 -c "import os; if os.path.exists('gulp.nc'): os.remove('gulp.his')" """,
                          ] 
+        #foxtrot
+        elif job.server.id=='server003':
+            cmds = [
+                '#!/usr/bin/env bash',
+                'source /home/danse-vnf-admin/.vnf',
+                #'. ~/.vnf',
+                #'. ~/.gulp-env',
+                'mpirun -np %d gulp_openmpi < %s > %s' % (np, computation.inputFile, computation.output_filename),
+                '',
+                ]
+            if self.convertHistoryFile:
+                cmds += [
+                '/usr/local/python-2.6.2/bin/python2.6 /home/danse-vnf-admin/dv/tools/pythia-0.8/bin/conversionTasks.py -convertHistoryFile=True -historyFile=gulp.his -ncFile=gulp.nc',
+                'if [ -e gulp.nc ]; then rm gulp.his; fi',
+                #"""/usr/local/python-2.6.2/bin/python2.6 -c "import os; if os.path.exists('gulp.nc'): os.remove('gulp.his')" """,
+                         ] 
+                
                 
         if self.serializePhononArrays:
             cmds += [
