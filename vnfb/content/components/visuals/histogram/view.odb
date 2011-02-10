@@ -23,8 +23,7 @@ def visual(director=None, histogram=None, downloadaction=None):
     try:
         title = histogram.getAttribute('title')
     except KeyError:
-        title = 'Histogram %s: I(%s)' % (
-            id,
+        title = 'Histogram I(%s)' % (
             ','.join(['%s(%s)' % (axis.name(), axis.unit()) 
                       for axis in histogram.axes()]),
             )
