@@ -1,0 +1,20 @@
+
+def visual(forcefields, cols, director):
+    try: return table(forcefields, cols, director)
+    except:
+        import journal
+        debug = journal.debug('forcefield-table')
+        import traceback
+        debug.log(traceback.format_exc())
+        return
+
+
+def table(forcefields, cols, director):
+    from vnfb.content.visuals.table.selectoneforcefields import table
+    return table(forcefields, cols, director, editable=False)
+
+
+# version
+__id__ = "$Id$"
+
+# End of file 
