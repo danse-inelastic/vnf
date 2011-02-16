@@ -1,0 +1,113 @@
+# this is the visual for the whole table view that includes a table and
+# many controls.
+# it is different from atomicstructure/table which only is the table itself.
+
+from luban.content import load, select, alert
+import luban.content as lc
+
+def visual(
+    director, name,
+    filter_expr=None, filter_key=None, filter_value=None,
+    label=None, mine=False,
+    order_by=None, reverse_order=None,
+    number_records_per_page=None, page_number=None,
+    ):
+    # name: name of table view
+    # 
+    domaccess = director.retrieveDOMAccessor('forcefield')
+    targettablename = 'gulppotential'
+        
+    from vnfb.components.MasterTable import MasterTableFactory, filtercompiler
+    def countrecords(filter, label=None, mine=False):
+        return domaccess.countForcefields(filter, label=label, mine=mine)
+    def createtable(order_by, reverse_order, slice, filter, label=None, mine=False):
+        return createForcefieldTable(
+            director, domaccess,
+            order_by=order_by,
+            reverse_order=reverse_order,
+            slice=slice,
+            filter=filter,
+            label=label,
+            mine=mine,
+            )
+    from vnfb.content.visuals.table.selectoneforcefield import model
+    compilefilter = filtercompiler(columns, measure2dbcol, model=model)
+
+    smartlabelaccess = director.retrieveDOMAccessor('smartlabel')
+    def filterfromlabel(label):
+        return smartlabelaccess.createFilterExprFromLabel(
+            label, targettable = targettablename)
+    smartlabels = smartlabelaccess.getLabelNames(targettable=targettablename)
+
+    labelaccess = director.retrieveDOMAccessor('label')
+    labels = labelaccess.getLabelNames(targettable=targettablename)
+
+    factory = MasterTableFactory(
+        name, countrecords, createtable,
+        compilefilter, filtercols,
+        filterfromlabel, smartlabels, labels,
+        sorting_options = [
+            ('id', 'ID'),
+            ('short_description', 'Description'),
+            ('date', 'Date created'),
+        ],
+        polymorphic = False, dbtablename='material_simulations.GulpPotential.GulpPotential',
+        createlabelstoolbar = False,
+        )
+
+    tableview = factory.create(
+        label = label, mine = mine,
+        filter_expr=filter_expr, filter_key=filter_key, filter_value=filter_value,
+        order_by=order_by,
+        reverse_order=reverse_order,
+        number_records_per_page=number_records_per_page,
+        page_number=page_number)
+
+    return tableview
+
+
+def createForcefieldTable(
+    director, domaccess,
+    order_by=None, reverse_order=None, slice=None,
+    filter=None,
+    label=None,
+    mine=False,
+    ):
+
+    records = domaccess.getForcefieldRecords(
+        order_by=order_by, reverse_order=reverse_order, slice=slice,
+        filter=filter,
+        label=label,
+        mine=mine,
+        )
+
+    cols = columns
+    args = records, cols, director
+    thetable = director.retrieveVisual(
+        'material_simulations/table-selectoneforcefield',
+        forcefields = records,
+        cols = cols,
+        director = director)
+    
+    return thetable
+
+
+
+columns = [
+    'selectone',
+    'id',
+    'description',
+    'filename',
+    'creator'
+    'created']
+measure2dbcol = {
+    'description': 'short_description',
+    'created': 'date',
+    }
+filtercols = columns[1:]
+
+
+# version
+__id__ = "$Id$"
+
+# End of file 

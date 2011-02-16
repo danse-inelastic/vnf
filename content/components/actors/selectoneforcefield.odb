@@ -1,0 +1,79 @@
+from luban.content import load, select, alert
+import luban.content as lc
+
+from vnfb.components.MasterTable import FilterSyntaxError, MasterTableActor as base
+
+class Actor(base):
+
+    class Inventory(base.Inventory):
+
+        import pyre.inventory
+
+        id = pyre.inventory.str('id')
+        description = pyre.inventory.str('description')
+
+
+    def default(self, director):
+        return self.showListView(director)
+
+
+    def showListView(self, director):
+        try:
+            view = self.createListView(director)
+        except FilterSyntaxError, msg:
+            return alert('filter syntax error: %s' % msg)
+        return [
+            select(id = 'forcefield-selector-container').replaceContent(view),
+            ]
+    
+            
+    def createListView(self, director):
+        order_by        = self.inventory.order_by
+        reverse_order   = self.inventory.reverse_order
+        number_records_per_page     = self.inventory.number_records_per_page
+        page_number     = self.inventory.page_number
+
+        filter_expr     = self.inventory.filter_expr
+        filter_key      = self.inventory.filter_key
+        filter_value    = self.inventory.filter_value
+
+        label = self.inventory.label
+        mine = self.inventory.mine
+        
+        tableview = director.retrieveVisual(
+            'atomicstructure/tableview-selectonestructure',
+            director,
+            self.name,
+            label           = label,
+            mine            = mine,
+            filter_expr     = filter_expr,
+            filter_key      = filter_key,
+            filter_value    = filter_value,
+            order_by        = order_by,
+            reverse_order   = reverse_order,
+            number_records_per_page = number_records_per_page,
+            page_number     = page_number
+            )
+        return tableview
+
+
+    def _defaults(self):
+        super(Actor, self)._defaults()
+        self.inventory.number_records_per_page = 10
+        return
+
+
+    def __init__(self, name='selectoneatomicstructure'):
+        super(Actor, self).__init__(name)
+        return
+
+
+
+def actor(): return Actor()
+
+
+# version
+__id__ = "$Id$"
+
+# End of file 
+
