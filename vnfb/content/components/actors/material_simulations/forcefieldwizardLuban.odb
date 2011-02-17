@@ -91,7 +91,8 @@ class Actor(base):
             value = False,
             )
         
-        # not sure how you want to store the type....
+        # not sure how radio buttons transfer values to inventory, but it would
+        # be convenient if it could be either GulpOpt, GulpLd, or GulpMd....(see dom.material_simulations)
         button = form.submitbutton(label="calculate")
         form.onsubmit = select(id='type-selector-doc').submit(
             actor = 'material_simulations/forcefieldwizard',
@@ -160,38 +161,51 @@ class Actor(base):
         return doc
     
     def settings(self, director):
-        #from luban.content import select
         self.inventory.simulationId = director.getGUID()
-        #showdock = select(id='dock').show()
-        
-#        splitter = Splitter()
-#        splitter.orientation = 'horizontal'
-#        leftSection = splitter.section()
         form = Form(
-            id='forcefield-wizard-startform',
+            id='settings',
             title='')
-        args = {
-            'simulationId': self.inventory.simulationId,
-            'structureId': self.inventory.structureId,
-            }
-        import urlparse as up
-        parts = up.urlparse(director.weaver.inventory.htmlbase)
-        cgihome = up.urljoin(parts.scheme+'://'+parts.netloc, director.weaver.inventory.controllerurl)
-        vnfArgs = {
-            'cgihome':cgihome,
-            'sentry.username':director.sentry.username,
-            'sentry.ticket':director.sentry.ticket,
-            }
-        args.update(vnfArgs)
+        orm = director.clerk.orm
+        # what needs to happen here is:
+        # runtype = self.inventory.runtype
+        # depending on which runtype is selected, the correct form needs to be presented
         
-        from vnfb.components.JnlpFile import JnlpFile
-        jnlpFile = JnlpFile(
-            resources=('GULP.jar', 'j2ssh.jar', 'commons-logging.jar','pg74.216.jdbc3.jar'),
-            mainClass='javagulp.controller.LaunchAtomSim',
-            programArguments = args,
-            fileName='gulpLauncher'
-            )
-        relativeLocationOfFile = jnlpFile.writeJnlp(director)
+        className = self.inventory.runtype        
+        exec('from vnfb.dom.material_simulations.'+className+' import '+className)
+#        exec('from '+analysisPaths[self.inventory.analysisType]+' import '+
+#             className)
+        analysisDbClass = eval(className)
+        analysisDbObj = director.clerk.insertNewRecordWithID(analysisDbClass)
+
+        self.inventory.analysisId = analysisDbObj.id
+        analysisDbObj.creator = director.sentry.username
+        import time
+        analysisDbObj.date = time.ctime()
+        #orm.save(analysisObj, save_not_owned_referred_object=False)
+        director.clerk.db.updateRecord(analysisDbObj)
+        analysisObj = orm.record2object(analysisDbObj)
+        drawer = director.painter.paintObj.drawers.getDrawer(analysisObj.__class__)
+        drawer.actor = 'orm/analysis/%s' % analysisObj.__class__.__name__.lower()
+        editview = drawer(analysisObj)
+        doc.add(editview)
+        #container.oncreate = [
+        #    select(element=container).append(        
+        #      #load(actor='analysis/selectdynamics', routine='createListView')
+        #      load(actor=actorName, routine='edit')#, id = dynamicsId)
+        #      ),
+        #    ]
+#        sA.add(load(actor=actorName, routine='edit', id = self.inventory.dynamicsId))
+#        sB          = splitter.section()
+#        docSub      = lc.document(title = "")
+        b = lc.button(label='Create job'); 
+        doc.add(b)
+        b.onclick = load(
+            #actor=self.name, routine='runDirectly', 
+            analysisId = self.inventory.analysisId,
+            analysisType = self.inventory.analysisType,
+            actor=self.name, routine='configureSubmissionQueue')
+        return select(id='main-display-area').replaceContent(doc)
+        
         
         p = form.paragraph()
         p.text = ['''AtomSim uses efficient forcefield
@@ -200,31 +214,7 @@ class Actor(base):
         forcefield fitting to experimental data,
         and crystal property calculation.''']
         
-        h = HtmlDocument()
-        h.text = ['<br><center><a href="'+relativeLocationOfFile+
-                  '"><img src="images/webstart.gif" alt="AtomSim"/></a></center>']
-        form.add(h)
-        
-        h = HtmlDocument()
-        h.text = ['''Press "Launch" above to activate AtomSim in Web Start mode.  Note: you must have
-        a Java Virtual Machine (JVM) installed.  If you do not, clicking 
-        "Launch" will likely cause your browser to alert you to this
-        and install one automatically.  It is recommended to use 
-        the JVM from Sun Microsystems.  <b>The OpenJDK (default on Ubuntu OS)
-        does not work due to bugs in their webstart launcher.</b>''']
-        form.add(h)
 
-        hdoc = lc.htmldocument(id='mdPlan')
-        
-        urlArgs = {'actor':'material_simulations/mdPlan', 
-                   'routine':'createMdPlanPage',
-                   'sentry.username':director.sentry.username,
-                   'sentry.ticket':director.sentry.ticket,}
-        
-        hdoc.text = ["If performing an md simulation to calculate S(Q,E),"
-                     "the following guide will help estimate the amount of time needed in the simulation.",
-                     """<form><center><input type="button" value="guide" onClick="window.open('"""+formUrl(cgihome, urlArgs)+"""','mdToolsWindow','width=600,height=400')"></center></form>""",
-                     ]
         form.add(hdoc)
 
         next = form.submitbutton(label="next")
@@ -234,87 +224,6 @@ class Actor(base):
             simulationId = self.inventory.simulationId,
             )
 
-        #return [showdock] + [select(id='main-display-area').replaceContent(splitter)]
-        #return select(id='main-display-area').replaceContent(splitter)
-        return select(id='main-display-area').replaceContent(form)
-
-    def atomSimForm(self, director):
-        #from luban.content import select
-        self.inventory.simulationId = director.getGUID()
-        #showdock = select(id='dock').show()
-        
-#        splitter = Splitter()
-#        splitter.orientation = 'horizontal'
-#        leftSection = splitter.section()
-        form = Form(
-            id='forcefield-wizard-startform',
-            title='')
-        args = {
-            'simulationId': self.inventory.simulationId,
-            'structureId': self.inventory.structureId,
-            }
-        import urlparse as up
-        parts = up.urlparse(director.weaver.inventory.htmlbase)
-        cgihome = up.urljoin(parts.scheme+'://'+parts.netloc, director.weaver.inventory.controllerurl)
-        vnfArgs = {
-            'cgihome':cgihome,
-            'sentry.username':director.sentry.username,
-            'sentry.ticket':director.sentry.ticket,
-            }
-        args.update(vnfArgs)
-        
-        from vnfb.components.JnlpFile import JnlpFile
-        jnlpFile = JnlpFile(
-            resources=('GULP.jar', 'j2ssh.jar', 'commons-logging.jar','pg74.216.jdbc3.jar'),
-            mainClass='javagulp.controller.LaunchAtomSim',
-            programArguments = args,
-            fileName='gulpLauncher'
-            )
-        relativeLocationOfFile = jnlpFile.writeJnlp(director)
-        
-        p = form.paragraph()
-        p.text = ['''AtomSim uses efficient forcefield
-        techniques for simulating larger systems.  
-        Its capabilities include phonon / molecular dynamics / optimization, 
-        forcefield fitting to experimental data,
-        and crystal property calculation.''']
-        
-        h = HtmlDocument()
-        h.text = ['<br><center><a href="'+relativeLocationOfFile+
-                  '"><img src="images/webstart.gif" alt="AtomSim"/></a></center>']
-        form.add(h)
-        
-        h = HtmlDocument()
-        h.text = ['''Press "Launch" above to activate AtomSim in Web Start mode.  Note: you must have
-        a Java Virtual Machine (JVM) installed.  If you do not, clicking 
-        "Launch" will likely cause your browser to alert you to this
-        and install one automatically.  It is recommended to use 
-        the JVM from Sun Microsystems.  <b>The OpenJDK (default on Ubuntu OS)
-        does not work due to bugs in their webstart launcher.</b>''']
-        form.add(h)
-
-        hdoc = lc.htmldocument(id='mdPlan')
-        
-        urlArgs = {'actor':'material_simulations/mdPlan', 
-                   'routine':'createMdPlanPage',
-                   'sentry.username':director.sentry.username,
-                   'sentry.ticket':director.sentry.ticket,}
-        
-        hdoc.text = ["If performing an md simulation to calculate S(Q,E),"
-                     "the following guide will help estimate the amount of time needed in the simulation.",
-                     """<form><center><input type="button" value="guide" onClick="window.open('"""+formUrl(cgihome, urlArgs)+"""','mdToolsWindow','width=600,height=400')"></center></form>""",
-                     ]
-        form.add(hdoc)
-
-        next = form.submitbutton(label="next")
-        form.onsubmit = select(element=form).submit(
-            actor = 'material_simulations/forcefieldwizard',
-            routine = 'configureSubmissionQueue',
-            simulationId = self.inventory.simulationId,
-            )
-
-        #return [showdock] + [select(id='main-display-area').replaceContent(splitter)]
-        #return select(id='main-display-area').replaceContent(splitter)
         return select(id='main-display-area').replaceContent(form)
     
     def storeInputFile(self, director):
@@ -417,23 +326,76 @@ class Actor(base):
         return
     
     def configureSubmissionQueue(self, director):
+        orm = director.clerk.orm
+        className = self.inventory.runtype
+        simulationRecord = director.clerk._getEntry(className, 
+                id = self.inventory.simulationId, maindom = 'vnfb.dom.material_simulations')
+        # next have to write three files to working directory--structure file, forcefield file, and inputfile
+        simulationObj = orm.record2object(simulationRecord)
+        import time
+        simulationObj.date = time.ctime()
+        simulationObj.creator = director.sentry.username
+        domaccess = director.retrieveDOMAccessor('atomicstructure')
+        structureRecord = domaccess.getAtomicStructure(self.inventory.structureId)
+        structure = orm(structureRecord)
+        simulationObj.matter = structure # this turns an object back into a table?
+        #since the potential has already been stored, we just get it 
+        from memd.gulp.GulpPotential import GulpPotential
+        try:
+            potentialRecord = orm.db.query(orm(GulpPotential)).filter_by(
+                        potential_name = self.inventory.potential_name).one()
+            potentialObj
+        except Exception, err:
+            pass
+        simulationObj.forcefield = orm.record2object(potentialRecord)
+        
+        simulationInputFileContents = getSimInput(simulationObj)
+        #write the input file
+        datadir = director.dds.abspath(simulationRecord)
+        if not os.path.exists(datadir): 
+            os.makedirs(datadir)
+        inputFilePath = director.dds.abspath(simulationRecord, 
+                        filename = simulationRecord.inputfile)
+        open(inputFilePath, 'w').write(simulationInputFileContents)
+        #write the structure file
+        open(os.path.join(datadir,'structure.xyz'), 'w').write(structure.writeStr('xyz'))
+        #copy over the forcefield file
+        # NOT EXACTLY SURE HOW TO DO THIS...
+        #
+        domPath = 'material_simulations.'+className+'.'+className
         return director.redirect(actor = 'job', routine = 'create', 
-                computation_type = 'material_simulations.GulpSettings.GulpSettings', 
+                computation_type = domPath, 
                 computation_id = self.inventory.simulationId)
+
+def getSimInputfile(simOb):
+    baseSettings = {'pressure':simOb.pressure,
+        'temperature':simOb.temperature,
+        'xyzFile':'structure.xyz',
+        'dispersionInRecipSpace':simOb.calc_dispersion_in_recip_space,
+        'useInitialBondingOnly':simOb.assign_bonds_from_initial_geometry,
+        'forcefield':simOb.forcefield.filename,
+        'moleculeIdentification':simOb.identify_molecules,}
+    if mdSettings['type']=='gulpopt':
+        gulpOpt(simOb, baseSettings)
+    elif mdSettings['type']=='gulpphonons':
+        pass
+
+def gulpOpt(simOb, baseSettings):
+    from memdf.gulp.Optimize import Optimize
+    e = Optimize()
+    optSettings = {
+        'constraints':simOb.constraint,
+        'optimizeCell':simOb.optimize_cell,
+        'optimizeCoordinates':simOb.optimize_coordinates,
+        'trajectoryFilename':simOb.trajectoryfile,
+        'restartFilename':simOb.restartfile,
+           }
+    optSettings.update(baseSettings)
+    for key,val in optSettings.iteritems():
+        setattr(e, key, val)
+    e.getInputfile()
 
 import os
 
-def formUrl(base, keyvals):
-    connectors = ['?'] + ['&']*(len(keyvals)-1)
-    for connector,keyvals in zip(connectors,keyvals.items()):
-        base = base+connector+keyvals[0]+'='+keyvals[1]
-    return str(base)
-
 def actor(): return Actor()
-
-
-# version
-__id__ = "$Id$"
-
-# End of file 
 
