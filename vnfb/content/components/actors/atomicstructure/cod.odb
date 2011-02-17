@@ -144,7 +144,7 @@ class Actor(base):
         if sg!=None:
             query += " AND (sg='" + sg + "')"
         if nelements!=None:
-            query += " AND (nel='" + str(nelements) + "')"
+            query += " AND (nel=" + str(nelements) + ")"
         if elements!=None:
            words = elements.split()    
            for element in words:
