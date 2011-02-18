@@ -1,0 +1,58 @@
+#!/usr/bin/env python
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#                                
+#                          J Brandon Keith,  Jiao Lin
+#                      California Institute of Technology
+#                      (C) 2006-2010  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+"""
+here user can choose from different wizards
+"""
+
+from luban.content import load, select, alert
+import luban.content as lc
+
+
+def visual(director=None, atomicstructure=None):
+    doc = lc.document(id='md-wizard-type-selector-doc')
+    doc.paragraph(
+        text=[
+            "Please select what type of forcefield simulation you'd like to run.",
+            ]
+        )
+        
+    form = doc.form(id='md-wizard-type-form')
+    
+    entries = [
+        ('optimization', 'Gulp Optimization'),
+        ('ld', 'Gulp Lattice Dynamics'),
+        ('md', 'Gulp MD'),
+        ]
+    form.radio(
+        label='Type of simulation',
+        name = 'runtype',
+        entries = entries,
+        )
+
+    button = form.submitbutton(label="Configure")
+    form.onsubmit = select(element=form).submit(
+        actor = 'material_simulations/forcefieldwizard',
+        routine = 'presentWizard',
+        structureId = atomicstructure,
+        )
+    
+    return doc
+
+
+
+# version
+__id__ = "$Id$"
+
+# End of file 

@@ -26,7 +26,15 @@ from luban.content import load, select, alert
 def visual(atomicstructure=None, director=None):
     doc = lc.document(id='md-workflow-selector')
     tabs = lc.tabs(id='md-workflow-selector-tabs'); doc.add(tabs)
+
     wizardstab = tabs.tab(id='md-workflow-selector-wizards-tab', label='Wizards')
+    wizards_start = director.retrieveVisual(
+        'material_simulations/moldyn/wizard-type-selector',
+        director=director,
+        atomicstructure = atomicstructure,
+        )
+    wizardstab.add(wizards_start)
+
     atomsimtab = tabs.tab(id='md-workflow-selector-atomsim-tab', label='AtomSim')
     atomsim_start = director.retrieveVisual(
         'material_simulations/moldyn/atomsim-start',
