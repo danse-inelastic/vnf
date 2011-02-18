@@ -64,12 +64,22 @@ class Actor(base):
             'material_simulations/moldyn/matter-selector',
             director=director,
             onselect = load(
-                actor=self.name, routine='atomSimForm',
+                actor=self.name, routine='loadWorkflowSelector',
                 structureId=select(id='atomicstructure-table').table(
                     'getIdentifierForSelectedRow', colname='selectone'),
                 )
             )
         return visual
+
+    
+    def loadWorkflowSelector(self, director):
+        vis = director.retrieveVisual(
+            'material_simulations/moldyn/sim-workflow-selector', 
+            atomicstructure = self.inventory.structureId,
+            director = director,
+            )
+        return select(id='main-display-area').replaceContent(vis)
+
 
     def atomSimForm(self, director):
         form = director.retrieveVisual(
