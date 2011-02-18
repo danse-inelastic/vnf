@@ -1,0 +1,46 @@
+#!/usr/bin/env python
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#                                
+#                          J Brandon Keith,  Jiao Lin
+#                      California Institute of Technology
+#                      (C) 2006-2010  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+"""
+the matter selector for forcefield simulation wizard.
+"""
+
+import luban.content as lc
+from luban.content import load, select, alert
+
+
+def visual(onselect=None, director=None):
+    doc = lc.document(id='matter-selector-doc')
+    doc.paragraph(
+        text=[
+        'Please select one atomic structure from the following table,',
+        'you can search for the structure using the filtering controls.',
+        ]
+        )
+    # the container of the atomicstructure selector
+    container = lc.document(id='atomicstructure-selector-container')
+    doc.add(container)
+    container.oncreate = [
+        select(element=container).append(
+          load(actor='selectoneatomicstructure', routine='createListView')
+          ),
+        ]
+    # cancel
+    # select button
+    b = lc.button(label='select'); doc.add(b)
+    b.onclick = onselect
+    return doc
+
+
+__date__ = "$Nov 20, 2009 3:11:39 PM$"
