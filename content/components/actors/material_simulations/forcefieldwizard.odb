@@ -58,6 +58,13 @@ class Actor(base):
         doc = self.createMatterSelector(director)
         wizard.add(doc)
         return select(id='main-display-area').replaceContent(wizard)
+
+
+    def presentWizard(self, director):
+        runtype = self.inventory.runtype
+        structureId = self.inventory.structureId
+        return alert('type: %s, structure: %s' % (runtype, structureId))
+
     
     def createMatterSelector(self, director):
         visual = director.retrieveVisual(
