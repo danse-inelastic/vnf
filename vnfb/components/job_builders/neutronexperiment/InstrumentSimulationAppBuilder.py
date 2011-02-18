@@ -183,6 +183,16 @@ class Builder(base):
         return
 
 
+    def onArm(self, component):
+        kwds = {
+            'name': component.componentname,
+            'category': 'optics',
+            'type': 'Arm',
+            'supplier': 'mcstas2',
+            }
+        self.onNeutronComponent( **kwds )
+
+
     def onChanneledGuide(self, component):
         kwds = {
             'name': component.componentname,
@@ -757,45 +767,45 @@ class Builder(base):
         self.cmdline_opts.update( opts )
 
 
-#    def onVanadiumPlate(self, component):
-#        kwds = {
-#            'name': component.componentname,
-#            'category': 'samples',
-#            'type': 'V_sample',
-#            'supplier': 'mcstas2',
-#            }
-#        self.onNeutronComponent( **kwds )
-#
-#        opts = {}
-#
-#        parameters = {
-#            'radius_i': component.radius_i,
-#            'radius_o': component.radius_o,
-#            'h': component.h,
-#            'focus_r': component.focus_r,
-#            'pack': component.pack,
-#            'frac': component.frac,
-#            'f_QE': component.f_QE,
-#            'gamma': component.gamma,
-#            'target_x': component.target_x,
-#            'target_y': component.target_y,
-#            'target_z': component.target_z,
-#            'focus_xw': component.focus_xw,
-#            'focus_yh': component.focus_yh,
-#            'focus_aw': component.focus_aw,
-#            'focus_ah': component.focus_ah,
-#            'xwidth': component.x_width,
-#            'yheight': component.y_height,
-#            'zthick': component.zthick,
-#            'sig_a': component.sig_a,
-#            'sig_i': component.sig_i,
-#            'V0': component.V0,
-#            'target_index': component.target_index,
-#            }
-#        for k,v in parameters.iteritems():
-#            opts['%s.%s' % (component.componentname, k)] = v
-#
-#        self.cmdline_opts.update( opts )
+    def onVanadiumPlate(self, component):
+        kwds = {
+            'name': component.componentname,
+            'category': 'samples',
+            'type': 'V_sample',
+            'supplier': 'mcstas2',
+            }
+        self.onNeutronComponent( **kwds )
+
+        opts = {}
+
+        parameters = {
+            'radius_i': component.radius_i,
+            'radius_o': component.radius_o,
+            'h': component.h,
+            'focus_r': component.focus_r,
+            'pack': component.pack,
+            'frac': component.frac,
+            'f_QE': component.f_QE,
+            'gamma': component.gamma,
+            'target_x': component.target_x,
+            'target_y': component.target_y,
+            'target_z': component.target_z,
+            'focus_xw': component.focus_xw,
+            'focus_yh': component.focus_yh,
+            'focus_aw': component.focus_aw,
+            'focus_ah': component.focus_ah,
+            'xwidth': component.x_width,
+            'yheight': component.y_height,
+            'zthick': component.zthick,
+            'sig_a': component.sig_a,
+            'sig_i': component.sig_i,
+            'V0': component.V0,
+            'target_index': component.target_index,
+            }
+        for k,v in parameters.iteritems():
+            opts['%s.%s' % (component.componentname, k)] = v
+
+        self.cmdline_opts.update( opts )
 
 
     def onPSD_TEWMonitor(self, component):
