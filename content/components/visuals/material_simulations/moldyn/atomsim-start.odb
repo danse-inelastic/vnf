@@ -1,0 +1,99 @@
+#!/usr/bin/env python
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#                                
+#                          J Brandon Keith,  Jiao Lin
+#                      California Institute of Technology
+#                      (C) 2006-2010  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+import luban.content as lc
+from luban.content import load, select, alert
+
+
+def visual(structureId=None, director=None):
+    simulationId = director.getGUID()
+        
+    form = lc.form(
+        id='forcefield-wizard-startform',
+        title='')
+    args = {
+        'simulationId': simulationId,
+        'structureId': structureId,
+        }
+    import urlparse as up
+    parts = up.urlparse(director.weaver.inventory.htmlbase)
+    cgihome = up.urljoin(parts.scheme+'://'+parts.netloc, director.weaver.inventory.controllerurl)
+    vnfArgs = {
+        'cgihome':cgihome,
+        'sentry.username':director.sentry.username,
+        'sentry.ticket':director.sentry.ticket,
+        }
+    args.update(vnfArgs)
+
+    from vnfb.components.JnlpFile import JnlpFile
+    jnlpFile = JnlpFile(
+        resources=('GULP.jar', 'j2ssh.jar', 'commons-logging.jar','pg74.216.jdbc3.jar'),
+        mainClass='javagulp.controller.LaunchAtomSim',
+        programArguments = args,
+        fileName='gulpLauncher'
+        )
+    relativeLocationOfFile = jnlpFile.writeJnlp(director)
+
+    p = form.paragraph()
+    p.text = ['''AtomSim uses efficient forcefield
+    techniques for simulating larger systems.  
+    Its capabilities include phonon / molecular dynamics / optimization, 
+    forcefield fitting to experimental data,
+    and crystal property calculation.''']
+
+    h = lc.htmldocument()
+    h.text = ['<br><center><a href="'+relativeLocationOfFile+
+              '"><img src="images/webstart.gif" alt="AtomSim"/></a></center>']
+    form.add(h)
+
+    h = lc.htmldocument()
+    h.text = ['''Press "Launch" above to activate AtomSim in Web Start mode.  Note: you must have
+    a Java Virtual Machine (JVM) installed.  If you do not, clicking 
+    "Launch" will likely cause your browser to alert you to this
+    and install one automatically.  It is recommended to use 
+    the JVM from Sun Microsystems.  <b>The OpenJDK (default on Ubuntu OS)
+    does not work due to bugs in their webstart launcher.</b>''']
+    form.add(h)
+
+    hdoc = lc.htmldocument(id='mdPlan')
+
+    urlArgs = {'actor':'material_simulations/mdPlan', 
+               'routine':'createMdPlanPage',
+               'sentry.username':director.sentry.username,
+               'sentry.ticket':director.sentry.ticket,}
+
+    hdoc.text = ["If performing an md simulation to calculate S(Q,E),"
+                 "the following guide will help estimate the amount of time needed in the simulation.",
+                 """<form><center><input type="button" value="guide" onClick="window.open('"""+formUrl(cgihome, urlArgs)+"""','mdToolsWindow','width=600,height=400')"></center></form>""",
+                 ]
+    form.add(hdoc)
+
+    next = form.submitbutton(label="next")
+    form.onsubmit = select(element=form).submit(
+        actor = 'material_simulations/forcefieldwizard',
+        routine = 'configureSubmissionQueue',
+        simulationId = simulationId,
+        )
+
+    return form
+
+
+def formUrl(base, keyvals):
+    connectors = ['?'] + ['&']*(len(keyvals)-1)
+    for connector,keyvals in zip(connectors,keyvals.items()):
+        base = base+connector+keyvals[0]+'='+keyvals[1]
+    return str(base)
+
+
+__date__ = "$Nov 20, 2009 3:11:39 PM$"
