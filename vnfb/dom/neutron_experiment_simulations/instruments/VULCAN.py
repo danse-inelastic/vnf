@@ -129,7 +129,7 @@ def L_monitor1():
     c.filename = "Vulcan_asbuilt_L_monitor1.txt"
     c.Lmax = 14.0
     c.x_width = 0.1
-    c.Lmin = 0.0
+    c.Lmin = 0.1
     return c
 
 def bulk_shield_insert1():
@@ -175,7 +175,7 @@ def L_monitor2():
     c.filename = "Vulcan_asbuilt_L_monitor2.txt"
     c.Lmax = 14.0
     c.x_width = 0.1
-    c.Lmin = 0.0
+    c.Lmin = 0.1
     return c
 
 def transition_guide1():
@@ -236,7 +236,7 @@ def L_monitor3():
     c.filename = "Vulcan_asbuilt_L_monitor3.txt"
     c.Lmax = 14.0
     c.x_width = 0.1
-    c.Lmin = 0.0
+    c.Lmin = 0.1
     return c
 
 def bandwidth_chopper():
@@ -352,7 +352,7 @@ def L_monitor4():
     c.filename = "Vulcan_asbuilt_L_monitor4.txt"
     c.Lmax = 14.0
     c.x_width = 0.1
-    c.Lmin = 0.0
+    c.Lmin = 0.1
     return c
 
 def curved_guide7():
@@ -908,7 +908,7 @@ def L_monitor5():
     c.filename = "Vulcan_asbuilt_L_monitor5.txt"
     c.Lmax = 14.0
     c.x_width = 0.1
-    c.Lmin = 0.0
+    c.Lmin = 0.1
     return c
 
 def straight_section1():
@@ -969,7 +969,7 @@ def L_monitor6():
     c.filename = "Vulcan_asbuilt_L_monitor6.txt"
     c.Lmax = 14.0
     c.x_width = 0.1
-    c.Lmin = 0.0
+    c.Lmin = 0.1
     return c
 
 def VTG_Slit():
@@ -1277,7 +1277,7 @@ def L_monitor7():
     c.filename = "Vulcan_asbuilt_L_monitor7.txt"
     c.Lmax = 14.0
     c.x_width = 0.1
-    c.Lmin = 0.0
+    c.Lmin = 0.1
     return c
 
 def TG_Slit():
@@ -1471,7 +1471,7 @@ def L_monitor8():
     c.filename = "Vulcan_asbuilt_L_monitor8.txt"
     c.Lmax = 14.0
     c.x_width = 0.1
-    c.Lmin = 0.0
+    c.Lmin = 0.1
     return c
 
 def FU_Out():
@@ -1488,7 +1488,7 @@ def L_monitor9():
     c.filename = "Vulcan_asbuilt_L_monitor9.txt"
     c.Lmax = 14.0
     c.x_width = 0.15
-    c.Lmin = 0.0
+    c.Lmin = 0.1
     return c
 
 def L_monitor10():
@@ -1500,7 +1500,7 @@ def L_monitor10():
     c.filename = "Vulcan_asbuilt_L_monitor10.txt"
     c.Lmax = 14.0
     c.x_width = 0.002
-    c.Lmin = 0.0
+    c.Lmin = 0.1
     return c
 
 def psd_sample_position():
