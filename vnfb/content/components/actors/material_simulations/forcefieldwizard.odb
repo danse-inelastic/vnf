@@ -55,40 +55,21 @@ class Actor(base):
         #title = 'Forcefield simulation of %s' % (structurelabel,)
         title = 'Simulation with forcefields'
         wizard = Document(id='forcefieldwizard-start', title=title)
-        doc = self.selectMatter(director)
+        doc = self.createMatterSelector(director)
         wizard.add(doc)
         return select(id='main-display-area').replaceContent(wizard)
     
-    def selectMatter(self, director):
-        doc = lc.document(id='matter-selector-doc')
-        doc.paragraph(
-            text=[
-            'Please select one atomic structure from the following table,',
-            'you can search for the structure using the filtering controls.',
-            ]
-            )
-        # the container of the atomicstructure selector
-        container = lc.document(id='atomicstructure-selector-container')
-        doc.add(container)
-        container.oncreate = [
-            select(element=container).append(
-              load(actor='selectoneatomicstructure', routine='createListView')
-              ),
-            ]
-        # cancel
-#        c = lc.link(label='cancel', Class='float-right'); doc.add(c)
-#        c.onclick = select(id=self.matter_view_id).replaceBy(
-#            load(actor='scatterer/editor', routine='createMatterView',
-#                 id = self.id)
-#            )
-        # select button
-        b = lc.button(label='select'); doc.add(b)
-        b.onclick = load(
+    def createMatterSelector(self, director):
+        visual = director.retrieveVisual(
+            'material_simulations/moldyn/matter-selector',
+            director=director,
+            onselect = load(
                 actor=self.name, routine='atomSimForm',
                 structureId=select(id='atomicstructure-table').table(
                     'getIdentifierForSelectedRow', colname='selectone'),
                 )
-        return doc
+            )
+        return visual
 
     def atomSimForm(self, director):
         form = director.retrieveVisual(
