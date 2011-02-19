@@ -41,6 +41,9 @@ EXPORT_PYTHON_MODULES = \
 	ComputationResult.py \
 	ComputationResultTs.py \
 	Eisf.py \
+	GulpMd.py \
+	GulpOpt.py \
+	GulpPhonon.py \
 	GulpPotential.py \
 	GulpSettings.py \
 	Msd.py \
