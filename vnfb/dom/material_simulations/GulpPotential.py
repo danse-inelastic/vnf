@@ -12,8 +12,8 @@
 
 from _ import o2t
 
-from memd.gulp.GulpPotential import GulpPotential as GulpPotentialBase
-GulpPotential = o2t(GulpPotentialBase)
+from memd.gulp.GulpPotential import GulpPotential
+GulpPotentialTable = o2t(GulpPotential)
 
 #import dsaw.db
 #GulpSettings.addColumn(
