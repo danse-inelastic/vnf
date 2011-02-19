@@ -24,6 +24,13 @@ def visual(atomicstructure=None, director=None):
     doc = lc.document(id='start-optimization-container')
     doc.title = "Gulp optimization"
     doc.add(viewIndicator(atomicstructure, director))
+    visual = director.redirect(
+        actor = 'orm/gulpoptimizations',
+        routine = 'edit',
+        include_credential=False,
+        edithierarchy = True,
+        )
+    doc.add(visual)
     return doc
 
 

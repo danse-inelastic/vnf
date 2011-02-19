@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 
 tablename = 'gulppotential'
 
@@ -14,7 +16,6 @@ class Accessor(base):
 
     def _getOrm(self):
         orm = self.director.clerk.orm
-        from vnfb.dom.material_simulations.GulpPotential import GulpPotential
         orm(GulpPotential)
         return orm
     orm = property(_getOrm)
@@ -22,7 +23,7 @@ class Accessor(base):
 
     def removeForcefield(self, id):
         orm = self.orm
-        g = orm.load(GulpPotentialBase, id)
+        g = orm.load(GulpPotential, id)
         orm.destroy(g)
         return
     
@@ -242,7 +243,7 @@ class Accessor(base):
 
 
 from vnfb.dom.Label import Label, common_labels
-from vnfb.dom.GulpPotential import GulpPotential, GulpPotentialBase #this is the obj
+from vnfb.dom.material_simulations.GulpPotential import GulpPotential, GulpPotentialTable
 
 
 from dsaw.db.VersatileReference import global_pointer
