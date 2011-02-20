@@ -21,36 +21,29 @@ from luban.content import load, select, alert
 
 
 def visual(atomicstructure=None, director=None):
-    doc = lc.document(id='start-optimization-container')
-    doc.title = "Gulp optimization"
-    doc.add(viewIndicator(atomicstructure, director))
-    visual = director.redirect(
-        actor = 'orm/gulpoptimizations',
-        routine = 'edit',
-        include_credential=False,
-        edithierarchy = True,
-        )
-    doc.add(visual)
-    return doc
+    """atomicstructure: id of atomic structure
+    """
+    # create a new optimization and then bring out the editor
 
-
-def viewIndicator(atomicstructure, director):
-    path = []
-    path.append(('Simulations ', load(actor='materialsimulation')))
-    path.append(
-        ('Create New MD simulation', 
-         load(actor='material_simulations/forcefieldwizard'))
+    # matter
+    matterdomaccess = director.retrieveDOMAccessor('atomicstructure')
+    matter = matterdomaccess.getAtomicStructure(atomicstructure)
+    # create and save to db
+    from vnfb.dom.material_simulations.GulpOpt import GulpOpt
+    obj = GulpOpt()
+    obj.matter = matter
+    director.clerk.orm.save(obj)
+    # assign creator
+    record = director.clerk.orm(obj)
+    record.creator = director.sentry.username
+    director.clerk.db.updateRecord(record)
+    #
+    id = record.id
+    return director.retrieveVisual(
+        'material_simulations/moldyn/optimization-editor',
+        id = id,
+        director = director,
         )
-    path.append(
-        ('Gulp optimization', 
-         load(actor='material_simulations/forcefieldwizard',
-              routine='presentWizard',
-              runtype='optimization',
-              structureId=atomicstructure))
-        )
-    
-    return director.retrieveVisual('view-indicator', path=path)
-
 
 
 # version
