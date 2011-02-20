@@ -65,6 +65,8 @@ class Actor(base):
         if not runtype:
             return alert("Please select a simulation type")
         structureId = self.inventory.structureId
+        if not structureId:
+            return alert("Error: no structure selected")
         visualname = 'material_simulations/moldyn/wizard-%s-start' % runtype
         try:
             visual = director.retrieveVisual(
@@ -76,6 +78,23 @@ class Actor(base):
             import traceback
             msg = "Loading visual %s failed: \n\n%s" %(
                 visualname, traceback.format_exc())
+            return alert(msg)
+        return select(id='main-display-area').replaceContent(visual)
+
+
+    def editSimulation(self, director):
+        runtype = self.inventory.runtype
+        visname = 'material_simulations/moldyn/%s-editor' % runtype
+        try:
+            visual = director.retrieveVisual(
+                visname,
+                id = self.inventory.simulationId,
+                director = director,
+                )
+        except:
+            import traceback
+            msg = "Loading visual %s failed: \n\n%s" %(
+                visname, traceback.format_exc())
             return alert(msg)
         return select(id='main-display-area').replaceContent(visual)
 
