@@ -32,8 +32,8 @@ def visual(director=None, atomicstructure=None):
     
     entries = [
         ('optimization', 'Gulp Optimization'),
-        ('ld', 'Gulp Lattice Dynamics'),
-        ('md', 'Gulp MD'),
+        ('phonon', 'Gulp Lattice Dynamics (Phonon)'),
+        ('md', 'Gulp Molecular Dynamics'),
         ]
     form.radio(
         label='Type of simulation',

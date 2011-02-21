@@ -16,12 +16,11 @@ from vnfb.content.actors.material_simulations.gulp.SimActorBase import SimActorB
 class Actor(base):
 
 
-    editor_visual_name = 'material_simulations/moldyn/optimization-editor'
-    from vnfb.dom.material_simulations.GulpOpt import GulpOptTable as dbtable
+    editor_visual_name = 'material_simulations/moldyn/md-editor'
+    from vnfb.dom.material_simulations.GulpMd import GulpMdTable as dbtable
 
-    
 
-    def __init__(self, name='material_simulations/gulp/optimization'):
+    def __init__(self, name='material_simulations/gulp/md'):
         super(Actor, self).__init__(name)
         return
 
