@@ -4,7 +4,7 @@ from _ import o2t
 
 from vnfb.dom.Computation import Computation
 
-from mdt.GulpOpt import GulpOpt
+from mdt.orm.GulpOpt import GulpOpt
 GulpOptTable = o2t(
     GulpOpt, 
     {'subclassFrom': Computation, 

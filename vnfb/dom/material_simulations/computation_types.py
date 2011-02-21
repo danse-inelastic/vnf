@@ -17,6 +17,8 @@ typenames = [
     'material_simulations.BvKComputation.BvK_GetPhonons',
     'material_simulations.GulpSettings.GulpSettings',
     'material_simulations.GulpOpt.GulpOpt',
+    'material_simulations.GulpMd.GulpMd',
+    'material_simulations.GulpPhonon.GulpPhonon',
     ]
 
 
