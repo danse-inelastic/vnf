@@ -11,14 +11,13 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 PROJECT = vnfb
-PACKAGE = content
+PACKAGE = content/actors/material_simulations/gulp
 
 
 # directory structure
 
 BUILD_DIRS = \
-	actors \
-	visuals \
+
 
 OTHER_DIRS = \
 
@@ -37,7 +36,7 @@ all: export
 # export
 
 EXPORT_PYTHON_MODULES = \
-	Announcement.py \
+	SimActorBase.py \
 	__init__.py \
 
 
@@ -46,10 +45,9 @@ export:: export-package-python-modules
 
 
 #include doxygen/default.def
-#docs: export-doxygen-docs
-
+# docs: export-doxygen-docs
 
 # version
-# $Id: Make.mm 1213 2006-11-18 16:17:08Z linjiao $
+# $Id$
 
 # End of file
