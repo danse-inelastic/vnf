@@ -16,17 +16,17 @@
 start page for gulp optimization workflow
 """
 
-def visual(atomicstructure=None, director=None):
-    """atomicstructure: id of atomic structure
-    """
-    from vnfb.dom.material_simulations.GulpOpt import GulpOpt
-    editorvisual = 'material_simulations/moldyn/optimization-editor'
+import luban.content as lc
+from luban.content import load, select, alert
+
+
+def visual(id=None, director=None):
     return director.retrieveVisual(
-        'material_simulations/moldyn/sim-wizard-start',
-        simcls=GulpOpt,
-        editorvisual=editorvisual,
-        atomicstructure=atomicstructure,
-        director = director,
+        'material_simulations/moldyn/gulp-sim-editor',
+        id=id, director=director, 
+        typename='md', 
+        actorname='material_simulations/gulp/md',
+        ormactorname='orm/gulpmd',
         )
 
 

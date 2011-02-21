@@ -21,67 +21,13 @@ from luban.content import load, select, alert
 
 
 def visual(id=None, director=None):
-    #
-    if not id:
-        d = lc.document()
-        d.paragraph(text="simulation id not provided")
-        return d
-    
-    # container
-    doc = lc.document(id='start-optimization-container')
-    doc.title = "Gulp optimization"
-    doc.add(viewIndicator(id, director))
-
-    # form
-    visual = director.redirect(
-        actor = 'orm/gulpoptimizations',
-        routine = 'edit',
-        id = id,
-        include_credential=False,
-        edithierarchy = True,
+    return director.retrieveVisual(
+        'material_simulations/moldyn/gulp-sim-editor',
+        id=id, director=director, 
+        typename='optimization', 
+        actorname='material_simulations/gulp/optimization',
+        ormactorname='orm/gulpoptimizations',
         )
-    doc.add(visual)
-
-    # buttons
-    # create job
-    createjob = load(
-        actor='material_simulations/gulp/optimization', 
-        routine='createJob',
-        id = id,
-        formids = select(element=visual).findDescendentIDs(type='form'),
-        )
-    b = lc.button(label='Create job', onclick=createjob)
-    b.tip = 'create computational job for this simulation'
-    doc.add(b)
-    # delete
-    delete = load(
-        actor = 'material_simulations/gulp/optimization',
-        routine='deleteSimulation',
-        id = id,
-        )
-    b = lc.button(label='Delete simulation', onclick=delete)
-    doc.add(b)
-    
-    return doc
-
-
-def viewIndicator(id, director):
-    path = []
-    path.append(('Simulations ', load(actor='materialsimulation')))
-    # path.append(
-    #     ('Create New MD simulation', 
-    #      load(actor='material_simulations/forcefieldwizard'))
-    #     )
-    path.append(
-        ('Gulp optimization %s' % id, 
-         load(actor='material_simulations/forcefieldwizard',
-              routine='editSimulation',
-              runtype='optimization',
-              simulationId=id))
-        )
-    
-    return director.retrieveVisual('view-indicator', path=path)
-
 
 
 # version

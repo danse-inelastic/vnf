@@ -13,17 +13,17 @@
 
 
 """
-start page for gulp optimization workflow
+start page for gulp md workflow
 """
 
 def visual(atomicstructure=None, director=None):
     """atomicstructure: id of atomic structure
     """
-    from vnfb.dom.material_simulations.GulpOpt import GulpOpt
-    editorvisual = 'material_simulations/moldyn/optimization-editor'
+    from vnfb.dom.material_simulations.GulpMd import GulpMd
+    editorvisual = 'material_simulations/moldyn/md-editor'
     return director.retrieveVisual(
         'material_simulations/moldyn/sim-wizard-start',
-        simcls=GulpOpt,
+        simcls=GulpMd,
         editorvisual=editorvisual,
         atomicstructure=atomicstructure,
         director = director,
