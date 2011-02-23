@@ -12,5 +12,5 @@ GulpMdTable = o2t(
     )
 GulpMdTable.job_builder = 'material_simulations/gulp/md'
 GulpMdTable.actor = 'material_simulations/gulp/md'
-GulpMdTable.result_retriever = 'material_simulations/gulp/md'
+GulpMdTable.result_retriever = 'material_simulations/gulpSettings'
 

@@ -13,5 +13,5 @@ GulpOptTable = o2t(
     )
 GulpOptTable.job_builder = 'material_simulations/gulp/optimization'
 GulpOptTable.actor = 'material_simulations/gulp/optimization'
-GulpOptTable.result_retriever = 'material_simulations/gulp/optimization'
+GulpOptTable.result_retriever = 'material_simulations/gulpSettings'
 

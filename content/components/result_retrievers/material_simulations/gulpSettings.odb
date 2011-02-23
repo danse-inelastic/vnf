@@ -1,14 +1,9 @@
-# -*- Python -*-
-#
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-#
-#                      California Institute of Technology
-#                        (C) 2008  All Rights Reserved
-#
-# {LicenseText}
-#
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-#
+
+outputFiles = {"optimization":{'matter.orm.Structure':None}, 
+    "phonons":{'vsat.PhononDOS':['dos.dens'], 
+        'vsat.Phonons':['polarizations.pkl', 'energies.pkl']}, 
+    "molecular dynamics":{'vsat.Trajectory':self.trajectories},}
+
 import time, os
 from vnfb.components.ComputationResultRetriever import ComputationResultRetriever as base
 class Retriever(base):
@@ -24,15 +19,15 @@ class Retriever(base):
         # check result is available
         self.declareProgress(0.2, 'check if results exist')
         orm = director.clerk.orm
-        gulpSettings = orm.record2object(computation)
-        runtype = gulpSettings.runtype
-        expected_results = gulpSettings.getOutputFiles()  
-        # treat trajectories differently: look for those in motion d.o. eventually
-        if 'gulp.nc' in expected_results:
-            expected_results.remove('gulp.nc')
-        self._check_results_sanity(expected_results, job=job)
+        gulpObj = orm.record2object(computation)
+        type = gulpOjb.__class__.__name__
+#        expected_results = gulpSettings.getOutputFiles()  
+#        # treat trajectories differently: look for those in motion d.o. eventually
+#        if 'gulp.nc' in expected_results:
+#            expected_results.remove('gulp.nc')
+#        self._check_results_sanity(expected_results, job=job)
     
-        if 'phonons' in runtype:
+        if type=='GulpPhonon':
             self.declareProgress(0.6, """create phonon and/or dos data objects""")
             #store the phonons and the dos results
 #            for key,val in doOutputFiles.iteritems():
@@ -53,17 +48,19 @@ class Retriever(base):
             db.updateRecord(dos)
             
             self.declareProgress(0.9, 'get result from computational server')
-            doOutputFiles = gulpSettings.getDOAndOutputFile()
-            filesInJobDir = doOutputFiles['vsat.Phonons']
+#            doOutputFiles = gulpSettings.getDOAndOutputFile()
+#            filesInJobDir = doOutputFiles['vsat.Phonons']
+            filesInJobDir = ['dos.dens']
             self._save_results(computation, job, filesInJobDir, phonons)
-            
-            filesInJobDir = doOutputFiles['vsat.PhononDOS']
+            #filesInJobDir = doOutputFiles['vsat.PhononDOS']
+            filesInJobDir = ['polarizations.pkl', 'energies.pkl']
             self._save_results(computation, job, filesInJobDir, dos)
             
-        if 'molecular dynamics' in runtype:
+        if type=='GulpMd':
             self.declareProgress(0.6, """create trajectory data object""")
-            doOutputFiles = gulpSettings.getDOAndOutputFile()
-            dataObjectFile = doOutputFiles['vsat.Trajectory'][0] #this should get gulp.nc
+#            doOutputFiles = gulpSettings.getDOAndOutputFile()
+#            dataObjectFile = doOutputFiles['vsat.Trajectory'][0] #this should get gulp.nc
+            dataObjectFile = 'gulp.nc'
             # if the computation already has the trajectory, skip this
             from sqlalchemy.orm.exc import NoResultFound
             try:
@@ -91,6 +88,9 @@ class Retriever(base):
                 trajectory.trajectory_path = 'gulp.nc'
                 trajectoryRecord = orm(trajectory)
                 db.updateRecord(trajectoryRecord)
+
+        if type=='GulpOpt':
+            self.declareProgress(0.9, 'all done')
             #copy a temporary copy of the job to the web server (for the job page)
             #self.declareProgress(0.9, 'get result from computational server')
             #should probably first check to see if they are available on vnf server, then if not do below
