@@ -349,7 +349,7 @@ class Actor(base):
             pass
         simulationObj.forcefield = orm.record2object(potentialRecord)
         
-        simulationInputFileContents = getSimInput(simulationObj)
+        simulationInputFileContents = getSimInputfile(simulationObj)
         #write the input file
         datadir = director.dds.abspath(simulationRecord)
         if not os.path.exists(datadir): 
@@ -378,22 +378,56 @@ def getSimInputfile(simOb):
     if mdSettings['type']=='gulpopt':
         gulpOpt(simOb, baseSettings)
     elif mdSettings['type']=='gulpphonons':
-        pass
+        gulpPhonon(simOb, baseSettings)
+    elif mdSettings['type']=='gulpmd':
+        gulpMd(simOb, baseSettings)
 
 def gulpOpt(simOb, baseSettings):
     from memdf.gulp.Optimize import Optimize
     e = Optimize()
-    optSettings = {
+    settings = {
         'constraints':simOb.constraint,
         'optimizeCell':simOb.optimize_cell,
         'optimizeCoordinates':simOb.optimize_coordinates,
         'trajectoryFilename':simOb.trajectoryfile,
         'restartFilename':simOb.restartfile,
            }
-    optSettings.update(baseSettings)
-    for key,val in optSettings.iteritems():
+    settings.update(baseSettings)
+    for key,val in settings.iteritems():
         setattr(e, key, val)
     e.getInputfile()
+    
+def gulpPhonon(simOb, baseSettings):
+    from memdf.gulp.Phonon import Phonon
+    e = Phonon()
+    settings = {
+        'kpointMesh':simOb.kpointMesh,
+        'dosAndDispersionFilename':simOb.dosAndDispersionFilename,
+        'broadenDos':simOb.broadenDos,
+        'projectDos':simOb.projectDos}
+    settings.update(baseSettings)
+    for key,val in settings.iteritems():
+        setattr(e, key, val)
+    e.writeInputfile()
+    
+def gulpMd(simOb, baseSettings):
+    from memdf.gulp.Md import Md
+    e = Md()
+    settings = {
+        'ensemble':simOb.ensemble,
+        'equilibrationTime':simOb.equilibration_time,
+        'productionTime':simOb.production_time,
+        'propCalcInterval':simOb.properties_calculation_interval,
+        'thermostatParameter':simOb.thermostat_parameter,
+        'barostatParameter':simOb.barostat_parameter,
+        'timeStep':simOb.timestep,
+        'trajectoryFilename':simOb.trajectoryfile,
+        'restartFilename':simOb.restartfile,
+        'dumpInterval':simOb.restart_dump_frequency,}
+    settings.update(baseSettings)
+    for key,val in settings.iteritems():
+        setattr(e, key, val)
+    e.writeInputfile()
 
 import os
 
