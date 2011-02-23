@@ -1,0 +1,74 @@
+
+import journal
+debug = journal.debug('phonon')
+from vnfb.components.JobBuilder import JobBuilder as base
+
+class Builder(base):
+
+    def __init__(self, name, path):
+        base.__init__(self, name, path)
+
+    def render(self, computation, db=None, dds=None):
+        # find out the file name of the gulp library file
+        potential = computation.potential.dereference(db)
+        #libptr = dds.abspath(computation, filename=Computation.LIBPOINTER_FILE)
+        #libname = open(libptr).read().strip()
+
+        # two files need to be copied to job directory
+        # 1. gulp.gin
+        # 2. the library file
+        files = [computation.inputFile, potential.filename]
+
+        # copy files to job directory
+        job = computation.getJob(self.db)
+        for f in files:
+            dds.copy(computation, f, job, f)
+
+        # 3. add run.sh
+        #files.append( self._make_script1(computation) )
+        files.append( self._make_script(computation, db, dds) )
+        return files
+    
+    def _make_script(self, computation, db=None, dds = None):
+        job = computation.getJob(self.db)
+        #server = director.clerk.dereference(job.server)
+        server = job.server.dereference(db)
+        server_jobpath = dds.abspath(job, server=server)
+        np = job.numprocessors()
+        #octopod
+        if job.server.id=='server000':
+            cmds = [
+                '#!/usr/bin/env bash',
+                '. ~/.gulp-env',
+                'mpirun -np %d gulp < %s > %s' % (np, computation.inputFile, computation.output_filename),
+                '',
+                ]
+        #foxtrot
+        elif job.server.id=='server003':
+            cmds = [
+                '#!/usr/bin/env bash',
+                'source /home/danse-vnf-admin/.vnf',
+                #'. ~/.vnf',
+                #'. ~/.gulp-env',
+                'mpirun -np %d gulp_openmpi < %s > %s' % (np, computation.inputFile, computation.output_filename),
+                '',
+                ]              
+        cmds += [
+        'convert.py '+computation.output_filename,
+                 ] 
+        # need to create Phonon Modes File eventually....
+        script = self.shscriptname
+        path = self._path(script)
+        open(path, 'w').write('\n'.join(cmds))
+        return script
+    
+
+
+def job_builder(name, path):
+    return Builder(name, path)
+
+
+# version
+__id__ = "$Id$"
+
+# End of file 

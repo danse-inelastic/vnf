@@ -12,5 +12,5 @@ GulpPhononTable = o2t(
     )
 GulpPhononTable.job_builder = 'material_simulations/gulp/phonon'
 GulpPhononTable.actor = 'material_simulations/gulp/phonon'
-GulpPhononTable.result_retriever = 'material_simulations/gulp/phonon'
+GulpPhononTable.result_retriever = 'material_simulations/gulpSettings'
 
