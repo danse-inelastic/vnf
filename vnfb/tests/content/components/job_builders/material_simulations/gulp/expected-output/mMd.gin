@@ -1,0 +1,25 @@
+md conv 
+vectors
+2.456 0.0 0.0
+0.0 2.456 0.0
+0.0 0.0 6.696
+cartesian
+C   0 0 0
+C   0 0 3.348
+C   0.708986 1.228 0
+C   1.41797 0 3.348
+harmonic 
+C C 22.594 0.63952 0.0 0.0 1.8
+C C  8.301 3.42180 0.0 1.8 2.6
+C C -0.231 24.95086 0.0 2.6 3.1
+C C  0.362 2.94862 0.0 3.1 3.5
+                
+ensemble nvt 0.05
+temperature 0.0
+equilibration 0.0 ps
+production 0.0 ps
+timestep 0.002 ps
+sample 5.0 ps
+output history molDynamics.his.his
+write 0.0 ps
+dump molDynamics.res
