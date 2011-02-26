@@ -30,6 +30,7 @@ class ApproveUser(base):
 
         from vnfb.utils.services.ipad import askIpadToReload
         askIpadToReload(self)
+
         return
 
 
@@ -52,6 +53,10 @@ class ApproveUser(base):
         announce(self, 'user-approval', user)
         # alert administrators
         # announce(self, 'user-approval-alert', user)
+        
+        # 
+        print "Please add user %s 's email %s to vnf-users group" % (username, user.email)
+        return
 
 
     def _configure(self):
