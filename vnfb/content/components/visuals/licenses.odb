@@ -20,20 +20,7 @@ def visual(director=None):
                            text=['''<h2>License and Restriction Information<br>
       </h2>
       
-      <h4>VNF, BvK<br>
-      </h4>
-      <p>All VNF code is under the BSD-style DANSE license:
-      </p>
-
-
-<pre>DANSE Software 1.0 <br><br>COPYRIGHT AND PERMISSION NOTICE:<br>Copyright (c) 2010 California Institute of Technology. All rights reserved. <br>Permission is hereby granted, free of charge, to any person obtaining a copy <br>of this software and associated documentation files (the "Software"), to deal in <br>the Software without restriction, including without limitation the rights to use, <br>copy, modify, merge, publish, distribute, and/or sell copies of the Software, and to <br>permit persons to whom the Software is furnished to do so, provided that the above <br>copyright notice(s) and this permission notice appear in all copies of the Software <br>and that both the above copyright notice(s) and this permission notice appear in <br>supporting documentation. <br><br>THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY <br>KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE <br>WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PUR- <br>POSE AND NONINFRINGEMENT OF THIRD PARTY RIGHTS. IN NO EVENT <br>SHALL THE COPYRIGHT HOLDER OR HOLDERS INCLUDED IN THIS NO- <br>TICE BE LIABLE FOR ANY CLAIM, OR ANY SPECIAL INDIRECT OR CON- <br>SEQUENTIAL DAMAGES, OR ANY DAMAGES WHATSOEVER RESULTING <br>FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF <br>CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT <br>OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS <br>SOFTWARE. <br><br>Except as contained in this notice, the name of a copyright holder shall not be <br>used in advertising or otherwise to promote the sale, use or other dealings in this <br>Software without prior written authorization of the copyright holder. <br>All source code included in this distribution is covered by this notice, unless <br>specifically stated otherwise within each file. See each file within each release for <br>specific copyright holders. <br><br>DANSE is the name of a software system under construction with U.S. National <br>Science Foundation funding.  All work derived from DANSE software should<br>acknowledge DANSE with the following statement:<br><br>  "This work benefitted from DANSE software developed<br>   under NSF award DMR-0520547."<br></pre>
-      
-      <h4>VASP</h4>
-      <p>VASP usage is restricted
-to those users who have a valid VASP license. For now, prospective users should contact us directly if they desire
-to use it and must have a valid license of their own.&nbsp; <br>
-      </p>
-      <h4>GULP<br>
+    <h4>GULP<br>
       </h4>
       <p>GULP users must comply with the following stipulations on the <a href="https://www.ivec.org/gulp/">GULP homepage</a>: <br>
       </p>
