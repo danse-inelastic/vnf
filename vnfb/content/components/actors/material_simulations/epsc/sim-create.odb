@@ -1,0 +1,84 @@
+# -*- Python -*-
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                               Alex Dementsov
+#                      California Institute of Technology
+#                        (C) 2010  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+from luban.content import select, load, alert
+from vnfb.qeutils.qegrid import QEGrid
+from vnfb.qeutils.qeconst import SIMCHAINS, MDSTEPS, ID_MD_LABEL, ID_MD_OPTIONS
+from vnfb.qeutils.qeutils import selection2typekey, nonMDChain, noHyphen
+from luban.content.FormCheckBox import FormCheckBox
+from vnfb.dom.QESimulation import QESimulation
+
+import luban.content as lc
+from luban.components.AuthorizedActor import AuthorizedActor as base
+
+class Actor(base):
+    """ Create Quantum Espresso simulation"""
+
+    class Inventory(base.Inventory):
+        import pyre.inventory
+        sname       = pyre.inventory.str('sname', default='')
+        simtype     = pyre.inventory.str('simtype', default='')
+        description = pyre.inventory.str('description', default='')
+        label       = pyre.inventory.str('label', default='')
+        structureid = pyre.inventory.str('structureid', default='')
+
+        # Molecular dynamics steps
+        electronmin = pyre.inventory.bool(name='electronmin', default=False)
+        ionmin      = pyre.inventory.bool(name='ionmin', default=False)
+        ionrandom   = pyre.inventory.bool(name='ionrandom', default=False)
+        quenching   = pyre.inventory.bool(name='quenching', default=False)
+        dynamics    = pyre.inventory.bool(name='dynamics', default=False)
+        thermostat  = pyre.inventory.bool(name='thermostat', default=False)
+
+
+    def default(self, director):
+        return select(id='main-display-area').replaceContent(self.content(director))
+
+
+    def content(self, director):
+        def viewIndicator(director):
+            path = []
+            path.append(('Simulations ', load(actor='materialsimulation')))
+            path.append(('Create New Simulation ', select(id='main-display-area').replaceContent(
+                                                          load(actor='materialsimulation',
+                                                               routine='newSimulation')
+                                                          ))
+                        )
+            path.append('EPSC')
+            return director.retrieveVisual('view-indicator', path=path)
+
+        doc         = lc.document(title   = "Create New Simulation")
+
+        return doc
+
+
+    def __init__(self):
+        super(Actor, self).__init__(name='material_simulations/epsc/sim-create')
+
+
+    def _configure(self):
+        super(Actor, self)._configure()
+        #self.sname       = self.inventory.sname
+
+
+    def _init(self):
+        super(Actor, self)._init()
+        return
+
+def actor():
+    return Actor()
+
+
+__date__ = "$Mar 1, 2011 12:19:17 PM$"
+
+

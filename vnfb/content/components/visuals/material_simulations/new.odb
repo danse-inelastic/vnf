@@ -56,6 +56,10 @@ def showSimulations(table):
     packages.append((lc.link(label="GULP", onclick=load(actor="material_simulations/forcefieldwizard")),
                     """Academically open source lattice and molecular dynamics code with a wide range of functionality and forcefields."""
                     ))
+                    
+    packages.append((lc.link(label="EPSC", onclick=load(actor="material_simulations/epsc/sim-create")),
+                    """Elasto Plastic Self Consistent package for simulation of the thermo-mechanical deformation of polycrystalline aggregates"""))                    
+
     packages.append(('',lc.link(label="License", onclick=load(actor='licenses', routine='default'))))
 
 
