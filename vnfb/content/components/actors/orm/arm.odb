@@ -1,0 +1,32 @@
+# -*- Python -*-
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                               Alex Dementsov
+#                      California Institute of Technology
+#                        (C) 2010  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+from vnfb.dom.neutron_experiment_simulations.neutron_components.Arm import Arm
+
+from luban.components.Actor import Actor
+import luban.orm
+base = luban.orm.object2actor(Arm)
+class Actor(base):
+
+    class Inventory(base.Inventory):
+
+        import luban.inventory
+
+
+
+def actor():
+    return Actor('orm/arm')
+
+__date__ = "$Mar 7, 2011 12:15:45 PM$"
+
+
