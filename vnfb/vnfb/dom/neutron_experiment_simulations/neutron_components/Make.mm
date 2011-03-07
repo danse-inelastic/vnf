@@ -31,6 +31,7 @@ all: export
 
 EXPORT_PYTHON_MODULES = \
 	AbstractNeutronComponent.py \
+	Arm.py \
 	ChanneledGuide.py \
 	CollimatorLinear.py \
 	CollimatorRadial.py \
