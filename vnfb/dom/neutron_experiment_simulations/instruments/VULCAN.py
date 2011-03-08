@@ -1787,6 +1787,7 @@ def createInstrument(director):
         ccomp("L_monitor10", L_monitor10(), ((0.00000, 0.00000, 0.97200), (0.00000, 0.00000, 0.00000), 'previous')),
         ccomp("psd_sample_position", psd_sample_position(), ((0.00000, 0.00000, 0.97300), (0.00000, 0.00000, 0.00000), 'previous')),
         ccomp('neutron_recorder', neutron_recorder(), ((0,0,0), (0,0,0), 'previous')),
+
 #        ccomp("psd_xscan_L", psd_xscan_L(), ((0.00000, 0.00000, 0.97400), (0.00000, 0.00000, 0.00000), 'previous')),
 #        ccomp("psd_yscan_L", psd_yscan_L(), ((0.00000, 0.00000, 0.97500), (0.00000, 0.00000, 0.00000), 'previous')),
 #        ccomp("sample", sample(), ((0.00000, 0.00000, 1.00000), (0.00000, 0.00000, 0.00000), 'previous')),
