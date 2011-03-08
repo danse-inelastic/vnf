@@ -961,6 +961,7 @@ class _ComponentOutputfiles:
             'QEMonitor',
             'TofMonitor',
             'SphericalPSD',
+            'PSDMonitor',
             ]:
             f1, ext = os.path.splitext(f)
             f = '.'.join( [f1, 'h5'] )
