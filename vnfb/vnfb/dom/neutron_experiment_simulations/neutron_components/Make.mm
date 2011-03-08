@@ -61,6 +61,7 @@ EXPORT_PYTHON_MODULES = \
 	SphericalPSD.py \
 	TofMonitor.py \
 	T0Chopper.py \
+	VulcanDetectorSystem.py \
 	VanadiumPlate.py \
 	__init__.py \
 	_.py \
