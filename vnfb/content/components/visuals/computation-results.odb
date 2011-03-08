@@ -121,7 +121,7 @@ def visual(computation=None, actor=None, director=None,
         doc1.onexpand = [
             #select(element=alertdoc).hide(),
             select(element=doc1).replaceBy(
-            load(actor='orm/%s' % type,
+            load(actor='orm/%s' % r.getTableName(),
                  routine='createGraphicalView',
                  id = r.id)
             )
