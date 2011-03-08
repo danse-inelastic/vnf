@@ -1,0 +1,32 @@
+# -*- Python -*-
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                               Alex Dementsov
+#                      California Institute of Technology
+#                        (C) 2010  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+from vnfb.dom.neutron_experiment_simulations.neutron_components.VulcanDetectorSystem import VulcanDetectorSystem
+
+from luban.components.Actor import Actor
+import luban.orm
+base = luban.orm.object2actor(VulcanDetectorSystem)
+class Actor(base):
+
+    class Inventory(base.Inventory):
+
+        import luban.inventory
+
+
+
+def actor():
+    return Actor('orm/vulcandetectorsystem')
+
+__date__ = "$Mar 8, 2011 3:44:16 PM$"
+
+
