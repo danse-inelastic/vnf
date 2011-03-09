@@ -769,18 +769,18 @@ class Builder(base):
 
     def onVulcanDetectorSystem(self, detectorsystem):
         "Composition of 6 NDMonitor"
+        compname = detectorsystem.componentname
         
         # create odb file
         content = """
 def neutroncomponent():
     from mcvine.instruments.VULCAN.DetectorSystem import DetectorSystem
-    return DetectorSystem('detectorsystem')
-        """
-        compname = detectorsystem.componentname
+    return DetectorSystem('%s')
+        """ % compname
+        content = content.splitlines()
+
         filename = '%s.odb' % compname
-        odbfile = self._path(filename)
-        open(odbfile, 'w').write(content)
-        self.odbs.append(odbfile)
+        self.odbs.append((filename, content))
         
         # 
         kwds = {
@@ -962,10 +962,6 @@ def neutroncomponent():
         return
 
 
-    def _path(self, filename):
-        import os
-        return os.path.join(self.path, filename)
-    
     def _datadir(self, obj):
         dds = self.dds
         return dds.abspath(obj)
