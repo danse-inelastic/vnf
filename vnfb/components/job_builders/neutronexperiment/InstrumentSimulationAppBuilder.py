@@ -769,14 +769,26 @@ class Builder(base):
 
     def onVulcanDetectorSystem(self, detectorsystem):
         "Composition of 6 NDMonitor"
-        # Create NDMonitor(t)
+        
+        # create odb file
+        content = """
+def neutroncomponent():
+    from mcvine.instruments.VULCAN.DetectorSystem import DetectorSystem
+    return DetectorSystem('detectorsystem')
+        """
+        compname = detectorsystem.componentname
+        filename = '%s.odb' % compname
+        odbfile = self._path(filename)
+        open(odbfile, 'w').write(content)
+        self.odbs.append(odbfile)
+        
+        # 
         kwds = {
-            'name':     'm1',
-            'category': 'monitors',
-            'type':     'NDMonitor(t)',   #?
-            'supplier': 'mcni',
+            'name':     compname,
             }
-        self.onNeutronComponent( **kwds )
+        # XXX: name has to be a valid varaible name
+        self._write( 
+            '%(name)s = facility(%(name)r, default = %(name)r)' % kwds )
 
         opts = {}
 
@@ -786,10 +798,12 @@ class Builder(base):
             'tmin':     detectorsystem.tmin,
             'tmax':     detectorsystem.tmax,
             'nt':       detectorsystem.nt,
-            'filename': "NDMonitor-m1.out"  #outputfilename(component)
+            'wmin':     detectorsystem.wmin,
+            'wmax':     detectorsystem.wmax,
+            'nw':       detectorsystem.nw
             }
         for k,v in parameters.iteritems():
-            opts['%s.%s' % ("m1", k)] = v
+            opts['%s.%s' % (detectorsystem.componentname, k)] = v
 
         self.cmdline_opts.update( opts )
         
@@ -948,6 +962,10 @@ class Builder(base):
         return
 
 
+    def _path(self, filename):
+        import os
+        return os.path.join(self.path, filename)
+    
     def _datadir(self, obj):
         dds = self.dds
         return dds.abspath(obj)

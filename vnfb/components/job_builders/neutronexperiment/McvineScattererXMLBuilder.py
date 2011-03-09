@@ -85,14 +85,42 @@ class Builder(JobBuilder, XMLMill):
         return
 
 
-    def onIsotropicElasticKernel(self, kernel):
+    def onPowderDiffractionKernel(self, kernel):
+        self._write( '<!DOCTYPE scatterer>' )
+
         attrs = {
+            'mcweights': (0,1,0),
             }
+
+        self._write( '<homogeneous_scatterer %s>' % attribs_str( attrs ) )
+        self._indent()
+
+        for name, kernel in scatterer.kernels.dereference(self.db):
+            self.dispatch( kernel )
+            continue
+
+        self._outdent()
+        self._write( '</homogeneous_scatterer>' )
+        
+#  <SimplePowderDiffractionKernel Dd_over_d="1e-5" DebyeWaller_factor="0" peaks-py-path="peaks.py">
+#  </SimplePowderDiffractionKernel>
+
 
         self._write( '<IsotropicKernel %s>' %
                      attribs_str( attrs ) )
         self._write( '</IsotropicKernel>' )
         return 
+
+
+    def onIsotropicElasticKernel(self, kernel):
+        attrs = {
+            }
+
+
+        self._write( '<IsotropicKernel %s>' %
+                     attribs_str( attrs ) )
+        self._write( '</IsotropicKernel>' )
+        return
 
 
     def onSQEKernel(self, kernel):
