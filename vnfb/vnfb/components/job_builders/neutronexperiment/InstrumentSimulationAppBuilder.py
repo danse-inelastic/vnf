@@ -1007,6 +1007,9 @@ class _ComponentOutputfiles:
             ]:
             f1, ext = os.path.splitext(f)
             f = '.'.join( [f1, 'h5'] )
+        elif (klass == "VulcanDetectorSystem"):
+            fs      = ['m%s.h5'% i for i in range(1,7)]
+            return [os.path.join(self.root, f) for f in fs]
         
         return [os.path.join(self.root, f)]
 
