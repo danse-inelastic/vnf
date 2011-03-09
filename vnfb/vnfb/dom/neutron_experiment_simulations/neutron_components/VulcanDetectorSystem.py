@@ -69,7 +69,7 @@ class Inventory(InvBase):
     yheight.tip = 'Height of monitors, m'
     yheight.help = yheight.tip
 
-    dbtablename = 'vulcan_detector_system'
+    dbtablename = 'vulcandetectorsystems'
 
 VulcanDetectorSystem.Inventory = Inventory
 del Inventory
