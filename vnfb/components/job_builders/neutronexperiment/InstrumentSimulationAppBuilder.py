@@ -767,6 +767,34 @@ class Builder(base):
         self.cmdline_opts.update( opts )
 
 
+    def onVulcanDetectorSystem(self, detectorsystem):
+        "Composition of 6 NDMonitor"
+        # Create NDMonitor(t)
+        kwds = {
+            'name':     'm1',
+            'category': 'monitors',
+            'type':     'NDMonitor(t)',   #?
+            'supplier': 'mcni',
+            }
+        self.onNeutronComponent( **kwds )
+
+        opts = {}
+
+        parameters = {
+            'xwidth':   detectorsystem.xwidth,
+            'yheight':  detectorsystem.yheight,
+            'tmin':     detectorsystem.tmin,
+            'tmax':     detectorsystem.tmax,
+            'nt':       detectorsystem.nt,
+            'filename': "NDMonitor-m1.out"  #outputfilename(component)
+            }
+        for k,v in parameters.iteritems():
+            opts['%s.%s' % ("m1", k)] = v
+
+        self.cmdline_opts.update( opts )
+        
+
+
     def onVanadiumPlate(self, component):
         kwds = {
             'name': component.componentname,
@@ -911,7 +939,7 @@ class Builder(base):
             '%(name)s = facility(%(name)r, default = component(%(category)r, %(type)r, supplier = %(supplier)r )(%(name)r ) )' % kwds )
         return
                                     
-            
+        
     def _indent(self): self.indent_level += 1
     def _outdent(self): self.indent_level -= 1
 
