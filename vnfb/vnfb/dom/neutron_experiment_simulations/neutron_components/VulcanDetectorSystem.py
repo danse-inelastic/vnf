@@ -37,7 +37,7 @@ class VulcanDetectorSystem(base):
 InvBase=base.Inventory
 class Inventory(InvBase):
 
-    tmin        = InvBase.d.float(name='tmin', default=0., validator=InvBase.v.positive)
+    tmin        = InvBase.d.float(name='tmin', default=0., validator=InvBase.v.nonnegative)
     tmin.tip    = 'Minimum TOF, seconds'
     tmin.help   = tmin.tip
 
@@ -49,7 +49,7 @@ class Inventory(InvBase):
     nt.tip      = 'Number of divisions in time axes'
     nt.help     = nt.tip
 
-    wmin        = InvBase.d.float(name='wmin', default=0., validator=InvBase.v.positive)
+    wmin        = InvBase.d.float(name='wmin', default=0., validator=InvBase.v.nonnegative)
     wmin.tip    = 'Minimum of wavelength, AA'
     wmin.help   = wmin.tip
 
