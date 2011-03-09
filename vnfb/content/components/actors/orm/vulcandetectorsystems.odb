@@ -25,7 +25,7 @@ class Actor(base):
 
 
 def actor():
-    return Actor('orm/vulcandetectorsystem')
+    return Actor('orm/vulcandetectorsystems')
 
 __date__ = "$Mar 8, 2011 3:44:16 PM$"
 
