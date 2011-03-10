@@ -11,27 +11,29 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
-#XXX: Finish?
+#XXX: Finish!!!
 
-from AbstractScatteringKernel import AbstractScatteringKernel as base, TableBase
+from _ import AbstractScatteringKernel as base, TableBase
 
 class PowderDiffractionKernel(base):
 
-    # scattering_length = 1.0
+    dfraction   = 1e-5    # Dd_over_d
+    dwfactor    = 1.      # DebyeWaller_factor
 
     def customizeLubanObjectDrawer(self, drawer):
         drawer.sequence = ['properties']
-        # drawer.mold.sequence = ['scattering_length']
+        drawer.mold.sequence = [
+            'dfraction',
+            'dwfactor'
+            ]
         return
-
-    pass
-
 
 
 InvBase = base.Inventory
 class Inventory(InvBase):
 
-    # scattering_length = InvBase.d.float(name = 'scattering_length', default = 1.)
+    dfraction   = InvBase.d.float(name = 'dfraction', default = 1e-5)
+    dwfactor    = InvBase.d.float(name = 'dwfactor', default = 1.)
 
     dbtablename = 'powderdiffractionkernels'
 
@@ -40,7 +42,6 @@ class Inventory(InvBase):
 
 PowderDiffractionKernel.Inventory = Inventory
 del Inventory
-
 
 from _ import o2t
 PowderDiffractionKernelTable = o2t(PowderDiffractionKernel, {'subclassFrom': TableBase},)
