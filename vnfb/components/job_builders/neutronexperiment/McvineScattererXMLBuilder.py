@@ -86,29 +86,15 @@ class Builder(JobBuilder, XMLMill):
 
 
     def onPowderDiffractionKernel(self, kernel):
-        self._write( '<!DOCTYPE scatterer>' )
-
         attrs = {
-            'mcweights': (0,1,0),
+            "Dd_over_d": kernel.dfraction,
+            "DebyeWaller_factor": kernel.dwfactor,
+            "peaks-py-path": "peaks.py"
             }
 
-        self._write( '<homogeneous_scatterer %s>' % attribs_str( attrs ) )
-        self._indent()
-
-        for name, kernel in scatterer.kernels.dereference(self.db):
-            self.dispatch( kernel )
-            continue
-
-        self._outdent()
-        self._write( '</homogeneous_scatterer>' )
-        
-#  <SimplePowderDiffractionKernel Dd_over_d="1e-5" DebyeWaller_factor="0" peaks-py-path="peaks.py">
-#  </SimplePowderDiffractionKernel>
-
-
-        self._write( '<IsotropicKernel %s>' %
+        self._write( '<SimplePowderDiffractionKernel %s>' %
                      attribs_str( attrs ) )
-        self._write( '</IsotropicKernel>' )
+        self._write( '</SimplePowderDiffractionKernel>' )        
         return 
 
 
