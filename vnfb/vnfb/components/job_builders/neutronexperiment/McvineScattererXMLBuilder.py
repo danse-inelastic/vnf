@@ -92,8 +92,7 @@ class Builder(JobBuilder, XMLMill):
             "peaks-py-path": "peaks.py"
             }
 
-        self._write( '<SimplePowderDiffractionKernel %s>' %
-                     attribs_str( attrs ) )
+        self._write( '<SimplePowderDiffractionKernel %s>' % attribs_str( attrs ) )
         self._write( '</SimplePowderDiffractionKernel>' )        
         return 
 
