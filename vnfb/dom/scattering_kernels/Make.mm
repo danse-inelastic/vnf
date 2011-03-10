@@ -17,6 +17,7 @@ PACKAGE = dom/scattering_kernels
 # directory structure
 
 BUILD_DIRS = \
+	diff \
 	ins \
 	sans \
 
