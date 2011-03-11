@@ -30,7 +30,6 @@ class PowderDiffractionKernel(base):
             'lazcontent'
             ]
 
-
         def _createfield_for_lazcontent(obj):
             # this is a method of mold.
             self = drawer.mold

@@ -149,6 +149,41 @@ class Builder(base):
         return
 
 
+    def onSimpleSource(self, s):
+        kwds = {
+            'name': s.componentname,
+            'category': 'sources',
+            'type': 'Source_simple',
+            'supplier': 'mcstas2',
+            }
+        self.onNeutronComponent( **kwds )
+
+        opts = {
+            }
+
+
+        parameters = {
+            'radius':   s.radius,
+            'height':   s.height,
+            'width':   s.width,
+            'dist':   s.dist,
+            'xw':   s.xw,
+            'yh':   s.yh,
+            'E0':   s.E0,
+            'dE':   s.dE,
+            'Lambda0':   s.Lambda0,
+            'dLambda':   s.dLambda,
+            'flux':   s.flux,
+            'gauss':   s.gauss,
+            }
+        for k,v in parameters.iteritems():
+            opts['%s.%s' % (s.componentname, k)] = v
+            continue
+
+        self.cmdline_opts.update( opts )
+        return
+
+
     def onSNSModerator(self, component):
         kwds = {
             'name': component.componentname,
