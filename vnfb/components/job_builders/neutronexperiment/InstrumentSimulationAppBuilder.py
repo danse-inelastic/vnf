@@ -52,6 +52,8 @@ class Builder(base):
         
         self._write( 'import mcvine' )
         self._write( 'import mccomponents.pyre_support' )
+        # XXX: hack: need this line to support diffraction kernels
+        self._write( 'import mccomponents.sample.diffraction.xml')
         self._write( 'from mcni.pyre_support.Instrument import Instrument as base' )
         self._write( 'class Instrument(base):' )
 
