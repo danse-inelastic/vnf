@@ -55,6 +55,7 @@ EXPORT_PYTHON_MODULES = \
 	QMonitor.py \
 	SampleBase.py \
 	SampleComponent.py \
+	SimpleSource.py \
 	Slit.py \
 	SNSModerator.py \
 	SNSModeratorMCSimulatedData.py \
