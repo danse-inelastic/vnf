@@ -11,8 +11,7 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
-#XXX: Finish!!!
-
+# XXX: Need to create text area
 from _ import AbstractScatteringKernel as base, TableBase
 
 LAZ_DEFAULT = "Please insert content of .laz file (e.g. Al.laz)!"
