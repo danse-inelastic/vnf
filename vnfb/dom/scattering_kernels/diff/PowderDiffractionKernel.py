@@ -29,7 +29,6 @@ class PowderDiffractionKernel(base):
             'dwfactor',
             'lazcontent'
             ]
-        return
 
 
         def _createfield_for_lazcontent(obj):
