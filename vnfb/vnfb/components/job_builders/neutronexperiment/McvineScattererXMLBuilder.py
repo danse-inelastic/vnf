@@ -90,14 +90,16 @@ class Builder(JobBuilder, XMLMill):
         from mcvine.instruments.VULCAN.applications.peak_generator import PeakGenerator
 
         # Create peaks file
-        filepath    = os.path.join(self.path, "peaks.py")
-        gen         = PeakGenerator(config=kernel.lazcontent)
+        PEAKS   = "peaks.py"
+        filepath    = os.path.join(self.path, PEAKS)
+        gen         = PeakGenerator(config=kernel.lazcontent, linewidth=0, dwfactor=kernel.dwfactor)
         gen.save(filepath)
+        self.filenames.append(PEAKS)
 
         attrs = {
             "Dd_over_d": kernel.dfraction,
             "DebyeWaller_factor": kernel.dwfactor,
-            "peaks-py-path": "peaks.py"
+            "peaks-py-path": PEAKS
             }
 
         self._write( '<SimplePowderDiffractionKernel %s>' % attribs_str( attrs ) )
