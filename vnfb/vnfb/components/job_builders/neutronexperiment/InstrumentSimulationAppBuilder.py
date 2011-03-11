@@ -442,6 +442,33 @@ class Builder(base):
         return
 
 
+    # XXX: No implementation in McVine at this moment!
+#    def onQMonitor(self, m):
+#        kwds = {
+#            'name': m.componentname,
+#            'category': 'monitors',
+#            'type': 'QMonitor',
+#            'supplier': 'mcni', # ?
+#            }
+#        self.onNeutronComponent( **kwds )
+#
+#        opts = {
+#            }
+#
+#        parameters = {
+#            'filename': outputfilename(m),
+#            'Qmin': m.Qmin,
+#            'Qmax': m.Qmax,
+#            'nQ':   m.nQ
+#            }
+#        for k,v in parameters.iteritems():
+#            opts['%s.%s' % (m.componentname, k)] = v
+#            continue
+#
+#        self.cmdline_opts.update( opts )
+#        return
+
+
     def onTofMonitor(self, m):
         kwds = {
             'name': m.componentname,
