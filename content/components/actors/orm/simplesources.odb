@@ -1,0 +1,32 @@
+# -*- Python -*-
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                               Alex Dementsov
+#                      California Institute of Technology
+#                        (C) 2010  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+from vnfb.dom.neutron_experiment_simulations.neutron_components.SimpleSource import SimpleSource
+
+from luban.components.Actor import Actor
+import luban.orm
+base = luban.orm.object2actor(SimpleSource)
+class Actor(base):
+
+    class Inventory(base.Inventory):
+
+        import luban.inventory
+
+
+
+def actor():
+    return Actor('orm/simplesources')
+
+__date__ = "$Mar 11, 2011 1:32:08 PM$"
+
+
