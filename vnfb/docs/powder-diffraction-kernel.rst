@@ -6,18 +6,42 @@ Using Powder Diffraction Kernel in VNF
 Introduction
 ------------
 
-In this tutorial we will learn how to use Powder Diffraction Kernel.
+In this tutorial we will learn how to use Powder Diffraction Kernel for simple
+instrument composed of three componentsin in VNF:
 
+::
+
+[SimpleSource] -> [SampleComponent] -> [EMonitor]
+
+``SimpleSource`` generates beam of neutrons uniformly distributed within the energy range
+``[E0-dE, E0+dE]`` which are scattered by ``SampleComponent`` with the powder
+diffraction kernel inside. Neutrons scattered by the ``SampleComponent`` are detected by the
+``EMonitor`` - the energy sensitive monitor. As a result we should see distinctive
+peaks on the Intensity vs. Energy I(E) plot.
 
 Create New Sample
 -----------------
 
+To explore the diffraction properties of material we create the new
+sample which includes the powder diffraction kernel. In the tab *Sample*
+click on the *Create New Sample* button.
 
 .. figure:: images/powder-diff-kernel/1.sample-list.png
    :width: 720px
 
    *Fig. 1 Create new sample*
 
+To configure sample one needs to fill out several sections:
+
+* Basic information
+* Atomic structure
+* Geometry shape
+* Kernels
+
+Let's start with the ``Basic information`` section. In this section all you need
+to set is the ``description``. This description can be important to help you find
+this experiment later on. Once the description is set don't forget to click on
+``Save`` button.
 
 .. figure:: images/powder-diff-kernel/2.sample-description.png
    :width: 300px
