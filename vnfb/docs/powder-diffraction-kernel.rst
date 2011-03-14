@@ -58,7 +58,7 @@ Add Powder Diffraction Kernel
 .. figure:: images/powder-diff-kernel/8.sample-kernel-info-full.png
    :width: 720px
 
-   *Fig. 8 Final sample information*
+   *Fig. 8 Final sample configuration*
 
 
 Create New Instrument
@@ -87,38 +87,38 @@ Instrument Components Configuration
 .. figure:: images/powder-diff-kernel/12.source-parameters.png
    :width: 450px
 
-   *Fig. 12 Edit *
+   *Fig. 12 Edit SimpleSource configuration*
 
 .. figure:: images/powder-diff-kernel/13.source-info.png
    :width: 720px
 
-   *Fig. *
+   *Fig. 13 SimpleSource configuration*
 
 .. figure:: images/powder-diff-kernel/14.sample-edit.png
    :width: 720px
 
-   *Fig. *
+   *Fig. 14 Edit basic sample configuration*
 
 
 .. figure:: images/powder-diff-kernel/15.sample-info-chain.png
    :width: 720px
 
-   *Fig. *
+   *Fig. 15 Basic sample configuration*
 
 .. figure:: images/powder-diff-kernel/16.monitor-edit.png
    :width: 300px
 
-   *Fig. *
+   *Fig. 16 Edit EMonitor configuration*
 
 .. figure:: images/powder-diff-kernel/17.monitor-info-chain.png
    :width: 720px
 
-   *Fig. *
+   *Fig. 17 EMonitor configuration*
 
 .. figure:: images/powder-diff-kernel/18.continue-button.png
    :width: 150px
 
-   *Fig. *
+   *Fig. 18 Continue Button*
 
 
 Sample Configuration
@@ -128,19 +128,19 @@ Sample Configuration
 .. figure:: images/powder-diff-kernel/19.sample-select.png
    :width: 720px
 
-   *Fig. *
+   *Fig. 19 Select sample for sample component*
 
 .. figure:: images/powder-diff-kernel/20.sample-review.png
    :width: 720px
 
-   *Fig. *
+   *Fig. 20 Review sample configuration*
 
 
 
 .. figure:: images/powder-diff-kernel/21.sample-environment.png
    :width: 720px
 
-   *Fig. *
+   *Fig. 21 Sample environment configuration*
 
 
 Experiment Configuration
@@ -149,22 +149,22 @@ Experiment Configuration
 .. figure:: images/powder-diff-kernel/22.experiment-edit.png
    :width: 450px
 
-   *Fig. *
+   *Fig. 22 Edit basic experiment configuration*
 
 .. figure:: images/powder-diff-kernel/23.experiment-info.png
    :width: 720px
 
-   *Fig. *
+   *Fig. 23 Basic experiment configuration*
 
 .. figure:: images/powder-diff-kernel/24.experiment-review.png
    :width: 400px
 
-   *Fig. *
+   *Fig. 24 Review of full experiment configuration*
 
 .. figure:: images/powder-diff-kernel/25.create-job-button.png
    :width: 150px
 
-   *Fig. *
+   *Fig. 25 Create job*
 
 
 Job Submission, Monitoring and Results Retrieval
@@ -174,33 +174,33 @@ Job Submission, Monitoring and Results Retrieval
 .. figure:: images/powder-diff-kernel/26.job-form.png
    :width: 350px
 
-   *Fig. *
+   *Fig. 26 Edit experiment job*
 
 
 .. figure:: images/powder-diff-kernel/27.job-submission.png
    :width: 720px
 
-   *Fig. *
+   *Fig. 27 Job submission*
 
 .. figure:: images/powder-diff-kernel/28.job-running.png
    :width: 480px
 
-   *Fig. *
+   *Fig. 28 Running job*
 
 .. figure:: images/powder-diff-kernel/29.job-finished.png
    :width: 720px
 
-   *Fig. *
+   *Fig. 29 Finished job*
 
 .. figure:: images/powder-diff-kernel/30.job-packing.png
    :width: 720px
 
-   *Fig. *
+   *Fig. 30 Results retrieval*
 
 .. figure:: images/powder-diff-kernel/31.job-tarball.png
    :width: 500px
 
-   *Fig. *
+   *Fig. 31 Results ready for download*
 
 
 Experiment Results
@@ -209,12 +209,12 @@ Experiment Results
 .. figure:: images/powder-diff-kernel/32.experiment-results.png
    :width: 720px
 
-   *Fig. *
+   *Fig. 32 Experiment results*
 
 .. figure:: images/powder-diff-kernel/33.results-histogram.png
    :width: 720px
 
-   *Fig. *
+   *Fig. 33 Histogram I(E)*
 
 
 
