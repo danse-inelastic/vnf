@@ -36,7 +36,14 @@ Web Portal Guide
 
 ..     qe-phonon-dos
 ..     qe-car-parrinello
-   
+
+.. Scattering Kernels:
+
+.. .. toctree::
+
+..     powder-diffraction-kernel
+
+
 .. ..   discussion
 
 

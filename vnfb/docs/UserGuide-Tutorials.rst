@@ -20,4 +20,10 @@ Quantum Espresso
 
 * :ref:`qe-phonon-dos`
 * :ref:`qe-car-parrinello`
-   
+.. * :ref:`qe-parser`
+
+
+Scattering Kernels
+------------------
+
+* :ref:`powder-diffraction-kernel`
