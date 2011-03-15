@@ -19,11 +19,11 @@ class TestCase(unittest.TestCase):
 
     def test1(self):
         from memdf.gulp.Optimize import Optimize
- 	m = Optimize()
- 	m.xyzFile='structure.xyz'
- 	m.forcefield='axiallySymmetricNWS.lib'
- 	m.inputDeckName = ginfile = 'mOpt.gin'
- 	m.writeInputfile()
+     	m = Optimize()
+     	m.xyzFile='structure.xyz'
+     	m.forcefield='axiallySymmetricNWS.lib'
+     	m.inputDeckName = ginfile = 'mOpt.gin'
+     	m.writeInputfile()
         
         expected = 'expected-output'
         s = open(ginfile).read()
