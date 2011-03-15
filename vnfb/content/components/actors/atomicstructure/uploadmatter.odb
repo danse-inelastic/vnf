@@ -66,6 +66,8 @@ class Actor(base):
         structure = domaccess.newAtomicStructure()
         #filepath, ext = os.path.splitext(found)
         structure.read(found)
+        #make sure description is not too long
+        structure.description = structure.description[:250]
         #
         orm = director.clerk.orm
         self.inventory.structureid = orm(structure).id
