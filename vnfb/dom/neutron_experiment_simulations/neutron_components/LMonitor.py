@@ -19,9 +19,9 @@ class LMonitor(base):
 
     Lmin = 2.
     Lmax = 10.
-    x_min = y_min = -0.1
-    x_max = y_max = 0.1
-    x_width = y_height = 0.15
+    x_min = y_min = 0
+    x_max = y_max = 0
+    x_width = y_height = 0 #0.15
     nchan = 100
 
     def customizeLubanObjectDrawer(self, drawer):
@@ -44,17 +44,17 @@ class Inventory(InvBase):
     Lmin.help = 'Minimum wavelength to detect (AA) '
     Lmax = InvBase.d.float( name = 'Lmax', default = 10, validator=InvBase.v.positive)
     Lmax.help = 'Maximum wavelength to detect (AA) '
-    x_min = InvBase.d.float( name = 'x_min', default = -0.1 )
+    x_min = InvBase.d.float( name = 'x_min', default = 0 )
     x_min.help = 'Lower x bound of detector opening (m) '
-    x_max = InvBase.d.float( name = 'x_max', default = 0.1 )
+    x_max = InvBase.d.float( name = 'x_max', default = 0 )
     x_max.help = 'Upper x bound of detector opening (m) '
-    y_min = InvBase.d.float( name = 'y_min', default = -0.1 )
+    y_min = InvBase.d.float( name = 'y_min', default = 0 )
     y_min.help = 'Lower y bound of detector opening (m) '
-    y_max = InvBase.d.float( name = 'y_max', default = 0.1 )
+    y_max = InvBase.d.float( name = 'y_max', default = 0 )
     y_max.help = 'Upper y bound of detector opening (m) '
-    x_width = InvBase.d.float( name = 'x_width', default = 0.15, validator=InvBase.v.positive )
+    x_width = InvBase.d.float( name = 'x_width', default = 0, validator=InvBase.v.positive )
     x_width.help = 'Width/diameter of detector (x). Overrides xmin,xmax. (m) '
-    y_height = InvBase.d.float( name = 'y_height', default = 0.15, validator=InvBase.v.positive )
+    y_height = InvBase.d.float( name = 'y_height', default = 0, validator=InvBase.v.positive )
     y_height.help = 'Height of detector (y). Overrides ymin,ymax. (m) '
 
 
