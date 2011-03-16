@@ -14,6 +14,7 @@ Web Portal Guide
    UserGuide-analysis
    UserGuide-samples
    UserGuide-experiments
+   UserGuide-instruments
    UserGuide-jobs
    UserGuide-FAQ
 
