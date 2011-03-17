@@ -4,7 +4,7 @@ VULCAN Instrument
 =================
 
 Introduction
-------------
+^^^^^^^^^^^^
 
 .. figure:: images/vulcan/_1.vulcan-image.png
    :width: 500px
@@ -14,17 +14,26 @@ Introduction
 .. figure:: images/vulcan/_2.vulcan-schema.png
    :width: 500px
 
-   *Fig. 2 Schema of VULCAN instrument with numbered sections*
+   *Fig. 2 Geometry of VULCAN instrument with numbered sections*
 
 .. figure:: images/vulcan/_3.vulcan-schema2.png
    :width: 400px
 
-   *Fig. 3 Another schema of VULCAN instrument*
+   *Fig. 3 Schema of VULCAN instrument*
+
+
+VULCAN Instrument Model
+^^^^^^^^^^^^^^^^^^^^^^^
 
 .. figure:: images/vulcan/_4.vulcan-components.png
    :width: 720px
 
    *Fig. 4 Components sequence in VULCAN instrument model*
+
+
+Instrument Before Sample
+^^^^^^^^^^^^^^^^^^^^^^^^
+
 
 .. figure:: images/vulcan/1.select-vulcan.png
    :width: 720px
@@ -35,6 +44,10 @@ Introduction
    :width: 850px
 
    *Fig. 6 Component chain of VULCAN instrument*
+
+
+SNSModerator Component
+^^^^^^^^^^^^^^^^^^^^^^
 
 .. figure:: images/vulcan/3.edit-snsmoderator.png
    :width: 400px
@@ -55,6 +68,11 @@ Introduction
    :width: 720px
 
    *Fig. 10 LMonitor component*
+
+
+NeutronRecorder Component
+^^^^^^^^^^^^^^^^^^^^^^^^^
+
 
 .. figure:: images/vulcan/7.neutronrecorder-info.png
    :width: 720px
@@ -85,6 +103,10 @@ Introduction
    :width: 720px
 
    *Fig. 16 NeutronExperiment view with results*
+
+
+Intermediate Detectors
+^^^^^^^^^^^^^^^^^^^^^^
 
 .. figure:: images/vulcan/13.lmonitor1.png
    :width: 500px
@@ -151,10 +173,20 @@ Introduction
 
    *Fig. 29 Add description to recorded neutrons*
 
+
+Instrument with Sample and Detector System
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+
 .. figure:: images/vulcan/26.component-chain.png
    :width: 720px
 
    *Fig. 30 Component chain for sample*
+
+
+NeutronPlayer Component
+^^^^^^^^^^^^^^^^^^^^^^
+
 
 .. figure:: images/vulcan/27.neutron-player-edit.png
    :width: 400px
@@ -176,6 +208,11 @@ Introduction
 
    *Fig. 34 Sample component*
 
+
+Vulcan Detector System
+^^^^^^^^^^^^^^^^^^^^^^
+
+
 .. figure:: images/vulcan/31.detector-system-info.png
    :width: 720px
 
@@ -190,6 +227,10 @@ Introduction
    :width: 650px
 
    *Fig. 37 Edit basic experiment configuration with sample*
+
+
+Experiment Results
+^^^^^^^^^^^^^^^^^^
 
 .. figure:: images/vulcan/34.experiment-vsd-results.png
    :width: 720px
