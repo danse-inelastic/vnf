@@ -63,7 +63,7 @@ After atomic structure has been selected you need to select shape type (box or
 cylinder) and set geometry parameters (e.g. width, thickness, height).
 
 .. figure:: images/powder-diff-kernel/4.sample-shape.png
-   :width: 300px
+   :width: 250px
 
    *Fig. 4 Select and edit sample shape*
 
