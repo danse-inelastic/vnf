@@ -175,7 +175,7 @@ The selected neutron profile will be displayed in properties:
           it still can be used for VULCAN.
 
 To show more examples of other components configuration in the instrument
-the configuration of ``LMonitor`` is shown in Fig. 10.
+the configuration of ``LMonitor`` is shown in *Fig. 10*.
 
 .. figure:: images/vulcan/6.lmonitor10-info.png
    :width: 720px
@@ -328,6 +328,14 @@ neutrons. This little step allows you to find the recorded neutrons when you use
 Instrument with Sample and Detector System
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+The second part of our experiment is *Instrument with sample and detector system*.
+As in the first part we need to create a new experiment (see above). But in this
+case we select ``Ideal Inelastic Neutron Scattering Instrument for Powder Sample``
+instead of ``VULCAN`` and click ``continue``. The default values need to be changed
+by clicking on the component and selecting different component from
+``change component type`` drop-down menu. The first component need to be changed to
+``NeutronPlayer`` and final component is changed to ``VulcanDetectorSystem``. So
+the final component chain will look as shown in *Fig. 30*.
 
 .. figure:: images/vulcan/26.component-chain.png
    :width: 720px
@@ -338,56 +346,108 @@ Instrument with Sample and Detector System
 NeutronPlayer Component
 ^^^^^^^^^^^^^^^^^^^^^^^
 
+``NeutronPlayer`` component is in a sense opposite to ``NeutronRecorder`` component.
+It allows you to use saved neutrons as a component instead of doing the simulation
+that produce this neutrons over and over again. Now is the time to use neutrons
+that we generated in previous sections. ``NeutronPlayer`` component has no neutrons
+set by default so we need add them. In the ``NeutronPlayer`` component click ``edit``
+link,
 
 .. figure:: images/vulcan/27.neutron-player-edit.png
    :width: 400px
 
    *Fig. 31 No neutrons are set for NeutronPlayer*
 
+... select neutrons that we created before (description that we added for
+neutrons helps to find them in this list) and click ``Save``.
+
 .. figure:: images/vulcan/28.select-neutrons.png
    :width: 720px
 
    *Fig. 32 Select recorded neutrons for NeutronPlayer*
+
+As you can see, neutrons for ``NeutronPlayer`` are now set.
 
 .. figure:: images/vulcan/29.neutronplayer-info.png
    :width: 720px
 
    *Fig. 33 NeutronPlayer component*
 
+``SampleComponent`` doesn't change.
+
 .. figure:: images/vulcan/30.sample-info.png
    :width: 720px
 
    *Fig. 34 Sample component*
 
-
-Vulcan Detector System
-^^^^^^^^^^^^^^^^^^^^^^
-
+In ``VulcanDetectorSystem`` component we adjusted position and some other parameters.
 
 .. figure:: images/vulcan/31.detector-system-info.png
    :width: 720px
 
    *Fig. 35 VulcanDetectorSystem component*
 
+
+Vulcan Detector System
+^^^^^^^^^^^^^^^^^^^^^^
+
+``VulcanDetectorSystem`` component is a system composed of 3 time-of-flight
+sensitive and 3 wavelength sensitive monitors and is specific to VULCAN instrument.
+Internally ``VulcanDetectorSystem`` uses  McVine ``NDMonitor``, a multidimensional
+monitor that is very flexible to display all kinds of dependencies. Please consult
+the documentation on `NDMonitor <http://docs.danse.us/MCViNE/sphinx/Components.html#ndmonitor>`_
+for more details. The time-of-flight monitors are implemented with  ``NDMonitor(t)``
+and the wavelength  monitors are implemented with ``NDMonitor(w)``. The detector
+system sets some restrictions on monitors configuration: size of monitors, time-of-flight
+and wavelength range are the same for all corresponding monitors. The detectors
+in the system are located in the plane perpendicular to the Z axis. Three locations
+are set for each pair of tof and wavelength monitors:
+
+::
+
+    (-2, 0, 0)          - center
+    (-1.959, 0.403, 0)  - top
+    (-1.959, -0.403, 0) - bottom
+
+Now back to our experiment. After we configured components ``NeutronPlayer``,
+``SampleComponent`` and ``VulcanDetectorSystem`` click on ``continue`` button.
+Additionally to configuring component chain we need also to set up sample.
+For ``SampleComponent`` we will use sample generated in tutorial
+:ref:`powder-diffraction-kernel`. Please read this tutorial for more details.
+Given that the sample is already generated, we will select it from the list of
+``Sample configuration``.
+
 .. figure:: images/vulcan/32.select-sample.png
    :width: 720px
 
    *Fig. 36 Select sample for sample component*
+
+Next, configure ``Sample environment`` and edit basic experiment configuration.
+
 
 .. figure:: images/vulcan/33.edit-experiment.png
    :width: 650px
 
    *Fig. 37 Edit basic experiment configuration with sample*
 
-
-Experiment Results
-^^^^^^^^^^^^^^^^^^
+Repeat step described in more details above: review experiment configuration,
+submit job, retrieve results, switch to NeutronExperiment view we finally see the
+experiment results.
 
 .. figure:: images/vulcan/34.experiment-vsd-results.png
    :width: 720px
 
    *Fig. 38 Experiment view with results*
 
+
+Experiment Results
+^^^^^^^^^^^^^^^^^^
+
+Experiment results are provided by ``VulcanDetectorSystem`` and consist of six plots:
+three ``I(TOF)`` plots from time sensitive monitors and three ``I(w)`` from wavelength
+sensitive monitors. First two plots (*Fig. 39-40*) show data for center detectors,
+next two plots (*Fig. 41-42*) show data for top detectors and two last plots
+(*Fig. 43-44*) show data for bottom detectors.
 
 .. figure:: images/vulcan/35.m1.png
    :width: 500px
@@ -412,12 +472,12 @@ Experiment Results
 .. figure:: images/vulcan/39.m5.png
    :width: 500px
 
-   *Fig. 43 Plot I(TOF) for side buttom detector*
+   *Fig. 43 Plot I(TOF) for side bottom detector*
 
 .. figure:: images/vulcan/40.m6.png
    :width: 500px
 
-   *Fig. 44 Plot I(w) for side buttom detector*
+   *Fig. 44 Plot I(w) for side bottom detector*
 
 
 
