@@ -145,22 +145,37 @@ there is no neutron profile specified by default, so we need to set it first.
 
 ::
 
-    WARNING: If you don't specify the neutron profile you will 
+    WARNING: If you don't specify the neutron profile you will discover an error
+             message when the job gets submitted.
+
+In the ``SNSModerator`` component click on *edit* link.
 
 .. figure:: images/vulcan/3.edit-snsmoderator.png
    :width: 400px
 
    *Fig. 7 No neutron profile specified*
 
+... and select neutron profile from available options.
+
 .. figure:: images/vulcan/4.select-neutronprofile.png
    :width: 300px
 
    *Fig. 8 Select neutron profile*
 
+The selected neutron profile will be displayed in properties:
+
 .. figure:: images/vulcan/5.snsmoderator-info.png
    :width: 720px
 
    *Fig. 9 SNSModerator component*
+
+::
+
+    Note: Though the selected neutron profile is implemented for ARCS instrument
+          it still can be used for VULCAN.
+
+To show more examples of other components configuration in the instrument
+the configuration of ``LMonitor`` is shown in Fig. 10.
 
 .. figure:: images/vulcan/6.lmonitor10-info.png
    :width: 720px
@@ -171,31 +186,58 @@ there is no neutron profile specified by default, so we need to set it first.
 NeutronRecorder Component
 ^^^^^^^^^^^^^^^^^^^^^^^^^
 
+The final component in the chain is ``NeutronRecorder``. This component saves
+neutrons that can later be used or replayed for different component chains.
+Here we save neutrons at the sample position to use in instrument with sample
+and detector system.
 
 .. figure:: images/vulcan/7.neutronrecorder-info.png
    :width: 720px
 
    *Fig. 11 NeutronRecorder component*
 
+When we are agree with the components configuration click on ``continue`` button and edit
+description to the experiment. Here we create ``1e6`` neutrons.
+
 .. figure:: images/vulcan/8.edit-experiment.png
    :width: 400px
 
    *Fig. 12 Edit basic experiment configuration*
+
+Next, review the full experiment configuration and click on ``create job`` button,
+then select computational server and click ``submit``.
 
 .. figure:: images/vulcan/9.job-edit.png
    :width: 300px
 
    *Fig. 13 Edit experiment job*
 
+After the job is finished you can retrieve results by clicking on
+``Pack the job directory for download``. 
+
 .. figure:: images/vulcan/10.job-finished.png
    :width: 450px
 
    *Fig. 14 Finished job*
 
+::
+
+    Note: The job exited with code 0, meaning that simulation ran successfully.
+
+Now switch to NeutronExperimen page:
+
 .. figure:: images/vulcan/11.job-download.png
    :width: 450px
 
    *Fig. 15 Switch to NeutronExperiment view*
+
+... and you will see the following sections:
+
+* Overview
+
+* Experiment details
+
+* Results
 
 .. figure:: images/vulcan/12.experiment-vulcan-results.png
    :width: 720px
@@ -205,6 +247,9 @@ NeutronRecorder Component
 
 Intermediate Detectors
 ^^^^^^^^^^^^^^^^^^^^^^
+
+In the ``Results`` section the histograms are displayed from ``LMonitor`` and
+``PSDMonitor``. Here ``I(w)`` is the intensity vs. wavelength plot.
 
 .. figure:: images/vulcan/13.lmonitor1.png
    :width: 500px
@@ -261,10 +306,18 @@ Intermediate Detectors
 
    *Fig. 27 Neutron intensity distribution I(x,y) for PSDMonitor*
 
+In results section of NeutronExperiment page you also can see ``Neutron storage``
+subsection where information about 20 neutrons is displayed showing velosity,
+position, tof and other parameters.
+
 .. figure:: images/vulcan/24.neutronstorage-info.png
    :width: 500px
 
    *Fig. 28 Several neutrons saved by NeutronRecorder*
+
+One important step that needs to be done is to edit description for recorded
+neutrons. This little step allows you to find the recorded neutrons when you use
+``NeutronPlayer`` in the next part of our experiment.
 
 .. figure:: images/vulcan/25.neutrons-save.png
    :width: 500px
