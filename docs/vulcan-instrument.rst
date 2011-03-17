@@ -6,17 +6,23 @@ VULCAN Instrument
 Introduction
 ^^^^^^^^^^^^
 
+VULCAN is a diffractometer at the Spallation Neutron Source intended for
+measurements of deformation, residual stress related studies, spatial mapping
+of chemistry, microstructure, and texture.
+
 .. figure:: images/vulcan/_1.vulcan-image.png
    :width: 500px
 
    *Fig. 1 Part of VULCAN instrument with sample and detectors*
 
-.. figure:: images/vulcan/_2.vulcan-schema.png
+.. figure:: images/vulcan/_2.vulcan-geometry.png
    :width: 500px
 
    *Fig. 2 Geometry of VULCAN instrument with numbered sections*
 
-.. figure:: images/vulcan/_3.vulcan-schema2.png
+*X.-L. Wang et al. Physica B 385–386 (2006) 673–675*
+
+.. figure:: images/vulcan/_3.vulcan-schema.png
    :width: 400px
 
    *Fig. 3 Schema of VULCAN instrument*
@@ -25,20 +31,103 @@ Introduction
 VULCAN Instrument Model
 ^^^^^^^^^^^^^^^^^^^^^^^
 
+The VULCAN instrument can be modelled by a sequence of components where each of them
+performs some action on neutron beam. The model that we used in VNF experiment is
+provided on *Fig. 4* with only difference being that
+``Monitor_nD`` were omited and set of ``PSD_TEWMonitor`` were replaced by
+``VulcanDetectorSystem``.
+
 .. figure:: images/vulcan/_4.vulcan-components.png
    :width: 720px
 
    *Fig. 4 Components sequence in VULCAN instrument model*
 
+So the actual component chain in VNF experiment looks as follows:
+
+::
+
+    [SNSModerator] -> [CollimatorLinear] -> {Slit} -> [LMonitor1] -> {Guide} ->
+    [LMonitor2] -> {Guide} -> [LMonitor3] -> [DiskChopper] -> {Guide} ->
+    [LMonitor4] -> {Guide} -> [LMonitor5] -> {Guide} -> [LMonitor6] -> [Slit] ->
+    {GuideGravity} -> [LMonitor7] -> [Slit] -> {GuideGravity} -> [LMonitor8] ->
+    [LMonitor9] -> [LMonitor10] -> [PSDMonitor] -> [SAMPLE] -> [VulcanDetectorSystem]
+
+where curly brackets ``{}`` specify set of components of the same type. Please consult
+McVine script for more detailed configuration of VULCAN instrumet: `vulcan-mcvine.sh <http://dev.danse.us/trac/MCViNE/browser/trunk/instruments/VULCAN/tests/vulcan/vulcan-mcvine.sh>`_
+Many of these components are standard McStas components but some of them are specific to VULCAN
+instrument. Here we provide description of each of the components used in VULCAN:
+
+``SNSModerator`` - Neutron source that produces a time and energy distribution from
+the SNS moderator files (see section *SNSModerator Component*)
+
+``CollimatorLinear`` - Soller collimator with rectangular opening and specified
+length (see also `Collimator_linear <http://www.mcstas.org/download/components/optics/Collimator_linear.html>`_)
+
+``Slit`` - Simple rectangular or circular slit
+(see also `Slit <http://www.mcstas.org/download/components/optics/Slit.html>`_)
+
+``LMonitor`` - Wavelength-sensitive monitor
+(see also `L_monitor <http://www.mcstas.org/download/components/monitors/L_monitor.html>`_)
+
+``Guide`` - Rectangular neutron guide tube centered on the Z axis
+(see also `Guide <http://www.mcstas.org/download/components/optics/Guide.html>`_)
+
+``DiskChopper`` - Disc chopper with n identical slits, which are symmetrically
+disposed on the disc (see also `DiskChopper <http://www.mcstas.org/download/components/optics/DiskChopper.html>`_)
+
+``GuideGravity`` - Rectangular neutron straight guide tube centered on the Z axis, with
+gravitation handling (see also `Guide_gravity <http://www.mcstas.org/download/components/optics/Guide_gravity.html>`_)
+
+``PSDMonitor`` - Position-sensitive monitor (see also `PSD_monitor <http://www.mcstas.org/download/components/monitors/PSD_monitor.html>`_)
+
+``VulcanDetectorSystem`` - System of 3 time-of-flight sensitive and 3 wavelength sensitive monitors
+(see section *Vulcan Detector System*)
+
+The full experiment with VULCAN instrument in VNF
+
+::
+
+    [SNSModerator] -> {{... Components ...}} -> [SAMPLE] -> [VulcanDetectorSystem]
+
+
+can be split into two parts: 
+
+**Part 1: Instrument before sample**
+
+::
+
+    [SNSModerator] -> {{... Components ...}} -> [NeutronRecorder]
+
+**Part 2: Instrument with sample and detector system**
+
+::
+
+    [NeutronPlayer] -> [SAMPLE] -> [VulcanDetectorSystem]
+
+In the first part the information about the neutron profile is collected along the instrument
+from set of ``LMonitor`` and ``PSDMonitor``. In the second part we get scattered
+neutrons from sample for time-of-flight and wavelength sensitive monitors. This flexibility
+allows to save neutrons passing through instrument right before sample and use them
+for different samples later on without redoing the simulation over and over again.
+
 
 Instrument Before Sample
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
+Let's start with the first part: *Instrument before sample*. First we need to
+create new experiment in ``experiments`` tab click on plus sign ``create new experiment``.
+In ``Setup your experiment`` page select ``VULCAN`` instrument and click ``continue``.
 
 .. figure:: images/vulcan/1.select-vulcan.png
    :width: 720px
 
    *Fig. 5 Select VULCAN instrument*
+
+You will see the a long component chain with over 100 different components starting
+with ``SNSModerator`` and ending with ``NeutronRecorder``. These
+components are already properly configured according to the VULCAN instrument
+model but you still can adjust parameters, replace or even add new components
+by clicking on a component. 
 
 .. figure:: images/vulcan/2.vulcan-chain.png
    :width: 850px
@@ -48,6 +137,15 @@ Instrument Before Sample
 
 SNSModerator Component
 ^^^^^^^^^^^^^^^^^^^^^^
+
+Source of neutrons in VULCAN instrument is generated by SNSModerator component -
+a custom component created at SNS Oak Ridge National Laboratory, that generates
+time and energy distribution from neutron profile file. As you can see in *Fig. 7*
+there is no neutron profile specified by default, so we need to set it first.
+
+::
+
+    WARNING: If you don't specify the neutron profile you will 
 
 .. figure:: images/vulcan/3.edit-snsmoderator.png
    :width: 400px
@@ -185,7 +283,7 @@ Instrument with Sample and Detector System
 
 
 NeutronPlayer Component
-^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^
 
 
 .. figure:: images/vulcan/27.neutron-player-edit.png
