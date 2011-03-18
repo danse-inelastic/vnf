@@ -27,3 +27,8 @@ Scattering Kernels
 ------------------
 
 * :ref:`powder-diffraction-kernel`
+
+EPSC
+----
+
+* :ref:`epsc`
