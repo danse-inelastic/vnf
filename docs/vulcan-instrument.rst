@@ -6,26 +6,40 @@ VULCAN Instrument
 Introduction
 ^^^^^^^^^^^^
 
-VULCAN is a diffractometer at the Spallation Neutron Source intended for
+`VULCAN <http://neutrons.ornl.gov/instruments/SNS/VULCAN/>`_ is a diffractometer
+at the Spallation Neutron Source intended for
 measurements of deformation, residual stress related studies, spatial mapping
-of chemistry, microstructure, and texture.
+of chemistry, microstructure, and texture. It was officially completed in **June 26,
+2009**.  *Fig. 1* shows the room with sample and detectors.
 
 .. figure:: images/vulcan/_1.vulcan-image.png
    :width: 500px
 
    *Fig. 1 Part of VULCAN instrument with sample and detectors*
 
+The VULCAN instrument can be devided into the following main sections:
+
+1. In-monolith guide: supermirror, 3m
+2. Frame definition chopper
+3. Curved guide, 20m
+4. Straight guide, 12m
+5. Interchangeable guide-collimator system, 5m
+6. Detector banks with 60-150 degree range
+7. SANS detector
+
 .. figure:: images/vulcan/_2.vulcan-geometry.png
    :width: 500px
 
    *Fig. 2 Geometry of VULCAN instrument with numbered sections*
 
-*X.-L. Wang et al. Physica B 385–386 (2006) 673–675*
+Long curved guide suppresses the high-energy neutrons with thermal neutrons passing
+through. The thermal neutrons are delivered to the sample position using a vertically focusing
+neutron guide designed to increase the vertical angular divergence.
 
 .. figure:: images/vulcan/_3.vulcan-schema.png
-   :width: 400px
+   :width: 500px
 
-   *Fig. 3 Schema of VULCAN instrument*
+   *Fig. 3 Schema of VULCAN instrument, X.-L. Wang et al. Physica B 385–386 (2006) 673–675*
 
 
 VULCAN Instrument Model
@@ -42,7 +56,7 @@ provided on *Fig. 4* with only difference being that
 
    *Fig. 4 Components sequence in VULCAN instrument model*
 
-So the actual component chain in VNF experiment looks as follows:
+So the actual component chain used in VNF experiment looks as follows:
 
 ::
 
@@ -53,7 +67,8 @@ So the actual component chain in VNF experiment looks as follows:
     [LMonitor9] -> [LMonitor10] -> [PSDMonitor] -> [SAMPLE] -> [VulcanDetectorSystem]
 
 where curly brackets ``{}`` specify set of components of the same type. Please consult
-McVine script for more detailed configuration of VULCAN instrumet: `vulcan-mcvine.sh <http://dev.danse.us/trac/MCViNE/browser/trunk/instruments/VULCAN/tests/vulcan/vulcan-mcvine.sh>`_
+McVine script `vulcan-mcvine.sh <http://dev.danse.us/trac/MCViNE/browser/trunk/instruments/VULCAN/tests/vulcan/vulcan-mcvine.sh>`_
+for more detailed configuration of VULCAN instrumet.
 Many of these components are standard McStas components but some of them are specific to VULCAN
 instrument. Here we provide description of each of the components used in VULCAN:
 
