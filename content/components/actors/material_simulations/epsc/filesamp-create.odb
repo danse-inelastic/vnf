@@ -4,7 +4,7 @@
 #
 #                               Alex Dementsov
 #                      California Institute of Technology
-#                        (C) 2010  All Rights Reserved
+#                        (C) 2011  All Rights Reserved
 #
 # {LicenseText}
 #
@@ -22,23 +22,10 @@ import luban.content as lc
 from luban.components.AuthorizedActor import AuthorizedActor as base
 
 class Actor(base):
-    """ Create Quantum Espresso simulation"""
+    """ Create Material file"""
 
     class Inventory(base.Inventory):
         import pyre.inventory
-        sname       = pyre.inventory.str('sname', default='')
-        simtype     = pyre.inventory.str('simtype', default='')
-        description = pyre.inventory.str('description', default='')
-        label       = pyre.inventory.str('label', default='')
-        structureid = pyre.inventory.str('structureid', default='')
-
-        # Molecular dynamics steps
-        electronmin = pyre.inventory.bool(name='electronmin', default=False)
-        ionmin      = pyre.inventory.bool(name='ionmin', default=False)
-        ionrandom   = pyre.inventory.bool(name='ionrandom', default=False)
-        quenching   = pyre.inventory.bool(name='quenching', default=False)
-        dynamics    = pyre.inventory.bool(name='dynamics', default=False)
-        thermostat  = pyre.inventory.bool(name='thermostat', default=False)
 
 
     def default(self, director):
@@ -54,30 +41,22 @@ class Actor(base):
                                                                routine='newSimulation')
                                                           ))
                         )
-            path.append('EPSC')
+            path.append(('EPSC', load(actor='material_simulations/epsc/sim-create')))
+            path.append("Create Material")
+            
             return director.retrieveVisual('view-indicator', path=path)
 
-        doc         = lc.document(title   = "Create New Simulation")
+        doc         = lc.document(title   = "Create Material")
         splitter    = doc.splitter(orientation="vertical")
         sA          = splitter.section()
         sA.add(viewIndicator(director))
         sB          = splitter.section()
-        table       = QEGrid(lc.grid(Class="qe-table"))
-        link        = lc.link(label='filesamp')
-        link.onclick    = load(actor='material_simulations/epsc/filesamp-create')
-        table.addRow((link,))
-
-        table.addRow((lc.link(label='filecrys', onclick="filecrys"),))
-        table.addRow((lc.link(label='filediff', onclick="filediff"),))
-        table.addRow((lc.link(label='fileproc', onclick="fileproc"),))
-        
-        sB.add(table.grid())
 
         return doc
 
 
     def __init__(self):
-        super(Actor, self).__init__(name='material_simulations/epsc/sim-create')
+        super(Actor, self).__init__(name='material_simulations/epsc/filesamp-create')
 
 
     def _configure(self):
@@ -93,6 +72,6 @@ def actor():
     return Actor()
 
 
-__date__ = "$Mar 1, 2011 12:19:17 PM$"
+__date__ = "$Mar 22, 2011 9:46:59 AM$"
 
 
