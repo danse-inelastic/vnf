@@ -11,6 +11,68 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
+from luban.content import select, load, alert
+from vnfb.qeutils.qegrid import QEGrid
+from vnfb.qeutils.qeconst import SIMCHAINS, MDSTEPS, ID_MD_LABEL, ID_MD_OPTIONS
+from vnfb.qeutils.qeutils import selection2typekey, nonMDChain, noHyphen
+from luban.content.FormCheckBox import FormCheckBox
+from vnfb.dom.QESimulation import QESimulation
+
+import luban.content as lc
+from luban.components.AuthorizedActor import AuthorizedActor as base
+
+class Actor(base):
+    """ Create Material file"""
+
+    class Inventory(base.Inventory):
+        import pyre.inventory
+
+
+    def default(self, director):
+        return select(id='main-display-area').replaceContent(self.content(director))
+
+
+    def content(self, director):
+        def viewIndicator(director):
+            path = []
+            path.append(('Simulations ', load(actor='materialsimulation')))
+            path.append(('Create New Simulation ', select(id='main-display-area').replaceContent(
+                                                          load(actor='materialsimulation',
+                                                               routine='newSimulation')
+                                                          ))
+                        )
+            path.append(('EPSC', load(actor='material_simulations/epsc/sim-create')))
+            path.append("Create Material Configuration")
+
+            return director.retrieveVisual('view-indicator', path=path)
+
+        doc         = lc.document(title   = "Create Material Configuration")
+        splitter    = doc.splitter(orientation="vertical")
+        sA          = splitter.section()
+        sA.add(viewIndicator(director))
+        sB          = splitter.section()
+        visual  = 'material_simulations/epsc/filecrys-form'
+        sB.add(director.retrieveVisual(visual, self.inventory, director))
+
+        return doc
+
+
+    def __init__(self):
+        super(Actor, self).__init__(name='material_simulations/epsc/filecrys-create')
+
+
+    def _configure(self):
+        super(Actor, self)._configure()
+        #self.sname       = self.inventory.sname
+
+
+    def _init(self):
+        super(Actor, self)._init()
+        return
+
+def actor():
+    return Actor()
+
 
 __date__ = "$Mar 22, 2011 9:46:59 AM$"
 

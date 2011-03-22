@@ -1,0 +1,81 @@
+# -*- Python -*-
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                               Alex Dementsov
+#                      California Institute of Technology
+#                        (C) 2011  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+import luban.content as lc
+from luban.content import select
+from luban.content import load
+from vnfb.qeutils.qegrid import QEGrid
+from luban.content.FormTextField import FormTextField
+from luban.content.FormSelectorField import FormSelectorField
+from luban.content.FormSubmitButton import FormSubmitButton
+from luban.content.FormRadioBox import FormRadioBox
+
+
+class Visual:
+
+    def __init__(self, actor, director):#, structureid):
+        self._actor         = actor
+        self._director      = director
+        #self._structureid   = structureid
+
+
+    def form(self):
+        # Parameter elements
+        form        = lc.form(id='qe-atoms-form')
+        table       = QEGrid(lc.grid(Class="qe-form"))
+        test1     = FormTextField(name = "test1", value = 0)
+
+
+#        # Skip link
+#        visual_     = "material_simulations/espresso/link-skip"
+#        skipLink    = self._director.retrieveVisual(visual_,
+#                                                  id        = self._actor.id,
+#                                                  taskid    = self._actor.taskid,
+#                                                  type      = self._actor.type)
+
+        submit      = FormSubmitButton(label="Generate Material Configuration")
+        cancel      = lc.button(label="Cancel")
+        cancel.onclick  = load(actor = 'material_simulations/epsc/sim-view')#, id=self._actor.id)
+
+        # Parameters attachment
+        st          = QEGrid(lc.grid()) # Submit Table
+        st.addRow((submit, cancel), ("qe-action-accept", "qe-action-cancel"))
+
+        table.addRow(("Test:", test1))
+        #table.addRow(("", skipLink))
+        table.addRow(("", st.grid()))
+
+        table.setColumnStyle(0, "qe-form-label")
+        table.setColumnStyle(1, "qe-form-field")
+
+#        form.onsubmit   = select(element=form).submit(actor     = 'material_simulations/espresso-utils/generate-pw',
+#                                                      routine   = 'generateInput',
+#                                                      taskid    = self._actor.taskid,
+#                                                      id        = self._actor.id,
+#                                                      type      = self._actor.type,
+#                                                      mattertype    = self._actor.mattertype,
+#                                                      structureid   = self._structureid,
+#                                                      simtype   = self._simtype)
+
+        form.add(table.grid())
+
+        return form
+
+
+def visual(actor, director):#, structureid):
+    v   = Visual(actor, director)#, structureid)
+    return v.form()
+
+__date__ = "$Mar 22, 2011 10:11:29 AM$"
+
+

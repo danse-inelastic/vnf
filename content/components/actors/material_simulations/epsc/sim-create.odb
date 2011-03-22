@@ -63,13 +63,21 @@ class Actor(base):
         sA.add(viewIndicator(director))
         sB          = splitter.section()
         table       = QEGrid(lc.grid(Class="qe-table"))
+        link        = lc.link(label='filecrys')
+        link.onclick    = load(actor='material_simulations/epsc/filecrys-create')
+        table.addRow((link,))
+
         link        = lc.link(label='filesamp')
         link.onclick    = load(actor='material_simulations/epsc/filesamp-create')
         table.addRow((link,))
 
-        table.addRow((lc.link(label='filecrys', onclick="filecrys"),))
-        table.addRow((lc.link(label='filediff', onclick="filediff"),))
-        table.addRow((lc.link(label='fileproc', onclick="fileproc"),))
+        link        = lc.link(label='filediff')
+        link.onclick    = load(actor='material_simulations/epsc/filediff-create')
+        table.addRow((link,))
+
+        link        = lc.link(label='fileproc')
+        link.onclick    = load(actor='material_simulations/epsc/fileproc-create')
+        table.addRow((link,))
         
         sB.add(table.grid())
 
