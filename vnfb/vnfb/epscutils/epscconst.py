@@ -21,13 +21,26 @@ CCC2    = """  0.899E+02  0.683E+02  0.683E+02  0.000E+00  0.000E+00  0.000E+00
   0.000E+00  0.000E+00  0.000E+00  0.000E+00  0.000E+00  0.327E+02"""
 
 ALFACC  = ("10.0e-6", "10.0e-6", "10.0e-6", "0", "0", "0")
+NMODESX = (1,)
+NAMESYS = "<111>{110} SLIP"
+MODEX   = """ 1  12  20   1                           modex,nsmx,nrsx,iopsysx
+ 0.000   0.000   0.000   0.000           stw,twvol,gamdthr,tauprop
+ 0.075   0.365   32.5    1.300           tau0,tau1,thet0,thet1 (Voce hard)
+ 1.0   1.0   1.0                         hself,hlat(nmodes)
+   1  1 -1        0  1  1
+   1  1 -1        1  0  1
+   1  1 -1        1 -1  0
+   1 -1 -1        0  1 -1
+   1 -1 -1        1  0  1
+   1 -1 -1        1  1  0
+   1 -1  1        0  1  1
+   1 -1  1        1  0 -1
+   1 -1  1        1  1  0
+   1  1  1        0  1 -1
+   1  1  1        1  0 -1
+   1  1  1        1 -1  0"""
 
-#ccc2
-#alfacc
-#nmodesx
-#nmodes
-#mode
-#
+
 #namesys
 #modex nsmx nrsx iopsysx
 #stwx twvol gamdthres tauprop
