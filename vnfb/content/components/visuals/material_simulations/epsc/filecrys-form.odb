@@ -20,7 +20,9 @@ from luban.content.FormSelectorField import FormSelectorField
 from luban.content.FormSubmitButton import FormSubmitButton
 from luban.content.FormRadioBox import FormRadioBox
 
-from vnfb.epscutils.epscconst import CRYSYM, LATTICE
+from luban.content.FormTextArea import  FormTextArea
+
+from vnfb.epscutils.epscconst import CRYSYM, LATTICE, CCC2, ALFACC
 
 class Visual:
 
@@ -38,25 +40,37 @@ class Visual:
                                         entries=enumerate(CRYSYM))
                                         
         # XXX: Lattice parameters should be taken from structure
-        a           = FormTextField(name = "a", value = LATTICE[0], tip="a")
-        b           = FormTextField(name = "b", value = LATTICE[1], tip="b")
-        c           = FormTextField(name = "c", value = LATTICE[2], tip="c")
-        alpha       = FormTextField(name = "alpha", value = LATTICE[3], tip="alpha")
-        beta        = FormTextField(name = "beta", value = LATTICE[4], tip="beta")
-        gamma       = FormTextField(name = "gamma", value = LATTICE[5], tip="gamma")
+        a           = FormTextField(name = "a", value = LATTICE[0], tip="a", Class="epsc-lattice-field")
+        b           = FormTextField(name = "b", value = LATTICE[1], tip="b", Class="epsc-lattice-field")
+        c           = FormTextField(name = "c", value = LATTICE[2], tip="c", Class="epsc-lattice-field")
+        alpha       = FormTextField(name = "alpha", value = LATTICE[3], tip="alpha", Class="epsc-lattice-field")
+        beta        = FormTextField(name = "beta", value = LATTICE[4], tip="beta", Class="epsc-lattice-field")
+        gamma       = FormTextField(name = "gamma", value = LATTICE[5], tip="gamma", Class="epsc-lattice-field")
         lattice     = QEGrid(lc.grid())
         lattice.addRow(("a", a, "b", b, "c", c, "alpha", alpha, "beta", beta, "gamma", gamma))
 
-        lattice.setColumnStyle(1, "epsc-lattice-field")
-        lattice.setColumnStyle(3, "epsc-lattice-field")
-        lattice.setColumnStyle(5, "epsc-lattice-field")
-        lattice.setColumnStyle(7, "epsc-lattice-field")
-        lattice.setColumnStyle(9, "epsc-lattice-field")
-        lattice.setColumnStyle(11, "epsc-lattice-field")
+        ccc2        = FormTextArea(name="ccc2", value=CCC2, Class="ccc2-text-area")
 
-        # Lattice parameters: a []  b []  c []  alpha []  beta []  gamma [] 
-        # Elastic stiffness (matrix 6x6): [textarea]
-        # Thermal expansion coefficients: [] [] [] [] [] []
+        alfacc1     = FormTextField(name = "alfacc1", value = ALFACC[0], Class="epsc-lattice-field")
+        alfacc2     = FormTextField(name = "alfacc2", value = ALFACC[1], Class="epsc-lattice-field")
+        alfacc3     = FormTextField(name = "alfacc3", value = ALFACC[2], Class="epsc-lattice-field")
+        alfacc4     = FormTextField(name = "alfacc4", value = ALFACC[3], Class="epsc-lattice-field")
+        alfacc5     = FormTextField(name = "alfacc5", value = ALFACC[4], Class="epsc-lattice-field")
+        alfacc6     = FormTextField(name = "alfacc6", value = ALFACC[5], Class="epsc-lattice-field")
+
+        alfacc      = QEGrid(lc.grid())
+        alfacc.addRow((alfacc1, alfacc2, alfacc3, alfacc4, alfacc5, alfacc6))
+
+
+#        nmodesx
+#        nmodes
+#        mode
+#        namesys
+#        modex nsmx nrsx iopsysx
+#        stwx twvol gamdthres tauprop
+#        tau0x tau1x thet0x thet1x
+
+
         # Total number of modes: []
         # Number of modes to be used: []
         # Label of the modes to be used: []
@@ -107,8 +121,8 @@ class Visual:
 
         table.addRow((crysym_label, crysym))
         table.addRow((lattice_label, lattice.grid()))
-        table.addRow((stiff_label, ""))
-        table.addRow((exp_label, ""))
+        table.addRow((stiff_label, ccc2))
+        table.addRow((exp_label, alfacc.grid()))
         table.addRow((modes_label, ""))
         table.addRow((umodes_label, ""))
         table.addRow((lmodes_label, ""))
