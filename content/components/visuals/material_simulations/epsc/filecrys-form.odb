@@ -22,7 +22,7 @@ from luban.content.FormRadioBox import FormRadioBox
 
 from luban.content.FormTextArea import  FormTextArea
 
-from vnfb.epscutils.epscconst import CRYSYM, LATTICE, CCC2, ALFACC
+from vnfb.epscutils.epscconst import *
 
 class Visual:
 
@@ -51,35 +51,66 @@ class Visual:
 
         ccc2        = FormTextArea(name="ccc2", value=CCC2, Class="ccc2-text-area")
 
-        alfacc1     = FormTextField(name = "alfacc1", value = ALFACC[0], Class="epsc-lattice-field")
-        alfacc2     = FormTextField(name = "alfacc2", value = ALFACC[1], Class="epsc-lattice-field")
-        alfacc3     = FormTextField(name = "alfacc3", value = ALFACC[2], Class="epsc-lattice-field")
-        alfacc4     = FormTextField(name = "alfacc4", value = ALFACC[3], Class="epsc-lattice-field")
-        alfacc5     = FormTextField(name = "alfacc5", value = ALFACC[4], Class="epsc-lattice-field")
-        alfacc6     = FormTextField(name = "alfacc6", value = ALFACC[5], Class="epsc-lattice-field")
+        alfacc1     = FormTextField(name = "alfacc1", value = ALFACC[0], Class="epsc-num-field")
+        alfacc2     = FormTextField(name = "alfacc2", value = ALFACC[1], Class="epsc-num-field")
+        alfacc3     = FormTextField(name = "alfacc3", value = ALFACC[2], Class="epsc-num-field")
+        alfacc4     = FormTextField(name = "alfacc4", value = ALFACC[3], Class="epsc-num-field")
+        alfacc5     = FormTextField(name = "alfacc5", value = ALFACC[4], Class="epsc-num-field")
+        alfacc6     = FormTextField(name = "alfacc6", value = ALFACC[5], Class="epsc-num-field")
 
         alfacc      = QEGrid(lc.grid())
         alfacc.addRow((alfacc1, alfacc2, alfacc3, alfacc4, alfacc5, alfacc6))
 
+        nmodesx     = FormSelectorField(name="nmodesx",
+                                        entries=enumerate(NMODESX))
+        namesys     = FormTextField(name = "namesys", value = NAMESYS)
 
-#        nmodesx
-#        nmodes
-#        mode
-#        namesys
-#        modex nsmx nrsx iopsysx
-#        stwx twvol gamdthres tauprop
-#        tau0x tau1x thet0x thet1x
-
-
-        # Total number of modes: []
-        # Number of modes to be used: []
-        # Label of the modes to be used: []
-
-
-#        server      = FormSelectorField(name="server",
-#                                        entries=enumerate(serversList),
-#                                        selection=servers.selected(sim.serverid))
-        #test1     = FormTextField(name = "test1", value = TEST)
+        mode        = FormTextArea(name="mode", value=MODEX, Class="mode-text-area")
+        
+#        # !!! KEEP, Mode parameters
+#        mode        = QEGrid(lc.grid())
+#
+#        modex_g     = QEGrid(lc.grid(Class="float-right"))
+#        modex_g.addRow(("modex", FormTextField(name = "modex", value = 1, Class="epsc-num-field",
+#                                               tip="" )))
+#        nsmx_g     = QEGrid(lc.grid(Class="float-right"))
+#        nsmx_g.addRow(("nsmx", FormTextField(name = "nsmx", value = 1, Class="epsc-num-field",
+#                                               tip="" )))
+#        nrsx_g     = QEGrid(lc.grid(Class="float-right"))
+#        nrsx_g.addRow(("nrsx", FormTextField(name = "nrsx", value = 1, Class="epsc-num-field",
+#                                               tip="" )))
+#        iopsysx_g     = QEGrid(lc.grid(Class="float-right"))
+#        iopsysx_g.addRow(("iopsysx", FormTextField(name = "iopsysx", value = 1, Class="epsc-num-field",
+#                                               tip="" )))
+#        stwx_g     = QEGrid(lc.grid(Class="float-right"))
+#        stwx_g.addRow(("stwx", FormTextField(name = "stwx", value = 1, Class="epsc-num-field",
+#                                               tip="" )))
+#        twvol_g     = QEGrid(lc.grid(Class="float-right"))
+#        twvol_g.addRow(("twvol", FormTextField(name = "twvol", value = 1, Class="epsc-num-field",
+#                                               tip="" )))
+#        gamdthres_g     = QEGrid(lc.grid(Class="float-right"))
+#        gamdthres_g.addRow(("gamdthres", FormTextField(name = "gamdthres", value = 1, Class="epsc-num-field",
+#                                               tip="" )))
+#        tauprop_g     = QEGrid(lc.grid(Class="float-right"))
+#        tauprop_g.addRow(("tauprop", FormTextField(name = "tauprop", value = 1, Class="epsc-num-field",
+#                                               tip="" )))
+#        tau0x_g     = QEGrid(lc.grid(Class="float-right"))
+#        tau0x_g.addRow(("tau0x", FormTextField(name = "tau0x", value = 1, Class="epsc-num-field",
+#                                               tip="" )))
+#        tau1x_g     = QEGrid(lc.grid(Class="float-right"))
+#        tau1x_g.addRow(("tau1x", FormTextField(name = "tau1x", value = 1, Class="epsc-num-field",
+#                                               tip="" )))
+#        thet0x_g     = QEGrid(lc.grid(Class="float-right"))
+#        thet0x_g.addRow(("thet0x", FormTextField(name = "thet0x", value = 1, Class="epsc-num-field",
+#                                               tip="" )))
+#        thet1x_g     = QEGrid(lc.grid(Class="float-right"))
+#        thet1x_g.addRow(("thet1x", FormTextField(name = "thet1x", value = 1, Class="epsc-num-field",
+#                                               tip="" )))
+#
+#        mode.addRow((modex_g.grid(), nsmx_g.grid(), nrsx_g.grid(), iopsysx_g.grid()))
+#        mode.addRow((stwx_g.grid(), twvol_g.grid(), gamdthres_g.grid(), tauprop_g.grid()))
+#        mode.addRow((tau0x_g.grid(), tau1x_g.grid(), thet0x_g.grid(), thet1x_g.grid()))
+        
 
 
 #        # Skip link
@@ -113,19 +144,19 @@ class Visual:
         modes_label     = lc.link(label="Total number of modes:")
         modes_label.tip = "Total number of modes"
         
-        umodes_label    = lc.link(label="Number of modes:")
-        umodes_label.tip    = "Number of modes to be used in calculation"
+        namesys_label    = lc.link(label="Mode name:")
+        namesys_label.tip    = "Can be arbitrary descriptive name"
         
-        lmodes_label    = lc.link(label="Label of the modes:")
-        lmodes_label.tip    = "Label of the modes to be used"
+        mode_label    = lc.link(label="Mode parameters:")
+        mode_label.tip    = "Set of mode parameters"
 
         table.addRow((crysym_label, crysym))
         table.addRow((lattice_label, lattice.grid()))
         table.addRow((stiff_label, ccc2))
         table.addRow((exp_label, alfacc.grid()))
-        table.addRow((modes_label, ""))
-        table.addRow((umodes_label, ""))
-        table.addRow((lmodes_label, ""))
+        table.addRow((modes_label, nmodesx))
+        table.addRow((namesys_label, namesys))
+        table.addRow((mode_label, mode))
         
         #table.addRow(("", skipLink))
         table.addRow(("", st.grid()))

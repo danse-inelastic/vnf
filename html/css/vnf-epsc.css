@@ -12,6 +12,13 @@ This is CSS layout for EPSC pages
     margin-left: 3px;
 }
 
+.epsc-num-field input {
+    width: 60px;
+    margin-right: 8px;
+    margin-left: 3px;
+}
+
+
 .epsc-form-label {
     color: black;
     width: 200px;
@@ -36,4 +43,12 @@ This is CSS layout for EPSC pages
 .ccc2-text-area textarea {
     width: 500px;
     height: 40px;
+}
+.mode-text-area textarea {
+    width: 500px;
+    height: 200px;
+}
+
+.float-right .epsc-num-field {
+    float: right;
 }
