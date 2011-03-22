@@ -20,6 +20,7 @@ from luban.content.FormSelectorField import FormSelectorField
 from luban.content.FormSubmitButton import FormSubmitButton
 from luban.content.FormRadioBox import FormRadioBox
 
+from vnfb.epscutils.epscconst import CRYSYM, LATTICE
 
 class Visual:
 
@@ -33,7 +34,28 @@ class Visual:
         # Parameter elements
         form        = lc.form(id='qe-atoms-form')
         table       = QEGrid(lc.grid(Class="qe-form"))
-        test1     = FormTextField(name = "test1", value = 0)
+        crysym      = FormSelectorField(name="crysym",
+                                        entries=enumerate(CRYSYM))
+                                        
+        # XXX: Lattice parameters should be taken from structure
+        a           = FormTextField(name = "a", value = LATTICE[0])
+        lattice     = QEGrid(lc.grid())
+        lattice.addRow(("a", a, "a", a))
+
+        lattice.setColumnStyle(1, "epsc-lattice-field")
+        
+        # Lattice parameters: a []  b []  c []  alpha []  beta []  gamma [] 
+        # Elastic stiffness (matrix 6x6): [textarea]
+        # Thermal expansion coefficients: [] [] [] [] [] []
+        # Total number of modes: []
+        # Number of modes to be used: []
+        # Label of the modes to be used: []
+
+
+#        server      = FormSelectorField(name="server",
+#                                        entries=enumerate(serversList),
+#                                        selection=servers.selected(sim.serverid))
+        #test1     = FormTextField(name = "test1", value = TEST)
 
 
 #        # Skip link
@@ -51,7 +73,15 @@ class Visual:
         st          = QEGrid(lc.grid()) # Submit Table
         st.addRow((submit, cancel), ("qe-action-accept", "qe-action-cancel"))
 
-        table.addRow(("Test:", test1))
+
+
+        table.addRow(("Crystal symmetry:", crysym))
+        table.addRow(("Lattice parameters:", lattice.grid()))
+        table.addRow(("Elastic stiffness (matrix 6x6):", ""))
+        table.addRow(("Thermal expansion coefficients:", ""))
+        table.addRow(("Total number of modes:", ""))
+        table.addRow(("Number of modes to be used:", ""))
+        table.addRow(("Label of the modes to be used:", ""))
         #table.addRow(("", skipLink))
         table.addRow(("", st.grid()))
 

@@ -33,6 +33,7 @@
         vnf-atomicstructure.css
         vnf-bvk.css
         vnf-qe.css
+        vnf-epsc.css
       </property>
     </component>
 

@@ -27,6 +27,7 @@ EXPORT_DATAFILES = \
 	vnf.css \
 	vnf-atomicstructure.css \
 	vnf-bvk.css \
+	vnf-epsc.css \
 	vnf-experiment.css \
 	vnf-jobs.css \
 	vnf-login.css \

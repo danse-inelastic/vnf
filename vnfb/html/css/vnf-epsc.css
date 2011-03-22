@@ -1,0 +1,11 @@
+/*
+This is CSS layout for EPSC pages
+*/
+
+.epsc-lattice-label {
+    color: red;
+}
+
+.epsc-lattice-field {
+    width: 100;
+}
