@@ -18,7 +18,8 @@
         "vnf-matsim.css",
         "vnf-atomicstructure.css",
         "vnf-bvk.css",
-        "vnf-qe.css"
+        "vnf-qe.css",
+        "vnf-epsc.css"
         ],
      "jslibs":      [
         "jquery/jquery.js",
