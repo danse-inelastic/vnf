@@ -113,9 +113,9 @@ class Visual:
         
 
 
-#        # Skip link
-#        visual_     = "material_simulations/espresso/link-skip"
-#        skipLink    = self._director.retrieveVisual(visual_,
+        # Skip link
+        visual_     = "material_simulations/epsc/link-skip"
+        skipLink    = self._director.retrieveVisual(visual_)#,
 #                                                  id        = self._actor.id,
 #                                                  taskid    = self._actor.taskid,
 #                                                  type      = self._actor.type)
@@ -158,7 +158,7 @@ class Visual:
         table.addRow((namesys_label, namesys))
         table.addRow((mode_label, mode))
         
-        #table.addRow(("", skipLink))
+        table.addRow(("", skipLink))
         table.addRow(("", st.grid()))
 
         table.setColumnStyle(0, "epsc-form-label")
