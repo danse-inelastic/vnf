@@ -42,11 +42,11 @@ class Actor(base):
                                                           ))
                         )
             path.append(('EPSC', load(actor='material_simulations/epsc/sim-create')))
-            path.append("Create Material")
+            path.append("Create Sample")
             
             return director.retrieveVisual('view-indicator', path=path)
 
-        doc         = lc.document(title   = "Create Material")
+        doc         = lc.document(title   = "Create Sample")
         splitter    = doc.splitter(orientation="vertical")
         sA          = splitter.section()
         sA.add(viewIndicator(director))
