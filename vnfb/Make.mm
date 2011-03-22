@@ -19,6 +19,7 @@ BUILD_DIRS = \
 	applications \
 	content \
 	dom \
+	epscutils \
 	forms \
 	weaver \
 	inventory \
