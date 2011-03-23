@@ -26,6 +26,10 @@ class Actor(base):
 
     class Inventory(base.Inventory):
         import pyre.inventory
+        a     = pyre.inventory.str('a', default='0')
+        b     = pyre.inventory.str('b', default='0')
+        c     = pyre.inventory.str('c', default='0')
+        ngrain  = pyre.inventory.str('ngrain', default='0')
 
 
     def default(self, director):
@@ -57,13 +61,44 @@ class Actor(base):
         return doc
 
 
+    def generateConfig(self, director):
+        "Generates config file and redirects to general form"
+        # Special cases
+        texture = self.generateTexture(int(self.ngrain))
+
+        # Config text
+        config  = FILESAMP_T % (self.a, self.b, self.c, self.ngrain, texture)
+
+        return director.redirect(actor   = 'material_simulations/epsc/config-create',
+                                routine  = 'default',
+                                text     = config,
+#                                id      = self.inventory.id,
+#                                taskid  = self.inventory.taskid,
+                                type    = "filesamp")
+
+
+    def generateTexture(self, ngrain):
+        "Generates angle distribution for each grain"
+        import random
+        s   = ""
+        for i in range(ngrain):
+            s   += "\t%s\t%s\t%s\t1\n" % (360.0*random.random(),
+                                     180.0*random.random(),
+                                     360.0*random.random())
+        return s
+
+
+
     def __init__(self):
         super(Actor, self).__init__(name='material_simulations/epsc/filesamp-create')
 
 
     def _configure(self):
         super(Actor, self)._configure()
-        #self.sname       = self.inventory.sname
+        self.a       = self.inventory.a
+        self.b       = self.inventory.b
+        self.c       = self.inventory.c
+        self.ngrain  = self.inventory.ngrain
 
 
     def _init(self):
