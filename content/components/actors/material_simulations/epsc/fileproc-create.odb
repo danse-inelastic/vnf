@@ -21,12 +21,21 @@ from vnfb.dom.QESimulation import QESimulation
 import luban.content as lc
 from luban.components.AuthorizedActor import AuthorizedActor as base
 
+from vnfb.epscutils.epscconst import *
+
 class Actor(base):
     """ Create Process file"""
 
     class Inventory(base.Inventory):
         import pyre.inventory
-
+        nsteps     = pyre.inventory.str('nsteps', default='0')
+        temp_s     = pyre.inventory.str('temp_s', default='0')
+        temp_f     = pyre.inventory.str('temp_f', default='0')
+        i_temp     = pyre.inventory.str('i_temp', default='0')
+        itmax_mod  = pyre.inventory.str('itmax_mod', default='0')
+        error_mod  = pyre.inventory.str('error_mod', default='0')
+        maxgrain   = pyre.inventory.str('maxgrain', default='0')
+        
 
     def default(self, director):
         return select(id='main-display-area').replaceContent(self.content(director))
@@ -57,13 +66,39 @@ class Actor(base):
         return doc
 
 
+    def generateConfig(self, director):
+        "Generates config file and redirects to general form"
+        # Special cases
+        t   = self.i_temp
+        if t == "on": i_temp = 1
+        else: i_temp = 0
+        
+        # Config text
+        config  = FILEPROC_T % (self.nsteps, self.temp_s, self.temp_f,
+                                i_temp, self.itmax_mod, self.error_mod,
+                                self.maxgrain)
+
+        return director.redirect(actor   = 'material_simulations/epsc/config-create',
+                                routine  = 'default',
+                                text     = config,
+#                                id      = self.inventory.id,
+#                                taskid  = self.inventory.taskid,
+                                type    = "fileproc")
+
+
     def __init__(self):
         super(Actor, self).__init__(name='material_simulations/epsc/fileproc-create')
 
 
     def _configure(self):
         super(Actor, self)._configure()
-        #self.sname       = self.inventory.sname
+        self.nsteps       = self.inventory.nsteps
+        self.temp_s       = self.inventory.temp_s
+        self.temp_f       = self.inventory.temp_f
+        self.i_temp       = self.inventory.i_temp
+        self.itmax_mod    = self.inventory.itmax_mod
+        self.error_mod    = self.inventory.error_mod
+        self.maxgrain     = self.inventory.maxgrain
 
 
     def _init(self):
