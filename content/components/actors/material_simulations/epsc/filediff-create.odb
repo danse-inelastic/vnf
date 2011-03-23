@@ -21,6 +21,8 @@ from vnfb.dom.QESimulation import QESimulation
 import luban.content as lc
 from luban.components.AuthorizedActor import AuthorizedActor as base
 
+from vnfb.epscutils.epscconst import *
+
 class Actor(base):
     """ Create Diffraction file"""
 
