@@ -18,7 +18,7 @@ def visual(actor):#id, taskid, type):
     "Returns formatted skip link"
     linkContent = lc.link(label="Skip To Configuration Form")
     linkContent.onclick = load(actor   = 'material_simulations/epsc/config-create',
-                              routine = 'default')
+                               routine = 'default')
 #                              ,text    = "",
 #                              id      = id,
 #                              taskid  = taskid,
