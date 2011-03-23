@@ -49,7 +49,6 @@ EXPORT_PYTHON_MODULES = \
 	Computation.py \
 	ComputationResult.py \
 	ComputationResultTs.py \
-	EPSCConfiguration.py \
 	Export.py \
 	Feature.py \
 	Histogram.py \
