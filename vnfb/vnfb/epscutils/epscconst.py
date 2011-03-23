@@ -60,6 +60,13 @@ Elastic stiffness (single crystal [GPa]; scaled=0.85xINTERPOLATED)
 ELLIPSOID   = ("1.0", "1.0", "1.0")
 NGRAIN      = "1000"
 
+FILESAMP_T  = """AXES OF THE REPRESENTATIVE ELLIPSOID
+	%s	%s	%s
+DISCRETE TEXTURE FROM ODF FILE
+B	%s	0
+%s
+"""
+
 # filediff
 NDIF        = 74
 SPREAD      = 1
