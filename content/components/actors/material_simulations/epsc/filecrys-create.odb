@@ -80,11 +80,16 @@ class Actor(base):
 
     def generateConfig(self, director):
         "Generates config file and redirects to general form"
-        config  = FILECRYS_T % (self.crysym, self.a, self.b, self.c, self.alpha,
+        # Special cases
+        crysym  = CRYSYM[int(self.crysym)]
+        nmodesx = int(self.nmodesx)+1
+
+        # Config text
+        config  = FILECRYS_T % (crysym, self.a, self.b, self.c, self.alpha,
                                 self.beta, self.gamma, self.ccc2, self.alfacc1,
                                 self.alfacc2, self.alfacc3, self.alfacc4,
-                                self.alfacc5, self.alfacc6, self.nmodesx,
-                                self.nmodesx, self.namesys, self.mode)
+                                self.alfacc5, self.alfacc6, nmodesx,
+                                nmodesx, self.namesys, self.mode)
 
         return director.redirect(actor   = 'material_simulations/epsc/config-create',
                                 routine  = 'default',
