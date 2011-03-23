@@ -11,6 +11,7 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
+# filecrys
 CRYSYM  = ("CUBIC", "HEXAG")
 LATTICE = ("3.5", "3.5", "3.5", "90", "90", "90") # Temp
 CCC2    = """  0.899E+02  0.683E+02  0.683E+02  0.000E+00  0.000E+00  0.000E+00
@@ -40,11 +41,9 @@ MODEX   = """ 1  12  20   1                           modex,nsmx,nrsx,iopsysx
    1  1  1        1  0 -1
    1  1  1        1 -1  0"""
 
-
-#namesys
-#modex nsmx nrsx iopsysx
-#stwx twvol gamdthres tauprop
-#tau0x tau1x thet0x thet1x
+# filesamp
+ELLIPSOID   = ("1.0", "1.0", "1.0")
+NGRAIN      = "1000"
 
 __date__ = "$Mar 22, 2011 10:52:10 AM$"
 
