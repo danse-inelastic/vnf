@@ -45,6 +45,11 @@ MODEX   = """ 1  12  20   1                           modex,nsmx,nrsx,iopsysx
 ELLIPSOID   = ("1.0", "1.0", "1.0")
 NGRAIN      = "1000"
 
+# filediff
+NDIF        = 74
+SPREAD      = 1
+PLANEDIFF   = ("3", "1", "0")
+
 __date__ = "$Mar 22, 2011 10:52:10 AM$"
 
 

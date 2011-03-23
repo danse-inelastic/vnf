@@ -51,8 +51,6 @@ class Visual:
         ngrain_label   = lc.link(label="Number of grains:", )
         ngrain_label.tip   = "Number of grains"
 
-        
-
         table.addRow((ellipsoid_label, ellipsoid.grid()))
         table.addRow((ngrain_label, ngrain))
 
@@ -92,8 +90,8 @@ class Visual:
         return form
 
 
-def visual(actor, director):#, structureid):
-    v   = Visual(actor, director)#, structureid)
+def visual(actor, director):    #, structureid):
+    v   = Visual(actor, director)   #, structureid)
     return v.form()
 
 __date__ = "$Mar 22, 2011 10:11:29 AM$"
