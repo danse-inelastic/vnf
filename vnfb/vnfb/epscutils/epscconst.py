@@ -81,6 +81,29 @@ ITMAX_MOD   = "100"
 ERROR_MOD   = "1.e-02"
 ITMAX_GRAIN = "100"
 
+FILEPROC_T  = """* Thermo-mechanical process
+*Number of steps in the process:
+%s								"nsteps"
+*Starting and final temperature:
+%s  %s						"temp_s" "temp_f"
+*Enforced temperature dependence of elastic constants (1=YES or 0=NO)?
+%s                                                                 "i_temp_cij"
+*Indexes and values for the stress boundary condition:
+	0	1	1	1	1	1			"istbd"
+	999	0.0	0.0	0.0	0.0	0.0			"stbc"
+*Indexes and values for the strain boundary condition:
+	1	0	0	0	0	0			"ietbc"
+	-0.03	999   999	999	999	999			"etbc"
+*Reset macroscopic strain to zero (1=YES or 0=NO)?
+1
+*Control process variable: 0=temp , 1,2,3=etss(1,2,3) , 4,5,6=stss(1,2,3)
+1									"i_control_var"
+*Convergence criterium for the sample moduli:
+%s  %s                                           "itmax_mod"  "error_mod"
+*Maximum number of iterations to select the set of systems in grains:
+%s                                            "itmax_grain"
+"""
+
 __date__ = "$Mar 22, 2011 10:52:10 AM$"
 
 
