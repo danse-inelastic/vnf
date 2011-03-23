@@ -1,0 +1,90 @@
+import os.path
+#!/usr/bin/env python
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                               Alex Dementsov
+#                      California Institute of Technology
+#                        (C) 2009  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+import os
+import luban.content as lc
+from luban.content import select
+from luban.content import load
+from vnfb.qeutils.qegrid import QEGrid
+from luban.content.FormTextField import FormTextField
+from luban.content.FormTextArea import FormTextArea
+from luban.content.FormSubmitButton import FormSubmitButton
+from vnfb.qeutils.qeconst import GENERATOR_TYPES
+
+BASE    = "material_simulations/epsc-generators"
+
+#def actorname(type):
+#    "Returns actor name depending if filtering is needed or not"
+#    actor   = "material_simulations/espresso/input-create"  # No filtering
+#    ltype    = type.lower()
+#
+#    if ltype in GENERATOR_TYPES:
+#        generator   = "generate-%s" % ltype
+#        actor       = os.path.join(BASE, generator)
+#
+#    return actor
+#
+#
+#def routinename(type):
+#    "Returns routine name depending if filtering is needed or not"
+#    name    = "createRecord"
+#    ltype    = type.lower()
+#
+#    if ltype in GENERATOR_TYPES:
+#        name    = "filterInput"
+#
+#    return name
+
+
+def visual(actor): #, director):
+    form        = lc.form(id='create-simulation-form')
+    table       = QEGrid(lc.grid(Class="qe-form"))
+    form.add(table.grid())
+
+    submit      = FormSubmitButton(label="Create Configuration")
+    cancel      = lc.button(label="Cancel")
+    cancel.onclick  = load(actor = 'material_simulations/epsc/sim-view')#, id=actor.id)
+    st          = QEGrid(lc.grid()) # Submit Table
+    st.addRow((submit, cancel), ("qe-action-accept", "qe-action-cancel"))
+
+    # Create form fields
+    text            = FormTextArea(name  ="text", value= "Hello")#actor.text, Class="qe-text-area")
+    fname           = FormTextField(name = "fname", value = "world")#actor.fname)
+    description     = FormTextField(name = "description", value="")#actor.description)   # Make as textarea
+
+    # Add form fields to the table
+    table.addRow(("Configuration: *", text))
+    table.addRow(("Name:", fname))
+    table.addRow(("Description:", description))
+
+    table.addRow(("", st.grid()))
+
+    table.setColumnStyle(0, "qe-form-label")
+    table.setColumnStyle(1, "qe-form-field")
+
+
+#    form.onsubmit   = select(element=form).submit(actor     = actorname(actor.type),
+#                                                  routine   = routinename(actor.type),
+#                                                  id        = actor.id,
+#                                                  taskid    = actor.taskid,
+#                                                  type      = actor.type,
+#                                                  subtype   = actor.subtype)
+#
+
+    return form
+
+
+__date__ = "$Jan 12, 2010 7:21:52 PM$"
+
+
