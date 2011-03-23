@@ -50,6 +50,15 @@ NDIF        = 74
 SPREAD      = 1
 PLANEDIFF   = ("3", "1", "0")
 
+# fileproc
+NSTEPS      = "40"
+TEMP_S      = "292"
+TEMP_F      = "292"
+I_TEMP      = False
+ITMAX_MOD   = "100"
+ERROR_MOD   = "1.e-02"
+ITMAX_GRAIN = "100"
+
 __date__ = "$Mar 22, 2011 10:52:10 AM$"
 
 

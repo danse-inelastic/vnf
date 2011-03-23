@@ -42,15 +42,17 @@ class Actor(base):
                                                           ))
                         )
             path.append(('EPSC', load(actor='material_simulations/epsc/sim-create')))
-            path.append("Create Process")
+            path.append("Create Process Configuration")
 
             return director.retrieveVisual('view-indicator', path=path)
 
-        doc         = lc.document(title   = "Create Process")
+        doc         = lc.document(title   = "Create Process Configuration")
         splitter    = doc.splitter(orientation="vertical")
         sA          = splitter.section()
         sA.add(viewIndicator(director))
         sB          = splitter.section()
+        visual  = 'material_simulations/epsc/fileproc-form'
+        sB.add(director.retrieveVisual(visual, self.inventory, director))
 
         return doc
 
