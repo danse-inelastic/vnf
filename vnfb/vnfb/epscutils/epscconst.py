@@ -72,6 +72,14 @@ NDIF        = 74
 SPREAD      = 1
 PLANEDIFF   = ("3", "1", "0")
 
+FILEDIFF_T  = """*DIFFRACTING PLANES AND DIRECTION
+*Number of diffraction directions and diffracting angle spread:
+  %s  %s					"ndif"	"spread"
+*Plane type and direction angle:
+*"n3" or "n4"   "theta"        "phi"
+%s
+"""
+
 # fileproc
 NSTEPS      = "40"
 TEMP_S      = "292"

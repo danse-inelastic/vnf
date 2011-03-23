@@ -12,11 +12,11 @@
 #
 
 from luban.content import select, load, alert
-from vnfb.qeutils.qegrid import QEGrid
-from vnfb.qeutils.qeconst import SIMCHAINS, MDSTEPS, ID_MD_LABEL, ID_MD_OPTIONS
-from vnfb.qeutils.qeutils import selection2typekey, nonMDChain, noHyphen
-from luban.content.FormCheckBox import FormCheckBox
-from vnfb.dom.QESimulation import QESimulation
+#from vnfb.qeutils.qegrid import QEGrid
+#from vnfb.qeutils.qeconst import SIMCHAINS, MDSTEPS, ID_MD_LABEL, ID_MD_OPTIONS
+#from vnfb.qeutils.qeutils import selection2typekey, nonMDChain, noHyphen
+#from luban.content.FormCheckBox import FormCheckBox
+#from vnfb.dom.QESimulation import QESimulation
 
 import luban.content as lc
 from luban.components.AuthorizedActor import AuthorizedActor as base
@@ -28,6 +28,11 @@ class Actor(base):
 
     class Inventory(base.Inventory):
         import pyre.inventory
+        ndif    = pyre.inventory.str('ndif', default='0')
+        spread  = pyre.inventory.str('spread', default='0')
+        h       = pyre.inventory.str('h', default='0')
+        k       = pyre.inventory.str('k', default='0')
+        l       = pyre.inventory.str('l', default='0')
 
 
     def default(self, director):
@@ -59,13 +64,50 @@ class Actor(base):
         return doc
 
 
+    def generateConfig(self, director):
+        "Generates config file and redirects to general form"
+        # Special cases
+        angles  = self.generateAngles(int(self.ndif), int(self.h), int(self.k), int(self.l))
+
+        # Config text
+        config  = FILEDIFF_T % (self.ndif, self.spread, angles)
+
+        return director.redirect(actor   = 'material_simulations/epsc/config-create',
+                                routine  = 'default',
+                                text     = config,
+#                                id      = self.inventory.id,
+#                                taskid  = self.inventory.taskid,
+                                type    = "filediff")
+
+    def generateAngles(self, ndif, h, k, l):
+        "Generates directions for diffraction plane"
+        s   = ""
+        if ndif == 0:
+            return s
+
+        d   = 180/(ndif/2-1)
+        phi = 50
+        for i in range(2):
+            theta   = 0
+            for j in range(ndif/2):
+                s   += "%s %s %s\t\t%s\t\t%s\n" % (h, k, l, theta, phi)
+                theta   += d
+            phi += 180
+
+        return s
+
+
     def __init__(self):
         super(Actor, self).__init__(name='material_simulations/epsc/filediff-create')
 
 
     def _configure(self):
         super(Actor, self)._configure()
-        #self.sname       = self.inventory.sname
+        self.ndif    = self.inventory.ndif
+        self.spread  = self.inventory.spread
+        self.h       = self.inventory.h
+        self.k       = self.inventory.k
+        self.l       = self.inventory.l
 
 
     def _init(self):

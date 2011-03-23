@@ -82,8 +82,9 @@ class Visual:
         table.setColumnStyle(0, "epsc-form-label")
         table.setColumnStyle(1, "qe-form-field")
 
-#        form.onsubmit   = select(element=form).submit(actor     = 'material_simulations/espresso-utils/generate-pw',
-#                                                      routine   = 'generateInput',
+        form.onsubmit   = select(element=form).submit(actor     = 'material_simulations/epsc/filediff-create',
+                                                      routine   = 'generateConfig')#,
+#                                                      type      = "filecrys")
 #                                                      taskid    = self._actor.taskid,
 #                                                      id        = self._actor.id,
 #                                                      type      = self._actor.type,
