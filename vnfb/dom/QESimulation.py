@@ -27,6 +27,9 @@ Notes:
 in VNF (e.g. gulpsimulations or bvkcomputations) which refer to the actual simulation steps.
     - This table is Quantum Espresso specific
     - Has 'creator' field (owned table)
+
+Important Note:
+    - Now QESimulation is also used for EPSC model
 """
 
 from vnfb.components.QETable import QETable
