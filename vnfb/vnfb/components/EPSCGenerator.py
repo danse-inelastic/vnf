@@ -34,12 +34,12 @@ class EPSCGenerator(base):
 #        structureid = pyre.inventory.str('structureid', default='') # Atomic structure id
 #        # Task attributes
 #        taskid      = pyre.inventory.str('taskid', default='')      # Task id
-#        type        = pyre.inventory.str('type', default='')        # Task type
+        type        = pyre.inventory.str('type', default='')        # Task type
 #        subtype     = pyre.inventory.str('subtype', default='')
 #        # Input attributes
 #        fname       = pyre.inventory.str('fname', default='')
 #        description = pyre.inventory.str('description', default='')
-#        text        = pyre.inventory.str('text', default='')
+        text        = pyre.inventory.str('text', default='')
 #        linkorder   = pyre.inventory.str('linkorder', default='')   # Linkorder, if not set from qeconst.py
 
 
@@ -116,17 +116,18 @@ class EPSCGenerator(base):
 
     def _configure(self):
         super(EPSCGenerator, self)._configure()
+
 #        self.id             = self.inventory.id
 #        self.simtype        = self.inventory.simtype
 #        self.structureid    = self.inventory.structureid
 #
 #        self.taskid         = self.inventory.taskid
-#        self.type           = self.inventory.type
+        self.type           = self.inventory.type
 #        self.subtype        = self.inventory.subtype
 #
 #        self.fname          = self.inventory.fname
 #        self.description    = self.inventory.description
-#        self.text           = self.inventory.text
+        self.text           = self.inventory.text
 #        self.linkorder      = self.inventory.linkorder
 
 

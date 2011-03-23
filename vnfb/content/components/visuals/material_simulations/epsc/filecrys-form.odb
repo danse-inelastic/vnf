@@ -18,7 +18,6 @@ from vnfb.qeutils.qegrid import QEGrid
 from luban.content.FormTextField import FormTextField
 from luban.content.FormSelectorField import FormSelectorField
 from luban.content.FormSubmitButton import FormSubmitButton
-from luban.content.FormRadioBox import FormRadioBox
 
 from luban.content.FormTextArea import  FormTextArea
 
@@ -26,7 +25,7 @@ from vnfb.epscutils.epscconst import *
 
 class Visual:
 
-    def __init__(self, actor, director):#, structureid):
+    def __init__(self, actor, director): #, structureid):
         self._actor         = actor
         self._director      = director
         #self._structureid   = structureid
@@ -164,8 +163,9 @@ class Visual:
         table.setColumnStyle(0, "epsc-form-label")
         table.setColumnStyle(1, "qe-form-field")
 
-#        form.onsubmit   = select(element=form).submit(actor     = 'material_simulations/espresso-utils/generate-pw',
-#                                                      routine   = 'generateInput',
+        form.onsubmit   = select(element=form).submit(actor     = 'material_simulations/epsc/filecrys-create',
+                                                      routine   = 'generateConfig')#,
+#                                                      type      = "filecrys")
 #                                                      taskid    = self._actor.taskid,
 #                                                      id        = self._actor.id,
 #                                                      type      = self._actor.type,

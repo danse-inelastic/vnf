@@ -49,7 +49,8 @@ EXPORT_PYTHON_MODULES = \
 	Computation.py \
 	ComputationResult.py \
 	ComputationResultTs.py \
-    Export.py \
+	EPSCConfiguration.py \
+	Export.py \
 	Feature.py \
 	Histogram.py \
 	ITask.py \
@@ -61,15 +62,15 @@ EXPORT_PYTHON_MODULES = \
 	OwnedObject.py \
 	OwnedObjectTs.py \
 	Privilege.py \
-    QEConfiguration.py \
-    QEConvergence.py \
-    QEConvParamTask.py \
-    QEJob.py \
-    QEConvParam.py \
-    QESetting.py \
-    QESimulation.py \
-    QESimulationTask.py \
-    QETask.py \
+	QEConfiguration.py \
+	QEConvergence.py \
+	QEConvParamTask.py \
+	QEJob.py \
+	QEConvParam.py \
+	QESetting.py \
+	QESimulation.py \
+	QESimulationTask.py \
+	QETask.py \
 	Registrant.py \
 	Role.py \
 	RoleHasPrivilege.py \

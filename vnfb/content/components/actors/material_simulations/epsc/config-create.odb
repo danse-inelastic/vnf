@@ -23,6 +23,7 @@ class Actor(base):
 
     class Inventory(base.Inventory):
         import pyre.inventory
+        
 #        subtype     = pyre.inventory.str('subtype', default='')
 #
 #        # Specific for convergence tests
@@ -41,9 +42,9 @@ class Actor(base):
         "Default implementation of input form"
         visual_     = "material_simulations/epsc/input-default"
 
-        return director.retrieveVisual(visual_)#,
-#                                       actor        = self.inventory,
-#                                       director     = director)
+        return director.retrieveVisual(visual_,
+                                       actor        = self.inventory,
+                                       director     = director)
 
 
 #    def createRecord(self, director):

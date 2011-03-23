@@ -41,6 +41,21 @@ MODEX   = """ 1  12  20   1                           modex,nsmx,nrsx,iopsysx
    1  1  1        1  0 -1
    1  1  1        1 -1  0"""
 
+FILECRYS_T = """*Material: 
+%s           crysym
+   %s   %s   %s   %s   %s   %s   unit cell axes and angles
+Elastic stiffness (single crystal [GPa]; scaled=0.85xINTERPOLATED)
+%s
+*Thermal expansion coefficients (single crystal in crystal axis):
+ %s  %s  %s   %s   %s   %s                    "alfacc"
+*Info about slip & twinning modes in this file:
+  %s          nmodesx    (total # of modes listed in file)
+  %s          nmodes     (# of modes to be used in the calculation)
+  1          mode(i)    (label of the modes to be used)
+  %s
+%s"""
+
+
 # filesamp
 ELLIPSOID   = ("1.0", "1.0", "1.0")
 NGRAIN      = "1000"

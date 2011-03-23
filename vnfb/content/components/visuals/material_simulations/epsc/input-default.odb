@@ -47,7 +47,7 @@ BASE    = "material_simulations/epsc-generators"
 #    return name
 
 
-def visual(actor): #, director):
+def visual(actor, director):
     form        = lc.form(id='create-simulation-form')
     table       = QEGrid(lc.grid(Class="qe-form"))
     form.add(table.grid())
@@ -59,8 +59,8 @@ def visual(actor): #, director):
     st.addRow((submit, cancel), ("qe-action-accept", "qe-action-cancel"))
 
     # Create form fields
-    text            = FormTextArea(name  ="text", value= "Hello")#actor.text, Class="qe-text-area")
-    fname           = FormTextField(name = "fname", value = "world")#actor.fname)
+    text            = FormTextArea(name  ="text", value= actor.text, Class="qe-text-area")
+    fname           = FormTextField(name = "fname", value = "")#actor.fname)
     description     = FormTextField(name = "description", value="")#actor.description)   # Make as textarea
 
     # Add form fields to the table

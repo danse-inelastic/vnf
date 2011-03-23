@@ -11,50 +11,87 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
-from luban.content import select, load, alert
-from vnfb.qeutils.qegrid import QEGrid
-from vnfb.qeutils.qeconst import SIMCHAINS, MDSTEPS, ID_MD_LABEL, ID_MD_OPTIONS
-from vnfb.qeutils.qeutils import selection2typekey, nonMDChain, noHyphen
-from luban.content.FormCheckBox import FormCheckBox
-from vnfb.dom.QESimulation import QESimulation
+from luban.content import select, load#, alert
+#from vnfb.qeutils.qegrid import QEGrid
+#from vnfb.qeutils.qeconst import SIMCHAINS, MDSTEPS, ID_MD_LABEL, ID_MD_OPTIONS
+#from vnfb.qeutils.qeutils import selection2typekey, nonMDChain, noHyphen
+#from luban.content.FormCheckBox import FormCheckBox
+#from vnfb.dom.QESimulation import QESimulation
 
 import luban.content as lc
 from luban.components.AuthorizedActor import AuthorizedActor as base
+
+from vnfb.epscutils.epscconst import *
 
 class Actor(base):
     """ Create Material file"""
 
     class Inventory(base.Inventory):
         import pyre.inventory
+        crysym = pyre.inventory.str('crysym', default='')
+        a     = pyre.inventory.str('a', default='')
+        b     = pyre.inventory.str('b', default='')
+        c     = pyre.inventory.str('c', default='')
+        alpha   = pyre.inventory.str('alpha', default='')
+        beta    = pyre.inventory.str('beta', default='')
+        gamma   = pyre.inventory.str('gamma', default='')
+        ccc2    = pyre.inventory.str('ccc2', default='')
+        alfacc1     = pyre.inventory.str('alfacc1', default='')
+        alfacc2     = pyre.inventory.str('alfacc2', default='')
+        alfacc3     = pyre.inventory.str('alfacc3', default='')
+        alfacc4     = pyre.inventory.str('alfacc4', default='')
+        alfacc5     = pyre.inventory.str('alfacc5', default='')
+        alfacc6     = pyre.inventory.str('alfacc6', default='')
+        nmodesx     = pyre.inventory.str('nmodesx', default='')
+        namesys     = pyre.inventory.str('namesys', default='')
+        mode        = pyre.inventory.str('mode', default='')
 
 
     def default(self, director):
         return select(id='main-display-area').replaceContent(self.content(director))
 
 
-    def content(self, director):
-        def viewIndicator(director):
-            path = []
-            path.append(('Simulations ', load(actor='materialsimulation')))
-            path.append(('Create New Simulation ', select(id='main-display-area').replaceContent(
-                                                          load(actor='materialsimulation',
-                                                               routine='newSimulation')
-                                                          ))
-                        )
-            path.append(('EPSC', load(actor='material_simulations/epsc/sim-create')))
-            path.append("Create Material Configuration")
+    def _viewIndicator(self, director):
+        path = []
+        path.append(('Simulations ', load(actor='materialsimulation')))
+        path.append(('Create New Simulation ', select(id='main-display-area').replaceContent(
+                                                      load(actor='materialsimulation',
+                                                           routine='newSimulation')
+                                                      ))
+                    )
+        path.append(('EPSC', load(actor='material_simulations/epsc/sim-create')))
+        path.append("Create Material Configuration")
 
-            return director.retrieveVisual('view-indicator', path=path)
+        return director.retrieveVisual('view-indicator', path=path)
+
+
+    def content(self, director):
 
         doc         = lc.document(title   = "Create Material Configuration")
         splitter    = doc.splitter(orientation="vertical")
         sA          = splitter.section()
-        sA.add(viewIndicator(director))
+        sA.add(self._viewIndicator(director))
         sB          = splitter.section()
         visual  = 'material_simulations/epsc/filecrys-form'
         sB.add(director.retrieveVisual(visual, self.inventory, director))
 
         return doc
+
+
+    def generateConfig(self, director):
+        "Generates config file and redirects to general form"
+        config  = FILECRYS_T % (self.crysym, self.a, self.b, self.c, self.alpha,
+                                self.beta, self.gamma, self.ccc2, self.alfacc1,
+                                self.alfacc2, self.alfacc3, self.alfacc4,
+                                self.alfacc5, self.alfacc6, self.nmodesx,
+                                self.nmodesx, self.namesys, self.mode)
+
+        return director.redirect(actor   = 'material_simulations/epsc/config-create',
+                                routine  = 'default',
+                                text     = config,
+#                                id      = self.inventory.id,
+#                                taskid  = self.inventory.taskid,
+                                type    = "filecrys")
 
 
     def __init__(self):
@@ -63,7 +100,23 @@ class Actor(base):
 
     def _configure(self):
         super(Actor, self)._configure()
-        #self.sname       = self.inventory.sname
+        self.crysym  = self.inventory.crysym
+        self.a       = self.inventory.a
+        self.b       = self.inventory.b
+        self.c       = self.inventory.c
+        self.alpha         = self.inventory.alpha
+        self.beta          = self.inventory.beta
+        self.gamma         = self.inventory.gamma
+        self.ccc2          = self.inventory.ccc2
+        self.alfacc1       = self.inventory.alfacc1
+        self.alfacc2       = self.inventory.alfacc2
+        self.alfacc3       = self.inventory.alfacc3
+        self.alfacc4       = self.inventory.alfacc4
+        self.alfacc5       = self.inventory.alfacc5
+        self.alfacc6       = self.inventory.alfacc6
+        self.nmodesx       = self.inventory.nmodesx
+        self.namesys       = self.inventory.namesys
+        self.mode          = self.inventory.mode
 
 
     def _init(self):
