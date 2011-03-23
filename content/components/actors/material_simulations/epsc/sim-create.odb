@@ -22,7 +22,7 @@ import luban.content as lc
 from luban.components.AuthorizedActor import AuthorizedActor as base
 
 class Actor(base):
-    """ Create Quantum Espresso simulation"""
+    """ Create EPSC simulation"""
 
     class Inventory(base.Inventory):
         import pyre.inventory
@@ -31,14 +31,6 @@ class Actor(base):
         description = pyre.inventory.str('description', default='')
         label       = pyre.inventory.str('label', default='')
         structureid = pyre.inventory.str('structureid', default='')
-
-        # Molecular dynamics steps
-        electronmin = pyre.inventory.bool(name='electronmin', default=False)
-        ionmin      = pyre.inventory.bool(name='ionmin', default=False)
-        ionrandom   = pyre.inventory.bool(name='ionrandom', default=False)
-        quenching   = pyre.inventory.bool(name='quenching', default=False)
-        dynamics    = pyre.inventory.bool(name='dynamics', default=False)
-        thermostat  = pyre.inventory.bool(name='thermostat', default=False)
 
 
     def default(self, director):
@@ -62,26 +54,92 @@ class Actor(base):
         sA          = splitter.section()
         sA.add(viewIndicator(director))
         sB          = splitter.section()
-        table       = QEGrid(lc.grid(Class="qe-table"))
-        link        = lc.link(label='filecrys')
-        link.onclick    = load(actor='material_simulations/epsc/filecrys-create')
-        table.addRow((link,))
-
-        link        = lc.link(label='filesamp')
-        link.onclick    = load(actor='material_simulations/epsc/filesamp-create')
-        table.addRow((link,))
-
-        link        = lc.link(label='filediff')
-        link.onclick    = load(actor='material_simulations/epsc/filediff-create')
-        table.addRow((link,))
-
-        link        = lc.link(label='fileproc')
-        link.onclick    = load(actor='material_simulations/epsc/fileproc-create')
-        table.addRow((link,))
-        
-        sB.add(table.grid())
+        visual  = 'material_simulations/epsc/form-sim-create'
+        sB.add(director.retrieveVisual(visual, self.inventory, director))
 
         return doc
+
+
+    def showOptions(self, director):
+        " Displays 'Select Atomic Structure' page"
+        doc = lc.document(title='Select Atomic Structure')
+        doc.Class = 'mastertable-as-selector-panel'
+
+        # the container of the atomicstructure selector
+        container = doc.document(id     = 'atomicstructure-selector-container',
+                                 Class  = 'master-table-wrapper')
+        container.oncreate = select(element=container).append(
+                                            load(actor='selectoneatomicstructure',
+                                                 routine='createListView')
+                                    )
+
+        # the button
+        b = lc.button(label='Select')
+        doc.add(b)
+        b.onclick = load(actor          = self.name,
+                         structureid    = select(id='atomicstructure-table').table(
+                                                        'getIdentifierForSelectedRow',
+                                                        colname = 'selectone')
+            )
+        return select(id='main-display-area').replaceContent(doc)
+
+#
+#
+#
+#    def _checked(self, step):
+#        "Takes molecular dynamics step and decides if to check them"
+#        # List of checkboxes which need to be checked
+#        if step in MD_STEPS_CHECKED:
+#            return True
+#
+#        return False
+#
+#
+#    def createRecord(self, director):
+#        "Create simulation record"
+#        self._verify()
+#        keys    = SIMCHAINS.keys()
+#        simtype = keys[int(self.simtype)]
+#
+#        params  = {"sname":         self._sname(),
+#                   "type":          simtype,
+#                   "simchain":      self._simChain(),
+#                   "creator":       director.sentry.username,
+#                   "short_description":   self._description(),
+#                   "label":         self.label,
+#                   "structureid":   self.structureid
+#                   }
+#        sim     = QESimulation(director)
+#        sim.createRecord(params)
+#        sim.establishGlobalPointer(director.clerk.db)
+#
+#        return load(actor='material_simulations/espresso/sim-view', id = sim.id)
+#
+#
+#    def _simChain(self):
+#        "Returns comma-separated simulation chain string of tasks"
+#        # Output example: "PW,PW,DOS" or "electron-min,thermostat"
+#        # Important: Keep the order!
+#        typekey = selection2typekey(self.simtype)
+#        if typekey != "molecular-dynamics": # Use standard chain from qeconst.py
+#            return nonMDChain(typekey)
+#
+#        return self._mdChain()
+#
+#
+#    def _description(self):
+#        "Returns description"
+#        if self.description == '':  # Description is not set
+#            return "QE simulation"
+#
+#        return self.description
+#
+#    def _sname(self):
+#        "Returns simulation name"
+#        if self.sname == '':    # Simulation name is not set
+#            return "Default"
+#
+#        return self.sname
 
 
     def __init__(self):
@@ -90,7 +148,11 @@ class Actor(base):
 
     def _configure(self):
         super(Actor, self)._configure()
-        #self.sname       = self.inventory.sname
+        self.sname       = self.inventory.sname
+        self.simtype     = self.inventory.simtype
+        self.description = self.inventory.description
+        self.label       = self.inventory.label
+        self.structureid = self.inventory.structureid
 
 
     def _init(self):
@@ -99,6 +161,97 @@ class Actor(base):
 
 def actor():
     return Actor()
+
+
+
+#from luban.content import select, load, alert
+#from vnfb.qeutils.qegrid import QEGrid
+#from vnfb.qeutils.qeconst import SIMCHAINS, MDSTEPS, ID_MD_LABEL, ID_MD_OPTIONS
+#from vnfb.qeutils.qeutils import selection2typekey, nonMDChain, noHyphen
+#from luban.content.FormCheckBox import FormCheckBox
+#from vnfb.dom.QESimulation import QESimulation
+#
+#import luban.content as lc
+#from luban.components.AuthorizedActor import AuthorizedActor as base
+#
+#class Actor(base):
+#    """ Create Quantum Espresso simulation"""
+#
+#    class Inventory(base.Inventory):
+#        import pyre.inventory
+#        sname       = pyre.inventory.str('sname', default='')
+#        simtype     = pyre.inventory.str('simtype', default='')
+#        description = pyre.inventory.str('description', default='')
+#        label       = pyre.inventory.str('label', default='')
+#        structureid = pyre.inventory.str('structureid', default='')
+#
+#        # Molecular dynamics steps
+#        electronmin = pyre.inventory.bool(name='electronmin', default=False)
+#        ionmin      = pyre.inventory.bool(name='ionmin', default=False)
+#        ionrandom   = pyre.inventory.bool(name='ionrandom', default=False)
+#        quenching   = pyre.inventory.bool(name='quenching', default=False)
+#        dynamics    = pyre.inventory.bool(name='dynamics', default=False)
+#        thermostat  = pyre.inventory.bool(name='thermostat', default=False)
+#
+#
+#    def default(self, director):
+#        return select(id='main-display-area').replaceContent(self.content(director))
+#
+#
+#    def content(self, director):
+#        def viewIndicator(director):
+#            path = []
+#            path.append(('Simulations ', load(actor='materialsimulation')))
+#            path.append(('Create New Simulation ', select(id='main-display-area').replaceContent(
+#                                                          load(actor='materialsimulation',
+#                                                               routine='newSimulation')
+#                                                          ))
+#                        )
+#            path.append('EPSC')
+#            return director.retrieveVisual('view-indicator', path=path)
+#
+#        doc         = lc.document(title   = "Create New Simulation")
+#        splitter    = doc.splitter(orientation="vertical")
+#        sA          = splitter.section()
+#        sA.add(viewIndicator(director))
+#        sB          = splitter.section()
+#        table       = QEGrid(lc.grid(Class="qe-table"))
+#        link        = lc.link(label='filecrys')
+#        link.onclick    = load(actor='material_simulations/epsc/filecrys-create')
+#        table.addRow((link,))
+#
+#        link        = lc.link(label='filesamp')
+#        link.onclick    = load(actor='material_simulations/epsc/filesamp-create')
+#        table.addRow((link,))
+#
+#        link        = lc.link(label='filediff')
+#        link.onclick    = load(actor='material_simulations/epsc/filediff-create')
+#        table.addRow((link,))
+#
+#        link        = lc.link(label='fileproc')
+#        link.onclick    = load(actor='material_simulations/epsc/fileproc-create')
+#        table.addRow((link,))
+#
+#        sB.add(table.grid())
+#
+#        return doc
+#
+#
+#    def __init__(self):
+#        super(Actor, self).__init__(name='material_simulations/epsc/sim-create')
+#
+#
+#    def _configure(self):
+#        super(Actor, self)._configure()
+#        #self.sname       = self.inventory.sname
+#
+#
+#    def _init(self):
+#        super(Actor, self)._init()
+#        return
+#
+#def actor():
+#    return Actor()
 
 
 __date__ = "$Mar 1, 2011 12:19:17 PM$"

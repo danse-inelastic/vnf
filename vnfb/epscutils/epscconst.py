@@ -11,6 +11,8 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
+NUMPROC = 1
+
 # filecrys
 CRYSYM  = ("CUBIC", "HEXAG")
 LATTICE = ("3.5", "3.5", "3.5", "90", "90", "90") # Temp
@@ -111,6 +113,7 @@ FILEPROC_T  = """* Thermo-mechanical process
 *Maximum number of iterations to select the set of systems in grains:
 %s                                            "itmax_grain"
 """
+
 
 __date__ = "$Mar 22, 2011 10:52:10 AM$"
 
