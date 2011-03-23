@@ -11,6 +11,110 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
+import luban.content as lc
+from luban.content import select
+from luban.content import load
+from vnfb.qeutils.qegrid import QEGrid
+from luban.content.FormTextField import FormTextField
+from luban.content.FormSelectorField import FormSelectorField
+from luban.content.FormSubmitButton import FormSubmitButton
+from luban.content.FormCheckBox import FormCheckBox
+from luban.content.FormRadioBox import FormRadioBox
+
+from luban.content.FormTextArea import  FormTextArea
+
+from vnfb.epscutils.epscconst import *
+
+class Visual:
+
+    def __init__(self, actor, director):    #, structureid):
+        self._actor         = actor
+        self._director      = director
+        #self._structureid   = structureid
+
+
+    def form(self):
+        # Parameter elements
+        form        = lc.form(id="epsc-form")
+        table       = QEGrid(lc.grid(Class="qe-form"))
+
+        nsteps      = FormTextField(name = "nsteps", value = NSTEPS)
+        temp_s      = FormTextField(name = "temp_s", value = TEMP_S, Class="epsc-num-field")
+        temp_f      = FormTextField(name = "temp_f", value = TEMP_F, Class="epsc-num-field")
+        temp        = QEGrid(lc.grid())
+        temp.addRow(("Starting", temp_s, "Final", temp_f))
+
+        i_temp      = FormCheckBox(name="i_temp", checked = I_TEMP)
+        itmax_mod   = FormTextField(name = "itmax_mod", value = ITMAX_MOD, Class="epsc-num-field",
+                                    tip  = "Maximum iteration steps")
+        error_mod   = FormTextField(name = "error_mod", value = ERROR_MOD, Class="epsc-num-field",
+                                    tip  = "Iteration error")
+        conv        = QEGrid(lc.grid())
+        conv.addRow(("Steps", itmax_mod, "Error", error_mod))
+        
+        maxgrain    = FormTextField(name = "maxgrain", value = ITMAX_GRAIN)
+
+
+        nsteps_label   = lc.link(label="Number of steps:", )
+        nsteps_label.tip   = "Number of steps in the process"
+
+        temp_label   = lc.link(label="Temperature:", )
+        temp_label.tip   = "Starting and final temperature"
+
+        i_temp_label   = lc.link(label="Enforced temperature dependence:", )
+        i_temp_label.tip   = "Enforced temperature dependence of elastic constants (checked=YES)"
+
+        conv_label   = lc.link(label="Convergence criterium:", )
+        conv_label.tip   = "Convergence criterium for the sample moduli"
+
+        maxiter_label   = lc.link(label="Maximum number of iterations:", )
+        maxiter_label.tip   = "Maximum number of iterations to select the set of systems in grains"
+
+        table.addRow((nsteps_label, nsteps))
+        table.addRow((temp_label, temp.grid()))
+        table.addRow((i_temp_label, i_temp))
+        table.addRow((conv_label, conv.grid()))
+        table.addRow((maxiter_label, maxgrain))
+
+        # Skip link
+        visual_     = "material_simulations/epsc/link-skip"
+        skipLink    = self._director.retrieveVisual(visual_)#,
+#                                                  id        = self._actor.id,
+#                                                  taskid    = self._actor.taskid,
+#                                                  type      = self._actor.type)
+
+        submit      = FormSubmitButton(label="Generate Process Configuration")
+        cancel      = lc.button(label="Cancel")
+        cancel.onclick  = load(actor = 'material_simulations/epsc/sim-view')#, id=self._actor.id)
+
+        # Parameters attachment
+        st          = QEGrid(lc.grid()) # Submit Table
+        st.addRow((submit, cancel), ("qe-action-accept", "qe-action-cancel"))
+
+
+        table.addRow(("", skipLink))
+        table.addRow(("", st.grid()))
+
+        table.setColumnStyle(0, "epsc-form-label")
+        table.setColumnStyle(1, "qe-form-field")
+
+#        form.onsubmit   = select(element=form).submit(actor     = 'material_simulations/espresso-utils/generate-pw',
+#                                                      routine   = 'generateInput',
+#                                                      taskid    = self._actor.taskid,
+#                                                      id        = self._actor.id,
+#                                                      type      = self._actor.type,
+#                                                      mattertype    = self._actor.mattertype,
+#                                                      structureid   = self._structureid,
+#                                                      simtype   = self._simtype)
+
+        form.add(table.grid())
+
+        return form
+
+
+def visual(actor, director):    #, structureid):
+    v   = Visual(actor, director)   #, structureid)
+    return v.form()
 
 __date__ = "$Mar 22, 2011 10:11:29 AM$"
 
