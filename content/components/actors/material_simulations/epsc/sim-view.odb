@@ -11,7 +11,7 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
-from vnfb.epscutils.action_links import settingsLink, serverLink
+from vnfb.epscutils.action_links import settingsLink, serverLink, configLink
 
 from vnfb.qeutils.qeutils import stamp2date, analyseActor, label2typekey, nonMDChain
 from vnfb.qeutils.taskcreator import TaskCreator
@@ -199,10 +199,10 @@ class Actor(base):
         p_label    = lc.link(label="Process:")
         p_label.tip    = "Thermo-mechanical process"
 
-        table.addRow((m_label, ""))
-        table.addRow((s_label, ""))
-        table.addRow((t_label, ""))
-        table.addRow((p_label, ""))
+        table.addRow((m_label, configLink(director, self.id, "filecrys")))
+        table.addRow((s_label, configLink(director, self.id, "filesamp")))
+        table.addRow((t_label, configLink(director, self.id, "filediff")))
+        table.addRow((p_label, configLink(director, self.id, "fileproc")))
 
         table.setColumnStyle(0, "epsc-cell-param")
 

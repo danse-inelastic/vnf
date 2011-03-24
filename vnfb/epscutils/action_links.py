@@ -13,9 +13,10 @@
 
 from luban.content import load
 from luban.content.Link import Link
+from vnfb.epscutils.epscconst import FILETYPE
 
 def settingsLink(director, id):
-    """Displays settings of the simulation"""
+    "Returns link to settings of simulation"
     settings  = director.clerk.getQESettings(where="simulationid='%s'" % id )
 
     # Default link
@@ -41,7 +42,7 @@ def settingsLink(director, id):
 
 
 def serverLink(director, id):
-    "Returns server link"
+    "Returns link to server information"
     server = None
     link = "None"
 
@@ -62,6 +63,22 @@ def serverLink(director, id):
                 onclick = select(id='').append(load(actor='server/load', routine='createDialog'))
                 )
 
+    return link
+
+
+def configLink(director, id, type):
+    "Returns link to configuration"
+    if not type in FILETYPE:
+        return "None"
+
+    actorName   = "material_simulations/epsc/%s-create" % type
+    # Default link
+    link = Link(label="Create",
+                Class="epsc-action-create",
+                onclick=load(actor      = actorName,
+                             id         = id)
+                )
+                
     return link
 
 
