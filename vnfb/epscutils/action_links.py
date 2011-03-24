@@ -97,26 +97,6 @@ def configLink(director, id, taskid, type, structureid):
                                configid   = input.id))
 
 
-#    def getLink(self):      # simulation
-#        inputs  = self._director.clerk.getQEConfigurations(where="taskid='%s'" % self._taskid )
-#
-#        link    = self._linkAdd()
-#        if not inputs:      # No inputs created, return "Add" link
-#            return link
-#
-#        input   = latestInput(inputs)
-#        if not input:       # No input, return "Add" link
-#            return link
-#
-#        return Link(label   = input.filename,
-#                    onclick = load(actor      = "material_simulations/espresso/input-view",
-#                                 id         = self._id,
-#                                 taskid     = self._taskid,
-#                                 type       = self._type,
-#                                 configid   = input.id)   # Some more?
-#                    )
-
-
 __date__ = "$Mar 23, 2011 7:15:15 PM$"
 
 

@@ -11,6 +11,156 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
+from vnfb.qeutils.qegrid import QEGrid
+from vnfb.qeutils.qeutils import  recordFileExists, writeRecordFile, readRecordFile
+
+from luban.content import select
+from luban.content import load
+from luban.content.FormTextArea import FormTextArea
+from luban.content.FormTextField import FormTextField
+from luban.content.FormSubmitButton import FormSubmitButton
+from luban.content.Form import Form
+from vnfb.epscutils.epscconst import TYPE_DESC
+
+import luban.content as lc
+from luban.components.AuthorizedActor import AuthorizedActor as base
+
+class Actor(base):
+
+    class Inventory(base.Inventory):
+        import pyre.inventory
+        id          = pyre.inventory.str('id', default='')          # Simulation Id
+        configid    = pyre.inventory.str('configid', default='')    # Configuration Id
+        taskid      = pyre.inventory.str('taskid', default='')
+        type        = pyre.inventory.str('type', default='')        # Type of the configuration file
+        fname       = pyre.inventory.str('fname', default='')
+        description = pyre.inventory.str('description', default='')
+        parser      = pyre.inventory.str('parser', default='')
+        text        = pyre.inventory.str('text', default='')
+
+
+    def default(self, director):
+        return select(id='main-display-area').replaceContent(self.content(director))
+
+
+    def content(self, director):
+        input   = director.clerk.getQEConfigurations(id=self.configid)
+        label   = "Edit %s Configuration: %s" % (TYPE_DESC[input.type], input.filename)
+
+        def viewIndicator(director):
+            qelink  = load( actor           = 'materialsimulation',
+                            filter_key      = 'type',
+                            filter_value    = 'qesimulations')
+
+            path = []
+            path.append(('Simulations ', load(actor='materialsimulation')))
+            path.append(('EPSC ', qelink))
+            path.append(('%s ' % self.id, load(actor    = 'material_simulations/epsc/sim-view',
+                                               id       = self.id)))
+            path.append(label)
+
+            return director.retrieveVisual('view-indicator', path=path)
+
+        doc         = lc.document(title=label)
+        splitter    = doc.splitter(orientation="vertical")
+        sA          = splitter.section()
+        sA.add(viewIndicator(director))
+        sB          = splitter.section()
+        sB.add(self._setForm(director, input))
+
+        return doc
+
+
+    def _setForm(self, director, input):
+        "Sets create new settings form"
+
+        form        = Form(id='create-simulation-form')
+        table       = QEGrid(lc.grid(Class="qe-form"))
+        form.add(table.grid())
+
+        text            = FormTextArea(name="text", value=self._inputText(director, input), Class="qe-text-area")
+        fname           = FormTextField(name = "fname", value = input.filename)
+        description     = FormTextField(name = "description", value=input.description)   # Make as textarea
+
+        submit      = FormSubmitButton(label="Edit Configuration Input")
+        cancel      = lc.button(label="Cancel")
+        cancel.onclick  = load(actor = 'material_simulations/epsc/sim-view', id=self.id)
+
+        st          = QEGrid(lc.grid()) # Submit Table
+        st.addRow((submit, cancel), ("qe-action-accept", "qe-action-cancel"))
+
+        table.addRow(("Configuration: *", text ))
+        table.addRow(("Name:", fname))
+        table.addRow(("Description:", description))
+        table.addRow(("", st.grid()))
+
+        table.setColumnStyle(0, "qe-form-label")
+        table.setColumnStyle(1, "qe-form-field")
+
+        form.onsubmit   = select(element=form).submit(actor     = 'material_simulations/epsc/config-edit',
+                                                      routine   = 'updateRecord',
+                                                      configid  = self.configid,
+                                                      taskid    = self.taskid,
+                                                      id        = self.id)
+
+        return form
+
+
+    def _inputText(self, director, input):
+        fname   = input.type
+        s       = readRecordFile(director.dds, input, fname)
+        if s:
+            return s
+        return ""
+
+
+    def updateRecord(self, director):
+        "Update configuration record"
+        self.updateDBRecord(director)
+        self.updateFile(director)
+
+        return load(actor='material_simulations/epsc/sim-view', id=self.id)
+
+
+    def updateDBRecord(self, director):
+        "Update db record"
+        params  = {"filename":      self.fname,
+                   "description":   self.description}
+
+        self.input     = director.clerk.getQEConfigurations(id=self.configid)
+        self.input.setDirector(director)
+        self.input.updateRecord(params)
+
+
+    def updateFile(self, director):
+        fname   = self.input.type
+        # Even if file does not exist, still write content to the file
+        # Important Note: There is no filtering when config file is edited!
+        writeRecordFile(director.dds, self.input, fname, self.text)  # XXX Filter config
+
+
+    def __init__(self):
+        super(Actor, self).__init__(name='material_simulations/epsc/config-edit')
+
+
+    def _configure(self):
+        super(Actor, self)._configure()
+        self.id             = self.inventory.id
+        self.taskid         = self.inventory.taskid
+        self.configid       = self.inventory.configid
+        self.type           = self.inventory.type
+        self.fname          = self.inventory.fname
+        self.description    = self.inventory.description
+        self.parser         = self.inventory.parser
+        self.text           = self.inventory.text
+
+
+    def _init(self):
+        super(Actor, self)._init()
+        return
+
+def actor():
+    return Actor()
 
 __date__ = "$Mar 24, 2011 10:58:47 AM$"
 
