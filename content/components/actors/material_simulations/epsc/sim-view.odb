@@ -11,6 +11,8 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
+from vnfb.epscutils.epscsettings import EPSCSettings
+from vnfb.epscutils.epscserver import EPSCServer
 
 from vnfb.qeutils.qeutils import stamp2date, analyseActor, label2typekey, nonMDChain
 from vnfb.qeutils.taskcreator import TaskCreator
@@ -45,8 +47,6 @@ class Actor(base):
         if not self._sim:   # No simulation, return empty document
             return lc.document()
 
-        #self._checkTasks(director)  # ! Checks tasks if they exist, otherwise creates missing
-
         doc         = lc.document(title   = 'Simulation Name: %s' % self._sim.sname)
         splitter    = doc.splitter(orientation="vertical")
         sA          = splitter.section()
@@ -54,21 +54,22 @@ class Actor(base):
 
         sC          = splitter.section(id="qe-section-actions")
         self._showActions(sC, self._sim)
-#
-#        # Area for errors
-#        splitter.section(id="input-error-area") # ?
-#
-#        sB          = splitter.section()
-#
-#        table       = QEGrid(lc.grid(Class = "qe-table"))
-#        sB.add(table.grid())
-#        self._showSimulationInfo(table, self._sim)
-#        self._showSettings(director, table)
-#        self._showServer(director, table)
+
+        # Area for errors
+        splitter.section(id="input-error-area") # ?
+
+        sB          = splitter.section()
+
+        table       = QEGrid(lc.grid(Class = "qe-table"))
+        sB.add(table.grid())
+        self._showSimulationInfo(table, self._sim)
+        self._showSettings(director, table)
+        self._showServer(director, table)
+        
 #        self._showTasks(director, splitter)
 #
-#        # Should go after all of the rows are added!
-#        table.setColumnStyle(0, "qe-cell-param")
+        # Should go after all of the rows are added!
+        table.setColumnStyle(0, "qe-cell-param")
 
         return doc
 
@@ -93,30 +94,13 @@ class Actor(base):
 #        return select(id = ID_SIMTASKS).replaceContent(container)
 #
 #
-##    def _checkTasks(self, director):
-##        creator     = TaskCreator(director, self.id)
-##        creator.createRecords(self._chainString())
-#
-#
-#    def _chainString(self):
-#        "Returns comma-separated string of tasks"
-#        # Example of output: "electron-min,thermostat" or "PW,PW,DOS"
-#
-#        # Molecular dynamics case
-#        if self._sim.type == SIMTYPE["molecular-dynamics"]:
-#            return self._sim.simchain
-#
-#        return nonMDChain(label2typekey(self._sim.type))
-#
 
     def _showActions(self, section, sim):
         self._refreshAction(section, sim)
-#        self._newAction(section, sim)
-#        self._editAction(section, sim)
-#        self._cloneAction(section, sim)
-#        #self._convergenceAction(section, sim)
-#        self._analysisAction(section, sim)
-#        self._deleteAction(section, sim)
+        self._newAction(section, sim)
+        self._editAction(section, sim)
+        self._resultsAction(section, sim)
+        self._deleteAction(section, sim)
 
         section.add(lc.document(Class="clear-both"))
 
@@ -131,104 +115,81 @@ class Actor(base):
         section.add(link)
 
 
-#    def _newAction(self, section, sim):
-#        "New action"
-#        link    = lc.link(label="New",
-#                            Class="qe-action-edit",
-#                            onclick = load(actor='material_simulations/espresso/sim-create'))
-#        link.tip    = "Create New Simulation"
-#        section.add(link)
-#
-#
-#    def _editAction(self, section, sim):
-#        "Edit action"
-#        link    = lc.link(label="Edit",
-#                            Class="qe-action-edit",
-#                            onclick = load(actor='material_simulations/espresso/sim-edit',
-#                                           id=self.id))
-#        link.tip    = "Edit Simulation"
-#        section.add(link)
-#
-#
-#    def _cloneAction(self, section, sim):
-#        "Clone action"
-#        link    = lc.link(label="Clone",
-#                            Class   = "qe-action-clone",
-#                            onclick = load(actor='material_simulations/espresso/sim-clone',
-#                                           id=self.id))
-#        link.tip    = "Clone Simulation Records"
-#        section.add(link)
-#
-#
-#    def _convergenceAction(self, section, sim):
-#        "Adds analysis action"
-#        link        = lc.link(label="Convergence",
-#                            Class="qe-action-analyze",
-#                            onclick = load(actor    = 'material_simulations/espresso-convergence/view',
-#                                           id       = self.id))
-#        link.tip    = "Convergence Tests for Simulation Parameters"
-#        section.add(link)
-#
-#
-#    def _analysisAction(self, section, sim):
-#        "Adds analysis action"
-#        link        = lc.link(label="Analysis",
-#                            Class="qe-action-analyze",
-#                            onclick = load(actor    = analyseActor(sim.type),
-#                                           id       = self.id,
-#                                           simtype  = sim.type
-#                                           ))
-#        link.tip    = "Analyze the Simulation Results"
-#        section.add(link)
-#
-#
-#    def _deleteAction(self, section, sim):
-#        "Delete action"
-#        link    = lc.link(label="Delete",
-#                              Class="qe-action-delete",
-#                              onclick = load(actor='material_simulations/espresso/sim-delete',
-#                              id=self.id))
-#        link.tip    = "Delete Simulation"
-#        section.add(link)
-#
-#
-#    def _showSimulationInfo(self, table, sim):
-#        """Shows simulation data"""
-#        if not sim:
-#            return
-#
-#        table.addRow(('Simulation Type: ', sim.type))
-#        table.addRow(('Atomic Structure: ', self._structure(sim)))
-#        table.addRow(('Description: ', sim.short_description))
-#        table.addRow(('Package: ', sim.package))
-#        table.addRow(('Label: ', sim.label))
-#        table.addRow(('Time Created: ', str(sim.date)))
-#
-#        #table.addRow(('Time Created: ', stamp2date(sim.date)))
-#        #table.addRow(('Time Modified: ', stamp2date(sim.timemodified)))
-#
-#
-#    def _structure(self, sim):
-#        return lc.link( label   = sim.structureid,
-#                        tip     = "Show details of the atomic structure",
-#                        onclick = load( actor   = 'atomicstructure',
-#                                        routine = 'showOverview',
-#                                        id      = sim.structureid)
-#                        )
-#
-#
-#    def _showSettings(self, director, table):
-#        params  = QEParams(self._sim, director)
-#        link    = params.getLink(self.id)
-#
-#        table.addRow(("Simulation Settings: ", link))
-#
-#
-#    def _showServer(self, director, table):
-#        server  = QEServer(director)
-#        link    = server.getLink(self.id)
-#
-#        table.addRow(("Server: ", link))
+    def _newAction(self, section, sim):
+        "New action"
+        link    = lc.link(label="New",
+                            Class="qe-action-edit",
+                            onclick = load(actor='material_simulations/epsc/sim-create'))
+        link.tip    = "Create New Simulation"
+        section.add(link)
+
+
+    def _editAction(self, section, sim):
+        "Edit action"
+        link    = lc.link(label="Edit",
+                            Class="qe-action-edit",
+                            onclick = load(actor='material_simulations/epsc/sim-edit',
+                                           id=self.id))
+        link.tip    = "Edit Simulation"
+        section.add(link)
+
+
+
+    def _resultsAction(self, section, sim):
+        "Adds results action"
+        resultsActor    = 'material_simulations/epsc/results'
+        link        = lc.link(label="Results",
+                            Class="qe-action-analyze",
+                            onclick = load(actor    = resultsActor,
+                                           id       = self.id ))
+        link.tip    = "Analyze the Simulation Results"
+        section.add(link)
+
+
+    def _deleteAction(self, section, sim):
+        "Delete action"
+        link    = lc.link(label="Delete",
+                              Class="qe-action-delete",
+                              onclick = load(actor='material_simulations/epsc/sim-delete',
+                              id=self.id))
+        link.tip    = "Delete Simulation"
+        section.add(link)
+
+
+    def _showSimulationInfo(self, table, sim):
+        """Shows simulation data"""
+        if not sim:
+            return
+
+        table.addRow(('Atomic structure: ', self._structure(sim)))
+        table.addRow(('Thermo-mechanical processes: ', "1"))    # XXX
+        table.addRow(('Description: ', sim.short_description))
+        table.addRow(('Package: ', sim.package))
+        table.addRow(('Label: ', sim.label))
+        table.addRow(('Time created: ', str(sim.date)))
+
+
+    def _structure(self, sim):
+        return lc.link( label   = sim.structureid,
+                        tip     = "Show details of the atomic structure",
+                        onclick = load( actor   = 'atomicstructure',
+                                        routine = 'showOverview',
+                                        id      = sim.structureid)
+                        )
+
+
+    def _showSettings(self, director, table):
+        settings    = EPSCSettings(self._sim, director)
+        link        = settings.getLink(self.id)
+
+        table.addRow(("Simulation Settings: ", link))
+
+
+    def _showServer(self, director, table):
+        server  = EPSCServer(director)
+        link    = server.getLink(self.id)
+
+        table.addRow(("Server: ", link))
 #
 #
 #    def _showTasks(self, director, splitter):

@@ -38,6 +38,8 @@ all: export
 EXPORT_PYTHON_MODULES = \
 	__init__.py \
         epscconst.py \
+        epscserver.py \
+        epscsettings.py \
         taskcreator.py \
 
 #include doxygen/default.def
