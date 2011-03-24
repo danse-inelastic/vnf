@@ -61,7 +61,7 @@ This is CSS layout for EPSC pages
 }
 
 .epsc-section {
-    font-size: 18px;
+    font-size: 17px;
     font-weight: normal;
     margin-top: 30px;
     margin-bottom: 10px;
@@ -79,10 +79,10 @@ This is CSS layout for EPSC pages
 
 /* Run button */
 #action-button {
-    margin: 30px 10px;
+    margin: 30px 0px;
 }
 .epsc-run-task {
-    margin: 10px 10px 10px 10px;
+    margin: 10px 10px 10px 0px;
     padding: 5px 20px;
     -moz-border-radius: 5px;
     -webkit-border-radius: 5px;

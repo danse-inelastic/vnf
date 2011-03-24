@@ -13,7 +13,7 @@
 
 from vnfb.qeutils.qeutils import latestJob, simChain
 from vnfb.qeutils.qeconst import SIMCHAINS
-
+from vnfb.epscutils.epscconst import EPSCCHAIN
 
 class QERecords(object):
 
@@ -80,10 +80,15 @@ class SimulationRecord(QERecords):
             return None         # No simulation
 
         simtype     = self._sim.type
-        if simtype in SIMCHAINS:
-            return simtype
 
-        return None
+        #        if simtype in SIMCHAINS:
+        #            return simtype
+        #
+        #        return None
+
+        # Return plane simtype
+        return simtype
+
 
 
     # XXX: Get type list from qesimulations.simchain record, instead of SIMCHAINS
@@ -96,8 +101,11 @@ class SimulationRecord(QERecords):
         if self._simtype == "Molecular Dynamics": # Special case for molecular dynamics
             return simChain(self._sim.simchain)
 
-        if self._simtype:
+        if self._simtype in SIMCHAINS.keys():   # QE
             return SIMCHAINS[self._simtype]
+
+        if self._simtype in EPSCCHAIN.keys():   # EPSC
+            return EPSCCHAIN[self._simtype]
 
         return ()
 

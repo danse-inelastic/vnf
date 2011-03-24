@@ -64,7 +64,7 @@ def serverLink(director, id):
     return link
 
 
-def configLink(director, id, type):
+def configLink(director, id, type, structureid):
     "Returns link to configuration"
     if not type in FILETYPE:
         return "None"
@@ -74,8 +74,10 @@ def configLink(director, id, type):
     link = Link(label="Create",
                 Class="epsc-action-create",
                 onclick=load(actor      = actorName,
-                             id         = id)
-                )
+                             id         = id,
+                             type       = type,
+                             #taskid    = taskid,
+                             structureid = structureid))
                 
     return link
 
