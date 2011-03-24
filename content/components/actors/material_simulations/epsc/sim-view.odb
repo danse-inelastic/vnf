@@ -55,7 +55,7 @@ class Actor(base):
         if len(tasklist) == 0:      # No task generated, no simulation
             return doc
         
-        self._task  = tasklist[0]   # There should be just one task!
+        self._task  = tasklist[0]   # Task object: there should be just one task!
 
 
         sB          = splitter.section()
@@ -197,10 +197,10 @@ class Actor(base):
         p_label    = lc.link(label="Process:")
         p_label.tip    = "Thermo-mechanical process"
 
-        table.addRow((m_label, configLink(director, self.id, "filecrys", self._sim.structureid)))
-        table.addRow((s_label, configLink(director, self.id, "filesamp", self._sim.structureid)))
-        table.addRow((t_label, configLink(director, self.id, "filediff", self._sim.structureid)))
-        table.addRow((p_label, configLink(director, self.id, "fileproc", self._sim.structureid)))
+        table.addRow((m_label, configLink(director, self.id, self._task.id, "filecrys", self._sim.structureid)))
+        table.addRow((s_label, configLink(director, self.id, self._task.id, "filesamp", self._sim.structureid)))
+        table.addRow((t_label, configLink(director, self.id, self._task.id, "filediff", self._sim.structureid)))
+        table.addRow((p_label, configLink(director, self.id, self._task.id, "fileproc", self._sim.structureid)))
 
         table.setColumnStyle(0, "epsc-cell-param")
 
