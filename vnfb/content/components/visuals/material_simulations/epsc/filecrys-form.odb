@@ -114,10 +114,7 @@ class Visual:
 
         # Skip link
         visual_     = "material_simulations/epsc/link-skip"
-        skipLink    = self._director.retrieveVisual(visual_,
-                                                  id        = self._actor.id,
-                                                  taskid    = self._actor.taskid,
-                                                  type      = self._actor.type)
+        skipLink    = self._director.retrieveVisual(visual_, self._actor)
 
         submit      = FormSubmitButton(label="Generate Material Configuration")
         cancel      = lc.button(label="Cancel")
@@ -166,8 +163,8 @@ class Visual:
         form.onsubmit   = select(element=form).submit(actor     = 'material_simulations/epsc/filecrys-create',
                                                       routine   = 'generateConfig',
                                                       id        = self._actor.id,
-                                                      structureid   = self._structureid)
-                                                      # mattertype    = self._actor.mattertype, # ?
+                                                      taskid    = self._actor.taskid,
+                                                      type      = self._actor.type)
         form.add(table.grid())
 
         return form

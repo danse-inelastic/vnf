@@ -21,6 +21,11 @@ EPSC_BIN    = "epsc3" # Binary for EPSC should be epsc3
 EPSCCHAIN   = OrderedDict()
 EPSCCHAIN["epsc"]   = ("epsc",)
 
+TYPE_DESC   = OrderedDict()
+TYPE_DESC[FILETYPE[0]]  = "Material"        # filecrys
+TYPE_DESC[FILETYPE[1]]  = "Sample"          # filesamp
+TYPE_DESC[FILETYPE[2]]  = "Diffraction"     # filediff
+TYPE_DESC[FILETYPE[3]]  = "Process"         # fileproc
 
 # filecrys
 CRYSYM  = ("CUBIC", "HEXAG")
