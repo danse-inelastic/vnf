@@ -11,12 +11,7 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
-from luban.content import select, load#, alert
-#from vnfb.qeutils.qegrid import QEGrid
-#from vnfb.qeutils.qeconst import SIMCHAINS, MDSTEPS, ID_MD_LABEL, ID_MD_OPTIONS
-#from vnfb.qeutils.qeutils import selection2typekey, nonMDChain, noHyphen
-#from luban.content.FormCheckBox import FormCheckBox
-#from vnfb.dom.QESimulation import QESimulation
+from luban.content import select, load
 
 import luban.content as lc
 from luban.components.AuthorizedActor import AuthorizedActor as base

@@ -53,7 +53,6 @@ EXPORT_PYTHON_MODULES = \
 	JnlpFile.py \
         Job.py \
 	JobBuilder.py \
-	EPSCGenerator.py \
 	MasterTable.py \
 	Postman.py \
         QEAnalysis.py \
