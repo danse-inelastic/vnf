@@ -99,4 +99,16 @@ a.epsc-run-task {
     font-weight: normal;
 }
 
+/* Action buttons */
+.epsc-action-create {
+    padding: 1px 15px 3px 15px;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    text-decoration: none;
+    margin-left: 0px;
+    background-color: #FF7700;
+}
+a.epsc-action-create {
+    text-decoration: none;
+}
 
