@@ -11,6 +11,103 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
+from vnfb.qeutils.qegrid import QEGrid
+
+from luban.content import select
+from luban.content.Paragraph import Paragraph
+from luban.content.Form import Form
+from luban.content.FormSubmitButton import FormSubmitButton
+from luban.content import load
+
+import luban.content as lc
+from luban.components.AuthorizedActor import AuthorizedActor as base
+
+class Actor(base):
+
+    class Inventory(base.Inventory):
+        import pyre.inventory
+        id          = pyre.inventory.str('id', default='')          # Simulation Id
+        configid    = pyre.inventory.str('configid', default='')    # Configuration Id
+
+
+    def default(self, director):
+        return select(id='main-display-area').replaceContent(self.content(director))
+
+
+    def content(self, director):
+        #self._input = director.clerk.getQEConfigurations(id=self.configid)
+
+        def viewIndicator(director):
+            qelink  = load( actor           = 'materialsimulation',
+                            filter_key      = 'type',
+                            filter_value    = 'qesimulations')
+
+            path = []
+            path.append(('Simulations ', load(actor='materialsimulation')))
+            path.append(('EPSC ', qelink))
+            path.append(('%s ' % self.id, load(actor    = 'material_simulations/epsc/sim-view',
+                                               id       = self.id))
+                        )
+            path.append("Delete Settings Configuration")
+
+            return director.retrieveVisual('view-indicator', path=path)
+
+        doc         = lc.document(title="Delete Settings Configuration")
+        splitter    = doc.splitter(orientation="vertical")
+        sA          = splitter.section()
+        sA.add(viewIndicator(director))
+        sB          = splitter.section()
+        sB.add(Paragraph(text="Are you sure you want to delete settings configuration?"))
+        sB.add(self._setForm())
+
+        return doc
+
+
+    def _setForm(self):
+        form        = Form()
+        submit      = FormSubmitButton(label="Delete")
+        cancel      = lc.button(label="Cancel")
+        cancel.onclick = load(actor = 'material_simulations/epsc/sim-view', id=self.id)
+
+        st          = QEGrid(lc.grid()) # Submit Table
+        st.addRow((submit, cancel), ("qe-action-accept", "qe-action-cancel"))
+
+        form.add(st.grid())
+        form.onsubmit   = select(element=form).submit(actor     = 'material_simulations/epsc/settings-delete',
+                                                      routine   = 'deleteRecord',
+                                                      id        = self.id,
+                                                      configid  = self.configid)
+
+        return form
+
+
+    def deleteRecord(self, director):
+        """Delete settings record"""
+        settings     = director.clerk.getQESettings(id=self.configid)
+        settings.setDirector(director)
+        settings.deleteRecord()
+
+        return load(actor='material_simulations/epsc/sim-view', id=self.id)
+
+
+    def __init__(self):
+        super(Actor, self).__init__(name='material_simulations/epsc/settings-delete')
+
+        return
+
+
+    def _configure(self):
+        super(Actor, self)._configure()
+        self.id             = self.inventory.id
+        self.configid       = self.inventory.configid
+
+
+    def _init(self):
+        super(Actor, self)._init()
+        return
+
+def actor():
+    return Actor()
 
 __date__ = "$Mar 23, 2011 4:51:23 PM$"
 
