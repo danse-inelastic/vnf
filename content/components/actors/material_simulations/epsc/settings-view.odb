@@ -11,6 +11,121 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
+from vnfb.epscutils.action_links import serverLink
+from vnfb.qeutils.qeutils import stamp2date
+from vnfb.qeutils.qegrid import QEGrid
+
+from luban.content import select
+from luban.content import load
+
+import luban.content as lc
+from luban.components.AuthorizedActor import AuthorizedActor as base
+
+class Actor(base):
+
+    class Inventory(base.Inventory):
+        import pyre.inventory
+        id          = pyre.inventory.str('id', default='')          # Simulation Id
+        configid    = pyre.inventory.str('configid', default='')    # Configuration Id
+
+    def default(self, director):
+        return select(id='main-display-area').replaceContent(self.content(director))
+
+
+    def content(self, director):
+        self._sim       = director.clerk.getQESimulations(id=self.id)
+        self._settings  = director.clerk.getQESettings(id=self.configid)
+
+        def viewIndicator(director):
+            qelink  = load( actor           = 'materialsimulation',
+                            filter_key      = 'type',
+                            filter_value    = 'qesimulations')
+
+            path = []
+            path.append(('Simulations ', load(actor='materialsimulation')))
+            path.append(('EPSC ', qelink))
+            path.append(('%s ' % self.id, load(actor    = 'material_simulations/epsc/sim-view',
+                                               id       = self.id)))
+
+            path.append('Settings Configuration')
+
+            return director.retrieveVisual('view-indicator', path=path)
+
+        doc         = lc.document(title="Settings Configuration: %s" % self._settings.sname)
+        splitter    = doc.splitter(orientation="vertical")
+        sA          = splitter.section()
+        sA.add(viewIndicator(director))
+        sC          = splitter.section(id="qe-section-actions")
+        self._showActions(sC)
+
+        # Area for errors
+        splitter.section(id="input-error-area") # ?
+
+        sB          = splitter.section()
+        table       = QEGrid(lc.grid(Class = "qe-table"))
+        sB.add(table.grid())
+        self._showSettings(director, table, self._settings)
+
+        # Should go after all of the rows are added!
+        table.setColumnStyle(0, "qe-cell-param")
+
+        return doc
+
+
+    def _showActions(self, section):  #, inputs
+        section.add(lc.link(label   = "Back",
+                            Class   = "qe-action-back",
+                            onclick = load(actor      = 'material_simulations/epsc/sim-view',
+                                             id         = self.id))
+                    )
+
+        section.add(lc.link(label   = "Edit",
+                            Class   = "qe-action-edit",
+                            onclick = load(actor      = 'material_simulations/epsc/settings-edit',
+                                             id         = self.id,
+                                             configid   = self.configid))
+                    )
+
+        section.add(lc.link(label="Delete",
+                            Class="qe-action-delete",
+                            onclick = load(actor      = 'material_simulations/epsc/settings-delete',
+                                             id         = self.id,
+                                             configid   = self.configid))
+                    )
+
+        section.add(lc.document(Class="clear-both"))
+
+
+    def _showSettings(self, director, table, settings):
+        "Displays settings"
+
+        if not settings:
+            return
+        
+        table.addRow(("Server: ", serverLink(director, self.id)))
+        table.addRow(("Number of Processors: ",  "1")) 
+        table.addRow(("Optimization: ",  "None"))      
+        table.addRow(('Name:', settings.sname))
+        table.addRow(('Description:', settings.description))
+
+
+    def __init__(self):
+        super(Actor, self).__init__(name='material_simulations/epsc/settings-view')
+
+        return
+
+
+    def _configure(self):
+        super(Actor, self)._configure()
+        self.id             = self.inventory.id
+        self.configid       = self.inventory.configid
+
+    def _init(self):
+        super(Actor, self)._init()
+        return
+
+def actor():
+    return Actor()
 
 __date__ = "$Mar 23, 2011 4:51:23 PM$"
 
