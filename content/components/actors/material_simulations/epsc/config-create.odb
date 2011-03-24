@@ -11,10 +11,8 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
-from vnfb.qeutils.qeparser.qeinput import QEInput
 from vnfb.dom.QEConfiguration import QEConfiguration
-from vnfb.qeutils.qeutils import writeRecordFile, defaultInputName, subtypeMatdyn
-#import vnfb.qeutils.filters as filterdir
+from vnfb.qeutils.qeutils import writeRecordFile
 
 from luban.content import load, select
 import luban.content as lc
@@ -88,55 +86,37 @@ class Actor(base):
                                        director     = director)
 
 
-#    def createRecord(self, director):
-#        "Create configuration record"
-#        self._createDBRecord(director)
-#        self._updateTaskRecord(director)    # For matdyn mostly
-#        self._createFile(director)
-#
-#        if self.inventory.paramid != "":  # Specific for convergence tests
-#            return load( actor    = 'material_simulations/espresso-convergence/param-view',
-#                         id       = self.inventory.id,
-#                         convid   = self.inventory.convid,
-#                         paramid  = self.inventory.paramid)
-#
-#        return load(actor = 'material_simulations/epsc/sim-view')#, id = self.inventory.id)
+    def createRecord(self, director):
+        "Create configuration record"
+        self._createDBRecord(director)
+        self._createFile(director)
 
-#    def _createDBRecord(self, director):
-#        # 'text' field is not stored
-#        params  = {"taskid":        self.inventory.taskid,
-#                   "filename":      self._fname(),          # Set default name if not filename specified
-#                   "description":   subtypeMatdyn(self.inventory.subtype), # Store subtype for description
-#                   "type":          self.inventory.type
-#                   }
-#        self.input  = QEConfiguration(director)
-#        self.input.createRecord(params)
-#
-#
-#    def _createFile(self, director):
-#        "Writes configuration to file"
-#        # fn (file name) is fixed and doesn't depend on the filename record
-#        fn      = defaultInputName(self.inventory.type)
-#
-#        writeRecordFile(director.dds, self.input, fn, self.inventory.text)
-#
-#
-#    def _updateTaskRecord(self, director):
-#        if self.inventory.subtype == "":
-#            return      # No update for empty subtype
-#
-#        task    = director.clerk.getQETasks(id = self.inventory.taskid)
-#        params  = {"subtype": subtypeMatdyn(self.inventory.subtype),}
-#        task.setDirector(director)
-#        task.updateRecord(params)
+        return load(actor = 'material_simulations/epsc/sim-view', id = self.inventory.id)
 
 
-#    def _fname(self):
-#        # Filename is not set
-#        if self.fname == '':
-#            return defaultInputName(self.inventory.type)
-#
-#        return self.fname
+    def _createDBRecord(self, director):
+        "Creates db record for configuration, Note: 'text' field is not stored"
+        params  = {"taskid":        self.inventory.taskid,
+                   "filename":      self._fname(),          # Set default name if not filename specified
+                   "description":   self.inventory.description, 
+                   "type":          self.inventory.type
+                   }
+        self.input  = QEConfiguration(director)
+        self.input.createRecord(params)
+
+
+    def _createFile(self, director):
+        "Writes configuration to file"
+        # fn (file name) is fixed and doesn't depend on the filename record
+        fn      = self.inventory.type
+        writeRecordFile(director.dds, self.input, fn, self.inventory.text)
+
+
+    def _fname(self):
+        "Returns filename field"        
+        if self.fname == '':    # Filename is not set
+            return self.inventory.type
+        return self.fname
 
 
     def __init__(self):
