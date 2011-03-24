@@ -11,6 +11,113 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
+from vnfb.dom.QESetting import QESetting
+from vnfb.qeutils.qegrid import QEGrid
+
+from luban.content import select
+from luban.content import load
+from luban.content.Form import Form
+from luban.content.FormSelectorField import FormSelectorField
+from luban.content.FormTextField import FormTextField
+from luban.content.FormSubmitButton import FormSubmitButton
+from vnfb.utils.serverlist import ServerList
+from vnfb.epscutils.epscconst import EPSC_BIN
+
+import luban.content as lc
+from vnfb.components.QESettings import Actor as base
+
+class Actor(base):
+
+    def content(self, director):
+        sim       = director.clerk.getQESimulations(id=self.id)
+
+        def viewIndicator(director):
+            qelink  = load( actor           = 'materialsimulation',
+                            filter_key      = 'type',
+                            filter_value    = 'qesimulations')
+
+            path = []
+            path.append(('Simulations ', load(actor='materialsimulation')))
+            path.append(('EPSC ', qelink))
+            path.append(('%s ' % self.id, load(actor    = 'material_simulations/epsc/sim-view',
+                                               id       = self.id)))
+
+            path.append('Create Settings Configuration')
+
+            return director.retrieveVisual('view-indicator', path = path)
+
+        doc         = lc.document(title   = "Create Settings Configuration")
+        splitter    = doc.splitter(orientation="vertical")
+        sA          = splitter.section()
+        sA.add(viewIndicator(director))
+        sB          = splitter.section()
+        sB.add(self._setForm(director))
+
+        return doc
+
+
+    def _setForm(self, director):
+        "Sets create new settings form"
+
+        form        = Form(id='create-simulation-form')
+        table       = QEGrid(lc.grid(Class="qe-form"))
+        form.add(table.grid())
+
+        server          = FormSelectorField(name    = "server",
+                                            entries = enumerate(self._serverList(director)))
+        sname           = FormTextField(name = "sname", value = self.sname)
+        description     = FormTextField(name = "description", value=self.description)   # Make as textarea
+        submit          = FormSubmitButton(label="Create Settings Configuration")
+        cancel          = lc.button(label="Cancel")
+        cancel.onclick  = load(actor = 'material_simulations/epsc/sim-view', id=self.id)
+
+        st          = QEGrid(lc.grid()) # Submit Table
+        st.addRow((submit, cancel), ("qe-action-accept", "qe-action-cancel"))
+
+        table.addRow(("Server: *", server))
+        table.addRow(("Name:", sname))
+        table.addRow(("Description:", description))
+        table.addRow(("", st.grid()))
+
+        table.setColumnStyle(0, "qe-form-label")
+        table.setColumnStyle(1, "qe-form-field")
+
+        form.onsubmit   = select(element=form).submit(actor     = 'material_simulations/epsc/settings-add',
+                                                      routine   = 'createRecord',
+                                                      id        = self.id)
+
+        return form
+
+
+    # XXX: Fix
+    def createRecord(self, director):
+        """Create settings record"""
+        servers     = ServerList(director)
+        shortname   = self._serverShortName(director)
+
+        params  = {"simulationid":  self.id,
+                   "sname":         self._sname(),
+                   "description":   self.description,
+                   "serverid":      servers.id(self.server),    # XXX: Fix
+                   "numproc":       1,       # EPSC runs on a single core
+                   "optlevel":      0,
+                   "npool":         0,      
+                   "executable":    EPSC_BIN,
+                   "params":        "",     
+                   "modules":       ""       # Change to g95?
+                  }
+        settings     = QESetting(director)
+        settings.createRecord(params)
+
+        return load(actor='material_simulations/epsc/sim-view', id=self.id)
+
+
+    def __init__(self):
+        super(Actor, self).__init__(name='material_simulations/epsc/settings-add')
+
+
+def actor():
+    return Actor()
 
 __date__ = "$Mar 23, 2011 4:51:23 PM$"
 

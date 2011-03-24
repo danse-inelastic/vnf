@@ -11,9 +11,11 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
-NUMPROC = 1
+NUMPROC = 1 # Number of thermo-mechanical processes
 
 FILETYPE    = ("filecrys", "filesamp", "filediff", "fileproc")
+EPSC_BIN    = "epsc3" # Binary for EPSC should be epsc3
+
 
 # filecrys
 CRYSYM  = ("CUBIC", "HEXAG")

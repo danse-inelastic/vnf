@@ -124,13 +124,11 @@ class Actor(base):
         section.add(link)
 
 
-
     def _resultsAction(self, section, sim):
         "Adds results action"
-        resultsActor    = 'material_simulations/epsc/results'
         link        = lc.link(label="Results",
                             Class="qe-action-analyze",
-                            onclick = load(actor    = resultsActor,
+                            onclick = load(actor    = 'material_simulations/epsc/results',
                                            id       = self.id ))
         link.tip    = "Analyze the Simulation Results"
         section.add(link)
