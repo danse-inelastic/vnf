@@ -11,13 +11,7 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
-from luban.content import select, load, alert
-from vnfb.qeutils.qegrid import QEGrid
-from vnfb.qeutils.qeconst import SIMCHAINS, MDSTEPS, ID_MD_LABEL, ID_MD_OPTIONS
-from vnfb.qeutils.qeutils import selection2typekey, nonMDChain, noHyphen
-from luban.content.FormCheckBox import FormCheckBox
-from vnfb.dom.QESimulation import QESimulation
-
+from luban.content import select, load
 import luban.content as lc
 from luban.components.AuthorizedActor import AuthorizedActor as base
 
@@ -28,6 +22,13 @@ class Actor(base):
 
     class Inventory(base.Inventory):
         import pyre.inventory
+        # General
+        id          = pyre.inventory.str('id', default='')
+        taskid      = pyre.inventory.str('taskid', default='')
+        type        = pyre.inventory.str('type', default='')
+        structureid = pyre.inventory.str('structureid', default='')
+
+        # Specific
         nsteps     = pyre.inventory.str('nsteps', default='0')
         temp_s     = pyre.inventory.str('temp_s', default='0')
         temp_f     = pyre.inventory.str('temp_f', default='0')
@@ -41,29 +42,55 @@ class Actor(base):
         return select(id='main-display-area').replaceContent(self.content(director))
 
 
+    def _viewIndicator(self, director):
+        qelink  = load( actor           = 'materialsimulation',
+                        filter_key      = 'type',
+                        filter_value    = 'qesimulations')
+
+        path = []
+        path.append(('Simulations ', load(actor='materialsimulation')))
+        path.append(('EPSC ', qelink))
+        path.append(('%s ' % self.id, load(actor    = 'material_simulations/epsc/sim-view',
+                                           id       = self.id)))
+        path.append('Create Process Configuration')
+
+        return director.retrieveVisual('view-indicator', path=path)
+
+
     def content(self, director):
-        def viewIndicator(director):
-            path = []
-            path.append(('Simulations ', load(actor='materialsimulation')))
-            path.append(('Create New Simulation ', select(id='main-display-area').replaceContent(
-                                                          load(actor='materialsimulation',
-                                                               routine='newSimulation')
-                                                          ))
-                        )
-            path.append(('EPSC', load(actor='material_simulations/epsc/sim-create')))
-            path.append("Create Process Configuration")
-
-            return director.retrieveVisual('view-indicator', path=path)
-
         doc         = lc.document(title   = "Create Process Configuration")
         splitter    = doc.splitter(orientation="vertical")
         sA          = splitter.section()
-        sA.add(viewIndicator(director))
+        sA.add(self._viewIndicator(director))
         sB          = splitter.section()
         visual  = 'material_simulations/epsc/fileproc-form'
         sB.add(director.retrieveVisual(visual, self.inventory, director))
-
         return doc
+
+
+#    def content(self, director):
+#        def viewIndicator(director):
+#            path = []
+#            path.append(('Simulations ', load(actor='materialsimulation')))
+#            path.append(('Create New Simulation ', select(id='main-display-area').replaceContent(
+#                                                          load(actor='materialsimulation',
+#                                                               routine='newSimulation')
+#                                                          ))
+#                        )
+#            path.append(('EPSC', load(actor='material_simulations/epsc/sim-create')))
+#            path.append("Create Process Configuration")
+#
+#            return director.retrieveVisual('view-indicator', path=path)
+#
+#        doc         = lc.document(title   = "Create Process Configuration")
+#        splitter    = doc.splitter(orientation="vertical")
+#        sA          = splitter.section()
+#        sA.add(viewIndicator(director))
+#        sB          = splitter.section()
+#        visual  = 'material_simulations/epsc/fileproc-form'
+#        sB.add(director.retrieveVisual(visual, self.inventory, director))
+#
+#        return doc
 
 
     def generateConfig(self, director):
@@ -81,9 +108,9 @@ class Actor(base):
         return director.redirect(actor   = 'material_simulations/epsc/config-create',
                                 routine  = 'default',
                                 text     = config,
-#                                id      = self.inventory.id,
-#                                taskid  = self.inventory.taskid,
-                                type    = "fileproc")
+                                id       = self.inventory.id,
+                                taskid   = self.inventory.taskid,
+                                type     = self.inventory.type)
 
 
     def __init__(self):
@@ -92,6 +119,11 @@ class Actor(base):
 
     def _configure(self):
         super(Actor, self)._configure()
+        self.id             = self.inventory.id
+        self.taskid         = self.inventory.taskid
+        self.type           = self.inventory.type
+        self.structureid    = self.inventory.structureid
+
         self.nsteps       = self.inventory.nsteps
         self.temp_s       = self.inventory.temp_s
         self.temp_f       = self.inventory.temp_f
