@@ -11,7 +11,7 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
-from luban.content import load
+from luban.content import load, select
 from luban.content.Link import Link
 from vnfb.epscutils.epscconst import FILETYPE
 
@@ -24,18 +24,16 @@ def settingsLink(director, id):
                 Class="epsc-action-create",
                 tip     = "Set simulation environment",
                 onclick=load(actor      = "material_simulations/epsc/settings-add",
-                             id         = id)
-                )
+                             id         = id))
 
     if settings:
         s = settings[0]
         if s:
             link = Link(label   = s.sname,
-                        Class="action-link",
+                        Class   = "action-link",
                         onclick = load(actor    = "material_simulations/epsc/settings-view",
                                      id         = id,
-                                     configid   = s.id)
-                        )
+                                     configid   = s.id))
 
     return link
 
