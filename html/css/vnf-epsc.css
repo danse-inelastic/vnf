@@ -52,3 +52,51 @@ This is CSS layout for EPSC pages
 .float-right .epsc-num-field {
     float: right;
 }
+
+/* Simulation */
+.epsc-cell-param {
+    width: 170px;
+    font-weight: bold;
+    background-color: #ddd;
+}
+
+.epsc-section {
+    font-size: 18px;
+    font-weight: normal;
+    margin-top: 30px;
+    margin-bottom: 10px;
+}
+
+#epsc .epsc-cell-param a {
+    color: black;
+}
+
+.epsc-cell-param a, .epsc-cell-param a:hover {
+    color: black;
+    text-decoration:none;
+    cursor:text;
+}
+
+/* Run button */
+#action-button {
+    margin: 30px 10px;
+}
+.epsc-run-task {
+    margin: 10px 10px 10px 10px;
+    padding: 5px 20px;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    text-decoration: none;
+    font-size: 16px;
+    background-color: #48f640; /* deep green #1fff1f*/
+}
+
+#epsc a.epsc-run-task {
+    color: black;
+}
+a.epsc-run-task {
+    text-decoration: none;
+    font-weight: normal;
+}
+
+

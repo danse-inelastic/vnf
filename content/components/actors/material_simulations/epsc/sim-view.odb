@@ -47,7 +47,7 @@ class Actor(base):
         if not self._sim:   # No simulation, return empty document
             return lc.document()
 
-        doc         = lc.document(title   = 'Simulation Name: %s' % self._sim.sname)
+        doc         = lc.document(title   = 'Simulation Name: %s' % self._sim.sname, id="epsc")
         splitter    = doc.splitter(orientation="vertical")
         sA          = splitter.section()
         sA.add(self._viewIndicator(director))
@@ -63,13 +63,13 @@ class Actor(base):
         table       = QEGrid(lc.grid(Class = "qe-table"))
         sB.add(table.grid())
         self._showSimulationInfo(table, self._sim)
-        self._showSettings(director, table)
-        self._showServer(director, table)
-        
-#        self._showTasks(director, splitter)
-#
+        self._showSettings(director, splitter)
+        self._showConfigurations(director, splitter)
+        self._showJob(director, splitter)
+        self._showAction(director, splitter)
+
         # Should go after all of the rows are added!
-        table.setColumnStyle(0, "qe-cell-param")
+        table.setColumnStyle(0, "epsc-cell-param")
 
         return doc
 
@@ -178,18 +178,72 @@ class Actor(base):
                         )
 
 
-    def _showSettings(self, director, table):
+    def _showSettings(self, director, splitter):
+        section    = splitter.section()
+        section.add(lc.paragraph(text="Settings", Class="epsc-section"))
+        table       = QEGrid(lc.grid(Class = "qe-table"))
+        section.add(table.grid())
+
+        # Add settings
         settings    = EPSCSettings(self._sim, director)
         link        = settings.getLink(self.id)
+        table.addRow(("Simulation settings: ", link))
 
-        table.addRow(("Simulation Settings: ", link))
-
-
-    def _showServer(self, director, table):
+        # Add server
         server  = EPSCServer(director)
         link    = server.getLink(self.id)
+        table.addRow(("Server Info: ", link))
+        
+        table.setColumnStyle(0, "epsc-cell-param")
 
-        table.addRow(("Server: ", link))
+
+    def _showConfigurations(self, director, splitter):
+        section    = splitter.section()
+        section.add(lc.paragraph(text="Configurations", Class="epsc-section"))
+        table       = QEGrid(lc.grid(Class = "qe-table"))
+        section.add(table.grid())
+
+        m_label    = lc.link(label="Material:")
+        m_label.tip    = "Material configuration"
+
+        s_label    = lc.link(label="Sample:")
+        s_label.tip    = "Grain shape and texture"
+
+        t_label    = lc.link(label="Diffraction:")
+        t_label.tip    = "Diffracting planes and direction"
+
+        p_label    = lc.link(label="Process:")
+        p_label.tip    = "Thermo-mechanical process"
+
+        table.addRow((m_label, ""))
+        table.addRow((s_label, ""))
+        table.addRow((t_label, ""))
+        table.addRow((p_label, ""))
+
+        table.setColumnStyle(0, "epsc-cell-param")
+
+
+    def _showJob(self, director, splitter):
+        section    = splitter.section()
+        section.add(lc.paragraph(text="Job", Class="epsc-section"))
+        table       = QEGrid(lc.grid(Class = "qe-table"))
+        section.add(table.grid())
+
+        table.addRow(("Status", "None"))
+        table.addRow(("Output", "None"))
+        table.addRow(("Job Id", "None"))
+        table.addRow(("Results", "None"))
+
+        table.setColumnStyle(0, "epsc-cell-param")
+
+        
+    def _showAction(self, director, splitter):
+        "Shows action button (run simulation)"
+        section    = splitter.section(id="action-button")
+        link = lc.link(label    = "Run Simulation",
+                       Class    = "epsc-run-task")
+        section.add(link)
+
 #
 #
 #    def _showTasks(self, director, splitter):
