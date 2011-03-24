@@ -14,7 +14,7 @@
 import luban.content as lc
 from luban.content import load
 
-def visual(actor):#, id, taskid, type):
+def visual(actor):
     "Returns formatted skip link"
     linkContent = lc.link(label="Skip To Configuration Form")
     linkContent.onclick = load(actor   = 'material_simulations/epsc/config-create',

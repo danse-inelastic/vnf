@@ -17,7 +17,10 @@ This is CSS layout for EPSC pages
     margin-right: 8px;
     margin-left: 3px;
 }
-
+.epsc-text-area textarea {
+    width: 500px;
+    height: 300px;
+}
 
 .epsc-form-label {
     color: black;

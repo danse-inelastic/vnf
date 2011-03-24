@@ -59,9 +59,9 @@ def visual(actor, director):
     st.addRow((submit, cancel), ("qe-action-accept", "qe-action-cancel"))
 
     # Create form fields
-    text            = FormTextArea(name  ="text", value= actor.text, Class="qe-text-area")
+    text            = FormTextArea(name  ="text", value= actor.text, Class="epsc-text-area")
     fname           = FormTextField(name = "fname", value = actor.fname)
-    description     = FormTextField(name = "description", value=actor.description) 
+    description     = FormTextField(name = "description", value = actor.description)
 
     # Add form fields to the table
     table.addRow(("Configuration: *", text))
@@ -74,13 +74,11 @@ def visual(actor, director):
     table.setColumnStyle(1, "qe-form-field")
 
 
-#    form.onsubmit   = select(element=form).submit(actor     = actorname(actor.type),
-#                                                  routine   = routinename(actor.type),
-#                                                  id        = actor.id,
-#                                                  taskid    = actor.taskid,
-#                                                  type      = actor.type,
-#                                                  subtype   = actor.subtype)
-#
+    form.onsubmit   = select(element=form).submit(actor     = "material_simulations/epsc/config-create",
+                                                  routine   = "createRecord",
+                                                  id        = actor.id,
+                                                  taskid    = actor.taskid,
+                                                  type      = actor.type)
 
     return form
 
