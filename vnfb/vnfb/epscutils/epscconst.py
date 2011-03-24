@@ -11,10 +11,15 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
+from vnfb.utils.orderedDict import OrderedDict
+
 NUMPROC = 1 # Number of thermo-mechanical processes
 
 FILETYPE    = ("filecrys", "filesamp", "filediff", "fileproc")
 EPSC_BIN    = "epsc3" # Binary for EPSC should be epsc3
+
+EPSCCHAIN   = OrderedDict()
+EPSCCHAIN["epsc"]   = ("epsc",)
 
 
 # filecrys

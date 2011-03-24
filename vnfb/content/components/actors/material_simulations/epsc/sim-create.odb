@@ -96,7 +96,7 @@ class Actor(base):
     def _createSim(self, director):
         "Creates simulation record"
         params  = {"sname":         self._sname(),
-                   "type":          "",
+                   "type":          "epsc",     # Only one type
                    "simchain":      "",
                    "creator":       director.sentry.username,
                    "short_description":   self._description(),
@@ -113,7 +113,7 @@ class Actor(base):
     def _createTask(self, director):
         "Creates task for the simulation"
         creator     = EPSCTaskCreator(director, self._newid)
-        creator.createRecords("epsc")
+        creator.createRecords("epsc")   # One task of type="epsc"
 
 
     def _description(self):
