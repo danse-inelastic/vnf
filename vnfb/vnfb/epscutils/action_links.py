@@ -14,6 +14,7 @@
 from luban.content import load, select
 from luban.content.Link import Link
 from vnfb.epscutils.epscconst import FILETYPE
+from vnfb.qeutils.qeutils import latestInput
 
 def settingsLink(director, id):
     "Returns link to settings of simulation"
@@ -66,9 +67,10 @@ def serverLink(director, id):
 
 def configLink(director, id, taskid, type, structureid):
     "Returns link to configuration"
-    if not type in FILETYPE:
+    if not type in FILETYPE:    # Extra protection :)
         return "None"
 
+    inputs  = director.clerk.getQEConfigurations(where="taskid='%s' and type='%s'" % (taskid, type))
     actorName   = "material_simulations/epsc/%s-create" % type
     # Default link
     link = Link(label="Create",
@@ -78,8 +80,41 @@ def configLink(director, id, taskid, type, structureid):
                              taskid     = taskid,
                              type       = type,
                              structureid = structureid))
-                
-    return link
+                             
+    if not inputs:      # No inputs created, return "Add" link
+        return link
+
+    input   = latestInput(inputs)
+    if not input:       # No input, return default link
+        return link
+
+    # Link to configuration view
+    return Link(label   = input.filename,
+                onclick = load(actor      = "material_simulations/epsc/config-view",
+                               id         = id,
+                               taskid     = taskid,
+                               type       = type,
+                               configid   = input.id))
+
+
+#    def getLink(self):      # simulation
+#        inputs  = self._director.clerk.getQEConfigurations(where="taskid='%s'" % self._taskid )
+#
+#        link    = self._linkAdd()
+#        if not inputs:      # No inputs created, return "Add" link
+#            return link
+#
+#        input   = latestInput(inputs)
+#        if not input:       # No input, return "Add" link
+#            return link
+#
+#        return Link(label   = input.filename,
+#                    onclick = load(actor      = "material_simulations/espresso/input-view",
+#                                 id         = self._id,
+#                                 taskid     = self._taskid,
+#                                 type       = self._type,
+#                                 configid   = input.id)   # Some more?
+#                    )
 
 
 __date__ = "$Mar 23, 2011 7:15:15 PM$"
