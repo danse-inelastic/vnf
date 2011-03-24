@@ -66,30 +66,6 @@ class Actor(base):
 
         return doc
 
-#    def content(self, director):
-#        def viewIndicator(director):
-#            path = []
-#            path.append(('Simulations ', load(actor='materialsimulation')))
-#            path.append(('Create New Simulation ', select(id='main-display-area').replaceContent(
-#                                                          load(actor='materialsimulation',
-#                                                               routine='newSimulation')
-#                                                          ))
-#                        )
-#            path.append(('EPSC', load(actor='material_simulations/epsc/sim-create')))
-#            path.append("Create Sample Configuration")
-#
-#            return director.retrieveVisual('view-indicator', path=path)
-#
-#        doc         = lc.document(title   = "Create Sample Configuration")
-#        splitter    = doc.splitter(orientation="vertical")
-#        sA          = splitter.section()
-#        sA.add(viewIndicator(director))
-#        sB          = splitter.section()
-#        visual  = 'material_simulations/epsc/filesamp-form'
-#        sB.add(director.retrieveVisual(visual, self.inventory, director))
-#
-#        return doc
-
 
     def generateConfig(self, director):
         "Generates config file and redirects to general form"

@@ -26,10 +26,10 @@ from vnfb.epscutils.epscconst import *
 
 class Visual:
 
-    def __init__(self, actor, director):#, structureid):
+    def __init__(self, actor, director):
         self._actor         = actor
         self._director      = director
-        #self._structureid   = structureid
+        self._structureid   = actor.structureid
 
 
     def form(self):
@@ -62,14 +62,11 @@ class Visual:
 
         # Skip link
         visual_     = "material_simulations/epsc/link-skip"
-        skipLink    = self._director.retrieveVisual(visual_)#,
-#                                                  id        = self._actor.id,
-#                                                  taskid    = self._actor.taskid,
-#                                                  type      = self._actor.type)
+        skipLink    = self._director.retrieveVisual(visual_, self._actor)
 
         submit      = FormSubmitButton(label="Generate Diffraction Configuration")
         cancel      = lc.button(label="Cancel")
-        cancel.onclick  = load(actor = 'material_simulations/epsc/sim-view')#, id=self._actor.id)
+        cancel.onclick  = load(actor = 'material_simulations/epsc/sim-view', id=self._actor.id)
 
         # Parameters attachment
         st          = QEGrid(lc.grid()) # Submit Table
@@ -83,22 +80,18 @@ class Visual:
         table.setColumnStyle(1, "qe-form-field")
 
         form.onsubmit   = select(element=form).submit(actor     = 'material_simulations/epsc/filediff-create',
-                                                      routine   = 'generateConfig')#,
-#                                                      type      = "filecrys")
-#                                                      taskid    = self._actor.taskid,
-#                                                      id        = self._actor.id,
-#                                                      type      = self._actor.type,
-#                                                      mattertype    = self._actor.mattertype,
-#                                                      structureid   = self._structureid,
-#                                                      simtype   = self._simtype)
+                                                      routine   = 'generateConfig',
+                                                      id        = self._actor.id,
+                                                      taskid    = self._actor.taskid,
+                                                      type      = self._actor.type)
 
         form.add(table.grid())
 
         return form
 
 
-def visual(actor, director):    #, structureid):
-    v   = Visual(actor, director)   #, structureid)
+def visual(actor, director):
+    v   = Visual(actor, director)
     return v.form()
 
 __date__ = "$Mar 22, 2011 10:11:29 AM$"
