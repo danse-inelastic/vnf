@@ -11,8 +11,7 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
-from vnfb.epscutils.epscsettings import EPSCSettings
-from vnfb.epscutils.epscserver import EPSCServer
+from vnfb.epscutils.action_links import settingsLink, serverLink
 
 from vnfb.qeutils.qeutils import stamp2date, analyseActor, label2typekey, nonMDChain
 from vnfb.qeutils.taskcreator import TaskCreator
@@ -85,15 +84,6 @@ class Actor(base):
 
         return director.retrieveVisual('view-indicator', path=path)
 
-
-#    def refreshStatus(self, director):
-#        "Refresh tasks table"
-#        container   = lc.document()
-#        container.add(self._taskTable(director))
-#
-#        return select(id = ID_SIMTASKS).replaceContent(container)
-#
-#
 
     def _showActions(self, section, sim):
         self._refreshAction(section, sim)
@@ -184,15 +174,9 @@ class Actor(base):
         table       = QEGrid(lc.grid(Class = "qe-table"))
         section.add(table.grid())
 
-        # Add settings
-        settings    = EPSCSettings(self._sim, director)
-        link        = settings.getLink(self.id)
-        table.addRow(("Simulation settings: ", link))
-
-        # Add server
-        server  = EPSCServer(director)
-        link    = server.getLink(self.id)
-        table.addRow(("Server Info: ", link))
+        # Add settings and server
+        table.addRow(("Simulation settings: ", settingsLink(director, self.id)))
+        table.addRow(("Server Info: ", serverLink(director, self.id)))
         
         table.setColumnStyle(0, "epsc-cell-param")
 
@@ -243,36 +227,6 @@ class Actor(base):
         link = lc.link(label    = "Run Simulation",
                        Class    = "epsc-run-task")
         section.add(link)
-
-#
-#
-#    def _showTasks(self, director, splitter):
-#        """Shows chain of configuration files"""
-#        # Show simulation tasks section
-#        sC          = splitter.section(id="qe-tasks-label")
-#        sC.add(Paragraph(text="Simulation Tasks", Class="qe-section-inline"))
-#
-#        # Show refresh status button
-#        sC.add(lc.link(label="Refresh Status", id = "action-refresh-status",
-#                         onclick = load(actor   = 'material_simulations/espresso/sim-view',
-#                                        routine = "refreshStatus",
-#                                        id      = self.id)
-#                        ))
-#        sC.add(lc.document(Class="clear-both"))
-#
-#
-#        # Show tasks table
-#        sT          = splitter.section(id = ID_SIMTASKS)
-#        container   = lc.document()
-#        container.add(self._taskTable(director))
-#        sT.add(container)
-#
-#
-#    def _taskTable(self, director):
-#        "Returns task table section"
-#        sim         = director.clerk.getQESimulations(id=self.id)
-#        taskstable  = QETasks(director, sim.id, sim.type, sim.simchain)
-#        return taskstable.tasks()
 
 
     def __init__(self):
