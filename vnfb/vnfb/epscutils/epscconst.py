@@ -13,6 +13,8 @@
 
 NUMPROC = 1
 
+FILETYPE    = ("filecrys", "filesamp", "filediff", "fileproc")
+
 # filecrys
 CRYSYM  = ("CUBIC", "HEXAG")
 LATTICE = ("3.5", "3.5", "3.5", "90", "90", "90") # Temp
