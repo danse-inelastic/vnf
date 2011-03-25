@@ -29,7 +29,7 @@ DEFAULT_MESSAGE = "Not Started"
 
 class JobStatus(object):
 
-    def __init__(self, director, simid, linkorder, job = None):
+    def __init__(self, director, simid, linkorder, job = None, outputfile=None):
         self._director  = director
         self._simid     = simid
         self._linkorder = linkorder
@@ -37,6 +37,7 @@ class JobStatus(object):
         self._task      = None
         self._input     = None
         self._server    = None
+        self._outputfile    = outputfile    # Output file to look into for job output
 
         self._init()
 
@@ -110,7 +111,7 @@ class JobStatus(object):
         if not self._job or not self._task:
             return ""
 
-        return lc.link(label="Refresh",
+        return lc.link(label    ="Refresh",
                       Class     = "qe-task-action",
                       onclick   = load(actor     = 'jobs/status',
                                        routine   = routine,
@@ -119,6 +120,13 @@ class JobStatus(object):
                                        jobid     = self._job.id,
                                        linkorder = self._linkorder)
                      )
+
+    def id(self):
+        "Returns job's id"
+        if not self._job:
+            return None
+        return self._job.id
+
 
     def output(self):
         "Returns formatted link to output file on local server"
@@ -260,7 +268,11 @@ class JobStatus(object):
     # XXX: Fix cardcoded pattern for output file
     def _matchCheck(self, files):
         "Find matching file. Single matching file if possible. Picks first otherwise"
-        REEXP   = '[\w]+\.in\.out$'
+        REEXP   = '[\w]+\.in\.out$' # Default regular expression for output file
+
+        if self._outputfile:        # If output file is specified, get it
+            REEXP   = self._outputfile
+
         for fname in files:
             p   = re.compile(REEXP)
             if p.match(fname):   # matches

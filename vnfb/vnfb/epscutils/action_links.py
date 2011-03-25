@@ -14,7 +14,7 @@
 from luban.content import load, select
 import luban.content as lc
 from vnfb.epscutils.epscconst import FILETYPE
-from vnfb.qeutils.qeutils import latestInput
+from vnfb.qeutils.qeutils import latestInput, latestJob
 
 def settingsLink(director, id):
     "Returns link to settings of simulation"
@@ -106,6 +106,35 @@ def runLink(director, id, taskid):
                                   id        = id,
                                   taskid    = taskid,
                                   package   = "epsc"))
+
+
+def jobLink(director, id, taskid):
+    "Returns link to job"
+    jobs        = director.clerk.getQEJobs(where="taskid='%s'" % taskid)
+
+    if not jobs:
+        return "None"
+
+    job  = latestJob(jobs)
+
+    return lc.link(label   = job.id,
+                   onclick = load(actor     = 'jobs/jobs-view',
+                                  id        = id,
+                                  taskid    = taskid,
+                                  jobid     = job.id,
+                                  type      = "epsc"))
+
+
+def allJobsLink(director, id, taskid):
+    "Returns link to all jobs"
+    return lc.link(label    = "All Jobs",
+                   Class    = "qe-all-jobs", # Class = "qe-task-action"
+                   onclick = load(actor     = 'jobs/jobs-view-all',
+                                  id        = id,
+                                  taskid    = taskid,
+                                  type      = "epsc",
+                                  linkorder = 0))
+
 
 
 __date__ = "$Mar 23, 2011 7:15:15 PM$"

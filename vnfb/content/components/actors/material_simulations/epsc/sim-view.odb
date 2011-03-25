@@ -11,10 +11,12 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
-from vnfb.epscutils.action_links import settingsLink, serverLink, configLink, runLink
+from vnfb.epscutils.action_links import *
 from vnfb.qeutils.qegrid import QEGrid
+from vnfb.qeutils.jobstatus import JobStatus
 from vnfb.qeutils.qerecords import SimulationRecord
 from vnfb.qeutils.qeconst import TASK_ACTION
+from vnfb.epscutils.epscconst import *
 
 from luban.content import select
 from luban.content import load
@@ -212,10 +214,14 @@ class Actor(base):
         table       = QEGrid(lc.grid(Class = "qe-table"))
         section.add(table.grid())
 
-        table.addRow(("Status", "None"))
-        table.addRow(("Output", "None"))
-        table.addRow(("Job Id", "None"))
-        table.addRow(("Results", "None"))
+        jobstatus      = JobStatus(director, self.id, 0, outputfile=EPSC_OUT)
+
+
+        table.addRow(("Status", jobstatus.status(), jobstatus.action()))
+        table.addRow(("Output", jobstatus.output(), ""))
+        table.addRow(("Job Id", jobLink(director, self.id, self._task.id),
+                                allJobsLink(director, self.id, self._task.id)))
+        table.addRow(("Results", "None", ""))
 
         table.setColumnStyle(0, "epsc-cell-param")
 
