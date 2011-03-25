@@ -14,6 +14,7 @@
 import os
 from luban.content.ProgressBar import ProgressBar
 from luban.content import load, select
+import luban.content as lc
 from vnfb.utils import launch_detached, bindir
 from vnfb.qeutils.qeutils import latestJob
 from vnfb.qeutils.qeconst import JOB_STATE, TASK_ACTION
@@ -28,6 +29,8 @@ class Actor(base):
         subtype     = pyre.inventory.str('subtype', default='')
         optlevel    = pyre.inventory.str('optlevel', default="0")
 
+        package     = pyre.inventory.str('package', default="espresso")
+
 
     def default(self, director):
         "Not implemented"
@@ -36,14 +39,24 @@ class Actor(base):
 
     def submit(self, director):
         "Submit job to the computing nodes. Trace job status."
-        self.submitJob(director)
+        if not self.package in ["espresso", "epsc"]:    # Supported packages
+            return lc.document()
 
-        return self.progressBar(director)
+        if self.package == "espresso":
+            self.submitJob(director, "jobdriver.py")
+            onfinished  = "material_simulations/espresso/sim-view"
+            return self.progressBar(director, onfinished)
+
+        if self.package == "epsc":
+            self.submitJob(director, "epscjobdriver.py")
+            onfinished  = "material_simulations/epsc/sim-view"
+            return self.progressBar(director, onfinished)
+      
 
 
-    def submitJob(self, director):
+    def submitJob(self, director, driverScript):
         "Spawns process that submits job to the computing nodes"
-        cmd = os.path.join(bindir, "jobdriver.py")
+        cmd = os.path.join(bindir, driverScript)
 
         options =   {
                     'id':       self.inventory.id,
@@ -66,11 +79,10 @@ class Actor(base):
         for o in opts.keys():
             if opts[o].strip() != '':   # option is not empty
                 options[o]  = opts[o]
-
         return options
 
 
-    def progressBar(self, director):
+    def progressBar(self, director, onfinished):
         pbar    = ProgressBar(
                             id = 'pbar-%s' % self.taskid,
                             status = 'Submitting job...',
@@ -85,8 +97,8 @@ class Actor(base):
                                 )
 
         pbar.onfinished  = [
-                            load(actor = "material_simulations/espresso/sim-view",
-                                 id = self.id),
+                            load(actor  = onfinished,
+                                 id     = self.id),
                             ]
         
         return select(id="%s-%s" % (TASK_ACTION, self.taskid) ).replaceContent(pbar)
@@ -101,10 +113,8 @@ class Actor(base):
             job  = latestJob(jobs)
 
         state   = self._getStatus(job)
-        return  selectpbar.setAttr(
-                                    percentage  = state[0],
-                                    status      = state[1],
-                                    )
+        return  selectpbar.setAttr(percentage  = state[0],
+                                   status      = state[1])
 
     def _getStatus(self, job):
         status  = (100, "Unknown status")
@@ -117,8 +127,6 @@ class Actor(base):
     def __init__(self):
         super(Actor, self).__init__(name='jobs/submit')
 
-        return
-
 
     def _configure(self):
         super(Actor, self)._configure()
@@ -126,6 +134,8 @@ class Actor(base):
         self.taskid     = self.inventory.taskid
         self.subtype    = self.inventory.subtype
         self.optlevel   = self.inventory.optlevel
+
+        self.package    = self.inventory.package
 
 
     def _init(self):
@@ -137,27 +147,3 @@ def actor():
 
 
 __date__ = "$Nov 4, 2009 9:27:51 AM$"
-
-
-#    def _testVel(self, director):
-#        from vnfb.qeutils.results.cpresult import CPResult
-#        result          = CPResult(director, self.id, linkorder = 1)
-#        self._output    = result.output()
-#        self._step      = self._output.property('trajectory')['step']
-#        self._time      = self._output.property('trajectory')['time']
-#        self._vel       = self._output.property('trajectory')['vel']
-#        self._pos       = self._output.property('trajectory')['pos']
-#
-#        self._storeVelFile()
-#
-#
-#    def _storeVelFile(self):
-#        "Stores velocities to cp.vel file"
-#        str     = ""
-#        for ts in range(len(self._vel)):
-#            str += "     %s  %s\n" % (self._step[ts], self._time[ts])
-#            for atom in self._vel[ts]:
-#                str   += " %s %s %s\n" % (atom[0], atom[1], atom[2])
-#
-#        str = str.rstrip("\n")
-#        print str

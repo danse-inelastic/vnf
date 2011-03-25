@@ -500,7 +500,7 @@ class Actor(base):
 
 
     def __init__(self):
-        super(Actor, self).__init__(name='jobs/submit')
+        super(Actor, self).__init__(name='jobs/conv-run')
 
 
     def _configure(self):

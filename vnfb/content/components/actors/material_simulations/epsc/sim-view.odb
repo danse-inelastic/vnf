@@ -223,7 +223,13 @@ class Actor(base):
         "Shows action button (run simulation)"
         section    = splitter.section(id="action-button")
         link = lc.link(label    = "Run Simulation",
-                       Class    = "epsc-run-task")
+                       Class    = "epsc-run-task",
+                       onclick  = load(actor     ='jobs/submit',
+                                      routine   = 'submit',
+                                      id        = self.id,
+                                      taskid    = self._task.id,
+                                      package   = "epsc"))
+
         section.add(link)
 
 

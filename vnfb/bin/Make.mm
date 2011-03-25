@@ -39,6 +39,7 @@ EXPORT_DATAFILES = \
 	destroydataobject.py \
 	doma.py \
 	dumpdb.py \
+	epscjobdriver.py \
 	establishglobalpointers.py \
 	establish_ssh_tunnels.py \
 	findchildrenofdataobject.py \

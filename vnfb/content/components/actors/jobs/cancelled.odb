@@ -10,6 +10,9 @@
 #
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
+
+# Obsolete
+
 from vinil.utils.const import STATES
 
 from luban.content.Document import Document
