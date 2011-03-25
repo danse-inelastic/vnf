@@ -105,6 +105,7 @@ def runLink(director, id, taskid):
                                   routine   = 'submit',
                                   id        = id,
                                   taskid    = taskid,
+                                  subtype   = "epsc",   # Used to identify job type!
                                   package   = "epsc"))
 
 

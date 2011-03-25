@@ -19,6 +19,7 @@ FILETYPE    = ("filecrys", "filesamp", "filediff", "fileproc")
 EPSC_BIN    = "epsc3"       # Binary for EPSC should be epsc3
 EPSC_IN     = "epsc3.in"    # Filename for main config file
 EPSC_OUT    = "EPSC.out"    # Filename for output file
+EPSC_OUT_RE = "EPSC\.out$"  # Regular expression for output file
 
 EPSCCHAIN   = OrderedDict()
 EPSCCHAIN["epsc"]   = ("epsc",)
