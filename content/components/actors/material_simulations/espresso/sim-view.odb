@@ -34,6 +34,7 @@ class Actor(base):
 
 
     def default(self, director):
+
         return select(id='main-display-area').replaceContent(self.content(director))
 
 
@@ -44,6 +45,12 @@ class Actor(base):
 
         if not self._sim:   # No simulation, return empty document
             return lc.document()
+
+        # HACK: Redirects to EPSC simulation
+        if self._sim.type == "epsc":
+            return director.redirect(actor   = 'material_simulations/epsc/sim-view',
+                                     routine = 'content',
+                                     id      = self.id)
 
         self._checkTasks(director)  # ! Checks tasks if they exist, otherwise creates missing
         
@@ -114,7 +121,7 @@ class Actor(base):
         self._newAction(section, sim)
         self._editAction(section, sim)
         self._cloneAction(section, sim)
-        #self._convergenceAction(section, sim)
+        #self._convergenceAction(section, sim)  # Keep!
         self._analysisAction(section, sim)
         self._deleteAction(section, sim)
 
