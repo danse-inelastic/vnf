@@ -1,4 +1,4 @@
-# -*- Python -*-
+#!/usr/bin/env python
 #
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
@@ -26,6 +26,7 @@ def main():
 if __name__ == '__main__':
     # invoke the application shell
     main()
+    
 __date__ = "$Mar 24, 2011 6:22:16 PM$"
 
 
