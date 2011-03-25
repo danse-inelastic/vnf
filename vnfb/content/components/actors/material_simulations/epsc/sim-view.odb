@@ -214,7 +214,7 @@ class Actor(base):
         table       = QEGrid(lc.grid(Class = "qe-table"))
         section.add(table.grid())
 
-        jobstatus      = JobStatus(director, self.id, 0, outputfile=EPSC_OUT)
+        jobstatus      = JobStatus(director, self.id, 0, outputRegex=EPSC_OUT_RE)
 
 
         table.addRow(("Status", jobstatus.status(), jobstatus.action()))
@@ -224,6 +224,8 @@ class Actor(base):
         table.addRow(("Results", "None", ""))
 
         table.setColumnStyle(0, "epsc-cell-param")
+        table.setColumnStyle(2, "epsc-jobs-action-column")
+
 
         
     def _showAction(self, director, splitter):

@@ -135,7 +135,15 @@ a.epsc-action-create {
     font-weight: bold;
 }
 
-/* Run button */
+/* Jobs */
 .epsc-run-action {
     width: 500px;
+}
+
+.epsc-jobs-action-column {
+    width: 100px;
+}
+
+.qe-table .epsc-jobs-action-column {
+    padding-left: 0px;
 }

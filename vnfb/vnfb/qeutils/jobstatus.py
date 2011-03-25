@@ -20,6 +20,7 @@ import re
 from vnfb.qeutils.qeconst import ID_OUTPUT, ID_STATUS
 from vnfb.qeutils.qeutils import key2str, dataroot, jobStatus, makedirs, qedialog
 from vnfb.qeutils.qerecords import SimulationRecord
+from vnfb.epscutils.epscconst import EPSC_OUT_RE
 
 import luban.content as lc
 from luban.content import load, select
@@ -29,7 +30,7 @@ DEFAULT_MESSAGE = "Not Started"
 
 class JobStatus(object):
 
-    def __init__(self, director, simid, linkorder, job = None, outputfile=None):
+    def __init__(self, director, simid, linkorder, job = None, outputRegex=None):
         self._director  = director
         self._simid     = simid
         self._linkorder = linkorder
@@ -37,7 +38,7 @@ class JobStatus(object):
         self._task      = None
         self._input     = None
         self._server    = None
-        self._outputfile    = outputfile    # Output file to look into for job output
+        self._outputRegex    = outputRegex    # Regular expression for output file
 
         self._init()
 
@@ -171,7 +172,7 @@ class JobStatus(object):
         remotepath  = self._director.dds.abspath(self._job, server=self._server)
         localpath   = self._localPath()
         cmd         = "ls %s" % remotepath  # list current job directory
-
+        
         failed, output, error = self._director.csaccessor.execute(cmd,
                                                                   self._server,
                                                                   remotepath,
@@ -239,7 +240,7 @@ class JobStatus(object):
         localpath   = os.path.join(tmpbase, self._job.name)   # ../content/data/tmp/qejobs
         localpath   = os.path.join(localpath, self._job.id)     # ../content/data/tmp/qejobs/EXSWTYTK
         if not os.path.exists(localpath): # create directory, if necessary
-            makedirs(localpath)     # XXX: Can through the exception
+            makedirs(localpath)     # XXX: Can throw the exception
 
         return localpath  # Example: ../content/data/tmp/qejobs/EXSWTYTK
 
@@ -268,11 +269,14 @@ class JobStatus(object):
     # XXX: Fix cardcoded pattern for output file
     def _matchCheck(self, files):
         "Find matching file. Single matching file if possible. Picks first otherwise"
-        REEXP   = '[\w]+\.in\.out$' # Default regular expression for output file
+        REEXP   = '[\w]+\.in\.out$' # Default regular expression (regex) for output file
 
-        if self._outputfile:        # If output file is specified, get it
-            REEXP   = self._outputfile
+        if self._job.description == "epsc": # EPSC specific
+            REEXP   = EPSC_OUT_RE
 
+        if self._outputRegex:        # If output regex is specified, use it
+            REEXP   = self._outputRegex
+            
         for fname in files:
             p   = re.compile(REEXP)
             if p.match(fname):   # matches
@@ -280,17 +284,16 @@ class JobStatus(object):
 
         return None
 
+
     def _statusId(self):
         if not self._job:
             return ""
-
         return "%s-%s" % (ID_STATUS, self._job.id)
 
 
     def _outputId(self):
         if not self._job:
-            return ""
-        
+            return ""        
         return "%s-%s" % (ID_OUTPUT, self._job.id)
 
 

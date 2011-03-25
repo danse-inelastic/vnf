@@ -103,7 +103,7 @@ class JobDriver(base):
                    "timesubmitted": stamp(),
                    "creator":       self.sentry.username,
                    "numberprocessors":   setting.numproc, # -> take from QESettings
-                   "description":   self.subtype
+                   "description":   self.subtype    # HACK: Identify job type by description
                    }
 
         self._job  = QEJob(self)
