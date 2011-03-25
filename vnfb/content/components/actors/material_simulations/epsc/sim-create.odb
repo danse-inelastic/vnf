@@ -96,7 +96,7 @@ class Actor(base):
     def _createSim(self, director):
         "Creates simulation record"
         params  = {"sname":         self._sname(),
-                   "type":          "epsc",     # Only one type
+                   "type":          "epsc",     # Only one type!
                    "simchain":      "",
                    "creator":       director.sentry.username,
                    "short_description":   self._description(),
