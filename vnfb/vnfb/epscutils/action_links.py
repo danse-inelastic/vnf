@@ -12,7 +12,7 @@
 #
 
 from luban.content import load, select
-from luban.content.Link import Link
+import luban.content as lc
 from vnfb.epscutils.epscconst import FILETYPE
 from vnfb.qeutils.qeutils import latestInput
 
@@ -21,7 +21,7 @@ def settingsLink(director, id):
     settings  = director.clerk.getQESettings(where="simulationid='%s'" % id )
 
     # Default link
-    link = Link(label="Create",
+    link = lc.link(label="Create",
                 Class="epsc-action-create",
                 tip     = "Set simulation environment",
                 onclick=load(actor      = "material_simulations/epsc/settings-add",
@@ -30,7 +30,7 @@ def settingsLink(director, id):
     if settings:
         s = settings[0]
         if s:
-            link = Link(label   = s.sname,
+            link = lc.link(label   = s.sname,
                         Class   = "action-link",
                         onclick = load(actor    = "material_simulations/epsc/settings-view",
                                      id         = id,
@@ -56,7 +56,7 @@ def serverLink(director, id):
         return link
 
 
-    link = Link(label   = server.address,
+    link = lc.link(label   = server.address,
                 Class   = "action-link",
                 tip     = "Show details of computational cluster",
                 onclick = select(id='').append(load(actor='server/load', routine='createDialog'))
@@ -73,9 +73,9 @@ def configLink(director, id, taskid, type, structureid):
     inputs  = director.clerk.getQEConfigurations(where="taskid='%s' and type='%s'" % (taskid, type))
     actorName   = "material_simulations/epsc/%s-create" % type
     # Default link
-    link = Link(label="Create",
-                Class="epsc-action-create",
-                onclick=load(actor      = actorName,
+    link = lc.link(label="Create",
+                   Class="epsc-action-create",
+                   onclick=load(actor      = actorName,
                              id         = id,
                              taskid     = taskid,
                              type       = type,
@@ -89,12 +89,23 @@ def configLink(director, id, taskid, type, structureid):
         return link
 
     # Link to configuration view
-    return Link(label   = input.filename,
-                onclick = load(actor      = "material_simulations/epsc/config-view",
+    return lc.link(label   = input.filename,
+                   onclick = load(actor      = "material_simulations/epsc/config-view",
                                id         = id,
                                taskid     = taskid,
                                type       = type,
                                configid   = input.id))
+
+
+def runLink(director, id, taskid):
+    "Returns run link"
+    return lc.link(label    = "Run Simulation",
+                   Class    = "epsc-run-task",
+                   onclick  = load(actor     ='jobs/submit',
+                                  routine   = 'submit',
+                                  id        = id,
+                                  taskid    = taskid,
+                                  package   = "epsc"))
 
 
 __date__ = "$Mar 23, 2011 7:15:15 PM$"

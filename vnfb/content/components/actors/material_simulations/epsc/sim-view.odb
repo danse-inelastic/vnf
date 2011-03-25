@@ -11,9 +11,10 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
-from vnfb.epscutils.action_links import settingsLink, serverLink, configLink
+from vnfb.epscutils.action_links import settingsLink, serverLink, configLink, runLink
 from vnfb.qeutils.qegrid import QEGrid
 from vnfb.qeutils.qerecords import SimulationRecord
+from vnfb.qeutils.qeconst import TASK_ACTION
 
 from luban.content import select
 from luban.content import load
@@ -221,16 +222,15 @@ class Actor(base):
         
     def _showAction(self, director, splitter):
         "Shows action button (run simulation)"
-        section    = splitter.section(id="action-button")
-        link = lc.link(label    = "Run Simulation",
-                       Class    = "epsc-run-task",
-                       onclick  = load(actor     ='jobs/submit',
-                                      routine   = 'submit',
-                                      id        = self.id,
-                                      taskid    = self._task.id,
-                                      package   = "epsc"))
+        doc     = lc.document()   # Example: run-task-BFDFX56
 
-        section.add(link)
+        if not self._task:
+            return 
+
+        doc.id  = "%s-%s" % (TASK_ACTION, self._task.id)
+        doc.add(runLink(director, self.id, self._task.id))    
+        section = splitter.section(id="action-button")
+        section.add(doc)
 
 
     def __init__(self):
