@@ -46,6 +46,8 @@ Important Notes:
     - Dynmat task IS NOT a parallel program (no mpirun)
     - Both "<" and "-inp" work on foxtrot.danse.us
     - See also vnfb/applications/ITaskApp.py
+    - This application is specific for Quantum Espress. To use it for other package,
+      you need to subclass it
 """
 
 class JobDriver(base):
@@ -270,7 +272,6 @@ class JobDriver(base):
         return settings.npool
 
 
-    # XXX: Extend to scratch
     def _moveFiles(self):
         """
         Moves files from local server to the computational cluster (normally, head node).

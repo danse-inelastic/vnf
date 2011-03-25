@@ -36,6 +36,7 @@ all: export
 
 EXPORT_PYTHON_MODULES = \
 	ApproveUser.py \
+	EPSCJobDriver.py \
 	EstablishGlobalPointers.py \
 	ITaskApp.py \
         JobDriver.py \

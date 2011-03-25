@@ -62,7 +62,8 @@ class TaskAction(object):
                                       id        = self._simid,
                                       taskid    = self._task.id,
                                       subtype   = self._task.subtype,
-                                      optlevel  = self._optlevel())
+                                      optlevel  = self._optlevel(),
+                                      package   = "espresso")
                         )
         return link
 
