@@ -222,7 +222,7 @@ class Actor(base):
         
     def _showAction(self, director, splitter):
         "Shows action button (run simulation)"
-        doc     = lc.document()   # Example: run-task-BFDFX56
+        doc     = lc.document(Class="epsc-run-action")   # Example: run-task-BFDFX56
 
         if not self._task:
             return 

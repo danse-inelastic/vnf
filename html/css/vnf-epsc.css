@@ -134,3 +134,8 @@ a.epsc-action-create {
     width: 120px;
     font-weight: bold;
 }
+
+/* Run button */
+.epsc-run-action {
+    width: 500px;
+}
