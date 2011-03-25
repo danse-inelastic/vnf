@@ -15,6 +15,7 @@ from vnfb.epscutils.action_links import *
 from vnfb.qeutils.qegrid import QEGrid
 from vnfb.qeutils.jobstatus import JobStatus
 from vnfb.qeutils.qerecords import SimulationRecord
+from vnfb.qeutils.results.resultinfo import ResultInfo
 from vnfb.qeutils.qeconst import TASK_ACTION
 from vnfb.epscutils.epscconst import *
 
@@ -214,14 +215,14 @@ class Actor(base):
         table       = QEGrid(lc.grid(Class = "qe-table"))
         section.add(table.grid())
 
-        jobstatus      = JobStatus(director, self.id, 0, outputRegex=EPSC_OUT_RE)
-
+        jobstatus   = JobStatus(director, self.id, 0, outputRegex=EPSC_OUT_RE)
+        results     = ResultInfo(director, self.id, 0)
 
         table.addRow(("Status", jobstatus.status(), jobstatus.action()))
         table.addRow(("Output", jobstatus.output(), ""))
         table.addRow(("Job Id", jobLink(director, self.id, self._task.id),
                                 allJobsLink(director, self.id, self._task.id)))
-        table.addRow(("Results", "None", ""))
+        table.addRow(("Results", results.link(), results.action()))
 
         table.setColumnStyle(0, "epsc-cell-param")
         table.setColumnStyle(2, "epsc-jobs-action-column")
