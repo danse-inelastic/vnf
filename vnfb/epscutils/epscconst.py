@@ -18,7 +18,7 @@ NUMPROC = 1 # Number of thermo-mechanical processes
 FILETYPE    = ("filecrys", "filesamp", "filediff", "fileproc")
 EPSC_BIN    = "epsc3"       # Binary for EPSC should be epsc3
 EPSC_IN     = "epsc3.in"    # Filename for main config file
-EPSC_OUT    = "epsc3.out"   # Filename for output file
+EPSC_OUT    = "EPSC.out"    # Filename for output file
 
 EPSCCHAIN   = OrderedDict()
 EPSCCHAIN["epsc"]   = ("epsc",)
@@ -130,21 +130,21 @@ FILEPROC_T  = """* Thermo-mechanical process
 %s                                            "itmax_grain"
 """
 
-EPSC_IN_T = """* Main configuration file
+EPSC_IN_TEXT = """* Main configuration file
 *File for the material data:
-%s
+filecrys
 *File for the sample (grain shape+texture) data:
-%s
+filesamp
 *Reads state from previous process (1=YES or 0=NO) and related file:
 0                                                                "i_prev_proc"
 * 
 *Reads diffracting planes and diffraction directions (1=YES or 0=NO) and file:
 1                                                                 "i_diff_dir"
-%s
+filediff
 *Number of thermomechanical processes to be run:
 1                                                                     "nproc"
 *Files containing information about each process:
-%s
+fileproc
 """
 
 __date__ = "$Mar 22, 2011 10:52:10 AM$"
