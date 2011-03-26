@@ -26,6 +26,18 @@ EPSC_OUT_FILES = [EPSC_OUT, "epsc1.out", "epsc2.out", "epsc3.out", "epsc4.out",
                   "epsc9.out", "epsc10.out", "epsc11.out", "epsc12.out",
                   "epsc13.out", "epsc14.out", "epsc15.out"]
 
+EPSC_OUT_TIPS = ["Main output",
+                "File for sample and convergence",
+                "File for grains state and plastic activity",
+                "Components 11 22 33 of sample strain, stress, elastic  strain and avacs",
+                "Final sample and grains state",
+                "Evolution of sample strain rate, strain (and devs)",
+                "Evolution of sample stress rate, stress (and devs)",
+                "Relative activity in each mode and avacs vs strain",
+                "Equivalent states",
+                "Evolution of internal strains", " ", " ", " ", " ", " ", " "]
+
+
 EPSCCHAIN   = OrderedDict()
 EPSCCHAIN["epsc"]   = ("epsc",)
 

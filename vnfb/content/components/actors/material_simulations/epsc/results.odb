@@ -12,8 +12,7 @@
 #
 
 from vnfb.qeutils.qegrid import QEGrid
-
-from vnfb.epscutils.epscconst import EPSC_OUT_FILES, EPSC_OUT
+from vnfb.epscutils.epscconst import EPSC_OUT_FILES, EPSC_OUT, EPSC_OUT_TIPS 
 
 import luban.content as lc
 from luban.content import select, load
@@ -80,6 +79,7 @@ class Actor(base):
                 label = "OUTPUT"
             column.addRow((lc.link(label   = label,
                                 Class   = classes[i],
+                                tip     = EPSC_OUT_TIPS[i],
                                 onclick = load(actor      = 'material_simulations/epsc/results',
                                                routine    = "outputs",
                                                type       = "", 
