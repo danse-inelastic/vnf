@@ -147,3 +147,25 @@ a.epsc-action-create {
 .qe-table .epsc-jobs-action-column {
     padding-left: 0px;
 }
+
+.epsc-output-section {
+    width: 100px;
+    height: 30px;
+}
+
+.qe-color-blue.epsc-output-default {
+    background-color: #9bbcf8;
+}
+
+.epsc-output-default {
+    padding: 4px 15px;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    text-decoration: none;
+    margin-right: 20px;
+    background-color: #c2d6f9;
+}
+
+a.epsc-output-default {
+    text-decoration: none;
+}

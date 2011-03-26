@@ -21,6 +21,11 @@ EPSC_IN     = "epsc3.in"    # Filename for main config file
 EPSC_OUT    = "EPSC.out"    # Filename for output file
 EPSC_OUT_RE = "EPSC\.out$"  # Regular expression for output file
 
+EPSC_OUT_FILES = [EPSC_OUT, "epsc1.out", "epsc2.out", "epsc3.out", "epsc4.out",
+                  "epsc5.out", "epsc6.out", "epsc7.out", "epsc8.out",
+                  "epsc9.out", "epsc10.out", "epsc11.out", "epsc12.out",
+                  "epsc13.out", "epsc14.out", "epsc15.out"]
+
 EPSCCHAIN   = OrderedDict()
 EPSCCHAIN["epsc"]   = ("epsc",)
 

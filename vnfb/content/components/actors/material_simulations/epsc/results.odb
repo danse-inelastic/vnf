@@ -11,6 +11,253 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
+from vnfb.qeutils.qeutils import analyseActor
+from vnfb.qeutils.qerecords import SimulationRecord
+from vnfb.qeutils.results.pwresult import PWResult
+from vnfb.qeutils.results.resultpath import ResultPath
+from vnfb.qeutils.qegrid import QEGrid
+
+from vnfb.epscutils.epscconst import EPSC_OUT_FILES, EPSC_OUT
+
+import luban.content as lc
+from luban.content import select, load
+
+ID_RESULTS      = "qe-splitter-results" # id for results container
+ID_OUTPUTS      = "qe-splitter-outputs"
+CLASS_DEFAULT   = "epsc-output-default"  # Default class
+CLASS_ACTIVE    = "qe-color-blue"
+CLASS_ERROR     = "qe-color-red"
+
+
+from luban.components.AuthorizedActor import AuthorizedActor as base
+
+class Actor(base):
+
+    class Inventory(base.Inventory):
+        import pyre.inventory
+        id          = pyre.inventory.str('id', default='')          # Simulation Id
+        simtype     = pyre.inventory.str('simtype', default='')
+        type        = pyre.inventory.str('type', default='')        # Task type
+        linkorder   = pyre.inventory.int('linkorder', default=0)
+
+
+    def default(self, director):
+        # Redirection doesn't pass value to self.id, so I need to do it manually
+        self.id         = self.inventory.id
+        self.linkorder  = self.inventory.linkorder
+        return select(id='main-display-area').replaceContent(self.content(director))
+
+
+    def content(self, director):
+        "Contains of two separate splitters: header and results"
+        doc         = lc.document(title="Simulation Results")
+        splitter    = doc.splitter(orientation="vertical")
+        sInd        = splitter.section()                        # path indicator
+        sAct        = splitter.section(id="qe-section-actions") # actions
+
+        self._viewIndicator(director, sInd)
+        self._showActions(director, sAct)                 # Show actions
+
+        outputSplitter  = doc.splitter(orientation="horizontal")
+        sLinks      = outputSplitter.section()
+        sData       = outputSplitter.section()
+        outputLinks = lc.document(id=ID_OUTPUTS)
+        outputData  = lc.document(id = ID_RESULTS)
+
+        sLinks.add(outputLinks)
+        sData.add(outputData)
+
+        outputLinks.add(self._outputLinks(director))
+        #outputData.add("world")
+
+        #doc.add(outputFrame)
+
+        #self._outputAction(director, container)
+#        outputFrame = outputFrame.splitter(orientation="horizontal")
+#        outputFrame.add("Hello")
+#        outputFrame.add("world")
+        
+#        # Simulation Data
+#        resSplitter = docResults.splitter(orientation="vertical")
+#        self._simData(director, resSplitter)              # Simulation Specific data
+#
+#        # System Summary and Electron Structure
+#        sSum        = resSplitter.section()                        # system summary
+#        sEle        = resSplitter.section()                        # electron structure
+#        self._summary(director, sSum)                     # System Summary
+#        self._electronStructure(director, sEle)           # Electron Structure
+
+        return doc
+
+
+    def _outputLinks(self, director):
+        "Output links"
+        column    = QEGrid(lc.grid())
+        classes     = self._typeClasses(director, self.linkorder)
+
+        for i in range(len(EPSC_OUT_FILES)):
+            label   = EPSC_OUT_FILES[i]
+            if label == EPSC_OUT:
+                label = "OUTPUT"
+            column.addRow((lc.link(label   = label,
+                                Class   = classes[i],
+                                onclick = load(actor      = 'material_simulations/epsc/results',
+                                               routine    = "outputs",
+                                               type       = "", 
+                                               simtype    = self.simtype,
+                                               id         = self.id,
+                                               linkorder  = i)),))
+        column.setColumnStyle(0, "epsc-output-section")
+        return column.grid()
+
+
+    def _typeClasses(self, director, linkorder):
+        "Returns list with class names for the specified linkorder"
+        classes = [CLASS_DEFAULT for i in EPSC_OUT_FILES] # Set default values first
+
+        if not linkorder in range(len(EPSC_OUT_FILES)):    # linkorder is out of range
+            return classes
+
+        classes[linkorder]   = CLASS_ACTIVE + " " + classes[linkorder]
+
+        return classes
+
+
+    def outputs(self, director):
+        "Displays the content of output files"
+        return select(id=ID_OUTPUTS).replaceContent(self._outputLinks(director))
+    
+#        return [select(id=ID_RESULTS).replaceContent(self._contentOutput(director)),
+#                select(id=ID_OUTPUTS).replaceContent(self._outputLinks(director))
+#                ]
+
+
+
+
+    def _contentOutput(self, director):
+        doc     = lc.document()
+        visual  = 'material_simulations/epsc/outputs'
+        doc.add(director.retrieveVisual(visual, director, self.id, self.type, self.linkorder))
+
+        return  doc
+
+
+    def _viewIndicator(self, director, section):
+        qelink  = load( actor           = 'materialsimulation',
+                        filter_key      = 'type',
+                        filter_value    = 'qesimulations')
+
+        path = []
+        path.append(('Simulations ', load(actor='materialsimulation')))
+        path.append(('EPSC ', qelink))
+        path.append(('%s ' % self.id, load(actor    = 'material_simulations/epsc/sim-view',
+                                           id       = self.id)))
+        path.append('Simulation Results')
+        section.add(director.retrieveVisual('view-indicator', path=path))
+
+
+    def _showActions(self, director, section):
+        # Action splitter
+        container   = lc.splitter(orientation="horizontal", id="qe-splitter-analysis")
+        sMain        = container.section(Class="qe-section-back")    # Left actions
+        section.add(container)
+        self._backAction(sMain)
+        self._refreshAction(sMain)
+
+        section.add(lc.document(Class="clear-both"))
+
+
+    def _backAction(self, section):
+        "Back button"
+        section.add(lc.link(label ="Back",
+                            Class ="qe-action-back",
+                            onclick = load(actor      = 'material_simulations/epsc/sim-view',
+                                             id       = self.id)))
+
+    def _refreshAction(self, section):
+        "Refresh button"
+        section.add(lc.link(label="Refresh",
+                            Class="qe-action-edit",
+                            onclick = load(actor    = 'material_simulations/epsc/results',
+                                           id       = self.id)))
+
+
+#    def _outputAction(self, director, container):
+#        "Simulation output files"
+#        sA          = container.section(Class="qe-section-text-output")
+#        sA.add(lc.htmldocument(text="Outputs: "))
+#        sB          = container.section(Class="qe-section-output")
+#
+#        docOutput   = lc.document(id=ID_OUTPUTS)    # Hook for output links
+#        docOutput.add(self._outputLinks(director))
+#        sB.add(docOutput)
+#
+#
+#    def _outputLinks(self, director):
+#        "Output links"
+#        doc         = lc.document()         # Container for links
+#        simrecord   = SimulationRecord(director, self.id)
+#        typelist    = simrecord.typeList()  # simulation tasks type list, populated from SIMCHAINS
+#        chainsize   = len(typelist)
+#
+#        classes     = self._typeClasses(director, self.linkorder, chainsize)
+#
+#        for i in range(chainsize):
+#            doc.add(lc.link(label   = typelist[i],
+#                            Class   = classes[i],
+#                            onclick = load(actor      = analyseActor(self.simtype), # XXX
+#                                           routine    = "outputs",
+#                                           type       = typelist[i],
+#                                           simtype    = self.simtype,
+#                                           id         = self.id,
+#                                           linkorder  = i))
+#                    )
+#
+#        return doc
+
+
+#    def _typeClasses(self, director, linkorder, chainsize):
+#        "Returns list with class names for the specified linkorder"
+#        classes = [CLASS_DEFAULT for i in range(chainsize)] # Set default values first
+#        crash   = self._crashCheck(director, chainsize)
+#
+#        assert(len(crash) == chainsize)  # Assumption
+#
+#
+#        for i in range(len(classes)):
+#            if crash[i]:
+#                classes[i]   = "%s %s" % (CLASS_ERROR, classes[i])
+#
+#        if not linkorder in range(chainsize):    # linkorder is out of range
+#            return classes
+#
+#        if not crash[linkorder]:     # Mark as active if it is not crashed only
+#            classes[linkorder]   = CLASS_ACTIVE + " " + classes[linkorder]
+#
+#        return classes
+
+
+
+
+    def _configure(self):
+        super(Actor, self)._configure()
+        self.id             = self.inventory.id
+        self.type           = self.inventory.type
+        self.simtype        = self.inventory.simtype
+        self.linkorder      = self.inventory.linkorder
+
+
+    def _init(self):
+        super(Actor, self)._init()
+
+
+    def __init__(self):
+        super(Actor, self).__init__(name='material_simulations/epsc/results')
+
+
+def actor():
+    return Actor()
+
 
 __date__ = "$Mar 23, 2011 4:20:15 PM$"
 
