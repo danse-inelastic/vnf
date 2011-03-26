@@ -11,6 +11,8 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
+import re
+from vnfb.epscutils.epscconst import EPSC_OUT_FILES
 import luban.content as lc
 from vnfb.qeutils.results.resultpath import ResultPath
 
@@ -23,21 +25,30 @@ def content(path):
     return text
 
 
-def visual(director, simid, ttype, linkorder):
+def regex(filename):
+    "Create regex for output filename "
+    s   = filename.replace(".", "\.")   # Escape dot: "."
+    s   += "$"      # Set ending character
+    return s
+    
+
+def visual(director, simid, linkorder):
+    if not linkorder in range(len(EPSC_OUT_FILES)):
+        return lc.document()    # linkorder is out of range!
     form        = lc.form(id='create-simulation-form')
-    resultpath  = ResultPath(director, simid, linkorder)
-    fcrash      = resultpath.resultFiles("crash")
-    foutput     = resultpath.resultFiles("output")
+    resultpath  = ResultPath(director, simid, 0)
+    allfiles    = resultpath.resultFiles()
 
-    # Show only if crash file exists
-    if fcrash:
-        crash       = form.textarea(Class="qe-textarea-crash")
-        crash.label = "CRASH"
-        crash.value = content(fcrash)
+    for f in allfiles:
+        REGEX   = regex(EPSC_OUT_FILES[linkorder])
+        p       = re.compile(REGEX)
+        matches = p.findall(f)   # Try to find pattern in the file path
+        if len(matches) != 0:   # Match found
+            file    = f
+            break
 
-    pwoutput    = form.textarea(Class="qe-textarea-outputs")
-    pwoutput.label  = "%s Output" % ttype
-    pwoutput.value  = content(foutput)
+    pwoutput    = form.textarea(Class="epsc-textarea-outputs")
+    pwoutput.value  = content(file)
 
     return   form
 
