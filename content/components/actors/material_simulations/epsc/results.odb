@@ -11,10 +11,6 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
-from vnfb.qeutils.qeutils import analyseActor
-from vnfb.qeutils.qerecords import SimulationRecord
-from vnfb.qeutils.results.pwresult import PWResult
-from vnfb.qeutils.results.resultpath import ResultPath
 from vnfb.qeutils.qegrid import QEGrid
 
 from vnfb.epscutils.epscconst import EPSC_OUT_FILES, EPSC_OUT
@@ -68,24 +64,7 @@ class Actor(base):
         sData.add(outputData)
 
         outputLinks.add(self._outputLinks(director))
-        #outputData.add("world")
-
-        #doc.add(outputFrame)
-
-        #self._outputAction(director, container)
-#        outputFrame = outputFrame.splitter(orientation="horizontal")
-#        outputFrame.add("Hello")
-#        outputFrame.add("world")
-        
-#        # Simulation Data
-#        resSplitter = docResults.splitter(orientation="vertical")
-#        self._simData(director, resSplitter)              # Simulation Specific data
-#
-#        # System Summary and Electron Structure
-#        sSum        = resSplitter.section()                        # system summary
-#        sEle        = resSplitter.section()                        # electron structure
-#        self._summary(director, sSum)                     # System Summary
-#        self._electronStructure(director, sEle)           # Electron Structure
+        outputData.add(self._contentOutput(director))
 
         return doc
 
@@ -125,19 +104,15 @@ class Actor(base):
 
     def outputs(self, director):
         "Displays the content of output files"
-        return select(id=ID_OUTPUTS).replaceContent(self._outputLinks(director))
-    
-#        return [select(id=ID_RESULTS).replaceContent(self._contentOutput(director)),
-#                select(id=ID_OUTPUTS).replaceContent(self._outputLinks(director))
-#                ]
-
-
+        return [select(id=ID_RESULTS).replaceContent(self._contentOutput(director)),
+                select(id=ID_OUTPUTS).replaceContent(self._outputLinks(director))
+                ]
 
 
     def _contentOutput(self, director):
         doc     = lc.document()
         visual  = 'material_simulations/epsc/outputs'
-        doc.add(director.retrieveVisual(visual, director, self.id, self.type, self.linkorder))
+        doc.add(director.retrieveVisual(visual, director, self.id, self.linkorder))
 
         return  doc
 
