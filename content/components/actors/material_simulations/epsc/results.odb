@@ -157,63 +157,6 @@ class Actor(base):
                                            id       = self.id)))
 
 
-#    def _outputAction(self, director, container):
-#        "Simulation output files"
-#        sA          = container.section(Class="qe-section-text-output")
-#        sA.add(lc.htmldocument(text="Outputs: "))
-#        sB          = container.section(Class="qe-section-output")
-#
-#        docOutput   = lc.document(id=ID_OUTPUTS)    # Hook for output links
-#        docOutput.add(self._outputLinks(director))
-#        sB.add(docOutput)
-#
-#
-#    def _outputLinks(self, director):
-#        "Output links"
-#        doc         = lc.document()         # Container for links
-#        simrecord   = SimulationRecord(director, self.id)
-#        typelist    = simrecord.typeList()  # simulation tasks type list, populated from SIMCHAINS
-#        chainsize   = len(typelist)
-#
-#        classes     = self._typeClasses(director, self.linkorder, chainsize)
-#
-#        for i in range(chainsize):
-#            doc.add(lc.link(label   = typelist[i],
-#                            Class   = classes[i],
-#                            onclick = load(actor      = analyseActor(self.simtype), # XXX
-#                                           routine    = "outputs",
-#                                           type       = typelist[i],
-#                                           simtype    = self.simtype,
-#                                           id         = self.id,
-#                                           linkorder  = i))
-#                    )
-#
-#        return doc
-
-
-#    def _typeClasses(self, director, linkorder, chainsize):
-#        "Returns list with class names for the specified linkorder"
-#        classes = [CLASS_DEFAULT for i in range(chainsize)] # Set default values first
-#        crash   = self._crashCheck(director, chainsize)
-#
-#        assert(len(crash) == chainsize)  # Assumption
-#
-#
-#        for i in range(len(classes)):
-#            if crash[i]:
-#                classes[i]   = "%s %s" % (CLASS_ERROR, classes[i])
-#
-#        if not linkorder in range(chainsize):    # linkorder is out of range
-#            return classes
-#
-#        if not crash[linkorder]:     # Mark as active if it is not crashed only
-#            classes[linkorder]   = CLASS_ACTIVE + " " + classes[linkorder]
-#
-#        return classes
-
-
-
-
     def _configure(self):
         super(Actor, self)._configure()
         self.id             = self.inventory.id

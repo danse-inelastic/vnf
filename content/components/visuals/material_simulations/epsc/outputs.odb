@@ -36,8 +36,13 @@ def visual(director, simid, linkorder):
     if not linkorder in range(len(EPSC_OUT_FILES)):
         return lc.document()    # linkorder is out of range!
     form        = lc.form(id='create-simulation-form')
+    pwoutput    = form.textarea(Class="epsc-textarea-outputs")    
     resultpath  = ResultPath(director, simid, 0)
     allfiles    = resultpath.resultFiles()
+
+    if not allfiles:
+        pwoutput.value  = "No output files found"
+        return form
 
     for f in allfiles:
         REGEX   = regex(EPSC_OUT_FILES[linkorder])
@@ -46,9 +51,8 @@ def visual(director, simid, linkorder):
         if len(matches) != 0:   # Match found
             file    = f
             break
-
-    pwoutput    = form.textarea(Class="epsc-textarea-outputs")
-    pwoutput.value  = content(file)
+    
+    pwoutput.value  = content(file) # Set content for textarea
 
     return   form
 
