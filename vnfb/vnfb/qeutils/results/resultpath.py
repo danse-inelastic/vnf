@@ -183,10 +183,13 @@ class ResultPath(object):
         "Returns list of *absolute* file names"
         # Example: ["/path/to/results/4I2NPMY4pw.in", "/path/to/results/4I2NPMY4pw.in.out", ...]
         path    = self.localPath()
+        if not path:
+            return None
+        
         if os.path.exists(path):
             return self._files(path)
 
-        return None
+        return None # Default
 
 
     def _files(self, path):
