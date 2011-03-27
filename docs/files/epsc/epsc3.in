@@ -1,0 +1,15 @@
+* Main configuration file
+*File for the material data:
+filecrys
+*File for the sample (grain shape+texture) data:
+filesamp
+*Reads state from previous process (1=YES or 0=NO) and related file:
+0                                                                "i_prev_proc"
+* 
+*Reads diffracting planes and diffraction directions (1=YES or 0=NO) and file:
+1                                                                 "i_diff_dir"
+filediff
+*Number of thermomechanical processes to be run:
+1                                                                     "nproc"
+*Files containing information about each process:
+fileproc
