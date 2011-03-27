@@ -1,0 +1,61 @@
+# -*- Python -*-
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                               Alex Dementsov
+#                      California Institute of Technology
+#                        (C) 2011  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+import luban.content as lc
+from vnfb.qeutils.qegrid import QEGrid
+
+from luban.content import select, load
+
+from luban.content.FormSelectorField import FormSelectorField
+from luban.content.FormTextField import FormTextField
+from luban.content.FormSubmitButton import FormSubmitButton
+from luban.content.Form import Form
+
+from vnfb.epscutils.epscconst import NUMPROC
+
+def visual(actor, director, sim):
+    "Sets create new simulation form"
+
+    form        = Form(id = 'create-simulation-form')
+    table       = QEGrid(lc.grid(Class="qe-form"))
+    form.add(table.grid())
+
+    sname       = FormTextField(name = "sname", value = sim.sname)
+    numproc     = FormSelectorField(name        = "numproc",
+                                    entries     = enumerate(range(1,NUMPROC+1)))
+    description = FormTextField(name="description", value=sim.short_description)
+    label       = FormTextField(name="label", value=sim.label)
+    submit      = FormSubmitButton(label="Save Changes")
+    cancel      = lc.button(label="Cancel", onclick = load(actor = 'materialsimulation'))
+
+    st          = QEGrid(lc.grid()) # Submit Table
+    st.addRow((submit, cancel), ("qe-action-accept", "qe-action-cancel"))
+
+    table.addRow(("Thermo-mechanical processes: *", numproc))
+    table.addRow(("Name:", sname))
+    table.addRow(("Description:", description))
+    table.addRow(("Label:", label))
+    table.addRow(("", st.grid()))
+
+    table.setColumnStyle(0, "qe-form-label")
+    table.setColumnStyle(1, "qe-form-field")
+
+    form.onsubmit   = select(element=form).submit(actor         = 'material_simulations/epsc/sim-edit',
+                                                  routine       = 'updateRecord',
+                                                  id            = sim.id)
+
+    return form
+
+__date__ = "$Mar 27, 2011 10:20:17 AM$"
+
+

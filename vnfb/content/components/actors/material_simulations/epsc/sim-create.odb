@@ -69,8 +69,7 @@ class Actor(base):
                                  Class  = 'master-table-wrapper')
         container.oncreate = select(element=container).append(
                                             load(actor='selectoneatomicstructure',
-                                                 routine='createListView')
-                                    )
+                                                 routine='createListView'))
 
         # the button
         b = lc.button(label='Select')
