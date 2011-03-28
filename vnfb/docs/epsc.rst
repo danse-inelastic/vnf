@@ -14,37 +14,65 @@ Elasto Plastic Self Consistent Model
 Create New EPSC Simulation
 --------------------------
 
-
+To create new EPSC simulation go to ``simulations`` tab and click button
+``create new simulation``.
 
 .. figure:: images/epsc/1.new-simulation.png
    :width: 720px
 
    *Fig. 1 Create new simulation*
 
+In the list of available simulation packages click on ``EPSC`` package and
+the ``Create New Simulation`` form will be displayed.
 
 .. figure:: images/epsc/2.select-epsc.png
    :width: 450px
 
    *Fig. 2 Select EPSC simulation*
 
+You will need to select the atomic structure you want to use for EPSC simulation.
 
 .. figure:: images/epsc/3.atomic-structure.png
    :width: 350px
 
    *Fig. 3 Select atomic structure*
 
+For this simulation we selected ``Al`` atomic structure from the list of available
+structures. You can use filter and some simple regular expressions if needed to
+narrow down available options.
 
 .. figure:: images/epsc/4.select-atomic-structure.png
    :width: 720px
 
    *Fig. 4 Select atomic structure from table*
 
+Once you selected the atomic structure you can easily choose another one by clicking
+on link ``Change``. Next, select number of thermo-mechanical processes - there is no
+much choice here as only one thermo-mechanical process is supported at this moment.
+Finally, add description (this can help to find your simulation later on)
+and click ``Create New Simulation``. Setting ``Name`` and ``Label`` can also be useful :).
+
+::
+
+    Note: At this moment only one thermo-mechanical process is supported.
+          We plan to support several processes in future releases.
 
 .. figure:: images/epsc/5.create-simulation.png
    :width: 400px
 
    *Fig. 5 Create new simulation form*
 
+After the simulation is created you will see the simulation view which displays 
+various information:
+
+* Navigation buttons (New, Edit etc.)
+* General information about the simulation (atomic structure, thermo-mechanical processes etc.)
+* Settings (parameters for computational environment)
+* Configurations (parameters which define the EPSC model)
+* Job (status of computational job and results when simulation was run)
+
+Before running simulation you need to create settings and configurations marked
+by red buttons ``Create``.
 
 .. figure:: images/epsc/6.simulation-view.png
    :width: 500px
@@ -55,36 +83,72 @@ Create New EPSC Simulation
 Settings and Configurations
 ---------------------------
 
+In the ``Settings`` section click on ``Create`` button
 
 .. figure:: images/epsc/7.create-settings-link.png
    :width: 500px
 
    *Fig. 7 Create settings link*
 
+... and select computational cluster (server) you want to run your simulation on -
+this is all the control you have :).
+
+::
+
+    Note: Because the EPSC package was developed for a single core you cannot run
+          the simulation on more than one core (processor).
 
 .. figure:: images/epsc/8.create-settings.png
    :width: 450px
 
    *Fig. 8 Create settings configuration*
 
+Next step is to create configurations. There four configuration types:
+
+* **Material**, material configuration
+* **Sample**, grain shape and texture
+* **Diffraction**, diffracting planes and direction
+* **Process**, thermo-mechanical process
+
+::
+
+    Note: Because only one thermo-mechanical process is supported there is one
+          "Process" configuration.
 
 .. figure:: images/epsc/9a.create-material-link.png
    :width: 500px
 
    *Fig. 9 Create material configuration link*
 
+When you click on ``Create`` button in ``Material`` configuration, the ``Create
+Material Configuration`` form will displayed. Here you can setup the following parameters:
+
+* Unit cell parameters
+* Elastic stiffness tensor
+* Thermal expansion coefficients
+* Mode parameters
+
+::
+
+    Notes:
+    
+      - Crystal symmetry can only be either "Cubic" or "Hexagonal" even if the
+        atomic structure that you selected before has different symmetry.
+
+      - Total number of modes is one: it can be either slipping or twinning.
 
 .. figure:: images/epsc/9.material-form.png
    :width: 720px
 
    *Fig. 10 Generate material configuration*
 
+When you click on ``Generate Material Configuration`` button, the system will automitically
+generate configuration using parameters that you specified in the form.
 
 .. figure:: images/epsc/10.create-material.png
    :width: 720px
 
    *Fig. 11 Create material configuration*
-
 
 ::
 
@@ -121,15 +185,28 @@ Settings and Configurations
        1  1  1        0  1 -1
        1  1  1        1  0 -1
        1  1  1        1 -1  0
+       
+*Fig. 11a Material configuration. See also:*
+`filecrys <http://dev.danse.us/trac/VNET/browser/vnf/branches/beta-useluban/vnfb/docs/files/epsc/filecrys?rev=3654>`_
 
+In this configuration we have one slip mode.
+You can edit the configuration manually if you understand what you are doing :).
+Or even skip the configuration generation by clicking ``Skip To
+Configuration Form``. After you reviewed the configuration, click ``Create
+Configuration`` and the configuration for material will be stored in the system.
 
-
+Next step is to create configuration for sample: click ``Create`` button for **Sample**
+and ``Create Sample Configuration`` form will be displayed. In this form you define
+the grain shape (ellipsoid axes) and number of grains. All the grains in EPSC model
+have the same shape with different orientation.
 
 .. figure:: images/epsc/11.sample-form.png
    :width: 420px
 
    *Fig. 12 Generate sample configuration*
 
+Click ``Generate Sample Configuration`` and the system will create texture with
+uniformly distributed orientation of grains.
 
 ::
 
@@ -138,7 +215,7 @@ Settings and Configurations
     DISCRETE TEXTURE FROM ODF FILE
     B	1000	0
             67.5665935776	30.7723200734	200.645581423	1
-            320.9954098	25.674444712	313.528263287	1
+            320.9954098  	25.674444712	313.528263287	1
             281.921283004	84.9278764658	190.345130696	1
             13.5237255003	15.9706662546	107.702130497	1
             168.702831231	90.5544456582	298.823202199	1
@@ -151,12 +228,20 @@ Settings and Configurations
             324.433609308	81.3434035609	282.394127615	1
             ...
 
+*Fig. 12a Sample configuration. See full configuration:* `filesamp <http://dev.danse.us/trac/VNET/browser/vnf/branches/beta-useluban/vnfb/docs/files/epsc/filesamp?rev=3654>`_
+
+Next, create configuration for diffraction by clicking ``Create`` button
+for **Diffraction** and ``Create Diffraction Configuration`` form will be displayed.
+Here you can specify parameters:
+
+* Number of diffraction directions
+* Difracting angle spread, and
+* Diffraction plane
 
 .. figure:: images/epsc/12.diffraction-form.png
    :width: 450px
 
    *Fig. 13 Generate diffraction configuration*
-
 
 ::
 
@@ -175,12 +260,23 @@ Settings and Configurations
     3 1 0		35		50
     ...
 
+*Fig. 13a Diffraction configuration. See full configuration:* `filediff <http://dev.danse.us/trac/VNET/browser/vnf/branches/beta-useluban/vnfb/docs/files/epsc/filediff?rev=3654>`_
+
+Finally, we need to create configuration for single thermo-mechanical process. In the
+``Create Process Configuration`` form you can specify:
+
+* Number of steps
+* Temperature parameters
+* Convergence criteria, and
+* Iteration limits
 
 .. figure:: images/epsc/13.process-form.png
    :width: 450px
 
    *Fig. 14 Generate thermo-mechanical process configuration*
 
+To set mechanical properties for the process, go to generated configuration
+and modify, if necessary, the boundary conditions for stress and strain:
 
 ::
 
@@ -206,6 +302,12 @@ Settings and Configurations
     *Maximum number of iterations to select the set of systems in grains:
     100                                            "itmax_grain"
 
+*Fig. 14a Thermo-mechanical process configuration. See also:* `fileproc <http://dev.danse.us/trac/VNET/browser/vnf/branches/beta-useluban/vnfb/docs/files/epsc/fileproc?rev=3654>`_
+
+That's all we need to configure EPSC model. When you run simulation, the system
+will automatically generate the main configuration file ``epsc3.in`` behind the
+scenes which is first read by the EPSC package on the computational cluster.
+
 ::
 
     * Main configuration file
@@ -224,14 +326,14 @@ Settings and Configurations
     *Files containing information about each process:
     fileproc
 
-
+*Main configuration file. See also:* `epsc3.in <http://dev.danse.us/trac/VNET/browser/vnf/branches/beta-useluban/vnfb/docs/files/epsc/epsc3.in?rev=3654>`_
 
 
 
 Running Simulation
 ------------------
 
-
+After all this preparation now is the fun time!
 
 .. figure:: images/epsc/14.run-simulation.png
    :width: 500px
@@ -297,7 +399,16 @@ Simulation Results
 
    *Fig. 24 epsc1.out file content in results view*
 
-
+* **OUTPUT** Standard output
+* **epsc1.out** File for sample and convergence
+* **epsc2.out** File for grains state and plastic activity
+* **epsc3.out** Components 11 22 33 of sample strain, stress, elastic  strain and avacs
+* **epsc4.out** Final sample and grains state
+* **epsc5.out** Evolution of sample strain rate, strain (and devs)
+* **epsc6.out** Evolution of sample stress rate, stress (and devs)
+* **epsc7.out** Relative activity in each mode and avacs vs strain
+* **epsc8.out** Equivalent states
+* **epsc9.out** Evolution of internal strains
 
 
 
