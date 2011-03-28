@@ -6,164 +6,84 @@ Running EPSC Simulation in VNF
 Introduction
 ------------
 
-EPSC Model
-----------
+Elasto Plastic Self Consistent Model
+------------------------------------
 
-Create New Simulation
----------------------
 
-Settings and Configurations
----------------------------
 
-Running Simulation
-------------------
+Create New EPSC Simulation
+--------------------------
 
-Simulation Results
-------------------
 
 
 .. figure:: images/epsc/1.new-simulation.png
    :width: 720px
 
-   *Fig. *
+   *Fig. 1 Create new simulation*
 
 
 .. figure:: images/epsc/2.select-epsc.png
-   :width: 720px
+   :width: 450px
 
-   *Fig. *
+   *Fig. 2 Select EPSC simulation*
 
 
 .. figure:: images/epsc/3.atomic-structure.png
-   :width: 720px
+   :width: 350px
 
-   *Fig. *
+   *Fig. 3 Select atomic structure*
 
 
 .. figure:: images/epsc/4.select-atomic-structure.png
    :width: 720px
 
-   *Fig. *
+   *Fig. 4 Select atomic structure from table*
 
 
 .. figure:: images/epsc/5.create-simulation.png
-   :width: 720px
+   :width: 400px
 
-   *Fig. *
+   *Fig. 5 Create new simulation form*
 
 
 .. figure:: images/epsc/6.simulation-view.png
-   :width: 720px
+   :width: 500px
 
-   *Fig. *
+   *Fig. 6 EPSC simulation view*
+
+
+Settings and Configurations
+---------------------------
 
 
 .. figure:: images/epsc/7.create-settings-link.png
-   :width: 720px
+   :width: 500px
 
-   *Fig. *
+   *Fig. 7 Create settings link*
 
 
 .. figure:: images/epsc/8.create-settings.png
-   :width: 720px
+   :width: 450px
 
-   *Fig. *
+   *Fig. 8 Create settings configuration*
+
+
+.. figure:: images/epsc/9a.create-material-link.png
+   :width: 500px
+
+   *Fig. 9 Create material configuration link*
 
 
 .. figure:: images/epsc/9.material-form.png
    :width: 720px
 
-   *Fig. *
+   *Fig. 10 Generate material configuration*
 
 
 .. figure:: images/epsc/10.create-material.png
    :width: 720px
 
-   *Fig. *
-
-
-.. figure:: images/epsc/11.sample-form.png
-   :width: 720px
-
-   *Fig. *
-
-
-.. figure:: images/epsc/12.diffraction-form.png
-   :width: 720px
-
-   *Fig. *
-
-
-.. figure:: images/epsc/13.process-form.png
-   :width: 720px
-
-   *Fig. *
-
-
-.. figure:: images/epsc/14.run-simulation.png
-   :width: 720px
-
-   *Fig. *
-
-
-.. figure:: images/epsc/15.submitting-job.png
-   :width: 720px
-
-   *Fig. *
-
-
-.. figure:: images/epsc/16.refresh-status.png
-   :width: 720px
-
-   *Fig. *
-
-
-.. figure:: images/epsc/17.view-output.png
-   :width: 720px
-
-   *Fig. *
-
-
-.. figure:: images/epsc/18.output-dialog.png
-   :width: 720px
-
-   *Fig. *
-
-
-.. figure:: images/epsc/19.retrieve-results.png
-   :width: 720px
-
-   *Fig. *
-
-
-.. figure:: images/epsc/20.job-completed.png
-   :width: 720px
-
-   *Fig. *
-
-
-.. figure:: images/epsc/21.results-link.png
-   :width: 720px
-
-   *Fig. *
-
-
-.. figure:: images/epsc/22.results-output.png
-   :width: 720px
-
-   *Fig. *
-
-
-.. figure:: images/epsc/23.results-epsc1.png
-   :width: 720px
-
-   *Fig. *
-
-
-
-
-
-
+   *Fig. 11 Create material configuration*
 
 
 ::
@@ -202,6 +122,15 @@ Simulation Results
        1  1  1        1  0 -1
        1  1  1        1 -1  0
 
+
+
+
+.. figure:: images/epsc/11.sample-form.png
+   :width: 420px
+
+   *Fig. 12 Generate sample configuration*
+
+
 ::
 
     AXES OF THE REPRESENTATIVE ELLIPSOID
@@ -222,6 +151,13 @@ Simulation Results
             324.433609308	81.3434035609	282.394127615	1
             ...
 
+
+.. figure:: images/epsc/12.diffraction-form.png
+   :width: 450px
+
+   *Fig. 13 Generate diffraction configuration*
+
+
 ::
 
     *DIFFRACTING PLANES AND DIRECTION
@@ -238,6 +174,13 @@ Simulation Results
     3 1 0		30		50
     3 1 0		35		50
     ...
+
+
+.. figure:: images/epsc/13.process-form.png
+   :width: 450px
+
+   *Fig. 14 Generate thermo-mechanical process configuration*
+
 
 ::
 
@@ -280,5 +223,83 @@ Simulation Results
     1                                                                     "nproc"
     *Files containing information about each process:
     fileproc
+
+
+
+
+
+Running Simulation
+------------------
+
+
+
+.. figure:: images/epsc/14.run-simulation.png
+   :width: 500px
+
+   *Fig. 15 Run simulation*
+
+
+.. figure:: images/epsc/15.submitting-job.png
+   :width: 500px
+
+   *Fig. 16 Submitting job to the cluster*
+
+
+.. figure:: images/epsc/16.refresh-status.png
+   :width: 500px
+
+   *Fig. 17 Update job status*
+
+
+.. figure:: images/epsc/17.view-output.png
+   :width: 500px
+
+   *Fig. 18 View simulation output*
+
+
+.. figure:: images/epsc/18.output-dialog.png
+   :width: 500px
+
+   *Fig. 19 Simulation output*
+
+
+.. figure:: images/epsc/19.retrieve-results.png
+   :width: 500px
+
+   *Fig. 20 Retrieve results*
+
+
+.. figure:: images/epsc/20.job-completed.png
+   :width: 500px
+
+   *Fig. 21 Download compressed package with results*
+
+
+Simulation Results
+------------------
+
+
+
+.. figure:: images/epsc/21.results-link.png
+   :width: 500px
+
+   *Fig. 22 View results*
+
+
+.. figure:: images/epsc/22.results-output.png
+   :width: 720px
+
+   *Fig. 23 Simulation output in results view*
+
+
+.. figure:: images/epsc/23.results-epsc1.png
+   :width: 720px
+
+   *Fig. 24 epsc1.out file content in results view*
+
+
+
+
+
 
 
