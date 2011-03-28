@@ -35,7 +35,7 @@ EPSC_OUT_TIPS = ["Main output",
                 "Evolution of sample stress rate, stress (and devs)",
                 "Relative activity in each mode and avacs vs strain",
                 "Equivalent states",
-                "Evolution of internal strains", " ", " ", " ", " ", " ", " "]
+                "Evolution of internal strains", "", "", "", "", "", ""]
 
 
 EPSCCHAIN   = OrderedDict()
