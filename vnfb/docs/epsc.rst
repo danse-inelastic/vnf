@@ -21,29 +21,149 @@ Running Simulation
 Simulation Results
 ------------------
 
-1.new-simulation.png
-2.select-epsc.png
-3.atomic-structure.png
-4.select-atomic-structure.png
-5.create-simulation.png
-6.simulation-view.png
-7.create-settings-link.png
-8.create-settings.png
-9.material-form.png
-10.create-material.png
-11.sample-form.png
-12.diffraction-form.png
-13.process-form.png
-14.run-simulation.png
-15.submitting-job.png
-16.refresh-status.png
-17.view-output.png
-18.output-dialog.png
-19.retrieve-results.png
-20.job-completed.png
-21.results-link.png
-22.results-output.png
-23.results-epsc1.png
+
+.. figure:: images/epsc/1.new-simulation.png
+   :width: 720px
+
+   *Fig. *
+
+
+.. figure:: images/epsc/2.select-epsc.png
+   :width: 720px
+
+   *Fig. *
+
+
+.. figure:: images/epsc/3.atomic-structure.png
+   :width: 720px
+
+   *Fig. *
+
+
+.. figure:: images/epsc/4.select-atomic-structure.png
+   :width: 720px
+
+   *Fig. *
+
+
+.. figure:: images/epsc/5.create-simulation.png
+   :width: 720px
+
+   *Fig. *
+
+
+.. figure:: images/epsc/6.simulation-view.png
+   :width: 720px
+
+   *Fig. *
+
+
+.. figure:: images/epsc/7.create-settings-link.png
+   :width: 720px
+
+   *Fig. *
+
+
+.. figure:: images/epsc/8.create-settings.png
+   :width: 720px
+
+   *Fig. *
+
+
+.. figure:: images/epsc/9.material-form.png
+   :width: 720px
+
+   *Fig. *
+
+
+.. figure:: images/epsc/10.create-material.png
+   :width: 720px
+
+   *Fig. *
+
+
+.. figure:: images/epsc/11.sample-form.png
+   :width: 720px
+
+   *Fig. *
+
+
+.. figure:: images/epsc/12.diffraction-form.png
+   :width: 720px
+
+   *Fig. *
+
+
+.. figure:: images/epsc/13.process-form.png
+   :width: 720px
+
+   *Fig. *
+
+
+.. figure:: images/epsc/14.run-simulation.png
+   :width: 720px
+
+   *Fig. *
+
+
+.. figure:: images/epsc/15.submitting-job.png
+   :width: 720px
+
+   *Fig. *
+
+
+.. figure:: images/epsc/16.refresh-status.png
+   :width: 720px
+
+   *Fig. *
+
+
+.. figure:: images/epsc/17.view-output.png
+   :width: 720px
+
+   *Fig. *
+
+
+.. figure:: images/epsc/18.output-dialog.png
+   :width: 720px
+
+   *Fig. *
+
+
+.. figure:: images/epsc/19.retrieve-results.png
+   :width: 720px
+
+   *Fig. *
+
+
+.. figure:: images/epsc/20.job-completed.png
+   :width: 720px
+
+   *Fig. *
+
+
+.. figure:: images/epsc/21.results-link.png
+   :width: 720px
+
+   *Fig. *
+
+
+.. figure:: images/epsc/22.results-output.png
+   :width: 720px
+
+   *Fig. *
+
+
+.. figure:: images/epsc/23.results-epsc1.png
+   :width: 720px
+
+   *Fig. *
+
+
+
+
+
+
 
 
 ::
