@@ -6,14 +6,17 @@ Running EPSC Simulation in VNF
 Introduction
 ------------
 
-In this tutorial we will learn how to run EPSC simulation in VNF.
+In this tutorial we will learn how to run EPSC simulation in VNF. In the beginning
+we briefly describe the theory of EPSC model and then present step by step the workflow
+of EPSC simulation from creation of configuration files till retrieving simulation
+results.
 
 Elasto Plastic Self Consistent Model
 ------------------------------------
 
 The Elasto Plastic Self Consistent (EPSC) modes was first formulated in paper
-`Elastic-plastic behaviour of polycrystalline metals and composites
-<http://rspa.royalsocietypublishing.org/content/319/1537/247.abstract>`_ ,
+`Elastic-plastic behavior of polycrystalline metals and composites
+<http://rspa.royalsocietypublishing.org/content/319/1537/247.abstract>`_,
 *Hutchinson, J.W. (1970)  Proc. Roy. Soc. London, A 319, 247-272*. This paper
 became the theoretical background for EPSC simulation package. In this section
 we provide a brief overview of the theory of EPSC model, please read the above paper
@@ -93,7 +96,7 @@ is influenced by slip on other systems according to the law
 
 
 Voce Hardening of Slip and Twinning Systems
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 The threshold stress :math:`\tau^s` describes in an average way the resistance for activation that the deformation
 modes experience and it usually increases with deformation.
@@ -169,7 +172,7 @@ and click ``Create New Simulation``. Setting ``Name`` and ``Label`` can also be 
 
    *Fig. 5 Create new simulation form*
 
-After the simulation is created you will see the simulation view which displays 
+After the simulation is created you will see the simulation view which displays
 various information:
 
 * Navigation buttons (New, Edit etc.)
@@ -238,7 +241,7 @@ Material Configuration`` form will displayed. Here you can setup the following p
 ::
 
     Notes:
-    
+
       - Crystal symmetry can only be either "Cubic" or "Hexagonal" even if the
         atomic structure that you selected before has different symmetry.
 
@@ -292,7 +295,7 @@ generate configuration using parameters that you specified in the form.
        1  1  1        0  1 -1
        1  1  1        1  0 -1
        1  1  1        1 -1  0
-       
+
 *Fig. 11a Material configuration. See also:*
 `filecrys <http://dev.danse.us/trac/VNET/browser/vnf/branches/beta-useluban/vnfb/docs/files/epsc/filecrys?rev=3654>`_
 
@@ -404,7 +407,7 @@ and modify, if necessary, the boundary conditions for stress and strain:
     1
     *Control process variable: 0=temp , 1,2,3=etss(1,2,3) , 4,5,6=stss(1,2,3)
     1									"i_control_var"
-    *Convergence criterium for the sample moduli:
+    *Convergence criterion for the sample moduli:
     100  1.e-02                                           "itmax_mod"  "error_mod"
     *Maximum number of iterations to select the set of systems in grains:
     100                                            "itmax_grain"
@@ -443,7 +446,7 @@ Running Simulation
 After all this preparation now is the fun time! Before you run simulation please
 make sure that the settings and all configurations are set and click ``Run Simulation``
 button. System will generate all auxiliary scripts, copy files to the remote cluster
-and submit simulation to queue manager. 
+and submit simulation to queue manager.
 
 .. figure:: images/epsc/14.run-simulation.png
    :width: 500px
@@ -457,12 +460,29 @@ The status of the job submission will be tracked by progress bar.
 
    *Fig. 16 Submitting job to the cluster*
 
+When the simulation is submitted to the remote cluster the ``Job`` section will
+appear in the simulation view. In the ``Job`` section you can do several things:
+
+* Track the current status of the job
+* Get the current output of the simulation
+* Retrieve results, and
+* Download results in a compressed (.tgz) file
+
+::
+
+    Note: When a job is submitted it cannot be canceled. Though you can submit
+          another job and it will be run separately from the previous one.
+
+To track the current status of the job click on ``Refresh`` button, the **Status**
+and **Output** will be updated.
 
 .. figure:: images/epsc/16.refresh-status.png
    :width: 500px
 
    *Fig. 17 Update job status*
 
+When ``Output`` link is available you can click on it and see what the current
+simulation output is. This helps to see what is going on with simulation on the cluster.
 
 .. figure:: images/epsc/17.view-output.png
    :width: 500px
@@ -475,12 +495,21 @@ The status of the job submission will be tracked by progress bar.
 
    *Fig. 19 Simulation output*
 
+When the job status changes to ``Finished`` you can retrieve results by clicking ``Check``
+button.
+
+::
+
+    Note: Results can be requested any time after the job is submitted. If job is not
+          finished you will just get partial results.
 
 .. figure:: images/epsc/19.retrieve-results.png
    :width: 500px
 
    *Fig. 20 Retrieve results*
 
+After results are retrieved the link to compressed results package will be displayed
+in .tgz (or .tar.gz) format. You can now download the results.
 
 .. figure:: images/epsc/20.job-completed.png
    :width: 500px
@@ -491,13 +520,16 @@ The status of the job submission will be tracked by progress bar.
 Simulation Results
 ------------------
 
-
+Besides downloading results in compressed file you can view the results in
+``Results`` view:
 
 .. figure:: images/epsc/21.results-link.png
    :width: 500px
 
    *Fig. 22 View results*
 
+In the ``Simulation Results`` view you can see the list of output files. By clicking
+on each of these files you will see the content.
 
 .. figure:: images/epsc/22.results-output.png
    :width: 720px
@@ -510,7 +542,10 @@ Simulation Results
 
    *Fig. 24 epsc1.out file content in results view*
 
-* **OUTPUT** Standard output
+Each output file stores specific information of the simulation. Below is the list
+of available output filenames and their descriptions:
+
+* **OUTPUT**    Standard output
 * **epsc1.out** File for sample and convergence
 * **epsc2.out** File for grains state and plastic activity
 * **epsc3.out** Components 11 22 33 of sample strain, stress, elastic  strain and avacs
@@ -521,7 +556,4 @@ Simulation Results
 * **epsc8.out** Equivalent states
 * **epsc9.out** Evolution of internal strains
 
-
-
-
-
+Please see the `output files <http://dev.danse.us/trac/VNET/browser/vnf/branches/beta-useluban/vnfb/docs/files/epsc>`_ for this tutorial in our repository.
