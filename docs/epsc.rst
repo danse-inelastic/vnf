@@ -6,10 +6,110 @@ Running EPSC Simulation in VNF
 Introduction
 ------------
 
+In this tutorial we will learn how to run EPSC simulation in VNF.
+
 Elasto Plastic Self Consistent Model
 ------------------------------------
 
+The Elasto Plastic Self Consistent (EPSC) modes was first formulated in paper
+`Elastic-plastic behaviour of polycrystalline metals and composites
+<http://rspa.royalsocietypublishing.org/content/319/1537/247.abstract>`_ ,
+*Hutchinson, J.W. (1970)  Proc. Roy. Soc. London, A 319, 247-272*. This paper
+became the theoretical background for EPSC simulation package.
 
+Self-Consistent Equation
+^^^^^^^^^^^^^^^^^^^^^^^^
+
+Stress rate :math:`\dot{\sigma}` dependence for *total* (elastic + plastic) strain rate
+:math:`\dot{\epsilon}` and thermal expansion:
+
+.. math::
+   \dot{\sigma} = L:(\dot{\epsilon} - \alpha\dot{T})
+
+where :math:`L` is the overall instantaneous elasto-plastic stiffness tensor,
+:math:`\alpha` is the overall thermal expansion tensor, and :math:`\dot{T}` is the
+temperature rate. The constitutive relation of a particular grain:
+
+.. math::
+   \dot{\sigma}^c = L^c:(\dot{\epsilon}^c - \alpha^c\dot{T})
+
+where :math:`L^c` is the grain modulus dependent on the orientation of the grain,
+
+The EPSC method assumes each grain to be an elasto-plastic ellipsoid interacting
+with the elasto-plastic effective medium. Having introduced the instantaneous
+stiffness, the equivalent inclusion method relates the total strain rate in
+a grain to that in the bulk medium by the interaction equation:
+
+.. math::
+   \dot{\sigma}^c - \dot{\sigma} = -L^*:(\dot{\epsilon}^c - \dot{\epsilon})
+
+Solving equations with respect to stress and strain rates we get expression
+for the overall thermal coefficients:
+
+.. math::
+   \alpha = L^{-1}:\langle(L+L^*):(L^c+L^*)^{-1}\rangle^{-1}\langle(L+L^*):(L^c+L^*)^{-1}:L^c:\alpha^c\rangle
+
+When :math:`(L+L^*)` is the same for every grain the expression can be reduced
+further:
+
+.. math::
+   \alpha = L^{-1}:\langle(L^c+L^*)^{-1}\rangle^{-1}\langle(L^c+L^*)^{-1}:L^c:\alpha^c\rangle
+
+
+
+Single Crystal Instantaneous Stiffness
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Plastic flow causes a grain to become more compliant and :math:`L^c` may be
+expressed in terms of the single crystal elastic modulus :math:`C^c` and the
+active slip systems:
+
+.. math::
+   L^c=C^c:(I-\sum_{s}m^{s}\otimes f^s{})
+
+The sum is over the active slip systems :math:`s` in the grain.
+:math:`m^s` is the Schmid tensor, which resolves the shear component of
+stress or strain along a slip system. The tensor :math:`f^s`
+solves the shear strain increments :math:`\dot{\gamma}^s` in terms of the
+crystal strain rate:
+
+.. math::
+   \dot{\gamma}^s = f^s:\dot{\epsilon}^c
+
+.. math::
+   f^s = \sum_{t}(X^{-1})^{st}m^{t}:C^c
+
+.. math::
+   X^{st} = m^s:C^c:m^t + V^s(\Gamma)h^{st}
+
+The critical resolved shear stress :math:`\tau^s` of slip system :math:`s`
+is influenced by slip on other systems according to the law
+
+.. math::
+    \dot{\tau}^s = \sum_{t}V^s(\Gamma)h^{st}\dot{\gamma}^t
+
+
+Hardening of Slip and Twinning Systems
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+The implemented hardening law is characterized by an evolution of the threshold
+stress with accumulated shear strain in each grain of the form
+
+.. math::
+    \hat{\tau}^s = \tau_0^s+(\tau_1^s+\theta_1^s\Gamma)(1-\exp{(-\frac{\theta_0^s\Gamma}{\tau_1^s})})
+
+The increase in the threshold stress of a system due to shear activity in the
+grain systems is calculated as:
+
+.. math::
+    \Delta\tau^s = \frac{d\hat{\tau}^s}{d\Gamma}\sum_{s^{\prime}}h^{ss^{\prime}}\Delta\gamma^{s^{\prime}}
+
+When 'self' and 'latent' hardening are indistinguishable then :math:`h^{ss^{\prime}}=1`
+and the evolution of the threshold stress is given by the reference hardening
+function
+
+.. math::
+    \frac{\Delta\tau^s}{\Delta\Gamma} = \frac{d\hat{\tau}^s}{d\Gamma} = V^s(\Gamma) = \theta_1+(\theta_0-\theta_1+\frac{\theta_0\theta_1}{\tau_1}\Gamma)\exp(-\Gamma\frac{\theta_0}{\tau_1})
 
 Create New EPSC Simulation
 --------------------------
@@ -333,13 +433,17 @@ scenes which is first read by the EPSC package on the computational cluster.
 Running Simulation
 ------------------
 
-After all this preparation now is the fun time!
+After all this preparation now is the fun time! Before you run simulation please
+make sure that the settings and all configurations are set and click ``Run Simulation``
+button. System will generate all auxiliary scripts, copy files to the remote cluster
+and submit simulation to queue manager. 
 
 .. figure:: images/epsc/14.run-simulation.png
    :width: 500px
 
    *Fig. 15 Run simulation*
 
+The status of the job submission will be tracked by progress bar.
 
 .. figure:: images/epsc/15.submitting-job.png
    :width: 500px
