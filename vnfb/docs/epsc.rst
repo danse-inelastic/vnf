@@ -15,7 +15,10 @@ The Elasto Plastic Self Consistent (EPSC) modes was first formulated in paper
 `Elastic-plastic behaviour of polycrystalline metals and composites
 <http://rspa.royalsocietypublishing.org/content/319/1537/247.abstract>`_ ,
 *Hutchinson, J.W. (1970)  Proc. Roy. Soc. London, A 319, 247-272*. This paper
-became the theoretical background for EPSC simulation package.
+became the theoretical background for EPSC simulation package. In this section
+we provide a brief overview of the theory of EPSC model, please read the above paper
+and `EPSC3_Manual.pdf <http://dev.danse.us/trac/SCM/export/444/epsc/trunk/doc/EPSC3_manual.pdf>`_
+for more details.
 
 Self-Consistent Equation
 ^^^^^^^^^^^^^^^^^^^^^^^^
@@ -89,15 +92,19 @@ is influenced by slip on other systems according to the law
     \dot{\tau}^s = \sum_{t}V^s(\Gamma)h^{st}\dot{\gamma}^t
 
 
-Hardening of Slip and Twinning Systems
+Voce Hardening of Slip and Twinning Systems
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+The threshold stress :math:`\tau^s` describes in an average way the resistance for activation that the deformation
+modes experience and it usually increases with deformation.
 The implemented hardening law is characterized by an evolution of the threshold
 stress with accumulated shear strain in each grain of the form
 
 .. math::
     \hat{\tau}^s = \tau_0^s+(\tau_1^s+\theta_1^s\Gamma)(1-\exp{(-\frac{\theta_0^s\Gamma}{\tau_1^s})})
 
+where :math:`\Gamma` is the accumulated shear in the grain, :math:`\tau_0^s`,
+:math:`\tau_1^s`, :math:`\theta_0^s` and :math:`\theta_1^s` are Voce parameters.
 The increase in the threshold stress of a system due to shear activity in the
 grain systems is calculated as:
 
