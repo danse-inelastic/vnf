@@ -34,17 +34,28 @@ class Visual:
     def form(self):
         # Parameter elements
         form        = lc.form(id="epsc-form")
+        if not self._director:
+            return form
+
+        # Retrieve data from atomic structure
+        domaccess   = self._director.retrieveDOMAccessor('atomicstructure')
+        structure   = domaccess.getAtomicStructure(self._structureid)
+        if not structure:   # No structure, no form
+            return form
+        
+        lattice     = structure.lattice     # Lattice structure
+        
         table       = QEGrid(lc.grid(Class="qe-form"))
         crysym      = FormSelectorField(name="crysym",
                                         entries=enumerate(CRYSYM))
                                         
         # XXX: Lattice parameters should be taken from structure
-        a           = FormTextField(name = "a", value = LATTICE[0], tip="a", Class="epsc-lattice-field")
-        b           = FormTextField(name = "b", value = LATTICE[1], tip="b", Class="epsc-lattice-field")
-        c           = FormTextField(name = "c", value = LATTICE[2], tip="c", Class="epsc-lattice-field")
-        alpha       = FormTextField(name = "alpha", value = LATTICE[3], tip="alpha", Class="epsc-lattice-field")
-        beta        = FormTextField(name = "beta", value = LATTICE[4], tip="beta", Class="epsc-lattice-field")
-        gamma       = FormTextField(name = "gamma", value = LATTICE[5], tip="gamma", Class="epsc-lattice-field")
+        a           = FormTextField(name = "a", value = lattice.a, tip="a", Class="epsc-lattice-field")
+        b           = FormTextField(name = "b", value = lattice.b, tip="b", Class="epsc-lattice-field")
+        c           = FormTextField(name = "c", value = lattice.c, tip="c", Class="epsc-lattice-field")
+        alpha       = FormTextField(name = "alpha", value = lattice.alpha, tip="alpha", Class="epsc-lattice-field")
+        beta        = FormTextField(name = "beta", value = lattice.beta, tip="beta", Class="epsc-lattice-field")
+        gamma       = FormTextField(name = "gamma", value = lattice.gamma, tip="gamma", Class="epsc-lattice-field")
         lattice     = QEGrid(lc.grid())
         lattice.addRow(("a", a, "b", b, "c", c, "alpha", alpha, "beta", beta, "gamma", gamma))
 
