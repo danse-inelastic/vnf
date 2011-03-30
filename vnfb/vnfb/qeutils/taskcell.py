@@ -166,16 +166,16 @@ class TaskCell:
                                       id        = self._simid,
                                       taskid    = self._task.id,
                                       jobid     = self._job.id,
-                                      type      = self._type)
-                        )
+                                      type      = self._type,
+                                      package   = "Quantum Espresso"))
         action = lc.link(label    = "All Jobs",
                           Class    = "qe-all-jobs", # Class = "qe-task-action"
                            onclick = load(actor     = 'jobs/jobs-view-all',
                                           id        = self._simid,
                                           taskid    = self._task.id,
                                           type      = self._type,
-                                          linkorder = self._linkorder)
-                            )
+                                          linkorder = self._linkorder,
+                                          package   = "Quantum Espresso"))
 
         table.addRow(("Job:", link, action))
 

@@ -50,7 +50,7 @@ class Actor(base):
         if self._sim.type == "epsc":
             return director.redirect(actor   = 'material_simulations/epsc/sim-view',
                                      routine = 'content',
-                                     id      = self.id)
+                                     id      = self.inventory.id)
 
         self._checkTasks(director)  # ! Checks tasks if they exist, otherwise creates missing
         

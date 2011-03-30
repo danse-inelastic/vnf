@@ -185,7 +185,8 @@ class Actor(base):
                                       id        = self.id,
                                       taskid    = self.taskid,
                                       jobid     = job.id,
-                                      type      = "PW"))     # XXX: Fix!!!
+                                      type      = "PW",             # XXX: Fix!!!
+                                      package   = "Quantum Espresso"))
                         
         return select(id=convJobId(self.rownum, 0)).replaceContent(link)
 

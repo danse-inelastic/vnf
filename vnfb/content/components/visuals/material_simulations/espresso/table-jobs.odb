@@ -24,6 +24,7 @@ def visual(director, simid, type, jobs, taskid, linkorder):
     """
     Returns the table of jobs related to QE task
     """
+    
     table   = QEGrid(lc.grid(Class="qe-tasks-table"))
 
     def jobid(job):
@@ -32,7 +33,8 @@ def visual(director, simid, type, jobs, taskid, linkorder):
                                       id        = simid,
                                       taskid    = taskid,
                                       jobid     = job.id,
-                                      type      = type)
+                                      type      = type,
+                                      package   = "Quantum Espresso")
                         )
 
     def submitted(job):

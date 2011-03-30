@@ -14,7 +14,8 @@
 # Translates package name to short name
 PACKNAME    = {}
 PACKNAME["Quantum Espresso"]    = "espresso"
-PACKNAME["EPSC"]    = "epsc"
+PACKNAME["EPSC"]                = "epsc"
+PACKNAME["Default"]             = "espresso"
 
 __date__ = "$Mar 29, 2011 5:59:59 PM$"
 
