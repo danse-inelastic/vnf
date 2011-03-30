@@ -123,7 +123,8 @@ def jobLink(director, id, taskid):
                                   id        = id,
                                   taskid    = taskid,
                                   jobid     = job.id,
-                                  type      = "epsc"))
+                                  type      = "epsc",
+                                  package   = "EPSC"))
 
 
 def allJobsLink(director, id, taskid):
@@ -134,7 +135,8 @@ def allJobsLink(director, id, taskid):
                                   id        = id,
                                   taskid    = taskid,
                                   type      = "epsc",
-                                  linkorder = 0))
+                                  linkorder = 0,
+                                  package   = "EPSC"))
 
 
 

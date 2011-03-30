@@ -96,7 +96,7 @@ class Actor(base):
         "Creates simulation record"
         params  = {"sname":         self._sname(),
                    "type":          "epsc",     # Only one type!
-                   "simchain":      "",
+                   "simchain":      "epsc",
                    "creator":       director.sentry.username,
                    "short_description":   self._description(),
                    "label":         self.label,

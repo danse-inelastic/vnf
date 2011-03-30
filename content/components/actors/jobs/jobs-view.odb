@@ -13,6 +13,7 @@
 
 from vnfb.qeutils.qeutils import stamp2date
 from vnfb.qeutils.qegrid import QEGrid
+from vnfb.utils.const import PACKNAME
 
 from luban.content import select
 from luban.content import load
@@ -20,7 +21,6 @@ from luban.content import load
 import luban.content as lc
 from luban.components.AuthorizedActor import AuthorizedActor as base
 
-# Requires simulation id, config id and config type: (id, configid, type)
 class Actor(base):
 
     class Inventory(base.Inventory):
@@ -29,6 +29,7 @@ class Actor(base):
         jobid       = pyre.inventory.str('jobid', default='')    # Configuration Id
         taskid      = pyre.inventory.str('taskid', default='')
         type        = pyre.inventory.str('type', default='')        # Type of the configuration file
+        package     = pyre.inventory.str('package', default='Quantum Espresso')
 
 
     def default(self, director):
@@ -36,6 +37,9 @@ class Actor(base):
 
 
     def content(self, director):
+        if not self.package in PACKNAME.keys():
+            self.package    = 'Quantum Espresso'    # "Default"?
+
         job     = director.clerk.getQEJobs(id = self.jobid)
         #input     = director.clerk.getQEConfigurations(id=self.configid)
 
@@ -46,14 +50,9 @@ class Actor(base):
 
             path = []
             path.append(('Simulations ', load(actor='materialsimulation')))
-            path.append(('Quantum Espresso ', qelink))
-            path.append(('%s ' % self.id, load(actor    = 'material_simulations/espresso/sim-view',
+            path.append(('%s ' % self.package, qelink))
+            path.append(('%s ' % self.id, load(actor    = 'material_simulations/%s/sim-view' % PACKNAME[self.package],
                                                id       = self.id)))
-            path.append(('%s Task ' % self.type, load(actor    = 'material_simulations/espresso/task-view',
-                                                      id       = self.id,
-                                                      taskid   = self.taskid,
-                                                      type     = self.type)))
-
             path.append('Job: %s' % job.id)
 
             return director.retrieveVisual('view-indicator', path=path)
@@ -79,17 +78,18 @@ class Actor(base):
     def _showActions(self, section):  #, inputs
         section.add(lc.link(label="Back",
                             Class="qe-action-back",
-                            onclick = load(actor      = 'material_simulations/espresso/sim-view',
+                            onclick = load(actor      = 'material_simulations/%s/sim-view' % PACKNAME[self.package],
                                              id         = self.id))
                     )
 
         section.add(lc.link(label="Delete",
                             Class="qe-action-delete",
-                            onclick = load(actor      = 'jobs/delete',
+                            onclick = load(actor        = 'jobs/delete',
                                              id         = self.id,
                                              jobid      = self.jobid,
                                              taskid     = self.taskid,
-                                             type       = self.type))
+                                             type       = self.type,
+                                             package    = self.package))
                     )
 
         section.add(lc.document(Class="clear-both"))
@@ -124,6 +124,7 @@ class Actor(base):
         self.jobid          = self.inventory.jobid
         self.taskid         = self.inventory.taskid
         self.type           = self.inventory.type
+        self.package        = self.inventory.package
 
 
     def _init(self):

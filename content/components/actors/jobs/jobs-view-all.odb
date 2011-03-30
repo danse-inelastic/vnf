@@ -50,10 +50,10 @@ class Actor(base):
             path.append(('Quantum Espresso ', qelink))
             path.append(('%s ' % self.id, load(actor    = 'material_simulations/espresso/sim-view',
                                                id       = self.id)))
-            path.append(('%s Task: %s' % (self.type, self.taskid), load(actor    = 'material_simulations/espresso/task-view',
-                                                                      id       = self.id,
-                                                                      taskid   = self.taskid,
-                                                                      type     = self.type)))
+#            path.append(('%s Task: %s' % (self.type, self.taskid), load(actor    = 'material_simulations/espresso/task-view',
+#                                                                      id       = self.id,
+#                                                                      taskid   = self.taskid,
+#                                                                      type     = self.type)))
 
             path.append('Jobs')
 
