@@ -50,6 +50,7 @@ EXPORT_PYTHON_MODULES = \
 	__init__.py \
 	acl.py \
 	atomicstructure.py \
+	const.py \
 	crystallattice.py \
 	constraints.py \
 	math.py \
