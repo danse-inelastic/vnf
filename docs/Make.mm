@@ -26,7 +26,7 @@ RECURSE_DIRS = \
 all: docs
 	BLD_ACTION="all" $(MM) recurse
 
-clean::
+clean:: sphinx-clean
 	BLD_ACTION="clean" $(MM) recurse
 
 distclean::
