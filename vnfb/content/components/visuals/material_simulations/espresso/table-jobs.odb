@@ -20,22 +20,21 @@ import luban.content as lc
 
 
 # XXX: Bug in check and results display
-def visual(director, simid, type, jobs, taskid, linkorder):
+def visual(director, actor, jobs): #simid, type, jobs, taskid, linkorder):
     """
     Returns the table of jobs related to QE task
     """
-    
+
     table   = QEGrid(lc.grid(Class="qe-tasks-table"))
 
-    def jobid(job):
+    def jobid(job, actor):
         return  lc.link(label   = job.id,
                        onclick = load(actor     = 'jobs/jobs-view',
-                                      id        = simid,
-                                      taskid    = taskid,
+                                      id        = actor.id,
+                                      taskid    = actor.taskid,
                                       jobid     = job.id,
-                                      type      = type,
-                                      package   = "Quantum Espresso")
-                        )
+                                      type      = actor.type,
+                                      package   = actor.package))
 
     def submitted(job):
         return stamp2date(job.timesubmitted)
@@ -52,22 +51,22 @@ def visual(director, simid, type, jobs, taskid, linkorder):
     def check(result):
         return result.action()
 
-    def delete(job):
+    def delete(job, actor):
         return lc.link( label   = "Delete",
                         Class   = "qe-action-delete",
                         onclick = load(actor        = 'jobs/delete',
-                                         id         = simid,
+                                         id         = actor.id,
                                          jobid      = job.id,
-                                         taskid     = taskid,
-                                         type       = type)
-                       )
+                                         taskid     = actor.taskid,
+                                         type       = actor.type,
+                                         package    = actor.package))
 
     if len(jobs):
         table.addRow(("Id", "Time Submitted", "Status", "", "Results", "", ""))
         for j in jobs:
-            result      = ResultInfo(director, simid, linkorder, j)
-            jobstatus   = JobStatus(director, simid, linkorder, j)
-            table.addRow((jobid(j), submitted(j), status(jobstatus), refresh(jobstatus), results(result), check(result), delete(j)))
+            result      = ResultInfo(director, actor.id, actor.linkorder, j)
+            jobstatus   = JobStatus(director, actor.id, actor.linkorder, j)
+            table.addRow((jobid(j, actor), submitted(j), status(jobstatus), refresh(jobstatus), results(result), check(result), delete(j, actor)))
 
     table.setColumnStyle(0, "qe-table-id")
     table.setColumnStyle(1, "qe-table-time")

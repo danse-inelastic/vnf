@@ -108,13 +108,9 @@ class Actor(base):
 
     def _showJobs(self, director, section, jobs):
         jobstable   = director.retrieveVisual('material_simulations/espresso/table-jobs',
-                                              director  = director,
-                                              simid     = self.id,
-                                              type      = self.type,
-                                              jobs      = jobs,
-                                              taskid    = self.taskid,
-                                              linkorder = self.linkorder
-                                              )
+                                              director,
+                                              self.inventory,
+                                              jobs)
 
         if jobstable is None:
             raise RuntimeError, 'Failed to load visual jobs table'
