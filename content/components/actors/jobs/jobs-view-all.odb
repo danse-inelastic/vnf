@@ -15,6 +15,7 @@
 #from vnfb.qeutils.qegrid import QEGrid
 #from vnfb.qeutils.taskinfo import TaskInfo
 
+from vnfb.utils.const import PACKNAME
 from luban.content import select
 from luban.content import load
 
@@ -30,6 +31,7 @@ class Actor(base):
         taskid      = pyre.inventory.str('taskid', default='')
         type        = pyre.inventory.str('type', default='')        # Type of the configuration file
         linkorder   = pyre.inventory.int('linkorder', default=0)
+        package     = pyre.inventory.str('package', default='Quantum Espresso')
 
 
     def default(self, director):
@@ -37,6 +39,9 @@ class Actor(base):
 
 
     def content(self, director):
+        if not self.package in PACKNAME.keys():
+            self.package    = 'Quantum Espresso'    # "Default"?
+
         # Get jobs
         jobs     = director.clerk.getQEJobs(where="taskid='%s' ORDER BY timesubmitted DESC" % self.taskid)
 
@@ -47,8 +52,8 @@ class Actor(base):
 
             path = []
             path.append(('Simulations ', load(actor='materialsimulation')))
-            path.append(('Quantum Espresso ', qelink))
-            path.append(('%s ' % self.id, load(actor    = 'material_simulations/espresso/sim-view',
+            path.append(('%s ' %  self.package, qelink))
+            path.append(('%s ' % self.id, load(actor    = 'material_simulations/%s/sim-view' % PACKNAME[self.package],
                                                id       = self.id)))
 #            path.append(('%s Task: %s' % (self.type, self.taskid), load(actor    = 'material_simulations/espresso/task-view',
 #                                                                      id       = self.id,
@@ -81,7 +86,7 @@ class Actor(base):
     def _backAction(self, section):
         link    = lc.link(label="Back",
                             Class="qe-action-back",
-                            onclick = load(actor      = 'material_simulations/espresso/sim-view',
+                            onclick = load(actor      = 'material_simulations/%s/sim-view' % PACKNAME[self.package],
                                              id         = self.id))
         section.add(link)
 
@@ -94,7 +99,8 @@ class Actor(base):
                                           id        = self.id,
                                           taskid    = self.taskid,
                                           type      = self.type,
-                                          linkorder = self.linkorder))
+                                          linkorder = self.linkorder,
+                                          package   = self.package))
         link.tip    = "Refresh Job List"
         section.add(link)
 
@@ -128,6 +134,7 @@ class Actor(base):
         self.taskid         = self.inventory.taskid
         self.type           = self.inventory.type
         self.linkorder      = self.inventory.linkorder
+        self.package        = self.inventory.package
 
 
     def _init(self):
