@@ -20,7 +20,7 @@ import luban.content as lc
 
 
 # XXX: Bug in check and results display
-def visual(director, actor, jobs): #simid, type, jobs, taskid, linkorder):
+def visual(director, actor, jobs):
     """
     Returns the table of jobs related to QE task
     """
