@@ -19,11 +19,11 @@ from luban.content.Paragraph import Paragraph
 from luban.content.Form import Form
 from luban.content.FormSubmitButton import FormSubmitButton
 from luban.content import load
+from vnfb.utils.const import PACKNAME
 
 import luban.content as lc
 from luban.components.AuthorizedActor import AuthorizedActor as base
 
-# Requires simulation id,
 class Actor(base):
 
     class Inventory(base.Inventory):
@@ -32,6 +32,7 @@ class Actor(base):
         taskid  = pyre.inventory.str('taskid', default='')
         jobid   = pyre.inventory.str('jobid', default='')
         type    = pyre.inventory.str('type', default='')
+        package = pyre.inventory.str('package', default='Quantum Espresso')
 
 
     def default(self, director):
@@ -39,6 +40,8 @@ class Actor(base):
 
 
     def content(self, director):
+        if not self.package in PACKNAME.keys():
+            self.package    = 'Quantum Espresso'    # "Default"?
 
         def viewIndicator(director):
             qelink  = load( actor           = 'materialsimulation',
@@ -47,15 +50,14 @@ class Actor(base):
 
             path = []
             path.append(('Simulations ', load(actor='materialsimulation')))
-            path.append(('Quantum Espresso ', qelink))
-            path.append(('%s ' % self.id, load(actor    = 'material_simulations/espresso/sim-view',
-                                               id       = self.id))
-                        )
-            path.append("Delete %s Task: %s" % (self.type, self.taskid))
+            path.append(('%s ' % self.package, qelink))
+            path.append(('%s ' % self.id, load(actor    = 'material_simulations/%s/sim-view' % PACKNAME[self.package],
+                                               id       = self.id)))
+            path.append("Delete Job: %s" % self.jobid)
 
             return director.retrieveVisual('view-indicator', path=path)
 
-        doc         = lc.document(title="Delete %s Task: %s" % (self.type, self.taskid))
+        doc         = lc.document(title="Delete Job: %s" % self.jobid)
         splitter    = doc.splitter(orientation="vertical")
         sA          = splitter.section()
         sA.add(viewIndicator(director))
@@ -71,18 +73,18 @@ class Actor(base):
         form        = Form()
         submit      = FormSubmitButton(label="Delete")
         cancel      = lc.button(label="Cancel")
-        cancel.onclick = load(actor = 'material_simulations/espresso/sim-view', id=self.id)
+        cancel.onclick = load(actor = 'material_simulations/%s/sim-view' % PACKNAME[self.package], id=self.id)
 
         st          = QEGrid(lc.grid()) # Submit Table
         st.addRow((submit, cancel), ("qe-action-accept", "qe-action-cancel"))
 
         form.add(st.grid())
-        form.onsubmit   = select(element=form).submit(actor     = 'material_simulations/espresso/delete',
+        form.onsubmit   = select(element=form).submit(actor     = 'jobs/delete',
                                                       routine   = 'deleteRecord',
                                                       id        = self.id,
                                                       jobid     = self.jobid,
-                                                      taskid    = self.taskid)
-
+                                                      taskid    = self.taskid,
+                                                      package   = self.package)
         return form
 
 
@@ -92,7 +94,7 @@ class Actor(base):
         self._deleteLocalResults(director)   # Not tested
         self._deleteRemoteResults(director)   # Not tested
 
-        return load(actor='material_simulations/espresso/sim-view', id=self.id)
+        return load(actor='material_simulations/%s/sim-view' % PACKNAME[self.package], id=self.id)
 
 
     def _deleteJobs(self, director):
@@ -117,8 +119,6 @@ class Actor(base):
     def __init__(self):
         super(Actor, self).__init__(name='jobs/delete')
 
-        return
-
 
     def _configure(self):
         super(Actor, self)._configure()
@@ -126,6 +126,7 @@ class Actor(base):
         self.jobid          = self.inventory.jobid
         self.taskid         = self.inventory.taskid
         self.type           = self.inventory.type
+        self.package        = self.inventory.package
 
 
     def _init(self):
