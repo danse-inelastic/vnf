@@ -13,6 +13,7 @@ Contents:
    DeveloperGuide-Include-Simple-Computation-Engine
    DeveloperGuide-NeutronExperimentSimulation
    DeveloperGuide-Architecture
+   DeveloperGuide-QE
    DeveloperGuide-UserInterface
    DeveloperGuide-DOM
    DeveloperGuide-ThirdPartyDbs
