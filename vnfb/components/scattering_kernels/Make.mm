@@ -10,7 +10,7 @@
 #
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-PROJECT = vnfb/components
+PROJECT = vnf/components
 PACKAGE = scattering_kernels
 
 RECURSE_DIRS = \

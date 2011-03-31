@@ -25,7 +25,7 @@ class Component(base):
 
 
     def initdb(self):
-        from vnfb.dom.neutron_experiment_simulations.neutron_components.VanadiumPlate \
+        from vnf.dom.neutron_experiment_simulations.neutron_components.VanadiumPlate \
              import VanadiumPlate
         vp = VanadiumPlate()
 

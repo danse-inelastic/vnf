@@ -14,8 +14,8 @@
 import luban.content as lc
 from luban.content import select
 from luban.content import load
-from vnfb.qeutils.qegrid import QEGrid
-from vnfb.qeutils.qeconst import MATTER_TYPE
+from vnf.qeutils.qegrid import QEGrid
+from vnf.qeutils.qeconst import MATTER_TYPE
 from luban.content.FormSubmitButton import FormSubmitButton
 
 # XXX: Break radio button!

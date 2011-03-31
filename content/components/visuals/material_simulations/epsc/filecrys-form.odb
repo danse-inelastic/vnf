@@ -14,14 +14,14 @@
 import luban.content as lc
 from luban.content import select
 from luban.content import load
-from vnfb.qeutils.qegrid import QEGrid
+from vnf.qeutils.qegrid import QEGrid
 from luban.content.FormTextField import FormTextField
 from luban.content.FormSelectorField import FormSelectorField
 from luban.content.FormSubmitButton import FormSubmitButton
 
 from luban.content.FormTextArea import  FormTextArea
 
-from vnfb.epscutils.epscconst import *
+from vnf.epscutils.epscconst import *
 
 class Visual:
 

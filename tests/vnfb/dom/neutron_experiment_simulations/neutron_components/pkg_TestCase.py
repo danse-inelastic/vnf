@@ -16,7 +16,7 @@ import unittest
 class TestCase(unittest.TestCase):
 
     def test(self):
-        from vnfb.dom.neutron_experiment_simulations.neutron_components import getTypes
+        from vnf.dom.neutron_experiment_simulations.neutron_components import getTypes
         types = getTypes()
         print types
         return

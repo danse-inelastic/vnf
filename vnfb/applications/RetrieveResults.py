@@ -30,7 +30,7 @@ class RetrieveResults(base):
         type = self.type
         computation = domaccess.getRecordByID(type, id)
 
-        from vnfb.utils.computation import retrieve_results
+        from vnf.utils.computation import retrieve_results
         retrieve_results(computation, director=self)
         return
 

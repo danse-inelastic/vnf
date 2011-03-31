@@ -16,11 +16,11 @@ import journal
 debug = journal.debug('bvk_getdos-jobbuilder')
 
 
-from vnfb.components.JobBuilder import JobBuilder as base
+from vnf.components.JobBuilder import JobBuilder as base
 
 class Builder(base):
 
-    from vnfb.dom.material_simulations.BvKComputation import BvK_GetDos as Computation
+    from vnf.dom.material_simulations.BvKComputation import BvK_GetDos as Computation
 
     def render(self, computation, db=None, dds=None):
         self._files = []

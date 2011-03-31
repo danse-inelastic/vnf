@@ -30,7 +30,7 @@ from luban.components.AuthorizedActor import AuthorizedActor as base
 class SimActorBase(base):
     
     editor_visual_name = None #  'material_simulations/moldyn/optimization-editor'
-    dbtable = None #  from vnfb.dom.material_simulations.GulpOpt import GulpOptTable
+    dbtable = None #  from vnf.dom.material_simulations.GulpOpt import GulpOptTable
     
     class Inventory(base.Inventory):
 
@@ -101,7 +101,7 @@ class SimActorBase(base):
             return alert("simulation %s not owned by you" % id)
 
         # make sure it is ok to delete
-        from vnfb.utils.db.findreferrals import hasreferral
+        from vnf.utils.db.findreferrals import hasreferral
         orm = clerk.orm
         if hasreferral(record, clerk):
             return alert("simulation %s still in use" % id)

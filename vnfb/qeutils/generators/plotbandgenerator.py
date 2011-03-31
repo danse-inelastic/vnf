@@ -11,9 +11,9 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
-from vnfb.qeutils.results.pwresult import PWResult
-from vnfb.qeutils.results.bandsresult import BANDSResult
-from vnfb.qeutils.results.resultpath import PSBAND, XMGRBAND
+from vnf.qeutils.results.pwresult import PWResult
+from vnf.qeutils.results.bandsresult import BANDSResult
+from vnf.qeutils.results.resultpath import PSBAND, XMGRBAND
 
 
 class PLOTBANDGenerator(object):

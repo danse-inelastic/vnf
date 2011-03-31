@@ -22,7 +22,7 @@ Notes:
     - This table is Quantum Espresso specific
 """
 
-from vnfb.components.QETable import QETable
+from vnf.components.QETable import QETable
 
 from MaterialSimulation import MaterialSimulation
 

@@ -33,7 +33,7 @@ def visual(computation=None, actor=None, director=None,
     # the job
     job = computation.getJob(db)
     # always good to check the job
-    from vnfb.utils.job import check
+    from vnf.utils.job import check
     check(job, director)
 
     # the document to build
@@ -43,7 +43,7 @@ def visual(computation=None, actor=None, director=None,
     result_retrieval_status = computation.getResultRetrievalStatus(db)
 
     if result_retrieval_status is None:
-        from vnfb.utils.computation import start_results_retrieval
+        from vnf.utils.computation import start_results_retrieval
         start_results_retrieval(computation, director)
         result_retrieval_status = 'retrieving'
         
@@ -57,7 +57,7 @@ def visual(computation=None, actor=None, director=None,
     if result_retrieval_status == 'retrieving':
         p = doc.paragraph(text=['Still retrieving results...'])
 
-        from vnfb.utils.computation import get_results_retrieval_task
+        from vnf.utils.computation import get_results_retrieval_task
         task = get_results_retrieval_task(computation, db)
         if not task:
             raise RuntimeError, 'there should be an itask working at retrieving '+\
@@ -75,7 +75,7 @@ def visual(computation=None, actor=None, director=None,
             id = task.id,
             )
         if on_all_results_retrieved:
-            from vnfb.content import safe_eval_action
+            from vnf.content import safe_eval_action
             onfinished = safe_eval_action(on_all_results_retrieved)
         else:
             onfinished = refresh

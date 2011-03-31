@@ -21,7 +21,7 @@ import luban.content as lc
 setpagetitle = select(id='').setAttr(title='VNF: ARCS instrument')
 
 
-from vnfb.components.visuals import set_contextual_help
+from vnf.components.visuals import set_contextual_help
 sethelppage = set_contextual_help(
     page='UserGuide-instruments-ARCS-apps', label='about ARCS apps')
 

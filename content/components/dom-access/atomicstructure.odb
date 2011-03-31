@@ -18,7 +18,7 @@
 tablename = 'atomicstructure'
 
 
-from vnfb.components.DOMAccessor import DOMAccessor as base
+from vnf.components.DOMAccessor import DOMAccessor as base
 
 class Accessor(base):
 
@@ -30,7 +30,7 @@ class Accessor(base):
 
     def _getOrm(self):
         orm = self.director.clerk.orm
-        from vnfb.dom.AtomicStructure import Structure
+        from vnf.dom.AtomicStructure import Structure
         orm(Structure)
         return orm
     orm = property(_getOrm)
@@ -189,7 +189,7 @@ class Accessor(base):
         if mine:
             q = sqlalchemy.select(cols, st.c.creator==username)
         else:
-            from vnfb.utils.query.accesscontrol import select_public_and_owned_records
+            from vnf.utils.query.accesscontrol import select_public_and_owned_records
             q = select_public_and_owned_records(cols, st, username, db)
 
         # filter query
@@ -233,44 +233,14 @@ class Accessor(base):
         return q
 
 
-    def getallsimulations(self, id, **opts):
-        '''get all simulations for this atomic structure
-        '''
-        # XXX this implementation does not work anymore ...
-        # XXX has to go through all material simulation tables and use back reference
-        # XXX to find the simulations.
-
-        s = self.getAtomicStructure(id)
-        orm = self.orm
-        record = orm(s)
-        
-        db = self.db
-        tables = simulationTables()
-
-        computations = []
-        for table in tables:
-            computations += record.getReferences(db, table, 'matter', **opts)
-            continue
-
-        return computations
-
-
-
-
-from vnfb.dom.Label import Label, common_labels
-from vnfb.dom.AtomicStructure import StructureTable, Structure
-from vnfb.dom.Atom import AtomTable, Atom
-from vnfb.dom.Lattice import LatticeTable, Lattice
+from vnf.dom.Label import Label, common_labels
+from vnf.dom.AtomicStructure import StructureTable, Structure
+from vnf.dom.Atom import AtomTable, Atom
+from vnf.dom.Lattice import LatticeTable, Lattice
 
 
 from dsaw.db.VersatileReference import global_pointer
 import sqlalchemy
-
-
-def simulationTables():
-    from vnf.dom import materialsimulationtables, materialmodelingtables
-    tables = materialsimulationtables()# + materialmodelingtables()
-    return tables
 
 
 

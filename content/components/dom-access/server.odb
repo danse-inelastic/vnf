@@ -15,7 +15,7 @@
 tablename = 'servers'
 
 
-from vnfb.components.DOMAccessor import DOMAccessor as base
+from vnf.components.DOMAccessor import DOMAccessor as base
 
 class Accessor(base):
 
@@ -46,7 +46,7 @@ class Accessor(base):
 
 
 
-from vnfb.dom.Server import Server as ServerTable
+from vnf.dom.Server import Server as ServerTable
 
 
 def accessor():

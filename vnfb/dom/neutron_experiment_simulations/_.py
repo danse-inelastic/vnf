@@ -1,10 +1,10 @@
-from vnfb.dom._ import o2t
+from vnf.dom._ import o2t
 
-from vnfb.dom.Computation import Computation as ComputationTableBase
-from vnfb.dom.AbstractOwnedObjectBase import AbstractOwnedObjectBase
-from vnfb.dom.ComputationResult import ComputationResult, ComputationResultInterface
-from vnfb.dom.OwnedObject import OwnedObject
-from vnfb.dom.AtomicStructure import Structure as AtomicStructure
-from vnfb.dom import geometry, scattering_kernels
-from vnfb.dom.geometry.AbstractShape import AbstractShape
-from vnfb.dom.scattering_kernels.AbstractScatteringKernel import AbstractScatteringKernel
+from vnf.dom.Computation import Computation as ComputationTableBase
+from vnf.dom.AbstractOwnedObjectBase import AbstractOwnedObjectBase
+from vnf.dom.ComputationResult import ComputationResult, ComputationResultInterface
+from vnf.dom.OwnedObject import OwnedObject
+from vnf.dom.AtomicStructure import Structure as AtomicStructure
+from vnf.dom import geometry, scattering_kernels
+from vnf.dom.geometry.AbstractShape import AbstractShape
+from vnf.dom.scattering_kernels.AbstractScatteringKernel import AbstractScatteringKernel

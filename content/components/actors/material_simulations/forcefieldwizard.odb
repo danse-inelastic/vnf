@@ -139,7 +139,7 @@ class Actor(base):
         #TODO: make it so it will load settings back in if restarting
         # then store the settings
         #from memd.gulp.GulpSettings import GulpSettings
-        from vnfb.dom.material_simulations.GulpSettings import GulpSettings
+        from vnf.dom.material_simulations.GulpSettings import GulpSettings
         gulpSettings = GulpSettings()
         gulpSettings.id = self.inventory.simulationId
         import time

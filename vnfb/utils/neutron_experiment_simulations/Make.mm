@@ -10,7 +10,7 @@
 #
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-PROJECT = vnfb/utils
+PROJECT = vnf/utils
 PACKAGE = neutron_experiment_simulations
 
 RECURSE_DIRS = \

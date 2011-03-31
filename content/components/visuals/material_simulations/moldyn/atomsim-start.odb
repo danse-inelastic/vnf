@@ -36,7 +36,7 @@ def visual(structureId=None, director=None):
         }
     args.update(vnfArgs)
 
-    from vnfb.components.JnlpFile import JnlpFile
+    from vnf.components.JnlpFile import JnlpFile
     jnlpFile = JnlpFile(
         resources=('GULP.jar', 'j2ssh.jar', 'commons-logging.jar','pg74.216.jdbc3.jar'),
         mainClass='javagulp.controller.LaunchAtomSim',

@@ -24,7 +24,7 @@ class Component(base):
         orm = domaccess.orm
 
         # find the al model
-        from vnfb.dom.material_simulations.BvKModel import BvKModel
+        from vnf.dom.material_simulations.BvKModel import BvKModel
         BvKModelTable = orm(BvKModel)
         models = orm.db.query(BvKModelTable).filter("short_description like 'bvk model of fcc Al at 300 from literature%'").all()
         if not models: raise RuntimeError, "could not find bvk model for fcc Al"
@@ -33,7 +33,7 @@ class Component(base):
         matter = model.matter.dereference(orm.db)
 
         #
-        from vnfb.dom.material_simulations.BvKComputation import BvK_GetPhonons_Table
+        from vnf.dom.material_simulations.BvKComputation import BvK_GetPhonons_Table
         computation = BvK_GetPhonons_Table()
         computation.id = 'fortest'
         computation.matter = matter
@@ -45,7 +45,7 @@ class Component(base):
         server = serveraccess.getServerRecord('server000')
 
         # job
-        from vnfb.dom.Job import Job
+        from vnf.dom.Job import Job
         job = Job()
         job.id = 'job-bvk_getphonons-fortest'
         job.short_description = 'job for testing the computation type bvk_getphonons'

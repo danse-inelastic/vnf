@@ -29,7 +29,7 @@ class Component(base):
         return
 
 
-from vnfb.dom.User import User
+from vnf.dom.User import User
 def user(name, pw, fullname, email):
     r = User()
     r.id = name

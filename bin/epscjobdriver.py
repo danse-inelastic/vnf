@@ -12,7 +12,7 @@
 #
 
 def main():
-    from vnfb.applications.EPSCJobDriver import EPSCJobDriver
+    from vnf.applications.EPSCJobDriver import EPSCJobDriver
 
     class App(EPSCJobDriver):
 

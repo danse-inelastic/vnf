@@ -21,7 +21,7 @@ from luban.content import select, load, alert
 from dsaw.model.descriptors import validators
 
 #
-from vnfb.dom.AtomicStructure import Structure, Lattice, Atom
+from vnf.dom.AtomicStructure import Structure, Lattice, Atom
 
 from luban.components.Actor import Actor
 import luban.orm
@@ -80,7 +80,7 @@ class Actor(base):
         orm = director.clerk.orm; db = orm.db
         matterrecord = orm(matter)
         # the sqes
-        from vnfb.dom.material_simulations.SQE import SQE
+        from vnf.dom.material_simulations.SQE import SQE
         orm(SQE)
         sqes = matterrecord.sqes.dereference(db)
         #

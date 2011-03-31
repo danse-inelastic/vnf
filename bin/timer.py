@@ -15,7 +15,7 @@
 def main():
 
 
-    from vnfb.applications.Timer import Timer
+    from vnf.applications.Timer import Timer
 
 
     class App(Timer):

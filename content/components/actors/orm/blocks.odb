@@ -17,12 +17,12 @@ import luban.content as lc
 from luban.content import select, load, alert
 
 
-from vnfb.dom.geometry.Block import Block
+from vnf.dom.geometry.Block import Block
 
 from luban.components.Actor import Actor
 import luban.orm
 base = luban.orm.object2actor(Block)
-from vnfb.components.geometry.ShapeOrmActorHelper import helper
+from vnf.components.geometry.ShapeOrmActorHelper import helper
 class Actor(helper(Block), base):
 
     class Inventory(base.Inventory):

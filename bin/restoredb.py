@@ -79,7 +79,7 @@ class DbApp(base):
 
     def _defaults(self):
         super(DbApp, self)._defaults()
-        from vnfb.components.Clerk import Clerk
+        from vnf.components.Clerk import Clerk
         self.inventory.clerk = Clerk()
         return
 

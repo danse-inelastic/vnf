@@ -11,7 +11,7 @@
 #
 
 tablename='analysis'
-from vnfb.components.DOMAccessor import DOMAccessor as base
+from vnf.components.DOMAccessor import DOMAccessor as base
 
 class Accessor(base):
 
@@ -176,13 +176,13 @@ class Accessor(base):
     
 
     def analysisTables(self):
-        from vnfb.dom.analysis.analysis_types import typenames
+        from vnf.dom.analysis.analysis_types import typenames
         ormtables = map(self._getTable, typenames)
 
         return ormtables
 
 
-from vnfb.dom.Label import Label
+from vnf.dom.Label import Label
 
 
 from dsaw.db.VersatileReference import global_pointer

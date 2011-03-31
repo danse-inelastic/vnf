@@ -1,2 +1,2 @@
-from vnfb.dom._ import o2t
+from vnf.dom._ import o2t
 

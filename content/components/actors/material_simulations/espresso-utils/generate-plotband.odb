@@ -11,9 +11,9 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
-from vnfb.qeutils.generators.plotbandgenerator import PLOTBANDGenerator
+from vnf.qeutils.generators.plotbandgenerator import PLOTBANDGenerator
 
-from vnfb.components.QEGenerator import QEGenerator as base
+from vnf.components.QEGenerator import QEGenerator as base
 
 class Actor(base):
 

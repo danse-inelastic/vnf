@@ -39,7 +39,7 @@ class DbApp(base):
             kwds[k] = v
             continue
 
-        from vnfb.utils.communications import announce
+        from vnf.utils.communications import announce
         announce(self, announcement, **kwds)
         return
 

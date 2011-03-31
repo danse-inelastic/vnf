@@ -23,7 +23,7 @@ def importType(name):
 
 
 def _import(modulename):
-    pkg = 'vnfb.dom'
+    pkg = 'vnf.dom'
     m = '%s.%s' % (pkg, modulename)
     return __import__(m, {}, {}, [''])
 

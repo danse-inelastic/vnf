@@ -23,7 +23,7 @@ Test assumes that
 
 def createTestApp(Component):
 
-    from vnfb.testing.job_builder import TestApp as base
+    from vnf.testing.job_builder import TestApp as base
     
     
     class TestApp(base):
@@ -44,7 +44,7 @@ def createTestApp(Component):
             
             # see if the experiment is already in db
             expid = 'testjobbuilder-component-%s' % Component.__name__
-            from vnfb.dom.neutron_experiment_simulations.NeutronExperiment import NeutronExperimentTable
+            from vnf.dom.neutron_experiment_simulations.NeutronExperiment import NeutronExperimentTable
             exps = db.query(NeutronExperimentTable).filter_by(id=expid).all()
 
             if not exps:
@@ -63,16 +63,16 @@ def createTestApp(Component):
             db = orm.db
             
             # the instrument with source and monitor
-            from vnfb.dom.neutron_experiment_simulations.Instrument import InstrumentTable
+            from vnf.dom.neutron_experiment_simulations.Instrument import InstrumentTable
             instrument_record = db.query(InstrumentTable).filter_by(name='Test').one()
             instrument = orm.record2object(instrument_record)
 
             # create a new instrument configuration
-            from vnfb.dom.neutron_experiment_simulations.InstrumentConfiguration import InstrumentConfiguration
+            from vnf.dom.neutron_experiment_simulations.InstrumentConfiguration import InstrumentConfiguration
             ic = InstrumentConfiguration()
             components = ic.components
             # source
-            from vnfb.dom.neutron_experiment_simulations.neutron_components.MonochromaticSource import MonochromaticSource
+            from vnf.dom.neutron_experiment_simulations.neutron_components.MonochromaticSource import MonochromaticSource
             source = MonochromaticSource()
             source.componentname = 'source'
             source.energy = 70
@@ -85,7 +85,7 @@ def createTestApp(Component):
             #
             
             # experiment
-            from vnfb.dom.neutron_experiment_simulations.NeutronExperiment import NeutronExperiment
+            from vnf.dom.neutron_experiment_simulations.NeutronExperiment import NeutronExperiment
             exp = NeutronExperiment()
             exp.instrument = instrument
             exp.instrument_configuration = ic
@@ -97,7 +97,7 @@ def createTestApp(Component):
             
             # job
             jobid = 'testjobbuilder-neutroncomponent-%s' % Component.__name__
-            from vnfb.dom.Job import Job
+            from vnf.dom.Job import Job
             jobs = orm.db.query(Job).filter_by(id=jobid).all()
             if not jobs:
                 job = self.createJob(jobid, exprecord, orm.db)
@@ -115,7 +115,7 @@ def createTestApp(Component):
             serveraccess = self.retrieveDOMAccessor('server')
             server = serveraccess.getServerRecord('server000')
             
-            from vnfb.dom.Job import Job
+            from vnf.dom.Job import Job
             job = Job()
             job.id = id
             job.short_description = 'job for test experiment for job builder of component %s' % Component.__name__
@@ -171,12 +171,12 @@ def getTestCasePyFilename(comp):
 
 
 def skipComponents():
-    from vnfb.dom.neutron_experiment_simulations.neutron_components.DetectorSystem_fromXML import DetectorSystem_fromXML
-    from vnfb.dom.neutron_experiment_simulations.neutron_components.SNSModerator import SNSModerator
-    from vnfb.dom.neutron_experiment_simulations.neutron_components.NeutronPlayer import NeutronPlayer
-    from vnfb.dom.neutron_experiment_simulations.neutron_components.PlaceHolder import PlaceHolder
-    from vnfb.dom.neutron_experiment_simulations.neutron_components.VanadiumPlate import VanadiumPlate
-    from vnfb.dom.neutron_experiment_simulations.neutron_components.QMonitor import QMonitor
+    from vnf.dom.neutron_experiment_simulations.neutron_components.DetectorSystem_fromXML import DetectorSystem_fromXML
+    from vnf.dom.neutron_experiment_simulations.neutron_components.SNSModerator import SNSModerator
+    from vnf.dom.neutron_experiment_simulations.neutron_components.NeutronPlayer import NeutronPlayer
+    from vnf.dom.neutron_experiment_simulations.neutron_components.PlaceHolder import PlaceHolder
+    from vnf.dom.neutron_experiment_simulations.neutron_components.VanadiumPlate import VanadiumPlate
+    from vnf.dom.neutron_experiment_simulations.neutron_components.QMonitor import QMonitor
     return [
         DetectorSystem_fromXML,
         SNSModerator,
@@ -188,12 +188,12 @@ def skipComponents():
 
 
 def createTestCasePyFiles():
-    from vnfb.dom.neutron_experiment_simulations.neutron_components import findComponents
+    from vnf.dom.neutron_experiment_simulations.neutron_components import findComponents
     comps = findComponents()
     return map(createTestCasePy, [c for c in comps if c not in skipComponents()])
 
 def getTestCasePyFiles():
-    from vnfb.dom.neutron_experiment_simulations.neutron_components import findComponents
+    from vnf.dom.neutron_experiment_simulations.neutron_components import findComponents
     comps = findComponents()
     return map(getTestCasePyFilename, [c for c in comps if c not in skipComponents()])
 
@@ -243,7 +243,7 @@ class App(Script):
             component = self.inventory.component
             if not component:
                 raise RuntimeError, 'component type is not specified'
-            m = 'vnfb.dom.neutron_experiment_simulations.neutron_components.%s' % component
+            m = 'vnf.dom.neutron_experiment_simulations.neutron_components.%s' % component
             m = __import__(m, {}, {}, [''])
             C = getattr(m, component)
             file = createTestCasePy(C)

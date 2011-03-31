@@ -16,7 +16,7 @@ import unittest
 class TestCase(unittest.TestCase):
 
     def test1(self):
-        from vnfb.components.Postman import Postman
+        from vnf.components.Postman import Postman
         postman = Postman()
         postman.host = 'smtp-server.cco.caltech.edu'
         postman.port = ''

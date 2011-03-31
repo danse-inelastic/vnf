@@ -25,7 +25,7 @@ import luban.content as lc
 
 # common actions
 setpagetitle = select(id='').setAttr(title='Virtual neutron facility: jobs')
-from  vnfb.components.visuals import set_contextual_help
+from  vnf.components.visuals import set_contextual_help
 sethelppage = set_contextual_help(
     page='UserGuide-jobs', label='about jobs')
 
@@ -37,10 +37,10 @@ from luban.content.ProgressBar import ProgressBar
 from luban.content.Form import Form
 from luban.content.Link import Link
 
-from vnfb.utils.job import check
+from vnf.utils.job import check
 
 #
-from vnfb.components.MasterTable import FilterSyntaxError, MasterTableActor as base
+from vnf.components.MasterTable import FilterSyntaxError, MasterTableActor as base
 class Actor(base):
 
     class Inventory(base.Inventory):
@@ -355,7 +355,7 @@ class Actor(base):
         if job: raise RuntimeError, "computation %s already has a job" % computation.id
 
         # create new job
-        from vnfb.utils.job import new
+        from vnf.utils.job import new
         job = new(director)
         
         # assign computation
@@ -483,7 +483,7 @@ class Actor(base):
         short_description = self.inventory.short_description
         serverId = self.inventory.server
         #check to make sure user has not allocated more nodes/cores than server has
-        from vnfb.dom.Server import Server
+        from vnf.dom.Server import Server
         serverRecord = director.clerk.db.fetchall(Server, where="id='%s'" % serverId)[0]
         
         numnodes = self.inventory.numnodes
@@ -565,7 +565,7 @@ class Actor(base):
         # first check if there is itask running
         task = job.findPendingTask(director.clerk.db, iworker=iworker)
         if not task:
-            from vnfb.dom.ITask import createITask, ITask
+            from vnf.dom.ITask import createITask, ITask
             task = director.clerk.insertNewOwnedRecord(ITask)
             task = createITask(
                 task.id,
@@ -585,7 +585,7 @@ class Actor(base):
             director.clerk.updateRecordWithID(task)
             
         # start the task
-        from vnfb.utils.itask import start
+        from vnf.utils.itask import start
         start(task)
         
         # build the progress bar and return
@@ -732,7 +732,7 @@ class Actor(base):
             raise RuntimeError, "Job %s is not running" % id
 
         # cancel the job
-        from vnfb.utils.job.scheduler import cancel
+        from vnf.utils.job.scheduler import cancel
         cancel(job, director)
 
         #
@@ -816,8 +816,8 @@ def isPositiveInteger(candiate):
     return value > 0
 
 
-from vnfb.utils.job import packjobdir as packutils
-from vnfb.dom.Job import Job
+from vnf.utils.job import packjobdir as packutils
+from vnf.dom.Job import Job
 
 def actor(): return Actor()
 

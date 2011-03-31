@@ -11,8 +11,8 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
-from vnfb.components.DOMAccessor import DOMAccessor as base
-from vnfb.dom.material_simulations.GulpSettings import GulpSettings as GulpSettingsTable
+from vnf.components.DOMAccessor import DOMAccessor as base
+from vnf.dom.material_simulations.GulpSettings import GulpSettings as GulpSettingsTable
 from memd.gulp.GulpSettings import GulpSettings
 import os, numpy
 

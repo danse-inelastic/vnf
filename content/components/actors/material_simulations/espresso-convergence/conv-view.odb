@@ -11,15 +11,15 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
-from vnfb.qeutils.qegrid import QEGrid
-from vnfb.qeutils.qeutils import stamp2date, key2val
-from vnfb.qeutils.qeconst import CONVTYPE
+from vnf.qeutils.qegrid import QEGrid
+from vnf.qeutils.qeutils import stamp2date, key2val
+from vnf.qeutils.qeconst import CONVTYPE
 
 import luban.content as lc
 from luban.content import load, select
 from luban.content.Paragraph import Paragraph
 
-from vnfb.components.QEConvergence import QEConvergence as base
+from vnf.components.QEConvergence import QEConvergence as base
 
 class Actor(base):
     class Inventory(base.Inventory):

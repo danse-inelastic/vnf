@@ -11,9 +11,9 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
-from vnfb.qeutils.results.cpresult import CPResult
-from vnfb.qeutils.qeparser.qeinput import QEInput
-from vnfb.qeutils.qeutils import defaultInputName, readRecordFile
+from vnf.qeutils.results.cpresult import CPResult
+from vnf.qeutils.qeparser.qeinput import QEInput
+from vnf.qeutils.qeutils import defaultInputName, readRecordFile
 
 
 EM_LINKORDER    = 0 # Electron minimization should exist!

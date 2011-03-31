@@ -21,7 +21,7 @@ This could be merged with the main application of vnf.
 '''
 
 
-from vnfb.testing import getDeploymentInfo
+from vnf.testing import getDeploymentInfo
 deploymentinfo = getDeploymentInfo()
 
 

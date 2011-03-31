@@ -11,7 +11,7 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
-from vnfb.utils.orderedDict import OrderedDict
+from vnf.utils.orderedDict import OrderedDict
 
 NUMPROC = 1 # Number of thermo-mechanical processes
 

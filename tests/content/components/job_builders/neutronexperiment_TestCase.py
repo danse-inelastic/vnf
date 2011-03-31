@@ -26,7 +26,7 @@ Test assumes that
 standalone = True
 
 
-from vnfb.testing.job_builder import TestApp as base
+from vnf.testing.job_builder import TestApp as base
 
 
 class TestApp(base):

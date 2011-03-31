@@ -11,9 +11,9 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
-from vnfb.dom.neutron_experiment_simulations.neutron_components.MonochromaticSource import MonochromaticSource
-from vnfb.dom.neutron_experiment_simulations.neutron_components.SampleComponent import SampleComponent
-from vnfb.dom.neutron_experiment_simulations.neutron_components.QMonitor import QMonitor
+from vnf.dom.neutron_experiment_simulations.neutron_components.MonochromaticSource import MonochromaticSource
+from vnf.dom.neutron_experiment_simulations.neutron_components.SampleComponent import SampleComponent
+from vnf.dom.neutron_experiment_simulations.neutron_components.QMonitor import QMonitor
 
 
 

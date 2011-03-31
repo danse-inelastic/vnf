@@ -29,7 +29,7 @@ class Component(base):
         return
 
 
-from vnfb.dom.neutron_experiment_simulations.neutron_components.DetectorSystem_fromXML import DetectorSystem_fromXMLTable as T, DetectorSystemHierarchy_fromXMLTable as HT
+from vnf.dom.neutron_experiment_simulations.neutron_components.DetectorSystem_fromXML import DetectorSystem_fromXMLTable as T, DetectorSystemHierarchy_fromXMLTable as HT
 def record(id, short_description, hierarchy, tofmin, tofmax, ntofbins):
     r = T()
     r.id = id

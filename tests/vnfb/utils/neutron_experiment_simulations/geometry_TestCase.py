@@ -12,7 +12,7 @@
 #
 
 
-from vnfb.utils.neutron_experiment_simulations import geometry
+from vnf.utils.neutron_experiment_simulations import geometry
 
 I = [
     [1,0,0],

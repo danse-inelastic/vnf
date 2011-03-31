@@ -44,7 +44,7 @@ class Component(base):
 
 
 
-from vnfb.dom.Server import Server
+from vnf.dom.Server import Server
 def server(
     id, short_description,
     address, port,

@@ -12,7 +12,7 @@
 #
 
 
-from vnfb.dom.ComputationResultTs import ComputationResultTs, ComputationResultInterface
+from vnf.dom.ComputationResultTs import ComputationResultTs, ComputationResultInterface
 
 
 # version

@@ -14,12 +14,12 @@
 
 standalone = True
 
-from vnfb.dom.User import User
-from vnfb.dom.Role import Role
-from vnfb.dom.Privilege import Privilege
-from vnfb.dom.UserHasRole import UserHasRole
-from vnfb.dom.RoleHasRole import RoleHasRole
-from vnfb.dom.RoleHasPrivilege import RoleHasPrivilege, grant
+from vnf.dom.User import User
+from vnf.dom.Role import Role
+from vnf.dom.Privilege import Privilege
+from vnf.dom.UserHasRole import UserHasRole
+from vnf.dom.RoleHasRole import RoleHasRole
+from vnf.dom.RoleHasPrivilege import RoleHasPrivilege, grant
 
 
 import unittest

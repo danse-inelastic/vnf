@@ -8,7 +8,7 @@ User approval
 -------------
 To approve a user::
 
- $ cd $EXPORT_ROOT/vnfb/bin
+ $ cd $EXPORT_ROOT/vnf/bin
  $ ./approveUser.py -username=<username>
 
 Simply run approveUser without username will reload the
@@ -22,11 +22,11 @@ Make an email announcement
 """"""""""""""""""""""""""
 
 To send an email announcement, use method
-vnfb.utils.communications.announce.
+vnf.utils.communications.announce.
 
 Example::
 
- >>> from vnfb.utils.communications import announce
+ >>> from vnf.utils.communications import announce
  >>> announcement = 'bug-report'
  >>> announce(director, announcement, user, bugid, comment, traceback)
 
@@ -40,13 +40,13 @@ component. The parameter "anncoucement" of the method "announce"
 is a string, and is used to look up the announcement component.
 In the example code piece above, "bug-report" is the announcement
 component name. So the component
-`"content/components/announcements/bug-report.odb" <http://danse.us/trac/VNET/browser/vnf/branches/beta-useluban/vnfb/content/components/announcements/bug-report.odb>`_
+`"content/components/announcements/bug-report.odb" <http://danse.us/trac/VNET/browser/vnf/trunk/content/components/announcements/bug-report.odb>`_
 will be used, and the parameters after the "announcement"
 parameter in the call to function "announce" 
 (here, they are "user", "bugid", "comment", and "traceback")
 are passed
 to the component factory method 
-(`method definition is here <http://danse.us/trac/VNET/browser/vnf/branches/beta-useluban/vnfb/content/components/announcements/bug-report.odb#L13>`_)::
+(`method definition is here <http://danse.us/trac/VNET/browser/vnf/trunk/content/components/announcements/bug-report.odb#L13>`_)::
 
  def announcement(user, bugid, comment, traceback):
      ...
@@ -62,7 +62,7 @@ Run a command in a subprocess and detach it from the current process
 It is very useful in UI to launch a separate process that runs on its
 own so we can get back to user quickly with a response. ::
  
- $ cd $EXPORT_ROOT/vnfb/bin
+ $ cd $EXPORT_ROOT/vnf/bin
  $ ./launch-detached.py --home=<workdir> --cmd=<command> --output-log=<outputlogfile> --error-log=<errorlogfile>
 
 You can get help by::

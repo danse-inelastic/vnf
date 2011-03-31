@@ -12,7 +12,7 @@
 #
 
 
-from vnfb.components.DOMAccessor import DOMAccessor
+from vnf.components.DOMAccessor import DOMAccessor
 basenames = dir(DOMAccessor)
 basenames += [
     'aliases',

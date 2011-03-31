@@ -12,7 +12,7 @@
 #
 
 
-from vnfb.deployment import *
+from vnf.deployment import *
 
 
 # version

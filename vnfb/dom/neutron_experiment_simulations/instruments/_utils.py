@@ -6,7 +6,7 @@ def createInstrument(
     '''create an instrument from a instrument info dictionary (see Test.py for an example)
     and save it to db by using the given orm
     '''
-    from vnfb.dom.neutron_experiment_simulations.Instrument import Instrument
+    from vnf.dom.neutron_experiment_simulations.Instrument import Instrument
     
     instrument = Instrument()
     instrument.name = instrumentinfo['name']
@@ -39,12 +39,12 @@ def createInstrument(
     return instrument
 
 
-from vnfb.utils.neutron_experiment_simulations.geometry import tomatrix as _tomatrix
+from vnf.utils.neutron_experiment_simulations.geometry import tomatrix as _tomatrix
 
 
 def createComponent(typename, kwds):
     t = 'neutron_experiment_simulations.neutron_components.%s.%s' % (typename, typename)
-    from vnfb.dom import importType
+    from vnf.dom import importType
     t = importType(t)
     o = t()
     for k,v in kwds.iteritems():

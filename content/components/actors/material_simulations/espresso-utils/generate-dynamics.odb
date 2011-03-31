@@ -11,8 +11,8 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
-from vnfb.qeutils.generators.dygenerator import DYGenerator
-from vnfb.components.QEGenerator import QEGenerator as base
+from vnf.qeutils.generators.dygenerator import DYGenerator
+from vnf.components.QEGenerator import QEGenerator as base
 
 class Actor(base):
 

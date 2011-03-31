@@ -15,7 +15,7 @@
 import luban.content as lc
 from luban.content import load, select, alert
 
-from vnfb.components.AuthorizedActor import AuthorizedActor as base, portal
+from vnf.components.AuthorizedActor import AuthorizedActor as base, portal
 
 
 class Actor(base):
@@ -176,7 +176,7 @@ class Actor(base):
         domaccess = self._domaccess(director)
         model = domaccess.getModel(id=model_id)
         
-        from vnfb.utils.db import destroy
+        from vnf.utils.db import destroy
         destroy(domaccess.orm(model), domaccess, director.sentry.username)
         return select(id='bvk-model-row-%s' % model_id).destroy()
 
@@ -273,7 +273,7 @@ class Actor(base):
         #
         form = lc.form(title='Select a target'); doc.add(form)
 
-        from vnfb.dom.material_simulations.BvKComputation import targets
+        from vnf.dom.material_simulations.BvKComputation import targets
         entries = targets
         selector = form.radio(name='target', entries=entries)
 

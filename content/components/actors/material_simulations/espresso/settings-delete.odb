@@ -10,7 +10,7 @@
 #
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
-from vnfb.qeutils.qegrid import QEGrid
+from vnf.qeutils.qegrid import QEGrid
 
 from luban.content import select
 from luban.content.Paragraph import Paragraph

@@ -15,7 +15,7 @@
 tablename = 'matter'
 
 
-from vnfb.components.DOMAccessor import DOMAccessor as base
+from vnf.components.DOMAccessor import DOMAccessor as base
 
 class Accessor(base):
 

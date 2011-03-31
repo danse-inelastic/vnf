@@ -11,8 +11,8 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
-from vnfb.qeutils.qeutils import stamp2date, defaultInputName, readRecordFile
-from vnfb.qeutils.qegrid import QEGrid
+from vnf.qeutils.qeutils import stamp2date, defaultInputName, readRecordFile
+from vnf.qeutils.qegrid import QEGrid
 
 from luban.content import select
 from luban.content import load

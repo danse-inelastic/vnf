@@ -2,7 +2,7 @@
 
 from _ import o2t
 
-from vnfb.dom.Computation import Computation
+from vnf.dom.Computation import Computation
 
 from memd.gulp.GulpSettings import GulpSettings as GulpSettingsDO
 GulpSettings = o2t(GulpSettingsDO, {'subclassFrom': Computation, 'dbtablename':'gulpsettings'})

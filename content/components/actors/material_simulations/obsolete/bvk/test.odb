@@ -60,7 +60,7 @@ class Actor(base):
 
 
         # create constraints
-        from vnfb.utils.constraints import Variable
+        from vnf.utils.constraints import Variable
         class M(Variable):
             def __init__(self, *indexes): self.indexes = indexes
         m10 = M(1,0)

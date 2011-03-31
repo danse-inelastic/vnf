@@ -14,10 +14,10 @@
 """
 Generates PH configuration file from scratch
 """
-from vnfb.qeutils.qeparser.qeinput import QEInput
-from vnfb.qeutils.qeparser.namelist import Namelist
-from vnfb.qeutils.results.pwresult import PWResult
-from vnfb.qeutils.qeconst import SIMTYPE
+from vnf.qeutils.qeparser.qeinput import QEInput
+from vnf.qeutils.qeparser.namelist import Namelist
+from vnf.qeutils.results.pwresult import PWResult
+from vnf.qeutils.qeconst import SIMTYPE
 
 TR2_PH      = "1.0d-12"
 LDISP       = ".true."

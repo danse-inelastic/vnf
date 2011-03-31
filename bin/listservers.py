@@ -26,7 +26,7 @@ class App(base):
     def main(self, *args, **kwds):
         clerk = self.inventory.clerk
 
-        from vnfb.dom.Server import Server
+        from vnf.dom.Server import Server
         servers = clerk.db.query(Server).all()
 
         for s in servers:
@@ -40,7 +40,7 @@ class App(base):
 
 
     def _getPrivateDepositoryLocations(self):
-        from vnfb.deployment import pyre_depositories
+        from vnf.deployment import pyre_depositories
         return pyre_depositories
 
 

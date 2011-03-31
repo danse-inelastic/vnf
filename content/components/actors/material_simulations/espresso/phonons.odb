@@ -14,10 +14,10 @@
 import os
 import time
 import shutil
-from vnfb.qeutils.qeutils import analyseActor, dataroot
-from vnfb.qeutils.results.matdynresult import MATDYNResult
-from vnfb.qeutils.results.pwresult import PWResult
-from vnfb.dom.material_simulations.Phonons import PhononsTable
+from vnf.qeutils.qeutils import analyseActor, dataroot
+from vnf.qeutils.results.matdynresult import MATDYNResult
+from vnf.qeutils.results.pwresult import PWResult
+from vnf.dom.material_simulations.Phonons import PhononsTable
 import idf.DOS
 import idf.Polarizations
 import idf.Omega2
@@ -145,7 +145,7 @@ flfrq = %s
 
     def _matdynpath(self):
         "Returns matdyn results path of 'dispersion' subtype"
-        # Example: "/home/dexity/exports/vnf/vnfb/content/data/tmp/tmpTRqFuy/8CNH5MUJ"
+        # Example: "/home/dexity/exports/vnf/vnf/content/data/tmp/tmpTRqFuy/8CNH5MUJ"
         path    = self._matdynresult.localPath()
         if not path:
             return ""   # empty string
@@ -154,7 +154,7 @@ flfrq = %s
 
 
     def _createRecord(self, director):
-        """Creates 'phonons' record (taken from: vnfb/components/ComputationResultRetriever.py)
+        """Creates 'phonons' record (taken from: vnf/components/ComputationResultRetriever.py)
         Notes:
             - Sets phonid
         """

@@ -25,7 +25,7 @@ class DbApp(base):
 
     def main(self, *args, **kwds):
         db = self.clerk.db
-        from vnfb.dom.User import User
+        from vnf.dom.User import User
 
         users = db.query(User).all()
         for user in users:

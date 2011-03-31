@@ -20,11 +20,11 @@ class AppExtension(Base):
         
         import pyre.inventory
 
-        import vnfb.components
-        dds = pyre.inventory.facility(name="dds", factory=vnfb.components.dds)
+        import vnf.components
+        dds = pyre.inventory.facility(name="dds", factory=vnf.components.dds)
         dds.meta['tip'] = "the component manages data files"
 
-        csaccessor = pyre.inventory.facility( name='csaccessor', factory = vnfb.components.ssher)
+        csaccessor = pyre.inventory.facility( name='csaccessor', factory = vnf.components.ssher)
         csaccessor.meta['tip'] = 'computing server accessor'
         
         itaskmanager = pyre.inventory.facility(name='itaskmanager', default = 'itask-manager')
@@ -52,7 +52,7 @@ class AppExtension(Base):
         self.csaccessor = self.inventory.csaccessor
         self.itaskmanager = self.inventory.itaskmanager
 
-        from vnfb.components import accesscontrol
+        from vnf.components import accesscontrol
         self.accesscontrol = accesscontrol()
 
         return

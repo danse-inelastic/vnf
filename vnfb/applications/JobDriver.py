@@ -18,18 +18,18 @@ POSFILE     = "cp.pos"
 NCFILE      = "cp.nc"
 DOSFILE     = "vdos.dos"
 
-from vnfb.dom.QEJob import QEJob
-from vnfb.qeutils.results.cpresult import CPResult
-from vnfb.qeutils.qeutils import stamp, writeRecordFile, defaultInputName, readRecordFile
-from vnfb.qeutils.qeconst import RUNSCRIPT, TYPE, MDSTEPS, NOPARALLEL
-from vnfb.qeutils.qeutils import packname
-from vnfb.qeutils.qescheduler import schedule
-from vnfb.qeutils.servers import outdir, createOutdir
+from vnf.dom.QEJob import QEJob
+from vnf.qeutils.results.cpresult import CPResult
+from vnf.qeutils.qeutils import stamp, writeRecordFile, defaultInputName, readRecordFile
+from vnf.qeutils.qeconst import RUNSCRIPT, TYPE, MDSTEPS, NOPARALLEL
+from vnf.qeutils.qeutils import packname
+from vnf.qeutils.qescheduler import schedule
+from vnf.qeutils.servers import outdir, createOutdir
 from luban.applications.UIApp import UIApp as base
 
 import pyre.idd
 import pyre.inventory
-import vnfb.components
+import vnf.components
 
 """
 Jobs submission steps:
@@ -45,7 +45,7 @@ Important Notes:
      (see _createRunScript() method) in this case try to use "-inp".
     - Dynmat task IS NOT a parallel program (no mpirun)
     - Both "<" and "-inp" work on foxtrot.danse.us
-    - See also vnfb/applications/ITaskApp.py
+    - See also vnf/applications/ITaskApp.py
     - This application is specific for Quantum Espress. To use it for other package,
       you need to subclass it
 """
@@ -61,13 +61,13 @@ class JobDriver(base):
         idd = pyre.inventory.facility('idd-session', factory=pyre.idd.session, args=['idd-session',])
         idd.meta['tip'] = "access to the token server"
 
-        clerk = pyre.inventory.facility(name="clerk", factory=vnfb.components.clerk)
+        clerk = pyre.inventory.facility(name="clerk", factory=vnf.components.clerk)
         clerk.meta['tip'] = "the component that retrieves data from the various database tables"
 
-        dds = pyre.inventory.facility(name="dds", factory=vnfb.components.dds)
+        dds = pyre.inventory.facility(name="dds", factory=vnf.components.dds)
         dds.meta['tip'] = "the component manages data files"
 
-        csaccessor = pyre.inventory.facility(name='csaccessor', factory = vnfb.components.ssher)
+        csaccessor = pyre.inventory.facility(name='csaccessor', factory = vnf.components.ssher)
         csaccessor.meta['tip'] = 'computing server accessor'
 
 

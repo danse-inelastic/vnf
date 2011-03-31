@@ -20,7 +20,7 @@ def hasPrivilege(user, target=None, name=None, db=None):
     name: name of the privilege. see Privilege class for more details
     db: db connection
     '''
-    from vnfb.dom.User import User
+    from vnf.dom.User import User
     if not isinstance(user, User):
         user = db.query(User).filter_by(id=user).one()
         

@@ -11,10 +11,10 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
-from vnfb.qeutils.results.qeresult import QEResult
-from vnfb.qeutils.qeconst import SMEARING, IBRAV
-from vnfb.qeutils.qegrid import QEGrid
-from vnfb.qeutils.qeutils import fstr
+from vnf.qeutils.results.qeresult import QEResult
+from vnf.qeutils.qeconst import SMEARING, IBRAV
+from vnf.qeutils.qegrid import QEGrid
+from vnf.qeutils.qeutils import fstr
 
 from qecalc.qetask.pwtask import PWTask
 import luban.content as lc

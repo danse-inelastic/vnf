@@ -21,7 +21,7 @@ def visual(jobs, cols, director):
 
 
 def table(jobs, cols, director):
-    from vnfb.content.visuals.table.job import table
+    from vnf.content.visuals.table.job import table
     return table(jobs, cols, director, editable=True)
 
 

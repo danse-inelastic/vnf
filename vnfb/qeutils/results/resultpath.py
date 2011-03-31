@@ -13,10 +13,10 @@
 
 import os
 import re
-from vnfb.qeutils.qeutils import dataroot
-from vnfb.qeutils.qeconst import OUTPUT_EXT, INPUT_EXT
-from vnfb.qeutils.results.resultinfo import ResultInfo
-#from vnfb.qeutils.qerecords import SimulationRecord
+from vnf.qeutils.qeutils import dataroot
+from vnf.qeutils.qeconst import OUTPUT_EXT, INPUT_EXT
+from vnf.qeutils.results.resultinfo import ResultInfo
+#from vnf.qeutils.qerecords import SimulationRecord
 
 def ending(ext):
     return '[\w]+\.%s$' % ext
@@ -85,7 +85,7 @@ class ResultPath(object):
         Retruns absolute path of the result file(s) specified by file type (ftype), e.g.
         output or input config files, that exist on the file system
 
-        Example: "/home/dexity/exports/vnf/vnfb/content/data/tmp/tmpTsdw21/4ICDAVNK/4I2NPMY4pw.in.out"
+        Example: "/home/dexity/exports/vnf/vnf/content/data/tmp/tmpTsdw21/4ICDAVNK/4I2NPMY4pw.in.out"
         Identifies type of file (e.g. input and output file) based on regular expression (not input record)!
 
         relative - flag that affects path of returned string. If True, returns
@@ -96,7 +96,7 @@ class ResultPath(object):
             returns: "tmp/tmpTsdw21/4ICDAVNK/4I2NPMY4pw.in.out"
 
             relative = False
-            returns: "/home/dexity/exports/vnf/vnfb/content/data/tmp/tmpTsdw21/4ICDAVNK/4I2NPMY4pw.in.out"
+            returns: "/home/dexity/exports/vnf/vnf/content/data/tmp/tmpTsdw21/4ICDAVNK/4I2NPMY4pw.in.out"
         """
 
         if not ftype:                # All files in the result directory
@@ -136,7 +136,7 @@ class ResultPath(object):
         Each job for the task of type will have separate root path specified by
         task type (ttype)
 
-        Example: "/home/dexity/exports/vnf/vnfb/content/data/tmp/tmpTsdw21/4ICDAVNK/
+        Example: "/home/dexity/exports/vnf/vnf/content/data/tmp/tmpTsdw21/4ICDAVNK/
         Note: Result path is assumed not to have child directories.
         """
         if not self._recordsOK():

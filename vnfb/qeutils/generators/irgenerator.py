@@ -24,7 +24,7 @@ TRANP               = ".true."
 #AMPRP               = "0.02"
 
 
-from vnfb.qeutils.generators.cpgenerator import CPGenerator as base
+from vnf.qeutils.generators.cpgenerator import CPGenerator as base
 
 class IRGenerator(base):
     "Generator for CP Ion Randomization task"

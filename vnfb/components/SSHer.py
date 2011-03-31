@@ -425,7 +425,7 @@ def _tunneled_remote_host(server):
 
 
 import os
-from vnfb.utils.spawn import spawn
+from vnf.utils.spawn import spawn
 
 
 # version

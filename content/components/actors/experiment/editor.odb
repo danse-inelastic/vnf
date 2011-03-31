@@ -174,7 +174,7 @@ class Actor(base):
         ic = exp.instrument_configuration.dereference(domaccess.db)
 
         # insert a new component
-        from vnfb.dom.neutron_experiment_simulations.neutron_components.PlaceHolder import PlaceHolderTable
+        from vnf.dom.neutron_experiment_simulations.neutron_components.PlaceHolder import PlaceHolderTable
         newcomponent = domaccess.insertNewRecordWithID(PlaceHolderTable)
         ic.components.insert(newcomponent, before=before, db=domaccess.db)
 
@@ -199,7 +199,7 @@ class Actor(base):
         ic = exp.instrument_configuration.dereference(domaccess.db)
 
         # append a new component
-        from vnfb.dom.neutron_experiment_simulations.neutron_components.PlaceHolder import PlaceHolderTable
+        from vnf.dom.neutron_experiment_simulations.neutron_components.PlaceHolder import PlaceHolderTable
         newcomponent = domaccess.insertNewRecordWithID(PlaceHolderTable)
         ic.components.add(newcomponent, db=domaccess.db)
 

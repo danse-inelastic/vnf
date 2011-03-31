@@ -11,7 +11,7 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
-from vnfb.qeutils.generators.cpgenerator import CPGenerator as base
+from vnf.qeutils.generators.cpgenerator import CPGenerator as base
 
 # Control namelist
 RESTART_MODE    = "'restart'"

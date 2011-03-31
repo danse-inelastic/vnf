@@ -12,9 +12,9 @@
 #
 
 import os
-from vnfb.qeutils.qeconst import LINKORDER
-from vnfb.qeutils.results.qeresult import QEResult
-from vnfb.qeutils.results.resultpath import FILBAND
+from vnf.qeutils.qeconst import LINKORDER
+from vnf.qeutils.results.qeresult import QEResult
+from vnf.qeutils.results.resultpath import FILBAND
 
 NONE        = "None"
 class BANDSResult(QEResult):

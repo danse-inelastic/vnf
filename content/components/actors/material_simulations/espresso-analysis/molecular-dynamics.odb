@@ -11,12 +11,12 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
-from vnfb.qeutils.qeutils import parseVDos
-from vnfb.qeutils.qeutils import analyseActor
-from vnfb.qeutils.qerecords import SimulationRecord
-from vnfb.qeutils.results.cpresult import CPResult
-from vnfb.qeutils.results.resultpath import ResultPath
-from vnfb.qeutils.qegrid import QEGrid
+from vnf.qeutils.qeutils import parseVDos
+from vnf.qeutils.qeutils import analyseActor
+from vnf.qeutils.qerecords import SimulationRecord
+from vnf.qeutils.results.cpresult import CPResult
+from vnf.qeutils.results.resultpath import ResultPath
+from vnf.qeutils.qegrid import QEGrid
 
 import luban.content as lc
 from luban.content import select, load

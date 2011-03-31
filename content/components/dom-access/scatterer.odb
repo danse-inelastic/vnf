@@ -15,7 +15,7 @@
 tablename='sample'
 
 
-from vnfb.components.DOMAccessor import DOMAccessor as base
+from vnf.components.DOMAccessor import DOMAccessor as base
 
 class Accessor(base):
 
@@ -29,12 +29,12 @@ class Accessor(base):
         orm = self.director.clerk.orm
         
         # build orm for all dependent types
-        from vnfb.dom.scattering_kernels import kernelnames
+        from vnf.dom.scattering_kernels import kernelnames
         for name in kernelnames:
             type = self._getObjectByImportingFromDOM(name)
             orm(type)
             continue
-        from vnfb.dom.geometry import getShapeTypes
+        from vnf.dom.geometry import getShapeTypes
         map(orm, getShapeTypes())
         
         return orm
@@ -65,7 +65,7 @@ class Accessor(base):
         return record.short_description
 
 
-from vnfb.dom.neutron_experiment_simulations.Scatterer import Scatterer, ScattererTable
+from vnf.dom.neutron_experiment_simulations.Scatterer import Scatterer, ScattererTable
 
 
 from dsaw.db.VersatileReference import global_pointer

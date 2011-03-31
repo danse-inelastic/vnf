@@ -96,7 +96,7 @@ class User(base):
 
     def _getPrivilege(self, privilege, db):
         target, name = privilege
-        from vnfb.dom.Privilege import Privilege
+        from vnf.dom.Privilege import Privilege
         privilege = db.query(Privilege).filter_by(target=target, name=name).one()
         return privilege
     

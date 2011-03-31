@@ -16,7 +16,7 @@ import unittest
 class TestCase(unittest.TestCase):
 
     def test(self):
-        from vnfb.dom.geometry import getShapeTypes
+        from vnf.dom.geometry import getShapeTypes
         getShapeTypes()
         return
 

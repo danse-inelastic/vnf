@@ -19,7 +19,7 @@ from luban.content import select, load, alert
 
 
 #
-from vnfb.dom.neutron_experiment_simulations.neutron_components.DetectorSystem_fromXML import DetectorSystemHierarchy_fromXML
+from vnf.dom.neutron_experiment_simulations.neutron_components.DetectorSystem_fromXML import DetectorSystemHierarchy_fromXML
 
 from luban.components.Actor import Actor
 import luban.orm

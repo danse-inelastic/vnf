@@ -11,7 +11,7 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
-from vnfb.components.QEAnalysis import QEAnalysis as base
+from vnf.components.QEAnalysis import QEAnalysis as base
 
 class Actor(base):
     pass

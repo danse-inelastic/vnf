@@ -23,7 +23,7 @@ ELECTRON_DYNAMICS   = "'verlet'"
 ELECTRON_TEMPERATURE    = "'not_controlled'"
 ION_DYNAMICS        = "'verlet'"
 
-from vnfb.qeutils.generators.cpgenerator import CPGenerator as base
+from vnf.qeutils.generators.cpgenerator import CPGenerator as base
 
 class DYGenerator(base):
     "Generator for CP Electron and Ion Dynamics task"

@@ -86,7 +86,7 @@ class NeutronPlayer(base):
 
 
 
-from vnfb.dom.neutron_experiment_simulations.NeutronStorage import NeutronStorage
+from vnf.dom.neutron_experiment_simulations.NeutronStorage import NeutronStorage
 
 InvBase=base.Inventory
 class Inventory(InvBase):

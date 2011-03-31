@@ -20,7 +20,7 @@ from TestCaseBase import createTestCase, TestAppBase
 class TestApp(TestAppBase):
     
     
-    from vnfb.dom.scattering_kernels.IsotropicElasticKernel import IsotropicElasticKernel as Kernel
+    from vnf.dom.scattering_kernels.IsotropicElasticKernel import IsotropicElasticKernel as Kernel
     
     
     kernelid = 'testjobbuilder'

@@ -12,7 +12,7 @@
 #
 
 
-from vnfb.components.DOMAccessor import DOMAccessor as base
+from vnf.components.DOMAccessor import DOMAccessor as base
 
 class Accessor(base):
 
@@ -60,7 +60,7 @@ class Accessor(base):
 
 
 
-from vnfb.dom.News import News
+from vnf.dom.News import News
 import sqlalchemy
 
 

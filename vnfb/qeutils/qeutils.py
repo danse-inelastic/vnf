@@ -18,9 +18,9 @@ import os.path
 
 import os
 import re
-from vnfb.qeutils.qeconst import INPUT, INPUT_DEFAULT, ANALYSIS, SUBTYPE_MATDYN, SIMTYPE, SIMCHAINS
-from vnfb.qeutils.qescheduler import schedulerfactory
-from vnfb.qeutils.qeparser.qeinput import QEInput
+from vnf.qeutils.qeconst import INPUT, INPUT_DEFAULT, ANALYSIS, SUBTYPE_MATDYN, SIMTYPE, SIMCHAINS
+from vnf.qeutils.qescheduler import schedulerfactory
+from vnf.qeutils.qeparser.qeinput import QEInput
 import luban.content as lc
 from luban.content import load, select
 
@@ -111,7 +111,7 @@ ifelse  = lambda a,b,c: (b,c)[not a]
 
 """
 Sets attribute 'name' of object 'obj' from params dictionary
-Used mostly on database classes (vnfb.dom)
+Used mostly on database classes (vnf.dom)
 """
 setname = lambda params, obj, name: ifelse(params.has_key(name), params.get(name), getattr(obj, name))
 
@@ -201,7 +201,7 @@ def readRecordFile(dds, record, fname=None):
 def dataroot(director, relative = False):
     "Returns data root directory where the simulation results are exported"
     # Example:
-    #    relative = False: "/home/dexity/exports/vnf/vnfb/content/data"
+    #    relative = False: "/home/dexity/exports/vnf/vnf/content/data"
     #    relative = True:  "../content/data"
 
     if not director:
@@ -375,8 +375,8 @@ def getResult(director, id, sim, linkorder):
     assert type(tasktype) == str
     modfile     = tasktype.lower()+"result"
     modclass    = tasktype.upper()+"Result"
-    module      = _import("vnfb.qeutils.results.%s" % modfile)
-    # from vnfb.qeutils.results.phresult import PHResult
+    module      = _import("vnf.qeutils.results.%s" % modfile)
+    # from vnf.qeutils.results.phresult import PHResult
     result      = getattr(module, modclass)(director, id)   # instance
     return result
 
@@ -437,7 +437,7 @@ def torqueFactory(director, job, server):
     if not director or not job or not server:   # If one of them is None return None
         return None
 
-    factory = schedulerfactory(server)    # vnfb.clusterscheduler.qetorque.Scheduler
+    factory = schedulerfactory(server)    # vnf.clusterscheduler.qetorque.Scheduler
     jobpath = director.dds.abspath(job, server=server)
     launch  = lambda cmd: director.csaccessor.execute(
                                                     cmd,

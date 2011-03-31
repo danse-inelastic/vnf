@@ -11,12 +11,12 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
-from vnfb.qeutils.qeparser.pseudo.pseudo import PSEUDO
-from vnfb.qeutils.generators.emgenerator import EMGenerator
+from vnf.qeutils.qeparser.pseudo.pseudo import PSEUDO
+from vnf.qeutils.generators.emgenerator import EMGenerator
 from qecalc.qetask.qeparser.pwinput import PWInput
 from luban.content import select
 
-from vnfb.components.QEGenerator import QEGenerator as base
+from vnf.components.QEGenerator import QEGenerator as base
 IBRAV   = 14
 
 #XXX: The number atomic species is limited by 10 for now

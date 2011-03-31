@@ -16,7 +16,7 @@ Convergence - table that stores records for convergence tests
 """
 
 
-from vnfb.components.QETable import QETable
+from vnf.components.QETable import QETable
 
 class QEConvergence(QETable):
     name = "qeconvergences"

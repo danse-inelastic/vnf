@@ -27,9 +27,9 @@ Notes on database classes implementation:
 3. Using QETable methods does not require passing director every time you use it.
 """
 
-from vnfb.qeutils.qeutils import timestamp, newid, setname, ifelse
+from vnf.qeutils.qeutils import timestamp, newid, setname, ifelse
 from dsaw.db.WithID import WithID
-#from vnfb.dom.Computation import Computation
+#from vnf.dom.Computation import Computation
 
 NO_UPDATE   = ["timecreated", "date", "id"]
 STAMPED     = ["timecreated", "timemodified"]

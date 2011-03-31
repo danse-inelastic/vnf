@@ -88,7 +88,7 @@ class Actor(base):
         #
         _buttonid = lambda s: 'scatterer-shape-button-%s' % s.lower()
         # dehighlight buttons
-        from vnfb.dom.geometry import shapenames
+        from vnf.dom.geometry import shapenames
         dehighlight = [select(id=_buttonid(s)).removeClass('highlight')
                        for s in shapenames ]
 
@@ -269,7 +269,7 @@ class Actor(base):
         if not scatterer_record.matter:
             return alert("You have not defined the atomic structure (matter) for this scatterer")
         
-        from vnfb.dom.scattering_kernels import getKernelTypes
+        from vnf.dom.scattering_kernels import getKernelTypes
         types = getKernelTypes()
         #
         _buttonid = lambda t: 'scatterer-kernel-button-%s' % t.lower()

@@ -11,7 +11,7 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
-from vnfb.utils import atomicstructure as struct_utils
+from vnf.utils import atomicstructure as struct_utils
 
 import unittest
 class TestCase(unittest.TestCase):

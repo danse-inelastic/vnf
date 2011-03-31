@@ -15,7 +15,7 @@
 tablename='materialsimulation'
 
 
-from vnfb.components.DOMAccessor import DOMAccessor as base
+from vnf.components.DOMAccessor import DOMAccessor as base
 
 class Accessor(base):
 
@@ -148,10 +148,10 @@ class Accessor(base):
         from vnf.dom import materialsimulationtables, materialmodelingtables
         tables = materialsimulationtables()# + materialmodelingtables()
 
-        from vnfb.dom.material_simulations.computation_types import typenames
+        from vnf.dom.material_simulations.computation_types import typenames
         ormtables = map(self._getTable, typenames)
 
-        from vnfb.dom import qesimtables
+        from vnf.dom import qesimtables
 
         return tables + ormtables + qesimtables()
 
@@ -163,7 +163,7 @@ class Accessor(base):
           entity: global address of the entity
           type: type of the entity
         '''
-        from vnfb.utils.query.labels import select_labeled_entities_clause
+        from vnf.utils.query.labels import select_labeled_entities_clause
         return select_labeled_entities_clause(name, type, db).alias('labeled')
 
 
@@ -211,7 +211,7 @@ class Accessor(base):
         u = u.alias('uq1q2')
         cols = [u.c.id, u.c.short_description, u.c.type, u.c.date,
                 u.c.globalpointer, u.c.creator, u.c.matter]
-        from vnfb.utils.query.accesscontrol import select_public_and_owned_records
+        from vnf.utils.query.accesscontrol import select_public_and_owned_records
         username = self.director.sentry.username
         return select_public_and_owned_records(cols, u, username, db)
 
@@ -223,7 +223,7 @@ class Accessor(base):
           * id
           * short_description
         '''
-        from vnfb.utils.query.atomicstructures import select_matter_clause
+        from vnf.utils.query.atomicstructures import select_matter_clause
         return select_matter_clause(db).alias('matterq')
 
 

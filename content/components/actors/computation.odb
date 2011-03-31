@@ -39,12 +39,12 @@ class Actor(base):
         
         computation = domaccess.getRecordByID(self.inventory.type, id=self.inventory.id)
         
-        from vnfb.utils.computation import start_results_retrieval
+        from vnf.utils.computation import start_results_retrieval
         start_results_retrieval(computation, director)
 
         posterior_action = self.inventory.posterior_action
         if posterior_action:
-            from vnfb.content import safe_eval_action
+            from vnf.content import safe_eval_action
             return safe_eval_action(posterior_action)
 
     def createResultsDoc(self, director):

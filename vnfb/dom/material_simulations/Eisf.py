@@ -11,7 +11,7 @@
 #
 
 from vsat.Eisf import Eisf
-from vnfb.dom.AtomicStructure import StructureTable
+from vnf.dom.AtomicStructure import StructureTable
 
 # db table
 from ComputationResult import ComputationResult

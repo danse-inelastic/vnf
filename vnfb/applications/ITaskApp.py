@@ -15,7 +15,7 @@ from luban.applications.UIApp import UIApp as base
 
 class ITaskApp(base):
 
-    from vnfb.dom.ITask import ITask as Table
+    from vnf.dom.ITask import ITask as Table
 
     class Inventory(base.Inventory):
 
@@ -29,12 +29,12 @@ class ITaskApp(base):
         clerk = pyre.inventory.facility(name="clerk", default='clerk')
         clerk.meta['tip'] = "the component that retrieves data from the various database tables"
         
-        import vnfb.components
         import vnf.components
-        dds = pyre.inventory.facility(name="dds", factory=vnfb.components.dds)
+        import vnf.components
+        dds = pyre.inventory.facility(name="dds", factory=vnf.components.dds)
         dds.meta['tip'] = "the component manages data files"
         
-        csaccessor = pyre.inventory.facility(name='csaccessor', factory = vnfb.components.ssher)
+        csaccessor = pyre.inventory.facility(name='csaccessor', factory = vnf.components.ssher)
         csaccessor.meta['tip'] = 'computing server accessor'
         
         import vnf.inventory

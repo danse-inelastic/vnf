@@ -16,15 +16,15 @@
 
 
 def announce(director, announcement, *args, **kwds):
-    import vnfb.components
+    import vnf.components
     
     # create the announcer
-    announcer = vnfb.components.announcer()
+    announcer = vnf.components.announcer()
     director.configureComponent(announcer)
     announcer.init()
     
     # create the postman
-    postman = vnfb.components.postman()
+    postman = vnf.components.postman()
     director.configureComponent(postman)
     postman.init()
 

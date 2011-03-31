@@ -82,8 +82,8 @@ class Inventory(InvBase):
 
 ARCSbeam.Inventory = Inventory
 
-from vnfb.dom._ import o2t
-from vnfb.dom.Computation import Computation
+from vnf.dom._ import o2t
+from vnf.dom.Computation import Computation
 ARCSbeam_Table = o2t(ARCSbeam, {'subclassFrom': Computation})
 ARCSbeam_Table.job_builder = 'mcvine/arcs/beam-profile'
 ARCSbeam_Table.actor = 'instruments/arcs/beam-profile'

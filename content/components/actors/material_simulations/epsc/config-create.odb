@@ -11,12 +11,12 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
-from vnfb.dom.QEConfiguration import QEConfiguration
-from vnfb.qeutils.qeutils import writeRecordFile
+from vnf.dom.QEConfiguration import QEConfiguration
+from vnf.qeutils.qeutils import writeRecordFile
 
 from luban.content import load, select
 import luban.content as lc
-from vnfb.epscutils.epscconst import TYPE_DESC
+from vnf.epscutils.epscconst import TYPE_DESC
 
 from luban.components.AuthorizedActor import AuthorizedActor as base
 class Actor(base):

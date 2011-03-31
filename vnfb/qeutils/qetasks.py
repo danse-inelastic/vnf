@@ -11,9 +11,9 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
-from vnfb.qeutils.taskcell import TaskCell
-from vnfb.qeutils.qegrid import QEGrid
-from vnfb.qeutils.qerecords import SimulationRecord
+from vnf.qeutils.taskcell import TaskCell
+from vnf.qeutils.qegrid import QEGrid
+from vnf.qeutils.qerecords import SimulationRecord
 
 import luban.content as lc
 

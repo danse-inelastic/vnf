@@ -170,7 +170,7 @@ class Actor(base):
             raise RuntimeError, "should not reach here: job already exists. computation: %s, job: %s" % (computation.id, job.id)
         
         # create new job
-        from vnfb.utils.job import new
+        from vnf.utils.job import new
         job = new(director)
         
         # assign computation
@@ -226,7 +226,7 @@ class Actor(base):
     def _getComputation(self, director):
         # load the computation from db
         id = self.inventory.id
-        from vnfb.dom.neutron_experiment_simulations.integrated.arcs.ARCSbeam import ARCSbeam_Table
+        from vnf.dom.neutron_experiment_simulations.integrated.arcs.ARCSbeam import ARCSbeam_Table
         computation = director.clerk.db.query(ARCSbeam_Table).filter_by(id=id).one()
         return computation
     

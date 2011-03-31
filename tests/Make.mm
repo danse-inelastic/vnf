@@ -10,14 +10,14 @@
 #
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-PROJECT = vnfb
+PROJECT = vnf
 PACKAGE = tests
 
 RECURSE_DIRS = \
 	content \
 
 EXPORT_DATADIRS = \
-	vnfb \
+	vnf \
 	content \
 	selenium \
 

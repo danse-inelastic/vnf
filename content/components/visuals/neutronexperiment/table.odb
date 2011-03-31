@@ -21,7 +21,7 @@ def visual(experiments, cols, director):
 
 
 def table(experiments, cols, director):
-    from vnfb.content.visuals.table.experiment import table
+    from vnf.content.visuals.table.experiment import table
     return table(experiments, cols, director, editable=True)
 
 

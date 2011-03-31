@@ -30,8 +30,8 @@ class Component(base):
         return
 
 
-from vnfb.dom.material_simulations.Phonons import PhononsTable
-from vnfb.dom.AtomicStructure import StructureTable
+from vnf.dom.material_simulations.Phonons import PhononsTable
+from vnf.dom.AtomicStructure import StructureTable
 def create(id, matter_description, db):
     where = "short_description like '%s'" % matter_description
     matter = db.query(StructureTable).filter(where).all()[0]

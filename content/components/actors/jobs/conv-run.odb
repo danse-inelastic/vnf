@@ -18,16 +18,16 @@ import time
 import os
 from luban.content.ProgressBar import ProgressBar
 from luban.content import load, select
-from vnfb.utils import launch_detached, bindir
-from vnfb.qeutils.qeutils import latestJob, jobStatus, key2str, latestInput
-from vnfb.qeutils.qeutils import defaultInputName, readRecordFile, setInputParam, getInputParam, writeRecordFile
-from vnfb.qeutils.results.resultinfo import ResultInfo
-from vnfb.qeutils.qeconst import JOB_STATE
-from vnfb.qeutils.results.pwresult import PWResult
+from vnf.utils import launch_detached, bindir
+from vnf.qeutils.qeutils import latestJob, jobStatus, key2str, latestInput
+from vnf.qeutils.qeutils import defaultInputName, readRecordFile, setInputParam, getInputParam, writeRecordFile
+from vnf.qeutils.results.resultinfo import ResultInfo
+from vnf.qeutils.qeconst import JOB_STATE
+from vnf.qeutils.results.pwresult import PWResult
 
 import luban.content as lc
-from vnfb.qeutils.qeconst import ID_CONV_JOBS, ID_CONV_OPT
-from vnfb.qeutils.qeutils import convJobId, convJobRowId
+from vnf.qeutils.qeconst import ID_CONV_JOBS, ID_CONV_OPT
+from vnf.qeutils.qeutils import convJobId, convJobRowId
 
 # Fraction out of total job progress
 SUBMIT_FRACTION     = 0.3   # Job submission

@@ -32,10 +32,10 @@ Important Note:
     - Now QESimulation is also used for EPSC model
 """
 
-from vnfb.components.QETable import QETable
+from vnf.components.QETable import QETable
 from dsaw.db.GloballyReferrable import GloballyReferrable
-from vnfb.dom.Computation import Computation
-from vnfb.dom.AtomicStructure import StructureTable
+from vnf.dom.Computation import Computation
+from vnf.dom.AtomicStructure import StructureTable
 
 from MaterialSimulation import MaterialSimulation
 
@@ -156,7 +156,7 @@ if __name__ == "__main__":
 
 
 
-#    from vnfb.qeutils.qeutils import stamp2date
+#    from vnf.qeutils.qeutils import stamp2date
 #    timeCreated = dsaw.db.varchar(name="timeCreated", length=32, default='')
 #    timeCreated.meta['tip'] = "timeCreated - replaced by 'date'"
 #

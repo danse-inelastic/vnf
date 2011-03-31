@@ -11,7 +11,7 @@
 #
 import luban.content as lc
 from luban.content import select, load, alert
-from vnfb.dom.material_simulations.Msd import Msd
+from vnf.dom.material_simulations.Msd import Msd
 from luban.components.Actor import Actor
 import luban.orm
 base = luban.orm.object2actor(Msd)

@@ -19,9 +19,9 @@ def announcement(itask, user):
         username = user.username
         useremail = user.email
         
-    import vnfb.content
+    import vnf.content
 
-    msg = vnfb.content.announcement()
+    msg = vnf.content.announcement()
     msg.sender = useremail
     msg.subject = "ITask #%s failed" % (itask.id,)
     msg.text = [

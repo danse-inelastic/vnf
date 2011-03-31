@@ -12,7 +12,7 @@
 #
 
 import os
-from vnfb.qeutils.qegrid import QEGrid
+from vnf.qeutils.qegrid import QEGrid
 
 from luban.content import select
 from luban.content.Paragraph import Paragraph
@@ -21,7 +21,7 @@ from luban.content.FormSubmitButton import FormSubmitButton
 from luban.content import load
 import luban.content as lc
 from luban.components.AuthorizedActor import AuthorizedActor as base
-from vnfb.epscutils.epscconst import TYPE_DESC
+from vnf.epscutils.epscconst import TYPE_DESC
 
 class Actor(base):
 

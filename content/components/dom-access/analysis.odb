@@ -11,7 +11,7 @@
 #
 
 tablename='analysis'
-from vnfb.components.DOMAccessor import DOMAccessor as base
+from vnf.components.DOMAccessor import DOMAccessor as base
 
 class Accessor(base):
 
@@ -190,7 +190,7 @@ class Accessor(base):
 
 
     def _analysisTables(self):
-        from vnfb.dom.analysis.analysis_types import typenames
+        from vnf.dom.analysis.analysis_types import typenames
         ormtables = map(self._getTable, typenames)
         return ormtables
 
@@ -202,7 +202,7 @@ class Accessor(base):
           entity: global address of the entity
           type: type of the entity
         '''
-        from vnfb.utils.query.labels import select_labeled_entities_clause
+        from vnf.utils.query.labels import select_labeled_entities_clause
         return select_labeled_entities_clause(name, type, db).alias('labeled')
 
 
@@ -251,7 +251,7 @@ class Accessor(base):
         return
 
 
-from vnfb.dom.Label import Label
+from vnf.dom.Label import Label
 from dsaw.db.VersatileReference import global_pointer
 import sqlalchemy
 

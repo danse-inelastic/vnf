@@ -20,10 +20,10 @@ Notes:
 
 """
 
-from vnfb.qeutils.qeparser.namelist import Namelist
-from vnfb.qeutils.qeparser.card import Card
-from vnfb.qeutils.qeconst import SMEARING, MATTER_TYPE, SIMTYPE, RELAXLIST
-from vnfb.qeutils.results.pwresult import PWResult
+from vnf.qeutils.qeparser.namelist import Namelist
+from vnf.qeutils.qeparser.card import Card
+from vnf.qeutils.qeconst import SMEARING, MATTER_TYPE, SIMTYPE, RELAXLIST
+from vnf.qeutils.results.pwresult import PWResult
 
 # Default Control params
 CALCULATION     = "'scf'"

@@ -11,12 +11,12 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
-from vnfb.qeutils.qeutils import  setInputParam
+from vnf.qeutils.qeutils import  setInputParam
 
 import luban.content as lc
 from luban.content import load, select
 
-from vnfb.components.QEConvergence import QEConvergence as base
+from vnf.components.QEConvergence import QEConvergence as base
 
 class Actor(base):
     class Inventory(base.Inventory):

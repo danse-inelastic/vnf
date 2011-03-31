@@ -11,10 +11,10 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
-from vnfb.qeutils.results.phresult import PHResult
-from vnfb.qeutils.qeparser.qeinput import QEInput
-from vnfb.qeutils.qeparser.namelist import Namelist
-from vnfb.qeutils.qeconst import ZASR, ZASRLIST
+from vnf.qeutils.results.phresult import PHResult
+from vnf.qeutils.qeparser.qeinput import QEInput
+from vnf.qeutils.qeparser.namelist import Namelist
+from vnf.qeutils.qeconst import ZASR, ZASRLIST
 
 class DYNMATGenerator(object):
 

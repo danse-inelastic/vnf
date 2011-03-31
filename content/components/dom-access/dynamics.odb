@@ -10,7 +10,7 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 tablename='dynamics'
-from vnfb.components.DOMAccessor import DOMAccessor as base
+from vnf.components.DOMAccessor import DOMAccessor as base
 
 class Accessor(base):
 
@@ -22,9 +22,9 @@ class Accessor(base):
         orm = self.director.clerk.orm
         # build orm for all dynamics types--orm 
         #registers and stores these internally
-        from vnfb.dom.material_simulations.Phonons import Phonons
-        #from vnfb.dom.material_simulations.Motion import MotionDO
-        from vnfb.dom.material_simulations.Trajectory import TrajectoryDO
+        from vnf.dom.material_simulations.Phonons import Phonons
+        #from vnf.dom.material_simulations.Motion import MotionDO
+        from vnf.dom.material_simulations.Trajectory import TrajectoryDO
         # from vsat.Phonons import Phonons
         # from vsat.Motion import Motion
         orm(Phonons)

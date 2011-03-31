@@ -33,7 +33,7 @@ class Component(base):
         return
 
 
-from vnfb.dom.UserHasRole import assign, User, Role
+from vnf.dom.UserHasRole import assign, User, Role
 
 
 assignments = [

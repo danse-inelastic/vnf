@@ -11,8 +11,8 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
-from vnfb.qeutils.qegrid import QEGrid
-from vnfb.epscutils.epscconst import EPSC_OUT_FILES, EPSC_OUT, EPSC_OUT_TIPS 
+from vnf.qeutils.qegrid import QEGrid
+from vnf.epscutils.epscconst import EPSC_OUT_FILES, EPSC_OUT, EPSC_OUT_TIPS 
 
 import luban.content as lc
 from luban.content import select, load

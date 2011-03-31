@@ -87,7 +87,7 @@ def cancel( job, director ):
         # alert user
         user = director.clerk.getUser(job.creator)
         
-        from vnfb.utils.communications import announce
+        from vnf.utils.communications import announce
         announce(director, 'job-state-changed', job, user)
         
     return job
@@ -101,13 +101,13 @@ def schedulerfactory( server ):
     if scheduler in [ None, '', 'None' ]:
         raise RuntimeError, "scheduler not specified"
 
-    from vnfb.clusterscheduler import scheduler as factory
+    from vnf.clusterscheduler import scheduler as factory
     try: scheduler = factory( scheduler )
     except: raise NotImplementedError, 'scheduler %r' % scheduler
     return scheduler
 
 
-from vnfb.components.CSAccessor import RemoteAccessError
+from vnf.components.CSAccessor import RemoteAccessError
 
 
 # version

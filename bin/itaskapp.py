@@ -15,7 +15,7 @@
 def main():
 
 
-    from vnfb.applications.ITaskApp import ITaskApp
+    from vnf.applications.ITaskApp import ITaskApp
 
 
     class App(ITaskApp):

@@ -82,7 +82,7 @@ def check( job, director ):
         # alert user
         user = director.clerk.getUser(job.creator)
         
-        from vnfb.components import announcer
+        from vnf.components import announcer
         announcer(director, 'job-state-changed', job, user)
         
     return job
@@ -134,7 +134,7 @@ def schedulerfactory( server ):
     if scheduler in [ None, '', 'None' ]:
         raise RuntimeError, "scheduler not specified"
 
-    from vnfb.clusterscheduler import scheduler as factory
+    from vnf.clusterscheduler import scheduler as factory
     try: scheduler = factory( scheduler )
     except: raise NotImplementedError, 'scheduler %r' % scheduler
     return scheduler

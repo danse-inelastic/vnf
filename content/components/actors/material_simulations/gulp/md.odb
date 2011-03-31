@@ -12,12 +12,12 @@
 #
 
 
-from vnfb.content.actors.material_simulations.gulp.SimActorBase import SimActorBase as base
+from vnf.content.actors.material_simulations.gulp.SimActorBase import SimActorBase as base
 class Actor(base):
 
 
     editor_visual_name = 'material_simulations/moldyn/md-editor'
-    from vnfb.dom.material_simulations.GulpMd import GulpMdTable as dbtable
+    from vnf.dom.material_simulations.GulpMd import GulpMdTable as dbtable
 
 
     def __init__(self, name='material_simulations/gulp/md'):

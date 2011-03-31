@@ -26,7 +26,7 @@ def visual(id, taskid, type):
 
     return linkContent
 
-#from vnfb.qeutils.qegrid import QEGrid
+#from vnf.qeutils.qegrid import QEGrid
 
 #    table       = QEGrid(lc.grid())
 #    table.addRow(("", linkContent))

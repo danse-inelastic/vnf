@@ -141,7 +141,7 @@ class DistributedDataStorage(base):
         if r: return r
         # if not found, try to search all the servers
         director = self.director
-        from vnfb.dom.Server import Server
+        from vnf.dom.Server import Server
         servers = director.clerk.db.query(Server).all()
         servers.append(None)
         for server in servers:
@@ -261,7 +261,7 @@ class DistributedDataStorage(base):
             import tempfile
             f = tempfile.mktemp()
             open(f, 'w').write(content)
-            from vnfb.dom.Server import LocalHost as localhost
+            from vnf.dom.Server import LocalHost as localhost
             csaccessor.copyfile(localhost, f, server, path)
             os.remove(f)
             return

@@ -64,7 +64,7 @@ class Builder(base):
         
         # orientation
         orientation = scatterer.orientation
-        from vnfb.utils.neutron_experiment_simulations.geometry import toangles
+        from vnf.utils.neutron_experiment_simulations.geometry import toangles
         orientation = toangles(orientation)
         
         attrs = {

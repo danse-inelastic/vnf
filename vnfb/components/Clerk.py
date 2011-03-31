@@ -32,7 +32,7 @@ class Clerk(base, ClerkBase):
     # user table
     def indexUsers(self, where=None):
         """create an index of all users that meet the specified criteria"""
-        from vnfb.dom.User import User
+        from vnf.dom.User import User
         index = {}
         users = self.db.fetchall(User, where=where)
         for user in users:
@@ -46,7 +46,7 @@ class Clerk(base, ClerkBase):
 
 
     def getUser(self, username):
-        from vnfb.dom.User import User
+        from vnf.dom.User import User
         users = self.db.fetchall(User, where="username='%s'" % username)
         if not users: raise RuntimeError, "user %r not found" % username
         assert len(users) == 1
@@ -54,14 +54,14 @@ class Clerk(base, ClerkBase):
 
 
     def getUserInfo(self, username):
-        from vnfb.dom.Registrant import Registrant
+        from vnf.dom.Registrant import Registrant
         registrants = self.db.fetchall(Registrant, where="username='%s'"% username)
         if not registrants: raise RuntimeError, "user %r not found" % username
         assert len(registrants) == 1
         return registrants[0]
         
 
-    """QE methods for retrieving records using vnfb.dom"""
+    """QE methods for retrieving records using vnf.dom"""
 
     def getQEJobs(self, id=None, where=None):
         '''retrieve qejobs record specified by id'''
@@ -110,7 +110,7 @@ class Clerk(base, ClerkBase):
 
     # register tables that are not in orm
     def _registerTables(self, db):
-        from vnfb.dom import tables_without_orm
+        from vnf.dom import tables_without_orm
         for table in tables_without_orm():
             db.registerTable(table)
         return
@@ -128,7 +128,7 @@ class Clerk(base, ClerkBase):
         director = self.director
         guid = director.getGUID
         db = self.db
-        from vnfb.dom import object2table
+        from vnf.dom import object2table
         from dsaw.model.visitors.OrmManager import OrmManager
         self._orm = OrmManager(db=db, guid=guid, object2table=object2table)
         return

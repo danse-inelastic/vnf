@@ -15,7 +15,7 @@
 def main():
 
 
-    from vnfb.applications.RetrieveResults import RetrieveResults as base
+    from vnf.applications.RetrieveResults import RetrieveResults as base
 
 
     class App(base):

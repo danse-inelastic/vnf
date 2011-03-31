@@ -15,7 +15,7 @@
 from luban.content import load, select, alert
 import luban.content as lc
 
-from vnfb.components.MasterTable import FilterSyntaxError, MasterTableActor as base
+from vnf.components.MasterTable import FilterSyntaxError, MasterTableActor as base
 
 class Actor(base):
 

@@ -55,7 +55,7 @@ class Actor(base):
         #
         form = lc.form(title='Select a computation engine'); doc.add(form)
         
-        from vnfb.dom.material_simulations.sqe_calculators import all
+        from vnf.dom.material_simulations.sqe_calculators import all
         entries = zip(all, all)
         selector = form.radio(name='engine', entries=entries)
 

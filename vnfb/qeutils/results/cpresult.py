@@ -13,7 +13,7 @@
 
 import os
 from qecalc.qetask.cptask import CPTask
-from vnfb.qeutils.results.qeresult import QEResult
+from vnf.qeutils.results.qeresult import QEResult
 
 NONE        = "None"
 class CPResult(QEResult):

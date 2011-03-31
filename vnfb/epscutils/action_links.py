@@ -13,8 +13,8 @@
 
 from luban.content import load, select
 import luban.content as lc
-from vnfb.epscutils.epscconst import FILETYPE
-from vnfb.qeutils.qeutils import latestInput, latestJob
+from vnf.epscutils.epscconst import FILETYPE
+from vnf.qeutils.qeutils import latestInput, latestJob
 
 def settingsLink(director, id):
     "Returns link to settings of simulation"

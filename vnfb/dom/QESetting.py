@@ -19,8 +19,8 @@ Notes:
 
 """
 
-from vnfb.components.QETable import QETable
-from vnfb.qeutils.qeconst import SETTINGS
+from vnf.components.QETable import QETable
+from vnf.qeutils.qeconst import SETTINGS
 
 # Update column from QECalc
 

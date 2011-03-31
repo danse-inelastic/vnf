@@ -19,7 +19,7 @@ from luban.content import select, load, alert
 
 
 #
-from vnfb.dom.material_simulations.GulpOpt import GulpOpt
+from vnf.dom.material_simulations.GulpOpt import GulpOpt
 
 from luban.components.Actor import Actor
 import luban.orm

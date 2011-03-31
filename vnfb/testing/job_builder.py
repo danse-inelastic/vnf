@@ -42,7 +42,7 @@ class TestApp(base):
         self._resetJob()
         
         # build job
-        from vnfb.utils.job import buildjob
+        from vnf.utils.job import buildjob
         computation = self.computation
         path = dds.abspath(job)
         buildjob(computation, db=db, dds=dds, path=path, director=self)
@@ -125,7 +125,7 @@ class TestApp(base):
         testFacility = self.testFacility
         
         # find the itask
-        from vnfb.dom.ITask import ITask
+        from vnf.dom.ITask import ITask
         gp = job.globalpointer
         gp = gp and gp.id
         if gp:

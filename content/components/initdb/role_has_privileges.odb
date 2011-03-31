@@ -43,7 +43,7 @@ class Component(base):
         return
 
 
-from vnfb.dom.RoleHasPrivilege import grant, Role, Privilege
+from vnf.dom.RoleHasPrivilege import grant, Role, Privilege
 
 
 assignments = [

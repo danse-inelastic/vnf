@@ -16,7 +16,7 @@ from _ import JobBuilder as base
 
 class Builder(base):
 
-    from vnfb.dom.neutron_experiment_simulations.NeutronExperiment import NeutronExperiment as Computation
+    from vnf.dom.neutron_experiment_simulations.NeutronExperiment import NeutronExperiment as Computation
 
     def render(self, computation, db=None, dds=None):
         # make sure orm is initd

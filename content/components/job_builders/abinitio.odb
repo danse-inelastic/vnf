@@ -16,7 +16,7 @@ import journal
 debug = journal.debug('abinitio-jobbuilder')
 
 
-from vnfb.components.JobBuilder import JobBuilder as base
+from vnf.components.JobBuilder import JobBuilder as base
 
 class Builder(base):
 

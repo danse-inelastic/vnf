@@ -22,13 +22,13 @@ from luban.content.Paragraph import Paragraph
 
 # common actions
 setpagetitle = select(id='').setAttr(title='Virtual neutron facility: experiments')
-from  vnfb.components.visuals import set_contextual_help
+from  vnf.components.visuals import set_contextual_help
 sethelppage = set_contextual_help(
     page='UserGuide-experiments', label='about experiments')
 
 
 #
-from vnfb.components.MasterTable import FilterSyntaxError, MasterTableActor as base
+from vnf.components.MasterTable import FilterSyntaxError, MasterTableActor as base
 class Actor(base):
 
 

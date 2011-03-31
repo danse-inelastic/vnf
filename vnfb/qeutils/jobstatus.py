@@ -17,10 +17,10 @@ Displays the status of the job
 import os.path
 import os
 import re
-from vnfb.qeutils.qeconst import ID_OUTPUT, ID_STATUS
-from vnfb.qeutils.qeutils import key2str, dataroot, jobStatus, makedirs, qedialog
-from vnfb.qeutils.qerecords import SimulationRecord
-from vnfb.epscutils.epscconst import EPSC_OUT_RE
+from vnf.qeutils.qeconst import ID_OUTPUT, ID_STATUS
+from vnf.qeutils.qeutils import key2str, dataroot, jobStatus, makedirs, qedialog
+from vnf.qeutils.qerecords import SimulationRecord
+from vnf.epscutils.epscconst import EPSC_OUT_RE
 
 import luban.content as lc
 from luban.content import load, select

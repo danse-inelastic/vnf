@@ -12,8 +12,8 @@
 #
 
 from luban.content import select, load
-from vnfb.dom.QESimulation import QESimulation
-from vnfb.epscutils.taskcreator import EPSCTaskCreator
+from vnf.dom.QESimulation import QESimulation
+from vnf.epscutils.taskcreator import EPSCTaskCreator
 
 import luban.content as lc
 from luban.components.AuthorizedActor import AuthorizedActor as base

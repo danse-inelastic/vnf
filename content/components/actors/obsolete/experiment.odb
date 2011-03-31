@@ -20,7 +20,7 @@ from luban.content.Button import Button
 from luban.content.Paragraph import Paragraph
 
 
-from vnfb.components.MasterTable import FilterSyntaxError, MasterTableActor as base
+from vnf.components.MasterTable import FilterSyntaxError, MasterTableActor as base
 
 
 class Actor(base):
@@ -50,7 +50,7 @@ class Actor(base):
 
         domaccess = director.retrieveDOMAccessor('experiment')
         
-        from vnfb.components.MasterTable import MasterTableFactory, filtercompiler
+        from vnf.components.MasterTable import MasterTableFactory, filtercompiler
         def countrecords(filter, label=None):
             return domaccess.countExperiments(filter, label=label)
         def createtable(order_by, reverse_order, slice, filter, label=None):

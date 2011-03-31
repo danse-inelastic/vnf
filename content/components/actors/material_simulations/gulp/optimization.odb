@@ -12,12 +12,12 @@
 #
 
 
-from vnfb.content.actors.material_simulations.gulp.SimActorBase import SimActorBase as base
+from vnf.content.actors.material_simulations.gulp.SimActorBase import SimActorBase as base
 class Actor(base):
 
 
     editor_visual_name = 'material_simulations/moldyn/optimization-editor'
-    from vnfb.dom.material_simulations.GulpOpt import GulpOptTable as dbtable
+    from vnf.dom.material_simulations.GulpOpt import GulpOptTable as dbtable
 
     
 

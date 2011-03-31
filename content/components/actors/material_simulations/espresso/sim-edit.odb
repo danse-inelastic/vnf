@@ -23,9 +23,9 @@ Question:
     - What happens to tasks?
 """
 
-#from vnfb.utils.serverlist import ServerList
-from vnfb.qeutils.qegrid import QEGrid
-from vnfb.qeutils.qeconst import SIMCHAINS
+#from vnf.utils.serverlist import ServerList
+from vnf.qeutils.qegrid import QEGrid
+from vnf.qeutils.qeconst import SIMCHAINS
 
 from luban.content import select
 from luban.content import load

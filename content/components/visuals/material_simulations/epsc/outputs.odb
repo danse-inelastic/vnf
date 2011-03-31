@@ -12,9 +12,9 @@
 #
 
 import re
-from vnfb.epscutils.epscconst import EPSC_OUT_FILES
+from vnf.epscutils.epscconst import EPSC_OUT_FILES
 import luban.content as lc
-from vnfb.qeutils.results.resultpath import ResultPath
+from vnf.qeutils.results.resultpath import ResultPath
 
 def content(path):
     "Returns content of the file of path"

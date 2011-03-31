@@ -17,7 +17,7 @@ from _ import o2t
 # data object
 from vsat.Phonons import Phonons
 
-from vnfb.dom.AtomicStructure import StructureTable
+from vnf.dom.AtomicStructure import StructureTable
 # vnf holder
 from ComputationResult import ComputationResult
 #PhononDispersionTable = o2t(PhononDispersion, {'subclassFrom': ComputationResult})

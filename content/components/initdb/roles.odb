@@ -29,7 +29,7 @@ class Component(base):
         return
 
 
-from vnfb.dom.Role import Role
+from vnf.dom.Role import Role
 def role(name, context, description):
     r = Role()
     r.rolename = name

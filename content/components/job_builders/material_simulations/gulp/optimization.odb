@@ -13,8 +13,8 @@
 
 import journal
 debug = journal.debug('optimize')
-from vnfb.components.JobBuilder import JobBuilder as base
-#from vnfb.components.job_builders.gulpBase import Builder as base
+from vnf.components.JobBuilder import JobBuilder as base
+#from vnf.components.job_builders.gulpBase import Builder as base
 
 class Builder(base):
 

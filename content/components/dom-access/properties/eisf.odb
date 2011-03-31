@@ -11,7 +11,7 @@
 #
 
 
-from vnfb.components.DOMAccessor import DOMAccessor as base
+from vnf.components.DOMAccessor import DOMAccessor as base
 
 class Accessor(base):
 
@@ -72,7 +72,7 @@ class Accessor(base):
         return origin
 
 
-from vnfb.dom.material_simulations.Eisf import Eisf
+from vnf.dom.material_simulations.Eisf import Eisf
 
 import os, numpy
 

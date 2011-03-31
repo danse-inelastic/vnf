@@ -11,11 +11,11 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
-from vnfb.qeutils.generators.q2rgenerator import Q2RGenerator
-from vnfb.qeutils.qeparser.qeinput import QEInput
-import vnfb.qeutils.filters as filters
+from vnf.qeutils.generators.q2rgenerator import Q2RGenerator
+from vnf.qeutils.qeparser.qeinput import QEInput
+import vnf.qeutils.filters as filters
 
-from vnfb.components.QEGenerator import QEGenerator as base
+from vnf.components.QEGenerator import QEGenerator as base
 
 class Actor(base):
 

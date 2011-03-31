@@ -15,9 +15,9 @@ import os
 from luban.content.ProgressBar import ProgressBar
 from luban.content import load, select
 import luban.content as lc
-from vnfb.utils import launch_detached, bindir
-from vnfb.qeutils.qeutils import latestJob
-from vnfb.qeutils.qeconst import JOB_STATE, TASK_ACTION
+from vnf.utils import launch_detached, bindir
+from vnf.qeutils.qeutils import latestJob
+from vnf.qeutils.qeconst import JOB_STATE, TASK_ACTION
 
 from luban.components.AuthorizedActor import AuthorizedActor as base
 class Actor(base):

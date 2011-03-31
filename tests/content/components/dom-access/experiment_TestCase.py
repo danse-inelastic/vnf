@@ -22,7 +22,7 @@ Test assumes that
 
 
 # application
-from vnfb.testing.TestAppBase import Application as base
+from vnf.testing.TestAppBase import Application as base
 class TestApp(base):
 
 

@@ -18,13 +18,13 @@ import luban.content as lc
 
 # common actions
 setpagetitle = select(id='').setAttr(title='Virtual neutron facility: samples')
-from  vnfb.components.visuals import set_contextual_help
+from  vnf.components.visuals import set_contextual_help
 sethelppage = set_contextual_help(
     page='UserGuide-samples', label='about samples')
 
 
 #
-from vnfb.components.MasterTable import FilterSyntaxError, MasterTableActor as base
+from vnf.components.MasterTable import FilterSyntaxError, MasterTableActor as base
 class Actor(base):
 
 

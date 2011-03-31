@@ -11,7 +11,7 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
-from vnfb.dom.neutron_experiment_simulations.neutron_components.Guide import Guide
+from vnf.dom.neutron_experiment_simulations.neutron_components.Guide import Guide
 
 from luban.components.Actor import Actor
 import luban.orm

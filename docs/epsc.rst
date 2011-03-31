@@ -297,7 +297,7 @@ generate configuration using parameters that you specified in the form.
        1  1  1        1 -1  0
 
 *Fig. 11a Material configuration. See also:*
-`filecrys <http://dev.danse.us/trac/VNET/browser/vnf/branches/beta-useluban/vnfb/docs/files/epsc/filecrys?rev=3654>`_
+`filecrys <http://dev.danse.us/trac/VNET/browser/vnf/trunk/docs/files/epsc/filecrys?rev=3654>`_
 
 In this configuration we have one slip mode.
 You can edit the configuration manually if you understand what you are doing :).
@@ -338,7 +338,7 @@ uniformly distributed orientation of grains.
             324.433609308	81.3434035609	282.394127615	1
             ...
 
-*Fig. 12a Sample configuration. See full configuration:* `filesamp <http://dev.danse.us/trac/VNET/browser/vnf/branches/beta-useluban/vnfb/docs/files/epsc/filesamp?rev=3654>`_
+*Fig. 12a Sample configuration. See full configuration:* `filesamp <http://dev.danse.us/trac/VNET/browser/vnf/trunk/docs/files/epsc/filesamp?rev=3654>`_
 
 Next, create configuration for diffraction by clicking ``Create`` button
 for **Diffraction** and ``Create Diffraction Configuration`` form will be displayed.
@@ -370,7 +370,7 @@ Here you can specify parameters:
     3 1 0		35		50
     ...
 
-*Fig. 13a Diffraction configuration. See full configuration:* `filediff <http://dev.danse.us/trac/VNET/browser/vnf/branches/beta-useluban/vnfb/docs/files/epsc/filediff?rev=3654>`_
+*Fig. 13a Diffraction configuration. See full configuration:* `filediff <http://dev.danse.us/trac/VNET/browser/vnf/trunk/docs/files/epsc/filediff?rev=3654>`_
 
 Finally, we need to create configuration for single thermo-mechanical process. In the
 ``Create Process Configuration`` form you can specify:
@@ -412,7 +412,7 @@ and modify, if necessary, the boundary conditions for stress and strain:
     *Maximum number of iterations to select the set of systems in grains:
     100                                            "itmax_grain"
 
-*Fig. 14a Thermo-mechanical process configuration. See also:* `fileproc <http://dev.danse.us/trac/VNET/browser/vnf/branches/beta-useluban/vnfb/docs/files/epsc/fileproc?rev=3654>`_
+*Fig. 14a Thermo-mechanical process configuration. See also:* `fileproc <http://dev.danse.us/trac/VNET/browser/vnf/trunk/docs/files/epsc/fileproc?rev=3654>`_
 
 That's all we need to configure EPSC model. When you run simulation, the system
 will automatically generate the main configuration file ``epsc3.in`` behind the
@@ -436,7 +436,7 @@ scenes which is first read by the EPSC package on the computational cluster.
     *Files containing information about each process:
     fileproc
 
-*Main configuration file. See also:* `epsc3.in <http://dev.danse.us/trac/VNET/browser/vnf/branches/beta-useluban/vnfb/docs/files/epsc/epsc3.in?rev=3654>`_
+*Main configuration file. See also:* `epsc3.in <http://dev.danse.us/trac/VNET/browser/vnf/trunk/docs/files/epsc/epsc3.in?rev=3654>`_
 
 
 
@@ -556,4 +556,4 @@ of available output filenames and their descriptions:
 * **epsc8.out** Equivalent states
 * **epsc9.out** Evolution of internal strains
 
-Please see the `output files <http://dev.danse.us/trac/VNET/browser/vnf/branches/beta-useluban/vnfb/docs/files/epsc>`_ for this tutorial in our repository.
+Please see the `output files <http://dev.danse.us/trac/VNET/browser/vnf/trunk/docs/files/epsc>`_ for this tutorial in our repository.

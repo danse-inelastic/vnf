@@ -23,7 +23,7 @@ def getShapeTypes():
 
 
 def importShapeType(name):
-    pkg = 'vnfb.dom.geometry'
+    pkg = 'vnf.dom.geometry'
     m = '%s.%s' % (pkg, name)
     m = _import(m)
     return getattr(m, name)

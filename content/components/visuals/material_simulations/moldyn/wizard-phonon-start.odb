@@ -19,7 +19,7 @@ start page for gulp phonon workflow
 def visual(atomicstructure=None, director=None):
     """atomicstructure: id of atomic structure
     """
-    from vnfb.dom.material_simulations.GulpPhonon import GulpPhonon
+    from vnf.dom.material_simulations.GulpPhonon import GulpPhonon
     editorvisual = 'material_simulations/moldyn/phonon-editor'
     return director.retrieveVisual(
         'material_simulations/moldyn/sim-wizard-start',

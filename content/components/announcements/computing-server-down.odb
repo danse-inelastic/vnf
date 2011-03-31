@@ -11,9 +11,9 @@
 
 
 def announcement(server, error):
-    import vnfb.content
+    import vnf.content
 
-    msg = vnfb.content.announcement()
+    msg = vnf.content.announcement()
     msg.sender = 'linjiao@caltech.edu'
     msg.subject = 'Computing server "%s" is down' % (server.short_description, )
     msg.text = [

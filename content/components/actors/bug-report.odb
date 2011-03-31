@@ -34,7 +34,7 @@ class Actor(base):
         traceback = self.inventory.traceback
         comment = self.inventory.comment
 
-        from vnfb.dom.Bug import Bug
+        from vnf.dom.Bug import Bug
         bug = Bug()
 
         bug.id = id
@@ -53,7 +53,7 @@ class Actor(base):
 
 
     def _emailComment(self, bugid, comment, traceback, director):
-        from vnfb.utils.communications import announce
+        from vnf.utils.communications import announce
         announcement = 'bug-report'
         username = director.sentry.username
         if not username: return

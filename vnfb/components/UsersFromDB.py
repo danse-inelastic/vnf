@@ -21,8 +21,8 @@ class UsersFromDB(base):
 
         import pyre.inventory
 
-        import vnfb.components
-        clerk = pyre.inventory.facility(name="clerk", factory=vnfb.components.clerk)
+        import vnf.components
+        clerk = pyre.inventory.facility(name="clerk", factory=vnf.components.clerk)
         clerk.meta['tip'] = "the component that retrieves data from the various database tables"
         pass # end of Inventory
 
@@ -56,7 +56,7 @@ class UsersFromDB(base):
 
 
     def save(self):
-        from vnfb.dom.User import User
+        from vnf.dom.User import User
         for name, pw in self._users.iteritems():
             assignments = [ ('password', pw) ]
             self.clerk.db.updateRow(User, assignments, where="username='%s'" % name)

@@ -5,7 +5,7 @@ outputFiles = {"optimization":{'matter.orm.Structure':None},
     "molecular dynamics":{'vsat.Trajectory':self.trajectories},}
 
 import time, os
-from vnfb.components.ComputationResultRetriever import ComputationResultRetriever as base
+from vnf.components.ComputationResultRetriever import ComputationResultRetriever as base
 class Retriever(base):
 
     def _retrieveResultsFor(self, computation):
@@ -36,12 +36,12 @@ class Retriever(base):
 #                dataClass = eval(parts[-1])
 #                result = self._make_result_holder(computation, dataClass)
 #                result.matter = computation.matter
-            from vnfb.dom.material_simulations.Phonons import PhononsTable
+            from vnf.dom.material_simulations.Phonons import PhononsTable
             phonons = self._make_result_holder(computation, PhononsTable)
             phonons.matter = computation.matter
             computation.results.add(phonons, db)
             db.updateRecord(phonons)
-            from vnfb.dom.material_simulations.PhononDOS import PhononDOSTable
+            from vnf.dom.material_simulations.PhononDOS import PhononDOSTable
             dos = self._make_result_holder(computation, PhononDOSTable)
             dos.matter = computation.matter
             computation.results.add(dos, db)
@@ -67,7 +67,7 @@ class Retriever(base):
                 trajectory = computation.results.getElementByKey('trajectory', db) #'trajectory' is class name
             except: #if not trajectory:
                 db._sasession.rollback()
-                from vnfb.dom.material_simulations.Trajectory import Trajectory
+                from vnf.dom.material_simulations.Trajectory import Trajectory
                 trajectoryRecord = self._make_result_holder(computation, Trajectory)
                 trajectoryRecord.creator = computation.creator
                 trajectoryRecord.date = time.ctime()

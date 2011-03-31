@@ -19,9 +19,9 @@ def announcement(message='', subject='alert', sender=None):
     '''
     if not sender: sender = adminemail
     
-    import vnfb.content
+    import vnf.content
 
-    msg = vnfb.content.announcement()
+    msg = vnf.content.announcement()
     msg.sender = sender
     msg.subject = subject
     msg.text = message

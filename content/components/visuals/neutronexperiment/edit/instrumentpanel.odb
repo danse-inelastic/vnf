@@ -84,7 +84,7 @@ class Factory(object):
         instrumentrecord = experiment.instrument.dereference(domaccess.db)
         ic = domaccess.getInstrumentConfiguration(experiment)
         # try to find if there is a wizard factory
-        m = 'vnfb.content.visuals.neutronexperiment.instruments.%s' % instrumentrecord.name
+        m = 'vnf.content.visuals.neutronexperiment.instruments.%s' % instrumentrecord.name
         try:
             m = __import__(m, {}, {}, [''])
             wizard_factory = getattr(m, 'configuration_wizard')

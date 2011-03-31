@@ -11,9 +11,9 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
-from vnfb.dom.QEJob import QEJob
-from vnfb.qeutils.qeconst import STATES
-from vnfb.qeutils.qeutils import packname, unpackname
+from vnf.dom.QEJob import QEJob
+from vnf.qeutils.qeconst import STATES
+from vnf.qeutils.qeutils import packname, unpackname
 
 import os
 from luban.content import select

@@ -14,7 +14,7 @@
 
 
 #
-from vnfb.dom.News import News
+from vnf.dom.News import News
 
 from luban.components.Actor import Actor
 import luban.orm

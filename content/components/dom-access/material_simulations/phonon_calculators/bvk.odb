@@ -12,7 +12,7 @@
 #
 
 
-from vnfb.components.DOMAccessor import DOMAccessor as base
+from vnf.components.DOMAccessor import DOMAccessor as base
 
 class Accessor(base):
 
@@ -157,9 +157,9 @@ class Accessor(base):
         return bool(u.count().execute().fetchone()[0])
         
 
-from vnfb.dom.material_simulations.BvKModel import BvKModel
-from vnfb.dom.material_simulations.BvKBond import BvKBond
-import vnfb.dom.material_simulations.BvKComputation as BvKComputation
+from vnf.dom.material_simulations.BvKModel import BvKModel
+from vnf.dom.material_simulations.BvKBond import BvKBond
+import vnf.dom.material_simulations.BvKComputation as BvKComputation
 
 import os, numpy
 

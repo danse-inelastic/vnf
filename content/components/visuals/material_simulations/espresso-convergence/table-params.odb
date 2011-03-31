@@ -11,9 +11,9 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
-from vnfb.qeutils.qeutils import stamp2date, latestParam, ifelse, key2val
-from vnfb.qeutils.qeconst import CONVTYPE, CONVTYPELIST
-from vnfb.qeutils.qegrid import QEGrid
+from vnf.qeutils.qeutils import stamp2date, latestParam, ifelse, key2val
+from vnf.qeutils.qeconst import CONVTYPE, CONVTYPELIST
+from vnf.qeutils.qegrid import QEGrid
 
 import luban.content as lc
 from luban.content import load, select

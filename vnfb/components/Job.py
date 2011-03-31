@@ -20,7 +20,7 @@ def cancel(job, director):
     
 
 def pack(job, director, debug=False):
-    from vnfb.utils import launch_detached, bindir
+    from vnf.utils import launch_detached, bindir
     import os
     exe = os.path.join(bindir, 'packjobdir.py')
     launch_detached('%s -id=%s' % (exe, job.id), debug=debug)

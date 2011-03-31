@@ -19,7 +19,7 @@ skip = True
 import os
 
 # application
-from vnfb.testing.TestAppBase import Application as base
+from vnf.testing.TestAppBase import Application as base
 class TestApp(base):
 
     
@@ -119,7 +119,7 @@ class TestApp(base):
 
 
     def _decode(self, url):
-        from vnfb.components.DistributedDataStorage import _decodesurl
+        from vnf.components.DistributedDataStorage import _decodesurl
         return _decodesurl(url)
 
 

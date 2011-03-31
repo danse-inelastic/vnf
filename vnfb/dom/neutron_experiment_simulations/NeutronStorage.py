@@ -39,7 +39,7 @@ NeutronStorage.Inventory = Inventory
 
 
 # db table
-from vnfb.dom.ComputationResult import ComputationResult
+from vnf.dom.ComputationResult import ComputationResult
 NeutronStorageTable = o2t(NeutronStorage, {'subclassFrom': ComputationResult})
 NeutronStorageTable.datafiles = [
     'data.idf',

@@ -45,7 +45,7 @@ class Component(base):
         source = MonochromaticSource()
         source.componentname = 'source'
         source.energy = 70
-        from vnfb.utils.neutron_experiment_simulations.geometry import tomatrix
+        from vnf.utils.neutron_experiment_simulations.geometry import tomatrix
         orientation = tomatrix((0, 30, 0))
         source.orientation = orientation
         ic.components.append(source)
@@ -77,7 +77,7 @@ class Component(base):
         server = serveraccess.getServerRecord('server000')
 
         # job
-        from vnfb.dom.Job import Job
+        from vnf.dom.Job import Job
         job = Job()
         job.id = 'job-neutronexperiments-test-arcs-detector-system'
         job.short_description = 'job for testing the arcs detector system'
@@ -95,13 +95,13 @@ class Component(base):
 
 
 
-from vnfb.dom.neutron_experiment_simulations.NeutronExperiment import NeutronExperiment, NeutronExperimentTable
-from vnfb.dom.neutron_experiment_simulations.Instrument import InstrumentTable
-from vnfb.dom.neutron_experiment_simulations.InstrumentConfiguration \
+from vnf.dom.neutron_experiment_simulations.NeutronExperiment import NeutronExperiment, NeutronExperimentTable
+from vnf.dom.neutron_experiment_simulations.Instrument import InstrumentTable
+from vnf.dom.neutron_experiment_simulations.InstrumentConfiguration \
      import InstrumentConfiguration
-from vnfb.dom.neutron_experiment_simulations.neutron_components.MonochromaticSource \
+from vnf.dom.neutron_experiment_simulations.neutron_components.MonochromaticSource \
      import MonochromaticSource
-from vnfb.dom.neutron_experiment_simulations.neutron_components.DetectorSystem_fromXML \
+from vnf.dom.neutron_experiment_simulations.neutron_components.DetectorSystem_fromXML \
      import DetectorSystem_fromXML, DetectorSystemHierarchy_fromXML
 
 

@@ -15,7 +15,7 @@
 def main():
 
 
-    from vnfb.applications.UpdateJobStatus import UpdateJobStatus
+    from vnf.applications.UpdateJobStatus import UpdateJobStatus
 
 
     class App(UpdateJobStatus):

@@ -50,7 +50,7 @@ class DbApp(base):
         
         record = clerk.db.query(Table).filter_by(id=id).one()
 
-        from vnfb.utils.db.findreferrals import findreferrals
+        from vnf.utils.db.findreferrals import findreferrals
         for r, desc in findreferrals(record, clerk):
             print '-', desc
         return
@@ -62,7 +62,7 @@ class DbApp(base):
 
 
     def _getPrivateDepositoryLocations(self):
-        from vnfb.deployment import pyre_depositories
+        from vnf.deployment import pyre_depositories
         return pyre_depositories
 
 

@@ -14,17 +14,17 @@
 import os
 import luban.content as lc
 from luban.content import load, select
-from vnfb.qeutils.jobstatus import JobStatus
-from vnfb.qeutils.results.resultinfo import ResultInfo
-from vnfb.qeutils.qegrid import QEGrid
-from vnfb.qeutils.inputinfo import InputInfo
-from vnfb.qeutils.qeconst import TASK_ACTION, MDLABEL, TYPETIP
-from vnfb.qeutils.qeutils import latestJob
-from vnfb.qeutils.taskaction import TaskAction
+from vnf.qeutils.jobstatus import JobStatus
+from vnf.qeutils.results.resultinfo import ResultInfo
+from vnf.qeutils.qegrid import QEGrid
+from vnf.qeutils.inputinfo import InputInfo
+from vnf.qeutils.qeconst import TASK_ACTION, MDLABEL, TYPETIP
+from vnf.qeutils.qeutils import latestJob
+from vnf.qeutils.taskaction import TaskAction
 
-#from vnfb.qeutils.qeutils import jobStatus
+#from vnf.qeutils.qeutils import jobStatus
 #RUN_TASK    = "run-task"
-#from vnfb.qeutils.taskinfo import TaskInfo
+#from vnf.qeutils.taskinfo import TaskInfo
 #CLASS_ERROR = 'qe-text-red'
 #CLASS_OK    = 'qe-text-blue'
 #CLASS_NA    = 'qe-text-black'

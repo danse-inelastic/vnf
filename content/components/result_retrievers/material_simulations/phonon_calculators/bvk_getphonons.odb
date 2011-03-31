@@ -12,7 +12,7 @@
 #
 
 
-from vnfb.components.ComputationResultRetriever import ComputationResultRetriever as base
+from vnf.components.ComputationResultRetriever import ComputationResultRetriever as base
 class Retriever(base):
 
     def _retrieveResultsFor(self, computation):
@@ -36,7 +36,7 @@ class Retriever(base):
 
 ##         # create a phonon dos record to save dos
 ##         self.declareProgress(0.4, 'create a phonon dos to store the result')
-##         from vnfb.dom.material_simulations.PhononDOS import PhononDOSTable
+##         from vnf.dom.material_simulations.PhononDOS import PhononDOSTable
 ##         dos = self._make_result_holder(computation, PhononDOSTable)
 ##         dos.matter = computation.matter
 ##         db.updateRecord(dos)
@@ -47,7 +47,7 @@ class Retriever(base):
         
         # create a phonons record to save phonons
         self.declareProgress(0.6, 'create phonons entry to store the result')
-        from vnfb.dom.material_simulations.Phonons import PhononsTable
+        from vnf.dom.material_simulations.Phonons import PhononsTable
         disp = self._make_result_holder(computation, PhononsTable)
         disp.matter = computation.matter
         db.updateRecord(disp)

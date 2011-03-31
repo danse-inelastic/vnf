@@ -1,2 +1,2 @@
 
-from vnfb.components.JobBuilder import JobBuilder
+from vnf.components.JobBuilder import JobBuilder

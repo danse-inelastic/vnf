@@ -17,7 +17,7 @@ QEConvergence - base actor class for Quantum Espresso convergence pages
 
 ID_CONVERGENCE  = "qe-container-convergence"
 
-from vnfb.qeutils.qeutils import qeinput, defaultInputName, readRecordFile
+from vnf.qeutils.qeutils import qeinput, defaultInputName, readRecordFile
 
 import luban.content as lc
 from luban.content import select, load

@@ -23,7 +23,7 @@ def launch_detached(cmd, home='.', debug=False):
 
     c = ' '.join(c)
 
-    # Move spawn from vnf -> vnfb
+    # Move spawn from vnf -> vnf
     from vnf.utils.spawn import spawn
     import os
     ret, log, err= spawn(c, env=os.environ)

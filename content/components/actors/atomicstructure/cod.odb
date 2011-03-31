@@ -266,8 +266,8 @@ class Actor(base):
                 # it means the server might not be available at this time
                 return alert("COD data server is temporarily down. Please try again in a minute")
             # create a new record
-            #from vnfb.dom.BigStructure import Structure
-            from vnfb.dom.AtomicStructure import Structure
+            #from vnf.dom.BigStructure import Structure
+            from vnf.dom.AtomicStructure import Structure
             structure = Structure()
             # avoid access deny problem for python egg cache
             import os

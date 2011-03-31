@@ -19,7 +19,7 @@ start page for gulp md workflow
 def visual(atomicstructure=None, director=None):
     """atomicstructure: id of atomic structure
     """
-    from vnfb.dom.material_simulations.GulpMd import GulpMd
+    from vnf.dom.material_simulations.GulpMd import GulpMd
     editorvisual = 'material_simulations/moldyn/md-editor'
     return director.retrieveVisual(
         'material_simulations/moldyn/sim-wizard-start',

@@ -12,7 +12,7 @@
 #
 
 
-from vnfb.utils.material_simulations.bvkutils import findForceContantTensorConstraints
+from vnf.utils.material_simulations.bvkutils import findForceContantTensorConstraints
 
 
 import unittest

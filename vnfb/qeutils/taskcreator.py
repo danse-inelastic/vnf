@@ -11,9 +11,9 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
-from vnfb.qeutils.qeutils import simChain
-from vnfb.dom.QETask import QETask
-from vnfb.dom.QESimulationTask import QESimulationTask
+from vnf.qeutils.qeutils import simChain
+from vnf.dom.QETask import QETask
+from vnf.dom.QESimulationTask import QESimulationTask
 
 class TaskCreator:
     "Creates a single task record (touches other records is needed)"

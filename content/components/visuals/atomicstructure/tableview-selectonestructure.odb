@@ -31,7 +31,7 @@ def visual(
     domaccess = director.retrieveDOMAccessor('atomicstructure')
     targettablename = 'atomicstructure'
         
-    from vnfb.components.MasterTable import MasterTableFactory, filtercompiler
+    from vnf.components.MasterTable import MasterTableFactory, filtercompiler
     def countrecords(filter, label=None, mine=False):
         return domaccess.countAtomicStructures(filter, label=label, mine=mine)
     def createtable(order_by, reverse_order, slice, filter, label=None, mine=False):
@@ -44,7 +44,7 @@ def visual(
             label=label,
             mine=mine,
             )
-    from vnfb.content.visuals.table.selectoneatomicstructure import model
+    from vnf.content.visuals.table.selectoneatomicstructure import model
     compilefilter = filtercompiler(columns, measure2dbcol, model=model)
 
     smartlabelaccess = director.retrieveDOMAccessor('smartlabel')

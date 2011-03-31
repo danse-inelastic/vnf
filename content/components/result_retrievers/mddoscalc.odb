@@ -11,7 +11,7 @@
 #
 
 
-from vnfb.components.ComputationResultRetriever import ComputationResultRetriever as base
+from vnf.components.ComputationResultRetriever import ComputationResultRetriever as base
 class Retriever(base):
 
     def _retrieveResultsFor(self, computation):
@@ -30,7 +30,7 @@ class Retriever(base):
 
         # create a dos record to save dos
         self.declareProgress(0.4, 'create a DOS data object to store the result')
-        from vnfb.dom.material_simulations.PhononDOS import PhononDOSTable
+        from vnf.dom.material_simulations.PhononDOS import PhononDOSTable
         dos = self._make_result_holder(computation, PhononDOSTable)
         #dos.matter = computation.matter  #analysis calc does not have matter ref!
         db.updateRecord(dos)

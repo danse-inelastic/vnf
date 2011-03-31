@@ -17,7 +17,7 @@ to the directory content/data/tmp
 import sys, os, tempfile
 import luban.content as lc
 from luban.content import load, select
-from vnfb.qeutils.qegrid import QEGrid
+from vnf.qeutils.qegrid import QEGrid
 
 def visual(imageDoc, sqeId, director):
     """

@@ -13,7 +13,7 @@
 
 
 def scheduler( name ):
-    package = 'vnfb.clusterscheduler'
+    package = 'vnf.clusterscheduler'
     module = __import__( '%s.%s' % (package,name), {}, {}, [''] )
     #exec 'import %s as module' % name in locals()
     return module.Scheduler

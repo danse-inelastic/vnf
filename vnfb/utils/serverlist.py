@@ -11,8 +11,8 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
-from vnfb.utils.orderedDict import OrderedDict
-from vnfb.qeutils.qeconst import SERVERS
+from vnf.utils.orderedDict import OrderedDict
+from vnf.qeutils.qeconst import SERVERS
 
 class ServerList:
     """

@@ -12,7 +12,7 @@
 #
 
 
-dbname = 'postgres:///vnfbeta'
+dbname = 'postgres:///vnfeta'
 
 import os
 exportroot = os.environ.get('EXPORT_ROOT') or os.environ.get('PYRE_DIR')
@@ -20,11 +20,11 @@ if not exportroot:
     raise RuntimeError, "cannot figure out export root directory"
 
 
-vnfbexportroot = os.path.join(exportroot, 'vnfb')
-contentroot = os.path.join(vnfbexportroot, 'content')
+vnfexportroot = os.path.join(exportroot, 'vnf')
+contentroot = os.path.join(vnfexportroot, 'content')
 componentsroot = os.path.join(contentroot, 'components')
 dataroot = os.path.join(contentroot, 'data')
-configdir = os.path.join(vnfbexportroot, 'config')
+configdir = os.path.join(vnfexportroot, 'config')
 guid_datastore_path = os.path.join(configdir, 'guid.dat')
 
 lubanserviceshome = '/tmp/luban-services'

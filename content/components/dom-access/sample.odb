@@ -15,7 +15,7 @@
 tablename='sample'
 
 
-from vnfb.components.DOMAccessor import DOMAccessor as base
+from vnf.components.DOMAccessor import DOMAccessor as base
 
 class Accessor(base):
 
@@ -153,7 +153,7 @@ class Accessor(base):
         if filter:
             q = sqlalchemy.select([q.alias('sample')], whereclause=filter)
 
-        from vnfb.utils.query.accesscontrol import select_public_and_owned_records
+        from vnf.utils.query.accesscontrol import select_public_and_owned_records
         q1 = q.alias('toselectpubrecs')
         cols = [
             q1.c.id,
@@ -225,7 +225,7 @@ class Accessor(base):
 
     def _sampleTables(self):
         # data object types
-        from vnfb.dom.neutron_experiment_simulations.sample_types import getTypes
+        from vnf.dom.neutron_experiment_simulations.sample_types import getTypes
         types = getTypes()
         #
         orm = self.director.clerk.orm
@@ -256,11 +256,11 @@ class Accessor(base):
         return
 
 
-from vnfb.dom.Label import Label, common_labels
+from vnf.dom.Label import Label, common_labels
 
-from vnfb.dom.neutron_experiment_simulations.Scatterer import Scatterer, ScattererTable
-from vnfb.dom.neutron_experiment_simulations.SampleAssembly import SampleAssembly, SampleAssemblyTable
-from vnfb.dom.neutron_experiment_simulations.neutron_components.SampleBase import SampleBase, TableBase as SampleTableBase
+from vnf.dom.neutron_experiment_simulations.Scatterer import Scatterer, ScattererTable
+from vnf.dom.neutron_experiment_simulations.SampleAssembly import SampleAssembly, SampleAssemblyTable
+from vnf.dom.neutron_experiment_simulations.neutron_components.SampleBase import SampleBase, TableBase as SampleTableBase
 
 
 from dsaw.db.VersatileReference import global_pointer

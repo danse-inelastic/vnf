@@ -19,7 +19,7 @@ from luban.content import select, load, alert
 
 
 #
-from vnfb.dom.neutron_experiment_simulations.neutron_components.QEMonitor import QEMonitor
+from vnf.dom.neutron_experiment_simulations.neutron_components.QEMonitor import QEMonitor
 
 from luban.components.Actor import Actor
 import luban.orm

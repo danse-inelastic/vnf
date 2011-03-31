@@ -28,7 +28,7 @@ class App(base):
     def main(self, *args, **kwds):
         clerk = self.inventory.clerk
 
-        from vnfb.dom.Server import Server
+        from vnf.dom.Server import Server
         servers = clerk.db.query(Server).filter_by(status='online').all()
         
         map(self._check, servers)
@@ -50,7 +50,7 @@ class App(base):
             self.ostream.write('server reachable\n')
 
         if self.inventory.checksoftwares:
-            from vnfb.utils.servers.check_software_installation import check
+            from vnf.utils.servers.check_software_installation import check
             check(server, csa)
         return
 
@@ -61,7 +61,7 @@ class App(base):
         server.status = 'offline'
         db.updateRecord(server)
 
-        from vnfb.utils.communications import announce
+        from vnf.utils.communications import announce
         announce(self, 'computing-server-down', server, error)
         return
 
@@ -83,7 +83,7 @@ class App(base):
     
 
     def _getPrivateDepositoryLocations(self):
-        from vnfb.deployment import pyre_depositories
+        from vnf.deployment import pyre_depositories
         return pyre_depositories
 
 

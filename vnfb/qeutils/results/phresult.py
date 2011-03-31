@@ -12,9 +12,9 @@
 #
 
 import os
-from vnfb.qeutils.qeconst import FILDYN
-from vnfb.qeutils.qeconst import LINKORDER
-from vnfb.qeutils.results.qeresult import QEResult
+from vnf.qeutils.qeconst import FILDYN
+from vnf.qeutils.qeconst import LINKORDER
+from vnf.qeutils.results.qeresult import QEResult
 from qecalc.qetask.phtask import PHTask
 
 NONE        = "None"

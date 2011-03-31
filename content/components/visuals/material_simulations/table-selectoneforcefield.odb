@@ -10,7 +10,7 @@ def visual(forcefields, cols, director):
 
 
 def table(forcefields, cols, director):
-    from vnfb.content.visuals.table.selectoneforcefields import table
+    from vnf.content.visuals.table.selectoneforcefields import table
     return table(forcefields, cols, director, editable=False)
 
 

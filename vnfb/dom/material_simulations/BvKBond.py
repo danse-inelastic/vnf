@@ -48,7 +48,7 @@ def customizeLubanObjectDrawer(self, drawer):
         helpelem.paragraph(
             text=['The offset is on the following base vectors:']
             )
-        from vnfb.content.visuals.atomicstructure import getBaseVectorsDoc
+        from vnf.content.visuals.atomicstructure import getBaseVectorsDoc
         basedoc = getBaseVectorsDoc(
             matter = obj.matter,
             primitive_unitcell = obj.uses_primitive_unitcell,

@@ -29,7 +29,7 @@ class Component(base):
         return
 
 
-from vnfb.dom.Feature import FeatureTable as Table
+from vnf.dom.Feature import FeatureTable as Table
 def feature(id, description, status, developer):
     r = Table()
     r.id = id

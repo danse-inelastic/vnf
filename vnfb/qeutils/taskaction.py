@@ -13,7 +13,7 @@
 
 import luban.content as lc
 from luban.content import load
-from vnfb.qeutils.qeutils import jobStatus
+from vnf.qeutils.qeutils import jobStatus
 
 
 class TaskAction(object):

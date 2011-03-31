@@ -12,7 +12,7 @@
 #
 
 
-from vnfb.components.job_builders.neutronexperiment.NeutronExperiment import Builder
+from vnf.components.job_builders.neutronexperiment.NeutronExperiment import Builder
 def job_builder(name, path):
     return Builder(name, path)
 

@@ -63,7 +63,7 @@ class DbApp(base):
 
 
     def _getPrivateDepositoryLocations(self):
-        from vnfb.deployment import pyre_depositories
+        from vnf.deployment import pyre_depositories
         return pyre_depositories
     
 

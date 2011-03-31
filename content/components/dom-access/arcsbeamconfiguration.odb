@@ -12,7 +12,7 @@
 #
 
 
-from vnfb.components.DOMAccessor import DOMAccessor as base
+from vnf.components.DOMAccessor import DOMAccessor as base
 
 class Accessor(base):
 
@@ -105,7 +105,7 @@ class Accessor(base):
             where = st.c.creator == username
             q = sqlalchemy.select(cols, where)
         else:
-            from vnfb.utils.query.accesscontrol import select_public_and_owned_records
+            from vnf.utils.query.accesscontrol import select_public_and_owned_records
             q = select_public_and_owned_records(cols, st, username, db)
             
         if filter:
@@ -158,8 +158,8 @@ class Accessor(base):
 
 
 
-from vnfb.dom.Label import Label, common_labels
-from vnfb.dom.neutron_experiment_simulations.integrated.arcs.ARCSbeam import ARCSbeam, ARCSbeam_Table
+from vnf.dom.Label import Label, common_labels
+from vnf.dom.neutron_experiment_simulations.integrated.arcs.ARCSbeam import ARCSbeam, ARCSbeam_Table
 
 
 from dsaw.db.VersatileReference import global_pointer

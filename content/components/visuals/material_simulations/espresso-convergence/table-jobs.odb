@@ -11,8 +11,8 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
-from vnfb.qeutils.qegrid import QEGrid
-from vnfb.qeutils.qeutils import convJobId, convJobRowId
+from vnf.qeutils.qegrid import QEGrid
+from vnf.qeutils.qeutils import convJobId, convJobRowId
 import luban.content as lc
 
 MAX_STEPS   = 30    # Max number of rows in the table

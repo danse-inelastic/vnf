@@ -14,8 +14,8 @@
 # XXX: Critical: celldm(1) is created incorrectly from atomic structure
 #   Quick fix: set fixed value CELLDM!
 
-from vnfb.qeutils.qeparser.namelist import Namelist
-from vnfb.qeutils.qeparser.card import Card
+from vnf.qeutils.qeparser.namelist import Namelist
+from vnf.qeutils.qeparser.card import Card
 
 # Default Control params
 CALCULATION     = "'cp'"

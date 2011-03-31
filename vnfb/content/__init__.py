@@ -29,7 +29,7 @@ def safe_eval_action(s):
         'alert': alert,
         'select': select,
         }
-    from vnfb.utils.safe_eval import safe_eval
+    from vnf.utils.safe_eval import safe_eval
     safe_eval(s, c)
     return c['action']
 

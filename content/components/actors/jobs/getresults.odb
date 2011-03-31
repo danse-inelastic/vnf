@@ -14,10 +14,10 @@
 from luban.content import load
 from luban.content import select
 import luban.content as lc
-from vnfb.qeutils.qeconst import RESULTS_ID
-from vnfb.qeutils.results.resultinfo import ResultInfo
-#from vnfb.qeutils.taskinfo import TaskInfo
-from vnfb.qeutils.qeutils import latestJob
+from vnf.qeutils.qeconst import RESULTS_ID
+from vnf.qeutils.results.resultinfo import ResultInfo
+#from vnf.qeutils.taskinfo import TaskInfo
+from vnf.qeutils.qeutils import latestJob
 
 from luban.components.AuthorizedActor import AuthorizedActor as base
 

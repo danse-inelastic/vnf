@@ -11,7 +11,7 @@
 #
 
 
-from vnfb.components.DOMAccessor import DOMAccessor as base
+from vnf.components.DOMAccessor import DOMAccessor as base
 
 class Accessor(base):
 
@@ -34,7 +34,7 @@ class Accessor(base):
 
     def getPotentialNames(self):
         #results = self.director.clerk._getEntry('GulpPotential', maindom='memd.gulp')
-        results = self.director.clerk._getEntry('GulpPotential', maindom='vnfb.dom.material_simulations')
+        results = self.director.clerk._getEntry('GulpPotential', maindom='vnf.dom.material_simulations')
         potentialNames=[]
         for entry in results:
             potentialNames.append(entry.potential_name)
@@ -44,7 +44,7 @@ class Accessor(base):
 #        potential = self.getPotential(id)
 #        record = self.orm(potential)
         records = self.director.clerk._getEntry('GulpPotential', 
-            where="potential_name='"+potential_name+"'", maindom='vnfb.dom.material_simulations')
+            where="potential_name='"+potential_name+"'", maindom='vnf.dom.material_simulations')
         # assume the first one is correct
         record = records[0]
         director = self.director

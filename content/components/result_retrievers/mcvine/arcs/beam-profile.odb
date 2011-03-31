@@ -31,7 +31,7 @@ expected_others = [
 expected_files = expected_histogram_files + expected_others
 
 
-from vnfb.components.ComputationResultRetriever import ComputationResultRetriever as base
+from vnf.components.ComputationResultRetriever import ComputationResultRetriever as base
 class Retriever(base):
 
     def _retrieveResultsFor(self, computation):
@@ -92,9 +92,9 @@ class Retriever(base):
         return
         
 
-from vnfb.dom.Histogram import HistogramTable
-from vnfb.dom.neutron_experiment_simulations.NeutronStorage import NeutronStorageTable, NeutronStorage
-from vnfb.dom.neutron_experiment_simulations.integrated.arcs.ARCSbeam import ARCSbeam
+from vnf.dom.Histogram import HistogramTable
+from vnf.dom.neutron_experiment_simulations.NeutronStorage import NeutronStorageTable, NeutronStorage
+from vnf.dom.neutron_experiment_simulations.integrated.arcs.ARCSbeam import ARCSbeam
 import os
 
 

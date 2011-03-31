@@ -13,14 +13,14 @@
 
 
 """
-Those prebuilt instruments are under vnfb/dom/neutron_experiment_simulations/instruments/
+Those prebuilt instruments are under vnf/dom/neutron_experiment_simulations/instruments/
 Two forms of instrument files are accepted:
  1. instrument = dictionary of information about the instrument. eg. Test.py
  2. createInstrument = factory method that create an instrument in the db given this
     application as the directory. eg. ARCS_beam.py
 
 It should be easy to make this app to accept arbitrary python file (so it is
-not limited to the files in vnfb/dom/neutron_experiment_simulations/instruments
+not limited to the files in vnf/dom/neutron_experiment_simulations/instruments
 """
 
 
@@ -39,7 +39,7 @@ class Component(base):
     def initdb(self):
         instruments = self.inventory.instruments
         if not instruments:
-            from vnfb.dom.neutron_experiment_simulations.instruments \
+            from vnf.dom.neutron_experiment_simulations.instruments \
                  import instrument_names as instruments
         self._createInstruments(instruments)
         return
@@ -62,7 +62,7 @@ class Component(base):
         instrument = getattr(module, 'instrument')
         
         orm = self.director.clerk.orm
-        from vnfb.dom.neutron_experiment_simulations.instruments import createInstrument
+        from vnf.dom.neutron_experiment_simulations.instruments import createInstrument
         createInstrument(instrument, orm)
         
         return
@@ -70,7 +70,7 @@ class Component(base):
 
     def _importInstrumentModule(self, name):
         n = 'neutron_experiment_simulations.instruments.%s' % name
-        from vnfb.dom import _import
+        from vnf.dom import _import
         return _import(n)
 
 

@@ -76,7 +76,7 @@ class Worker(base):
         computation = db.dereference(job.computation)
         
         director.declareProgress(0.4, 'Preparing: building job ...')
-        from vnfb.utils.job import buildjob
+        from vnf.utils.job import buildjob
         files, deps = buildjob(
             computation, db=db, dds=dds, path=jobpath, director=director)
         for f in files: dds.remember(job, f)
@@ -105,7 +105,7 @@ class Worker(base):
 
 
     def schedule(self, job):
-        from vnfb.utils.job.scheduler import schedule
+        from vnf.utils.job.scheduler import schedule
         return schedule(job, self.director)
 
 

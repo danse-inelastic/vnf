@@ -11,7 +11,7 @@
 #
 
 
-from vnfb.components.ComputationResultRetriever import ComputationResultRetriever as base
+from vnf.components.ComputationResultRetriever import ComputationResultRetriever as base
 class Retriever(base):
 
     def _retrieveResultsFor(self, computation):
@@ -30,7 +30,7 @@ class Retriever(base):
 
         # create a sqe record
         self.declareProgress(0.4, 'create a data object to store the result')
-        from vnfb.dom.material_simulations.Eisf import EisfTable
+        from vnf.dom.material_simulations.Eisf import EisfTable
         eisf = self._make_result_holder(computation, EisfTable)
         eisf.matter = computation.matter
         db.updateRecord(eisf)

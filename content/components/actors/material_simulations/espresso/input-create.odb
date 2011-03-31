@@ -11,13 +11,13 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
-from vnfb.qeutils.qeparser.qeinput import QEInput
-from vnfb.dom.QEConfiguration import QEConfiguration
-from vnfb.qeutils.qeutils import writeRecordFile, defaultInputName, subtypeMatdyn
-#import vnfb.qeutils.filters as filterdir
+from vnf.qeutils.qeparser.qeinput import QEInput
+from vnf.dom.QEConfiguration import QEConfiguration
+from vnf.qeutils.qeutils import writeRecordFile, defaultInputName, subtypeMatdyn
+#import vnf.qeutils.filters as filterdir
 
 from luban.content import load
-from vnfb.components.QEGenerator import QEGenerator as base
+from vnf.components.QEGenerator import QEGenerator as base
 
 class Actor(base):
 

@@ -29,7 +29,7 @@ class Component(base):
         return
 
 
-from vnfb.dom.Registrant import Registrant
+from vnf.dom.Registrant import Registrant
 def registrant(firstname, lastname, username, pw, email, organization):
     r = Registrant()
     r.firstname = firstname

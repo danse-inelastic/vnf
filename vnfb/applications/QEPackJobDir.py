@@ -25,14 +25,14 @@ class PackJobDir(base):
         import pyre.inventory
         id = pyre.inventory.str('id')   # job id
 
-        import vnfb.components
-        clerk = pyre.inventory.facility(name="clerk", factory=vnfb.components.clerk)
+        import vnf.components
+        clerk = pyre.inventory.facility(name="clerk", factory=vnf.components.clerk)
         clerk.meta['tip'] = "the component that retrieves data from the various database tables"
 
-        dds = pyre.inventory.facility(name="dds", factory=vnfb.components.dds)
+        dds = pyre.inventory.facility(name="dds", factory=vnf.components.dds)
         dds.meta['tip'] = "the component manages data files"
 
-        csaccessor = pyre.inventory.facility(name='csaccessor', factory = vnfb.components.ssher)
+        csaccessor = pyre.inventory.facility(name='csaccessor', factory = vnf.components.ssher)
         csaccessor.meta['tip'] = 'computing server accessor'
 
         debug = pyre.inventory.bool(name='debug', default=False)

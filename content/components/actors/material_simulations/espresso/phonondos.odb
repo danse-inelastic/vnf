@@ -18,9 +18,9 @@ from qecalc.qetask.matdyntask import MatdynTask
 import os
 import time
 import shutil
-from vnfb.qeutils.qeutils import analyseActor, dataroot
-from vnfb.qeutils.results.matdynresult import MATDYNResult
-from vnfb.dom.material_simulations.PhononDOS import PhononDOSTable
+from vnf.qeutils.qeutils import analyseActor, dataroot
+from vnf.qeutils.results.matdynresult import MATDYNResult
+from vnf.dom.material_simulations.PhononDOS import PhononDOSTable
 
 CONVERT_DELAY       = 5   # 5 sec
 TO_THZ              = 0.0299792458
@@ -93,7 +93,7 @@ fldos = %s""" % (self._matdynresult.inputFile(),
 
 
     def _createRecord(self, director):
-        """Creates 'phonondoses' record (taken from: vnfb/components/ComputationResultRetriever.py)
+        """Creates 'phonondoses' record (taken from: vnf/components/ComputationResultRetriever.py)
         Notes:
             - Sets phonid
         """
@@ -138,7 +138,7 @@ fldos = %s""" % (self._matdynresult.inputFile(),
 
     def _matdynpath(self):
         "Returns matdyn results path of 'dos' subtype"
-        # Example: "/home/dexity/exports/vnf/vnfb/content/data/tmp/tmpTRqFuy/8CNH5MUJ"
+        # Example: "/home/dexity/exports/vnf/vnf/content/data/tmp/tmpTRqFuy/8CNH5MUJ"
         path    = self._matdynresult.localPath()
         if not path:
             return ""   # empty string

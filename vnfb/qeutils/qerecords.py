@@ -11,9 +11,9 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
-from vnfb.qeutils.qeutils import latestJob, simChain
-from vnfb.qeutils.qeconst import SIMCHAINS
-from vnfb.epscutils.epscconst import EPSCCHAIN
+from vnf.qeutils.qeutils import latestJob, simChain
+from vnf.qeutils.qeconst import SIMCHAINS
+from vnf.epscutils.epscconst import EPSCCHAIN
 
 class QERecords(object):
 

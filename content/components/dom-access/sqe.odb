@@ -11,7 +11,7 @@
 #
 
 
-from vnfb.components.DOMAccessor import DOMAccessor as base
+from vnf.components.DOMAccessor import DOMAccessor as base
 
 class Accessor(base):
 
@@ -31,7 +31,7 @@ class Accessor(base):
 
 import journal
 debug = journal.debug('sqe-accessor')
-from vnfb.dom.material_simulations.SQE import SQE, SQETable
+from vnf.dom.material_simulations.SQE import SQE, SQETable
 
 
 def read(sqe, director):

@@ -18,7 +18,7 @@ typenames = [
 
 
 def getTypes():
-    from vnfb.dom import importType
+    from vnf.dom import importType
     return map(importType, typenames)
 
 

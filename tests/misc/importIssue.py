@@ -1,3 +1,3 @@
 
 
-from vnfb.dom.analysis.MdDosCalc import MdDosCalcBase
+from vnf.dom.analysis.MdDosCalc import MdDosCalcBase

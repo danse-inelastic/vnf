@@ -25,7 +25,7 @@ class Actor(base):
         
     def createGraphicalView(self, director):
         # create temporary directory
-        from vnfb.utils.job import packjobdir
+        from vnf.utils.job import packjobdir
         parentdir = packjobdir.temproot
         parentdir = os.path.abspath(parentdir)
         tmpdirectory = tempfile.mkdtemp(dir=parentdir)
@@ -45,7 +45,7 @@ class Actor(base):
 #        trajectory = orm.load(Trajectory, self.inventory.id)
         #datadir = director.dds.abspath(orm(trajectory))
         
-#        from vnfb.utils.job import packobjectdir as packutils
+#        from vnf.utils.job import packobjectdir as packutils
 #        url = packutils.downloadurl(orm(trajectory), director)
 #        filename = url.split('/')[-1]
 #        label = 'Download %s' % filename

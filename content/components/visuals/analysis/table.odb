@@ -20,7 +20,7 @@ def visual(analyses, cols, director):
 
 
 def table(analyses, cols, director):
-    from vnfb.content.visuals.table.analysis import table
+    from vnf.content.visuals.table.analysis import table
     return table(analyses, cols, director, editable=True)
 
 

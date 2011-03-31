@@ -2,7 +2,7 @@
 
 from _ import o2t
 
-from vnfb.dom.Computation import Computation
+from vnf.dom.Computation import Computation
 
 from mdt.orm.GulpMd import GulpMd
 GulpMdTable = o2t(

@@ -11,7 +11,7 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
-from vnfb.qeutils.qeconst import NOPARALLEL
+from vnf.qeutils.qeconst import NOPARALLEL
 from pyre.units.time import hour
 import math
 import os
@@ -120,7 +120,7 @@ def schedulerfactory( server ):
     if scheduler in [ None, '', 'None' ]:
         raise RuntimeError, "scheduler not specified"
 
-    from vnfb.clusterscheduler import scheduler as factory
+    from vnf.clusterscheduler import scheduler as factory
     try: scheduler = factory( scheduler )
     except: raise NotImplementedError, 'scheduler %r' % scheduler
     return scheduler

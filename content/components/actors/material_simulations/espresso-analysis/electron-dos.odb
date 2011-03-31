@@ -12,9 +12,9 @@
 #
 
 import luban.content as lc
-from vnfb.qeutils.qeutils import parseElectronDos
-from vnfb.qeutils.results.dosresult import DOSResult
-from vnfb.components.QEAnalysis import QEAnalysis as base
+from vnf.qeutils.qeutils import parseElectronDos
+from vnf.qeutils.results.dosresult import DOSResult
+from vnf.components.QEAnalysis import QEAnalysis as base
 
 class Actor(base):
 

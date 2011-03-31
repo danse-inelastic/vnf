@@ -17,7 +17,7 @@ def visual(
     domaccess = director.retrieveDOMAccessor('forcefield')
     targettablename = 'gulppotential'
         
-    from vnfb.components.MasterTable import MasterTableFactory, filtercompiler
+    from vnf.components.MasterTable import MasterTableFactory, filtercompiler
     def countrecords(filter, label=None, mine=False):
         return domaccess.countForcefields(filter, label=label, mine=mine)
     def createtable(order_by, reverse_order, slice, filter, label=None, mine=False):
@@ -30,7 +30,7 @@ def visual(
             label=label,
             mine=mine,
             )
-    from vnfb.content.visuals.table.selectoneforcefield import model
+    from vnf.content.visuals.table.selectoneforcefield import model
     compilefilter = filtercompiler(columns, measure2dbcol, model=model)
 
     smartlabelaccess = director.retrieveDOMAccessor('smartlabel')

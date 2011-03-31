@@ -22,7 +22,7 @@ ELECTRON_DAMPING    = "0.2"
 ION_DYNAMICS        = "'damp'"
 ION_DAMPING         = "0.02"
 
-from vnfb.qeutils.generators.cpgenerator import CPGenerator as base
+from vnf.qeutils.generators.cpgenerator import CPGenerator as base
 
 class IMGenerator(base):
     "Generator for CP Ion Minimization task"

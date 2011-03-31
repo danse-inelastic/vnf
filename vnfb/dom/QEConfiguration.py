@@ -21,7 +21,7 @@ TODO:
     - Change name from QEConfiguration to QEInput? QEInput is too specific?
 """
 
-from vnfb.components.QETable import QETable
+from vnf.components.QETable import QETable
 
 class QEConfiguration(QETable):
 

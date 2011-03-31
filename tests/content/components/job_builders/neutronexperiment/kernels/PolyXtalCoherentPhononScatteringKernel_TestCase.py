@@ -19,7 +19,7 @@ from TestCaseBase import createTestCase, TestAppBase
 
 class TestApp(TestAppBase):
     
-    from vnfb.dom.scattering_kernels.ins.PolyXtalCoherentPhononScatteringKernel import PolyXtalCoherentPhononScatteringKernel as Kernel
+    from vnf.dom.scattering_kernels.ins.PolyXtalCoherentPhononScatteringKernel import PolyXtalCoherentPhononScatteringKernel as Kernel
 
 
     kernelid = 'bvk-bccFeAt295-N40-df0.2-testjobbuilder'

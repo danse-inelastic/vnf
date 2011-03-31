@@ -1,6 +1,6 @@
-from vnfb.dom.scattering_kernels._ import *
+from vnf.dom.scattering_kernels._ import *
 
-from vnfb.dom.scattering_kernels.AbstractScatteringKernel import AbstractScatteringKernel, AbstractScatteringKernelInventory, TableBase as KernelTableBase
+from vnf.dom.scattering_kernels.AbstractScatteringKernel import AbstractScatteringKernel, AbstractScatteringKernelInventory, TableBase as KernelTableBase
 
 
 

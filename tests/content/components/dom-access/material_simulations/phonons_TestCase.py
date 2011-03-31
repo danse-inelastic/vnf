@@ -27,7 +27,7 @@ phononsid = "bvk-fccAgAt293-N20-df0.2"
 
 
 # application
-from vnfb.testing.TestAppBase import Application as base
+from vnf.testing.TestAppBase import Application as base
 class TestApp(base):
 
 

@@ -260,7 +260,7 @@ class MasterTableFactory(object):
         # 
         path.append(label)
 
-        from vnfb.content.visuals.view_indicator import visual
+        from vnf.content.visuals.view_indicator import visual
         return visual(path)
 
 
@@ -759,8 +759,8 @@ def filtercompiler(measures, measure2dbcol, model=None):
     '''
     def compilefilter(filter_expr):
         if not filter_expr: return
-        from vnfb.utils.safe_eval import safe_eval
-        from vnfb.utils.filter import measure as filtermeasure, expr2dbsyntax
+        from vnf.utils.safe_eval import safe_eval
+        from vnf.utils.filter import measure as filtermeasure, expr2dbsyntax
 
         # building the evaluation context
         context = {}
@@ -837,7 +837,7 @@ class MasterTableActor(base):
         #
         username = director.sentry.username
 
-        from vnfb.utils.db.findreferrals import hasreferral
+        from vnf.utils.db.findreferrals import hasreferral
         orm = clerk.orm
         stillinuse = []; notowned = []
         for record in records:

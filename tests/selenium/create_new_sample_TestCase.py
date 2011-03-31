@@ -75,7 +75,7 @@ class TestCaseBase(base):
         
 
 def pysuite():
-    from vnfb.testing import getDeploymentInfo
+    from vnf.testing import getDeploymentInfo
     info = getDeploymentInfo()
     fixtures = info.selenium_test_fixtures
     return makePySuite(TestCaseBase, fixtures)

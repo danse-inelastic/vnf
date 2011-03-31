@@ -12,10 +12,10 @@
 #
 
 
-from vnfb.dom.Label import Label, common_labels
+from vnf.dom.Label import Label, common_labels
 
 
-from vnfb.components.DOMAccessor import DOMAccessor as base
+from vnf.components.DOMAccessor import DOMAccessor as base
 
 class Accessor(base):
 

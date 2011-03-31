@@ -11,8 +11,8 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
-from vnfb.dom.QETask import QETask
-from vnfb.qeutils.taskcreator import TaskCreator
+from vnf.dom.QETask import QETask
+from vnf.qeutils.taskcreator import TaskCreator
 
 class EPSCTaskCreator(TaskCreator):
 

@@ -11,14 +11,14 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
-from vnfb.qeutils.results.q2rresult import Q2RResult
-from vnfb.qeutils.qeconst import MATDYN_METHOD_LIST
-from vnfb.qeutils.qeparser.namelist import Namelist
-from vnfb.qeutils.results.pwresult import PWResult
-from vnfb.qeutils.generators.phgenerator import PHGenerator
+from vnf.qeutils.results.q2rresult import Q2RResult
+from vnf.qeutils.qeconst import MATDYN_METHOD_LIST
+from vnf.qeutils.qeparser.namelist import Namelist
+from vnf.qeutils.results.pwresult import PWResult
+from vnf.qeutils.generators.phgenerator import PHGenerator
 
 from qecalc.qetask.qeparser.matdyninput import MatdynInput
-from vnfb.qeutils.qecalcutils import kmesh
+from vnf.qeutils.qecalcutils import kmesh
 
 DOS     = ".true."
 

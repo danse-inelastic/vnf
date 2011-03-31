@@ -19,7 +19,7 @@ Notes:
     - Set reference to ExportSimulation table?
 """
 
-from vnfb.components.QETable import QETable
+from vnf.components.QETable import QETable
 
 class Export(QETable):
     name = "exports"

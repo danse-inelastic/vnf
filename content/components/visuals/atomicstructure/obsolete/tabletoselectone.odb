@@ -31,7 +31,7 @@ def visual(
     domaccess = director.retrieveDOMAccessor('atomicstructure')
     targettablename = 'atomicstructure'
         
-    from vnfb.components.MasterTable import MasterTableFactory, filtercompiler
+    from vnf.components.MasterTable import MasterTableFactory, filtercompiler
     def countrecords(filter, label=None):
         return domaccess.countAtomicStructures(filter, label=label)
     def createtable(order_by, reverse_order, slice, filter, label=None):

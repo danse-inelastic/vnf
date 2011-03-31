@@ -11,7 +11,7 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
-from vnfb.qeutils.qegrid import QEGrid
+from vnf.qeutils.qegrid import QEGrid
 
 from luban.content import select
 from luban.content import load
@@ -20,12 +20,12 @@ from luban.content.FormSelectorField import FormSelectorField
 from luban.content.FormTextField import FormTextField
 from luban.content.FormCheckBox import FormCheckBox
 from luban.content.FormSubmitButton import FormSubmitButton
-from vnfb.qeutils.qeconst import SERVERS, NOPARALSIM, SIMTYPE, OPT_DEFAULT
-from vnfb.utils.serverlist import ServerList
-from vnfb.qeutils.qeutils import serverName
+from vnf.qeutils.qeconst import SERVERS, NOPARALSIM, SIMTYPE, OPT_DEFAULT
+from vnf.utils.serverlist import ServerList
+from vnf.qeutils.qeutils import serverName
 
 import luban.content as lc
-from vnfb.components.QESettings import Actor as base
+from vnf.components.QESettings import Actor as base
 
 class Actor(base):
 

@@ -1,7 +1,7 @@
 
 import journal
 debug = journal.debug('phonon')
-from vnfb.components.JobBuilder import JobBuilder as base
+from vnf.components.JobBuilder import JobBuilder as base
 
 class Builder(base):
 

@@ -15,7 +15,7 @@
 QEParams - table for configuration parameters used in convergence tests
 """
 
-from vnfb.components.QETable import QETable
+from vnf.components.QETable import QETable
 
 class QEConvParam(QETable):
     name = "qeconvparams"

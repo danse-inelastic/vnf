@@ -23,7 +23,7 @@ ELECTRON_VELOCITIES = "'zero'"
 ION_DYNAMICS        = "'verlet'"
 ION_VELOCITIES      = "'zero'"
 
-from vnfb.qeutils.generators.cpgenerator import CPGenerator as base
+from vnf.qeutils.generators.cpgenerator import CPGenerator as base
 
 class QUGenerator(base):
     "Generator for CP Quenching task"

@@ -12,7 +12,7 @@
 #
 
 import luban.content as lc
-from vnfb.qeutils.results.resultpath import ResultPath
+from vnf.qeutils.results.resultpath import ResultPath
 
 def content(path):
     "Returns content of the file of path"

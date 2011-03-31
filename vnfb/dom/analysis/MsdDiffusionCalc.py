@@ -13,7 +13,7 @@
 
 from _ import o2t
 
-from vnfb.dom.Computation import Computation
+from vnf.dom.Computation import Computation
 
 from vsat.trajectory.MsdDiffusionCalc import MsdDiffusionCalc as MsdDiffusionCalcBase
 

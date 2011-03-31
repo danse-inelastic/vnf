@@ -11,7 +11,7 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
-from vnfb.qeutils.qeparser.filter import Filter as InputFilter
+from vnf.qeutils.qeparser.filter import Filter as InputFilter
 
 """
 Filter - base class for all filters. Performs no filtering

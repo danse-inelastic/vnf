@@ -13,8 +13,8 @@
 
 import luban.content as lc
 from luban.content import select, load
-from vnfb.qeutils.qeparser.qeinput import QEInput
-import vnfb.qeutils.filters as filters
+from vnf.qeutils.qeparser.qeinput import QEInput
+import vnf.qeutils.filters as filters
 
 
 from luban.components.AuthorizedActor import AuthorizedActor as base

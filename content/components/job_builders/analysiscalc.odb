@@ -14,7 +14,7 @@
 import journal, os
 debug = journal.debug('analysis')
 
-from vnfb.components.JobBuilder import JobBuilder as base
+from vnf.components.JobBuilder import JobBuilder as base
 
 class Builder(base):
 

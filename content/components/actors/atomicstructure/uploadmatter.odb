@@ -40,7 +40,7 @@ class Actor(base):
         # check the upload
         uploadid = self.inventory.uploadid
         
-        from vnfb.utils.upload import abspath
+        from vnf.utils.upload import abspath
         dir = abspath(uploadid)
         
         entries = os.listdir(dir); found = None

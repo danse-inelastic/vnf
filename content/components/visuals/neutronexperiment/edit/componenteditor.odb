@@ -54,7 +54,7 @@ class Factory(object):
         title = '%s: %s' % (component.componentname, component.__class__.__name__)
         doc = lc.document(Class='container', id='component-editor', title=title)
 
-        from vnfb.dom.neutron_experiment_simulations.neutron_components.SampleComponent import SampleComponentTable
+        from vnf.dom.neutron_experiment_simulations.neutron_components.SampleComponent import SampleComponentTable
         issaample = isinstance(component, SampleComponentTable)
         if not issaample:
             toolbar = lc.toolbar(id='component-editor-toolbar', Class='topright-toolbar')
@@ -117,9 +117,9 @@ class Factory(object):
 
 
     def _getComponentTypeNames(self):
-        from vnfb.dom.neutron_experiment_simulations.neutron_components import typenames
-        from vnfb.dom.neutron_experiment_simulations.neutron_components.SampleBase import TableBase
-        from vnfb.dom.neutron_experiment_simulations.neutron_components.SampleComponent import SampleComponentTable
+        from vnf.dom.neutron_experiment_simulations.neutron_components import typenames
+        from vnf.dom.neutron_experiment_simulations.neutron_components.SampleBase import TableBase
+        from vnf.dom.neutron_experiment_simulations.neutron_components.SampleComponent import SampleComponentTable
         domaccess = self.domaccess
         def isNotSampleTable(name):
             t = domaccess._getTable(name)

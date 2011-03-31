@@ -60,7 +60,7 @@ class Actor(base):
 
     def uploadDirectory(self):
         id = self.inventory.id
-        from vnfb.utils.upload import abspath
+        from vnf.utils.upload import abspath
         directory = abspath(id)
         self._debug.log('upload directory: %s'%directory)
         return directory

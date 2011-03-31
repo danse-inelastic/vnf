@@ -1,1 +1,1 @@
-from vnfb.dom.MaterialSimulation import MaterialSimulation as SimulationBase
+from vnf.dom.MaterialSimulation import MaterialSimulation as SimulationBase

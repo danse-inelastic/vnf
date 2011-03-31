@@ -11,7 +11,7 @@
 
 
 def visual(samples, cols, director):
-    from vnfb.content.visuals.table.sample import table
+    from vnf.content.visuals.table.sample import table
     return table(samples, cols, director, editable=True)
 
 

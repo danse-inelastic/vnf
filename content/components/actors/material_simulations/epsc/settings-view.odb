@@ -11,9 +11,9 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
-from vnfb.epscutils.action_links import serverLink
-from vnfb.qeutils.qeutils import stamp2date
-from vnfb.qeutils.qegrid import QEGrid
+from vnf.epscutils.action_links import serverLink
+from vnf.qeutils.qeutils import stamp2date
+from vnf.qeutils.qegrid import QEGrid
 
 from luban.content import select
 from luban.content import load

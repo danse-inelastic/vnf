@@ -33,7 +33,7 @@ class Factory(object):
         doc = lc.document(title='')
         tabs = lc.tabs()
         #jmol
-#        from vnfb.components.JnlpFile import JnlpFile
+#        from vnf.components.JnlpFile import JnlpFile
 #        director = self.director
 #        args = {
 #                'cgihome':director.cgihome,

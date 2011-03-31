@@ -12,12 +12,12 @@
 #
 
 import luban.content as lc
-from vnfb.qeutils.qegrid import QEGrid
-from vnfb.qeutils.results.dynmatresult import DYNMATResult
+from vnf.qeutils.qegrid import QEGrid
+from vnf.qeutils.results.dynmatresult import DYNMATResult
 
 NONE    = "None"
 
-from vnfb.components.QEAnalysis import QEAnalysis as base
+from vnf.components.QEAnalysis import QEAnalysis as base
 class Actor(base):
     
     def _simData(self, director, splitter):

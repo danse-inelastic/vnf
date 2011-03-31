@@ -58,7 +58,7 @@ def _getRole(name, context, db):
         raise RuntimeError, msg
 
 
-from vnfb.dom.RoleHasRole import join, Role
+from vnf.dom.RoleHasRole import join, Role
 
 
 assignments = [

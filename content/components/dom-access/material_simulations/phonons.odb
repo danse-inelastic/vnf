@@ -12,7 +12,7 @@
 #
 
 
-from vnfb.components.DOMAccessor import DOMAccessor as base
+from vnf.components.DOMAccessor import DOMAccessor as base
 
 class Accessor(base):
 
@@ -82,7 +82,7 @@ class Accessor(base):
         path = dds.abspath(record, os.path.join(subdir, 'DOS'))
         if not os.path.exists(path):
             # no DOS, create it
-            from vnfb.dom.material_simulations.Phonons import computeDOS
+            from vnf.dom.material_simulations.Phonons import computeDOS
             e,I = computeDOS(phonons)
             # e is in meV, DOS needs terahz, and
             # it is frequency, not angular frequency (see DOS specification in idf)
@@ -101,7 +101,7 @@ class Accessor(base):
         # the primitive cell
         primcell = matter.primitive_unitcell.base
         # the reciprocal cell
-        from vnfb.utils.crystallattice import reciprocal
+        from vnf.utils.crystallattice import reciprocal
         recicell = reciprocal(primcell)
         #
         from idf.phonons import getStandardQgridinfo
@@ -110,7 +110,7 @@ class Accessor(base):
         if content != standard_content:
             open(path, 'w').write(standard_content)
             db = self.director.clerk.db
-            from vnfb.dom.Server import Server
+            from vnf.dom.Server import Server
             servers = db.query(Server).all()
             filename = os.path.join(subdir, 'Qgridinfo')
             for server in servers:
@@ -167,7 +167,7 @@ class Accessor(base):
         # the primitive cell
         primcell = matter.primitive_unitcell.base
         # the reciprocal cell
-        from vnfb.utils.crystallattice import reciprocal
+        from vnf.utils.crystallattice import reciprocal
         recicell = reciprocal(primcell)
 
         from idf.phonons import read
@@ -215,7 +215,7 @@ idf_files = [
     'Qgridinfo',
     ]
     
-from vnfb.dom.material_simulations.Phonons import Phonons
+from vnf.dom.material_simulations.Phonons import Phonons
 
 import os, numpy
 

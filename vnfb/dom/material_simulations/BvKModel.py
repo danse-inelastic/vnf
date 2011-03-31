@@ -13,7 +13,7 @@
 
 
 # activate customized orm in vnf for atomic structure
-import vnfb.dom.AtomicStructure
+import vnf.dom.AtomicStructure
 
 
 # deactivate the warning from importing bvk

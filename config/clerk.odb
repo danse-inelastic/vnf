@@ -1,2 +1,2 @@
-from vnfb.components.Clerk import Clerk
+from vnf.components.Clerk import Clerk
 def clerk(): return Clerk('clerk')

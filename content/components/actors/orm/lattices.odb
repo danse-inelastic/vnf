@@ -19,7 +19,7 @@ from luban.content import select, load, alert
 
 
 #
-from vnfb.dom.AtomicStructure import Structure, Lattice, Atom
+from vnf.dom.AtomicStructure import Structure, Lattice, Atom
 
 from luban.components.Actor import Actor
 import luban.orm

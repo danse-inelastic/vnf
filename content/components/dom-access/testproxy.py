@@ -5,7 +5,7 @@ def setup():
     from dsaw.db import connect
     db = connect(db='postgres:///vnfa2b')
 
-    from vnfb.components.DOMAccessor import DOMAccessor
+    from vnf.components.DOMAccessor import DOMAccessor
     da = DOMAccessor('proxy')
     da.db=db
 

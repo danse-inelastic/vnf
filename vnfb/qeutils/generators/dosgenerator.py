@@ -11,7 +11,7 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
-from vnfb.qeutils.qeparser.qeinput import QEInput
+from vnf.qeutils.qeparser.qeinput import QEInput
 
 class DOSGenerator(object):
 

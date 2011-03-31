@@ -11,7 +11,7 @@
 
 
 
-# this is obsolete. see vnfb.components.iworkers.PackJobDir
+# this is obsolete. see vnf.components.iworkers.PackJobDir
 
 from pyre.applications.Script import Script as base
 
@@ -23,12 +23,12 @@ class PackJobDir(base):
         import pyre.inventory
         id = pyre.inventory.str('id')
 
-        import vnfb.components
         import vnf.components
-        clerk = pyre.inventory.facility(name="clerk", factory=vnfb.components.clerk)
+        import vnf.components
+        clerk = pyre.inventory.facility(name="clerk", factory=vnf.components.clerk)
         clerk.meta['tip'] = "the component that retrieves data from the various database tables"
 
-        dds = pyre.inventory.facility(name="dds", factory=vnfb.components.dds)
+        dds = pyre.inventory.facility(name="dds", factory=vnf.components.dds)
         dds.meta['tip'] = "the component manages data files"
 
         csaccessor = pyre.inventory.facility(name='csaccessor', factory = vnf.components.ssher)

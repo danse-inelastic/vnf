@@ -12,7 +12,7 @@
 #
 
 
-from vnfb.applications.ApproveUser import ApproveUser
+from vnf.applications.ApproveUser import ApproveUser
 
 
 def main():

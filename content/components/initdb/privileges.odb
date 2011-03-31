@@ -29,7 +29,7 @@ class Component(base):
         return
 
 
-from vnfb.dom.Privilege import Privilege
+from vnf.dom.Privilege import Privilege
 def privilege(name, target, description):
     r = Privilege()
     r.name = name

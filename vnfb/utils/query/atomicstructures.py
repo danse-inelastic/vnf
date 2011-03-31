@@ -14,7 +14,7 @@
 
 from _ import *
 
-from vnfb.dom.AtomicStructure import StructureTable
+from vnf.dom.AtomicStructure import StructureTable
 
 def select_matter_clause(db):
     '''create a sqlalchemy select cluase for the atomicstructure(matter) table

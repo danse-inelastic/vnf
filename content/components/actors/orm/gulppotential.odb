@@ -19,7 +19,7 @@ from luban.content import select, load, alert
 
 
 #
-from vnfb.dom.material_simulations.GulpPotential import GulpPotential
+from vnf.dom.material_simulations.GulpPotential import GulpPotential
 
 from luban.components.Actor import Actor
 import luban.orm

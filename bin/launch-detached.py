@@ -15,7 +15,7 @@
 def main(**kwds):
 
 
-    from vnfb.applications.LaunchDetached import Launch
+    from vnf.applications.LaunchDetached import Launch
 
 
     class App(Launch):

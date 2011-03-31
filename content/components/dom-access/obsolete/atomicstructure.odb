@@ -18,7 +18,7 @@
 tablename = 'atomicstructure'
 
 
-from vnfb.components.DOMAccessor import DOMAccessor as base, Proxy
+from vnf.components.DOMAccessor import DOMAccessor as base, Proxy
 
 class Accessor(base):
 
@@ -30,7 +30,7 @@ class Accessor(base):
 
     def _getOrm(self):
         orm = self.director.clerk.orm
-        from vnfb.dom.AtomicStructure import Structure
+        from vnf.dom.AtomicStructure import Structure
         orm(Structure)
         return orm
     orm = property(_getOrm)
@@ -259,9 +259,9 @@ class AtomicStructureProxy(Proxy):
 
 
 from vnf.dom.Label import Label
-from vnfb.dom.AtomicStructure import StructureTable as AtomicStructure
-from vnfb.dom.Atom import AtomTable as Atom
-from vnfb.dom.Lattice import LatticeTable as Lattice
+from vnf.dom.AtomicStructure import StructureTable as AtomicStructure
+from vnf.dom.Atom import AtomTable as Atom
+from vnf.dom.Lattice import LatticeTable as Lattice
 
 
 from dsaw.db.VersatileReference import global_pointer

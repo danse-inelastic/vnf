@@ -15,7 +15,7 @@ def visual(records, cols, director):
 
 
 def table(records, cols, director):
-    from vnfb.content.visuals.table.arcsbeamprofile import table
+    from vnf.content.visuals.table.arcsbeamprofile import table
     return table(records, director=director, editable=True)
 
 

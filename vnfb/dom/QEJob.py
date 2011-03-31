@@ -18,7 +18,7 @@ Notes:
     - Has 'creator' field (owned table)
 """
 
-from vnfb.components.QETable import QETable
+from vnf.components.QETable import QETable
 
 class QEJob(QETable):
     # 'name' attribute should be present in every class table.

@@ -15,7 +15,7 @@
 standalone = True
 
 # application
-from vnfb.testing.TestAppBase import Application as base
+from vnf.testing.TestAppBase import Application as base
 class TestApp(base):
 
 
@@ -31,11 +31,11 @@ class TestApp(base):
         orm = clerk.orm
 
         # load
-        # from vnfb.dom.Atom import Atom
+        # from vnf.dom.Atom import Atom
         # atom = orm.load(Atom, '3BEYWG5W')
 
         # save matter
-        from vnfb.dom.AtomicStructure import Structure
+        from vnf.dom.AtomicStructure import Structure
         matter = Structure()
         matter.short_description = 'test structure'
         orm.save(matter)

@@ -11,8 +11,8 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
-from vnfb.qeutils.qeutils import stamp2date, readRecordFile
-from vnfb.qeutils.qegrid import QEGrid
+from vnf.qeutils.qeutils import stamp2date, readRecordFile
+from vnf.qeutils.qegrid import QEGrid
 
 from luban.content import select
 from luban.content import load
@@ -20,7 +20,7 @@ from luban.content import load
 import luban.content as lc
 from luban.components.AuthorizedActor import AuthorizedActor as base
 from luban.content.HtmlDocument import HtmlDocument
-from vnfb.epscutils.epscconst import TYPE_DESC
+from vnf.epscutils.epscconst import TYPE_DESC
 
 class Actor(base):
 

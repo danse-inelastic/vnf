@@ -11,12 +11,12 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
-from vnfb.qeutils.qegrid import QEGrid
+from vnf.qeutils.qegrid import QEGrid
 
 import luban.content as lc
 from luban.content import load, select
 
-from vnfb.components.QEConvergence import QEConvergence as base
+from vnf.components.QEConvergence import QEConvergence as base
 
 class Actor(base):
 
@@ -32,7 +32,7 @@ class Actor(base):
 
     # TEMP
     def runTest(self, director):
-        from vnfb.qeutils.qecalcutils.converger import Converger
+        from vnf.qeutils.qecalcutils.converger import Converger
         configString    = """
 [pw.x]
 pwInput: /tmp/convergence/pw.in

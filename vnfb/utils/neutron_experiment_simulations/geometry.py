@@ -109,7 +109,7 @@ def calculateComponentAbsoluteCoordinates(components, getname=None):
     calculates the absolute coordinates and assign that back to
     the components.
 
-    All components must be instances of vnfb.dom.neutron_experiment_simulations.AbstractNeutronComponent or vnfb.dom.neutron_experiment_simulations.Scatterer
+    All components must be instances of vnf.dom.neutron_experiment_simulations.AbstractNeutronComponent or vnf.dom.neutron_experiment_simulations.Scatterer
 
     getname: method to get name attribute of a component.
         when the components are instances of AbstractNeutronComponent, use default

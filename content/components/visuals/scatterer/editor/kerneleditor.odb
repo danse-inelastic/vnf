@@ -72,7 +72,7 @@ class Factory(object):
 
         #
         toolbar = lc.toolbar(); doc.add(toolbar)
-        from vnfb.dom.scattering_kernels import getKernelTypes
+        from vnf.dom.scattering_kernels import getKernelTypes
         kerneltypes = getKernelTypes()
         for kerneltype in kerneltypes:
             typename = kerneltype.__name__

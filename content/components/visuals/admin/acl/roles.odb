@@ -16,7 +16,7 @@ from luban.content import load, alert, select
 import luban.content as lc
 
 
-from vnfb.components.visuals.AdminVisualFactory import AdminVisualFactory as base
+from vnf.components.visuals.AdminVisualFactory import AdminVisualFactory as base
 class Factory(base):
 
     def create(self, director=None):

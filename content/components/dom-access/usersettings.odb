@@ -15,7 +15,7 @@
 tablename = 'usersettings'
 
 
-from vnfb.components.DOMAccessor import DOMAccessor as base
+from vnf.components.DOMAccessor import DOMAccessor as base
 
 class Accessor(base):
 
@@ -49,7 +49,7 @@ class Accessor(base):
         return row
     
 
-from vnfb.dom.UserSetting import UserSettingTable, UserSetting
+from vnf.dom.UserSetting import UserSettingTable, UserSetting
         
 def accessor():
     return Accessor()

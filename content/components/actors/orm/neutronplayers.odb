@@ -19,7 +19,7 @@ from luban.content import select, load, alert
 
 
 #
-from vnfb.dom.neutron_experiment_simulations.neutron_components.NeutronPlayer import NeutronPlayer
+from vnf.dom.neutron_experiment_simulations.neutron_components.NeutronPlayer import NeutronPlayer
 
 from luban.components.Actor import Actor
 import luban.orm
@@ -34,7 +34,7 @@ class Actor(base):
     def store(self, director):
         # this is overloaded because the orm view of neutronplayer was overloaded
         # please look at
-        # vnfb.dom.neutron_experiment_simulations.neutron_components.NeutronPlayer
+        # vnf.dom.neutron_experiment_simulations.neutron_components.NeutronPlayer
         # for details
         
         #

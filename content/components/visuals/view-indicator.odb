@@ -12,7 +12,7 @@
 #
 
 
-from vnfb.content.visuals.view_indicator import visual
+from vnf.content.visuals.view_indicator import visual
 
 
 # version

@@ -13,7 +13,7 @@
 
 
 '''
-Test of methods of base class vnfb.components.ComputationResultRetriever.ComputationResultRetriever.
+Test of methods of base class vnf.components.ComputationResultRetriever.ComputationResultRetriever.
 
 Test assumes that
  1. database. see parameter "dbname"
@@ -31,7 +31,7 @@ skip = True # temporarily let auto testing to skip over this test.
 
 
 #
-from vnfb.testing import getDeploymentInfo
+from vnf.testing import getDeploymentInfo
 deploymentinfo = getDeploymentInfo()
 dbname = deploymentinfo.dbname
 
@@ -46,12 +46,12 @@ jobid = "5WW9U3SR"
 
 
 # result holder
-from vnfb.dom.material_simulations.PhononDOS import PhononDOSTable as ResultHolder
+from vnf.dom.material_simulations.PhononDOS import PhononDOSTable as ResultHolder
 result_holder_id = 'test-computationresultretriever'
 
 
 # dummy retriever
-from vnfb.components.ComputationResultRetriever import ComputationResultRetriever as base
+from vnf.components.ComputationResultRetriever import ComputationResultRetriever as base
 class Retriever(base):
 
     pass
@@ -75,7 +75,7 @@ class TestApp(base):
         # get job and computation
         domaccessor = self.retrieveDOMAccessor('job')
         db = domaccessor.db
-        from vnfb.dom.Job import Job
+        from vnf.dom.Job import Job
         job = domaccessor.getRecordByID(Job, jobid)
         computation = db.dereference(job.computation)
 

@@ -18,7 +18,7 @@ from luban.content import select, load, alert
 
 #
 import luban.orm
-from vnfb.dom.neutron_experiment_simulations.integrated.arcs.ARCSbeam import ARCSbeam, ARCSbeam_Table
+from vnf.dom.neutron_experiment_simulations.integrated.arcs.ARCSbeam import ARCSbeam, ARCSbeam_Table
 base = luban.orm.object2actor(ARCSbeam)
 class Actor(base):
     

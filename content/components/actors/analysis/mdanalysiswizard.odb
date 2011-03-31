@@ -78,14 +78,14 @@ class Actor(base):
         
         #import the correct analysis
         className = self.inventory.analysisType        
-        exec('from vnfb.dom.analysis.'+className+' import '+className)
+        exec('from vnf.dom.analysis.'+className+' import '+className)
 #        exec('from '+analysisPaths[self.inventory.analysisType]+' import '+
 #             className)
         analysisDbClass = eval(className)
         analysisDbObj = director.clerk.insertNewRecordWithID(analysisDbClass)
         #load trajectory      
         trajectoryDbObj = director.clerk._getEntry('Trajectory', 
-            id = self.inventory.trajectoryId, maindom = 'vnfb.dom.material_simulations')
+            id = self.inventory.trajectoryId, maindom = 'vnf.dom.material_simulations')
         analysisDbObj.trajectory = trajectoryDbObj
         self.inventory.analysisId = analysisDbObj.id
         analysisDbObj.creator = director.sentry.username
@@ -120,7 +120,7 @@ class Actor(base):
         orm = director.clerk.orm
         className = self.inventory.analysisType
         analysisRecord = director.clerk._getEntry(className, 
-                id = self.inventory.analysisId, maindom = 'vnfb.dom.analysis')
+                id = self.inventory.analysisId, maindom = 'vnf.dom.analysis')
         #note the code below makes a slightly different object than the vsat one..
         #..it has Computation as superclass
         analysisObj = orm.record2object(analysisRecord)

@@ -11,9 +11,9 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
-from vnfb.qeutils.generators.phgenerator import PHGenerator
+from vnf.qeutils.generators.phgenerator import PHGenerator
 
-from vnfb.components.QEGenerator import QEGenerator as base
+from vnf.components.QEGenerator import QEGenerator as base
 class Actor(base):
 
     class Inventory(base.Inventory):

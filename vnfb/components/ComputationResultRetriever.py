@@ -60,7 +60,7 @@ class ComputationResultRetriever(Component):
                 ]
 
             # send an alert email
-            # from vnfb.utils.communications import announce
+            # from vnf.utils.communications import announce
             # announce(director, 'alert-to-vnf-developers',
             #          message=body, subject=subject)
             

@@ -32,7 +32,7 @@ class App(base):
     def main(self, *args, **kwds):
         clerk = self.inventory.clerk
 
-        from vnfb.dom.Server import Server
+        from vnf.dom.Server import Server
         id = self.inventory.id
         server = clerk.getRecordByID(Server, id)
 
@@ -58,7 +58,7 @@ class App(base):
         db.updateRecord(server)
 
         print "server %s activated" % server.short_description
-        # from vnfb.utils.communications import announce
+        # from vnf.utils.communications import announce
         # announce(self, 'computing-server-activated', server, error)
         return
 
@@ -69,7 +69,7 @@ class App(base):
 
 
     def _getPrivateDepositoryLocations(self):
-        from vnfb.deployment import pyre_depositories
+        from vnf.deployment import pyre_depositories
         return pyre_depositories
 
 

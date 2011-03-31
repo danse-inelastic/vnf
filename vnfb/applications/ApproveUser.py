@@ -28,18 +28,18 @@ class ApproveUser(base):
         if username:
             self.approve(username)
 
-        from vnfb.utils.services.ipad import askIpadToReload
+        from vnf.utils.services.ipad import askIpadToReload
         askIpadToReload(self)
 
         return
 
 
     def approve(self, username):
-        from vnfb.dom.Registrant import Registrant
+        from vnf.dom.Registrant import Registrant
         where = "username='%s'" % username
         registrant = self.clerk.db.query(Registrant).filter_by(username=username).one()
 
-        from vnfb.dom.User import User
+        from vnf.dom.User import User
         user = User()
         user.username = user.id = username
         user.password = registrant.password
@@ -48,7 +48,7 @@ class ApproveUser(base):
         
         self.clerk.db.insertRow(user)
 
-        from vnfb.utils.communications import announce
+        from vnf.utils.communications import announce
         # send an acknowlegement to user
         announce(self, 'user-approval', user)
         # alert administrators
@@ -67,7 +67,7 @@ class ApproveUser(base):
 
 
     def _getPrivateDepositoryLocations(self):
-        from vnfb.deployment import pyre_depositories
+        from vnf.deployment import pyre_depositories
         return pyre_depositories
 
 

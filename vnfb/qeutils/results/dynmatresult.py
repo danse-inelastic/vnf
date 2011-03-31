@@ -12,8 +12,8 @@
 #
 
 from qecalc.qetask.dynmattask import DynmatTask
-from vnfb.qeutils.qeconst import LINKORDER
-from vnfb.qeutils.results.qeresult import QEResult
+from vnf.qeutils.qeconst import LINKORDER
+from vnf.qeutils.results.qeresult import QEResult
 
 NONE        = "None"
 class DYNMATResult(QEResult):

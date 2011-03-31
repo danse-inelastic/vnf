@@ -11,7 +11,7 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
-from vnfb.qeutils.taskcreator import TaskCreator
+from vnf.qeutils.taskcreator import TaskCreator
 from luban.content import load
 from luban.components.AuthorizedActor import AuthorizedActor as base
 

@@ -11,16 +11,16 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
-from vnfb.qeutils.qegrid import QEGrid
-from vnfb.qeutils.qeutils import qetask, stamp2date, ifelse, latestInput, qedialog
-from vnfb.qeutils.qeutils import defaultInputName, readRecordFile
-from vnfb.qeutils.qeconst import CONVTYPE, ID_CONV_JOBS, ID_CONV_OPT
+from vnf.qeutils.qegrid import QEGrid
+from vnf.qeutils.qeutils import qetask, stamp2date, ifelse, latestInput, qedialog
+from vnf.qeutils.qeutils import defaultInputName, readRecordFile
+from vnf.qeutils.qeconst import CONVTYPE, ID_CONV_JOBS, ID_CONV_OPT
 
 import luban.content as lc
 from luban.content import load, select
 from luban.content.Paragraph import Paragraph
 
-from vnfb.components.QEConvergence import QEConvergence as base
+from vnf.components.QEConvergence import QEConvergence as base
 
 class Actor(base):
     class Inventory(base.Inventory):
@@ -102,8 +102,8 @@ class Actor(base):
 
         # !!! Test
 
-#        from vnfb.qeutils.qeutils import latestJob
-#        from vnfb.qeutils.results.pwresult import PWResult
+#        from vnf.qeutils.qeutils import latestJob
+#        from vnf.qeutils.results.pwresult import PWResult
 ##        jobs    = director.clerk.getQEJobs(where="taskid='%s'" % task.id)
 ##        job     = latestJob(jobs)
 #        job     = director.clerk.getQEJobs(id="JCDDBWPC")

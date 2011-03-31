@@ -11,12 +11,12 @@
 
 
 def announcement(traceback):
-    import vnfb.content
+    import vnf.content
     import socket
     
     hostname = socket.gethostname()
 
-    msg = vnfb.content.announcement()
+    msg = vnf.content.announcement()
     msg.sender = 'linjiao@caltech.edu'
     msg.subject = 'From vnf host %r: COD server is down' % hostname
     msg.text = [traceback]

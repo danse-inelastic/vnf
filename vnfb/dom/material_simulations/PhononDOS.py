@@ -16,7 +16,7 @@ from _ import o2t
 
 from vsat.PhononDOS import PhononDOS
 
-from vnfb.dom.AtomicStructure import StructureTable
+from vnf.dom.AtomicStructure import StructureTable
 # db table
 from ComputationResult import ComputationResult
 PhononDOSTable = o2t(PhononDOS, {'subclassFrom': ComputationResult})

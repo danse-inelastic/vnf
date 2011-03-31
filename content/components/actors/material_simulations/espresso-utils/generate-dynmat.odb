@@ -11,11 +11,11 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
-from vnfb.qeutils.generators.dynmatgenerator import DYNMATGenerator
-from vnfb.qeutils.qeparser.qeinput import QEInput
-import vnfb.qeutils.filters as filters
+from vnf.qeutils.generators.dynmatgenerator import DYNMATGenerator
+from vnf.qeutils.qeparser.qeinput import QEInput
+import vnf.qeutils.filters as filters
 
-from vnfb.components.QEGenerator import QEGenerator as base
+from vnf.components.QEGenerator import QEGenerator as base
 
 class Actor(base):
 

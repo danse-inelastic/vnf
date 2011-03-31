@@ -16,12 +16,12 @@ import luban.content as lc
 from luban.content import select, load, alert
 
 
-from vnfb.dom.geometry.Cylinder import Cylinder
+from vnf.dom.geometry.Cylinder import Cylinder
 
 from luban.components.Actor import Actor
 import luban.orm
 base = luban.orm.object2actor(Cylinder)
-from vnfb.components.geometry.ShapeOrmActorHelper import helper
+from vnf.components.geometry.ShapeOrmActorHelper import helper
 class Actor(helper(Cylinder), base):
 
     class Inventory(base.Inventory):

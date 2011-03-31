@@ -56,7 +56,7 @@ class UpdateJobStatus(base):
         domaccess = self.retrieveDOMAccessor('job')
         jobs = domaccess.getJobRecords(filter=where)
         
-        from vnfb.utils.job import check
+        from vnf.utils.job import check
         for job in jobs:
             self.ostream.write('Checking job %s\n' % job.id)
             self.ostream.write(' - before chechking, status=%s\n' % job.state)

@@ -13,9 +13,9 @@
 
 import time
 from luban.content import select
-from vnfb.qeutils.qeconst import TASK_ACTION
-from vnfb.qeutils.qeutils import deleteJob
-from vnfb.qeutils.taskaction import TaskAction
+from vnf.qeutils.qeconst import TASK_ACTION
+from vnf.qeutils.qeutils import deleteJob
+from vnf.qeutils.taskaction import TaskAction
 
 UPDATE_TIME = 1 # 1 sec
 

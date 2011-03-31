@@ -20,7 +20,7 @@ import os, tempfile
 import numpy as np
 
 #
-from vnfb.dom.material_simulations.Phonons import Phonons
+from vnf.dom.material_simulations.Phonons import Phonons
 
 from luban.components.Actor import Actor
 import luban.orm

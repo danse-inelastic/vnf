@@ -11,9 +11,9 @@
 
 
 def announcement(user, comments):
-    import vnfb.content, time
+    import vnf.content, time
 
-    msg = vnfb.content.announcement()
+    msg = vnf.content.announcement()
     msg.sender = user.email
     msg.subject = "User feed back from %s. (%s)" % (user.fullname, time.ctime(),)
     msg.text = [

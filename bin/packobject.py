@@ -12,7 +12,7 @@
 
 def main():
 
-    from vnfb.applications.PackObject import PackObject as base
+    from vnf.applications.PackObject import PackObject as base
 
     class App(base):
         def _getPrivateDepositoryLocations(self):

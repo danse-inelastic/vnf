@@ -21,7 +21,7 @@ import luban.content as lc
 setpagetitle = select(id='').setAttr(title='VNF: administration')
 
 
-from vnfb.components.AdminActor import AdminActor as base
+from vnf.components.AdminActor import AdminActor as base
 class Actor(base):
 
 

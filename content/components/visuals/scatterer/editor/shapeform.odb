@@ -34,7 +34,7 @@ class Factory(object):
         doc = lc.document(Class='container', id='scatterer-shape-form')
 
         # type
-        from vnfb.dom.geometry import importShapeType
+        from vnf.dom.geometry import importShapeType
         type = importShapeType(typename)
 
         # drawer

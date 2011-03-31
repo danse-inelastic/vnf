@@ -14,8 +14,8 @@
 # Specific for QE at this moment
 def main():
 
-    #from vnfb.applications.PackJobDir import PackJobDir as base
-    from vnfb.applications.QEPackJobDir import PackJobDir as base
+    #from vnf.applications.PackJobDir import PackJobDir as base
+    from vnf.applications.QEPackJobDir import PackJobDir as base
 
     class App(base):
         def _getPrivateDepositoryLocations(self):

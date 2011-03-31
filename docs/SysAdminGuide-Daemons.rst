@@ -6,4 +6,4 @@ Monitors
 --------
 Log file for "updatejobstatus.py":
 
-vnfb/log/<date>-update-job-status.log
+vnf/log/<date>-update-job-status.log

@@ -16,7 +16,7 @@ import unittest
 class TestCase(unittest.TestCase):
 
     def test(self):
-        from vnfb.dom.neutron_experiment_simulations.SampleAssembly import SampleAssembly
+        from vnf.dom.neutron_experiment_simulations.SampleAssembly import SampleAssembly
         return
 
     

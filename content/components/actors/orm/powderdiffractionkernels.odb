@@ -15,12 +15,12 @@ import luban.content as lc
 from luban.content import select, load, alert
 
 
-from vnfb.dom.scattering_kernels.diff.PowderDiffractionKernel import PowderDiffractionKernel
+from vnf.dom.scattering_kernels.diff.PowderDiffractionKernel import PowderDiffractionKernel
 
 from luban.components.Actor import Actor
 import luban.orm
 base = luban.orm.object2actor(PowderDiffractionKernel)
-from vnfb.components.scattering_kernels.KernelOrmActorHelper import helper
+from vnf.components.scattering_kernels.KernelOrmActorHelper import helper
 class Actor(helper(PowderDiffractionKernel), base):
 
     class Inventory(base.Inventory):

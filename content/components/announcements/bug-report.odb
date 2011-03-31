@@ -17,9 +17,9 @@ def announcement(user, bugid, comment, traceback):
         username = user.username
         useremail = user.email
         
-    import vnfb.content
+    import vnf.content
 
-    msg = vnfb.content.announcement()
+    msg = vnf.content.announcement()
     msg.sender = useremail
     #msg.sender = 'linjiao@caltech.edu'
     msg.subject = "Bug #%s" % (bugid,)

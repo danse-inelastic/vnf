@@ -17,9 +17,9 @@ TODO: Questions:
 """
 
 
-from vnfb.qeutils.qeconst import SIMCHAINS
-from vnfb.qeutils.qegrid import QEGrid
-from vnfb.dom.QESimulation import QESimulation
+from vnf.qeutils.qeconst import SIMCHAINS
+from vnf.qeutils.qegrid import QEGrid
+from vnf.dom.QESimulation import QESimulation
 
 from luban.content import select
 from luban.content import load

@@ -11,12 +11,12 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
-from vnfb.qeutils.qeparser.pseudo.pseudo import PSEUDO
-from vnfb.qeutils.generators.pwgenerator import PWGenerator
+from vnf.qeutils.qeparser.pseudo.pseudo import PSEUDO
+from vnf.qeutils.generators.pwgenerator import PWGenerator
 from qecalc.qetask.qeparser.pwinput import PWInput
 from luban.content import select
 
-from vnfb.components.QEGenerator import QEGenerator as base
+from vnf.components.QEGenerator import QEGenerator as base
 
 #XXX: The number atomic species is limited by 10 for now
 class Actor(base):

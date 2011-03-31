@@ -12,7 +12,7 @@
 #
 
 
-from vnfb.components.ComputationResultRetriever import ComputationResultRetriever as base
+from vnf.components.ComputationResultRetriever import ComputationResultRetriever as base
 class Retriever(base):
 
     def _retrieveResultsFor(self, computation):
@@ -97,10 +97,10 @@ class Retriever(base):
         return
 
 
-from vnfb.dom.neutron_experiment_simulations.neutron_components.MonitorBase import MonitorBase, MonitorTableBase
-from vnfb.components.job_builders.neutronexperiment.NeutronExperiment import outputfiles
-from vnfb.dom.Histogram import HistogramTable
-from vnfb.dom.neutron_experiment_simulations.NeutronStorage import NeutronStorageTable
+from vnf.dom.neutron_experiment_simulations.neutron_components.MonitorBase import MonitorBase, MonitorTableBase
+from vnf.components.job_builders.neutronexperiment.NeutronExperiment import outputfiles
+from vnf.dom.Histogram import HistogramTable
+from vnf.dom.neutron_experiment_simulations.NeutronStorage import NeutronStorageTable
     
 
 def retriever():

@@ -15,7 +15,7 @@
 def main():
 
 
-    from vnfb.applications.EstablishGlobalPointers import EstablishGlobalPointers as base
+    from vnf.applications.EstablishGlobalPointers import EstablishGlobalPointers as base
 
 
     class App(base):

@@ -1,13 +1,13 @@
 # -*- Makefile -*-
 
-PROJECT = vnfb
+PROJECT = vnf
 
 # directory structure
 
 RECURSE_DIRS = \
 	bin \
 	cgi-bin \
-	vnfb \
+	vnf \
 	dds \
 	log \
 	content \

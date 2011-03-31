@@ -21,7 +21,7 @@ def visual(atomicstructures, cols, director):
 
 
 def table(atomicstructures, cols, director):
-    from vnfb.content.visuals.table.atomicstructure import table
+    from vnf.content.visuals.table.atomicstructure import table
     return table(atomicstructures, cols, director, editable=True)
 
 

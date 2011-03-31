@@ -20,7 +20,7 @@ from TestCaseBase import createTestCase, TestAppBase
 class TestApp(TestAppBase):
     
     
-    from vnfb.dom.scattering_kernels.ins.SQEKernel import SQEKernel as Kernel
+    from vnf.dom.scattering_kernels.ins.SQEKernel import SQEKernel as Kernel
     
     
     kernelid = 'testjobbuilder'
@@ -36,7 +36,7 @@ class TestApp(TestAppBase):
     
     def createKernel(self):
         orm = self.clerk.orm
-        from vnfb.dom.material_simulations.SQE import SQE
+        from vnf.dom.material_simulations.SQE import SQE
         sqe = orm.load(SQE, id='histogram-example')
         
         k = self.Kernel()

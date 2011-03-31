@@ -11,15 +11,15 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
-from vnfb.dom.QESetting import QESetting
-from vnfb.qeutils.qegrid import QEGrid
+from vnf.dom.QESetting import QESetting
+from vnf.qeutils.qegrid import QEGrid
 from luban.content.FormSelectorField import FormSelectorField
 from luban.content import select
 
-from vnfb.qeutils.qeconst import SETTINGS, SERVERS, NOPARALSIM, SIMTYPE, OPT_DEFAULT
-from vnfb.qeutils.qeconst import ID_SELECTOR_CORES
-from vnfb.qeutils.qeutils import serverName
-from vnfb.utils.serverlist import ServerList
+from vnf.qeutils.qeconst import SETTINGS, SERVERS, NOPARALSIM, SIMTYPE, OPT_DEFAULT
+from vnf.qeutils.qeconst import ID_SELECTOR_CORES
+from vnf.qeutils.qeutils import serverName
+from vnf.utils.serverlist import ServerList
 
 import luban.content as lc
 from luban.content.FormCheckBox import FormCheckBox

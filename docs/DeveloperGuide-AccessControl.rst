@@ -69,6 +69,6 @@ in content/components/dom-access/label.odb.
  * markAsPrivate(entity): mark a record as private
 
 Convenient methods for db queries are implemented in
-vnfb.utils.query.accesscontrol.
+vnf.utils.query.accesscontrol.
 
 TODO: list all methods to present the full API.

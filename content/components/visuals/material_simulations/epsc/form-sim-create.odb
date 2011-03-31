@@ -12,7 +12,7 @@
 #
 
 import luban.content as lc
-from vnfb.qeutils.qegrid import QEGrid
+from vnf.qeutils.qegrid import QEGrid
 
 from luban.content import select, load
 
@@ -21,7 +21,7 @@ from luban.content.FormTextField import FormTextField
 from luban.content.FormSubmitButton import FormSubmitButton
 from luban.content.Form import Form
 
-from vnfb.epscutils.epscconst import *
+from vnf.epscutils.epscconst import *
 
 def atomicStructure(actor, director):
     link        = lc.link(label = "Select Atomic Structure",

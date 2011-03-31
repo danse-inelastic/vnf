@@ -3,14 +3,14 @@
 Tests
 =====
 
-All tests should be under directory "tests" in the vnfb source tree.
+All tests should be under directory "tests" in the vnf source tree.
 
 All selenium tests should be under directory "tests/selenium" in the
-vnfb source tree.
+vnf source tree.
 
 More details of the "tests" directory structure:
 
-* vnfb: tests of vnfb python package
+* vnf: tests of vnf python package
 * selenium: selenium tests of UI
 * content/components: tests of components
 * eclipse: tests based on eclipse
@@ -36,7 +36,7 @@ The following packages are included in the buildbot system:
 For vnf package, currently the
 following test directories are included in the buildbot system:
 
-* tests/vnfb
+* tests/vnf
 * tests/content
 * tests/selenium
 

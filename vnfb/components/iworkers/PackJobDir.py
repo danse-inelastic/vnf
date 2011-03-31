@@ -103,7 +103,7 @@ class PackJobDir(base):
 
 
 import os, tempfile, shutil
-from vnfb.utils.job import packjobdir
+from vnf.utils.job import packjobdir
 
 
 

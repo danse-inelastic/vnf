@@ -36,15 +36,15 @@ class DOMAccessor( base ):
 
     def importAllDataObjects(self):
         '''in some circumstances, it is useful to know of all the data objects
-        in the system. this is done by importing all modules in vnfb.dom
+        in the system. this is done by importing all modules in vnf.dom
         '''
         # actually some dom must be imported earlier than others
-        from vnfb.dom import AtomicStructure
+        from vnf.dom import AtomicStructure
         
         def _imp(m): return __import__(m, {}, {}, [''])
 
         #
-        dompkgname = 'vnfb.dom'
+        dompkgname = 'vnf.dom'
         dompkg = _imp(dompkgname)
         f = dompkg.__file__
 
@@ -251,17 +251,17 @@ class DOMAccessor( base ):
           >>> domaccess._getTable('a')  # return A
 
         If the table is not yet registered, you can specify 
-        it by its place in vnfb.dom namespace. 
+        it by its place in vnf.dom namespace. 
 
         For example, there is a class ATable which is a table and
-        is defined in vnfb.dom.subpkg.A module. Then
+        is defined in vnf.dom.subpkg.A module. Then
 
           >>> domaccess._getTable('subpkg.A.ATable')
 
         You could also just specify the place of a data object
         instead of a table. Suppose class A is the class of a
         data object (not a table), and is defined in 
-        vnfb.dom.subpkg.A module, then
+        vnf.dom.subpkg.A module, then
 
           >>> domaccess._getTable('subpkg.A.A')
         '''
@@ -274,7 +274,7 @@ class DOMAccessor( base ):
 
 
     def _getObjectByImportingFromDOM(self, name):
-        pkg = 'vnfb.dom'
+        pkg = 'vnf.dom'
         domains = name.split('.')
         module = '%s.%s' % (pkg, '.'.join(domains[:-1]))
         try:
@@ -313,13 +313,13 @@ class DOMAccessor( base ):
     
     """Auxiliary classes"""
     
-    def _getClass(self, classname, maindom = "vnfb.dom"):
+    def _getClass(self, classname, maindom = "vnf.dom"):
         """Get class from classname"""
         module  = _import("%s.%s" % (maindom, classname))
         return getattr(module, classname)
 
 
-    def _getEntry(self, classname, id=None, where=None, maindom="vnfb.dom"):
+    def _getEntry(self, classname, id=None, where=None, maindom="vnf.dom"):
         """Get entry specified by id or where clause"""
         table = self._getClass(classname, maindom)
         if id is not None:

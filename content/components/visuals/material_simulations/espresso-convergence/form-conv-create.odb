@@ -11,8 +11,8 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
-from vnfb.qeutils.qegrid import QEGrid
-from vnfb.qeutils.qeconst import CONVTYPE, CONVPARAM, MAX_STEPS, TOLERANCE, ID_START, ID_STEP, ID_PARAM
+from vnf.qeutils.qegrid import QEGrid
+from vnf.qeutils.qeconst import CONVTYPE, CONVPARAM, MAX_STEPS, TOLERANCE, ID_START, ID_STEP, ID_PARAM
 
 import luban.content as lc
 from luban.content import load, select

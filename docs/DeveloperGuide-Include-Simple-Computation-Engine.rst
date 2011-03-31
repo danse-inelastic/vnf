@@ -99,10 +99,10 @@ Next we need to build forms for user to configure their computations.
 
 Luban orm will help you do that. You will need to drop components
 into content/components/actors/orm 
-(http://danse.us/trac/VNET/browser/vnf/branches/beta-useluban/vnfb/content/components/actors/orm)::
+(http://danse.us/trac/VNET/browser/vnf/trunk/content/components/actors/orm)::
  
  # siniqmodels.odb
- from vnfb.dom...SinIQModel import SinIQModel
+ from vnf.dom...SinIQModel import SinIQModel
  import luban.orm
  Actor = luban.orm.object2actor(SinIQModel)
  def actor():
@@ -111,7 +111,7 @@ into content/components/actors/orm
 and ::
 
  # iqmodelevaluations.odb
- from vnfb.dom...IQModelEvaluation import IQModelEvaluation
+ from vnf.dom...IQModelEvaluation import IQModelEvaluation
  import luban.orm
  Actor = luban.orm.object2actor(IQModelEvaluation)
  def actor():
@@ -142,7 +142,7 @@ Job builder
 """""""""""
 A job builder takes a computation db record and converts it into a script that can be run by itself. 
 An example is
-http://danse.us/trac/VNET/browser/vnf/branches/beta-useluban/vnfb/content/components/job_builders/material_simulations/phonon_calculators/bvk_getdos.odb
+http://danse.us/trac/VNET/browser/vnf/trunk/content/components/job_builders/material_simulations/phonon_calculators/bvk_getdos.odb
 
 
 

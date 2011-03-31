@@ -52,7 +52,7 @@ correct location of previously run simulation)
 
 Filters for QE are located in the directory:
 
-vnfb/qeutils/filters/
+vnf/qeutils/filters/
 
 You can edit filters that you think are appropriate
 

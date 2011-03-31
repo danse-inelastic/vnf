@@ -11,8 +11,8 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
-from vnfb.qeutils.qeconst import FILBAND
-from vnfb.qeutils.qeparser.qeinput import QEInput
+from vnf.qeutils.qeconst import FILBAND
+from vnf.qeutils.qeparser.qeinput import QEInput
 
 LSIM    = ".true."
 

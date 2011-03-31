@@ -21,7 +21,7 @@ from SimulationBase import SimulationBase as SimulationTableBase
 from dsaw.model.Inventory import Inventory as InvBase
 
 
-from vnfb.dom.AtomicStructure import Structure
+from vnf.dom.AtomicStructure import Structure
 from BvKModel import BvKModel
 
 class BvKComputation(object):

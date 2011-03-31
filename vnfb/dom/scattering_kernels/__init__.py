@@ -22,7 +22,7 @@ kernelnames = [
 
 
 def getKernelTypes():
-    from vnfb.dom import importType
+    from vnf.dom import importType
     return map(importType, kernelnames)
 
 

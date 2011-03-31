@@ -12,14 +12,14 @@
 #
 
 
-from vnfb.qeutils.qegrid import QEGrid
+from vnf.qeutils.qegrid import QEGrid
 
 from luban.content import select
 from luban.content.Paragraph import Paragraph
 from luban.content.Form import Form
 from luban.content.FormSubmitButton import FormSubmitButton
 from luban.content import load
-from vnfb.utils.const import PACKNAME
+from vnf.utils.const import PACKNAME
 
 import luban.content as lc
 from luban.components.AuthorizedActor import AuthorizedActor as base

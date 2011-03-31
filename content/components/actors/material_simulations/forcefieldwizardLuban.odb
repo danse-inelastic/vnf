@@ -171,7 +171,7 @@ class Actor(base):
         # depending on which runtype is selected, the correct form needs to be presented
         
         className = self.inventory.runtype        
-        exec('from vnfb.dom.material_simulations.'+className+' import '+className)
+        exec('from vnf.dom.material_simulations.'+className+' import '+className)
 #        exec('from '+analysisPaths[self.inventory.analysisType]+' import '+
 #             className)
         analysisDbClass = eval(className)
@@ -234,7 +234,7 @@ class Actor(base):
         #TODO: make it so it will load settings back in if restarting
         # then store the settings
         #from memd.gulp.GulpSettings import GulpSettings
-        from vnfb.dom.material_simulations.GulpSettings import GulpSettings
+        from vnf.dom.material_simulations.GulpSettings import GulpSettings
         gulpSettings = GulpSettings()
         gulpSettings.id = self.inventory.simulationId
         import time
@@ -329,7 +329,7 @@ class Actor(base):
         orm = director.clerk.orm
         className = self.inventory.runtype
         simulationRecord = director.clerk._getEntry(className, 
-                id = self.inventory.simulationId, maindom = 'vnfb.dom.material_simulations')
+                id = self.inventory.simulationId, maindom = 'vnf.dom.material_simulations')
         # next have to write three files to working directory--structure file, forcefield file, and inputfile
         simulationObj = orm.record2object(simulationRecord)
         import time

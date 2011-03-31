@@ -15,7 +15,7 @@
 # If everyone is reinventing the wheel, why not to join? :)
 
 def main():
-    from vnfb.applications.JobDriver import JobDriver
+    from vnf.applications.JobDriver import JobDriver
 
     class App(JobDriver):
 

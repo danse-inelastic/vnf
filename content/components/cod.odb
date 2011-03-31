@@ -51,7 +51,7 @@ class Cod(Component):
 
 
     def sendServerDownAlert(self, error, director):
-        from vnfb.utils.communications import announce
+        from vnf.utils.communications import announce
         announce(director, 'cod-server-down', error)
         return
 

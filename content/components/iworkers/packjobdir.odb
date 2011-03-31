@@ -10,7 +10,7 @@
 #
 
 
-from vnfb.components.iworkers.PackJobDir import PackJobDir
+from vnf.components.iworkers.PackJobDir import PackJobDir
 
 def iworker():
     return PackJobDir('packjobdir', 'iworker')

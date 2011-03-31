@@ -19,7 +19,7 @@ from luban.content import select, load, alert
 
 
 #
-from vnfb.dom.Histogram import Histogram
+from vnf.dom.Histogram import Histogram
 
 from luban.components.Actor import Actor
 import luban.orm

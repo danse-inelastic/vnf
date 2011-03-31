@@ -48,16 +48,16 @@ tplotmax=LM1/(sqrt(Emin)*SE2V)+toffset;
 
 
 
-from vnfb.dom.neutron_experiment_simulations.neutron_components.SNSModeratorMCSimulatedData\
+from vnf.dom.neutron_experiment_simulations.neutron_components.SNSModeratorMCSimulatedData\
      import SNSModeratorMCSimulatedData
 
 
-from vnfb.dom.neutron_experiment_simulations.neutron_components.SNSModerator import SNSModerator
-from vnfb.dom.neutron_experiment_simulations.neutron_components.TofMonitor import TofMonitor
-from vnfb.dom.neutron_experiment_simulations.neutron_components.ChanneledGuide import ChanneledGuide
-from vnfb.dom.neutron_experiment_simulations.neutron_components.NeutronRecorder import NeutronRecorder
-from vnfb.dom.neutron_experiment_simulations.neutron_components.T0Chopper import T0Chopper
-from vnfb.dom.neutron_experiment_simulations.neutron_components.FermiChopper import FermiChopper
+from vnf.dom.neutron_experiment_simulations.neutron_components.SNSModerator import SNSModerator
+from vnf.dom.neutron_experiment_simulations.neutron_components.TofMonitor import TofMonitor
+from vnf.dom.neutron_experiment_simulations.neutron_components.ChanneledGuide import ChanneledGuide
+from vnf.dom.neutron_experiment_simulations.neutron_components.NeutronRecorder import NeutronRecorder
+from vnf.dom.neutron_experiment_simulations.neutron_components.T0Chopper import T0Chopper
+from vnf.dom.neutron_experiment_simulations.neutron_components.FermiChopper import FermiChopper
 
 def moderator():
     c = SNSModerator()

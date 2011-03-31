@@ -40,7 +40,7 @@ class DbApp(base):
         print " * typical usage:"
         print "   $ createtable.py --name=<tablename>"
         print
-        print " * table name is the name of the table class in vnfb.dom namespace. For example"
+        print " * table name is the name of the table class in vnf.dom namespace. For example"
         print "   - News.News"
         print
         print

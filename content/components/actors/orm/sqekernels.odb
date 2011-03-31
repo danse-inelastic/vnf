@@ -16,12 +16,12 @@ import luban.content as lc
 from luban.content import select, load, alert
 
 
-from vnfb.dom.scattering_kernels.ins.SQEKernel import SQEKernel
+from vnf.dom.scattering_kernels.ins.SQEKernel import SQEKernel
 
 from luban.components.Actor import Actor
 import luban.orm
 base = luban.orm.object2actor(SQEKernel)
-from vnfb.components.scattering_kernels.KernelOrmActorHelper import helper
+from vnf.components.scattering_kernels.KernelOrmActorHelper import helper
 class Actor(helper(SQEKernel), base):
 
     class Inventory(base.Inventory):

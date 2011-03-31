@@ -11,7 +11,7 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
-from vnfb.dom.neutron_experiment_simulations.neutron_components.Monitor import Monitor
+from vnf.dom.neutron_experiment_simulations.neutron_components.Monitor import Monitor
 
 from luban.components.Actor import Actor
 import luban.orm

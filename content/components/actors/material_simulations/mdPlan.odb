@@ -12,7 +12,7 @@
 
 from luban.content import load, select, alert
 import luban.content as lc
-from vnfb.qeutils.qegrid import QEGrid
+from vnf.qeutils.qegrid import QEGrid
 
 from luban.components.AuthorizedActor import AuthorizedActor as base
 #from luban.components.FormProcessor import FormProcessor as base

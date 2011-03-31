@@ -31,8 +31,8 @@ class Component(base):
         return
 
 
-from vnfb.dom.material_simulations.SQE import SQETable
-from vnfb.dom.AtomicStructure import StructureTable
+from vnf.dom.material_simulations.SQE import SQETable
+from vnf.dom.AtomicStructure import StructureTable
 def create(id, matter_description=None, creator=None, db=None):
     r = SQETable()
     r.id = id

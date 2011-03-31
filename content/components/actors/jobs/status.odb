@@ -11,8 +11,8 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
-from vnfb.qeutils.jobstatus import JobStatus
-from vnfb.qeutils.qeconst import ID_OUTPUT, ID_STATUS
+from vnf.qeutils.jobstatus import JobStatus
+from vnf.qeutils.qeconst import ID_OUTPUT, ID_STATUS
 
 import luban.content as lc
 from luban.content import select

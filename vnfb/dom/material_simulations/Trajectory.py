@@ -15,7 +15,7 @@ from _ import o2t
 
 # data object
 from vsat.Trajectory import Trajectory as TrajectoryDO
-from vnfb.dom.AtomicStructure import StructureTable
+from vnf.dom.AtomicStructure import StructureTable
 
 # "Holder" in vnf
 from ComputationResultTs import ComputationResultTs

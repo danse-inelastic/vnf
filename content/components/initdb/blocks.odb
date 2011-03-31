@@ -33,7 +33,7 @@ class Component(base):
     
 
     
-from vnfb.dom.geometry.Block import BlockTable as Block
+from vnf.dom.geometry.Block import BlockTable as Block
 def block(id, width, height, thickness):
     r = Block()
     r.id = id

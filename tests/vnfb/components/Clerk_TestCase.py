@@ -16,7 +16,7 @@ standalone = True
 
 
 # application
-from vnfb.testing.TestAppBase import Application as base
+from vnf.testing.TestAppBase import Application as base
 class TestApp(base):
 
 
@@ -34,17 +34,17 @@ class TestApp(base):
         orm = clerk.orm
 
         # load
-        # from vnfb.dom.Atom import Atom
+        # from vnf.dom.Atom import Atom
         # atom = orm.load(Atom, '3BEYWG5W')
 
         # save matter
-        from vnfb.dom.AtomicStructure import Structure
+        from vnf.dom.AtomicStructure import Structure
         matter = Structure()
         matter.short_description = 'test structure'
         orm.save(matter)
 
         # save scatterer
-        from vnfb.dom.neutron_experiment_simulations.Scatterer import Scatterer
+        from vnf.dom.neutron_experiment_simulations.Scatterer import Scatterer
         scatterer = Scatterer()
         scatterer.short_description = 'test'
         scatterer.matter = matter
@@ -65,7 +65,7 @@ class TestApp(base):
 
         # atomic structure
         structuretable = db.getTable('atomicstructures')
-        from vnfb.dom.AtomicStructure import StructureTable, AbstractOwnedObjectBase
+        from vnf.dom.AtomicStructure import StructureTable, AbstractOwnedObjectBase
         tf.assertEqual(StructureTable, structuretable)
         AbstractOwnedObjectBase.creator
         return

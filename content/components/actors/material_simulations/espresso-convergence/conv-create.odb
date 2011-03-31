@@ -11,18 +11,18 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
-from vnfb.qeutils.qegrid import QEGrid
+from vnf.qeutils.qegrid import QEGrid
 
 import luban.content as lc
 from luban.content import load, select
 
 
-from vnfb.dom.QEConvergence import QEConvergence
-from vnfb.dom.QEConvParam import QEConvParam
-from vnfb.dom.QETask import QETask
-from vnfb.dom.QEConvParamTask import QEConvParamTask
-from vnfb.qeutils.qeconst import MAX_STEPS, TOLERANCE, CONVPARAMLIST, CONVPARAM, CONVTYPELIST, ID_START, ID_STEP, ID_PARAM
-from vnfb.components.QEConvergence import QEConvergence as base
+from vnf.dom.QEConvergence import QEConvergence
+from vnf.dom.QEConvParam import QEConvParam
+from vnf.dom.QETask import QETask
+from vnf.dom.QEConvParamTask import QEConvParamTask
+from vnf.qeutils.qeconst import MAX_STEPS, TOLERANCE, CONVPARAMLIST, CONVPARAM, CONVTYPELIST, ID_START, ID_STEP, ID_PARAM
+from vnf.components.QEConvergence import QEConvergence as base
 
 class Actor(base):
     class Inventory(base.Inventory):

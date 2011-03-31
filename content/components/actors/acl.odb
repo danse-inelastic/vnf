@@ -15,11 +15,11 @@
 from luban.content import load, select, alert
 import luban.content as lc
 
-from vnfb.dom.UserHasRole import remove as removeRole
-from vnfb.dom.RoleHasRole import join as joinGroup, leave as leaveGroup
-from vnfb.dom.RoleHasPrivilege import grant as grantPrivilege, revoke as revokePrivilege
+from vnf.dom.UserHasRole import remove as removeRole
+from vnf.dom.RoleHasRole import join as joinGroup, leave as leaveGroup
+from vnf.dom.RoleHasPrivilege import grant as grantPrivilege, revoke as revokePrivilege
 
-from vnfb.components.AdminActor import AdminReceptionist as base, portal
+from vnf.components.AdminActor import AdminReceptionist as base, portal
 class Actor(base):
 
 

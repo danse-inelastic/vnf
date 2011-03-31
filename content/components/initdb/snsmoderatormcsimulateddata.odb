@@ -31,7 +31,7 @@ class Component(base):
 
 
 
-from vnfb.dom.neutron_experiment_simulations.neutron_components.SNSModeratorMCSimulatedData \
+from vnf.dom.neutron_experiment_simulations.neutron_components.SNSModeratorMCSimulatedData \
      import SNSModeratorMCSimulatedDataTable
 
 def createRecord(id, instrument, short_description):

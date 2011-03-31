@@ -27,7 +27,7 @@ recordid = "fortest"
 
 
 # application
-from vnfb.testing.job_builder import TestApp as base
+from vnf.testing.job_builder import TestApp as base
 class TestApp(base):
 
 

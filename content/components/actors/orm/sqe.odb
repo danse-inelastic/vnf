@@ -14,7 +14,7 @@ import sys, os, tempfile
 import luban.content as lc
 from luban.content import select, load, alert
 from luban.components.Actor import Actor
-from vnfb.dom.material_simulations.SQE import SQE
+from vnf.dom.material_simulations.SQE import SQE
 import luban.orm
 base = luban.orm.object2actor(SQE)
 

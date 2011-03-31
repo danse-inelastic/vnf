@@ -99,7 +99,7 @@ class Actor(base):
         d['tofmonitor2'].nchan = tofmon2nchan
         domaccess.orm.save(ic, save_not_owned_referred_object=0)
 
-        from vnfb.content.visuals.neutronexperiment.instruments import load_manual_instrument_configuration
+        from vnf.content.visuals.neutronexperiment.instruments import load_manual_instrument_configuration
         load_mic = load_manual_instrument_configuration(self.inventory.experiment_id)
         return select(id='instrument-configuration-wizard').replaceBy(load_mic)
 

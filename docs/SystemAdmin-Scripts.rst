@@ -8,7 +8,7 @@ approveUser.py
 
 Signature::
 
- $ cd $EXPORT_ROOT/vnfb/bin
+ $ cd $EXPORT_ROOT/vnf/bin
  $ ./approveUser.py --username=<username>
 
 

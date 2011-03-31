@@ -13,7 +13,7 @@
 
 
 
-from vnfb.components.DOMAccessor import DOMAccessor as base
+from vnf.components.DOMAccessor import DOMAccessor as base
 
 class Accessor(base):
 
@@ -34,8 +34,8 @@ class Accessor(base):
 
 
 
-from vnfb.dom.material_simulations.Phonons import Phonons, PhononsTable
-from vnfb.dom.material_simulations.PhononDOS import PhononDOS, PhononDOSTable
+from vnf.dom.material_simulations.Phonons import Phonons, PhononsTable
+from vnf.dom.material_simulations.PhononDOS import PhononDOS, PhononDOSTable
 
 
 def accessor():

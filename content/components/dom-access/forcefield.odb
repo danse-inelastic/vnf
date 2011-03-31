@@ -4,7 +4,7 @@
 tablename = 'gulppotential'
 
 
-from vnfb.components.DOMAccessor import DOMAccessor as base
+from vnf.components.DOMAccessor import DOMAccessor as base
 
 class Accessor(base):
 
@@ -174,7 +174,7 @@ class Accessor(base):
         if mine:
             q = sqlalchemy.select(cols, st.c.creator==username)
         else:
-            from vnfb.utils.query.accesscontrol import select_public_and_owned_records
+            from vnf.utils.query.accesscontrol import select_public_and_owned_records
             q = select_public_and_owned_records(cols, st, username, db)
 
         # filter query
@@ -242,8 +242,8 @@ class Accessor(base):
 
 
 
-from vnfb.dom.Label import Label, common_labels
-from vnfb.dom.material_simulations.GulpPotential import GulpPotential, GulpPotentialTable
+from vnf.dom.Label import Label, common_labels
+from vnf.dom.material_simulations.GulpPotential import GulpPotential, GulpPotentialTable
 
 
 from dsaw.db.VersatileReference import global_pointer

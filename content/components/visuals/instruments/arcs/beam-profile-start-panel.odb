@@ -26,7 +26,7 @@ def visual(director):
          load(actor='instruments/arcs', routine='reloadStartPanel')
          ),
         ]
-    from vnfb.content.visuals import view_indicator
+    from vnf.content.visuals import view_indicator
     whereami = view_indicator.visual(path)
     container.add(whereami)
 

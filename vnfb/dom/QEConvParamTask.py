@@ -19,7 +19,7 @@ Notes:
     - None
 """
 
-from vnfb.components.QETable import QETable
+from vnf.components.QETable import QETable
 
 class QEConvParamTask(QETable):
 

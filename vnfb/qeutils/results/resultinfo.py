@@ -14,12 +14,12 @@ import os.path
 
 import os
 import time
-from vnfb.components.Job import pack
-from vnfb.qeutils.message import Message
-from vnfb.applications.PackJobDir import PackJobDir
-from vnfb.qeutils.qeconst import RESULTS_ID
-from vnfb.qeutils.qerecords import SimulationRecord
-from vnfb.qeutils.qeutils import ifelse
+from vnf.components.Job import pack
+from vnf.qeutils.message import Message
+from vnf.applications.PackJobDir import PackJobDir
+from vnf.qeutils.qeconst import RESULTS_ID
+from vnf.qeutils.qerecords import SimulationRecord
+from vnf.qeutils.qeutils import ifelse
 
 import luban.content as lc
 from luban.content import load
@@ -244,7 +244,7 @@ class ResultInfo:
         # Import should be local
         
         Class       = CLASS_OK
-        from vnfb.qeutils.results.resultpath import ResultPath
+        from vnf.qeutils.results.resultpath import ResultPath
         resultpath  = ResultPath(self._director, self._simid, self._linkorder)
         fcrash      = resultpath.resultFiles("crash")
         if fcrash:
@@ -264,7 +264,7 @@ class ResultInfo:
 
     def _untar(self):
         dds = self._director.dds
-        # Example: dataroot = /home/dexity/exports/vnf/vnfb/content/data
+        # Example: dataroot = /home/dexity/exports/vnf/vnf/content/data
         dataroot    = os.path.abspath(dds.dataroot) # Absolute data root
 
         tarfile     = os.path.join(dataroot, self._tarpath())
@@ -318,7 +318,7 @@ class ResultInfo:
 
     def _ptrfilepath(self):
         """Return pointer filename
-        E.g.: /home/dexity/exports/vnf/vnfb/content/data/qejobs/44MTMA42..__dir__pack__ptr__
+        E.g.: /home/dexity/exports/vnf/vnf/content/data/qejobs/44MTMA42..__dir__pack__ptr__
         """
         if not self._job:
             return

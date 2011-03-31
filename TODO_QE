@@ -116,7 +116,7 @@ Simulation Types
 Nice To Have
 ============
 
-- [PARTIALLY] Move some of the qe stuff from vnfb/vnfb/utils -> vnfb/content/components/visuals
+- [PARTIALLY] Move some of the qe stuff from vnf/vnf/utils -> vnf/content/components/visuals
  because they look like visuals :)
 
 

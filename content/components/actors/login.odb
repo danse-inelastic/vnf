@@ -157,8 +157,8 @@ class Actor(base):
         if errors:
             if not director.userIsActive():
                 # find out if user just registered
-                from vnfb.dom.Registrant import Registrant
-                from vnfb.dom.User import User
+                from vnf.dom.Registrant import Registrant
+                from vnf.dom.User import User
                 db = director.clerk.db
                 if db.query(Registrant).filter_by(username=username).all() \
                    and not db.query(User).filter_by(username=username).all():
@@ -169,7 +169,7 @@ class Actor(base):
         if not post_authorization_action:
             post_authorization_action = load(actor='greeter', routine='greet')
         else:
-            from vnfb.content import safe_eval_action
+            from vnf.content import safe_eval_action
             post_authorization_action = safe_eval_action(post_authorization_action)
         return [
             createCredential(

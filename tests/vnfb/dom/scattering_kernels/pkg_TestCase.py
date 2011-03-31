@@ -16,7 +16,7 @@ import unittest
 class TestCase(unittest.TestCase):
 
     def test(self):
-        from vnfb.dom.scattering_kernels import getKernelTypes
+        from vnf.dom.scattering_kernels import getKernelTypes
         getKernelTypes()
         return
 

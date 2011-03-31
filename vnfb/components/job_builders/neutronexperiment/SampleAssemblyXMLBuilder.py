@@ -65,7 +65,7 @@ class Builder(ShapeRenderer, XMLMill):
         scatterers = [s for n,s in scatterers_ref.dereference(self.db)]
 
         # calculate absolute coordinates of scatterers
-        from vnfb.utils.neutron_experiment_simulations.geometry \
+        from vnf.utils.neutron_experiment_simulations.geometry \
              import calculateComponentAbsoluteCoordinates, toangles
         calculateComponentAbsoluteCoordinates(
             scatterers, 
@@ -114,7 +114,7 @@ class Builder(ShapeRenderer, XMLMill):
         # now need to create a xyz file
         matterrecord = scatterer.matter.dereference(self.db)
         orm = self.orm
-        from vnfb.dom.AtomicStructure import Structure
+        from vnf.dom.AtomicStructure import Structure
         matter = orm.load(Structure, matterrecord.id)
         matter.description = '' # right now mcvine cannot parse description
         xyzfilename = self._create_xyzfile(matter)
@@ -200,7 +200,7 @@ def attribs_str( attributes ):
 
 
 
-from vnfb.utils.atomicstructure import makeXYZfileContent
+from vnf.utils.atomicstructure import makeXYZfileContent
 
 
 # version

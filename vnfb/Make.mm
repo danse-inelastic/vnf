@@ -10,8 +10,8 @@
 #
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-PROJECT = vnfb
-PACKAGE = vnfb
+PROJECT = vnf
+PACKAGE = vnf
 
 BUILD_DIRS = \
 	clusterscheduler \

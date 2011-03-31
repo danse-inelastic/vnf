@@ -41,7 +41,7 @@ class Actor(base):
 
         # check the upload
         uploadid = self.inventory.uploadid
-        from vnfb.utils.upload import abspath
+        from vnf.utils.upload import abspath
         path = abspath(uploadid)
 
         # find the file
@@ -76,7 +76,7 @@ class Actor(base):
         clerk = director.clerk
         db = clerk.db
         #
-        from vnfb.dom.material_simulations.SQE import SQETable
+        from vnf.dom.material_simulations.SQE import SQETable
         sqe = clerk.insertNewOwnedRecord(SQETable)
         #
         sqe.matter = self.inventory.structureid
@@ -134,7 +134,7 @@ def checksqe_h5(path):
 
 
 def checksqe_nc(path):
-    from vnfb.dom.material_simulations.SQE import SQE
+    from vnf.dom.material_simulations.SQE import SQE
     sqe = SQE()
     sqe.read(path)
     return

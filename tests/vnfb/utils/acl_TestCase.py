@@ -21,17 +21,17 @@ class TestCase(unittest.TestCase):
 
     def test1(self):
         import dsaw.db
-        db = dsaw.db.connect(db='postgres:///vnfbeta')
+        db = dsaw.db.connect(db='postgres:///vnfeta')
         
-        from vnfb.dom.User import User
+        from vnf.dom.User import User
         demo = db.query(User).filter_by(username='demo').one()
         
-        from vnfb.utils.acl import hasPrivilege
+        from vnf.utils.acl import hasPrivilege
         self.assert_(not hasPrivilege(demo, target='vasp', name='run', db=db))
         
         linjiao = db.query(User).filter_by(username='linjiao').one()
         
-        from vnfb.utils.acl import hasPrivilege
+        from vnf.utils.acl import hasPrivilege
         self.assert_(hasPrivilege(linjiao, target='bug', name='modify', db=db))
         
         return

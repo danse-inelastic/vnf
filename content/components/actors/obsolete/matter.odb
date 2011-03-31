@@ -20,7 +20,7 @@ from luban.content.Paragraph import Paragraph
 from luban.content.Document import Document
 
 
-from vnfb.components.MasterTable import FilterSyntaxError, MasterTableActor as base
+from vnf.components.MasterTable import FilterSyntaxError, MasterTableActor as base
 
 
 class Actor(base):
@@ -71,7 +71,7 @@ class Actor(base):
 
         domaccess = self.getMatterAccess(director)
         
-        from vnfb.components.MasterTable import MasterTableFactory, filtercompiler
+        from vnf.components.MasterTable import MasterTableFactory, filtercompiler
         def countrecords(filter, label=None):
             return domaccess.countMatters(filter, label=label)
         def createtable(order_by, reverse_order, slice, filter, label=None):

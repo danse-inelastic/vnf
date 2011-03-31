@@ -29,7 +29,7 @@ def visual(
 
     domaccess = director.retrieveDOMAccessor(name)
 
-    from vnfb.components.MasterTable import MasterTableFactory, filtercompiler
+    from vnf.components.MasterTable import MasterTableFactory, filtercompiler
     def countrecords(filter, label=None, mine=False):
         return domaccess.countExperiments(filter, label=label, mine=mine)
     def createtable(order_by, reverse_order, slice, filter, label=None, mine=False):
@@ -43,7 +43,7 @@ def visual(
             label=label,
             mine=mine,
             )
-    from vnfb.content.visuals.table.experiment import model
+    from vnf.content.visuals.table.experiment import model
     compilefilter = filtercompiler(columns, measure2dbcol, model=model)
 
     smartlabelaccess = director.retrieveDOMAccessor('smartlabel')

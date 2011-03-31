@@ -62,7 +62,7 @@ def check( job, director ):
 
         # alert user
         user = director.clerk.getUser(job.creator)
-        from vnfb.utils.communications import announce
+        from vnf.utils.communications import announce
         announce(director, 'job-state-changed', job, user)
 
         # callback
@@ -86,7 +86,7 @@ def onfinished(job, director):
     computation = job.computation.dereference(db)
 
     # 2. retrieve
-    from vnfb.utils.computation import start_results_retrieval
+    from vnf.utils.computation import start_results_retrieval
     start_results_retrieval(computation, director)
     return
 
@@ -107,7 +107,7 @@ def cancel(job, director):
     
 
 def pack(job, director, debug=False):
-    from vnfb.utils import launch_detached, bindir
+    from vnf.utils import launch_detached, bindir
     import os
     exe = os.path.join(bindir, 'packjobdir.py')
     launch_detached('%s -id=%s' % (exe, job.id), debug=debug)
@@ -115,7 +115,7 @@ def pack(job, director, debug=False):
 
 
 def new(director):
-    from vnfb.dom.Job import Job
+    from vnf.dom.Job import Job
     job = director.clerk.insertNewOwnedRecord(Job)
 
     job.creator = director.sentry.username

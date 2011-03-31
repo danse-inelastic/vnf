@@ -13,8 +13,8 @@
 
 
 # auto discovery
-def findComponents(package='vnfb.dom.neutron_experiment_simulations.neutron_components'):
-    from vnfb.dom.neutron_experiment_simulations.AbstractNeutronComponent import AbstractNeutronComponent
+def findComponents(package='vnf.dom.neutron_experiment_simulations.neutron_components'):
+    from vnf.dom.neutron_experiment_simulations.AbstractNeutronComponent import AbstractNeutronComponent
     pkg = __import__(package, {}, {}, [''])
     import os
     dir = os.path.dirname(pkg.__file__)

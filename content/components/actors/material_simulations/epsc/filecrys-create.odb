@@ -16,7 +16,7 @@ from luban.content import select, load
 import luban.content as lc
 from luban.components.AuthorizedActor import AuthorizedActor as base
 
-from vnfb.epscutils.epscconst import *
+from vnf.epscutils.epscconst import *
 
 class Actor(base):
     """ Create Material file"""

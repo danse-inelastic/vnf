@@ -10,14 +10,14 @@
 #
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
-from vnfb.qeutils.qeutils import stamp, writeRecordFile, latestInput, readRecordFile
-from vnfb.qeutils.qeconst import RUNSCRIPT
-from vnfb.qeutils.qeutils import packname
-from vnfb.qeutils.qescheduler import schedule
-from vnfb.qeutils.servers import outdir, createOutdir
-from vnfb.epscutils.epscconst import FILETYPE, EPSC_BIN, EPSC_IN, EPSC_IN_TEXT, EPSC_OUT
+from vnf.qeutils.qeutils import stamp, writeRecordFile, latestInput, readRecordFile
+from vnf.qeutils.qeconst import RUNSCRIPT
+from vnf.qeutils.qeutils import packname
+from vnf.qeutils.qescheduler import schedule
+from vnf.qeutils.servers import outdir, createOutdir
+from vnf.epscutils.epscconst import FILETYPE, EPSC_BIN, EPSC_IN, EPSC_IN_TEXT, EPSC_OUT
 
-from vnfb.applications.JobDriver import JobDriver as base
+from vnf.applications.JobDriver import JobDriver as base
 
 class EPSCJobDriver(base):
 

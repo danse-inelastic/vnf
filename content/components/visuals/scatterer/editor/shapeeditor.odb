@@ -58,7 +58,7 @@ class Factory(object):
         doc.paragraph(text=['Select one of the shapes',])
 
         toolbar = lc.toolbar(); doc.add(toolbar)
-        from vnfb.dom.geometry import shapenames
+        from vnf.dom.geometry import shapenames
         for shape in shapenames:
             actor = 'scatterer/editor'
             routine = 'onSelectShapeType'

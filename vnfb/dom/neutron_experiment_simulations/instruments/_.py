@@ -1,1 +1,1 @@
-from vnfb.dom.neutron_experiment_simulations.Instrument import Instrument
+from vnf.dom.neutron_experiment_simulations.Instrument import Instrument

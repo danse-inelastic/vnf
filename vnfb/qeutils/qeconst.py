@@ -11,7 +11,7 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
-from vnfb.utils.orderedDict import OrderedDict
+from vnf.utils.orderedDict import OrderedDict
 
 # Available packages
 PACKAGES    = ("Quantum Espresso",)  #, "VASP", "GULP"]  # Packages
@@ -211,7 +211,7 @@ JOB_STATE["enqueue"]            = (80, "Submitting to queue ...")
 JOB_STATE["submitted"]          = (100, "Done!")
 JOB_STATE["submit-failed"]      = (100, "Submit failed! :(")
 
-# Job on cluster (Torque states: taken from vnfb.clusterscheduler.torque._states)
+# Job on cluster (Torque states: taken from vnf.clusterscheduler.torque._states)
 JOB_STATE["finished"]           = "finished"
 JOB_STATE["running"]            = "running"
 JOB_STATE["queued"]             = "queued"

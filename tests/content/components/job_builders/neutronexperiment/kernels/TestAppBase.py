@@ -12,7 +12,7 @@
 #
 
 
-from vnfb.testing.job_builder import TestApp as base
+from vnf.testing.job_builder import TestApp as base
 class TestAppBase(base):
 
     Kernel = None
@@ -46,7 +46,7 @@ class TestAppBase(base):
         
         # see if the experiment is already in db
         expid = 'testjobbuilder-kernel-%s' % Kernel.__name__
-        from vnfb.dom.neutron_experiment_simulations.NeutronExperiment import NeutronExperimentTable
+        from vnf.dom.neutron_experiment_simulations.NeutronExperiment import NeutronExperimentTable
         exps = db.query(NeutronExperimentTable).filter_by(id=expid).all()
 
         if not exps:
@@ -69,31 +69,31 @@ class TestAppBase(base):
         db = orm.db
 
         # the instrument with source and monitor
-        from vnfb.dom.neutron_experiment_simulations.Instrument import InstrumentTable
+        from vnf.dom.neutron_experiment_simulations.Instrument import InstrumentTable
         instrument_record = db.query(InstrumentTable).filter_by(name='IdealPowderINS').one()
         instrument = orm.record2object(instrument_record)
 
         # instrument configuration
-        from vnfb.dom.neutron_experiment_simulations.InstrumentConfiguration import InstrumentConfiguration
+        from vnf.dom.neutron_experiment_simulations.InstrumentConfiguration import InstrumentConfiguration
         ic = InstrumentConfiguration()
         ic.components = instrument.components
 
         # create a new sample assembly
-        from vnfb.dom.neutron_experiment_simulations.SampleAssembly import SampleAssembly
+        from vnf.dom.neutron_experiment_simulations.SampleAssembly import SampleAssembly
         sampleassembly = SampleAssembly()
         
         # create a scatterer
-        from vnfb.dom.neutron_experiment_simulations.Scatterer import Scatterer
+        from vnf.dom.neutron_experiment_simulations.Scatterer import Scatterer
         scatterer = Scatterer(); scatterer.scatterername = 'sample'
         # add scatterer to sample assembly
         sampleassembly.scatterers = [scatterer]
         
         # more details about the scatterer
         # shape
-        from vnfb.dom.geometry.Block import Block
+        from vnf.dom.geometry.Block import Block
         scatterer.shape = orm.load(Block, id='default-sample-plate-1')
         # matter
-        from vnfb.dom.AtomicStructure import StructureTable
+        from vnf.dom.AtomicStructure import StructureTable
         where = "short_description like '%bcc Fe at 295%'"
         struct = orm.db.query(StructureTable).filter(where).all()[0]
         matter = orm.record2object(struct)
@@ -103,7 +103,7 @@ class TestAppBase(base):
         scatterer.kernels = [kernel]
 
         # experiment
-        from vnfb.dom.neutron_experiment_simulations.NeutronExperiment import NeutronExperiment
+        from vnf.dom.neutron_experiment_simulations.NeutronExperiment import NeutronExperiment
         exp = NeutronExperiment()
         exp.instrument = instrument
         exp.instrument_configuration = ic
@@ -127,7 +127,7 @@ class TestAppBase(base):
         exprecord = orm(exp)
 
         # job
-        from vnfb.dom.Job import Job
+        from vnf.dom.Job import Job
         jobid = 'testjobbuilder-kernel-%s' % self.Kernel.__name__
         if len(jobid) > Job.id.length:
             jobid = ('%s-testjbkernel' % self.Kernel.__name__)[:Job.id.length]
@@ -162,7 +162,7 @@ class TestAppBase(base):
         server = self._getServer()
         
         #
-        from vnfb.dom.Job import Job
+        from vnf.dom.Job import Job
         job = Job()
         job.id = id
         job.short_description = 'job for test experiment for job builder of component %s' % self.Kernel.__name__

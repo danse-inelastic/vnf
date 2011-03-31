@@ -12,7 +12,7 @@
 #
 
 
-from vnfb.components.DOMAccessor import DOMAccessor as base
+from vnf.components.DOMAccessor import DOMAccessor as base
 
 class Accessor(base):
 
@@ -52,7 +52,7 @@ class Accessor(base):
         r = self.getJobRecord(id)
         db = self.db
         # itasks
-        from vnfb.dom.ITask import ITask
+        from vnf.dom.ITask import ITask
         tasks = r.getReferences(db, ITask, 'beneficiary')
         for task in tasks:
             task.state = 'failed'
@@ -134,7 +134,7 @@ class Accessor(base):
             where = st.c.creator == username
             q = sqlalchemy.select(cols, where)
         else:
-            from vnfb.utils.query.accesscontrol import select_public_and_owned_records
+            from vnf.utils.query.accesscontrol import select_public_and_owned_records
             q = select_public_and_owned_records(cols, st, username, db)
             
         if filter:
@@ -181,8 +181,8 @@ class Accessor(base):
 
 
 
-from vnfb.dom.Label import Label, common_labels
-from vnfb.dom.Job import Job as JobTable
+from vnf.dom.Label import Label, common_labels
+from vnf.dom.Job import Job as JobTable
 
 
 from dsaw.db.VersatileReference import global_pointer

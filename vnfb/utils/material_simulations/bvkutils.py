@@ -32,8 +32,8 @@ def findForceContantTensorConstraints(bond):
     return constraints
 
 
-# visitor to sympy expression to construct vnfb.utils.constraints expression
-from vnfb.utils import constraints
+# visitor to sympy expression to construct vnf.utils.constraints expression
+from vnf.utils import constraints
 class SympyExpression2ConstraintExpression(object):
 
 

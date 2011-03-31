@@ -10,7 +10,7 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 tablename='trajectory'
-from vnfb.components.DOMAccessor import DOMAccessor as base
+from vnf.components.DOMAccessor import DOMAccessor as base
 
 class Accessor(base):
 
@@ -22,7 +22,7 @@ class Accessor(base):
         orm = self.director.clerk.orm
         # build orm for trajectory only 
         #registers and stores these internally
-        from vnfb.dom.material_simulations.Trajectory import TrajectoryDO
+        from vnf.dom.material_simulations.Trajectory import TrajectoryDO
         #orm(Phonons)
         orm(TrajectoryDO)
         return orm

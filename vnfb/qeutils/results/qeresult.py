@@ -13,7 +13,7 @@ import os.path
 #
 
 import os
-from vnfb.qeutils.results.resultpath import ResultPath
+from vnf.qeutils.results.resultpath import ResultPath
 
 """
 Regular expressions for various types of files

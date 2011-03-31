@@ -1,2 +1,2 @@
-from vnfb.components.AppExtension import AppExtension
+from vnf.components.AppExtension import AppExtension
 def extension(): return AppExtension()

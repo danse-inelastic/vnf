@@ -11,9 +11,9 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
-from vnfb.qeutils.qeconst import QETYPES, SIMCHAINS
-from vnfb.qeutils.qeutils import latestInput, noHyphen, getResult
-from vnfb.qeutils.results.phresult import PHResult
+from vnf.qeutils.qeconst import QETYPES, SIMCHAINS
+from vnf.qeutils.qeutils import latestInput, noHyphen, getResult
+from vnf.qeutils.results.phresult import PHResult
 
 from luban.content import load, alert
 from luban.content.Link import Link

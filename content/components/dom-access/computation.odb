@@ -12,7 +12,7 @@
 #
 
 
-from vnfb.components.DOMAccessor import DOMAccessor as base
+from vnf.components.DOMAccessor import DOMAccessor as base
 
 class Accessor(base):
 
@@ -25,7 +25,7 @@ class Accessor(base):
     def _getOrm(self):
         orm = self.director.clerk.orm
         # build orm for all computation types
-        from vnfb.dom.computation_types import typenames, deps_typenames
+        from vnf.dom.computation_types import typenames, deps_typenames
         for name in typenames+deps_typenames:
             objectClass = self._getObjectByImportingFromDOM(name)
             from dsaw.db.Table import Table as TableBase

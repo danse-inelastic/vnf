@@ -29,6 +29,6 @@ Authentication service.
 After changes user database, you will need to refresh ipad.
 This can be done with the approveUser.py command::
 
- $ cd $EXPORT_ROOT/vnfb/bin
+ $ cd $EXPORT_ROOT/vnf/bin
  $ ./approveUser.py
 

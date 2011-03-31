@@ -1,4 +1,4 @@
-from luban.components.Actor import Actor as baseActor
+from luban.components.AuthorizedActor import AuthorizedActor as baseActor
 #from vnf.applications.WebApplication import AuthenticationError
 
 

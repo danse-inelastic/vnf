@@ -15,7 +15,7 @@
 import luban.content
 from luban.content import select, alert, load
 
-from vnfb.components.AdminActor import AdminFormProcessor as base
+from vnf.components.AdminActor import AdminFormProcessor as base
 
 
 class Actor(base):
@@ -48,7 +48,7 @@ class Actor(base):
 
     def _postProcessing(self, director):
         self._store(director)
-        from vnfb.content import safe_eval_action
+        from vnf.content import safe_eval_action
         post_process_action = self.inventory.post_process_action
         return safe_eval_action(post_process_action)
 

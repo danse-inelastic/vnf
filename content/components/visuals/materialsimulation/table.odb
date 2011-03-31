@@ -24,7 +24,7 @@ def visual(matsims, cols, director):
 def table(matsims, cols, director):
     """Creates table for material simulations"""
 
-    from vnfb.content.visuals.table.materialsimulation import table
+    from vnf.content.visuals.table.materialsimulation import table
     return table(matsims, cols, director, editable=False)
 
 

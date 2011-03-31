@@ -24,10 +24,10 @@ import unittest
 class TestCase(unittest.TestCase):
 
     def test(self):
-        from vnfb.components.DOMAccessor import DOMAccessor
+        from vnf.components.DOMAccessor import DOMAccessor
         domaccessor = DOMAccessor('t')
         
-        from vnfb.dom.computation_types import typenames, deps_typenames
+        from vnf.dom.computation_types import typenames, deps_typenames
         for name in typenames+deps_typenames:
             domaccessor._getObjectByImportingFromDOM(name)
             

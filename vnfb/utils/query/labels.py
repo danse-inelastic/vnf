@@ -13,7 +13,7 @@
 
 
 from _ import *
-from vnfb.dom.Label import Label, common_labels
+from vnf.dom.Label import Label, common_labels
 
 
 def select_labeled_entities_clause(name, type, db):

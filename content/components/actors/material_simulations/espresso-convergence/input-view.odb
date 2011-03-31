@@ -11,14 +11,14 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
-from vnfb.qeutils.qegrid import QEGrid
+from vnf.qeutils.qegrid import QEGrid
 
 import luban.content as lc
-from vnfb.qeutils.qeutils import defaultInputName, readRecordFile
+from vnf.qeutils.qeutils import defaultInputName, readRecordFile
 from luban.content import load, select
 from luban.content.FormTextArea import FormTextArea
 
-from vnfb.components.QEConvergence import QEConvergence as base
+from vnf.components.QEConvergence import QEConvergence as base
 
 class Actor(base):
     class Inventory(base.Inventory):

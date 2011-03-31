@@ -18,7 +18,7 @@ class TestCase(unittest.TestCase):
     def __init__(self, *args, **kwds):
         super(TestCase, self).__init__(*args, **kwds)
         
-        from vnfb.dom.material_simulations.Phonons import Phonons
+        from vnf.dom.material_simulations.Phonons import Phonons
         from mccomponents.sample.idf import readDispersion
         datadir = '../../../../content/data/phonons/bvk-bccFeAt295-N40-df0.2'
         nAtoms, dimension, Qaxes, polarizations, energies, dos = readDispersion(datadir)

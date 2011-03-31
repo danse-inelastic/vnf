@@ -92,7 +92,7 @@ class Builder(base):
         self.cmdline_opts[ 'sequence' ] = sequence
 
         # calculate absolute coordinates of scatterers
-        from vnfb.utils.neutron_experiment_simulations.geometry \
+        from vnf.utils.neutron_experiment_simulations.geometry \
             import calculateComponentAbsoluteCoordinates
         calculateComponentAbsoluteCoordinates(components)
 
