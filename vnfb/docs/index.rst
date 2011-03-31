@@ -34,7 +34,7 @@ Getting started
 * :ref:`Scripting interface <scripting>`
 .. * :ref:`Tutorials for Developers <vnftutorials-dev>`
 .. DeveloperGuide.rst: this is where we discuss the api for VNF and give recommendations for volunteer work
-* :ref:`Extending VNF <vnfdeveloperguide>`
+* :ref:`Developer's guide <vnfdeveloperguide>`
 
 
 More
