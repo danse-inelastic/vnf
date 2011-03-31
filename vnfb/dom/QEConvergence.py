@@ -32,13 +32,13 @@ class QEConvergence(QETable):
     description = dsaw.db.varchar(name="description", length=1024, default='')
     description.meta['tip'] = "Description of the convergence test"
 
-    timecreated = dsaw.db.varchar(name="timecreated", length=16, default='')
+    timecreated = dsaw.db.varchar(name="timecreated", length=32, default='')
     timecreated.meta['tip'] = "timecreated"
 
     type = dsaw.db.varchar(name="type", length=128, default='')
     type.meta['tip'] = "Convergence type (criteria): 'total-energy', 'frequency', later 'fermi-energy'"
 
-    timemodified = dsaw.db.varchar(name="timemodified", length=16, default='')
+    timemodified = dsaw.db.varchar(name="timemodified", length=32, default='')
     timemodified.meta['tip'] = "timemodified"
 
     label       = dsaw.db.varchar(name="label", length=128, default='')

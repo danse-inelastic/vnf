@@ -63,10 +63,10 @@ class QESetting(QETable):
     modules     = dsaw.db.varchar(name='modules', length=512, default = SETTINGS["modules"])
     modules.meta['tip'] = "Modules"
 
-    timecreated = dsaw.db.varchar(name="timecreated", length=16, default='')
+    timecreated = dsaw.db.varchar(name="timecreated", length=32, default='')
     timecreated.meta['tip'] = "Time Created"
 
-    timemodified = dsaw.db.varchar(name="timemodified", length=16, default='')
+    timemodified = dsaw.db.varchar(name="timemodified", length=32, default='')
     timemodified.meta['tip'] = "Time Modified"
 
     # Keep it just in case

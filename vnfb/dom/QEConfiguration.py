@@ -43,10 +43,10 @@ class QEConfiguration(QETable):
     description = dsaw.db.varchar(name="description", length=1024, default='')
     description.meta['tip'] = "description"
 
-    timecreated = dsaw.db.varchar(name="timecreated", length=16, default='')
+    timecreated = dsaw.db.varchar(name="timecreated", length=32, default='')
     timecreated.meta['tip'] = "timecreated"
 
-    timemodified = dsaw.db.varchar(name="timemodified", length=16, default='')
+    timemodified = dsaw.db.varchar(name="timemodified", length=32, default='')
     timemodified.meta['tip'] = "timemodified"
 
     # Kind of redundant because QETask has also type
