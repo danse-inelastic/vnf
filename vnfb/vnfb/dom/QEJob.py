@@ -42,16 +42,16 @@ class QEJob(QETable):
     status = dsaw.db.varchar(name="status", length=64, default='')
     status.meta['tip'] = ""
 
-    timesubmitted = dsaw.db.varchar(name="timesubmitted", length=16, default='')
+    timesubmitted = dsaw.db.varchar(name="timesubmitted", length=32, default='')
     timesubmitted.meta['tip'] = "timesubmitted"
 
-    timestarted = dsaw.db.varchar(name="timestarted", length=16, default='')
+    timestarted = dsaw.db.varchar(name="timestarted", length=32, default='')
     timestarted.meta['tip'] = "timestarted"
 
-    timerestarted = dsaw.db.varchar(name="timerestarted", length=16, default='')
+    timerestarted = dsaw.db.varchar(name="timerestarted", length=32, default='')
     timerestarted.meta['tip'] = "timerestarted"
 
-    timecompleted = dsaw.db.varchar(name="timecompleted", length=16, default='')
+    timecompleted = dsaw.db.varchar(name="timecompleted", length=32, default='')
     timecompleted.meta['tip'] = "timecompleted"
 
     exitcode = dsaw.db.integer(name="exitcode", default=-1)

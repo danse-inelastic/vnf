@@ -64,7 +64,7 @@ class QESimulation(QETable, GloballyReferrable):
     # in MS
     # Conflict
     date = dsaw.db.date( name='date' )
-    #date = dsaw.db.varchar(name="date", length=16, default='')
+    #date = dsaw.db.varchar(name="date", length=32, default='')
     date.meta['tip'] = "timecreated"
 
     package = dsaw.db.varchar(name="package", length=128, default='Quantum Espresso')
@@ -73,7 +73,7 @@ class QESimulation(QETable, GloballyReferrable):
     type = dsaw.db.varchar(name="type", length=128, default='')
     type.meta['tip'] = ""
 
-    timemodified = dsaw.db.varchar(name="timemodified", length=16, default='')
+    timemodified = dsaw.db.varchar(name="timemodified", length=32, default='')
     timemodified.meta['tip'] = "timemodified"
 
     label       = dsaw.db.varchar(name="label", length=128, default='')
@@ -82,8 +82,8 @@ class QESimulation(QETable, GloballyReferrable):
     simchain    = dsaw.db.varchar(name="simchain", length=1024, default='')
     simchain.meta['tip'] = "Specifies chain sequence in comma-separated values. Example: PW,PW,DOS"
 
-    #matter = dsaw.db.integer(name="matter", length=16) # Original
-    #matter = dsaw.db.varchar(name="matter", length=16)
+    #matter = dsaw.db.integer(name="matter", length=32) # Original
+    #matter = dsaw.db.varchar(name="matter", length=32)
     
     matter = dsaw.db.reference(name='matter', table=StructureTable)
     matter.meta['tip']  = "(STUB) Refers to atomic group. Kind of useless but must have"
@@ -151,13 +151,13 @@ if __name__ == "__main__":
 #    formula = dsaw.db.varchar(name="formula", length=32, default='')
 #    formula.meta['tip'] = ""
 
-#    date = dsaw.db.varchar(name="date", length=16, default='')
+#    date = dsaw.db.varchar(name="date", length=32, default='')
 #    date.meta['tip'] = "timeCreated"
 
 
 
 #    from vnfb.qeutils.qeutils import stamp2date
-#    timeCreated = dsaw.db.varchar(name="timeCreated", length=16, default='')
+#    timeCreated = dsaw.db.varchar(name="timeCreated", length=32, default='')
 #    timeCreated.meta['tip'] = "timeCreated - replaced by 'date'"
 #
 #    description = dsaw.db.varchar(name="description", length=1024, default='')

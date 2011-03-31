@@ -49,10 +49,10 @@ class QEConvParam(QETable):
     step  = dsaw.db.varchar(name="step", length=512, default='')
     step.meta['tip'] = "Step of parameter. Handles int, double and vector"
 
-    timecreated = dsaw.db.varchar(name="timecreated", length=16, default='')
+    timecreated = dsaw.db.varchar(name="timecreated", length=32, default='')
     timecreated.meta['tip'] = "timecreated"
 
-    timemodified = dsaw.db.varchar(name="timemodified", length=16, default='')
+    timemodified = dsaw.db.varchar(name="timemodified", length=32, default='')
     timemodified.meta['tip'] = "timemodified"
 
 __date__ = "$Apr 21, 2010 6:02:30 PM$"

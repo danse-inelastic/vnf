@@ -38,10 +38,10 @@ class QETask(QETable):
     short_description.meta['tip'] = ""
 
     # in MS
-    timecreated = dsaw.db.varchar(name="timecreated", length=16, default='')
+    timecreated = dsaw.db.varchar(name="timecreated", length=32, default='')
     timecreated.meta['tip'] = "timecreated"
 
-    #date = dsaw.db.varchar(name="date", length=16, default='')
+    #date = dsaw.db.varchar(name="date", length=32, default='')
     #date.meta['tip'] = "timecreated"
 
     # ?
@@ -57,7 +57,7 @@ class QETask(QETable):
     linkorder = dsaw.db.integer(name="linkorder", default=0)
     linkorder.meta['tip'] = "Link order that defines order in which job is started and displayed in the simulation chain"
 
-    timemodified = dsaw.db.varchar(name="timemodified", length=16, default='')
+    timemodified = dsaw.db.varchar(name="timemodified", length=32, default='')
     timemodified.meta['tip'] = "timemodified"
 
     # ?
