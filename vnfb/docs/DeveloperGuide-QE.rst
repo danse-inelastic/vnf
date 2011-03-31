@@ -6,7 +6,10 @@ Architecture of Quantum Espresso Simulation
 Introduction
 ------------
 
-In the beginning there was command line, and command line was dark
+In the beginning there was a command line, and the command line was dark and
+the green ASCII characters were with it. Through it all things were made and
+without it nothing was made that has been made. :)
+
 {About Quantum Espresso package architecture }
 
 Architecture Overview
