@@ -1,0 +1,193 @@
+
+Molecular dynamics calculations
+===============================
+
+- Phonon DOS
+- S(Q,E)        # After DANSE meeting
+
+Chain:
+[cp.x]{2-6} -> [qe2nc.py + nMOLDYN]
+
+Note:
+    qe2nc.py script is the adapted dl...
+
+Car-Parrinello molecular dynamics uses cp.x binary. Some runs are performed to prepare
+system to a particular state, some perform actual molecular dynamics. 
+cppp.x binary performs postprocessing and basically just processes the
+trajectories provided by CP simulation and extracts them in a more convenient form.
+I can do the parsing by myself.
+
+User goes to "Create New Simulation" page and selects "Molecular Dynamics", the
+following steps show up in the end.
+
+Steps:
+    [x] Electronic Minimization # Essential (Tip: With Fixed Ions and Cells)
+    [ ] Ion Minimization (Tip: With Damped Electron Dynamics and Fixed Cells)
+    [ ] Ions Randomization
+    [ ] Electrons and Ions Quenching
+    [ ] Electron and Ion Dynamics
+    [x] Electron and Ion Dynamics with Nose Thermostat
+
+Types:
+    electron-min,ion-min,ion-random,quenching,dynamics,thermostat,trajectory
+
+Description:
+
+- Electronic Minimization (with Fixed Ions and Cells) # Essential
+
+    restart_mode = 'from_scratch'   # SYSTEM
+    electron_dynamics = 'sd'        # ELECTRONS
+    ion_dynamics = 'none'           # IONS
+
+Label: Electronic Minimization
+
+Performs steepest descent electron dynamics
+
+- Ion Minimization (with Damped Electron Dynamics and Fixed Cells)
+
+    restart_mode = 'restart'        # SYSTEM
+    electron_dynamics = 'damp'      # ELECTRONS
+    electron_damping = 0.2
+    ion_dynamics = 'damp'           # IONS
+    ion_damping = 0.02
+    ion_velocities = 'zero'
+
+Label: Ion Minimization
+
+Performs both damped phonon dynamics and electron damping. It is supposed
+that atoms are located near equalibrium, that is interatomic forces are small
+(< 1 atomic units). If your system is far from equalibrium (forces > 1 atomic units)
+you need to use steepest descent phonon dynamics.
+    ion_dynamics = 'sd'
+
+- Ions Randomization
+    ion_dynamics = 'none'           # IONS, for each species
+    tranp(1) = .TRUE.
+    amprp(1) = 0.02
+
+Performs randomization of ions in case if your system is very close to equalibrium.
+
+Notes:
+    To be strict after ions randomization you should also do the "Electron Minimization" again
+
+Label: Ions Randomization
+
+- Electrons and Ions Quenching
+    electron_dynamics = 'verlet'
+    electron_velocities = 'zero'
+    ion_dynamics = 'verlet'
+    ion_velocities = 'zero'
+
+Label: Electrons and Ions Quenching
+
+- Electron and Ion Dynamics
+    electron_dynamics = 'verlet'
+    electron_temperature = 'not_controlled'
+    ion_dynamics = 'verlet'
+
+Notes:
+    - First CP run of "Electron and Ion Dynamics" should be performed with
+
+Label: Electron and Ion Dynamics
+
+- Electron and Ion Dynamics with Nose Thermostat    # Essential
+    electron_dynamics = 'verlet'
+    electron_temperature = 'zero'
+    ion_dynamics = 'verlet'
+    ion_temperature = 'nose'
+    tempw = 300
+    fnosep = 60
+
+Label: Electrons and Ions with Thermostat
+
+Forms
+-----
+
+[electron-min]
+
+Atomic Structure: *     Mass (u)    Pseudo Potential
+                    Au [196.9665]  [Au.blyp-van_ak.UPF] # Example (similar for each specie)
+Energy Cutoff (Ry): *  [ecutwfc = 27.0]
+Effective Electron Mass (a.u.): * [emass = 400.0]   # 1 a.u. of mass = 1/1822.9 a.m.u. = 9.10939 * 10^-31 kg
+Time Step (a.u.): *     [dt = 2.0]                # 1 a.u. = 2.4189*10^-5 ps ~ 0.000024 ps
+Number of Steps: *      [nstep = 100]
+
+
+[ion-min]
+Time Step (a.u.): *     [dt = 2.0]                # 1 a.u. = 2.4189*10^-5 ps ~ 0.000024 ps
+Number of Steps: *      [nstep = 200]
+
+
+[ion-random]
+Randomization Amplitude: * [amprp(1) = 0.02]      # For each specie!
+Time Step (a.u.): *     [dt = 5.0]                # 1 a.u. = 2.4189*10^-5 ps ~ 0.000024 ps
+Number of Steps: *      [nstep = 100]
+
+
+[quenching]
+Time Step (a.u.): *     [dt = 5.0]                # 1 a.u. = 2.4189*10^-5 ps ~ 0.000024 ps
+Number of Steps: *      [nstep = 100]
+
+
+[dynamics]
+Time Step (a.u.): *     [dt = 5.0]                # 1 a.u. = 2.4189*10^-5 ps ~ 0.000024 ps
+Number of Steps: *      [nstep = 200]
+
+
+[thermostat]
+Temperature (K): *      [tempw = 300.0]
+Oscillation Frequency (THz): *  [fnosep = 60]
+Time Step (a.u.): *     [dt = 10.0]                # 1 a.u. = 2.4189*10^-5 ps ~ 0.000024 ps
+Number of Steps: *      [nstep = 1000]
+
+[trajectory]
+Start Time: * []    # Currently for thermostat step only!
+End Time: * []
+[x] Vibrational Density of States (DOS)
+[x] Velocity Distribution
+[x] Mean-Square Displacement
+[x] Radial Distribution Function
+[x] Temperature Dependence on Time
+
+Generators
+----------
+
+Analysis Page
+-------------
+
+Possible dependencies:
+    Temperature as a function of time
+    Velocity distribution
+    Mean squared displacement
+    Radial distribution function
+    * Potential energy and constant of motion as a function of time
+
+
+Available steps:
+- Electronic minimization (with fixed ions and cells)
+- Ions randomization
+- Geometry optimization
+
+The schema looks like:
+[Step 1. Electronic ground state] -> [Step 2. Molecular Dynamics] -> [Step 3. DOS from Trajectory Analysis]
+
+TODO:
+
+1. Converter from velocity/position to NetCDF format (MMTK format) for nMOLDYN
+2. 
+
+
+Form for Step 1
+---------------
+
+
+
+Form for Step 2
+---------------
+
+
+Form for Step 3
+---------------
+
+Notes:
+    - Trajectory to netCDF format conversion seems to be correct (See: qe2nmol.py)!

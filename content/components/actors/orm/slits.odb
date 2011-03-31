@@ -1,0 +1,32 @@
+# -*- Python -*-
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                               Alex Dementsov
+#                      California Institute of Technology
+#                        (C) 2010  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+from vnfb.dom.neutron_experiment_simulations.neutron_components.Slit import Slit
+
+from luban.components.Actor import Actor
+import luban.orm
+base = luban.orm.object2actor(Slit)
+class Actor(base):
+
+    class Inventory(base.Inventory):
+
+        import luban.inventory
+
+
+
+def actor():
+    return Actor('orm/slits')
+
+__date__ = "$Oct 6, 2010 5:53:45 PM$"
+
+

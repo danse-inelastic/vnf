@@ -1,0 +1,36 @@
+#!/usr/bin/env python
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#                                
+#                                 Jiao Lin
+#                      California Institute of Technology
+#                      (C) 2006-2011  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+"""
+start page for gulp optimization workflow
+"""
+
+def visual(atomicstructure=None, director=None):
+    """atomicstructure: id of atomic structure
+    """
+    from vnfb.dom.material_simulations.GulpOpt import GulpOpt
+    editorvisual = 'material_simulations/moldyn/optimization-editor'
+    return director.retrieveVisual(
+        'material_simulations/moldyn/sim-wizard-start',
+        simcls=GulpOpt,
+        editorvisual=editorvisual,
+        atomicstructure=atomicstructure,
+        director = director,
+        )
+
+
+# version
+__id__ = "$Id$"
+
+# End of file 

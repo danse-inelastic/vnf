@@ -1,0 +1,111 @@
+$def with (host)
+<html>
+<head>
+	<title>Browsing remote filesystem at $host</title>
+	<link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css" rel="stylesheet" type="text/css"/>
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>
+	<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js"></script>
+	<script type="text/javascript" src="static/jquery.jstree.js"></script>
+	
+<script type="text/javascript">
+var bars = new Object();
+function new_bar(name, data) {
+	chunks = data.split("|")
+	if (chunks[0] == 'error') {
+		alert(chunks[1]);
+		return;
+	}
+	else {
+		bars[chunks[0]] = 0.0;
+	}
+	\$("#bars").append("<div id='container"+chunks[0]+"'></div>");
+	\$("#container"+chunks[0]).append("<center><strong>"+name+"</strong></center>");
+	\$("#container"+chunks[0]).append("<div id='bar"+chunks[0]+"'></div>");
+	\$("#bar"+chunks[0]).progressbar({value: 0});
+}
+function remove_bar(num) {
+	\$("#bar"+num).progressbar("option", "value", 100);
+	\$("#container"+num).fadeOut(600, function() {
+		\$("#container"+num).remove();
+	});
+}
+function update_bars() {
+	for (var i in bars) {
+		\$.ajax({
+			url:'status/'+i,
+			success:function(data) {
+				chunks = data.split("|");
+				if (chunks[0] == 'error') {
+					alert(chunks[1]);
+					delete bars[i];
+				}
+				
+				var status = parseInt(chunks[1]);
+				var completion = parseFloat(chunks[2]);
+				
+				\$("#bar"+chunks[0]).progressbar("option", "value", completion);
+				if (status == 2) {
+					delete bars[i];
+					setTimeout("remove_bar("+i+")", 4000);
+				}
+				else if (status == 3) {
+					alert(chunks[3]);
+					delete bars[i];
+					setTimeout("remove_bar("+i+")", 4000);
+				}
+			}
+		});
+	}
+}
+setInterval("update_bars()",700);
+update_bars();
+\$(document).ready(function() {
+	\$("#tree").jstree({
+		"json_data":{
+			"ajax":{
+				"url":function(n) {
+					return "dir/" + (n.attr ? n.attr("id") : "");
+				}
+			}
+		},
+		"plugins":["themes","json_data","ui"]
+	});
+	\$("#tree").bind("select_node.jstree", function(e, data) {
+		var node = data.rslt.obj;
+		if (!data.inst.is_leaf(node)) return;
+		if (node.attr("folder") == true) {
+			return;
+		}
+		var basename = node.attr("id").replace(/.*\//,'');
+		\$.ajax({
+			url:'download',
+			data: {"path":node.attr("id"),
+				   "dest":basename},
+			type:'POST',
+			success:function (data) {
+				new_bar(basename, data);
+			}
+		});
+	});
+});
+</script>
+<style type="text/css">
+#tree {
+	float:left;
+	border:solid 1px;
+	width:59%;
+}
+#bars {
+	float:right;
+	border:solid 1px;
+	width:39%;
+}
+</style>
+</head>
+<body>
+	<div id="tree">
+	</div>
+	<div id="bars">
+	</div>
+</body>
+</html>

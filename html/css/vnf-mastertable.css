@@ -1,0 +1,415 @@
+/*  -*- CSS -*-  */
+
+/* overall container */
+#main-display-area .master-table-container a.luban-link {
+    color:#47823c;
+}
+
+/* top portion: view indicator and change-view-toolbar */
+.master-table-title-bar{
+    margin: 2px 0 13px 0;
+}
+.master-table-title-bar .luban-splitter-section-container>td {
+    /*width: 50%;*/
+}
+
+.master-table-toptoolbar-container .luban-toolbar .luban-button-container {
+    padding:0;
+    margin:0;
+}
+.master-table-toptoolbar-container .luban-toolbar {
+    -moz-border-radius:12px;
+    -webkit-border-radius:12px;
+    background-color:#f0f5f5;
+    border:1px solid #AAAAAA;
+    /*padding:0px 5px;*/
+}
+.master-table-toptoolbar-container .luban-toolbar > table{
+    border-collapse: collapse;
+}
+.master-table-toptoolbar-container .luban-toolbar .splitter{
+    font-size: 1.3em;
+    padding: 0 10px;
+}
+.master-table-toptoolbar-container .luban-toolbar .luban-toolbar-left-padding{
+    -moz-border-radius-bottomleft:12px;
+    -moz-border-radius-topleft:12px;
+    -webkit-border-top-left-radius: 12px;
+    -webkit-border-bottom-left-radius: 12px;
+    width: 8px;
+    min-width: 8px;
+    background-color: gray;
+}
+.master-table-toptoolbar-container .luban-toolbar img{
+    height: 20px;
+    margin: 0px;
+    padding: 0px;
+    vertical-align: bottom;
+}
+.master-table-toptoolbar-container .luban-toolbar span{
+    font-size: 0.9em;
+    margin: 0 1px;
+    padding: 0;
+}
+
+div.master-table-toptoolbar h1.luban-document-title {
+    font-size:0.75em;
+    font-weight:bold;
+}
+
+.master-table-advanced-filter-widget {
+    display: inline;
+}
+.master-table-advanced-filter-widget div{
+    display: inline;
+}
+.master-table-advanced-filter-widget input {
+    width: 250px;
+    border-width: 3px;
+}
+.master-table-advanced-filter-widget a {
+    margin: 0 2px 0 5px;
+}
+.master-table-basic-filter-widget {
+    display: inline;
+}
+.master-table-basic-filter-widget div{
+    display: inline;
+}
+.master-table-basic-filter-widget input {
+    width: 80px;
+    margin: 0 5px;
+}
+.master-table-basic-filter-widget select {
+    width: 80px;
+    margin: 0 5px;
+}
+.master-table-basic-filter-widget a {
+    margin: 0 2px 0 5px;
+}
+
+
+.master-table-toptoolbar-container label {
+    font-size:0.7em;
+    vertical-align:middle;
+}
+.master-table-toptoolbar-container .luban-formfield {
+    margin: 0;
+    display: inline;
+}
+.master-table-toptoolbar-container .luban-formfield div{
+    display: inline;
+}
+.master-table-toptoolbar-container .luban-formfield table{
+    display: inline;
+    border-collapse: collapse;
+    margin:0;
+    padding:0;
+    vertical-align:bottom;
+}
+.master-table-toptoolbar-container *{
+    vertical-align:middle;
+}
+.master-table-toptoolbar-container .luban-toolbar .luban-button{
+    padding: 0;
+}
+
+
+.master-table-filter-control-container {
+    border-right:dotted 2px grey;
+    padding: 0 7px;
+    min-width: 22em;
+}
+.master-table-filter-control-container > div{
+    font-size: 0.8em;
+}    
+.master-table-filter-control-container p {
+    display:inline;
+    font-weight: bold;
+    margin: 0 7px 0 0 ;
+}
+
+.master-table-smartlabel-widget {
+border-right:2px solid grey;
+margin-right:5px;
+padding-right:5px;
+}
+div.master-table-smartlabel {
+padding-left:1.5em;
+}
+div.master-table-smartlabel input {
+width:8em;
+padding-left:10px;
+}
+#smartlabel-button {
+display:inline;
+font-size:0.8em;
+}
+.master-table-labeled-collection-selector-widget {
+border-right:2px solid grey;
+margin-right:7px;
+padding-right:7px;
+}
+.master-table-labeled-collection-selector-widget select {
+width:9em;
+margin-left:1em;
+margin-top:4px;
+}
+
+/* toolbar just on top of table */
+.master-table-tabletoptoolbar td {
+    vertical-align: bottom;
+}
+
+.master-table-navigation-bar {
+    font-size: 0.8em;
+    height: auto;
+    max-width: 300px;
+    margin-left: auto;
+    margin-right: 1px;
+    text-align: right;
+}
+.master-table-navigation-bar p{
+    display: inline;
+}
+.master-table-navigation-bar a {
+    color:#47823c;
+}
+.master-table-navigation-bar .splitter {
+    padding:0px 3px;
+}
+/*
+.master-table-navigation-bar-left, .master-table-navigation-bar-right{
+    width: auto;
+    text-align: center;
+}
+*/
+.master-table-navigation-bar-middle{
+    width: auto;
+    text-align: center;
+    color: #666666;
+    padding: 0px 10px;
+    font-size: 0.92em;
+}
+
+
+
+/* sortingtoolbar */
+.master-table-sortingtoolbar {
+    /*
+    height: 30px;
+    width: 240;
+    */
+    height: auto;
+    /*max-width: 400px;*/
+    margin-left: 1px;
+    margin-right: auto;
+}
+.master-table-sortingtoolbar > table.luban-splitter {
+    width: auto;
+    margin: 0 auto 0 1px;
+}
+.master-table-sortingtoolbar > table.luban-splitter tr{
+}
+.master-table-sortingtoolbar > table.luban-splitter td{
+    width: auto;
+    padding: 0 10px;
+}
+.master-table-sortingtoolbar > table.luban-splitter td .formfield{
+    margin: 0;
+    font-size: 0.8em;
+}
+.master-table-sortingtoolbar * {
+    display: inline;
+    vertical-align: middle;
+}
+.master-table-sortingtoolbar .luban-formfield table{
+    display: inline;
+    border-collapse: collapse;
+    margin:0;
+    padding:0;
+    vertical-align:bottom;
+}
+.master-table-sortingtoolbar > table.luban-splitter td a{
+    margin: 0;
+}
+.master-table-sortingtoolbar > table.luban-splitter td p{
+    margin: 0;
+}
+
+.master-table-sortingtoolbar div.label-container {
+    color: #888888;
+    font-size: 0.9em;
+    display: inline;
+}
+.master-table-sortingtoolbar div.label-container div{
+    display: inline;
+}
+
+.master-table-sortingtoolbar input {
+    border-color: #cced8c;
+    border-width: 2;
+    display: inline;
+}
+
+.master-table-sortingtoolbar select {
+    border-color: #cced8c;
+    border-width: 2;
+    display: inline;
+    max-width: 10em;
+    min-width: 5em;
+}
+
+
+/* toolbar at the bottom-left */
+.master-table-tablebottomtoolbar-left {
+    font-size:0.8em;
+    margin-top:8px;
+}
+div.master-table-tablebottomtoolbar-left-interior > table.luban-splitter{
+    width: auto;
+}
+.master-table-tablebottomtoolbar-left a {
+    /*border-left:solid 1px;*/
+    border-right:1px solid #444;
+    padding:0 5px;
+}
+
+.delete-checked-rows-button a {
+    border-right:1px solid lightgreen;
+}
+.delete-checked-rows-button {
+    border-right:1px solid #777777;
+}
+.labels-toolbar  {
+    margin-left:1em;
+}
+
+.master-table-tablebottomtoolbar-left div {
+    display:inline;
+}
+.master-table-tablebottomtoolbar-left h1.luban-document-title {
+    font-size:0.95em;
+    font-weight:bold;
+    display:inline;
+    /* margin-right:10px; */
+}
+.master-table-tablebottomtoolbar-left select {
+    width:90px;
+    height: 18px;
+}
+.master-table-tablebottomtoolbar-left input {
+    width: 70px;
+    height: 18px;
+}
+.master-table-tablebottomtoolbar-left .luban-formfield {
+    margin-left: 5px;
+    margin-right: 0;
+}
+.master-table-tablebottomtoolbar-left .luban-formfield table {
+    display:inline;
+    border-collapse: collapse;
+    margin:0;
+    padding:0;
+    vertical-align:bottom;
+}
+
+/* table itself */
+.master-table {
+    width: 100%;
+}
+
+.master-table thead {
+    color: #1C227A;
+    font-size: 0.6em;
+    text-transform: uppercase;
+}
+.master-table thead>tr>td{
+    padding: 7px 15px;
+    font-weight: bold;
+}
+.master-table thead td:first-child {
+    -moz-border-radius:10px 0 0 10px;
+    -webkit-border-top-left-radius: 10px;
+    -webkit-border-bottom-left-radius: 10px;
+}
+.master-table thead td:last-child {
+    -moz-border-radius:0 10px 10px 0;
+    -webkit-border-top-right-radius: 10px;
+    -webkit-border-bottom-right-radius: 10px;
+}
+.master-table.tabulated td{
+    padding: 3px 5px;
+}
+.master-table tr.odd>td:first-child {
+    -moz-border-radius:9px 0 0 9px;
+    -webkit-border-top-left-radius: 9px;
+    -webkit-border-bottom-left-radius: 9px;
+}
+.master-table tr.odd>td:last-child {
+    -moz-border-radius:0 9px 9px 0;
+    -webkit-border-top-right-radius: 9px;
+    -webkit-border-bottom-right-radius: 9px;
+}
+.master-table tr.odd td {
+    background-color:#e3e5e1;
+}
+.master-table tr.odd {
+    background-color: transparent;
+}
+.master-table tr.even {
+    background-color:white;
+}
+#main-display-area .master-table a.luban-link {
+    color:#657098;
+}
+.master-table input[type="checkbox"] {
+    width:1.6em;
+    height:1.6em;
+    margin: 0;
+}
+
+
+/* master table as selector */
+.mastertable-as-selector-panel {
+-moz-border-radius:10px;
+-webkit-border-radius:10px;
+background-color:#e5e5e5;
+border:1px solid lightGrey;
+font-size:90%;
+margin-left:2em;
+max-width:90%;
+padding:1em;
+min-width: 58em;
+}
+.mastertable-as-selector-panel table {
+ /* width:auto; */
+}
+.mastertable-as-selector-panel #view-indicator {
+min-width:4em;
+}
+.mastertable-as-selector-panel .master-table-title-bar {
+font-size:80%;
+}
+.mastertable-as-selector-panel .master-table {
+font-size:100%;
+text-align:center;
+width:98%;
+}
+.mastertable-as-selector-panel .luban-button-container {
+margin-top:1.5em;
+}
+.mastertable-as-selector-panel .master-table-wrapper {
+-moz-border-radius:8px;
+-webkit-border-radius:8px;
+background-color:white;
+padding:3px;
+}
+.mastertable-as-selector-panel .master-table td {
+padding:0 2em;
+}
+
+/* version */
+/* $Id$ */
+
+/* End of file  */

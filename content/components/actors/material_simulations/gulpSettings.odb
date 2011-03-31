@@ -1,0 +1,144 @@
+#!/usr/bin/env python
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                      California Institute of Technology
+#                      (C) 2006-2009  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+import luban.content as lc
+from luban.content import load, select
+
+from luban.components.AuthorizedActor import AuthorizedActor as base
+
+class Actor(base):
+
+    class Inventory(base.Inventory):
+
+        import pyre.inventory
+
+        id = pyre.inventory.str(name='id')
+
+    def createView(self, director):
+        doc = lc.document(Class='container')
+
+        domaccess = self._domaccess(director)
+        db = domaccess.db
+        c = self._getComputationRecord(director)
+#        if not domaccess.isComputationConfigured(c):
+#            return self.createConfigurationView(director)
+        
+        path = self._pathToMe(director)
+        view_indicator = director.retrieveVisual('view-indicator', path=path)
+        doc.add(view_indicator)
+
+        # matter view
+        matter = c.matter.dereference(db)
+        matterview = doc.document(title='material', collapsable=True, collapsed=False)
+        viewmatter = load(actor='atomicstructure', routine='showOverview',
+                          id = matter.id)
+        link = lc.link(label=matter.short_description, onclick=viewmatter)
+        matterview.add(link)
+
+        # results
+        resultsdoc = doc.document(title = 'Results', collapsable=True, collapsed=False)
+        resultsdoc.paragraph(text=['loading results. please wait...'])
+        resultsdoc.onexpand = select(element=resultsdoc).replaceContent(
+            load(actor=self.name, routine='createResultsDoc',
+                 id=self.inventory.id)
+            )
+
+        # my configuration
+#        configdoc = doc.document(title = 'Configuration', collapsable = True)
+#        configdoc.oncreate = select(element=configdoc).append(
+#            load(
+#              actor='material_simulations/forcefieldwizard', routine='default',
+#              id = c.id, editlink=False,
+#            ))
+        return doc
+
+    def createResultsDoc(self, director):
+        record = self._getComputationRecord(director)
+        return director.retrieveVisual(
+            'computation-results',
+            computation=record, actor=self.name, director=director)
+
+#    def createConfigurationView(self, director):
+#        c = self._getComputation(director)
+#        
+#        drawer = director.painter.paintObj.drawers.getDrawer(c.__class__)
+#        computation_doc = drawer(c)
+#        
+#        form = computation_doc.getDescendentByName('properties-form')
+#        form.onsubmit.params.update({
+#            'poststoring_routine': 'createJob',
+#            })
+#        
+#        # the container
+#        doc = lc.document()
+#
+#        # path
+#        path = self._pathToMe(director)
+#        view_indicator = director.retrieveVisual('view-indicator', path=path)
+#        doc.add(view_indicator)
+#
+#        # 
+#        doc.add(computation_doc)
+#
+#        return doc
+
+
+    def _pathToMe(self, director):
+        id = self.inventory.id
+        if not id:
+            raise RuntimeError
+        domaccess = self._domaccess(director)
+        label = domaccess.getComputationLabel(id)
+        computation = self._getComputation(director)
+        return [
+            ('Simulations',
+             lc.load(actor='materialsimulation')),
+            # assume all simulation types that start with "bvk_" are bvk simulations
+            ('AtomSim simulations',
+             lc.load(actor='materialsimulation', filter_expr="type=='GulpSettings'")),
+            ('%s %s' % (computation.__class__.__name__, label),
+             lc.select(id='main-display-area').replaceContent(
+            lc.load(actor='material_simulations/gulpSettings',
+                    routine = 'createView', id=id)
+            )),
+            ]
+
+
+    def _getComputation(self, director):
+        domaccess = self._domaccess(director)
+        id = self.inventory.id
+        return domaccess.getComputation(id)
+
+
+    def _getComputationRecord(self, director):
+        domaccess = self._domaccess(director)
+        id = self.inventory.id
+        return domaccess.getComputationRecord(id)
+
+
+    def _domaccess(self, director):
+        return director.retrieveDOMAccessor('material_simulations/gulpSettings')
+
+
+    def __init__(self, name='material_simulations/gulpSettings'):
+        super(Actor, self).__init__(name)
+        return
+
+
+def actor(): return Actor()
+
+
+# version
+__id__ = "$Id$"
+
+# End of file 
+

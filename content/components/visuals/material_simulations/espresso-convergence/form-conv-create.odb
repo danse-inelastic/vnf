@@ -1,0 +1,78 @@
+#!/usr/bin/env python
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                               Alex Dementsov
+#                      California Institute of Technology
+#                        (C) 2009  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+from vnfb.qeutils.qegrid import QEGrid
+from vnfb.qeutils.qeconst import CONVTYPE, CONVPARAM, MAX_STEPS, TOLERANCE, ID_START, ID_STEP, ID_PARAM
+
+import luban.content as lc
+from luban.content import load, select
+from luban.content.FormTextField import FormTextField
+from luban.content.FormSubmitButton import FormSubmitButton
+from luban.content.FormSelectorField import FormSelectorField
+from luban.content.Form import Form
+
+
+def visual(director, id):
+
+    keys        = CONVPARAM.keys()
+    key         = keys[0]
+
+    form        = Form()
+    table       = QEGrid(lc.grid(Class="qe-form"))
+    form.add(table.grid())
+    convtype    = FormSelectorField(name    = "convtype",
+                                    entries = enumerate(CONVTYPE.values()))
+
+    param       = FormSelectorField(name    = "param",
+                                    id      = ID_PARAM,
+                                    entries = enumerate(CONVPARAM.keys())
+                                    )
+    param.onchange  = load( actor   = "material_simulations/espresso-convergence/conv-create",
+                            routine = "setDefaults",
+                            param   = select(element=param).getAttr("value"))   # Cool
+
+    start       = FormTextField(name = "start", id = ID_START, value = CONVPARAM[key][2])
+    step        = FormTextField(name = "step", id = ID_STEP, value = CONVPARAM[key][3])
+    tolerance   = FormTextField(name = "tolerance", value = TOLERANCE)
+    maxsteps    = FormTextField(name = "maxsteps", value = MAX_STEPS)
+    description = FormTextField(name = "description", value = "")
+
+    submit      = FormSubmitButton(label="Create Test")
+    cancel      = lc.button(label="Cancel")
+    cancel.onclick  = load( actor   = 'material_simulations/espresso-convergence/view',
+                            id      = id)
+
+    st          = QEGrid(lc.grid()) # Submit Table
+    st.addRow((submit, cancel), ("qe-action-accept", "qe-action-cancel"))
+
+    table.addRow(("Convergence Parameter: *",   convtype ))
+    table.addRow(("Varying Parameter: *",       param))
+    table.addRow(("Start Value: *",             start))
+    table.addRow(("Step: *",                    step))
+    table.addRow(("Tolerance, %: *",            tolerance))
+    table.addRow(("Max Steps: *",               maxsteps))
+    table.addRow(("Description:",               description))
+
+    table.addRow(("", st.grid()))
+
+    table.setColumnStyle(0, "qe-form-label")
+    table.setColumnStyle(1, "qe-form-field")
+
+    form.onsubmit   = select(element=form).submit(actor     = 'material_simulations/espresso-convergence/conv-create',
+                                                  routine   = 'createRecord',
+                                                  id        = id)
+    return form
+
+__date__ = "$Apr 23, 2010 2:41:34 PM$"
+
+

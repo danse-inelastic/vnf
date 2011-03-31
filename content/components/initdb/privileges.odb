@@ -1,0 +1,56 @@
+#!/usr/bin/env python
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                Jiao Lin
+#                      California Institute of Technology
+#                        (C) 2008  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+from pyre.components.Component import Component as base
+
+
+class Component(base):
+
+
+    class Inventory(base.Inventory):
+
+        import pyre.inventory
+
+
+    def initdb(self):
+        db = self.director.clerk.db
+        for r in privileges: db.insertRow( r )
+        return
+
+
+from vnfb.dom.Privilege import Privilege
+def privilege(name, target, description):
+    r = Privilege()
+    r.name = name
+    r.target = target
+    r.description = description
+    return r
+
+
+privileges = [
+    privilege('run', 'simulation', 'privilege to run simulation (in generic sense)'), 
+    privilege('run', 'vasp', 'privilege to run vasp'), 
+    privilege('modify', 'bug', 'privilege to modify bugs'), 
+    privilege('administrate', 'system', 'privilege to administrate the vnf system'),
+    ]
+
+
+
+def initdb(): return Component('initdb-privileges', 'initdb')
+
+
+# version
+__id__ = "$Id$"
+
+# End of file 

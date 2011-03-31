@@ -1,0 +1,32 @@
+# -*- Python -*-
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                 Jiao Lin
+#                      California Institute of Technology
+#                      (C) 2006-2009  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+import luban.content as lc
+
+def visual(director):
+    doc = lc.document(id='credits')
+    hdoc = lc.htmldocument(); doc.add(hdoc)
+    pyre = '<a target="_blank" href="http://docs.danse.us/pyre/sphinx">pyre</a>'
+    luban = '<a target="_blank" href="http://docs.danse.us/pyre/luban/sphinx">luban</a>'
+    hdoc.text = 'Powered by %s/%s' % (pyre, luban)
+    
+    l = lc.link(id='surprise-for-bug-report-test', label='test bug report dialog'); doc.add(l)
+    l.onclick = lc.load(actor='notimplemented')
+    
+    return doc
+
+    
+# version
+__id__ = "$Id$"
+
+# End of file 

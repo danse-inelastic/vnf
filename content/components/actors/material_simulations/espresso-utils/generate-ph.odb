@@ -1,0 +1,80 @@
+#!/usr/bin/env python
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                               Alex Dementsov
+#                      California Institute of Technology
+#                        (C) 2009  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+from vnfb.qeutils.generators.phgenerator import PHGenerator
+
+from vnfb.components.QEGenerator import QEGenerator as base
+class Actor(base):
+
+    class Inventory(base.Inventory):
+        import pyre.inventory        
+        # Multiple phonons. Q-points
+        nq1         = pyre.inventory.str('nq1', default='')        
+        nq2         = pyre.inventory.str('nq2', default='')
+        nq3         = pyre.inventory.str('nq3', default='')
+
+        # Single phonons. Phonon coordinates 
+        kx          = pyre.inventory.str('kx', default='')
+        ky          = pyre.inventory.str('ky', default='')
+        kz          = pyre.inventory.str('kz', default='')
+
+
+    def content(self, director):
+        "Populates the content for creation of input configuration"
+        title   = "PH Configuration Input"
+        label   = "PH Form"
+        visual  = "material_simulations/espresso/input-ph"  # PH parameters form
+        return self._document(director, title, label, visual = visual)
+
+
+    # Redirector
+    def generateInput(self, director):
+        "Redirects PH input text to input form"
+        return director.redirect(actor   = 'material_simulations/espresso/input-create',
+                                routine = 'default',
+                                text    = self._input(director),
+                                id      = self.inventory.id,
+                                taskid  = self.inventory.taskid,
+                                type    = self.inventory.type)
+
+    # Generator
+    def _input(self, director):
+        "Generates PH input text"
+        gen     = PHGenerator(director, self.inventory)
+        gen.setInputph()
+        return gen.toString()
+
+
+    def __init__(self):
+        super(Actor, self).__init__(name='material_simulations/espresso-utils/generate-ph')
+
+
+    def _configure(self):
+        super(Actor, self)._configure()
+        self.nq1            = self.inventory.nq1
+        self.nq2            = self.inventory.nq2
+        self.nq3            = self.inventory.nq3
+
+        self.kx             = self.inventory.kx
+        self.ky             = self.inventory.ky
+        self.kz             = self.inventory.kz
+
+
+    def _init(self):
+        super(Actor, self)._init()
+        return
+
+def actor():
+    return Actor()
+
+__date__ = "$Jan 13, 2010 4:29:22 AM$"

@@ -1,0 +1,62 @@
+# -*- Python -*-
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                 Jiao Lin
+#                      California Institute of Technology
+#                      (C) 2006-2009  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+import luban.content as lc
+from luban.content import select, load, alert
+
+
+def visual(director, bvkid):
+    doc = lc.document(id='bvk-editor-%s' % bvkid, Class='bvkeditor')
+
+    domaccess = director.retrieveDOMAccessor('material_simulations/phonon_calculators/bvk')
+    model = domaccess.getModel(bvkid)
+
+    # fraccoords = model.getFractionalCoordinates()
+
+
+    bondscontainer = doc.document(id='bvk-%s-editor-bonds-container' % bvkid)
+    nbonds = model.countBonds()
+
+    if not nbonds:
+        bondscontainer.paragraph(text=['No bonds have been created for this bvk model.'], id='nobonds-alert-bvk-%s'%bvkid)
+
+    for i in range(nbonds):
+        bond = model.getBond(i)
+        
+        container = lc.document(id='bvk-%s-bond-%s' % (bvkid, i))
+        bondscontainer.add(container)
+        
+        v = director.retrieveVisual(
+            'material_simulations/phonon_calculators/bvk/force-constant-form-onebond',
+            director = director,
+            bvkid=bvkid, bondindex=i,
+            edit = False, containerid = container.id
+            )
+        container.add(v)        
+        continue
+
+    newbond = lc.link(label='new bond')
+    newbond.onclick =  load(
+        actor='material_simulations/phonon_calculators/bvk/editor', routine='newbond',
+        id = bvkid)
+
+    doc.add(newbond)
+
+    return doc
+
+
+# version
+__id__ = "$Id$"
+
+# End of file 

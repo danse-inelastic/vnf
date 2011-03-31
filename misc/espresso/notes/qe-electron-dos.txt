@@ -1,0 +1,44 @@
+
+[PW]
+# Same as in qe-general.txt
+
+[PW]
+Configuration field:
+
+# Generate same config field as in first [PW]
+Changes to configuration field:
+    Replace: calcualtion = 'nscf'
+
+[DOS]
+Form:
+
+Emin (eV): [0]
+Emax (eV): [25.0 ]
+Delta E (eV): [0.1]
+
+Configuration field:
+&INPUTPP
+   prefix = "default"
+   Emin = [user defined],
+   Emax = [user defined],
+   DeltaE = [user defined],
+/
+
+{Tab "Analysis"}
+
+System Summary
+--------------
+# See qe-analysis.txt
+
+Electron System     # From PW
+---------------
+
+# See qe-analysis.txt. Take all of the data from PW1 except Fermi energy, which
+should be taken from PW2 (more acurate)
+
+Electron DOS
+------------
+[Plot]
+
+# In the future: add "Electron Dispersion"
+

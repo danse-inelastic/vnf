@@ -1,0 +1,56 @@
+#!/usr/bin/env python
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                Jiao  Lin
+#                                 Caltech
+#                       (C) 2008  All Rights Reserved
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+def announcement(user):
+    import vnfb.content
+
+    msg = vnfb.content.announcement()
+    msg.sender = "linjiao@caltech.edu"
+    msg.subject = "Your VNF account"
+    msg.text = [
+"""
+Dear %(fullname)s,
+
+Welcome to the Virtual Neutron Facility.
+
+Your user name is %(username)s.
+
+Please visit https://vnf.caltech.edu and start planning your experiments.
+
+Here are some VNF documentation links:
+
+* Documentation home: http://docs.danse.us/VNET/index.html
+* Web portal guide: http://docs.danse.us/VNET/UserGuide.html#vnfuserguide
+* Video demos: http://docs.danse.us/VNET/UserGuide-screencasts.html
+
+Sincerely,
+DANSE-vnf team
+"""
+        ]
+
+    subs = {
+        'fullname': user.fullname,
+        'username': user.username,
+        }
+
+    msg.recipients[user.email] = subs
+
+    # send email copy to vnf admins as well
+    adminemail = 'vnf-administrators@googlegroups.com'
+    msg.recipients[adminemail] = subs
+
+    return msg
+
+# version
+__id__ = "$Id$"
+
+# End of file 

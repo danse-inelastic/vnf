@@ -1,0 +1,68 @@
+# -*- Python -*-
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                   Jiao Lin
+#                      California Institute of Technology
+#                        (C) 2008  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+from vnfb.components.ComputationResultRetriever import ComputationResultRetriever as base
+class Retriever(base):
+
+    def _retrieveResultsFor(self, computation):
+        director = self.director
+        db = director.clerk.db
+
+        # must have a job
+        self.declareProgress(0.1, 'look up job')
+        job = computation.getJob(db)
+
+        # check result is available
+        self.declareProgress(0.2, 'check if results exist')
+        expected_results = [ 
+            'DOS',
+            'Omega2',
+            'Polarizations',
+            'WeightedQ',
+            'Qgridinfo',
+            ]           
+        self._check_results_sanity(expected_results=expected_results, job=job)
+
+##         # create a phonon dos record to save dos
+##         self.declareProgress(0.4, 'create a phonon dos to store the result')
+##         from vnfb.dom.material_simulations.PhononDOS import PhononDOSTable
+##         dos = self._make_result_holder(computation, PhononDOSTable)
+##         dos.matter = computation.matter
+##         db.updateRecord(dos)
+
+##         # save the result from job to dos
+##         self.declareProgress(0.5, 'get result from server')
+##         self._save_result(computation, job, 'DOS', dos, 'data.idf')
+        
+        # create a phonons record to save phonons
+        self.declareProgress(0.6, 'create phonons entry to store the result')
+        from vnfb.dom.material_simulations.Phonons import PhononsTable
+        disp = self._make_result_holder(computation, PhononsTable)
+        disp.matter = computation.matter
+        db.updateRecord(disp)
+
+        # save the result from job to phonons
+        self.declareProgress(0.7, 'get result from server')
+        self._save_results(computation, job, expected_results, disp, result_subdir='data.idf')
+        return
+
+
+def retriever():
+    return Retriever('bvk_getphonons')
+
+
+# version
+__id__ = "$Id$"
+
+# End of file 

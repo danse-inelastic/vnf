@@ -1,0 +1,87 @@
+# -*- Python -*-
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                      California Institute of Technology
+#                      (C) 2006-2009  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+from vnfb.components.DOMAccessor import DOMAccessor as base
+
+class Accessor(base):
+
+
+    def __init__(self):
+        super(Accessor, self).__init__('sq-accessor')
+        return
+
+
+    def _getOrm(self):
+        orm = self.director.clerk.orm
+        orm(Sq)
+        return orm
+    orm = property(_getOrm)
+
+
+    def getProperty(self, id):
+        orm = self.orm
+        return orm.load(Sq, id)
+
+
+    def getDataForProperty(self, id):
+        sq = self.getProperty(id)
+        record = self.orm(sq)
+
+        director = self.director
+
+        # make sure file is at the web server
+        if not director.dds.is_available(record):
+            try:
+                director.dds.make_available(record)
+            except:
+                import journal
+                debug = journal.debug('main')
+                debug.log('Unable to get data files for record %s' % record.id)
+                import traceback
+                debug.log(traceback.format_exc())
+                return
+        
+        # the data file
+        path = director.dds.abspath(record)
+        import os
+        # check path
+        if os.path.exists(os.path.join(path, 'data.plot')): 
+            sq.read(os.path.join(path, 'data.plot'))
+#        elif os.path.exists(os.path.join(path, 'data.txt')): 
+#            dos.read(os.path.join(path, 'data.txt'))
+        else: return
+        return sq
+
+
+    def getOrigin(self, id=None, dos=None):
+        'get the original computation that creates this sq'
+        if sq is None:
+            sq = self.getSq(id)
+        orm = self.orm
+        r = orm(sq)
+        origin = r.getOrigin(orm.db)
+        return origin
+
+
+from vnfb.dom.material_simulations.Sq import Sq
+
+import os, numpy
+
+def accessor():
+    return Accessor()
+
+
+# version
+__id__ = "$Id$"
+
+# End of file 

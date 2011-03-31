@@ -3,8 +3,18 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>Test page for applets</title>
+
 </head>
 <body>
 <a href="DansePlotter.jnlp">Danse Plotter</a>
+<br></br>
+<script type="text/javascript" src="jmol/Jmol.js"></script>
+<script> 
+	jmolInitialize("jmol", useSignedApplet);
+    //jmolCheckBrowser("popup", "browsercheck", "onClick");
+</script> 
+<script> 
+	jmolApplet(400, "load caffeine.xyz");
+</script> 
 </body>
 </html>

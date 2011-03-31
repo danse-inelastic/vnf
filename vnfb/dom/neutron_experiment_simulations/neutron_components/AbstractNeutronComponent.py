@@ -1,0 +1,5 @@
+from vnfb.dom.neutron_experiment_simulations.AbstractNeutronComponent import AbstractNeutronComponent
+
+
+from vnfb.dom.AbstractOwnedObjectBase import AbstractOwnedObjectBase
+class NeutronComponentTableBase(AbstractOwnedObjectBase): pass

@@ -1,0 +1,66 @@
+#!/usr/bin/env python
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                     California Institute of Technology
+#                       (C) 2009  All Rights Reserved
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+from luban.content import load, select, alert
+import luban.content as lc
+
+from luban.content.FormTextField import FormTextField
+from luban.content.FormSelectorField import FormSelectorField
+from luban.content.FormSubmitButton import FormSubmitButton
+
+def visual(director=None, id=None):
+    container = lc.document(id='edit-atomic-structure-form', Class='container')
+
+    cancel = load(actor='atomicstructure', routine='canceledit', id = id)
+    delete = [
+        load(actor='atomicstructure', routine='delete', id = id),
+        load(actor='atomicstructure', routine='showListView'),
+        ]
+    
+    controls = container.document(Class='master-controls')
+    cancellink = lc.link(label='cancel', onclick=cancel, Class='cancel')
+    controls.add(cancellink)
+    deletelink = lc.link(label='delete', onclick=delete, Class='delete')
+    controls.add(deletelink)
+    
+    #view = director.retrieveVisual('atomicstructure/edit-structure-view',
+    #                                   id = id)
+    view = editView(director, id)
+    container.add(view)
+
+    sp = container.splitter()
+    left = sp.section(); right = sp.section()
+    done = load(
+        actor='atomicstructure', routine='doneediting',
+        id = id, viewid = view.id,
+        formids = select(element=container).findDescendentIDs(type='form')
+        )
+    donebutton = lc.button(label='done', onclick=done)
+    left.add(donebutton)
+
+    controls2 = right.document(Class='master-controls')
+    cancellink2 = lc.link(label='cancel', onclick=cancel, Class='cancel')
+    controls2.add(cancellink2)
+    deletelink2 = lc.link(label='delete', onclick=delete, Class='delete')
+    controls2.add(deletelink2)    
+    
+    return container
+    
+def editView(director, id):
+    domaccess = director.retrieveDOMAccessor('atomicstructure')
+    struct = domaccess.getAtomicStructure(id)
+    drawer = director.painter.paintObj.drawers.getDrawer(struct.__class__)
+    return drawer(struct)
+
+
+# version
+__id__ = "$Id$"
+
+# End of file 

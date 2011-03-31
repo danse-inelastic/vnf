@@ -1,0 +1,61 @@
+# -*- Python -*-
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                               Alex Dementsov
+#                      California Institute of Technology
+#                        (C) 2011  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+import re
+from vnfb.epscutils.epscconst import EPSC_OUT_FILES
+import luban.content as lc
+from vnfb.qeutils.results.resultpath import ResultPath
+
+def content(path):
+    "Returns content of the file of path"
+    try:
+        text = open(path).read()
+    except:
+        text    = "Ooops! File Not Accessible"
+    return text
+
+
+def regex(filename):
+    "Create regex for output filename "
+    s   = filename.replace(".", "\.")   # Escape dot: "."
+    s   += "$"      # Set ending character
+    return s
+    
+
+def visual(director, simid, linkorder):
+    if not linkorder in range(len(EPSC_OUT_FILES)):
+        return lc.document()    # linkorder is out of range!
+    form        = lc.form(id='create-simulation-form')
+    pwoutput    = form.textarea(Class="epsc-textarea-outputs")    
+    resultpath  = ResultPath(director, simid, 0)
+    allfiles    = resultpath.resultFiles()
+
+    if not allfiles:
+        pwoutput.value  = "No output files found"
+        return form
+
+    for f in allfiles:
+        REGEX   = regex(EPSC_OUT_FILES[linkorder])
+        p       = re.compile(REGEX)
+        matches = p.findall(f)   # Try to find pattern in the file path
+        if len(matches) != 0:   # Match found
+            file    = f
+            break
+    
+    pwoutput.value  = content(file) # Set content for textarea
+
+    return   form
+
+__date__ = "$Mar 25, 2011 5:48:32 PM$"
+
+

@@ -1,0 +1,86 @@
+#!/usr/bin/env python
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                 Jiao Lin
+#                      California Institute of Technology
+#                      (C) 2006-2009  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+from luban.content import load, select, alert
+import luban.content as lc
+
+
+class Factory(object):
+
+    matter_view_id = 'scatterer-matter-view'
+
+
+    def __init__(self, id, director):
+        self.id = id
+        self.director = director
+        self.domaccess = director.retrieveDOMAccessor('scatterer')
+        self.record = self.domaccess.getRecord(id)
+        matter = self.record.matter
+        self.matter = matter and matter.id and matter.dereference(self.domaccess.db)
+        return
+
+
+    def __call__(self, readonly=False):
+        doc = lc.document(
+            title='Atomic structure', id=self.matter_view_id,
+            collapsable=True)
+
+        director = self.director
+        id = self.id
+        matter = self.matter
+        
+        if not matter:
+            if readonly: raise RuntimeError
+            doc.add(
+                director.retrieveVisual('scatterer/editor/matterselector',
+                                        id=id, director=director)
+                )
+        else:
+            summary = self._createSummary()
+            doc.add(summary)
+
+            # placeholder = doc.document(Class='Container')
+            if not readonly:
+                tip='Be careful! If you change the atomic structure, all kernel settings are lost'
+                link = lc.link(label='change', tip=tip); doc.add(link)
+                # link.onclick = select(element=placeholder).replaceBy(
+                link.onclick = select(element=link).replaceBy(
+                    load(actor='scatterer/editor', routine='createMatterSelector',
+                         id = id)
+                    )
+                
+        return doc
+
+
+    def _createSummary(self):
+        director = self.director
+        return director.retrieveVisual(
+            'atomicstructure/overview-structureinfo',
+            director=director, id=self.matter.id)
+        matter = self.matter
+        short_description = matter.short_description
+        doc = lc.document(title = 'Atomic structure %r' % short_description)
+        return  doc
+
+
+    
+def visual(id, director, readonly=False):
+    return Factory(id, director)(readonly=readonly)
+
+
+# version
+__id__ = "$Id$"
+
+# End of file 
+

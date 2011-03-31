@@ -1,0 +1,55 @@
+#!/usr/bin/env python
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                 Jiao Lin
+#                      California Institute of Technology
+#                      (C) 2006-2009  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+from luban.content import load, select, alert
+import luban.content as lc
+
+
+from luban.content.PortletItem import PortletItem
+
+class Factory(object):
+
+    def __init__(self, id, director):
+        self.id = id
+        self.director = director
+        self.db = director.clerk.db
+        return
+
+
+    def __call__(self, kernel):
+        db = self.db
+        id = self.id
+        typename = kernel.__class__.__name__
+        label = typename
+        if len(label)>12: label = label[:9]+ '...'
+        
+        widgetid = 'kernel-%s-portletitem' % kernel.id
+        item = PortletItem(label=label, id=widgetid, tip=typename)
+        item.onselect = load(
+            actor='scatterer/editor', routine='selectKernelView',
+            id=id, kernel = db.getUniqueIdentifierStr(kernel),
+            )
+        return item
+
+
+    
+def visual(id, director, kernel):
+    return Factory(id, director)(kernel)
+
+
+# version
+__id__ = "$Id$"
+
+# End of file 
+

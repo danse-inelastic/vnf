@@ -1,0 +1,10 @@
+# -*- Python -*-
+
+import luban.content as lc
+
+def visual(director):
+    doc = lc.document(title='Structure Builder')
+    return doc
+
+
+

@@ -1,3 +1,0 @@
-def userManager():
-    from vnf.components import usersFromDB
-    return usersFromDB()

@@ -1,0 +1,99 @@
+#!/usr/bin/env python
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                 Jiao Lin
+#                      California Institute of Technology
+#                      (C) 2006-2009  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+
+#
+import luban.content as lc
+from luban.content import select, load, alert
+
+
+#
+from vnfb.dom.neutron_experiment_simulations.NeutronStorage import NeutronStorage
+
+from luban.components.Actor import Actor
+import luban.orm
+base = luban.orm.object2actor(NeutronStorage)
+class Actor(base):
+
+    class Inventory(base.Inventory):
+
+        import pyre.inventory
+
+        start = pyre.inventory.int('start', default=0)
+        end = pyre.inventory.int('end', default=0)
+
+
+    def createGraphicalView(self, director):
+        id = self.inventory.id
+
+        title='Neutron storage %s' % id
+        doc = lc.document(title=title, collapsable=True)
+
+        # show 20 neutrons
+        si = self.inventory
+        start = si.start
+        end = si.end
+        if not end: end=20
+            
+        viewneutrons = self._viewNeutrons(director, start=start, end=end)
+        doc.add(viewneutrons)
+
+        propview = doc.document(title='Properties', collapsable=True)
+        view = self.displayProperties(director)
+        propview.add(view)
+        
+        return doc
+
+
+    def _viewNeutrons(self, director, start=0, end=20):
+        # db record
+        ns = self._load(director)
+        orm = director.clerk.orm
+        record = orm(ns)
+
+        # neutron file
+        p = director.dds.abspath(record)
+        import os
+        f = os.path.join(p, 'data.idf')
+
+        # read neutrons
+        from mcni.neutron_storage.idf_usenumpy import read
+        neutrons = read(f, start=start, n=end-start)
+
+        # prepare document
+        title='Neutrons %s-%s' % (start, end)
+        doc = lc.document(title = title)
+
+        #
+        hdoc = lc.htmldocument()
+        doc.add(hdoc)
+
+        hdoc.text = ['<pre>'] +  [_str(n)+'\n' for n in neutrons] + ['</pre>']
+
+        return doc
+
+
+def _str(n):
+    x,y,z, vx,vy,vz, s1,s2, time, prob = n
+    return 'Neutron(\n\tr=%s, \n\tv=%s, \n\ttof=%s, \n\tp=%s, \n\ts=%s\n\t)' % (
+        (x,y,z), (vx,vy,vz), time, prob, (s1,s2))
+
+def actor():
+    return Actor('orm/neutronstorages')
+
+
+# version
+__id__ = "$Id$"
+
+# End of file 

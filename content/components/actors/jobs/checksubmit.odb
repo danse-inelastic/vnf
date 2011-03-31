@@ -1,0 +1,125 @@
+#!/usr/bin/env python
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                               Alex Dementsov
+#                      California Institute of Technology
+#                        (C) 2009  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+from vnfb.dom.QEJob import QEJob
+from vnfb.qeutils.qeconst import STATES
+from vnfb.qeutils.qeutils import packname, unpackname
+
+import os
+from luban.content import select
+from luban.content import load
+from luban.content.Link import Link
+from luban.content.Splitter import Splitter
+from luban.content.FormSelectorField import FormSelectorField
+from luban.content.Plot2D import Plot2D
+
+import luban.content as lc
+from luban.components.AuthorizedActor import AuthorizedActor as base
+
+# TODO: Do I need to place checksubmit in a separate actor?
+
+class Actor(base):
+
+    class Inventory(base.Inventory):
+        import pyre.inventory
+        id          = pyre.inventory.str('id', default='')  # Simulation Id
+        taskid      = pyre.inventory.str('taskid', default='')
+
+
+    def default(self, director):
+        "Not implemented"
+        pass
+
+
+    def checkSubmit(self, director):
+        """
+        Checks if the simulation can be submitted to jobs queue
+            - Check if settings are set
+            - Check if server is set
+            - Check if configuration input is set
+        """
+        
+#        errors  = {}
+#        self._checkInputs(director, errors)
+#
+#        # Check settings # Not sure if I need it now
+#        # If check failed, go to error page (with link "Go Back")
+#        #return load(actor="jobs/submitted", routine="submit", id=self.id)
+#        if errors:
+#            return self.formError(errors)
+
+
+        return load(actor   = "material_simulations/espresso/submit",
+                   routine  = "submit",
+                   id       = self.id,
+                   taskid   = self.taskid)
+
+
+
+    def _checkInputs(self, director, errors):
+        """Checks config inputs"""
+        sim     = director.clerk.getQESimulations(id = self.id)
+        inputs  = director.clerk.getQEConfigurations(where = "simulationid='%s'" % self.id)
+        chain   = SIMCHAINS[sim.type]
+        if not self._isComplete(chain, inputs):
+            errors['input']  = "Error: One of the configuration inputs are missing"
+            return
+
+
+    def _isComplete(self, chain, inputs):
+        test    = [0 for i in range(len(chain))]
+        types   = self._getInputTypes(inputs)
+
+        for i in range(len(types)):    # Check if inputs has all the values from chain list
+            for j in range(len(chain)):
+                if types[i] == chain[j]:
+                    test[j] = 1
+
+        if test.count(0) == 0:  # No zeros left, then set is complete
+            return True
+
+        return False
+
+
+    def _getInputTypes(self, inputs):
+        """Converts configuration entries to """
+        types   = []
+        for i in inputs:
+            if i.text != '':
+                types.append(i.type)
+
+        return types
+
+    def __init__(self):
+        super(Actor, self).__init__(name='jobs/checksubmit')
+
+        return
+
+
+    def _configure(self):
+        super(Actor, self)._configure()
+        self.id         = self.inventory.id
+        self.taskid     = self.inventory.taskid
+
+
+    def _init(self):
+        super(Actor, self)._init()
+        return
+
+def actor():
+    return Actor()
+
+
+__date__ = "$Dec 16, 2009 5:27:17 PM$"
+
+

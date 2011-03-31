@@ -1,0 +1,41 @@
+#!/usr/bin/env python
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                      California Institute of Technology
+#                      (C) 2006-2009  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+#
+import luban.content as lc
+from luban.content import select, load, alert
+
+
+#
+from vsat.trajectory.VacfDiffusionCalc import VacfDiffusionCalc
+
+from luban.components.Actor import Actor
+import luban.orm
+base = luban.orm.object2actor(VacfDiffusionCalc)
+class Actor(base):
+
+    class Inventory(base.Inventory):
+
+        import luban.inventory
+        
+    def debug(self, director):
+        pass
+        
+
+def actor():
+    return Actor('orm/vacfdiffusioncalc')
+
+
+# version
+__id__ = "$Id$"
+
+# End of file 

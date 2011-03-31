@@ -1,0 +1,114 @@
+#!/usr/bin/env python
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                Jiao Lin
+#                      California Institute of Technology
+#                        (C) 2008  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+from pyre.components.Component import Component as base
+
+
+class Component(base):
+
+
+    def initdb(self):
+        director = self.director
+        self.domaccess = director.retrieveDOMAccessor('experiment')
+
+        self._createExperiment1()
+        return
+
+
+    def _createExperiment1(self):
+        'experiment for testing DetectorSystemFromXml'
+        
+        director = self.director
+        domaccess = self.domaccess
+        orm = domaccess.orm
+        db = orm.db
+
+        # the instrument with source and monitor
+        instrument_record = db.query(InstrumentTable).filter_by(name='Test').one()
+
+        # create a new instrument configuration
+        ic_id = 'test-exprimrnet-monosource-detsystem'
+        ic = InstrumentConfiguration()
+        components = ic.components
+        # source
+        source = MonochromaticSource()
+        source.componentname = 'source'
+        source.energy = 70
+        from vnfb.utils.neutron_experiment_simulations.geometry import tomatrix
+        orientation = tomatrix((0, 30, 0))
+        source.orientation = orientation
+        ic.components.append(source)
+        # det system
+        detsystem = DetectorSystem_fromXML()
+        detsystem.componentname = 'monitor'
+        detsystem.hierarchy = orm.load(DetectorSystemHierarchy_fromXML, id='ARCS')
+        detsystem.tofmin = 100
+        detsystem.tofmax = 2000
+        detsystem.ntofbins = 190
+        ic.components.append(detsystem)
+        #
+        orm.save(ic, id=ic_id)
+        ic_record = db.query(orm(InstrumentConfiguration)).filter_by(id=ic_id).one()
+        
+        # experiment
+        exp = NeutronExperimentTable()
+        exp.id = 'test-arcs-detector-system'
+        exp.instrument = instrument_record
+        exp.instrument_configuration = ic_record
+        exp.ncount = 10
+        exp.buffer_size = 10
+        exp.short_description = 'experiment for testing the arcs detector system'
+        orm.db.insertRow(exp)
+
+        #
+        # server
+        serveraccess = director.retrieveDOMAccessor('server')
+        server = serveraccess.getServerRecord('server000')
+
+        # job
+        from vnfb.dom.Job import Job
+        job = Job()
+        job.id = 'job-neutronexperiments-test-arcs-detector-system'
+        job.short_description = 'job for testing the arcs detector system'
+        job.server = server
+        job.computation = exp
+        job.creator = 'demo'
+        orm.db.insertRow(job)
+        
+        return
+
+
+    def __init__(self):
+        base.__init__(self, 'bvk_getphonons', 'initdb')
+        return
+
+
+
+from vnfb.dom.neutron_experiment_simulations.NeutronExperiment import NeutronExperiment, NeutronExperimentTable
+from vnfb.dom.neutron_experiment_simulations.Instrument import InstrumentTable
+from vnfb.dom.neutron_experiment_simulations.InstrumentConfiguration \
+     import InstrumentConfiguration
+from vnfb.dom.neutron_experiment_simulations.neutron_components.MonochromaticSource \
+     import MonochromaticSource
+from vnfb.dom.neutron_experiment_simulations.neutron_components.DetectorSystem_fromXML \
+     import DetectorSystem_fromXML, DetectorSystemHierarchy_fromXML
+
+
+def initdb(): return Component()
+
+
+# version
+__id__ = "$Id$"
+
+# End of file 

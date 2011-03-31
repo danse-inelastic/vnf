@@ -17,6 +17,7 @@ class DDS:
     def __init__(self, masternode, transferfile=None,
                  readfile=None, writefile=None, makedirs=None,
                  rename=None, symlink=None, fileexists=None,
+                 remove = None,
                  ):
         '''create a "distributed data storage"
 
@@ -28,6 +29,7 @@ class DDS:
         writefile: the facility to write a text file. writefile("server.address:/a/b/c", "contents")
         makedirs: the facility to make a directory. it should be able to make the intermediate directories automatically
         fileexists: the facility to check if a file exists on a node or not. fileexists("server.address:/a/b/c")
+        remove: the facility to remove a file
         '''
         self.masternode = masternode
         self.nodes = [masternode]
@@ -38,6 +40,7 @@ class DDS:
         self._fileexists = fileexists
         self._rename = rename
         self._symlink = symlink
+        self._remove = remove
         return
 
 
@@ -60,6 +63,13 @@ class DDS:
         self._rename(oldpath, newpath, node.address)
         self.forget(old, node)
         self.remember(new, node)
+        return
+
+
+    def remove(self, filename, node=None):
+        if node is None: node = self.masternode
+        path = '%s/%s' % (node.rootpath, filename)
+        self._remove(path, node.address)
         return
 
 
@@ -123,12 +133,16 @@ class DDS:
 
 
     def is_available(self, path, node=None):
-        if node is None: node = self.masternode
+        if node is None:
+            node = self.masternode
 
         l = self._read_availability_list(path)
-        if _str(node) in l: return True
+
+        if _str(node) in l:
+            return True
 
         ret = self._fileexists(_url(node, path))
+
         if ret:
             l.append(_str(node))
             self._update_availability_list(path,l)
@@ -137,10 +151,14 @@ class DDS:
 
     def make_available(self, path, node=None):
         '''make file at given path available at given node'''
-        if self.is_available(path, node): return
-        if node is None: node = self.masternode
+        if self.is_available(path, node):
+            return
+
+        if node is None:
+            node = self.masternode
         node1 = self.find_node(path)
-        if node1 is None: raise RuntimeError, "%s is not available anywhere" % path
+        if node1 is None:
+            raise RuntimeError, "%s is not available anywhere" % path
         self._transfer(path, node1, node)
         self.remember(path, node)
         return
@@ -157,8 +175,50 @@ class DDS:
         if expired:
             l1 = filter(lambda n: n not in expired, l)
             self._update_availability_list(path, l1)
-        if ret is None: raise RuntimeError, "no node has the path %r" % path
+        if ret is None:
+            # raise RuntimeError, "no node has the path %r" % path
+            return
         return _node(ret)
+
+
+    def makedirs(self, path, node):
+        """Recursively creates directories on destination node 'node',
+        which can also be remote node
+        Issues:
+            - Doesn't check if the node already exists
+        """
+        if node is None:
+            node = self.masternode
+
+        self._makedirs(_url(node, path))
+        #self.remember(path, node)  # Need remember?
+
+
+    def untar(self, tarfile, path, node):
+        """
+        Extracts (untars) tarfile to the specified 'path'. 
+        Parameters:
+            tarfile - absolute path of tar file to be extracted
+            path    - absolute path where tarfile to be extracted
+        Notes:
+            - Parameter 'node' is not supported at this time
+            - If path doesn't exist, it will create it
+            - Not very flexible for other accessors
+        """
+        # If path doesn't exist, create it
+        if not os.path.exists(path):
+            self.makedirs(path, node)
+
+        pieces = [
+            'tar',
+            '-xzf',
+            tarfile,
+            '-C',
+            path
+            ]
+
+        # Extract tar file
+        os.system(" ".join(pieces))
 
 
     def _transfer(self, path, srcnode, destnode):

@@ -1,0 +1,86 @@
+#!/usr/bin/env python
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                     California Institute of Technology
+#                       (C) 2009  All Rights Reserved
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+# a simple form to create a atomic structure
+# it collaborates with actor atomicstructure/create-structure-form
+
+
+from luban.content import load, select, alert
+import luban.content as lc
+
+
+def visual(director, id = None):
+#    if not id:
+#        id = director.getGUID()
+    doc = lc.document()
+    doc.add(viewIndicator(director, id))
+    
+# need to put these three buttons on a grid
+
+    decideInput = lc.splitter(id='input-method-selectors-container', Class='decideInputMethod')
+    doc.add(decideInput)
+
+    dehighlightbuttons = select(element=decideInput).find(type='button').removeClass('selected')
+    highlightbutton = lambda b: [dehighlightbuttons, select(element=b).addClass('selected')]
+    
+    btnDb = lc.button(label='Load from database', tip='load from database')
+    btnDb.onclick = [
+        select(id='new-structure-form').replaceContent(
+            load(actor='atomicstructure/cod', 
+                 routine='default')  #, #id = id))
+            )
+        ] +  highlightbutton(btnDb)
+    btnDb.Class = 'selected'
+    decideInput.section().add(btnDb)
+    
+    btnUpload = lc.button(label='Upload', tip='upload from file')
+    btnUpload.onclick = [
+        select(id='new-structure-form').replaceContent(
+            director.retrieveVisual('atomicstructure/upload-matter-panel',
+                                    director=director)
+            ), #, #uploadid = id))
+        ] + highlightbutton(btnUpload)
+    decideInput.section().add(btnUpload)
+    
+    btnMan = lc.button(label='Create manually', tip='input coordinates by hand')
+    btnMan.onclick = [
+        select(id='new-structure-form').replaceContent(
+            load(actor='loadvisual', 
+                 visual='atomicstructure/edit-new-structure-view',
+                 id = id)
+            )
+        ] + highlightbutton(btnMan)
+    decideInput.section().add(btnMan)
+    
+    formdoc = lc.document(id='new-structure-form', Class='new-structure-container')
+    formdoc.oncreate = select(element=formdoc).replaceContent(
+        load(actor='atomicstructure/cod', routine='default')#, id = id)
+        )
+    doc.add(formdoc)
+   
+    return doc
+
+def viewIndicator(director, id):
+    path = []
+    path.append(('atomic structures', load(actor='atomicstructure')))
+
+    if id:
+        label = 'structure %s' % id
+    else:
+        label = 'new structure'
+    path.append(label)
+    return director.retrieveVisual('view-indicator', path=path)
+
+
+# version
+__id__ = "$Id$"
+
+# End of file 

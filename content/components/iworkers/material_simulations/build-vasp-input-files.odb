@@ -1,0 +1,142 @@
+# -*- Python -*-
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                   Jiao Lin
+#                      California Institute of Technology
+#                        (C) 2009  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+from pyre.components.Component import Component
+
+class Worker(Component):
+
+    class Inventory(Component.Inventory):
+
+        import pyre.inventory
+
+
+    def run(self, task):
+        director = self.director
+        self.domdomaccess = domaccess = director.retrieveDOMAccessor('atomicstructure')
+        
+        db = director.clerk.db
+
+        director.declareProgress(0.1, 'Get vasp computation user inputs ...')
+        computation = task.beneficiary.dereference(db)
+
+        director.declareProgress(0.2, 'Create xyz file...')
+        matter = computation.matter.dereference(db)
+        xyzfilename, xyzfilecontents = self._makeXYZfile(matter)
+
+        director.declareProgress(0.3, 'Process vasp computation user inputs ...')
+        xcFunctional = computation.xcFunctional
+        xcf = _xcf[xcFunctional]
+        
+        params = [
+            ('name', matter.chemical_formula or computation.short_description or computation.id),
+            ('ecutoff', computation.kineticEnergyCutoff),
+            ('xcf', xcf),
+            ('mpmesh', ','.join([str(i) for i in computation.monkhorstPackMesh]) ),
+            ('unitcell', xyzfilename),
+            ('generateInputsOnly', 1),
+            ]
+        cmds = [
+            'source ~/.abinitio-env',
+            'vaspapp.py ' + ' '.join(['-%s=%s' % (k,v) for k,v in params]),
+            ]
+
+        director.declareProgress(0.4, 'Generate vasp script that will be run on a computing cluster to generate raw vasp inputs ...')
+        import tempfile, os
+        tmpdir = tempfile.mkdtemp()
+        
+        localrunsh = os.path.join(tmpdir, runsh_fn)
+        open(localrunsh, 'w').write('\n'.join(cmds))
+
+        localxyz = os.path.join(tmpdir, xyzfilename)
+        open(localxyz, 'w').write('\n'.join(xyzfilecontents))
+
+        from vnf.components.misc import defaultServer
+        server = defaultServer(director)
+        
+        director.declareProgress(0.5, 'Make temporary directory on server %s ...' % (server.short_description,))
+        remotetmpdir = mkdtemp_remote(server, director)
+
+        from vnfb.dom.Server import LocalHost
+        director.declareProgress(0.6, 'Copy %s to server %s ...' % (runsh_fn, server.short_description))
+        director.csaccessor.copyfile(LocalHost, localrunsh, server, remotetmpdir)
+        
+        director.declareProgress(0.7, 'Copy %s to server %s ...' % (xyzfilename, server.short_description))
+        director.csaccessor.copyfile(LocalHost, localxyz, server, remotetmpdir)
+        
+        director.declareProgress(0.8, 'Run %s on server %s ...' % (runsh_fn, server.short_description))
+        director.csaccessor.execute('sh %s' % runsh_fn, server, remotetmpdir)
+
+        director.declareProgress(0.9, 'Collect result from server %s ...' % server.short_description)
+        localvaspdir = director.dds.abspath(computation)
+        if not os.path.exists(localvaspdir):
+            os.makedirs(localvaspdir)
+        files = [
+            'INCAR',
+            'POSCAR',
+            'POTCAR',
+            'KPOINTS',
+            ]
+        for f in files:
+            remotepath = os.path.join(remotetmpdir, f)
+            director.csaccessor.getfile(server, remotepath, localvaspdir)
+        
+        director.declareProgress(1., 'done.')
+        return
+
+
+    def _makeXYZfile(self, structurerecord):
+        # get structure
+        domaccess = self.domaccess
+        structure = domaccess.getAtomicStructure(id=structurerecord.id)
+
+        from vnfb.utils.atomicstructure import makeXYZfileContent
+        content = makeXYZfileContent(structure)
+
+        #
+        filename = 'matter.xyz'
+        return filename, content
+
+
+
+def mkdtemp_remote(server, director):
+    failed, out, error = director.csaccessor.execute(
+        r'python -c \"import tempfile; print tempfile.mkdtemp()\"',
+        server, '/tmp',
+        suppressException=1)
+    if failed:
+        raise RuntimeError, "failed to create temporary directory on server %r\n%s" % (
+            server.short_description, error)
+    return out.strip()
+    
+
+runsh_fn = 'build-vasp-input-files.sh'
+
+_xcf = {
+    'PAW-PBE': 'pawpbe',
+    'PAW-GGA': 'pawgga',
+    'PAW-LDA': 'pawlda',
+    'USPP-GGA': 'usppgga',
+    'USPP-LDA': 'uspplda',
+    }
+
+
+def iworker():
+    return Worker('build-vasp-input-files', 'iworker')
+
+
+
+# version
+__id__ = "$Id$"
+
+# End of file 

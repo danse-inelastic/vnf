@@ -1,0 +1,73 @@
+#!/usr/bin/env python
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                               Alex Dementsov
+#                      California Institute of Technology
+#                        (C) 2009  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+from vnfb.qeutils.qegrid import QEGrid
+
+import luban.content as lc
+from vnfb.qeutils.qeutils import defaultInputName, readRecordFile
+from luban.content import load, select
+from luban.content.FormTextArea import FormTextArea
+
+from vnfb.components.QEConvergence import QEConvergence as base
+
+class Actor(base):
+    class Inventory(base.Inventory):
+        import pyre.inventory
+        inputid      = pyre.inventory.str('inputid', default='')
+
+    def _viewIndicator(self, director, section):
+        qelink  = load( actor           = 'materialsimulation',
+                        filter_key      = 'type',
+                        filter_value    = 'qesimulations')
+
+        path = []
+        path.append(('Simulations ', load(actor='materialsimulation')))
+        path.append(('Quantum Espresso ', qelink))
+        path.append(('%s ' % self.id, load(actor    = 'material_simulations/espresso/sim-view',
+                                           id       = self.id)))
+        path.append(('Convergence Tests', load(actor    = 'material_simulations/espresso-convergence/view',
+                                            id       = self.id)))
+        path.append("Input: %s" % self.inputid)
+        section.add(director.retrieveVisual('view-indicator', path=path))
+
+
+    def _refreshAction(self, section):
+        section.add(lc.link(label="Refresh",
+                            Class="qe-action-back",
+                            onclick = load(actor      = 'material_simulations/espresso-convergence/input-view',
+                                             id       = self.id,
+                                             inputid  = self.inputid))
+                    )
+
+    def _mainContent(self, director, splitter):
+        content     = splitter.section()
+        table       = QEGrid(lc.grid())
+        content.add(table.grid())
+
+        text        = FormTextArea( name    = "text",
+                                    value   = self._inputText(director, self._input),
+                                    Class   = "qe-textarea-inputs")
+        table.addRow((text,))
+
+
+    def _configure(self):
+        super(Actor, self)._configure()
+        self.inputid     = self.inventory.inputid
+
+def actor():
+    return Actor(name='material_simulations/espresso-convergence/input-view')
+
+
+__date__ = "$Apr 23, 2010 12:22:43 PM$"
+
+

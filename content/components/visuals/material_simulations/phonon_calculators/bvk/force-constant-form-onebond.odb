@@ -1,0 +1,286 @@
+# -*- Python -*-
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                 Jiao Lin
+#                      California Institute of Technology
+#                      (C) 2006-2009  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+import luban.content as lc
+from luban.content import select, load, alert
+from luban.content.FormSelectorField import FormSelectorField
+from luban.content.FormTextField import FormTextField
+
+import journal
+info = journal.info('force-constant-form-onebond')
+
+mat0 = [
+    [0,0,0],
+    [0,0,0],
+    [0,0,0],
+    ]
+
+
+def visual(**kwds):
+    debug = kwds.get('debug')
+    if kwds.has_key('debug'): del kwds['debug']
+    if debug:
+        return _visual(**kwds)
+    return visualFromDB(**kwds)
+
+
+def visualFromDB(director, bvkid, bondindex, edit, containerid):
+
+    info.log('building visual for bvk %s bond %s' % (bvkid, bondindex))
+    
+    domaccess = director.retrieveDOMAccessor('material_simulations/phonon_calculators/bvk')
+    model = domaccess.getModel(bvkid)
+    fraccoords = model.getFractionalCoordinates()
+    uid = 'bvk%s-bond%s'%(bvkid,bondindex)
+
+    bond = model.getBond(bondindex)
+    siteA = bond.A; siteB = bond.B
+    siteBlatticevector = bond.Boffset
+    matrix=bond.force_constant_matrix
+    # ...
+    constraints = []
+
+    info.log('finished loading data from db, about to build visual')
+
+    editable = edit and model.mutable
+
+    editbond = editable and bond.bond_is_mutable
+
+    form = _visual(
+        bvkid=bvkid, bondindex=bondindex,
+        uid=uid, sites=fraccoords,
+        siteA=siteA, siteB=siteB, siteBlatticevector=siteBlatticevector,
+        editable = editable,
+        editbond = editbond,
+        matrix=matrix, constraints=constraints,
+        )
+
+    if editable:
+        form.submitbutton(label='save')
+        form.onsubmit = select(element=form).submit(
+            actor = 'material_simulations/phonon_calculators/bvk/force-constant-form',
+            routine = 'process',
+            id = bvkid, bondindex = bondindex,
+            )
+
+        cancel = lc.link(label='cancel')
+        cancel.onclick = load(
+            actor='material_simulations/phonon_calculators/bvk/editor', routine='displaybond',
+            id = bvkid, bondindex = bondindex,
+            )
+        form.add(cancel)
+
+    else:
+
+        if model.mutable:
+            edit = lc.link(label='edit')
+            edit.onclick = load(
+                actor='material_simulations/phonon_calculators/bvk/editor', routine='editbond',
+                id = bvkid, bondindex = bondindex,
+                )
+            form.add(edit)
+
+    return form
+
+
+# implementation method. 
+def _visual(
+    bvkid, bondindex,
+    uid, sites,
+    siteA=0, siteB=0, siteBlatticevector=[0,0,0],
+    editable = True,
+    editbond=False,
+    matrix=mat0, constraints=[],
+    ):
+
+    # convert numpy array to list 
+    siteBlatticevector = [int(x) for x in siteBlatticevector]
+    matrix = [list(v) for v in matrix]
+    sites = [str(site) for site in sites]
+
+    info.log('start form')
+    form = lc.form(title='Bond %s' % bondindex)
+    
+    sp = lc.splitter(Class='force-constant-form-one-bond')
+    form.add(sp)
+    info.log('added splitter')
+
+    left = sp.section()
+    right = sp.section()
+
+    bonddoc = bondWidget(
+        uid, sites,
+        siteA=siteA, siteB=siteB, siteBlatticevector=siteBlatticevector,
+        editable=editable and editbond)
+
+    info.log('added bond widget')
+        
+    left.add(bonddoc)
+    
+    grid = matrixdoc(uid, matrix, constraints, editable)
+    right.add(grid)
+
+    info.log('added matrix')
+
+    return form
+
+
+def matrixdoc(uid, matrix, constraints, editable):
+    grid = lc.document(Class='grid', title='Force constant matrix')
+
+    # find those that depends on others
+    info.log('finding dependents...')
+    if editable and constraints:
+        import numpy
+        dependents = numpy.zeros((3,3), bool)
+        for constraint in constraints:
+            dependents[constraint.right.indexes] = 1
+            continue
+
+    # create input fields
+    minputs = []
+    for i in range(3):
+
+        info.log('building input fields for row %s...' % i)
+        
+        if not editable:
+            deps = [1,1,1]
+        else:
+            if constraints: deps = dependents[i]
+            else: deps = None
+
+        vec = matrix[i]
+        
+        vecinputs, fields = vectorInput(uid, i, vec, deps)
+        grid.add(vecinputs)
+
+        minputs.append(fields)
+        continue
+
+    info.log('applying constraints...')
+    if editable and constraints is not None:
+        for constraint in constraints:
+            assert constraint.__class__.__name__.lower() == 'equal'
+            left = constraint.left.indexes
+            right = constraint.right.indexes
+            i,j = left
+            minputs[i][j].onchange = select(id=minputid(uid, right)).setAttr(
+                text=select(id=minputid(uid, left)).getAttr('value'))
+    
+    return grid
+
+
+def bondWidget(uid, sites, siteA, siteB, siteBlatticevector, editable=False):
+    doc = lc.document(title='bond', Class='bond-container')
+    sp = doc.splitter(Class='bond-sites')
+
+    left = sp.section()
+    sp.section().paragraph(text=['---'], Class='bond-sign')
+    right = sp.section()
+
+    wA = siteWidget(sites, siteA, 'siteA', editable)
+    left.document(title='A').add(wA)
+    
+    wB = siteWidget(sites, siteB, 'siteB', editable)
+    right.document(title='B').add(wB)
+
+    v = siteBLatticeVectorDoc(uid, siteBlatticevector, editable)
+    doc.add(v)
+
+    return doc
+
+
+def siteWidget(sites, siteindex, name, editable):
+    info.log('site widget for %s' % name)
+    if editable:
+        opts = enumerate(sites)
+        return FormSelectorField(
+            tip = 'select site',
+            name = name,
+            entries = opts,
+            selection = siteindex,
+            )
+    return lc.paragraph(text=[sites[siteindex]], Class='value')
+
+
+def siteBLatticeVectorDoc(uid, vec, editable=False):
+    doc = lc.document(
+        title='Lattice vector added to siteB',
+        Class='siteB-lattice-vector-container')
+
+    if editable:
+        doc.add(siteBLatticeVectorInput(uid, vec))
+    else:
+        a,b,c = vec
+        vtxt = "%s * a + %s * b + %s * c" % (a,b,c)
+        doc.paragraph(text=[vtxt], Class='value')
+    return doc
+
+
+def siteBLatticeVectorInput(uid, vec=None):
+    if vec is None:
+        vec = [0,0,0]
+        
+    doc = lc.document()
+    
+    lvs = ['a', 'b', 'c']
+    for i, (val, lv) in enumerate(zip(vec, lvs)):
+        f = FormTextField(
+            label = '',
+            name = 'siteB_offset_%s' % lv,
+            value = val,
+            )
+        doc.add(f)
+        text = ['*', lv]
+        if i<2: text.append('+')
+        doc.paragraph(text=text)
+
+    return doc
+
+
+def minputid(uid, indexes):
+    i,j = indexes
+    return '%s-%s-%s' % (uid, i,j)
+
+
+def vectorInput(uid, index, vec=None, deps=None):
+
+    # index is the index of this vector in the force constant matrix
+    
+    splitter = lc.splitter()
+    fields = []
+    for i in range(3):
+
+        id = minputid(uid, (index, i))
+        
+        if deps is not None and deps[i]:
+            f = lc.paragraph(id=id, Class='value')
+            if vec is not None: f.text = [vec[i]]
+        else:
+            name = 'm%s%s' % (index, i)
+            f = FormTextField(id=id, name=name)
+            if vec is not None: f.value = vec[i]
+            
+        fields.append(f)
+        splitter.section().add(f)
+        
+        continue
+    
+    return splitter, fields
+
+
+# version
+__id__ = "$Id$"
+
+# End of file 

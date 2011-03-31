@@ -1,0 +1,82 @@
+# -*- Python -*-
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                   Jiao Lin
+#                      California Institute of Technology
+#                      (C) 2006-2009  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+tablename='sample'
+
+
+from vnfb.components.DOMAccessor import DOMAccessor as base
+
+class Accessor(base):
+
+
+    def __init__(self):
+        super(Accessor, self).__init__('sample-accessor')
+        return
+
+
+    def _getOrm(self):
+        orm = self.director.clerk.orm
+        
+        # build orm for all dependent types
+        from vnfb.dom.scattering_kernels import kernelnames
+        for name in kernelnames:
+            type = self._getObjectByImportingFromDOM(name)
+            orm(type)
+            continue
+        from vnfb.dom.geometry import getShapeTypes
+        map(orm, getShapeTypes())
+        
+        return orm
+    orm = property(_getOrm)
+
+
+    def getObject(self, id):
+        return self.orm.load(Scatterer, id)
+
+
+    def getRecord(self, id):
+        return self.getRecordByID(ScattererTable, id)
+
+
+    def createRecord(self):
+        return self.insertNewOwnedRecord(ScattererTable)
+
+
+    def isConstructed(self, id):
+        record = self.getRecord(id)
+        if not record.matter or not record.matter.id: return False
+        if not record.shape or not record.shape.id: return False
+        # only need orm if we reach here
+        orm = self.orm
+        db = orm.db
+        kernels = record.kernels.dereference(db)
+        if not len(kernels): return False
+        return record.short_description
+
+
+from vnfb.dom.neutron_experiment_simulations.Scatterer import Scatterer, ScattererTable
+
+
+from dsaw.db.VersatileReference import global_pointer
+import sqlalchemy
+
+
+def accessor():
+    return Accessor()
+
+
+# version
+__id__ = "$Id$"
+
+# End of file 

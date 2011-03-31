@@ -1,0 +1,120 @@
+# -*- Python -*-
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                 Jiao Lin
+#                      California Institute of Technology
+#                      (C) 2006-2010  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+from luban.content import load, select, alert
+import luban.content as lc
+
+from luban.content.FormSelectorField import FormSelectorField
+
+
+class Factory(object):
+
+
+    def __init__(self, id, director):
+        domaccess = director.retrieveDOMAccessor('experiment')
+        self.domaccess = domaccess
+        self.director = director
+        self.id = id
+        self.experiment = domaccess.getExperiment(id)
+        return
+    
+
+    def __call__(self, mode=None):
+        domaccess = self.domaccess
+        experiment = self.experiment
+
+        missinginfo = domaccess.getMissingInformation(experiment=experiment)
+        if missinginfo:
+            return self._createNotReadyDocument(experiment, missinginfo)
+
+        if mode is None:
+            mode = 'configure'
+
+        if mode == 'configure':
+            doc = self._createConfigurationDocument(experiment)
+        else:
+            doc = self._createSummaryDocument(experiment)
+
+        return doc
+
+
+    def _createNotReadyDocument(self, experiment, missinginfo):
+        doc = lc.document(title='Thie experiment is not ready.')
+        doc.paragraph(text=[
+            'This experiment is missing %s. ' % missinginfo,
+            'Please follow the wizard and provide necessary settings.',
+            ])
+        return doc
+
+
+    def _createConfigurationDocument(self, experiment):
+        doc = lc.document(title='Finish up')
+
+        doc.paragraph(text=[
+            'We are almost done! Please fill out the following form to finish up.'
+            ])
+
+        # form
+        form = self._buildForm(experiment)
+        doc.add(form)
+
+        # continue button
+        switch = select(element=doc).replaceBy(
+            load(actor='experiment/editor', routine='createEditWizard_finishpanel',
+                 id = self.id, mode='summary')
+            )
+        continuebutton = lc.button(label='continue', onclick=switch)
+        doc.add(continuebutton)
+
+        return doc
+
+
+    def _buildForm(self, exp):
+        director = self.director
+        getDrawer = director.painter.paintObj.drawers.getDrawer
+        drawer = getDrawer(exp.__class__)
+        doc = drawer.createPropertiesForm(exp)
+        return doc
+
+
+    def _createSummaryDocument(self, exp):
+        doc = lc.document(title='Finish up - Summary')
+        doc.paragraph(text=[
+            'Please review your experiment.'
+            ])
+        
+        director = self.director
+        getDrawer = director.painter.paintObj.drawers.getDrawer
+        drawer = getDrawer(exp.__class__)
+        doc1 = drawer(exp, readonly=True, editlink=False)
+        doc.add(doc1)
+
+        createjob = load(
+            actor='job', routine='create',
+            computation_type = 'neutron_experiment_simulations.NeutronExperiment.NeutronExperiment',
+            computation_id = self.id
+            )
+        continuebutton = lc.button(label='create job', onclick=createjob)
+        doc.add(continuebutton)
+        
+        return doc
+
+
+def visual(id, director, mode=None):
+    return Factory(id, director)(mode=mode)
+
+# version
+__id__ = "$Id$"
+
+# End of file 

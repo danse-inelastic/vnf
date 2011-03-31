@@ -1,0 +1,200 @@
+# -*- Python -*-
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                   Jiao Lin
+#                      California Institute of Technology
+#                      (C) 2006-2009  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+from vnfb.components.DOMAccessor import DOMAccessor as base
+
+class Accessor(base):
+
+
+    def __init__(self):
+        super(Accessor, self).__init__('job')
+        return
+
+
+    def _getOrm(self):
+        orm = self.director.clerk.orm
+        
+        # job depends on computation, let us just reuse orm initialization from computation
+        self.director.retrieveDOMAccessor('computation').orm
+        
+        return orm
+    orm = property(_getOrm)
+
+
+    def getJobRecord(self, id):
+        # make sure orm is initd
+        orm = self.orm
+        #
+        return self.getRecordByID(JobTable, id)
+
+
+    def getJobLabel(self, id):
+        r = self.getJobRecord(id)
+        t = 'Job %s' % id
+        if r.short_description:
+            t += '(%s)' % r.short_description
+        return t
+
+
+    def resetJob(self, id):
+        "reset job to 'initial' status, which allows someone to resubmit the job"
+        r = self.getJobRecord(id)
+        db = self.db
+        # itasks
+        from vnfb.dom.ITask import ITask
+        tasks = r.getReferences(db, ITask, 'beneficiary')
+        for task in tasks:
+            task.state = 'failed'
+            db.updateRecord(task)
+            continue
+        # job itself
+        r.state = 'submissionfailed'
+        db.updateRecord(r)
+        # also reset the computation so that the job retrieval looks like failed
+        computation = r.computation.dereference(db)
+        domaccess = self.director.retrieveDOMAccessor('computation')
+        domaccess.resetResultRetrievalTask(
+            type=computation.getTableName(),
+            id=computation.id)
+        return
+    
+
+    def countJobs(self, filter=None, label=None, mine=False):
+        q = self.makeQuery(filter=filter, label=label, mine=mine)
+        return q.alias('tocount').count().execute().fetchone()[0]
+    
+    
+    def getJobIDs(
+        self,
+        filter=None, order_by=None, reverse_order=None, slice=None,
+        label=None, mine=False,
+        ):
+        
+        db = self.db
+        q = self.makeQuery(filter=filter, label=label, mine=mine)
+
+        if order_by:
+            q = q.order_by(order_by)
+        if slice:
+            if reverse_order:
+                n = self.countJobs(filter=filter, label=label, mine=mine)
+                slice = n-slice[1], n-slice[0]
+            q = sqlalchemy.select(
+                [q.alias('toslice')],
+                limit = slice[1]-slice[0],
+                offset = slice[0])
+            
+        ret = q.execute().fetchall()
+        
+        if reverse_order:
+            ret.reverse()
+        return [i.id for i in ret]
+
+
+    def getJobRecords(
+        self,
+        filter=None, order_by=None, reverse_order=None, slice=None,
+        label=None, mine=False,
+        ):
+        ids = self.getJobIDs(
+            filter=filter, order_by=order_by, reverse_order=reverse_order, slice=slice,
+            label=label, mine=mine,
+            )
+        return map(self.getJobRecord, ids)
+
+
+    def makeQuery(self, filter=None, label=None, mine=False):
+        if label:
+            if filter: raise RuntimeError
+            return self.makeLabeledQuery(label, mine=mine)
+        db = self.db
+
+        st = db._tablemap.TableToSATable(JobTable)
+        cols = [
+            st.c.id.label('id'),
+            st.c.short_description.label('short_description'),
+            st.c.state.label('state'),
+            st.c.time_start.label('time_start'),
+            st.c.creator,
+            st.c.globalpointer,
+            ]
+        username = self.director.sentry.username
+        if mine:
+            where = st.c.creator == username
+            q = sqlalchemy.select(cols, where)
+        else:
+            from vnfb.utils.query.accesscontrol import select_public_and_owned_records
+            q = select_public_and_owned_records(cols, st, username, db)
+            
+        if filter:
+            q = sqlalchemy.select([q.alias('jobs')], whereclause=filter)
+        return q
+
+
+    def makeLabeledQuery(self, label, mine=False):
+        mastertablename = 'job'
+        
+        db = self.db
+        sL = db._tablemap.TableToSATable(Label)
+        if label in common_labels:
+            whereclause="labelname='%s'" % (label,)
+        else:
+            whereclause="labelname='%s' and targettable='%s'" % (
+                label, mastertablename)
+        labelq = sqlalchemy.select(
+            [sL.c.entity.label('entity'),
+             sL.c.labelname.label('label'),
+             ],
+            whereclause=whereclause,
+            ).alias('labelq')
+        
+        st = db._tablemap.TableToSATable(JobTable)
+
+        cols = [
+            st.c.id.label('id'),
+            st.c.short_description.label('short_description'),
+            st.c.state.label('state'),
+            st.c.time_start.label('time_start'),
+            labelq.c.entity.label('gptr'),
+            ]
+        
+        # where = st.c.globalpointer==labelq.c.entity
+        where = 'globalpointer=labelq.entity'
+        if mine:
+            username = self.director.sentry.username
+            mine = "creator='%s'" % username
+            where = '%s and %s' % (where, mine)
+        q = sqlalchemy.select(cols, whereclause = where)
+
+        return q
+
+
+
+from vnfb.dom.Label import Label, common_labels
+from vnfb.dom.Job import Job as JobTable
+
+
+from dsaw.db.VersatileReference import global_pointer
+import sqlalchemy
+
+
+
+def accessor():
+    return Accessor()
+
+
+# version
+__id__ = "$Id$"
+
+# End of file 

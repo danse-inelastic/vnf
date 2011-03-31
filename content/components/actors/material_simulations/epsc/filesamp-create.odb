@@ -1,0 +1,125 @@
+# -*- Python -*-
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                               Alex Dementsov
+#                      California Institute of Technology
+#                        (C) 2011  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+from luban.content import select, load
+
+import luban.content as lc
+from luban.components.AuthorizedActor import AuthorizedActor as base
+
+from vnfb.epscutils.epscconst import *
+
+class Actor(base):
+    """ Create Material file"""
+
+    class Inventory(base.Inventory):
+        import pyre.inventory
+        # General
+        id          = pyre.inventory.str('id', default='')
+        taskid      = pyre.inventory.str('taskid', default='')
+        type        = pyre.inventory.str('type', default='')
+        structureid = pyre.inventory.str('structureid', default='') 
+
+        # Specific
+        a     = pyre.inventory.str('a', default='0')
+        b     = pyre.inventory.str('b', default='0')
+        c     = pyre.inventory.str('c', default='0')
+        ngrain  = pyre.inventory.str('ngrain', default='0')
+
+
+    def default(self, director):
+        return select(id='main-display-area').replaceContent(self.content(director))
+
+
+    def _viewIndicator(self, director):
+        qelink  = load( actor           = 'materialsimulation',
+                        filter_key      = 'type',
+                        filter_value    = 'qesimulations')
+
+        path = []
+        path.append(('Simulations ', load(actor='materialsimulation')))
+        path.append(('EPSC ', qelink))
+        path.append(('%s ' % self.id, load(actor    = 'material_simulations/epsc/sim-view',
+                                           id       = self.id)))
+        path.append('Create Sample Configuration')
+
+        return director.retrieveVisual('view-indicator', path=path)
+
+
+    def content(self, director):
+        doc         = lc.document(title   = "Create Sample Configuration")
+        splitter    = doc.splitter(orientation="vertical")
+        sA          = splitter.section()
+        sA.add(self._viewIndicator(director))
+        sB          = splitter.section()
+        visual  = 'material_simulations/epsc/filesamp-form'
+        sB.add(director.retrieveVisual(visual, self.inventory, director))
+
+        return doc
+
+
+    def generateConfig(self, director):
+        "Generates config file and redirects to general form"
+        # Special cases
+        texture = self.generateTexture(int(self.ngrain))
+
+        # Config text
+        config  = FILESAMP_T % (self.a, self.b, self.c, self.ngrain, texture)
+
+        return director.redirect(actor   = 'material_simulations/epsc/config-create',
+                                routine  = 'default',
+                                text     = config,
+                                id       = self.inventory.id,
+                                taskid   = self.inventory.taskid,
+                                type     = self.inventory.type)
+
+
+    def generateTexture(self, ngrain):
+        "Generates angle distribution for each grain"
+        import random
+        s   = ""
+        for i in range(ngrain):
+            s   += "\t%s\t%s\t%s\t1\n" % (360.0*random.random(),
+                                     180.0*random.random(),
+                                     360.0*random.random())
+        return s
+
+
+
+    def __init__(self):
+        super(Actor, self).__init__(name='material_simulations/epsc/filesamp-create')
+
+
+    def _configure(self):
+        super(Actor, self)._configure()
+        self.id             = self.inventory.id
+        self.taskid         = self.inventory.taskid
+        self.type           = self.inventory.type
+        self.structureid    = self.inventory.structureid
+
+        self.a       = self.inventory.a
+        self.b       = self.inventory.b
+        self.c       = self.inventory.c
+        self.ngrain  = self.inventory.ngrain
+
+
+    def _init(self):
+        super(Actor, self)._init()
+        return
+
+def actor():
+    return Actor()
+
+
+__date__ = "$Mar 22, 2011 9:46:59 AM$"
+
+

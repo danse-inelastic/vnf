@@ -15,21 +15,14 @@
 def main():
 
 
-    from vnf.applications.UpdateJobStatus import UpdateJobStatus
+    from vnfb.applications.UpdateJobStatus import UpdateJobStatus
 
 
     class App(UpdateJobStatus):
 
 
         def _getPrivateDepositoryLocations(self):
-            from os.path import join
-            root = '..'
-            content = join(root, 'content')
-            config = join(root, 'config')
-            
-            from vnf.depositories import depositories
-            
-            return depositories(content)+[config]
+            return ['../config', '../content/components', '/tmp/luban-services']
 
 
     app = App()

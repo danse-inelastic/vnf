@@ -1,0 +1,32 @@
+# -*- Python -*-
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                               Alex Dementsov
+#                      California Institute of Technology
+#                        (C) 2010  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+import luban.content as lc
+from luban.content import load
+
+def visual(actor):
+    "Returns formatted skip link"
+    linkContent = lc.link(label="Skip To Configuration Form")
+    linkContent.onclick = load(actor   = 'material_simulations/epsc/config-create',
+                               routine = 'default',
+                               text    = "",
+                               id      = actor.id,
+                               taskid  = actor.taskid,
+                               type    = actor.type)
+
+    return linkContent
+    
+
+__date__ = "$Aug 16, 2010 1:26:58 PM$"
+
+

@@ -1,0 +1,121 @@
+# -*- Python -*-
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                 Jiao Lin
+#                      California Institute of Technology
+#                      (C) 2006-2010  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+from luban.content import load, select, alert
+import luban.content as lc
+
+from luban.content.FormSelectorField import FormSelectorField
+
+
+class Factory(object):
+
+
+    def __init__(self, id, director):
+        domaccess = director.retrieveDOMAccessor('experiment')
+        self.domaccess = domaccess
+        self.director = director
+        self.id = id
+        self.experiment = domaccess.getExperimentRecord(id)
+        return
+    
+
+    def __call__(self):
+        director = self.director
+        experiment = self.experiment
+        domaccess = self.domaccess
+        
+        doc = lc.document(Class='container')
+        
+        path = self._path()
+        view_indicator = director.retrieveVisual('view-indicator', path=path)
+        doc.add(view_indicator)
+
+        instructiondoc = doc.document( title='Setup your experiment')
+        instructiondoc.paragraph(
+            text = ['Please set up your experiment using the following wizard.']
+            )
+
+        wizard_container = doc.document(id='experimentwizard-container')
+        
+        navigation_bar = lc.toolbar(id='experimentwizard-navigationbar');
+        wizard_container.add(navigation_bar)
+
+        #
+        editpanel = wizard_container.document(
+            id='experimentwizard-editpanel', Class='container')
+        refresheditpanel = select(element=editpanel).replaceContent
+        # select tab1 when started
+        # tabs.oncreate = select(element=tab1).tab('select')
+        editpanel.add(
+            director.retrieveVisual(
+              'neutronexperiment/edit/instrumentpanel',
+              experiment=experiment, domaccess=domaccess, director=director)
+            )
+
+        #
+        names = ['instrument', 'sample', 'sample_environment', 'finish']
+        nsteps = len(names)
+        for index, name in enumerate(names):
+            b = self._button(
+                name, refresheditpanel, selected=not index,
+                index=index, nsteps=nsteps)
+            navigation_bar.add(b)
+            continue
+
+        #
+        wizard_container.oncreate = load(
+            actor='experiment/editor',
+            routine='hideSamplePanelsIfNecessary',
+            id = self.id,
+            )
+        return doc
+
+
+    def _button(self, name, refresheditpanel, selected, index=None, nsteps=None):
+        doc1 = lc.document(Class='navigation-button', id='navigation-button-%s' % name)
+        if selected: doc1.addClass('selected')
+        
+        sp1 = doc1.splitter()
+        #sp1.section(Class='index').paragraph(text=[str(index+1)])
+        sec = sp1.section()
+        button = lc.image(path='neutronexperiment/editor/%s.png' % name)
+        sec.add(button)
+        sec.paragraph(text=['%s' % name.capitalize().replace('_', ' ')])
+
+        if index < nsteps-1:
+            sec = sp1.section()
+            sec.add('>>')
+
+        director = self.director
+        doc1.onclick = director.retrieveVisual('neutronexperiment/edit/switch-to-editpanel')\
+                       .get(self.id, name)
+                
+        return doc1
+
+
+    def _path(self):
+        id = self.id
+        return [
+            ('Experiments', load(actor='experiment')),
+            ('Edit experiment %s' % id, load(actor='experiment', routine='edit', id=id)),
+            ]
+
+
+def visual(id, director):
+    return Factory(id, director)()
+
+# version
+__id__ = "$Id$"
+
+# End of file 

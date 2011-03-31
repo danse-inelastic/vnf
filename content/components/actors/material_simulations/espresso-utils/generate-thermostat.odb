@@ -1,0 +1,68 @@
+#!/usr/bin/env python
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                               Alex Dementsov
+#                      California Institute of Technology
+#                        (C) 2009  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+from vnfb.qeutils.generators.thgenerator import THGenerator
+from vnfb.components.QEGenerator import QEGenerator as base
+
+class Actor(base):
+
+    class Inventory(base.Inventory):
+        import pyre.inventory
+        tempw       = pyre.inventory.str('tempw', default='')
+        fnosep      = pyre.inventory.str('fnosep', default='')
+        dt          = pyre.inventory.str('dt', default='')
+        nstep       = pyre.inventory.str('nstep', default='')
+
+
+    def content(self, director):
+        "Populates the content for creation of input configuration"
+        title   = "Dynamics with Thermostat Configuration Input"
+        label   = "Dynamics with Thermostat Form"
+        visual  = "material_simulations/espresso/input-thermostat"  # parameters form
+        return self._document(director, title, label, visual = visual)
+
+
+    def generateInput(self, director):
+        gen     = THGenerator(director, self.inventory)
+        gen.setInput()
+        return director.redirect(actor   = 'material_simulations/espresso/input-create',
+                                routine = 'default',
+                                text    = gen.toString(),
+                                id      = self.inventory.id,
+                                taskid  = self.inventory.taskid,
+                                type    = self.inventory.type)
+
+
+    def __init__(self):
+        super(Actor, self).__init__(name='material_simulations/espresso-utils/generate-thermostat')
+
+
+    def _configure(self):
+        super(Actor, self)._configure()
+        self.tempw          = self.inventory.tempw
+        self.fnosep         = self.inventory.fnosep
+        self.dt             = self.inventory.dt
+        self.nstep          = self.inventory.nstep
+
+
+    def _init(self):
+        super(Actor, self)._init()
+        return
+
+def actor():
+    return Actor()
+
+
+__date__ = "$May 15, 2010 8:33:01 AM$"
+
+

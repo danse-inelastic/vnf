@@ -1,0 +1,56 @@
+# -*- Python -*-
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                   Jiao Lin
+#                      California Institute of Technology
+#                      (C) 2006-2009  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+from vnfb.components.DOMAccessor import DOMAccessor as base
+from vnfb.dom.material_simulations.GulpSettings import GulpSettings as GulpSettingsTable
+from memd.gulp.GulpSettings import GulpSettings
+import os, numpy
+
+class Accessor(base):
+
+
+    def __init__(self):
+        super(Accessor, self).__init__('gulp-settings-query')
+        return
+
+
+    def _getOrm(self):
+        orm = self.director.clerk.orm
+        orm(GulpSettings)
+        return orm
+    orm = property(_getOrm)
+
+
+    def getComputation(self, id):
+        orm = self.orm
+        return orm.load(GulpSettings, id)
+    
+
+    def getComputationRecord(self, id):
+        db = self.db
+        return db.query(GulpSettingsTable).filter_by(id=id).one()
+
+
+    def getComputationLabel(self, computation_id):
+        computation = self.getComputation(computation_id)
+        record = self.orm(computation)
+        return record.short_description or record.id
+
+def accessor():
+    return Accessor()
+
+
+# version
+__id__ = "$Id$"
+
+# End of file 

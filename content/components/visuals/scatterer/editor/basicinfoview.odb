@@ -1,0 +1,85 @@
+#!/usr/bin/env python
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                 Jiao Lin
+#                      California Institute of Technology
+#                      (C) 2006-2009  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+from luban.content import load, select, alert
+import luban.content as lc
+
+
+class Factory(object):
+
+    basicinfo_view_id = 'scatterer-basicinfo-view'
+
+
+    def __init__(self, id, director):
+        self.id = id
+        self.director = director
+        self.domaccess = director.retrieveDOMAccessor('scatterer')
+        self.record = self.domaccess.getRecord(id)
+        return
+
+
+    def __call__(self):
+        doc = lc.document(
+            title='Basic information', id=self.basicinfo_view_id,
+            collapsable=True)
+
+        director = self.director
+        id = self.id
+        record = self.record
+        
+        if not record.short_description:
+            doc.add(
+                director.retrieveVisual('scatterer/editor/basicinfoeditor',
+                                        id=id, director=director)
+                )
+        else:
+            interior = doc.document(Class='container')
+            summary = self._createSummary()
+            interior.add(summary)
+
+            link = lc.link(label='edit'); interior.add(link)
+            link.onclick = select(element=interior).replaceBy(
+                load(actor='scatterer/editor', routine='createBasicinfoEditor',
+                     id = id)
+                )
+            
+        return doc
+
+
+    def _createSummary(self):
+        record = self.record
+        doc = lc.document(Class='container', title='')
+        grid = lc.grid(Class='properties'); doc.add(grid)
+        attrs = ['short_description']
+        for attr in attrs:
+            value = getattr(record, attr)
+            row = grid.row()
+            pcell = row.cell(Class='prop-name')
+            pcell.add(attr)
+            vcell = row.cell(Class='prop-value')
+            vcell.add(str(value))
+            continue
+        return  doc
+
+
+    
+def visual(id, director):
+    return Factory(id, director)()
+
+
+# version
+__id__ = "$Id$"
+
+# End of file 
+

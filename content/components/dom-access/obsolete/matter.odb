@@ -1,0 +1,179 @@
+# -*- Python -*-
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                   Jiao Lin
+#                      California Institute of Technology
+#                      (C) 2006-2009  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+tablename = 'matter'
+
+
+from vnfb.components.DOMAccessor import DOMAccessor as base
+
+class Accessor(base):
+
+
+    def __init__(self):
+        super(Accessor, self).__init__('matter-accessor')
+        return
+
+
+    def getMatter(self, type, id):
+        return self.getRecordByID(type, id)
+
+
+    def countMatters(self, filter=None, label=None):
+        db = self.db
+        
+        from vnf.dom import mattertables
+        tables = mattertables()
+
+        qf = lambda table: self.makeQuery(table, filter=filter, label=label)
+        qs = map(qf, tables)
+        
+        q = sqlalchemy.union_all(*qs)
+        return q.alias('tocount').count().execute().fetchone()[0]
+
+
+    def getMatters(self, filter=None, order_by=None, reverse_order=None, slice=None, label=None):
+        db = self.db
+        
+        # this implementation does not work when order_by=Type
+        self._debug.log('filter: %r, order_by: %r, slice: %r' % (filter, order_by, slice))
+        from vnf.dom import mattertables
+        tables = mattertables()
+
+        qf = lambda table: self.makeQuery(table, filter=filter, label=label)
+
+        qs = map(qf, tables)
+        q = sqlalchemy.union_all(*qs)
+
+        if order_by:
+            q = q.order_by(order_by)
+        if slice:
+            if reverse_order:
+                n = self.countMatters(filter=filter, label=label)
+                slice = n-slice[1], n-slice[0]
+            q = sqlalchemy.select(
+                [q.alias('tmptoslice')],
+                limit = slice[1]-slice[0],
+                offset = slice[0])
+
+        # only need gpointers to be returned
+        q = q.alias('tmp')
+        q1 = sqlalchemy.select(columns=['gptr'], from_obj=[q])
+
+        #db._saengine.echo = True
+        rows = q1.execute().fetchall()
+
+        #and then map to records
+        from dsaw.db.VersatileReference import vreference
+        def _(row): return db.dereference(vreference(row[0]))
+        
+        ret = map(_, rows)
+        if reverse_order:
+            ret.reverse()
+        return ret
+
+
+    def makeQuery(self, table, filter=None, label=None):
+        'craete a uery for a matter table with given filter'
+        if label:
+            if filter: raise RuntimeError
+            return self.makeLabeledQuery(label, table)
+        db = self.db
+        sGP = db._tablemap.TableToSATable(global_pointer)
+        st = db._tablemap.TableToSATable(table)
+        q = sqlalchemy.select(
+            [st.c.id.label('id'),
+             st.c.short_description.label('short_description'),
+             sGP.c.type.label('type'),
+             st.c.date.label('date'),
+             st.c.chemical_formula.label('chemical_formula'),
+             st.c.globalpointer.label('gptr'),
+             ],
+            st.c.globalpointer==sGP.c.id,
+            )
+        if filter:
+            q = sqlalchemy.select([q.alias('matter')], whereclause=filter)
+        return q
+
+
+    def makeLabeledQuery(self, label, table):
+        'craete a uery for a matter table'
+        db = self.db
+        sL = db._tablemap.TableToSATable(Label)
+        labelq = sqlalchemy.select(
+            [sL.c.entity.label('entity'),
+             sL.c.labelname.label('label'),
+             ],
+            whereclause="labelname='%s' and targettable='%s'" % (label, tablename))\
+            .alias('labelq')
+        
+        sGP = db._tablemap.TableToSATable(global_pointer)
+        st = db._tablemap.TableToSATable(table)
+        
+        q1 = sqlalchemy.select(
+            [labelq.c.entity.label('entity'),
+             sGP.c.type.label('type'),
+             ],
+            labelq.c.entity==sGP.c.id,
+            ).alias('q1')
+
+        q = sqlalchemy.select(
+            [st.c.id.label('id'),
+             st.c.short_description.label('short_description'),
+             q1.c.type.label('type'),
+             st.c.date.label('date'),
+             st.c.chemical_formula.label('chemical_formula'),
+             st.c.globalpointer.label('gptr'),
+             ],
+            st.c.globalpointer==q1.c.entity,
+            )
+
+        return q
+
+
+    def getallsimulations(self, matter, **opts):
+        '''get all simulations for this matter
+        '''
+        db = self.db
+        tables = simulationTables()
+
+        computations = []
+        for table in tables:
+            computations += matter.getReferences(db, table, 'matter', **opts)
+            continue
+
+        return computations
+
+
+from vnf.dom.Label import Label
+
+
+from dsaw.db.VersatileReference import global_pointer
+import sqlalchemy
+
+
+def simulationTables():
+    from vnf.dom import materialsimulationtables, materialmodelingtables
+    tables = materialsimulationtables()# + materialmodelingtables()
+    return tables
+
+
+
+def accessor():
+    return Accessor()
+
+
+# version
+__id__ = "$Id$"
+
+# End of file 

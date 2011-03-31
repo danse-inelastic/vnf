@@ -1,0 +1,52 @@
+Status: DONE
+
+Add parameter metalic/non-metalic to PW simulation that is general for all of
+the simulations.
+
+When user clicks on "Add" in Task view page is displayed with options:
+
+{Page 1}
+(X) Metal (no band gap)
+( ) Insulator (with a band gap)
+
+
+{Page 1.1}      # In the future: Add to Page 1 
+- Magnetization
+- Relativity (spin-orbit interaction)   # pseudo-potential dependent
+
+
+{Page 2}
+[Metal]
+Changes to PW form:
+
+Smearing Type: gaussian, methfessel-paxton, marzari-vanderbilt, fermi-dirac
+
+- Add parameter "degauss"
+Smearing Degree (Ry): [0.02]
+
+Changes to PW config field:
+
+Has: 
+    occupations = 'smearing'
+    smearing    = [user defined]
+    degauss     = [user defined]
+
+
+
+[Insulator]
+Changes to PW form:
+
+Remove:
+    Smearing Type,
+    Smearing Degree
+
+Changes to PW config field:
+
+Has:
+    occupations = 'fixed'
+
+Remove:
+    smearing
+    degauss
+
+

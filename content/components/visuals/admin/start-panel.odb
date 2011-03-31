@@ -1,0 +1,75 @@
+# -*- Python -*-
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                 Jiao Lin
+#                      California Institute of Technology
+#                      (C) 2006-2010  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+# the panel to show at start of admin UI
+# this should be inserted into the main-frame
+
+from luban.content import load
+import luban.content as lc
+
+from vnfb.components.visuals.AdminVisualFactory import AdminVisualFactory as base
+class Factory(base):
+
+    def create(self, director=None):
+        visual = lc.document(id='admin-panel')
+        reload = load(actor='admin', routine='reloadStartPanel')
+        link = lc.link(label='reload', onclick=reload)
+        visual.add(link)
+
+        ncols = 4
+        nrows = int(len(apps)*1./ncols)
+        grid = lc.grid(); visual.add(grid)
+
+        for i,app in enumerate(apps):
+            if i%ncols == 0:
+                row = grid.row()
+            cell = row.cell()
+            icon = app.icon
+            action = load(actor='admin', routine='loadApp', app=app.name)
+            button = lc.button(
+                label = app.label,
+                tip = app.tip,
+                icon=icon, onclick=action, 
+                Class='app-launch-button')
+            cell.add(button)
+            continue
+
+        return visual
+
+
+class App:
+    
+    icon = None
+    tip = None
+    label = None
+
+    def __init__(self, name, label, icon=None, tip=None):
+        self.name = name
+        self.label = label
+        self.icon = icon or 'admin/%s.png' % name
+        self.tip = tip
+
+apps = [
+    App(
+        'acl',
+        'Access control',
+        ),
+    ]
+
+
+visual = Factory()
+
+# version
+__id__ = "$Id$"
+
+# End of file 

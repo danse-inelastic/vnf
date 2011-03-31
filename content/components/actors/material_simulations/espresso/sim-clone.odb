@@ -1,0 +1,186 @@
+#!/usr/bin/env python
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                               Alex Dementsov
+#                      California Institute of Technology
+#                        (C) 2009  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+"""
+TODO: Questions:
+    - What happens to tasks? Will they be also cloned?
+"""
+
+
+from vnfb.qeutils.qeconst import SIMCHAINS
+from vnfb.qeutils.qegrid import QEGrid
+from vnfb.dom.QESimulation import QESimulation
+
+from luban.content import select
+from luban.content import load
+from luban.content.FormSelectorField import FormSelectorField
+from luban.content.FormTextField import FormTextField
+from luban.content.FormSubmitButton import FormSubmitButton
+from luban.content.Form import Form
+
+import luban.content as lc
+from luban.components.AuthorizedActor import AuthorizedActor as base
+
+class Actor(base):
+    "Create copy of existing simulation (clone simulation)"
+
+    class Inventory(base.Inventory):
+        import pyre.inventory
+        # Add tips for each parameter?
+
+        id          = pyre.inventory.str('id', default='')      # Simulation Id
+        sname       = pyre.inventory.str('sname', default='')
+        simtype     = pyre.inventory.str('simtype', default='')
+        description = pyre.inventory.str('description', default='')
+        label       = pyre.inventory.str('label', default='')
+        matter      = pyre.inventory.str('matter', default='')
+
+
+    def default(self, director):
+        return select(id='main-display-area').replaceContent(self.content(director))
+
+
+    def content(self, director):
+        sim     = director.clerk.getQESimulations(id=self.id)
+        
+        def viewIndicator(director):
+            qelink  = load( actor           = 'materialsimulation',
+                            filter_key      = 'type',
+                            filter_value    = 'qesimulations')
+
+            path = []
+            path.append(('Simulations ', load(actor='materialsimulation')))
+            path.append(('Quantum Espresso ', qelink))
+            path.append(('%s ' % self.id, load(actor    = 'material_simulations/espresso/sim-view',
+                                               id       = self.id))
+                        )
+            path.append('Clone')
+
+            return director.retrieveVisual('view-indicator', path=path)
+
+        doc         = lc.document(title   = 'Clone Simulation: %s' % sim.sname)
+        splitter    = doc.splitter(orientation="vertical")
+        sA          = splitter.section()
+        sA.add(viewIndicator(director))
+        sB          = splitter.section()
+        sB.add(self._setForm(director, sim))
+
+        return doc
+
+
+    def _setForm(self, director, sim):
+
+        form        = Form()
+        table       = QEGrid(lc.grid(Class="qe-form"))
+        form.add(table.grid())
+
+        sname       = FormTextField(name = "sname", value = sim.sname)
+        simtype     = FormSelectorField(name="simtype",
+                                        entries=enumerate(SIMCHAINS.keys()),
+                                        selection=self.simtypeValue(sim.type))
+        description = FormTextField(name="description", value=sim.short_description)   # Make as textarea
+        label       = FormTextField(name="label", value=sim.label)
+        matter      = FormSelectorField(name="matter",
+                                        entries=enumerate(["Not Available",]))  # ?
+
+        submit      = FormSubmitButton(label="Create New Simulation")
+        cancel      = lc.button(label="Cancel")
+        cancel.onclick = load(actor = 'material_simulations/espresso/sim-view', id=self.id)
+
+        st          = QEGrid(lc.grid()) # Submit Table
+        st.addRow((submit, cancel), ("qe-action-accept", "qe-action-cancel"))
+
+        table.addRow(("Name:", sname))
+        table.addRow(("Type:", simtype))
+        table.addRow(("Description:", description))
+        table.addRow(("Label:", label))
+        table.addRow(("Atomic Structure:", matter))
+        table.addRow(("", st.grid()))
+
+        table.setColumnStyle(0, "qe-form-label")
+        table.setColumnStyle(1, "qe-form-field")
+
+        form.onsubmit   = select(element=form).submit(actor     = 'material_simulations/espresso/sim-clone',
+                                                      routine   = 'createRecord',
+                                                      id        = sim.id)
+
+        return form
+
+
+    def simtypeValue(self, simtype):
+        keys    = SIMCHAINS.keys()
+        for i in range(len(keys)):
+            if keys[i] == simtype:
+                return i
+
+        return 0
+
+
+    def createRecord(self, director):
+        """Create simulation record"""
+        self._verify()
+        keys    = SIMCHAINS.keys()
+        simtype = keys[int(self.simtype)]
+        servers = ServerList(director)
+
+        params  = {"sname":         self.sname,
+                   "type":          simtype,
+                   "creator":       director.sentry.username,
+                   "short_description":   self.description,
+                   "label":         self.label,
+#                   "serverid":      servers.id(self.server)
+                   #"matter":        self.matter    # Doesn't work at this moment
+                   }
+        sim     = QESimulation(director)
+#        sim.setDirector(director)
+        sim.createRecord(params)
+
+        return load(actor='material_simulations/espresso/sim-view', id = sim.id)  # Redirection to the page
+
+
+    # stub
+    def _verify(self):
+        """Verify data first """
+        pass
+
+
+    def _configure(self):
+        super(Actor, self)._configure()
+        self.id          = self.inventory.id
+        self.sname       = self.inventory.sname
+        self.simtype     = self.inventory.simtype
+        self.description = self.inventory.description
+        self.label       = self.inventory.label
+#        self.server      = self.inventory.server
+        self.matter      = self.inventory.matter
+
+        return
+
+
+    def __init__(self):
+        super(Actor, self).__init__(name='material_simulations/espresso/sim-clone')
+
+        return
+
+
+    def _init(self):
+        super(Actor, self)._init()
+        return
+
+def actor():
+    return Actor()
+
+
+__date__ = "$Nov 2, 2009 3:19:32 PM$"
+
+

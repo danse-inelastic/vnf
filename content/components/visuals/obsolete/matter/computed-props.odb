@@ -1,0 +1,63 @@
+# -*- Python -*-
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                 Jiao Lin
+#                      California Institute of Technology
+#                      (C) 2006-2009  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+import luban.content as lc
+
+class Factory(object):
+
+    def __init__(self, director, id, type):
+        self.director = director
+        self.id = id
+        self.type = type
+        self.domaccess = director.retrieveDOMAccessor('matter')
+        self.matter = self.domaccess.getMatter(type, id)
+        self.actor = 'matter'
+
+
+    def create(self):
+        import pdb; pdb.set_trace()
+        body = self.createBody()
+        doc = self.director.retrieveVisual(
+            'matter/collapsable',
+            id='matter-computed-props',
+            title='Computed properties',
+            body=body)
+        return doc
+    
+    
+    def createBody(self):
+        director = self.director
+        
+        doc = lc.document(id='computed-props')
+        types = [
+            'phonons',
+            ]
+        for t in types:
+            d = director.retrieveVisual(
+                'matter/computed-%s' % t,
+                director = director,
+                id=self.id, type=self.type)
+            doc.add(d)
+            continue
+        
+        return doc
+
+
+def visual(director, id, type):
+    return Factory(director, id, type).create()
+    
+# version
+__id__ = "$Id$"
+
+# End of file 

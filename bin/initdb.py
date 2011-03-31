@@ -12,141 +12,127 @@
 #
 
 
-## Initialize vnf db to have necessary tables. This will remove all
-## existing tables, so be careful!
+
+"""
+initialized database with data objects loaded
+"""
 
 
-from pyre.applications.Script import Script
+from luban.applications.UIApp import UIApp as base
 
 
-class DbApp(Script):
+class DbApp(base):
 
 
-    class Inventory(Script.Inventory):
+    class Inventory(base.Inventory):
 
         import pyre.inventory
 
-        import vnf.components
-        clerk = pyre.inventory.facility(name="clerk", factory=vnf.components.clerk)
-        clerk.meta['tip'] = "the component that retrieves data from the various database tables"
+        table = pyre.inventory.str(name='table')
+        tables = pyre.inventory.list(name='tables')
 
-        import pyre.idd
-        idd = pyre.inventory.facility('idd-session', factory=pyre.idd.session, args=['idd-session'])
-        idd.meta['tip'] = "access to the token server"
+        create_tables_only = pyre.inventory.bool(name='create-tables-only', default=False)
+        create_tables_only.meta['tip'] = "when true, only create the tables. won't try to create initial records"
 
-        wwwuser = pyre.inventory.str(name='wwwuser', default='')
-
-        tables = pyre.inventory.list(name='tables', default=[])
-
+        all = pyre.inventory.bool(name='all', default=False)
+        all.meta['tip'] = 'if true, init tables using all availabe table initalizers'
+        
+        
+    def help(self):
+        print
+        print 'initialize db table(s)'
+        print 
+        print " * typical usage:"
+        print "   $ initdb.py --table=<tablename>"
+        print "   $ initdb.py --tables=<table1,table2>"
+        print "   $ initdb.py --all"
+        print
+        print " * table name is the name of the table. For example"
+        print "   - news"
+        print "   - users"
+        print
+        print
+        
 
     def main(self, *args, **kwds):
-
-        self.db.autocommit(True)
-
-        tables = self.tables
+        clerk = self.clerk
+        clerk.importAllDataObjects()
+        print "registered tables:"
+        for table in clerk.db.iterAllTables():
+            print ' -', table.getTableName()
+        print
+        print "create all tables"
+        clerk.db.createAllTables()
+        if self.inventory.create_tables_only:
+            return
+        
+        tables = self.inventory.tables
         if not tables:
-            from vnf.dom import alltables
-            tables = alltables()
+            table = self.inventory.table
+            if table:
+                tables = [table]
+        if self.inventory.all:
+            tables = self.getInitializerList()
+
+        print "init tables"
+        self.inittables(tables)
+        return
+
+
+    def inittables(self, tables):
+        map(self.inittable, tables)
+
+
+    def inittable(self, table):
+        print ' * %s' % table
+        clerk = self.inventory.clerk
+        orm = clerk.orm
+
+        component = self.retrieveInitalizer(table)
+        if hasattr(component, 'getObjects'):
+            objs = component.getObjects()
+            for obj in objs:
+                orm.save(obj)
+
+        elif hasattr(component, 'initdb'):
+            component.initdb()
+
+        elif component is None:
+            print 'initdb component for table %s does not exist' % table
+            pass
+
         else:
-            tables = [self.clerk._getTable(t) for t in tables]
-
-        for table in tables:
-            #self.dropTable( table )
-            self.createTable( table )
-            if self.wwwuser: self.enableWWWUser( table )
-            continue
-
-        for table in tables:
-            self.initTable( table )
+            raise RuntimeError, 'initdb component for table %s does not implement the required interface' % table
 
         return
 
 
-    def createTable(self, table):
-        # create the component table
-        print " -- creating table %r" % table.name
-        try:
-            self.db.createTable(table)
-        except self.db.ProgrammingError, msg:
-            print "    failed; table exists?"
-            print msg
+    def getInitializerList(self):
+        component = self.retrieveComponent(
+            'getinitializers', factory='initdb', vault=['initdb'])
+        return component.get()
+
+
+    def retrieveInitalizer(self, name):
+        component = self.retrieveComponent(name, factory='initdb', vault=['initdb'])
+        if component is None:
+            curator_dump = self._dumpCurator()
+            self._debug.log("could not locate db initializer %r. curator dump: %s" % (
+                name, curator_dump))
         else:
-            print "    success"
-
-        return
-
-
-    def dropTable(self, table):
-        print " -- dropping table %r" % table.name
-        try:
-            self.db.dropTable(table)
-        except self.db.ProgrammingError:
-            print "    failed; table doesn't exist?"
-        else:
-            print "    success"
-
-        return
-
-
-    def initTable(self, table):
-        module = table.__module__
-        m = __import__( module, {}, {}, [''] )
-        inittable = m.__dict__.get( 'inittable' )
-        if inittable is None: return
-        print " -- Inialize table %r" % table.name
-        try:
-            inittable( self.db )
-        except self.db.IntegrityError:
-            print "    failed; records already exist?"
-        else:
-            print "    success"
-            
-        return
-
-
-    def enableWWWUser(self, table):
-        print " -- Enable www user %r for table %r" % (self.wwwuser, table.name)
-        sql = 'grant all on table "%s" to "%s"' % (table.name, self.wwwuser)
-        c = self.db.cursor()
-        c.execute(sql)
-        return
+            self.configureComponent(component)
+            component.director = self
+        return component
 
 
     def __init__(self):
-        Script.__init__(self, 'initdb')
-        self.db = None
-        return
-
-
-    def _configure(self):
-        Script._configure(self)
-        self.clerk = self.inventory.clerk
-        self.clerk.director = self
-        self.wwwuser = self.inventory.wwwuser
-        self.tables = self.inventory.tables
-        return
-
-
-    def _init(self):
-        Script._init(self)
-
-        self.db = self.clerk.db
-        self.idd = self.inventory.idd
-
-        # initialize table registry
-        import vnf.dom
-        vnf.dom.register_alltables()
-
-        # id generator
-        def guid(): return '%s' % self.idd.token().locator
-        import vnf.dom
-        vnf.dom.set_idgenerator( guid )
+        base.__init__(self, 'initdb')
         return
 
 
     def _getPrivateDepositoryLocations(self):
-        return ['../config']
-    
+        return ['../config', '../content/components', '/tmp/luban-services']
+
 
 
 def main():

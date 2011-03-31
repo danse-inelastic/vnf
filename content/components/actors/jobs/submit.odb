@@ -1,0 +1,149 @@
+#!/usr/bin/env python
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                               Alex Dementsov
+#                      California Institute of Technology
+#                        (C) 2009  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+import os
+from luban.content.ProgressBar import ProgressBar
+from luban.content import load, select
+import luban.content as lc
+from vnfb.utils import launch_detached, bindir
+from vnfb.qeutils.qeutils import latestJob
+from vnfb.qeutils.qeconst import JOB_STATE, TASK_ACTION
+
+from luban.components.AuthorizedActor import AuthorizedActor as base
+class Actor(base):
+
+    class Inventory(base.Inventory):
+        import pyre.inventory
+        id          = pyre.inventory.str('id', default='')      # Simulation Id
+        taskid      = pyre.inventory.str('taskid', default='')
+        subtype     = pyre.inventory.str('subtype', default='')
+        optlevel    = pyre.inventory.str('optlevel', default="0")
+
+        package     = pyre.inventory.str('package', default="espresso")
+
+
+    def default(self, director):
+        "Not implemented"
+        pass
+    
+
+    def submit(self, director):
+        "Submit job to the computing nodes. Trace job status."
+        if not self.package in ["espresso", "epsc"]:    # Supported packages
+            return lc.document()
+
+        if self.package == "espresso":
+            self.submitJob(director, "jobdriver.py")
+            onfinished  = "material_simulations/espresso/sim-view"
+            return self.progressBar(director, onfinished)
+
+        if self.package == "epsc":
+            self.submitJob(director, "epscjobdriver.py")
+            onfinished  = "material_simulations/epsc/sim-view"
+            return self.progressBar(director, onfinished)
+      
+
+
+    def submitJob(self, director, driverScript):
+        "Spawns process that submits job to the computing nodes"
+        cmd = os.path.join(bindir, driverScript)
+
+        options =   {
+                    'id':       self.inventory.id,
+                    'taskid':   self.inventory.taskid,
+                    'subtype':  self.inventory.subtype,
+                    "optlevel": self.inventory.optlevel
+                    }
+
+        options = self._refine(options)
+        optstr  = ' '.join([ '--%s="%s"' % (k,v) for k,v in options.iteritems() ])
+        cmd     += ' ' + optstr
+
+        launch_detached(cmd)
+        return
+
+
+    def _refine(self, opts):
+        "pyre complains about parameters like: '--subtype=', so we get rid of them"
+        options     = {}
+        for o in opts.keys():
+            if opts[o].strip() != '':   # option is not empty
+                options[o]  = opts[o]
+        return options
+
+
+    def progressBar(self, director, onfinished):
+        pbar    = ProgressBar(
+                            id = 'pbar-%s' % self.taskid,
+                            status = 'Submitting job...',
+                            percentage = 0,
+                            skip = 2000,    # time interval?
+                            )
+
+        pbar.onchecking = load(
+                                actor   = 'jobs/submit',
+                                routine = 'checkStatus',
+                                taskid  = self.taskid,
+                                )
+
+        pbar.onfinished  = [
+                            load(actor  = onfinished,
+                                 id     = self.id),
+                            ]
+        
+        return select(id="%s-%s" % (TASK_ACTION, self.taskid) ).replaceContent(pbar)
+
+
+    # XXX: Might be potential error
+    def checkStatus(self, director):
+        selectpbar      = select(id='pbar-%s' % self.taskid)
+        job     = None  
+        jobs    = director.clerk.getQEJobs(where="taskid='%s'" % self.taskid)
+        if jobs:
+            job  = latestJob(jobs)
+
+        state   = self._getStatus(job)
+        return  selectpbar.setAttr(percentage  = state[0],
+                                   status      = state[1])
+
+    def _getStatus(self, job):
+        status  = (100, "Unknown status")
+        if not job or not job.status in JOB_STATE.keys():
+            return status
+
+        return JOB_STATE[job.status]
+
+
+    def __init__(self):
+        super(Actor, self).__init__(name='jobs/submit')
+
+
+    def _configure(self):
+        super(Actor, self)._configure()
+        self.id         = self.inventory.id
+        self.taskid     = self.inventory.taskid
+        self.subtype    = self.inventory.subtype
+        self.optlevel   = self.inventory.optlevel
+
+        self.package    = self.inventory.package
+
+
+    def _init(self):
+        super(Actor, self)._init()
+        return
+
+def actor():
+    return Actor()
+
+
+__date__ = "$Nov 4, 2009 9:27:51 AM$"

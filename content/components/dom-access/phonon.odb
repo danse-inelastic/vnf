@@ -1,0 +1,48 @@
+# -*- Python -*-
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                   Jiao Lin
+#                      California Institute of Technology
+#                      (C) 2006-2009  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+
+from vnfb.components.DOMAccessor import DOMAccessor as base
+
+class Accessor(base):
+
+
+    def __init__(self):
+        super(Accessor, self).__init__('phonon-accessor')
+        return
+
+
+    def getPhonons(self, atomicstructure):
+        db = self.db
+        return atomicstructure.phonons.dereference(db, status='n')
+
+
+    def getDOSes(self, atomicstructure):
+        db = self.db
+        return atomicstructure.phonondoses.dereference(db)
+
+
+
+from vnfb.dom.material_simulations.Phonons import Phonons, PhononsTable
+from vnfb.dom.material_simulations.PhononDOS import PhononDOS, PhononDOSTable
+
+
+def accessor():
+    return Accessor()
+
+
+# version
+__id__ = "$Id$"
+
+# End of file 

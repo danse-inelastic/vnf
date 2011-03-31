@@ -1,0 +1,46 @@
+#!/usr/bin/env python
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                               Alex Dementsov
+#                      California Institute of Technology
+#                        (C) 2009  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+# Obsolete
+
+from vinil.utils.const import STATES
+
+from luban.content.Document import Document
+
+from vinil.components.JobsActor import JobsActor as base
+class Actor(base):
+
+    def content(self, director):
+        document = Document()
+        data    = self.getTableData(director, where="status='%s'" % STATES['Q'])
+        self.addTable(document, "Queued Jobs", data)
+
+        return document
+
+
+    def pathlist(self, director):
+        self.pathlist = [("Home","greet","link"),
+                         ("Jobs", "jobs/index", "link"),
+                         ("Queued", None, None) ]
+
+        return self.pathlist
+
+
+def actor():
+    return Actor('jobs/queued')
+
+
+
+__date__ = "$Nov 4, 2009 9:27:51 AM$"
+
+

@@ -1,0 +1,155 @@
+
+Job status has format:
+
+<StatusName>[:<ProgressName>[:<Percentage>]]
+
+<StatusName>
+    submitting  (None)
+    submit-failed   (None)
+    finished    ('C')
+    running     ('R')
+    queued      ('Q')
+    exiting     ('E')
+    onhold      ('H')
+    waiting     ('W')
+    suspend     ('S')
+
+<StatusName> = submitting
+<ProgressName>:<Percentage>
+    create-job:10           # Creating job record
+    prepare-configs:20      # Preparing configuration files
+    prepare-controls:40     # Preparing control files
+    copy:60                 # Copying files to cluster
+    enqueue:80              # Submitting to queue
+    done: 100               # Done
+
+Example:
+
+Retrieving results:
+
+
+Input Generators
+----------------
+
+
+Results Path
+------------
+There are two types of result paths: local and remote. Local result path is available
+when results are retrieved to the local machine only.
+
+
+Car-Parrinello molecular dynamics
+---------------------------------
+
+"NVT" - Canonical ensemble with Nose Thermostat. At this point Quantum Espresso
+within VNF does not directly support variable-cell molecular dynamics (or stress
+calculation) - "NPT". But you are still can do variable-cell molecular dynamics
+by editing files appropriately.
+
+In order to caclculate CP molecular dynamics simulation you need to bring your system. 
+to a particular state. The following steps are implemented:
+
+- Electronic Minimization (with Fixed Ions and Cells) # Essential
+
+    restart_mode = 'from_scratch'   # SYSTEM
+    electron_dynamics = 'sd'        # ELECTRONS
+    ion_dynamics = 'none'           # IONS
+
+Label: Electronic Minimization
+
+Performs steepest descent electron dynamics
+
+- Ion Minimization (with Damped Electron Dynamics and Fixed Cells)
+
+    restart_mode = 'restart'        # SYSTEM
+    electron_dynamics = 'damp'      # ELECTRONS
+    electron_damping = 0.2
+    ion_dynamics = 'damp'           # IONS
+    ion_damping = 0.02
+    ion_velocities = 'zero'
+
+Label: Ion Minimization
+
+Performs both damped phonon dynamics and electron damping. It is supposed
+that atoms are located near equalibrium, that is interatomic forces are small 
+(< 1 atomic units). If your system is far from equalibrium (forces > 1 atomic units)
+you need to use steepest descent phonon dynamics.
+    ion_dynamics = 'sd'
+
+- Ions Randomization
+    ion_dynamics = 'none'           # IONS, for each species
+    tranp(1) = .TRUE.               
+    amprp(1) = 0.02
+
+Performs randomization of ions in case if your system is very close to equalibrium.
+
+Notes:
+    To be strict after ions randomization you should also do the "Electron Minimization" again
+
+Label: Ions Randomization
+
+- Electrons and Ions Quenching
+    electron_dynamics = 'verlet'
+    electron_velocities = 'zero'
+    ion_dynamics = 'verlet'
+    ion_velocities = 'zero'
+
+Label: Electrons and Ions Quenching
+
+- Electron and Ion Dynamics
+    electron_dynamics = 'verlet'
+    electron_temperature = 'not_controlled'
+    ion_dynamics = 'verlet'
+
+Notes:
+    - First CP run of "Electron and Ion Dynamics" should be performed with
+
+Label: Electron and Ion Dynamics
+
+- Electron and Ion Dynamics with Nose Thermostat    # Essential
+    electron_dynamics = 'verlet'
+    electron_temperature = 'zero'
+    ion_dynamics = 'verlet'
+    ion_temperature = 'nose'
+    tempw = 300
+    fnosep = 60
+
+Label: Electrons and Ions with Thermostat
+
+Analysis Page
+-------------
+
+
+Configuration Input
+-------------------
+
+- Can skip generation forms and copy and paste the configuration input
+
+- Users cannot control parameters, these parameters are handled by VNF.
+  Parameters are not filtered when user edits configuration input.
+
+
+
+Example of Q2R filtering
+------------------------
+
+Say, user entered config file to the config form
+
+&INPUT
+    fildyn = hello
+    zasr = 'crystal'
+    flfrc = world
+/
+
+VNF knows that "fildyn" and "flfrc" are special parameters that need to be set
+according to the system convention. They will be set to proper parameters even
+if they are not present in the first place. When you click on the "Submit" button
+you get the following config text:
+
+&INPUT
+    fildyn = '/home/danse-vnf-admin/vnf/data/qejobs/EYGFTV94/matdyn'
+    zasr = 'crystal'
+    flfrc = 'default.fc'
+/
+
+

@@ -1,0 +1,131 @@
+#!/usr/bin/env python
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                               Alex Dementsov
+#                      California Institute of Technology
+#                        (C) 2009  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+# OUTDATED !!! Not used
+
+import os
+from vinil.utils.const import STEPS
+from vinil.utils.utils import stamp2date
+
+from luban.content import select
+from luban.content.Paragraph import Paragraph
+from luban.content.Document import Document
+from luban.content.HtmlDocument import HtmlDocument
+from luban.content import load
+from luban.content.Link import Link
+from luban.content.Plot2D import Plot2D
+
+# Variable that should be set in envs.sh
+EXPORT_ROOT = os.environ.get('EXPORT_ROOT')
+
+from vinil.components.Actor import Actor as base
+class Actor(base):
+
+    class Inventory(base.Inventory):
+        import pyre.inventory
+        id = pyre.inventory.str('id', default='')      # Job Id
+
+
+    def content(self, director):
+        job = director.clerk.getJobs(id=self.id)
+        (simid, simname) = self.simdata(director, job)
+
+        d = Document(title='Job#: %s' % job.id)
+        d.add(Link(label="Delete", Class="action-link", onclick = load(actor='jobs/delete', routine='link', id=self.id)))
+
+        # Downloads
+        d.add(Paragraph(text="Download:"))   # STUB
+        d.add(Link(label="Ni.tar.gz", Class="action-link", onclick = load(actor='jobs/view', routine='link', id=self.id)))
+
+        # Simulation
+        d.add(Paragraph(text="Simulation:"))
+        d.add(Link(label=simname, Class="action-link", onclick = load(actor='espresso/sim-view', routine='link', id=simid)))
+
+        # Server
+        d.add(Paragraph(text="Server:"))   # STUB
+        d.add(Link(label="foxtrot.danse.us", Class="action-link", onclick = load(actor='jobs/view', routine='link', id=self.id)))
+
+        # Files
+        d.add(Paragraph(text="Input Files: ni.scf.in, ni.dos.in"))      # STUB
+        d.add(Paragraph(text="Output Files: ni.scf.out, ni.dos.out"))   # STUB
+        d.add(Paragraph(text="Plots:"))
+
+        # Display Plot
+        d.add(self.getPWPlot(director))
+        #self.getPWPlot(director)
+
+        return d
+
+    def getPWPlot(self, director):
+        from vinil.utils import utils
+        infile = EXPORT_ROOT + "/output/ni.scf.dos.out"
+
+        # Populate 'x', 'y' and 'z' (cumulative) lists from file
+        (e,  up,  down,  cum) = utils.parseFile(infile)
+        #print (e,  x,  y,  z)
+
+        plot = Plot2D(width=500, height=350)
+
+        plot.curve(x=e, y=up, label='Spin Up')
+        plot.curve(x=e, y=down, label='Spin Down')
+
+        return plot
+
+    # Same as in jobs.odb. Refactor?
+    def simdata(self, director, job):
+        """Returns simulation data based on job"""
+        simid   = None
+        simname = ""
+
+        if job:
+            sim     = director.clerk.getSimulations(id=job.simulationId)
+            if sim:
+                simid   = sim.id
+                simname = sim.sname
+
+        return (simid, simname)
+
+
+    def pathlist(self, director):
+        job     = director.clerk.getJobs(id=self.id)
+        self.pathlist = [("Home","greet","link"),
+                         ("Simulations", "simulations", "link"),
+                         ("Quantum Espresso", "espresso/index", "link"),
+                         ("Jobs", "jobs/index", "link"),
+                         (job.id, None, None)]
+
+        return self.pathlist
+
+
+    def __init__(self, *args, **kwds):
+        super(Actor, self).__init__(*args, **kwds)
+
+        return
+
+
+    def _configure(self):
+        super(Actor, self)._configure()
+        self.id = self.inventory.id
+        return
+
+
+    def _init(self):
+        super(Actor, self)._init()
+        return
+
+def actor():
+    return Actor('jobs/view')
+
+__date__ = "$Nov 4, 2009 1:00:31 PM$"
+
+

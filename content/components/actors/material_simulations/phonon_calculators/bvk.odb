@@ -1,0 +1,379 @@
+#!/usr/bin/env python
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                 Jiao Lin
+#                      California Institute of Technology
+#                      (C) 2006-2009  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+import luban.content as lc
+from luban.content import load, select, alert
+
+from vnfb.components.AuthorizedActor import AuthorizedActor as base, portal
+
+
+class Actor(base):
+
+
+    class Inventory(base.Inventory):
+
+        import pyre.inventory
+
+        atomicstructure_id = pyre.inventory.str('atomicstructure_id')
+        model_id = pyre.inventory.str('model_id')
+        target = pyre.inventory.str('target')
+
+        computation_id = pyre.inventory.str('computation_id')
+
+        formids = pyre.inventory.list('formids')
+        viewid = pyre.inventory.str('viewid')
+
+        display_model_properties = pyre.inventory.bool('display_model_properties')
+
+
+    def start(self, director):
+        sid = self.inventory.atomicstructure_id
+        if not sid:
+            return self.askForAtomicStructure(director)
+        mid = self.inventory.model_id
+        if not mid:
+            return self.askForModel(director)
+        return self.presentComputingTarget(director)
+
+
+    def askForAtomicStructure(self, director):
+        computation_id = self.inventory.computation_id
+        if computation_id:
+            raise NotImplementedError
+        target = self.inventory.target
+        view = director.retrieveVisual(
+            'material_simulations/phonon_calculators/bvk/matter-selector',
+            id = computation_id, target = target, director=director,
+            )
+        return select(id='main-display-area').replaceContent(view)
+
+    
+    def onCancelMatterSelector(self, director):
+        return load(actor='materialsimulation')
+    
+    
+    def askForModel(self, director):
+        doc = lc.document()
+        
+        #
+        path = self._pathToMe(director)
+        view_indicator = director.retrieveVisual('view-indicator', path=path)
+        doc.add(view_indicator)
+
+        #
+        domaccess = self._domaccess(director)
+        models = domaccess.getModels(self.inventory.atomicstructure_id)
+        if models:
+            modelsdoc = doc.document(title='select from existing models', collapsable=True)
+            modelsdoc.add(self._createModelSelector(director, models))
+
+        new = doc.document(title='create a new model', collapsable=True)
+        link = lc.link(label='create', onclick=load(
+            actor=self.name, routine='newModel',
+            atomicstructure_id=self.inventory.atomicstructure_id))
+        new.add(link)
+        return select(id='main-display-area').replaceContent(doc)
+
+
+    def newModel(self, director):
+        atomicstructure_id = self.inventory.atomicstructure_id
+        domaccess = self._domaccess(director)
+
+        model = domaccess.newModel(atomicstructure_id)
+        self.inventory.model_id = domaccess.orm(model).id
+        
+        return self.editModel(director)
+
+
+    def selectModel(self, director):
+        model_id = self.inventory.model_id
+        domaccess = self._domaccess(director)
+        model = domaccess.getModel(id=model_id)
+        
+        if not domaccess.isModelConstructed(model=model):
+            return self.editModel(director)
+        
+        return self.presentComputingTarget(director)
+
+
+    def createModelEditor(self, director):
+        model_id = self.inventory.model_id
+        domaccess = self._domaccess(director)
+        model = domaccess.getModel(id=model_id)
+        if not domaccess.isModelEditable(modelrecord = domaccess.orm(model)):
+            raise RuntimeError, "Model %s is not editable" % model_id
+
+        if not self.inventory.atomicstructure_id:
+            self.inventory.atomicstructure_id = domaccess.orm(model.matter).id
+
+        doc = lc.document()
+        path = self._pathToMe(director)
+
+        # 
+        modellabel = domaccess.getModelLabel(model=model)
+        path.append(('edit %s'%modellabel,
+                     load(actor=self.name, routine='editModel', model_id=model_id))
+                    )
+
+        #
+        view_indicator = director.retrieveVisual('view-indicator', path=path)
+        doc.add(view_indicator)
+        
+        drawer = director.painter.paintObj.drawers.getDrawer(model.__class__)
+        editview = drawer(model)
+        doc.add(editview)
+
+        # adjust editview if display_model_properties is true
+        display_model_properties = self.inventory.display_model_properties
+        if display_model_properties:
+            propdoc = lc.document(title='Properties', collapsable=True)
+            propdoc.add(director.redirect(
+                actor='orm/bvkmodels', 
+                routine='displayProperties',
+                id=model_id,
+                include_credential=False,
+                ))
+            editview.contents[0] = propdoc
+        
+        done = load(
+            actor=self.name, routine='doneEditingModel',
+            model_id = model_id,
+            viewid = editview.id,
+            formids = select(element=editview).findDescendentIDs(type='form'),
+            )
+        donebutton = lc.button(label='I am done', onclick=done)
+        doc.add(donebutton)
+
+        return doc
+
+
+    # this routine can be used for "post_authorization_action" 
+    # parameter of login page. for example, this url works:
+    #
+    # https://vnf.caltech.edu/cgi-bin/....../main.cgi?actor=login&actor.post_authorization_action=load(actor='material_simulations/phonon_calculators/bvk',routine='P_editModel',model_id='3DIKUS7R')
+    P_editModel = portal(createModelEditor, 'VNF: model editor')
+
+    
+    def editModel(self, director):
+        doc = self.createModelEditor(director)
+        action = select(id='main-display-area').replaceContent(doc)
+        return action
+
+
+    def deleteModel(self, director):
+        model_id = self.inventory.model_id
+        domaccess = self._domaccess(director)
+        model = domaccess.getModel(id=model_id)
+        
+        from vnfb.utils.db import destroy
+        destroy(domaccess.orm(model), domaccess, director.sentry.username)
+        return select(id='bvk-model-row-%s' % model_id).destroy()
+
+
+    def cloneModel(self, director):
+        model_id = self.inventory.model_id
+        domaccess = self._domaccess(director)
+        model = domaccess.getModel(id=model_id)
+        clone = model.copy()
+        domaccess.orm.save(clone, save_not_owned_referred_object=False)
+        record = domaccess.orm(clone)
+        return load(actor=self.name, routine='editModel', model_id=record.id)
+
+
+    def doneEditingModel(self, director):
+        actions = []; messages = []
+
+        model_id = self.inventory.model_id
+        domaccess = self._domaccess(director)
+        model = domaccess.getModel(id=model_id)
+        #
+        if len(model.bonds) ==0:
+            messages.append('sorry. you have not added a bond to your model.')
+            viewid = self.inventory.viewid
+            actions.append(
+                select(id=viewid).find(name='bonds').addClass('highlighted'),
+                )
+        
+        formids = self.inventory.formids
+        actions += [select(id=id).addClass('highlighted') for id in formids]
+        n = len(formids)
+        if n:
+            messages.append('sorry. there are %s forms to fill out. please look for highlighted sections.' % n)
+
+        if len(actions):
+            actions.append(alert('\n\n'.join(messages)))
+            return actions
+
+        try:
+            self._checkModelIntegrity(model, director)
+        except Exception, msg:
+            return alert('BvK model %s is damaged. Please contact vnf administrators at vnf-administrators@googlegroups.com\n%s' % (model_id, msg))
+
+        return load(
+            actor=self.name, routine='presentComputingTarget',
+            model_id = model_id,
+            )
+
+
+    def _checkModelIntegrity(self, model, director):
+        domaccess = self._domaccess(director)
+        orm = domaccess.orm
+        
+        bonds = model.bonds
+        for bond in bonds:
+            if orm(bond.matter).id != orm(model.matter).id:
+                msg = "bond %s: matter %s does not match matter %s of model %s" % (
+                    orm(bond).id, orm(bond.matter).id, 
+                    orm(model.matter).id, orm(model).id)
+                raise RuntimeError, msg
+            if bond.uses_primitive_unitcell != model.uses_primitive_unitcell:
+                msg = "bond %s: uses_primitive_unitcell %s does not match model %s" % (
+                    orm(bond).id, bond.uses_primitive_unitcell, orm(model).id)
+                raise RuntimeError, msg
+            continue
+        return True
+    
+
+    def presentComputingTarget(self, director):
+        # get model
+        model_id = self.inventory.model_id
+        domaccess = self._domaccess(director)
+        model = domaccess.getModel(id=model_id)
+
+        # assign matter if necessary
+        if not self.inventory.atomicstructure_id:
+            self.inventory.atomicstructure_id = domaccess.orm(model.matter).id
+            
+        # create doc to present
+        doc = lc.document()
+        
+        #
+        path = self._pathToMe(director)
+        view_indicator = director.retrieveVisual('view-indicator', path=path)
+        doc.add(view_indicator)
+        
+        domaccess = director.retrieveDOMAccessor('atomicstructure')
+        matter = domaccess.getAtomicStructureRecord(id=self.inventory.atomicstructure_id)
+        matterlabel = matter.short_description
+        
+        doc.paragraph(
+            text = ['To compute phonons for %s using bvk, please select a target' % matterlabel],
+            )
+        #
+        form = lc.form(title='Select a target'); doc.add(form)
+
+        from vnfb.dom.material_simulations.BvKComputation import targets
+        entries = targets
+        selector = form.radio(name='target', entries=entries)
+
+        #
+        form.submitbutton(label='OK', id='bvk-select-target-submit-button')
+        form.onsubmit = lc.select(element=form).submit(
+            actor=self.name, routine='onSelectComputingTarget',
+            model_id = self.inventory.model_id,
+            )
+        
+        return select(id='main-display-area').replaceContent(doc)
+
+
+    def onSelectComputingTarget(self, director):
+        target = self.inventory.target
+
+        model_id = self.inventory.model_id
+        domaccess = self._domaccess(director)
+        #
+        c = domaccess.newComputation(target, model_id)
+        
+        #
+        orm = domaccess.orm
+        self.inventory.computation_id = orm(c).id
+        
+        routine = 'onConfiguring%sComputation' % target.capitalize()
+        return getattr(self, routine)(director)
+
+
+    def onConfiguringDosComputation(self, director):
+        return select(id='main-display-area').replaceContent(
+            load(actor='material_simulations/phonon_calculators/bvk_getdos',
+                 routine='createConfigurationView',
+                 id = self.inventory.computation_id
+                 )
+            )
+
+
+    def onConfiguringDirectionaldispersionComputation(self, director):
+        return        
+
+
+    def onConfiguringPhononsComputation(self, director):
+        return select(id='main-display-area').replaceContent(
+            load(actor='material_simulations/phonon_calculators/bvk_getphonons',
+                 routine='createConfigurationView',
+                 id = self.inventory.computation_id
+                 )
+            )
+
+
+    def _createModelSelector(self, director, models):
+        return director.retrieveVisual(
+            'material_simulations/phonon_calculators/bvk/model-selector',
+            models, director)
+
+
+
+    def _getModelRecord(self, director):
+        domaccess = self._domaccess(director)
+        return domaccess.getModelRecord(self.inventory.model_id)
+
+
+    def _pathToMe(self, director):
+        atomicstructure_id = self.inventory.atomicstructure_id
+        if not atomicstructure_id:
+            modelrecord = self._getModelRecord(director)
+            atomicstructure_id = modelrecord.matter.dereference(director.clerk.db).id
+            
+        struct_label = director.retrieveDOMAccessor('atomicstructure').getAtomicStructureLabel(
+            atomicstructure_id)
+        struct_label = 'structure %r' % struct_label
+        return [
+            ('Atomic structures',
+             lc.load(actor='atomicstructure')),            
+            (struct_label,
+             lc.load(actor='atomicstructure', routine='showOverview', id=atomicstructure_id)),
+            ('phonons', lc.load(
+            actor='/'.join(self.name.split('/')[:-1]), routine='start',
+            atomicstructure_id=atomicstructure_id)),
+            ('bvk', lc.load(
+            actor=self.name, routine='start',
+            atomicstructure_id=atomicstructure_id)),
+            ]
+
+
+    def _domaccess(self, director):
+        return director.retrieveDOMAccessor('material_simulations/phonon_calculators/bvk')
+
+
+    def __init__(self, name='material_simulations/phonon_calculators/bvk'):
+        super(Actor, self).__init__(name)
+        return
+
+
+def actor(): return Actor()
+
+
+# version
+__id__ = "$Id$"
+
+# End of file 
+

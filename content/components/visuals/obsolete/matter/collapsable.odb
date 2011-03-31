@@ -1,0 +1,58 @@
+# -*- Python -*-
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                 Jiao Lin
+#                      California Institute of Technology
+#                      (C) 2006-2009  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+import luban.content as lc
+
+
+def visual(id, title, body=None, loadbody=None):
+    '''create a collapsable document
+
+    body: body document
+    loadbody: action to load body document
+    '''
+    import pdb; pdb.set_trace()
+    
+    doc = lc.document(id=id, Class='collapsable')
+    
+    titlebar = lc.splitter(Class='titlebar')
+    doc.add(titlebar)
+    
+    left = titlebar.section(Class='title-container')
+    left.paragraph(text=[title], Class='title')
+    
+    right = titlebar.section(Class='controls')
+
+    sbody = lc.select(element=body)
+    action = sbody.hide()
+    collapse = lc.link(label='^', onclick=action)
+
+    actions = [sbody.show()]
+    if loadbody:
+        actions.append(loadbody)
+        
+    expand = lc.link(label='v', onclick=actions)
+
+    right.add(collapse)
+    right.add(expand)
+
+    if body:
+        doc.add(body)
+    
+    return doc
+
+
+# version
+__id__ = "$Id$"
+
+# End of file 

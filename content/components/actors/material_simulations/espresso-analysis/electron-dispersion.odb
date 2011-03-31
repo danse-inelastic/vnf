@@ -1,0 +1,52 @@
+#!/usr/bin/env python
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                               Alex Dementsov
+#                      California Institute of Technology
+#                        (C) 2009  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+import luban.content as lc
+from vnfb.qeutils.qegrid import QEGrid
+from vnfb.qeutils.results.plotbandresult import PLOTBANDResult
+from vnfb.qeutils.message import Message
+from vnfb.components.QEAnalysis import QEAnalysis as base
+
+class Actor(base):
+
+    def _simData(self, director, splitter):
+        "Shows electron DOS specific data"
+        self._plotbandresult      = PLOTBANDResult(director, self.id)
+        self._electronDispersion(director, splitter)
+
+
+    def _electronDispersion(self, director, splitter):
+        "Display electron dispersion plot"
+        # Not displayed if no file exist or data are not in proper format
+        section    = splitter.section()
+        table       = QEGrid(lc.grid(Class = "qe-table-analysis"))
+        section.add(lc.paragraph(text="Electron Dispersion", Class="qe-section"))
+        section.add(table.grid())
+
+        psfile      = self._plotbandresult.bandsPS(relative = True)
+        pngfile     = self._plotbandresult.bandsPNG(relative = True)
+        message     = Message()
+        message.setHtmlLink("bands.ps", psfile)
+        table.addRow(("Files:",     message.string("a")))
+        table.setColumnStyle(0, "qe-cell-param-analysis")
+
+        if pngfile:
+            section.add(lc.htmldocument(text="<img src='%s' width='700'/>" % pngfile))
+
+
+def actor():
+    return Actor(name='material_simulations/espresso-analysis/electron-dispersion')
+
+__date__ = "$Mar 14, 2010 9:38:04 AM$"
+
+

@@ -1,0 +1,146 @@
+# -*- Python -*-
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                               Alex Dementsov
+#                      California Institute of Technology
+#                        (C) 2011  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+from vnfb.dom.QEConfiguration import QEConfiguration
+from vnfb.qeutils.qeutils import writeRecordFile
+
+from luban.content import load, select
+import luban.content as lc
+from vnfb.epscutils.epscconst import TYPE_DESC
+
+from luban.components.AuthorizedActor import AuthorizedActor as base
+class Actor(base):
+
+    class Inventory(base.Inventory):
+        import pyre.inventory
+        id          = pyre.inventory.str('id', default='')          # Simulation id
+        taskid      = pyre.inventory.str('taskid', default='')      # Task id
+        type        = pyre.inventory.str('type', default='')        # Task type
+        text        = pyre.inventory.str('text', default='')
+        # Input attributes
+        fname       = pyre.inventory.str('fname', default='')
+        description = pyre.inventory.str('description', default='')
+
+
+    def default(self, director):
+        "Default routine"
+        return select(id='main-display-area').replaceContent(self.content(director))
+
+
+    def content(self, director):
+        "Populates the content for creation of input configuration"
+        title   = 'Create %s Configuration' % TYPE_DESC[self.inventory.type]
+        label   = title
+        return self._document(director, title, label)
+
+
+    def _document(self, director, title, label, formMethod = "defaultForm", visual = None):
+        doc         = lc.document(title = title)
+        splitter    = doc.splitter(orientation = "vertical")
+        sA          = splitter.section()
+        sB          = splitter.section()
+        sA.add(self._viewIndicator(director, label))
+        sB.add(getattr(self, formMethod)(director, visual))
+
+        return doc
+
+
+    def _viewIndicator(self, director, label):
+        "Displays the navigation path on the top"
+        # director.redirect() does not pass variables. Get them from inventory instead
+        self.id     = self.inventory.id
+        self.taskid = self.inventory.taskid
+        self.type   = self.inventory.type
+
+        qelink  = load( actor           = 'materialsimulation',
+                        filter_key      = 'type',
+                        filter_value    = 'qesimulations')
+
+        path = []
+        path.append(('Simulations ', load(actor='materialsimulation')))
+        path.append(('EPSC ', qelink))
+        path.append(('%s ' % self.id, load(actor    = 'material_simulations/epsc/sim-view',
+                                           id       = self.id)))
+        path.append(label)
+
+        return director.retrieveVisual('view-indicator', path=path)
+
+
+
+    def defaultForm(self, director, visual):
+        "Default implementation of input form"
+        visual_     = "material_simulations/epsc/input-default"
+
+        return director.retrieveVisual(visual_,
+                                       actor        = self.inventory,
+                                       director     = director)
+
+
+    def createRecord(self, director):
+        "Create configuration record"
+        self._createDBRecord(director)
+        self._createFile(director)
+
+        return load(actor = 'material_simulations/epsc/sim-view', id = self.inventory.id)
+
+
+    def _createDBRecord(self, director):
+        "Creates db record for configuration, Note: 'text' field is not stored"
+        params  = {"taskid":        self.inventory.taskid,
+                   "filename":      self._fname(),          # Set default name if not filename specified
+                   "description":   self.inventory.description, 
+                   "type":          self.inventory.type
+                   }
+        self.input  = QEConfiguration(director)
+        self.input.createRecord(params)
+
+
+    def _createFile(self, director):
+        "Writes configuration to file"
+        # fn (file name) is fixed and doesn't depend on the filename record
+        fn      = self.inventory.type
+        writeRecordFile(director.dds, self.input, fn, self.inventory.text)
+
+
+    def _fname(self):
+        "Returns filename field"        
+        if self.fname == '':    # Filename is not set
+            return self.inventory.type
+        return self.fname
+
+
+    def __init__(self):
+        super(Actor, self).__init__(name='material_simulations/epsc/config-create')
+
+
+    def _configure(self):
+        super(Actor, self)._configure()
+        self.id             = self.inventory.id
+        self.taskid         = self.inventory.taskid
+        self.type           = self.inventory.type
+
+        self.fname          = self.inventory.fname
+        self.description    = self.inventory.description
+        self.text           = self.inventory.text
+
+
+    def _init(self):
+        super(Actor, self)._init()
+        return
+
+def actor():
+    return Actor()
+
+__date__ = "$Mar 22, 2011 4:08:46 PM$"
+
+

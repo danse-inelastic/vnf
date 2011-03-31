@@ -1,0 +1,115 @@
+#!/usr/bin/env python
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                 Jiao Lin
+#                      California Institute of Technology
+#                      (C) 2006-2009  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+import luban.content as lc
+from luban.content import load, select, alert
+
+from luban.components.AuthorizedActor import AuthorizedActor as base
+
+
+class Actor(base):
+
+
+    class Inventory(base.Inventory):
+
+        import pyre.inventory
+
+	atomicstructure_id = pyre.inventory.str('atomicstructure_id')
+
+        engine = pyre.inventory.str('engine')
+
+
+    def start(self, director):
+        if not director.accesscontrol.checkPrivilege(target='simulation', name='run'):
+            return alert("You don't have access to run simulations.")
+        
+        sid = self.inventory.atomicstructure_id
+        if not sid:
+            return self.askForAtomicStructure(director)
+        return self.presentComputingEngine(director)
+
+
+    def presentComputingEngine(self, director):
+        doc = lc.document()
+
+        #
+        path = self._path(director)
+        view_indicator = director.retrieveVisual('view-indicator', path=path)
+        doc.add(view_indicator)
+
+        domaccess = director.retrieveDOMAccessor('atomicstructure')
+        matter = domaccess.getAtomicStructureRecord(id=self.inventory.atomicstructure_id)
+        matterlabel = matter.short_description
+        
+        doc.paragraph(
+            text = ['To compute phonons for %s, please select a computation engine' % matterlabel],
+            )
+        #
+        form = lc.form(title='Select a computation engine'); doc.add(form)
+
+        from vnfb.dom.material_simulations.phonon_calculators import all
+        entries = all #zip(all, all)
+        selector = form.radio(name='engine', entries=entries)
+
+        #
+        form.submitbutton(label='OK', id='phonons-select-engine-submit-button')
+        form.onsubmit = lc.select(element=form).submit(
+            actor=self.name, routine='onSelectComputingEngine',
+            atomicstructure_id=self.inventory.atomicstructure_id,
+            )
+        
+        return select(id='main-display-area').replaceContent(doc)
+
+
+    def onSelectComputingEngine(self, director):
+        engine = self.inventory.engine
+        actor = '%s/%s' % (self.name, engine)
+        routine = 'start'
+        atomicstructure_id = self.inventory.atomicstructure_id
+        if engine == "quantumespresso":
+            actor = 'material_simulations/espresso/sim-create'
+            return lc.load(actor=actor, structureid=atomicstructure_id)
+        return lc.load(actor=actor, routine=routine, atomicstructure_id=atomicstructure_id)
+        
+
+
+    def _path(self, director):
+        struct_label = director.retrieveDOMAccessor('atomicstructure').getAtomicStructureLabel(
+            self.inventory.atomicstructure_id)
+        struct_label = 'structure %r' % struct_label
+        return [
+            ('Atomic structures',
+             lc.load(actor='atomicstructure')),
+            (struct_label,
+             lc.load(actor='atomicstructure', routine='showOverview',
+                     id=self.inventory.atomicstructure_id)),
+            ('phonons', lc.load(
+            actor=self.name, routine='start',
+            atomicstructure_id=self.inventory.atomicstructure_id)),
+            ]
+        
+
+    def __init__(self, name='material_simulations/phonon_calculators'):
+        super(Actor, self).__init__(name)
+        return
+
+
+def actor(): return Actor()
+
+
+# version
+__id__ = "$Id$"
+
+# End of file 
+

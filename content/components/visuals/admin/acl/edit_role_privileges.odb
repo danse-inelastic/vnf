@@ -1,0 +1,63 @@
+# -*- Python -*-
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                 Jiao Lin
+#                      California Institute of Technology
+#                      (C) 2006-2010  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+import luban.content as lc
+from vnfb.components.visuals.AdminVisualFactory import AdminVisualFactory as base
+
+from luban.content import load, alert, select
+import luban.content as lc
+from luban.content.FormCheckBox import FormCheckBox
+
+
+class Factory(base):
+
+    def create(self, director=None, id=None):
+        # container
+        title = 'Privileges for role %r' % id
+        doc = lc.document(id='role-has-privileges', title=title)
+        
+        # 
+        domaccess = director.retrieveDOMAccessor('acl')
+        db = domaccess.db
+        role = domaccess.getRole(id)
+        privileges = domaccess.getAllPrivileges()
+        
+        # form
+        form = doc.form(id='role-has-privileges-form')
+        # submit action
+        form.onsubmit = select(element=form).submit(
+            actor='acl', routine='setPrivileges',
+            roleid=id)
+
+        # add checkboxes
+        for privilege in privileges:
+            hasprivilege = role.hasPrivilege(privilege, db)
+            name = 'r%s' % privilege.id
+            b = FormCheckBox(name=name, value=hasprivilege, label=privilege.description)
+            form.add(b)
+            continue
+
+        # submit
+        form.submitbutton(label='Set privileges')
+
+        return doc
+
+    
+visual = Factory()
+
+
+# version
+__id__ = "$Id$"
+
+# End of file 

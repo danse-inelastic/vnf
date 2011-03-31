@@ -1,0 +1,167 @@
+#!/usr/bin/env python
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                               Alex Dementsov
+#                      California Institute of Technology
+#                        (C) 2009  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+from vnfb.qeutils.qeparser.pseudo.pseudo import PSEUDO
+from vnfb.qeutils.generators.emgenerator import EMGenerator
+from qecalc.qetask.qeparser.pwinput import PWInput
+from luban.content import select
+
+from vnfb.components.QEGenerator import QEGenerator as base
+IBRAV   = 14
+
+#XXX: The number atomic species is limited by 10 for now
+class Actor(base):
+
+    class Inventory(base.Inventory):
+        import pyre.inventory
+        # Matter type
+        mattertype  = pyre.inventory.str('mattertype', default='0')
+
+        ecutwfc     = pyre.inventory.str('ecutwfc', default='')
+        ecutrho     = pyre.inventory.str('ecutrho', default='')
+        emass       = pyre.inventory.str('emass', default='')
+        dt          = pyre.inventory.str('dt', default='')
+        nstep       = pyre.inventory.str('nstep', default='')
+
+        #HACK: population of inventory parameters for form submission
+        mass0       = pyre.inventory.str('mass0', default='')
+        mass1       = pyre.inventory.str('mass1', default='')
+        mass2       = pyre.inventory.str('mass2', default='')
+        mass3       = pyre.inventory.str('mass3', default='')
+        mass4       = pyre.inventory.str('mass4', default='')
+        mass5       = pyre.inventory.str('mass5', default='')
+        mass6       = pyre.inventory.str('mass6', default='')
+        mass7       = pyre.inventory.str('mass7', default='')
+        mass8       = pyre.inventory.str('mass8', default='')
+        mass9       = pyre.inventory.str('mass9', default='')
+        pseudo0     = pyre.inventory.str('pseudo0', default='')
+        pseudo1     = pyre.inventory.str('pseudo1', default='')
+        pseudo2     = pyre.inventory.str('pseudo2', default='')
+        pseudo3     = pyre.inventory.str('pseudo3', default='')
+        pseudo4     = pyre.inventory.str('pseudo4', default='')
+        pseudo5     = pyre.inventory.str('pseudo5', default='')
+        pseudo6     = pyre.inventory.str('pseudo6', default='')
+        pseudo7     = pyre.inventory.str('pseudo7', default='')
+        pseudo8     = pyre.inventory.str('pseudo8', default='')
+        pseudo9     = pyre.inventory.str('pseudo9', default='')
+
+
+    def content(self, director):
+        "Populates the content for creation of input configuration"
+        title   = "Electron Minimization Configuration Input"
+        label   = "Electron Minimizatio Form"
+        visual  = "material_simulations/espresso/input-electron-min"  # Material type form
+        return self._document(director, title, label, visual = visual)
+
+
+    # Redirector for scf
+    def generateInput(self, director):
+        return director.redirect(actor   = 'material_simulations/espresso/input-create',
+                                routine = 'default',
+                                text    = self._input(director),
+                                id      = self.inventory.id,
+                                taskid  = self.inventory.taskid,
+                                type    = self.inventory.type)
+
+
+    def _input(self, director):
+        "Generator scf calculation"
+        pwinput   = self._loadStructure(director)   # Initial structure loading from atomic structure
+        return self._getInput(director, pwinput)
+
+
+    def _getInput(self, director, input):
+        gen = EMGenerator(director, self.inventory, input)
+        gen.setControl()
+        gen.setSystem()
+        gen.setElectrons()
+        gen.setIons()      # For geometry optimization only
+        return gen.toString()   #input.structure.toString()
+
+
+    def _loadStructure(self, director):
+        """Populates the geometry (structure) related parameters:
+            - SYSTEM
+            - ATOMIC_POSITIONS
+        """
+        structure   = self._structure(director)
+        # For test print: structure, structure.lattice.base
+
+        masslist    = []
+        pseudolist  = []
+        labels      = self._labels(structure)
+        for i in range(len(labels)):
+            masslist.append(float(getattr(self, "mass%s" % i)))
+            pseudo  = PSEUDO[labels[i]][int(getattr(self, "pseudo%s" % i))]
+            pseudolist.append(pseudo)
+
+        input          = PWInput()
+        input.structure.load(source    = 'diffpy',
+                              structure = structure,
+                              ibrav     = IBRAV,
+                              massList  = masslist,
+                              psList    = pseudolist)
+
+        input.structure.updatePWInput() # XXX Updates QEStructure. Not sure why?
+
+        return input
+
+
+    def _structure(self, director):
+        "Get structure from atomicstructure database table"
+        domaccess   = director.retrieveDOMAccessor('atomicstructure')
+        return domaccess.getAtomicStructure(self.structureid)
+
+
+    def _labels(self, structure):
+        "Atom labels"
+        pw          = PWInput() # Not efficient!
+        pw.structure.load(source = 'diffpy', structure = structure)
+        return pw.structure.atomLabels()
+
+
+    def __init__(self):
+        super(Actor, self).__init__(name='material_simulations/espresso-utils/generate-electron-min')
+
+
+    def _configure(self):
+        super(Actor, self)._configure()
+        self.mattertype     = self.inventory.mattertype
+        self.ecutwfc        = self.inventory.ecutwfc
+        self.ecutrho        = self.inventory.ecutrho
+        self.emass          = self.inventory.emass
+        self.dt             = self.inventory.dt
+        self.nstep          = self.inventory.nstep
+        
+
+        N_ATOMS  = 10
+        # Set masses for atoms
+        for i in range(N_ATOMS):
+            setattr(self, "mass%s" % i, getattr(self.inventory, "mass%s" % i))
+
+        # Set pseudo potentials for atoms
+        for i in range(N_ATOMS):
+            setattr(self, "pseudo%s" % i, getattr(self.inventory, "pseudo%s" % i))
+
+
+    def _init(self):
+        super(Actor, self)._init()
+        return
+
+def actor():
+    return Actor()
+
+
+__date__ = "$May 15, 2010 8:33:01 AM$"
+
+

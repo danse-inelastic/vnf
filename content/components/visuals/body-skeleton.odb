@@ -1,0 +1,42 @@
+# -*- Python -*-
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                 Jiao Lin
+#                      California Institute of Technology
+#                      (C) 2006-2009  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+from luban.content.Document import Document
+from luban.content.Splitter import Splitter
+from luban.content.Tabs import Tabs
+from luban.content.Tabs import Tab
+
+
+def visual(director=None, context=None):
+    horizontal = Splitter(orientation='horizontal')
+
+    portlets_frame = horizontal.section(id='portlets-frame')
+    portlets_frame.add(director.retrieveVisual('main-portlet'))
+    portlets_frame.add(
+        director.retrieveVisual('help-portlet', context=context, director=director))
+    
+    main_display_area_frame = horizontal.section(id='main-display-area-frame')
+
+    # area for indicator of what the current view is
+    #view_indicator = main_display_area_frame.document(id='view-indicator')
+
+    main_display_area = main_display_area_frame.document(id='main-display-area')
+
+    return horizontal
+
+    
+# version
+__id__ = "$Id$"
+
+# End of file 

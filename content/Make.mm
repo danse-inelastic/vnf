@@ -10,22 +10,17 @@
 #
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-PROJECT = vnf
+PROJECT = vnfb
 PACKAGE = content
 
 RECURSE_DIRS = \
 
 EXPORT_DATADIRS = \
-	base\
-	extension_template\
-	ins\
-	materialSimulation\
-	tutorials\
+	components \
+	documents \
 
 
 EXPORT_DATAFILES = \
-	news \
-
 
 INIT_DATADIRS = \
 	data\

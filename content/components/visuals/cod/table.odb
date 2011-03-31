@@ -1,0 +1,49 @@
+# -*- Python -*-
+
+
+from luban.content import select, load, alert
+import luban.content as lc
+
+
+def visual(data, director, cols=None):
+    from luban.content.table import Model, View, Table
+    from luban.content import load
+    from luban.content.Link import Link
+    
+    #these belong here rather than outside the visual
+    cols= [
+        'selectone',
+        'id',
+        'lattice',
+        'spacegroup',
+        'formula',
+        'text']
+    
+    class model(Model):
+        selected = Model.descriptors.bool(name='selectone')
+        #id = Model.descriptors.link(name='id')
+        id = Model.descriptors.str(name='id')
+        lattice = Model.descriptors.str(name='lattice')
+        spacegroup = Model.descriptors.str(name='spacegroup')
+        formula = Model.descriptors.str(name='formula')
+        text = Model.descriptors.str(name='text')
+        row_identifiers = ['id']
+
+    possibleColumns = [
+        View.Column(label='', measure='selectone'),
+        View.Column(label='id', measure='id'),
+        View.Column(label='lattice\n (a,b,c,alpha,beta,gamma)', measure='lattice'),
+        View.Column(label='space group', measure='spacegroup'),
+        View.Column(label='chemical formula', measure='formula'),
+        View.Column(label='description', measure='text'),
+        ]
+    if cols:
+        actualColumns = filter(lambda col: col.measure in cols, possibleColumns)
+
+    view = View(columns=actualColumns, editable=False)
+
+    table = Table(model=model, data=data, view=view, id='cod-table')
+
+    return table
+    
+

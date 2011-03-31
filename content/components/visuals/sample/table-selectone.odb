@@ -1,0 +1,28 @@
+#!/usr/bin/env python
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                  Jiao Lin
+#                     California Institute of Technology
+#                       (C) 2009  All Rights Reserved
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+# The table to select one sample(assembly)
+# The table include a few columns such as id and description.
+# The first column is radio buttons.
+# This only creates the table itself, no filtering and sorting controls.
+# The full view with controls is in tableview-selectone.
+
+
+def visual(samples, cols, director):
+    from vnfb.content.visuals.table.selectonesample import table
+    return table(samples, cols, director, editable=False)
+
+
+# version
+__id__ = "$Id$"
+
+# End of file 

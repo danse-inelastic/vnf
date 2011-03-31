@@ -1,0 +1,196 @@
+# -*- Python -*-
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                 Jiao Lin
+#                      California Institute of Technology
+#                      (C) 2006-2010  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+from luban.content import load, select, alert
+import luban.content as lc
+
+from luban.content.FormSelectorField import FormSelectorField
+
+
+class Factory(object):
+
+
+    def __init__(self, id, director):
+        domaccess = director.retrieveDOMAccessor('experiment')
+        self.domaccess = domaccess
+        self.director = director
+        self.id = id
+        self.experiment = domaccess.getExperimentRecord(id)
+        instrument = self.experiment.instrument
+        self.instrument = instrument.dereference(domaccess.db)
+        return
+    
+
+    def __call__(self, componenttoedit):
+        #
+        domaccess = self.domaccess
+        director = self.director
+        
+        experiment = self.experiment
+        # check if configuration exists
+        # now ic is the db record of the configuration
+        ic = self._get_instrument_configuration(experiment)
+        
+        #
+        instrument = experiment.instrument.dereference(domaccess.db)
+        doc = lc.document(title='%s' % instrument.name,
+                          id='instrument-configuration')
+
+        doc.paragraph(text=[
+            'to edit, please select a component from the following component chain',
+            ])
+        
+        # component list
+        components = [c for n, c in ic.components.dereference(domaccess.db)]
+        if componenttoedit is None:
+            componenttoedit = components[0]
+
+        # the panel to edit/view individual component
+        componentpanel = lc.document(id='experimentwizard-componentpanel')
+
+        # action to load view of a component
+        loadcomponentview = lambda component: load(
+            actor='loadvisual', visual='neutronexperiment/edit/componenteditor',
+            id=self.id, componentuid = domaccess.db.getUniqueIdentifierStr(component)
+            )
+        # view of current component
+        componentview = director.retrieveVisual(
+            'neutronexperiment/edit/componenteditor',
+            id=self.id, component=componenttoedit,
+            director=director, domaccess=domaccess, experiment=experiment)
+
+        # action to refresh component configuration view
+        refreshconfigurationpanel = lambda component: select(
+            element=componentpanel).replaceContent(loadcomponentview(component))
+
+        # view of the component chain
+        componentchainview = self._createComponentChainView(
+            components, refreshconfigurationpanel, component = componenttoedit)
+
+        # add the current component's view to the component config panel
+        componentpanel.add(componentview)
+        
+        #
+        doc.add(componentchainview)
+        doc.add(componentpanel)
+
+        # continue button
+        if self.instrument.has_sample_component:
+            nexttab = 'sample'
+        else:
+            nexttab = 'finish'
+
+        switch = director.retrieveVisual(
+            'neutronexperiment/edit/switch-to-editpanel')\
+            .get(self.id, nexttab)
+        continuebutton = lc.button(label='continue', onclick=switch)
+        doc.add(continuebutton)
+        return doc
+
+
+    def _get_instrument_configuration(self, experiment):
+        domaccess = self.domaccess
+        ic = experiment.instrument_configuration
+        ic = ic and ic.id and ic.dereference(domaccess.db)
+        if not ic:
+            orm = domaccess.orm
+            ic = domaccess.createInstrumentConfiguration(orm.record2object(experiment))
+            ic = domaccess.orm(ic)
+        return ic
+
+
+    def _createComponentChainView(self, components, refreshconfigurationpanel, component=None):
+        director = self.director
+        domaccess = self.domaccess
+        db = domaccess.db
+        
+        current_component = component
+        
+        doc = lc.document(id='component-chain-container', title='Component chain')
+        sp = doc.splitter(id='component-chain')
+
+        # ids of components
+        ids = [c.id for c in components]
+
+        # ids of buttons for components
+        idformatter = 'component-%s'
+        buttonids = [idformatter % id for id in ids]
+
+        # ids of insert buttons for components
+        insertbuttonidformatter = 'insert-before-component-%s'
+        insertbuttonids = [insertbuttonidformatter % id for id in ids]
+        
+        for component in components:
+            compuid = db.getUniqueIdentifierStr(component)
+            
+            # button to insert before a component
+            insertbuttoncontainer = sp.section()
+            insertbutton = lc.button(id=insertbuttonidformatter%component.id)
+            insertbuttoncontainer.add(insertbutton)
+            insertbutton.Class='component-chain-insert-button'
+            insertbutton.label = '->'
+            insertbutton.tip = 'click to insert component'
+            insertbutton.onclick = load(
+                actor='experiment/editor', routine='onInsertComponent',
+                id = self.id, before=compuid)
+
+            # "button" of a comonent
+            button = sp.section().document(id=idformatter % component.id)
+            button.Class='component-chain-button'
+
+            # when icons are available, add them into the "button"
+            #path = 'components/%s/middle-size-icon.png' % name
+            #img = lc.image(path=path)
+            label = '%s: %s' % (component.componentname, component.__class__.__name__)
+            button.paragraph(text=[label])
+
+            if current_component.id == component.id:
+                button.addClass('selected')
+            
+            #
+            selectthisbutton = director.retrieveVisual(
+                'neutronexperiment/edit/select-a-button').select(button.id, buttonids)
+            button.onclick = selectthisbutton + [
+                refreshconfigurationpanel(component),
+                ]
+
+            button.tip = '%s: click for more details' % component.componentname
+            continue
+                
+        # button to append before a component
+        appendbuttoncontainer = sp.section()
+        appendbutton = lc.button(id='append-component')
+        appendbuttoncontainer.add(appendbutton)
+        appendbutton.Class='component-chain-insert-button'
+        appendbutton.label = '->'
+        appendbutton.tip = 'click to append component'
+        appendbutton.onclick = load(
+            actor='experiment/editor', routine='onAppendComponent',
+            id = self.id)
+
+        return doc
+
+
+
+def visual(id=None, director=None, component=None):
+    '''
+    id: experiment id
+    component: component to edit
+    '''
+    return Factory(id, director)(component)
+
+# version
+__id__ = "$Id$"
+
+# End of file 

@@ -1,0 +1,115 @@
+# -*- Python -*-
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                   Jiao Lin
+#                      California Institute of Technology
+#                      (C) 2006-2010  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+import luban.content as lc
+from luban.content import load, select, alert
+
+from luban.components.FormProcessor import FormProcessor as base
+
+
+class Actor(base):
+
+
+    class Inventory(base.Inventory):
+
+        import luban.inventory
+
+        experiment_id = luban.inventory.str(name='experiment_id')
+
+        fermi_nu = luban.inventory.float('fermi_nu', default=600)
+        
+        # fermi_bladeradius = luban.inventory.float('fermi_bladeradius', default=0.5801)
+        
+        T0_nu = luban.inventory.float('T0_nu', default=60)
+        
+        E = luban.inventory.float('E', default=70)
+
+        emission_time = luban.inventory.float('emission_time', default=-1)
+
+
+    def default(self, director):
+        return self.process(director)
+
+
+    def _postProcessing(self, director):
+        self._castInventoryProperties()
+        fermi_nu = self.inventory.fermi_nu
+        T0_nu = self.inventory.T0_nu
+        E = self.inventory.E
+        emission_time = self.inventory.emission_time
+
+        LM1 = 11.82 # distance from moderator to monitor 1
+        
+        Emin = E*0.8
+        Emax = E*1.2
+        
+        # emission_time = self.inventory.emission_time
+        if emission_time < 0: emission_time = None
+        else:emission_time *= 1.e-6
+        from mcvine.instruments.ARCS import t0chopper, fermichopper
+        t0phase = t0chopper.phase(E, 8.77, emission_time=emission_time)
+        fermiphase = fermichopper.phase(E, 11.61, emission_time=emission_time)
+        # monitor tof range
+        SE2V = 437.3949
+        from math import sqrt
+        tofmonmin=roundToMicroSeconds(LM1/(sqrt(Emax*1.1)*SE2V))
+        tofmonmax=roundToMicroSeconds(LM1/(sqrt(Emin*0.9)*SE2V))
+        tofmonnchan = int((tofmonmax-tofmonmin)/1e-6+0.5)
+
+        #
+        domaccess = director.retrieveDOMAccessor('experiment')
+        experiment = domaccess.getExperimentRecord(self.inventory.experiment_id)
+        ic = domaccess.getInstrumentConfiguration(experiment)
+        ic = domaccess.orm.record2object(ic)
+        components = ic.components
+        d = {}
+        for c in components:
+            k = c.componentname
+            d[k] = c
+            continue
+        d['fermi_chopp'].nu = fermi_nu
+        # d['fermi_chopp'].blader = fermi_bladeradius
+        d['t0_chopp'].nu = T0_nu
+        d['fermi_chopp'].tc = fermiphase
+        d['t0_chopp'].tc = t0phase
+        d['moderator'].Emin = Emin
+        d['moderator'].Emax = Emax
+        d['tofmonitor1'].tmin = tofmonmin
+        d['tofmonitor1'].tmax = tofmonmax
+        d['tofmonitor1'].nchan = tofmonnchan
+        domaccess.orm.save(ic, save_not_owned_referred_object=0)
+
+        from vnfb.content.visuals.neutronexperiment.instruments import load_manual_instrument_configuration
+        load_mic = load_manual_instrument_configuration(self.inventory.experiment_id)
+        return select(id='instrument-configuration-wizard').replaceBy(load_mic)
+
+
+    def __init__(self, name='neutronexperiment/edit/ARCS_beam_wizard'):
+        super(Actor, self).__init__(name)
+        return
+
+
+
+def roundToMicroSeconds(t):
+    t1 = int(t*1e6)
+    return t1*1.e-6
+
+
+def actor(): return Actor()
+
+
+# version
+__id__ = "$Id$"
+
+# End of file 

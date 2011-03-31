@@ -1,0 +1,87 @@
+#!/usr/bin/env python
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                  Jiao Lin
+#                     California Institute of Technology
+#                       (C) 2009  All Rights Reserved
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+"""
+visual show the packing procedure and when done, show the download link
+"""
+
+
+import luban.content as lc
+from luban.content import load, select, alert
+
+
+def visual(job=None, director=None):
+
+    view = lc.document(id='job-download-link', title='packing job %s' % job.id)
+    
+    iworker = 'packjobdir'
+
+    # first check if there is itask running
+    task = job.findPendingTask(director.clerk.db, iworker=iworker)
+    if not task:
+        from vnfb.dom.ITask import createITask, ITask
+        task = director.clerk.insertNewOwnedRecord(ITask)
+        task = createITask(
+            task.id,
+            beneficiary = job,
+            worker = iworker,
+            type = iworker,
+            )
+        director.clerk.updateRecordWithID(task)
+    else:
+        if task.state in ['failed', 'cancelled']:
+            # reopen the task
+            task.state = 'created'
+            director.clerk.updateRecordWithID(task)
+
+        elif task.state == 'running':
+            pass
+        
+        elif task.state == 'created':
+            pass
+        
+        else:
+            raise RuntimeError, \
+                  "failed to generate job-dir-packing view for job %s. itask is %s" % (
+                job.id, task.id)
+        
+    # start the task
+    if task.state != 'running':
+        from vnfb.utils.itask import start
+        start(task)
+    
+    # build the progress bar and return
+    pbar = lc.progressbar(
+        id = 'itask-%s-pbar' % task.id,
+        status = 'Packing job...',
+        percentage = 0,
+        skip = 2000,
+        )
+    view.add(pbar)
+
+    pbar.onchecking = load(
+        actor='itask',
+        routine='checkProgress',
+        id = task.id,
+        )
+    pbar.onfinished = select(element=view).replaceBy(
+        load(actor='job', routine='createDownloadLink', id=job.id)
+        )
+
+    return view
+
+
+
+# version
+__id__ = "$Id$"
+
+# End of file 

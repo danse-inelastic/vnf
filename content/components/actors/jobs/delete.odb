@@ -1,0 +1,142 @@
+#!/usr/bin/env python
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                               Alex Dementsov
+#                      California Institute of Technology
+#                        (C) 2009  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+from vnfb.qeutils.qegrid import QEGrid
+
+from luban.content import select
+from luban.content.Paragraph import Paragraph
+from luban.content.Form import Form
+from luban.content.FormSubmitButton import FormSubmitButton
+from luban.content import load
+from vnfb.utils.const import PACKNAME
+
+import luban.content as lc
+from luban.components.AuthorizedActor import AuthorizedActor as base
+
+class Actor(base):
+
+    class Inventory(base.Inventory):
+        import pyre.inventory
+        id      = pyre.inventory.str('id', default='')    # Simulation Id
+        taskid  = pyre.inventory.str('taskid', default='')
+        jobid   = pyre.inventory.str('jobid', default='')
+        type    = pyre.inventory.str('type', default='')
+        package = pyre.inventory.str('package', default='Quantum Espresso')
+
+
+    def default(self, director):
+        return select(id='main-display-area').replaceContent(self.content(director))
+
+
+    def content(self, director):
+        if not self.package in PACKNAME.keys():
+            self.package    = 'Quantum Espresso'    # "Default"?
+
+        def viewIndicator(director):
+            qelink  = load( actor           = 'materialsimulation',
+                            filter_key      = 'type',
+                            filter_value    = 'qesimulations')
+
+            path = []
+            path.append(('Simulations ', load(actor='materialsimulation')))
+            path.append(('%s ' % self.package, qelink))
+            path.append(('%s ' % self.id, load(actor    = 'material_simulations/%s/sim-view' % PACKNAME[self.package],
+                                               id       = self.id)))
+            path.append("Delete Job: %s" % self.jobid)
+
+            return director.retrieveVisual('view-indicator', path=path)
+
+        doc         = lc.document(title="Delete Job: %s" % self.jobid)
+        splitter    = doc.splitter(orientation="vertical")
+        sA          = splitter.section()
+        sA.add(viewIndicator(director))
+        sB          = splitter.section()
+        sB.add(Paragraph(text="Warning: Deleting job will also delete results of the job"))
+        sB.add(Paragraph(text="Are you sure you want to delete the job?"))
+        sB.add(self._setForm())
+
+        return doc
+
+
+    def _setForm(self):
+        form        = Form()
+        submit      = FormSubmitButton(label="Delete")
+        cancel      = lc.button(label="Cancel")
+        cancel.onclick = load(actor = 'material_simulations/%s/sim-view' % PACKNAME[self.package], id=self.id)
+
+        st          = QEGrid(lc.grid()) # Submit Table
+        st.addRow((submit, cancel), ("qe-action-accept", "qe-action-cancel"))
+
+        form.add(st.grid())
+        form.onsubmit   = select(element=form).submit(actor     = 'jobs/delete',
+                                                      routine   = 'deleteRecord',
+                                                      id        = self.id,
+                                                      jobid     = self.jobid,
+                                                      taskid    = self.taskid,
+                                                      package   = self.package)
+        return form
+
+
+    def deleteRecord(self, director):
+        """Delete task record"""
+        self._deleteJobs(director)      # Not tested
+        self._deleteLocalResults(director)   # Not tested
+        self._deleteRemoteResults(director)   # Not tested
+
+        return load(actor='material_simulations/%s/sim-view' % PACKNAME[self.package], id=self.id)
+
+
+    def _deleteJobs(self, director):
+        """Deletes jobs"""
+        job            = director.clerk.getQEJobs(id = self.jobid)
+        if job:
+            job.setDirector(director)
+            job.deleteRecord()
+
+
+    def _deleteLocalResults(self, director):
+        "Delete local results. E.g. clean up directory"
+        pass
+
+
+    def _deleteRemoteResults(self, director):
+        "Delete remote results. E.g. clean up directory"
+        pass
+
+
+
+    def __init__(self):
+        super(Actor, self).__init__(name='jobs/delete')
+
+
+    def _configure(self):
+        super(Actor, self)._configure()
+        self.id             = self.inventory.id
+        self.jobid          = self.inventory.jobid
+        self.taskid         = self.inventory.taskid
+        self.type           = self.inventory.type
+        self.package        = self.inventory.package
+
+
+    def _init(self):
+        super(Actor, self)._init()
+        return
+
+def actor():
+    return Actor()
+
+
+__date__ = "$Nov 4, 2009 7:21:22 PM$"
+
+

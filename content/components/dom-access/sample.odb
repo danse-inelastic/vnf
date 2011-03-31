@@ -1,0 +1,277 @@
+# -*- Python -*-
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                   Jiao Lin
+#                      California Institute of Technology
+#                      (C) 2006-2009  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+tablename='sample'
+
+
+from vnfb.components.DOMAccessor import DOMAccessor as base
+
+class Accessor(base):
+
+
+    def __init__(self):
+        super(Accessor, self).__init__('sample-accessor')
+        return
+
+
+    def _getOrm(self):
+        # _sampleTables actually orm all sample data objects
+        self._sampleTables()
+        # so we are good to go here
+        orm = self.director.clerk.orm
+        return orm
+    orm = property(_getOrm)
+
+
+    def isConstructed(self, record):
+        if isinstance(record, ScattererTable):
+            return self.isScattererConstructed(record)
+        elif isinstance(record, SampleAssemblyTable):
+            raise NotImplementedError
+        elif isinstance(record, SampleTableBase):
+            return True
+
+
+    def isScattererConstructed(self, record):
+        #
+        matter = record.matter and record.matter.id
+        if not matter: return False
+
+        #
+        shape = record.shape and record.shape.id
+        if not shape: return False
+
+        if not record.short_description: return False
+
+        #
+        orm = self.orm
+        kernels = record.kernels.dereference(orm.db)
+        if not kernels: return False
+
+        return True
+
+
+    def getSample(self, type, id):
+        return self.getRecordByID(type, id)
+
+
+    def countSamples(self, filter=None, label=None, mine=False):
+        db = self.db
+        
+        tables = self.sampleTables()
+        
+        qf = lambda table: self.makeQuery(table, filter=filter, label=label, mine=mine)
+
+        qs = map(qf, tables)
+        
+        q = sqlalchemy.union_all(*qs)
+        return q.alias('tocount').count().execute().fetchone()[0]
+
+
+    def getSamples(
+        self, filter=None,
+        order_by=None, reverse_order=None, slice=None,
+        label=None, mine=False):
+        
+        db = self.db
+
+        self._debug.log('filter: %r, order_by: %r, slice: %r' % (filter, order_by, slice))
+        tables = self.sampleTables()
+        qf = lambda table: self.makeQuery(table, filter=filter, label=label, mine=mine)
+
+        qs = map(qf, tables)
+        q = sqlalchemy.union_all(*qs)
+
+        if order_by:
+            q = q.order_by(order_by)
+        if slice:
+            if reverse_order:
+                n = self.countSamples(filter=filter, label=label, mine=mine)
+                slice = n-slice[1], n-slice[0]
+            q = sqlalchemy.select(
+                [q.alias('tmptoslice')],
+                limit = slice[1]-slice[0],
+                offset = slice[0])
+
+        # only need gpointers to be returned
+        q = q.alias('tmp')
+        q1 = sqlalchemy.select(columns=['globalpointer'], from_obj=[q])
+
+        #db._saengine.echo = True
+        rows = q1.execute().fetchall()
+
+        #and then map to records
+        from dsaw.db.VersatileReference import vreference
+        def _(row): return db.dereference(vreference(row[0]))
+        
+        ret = map(_, rows)
+        if reverse_order:
+            ret.reverse()
+        return ret
+
+
+    def makeQuery(self, table, filter=None, label=None, mine=False):
+        'craete a query for a sample table with given filter'
+
+        db = self.db
+        
+        if label:
+            if filter: raise RuntimeError
+            return self.makeLabeledQuery(label, table, mine=mine)
+        
+        sGP = db._tablemap.TableToSATable(global_pointer).alias('gptrs')
+        st = db._tablemap.TableToSATable(table)
+        cols = [
+            st.c.id.label('id'),
+            st.c.short_description.label('short_description'),
+            sGP.c.type.label('type'),
+            st.c.date.label('date'),
+            st.c.isconfiguration.label('isconfiguration'),
+            st.c.globalpointer.label('globalpointer'),
+            st.c.creator,
+            ]
+        # where = st.c.globalpointer==sGP.c.id,
+        where = 'globalpointer=gptrs.id'
+        username = self.director.sentry.username
+        if mine:
+            mine = "creator='%s'" % username
+            where = '%s and %s' % (where, mine)
+        q = sqlalchemy.select(cols, where)
+        
+        filter = self._normalizeFilter(filter)
+        if filter:
+            q = sqlalchemy.select([q.alias('sample')], whereclause=filter)
+
+        from vnfb.utils.query.accesscontrol import select_public_and_owned_records
+        q1 = q.alias('toselectpubrecs')
+        cols = [
+            q1.c.id,
+            q1.c.short_description,
+            q1.c.type,
+            q1.c.date,
+            q1.c.isconfiguration,
+            q1.c.globalpointer,
+            q1.c.creator,
+            ]
+        q = select_public_and_owned_records(cols, q1, username, db)
+        return q
+
+
+    def makeLabeledQuery(self, label, table, mine):
+        'craete a uery for a sample table with given filter'
+        db = self.db
+        
+        sL = db._tablemap.TableToSATable(Label)
+        cols = [
+            sL.c.entity.label('entity'),
+            sL.c.labelname.label('label'),
+            ]
+        if label in common_labels:
+            whereclause="labelname='%s'" % (label,)
+        else:
+            whereclause="labelname='%s' and targettable='%s'" % (
+                label, tablename)
+        labelq = sqlalchemy.select(cols, whereclause=whereclause)\
+            .alias('labelq')
+        
+        sGP = db._tablemap.TableToSATable(global_pointer)
+        st = db._tablemap.TableToSATable(table)
+        
+        q1 = sqlalchemy.select(
+            [labelq.c.entity.label('entity'),
+             sGP.c.type.label('type'),
+             ],
+            labelq.c.entity==sGP.c.id,
+            ).alias('q1')
+
+        cols = [
+            st.c.id.label('id'),
+            st.c.short_description.label('short_description'),
+            q1.c.type.label('type'),
+            st.c.date.label('date'),
+            st.c.isconfiguration.label('isconfiguration'),
+            st.c.globalpointer.label('globalpointer'),
+            ]
+        # where = st.c.globalpointer==q1.c.entity
+        where = "globalpointer=q1.entity"
+        if mine:
+            username = self.director.sentry.username
+            mine = "creator='%s'" % username
+            where = '%s and %s' % (where, mine)
+        q = sqlalchemy.select(cols, whereclause=where)
+        
+        return q
+
+
+    def getTables(self):
+        return self.sampleTables()
+    
+
+    def sampleTables(self):
+        self._establishGlobalPointers()
+        return self._sampleTables()
+
+
+    def _sampleTables(self):
+        # data object types
+        from vnfb.dom.neutron_experiment_simulations.sample_types import getTypes
+        types = getTypes()
+        #
+        orm = self.director.clerk.orm
+        # orm all types
+        ormtables = map(orm, types)
+        return ormtables
+
+
+    def _normalizeFilter(self, filter):
+        # any sample component has a special column "isconfiguration",
+        # when it is true, a sample component is really a sample configuration
+        # we need to normalize the filter to only return records for which isconfiguration
+        # is false.
+        addtional_filter = 'isconfiguration=false or isconfiguration=null'
+        if not filter: return addtional_filter
+        return '(%s) and (%s)' % (filter, addtional_filter)
+
+
+    def _establishGlobalPointers(self):
+        # temp fix
+        # the current way of querying will omit the records without global pointers
+        # we have to establish global pointer for each reocrd without one
+        db = self.db
+        for table in self._sampleTables():
+            rs = db.query(table).filter_by(globalpointer=None).all()
+            for r in rs: r.establishGlobalPointer(db)
+            continue
+        return
+
+
+from vnfb.dom.Label import Label, common_labels
+
+from vnfb.dom.neutron_experiment_simulations.Scatterer import Scatterer, ScattererTable
+from vnfb.dom.neutron_experiment_simulations.SampleAssembly import SampleAssembly, SampleAssemblyTable
+from vnfb.dom.neutron_experiment_simulations.neutron_components.SampleBase import SampleBase, TableBase as SampleTableBase
+
+
+from dsaw.db.VersatileReference import global_pointer
+import sqlalchemy
+
+
+def accessor():
+    return Accessor()
+
+
+# version
+__id__ = "$Id$"
+
+# End of file 

@@ -1,0 +1,71 @@
+High priority
+-------------
+ * phonons data object: read/write different formats...  need to think
+   of how make_available can work better for multiple data formats...
+ * analytical sqe model
+ * DetectorSytemFromXML component
+ * Nuetron recorder, player
+
+
+
+Front page
+----------
+
+
+
+Misc.
+-----
+ * The "collapsed" document need a small tiny document body to look better
+
+
+Master tables
+------------
+ * delete button
+
+
+
+Job
+---
+ * job view page
+
+
+
+Neutron experiment
+------------------
+ * revise neutron experiment wizard (to make it more graphic and more
+   intuitive)
+* fixed the bug that happens when selecting neutron storage and there
+  is no storage records in the system
+
+
+Atomicstructure
+---------------
+ * link to create sample from atomicstructure page
+ * panels for SQE, samples, experiments
+
+
+
+Kernels
+-------
+* Phonon kernel: should be able to take polarizations as numpy array
+  of complex numbers
+
+
+More long term 
+--------------
+
+Help system
+
+Establish a suite of tests to make sure that vnf is running correctly.
+This would be useful, for example, when vnf vm is restarted.
+
+Also make a test script for testing if a computing cluster is live  
+ * ssh connection (or other connection)
+ * cluster status daemon
+ * job scheduler script (torque for example)
+ * mpi daemon
+ * test if any of the computing engine is available
+THis script probably is best written with facilities in pathos.
+
+
+

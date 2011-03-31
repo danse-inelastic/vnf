@@ -1,0 +1,113 @@
+#!/usr/bin/env python
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                 Jiao Lin
+#                      California Institute of Technology
+#                      (C) 2006-2009  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+from luban.content import load, select, alert
+import luban.content as lc
+
+
+class Factory(object):
+
+    kernel_view_id = 'scatterer-kernel-view'
+
+
+    def __init__(self, id, director):
+        self.id = id
+        self.director = director
+        self.domaccess = director.retrieveDOMAccessor('scatterer')
+        r = self.record = self.domaccess.getRecord(id)
+        return
+
+
+    def __call__(self, kernel):
+        '''create editor for the given kernel
+
+        kernel: db record of the kernel of interest
+        '''
+        container = lc.document(id=self.kernel_view_id, Class='container')
+        doc = lc.document(id='scatterer-kernel-editor-doc', title='Kernel editor')
+        container.add(doc)
+
+        # tool bar to select kernel type
+        # import pdb; pdb.set_trace()
+        kerneltablename = kernel and kernel.getTableName()
+        selecttype = self._createTypeSelector(kernel=kernel)
+        doc.add(selecttype)
+
+        # form panel
+        if kernel:
+            kernelform = self._createKernelForm(kernel, kerneltablename)
+
+        else:
+            kernelform = lc.document(id='scatterer-kernel-form', Class='container')
+            
+        doc.add(kernelform)
+        
+        return container
+
+
+    def _createTypeSelector(self, kernel):
+        director = self.director
+        domaccess = self.domaccess
+        db = domaccess.db
+
+        #
+        kerneluid = (kernel or '') and db.getUniqueIdentifierStr(kernel)
+
+        #
+        doc = lc.document(Class='container', id='scatterer-kernel-type-selector-doc')
+
+        #
+        doc.paragraph(text=['Choose one of the kernel types',])
+
+        #
+        toolbar = lc.toolbar(); doc.add(toolbar)
+        from vnfb.dom.scattering_kernels import getKernelTypes
+        kerneltypes = getKernelTypes()
+        for kerneltype in kerneltypes:
+            typename = kerneltype.__name__
+            actor = 'scatterer/editor'
+            routine = 'onSelectKernelType'
+            action = load(actor=actor, routine=routine,
+                          id=self.id, kerneltype=typename, kernel=kerneluid)
+            button = lc.button(
+                icon='scattering_kernels/%s.png' % typename.lower(),
+                id = 'scatterer-kernel-button-%s' % typename.lower(),
+                tip = typename,
+                onclick=action)
+            toolbar.add(button)
+            if kerneltype.__name__ == kernel.__class__.__name__:
+                button.Class = 'highlight'
+            continue
+        
+        return doc
+
+
+    def _createKernelForm(self, kernel, tablename):
+        director = self.director
+        id = self.id
+        return director.retrieveVisual(
+            'scatterer/editor/kernelform',
+            id=id, director=director, kernel=kernel, tablename=tablename)
+
+
+    
+def visual(id, director, kernel):
+    return Factory(id, director)(kernel)
+
+
+# version
+__id__ = "$Id$"
+
+# End of file 
+

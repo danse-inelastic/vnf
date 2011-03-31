@@ -1,1 +1,0 @@
-../../../../bin/journald.py

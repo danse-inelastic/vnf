@@ -1,0 +1,176 @@
+#!/usr/bin/env python
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                      California Institute of Technology
+#                      (C) 2006-2009  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+from luban.content import load, select
+import luban.content as lc
+from luban.content.Document import Document
+from luban.content.Link import Link
+from luban.components.Actor import Actor as base
+import journal
+#analysisPaths = {'mddoscalc':'vsat.trajectory.MdDosCalc',
+#                   'csfcalc':'vsat.trajectory.CsfCalc'}
+class Actor(base):
+
+    class Inventory(base.Inventory):
+        import pyre.inventory
+        analysisId = pyre.inventory.str('analysisId', default = '')
+        trajectoryId = pyre.inventory.str('trajectoryId', default = '')
+        #dynamicsType = pyre.inventory.str('dynamicsType', default = '')
+        analysisType = pyre.inventory.str('analysisType', default='')
+        short_description = pyre.inventory.str('short_description', default = '' )
+        creator = pyre.inventory.str('creator', default='')
+        description = pyre.inventory.str('description', default='')
+    
+    def default(self, director):
+        wizard = Document(id='analysiswizard', title='Analysis')
+        #doc = self.selectAnalysisType(director)
+        doc = director.retrieveVisual('analysis/newAnalysisType', director = director)
+        wizard.add(doc)
+        return select(id='main-display-area').replaceContent(wizard)
+    
+    def selectTrajectory(self, director):
+        doc = lc.document(id='trajectory-selector-doc')
+        doc.paragraph(
+            text=['Please select a trajectory:',]
+            )
+        container = lc.document(id='trajectory-selector-container')
+        doc.add(container)
+        container.oncreate = [
+            select(element=container).append(
+              load(actor='analysis/selecttrajectory', routine='createListView')
+              ),
+            ]
+        # select button
+        b = lc.button(label='select'); doc.add(b)
+        #b.onclick = getInfoAndProceed()
+        b.onclick = load(actor = 'analysis/mdanalysiswizard', 
+                       routine = 'analysisSettings',
+                  trajectoryId = select(id='trajectory-table').table('getIdentifierForSelectedRow', colname='selectone'),
+                  analysisType = self.inventory.analysisType)
+        return doc
+
+    def analysisSettings(self, director):
+        self.debug = journal.debug('analysisSettings')
+        orm = director.clerk.orm
+        doc = lc.document(id='analysis-configuration-doc')
+        #if appropriate, put in the md planning tools
+        if self.inventory.analysisType in ['csfcalc','isfcalc','dos',]:
+            doc.paragraph(
+                text=['Use the following planning tools to configure the analysis calculation:',])
+            #doc = lc.document(title = "")
+            container = lc.document(title = "")
+            #container.add(load(actor='material_simulations/mdPlan', routine='createMdPlanForm'))
+            container.oncreate = [
+                select(element=container).append(
+                  load(actor='material_simulations/mdPlan', routine='createMdPlanForm')),
+                ]
+            doc.add(container)
+        #now put in the Q vector planning tool
+        
+        #import the correct analysis
+        className = self.inventory.analysisType        
+        exec('from vnfb.dom.analysis.'+className+' import '+className)
+#        exec('from '+analysisPaths[self.inventory.analysisType]+' import '+
+#             className)
+        analysisDbClass = eval(className)
+        analysisDbObj = director.clerk.insertNewRecordWithID(analysisDbClass)
+        #load trajectory      
+        trajectoryDbObj = director.clerk._getEntry('Trajectory', 
+            id = self.inventory.trajectoryId, maindom = 'vnfb.dom.material_simulations')
+        analysisDbObj.trajectory = trajectoryDbObj
+        self.inventory.analysisId = analysisDbObj.id
+        analysisDbObj.creator = director.sentry.username
+        import time
+        analysisDbObj.date = time.ctime()
+        #orm.save(analysisObj, save_not_owned_referred_object=False)
+        director.clerk.db.updateRecord(analysisDbObj)
+        analysisObj = orm.record2object(analysisDbObj)
+        drawer = director.painter.paintObj.drawers.getDrawer(analysisObj.__class__)
+        drawer.actor = 'orm/analysis/%s' % analysisObj.__class__.__name__.lower()
+        editview = drawer(analysisObj)
+        doc.add(editview)
+        #container.oncreate = [
+        #    select(element=container).append(        
+        #      #load(actor='analysis/selectdynamics', routine='createListView')
+        #      load(actor=actorName, routine='edit')#, id = dynamicsId)
+        #      ),
+        #    ]
+#        sA.add(load(actor=actorName, routine='edit', id = self.inventory.dynamicsId))
+#        sB          = splitter.section()
+#        docSub      = lc.document(title = "")
+        b = lc.button(label='Create job'); 
+        doc.add(b)
+        b.onclick = load(
+            #actor=self.name, routine='runDirectly', 
+            analysisId = self.inventory.analysisId,
+            analysisType = self.inventory.analysisType,
+            actor=self.name, routine='configureSubmissionQueue')
+        return select(id='main-display-area').replaceContent(doc)
+    
+    def configureSubmissionQueue(self, director):
+        orm = director.clerk.orm
+        className = self.inventory.analysisType
+        analysisRecord = director.clerk._getEntry(className, 
+                id = self.inventory.analysisId, maindom = 'vnfb.dom.analysis')
+        #note the code below makes a slightly different object than the vsat one..
+        #..it has Computation as superclass
+        analysisObj = orm.record2object(analysisRecord)
+        analysisObj.trajectory.trajectory_path = 'gulp.nc' #reinitialize path to current directory
+        analysisInputFileContents = analysisObj._getInputFile()
+        #write the input file
+        datadir = director.dds.abspath(analysisRecord)
+        if not os.path.exists(datadir): 
+            os.makedirs(datadir)
+        inputFilePath = director.dds.abspath(analysisRecord, 
+                        filename = self.inventory.analysisType+'.inp')
+        open(inputFilePath, 'w').write(analysisInputFileContents)
+        #
+        domPath = 'analysis.'+className+'.'+className
+        return director.redirect(actor = 'job', routine = 'create', 
+                computation_type = domPath, 
+                computation_id = self.inventory.analysisId)
+        
+#    def runDirectly(self, director):
+#        orm = director.clerk.orm
+#        className = analysisPaths[self.inventory.analysisType].split('.')[-1]
+#        exec('from '+analysisPaths[self.inventory.analysisType]+' import '+
+#             className)
+#        analysisClass = eval(className)
+#        analysisObj = orm.load(analysisClass, id=self.inventory.analysisId)
+#        analysisResult = analysisObj.compute()
+#        x, y = analysisResult.getXY()
+#        # plot
+#        doc = lc.document(title='analysis %s' % self.inventory.analysisId)
+#        p = lc.plot2d()
+#        p.curve(x=list(x), y=list(y))
+#        return select(id = 'main-display-area').replaceContent(doc)
+#        for i,y in enumerate(ys):
+#            p.curve(x=list(x), y=list(y), label=str(i))
+
+    def startFormShowError(self, director, errors=None):
+        from luban.content import select
+        return [select(id='%s-input' % name).showError(text)
+            for name, text in errors.iteritems()]
+    
+    def __init__(self, name='analysis/mdanalysiswizard'):
+        super(Actor, self).__init__(name)
+        return
+
+import os
+def actor(): return Actor()
+
+
+# version
+__id__ = "$Id$"
+
+# End of file 
+

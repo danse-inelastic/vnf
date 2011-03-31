@@ -1,0 +1,76 @@
+# -*- Python -*-
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                   Jiao Lin
+#                      California Institute of Technology
+#                      (C) 2006-2011  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+from pyre.components.Component import Component
+
+class Cod(Component):
+
+
+    class Inventory(Component.Inventory):
+
+        import pyre.inventory
+
+        host = pyre.inventory.str('host')
+        user = pyre.inventory.str('user')
+        passwd = pyre.inventory.str('passwd')
+        db = pyre.inventory.str('db')
+    
+
+    def __init__(self, name='cod', facility='cod'):
+        super(Cod, self).__init__(name, facility)
+        return
+
+
+    def connect(self):
+        host = self.inventory.host
+        user = self.inventory.user
+        passwd = self.inventory.passwd
+        db = self.inventory.db
+        if not db:
+            raise RuntimeError, "db not specified"
+
+        import MySQLdb
+        conn = MySQLdb.connect(
+            host = host,
+            user = user,
+            passwd = passwd,
+            db = db,
+            )
+        return conn
+
+
+    def sendServerDownAlert(self, error, director):
+        from vnfb.utils.communications import announce
+        announce(director, 'cod-server-down', error)
+        return
+
+
+    def testConnection(self, director):
+        try:
+            self.connect()
+        except:
+            import traceback
+            tb = traceback.format_exc()
+            self.sendServerDownAlert(tb, director)
+        return
+
+
+def cod(): return Cod()
+codmanager = cod
+
+    
+# version
+__id__ = "$Id$"
+
+# End of file 

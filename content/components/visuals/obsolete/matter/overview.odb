@@ -1,0 +1,237 @@
+# -*- Python -*-
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                 Jiao Lin
+#                      California Institute of Technology
+#                      (C) 2006-2009  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+import numpy
+
+import luban.content as lc
+from luban.content import select, load, alert
+from luban.content.FormTextField import FormTextField
+from luban.content.FormTextArea import FormTextArea
+
+class Factory(object):
+
+    def __init__(self, director, id, type):
+        self.director = director
+        self.id = id
+        self.type = type
+        self.domaccess = director.retrieveDOMAccessor('matter')
+        self.matter = self.domaccess.getMatter(type, id)
+        self.actor = 'matter'
+
+
+    def create(self):
+        view = lc.document(id='matter-view')
+
+        titlebar = lc.splitter(Class='matter-view-title-bar')
+        view.add(titlebar)
+
+        matter = self.matter
+        view_label = matter.short_description or matter.id
+
+        # view indicator
+        view_indicator = self.createViewIndicator()
+        titlebar.section().add(view_indicator)
+
+        # info
+        matterinfo = self.createMatterInfoSection()
+        view.add(matterinfo)
+
+        director = self.director
+        # props
+        propsdoc = director.retrieveVisual(
+            'matter/computed-props',
+            director, self.id, self.type)
+        view.add(propsdoc)
+        
+        return view
+
+
+    def createViewIndicator(self):
+        view_indicator = lc.document(id='view-indicator')
+
+        actor = self.actor
+        view_indicator.add(
+            lc.link(
+                label=actor.capitalize()+'s', onclick=lc.load(actor=actor)
+                )
+            )
+        
+        view_indicator.paragraph(text=['/ '], Class='splitter')
+
+        label = self.getMatterLabel()
+        thislink = lc.link(
+            label = label,
+            onclick = lc.load(
+                actor=actor, routine='showMaterialView',
+                type = self.type, id = self.id)
+            )
+        view_indicator.add(thislink)
+
+        return view_indicator
+
+
+    def createMatterInfoSection(self):
+        splitter = lc.splitter(id='matter-info-section')
+        
+        namesec = splitter.section(id='matter-name-container')
+        namedoc = self.createNameDoc()
+        namesec.add(namedoc)
+
+        latticesec = splitter.section(id='matter-lattice-container')
+        latticedoc = self.createLatticeDoc()
+        latticesec.add(latticedoc)
+        
+        atomssec = splitter.section(id='matter-atoms-container')
+        atomsdoc = self.createAtomsDoc()
+        atomssec.add(atomsdoc)
+
+        return splitter
+
+
+    def createLatticeDoc(self):
+
+        doc = lc.document(title='Lattice', Class='matter-info-subsection')
+
+        matter = self.matter
+        
+        # 
+        cl = matter.cartesian_lattice
+        cl = numpy.array(cl)
+        cl.shape = 3,3
+
+        #
+        names = ['a', 'b', 'c']
+        
+        for name, v in zip(names, cl):
+            doc.add(self.createLatticeVectorDoc(name, v))
+
+        return doc
+    
+    
+    def createLatticeVectorDoc(self, name, vec):
+        splitter = lc.splitter(Class='lattice-vector')
+        namesec = splitter.section()
+        valuesec = splitter.section()
+        editsec = splitter.section(Class='editlink-container')
+        
+        namep = namesec.paragraph(text=[name, '='], Class='label')
+        
+        vp = valuesec.paragraph(text=[str(vec)], Class='editable')
+        vi = FormTextField(hidden=True, value=str(vec)); valuesec.add(vi)
+
+        vi.onblur = [
+            select(element=vp).show(),
+            select(element=vi).hide(),
+            ]
+        getnewvalue = select(element=vi).getAttr('value')
+        kwds = {name: getnewvalue}
+        vi.onchange = [
+            load(
+                actor=self.actor, routine='changeLattice%s'%name,
+                id = self.id, type = self.type,
+                **kwds),
+            select(element=vp).show(),
+            select(element=vp).setAttr(value=getnewvalue),
+            select(element=vi).hide(),
+            ]
+
+        l = lc.link(label='edit'); editsec.add(l)
+        l.onclick = [
+            select(element=vp).hide(),
+            select(element=vi).show(),
+            select(element=vi).focus(),
+            ]
+
+        return splitter
+    
+
+    def createAtomsDoc(self):
+        doc = lc.document(title='Atoms', Class='matter-info-subsection')
+
+        matter = self.matter
+        
+        splitter = doc.splitter()
+        left = splitter.section()
+        right = splitter.section(Class='editatoms-container')
+        #
+        symbols = matter.atom_symbols
+        n = len(symbols)
+        coords = matter.fractional_coordinates
+        coords = numpy.array(coords)
+        coords.shape = n, 3
+        atoms = [
+            '%s: %s' % (symbol, coord)
+            for symbol, coord in zip(symbols, coords)
+            ]
+        atoms = '\n'.join(atoms)
+
+        #
+        ta = FormTextArea(readonly=True, value=atoms); left.add(ta)
+
+        #
+        editlink = lc.link(label='edit'); 
+        right.document().add(editlink)
+
+        expandviewlink = lc.link(label='larger view'); 
+        right.document().add(expandviewlink)
+        return doc
+
+
+    def createNameDoc(self):
+        matter = self.matter
+        
+        doc = lc.document(title='Name', Class='matter-info-subsection')
+        splitter = doc.splitter()
+        left = splitter.section()
+        right = splitter.section(Class='editlink-container')
+
+        label = self.getMatterLabel()
+        p = left.paragraph(text=[label], Class='editable')
+
+        i = FormTextField(hidden=True, value=matter.short_description); left.add(i)
+
+        i.onblur = [
+            select(element=p).show(),
+            select(element=i).hide(),
+            ]
+        i.onchange = load(
+            actor=self.actor, routine='changeDescriptionAndUpdateMatterView',
+            id = self.id, type = self.type,
+            description = select(element=i).getAttr('value'),
+            )
+                          
+
+        l = lc.link(label='edit'); right.add(l)
+        l.onclick = [
+            select(element=p).hide(),
+            select(element=i).show(),
+            select(element=i).focus(),
+            ]
+
+        return doc
+
+
+    def getMatterLabel(self):
+        matter = self.matter
+        return matter.short_description or matter.id
+        
+
+
+def visual(director, id, type):
+    return Factory(director, id, type).create()
+    
+# version
+__id__ = "$Id$"
+
+# End of file 

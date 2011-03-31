@@ -1,0 +1,57 @@
+# -*- Python -*-
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                      California Institute of Technology
+#                        (C) 2008  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+from vnfb.components.ComputationResultRetriever import ComputationResultRetriever as base
+class Retriever(base):
+
+    def _retrieveResultsFor(self, computation):
+        director = self.director
+        db = director.clerk.db
+        orm = director.clerk.orm
+        analysisObj = orm.record2object(computation)
+
+        # must have a job
+        self.declareProgress(0.1, 'look up job')
+        job = computation.getJob(db)
+
+        # check result is available
+        self.declareProgress(0.2, 'check if results exist')
+        self._check_results_sanity(expected_results=[analysisObj._dosFile], job=job)
+
+        # create a dos record to save dos
+        self.declareProgress(0.4, 'create a DOS data object to store the result')
+        from vnfb.dom.material_simulations.PhononDOS import PhononDOSTable
+        dos = self._make_result_holder(computation, PhononDOSTable)
+        #dos.matter = computation.matter  #analysis calc does not have matter ref!
+        db.updateRecord(dos)
+
+        # save the result from job to dos
+        
+        #dosObj = orm.record2object(dos)
+        #server = self.db.dereference(job.server)
+        #is_available = self.dds.is_available
+        #dosObj.read(analysisObj.dosFile)
+        #from idf import DOS
+        #DOS.write(dosObj.e, dosObj.i, 'data.idf')
+        self.declareProgress(0.5, 'get result from server')
+        #self._save_result(computation, job, analysisObj.dosFile, dos, 'data.txt')
+        self._save_result(computation, job, 'data.idf', dos, 'data.idf')
+
+def retriever():
+    return Retriever('mddoscalc')
+
+
+# version
+__id__ = "$Id$"
+
+# End of file 

@@ -1,0 +1,92 @@
+#!/usr/bin/env python
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                 Jiao Lin
+#                      California Institute of Technology
+#                      (C) 2006-2009  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+from luban.content import load, select, alert
+import luban.content as lc
+
+
+class Factory(object):
+
+    kernels_view_id = 'scatterer-kernels-view'
+    kernel_view_id = 'scatterer-kernel-view'
+
+
+    def __init__(self, id, director):
+        self.id = id
+        self.director = director
+        self.domaccess = director.retrieveDOMAccessor('scatterer')
+        self.record = self.domaccess.getRecord(id)
+        kernelsref = self.record.kernels
+        self.kernels = kernelsref.dereference(self.domaccess.db)
+        return
+
+
+    def __call__(self):
+        doc = lc.document(
+            title='Kernels', id=self.kernels_view_id,
+            collapsable=True)
+
+        director = self.director
+        id = self.id
+        kernels = self.kernels
+        
+        sp = lc.splitter(); doc.add(sp)
+        left = sp.section(id='scatterer-editor-kernels-portlet-container')
+        right = sp.section(id='scatterer-editor-kernel-view-container')
+
+        portlet = lc.portlet(id='scatterer-editor-kernels-portlet', title='kernel list')
+        left.add(portlet)
+        for i, (key, kernel) in enumerate(kernels):
+            item = director.retrieveVisual(
+                'scatterer/editor/kernelsview-kernel-portletitem',
+                id=id, director=director, kernel=kernel)
+            item.selected = i==0
+            portlet.add(item)
+            continue
+        portlet.item(
+            id = 'scatterer-add-a-kernel-portletitem',
+            label='add a kernel',
+            onclick=load(
+              actor='scatterer/editor', routine='addKernel',
+              id=id),
+            selected = not bool(kernels)
+            )
+
+        if kernels:
+            key0, kernel0 = kernels[0]
+            kernelview = director.retrieveVisual(
+                'scatterer/editor/kernelview',
+                id = id, director=director, kernel=kernel0)
+            right.add(kernelview)
+
+        else:
+            doc1 = right.document(id=self.kernel_view_id)
+            doc1.paragraph(
+                text=['Please add a new kernel by selecting the'\
+                      '"add a kernel" on the left menu']
+                )
+        
+        return doc
+
+
+    
+def visual(id, director):
+    return Factory(id, director)()
+
+
+# version
+__id__ = "$Id$"
+
+# End of file 
+

@@ -1,0 +1,122 @@
+#!/usr/bin/env python
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                 Jiao Lin
+#                      California Institute of Technology
+#                      (C) 2006-2009  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+from luban.content import alert, load, select
+
+from luban.components.AuthorizedActor import AuthorizedActor as base
+
+
+class Actor(base):
+
+
+    class Inventory(base.Inventory):
+
+        import pyre.inventory
+        table = pyre.inventory.str(name='table')
+        table.meta['tip'] = 'name of the master table'
+        
+        label = pyre.inventory.str(name='label')
+        entity = pyre.inventory.str(name='entity')
+
+        entities = pyre.inventory.list(name='entities')
+
+        entity_has_type = pyre.inventory.bool(name='entity_has_type', default=True)
+        type = pyre.inventory.str(name='type', default='')
+        type.meta['tip'] = 'name of the db table of interest'
+
+
+    def addEntities(self, director):
+        entities = self.inventory.entities
+        if not entities: return alert('please select some items to apply label')
+
+        entity_has_type = self.inventory.entity_has_type
+        if entity_has_type:
+            assert len(entities)%2==0
+
+        labelaccess = director.retrieveDOMAccessor('label')
+        labelaccess.importAllDataObjects()
+
+        table = self.inventory.table
+        label = self.inventory.label
+
+        if not label: return alert('please select a label to apply')
+
+        records = []
+        if entity_has_type:
+            for i in range(len(entities)/2):
+                id = entities[2*i]
+                type = entities[2*i+1]
+                records.append(director.clerk.getRecordByID(type, id))
+        else:
+            type = self.inventory.type
+            for id in entities:
+                records.append(director.clerk.getRecordByID(type, id))
+        
+        actions = []
+        for record in records:
+            # already labeled, skip
+            if labelaccess.isLabeled(record, table, label): continue
+
+            try:
+                labelaccess.createLabel(label=label, targettable=table, entity=record)
+            except RuntimeError, msg:
+                e = 'Failed to apply label %r: %s' % (label, msg)
+                actions.append(alert(e))
+            continue
+        
+        return actions or None
+
+
+    def new(self, director):
+        label = self.inventory.label
+        table = self.inventory.table
+        
+        labelaccess = director.retrieveDOMAccessor('label')
+        labels = labelaccess.getLabelNames(table)
+
+        smartlabelaccess = director.retrieveDOMAccessor('smartlabel')
+        smartlabels = smartlabelaccess.getLabelNames(table)
+        
+        if label in labels or label in smartlabels:
+            return alert('Label %r already exist' % label)
+        
+        labelaccess.createLabel(
+            label = label,
+            targettable = table,
+            )
+
+        # this depends on MasterTableFactory implementation not very good
+        id = '%s-table-applylabel-selector' % table
+        a1 = select(id=id).formfield('addOption', value=-1, label=label)
+        a1b = select(id=id).setAttr(selection=label)
+    
+        id = '%s-table-collection-selector' % table
+        a2 = select(id=id).formfield('addOption', value=-1, label=label)
+
+        return [a1, a1b, a2]
+    
+
+    def __init__(self, name='smartlabel'):
+        super(Actor, self).__init__(name)
+        return
+
+
+def actor(): return Actor()
+
+
+# version
+__id__ = "$Id$"
+
+# End of file 
+

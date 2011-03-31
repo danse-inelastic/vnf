@@ -2,9 +2,9 @@
 #
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
-#                             Michael A.G. Aivazis
+#                                 Jiao Lin
 #                      California Institute of Technology
-#                      (C) 1998-2005  All Rights Reserved
+#                      (C) 2006-2011  All Rights Reserved
 #
 # {LicenseText}
 #
@@ -15,21 +15,14 @@
 def main():
 
 
-    from vnf.applications.ITaskApp import ITaskApp
+    from vnfb.applications.ITaskApp import ITaskApp
 
 
     class App(ITaskApp):
 
 
         def _getPrivateDepositoryLocations(self):
-            from os.path import join
-            root = '..'
-            content = join(root, 'content')
-            config = join(root, 'config')
-            
-            from vnf.depositories import depositories
-            
-            return depositories(content)+[config]
+            return ['/tmp/luban-services', '../config', '../content/components']
 
 
     app = App()

@@ -1,16 +1,6 @@
 # -*- Makefile -*-
-#
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-#
-#                               Michael A.G. Aivazis
-#                        California Institute of Technology
-#                        (C) 1998-2005  All Rights Reserved
-#
-# <LicenseText>
-#
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-PROJECT = vnf
+PROJECT = vnfb
 PACKAGE = bin
 
 #--------------------------------------------------------------------------
@@ -29,40 +19,58 @@ distclean::
 	BLD_ACTION="distclean" $(MM) recurse
 
 
+#--------------------------------------------------------------------------
+#
+# export
+
 EXPORT_DATAFILES = \
+	activateserver.py \
+	announce.py \
 	approveUser.py \
-	checkdb.py \
-	createInstrument.py \
-	delete.py \
-	find-dangling-references.py \
-	idd.py \
+	checkcod.py \
+	checkservers.py \
+	checkcod.py \
+	createdataobject.py \
+	createtable.py \
+	cron-daemons.sh \
+	cron-monitors.sh \
+	deleterecord.py \
+	destroydb.py \
+	destroydataobject.py \
+	doma.py \
+	dumpdb.py \
+	epscjobdriver.py \
+	establishglobalpointers.py \
+	establish_ssh_tunnels.py \
+	findchildrenofdataobject.py \
+	findreferrals.py \
+	getuserlist.py \
+	initdb-alpha.py \
 	initdb.py \
-	ipad.py \
+	initdb.sh \
 	itaskapp.py \
-	journald.py \
 	launch-detached.py \
-	migratetable.py \
-	packjobdir.py \
-	project.py \
+	listservers.py \
+	loaddataobject.py \
+        packjobdir.py \
+        jobdriver.py \
+	restoredb.py \
 	retrieveresults.py \
-	signJar.py \
-	templator.py \
+	run-daemons.sh \
+	run-monitors.sh \
+	startservices.sh \
+	stopservices.sh \
 	timer.py \
 	updatejobstatus.py \
-	updatejobstatus.sh \
 
 
-CP_F = rsync 
+
+CP_F = rsync -r --copy-unsafe-links
 EXPORT_DATA_PATH = $(EXPORT_ROOT)/$(PROJECT)/$(PACKAGE)
 
-export-data-files:: 
+export-data-files::
 	mkdir -p $(EXPORT_DATA_PATH); \
 	for x in $(EXPORT_DATAFILES); do { \
 	  $(CP_F) $$x $(EXPORT_DATA_PATH)/ ; \
-        } done
+	} done
 
-
-# version
-# $Id: Make.mm,v 1.1.1.1 2006-11-27 00:09:14 aivazis Exp $
-
-# End of file

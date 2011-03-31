@@ -1,0 +1,138 @@
+# -*- Python -*-
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                 Jiao Lin
+#                      California Institute of Technology
+#                      (C) 2006-2010  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+from luban.content import load, select, alert
+import luban.content as lc
+
+from luban.content.FormSelectorField import FormSelectorField
+
+
+class Factory(object):
+
+
+    def __init__(self, id=None, experiment=None, domaccess=None, director=None):
+        if director is None:
+            raise RuntimeError
+        self.director = director
+
+        if not domaccess:
+            domaccess = director.retrieveDOMAccessor('experiment')
+        self.domaccess = domaccess
+        
+        if id is None and experiment is None:
+            raise RuntimeError
+
+        if not experiment:
+            experiment = domaccess.getExperimentRecord(id)
+        self.experiment = experiment
+
+        if not id:
+            id = experiment.id
+        self.id = id
+        
+        return
+    
+
+    def __call__(self, mode=None):
+        doc = lc.document(id='instrumentpanel')
+
+        if mode is None:
+            experiment = self.experiment
+            instrument = experiment.instrument
+            instrument = instrument and instrument.id
+            if instrument:
+                mode = 'configuration'
+            else:
+                mode = 'selector'
+
+        h = '_create%sDoc' % mode.capitalize()
+        interior = getattr(self, h)()
+        doc.add(interior)
+        
+        return doc
+
+
+    def _createSelectorDoc(self):
+        director = self.director
+        domaccess = self.domaccess
+        id = self.id
+        doc = director.retrieveVisual(
+            'neutronexperiment/edit/instrumentselector',
+            id=id, domaccess=domaccess, director=director,
+            )
+        return doc
+
+
+    def _createConfigurationDoc(self):
+        director = self.director
+        domaccess = self.domaccess
+
+        experiment = self.experiment
+        
+        # instrument configuration
+        instrumentrecord = experiment.instrument.dereference(domaccess.db)
+        ic = domaccess.getInstrumentConfiguration(experiment)
+        # try to find if there is a wizard factory
+        m = 'vnfb.content.visuals.neutronexperiment.instruments.%s' % instrumentrecord.name
+        try:
+            m = __import__(m, {}, {}, [''])
+            wizard_factory = getattr(m, 'configuration_wizard')
+        except ImportError:
+            wizard_factory = None
+
+        # if there is a wizard factory, use it
+        if wizard_factory:
+            wizard = wizard_factory(experiment)
+            return wizard
+
+        # otherwise
+        return self._createManualconfigurationDoc()
+
+
+    def _createManualconfigurationDoc(self):
+        director = self.director
+        
+        container = lc.document(Class='container')
+
+        # button to change to instrument selector
+        selectinstrumentbutton = lc.button(
+            label='Choose a different instrument',
+            tip=('Careful! if you choose a different instrument, '\
+                 'all your current instrument configuration will be lost.'),
+            onclick=select(id='instrumentpanel').replaceBy(self(mode='selector'))
+            )
+        selectinstrumentbutton.Class = 'float-right'
+        container.add(selectinstrumentbutton)
+
+        configdoc = director.retrieveVisual(
+            'neutronexperiment/edit/instrumentconfiguration',
+            id = self.id, director=director)
+        container.add(configdoc)
+        
+        return container
+
+
+
+def visual(id=None, experiment=None, domaccess=None, director=None, mode=None):
+    """
+    id: experiment id
+    experiment: experiment record
+    """
+    return Factory(id=id, experiment=experiment, domaccess=domaccess, director=director)\
+           (mode=mode)
+
+# version
+__id__ = "$Id$"
+
+# End of file 

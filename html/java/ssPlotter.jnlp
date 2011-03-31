@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jnlp spec="1.0+" codebase="http://vnf.caltech.edu/vnf/alpha/java">
+    <information>
+        <title>plotter</title>
+        <vendor>Danse</vendor>
+        <homepage href="http://danse.us" />
+        <description></description>
+    </information>
+    <offline-allowed/>
+    <security>
+    	<all-permissions/>
+    </security>
+    <resources>
+        <j2se version="1.5+" java-vm-args="-Xmx512m"/>
+        <jar href="ssPlotter.jar"/>
+        <jar href="visad.jar"/>
+        <extension href="http://download.java.net/media/java3d/webstart/release/java3d-latest.jnlp"/>
+    </resources>
+    <application-desc main-class="ss.SpreadSheet" />
+</jnlp>

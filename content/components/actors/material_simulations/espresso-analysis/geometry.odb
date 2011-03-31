@@ -1,0 +1,52 @@
+#!/usr/bin/env python
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                               Alex Dementsov
+#                      California Institute of Technology
+#                        (C) 2009  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+import luban.content as lc
+from vnfb.qeutils.qegrid import QEGrid
+from vnfb.components.QEAnalysis import QEAnalysis as base
+
+class Actor(base):
+
+    def _simData(self, director, splitter):
+        "Displayed input and output geometry"
+        sInp    = splitter.section()
+        sOut    = splitter.section()
+
+        self._inputGeometry(director, sInp)
+        self._outputGeometry(director, sOut)
+
+
+    def _inputGeometry(self, director, section):
+        section.add(lc.paragraph(text="Input Geometry", Class="qe-section"))
+        table       = QEGrid(lc.grid(Class = "qe-table-analysis"))
+        section.add(table.grid())
+        table.addRow(("Lattice:", self._pwresult.latticeInput()))
+        table.addRow(("Positions:", self._pwresult.positionInput()))
+        table.setColumnStyle(0, "qe-cell-param-analysis")
+
+
+    def _outputGeometry(self, director, section):
+        section.add(lc.paragraph(text="Output Geometry", Class="qe-section"))
+        table       = QEGrid(lc.grid(Class = "qe-table-analysis"))
+        section.add(table.grid())
+        table.addRow(("Lattice:", self._pwresult.latticeOutput()))
+        table.addRow(("Positions:", self._pwresult.positionOutput()))
+        table.setColumnStyle(0, "qe-cell-param-analysis")
+
+
+def actor():
+    return Actor(name='material_simulations/espresso-analysis/geometry')
+
+__date__ = "$Mar 14, 2010 10:29:08 AM$"
+
+

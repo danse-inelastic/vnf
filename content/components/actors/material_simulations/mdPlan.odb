@@ -1,0 +1,242 @@
+#!/usr/bin/env python
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                      California Institute of Technology
+#                      (C) 2006-2009  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+from luban.content import load, select, alert
+import luban.content as lc
+from vnfb.qeutils.qegrid import QEGrid
+
+from luban.components.AuthorizedActor import AuthorizedActor as base
+#from luban.components.FormProcessor import FormProcessor as base
+
+class Actor(base):
+
+
+    class Inventory(base.Inventory):
+
+        import pyre.inventory
+
+        #passed
+        structureId = pyre.inventory.str('structureId', default = '')
+        
+        #user input
+        energyCutoff = pyre.inventory.float('energyCutoff', default = 40.0)
+        energyCutoff.meta['label'] = 'Top of the energy axis (meV)'
+        energyCutoff.meta['tip'] = (
+            'Please input an energy maximum'
+            )
+        energyCutoff.meta['rangeError'] = (
+            'Please enter a positive number.'
+            )
+        
+        #user input
+        energyResolution = pyre.inventory.float('energyResolution', default = 0.5)
+        energyResolution.meta['label'] = 'Spacing between data points on the energy axis (meV)'
+        energyResolution.meta['tip'] = (
+            'Please input a resolution in energy'
+            )
+        energyResolution.meta['rangeError'] = (
+            'Please enter a positive number.'
+            )
+        
+        #user input
+        timestep = pyre.inventory.float('timestep', default = '0.001')
+        timestep.meta['label'] = 'Simulation timestep (ps)'
+        timestep.meta['tip'] = (
+            'Please input a timestep'
+            )
+        timestep.meta['rangeError'] = (
+            'Please enter a positive number.'
+            )
+        
+        #output
+        results = pyre.inventory.str('results', default = 'None')
+        
+        #user input
+        ax = pyre.inventory.str('ax',default = '1.0')
+        ay = pyre.inventory.str('ay',default = '0.0')
+        az = pyre.inventory.str('az',default = '0.0')
+        bx = pyre.inventory.str('bx',default = '0.0')
+        by = pyre.inventory.str('by',default = '1.0')
+        bz = pyre.inventory.str('bz',default = '0.0')
+        cx = pyre.inventory.str('cx',default = '0.0')
+        cy = pyre.inventory.str('cy',default = '0.0')
+        cz = pyre.inventory.str('cz',default = '1.0')
+        
+
+    def default(self, director):
+#        doc = lc.document(title='Guide', dockable=True, closable=True)
+#        doc.document(title='content')
+#        return select(id='').append(doc)
+        return select(id='mdPlan').show()
+    
+
+    def createMdPlanWindow(self, director):
+        doc = lc.document(id='mdPlan', title='Md and Analysis Planning Tools', dockable=True)#, hidden=True)
+
+        hdoc = self.createMdPlanDocument(director)
+        doc.document(id='mdPlan-window-interior').add(hdoc)
+
+        b = lc.button(
+            label='minimize',
+            onclick=select(id='dock').dock('attach', select(element=doc)),
+            )
+        doc.add(b)
+        
+        return select(id='').append(doc)
+
+
+    def showMdPlanWindow(self, director):
+        '''show the mdPlan window
+
+        page: the page to show in the MdPlan window
+        '''
+        newdoc = self.createMdPlanDocument(director)
+        usenewdoc = select(id='mdPlan-window-interior').replaceContent(newdoc)
+        return select(id='dock').dock('release', select(id='mdPlan'), callback=usenewdoc)
+        #newwin = self.createHelpWindow(director)
+        return [
+            #select(id='help-container').replaceBy(newdoc),
+            #select(id='help').replaceBy(newwin),
+            select(id='dock').dock('release', select(id='mdPlan')),
+            ]
+        
+    def createMdPlanPage(self, director):  
+        page = lc.page(title="Md planning tools") 
+        title = 'Md and analysis parameters for energy axis resolution' 
+        page.add(self.createMdPlanForm(director))
+        return page
+
+    def createMdPlanForm(self, director):  
+
+        form = lc.form(id='energyAxisPanel', title='Determine energy axis')
+        
+        property = 'energyCutoff'
+        meta = getattr( self.Inventory, property ).meta
+        field = form.text(
+            id = _input_widget_ID(property),
+            name = property,
+            label = meta['label'],
+            value = getattr( self.inventory, property ),
+            )
+        #field.help = meta['tip']
+        
+        property = 'energyResolution'
+        meta = getattr( self.Inventory, property ).meta
+        field = form.text(
+            id = _input_widget_ID(property),
+            name = property,
+            label = meta['label'],
+            value = getattr( self.inventory, property ),
+            )
+        #field.help = meta['tip']
+        
+        property = 'timestep'
+        meta = getattr( self.Inventory, property ).meta
+        field = form.text(
+            id = _input_widget_ID(property),
+            name = property,
+            label = meta['label'],
+            value = getattr( self.inventory, property ),
+            )
+        #field.help = meta['tip']
+            
+#        p = form.paragraph()
+#        p.text = "Optional: inspect Q-space coverage from supercell"
+#        supercellGrid       = QEGrid(lc.grid(Class="ff-table"))
+#        form.add(supercellGrid.grid())
+        #supercellGrid.setColumnStyle(0, "qe-cell-param")
+            
+#        formSC = lc.form()    
+#        prefix = 'input'
+#        self.ax = formSC.text(id='ax', name='%s.ax' % prefix, label='a: (x)', 
+#                      value = self.inventory.ax) 
+#        self.ay = formSC.text(id='ay', name='%s.ay' % prefix, label='(y)', 
+#                      value = self.inventory.ay) 
+#        self.az = formSC.text(id='az', name='%s.az' % prefix, label='(z)', 
+#                      value = self.inventory.az) 
+#        supercellGrid.addRow((self.ax, self.ay, self.az))
+#        
+#        self.bx = formSC.text(id='bx', name='%s.bx' % prefix, label='b: (x)', 
+#                      value = self.inventory.bx)
+#        self.by = formSC.text(id='by', name='%s.by' % prefix, label='(y)', 
+#                      value = self.inventory.by)   
+#        self.bz = formSC.text(id='bz', name='%s.bz' % prefix, label='(z)', 
+#                      value = self.inventory.bz)  
+#        supercellGrid.addRow((self.bx, self.by, self.bz))
+#        
+#        self.cx = formSC.text(id='cx', name='%s.cx' % prefix, label='c: (x)', 
+#                      value = self.inventory.cx) 
+#        self.cy = formSC.text(id='cy', name='%s.cy' % prefix, label='(y)', 
+#                      value = self.inventory.cy) 
+#        self.cz = formSC.text(id='cz', name='%s.cz' % prefix, label='(z)', 
+#                      value = self.inventory.cz)
+#        supercellGrid.addRow((self.cx, self.cy, self.cz))
+        
+        # calculate
+        button = form.submitbutton(label="calculate")
+        form.onsubmit = select(id='energyAxisPanel').submit(
+            actor = 'material_simulations/mdPlan',
+            routine = 'calculateMdInfo',
+#            structureId = self.inventory.structureId,
+            )
+
+        #now add the plot and the info
+        #doc = container.document(title='Md sampling parameters', id='computedSampling')
+        return form
+    
+    def calculateMdInfo(self, director):
+        from vsat.MdPlan import MdPlan
+        mdPlan = MdPlan(self.inventory.energyCutoff, 
+                        self.inventory.energyResolution, 
+                        self.inventory.timestep)
+#        return load(actor='material_simulations/mdPlan', routine='resultsPage', 
+#                    results=mdPlan.getInfo(), include_credential = False)
+        resultsDoc = lc.document(id='results')
+        resultsDoc.paragraph()
+        #resultsDoc.text=['<br>', mdPlan.getHtmlInfo()]
+        analysisGrid = QEGrid(lc.grid(Class="qe-table"))
+        for desc,val in mdPlan.getTupleInfo():
+            analysisGrid.addRow((desc, str(val)))
+            
+        resultsDoc.add(analysisGrid.grid())
+        
+        button = lc.button(label="redo")
+        button.onclick = select(id='energyAxisPanel').replaceContent(load(
+            actor = 'material_simulations/mdPlan',
+            routine = 'createMdPlanForm',
+            energyCutoff = self.inventory.energyCutoff,
+            energyResolution = self.inventory.energyResolution,
+            timestep = self.inventory.timestep,
+#            structureId = self.inventory.structureId,
+            ))
+        resultsDoc.add(button)
+        
+        #return select(id='energyAxisPanel').append(resultsDoc)
+        return select(id='energyAxisPanel').replaceContent(resultsDoc)
+        #return resultsDoc
+
+
+    def __init__(self, name='mdPlan'):
+        super(Actor, self).__init__(name)
+
+def _input_widget_ID(name):
+    return '%s-input' % name
+
+
+def actor(): return Actor()
+
+
+# version
+__id__ = "$Id$"
+
+# End of file 
+

@@ -1,0 +1,49 @@
+# -*- Python -*-
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                 Jiao Lin
+#                      California Institute of Technology
+#                      (C) 2006-2010  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+# the panel to show at start of acl UI
+
+from luban.content import load, select, alert
+import luban.content as lc
+
+from vnfb.components.visuals.AdminVisualFactory import AdminVisualFactory as base
+class Factory(base):
+
+    def create(self, director=None):
+        doc = lc.document()
+        vi = self.viewindicator(director); doc.add(vi)
+        vis = director.retrieveVisual('admin/acl/start_page')
+        doc.add(vis)
+        return doc
+
+
+    def viewindicator(self, director):
+        path = []
+
+        actor, routine = 'admin', 'reloadStartPanel'
+        path.append(('Administration', lc.load(actor=actor, routine=routine)))
+
+        actor, routine = 'admin', 'loadApp'
+        action = lc.load(actor=actor, routine=routine, app='acl')
+        path.append(('acl', action))
+
+        return director.retrieveVisual('view-indicator', path=path)
+
+
+visual = Factory()
+
+
+# version
+__id__ = "$Id$"
+
+# End of file 

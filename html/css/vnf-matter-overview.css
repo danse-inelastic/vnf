@@ -1,0 +1,73 @@
+/*  -*- CSS -*-  */
+
+#matter-info-section {
+    margin: 0.8em 0;
+    padding: 0.5em;
+    background-color: #f5f5f5;
+    -moz-border-radius: 1em;
+    -webkit-border-radius: 1em;
+}
+#matter-info-section .luban-splitter {
+    width:95%;
+}
+#matter-info-section .luban-splitter td {
+    vertical-align:top;
+    font-size:0.88em;
+}
+/* sizes */
+#matter-name-container {
+    width:30%;
+}
+#matter-lattice-container {
+    width:35%;
+    border-left:1px dashed;
+    padding-left:1em;
+    border-right:1px dashed;
+}
+#matter-atoms-container {
+    padding-left:1em;
+    width:35%;
+}
+/* title */
+#matter-info-section h1.luban-document-title {
+    text-transform:uppercase;
+    font-size:0.8em;
+    font-weight:bold;
+    margin-bottom:0.8em;
+}
+/* document interior*/
+.matter-info-subsection.luban-document > div {
+    padding: 0.1em 0.5em;
+}
+/* link sections */
+.editlink-container-container {
+    width: 4em;
+}
+.editatoms-container-container {
+    width: 8em;
+}
+/* input widgets */
+#matter-info-section .luban-formfield {
+    margin:0;
+}
+#matter-info-section textarea {
+    height:5em;
+    min-height:3em;
+    width:80%;
+    max-width:90%;
+}
+/* texts */
+#matter-info-section p {
+    margin:0;
+}
+.lattice-vector p{
+    font-family: monospace;
+    font-size: 1.3em;
+}
+
+
+
+/* version */
+/* $Id$ */
+
+/* End of file  */

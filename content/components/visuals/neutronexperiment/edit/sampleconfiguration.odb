@@ -1,0 +1,112 @@
+# -*- Python -*-
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                 Jiao Lin
+#                      California Institute of Technology
+#                      (C) 2006-2010  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+from luban.content import load, select, alert
+import luban.content as lc
+
+from luban.content.FormSelectorField import FormSelectorField
+
+
+class Factory(object):
+
+
+    def __init__(self, id, director):
+        domaccess = director.retrieveDOMAccessor('experiment')
+        self.domaccess = domaccess
+        self.director = director
+        self.id = id
+        self.experiment = domaccess.getExperimentRecord(id)
+        sample = self.experiment.sample
+        self.sample = sample.dereference(domaccess.db)
+        return
+    
+
+    def __call__(self):
+        #
+        domaccess = self.domaccess
+        director = self.director
+        
+        # check if configuration exists
+        experiment = self.experiment
+        sc = experiment.sample_configuration
+        sc = sc and sc.id and sc.dereference(domaccess.db)
+        if not sc:
+            orm = domaccess.orm
+            sc = domaccess.createSampleConfiguration(orm.record2object(experiment))
+            sc = domaccess.orm(sc)
+            
+        # the container document
+        sample = self.sample
+        doc = lc.document(title='Configuring sample %s' % sample.short_description or sample.id)
+
+        # the editor
+        view = self._createEditor(sc); doc.add(view)
+
+        # continue button
+        switch = director.retrieveVisual(
+            'neutronexperiment/edit/switch-to-editpanel')\
+            .get(self.id, 'sample_environment')
+        continuebutton = lc.button(label='continue', onclick=switch)
+        doc.add(continuebutton)
+        
+        return doc
+
+
+    def _createEditor(self, sampleconfiguration):
+        typename = sampleconfiguration.__class__.__name__
+        handler = '_on' + typename
+        if not hasattr(self, handler):
+            handler = '_onSampleComponent'
+        handler = getattr(self, handler)
+        return handler(sampleconfiguration)
+
+
+    def _onScatterer(self, sc):
+        director = self.director
+        return director.retrieveVisual(
+            'neutronexperiment/edit/scatterereditor', id=sc.id, director=director)
+
+
+    def _onSampleAssembly(self, sc):
+        doc = lc.document(Class='container')
+        doc.oncreate = load(
+            actor='orm/sampleassemblies', routine='edit', id=sc.id)
+        return doc
+
+
+    def _onSampleComponent(self, sc):
+        tablename = sc.getTableName()
+        doc = lc.document(Class='container')
+        
+        director = self.director
+        doc1 = director.redirect(
+            actor='orm/%s' % tablename, routine='edit',
+            id=sc.id,
+            include_credential=False)
+
+        doc.add(doc1)
+        return doc
+
+
+
+def visual(id, director):
+    '''
+    id of the experiment
+    '''
+    return Factory(id, director)()
+
+# version
+__id__ = "$Id$"
+
+# End of file 

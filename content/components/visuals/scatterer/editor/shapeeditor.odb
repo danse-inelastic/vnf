@@ -1,0 +1,96 @@
+#!/usr/bin/env python
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                 Jiao Lin
+#                      California Institute of Technology
+#                      (C) 2006-2009  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+from luban.content import load, select, alert
+import luban.content as lc
+
+
+class Factory(object):
+
+    shape_view_id = 'scatterer-shape-view'
+
+
+    def __init__(self, id, director):
+        self.id = id
+        self.director = director
+        self.domaccess = director.retrieveDOMAccessor('scatterer')
+        r = self.record = self.domaccess.getRecord(id)
+        self.shape = r.shape and r.shape.id and r.shape.dereference(self.domaccess.db)
+        return
+
+
+    def __call__(self):
+        doc = lc.document(id='scatterer-shape-editor-doc', title='edit shape')
+
+        # tool bar to select shape type
+        # import pdb; pdb.set_trace()
+        shape = self.shape
+        shapetypename = shape and shape.__class__.__name__
+        selecttype = self._createTypeSelector(currenttype=shapetypename)
+        doc.add(selecttype)
+
+        # form panel
+        if self.shape:
+            shapetypename = self.shape.__class__.__name__
+            shapeform = self._createShapeForm(shapetypename)
+
+        else:
+            shapeform = lc.document(id='scatterer-shape-form', Class='container')
+        doc.add(shapeform)
+        
+        return doc
+
+
+    def _createTypeSelector(self, currenttype):
+        doc = lc.document(Class='container', id='scatterer-shape-type-selector-doc')
+        
+        doc.paragraph(text=['Select one of the shapes',])
+
+        toolbar = lc.toolbar(); doc.add(toolbar)
+        from vnfb.dom.geometry import shapenames
+        for shape in shapenames:
+            actor = 'scatterer/editor'
+            routine = 'onSelectShapeType'
+            action = load(actor=actor, routine=routine, id=self.id, shape=shape)
+            button = lc.button(
+                icon='shapes/%s.png' % shape.lower(),
+                tip = shape.lower(),
+                id = 'scatterer-shape-button-%s' % shape.lower(),
+                onclick=action)
+            toolbar.add(button)
+            if shape == currenttype:
+                button.Class = 'highlight'
+            continue
+        
+        return doc
+
+
+    def _createShapeForm(self, typename):
+        director = self.director
+        id = self.id
+        return director.retrieveVisual(
+            'scatterer/editor/shapeform',
+            id=id, director=director, typename=typename)
+
+
+    
+def visual(id, director):
+    return Factory(id, director)()
+
+
+# version
+__id__ = "$Id$"
+
+# End of file 
+

@@ -1,0 +1,177 @@
+#!/usr/bin/env python
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                               Alex Dementsov
+#                      California Institute of Technology
+#                        (C) 2009  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+from vnfb.qeutils.qegrid import QEGrid
+
+from luban.content import select
+from luban.content import load
+from luban.content.Form import Form
+from luban.content.FormSelectorField import FormSelectorField
+from luban.content.FormTextField import FormTextField
+from luban.content.FormCheckBox import FormCheckBox
+from luban.content.FormSubmitButton import FormSubmitButton
+from vnfb.qeutils.qeconst import SERVERS, NOPARALSIM, SIMTYPE, OPT_DEFAULT
+from vnfb.utils.serverlist import ServerList
+from vnfb.qeutils.qeutils import serverName
+
+import luban.content as lc
+from vnfb.components.QESettings import Actor as base
+
+class Actor(base):
+
+    class Inventory(base.Inventory):
+        import pyre.inventory
+        configid    = pyre.inventory.str('configid', default='')
+
+
+    def content(self, director):
+        sim       = director.clerk.getQESimulations(id=self.id)
+        settings  = director.clerk.getQESettings(id=self.configid)
+
+
+        def viewIndicator(director):
+            qelink  = load( actor           = 'materialsimulation',
+                            filter_key      = 'type',
+                            filter_value    = 'qesimulations')
+
+            path = []
+            path.append(('Simulations ', load(actor='materialsimulation')))
+            path.append(('Quantum Espresso ', qelink))
+            path.append(('%s ' % self.id, load(actor    = 'material_simulations/espresso/sim-view',
+                                               id       = self.id))
+                        )
+            path.append("Edit Settings Configuration")
+
+            return director.retrieveVisual('view-indicator', path=path)
+
+        doc         = lc.document(title="Edit Settings Configuration")
+        splitter    = doc.splitter(orientation="vertical")
+        sA          = splitter.section()
+        sA.add(viewIndicator(director))
+        sB          = splitter.section()
+        sB.add(self._setForm(director, sim, settings))
+
+        return doc
+
+
+    def _setForm(self, director, sim, settings):
+        "Edit settings form"
+        servers     = ServerList(director)
+        serversList = servers.list()
+        
+        form        = Form(id='create-simulation-form')
+        table       = QEGrid(lc.grid(Class="qe-form"))
+        form.add(table.grid())
+
+        server      = FormSelectorField(name        = "server",
+                                        entries     = enumerate(serversList),
+                                        selection   = servers.selected(settings.serverid))
+        numproc     = FormSelectorField(name        = "numproc",
+                                        entries     = self._procOptions(sim),
+                                        selection   = self._procSelected(settings))
+        localdisk   = FormCheckBox(name="localdisk", value = self._optLevelChecked(settings))
+        sname       = FormTextField(name = "sname", value = settings.sname)
+        description = FormTextField(name = "description", value=settings.description)   # Make as textarea
+
+        # Explain link
+        visual_     = "material_simulations/espresso/link-opt"
+        explLink    = director.retrieveVisual(visual_, form=form)
+
+        diskgrid    = QEGrid(lc.grid())
+        diskgrid.addRow((localdisk, explLink))
+
+        submit      = FormSubmitButton(label="Edit Settings Configuration")
+        cancel      = lc.button(label="Cancel")
+        cancel.onclick  = load(actor = 'material_simulations/espresso/sim-view', id=self.id)
+
+        st          = QEGrid(lc.grid()) # Submit Table
+        st.addRow((submit, cancel), ("qe-action-accept", "qe-action-cancel"))
+        table.addRow(("Server:", server))
+        table.addRow(("Number of Cores: *", numproc))
+        table.addRow(("Optimization: *", diskgrid.grid()))
+        table.addRow(("Name:", sname))
+        table.addRow(("Description:", description))
+        table.addRow(("", st.grid()))
+
+        table.setColumnStyle(0, "qe-form-label")
+        table.setColumnStyle(1, "qe-form-field")
+
+        form.onsubmit   = select(element=form).submit(actor     = 'material_simulations/espresso/settings-edit',
+                                                      routine   = 'updateRecord',
+                                                      id        = self.id,
+                                                      configid  = self.configid)
+
+        return form
+
+
+    def _optLevelChecked(self, settings):
+        "Returns optlevel"
+        if not settings:
+            return OPT_DEFAULT
+
+        if settings.optlevel:
+            return True
+
+        return False
+        
+
+    def _procSelected(self, settings):
+        "Return selected order"
+        # Because of the bug in FormSelectorField we will just return the number of cores
+        return settings.numproc
+
+
+    # XXX: Fix
+    def updateRecord(self, director):
+        """Update settings record"""
+        settings     = director.clerk.getQESettings(id=self.configid)
+        settings.setDirector(director)
+        servers     = ServerList(director)
+
+        shortname   = self._serverShortName(director)
+
+        params  = {"sname":         self.sname,
+                   "description":   self.description,  # I don't really need description at this point!
+                   "serverid":      servers.id(self.server),
+                   "optlevel":      self._optLevel(),
+                   "numproc":       SERVERS[shortname]["coreslist"][int(self.numproc)],
+                  }                   
+        settings.updateRecord(params)
+        
+        return load(actor = 'material_simulations/espresso/sim-view', id=self.id)
+
+
+    def __init__(self):
+        super(Actor, self).__init__(name='material_simulations/espresso/settings-edit')
+
+        return
+
+
+    def _configure(self):
+        super(Actor, self)._configure()
+        self.configid       = self.inventory.configid
+
+
+    def _init(self):
+        super(Actor, self)._init()
+        return
+
+def actor():
+    return Actor()
+
+
+
+
+__date__ = "$Nov 11, 2009 1:03:02 PM$"
+
+

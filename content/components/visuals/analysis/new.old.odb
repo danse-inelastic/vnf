@@ -1,0 +1,145 @@
+#!/usr/bin/env python
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                      California Institute of Technology
+#                        (C) 2009  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+import luban.content as lc
+from vnfb.qeutils.qegrid import QEGrid
+
+from luban.content import load, select
+
+def visual(director):
+    doc         = lc.document(title = "")
+    splitter    = doc.splitter(orientation="vertical")
+    sA          = splitter.section()
+    sA.add(viewIndicator(director))
+
+    sB          = splitter.section()
+    sp = lc.splitter(orientation="vertical"); sB.add(sp)
+    
+    scat = sp.section()
+    docScat = lc.document(title = 'Scattering')
+    scat.add(docScat)
+    scat.add(createScatteringAnalysis())
+
+    middle = sp.section()
+    docMiddle        = lc.document(title = "Dynamics")
+    middle.add(docMiddle)
+    middle.add(createDynamicsAnalysis())
+    
+    struct = sp.section()
+    docStruct         = lc.document(title = "Structure")
+    struct.add(docStruct)
+    struct.add(createStructureAnalysis())
+    return doc
+
+def createStructureAnalysis():
+    qegrid = QEGrid(lc.grid(Class="qe-table"))
+    qegrid.setColumnStyle(0, "qe-cell-param")
+    
+    routines   = []
+    routines.append(
+                    (lc.link(label="RDF", onclick=select(id='main-display-area'
+                            ).replaceContent(load(actor="orm/rdfcalc", routine='edit', id='2'))),
+                    "Radial Distribution Function from an MD trajectory")
+                    )
+    
+    for link,desc in routines:
+        qegrid.addRow((link,desc))
+#        row = grid.row()
+#        row.cell().add(link)
+#        row.cell().add(desc)
+    return qegrid.grid()
+
+def createDynamicsAnalysis():
+    qegrid = QEGrid(lc.grid(Class="qe-table"))
+    
+    routines   = []
+    routines.append(
+                    (lc.link(label="DoPS", onclick=select(id='main-display-area'
+                            ).replaceContent(load(actor="orm/motiondoscalc", routine='edit', id='2'))),
+                    "Density of Phonon States from an MD trajectory")
+                    )
+    routines.append(
+                    (lc.link(label="VACF", onclick=select(id='main-display-area'
+                            ).replaceContent(load(actor="orm/vacfcalc", routine='edit', id='2'))),
+                    "Velocity Autocorrelation Function from an MD trajectory")
+                    )
+    routines.append(
+                    (lc.link(label="MSD", onclick=select(id='main-display-area'
+                            ).replaceContent(load(actor="orm/msdcalc", routine='edit', id='2'))),
+                    "Mean Squared Displacement from an MD trajectory")
+                    )
+    routines.append(
+                    (lc.link(label="Diffusion", onclick=select(id='main-display-area'
+                            ).replaceContent(load(actor="orm/diffusioncalc", routine='edit', id='2'))),
+                    "Generate a diffusion coefficient from an MD trajectory")
+                    )
+    
+    for link,desc in routines:
+        qegrid.addRow((link,desc))
+#        row = grid.row()
+#        row.cell().add(link)
+#        row.cell().add(desc)
+    return qegrid.grid()
+
+def createScatteringAnalysis():
+    qegrid = QEGrid(lc.grid(Class="qe-table"))
+    
+    routines   = []
+    routines.append(
+                    (lc.link(label="S(Q,E)", onclick=select(id='main-display-area'
+                            ).replaceContent(load(actor="orm/csfcalc", routine='edit', id='2'))),
+                    "Generate coherent and incoherent portions of inelastic scattering through an MD trajectory")
+                    )
+    routines.append(
+                    (lc.link(label="EISF", onclick=select(id='main-display-area'
+                            ).replaceContent(load(actor="orm/eisfcalc", routine='edit', id='2'))),
+                    "Elastic Incoherent Structure Factor from an MD trajectory")
+                    )
+    routines.append(
+                    (lc.link(label="Static S(Q)", onclick=select(id='main-display-area'
+                            ).replaceContent(load(actor="orm/staticsqcalc", routine='edit', id='2'))),
+                    "Static Structure Factor from an MD trajectory")
+                    )
+    routines.append(
+                    (lc.link(label="Dynamic S(Q)", onclick=select(id='main-display-area'
+                            ).replaceContent(load(actor="orm/dynamicsqcalc", routine='edit', id='2'))),               
+                    "Dynamic Structure Factor from an MD trajectory")
+                    )
+    routines.append(
+                    (lc.link(label="Multiphonon Scattering", onclick=select(id='main-display-area'
+                            ).replaceContent(load(actor="orm/multiscatcalc", routine='edit', id='2'))),      
+                    "Add multiphonon scattering corrections to an S(Q,E)")
+                    )
+    
+    for link,desc in routines:
+        qegrid.addRow((link,desc))
+#        row = grid.row()
+#        row.cell().add(link)
+#        row.cell().add(desc)
+    return qegrid.grid()
+
+
+
+
+
+def viewIndicator(director):
+    path = []
+    path.append(('Analysis ', load(actor='analysis', routine='edit')))
+    path.append('Create New Analysis')
+    
+    return director.retrieveVisual('view-indicator', path=path)
+
+
+
+__date__ = "$Nov 20, 2009 3:11:39 PM$"
+
+

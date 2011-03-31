@@ -1,0 +1,161 @@
+#!/usr/bin/env python
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                               Alex Dementsov
+#                      California Institute of Technology
+#                        (C) 2009  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+from vnfb.qeutils.qeutils import stamp2date
+from vnfb.qeutils.qegrid import QEGrid
+from vnfb.qeutils.qeserver import QEServer
+
+from luban.content import select
+from luban.content import load
+
+import luban.content as lc
+from luban.components.AuthorizedActor import AuthorizedActor as base
+
+OPT_LEVEL   = "Scratch space"
+
+# Requires simulation id, config id and config type: (id, configid, type)
+class Actor(base):
+
+    class Inventory(base.Inventory):
+        import pyre.inventory
+        id          = pyre.inventory.str('id', default='')          # Simulation Id
+        configid    = pyre.inventory.str('configid', default='')    # Configuration Id
+
+    def default(self, director):
+        return select(id='main-display-area').replaceContent(self.content(director))
+
+
+    def content(self, director):
+        self._sim       = director.clerk.getQESimulations(id=self.id)
+        self._settings  = director.clerk.getQESettings(id=self.configid)    # type=settings
+
+        def viewIndicator(director):
+            qelink  = load( actor           = 'materialsimulation',
+                            filter_key      = 'type',
+                            filter_value    = 'qesimulations')
+
+            path = []
+            path.append(('Simulations ', load(actor='materialsimulation')))
+            path.append(('Quantum Espresso ', qelink))
+            path.append(('%s ' % self.id, load(actor    = 'material_simulations/espresso/sim-view',
+                                               id       = self.id)))
+
+            path.append('Settings Configuration')
+
+            return director.retrieveVisual('view-indicator', path=path)
+
+        doc         = lc.document(title="Settings Configuration: %s" % self._settings.sname)
+        splitter    = doc.splitter(orientation="vertical")
+        sA          = splitter.section()
+        sA.add(viewIndicator(director))
+        sC          = splitter.section(id="qe-section-actions")
+        self._showActions(sC)
+
+        # Area for errors
+        splitter.section(id="input-error-area") # ?
+
+        sB          = splitter.section()
+        table       = QEGrid(lc.grid(Class = "qe-table"))
+        sB.add(table.grid())
+        self._showSettings(director, table, self._settings)
+
+        # Should go after all of the rows are added!
+        table.setColumnStyle(0, "qe-cell-param")
+
+        return doc
+
+
+    def _showActions(self, section):  #, inputs
+        section.add(lc.link(label="Back",
+                            Class="qe-action-back",
+                            onclick = load(actor      = 'material_simulations/espresso/sim-view',
+                                             id         = self.id))
+                    )
+
+        section.add(lc.link(label="Edit",
+                            Class="qe-action-edit",
+                            onclick = load(actor      = 'material_simulations/espresso/settings-edit',
+                                             id         = self.id,
+                                             configid   = self.configid))
+                    )
+                    
+        section.add(lc.link(label="Delete",
+                            Class="qe-action-delete",
+                            onclick = load(actor      = 'material_simulations/espresso/settings-delete',
+                                             id         = self.id,
+                                             configid   = self.configid))
+                    )
+
+        section.add(lc.document(Class="clear-both"))
+        
+                    
+    def _showSettings(self, director, table, settings):
+        #(self._parser, fp)    = self.parser(settings)
+
+        if settings:
+            self._showServer(director, table)
+            table.addRow(("Number of Processors: ", str(settings.numproc) ))
+            table.addRow(("Optimization: ", self._optimization(settings) ))
+            table.addRow(('Name:', settings.sname))
+            table.addRow(('Description:', settings.description))
+
+            # Additional parameters
+#            table.addRow(("Number of Nodes: ", str(settings.numnodes)))
+#            table.addRow(("Npool: ", str(settings.npool)))
+#            table.addRow(("Executable: ", settings.executable))
+#            table.addRow(("Additional Parameters: ", settings.params))
+#            table.addRow(("Modules: ", settings.modules))
+
+
+    def _optimization(self, settings):
+        "Returns optimization level message"
+        optlevel    = "None"
+        if not settings:
+            return optlevel
+
+        if settings.optlevel:
+            return OPT_LEVEL
+
+        return optlevel
+
+
+    def _showServer(self, director, table):
+        server  = QEServer(director)
+        link    = server.getLink(self.id)
+
+        table.addRow(("Server: ", link))
+
+
+    def __init__(self):
+        super(Actor, self).__init__(name='material_simulations/espresso/settings-view')
+
+        return
+
+
+    def _configure(self):
+        super(Actor, self)._configure()
+        self.id             = self.inventory.id
+        self.configid       = self.inventory.configid
+
+    def _init(self):
+        super(Actor, self)._init()
+        return
+
+def actor():
+    return Actor()
+
+
+
+__date__ = "$Nov 11, 2009 1:03:02 PM$"
+
+

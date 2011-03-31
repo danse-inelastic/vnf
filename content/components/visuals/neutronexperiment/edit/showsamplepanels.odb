@@ -1,0 +1,44 @@
+# -*- Python -*-
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                 Jiao Lin
+#                      California Institute of Technology
+#                      (C) 2006-2010  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+
+'''
+this actually returns an action, not a visual
+'''
+
+
+from luban.content import select, load, alert
+
+
+# cf. skeleton.odb
+samplepanels = [
+    'sample', 'sample_environment',
+    ]
+
+
+from pyre.components.Component import Component as base
+class C(base):
+
+    def get(self):
+        return [select(id='navigation-button-%s' % p).show() for p in samplepanels]
+        
+
+def visual(dummy): return C('showsamplepanels', 'actionfactory')
+
+
+
+# version
+__id__ = "$Id$"
+
+# End of file 

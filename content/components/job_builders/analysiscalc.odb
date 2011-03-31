@@ -1,0 +1,116 @@
+# -*- Python -*-
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                      California Institute of Technology
+#                      (C) 2008-2010  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+import journal, os
+debug = journal.debug('analysis')
+
+from vnfb.components.JobBuilder import JobBuilder as base
+
+class Builder(base):
+
+    def __init__(self, name, path):
+        base.__init__(self, name, path)
+
+    def render(self, computation, db=None, dds=None):
+        """to render this we get the trajectory object from the analysis object, 
+        copy over the trajectory file, reinitialize the trajectory object 
+        based on the new location of the trajectory.
+        
+        After that we write out the analysis input file and return. 
+        """
+        orm = self.director.clerk.orm  
+        analysisObj = orm.record2object(computation)  
+#        trajectoryObj = analysisObj.trajectory
+#        trajectoryDbObj = orm(trajectoryObj)
+#        dds.copy(trajectoryDbObj, 'gulp.nc', job, 'gulp.nc')
+#        
+#        
+#        analysisInputFileContents = analysisObj.getInputFile()
+#        datadir = director.dds.abspath(computation)
+#        if not os.path.exists(datadir): 
+#            os.makedirs(datadir)
+#        inputFilePath = director.dds.abspath(computation, 
+#            filename = self.inventory.analysisType+'.inp')
+#        open(inputFilePath, 'w').write(analysisInputFileContents)        
+        
+        # copy files to job directory
+        job = computation.getJob(self.db)
+        dds.copy(computation, analysisObj._inputFileName, job, analysisObj._inputFileName)
+        trajectoryObj = analysisObj.trajectory
+        trajectoryDbObj = orm(trajectoryObj)
+        dds.copy(trajectoryDbObj, 'gulp.nc', job, 'gulp.nc')
+        # 3. add run.sh
+        files = [analysisObj._inputFileName, 'gulp.nc']
+        files.append(self._make_script(computation) )
+        return files    
+    
+    def _make_script(self, computation):
+        job = computation.getJob(self.db)
+        orm = self.director.clerk.orm  
+        analysisObj = orm.record2object(computation)
+        np = job.numprocessors()
+        #octopod
+        if job.server.id=='server000':
+            cmds = [
+                '#!/usr/bin/env bash',
+                '. /home/linjiao/.analysis-env',
+                'mpirun -np %d parnasis --%s --inp %s' % (np, analysisObj._type, analysisObj.inputFileName),
+                '',
+                ]
+            #check to see if it is an MdDosCalc:
+            if analysisObj.__class__.__name__=='MdDosCalc':
+                cmds += ['conversionTasks.py --convertDosFile=True --textFile='+analysisObj._dosFile,]
+        #foxtrot md
+        elif job.server.id=='server002':
+            cmds = [
+                '#!/usr/bin/env bash',
+                'python -V',
+                'source /home/jbrkeith/.bash_profile',
+                'echo $PYTHONPATH',
+                'python -V',
+                'mpirun -np %d /usr/local/python-2.6.2/bin/python2.6 /home/jbrkeith/dv/tools/pythia-0.8/bin/parnasis --%s --inp %s' % (np, analysisObj._type, analysisObj._inputFileName),
+                '',
+                ]
+            #check to see if it is an MdDosCalc:
+            if analysisObj.__class__.__name__ in ['MdDosCalc']:
+                cmds += ["""/usr/local/python-2.6.2/bin/python2.6 /home/jbrkeith/dv/tools/pythia-0.8/bin/conversionTasks.py --convertDosFile=True --textFile="""+analysisObj._dosFile+' --idfFile=data.idf',]
+        
+        #foxtrot
+        elif job.server.id=='server003':
+            cmds = [
+                '#!/usr/bin/env bash',
+                'python -V',
+                'source /home/danse-vnf-admin/.vnf',
+                'echo $PYTHONPATH',
+                'python -V',
+                'mpirun -np %d /usr/local/python-2.6.2/bin/python2.6 /home/danse-vnf-admin/dv/tools/pythia-0.8/bin/parnasis --%s --inp %s' % (np, analysisObj._type, analysisObj._inputFileName),
+                '',
+                ]
+            #check to see if it is an MdDosCalc:
+            if analysisObj.__class__.__name__ in ['MdDosCalc']:
+                cmds += ["""/usr/local/python-2.6.2/bin/python2.6 /home/danse-vnf-admin/dv/tools/pythia-0.8/bin/conversionTasks.py --convertDosFile=True --textFile="""+analysisObj._dosFile+' --idfFile=data.idf',]
+
+        script = self.shscriptname
+        path = self._path(script)
+        open(path, 'w').write('\n'.join(cmds))
+        return script 
+
+
+def job_builder(name, path):
+    return Builder(name, path)
+
+
+# version
+__id__ = "$Id$"
+
+# End of file 

@@ -1,0 +1,70 @@
+#!/usr/bin/env python
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                               Alex Dementsov
+#                      California Institute of Technology
+#                        (C) 2009  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+import luban.content as lc
+from luban.content import select
+from luban.content import load
+from vnfb.qeutils.qegrid import QEGrid
+from luban.content.FormSubmitButton import FormSubmitButton
+from luban.content.FormTextField import FormTextField
+
+DT      = 5.0
+NSTEP   = 100
+AMPRP   = 0.02
+
+def visual(actor, director, structureid, simtype):
+    form        = lc.form(id='create-simulation-form')
+    table       = QEGrid(lc.grid(Class="qe-form"))
+    form.add(table.grid())
+
+    dt          = FormTextField(name = "dt",    value = DT)
+    nstep       = FormTextField(name = "nstep", value = NSTEP)
+    amprp       = FormTextField(name = "amprp", value = AMPRP)
+    # Skip link
+    visual_     = "material_simulations/espresso/link-skip"
+    skipLink    = director.retrieveVisual(visual_,
+                                          id        = actor.id,
+                                          taskid    = actor.taskid,
+                                          type      = actor.type)
+
+    submit      = FormSubmitButton(label="Generate Input Configuration")
+    cancel      = lc.button(label="Cancel")
+    cancel.onclick  = load(actor = 'material_simulations/espresso/sim-view', id=actor.id)
+
+    # Parameters attachment
+    st          = QEGrid(lc.grid()) # Submit Table
+    st.addRow((submit, cancel), ("qe-action-accept", "qe-action-cancel"))
+
+    table.addRow(("Randomization Amplitude: *", amprp))
+    table.addRow(("Time Step (a.u.): *", dt))
+    table.addRow(("Number of Steps: *", nstep))
+    table.addRow(("", skipLink))
+    table.addRow(("", st.grid()))
+
+    table.setColumnStyle(0, "qe-form-label")
+    table.setColumnStyle(1, "qe-form-field")
+
+    submitActor   = 'material_simulations/espresso-utils/generate-ion-random'
+    form.onsubmit   = select(element=form).submit(actor     = submitActor,
+                                                  routine   = 'generateInput',
+                                                  taskid    = actor.taskid,
+                                                  id        = actor.id,
+                                                  type      = actor.type,
+                                                  simtype   = simtype)
+
+    return form
+
+
+__date__ = "$Apr 30, 2010 12:20:21 PM$"
+
+

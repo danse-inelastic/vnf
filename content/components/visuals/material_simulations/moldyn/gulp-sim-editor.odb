@@ -1,0 +1,90 @@
+#!/usr/bin/env python
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#                                
+#                                 Jiao Lin
+#                      California Institute of Technology
+#                      (C) 2006-2011  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+"""
+start page for gulp simulation workflow
+"""
+
+import luban.content as lc
+from luban.content import load, select, alert
+
+
+def visual(id=None, director=None, typename=None, actorname=None, ormactorname=None):
+    #
+    if not id:
+        d = lc.document()
+        d.paragraph(text="simulation id not provided")
+        return d
+    
+    # container
+    doc = lc.document(id='start-%s-container' % typename)
+    doc.title = "Gulp %s" % typename
+    doc.add(viewIndicator(id, typename, director))
+
+    # form
+    visual = director.redirect(
+        actor = ormactorname,
+        routine = 'edit',
+        id = id,
+        include_credential=False,
+        edithierarchy = True,
+        )
+    doc.add(visual)
+
+    # buttons
+    # create job
+    createjob = load(
+        actor=actorname, 
+        routine='createJob',
+        id = id,
+        formids = select(element=visual).findDescendentIDs(type='form'),
+        )
+    b = lc.button(label='Create job', onclick=createjob)
+    b.tip = 'create computational job for this simulation'
+    doc.add(b)
+    # delete
+    delete = load(
+        actor = actorname,
+        routine='deleteSimulation',
+        id = id,
+        )
+    b = lc.button(label='Delete simulation', onclick=delete)
+    doc.add(b)
+    
+    return doc
+
+
+def viewIndicator(id, typename, director):
+    path = []
+    path.append(('Simulations ', load(actor='materialsimulation')))
+    # path.append(
+    #     ('Create New MD simulation', 
+    #      load(actor='material_simulations/forcefieldwizard'))
+    #     )
+    path.append(
+        ('Gulp %s %s' % (typename, id), 
+         load(actor='material_simulations/forcefieldwizard',
+              routine='editSimulation',
+              runtype=typename,
+              simulationId=id))
+        )
+    
+    return director.retrieveVisual('view-indicator', path=path)
+
+
+
+# version
+__id__ = "$Id$"
+
+# End of file 

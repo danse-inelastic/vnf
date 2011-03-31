@@ -1,0 +1,88 @@
+# -*- Python -*-
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                               Alex Dementsov
+#                      California Institute of Technology
+#                        (C) 2011  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+import luban.content as lc
+from luban.content import select
+from luban.content import load
+from vnfb.qeutils.qegrid import QEGrid
+from luban.content.FormTextField import FormTextField
+from luban.content.FormSubmitButton import FormSubmitButton
+
+from vnfb.epscutils.epscconst import *
+
+class Visual:
+
+    def __init__(self, actor, director):
+        self._actor         = actor
+        self._director      = director
+        self._structureid   = actor.structureid
+
+
+    def form(self):
+        # Parameter elements
+        form        = lc.form(id="epsc-form")
+        table       = QEGrid(lc.grid(Class="qe-form"))
+
+        a           = FormTextField(name = "a", value = ELLIPSOID[0], tip="a", Class="epsc-num-field")
+        b           = FormTextField(name = "b", value = ELLIPSOID[1], tip="b", Class="epsc-num-field")
+        c           = FormTextField(name = "c", value = ELLIPSOID[2], tip="c", Class="epsc-num-field")
+        ellipsoid   = QEGrid(lc.grid())
+        ellipsoid.addRow(("a", a, "b", b, "c", c))
+
+        ngrain      = FormTextField(name = "ngrain", value = NGRAIN)
+
+        ellipsoid_label   = lc.link(label="Ellipsoid axes:", )
+        ellipsoid_label.tip   ="Axes of the representative ellipsoid"
+
+        ngrain_label   = lc.link(label="Number of grains:", )
+        ngrain_label.tip   = "Number of grains"
+
+        table.addRow((ellipsoid_label, ellipsoid.grid()))
+        table.addRow((ngrain_label, ngrain))
+
+        # Skip link
+        visual_     = "material_simulations/epsc/link-skip"
+        skipLink    = self._director.retrieveVisual(visual_, self._actor)
+
+        submit      = FormSubmitButton(label="Generate Sample Configuration")
+        cancel      = lc.button(label="Cancel")
+        cancel.onclick  = load(actor = 'material_simulations/epsc/sim-view', id=self._actor.id)
+
+        # Parameters attachment
+        st          = QEGrid(lc.grid()) # Submit Table
+        st.addRow((submit, cancel), ("qe-action-accept", "qe-action-cancel"))
+
+        table.addRow(("", skipLink))
+        table.addRow(("", st.grid()))
+
+        table.setColumnStyle(0, "epsc-form-label")
+        table.setColumnStyle(1, "qe-form-field")
+
+        form.onsubmit   = select(element=form).submit(actor     = 'material_simulations/epsc/filesamp-create',
+                                                      routine   = 'generateConfig',
+                                                      id        = self._actor.id,
+                                                      taskid    = self._actor.taskid,
+                                                      type      = self._actor.type)
+
+        form.add(table.grid())
+
+        return form
+
+
+def visual(actor, director):
+    v   = Visual(actor, director)
+    return v.form()
+
+__date__ = "$Mar 22, 2011 10:11:29 AM$"
+
+

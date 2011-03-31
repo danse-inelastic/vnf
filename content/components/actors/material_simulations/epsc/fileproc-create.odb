@@ -1,0 +1,146 @@
+# -*- Python -*-
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                               Alex Dementsov
+#                      California Institute of Technology
+#                        (C) 2011  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+from luban.content import select, load
+import luban.content as lc
+from luban.components.AuthorizedActor import AuthorizedActor as base
+
+from vnfb.epscutils.epscconst import *
+
+class Actor(base):
+    """ Create Process file"""
+
+    class Inventory(base.Inventory):
+        import pyre.inventory
+        # General
+        id          = pyre.inventory.str('id', default='')
+        taskid      = pyre.inventory.str('taskid', default='')
+        type        = pyre.inventory.str('type', default='')
+        structureid = pyre.inventory.str('structureid', default='')
+
+        # Specific
+        nsteps     = pyre.inventory.str('nsteps', default='0')
+        temp_s     = pyre.inventory.str('temp_s', default='0')
+        temp_f     = pyre.inventory.str('temp_f', default='0')
+        i_temp     = pyre.inventory.str('i_temp', default='0')
+        itmax_mod  = pyre.inventory.str('itmax_mod', default='0')
+        error_mod  = pyre.inventory.str('error_mod', default='0')
+        maxgrain   = pyre.inventory.str('maxgrain', default='0')
+        
+
+    def default(self, director):
+        return select(id='main-display-area').replaceContent(self.content(director))
+
+
+    def _viewIndicator(self, director):
+        qelink  = load( actor           = 'materialsimulation',
+                        filter_key      = 'type',
+                        filter_value    = 'qesimulations')
+
+        path = []
+        path.append(('Simulations ', load(actor='materialsimulation')))
+        path.append(('EPSC ', qelink))
+        path.append(('%s ' % self.id, load(actor    = 'material_simulations/epsc/sim-view',
+                                           id       = self.id)))
+        path.append('Create Process Configuration')
+
+        return director.retrieveVisual('view-indicator', path=path)
+
+
+    def content(self, director):
+        doc         = lc.document(title   = "Create Process Configuration")
+        splitter    = doc.splitter(orientation="vertical")
+        sA          = splitter.section()
+        sA.add(self._viewIndicator(director))
+        sB          = splitter.section()
+        visual  = 'material_simulations/epsc/fileproc-form'
+        sB.add(director.retrieveVisual(visual, self.inventory, director))
+        return doc
+
+
+#    def content(self, director):
+#        def viewIndicator(director):
+#            path = []
+#            path.append(('Simulations ', load(actor='materialsimulation')))
+#            path.append(('Create New Simulation ', select(id='main-display-area').replaceContent(
+#                                                          load(actor='materialsimulation',
+#                                                               routine='newSimulation')
+#                                                          ))
+#                        )
+#            path.append(('EPSC', load(actor='material_simulations/epsc/sim-create')))
+#            path.append("Create Process Configuration")
+#
+#            return director.retrieveVisual('view-indicator', path=path)
+#
+#        doc         = lc.document(title   = "Create Process Configuration")
+#        splitter    = doc.splitter(orientation="vertical")
+#        sA          = splitter.section()
+#        sA.add(viewIndicator(director))
+#        sB          = splitter.section()
+#        visual  = 'material_simulations/epsc/fileproc-form'
+#        sB.add(director.retrieveVisual(visual, self.inventory, director))
+#
+#        return doc
+
+
+    def generateConfig(self, director):
+        "Generates config file and redirects to general form"
+        # Special cases
+        t   = self.i_temp
+        if t == "on": i_temp = 1
+        else: i_temp = 0
+        
+        # Config text
+        config  = FILEPROC_T % (self.nsteps, self.temp_s, self.temp_f,
+                                i_temp, self.itmax_mod, self.error_mod,
+                                self.maxgrain)
+
+        return director.redirect(actor   = 'material_simulations/epsc/config-create',
+                                routine  = 'default',
+                                text     = config,
+                                id       = self.inventory.id,
+                                taskid   = self.inventory.taskid,
+                                type     = self.inventory.type)
+
+
+    def __init__(self):
+        super(Actor, self).__init__(name='material_simulations/epsc/fileproc-create')
+
+
+    def _configure(self):
+        super(Actor, self)._configure()
+        self.id             = self.inventory.id
+        self.taskid         = self.inventory.taskid
+        self.type           = self.inventory.type
+        self.structureid    = self.inventory.structureid
+
+        self.nsteps       = self.inventory.nsteps
+        self.temp_s       = self.inventory.temp_s
+        self.temp_f       = self.inventory.temp_f
+        self.i_temp       = self.inventory.i_temp
+        self.itmax_mod    = self.inventory.itmax_mod
+        self.error_mod    = self.inventory.error_mod
+        self.maxgrain     = self.inventory.maxgrain
+
+
+    def _init(self):
+        super(Actor, self)._init()
+        return
+
+def actor():
+    return Actor()
+
+
+__date__ = "$Mar 22, 2011 9:46:59 AM$"
+
+

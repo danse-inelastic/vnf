@@ -1,0 +1,84 @@
+#!/usr/bin/env python
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                               Alex Dementsov
+#                      California Institute of Technology
+#                        (C) 2009  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+from vnfb.qeutils.generators.q2rgenerator import Q2RGenerator
+from vnfb.qeutils.qeparser.qeinput import QEInput
+import vnfb.qeutils.filters as filters
+
+from vnfb.components.QEGenerator import QEGenerator as base
+
+class Actor(base):
+
+    class Inventory(base.Inventory):
+        import pyre.inventory
+        zasr        = pyre.inventory.str('zasr', default='')
+
+
+    def content(self, director):
+        "Populates the content for creation of input configuration"
+        title   = "Q2R Configuration Input"
+        label   = "Q2R Form"
+        visual  = "material_simulations/espresso/input-q2r"  # Q2R parameters form
+        return self._document(director, title, label, visual = visual)
+
+
+    def generateInput(self, director):
+        gen     = Q2RGenerator(director, self.inventory)
+        gen.setInput()
+        return director.redirect(actor   = 'material_simulations/espresso/input-create',
+                                routine = 'default',
+                                text    = gen.toString(),
+                                id      = self.inventory.id,
+                                taskid  = self.inventory.taskid,
+                                type    = self.inventory.type)
+
+
+    def filterInput(self, director):
+        "Takes parameters from input-default form and filter text"
+        gen     = Q2RGenerator(director, self.inventory)
+        input   = QEInput(config=self.inventory.text, type="q2r")
+
+        filter  = filters.filterFactory("q2r")  # Q2RFilter()
+        filter.setFildyn(gen.fildyn())          # Set dynamic variable
+        filter.apply(input)                     # Apply filter to input
+        fconfig = input.toString()              # Filtered config input
+
+        return director.redirect(actor   = 'material_simulations/espresso/input-create',
+                                routine = 'createRecord',
+                                text    = fconfig,
+                                id      = self.inventory.id,
+                                taskid  = self.inventory.taskid,
+                                type    = self.inventory.type,
+                                subtype = self.inventory.subtype,
+                                fname   = self.inventory.fname,
+                                description = self.inventory.description)
+
+
+    def __init__(self):
+        super(Actor, self).__init__(name='material_simulations/espresso-utils/generate-q2r')
+
+
+    def _configure(self):
+        super(Actor, self)._configure()
+        self.zasr           = self.inventory.zasr
+
+
+    def _init(self):
+        super(Actor, self)._init()
+        return
+
+def actor():
+    return Actor()
+
+__date__ = "$Jan 13, 2010 4:29:22 AM$"
+

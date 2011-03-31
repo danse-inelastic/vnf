@@ -1,0 +1,48 @@
+#!/usr/bin/env python
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#                                
+#                          J Brandon Keith,  Jiao Lin
+#                      California Institute of Technology
+#                      (C) 2006-2010  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+"""
+here user can select from two workflows:
+
+ * wizard like workflows
+ * atomsim java interface
+"""
+
+import luban.content as lc
+from luban.content import load, select, alert
+
+
+def visual(atomicstructure=None, director=None):
+    doc = lc.document(id='md-workflow-selector')
+    tabs = lc.tabs(id='md-workflow-selector-tabs'); doc.add(tabs)
+
+    wizardstab = tabs.tab(id='md-workflow-selector-wizards-tab', label='Wizards')
+    wizards_start = director.retrieveVisual(
+        'material_simulations/moldyn/wizard-type-selector',
+        director=director,
+        atomicstructure = atomicstructure,
+        )
+    wizardstab.add(wizards_start)
+
+    atomsimtab = tabs.tab(id='md-workflow-selector-atomsim-tab', label='AtomSim')
+    atomsim_start = director.retrieveVisual(
+        'material_simulations/moldyn/atomsim-start',
+        director=director,
+        structureId = atomicstructure,
+        )
+    atomsimtab.add(atomsim_start)
+    return doc
+
+
+__date__ = "$Nov 20, 2009 3:11:39 PM$"

@@ -1,0 +1,264 @@
+#!/usr/bin/env python
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                 Jiao Lin
+#                      California Institute of Technology
+#                      (C) 2006-2010  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+from luban.content import load, select, alert
+import luban.content as lc
+
+
+# The action to load the job-editor panel
+# select(id='main-display-area').replaceContent(...)
+loadjobeditor = lambda id: load(
+    actor='job', 
+    routine='view',
+    id = id,
+    )
+        
+
+from luban.components.AuthorizedActor import AuthorizedActor as base
+class Actor(base):
+
+
+    class Inventory(base.Inventory):
+
+        import pyre.inventory
+
+        id = pyre.inventory.str('id')
+        
+        formids = pyre.inventory.list('formids')
+        viewid = pyre.inventory.str('viewid')
+
+        histogram = pyre.inventory.str('histogram')
+
+
+    def showProfilesTable(self, director):
+        workpanel = select(id='arcs-beam-work-panel')
+        tableview = load(
+            actor='instruments/arcs/beam-profiles', routine='createListView')
+        return workpanel.replaceContent(tableview)
+
+
+    def view(self, director):
+        title = 'ARCS beam profile #%s' % self.inventory.id
+        doc = lc.document(title=title)
+        
+        sp = lc.splitter(); doc.add(sp)
+        propsdoc = director.redirect(
+            actor='orm/arcsbeamconfigurations',
+            routine = 'displayProperties',
+            id = self.inventory.id,
+            editlink=False,
+            include_credential=False,
+            )
+        sp.section().add(propsdoc)
+        
+        v = self.createView(director)
+        sp.section().add(v)
+        
+        return select(id='arcs-beam-work-panel').replaceContent(doc)
+        
+
+    def update(self, director):
+        # check if there are unfilled forms
+        actions = self._checkForms(director)
+        if actions: return actions
+        
+        # check if we have results, if yes, show them
+        if self._hasResults(director):
+            return self.showResults(director)
+
+        if self._jobIsDone(director):
+            return self.getResults(director)
+        
+        return self.prepareSimulation(director)
+
+
+    def showResults(self, director):
+        doc = self.createView(director)
+        return select(id='main-display-area').replaceContent(doc)
+
+
+    def downloadHistogram(self, director):
+        id = self.inventory.id
+        dds = director.dds
+        domaccess = director.retrieveDOMAccessor('computation')
+        computation = domaccess.getComputationRecord(
+            'arcsbeamconfigurations', id)
+
+        histogram = self.inventory.histogram
+        f = '%s.h5' % histogram
+        p = dds.abspath(computation, 'out/%s' % f)
+        
+        content = open(p, 'rb').read()
+        return lc.file(filename=f, content=content)
+
+
+    def createView(self, director):
+        # check if we have results, if yes, show them
+        if self._hasResults(director):
+            return director.retrieveVisual(
+                'instruments/arcs/beam-profile-results-view', 
+                id = self.inventory.id,
+                director = director,
+                )
+        
+        # the view 
+        doc = lc.document(id='main-display-area')
+
+        #
+        id = self.inventory.id
+        domaccess = director.retrieveDOMAccessor('computation')
+        computation = domaccess.getComputationRecord('arcsbeamconfigurations', id)
+        # if job is done, show the computation result retrieval view
+        if self._jobIsDone(director):
+            # when results are retrieved, load this actor
+            on_all_results_retrieved = "load(actor=%r, routine='update', id=%r)" % (
+                self.name, id)
+            vis = director.retrieveVisual(
+                'computation-results',
+                computation=computation,
+                actor='computation', 
+                on_all_results_retrieved = on_all_results_retrieved,
+                director=director,
+                )
+        else:
+            # otherwise, the job status view
+            vis = self.createJobStatusView(director)
+        
+        #
+        doc.add(vis)
+        return doc
+
+
+    def getResults(self, director):
+        id = self.inventory.id
+        vis = load(actor='computation', routine='createResultsDoc',
+                   type='arcsbeamconfigurations', id=id)
+        return select(id='main-display-area').replaceContent(vis)
+
+
+    def prepareSimulation(self, director):
+        # load the computation from db
+        computation = self._getComputation(director)
+        
+        # if there is already a job, just present it
+        job = computation.getJob(director.clerk.db)
+        if job: 
+            return self.presentJobStatus(director)
+
+        job = self._createJob(director, computation=computation)
+        
+        return loadjobeditor(job.id)
+
+
+    def _createJob(self, director, computation=None):
+        # load the computation from db
+        computation = computation or self._getComputation(director)
+        
+        job = computation.getJob(director.clerk.db)
+        if job: 
+            raise RuntimeError, "should not reach here: job already exists. computation: %s, job: %s" % (computation.id, job.id)
+        
+        # create new job
+        from vnfb.utils.job import new
+        job = new(director)
+        
+        # assign computation
+        job.computation = computation
+        
+        # update
+        director.clerk.updateRecordWithID(job)
+        
+        return job
+
+    
+    def createJobStatusView(self, director):
+        # load the computation from db
+        computation = self._getComputation(director)
+        
+        # there should be a job already
+        job = computation.getJob(director.clerk.db)
+        if not job: 
+            raise RuntimeError, "should not reach here: job does not exist. computation: %s" % (computation.id, )
+
+        #
+        doc = lc.document()
+        text = [
+            'There is a computation job for this simulation. ',
+            'It is now %s' % job.state,
+            ]
+        doc.paragraph(text=text)
+        
+        link = lc.link(label='View the job details', onclick=loadjobeditor(job.id))
+        doc.add(link)
+
+        return doc
+
+    
+    def presentJobStatus(self, director):
+        doc = self.createJobStatusView(director)
+        return select(id='main-display-area').replaceContent(doc)
+
+    
+    def _hasResults(self, director):
+        domaccess = director.retrieveDOMAccessor('computation')
+        id = self.inventory.id
+        return domaccess.isComputationResultsRetrieved(
+            'arcsbeamconfigurations', id)        
+
+
+    def _jobIsDone(self, director):
+        domaccess = director.retrieveDOMAccessor('computation')
+        id = self.inventory.id
+        return domaccess.isJobDone('arcsbeamconfigurations', id)
+
+
+    def _getComputation(self, director):
+        # load the computation from db
+        id = self.inventory.id
+        from vnfb.dom.neutron_experiment_simulations.integrated.arcs.ARCSbeam import ARCSbeam_Table
+        computation = director.clerk.db.query(ARCSbeam_Table).filter_by(id=id).one()
+        return computation
+    
+
+    def _checkForms(self, director):
+        actions = []; messages = []
+        formids = self.inventory.formids
+        actions += [select(id=id).addClass('highlighted') for id in formids]
+        n = len(formids)
+        if n > 1:
+            msg = 'sorry. there are %s forms to submit.' % n
+        else:
+            msg = 'sorry. there is a form to submit.'
+        msg += 'Please look for highlighted sections.'
+        messages.append(msg)
+
+        if len(actions):
+            actions.append(alert('\n\n'.join(messages)))
+            return actions
+
+
+    def __init__(self, name='instruments/arcs/beam-profile'):
+        super(Actor, self).__init__(name)
+        return
+
+
+
+def actor(): return Actor()
+
+
+# version
+__id__ = "$Id$"
+
+# End of file 
+

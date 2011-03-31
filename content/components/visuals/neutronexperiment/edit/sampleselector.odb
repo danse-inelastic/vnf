@@ -1,0 +1,77 @@
+# -*- Python -*-
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                 Jiao Lin
+#                      California Institute of Technology
+#                      (C) 2006-2010  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+from luban.content import load, select, alert
+import luban.content as lc
+
+from luban.content.FormSelectorField import FormSelectorField
+
+
+class Factory(object):
+
+
+    def __init__(self, id=None, domaccess=None, director=None):
+        if director is None:
+            raise RuntimeError
+        if not domaccess:
+            domaccess = director.retrieveDOMAccessor('sample')
+        self.domaccess = domaccess
+        self.director = director
+        self.id = id
+        return
+    
+
+    def __call__(self):
+        director = self.director
+        
+        doc = lc.document(
+            title='Select a sample from the following table',
+            id='experimentwizard-sampleselector',
+            )
+        doc.Class='mastertable-as-selector-panel'
+
+        # the container of the sample selector
+        container = doc.document(id='sample-selector-container', Class='master-table-wrapper')
+        listview = director.redirect(
+            actor='selectonesample', routine='createListView',
+            include_credential=False)
+        container.add(listview)
+        
+        #
+        b = lc.button(label="continue"); doc.add(b)
+        selectedsample = select(id='sample-table').table(
+            'getIdentifierForSelectedRow', colname='selectone')
+        selecteduid = load(
+            actor='selectonesample',
+            routine='getSelectedSampleUniqueIdentifierStr',
+            selected = selectedsample,
+            )
+        b.onclick = load(
+            actor='experiment/editor', routine='onSelectSample',
+            id = self.id, sample=selecteduid)
+        
+        return doc
+
+
+
+def visual(id=None, domaccess=None, director=None):
+    """
+    id: id of experiment
+    """
+    return Factory(id=id, domaccess=domaccess, director=director)()
+
+# version
+__id__ = "$Id$"
+
+# End of file 

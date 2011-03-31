@@ -1,0 +1,10 @@
+
+Change name: Total Energy -> Electron Structure (SCF)
+
+SCF - Self Confistent Field
+
+[PW]
+See qe-general.txt
+
+
+

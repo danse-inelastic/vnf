@@ -1,0 +1,322 @@
+#!/usr/bin/env python
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                 Jiao Lin
+#                      California Institute of Technology
+#                      (C) 2006-2009  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+import luban.content as lc
+
+from luban.content import load, select
+
+from luban.content.Button import Button
+from luban.content.Paragraph import Paragraph
+
+
+from vnfb.components.MasterTable import FilterSyntaxError, MasterTableActor as base
+
+
+class Actor(base):
+
+
+    class Inventory(base.Inventory):
+
+        import pyre.inventory
+
+        # in case of working with one experiment
+        id = pyre.inventory.str('id')
+        short_description = pyre.inventory.str('short_description')
+        instrument = pyre.inventory.str('instrument')
+        sample = pyre.inventory.str('sample')
+
+
+    def default(self, director):
+        return self.showListView(director)
+
+
+    def showListView(self, director):
+        view = self.createListView(director)
+        return select(id='main-display-area').replaceContent(view)
+
+
+    def createListView(self, director):
+
+        domaccess = director.retrieveDOMAccessor('experiment')
+        
+        from vnfb.components.MasterTable import MasterTableFactory, filtercompiler
+        def countrecords(filter, label=None):
+            return domaccess.countExperiments(filter, label=label)
+        def createtable(order_by, reverse_order, slice, filter, label=None):
+            return self.createExperimentTable(
+                director,
+                order_by=order_by,
+                reverse_order=reverse_order,
+                slice=slice,
+                filter=filter,
+                label=label
+                )
+        compilefilter = filtercompiler(columns, measure2dbcol)
+
+        smartlabelaccess = director.retrieveDOMAccessor('smartlabel')
+        def filterfromlabel(label):
+            return smartlabelaccess.createFilterExprFromLabel(
+                label, self.name)
+        smartlabels = smartlabelaccess.getLabelNames(self.name)
+
+        labelaccess = director.retrieveDOMAccessor('label')
+        labels = labelaccess.getLabelNames(self.name)
+            
+        factory = MasterTableFactory(
+            self.name, countrecords, createtable,
+            compilefilter, filtercols,
+            filterfromlabel, smartlabels, labels,
+            sorting_options = [
+                ('id', 'ID'),
+                ('short_description', 'Description'),
+            ],
+            polymorphic = False, dbtablename='neutronexperiments'
+            )
+
+        order_by = self.inventory.order_by
+        reverse_order = self.inventory.reverse_order
+        number_records_per_page = self.inventory.number_records_per_page
+        page_number = self.inventory.page_number
+
+        filter_expr = self.inventory.filter_expr
+        filter_key = self.inventory.filter_key
+        filter_value = self.inventory.filter_value
+
+        label = self.inventory.label
+        
+        tableview = factory.create(
+            label=label,
+            filter_expr=filter_expr, filter_key=filter_key, filter_value=filter_value,
+            order_by=order_by,
+            reverse_order=reverse_order,
+            number_records_per_page=number_records_per_page,
+            page_number=page_number,
+            )
+
+        # add some buttons to the left of navbar
+        toolbar = tableview.find(id='experiment-table-toptoolbar')
+        #
+        button = Button(label='New', tip='create new experiment', icon='new.png')
+        toolbar.add(button)
+        button.onclick = load(actor='experiment', routine='new')
+
+        return tableview
+    
+        
+    def createExperimentTable(
+        self, director,
+        order_by=None, reverse_order=None, slice=None, filter=None,
+        label = None,
+        ):
+        domaccess = director.retrieveDOMAccessor('experiment')
+        
+        experiments = domaccess.getExperiments(
+            filter=filter, order_by=order_by, reverse_order=reverse_order, slice=slice,
+            label=label,
+            )
+
+        cols = columns
+        args = experiments, cols, director
+        thetable = director.retrieveComponent(
+            'experiment-table',
+            factory="visual", args=args,
+            vault=['visuals'])
+        thetable.oncellchanged = select(element=thetable).notify(
+            event='row-changed', actor='experimenttable', routine='processRowChange')
+        return thetable
+
+
+    def showExperimentView(self, director):
+        id = self.inventory.id
+        
+        domaccess = self._domaccess(director)
+        if not domaccess.isConstructued(id):
+            view = self.createEditor(director)
+        else:
+            #view = self.createSimpleDisplay(director)
+            view = self.createView(director)
+        return select(id='main-display-area').replaceContent(view)
+
+
+
+    def createView(self, director):
+        return director.retrieveVisual(
+            name='neutronexperiment/view/skeleton',
+            id = self.inventory.id,
+            director = director
+            )
+
+
+    def createSimpleDisplay(self, director):
+        domaccess = self._domaccess(director)
+        id = self.inventory.id
+        
+        doc = lc.document(Class='container')
+        
+        if domaccess.isEditable(id):
+            link = lc.link(
+                label='edit',
+                onclick=select(id='main-display-area').replaceContent(
+                  load(actor='experiment', routine='createEditor',
+                       id=id)
+                ),
+                )
+            doc.add(link)
+
+        doc.oncreate = select(element=doc).append(
+            load(actor='orm/neutronexperiments', routine='display',
+                 id = self.inventory.id, editlink = False)
+            )
+        return doc
+
+
+    def createEditor(self, director):
+        return director.retrieveVisual(
+            'neutronexperiment/edit/skeleton',
+            id = self.inventory.id,
+            director = director,
+            )
+
+
+    def new(self, director):
+        domaccess = self._domaccess(director)
+        exp = domaccess.createExperiment()
+        self.inventory.id = domaccess.orm(exp).id
+        return self.edit(director)
+
+
+    def edit(self, director):
+        view = self.createEditor(director)
+        return select(id='main-display-area').replaceContent(view)
+
+
+    def createEditWizard_startform(self, director):
+        return director.retrieveVisual(
+            'neutronexperiment/edit/startform',
+            id = self.inventory.id,
+            director = director
+            )
+
+
+    def createEditWizard_instrumentconfiguration(self, director):
+        return director.retrieveVisual(
+            'neutronexperiment/edit/instrumentconfiguration',
+            id = self.inventory.id,
+            director = director
+            )
+
+
+    def createEditWizard_sampleconfiguration(self, director):
+        return director.retrieveVisual(
+            'neutronexperiment/edit/sampleconfiguration',
+            id = self.inventory.id,
+            director = director
+            )
+
+
+    def createEditWizard_sampleenvironmentconfiguration(self, director):
+        return director.retrieveVisual(
+            'neutronexperiment/edit/sampleenvironmentconfiguration',
+            id = self.inventory.id,
+            director = director
+            )
+
+
+    def createEditWizard_summary(self, director):
+        return director.retrieveVisual(
+            'neutronexperiment/edit/summary',
+            id = self.inventory.id,
+            director = director
+            )
+
+
+    def verifyEditWizard_startform(self, director):
+        short_description = self.inventory.short_description
+        if not short_description:
+            return select(id='experimentwizard-startform').find(name='short_description')\
+                   .formfield('showError', message = 'cannot be empty')
+
+        #
+        domaccess = self._domaccess(director)
+
+        # get record
+        id = self.inventory.id
+        r = domaccess.getExperimentRecord(id)
+
+        # description
+        r.short_description = short_description
+
+        # instrument
+        instrument = self.inventory.instrument
+        if r.instrument and (r.instrument.id != instrument \
+                             and r.instrument_configuration \
+                             and r.instrument_configuration.id):
+            # user selects a new instrument, need to annihilate the old configuration
+            icid = r.instrument_configuration.dereference(domaccess.db).id
+            r.instrument_configuration = None
+            domaccess.db.updateRecord(r)
+            domaccess.destroyInstrumentConfiguration(icid)
+        r.instrument = instrument
+        
+        # sample
+        sample = self.inventory.sample
+        if sample:
+            samplerecord = domaccess.db.fetchRecordUsingUniqueIdentifierStr(sample)
+            oldsamplerecord = r.sample and r.sample.dereference(domaccess.db)
+            if oldsamplerecord \
+                   and (type(oldsamplerecord) != type(samplerecord) \
+                        or oldsamplerecord.id != samplerecord.id) \
+                   and r.sample_configuration and r.sample_configuration.id:
+                # user selects a new sample, need to annihilate the old configuration
+                screcord = r.sample_configuration.dereference(domaccess.db)
+                r.sample_configuration = None
+                domaccess.db.updateRecord(r)
+                domaccess.destroySampleConfiguration(record=screcord)
+            r.sample = samplerecord
+
+        # update
+        domaccess.db.updateRecord(r)
+
+        # switch to the next form
+        return select(id='experimentwizard-instrumentconfiguration-tab').tab('select')
+
+
+    def _domaccess(self, director):
+        return director.retrieveDOMAccessor('experiment')
+    
+
+    def __init__(self, name='experiment'):
+        super(Actor, self).__init__(name)
+        return
+
+
+    # db access
+
+
+columns = ['selected', 'id', 'description']
+measure2dbcol = {
+    'description': 'short_description',
+    }
+filtercols = columns[1:]
+
+
+
+def actor(): return Actor()
+
+
+# version
+__id__ = "$Id$"
+
+# End of file 
+

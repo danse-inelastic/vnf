@@ -1,0 +1,161 @@
+#!/usr/bin/env python
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                               Alex Dementsov
+#                      California Institute of Technology
+#                        (C) 2009  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+# OBSOLETE !!!
+
+# TODO: When you go to step one and then back to step two it doesn't create the simulation again
+
+from vinil.utils.const import STEPS
+from vinil.utils.simulationsteps import SimulationSteps
+from vinil.utils.stepper import Stepper
+from vinil.utils.simchain import SimChain
+
+from luban.content import select
+from luban.content.Paragraph import Paragraph
+from luban.content.Document import Document
+from luban.content.HtmlDocument import HtmlDocument
+from luban.content import load
+from luban.content.Link import Link
+from luban.content.Splitter import Splitter
+from luban.content.FormSelectorField import FormSelectorField
+from luban.content.FormRadioBox import FormRadioBox
+from luban.content.Form import Form
+from luban.content.Tabs import Tabs
+
+
+from vinil.components.Actor import Actor as base
+class Actor(base):
+
+    class Inventory(base.Inventory):
+        import pyre.inventory
+        id      = pyre.inventory.str('id', default='')
+
+
+    def content(self, director):
+        splitter    = Splitter(orientation='vertical', id="step-splitter")
+        simsteps    = SimulationSteps(current=2)
+        s_steps     = simsteps.getSteps()
+        splitter.add(s_steps)
+        s_content   = splitter.section()
+
+        sim         = director.clerk.getSimulations(id=self.id)
+        if sim:
+            name = sim.sname
+        else:
+            name = ""
+
+        d           = Document(title="Simulation Name: %s" % name, Class="step-content")
+        text ="""Before you run any simulation in Quantum Espresso you need to specify
+        the configuration. Here you can create or edit configuration for you simulation
+        """
+
+        d.add(Paragraph(text=text))
+        self.showInputFiles(director, d, sim.type)
+        
+        s_content.add(d)
+
+        linklist    = (("espresso/step-one", "link", None), ("espresso/step-three", "link", self.id))
+        stepper     = Stepper(linklist)
+        s_stepper   = stepper.getStepper()
+        splitter.add(s_stepper)
+
+        return splitter
+
+
+    def showInputFiles(self, director, document, type):
+        splitter        = SimChain(director, type)
+
+        document.add(splitter.chain(self.id))
+
+
+    def pathlist(self, director):
+        sim     = director.clerk.getSimulations(id=self.id)
+        self.pathlist = [("Home","greet","link"),
+                         ("Simulations", "simulations", "link"),
+                         ("Quantum Espresso", "espresso/index", "link"),
+                         (sim.sname, "espresso/sim-view", "link", self.id),
+                         (STEPS[1], None, None)]
+
+        return self.pathlist
+
+    def __init__(self, *args, **kwds):
+        super(Actor, self).__init__(*args, **kwds)
+
+        return
+
+
+    def _configure(self):
+        super(Actor, self)._configure()
+        self.id = self.inventory.id
+        return
+
+
+    def _init(self):
+        super(Actor, self)._init()
+        return
+
+def actor():
+    return Actor('espresso/step-two')
+
+
+# **************** DEAD CODE *******************
+
+#        text ="""Before you run any simulation in Quantum Espresso you need to specify
+#        the material. Here you can import existing material or create a new material
+#        that will be saved in "Materials" section later on."""
+
+#        d_form      = Document(Class="step-content-form")
+#
+#        # entries=enumerate(["Ni", "Al", "Si", "Fe", "Cu", "AlAs", "SiO2"])) )
+#        d_form.add(FormRadioBox(entries=enumerate(["Create Configuration",
+#                                                   "Manually Add Configuration",
+#                                                   "Import Material",
+#                                                   "Create New Material",
+#                                                   "Go To ['Set Simulation Parameters', 'Review Configuration', 'Add to Jobs Queue']"])) )
+#
+#        form        = Form(id="form-vinil") # id="stylized"
+#        form.text(label='Material Name') # help='Help'
+#        form.text(label='Bravais-Lattice Index (ibrav)', value="2")
+#        form.text(label='Element Name', value="Ni")
+#        form.text(label='Element Mass (a.e.)', value="26.98")
+#        form.selector(label="Pseudo Potential", entries=enumerate(["Ni.pde-nd-rrkjus.UPF", "NirelPBE.RRKJ3.UPF"]))
+#
+#        form.text(label='Atomic position', value="0 0 0")
+#
+#        # Need to set parameters:
+#        #    'nspin',
+#        #    'starting_magnetization',
+#        #    'multiplicity',
+#        #    'tot_magnetization'
+#
+#        d_form.add(form)
+#        d.add(d_form)
+#        tabs = Tabs()
+#        tabs.tab('Control').paragraph(text=['Namelist: CONTROL '])
+#        tabs.tab('System').document(title='Namelist: SYSTEM')
+#        tabs.tab('Electrons').paragraph(text=['Namelist: ELECTRONS'])
+#        tabs.tab('Ions').paragraph(text=['Namelist: IONS'])
+#        tabs.tab('Cell').paragraph(text=['Namelist: CELL'])
+#        tabs.tab('Phonon').paragraph(text=['Namelist: PHONON'])
+#        tabs.tab('Lattice').paragraph(text=['Some form'])
+#        tabs.tab('K-Points').paragraph(text=['Card: K_POINTS'])
+#        tabs.tab('Other').paragraph(text=['Some form'])
+#        d.add(tabs)
+
+
+
+
+
+__date__ = "$Sep 29, 2009 7:48:28 PM$"
+
+

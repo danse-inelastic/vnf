@@ -1,0 +1,113 @@
+# -*- Python -*-
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                   Jiao Lin
+#                      California Institute of Technology
+#                        (C) 2008  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+from vnfb.components.ComputationResultRetriever import ComputationResultRetriever as base
+class Retriever(base):
+
+    def _retrieveResultsFor(self, computation):
+        director = self.director
+        clerk = director.clerk
+        self.db = db = clerk.db
+        self.orm = orm = clerk.orm
+        
+        # must have a job
+        self.declareProgress(0.1, 'look up job')
+        job = computation.getJob(db)
+
+        # for each monitor component, retrieve results
+        # 1. find all monitors
+        self.declareProgress(0.2, 'search for neutron components that generate outputs')
+        ic = computation.instrument_configuration.dereference(db)
+        components = [c for n, c in  ic.components.dereference(db)]
+        # right now, only search for monitors
+        def isMonitor(c):
+            return isinstance(c, MonitorTableBase)
+        outcomponents = filter(isMonitor, components)
+
+        # 2. loop over output components and retrieve result
+        start = 0.3; stop = 0.9
+        step = (stop-start)/len(outcomponents)
+        for i, component in enumerate(outcomponents):
+            p = start + step * i
+            msg = 'working on %s' % component.componentname
+            self.declareProgress(p, msg)
+            self._debug.log(msg)
+            self._dispatch(component, computation, job)
+            continue
+        
+        return
+
+
+    def _dispatch(self, component, computation, job):
+        h = '_on%s' % component.__class__.__name__
+        if hasattr(self, h):
+            h = getattr(self, h)
+        else:
+            h = self._onMonitor
+        return h(component, computation, job)
+
+
+    def _onNeutronRecorder(self, recorder, computation, job):
+        # there should be only one path
+        files = outputfiles(recorder)
+        assert len(files) == 1
+        neutronfilename = files[0]
+
+        # check result is available
+        self._check_results_sanity(expected_results=files, job=job)
+        
+        # create a neutron storage
+        storage = self._make_result_holder(computation, NeutronStorageTable)
+            
+        # save the result from job to histogram record
+        self._save_result(computation, job, neutronfilename, storage, 'data.idf')
+        
+        return
+
+
+    def _onMonitor(self, monitor, computation, job):
+        '''default handler for monitors'''
+        files = outputfiles(monitor)
+        for f in files:
+            if not f.endswith('.h5'):
+                raise NotImplementedError
+
+        # check result is available
+        self._check_results_sanity(expected_results=files, job=job)
+        
+        # create a histogram for each data file
+        for f in files:
+            hist = self._make_result_holder(computation, HistogramTable)
+            
+            # save the result from job to histogram record
+            self._save_result(computation, job, f, hist, 'data.h5')
+            continue
+        
+        return
+
+
+from vnfb.dom.neutron_experiment_simulations.neutron_components.MonitorBase import MonitorBase, MonitorTableBase
+from vnfb.components.job_builders.neutronexperiment.NeutronExperiment import outputfiles
+from vnfb.dom.Histogram import HistogramTable
+from vnfb.dom.neutron_experiment_simulations.NeutronStorage import NeutronStorageTable
+    
+
+def retriever():
+    return Retriever('neutronexperiment-results-retriever')
+
+
+# version
+__id__ = "$Id$"
+
+# End of file 

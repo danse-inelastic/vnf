@@ -1,0 +1,174 @@
+# -*- Python -*-
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                 Jiao Lin
+#                      California Institute of Technology
+#                      (C) 2006-2010  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+from luban.content import load, select, alert
+import luban.content as lc
+
+from luban.content.FormSelectorField import FormSelectorField
+
+
+class Factory(object):
+
+
+    def __init__(self, id, director):
+        domaccess = director.retrieveDOMAccessor('experiment')
+        self.domaccess = domaccess
+        self.director = director
+        self.id = id
+        return
+    
+
+    def __call__(self):
+        director = self.director
+        id = self.id
+        domaccess = self.domaccess
+        experiment = domaccess.getExperiment(id)
+        orm = domaccess.orm
+        experiment_record = orm(experiment)
+        db = orm.db
+
+        #
+        editable = domaccess.isEditable(id=id)
+        
+        doc = lc.document(Class='container')
+
+        # title bar
+        sp = doc.splitter(Class='title-bar')
+        left = sp.section()
+        right = sp.section()
+        # left: viewindicator
+        path = self._path()
+        view_indicator = director.retrieveVisual('view-indicator', path=path)
+        left.add(view_indicator)
+        # right: toolbar
+        toolbar = lc.toolbar(Class='topright-toolbar'); right.add(toolbar)
+        #
+        if editable:
+            edit = lc.button(label='Edit')
+            edit.onclick = select(id='main-display-area').replaceContent(
+                load(actor='experiment', routine='createEditor', id=id))
+            toolbar.add(edit)
+        # job
+        job = experiment_record.getJob(db)
+        if job:
+            jobbutton = lc.button(
+                label='View job',
+                tip='view the computation job of this virutal experiment')
+            viewjob = load(actor='job', routine='view', id = job.id)
+            jobbutton.onclick = viewjob
+            toolbar.add(jobbutton)
+
+            # if the job was created but not yet submitted,
+            # also add an alert line to let user submit the job
+            if job.state == 'created':
+                alertdoc = doc.document(Class='warning', title='Reminder', collapsable=True)
+                label = 'You have created a computation job for this virtual experiment. '\
+                        'Do you want to submit it?'
+                startjobalert = lc.link(label=label, onclick=viewjob)
+                alertdoc.add(startjobalert)
+
+        # panels
+        # overview
+        overview = doc.document(title="Overview", collapsable=True)
+        overview.add(self._createOverview(experiment))
+
+        # sample
+        sample_configuration = experiment.sample_configuration
+        if sample_configuration:
+            screcord = orm(sample_configuration)
+            scid = screcord.id
+            sctype = screcord.getTableName()
+            sampledetails = doc.document(title='Sample details', collapsable=True, collapsed=True)
+            sampledetails.paragraph(text='loading. please wait ...')
+            sampledetails.onexpand = select(element=sampledetails).replaceContent(
+                load(actor='loadvisual', visual='sample/details',
+                     id = scid, type = sctype, editlink=False)
+                )
+
+        # details
+        details = doc.document(title="Experiment details", collapsable=True, collapsed=True)
+        details.paragraph(text='loading. please wait ...')
+        details.onexpand = select(element=details).replaceContent(
+            load(actor='orm/neutronexperiments', routine='display',
+                 id = self.id, editlink=False)
+            )
+
+        # results
+        jobdone = False
+        if job:
+            jobdone = job.state in ['terminated', 'finished']
+        if jobdone:
+            resultsdoc = doc.document(title = 'Results', collapsable=True, collapsed=True)
+            resultsdoc.paragraph(text=['loading results. please wait...'])
+            resultsdoc.onexpand = select(element=resultsdoc).replaceContent(
+                load(actor='computation', routine='createResultsDoc',
+                     id=id, type=experiment_record.getTableName())
+                )
+        return doc
+
+
+    def _createOverview(self, experiment):
+        #
+        orm = self.domaccess.orm
+        
+        # k,v pair
+        items = []
+        
+        # instrument
+        instrument = experiment.instrument
+        items.append(('instrument', instrument.name))
+
+        # sample
+        if orm(instrument).has_sample_component:
+            sample = experiment.sample
+            if sample is not None:
+                label = sample.__class__.__name__
+                samplerecord = orm(sample)
+                if label in ['Scatterer', 'SampleAssembly']:
+                    label = '%s %s' % (label, samplerecord.short_description or samplerecord.id)
+                action = load(
+                    actor='sample', routine='view',
+                    type=samplerecord.getTableName(), id=samplerecord.id)
+                link = lc.link(label=label, onclick=action, tip='click to view the sample')
+                items.append(('sample', link))
+
+        # ncount
+        items.append(('ncount', str(experiment.ncount)))
+
+        doc = lc.document(Class='container')
+        grid = lc.grid(Class='properties'); doc.add(grid)
+        for key, value in items:
+            row = grid.row()
+            row.cell(Class='prop-name').add(key)
+            row.cell(Class='prop-value').add(value)
+            continue
+        return doc
+
+
+    def _path(self):
+        id = self.id
+        return [
+            ('Experiments', load(actor='experiment')),
+            ('Experiment %s' % id,
+             load(actor='experiment', routine='showExperimentView', id=id)),
+            ]
+
+
+def visual(id, director):
+    return Factory(id, director)()
+
+# version
+__id__ = "$Id$"
+
+# End of file 

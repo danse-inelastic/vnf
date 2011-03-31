@@ -1,0 +1,170 @@
+import os.path
+#!/usr/bin/env python
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                               Alex Dementsov
+#                      California Institute of Technology
+#                        (C) 2009  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+import idf.DOS
+from qecalc.qetask.matdyntask import MatdynTask
+
+import os
+import time
+import shutil
+from vnfb.qeutils.qeutils import analyseActor, dataroot
+from vnfb.qeutils.results.matdynresult import MATDYNResult
+from vnfb.dom.material_simulations.PhononDOS import PhononDOSTable
+
+CONVERT_DELAY       = 5   # 5 sec
+TO_THZ              = 0.0299792458
+EXPORT              = {}
+EXPORT["success"]   = (0, "Success: Phonon DOS is exported!")
+EXPORT["error"]     = (1, "Error: Phonon DOS export failed! :(")
+SUBTYPE             = "dos"
+
+# XXX: Hide MatdynTask in MATDYNResult()
+from luban.components.AuthorizedActor import AuthorizedActor as base
+class Actor(base):
+
+    class Inventory(base.Inventory):
+        import pyre.inventory
+        simid       = pyre.inventory.str('simid', default='')
+        simtype     = pyre.inventory.str('simtype', default='')
+
+
+    def create(self, director):
+        "Create phonon DOS in idf format"
+        self._matdynresult  = MATDYNResult(director, self.simid, SUBTYPE)
+        self._matdynpath    = self._matdynpath()
+        
+        try:            # Try export phonon DOS to idf format
+            self._convertResults(director)
+            self._createRecord(director)
+            self._createLocation(director)
+            self._relocateResults(director)
+            export  = EXPORT["success"]
+        except:
+            export  = EXPORT["error"]
+
+        return director.redirect(actor      = analyseActor(self.simtype),
+                                 routine    = "exportStatus",
+                                 statuscode = export[0],
+                                 status     = export[1],
+                                 simtype    = self.simtype,
+                                 id         = self.simid)
+
+
+    def _convertResults(self, director):
+        """Convert matdyn output (matdyn.modes, matdyn.freq, matdyn.dos) to
+        'data.idf' file to jobs temp directory
+        """
+        path        = self._matdynresult.resultPath()   # Result path object
+        flvec       = path.resultFiles("flvec")
+        flfrq       = path.resultFiles("flfrq")
+        fldos       = path.resultFiles("fldos")
+        outdos      = os.path.join(self._matdynpath, "data.idf")
+
+        # Configuration setting for QECalc
+
+        settingString = """[matdyn.x]
+matdynInput: %s
+matdynOutput: %s
+flvec = %s
+flfrq = %s
+fldos = %s""" % (self._matdynresult.inputFile(),
+                self._matdynresult.outputFile(),
+                flvec, flfrq, fldos)
+
+        # XXX: Not efficient, look into self._matdynresult
+        matdyn = MatdynTask( configString = settingString)
+        #matdyn.syncSetting()   # ?
+        matdyn.output.parse()
+        axis, dos = matdyn.output.property('phonon dos')
+        idf.DOS.write(axis*TO_THZ, dos, filename = outdos, comment = '')
+
+        time.sleep(CONVERT_DELAY)   # Wait for a while to make sure that data.idf is created
+
+
+    def _createRecord(self, director):
+        """Creates 'phonondoses' record (taken from: vnfb/components/ComputationResultRetriever.py)
+        Notes:
+            - Sets phonid
+        """
+
+        domaccessor = director.retrieveDOMAccessor('material_simulations/phonondos')
+        orm         = domaccessor.orm   # ? Weird!
+        clerk       = director.clerk
+        computation = clerk.getQESimulations(id = self.simid)
+        record      = clerk.insertNewOwnedRecord(PhononDOSTable, owner = computation.creator)
+        self._phonid    = record.id     # Important!
+
+        # The result record should know where it comes from
+        computation.results.add(record, clerk.db)
+        record.matter = computation.structureid
+        clerk.db.updateRecord(record)
+
+
+    def _createLocation(self, director):
+        "Creates directory to store DOS file (data.idf)"
+        phonpath    = self._phonpath(director)
+        if not os.path.exists(phonpath):
+            os.makedirs (phonpath)
+
+
+    # XXX: Replace by correct phonondoses id
+    def _relocateResults(self, director):
+        "Copy from tmp/ directory to phonodoses directory"
+        # Making it in a "kosher" way will make your life hard
+        src         = os.path.join(self._matdynpath, "data.idf")   # XXX Check if it exists
+        if not os.path.exists(src):
+            raise           # If nothing to copy, complain. It will be caught anyway!
+        dest        = self._phonpath(director)
+        shutil.copy(src, dest)
+
+
+    def _phonpath(self, director):
+        "Returns phonondoses directory corresponding to id (set in _createRecord())"
+        datadir     = dataroot(director)
+        pid         = os.path.join("phonondoses", self._phonid) # Phonon DOS id
+        return os.path.join(datadir, pid)
+
+
+    def _matdynpath(self):
+        "Returns matdyn results path of 'dos' subtype"
+        # Example: "/home/dexity/exports/vnf/vnfb/content/data/tmp/tmpTRqFuy/8CNH5MUJ"
+        path    = self._matdynresult.localPath()
+        if not path:
+            return ""   # empty string
+
+        return path
+
+
+    def __init__(self):
+        super(Actor, self).__init__(name='material_simulations/espresso/phonondos')
+        return
+
+
+    def _configure(self):
+        super(Actor, self)._configure()
+        self.simid       = self.inventory.simid
+        self.simtype     = self.inventory.simtype
+
+
+    def _init(self):
+        super(Actor, self)._init()
+        return
+
+def actor():
+    return Actor()
+
+
+__date__ = "$Jan 18, 2010 10:30:25 PM$"
+
+

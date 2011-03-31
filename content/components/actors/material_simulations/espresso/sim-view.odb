@@ -1,0 +1,293 @@
+#!/usr/bin/env python
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                               Alex Dementsov
+#                      California Institute of Technology
+#                        (C) 2009  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+from vnfb.qeutils.qeutils import stamp2date, analyseActor, label2typekey, nonMDChain
+from vnfb.qeutils.taskcreator import TaskCreator
+from vnfb.qeutils.qetasks import QETasks
+from vnfb.qeutils.qegrid import QEGrid
+from vnfb.qeutils.qeparams import QEParams
+from vnfb.qeutils.qeserver import QEServer
+from vnfb.qeutils.qeconst import ID_SIMTASKS, SIMTYPE
+
+from luban.content import select
+from luban.content.Paragraph import Paragraph
+from luban.content import load
+import luban.content as lc
+
+# XXX: Why there is no self.type?
+from luban.components.AuthorizedActor import AuthorizedActor as base
+class Actor(base):
+
+    class Inventory(base.Inventory):
+        import pyre.inventory
+        id      = pyre.inventory.str('id', default='')      # Simulation Id
+
+
+    def default(self, director):
+
+        return select(id='main-display-area').replaceContent(self.content(director))
+
+
+    def content(self, director):
+        "Main content"
+        self.id     = self.inventory.id
+        self._sim   = director.clerk.getQESimulations(id=self.id)
+
+        if not self._sim:   # No simulation, return empty document
+            return lc.document()
+
+        # HACK: Redirects to EPSC simulation
+        if self._sim.type == "epsc":
+            return director.redirect(actor   = 'material_simulations/epsc/sim-view',
+                                     routine = 'content',
+                                     id      = self.inventory.id)
+
+        self._checkTasks(director)  # ! Checks tasks if they exist, otherwise creates missing
+        
+        doc         = lc.document(title   = 'Simulation Name: %s' % self._sim.sname)
+        splitter    = doc.splitter(orientation="vertical")
+        sA          = splitter.section()
+        sA.add(self._viewIndicator(director))
+
+        sC          = splitter.section(id="qe-section-actions")
+        self._showActions(sC, self._sim)
+
+        # Area for errors
+        splitter.section(id="input-error-area") # ?
+
+        sB          = splitter.section()
+
+        table       = QEGrid(lc.grid(Class = "qe-table"))
+        sB.add(table.grid())
+        self._showSimulationInfo(table, self._sim)
+        self._showSettings(director, table)
+        self._showServer(director, table)
+        self._showTasks(director, splitter)
+
+        # Should go after all of the rows are added!
+        table.setColumnStyle(0, "qe-cell-param")
+        
+        return doc
+
+
+    def _viewIndicator(self, director):
+        qelink  = load( actor           = 'materialsimulation',
+                        filter_key      = 'type',
+                        filter_value    = 'qesimulations')
+        path = []
+        path.append(('Simulations ', load(actor='materialsimulation')))
+        path.append(('Quantum Espresso ', qelink))
+        path.append(self.id)
+
+        return director.retrieveVisual('view-indicator', path=path)
+
+
+    def refreshStatus(self, director):
+        "Refresh tasks table"
+        container   = lc.document()
+        container.add(self._taskTable(director))
+
+        return select(id = ID_SIMTASKS).replaceContent(container)
+
+
+    def _checkTasks(self, director):
+        creator     = TaskCreator(director, self.id)
+        creator.createRecords(self._chainString())
+
+
+    def _chainString(self):
+        "Returns comma-separated string of tasks"
+        # Example of output: "electron-min,thermostat" or "PW,PW,DOS"
+
+        # Molecular dynamics case
+        if self._sim.type == SIMTYPE["molecular-dynamics"]:
+            return self._sim.simchain
+
+        return nonMDChain(label2typekey(self._sim.type))
+
+
+    def _showActions(self, section, sim):
+        self._refreshAction(section, sim)
+        self._newAction(section, sim)
+        self._editAction(section, sim)
+        self._cloneAction(section, sim)
+        #self._convergenceAction(section, sim)  # Keep!
+        self._analysisAction(section, sim)
+        self._deleteAction(section, sim)
+
+        section.add(lc.document(Class="clear-both"))
+
+
+    def _refreshAction(self, section, sim):
+        "Refresh action"
+        link    = lc.link(label="Refresh",
+                            Class="qe-action-refresh",
+                            onclick = load(actor='material_simulations/espresso/sim-view',
+                                           id=self.id))
+        link.tip    = "Refresh Simulation Page"
+        section.add(link)
+
+
+    def _newAction(self, section, sim):
+        "New action"
+        link    = lc.link(label="New",
+                            Class="qe-action-edit",
+                            onclick = load(actor='material_simulations/espresso/sim-create'))
+        link.tip    = "Create New Simulation"
+        section.add(link)
+
+
+    def _editAction(self, section, sim):
+        "Edit action"
+        link    = lc.link(label="Edit",
+                            Class="qe-action-edit",
+                            onclick = load(actor='material_simulations/espresso/sim-edit',
+                                           id=self.id))
+        link.tip    = "Edit Simulation"
+        section.add(link)
+
+
+    def _cloneAction(self, section, sim):
+        "Clone action"
+        link    = lc.link(label="Clone",
+                            Class   = "qe-action-clone",
+                            onclick = load(actor='material_simulations/espresso/sim-clone',
+                                           id=self.id))
+        link.tip    = "Clone Simulation Records"
+        section.add(link)
+
+
+    def _convergenceAction(self, section, sim):
+        "Adds analysis action"
+        link        = lc.link(label="Convergence",
+                            Class="qe-action-analyze",
+                            onclick = load(actor    = 'material_simulations/espresso-convergence/view',
+                                           id       = self.id))
+        link.tip    = "Convergence Tests for Simulation Parameters"
+        section.add(link)
+
+
+    def _analysisAction(self, section, sim):
+        "Adds analysis action"
+        link        = lc.link(label="Analysis",
+                            Class="qe-action-analyze",
+                            onclick = load(actor    = analyseActor(sim.type),
+                                           id       = self.id,
+                                           simtype  = sim.type
+                                           ))
+        link.tip    = "Analyze the Simulation Results"
+        section.add(link)
+
+
+    def _deleteAction(self, section, sim):
+        "Delete action"
+        link    = lc.link(label="Delete",
+                              Class="qe-action-delete",
+                              onclick = load(actor='material_simulations/espresso/sim-delete',
+                              id=self.id))
+        link.tip    = "Delete Simulation"
+        section.add(link)
+
+
+    def _showSimulationInfo(self, table, sim):
+        """Shows simulation data"""
+        if not sim:
+            return
+
+        table.addRow(('Simulation Type: ', sim.type))
+        table.addRow(('Atomic Structure: ', self._structure(sim)))
+        table.addRow(('Description: ', sim.short_description))
+        table.addRow(('Package: ', sim.package))
+        table.addRow(('Label: ', sim.label))
+        table.addRow(('Time Created: ', str(sim.date)))
+
+        #table.addRow(('Time Created: ', stamp2date(sim.date)))
+        #table.addRow(('Time Modified: ', stamp2date(sim.timemodified)))
+
+
+    def _structure(self, sim):
+        return lc.link( label   = sim.structureid,
+                        tip     = "Show details of the atomic structure",
+                        onclick = load( actor   = 'atomicstructure',
+                                        routine = 'showOverview',
+                                        id      = sim.structureid)
+                        )
+
+
+    def _showSettings(self, director, table):
+        params  = QEParams(self._sim, director)
+        link    = params.getLink(self.id)
+
+        table.addRow(("Simulation Settings: ", link))
+
+
+    def _showServer(self, director, table):
+        server  = QEServer(director)
+        link    = server.getLink(self.id)
+
+        table.addRow(("Server: ", link))
+
+
+    def _showTasks(self, director, splitter):
+        """Shows chain of configuration files"""
+        # Show simulation tasks section
+        sC          = splitter.section(id="qe-tasks-label")
+        sC.add(Paragraph(text="Simulation Tasks", Class="qe-section-inline"))
+
+        # Show refresh status button
+        sC.add(lc.link(label="Refresh Status", id = "action-refresh-status",
+                         onclick = load(actor   = 'material_simulations/espresso/sim-view',
+                                        routine = "refreshStatus",
+                                        id      = self.id)
+                        ))
+        sC.add(lc.document(Class="clear-both"))
+
+
+        # Show tasks table
+        sT          = splitter.section(id = ID_SIMTASKS)
+        container   = lc.document()
+        container.add(self._taskTable(director))
+        sT.add(container)
+
+
+    def _taskTable(self, director):
+        "Returns task table section"
+        sim         = director.clerk.getQESimulations(id=self.id)
+        taskstable  = QETasks(director, sim.id, sim.type, sim.simchain)
+        return taskstable.tasks()
+
+
+    def __init__(self):
+        super(Actor, self).__init__(name='material_simulations/espresso/sim-view')
+        self.files  = [] # Temp
+
+        return
+
+
+    def _configure(self):
+        super(Actor, self)._configure()
+        self.id = self.inventory.id
+        return
+
+
+    def _init(self):
+        super(Actor, self)._init()
+        return
+
+def actor():
+    return Actor()
+
+
+__date__ = "$Nov 2, 2009 3:15:35 PM$"
+
+

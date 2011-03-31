@@ -1,0 +1,93 @@
+# -*- Python -*-
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                 Jiao Lin
+#                      California Institute of Technology
+#                      (C) 2006-2009  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+from luban.content.Document import Document
+from luban.content.Splitter import Splitter
+from luban.content.Splitter import SplitSection
+from luban.content.Tabs import Tabs
+from luban.content.Tabs import Tab
+
+def matterviewdoc():
+    return Document(
+        id='matterviewdoc',
+        )
+
+def leftpanel():
+    doc = SplitSection(id='matterviewpanel')
+    doc.add(titlesection())
+    doc.add(matterviewdoc())
+    return doc
+
+def newsimtab():
+    instance = Tab(id='newmatsimtab')
+    instance.Class = ''
+    instance.selected = False
+    instance.label = 'Create new simulation'
+    instance.contents = []
+    return instance
+
+def oldsimtab():
+    instance = Tab(id='oldmatsimtab')
+    instance.Class = ''
+    instance.selected = False
+    instance.label = 'Existing simulations'
+    instance.contents = []
+    return instance
+
+def simtabs():
+    instance = Tabs()
+    instance.contents = [newsimtab(), oldsimtab()]
+    instance.Class = ''
+    return instance
+
+
+def simsdoc():
+    doc = Document(id='mattersimsdoc')
+    doc.add(simtabs())
+    return doc
+
+def rightpanel():
+    instance = SplitSection(id='mattersimspanel')
+    instance.add(simsdoc())
+    return instance
+
+def horizsplit():
+    instance = Splitter()
+    instance.orientation = 'horizontal'
+    instance.contents = [leftpanel(), rightpanel()]
+    instance.Class = ''
+    return instance
+
+
+def titlesection():
+    ret = Splitter(id='matterdoc-titlecontainer', orientation='vertical')
+    ret.section(id='matterdoc-title')
+    ret.section(id='matterdoc-title-extra')
+    return ret
+
+
+def visual(director):
+    instance = Document()
+    instance.id = 'matterdoc'
+    instance.contents = [
+        horizsplit(),
+        ]
+    instance.Class = ''
+    return instance
+
+    
+# version
+__id__ = "$Id$"
+
+# End of file 

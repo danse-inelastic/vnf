@@ -1,0 +1,284 @@
+# -*- Python -*-
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                   Jiao Lin
+#                      California Institute of Technology
+#                      (C) 2006-2009  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+# TODO: the proxy should not be necessary any more. just use dsaw orm. shoudl remove all proxy classes etc
+
+
+tablename = 'atomicstructure'
+
+
+from vnfb.components.DOMAccessor import DOMAccessor as base
+
+class Accessor(base):
+
+
+    def __init__(self):
+        super(Accessor, self).__init__('atomicstructure-accessor')
+        return
+
+
+    def _getOrm(self):
+        orm = self.director.clerk.orm
+        from vnfb.dom.AtomicStructure import Structure
+        orm(Structure)
+        return orm
+    orm = property(_getOrm)
+
+
+    def removeAtomicStructure(self, id):
+        orm = self.orm
+        s = orm.load(Structure, id)
+        orm.destroy(s)
+        return
+    
+
+    def newAtomicStructure(self):
+        orm = self.orm
+        s = Structure()
+        orm.save(s)
+
+        # assign creator
+        creator = self.director.sentry.username
+        r = orm(s)
+        r.creator = creator
+        orm.db.updateRecord(r)
+        
+        return s
+
+
+    def getAtomicStructure(self, id):
+        orm = self.orm
+        return orm.load(Structure, id)
+
+
+    def getAtomicStructureRecord(self, id):
+        db = self.db
+        return db.query(StructureTable).filter_by(id=id).one()
+
+
+    def getAtomicStructureLabel(self, id):
+        r = self.getAtomicStructureRecord(id)
+        return r.short_description or r.id
+    
+
+    def getSimilarAtomicStructureRecords(self, id):
+        'find the atomic structure records that are similar to the one with given id'
+        # the criterias is
+        #  1. same space group
+        #  2. same chemical formula
+        raise NotImplementedError
+
+
+    def setDescription(self, id, description):
+        record = self.getAtomicStructureRecord(id)
+        record.short_description = description
+        self.db.updateRecord(record)
+        return
+
+
+    def isOwnedByUser(self, id):
+        'check if a structure is owned by the current user'
+        director = self.director
+        username = director.sentry.username
+        r = self.getAtomicStructureRecord(id)
+        return r.creator == username
+
+
+    def isConstructued(self, id):
+        'check if a structure is constructed and ready to be used'
+        s = self.getAtomicStructure(id)
+        if not s.description: return False
+        # check if there are atoms
+        if not len(s): return False
+        # more...
+        return True
+
+
+    def isEditable(self, id):
+        'check if a structure is still editable'
+        return not self.isReferred(id)
+
+
+    def isReferred(self, id):
+        'check if this structure is referred by someone'
+        r = self.getAtomicStructureRecord(id)
+        return r.globalpointer is not None
+
+
+    def isTransient(self, id=None, record=None):
+        if record:
+            return super(Accessor, self).isTransient(record)
+        
+        r = self.getAtomicStructureRecord(id)
+        return self.isTransient(record=r)
+
+
+    def countAtomicStructures(self, filter=None, label=None, mine=False):
+        q = self.makeQuery(filter=filter, label=label, mine=mine)
+        return q.alias('tocount').count().execute().fetchone()[0]
+    
+
+    def getAtomicStructureIDs(
+        self,
+        filter=None, order_by=None, reverse_order=None, slice=None,
+        label=None,
+        mine=False,
+        ):
+        
+        db = self.db
+        q = self.makeQuery(filter=filter, label=label, mine=mine)
+
+        if order_by:
+            q = q.order_by(order_by)
+        if slice:
+            if reverse_order:
+                n = self.countAtomicStructures(filter=filter, label=label, mine=mine)
+                slice = n-slice[1], n-slice[0]
+            q = sqlalchemy.select(
+                [q.alias('toslice')],
+                limit = slice[1]-slice[0],
+                offset = slice[0])
+
+        ret = q.execute().fetchall()
+        
+        if reverse_order:
+            ret.reverse()
+        return [i.id for i in ret]
+
+
+    def getAtomicStructureRecords(
+        self,
+        filter=None, order_by=None, reverse_order=None, slice=None,
+        label=None,
+        mine=False,
+        ):
+        ids = self.getAtomicStructureIDs(
+            filter=filter, order_by=order_by, reverse_order=reverse_order, slice=slice,
+            label=label, mine=mine,
+            )
+        return map(self.getAtomicStructureRecord, ids)
+
+
+    def makeQuery(self, filter=None, label=None, mine=False):
+        if label:
+            if filter: raise RuntimeError
+            return self.makeLabeledQuery(label, mine=mine)
+        db = self.db
+
+        # query
+        st = db._tablemap.TableToSATable(StructureTable)
+        cols = [
+            st.c.id.label('id'),
+            st.c.short_description.label('short_description'),
+            st.c.chemical_formula.label('chemical_formula'),
+            st.c.date.label('date'),
+            st.c.creator,
+            ]
+        username = self.director.sentry.username
+        if mine:
+            q = sqlalchemy.select(cols, st.c.creator==username)
+        else:
+            from vnfb.utils.query.accesscontrol import select_public_and_owned_records
+            q = select_public_and_owned_records(cols, st, username, db)
+
+        # filter query
+        if filter:
+            q = sqlalchemy.select([q.alias('atomicstructure')], whereclause=filter)
+        return q
+
+
+    def makeLabeledQuery(self, label, mine=False):
+        db = self.db
+        sL = db._tablemap.TableToSATable(Label)
+        if label in common_labels:
+            whereclause="labelname='%s'" % (label,)
+        else:
+            whereclause="labelname='%s' and targettable='%s'" % (
+                label, tablename)
+        labelq = sqlalchemy.select(
+            [sL.c.entity.label('entity'),
+             sL.c.labelname.label('label'),
+             ],
+            whereclause=whereclause,
+            ).alias('labelq')
+        
+        st = db._tablemap.TableToSATable(StructureTable)
+        
+        cols = [
+            st.c.id.label('id'),
+            st.c.short_description.label('short_description'),
+            st.c.chemical_formula.label('chemical_formula'),
+            st.c.date.label('date'),
+            labelq.c.entity.label('gptr'),
+            ]
+        # where = st.c.globalpointer==labelq.c.entity
+        where = 'globalpointer=labelq.entity'
+        if mine:
+            username = self.director.sentry.username
+            mine = "creator='%s'" % username
+            where = '%s and %s' % (where, mine)
+        q = sqlalchemy.select(cols, where)
+        
+        return q
+
+
+    def getallsimulations(self, id, **opts):
+        '''get all simulations for this atomic structure
+        '''
+        # XXX this implementation does not work anymore ...
+        # XXX has to go through all material simulation tables and use back reference
+        # XXX to find the simulations.
+
+        s = self.getAtomicStructure(id)
+        orm = self.orm
+        record = orm(s)
+        
+        db = self.db
+        tables = simulationTables()
+
+        computations = []
+        for table in tables:
+            computations += record.getReferences(db, table, 'matter', **opts)
+            continue
+
+        return computations
+
+
+
+
+from vnfb.dom.Label import Label, common_labels
+from vnfb.dom.AtomicStructure import StructureTable, Structure
+from vnfb.dom.Atom import AtomTable, Atom
+from vnfb.dom.Lattice import LatticeTable, Lattice
+
+
+from dsaw.db.VersatileReference import global_pointer
+import sqlalchemy
+
+
+def simulationTables():
+    from vnf.dom import materialsimulationtables, materialmodelingtables
+    tables = materialsimulationtables()# + materialmodelingtables()
+    return tables
+
+
+
+def accessor():
+    return Accessor()
+
+
+# version
+__id__ = "$Id$"
+
+# End of file 

@@ -1,0 +1,91 @@
+#!/usr/bin/env python
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                               Alex Dementsov
+#                      California Institute of Technology
+#                        (C) 2009  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+from vnfb.qeutils.generators.matdyngenerator import MATDYNGenerator
+from vnfb.qeutils.qeparser.qeinput import QEInput
+import vnfb.qeutils.filters as filters
+
+from vnfb.components.QEGenerator import QEGenerator as base
+class Actor(base):
+
+    class Inventory(base.Inventory):
+        import pyre.inventory
+        subtype     = pyre.inventory.str('subtype', default='')    # dos, or dispersion
+        nk1         = pyre.inventory.int('nk1', default=0)        # Change to float?
+        nk2         = pyre.inventory.int('nk2', default=0)
+        nk3         = pyre.inventory.int('nk3', default=0)
+
+
+    def content(self, director):
+        "Populates the content for creation of input configuration"
+        title   = "MATDYN Configuration Input"
+        label   = "MATDYN Form"
+
+        visual  = "material_simulations/espresso/input-matdyn"  
+        return self._document(director, title, label, visual = visual)
+
+
+    def generateInput(self, director):
+        gen     = MATDYNGenerator(director, self.inventory)
+        gen.setInput()
+        return director.redirect(actor   = 'material_simulations/espresso/input-create',
+                                routine = 'default',
+                                text    = gen.toString(),
+                                id      = self.inventory.id,
+                                taskid  = self.inventory.taskid,
+                                type    = self.inventory.type,
+                                subtype = self.inventory.subtype)
+
+        
+    def filterInput(self, director):
+        "Takes parameters from input-default form and filters text"
+        gen     = MATDYNGenerator(director, self.inventory)
+        input   = QEInput(config=self.inventory.text, type=self.inventory.type)
+
+        filter  = filters.filterFactory(self.inventory.type)  # MATDYNFilter()
+        filter.setFlfrc(gen.flfrc())            # Set dynamic variable
+        filter.apply(input)                     # Apply filter to input
+        fconfig = input.toString()              # Filtered config input
+
+        return director.redirect(actor   = 'material_simulations/espresso/input-create',
+                                routine = 'createRecord',
+                                text    = fconfig,
+                                id      = self.inventory.id,
+                                taskid  = self.inventory.taskid,
+                                type    = self.inventory.type,
+                                subtype = self.inventory.subtype,
+                                fname   = self.inventory.fname,
+                                description = self.inventory.description)
+
+    def __init__(self):
+        super(Actor, self).__init__(name='material_simulations/espresso-utils/generate-matdyn')
+
+
+    def _configure(self):
+        super(Actor, self)._configure()
+        self.subtype         = self.inventory.subtype
+        self.nk1            = self.inventory.nk1
+        self.nk2            = self.inventory.nk2
+        self.nk3            = self.inventory.nk3
+
+
+    def _init(self):
+        super(Actor, self)._init()
+        return
+
+def actor():
+    return Actor()
+
+
+__date__ = "$Jan 13, 2010 4:29:22 AM$"
+

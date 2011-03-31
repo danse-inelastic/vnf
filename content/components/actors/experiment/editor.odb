@@ -1,0 +1,406 @@
+#!/usr/bin/env python
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                 Jiao Lin
+#                      California Institute of Technology
+#                      (C) 2006-2009  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+import luban.content as lc
+
+from luban.content import load, select, alert
+
+from luban.content.Button import Button
+from luban.content.Paragraph import Paragraph
+
+
+from luban.components.AuthorizedActor import AuthorizedActor as base
+
+
+class Actor(base):
+
+
+    class Inventory(base.Inventory):
+
+        import pyre.inventory
+
+        id = pyre.inventory.str('id')
+        short_description = pyre.inventory.str('short_description')
+        instrument = pyre.inventory.str('instrument')
+        sample = pyre.inventory.str('sample')
+        mode = pyre.inventory.str('mode')
+        component = pyre.inventory.str('component')
+        before = pyre.inventory.str('before')
+        newtype = pyre.inventory.str('newtype')
+
+
+    def createEditor(self, director):
+        return director.retrieveVisual(
+            'neutronexperiment/edit/skeleton',
+            id = self.inventory.id,
+            director = director,
+            )
+
+
+    def createEditWizard_instrumentpanel(self, director):
+        return director.retrieveVisual(
+            'neutronexperiment/edit/instrumentpanel',
+            id = self.inventory.id,
+            director = director
+            )
+
+
+    def onSelectInstrument(self, director):
+        """
+        id: experiment id
+        instrument: id of selected instrument
+
+        return: adction to update edit panel of experiment wizard
+        """
+        domaccess = self._domaccess(director)
+        orm = domaccess.orm
+        db = orm.db
+
+        #
+        instrument = self.inventory.instrument
+        if not instrument: return
+
+        #
+        instrument = domaccess.getInstrumentRecord(instrument)
+        # XXX shoule check if instrument is constructed well
+        #if not domaccess.isConstructed(record=instrument):
+        #    return alert('this instrument is not yet fully constructed. please choose another one')
+
+        # set instrument to the new instrument
+        self.setInstrument(director)
+
+        # actions
+        # 
+        if instrument.has_sample_component:
+            panelactions = director.retrieveVisual('neutronexperiment/edit/showsamplepanels').get()
+        else:
+            panelactions = director.retrieveVisual('neutronexperiment/edit/hidesamplepanels').get()
+        #
+        mode = 'configuration'
+        newpanel = director.retrieveVisual(
+            'neutronexperiment/edit/instrumentpanel',
+            id=self.inventory.id, director=director, domaccess=domaccess,
+            mode=mode)
+        refreshactions = [select(id='instrumentpanel').replaceBy(newpanel)]
+        #
+        actions = panelactions + refreshactions
+        return actions
+
+
+    def setInstrument(self, director):
+        """
+        id: experiment id
+        instrument: instrument id
+
+        return: instrument id
+        """
+        id = self.inventory.id
+        domaccess = self._domaccess(director)
+        exp = domaccess.getExperimentRecord(id)
+
+        # old instrument
+        oldinstrument = exp.instrument and exp.instrument.id
+
+        # new instrument
+        instrument = self.inventory.instrument
+        # if old = new, nothing to do
+        if instrument == oldinstrument: return instrument
+
+        # assign to experiment
+        exp.instrument = instrument
+        domaccess.db.updateRecord(exp)
+
+        # remove old configuration if necessary
+        ic = exp.instrument_configuration
+        ic = ic and ic.id and ic.dereference(domaccess.db)
+        if ic:
+            exp.instrument_configuration = None
+            domaccess.db.updateRecord(exp)
+            orm = domaccess.orm
+            ic = orm.record2object(ic)
+            orm.destroy(ic)
+
+        return instrument
+
+
+    def hideSamplePanelsIfNecessary(self, director): 
+        domaccess = self._domaccess(director)
+
+        # experiment
+        id = self.inventory.id
+        exp = domaccess.getExperimentRecord(id=id)
+        
+        # instrument
+        instrument = exp.instrument
+        instrument = instrument and instrument.id and instrument.dereference(domaccess.db)
+
+        # if instrument does not have a sample component
+        # hide the sample panels
+        if instrument:
+            if not instrument.has_sample_component:
+                hidesamplepanels = director.retrieveVisual(
+                    'neutronexperiment/edit/hidesamplepanels') .get()
+                return hidesamplepanels
+        return
+
+
+    def onInsertComponent(self, director):
+        """
+        id: id of experiment
+        before: unique identifier of the component before which the new component will be inserted
+        """
+        domaccess = self._domaccess(director)
+
+        # experiment
+        id = self.inventory.id
+        exp = domaccess.getExperimentRecord(id=id)
+
+        # before
+        before = self.inventory.before
+        before = domaccess.db.fetchRecordUsingUniqueIdentifierStr(before)
+
+        # instrument configuration
+        ic = exp.instrument_configuration.dereference(domaccess.db)
+
+        # insert a new component
+        from vnfb.dom.neutron_experiment_simulations.neutron_components.PlaceHolder import PlaceHolderTable
+        newcomponent = domaccess.insertNewRecordWithID(PlaceHolderTable)
+        ic.components.insert(newcomponent, before=before, db=domaccess.db)
+
+        # actions
+        newview = director.retrieveVisual(
+            'neutronexperiment/edit/instrumentconfiguration',
+            id = id, director=director, component=newcomponent)
+        return select(id='instrument-configuration').replaceBy(newview)
+
+
+    def onAppendComponent(self, director):
+        """
+        id: id of experiment
+        """
+        domaccess = self._domaccess(director)
+
+        # experiment
+        id = self.inventory.id
+        exp = domaccess.getExperimentRecord(id=id)
+
+        # instrument configuration
+        ic = exp.instrument_configuration.dereference(domaccess.db)
+
+        # append a new component
+        from vnfb.dom.neutron_experiment_simulations.neutron_components.PlaceHolder import PlaceHolderTable
+        newcomponent = domaccess.insertNewRecordWithID(PlaceHolderTable)
+        ic.components.add(newcomponent, db=domaccess.db)
+
+        # actions
+        newview = director.retrieveVisual(
+            'neutronexperiment/edit/instrumentconfiguration',
+            id = id, director=director, component=newcomponent)
+        return select(id='instrument-configuration').replaceBy(newview)
+
+
+    def onChangeComponentType(self, director):
+        """
+        id: id of experiment
+        component: unique identifier of the component before which the new component will be inserted
+        newtype: new component type
+        """
+        domaccess = self._domaccess(director)
+        orm = domaccess.orm
+
+        # experiment
+        id = self.inventory.id
+        exp = domaccess.getExperimentRecord(id=id)
+
+        # component
+        component = self.inventory.component
+        component = domaccess.db.fetchRecordUsingUniqueIdentifierStr(component)
+
+        # instrument configuration
+        ic = exp.instrument_configuration.dereference(domaccess.db)
+
+        # create a new component
+        newtype = self.inventory.newtype
+        newcomponent = domaccess.initComponentRecord(
+            newtype, componentname=component.componentname)
+        
+        # replace the old component with the newcomponent
+        index = ic.components.getIndex(component, db=domaccess.db)
+        ic.components.setElement(index=index, element=newcomponent, db=domaccess.db)
+
+        # destroy the old component
+        orm.destroy(orm.record2object(component))
+
+        # actions
+        newview = director.retrieveVisual(
+            'neutronexperiment/edit/instrumentconfiguration',
+            id = id, director=director, component=newcomponent)
+        return select(id='instrument-configuration').replaceBy(newview)
+
+
+    def onDeleteComponent(self, director):
+        """
+        id: id of experiment
+        component: unique identifier of the component before which the new component will be inserted
+        """
+        domaccess = self._domaccess(director)
+
+        # experiment
+        id = self.inventory.id
+        exp = domaccess.getExperimentRecord(id=id)
+
+        # component
+        component = self.inventory.component
+        component = domaccess.db.fetchRecordUsingUniqueIdentifierStr(component)
+
+        # instrument configuration
+        ic = exp.instrument_configuration.dereference(domaccess.db)
+
+        # if there is only one component left, alert user
+        components = ic.components.dereference(domaccess.db)
+        if len(components) == 1:
+            return alert('There is only one component left.')
+        if len(components) == 0:
+            raise RuntimeError
+
+        # delete component from the refset
+        ic.components.delete(component,domaccess.db)
+        # destroy it
+        orm = domaccess.orm
+        orm.destroy(orm.record2object(component))
+        
+        # actions
+        newview = director.retrieveVisual(
+            'neutronexperiment/edit/instrumentconfiguration',
+            id = id, director=director)
+        return select(id='instrument-configuration').replaceBy(newview)
+
+
+    def createEditWizard_samplepanel(self, director):
+        mode = self.inventory.mode or None
+        return director.retrieveVisual(
+            'neutronexperiment/edit/samplepanel',
+            id = self.inventory.id,
+            director = director,
+            mode = mode
+            )
+
+
+    def onSelectSample(self, director):
+        domaccess = director.retrieveDOMAccessor('sample')
+        orm = domaccess.orm
+        db = orm.db
+
+        #
+        sample = self.inventory.sample
+        if not sample: return
+
+        #
+        sample = db.fetchRecordUsingUniqueIdentifierStr(sample)
+        if not domaccess.isConstructed(record=sample):
+            return alert('this sample is not yet fully constructed. please choose another one')
+
+        # set sample to the new sample
+        self.setSample(director)
+
+        # create configure-sample panel
+        self.inventory.mode = 'configure'
+        doc = self.createEditWizard_samplepanel(director)
+        
+        return select(id='samplepanel').replaceBy(doc)
+
+
+    def setSample(self, director):
+        """
+        id: experiment id
+        sample: sample uid
+
+        return: sample uid
+        """
+        # if sample is not specified, do nothing
+        if not self.inventory.sample: return
+
+        #
+        id = self.inventory.id
+        domaccess = self._domaccess(director)
+        sampledomaccess = director.retrieveDOMAccessor('sample')
+
+        #
+        exp = domaccess.getExperimentRecord(id)
+
+        # old sample
+        oldsample = exp.sample and exp.sample.id and exp.sample.dereference(sampledomaccess.db)
+
+        # new sample
+        sample = self.inventory.sample
+        sample = sampledomaccess.db.fetchRecordUsingUniqueIdentifierStr(sample)
+        # if old = new, nothing to do
+        if oldsample and sample.id == oldsample.id: return self.inventory.sample
+
+        # assign to experiment
+        exp.sample = sample
+        domaccess.db.updateRecord(exp)
+
+        # remove old configuration if necessary
+        sc = exp.sample_configuration
+        sc = sc and sc.id and sc.dereference(domaccess.db)
+        if sc:
+            exp.sample_configuration = None
+            domaccess.db.updateRecord(exp)
+            orm = sampledomaccess.orm
+            sc = orm.record2object(sc)
+            orm.destroy(sc)
+
+        return self.inventory.sample
+
+
+    def createEditWizard_sample_environmentpanel(self, director):
+        return director.retrieveVisual(
+            'neutronexperiment/edit/sample_environmentpanel',
+            id = self.inventory.id,
+            director = director
+            )
+
+
+    def createEditWizard_finishpanel(self, director):
+        mode = self.inventory.mode or None
+        return director.retrieveVisual(
+            'neutronexperiment/edit/finishpanel',
+            id = self.inventory.id,
+            director = director,
+            mode = mode
+            )
+
+
+    def _domaccess(self, director):
+        return director.retrieveDOMAccessor('experiment')
+    
+
+    def __init__(self, name='experiment/editor'):
+        super(Actor, self).__init__(name)
+        return
+
+
+    # db access
+
+
+
+def actor(): return Actor()
+
+
+# version
+__id__ = "$Id$"
+
+# End of file 
+

@@ -1,0 +1,74 @@
+#!/usr/bin/env python
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                               Alex Dementsov
+#                      California Institute of Technology
+#                        (C) 2009  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+import time
+from luban.content import select
+from vnfb.qeutils.qeconst import TASK_ACTION
+from vnfb.qeutils.qeutils import deleteJob
+from vnfb.qeutils.taskaction import TaskAction
+
+UPDATE_TIME = 1 # 1 sec
+
+from luban.components.AuthorizedActor import AuthorizedActor as base
+class Actor(base):
+
+    class Inventory(base.Inventory):
+        import pyre.inventory
+        simid          = pyre.inventory.str('simid', default='')
+        jobid          = pyre.inventory.str('jobid', default='')      # Job Id
+        taskid         = pyre.inventory.str('taskid', default='')
+
+
+    def default(self, director):
+        "Not implemented"
+        pass
+
+
+    def cancel(self, director):
+        "Cancel running job"
+        job     = director.clerk.getQEJobs(id = self.jobid)
+        task    = director.clerk.getQETasks(id = self.taskid)
+        server  = director.clerk.getServers(id = job.serverid)
+        deleteJob(director, job, server)
+
+        time.sleep(UPDATE_TIME)   # Give about 1 second to update the state
+        action  = TaskAction(director, self.simid, job, task)
+
+        return select(id="%s-%s" % (TASK_ACTION, self.taskid) ).replaceContent(action.link())
+
+
+    def __init__(self):
+        super(Actor, self).__init__(name='jobs/cancel')
+
+        return
+
+
+    def _configure(self):
+        super(Actor, self)._configure()
+        self.simid      = self.inventory.simid
+        self.jobid      = self.inventory.jobid
+        self.taskid     = self.inventory.taskid
+
+
+    def _init(self):
+        super(Actor, self)._init()
+        return
+
+def actor():
+    return Actor()
+
+
+
+__date__ = "$Apr 19, 2010 7:37:14 AM$"
+
+

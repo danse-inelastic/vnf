@@ -1,0 +1,99 @@
+# -*- Python -*-
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                   Jiao Lin
+#                      California Institute of Technology
+#                      (C) 2006-2009  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+from vnfb.components.DOMAccessor import DOMAccessor as base
+
+class Accessor(base):
+
+
+    def __init__(self):
+        super(Accessor, self).__init__('computation')
+        return
+
+
+    def _getOrm(self):
+        orm = self.director.clerk.orm
+        # build orm for all computation types
+        from vnfb.dom.computation_types import typenames, deps_typenames
+        for name in typenames+deps_typenames:
+            objectClass = self._getObjectByImportingFromDOM(name)
+            from dsaw.db.Table import Table as TableBase
+            if not issubclass(objectClass, TableBase):
+                table = orm(objectClass)
+            else:
+                orm.db.registerTable(table)
+            #orm(type) no longer necessary
+        return orm
+    orm = property(_getOrm)
+
+
+    def getComputationRecord(self, type, id):
+        orm = self.orm
+        db = orm.db
+        table = db.getTable(type)
+        return db.query(table).filter_by(id=id).one()
+
+
+    def getResultRetrievalTask(self, type=None, id=None):
+        r = self.getComputationRecord(type, id)
+        db = self.db
+        return r.getOnlyTask(db, iworker='retrieve_computation_results')
+
+
+    def resetResultRetrievalTask(self, type=None, id=None):
+        db = self.db
+        t = self.getResultRetrievalTask(type, id)
+        if t:
+            t.state = 'failed'
+            db.updateRecord(t)
+        c = self.getComputationRecord(type, id)
+        c.resetResultRetrievalStatus(db)
+        # also remove all the previously retrieved results
+        results = c.results.dereference(db)
+        c.results.clear(db)
+        for k, r in results:
+            db.deleteRecord(r)
+            continue
+        return
+    
+
+    def isComputationResultsRetrieved(self, type, id):
+        task = self.getResultRetrievalTask(type, id)
+        if not task:
+            return False
+        return task.state == 'finished'
+
+
+    def getJob(self, type, id):
+        db = self.db
+        r = self.getComputationRecord(type, id)
+        job = r.getJob(db)
+        return job
+
+
+    def isJobDone(self, type, id):
+        job = self.getJob(type, id)
+        if not job:
+            return False
+        return job.state in ['finished', 'terminated']
+
+    
+def accessor():
+    return Accessor()
+
+
+# version
+__id__ = "$Id$"
+
+# End of file 

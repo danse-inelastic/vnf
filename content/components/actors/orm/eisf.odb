@@ -1,0 +1,142 @@
+#!/usr/bin/env python
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                 Jiao Lin
+#                      California Institute of Technology
+#                      (C) 2006-2009  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+import luban.content as lc
+from luban.content import select, load, alert
+from vnfb.dom.material_simulations.Eisf import Eisf
+from luban.components.Actor import Actor
+import luban.orm
+base = luban.orm.object2actor(Eisf)
+class Actor(base):
+
+    class Inventory(base.Inventory):
+
+        import pyre.inventory
+        ids = pyre.inventory.list(name='ids')
+
+
+    def createGraphicalView(self, director):
+        ids = self.inventory.ids
+        if ids: return self._createGraphicalViewM(director)
+        return self._createGraphicalView1(director)        
+
+
+    def _createGraphicalViewM(self, director):
+        domaccess = self._domaccess(director)
+        
+        # the document to build
+        doc = lc.document(title='Elastic Incoherent Structure Factor (EISF)')
+
+        # plot
+        p = self._createPlotM(director)
+        doc.add(p)
+        
+        return doc
+
+
+    def _createGraphicalView1(self, director):
+        domaccess = self._domaccess(director)
+        obj = self._load(director)
+        orm = domaccess.orm
+        db = orm.db
+        
+        record = orm(obj)
+
+        # the document to build
+        doc = lc.document(title='Elastic Incoherent Structure Factor (EISF) %s' % record.id)
+
+        # link to the computation
+        origin = record.getOrigin(db)
+        origin_link = lc.link(
+            label='computed from %s %s' % (origin.getTableName(), origin.id),
+            onclick = load(actor='computation', routine='view',
+                           type = origin.getTableName(), id = origin.id)
+            )
+        doc.add(origin_link)
+        
+        # plot
+        p = self.createPlot(director)
+        doc.add(p)
+        
+        return doc
+
+
+    def createPlot(self, director):
+        ids = self.inventory.ids
+        if ids: return self._createPlotM(director)
+        return self._createPlot1(director)
+
+
+    def _createPlotM(self, director):
+        doc = lc.splitter(Class='plot-with-legends')
+        left = doc.section(); right = doc.section()
+        
+        domaccess = self._domaccess(director)
+        
+        propertylist = map(domaccess.getDataForProperty, self.inventory.ids)
+        propertylist = filter(bool, propertylist)
+        if not propertylist:
+            return lc.paragraph(text=['Data missing'])
+
+        #
+        p = lc.plot2d(); left.add(p)
+        g = lc.grid(); right.add(g)
+        for property in propertylist:
+            origin = domaccess.getOrigin(property=property)
+            label='%s %s' % (origin.getTableName(), origin.id)
+            p.curve(x=list(property.x), y=list(property.y), label=label)
+
+            row = g.row()
+            # left cell shows label
+            labelcell = row.cell()
+            loadorigin = load(actor='computation', routine='view',
+                              type=origin.getTableName(), id = origin.id)
+            labellink = lc.link(label=label, onclick=loadorigin)
+            labelcell.add(labellink)
+            # right cel shows summary
+            summarycell = row.cell()
+            summarycell.add(str(origin))
+            continue
+
+        return doc
+
+
+    def _createPlot1(self, director):
+        domaccess = self._domaccess(director)
+
+        property = domaccess.getDataForProperty(id=self.inventory.id)
+        
+        # plot
+        p = lc.plot2d()
+        p.curve(x=list(property.x), y=list(property.y), label='EISF')
+
+        return p
+        
+
+    def _initComputationOrm(self, director):
+        domaccess = director.retrieveDOMAccessor('computation')
+        return domaccess.orm
+
+
+    def _domaccess(self, director):
+        self._initComputationOrm(director)
+        return director.retrieveDOMAccessor('properties/eisf')
+            
+
+def actor():
+    return Actor('orm/eisf')
+
+
+# version
+__id__ = "$Id$"
+
+# End of file 

@@ -1,0 +1,96 @@
+#!/usr/bin/env python
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                 Jiao Lin
+#                      California Institute of Technology
+#                      (C) 2006-2009  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+from luban.content import load, select, alert
+import luban.content as lc
+
+
+class Factory(object):
+
+    shape_view_id = 'scatterer-shape-view'
+
+
+    def __init__(self, id, director):
+        self.id = id
+        self.director = director
+        self.domaccess = director.retrieveDOMAccessor('scatterer')
+        self.record = self.domaccess.getRecord(id)
+        shape = self.record.shape
+        self.shape = shape and shape.id and shape.dereference(self.domaccess.db)
+        return
+
+
+    def __call__(self):
+        doc = lc.document(
+            title='Shape', id=self.shape_view_id,
+            collapsable=True)
+
+        director = self.director
+        id = self.id
+        shape = self.shape
+        
+        if not shape:
+            doc.add(
+                director.retrieveVisual('scatterer/editor/shapeeditor',
+                                        id=id, director=director)
+                )
+        else:
+            interior = doc.document(Class='container')
+            summary = self._createSummary()
+            interior.add(summary)
+
+            link = lc.link(label='edit'); interior.add(link)
+            link.onclick = select(element=interior).replaceBy(
+                load(actor='scatterer/editor', routine='createShapeEditor',
+                     id = id)
+                )
+            
+        return doc
+
+
+    def _createSummary(self):
+        shape = self.shape
+        doc = lc.document(Class='container', title=shape.__class__.__name__)
+
+        sp = doc.splitter()
+        
+        left = sp.section().document()
+        left.oncreate = select(element=left).append(
+            load(actor='orm/%s' % shape.getTableName(),
+                 routine='displayProperties',
+                 id=shape.id,
+                 editlink = False,
+                 )
+            )
+
+        right = sp.section()
+        typename = shape.__class__.__name__
+        path='icons/shapes/%s.png' % typename.lower()
+        image = lc.image(path=path)
+        image.Class='shape-summary-image'
+        right.add(image)
+
+        return  doc
+
+
+    
+def visual(id, director):
+    return Factory(id, director)()
+
+
+# version
+__id__ = "$Id$"
+
+# End of file 
+

@@ -1,0 +1,93 @@
+# -*- Python -*-
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                   Jiao Lin
+#                      California Institute of Technology
+#                      (C) 2008-2010  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+import journal
+debug = journal.debug('bvk_getphonons-jobbuilder')
+
+
+from vnfb.components.JobBuilder import JobBuilder as base
+
+class Builder(base):
+
+    from vnfb.dom.material_simulations.BvKComputation import BvK_GetPhonons as Computation
+
+    def render(self, computation, db=None, dds=None):
+        self._files = []
+
+        # make system
+        self.domaccess = domaccess = self.director.retrieveDOMAccessor(
+            'material_simulations/phonon_calculators/bvk')
+        
+        model = domaccess.getModel(computation.model.id)
+        system = self._render_system(model)
+        
+        # make script
+        self._make_script(computation)
+
+        #
+        return self._files
+
+
+    def _render_system(self, model):
+        filename = 'system'
+        
+        dds = self.director.dds
+        orm = self.domaccess.orm
+        
+        modelpath = dds.abspath(orm(model))
+        modelsystempath = os.path.join(modelpath, filename)
+        if not os.path.exists(modelsystempath):
+            # create directory first
+            if not os.path.exists(modelpath):
+                os.makedirs(modelpath)
+            # create system
+            from bvk import systemFromModel
+            systemFromModel(model, filename=modelsystempath)
+        # copy system to job
+        dest = self._path(filename)
+        import shutil
+        shutil.copyfile(modelsystempath, dest)
+        #
+        self._files.append(filename)
+        self._system = filename
+        return
+    
+    
+    def _make_script(self, computation):
+        # build the script
+        df = computation.df
+        N1 = computation.N1
+        cmds = [
+            'source ~/.bvk',
+            'bvkdisp.py -d %s -N %s' % (df, N1),
+            ]
+        # write to file
+        path = self._path(self.shscriptname)
+        open(path, 'w').write('\n'.join(cmds))
+        #
+        self._files.append(self.shscriptname)
+        return
+    
+
+import os
+
+
+def job_builder(name, path):
+    return Builder(name, path)
+
+
+# version
+__id__ = "$Id$"
+
+# End of file 

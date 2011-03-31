@@ -1,0 +1,131 @@
+# -*- Python -*-
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                               Alex Dementsov
+#                      California Institute of Technology
+#                        (C) 2011  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+from luban.content import select, load
+import luban.content as lc
+from luban.components.AuthorizedActor import AuthorizedActor as base
+
+from vnfb.epscutils.epscconst import *
+
+class Actor(base):
+    """ Create Diffraction file"""
+
+    class Inventory(base.Inventory):
+        import pyre.inventory
+        # General
+        id          = pyre.inventory.str('id', default='')
+        taskid      = pyre.inventory.str('taskid', default='')
+        type        = pyre.inventory.str('type', default='')
+        structureid = pyre.inventory.str('structureid', default='')
+
+        # Specific
+        ndif    = pyre.inventory.str('ndif', default='0')
+        spread  = pyre.inventory.str('spread', default='0')
+        h       = pyre.inventory.str('h', default='0')
+        k       = pyre.inventory.str('k', default='0')
+        l       = pyre.inventory.str('l', default='0')
+
+
+    def default(self, director):
+        return select(id='main-display-area').replaceContent(self.content(director))
+
+
+    def _viewIndicator(self, director):
+        qelink  = load( actor           = 'materialsimulation',
+                        filter_key      = 'type',
+                        filter_value    = 'qesimulations')
+
+        path = []
+        path.append(('Simulations ', load(actor='materialsimulation')))
+        path.append(('EPSC ', qelink))
+        path.append(('%s ' % self.id, load(actor    = 'material_simulations/epsc/sim-view',
+                                           id       = self.id)))
+        path.append('Create Diffraction Configuration')
+
+        return director.retrieveVisual('view-indicator', path=path)
+
+
+    def content(self, director):
+        doc         = lc.document(title   = "Create Diffraction Configuration")
+        splitter    = doc.splitter(orientation="vertical")
+        sA          = splitter.section()
+        sA.add(self._viewIndicator(director))
+        sB          = splitter.section()
+        visual  = 'material_simulations/epsc/filediff-form'
+        sB.add(director.retrieveVisual(visual, self.inventory, director))
+
+        return doc
+
+
+    def generateConfig(self, director):
+        "Generates config file and redirects to general form"
+        # Special cases
+        angles  = self.generateAngles(int(self.ndif), int(self.h), int(self.k), int(self.l))
+
+        # Config text
+        config  = FILEDIFF_T % (self.ndif, self.spread, angles)
+
+        return director.redirect(actor   = 'material_simulations/epsc/config-create',
+                                routine  = 'default',
+                                text     = config,
+                                id       = self.inventory.id,
+                                taskid   = self.inventory.taskid,
+                                type     = self.inventory.type)
+
+
+    def generateAngles(self, ndif, h, k, l):
+        "Generates directions for diffraction plane"
+        s   = ""
+        if ndif == 0:
+            return s
+
+        d   = 180/(ndif/2-1)
+        phi = 50
+        for i in range(2):
+            theta   = 0
+            for j in range(ndif/2):
+                s   += "%s %s %s\t\t%s\t\t%s\n" % (h, k, l, theta, phi)
+                theta   += d
+            phi += 180
+
+        return s
+
+
+    def __init__(self):
+        super(Actor, self).__init__(name='material_simulations/epsc/filediff-create')
+
+
+    def _configure(self):
+        super(Actor, self)._configure()
+        self.id             = self.inventory.id
+        self.taskid         = self.inventory.taskid
+        self.type           = self.inventory.type
+        self.structureid    = self.inventory.structureid
+
+        self.ndif    = self.inventory.ndif
+        self.spread  = self.inventory.spread
+        self.h       = self.inventory.h
+        self.k       = self.inventory.k
+        self.l       = self.inventory.l
+
+
+    def _init(self):
+        super(Actor, self)._init()
+        return
+
+def actor():
+    return Actor()
+
+__date__ = "$Mar 22, 2011 9:46:59 AM$"
+
+

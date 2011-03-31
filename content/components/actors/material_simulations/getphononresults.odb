@@ -1,0 +1,125 @@
+#!/usr/bin/env python
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                 Jiao Lin
+#                      California Institute of Technology
+#                      (C) 2006-2009  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+import luban.content as lc
+from luban.content import select, load, alert
+
+
+from luban.components.AuthorizedActor import AuthorizedActor as base
+
+
+class Actor(base):
+
+
+    class Inventory(base.Inventory):
+
+        import pyre.inventory
+        
+        id = pyre.inventory.str('id')
+
+
+    def createPhononDocForAtomicStructure(self, director):
+        doc = lc.document()
+        doc.add(self.createPhononsDocForAtomicStructure(director))
+        doc.add(self.createDOSDocForAtomicStructure(director))
+        return doc
+
+
+    def createDOSDocForAtomicStructure(self, director):
+        doc = lc.document(title='Density of states')
+        
+        atomicstructureaccess = director.retrieveDOMAccessor('atomicstructure')
+        structrecord = atomicstructureaccess.getAtomicStructureRecord(self.inventory.id)
+        
+        phononaccess = director.retrieveDOMAccessor('phonon')
+        doses = phononaccess.getDOSes(atomicstructure=structrecord)
+        
+        if not doses:
+            doc.paragraph(text=['There is no density of states calculated.'])
+        elif len(doses)==1:
+            dos = doses[0]
+            doc1 = doc.document(Class='container')
+            doc1.paragraph(text=['loading phonon dos. please wait...'])
+            doc1.oncreate = select(element=doc1).replaceContent(
+                load(actor='orm/phonondoses', routine='createGraphicalView', id=dos.id)
+                )
+        else:
+            doc1 = doc.document(Class='container')
+            doc1.paragraph(text=['loading phonon dos curves. please wait...'])
+            ids = [dos.id for dos in doses]
+            doc1.oncreate = select(element=doc1).replaceContent(
+                load(actor='orm/phonondoses', routine='createGraphicalView', ids=ids)
+                )
+            
+        newphononcomputation = lc.load(
+            actor='material_simulations/phonon_calculators', routine='start',
+            atomicstructure_id = self.inventory.id
+            )
+        link = lc.link(
+            label='Start a new phonon computation', onclick=newphononcomputation,
+            id = 'start-new-phonon-computation-link')
+        doc.add(link)
+
+        return doc
+
+
+    def createPhononsDocForAtomicStructure(self, director):
+        doc = lc.document(title='Phonons')
+
+        atomicstructureaccess = director.retrieveDOMAccessor('atomicstructure')
+        structrecord = atomicstructureaccess.getAtomicStructureRecord(self.inventory.id)
+        
+        phononaccess = director.retrieveDOMAccessor('phonon')
+        disps = phononaccess.getPhonons(atomicstructure=structrecord)
+        
+        if not disps:
+            doc.paragraph(text=['There are no phonons calculated.'])
+        elif len(disps)==1:
+            disp = disps[0]
+            doc1 = doc.document(Class='container')
+            doc1.paragraph(text=['loading phonons. please wait...'])
+            doc1.oncreate = select(element=doc1).replaceContent(
+                load(actor='orm/phonons', routine='createGraphicalView', id=disp.id)
+                )
+        else:
+            doc1 = doc.document(Class='container')
+            doc1.paragraph(text=['loading phonons curves. please wait...'])
+            ids = [disp.id for disp in disps]
+            doc1.oncreate = select(element=doc1).replaceContent(
+                load(actor='orm/phonons', routine='createGraphicalView', ids=ids)
+                )
+            
+        newphononcomputation = lc.load(
+            actor='material_simulations/phonon_calculators', routine='start',
+            atomicstructure_id = self.inventory.id
+            )
+        link = lc.link(label='Start a new phonon computation', onclick=newphononcomputation)
+        doc.add(link)
+
+        return doc
+    
+    
+    def __init__(self, name='getphononresults'):
+        super(Actor, self).__init__(name)
+        return
+
+
+def actor(): return Actor()
+
+
+# version
+__id__ = "$Id$"
+
+# End of file 
+

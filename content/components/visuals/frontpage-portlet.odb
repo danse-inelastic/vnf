@@ -1,0 +1,86 @@
+# -*- Python -*-
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                 Jiao Lin
+#                      California Institute of Technology
+#                      (C) 2006-2009  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+import luban.content
+from luban.content import load, select, alert
+
+
+def visual(director):
+    portletcontainer = luban.content.document(id='front-page-portlet-container')
+    
+    portlet = luban.content.portlet(id='frontpage-portlet', title='');
+    portletcontainer.add(portlet)
+
+    portlet.item(
+        id='frontpage-portlet-signup', label='sign up/register',
+        onclick=select(id='body-frame').replaceContent(load(actor='registrar', routine='createInterviewDocument'))
+        )
+    portlet.item(
+        id='frontpage-portlet-screencasts', label='screencasts',
+        onclick=select(id='front-page-central-display').replaceContent(
+            load(actor='frontpage', routine='createDocument', name='screencasts')),
+        )
+    portlet.item(
+        id='frontpage-portlet-tutorials', label='tutorials',
+        onclick=select(id='front-page-central-display').replaceContent(
+            load(actor='frontpage', routine='createDocument', name='tutorials')),
+        )
+    portlet.item(
+        id='frontpage-portlet-status', label='status',
+        onclick=select(id='front-page-central-display').replaceContent(
+            load(actor='frontpage', routine='createStatusDocument')),
+        )
+##     portlet.item(
+##         id='frontpage-portlet-news', label='news',
+##         onclick=select(id='front-page-central-display').replaceContent(load(actor='news'))
+##         )
+##     portlet.item(
+##         id='frontpage-portlet-documents', label='documents',
+##         onclick=select(id='front-page-central-display').replaceContent(load(actor='documents'))
+##         )
+##     portlet.item(
+##         id='frontpage-portlet-publication', label='publication',
+##         onclick=select(id='front-page-central-display').replaceContent(
+##             load(actor='frontpage', routine='createDocument', name='publication')),
+##         )
+    portlet.item(
+        id='frontpage-portlet-technology', label='technology',
+        onclick=select(id='front-page-central-display').replaceContent(
+            load(actor='frontpage', routine='createDocument', name='technology')),
+        )
+    portlet.item(
+        id='frontpage-portlet-personnel', label='personnel',
+        onclick=select(id='front-page-central-display').replaceContent(
+            load(actor='frontpage', routine='createDocument', name='personnel')),
+        )
+    portlet.item(
+        id='frontpage-portlet-about', label='about',
+        onclick=load(actor='about', routine='showAboutDialog'),
+        )
+    
+    htmldoc = luban.content.htmldocument(); portletcontainer.add(htmldoc)
+    htmldoc.Class = 'portletitem'
+    htmldoc.text = ['<a href="http://docs.danse.us/VNET" target="_blank">documentation</a>']
+    
+    htmldoc = luban.content.htmldocument(); portletcontainer.add(htmldoc)
+    htmldoc.Class = 'portletitem'
+    htmldoc.text = ['<a href="http://docs.danse.us/VNET/contactus.html" target="_blank">contact us</a>']
+    
+    return portletcontainer
+
+    
+# version
+__id__ = "$Id$"
+
+# End of file 

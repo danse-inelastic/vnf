@@ -1,0 +1,397 @@
+/*  -*- CSS -*-  */
+
+body {
+    font-size: 85%;
+}
+
+div table {
+    font-size: 1em;
+}
+
+/* Link */
+a {
+    text-decoration: underline;
+    color: blue;
+}
+a:hover {
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.ui-accordion .ui-accordion-content { 
+    padding: 0.1em 0.2em;
+}
+
+.luban-toolbar {
+}
+
+.ui-widget {
+}
+
+a.luban-link {
+    text-decoration: underline;
+}
+
+a.luban-link:hover{
+    text-decoration: none;
+    cursor: pointer;
+}
+
+#body-wrapper{
+}
+
+
+table.luban-splitter {
+    width: 100%;
+}
+
+td[luban-element-type=splitsection] {
+    vertical-align: top;
+}
+
+div h1,h2,h3,h4,h5,h6 {
+    font-weight: normal;
+    margin: 0;
+    padding-top: 0.5em;
+    border-bottom: none;
+}
+
+p.hidden {
+    color: transparent;
+}
+
+.invisible {
+    color: transparent;
+}
+
+
+/* overload the default behavior of luban for input */
+input, select, textarea{
+    border-color: #cced8c;
+    border-width: 2;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+}
+textarea {
+    min-height: 120px;
+}
+
+
+/* overload the default behavior of luban for buttons */
+.luban-button-container {
+    padding: 12px 8px;
+    margin: 5px;
+    text-align: center;
+}
+.luban-button {
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    background-color: #eeeeee;
+    border: none;
+    padding: 2px 5px;
+    color: #333333;
+    border: 2px solid #CCED8C;
+}
+
+.luban-button-container,
+.luban-button-container a{
+    text-decoration: none;
+    padding: 3px 5px;
+    margin: 3px 0px 7px 0px;
+    text-align: left;
+}
+
+.luban-button img {
+    margin: 5px;
+    height: 27px;
+}
+
+.luban-button span {
+    margin: 5px;
+}
+
+
+/* overload uploader button */
+.luban-uploader-button {
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    background-color: #eeeeee;
+    border: none;
+    padding: 2px 5px;
+    color: #333333;
+    border: 2px solid #CCED8C;
+}
+
+
+
+/* overload the default behavior of luban for forms */
+fieldset{
+    background-color: lightYellow;
+    -moz-border-radius: 15px;
+    -webkit-border-radius: 15px;
+}
+
+
+/* plot2d default size */
+.luban-plot2d {
+    width: 480;
+    height: 320;
+}
+
+
+/* error */
+.luban-formfield .error {
+}
+
+
+/* properties grid */
+.properties td.prop-name {
+    font-style:italic;
+    text-align:right;
+    padding-right:1em;
+    font-size:90%;
+}
+
+
+/* toolbar at the top-right corner */
+.topright-toolbar.luban-toolbar {
+    background-color:#f0f5f5;
+    border: 1px solid #AAAAAA;
+    -moz-border-radius:12px;
+    -webkit-border-radius:12px;
+}
+.topright-toolbar.luban-toolbar table {
+border-collapse:collapse;
+}
+.topright-toolbar.luban-toolbar .luban-toolbar-left-padding {
+    -moz-border-radius-bottomleft:12px;
+    -moz-border-radius-topleft:12px;
+    -webkit-border-bottom-left-radius:12px;
+    -webkit-border-top-left-radius:12px;
+    width:8px;
+    min-width:8px;
+    background-color:gray;
+}
+.topright-toolbar.luban-toolbar > table > tbody > tr > td {
+    border-right:2px solid #999999;
+}
+.topright-toolbar.luban-toolbar > table > tbody > tr > td:last-child {
+    border-right:none;
+}
+.topright-toolbar.luban-toolbar .luban-button-container {
+    margin:5px 2px;
+}
+.topright-toolbar.luban-toolbar .luban-button-container a {
+    margin:0;
+    color:green;
+}
+
+/* warning */
+.panel.luban-document.warning {
+border:1px solid #EEAAAA;
+}
+.luban-document.warning {
+-moz-border-radius-bottomleft:1em;
+border:1px solid #EEAAAA;
+margin-bottom:1em;
+padding:0.5em 1em;
+}
+
+
+/* luban document */
+.luban-document-title {
+    font-size: 1.2em;
+}
+
+/* panel luban document */
+/* panel */
+.panel.luban-document {
+-moz-border-radius:1em;
+-webkit-border-radius:1em;
+padding:0.3em;
+border:solid 1px #ccc;
+}
+.panel.luban-document .titlebar {
+-moz-border-radius:12px;
+-webkit-border-radius:12px;
+border-bottom:1px solid #ddd;
+}
+.panel.luban-document .titlebar table {
+border-collapse:collapse;
+}
+.panel.luban-document .titlebar table td {
+}
+.panel.luban-document .titlebar p {
+margin-left:0em;
+margin-top:0.2em;
+margin-bottom:0.2em;
+padding:0.1em 0.2em;
+-moz-border-radius:7px;
+-webkit-border-radius:7px;
+font-size:0.85em;
+}
+.panel.luban-document .titlebar a {
+margin:0.5em;
+}
+.panel.luban-document .titlebar .controls-container {
+width:3em;
+}
+
+.luban-document.panel > .luban-document-title > table  td.luban-document-title-controls a{
+    color: white;
+    font-size: 1.7em;
+    font-weight: bolder;
+    text-decoration: none;
+}
+.luban-document.panel > .luban-document-title >table>tbody>tr>td.luban-document-title-controls > a.collapse-expand:hover {
+    text-decoration:underline;
+    cursor: pointer;
+}
+.luban-document.panel > .luban-document-title >table>tbody>tr>td.luban-document-title-controls > a.float:hover {
+    text-decoration:underline;
+    cursor: pointer;
+}
+.luban-document.panel > .luban-document-title >table>tbody>tr>td.luban-document-title-controls > a.close:hover {
+    text-decoration:underline;
+    cursor: pointer;
+}
+
+.luban-document.panel > .luban-document-title > table td.luban-document-title-controls a.float {
+background-color:transparent;
+background-image:url(../images/icons/expand-arrow.16.png);
+color:transparent;
+background-position:center;
+background-repeat:no-repeat;
+}
+
+/* highlighted */
+.panel.luban-document.highlighted > .luban-document-title {
+background-color:#88B0BC;
+}
+.panel.luban-document.highlighted > .luban-document-body {
+border-color:#88B0BC;
+}
+
+
+/* dockable */
+.dockable.panel.luban-document > .luban-document-body  {
+    border:none;
+    max-height:92%;
+    /*overflow:scroll;*/
+}
+
+/* dock */
+.luban-dock > table > tbody > tr > td:first-child {
+background-color: #555555;
+background-image: url(../images/vnf-logos/vnf.darker-color.27px.png) ;
+background-repeat: no-repeat;
+width:4.6em;
+}
+.luban-dock > table > tbody > tr > td {
+background-color:blue;
+color:white;
+font-weight:bold;
+border:2px solid white;
+}
+.luban-dock > table {
+height:2.5em;
+}
+.luban-dock {
+background-color:lightBlue;
+height:2.6em;
+border-top:1px solid #888888;
+border-bottom:1px solid #226666;
+z-index: 100;
+
+filter:alpha(opacity=50);
+opacity:0.5;
+}
+
+/* help */
+#help{
+    width: 990px;
+    z-index: 200;
+    background-color: lightYellow;
+}
+#help-container{
+    border-bottom:1px solid lightGrey;
+    border-top:1px solid lightGrey;
+    margin:0 0 8px;
+}
+#help.dockable.panel.luban-document > .luban-document-body {
+    padding: 0px;
+}
+#help .luban-button-container  {
+text-align:center;
+}
+#help .luban-button-container a {
+border:2px solid #99bb99;
+}
+
+/* server load */
+#server-load-window{
+    width: 990px;
+    z-index: 200;
+    background-color: lightYellow;
+}
+#ganglia-page-container{
+    border-bottom:1px solid lightGrey;
+    border-top:1px solid lightGrey;
+    margin:0 0 8px;
+}
+#server-load-window > .luban-document-body {
+    padding: 0px;
+}
+#server-load-window .luban-button-container  {
+text-align:center;
+}
+#server-load-window .luban-button-container a {
+border:2px solid #99bb99;
+}
+
+/* dialog */
+.luban-dialog .luban-button-container .luban-button {
+    color:#444444;
+}
+
+/* bug report dialog */
+.bug-body > .luban-document-body {
+margin-left:1em;
+}
+.traceback-container > .luban-document-body {
+margin-left:2em;
+}
+.traceback-doc {
+max-width:960;
+max-height:400;
+overflow:scroll;
+}
+.bug-report-form fieldset {
+border:2px solid lightGrey;
+}
+.bug-report-form .luban-formtextarea {
+width:100%;
+}
+.bug-report-form .luban-formtextarea table {
+width:100%;
+}
+.bug-report-form .luban-formtextarea table td.input-container {
+width:100%;
+}
+.bug-report-form .luban-formtextarea table td.input-container textarea {
+width:100%;
+}
+
+/* misc */
+.float-right {
+    float: right;
+}
+.inline-display {
+    display: inline;
+}
+
+
+/* version */
+/* $Id$ */
+
+/* End of file  */

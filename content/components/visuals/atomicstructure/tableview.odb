@@ -1,0 +1,128 @@
+#!/usr/bin/env python
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                  Jiao Lin
+#                     California Institute of Technology
+#                       (C) 2009  All Rights Reserved
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+# this is the visual for the whole table view that includes a table and
+# many controls.
+# it is different from atomicstructure/table which only is the table itself.
+
+
+from luban.content import load, select, alert
+import luban.content as lc
+
+
+def visual(
+    director, name,
+    filter_expr=None, filter_key=None, filter_value=None,
+    label=None, mine=False,
+    order_by=None, reverse_order=None,
+    number_records_per_page=None, page_number=None,
+    ):
+    # name: name of table view
+    # 
+    domaccess = director.retrieveDOMAccessor(name)
+        
+    from vnfb.components.MasterTable import MasterTableFactory, filtercompiler
+    def countrecords(filter, label=None, mine=False):
+        return domaccess.countAtomicStructures(filter, label=label, mine=mine)
+    def createtable(order_by, reverse_order, slice, filter, label=None, mine=False):
+        return createAtomicStructureTable(
+            director, domaccess,
+            order_by=order_by,
+            reverse_order=reverse_order,
+            slice=slice,
+            filter=filter,
+            label=label,
+            mine=mine)
+    from vnfb.content.visuals.table.atomicstructure import model
+    compilefilter = filtercompiler(columns, measure2dbcol, model=model)
+
+    smartlabelaccess = director.retrieveDOMAccessor('smartlabel')
+    def filterfromlabel(label):
+        return smartlabelaccess.createFilterExprFromLabel(
+            label, name)
+    smartlabels = smartlabelaccess.getLabelNames(name)
+
+    labelaccess = director.retrieveDOMAccessor('label')
+    labels = labelaccess.getLabelNames(name)
+
+    factory = MasterTableFactory(
+        name, countrecords, createtable,
+        compilefilter, filtercols,
+        filterfromlabel, smartlabels, labels,
+        sorting_options = [
+            ('id', 'ID'),
+            ('short_description', 'Description'),
+            ('date', 'Date created'),
+        ],
+        polymorphic = False, dbtablename='AtomicStructure.Structure'
+        )
+
+    tableview = factory.create(
+        label = label, mine=mine,
+        filter_expr=filter_expr, filter_key=filter_key, filter_value=filter_value,
+        order_by=order_by,
+        reverse_order=reverse_order,
+        number_records_per_page=number_records_per_page,
+        page_number=page_number)
+
+    # add new button
+    toolbar = tableview.find(id='atomicstructure-table-toptoolbar')
+    # toolbar.add(Paragraph(text='|', Class='splitter'))
+    #
+    button = lc.button(label='New', tip='create new atomic structure', icon='new.png')
+    toolbar.add(button)
+    button.onclick = select(id='main-display-area').replaceContent(
+        load(actor=name, routine='newAtomicStructureForm')
+        )
+
+    return tableview
+
+
+def createAtomicStructureTable(
+    director, domaccess,
+    order_by=None, reverse_order=None, slice=None,
+    filter=None,
+    label=None,
+    mine=False):
+
+    records = domaccess.getAtomicStructureRecords(
+        order_by=order_by, reverse_order=reverse_order, slice=slice,
+        filter=filter,
+        label=label,
+        mine=mine,
+        )
+
+    cols = columns
+    args = records, cols, director
+    thetable = director.retrieveVisual(
+        'atomicstructure/table',
+        atomicstructures = records,
+        cols = cols,
+        director = director)
+    thetable.oncellchanged = select(element=thetable).notify(
+        event='row-changed', actor='atomicstructure/table', routine='processRowChange')
+    return thetable
+
+
+
+columns = [ 'selected', 'id', 'description', 'chemical_formula', 'created']
+measure2dbcol = {
+    'description': 'short_description',
+    'created': 'date',
+    }
+filtercols = columns[1:]
+
+
+# version
+__id__ = "$Id$"
+
+# End of file 

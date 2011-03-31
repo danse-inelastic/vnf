@@ -1,0 +1,177 @@
+# -*- Python -*-
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                 Jiao Lin
+#                      California Institute of Technology
+#                      (C) 2006-2009  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+import numpy
+
+import luban.content as lc
+from luban.content import select, load, alert
+from luban.content.FormTextField import FormTextField
+from luban.content.FormTextArea import FormTextArea
+
+
+class Factory(object):
+
+    def __init__(self, director, id):
+        self.director = director
+        self.id = id
+        self.domaccess = director.retrieveDOMAccessor('atomicstructure')
+        self.atomicstructure = self.domaccess.getAtomicStructure(id)
+        self.record = self.domaccess.orm(self.atomicstructure)
+        self.actor = 'atomicstructure'
+
+
+    def create(self):
+        splitter = lc.splitter(id='atomicstructure-info-section')
+        
+        namesec = splitter.section(id='atomicstructure-name-container')
+        namedoc = self.createNameDoc()
+        namesec.add(namedoc)
+
+        structuresec = splitter.section(id='atomicstructure-structure-container')
+        structuredoc = self.createStructureDoc()
+        structuresec.add(structuredoc)
+        
+        return splitter
+
+
+    def createStructureDoc(self):
+        atomicstructure = self.atomicstructure
+        record = self.record
+
+        doc = lc.document(title='Structure', Class='atomicstructure-info-subsection')
+
+        sp = lc.splitter(); doc.add(sp)
+        # bcc, fcc etc
+        struk = atomicstructure.StrukturberichtDesignation
+        if struk:
+            label = str(struk)
+            struklink = lc.link(label=label)
+            sp.section().add(struklink)
+
+        # cubic, mononclinic etc
+        xtalsystemsection = sp.section()
+        # 
+        xtalsystem = atomicstructure.crystal_system.capitalize()
+        centering = atomicstructure.centering_description
+        tip = 'click to view' 
+        label = '%s, %s' % (xtalsystem, centering)
+        xtalsystemlink = lc.link(label=label, tip=tip)
+        xtalsystemsection.add(xtalsystemlink)
+        # dialog to show the crystal system image
+        dialog = lc.dialog(id="crystal-system-viewer", title='Crystal system', autoopen=True); 
+        dialogbody = lc.document(); dialog.add(dialogbody)
+        director = self.director
+        latticeview = director.redirect(
+            actor='lattice_system', routine='createView',
+            crystal_system = xtalsystem,
+            centering=atomicstructure.centering,
+            centering_description=atomicstructure.centering_description,
+            include_credential = 0
+            )
+        dialogbody.add(latticeview)
+        
+        #okbutton = lc.button(label='ok', onclick=[
+        #    select(element=dialog).dialog('close'),
+        #    ])
+        #dialog.add(okbutton)
+        xtalsystemlink.onclick = select(element=doc).append(dialog)
+
+        # sg
+        sg = atomicstructure.sg
+        sgname = sg.pdb_name
+        tip = 'Space group: %s' % sgname
+        sglink = lc.link(label=sgname, tip=tip)
+        sp.section().add(sglink)
+
+        # chemical formula
+        chemical_formula = record.chemical_formula or atomicstructure.getChemicalFormula()
+        label = chemical_formula
+        natoms = len(atomicstructure)
+        maxn = 5
+        tip = ["<p>%s %s</p>" % (a.symbol, a.xyz) for a in atomicstructure[:maxn]]
+        if natoms>maxn:
+            tip.append('...')
+        tip = '\n'.join(tip)
+        cflink = lc.link(label=label, tip=tip)
+        sp.section().add(cflink)
+
+        # "details' link
+        details = select(id='main-display-area').replaceContent(
+            load(actor=self.actor, routine='createDetailsview',
+                 id=self.id)
+            )
+        tip = 'click me to show details of this atomic structure'
+        detailslink = lc.link(label='details', onclick=details, tip=tip)
+        doc.add(detailslink)
+
+        # edit link
+        domaccess = self.domaccess
+        if not domaccess.isReferred(self.id):
+            edit = select(id='main-display-area').replaceContent(
+                load(actor=self.actor, routine='editAtomicStructureForm',
+                     id=self.id)
+                )
+            tip = 'click me to edit this atomic structure'
+            editlink = lc.link(label='edit', onclick=edit, tip=tip)
+            doc.add(editlink)
+        return doc
+
+
+    def createNameDoc(self):
+        atomicstructure = self.atomicstructure
+        
+        doc = lc.document(title='Name', Class='atomicstructure-info-subsection')
+        splitter = doc.splitter()
+        left = splitter.section(id='atomicstructure-name-field')
+        right = splitter.section(Class='editlink-container')
+
+        label = self.getAtomicStructureLabel()
+        p = left.paragraph(text=[label], Class='editable')
+
+        i = FormTextField(hidden=True, value=atomicstructure.description)
+        left.add(i)
+
+        i.onblur = [
+            select(element=p).show(),
+            select(element=i).hide(),
+            ]
+        i.onchange = load(
+            actor=self.actor, routine='changeDescriptionAndUpdateAtomicStructureView',
+            id = self.id,
+            description = select(element=i).getAttr('value'),
+            )
+                          
+
+        l = lc.link(label='edit'); right.add(l)
+        l.onclick = [
+            select(element=p).hide(),
+            select(element=i).show(),
+            select(element=i).focus(),
+            ]
+
+        return doc
+
+
+    def getAtomicStructureLabel(self):
+        return self.domaccess.getAtomicStructureLabel(self.id)
+        
+
+
+def visual(director, id):
+    return Factory(director, id).create()
+    
+# version
+__id__ = "$Id$"
+
+# End of file 

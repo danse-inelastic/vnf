@@ -1,0 +1,49 @@
+# -*- Python -*-
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                 Jiao Lin
+#                      California Institute of Technology
+#                      (C) 2006-2010  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+import luban.content as lc
+from vnfb.components.visuals.AdminVisualFactory import AdminVisualFactory as base
+
+class Factory(base):
+
+    def create(self, director=None, id=None):
+        # container
+        title = 'Privileges for role %r' % id
+        doc = lc.document(id='role-has-roles', title=title)
+
+        # 
+        domaccess = director.retrieveDOMAccessor('acl')
+        db = domaccess.db
+        role = domaccess.getRole(id)
+        privileges = domaccess.getAllPrivileges()
+
+        #
+        text = []
+        for privilege in privileges:
+            hasprivilege = role.hasPrivilege(privilege, db)
+            if hasprivilege:
+                text.append('* %s' % privilege.description)
+            continue
+        rstdoc = lc.rstdoc(text=text); doc.add(rstdoc)
+
+        return doc
+
+
+visual = Factory()
+
+    
+# version
+__id__ = "$Id$"
+
+# End of file 

@@ -1,0 +1,54 @@
+# -*- Python -*-
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                 Jiao Lin
+#                      California Institute of Technology
+#                      (C) 2006-2009  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+from luban.content.Document import Document
+from luban.content.Splitter import Splitter
+from luban.content.Splitter import SplitSection
+from luban.content.Tabs import Tabs
+from luban.content.Tabs import Tab
+
+
+def visual(director):
+    skeleton = director.retrieveVisual('skeleton')
+
+    header = skeleton.find(id='mainframe-header')
+    userinfo = header.find(id='header-userinfo')
+    userinfo.hidden = True
+
+    # to be added: topmenu
+    body_frame = skeleton.find(id='body-frame')
+    bodydoc = body_frame.document(id='login-body-doc')
+    splitter = luban.content.splitter(id='login-body-splitter')
+    bodydoc.add(splitter)
+    
+    left = splitter.section(id='login-body-left')
+    left.document(id='login-form-container')
+    portletcontainer = left.document(id='front-page-portlet-container')
+    portlet = director.retrieveVisual('frontpage-portlet')
+    portletcontainer.add(portlet)
+    
+    right = splitter.section(id='login-body-right')
+    right.document(
+        id='front-page-vnf-intro-container',
+        title='Welcome to the Virtual Neutron Facility',
+        )
+    right.document(id='front-page-central-display')
+    
+    return skeleton
+
+    
+# version
+__id__ = "$Id$"
+
+# End of file 

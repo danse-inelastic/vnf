@@ -18,7 +18,7 @@
 
   <component name='postman'>
 
-    <property name='host'>localhost</property>
+    <property name='host'>smtp-server.cco.caltech.edu</property>
 
   </component>
 

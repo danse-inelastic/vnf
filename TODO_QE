@@ -1,0 +1,178 @@
+ TODO List for Quantum Espresso
+==============================
+
+NOW
+===
+
+Part 1
+------
+- [DONE] Implement scratch space
+- [DONE] Handle important parameters (e.g. outdir, prefix ...) so that users could run simulations using example
+  config files
+    Problematic types: MATDYN, DYNMAT, Q2R
+- [DONE] Able to skip generator forms: "Skip Input Generator"
+- [DONE] Add "Explain" link to simulation edit
+- Implement progress bar for results
+- [IN PROGRESS] Add "octopod" server and implement module that handles server configurations
+  and settings
+
+
+Part 2
+------
+- Convergence tests
+- Simulation Clone
+- Simulation Delete
+- Delete Job(s)
+
+
+Part 3
+------
+- Storing optimized structure to atomic structure
+- Don't allow to set config input unless the previous config input is set
+
+
+Part 4
+-------
+Molecular Dynamics:
+- Implement converters for molecular dynamics:
+    scripts/nc2dos.py
+    scripts/qe2dos.py
+    scripts/qe2nc.py
+
+- Implement display of major trajectory parameters for each task: VDOS, 
+- Implement convenient selection of time frame
+- Create trajectory and store it to the database (including charge?)
+
+
+Part 5
+------
+- Implement batch job submission
+- Implement status bar for batch job submission
+- Fix status bar
+
+
+Part 6
+------
+Go through the types of simulation and make sure they work as they should:
+
+- Electron Structure
+- Electron DOS
+- Electron Dispersion
+- Geometry Optimization
+- Single Phonon
+- Multiple Phonon
+- Molecular Dynamics
+
+- Test filters for task types: 
+    "pw", "ph", "q2r", "dos", "dynmat", "matdyn", "bands", "plotband", "cp"
+
+
+Part 7
+------
+- Write documentation for QE [MUST]
+- Write implementation notes for developers [MUST]
+- Write documentation for qeinput and make it a python egg
+- Add link next to the plot to download the DOS file. Open the file in a new browser window.
+- Add links to documentation for QE (inputs: pw, ph, q2r).
+- [IN PROGRESS] Format text for some tesk types (e.g. q2r doc is in PH/q2r.f90 file of espresso source code)
+    Note: Could not find docs for "plotband" task type
+
+
+Part 8: Cleaning
+----------------
+- Implement PLOTBAND filter (non-standard config file)
+- Fix plot sizes on analysis page (see vnf.css: .luban-plot2d)
+- Delete directory when configuration is deleted
+
+
+Part 9: TeraGrid
+-------------------------------------------
+- Add TeraGrid to the list of servers
+
+
+Issues:
+- Was thinking about definition of failed job for QE. Currently, when CRASH file
+exists, it marked as failed. But sometimes when STDERR.log is not empty, but no
+CRASH file job can also be failed. Add check is STDERR.log is not empty? The reason
+why not add this check at this time is that there might be warnings that are
+system related and nothing user can do about it.
+
+Problem: How to define similarity for simulation tasks? Settings? Matter?
+Solution:
+
+
+Simulation Types
+================
+
+- Electron Structure
+- Electron DOS
+- Electron Dispersion
+- Geometry Optimization
+- Single Phonon
+- Multiple Phonon (1. On-host run)
+- Molecular Dynamics
+
+
+Nice To Have
+============
+
+- [PARTIALLY] Move some of the qe stuff from vnfb/vnfb/utils -> vnfb/content/components/visuals
+ because they look like visuals :)
+
+
+Must Have
+=========
+    NONE
+
+
+CRITICAL FIXES
+==============
+    NONE
+
+
+COMPLETED
+=========
+
+- [DONE] Generate QE config file from atomic structure
+- [DONE] Add progress bar for jobs with steps description
+- [DONE] Move "servers" reference from qesimulations to qesettings
+- [DONE] Dialog widget
+- [DONE] Implement Filter class in qeinput
+- [DONE] Update qeinput interface and write unit tests!
+- [DONE] Finish up the qeinput!
+- [DONE] Figure out what diskspace the QE is currently using. In case of NFS measure the performace
+        degradation in comparison with scratch space
+- [DONE] Sanityze input file for qe simulations from Windows carriage return ('\15\32')
+    See:
+        http://kb.iu.edu/data/data/acux.html
+        Command: awk '{ sub("\r$", ""); print }' winfile.txt > unixfile.txt
+- [DONE] Recognize elements and populate psedo potentials depending on the elements in the structure
+    (see input-pw.odb visual)
+- [DONE] Handle multiple jobs for the task
+- [DONE] Fix database jobs status depending on the actual jobs status
+- [DONE] Fix the formatting of config view and create
+- [DONE] Display and refresh output file
+- [DONE] Display simulation results and plot with
+- [DONE] Fix retrieving results again (fix getmtime.py)
+- [DONE] Run "Multiple Phonon" simulation
+- [DONE] Run "Single Phonon" simulation
+- [DONE] Phonon DOS ("Analyze" button)
+- [DONE] Phonon Dispersion ("Analyze" button)
+- [DONE] Generate QE config file from atomic structure !!!
+- [DONE] Update only simulation task field (revise visuals)
+- [DONE] Run simulation with vnf created bash script (no qeapp.py)
+- [DONE] Get results with "Check" link
+- [DONE] Make "Status" string and action buttons ("Run Task", "Cancel", "Run Task Again") work properly
+- [DONE] Hook up QECalc (use qeapp.py?)
+- [DONE] Do not display action buttons "Run Task" or "Cancel" unless previous simulation
+    is running or completed
+- [DONE] Change action buttom depending on the status of the job:
+    "Run Task" -> "Cancel" -> "Run Task"
+
+
+*** Alpha Release of QE simulations ***
+- Disable option to use existing task in simulation
+    Reason: involves complexity in dealing with computation nodes on cluster and
+settings handling.
+- Disable option to change simulation type (?)
+    Reason: involves complexity in dealing with dereferencing simulation tasks

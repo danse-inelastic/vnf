@@ -1,0 +1,69 @@
+#!/usr/bin/env python
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                  Jiao Lin
+#                     California Institute of Technology
+#                       (C) 2009  All Rights Reserved
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+
+import luban.content as lc
+from luban.content import load, select, alert
+
+
+def visual(id=None, info=None, director=None):
+    visual = lc.dialog(title='Bug report', autoopen=1, id='bugdialog-%s' % id)
+    visual.Class='bug-report'
+
+    body = visual.document(title='Please help us improve vnf' , Class='bug-body')
+    p = body.paragraph(Class='bug-report-intro')
+    p.text = [
+        'You may enounter bugs occasionally in VNF.',
+        'It would be helpful if you can provide some details of',
+        'how this bug was triggered.',
+        'If you don\'t have time to fill out a detailed report',
+        'please just click the submit button without any comments,',
+        'which would still be helpful.',
+        ]
+
+    tracebackcontainer = body.document(
+        title='Traceback', collapsable = True, collapsed=True)
+    tracebackcontainer.Class='traceback-container'
+    
+    tracebackhtmldoc = lc.htmldocument(Class='traceback-doc'); 
+    tracebackcontainer.add(tracebackhtmldoc)
+    
+    import sys, cgitb
+    exc_info = sys.exc_info()
+    tbtext = cgitb.html(exc_info)
+    tracebackhtmldoc.text = tbtext.splitlines()
+    
+    # tracebackhtmldoc.text += ['<pre>'+info['traceback']+'</pre>']
+
+    form = body.form(title="Bug #%s" % id, id='bug-submit-form')
+    form.Class='bug-report-form'
+    
+    form.textarea(
+        name='comment',
+        id = 'bug-comment',
+        label='Comment',
+        help='Please let us know the situation in which this bug was triggered',
+        )
+    # okbutton = lc.button(label='ok', onclick=lc.select(element=visual).destroy())
+    # visual.add(okbutton)
+    form.submitbutton(label='Submit', id='bug-submit-button', name='bug-submit')
+    import urllib;  tbtext = urllib.quote(tbtext)
+    form.onsubmit = select(element=form).submit(
+        actor='bug-report', routine='process', traceback=tbtext, id=id)
+    
+    return visual
+
+
+# version
+__id__ = "$Id$"
+
+# End of file 

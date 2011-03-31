@@ -1,0 +1,227 @@
+#!/usr/bin/env python
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                               Alex Dementsov
+#                      California Institute of Technology
+#                        (C) 2009  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+import os
+import time
+import shutil
+from vnfb.qeutils.qeutils import analyseActor, dataroot
+from vnfb.qeutils.results.matdynresult import MATDYNResult
+from vnfb.qeutils.results.pwresult import PWResult
+from vnfb.dom.material_simulations.Phonons import PhononsTable
+import idf.DOS
+import idf.Polarizations
+import idf.Omega2
+from qecalc.qetask.matdyntask import MatdynTask
+
+CONVERT_DELAY   = 5     # 5 sec
+C               = 29979245800.0
+PI              = 3.14159265
+TWO_PI          = 2.0*PI
+TO_THZ          = 0.0299792458
+A2B             = 1.889725989   # Angstroms to bohrs
+
+
+PHONON_FILES    = ("Polarizations", "Omega2", "Qgridinfo")
+EXPORT              = {}
+EXPORT["success"]   = (0, "Success: Phonon Dispersion is exported!")
+EXPORT["error"]     = (1, "Error: Phonon Dispersion export failed! :(")
+SUBTYPE             = "dispersion"
+
+# XXX: Hide MatdynTask in MATDYNResult()
+from luban.components.AuthorizedActor import AuthorizedActor as base
+class Actor(base):
+
+    class Inventory(base.Inventory):
+        import pyre.inventory
+        simid       = pyre.inventory.str('simid', default='')
+        simtype     = pyre.inventory.str('simtype', default='')
+
+
+    def create(self, director):
+        "Create Phonons on Grid in idf format"
+        self._matdynresult  = MATDYNResult(director, self.simid, SUBTYPE)
+        self._pwresult      = PWResult(director, self.simid)
+        
+        self._matdynpath    = self._matdynpath()
+        self._matdyninput   = self._matdynresult.input()
+
+        try:            # Try export phonon dispersion to idf format
+            self._convertResults(director)
+            self._createRecord(director)
+            self._createLocation(director)
+            self._relocateResults(director)
+            export  = EXPORT["success"]
+        except:
+            export  = EXPORT["error"]
+
+        return director.redirect(actor      = analyseActor(self.simtype),
+                                 routine    = "exportStatus",
+                                 statuscode = export[0],
+                                 status     = export[1],
+                                 simtype    = self.simtype,
+                                 id         = self.simid)
+
+
+    def _convertResults(self, director):
+        """Convert matdyn output (matdyn.modes, matdyn.freq, matdyn.dos) to
+        DOS, Polarizations, Omega2 file to jobs temp directory
+        """
+        # XXX: Refactor. Take Pols, Freq ... from MATDYNResult
+        # XXX: Not efficient, look into self._matdynresult
+        matdyn = MatdynTask( configString = self._configString(director))
+        matdyn.output.parse()
+        Pols, Freqs, qPoints = matdyn.output.property('multi phonon')
+        
+        self._createPolarizations(Pols)
+        self._createOmega2(Freqs)
+        self._createQgridinfo()
+        
+
+        time.sleep(CONVERT_DELAY)   # Wait for a while to make sure that file are created
+
+
+    def _configString(self, director):
+        "Returns settings string for MATDYN task"
+        path        = self._matdynresult.resultPath()   # Result path object
+        flvec       = path.resultFiles("flvec")
+        flfrq       = path.resultFiles("flfrq")
+
+        # Configuration setting for QECalc
+        settingString = """[matdyn.x]
+matdynInput: %s
+matdynOutput: %s
+flvec = %s
+flfrq = %s
+""" % ( self._matdynresult.inputFile(),
+        self._matdynresult.outputFile(),
+        flvec, flfrq)
+
+        return settingString
+
+
+    def _createPolarizations(self, pols):
+        "Creates Polarizations file"
+        pol         = os.path.join(self._matdynpath, "Polarizations")
+        idf.Polarizations.write(pols, pol, 'Polarizations')
+
+
+    def _createOmega2(self, freqs):
+        "Creates Omega2 file"
+        omega2      = os.path.join(self._matdynpath, "Omega2")
+        idf.Omega2.write( (freqs*C*TWO_PI)**2, omega2, '')
+
+
+    def _createQgridinfo(self):
+        "Creates Qgridinfo file"
+        filename        = os.path.join(self._matdynpath, "Qgridinfo")
+        nqGrid          = self._matdynresult.nqGrid()
+        recipLattice    = self._pwresult.recipLattice()
+#        print filename, nqGrid, recipLattice # XXX
+        self._generateQgridinfo(filename, nqGrid, recipLattice)
+
+
+    def _generateQgridinfo(self, filename, nqGrid, recipLattice):
+        # XXX: Check if parameters are set
+        #if not filename or not nqGrid or not recipLattice:
+        #    raise       # If some of the parameters are not set, complain!
+
+        s = ''
+        for i in range(3):
+            s = s + 'b%d = %# .8f , %# .8f , %# .8f\nn%d = %d\n'%(i+1, \
+            recipLattice[i,0], recipLattice[i,1], recipLattice[i,2], i+1, nqGrid[i])
+
+        open(filename, 'w').write(s)
+
+
+    def _matdynpath(self):
+        "Returns matdyn results path of 'dispersion' subtype"
+        # Example: "/home/dexity/exports/vnf/vnfb/content/data/tmp/tmpTRqFuy/8CNH5MUJ"
+        path    = self._matdynresult.localPath()
+        if not path:
+            return ""   # empty string
+
+        return path
+
+
+    def _createRecord(self, director):
+        """Creates 'phonons' record (taken from: vnfb/components/ComputationResultRetriever.py)
+        Notes:
+            - Sets phonid
+        """
+        domaccessor = director.retrieveDOMAccessor('material_simulations/phonons')
+        orm         = domaccessor.orm   # ?
+        clerk       = director.clerk
+        computation = clerk.getQESimulations(id = self.simid)
+        record      = clerk.insertNewOwnedRecord(PhononsTable, owner = computation.creator)
+        self._phonid    = record.id     # Important!
+
+        # The result record should know where it comes from
+        computation.results.add(record, clerk.db)
+        record.matter = computation.structureid
+        clerk.db.updateRecord(record)
+
+
+    def _createLocation(self, director):
+        "Creates directory to store DOS file (data.idf)"
+        phonpath    = self._phonpath(director)
+        if not os.path.exists(phonpath):
+            os.makedirs (phonpath)
+
+
+    def _relocateResults(self, director):
+        "Copy from tmp/ directory to phonons directory"
+        dest        = self._phonpath(director)
+        for file in PHONON_FILES:
+            src         = os.path.join(self._matdynpath, file)
+            if not os.path.exists(src):
+                raise       # If files don't exist, complain!
+            shutil.copy(src, dest)
+
+
+    def _phonpath(self, director):
+        "Returns phonondoses directory corresponding to id (set in _createRecord())"
+        # Example: phonons/3TUHW54R/data.idf/
+        datadir    = dataroot(director)
+        pid         = os.path.join("phonons", self._phonid) # Phonons id
+        dir         = os.path.join(datadir, pid)
+        dir         = os.path.join(dir, "data.idf") # Specific for "dispersion"
+        return dir
+
+
+
+    def _testIDF(self):
+        pass
+
+    def __init__(self):
+        super(Actor, self).__init__(name='material_simulations/espresso/phonons')
+
+        return
+
+
+    def _configure(self):
+        super(Actor, self)._configure()
+        self.simid       = self.inventory.simid
+        self.simtype     = self.inventory.simtype
+
+
+    def _init(self):
+        super(Actor, self)._init()
+        return
+
+def actor():
+    return Actor()
+
+
+__date__ = "$Jan 18, 2010 10:30:39 PM$"
+
+

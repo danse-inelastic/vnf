@@ -15,11 +15,21 @@
 def main(**kwds):
 
 
-    from vnf.applications.LaunchDetached import Launch
+    from vnfb.applications.LaunchDetached import Launch
 
 
     class App(Launch):
 
+
+        def help(self):
+            super(App, self).help()
+            import sys
+            print
+            print '* Debug:'
+            print
+            print '  $ %s <...options...> debug ' % sys.argv[0]
+            return
+        
 
         def _getPrivateDepositoryLocations(self):
             return ['../config']

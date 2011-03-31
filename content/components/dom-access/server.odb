@@ -1,0 +1,59 @@
+# -*- Python -*-
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                   Jiao Lin
+#                      California Institute of Technology
+#                      (C) 2006-2009  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+tablename = 'servers'
+
+
+from vnfb.components.DOMAccessor import DOMAccessor as base
+
+class Accessor(base):
+
+
+    def __init__(self):
+        super(Accessor, self).__init__('server')
+        return
+
+
+    def _getOrm(self):
+        orm = self.director.clerk.orm
+        return orm
+    orm = property(_getOrm)
+
+
+    def getServerRecord(self, id):
+        return self.getRecordByID(ServerTable, id)
+
+
+    def getServerRecords(self):
+        db = self.db
+        return db.query(ServerTable).all()
+
+
+    def getAliveServerRecords(self):
+        db = self.db
+        return db.query(ServerTable).filter_by(status='online').all()
+
+
+
+from vnfb.dom.Server import Server as ServerTable
+
+
+def accessor():
+    return Accessor()
+
+
+# version
+__id__ = "$Id$"
+
+# End of file 

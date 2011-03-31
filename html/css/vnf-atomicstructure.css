@@ -1,0 +1,159 @@
+/*  -*- CSS -*-  */
+
+/* overview */
+#atomicstructure-info-section {
+    margin: 0.8em 0;
+    padding: 0.5em;
+    background-color: #f5f5f5;
+    -moz-border-radius: 1em;
+    -webkit-border-radius: 1em;
+}
+#atomicstructure-info-section .luban-splitter {
+    width:auto;
+}
+#atomicstructure-info-section .luban-splitter td {
+    vertical-align:top;
+    font-size:0.88em;
+    padding: 0 0.5em;
+}
+/* "name" section */
+#atomicstructure-name-container {
+    width:20em;
+    border-right:dotted 2px grey;
+}
+#atomicstructure-name-field {
+width:15em;
+}
+#atomicstructure-name-field .luban-formtextfield table {
+border-collapse:collapse;
+}
+#atomicstructure-name-field .luban-formtextfield * {
+margin:0;
+padding:0;
+}
+#atomicstructure-name-field input {
+width:10em;
+padding:0;
+margin:0;
+height:1.5em;
+}
+/* title */
+#atomicstructure-info-section h1.luban-document-title {
+    text-transform:uppercase;
+    font-size:0.8em;
+    font-weight:bold;
+    margin-bottom:0.8em;
+}
+/* document interior*/
+.atomicstructure-info-subsection.luban-document > div {
+    padding: 0.1em 0.5em;
+}
+/* link sections */
+.editlink-container-container {
+    width: 4em;
+}
+.editatoms-container-container {
+    width: 8em;
+}
+/* input widgets */
+#atomicstructure-info-section .luban-formfield {
+    margin:0;
+}
+#atomicstructure-info-section textarea {
+    height:5em;
+    min-height:3em;
+    width:80%;
+    max-width:90%;
+}
+/* texts */
+#atomicstructure-info-section p {
+    margin:0;
+}
+.lattice-vector p{
+    font-family: monospace;
+    font-size: 1.3em;
+}
+
+/* lattice system popup */
+#crystal-system-viewer {
+    min-width: 200px;
+}
+
+
+/* new structure forms */
+.decideInputMethod[luban-element-type=splitter] > table {
+    width:auto;
+}
+.decideInputMethod[luban-element-type=splitter] .luban-button {
+    border:none;
+}
+#body-frame .decideInputMethod[luban-element-type="splitter"] > table.luban-splitter > tbody > tr > td {
+    margin:0;
+    padding:0;
+}
+/* #body-frame .decideInputMethod[luban-element-type="splitter"] > table.luban-splitter > tbody > tr > td > div .luban-button-container, .luban-button-container a {*/
+#body-frame .decideInputMethod[luban-element-type="splitter"] > table.luban-splitter > tbody > tr > td > div .luban-button-container a {
+    margin-bottom:0;
+    padding-bottom:0;
+    -moz-border-radius:0;
+    -webkit-border-radius:0;
+}
+.decideInputMethod[luban-element-type="splitter"] .luban-button-container .luban-button {
+    background-color:#f5f8fa;
+}
+.decideInputMethod[luban-element-type="splitter"] .luban-button-container.selected .luban-button {
+    background-color:#eeeeee;
+}
+
+#new-structure-form {
+    background-color:#eeeeee;
+    padding:0.3em;
+    -moz-border-radius:1em;
+    -webkit-border-radius: 1em;
+}
+
+
+/* editor */
+#edit-atomic-structure-form  .master-controls {
+text-align:right;
+font-size:1.1em;
+margin:0.3em 2em;
+}
+#edit-atomic-structure-form  .master-controls a {
+margin:1em;
+}
+
+
+/* computed properties */
+#computed-props .luban-document {
+margin-bottom:1em;
+}
+#computed-props .luban-document > .luban-document-title {
+font-style:italic;
+font-size:1.05em;
+}
+#computed-props .luban-document.collapsable > .luban-document-title {
+font-size:0.78em;
+}
+#computed-props .luban-document > .luban-document-body {
+margin-left:1em;
+}
+#computed-props .luban-document.container >.luban-document-body {
+margin-left:0;
+}
+#computed-props .luban-document.collapsable > .luban-document-body {
+margin-left:0;
+}
+/* .. phonon dos */
+.plot-with-legends table table td {
+    padding-left:1em;
+}
+.plot-with-legends table td {
+    vertical-align:top;
+}
+
+
+/* version */
+/* $Id$ */
+
+/* End of file  */

@@ -1,0 +1,133 @@
+#!/usr/bin/env python
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                               Alex Dementsov
+#                      California Institute of Technology
+#                        (C) 2009  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+from vnfb.dom.QESetting import QESetting
+from vnfb.qeutils.qegrid import QEGrid
+
+from luban.content import select
+from luban.content import load
+from luban.content.Form import Form
+from luban.content.FormSelectorField import FormSelectorField
+from luban.content.FormTextField import FormTextField
+from luban.content.FormCheckBox import FormCheckBox
+from luban.content.FormSubmitButton import FormSubmitButton
+from vnfb.qeutils.qeconst import SETTINGS, SERVERS, NOPARALSIM, SIMTYPE, OPT_DEFAULT
+from vnfb.utils.serverlist import ServerList
+
+import luban.content as lc
+from vnfb.components.QESettings import Actor as base
+
+class Actor(base):
+
+    def content(self, director):
+        sim       = director.clerk.getQESimulations(id=self.id)
+
+        def viewIndicator(director):
+            qelink  = load( actor           = 'materialsimulation',
+                            filter_key      = 'type',
+                            filter_value    = 'qesimulations')
+
+            path = []
+            path.append(('Simulations ', load(actor='materialsimulation')))
+            path.append(('Quantum Espresso ', qelink))
+            path.append(('%s ' % self.id, load(actor    = 'material_simulations/espresso/sim-view',
+                                               id       = self.id)))
+
+            path.append('Create Settings Configuration')
+
+            return director.retrieveVisual('view-indicator', path = path)
+
+        doc         = lc.document(title   = "Create Settings Configuration")
+        splitter    = doc.splitter(orientation="vertical")
+        sA          = splitter.section()
+        sA.add(viewIndicator(director))
+        sB          = splitter.section()
+        sB.add(self._setForm(director))
+
+        return doc
+
+
+    def _setForm(self, director):
+        "Sets create new settings form"
+        
+        form        = Form(id='create-simulation-form')
+        table       = QEGrid(lc.grid(Class="qe-form"))
+        form.add(table.grid())
+
+        server          = FormSelectorField(name    = "server",
+                                            entries = enumerate(self._serverList(director)))
+        actorName       = "material_simulations/espresso/settings-add"
+        server.onchange = load( actor   = actorName,
+                                routine = "setCoresList",
+                                server  = select(element=server).getAttr("value"))
+
+        sname           = FormTextField(name = "sname", value = self.sname)
+        description     = FormTextField(name = "description", value=self.description)   # Make as textarea
+        submit          = FormSubmitButton(label="Create Settings Configuration")
+        cancel          = lc.button(label="Cancel")
+        cancel.onclick  = load(actor = 'material_simulations/espresso/sim-view', id=self.id)
+
+        st          = QEGrid(lc.grid()) # Submit Table
+        st.addRow((submit, cancel), ("qe-action-accept", "qe-action-cancel"))
+
+        table.addRow(("Server: *", server))
+        table.addRow(("Number of Cores: *", self._selectorCores(director)))
+        self._setOptimField(director, table, form)
+        table.addRow(("Name:", sname))
+        table.addRow(("Description:", description))
+        table.addRow(("", st.grid()))
+
+        table.setColumnStyle(0, "qe-form-label")
+        table.setColumnStyle(1, "qe-form-field")
+
+        form.onsubmit   = select(element=form).submit(actor     = 'material_simulations/espresso/settings-add',
+                                                      routine   = 'createRecord',
+                                                      id        = self.id)
+
+        return form
+
+
+    # XXX: Fix
+    def createRecord(self, director):
+        """Create settings record"""
+        servers     = ServerList(director)
+        shortname   = self._serverShortName(director)
+
+        params  = {"simulationid":  self.id,
+                   "sname":         self._sname(),
+                   "description":   self.description,
+                   "serverid":      servers.id(self.server),    # XXX: Fix 
+                   "numproc":       SERVERS[shortname]["coreslist"][self.numproc],
+                   "optlevel":      self._optLevel(),
+                   "npool":         SETTINGS["npool"],      # Set from constants?
+                   "executable":    SETTINGS["executable"], # Set from constants?
+                   "params":        SETTINGS["params"],     # Set from constants?
+                   "modules":       SETTINGS["modules"]     # Set from constants?
+                  }
+        settings     = QESetting(director)
+        settings.createRecord(params)
+        
+        return load(actor='material_simulations/espresso/sim-view', id=self.id)
+
+
+    def __init__(self):
+        super(Actor, self).__init__(name='material_simulations/espresso/settings-add')
+
+
+def actor():
+    return Actor()
+
+
+__date__ = "$Nov 11, 2009 1:03:02 PM$"
+
+

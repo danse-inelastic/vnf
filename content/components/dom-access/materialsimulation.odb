@@ -1,0 +1,289 @@
+# -*- Python -*-
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                   Jiao Lin
+#                      California Institute of Technology
+#                      (C) 2006-2009  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+tablename='materialsimulation'
+
+
+from vnfb.components.DOMAccessor import DOMAccessor as base
+
+class Accessor(base):
+
+
+    def __init__(self):
+        super(Accessor, self).__init__('materialsimulation-accessor')
+        return
+    
+    
+    def getMaterialSimulation(self, type, id):
+        return self.getRecordByID(type, id)
+    
+    
+    def countSimulations(self, filter=None, label=None, mine=False):
+        db = self.db
+        
+        tables = self.simulationTables()
+        
+        qf = lambda table: self.makeQuery(table, filter=filter, label=label, mine=mine)
+
+        qs = map(qf, tables)
+        
+        q = sqlalchemy.union_all(*qs)
+        return q.alias('tocount').count().execute().fetchone()[0]
+
+
+    def getSimulations(self, filter=None, order_by=None, 
+                       reverse_order=None, slice=None, label=None, mine=False):
+        db = self.db
+
+        self._debug.log('filter: %r, order_by: %r, slice: %r' % (filter, order_by, slice))
+        tables = self.simulationTables()
+        qf = lambda table: self.makeQuery(table, filter=filter, label=label, mine=mine)
+
+        qs = map(qf, tables)
+        q = sqlalchemy.union_all(*qs)
+
+        if order_by:
+            q = q.order_by(order_by)
+        if slice:
+            if reverse_order:
+                n = self.countSimulations(filter=filter, label=label, mine=mine)
+                slice = n-slice[1], n-slice[0]
+            q = sqlalchemy.select(
+                [q.alias('tmptoslice')],
+                limit = slice[1]-slice[0],
+                offset = slice[0])
+
+        # only need gpointers to be returned
+        q = q.alias('tmp')
+        q1 = sqlalchemy.select(columns=['globalpointer'], from_obj=[q])
+
+        #db._saengine.echo = True
+        rows = q1.execute().fetchall()
+
+        #and then map to records
+        from dsaw.db.VersatileReference import vreference
+        def _(row): return db.dereference(vreference(row[0]))
+        
+        ret = map(_, rows)
+        if reverse_order:
+            ret.reverse()
+        return ret
+
+
+    def makeQuery(self, table, filter=None, label=None, mine=False):
+        'create a query for a material simulation table with given filter'
+
+        db = self.db
+        
+        if label:
+            if filter: raise RuntimeError
+            return self.makeLabeledQuery(label, table, mine=mine)
+
+        q = self._select_simulation_withmatterdescription_clause(table, db)
+
+        username = self.director.sentry.username
+        if mine:
+            mine = "creator='%s'" % username
+            if filter:
+                filter = '(%s) and %s' % (filter, mine)
+            else:
+                filter = mine
+
+        if filter:
+            q = sqlalchemy.select([q.alias('matsim')], whereclause=filter)
+            
+        return q
+
+
+    def makeLabeledQuery(self, label, table, mine=False):
+        'create a query for a matter table with given filter'
+        db = self.db
+
+        labelq = self._select_labeled_entities_clause(label, tablename, db)
+        simq = self._select_simulation_withmatterdescription_clause(table, db)
+        simq = simq.alias('sims')
+
+        cols = [
+            simq.c.id.label('id'),
+            simq.c.short_description.label('short_description'),
+            labelq.c.type.label('type'),
+            simq.c.date.label('date'),
+            simq.c.matter.label('matter'),
+            simq.c.globalpointer.label('globalpointer'),
+            simq.c.creator.label('creator'),
+            ]
+        # where = simq.c.globalpointer==labelq.c.entity
+        where = 'sims.globalpointer=labeled.entity'
+        if mine:
+            username = self.director.sentry.username
+            mine = "sims.creator='%s'" % username
+            where = '(%s) and %s' % (where, mine)
+        
+        q = sqlalchemy.select(cols, whereclause=where)
+        
+        return q
+
+
+    def getTables(self):
+        return self.simulationTables()
+    
+
+    def simulationTables(self):
+        self._establishGlobalPointers()
+        return self._simulationTables()
+
+
+    def _simulationTables(self):
+        from vnf.dom import materialsimulationtables, materialmodelingtables
+        tables = materialsimulationtables()# + materialmodelingtables()
+
+        from vnfb.dom.material_simulations.computation_types import typenames
+        ormtables = map(self._getTable, typenames)
+
+        from vnfb.dom import qesimtables
+
+        return tables + ormtables + qesimtables()
+
+
+    def _select_labeled_entities_clause(self, name, type, db):
+        '''get the labeled entities for the given label (specified by name and type)
+
+        cols:
+          entity: global address of the entity
+          type: type of the entity
+        '''
+        from vnfb.utils.query.labels import select_labeled_entities_clause
+        return select_labeled_entities_clause(name, type, db).alias('labeled')
+
+
+    def _select_simulation_withmatterdescription_clause(self, table, db):
+        '''create an sqlalchemy select clause for a given material simulation table
+
+        cols:
+          * id
+          * short_description
+          * type: type of the simulation (obtained from globaponter table)
+          * date
+          * matter: short_description of matter
+          * globalpointer
+        '''
+        simq = self._select_simulation_clause(table, db)
+        simq = simq.alias('simq')
+        
+        matterq = self._select_matter_clause(db)
+
+        cols = [
+            simq.c.id.label('id'),
+            simq.c.short_description.label('short_description'),
+            simq.c.type.label('type'),
+            simq.c.date.label('date'),
+            simq.c.globalpointer.label('globalpointer'),
+            simq.c.creator.label('creator'),
+            matterq.c.short_description.label('matter'),
+            ]
+        where = simq.c.matterid==matterq.c.id
+        q1 = sqlalchemy.select(cols, where)
+        
+        cols = [
+            simq.c.id.label('id'),
+            simq.c.short_description.label('short_description'),
+            simq.c.type.label('type'),
+            simq.c.date.label('date'),
+            simq.c.globalpointer.label('globalpointer'),
+            simq.c.creator.label('creator'),
+            simq.c.matterid.label('matter'),
+            ]
+        where = simq.c.matterid==None
+        q2 = sqlalchemy.select(cols, where)
+        
+        u = sqlalchemy.union_all(q1,q2)
+        u = u.alias('uq1q2')
+        cols = [u.c.id, u.c.short_description, u.c.type, u.c.date,
+                u.c.globalpointer, u.c.creator, u.c.matter]
+        from vnfb.utils.query.accesscontrol import select_public_and_owned_records
+        username = self.director.sentry.username
+        return select_public_and_owned_records(cols, u, username, db)
+
+
+    def _select_matter_clause(self, db):
+        '''create a sqlalchemy select cluase for the atomicstructure(matter) table
+
+        columns:
+          * id
+          * short_description
+        '''
+        from vnfb.utils.query.atomicstructures import select_matter_clause
+        return select_matter_clause(db).alias('matterq')
+
+
+    def _select_simulation_clause(self, table, db):
+        '''create a sqlalchemy select clause for a material simulation table
+
+        cols:
+          * id
+          * short_description
+          * type: type of the simulation (obtained from globaponter table)
+          * date
+          * matterid
+          * globalpointer
+        '''
+
+        sGP = db._tablemap.TableToSATable(global_pointer)
+        st = db._tablemap.TableToSATable(table)
+
+        cols = [
+            st.c.id.label('id'),
+            st.c.short_description.label('short_description'),
+            sGP.c.type.label('type'),
+            st.c.date.label('date'),
+            st.c.matter.label('matterid'),
+            st.c.creator.label('creator'),
+            st.c.globalpointer.label('globalpointer'),
+            ]
+        where = st.c.globalpointer==sGP.c.id
+        try:
+            simq = sqlalchemy.select(cols, where)
+        except:
+            import traceback
+            raise RuntimeError, 'Failed to select required columns from simulation table %s.\n'\
+                  'Original exception was:\n%s' % (table.getTableName(), traceback.format_exc())
+
+        return simq
+
+
+    def _establishGlobalPointers(self):
+        # temp fix
+        # the current way of querying will omit the records without global pointers
+        # we have to establish global pointer for each reocrd without one
+        db = self.db
+        for table in self._simulationTables():
+            rs = db.query(table).filter_by(globalpointer=None).all()
+            for r in rs: r.establishGlobalPointer(db)
+            continue
+        return
+    
+
+
+from dsaw.db.VersatileReference import global_pointer
+import sqlalchemy
+
+
+def accessor():
+    return Accessor()
+
+
+# version
+__id__ = "$Id$"
+
+# End of file 

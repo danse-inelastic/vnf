@@ -1,0 +1,26 @@
+TODO list for Quantum Espresso
+
+- Allow users to upload pseudo-potentials on PW form page. Pseudo-potentials are
+stored in a user specific directory.
+
+
+SIMCHAINS[SIMTYPE["scf"]]                   = ("PW",)                       # test
+SIMCHAINS[SIMTYPE["electron-dos"]]          = ("PW", "PW", "DOS")           # analysis, test
+SIMCHAINS[SIMTYPE["electron-dispersion"]]   = ("PW", "PW", "BANDS", "PLOTBAND") # Fix issue with plotband, test
+SIMCHAINS[SIMTYPE["geometry"]]              = ("PW",)                       # export structure, check results, test
+SIMCHAINS[SIMTYPE["single-phonon"]]         = ("PW", "PH", "DYNMAT")    # wrong results, test
+SIMCHAINS[SIMTYPE["multiple-phonon"]]       = ("PW", "PH", "Q2R", "MATDYN") # test
+
+
+Add simulation types:
+
+- Convergence tests (see Nikolay's work)
+- Molecular dynamics (CP, ordinary?)
+- ? Inharmonicity (d3.x)
+- ? Electron-Phonon interaction (ph.x)
+
+
+Vary parameters:
+    K-points
+    Energy cutoffs
+

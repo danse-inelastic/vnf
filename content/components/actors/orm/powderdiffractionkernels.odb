@@ -1,0 +1,62 @@
+# -*- Python -*-
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                               Alex Dementsov
+#                      California Institute of Technology
+#                        (C) 2010  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+import luban.content as lc
+from luban.content import select, load, alert
+
+
+from vnfb.dom.scattering_kernels.diff.PowderDiffractionKernel import PowderDiffractionKernel
+
+from luban.components.Actor import Actor
+import luban.orm
+base = luban.orm.object2actor(PowderDiffractionKernel)
+from vnfb.components.scattering_kernels.KernelOrmActorHelper import helper
+class Actor(helper(PowderDiffractionKernel), base):
+
+    class Inventory(base.Inventory):
+
+        import luban.inventory
+
+
+    def createGraphicalView(self, director):
+        doc = lc.document(Class='container')
+        properties_view = doc.document(title="Properties")
+        #self.inventory.editlink = False
+        properties_view.add(self.displayProperties(director))
+        return doc
+
+
+    def _getInputErrors(self):
+        e = super(Actor, self)._getInputErrors()
+        if e: return e
+
+
+    def store(self, director):
+        #
+        ret = super(Actor, self).store(director)
+
+        #
+        kernel = self._load(director)
+        orm = director.clerk.orm
+        record = orm(kernel)
+
+        orm.db.updateRecord(record)
+        return ret
+
+
+def actor():
+    return Actor('orm/powderdiffractionkernels')
+
+__date__ = "$Mar 9, 2011 3:58:04 PM$"
+
+

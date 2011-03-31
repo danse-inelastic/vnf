@@ -1,0 +1,81 @@
+#!/usr/bin/env python
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                      California Institute of Technology
+#                        (C) 2009  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+import luban.content as lc
+from vnfb.qeutils.qegrid import QEGrid
+
+from luban.content import load, select
+
+def visual(director):
+    doc         = lc.document(title   = "Create New Simulation")
+    splitter    = doc.splitter(orientation="vertical")
+    sA          = splitter.section()
+    sA.add(viewIndicator(director))
+
+    sB          = splitter.section()
+    
+    table       = QEGrid(lc.grid(Class="qe-table"))
+    sB.add(table.grid())
+    showSimulations(table)
+
+    table.setColumnStyle(0, "qe-cell-param")
+    return doc
+
+
+def showSimulations(table):
+    """
+    Shows simulation packages as "Package Name":"Description" table
+    
+    The ordering below is on length/time scales (smallest to largest) and generality 
+    """
+    packages   = []
+
+    packages.append((lc.link(label="Quantum Espresso", onclick=load(actor="material_simulations/espresso/sim-create")),
+                    "Open source package for electronic-structure calculations and materials modeling using density-functional theory, plane waves, and pseudopotentials."))
+
+    #packages.append((lc.link(label="VASP", onclick=load(actor="material_simulations/vasp-rawinput")),
+    #"Proprietary package for electronic-structure calculations using density-functional theory, plane waves, and pseudopotentials.  See License."))
+
+    packages.append(
+        (lc.link(label="BvK",
+                 onclick=load(actor="material_simulations/phonon_calculators/bvk", routine='start')),
+         "Born von Karman non-central forces lattice dynamics calculator.",
+         )
+        )
+#    packages.append((lc.link(label="MMTK", onclick=load(actor="material_simulations/mmtk", routine='new')),
+#                    "Open source molecular mechanics toolkit with Amber and Lennard Jones forcefields."))
+    packages.append((lc.link(label="GULP", onclick=load(actor="material_simulations/forcefieldwizard")),
+                    """Academically open source lattice and molecular dynamics code with a wide range of functionality and forcefields."""
+                    ))
+                    
+    packages.append((lc.link(label="EPSC", onclick=load(actor="material_simulations/epsc/sim-create")),
+                    """Elasto Plastic Self Consistent package for simulation of the thermo-mechanical deformation of polycrystalline aggregates"""))                    
+
+    packages.append(('',lc.link(label="License", onclick=load(actor='licenses', routine='default'))))
+
+
+    for p in packages:
+        table.addRow((p[0], p[1]))
+
+
+def viewIndicator(director):
+    path = []
+    path.append(('Simulations ', load(actor='materialsimulation')))
+    path.append('Create New Simulation')
+    
+    return director.retrieveVisual('view-indicator', path=path)
+
+
+
+__date__ = "$Nov 20, 2009 3:11:39 PM$"
+
+

@@ -1,0 +1,528 @@
+#!/usr/bin/env python
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                               Alex Dementsov
+#                      California Institute of Technology
+#                        (C) 2009  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+# XXX: Much of the functionality is borrowed from "jobs/submit" actor. Refactor!
+
+import time
+
+import os
+from luban.content.ProgressBar import ProgressBar
+from luban.content import load, select
+from vnfb.utils import launch_detached, bindir
+from vnfb.qeutils.qeutils import latestJob, jobStatus, key2str, latestInput
+from vnfb.qeutils.qeutils import defaultInputName, readRecordFile, setInputParam, getInputParam, writeRecordFile
+from vnfb.qeutils.results.resultinfo import ResultInfo
+from vnfb.qeutils.qeconst import JOB_STATE
+from vnfb.qeutils.results.pwresult import PWResult
+
+import luban.content as lc
+from vnfb.qeutils.qeconst import ID_CONV_JOBS, ID_CONV_OPT
+from vnfb.qeutils.qeutils import convJobId, convJobRowId
+
+# Fraction out of total job progress
+SUBMIT_FRACTION     = 0.3   # Job submission
+RUN_FRACTION        = 0.4   # Job run
+PACKING_FRACTION    = 0.3   # Results packing 
+RUN_PERC            = 50
+FINISHED_PERC       = 70
+
+# <job secquence> <energy> <degauss>. Example: 0 -12.400754729999999 0.05
+# rownum = <job secquence>
+FILENAME            = "/tmp/convlist"   
+
+
+from luban.components.AuthorizedActor import AuthorizedActor as base
+class Actor(base):
+
+    class Inventory(base.Inventory):
+        import pyre.inventory
+        id          = pyre.inventory.str('id', default='')      # Simulation Id
+        taskid      = pyre.inventory.str('taskid', default='')
+        convid      = pyre.inventory.str('convid', default='')
+        paramid     = pyre.inventory.str('paramid', default='')
+        state       = pyre.inventory.str('state', default='')
+
+        rownum      = pyre.inventory.int('rownum', default=0)
+        colnum      = pyre.inventory.int('colnum', default=0)
+
+
+    def default(self, director):
+        "Not implemented"
+        pass
+
+
+    def run(self, director):
+        "Submit job to the computing nodes. Trace job status."
+        jTable          = lc.document()
+        splitter        = jTable.splitter(orientation="vertical")
+        self._jobTitle(splitter)
+        self._jobTable(director, splitter)
+
+        return [select(id=ID_CONV_JOBS).replaceContent(jTable),
+                load(actor      ='jobs/conv-run',
+                      routine   = 'addRow',
+                      id        = self.id,
+                      taskid    = self.taskid,
+                      rownum    = self.rownum,
+                      paramid   = self.paramid)]
+
+
+    def _jobTitle(self, splitter):
+        sP          = splitter.section(id="qe-tasks-label")
+        sP.add(lc.paragraph(text="Convergence Jobs", Class="qe-section-inline"))
+        sP.add(lc.document(Class="clear-both"))
+
+
+    def _jobTable(self, director, splitter):
+        visual   = 'material_simulations/espresso-convergence/table-jobs'
+        sT          = splitter.section()                        # path indicator
+        table       = director.retrieveVisual(  visual,
+                                                director,
+                                                id      = self.id,
+                                                paramid = self.paramid,
+                                                part    = "header")
+        sT.add(table)
+
+    
+    def addRow(self, director):
+        visual      = 'material_simulations/espresso-convergence/table-jobs'
+        row         = director.retrieveVisual(  visual,
+                                                director,
+                                                id      = self.id,
+                                                paramid = self.paramid,
+                                                rownum  = self.rownum)
+        action      = []
+        action.append(select(id=convJobRowId(self.rownum)).replaceContent(row))
+        action.append(load(actor    ='jobs/conv-run',
+                          routine   = 'runJob',
+                          id        = self.id,
+                          taskid    = self.taskid,
+                          paramid   = self.paramid,
+                          rownum    = self.rownum))
+
+        return action
+
+
+    def runJob(self, director):
+        self.submitJob(director)
+        time.sleep(0.7)     # Give a bit time to generate job record
+
+        return self.populateRow(director)
+
+#        if self.colnum < 4:
+#            action.append(load(actor    ='jobs/conv-run',
+#                              routine   = 'setCell',
+#                              id        = self.id,
+#                              paramid   = self.paramid,
+#                              colnum    = self.colnum + 1,
+#                              rownum    = self.rownum))
+#
+#        if (self.colnum + 1) % 5 == 0 and self.rownum < 1:
+#            action.append(load(actor      ='jobs/conv-run',
+#                              routine   = 'addRow',
+#                              id        = self.id,
+#                              paramid   = self.paramid,
+#                              rownum    = self.rownum + 1))
+
+
+    def submitJob(self, director):
+        "Spawns process that submits job to the computing nodes"
+        cmd = os.path.join(bindir, "jobdriver.py")
+
+        options =   { 'id':       self.inventory.id,
+                      'taskid':   self.inventory.taskid,
+                    }
+
+        options = self._refine(options)
+        optstr  = ' '.join([ '--%s="%s"' % (k,v) for k,v in options.iteritems() ])
+        cmd     += ' ' + optstr
+
+        launch_detached(cmd)
+
+
+    def _refine(self, opts):
+        "pyre complains about parameters like: '--subtype=', so we get rid of them"
+        options     = {}
+        for o in opts.keys():
+            if opts[o].strip() != '':   # option is not empty
+                options[o]  = opts[o]
+
+        return options
+
+
+
+    def populateRow(self, director):
+        action      = []
+        action.append(self.jobId(director))
+        action.append(self.taskType())
+        action.append(self.progressBar(director))
+        action.append(self.results(director))
+        action.append(self.optimal())
+        
+        return action
+
+
+    def jobId(self, director):
+        "Displays id of the current job"
+        jobs        = director.clerk.getQEJobs(where="taskid='%s'" % self.taskid)
+
+        if not jobs:
+            return select(id=convJobId(self.rownum, 0)).replaceContent("None")
+
+        job  = latestJob(jobs)
+        link = lc.link(label   = job.id,
+                       onclick = load(actor     = 'jobs/jobs-view',
+                                      id        = self.id,
+                                      taskid    = self.taskid,
+                                      jobid     = job.id,
+                                      type      = "PW",             # XXX: Fix!!!
+                                      package   = "Quantum Espresso"))
+                        
+        return select(id=convJobId(self.rownum, 0)).replaceContent(link)
+
+        
+    def taskType(self):
+        return select(id=convJobId(self.rownum, 1)).replaceContent("PW")
+
+
+    def progressBar(self, director):
+        if self.state == "complete":
+            return select(id=convJobId(self.rownum, 2) ).replaceContent("Complete")
+        
+        pbar    = ProgressBar( id           = self.pbarId(self.rownum),
+                                status      = 'Submitting job ...',
+                                percentage  = 0,
+                                skip        = 2000,    # time interval?
+                            )
+
+        pbar.onchecking = load( actor    = 'jobs/conv-run',
+                                routine  = 'checkStatus',
+                                id        = self.id,
+                                taskid    = self.taskid,
+                                paramid   = self.paramid,
+                                rownum    = self.rownum)
+
+                                 
+        pbar.onfinished  = []
+        pbar.onfinished.append(load(actor      = "jobs/conv-run",
+                                 routine    = "updateFields",
+                                 id         = self.id,
+                                 taskid     = self.taskid,
+                                 paramid    = self.paramid,
+                                 state      = "complete",
+                                 rownum     = self.rownum))
+                                 
+        pbar.onfinished.append(load(actor      = "jobs/conv-run",
+                                 routine    = "checkResults",
+                                 id         = self.id,
+                                 taskid     = self.taskid,
+                                 paramid    = self.paramid,
+                                 rownum     = self.rownum))
+
+        return select(id=convJobId(self.rownum, 2) ).replaceContent(pbar)
+
+
+    def updateFields(self, director):
+        action  = []
+        action.append(self.results(director))
+        action.append(self.progressBar(director))
+        
+        return action
+
+
+    def results(self, director):
+        link   = lc.document()
+        link.add("None")
+        if self.state == "complete":
+            job     = self._latestJob(director)
+            results = ResultInfo(director, self.id, 0, job)
+            link    = results.status()
+
+        return select(id=convJobId(self.rownum, 3) ).replaceContent(link)
+
+
+    def optimal(self):
+        link   = lc.document()
+        link.add("None")
+        return select(id=convJobId(self.rownum, 4) ).replaceContent(link)
+
+
+    # XXX: Too long. Refactor!
+    def checkStatus(self, director):
+        selectpbar      = select(id = self.pbarId(self.rownum))
+        job     = None
+        jobs    = director.clerk.getQEJobs(where="taskid='%s'" % self.taskid)
+        if jobs:
+            job  = latestJob(jobs)
+
+
+        if self._isSubmitting(job):                 # job.description == ""
+            state       = self._getStatus(job)
+            jperc     = state[0]*SUBMIT_FRACTION
+            jstatus   = state[1]
+            return self._pbarAttr(selectpbar, jperc, jstatus)
+
+        if self._isSubmitted(director, job):      # job.status == "submitted"
+            jperc     = 40
+            jstatus   = "Submitted ..."
+            self._updateJobStatus(director, job, jstatus)
+            self._updateJobStage(director, job, "submitted")
+            return self._pbarAttr(selectpbar, jperc, jstatus)
+
+        if self._isRunning(job):                  # job.description == "submitted"
+            server  = director.clerk.getServers(id = job.serverid)
+            status  = jobStatus(director, job, server)  # Get status from remote server
+            if not status:
+                jperc     = 100
+                jstatus   = "Unknown state"
+                return self._pbarAttr(selectpbar, jperc, jstatus)
+
+            if status["state"] == "terminated" or status["state"] == "finished":
+                jperc     = FINISHED_PERC    
+                jstatus   = "Finished Run"
+                self._updateJobStatus(director, job, jstatus)
+                self._updateJobStage(director, job, "finished")
+                return self._pbarAttr(selectpbar, jperc, jstatus)
+
+            str     = key2str(status["state"])
+            if status.has_key("runtime") and status["state"] == "running":
+                str     += " (%s) " % status["runtime"]
+
+            jperc     = RUN_PERC
+            jstatus   = str
+            self._updateJobStatus(director, job, jstatus)
+            return self._pbarAttr(selectpbar, jperc, jstatus)
+
+        if self._isFinished(job):
+            jperc     = FINISHED_PERC    
+            jstatus   = job.status
+            self._updateJobStage(director, job, "packing")
+            return self._pbarAttr(selectpbar, jperc, jstatus)
+
+        if self._isPacking(job):
+            results     = ResultInfo(director, self.id, 0, job)
+            results.retrieve()
+            (state, label)  = results.stateLabel()
+            jperc     = 80      # Can later discretize finer
+            jstatus   = label
+            self._updateJobStatus(director, job, state)
+            return self._pbarAttr(selectpbar, jperc, jstatus)
+
+        if self._isComplete(job):
+            jperc     = 100
+            jstatus   = "Complete!"
+            self._updateJobStatus(director, job, jstatus)
+            self._updateJobStage(director, job, "complete")
+            return self._pbarAttr(selectpbar, jperc, jstatus)
+
+        if self._isDone(job):
+            jperc     = 100
+            jstatus   = "Complete!"
+            return self._pbarAttr(selectpbar, jperc, jstatus)
+
+        return self._pbarAttr(selectpbar, 100, "Unknown state") # Default value
+
+
+    def _pbarAttr(self, selectpbar, percentage, status):
+        return selectpbar.setAttr( percentage   = percentage,
+                                    status      = status)
+
+
+    def _updateJobStage(self, director, job, str):
+        "Updates job stage, currently stored in 'description' field"
+        job.setDirector(director)
+        job.updateRecord({"description": str,})
+
+
+    def _updateJobStatus(self, director, job, str):
+        "Updates job stage, currently stored in 'description' field"
+        job.setDirector(director)
+        job.updateRecord({"status": str,})
+
+
+    def _isSubmitting(self, job):
+        return job.description == "" and job.status != "submitted"
+
+
+    def _isSubmitted(self, director, job):
+        return job.status == "submitted"
+
+
+    def _isRunning(self, job):
+        return job.description == "submitted"
+
+
+    def _isFinished(self, job):
+        return job.description == "finished"
+
+
+    def _isPacking(self, job):
+        return job.description == "packing" and job.status != "ready"
+
+
+    def _isComplete(self, job):
+        return job.status == "ready"
+
+
+    def _isDone(self, job):
+        return job.description == "complete"
+
+
+    def _latestJob(self, director):
+        jobs        = director.clerk.getQEJobs(where="taskid='%s'" % self.taskid)
+
+        if not jobs:
+            return None
+
+        return latestJob(jobs)
+
+
+    def checkResults(self, director):
+        "Checks varying parameter and desides if start new job or show optimal value"
+        (energy, degauss)   = self.energyDegauss(director)
+        self.appendToFile(energy, degauss)
+
+        records     = self.loadRecords()
+        self.editInput(director)
+
+        linkA = load(actor      ='jobs/conv-run',
+                      routine   = 'addRow',
+                      id        = self.id,
+                      taskid    = self.taskid,
+                      rownum    = self.rownum + 1,
+                      paramid   = self.paramid)
+
+        linkB = load (actor      = "jobs/conv-run",
+                     routine    = "showOptimal",
+                     id         = self.id,
+                     taskid     = self.taskid,
+                     paramid    = self.paramid,
+                     rownum     = self.rownum)
+
+        if len(records) < 3:
+            return linkA
+
+        if self.isConverged(records):
+            return linkB
+        
+        if self.rownum < 9: # Submit job again!
+            return linkA
+
+        return linkB    # Default
+
+
+    def isConverged(self, records):
+        tol1    = abs(float(records[self.rownum][1]/records[self.rownum-1][1]) - 1.0)
+        tol2    = abs(float(records[self.rownum-1][1]/records[self.rownum-2][1]) - 1.0)
+        return tol1 < 0.01 and tol2 < 0.01
+
+
+    def energyDegauss(self, director):
+        job     = self._latestJob(director)
+        result  = PWResult(director, self.id, job = job)
+        estr    = result.totalEnergy()      # (-12.400754729999999, 'Ry')
+        dstr    = result.smearingDegree()   # "0.05 Ry"
+        energy  = estr[0]
+        d       = dstr.split()
+        degauss = float(d[0])
+        return (energy, degauss)
+
+
+    def appendToFile(self, energy, degauss):
+        if self.rownum == 0:
+            open(FILENAME, "w").write("")   # flush first
+
+        open(FILENAME, "a").write("%s %s %s\n" % (self.rownum, energy, degauss))
+
+    
+    def loadRecords(self):
+        "Parses data from file and returns list"
+        file    = open(FILENAME)
+        records = []
+        for line in file:
+            r   = line.split()
+            records.append((int(r[0]), float(r[1]), float(r[2])))
+
+        return records
+
+
+    def editInput(self, director):
+        inputs  = director.clerk.getQEConfigurations(where="taskid='%s'" % self.taskid)
+        input   = latestInput(inputs)
+        fname   = defaultInputName(input.type)
+        str     = readRecordFile(director.dds, input, fname)
+
+        degauss = getInputParam(str, "degauss")
+        degauss = float(degauss)
+        newstr  = setInputParam(str, "degauss", "%s" % (degauss-0.005))
+        writeRecordFile(director.dds, input, fname, newstr)
+
+
+    # XXX: Fix load()
+    def showOptimal(self, director):
+        container       = lc.document()
+        (energy, degauss)   = self.energyDegauss(director)
+        
+        value       = "%s" % degauss
+        container.add(lc.paragraph(text="Optimal Value: %s" % value, Class="qe-section-inline"))
+
+        # Show refresh status button
+        container.add(lc.link( label   ="Export to PW",
+                        id      = "action-refresh-status",
+                        onclick = load(actor   = 'material_simulations/espresso-convergence/param-create',
+                                        routine = "refreshStatus",
+                                        id      = self.id)
+                        ))
+        container.add(lc.document(Class="clear-both"))
+        return select(id = ID_CONV_OPT).replaceContent(container)
+
+
+    def pbarId(self, rownum):
+        PBAR_BASE   = "pbar"
+        return '%s-%s' % (PBAR_BASE, rownum)
+
+    
+    def _getStatus(self, job):
+        status  = (100, "Unknown status")
+        if not job or not job.status in JOB_STATE.keys():
+            return status
+
+        return JOB_STATE[job.status]
+
+
+    def __init__(self):
+        super(Actor, self).__init__(name='jobs/conv-run')
+
+
+    def _configure(self):
+        super(Actor, self)._configure()
+        self.id         = self.inventory.id
+        self.taskid     = self.inventory.taskid
+        self.convid     = self.inventory.convid
+        self.paramid    = self.inventory.paramid
+        self.state      = self.inventory.state
+
+        self.rownum     = self.inventory.rownum
+        self.colnum     = self.inventory.colnum
+
+
+    def _init(self):
+        super(Actor, self)._init()
+
+def actor():
+    return Actor()
+
+
+__date__ = "$May 2, 2010 10:42:56 AM$"
+
+

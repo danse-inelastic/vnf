@@ -1,0 +1,180 @@
+/*
+This is CSS layout for EPSC pages
+*/
+
+/* Form */
+.epsc-lattice-label {    
+}
+
+.epsc-lattice-field input {
+    width: 60px;
+    margin-right: 8px;
+    margin-left: 3px;
+}
+
+.epsc-num-field input {
+    width: 60px;
+    margin-right: 8px;
+    margin-left: 3px;
+}
+.epsc-text-area textarea {
+    width: 600px;
+    height: 300px;
+}
+
+.epsc-form-label {
+    color: black;
+    width: 200px;
+    font-weight: bold;
+    vertical-align: top;
+    text-align: right;
+    padding-top: 5px;
+    padding-right: 5px;
+
+}
+
+#epsc-form .epsc-form-label a {
+    color: black;
+}
+
+.epsc-form-label a, .epsc-form-label a:hover {
+    color: black;
+    text-decoration:none;
+    cursor:text;
+}
+
+.ccc2-text-area textarea {
+    width: 500px;
+    height: 40px;
+}
+.mode-text-area textarea {
+    width: 500px;
+    height: 200px;
+}
+
+.float-right .epsc-num-field {
+    float: right;
+}
+
+/* Simulation */
+.epsc-cell-param {
+    width: 170px;
+    font-weight: bold;
+    background-color: #ddd;
+}
+
+.epsc-section {
+    font-size: 17px;
+    font-weight: normal;
+    margin-top: 30px;
+    margin-bottom: 10px;
+}
+
+#epsc .epsc-cell-param a {
+    color: black;
+}
+
+.epsc-cell-param a, .epsc-cell-param a:hover {
+    color: black;
+    text-decoration:none;
+    cursor:text;
+}
+
+/* Run button */
+#action-button {
+    margin: 30px 0px;
+}
+.epsc-run-task {
+    margin: 10px 10px 10px 0px;
+    padding: 5px 20px;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    text-decoration: none;
+    font-size: 16px;
+    background-color: #48f640; /* deep green #1fff1f*/
+}
+
+#epsc a.epsc-run-task {
+    color: black;
+}
+a.epsc-run-task {
+    text-decoration: none;
+    font-weight: normal;
+}
+
+/* Action buttons */
+.epsc-action-create {
+    padding: 1px 15px 3px 15px;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    text-decoration: none;
+    margin-left: 0px;
+    background-color: #FF7700;
+}
+a.epsc-action-create {
+    text-decoration: none;
+}
+
+/* Configuration */
+.epsc-config-table table {
+    border-collapse: collapse;
+    -moz-border-radius: 10px;
+    -webkit-border-radius: 10px;
+    width: 700px;
+    background-color: #f0f0f0;
+}
+
+.epsc-config-table td {
+    border: 2px solid white;
+    padding: 3px 10px 3px 10px;
+    vertical-align: top;
+}
+
+.epsc-config-cell-param {
+    width: 120px;
+    font-weight: bold;
+}
+
+/* Jobs */
+.epsc-run-action {
+    width: 500px;
+}
+
+.epsc-jobs-action-column {
+    width: 100px;
+}
+
+.qe-table .epsc-jobs-action-column {
+    padding-left: 0px;
+}
+
+
+/* Outputs */
+.epsc-output-section {
+    width: 100px;
+    height: 30px;
+}
+
+.qe-color-blue.epsc-output-default {
+    background-color: #9bbcf8;
+}
+
+.epsc-output-default {
+    padding: 4px 15px;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    text-decoration: none;
+    margin-right: 0px;
+    background-color: #c2d6f9;
+}
+
+a.epsc-output-default {
+    text-decoration: none;
+}
+
+.epsc-textarea-outputs td textarea {
+    margin-top: -8px;
+    margin-left: -20px;
+    width: 600px;
+    height: 400px;
+}

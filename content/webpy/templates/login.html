@@ -1,0 +1,24 @@
+$def with (sources, message)
+<html>
+<head>
+	<title>FTP login</title>
+</head>
+<body>
+	<div>
+		<h1>Login</h1><br/>
+		<h3>$message</h3>
+		<form name="input" action="login" method="post">
+			Data source: <br />
+			<select name="source">
+			$for s in sources:
+				<option name="$s">$s</option>
+			</select><br />
+			Username: <br />
+			<input type="text" name="username" /><br />
+			Password: <br />
+			<input type="password" name="password" /><br />
+			<input type="submit" value="Submit" />
+		</form>
+	</div>
+</body>
+</html>

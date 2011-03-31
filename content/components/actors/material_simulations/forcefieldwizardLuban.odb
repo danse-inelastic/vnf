@@ -1,0 +1,435 @@
+#!/usr/bin/env python
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                      California Institute of Technology
+#                      (C) 2006-2009  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+from luban.content import load, select
+import luban.content as lc
+
+from luban.content.Document import Document
+from luban.content.Link import Link
+
+from luban.components.Actor import Actor as base
+
+from luban.content.Splitter import Splitter, SplitSection
+
+from luban.content.Form import Form
+from luban.content.FormTextField import FormTextField
+from luban.content.FormSelectorField import FormSelectorField
+from luban.content.HtmlDocument import HtmlDocument
+#from luban.content import select
+
+def _input_widget_ID(name):
+    return '%s-input' % name
+
+class Actor(base):
+
+    class Inventory(base.Inventory):
+
+        import pyre.inventory
+
+        simulationId = pyre.inventory.str('simulationId', default = '')
+        structureId = pyre.inventory.str('structureId', default = '')
+        short_description = pyre.inventory.str('short_description', default = '' )
+        short_description.meta['tip'] = 'A short description'
+        inputFileContents = pyre.inventory.str('inputFileContents', default='')
+        runtype = pyre.inventory.str('runtype', default='')
+        creator = pyre.inventory.str('creator', default='')
+        description = pyre.inventory.str('description', default='')
+        
+        potentialContent = pyre.inventory.str('potentialContent', default='')
+        potential_name = pyre.inventory.str('potential_name', default='')
+        potential_filename = pyre.inventory.str('potential_filename', default='')
+        potentialCreator = pyre.inventory.str('potentialCreator', default='')
+        potentialDescription = pyre.inventory.str('potentialDescription', default='')
+
+    def default(self, director):
+        title = 'Simulation with forcefields'
+        wizard = Document(id='forcefieldwizard-start', title=title)
+        doc = self.selectMatter(director)
+        wizard.add(doc)
+        return select(id='main-display-area').replaceContent(wizard)
+    
+    def selectType(self, director):
+        doc = lc.document(id='type-selector-doc')
+        doc.paragraph(
+            text=[
+            "Please select what type of forcefield simulation you'd like to run.",
+            ]
+            )
+        
+        form = lc.form(id='type-form')
+        
+        property = 'optimization'
+        field = form.radio(
+            id = _input_widget_ID(property),
+            name = 'runtype',
+            label = 'Gulp Optimization',
+            value = True,
+            )
+        
+        property = 'ld'
+        field = form.radio(
+            id = _input_widget_ID(property),
+            name = 'runtype',
+            label = 'Gulp Lattice Dynamics',
+            value = False,
+            )
+        
+        property = 'md'
+        field = form.radio(
+            id = _input_widget_ID(property),
+            name = 'runtype',
+            label = 'Gulp MD',
+            value = False,
+            )
+        
+        # not sure how radio buttons transfer values to inventory, but it would
+        # be convenient if it could be either GulpOpt, GulpLd, or GulpMd....(see dom.material_simulations)
+        button = form.submitbutton(label="calculate")
+        form.onsubmit = select(id='type-selector-doc').submit(
+            actor = 'material_simulations/forcefieldwizard',
+            routine = 'selectMatter',
+#            structureId = self.inventory.structureId,
+            )
+        
+        doc.add(form)
+        return doc
+    
+    def selectMatter(self, director):
+        doc = lc.document(id='matter-selector-doc')
+        doc.paragraph(
+            text=[
+            'Please select one atomic structure from the following table,',
+            'you can search for the structure using the filtering controls.',
+            ]
+            )
+        # the container of the atomicstructure selector
+        container = lc.document(id='atomicstructure-selector-container')
+        doc.add(container)
+        container.oncreate = [
+            select(element=container).append(
+              load(actor='selectoneatomicstructure', routine='createListView')
+              ),
+            ]
+        # cancel
+#        c = lc.link(label='cancel', Class='float-right'); doc.add(c)
+#        c.onclick = select(id=self.matter_view_id).replaceBy(
+#            load(actor='scatterer/editor', routine='createMatterView',
+#                 id = self.id)
+#            )
+        # select button
+        b = lc.button(label='select'); doc.add(b)
+        b.onclick = load(
+                actor=self.name, routine='selectForcefield',
+                structureId=select(id='atomicstructure-table').table(
+                    'getIdentifierForSelectedRow', colname='selectone'),
+                )
+        return doc
+    
+    def selectForcefield(self, director):
+        doc = lc.document(id='matter-selector-doc')
+        doc.paragraph(text=['Please select one forcefield from the following table,',])
+        # the container of the atomicstructure selector
+        container = lc.document(id='atomicstructure-selector-container')
+        doc.add(container)
+        container.oncreate = [
+            select(element=container).append(
+              load(actor='selectoneforcefield', routine='createListView')
+              ),
+            ]
+        # cancel
+#        c = lc.link(label='cancel', Class='float-right'); doc.add(c)
+#        c.onclick = select(id=self.matter_view_id).replaceBy(
+#            load(actor='scatterer/editor', routine='createMatterView',
+#                 id = self.id)
+#            )
+        # select button
+        b = lc.button(label='select'); doc.add(b)
+        b.onclick = load(
+                actor=self.name, routine='settings',
+                structureId=select(id='atomicstructure-table').table(
+                    'getIdentifierForSelectedRow', colname='selectone'),
+                )
+        return doc
+    
+    def settings(self, director):
+        self.inventory.simulationId = director.getGUID()
+        form = Form(
+            id='settings',
+            title='')
+        orm = director.clerk.orm
+        # what needs to happen here is:
+        # runtype = self.inventory.runtype
+        # depending on which runtype is selected, the correct form needs to be presented
+        
+        className = self.inventory.runtype        
+        exec('from vnfb.dom.material_simulations.'+className+' import '+className)
+#        exec('from '+analysisPaths[self.inventory.analysisType]+' import '+
+#             className)
+        analysisDbClass = eval(className)
+        analysisDbObj = director.clerk.insertNewRecordWithID(analysisDbClass)
+
+        self.inventory.analysisId = analysisDbObj.id
+        analysisDbObj.creator = director.sentry.username
+        import time
+        analysisDbObj.date = time.ctime()
+        #orm.save(analysisObj, save_not_owned_referred_object=False)
+        director.clerk.db.updateRecord(analysisDbObj)
+        analysisObj = orm.record2object(analysisDbObj)
+        drawer = director.painter.paintObj.drawers.getDrawer(analysisObj.__class__)
+        drawer.actor = 'orm/analysis/%s' % analysisObj.__class__.__name__.lower()
+        editview = drawer(analysisObj)
+        doc.add(editview)
+        #container.oncreate = [
+        #    select(element=container).append(        
+        #      #load(actor='analysis/selectdynamics', routine='createListView')
+        #      load(actor=actorName, routine='edit')#, id = dynamicsId)
+        #      ),
+        #    ]
+#        sA.add(load(actor=actorName, routine='edit', id = self.inventory.dynamicsId))
+#        sB          = splitter.section()
+#        docSub      = lc.document(title = "")
+        b = lc.button(label='Create job'); 
+        doc.add(b)
+        b.onclick = load(
+            #actor=self.name, routine='runDirectly', 
+            analysisId = self.inventory.analysisId,
+            analysisType = self.inventory.analysisType,
+            actor=self.name, routine='configureSubmissionQueue')
+        return select(id='main-display-area').replaceContent(doc)
+        
+        
+        p = form.paragraph()
+        p.text = ['''AtomSim uses efficient forcefield
+        techniques for simulating larger systems.  
+        Its capabilities include phonon / molecular dynamics / optimization, 
+        forcefield fitting to experimental data,
+        and crystal property calculation.''']
+        
+
+        form.add(hdoc)
+
+        next = form.submitbutton(label="next")
+        form.onsubmit = select(element=form).submit(
+            actor = 'material_simulations/forcefieldwizard',
+            routine = 'configureSubmissionQueue',
+            simulationId = self.inventory.simulationId,
+            )
+
+        return select(id='main-display-area').replaceContent(form)
+    
+    def storeInputFile(self, director):
+        # this method is called by the java web start gui (AtomSim)
+        orm = director.clerk.orm
+        # first store the potential
+        #self.storePotential(director)--> TODO: this is already stored by gulpUi so don't need to re-store
+        #TODO: make it so it will load settings back in if restarting
+        # then store the settings
+        #from memd.gulp.GulpSettings import GulpSettings
+        from vnfb.dom.material_simulations.GulpSettings import GulpSettings
+        gulpSettings = GulpSettings()
+        gulpSettings.id = self.inventory.simulationId
+        import time
+        gulpSettings.date = time.ctime()
+        gulpSettings.creator = director.sentry.username
+        gulpSettings.runtype = self.inventory.runtype
+        gulpSettings.description = self.inventory.runtype
+        #gulpSettings.inputFileContents = self.inventory.inputFileContents
+        #gulpSettings.potential_name = self.inventory.potential_name
+        domaccess = director.retrieveDOMAccessor('atomicstructure')
+        structure = domaccess.getAtomicStructure(self.inventory.structureId)
+        gulpSettings.matter = orm(structure) # this turns an object back into a table?
+        #since the potential has already been stored, we just get it 
+        from memd.gulp.GulpPotential import GulpPotential
+        try:
+            potentialRecord = orm.db.query(orm(GulpPotential)).filter_by(
+                        potential_name = self.inventory.potential_name).one()
+        except Exception, err:
+            print err
+            self.storePotential(director)
+            potentialRecord = orm.db.query(orm(GulpPotential)).filter_by(
+                        potential_name = self.inventory.potential_name).one()
+        #gulpSettings.potential = orm.record2object(record)
+        gulpSettings.potential = potentialRecord
+
+        #save the settings
+        director.clerk.insertNewRecord(gulpSettings)
+#        orm.save(gulpSettings, save_not_owned_referred_object=0, 
+#                 id = self.inventory.simulationId)
+        # these last few lines will eventually be taken care of by the orm
+        #create data directory for the simulation if necessary
+        datadir = director.dds.abspath(gulpSettings)
+        if not os.path.exists(datadir): 
+            os.makedirs(datadir)
+
+        inputFilePath = director.dds.abspath(gulpSettings, filename=getattr(gulpSettings, "inputFile")) # this is a hack until we can fix db layer so it interacts correctly with dds
+        open(inputFilePath, 'w').write(self.inventory.inputFileContents)
+        
+        #these lines should be executed right before the job is submitted
+        #get the potential from the database
+        gulpPotential = gulpSettings.potential
+        potentialPath = director.dds.abspath(potentialRecord, filename = getattr(potentialRecord, "filename"))
+        potentialContent = open(potentialPath).read()
+        #write the potential in the simulation directory
+        simulationPotential = director.dds.abspath(gulpSettings, filename = getattr(potentialRecord, "filename"))
+        open(simulationPotential, 'w').write(potentialContent)        
+        return 'success'
+    
+    def storePotential(self, director):
+        orm = director.clerk.orm
+        from memd.gulp.GulpPotential import GulpPotential
+        try:
+            record = orm.db.query(orm(GulpPotential)).filter_by(
+                                potential_name = self.inventory.potential_name).one()
+            gulpPotential = orm.record2object(record)
+        except Exception, err:
+            #print err
+            #print 'creating new potential'
+            gulpPotential = GulpPotential()
+        gulpPotential.filename = self.inventory.potential_filename
+        gulpPotential.creator = self.inventory.potentialCreator
+        gulpPotential.description = self.inventory.potentialDescription
+        gulpPotential.potential_name = self.inventory.potential_name
+        orm.save(gulpPotential)
+        #put the potential in the potentials subdirectory
+        libfile = director.dds.abspath(orm(gulpPotential), 
+                                             filename = gulpPotential.filename)
+        libDirectory,file = os.path.split(libfile)
+        if not os.path.exists(libDirectory):
+            try:
+                os.makedirs(libDirectory)
+            except Exception, err:
+                raise RuntimeError, "unable to create directory %r. %s: %s" % (
+                    self.path, err.__class__.__name__, err)
+        open(libfile, 'w').write(self.inventory.potentialContent)
+        #server = director.clerk.dereference(job.server)
+        director.dds.remember(orm(gulpPotential), files=[gulpPotential.filename])
+        return 'success'
+
+    def startFormShowError(self, director, errors=None):
+        from luban.content import select
+        return [
+            select(id='%s-input' % name).showError(text)
+            for name, text in errors.iteritems()
+            ]
+    
+    def __init__(self, name='material_simulations/forcefieldwizard'):
+        super(Actor, self).__init__(name)
+        return
+    
+    def configureSubmissionQueue(self, director):
+        orm = director.clerk.orm
+        className = self.inventory.runtype
+        simulationRecord = director.clerk._getEntry(className, 
+                id = self.inventory.simulationId, maindom = 'vnfb.dom.material_simulations')
+        # next have to write three files to working directory--structure file, forcefield file, and inputfile
+        simulationObj = orm.record2object(simulationRecord)
+        import time
+        simulationObj.date = time.ctime()
+        simulationObj.creator = director.sentry.username
+        domaccess = director.retrieveDOMAccessor('atomicstructure')
+        structureRecord = domaccess.getAtomicStructure(self.inventory.structureId)
+        structure = orm(structureRecord)
+        simulationObj.matter = structure # this turns an object back into a table?
+        #since the potential has already been stored, we just get it 
+        from memd.gulp.GulpPotential import GulpPotential
+        try:
+            potentialRecord = orm.db.query(orm(GulpPotential)).filter_by(
+                        potential_name = self.inventory.potential_name).one()
+            potentialObj
+        except Exception, err:
+            pass
+        simulationObj.forcefield = orm.record2object(potentialRecord)
+        
+        simulationInputFileContents = getSimInputfile(simulationObj)
+        #write the input file
+        datadir = director.dds.abspath(simulationRecord)
+        if not os.path.exists(datadir): 
+            os.makedirs(datadir)
+        inputFilePath = director.dds.abspath(simulationRecord, 
+                        filename = simulationRecord.inputfile)
+        open(inputFilePath, 'w').write(simulationInputFileContents)
+        #write the structure file
+        open(os.path.join(datadir,'structure.xyz'), 'w').write(structure.writeStr('xyz'))
+        #copy over the forcefield file
+        # NOT EXACTLY SURE HOW TO DO THIS...
+        #
+        domPath = 'material_simulations.'+className+'.'+className
+        return director.redirect(actor = 'job', routine = 'create', 
+                computation_type = domPath, 
+                computation_id = self.inventory.simulationId)
+
+def getSimInputfile(simOb):
+    baseSettings = {'pressure':simOb.pressure,
+        'temperature':simOb.temperature,
+        'xyzFile':'structure.xyz',
+        'dispersionInRecipSpace':simOb.calc_dispersion_in_recip_space,
+        'useInitialBondingOnly':simOb.assign_bonds_from_initial_geometry,
+        'forcefield':simOb.forcefield.filename,
+        'moleculeIdentification':simOb.identify_molecules,}
+    if mdSettings['type']=='gulpopt':
+        gulpOpt(simOb, baseSettings)
+    elif mdSettings['type']=='gulpphonons':
+        gulpPhonon(simOb, baseSettings)
+    elif mdSettings['type']=='gulpmd':
+        gulpMd(simOb, baseSettings)
+
+def gulpOpt(simOb, baseSettings):
+    from memdf.gulp.Optimize import Optimize
+    e = Optimize()
+    settings = {
+        'constraints':simOb.constraint,
+        'optimizeCell':simOb.optimize_cell,
+        'optimizeCoordinates':simOb.optimize_coordinates,
+        'trajectoryFilename':simOb.trajectoryfile,
+        'restartFilename':simOb.restartfile,
+           }
+    settings.update(baseSettings)
+    for key,val in settings.iteritems():
+        setattr(e, key, val)
+    e.getInputfile()
+    
+def gulpPhonon(simOb, baseSettings):
+    from memdf.gulp.Phonon import Phonon
+    e = Phonon()
+    settings = {
+        'kpointMesh':simOb.kpointMesh,
+        'dosAndDispersionFilename':simOb.dosAndDispersionFilename,
+        'broadenDos':simOb.broadenDos,
+        'projectDos':simOb.projectDos}
+    settings.update(baseSettings)
+    for key,val in settings.iteritems():
+        setattr(e, key, val)
+    e.writeInputfile()
+    
+def gulpMd(simOb, baseSettings):
+    from memdf.gulp.Md import Md
+    e = Md()
+    settings = {
+        'ensemble':simOb.ensemble,
+        'equilibrationTime':simOb.equilibration_time,
+        'productionTime':simOb.production_time,
+        'propCalcInterval':simOb.properties_calculation_interval,
+        'thermostatParameter':simOb.thermostat_parameter,
+        'barostatParameter':simOb.barostat_parameter,
+        'timeStep':simOb.timestep,
+        'trajectoryFilename':simOb.trajectoryfile,
+        'restartFilename':simOb.restartfile,
+        'dumpInterval':simOb.restart_dump_frequency,}
+    settings.update(baseSettings)
+    for key,val in settings.iteritems():
+        setattr(e, key, val)
+    e.writeInputfile()
+
+import os
+
+def actor(): return Actor()
+

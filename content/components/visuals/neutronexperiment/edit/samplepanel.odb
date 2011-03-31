@@ -1,0 +1,130 @@
+# -*- Python -*-
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                 Jiao Lin
+#                      California Institute of Technology
+#                      (C) 2006-2010  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+from luban.content import load, select, alert
+import luban.content as lc
+
+from luban.content.FormSelectorField import FormSelectorField
+
+
+class Factory(object):
+
+
+    def __init__(self, id=None, experiment=None, domaccess=None, director=None):
+        if director is None:
+            raise RuntimeError
+        self.director = director
+
+        if not domaccess:
+            domaccess = director.retrieveDOMAccessor('experiment')
+        self.domaccess = domaccess
+        
+        if id is None and experiment is None:
+            raise RuntimeError
+
+        if not experiment:
+            experiment = domaccess.getExperimentRecord(id)
+        self.experiment = experiment
+
+        if not id:
+            id = experiment.id
+        self.id = id
+        
+        return
+    
+
+    def __call__(self, mode=None):
+        director = self.director
+        domaccess = self.domaccess
+        db = domaccess.db
+        
+        experiment = self.experiment
+
+        sample = experiment.sample
+        sample = sample and sample.id and sample.dereference(db)
+
+        doc = lc.document(id='samplepanel', title='Sample configuration')
+
+        if mode is None:
+            if sample: mode = 'configure'
+            else: mode = 'selector'
+            
+        if mode == 'configure':
+            interior = self._createConfigureDocument()
+        else:
+            interior = self._createSelectorDocument()
+
+        doc.add(interior)
+
+        return doc
+
+
+    def _createSelectorDocument(self):
+        '''create a document to select a sample'''
+        director = self.director
+        domaccess = self.domaccess
+        # db = domaccess.db
+
+        # experiment = self.experiment
+        # sample = experiment.sample
+        # sample = sample and sample.id and sample.dereference(db)
+
+        # selector widget
+        sample_selector = director.retrieveVisual(
+            'neutronexperiment/edit/sampleselector',
+            id=self.id, domaccess=domaccess, director=director,
+            )
+        
+        return sample_selector
+    
+
+    def _createConfigureDocument(self):
+        '''create a document for configuring the sample
+        '''
+        doc = lc.document(Class='container')
+        
+        selectsamplebutton = lc.button(
+            label='Choose a different sample',
+            tip=('Careful! if you choose a different sample, '\
+                 'all your current sample configuration will be lost.'),
+            onclick=select(id='samplepanel').replaceBy(self(mode='selector'))
+            )
+        selectsamplebutton.Class = 'float-right'
+        doc.add(selectsamplebutton)
+
+        director = self.director
+        configdoc = director.retrieveVisual(
+            'neutronexperiment/edit/sampleconfiguration',
+            id = self.id, director=director)
+        doc.add(configdoc) 
+
+        return doc
+
+
+def visual(id=None, experiment=None, domaccess=None, director=None, mode=None):
+    """
+    id: experiment id
+    experiment: experiment record
+    mode: mode of sample panel.
+      * configure: shows a panel to configure a sample,
+      * selector:  shows a panel to select a sample.
+    """
+    f = Factory(id=id, experiment=experiment, domaccess=domaccess, director=director)
+    return f(mode=mode)
+
+
+# version
+__id__ = "$Id$"
+
+# End of file 

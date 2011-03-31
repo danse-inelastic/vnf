@@ -1,0 +1,97 @@
+# -*- Python -*-
+
+from luban.content import load, select
+import luban.content as lc
+
+from luban.content.FormTextField import FormTextField
+from luban.content.FormTextArea import FormTextArea
+
+def visual(director):
+    doc = lc.document(title='Crystallography Open Database')
+    
+    searchpanel = lc.form(); doc.add(searchpanel)
+    sp = lc.splitter(); searchpanel.add(sp)
+    
+    left = sp.section()
+    left.add(createLeftSearchPanel())
+             
+    middle = sp.section()
+    middle.add(createMiddleSearchPanel())
+    
+    # this is the old SQL container
+#    right = sp.section()
+#    right.add(createRightSearchPanel())
+
+    searchpanel.submitbutton(label='search')
+    searchpanel.onsubmit = select(element=searchpanel).submit(
+        actor = 'atomicstructure/cod', routine = 'process')
+
+    tablecontainer = doc.document(id='cod-table-container')
+    sp2 = lc.splitter(orientation='vertical')
+    tablecontainer.add(sp2)
+    
+    top = sp2.section()
+    # select button
+    b = lc.button(label='import to VNF')
+    b.onclick =  load(actor='atomicstructure/cod', routine='loadStructure', 
+                      id=select(id='cod-table').table('getIdentifierForSelectedRow', 
+                                              colname='selectone'))
+    top.add(b)
+    # table
+    bottom = sp2.section()
+    bottom.add(director.retrieveVisual('cod/table', 
+                                               data=[], 
+                                               director=director))
+    return doc
+
+
+def createLeftSearchPanel():
+    grid = lc.grid()
+    field = _limit_field
+
+    row = grid.row()
+    row.cell().add('description'); row.cell().add(FormTextField(name='text'))
+
+    row = grid.row()
+    row.cell().add('elements'); row.cell().add(
+        FormTextField(name='elements', tip='space delmited list of elements. e.g. Fe O F'))
+
+    row = grid.row()
+    row.cell().add('not elements'); row.cell().add(FormTextField(name='notelements'))
+
+    row = grid.row()
+    row.cell().add('volume');
+    cell = row.cell()
+    sp = lc.splitter(); cell.add(sp)
+    sp.section().add(field('volume', 'min'))
+    sp.section().add(field('volume', 'max'))
+    
+    row = grid.row()
+    row.cell().add('# of elements'); row.cell().add(FormTextField(name='nelements'))
+    
+    row = grid.row()
+    row.cell().add('space group'); row.cell().add(FormTextField(name='sg'))
+    return grid
+
+
+def createMiddleSearchPanel():
+    grid = lc.grid()
+    field = _limit_field
+        
+    for attr in ['a', 'b', 'c', 'alpha', 'beta', 'gamma']:
+        row = grid.row()
+        row.cell().add(attr)
+
+        row.cell().add(field(attr, 'min'))
+        row.cell().add(field(attr, 'max'))
+        continue
+    return grid
+
+def createRightSearchPanel():
+    return FormTextArea(name='sql')
+
+
+def _limit_field(var, postfix):
+    name = '%s_%s' % (var, postfix)
+    tip = '%s: %simum of %s' % (name, postfix, var)
+    return FormTextField(name=name, tip=tip)

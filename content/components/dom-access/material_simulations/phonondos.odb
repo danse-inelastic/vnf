@@ -1,0 +1,88 @@
+# -*- Python -*-
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                   Jiao Lin
+#                      California Institute of Technology
+#                      (C) 2006-2009  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+from vnfb.components.DOMAccessor import DOMAccessor as base
+
+class Accessor(base):
+
+
+    def __init__(self):
+        super(Accessor, self).__init__('phonondos-accessor')
+        return
+
+
+    def _getOrm(self):
+        orm = self.director.clerk.orm
+        orm(PhononDOS)
+        return orm
+    orm = property(_getOrm)
+
+
+    def getDOS(self, id):
+        orm = self.orm
+        return orm.load(PhononDOS, id)
+
+
+    def getDataForDOS(self, id):
+        dos = self.getDOS(id)
+        record = self.orm(dos)
+
+        director = self.director
+
+        # make sure file is at the web server
+        if not director.dds.is_available(record):
+            try:
+                director.dds.make_available(record)
+            except:
+                import journal
+                debug = journal.debug('main')
+                debug.log('Unable to get data files for record %s' % record.id)
+                import traceback
+                debug.log(traceback.format_exc())
+                return
+        
+        # the data file
+        path = director.dds.abspath(record)
+        import os
+        # check path
+        if os.path.exists(os.path.join(path, 'data.idf')): 
+            dos.read(os.path.join(path, 'data.idf'))
+#        elif os.path.exists(os.path.join(path, 'data.txt')): 
+#            dos.read(os.path.join(path, 'data.txt'))
+        else: return
+        return dos
+
+
+    def getOrigin(self, id=None, dos=None):
+        'get the original computation that creates this dos'
+        if dos is None:
+            dos = self.getDOS(id)
+        orm = self.orm
+        r = orm(dos)
+        origin = r.getOrigin(orm.db)
+        return origin
+
+
+from vnfb.dom.material_simulations.PhononDOS import PhononDOS
+
+import os, numpy
+
+def accessor():
+    return Accessor()
+
+
+# version
+__id__ = "$Id$"
+
+# End of file 

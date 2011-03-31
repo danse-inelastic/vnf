@@ -1,0 +1,105 @@
+#!/usr/bin/env python
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                               Alex Dementsov
+#                      California Institute of Technology
+#                        (C) 2009  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+import luban.content as lc
+from luban.content import select
+from luban.content import load
+from vnfb.qeutils.qeconst import SIMTYPE
+from vnfb.qeutils.qegrid import QEGrid
+from luban.content.FormTextField import FormTextField
+from luban.content.FormSubmitButton import FormSubmitButton
+
+NQ      = 2
+KX      = 0
+
+def phonForm(actor, director, structureid, simtype, fields, routine):
+    """General form suitable both for single and multiple simulation types
+    Notes:
+        - Routine is the same both for single and multiple phonons simulation type.
+        - Keep it for flexibility purposes!
+    """
+    
+    form        = lc.form(id='create-simulation-form')
+    table       = QEGrid(lc.grid(Class="qe-form"))
+    form.add(table.grid())
+    # Skip link
+    visual_     = "material_simulations/espresso/link-skip"
+    skipLink    = director.retrieveVisual(visual_,
+                                          id        = actor.id,
+                                          taskid    = actor.taskid,
+                                          type      = actor.type)
+
+    submit      = FormSubmitButton(label="Generate Input Configuration")
+    cancel      = lc.button(label="Cancel")
+    cancel.onclick  = load(actor = 'material_simulations/espresso/sim-view', id=actor.id)
+
+    st          = QEGrid(lc.grid()) # Submit Table
+    st.addRow((submit, cancel), ("qe-action-accept", "qe-action-cancel"))
+
+    # Add the actual fields to the form
+    for f in fields:
+        table.addRow(f)
+
+    table.addRow(("", skipLink))
+    table.addRow(("", st.grid()))
+    table.setColumnStyle(0, "qe-form-label")
+    table.setColumnStyle(1, "qe-form-field")
+
+    form.onsubmit   = select(element=form).submit(actor     = 'material_simulations/espresso-utils/generate-ph',
+                                                  routine   = routine,
+                                                  taskid    = actor.taskid,
+                                                  id        = actor.id,
+                                                  type      = actor.type,
+                                                  structureid   = structureid,
+                                                  simtype   = simtype)
+
+    return form
+
+
+def singlePhonForm(actor, director, structureid, simtype):
+    "Form for multiple phonon simulation type"
+    routine = "generateInput"  
+    fields  = []
+    fields.append(("Phonon coordinates", ""))
+    fields.append(("Kx:", FormTextField(name = "kx", value = KX)))
+    fields.append(("Ky:", FormTextField(name = "ky", value = KX)))
+    fields.append(("Kz:", FormTextField(name = "kz", value = KX)))
+
+    return phonForm(actor, director, structureid, simtype, fields, routine)
+
+
+def multiPhonForm(actor, director, structureid, simtype):
+    "Form for multiple phonon simulation type"
+    routine = "generateInput"
+    fields  = []
+    fields.append(("Q-Points", ""))
+    fields.append(("nq1:", FormTextField(name = "nq1", value = NQ)))
+    fields.append(("nq2:", FormTextField(name = "nq2", value = NQ)))
+    fields.append(("nq3:", FormTextField(name = "nq3", value = NQ)))
+
+    return phonForm(actor, director, structureid, simtype, fields, routine)
+
+
+def visual(actor, director, structureid, simtype):
+    if simtype  == SIMTYPE["multiple-phonon"]:
+        return multiPhonForm(actor, director, structureid, simtype)
+
+    elif simtype  == SIMTYPE["single-phonon"]:
+        return singlePhonForm(actor, director, structureid, simtype)
+
+    return lc.form()    # Dummy form (if things go really bad)
+
+
+
+__date__ = "$Jan 12, 2010 5:50:00 PM$"
+

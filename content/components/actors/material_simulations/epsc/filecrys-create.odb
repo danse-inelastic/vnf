@@ -1,0 +1,144 @@
+# -*- Python -*-
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                               Alex Dementsov
+#                      California Institute of Technology
+#                        (C) 2011  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+from luban.content import select, load
+
+import luban.content as lc
+from luban.components.AuthorizedActor import AuthorizedActor as base
+
+from vnfb.epscutils.epscconst import *
+
+class Actor(base):
+    """ Create Material file"""
+
+    class Inventory(base.Inventory):
+        import pyre.inventory
+        # General
+        id          = pyre.inventory.str('id', default='')
+        taskid      = pyre.inventory.str('taskid', default='')
+        type        = pyre.inventory.str('type', default='')
+        structureid = pyre.inventory.str('structureid', default='') 
+
+        # Specific
+        crysym = pyre.inventory.str('crysym', default='')
+        a     = pyre.inventory.str('a', default='')
+        b     = pyre.inventory.str('b', default='')
+        c     = pyre.inventory.str('c', default='')
+        alpha   = pyre.inventory.str('alpha', default='')
+        beta    = pyre.inventory.str('beta', default='')
+        gamma   = pyre.inventory.str('gamma', default='')
+        ccc2    = pyre.inventory.str('ccc2', default='')
+        alfacc1     = pyre.inventory.str('alfacc1', default='')
+        alfacc2     = pyre.inventory.str('alfacc2', default='')
+        alfacc3     = pyre.inventory.str('alfacc3', default='')
+        alfacc4     = pyre.inventory.str('alfacc4', default='')
+        alfacc5     = pyre.inventory.str('alfacc5', default='')
+        alfacc6     = pyre.inventory.str('alfacc6', default='')
+        nmodesx     = pyre.inventory.str('nmodesx', default='')
+        namesys     = pyre.inventory.str('namesys', default='')
+        mode        = pyre.inventory.str('mode', default='')
+
+
+    def default(self, director):
+        return select(id='main-display-area').replaceContent(self.content(director))
+
+
+    def _viewIndicator(self, director):
+        qelink  = load( actor           = 'materialsimulation',
+                        filter_key      = 'type',
+                        filter_value    = 'qesimulations')
+
+        path = []
+        path.append(('Simulations ', load(actor='materialsimulation')))
+        path.append(('EPSC ', qelink))
+        path.append(('%s ' % self.id, load(actor    = 'material_simulations/epsc/sim-view',
+                                           id       = self.id)))
+        path.append('Create Material Configuration')
+
+        return director.retrieveVisual('view-indicator', path=path)
+
+
+    def content(self, director):
+        doc         = lc.document(title   = "Create Material Configuration")
+        splitter    = doc.splitter(orientation="vertical")
+        sA          = splitter.section()
+        sA.add(self._viewIndicator(director))
+        sB          = splitter.section()
+        visual  = 'material_simulations/epsc/filecrys-form'
+        sB.add(director.retrieveVisual(visual, self.inventory, director))
+
+        return doc
+
+
+    def generateConfig(self, director):
+        "Generates config file and redirects to general form"
+        # Special cases
+        crysym  = CRYSYM[int(self.crysym)]
+        nmodesx = int(self.nmodesx)+1
+
+        # Config text
+        config  = FILECRYS_T % (crysym, self.a, self.b, self.c, self.alpha,
+                                self.beta, self.gamma, self.ccc2, self.alfacc1,
+                                self.alfacc2, self.alfacc3, self.alfacc4,
+                                self.alfacc5, self.alfacc6, nmodesx,
+                                nmodesx, self.namesys, self.mode)
+
+        return director.redirect(actor   = 'material_simulations/epsc/config-create',
+                                routine  = 'default',
+                                text     = config,
+                                id       = self.inventory.id,
+                                taskid   = self.inventory.taskid,
+                                type     = self.inventory.type)
+
+
+    def __init__(self):
+        super(Actor, self).__init__(name='material_simulations/epsc/filecrys-create')
+
+
+    def _configure(self):
+        super(Actor, self)._configure()
+        self.id             = self.inventory.id
+        self.taskid         = self.inventory.taskid
+        self.type           = self.inventory.type
+        self.structureid    = self.inventory.structureid
+
+        self.crysym  = self.inventory.crysym
+        self.a       = self.inventory.a
+        self.b       = self.inventory.b
+        self.c       = self.inventory.c
+        self.alpha         = self.inventory.alpha
+        self.beta          = self.inventory.beta
+        self.gamma         = self.inventory.gamma
+        self.ccc2          = self.inventory.ccc2
+        self.alfacc1       = self.inventory.alfacc1
+        self.alfacc2       = self.inventory.alfacc2
+        self.alfacc3       = self.inventory.alfacc3
+        self.alfacc4       = self.inventory.alfacc4
+        self.alfacc5       = self.inventory.alfacc5
+        self.alfacc6       = self.inventory.alfacc6
+        self.nmodesx       = self.inventory.nmodesx
+        self.namesys       = self.inventory.namesys
+        self.mode          = self.inventory.mode
+
+
+    def _init(self):
+        super(Actor, self)._init()
+        return
+
+def actor():
+    return Actor()
+
+
+__date__ = "$Mar 22, 2011 9:46:59 AM$"
+
+

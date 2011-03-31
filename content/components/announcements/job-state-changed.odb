@@ -1,0 +1,60 @@
+#!/usr/bin/env python
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                Jiao  Lin
+#                                 Caltech
+#                       (C) 2008  All Rights Reserved
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+def announcement(job, user):
+    import vnfb.content
+
+    msg = vnfb.content.announcement()
+    msg.sender = "linjiao@caltech.edu"
+    msg.subject = "VNF job #%s" % job.id
+    msg.text = [
+"""
+Dear %(fullname)s,
+
+Your job #%(id)s is now %(state)s.
+
+More details can be found out by
+
+1. Log into vnf website: https://vnf.caltech.edu;
+2. Select 'Jobs' from main menu;
+3. Look for this job by its id: %(id)s.
+
+DANSE-vnf team.
+"""
+        ]
+
+    subs = {
+        'fullname': user.fullname,
+        'state': job.state,
+        'id': job.id,
+        }
+
+    msg.recipients[user.email] = subs
+
+    return msg
+
+
+def test():
+    class job:
+        state = 'finished'
+        id = 'abcde'
+    class user:
+        fullname = 'full name'
+        email = 'linjiao@caltech.edu'
+    print announcement(job, user)
+    
+if __name__ == '__main__': test()
+
+# version
+__id__ = "$Id$"
+
+# End of file 

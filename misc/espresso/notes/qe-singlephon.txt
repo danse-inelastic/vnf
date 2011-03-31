@@ -1,0 +1,90 @@
+
+[PW]
+# See qe-multiphon.txt
+
+[PH]
+Form:
+Phonon vector
+kx: [0]
+ky: [0]
+kz: [0]
+
+# If Gamma-point (0, 0, 0)
+
+Configuration field:
+&INPUTPH
+   tr2_ph = 1.0d-12,
+   epsil = .true.   # for insulator. (remove for metal)
+   prefix = 'fev',  # automatic
+   trans = .true.,
+   outdir = '/scratch/markovsk/fev', # automatic
+   amass(1) = 55.8470, # automatic
+   amass(2) = 50.9415, # automatic
+   fildyn = 'fev.dyn', # automatic
+/
+0 0 0
+
+# If not Gamma point
+&INPUTPH
+   tr2_ph = 1.0d-12,
+   epsil = .true.   # for insulator. (remove for metal)
+   prefix = 'fev',  # automatic
+   trans = .true.,
+   outdir = '/scratch/markovsk/fev', # automatic
+   amass(1) = 55.8470, # automatic
+   amass(2) = 50.9415, # automatic
+   fildyn = 'fev.dyn', # automatic
+   lnscf = .true.
+/
+0.5 0.5 0.5 # user defined
+
+
+[DYNMAT]
+# If Gamma-point (0, 0, 0)
+Form:
+Acoustic Sum Rules: "'crystal'", "'simple'", "'one-dim'", "'zero-dim'",  "'no'"
+
+Configuration field:
+&INPUT
+   fildyn = 'fev.dyn',      # automatic
+   filout = 'dynmat.out',   # automatic
+   asr = 'crystal',         # user defined
+   q(1) = 0.0,              # ported from PH
+   q(2) = 0.0,              # ported from PH
+   q(3) = 0.0,              # ported from PH
+/
+
+
+
+# If not Gamma point
+Form: None
+
+Configuration field:
+&INPUT
+   fildyn = 'fev.dyn',      # automatic
+   filout = 'dynmat.out',   # automatic
+   q(1) = 0.5,              # ported from PH
+   q(2) = 0.5,              # ported from PH
+   q(3) = 0.5,              # ported from PH
+/
+
+{Tab "Analysis"}
+
+System Summary
+--------------
+# See qe-analysis.txt
+
+Electron System
+---------------
+# See qe-analysis.txt
+
+Phonons
+-------
+
+Frequencies (1/cm):
+000.0
+000.0
+000.0
+
+(3 frequencies for each atom)
+

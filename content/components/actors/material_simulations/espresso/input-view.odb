@@ -1,0 +1,151 @@
+#!/usr/bin/env python
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                               Alex Dementsov
+#                      California Institute of Technology
+#                        (C) 2009  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+from vnfb.qeutils.qeutils import stamp2date, defaultInputName, readRecordFile
+from vnfb.qeutils.qegrid import QEGrid
+
+from luban.content import select
+from luban.content import load
+
+import luban.content as lc
+from luban.components.AuthorizedActor import AuthorizedActor as base
+from luban.content.HtmlDocument import HtmlDocument
+
+# Requires simulation id, config id and config type: (id, configid, type)
+class Actor(base):
+
+    class Inventory(base.Inventory):
+        import pyre.inventory
+        id          = pyre.inventory.str('id', default='')          # Task Id
+        configid    = pyre.inventory.str('configid', default='')    # Configuration Id
+        taskid      = pyre.inventory.str('taskid', default='')
+        type        = pyre.inventory.str('type', default='')        # Type of the configuration file
+
+
+    def default(self, director):
+        return select(id='main-display-area').replaceContent(self.content(director))
+
+
+    def content(self, director):
+        #self._sim       = director.clerk.getQESimulations(id=self.id)
+        input     = director.clerk.getQEConfigurations(id=self.configid)
+
+        def viewIndicator(director):
+            qelink  = load( actor           = 'materialsimulation',
+                            filter_key      = 'type',
+                            filter_value    = 'qesimulations')
+
+            path = []
+            path.append(('Simulations ', load(actor='materialsimulation')))
+            path.append(('Quantum Espresso ', qelink))
+            path.append(('%s ' % self.id, load(actor    = 'material_simulations/espresso/sim-view',
+                                               id       = self.id)))
+            path.append(('%s Task ' % self.type, load(actor    = 'material_simulations/espresso/task-view',
+                                                      id       = self.id,
+                                                      taskid   = self.taskid,
+                                                      type     = self.type)))
+
+            path.append('Configuration Input: %s' % input.filename)
+
+            return director.retrieveVisual('view-indicator', path=path)
+
+        doc         = lc.document(title="Configuration Input: %s" % input.filename)
+        splitter    = doc.splitter(orientation="vertical")
+        sA          = splitter.section()
+        sA.add(viewIndicator(director))
+        sC          = splitter.section(id="qe-section-actions")
+        self._showActions(sC)
+
+        sB          = splitter.section()
+        table       = QEGrid(lc.grid(Class = "qe-table"))
+        sB.add(table.grid())
+
+        self._showInput(director, table, input)
+        # Should go after all of the rows are added!
+        table.setColumnStyle(0, "qe-cell-param")
+
+        return doc
+
+
+    def _showActions(self, section):  #, inputs
+        section.add(lc.link(label="Back",
+                            Class="qe-action-back",
+                            onclick = load(actor      = 'material_simulations/espresso/sim-view',
+                                             id         = self.id))
+                    )
+
+        section.add(lc.link(label="Edit",
+                            Class="qe-action-edit",
+                            onclick = load(actor      = 'material_simulations/espresso/input-edit',
+                                             id         = self.id,
+                                             configid   = self.configid,
+                                             taskid     = self.taskid,
+                                             type       = self.type))
+                    )
+
+        section.add(lc.link(label="Delete",
+                            Class="qe-action-delete",
+                            onclick = load(actor      = 'material_simulations/espresso/input-delete',
+                                             id         = self.id,
+                                             configid   = self.configid,
+                                             taskid     = self.taskid,
+                                             type       = self.type))
+                    )
+
+        section.add(lc.document(Class="clear-both"))
+        
+
+    def _showInput(self, director, table, input):
+        if input:
+            table.addRow(('Name:', input.filename))
+            table.addRow(("Type: ", self.type))  # input.type
+            table.addRow(("Description: ", input.description))
+            table.addRow(("Created: ", stamp2date(input.timecreated)))
+            table.addRow(("Last Modified: ", stamp2date(input.timemodified)))
+            table.addRow(("Configuration: ", self._inputText(director, input)))
+
+
+    def _inputText(self, director, input):
+        fname   = defaultInputName(input.type)
+        s       = readRecordFile(director.dds, input, fname)
+        if s:
+            return HtmlDocument(text="<pre>%s<pre>" % s)
+
+        return ""
+
+
+    def __init__(self):
+        super(Actor, self).__init__(name='material_simulations/espresso/input-view')
+
+        return
+
+
+    def _configure(self):
+        super(Actor, self)._configure()
+        self.id             = self.inventory.id
+        self.configid       = self.inventory.configid
+        self.taskid         = self.inventory.taskid
+        self.type           = self.inventory.type
+
+        
+    def _init(self):
+        super(Actor, self)._init()
+        return
+
+def actor():
+    return Actor()
+
+__date__ = "$Nov 9, 2009 5:10:40 PM$"
+
+
+

@@ -1,0 +1,92 @@
+#!/usr/bin/env python
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                 Jiao Lin
+#                      California Institute of Technology
+#                      (C) 2006-2010  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+from luban.content import load, select, alert
+import luban.content as lc
+
+from luban.components.AuthorizedActor import AuthorizedActor as base
+
+
+class Actor(base):
+
+
+    class Inventory(base.Inventory):
+
+        import pyre.inventory
+
+        ganglia_url = pyre.inventory.str('ganglia_url')
+
+
+    def createWindow(self, director):
+        window = lc.document(
+            id='server-load-window', title='Server load', dockable=True)
+
+        doc = self.createDocument(director)
+        window.document(id='server-load-window-interior').add(doc)
+
+        b = lc.button(
+            label='minimize',
+            id = 'minimize-server-load-button',
+            onclick=select(id='dock').dock('attach', select(element=window)),
+            )
+        window.add(b)
+        return window
+
+
+    def showWindow(self, director):
+        '''show the window
+        '''
+        return select(id='dock').dock('release', select(id='server-load'))
+
+
+    def createDialog(self, director):
+        dialog = lc.dialog(title='Server load', autoopen=True, id='server-load-dialog')
+        dialog.add(self.createDocument(director))
+        # add a button
+        okbutton = lc.button(
+            label='OK',
+            onclick=select(element=dialog).destroy()
+            )
+        dialog.add(okbutton)
+        return dialog
+
+
+    def createDocument(self, director):
+        ganglia_url = self.inventory.ganglia_url
+        if not ganglia_url:
+            ganglia_url = 'http://vnf.caltech.edu/ganglia'
+
+        hdoc = lc.htmldocument(id='ganglia-page-container')
+        hdoc.text = [
+            '<iframe src="%s"' % ganglia_url,
+            'width="990" height="500" frameborder="0">',
+            '</iframe>',
+            ]
+
+        return hdoc
+
+
+    def __init__(self, name='server/load'):
+        super(Actor, self).__init__(name)
+        return
+
+
+def actor(): return Actor()
+
+
+# version
+__id__ = "$Id$"
+
+# End of file 
+

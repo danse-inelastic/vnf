@@ -1,0 +1,458 @@
+# -*- Python -*-
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                   Jiao Lin
+#                      California Institute of Technology
+#                      (C) 2006-2009  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+tablename = 'experiment'
+
+
+from vnfb.components.DOMAccessor import DOMAccessor as base
+
+class Accessor(base):
+
+
+    def __init__(self):
+        super(Accessor, self).__init__('experiment-accessor')
+        return
+
+
+    def _getOrm(self):
+        orm = self.director.clerk.orm
+
+        orm(NeutronExperiment)
+
+        return orm
+    orm = property(_getOrm)
+
+
+    def initComponentRecord(self, typename, componentname=None):
+        r = self.createComponentRecord(typename)
+        if componentname:
+            r.componentname = componentname
+            self.db.updateRecord(r)
+        typename = typename.split('.')[-1]
+        handler = getattr(self, '_init%sRecord' % typename, None)
+        if handler:
+            handler(r)
+        return r
+
+    
+    def _initSNSModeratorRecord(self, record):
+        # need to find a default profile
+        from vnfb.dom.neutron_experiment_simulations.neutron_components.SNSModeratorMCSimulatedData import SNSModeratorMCSimulatedDataTable as ProfileTable
+        profile = self.db.query(ProfileTable).first()
+        record.neutronprofile = profile
+        self.db.updateRecord(record)
+        return record
+        
+    
+    def createComponentRecord(self, typename):
+        table = self._getTable(typename)
+        return self.insertNewRecordWithID(table)
+        
+
+    def createExperiment(self):
+        exp = NeutronExperiment()
+        orm = self.orm
+        orm.save(exp)
+        # set creator
+        r = orm(exp)
+        r.creator = self.director.sentry.username
+        self.updateRecordWithID(r)
+        return exp
+
+
+    def createSampleEnvironmentRecord(self, exp):
+        '''create sampleenvironment for the given experiment and save to db'''
+        se = self.insertNewRecordWithID(SampleEnvironmentTable)
+        exp.sampleenvironment = se
+        self.db.updateRecord(exp)
+        return se
+        
+
+    def destroySampleConfiguration(self, record=None):
+        # destroy an sample configuration
+        # record: sample configuration record
+        orm = self.orm
+        type = orm.getObjectTypeFromTableName(record.getTableName())
+        id = record.id
+        o = orm.load(type, id)
+        assert orm(o).isconfiguration
+        orm.destroy(o)
+        return
+
+
+    def createSampleConfiguration(self, experiment):
+        sample = experiment.sample
+        # copy the sample to a configuration
+        orm = self.orm
+        sc = orm.deepcopy(sample)
+        # assign
+        experiment.sample_configuration = sc
+        # save
+        orm.save(experiment, save_not_owned_referred_object=0)
+        # mark as configuration
+        r = orm(sc)
+        r.isconfiguration = True
+        orm.db.updateRecord(r)
+        return sc
+
+
+    def getInstrumentConfiguration(self, experiment):
+        '''get instrument configuration. if None, create it
+
+        experiment: a row in neutronexperiments table
+        return: a db row for instrument configuration
+        '''
+        ic = experiment.instrument_configuration
+        ic = ic and ic.id and ic.dereference(self.db)
+        if not ic:
+            orm = self.orm
+            ic = self.createInstrumentConfiguration(orm.record2object(experiment))
+            ic = self.orm(ic)
+        return ic
+
+
+    def destroyInstrumentConfiguration(self, id):
+        # destroy an instrument configuration given its id (not the experiment id)
+        orm = self.orm
+        o = orm.load(InstrumentConfiguration, id)
+        orm.destroy(o)
+        return
+
+
+    def createInstrumentConfiguration(self, experiment):
+        # the instrument
+        instrument = experiment.instrument
+        # the components
+        components = instrument.components
+        # new configuration
+        ic = InstrumentConfiguration()
+        # copy the components
+        orm = self.orm
+        deepcopy = orm.deepcopy
+        ic.components = map(deepcopy, components)
+        # save to db
+        orm = self.orm
+        experiment.instrument_configuration = ic
+        orm.save(experiment, save_not_owned_referred_object=0)
+        #
+        return ic
+
+
+    def getExperiment(self, id):
+        orm = self.orm
+        return orm.load(NeutronExperiment, id)
+
+
+    def getExperimentRecord(self, id):
+        db = self.db
+        return db.query(NeutronExperimentTable).filter_by(id=id).one()
+
+
+    def getInstrumentRecord(self, id):
+        db = self.db
+        r = db.query(InstrumentTable).filter_by(id=id).one()
+        return r
+
+
+    def getInstrument(self, id):
+        orm = self.orm
+        return orm.load(Instrument, id)
+
+
+    def getInstrumentRecords(self):
+        orm = self.orm
+        table = orm(Instrument)
+        
+        db = self.db
+        rs = db.query(table).filter_by(status='online').all()
+        return rs
+
+
+    def isConstructed(self, id=None, experiment=None, record=None):
+        return not self.getMissingInformation(id=id, experiment=experiment, record=record)
+
+
+    def getMissingInformation(self, id=None, experiment=None, record=None):
+        'check if an experiment is constructed and ready to be run'
+        if not record:
+            if id: record = self.getExperimentRecord(id)
+            elif experiment: record = self.orm(experiment)
+            else: raise RuntimeError
+        #
+        e = record
+        if not e.instrument or not e.instrument.id: return 'instrument'
+        if not e.instrument_configuration or not e.instrument_configuration.id:
+            return 'instrument configuration'
+        instrument = e.instrument.dereference(self.db)
+        if instrument.has_sample_component:
+            if not e.sample or not e.sample.id: return 'sample'
+            if not e.sample_configuration or not e.sample_configuration.id:
+                return 'sample configuration'
+            if not e.sampleenvironment or not e.sampleenvironment.id:
+                return 'sample environment'
+        if e.ncount <= 0: return 'number of counts'
+        return
+
+
+    def isEditable(self, id=None):
+        record = self.getExperimentRecord(id)
+        db = self.db
+        if record.getJob(db):
+            return False
+        return True
+
+
+    def countExperiments(self, filter=None, label=None, mine=False):
+        q = self.makeQuery(filter=filter, label=label, mine=mine)
+        return q.alias('tocount').count().execute().fetchone()[0]
+
+
+    def getExperiments(
+        self,
+        filter=None, order_by=None, reverse_order=None, slice=None,
+        label=None, mine=False,
+        ):
+        
+        self._debug.log('filter: %r, order_by: %r, slice: %r' % (filter, order_by, slice))
+
+        db = self.db
+        q = self.makeQuery(filter=filter, label=label, mine=mine)
+
+        if order_by:
+            q = q.order_by(order_by)
+        if slice:
+            if reverse_order:
+                n = self.countExperiments(filter=filter, label=label, mine=mine)
+                slice = n-slice[1], n-slice[0]
+            q = sqlalchemy.select(
+                [q.alias('toslice')],
+                limit = slice[1]-slice[0],
+                offset = slice[0])
+
+        ret = q.execute().fetchall()
+        
+        if reverse_order:
+            ret.reverse()
+
+        # ret = [self.getExperimentRecord(r.id) for r in ret]
+        self._debug.log('experiments: %s' % (ret,))
+        return ret
+
+
+    def makeQuery(self, filter=None, label=None, mine=False):
+        if label:
+            if filter: raise RuntimeError
+            return self.makeLabeledQuery(label, mine=mine)
+        db = self.db
+
+        q = self._select_experiment_withsampledescription_clause(db)
+
+        if mine:
+            username = self.director.sentry.username
+            mine = "creator='%s'" % username
+            if filter:
+                filter = '(%s) and %s' % (filter, mine)
+            else:
+                filter = mine
+
+        if filter:
+            q = sqlalchemy.select([q.alias('experiment')], whereclause=filter)
+            
+        return q
+
+
+    def makeLabeledQuery(self, label, mine=False):
+        'craete a uery for experiment table'
+        db = self.db
+        
+        labelq = self._select_labeled_entities_clause(label, tablename, db)
+        expq = self._select_experiment_withsampledescription_clause(db)
+        expq = expq.alias('exp')
+        
+        cols = [
+            expq.c.id.label('id'),
+            expq.c.short_description.label('short_description'),
+            expq.c.creator.label('creator'),
+            expq.c.date.label('date'),
+            expq.c.sample.label('sample'),
+            labelq.c.entity.label('globalpointer'),
+            expq.c.samplegptr,
+            ]
+        # expq.c.globalpointer==labelq.c.entity
+        where = "exp.globalpointer=labeled.entity"
+        if mine:
+            username = self.director.sentry.username
+            mine = "creator='%s'" % username
+            where = '(%s) and %s' % (where, mine)
+        q = sqlalchemy.select(cols, whereclause = where)
+
+        return q
+        
+
+    def _select_labeled_entities_clause(self, name, type, db):
+        '''get the labeled entities for the given label (specified by name and type)
+
+        cols:
+          entity: global address of the entity
+          type: type of the entity
+        '''
+        from vnfb.utils.query.labels import select_labeled_entities_clause
+        return select_labeled_entities_clause(name, type, db).alias('labeled')
+
+
+    def _select_experiment_withsampledescription_clause(self, db):
+        '''create an sqlalchemy select clause for a given experiment table
+
+        cols:
+          * id
+          * short_description of experiment
+          * sample: short_description of sample
+          * date: date created
+        '''
+        expq = self._select_experiment_clause(db)
+        expq = expq.alias('expq')
+        
+        sampleq = self._select_samples(db).alias('sampleq')
+
+        cols = [
+            expq.c.id.label('id'),
+            expq.c.short_description.label('short_description'),
+            expq.c.creator.label('creator'),
+            expq.c.date.label('date'),
+            expq.c.globalpointer,
+            sampleq.c.short_description.label('sample'),
+            sampleq.c.globalpointer.label('samplegptr'),
+            ]
+        where = expq.c.samplegptr==sampleq.c.globalpointer
+        q1 = sqlalchemy.select(cols, where)
+        
+        cols = [
+            expq.c.id.label('id'),
+            expq.c.short_description.label('short_description'),
+            expq.c.creator.label('creator'),
+            expq.c.date.label('date'),
+            expq.c.globalpointer,
+            "cast('NOT DEFINED' as varchar(32)) as sample",
+            expq.c.samplegptr.label('samplegptr'),
+            ]
+        where = expq.c.samplegptr == None
+        q2 = sqlalchemy.select(cols, whereclause=where)
+        
+        u = sqlalchemy.union_all(q1,q2)
+        
+        from vnfb.utils.query.accesscontrol import select_public_and_owned_records
+        q1 = u.alias('toselectpubrecs')
+        cols = [
+            q1.c.id,
+            q1.c.short_description,
+            q1.c.creator,
+            q1.c.date,
+            q1.c.globalpointer,
+            q1.c.sample,
+            q1.c.samplegptr,
+            ]
+        username = self.director.sentry.username
+        q = select_public_and_owned_records(cols, q1, username, db)
+        return q
+
+
+    def _select_samples(self, db):
+        '''create a sqlalchemy select clause for all sample tables.
+        
+        columns:
+          * globalpointer
+          * short_description
+        '''
+        tables = self._sample_tables()
+        qf = lambda table: self._select_sample_clause(table, db)
+        qs = map(qf, tables)
+        return sqlalchemy.union_all(*qs)
+
+
+    def _select_sample_clause(self, table, db):
+        '''create a sqlalchemy select cluase for the given sample table
+        sample tables are scatterers, sampleassemblies, and samplecomponents
+        
+        columns:
+          * globalpointer
+          * short_description
+        '''
+        st = db._tablemap.TableToSATable(table)
+        cols = [
+            st.c.globalpointer.label('globalpointer'),
+            st.c.short_description,
+            ]
+        return sqlalchemy.select(cols)
+
+
+    def _select_experiment_clause(self, db):
+        '''create a sqlalchemy select clause for a experiment table
+
+        cols:
+          * id
+          * short_description
+          * creator
+          * date
+          * samplegptr
+          * gtpr
+        '''
+
+        st = db._tablemap.TableToSATable(NeutronExperimentTable)
+
+        cols = [
+            st.c.id.label('id'),
+            st.c.short_description.label('short_description'),
+            st.c.creator.label('creator'),
+            st.c.date.label('date'),
+            st.c.sample.label('samplegptr'),
+            st.c.globalpointer.label('globalpointer'),
+            ]
+        try:
+            expq = sqlalchemy.select(cols)
+        except:
+            import traceback
+            raise RuntimeError, 'Failed to select required columns from experiment table %s.\n'\
+                  'Original exception was:\n%s' % (table.getTableName(), traceback.format_exc())
+
+        return expq
+
+
+    def _sample_tables(self):
+        from vnfb.dom.neutron_experiment_simulations.sample_types import getTypes
+        types = getTypes()
+        return [self.orm(t) for t in types]
+
+
+
+from vnfb.dom.Label import Label
+from vnfb.dom.neutron_experiment_simulations.NeutronExperiment import \
+     NeutronExperiment, NeutronExperimentTable
+from vnfb.dom.neutron_experiment_simulations.SampleEnvironment import SampleEnvironmentTable
+from vnfb.dom.neutron_experiment_simulations.Instrument import Instrument, InstrumentTable
+from vnfb.dom.neutron_experiment_simulations.InstrumentConfiguration import InstrumentConfiguration
+
+
+from dsaw.db.Table import Table
+from dsaw.db.VersatileReference import global_pointer
+import sqlalchemy
+
+
+def accessor():
+    return Accessor()
+
+
+# version
+__id__ = "$Id$"
+
+# End of file 

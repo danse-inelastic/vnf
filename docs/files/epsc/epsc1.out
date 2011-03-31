@@ -1,0 +1,476 @@
+ ******************************************************************************
+ * Main configuration file                                                     
+ ******************************************************************************
+ FILE FOR SAMPLE AND CONVERGENCE
+ ******************************************************************************
+ ******* CRYSTAL data - File: filecrys                                ********
+ ******************************************************************************
+ *Material:                                                                    
+ Elastic stiffness (single crystal [GPa]; scaled=0.85xINTERPOLATED)            
+   0.8990D+02  0.6830D+02  0.6830D+02  0.0000D+00  0.0000D+00  0.0000D+00
+   0.6830D+02  0.8990D+02  0.6830D+02  0.0000D+00  0.0000D+00  0.0000D+00
+   0.6830D+02  0.6830D+02  0.8990D+02  0.0000D+00  0.0000D+00  0.0000D+00
+   0.0000D+00  0.0000D+00  0.0000D+00  0.3270D+02  0.0000D+00  0.0000D+00
+   0.0000D+00  0.0000D+00  0.0000D+00  0.0000D+00  0.3270D+02  0.0000D+00
+   0.0000D+00  0.0000D+00  0.0000D+00  0.0000D+00  0.0000D+00  0.3270D+02
+ *Thermal expansion coefficients (single crystal in crystal axis):             
+   0.1000D-04  0.1000D-04  0.1000D-04  0.0000D+00  0.0000D+00  0.0000D+00
+ Plastic modes used:   1
+   <111>   24    0
+   0.0000D+00  0.0000D+00  0.0000D+00  0.0000D+00
+   0.7500D-01  0.3650D+00  0.3250D+02  0.1300D+01
+   0.1000D+01  0.1000D+01
+   1  1 -1     0  1  1
+   1  1 -1     1  0  1
+   1  1 -1     1 -1  0
+   1 -1 -1     0  1 -1
+   1 -1 -1     1  0  1
+   1 -1 -1     1  1  0
+   1 -1  1     0  1  1
+   1 -1  1     1  0 -1
+   1 -1  1     1  1  0
+   1  1  1     0  1 -1
+   1  1  1     1  0 -1
+   1  1  1     1 -1  0
+
+ ******************************************************************************
+ ******** SAMPLE data - File: filesamp                                *********
+ ******************************************************************************
+ AXES OF THE REPRESENTATIVE ELLIPSOID                                          
+    1.00   1.00   1.00
+ DISCRETE TEXTURE FROM ODF FILE                                                
+ B 1000    0
+ The texture may be written in "EPSC2.OUT"
+
+ ******************************************************************************
+ ELASTIC PROPERTIES AVERAGE:
+
+  VOIGT average stiffness matrix
+   0.1065D+03  0.5902D+02  0.6101D+02  0.3422D-01  0.4701D-02 -0.2958D+00
+   0.5902D+02  0.1062D+03  0.6128D+02  0.5588D+00 -0.1391D+00  0.2879D+00
+   0.6101D+02  0.6128D+02  0.1042D+03 -0.5931D+00  0.1344D+00  0.7888D-02
+   0.3422D-01  0.5588D+00 -0.5931D+00  0.2568D+02  0.7888D-02 -0.1391D+00
+   0.4701D-02 -0.1391D+00  0.1344D+00  0.7888D-02  0.2541D+02  0.3422D-01
+  -0.2958D+00  0.2879D+00  0.7888D-02 -0.1391D+00  0.3422D-01  0.2342D+02
+
+  VOIGT average compliance matrix
+   0.1585D-01 -0.5229D-02 -0.6202D-02 -0.2456D-04  0.4543D-06  0.1331D-03
+  -0.5229D-02  0.1599D-01 -0.6344D-02 -0.2444D-03  0.6130D-04 -0.1317D-03
+  -0.6202D-02 -0.6344D-02  0.1696D-01  0.2690D-03 -0.6175D-04 -0.1342D-05
+  -0.2456D-04 -0.2444D-03  0.2690D-03  0.9740D-02 -0.4482D-05  0.5917D-04
+   0.4543D-06  0.6130D-04 -0.6175D-04 -0.4482D-05  0.9840D-02 -0.1477D-04
+   0.1331D-03 -0.1317D-03 -0.1342D-05  0.5917D-04 -0.1477D-04  0.1067D-01
+
+  REUSS average stiffness matrix
+   0.9877D+02  0.6306D+02  0.6467D+02  0.9553D-02  0.1013D-01 -0.2628D+00
+   0.6306D+02  0.9856D+02  0.6488D+02  0.5245D+00 -0.1291D+00  0.2510D+00
+   0.6467D+02  0.6488D+02  0.9695D+02 -0.5340D+00  0.1189D+00  0.1174D-01
+   0.9553D-02  0.5245D+00 -0.5340D+00  0.1984D+02  0.4397D-02 -0.1339D+00
+   0.1013D-01 -0.1291D+00  0.1189D+00  0.4397D-02  0.1952D+02  0.3227D-01
+  -0.2628D+00  0.2510D+00  0.1174D-01 -0.1339D+00  0.3227D-01  0.1760D+02
+
+  REUSS average compliance matrix
+   0.2061D-01 -0.7394D-02 -0.8798D-02 -0.2423D-04 -0.3328D-05  0.2094D-03
+  -0.7394D-02  0.2080D-01 -0.8993D-02 -0.3956D-03  0.9850D-04 -0.2038D-03
+  -0.8798D-02 -0.8993D-02  0.2221D-01  0.4198D-03 -0.9518D-04 -0.5584D-05
+  -0.2423D-04 -0.3956D-03  0.4198D-03  0.1261D-01 -0.5584D-05  0.9850D-04
+  -0.3328D-05  0.9850D-04 -0.9518D-04 -0.5584D-05  0.1281D-01 -0.2423D-04
+   0.2094D-03 -0.2038D-03 -0.5584D-05  0.9850D-04 -0.2423D-04  0.1421D-01
+
+
+  HILL average stiffness matrix
+   0.1026D+03  0.6104D+02  0.6284D+02  0.2189D-01  0.7416D-02 -0.2793D+00
+   0.6104D+02  0.1024D+03  0.6308D+02  0.5416D+00 -0.1341D+00  0.2695D+00
+   0.6284D+02  0.6308D+02  0.1006D+03 -0.5635D+00  0.1267D+00  0.9815D-02
+   0.2189D-01  0.5416D+00 -0.5635D+00  0.2276D+02  0.6142D-02 -0.1365D+00
+   0.7416D-02 -0.1341D+00  0.1267D+00  0.6142D-02  0.2246D+02  0.3325D-01
+  -0.2793D+00  0.2695D+00  0.9815D-02 -0.1365D+00  0.3325D-01  0.2051D+02
+
+  HILL average compliance matrix
+   0.1789D-01 -0.6161D-02 -0.7312D-02 -0.2484D-04 -0.9577D-06  0.1638D-03
+  -0.6161D-02  0.1805D-01 -0.7476D-02 -0.3054D-03  0.7630D-04 -0.1609D-03
+  -0.7312D-02 -0.7476D-02  0.1920D-01  0.3302D-03 -0.7534D-04 -0.2947D-05
+  -0.2484D-04 -0.3054D-03  0.3302D-03  0.1099D-01 -0.4955D-05  0.7494D-04
+  -0.9577D-06  0.7630D-04 -0.7534D-04 -0.4955D-05  0.1113D-01 -0.1856D-04
+   0.1638D-03 -0.1609D-03 -0.2947D-05  0.7494D-04 -0.1856D-04  0.1219D-01
+
+ ******************************************************************************
+ PURE ELASTIC SELFCONSISTENT PROBLEM
+ For iteration =   1 the error is   0.4738D-02
+ For iteration =   2 the error is   0.2853D-03
+
+ SELFCONSISTENT MODULI ass2 :
+   0.1031D+03  0.6074D+02  0.6269D+02  0.2536D-01  0.7585D-02 -0.3028D+00
+   0.6074D+02  0.1028D+03  0.6295D+02  0.5845D+00 -0.1446D+00  0.2923D+00
+   0.6269D+02  0.6295D+02  0.1009D+03 -0.6098D+00  0.1370D+00  0.1050D-01
+   0.2536D-01  0.5845D+00 -0.6098D+00  0.2329D+02  0.7195D-02 -0.1470D+00
+   0.7585D-02 -0.1446D+00  0.1370D+00  0.7195D-02  0.2297D+02  0.3541D-01
+  -0.3028D+00  0.2923D+00  0.1050D-01 -0.1470D+00  0.3541D-01  0.2087D+02
+ THERMAL COEFFICIENTS alfass :
+   0.1000D-04  0.1000D-04  0.1000D-04  0.4500D-21 -0.1431D-21  0.1641D-20
+
+ SELF CONSISTENT ELASTIC STIFFNESS
+  0.1031D+03  0.6074D+02  0.6269D+02  0.2536D-01  0.7585D-02 -0.3028D+00
+  0.6074D+02  0.1028D+03  0.6295D+02  0.5845D+00 -0.1446D+00  0.2923D+00
+  0.6269D+02  0.6295D+02  0.1009D+03 -0.6098D+00  0.1370D+00  0.1050D-01
+  0.2536D-01  0.5845D+00 -0.6098D+00  0.2329D+02  0.7195D-02 -0.1470D+00
+  0.7585D-02 -0.1446D+00  0.1370D+00  0.7195D-02  0.2297D+02  0.3541D-01
+ -0.3028D+00  0.2923D+00  0.1050D-01 -0.1470D+00  0.3541D-01  0.2087D+02
+
+ SELF CONSISTENT ELASTIC COMPLIANCE
+  0.1762D-01 -0.5994D-02 -0.7214D-02 -0.2774D-04 -0.5179D-06  0.1715D-03
+ -0.5994D-02  0.1779D-01 -0.7384D-02 -0.3178D-03  0.7940D-04 -0.1687D-03
+ -0.7214D-02 -0.7384D-02  0.1901D-01  0.3455D-03 -0.7888D-04 -0.2833D-05
+ -0.2774D-04 -0.3178D-03  0.3455D-03  0.1074D-01 -0.5512D-05  0.7765D-04
+ -0.5179D-06  0.7940D-04 -0.7888D-04 -0.5512D-05  0.1088D-01 -0.1905D-04
+  0.1715D-03 -0.1687D-03 -0.2833D-05  0.7765D-04 -0.1905D-04  0.1198D-01
+
+ SELF CONSISTENT THERMAL COEFFICIENTS
+  0.1000D-04  0.1000D-04  0.1000D-04  0.4500D-21 -0.1431D-21  0.1641D-20
+
+ ******************************************************************************
+ ******** PROCESS data - File: fileproc                                ********
+ ******************************************************************************
+ * Thermo-mechanical process                                                   
+ *Number of steps in the process:                                              
+ 40
+ *Starting and final temperature:                                              
+ 292. 292.
+ *Enforced temperature dependence of elastic constants (1=YES or 0=NO)?        
+ 0
+ *Indexes and values for the stress boundary condition:                        
+            0           1           1           1           1           1
+   0.9990D+03  0.0000D+00  0.0000D+00  0.0000D+00  0.0000D+00  0.0000D+00
+ *Indexes and values for the strain boundary condition:                        
+            1           0           0           0           0           0
+  -0.3000D-01  0.9990D+03  0.9990D+03  0.9990D+03  0.9990D+03  0.9990D+03
+ *Reset macroscopic strain to zero (1=YES or 0=NO)?                            
+ 1
+ *Control process variable: 0=temp , 1,2,3=etss(1,2,3) , 4,5,6=stss(1,2,3)     
+ 1
+ *Convergence criterium for the sample moduli:                                 
+ ITMAX OVER MODULUS= 100 ERROR=   0.1000D-01
+ *Maximum number of iterations to select the set of systems in grains:         
+ ITMAX OVER GRAINS= 100
+
+ ******************************************************************************
+ ******************************************************************************
+ ******************************************************************************
+ START THE PROCESS: fileproc                                
+ STEP:   1  CONTROL VARIABLE:  0.00000D+00
+ ITERATION OVER GRAINS MODULI - NUMBER:   1
+ For iteration =   1 the error is   0.1584D-04
+
+
+ Bound. Cond., Av. and Dev. STRESS RATE (normalized)
+  -0.4256D-01  0.0000D+00  0.0000D+00  0.0000D+00  0.0000D+00  0.0000D+00
+  -0.4256D-01 -0.9430D-17  0.5060D-16  0.1161D-17 -0.1728D-18 -0.4172D-18
+       0.1068      0.0854      0.0813      0.0524      0.0766      0.0851
+ Bound. Cond., Av. and Dev. STRAIN RATE (normalized)
+  -0.7500D-03  0.2551D-03  0.3070D-03  0.1181D-05  0.2204D-07 -0.7298D-05
+  -0.7500D-03  0.2551D-03  0.3070D-03  0.1181D-05  0.2204D-07 -0.7298D-05
+       0.1054      0.0821      0.0813      0.0507      0.0745      0.0832
+
+ Bound. Cond., Av. and Dev. STRESS (normalized)
+  -0.4256D-01  0.0000D+00  0.0000D+00  0.0000D+00  0.0000D+00  0.0000D+00
+  -0.4256D-01 -0.9430D-17  0.5060D-16  0.1161D-17 -0.1728D-18 -0.4172D-18
+       0.1068      0.0854      0.0813      0.0524      0.0766      0.0851
+ Bound. Cond., Av. and Dev. STRAIN (normalized)
+  -0.7500D-03  0.2551D-03  0.3070D-03  0.1181D-05  0.2204D-07 -0.7298D-05
+  -0.7500D-03  0.2551D-03  0.3070D-03  0.1181D-05  0.2204D-07 -0.7298D-05
+       0.1054      0.0821      0.0813      0.0507      0.0745      0.0832
+ Bound. pressure, Av. Press. and Dev. (normalized)
+  -0.1419D-01 -0.1419D-01  0.4887D-03
+ ******************************************************************************
+ STEP:   2  CONTROL VARIABLE: -0.75000D-03
+ ITERATION OVER GRAINS MODULI - NUMBER:   1
+ For iteration =   1 the error is   0.8792D-06
+
+ ******************************************************************************
+ STEP:   3  CONTROL VARIABLE: -0.15000D-02
+ ITERATION OVER GRAINS MODULI - NUMBER:   1
+ For iteration =   1 the error is   0.4879D-07
+
+ ******************************************************************************
+ STEP:   4  CONTROL VARIABLE: -0.22500D-02
+ ITERATION OVER GRAINS MODULI - NUMBER:   1
+ For iteration =   1 the error is   0.2708D-08
+
+ ******************************************************************************
+ STEP:   5  CONTROL VARIABLE: -0.30000D-02
+ ITERATION OVER GRAINS MODULI - NUMBER:   1
+ For iteration =   1 the error is   0.1748D-01
+
+ ITERATION OVER GRAINS MODULI - NUMBER:   2
+ For iteration =   2 the error is   0.5158D-03
+
+ ******************************************************************************
+ STEP:   6  CONTROL VARIABLE: -0.37500D-02
+ ITERATION OVER GRAINS MODULI - NUMBER:   1
+ For iteration =   1 the error is   0.6307D-01
+
+ ITERATION OVER GRAINS MODULI - NUMBER:   2
+ For iteration =   2 the error is   0.5245D-02
+
+ ******************************************************************************
+ STEP:   7  CONTROL VARIABLE: -0.45000D-02
+ ITERATION OVER GRAINS MODULI - NUMBER:   1
+ For iteration =   1 the error is   0.1242D-01
+
+ ITERATION OVER GRAINS MODULI - NUMBER:   2
+ For iteration =   2 the error is   0.1305D-02
+
+ ******************************************************************************
+ STEP:   8  CONTROL VARIABLE: -0.52500D-02
+ ITERATION OVER GRAINS MODULI - NUMBER:   1
+ For iteration =   1 the error is   0.5812D-02
+
+ ******************************************************************************
+ STEP:   9  CONTROL VARIABLE: -0.60000D-02
+ ITERATION OVER GRAINS MODULI - NUMBER:   1
+ For iteration =   1 the error is   0.4456D-02
+
+ ******************************************************************************
+ STEP:  10  CONTROL VARIABLE: -0.67500D-02
+ ITERATION OVER GRAINS MODULI - NUMBER:   1
+ For iteration =   1 the error is   0.3523D-02
+
+
+ Bound. Cond., Av. and Dev. STRESS RATE (normalized)
+  -0.3182D-01  0.0000D+00  0.0000D+00  0.0000D+00  0.0000D+00  0.0000D+00
+  -0.3172D-01 -0.3519D-04 -0.4887D-04  0.1227D-05  0.1990D-05  0.4499D-06
+       0.1057      0.0961      0.0961      0.0756      0.0764      0.0809
+ Bound. Cond., Av. and Dev. STRAIN RATE (normalized)
+  -0.7500D-03  0.2631D-03  0.3464D-03 -0.1135D-05  0.1778D-05 -0.6069D-05
+  -0.7526D-03  0.2642D-03  0.3480D-03 -0.1168D-05  0.1718D-05 -0.6060D-05
+       0.0985      0.0990      0.1020      0.0780      0.0751      0.0812
+
+ Bound. Cond., Av. and Dev. STRESS (normalized)
+  -0.3715D+00  0.0000D+00  0.0000D+00  0.0000D+00  0.0000D+00  0.0000D+00
+  -0.3712D+00 -0.1031D-03 -0.1524D-03  0.9339D-05 -0.8767D-05 -0.7351D-06
+       0.1048      0.0907      0.0888      0.0638      0.0774      0.0843
+ Bound. Cond., Av. and Dev. STRAIN (normalized)
+  -0.7500D-02  0.2590D-02  0.3269D-02  0.1903D-05  0.7251D-05 -0.6744D-04
+  -0.7508D-02  0.2594D-02  0.3274D-02  0.1645D-05  0.7467D-05 -0.6736D-04
+       0.0979      0.0870      0.0884      0.0623      0.0726      0.0797
+ Bound. pressure, Av. Press. and Dev. (normalized)
+  -0.1238D+00 -0.1238D+00  0.1711D-02
+ ******************************************************************************
+ STEP:  11  CONTROL VARIABLE: -0.75000D-02
+ ITERATION OVER GRAINS MODULI - NUMBER:   1
+ For iteration =   1 the error is   0.2492D-02
+
+ ******************************************************************************
+ STEP:  12  CONTROL VARIABLE: -0.82500D-02
+ ITERATION OVER GRAINS MODULI - NUMBER:   1
+ For iteration =   1 the error is   0.2434D-02
+
+ ******************************************************************************
+ STEP:  13  CONTROL VARIABLE: -0.90000D-02
+ ITERATION OVER GRAINS MODULI - NUMBER:   1
+ For iteration =   1 the error is   0.2327D-02
+
+ ******************************************************************************
+ STEP:  14  CONTROL VARIABLE: -0.97500D-02
+ ITERATION OVER GRAINS MODULI - NUMBER:   1
+ For iteration =   1 the error is   0.2746D-02
+
+ ******************************************************************************
+ STEP:  15  CONTROL VARIABLE: -0.10500D-01
+ ITERATION OVER GRAINS MODULI - NUMBER:   1
+ For iteration =   1 the error is   0.2322D-02
+
+ ******************************************************************************
+ STEP:  16  CONTROL VARIABLE: -0.11250D-01
+ ITERATION OVER GRAINS MODULI - NUMBER:   1
+ For iteration =   1 the error is   0.2021D-02
+
+ ******************************************************************************
+ STEP:  17  CONTROL VARIABLE: -0.12000D-01
+ ITERATION OVER GRAINS MODULI - NUMBER:   1
+ For iteration =   1 the error is   0.2647D-02
+
+ ******************************************************************************
+ STEP:  18  CONTROL VARIABLE: -0.12750D-01
+ ITERATION OVER GRAINS MODULI - NUMBER:   1
+ For iteration =   1 the error is   0.2493D-02
+
+ ******************************************************************************
+ STEP:  19  CONTROL VARIABLE: -0.13500D-01
+ ITERATION OVER GRAINS MODULI - NUMBER:   1
+ For iteration =   1 the error is   0.3017D-02
+
+ ******************************************************************************
+ STEP:  20  CONTROL VARIABLE: -0.14250D-01
+ ITERATION OVER GRAINS MODULI - NUMBER:   1
+ For iteration =   1 the error is   0.2401D-02
+
+
+ Bound. Cond., Av. and Dev. STRESS RATE (normalized)
+  -0.2860D-01  0.0000D+00  0.0000D+00  0.0000D+00  0.0000D+00  0.0000D+00
+  -0.2845D-01 -0.4781D-04 -0.7017D-04 -0.4449D-08 -0.5796D-06  0.3827D-06
+       0.1043      0.1002      0.1034      0.0831      0.0781      0.0804
+ Bound. Cond., Av. and Dev. STRAIN RATE (normalized)
+  -0.7500D-03  0.2654D-03  0.3584D-03 -0.2392D-05  0.1731D-05 -0.6018D-05
+  -0.7542D-03  0.2672D-03  0.3609D-03 -0.2384D-05  0.1739D-05 -0.5994D-05
+       0.0949      0.1050      0.1091      0.0871      0.0756      0.0811
+
+ Bound. Cond., Av. and Dev. STRESS (normalized)
+  -0.6728D+00  0.0000D+00  0.0000D+00  0.0000D+00  0.0000D+00  0.0000D+00
+  -0.6712D+00 -0.5059D-03 -0.7571D-03  0.2570D-04 -0.1340D-04  0.6469D-05
+       0.1047      0.0932      0.0930      0.0703      0.0769      0.0821
+ Bound. Cond., Av. and Dev. STRAIN (normalized)
+  -0.1500D-01  0.5235D-02  0.6795D-02 -0.1539D-04  0.2434D-04 -0.1275D-03
+  -0.1504D-01  0.5253D-02  0.6820D-02 -0.1610D-04  0.2462D-04 -0.1274D-03
+       0.0973      0.0945      0.0970      0.0726      0.0739      0.0803
+ Bound. pressure, Av. Press. and Dev. (normalized)
+  -0.2243D+00 -0.2242D+00  0.4102D-02
+ ******************************************************************************
+ STEP:  21  CONTROL VARIABLE: -0.15000D-01
+ ITERATION OVER GRAINS MODULI - NUMBER:   1
+ For iteration =   1 the error is   0.1880D-02
+
+ ******************************************************************************
+ STEP:  22  CONTROL VARIABLE: -0.15750D-01
+ ITERATION OVER GRAINS MODULI - NUMBER:   1
+ For iteration =   1 the error is   0.2391D-02
+
+ ******************************************************************************
+ STEP:  23  CONTROL VARIABLE: -0.16500D-01
+ ITERATION OVER GRAINS MODULI - NUMBER:   1
+ For iteration =   1 the error is   0.2341D-02
+
+ ******************************************************************************
+ STEP:  24  CONTROL VARIABLE: -0.17250D-01
+ ITERATION OVER GRAINS MODULI - NUMBER:   1
+ For iteration =   1 the error is   0.2902D-02
+
+ ******************************************************************************
+ STEP:  25  CONTROL VARIABLE: -0.18000D-01
+ ITERATION OVER GRAINS MODULI - NUMBER:   1
+ For iteration =   1 the error is   0.3042D-02
+
+ ******************************************************************************
+ STEP:  26  CONTROL VARIABLE: -0.18750D-01
+ ITERATION OVER GRAINS MODULI - NUMBER:   1
+ For iteration =   1 the error is   0.2501D-02
+
+ ******************************************************************************
+ STEP:  27  CONTROL VARIABLE: -0.19500D-01
+ ITERATION OVER GRAINS MODULI - NUMBER:   1
+ For iteration =   1 the error is   0.2436D-02
+
+ ******************************************************************************
+ STEP:  28  CONTROL VARIABLE: -0.20250D-01
+ ITERATION OVER GRAINS MODULI - NUMBER:   1
+ For iteration =   1 the error is   0.2759D-02
+
+ ******************************************************************************
+ STEP:  29  CONTROL VARIABLE: -0.21000D-01
+ ITERATION OVER GRAINS MODULI - NUMBER:   1
+ For iteration =   1 the error is   0.2899D-02
+
+ ******************************************************************************
+ STEP:  30  CONTROL VARIABLE: -0.21750D-01
+ ITERATION OVER GRAINS MODULI - NUMBER:   1
+ For iteration =   1 the error is   0.2899D-02
+
+
+ Bound. Cond., Av. and Dev. STRESS RATE (normalized)
+  -0.2407D-01  0.0000D+00  0.0000D+00  0.0000D+00  0.0000D+00  0.0000D+00
+  -0.2385D-01 -0.5977D-04 -0.1087D-03  0.1779D-05  0.2628D-05  0.5857D-06
+       0.1031      0.1131      0.1205      0.0983      0.0840      0.0835
+ Bound. Cond., Av. and Dev. STRAIN RATE (normalized)
+  -0.7500D-03  0.2667D-03  0.3770D-03 -0.3172D-05  0.1651D-05 -0.5420D-05
+  -0.7568D-03  0.2694D-03  0.3814D-03 -0.3217D-05  0.1554D-05 -0.5388D-05
+       0.0874      0.1094      0.1174      0.0965      0.0752      0.0784
+
+ Bound. Cond., Av. and Dev. STRESS (normalized)
+  -0.9351D+00  0.0000D+00  0.0000D+00  0.0000D+00  0.0000D+00  0.0000D+00
+  -0.9317D+00 -0.1070D-02 -0.1644D-02  0.3544D-04 -0.1344D-04  0.9457D-05
+       0.1041      0.0965      0.0979      0.0758      0.0776      0.0816
+ Bound. Cond., Av. and Dev. STRAIN (normalized)
+  -0.2250D-01  0.7898D-02  0.1047D-01 -0.4350D-04  0.4057D-04 -0.1843D-03
+  -0.2260D-01  0.7939D-02  0.1053D-01 -0.4443D-04  0.4075D-04 -0.1838D-03
+       0.0949      0.0986      0.1022      0.0791      0.0741      0.0798
+ Bound. pressure, Av. Press. and Dev. (normalized)
+  -0.3117D+00 -0.3115D+00  0.5065D-02
+ ******************************************************************************
+ STEP:  31  CONTROL VARIABLE: -0.22500D-01
+ ITERATION OVER GRAINS MODULI - NUMBER:   1
+ For iteration =   1 the error is   0.2516D-02
+
+ ******************************************************************************
+ STEP:  32  CONTROL VARIABLE: -0.23250D-01
+ ITERATION OVER GRAINS MODULI - NUMBER:   1
+ For iteration =   1 the error is   0.2812D-02
+
+ ******************************************************************************
+ STEP:  33  CONTROL VARIABLE: -0.24000D-01
+ ITERATION OVER GRAINS MODULI - NUMBER:   1
+ For iteration =   1 the error is   0.2567D-02
+
+ ******************************************************************************
+ STEP:  34  CONTROL VARIABLE: -0.24750D-01
+ ITERATION OVER GRAINS MODULI - NUMBER:   1
+ For iteration =   1 the error is   0.2885D-02
+
+ ******************************************************************************
+ STEP:  35  CONTROL VARIABLE: -0.25500D-01
+ ITERATION OVER GRAINS MODULI - NUMBER:   1
+ For iteration =   1 the error is   0.2976D-02
+
+ ******************************************************************************
+ STEP:  36  CONTROL VARIABLE: -0.26250D-01
+ ITERATION OVER GRAINS MODULI - NUMBER:   1
+ For iteration =   1 the error is   0.3068D-02
+
+ ******************************************************************************
+ STEP:  37  CONTROL VARIABLE: -0.27000D-01
+ ITERATION OVER GRAINS MODULI - NUMBER:   1
+ For iteration =   1 the error is   0.2870D-02
+
+ ******************************************************************************
+ STEP:  38  CONTROL VARIABLE: -0.27750D-01
+ ITERATION OVER GRAINS MODULI - NUMBER:   1
+ For iteration =   1 the error is   0.3291D-02
+
+ ******************************************************************************
+ STEP:  39  CONTROL VARIABLE: -0.28500D-01
+ ITERATION OVER GRAINS MODULI - NUMBER:   1
+ For iteration =   1 the error is   0.2987D-02
+
+ ******************************************************************************
+ STEP:  40  CONTROL VARIABLE: -0.29250D-01
+ ITERATION OVER GRAINS MODULI - NUMBER:   1
+ For iteration =   1 the error is   0.2756D-02
+
+
+ Bound. Cond., Av. and Dev. STRESS RATE (normalized)
+  -0.1829D-01  0.0000D+00  0.0000D+00  0.0000D+00  0.0000D+00  0.0000D+00
+  -0.1803D-01 -0.8899D-04 -0.1151D-03 -0.2927D-05  0.3252D-05  0.3694D-05
+       0.1048      0.1403      0.1529      0.1267      0.0980      0.0938
+ Bound. Cond., Av. and Dev. STRAIN RATE (normalized)
+  -0.7500D-03  0.2663D-03  0.4029D-03 -0.4156D-05  0.5980D-06 -0.5220D-05
+  -0.7594D-03  0.2706D-03  0.4083D-03 -0.4016D-05  0.4598D-06 -0.5307D-05
+       0.0774      0.1135      0.1260      0.1057      0.0743      0.0747
+
+ Bound. Cond., Av. and Dev. STRESS (normalized)
+  -0.1145D+01  0.0000D+00  0.0000D+00  0.0000D+00  0.0000D+00  0.0000D+00
+  -0.1139D+01 -0.1835D-02 -0.2801D-02  0.4072D-04 -0.3045D-05  0.2358D-04
+       0.1033      0.1013      0.1043      0.0822      0.0795      0.0821
+ Bound. Cond., Av. and Dev. STRAIN (normalized)
+  -0.3000D-01  0.1056D-01  0.1438D-01 -0.8108D-04  0.5131D-04 -0.2360D-03
+  -0.3018D-01  0.1064D-01  0.1449D-01 -0.8200D-04  0.5099D-04 -0.2355D-03
+       0.0909      0.1015      0.1067      0.0847      0.0737      0.0782
+ Bound. pressure, Av. Press. and Dev. (normalized)
+  -0.3816D+00 -0.3812D+00  0.5422D-02
+ ******************************************************************************
+
+ ******************************************************************************
+ PARTIAL TIME=    4.20 secs
+ ******************************************************************************
+
+ ******************************************************************************
+ TOTAL TIME=    4.20 secs
+ ******************************************************************************

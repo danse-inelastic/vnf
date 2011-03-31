@@ -1,0 +1,43 @@
+# -*- Python -*-
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                 Jiao Lin
+#                      California Institute of Technology
+#                      (C) 2006-2010  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+import luban.content as lc
+from vnfb.components.visuals.AdminVisualFactory import AdminVisualFactory as base
+
+from luban.content import load, alert, select
+import luban.content as lc
+
+
+class Factory(base):
+
+    def create(self, director=None, privilegeid=None):
+        title = 'Privilege %s' % privilegeid
+        doc = lc.document(id='privilege-editor', title=title)
+        form = director.retrieveVisual(
+            'admin/acl/privilege_form',
+            director=director,
+            id=privilegeid,
+            post_process_action='select(id=%r).replaceContent(load(actor="loadvisual", visual="admin/acl/privilege",privilegeid="%s"))' % (doc.id, privilegeid),
+            )
+        doc.add(form)
+        return doc
+
+    
+visual = Factory()
+
+
+# version
+__id__ = "$Id$"
+
+# End of file 

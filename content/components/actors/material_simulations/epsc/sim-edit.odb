@@ -1,0 +1,103 @@
+# -*- Python -*-
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                               Alex Dementsov
+#                      California Institute of Technology
+#                        (C) 2011  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+from luban.content import select
+from luban.content import load
+
+import luban.content as lc
+from luban.components.AuthorizedActor import AuthorizedActor as base
+
+class Actor(base):
+
+    class Inventory(base.Inventory):
+        import pyre.inventory
+        id          = pyre.inventory.str('id', default='')      # Simulation Id
+        sname       = pyre.inventory.str('sname', default='')
+        simtype     = pyre.inventory.str('simtype', default='')
+        description = pyre.inventory.str('description', default='')
+        label       = pyre.inventory.str('label', default='')
+        # Number of thermo-mechanical processes, not used
+        numproc     = pyre.inventory.str('numproc', default='1')
+
+
+    def default(self, director):
+        return select(id='main-display-area').replaceContent(self.content(director))
+
+    def content(self, director):
+        sim = director.clerk.getQESimulations(id=self.id)
+        if not sim:
+            return lc.document() # If record is not present, return empty document
+
+        def viewIndicator(director):
+            qelink  = load( actor           = 'materialsimulation',
+                            filter_key      = 'type',
+                            filter_value    = 'qesimulations')
+
+            path = []
+            path.append(('Simulations ', load(actor='materialsimulation')))
+            path.append(('EPSC ', qelink))
+            path.append(('%s ' % self.id, load(actor= 'material_simulations/epsc/sim-view',
+                    id= self.id)))
+            path.append('Edit')
+            return director.retrieveVisual('view-indicator', path=path)
+        doc         = lc.document(title   = 'Edit Simulation: %s' % sim.sname)
+        splitter    = doc.splitter(orientation="vertical")
+        sA          = splitter.section()
+        sA.add(viewIndicator(director))
+        sB          = splitter.section()
+        visual  = 'material_simulations/epsc/form-sim-edit'
+        sB.add(director.retrieveVisual(visual, self.inventory, director, sim))
+
+        return doc
+
+
+    def updateRecord(self, director):
+        """Updates record in the database """
+        sim             = director.clerk.getQESimulations(id=self.id)
+        if sim:
+            params  = {"sname":         self.sname,
+                       #"type":          simtype, 
+                       "short_description":   self.description,
+                       "label":         self.label,
+                       }
+            sim.setDirector(director)
+            sim.updateRecord(params)
+        return load(actor='material_simulations/epsc/sim-view', id=self.id)  # Redirection to the page
+
+
+    def _configure(self):
+        super(Actor, self)._configure()
+        self.id          = self.inventory.id
+        self.sname       = self.inventory.sname
+        self.simtype     = self.inventory.simtype
+        self.description = self.inventory.description
+        self.label       = self.inventory.label
+        self.numproc     = self.inventory.numproc
+
+        return
+
+
+    def __init__(self):
+        super(Actor, self).__init__(name='material_simulations/epsc/sim-edit')
+
+
+    def _init(self):
+        super(Actor, self)._init()
+        return
+
+def actor():
+    return Actor()
+
+__date__ = "$Mar 23, 2011 12:59:03 PM$"
+
+

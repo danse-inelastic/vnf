@@ -1,0 +1,70 @@
+#!/usr/bin/env python
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                 Jiao Lin
+#                      California Institute of Technology
+#                      (C) 2006-2009  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+from luban.content import alert
+
+from luban.components.AuthorizedActor import AuthorizedActor as base
+
+
+class Actor(base):
+
+
+    class Inventory(base.Inventory):
+
+        import pyre.inventory
+        id = pyre.inventory.str(name='id')
+        description = pyre.inventory.str(name='description')
+        type = pyre.inventory.str(name='type')
+        sorting_measure = pyre.inventory.str(name='sorting_measure')
+
+
+    def processRowChange(self, director):
+        id = self.inventory.id
+        type = self.inventory.type
+        record = director.clerk.getRecordByID(type, id)
+        
+        changed = []
+        
+        description = self.inventory.description
+        if description != record.short_description:
+            record.short_description = description
+            changed.append('description')
+
+        if changed:
+            director.clerk.updateRecordWithID(record)
+
+        sorting_measure = self.inventory.sorting_measure
+        if sorting_measure in changed:
+            #return alert('The attribute you edited change the ordering. You may want to refress')
+            return
+        #return director.redirect(
+        #    actor='matter',
+        #    routine='handleMatterTableRowChange',
+        #    changed=changed)
+        return
+
+
+    def __init__(self, name='mattertable'):
+        super(Actor, self).__init__(name)
+        return
+
+
+def actor(): return Actor()
+
+
+# version
+__id__ = "$Id$"
+
+# End of file 
+

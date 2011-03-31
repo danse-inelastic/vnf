@@ -1,0 +1,57 @@
+#!/usr/bin/env python
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                               Alex Dementsov
+#                      California Institute of Technology
+#                        (C) 2009  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+import luban.content as lc
+from luban.content import select
+from luban.content import load
+from vnfb.qeutils.qegrid import QEGrid
+from vnfb.qeutils.qeconst import MATTER_TYPE
+from luban.content.FormSubmitButton import FormSubmitButton
+
+# XXX: Break radio button!
+def visual(actor, director, structureid, simtype):
+    form    = lc.form()
+    table       = QEGrid(lc.grid(Class="qe-form"))
+    
+    # Skip link
+    visual_     = "material_simulations/espresso/link-skip"
+    skipLink    = director.retrieveVisual(visual_,
+                                          id        = actor.id,
+                                          taskid    = actor.taskid,
+                                          type      = actor.type)
+
+    form.radio(name = "mattertype", entries = enumerate(MATTER_TYPE.values()), selection=0) # selection doesn't work in Chrome
+    form.add(skipLink)
+    form.add(table.grid())
+    form.onsubmit   = select(element=form).submit(actor     = 'material_simulations/espresso-utils/generate-pw',
+                                                  routine   = "params",
+                                                  id        = actor.id,
+                                                  taskid    = actor.taskid,
+                                                  type      = actor.type,
+                                                  structureid   = structureid,
+                                                  simtype   = simtype)
+
+    submit      = FormSubmitButton(label="Select Option")
+    cancel      = lc.button(label="Cancel")
+    cancel.onclick  = load(actor = 'material_simulations/espresso/sim-view', id=actor.id)
+
+    st          = QEGrid(lc.grid()) # Submit Table
+    st.addRow((submit, cancel), ("qe-action-accept", "qe-action-cancel"))
+    table.addRow((st.grid(),))
+
+    return form
+
+
+__date__ = "$Jan 12, 2010 5:48:06 PM$"
+
+

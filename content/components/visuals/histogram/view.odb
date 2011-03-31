@@ -1,0 +1,52 @@
+# -*- Python -*-
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                 Jiao Lin
+#                      California Institute of Technology
+#                      (C) 2006-2011  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+from luban.content import load, select, alert
+import luban.content as lc
+
+
+def visual(director=None, histogram=None, downloadaction=None):
+    dim = histogram.dimension()
+
+    # title
+    try:
+        title = histogram.getAttribute('title')
+    except KeyError:
+        title = 'Histogram I(%s)' % (
+            ','.join(['%s(%s)' % (axis.name(), axis.unit()) 
+                      for axis in histogram.axes()]),
+            )
+
+    # container
+    doc = lc.document(Class='container', title=title, collapsable=True)
+
+    # plot
+    plot = director.retrieveVisual(
+        'histogram/plot', histogram=histogram, director=director
+        )
+    doc.add(plot)
+    
+    downloader = lc.downloader(
+        label = 'download data', 
+        ondownload = downloadaction,
+        )
+    doc.add(downloader)
+    
+    return doc
+
+    
+# version
+__id__ = "$Id$"
+
+# End of file 

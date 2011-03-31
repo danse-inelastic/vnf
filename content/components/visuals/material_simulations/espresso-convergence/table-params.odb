@@ -1,0 +1,84 @@
+#!/usr/bin/env python
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                               Alex Dementsov
+#                      California Institute of Technology
+#                        (C) 2009  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+from vnfb.qeutils.qeutils import stamp2date, latestParam, ifelse, key2val
+from vnfb.qeutils.qeconst import CONVTYPE, CONVTYPELIST
+from vnfb.qeutils.qegrid import QEGrid
+
+import luban.content as lc
+from luban.content import load, select
+
+def visual(director, id, convid):
+    table       = QEGrid(lc.grid(Class="qe-tasks-table"))
+    params       = director.clerk.getQEConvParams(where="convergenceid='%s'" % convid)
+    if not params:           # No convergence tests found
+        return table.grid()
+
+    table.addRow(("Param Id", "Time Created", "Name", "Start", "Current", "Tolerance, %", "Optimal", "") )
+
+    def paramId(param):
+        actor   = "material_simulations/espresso-convergence/param-view"
+        return  lc.link(label   = param.id,
+                       onclick = load(actor     = actor,
+                                      id        = id,   # ?
+                                      convid    = convid,
+                                      paramid   = param.id))
+
+    def paramTime(param):
+        return stamp2date(param.timecreated)
+
+    def paramName(param):
+        return ifelse(param.pname, param.pname, "None")
+
+
+    def paramStart(param):
+        return ifelse(param.startvalue, param.startvalue, "None")
+
+
+    def paramCurrent(param):
+        return ifelse(param.value, param.value, "None")
+
+
+    def paramTolerance(param):
+        return ifelse(param.tolerance, str(param.tolerance), "None")
+
+
+    def paramOptimal(param):
+        return ifelse(param.optimal, param.optimal, "None")
+
+
+    def delete(param):
+        actor   = "material_simulations/espresso-convergence/param-delete"
+        return lc.link( label   = "Delete",
+                        Class   = "qe-action-delete",
+                        onclick = load(actor        = actor,
+                                         id         = id,
+                                         convid     = convid,
+                                         paramid    = param.id))
+
+    for p in params:
+        table.addRow((paramId(p), paramTime(p), paramName(p), paramStart(p),
+                      paramCurrent(p), paramTolerance(p), paramOptimal(p), delete(p)))
+
+    table.setColumnStyle(0, "qe-table-id")
+    table.setColumnStyle(1, "qe-table-time")
+    table.setColumnStyle(7, "qe-table-delete")
+    table.setRowStyle(0, "qe-table-header")
+
+    return table.grid()
+
+    
+
+__date__ = "$May 1, 2010 9:42:46 AM$"
+
+

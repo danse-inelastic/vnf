@@ -1,0 +1,77 @@
+#!/usr/bin/env python
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                               Alex Dementsov
+#                      California Institute of Technology
+#                        (C) 2009  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+from vnfb.qeutils.generators.trgenerator import TRGenerator
+from vnfb.components.QEGenerator import QEGenerator as base
+
+class Actor(base):
+
+    class Inventory(base.Inventory):
+        import pyre.inventory
+        start       = pyre.inventory.str('start', default='')
+        end         = pyre.inventory.str('end', default='')
+        
+        vdos        = pyre.inventory.bool('vdos', default=False)
+        vdist       = pyre.inventory.bool('vdist', default=False)
+        msd         = pyre.inventory.bool('msd', default=False)
+        rdf         = pyre.inventory.bool('rdf', default=False)
+        temptime    = pyre.inventory.bool('temptime', default=False)
+
+
+    def content(self, director):
+        "Populates the content for creation of input configuration"
+        title   = "Trajectory Analysis Configuration Input"
+        label   = "Trajectory Analysis Form"
+        visual  = "material_simulations/espresso/input-trajectory"  # parameters form
+        return self._document(director, title, label, visual = visual)
+
+
+    def generateInput(self, director):
+        gen     = TRGenerator(director, self.inventory)
+        gen.setSystem()
+        gen.setSteps()
+        gen.setAnalysis()
+        return director.redirect(actor   = 'material_simulations/espresso/input-create',
+                                routine = 'default',
+                                text    = gen.toString(),
+                                id      = self.inventory.id,
+                                taskid  = self.inventory.taskid,
+                                type    = self.inventory.type)
+
+
+    def __init__(self):
+        super(Actor, self).__init__(name='material_simulations/espresso-utils/generate-trajectory')
+
+
+    def _configure(self):
+        super(Actor, self)._configure()
+        self.start          = self.inventory.start
+        self.end            = self.inventory.end
+
+        self.vdos           = self.inventory.vdos
+        self.vdist          = self.inventory.vdist
+        self.msd            = self.inventory.msd
+        self.rdf            = self.inventory.rdf
+        self.temptime       = self.inventory.temptime
+
+
+    def _init(self):
+        super(Actor, self)._init()
+        return
+
+def actor():
+    return Actor()
+
+__date__ = "$May 15, 2010 8:33:01 AM$"
+
+

@@ -1,0 +1,60 @@
+#!/usr/bin/env python
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                               Alex Dementsov
+#                      California Institute of Technology
+#                        (C) 2009  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+import luban.content as lc
+from vnfb.qeutils.qeutils import parseElectronDos
+from vnfb.qeutils.results.dosresult import DOSResult
+from vnfb.components.QEAnalysis import QEAnalysis as base
+
+class Actor(base):
+
+    def _simData(self, director, splitter):
+        "Shows electron DOS specific data"
+        self._dosresult      = DOSResult(director, self.id)
+        self._electronDos(director, splitter)
+
+
+    # XXX: Issue: For magnetic materials it gives tuple (e, up, down, cum)
+    # For non-magnetic material it gives tuple (e, dos, cum?): E (eV), dos(E), Int dos(E)
+    def _electronDos(self, director, splitter):
+        "Display electron DOS plot"
+        # Not displayed if no file exist or data are not in proper format
+        section    = splitter.section()
+        section.add(lc.paragraph(text="Electron DOS", Class="qe-section"))
+        dosfile    = self._dosresult.dosFile()   # dos file path
+
+        if not dosfile:     # "No DOS file!" # if no DOS file, notify user!
+            section.add(lc.htmldocument(text="No Electron DOS", Class="qe-text-blue"))
+            return
+
+        # Populate D(E) list from file
+        data    = parseElectronDos(dosfile)
+        if not data:        # "DOS file contains non-proper data!"
+            section.add(lc.htmldocument(text="No Electron DOS", Class="qe-text-blue"))
+            return
+
+        (e,  up,  down) = data 
+
+        plot = lc.plot2d(Class="default-size-plot")
+        plot.curve(x=e, y=up, label="Record A")   # 'Spin Up'
+        plot.curve(x=e, y=down, label="Record B") # 'Spin Down'
+
+        section.add(plot)
+
+
+def actor():
+    return Actor(name='material_simulations/espresso-analysis/electron-dos')
+
+__date__ = "$Mar 14, 2010 9:37:41 AM$"
+
+

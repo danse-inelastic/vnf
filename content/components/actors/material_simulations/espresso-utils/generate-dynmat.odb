@@ -1,0 +1,91 @@
+#!/usr/bin/env python
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                               Alex Dementsov
+#                      California Institute of Technology
+#                        (C) 2009  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+from vnfb.qeutils.generators.dynmatgenerator import DYNMATGenerator
+from vnfb.qeutils.qeparser.qeinput import QEInput
+import vnfb.qeutils.filters as filters
+
+from vnfb.components.QEGenerator import QEGenerator as base
+
+class Actor(base):
+
+    class Inventory(base.Inventory):
+        import pyre.inventory
+        asr        = pyre.inventory.str('asr', default='')
+
+
+    def content(self, director):
+        "Populates the content for creation of input configuration"
+        title   = "DYNMAT Configuration Input"
+        label   = "DYNMAT Form"
+        visual  = "material_simulations/espresso/input-dynmat"  # DYNMAT parameters form
+        return self._document(director, title, label, visual = visual)
+
+
+    def generateInput(self, director):
+        return director.redirect(actor   = 'material_simulations/espresso/input-create',
+                                routine = 'default',
+                                text    = self._input(director),
+                                id      = self.inventory.id,
+                                taskid  = self.inventory.taskid,
+                                type    = self.inventory.type)
+
+
+    def filterInput(self, director):
+        "Takes parameters from input-default form and filters text"
+        gen     = DYNMATGenerator(director, self.inventory)
+        input   = QEInput(config=self.inventory.text, type=self.inventory.type)
+
+        filter  = filters.filterFactory(self.inventory.type)  # DYNMATFilter()
+        filter.setFildyn(gen.fildyn())          # Set dynamic variable
+        filter.apply(input)                     # Apply filter to input
+        fconfig = input.toString()              # Filtered config input
+
+        return director.redirect(actor   = 'material_simulations/espresso/input-create',
+                                routine = 'createRecord',
+                                text    = fconfig,
+                                id      = self.inventory.id,
+                                taskid  = self.inventory.taskid,
+                                type    = self.inventory.type,
+                                subtype = self.inventory.subtype,
+                                fname   = self.inventory.fname,
+                                description = self.inventory.description)
+
+
+    def _input(self, director):
+        "Generates PH input text"
+        gen     = DYNMATGenerator(director, self.inventory)
+        gen.setInput()
+        return gen.toString()
+
+
+    def __init__(self):
+        super(Actor, self).__init__(name='material_simulations/espresso-utils/generate-dynmat')
+
+
+    def _configure(self):
+        super(Actor, self)._configure()
+        self.asr           = self.inventory.asr
+
+
+    def _init(self):
+        super(Actor, self)._init()
+        return
+
+def actor():
+    return Actor()
+
+
+__date__ = "$Jan 13, 2010 4:29:22 AM$"
+
+

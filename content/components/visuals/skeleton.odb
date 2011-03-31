@@ -1,0 +1,42 @@
+# -*- Python -*-
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                 Jiao Lin
+#                      California Institute of Technology
+#                      (C) 2006-2010  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+import luban.content
+
+
+def visual(director):
+    vertical = luban.content.splitter(orientation='vertical')
+    header_frame = vertical.section(id='header-frame')
+    # news_container = vertical.section(id='header-news-container')
+    topmenu_frame = vertical.section(id='topmenu-frame')
+    body_frame = vertical.section(id='body-frame')#, Class='has-shadow')
+    footer_frame = vertical.section(id='footer-frame')
+    credits_frame = vertical.section(id='credits-frame')
+
+    header = director.retrieveVisual('mainframe-header')
+    header_frame.add(header)
+
+    footer = director.retrieveVisual('mainframe-footer')
+    footer_frame.add(footer)
+
+    credits = director.retrieveVisual('mainframe-credits')
+    credits_frame.add(credits)
+
+    return vertical
+
+    
+# version
+__id__ = "$Id$"
+
+# End of file 

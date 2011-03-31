@@ -1,0 +1,220 @@
+# -*- Python -*-
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                      California Institute of Technology
+#                      (C) 2006-2009  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+tablename='trajectory'
+from vnfb.components.DOMAccessor import DOMAccessor as base
+
+class Accessor(base):
+
+    def __init__(self):
+        super(Accessor, self).__init__('trajectory')
+        return
+
+    def _getOrm(self):
+        orm = self.director.clerk.orm
+        # build orm for trajectory only 
+        #registers and stores these internally
+        from vnfb.dom.material_simulations.Trajectory import TrajectoryDO
+        #orm(Phonons)
+        orm(TrajectoryDO)
+        return orm
+    orm = property(_getOrm)
+
+    def getDynamicsRecord(self, type, id):
+        orm = self.orm
+        db = orm.db
+        table = db.getTable(type)
+        return db.query(table).filter_by(id=id).one()
+
+    def getDynamics(self, id):
+        for table in self.dynamicsTables():
+            result = None
+            try:
+                result = db.query(table).filter_by(id=id).one()
+            except:
+                pass
+            if result:
+                dynamics = result
+        return dynamics
+
+    def getDynamics(self, type, id):
+        return self.getRecordByID(type, id)
+
+    def countDynamics(self, filter=None, label=None, mine=False):
+        db = self.db
+        tables = self.dynamicsTables()
+        qf = lambda table: self.makeQuery(table, filter=filter, label=label, mine=mine)
+        qs = map(qf, tables)
+        q = sqlalchemy.union_all(*qs)
+        return q.alias('tocount').count().execute().fetchone()[0]
+    
+    def getDynamicsRecords(self, filter=None, order_by=None, 
+                       reverse_order=None, slice=None, label=None, mine=False):
+        db = self.db
+        
+        self._debug.log('filter: %r, order_by: %r, slice: %r' % (filter, order_by, slice))
+        tables = self.dynamicsTables()
+        qf = lambda table: self.makeQuery(table, filter=filter, label=label, mine=mine)
+        
+        qs = map(qf, tables)
+        q = sqlalchemy.union_all(*qs)
+
+        if order_by:
+            q = q.order_by(order_by)
+        if slice:
+            if reverse_order:
+                n = self.countDynamics(filter=filter, label=label, mine=mine)
+                slice = n-slice[1], n-slice[0]
+            q = sqlalchemy.select(
+                [q.alias('tmptoslice')],
+                limit = slice[1]-slice[0],
+                offset = slice[0])
+
+        # only need gpointers to be returned
+        q = q.alias('tmp')
+        q1 = sqlalchemy.select(columns=['gptr'], from_obj=[q])
+
+        #db._saengine.echo = True
+        rows = q1.execute().fetchall()
+
+        #and then map to records
+        from dsaw.db.VersatileReference import vreference
+        def _(row): 
+            return db.dereference(vreference(row[0]))
+        ret = map(_, rows)
+        if reverse_order:
+            ret.reverse()
+        return ret
+
+    def makeQuery(self, table, filter=None, label=None, mine=False):
+        'create a query for a dynamics table with given filter'
+        db = self.db
+        
+        if label:
+            if filter: raise RuntimeError
+            return self.makeLabeledQuery(label, table, mine=mine)
+
+        sGP = db._tablemap.TableToSATable(global_pointer)
+        st = db._tablemap.TableToSATable(table)   
+        q = sqlalchemy.select(
+            [st.c.id.label('id'),
+             sGP.c.type.label('type'),
+             #st.c.date.label('date'),
+             st.c.globalpointer.label('gptr'),
+             ],
+            st.c.globalpointer==sGP.c.id,
+            )
+        
+        if mine:
+            username = self.director.sentry.username
+            mine = "creator='%s'" % username
+            if filter:
+                filter = '(%s) and %s' % (filter, mine)
+            else:
+                filter = mine
+        
+        if filter:
+            q = sqlalchemy.select([q.alias('dynamics')], whereclause=filter)
+            
+        return q
+
+
+    def makeLabeledQuery(self, label, table, mine=False):
+        'create a query for a dynamics table with a given filter'
+        db = self.db
+        
+        sL = db._tablemap.TableToSATable(Label)
+        labelq = sqlalchemy.select(
+            [sL.c.entity.label('entity'),
+             sL.c.labelname.label('label'),
+             ],
+            whereclause="labelname='%s' and targettable='%s'" % (label, tablename))\
+            .alias('labelq')
+        
+        sGP = db._tablemap.TableToSATable(global_pointer)
+        st = db._tablemap.TableToSATable(table)
+        
+        q1 = sqlalchemy.select(
+            [labelq.c.entity.label('entity'),
+             sGP.c.type.label('type'),
+             ],
+            labelq.c.entity==sGP.c.id,
+            ).alias('q1')
+            
+        where = 'sims.gptr=labeled.entity'
+        if mine:
+            username = self.director.sentry.username
+            mine = "sims.creator='%s'" % username
+            where = '%s and %s' % (where, mine)
+
+        q = sqlalchemy.select(
+            [st.c.id.label('id'),
+             q1.c.type.label('type'),
+             #st.c.date.label('date'),
+             st.c.globalpointer.label('gptr'),
+             ],
+            st.c.globalpointer==q1.c.entity,
+            )
+        return q
+
+    def getTables(self):
+        return self.dynamicsTables()
+    
+    def dynamicsTables(self):
+        typenames = ['material_simulations.Trajectory.Trajectory']
+        ormtables = map(self._getTable, typenames)
+        return ormtables
+    
+#    def _select_simulation_clause(self, table, db):
+#        '''create a sqlalchemy select clause for a material simulation table
+#
+#        cols:
+#          * id
+#          * short_description
+#          * type: type of the simulation (obtained from globaponter table)
+#          * date
+#          * matterid
+#          * gptr
+#        '''
+#
+#        sGP = db._tablemap.TableToSATable(global_pointer)
+#        st = db._tablemap.TableToSATable(table)
+#
+#        cols = [
+#            st.c.id.label('id'),
+#            st.c.short_description.label('short_description'),
+#            sGP.c.type.label('type'),
+#            st.c.date.label('date'),
+#            st.c.matter.label('matterid'),
+#            st.c.creator.label('creator'),
+#            st.c.globalpointer.label('gptr'),
+#            ]
+#        where = st.c.globalpointer==sGP.c.id
+#        try:
+#            simq = sqlalchemy.select(cols, where)
+#        except:
+#            import traceback
+#            raise RuntimeError, 'Failed to select required columns from simulation table %s.\n'\
+#                  'Original exception was:\n%s' % (table.getTableName(), traceback.format_exc())
+#
+#        return simq
+
+from dsaw.db.VersatileReference import global_pointer
+import sqlalchemy
+
+def accessor():
+    return Accessor()
+
+
+# version
+__id__ = "$Id$"
+
+# End of file 

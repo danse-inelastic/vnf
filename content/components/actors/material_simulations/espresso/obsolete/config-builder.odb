@@ -1,0 +1,125 @@
+#!/usr/bin/env python
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                               Alex Dementsov
+#                      California Institute of Technology
+#                        (C) 2009  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+from luban.content import select
+from luban.content.Paragraph import Paragraph
+from luban.content.Document import Document
+from luban.content.HtmlDocument import HtmlDocument
+from luban.content import load
+from luban.content.Link import Link
+from luban.content.Splitter import Splitter
+from luban.content.FormSelectorField import FormSelectorField
+from luban.content.FormRadioBox import FormRadioBox
+from luban.content.Form import Form
+from luban.content.Tabs import Tabs
+from luban.content.Button import Button
+
+import luban.content as lc
+from luban.components.AuthorizedActor import AuthorizedActor as base
+
+class Actor(base):
+
+    class Inventory(base.Inventory):
+        import pyre.inventory
+        id      = pyre.inventory.str('id', default='')
+
+    def default(self, director):
+        return select(id='main-display-area').replaceContent(self.content(director))
+
+
+    def content(self, director):
+
+        sim         = director.clerk.getQESimulations(id = self.id)
+        if sim:
+            name = sim.sname
+        else:
+            name = ""
+
+        def viewIndicator(director):
+            qelink  = load( actor           = 'materialsimulation',
+                            filter_key      = 'type',
+                            filter_value    = 'qesimulations')
+
+            path = []
+            path.append(('Simulations ', load(actor='materialsimulation')))
+            path.append(('Quantum Espresso ', qelink))
+            path.append(('%s ' % self.id, load(actor    = 'material_simulations/espresso/sim-view',
+                                               id       = self.id))
+                        )
+            path.append("PW")
+            path.append("Configuration Builder")
+
+            return director.retrieveVisual('view-indicator', path=path)
+
+        doc         = lc.document(title="Simulation Name: %s" % name)
+        splitter    = doc.splitter(orientation="vertical")
+        sA          = splitter.section()
+        sA.add(viewIndicator(director))
+        sB          = splitter.section()
+
+        tabs = Tabs()
+        tabs.tab('Control').paragraph(text=['Namelist: CONTROL '])
+        tabs.tab('System').document(title='Namelist: SYSTEM')
+        tabs.tab('Electrons').paragraph(text=['Namelist: ELECTRONS'])
+        tabs.tab('Ions').paragraph(text=['Namelist: IONS'])
+        tabs.tab('Cell').paragraph(text=['Namelist: CELL'])
+        tabs.tab('Phonon').paragraph(text=['Namelist: PHONON'])
+        tabs.tab('Lattice').paragraph(text=['Some form'])
+        tabs.tab('K-Points').paragraph(text=['Card: K_POINTS'])
+        tabs.tab('Other').paragraph(text=['Some form'])
+        sB.add(tabs)
+
+        cancel      = lc.link(label="Return")
+        cancel.onclick = load(actor = 'material_simulations/espresso/sim-view', id=self.id)
+
+        sB.add(cancel)
+
+        return doc
+
+
+    def __init__(self):
+        super(Actor, self).__init__(name='material_simulations/espresso/config-builder')
+
+        return
+
+
+    def _configure(self):
+        super(Actor, self)._configure()
+        self.id = self.inventory.id
+        return
+
+
+    def _init(self):
+        super(Actor, self)._init()
+        return
+
+def actor():
+    return Actor()
+
+__date__ = "$Nov 3, 2009 6:01:31 PM$"
+
+
+
+
+#    def pathlist(self, director):
+#        sim     = director.clerk.getSimulations(id=self.id)
+#        self.pathlist = [("Home","greet","link"),
+#                         ("Simulations", "simulations", "link"),
+#                         ("Quantum Espresso", "espresso/index", "link"),
+#                         (sim.sname, "espresso/sim-view", "link", self.id),
+#                         (STEPS[1], "espresso/step-two", "link", self.id),
+#                         ("PW", "espresso/set-config", "link", self.id),
+#                         ("Configuration Builder", None, None)]
+#
+#        return self.pathlist
+

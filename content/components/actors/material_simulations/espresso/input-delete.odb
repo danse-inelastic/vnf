@@ -1,0 +1,141 @@
+import os.path
+#!/usr/bin/env python
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                               Alex Dementsov
+#                      California Institute of Technology
+#                        (C) 2009  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+import os
+from vnfb.qeutils.qegrid import QEGrid
+from vnfb.qeutils.qeutils import defaultInputName
+
+from luban.content import select
+from luban.content.Paragraph import Paragraph
+from luban.content.Form import Form
+from luban.content.FormSubmitButton import FormSubmitButton
+from luban.content import load
+import luban.content as lc
+from luban.components.AuthorizedActor import AuthorizedActor as base
+
+# Requires simulation id,
+class Actor(base):
+
+    class Inventory(base.Inventory):
+        import pyre.inventory
+        id          = pyre.inventory.str('id', default='')          # Simulation Id
+        configid    = pyre.inventory.str('configid', default='')    # Configuration Id
+        taskid      = pyre.inventory.str('taskid', default='')
+        type        = pyre.inventory.str('type', default='')        # Type of the configuration file
+
+
+    def default(self, director):
+        return select(id='main-display-area').replaceContent(self.content(director))
+
+
+    def content(self, director):
+        input = director.clerk.getQEConfigurations(id=self.configid)
+
+        def viewIndicator(director):
+            qelink  = load( actor           = 'materialsimulation',
+                            filter_key      = 'type',
+                            filter_value    = 'qesimulations')
+
+            path = []
+            path.append(('Simulations ', load(actor='materialsimulation')))
+            path.append(('Quantum Espresso ', qelink))
+            path.append(('%s ' % self.id, load(actor    = 'material_simulations/espresso/sim-view',
+                                               id       = self.id))
+                        )
+            path.append(('%s Task ' % self.type, load(actor    = 'material_simulations/espresso/task-view',
+                                                      id       = self.id,
+                                                      taskid   = self.taskid,
+                                                      type     = self.type)))
+
+            path.append("Delete Configuration Input: %s" % input.filename)
+
+            return director.retrieveVisual('view-indicator', path=path)
+
+        doc         = lc.document(title="Delete Configuration Input: %s" % input.filename)
+        splitter    = doc.splitter(orientation="vertical")
+        sA          = splitter.section()
+        sA.add(viewIndicator(director))
+        sB          = splitter.section()
+
+        sB.add(Paragraph(text="Are you sure you want to delete the configuration input?"))
+        sB.add(self._setForm())
+
+        return doc
+
+    def _setForm(self):
+        form        = Form()
+        submit      = FormSubmitButton(label="Delete")
+        cancel      = lc.button(label="Cancel")
+        cancel.onclick = load(actor = 'material_simulations/espresso/sim-view', id=self.id)
+
+        st          = QEGrid(lc.grid()) # Submit Table
+        st.addRow((submit, cancel), ("qe-action-accept", "qe-action-cancel"))
+
+        form.add(st.grid())
+        form.onsubmit   = select(element=form).submit(actor     = 'material_simulations/espresso/input-delete',
+                                                      routine   = 'deleteRecord',
+                                                      id        = self.id,
+                                                      configid  = self.configid)
+
+        return form
+
+
+    # TODO: Delete also the directory
+    def deleteRecord(self, director):
+        "Delete configuration record"
+        self.deleteDBRecord(director)
+        self.deleteFile(director)
+
+        return load(actor='material_simulations/espresso/sim-view', id=self.id)
+
+
+    def deleteDBRecord(self, director):
+        "Delete db record"
+        self.input     = director.clerk.getQEConfigurations(id=self.configid)
+        self.input.setDirector(director)
+        self.input.deleteRecord()
+
+
+    def deleteFile(self, director):
+        fname       = defaultInputName(self.input.type)
+        absfilename = director.dds.abspath(self.input, filename = fname)
+        if os.path.exists(absfilename):
+            os.remove(absfilename)
+
+
+    def __init__(self):
+        super(Actor, self).__init__(name='material_simulations/espresso/input-delete')
+
+        return
+
+
+    def _configure(self):
+        super(Actor, self)._configure()
+        self.id             = self.inventory.id
+        self.configid       = self.inventory.configid
+        self.taskid         = self.inventory.taskid
+        self.type           = self.inventory.type
+
+
+    def _init(self):
+        super(Actor, self)._init()
+        return
+
+def actor():
+    return Actor()
+
+
+__date__ = "$Nov 9, 2009 7:08:53 PM$"
+
+

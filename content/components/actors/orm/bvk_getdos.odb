@@ -1,0 +1,58 @@
+#!/usr/bin/env python
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                 Jiao Lin
+#                      California Institute of Technology
+#                      (C) 2006-2009  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+
+#
+import luban.content as lc
+from luban.content import select, load, alert
+
+
+#
+from vnfb.dom.material_simulations.BvKComputation import BvK_GetDos
+
+from luban.components.Actor import Actor
+import luban.orm
+base = luban.orm.object2actor(BvK_GetDos)
+class Actor(base):
+
+    class Inventory(base.Inventory):
+
+        import luban.inventory
+
+        poststoring_routine = luban.inventory.str(name='poststoring_routine')
+
+
+    def _postStoringUserInputs(self, director):
+        poststoring_routine = self.inventory.poststoring_routine
+        if poststoring_routine:
+            return getattr(self, poststoring_routine)(director)
+        return super(Actor, self)._postStoringUserInputs(director)
+    
+    
+    def createJob(self, director):
+        return load(
+            actor='job', routine='create',
+            computation_type = 'material_simulations.BvKComputation.BvK_GetDos',
+            computation_id = self.inventory.id
+            )
+
+
+def actor():
+    return Actor('orm/bvk_getdos')
+
+
+# version
+__id__ = "$Id$"
+
+# End of file 

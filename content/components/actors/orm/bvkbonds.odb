@@ -1,0 +1,158 @@
+#!/usr/bin/env python
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                 Jiao Lin
+#                      California Institute of Technology
+#                      (C) 2006-2009  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+#
+import luban.content as lc
+from luban.content import select, load, alert
+
+
+select_constraint_alert = lambda formid:\
+                          select(id=formid).find(name='force-constant-matrix-constraints')
+
+#
+from vnfb.dom.material_simulations.BvKBond import BvKBond
+descriptors = BvKBond.Inventory.getDescriptors()
+descriptors = [d for d in descriptors if d.name != 'uses_primitive_unitcell']
+
+from luban.components.Actor import Actor
+import luban.orm
+base = luban.orm.object2actor(BvKBond, descriptors=descriptors)
+class Actor(base):
+
+    class Inventory(base.Inventory):
+
+        import luban.inventory
+
+
+    def getConstraints(self, director):
+        errors = self._getInputErrors()
+        if errors:
+            return self._reportErrors(errors)
+        
+        # cast user inputs into inventory
+        self._castInventoryProperties()
+
+        #
+        constraints = self._getConstraints(director)
+        doc = lc.document()
+        for c in constraints: doc.paragraph(text=[str(c)])
+        
+        return doc
+
+
+    def _getConstraints(self, director):
+        # check fc matrix
+        bond = self._load(director)
+
+        # initialize bond if necessary
+        if bond.matter is None:
+            bond = self._initBond(bond, director)
+
+        # establish the restrictions for force constant matrix
+        # 1. transfer info into bond object
+        bond.A = self.inventory.A
+        bond.B = self.inventory.B
+        bond.Boffset = self.inventory.Boffset
+        bond.Boffset_is_fractional = self.inventory.Boffset_is_fractional
+        # 2. find constraints
+        from vnfb.utils.material_simulations.bvkutils import findForceContantTensorConstraints
+        constraints = findForceContantTensorConstraints(bond)
+        
+        return constraints
+    
+
+    def process(self, director):
+        formid = self.inventory.formid
+        errors = self._getInputErrors()
+        if errors:
+            return self._reportErrors(errors)
+
+        # cast user inputs into inventory
+        self._castInventoryProperties()
+
+        # get constraints
+        constraints = self._getConstraints(director)
+        
+        # find violations
+        fcm = self.inventory.force_constant_matrix
+        violations = self._findViolations(fcm, constraints)
+        if violations:
+            doc = lc.document(Class='container')
+            doc1 = doc.document(title='Not satisfied', Class='error')
+            for violation in violations:
+                doc1.paragraph(text=[str(violation)])
+                continue
+            doc2 = doc.document(title='Satisfied')
+            for constraint in constraints:
+                if constraint not in violations:
+                    doc2.paragraph(text=[str(constraint)])
+            return [
+                select_constraint_alert(formid).show(),
+                select_constraint_alert(formid).replaceContent(doc),
+                ]
+
+        return self._postProcessing(director)
+
+
+    def _reportErrors(self, errors):
+        formid = self.inventory.formid
+        actions = super(Actor, self)._reportErrors(errors)
+        # need to add an action to clean up the constraint alert
+        actions.append(select_constraint_alert(formid).hide())
+        return actions
+
+
+    def _findViolations(self, matrix, constraints):
+        environ = {}
+        for i in range(3):
+            for j in range(3):
+                environ['m%s%s' % (i+1,j+1)] = matrix[i,j]
+
+        from vnfb.utils.constraints import check
+        violations = filter(lambda c: not check(c, environ), constraints)
+        return violations
+
+
+    def _initBond(self, bond, director):
+        domaccess = director.retrieveDOMAccessor('material_simulations/phonon_calculators/bvk')
+        orm = domaccess.orm
+        
+        bondrecord = orm(bond)
+
+        # find the record in _ReferenceSetTable so that we can know the model
+        from dsaw.db._referenceset import _ReferenceSetTable
+        refs = bondrecord.getReferences(orm.db, _ReferenceSetTable, 'element')
+        assert len(refs)==1
+
+        ref = refs[0]
+        modelrecord = ref.container.dereference(orm.db)
+
+        # set lattice and sg
+        matter = modelrecord.matter.dereference(orm.db)
+        bondrecord.matter = matter
+
+        # update
+        orm.db.updateRecord(bondrecord)
+        
+        return orm.load(bond.__class__, bondrecord.id)
+
+
+def actor():
+    return Actor('orm/bvkbonds')
+
+
+# version
+__id__ = "$Id$"
+
+# End of file 

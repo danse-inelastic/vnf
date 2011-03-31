@@ -1,0 +1,107 @@
+# -*- Python -*-
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                   Jiao Lin
+#                      California Institute of Technology
+#                      (C) 2006-2009  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+from vnfb.dom.Label import Label, common_labels
+
+
+from vnfb.components.DOMAccessor import DOMAccessor as base
+
+class Accessor(base):
+
+
+    def __init__(self):
+        super(Accessor, self).__init__('smartlabel-accessor')
+        return
+
+
+    def getLabels(self, targettable, creator=None, entity=None):
+        'get all labels for the given targettable'
+
+        db = self.db
+        
+        if creator is None:
+            creator = self._getUsername()
+        return db.query(Label).filter_by(
+            creator=creator, targettable=targettable, entity=entity)\
+            .all()
+
+
+    def getLabelNames(self, targettable, creator=None):
+        if creator is None:
+            creator = self._getUsername()
+        labels = self.getLabels(targettable, creator=creator, entity=None)
+        rt = [l.labelname for l in labels]
+        rt += common_labels
+        return rt
+    
+
+    def isLabeled(self, entity, targettable, label, creator=None):
+        'check if an entity is labled given label for the given targettable'
+
+        gp = entity.globalpointer
+        if not gp or not gp.id:
+            # no global pointer, it should not be labeled
+            return False
+        
+        db = self.db
+        
+        if creator is None:
+            creator = self._getUsername()
+        ptr = entity.globalpointer.id
+        labels = db.query(Label).filter_by(
+            creator=creator, labelname=label, entity=ptr, targettable=targettable)\
+            .all()
+        return bool(labels)
+
+
+    def createLabel(self, label, targettable, entity=None):
+        if label in common_labels:
+            return self.createCommonLabel(label, targettable, entity=entity)
+        return self._createLabel(label, targettable, entity)
+
+
+    def createCommonLabel(self, label, targettable, entity=None):
+        if label == 'private':
+            return self.markAsPrivate(entity)
+        raise NotImplementedError, label
+
+    
+    def markAsPrivate(self, entity):
+        if entity is None: 
+            raise ValueError, "Cannot mark None as private"
+        username = self.director.sentry.username
+        if entity.creator != username:
+            raise RuntimeError, "Cannot mark records owned by others as private"
+        return self._createLabel('private', '', entity=entity)
+        
+
+    def _createLabel(self, label, targettable, entity=None):
+        record = self.insertNewOwnedRecord(Label)
+        record.labelname = label
+        record.targettable = targettable
+        if entity:
+            record.entity = entity
+        self.updateRecordWithID(record)
+        return record
+
+
+
+def accessor():
+    return Accessor()
+
+
+# version
+__id__ = "$Id$"
+
+# End of file 

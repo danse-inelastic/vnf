@@ -1,0 +1,163 @@
+#!/usr/bin/env python
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                               Alex Dementsov
+#                      California Institute of Technology
+#                        (C) 2009  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+from vnfb.qeutils.qegrid import QEGrid
+
+import luban.content as lc
+from luban.content import load, select
+
+
+from vnfb.dom.QEConvergence import QEConvergence
+from vnfb.dom.QEConvParam import QEConvParam
+from vnfb.dom.QETask import QETask
+from vnfb.dom.QEConvParamTask import QEConvParamTask
+from vnfb.qeutils.qeconst import MAX_STEPS, TOLERANCE, CONVPARAMLIST, CONVPARAM, CONVTYPELIST, ID_START, ID_STEP, ID_PARAM
+from vnfb.components.QEConvergence import QEConvergence as base
+
+class Actor(base):
+    class Inventory(base.Inventory):
+        import pyre.inventory
+        convtype        = pyre.inventory.str('convtype', default='')
+        param           = pyre.inventory.str('param', default='')
+        start           = pyre.inventory.str('start', default='')
+        step            = pyre.inventory.str('step', default='')
+        tolerance       = pyre.inventory.float('tolerance', default=TOLERANCE)
+        maxsteps        = pyre.inventory.int('maxsteps', default=MAX_STEPS)
+        description     = pyre.inventory.str('description', default='')
+
+
+    def _mainContent(self, director, splitter):
+        content     = splitter.section()
+        visual      = 'material_simulations/espresso-convergence/form-conv-create'
+        content.add(director.retrieveVisual(visual,
+                                            director,
+                                            id = self.id))
+
+
+    def createRecord(self, director):
+        "Create convergence and convergence param records"
+        self._createConvergence(director)
+        self._createConvParam(director)
+        self._createTasks(director)
+        self._createConvParamTasks(director)
+
+        return load(actor   = 'material_simulations/espresso-convergence/view',
+                    id      = self.id)
+        
+
+    def _createConvergence(self, director):
+        "Create convergence record"
+        params  = {"simulationid":  self.inventory.id,
+                   "description":   self.inventory.description,
+                   "type":          self._convType(),
+                   "progress":      "Created"
+                   }
+        self._conv  = QEConvergence(director)
+        self._conv.createRecord(params)
+
+
+    def _createConvParam(self, director):
+        "Create convergence param record"
+        if not self._conv:  # If no convergence created, don't create convergence param
+            return
+
+        params  = {"convergenceid": self._conv.id,
+                   "pname":         self._param(),
+                   "tolerance":     self.inventory.tolerance,
+                   "maxsteps":      self.inventory.maxsteps,
+                   "value":         self.inventory.start,
+                   "type":          self._paramType(),
+                   "startvalue":    self.inventory.start,
+                   "step":          self.inventory.step
+                   }
+        self._convparam  = QEConvParam(director)
+        self._convparam.createRecord(params)
+        self._paramid   = self._convparam.id
+        
+
+    # XXX: Extend to general case for generating tasks based on convergence test types
+    # Generates PW task for now
+    def _createTasks(self, director):
+        "Creates tasks"
+        params  = {"type":          "PW",
+                   "package":       "Quantum Espresso",
+                   "linkorder":     0
+                   }
+        task     = QETask(director)
+        task.createRecord(params)
+        self._taskid    = task.id
+
+    
+    def _createConvParamTasks(self, director):
+        "Creates QEConvParamTask record"
+        params  = {"convparamid":   self._paramid,
+                   "taskid":        self._taskid
+                  }
+        paramtask = QEConvParamTask(director)
+        paramtask.createRecord(params)
+
+
+    def _convType(self):
+        return CONVTYPELIST[int(self.inventory.convtype)]
+
+
+    def _param(self):
+        return CONVPARAMLIST[int(self.inventory.param)]
+
+
+    def _paramType(self):
+        paramkey   = self._param()
+        if CONVPARAM.has_key(paramkey):
+            return CONVPARAM[paramkey][1]
+
+        return ""
+
+
+    def setDefaults(self, director):
+        # Note:
+        #   "selection" refers to value of the selected entry, e.g. "dgauss"
+        #   "value" refers to ordered number of the selected entry, e.g. 0
+        #
+
+        keys    = CONVPARAM.keys()
+        if self.param   == "":
+            self.param = "0"
+            
+        key     = keys[int(self.param)]
+
+        startField          = select(id=ID_START).setAttr(value=CONVPARAM[key][2])   # textValue(key, 2)
+        stepField           = select(id=ID_STEP).setAttr(value=CONVPARAM[key][3])    #textValue(key, 3)
+        actions = []
+        actions.append(startField)
+        actions.append(stepField)
+
+        return actions
+
+
+    def _configure(self):
+        super(Actor, self)._configure()
+        self.convtype       = self.inventory.convtype
+        self.param          = self.inventory.param
+        self.start          = self.inventory.start
+        self.step           = self.inventory.step
+        self.tolerance      = self.inventory.tolerance
+        self.maxsteps       = self.inventory.maxsteps
+        self.description    = self.inventory.description
+
+def actor():
+    return Actor(name='material_simulations/espresso-convergence/conv-create')
+
+
+__date__ = "$Apr 21, 2010 7:59:45 PM$"
+
+

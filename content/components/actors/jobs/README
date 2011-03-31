@@ -1,0 +1,14 @@
+Obsolete actors:
+
+    cancel.odb
+    cancelled.odb
+    checksubmit.odb
+    failed.odb
+    finished.odb
+    getresults.odb
+    index.odb
+    queued.odb
+    running.odb
+    status.odb
+    stopped.odb
+    view.odb

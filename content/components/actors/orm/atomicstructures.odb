@@ -1,0 +1,115 @@
+#!/usr/bin/env python
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                 Jiao Lin
+#                      California Institute of Technology
+#                      (C) 2006-2009  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+
+#
+import luban.content as lc
+from luban.content import select, load, alert
+
+
+from dsaw.model.descriptors import validators
+
+#
+from vnfb.dom.AtomicStructure import Structure, Lattice, Atom
+
+from luban.components.Actor import Actor
+import luban.orm
+base = luban.orm.object2actor(Structure)
+class Actor(base):
+
+    class Inventory(base.Inventory):
+
+        import luban.inventory
+
+
+    Inventory.short_description.validator = validators.notempty
+    Inventory.short_description.default = ''  # default to None will prevent validator from working
+    
+    def debug(self, director):
+        id = self.inventory.id
+        if not id:
+            self._createStructure(director)
+
+        # view
+        view = self.edit(director)
+
+        # add to skeleton
+        from luban.content.Page import Page
+        page = Page(title='title')
+        document = page.document(title='test', id='maindoc')
+        document.add(view)
+            
+        return page
+
+
+    def getSelectorEntriesForPhonons(self, director):
+        #
+        matter = self._load(director)
+        orm = director.clerk.orm; db = orm.db
+        matterrecord = orm(matter)
+        # the phononss
+        phonondomaccess = director.retrieveDOMAccessor('phonon')
+        disps = phonondomaccess.getPhonons(matterrecord)
+        #
+        if eval(self.inventory.include_none_entry):
+            entries = [('', '')]
+        else:
+            entries = []
+            
+        entries += [(db.getUniqueIdentifierStr(disp),
+                    disp.short_description or disp.id)
+                   for disp in disps]
+        self.inventory.include_credential = 0
+        return entries
+
+
+    def getSelectorEntriesForSqe(self, director):
+        #
+        matter = self._load(director)
+        orm = director.clerk.orm; db = orm.db
+        matterrecord = orm(matter)
+        # the sqes
+        from vnfb.dom.material_simulations.SQE import SQE
+        orm(SQE)
+        sqes = matterrecord.sqes.dereference(db)
+        #
+        if eval(self.inventory.include_none_entry):
+            entries = [('', '')]
+        else:
+            entries = []
+            
+        entries += [(db.getUniqueIdentifierStr(sqe),
+                     #sqe.short_description or sqe.id)
+                     sqe.id)
+                    for sqe in sqes]
+        self.inventory.include_credential = 0
+        return entries
+
+
+    def _createStructure(self, director):
+	struct = Structure()
+        orm = director.clerk.orm
+        orm.save(struct)
+        self.inventory.id = orm(struct).id
+        return
+
+
+def actor():
+    return Actor('orm/atomicstructures')
+
+
+# version
+__id__ = "$Id$"
+
+# End of file 

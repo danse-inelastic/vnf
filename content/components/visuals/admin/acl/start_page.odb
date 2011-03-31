@@ -1,0 +1,52 @@
+# -*- Python -*-
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                 Jiao Lin
+#                      California Institute of Technology
+#                      (C) 2006-2010  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+import luban.content as lc
+from luban.content import load, select, alert
+from vnfb.components.visuals.AdminVisualFactory import AdminVisualFactory as base
+
+class Factory(base):
+
+    def create(self, director=None):
+        tabs = lc.tabs(id='acl-container')
+        userstab = tabs.tab(id='acl-users', label='users')
+        rolestab = tabs.tab(id='acl-roles', label='roles')
+        privilegestab = tabs.tab(id='acl-privileges', label='privileges')
+
+        userstab.add(self._createUsersView(director))
+        rolestab.add(self._createRolesView(director))
+        privilegestab.add(self._createPrivilegesView(director))
+                     
+        return tabs
+    
+    
+    def _createUsersView(self, director):
+        return director.retrieveVisual('admin/acl/users')
+    
+
+    def _createRolesView(self, director):
+        return director.retrieveVisual('admin/acl/roles')
+
+
+    def _createPrivilegesView(self, director):
+        return director.retrieveVisual('admin/acl/privileges')
+    
+
+visual = Factory()
+
+    
+# version
+__id__ = "$Id$"
+
+# End of file 

@@ -1,0 +1,53 @@
+# -*- Python -*-
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                 Jiao Lin
+#                      California Institute of Technology
+#                      (C) 2006-2009  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+import luban.content as lc
+from luban.content import select, load, alert
+
+class Factory(object):
+
+    def __init__(self, director, id, type):
+        self.director = director
+        self.id = id
+        self.type = type
+        self.domaccess = director.retrieveDOMAccessor('matter')
+        self.matter = self.domaccess.getMatter(type, id)
+        self.actor = 'matter'
+
+
+    def create(self):
+        bodyid = 'computed-phonons-body'
+        body = lc.document(id=bodyid)
+        loadphonons = lc.load(
+            actor='material_simulations/getphononresults',
+            routine='updatePhononViewForMatter',
+            id = self.id, type = self.type,
+            )
+        doc = self.director.retrieveVisual(
+            'matter/collapsable',
+            id='matter-computed-phonons',
+            title='Phonons',
+            body=body,
+            loadbody=loadphonons,
+            )
+        return doc
+
+
+def visual(director, id, type):
+    return Factory(director, id, type).create()
+    
+# version
+__id__ = "$Id$"
+
+# End of file 

@@ -1,0 +1,69 @@
+#!/usr/bin/env python
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                  Jiao Lin
+#                     California Institute of Technology
+#                     (C) 2006-2010  All Rights Reserved
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+'''
+This implementation needs improvements.
+It assumes that there is a symbolic link in html/ named "tmp" pointing
+to the directory content/data/tmp
+'''
+
+import sys, os, tempfile, histogram.hdf as hh
+
+
+# path of tmp directory in the http url
+http_tmproot = 'tmp'
+
+# path to the tmp directory in the file system
+tmproot = os.path.join('..', 'content', 'data', 'tmp')
+
+
+def visual(histogram, director):
+    """
+    histogram: a histogram data object
+    """
+    # matplotlib needs home to be writable
+    os.environ['HOME'] = '/tmp'
+
+    # find the temporary directory to write the png file
+    tmpdirectory = tempfile.mkdtemp(dir=tmproot)
+    if not os.path.exists(tmpdirectory): os.makedirs(tmpdirectory)
+
+    subdir = os.path.split(tmpdirectory)[1]
+
+    # png filename
+    filename = 'plot.png'
+    filepath = os.path.join(tmpdirectory, filename)
+
+    #
+    saveout = sys.stdout
+    sys.stdout = open(os.devnull, 'w')
+    from histogram import plot
+    plot(histogram, output=filepath)
+    sys.stdout = saveout
+
+    # the url for the image
+    pngurl = os.path.join(http_tmproot, subdir, filename)
+
+    #
+    import luban.content as lc
+    doc = lc.htmldocument()
+    doc.text = [
+        '<img src="%s" />' % pngurl
+        ]
+    return doc
+
+
+
+# version
+__id__ = "$Id$"
+
+# End of file 

@@ -1,0 +1,162 @@
+
+Directory Stucture
+------------------
+
+Root directory: /home/danse-vnf-admin/vnf stores VNF related data (not necessarily
+job related data )
+
+Working directory (stored in "servers" database): /home/danse-vnf-admin/vnf/data
+
+
+
+
+Adding New Pseudo-Potential
+---------------------------
+
+Optimization
+------------
+
+When a user checks "Optimization" checkbox, the simulation will use scratch space
+as it's temporary directory. Example:
+
+/scratch/M56XLZEX
+
+where 'M56XLZEX' is the id of qesimulations. The directories are created and 
+never deleted by VNF. Though they can be cleaned up by system administrator
+any time without any warning.
+
+Job Submission
+--------------
+Steps of job submission:
+- Create database record for job
+- Copy configuration file from qeconfigurations to qejobs directory: self._storeConfigurations()
+- Generate run.sh script and save in qejobs directory: self._createRunScript()
+- Save extra file in qejobs directory (for "trajectory" task type): self._storeExtraFiles()
+- Move files to remote directory (create if not exists): self._moveFiles()
+- Submit job to queue: self._scheduleJob()
+
+
+Configuration Generation
+------------------------
+
+
+Configuration Filtering
+-----------------------
+
+The purpose of filters is to make sure that some of the parameters are correctly
+set, depending on system settings (e.g. parameter of simulation refers to the
+correct location of previously run simulation)
+
+- Filtering is done when the config file is created only
+- There is no filtering when config file is edited!
+
+Filters for QE are located in the directory:
+
+vnfb/qeutils/filters/
+
+You can edit filters that you think are appropriate
+
+Chain of calls for config input generation
+--------------------------------------------
+
+Format of the sequence diagrams:
+
+<short actor name>.<routine> (visual: <short visual name>) [<operation type>] ->
+
+Example: generate-q2r.default (visual: input-q2r) [form] ->
+
+"generate-q2r"  - short name for actor "material_simulations/espresso-utils/generate-q2r"
+"default"       - routine called in the "generate-q2r" actor
+"input-q2r"     - short name for visual "material_simulations/espresso/input-q2r"
+                  there might be several visuals used for one actor
+"form"          - Display form. Can be: "form", "redirect"
+"->"            - Refers to the next call
+
+Notes:
+    - Base directory names can change, but they should be in one of the
+      "material_simulations/espresso*/" directory.
+
+Click on <Input: Add>
+
+[PW]
+
+generate-pw.default (visual: input-pw) [form] ->
+    generate-pw.params (visual: form-pw) [form] ->
+        generate-pw.generateInput [redirect] ->
+            input-create.default (visual: input-default) [form] ->  # User modifies parameters in config form
+                generate-pw.filterInput [redirect] ->
+                    sim-view.default
+
+Note:
+    - Depending on scf (self-consistent) or nscf (non self-consistent) input will be
+      generated using different routines: generateInput and generateNscfInput correspondingly 
+
+
+[Q2R]
+
+generate-q2r.default (visual: input-q2r) [form] ->
+    generate-q2r.generateInput [redirect] ->
+        input-create.default (visual: input-default) [form] ->  # User modifies parameters in config form
+            generate-q2r.filterInput [redirect] ->
+                sim-view.default
+
+Sequence diagrams for other simulation tasks (PH, MATDYN, DYNMAT, BANDS, DOS, PLOTBAND, etc.)
+can be obtained by raplacing "q2r" to lower cased task label. E.g. for PH
+"generate-q2r" will become "generate-ph".
+
+
+
+Filter Parameters
+-----------------
+
+General (PW, PH, Q2R, MATDYN, etc...):
+    outdir  (**/qesimulations - NFS, /scratch - scratch space)
+    prefix  (docs default values)
+
+In more details:
+
+PW:
+    + control.prefix = 'pwscf'
+    - control.outdir
+    - control.pseudo_dir
+
+PH:
+    + inputph.fildyn = 'matdyn' (docs default value)
+    + inputph.prefix = 'pwscf'
+    - inputph.outdir
+
+Q2R (see doc in PH/q2r.f90):
+    + input.fildyn = {path to PH fildyn directory}, Example: '/home/danse-vnf-admin/vnf/data/qejobs/9DDA4RS/matdyn'
+    + input.flfrc = 'default.fc' (no docs default value)
+
+MATDYN (see doc in PH/matdyn.f90):
+    + input.flfrc = {path do Q2R flfrc directory}, Example: '/home/danse-vnf-admin/vnf/data/qejobs/9S2EA6Z/default.fc'
+    + input.fldos = 'matdyn.dos' (docs default value),
+    + input.flfrq = 'matdyn.freq' (docs default value),
+    + input.flvec = 'matdyn.modes' (docs default value),
+
+DYNMAT (see doc in PH/dynmat.f90):
+    + input.fildyn = {path to PH fildyn directory}, Example: '/home/danse-vnf-admin/vnf/data/qejobs/9DDA4RS/matdyn'
+    + input.filout = 'dynmat.out' (docs default value),
+    + input.filmol = 'dynmat.mold' (docs default value),
+    + input.filxsf = 'dynmat.axsf' (docs default value),
+
+BANDS
+    + inputpp.prefix = 'pwscf'
+    + inputpp.filband = 'bands.dat' (no docs default value)
+    - inputpp.outdir
+
+DOS
+    + inputpp.prefix = 'pwscf'
+    + inputpp.fildos = pwscf.dos    # No apostrophe
+    - inputpp.outdir
+
+CP
+    + control.prefix = 'cp'
+    - control.outdir
+    - control.pseudo_dir
+
+PLOTBAND (non standard config file, no documentation available)
+    Line #
+    [0]     {path to BANDS filband}, Example: /home/danse-vnf-admin/vnf/data/qejobs/FXWTH4WT/bands.dat
+

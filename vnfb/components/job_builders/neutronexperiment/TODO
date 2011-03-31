@@ -1,0 +1,4 @@
+ * implement relative positioning of components
+ * implement relatvie positioning of sample on sample "frame"
+ * McvineSampleAssemblyBuilder: render kernel required mcvine imports instead of hard-coding them
+ * add meta-data about sample form (polycrystal, etc) to scatterer data object, and modify renderer to recognize that

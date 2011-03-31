@@ -1,0 +1,83 @@
+#!/usr/bin/env python
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                     California Institute of Technology
+#                       (C) 2009  All Rights Reserved
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+# The table to select one simulation
+# The table include a few columns such as id and type.
+# The first column is radio buttons.
+# This only creates the table itself, no filtering and sorting controls.
+# The full view with controls is in tableview-selectone.
+
+def visual(simulations, cols, director):
+    from luban.content.table import Model, View, Table
+    from luban.content import load
+    from luban.content.Link import Link
+    orm = director.clerk.orm
+    
+    class model(Model):
+        selectone = Model.descriptors.radio_button(name='selectone')
+        id = Model.descriptors.str(name='id')
+        initial_chemical_formula = Model.descriptors.str(name='initial_chemical_formula')
+        total_time = Model.descriptors.str(name='total_time')
+        time_step_interval = Model.descriptors.str(name='time_step_interval')
+        creator = Model.descriptors.str(name='creator')
+        #description = Model.descriptors.str(name='description')
+        #type = Model.descriptors.str(name='type')
+        timestamp = Model.descriptors.str(name='timestamp')
+        row_identifiers = ['id']
+
+    columns = [
+        View.Column(label='', measure='selectone'),
+        View.Column(label='ID', measure='id'),
+        View.Column(label='Initial chemical formula', measure='initial_chemical_formula'),
+        View.Column(label='Total time (ps)', measure='total_time'),
+        View.Column(label='Time step interval (ps)', measure='time_step_interval'),
+        #View.Column(label='Description', measure='description'),
+        #View.Column(label='Type', measure='type'),
+        View.Column(label='Creator', measure='creator'),
+        View.Column(label='Timestamp', measure='timestamp'),
+        ]
+    columns = filter(lambda col: col.measure in cols, columns)
+    view = View(columns=columns, editable=False)
+    
+    def getSelectone(record): return False
+    def getId(record):
+        return record.id
+    def getInitial_chemical_formula(record):
+        return record.initial_chemical_formula
+    def getTotal_time(record):
+        return record.total_time
+    def getTime_step_interval(record):
+        return record.time_step_interval
+#    def getDescription(record):
+#        return record.short_description
+    def getCreator(record):
+        creator = record.creator
+        return str(creator)
+    def getTimestamp(record):
+        timestamp = record.timestamp
+        return str(timestamp)
+#    def getType(record):
+#        return record.getTableName()
+                
+    import operator
+    value_generators = [
+        eval('get'+col.measure.capitalize())
+        for col in view.columns]
+    record2tuple = lambda record: [g(record) for g in value_generators]
+    data = map(record2tuple, simulations)
+    table = Table(model=model, data=data, 
+                  view=view, id='trajectory-table')
+    return table
+
+
+# version
+__id__ = "$Id$"
+
+# End of file 

@@ -1,0 +1,52 @@
+#!/usr/bin/env python
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                Jiao  Lin
+#                                 Caltech
+#                       (C) 2008  All Rights Reserved
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+def announcement(itask, user):
+    '''announcement of failure of the given itask for the given user
+    '''
+    if isinstance(user, basestring):
+        username = useremail = user
+    else:
+        username = user.username
+        useremail = user.email
+        
+    import vnfb.content
+
+    msg = vnfb.content.announcement()
+    msg.sender = useremail
+    msg.subject = "ITask #%s failed" % (itask.id,)
+    msg.text = [
+"""
+User %(username)s has encountered a problem when itask #%(itaskid)s
+was run for him/her. 
+
+%(itaskerror)s
+
+""",
+        ]
+
+    subs = {
+        'username': username,
+        'itaskid': itask.id,
+        'itaskerror': itask.error,
+        }
+
+    adminemail = 'vnf-dev@googlegroups.com'
+    #adminemail = 'linjiao@caltech.edu'
+    msg.recipients[adminemail] = subs
+
+    return msg
+
+# version
+__id__ = "$Id$"
+
+# End of file 

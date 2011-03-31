@@ -1,0 +1,430 @@
+#!/usr/bin/env python
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                 Jiao Lin
+#                      California Institute of Technology
+#                      (C) 2006-2009  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+from luban.content import load, select, alert
+import luban.content as lc
+
+from luban.components.AuthorizedActor import AuthorizedActor as base
+
+
+class Actor(base):
+
+
+    class Inventory(base.Inventory):
+
+        import pyre.inventory
+        id = pyre.inventory.str(name='id')
+
+        matter = pyre.inventory.str(name='matter')
+
+        shape = pyre.inventory.str(name='shape')
+
+        kernel = pyre.inventory.str(name='kernel')
+        kerneltype = pyre.inventory.str(name='kerneltype')
+
+        oldkernel = pyre.inventory.str(name='oldkernel')
+
+        short_description = pyre.inventory.str(name='short_description')
+
+
+    def selectMatter(self, director):
+        domaccess = self._domaccess(director)
+        id = self.inventory.id
+
+        # scatterer record
+        record = domaccess.getRecord(id)
+
+        #
+        matter = self.inventory.matter
+        if not matter: raise RuntimeError
+
+        #
+        record.matter = matter
+        domaccess.updateRecordWithID(record)
+
+        # delete all kernels
+        db = domaccess.db
+        kernelrecords = [k for n,k in record.kernels.dereference(db)]
+        record.kernels.clear(db)
+        orm = domaccess.orm
+        for r in kernelrecords:
+            orm.destroy(orm.record2object(r))
+        return matter
+
+
+    def createMatterView(self, director):
+        id = self.inventory.id
+        return director.retrieveVisual('scatterer/editor/matterview', id=id, director=director)
+
+
+    def createMatterSelector(self, director):
+        id = self.inventory.id
+        return director.retrieveVisual('scatterer/editor/matterselector', id=id, director=director)
+
+
+    def createShapeView(self, director):
+        id = self.inventory.id
+        return director.retrieveVisual('scatterer/editor/shapeview', id=id, director=director)
+
+
+    def createShapeEditor(self, director):
+        id = self.inventory.id
+        return director.retrieveVisual('scatterer/editor/shapeeditor', id=id, director=director)
+
+
+    def onSelectShapeType(self, director):
+        'handles the event a user clicks a shape type button'
+        #
+        _buttonid = lambda s: 'scatterer-shape-button-%s' % s.lower()
+        # dehighlight buttons
+        from vnfb.dom.geometry import shapenames
+        dehighlight = [select(id=_buttonid(s)).removeClass('highlight')
+                       for s in shapenames ]
+
+        # highlight
+        shapetypename = self.inventory.shape
+        highlightbutton = select(id=_buttonid(shapetypename)).addClass('highlight')
+
+        # chang form
+        newform = director.retrieveVisual(
+            'scatterer/editor/shapeform',
+            id = self.inventory.id,
+            director = director,
+            typename = shapetypename,
+            )
+        changeshapeform = select(id='scatterer-shape-form').replaceBy(newform)
+
+        #
+        actions = dehighlight + [highlightbutton, changeshapeform]
+        return actions
+
+
+    def setShape(self, director):
+        "given new shape's unique identifier, change the shape of this scatterer"
+        domaccess = self._domaccess(director)
+        db = domaccess.db
+        
+        scatterer = domaccess.getRecord(self.inventory.id)
+        newshape = db.fetchRecordUsingUniqueIdentifierStr(self.inventory.shape)
+
+        # destroy old shape if it exists and is different type
+        oldshape = scatterer.shape and scatterer.shape.id and scatterer.shape.dereference(db)
+        if oldshape and oldshape.__class__ is not newshape.__class__:
+            orm = domaccess.orm
+            oldshapeobj = orm.record2object(oldshape)
+            # remove reference from scatterer to old shape
+            scatterer.shape = None
+            db.updateRecord(scatterer)
+            # destroy old shape
+            orm.destroy(oldshapeobj)
+
+        # assign new shape
+        scatterer.shape = db.fetchRecordUsingUniqueIdentifierStr(self.inventory.shape)
+
+        # update db
+        db.updateRecord(scatterer)
+
+        # change to view
+        view = director.retrieveVisual(
+            'scatterer/editor/shapeview',
+            id=self.inventory.id, director=director)
+        return select(id='scatterer-shape-view').replaceBy(view)
+
+
+    def createKernelsView(self, director):
+        id = self.inventory.id
+        return director.retrieveVisual(
+            'scatterer/editor/kernelsview', id=id, director=director)
+
+
+    def addKernel(self, director):
+        """replace the kernel view by a new kernel editor
+
+        id: id of scatterer
+
+        actions returned:
+          * change the kernel view to a kernel editor
+        """
+        # scatterer record
+        domaccess = self._domaccess(director)
+        id = self.inventory.id
+        scatterer_record = domaccess.getRecord(id)
+        # if matter is not assigned, we have a problem
+        if not scatterer_record.matter:
+            return alert("You have not defined the atomic structure (matter) for this scatterer")
+        
+        view = director.retrieveVisual(
+            'scatterer/editor/kerneleditor',
+            id =id, director=director, kernel=None)
+        return select(id='scatterer-kernel-view').replaceBy(view)
+
+
+    def showNewKernelEditor(self, director):
+        id = self.inventory.id
+        kernelview = select(id='scatterer-kernel-view')
+        newview = director.retrieveVisual(
+            'scatterer/editor/kerneleditor',
+            id = id, director=director, kernel=None)
+        return kernelview.replaceBy(newview)
+
+
+    def setKernel(self, director):
+        '''change a kernel in the kernel list of the scatterer
+
+        id: scatterer id
+        oldkernel: unique id of old kernel.
+          could be empty string: meaning there is no old kernel
+        kernel: unique id of new kernel.
+        '''
+        domaccess = self._domaccess(director)
+        db = domaccess.db
+
+        id = self.inventory.id
+        scatterer = domaccess.getRecord(id)
+        newkernel = db.fetchRecordUsingUniqueIdentifierStr(self.inventory.kernel)
+
+        #
+        oldkernel = self.inventory.oldkernel
+        oldkernel = oldkernel and db.fetchRecordUsingUniqueIdentifierStr(oldkernel)
+        if oldkernel and oldkernel.__class__ is not newkernel.__class__:
+            kerneltypechange = True
+            # destroy old kernel if it exists and is different type
+            orm = domaccess.orm
+            oldkernelobj = orm.record2object(oldkernel)
+            # remove reference from scatterer to old kernel
+            scatterer.kernels.delete(oldkernel, db)
+            # destroy old kernel
+            orm.destroy(oldkernelobj)
+            # add new kernel
+            scatterer.kernels.add(newkernel, db)
+            
+        elif not oldkernel:
+            # if there is no old kernel, neeed to add the kernel to the kernel set
+            scatterer.kernels.add(newkernel, db)
+            # need to set kernel.matter to scatterer.matter
+            newkernel.matter = scatterer.matter
+            db.updateRecord(newkernel)
+
+        else:
+            # thre is old kernel, but the old kernel and the new kernel is the same
+            # type. actually they should be the exact same record
+            kerneltypechange = False
+            assert oldkernel.__class__  is newkernel.__class__ and oldkernel.id == newkernel.id
+            
+        # actions
+        actions = []
+        if not oldkernel:
+            # in case of adding a new kernel, need to change portlet items
+            addkernelportletitem = select(id='scatterer-add-a-kernel-portletitem')
+            newportletitem = director.retrieveVisual(
+                'scatterer/editor/kernelsview-kernel-portletitem',
+                id=id, director=director, kernel=newkernel)
+            #
+            insertnewportletitem = addkernelportletitem.before(newportletitem)
+            actions.append(insertnewportletitem)
+            
+        elif kerneltypechange:
+            # kernel changed type, need to replace the portlet item with a new
+            # one. 
+            newportletitem = director.retrieveVisual(
+                'scatterer/editor/kernelsview-kernel-portletitem',
+                id=id, director=director, kernel=newkernel)
+            #
+            replaceportletitem = select(id='kernel-%s-portletitem' % oldkernel.id).replaceBy(
+                newportletitem)
+            actions.append(replaceportletitem)
+
+        # select the new porletitem
+        portletitemid = 'kernel-%s-portletitem' % newkernel.id
+        selectnewportletitem = select(id=portletitemid).portletitem('select')
+        actions.append(selectnewportletitem)
+
+        #
+        return actions
+
+
+    def onSelectKernelType(self, director):
+        '''handles the event a user clicks a kernel type button
+
+        id: id of the scatterer
+        kerneltype: the type name string of kernel that user selected.
+        kernel: the unique id of the kernel being edited
+        '''
+        # scatterer record
+        domaccess = self._domaccess(director)
+        id = self.inventory.id
+        scatterer_record = domaccess.getRecord(id)
+        # if matter is not assigned, we have a problem
+        if not scatterer_record.matter:
+            return alert("You have not defined the atomic structure (matter) for this scatterer")
+        
+        from vnfb.dom.scattering_kernels import getKernelTypes
+        types = getKernelTypes()
+        #
+        _buttonid = lambda t: 'scatterer-kernel-button-%s' % t.lower()
+        # dehighlight buttons
+        dehighlight = [select(id=_buttonid(t.__name__)).removeClass('highlight')
+                       for t in types ]
+
+        # highlight
+        kerneltypename = self.inventory.kerneltype
+        highlightbutton = select(id=_buttonid(kerneltypename)).addClass('highlight')
+
+        # chang form
+        domaccess = self._domaccess(director)
+        orm = domaccess.orm
+        db = orm.db
+        # 1. kernel
+        kernel = self.inventory.kernel
+        kernel = kernel and db.fetchRecordUsingUniqueIdentifierStr(kernel)
+        # 2. tablename
+        type = orm.getObjectTypeFromName(kerneltypename)
+        tablename = orm(type).getTableName()
+        # 3.
+        newform = director.retrieveVisual(
+            'scatterer/editor/kernelform',
+            id = self.inventory.id,
+            director = director,
+            kernel = kernel,
+            tablename = tablename,
+            )
+        changekernelform = select(id='scatterer-kernel-form').replaceBy(newform)
+
+        #
+        actions = dehighlight + [highlightbutton, changekernelform]
+        return actions
+
+
+    def createKernelView(self, director):
+        '''create view for the kernel
+
+        id: id of scatterer
+        kernel: unique id of kernel record. could be empty string, meaning this is from a form
+          that is editing the new kernel and user clicks cancel
+        '''
+        id = self.inventory.id
+        kernel = self.inventory.kernel
+        if not kernel:
+            view = lc.document(id='scatterer-kernel-view')
+            editor = director.retrieveVisual(
+                'scatterer/editor/kerneleditor',
+                id =id, director=director, kernel=None)
+            view.add(editor)
+            return view
+        else:
+            domaccess = self._domaccess(director)
+            orm = domaccess.orm
+            db = orm.db
+            kernel = db.fetchRecordUsingUniqueIdentifierStr(kernel)
+            return director.retrieveVisual(
+                'scatterer/editor/kernelview',
+                id=id, director=director, kernel=kernel)
+
+
+    def createKernelEditor(self, director):
+        '''create editor for the kernel
+
+        id: id of the scatterer
+        kernel: unique id of kernel record. cannot be empty
+        '''
+        id = self.inventory.id
+        kernel = self.inventory.kernel
+        domaccess = self._domaccess(director)
+        orm = domaccess.orm
+        db = orm.db
+        kernel = db.fetchRecordUsingUniqueIdentifierStr(kernel)
+        return director.retrieveVisual(
+            'scatterer/editor/kerneleditor', id=id, director=director, kernel=kernel)
+
+
+    def selectKernelView(self, director):
+        view = self.createKernelView(director)
+        return select(id='scatterer-kernel-view').replaceBy(view)
+
+
+    def deleteKernelAndRefreshKernelsView(self, director):
+        '''delete the kernel and the refresh the kernesl view
+
+        id: id of the scatterer
+        kernel: unique identifier for the kernel
+        '''
+        id = self.inventory.id
+        kernel = self.inventory.kernel
+        domaccess = self._domaccess(director)
+        orm = domaccess.orm
+        db = orm.db
+        kernel = db.fetchRecordUsingUniqueIdentifierStr(kernel)
+        # remove kernel from the refset
+        scatterer = domaccess.getRecord(id)
+        scatterer.kernels.delete(kernel, db)
+        # destroy kernel
+        orm.destroy(orm.record2object(kernel))
+        # refresh
+        view = self.createKernelsView(director)
+        return select(id='scatterer-kernels-view').replaceBy(view)
+
+
+    def verifyBasicInfo(self, director):
+        errors = {}
+        short_description = self.inventory.short_description
+        if not short_description:
+            errors['short_description'] = 'cannot be empty'
+        if len(self.inventory.short_description) > 64:
+            errors['short_description'] = 'must be less than 64 characters'
+
+        if errors:
+            form = select(id='scatterer-basicinfo-form')
+            actions = [
+                form.find(name=name).formfield('showError', message=error)
+                for name, error in errors.iteritems()
+                ]
+            return actions
+        
+        domaccess = self._domaccess(director)
+        id = self.inventory.id
+        record = domaccess.getRecord(id)
+        record.short_description = short_description
+        domaccess.db.updateRecord(record)
+
+        view = director.retrieveVisual(
+            'scatterer/editor/basicinfoview', id=id, director=director)
+        return select(id='scatterer-basicinfo-view').replaceBy(view)
+
+
+    def createBasicinfoEditor(self, director):
+        id = self.inventory.id
+        return director.retrieveVisual(
+            'scatterer/editor/basicinfoeditor', id=id, director=director)
+
+
+    def _domaccess(self, director):
+        return director.retrieveDOMAccessor('scatterer')
+
+
+    def __init__(self, name='scatterer/editor'):
+        super(Actor, self).__init__(name)
+        return
+
+
+
+
+
+def actor(): return Actor()
+
+
+# version
+__id__ = "$Id$"
+
+# End of file 
+

@@ -1,0 +1,50 @@
+#!/usr/bin/env python
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                             Michael A.G. Aivazis
+#                               Orthologue, Ltd.
+#                      (C) 2004-2008  All Rights Reserved
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+def announcement(registrant):
+    import vnfb.content
+
+    import socket
+    hostname = socket.gethostname()
+    
+    msg = vnfb.content.announcement()
+    msg.sender = "jiao.lin@gmail.com"
+    msg.subject = "New registration alert at %r: %s" % (
+        hostname, registrant.username)
+    msg.text = [
+"""
+New registrant:
+
+%(firstname)s %(lastname)s 
+
+Email: %(email)s
+
+Organization: %(organization)s
+
+"""
+        ]
+
+    subs = {}
+    keys = ['firstname', 'lastname', 'email', 'organization']
+    for k in keys:
+        subs[k] = getattr(registrant, k)
+        continue
+
+    adminemail = 'vnf-administrators@googlegroups.com'
+    msg.recipients[adminemail] = subs
+
+    return msg
+
+# version
+__id__ = "$Id: new-registrant.odb,v 1.1 2008-04-04 04:25:52 aivazis Exp $"
+
+# End of file 

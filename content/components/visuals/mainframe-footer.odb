@@ -1,0 +1,32 @@
+# -*- Python -*-
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                 Jiao Lin
+#                      California Institute of Technology
+#                      (C) 2006-2009  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+from luban.content import load
+
+from luban.content.Splitter import Splitter 
+from luban.content.Link import Link
+from luban.content.Document import Document
+
+def visual(director):
+    dummy = Splitter()
+    sec = dummy.section(id='footer-copyright')
+    sec.paragraph().text = [
+        'Copyright (C) 2008-2011 California Institute of Technology. All rights reserved.',
+        ]
+    return dummy
+
+    
+# version
+__id__ = "$Id$"
+
+# End of file 

@@ -1,0 +1,93 @@
+#!/usr/bin/env python
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                 Jiao Lin
+#                      California Institute of Technology
+#                      (C) 2006-2009  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+
+#
+import luban.content as lc
+from luban.content import select, load, alert
+
+
+#
+from vnfb.dom.material_simulations.BvKModel import BvKModel
+from vnfb.dom.material_simulations.BvKBond import BvKBond
+
+from luban.components.Actor import Actor
+import luban.orm
+base = luban.orm.object2actor(BvKModel)
+class Actor(base):
+
+    class Inventory(base.Inventory):
+
+        import luban.inventory
+
+
+    # reload to make sure a new bvkbond is created correctly
+    def appendNewReferenceSetItem(self, director):
+        '''append a new item to a reference set of this object
+
+        id: id of the record that represents this object
+        refname: name of the reference set
+        '''
+        refname = self.inventory.refname
+        assert refname == 'bonds'
+
+        # this object
+        model = obj = self._load(director)
+        
+        #
+        orm = director.clerk.orm
+        
+        # create a new item
+        bond = BvKBond()
+        bond.matter = model.matter
+        bond.uses_primitive_unitcell = model.uses_primitive_unitcell
+        orm.save(bond, save_not_owned_referred_object=0)
+        
+        # add to the refset
+        record = orm(model)
+        refset = record.bonds
+        refset.add(orm(bond), db=orm.db)
+
+        return orm.db.getUniqueIdentifierStr(orm(bond))
+
+
+    # need to update 'uses_primitive_unitcell' of all bonds after update
+    def _postStoringUserInputs(self, director):
+        model = self._load(director)
+        orm = director.clerk.orm
+        
+        bonds = model.bonds
+        for bond in bonds:
+            record = orm(bond)
+            record.uses_primitive_unitcell = model.uses_primitive_unitcell
+            orm.db.updateRecord(record)
+            continue
+        
+        return load(
+            actor='material_simulations/phonon_calculators/bvk',
+            routine = 'editModel',
+            model_id = orm(model).id,
+            display_model_properties = True,
+            )
+        return super(Actor, self)._postStoringUserInputs(director)
+            
+
+def actor():
+    return Actor('orm/bvkmodels')
+
+
+# version
+__id__ = "$Id$"
+
+# End of file 

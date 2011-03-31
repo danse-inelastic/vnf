@@ -1,0 +1,97 @@
+#!/usr/bin/env python
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                 Jiao Lin
+#                      California Institute of Technology
+#                      (C) 2006-2009  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+import luban.content as lc
+
+from luban.components.Actor import Actor as base
+class Actor(base):
+
+    class Inventory(base.Inventory):
+
+        import pyre.inventory
+        id = pyre.inventory.str(name='id')
+
+
+    def receive_file(self, director):
+        self._debug.log('receive file...')
+
+        if not hasattr(director, 'getUploads'):
+            raise RuntimeError, 'getUploads not defined for director'
+            
+        # the directory to save the uploads
+        directory = self.uploadDirectory()
+
+        # make sure the directory exists
+        if not os.path.exists(directory):
+            try:
+                os.makedirs(directory)
+            except:
+                import traceback
+                self._debug.log('failed to create directory %s\n%s' % (
+                    directory, traceback.format_exc()))
+
+        # save uploaded files
+        try:
+            uploads = director.getUploads()
+        except:
+            import traceback
+            self._debug.log('nothing got uploaded\n%s' % traceback.format_exc())
+            uploads = {}
+            
+        for name, (filename, content) in uploads.iteritems():
+            path = os.path.join(directory, '%s-%s' % (name, filename))
+            open(path, 'wb').write(content)
+            msg = 'saved uploaded file %r to %r.' % (filename, path)
+            self._debug.log(msg)
+            continue
+
+        return id
+
+
+    def uploadDirectory(self):
+        id = self.inventory.id
+        from vnfb.utils.upload import abspath
+        directory = abspath(id)
+        self._debug.log('upload directory: %s'%directory)
+        return directory
+
+
+    def test(self, director):        
+        frame = lc.frame(title='test uploader')
+        document = frame.document(title='test uploader', id='maindoc')
+        
+        # create uploader
+        uploader = lc.uploader(
+            name = 'uploaded',
+            label='Upload',
+            onsubmit=lc.load(actor=self.name, routine='receive_file', id='uploadid-111')
+            )
+        document.add(uploader)
+        return frame
+            
+            
+
+
+
+import os
+
+
+def actor():
+    return Actor('upload')
+
+
+# version
+__id__ = "$Id$"
+
+# End of file    
+        

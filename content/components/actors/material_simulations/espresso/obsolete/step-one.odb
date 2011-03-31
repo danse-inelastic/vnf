@@ -1,0 +1,151 @@
+#!/usr/bin/env python
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                               Alex Dementsov
+#                      California Institute of Technology
+#                        (C) 2009  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+# OBSOLETE !!!
+
+from vinil.utils.const import STEPS, SIMCHAINS, PACKAGES
+from vinil.utils.simulationsteps import SimulationSteps
+from vinil.utils.stepper import Stepper
+from vinil.dom.Simulation import Simulation
+
+from luban.content import select
+from luban.content.Paragraph import Paragraph
+from luban.content.Document import Document
+from luban.content.HtmlDocument import HtmlDocument
+from luban.content import load
+from luban.content.Link import Link
+from luban.content.Splitter import Splitter
+from luban.content.FormSelectorField import FormSelectorField
+from luban.content.FormRadioBox import FormRadioBox
+from luban.content.Form import Form
+
+from vinil.components.Actor import Actor as base
+
+class Actor(base):
+    """ First step create the simulation"""
+    
+    class Inventory(base.Inventory):
+        import pyre.inventory
+        id          = pyre.inventory.str('id', default='')      # Simulation Id
+        sname       = pyre.inventory.str('sname', default='')
+        package     = pyre.inventory.str('package', default='')
+        simtype     = pyre.inventory.str('simtype', default='')
+        description = pyre.inventory.str('description', default='')
+        formula     = pyre.inventory.str('formula', default='')
+
+    def content(self, director):
+        splitter    = Splitter(orientation='vertical', id="step-splitter")
+        simsteps    = SimulationSteps(current=1)
+        s_steps     = simsteps.getSteps()
+        splitter.add(s_steps)
+        s_content   = splitter.section()
+
+        d           = Document(Class="step-content")
+        text    = """Here you can create new simulation. Please choose the type of simulation from available options:"""
+        d.add(Paragraph(text=text))
+
+        form        = Form(id="form-vinil")
+        sname       = form.text(name="sname", label='Simulation Name', value=self.sname)
+        package     = form.selector(name="package", label='Package', entries=enumerate(PACKAGES))
+        simtype     = form.selector(name="simtype", label='Simulation Type', entries=enumerate(SIMCHAINS.keys()))
+        description = form.text(name="description", label='Description', value=self.description)   # Make as textarea
+        formula     = form.text(name="formula", label='Formula', value=self.formula)
+        #isFavorite - All simulations are favorite at this moment!
+        #d_form.add(FormCheckBox(entries=enumerate(options)) )
+        submit      = form.submitbutton(label="Create New Simulation")
+        form.onsubmit   = select(element=form).submit(actor = 'espresso/step-one', routine = 'createRecord')
+
+        d.add(form)
+        s_content.add(d)
+
+        # TODO: Redo stepper. Should not conflict with submit button!
+
+        linklist    = (("espresso/index", "link", None), ())    # ("espresso/step-one", "link", self.id)
+        stepper     = Stepper(linklist)
+        s_stepper   = stepper.getStepper()
+        splitter.add(s_stepper)
+
+        return splitter
+
+    def createRecord(self, director):
+        """Create simulation record"""
+        self.verify()
+        package = PACKAGES[int(self.package)]
+        keys    = SIMCHAINS.keys()
+        simtype = keys[int(self.simtype)]
+        
+        params  = {"sname": self.sname, "package": package,
+                   "type": simtype, "description": self.description,
+                   "formula": self.formula, "isFavorite": True}
+        sim     = Simulation()
+        sim.setDirector(director)
+        sim.createRecord(params)
+
+        return load(actor='espresso/step-two', routine='link', id=sim.id)  # Redirection to the page
+
+
+    # stub
+    def verify(self):
+        """Verify data first """
+        pass
+
+    def pathlist(self, director):
+        self.pathlist = [("Home","greet","link"),
+                         ("Simulations", "simulations", "link"),
+                         ("Quantum Espresso", "espresso/index", "link"),
+                         (STEPS[0], None, None)
+                         ]
+        return self.pathlist
+
+
+    def __init__(self, *args, **kwds):
+        super(Actor, self).__init__(*args, **kwds)
+
+        return
+
+
+    def _configure(self):
+        super(Actor, self)._configure()
+        self.id          = self.inventory.id
+        self.sname       = self.inventory.sname
+        self.package     = self.inventory.package
+        self.simtype     = self.inventory.simtype
+        self.description = self.inventory.description
+        self.formula     = self.inventory.formula
+
+        return
+
+
+    def _init(self):
+        super(Actor, self)._init()
+        return
+
+def actor():
+    return Actor('espresso/step-one')
+
+
+# *********** DEAD CODE ******************
+
+#        text ="""Here you can set parameters related to your simulation. This can
+#        general parameters related to your simularion such as convergence and
+#        iterations as well as architecture related such as the name of cluster the
+#        simulation will run on or number of processes"""
+#        d_form.add(Paragraph(text="First choose the type of the simulation from available options:"))
+#        d_form      = Document(Class="step-content-form")
+
+
+__date__ = "$Sep 29, 2009 7:47:51 PM$"
+
+
+
+

@@ -1,0 +1,98 @@
+#!/usr/bin/env python
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                  Jiao Lin
+#                     California Institute of Technology
+#                       (C) 2009  All Rights Reserved
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+def visual(matters, cols, director):
+    try: return table(matters, cols, director)
+    except:
+        import journal
+        debug = journal.debug('matter-table')
+        import traceback
+        debug.log(traceback.format_exc())
+        return
+
+
+def table(matters, cols, director):
+    from luban.content.table import Model, View, Table
+    from luban.content import load
+    from luban.content.Link import Link
+    
+    class model(Model):
+
+        selected = Model.descriptors.bool(name='selected')
+        id = Model.descriptors.link(name='id')
+        description = Model.descriptors.str(name='description')
+        visualize = Model.descriptors.link(name='visualize')
+        type = Model.descriptors.str(name='type')
+        chemical_formula = Model.descriptors.str(name='chemical_formula')
+        created = Model.descriptors.str(name='created')
+        simulations = Model.descriptors.str(name='simulations')
+
+        row_identifiers = ['id', 'type']
+
+    columns = [
+        View.Column(label='', measure='selected'),
+        View.Column(label='ID', measure='id'),
+        View.Column(label='Description', measure='description', editable=True),
+        View.Column(label='Visualize', measure='visualize'),
+        View.Column(label='Type', measure='type'),
+        View.Column(label='Chemical_formula', measure='chemical_formula'),
+        View.Column(label='Date created', measure='created'),
+        View.Column(label='Simulations', measure='simulations'),
+        ]
+    columns = filter(lambda col: col.measure in cols, columns)
+
+    view = View(columns=columns, editable=True)
+
+    def getSelected(matter): return False
+    def getId(matter):
+        label = matter.id
+        link = Link(
+            label = label,
+            onclick = load(
+                actor='matter', routine='showMaterialView',
+                id = matter.id,
+                type = matter.__class__.name,
+                )
+            )
+        return link
+    def getDescription(matter):
+        return matter.short_description
+    def getVisualize(matter):
+        return 'not implemented'
+    def getCreated(exp):
+        date = exp.date
+        return str(date)
+    def getType(matter):
+        return matter.__class__.name
+
+    def getChemical_formula(matter):
+        return matter.chemical_formula
+        
+    def getSimulations(matter):
+        return 'not implemented'
+        
+    import operator
+    value_generators = [
+        eval('get'+col.measure.capitalize())
+        for col in view.columns]
+    record2tuple = lambda record: [g(record) for g in value_generators]
+    data = map(record2tuple, matters)
+
+    table = Table(model=model, data=data, view=view, id='matter-table')
+
+    return table
+
+
+# version
+__id__ = "$Id$"
+
+# End of file 

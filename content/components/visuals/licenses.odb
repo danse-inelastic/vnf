@@ -1,0 +1,58 @@
+# -*- Python -*-
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                 Jiao Lin
+#                      California Institute of Technology
+#                      (C) 2006-2010  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+import luban.content as lc
+
+
+def visual(director=None):
+    hdoc = lc.htmldocument(id='license-document', 
+                           text=['''<h2>License and Restriction Information<br>
+      </h2>
+      
+    <h4>GULP<br>
+      </h4>
+      <p>GULP users must comply with the following stipulations on the <a href="https://www.ivec.org/gulp/">GULP homepage</a>: <br>
+      </p>
+
+
+    <p>GULP is available free of charge to academics provided you accept the
+    following conditions of use:</p>
+    <p></p><ol>
+      <li>The program is not to be distributed to anyone else without the
+      express permission of the author.</li>
+      <li>The program is not to be used for commercial research. For any
+      commercial use of the program a license must be obtained from Accelrys
+      Inc, including contract research.</li>
+      <li>The program is supplied on an "as is" basis with no implied guarantee
+    
+      </li></ol>
+     <p></p><p>For commercial and government use, you must contact <a href="http://www.accelrys.com">Accelrys Inc</a>.</p>
+
+    <p>To download GULP you must <a href="https://www.ivec.org/gulp/register.cgi">register</a>.  The
+    registration process checks that your email address is from a valid
+    educational institution domain.  Examples include .edu, .edu.au, and
+    .ac.uk.  If your institution is not recognised by the system then email us -
+    do not try to fool it.  If your institution does not have students, then you
+    must use the commercial version from Accelrys.</p>
+    <p>&nbsp;</p>
+    
+    
+    '''])
+    return hdoc
+
+    
+# version
+__id__ = "$Id$"
+
+# End of file 

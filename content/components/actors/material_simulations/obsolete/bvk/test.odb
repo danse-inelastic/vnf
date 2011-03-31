@@ -1,0 +1,97 @@
+#!/usr/bin/env python
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                 Jiao Lin
+#                      California Institute of Technology
+#                      (C) 2006-2009  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+from luban.content import load, select, alert
+import luban.content as lc
+
+
+from luban.components.AuthorizedActor import AuthorizedActor as base
+
+class Actor(base):
+
+
+    class Inventory(base.Inventory):
+
+        import pyre.inventory
+
+
+    def force_constant_form_onebond(self, director):
+        p = lc.page()
+
+        sites = [
+            '0*a+0*b+0*c',
+            '0.5*a+0.5*b+0.5*c',
+            ]
+            
+        d1 = p.document(title='test form 1')
+        v = director.retrieveVisual(
+            'material_simulations/bvk/force-constant-form-onebond',
+            bvkid='unknown', bondindex=3,
+            uid = 'bond1', sites = sites,
+            debug = True,
+            )
+        d1.add(v)
+        
+        d2 = p.document(title='test form 2')
+        v = director.retrieveVisual(
+            'material_simulations/bvk/force-constant-form-onebond',
+            bvkid='unknown', bondindex=3,
+            uid = 'bond2', sites = sites,
+            siteA = 0, siteB = 1,
+            matrix = [ [1,2,3],
+                       [4,5,6],
+                       [7,8,9],
+                       ],
+            editable=False,
+            debug = True,
+            )
+        d2.add(v)
+
+
+        # create constraints
+        from vnfb.utils.constraints import Variable
+        class M(Variable):
+            def __init__(self, *indexes): self.indexes = indexes
+        m10 = M(1,0)
+        m01 = M(0,1)
+        constraint = m10 == m01
+        constraints = [constraint]
+        
+        d3 = p.document(title='test form 3')
+        v = director.retrieveVisual(
+            'material_simulations/bvk/force-constant-form-onebond',
+            bvkid='unknown', bondindex=3,
+            uid = 'bond3', sites = sites,
+            siteA = 0, siteB = 1, siteBlatticevector=[1,1,1],
+            editbond=True,
+            matrix = [ [1,2,3],
+                       [4,5,6],
+                       [7,8,9],
+                       ],
+            constraints = constraints,
+            debug = True,
+            )
+        d3.add(v)
+        
+        return p
+
+
+def actor(): return Actor('test')
+
+
+# version
+__id__ = "$Id$"
+
+# End of file 
+

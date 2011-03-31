@@ -1,0 +1,62 @@
+#!/usr/bin/env python
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                Jiao Lin
+#                      California Institute of Technology
+#                        (C) 2008  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+from pyre.components.Component import Component as base
+
+
+class Component(base):
+
+
+    class Inventory(base.Inventory):
+
+        import pyre.inventory
+
+
+    def initdb(self):
+        db = self.director.clerk.db
+        db.createAllTables()
+        for entry in assignments:
+
+            role, privilege = entry
+            
+            context, name = role
+            role = db.query(Role).filter_by(rolename=name, context=context).one()
+
+            target, name = privilege
+            privilege = db.query(Privilege).filter_by(target=target, name=name).one()
+            
+            grant(privilege, role, db)
+            
+            continue
+        
+        return
+
+
+from vnfb.dom.RoleHasPrivilege import grant, Role, Privilege
+
+
+assignments = [
+    (('vnf', 'core-developer'), ('bug', 'modify')), # vnf core developer can modify bug
+    (('vnf', 'user'), ('simulation', 'run')), # vnf user can run simulation
+    (('vnf', 'administrator'), ('system', 'administrate')), # vnf admin can admin vnf
+    ]
+
+
+def initdb(): return Component('initdb-user_has_roles', 'initdb')
+
+
+# version
+__id__ = "$Id$"
+
+# End of file 

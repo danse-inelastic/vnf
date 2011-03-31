@@ -1,0 +1,76 @@
+
+# TODO: Include job selection which is used for analysis
+
+{Page 1}
+[Back] Outputs: [PW] [PH] [Q2R] [MATDYN]        [Export to Atomic Structure]
+
+System Summary
+--------------
+Material Type: Metal/Insulator
+Lattice Type: CubicP (FCC)
+
+#  Atom Position (bohr) Mass (u)  Pseudo-Potentials
+1. Fe   (0, 0, 0)       26.8        Fe-blah-UPF
+2. Fe   ...
+3. V    ...
+
+Energy Cutoff: 27.0 Ry
+Density Cutoff: 300 Ry
+Smearing Type: gaussian     # See qe-general.txt
+Smearing Degree: 0.02
+nk1: 8
+nk2: 8
+nk3: 8
+
+
+Electron System     # From PW
+---------------
+
+Total Energy: 0.0
+Fermi Energy: 0.0
+Forces:
+#  Atom Force (Ry/bohr)
+1. Fe:  (0, 0, 0)
+2. Fe:  (0, 0.5, 0)
+3. V:
+
+Stress (Ry/bohr^2): 0.0 0.0 0.0
+                    0.0 0.0 0.0
+                    0.0 0.0 0.0
+
+
+Phonons
+-------
+
+Phonon Grid: 0.0 0.0 0.0
+Phonon DOS: [plot]
+Phonon Dispersion: [plot]
+
+{Tab "PW"}
+
+PW Output
+
+<CRASH>   # If exists
++------------------------+
+|   CRASH text           |
+|                        |
++------------------------+
+
+<Save Output>
+-------------------------
+| Output text            |
+|                        |
+|                        |
+|                        |
+|                        |
+--------------------------
+
+{Tab "Export to Atomic Structure"}
+
+[Export Phonon DOS]         # If DOS jobs exist
+
+Phonon DOS Exported, Date, Number # (how many times), Link
+
+[Export Phonon Dispersion]  # If Dispersion jobs exist
+
+Phonon Dispersion Exported, Date, Number # (how many times) #, Link

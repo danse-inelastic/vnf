@@ -1,0 +1,55 @@
+#!/usr/bin/env python
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                               Alex Dementsov
+#                      California Institute of Technology
+#                        (C) 2009  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+from vnfb.qeutils.qegrid import QEGrid
+
+import luban.content as lc
+from luban.content import load, select
+
+from vnfb.components.QEConvergence import QEConvergence as base
+
+class Actor(base):
+
+    def _mainContent(self, director, splitter):
+        # Area for errors
+        splitter.section(id="input-error-area") # ?
+        sB          = splitter.section()
+        visual      = 'material_simulations/espresso-convergence/table-conv'
+        sB.add(director.retrieveVisual(visual,
+                                        director,
+                                        id = self.id))
+
+
+    # TEMP
+    def runTest(self, director):
+        from vnfb.qeutils.qecalcutils.converger import Converger
+        configString    = """
+[pw.x]
+pwInput: /tmp/convergence/pw.in
+pwOutput: /tmp/convergence/pw.out
+"""
+
+        task = Converger(configString = configString, taskName = 'total energy', tolerance = 1)
+        opt_ecutwfc = task.converge(what = 'ecutwfc', startValue = 18, step = 4)
+        print opt_ecutwfc
+
+
+
+def actor():
+    return Actor(name='material_simulations/espresso-convergence/view')
+
+
+
+__date__ = "$Apr 21, 2010 7:36:30 PM$"
+
+

@@ -1,0 +1,24 @@
+
+Convergence Tests
+=================
+
+[Back] [Create New Test]
+
+[Simulation Name]
+- "Electron Structure"
+- "Single Phonon"
+
+[Parameters] [Start value]  [Step]                      [Tolerance]     [Max Steps]
+'nbnd'                      (int)     {add}
+'degauss'                   (double)   {add} # metall
+'ecutwfc'                   (double)   {add}
+'ecutrho'                   (double)   {add}
+'conv_thr'                  (double)   {multiply}
+'kpoints'                   (int vector) {add vector}
+
+
+Notes:
+    - Store the converged value to the data base
+    - If the value does not converge
+
+

@@ -1,0 +1,184 @@
+#!/usr/bin/env python
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                 Jiao Lin
+#                      California Institute of Technology
+#                      (C) 2006-2009  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+from luban.content import load, select
+
+from luban.content.Document import Document
+from luban.content.Link import Link
+
+
+from luban.components.Actor import Actor as base
+
+
+class Actor(base):
+
+
+    class Inventory(base.Inventory):
+
+        import pyre.inventory
+
+        id = pyre.inventory.str('id')
+
+        matter_type = pyre.inventory.str('matter_type')
+        matter_id = pyre.inventory.str('matter_id')
+
+
+    def default(self, director):
+        return
+
+
+    def new(self, director):
+        return director.redirect(
+            actor='material_simulations/abinitiowizard',
+            routine='start',
+            matter_type=self.inventory.matter_type,
+            matter_id=self.inventory.matter_id,
+            id = '',
+            )
+
+
+    def view(self, director):
+        computation = self._getSimulation(director)
+        if not self._isConfigured(computation, director):
+            return director.redirect(
+                actor='material_simulations/abinitiowizard',
+                routine='restart',
+                id = self.inventory.id,
+                )
+        view = self.createView(director)
+        return select(id='main-display-area').replaceContent(view)
+
+
+    def createView(self, director):
+        id = self.inventory.id
+
+        computation = self._getSimulation(director)
+        
+        document = Document(
+            title='Ab initio simulation %s: %s' % (
+            computation.id, computation.short_description))
+
+        job = computation.getJob(director.clerk.db)
+
+        action = load(
+            actor = 'job', routine = 'view',
+            id = job.id,
+            )
+        label = 'The computation job: %s' % job.id
+        link = Link(label=label, onclick=action)
+        document.add(link)
+
+        configurationdoc = document.document(title='Configuration')
+        self._view_configuration(computation, configurationdoc, director=director)
+
+        if isdone(job):
+            #if not computation.results_state or computation.results_state == 'retrieval failed':
+            #retrieve_computation_results(computation, director, debug=0)
+                
+            resdoc = document.document(title='Results')
+            
+            action = load(
+                actor = self.name, 
+                routine = 'view_results',
+                id = id
+                )
+            label = 'Click here for results.'
+            link = Link(label = label, onclick=action)
+            resdoc.add(link)
+
+            further_computation_doc = document.document(title='More...')
+            action = load(
+                actor = 'phononsfromabinitio', routine = 'create',
+                abinitio_id = id,
+                )
+            label = 'Calculate phonons based on this computation.'
+            link = Link(label=label, onclick=action)
+            
+        return document
+
+
+    def _view_configuration(self, computation, document, director=None):
+        engine = computation.engine
+        handler = '_view_%s_configuration' % engine
+        handler = getattr(self, handler)
+        return handler(computation, document, director=director)
+
+
+    def _view_vasp_configuration(self, computation, document, director=None):
+        p = document.paragraph()
+        p.text = [
+            'Vasp simulation %s' % computation.id,
+            ]
+
+        matter = director.clerk.dereference(computation.matter)
+        p = document.paragraph()
+        p.text = [
+            'Material #%s: %s' % (matter.id, matter.short_description,),
+            ]
+
+        p = document.paragraph()
+        p.text = [
+            'Kinetic energy cutoff: %s' % (computation.kineticEnergyCutoff,),
+            ]
+
+        p = document.paragraph()
+        p.text = [
+            'Exchange correlation functional: %s' % (computation.xcFunctional,),
+            ]
+
+        p = document.paragraph()
+        p.text = [
+            'Monkhorst pack messh: %s' % (computation.monkhorstPackMesh,),
+            ]
+
+        return
+
+
+
+    def _isConfigured(self, computation, director):
+        if not computation.short_description: return False
+        if not computation.engine: return False
+        if not computation.matter: return False
+        if not computation.getJob(director.clerk.db): return False
+        return True
+
+
+    def _getMatter(self, director):
+        return director.clerk.getRecordByID(
+            self.inventory.matter_type, self.inventory.matter_id)
+
+    
+    def _getSimulation(self, director):
+        return director.clerk.getRecordByID(AbInitio, self.inventory.id)
+    
+
+
+    def __init__(self, name='abinitio'):
+        super(Actor, self).__init__(name)
+        return
+
+
+
+from vnf.dom.AbInitio import AbInitio
+from vnf.components.Job import isdone
+
+
+def actor(): return Actor()
+
+
+# version
+__id__ = "$Id$"
+
+# End of file 
+

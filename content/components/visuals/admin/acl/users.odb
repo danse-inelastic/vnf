@@ -1,0 +1,55 @@
+# -*- Python -*-
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                 Jiao Lin
+#                      California Institute of Technology
+#                      (C) 2006-2010  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+from luban.content import load, alert, select
+import luban.content as lc
+
+
+from vnfb.components.visuals.AdminVisualFactory import AdminVisualFactory as base
+class Factory(base):
+
+    def create(self, director=None):
+        doc = lc.document(id='acl-users', title='Users')
+        sp = lc.splitter(id='acl-users-splitter'); doc.add(sp)
+        left = sp.section(id='acl-users-userlist-container')
+        left.addClass('admin-portlet-container')
+        right = sp.section(id='acl-user-roles-section')
+        right.addClass('admin-main-panel')
+
+        usermenu = lc.portlet(id='acl-users-userlist')
+        left.add(usermenu)
+        
+        clerk = director.clerk
+        users = clerk.indexActiveUsers()
+        for username, user in users.iteritems():
+            # XXXX
+            if username.startswith('_'): continue
+            edituser = select(element=right).replaceContent(
+                load(
+                    actor='loadvisual', 
+                    visual='admin/acl/edit_user',
+                    username=username)
+                )
+            usermenu.item(label=username, onclick=edituser)
+            continue
+        return doc
+
+    
+visual = Factory()
+
+
+# version
+__id__ = "$Id$"
+
+# End of file 

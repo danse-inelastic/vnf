@@ -1,0 +1,133 @@
+# -*- Python -*-
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                 Jiao Lin
+#                      California Institute of Technology
+#                      (C) 2006-2010  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+from luban.content import load, select, alert
+import luban.content as lc
+
+from luban.content.FormSelectorField import FormSelectorField
+
+
+class Factory(object):
+
+
+    def __init__(self, id=None, domaccess=None, director=None):
+        if director is None:
+            raise RuntimeError
+        if not domaccess:
+            domaccess = director.retrieveDOMAccessor('experiment')
+        self.domaccess = domaccess
+        self.director = director
+        self.id = id
+        self.experiment = domaccess.getExperimentRecord(id=id)
+        instrument = self.experiment.instrument
+        instrument = instrument and instrument.id and instrument.dereference(domaccess.db)
+        self.instrument = instrument
+        self.instrument_id = instrument and instrument.id
+        return
+    
+
+    def __call__(self):
+        instruments = self.domaccess.getInstrumentRecords()
+        
+        doc = lc.document(
+            title='Select the instrument where you want to do your experiment',
+            id='experimentwizard-instrumentselector',
+            )
+
+        #
+        from luban.content.FormTextField import FormTextField
+        hidden_field = FormTextField(hidden=True, value=self.instrument_id)
+        doc.add(hidden_field)
+
+        #
+        introductiondoc = lc.document(id='experimentwizard-instrumentintro')
+
+        #
+        refreshintroduction = select(element=introductiondoc).replaceContent
+        updateinstrumentid = lambda id: select(element=hidden_field).setAttr(value=id)
+        
+        instrument_gallery = self._createInstrumentGallery(
+            instruments, introductiondoc, refreshintroduction, updateinstrumentid)
+
+        doc.add(instrument_gallery)
+        doc.add(introductiondoc)
+
+        b = lc.button(label="continue"); doc.add(b)
+        selectedinstrument = select(element=hidden_field).getAttr('value')
+        b.onclick = load(
+            actor='experiment/editor', routine='onSelectInstrument',
+            id = self.id, instrument = selectedinstrument,
+            )
+        
+        return doc
+
+
+    def _createInstrumentGallery(
+        self, instruments, introductiondoc, refreshintroduction, updateinstrumentid):
+        
+        director = self.director
+        
+        # current instrument id
+        currentinstrument_id = self.instrument_id
+        
+        doc = lc.document(id='instrument-gallery-container')
+        sp = doc.splitter(id='instrument-gallery')
+        
+        idformatter = 'instrument-%s'
+        ids = [c.id for c in instruments]
+        buttonids = [idformatter % id for id in ids]
+
+        for instrument in instruments:
+            name = instrument.name
+            path = 'instruments/%s/middle-size-icon.png' % name
+            
+            buttonid = idformatter % instrument.id
+            img = lc.image(path=path, id=buttonid)
+            sp.section().add(img)
+
+            introduction = lc.document()
+            short_description = instrument.short_description
+            introduction.paragraph(text=[short_description])
+
+            if currentinstrument_id and currentinstrument_id == instrument.id:
+                img.addClass('selected')
+                introductiondoc.add(introduction)
+            
+            selectthisbutton = director.retrieveVisual(
+                'neutronexperiment/edit/select-a-button')\
+                .select(buttonid, buttonids)
+            
+            img.onclick = selectthisbutton + [
+                refreshintroduction(introduction),
+                updateinstrumentid(instrument.id),
+                ]
+
+            img.tip = '%s: click for more details' % instrument.name
+            continue
+                
+        return doc
+
+
+
+
+def visual(id=None, domaccess=None, director=None):
+    """
+    id: id of neutron experiment
+    """
+    return Factory(id=id, domaccess=domaccess, director=director)()
+
+# version
+__id__ = "$Id$"
+
+# End of file 

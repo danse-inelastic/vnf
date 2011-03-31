@@ -1,0 +1,36 @@
+{% extends "!layout.html" %}
+
+
+{% block rootrellink %}
+		<li><a href="https://vnf.caltech.edu">VNF</a>|&nbsp;</li>
+        <li><a href="{{ pathto('index') }}">home</a>|&nbsp;</li>
+        <li><a href="{{ pathto('search') }}">search</a>|&nbsp;</li>
+        <li><a href="{{ pathto('UserGuide')}}">Web portal guide</a> |&nbsp;</li>
+        <li><a href="{{ pathto('Scripting')}}">Scripting</a> |&nbsp;</li>
+        <li><a href="{{ pathto('DeveloperGuide')}}">Extending VNF</a> &raquo;</li>
+{% endblock %}
+
+<!--        <li><a href="{{ pathto('index') }}">documentation </a> &raquo;</li>-->
+
+{% block relbar1 %}
+<div class="header">  
+<table><tr>
+<td>
+<div style="text-align: left; padding: 7px 7px 10px 10px">
+<a href="https://vnf.caltech.edu"><img class="logo" src="{{
+pathto("_static/vnf.png", 1) }}" border="0" alt="py4sci"
+  height="60"/></a>
+</div>
+</td>
+<td style="padding: 0pt 0pt 1em 3em;">
+</td>
+</tr>
+</table>
+</div>
+{{ super() }}
+{% endblock %}
+
+{# put the sidebar before the body #}
+{% block sidebar1 %}{{ sidebar() }}{% endblock %}
+{% block sidebar2 %}{% endblock %}
+

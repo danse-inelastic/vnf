@@ -1,0 +1,87 @@
+# -*- Python -*-
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                      California Institute of Technology
+#                      (C) 2006-2009  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+from vnfb.components.DOMAccessor import DOMAccessor as base
+
+class Accessor(base):
+
+    def __init__(self):
+        super(Accessor, self).__init__('sqe-accessor')
+        return
+
+    def getData(self, sqe):
+        director = self.director
+        sqe = read(sqe, director)
+        self._debug.log('sqe.__dict__:'+str(sqe.__dict__))
+        return sqe
+
+    def getSQEs(self, atomicstructure):
+        db = self.db
+        return atomicstructure.sqes.dereference(db)
+
+import journal
+debug = journal.debug('sqe-accessor')
+from vnfb.dom.material_simulations.SQE import SQE, SQETable
+
+
+def read(sqe, director):
+    """read data for a sqe data object
+    """
+    orm = director.clerk.orm
+    record = orm(sqe)
+    dds = director.dds
+    # the directory
+    dir = dds.abspath(record)
+    import os
+    try:
+        # nc
+        ncfile = SQETable.ncfile
+        if not dds.is_available(record, files=[ncfile]):
+            dds.make_available(record, files=[ncfile])
+        ncPath = dds.abspath(record, ncfile)
+        if not os.path.exists(ncPath):
+            return
+        sqe.read(ncPath)
+    except Exception, err:
+        debug.log(err)
+        # histogram
+        histfile = SQETable.histogramh5
+        if not dds.is_available(record, files=[histfile]):
+            dds.make_available(record, files=[histfile])
+        if not os.path.exists(dds.abspath(record, histfile)):
+            return
+        histpath = dds.abspath(record, histfile)
+        from histogram.hdf import load, utils
+        try:
+            entry = utils.getOnlyEntry(histpath)
+        except:
+            entry = 'S(Q,E)'
+        h = load(histpath, entry)
+        import numpy as npy
+        sqe.q = npy.array(h.axes()[0].binCenters())
+        sqe.e = npy.array(h.axes()[1].binCenters())
+        sqe.sqe = h.I     
+#    else: # i think this third use case is for scripting so it doesn't belong here
+#        p = os.path.join(dir, ncfile)
+#        if os.path.exists(p):
+#            sqe.read(p)
+    return sqe
+
+def accessor():
+    return Accessor()
+
+
+# version
+__id__ = "$Id$"
+
+# End of file 

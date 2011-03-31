@@ -15,17 +15,17 @@
 def main():
 
 
-    from vnf.applications.RetrieveResults import RetrieveResults as base
+    from vnfb.applications.RetrieveResults import RetrieveResults as base
 
 
     class App(base):
 
 
         def _getPrivateDepositoryLocations(self):
-            return ['../config']
+            return ['../config', '../content/components', '/tmp/luban-services']
 
 
-    app = App()
+    app = App('retrieveresults')
     return app.run()
 
 

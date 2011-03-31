@@ -1,0 +1,130 @@
+# -*- Python -*-
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                 Jiao Lin
+#                      California Institute of Technology
+#                      (C) 2006-2009  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+import luban.content as lc
+from luban.content import select, load, alert
+
+
+def visual(models=None, director=None, matter_id=None):
+    if matter_id:
+        domaccess = director.retrieveDOMAccessor('material_simulations/phonon_calculators/bvk')    
+        models = domaccess.getModels(matter_id)
+
+    if not models:
+        doc = lc.document()
+        doc.paragraph(text='no bvk models')
+    else:
+        doc = _visual(models, director)
+
+    if matter_id:
+        new_model = load(
+            actor='material_simulations/phonon_calculators/bvk',
+            routine='newModel',
+            atomicstructure_id=matter_id
+            )
+        link = lc.link(label='create a new model', onclick=new_model)
+        doc.add(link)
+    return doc
+
+
+def _visual(models, director):
+    painter = director.painter
+    domaccess = director.retrieveDOMAccessor('material_simulations/phonon_calculators/bvk')
+    orm = domaccess.orm
+    
+    doc = lc.document()
+
+    grid = lc.grid(Class='bvk-models-selector-grid'); doc.add(grid)
+
+    for model in models:
+        model_id = orm(model).id
+        row = grid.row(id='bvk-model-row-%s' % model_id)
+
+        # model
+        modelcell = row.cell(); modelcell.add(modelView(model, domaccess, painter))
+
+        # select link
+        selectlinkcell = row.cell();
+        link = lc.link(label='select this model', onclick=load(
+            actor='material_simulations/phonon_calculators/bvk', routine='selectModel',
+            model_id = model_id))
+        selectlinkcell.add(link)
+
+        # clone
+        clonelinkcell = row.cell();
+        link = lc.link(
+            label='clone', 
+            onclick=load(
+                actor='material_simulations/phonon_calculators/bvk',
+                routine='cloneModel',
+                model_id = model_id),
+            )
+        clonelinkcell.add(link)
+
+        if domaccess.isModelEditable(model=model):
+            # edit link
+            editlinkcell = row.cell();
+            link = lc.link(label='edit', onclick=load(
+                actor='material_simulations/phonon_calculators/bvk', 
+                routine='editModel',
+                model_id = model_id))
+            editlinkcell.add(link)
+
+            # delete link
+            deletelinkcell = row.cell();
+            link = lc.link(label='delete', onclick=load(
+                actor='material_simulations/phonon_calculators/bvk', 
+                routine='deleteModel',
+                model_id = model_id))
+            deletelinkcell.add(link)
+
+
+    return doc
+
+
+def modelView(model, domaccess, painter):
+    orm = domaccess.orm
+    title = 'Model %r' % (model.short_description or orm(model).id)
+    doc = lc.document(title=title, collapsed=True, collapsable=True)
+    p = lc.paragraph(text=['loading...'])
+    doc.add(p)
+    doc.oncollapse = select(element=doc).replaceContent(p)
+
+    model_is_editable = domaccess.isModelEditable(modelrecord=orm(model))
+    doc.onexpand = select(element=doc).replaceContent(
+        load(actor='orm/bvkmodels', routine='display',
+             id = orm(model).id, editlink=False)
+        )
+    return doc
+    
+    bonds = model.bonds
+    if len(bonds):
+        drawer = painter.paintObj.drawers.getDrawer(model)
+        doc = drawer(model, readonly=1, editlink=0)
+    else:
+        doc = lc.document(title='Model %s' % orm(model).id)
+        p = doc.paragraph(text=['there is no bond in this model'])
+        link = lc.link(label='edit this model', onclick=load(
+            actor='material_simulations/phonon_calculators/bvk', routine='editModel',
+            model_id = orm(model).id))
+        doc.add(link)
+
+    doc.collapsed = True
+    return doc
+
+
+# version
+__id__ = "$Id$"
+
+# End of file 

@@ -1,0 +1,579 @@
+/*
+This is CSS layout for Quantum Espresso pages
+*/
+
+pre {
+    font-size: 12px
+}
+
+fieldset {
+    border: 0px;
+    padding: 10px;
+    margin: 0px;
+    background-color: white;
+}
+
+
+#qe-section-actions {
+    margin-bottom: 15px;
+}
+
+#qe-splitter-analysis {
+    
+}
+
+#qe-splitter-analysis .qe-section-back {
+    width: 80px;
+}
+
+#qe-splitter-analysis .qe-section-text-output {
+    width: 65px;
+}
+
+.qe-splitter-export-phonon {
+    width: 380px;
+}
+
+#qe-export-status div {
+    padding: 20px 10px;
+}
+
+#action-refresh-status,
+.qe-action-default,
+.qe-action-back,
+.qe-action-refresh,
+.qe-action-new,
+.qe-action-edit,
+.qe-action-clone,
+.qe-action-analyze,
+.qe-action-delete,
+.qe-run-task,
+.qe-cancel-task {
+    padding: 2px 15px;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    text-decoration: none;
+    margin-right: 10px;
+}
+
+
+a.qe-action-default,
+a.qe-action-back,
+a.qe-action-refresh,
+a.qe-action-new,
+a.qe-action-edit,
+a.qe-action-clone,
+a.qe-action-analyze,
+a.qe-action-delete,
+a.qe-action-structure {
+    text-decoration: none;
+}
+
+.qe-action-back {
+    background-color: #dcf6db;
+}
+
+.qe-action-refresh {
+    background-color: #abff8d; /* #abff8d - light green, #dcf6db */
+}
+
+.qe-action-new {
+    background-color: #48f640; /* #48f640 - deep green, #c2d6f9 - light blue */
+}
+
+.qe-action-default,
+.qe-action-edit {
+    background-color: #c2d6f9; /* light blue */
+}
+
+.qe-action-clone {
+    background-color: #c2d6f9; /* #FFCC00 - orange */
+}
+
+.qe-action-analyze {
+    background-color: #c2d6f9; /* yellow */
+}
+
+.qe-action-delete {
+    background-color: #c2d6f9; /* #FF7700 - light red */
+}
+
+/* Just Colors */
+.qe-color-red {
+    background-color: #FF7700; /* red */
+}
+
+.qe-text-red {
+    color: red; /* red */
+}
+
+.qe-color-green {
+    background-color: green; /* change? */
+}
+
+.qe-text-green {
+    color: green; /* green */
+}
+
+
+.qe-color-blue {
+    background-color: #9bbcf8; /* more blue */
+}
+
+.qe-text-blue {
+    color: blue; /* blue */
+}
+
+.qe-text-black {
+    color: black; /* black */
+}
+
+.qe-action-structure {
+    font-weight: bold;
+    padding: 3px 20px;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    text-decoration: none;
+    margin-right: 10px;
+    margin-left: 2px;
+    background-color: #48f640;
+}
+
+.qe-structure-label {
+    padding-top: 3px;
+
+}
+
+.qe-structure-label td {
+    padding-right: 15px;
+    padding-left: 10px;
+}
+
+
+#action-refresh-status {
+    float: left;
+    background-color: #abff8d;   /* #8aff61; */
+    margin: 30px 10px 10px 25px;
+}
+
+
+.button-green a{
+    background-color: #33DD33; /* deep green */
+}
+
+.qe-run-task {
+    background-color: #48f640; /* deep green #1fff1f*/
+}
+
+a.qe-run-task,
+a.qe-cancel-task {
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.qe-cancel-task {
+    background-color: #FF7700; /* red */
+}
+
+
+.qe-tasks-table td.qe-action-task {
+    padding: 10px;
+}
+
+.qe-section,
+.qe-section-inline {
+    font-size: 1.1em;
+    font-weight: bold;
+    margin-top: 30px;
+    margin-bottom: 10px;
+}
+
+.qe-section-inline,
+.qe-section-inline a,
+.qe-section-inline p {
+    float: left;
+}
+
+#qe-tasks-label {
+    display: inline;
+}
+
+.qe-table {
+
+}
+
+.qe-table table,
+.qe-table-analysis table {
+    border-collapse: collapse;
+    -moz-border-radius: 10px;
+    -webkit-border-radius: 10px;
+    width: 500px;
+    background-color: #f0f0f0;
+}
+
+.qe-table-analysis table{
+    width: 570px;
+}
+
+.qe-table td,
+.qe-table-analysis td,
+.qe-tasks-table td{
+    border: 2px solid white;
+    padding: 3px 10px 3px 10px;
+    vertical-align: top;
+}
+
+.qe-tasks-table table{
+    border-collapse: collapse;
+    -moz-border-radius: 10px;
+    -webkit-border-radius: 10px;
+    background-color: #f0f0f0;
+}
+
+.qe-tasks-table td{
+    width: 240px
+}
+
+.qe-table-conv-jobs td {
+    border-width: 0px 2px 2px 2px;
+    border-style: solid;
+    border-color: white;
+    padding: 3px 10px 3px 10px;
+    vertical-align: top;
+    width: 800px;
+}
+
+.qe-table-conv-jobs table {
+    border-collapse: collapse;
+    -moz-border-radius: 10px;
+    -webkit-border-radius: 10px;
+    background-color: #f0f0f0;
+}
+
+.qe-grid table,
+.qe-tasks-info table {
+
+}
+
+.qe-grid td,
+.qe-tasks-info td {
+    border: 0px;
+    padding: 0px  5px 0px 0px;
+    vertical-align: top;
+}
+
+.qe-tasks-info td.qe-tasks-param {
+    width: 70px;
+}
+
+.qe-atomic-param {
+    
+}
+
+.qe-table-atomic td,
+.qe-table-forces td,
+.qe-table-stress td,
+.qe-table-freqs td{
+    border: 0px;
+    padding: 2px;
+    vertical-align: top;
+}
+
+.qe-table-atomic table {
+    border-collapse: collapse;
+    width: 380px
+}
+
+.qe-table-forces table {
+    border-collapse: collapse;
+    width: 200px
+}
+
+.qe-table-md {
+    padding: 5px 0px 5px 7px;
+}
+
+.qe-table-stress table {
+    border-collapse: collapse;
+    width: 200px
+}
+
+.qe-table-freqs table {
+    border-collapse: collapse;
+    width: 200px
+}
+
+textarea {
+    width: 400px;
+    height: 200px;
+}
+
+.qe-textarea-crash td textarea {
+    width: 600px;
+    height: 200px;
+}
+
+
+.qe-textarea-outputs td textarea {
+    width: 600px;
+    height: 400px;
+}
+
+.qe-textarea-inputs td textarea {
+    width: 500px;
+    height: 400px;
+}
+
+
+#qe-atoms-form {
+    
+}
+
+select {
+    width: 200px;
+}
+
+/*
+.qe-selector-pseudo {
+    width: 200px;
+}
+*/
+
+.qe-atoms-header td{
+    font-weight: bold;
+    padding-top: 3px;
+    padding-left: 15px;
+
+}
+
+.qe-atoms-label{
+    font-weight: bold;
+}
+
+.mass-textfield {
+    width: 90px;
+}
+
+.mass-textfield input {
+    width: 80px;
+}
+
+.qe-table-header {
+    font-weight: bold;
+    text-align: center;
+}
+
+.qe-table-header-left {
+    font-weight: bold;
+    text-align: left;
+}
+
+
+tr td .qe-table-id {
+    width: 80px;
+}
+
+tr td .qe-table-time {
+    width: 400px;
+}
+
+tr td .qe-table-check {
+    width: 50px;
+}
+
+tr td .qe-table-delete {
+    width: 50px;
+}
+
+tr td .qe-table-task-type {
+    width: 70px;
+}
+
+tr td .qe-table-job-status {
+    width: 300px;
+}
+
+
+tr td .qe-table-tar {
+    width: 100px;
+}
+
+tr td .qe-table-param {
+    width: 100px;
+}
+
+/*
+.qe-text-area {
+    width: 200px;
+}
+
+.qe-tasks-info td.qe-tasks-value {
+    width: 100px;
+}
+.qe-tasks-results p {
+    display: inline;
+    float: left;
+}
+*/
+
+.qe-cell-param {
+    width: 170px;
+    font-weight: bold;
+}
+
+.qe-cell-param-analysis {
+    width: 140px;
+    font-weight: bold;
+    background-color: #ddd;
+}
+
+.qe-cell-value {
+    
+}
+
+/* Style for QE forms */
+
+.qe-form {
+    border-collapse: collapse;
+}
+
+.qe-form-label {
+    width: 170px;
+    font-weight: bold;
+    vertical-align: top;
+    text-align: right;
+    padding-top: 5px;
+    padding-right: 5px;
+}
+
+.qe-form-field div {
+    margin: -2px;
+}
+
+.qe-task-header-change {
+    text-align: right;
+}
+
+.qe-action-accept {
+
+}
+
+.qe-action-cancel {
+    padding-top: 5px;
+}
+
+
+/* Change? */
+#qe-check-results,
+#qe-analyze-results,
+.qe-task-action {
+    margin-left: 10px;
+    padding: 1px 10px;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    text-decoration: none;
+}
+
+#qe-check-results,
+.qe-task-action {
+    background-color: #abff8d; /* light green #8aff61*/
+}
+
+a.qe-task-action {
+    text-decoration: none;
+}
+
+.qe-all-jobs {
+    margin-left: 15px;
+}
+
+
+#qe-analyze-results {
+    margin-left: 10px;
+    background-color: #c2d6f9; /* yellow */
+}
+
+.qe-run-tasks {
+
+}
+
+.default-size-plot {
+    width: 500;
+    height: 350;
+}
+
+/* CSS from Vinil */
+
+/* overload the default behavior of luban for buttons */
+#error-area,
+#input-error-area {
+    color: red;
+}
+
+.clear-both {
+    clear: both;
+}
+
+.display-inline a,
+.display-inline p{
+    margin: 0px;
+    float: left;
+}
+
+.display-block,
+.display-block a,
+.display-block p{
+    display: block;
+}
+
+.text-bold {
+    font-weight: bold;
+}
+
+.text-green {
+    color: green;
+}
+
+.text-blue {
+    color: blue; /* blue */
+}
+
+
+.padding-left-20 {
+    padding-left: 20px;
+}
+
+
+a.link-text-hack {
+    text-decoration:none;
+}
+
+a.link-text-hack:hover {
+    cursor:text;
+    text-decoration:none;
+}
+
+#qe-simchain a.link-text-hack {
+    color: blue;
+}
+
+#qe-simchain a.link-text-hack:hover {
+    color: blue;
+}
+
+.action-link {
+    border-color: #cced8c;
+    border-width: 2px;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    width:  50px;
+    padding: 0px 2px;
+}
+
+.qe-dialog-output {
+    width: 500px;
+    max-height: 400px;
+    overflow-y: scroll;
+    overflow-x: scroll;
+}
+

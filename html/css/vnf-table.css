@@ -1,0 +1,97 @@
+/* -*- CSS -*- */
+/*
+ * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ *
+ *                                   Jiao Lin
+ *                      California Institute of Technology
+ *                         (C) 2008 All Rights Reserved  
+ *
+ * {LicenseText}
+ *
+ * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ */
+
+.moneyCurrencySymbol {
+}
+
+.moneyAmount {
+    color: #00a000;
+}    
+
+.date {
+    text-align: center;
+}
+
+table.tabulated {
+    margin: 3pt;
+    border-spacing: 0pt;
+    border-left: none;
+    border-top: none;
+    border-bottom: none;
+    border-right: none;
+}
+
+table.tabulated td {
+    /*text-align: center;*/
+    font: 90%  "Lucida Grande", Verdana, Lucida, Helvetica, Arial, sans-serif;
+    border-left: 1px solid white;
+    border-right: 1px solid white;
+    border-style: solid;
+    border-width: 0pt 1px 0pt 1px;
+    padding: 1px 5px 1px 5px;
+}
+
+table.tabulated thead td {
+    font: 100%  "Lucida Grande", Verdana, Lucida, Helvetica, Arial, sans-serif;
+    background: #d7e1e3;
+    border-top-width: 0px;
+    border-top-color: white;
+    border-bottom-width: 0px;
+    border-bottom-color: white;
+    position: relative;
+    padding: 3px 10px 3px 10px;
+}
+
+
+
+/* calendar */
+a.dp-choose-date {
+    float: left;
+    width: 16px;
+    height: 16px;
+    padding: 0;
+    margin: 5px 3px 0;
+    display: block;
+    text-indent: -2000px;
+    overflow: hidden;
+    background: url(images/calendar.png) no-repeat; 
+}
+a.dp-choose-date.dp-disabled {
+    background-position: 0 -20px;
+    cursor: default;
+}
+
+/* makes the input field shorter once the date picker code
+ * has run (to allow space for the calendar icon
+ */
+input.dp-applied {
+    width: 140px;
+    float: left;
+}
+
+
+.odd {
+    background-color: #f5f5f5;
+    /*background-color: #f0f3fc;*/
+}
+
+.even {
+    background-color: #eaeaea;
+}
+
+
+/* version */
+/* $Id$ */
+
+/* End of file */
+

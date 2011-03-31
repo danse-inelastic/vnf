@@ -1,0 +1,203 @@
+#!/usr/bin/env python
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                 Jiao Lin
+#                      California Institute of Technology
+#                      (C) 2006-2009  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+from luban.content import load, select, alert, createCredential
+import luban.content as lc
+
+from luban.components.Actor import Actor as base
+
+
+class Actor(base):
+
+
+    class Inventory(base.Inventory):
+
+        import pyre.inventory
+
+        username = pyre.inventory.str('username')
+        password = pyre.inventory.str('password')
+
+        post_authorization_action = pyre.inventory.str(
+            'post_authorization_action')
+
+
+    def default(self, director):
+        visual = self.createFrontPageContent(director)
+        
+        frame = lc.frame(title='Virtual neutron facility: please login')
+        frame.add(visual)
+
+        dock = lc.dock(id='dock', hidden=True)
+        frame.add(dock)
+        
+        return frame
+
+
+    def recreate(self, director):
+        newframe = self.default(director)
+        return select(id='').replaceBy(newframe)
+
+
+    def createFrontPageContent(self, director):
+        '''create the content of the front page (frame)
+        add it to a frame then we have the login frame
+        '''
+        skeleton = director.retrieveVisual('skeleton')
+
+        # hide userinfo
+##         header = skeleton.find(id='mainframe-header')
+##         userinfo = header.find(id='header-userinfo')
+##         userinfo.hidden = True
+
+        # the content
+        body_frame = skeleton.find(id='body-frame')
+        body = self.createFrontPageBodyDocument(director)
+        body_frame.add(body)
+        
+        return skeleton
+
+
+    def createFrontPageBodyDocument(self, director):
+        '''create the body document for the front page
+        embed this document inside the skeleton in visuals/skeleton then we
+        get the whole front page (frame)
+        '''
+        bodydoc = lc.document(id='login-body-doc')
+        splitter = lc.splitter(id='login-body-splitter')
+        bodydoc.add(splitter)
+
+        # left
+        left = splitter.section(id='login-body-left')
+        # form
+        formcontainer = left.document(id='login-form-container')
+        form = director.retrieveVisual(
+            'login-form', 
+            post_authorization_action=self.inventory.post_authorization_action)
+        formcontainer.add(form)
+        # portlet
+        portlet = director.retrieveVisual('frontpage-portlet')
+        left.add(portlet)
+        #
+
+        # right
+        right = splitter.section(id='login-body-right')
+        # introduction
+        introcontainer = right.document(
+            id='front-page-vnf-intro-container',
+            title='Welcome to the Virtual Neutron Facility',
+            )
+        intro = lc.htmldocument(); introcontainer.add(intro)
+        intro.text = [
+            #'The Virtual Neutron Facility (VNF) provides online computation tools for simulating neutron scattering experiments.',
+            '<p>The Virtual Neutron Facility (VNF) is an online tool that allows users to perform end-to-end, full simulations of neutron scattering experiments. It integrates scientific software packages for material simulations with Monte-Carlo simulations of neutron scattering to gain insights into material properties.</p>',
+            ]
+        # central display
+        ctrldisplay = right.document(id='front-page-central-display')
+        initialviewdocuments = [
+            'screencasts',
+            #'tutorials',
+            'status',
+            'technology',
+            #'personnel',
+            ]
+        for idoc in initialviewdocuments:
+            doc = director.redirect(
+                actor='frontpage', routine='createDocument', name=idoc,
+                include_credential=False)
+            doc.Class += ' alternating-bg'
+            ctrldisplay.add(doc)
+            continue
+        # footnote
+        footnotecontainer = right.document(id='front-page-footnote-container')
+        htmldoc = lc.htmldocument(); footnotecontainer.add(htmldoc)
+        htmldoc.text = [
+            'The VNF is a product of the <a target="_blank" href="http://danse.us">DANSE</a> project, which is bringing computational materials science and instrument simulations to neutron scattering experiments. The  DANSE project is funded by the US National Science Foundation under grant DMR-0520547.',
+            ]
+        htmldoc = lc.htmldocument(); footnotecontainer.add(htmldoc)
+        htmldoc.text = [        
+            # 'You are presently at the stable release site of VNF; the version under development is <a target="_blank" href="https://vnf-dev.caltech.edu">here</a>.',
+            'You are presently at the development site of VNF; the release sites of vnf are available at <a target="_blank" href="https://vnf.caltech.edu">caltech</a> and <a target="_blank" href="https://vnf.sns.gov">SNS</a> (the latter is only accessible from inside ORNL)',
+            ]
+        return bodydoc
+
+
+    def verify(self, director):
+        # pass info to sentry
+        sentry = director.sentry
+        sentry.ticket = ''
+        sentry.username = self.inventory.username
+        sentry.passwd = self.inventory.password
+
+        errors = {}
+        
+        username = self.inventory.username
+        if not username:
+            errors['username'] = 'Username cannot be empty'
+        elif not director.userIsActive():
+            errors['username'] = 'Username does not exist. Please register first.'
+            
+        password = self.inventory.password
+        if not password:
+            errors['password'] = 'Password cannot be empty'
+
+        if director.userIsActive() and password and not director.userIsAuthorized():
+            errors['password'] = "Invalid password"
+        
+        if errors:
+            if not director.userIsActive():
+                # find out if user just registered
+                from vnfb.dom.Registrant import Registrant
+                from vnfb.dom.User import User
+                db = director.clerk.db
+                if db.query(Registrant).filter_by(username=username).all() \
+                   and not db.query(User).filter_by(username=username).all():
+                    return alert('Thanks for your interests in vnf. You probably just signed up for vnf but are not yet approved. Please wait for the approval email, and your patience is very much appreciated.')
+            return self.formError(director, errors=errors)
+
+        post_authorization_action = self.inventory.post_authorization_action
+        if not post_authorization_action:
+            post_authorization_action = load(actor='greeter', routine='greet')
+        else:
+            from vnfb.content import safe_eval_action
+            post_authorization_action = safe_eval_action(post_authorization_action)
+        return [
+            createCredential(
+                username=director.sentry.username,
+                ticket=director.sentry.ticket,
+                ),
+            post_authorization_action,
+            ]
+
+
+    def formError(self, director, errors=None):
+        from luban.content import select
+        return [select(id='login-form').enable()] + [
+            select(id='login-%s-input' % name).formfield('showError', message=text)
+            for name, text in errors.iteritems()
+            ]
+    
+    
+    def __init__(self, name='login'):
+        super(Actor, self).__init__(name)
+        return
+
+
+def actor(): return Actor()
+
+
+# version
+__id__ = "$Id$"
+
+# End of file 
+

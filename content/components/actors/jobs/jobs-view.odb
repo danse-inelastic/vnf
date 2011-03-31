@@ -1,0 +1,143 @@
+#!/usr/bin/env python
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                               Alex Dementsov
+#                      California Institute of Technology
+#                        (C) 2009  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+from vnfb.qeutils.qeutils import stamp2date
+from vnfb.qeutils.qegrid import QEGrid
+from vnfb.utils.const import PACKNAME
+
+from luban.content import select
+from luban.content import load
+
+import luban.content as lc
+from luban.components.AuthorizedActor import AuthorizedActor as base
+
+class Actor(base):
+
+    class Inventory(base.Inventory):
+        import pyre.inventory
+        id          = pyre.inventory.str('id', default='')          # Task Id
+        jobid       = pyre.inventory.str('jobid', default='')    # Configuration Id
+        taskid      = pyre.inventory.str('taskid', default='')
+        type        = pyre.inventory.str('type', default='')        # Type of the configuration file
+        package     = pyre.inventory.str('package', default='Quantum Espresso')
+
+
+    def default(self, director):
+        return select(id='main-display-area').replaceContent(self.content(director))
+
+
+    def content(self, director):
+        if not self.package in PACKNAME.keys():
+            self.package    = 'Quantum Espresso'    # "Default"?
+
+        job     = director.clerk.getQEJobs(id = self.jobid)
+        #input     = director.clerk.getQEConfigurations(id=self.configid)
+
+        def viewIndicator(director):
+            qelink  = load( actor           = 'materialsimulation',
+                            filter_key      = 'type',
+                            filter_value    = 'qesimulations')
+
+            path = []
+            path.append(('Simulations ', load(actor='materialsimulation')))
+            path.append(('%s ' % self.package, qelink))
+            path.append(('%s ' % self.id, load(actor    = 'material_simulations/%s/sim-view' % PACKNAME[self.package],
+                                               id       = self.id)))
+#            path.append(('%s Task: %s' % (self.type, self.taskid), load(actor    = 'material_simulations/espresso/task-view',
+#                                                                      id       = self.id,
+#                                                                      taskid   = self.taskid,
+#                                                                      type     = self.type)))
+            path.append('Job: %s' % job.id)
+
+            return director.retrieveVisual('view-indicator', path=path)
+
+        doc         = lc.document(title="Job: %s" % job.id)
+        splitter    = doc.splitter(orientation="vertical")
+        sA          = splitter.section()
+        sA.add(viewIndicator(director))
+        sC          = splitter.section(id="qe-section-actions")
+        self._showActions(sC)
+
+        sB          = splitter.section()
+        table       = QEGrid(lc.grid(Class = "qe-table"))
+        sB.add(table.grid())
+
+        self._showJob(director, table, job)
+        # Should go after all of the rows are added!
+        table.setColumnStyle(0, "qe-cell-param")
+
+        return doc
+
+
+    def _showActions(self, section):  #, inputs
+        section.add(lc.link(label="Back",
+                            Class="qe-action-back",
+                            onclick = load(actor      = 'material_simulations/%s/sim-view' % PACKNAME[self.package],
+                                             id         = self.id))
+                    )
+
+        section.add(lc.link(label="Delete",
+                            Class="qe-action-delete",
+                            onclick = load(actor        = 'jobs/delete',
+                                             id         = self.id,
+                                             jobid      = self.jobid,
+                                             taskid     = self.taskid,
+                                             type       = self.type,
+                                             package    = self.package))
+                    )
+
+        section.add(lc.document(Class="clear-both"))
+
+
+    def _showJob(self, director, table, job):
+        if job:
+            server  = director.clerk.getServers(id = job.serverid)
+            table.addRow(('Job Id:',    job.id))
+            table.addRow(("Type: ",     self.type))
+            table.addRow(('Server:',    server.address))
+            table.addRow(("Status: ",   job.status))
+            table.addRow(("Number of Processors: ", str(job.numberprocessors)))
+            table.addRow(("Time Submitted: ", stamp2date(job.timesubmitted)))
+            table.addRow(("Time Completed: ", job.timecompleted))
+            table.addRow(("Time Restarted: ", job.timestarted))
+            table.addRow(("Status Message: ", job.statusmessage))
+
+            # Output File:
+            # Error File:
+
+
+    def __init__(self):
+        super(Actor, self).__init__(name='jobs/jobs-view')
+
+        return
+
+
+    def _configure(self):
+        super(Actor, self)._configure()
+        self.id             = self.inventory.id
+        self.jobid          = self.inventory.jobid
+        self.taskid         = self.inventory.taskid
+        self.type           = self.inventory.type
+        self.package        = self.inventory.package
+
+
+    def _init(self):
+        super(Actor, self)._init()
+        return
+
+def actor():
+    return Actor()
+
+__date__ = "$Dec 18, 2009 11:10:00 AM$"
+
+

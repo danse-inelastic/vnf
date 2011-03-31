@@ -1,0 +1,54 @@
+
+# There are two ways to caclculate electron dispersion:
+# 1. [PW] -> [PW] (with generated grid)
+# 2. [PW] -> [PW] -> [BANDS] -> [PLOTBANDS]
+
+# We can give option to user when it creates a new simulation and chooses simulation
+type: "Electron Dispersion" as a subtype: "the Master's stuff", "QE stuff" (come up with the name)
+
+# For now let implement option (2)
+
+[PW]
+# Same as in qe-electron-dos.txt
+
+[PW]
+# Same as in qe-electron-dos.txt
+
+[BANDS]
+Form:
+[Finish] ???
+
+Configuration field:
+[Finish] ???
+
+[PLOTBANDS]
+Form:
+
+Emin (eV): [0]
+Emax (eV): [25]
+Delta E (eV): [0.1]
+
+
+Configuration field:
+
+{bands.dat}
+{Emin} {Emax}
+{bands.xmgr}
+{bands.ps}
+{Efermi}
+{DeltaE} {Efermi}
+
+{Tab "Analysis"}
+
+# See qe-general.txt
+
+Electron Dispersion
+-------------------
+(from plotbands)
+
+# In the future: Add Isosurface (for option (1))
+
+Electron Isosurface
+-------------------
+
+<FermiSurface.bxsf>

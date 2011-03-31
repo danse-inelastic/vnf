@@ -1,0 +1,145 @@
+# -*- Python -*-
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                 Jiao Lin
+#                      California Institute of Technology
+#                      (C) 2006-2010  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+from luban.content import load, select, alert
+import luban.content as lc
+
+from luban.content.FormSelectorField import FormSelectorField
+
+
+class Factory(object):
+
+
+    def __init__(self, id, director, experiment=None, domaccess=None):
+        self.director = director
+        self.id = id
+
+        if not domaccess:
+            domaccess = director.retrieveDOMAccessor('experiment')
+        self.domaccess = domaccess
+
+        if not experiment:
+            experiment = domaccess.getExperimentRecord(id)
+        self.experiment = experiment
+        
+        return
+    
+
+    def __call__(self, component=None, componentuid=None):
+        #
+        director = self.director
+        domaccess = self.domaccess
+
+        #
+        experiment = self.experiment
+
+        #
+        if component is None:
+            component = domaccess.db.fetchRecordUsingUniqueIdentifierStr(componentuid)
+        if componentuid is None:
+            componentuid = domaccess.db.getUniqueIdentifierStr(component)
+
+        #
+        title = '%s: %s' % (component.componentname, component.__class__.__name__)
+        doc = lc.document(Class='container', id='component-editor', title=title)
+
+        from vnfb.dom.neutron_experiment_simulations.neutron_components.SampleComponent import SampleComponentTable
+        issaample = isinstance(component, SampleComponentTable)
+        if not issaample:
+            toolbar = lc.toolbar(id='component-editor-toolbar', Class='topright-toolbar')
+            doc.add(toolbar)
+            
+            # widget to change type of component
+            typenames = self._getComponentTypeNames()
+            changecomponenttype = self._createChangeComponentTypeWidget(
+                componentuid, component, typenames)
+            toolbar.add(changecomponenttype)
+
+            # delete link
+            deletelink = lc.button(
+                label = 'Delete this component',
+                onclick = load(actor='experiment/editor', routine='onDeleteComponent',
+                               id=self.id, component=componentuid),
+                id = 'delete-component',
+                )
+            #deletelink.Class='float-right'
+            toolbar.add(deletelink)
+        
+        # orm generated view of current component
+        ormview = director.redirect(
+            actor = 'orm/%s' % component.getTableName(), routine='display',
+            id = component.id, editlink=True, include_credential=False)
+
+
+        doc.add(ormview)
+        return doc
+
+
+    def _createChangeComponentTypeWidget(self, componentuid, component, types):
+        # document to change component type
+        doc1 = lc.document()
+        label='change component type'
+        tip = ('Note: If you change the type of the component, '\
+               'all configuration of this component will be lost.'\
+               )
+        
+        labels = [t.split('.')[-1] for t in types]
+        entries = zip(types, labels)
+        t = self.domaccess.orm.getObjectTypeFromTableName(component.getTableName())
+        typename = '.'.join(t.__module__.split('.')[2:]) + '.' + t.__name__
+        
+        from luban.content.FormSelectorField import FormSelectorField
+        selector = FormSelectorField(
+            label=label, tip=tip, entries = entries, value=typename)
+        selected = select(element=selector).getAttr('value')
+        selector.onchange = load(
+            actor='experiment/editor', routine='onChangeComponentType',
+            id = self.id, component=componentuid, newtype=selected)
+        doc1.add(selector)
+        return doc1
+        # obsolete
+        # link to pop up the document
+        link = lc.link(label='change component type')
+        link.onclick=select(element=link).replaceBy(doc1)
+        
+        return link
+
+
+    def _getComponentTypeNames(self):
+        from vnfb.dom.neutron_experiment_simulations.neutron_components import typenames
+        from vnfb.dom.neutron_experiment_simulations.neutron_components.SampleBase import TableBase
+        from vnfb.dom.neutron_experiment_simulations.neutron_components.SampleComponent import SampleComponentTable
+        domaccess = self.domaccess
+        def isNotSampleTable(name):
+            t = domaccess._getTable(name)
+            return not issubclass(t, TableBase) and t != SampleComponentTable
+        return filter(isNotSampleTable, typenames)
+    
+
+def visual(
+    id=None, director=None, domaccess=None, experiment=None,
+    component=None, componentuid=None):
+    '''
+    id: experiment id
+    component: component to edit
+    componentid: id of component
+    '''
+    return Factory(id, director, domaccess=domaccess, experiment=experiment)\
+           (component=component, componentuid=componentuid)
+
+
+# version
+__id__ = "$Id$"
+
+# End of file 

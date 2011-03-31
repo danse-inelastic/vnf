@@ -1,0 +1,187 @@
+#!/usr/bin/env python
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                               Alex Dementsov
+#                      California Institute of Technology
+#                        (C) 2009  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+from vnfb.qeutils.qeutils import parseVDos
+from vnfb.qeutils.qeutils import analyseActor
+from vnfb.qeutils.qerecords import SimulationRecord
+from vnfb.qeutils.results.cpresult import CPResult
+from vnfb.qeutils.results.resultpath import ResultPath
+from vnfb.qeutils.qegrid import QEGrid
+
+import luban.content as lc
+from luban.content import select, load
+
+ID_RESULTS      = "qe-splitter-results" # id for results container
+ID_OUTPUTS      = "qe-splitter-outputs"
+CLASS_DEFAULT   = "qe-action-default"  # Default class
+CLASS_ACTIVE    = "qe-color-blue"
+CLASS_ERROR     = "qe-color-red"
+
+TRAJ_LINKORDER  = 2 # XXX: fix it!
+
+"""
+QEAnalysis - base actor class for Quantum Espresso analysis pages
+"""
+
+from luban.components.AuthorizedActor import AuthorizedActor as base
+
+class Actor(base):
+
+    class Inventory(base.Inventory):
+        import pyre.inventory
+        id          = pyre.inventory.str('id', default='')          # Simulation Id
+        simtype     = pyre.inventory.str('simtype', default='')
+        type        = pyre.inventory.str('type', default='')        # Task type
+        linkorder   = pyre.inventory.int('linkorder', default=-1)
+
+
+    def default(self, director):
+        # Redirection doesn't pass value to self.id, so I need to do it manually
+        self.id         = self.inventory.id
+        self.linkorder  = self.inventory.linkorder
+        return select(id='main-display-area').replaceContent(self.content(director))
+
+
+    def content(self, director):
+        "Contains of two separate splitters: header and results"
+        doc         = lc.document(title="Analysis of Simulation Results")
+        splitter    = doc.splitter(orientation="vertical")
+        sInd        = splitter.section()                        # path indicator
+        sAct        = splitter.section(id="qe-section-actions") # actions
+
+        docResults  = lc.document(id = ID_RESULTS)
+        doc.add(docResults)
+
+        #self._pwresult    = CPResult(director, self.id, linkorder = 0)  # From first "PW" task
+
+        self._viewIndicator(director, sInd)
+        self._showActions(director, sAct)                 # Show actions
+
+        # Simulation Data
+        resSplitter = docResults.splitter(orientation="vertical")
+        self._simData(director, resSplitter)              # Simulation Specific data
+        return doc
+
+
+    def _viewIndicator(self, director, section):
+        qelink  = load( actor           = 'materialsimulation',
+                        filter_key      = 'type',
+                        filter_value    = 'qesimulations')
+
+        path = []
+        path.append(('Simulations ', load(actor='materialsimulation')))
+        path.append(('Quantum Espresso ', qelink))
+        path.append(('%s ' % self.id, load(actor    = 'material_simulations/espresso/sim-view',
+                                           id       = self.id)))
+
+        path.append('Simulation Results')
+        section.add(director.retrieveVisual('view-indicator', path=path))
+
+
+    def _showActions(self, director, section):
+        # Action splitter
+        container   = lc.splitter(orientation="horizontal", id="qe-splitter-analysis")
+        sMain        = container.section(Class="qe-section-back")    # Left actions
+        section.add(container)
+        self._backAction(sMain)
+        self._refreshAction(sMain)
+        self._exportAction(sMain)
+#        self._outputAction(director, container)
+
+        section.add(lc.document(Class="clear-both"))
+
+
+    def _backAction(self, section):
+        "Back button"
+        section.add(lc.link(label="Back",
+                            Class="qe-action-back",
+                            onclick = load(actor      = 'material_simulations/espresso/sim-view',
+                                             id       = self.id))
+                    )
+
+    def _refreshAction(self, section):
+        "Refresh button"
+        section.add(lc.link(label="Refresh",
+                            Class="qe-action-edit",
+                            onclick = load(actor    = analyseActor(self.simtype),
+                                           simtype  = self.simtype,     # pass simtype
+                                           id       = self.id))
+                    )
+
+
+    def _exportAction(self, section):
+        "Export button"
+        link     = lc.link(label="Export",
+                            Class="qe-action-edit",
+#                            onclick = load(actor    = analyseActor(self.simtype), #'material_simulations/espresso-analysis/exports',
+#                                            routine = "export",
+#                                            id      = self.id,
+#                                            simtype = self.simtype),
+                           tip = "Export Parameters of the Simulation"
+                           )
+        section.add(link)
+
+
+    def _simData(self, director, splitter):
+        "Shows vibrational DOS "
+        self._resultpath    = ResultPath(director, self.id, linkorder = TRAJ_LINKORDER)
+        self._vDos(director, splitter)
+
+
+    def _vDos(self, director, splitter):
+        "Display vibrational DOS plot"
+        # Not displayed if no file exist or data are not in proper format
+        section    = splitter.section()
+        section.add(lc.paragraph(text="Vibrational DOS", Class="qe-section"))
+        dosfile     = self._resultpath.resultFiles("dos")
+
+        if not dosfile:     # "No DOS file!" # if no DOS file, notify user!
+            section.add(lc.htmldocument(text="No Vibrational DOS", Class="qe-text-blue"))
+            return
+
+        # Populate D(f) list from file
+        data    = parseVDos(dosfile)
+        if not data:        # "DOS file contains non-proper data!"
+            section.add(lc.htmldocument(text="No Vibrational DOS", Class="qe-text-blue"))
+            return
+
+        (f,  dos) = data
+
+        plot = lc.plot2d(Class="default-size-plot")
+        plot.curve(x=f, y=dos, label="Vibrational DOS")   # 'Spin Up'
+
+        section.add(plot)
+
+
+    def _configure(self):
+        super(Actor, self)._configure()
+        self.id             = self.inventory.id
+        self.type           = self.inventory.type
+        self.simtype        = self.inventory.simtype
+        self.linkorder      = self.inventory.linkorder
+
+
+    def _init(self):
+        super(Actor, self)._init()
+
+
+    def __init__(self, name):
+        super(Actor, self).__init__(name=name)
+
+
+def actor():
+    return Actor(name='material_simulations/espresso-analysis/molecular-dynamics')
+
+__date__ = "$Apr 30, 2010 12:20:21 PM$"
+
+

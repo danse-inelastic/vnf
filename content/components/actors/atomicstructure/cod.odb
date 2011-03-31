@@ -1,0 +1,292 @@
+# -*- python -*-
+
+from luban.content import select, load, alert
+import luban.content as lc
+
+#from luban.components.FormProcessor import FormProcessor as base
+from luban.components.AuthorizedActor import AuthorizedActor as base
+class Actor(base):
+
+
+    class Inventory(base.Inventory):
+
+        import luban.inventory
+
+        text = luban.inventory.str('text', default=None)
+        elements = luban.inventory.str('elements', default=None)
+        notelements = luban.inventory.str('notelements', default=None)
+        nelements = luban.inventory.int('nelements', validator=luban.inventory.positive, default=None)
+        sg = luban.inventory.str('sg', default=None)
+        
+        volume_min = luban.inventory.float('volume_min', validator=luban.inventory.nonnegative, default=None)
+        volume_max = luban.inventory.float('volume_max', validator=luban.inventory.nonnegative, default=None)
+
+        a_min = luban.inventory.float('a_min', validator=luban.inventory.nonnegative, default=None)
+        a_max = luban.inventory.float('a_max', validator=luban.inventory.nonnegative, default=None)
+
+        b_min = luban.inventory.float('b_min', validator=luban.inventory.nonnegative, default=None)
+        b_max = luban.inventory.float('b_max', validator=luban.inventory.nonnegative, default=None)
+
+        c_min = luban.inventory.float('c_min', validator=luban.inventory.nonnegative, default=None)
+        c_max = luban.inventory.float('c_max', validator=luban.inventory.nonnegative, default=None)
+
+        anglelimit = luban.inventory.range(0, 180, brackets='()')
+        alpha_min = luban.inventory.float('alpha_min', validator=anglelimit, default=None)
+        alpha_max = luban.inventory.float('alpha_max', validator=anglelimit, default=None)
+
+        beta_min = luban.inventory.float('beta_min', validator=anglelimit, default=None)
+        beta_max = luban.inventory.float('beta_max', validator=anglelimit, default=None)
+
+        gamma_min = luban.inventory.float('gamma_min', validator=anglelimit, default=None)
+        gamma_max = luban.inventory.float('gamma_max', validator=anglelimit, default=None)
+        
+        id = luban.inventory.str('id', default='')
+        fileId = luban.inventory.str('fileId')
+        #datastore = luban.inventory.str('datastore', default='/home/jbk/cod/cif')
+        import pyre.inventory
+        codmanager = pyre.inventory.facility('codmanager', default='cod')
+        
+    def default(self, director):
+        return director.retrieveVisual("cod/frame")     
+         
+    def debug(self, director):
+        page = lc.page(title='test cod')
+        visual = director.retrieveVisual("cod/frame")
+        page.add(visual)        
+        return page
+
+    def getTableView(self, director, getData=False):
+        if getData:
+            data = self._getData(director)
+        else: 
+            data = ()
+        return director.retrieveVisual('cod/table', director=director, data=data)
+
+    def process(self, director):
+        """process search inputs and return results in nice table """
+        codmanager = self.inventory.codmanager
+        try: 
+            codmanager.connect()
+        except:
+            import traceback; tb = traceback.format_exc()
+            codmanager.sendServerDownAlert(tb, director=self)
+            return alert("Database down temporarily. VNF admin is alerted and will get to that soon.")
+        from luban.content import select
+        tablecontainer = lc.document(id='cod-table-container')
+        sp2 = lc.splitter(orientation='vertical')
+        tablecontainer.add(sp2)
+        
+        top = sp2.section()
+        # select button
+        b = lc.button(label='import to VNF')
+        b.onclick =  load(actor='atomicstructure/cod', 
+                          routine='loadStructure', 
+                          fileId=select(id='cod-table').table('getIdentifiersForCheckedRows', 
+                                                              colname='selectone'))
+        top.add(b)
+        # table
+        bottom = sp2.section()
+        data = self._getData(director)
+        bottom.add(director.retrieveVisual('cod/table', 
+                                                   data=data, 
+                                                   director=director))
+        return select(id='cod-table-container').replaceBy(tablecontainer)
+
+
+    def _getInputErrors(self):
+        errors = super(Actor, self)._getInputErrors()
+        if errors: return errors
+
+        errors = {}
+        
+        self._castInventoryProperties()
+        si = self.inventory
+
+        props = [
+            'a', 'b', 'c',
+            'alpha', 'beta', 'gamma',
+            'volume',
+            ]
+        for prop in props:
+            minprop = '%s_min' % prop
+            min = getattr(si, minprop)
+            
+            maxprop = '%s_max' % prop
+            max = getattr(si, maxprop)
+
+            if min > max:
+                errors[minprop] = '%s must be smaller than %s' % (minprop, maxprop)
+            continue
+
+        return errors
+
+    def _getData(self, director):
+        self._castInventoryProperties()
+        si = self.inventory
+        text = si.text
+        elements = si.elements
+        notelements = si.notelements
+        nelements = si.nelements
+        sg = si.sg
+        volume = si.volume_min, si.volume_max
+        a = si.a_min, si.a_max
+        b = si.b_min, si.b_max
+        c = si.c_min, si.c_max
+        alpha = si.alpha_min, si.alpha_max
+        beta = si.beta_min, si.beta_max
+        gamma = si.gamma_min, si.gamma_max
+        
+        query = "SELECT * FROM data WHERE";
+        if text!=None:
+           words = text.split()    
+           for word in words:
+               query += " AND (text LIKE '%" + word + "%')"
+        if sg!=None:
+            query += " AND (sg='" + sg + "')"
+        if nelements!=None:
+            query += " AND (nel=" + str(nelements) + ")"
+        if elements!=None:
+           words = elements.split()    
+           for element in words:
+               query += " AND (formula LIKE '%" + element + "%')"
+        if notelements!=None:
+           words = notelements.split()    
+           for notelement in words:
+               query += " AND (formula NOT LIKE '%" + notelement + "%')"
+        #try:
+        query += self.between(volume, "vol");
+        #query += between(nelements, "nel");
+        query += self.between(a, "a");
+        query += self.between(b, "b");
+        query += self.between(c, "c");
+        query += self.between(alpha, "alpha");
+        query += self.between(beta, "beta");
+        query += self.between(gamma, "gamma");
+        query = query.replace("WHERE AND", "WHERE");
+        #catch NumberFormatException nfe:
+        #    JOptionPane.showMessageDialog(null, "Please enter numbers in the numeric fields.");
+        if query[-6:]==" WHERE":
+            query = "SELECT * FROM data";
+        query += " ORDER BY file LIMIT 100";
+
+        db = self.inventory.codmanager.connect()
+        c = db.cursor()
+        c.execute(query)
+        rawresults = c.fetchall()
+        
+        #process the results so only useful information is returned
+        results = []
+        unicodeErrorStrategy = 'ignore'
+        import json
+        dumps = json.dumps
+        for r in rawresults:
+            fileId = unicode(str(r[0]), 'utf-8', errors=unicodeErrorStrategy)
+            dumps(fileId)
+            prelattice = '(%4.2f, %4.2f, %4.2f, %4.2f, %4.2f, %4.2f)' % (r[1], r[3], r[5], r[7], r[9], r[11])
+            lattice = unicode(prelattice, 'utf-8', errors=unicodeErrorStrategy)
+
+            if r[26]==None:
+                prespacegroup = 'None'
+            else:
+                prespacegroup = r[26]
+            spacegroup = unicode(prespacegroup, 'utf-8', errors=unicodeErrorStrategy)
+                
+            if r[30]==None:
+                prefomula = 'None'
+            else:
+                preformula = r[30]
+            try:
+                formula = unicode(preformula, 'utf-8', errors=unicodeErrorStrategy)
+                description = unicode(r[45], 'utf-8', errors=unicodeErrorStrategy) 
+                dumps(description)
+            except:
+                import traceback
+                traceback.print_exc()
+                raise
+                #description = str(r[45])         
+            results.append(('', str(fileId), str(lattice), str(spacegroup), str(formula), str(description)))
+        return results
+
+        # the list returned here should be calculated from the parameters above
+#        return [
+#            (False, '3XFABC', 1.0, 2.0, 3.0, 88, 89., 91., 6.0, 5, 'symmetry', 'formula...', 'text...'),
+#            (True, '3ER4VC', 2.0, 3.0, 1.0, 99, 88., 90., 6.0, 3, 'P-1', 'formula...', 'text...'),
+#            (False, 'XXX', str(a), str(b), str(c), str(alpha), str(beta), str(gamma),
+#             str(volume), str(nelements), 'symmetry', 'formula', 'text',),
+#            ]
+        
+    def between(self, field, name):
+        line = ""
+        min,max = field
+        if min!=None:
+            if max!=None:
+                line += " AND (" + name + " BETWEEN " + str(min) + " AND " + str(max) + ")";
+            else:
+                line += " AND (" + name + " >= " + str(min) + ")";
+        elif max!=None:
+            line += " AND (" + name + " <= " + str(max) + ")";
+        return line;
+
+    def _castInventoryProperties(self):
+        """luban inventor items are not casted immediately. this is the place
+        where casting happens. This method is not necessary for actors that store
+        user inputs to db, because the db column descriptors will do the casting.
+        """
+        from luban.inventory.properties.PropertyInterface import PropertyInterface
+        from luban.inventory.properties.PropertySet import PropertySet
+        for name in dir(self.Inventory):
+            trait = getattr(self.Inventory, name)
+            if not isinstance(trait, PropertyInterface): continue
+            if isinstance(trait, PropertySet):
+                # use inventory.<name>.getValues() to get casted values
+                continue
+            value = getattr(self.inventory, name)
+            value = trait.convertValue(value)
+            setattr(self.inventory, name, value)
+            continue
+        return
+
+    def loadStructure(self, director):
+        #retrieve cif file and load into data object
+        fileId = self.inventory.fileId
+        if not fileId:
+            return alert("Please select a struture to import")
+        #db = self.inventory.datastore
+        import os
+        fileIds=fileId.split(',')
+        for id in fileIds:
+            folder = id[0]
+            #filePath = os.path.join(db, folder, id+".cif")
+            import urllib2
+            #f = urllib2.urlopen('http://vnf-dev.caltech.edu:8080/getcif/'+fileId)
+            try:
+                f = urllib2.urlopen('http://vnf-dev.caltech.edu/cod/cif/'+folder+'/'+id+'.cif')
+                cifFileContents = f.read()
+            except:
+                # it means the server might not be available at this time
+                return alert("COD data server is temporarily down. Please try again in a minute")
+            # create a new record
+            #from vnfb.dom.BigStructure import Structure
+            from vnfb.dom.AtomicStructure import Structure
+            structure = Structure()
+            # avoid access deny problem for python egg cache
+            import os
+            os.environ['PYTHON_EGG_CACHE'] = '/tmp/pythoneggcache'
+            # read 
+            structure.readStr(cifFileContents, 'cif')
+            #make special description that includes the COD id
+            structure.description = 'COD '+id+' '+structure.generateDescription()
+            orm = director.clerk.orm
+            orm.save(structure)
+            record = orm(structure)
+            record.creator = director.sentry.username
+            orm.db.updateRecord(record)
+
+        #call data object viewer
+        return select(id='main-display-area').replaceContent(
+            load(actor='atomicstructure',
+                 routine='createListView')
+            )
+
+def actor():
+    return Actor("atomicstructure-cod")

@@ -1,0 +1,117 @@
+#!/usr/bin/env python
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                               Alex Dementsov
+#                      California Institute of Technology
+#                        (C) 2009  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+from vnfb.qeutils.qeutils import  setInputParam
+
+import luban.content as lc
+from luban.content import load, select
+
+from vnfb.components.QEConvergence import QEConvergence as base
+
+class Actor(base):
+    class Inventory(base.Inventory):
+        import pyre.inventory
+        convid          = pyre.inventory.str('convid', default='')
+        paramid         = pyre.inventory.str('paramid', default='')
+        paramname       = pyre.inventory.str('paramname', default='')
+        taskid          = pyre.inventory.str('taskid', default='')
+
+        # Input specific
+        text            = pyre.inventory.str('text', default='')
+        fname           = pyre.inventory.str('fname', default='')
+        description     = pyre.inventory.str('description', default='')
+
+
+    # XXX: Extend "PW" to task type
+    def _viewIndicator(self, director, section):
+        qelink  = load( actor           = 'materialsimulation',
+                        filter_key      = 'type',
+                        filter_value    = 'qesimulations')
+
+        path = []
+        path.append(('Simulations ', load(actor='materialsimulation')))
+        path.append(('Quantum Espresso ', qelink))
+        path.append(('%s ' % self.id, load(actor    = 'material_simulations/espresso/sim-view',
+                                           id       = self.id)))
+        path.append(('Convergence Tests', load(actor    = 'material_simulations/espresso-convergence/view',
+                                            id       = self.id)))
+        path.append(("Test: %s" % self.convid, load(actor    = 'material_simulations/espresso-convergence/conv-view',
+                                                    id       = self.id,
+                                                    convid   = self.convid)))
+
+        path.append((self._paramLink(), load(actor    = 'material_simulations/espresso-convergence/param-view',
+                                             id       = self.id,
+                                             convid   = self.convid,
+                                             paramid  = self.paramid) ))
+        path.append("Create PW input")
+        section.add(director.retrieveVisual('view-indicator', path=path))
+
+
+    def _refreshAction(self, section):
+        section.add(lc.link(label="Refresh",
+                            Class="qe-action-back",
+                            onclick = load(  actor      = 'material_simulations/espresso-convergence/input-create',
+                                             id       = self.id,
+                                             convid   = self.convid,
+                                             paramid  = self.paramid,
+                                             paramname = self.paramname,
+                                             taskid   = self.taskid)))
+
+
+    def _mainContent(self, director, splitter):
+        self._param     = director.clerk.getQEConvParams(id = self.paramid)
+        if not self._param: # No parameter, no input
+            return
+
+        content     = splitter.section()
+        visual      = 'material_simulations/espresso-convergence/form-input'
+        content.add(director.retrieveVisual(visual,
+                                            director,
+                                            self.inventory,
+                                            self._revisedInput(director)))
+        
+
+    def _revisedInput(self, director):
+        "Changes varying parameter in the input file"
+        config  = self._inputText(director, self._input)
+        return setInputParam(config, self._param.pname, self._param.value)
+
+
+    def _paramLink(self):
+        s   = "Parameter"
+        if self.paramname == "":    # no paramname is passed
+            return s
+
+        s   += ": %s" % self.paramname
+        return s
+
+
+    def _configure(self):
+        super(Actor, self)._configure()
+        self.convid       = self.inventory.convid
+        self.paramid      = self.inventory.paramid
+        self.paramname    = self.inventory.paramname
+        self.taskid       = self.inventory.taskid
+
+        self.text         = self.inventory.text
+        self.fname        = self.inventory.fname
+        self.description  = self.inventory.description
+
+def actor():
+    return Actor(name='material_simulations/espresso-convergence/input-create')
+
+
+
+__date__ = "$May 2, 2010 8:52:56 AM$"
+
+

@@ -1,0 +1,202 @@
+/*  -*- CSS -*-  */
+
+#experimentwizard-container {
+    background-color: #f0f0f0;
+    -moz-border-radius:2em;
+    -webkit-border-radius:2em;
+}
+
+#experimentwizard-navigationbar {
+padding:0.3em;
+/*background-color:#F0F5F5;*/
+-moz-border-radius-topleft:2em;
+-moz-border-radius-topright:2em;
+-webkit-border-top-left-radius: 2em;
+-webkit-border-top-right-radius: 2em;
+}
+#experimentwizard-navigationbar table {
+border-collapse:collapse;
+width:auto;
+}
+#experimentwizard-navigationbar td {
+padding:0 0.4em;
+text-align:center;
+}
+#experimentwizard-navigationbar div.navigation-button:hover {
+border:3px solid lightGreen;
+cursor:pointer;
+}
+#experimentwizard-navigationbar div.navigation-button.selected{
+border:3px solid white;
+background-color: white;
+}
+#experimentwizard-navigationbar .index {
+color:#229999;
+font-size:1.3em;
+margin:0;
+padding:0;
+}
+#experimentwizard-navigationbar .navigation-button {
+background-color:#d0d0d0;
+-moz-border-radius:1em;
+-webkit-border-radius:1em;
+border:3px solid #f0f0f0;
+}
+#experimentwizard-navigationbar p {
+margin:0;
+}
+#experimentwizard-navigationbar div {
+margin:0;
+padding:0.2em 0.3em;
+}
+#experimentwizard-navigationbar img {
+height:2.5em;
+}
+
+#experimentwizard-editpanel {
+padding:1em;
+}
+
+#experimentwizard-instrumentselector {
+padding:0.5em 1em;
+}
+
+#instrument-gallery-container {
+}
+#instrument-gallery table {
+width:auto;
+}
+#instrument-gallery td {
+text-align:center;
+border:1em solid transparent;
+}
+#instrument-gallery div.luban-image-container:hover {
+border:3px solid lightgreen;
+}
+#instrument-gallery div.luban-image-container:hover img {
+height:5.1em;
+}
+#instrument-gallery div.luban-image-container.selected {
+border:3px solid red;
+}
+#instrument-gallery div.luban-image-container.selected img{
+height:6em;
+}
+#instrument-gallery img {
+height:5em;
+}
+#instrument-gallery div.luban-image-container {
+border:3px solid transparent;
+cursor:pointer;
+}
+#instrument-gallery {
+background-color:#444444;
+padding:0.2em;
+-moz-border-radius:1em;
+-webkit-border-radius:1em;
+margin:1em;
+width:60em;
+overflow-x:scroll;
+}
+#experimentwizard-instrumentintro {
+padding:0em 1em 1.0em 1.5em;
+font-family:times New Roman;
+font-size:1.2em;
+}
+
+/* select button */
+#experimentwizard-instrumentselector .luban-button-container {
+/* text-align:center; */
+font-size:1.3em;
+}
+#experimentwizard-instrumentselector .luban-button-container a.luban-button {
+border-width:3px;
+}
+
+/* instrument configuration */
+#instrumentconfigurationpanel {
+margin:1em;
+padding-bottom:1em;
+}
+/* component chain */
+#component-chain-container td {
+padding:0.2em 0.1em;
+}
+#component-chain-container .component-chain-button p {
+margin:0;
+}
+#component-chain-container div.component-chain-button:hover {
+border:2px solid green;
+}
+#component-chain-container .component-chain-button.selected {
+border:2px solid #f590a0;
+}
+#component-chain-container .component-chain-button {
+border:2px solid #777777;
+padding:0.5em 0.5em;
+background-color:#f5fff5;
+cursor: pointer;
+-moz-border-radius: 9px;
+-webkit-border-radius: 9px;
+}
+#component-chain-container > h1 {
+text-decoration:underline;
+margin-bottom:0.5em;
+}
+#component-chain-container {
+padding:0.5em 1.5em 1.3em 1.5em;
+border:1px solid #999999;
+max-width:70em;
+overflow-x:scroll;
+-moz-border-radius:1em;
+-web-border-radius:1em;
+background-color:white;
+margin-bottom:1em;
+}
+#component-chain-container table{
+    width: auto;
+}
+#component-chain-container div.component-chain-insert-button a {
+border:none;
+background-color:transparent;
+padding:0;
+margin:0;
+}
+#component-chain-container div.component-chain-insert-button:hover a {
+color:red;
+}
+
+/* component editor */
+#component-editor {
+}
+#component-editor-toolbar {
+    margin-right:1em;
+    margin-left:auto;
+    width:29em;
+    margin-bottom: 4px;
+}
+#component-editor-toolbar .luban-formfield {
+margin:0.2em 0.5em;
+}
+
+/* sample */
+#samplepanel {
+background-color:#f5f5f5;
+padding:0.5em;
+-moz-border-radius:1em;
+}
+#samplepanel .luban-document-body {
+padding-left:0.2em;
+}
+#samplepanel > .luban-document-title {
+font-weight:bold;
+font-size:1.4em;
+}
+#samplepanel h1.luban-document-title {
+margin-bottom:5px;
+}
+
+/* version */
+/* $Id$ */
+
+/* End of file  */

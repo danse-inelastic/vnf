@@ -1,0 +1,117 @@
+#!/usr/bin/env python
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                      California Institute of Technology
+#                      (C) 2006-2009  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#
+import sys, os, tempfile
+import luban.content as lc
+from luban.content import select, load, alert
+from luban.components.Actor import Actor
+from vnfb.dom.material_simulations.SQE import SQE
+import luban.orm
+base = luban.orm.object2actor(SQE)
+
+# path of tmp directory in the http url
+http_tmproot = 'tmp'
+
+# path to the tmp directory in the file system
+tmproot = os.path.join('..', 'content', 'data', 'tmp')
+
+class Actor(base):
+
+    class Inventory(base.Inventory):
+
+        import pyre.inventory
+        id = pyre.inventory.str(name='id')
+        zBottom = pyre.inventory.float(name='zBottom')
+        zTop = pyre.inventory.float(name='zTop')
+
+    def createGraphicalView(self, director):  
+        title = 'S(Q, E)' 
+        doc = lc.document(Class='container', title=title, collapsable=True)
+        p = director.retrieveVisual(
+            'graphics/imageplot',
+            imageDoc = self.generateImageDoc(director),
+            sqeId = self.inventory.id,
+            director=director,)
+        doc.add(p)
+        return doc
+
+    def replaceWithImageDoc(self, director):
+        #print 'form values: bottom %s and top %s' % (str(self.inventory.zBottom), str(self.inventory.zTop))
+        self._debug.log('form values: bottom %s and top %s' % (str(self.inventory.zBottom), str(self.inventory.zTop)))
+        return select(id='imageDoc').replaceContent(
+         self.generateImageDoc(director, self.inventory.zBottom, self.inventory.zTop))
+
+    def generateImageDoc(self, director, bottom=None, top=None):
+        sqe = self._load(director)
+        domaccess = self._domaccess(director)
+        #import matplotlib first and declare the backend
+        # matplotlib needs home to be writable
+        os.environ['HOME'] = tmphome = tempfile.mkdtemp()
+        import matplotlib
+        matplotlib.use('Agg')
+        sqe = domaccess.getData(sqe) 
+        # find the temporary directory to write the png file
+        tmpdirectory = tempfile.mkdtemp(dir=tmproot)
+        if not os.path.exists(tmpdirectory): os.makedirs(tmpdirectory)
+        subdir = os.path.split(tmpdirectory)[1]
+        # png filename
+        filename = 'plot.png'
+        filepath = os.path.join(tmpdirectory, filename)
+        #
+        saveout = sys.stdout
+        sys.stdout = open(os.devnull, 'w')
+        try:
+#            global useAgg 
+#            useAgg = True
+            from plotlib.NcPlottable import NcPlottable
+            plotObj = NcPlottable(sqe=sqe)
+        except Exception, err:
+            qaxis = 'Q', sqe.q
+            eaxis = 'E', sqe.e
+            I = sqe.sqe
+            from histogram import histogram
+            plotObj = histogram('S(Q,E)', [qaxis, eaxis], data=I)
+        if bottom!=None and top!=None:
+            plotObj.clip = [bottom, top]
+        plotObj.plotType(image=True) #nc plottable
+        plotObj.savefig(filepath)
+#        try:
+#            if bottom and top:
+#                plotObj.clip = [bottom, top]
+#            plotObj.plotType(imageX=True) #nc plottable
+#            plotObj.savefig(filepath)
+#        except Exception, err:
+#            #import histogram.hdf as hh
+#            import journal
+#            debug = journal.debug('imageplot')
+#            debug.log(err)
+#            from histogram import plot #histogram
+#            plot(plotObj, output=filepath)
+        sys.stdout = saveout
+        # the url for the image
+        pngurl = os.path.join(http_tmproot, subdir, filename)
+        imageDoc = lc.htmldocument(id='imageDoc')
+        imageDoc.text = ['<img src="%s" />' % pngurl]
+        import shutil; shutil.rmtree(tmphome)
+        return imageDoc
+
+    def _domaccess(self, director):
+        return director.retrieveDOMAccessor('sqe')
+
+def actor():
+    return Actor('orm/sqe')
+
+
+# version
+__id__ = "$Id$"
+
+# End of file 

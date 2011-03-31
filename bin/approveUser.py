@@ -2,9 +2,9 @@
 #
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
-#                                  Jiao Lin
+#                                Jiao Lin
 #                      California Institute of Technology
-#                        (C) 2008  All Rights Reserved
+#                      (C) 2006-2010  All Rights Reserved
 #
 # {LicenseText}
 #
@@ -12,35 +12,17 @@
 #
 
 
+from vnfb.applications.ApproveUser import ApproveUser
+
+
 def main():
+    import journal
+    # journal.debug('db').activate()
+    app = ApproveUser('approveUser')
+    return app.run()
 
 
-    from vnf.applications.ApproveUser import ApproveUser as base
-
-
-    class App(base):
-
-
-        def _getPrivateDepositoryLocations(self):
-            from os.path import join
-            root = '..'
-            content = join(root, 'content')
-            config = join(root, 'config')
-
-            from vnf.depositories import depositories
-            
-            return depositories(content)+[config]
-
-
-    app = App()
-    app.run()
-    return
-
-
-# main
-if __name__ == '__main__':
-    # invoke the application shell
-    main()
+if __name__ == '__main__': main()
 
 
 # version

@@ -1,0 +1,41 @@
+# -*- Python -*-
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                               Alex Dementsov
+#                      California Institute of Technology
+#                        (C) 2010  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+import luban.content as lc
+from luban.content import load
+
+def visual(id, taskid, type):
+    "Returns formatted skip link"
+    linkContent = lc.link(label="Skip To Configuration Form")
+    linkContent.onclick = load(actor   = 'material_simulations/espresso/input-create',
+                              routine = 'default',
+                              text    = "",
+                              id      = id,
+                              taskid  = taskid,
+                              type    = type)
+
+    return linkContent
+
+#from vnfb.qeutils.qegrid import QEGrid
+
+#    table       = QEGrid(lc.grid())
+#    table.addRow(("", linkContent))
+#    table.setColumnStyle(0, "qe-form-label")
+#    table.setColumnStyle(1, "qe-form-field")
+#
+#    return table.grid()
+    
+
+__date__ = "$Aug 16, 2010 1:26:58 PM$"
+
+

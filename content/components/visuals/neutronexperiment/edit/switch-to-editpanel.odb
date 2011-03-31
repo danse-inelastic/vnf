@@ -1,0 +1,63 @@
+# -*- Python -*-
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                 Jiao Lin
+#                      California Institute of Technology
+#                      (C) 2006-2010  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+
+'''
+this actually returns an action, not a visual
+'''
+
+
+from luban.content import select, load, alert
+
+
+# cf. skeleton.odb
+panels = [
+    'instrument',  'sample', 'sample_environment', 'finish'
+    ]
+
+
+from pyre.components.Component import Component
+class Factory(Component):
+
+    def get(self, id, name):
+        """
+        id: id of the experiment
+        name: name of the panel
+        """
+        if name not in panels: raise RuntimeError
+        actions = []
+        for panel in panels:
+            if panel != name:
+                action = select(id='navigation-button-%s' % panel).removeClass('selected')
+            else:
+                action = select(id='navigation-button-%s' % panel).addClass('selected')
+            actions.append(action)
+            continue
+
+        refresheditpanel = select(id='experimentwizard-editpanel').replaceContent
+        a = refresheditpanel(load(
+            actor='experiment/editor',
+            routine='createEditWizard_%spanel' % name,
+            id = id))
+        actions.append(a)
+
+        return actions
+
+
+def visual(dummy): return Factory('switch-to-editpanel', 'action')
+
+# version
+__id__ = "$Id$"
+
+# End of file 

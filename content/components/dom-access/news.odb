@@ -1,0 +1,74 @@
+# -*- Python -*-
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                   Jiao Lin
+#                      California Institute of Technology
+#                      (C) 2006-2009  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+from vnfb.components.DOMAccessor import DOMAccessor as base
+
+class Accessor(base):
+
+
+    def __init__(self):
+        super(Accessor, self).__init__('job')
+        return
+
+
+    def _getOrm(self):
+        orm = self.director.clerk.orm
+        orm(News)
+        return orm
+    orm = property(_getOrm)
+
+
+    def getLatestNewsRecords(self, max=10):
+        # make sure orm is initd
+        orm = self.orm
+        db = orm.db
+
+        table = orm(News)
+        st = db._tablemap.TableToSATable(table)
+
+        cols = [
+            st.c.id,
+            st.c.title,
+            st.c.time,
+            ]
+        q = sqlalchemy.select(cols)
+        q = q.order_by('time')
+        q = sqlalchemy.select(
+            [q.alias('toslice')],
+            limit = max
+            )
+        
+        all = q.execute().fetchall()
+        all.reverse()
+        return all
+
+
+    def getNewsRecord(self, id):
+        orm = self.orm
+        return orm.db.query(orm(News)).filter_by(id=id).one()
+
+
+
+from vnfb.dom.News import News
+import sqlalchemy
+
+
+def accessor():
+    return Accessor()
+
+
+# version
+__id__ = "$Id$"
+
+# End of file 

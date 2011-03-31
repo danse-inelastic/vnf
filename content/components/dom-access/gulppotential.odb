@@ -1,0 +1,87 @@
+# -*- Python -*-
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                      California Institute of Technology
+#                      (C) 2006-2009  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+from vnfb.components.DOMAccessor import DOMAccessor as base
+
+class Accessor(base):
+
+
+    def __init__(self):
+        super(Accessor, self).__init__('gulppotential-accessor')
+        return
+
+
+    def _getOrm(self):
+        orm = self.director.clerk.orm
+        orm(GulpPotential)
+        return orm
+    orm = property(_getOrm)
+
+
+    def getPotential(self, id):
+        orm = self.orm
+        return orm.load(GulpPotential, id)
+
+    def getPotentialNames(self):
+        #results = self.director.clerk._getEntry('GulpPotential', maindom='memd.gulp')
+        results = self.director.clerk._getEntry('GulpPotential', maindom='vnfb.dom.material_simulations')
+        potentialNames=[]
+        for entry in results:
+            potentialNames.append(entry.potential_name)
+        return potentialNames
+
+    def getDataForPotential(self, potential_name):
+#        potential = self.getPotential(id)
+#        record = self.orm(potential)
+        records = self.director.clerk._getEntry('GulpPotential', 
+            where="potential_name='"+potential_name+"'", maindom='vnfb.dom.material_simulations')
+        # assume the first one is correct
+        record = records[0]
+        director = self.director
+        # make sure file is at the web server
+        if not director.dds.is_available(record):
+            try:
+                director.dds.make_available(record)
+            except:
+                import journal
+                debug = journal.debug('main')
+                debug.log('Unable to get data files for record %s' % record.id)
+                import traceback
+                debug.log(traceback.format_exc())
+                return
+        
+        # the data file
+        path = director.dds.abspath(record)
+        
+        potentialFileName = record.filename
+        
+        import os
+        # check path
+        if os.path.exists(os.path.join(path, potentialFileName)): 
+            potentialContent = open(os.path.join(path, potentialFileName)).read()
+        else: potentialContent = ''
+        return potentialContent
+
+
+from memd.gulp.GulpPotential import GulpPotential
+
+import os, numpy
+
+def accessor():
+    return Accessor()
+
+
+# version
+__id__ = "$Id$"
+
+# End of file 

@@ -1,0 +1,66 @@
+#!/usr/bin/env python
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                               Alex Dementsov
+#                      California Institute of Technology
+#                        (C) 2009  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+from vnfb.qeutils.taskcreator import TaskCreator
+from luban.content import load
+from luban.components.AuthorizedActor import AuthorizedActor as base
+
+class Actor(base):
+    """ Silently creates simulation task"""
+
+    class Inventory(base.Inventory):
+        import pyre.inventory
+        simid       = pyre.inventory.str('simid', default='')
+        simtype     = pyre.inventory.str('simtype', default='') # Need it?
+        tasktype    = pyre.inventory.str('tasktype', default='')
+        linkorder   = pyre.inventory.int('linkorder', default=0)
+
+
+    def default(self, director):
+        pass
+
+
+    def createRecord(self, director):
+        "Create simulation record"
+        creator = TaskCreator(director, self.simid)
+        creator.createRecord(self.tasktype, self.linkorder)
+
+        return load(actor   ='material_simulations/espresso/sim-view',
+                    id      = self.simid)
+
+
+    def __init__(self):
+        super(Actor, self).__init__(name='material_simulations/espresso/task-create')
+
+        return
+
+
+    def _configure(self):
+        super(Actor, self)._configure()
+        self.simid       = self.inventory.simid
+        self.simtype     = self.inventory.simtype
+        self.tasktype    = self.inventory.tasktype
+        self.linkorder   = self.inventory.linkorder
+
+
+    def _init(self):
+        super(Actor, self)._init()
+        return
+
+def actor():
+    return Actor()
+
+
+__date__ = "$Dec 12, 2009 10:42:10 PM$"
+
+

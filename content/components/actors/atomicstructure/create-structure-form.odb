@@ -1,0 +1,292 @@
+#!/usr/bin/env python
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                 Jiao Lin
+#                      California Institute of Technology
+#                      (C) 2006-2009  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+from luban.content import load, select, alert
+import luban.content as lc
+
+
+from luban.components.FormProcessor import FormProcessor as base
+
+lattice_vars = ['a', 'b', 'c', 'alpha', 'beta', 'gamma']
+
+class Actor(base):
+
+
+    class Inventory(base.Inventory):
+
+        import luban.inventory
+
+        id = luban.inventory.str('id')
+        atomid = luban.inventory.str('atomid')
+
+        from luban.inventory import positive, greater, less, greaterEqual, lessEqual, notempty, isBoth, range
+        short_description = luban.inventory.str('short_description', validator=notempty)
+
+        a = luban.inventory.float('a', validator=positive)
+        b = luban.inventory.float('b', validator=positive)
+        c = luban.inventory.float('c', validator=positive)
+
+        angle = range(0, 180, brackets='()')
+        alpha = luban.inventory.float('alpha', validator=angle)
+        beta = luban.inventory.float('beta', validator=angle)
+        gamma = luban.inventory.float('gamma', validator=angle)
+
+        spacegroupno = luban.inventory.int(
+            'spacegroupno',
+            validator = range(1, 230, brackets='[]'),
+            )
+
+        import re
+        element = luban.inventory.propertySet(
+            name='element',
+            pattern = re.compile('element.*'),
+            validator = notempty)
+        x = luban.inventory.propertySet(
+            name='x',
+            pattern = re.compile('x.*'),
+            type = 'float',
+            )
+        y = luban.inventory.propertySet(
+            name='y',
+            pattern = re.compile('y.*'),
+            type = 'float',
+            )
+        z = luban.inventory.propertySet(
+            name='z',
+            pattern = re.compile('z.*'),
+            type = 'float',
+            )
+        between01 = range(0,1, brackets='[]')
+        occupancy = luban.inventory.propertySet(
+            name='occupancy',
+            pattern = re.compile('occupancy.*'),
+            type = 'float',
+            validator=between01,
+            )
+
+
+    def process(self, director):
+        id = self.inventory.id
+
+        ew = select(id='atomicstructure-atoms-error')
+        if not id:
+            return [
+                ew.replaceContent(lc.paragraph(text=['Please add at least one atom'])),
+                ew.show(),
+                ]
+        
+        domaccess = director.retrieveDOMAccessor('atomicstructure')
+        structure = domaccess.getAtomicStructure(id)
+
+        iteratoms = structure.iterAtomRecords()
+        atomids = [a.id for a in iteratoms]
+
+        errors = self.getInputErrors()
+
+        self._debug.log('errors: %s' % errors)
+        if errors: return self.reportErrors(director, errors, atomids)
+
+        short_description = self.inventory.short_description
+        lattice_in = {}
+        for var in lattice_vars:
+            lattice_in[var] = getattr(self.inventory, var)
+        atoms_in = {}
+        for id in atomids:
+            def _(attr):
+                return getattr(self.inventory, '%s%s' % (attr,id) )
+            atoms_in[id] = {
+                'xyz': [_('x'), _('y'), _('z')],
+                'element': _('element'),
+                'occupancy': _('occupancy'),
+                }
+        spacegroupno = self.inventory.spacegroupno
+        self._saveData(director, short_description, lattice_in, atoms_in, spacegroupno)
+        return load(actor='atomicstructure', routine='replaceBodyFrameWithAtomicStructureList')
+
+
+    def cancel(self, director):
+        id = self.inventory.id
+        if id:
+            domaccess = director.retrieveDOMAccessor('atomicstructure')
+            domaccess.removeAtomicStructure(id)
+
+        return load(actor='atomicstructure', routine='replaceBodyFrameWithAtomicStructureList')
+
+
+    def _saveData(self, director, short_description, lattice_in, atoms_in, spacegroupno_in):
+        id = self.inventory.id
+
+        domaccess = director.retrieveDOMAccessor('atomicstructure')
+        struct = domaccess.getAtomicStructure(id)
+
+        lattice = struct.lattice.record
+        for var in lattice_vars:
+            setattr(lattice, var, lattice_in[var])
+        domaccess.updateRecordWithID(lattice)
+
+        for atom in struct.iterAtomRecords():
+            atomid = atom.id
+            atom_in = atoms_in[atomid]
+            for var in ['xyz', 'element', 'occupancy']:
+                setattr(atom, var, atom_in[var])
+            domaccess.updateRecordWithID(atom)
+            continue
+
+        structrecord = struct.record
+        structrecord.short_description = short_description
+        structrecord.spacegroupno = spacegroupno_in
+        structrecord.chemical_formula = struct.getChemicalFormula()
+        
+        domaccess.updateRecordWithID(structrecord)
+
+        if domaccess.isTransient(structrecord):
+            # make structure a permanant record
+            domaccess.removeTransient(structrecord)
+            
+        return
+
+
+    def _formatErrors(self, errors, atomids):
+        def em(var, error):
+            return '%s: %s' % (var, error)
+        
+        e = {}
+        k = 'short_description'
+        e[k] = []
+        if errors.has_key(k):
+            e[k].append(em('name', errors[k]))
+            
+        e['lattice'] = [em(var, errors[var]) for var in lattice_vars if var in errors]
+
+        e['spacegroup'] = []
+        k = 'spacegroupno'
+        if errors.get(k): e['spacegroup'].append(em('number', errors[k]))
+
+        eatoms = e['atoms'] = {}
+        for id in atomids:
+            def _(var):
+                n = '%s%s' % (var, id)
+                if errors.has_key(n):
+                    l = eatoms.setdefault(id, [])
+                    l.append(em(var,errors[n]))
+            _('x')
+            _('y')
+            _('z')
+            _('element')
+            _('occupancy')
+            continue
+
+        return e
+
+
+    def reportErrors(self, director, errors, atomids):
+        actions = []
+        form = select(id='create-structure-form')
+        for name, error in errors.iteritems():
+            a = form.find(name=name).formfield('showError', message=error)
+            actions.append(a)
+            continue
+        return actions
+    
+
+    def addAtom(self, director):
+        id = self.inventory.id
+
+        domaccess = director.retrieveDOMAccessor('atomicstructure')
+        if not id:
+            structure = domaccess.newAtomicStructure()
+
+        else:
+            structure = domaccess.getAtomicStructure(id)
+
+        atom = structure.newAtom()
+
+        if not id:
+            domaccess.setTransient(structure.record)
+            id = structure.record.id
+            return refreshform(id)
+
+        actions = []
+        atomwidget = select(id='add-atoms-form').append(
+            director.retrieveVisual(
+              'atomicstructure/atom-input',
+              structid = id, atomid = atom.id,
+            )
+        )
+        actions.append(atomwidget)
+
+        return actions
+
+
+    def delAtom(self, director):
+        id = self.inventory.id
+
+        domaccess = director.retrieveDOMAccessor('atomicstructure')
+        if not id:
+            return
+
+        structure = domaccess.getAtomicStructure(id)
+
+        atomid = self.inventory.atomid
+        structure.delAtom(id=atomid)
+
+        actions = [select(id='atomicstructure-editatom-%s'%atomid).destroy()]
+        return actions
+
+
+    def updateConfiguration1(self, registry):
+        listing = self._listing(registry)
+        if listing:
+            for k, v in listing:
+                setattr(self.inventory, k, v)        
+        return []
+
+
+    def __init__(self, name='create-structure-form'):
+        super(Actor, self).__init__(name)
+        return
+
+
+    def _listing(self, registry):
+        if not registry: return []
+        listing = [
+            (name, descriptor.value) for name, descriptor in registry.properties.iteritems()
+            ]
+
+        listing += [
+            ("%s.%s" % (nodename, name), value)
+            for nodename, node in registry.facilities.iteritems()
+            for name, value in self._listing(node)
+            ]
+
+        return listing
+
+
+
+def refreshform(id):
+    return select(id='main-display-area').replaceContent(
+        load(actor='atomicstructure',
+             routine='newAtomicStructureForm',
+             id = id)
+        )
+
+
+def actor(): return Actor()
+
+
+# version
+__id__ = "$Id$"
+
+# End of file 
+

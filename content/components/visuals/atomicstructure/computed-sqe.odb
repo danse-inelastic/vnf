@@ -1,0 +1,55 @@
+# -*- Python -*-
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                 Jiao Lin
+#                      California Institute of Technology
+#                      (C) 2006-2009  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+import luban.content as lc
+from luban.content import select, load, alert
+
+class Factory(object):
+
+    def __init__(self, director, id):
+        self.director = director
+        self.id = id
+        self.domaccess = director.retrieveDOMAccessor('atomicstructure')
+        self.atomicstructure = self.domaccess.getAtomicStructure(id)
+        self.actor = 'atomicstructure'
+
+
+    def create(self):
+        doc = lc.document(
+            collapsable=1, collapsed = 1,
+            id='atomicstructure-computed-sqe',
+            title='Sqe',
+            )
+        loading = doc.document(Class='container')
+        loading.paragraph(text=['loading ...'])
+
+        loadsqe = select(element=doc).replaceContent(lc.load(
+            actor='material_simulations/getsqeresults',
+            routine='createSQEDocForAtomicStructure',
+            id = self.id,
+            ))
+        doc.onexpand = loadsqe
+
+        doc.oncollapse = select(element=doc).replaceContent(loading)
+        return doc
+
+
+def visual(director, id):
+    return Factory(director, id).create()
+
+    
+# version
+__id__ = "$Id$"
+
+# End of file 

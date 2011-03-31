@@ -1,0 +1,70 @@
+#!/usr/bin/env python
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                               Alex Dementsov
+#                      California Institute of Technology
+#                        (C) 2009  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+import luban.content as lc
+from luban.content import select
+from luban.content import load
+from vnfb.qeutils.qegrid import QEGrid
+from luban.content.FormTextField import FormTextField
+from luban.content.FormTextArea import FormTextArea
+from luban.content.FormSubmitButton import FormSubmitButton
+
+
+# XXX: Borrowed from input-default.odb visual. Refactor?
+def visual(director, actor, inputText):
+    form        = lc.form(id='create-simulation-form')
+    table       = QEGrid(lc.grid(Class="qe-form"))
+    form.add(table.grid())
+
+    submit      = FormSubmitButton(label="Create Input Configuration")
+    cancel      = lc.button(label="Cancel")
+    cancel.onclick  = load(actor      = 'material_simulations/espresso-convergence/param-view',
+                                         id       = actor.id,
+                                         convid   = actor.convid,
+                                         paramid  = actor.paramid)
+    st          = QEGrid(lc.grid()) # Submit Table
+    st.addRow((submit, cancel), ("qe-action-accept", "qe-action-cancel"))
+
+    # Create form fields
+    text            = FormTextArea( name    = "text",
+                                    value   = inputText,
+                                    Class   = "qe-textarea-inputs")
+    fname           = FormTextField(name    = "fname",
+                                    value   = actor.fname)
+    description     = FormTextField(name    = "description",
+                                    value   = actor.description)   # Make as textarea
+
+    # Add form fields to the table
+    table.addRow(("Configuration: *",   text))
+    table.addRow(("Name:",              fname))
+    table.addRow(("Description:",       description))
+
+    table.addRow(("", st.grid()))
+
+    table.setColumnStyle(0, "qe-form-label")
+    table.setColumnStyle(1, "qe-form-field")
+
+    form.onsubmit  = select(element=form).submit(actor    = 'material_simulations/espresso/input-create',
+                                                 routine  = 'createRecord',
+                                                 id       = actor.id,
+                                                 taskid   = actor.taskid,
+                                                 type     = "PW",   # XXX: Fix!
+                                                 convid   = actor.convid,
+                                                 paramid  = actor.paramid
+                                                 )
+
+    return form
+
+__date__ = "$May 2, 2010 12:24:23 PM$"
+
+

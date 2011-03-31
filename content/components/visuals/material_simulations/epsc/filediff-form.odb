@@ -1,0 +1,99 @@
+# -*- Python -*-
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                               Alex Dementsov
+#                      California Institute of Technology
+#                        (C) 2011  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+import luban.content as lc
+from luban.content import select
+from luban.content import load
+from vnfb.qeutils.qegrid import QEGrid
+from luban.content.FormTextField import FormTextField
+from luban.content.FormSelectorField import FormSelectorField
+from luban.content.FormSubmitButton import FormSubmitButton
+from luban.content.FormRadioBox import FormRadioBox
+
+from luban.content.FormTextArea import  FormTextArea
+
+from vnfb.epscutils.epscconst import *
+
+class Visual:
+
+    def __init__(self, actor, director):
+        self._actor         = actor
+        self._director      = director
+        self._structureid   = actor.structureid
+
+
+    def form(self):
+        # Parameter elements
+        form        = lc.form(id="epsc-form")
+        table       = QEGrid(lc.grid(Class="qe-form"))
+
+        ndif        = FormTextField(name = "ndif", value = NDIF)
+        spread      = FormTextField(name = "spread", value = SPREAD)
+
+        h           = FormTextField(name = "h", value = PLANEDIFF[0], tip="h", Class="epsc-num-field")
+        k           = FormTextField(name = "k", value = PLANEDIFF[1], tip="k", Class="epsc-num-field")
+        l           = FormTextField(name = "l", value = PLANEDIFF[2], tip="l", Class="epsc-num-field")
+        plane       = QEGrid(lc.grid())
+        plane.addRow((h, k, l))
+
+
+        ndif_label   = lc.link(label="Number of diffraction directions:", )
+        ndif_label.tip   = "Number of diffraction directions"
+
+        spread_label   = lc.link(label="Diffracting angle spread, grad:", )
+        spread_label.tip   = "Diffracting angle spread"
+
+        plane_label   = lc.link(label="Diffraction plane:", )
+        plane_label.tip   ="Diffraction plane"
+
+        table.addRow((ndif_label, ndif))
+        table.addRow((spread_label, spread))
+        table.addRow((plane_label, plane.grid()))
+
+        # Skip link
+        visual_     = "material_simulations/epsc/link-skip"
+        skipLink    = self._director.retrieveVisual(visual_, self._actor)
+
+        submit      = FormSubmitButton(label="Generate Diffraction Configuration")
+        cancel      = lc.button(label="Cancel")
+        cancel.onclick  = load(actor = 'material_simulations/epsc/sim-view', id=self._actor.id)
+
+        # Parameters attachment
+        st          = QEGrid(lc.grid()) # Submit Table
+        st.addRow((submit, cancel), ("qe-action-accept", "qe-action-cancel"))
+
+
+        table.addRow(("", skipLink))
+        table.addRow(("", st.grid()))
+
+        table.setColumnStyle(0, "epsc-form-label")
+        table.setColumnStyle(1, "qe-form-field")
+
+        form.onsubmit   = select(element=form).submit(actor     = 'material_simulations/epsc/filediff-create',
+                                                      routine   = 'generateConfig',
+                                                      id        = self._actor.id,
+                                                      taskid    = self._actor.taskid,
+                                                      type      = self._actor.type)
+
+        form.add(table.grid())
+
+        return form
+
+
+def visual(actor, director):
+    v   = Visual(actor, director)
+    return v.form()
+
+__date__ = "$Mar 22, 2011 10:11:29 AM$"
+
+

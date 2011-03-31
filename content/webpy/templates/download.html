@@ -1,0 +1,17 @@
+$def with (host, path, message)
+<html>
+<head>
+	<title>Downloading $host/$path</title>
+</head>
+<body>
+	<div>
+		<h2>Downloading $host/$path</h2>
+		<h3>$message</h3>
+		<form name="input" action="/browse/$path" method="post">
+		New name: <br />
+		<input type="text" name="filename" value="$(path.split('/')[-1])" /><br />
+		<input type="submit" value="Submit" />
+		</form>
+	</div>
+</body>
+</html>

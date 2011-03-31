@@ -1,0 +1,113 @@
+
+outputFiles = {"optimization":{'matter.orm.Structure':None}, 
+    "phonons":{'vsat.PhononDOS':['dos.dens'], 
+        'vsat.Phonons':['polarizations.pkl', 'energies.pkl']}, 
+    "molecular dynamics":{'vsat.Trajectory':self.trajectories},}
+
+import time, os
+from vnfb.components.ComputationResultRetriever import ComputationResultRetriever as base
+class Retriever(base):
+
+    def _retrieveResultsFor(self, computation):
+        director = self.director
+        db = self.db
+        orm = self.orm
+        # must have a job
+        self.declareProgress(0.1, 'look up job')
+        job = computation.getJob(db)
+        
+        # check result is available
+        self.declareProgress(0.2, 'check if results exist')
+        orm = director.clerk.orm
+        gulpObj = orm.record2object(computation)
+        type = gulpOjb.__class__.__name__
+#        expected_results = gulpSettings.getOutputFiles()  
+#        # treat trajectories differently: look for those in motion d.o. eventually
+#        if 'gulp.nc' in expected_results:
+#            expected_results.remove('gulp.nc')
+#        self._check_results_sanity(expected_results, job=job)
+    
+        if type=='GulpPhonon':
+            self.declareProgress(0.6, """create phonon and/or dos data objects""")
+            #store the phonons and the dos results
+#            for key,val in doOutputFiles.iteritems():
+#                parts = key.split('.')
+#                exec 'from '+key+' import '+parts[-1]
+#                dataClass = eval(parts[-1])
+#                result = self._make_result_holder(computation, dataClass)
+#                result.matter = computation.matter
+            from vnfb.dom.material_simulations.Phonons import PhononsTable
+            phonons = self._make_result_holder(computation, PhononsTable)
+            phonons.matter = computation.matter
+            computation.results.add(phonons, db)
+            db.updateRecord(phonons)
+            from vnfb.dom.material_simulations.PhononDOS import PhononDOSTable
+            dos = self._make_result_holder(computation, PhononDOSTable)
+            dos.matter = computation.matter
+            computation.results.add(dos, db)
+            db.updateRecord(dos)
+            
+            self.declareProgress(0.9, 'get result from computational server')
+#            doOutputFiles = gulpSettings.getDOAndOutputFile()
+#            filesInJobDir = doOutputFiles['vsat.Phonons']
+            filesInJobDir = ['dos.dens']
+            self._save_results(computation, job, filesInJobDir, phonons)
+            #filesInJobDir = doOutputFiles['vsat.PhononDOS']
+            filesInJobDir = ['polarizations.pkl', 'energies.pkl']
+            self._save_results(computation, job, filesInJobDir, dos)
+            
+        if type=='GulpMd':
+            self.declareProgress(0.6, """create trajectory data object""")
+#            doOutputFiles = gulpSettings.getDOAndOutputFile()
+#            dataObjectFile = doOutputFiles['vsat.Trajectory'][0] #this should get gulp.nc
+            dataObjectFile = 'gulp.nc'
+            # if the computation already has the trajectory, skip this
+            from sqlalchemy.orm.exc import NoResultFound
+            try:
+                trajectory = computation.results.getElementByKey('trajectory', db) #'trajectory' is class name
+            except: #if not trajectory:
+                db._sasession.rollback()
+                from vnfb.dom.material_simulations.Trajectory import Trajectory
+                trajectoryRecord = self._make_result_holder(computation, Trajectory)
+                trajectoryRecord.creator = computation.creator
+                trajectoryRecord.date = time.ctime()
+                computation.results.add(trajectoryRecord, db, key = 'trajectory')
+                db.updateRecord(trajectoryRecord)
+                #move results from job directory to dedicated trajectories data object directory
+                self.declareProgress(0.9, 'get result from computational server')
+                #self._save_and_move_results(computation=computation, job=job, 
+                #                files=dataObjectFiles, result_holder=trajectoryRecord)
+                self._save_result(computation=computation, job=job, filenameinjobdir=str(dataObjectFile),
+                                 result_holder=trajectoryRecord, newfilename='gulp.nc')
+                #now populate the fields of trajectoryRecord
+                #Trajectory = orm(trajectory)
+                trajectoryRecord.trajectory_path = os.path.join(self.dds.abspath(trajectoryRecord), 'gulp.nc')
+                trajectory=orm.record2object(trajectoryRecord)
+                trajectory.loadNetcdfTrajectory()
+                #reset the trajectory path to what it will be in the working directory
+                trajectory.trajectory_path = 'gulp.nc'
+                trajectoryRecord = orm(trajectory)
+                db.updateRecord(trajectoryRecord)
+
+        if type=='GulpOpt':
+            self.declareProgress(0.9, 'all done')
+            #copy a temporary copy of the job to the web server (for the job page)
+            #self.declareProgress(0.9, 'get result from computational server')
+            #should probably first check to see if they are available on vnf server, then if not do below
+            #i.e. fileexists()
+#            computing_server = self.director.clerk.dereference(job.server)
+#            if not self.dds.is_available(trajectory, dataObjectFiles[0], server = computing_server):
+#                self.dds.remember()
+#            self.dds.make_available(trajectory, dataObjectFiles)
+            #copy a temporary version of the trajectory to the web server (for the results page)
+#            if 
+#                self.dds.make_available(trajectory, dataObjectFiles, server)
+
+def retriever():
+    return Retriever('gulpSettings')
+
+
+# version
+__id__ = "$Id$"
+
+# End of file 

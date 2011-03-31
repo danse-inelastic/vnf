@@ -1,0 +1,180 @@
+# -*- Python -*-
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                   Jiao Lin
+#                      California Institute of Technology
+#                      (C) 2006-2009  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+from vnfb.components.DOMAccessor import DOMAccessor as base
+
+class Accessor(base):
+
+
+    def __init__(self):
+        super(Accessor, self).__init__('bvk-accessor')
+        return
+
+
+    def _getOrm(self):
+        orm = self.director.clerk.orm
+        orm(BvKModel)
+        return orm
+    orm = property(_getOrm)
+
+
+    def newComputation(self, type, model_id):
+        # model
+        model = self.getModel(model_id)
+        
+        # new computation
+        Computation = BvKComputation.getComputationClass(type)
+        c = Computation()
+        c.matter = model.matter
+        c.model = model
+
+        #
+        orm = self.orm
+        orm.save(c, save_not_owned_referred_object=0)
+
+        # assign the owner
+        r = orm(c)
+        r.creator = self.director.sentry.username
+        self.updateRecordWithID(r)
+        
+        return c
+
+
+    def getComputation(self, type, computation_id):
+        kls = BvKComputation.getComputationClass(type)
+        orm = self.orm
+        return orm.load(kls, computation_id)
+
+
+    def getComputationRecord(self, type, computation_id):
+        kls = BvKComputation.getComputationClass(type)
+        orm = self.orm
+        table = orm(kls)
+        return self.getRecordByID(table, computation_id)
+
+
+    def isComputationConfigured(self, computation):
+        # this implementation may change if bvk computation objects change
+        if computation.model is None or computation.matter is None: return False
+        return computation.df >0 and computation.N1 >0
+
+
+    def getComputationLabel(self, type, computation_id):
+        comutation = self.getComputation(type, computation_id)
+        record = self.orm(comutation)
+        return record.short_description or record.id
+    
+
+    def newModel(self, atomicstructure_id):
+        structdomacess = self.director.retrieveDOMAccessor('atomicstructure')
+        struct = structdomacess.getAtomicStructure(atomicstructure_id)
+        model = BvKModel()
+        model.matter = struct
+
+        # save to db
+        orm = self.orm
+        orm.save(model)
+        
+        return model
+
+    
+    def getModelRecord(self, id):
+        return self.getRecordByID(self.orm(BvKModel), id)
+
+
+    def getModel(self, id):
+        return self.orm.load(BvKModel, id)
+
+
+    def getModelRecords(self, atomicstructure_id):
+        struct = self.director.retrieveDOMAccessor('atomicstructure').getAtomicStructureRecord(atomicstructure_id)
+        Table = self.orm(BvKModel)
+        return struct.getReferences(self.db, Table, refname='matter')
+
+
+    def getModels(self, atomicstructure_id):
+        rs = self.getModelRecords(atomicstructure_id)
+        return map(self.getModel, [r.id for r in rs])
+
+
+    def getModelLabel(self, id=None, model=None, modelrecord=None):
+        if modelrecord is None:
+            if model:
+                modelrecord = self.orm(model)
+            else:
+                modelrecord = self.getModelRecord(id)
+        return modelrecord.short_description or modelrecord.id
+
+
+    def isModelConstructed(self, id=None, model=None):
+        'check if a bvk model is constructed and ready to be used'
+        if model is None:
+            model = self.getModel(id)
+        # check if there is a reference to atomic structure
+        if not model.matter: return False
+        # a label is necessary
+        if not model.short_description: return False
+        # check if there are bonds
+        if not len(model.bonds): return False
+        return True
+
+
+    def isModelEditable(self, id=None, modelrecord=None, model=None):
+        'check if a model is still editable'
+        if modelrecord is None:
+            if model:
+                modelrecord = self.orm(model)
+            else:
+                modelrecord = self.getModelRecord(id)
+        return not self.isModelReferred(modelrecord)
+
+
+    def isModelReferred(self, modelrecord):
+        'check if this model is referred by someone'
+        
+        db = self.db
+        orm = self.orm
+        import sqlalchemy
+        def queryComputation(C):
+            T = orm(C)
+            st = db._tablemap.TableToSATable(T)
+            return sqlalchemy.select(
+                [st.c.id], whereclause=st.c.model==modelrecord.id)
+        Computations = BvKComputation.getComputations()
+        qs = [queryComputation(C) for C in Computations]
+        u = sqlalchemy.union_all(*qs).alias('tocount')
+        return bool(u.count().execute().fetchone()[0])
+        
+
+from vnfb.dom.material_simulations.BvKModel import BvKModel
+from vnfb.dom.material_simulations.BvKBond import BvKBond
+import vnfb.dom.material_simulations.BvKComputation as BvKComputation
+
+import os, numpy
+
+m0 = [
+    [0,0,0],
+    [0,0,0],
+    [0,0,0],
+    ]
+
+
+def accessor():
+    return Accessor()
+
+
+# version
+__id__ = "$Id$"
+
+# End of file 

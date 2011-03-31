@@ -1,0 +1,108 @@
+#!/usr/bin/env python
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                               Alex Dementsov
+#                      California Institute of Technology
+#                        (C) 2009  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+from luban.content import load
+from luban.content import select
+import luban.content as lc
+from vnfb.qeutils.qeconst import RESULTS_ID
+from vnfb.qeutils.results.resultinfo import ResultInfo
+#from vnfb.qeutils.taskinfo import TaskInfo
+from vnfb.qeutils.qeutils import latestJob
+
+from luban.components.AuthorizedActor import AuthorizedActor as base
+
+class Actor(base):
+    """
+    Actor for retrieving results from server
+    Notes:
+        - See also 
+    """
+
+    class Inventory(base.Inventory):
+        import pyre.inventory
+        id          = pyre.inventory.str('id', default='')      # Simulation Id
+        taskid      = pyre.inventory.str('taskid', default='')  
+        jobid       = pyre.inventory.str('jobid', default='')   # Not passed at this time
+
+
+    def default(self, director):
+        "Not implemented"
+        pass
+
+
+    def retrieveStatus(self, director):
+        task    = director.clerk.getQETasks(id = self.taskid)
+        cid     = "%s-%s" % (RESULTS_ID, self._id(task.linkorder))         # results link
+        link    = self._retrieveResults(director, task)     # id = cid,
+        
+        return select(id=cid).replaceContent(link)
+
+
+    def _retrieveResults(self, director, task):   # Remove id?
+        link    = "None"
+
+        if self.jobid != "":    # If job id passed
+            job     = director.clerk.getQEJobs(id=self.jobid)
+        else:                   # get latest job
+            jobs    = director.clerk.getQEJobs(where = "taskid='%s'" % self.taskid)
+            if len(jobs) == 0:  # Empty list
+                return link
+            job         = latestJob(jobs)
+
+        # Weird line. See ResultInfo!
+        results     = ResultInfo(director, self.id, task.linkorder, job)
+
+        return results.retrieve()
+
+        
+    def formError(self, errors):
+        return [
+                select(id='%s-error-area' % key).replaceContent(value)
+                    for key, value in errors.iteritems()
+                ]
+
+    def _id(self, linkorder):
+        id   = linkorder             # Use linkorder for default
+
+        if self.jobid != "":    # Otherwise use job id
+            id   = self.jobid
+
+        return id
+
+    def __init__(self):
+        super(Actor, self).__init__(name='jobs/getresults')
+
+        return
+
+
+    def _configure(self):
+        super(Actor, self)._configure()
+        self.id         = self.inventory.id
+        self.taskid     = self.inventory.taskid
+        self.jobid      = self.inventory.jobid
+
+
+    def _init(self):
+        super(Actor, self)._init()
+        self._files = []
+        return
+
+def actor():
+    return Actor()
+
+
+__date__ = "$Dec 17, 2009 11:39:10 AM$"
+
+
+
+

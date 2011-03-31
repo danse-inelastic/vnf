@@ -1,0 +1,105 @@
+#!/usr/bin/env python
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                 Jiao Lin
+#                      California Institute of Technology
+#                      (C) 2006-2009  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+import luban.content as lc
+from luban.content import select, load, alert
+
+
+
+def visual(structureid=None, director=None):
+    '''
+    uploadid: unique id for this upload
+    '''
+    doc = lc.document(title='', Class='container')
+
+    # view indicator
+#    vi = viewindicator(structureid, director)
+#    doc.add(vi)
+
+    # spacer
+    doc.paragraph()
+    
+    # 
+    doc.paragraph(text=['Choose a file to upload.  Supported formats are:'])
+    
+    doc.paragraph(text=['1) .cif'])
+    
+    doc.paragraph(text=['2) .pdb'])
+    doc.paragraph(text=['3) .pdffit'])
+    doc.paragraph(text=['4) .xyz',
+     'Each line must contain an atom symbol followed by its position.',    
+     'If 9 floats are given on the comment line, these are used as the lattice vectors.',
+     'Format: a_x a_y a_z b_x b_y b_z c_x c_y c_z'])
+    doc.paragraph(text=['5) .xyz (VNF format)',
+     'All previous xyz rules apply, except an additional charge (in electron units) may be given following each position triplet.'])
+    doc.paragraph(text=['6) .xyz (raw)',
+     'Each line must contain an atom symbol followed by its position.',
+     'No total number of atoms is required.'])
+
+    # spacer
+    doc.paragraph()
+
+    # uploader
+    uploader = lc.uploader(
+        name = 'structureUploader',
+        label='Click here to browse for the structural file to upload',
+        )
+    
+    uploadid = director.getGUID() # identifier of this upload
+    saveuploadfile = lc.load(
+        actor='upload', routine='receive_file',
+        id=uploadid, 
+        )
+    uploader.onsubmit=saveuploadfile
+
+    uploader.oncomplete = lc.load(
+        actor='atomicstructure/uploadmatter', routine='onUpload',
+        structureid=structureid, uploadid = uploadid)
+
+    doc.add(uploader)
+
+    # spacer
+    doc.paragraph()
+    
+    # cancel button
+    cancel = lc.link(
+        label='cancel',
+        onclick = load(actor='atomicstructure', routine='showOverview', id=structureid)
+        )
+    doc.add(cancel)
+
+    return doc
+
+
+def viewindicator(id, director):
+    path = []
+
+    actor = 'atomicstructure'
+    path.append(('Atomic Structures', lc.load(actor=actor)))
+
+    domaccess = director.retrieveDOMAccessor('atomicstructure')
+    label = domaccess.getAtomicStructureLabel(id)
+    
+    action = lc.load(actor=actor, routine='showOverview', id = id)
+    path.append((label,action))
+
+    path.append('Upload structure')
+
+    return director.retrieveVisual('view-indicator', path=path)
+
+# version
+__id__ = "$Id$"
+
+# End of file 
+

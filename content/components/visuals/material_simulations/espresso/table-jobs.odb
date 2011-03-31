@@ -1,0 +1,82 @@
+#!/usr/bin/env python
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                               Alex Dementsov
+#                      California Institute of Technology
+#                        (C) 2009  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+from vnfb.qeutils.qeutils import stamp2date
+from vnfb.qeutils.jobstatus import JobStatus
+from vnfb.qeutils.results.resultinfo import ResultInfo
+from vnfb.qeutils.qegrid import QEGrid
+from luban.content import load
+import luban.content as lc
+
+
+# XXX: Bug in check and results display
+def visual(director, actor, jobs):
+    """
+    Returns the table of jobs related to QE task
+    """
+
+    table   = QEGrid(lc.grid(Class="qe-tasks-table"))
+
+    def jobid(job, actor):
+        return  lc.link(label   = job.id,
+                       onclick = load(actor     = 'jobs/jobs-view',
+                                      id        = actor.id,
+                                      taskid    = actor.taskid,
+                                      jobid     = job.id,
+                                      type      = actor.type,
+                                      package   = actor.package))
+
+    def submitted(job):
+        return stamp2date(job.timesubmitted)
+
+    def status(jobstatus):
+        return jobstatus.status()
+
+    def refresh(jobstatus):
+        return jobstatus.actionStatus()
+
+    def results(result):
+        return result.link()
+
+    def check(result):
+        return result.action()
+
+    def delete(job, actor):
+        return lc.link( label   = "Delete",
+                        Class   = "qe-action-delete",
+                        onclick = load(actor        = 'jobs/delete',
+                                         id         = actor.id,
+                                         jobid      = job.id,
+                                         taskid     = actor.taskid,
+                                         type       = actor.type,
+                                         package    = actor.package))
+
+    if len(jobs):
+        table.addRow(("Id", "Time Submitted", "Status", "", "Results", "", ""))
+        for j in jobs:
+            result      = ResultInfo(director, actor.id, actor.linkorder, j)
+            jobstatus   = JobStatus(director, actor.id, actor.linkorder, j)
+            table.addRow((jobid(j, actor), submitted(j), status(jobstatus), refresh(jobstatus), results(result), check(result), delete(j, actor)))
+
+    table.setColumnStyle(0, "qe-table-id")
+    table.setColumnStyle(1, "qe-table-time")
+    table.setColumnStyle(3, "qe-table-check")
+    table.setColumnStyle(5, "qe-table-check")
+    table.setColumnStyle(6, "qe-table-delete")
+    table.setRowStyle(0, "qe-table-header")
+
+    return table.grid()
+    
+
+__date__ = "$Jan 14, 2010 6:09:10 AM$"
+

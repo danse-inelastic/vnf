@@ -1,0 +1,315 @@
+/*  -*- CSS -*-  */
+
+/* */
+body {
+    background-color: #f5f5f5;
+}
+
+/* ------------------------------------------------------------ */
+/*   1. header */
+/* header: gradient bg */
+#header-frame {
+    height: 50;
+    /* background-color: #e0e0e0; */
+    background-image: url(../images/header-gradient.png);
+    background-repeat: repeat-x;
+}
+#mainframe-header {
+    margin: 0 25 0 25;
+}
+#mainframe-header table.luban-splitter{
+    height: 100%;
+}
+
+/* logo */
+#header-logo-container {
+    margin:0.75em 0 0.75em 1.5em;
+    padding:0;
+}
+/* hackish */
+#header-logo-container a{
+    color: transparent;
+}
+
+/* title */
+#header-title {
+    text-align: center;
+}
+#header-title-container {
+    vertical-align: bottom;
+}
+#header-title > h1{
+    font-size: 1.1em;
+    font-family: "courier new";
+    /* text-shadow:0 2px 2px #FFFFFF; */
+    text-shadow: 1px 1px white, -1px -1px #444;
+    /* font-weight: bold; */
+    color: #d0d0d0;
+}
+
+/* news */
+#header-news-container {
+    vertical-align: middle;
+    width: 21em;
+}
+#vnfnews {
+    margin-left:auto;
+    margin-right:0;
+    width:20em;
+    background: transparent;
+    border: none;
+    border-right: 1px solid;
+}
+
+/* user info, logoff */
+#header-userinfo-container {
+    vertical-align: middle;
+    width: 2.5em;
+}
+#header-userinfo-container a{
+    font-size: 0.8em;
+}
+#header-userinfo{
+    text-align: right;
+}
+
+
+/* ------------------------------------------------------------ */
+/*   2. body */
+#body-frame {
+    /*
+    margin: 25 25 25 25;
+    background-color: white;
+    border-style: outset;
+    border-width: 2;
+    border-color: #d0d0d0;
+    */
+    padding: 0.5em 0em 0.5em 0;
+}
+#body-frame > div > div[luban-element-type="splitter"] {
+    margin-right:1em;
+}
+/* so that portlet is next to the display area */
+#body-frame table.luban-splitter {
+    border-width: 0px;
+    border-spacing: 0px;
+    border-style: none;
+    border-collapse: collapse;
+}
+#body-frame table.luban-splitter td{
+}
+
+/* portlets on the left */
+#portlets-frame {
+    padding: 0;
+    vertical-align: top;
+    width: 15em;
+}
+
+/* main portlet */
+#main-portlet {
+    margin: 0 0 0 0;
+    padding: 0 0 0 0.2em;
+}
+/* override default luban behavior */
+#main-portlet .luban-portlet-body {
+    border: none;
+    padding: 1.6em 0 0 0;
+}
+/* portlet round borders */
+#main-portlet .luban-portletitem-content {
+    -moz-border-radius: 16px 16px 16px 16px;
+    -webkit-border-radius: 16px;
+    /* border: 1px solid green; */
+    padding: 0.25em 0.5em;
+    background-color: #e0e0e0;
+}
+#main-portlet .luban-portletitem-container {
+    -moz-border-radius: 23px 0 0 23px;
+    -webkit-border-top-left-radius: 21px;
+    -webkit-border-top-right-radius: 0px;
+    -webkit-border-bottom-right-radius: 0px;
+    -webkit-border-bottom-left-radius: 21px;
+    padding: 0.5em 1.5em 0.5em 0.5em;
+}
+/* selected */
+#main-portlet div.luban-portletitem-container.selected div.luban-portletitem-content{
+    /* orange */
+    /* background-color: #f5c073; */
+    
+    /* light orange */
+    background-color: #fffbb4;
+}
+#main-portlet div.luban-portletitem-container.selected{
+    /* background-color: #f5c073; */  /*oragne*/
+    background-color: #cced8c;
+}
+/* portlet font size */
+#main-portlet .luban-portletitem-content{
+    font-size: 1.1em;
+    color: #454545;
+    text-align: center;
+    padding: 4px 7px;
+}
+
+.luban-portletitem-container.selected .luban-portletitem-content a{
+    color: #30572C;
+    background-color: transparent;
+}
+.luban-portletitem-container.selected .luban-portletitem-content a:hover{
+    border: none;
+}
+.luban-portletitem-content a{
+    border-width: 0;
+    background-color: transparent;
+    color: #555555;
+}
+
+/* override the existing hover effect */
+.luban-portletitem-content a.luban-portletitem:hover {
+    background-color: transparent;
+    border-color: transparent;
+    border: none;
+    color: green;
+    cursor: pointer;
+}
+/* so that we can have new hover effect */
+#main-portlet div.luban-portletitem-content:hover{
+    background-color: #cced8c;
+    cursor: pointer; cursor: hand;
+}
+/*
+#main-portlet div.luban-portletitem-container:hover{
+    background-color: #f5c073;
+    cursor: default;
+}
+*/
+
+#help-portlet {
+margin-top:10em;
+font-size: 0.8em;
+text-align: right;
+}
+#help-portlet .luban-portlet-body {
+border:none;
+}
+#help-portlet .luban-portletitem-container {
+padding-right:0;
+}
+
+/* main area */
+#main-display-area-frame {
+    -moz-border-radius: 25px 25px 25px 25px;
+    -webkit-border-radius: 25px;
+    /*
+    border-color: #f5c073;
+    border-style: solid;
+    border-width: 10px;
+    height: 100%;
+    */
+    padding: 0.6em 0.5em 1.2em;
+    background-color: #cced8c;
+    vertical-align: top;
+}
+#main-display-area-frame > div.luban-splitsection-interior-container{
+    -moz-border-radius: 25px 25px 25px 25px;
+    -webkit-border-radius: 25px;
+    min-height: 41em;
+    width: 100%;
+    background-color: white;
+}
+
+#main-display-area {
+    padding: 0.5em 1em 1em 1em;
+    /*
+    min-height: 100%;
+    min-width: 100%;
+    */
+}
+#main-display-area a.luban-link{
+    color:#47823c;
+}
+
+/* editable */
+#main-display-area .editable {
+    color: #555555;
+}
+
+/* ------------------------------------------------------------ */
+/*   3. footer */
+/* footer: gradient bg */
+#footer-frame {
+    height: 26;
+    /* background-color: #e0e0e0; */
+    background-image: url(../images/footer-gradient.png);
+    background-repeat: repeat-x;
+}
+#footer-frame tr.luban-splitsection-interior-container{
+    height: 100%;
+}
+/* copyright */
+#footer-copyright {
+    height: 100%;
+}
+
+#footer-copyright p {
+    text-align:center;
+    text-shadow: 1px 1px #444;
+    font-family:Times,"Times New Roman",serif;
+    font-size:0.85em;
+    margin: 7px 0;
+    color: #d0d0d0;
+    vertical-align: bottom;
+}
+
+/* ------------------------------------------------------------ */
+/*   4. credits */
+#credits-frame {
+    text-align:center;
+    font-family:Times,"Times New Roman",serif;
+    font-size:0.8em;
+    margin: 5px;
+    margin-bottom: 4em;
+    color: #444444;
+}
+#credits-frame a:hover {
+    text-decoration:underline;
+    color: blue;
+}
+#credits-frame a {
+    color:#3333aa;
+    text-decoration:none;
+}
+a#surprise-for-bug-report-test {
+    margin-top: 2em;
+    color: transparent;
+    display: block;
+}
+a#surprise-for-bug-report-test:hover {
+    color: white;
+}
+/* inside main area */
+#view-indicator {
+    padding: 1em 0 1em 0;
+    font-size: 0.9em;
+    min-width: 270px;
+    max-width: 800px;
+    /* float: left; */
+}
+#view-indicator a{
+    color: #6f4980;
+    /* text-decoration: underline; */
+}
+#view-indicator p{
+    display: inline;
+    color:#47823c;
+}
+#view-indicator div{
+    margin-left: 0.5em;
+}
+
+
+/* version */
+/* $Id$ */
+
+/* End of file  */

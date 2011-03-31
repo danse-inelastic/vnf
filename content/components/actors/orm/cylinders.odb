@@ -1,0 +1,39 @@
+#!/usr/bin/env python
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                 Jiao Lin
+#                      California Institute of Technology
+#                      (C) 2006-2009  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+import luban.content as lc
+from luban.content import select, load, alert
+
+
+from vnfb.dom.geometry.Cylinder import Cylinder
+
+from luban.components.Actor import Actor
+import luban.orm
+base = luban.orm.object2actor(Cylinder)
+from vnfb.components.geometry.ShapeOrmActorHelper import helper
+class Actor(helper(Cylinder), base):
+
+    class Inventory(base.Inventory):
+
+        import luban.inventory
+
+
+def actor():
+    return Actor('orm/cylinders')
+
+
+# version
+__id__ = "$Id$"
+
+# End of file 

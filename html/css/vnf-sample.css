@@ -1,0 +1,151 @@
+/*  -*- CSS -*-  */
+
+/* editor */
+/* shape view */
+.shape-summary-image img{
+    height: 5em;
+}
+/* shape editor */
+#scatterer-shape-type-selector-doc table {
+border-collapse:collapse;
+}
+#scatterer-shape-type-selector-doc .luban-toolbar {
+background-color:transparent;
+}
+#scatterer-shape-type-selector-doc .luban-button-container {
+margin:0;
+padding:0;
+}
+#scatterer-shape-type-selector-doc .luban-button-container.highlight {
+border:1px solid lightgreen;
+}
+#scatterer-shape-type-selector-doc .luban-button-container:not(.highlight) a.luban-button:hover {
+background-color:#f0f0f0;
+}
+/* kernels editor */
+#scatterer-kernels-view table {
+border-collapse:collapse;
+}
+/* kernels editor: portlet */
+#scatterer-editor-kernels-portlet-container {
+    vertical-align: top;
+    width: 12em;
+    padding: 0;
+    border: 0;
+}
+#scatterer-editor-kernels-portlet {
+    width: 12em;
+    padding: 0;
+}
+/* portlet title */
+#scatterer-editor-kernels-portlet h5 {
+border:none;
+background-color:transparent;
+}
+/* override default luban behavior */
+#scatterer-editor-kernels-portlet .luban-portlet-body {
+    border: none;
+    padding: 1.6em 0 0 0;
+}
+/* portlet round borders */
+#scatterer-editor-kernels-portlet .luban-portletitem-content {
+    -moz-border-radius: 16px 16px 16px 16px;
+    -webkit-border-radius: 16px;
+    /* border: 1px solid green; */
+    padding: 0.25em 0.5em;
+    background-color: #e0e0e0;
+}
+#scatterer-editor-kernels-portlet .luban-portletitem-container {
+    -moz-border-radius: 23px 0 0 23px;
+    -webkit-border-top-left-radius: 21px;
+    -webkit-border-top-right-radius: 0px;
+    -webkit-border-bottom-right-radius: 0px;
+    -webkit-border-bottom-left-radius: 21px;
+    padding: 0.5em 1.5em 0.5em 0.5em;
+}
+/* selected */
+#scatterer-editor-kernels-portlet div.luban-portletitem-container.selected div.luban-portletitem-content{
+    /* orange */
+    /* background-color: #f5c073; */
+    
+    /* light orange */
+    /* background-color: #fffbb4; */
+}
+#scatterer-editor-kernels-portlet div.luban-portletitem-container.selected{
+    background-color: #e5e5e5;
+}
+/* portlet font size */
+#scatterer-editor-kernels-portlet .luban-portletitem-content{
+    font-size: 1.1em;
+    color: #454545;
+    text-align: center;
+    padding: 4px 7px;
+}
+/* so that we can have new hover effect */
+#scatterer-editor-kernels-portlet div.luban-portletitem-content:hover{
+    background-color: #cced8c;
+    cursor: hand;
+}
+/* kernesl editor: kernel type selector */
+#scatterer-kernel-type-selector-doc .luban-toolbar {
+background-color:transparent;
+}
+#scatterer-kernel-type-selector-doc .luban-button img {
+    height:70px;
+}
+#scatterer-kernel-type-selector-doc .luban-button-container {
+margin:0;
+padding:0;
+}
+#scatterer-kernel-type-selector-doc .luban-button-container.highlight {
+border:1px solid lightgreen;
+}
+#scatterer-kernel-type-selector-doc .luban-button-container:not(.highlight) a.luban-button:hover {
+background-color:#f0f0f0;
+}
+/* kernels editor: kernel view*/
+#scatterer-kernel-view {
+    background-color:white;
+    padding:1em;
+    -moz-border-radius:9px;
+    -webkit-border-radius:9px;
+    min-height: 15em;
+}
+#scatterer-kernel-view .controls table {
+    width:auto;
+}
+#scatterer-kernel-view .controls {
+    margin-top:2em;
+}
+#scatterer-editor-kernel-view-container {
+    background-color:#e5e5e5;
+    -moz-border-radius:10px;
+    -webkit-border-radius:10px;
+    padding:0.5em;
+}
+.kernel-summary-image img{
+    height: 4em;
+}
+/* plot in kernel view */
+#scatterer-kernel-view .luban-plot2d {
+    width:300px;
+}
+#scatterer-kernel-view .luban-plot2d div.plot {
+    width:300px;
+    height:200px;
+}
+#scatterer-kernel-view table td {
+vertical-align:top;
+}/* phonon kernel */
+#phonons-selector-container .luban-plot2d {
+height:160px;
+width:220px;
+}
+#phonons-selector-container table td {
+vertical-align:top;
+}
+
+/* version */
+/* $Id$ */
+
+/* End of file  */

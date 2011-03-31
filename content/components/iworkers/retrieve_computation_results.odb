@@ -1,0 +1,63 @@
+#!/usr/bin/env python
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                  Jiao Lin
+#                     California Institute of Technology
+#                       (C) 2008  All Rights Reserved
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+from pyre.components.Component import Component as base
+
+
+class Worker(base):
+
+    class Inventory(base.Inventory):
+
+        pass # end of Inventory
+    
+
+    def run(self, task):
+        director = self.director
+        #
+        domaccess = self.domaccess = director.retrieveDOMAccessor('computation')
+        # make sure orm is initd
+        orm = domaccess.orm
+        # db manager
+        db = domaccess.db
+
+        director.declareProgress(0.0, 'Look up computation ...')
+        computation = task.beneficiary.dereference(db)
+
+        #
+        from vnfb.utils.computation import retrieve_results
+        from vnfb.components.ComputationResultRetriever import RetrievalFailed
+        try:
+            retrieve_results(computation, director)
+            
+        except RetrievalFailed:  # failed retrieval in retrieving results
+            raise
+        
+        except:  # other exceptions such as results-retrieval component not implemented
+            import traceback
+            msg = traceback.format_exc()
+            computation.setResultRetrievalStatusAndErrorMessage(
+                'failed', msg, db)
+            raise
+        
+        return
+
+
+
+def iworker():
+    return Worker('retrieve_computation_results', 'iworker')
+
+
+
+# version
+__id__ = "$Id$"
+
+# End of file 

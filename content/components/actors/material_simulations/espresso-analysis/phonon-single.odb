@@ -1,0 +1,59 @@
+#!/usr/bin/env python
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                               Alex Dementsov
+#                      California Institute of Technology
+#                        (C) 2009  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+import luban.content as lc
+from vnfb.qeutils.qegrid import QEGrid
+from vnfb.qeutils.results.dynmatresult import DYNMATResult
+
+NONE    = "None"
+
+from vnfb.components.QEAnalysis import QEAnalysis as base
+class Actor(base):
+    
+    def _simData(self, director, splitter):
+        "Shows phonon specific data (phonon DOS, dispersion)"
+        self._dynmatresult      = DYNMATResult(director, self.id)
+
+        self._freqs(director, splitter)
+
+
+    def _freqs(self, director, splitter):
+        "Displays phonon frequencies"
+        section    = splitter.section()
+        section.add(lc.paragraph(text="Phonon", Class="qe-section"))
+        table       = QEGrid(lc.grid(Class = "qe-table-analysis"))
+        section.add(table.grid())
+        table.addRow(("Phonon Frequencies (1/cm):", self._freqsColumn()))
+        table.setColumnStyle(0, "qe-cell-param-analysis")
+
+
+    def _freqsColumn(self):
+        "Creates formatted column of phonon frequencies"
+        output  = self._dynmatresult.output()
+        if not output:
+            return NONE
+
+        freqs   = output.property('single phonon')
+        table   = QEGrid(lc.grid(Class="qe-table-freqs"))
+        for f in freqs:
+            table.addRow(("%f" % f,))
+
+        return table.grid()
+
+
+def actor():
+    return Actor(name='material_simulations/espresso-analysis/phonon-single')
+
+__date__ = "$Mar 14, 2010 10:29:49 AM$"
+
+

@@ -1,0 +1,281 @@
+#!/usr/bin/env python
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                               Alex Dementsov
+#                      California Institute of Technology
+#                        (C) 2009  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+from vnfb.qeutils.qegrid import QEGrid
+from vnfb.qeutils.qeutils import qetask, stamp2date, ifelse, latestInput, qedialog
+from vnfb.qeutils.qeutils import defaultInputName, readRecordFile
+from vnfb.qeutils.qeconst import CONVTYPE, ID_CONV_JOBS, ID_CONV_OPT
+
+import luban.content as lc
+from luban.content import load, select
+from luban.content.Paragraph import Paragraph
+
+from vnfb.components.QEConvergence import QEConvergence as base
+
+class Actor(base):
+    class Inventory(base.Inventory):
+        import pyre.inventory
+        convid          = pyre.inventory.str('convid', default='')
+        paramid         = pyre.inventory.str('paramid', default='')
+
+
+    def _viewIndicator(self, director, section):
+        #self._conv    = director.clerk.getQEConvergences(id = self.convid) # ?
+        self._param     = director.clerk.getQEConvParams(id = self.paramid)
+
+        qelink  = load( actor           = 'materialsimulation',
+                        filter_key      = 'type',
+                        filter_value    = 'qesimulations')
+
+        path = []
+        path.append(('Simulations ', load(actor='materialsimulation')))
+        path.append(('Quantum Espresso ', qelink))
+        path.append(('%s ' % self.id, load(actor    = 'material_simulations/espresso/sim-view',
+                                           id       = self.id)))
+        path.append(('Convergence Tests', load(actor    = 'material_simulations/espresso-convergence/view',
+                                            id       = self.id)))
+        path.append(("Test: %s" % self.convid, load(actor    = 'material_simulations/espresso-convergence/conv-view',
+                                                    id       = self.id,
+                                                    convid   = self.convid)))
+
+        path.append(self._paramLink())
+        section.add(director.retrieveVisual('view-indicator', path=path))
+
+
+    def _refreshAction(self, section):
+        section.add(lc.link(label="Refresh",
+                            Class="qe-action-back",
+                            onclick = load(actor      = 'material_simulations/espresso-convergence/param-view',
+                                             id       = self.id,
+                                             convid   = self.convid,
+                                             paramid  = self.paramid)))
+
+
+    def _mainContent(self, director, splitter):
+        "Main content"
+        if not self._param:    # No parameter found
+            return
+
+        splitter.section(id="input-error-area") # Area for errors?
+
+        self._showParamInfo(splitter)
+        self._showTasks(director, splitter)
+        self._showJobSection(director, splitter)
+        self._showOptimalTitle(director, splitter)
+
+
+
+    def _showParamInfo(self, splitter):
+        sC          = splitter.section()
+        table       = QEGrid(lc.grid(Class = "qe-table"))
+        sC.add(table.grid())
+        table.addRow(("Parameter Name: ",   self._param.pname))
+        table.addRow(("Parameter Id: ",     self._param.id))
+        table.addRow(("Start Value: ",      self._param.startvalue))
+        table.addRow(("Current Value: ",    self._param.value))
+        table.addRow(("Step: ",             self._param.step))
+        table.addRow(("Tolerance, %: ",     str(self._param.tolerance)))
+        table.addRow(("Max Steps: ",        str(self._param.maxsteps)))
+        table.addRow(("Optimal Value: ",    self._optimal()))
+        table.addRow(("Time Created: ",     stamp2date(self._param.timecreated) ))
+        table.setColumnStyle(0, "qe-cell-param")
+
+
+    def _showTasks(self, director, splitter):
+        task  = qetask(director, self.paramid, linkorder=0, refid="convparamid")
+        if not task:
+            self._noTasks(splitter)
+            return
+
+        self._showTaskTitle(splitter)
+        self._taskTable(director, splitter, task)
+
+        # !!! Test
+
+#        from vnfb.qeutils.qeutils import latestJob
+#        from vnfb.qeutils.results.pwresult import PWResult
+##        jobs    = director.clerk.getQEJobs(where="taskid='%s'" % task.id)
+##        job     = latestJob(jobs)
+#        job     = director.clerk.getQEJobs(id="JCDDBWPC")
+#        result  = PWResult(director, self.id, job = job)
+#        print job.id
+#        print result.totalEnergy()
+#        print result.smearingDegree()
+
+
+    def _showTaskTitle(self, splitter):
+        sP          = splitter.section(id="qe-tasks-label")
+        sP.add(Paragraph(text="Simulation Tasks", Class="qe-section-inline"))
+        sP.add(lc.document(Class="clear-both"))
+
+
+    # XXX: Borrowed from qetasks.py and taskcell.py. Refactor?
+    # XXX: Hardcoded to PW simulation
+    def _taskTable(self, director, splitter, task):
+        inputs  = director.clerk.getQEConfigurations(where="taskid='%s'" % task.id)
+        input   = latestInput(inputs)
+
+        sT          = splitter.section()
+        table       = QEGrid(lc.grid(Class="qe-tasks-table"))
+        table.addColumn((self._taskHeader(task),
+                         self._taskInfo(director, task, input),
+                         self._taskAction(task, input)))
+        sT.add(table.grid())
+
+        table.setCellStyle(2, 0, "qe-action-task")
+
+
+    def _noTasks(self, splitter):
+        sP          = splitter.section(id="qe-tasks-label")
+        sP.add(lc.paragraph(text="Simulation Tasks: None", Class="qe-section-inline"))
+        sP.add(lc.document(Class="clear-both"))        
+
+
+    def _taskHeader(self, task):
+        return lc.paragraph(text="Step 1: %s" % task.type, Class="text-bold")
+
+
+    def _taskInfo(self, director, task, input):
+        table   = QEGrid(lc.grid(Class="qe-tasks-info"))
+        table.addRow(("Input:", self._inputLink(director, task, input)))
+
+        return table.grid()
+
+
+    def _inputLink(self, director, task, input):
+        if not input:
+            actor   = "material_simulations/espresso-convergence/input-create"
+            return    lc.link(label     = "Add",
+                              onclick   = load(actor    = actor,
+                                               id       = self.id,
+                                               convid   = self.convid,
+                                               paramid  = self.paramid,
+                                               paramname    = self._param.pname,
+                                               taskid   = task.id))
+
+        fname       = defaultInputName(input.type)
+        inputText   = readRecordFile(director.dds, input, fname)
+
+        title   = '%s Input' % task.type
+        text    = lc.htmldocument(text="<pre>%s<pre>" % inputText)
+
+        content = lc.document()
+        dialog  = qedialog(title, text) # dialog to pop up
+        content.add(lc.link(label     = 'pw.in',
+                       onclick   = select(element=content).append(dialog)) )
+
+        return content
+
+
+    def _taskAction(self, task, input):
+        "Displays simulation task action button: 'Run Task', 'Cancel'"
+        doc     = lc.document()   # Example: run-task-BFDFX56
+
+#        if not self._task:
+#            return doc
+#
+#        doc.id = "%s-%s" % (TASK_ACTION, self._task.id)
+
+        doc.add(self._runLink(task))
+        return doc
+
+        
+    def _runLink(self, task):
+        "Returns 'Run Test' link"
+        # If not job created or is not running
+        link = lc.link(label    = "Run Test",
+                       Class    = "qe-run-task",
+                       onclick  = load(actor    ='jobs/conv-run',
+                                      routine   = 'run',
+                                      id        = self.id,
+                                      taskid    = task.id,
+                                      convid    = self.convid,  # Just in case
+                                      paramid   = self.paramid))
+        return link
+
+
+
+    def _showJobSection(self, director, splitter):
+        content     = lc.document(id = ID_CONV_JOBS)
+        sJ          = splitter.section()
+        sJ.add(content)
+
+     
+# Keep! Show if jobs exist
+#        jobSplitter = content.splitter(orientation="vertical")
+#
+#        self._jobTitle(jobSplitter)
+#        self._jobTable(director, jobSplitter)
+#
+#
+#    def _jobTitle(self, splitter):
+#        sP          = splitter.section(id="qe-tasks-label")
+#        sP.add(Paragraph(text="Convergence Jobs", Class="qe-section-inline"))
+#        sP.add(lc.document(Class="clear-both"))
+#
+#
+#    def _jobTable(self, director, splitter):
+#        sT          = splitter.section()                        # path indicator
+#        visual      = 'material_simulations/espresso-convergence/table-jobs'
+#        sT.add(director.retrieveVisual( visual,
+#                                        director,
+#                                        id      = self.id,
+#                                        paramid = self.paramid))
+
+    def _showOptimalTitle(self, director, splitter):
+        content     = lc.document(id = ID_CONV_OPT)
+        sJ          = splitter.section()
+        sJ.add(content)
+
+
+#    # XXX: Fix load()
+#    def _optimalTitle(self, director, splitter):
+#        value       = "24"
+#        sP          = splitter.section(id="qe-tasks-label")
+#        sP.add(Paragraph(text="Optimal Value: %s" % value, Class="qe-section-inline"))
+#
+#        # Show refresh status button
+#        sP.add(lc.link( label   ="Export to PW",
+#                        id      = "action-refresh-status",
+#                        onclick = load(actor   = 'material_simulations/espresso-convergence/param-create',
+#                                        routine = "refreshStatus",
+#                                        id      = self.id)
+#                        ))
+#        sP.add(lc.document(Class="clear-both"))
+
+
+    def _optimal(self):
+        return ifelse(self._param.optimal, self._param.optimal, "None")
+
+
+    def _paramLink(self):
+        s   = "Parameter"
+        if not self._param:
+            return s
+
+        s   += ": %s" % self._param.pname
+        return s
+
+
+    def _configure(self):
+        super(Actor, self)._configure()
+        self.convid       = self.inventory.convid
+        self.paramid      = self.inventory.paramid
+
+
+def actor():
+    return Actor(name='material_simulations/espresso-convergence/param-view')
+
+__date__ = "$May 1, 2010 7:49:07 AM$"
+
+

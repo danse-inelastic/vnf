@@ -1,0 +1,190 @@
+#!/usr/bin/env python
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                               Alex Dementsov
+#                      California Institute of Technology
+#                        (C) 2009  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+import luban.content as lc
+from luban.content import load, select
+
+from vnfb.qeutils.qegrid import QEGrid
+from vnfb.qeutils.results.phresult import PHResult
+from vnfb.qeutils.results.matdynresult import MATDYNResult
+from vnfb.qeutils.qeutils import parsePhononDos
+from vnfb.qeutils.qerecords import SimulationRecord
+from vnfb.utils.orderedDict import OrderedDict
+
+NONE                = "None"
+ID_EXPORT_STATUS    = "qe-export-status"
+CODE                = ["success", "error"]              # List of status codes
+CLASS               = ["qe-text-green", "qe-text-red"]  # CSS classes corresponding to the status code
+
+"""
+Status code:
+    0 - success
+    1 - error
+"""
+SUBTYPE_DOS     = "dos"
+SUBTYPE_DISP    = "dispersion"
+
+from vnfb.components.QEAnalysis import QEAnalysis as base
+class Actor(base):
+
+    class Inventory(base.Inventory):
+        import pyre.inventory
+        status      = pyre.inventory.str('status', default='')      # Status message
+        statuscode  = pyre.inventory.int('statuscode', default=0)    # Status code
+
+
+    def exportStatus(self, director):
+        "Updated the export status"
+        # Nice that I just can replace small part of document!
+        return select(id=ID_EXPORT_STATUS).replaceContent(self._exportStatus())
+
+
+    def _simData(self, director, splitter):
+        "Shows phonon specific data (phonon DOS, dispersion)"
+        self._phresult      = PHResult(director, self.id)
+        self._matdynresult  = MATDYNResult(director, self.id)   # Latest results
+        self._mddosresult   = MATDYNResult(director, self.id, SUBTYPE_DOS)   # DOS results
+        # Add dispersion results?
+
+        self._phonons(director, splitter)
+        self._phononDos(director, splitter)
+        self._phononDispersion(director, splitter)
+
+
+    def _phonons(self, director, splitter):
+        section    = splitter.section()
+        section.add(lc.paragraph(text="Phonons", Class="qe-section"))
+        table       = QEGrid(lc.grid(Class = "qe-table-analysis"))
+        section.add(table.grid())
+        table.addRow(("Phonon Grid:", self._phresult.grid(formatted=True)))
+        table.setColumnStyle(0, "qe-cell-param-analysis")
+
+
+    def _phononDos(self, director, splitter):
+        "Display phonon DOS plot"
+        # Not displayed if no file exist or data are not in proper format
+        section    = splitter.section()
+        section.add(lc.paragraph(text="Phonon DOS", Class="qe-section"))
+        dosfile    = self._mddosresult.dosFile()   # dos file path
+
+        if not dosfile:     # "No DOS file!" # if no DOS file, notify user!
+            section.add(lc.htmldocument(text="No Phonon DOS", Class="qe-text-blue"))
+            return
+
+        # Populate D(E) list from file
+        data    = parsePhononDos(dosfile)
+        if not data:        # "DOS file contains non-proper data!"
+            section.add(lc.htmldocument(text="No Phonon DOS", Class="qe-text-blue"))
+            return
+
+        (e,  state) = data
+        plot = lc.plot2d(Class="default-size-plot")
+        plot.curve(x=e, y=state, label='Phonon DOS')
+
+        section.add(plot)
+
+
+    def _phononDispersion(self, director, splitter):
+        section    = splitter.section()
+        section.add(lc.paragraph(text="Phonon Dispersion", Class="qe-section"))
+        section.add(lc.htmldocument(text="No Phonon Dispersion", Class="qe-text-blue"))
+        
+
+    def _contentExport(self, director):
+        "Export content for phonons"
+        doc     = lc.document()
+        simrecord   = SimulationRecord(director, self.id)
+        sim         = simrecord.record()
+        splitter    = lc.splitter(orientation="vertical")
+        sTit        = splitter.section()
+        splAct      = lc.splitter(Class="qe-splitter-export-phonon")
+        sDos        = splAct.section()
+        sDis        = splAct.section()
+        sSta        = splitter.section()
+        statusdoc   = lc.document(id=ID_EXPORT_STATUS)
+        sSta.add(statusdoc)
+        doc.add(splitter)
+        
+        sTit.add(lc.paragraph(text="Export Phonon Results", Class="qe-section"))
+        sTit.add(splAct)
+        self._exportDosAction(sDos, sim)
+        self._exportDispersionAction(sDis, sim)
+
+        return  doc
+
+
+    # XXX: Show the "Export Phonon DOS" button only if dos simulation has been run
+    def _exportDosAction(self, section, sim):
+        linkDos     = lc.link(label="Export Phonon DOS",
+                            Class="qe-action-edit",
+                            onclick = load(actor        = 'material_simulations/espresso/phonondos',
+                                            routine     = 'create',
+                                            simid       = self.inventory.id,
+                                            simtype     = self.simtype))
+        linkDos.tip = "Export Phonon DOS to Atomic Structure"
+
+        # Uncomment
+#        if self._phononDosCreated(sim):     # Check if DOS created
+#            linkDos.label   = "Phonon DOS"
+#            linkDos.onclick = load(actor        = 'atomicstructure',
+#                                    routine     = 'showOverview',
+#                                    id          = sim.structureid)  # matter id
+
+        section.add(linkDos)
+
+    # XXX: Show the "Export Phonon Dispersion" button only if dispersion simulation has been run
+    def _exportDispersionAction(self, section, sim):
+       linkDisp     = lc.link(label="Export Phonon Dispersion",
+                            Class="qe-action-edit",
+                            onclick = load(actor        = 'material_simulations/espresso/phonons',
+                                            routine     = 'create',
+                                            simid       = self.inventory.id,
+                                            simtype     = self.simtype))
+       linkDisp.tip = "Export Phonon Dispersion to Atomic Structure"
+       section.add(linkDisp)
+
+
+    def _exportStatus(self):
+        "Returns status element"
+        # Use inventory because it doesn't properly redirects attributes!
+        doc         = lc.htmldocument(Class=self._exportClass())
+        doc.text    = self.inventory.status
+
+        return doc
+
+
+    def _exportClass(self):
+        "Returns CSS class names specified by the statuscode"
+        code    = self.inventory.statuscode
+        if not code in range(len(CLASS)):
+            return ""   # No proper code, no class
+
+        return CLASS[code]
+
+
+    def _configure(self):
+        super(Actor, self)._configure()
+        self.status     = self.inventory.status
+        self.statuscode = self.inventory.statuscode
+
+
+    def _init(self):
+        super(Actor, self)._init()
+
+
+def actor():
+    return Actor(name='material_simulations/espresso-analysis/phonon-multiple')
+
+__date__ = "$Mar 14, 2010 10:30:21 AM$"
+
+

@@ -1,0 +1,30 @@
+#!/usr/bin/env python
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                     California Institute of Technology
+#                       (C) 2009  All Rights Reserved
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+def visual(analyses, cols, director):
+    try: return table(analyses, cols, director)
+    except:
+        import journal
+        debug = journal.debug('analyses-table')
+        import traceback
+        debug.log(traceback.format_exc())
+        return
+
+
+def table(analyses, cols, director):
+    from vnfb.content.visuals.table.analysis import table
+    return table(analyses, cols, director, editable=True)
+
+
+# version
+__id__ = "$Id$"
+
+# End of file 

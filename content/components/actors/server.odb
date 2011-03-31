@@ -1,0 +1,132 @@
+#!/usr/bin/env python
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                               Alex Dementsov
+#                      California Institute of Technology
+#                        (C) 2009  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+from vnfb.qeutils.qegrid import QEGrid
+
+from luban.content.Link import Link
+from luban.content import select
+from luban.content import load
+
+import luban.content as lc
+from luban.components.AuthorizedActor import AuthorizedActor as base
+
+
+class Actor(base):
+
+    class Inventory(base.Inventory):
+        import pyre.inventory
+        id          = pyre.inventory.str('id', default='')          # Server Id
+
+    def default(self, director):
+        return select(id='main-display-area').replaceContent(self.content(director))
+
+
+    def content(self, director):
+        servers       = director.clerk.getServers()
+
+        def viewIndicator(director):
+            path = []
+            path.append('Servers ')
+
+            return director.retrieveVisual('view-indicator', path=path)
+
+        doc         = lc.document(title="Computing Servers")
+        splitter    = doc.splitter(orientation="vertical")
+        sA          = splitter.section()
+        sA.add(viewIndicator(director))
+
+        sB          = splitter.section()
+
+        table       = QEGrid(lc.grid(Class="qe-table"))
+        sB.add(table.grid())
+        self._showServers(table, servers)
+
+        return doc
+
+
+    def view(self, director):
+        "View server data"
+        return select(id='main-display-area').replaceContent(self.contentView(director))
+
+
+    def contentView(self, director):
+        server       = director.clerk.getServers(id = self.id)
+
+        # Check if server exists
+        def viewIndicator(director):
+            path = []
+            path.append(('Servers ', load(actor='server')))
+            path.append('%s' % server.address)
+
+            return director.retrieveVisual('view-indicator', path=path)
+
+        doc         = lc.document(title="Computing Server: %s" % server.address)
+        splitter    = doc.splitter(orientation="vertical")
+        sA          = splitter.section()
+        sA.add(viewIndicator(director))
+
+        sB          = splitter.section()
+        table       = QEGrid(lc.grid(Class="qe-table"))
+        sB.add(table.grid())
+        self._showServerInfo(table, server)
+
+        return doc
+
+
+    def _showServers(self, table, servers):
+        """
+        Shows servers as a list
+
+        TODO: show as a table with columns: "Server Name", "Number Of Nodes", "Cores Per Node"
+        """
+        for s in servers:
+            link = Link(label=s.address,
+                        onclick=load(actor      = "server",
+                                     routine    = "view",
+                                     id         = s.id)
+                        )
+            table.addRow((link,))
+
+
+    def _showServerInfo(self, table, server):
+        "Shows servers information"
+        if server:
+            table.addRow(("Server Name: ", server.sname))
+            table.addRow(("Address Name: ", server.address))
+            table.addRow(("Description: ", server.short_description))
+            table.addRow(("Number of Nodes: ", str(server.nodes)))
+            table.addRow(("Cores per Node: ", str(server.corespernode)))
+
+
+    def __init__(self):
+        super(Actor, self).__init__(name='server')
+
+        return
+
+
+    def _configure(self):
+        super(Actor, self)._configure()
+        self.id             = self.inventory.id
+
+
+    def _init(self):
+        super(Actor, self)._init()
+        return
+
+def actor():
+    return Actor()
+
+
+__date__ = "$Dec 11, 2009 10:24:39 AM$"
+
+

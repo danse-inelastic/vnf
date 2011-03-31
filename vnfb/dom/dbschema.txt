@@ -1,0 +1,157 @@
+
+Database Schema Dependencies and Updates
+========================================
+
+Quantum Espresso Database Schema
+---------------------------------
+
+servers
+qesimulations:
+    -> servers      # Remove
+    -> atomicstructures
+qetasks:
+    ? -> matter
+qeconfigurations:
+    -> qetasks
+qesettings:
+    -> qesimulations
+    #-> servers     # Add
+qejobs:
+    -> qetasks
+    -> servers      # ?
+qesimulationtasks:
+    -> qesimulations
+    -> qetasks
+qeconvergences:
+    -> qesimulations
+qeconvparams:
+    -> qeconvergences
+qeconvparamtasks:
+    -> qeconvparams
+    -> qetasks
+
+
+Database Schema Updates
+-----------------------
+
+Jan 7, 2010
+changed reference to "matter" from polymorphic to nonpolymorphic:
+
+ bvk_getdos
+ bvk_getphonons
+ abinitio
+ phonons
+ phonondoses
+ sqes
+ scatterers
+
+table gulpsettings
+ col "description" -> "short_description"
+ col "date" -> date type
+
+
+
+Jan 11, 2010
+changed reference to "matter" from polymorphic to nonpolymorphic:
+kernels
+
+ sqekernel
+ polyxtalcoherentphononscatteringkernel
+
+
+Jan 13, 2010
+renamed tables
+ phonondispersions-> phonons
+ bvk_getdispersion -> bvk_getphonons
+
+rename columns
+ polyxtalcoherentphononscatteringkernels
+   dispersion -> phonons
+
+
+Jan 15, 2010
+
+table "instruments" added column "has_sample_component". boolean
+
+
+Jan 17, 2010
+
+table 'neutronexperiments' added col "buffer_size". integer
+new table 'placeholdercomponents'
+
+
+Jan 18, 2010
+table "fermichoppers": column "nchans" renamed to "nchan"
+
+
+Jan 19, 2010
+added tables "neutronstorages", 'neutronplayers'
+
+
+Jan 25, 2010
+table "qemonitors" added column Ei. type: double, default: 70
+table 'sqes' renamed to 'sqe'
+
+
+Feb 10, 2010
+itasks: removed column "short_description"
+
+
+Feb 11, 2010
+removed ACL1, ACL2 etc
+table "roles": added column "context"  and change column "id" from
+varchar to integer.
+added table "user_has_roles".
+
+Feb 18, 2010
+"atomicstructures": added column "creator"
+"jobs": column numprocessors renamed to numnodes, added column numcores
+
+
+Feb 24, 2010
+added table "role_has_roles", "privileges", "role_has_privileges"
+
+
+March 2, 2010
+table phonons added column "status"
+
+
+March 8, 2010
+added table 'detectorsystemhierarchy_fromxml'
+ table "detectorsystem_fromxmls" rename to "detectorsystem_fromxml".
+table "detectorsystem_fromxml"  add new column "hierarchy": a
+reference to table 'detectorsystemhierarchy_fromxml'
+
+March 28, 2010
+Added column qetasks.linkorder (QETask.linkorder) that defines order in which jobs are started
+and displayed in the simulation chain. The linkorder is zero-based sequence number
+TODO: Write converter script
+
+March 31, 2010
+Added column qetasks.subtype (QETask.subtype) that defines subtype of the simulation task.
+Sometime you need finer granularity. Example: task = "matdyn", subtype = "dos". Not in QE standard
+TODO: Write converter script
+
+April 16, 2010
+Added table "news"
+
+April 21, 2010
+Added table "qeconvergences" and "qeconvparams"
+
+April 22, 2010
+Added table "qeconvergencetasks"
+
+
+April 25, 2010
+Added table "features"
+Added column "status" to table "servers": var char of size 8
+
+May 2, 2010
+Changed table qeconvergencetasks -> qeconvparamtasks. This also affects column:
+convergenceid -> convparamid
+
+May 14, 2010
+Added column "simchain" to qesimulations table
+
+July 27, 2010
+Added column "optlevel" to qesettings table

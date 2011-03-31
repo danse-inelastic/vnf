@@ -1,0 +1,401 @@
+#!/usr/bin/env python
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                 Jiao Lin
+#                      California Institute of Technology
+#                      (C) 2006-2009  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+from luban.content import load, select, alert
+
+from luban.content.Button import Button
+from luban.content.Link import Link
+from luban.content.Paragraph import Paragraph
+from luban.content.Document import Document
+
+
+from vnfb.components.MasterTable import FilterSyntaxError, MasterTableActor as base
+
+
+class Actor(base):
+
+
+    class Inventory(base.Inventory):
+
+        import pyre.inventory
+
+        id = pyre.inventory.str('id')
+        type = pyre.inventory.str('type')
+        description = pyre.inventory.str('description')
+
+
+    def default(self, director):
+        return self.showListView(director)
+
+
+    def replaceBodyFrameWithMatterList(self, director):
+        body_frame = select(id='body-frame')
+        body_skeleton = director.retrieveVisual('body-skeleton')
+        main_display_area = body_skeleton.find(id='main-display-area')
+
+        try:
+            matterlist = self.createListView(director)
+        except FilterSyntaxError, msg:
+            return alert('filter syntax error: %s' % msg)
+            
+        main_display_area.add(matterlist)
+
+        material_portlet = body_skeleton.find(id='main-portlet-my-materials')
+        material_portlet.selected = 1
+        
+        return body_frame.replaceContent(body_skeleton)
+
+
+    def showListView(self, director):
+        try:
+            view = self.createListView(director)
+        except FilterSyntaxError, msg:
+            return alert('filter syntax error: %s' % msg)
+        return [
+            select(id='main-display-area').replaceContent(view),
+            ]
+            
+            
+    def createListView(self, director):
+
+        domaccess = self.getMatterAccess(director)
+        
+        from vnfb.components.MasterTable import MasterTableFactory, filtercompiler
+        def countrecords(filter, label=None):
+            return domaccess.countMatters(filter, label=label)
+        def createtable(order_by, reverse_order, slice, filter, label=None):
+            return self.createMatterTable(
+                director,
+                order_by=order_by,
+                reverse_order=reverse_order,
+                slice=slice,
+                filter=filter,
+                label=label)
+        compilefilter = filtercompiler(columns, measure2dbcol)
+
+        smartlabelaccess = director.retrieveDOMAccessor('smartlabel')
+        def filterfromlabel(label):
+            return smartlabelaccess.createFilterExprFromLabel(
+                label, self.name)
+        smartlabels = smartlabelaccess.getLabelNames(self.name)
+
+        labelaccess = director.retrieveDOMAccessor('label')
+        labels = labelaccess.getLabelNames(self.name)
+            
+        factory = MasterTableFactory(
+            self.name, countrecords, createtable,
+            compilefilter, filtercols,
+            filterfromlabel, smartlabels, labels)
+
+        order_by = self.inventory.order_by
+        reverse_order = self.inventory.reverse_order
+        number_records_per_page = self.inventory.number_records_per_page
+        page_number = self.inventory.page_number
+
+        filter_expr = self.inventory.filter_expr
+        filter_key = self.inventory.filter_key
+        filter_value = self.inventory.filter_value
+
+        label = self.inventory.label
+        
+        tableview = factory.create(
+            label = label,
+            filter_expr=filter_expr, filter_key=filter_key, filter_value=filter_value,
+            order_by=order_by,
+            reverse_order=reverse_order,
+            number_records_per_page=number_records_per_page,
+            page_number=page_number)
+
+        # add new button
+        toolbar = tableview.find(id='matter-table-toptoolbar')
+        #toolbar.add(Paragraph(text='|', Class='splitter'))
+        #
+        button = Button(label='New', tip='create new matter', icon='new.png')
+        toolbar.add(button)
+        button.onclick = load(actor=self.name, routine='new')
+        
+        return tableview
+
+
+    def createMatterTable(
+        self, director,
+        order_by=None, reverse_order=None, slice=None,
+        filter=None,
+        label=None):
+        
+        domaccess = self.getMatterAccess(director)
+        matters = domaccess.getMatters(
+            order_by=order_by, reverse_order=reverse_order, slice=slice,
+            filter=filter,
+            label=label,
+            )
+
+        cols = columns
+        args = matters, cols, director
+        thetable = director.retrieveComponent(
+            'matter-table',
+            factory="visual", args=args,
+            vault=['visuals'])
+        thetable.oncellchanged = select(element=thetable).notify(
+            event='row-changed', actor='mattertable', routine='processRowChange')
+        return thetable
+
+
+    def view(self, director):
+        "view a matter as a standalone page"
+        matter = self._getMatter(director)
+        
+        from luban.content.Page import Page
+        page = Page(title='Material %s' % matter.short_description)
+
+        document = page.document(id='main-display-area')
+        
+        view = self.createView(director)
+        document.add(view)
+        
+        return page
+
+
+    def showMaterialView(self, director):
+        'change view to matter view'
+        view = self.createView(director)
+        return select(id='main-display-area').replaceContent(view)
+
+
+    def createView(self, director):
+        'create matter view document'
+        return director.retrieveVisual(
+            'matter/overview',
+            director=director,
+            id=self.inventory.id, type = self.inventory.type,
+            )
+        # the following are obsolete.
+        visual = director.retrieveVisual(self.name)
+
+        matter = self._getMatter(director)
+        name =  matter.short_description or matter.id
+        text = '<p>Matter\ <a>%s</a></p>' % name
+        from luban.content.HtmlDocument import HtmlDocument
+        html = HtmlDocument(text=text)
+        visual.find(id='matterdoc-title').add(html)
+        if not matter.short_description:
+            visual.find(id='matterdoc-title-extra').add(
+                self.createMatterDescriptionInputControl(director))
+        
+        matterviewdoc = visual.find(id='matterviewdoc')
+        descriptiondoc = self.createDescriptionDoc(director)
+        matterviewdoc.add(descriptiondoc)
+
+        oldmatsimtab = visual.find(id='oldmatsimtab')
+        simstablecontainer = oldmatsimtab.document(id='matsimstablecontainer')
+        simstable = self.createSimsTable(director)
+        simstablecontainer.add(simstable)
+
+        newmatsimtab = visual.find(id='newmatsimtab')
+        newmatsimscontainer = newmatsimtab.document(id='newmatsimscontainer')
+        newsims = self.createNewSimButtons(director)
+        newmatsimscontainer.add(newsims)
+        return visual
+
+
+    def createMatterDescriptionInputControl(self, director):
+        from luban.content.Splitter import Splitter
+        from luban.content.Link import Link
+        from luban.content.FormTextField import FormTextField
+        doc = Splitter(id='matter-description-editor-container')
+
+        left = doc.section()
+        label = 'To give this material a name, click here'
+        link = Link(label=label, id='matterdoc-change-matter-name-link')
+        left.add(link)
+
+        right = doc.section()
+        field = FormTextField(
+            id = 'matter-description-input',
+            hidden = 1,
+            )
+        field.onchange = load(
+            actor=self.name, routine='changeDescriptionAndUpdateMatterView',
+            id = self.inventory.id, type = self.inventory.type,
+            description = select(element=field).formfield('getValue')
+            )
+        right.add(field)
+
+        left.onclick = [select(element=link).hide(), select(element=field).show()]
+        return doc
+
+
+    def changeDescriptionAndUpdateMatterView(self, director):
+        self.changeDescription(director)
+        return self.showMaterialView(director)
+
+
+    def changeDescription(self, director):
+        matter = self._getMatter(director)
+        matter.short_description = self.inventory.description
+        director.clerk.updateRecordWithID(matter)
+        return
+
+
+    def createNewSimButtons(self, director):
+        matter = self._getMatter(director)
+        
+        doc = Document()
+
+        # should be handled by resource manager
+        icons = {
+            }
+
+        simsaccess = director.retrieveDOMAccessor('materialsimulation')
+        simtables = simsaccess.getTables()
+        def _(table):
+            #doc = Document()
+            name = table.__name__
+            label = table.DESCRIPTION
+            icon = icons.get(name)
+            if not icon:
+                icon = '%s.png' % name
+            icon = 'material_simulations/%s' % icon
+            actor = 'material_simulations/%s' % (name.lower(), )
+            button = Button(
+                label=label, icon=icon, id='new-simulation-%s-button' % name,
+                tip = '\n '.join(table.LONG_DESCRIPTION),
+                onclick=load(
+                    actor=actor, routine='new',
+                    matter_type=matter.name, matter_id=matter.id)
+                )
+            return button
+
+        buttons = map(_, simtables)
+        map(doc.add, buttons)
+        return doc
+
+
+    def createSimsTable(self, director):
+        matter = self._getMatter(director)
+        #return director.redirect(
+        #    actor='materialsimulation',
+        #    routine='createTable',
+        #    filter="matsim.matter_gptr='%s'" % matter.globalpointer.id,
+        #    )
+        sims = self.getMatterAccess(director).getallsimulations(matter=matter)
+
+        if not sims:
+            text = ['There is no simulation for this material. Please create a new simulation. To start, click the "Create new simulation" tab']
+            return Document().paragraph(text=text)
+
+        args = sims, ['id', 'description', 'type', 'date',], director
+        #return table(*args)
+        thetable = director.retrieveComponent(
+            'materialsimulation-table',
+            factory="visual", args=args,
+            vault=['visuals'])
+
+        return thetable
+
+
+    def createDescriptionDoc(self, director):
+        matter = self._getMatter(director)
+
+        # cartesian lattice
+        cl = matter.cartesian_lattice
+        import numpy
+        cl = numpy.array(cl)
+        cl.shape = 3,3
+
+        # atoms
+        symbols = matter.atom_symbols
+        n = len(symbols)
+        coords = matter.fractional_coordinates
+        coords = numpy.array(coords)
+        coords.shape = n, 3
+        atoms = [
+            ' * %s: %s' % (symbol, coord)
+            for symbol, coord in zip(symbols, coords)
+            ]
+        atoms = '\n'.join(atoms)
+
+        subs = {
+            'name': matter.short_description,
+            'a': cl[0],
+            'b': cl[1],
+            'c': cl[2],
+            'atoms': atoms,
+            }
+        subs['namebar'] = '='*len(subs['name'])
+        # %(name)s
+        # %(namebar)s
+        description = '''
+
+Lattice
+"""""""
+
+ * a = %(a)s
+ * b = %(b)s
+ * c = %(c)s
+
+
+Atoms
+"""""
+
+%(atoms)s
+
+        ''' % subs
+
+        from luban.content.ReSTDocument import ReSTDocument
+        descriptiondoc = ReSTDocument(text = description.split('\b'))
+        
+        return descriptiondoc
+
+
+    def test(self, director):
+        from luban.content.Page import Page
+        page = Page(title='test')
+        visual = director.retrieveVisual(self.name)
+        page.add(visual)
+        return page
+    
+    
+    def __init__(self, name='matter'):
+        super(Actor, self).__init__(name)
+        return
+
+
+    # db access
+    def getMatterAccess(self, director):
+        return director.retrieveDOMAccessor(self.name)
+
+    
+    def _getMatter(self, director):
+        type = self.inventory.type
+        id = self.inventory.id
+        return self.getMatterAccess(director).getMatter(type, id)
+
+
+columns = [ 'selected', 'id', 'description', 'type', 'chemical_formula', 'created']
+measure2dbcol = {
+    'description': 'short_description',
+    'created': 'date',
+    }
+filtercols = columns[1:]
+
+
+def actor(): return Actor()
+
+
+# version
+__id__ = "$Id$"
+
+# End of file 
+

@@ -1,0 +1,111 @@
+#!/usr/bin/env python
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                               Alex Dementsov
+#                      California Institute of Technology
+#                        (C) 2009  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+from vnfb.qeutils.jobstatus import JobStatus
+from vnfb.qeutils.qeconst import ID_OUTPUT, ID_STATUS
+
+import luban.content as lc
+from luban.content import select
+from luban.components.AuthorizedActor import AuthorizedActor as base
+
+NONE    = "None"
+
+# XXX: Set jobstatus in self._init()?
+class Actor(base):
+    """
+    Actor for retrieving results from server
+    """
+
+    class Inventory(base.Inventory):
+        import pyre.inventory
+        id          = pyre.inventory.str('id', default='')      # Simulation Id
+        taskid      = pyre.inventory.str('taskid', default='')
+        jobid       = pyre.inventory.str('jobid', default='')   # Not passed at this time
+        linkorder   = pyre.inventory.int('linkorder', default=0)
+
+
+    def refreshStatusOutput(self, director):
+        """
+        Refresh job status and output file
+        Notes:
+            Used mostly for simulation view (latest job)
+        """
+        jobstatus   = self._jobStatus(director)
+        return [select(id=self._statusId()).replaceContent(self._getStatus(jobstatus)),
+                select(id=self._outputId()).replaceContent(self._getOutput(jobstatus))]
+
+
+    def refreshStatus(self, director):
+        """
+        Refresh job status and output file
+        Notes:
+            Used mostly for job list (specific job)
+        """
+        jobstatus   = self._jobStatus(director)
+        return select(id=self._statusId()).replaceContent(self._getStatus(jobstatus))
+
+
+    def _getStatus(self, jobstatus):
+        "Returns job status"
+        status      = lc.htmldocument()
+        status.text = jobstatus.updatedStatus()
+        return status
+
+
+    def _getOutput(self, jobstatus):
+        "Returns output"
+        output      = lc.document()
+        output.add(jobstatus.updatedOutput(output))
+        return output
+
+
+    def _jobStatus(self, director):
+        job         = director.clerk.getQEJobs(id=self.jobid)
+        return JobStatus(director, self.id, self.linkorder, job)
+
+
+    def __init__(self):
+        super(Actor, self).__init__(name='jobs/status')
+
+        return
+
+
+    def _statusId(self):
+        return "%s-%s" % (ID_STATUS, self.jobid) 
+
+
+    def _outputId(self):
+        return "%s-%s" % (ID_OUTPUT, self.jobid) 
+
+
+    def _configure(self):
+        super(Actor, self)._configure()
+        self.id         = self.inventory.id
+        self.taskid     = self.inventory.taskid
+        self.jobid      = self.inventory.jobid
+        self.linkorder  = self.inventory.linkorder
+
+
+    def _init(self):
+        super(Actor, self)._init()
+        self._files = []
+        return
+
+def actor():
+    return Actor()
+
+    
+
+__date__ = "$Feb 10, 2010 1:21:35 PM$"
+
+

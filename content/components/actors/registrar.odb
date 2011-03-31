@@ -1,0 +1,225 @@
+#!/usr/bin/env python
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                 Jiao Lin
+#                      California Institute of Technology
+#                      (C) 2006-2009  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+from luban.content import load, select, alert, createCredential
+import luban.content as lc
+
+from luban.components.Actor import Actor as base
+
+
+class Actor(base):
+    
+    
+    class Inventory(base.Inventory):
+        
+        import pyre.inventory
+        
+        firstname = pyre.inventory.str(name='firstname')
+        lastname = pyre.inventory.str(name='lastname')
+        username = pyre.inventory.str(name='username')
+        email = pyre.inventory.str(name="email")
+        password = pyre.inventory.str(name="password")
+        confirmation = pyre.inventory.str(name="confirmation")
+        organization = pyre.inventory.str(name='organization')
+        
+        
+    def default(self, director):
+        return self.interview(director)
+    
+    
+    def createInterviewDocument(self, director):
+        document = lc.document( title = 'Create a VNF Account', id='registration-document' )
+        #
+        p = document.paragraph(Class='inline-display', id='registration-doc-description')
+        p.text = [
+            'Please create your VNF account so that you can access',
+            'the Virtual Neutron Facility.',
+            'If you already have a VNF account,',
+            'please ',
+            ]
+        #
+        loadlogindoc = select(id='body-frame').replaceContent(
+            load(actor='login', routine='createFrontPageBodyDocument'))
+        signin_link = lc.link( label='sign in', onclick = loadlogindoc)
+        document.add(signin_link)
+
+        # build the registration form
+        form = document.form(
+            name='registration', title='Getting started with VNF', id='registration-form')
+        
+        firstname = form.text(name='firstname', label='First name',
+                              value = self.inventory.firstname)
+        firstname.help = ''
+        
+        lastname = form.text(name='lastname', label='Last name',
+                             value = self.inventory.lastname)
+        lastname.help = ''
+        
+        username = form.text(name='username', label='Desired Login Name',
+                             value = self.inventory.username)
+        username.help = 'Usernames are case sensitive; make sure your caps lock key is not enabled.'
+        
+        password = form.password(name='password', label='Password')
+        password.help = ('Passwords are also case sensitive.')
+ 
+        confirmation = form.password(name='confirmation', label='Re-enter password')
+        confirmation.help = ('Re-enter your password to confirm')
+
+        email = form.text(name='email', label='Email',
+                          value = self.inventory.email)
+        email.help = ('This address is used to keep you informed of status of your virtual experiments, updates to your VNF service, etc.')
+
+        organization = form.text(
+            name='organization', label='Organization',
+            value = self.inventory.organization)
+        organization.help = ''
+        
+        submit = form.submitbutton(label="Create my account")
+
+        form.onsubmit = select(element=form).submit(actor=self.name, routine='validateState')
+        
+        return document
+
+
+    def register(self, director):
+
+        # create new registrant record
+        from vnfb.dom.Registrant import Registrant as Table
+        registrant = director.clerk.createRecordWithID(Table)
+        registrant.firstname = self.firstname
+        registrant.lastname = self.lastname
+        registrant.username = self.username
+        registrant.email = self.email
+        registrant.organization = self.organization
+        registrant.password = self._encode(director, self.password)
+
+        # make announcements
+        from vnfb.utils.communications import announce
+
+        # 1. alert administrators
+        announce(director, 'new-registrant-alert', registrant)
+        
+        # 2. send an acknowlegement to registrant
+        from smtplib import SMTPRecipientsRefused
+        try:
+            announce(director, 'new-registrant', registrant)
+        except SMTPRecipientsRefused:
+            return alert('Youre email address is not reachable. Please re-register')
+
+        # save to db
+        director.clerk.insertNewRecord(registrant)
+
+        return self.registrationComplete(director)
+
+
+    def registrationComplete(self, director):
+        document = lc.document(title='VNF account registration done')
+        p = document.paragraph()
+        p.text = [
+            'Your VNF account registration is done. ',
+            'You will be informed of any progress by email.',
+            ]
+        b = lc.button(label='back to vnf home'); document.add(b)
+        b.onclick = select(id='body-frame').replaceContent(
+            load(actor='login', routine='createFrontPageBodyDocument')
+            )
+        return select(id='body-frame').replaceContent(document)
+
+
+    def validateState(self, director):
+        errors = {}
+
+        if not self.firstname:
+            errors['firstname'] = 'Cannot be empty'
+            
+        if not self.lastname:
+            errors['lastname'] = 'Cannot be empty'
+            
+        if self.password != self.confirmation:
+            errors['password'] = (
+                'Password and confirmation you entered do not match.'
+                )
+        min_password_len = 8
+        if len(self.password) < min_password_len:
+            errors['password'] = (
+                'Password too short. Must have at least %s characters.' % min_password_len
+                )
+
+        from vnfb.dom.Registrant import Registrant as Table
+        username = self.username
+        all = director.clerk.db.query( Table).filter_by(username=username).all()
+        if len(all):
+            errors['username'] = (
+                'Username %r has been registered.' % username \
+                + 'Please choose a different one.'
+                )
+        if not self.username:
+            errors['username'] = 'Cannot be empty'
+
+        if not self.email:
+            errors['email'] = 'Cannot be empty'
+
+        if self.password and self.confirmation and self.password != self.confirmation:
+            errors['confirmation'] = 'password does not match confirmation'
+            
+        if errors:
+            return self.formError(director, errors=errors)
+        return self.register(director)
+ 
+
+    def formError(self, director, errors=None):
+        from luban.content import select
+        return [
+            select(id='registration-form').find(name).formfield(
+                'showError', message=text)
+            for name, text in errors.iteritems()
+            ]
+    
+    
+    def __init__(self, name=None):
+        if name is None:
+            name = "registrar"
+        super(Actor, self).__init__(name)
+        return
+
+
+    def _configure(self):
+        super(Actor, self)._configure()
+
+        self.firstname = self.inventory.firstname
+        self.lastname = self.inventory.lastname
+        self.username = self.inventory.username
+        self.email = self.inventory.email
+        self.password = self.inventory.password
+        self.confirmation = self.inventory.confirmation
+        self.organization = self.inventory.organization
+
+        return
+
+
+    def _encode(self, director, password):
+        method = director.clerk.getUser('__method__').password
+        
+        from vnfb.components import usersFromDB
+        encoder = usersFromDB()._encoders[method]
+
+        return encoder(password)
+
+
+def actor(): return Actor()
+
+# version
+__id__ = "$Id$"
+
+# End of file 

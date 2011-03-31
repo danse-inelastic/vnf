@@ -1,0 +1,77 @@
+#!/usr/bin/env python
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                 Jiao Lin
+#                      California Institute of Technology
+#                      (C) 2006-2009  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+from luban.content import load, select, alert
+
+from luban.components.AuthorizedActor import AuthorizedActor as base
+
+
+class Actor(base):
+
+
+    class Inventory(base.Inventory):
+
+        import pyre.inventory
+
+        id = pyre.inventory.str('id')
+        traceback = pyre.inventory.str('traceback')
+        comment = pyre.inventory.str('comment')
+        
+
+    def process(self, director):
+        id = self.inventory.id
+        traceback = self.inventory.traceback
+        comment = self.inventory.comment
+
+        from vnfb.dom.Bug import Bug
+        bug = Bug()
+
+        bug.id = id
+        bug.traceback = traceback[:Bug.traceback.length]
+        bug.comment = comment[:Bug.comment.length]
+        bug.creator = director.sentry.username
+
+        # save to db
+        db = director.clerk.db
+        db.insertRow(bug)
+
+        # email
+        self._emailComment(id, comment, traceback, director)
+        
+        return select(id='bugdialog-%s' % id).destroy()
+
+
+    def _emailComment(self, bugid, comment, traceback, director):
+        from vnfb.utils.communications import announce
+        announcement = 'bug-report'
+        username = director.sentry.username
+        if not username: return
+        user = director.clerk.getUser(username)
+        announce(director, announcement, user, bugid, comment, traceback)
+        return    
+
+
+    def __init__(self, name='bug-report'):
+        super(Actor, self).__init__(name)
+        return
+
+
+def actor(): return Actor()
+
+
+# version
+__id__ = "$Id$"
+
+# End of file 
+

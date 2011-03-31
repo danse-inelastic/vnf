@@ -1,0 +1,70 @@
+#!/usr/bin/env python
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                               Alex Dementsov
+#                      California Institute of Technology
+#                        (C) 2009  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+import luban.content as lc
+from luban.content import select
+from luban.content import load
+from vnfb.qeutils.qegrid import QEGrid
+from luban.content.FormTextField import FormTextField
+from luban.content.FormSubmitButton import FormSubmitButton
+
+
+EMIN    = 0.0
+EMAX    = 25.0
+DELTAE  = 0.1
+
+def visual(actor, director, structureid, simtype):
+    "Display form for Gamma point"
+    form        = lc.form(id='create-simulation-form')
+    table       = QEGrid(lc.grid(Class="qe-form"))
+    form.add(table.grid())
+
+    emin        = FormTextField(name="emin", value = EMIN)
+    emax        = FormTextField(name="emax", value = EMAX)
+    deltae      = FormTextField(name="deltae", value = DELTAE)
+
+    # Skip link
+    visual_     = "material_simulations/espresso/link-skip"
+    skipLink    = director.retrieveVisual(visual_,
+                                          id        = actor.id,
+                                          taskid    = actor.taskid,
+                                          type      = actor.type)
+
+    submit      = FormSubmitButton(label="Generate Input Configuration")
+    cancel      = lc.button(label="Cancel")
+    cancel.onclick  = load(actor = 'material_simulations/espresso/sim-view', id=actor.id)
+
+    st          = QEGrid(lc.grid()) # Submit Table
+    st.addRow((submit, cancel), ("qe-action-accept", "qe-action-cancel"))
+
+    table.addRow(("Emin (eV): *", emin))
+    table.addRow(("Emax (eV): *", emax))
+    table.addRow(("Delta E (eV): *", deltae))
+    table.addRow(("", skipLink))
+    table.addRow(("", st.grid()))
+
+    table.setColumnStyle(0, "qe-form-label")
+    table.setColumnStyle(1, "qe-form-field")
+
+    form.onsubmit   = select(element=form).submit(actor     = 'material_simulations/espresso-utils/generate-dos',
+                                                  routine   = 'generateInput',
+                                                  taskid    = actor.taskid,
+                                                  id        = actor.id,
+                                                  type      = actor.type,
+                                                  structureid   = structureid)
+
+    return form
+
+__date__ = "$Jan 12, 2010 5:50:22 PM$"
+
+

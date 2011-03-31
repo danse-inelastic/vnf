@@ -1,0 +1,145 @@
+#!/usr/bin/env python
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                               Alex Dementsov
+#                      California Institute of Technology
+#                        (C) 2009  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+#from vnfb.qeutils.qeutils import stamp2date
+#from vnfb.qeutils.qegrid import QEGrid
+#from vnfb.qeutils.taskinfo import TaskInfo
+
+from vnfb.utils.const import PACKNAME
+from luban.content import select
+from luban.content import load
+
+import luban.content as lc
+from luban.components.AuthorizedActor import AuthorizedActor as base
+
+# Requires simulation id, config id and config type: (id, configid, type)
+class Actor(base):
+
+    class Inventory(base.Inventory):
+        import pyre.inventory
+        id          = pyre.inventory.str('id', default='')          # Task Id
+        taskid      = pyre.inventory.str('taskid', default='')
+        type        = pyre.inventory.str('type', default='')        # Type of the configuration file
+        linkorder   = pyre.inventory.int('linkorder', default=0)
+        package     = pyre.inventory.str('package', default='Quantum Espresso')
+
+
+    def default(self, director):
+        return select(id='main-display-area').replaceContent(self.content(director))
+
+
+    def content(self, director):
+        if not self.package in PACKNAME.keys():
+            self.package    = 'Quantum Espresso'    # "Default"?
+
+        # Get jobs
+        jobs     = director.clerk.getQEJobs(where="taskid='%s' ORDER BY timesubmitted DESC" % self.taskid)
+
+        def viewIndicator(director):
+            qelink  = load( actor           = 'materialsimulation',
+                            filter_key      = 'type',
+                            filter_value    = 'qesimulations')
+
+            path = []
+            path.append(('Simulations ', load(actor='materialsimulation')))
+            path.append(('%s ' %  self.package, qelink))
+            path.append(('%s ' % self.id, load(actor    = 'material_simulations/%s/sim-view' % PACKNAME[self.package],
+                                               id       = self.id)))
+#            path.append(('%s Task: %s' % (self.type, self.taskid), load(actor    = 'material_simulations/espresso/task-view',
+#                                                                      id       = self.id,
+#                                                                      taskid   = self.taskid,
+#                                                                      type     = self.type)))
+
+            path.append('Jobs')
+
+            return director.retrieveVisual('view-indicator', path=path)
+
+        doc         = lc.document(title="Jobs for %s Task %s" % (self.type, self.taskid))
+        splitter    = doc.splitter(orientation="vertical")
+        sA          = splitter.section()
+        sA.add(viewIndicator(director))
+        sC          = splitter.section(id="qe-section-actions")
+        self._showActions(sC)
+
+        sB          = splitter.section()
+        self._showJobs(director, sB, jobs)
+
+        return doc
+
+
+    def _showActions(self, section):
+        self._backAction(section)
+        self._refreshAction(section)
+        section.add(lc.document(Class="clear-both"))
+
+
+    def _backAction(self, section):
+        link    = lc.link(label="Back",
+                            Class="qe-action-back",
+                            onclick = load(actor      = 'material_simulations/%s/sim-view' % PACKNAME[self.package],
+                                             id         = self.id))
+        section.add(link)
+
+
+    def _refreshAction(self, section):
+        "Refresh action"
+        link    = lc.link(label="Refresh List",
+                            Class="qe-action-refresh",
+                            onclick = load(actor     = 'jobs/jobs-view-all',
+                                          id        = self.id,
+                                          taskid    = self.taskid,
+                                          type      = self.type,
+                                          linkorder = self.linkorder,
+                                          package   = self.package))
+        link.tip    = "Refresh Job List"
+        section.add(link)
+
+
+
+    def _showJobs(self, director, section, jobs):
+        jobstable   = director.retrieveVisual('material_simulations/espresso/table-jobs',
+                                              director,
+                                              self.inventory,
+                                              jobs)
+
+        if jobstable is None:
+            raise RuntimeError, 'Failed to load visual jobs table'
+
+        section.add(jobstable)
+
+
+    def __init__(self):
+        super(Actor, self).__init__(name='jobs/jobs-view-all')
+
+        return
+
+
+    def _configure(self):
+        super(Actor, self)._configure()
+        self.id             = self.inventory.id
+        self.taskid         = self.inventory.taskid
+        self.type           = self.inventory.type
+        self.linkorder      = self.inventory.linkorder
+        self.package        = self.inventory.package
+
+
+    def _init(self):
+        super(Actor, self)._init()
+        return
+
+def actor():
+    return Actor()
+
+__date__ = "$Dec 22, 2009 2:46:04 PM$"
+
+

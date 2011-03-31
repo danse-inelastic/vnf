@@ -1,0 +1,146 @@
+#!/usr/bin/env python
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                 Jiao Lin
+#                      California Institute of Technology
+#                      (C) 2006-2009  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+from luban.content import load, select, alert
+import luban.content as lc
+
+from luban.components.AuthorizedActor import AuthorizedActor as base
+
+
+class Actor(base):
+
+
+    class Inventory(base.Inventory):
+
+        import pyre.inventory
+
+        # the page to show
+        page = pyre.inventory.str('page')
+        # the next page to show
+        nextpagetoshow = pyre.inventory.str('nextpagetoshow')
+
+        #
+        show_help_on_login = pyre.inventory.bool('show_help_on_login')
+
+
+    def default(self, director):
+        # general help
+        return select(id='help').show()
+
+
+    def createHelpWindow(self, director):
+        doc = lc.document(
+            id='help', title='help', dockable=True)#, hidden=True)
+
+        hdoc = self.createHelpDocument(director)
+        doc.document(id='help-window-interior').add(hdoc)
+
+        # minimize button
+        b = lc.button(
+            label='minimize',
+            id = 'minimize-help-button',
+            )
+        doc.add(b)
+
+        # checkbox: show help on login
+        user_settings = self._getUserSettings(director)
+        from luban.content.FormCheckBox import FormCheckBox
+        cb = FormCheckBox(
+            id = 'show-help-window-on-login-cb',
+            label='Show this help window when log in',
+            value=user_settings.show_help_on_login
+            )
+        doc.add(cb)
+
+        #
+        b.onclick=[
+            select(id='dock').dock('attach', select(element=doc)),
+            load(actor='help', routine='setShowHelpOnLogin',
+                 show_help_on_login=select(element=cb).getAttr('value')),
+            ]
+
+        # hidden field to save the page string
+        from luban.content.FormTextField import FormTextField
+        field = FormTextField(id='help-page-text', hidden=True)
+        field.value = self.inventory.nextpagetoshow
+        doc.add(field)
+
+        if not user_settings.show_help_on_login:
+            doc.oncreate = select(id='dock').dock('attach', select(element=doc))
+        
+        return doc
+
+
+    def setShowHelpOnLogin(self, director):
+        value = self.inventory.show_help_on_login
+        user_settings = self._getUserSettings(director)
+        user_settings.show_help_on_login = value
+        director.clerk.db.updateRecord(user_settings)
+        return
+
+
+    def showHelpWindow(self, director):
+        '''show the help window
+
+        page: the page to show in the help window
+        '''
+        newdoc = self.createHelpDocument(director)
+        usenewdoc = select(id='help-window-interior').replaceContent(newdoc)
+        return select(id='dock').dock('release', select(id='help'), callback=usenewdoc)
+        #newwin = self.createHelpWindow(director)
+        return [
+            #select(id='help-container').replaceBy(newdoc),
+            #select(id='help').replaceBy(newwin),
+            select(id='dock').dock('release', select(id='help')),
+            ]
+
+
+    def createHelpDocument(self, director):
+        page = self.inventory.page
+        if not page:
+            page = 'UserGuide-Overview.html'
+        if not page.startswith('http://'):
+            base = 'http://docs.danse.us/VNET'
+            import os
+            page = os.path.join(base, page)
+
+        hdoc = lc.htmldocument(id='help-container')
+        hdoc.text = [
+            '<iframe src="%s"' % page,
+            'width="990" height="500" frameborder="0">',
+            '</iframe>',
+            ]
+
+        return hdoc
+
+
+    def _getUserSettings(self, director):
+        domaccess = director.retrieveDOMAccessor('usersettings')
+        username = director.sentry.username
+        return domaccess.getUserSettingRecord(username)
+
+
+    def __init__(self, name='help'):
+        super(Actor, self).__init__(name)
+        return
+
+
+def actor(): return Actor()
+
+
+# version
+__id__ = "$Id$"
+
+# End of file 
+

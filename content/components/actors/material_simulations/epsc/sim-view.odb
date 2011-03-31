@@ -1,0 +1,272 @@
+# -*- Python -*-
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                               Alex Dementsov
+#                      California Institute of Technology
+#                        (C) 2011  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+from vnfb.epscutils.action_links import *
+from vnfb.qeutils.qegrid import QEGrid
+from vnfb.qeutils.jobstatus import JobStatus
+from vnfb.qeutils.qerecords import SimulationRecord
+from vnfb.qeutils.results.resultinfo import ResultInfo
+from vnfb.qeutils.qeconst import TASK_ACTION
+from vnfb.epscutils.epscconst import *
+
+from luban.content import select
+from luban.content import load
+import luban.content as lc
+
+from luban.components.AuthorizedActor import AuthorizedActor as base
+class Actor(base):
+
+    class Inventory(base.Inventory):
+        import pyre.inventory
+        id      = pyre.inventory.str('id', default='')      # Simulation Id
+
+
+    def default(self, director):
+        return select(id='main-display-area').replaceContent(self.content(director))
+
+
+    def content(self, director):
+        "Main content"
+        self.id     = self.inventory.id
+        self._sim   = director.clerk.getQESimulations(id = self.id)
+
+        if not self._sim:   # No simulation, return empty document
+            return lc.document()
+
+        doc         = lc.document(title   = 'Simulation Name: %s' % self._sim.sname, id="epsc")
+        splitter    = doc.splitter(orientation="vertical")
+        sA          = splitter.section()
+        sA.add(self._viewIndicator(director))
+        sC          = splitter.section(id="qe-section-actions")
+        self._showActions(sC, self._sim)
+        # Area for errors
+        splitter.section(id="input-error-area") # ?
+
+
+        # Important lines: gets task info
+        simrecord   = SimulationRecord(director, self.id)
+        tasklist    = simrecord.taskList()
+        if len(tasklist) == 0:      # No task generated, no simulation
+            return doc
+        
+        self._task  = tasklist[0]   # Task object: there should be just one task!
+
+
+        sB          = splitter.section()
+        table       = QEGrid(lc.grid(Class = "qe-table"))
+        sB.add(table.grid())
+        self._showSimulationInfo(table, self._sim)
+        self._showSettings(director, splitter)
+        self._showConfigurations(director, splitter)
+        self._showJob(director, splitter)
+        self._showAction(director, splitter)
+
+        # Should go after all of the rows are added!
+        table.setColumnStyle(0, "epsc-cell-param")
+
+        return doc
+
+
+    def _viewIndicator(self, director):
+        qelink  = load( actor           = 'materialsimulation',
+                        filter_key      = 'type',
+                        filter_value    = 'qesimulations')  # XXX: Should be changed
+        path = []
+        path.append(('Simulations ', load(actor='materialsimulation')))
+        path.append(('EPSC ', qelink))
+        path.append(self.id)
+
+        return director.retrieveVisual('view-indicator', path=path)
+
+
+    def _showActions(self, section, sim):
+        self._refreshAction(section, sim)
+        self._newAction(section, sim)
+        self._editAction(section, sim)
+        self._resultsAction(section, sim)
+        self._deleteAction(section, sim)
+
+        section.add(lc.document(Class="clear-both"))
+
+
+    def _refreshAction(self, section, sim):
+        "Refresh action"
+        link    = lc.link(label="Refresh",
+                            Class="qe-action-refresh",
+                            onclick = load(actor='material_simulations/epsc/sim-view',
+                                           id=self.id))
+        link.tip    = "Refresh Simulation Page"
+        section.add(link)
+
+
+    def _newAction(self, section, sim):
+        "New action"
+        link    = lc.link(label="New",
+                            Class="qe-action-edit",
+                            onclick = load(actor='material_simulations/epsc/sim-create'))
+        link.tip    = "Create New Simulation"
+        section.add(link)
+
+
+    def _editAction(self, section, sim):
+        "Edit action"
+        link    = lc.link(label="Edit",
+                            Class="qe-action-edit",
+                            onclick = load(actor='material_simulations/epsc/sim-edit',
+                                           id=self.id))
+        link.tip    = "Edit Simulation"
+        section.add(link)
+
+
+    def _resultsAction(self, section, sim):
+        "Adds results action"
+        link        = lc.link(label="Results",
+                            Class="qe-action-analyze",
+                            onclick = load(actor    = 'material_simulations/epsc/results',
+                                           id       = self.id ))
+        link.tip    = "Analyze the Simulation Results"
+        section.add(link)
+
+
+    def _deleteAction(self, section, sim):
+        "Delete action"
+        link    = lc.link(label="Delete",
+                              Class="qe-action-delete",
+                              onclick = load(actor='material_simulations/epsc/sim-delete',
+                              id=self.id))
+        link.tip    = "Delete Simulation"
+        section.add(link)
+
+
+    def _showSimulationInfo(self, table, sim):
+        """Shows simulation data"""
+        if not sim:
+            return
+
+        table.addRow(('Atomic structure: ', self._structure(sim)))
+        table.addRow(('Thermo-mechanical processes: ', "1"))    # XXX
+        table.addRow(('Description: ', sim.short_description))
+        table.addRow(('Package: ', sim.package))
+        table.addRow(('Label: ', sim.label))
+        table.addRow(('Time created: ', str(sim.date)))
+
+
+    def _structure(self, sim):
+        return lc.link( label   = sim.structureid,
+                        tip     = "Show details of the atomic structure",
+                        onclick = load( actor   = 'atomicstructure',
+                                        routine = 'showOverview',
+                                        id      = sim.structureid)
+                        )
+
+
+    def _showSettings(self, director, splitter):
+        section    = splitter.section()
+        section.add(lc.paragraph(text="Settings", Class="epsc-section"))
+        table       = QEGrid(lc.grid(Class = "qe-table"))
+        section.add(table.grid())
+
+        # Add settings and server
+        table.addRow(("Simulation settings: ", settingsLink(director, self.id)))
+        table.addRow(("Server Info: ", serverLink(director, self.id)))
+        
+        table.setColumnStyle(0, "epsc-cell-param")
+
+
+    def _showConfigurations(self, director, splitter):
+        section    = splitter.section()
+        section.add(lc.paragraph(text="Configurations", Class="epsc-section"))
+        table       = QEGrid(lc.grid(Class = "qe-table"))
+        section.add(table.grid())
+
+        m_label    = lc.link(label="Material:")
+        m_label.tip    = "Material configuration"
+
+        s_label    = lc.link(label="Sample:")
+        s_label.tip    = "Grain shape and texture"
+
+        t_label    = lc.link(label="Diffraction:")
+        t_label.tip    = "Diffracting planes and direction"
+
+        p_label    = lc.link(label="Process:")
+        p_label.tip    = "Thermo-mechanical process"
+
+        table.addRow((m_label, configLink(director, self.id, self._task.id, "filecrys", self._sim.structureid)))
+        table.addRow((s_label, configLink(director, self.id, self._task.id, "filesamp", self._sim.structureid)))
+        table.addRow((t_label, configLink(director, self.id, self._task.id, "filediff", self._sim.structureid)))
+        table.addRow((p_label, configLink(director, self.id, self._task.id, "fileproc", self._sim.structureid)))
+
+        table.setColumnStyle(0, "epsc-cell-param")
+
+
+    def _showJob(self, director, splitter):
+        "Displays job"
+        jobstatus   = JobStatus(director, self.id, 0)   # Job status
+        if not jobstatus.id():  # No job found, don't add section
+            return
+        
+        section    = splitter.section()
+        section.add(lc.paragraph(text="Job", Class="epsc-section"))
+        table       = QEGrid(lc.grid(Class = "qe-table"))
+        section.add(table.grid())
+        
+        results     = ResultInfo(director, self.id, 0)  # Results
+
+        table.addRow(("Status:", jobstatus.status(), jobstatus.action()))
+        table.addRow(("Output:", jobstatus.output(), ""))
+        table.addRow(("Job Id:", jobLink(director, self.id, self._task.id),
+                                allJobsLink(director, self.id, self._task.id)))
+        table.addRow(("Results:", results.link(), results.action()))
+
+        table.setColumnStyle(0, "epsc-cell-param")
+        table.setColumnStyle(2, "epsc-jobs-action-column")
+
+
+        
+    def _showAction(self, director, splitter):
+        "Shows action button (run simulation)"
+        doc     = lc.document(Class="epsc-run-action")   # Example: run-task-BFDFX56
+
+        if not self._task:
+            return 
+
+        doc.id  = "%s-%s" % (TASK_ACTION, self._task.id)
+        doc.add(runLink(director, self.id, self._task.id))    
+        section = splitter.section(id="action-button")
+        section.add(doc)
+
+
+    def __init__(self):
+        super(Actor, self).__init__(name='material_simulations/epsc/sim-view')
+        self.files  = [] # Temp
+
+        return
+
+
+    def _configure(self):
+        super(Actor, self)._configure()
+        self.id = self.inventory.id
+        return
+
+
+    def _init(self):
+        super(Actor, self)._init()
+        return
+
+def actor():
+    return Actor()
+
+
+__date__ = "$Mar 22, 2011 12:23:06 AM$"
+
+

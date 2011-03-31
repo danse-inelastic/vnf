@@ -1,0 +1,116 @@
+/*  -*- CSS -*-  */
+.bvkmodel-properties-form input[type=text]{
+    width: 60em;
+}
+.bvkbond-form input {
+    width:8em;
+}
+
+.force-constant-matrix-input-container .error{
+    border: 1px solid red;
+}
+.force-constant-matrix-container{
+    vertical-align: top;
+}
+.force-constant-matrix input {
+    width: 5em;
+}
+div[luban-element-name="force-constant-matrix-constraints"] p{
+    margin: 0.2em 0;
+}
+.bvk-models-selector-grid > table {
+    width: 100%;
+}
+
+/* obsolet */
+/*
+.force-constant-form-one-bond {
+    margin: 0.2em;
+}
+
+.force-constant-form-one-bond .luban-document > div {
+    margin-left:0.7em;
+}
+.force-constant-form-one-bond .luban-document > .luban-document-title {
+    margin-left:0;
+    margin-bottom:0.2em;
+    border-bottom:1px solid #bbb;
+    -moz-border-radius:12px;
+    -web-border-radius:12px;
+    font-size:0.8em;
+    font-weight:bold;
+    color:#444;
+}
+.force-constant-form-one-bond .luban-document .luban-document .luban-document-title {
+border-bottom:none;
+}
+.force-constant-form-one-bond table.luban-splitter {
+    width:auto;
+}
+.force-constant-form-one-bond > table.luban-splitter > tbody > tr > td {
+vertical-align:top;
+padding:0 1em;
+}
+.force-constant-form-one-bond .bond-container .luban-formfield {
+    margin:0;
+}
+.force-constant-form-one-bond .bond-container p {
+    margin:0;
+}
+.force-constant-form-one-bond .bond-container .bond-sign {
+    padding:0 1em;
+}
+
+.force-constant-form-one-bond .siteB-lattice-vector-container {
+    text-align:right;
+}
+.force-constant-form-one-bond .siteB-lattice-vector-container div {
+    display:inline;
+}
+.force-constant-form-one-bond .siteB-lattice-vector-container p {
+    display:inline;
+    margin-right:1em;
+}
+.force-constant-form-one-bond .siteB-lattice-vector-container input {
+    width:3em;
+}
+.force-constant-form-one-bond .siteB-lattice-vector-container .luban-document-title {
+}
+.force-constant-form-one-bond .siteB-lattice-vector-container .luban-formfield {
+    margin-right: 0.3em;
+}
+
+.force-constant-form-one-bond .grid input {
+    margin:0.2em;
+    padding:0.1em 0.4em;
+    width:4em;
+    font-size:0.9em;
+}
+.force-constant-form-one-bond .grid p {
+    margin:0.2em;
+    padding:0.1em 0.4em;
+    width:3em;
+    font-size:0.9em;
+}
+.force-constant-form-one-bond .grid .luban-formfield {
+    margin:0;
+}
+.force-constant-form-one-bond .grid table.luban-splitter {
+    border-collapse:collapse;
+    width:auto;
+}
+.force-constant-form-one-bond .value{
+    color: green;
+}
+.force-constant-form-one-bond .bond-container .value {
+    font-size:0.9em;
+}
+.force-constant-form-one-bond .bond-sites .luban-document-title{
+    text-align:center;
+}
+*/
+
+/* version */
+/* $Id$ */
+
+/* End of file  */

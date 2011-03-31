@@ -1,0 +1,90 @@
+#!/usr/bin/env python
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                      California Institute of Technology
+#                      (C) 2006-2009  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+import os, tempfile
+import luban.content as lc
+from luban.content import select, load, alert
+
+from vsat.Trajectory import Trajectory
+from luban.components.Actor import Actor
+import luban.orm
+base = luban.orm.object2actor(Trajectory)
+class Actor(base):
+
+    class Inventory(base.Inventory):
+
+        import luban.inventory
+        
+    def createGraphicalView(self, director):
+        # create temporary directory
+        from vnfb.utils.job import packjobdir
+        parentdir = packjobdir.temproot
+        parentdir = os.path.abspath(parentdir)
+        tmpdirectory = tempfile.mkdtemp(dir=parentdir)
+        #if not os.path.exists(tmpdirectory): os.makedirs(tmpdirectory)
+        subdir = os.path.basename(tmpdirectory)
+
+        # create symlink to current trajectory location
+        trajName = 'gulp.nc' #should replace this with name in gulp d.o.
+        trajSymPath = os.path.join(tmpdirectory, trajName)
+        trajectory = self._load(director)
+        orm = director.clerk.orm
+        Trajectory = orm(trajectory)
+        trajDir = director.dds.abspath(Trajectory)
+        trajRealPath = os.path.abspath(os.path.join(trajDir, trajName))
+        os.symlink(trajRealPath, trajSymPath)
+        
+#        trajectory = orm.load(Trajectory, self.inventory.id)
+        #datadir = director.dds.abspath(orm(trajectory))
+        
+#        from vnfb.utils.job import packobjectdir as packutils
+#        url = packutils.downloadurl(orm(trajectory), director)
+#        filename = url.split('/')[-1]
+#        label = 'Download %s' % filename
+        
+        #trajDownloadPath = os.path.join(director.weaver.htmlbase, 'tmp', subdir, 'gulp.nc.tgz')
+        trajDownloadPath = os.path.join('tmp', subdir, 'gulp.nc')
+        link = lc.htmldocument(id='trajectory-download-link')
+        link.text = ['<a href="%s">Right click to download trajectory </a>' % (trajDownloadPath,)]
+        
+        return link  
+        
+#        domaccess = self._domaccess(director)
+#        sqe = domaccess.getData(trajectory)
+#
+#        from histogram import histogram
+#        qaxis = 'Q', sqe.q
+#        eaxis = 'E', sqe.e
+#        I = sqe.sqe
+#        h = histogram('S(Q,E)', [qaxis, eaxis], data=I)
+#        
+#        title = 'S(Q, E)' 
+#        doc = lc.document(Class='container', title=title, collapsable=True)
+#
+#        p = director.retrieveVisual(
+#            'histogram/imageplot',
+#            histogram=h,
+#            director=director,
+#            )
+#        doc.add(p)
+#        return doc
+
+    def _domaccess(self, director):
+        return director.retrieveDOMAccessor('trajectory')
+
+def actor():
+    return Actor('orm/trajectory')
+
+
+# version
+__id__ = "$Id$"
+
+# End of file 

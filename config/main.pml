@@ -1,34 +1,11 @@
-<?xml version="1.0"?>
+<inventory >
+  <component name="main">
+    <facility name="actor">login</facility>
+    <facility name="clerk">clerk</facility>
+    <facility name="extension">app-extension</facility>
+    <property name="log-dir">../log</property>
 <!--
-! ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-!
-!
-!                             Michael A.G. Aivazis
-!                      California Institute of Technology
-!                      (C) 1998-2005  All Rights Reserved
-!
-! {LicenseText}
-!
-! ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    <facility name="guid">guidfromidddaemon</facility>
 -->
-
-
-<!DOCTYPE inventory>
-
-<inventory>
-
-  <component name='main'>
-    <property name='debug'>1</property>
-    <property name='home'>http://vnf.http.server/vnf/</property>
-    <property name='cgi-home'>http://vnf.http.server/cgi-bin/vnf/main.sh</property>
-    <property name='imagepath'>/vnf/images</property>
-    <property name='javascriptpath'>/vnf/javascripts</property>
   </component>
-
 </inventory>
-
-
-<!-- version-->
-<!-- $Id$-->
-
-<!-- End of file -->

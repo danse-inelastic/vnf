@@ -1,0 +1,92 @@
+#!/usr/bin/env python
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                               Alex Dementsov
+#                      California Institute of Technology
+#                        (C) 2009  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+from vnfb.qeutils.qeutils import stamp2date, latestParam, ifelse, key2val
+from vnfb.qeutils.qeconst import CONVTYPE, CONVTYPELIST
+from vnfb.qeutils.qegrid import QEGrid
+
+import luban.content as lc
+from luban.content import load, select
+
+
+def visual(director, id):
+    table       = QEGrid(lc.grid(Class="qe-tasks-table"))
+
+    convs       = director.clerk.getQEConvergences(where="simulationid='%s'" % id)
+    if not convs:           # No convergence tests found
+        return table.grid()
+
+    table.addRow(("Test Id", "Time Created", "Type", "Parameter", "Current", "Optimal", "") )
+
+    def convId(conv):
+        actor   = "material_simulations/espresso-convergence/conv-view"
+        return  lc.link(label   = conv.id,
+                       onclick = load(actor     = actor,
+                                      id        = id,
+                                      convid    = conv.id)
+                        )
+
+    def convTime(conv):
+        return stamp2date(conv.timecreated)
+
+    def convType(conv):
+        return key2val(conv.type, CONVTYPE, conv.type)
+
+
+    def parameter(param):
+        if not param:
+            return "None"
+
+        return ifelse(param.pname, param.pname, "None")
+
+
+    def current(param):
+        if not param:
+            return "None"
+
+        return ifelse(param.value, param.value, "None")
+
+
+    def optimal(param):
+        if not param:
+            return "None"
+
+        return ifelse(param.optimal, param.optimal, "None")
+
+
+
+    def delete(conv):
+        actor   = "material_simulations/espresso-convergence/conv-delete"
+        return lc.link( label   = "Delete",
+                        Class   = "qe-action-delete",
+                        onclick = load(actor        = actor,
+                                         id         = id,
+                                         convid     = conv.id)
+                       )
+                       
+    for c in convs:
+        params  = director.clerk.getQEConvParams(where="convergenceid='%s'" % c.id)
+        p       = latestParam(params)
+        table.addRow((convId(c), convTime(c), convType(c), parameter(p),
+                      current(p), optimal(p), delete(c)))
+
+    table.setColumnStyle(0, "qe-table-id")
+    table.setColumnStyle(1, "qe-table-time")
+    table.setColumnStyle(6, "qe-table-delete")
+    table.setRowStyle(0, "qe-table-header")
+
+    return table.grid()
+
+__date__ = "$Apr 25, 2010 11:19:29 PM$"
+
+

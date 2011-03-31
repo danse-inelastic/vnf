@@ -1,0 +1,139 @@
+#!/usr/bin/env python
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                               Alex Dementsov
+#                      California Institute of Technology
+#                        (C) 2009  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+from vnfb.qeutils.qegrid import QEGrid
+
+from luban.content import select
+from luban.content import load
+from luban.content.Form import Form
+from luban.content.FormTextField import FormTextField
+from luban.content.FormSubmitButton import FormSubmitButton
+
+import luban.content as lc
+from luban.components.AuthorizedActor import AuthorizedActor as base
+
+# Requires simulation id,
+class Actor(base):
+
+    class Inventory(base.Inventory):
+        import pyre.inventory
+        id      = pyre.inventory.str('id', default='')    # Simulation Id
+        taskid  = pyre.inventory.str('taskid', default='')
+        type    = pyre.inventory.str('type', default='')
+        label   = pyre.inventory.str('label', default='')
+        description = pyre.inventory.str('description', default='') # Not used
+
+
+    def default(self, director):
+        return select(id='main-display-area').replaceContent(self.content(director))
+
+
+    def content(self, director):
+        task    = director.clerk.getQETasks(id=self.taskid)
+
+        def viewIndicator(director):
+            qelink  = load( actor           = 'materialsimulation',
+                            filter_key      = 'type',
+                            filter_value    = 'qesimulations')
+
+            path = []
+            path.append(('Simulations ', load(actor='materialsimulation')))
+            path.append(('Quantum Espresso ', qelink))
+            path.append(('%s ' % self.id, load(actor    = 'material_simulations/espresso/sim-view',
+                                               id       = self.id))
+                        )
+            path.append('Edit %s Task: %s' % (self.type, self.taskid))
+
+            return director.retrieveVisual('view-indicator', path=path)
+
+        doc         = lc.document(title="Edit %s Task: %s" % (self.type, self.taskid))
+        splitter    = doc.splitter(orientation="vertical")
+        sA          = splitter.section()
+        sA.add(viewIndicator(director))
+        sB          = splitter.section()
+        sB.add(self._setForm(task))
+
+        return doc
+
+
+    def _setForm(self, task):
+        "Edit task form. Only description and label can be edited"
+        form        = Form(id='create-simulation-form')
+        table       = QEGrid(lc.grid(Class="qe-form"))
+        form.add(table.grid())
+
+        label           = FormTextField(name = "label", value=task.label)
+        description     = FormTextField(name = "description", value=task.short_description)   # Make as textarea
+
+        submit      = FormSubmitButton(label="Edit Simulation Task")
+        cancel      = lc.button(label="Cancel")
+        cancel.onclick  = load(actor = 'material_simulations/espresso/sim-view', id=self.id)
+
+        st          = QEGrid(lc.grid()) # Submit Table
+        st.addRow((submit, cancel), ("qe-action-accept", "qe-action-cancel"))
+
+        table.addRow(("Label:", label))
+        table.addRow(("Description:", description))
+
+        table.addRow(("", st.grid()))
+
+        table.setColumnStyle(0, "qe-form-label")
+        table.setColumnStyle(1, "qe-form-field")
+
+        form.onsubmit   = select(element=form).submit(actor     = 'material_simulations/espresso/task-edit',
+                                                      routine   = 'updateRecord',
+                                                      id        = self.id,
+                                                      taskid    = self.taskid)
+
+        return form
+
+
+    def updateRecord(self, director):
+        """Update task record"""
+        task    = director.clerk.getQETasks(id=self.taskid)
+        task.setDirector(director)
+
+        params  = {"label":         self.label,
+                   "short_description":   self.description
+                  }
+        task.updateRecord(params)
+
+        return load(actor = 'material_simulations/espresso/sim-view', id=self.id)
+
+
+    def __init__(self):
+        super(Actor, self).__init__(name='material_simulations/espresso/task-edit')
+
+        return
+
+
+    def _configure(self):
+        super(Actor, self)._configure()
+        self.id             = self.inventory.id
+        self.taskid         = self.inventory.taskid
+        self.type           = self.inventory.type
+        self.label          = self.inventory.label
+        self.description    = self.inventory.description
+
+
+    def _init(self):
+        super(Actor, self)._init()
+        return
+
+def actor():
+    return Actor()
+
+
+__date__ = "$Dec 12, 2009 10:41:12 PM$"
+
+

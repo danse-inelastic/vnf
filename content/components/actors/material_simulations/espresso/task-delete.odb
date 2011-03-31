@@ -1,0 +1,178 @@
+#!/usr/bin/env python
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                               Alex Dementsov
+#                      California Institute of Technology
+#                        (C) 2009  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+from vnfb.qeutils.qegrid import QEGrid
+
+from luban.content import select
+from luban.content.Paragraph import Paragraph
+from luban.content.Form import Form
+from luban.content.FormSubmitButton import FormSubmitButton
+from luban.content import load
+
+import luban.content as lc
+from luban.components.AuthorizedActor import AuthorizedActor as base
+
+# Requires simulation id,
+class Actor(base):
+
+    class Inventory(base.Inventory):
+        import pyre.inventory
+        id      = pyre.inventory.str('id', default='')    # Simulation Id
+        taskid  = pyre.inventory.str('taskid', default='')
+        type    = pyre.inventory.str('type', default='')
+
+
+    def default(self, director):
+        return select(id='main-display-area').replaceContent(self.content(director))
+
+
+    def content(self, director):
+
+        def viewIndicator(director):
+            qelink  = load( actor           = 'materialsimulation',
+                            filter_key      = 'type',
+                            filter_value    = 'qesimulations')
+
+            path = []
+            path.append(('Simulations ', load(actor='materialsimulation')))
+            path.append(('Quantum Espresso ', qelink))
+            path.append(('%s ' % self.id, load(actor    = 'material_simulations/espresso/sim-view',
+                                               id       = self.id))
+                        )
+            path.append("Delete %s Task: %s" % (self.type, self.taskid))
+
+            return director.retrieveVisual('view-indicator', path=path)
+
+        doc         = lc.document(title="Delete %s Task: %s" % (self.type, self.taskid))
+        splitter    = doc.splitter(orientation="vertical")
+        sA          = splitter.section()
+        sA.add(viewIndicator(director))
+        sB          = splitter.section()
+        sB.add(Paragraph(text="Warning: Deleting simulation task will also delete configuration input and job associated with this task!"))
+        sB.add(Paragraph(text="Are you sure you want to delete the task?"))
+
+        sB.add(self._setForm())
+
+        return doc
+
+
+    def _setForm(self):
+        form        = Form()
+        submit      = FormSubmitButton(label="Delete")
+        cancel      = lc.button(label="Cancel")
+        cancel.onclick = load(actor = 'material_simulations/espresso/sim-view', id=self.id)
+
+        st          = QEGrid(lc.grid()) # Submit Table
+        st.addRow((submit, cancel), ("qe-action-accept", "qe-action-cancel"))
+
+        form.add(st.grid())
+        form.onsubmit   = select(element=form).submit(actor     = 'material_simulations/espresso/task-delete',
+                                                      routine   = 'deleteRecord',
+                                                      id        = self.id,
+                                                      taskid    = self.taskid)
+
+        return form
+
+
+    def deleteRecord(self, director):
+        """Delete task record"""
+
+        self._deleteInputs(director)    # Not tested
+        self._deleteReference(director) # Tested
+        self._deleteJobs(director)      # Not tested
+        self._deleteResults(director)   # Not tested
+        self._deleteTask(director)      # Tested
+
+        return load(actor='material_simulations/espresso/sim-view', id=self.id)
+
+
+    def _deleteInputs(self, director):
+        "Delete configuration inputs"
+        inputs            = director.clerk.getQEConfigurations(where="taskid='%s'" % self.id)
+        if inputs:
+            for inp in inputs:  # In case there are left overs?
+                inp.setDirector(director)
+                inp.deleteRecord()
+
+    # TODO: Check the logic
+    def _deleteReference(self, director):
+        "Handle references in QESimulationTask"
+        simtasks = director.clerk.getQESimulationTasks(where="simulationid='%s' AND taskid='%s'" % (self.id, self.taskid))
+
+        if simtasks:
+            simtask     = simtasks[0]
+            if simtask.simulationid == '':
+                self._deleteReferenceRecord(director, simtask)
+                return
+            
+            self._updateReference(director, simtask)
+
+
+    def _updateReference(self, director, simtask):
+        "Update QESimulationTask record"
+        params  = {"taskid": '',
+                  }
+        simtask.setDirector(director)
+        simtask.updateRecord(params)
+
+
+    def _deleteReferenceRecord(self, director, simtask):
+        "Delete QESimulationTask record"
+        simtask.setDirector(director)
+        simtask.deleteRecord()
+
+
+    def _deleteJobs(self, director):
+        """Deletes jobs"""
+        jobs            = director.clerk.getQEJobs(where="taskid='%s'" % self.id)
+        if jobs:
+            for j in jobs:
+                j.setDirector(director)
+                j.deleteRecord()
+
+
+    def _deleteResults(self, director):
+        "Delete simulation task results. E.g. clean up directory"
+        pass
+
+
+    def _deleteTask(self, director):
+        task     = director.clerk.getQETasks(id=self.taskid)
+        task.setDirector(director)
+        task.deleteRecord()
+
+
+    def __init__(self):
+        super(Actor, self).__init__(name='material_simulations/espresso/task-delete')
+
+        return
+
+
+    def _configure(self):
+        super(Actor, self)._configure()
+        self.id             = self.inventory.id
+        self.taskid         = self.inventory.taskid
+        self.type           = self.inventory.type
+
+
+    def _init(self):
+        super(Actor, self)._init()
+        return
+
+def actor():
+    return Actor()
+
+
+__date__ = "$Dec 12, 2009 10:41:24 PM$"
+
+

@@ -1,0 +1,18 @@
+Bugs list for Quantum Espresso part of VNF
+==========================================
+
+- [FIXED] In "jobs/jobs-view-all" actor "Check" button retrieves results only for the first record in the table.
+- Fix issue when pseudo-potential is not available for the atom element (e.g. Ce)
+- Fix global pointer issue for simulation creation
+- Max number of generated k-points for phonon dispersion in matdyn task is 26x26x26.
+  Figure out what causes the limitation. Extend to at least 64
+
+- Progress bar checks non existing ID.
+    In the middle of job submission (with progress bar) you click on any other link
+to get off the page. Progress bar still checking the progress (looking for the proper ID)
+which is gone.
+- [FIXED] Fix setting-edit (number of processors default selection)
+- [FIXED] For "Single Phonon" simulatin type allow user to pick only 1 processor (settings-edit,
+  settings-create)
+- [FIXED] When the QE configuration file is not present on the local machine it returns error
+- [FIXED] Check if director.redirect() does passes parameters ()
