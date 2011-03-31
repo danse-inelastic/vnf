@@ -5,6 +5,8 @@ Architecture of Quantum Espresso Simulation
 
 Introduction
 ------------
+
+In the beginning there was command line, and command line was dark
 {About Quantum Espresso package architecture }
 
 Architecture Overview
@@ -18,6 +20,16 @@ Simulation Workflow
 
 Database Schema
 ---------------
+
+Here is the database schema for Quantum Espresso simulation. The main table
+``qesimulations`` has many-to-many relationship with ``qetasks`` through
+``qesimulationtasks``
+
+.. figure:: images/qe-dev/dbschema.png
+   :width: 720px
+
+   *Fig. Database schema for Quantum Espresso simulation*
+
 
 Inputs
 ------
