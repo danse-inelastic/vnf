@@ -153,7 +153,7 @@ Which tell us the actual upper limit that will be calculated, 19.693654; the act
 
 where we see a summary of our choices.  Alternatively we could have chosen to calculate a coherent scattering function, which would additionally involve Q-vector parameters:
 
-.. figure:: images/md-sqe/analyses/csfCalc.png
+.. figure:: images/md-sqe/analyses/fCsfCalc.png
    :scale: 70 
 
 Submission and results

@@ -96,7 +96,7 @@ def createScatteringAnalysis():
     routines   = []
     routines.append(
                     (lc.link(label="S(Q,E)", onclick=select(id='main-display-area'
-                            ).replaceContent(load(actor="orm/csfcalc", routine='edit', id='2'))),
+                            ).replaceContent(load(actor="orm/fcsfcalc", routine='edit', id='2'))),
                     "Generate coherent and incoherent portions of inelastic scattering through an MD trajectory")
                     )
     routines.append(

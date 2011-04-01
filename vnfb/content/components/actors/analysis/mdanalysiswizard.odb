@@ -17,7 +17,7 @@ from luban.content.Link import Link
 from luban.components.Actor import Actor as base
 import journal
 #analysisPaths = {'mddoscalc':'vsat.trajectory.MdDosCalc',
-#                   'csfcalc':'vsat.trajectory.CsfCalc'}
+#                   'fcsfcalc':'vsat.trajectory.FCsfCalc'}
 class Actor(base):
 
     class Inventory(base.Inventory):
@@ -63,7 +63,7 @@ class Actor(base):
         orm = director.clerk.orm
         doc = lc.document(id='analysis-configuration-doc')
         #if appropriate, put in the md planning tools
-        if self.inventory.analysisType in ['csfcalc','isfcalc','dos',]:
+        if self.inventory.analysisType in ['fcsfcalc','isfcalc','dos',]:
             doc.paragraph(
                 text=['Use the following planning tools to configure the analysis calculation:',])
             #doc = lc.document(title = "")

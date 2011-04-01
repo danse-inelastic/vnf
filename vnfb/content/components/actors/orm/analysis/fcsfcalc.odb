@@ -19,11 +19,11 @@ from luban.content import select, load, alert
 
 
 #
-from vsat.trajectory.CsfCalc import CsfCalc
+from vsat.trajectory.FCsfCalc import FCsfCalc
 
 from luban.components.Actor import Actor
 import luban.orm
-base = luban.orm.object2actor(CsfCalc)
+base = luban.orm.object2actor(FCsfCalc)
 class Actor(base):
 
     class Inventory(base.Inventory):
@@ -35,7 +35,7 @@ class Actor(base):
         
 
 def actor():
-    return Actor('orm/analysis/csfcalc')
+    return Actor('orm/analysis/fcsfcalc')
 
 
 # version

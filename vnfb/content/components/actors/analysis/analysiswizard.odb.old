@@ -21,7 +21,7 @@ from luban.components.Actor import Actor as base
 import journal
 
 #analysisPaths = {'mddoscalc':'vsat.trajectory.MdDosCalc',
-#                   'csfcalc':'vsat.trajectory.CsfCalc'}
+#                   'fcsfcalc':'vsat.trajectory.FCsfCalc'}
 
 class Actor(base):
 

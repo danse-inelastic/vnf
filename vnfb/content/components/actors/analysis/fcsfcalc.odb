@@ -46,7 +46,7 @@ class Actor(base):
         settingsdoc = doc.document(title = 'Settings', collapsable = True)
         settingsdoc.oncreate = select(element=settingsdoc).append(
             load(
-              actor='orm/analysis/csfcalc', routine='displayProperties',
+              actor='orm/analysis/fcsfcalc', routine='displayProperties',
               id = c.id, editlink=not hasjob,
             ))
         
@@ -64,7 +64,7 @@ class Actor(base):
             else:
                 # results
                 resultsdoc = doc.document(title = 'Results', collapsable=True, collapsed=True)
-                resultsdoc.id = 'csfcalc-view-results-doc'
+                resultsdoc.id = 'fcsfcalc-view-results-doc'
                 resultsdoc.paragraph(text=['loading results. please wait...'])
                 resultsdoc.onexpand = select(element=resultsdoc).replaceContent(
                     load(actor=self.name, routine='createResultsDoc',
@@ -73,7 +73,7 @@ class Actor(base):
         else:
             createjob = load(
                 actor='job', routine='create',
-                computation_type = 'analysis.CsfCalc.CsfCalc',
+                computation_type = 'analysis.FCsfCalc.FCsfCalc',
                 computation_id = self.inventory.id
                 )
             l = lc.link(
@@ -112,17 +112,17 @@ class Actor(base):
         if not id:
             raise RuntimeError
         domaccess = self._domaccess(director)
-        #label = domaccess.getComputationLabel('csfcalc', id)
+        #label = domaccess.getComputationLabel('fcsfcalc', id)
         computation = self._getComputation(director)
         return [
             ('Analysis',
              lc.load(actor='analysis')),
             ('Coherent Scattering Function',
-             lc.load(actor='analysis', filter_expr="type=='csfcalc'")),
+             lc.load(actor='analysis', filter_expr="type=='fcsfcalc'")),
             #('%s %s' % (computation.__class__.__name__, label),
             ('%s' % (computation.__class__.__name__),
              lc.select(id='main-display-area').replaceContent(
-            lc.load(actor='analysis/csfcalc',
+            lc.load(actor='analysis/fcsfcalc',
                     routine = 'createView', id=id)
             )),
             ]
@@ -132,19 +132,19 @@ class Actor(base):
         return director.clerk.orm.record2object(record)
 #        domaccess = self._domaccess(director)
 #        id = self.inventory.id
-#        return domaccess.getComputation('csfcalc', id)
+#        return domaccess.getComputation('fcsfcalc', id)
 
     def _getComputationRecord(self, director):
         domaccess = self._domaccess(director)
         id = self.inventory.id
-        return domaccess.getAnalysisRecord('analysis.CsfCalc.CsfCalc', id)
+        return domaccess.getAnalysisRecord('analysis.FCsfCalc.FCsfCalc', id)
         #return domaccess.getAnalysisRecord(id)
 
     def _domaccess(self, director):
         return director.retrieveDOMAccessor('analysis')
         #return director.retrieveDOMAccessor('computation')
 
-    def __init__(self, name='analysis/csfcalc'):
+    def __init__(self, name='analysis/fcsfcalc'):
         super(Actor, self).__init__(name)
         return
 

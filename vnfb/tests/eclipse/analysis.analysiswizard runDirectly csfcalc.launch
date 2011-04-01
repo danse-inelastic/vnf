@@ -9,7 +9,7 @@
 </listAttribute>
 <stringAttribute key="org.eclipse.ui.externaltools.ATTR_LOCATION" value="${workspace_loc:vnfBetaLuban/vnfb/html/webmain.py}"/>
 <stringAttribute key="org.eclipse.ui.externaltools.ATTR_OTHER_WORKING_DIRECTORY" value="${workspace_loc:vnfBetaLuban/vnfb/html}"/>
-<stringAttribute key="org.eclipse.ui.externaltools.ATTR_TOOL_ARGUMENTS" value="--actor=analysis/analysiswizard --routine=runDirectly --actor.analysisType=csfcalc --actor.dynamicsIdAndType=&quot;3D2W5B75,motion&quot; --sentry.username=demo --sentry.passwd=demo --actor.analysisId=S5N4IZU"/>
+<stringAttribute key="org.eclipse.ui.externaltools.ATTR_TOOL_ARGUMENTS" value="--actor=analysis/analysiswizard --routine=runDirectly --actor.analysisType=fcsfcalc --actor.dynamicsIdAndType=&quot;3D2W5B75,motion&quot; --sentry.username=demo --sentry.passwd=demo --actor.analysisId=S5N4IZU"/>
 <stringAttribute key="org.eclipse.ui.externaltools.ATTR_WORKING_DIRECTORY" value="${workspace_loc:vnfBetaLuban/vnfb/html}"/>
 <stringAttribute key="org.python.pydev.debug.ATTR_INTERPRETER" value="__default"/>
 <stringAttribute key="org.python.pydev.debug.ATTR_PROJECT" value="vnfBetaLuban"/>

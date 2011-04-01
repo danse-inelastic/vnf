@@ -13,7 +13,7 @@
 
 typenames = [
     'analysis.MdDosCalc.MdDosCalcBase',
-    'analysis.CsfCalc.CsfCalcBase',
+    'analysis.FCsfCalc.FCsfCalcBase',
     'analysis.IsfCalc.IsfCalcBase',
     'analysis.EisfCalc.EisfCalcBase',
     'analysis.MsdDiffusionCalc.MsdDiffusionCalcBase',

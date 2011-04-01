@@ -64,7 +64,7 @@ class Actor(base):
             else:
                 # results
                 resultsdoc = doc.document(title = 'Results', collapsable=True, collapsed=True)
-                resultsdoc.id = 'csfcalc-view-results-doc'
+                resultsdoc.id = 'fcsfcalc-view-results-doc'
                 resultsdoc.paragraph(text=['loading results. please wait...'])
                 resultsdoc.onexpand = select(element=resultsdoc).replaceContent(
                     load(actor=self.name, routine='createResultsDoc',

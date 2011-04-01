@@ -38,7 +38,7 @@ EXPORT_PYTHON_MODULES = \
 	__init__.py \
 	_.py \
 	analysis_types.py \
-	CsfCalc.py \
+	FCsfCalc.py \
 	EisfCalc.py \
 	IsfCalc.py \
 	MdDosCalc.py \

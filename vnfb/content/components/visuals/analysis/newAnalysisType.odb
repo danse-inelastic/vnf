@@ -67,7 +67,7 @@ def createMdScatteringAnalysis():
     routines.append(
                     (lc.link(label="S(Q,E)_coh", onclick=select(id='main-display-area'
                     ).replaceContent(load(actor='analysis/mdanalysiswizard', routine='selectTrajectory',
-                    analysisType='CsfCalc'))),
+                    analysisType='FCsfCalc'))),
                     "Coherent inelastic scattering from md using Fourier transforms")
                     )
     routines.append(
@@ -149,7 +149,7 @@ def createPhonScatteringAnalysis():
     routines.append(
                     (lc.link(label="S(Q,E)_coh", onclick=select(id='main-display-area'
                     ).replaceContent(load(actor='analysis/analysiswizard', routine='selectTrajectory',
-                    analysisType='CsfCalcPhonon'))),
+                    analysisType='FCsfCalcPhonon'))),
                     "Coherent inelastic scattering from phonons")
                     )
     routines.append(

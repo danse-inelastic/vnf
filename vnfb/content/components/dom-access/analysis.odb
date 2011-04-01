@@ -24,9 +24,9 @@ class Accessor(base):
 #        # build orm for all dynamics types--orm 
 #        #registers and stores these internally
 #        from vsat.trajectory.MdDosCalc import MdDosCalc
-#        from vsat.trajectory.CsfCalc import CsfCalc
+#        from vsat.trajectory.FCsfCalc import FCsfCalc
 #        orm(MdDosCalc)
-#        orm(CsfCalc)
+#        orm(FCsfCalc)
 #        return orm
 #    orm = property(_getOrm)
 #
