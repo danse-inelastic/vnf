@@ -51,10 +51,6 @@ def qesimtables():
 
 
 def tables_without_orm():
-    # for compatibility with vnf-alpha. should eventually remove
-    from vnf.dom import alltables
-    vnfalphatables = alltables()
-
     ts = [
         'ITask.ITask',
         'Server.Server',
@@ -64,7 +60,7 @@ def tables_without_orm():
         'Privilege.Privilege',
         ]
     tables = map(importType, ts)
-    return vnfalphatables + tables + qetables()
+    return tables + qetables()
 
 
 # version

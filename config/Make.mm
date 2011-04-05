@@ -33,6 +33,7 @@ EXPORT_DATAFILES = \
 	checkservers.pml \
 	createdataobject.pml \
 	clerk.odb \
+	clerk.pml.withpw \
 	createInstruments.pml \
 	doma.pml \
 	getuserlist.pml \
