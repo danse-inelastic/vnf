@@ -45,9 +45,7 @@ EXPORT_DATAFILES = \
 	findchildrenofdataobject.py \
 	findreferrals.py \
 	getuserlist.py \
-	initdb-alpha.py \
 	initdb.py \
-	initdb.sh \
 	itaskapp.py \
 	launch-detached.py \
 	listservers.py \
