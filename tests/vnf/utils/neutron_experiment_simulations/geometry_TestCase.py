@@ -35,7 +35,7 @@ class TestCase(unittest.TestCase):
         relative_coordinates = {
             'a': (None, (0,0,0), I)
             }
-        abs = geometry.calculateAbsoluteCoordinates(relative_coordinates)
+        abs = geometry.calculateAbsoluteCoordinates(relative_coordinates, ['a'])
         pos, ori = abs['a']
         assert_array_almost_equal(pos, (0,0,0))
         assert_array_almost_equal(ori, I)
@@ -45,7 +45,7 @@ class TestCase(unittest.TestCase):
             'a': (None, (0,0,0), I),
             'b': ('a', (1,2,3), I),
             }
-        abs = geometry.calculateAbsoluteCoordinates(relative_coordinates)
+        abs = geometry.calculateAbsoluteCoordinates(relative_coordinates, ['a', 'b'])
         pos, ori = abs['a']
         assert_array_almost_equal(pos, (0,0,0))
         assert_array_almost_equal(ori, I)
@@ -58,7 +58,8 @@ class TestCase(unittest.TestCase):
             'b': (None, (0,0,0), I),
             'a': ('b', (1,2,3), I),
             }
-        abs = geometry.calculateAbsoluteCoordinates(relative_coordinates)
+        abs = geometry.calculateAbsoluteCoordinates(
+            relative_coordinates, ['a', 'b'])
         pos, ori = abs['b']
         assert_array_almost_equal(pos, (0,0,0))
         assert_array_almost_equal(ori, I)
@@ -71,7 +72,8 @@ class TestCase(unittest.TestCase):
             'a': (None, (0,0,0), I),
             'b': ('a', (0,0,0), (90,0,0)),
             }
-        abs = geometry.calculateAbsoluteCoordinates(relative_coordinates)
+        abs = geometry.calculateAbsoluteCoordinates(
+            relative_coordinates, ['a', 'b'])
         pos, ori = abs['a']
         assert_array_almost_equal(pos, (0,0,0))
         assert_array_almost_equal(ori, I)
@@ -85,7 +87,9 @@ class TestCase(unittest.TestCase):
             'b': ('a', (0,0,0), (90,0,0)),
             'c': ('b', (0,1,0), I),
             }
-        abs = geometry.calculateAbsoluteCoordinates(relative_coordinates)
+        abs = geometry.calculateAbsoluteCoordinates(
+            relative_coordinates,
+            ['a', 'b', 'c'])
         pos, ori = abs['a']
         assert_array_almost_equal(pos, (0,0,0))
         assert_array_almost_equal(ori, I)
@@ -103,7 +107,10 @@ class TestCase(unittest.TestCase):
             'c': ('b', (0,0,0), Y90),
             'd': ('c', (0,0,1), I),
             }
-        abs = geometry.calculateAbsoluteCoordinates(relative_coordinates)
+        abs = geometry.calculateAbsoluteCoordinates(
+            relative_coordinates,
+            ['a', 'b', 'c', 'd'],
+            )
         pos, ori = abs['a']
         assert_array_almost_equal(pos, (0,0,0))
         assert_array_almost_equal(ori, I)
