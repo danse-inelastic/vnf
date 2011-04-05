@@ -36,14 +36,16 @@ class TestCase(unittest.TestCase):
     def test3(self):
         disp = self.disp
         b = 1.74
-        x,ys = disp.getDispersionsPlot(
+        x,ys = disp.getDispersionPlot(
             [ (b/2,b/2,0),
               (0,0,0),
               (b,0,0),
               (b/2,b/2,b/2),
               (0,0,0),
               ],
-             branches=range(3), npointspersegment=31)
+            branches=range(3),
+            #npointspersegment=31,
+            )
         import pylab
         for y in ys:
             pylab.plot(x,y)
