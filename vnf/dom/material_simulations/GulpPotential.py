@@ -12,7 +12,7 @@
 
 from _ import o2t
 
-from memd.gulp.GulpPotential import GulpPotential
+from memdf.gulp.GulpPotential import GulpPotential
 GulpPotentialTable = o2t(GulpPotential)
 
 #import dsaw.db
