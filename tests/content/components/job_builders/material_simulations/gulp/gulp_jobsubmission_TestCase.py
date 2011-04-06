@@ -19,8 +19,8 @@ class TestApp(base):
 
     def main(self, testFacility):
         domaccess = self.retrieveDOMAccessor('material_simulations/gulpSettings')
-        computation = domaccess.getComputationRecord('phonons', recordid)
-        return base.main(self, computation, testFacility)
+        # computation = domaccess.getComputationRecord('phonons', recordid)
+        # return base.main(self, computation, testFacility)
 
 
     def _checkJobDir(self):

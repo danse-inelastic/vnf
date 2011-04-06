@@ -28,7 +28,9 @@ class TestCase(unittest.TestCase):
         expected = 'expected-output'
         s = open(ginfile).read()
         s1 = open(os.path.join(expected, ginfile)).read()
-        self.assertEqual(s, s1)
+        for l, l1 in zip(s.splitlines(), s1.splitlines()):
+            self.assertEqual(l.strip(), l1.strip())
+            continue
         return
 
     
