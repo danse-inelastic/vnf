@@ -66,16 +66,18 @@ def server(
 
 # this is the octopod server forwarded to localhost port 50022
 octopod = server(
-    'server000', 'default server (octopod)',
-    'localhost', '50022',
+    'server000',
+    'default server (foxtrot)',
+    'foxtrot.danse.us', '22',
     'danse-vnf-admin', '/home/danse-vnf-admin/vnf/data', 
     '',
     'torque',
     )
 
 foxtrot = server(
-    'server001', 'foxtrot',
-    'foxtrot.danse.us', '22',
+    'server001', 
+    'octopod',
+    'localhost', '50022',
     'danse-vnf-admin', '/home/danse-vnf-admin/vnf/data', 
     '',
     'torque',
