@@ -34,7 +34,6 @@ EXPORT_PYTHON_MODULES = \
 	Arm.py \
 	ChanneledGuide.py \
 	CollimatorLinear.py \
-	CollimatorRadial.py \
 	DetectorSystem_fromXML.py \
 	DiskChopper.py \
 	EMonitor.py \
