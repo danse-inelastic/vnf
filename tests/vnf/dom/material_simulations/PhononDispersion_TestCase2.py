@@ -22,13 +22,12 @@ class TestCase(unittest.TestCase):
         from mccomponents.sample.idf import readDispersion
         datadir = '../../../../content/data/phonons/bvk-bccFeAt295-N40-df0.2'
         nAtoms, dimension, Qaxes, polarizations, energies, dos = readDispersion(datadir)
-        disp = Phonons(
-            nAtoms = nAtoms,
-            dimension = dimension,
-            Qaxes = Qaxes,
-            polarizations = polarizations,
-            energies = energies,
-            )
+        disp = Phonons()
+        disp.nAtoms = nAtoms
+        disp.dimension = dimension
+        disp.Qaxes = Qaxes
+        disp.polarizations = polarizations
+        disp.energies = energies
         self.disp = disp
         return
         

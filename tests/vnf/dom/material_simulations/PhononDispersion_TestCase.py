@@ -25,13 +25,12 @@ class TestCase(unittest.TestCase):
         if os.path.exists(os.path.join(datadir, 'data.idf')):
             datadir = os.path.join(datadir, 'data.idf')
         nAtoms, dimension, Qaxes, polarizations, energies, dos = readDispersion(datadir)
-        disp = Phonons(
-            nAtoms = nAtoms,
-            dimension = dimension,
-            Qaxes = Qaxes,
-            polarizations = polarizations,
-            energies = energies,
-            )
+        disp = Phonons()
+        disp.nAtoms = nAtoms
+        disp.dimension = dimension
+        disp.Qaxes = Qaxes
+        disp.polarizations = polarizations
+        disp.energies = energies
         self.disp = disp
         return
         
