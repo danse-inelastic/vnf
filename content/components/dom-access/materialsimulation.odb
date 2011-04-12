@@ -145,8 +145,9 @@ class Accessor(base):
 
 
     def _simulationTables(self):
-        from vnf.dom import materialsimulationtables, materialmodelingtables
-        tables = materialsimulationtables()# + materialmodelingtables()
+        # from vnf.dom import materialsimulationtables, materialmodelingtables
+        # tables = materialsimulationtables()# + materialmodelingtables()
+        tables = []
 
         from vnf.dom.material_simulations.computation_types import typenames
         ormtables = map(self._getTable, typenames)
