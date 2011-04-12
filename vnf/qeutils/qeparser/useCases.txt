@@ -1,0 +1,115 @@
+ == Use Cases for parser ==
+
+ &system
+    ibrav=2, ! comment
+    celldm(1) =6.65, # ignores '#' symbol 
+/
+! comment
+
+&system
+    ibrav=2	! legal without comma if parameter is on a new line
+    celldm(1) =6.65,
+/
+
+ &system
+    ibrav=2,celldm(1) =6.65, ! legal
+/
+
+ &system ibrav=2, ! illegal
+    celldm(1) =6.65,
+/
+
+ &system
+    ibrav=2 celldm(1) =6.65 ! legal 
+/
+
+ &system
+    ibrav=2,
+    celldm(1) =6.65, # nat=  1 ! legal, nat is recognized, # - ignored
+/
+
+ &system
+    ibrav=2,
+    celldm(1) =6.65, ! nat=  1 ! legal, nat is NOT parsed
+/
+
+ &system
+<Sp><Sp><Sp><Sp>ibrav=2, ! <Tab> and <Sp> considered as the same
+<Tab>celldm(1) =6.65,
+/
+
+ &system
+    ibrav=2,
+    #,celldm(1) =6.65, ! considers as #celldm(1)
+/
+
+ &system
+    ibrav=2,
+    #celldm(1) =6.65, ! considers as the name #celldm(1)
+/
+
+ &system
+    ibrav=2,
+    celldm(<Sp>1) =6.65, ! legal (will not supported by the parser)
+/
+
+ &system
+    ibrav=2,
+    celldm<Sp>(1) =6.65, ! illegal
+/
+
+- If some text goes between namelists or cards it just ignores them.
+- Card cannot be cut:
+
+&system
+    ibrav=2,
+/
+&system		! illegal
+    celldm(1) =6.65,
+/
+
+- If config file has several namelists with same name, the first one is parsed and other are just ignored
+
+ &system     ! parsed
+    ibrav=2, 
+/
+ &system     ! ignored
+    ibrav=2,
+/
+
+- Included namelits are not supported
+
+&system
+    ibrav=2,
+&system		! Returns error that namelist is not terminated by '/'
+    celldm(1) =6.65,
+/
+/
+
+ATOMIC_POSITIONS
+ Ni 0.00 0.00 0.00, Ni 1.5 1.5 1.5  ! illegal
+
+ATOMIC_POSITIONS
+ Ni 0.00 0.00 0.00 Ni 1.5 1.5 1.5  ! illegal
+
+ATOMIC_POSITIONS
+Ni 0.00 0.00 0.00  ! legal
+
+ATOMIC_POSITIONS
+ Ni<Tab>0.00 0.00 0.00 ! legal
+
+Card with an argument:
+
+K_POINTS (automatic) ! legal
+K_POINTS automatic   ! legal
+K_POINTS {automatic} 
+
+Card with argument should be parsed with round brackets, no brackets and with braces.
+Output will be with round brackets and arguments in lower case,
+E.g.: K_POINTS (automatic)
+
+General
+-------
+- !(exclamation mark) is a comment
+- There is no block comment in Fortran
+
