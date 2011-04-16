@@ -233,7 +233,7 @@ class Actor(base):
         #self.storePotential(director)--> TODO: this is already stored by gulpUi so don't need to re-store
         #TODO: make it so it will load settings back in if restarting
         # then store the settings
-        #from memd.gulp.GulpSettings import GulpSettings
+        #from memdf.gulp.GulpSettings import GulpSettings
         from vnf.dom.material_simulations.GulpSettings import GulpSettings
         gulpSettings = GulpSettings()
         gulpSettings.id = self.inventory.simulationId
@@ -248,7 +248,7 @@ class Actor(base):
         structure = domaccess.getAtomicStructure(self.inventory.structureId)
         gulpSettings.matter = orm(structure) # this turns an object back into a table?
         #since the potential has already been stored, we just get it 
-        from memd.gulp.GulpPotential import GulpPotential
+        from memdf.gulp.GulpPotential import GulpPotential
         try:
             potentialRecord = orm.db.query(orm(GulpPotential)).filter_by(
                         potential_name = self.inventory.potential_name).one()
@@ -285,7 +285,7 @@ class Actor(base):
     
     def storePotential(self, director):
         orm = director.clerk.orm
-        from memd.gulp.GulpPotential import GulpPotential
+        from memdf.gulp.GulpPotential import GulpPotential
         try:
             record = orm.db.query(orm(GulpPotential)).filter_by(
                                 potential_name = self.inventory.potential_name).one()
@@ -340,7 +340,7 @@ class Actor(base):
         structure = orm(structureRecord)
         simulationObj.matter = structure # this turns an object back into a table?
         #since the potential has already been stored, we just get it 
-        from memd.gulp.GulpPotential import GulpPotential
+        from memdf.gulp.GulpPotential import GulpPotential
         try:
             potentialRecord = orm.db.query(orm(GulpPotential)).filter_by(
                         potential_name = self.inventory.potential_name).one()

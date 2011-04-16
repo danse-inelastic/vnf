@@ -26,7 +26,16 @@ class Actor(base):
 
         id = pyre.inventory.str(name='id')
 
+
     def checkProgress(self, director):
+        try:
+            return self._checkProgress(director)
+        except:
+            # if there is any error, we should probably return nothing?
+            return
+
+
+    def _checkProgress(self, director):
         itask = director.clerk.getRecordByID('itasks', self.inventory.id)
 
         from vnf.utils.itask import progressbarID

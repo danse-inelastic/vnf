@@ -13,7 +13,7 @@
 
 from vnf.components.DOMAccessor import DOMAccessor as base
 from vnf.dom.material_simulations.GulpSettings import GulpSettings as GulpSettingsTable
-from memd.gulp.GulpSettings import GulpSettings
+from memdf.gulp.GulpSettings import GulpSettings
 import os, numpy
 
 class Accessor(base):

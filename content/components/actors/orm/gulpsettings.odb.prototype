@@ -19,7 +19,7 @@ from luban.content import select, load, alert
 
 
 #
-from memd.gulp.GulpSettings import GulpSettings
+from memdf.gulp.GulpSettings import GulpSettings
 
 from luban.components.Actor import Actor
 import luban.orm

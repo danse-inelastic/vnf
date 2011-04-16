@@ -33,7 +33,7 @@ class Accessor(base):
         return orm.load(GulpPotential, id)
 
     def getPotentialNames(self):
-        #results = self.director.clerk._getEntry('GulpPotential', maindom='memd.gulp')
+        #results = self.director.clerk._getEntry('GulpPotential', maindom='memdf.gulp')
         results = self.director.clerk._getEntry('GulpPotential', maindom='vnf.dom.material_simulations')
         potentialNames=[]
         for entry in results:
@@ -73,7 +73,7 @@ class Accessor(base):
         return potentialContent
 
 
-from memd.gulp.GulpPotential import GulpPotential
+from memdf.gulp.GulpPotential import GulpPotential
 
 import os, numpy
 
