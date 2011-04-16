@@ -34,6 +34,7 @@ EXPORT_DATAFILES = \
 	createdataobject.pml \
 	clerk.odb \
 	clerk.pml.withpw \
+	cod.pml.template \
 	createInstruments.pml \
 	doma.pml \
 	getuserlist.pml \
