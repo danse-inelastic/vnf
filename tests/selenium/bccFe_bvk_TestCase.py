@@ -44,7 +44,7 @@ class TestCaseBase(base):
         # !!!
         # hack
         table = actor.selenium.lh.selector('table', id='atomicstructure-table')
-        structlink = table + '/tbody/tr[1]/td[2]/a'
+        structlink = table + '/tbody/tr[1]/td[3]/a'
         actor.selenium.waitForElementPresent(structlink)
         actor.selenium.click(structlink)
 
