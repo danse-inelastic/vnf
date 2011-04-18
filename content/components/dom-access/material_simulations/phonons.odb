@@ -184,7 +184,7 @@ class Accessor(base):
         director = self.director
 
         dds = director.dds
-        if dds.existssomewhere(phonons, 'data.idf'): return 'idf'
+        if dds.existssomewhere(phonons, 'data.idf/Omega2'): return 'idf'
         # other file formats should be here
         # ...
         
