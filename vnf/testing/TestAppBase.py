@@ -40,6 +40,16 @@ class Application(base):
         return 
 
 
+    def chroot(self):
+        '''it may be necessary for some tests to be executed 
+        at where web application script is executed. this
+        method change the working directory there.'''
+        import os
+        bin = os.path.join(deploymentinfo.vnfexportroot, 'bin')
+        os.chdir(bin)
+        return
+
+
     def _getPrivateDepositoryLocations(self):
         return deploymentinfo.pyre_depositories
 

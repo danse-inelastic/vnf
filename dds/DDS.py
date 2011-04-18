@@ -229,9 +229,24 @@ class DDS:
 
     def _read_availability_list(self, path):
         p = self._availability_list_path(path)
-        if self._fileexists(p):
-            return self._readfile(p).split('\n')
-        return []
+        if not self._fileexists(p):
+            return []
+        ret = self._readfile(p).split('\n')
+        # move the one in localhost in the front of list
+        # to speed things up
+        for i, item in enumerate(ret):
+            if item.startswith('localhost:'):
+                found = i
+                break
+            continue
+        else:
+            # no entry is from localhost, just return the list
+            return ret
+        item = ret[found]
+        del ret[found]
+        ret.insert(0, item)
+        return ret
+    
 
     def _update_availability_list(self, path, list):
         p = self._availability_list_path(path)
