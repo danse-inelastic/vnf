@@ -22,7 +22,7 @@ Test assumes that
 
 # phonons id.
 phononsid = "bvk-fccAgAt293-N20-df0.2"
-phononsid = "8VDEZDF"
+# phononsid = "8VDEZDF"
 
 
 # application

@@ -97,25 +97,16 @@ class Actor(base):
         doc.add(link)
         return doc
 
-    def _createPlotAndDataLink(self, disp, director):
-        domaccess = self._domaccess(director)
-        record = domaccess.orm(disp)
+    def _createPlotAndDataLink(self, phonons, director):
         try:
-            domaccess.standardizeDataInIDFFormat(record.id)
-        except NotImplementedError:
-            p = lc.paragraph()
-            p.text = [
-                'Plotting for phonons#%s failed: data missing or in wrong format' % (
-                    record.id,),
-                ]
-            h = lc.htmldocument()
-            return p,h
-        try:
-            disp = domaccess.getDataForPhonons(disp)
-        except NotImplementedError:
-            return lc.paragraph(text=['Parser for this data format is not yet implemented'])
-        if not disp: return lc.paragraph(text=['Data missing'])
-        x, ys, xticks = disp.getDefaultDispersionPlot()
+            plot = self._getDefaultDispersionPlot(phonons, director)
+        except RuntimeError, e:
+            p = lc.paragraph() # fake plot
+            p.text = [str(e)]
+            l = lc.htmldocument() # fake link
+            return p,l
+        x, ys, xticks = plot
+        
         # plot
         caption = (
             'Horizontal axis: high-symmetry points in the reciprocal space. '
@@ -131,6 +122,51 @@ class Actor(base):
             actor=self.name, routine='getfile', id=self.inventory.id)
         downloadLink = lc.downloader(label=label, ondownload=ondownload)
         return p, downloadLink
+
+
+    def _getDefaultDispersionPlot(self, phonons, director):
+        import pickle
+        
+        # try load it from cache
+        domaccess = self._domaccess(director)
+        record = domaccess.orm(phonons)
+        dds = director.dds
+        path = dds.abspath(record, "default-dispersion-plot")
+        if os.path.exists(path):
+            try:
+                return pickle.load(open(path))
+            except:
+                # fail to load from cache. treat it like there is no cache
+                pass
+        # no cache.
+        # create plot
+        plot = self._createDefaultDispersionPlot(phonons, director)
+        # save
+        pickle.dump(plot, open(path, 'w'))
+        return plot
+
+
+    def _createDefaultDispersionPlot(self, phonons, director):
+        "create default dispersion plot. return x, ys, and xticks"
+        domaccess = self._domaccess(director)
+        record = domaccess.orm(phonons)
+        try:
+            domaccess.standardizeDataInIDFFormat(record.id)
+        except NotImplementedError:
+            msg = 'Plotting for phonons#%s failed: data missing or in wrong format' % (record.id,)
+            raise RuntimeError, msg
+        
+        try:
+            phonons = domaccess.getDataForPhonons(phonons)
+        except NotImplementedError:
+            msg = 'Parser for this data format is not yet implemented'
+            raise RuntimeError, msg
+
+        if not phonons: 
+            raise RuntimeError, 'Data missing'
+        
+        x, ys, xticks = phonons.getDefaultDispersionPlot()
+        return x, ys, xticks
 
 
     def getfile(self, director):
