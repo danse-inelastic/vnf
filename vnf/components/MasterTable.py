@@ -44,17 +44,40 @@ class MasterTableFactory(object):
     
     dummylabel = 'select ...'
     
-    def __init__(self, name, countrecords, createtable,
-                 compilefilter, filtercols,
-                 filterfromlabel, smartlabels, labels,
-                 sorting_options=None,
-                 polymorphic=True, dbtablename=None,
-                 labeltargettablename=None,
-                 createlabelstoolbar = True,
-                 actorname = None,
-                 ):
+    def __init__(
+        self, 
+        name, 
+        countrecords, createtable,
+        compilefilter, filtercols,
+        filterfromlabel, smartlabels, labels,
+        sorting_options=None,
+        polymorphic=True, dbtablename=None,
+        labeltargettablename=None, 
+        createlabelstoolbar = True,
+        actorname = None,
+        tableviewlabel = None,
+        ):
+
+        """
+        name: name or identifier
+        countrecords, createtable: methods to count records and createtable
+        compilefilter: method to compile filter from expression
+        filtercols: columns that can be filtered
+        filterfromlabel: method to create filter given label
+        smartlabels: existing smart labels for the target table
+        labels: existing labels for the target table
+        sorting_options: options for sorting (a list of (value, label) tuples)
+        polymorphic: multiple tables?
+        dbtablename: if not polymorphic, the db table name
+        labeltargettablename: target name (identifier of this table) in the labels db table
+        createlabelstoolbar: create labels toolbar or not
+        actorname: name of the actor responding to actions
+        tableviewlabel: label of the table view 
+        """
+        
         self.name = name
         self.actorname = actorname or name
+        self.tableviewlabel = tableviewlabel or name
         self.countrecords = countrecords
         #self.fetchrecords = fetchrecords
         self.createtable = createtable
@@ -251,7 +274,7 @@ class MasterTableFactory(object):
 
 
     def createMineButton(self):
-        label='show my %s only' % self.name
+        label='show my %s only' % self.tableviewlabel
         action = load(actor=self.actorname, mine=True)
         b = Button(label=label, onclick=action, Class='show-my-records')
         return b
@@ -261,14 +284,14 @@ class MasterTableFactory(object):
         path = []
 
         # root
-        rootlabel = name.capitalize()
+        rootlabel = self.tableviewlabel.capitalize()
         rootaction = load(actor=self.actorname)
         root = rootlabel, rootaction
         path.append(root)
 
         # "my ..."
         if mine:
-            minelabel = 'my %s' % name
+            minelabel = 'my %s' % self.tableviewlabel
             mineaction = load(actor=self.actorname, mine=True)
             mine = minelabel, mineaction
             path.append(mine)
