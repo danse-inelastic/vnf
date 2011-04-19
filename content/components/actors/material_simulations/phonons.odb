@@ -46,15 +46,15 @@ class Actor(base):
 
     def default(self, director):
         return self.showListView(director)
-
-
+    
+    
     def debug_tableview(self, director):
         p       = lc.page()
         doc     = p.document(id='main-display-area')
         doc.add(self.createListView(director))
         return p
-
-
+    
+    
     def showListView(self, director):
         try:
             view = self.createListView(director)
@@ -99,6 +99,29 @@ class Actor(base):
         createListView, 
         title='Virtual neutron facility: phonons')
 
+
+    def showGraphicalViewWithLinkToTable(self, director):
+        id = self.inventory.id
+        container = lc.document(id='phonons-%s-view' % id)
+
+        # view indicator
+        from vnf.content.visuals.view_indicator import visual as createViewIndicator
+        path = [
+            ('Back to phonons table', 
+             load(actor=self.name, routine='showListView')),
+            ]
+        viewindicator = createViewIndicator(path)
+        container.add(viewindicator)
+        
+        #
+        container.oncreate = select(element=container).append(
+            load(actor='orm/phonons', 
+                 routine='createGraphicalView',
+                 id = id)
+            )
+        
+        return select(id='main-display-area').replaceContent(container)
+    
 
     def __init__(self, name='material_simulations/phonons'):
         super(Actor, self).__init__(name)

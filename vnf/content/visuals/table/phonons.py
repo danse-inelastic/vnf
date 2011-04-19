@@ -60,7 +60,8 @@ class AttrFetcher(object):
         link = Link(
             label = label,
             onclick = load(
-                actor='orm/phonons', routine='createGraphicalView',
+                actor='material_simulations/phonons', 
+                routine='showGraphicalViewWithLinkToTable',
                 id = record.id,
                 )
             )
