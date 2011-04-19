@@ -1,0 +1,51 @@
+# -*- Python -*-
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                   Jiao Lin
+#                      California Institute of Technology
+#                      (C) 2006-2009  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+tablename = 'TTT'
+
+from vnf.dom.TTT import TTT, TTTTable
+
+
+from vnf.components.DOMAccessorMixinForMasterTable_SingleTable import DOMAccessorMixinForMasterTable_SingleTable as MasterTableMixin
+from vnf.components.DOMAccessor import DOMAccessor as base
+class Accessor(base, MasterTableMixin):
+
+    Table = TTTTable
+    columns = ['id', 'short_description', 'date', 'creator'] # ... and more
+
+    def __init__(self):
+        super(Accessor, self).__init__('%s-accessor' % tablename)
+        return
+
+
+    def _getOrm(self):
+        orm = self.director.clerk.orm
+        orm(TTT)
+        return orm
+    orm = property(_getOrm)
+
+
+    def getRecord(self, id):
+        db = self.db
+        return db.query(TTTTable).filter_by(id=id).one()
+
+
+def accessor():
+    return Accessor()
+
+
+# version
+__id__ = "$Id$"
+
+# End of file 

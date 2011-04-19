@@ -15,12 +15,11 @@
 '''
 to create a master table
 
- * create an actor that inherits from MasterTableActor. eg actors/job
- * create a dom-accessor that has methods to return filtered and sorted list of
-   records. eg dom-access/job
- * create a visual to return a table view. eg visuals/job/tableview
- * create a visual to return a table. eg visuals/job/table
- * create an actor for handling editing entries in the table eg actors/job/table
+ * create an actor that inherits from MasterTableActor. eg actors/mastertable-actor.odb.template
+ * create a dom-accessor that has methods to return filtered and sorted list. eg dom-access/mastertable-domaccessor.odb.template
+ * create a visual module for the table view. eg vnf.content.visuals.table/mastertable.py.template
+ * create a visual to return a table view. eg visuals/mastertable-view.odb.template
+ * make sure the action to view a single record is handled
 '''
 
 
@@ -56,6 +55,7 @@ class MasterTableFactory(object):
         createlabelstoolbar = True,
         actorname = None,
         tableviewlabel = None,
+        publiconly = False,
         ):
 
         """
@@ -73,6 +73,7 @@ class MasterTableFactory(object):
         createlabelstoolbar: create labels toolbar or not
         actorname: name of the actor responding to actions
         tableviewlabel: label of the table view 
+        publiconly: only show the interface for the public (no personal info)
         """
         
         self.name = name
