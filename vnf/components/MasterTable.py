@@ -98,6 +98,9 @@ class MasterTableFactory(object):
         name = self.name
         actorname = self.actorname
         
+        # in id, one has to avoid '/'.
+        nameinid = getNameinid(name)
+
         view_label = 'View all'
 
         # the following is to find out the filtering or labeling
@@ -133,7 +136,10 @@ class MasterTableFactory(object):
         slice = [page_number*number_records_per_page, (page_number+1)*number_records_per_page]
         
         # create a container
-        view = Document(id='%s-list-view' % name, Class='master-table-container')
+        view = Document(
+            id='%s-list-view' % nameinid,
+            Class='master-table-container',
+            )
         
         titlebar = Splitter(Class='master-table-title-bar')
         view.add(titlebar)
@@ -160,7 +166,7 @@ class MasterTableFactory(object):
         # sortingtoolbar
         sortingtoolbar = Splitter(
             orientation='horizontal',
-            id='%s-table-sortingtoolbar'%name,
+            id='%s-table-sortingtoolbar' % nameinid,
             Class = 'master-table-sortingtoolbar')
         self.addSortingControls(
             sortingtoolbar,
@@ -172,11 +178,18 @@ class MasterTableFactory(object):
             )
 
         # toolbar right on top of table
-        tabletoptoolbar = Splitter(id='%s-table-tabletoptoolbar'%name, Class='master-table-tabletoptoolbar')
+        tabletoptoolbar = Splitter(
+            id='%s-table-tabletoptoolbar'%nameinid,
+            Class='master-table-tabletoptoolbar',
+            )
         view.add(tabletoptoolbar)
-        lefttoolbar = tabletoptoolbar.section(id='%s-table-tabletoptoolbar-left' % name, Class='master-table-tabletoptoolbar-left')
+        lefttoolbar = tabletoptoolbar.section(
+            id='%s-table-tabletoptoolbar-left' % nameinid, 
+            Class='master-table-tabletoptoolbar-left')
         lefttoolbar.add(sortingtoolbar)
-        righttoolbar = tabletoptoolbar.section(id='%s-table-tabletoptoolbar-right' % name, Class='master-table-tabletoptoolbar-right')
+        righttoolbar = tabletoptoolbar.section(
+            id='%s-table-tabletoptoolbar-right' % nameinid, 
+            Class='master-table-tabletoptoolbar-right')
         # navigation bar (previous, next...)
         bar = self.createNavigationBar(
             name,
@@ -202,11 +215,13 @@ class MasterTableFactory(object):
         #
 
         # toolbar right at the bottom of table
-        tablebottomtoolbar = Splitter(id='%s-table-tablebottomtoolbar'%name, 
-                                      Class='master-table-tablebottomtoolbar')
+        tablebottomtoolbar = Splitter(
+            id='%s-table-tablebottomtoolbar'%nameinid, 
+            Class='master-table-tablebottomtoolbar')
         view.add(tablebottomtoolbar)
-        lefttoolbar = tablebottomtoolbar.section(id='%s-table-tablebottomtoolbar-left' % name, 
-                                                 Class='master-table-tablebottomtoolbar-left')
+        lefttoolbar = tablebottomtoolbar.section(
+            id='%s-table-tablebottomtoolbar-left' % nameinid, 
+            Class='master-table-tablebottomtoolbar-left')
 
         if self.createlabelstoolbar:
             lefttoolbar_interior = Splitter(); lefttoolbar.add(lefttoolbar_interior)
@@ -218,8 +233,9 @@ class MasterTableFactory(object):
                 )
             lefttoolbar_interior.section().add(collections_toolbar)
         
-        righttoolbar = tablebottomtoolbar.section(id='%s-table-tablebottomtoolbar-right' % name, 
-                                                  Class='master-table-tablebottomtoolbar-right')
+        righttoolbar = tablebottomtoolbar.section(
+            id='%s-table-tablebottomtoolbar-right' % nameinid, 
+            Class='master-table-tablebottomtoolbar-right')
         # navigation bar (previous, next...)
         bar = self.createNavigationBar(
             name,
@@ -273,8 +289,9 @@ class MasterTableFactory(object):
         order_by, reverse_order,
         ):
 
+        nameinid = getNameinid(name)
         toolbar_changeview = Toolbar(
-            id= '%s-table-toptoolbar' % name,
+            id= '%s-table-toptoolbar' % nameinid,
             Class='master-table-toptoolbar',
             )
         
@@ -322,6 +339,9 @@ class MasterTableFactory(object):
         self, name,
         table=None,
         ):
+        
+        nameinid = getNameinid(name)
+        
         #doc = Document(title='Labels:')
         doc = luban.content.splitter()
         doc.Class = 'labels-toolbar'
@@ -333,7 +353,7 @@ class MasterTableFactory(object):
         field = FormSelectorField(
             #label = 'labeled collections',
             tip = 'choose a label',
-            id = '%s-table-applylabel-selector' % name,
+            id = '%s-table-applylabel-selector' % nameinid,
             Class='master-table-applylabel-selector',
             entries = entries,
             )
@@ -390,7 +410,7 @@ class MasterTableFactory(object):
         field = FormSelectorField(
             #label = 'labeled collections',
             tip='select a collection or a smart collection',
-            id='%s-table-collection-selector' % name,
+            id='%s-table-collection-selector' % getNameinid(name),
             Class='master-table-collection-selector',
             entries = entries,
             selection = label,
@@ -419,7 +439,7 @@ class MasterTableFactory(object):
         field = FormTextField(
             label = '',
             tip='input a name to create a "smart collection" that saves your filtering criteria',
-            id='%s-table-smartlabel' % name,
+            id='%s-table-smartlabel' % getNameinid(name),
             Class='master-table-smartlabel',
             #tip = "save this search as a smart label",
             )
@@ -457,7 +477,7 @@ class MasterTableFactory(object):
         show_advanced_widget = bool(filter_expr)
         
         filter_ctrl_container = Document(
-            id='%s-table-filter-control-container'%name,
+            id='%s-table-filter-control-container'%getNameinid(name),
             Class = 'master-table-filter-control-container',
             title='Filter/search:',
             )
@@ -595,7 +615,7 @@ class MasterTableFactory(object):
         
         # sorting
         sorting_container = toolbar.section(
-            id='%s-table-sorting-control-container'%name,
+            id='%s-table-sorting-control-container'%getNameinid(name),
             Class='master-table-sorting-control-container',
             )
         entries = self.sorting_options
@@ -618,7 +638,7 @@ class MasterTableFactory(object):
         
         # order reversing
         reverse_order_container = toolbar.section(
-            id='%s-table-sorting-reversing-control-container' % name,
+            id='%s-table-sorting-reversing-control-container' % getNameinid(name),
             Class = 'master-table-sorting-reversing-control-container',
             )
         entries = [
@@ -629,7 +649,7 @@ class MasterTableFactory(object):
             label = 'Ordering: ',
             entries=entries,
             selection=reverse_order,
-            id='%s-table-reverse_order' % name)
+            id='%s-table-reverse_order' % getNameinid(name))
         selector.onchange = load(
             actor=self.actorname, routine='showListView',
             number_records_per_page = number_records_per_page,
@@ -645,17 +665,17 @@ class MasterTableFactory(object):
 
 
     def _orderByWidgetID(self, name):
-        return '%s-table-order_by' % name
+        return '%s-table-order_by' % getNameinid(name)
     def _advancedFilterWidgetID(self, name):
-        return '%s-table-advanced-filter-widget' % name
+        return '%s-table-advanced-filter-widget' % getNameinid(name)
     def _basicFilterWidgetID(self, name):
-        return '%s-table-basic-filter-widget' % name
+        return '%s-table-basic-filter-widget' % getNameinid(name)
     def _filterAdvancedInputFieldID(self, name):
-        return '%s-table-advanced-filter' % name
+        return '%s-table-advanced-filter' % getNameinid(name)
     def _filterBasicInputFieldID(self, name):
-        return '%s-table-basic-filter-value' % name
+        return '%s-table-basic-filter-value' % getNameinid(name)
     def _filterBasicKeyFieldID(self, name):
-        return '%s-table-basic-filter-key' % name
+        return '%s-table-basic-filter-key' % getNameinid(name)
     
 
     def createNavigationBar(
@@ -870,6 +890,9 @@ class MasterTableActor(base):
         #   si.label, si.filter_expr, si.filter_key, si.filter_value) )
         return
     
+
+getNameinid = lambda name: name.replace('/', '_')
+
 
 class ProgrammingError(Exception): pass
 

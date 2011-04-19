@@ -74,11 +74,31 @@ class AttrFetcher(object):
 
     def createDescription(self, record):
         db = self.db
+        matter = record.matter
+        if matter:
+            matter = matter.dereference(db)
+        if matter is None:
+            return 'Unknown'
+        matter = matter.short_description or str(matter)
+        desc = "Phonons for %s" % matter
+        desc = desc[:record.__class__.short_description.length]
+        record.short_description = desc
+        db.updateRecord(record)
+        return desc
+
+
+    # obsolete
+    def createDescription1(self, record):
+        db = self.db
         origin = record.getOrigin(db)
         if origin is None:
             return ''
         origin = origin.short_description or str(origin)
-        return "computed from %s" % origin
+        desc = "computed from %s" % origin
+        desc = desc[:record.__class__.short_description.length]
+        record.short_description = desc
+        db.updateRecord(record)
+        return desc
 
 
 def table(records, cols, director, editable=True):
@@ -90,7 +110,8 @@ def table(records, cols, director, editable=True):
     import operator
     value_generators = [
         eval('attr_fetcher.get'+col.measure.capitalize())
-        for col in view1.columns]
+        for col in view1.columns
+        ]
     record2tuple = lambda record: [g(record) for g in value_generators]
     data = map(record2tuple, records)
                  

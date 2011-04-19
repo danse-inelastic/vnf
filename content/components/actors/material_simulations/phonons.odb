@@ -102,7 +102,7 @@ class Actor(base):
 
     def showGraphicalViewWithLinkToTable(self, director):
         id = self.inventory.id
-        container = lc.document(id='phonons-%s-view' % id)
+        container = lc.document(id='phonons-%s-view' % id.replace('.', '-'))
 
         # view indicator
         from vnf.content.visuals.view_indicator import visual as createViewIndicator
