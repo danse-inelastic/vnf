@@ -50,6 +50,8 @@ EXPORT_PYTHON_MODULES = \
 	CSAccessor.py \
 	DistributedDataStorage.py \
 	DOMAccessor.py \
+	DOMAccessorMixinForMasterTable.py \
+	DOMAccessorMixinForMasterTable_SingleTable.py \
 	JnlpFile.py \
         Job.py \
 	JobBuilder.py \

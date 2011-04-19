@@ -184,7 +184,7 @@ class PackJobDir(base):
 
         # initialize table registry
         import vnf.dom
-        vnf.dom.register_alltables()
+        # vnf.dom.register_alltables()
         return
 
 

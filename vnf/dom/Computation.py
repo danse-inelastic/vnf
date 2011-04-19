@@ -240,7 +240,21 @@ class Computation(HasTask, base):
             r.message = message[:message_len]
         db.updateRecord(r)
         return
-    
+
+
+# method register all computation tables
+def registerAllComputationTables(domaccess):
+    orm = domaccess.orm
+    from computation_types import typenames, deps_typenames
+    from dsaw.db.Table import Table as TableBase
+    for name in typenames+deps_typenames:
+        objectClass = domaccess._getObjectByImportingFromDOM(name)
+        if not issubclass(objectClass, TableBase):
+            table = orm(objectClass)
+        else:
+            orm.db.registerTable(table)
+        continue
+    return
 
 
 # The table that stores the information about retrievals of results for a computation

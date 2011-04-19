@@ -79,7 +79,7 @@ BvK_GetDos_Table.actor = 'material_simulations/phonon_calculators/bvk_getdos'
 BvK_GetDos_Table.result_retriever = 'material_simulations/phonon_calculators/bvk_getdos'
 def getShortDescription(self):
     if self.short_description: return self.short_description
-    return 'Compute DOS from BvK model %s: df=%s, N1=%s' % (
+    return 'DOS computation from BvK model %s: df=%s, N1=%s' % (
         self.model.id, self.df, self.N1)
 BvK_GetDos_Table.getShortDescription = getShortDescription
 BvK_GetDos_Table.__str__ = getShortDescription
@@ -123,7 +123,7 @@ BvK_GetPhonons_Table.actor = 'material_simulations/phonon_calculators/bvk_getpho
 BvK_GetPhonons_Table.result_retriever = 'material_simulations/phonon_calculators/bvk_getphonons'
 def getShortDescription(self):
     if self.short_description: return self.short_description
-    return 'Compute Phonons from BvK model %s: df=%s, N1=%s' % (
+    return 'Phonons computation from BvK model %s: df=%s, N1=%s' % (
         self.model.id, self.df, self.N1)
 BvK_GetPhonons_Table.getShortDescription = getShortDescription
 BvK_GetPhonons_Table.__str__ = getShortDescription

@@ -11,11 +11,15 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
+from vnf.dom.material_simulations.Phonons import Phonons, PhononsTable
 
+
+from vnf.components.DOMAccessorMixinForMasterTable_SingleTable import DOMAccessorMixinForMasterTable_SingleTable as MasterTableMixin
 from vnf.components.DOMAccessor import DOMAccessor as base
+class Accessor(base, MasterTableMixin):
 
-class Accessor(base):
-
+    Table = PhononsTable
+    columns = ['id', 'short_description', 'date', 'creator']
 
     def __init__(self):
         super(Accessor, self).__init__('phonons-accessor')
@@ -37,6 +41,7 @@ class Accessor(base):
     def getPhononsRecord(self, id):
         db = self.db
         return db.query(PhononsTable).filter_by(id=id).one()
+    getRecord = getPhononsRecord
 
 
     def standardizeDataInIDFFormat(self, id):
@@ -215,8 +220,6 @@ idf_files = [
     'Qgridinfo',
     ]
     
-from vnf.dom.material_simulations.Phonons import Phonons
-
 import os, numpy
 
 def accessor():

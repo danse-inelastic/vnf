@@ -1,0 +1,106 @@
+# -*- Python -*-
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                   Jiao Lin
+#                      California Institute of Technology
+#                      (C) 2006-2010  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+from luban.content.table import Model, View, Table
+from luban.content import load
+from luban.content.Link import Link
+
+
+class model(Model):
+
+    selected = Model.descriptors.bool(name='selected')
+    id = Model.descriptors.str(name='id')
+    description = Model.descriptors.link(name='description')
+    created = Model.descriptors.date(name='created')
+
+    row_identifiers = ['id']
+    
+
+columns = [
+    View.Column(label='', measure='selected'),
+    View.Column(label='ID', measure='id', hidden=True),
+    View.Column(label='Description', measure='description'), # editable=True),
+    View.Column(label='Date created', measure='created'),
+    ]
+
+
+def view(cols, editable=True):
+    global columns
+    columns = filter(lambda col: col.measure in cols, columns)
+    view = View(columns=columns, editable=editable)
+    return view
+
+
+class AttrFetcher(object):
+
+    def __init__(self, db):
+        self.db = db
+
+    def getSelected(self, record): return False
+    
+    def getId(self, record):
+        return record.id
+    
+    def getDescription(self, record):
+        desc = record.short_description
+        if not desc:
+            desc = self.createDescription(record)
+            
+        label = desc
+        link = Link(
+            label = label,
+            onclick = load(
+                actor='orm/phonons', routine='createGraphicalView',
+                id = record.id,
+                )
+            )
+        return link
+    
+    def getCreated(self, record):
+        date = record.date
+        return str(date)
+
+
+    def createDescription(self, record):
+        db = self.db
+        origin = record.getOrigin(db)
+        if origin is None:
+            return ''
+        origin = origin.short_description or str(origin)
+        return "computed from %s" % origin
+
+
+def table(records, cols, director, editable=True):
+    view1 = view(cols, editable=editable)
+
+    from vnf.dom.Computation import registerAllComputationTables
+    registerAllComputationTables(director.clerk)
+    attr_fetcher = AttrFetcher(director.clerk.db)
+    import operator
+    value_generators = [
+        eval('attr_fetcher.get'+col.measure.capitalize())
+        for col in view1.columns]
+    record2tuple = lambda record: [g(record) for g in value_generators]
+    data = map(record2tuple, records)
+                 
+    table = Table(
+        model=model, data=data, 
+        view=view1, id='phonons-table')
+
+    return table
+
+
+# version
+__id__ = "$Id$"
+
+# End of file 

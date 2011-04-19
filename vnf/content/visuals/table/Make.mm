@@ -41,6 +41,7 @@ EXPORT_PYTHON_MODULES = \
 	experiment.py \
 	job.py \
 	materialsimulation.py \
+	phonons.py \
 	sample.py \
 	selectoneatomicstructure.py \
 	selectonesample.py \

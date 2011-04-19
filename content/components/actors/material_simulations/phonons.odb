@@ -1,0 +1,116 @@
+#!/usr/bin/env python
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                 Jiao Lin
+#                      California Institute of Technology
+#                      (C) 2006-2009  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+from luban.content import load, select, alert
+import luban.content as lc
+
+
+
+# common actions
+setpagetitle = select(id='').setAttr(title='Virtual neutron facility: phonons')
+
+
+from vnf.components.visuals import set_contextual_help
+sethelppage = set_contextual_help(
+    page='UserGuide-phonons', label='about phonons')
+
+
+
+from vnf.components.MasterTable import FilterSyntaxError, MasterTableActor as base
+from vnf.components.AuthorizedActor import portal
+
+
+class Actor(base):
+
+    class Inventory(base.Inventory):
+
+        import pyre.inventory
+
+        id = pyre.inventory.str('id')
+        description = pyre.inventory.str('description')
+        
+        formids = pyre.inventory.list('formids')
+        viewid = pyre.inventory.str('viewid')
+
+
+    def default(self, director):
+        return self.showListView(director)
+
+
+    def debug_tableview(self, director):
+        p       = lc.page()
+        doc     = p.document(id='main-display-area')
+        doc.add(self.createListView(director))
+        return p
+
+
+    def showListView(self, director):
+        try:
+            view = self.createListView(director)
+        except FilterSyntaxError, msg:
+            return alert('filter syntax error: %s' % msg)
+        return [
+            select(id = 'main-display-area').replaceContent(view),
+            setpagetitle,
+            ] + sethelppage
+    
+    
+    def createListView(self, director):
+        order_by        = self.inventory.order_by
+        reverse_order   = self.inventory.reverse_order
+        number_records_per_page     = self.inventory.number_records_per_page
+        page_number     = self.inventory.page_number
+
+        filter_expr     = self.inventory.filter_expr
+        filter_key      = self.inventory.filter_key
+        filter_value    = self.inventory.filter_value
+
+        label = self.inventory.label
+        mine = self.inventory.mine
+        
+        tableview = director.retrieveVisual(
+            'material_simulations/phonons-tableview',
+            director,
+            self.name,
+            label           = label,
+            mine            = mine,
+            filter_expr     = filter_expr,
+            filter_key      = filter_key,
+            filter_value    = filter_value,
+            order_by        = order_by,
+            reverse_order   = reverse_order,
+            number_records_per_page = number_records_per_page,
+            page_number     = page_number
+            )
+        return tableview
+
+    P_createListView = portal(
+        createListView, 
+        title='Virtual neutron facility: phonons')
+
+
+    def __init__(self, name='material_simulations/phonons'):
+        super(Actor, self).__init__(name)
+        return
+
+
+
+def actor(): return Actor()
+
+
+# version
+__id__ = "$Id$"
+
+# End of file 
+
