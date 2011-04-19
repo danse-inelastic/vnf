@@ -134,8 +134,8 @@ class Accessor(base):
             where = st.c.creator == username
             q = sqlalchemy.select(cols, where)
         else:
-            from vnf.utils.query.accesscontrol import select_public_and_owned_records
-            q = select_public_and_owned_records(cols, st, username, db)
+            from vnf.utils.query.accesscontrol import select_public_or_owned_records
+            q = select_public_or_owned_records(cols, st, username, db)
             
         if filter:
             q = sqlalchemy.select([q.alias('jobs')], whereclause=filter)

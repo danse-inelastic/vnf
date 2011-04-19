@@ -189,8 +189,8 @@ class Accessor(base):
         if mine:
             q = sqlalchemy.select(cols, st.c.creator==username)
         else:
-            from vnf.utils.query.accesscontrol import select_public_and_owned_records
-            q = select_public_and_owned_records(cols, st, username, db)
+            from vnf.utils.query.accesscontrol import select_public_or_owned_records
+            q = select_public_or_owned_records(cols, st, username, db)
 
         # filter query
         if filter:

@@ -16,7 +16,7 @@ from _ import *
 
 
 from vnf.dom.Label import Label, common_labels
-def select_public_and_owned_records(cols, table, username, db):
+def select_public_or_owned_records(cols, table, username, db):
     '''
     cols must be columns of the given table.
     table must have the following columns

@@ -212,9 +212,9 @@ class Accessor(base):
         u = u.alias('uq1q2')
         cols = [u.c.id, u.c.short_description, u.c.type, u.c.date,
                 u.c.globalpointer, u.c.creator, u.c.matter]
-        from vnf.utils.query.accesscontrol import select_public_and_owned_records
+        from vnf.utils.query.accesscontrol import select_public_or_owned_records
         username = self.director.sentry.username
-        return select_public_and_owned_records(cols, u, username, db)
+        return select_public_or_owned_records(cols, u, username, db)
 
 
     def _select_matter_clause(self, db):

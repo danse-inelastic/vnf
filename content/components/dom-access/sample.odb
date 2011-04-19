@@ -153,7 +153,7 @@ class Accessor(base):
         if filter:
             q = sqlalchemy.select([q.alias('sample')], whereclause=filter)
 
-        from vnf.utils.query.accesscontrol import select_public_and_owned_records
+        from vnf.utils.query.accesscontrol import select_public_or_owned_records
         q1 = q.alias('toselectpubrecs')
         cols = [
             q1.c.id,
@@ -164,7 +164,7 @@ class Accessor(base):
             q1.c.globalpointer,
             q1.c.creator,
             ]
-        q = select_public_and_owned_records(cols, q1, username, db)
+        q = select_public_or_owned_records(cols, q1, username, db)
         return q
 
 

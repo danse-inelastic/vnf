@@ -351,7 +351,7 @@ class Accessor(base):
         
         u = sqlalchemy.union_all(q1,q2)
         
-        from vnf.utils.query.accesscontrol import select_public_and_owned_records
+        from vnf.utils.query.accesscontrol import select_public_or_owned_records
         q1 = u.alias('toselectpubrecs')
         cols = [
             q1.c.id,
@@ -363,7 +363,7 @@ class Accessor(base):
             q1.c.samplegptr,
             ]
         username = self.director.sentry.username
-        q = select_public_and_owned_records(cols, q1, username, db)
+        q = select_public_or_owned_records(cols, q1, username, db)
         return q
 
 
