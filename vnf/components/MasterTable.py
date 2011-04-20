@@ -101,13 +101,14 @@ class MasterTableFactory(object):
         if not self.polymorphic and not dbtablename:
             raise ProgrammingError, "a non-polymorphic table must supply a table name"
         self.dbtablename = dbtablename
+        self.publiconly = publiconly
         
         self.debug = journal.debug('MasterTableFactory')
 
         if labeltargettablename is None:
             labeltargettablename = name
         self.labeltargettablename = labeltargettablename
-        self.createlabelstoolbar = createlabelstoolbar
+        self.createlabelstoolbar = createlabelstoolbar and not self.publiconly
         return
     
     
@@ -170,6 +171,7 @@ class MasterTableFactory(object):
 
         # view indicator
         left = titlebar.section(Class='master-table-titlebar')
+        mine = mine and not self.publiconly
         view_indicator = self.createViewIndicator(name, view_label, mine=mine)
         left.add(view_indicator)
         if not mine:
@@ -329,18 +331,19 @@ class MasterTableFactory(object):
             )
         toolbar_changeview.add(filter_ctrl_container)
 
-        # smart label
-        smartlabel_widget = self.createSaveSmartLabelWidget(name)
-        toolbar_changeview.add(smartlabel_widget)
+        if not self.publiconly:
+            # smart label
+            smartlabel_widget = self.createSaveSmartLabelWidget(name)
+            toolbar_changeview.add(smartlabel_widget)
 
-        # labeled selector
-        labeled_widget = self.createCollectionSelectorWidget(
-            name,
-            label, mine,
-            number_records_per_page,
-            reverse_order,
-            )
-        toolbar_changeview.add(labeled_widget)
+            # labeled selector
+            labeled_widget = self.createCollectionSelectorWidget(
+                name,
+                label, mine,
+                number_records_per_page,
+                reverse_order,
+                )
+            toolbar_changeview.add(labeled_widget)
         
         return toolbar_changeview
 
@@ -826,30 +829,32 @@ def filtercompiler(measures, measure2dbcol, model=None):
     return compilefilter
 
 
-from luban.components.AuthorizedActor import AuthorizedActor as base
-class MasterTableActor(base):
 
-    class Inventory(base.Inventory):
+from pyre.inventory.Inventory import Inventory
+class ActorInventory(Inventory):
 
-        import pyre.inventory
-        
-        number_records_per_page = pyre.inventory.int(name='number_records_per_page', default=20)
-        page_number = pyre.inventory.int(name='page_number', default=0)
-        order_by = pyre.inventory.str(name='order_by', default='id')
-        reverse_order = pyre.inventory.bool(name='reverse_order', default=0)
-        
-        filter_expr = pyre.inventory.str(name='filter_expr')
-        filter_key = pyre.inventory.str(name='filter_key')
-        filter_value = pyre.inventory.str(name='filter_value')
+    import pyre.inventory
 
-        label = pyre.inventory.str(name='label', default='')
+    number_records_per_page = pyre.inventory.int(name='number_records_per_page', default=20)
+    page_number = pyre.inventory.int(name='page_number', default=0)
+    order_by = pyre.inventory.str(name='order_by', default='id')
+    reverse_order = pyre.inventory.bool(name='reverse_order', default=0)
 
-        mine = pyre.inventory.bool(name='mine', default=False)
+    filter_expr = pyre.inventory.str(name='filter_expr')
+    filter_key = pyre.inventory.str(name='filter_key')
+    filter_value = pyre.inventory.str(name='filter_value')
 
-        entities = pyre.inventory.list(name='entities')
-        entity_has_type = pyre.inventory.bool(name='entity_has_type')
-        type = pyre.inventory.str(name='type')
-        
+    label = pyre.inventory.str(name='label', default='')
+
+    mine = pyre.inventory.bool(name='mine', default=False)
+
+    entities = pyre.inventory.list(name='entities')
+    entity_has_type = pyre.inventory.bool(name='entity_has_type')
+    type = pyre.inventory.str(name='type')
+del Inventory
+
+
+class MasterTableActor_Mixin(object):
 
     def showListView(self, *args, **kwds):
         raise NotImplementedError
@@ -907,17 +912,15 @@ class MasterTableActor(base):
         return actions
 
 
-    def _init(self):
-        super(MasterTableActor, self)._init()
-        # si = self.inventory
-        # self._debug.log('label=%s, filter_expr=%s, filter_key=%s, filter_value=%s' % (
-        #   si.label, si.filter_expr, si.filter_key, si.filter_value) )
-        return
+
+from luban.components.AuthorizedActor import AuthorizedActor
+class MasterTableActor(AuthorizedActor, MasterTableActor_Mixin):
     
+    class Inventory(ActorInventory, AuthorizedActor.Inventory): pass
+
+
 
 getNameinid = lambda name: name.replace('/', '_')
-
-
 class ProgrammingError(Exception): pass
 
 # version
