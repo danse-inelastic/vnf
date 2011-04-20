@@ -11,15 +11,12 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 PROJECT = vnf
-PACKAGE = content/visuals
+PACKAGE = content/visuals/material_simulations
 
 
 # directory structure
 
 BUILD_DIRS = \
-	material_simulations \
-	neutronexperiment \
-	table \
 
 OTHER_DIRS = \
 
@@ -38,9 +35,8 @@ all: export
 # export
 
 EXPORT_PYTHON_MODULES = \
-	atomicstructure.py \
-	view_indicator.py \
 	__init__.py \
+	phonons.py \
 
 
 

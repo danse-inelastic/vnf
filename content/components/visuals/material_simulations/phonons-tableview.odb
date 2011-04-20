@@ -24,10 +24,14 @@ def visual(
     label=None, mine=False,
     order_by=None, reverse_order=None,
     number_records_per_page=None, page_number=None,
+    publiconly = False,
     ):
     # name: name of table view
     # 
     domaccess = director.retrieveDOMAccessor('material_simulations/phonons')
+
+    #
+    actorname = name
         
     from vnf.components.MasterTable import MasterTableFactory, filtercompiler
     def countrecords(filter, label=None, mine=False):
@@ -40,7 +44,9 @@ def visual(
             slice=slice,
             filter=filter,
             label=label,
-            mine=mine)
+            mine=mine,
+            actorname = actorname,
+            )
     from vnf.content.visuals.table.phonons import model
     compilefilter = filtercompiler(columns, measure2dbcol, model=model)
 
@@ -63,9 +69,11 @@ def visual(
             ('date', 'Date created'),
         ],
         polymorphic = False, 
+        actorname = actorname,
         dbtablename='material_simulations.Phonons.Phonons',
         labeltargettablename = 'phonons',
         tableviewlabel = 'phonons',
+        publiconly = publiconly,
         )
 
     tableview = factory.create(
@@ -94,7 +102,9 @@ def createTableVisual(
     order_by=None, reverse_order=None, slice=None,
     filter=None,
     label=None,
-    mine=False):
+    mine=False,
+    actorname = None,
+    ):
 
     records = domaccess.getRecords(
         order_by=order_by, reverse_order=reverse_order, slice=slice,
@@ -110,6 +120,7 @@ def createTableVisual(
         records,
         cols = cols,
         director = director,
+        actorname = actorname,
         editable = False)
     # thetable.oncellchanged = select(element=thetable).notify(
     #     event='row-changed', actor='atomicstructure/table', routine='processRowChange')

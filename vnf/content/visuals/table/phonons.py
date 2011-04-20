@@ -43,8 +43,9 @@ def view(cols, editable=True):
 
 class AttrFetcher(object):
 
-    def __init__(self, db):
+    def __init__(self, db, actorname):
         self.db = db
+        self.actorname = actorname
 
     def getSelected(self, record): return False
     
@@ -60,7 +61,7 @@ class AttrFetcher(object):
         link = Link(
             label = label,
             onclick = load(
-                actor='material_simulations/phonons', 
+                actor=self.actorname,
                 routine='showGraphicalViewWithLinkToTable',
                 id = record.id,
                 )
@@ -101,12 +102,14 @@ class AttrFetcher(object):
         return desc
 
 
-def table(records, cols, director, editable=True):
+def table(records, cols, director, editable=True, actorname=None):
+    actorname = actorname or 'material_simulations/phonons'
+    
     view1 = view(cols, editable=editable)
 
     from vnf.dom.Computation import registerAllComputationTables
     registerAllComputationTables(director.clerk)
-    attr_fetcher = AttrFetcher(director.clerk.db)
+    attr_fetcher = AttrFetcher(director.clerk.db, actorname)
     import operator
     value_generators = [
         eval('attr_fetcher.get'+col.measure.capitalize())

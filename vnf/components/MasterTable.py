@@ -174,7 +174,7 @@ class MasterTableFactory(object):
         mine = mine and not self.publiconly
         view_indicator = self.createViewIndicator(name, view_label, mine=mine)
         left.add(view_indicator)
-        if not mine:
+        if not mine and not self.publiconly:
             left.add(self.createMineButton())
         
         # toolbar with widgets with actions that can change the items in the table
@@ -919,9 +919,17 @@ class MasterTableActor(AuthorizedActor, MasterTableActor_Mixin):
     class Inventory(ActorInventory, AuthorizedActor.Inventory): pass
 
 
+from luban.components.Actor import Actor
+class MasterTableUnauthorizedActor(Actor, MasterTableActor_Mixin):
+    
+    class Inventory(ActorInventory, Actor.Inventory): pass
+
+
+
+class ProgrammingError(Exception): pass
+
 
 getNameinid = lambda name: name.replace('/', '_')
-class ProgrammingError(Exception): pass
 
 # version
 __id__ = "$Id$"
