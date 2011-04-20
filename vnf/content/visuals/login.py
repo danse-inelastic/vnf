@@ -12,12 +12,30 @@
 #
 
 
+# this is the factory for the page containing login form
+# and also introductory materials
+
+
 from luban.content import load, select, alert, createCredential
 import luban.content as lc
 
 
 class Factory(object):
 
+
+    def createFrame(self, post_authorization_action='', director=None):
+        visual = self.createFrontPageContent(
+            post_authorization_action, director)
+        
+        frame = lc.frame(title='Virtual neutron facility: please login')
+        frame.add(visual)
+
+        dock = lc.dock(id='dock', hidden=True)
+        frame.add(dock)
+        
+        return frame
+    
+    
     def createFrontPageContent(self, post_authorization_action, director):
         '''create the content of the front page (frame)
         add it to a frame then we have the login frame

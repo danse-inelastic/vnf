@@ -33,15 +33,9 @@ class Actor(base):
 
 
     def default(self, director):
-        visual = self.createFrontPageContent(director)
-        
-        frame = lc.frame(title='Virtual neutron facility: please login')
-        frame.add(visual)
-
-        dock = lc.dock(id='dock', hidden=True)
-        frame.add(dock)
-        
-        return frame
+        return self.visualfactory.createFrame(
+            self.inventory.post_authorization_action,
+            director)
 
 
     def recreate(self, director):

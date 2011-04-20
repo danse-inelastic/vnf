@@ -45,9 +45,12 @@ class Actor(base):
 
 
     def default(self, director):
-        return self.showListView(director)
-    
-    
+        f       = lc.frame()
+        doc     = f.document(id='main-display-area')
+        doc.add(self.createListView(director))
+        return f
+
+
     def debug_tableview(self, director):
         p       = lc.page()
         doc     = p.document(id='main-display-area')

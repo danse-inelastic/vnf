@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html >
  <head >
-  <base href="http://localhost:8600">
+  <base href="xxxBASExxx">
   </base>
   <style media="all" rel="stylesheet">
 @import url(css/jquery/ui/smoothness/ui.all.css);
@@ -58,7 +58,36 @@ $(function (){
   </div>
 </td>
 <td>
-right
+
+<!-- apps -->
+<div>
+  <a href="xxxCONTROLLERxxx?actor=material_simulations/phonons-public"
+     target="_blank"
+     >
+    <img src="images/start-apps/bccFe-295-phonon-dispersion.png"
+	 alt="Phonon dispersions" title="Phonon dispersions"
+	 />
+  </a>
+</div>
+
+<div>
+  <a href="xxxCONTROLLERxxx?actor=instruments/arcs/login"
+     target="_blank">
+    <img src="images/instruments/ARCS_beam/middle-size-icon.png"
+	 alt="ARCS" title="ARCS"
+	 />
+  </a>
+</div>
+
+<div>
+  <a href="xxxCONTROLLERxxx?actor=login"
+     target="_blank">
+    <img src="images/vnf-logos/vnf.bw.png" 
+	 alt="VNF main" title="VNF main"
+	 />
+  </a>
+</div>
+
 </td>
 </tr>
 </tbody>
