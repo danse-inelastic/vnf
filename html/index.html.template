@@ -66,6 +66,7 @@ $(function (){
      >
     <img src="images/start-apps/bccFe-295-phonon-dispersion.png"
 	 alt="Phonon dispersions" title="Phonon dispersions"
+	 class="start-app-icon"
 	 />
   </a>
 </div>
@@ -75,6 +76,7 @@ $(function (){
      target="_blank">
     <img src="images/instruments/ARCS_beam/middle-size-icon.png"
 	 alt="ARCS" title="ARCS"
+	 class="start-app-icon"
 	 />
   </a>
 </div>
@@ -84,6 +86,7 @@ $(function (){
      target="_blank">
     <img src="images/vnf-logos/vnf.bw.png" 
 	 alt="VNF main" title="VNF main"
+	 class="start-app-icon"
 	 />
   </a>
 </div>

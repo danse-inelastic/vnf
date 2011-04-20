@@ -1,0 +1,9 @@
+/*
+This is CSS layout for start page
+*/
+
+img.start-app-icon {
+    width: 18em;
+    padding: 1em;
+    border: none;
+}

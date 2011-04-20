@@ -38,6 +38,7 @@ EXPORT_DATAFILES = \
 	vnf-objecteditor.css \
         vnf-qe.css \
         vnf-sample.css \
+        vnf-start.css \
 	vnf-table.css \
 
 
