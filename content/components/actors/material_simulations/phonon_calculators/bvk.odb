@@ -287,19 +287,28 @@ class Actor(base):
         return select(id='main-display-area').replaceContent(doc)
 
 
-    def onSelectComputingTarget(self, director):
-        target = self.inventory.target
+    def createComputation(self, director):
+        """create a computation and returns its id
 
+        target: computation type -- phonons, dos
+        model_id: id of bvk model
+        """
+        target = self.inventory.target
         model_id = self.inventory.model_id
+
         domaccess = self._domaccess(director)
-        #
         c = domaccess.newComputation(target, model_id)
         
-        #
-        orm = domaccess.orm
-        self.inventory.computation_id = orm(c).id
-        
+        return domaccess.orm(c).id
+
+
+    def onSelectComputingTarget(self, director):
+        id = self.createComputation(director)
+        self.inventory.computation_id = id
+
+        target = self.inventory.target
         routine = 'onConfiguring%sComputation' % target.capitalize()
+        
         return getattr(self, routine)(director)
 
 
