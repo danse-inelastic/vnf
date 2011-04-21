@@ -11,6 +11,11 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
+
+import journal
+debug = 'phonons-table'
+
+
 from luban.content.table import Model, View, Table
 from luban.content import load
 from luban.content.Link import Link
@@ -22,6 +27,7 @@ class model(Model):
     id = Model.descriptors.str(name='id')
     description = Model.descriptors.link(name='description')
     created = Model.descriptors.date(name='created')
+    creator = Model.descriptors.str(name='creator')
 
     row_identifiers = ['id']
     
@@ -30,6 +36,7 @@ columns = [
     View.Column(label='', measure='selected'),
     View.Column(label='ID', measure='id', hidden=True),
     View.Column(label='Description', measure='description'), # editable=True),
+    View.Column(label='Creator', measure='creator'),
     View.Column(label='Date created', measure='created'),
     ]
 
@@ -71,6 +78,10 @@ class AttrFetcher(object):
     def getCreated(self, record):
         date = record.date
         return str(date)
+
+    
+    def getCreator(self, record):
+        return record.creator
 
 
     def createDescription(self, record):

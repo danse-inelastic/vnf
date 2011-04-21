@@ -18,7 +18,8 @@ import luban.content as lc
 
 
 # common actions
-setpagetitle = select(id='').setAttr(title='Virtual neutron facility: phonons')
+frametitle='Phonon dispersions - Virtual neutron facility'
+setframetitle = select(id='').setAttr(title=frametitle)
 
 
 from vnf.components.visuals import set_contextual_help
@@ -45,9 +46,15 @@ class Actor(base):
 
 
     def default(self, director):
-        f       = lc.frame()
-        doc     = f.document(id='main-display-area')
-        doc.add(self.createListView(director))
+        f       = lc.frame(title=frametitle)
+        
+        #
+        skeleton = director.retrieveVisual('skeleton')
+        f.add(skeleton)
+        
+        body_frame = skeleton.find(id='body-frame')
+        main_display = body_frame.document(id='main-display-area')
+        main_display.add(self.createListView(director))
         return f
 
 
@@ -65,7 +72,7 @@ class Actor(base):
             return alert('filter syntax error: %s' % msg)
         return [
             select(id = 'main-display-area').replaceContent(view),
-            setpagetitle,
+            setframetitle,
             ] + sethelppage
     
     

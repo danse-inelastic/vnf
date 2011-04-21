@@ -64,7 +64,7 @@ def visual(
         compilefilter, filtercols,
         filterfromlabel, smartlabels, labels,
         sorting_options = [
-            ('id', 'ID'),
+            ('creator', 'Owner'),
             ('short_description', 'Description'),
             ('date', 'Date created'),
         ],
@@ -127,12 +127,12 @@ def createTableVisual(
     return thetable
 
 
-columns = ['selected', 'id', 'description', 'created']
+columns = ['selected', 'id', 'description', 'creator', 'created']
 measure2dbcol = {
     'description': 'short_description',
     'created': 'date',
     }
-filtercols = columns[1:]
+filtercols = columns[2:]
 
 
 # version
