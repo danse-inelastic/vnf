@@ -157,7 +157,8 @@ class VisualFactory(VisualFactoryBase):
 
     def _createLinkForOrigin(self, id, origin, director):
         link = lc.link(
-            label='computed from %s %s' % (origin.getTableName(), origin.id),
+            label='%s %s -- click for more details' % (
+                origin.getTableName(), origin.id),
             )
         link.onclick = select(element=link).replaceBy(
             load(actor='material_simulations/phonons-public',

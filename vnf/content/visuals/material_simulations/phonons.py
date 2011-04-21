@@ -83,11 +83,16 @@ class Factory(object):
             title += ': %s' % short_description
         doc = lc.document(title=title)
         # plot
+        dispplotview = doc.document(
+            title = "Dispersion plot",
+            id = 'disp-plot-%s' % id.replace('.', '-'),
+            Class = 'phonon-dispersion-plot-container',
+            )
         p, link = self._createPlotAndDataLink(id, obj, director)
-        doc.add(p)
-        doc.add(link)
+        dispplotview.add(p)
+        dispplotview.add(link)
 
-        # link to the computation
+        #\ link to the computation
         try:
             origin = record.getOrigin(db)
         except:
@@ -97,7 +102,10 @@ class Factory(object):
             origin = None
         if origin:
             origin_link = self._createLinkForOrigin(id, origin, director)
-            doc.document(title='Computed from ...').add(origin_link)
+            origindoc = doc.document(title='Computed from ...')
+            origindoc.id = "origin-of-%s-doc" % id.replace('.', '-')
+            origindoc.Class = "computation-result-origin-container"
+            origindoc.add(origin_link)
         return doc
     
 

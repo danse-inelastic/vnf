@@ -1,3 +1,22 @@
 #phonons-table.tabulated {
     font-size: 1.2em;
 }
+
+.phonon-dispersion-plot-container {
+    -moz-border-radius: 0.4em;
+    -webkit-border-radius: 0.4em;
+    background-color: white;
+    border: 1px solid gray;
+    margin-top: 0.5em;
+    padding: 0 1em 1em;
+}
+
+.computation-result-origin-container {
+    margin-top: 1em;
+    -moz-border-radius: 0.4em;
+    -webkit-border-radius: 0.4em;
+    background-color: white;
+    border: 1px solid gray;
+    margin-top: 1em;
+    padding: 0 1em 1em;
+}

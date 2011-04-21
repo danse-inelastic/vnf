@@ -27,6 +27,8 @@ def customizeLubanObjectDrawer(self, drawer):
     drawer.mold.sequence = ['short_description', 'spacegroupno']
 Structure.customizeLubanObjectDrawer = customizeLubanObjectDrawer
 
+Structure.luban_orm_actor = "orm/atomicstructures"
+
 # version
 __id__ = "$Id$"
 
