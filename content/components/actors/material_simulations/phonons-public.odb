@@ -134,6 +134,11 @@ class Actor(base):
             ids=ids, id=id, director=director)
 
 
+    def createViewForOrigin(self, director):
+        id = self.inventory.id
+        return self.visualfactory._createViewForOrigin(id, director)
+    
+
     def createFile(self, director):
         id = self.inventory.id
         return self.visualfactory.createFile(id, director)
@@ -142,10 +147,46 @@ class Actor(base):
     def __init__(self, name='material_simulations/phonons-public'):
         super(Actor, self).__init__(name)
 
-        from vnf.content.visuals.material_simulations.phonons import Factory
-        self.visualfactory = Factory(actorname=self.name)
+        self.visualfactory = VisualFactory(actorname=self.name)
         return
 
+
+# XXX: customization of _createViewForOrigin. 
+from vnf.content.visuals.material_simulations.phonons import Factory as VisualFactoryBase
+class VisualFactory(VisualFactoryBase):
+
+    def _createLinkForOrigin(self, id, origin, director):
+        link = lc.link(
+            label='computed from %s %s' % (origin.getTableName(), origin.id),
+            )
+        link.onclick = select(element=link).replaceBy(
+            load(actor='material_simulations/phonons-public',
+                 routine='createViewForOrigin',
+                 id = id)
+            )
+        return link
+        
+    
+    def _createViewForOrigin(self, id, director):
+        '''id: id of the phonons record
+        '''
+        # record
+        record = self._loadRecord(id, director)
+
+        # origin
+        doma = self._domaccess(director)
+        db = doma.db
+        origin = record.getOrigin(db)
+        #
+        orm = doma.orm
+        obj = orm.record2object(origin)
+        orm(obj) # XXX: this should be part of luban.orm
+        
+        #
+        drawer = director.painter.paintObj.drawers.getDrawer(obj.__class__)
+        view = drawer(obj, readonly=True, editlink=False)
+        
+        return view
 
 
 def actor(): return Actor()

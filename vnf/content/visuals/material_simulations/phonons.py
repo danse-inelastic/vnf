@@ -82,6 +82,11 @@ class Factory(object):
         if short_description:
             title += ': %s' % short_description
         doc = lc.document(title=title)
+        # plot
+        p, link = self._createPlotAndDataLink(id, obj, director)
+        doc.add(p)
+        doc.add(link)
+
         # link to the computation
         try:
             origin = record.getOrigin(db)
@@ -91,18 +96,24 @@ class Factory(object):
             self._debug.log(msg)
             origin = None
         if origin:
-            origin_link = lc.link(
-                label='computed from %s %s' % (origin.getTableName(), origin.id),
-                onclick = load(actor='computation', routine='view',
-                               type = origin.getTableName(), id = origin.id)
-                )
-            doc.add(origin_link)
-        # plot
-        p, link = self._createPlotAndDataLink(id, obj, director)
-        doc.add(p)
-        doc.add(link)
+            origin_link = self._createLinkForOrigin(id, origin, director)
+            doc.document(title='Computed from ...').add(origin_link)
         return doc
     
+
+    def _createLinkForOrigin(self, id, origin, director):
+        '''id: id of the phonons record
+        origin: data object of the original computation for the phonons
+        '''
+        link = lc.link(
+            label='computed from %s %s' % (origin.getTableName(), origin.id),
+            onclick = load(
+                actor='computation', routine='view',
+                type = origin.getTableName(), id = origin.id
+                )
+            )
+        return link
+
     
     def _createPlotAndDataLink(self, id, phonons, director):
         try:
@@ -199,6 +210,12 @@ class Factory(object):
     def _load(self, id, director):
         doma = self._domaccess(director)
         return doma.getPhonons(id)
+
+
+    def _loadRecord(self, id, director):
+        obj = self._load(id, director)
+        doma = self._domaccess(director)
+        return doma.orm(obj)
     
     
     def _initComputationOrm(self, director):

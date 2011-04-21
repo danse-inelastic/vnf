@@ -113,6 +113,7 @@ class BvK_GetPhonons(BvKComputation):
     
     def customizeLubanObjectDrawer(self, drawer):
         drawer.sequence = ['properties']
+        drawer.readonly_view_sequence = ['properties', 'model']
         drawer.mold.sequence = ['N1', 'df']
 
 

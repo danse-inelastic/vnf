@@ -71,7 +71,8 @@ class AttrFetcher(object):
                 actor=self.actorname,
                 routine='showGraphicalViewWithLinkToTable',
                 id = record.id,
-                )
+                ),
+            tip = "click to view details",
             )
         return link
     

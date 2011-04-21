@@ -32,6 +32,7 @@
         vnf-matsim.css
         vnf-atomicstructure.css
         vnf-bvk.css
+	vnf-phonons.css
         vnf-qe.css
         vnf-epsc.css
       </property>
