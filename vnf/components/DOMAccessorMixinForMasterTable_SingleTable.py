@@ -22,6 +22,11 @@ class DOMAccessorMixinForMasterTable_SingleTable(base):
     Table = None # the single table to query. a subclass of dsaw.db.Table
     columns = [] # names of cols of interests
 
+    def customizeFilter(self, filter):
+        # reload this to provide customization
+        return filter
+    
+
     def makeQuery(self, filter=None, label=None, mine=False):
         if label:
             if filter: raise RuntimeError
@@ -38,6 +43,7 @@ class DOMAccessorMixinForMasterTable_SingleTable(base):
             from vnf.utils.query.accesscontrol import select_public_or_owned_records
             q = select_public_or_owned_records(cols, st, username, db)
 
+        filter = self.customizeFilter(filter)
         # filter query
         if filter:
             q = sqlalchemy.select([q.alias('tofilter')], whereclause=filter)

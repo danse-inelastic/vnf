@@ -81,6 +81,22 @@ class Actor(base):
         return ','.join(ids)
 
 
+    def getResults(self, director):
+        """get the results of the given computation
+        
+        Input:
+        - type, id: identify the computation
+        
+        Return:
+        - type: str
+        - content: a list of 2-tuples of (type, id) of result records
+        """
+        r = self._getComputationRecord(director)
+        results = r.results.dereference(director.clerk.db)
+        l = [(r.__class__.__name__, r.id) for k, r in results]
+        return str(l)
+
+
     def _getComputationRecord(self, director):
         domaccess = self._domaccess(director)
         orm = domaccess.orm

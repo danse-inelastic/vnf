@@ -22,7 +22,7 @@ def waitForJobToFinish(jobid, credential):
             id = jobid,
             credential = credential,
             )
-        if jobstatus in ['submitted', 'running']:
+        if jobstatus in ['submitted', 'running', 'queued']:
             print 'job #%s is %s' % (jobid, jobstatus)
         elif jobstatus in ['finished', 'terminated', 'cancelled']:
             break
