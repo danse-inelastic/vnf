@@ -21,6 +21,8 @@ class Actor(base):
         id = pyre.inventory.str('id')
         type = pyre.inventory.str('type')
         posterior_action = pyre.inventory.str('posterior_action')
+        iworker = pyre.inventory.str('iworker')
+
 
     def view(self, director):
         domaccess = director.retrieveDOMAccessor('computation')
@@ -47,6 +49,7 @@ class Actor(base):
             from vnf.content import safe_eval_action
             return safe_eval_action(posterior_action)
 
+
     def createResultsDoc(self, director):
         record = self._getComputationRecord(director)
         return director.retrieveVisual(
@@ -55,9 +58,39 @@ class Actor(base):
             actor=self.name, director=director
             )
 
+
+    def getTaskIds(self, director):
+        """find the itasks for the given iworker
+
+        Input:
+        - type, id: identify the computation
+        - iworker: the iworker (str)
+        
+        Return: 
+        - type: str
+        - content: a comma sperated list of ids of found tasks
+        """
+        # the computation record
+        computation = self._getComputationRecord(director)
+        
+        # search for tasks
+        iworker = self.inventory.iworker
+        tasks = computation.findTasks(director.clerk.db, iworker)
+
+        ids = [t.id for t in tasks]
+        return ','.join(ids)
+
+
     def _getComputationRecord(self, director):
         domaccess = self._domaccess(director)
-        return domaccess.getComputationRecord(self.inventory.type, self.inventory.id)
+        orm = domaccess.orm
+        type = self.inventory.type
+        id = self.inventory.id
+        try:
+            return domaccess.getComputationRecord(type, id)
+        except:
+            return domaccess.getRecordByID(type, id)
+        
 
     def _domaccess(self, director):
         domaccess = director.retrieveDOMAccessor('computation')

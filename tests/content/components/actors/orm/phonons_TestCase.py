@@ -38,16 +38,8 @@ class TestApp(base):
         self.testFacility = testFacility
 
         self.chroot()
-        self.test1()
         self.test2()
         return 
-
-
-    def test1(self):
-        actor = self.actor
-        phonons = actor._load(self)
-        print actor._createPlotAndDataLink(phonons, self)
-        return
 
 
     def test2(self):

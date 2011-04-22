@@ -100,6 +100,15 @@ class Actor(base):
             ]
 
 
+    def authenticate(self, director):
+        sentry = director.sentry
+        sentry.ticket = ''
+        sentry.username = self.inventory.username
+        sentry.passwd = self.inventory.password
+        sentry.authenticate()
+        return sentry.ticket
+    
+
     def formError(self, director, errors=None):
         from luban.content import select
         return [select(id='login-form').enable()] + [

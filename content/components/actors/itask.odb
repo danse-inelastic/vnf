@@ -35,6 +35,22 @@ class Actor(base):
             return
 
 
+    def getStatus(self, director):
+        """get the current status of the task
+        
+        input:
+        - id: task id
+
+        return: a dictionary
+        """
+        itask = director.clerk.getRecordByID('itasks', self.inventory.id)
+        d = {}; attrs = ['progress_percentage', 'progress_text', 'state']
+        for attr in attrs:
+            d[attr] = getattr(itask, attr)
+            continue
+        return str(d)
+
+
     def _checkProgress(self, director):
         itask = director.clerk.getRecordByID('itasks', self.inventory.id)
 

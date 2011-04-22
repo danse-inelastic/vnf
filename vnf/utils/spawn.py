@@ -39,46 +39,22 @@ def spawn(command, dry_run = 0, env = None):
     info.log( "Executing: \n%s" % cmd )
 
     import subprocess
-    log = OStrStream()
-    errlog = OStrStream()
     
     p = subprocess.Popen(
-        cmd, stdout = log, stderr = errlog, shell = True, env = env)
+        cmd, 
+        stdout = subprocess.PIPE, 
+        stderr = subprocess.PIPE,
+        shell = True, env = env,
+        )
     
+    out, err = p.communicate()
     ret = p.wait()
+    # 
     del p
 
     info.log( "cmd \n%s\n finished" % cmd )
-    return ret, log.str(), errlog.str()
+    return ret, out, err
 import types
-
-
-class OStrStream:
-
-    def __init__(self):
-        import tempfile
-        f = self.__filepath__ = tempfile.mktemp()
-        self.__stream__ = open( f, 'w' )
-        return
-
-
-    def __del__(self):
-        del self.__stream__
-        import os
-        os.remove( self.__filepath__ )
-        return
-
-
-    def __getattr__(self, name):
-        return getattr(self.__stream__, name)
-    
-
-    def str(self):
-        self.__stream__.close()
-        s = open(self.__filepath__).read()
-        return s
-
-    pass # end of OStrStream
 
 
 def test_spawn( ):
@@ -86,15 +62,7 @@ def test_spawn( ):
     return
 
 
-def test_OStrStream():
-    oss = OStrStream()
-    print >> oss, "hello"
-    assert oss.str() == 'hello\n'
-    return
-
-
 def test():
-    test_OStrStream()
     test_spawn()
     return
 

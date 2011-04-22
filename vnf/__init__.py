@@ -12,8 +12,8 @@
 #
 
 
-version = 'beta'
-copyright = '2008-2010 California Institute of Technology'
+version = '1'
+copyright = '2008-2011 California Institute of Technology'
 
 
 # version

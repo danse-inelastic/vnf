@@ -69,6 +69,14 @@ class Computation(HasTask, base):
         if len(jobs)>1: raise RuntimeError
         if not jobs: return None
         return jobs[0]
+
+
+    def findTasks(self, db, iworker):
+        "find the itasks that are for the given iworker"
+        from ITask import ITask
+        tasks = self.getReferences(db, ITask, 'beneficiary')
+        criteria = lambda x: x.worker == iworker
+        return filter(criteria, tasks)
     
     
     def findPendingTask(self, db, iworker=None):

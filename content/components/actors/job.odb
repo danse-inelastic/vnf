@@ -101,6 +101,13 @@ class Actor(base):
 
         resubmission = pyre.inventory.bool('resubmission', default=0)
 
+        key = pyre.inventory.str('key')
+
+
+    class AlreadySubmitted(Exception): pass
+    class InSubmission(Exception): pass
+    class LogicError(Exception): pass
+
 
     def default(self, director):
         return self.showListView(director)
@@ -349,11 +356,26 @@ class Actor(base):
     
 
     def create(self, director):
+        """create a job for the given computation, and show the job editor
+        
+        computation_type, computation_id: specified the computation record
+        """
+        self.inventory.id = self.createJob(director)
+        return self.edit(director)
+    
+    
+    def createJob(self, director):
+        """create a job for the given computation, and return the new job id
+        
+        computation_type, computation_id: specified the computation record
+        """
         computation = self._getComputation(director)
         # if there is already a job, we have a problem
         job = computation.getJob(director.clerk.db)
-        if job: raise RuntimeError, "computation %s already has a job" % computation.id
-
+        if job: 
+            msg = "computation %s already has a job" % computation.id
+            raise RuntimeError, msg
+        
         # create new job
         from vnf.utils.job import new
         job = new(director)
@@ -363,9 +385,7 @@ class Actor(base):
         
         # update
         director.clerk.updateRecordWithID(job)
-        
-        self.inventory.id = job.id
-        return self.edit(director)
+        return job.id
     
     
     def edit(self, director):
@@ -478,6 +498,89 @@ class Actor(base):
 
 
     def verify(self, director):
+        errors = self._verifyAttributes(director)
+        if errors:
+            return self.showErrors(director, errors=errors)
+
+        self._setAttributes(director)
+        return self.submit(director)
+
+
+    def updateStatus(self, director):
+        """update the status of the given job and return it
+
+        input:
+        - id: job id
+        """
+        id = self.inventory.id
+        job = self._getJobRecord(director)
+        check( job, director )
+        return job.state
+
+
+    def getAttribute(self, director):
+        '''get value of the attribute requested by user
+
+        Input:
+        - id: job id
+        - key: name of the attribute
+        '''
+        record = self._getJobRecord(director)
+        key = self.inventory.key
+        if hasattr(record, key):
+            return getattr(record, key)
+        raise KeyError, key
+
+
+    def setAttributes(self, director):
+        """set the user input attributes for the given job
+
+        Iinput:
+        - id: job id
+        - ..... additional attributes. see inventory
+        
+        if error, throw an ValueError exception
+        otherwise, return None
+        """
+        errors = self._verifyAttributes(director)
+        if errors:
+            msg = ['%s: %s' % (k,v) for k,v in errors.iteritems()]
+            msg = '\n'.join(msg)
+            raise ValueError, msg
+        self._setAttributes(director)
+        return ''
+
+
+    def _setAttributes(self, director):
+        """set the user input attributes for the given job
+
+        Iinput:
+        - id: job id
+        - ..... additional attributes. see inventory
+        
+        this method does not check for errors.
+        """
+        record = self._getJobRecord(director)
+        
+        record.short_description = self.inventory.short_description
+        record.server = self.inventory.server
+        record.numnodes = self.inventory.numnodes
+        record.numcores = self.inventory.numcores
+        record.walltime = self.inventory.walltime
+        
+        director.clerk.updateRecordWithID(record)
+        return
+    
+    
+    def _verifyAttributes(self, director):
+        """verify the user input attributes for the given job
+
+        Iinput:
+        - id: job id
+        - ..... additional attributes. see inventory
+        
+        returns a dict of errors
+        """
         errors = {}
         
         short_description = self.inventory.short_description
@@ -502,21 +605,9 @@ class Actor(base):
         if not isPositiveInteger(walltime):
             errors['walltime'] = self.Inventory.walltime.meta['tiponerror']
 
-        if errors:
-            return self.showErrors(director, errors=errors)
+        return errors
         
-        record = self._getJobRecord(director)
-
-        record.short_description = short_description
-        record.server = serverId
-        record.numnodes = numnodes
-        record.numcores = numcores
-        record.walltime = walltime
-
-        director.clerk.updateRecordWithID(record)
-        return self.submit(director)
-
-
+        
     def submit(self, director):
         if not self._isowner(director):
             return alert("permission denied")
@@ -551,42 +642,13 @@ class Actor(base):
 
     def create_submitting_view(self, director):
         view = lc.document(title='submitting job %s' % self.inventory.id)
-        
-        job = self._getJobRecord(director)
 
-        if job.state in ['submitted', 'running', 'onhold',
-                         'finished', 'terminated', 'cancelled']:
+        try:
+            task = self._start_submission_task(director)
+        except AlreadySubmitted, state:
             return self.already_submitted(director)
-        if job.state in ['submitting']:
+        except InSubmission, state:
             return self.in_submission(director)
-        
-        iworker = 'submitjob'
-        
-        # first check if there is itask running
-        task = job.findPendingTask(director.clerk.db, iworker=iworker)
-        if not task:
-            from vnf.dom.ITask import createITask, ITask
-            task = director.clerk.insertNewOwnedRecord(ITask)
-            task = createITask(
-                task.id,
-                beneficiary = job,
-                worker = iworker,
-                type = iworker,
-                )
-            director.clerk.updateRecordWithID(task)
-        else:
-            if task.state not in ['failed', 'cancelled']:
-                # should not reach here
-                raise RuntimeError, \
-                      "failed to generate submission view for job %s. itask is %s" % (
-                    job.id, task.id)
-            # reopen the task
-            task.state = 'created'
-            director.clerk.updateRecordWithID(task)
-            
-        # start the task
-        from vnf.utils.itask import start
-        start(task)
         
         # build the progress bar and return
         pbar = ProgressBar(
@@ -619,6 +681,61 @@ class Actor(base):
         
         return view
 
+
+    def start_submission_task(self, director):
+        """start job submission task for the given job and return the task id
+
+        Inputs:
+        - id: job id
+        """
+        task = self._start_submission_task(director)
+        return task.id
+
+
+    def _start_submission_task(self, director):
+        """start job submission task for the given job and return the task
+
+        Inputs:
+        - id: job id
+        """
+        job = self._getJobRecord(director)
+
+        if job.state in ['submitted', 'running', 'onhold',
+                         'finished', 'terminated', 'cancelled']:
+            raise self.AlreadySubmitted, job.state
+        
+        if job.state in ['submitting']:
+            raise self.InSubmission, job.state
+        
+        iworker = 'submitjob'
+        
+        # first check if there is itask running
+        task = job.findPendingTask(director.clerk.db, iworker=iworker)
+        if not task:
+            from vnf.dom.ITask import createITask, ITask
+            task = director.clerk.insertNewOwnedRecord(ITask)
+            task = createITask(
+                task.id,
+                beneficiary = job,
+                worker = iworker,
+                type = iworker,
+                )
+            director.clerk.updateRecordWithID(task)
+        else:
+            if task.state not in ['failed', 'cancelled']:
+                # should not reach here
+                raise self.LogicError, \
+                      "failed to generate submission view for job %s. itask is %s" % (
+                    job.id, task.id)
+            # reopen the task
+            task.state = 'created'
+            director.clerk.updateRecordWithID(task)
+            
+        # start the task
+        from vnf.utils.itask import start
+        start(task)
+        return task
+        
 
     #XXX: obsolete
     def showErrors(self, director, errors=None):
