@@ -75,6 +75,7 @@ class DOMAccessorMixinForMasterTable_SingleTable(base):
             username = self.getUsername()
             mine = "creator='%s'" % username
             where = '%s and %s' % (where, mine)
+        where = self.customizeFilter(where)
         q = sqlalchemy.select(cols, where)
         
         return q

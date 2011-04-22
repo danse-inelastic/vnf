@@ -19,7 +19,7 @@ from vnf.components.DOMAccessor import DOMAccessor as base
 class Accessor(base, MasterTableMixin):
 
     Table = PhononsTable
-    columns = ['id', 'short_description', 'date', 'creator']
+    columns = ['id', 'short_description', 'date', 'creator', 'status']
 
     def __init__(self):
         super(Accessor, self).__init__('phonons-accessor')
@@ -42,6 +42,12 @@ class Accessor(base, MasterTableMixin):
         db = self.db
         return db.query(PhononsTable).filter_by(id=id).one()
     getRecord = getPhononsRecord
+
+
+    def customizeFilter(self, filter):
+        if filter is None:
+            return "status='n'"
+        return "(%s) and status='n'" % filter
 
 
     def standardizeDataInIDFFormat(self, id):
