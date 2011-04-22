@@ -62,7 +62,7 @@ $(function (){
 
 <!-- apps -->
 <div>
-  <a href="xxxCONTROLLERxxx?actor=material_simulations/phonons-public"
+  <a href="xxxCONTROLLERxxx?actor=material_simulations/phonons-public&routine=start"
      target="_blank"
      >
     <img src="images/start-apps/bccFe-295-phonon-dispersion.png"

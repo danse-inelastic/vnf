@@ -39,6 +39,9 @@ def computePhonons(modelid, df=0.02, N1=40, credential=None):
         id = computationid,
         credential = credential,
         )
+
+    # TODO: create plot of dispersions
+    
     return 
 
 

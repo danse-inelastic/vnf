@@ -46,6 +46,10 @@ class Actor(base):
 
 
     def default(self, director):
+        return self.showListView(director)
+    
+
+    def start(self, director):
         f       = lc.frame(title=frametitle)
         
         #
