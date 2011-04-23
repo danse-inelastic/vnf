@@ -14,6 +14,9 @@
 
 skip = True
 
+from vnf import scripting
+scripting.runByHttp.controller_url = 'http://192.168.12.150/cgi-bin/vnf/dev.cgi'
+
 
 import unittest
 class TestCase(unittest.TestCase):

@@ -30,6 +30,7 @@ EXPORT_DATAFILES = \
 	checkcod.py \
 	checkservers.py \
 	checkcod.py \
+	compute-phonons-from-bvk-models.py \
 	createdataobject.py \
 	createtable.py \
 	cron-daemons.sh \
