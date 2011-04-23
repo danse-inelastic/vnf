@@ -11,16 +11,13 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 PROJECT = vnf
-PACKAGE = content/visuals
+PACKAGE = scripting
 
 
 # directory structure
 
 BUILD_DIRS = \
-	computation \
-	material_simulations \
-	neutronexperiment \
-	table \
+	bvk \
 
 OTHER_DIRS = \
 
@@ -40,17 +37,17 @@ all: export
 
 EXPORT_PYTHON_MODULES = \
 	__init__.py \
-	atomicstructure.py \
-	login.py \
-	view_indicator.py \
+	computation.py \
+	itask.py \
+	job.py \
 
 
+#include doxygen/default.def
 
 export:: export-package-python-modules 
 
 
-#include doxygen/default.def
-# docs: export-doxygen-docs
+docs: export-doxygen-docs
 
 # version
 # $Id: Make.mm 1213 2006-11-18 16:17:08Z linjiao $

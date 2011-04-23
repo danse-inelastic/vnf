@@ -23,6 +23,7 @@ BUILD_DIRS = \
 	forms \
 	weaver \
 	inventory \
+	scripting \
 	services \
         qeutils \
 	testing \
@@ -36,7 +37,7 @@ RECURSE_DIRS = $(BUILD_DIRS) $(OTHER_DIRS)
 #
 
 all: export
-#	BLD_ACTION="all" $(MM) recurse
+	BLD_ACTION="all" $(MM) recurse
 
 tidy::
 	BLD_ACTION="tidy" $(MM) recurse
@@ -55,12 +56,9 @@ EXPORT_PYTHON_MODULES = \
 	deployment.py \
 
 
-# export:: export-python-modules
-#	BLD_ACTION="export" $(MM) recurse
-export:: export-python-project-rsync
+export:: export-python-modules
+	BLD_ACTION="export" $(MM) recurse
 
-export-python-project-rsync:
-	rsync --exclude Make.mm -r ./ $(EXPORT_MODULEDIR)/
 
 # version
 # $Id: Make.mm,v 1.1.1.1 2006-11-27 00:09:19 aivazis Exp $

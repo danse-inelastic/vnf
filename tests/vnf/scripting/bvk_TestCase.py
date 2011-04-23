@@ -22,7 +22,7 @@ import unittest
 class TestCase(unittest.TestCase):
 
     def test1(self):
-        model_id='6P343XN'
+        model_id='N3FMCZN'
         from vnf.scripting import authenticate
         from realuser import username, password
         credential = authenticate(username=username, password=password)
@@ -31,7 +31,7 @@ class TestCase(unittest.TestCase):
         return
 
     
-    def test2(self):
+    def _test2(self):
         computationid = 'LHHD5P3'
         from vnf.scripting import authenticate
         from realuser import username, password

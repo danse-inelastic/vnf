@@ -11,16 +11,12 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 PROJECT = vnf
-PACKAGE = content/visuals
+PACKAGE = content/visuals/computation
 
 
 # directory structure
 
 BUILD_DIRS = \
-	computation \
-	material_simulations \
-	neutronexperiment \
-	table \
 
 OTHER_DIRS = \
 
@@ -40,10 +36,7 @@ all: export
 
 EXPORT_PYTHON_MODULES = \
 	__init__.py \
-	atomicstructure.py \
-	login.py \
-	view_indicator.py \
-
+	result.py \
 
 
 export:: export-package-python-modules 
