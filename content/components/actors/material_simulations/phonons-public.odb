@@ -148,6 +148,13 @@ class Actor(base):
         return self.visualfactory.createFile(id, director)
 
 
+    def _defaults(self):
+        super(Actor, self)._defaults()
+        self.inventory.order_by = 'date'
+        self.inventory.reverse_order = 1
+        return
+
+
     def __init__(self, name='material_simulations/phonons-public'):
         super(Actor, self).__init__(name)
 
