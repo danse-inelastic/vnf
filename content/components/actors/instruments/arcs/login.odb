@@ -16,9 +16,10 @@
 # this has to be not an AuthorizedActor.
 
 
+import luban.content as lc
+
+
 from luban.components.Actor import Actor as base
-
-
 class Actor(base):
 
 
@@ -28,10 +29,30 @@ class Actor(base):
 
 
     def default(self, director):
-        return director.redirect(
-            actor='login', routine='default',
-            post_authorization_action='load(actor="instruments/arcs", routine="showARCSMainFrame")',
-            )
+        from vnf.content.visuals.login import Factory as Visualfactory
+        f = Visualfactory()
+
+        # the login form
+        post_authorization_action='load(actor="instruments/arcs", routine="showARCSMainFrame")'
+        form = f.createLoginForm(post_authorization_action, director)
+        
+        # container
+        # left: image, right: login form
+        container = lc.splitter()
+        # img = lc.image(path='instruments/ARCS_beam/schematic.png')
+        img = lc.image(path='instruments/ARCS_beam/middle-size-icon.png')
+        container.section().add(img)
+        container.section().document(title='VNF ARCS portal').add(form)
+        
+        # the skeleton
+        skeleton = f.createSkeleton(director)
+        # .. add the form into the skeleton
+        skeleton.find(id='body-frame').add(container)
+
+        # create a frame and add skeleton into the frame
+        frame = lc.frame(title='VNF: ARCS portal')
+        frame.add(skeleton)
+        return frame
 
 
     def __init__(self, name='instruments/arcs/login'):

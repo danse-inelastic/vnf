@@ -24,6 +24,10 @@ class Factory(object):
 
 
     def createFrame(self, post_authorization_action='', director=None):
+        """create the default login frame for vnf.
+        This frame has the footer, header, and a login form, some
+        documentation, some status monitor for vnf.
+        """
         visual = self.createFrontPageContent(
             post_authorization_action, director)
         
@@ -34,14 +38,24 @@ class Factory(object):
         frame.add(dock)
         
         return frame
+
+
+    def createSkeleton(self, director):
+        """create the skeleton. it has the footer and the header.
+        to add more content, try to add things to the sub document with
+        id "body-frame", and then add the skeleton to a frame, 
+        then we have a user interface. See "createFrontPageContent"
+        for an example usage.
+        """
+        return director.retrieveVisual('skeleton')
     
     
     def createFrontPageContent(self, post_authorization_action, director):
         '''create the content of the front page (frame)
         add it to a frame then we have the login frame
         '''
-        skeleton = director.retrieveVisual('skeleton')
-
+        skeleton = self.createSkeleton(director)
+        
         # hide userinfo
 ##         header = skeleton.find(id='mainframe-header')
 ##         userinfo = header.find(id='header-userinfo')
@@ -56,6 +70,15 @@ class Factory(object):
         return skeleton
 
 
+    def createLoginForm(self, post_authorization_action, director):
+        """the login form
+        """
+        form = director.retrieveVisual(
+            'login-form', 
+            post_authorization_action=post_authorization_action)
+        return form
+
+    
     def createFrontPageBodyDocument(self, post_authorization_action, director):
         '''create the body document for the front page
         embed this document inside the skeleton in visuals/skeleton then we
@@ -69,9 +92,7 @@ class Factory(object):
         left = splitter.section(id='login-body-left')
         # form
         formcontainer = left.document(id='login-form-container')
-        form = director.retrieveVisual(
-            'login-form', 
-            post_authorization_action=post_authorization_action)
+        form = self.createLoginForm(post_authorization_action, director)
         formcontainer.add(form)
         # portlet
         portlet = director.retrieveVisual('frontpage-portlet')
