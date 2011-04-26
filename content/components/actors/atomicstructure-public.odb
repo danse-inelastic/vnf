@@ -1,0 +1,132 @@
+#!/usr/bin/env python
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                 Jiao Lin
+#                      California Institute of Technology
+#                      (C) 2006-2011  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+from luban.content import load, select, alert
+import luban.content as lc
+
+
+
+# common actions
+frametitle='Atomic structures - Virtual neutron facility'
+setframetitle = select(id='').setAttr(title=frametitle)
+
+
+from vnf.components.visuals import set_contextual_help
+sethelppage = set_contextual_help(
+    page='UserGuide-atomicstructures', label='about atomic structures')
+
+
+
+from vnf.components.MasterTable import FilterSyntaxError, MasterTableUnauthorizedActor as base
+
+
+class Actor(base):
+
+    class Inventory(base.Inventory):
+
+        import pyre.inventory
+
+        id = pyre.inventory.str('id')
+        description = pyre.inventory.str('description')
+        
+        formids = pyre.inventory.list('formids')
+        viewid = pyre.inventory.str('viewid')
+
+
+    def default(self, director):
+        return self.showListView(director)
+    
+
+    def start(self, director):
+        f       = lc.frame(title=frametitle)
+        
+        #
+        skeleton = director.retrieveVisual('skeleton')
+        f.add(skeleton)
+        
+        body_frame = skeleton.find(id='body-frame')
+        main_display = body_frame.document(id='main-display-area')
+        main_display.add(self.createListView(director))
+        return f
+
+
+    def debug_tableview(self, director):
+        p       = lc.page()
+        doc     = p.document(id='main-display-area')
+        doc.add(self.createListView(director))
+        return p
+    
+    
+    def showListView(self, director):
+        try:
+            view = self.createListView(director)
+        except FilterSyntaxError, msg:
+            return alert('filter syntax error: %s' % msg)
+        return [
+            select(id = 'main-display-area').replaceContent(view),
+            setframetitle,
+            ] + sethelppage
+    
+    
+    def createListView(self, director):
+        order_by        = self.inventory.order_by
+        reverse_order   = self.inventory.reverse_order
+        number_records_per_page     = self.inventory.number_records_per_page
+        page_number     = self.inventory.page_number
+
+        filter_expr     = self.inventory.filter_expr
+        filter_key      = self.inventory.filter_key
+        filter_value    = self.inventory.filter_value
+
+        label = self.inventory.label
+        mine = self.inventory.mine
+        
+        tableview = director.retrieveVisual(
+            'atomicstructure/tableview',
+            director,
+            self.name,
+            label           = label,
+            mine            = mine,
+            filter_expr     = filter_expr,
+            filter_key      = filter_key,
+            filter_value    = filter_value,
+            order_by        = order_by,
+            reverse_order   = reverse_order,
+            number_records_per_page = number_records_per_page,
+            page_number     = page_number,
+            publiconly      = True,
+            )
+        return tableview
+
+
+    def _defaults(self):
+        super(Actor, self)._defaults()
+        self.inventory.order_by = 'date'
+        self.inventory.reverse_order = 1
+        return
+
+
+    def __init__(self, name='atomicstructure-public'):
+        super(Actor, self).__init__(name)
+        return
+
+
+def actor(): return Actor()
+
+
+# version
+__id__ = "$Id$"
+
+# End of file 
+

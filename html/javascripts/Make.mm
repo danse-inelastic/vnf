@@ -46,7 +46,7 @@ RSYNC_A = rsync -a --copy-links
 EXPORT_DATA_PATH = $(EXPORT_ROOT)/$(PROJECT)/$(PACKAGE)
 
 
-export-package-data: export-package-data-dirs export-package-data-files
+export-package-data: other/chemdoodle export-package-data-dirs export-package-data-files
 
 
 export-package-data-dirs:: $(EXPORT_DATADIRS) 
@@ -62,6 +62,14 @@ export-package-data-files:: $(EXPORT_DATAFILES)
 	for x in $(EXPORT_DATAFILES); do { \
 	        $(RSYNC_A) $$x $(EXPORT_DATA_PATH)/ ; \
         } done
+
+
+CHEMDOODLEZIP=ChemDoodleWeb-4.2.2.zip
+other/chemdoodle:
+	cd other ;\
+	wget http://web.chemdoodle.com/downloads/$(CHEMDOODLEZIP) ;\
+	unzip $(CHEMDOODLEZIP) ;\
+	ln -s ChemDoodleWeb/install chemdoodle
 
 
 # version

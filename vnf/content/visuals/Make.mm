@@ -42,6 +42,7 @@ EXPORT_PYTHON_MODULES = \
 	__init__.py \
 	atomicstructure.py \
 	login.py \
+	matter_viewer.py \
 	view_indicator.py \
 
 

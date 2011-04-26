@@ -36,6 +36,9 @@ pyre_depositories = [
     ]
 
 
+controller_url = ""
+html_base = ""
+
 # version
 __id__ = "$Id$"
 

@@ -81,6 +81,7 @@ def table(atomicstructures, cols, director, editable=True):
 
     return table
 
+
 # version
 __id__ = "$Id$"
 

@@ -25,10 +25,11 @@ def visual(
     label=None, mine=False,
     order_by=None, reverse_order=None,
     number_records_per_page=None, page_number=None,
+    publiconly = False,
     ):
     # name: name of table view
     # 
-    domaccess = director.retrieveDOMAccessor(name)
+    domaccess = director.retrieveDOMAccessor('atomicstructure')
         
     from vnf.components.MasterTable import MasterTableFactory, filtercompiler
     def countrecords(filter, label=None, mine=False):
@@ -41,7 +42,9 @@ def visual(
             slice=slice,
             filter=filter,
             label=label,
-            mine=mine)
+            mine=mine,
+            publiconly = publiconly,
+            )
     from vnf.content.visuals.table.atomicstructure import model
     compilefilter = filtercompiler(columns, measure2dbcol, model=model)
 
@@ -63,7 +66,8 @@ def visual(
             ('short_description', 'Description'),
             ('date', 'Date created'),
         ],
-        polymorphic = False, dbtablename='AtomicStructure.Structure'
+        polymorphic = False, dbtablename='AtomicStructure.Structure',
+        publiconly = publiconly,
         )
 
     tableview = factory.create(
@@ -74,15 +78,17 @@ def visual(
         number_records_per_page=number_records_per_page,
         page_number=page_number)
 
-    # add new button
-    toolbar = tableview.find(id='atomicstructure-table-toptoolbar')
-    # toolbar.add(Paragraph(text='|', Class='splitter'))
-    #
-    button = lc.button(label='New', tip='create new atomic structure', icon='new.png')
-    toolbar.add(button)
-    button.onclick = select(id='main-display-area').replaceContent(
-        load(actor=name, routine='newAtomicStructureForm')
-        )
+    if not publiconly:
+        # add new button
+        toolbar = tableview.find(id='atomicstructure-table-toptoolbar')
+        # toolbar.add(Paragraph(text='|', Class='splitter'))
+        #
+        button = lc.button(
+            label='New', tip='create new atomic structure', icon='new.png')
+        toolbar.add(button)
+        button.onclick = select(id='main-display-area').replaceContent(
+            load(actor=name, routine='newAtomicStructureForm')
+            )
 
     return tableview
 
@@ -92,7 +98,8 @@ def createAtomicStructureTable(
     order_by=None, reverse_order=None, slice=None,
     filter=None,
     label=None,
-    mine=False):
+    mine=False, 
+    publiconly = False):
 
     records = domaccess.getAtomicStructureRecords(
         order_by=order_by, reverse_order=reverse_order, slice=slice,
@@ -103,11 +110,14 @@ def createAtomicStructureTable(
 
     cols = columns
     args = records, cols, director
-    thetable = director.retrieveVisual(
-        'atomicstructure/table',
-        atomicstructures = records,
-        cols = cols,
-        director = director)
+    if publiconly:
+        from vnf.content.visuals.table.atomicstructure_public \
+            import table as createTableVisual
+    else:
+        from vnf.content.visuals.table.atomicstructure \
+            import table as createTableVisual
+    thetable = createTableVisual(
+        records, cols, director)
     thetable.oncellchanged = select(element=thetable).notify(
         event='row-changed', actor='atomicstructure/table', routine='processRowChange')
     return thetable

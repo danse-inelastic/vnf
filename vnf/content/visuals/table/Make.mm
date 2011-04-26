@@ -38,6 +38,7 @@ EXPORT_PYTHON_MODULES = \
 	arcsbeamprofile.py \
 	analysis.py \
 	atomicstructure.py \
+	atomicstructure_public.py \
 	experiment.py \
 	job.py \
 	materialsimulation.py \

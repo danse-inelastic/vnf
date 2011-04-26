@@ -62,6 +62,17 @@ $(function (){
 
 <!-- apps -->
 <div>
+  <a href="xxxCONTROLLERxxx?actor=atomicstructure-public&routine=start"
+     target="_blank"
+     >
+    <img src="images/start-apps/atomicstructure.png"
+	 alt="Atomic structures" title="Atomic structures"
+	 class="start-app-icon"
+	 />
+  </a>
+</div>
+
+<div>
   <a href="xxxCONTROLLERxxx?actor=material_simulations/phonons-public&routine=start"
      target="_blank"
      >
