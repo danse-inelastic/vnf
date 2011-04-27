@@ -361,7 +361,7 @@ div.master-table-tablebottomtoolbar-left-interior > table.luban-splitter{
     background-color:white;
 }
 #main-display-area .master-table a.luban-link {
-    color:#657098;
+    /* color:#657098; */
 }
 .master-table input[type="checkbox"] {
     width:1.6em;

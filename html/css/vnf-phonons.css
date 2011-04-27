@@ -2,6 +2,16 @@
     font-size: 1.2em;
 }
 
+#phonons-table tbody td[colname='creator'] {
+    color: #505050;
+    font-size: 80%;
+}
+
+#phonons-table tbody td[colname='created'] {
+    color: #505050;
+    font-size: 80%;
+}
+
 .phonon-dispersion-plot-container {
     -moz-border-radius: 0.4em;
     -webkit-border-radius: 0.4em;

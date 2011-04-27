@@ -35,6 +35,7 @@
 	vnf-phonons.css
         vnf-qe.css
         vnf-epsc.css
+	vnf-arcs.css
       </property>
     </component>
 

@@ -38,7 +38,7 @@ class Actor(base):
         
         # container
         # left: image, right: login form
-        container = lc.splitter()
+        container = lc.splitter(id='arcs-login')
         # img = lc.image(path='instruments/ARCS_beam/schematic.png')
         img = lc.image(path='instruments/ARCS_beam/middle-size-icon.png')
         container.section().add(img)

@@ -252,6 +252,7 @@ width:3em;
     font-size: 1.7em;
     font-weight: bolder;
     text-decoration: none;
+    text-shadow: none;
 }
 .luban-document.panel > .luban-document-title >table>tbody>tr>td.luban-document-title-controls > a.collapse-expand:hover {
     text-decoration:underline;

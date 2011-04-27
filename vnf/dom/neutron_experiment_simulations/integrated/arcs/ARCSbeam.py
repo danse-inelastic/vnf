@@ -14,7 +14,7 @@
 
 class ARCSbeam:
 
-    fermi_chopper = '100meV, SMI'
+    fermi_chopper = '100-1.5-SMI'
     fermi_nu = 600
     T0_nu = 60
     E = 70
@@ -43,7 +43,9 @@ class ARCSbeam:
 
 
 fc_choices = [
-    '100meV, SMI',
+    '100-1.5-SMI',
+    '700-1.5-SMI',
+    '700-0.5-AST',
     ]
 
 from dsaw.model.Inventory import Inventory as InvBase
