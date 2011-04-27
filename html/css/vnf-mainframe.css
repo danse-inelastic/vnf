@@ -2,7 +2,8 @@
 
 /* */
 body {
-    background-color: #f5f5f5;
+    background-color: #eff0ef;
+    text-shadow: 1px 1px 1px #FFFFFF;
 }
 
 /* ------------------------------------------------------------ */
@@ -254,11 +255,11 @@ padding-right:0;
 
 #footer-copyright p {
     text-align:center;
-    text-shadow: 1px 1px #444;
+    text-shadow: 1px 1px white;
     font-family:Times,"Times New Roman",serif;
     font-size:0.85em;
     margin: 7px 0;
-    color: #d0d0d0;
+    color: #606060;
     vertical-align: bottom;
 }
 
@@ -280,10 +281,13 @@ padding-right:0;
     color:#3333aa;
     text-decoration:none;
 }
-a#surprise-for-bug-report-test {
+div#surprise-container {
     margin-top: 2em;
+    text-align: right;
+}
+a#surprise-for-bug-report-test {
     color: transparent;
-    display: block;
+    text-shadow: none;
 }
 a#surprise-for-bug-report-test:hover {
     color: white;

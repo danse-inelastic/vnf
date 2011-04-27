@@ -20,7 +20,11 @@ def visual(director):
     luban = '<a target="_blank" href="http://docs.danse.us/pyre/luban/sphinx">luban</a>'
     hdoc.text = 'Powered by %s/%s' % (pyre, luban)
     
-    l = lc.link(id='surprise-for-bug-report-test', label='test bug report dialog'); doc.add(l)
+    surprisedoc = doc.document(id='surprise-container')
+    l = lc.link(id='surprise-for-bug-report-test', 
+                label='test bug report dialog'); 
+    surprisedoc.add(l)
+    
     l.onclick = lc.load(actor='notimplemented')
     
     return doc
