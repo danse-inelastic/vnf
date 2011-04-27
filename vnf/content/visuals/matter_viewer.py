@@ -49,6 +49,9 @@ class Factory(object):
         atoms = getAtomsInOneUnitCell(matter)
         for count,atom in enumerate(atoms):
             symbol = atom.symbol
+            # this is to avoid a bug in chemdoodle
+            if symbol in buggyelements:
+                symbol = 'Cu'
             x,y,z = atom.xyz
             code.append('var atom%s = new ChemDoodle.structures.Atom("%s", %s, %s, %s);' % (count, symbol, x*size/2,y*size/2,z*size/2))
             code.append('mol.atoms[%s]=atom%s;' % (count,count))
@@ -131,6 +134,12 @@ js_create_3dscene_template = """
   }
   %(add_mol_to_canvas)s;
 """
+
+# elements for which chemdoodle is buggy
+buggyelements = [
+    'Fe', 'Al',
+    ]
+
 
 def getAtomsInOneUnitCell(matter):
     "get atoms in one unit cell, including atoms in the faces"
