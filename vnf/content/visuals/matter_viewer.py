@@ -28,7 +28,7 @@ class Factory(object):
     chem_doodle_base = '%s/other/chemdoodle' % js_base
     
     
-    def createViewer(self, matter, size=200):
+    def createViewer(self, matter, size=500):
         """create html content that has a matter viewer
         This is implemented by using chemdoodle
         """
@@ -47,13 +47,14 @@ class Factory(object):
         # add atoms to mol
         sg = matter.sg
         atoms = getAtomsInOneUnitCell(matter)
+        scalefactor = 10
         for count,atom in enumerate(atoms):
             symbol = atom.symbol
             # this is to avoid a bug in chemdoodle
             if symbol in buggyelements:
                 symbol = 'Cu'
             x,y,z = atom.xyz
-            code.append('var atom%s = new ChemDoodle.structures.Atom("%s", %s, %s, %s);' % (count, symbol, x*size/2,y*size/2,z*size/2))
+            code.append('var atom%s = new ChemDoodle.structures.Atom("%s", %s, %s, %s);' % (count, symbol, x*scalefactor,y*scalefactor,z*scalefactor))
             code.append('mol.atoms[%s]=atom%s;' % (count,count))
             continue
         # add mol to canvas
@@ -116,9 +117,9 @@ js_create_3dscene_template = """
   var webgl = ChemDoodle.featureDetection.supports_webgl();
   if (webgl) {
     canvas \
-      = new ChemDoodle.TransformCanvas3D('canvas', %(width)s, %(height)s, true);
+      = new ChemDoodle.TransformCanvas3D('canvas', %(width)s, %(height)s);
     canvas.specs.set3DRepresentation('Ball and Stick');
-    canvas.specs.backgroundColor = 'black';
+    // canvas.specs.backgroundColor = 'black';
     }
   else {
     canvas \
@@ -137,7 +138,8 @@ js_create_3dscene_template = """
 
 # elements for which chemdoodle is buggy
 buggyelements = [
-    'Fe', 'Al',
+    'Fe', 'Al', 'Th', 'Rb', 'V', 'Mo', 'Cr', 'Ta', 'Ce',
+    'W', 'Co', 'Nb',
     ]
 
 
