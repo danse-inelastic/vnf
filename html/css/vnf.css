@@ -462,8 +462,8 @@ width:100%;
 }
 /* app body: toolbar button */
 .app-container > .luban-document-body > .luban-toolbar .luban-button {
-    background-color:gray;
-    color:white;
+    background-color: #a0c0a0;
+    /* color:white; */
 }
 .app-container > .luban-document-body > .luban-toolbar .luban-button-container {
     margin:1px;
@@ -491,7 +491,7 @@ width:100%;
 }
 /* app body: output */
 .app-container .app-output-cell {
-    min-width: 50em;
+    min-width: 40em;
     min-height: 30em;
     border: 1px solid #909090;
     background-color: #f5f5f5;
@@ -500,15 +500,28 @@ width:100%;
 }
 /* big buttons for launching applications */
 .app-launch-button {
+    /* background-color:#DDDDDF; 
     border: 2px solid silver;
-    background-color:#DDDDDF;
+    -moz-border-radius: 1em;
+    -webkit-border-radius: 1em;*/
     padding:0;
     text-align:center;
+    width: 9em;
+}
+.app-launch-button img:hover{
+    -moz-box-shadow: -5px -5px 5px white;
+    -webkit-box-shadow: -5px -5px 5px white;
+    box-shadow: -5px -5px 5px white;
+}    
+.app-launch-button img{
+    height: 7em;
+    width: 7em;
+    display: block;
+    -moz-box-shadow: 5px 5px 5px #ccc;
+    -webkit-box-shadow: 5px 5px 5px #ccc;
+    box-shadow: 5px 5px 5px #ccc;
     -moz-border-radius: 1em;
     -webkit-border-radius: 1em;
-}
-.app-launch-button img{
-    height: 70px;
 }
 .app-launch-button a {
     background-color:transparent;
@@ -516,6 +529,10 @@ width:100%;
     color:transparent;
     margin:0;
     padding:0;
+}
+.app-launch-button a span{
+    display:block;
+    color: black;
 }
 .app-launch-button:hover {
     border-color:#aaaaff;
