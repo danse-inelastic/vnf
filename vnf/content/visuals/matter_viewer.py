@@ -32,62 +32,35 @@ class Factory(object):
         """create html content that has a matter viewer
         This is implemented by using chemdoodle
         """
-        text = []
-        text.append('<html>')
-        text.append('<head>')
-        text.append(
-            '<link rel="stylesheet" href="%s/ChemDoodleWeb.css" type="text/css">' % self.chem_doodle_base
-            )
-        text.append(
-            '<script type="text/javascript" src="%s/ChemDoodleWeb-libs.js"></script>' % self.chem_doodle_base
-            )
-        text.append(
-            '<script type="text/javascript" src="%s/ChemDoodleWeb.js"></script>' % self.chem_doodle_base
-            )
-        text.append('<title>Matter viewer</title>')
-        text.append('</head>')
-        text.append('<body>')
-
-        text.append('<div>')
-        text.append('<script>')
-        # text += self._createChemDoodleJSUsingPDB(matter, size)
-        text += self._createChemDoodleJS(matter, size)
-        text.append('</script>')
-        text.append('</div>')
-        
-        text.append('</body>')
-        text.append('</html>')
-        return '\n'.join(text)
+        chem_doodle_base = self.chem_doodle_base
+        script = self._createChemDoodleJS(matter, size)
+        # script = self._createChemDoodleJSUsingPDB(matter, size)
+        script = '\n'.join(script)
+        text = page_template % locals()
+        return text
 
 
     def _createChemDoodleJS(self, matter, size):
-        text = [
-            """
-	// initialize component and set visual specifications
-	// var canvas = new ChemDoodle.RotatorCanvas('rotate3D', 200, 200, true);""",
-            "var canvas = new ChemDoodle.TransformCanvas('canvas', %s, %s, true);" % (size, size),
-            """// use JMol colors for atom types
-	canvas.specs.atoms_useJMOLColors = true;
-	// render circles instead of labels
-	canvas.specs.atoms_circles_2D = true;
-	// make bonds symmetrical (they will not face into rings)
-	canvas.specs.bonds_symmetrical_2D = true;
-	// change the background color
-	canvas.specs.backgroundColor = '#E4FFC2';
-        """]
-        text.append('var mol = new ChemDoodle.structures.Molecule();')
+        code = []
+        # create mol
+        code.append('var mol = new ChemDoodle.structures.Molecule();')
+        # add atoms to mol
         sg = matter.sg
         atoms = getAtomsInOneUnitCell(matter)
-        count = 0
         for count,atom in enumerate(atoms):
             symbol = atom.symbol
             x,y,z = atom.xyz
-            text.append('var atom%s = new ChemDoodle.structures.Atom("%s", %s, %s, %s);' % (count, symbol, x*size/2,y*size/2,z*size/2))
-            text.append('mol.atoms[%s]=atom%s;' % (count,count))
+            code.append('var atom%s = new ChemDoodle.structures.Atom("%s", %s, %s, %s);' % (count, symbol, x*size/2,y*size/2,z*size/2))
+            code.append('mol.atoms[%s]=atom%s;' % (count,count))
             continue
-        text.append('canvas.loadMolecule(mol);')
-        # text.append('canvas.startAnimation();')
-        return text
+        # add mol to canvas
+        code.append('canvas.loadMolecule(mol);')
+        add_mol_to_canvas = '\n'.join(code)
+        #
+        width = height = size
+        #
+        text = js_create_3dscene_template % locals()
+        return [text]
 
 
     def _createChemDoodleJSUsingPDB(self, matter, size):
@@ -113,6 +86,47 @@ class Factory(object):
         return text
 
 
+page_template = '''
+<html>
+<head>
+<link rel="stylesheet" href="%(chem_doodle_base)s/ChemDoodleWeb.css" type="text/css">
+<script type="text/javascript" src="%(chem_doodle_base)s/ChemDoodleWeb-libs.js"></script>
+<script type="text/javascript" src="%(chem_doodle_base)s/ChemDoodleWeb.js"></script>
+<title>Matter viewer</title>
+</head>
+<body>
+
+<div>
+<script>
+%(script)s
+</script>
+</div>
+
+</body>
+</html>
+'''
+
+
+js_create_3dscene_template = """
+  // initialize component and set visual specifications
+  var canvas;
+  var webgl = ChemDoodle.featureDetection.supports_webgl();
+  if (webgl)
+    canvas \
+      = new ChemDoodle.TransformCanvas3D('canvas', %(width)s, %(height)s, true);
+  else 
+    canvas \
+      = new ChemDoodle.TransformCanvas('canvas', %(width)s, %(height)s, true);
+  // use JMol colors for atom types
+  canvas.specs.atoms_useJMOLColors = true;
+  // render circles instead of labels
+  canvas.specs.atoms_circles_2D = true;
+  // make bonds symmetrical (they will not face into rings)
+  canvas.specs.bonds_symmetrical_2D = true;
+  // change the background color
+  canvas.specs.backgroundColor = '#E4FFC2';
+  %(add_mol_to_canvas)s;
+"""
 
 def getAtomsInOneUnitCell(matter):
     "get atoms in one unit cell, including atoms in the faces"
