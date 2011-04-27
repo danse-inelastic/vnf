@@ -111,20 +111,24 @@ js_create_3dscene_template = """
   // initialize component and set visual specifications
   var canvas;
   var webgl = ChemDoodle.featureDetection.supports_webgl();
-  if (webgl)
+  if (webgl) {
     canvas \
       = new ChemDoodle.TransformCanvas3D('canvas', %(width)s, %(height)s, true);
-  else 
+    canvas.specs.set3DRepresentation('Ball and Stick');
+    canvas.specs.backgroundColor = 'black';
+    }
+  else {
     canvas \
       = new ChemDoodle.TransformCanvas('canvas', %(width)s, %(height)s, true);
-  // use JMol colors for atom types
-  canvas.specs.atoms_useJMOLColors = true;
-  // render circles instead of labels
-  canvas.specs.atoms_circles_2D = true;
-  // make bonds symmetrical (they will not face into rings)
-  canvas.specs.bonds_symmetrical_2D = true;
-  // change the background color
-  canvas.specs.backgroundColor = '#E4FFC2';
+      // use JMol colors for atom types
+      canvas.specs.atoms_useJMOLColors = true;
+      // render circles instead of labels
+      canvas.specs.atoms_circles_2D = true;
+      // make bonds symmetrical (they will not face into rings)
+      canvas.specs.bonds_symmetrical_2D = true;
+      // change the background color
+      canvas.specs.backgroundColor = '#E4FFC2';
+  }
   %(add_mol_to_canvas)s;
 """
 
