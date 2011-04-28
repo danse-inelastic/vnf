@@ -52,7 +52,7 @@ from dsaw.model.Inventory import Inventory as InvBase
 
 class Inventory(InvBase):
 
-    fermi_chopper = InvBase.d.str(name='fermi_chopper', default='100meV, SMI')
+    fermi_chopper = InvBase.d.str(name='fermi_chopper', default='100-1.5-SMI')
     fermi_chopper.label = 'Select a Fermi chopper'
     fermi_chopper.validator = InvBase.v.choice(fc_choices)
 
@@ -76,7 +76,7 @@ class Inventory(InvBase):
     ncount = InvBase.d.int(name='ncount', default=10000000,
                            validator = InvBase.v.greaterEqual(1000000),
                            )
-    ncount.label = 'number of Monte Carlo simulation runs. Each MC run corresponds to 34kJ energy.'
+    ncount.label = 'number of Monte Carlo simulation runs' #. Each MC run corresponds to 34kJ energy.'
     ncount.expert = True
     
     dbtablename = 'arcsbeamconfigurations'

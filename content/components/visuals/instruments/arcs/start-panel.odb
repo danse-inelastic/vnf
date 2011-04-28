@@ -32,12 +32,18 @@ def visual(director):
             row = grid.row()
         cell = row.cell()
         icon = app.icon
+        path = 'icons/%s' % icon
         action = load(actor='instruments/arcs', routine='loadApp', app=app.name)
         button = lc.button(
-            # label=app.label,
+            label=app.label,
             tip = app.label,
             icon=icon, onclick=action, 
             Class='app-launch-button')
+        # button = lc.image(
+            # tip = app.label,
+        #    path=path, onclick=action, 
+        #    Class='app-launch-button',
+        #    )
         cell.add(button)
         continue
     

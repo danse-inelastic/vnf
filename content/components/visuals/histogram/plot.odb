@@ -19,12 +19,18 @@ def visual(director=None, histogram=None):
     dim = histogram.dimension()
 
     if dim==1:
-        p = lc.plot2d()
-        x = list(histogram.axes()[0].binCenters())
+        vis = lc.document(id='histogram-plot-container')
+        p = lc.plot2d(); vis.add(p)
+        xaxis = histogram.axes()[0]
+        x = list(xaxis.binCenters())
         y = list(histogram.I)
         p.curve(x=x,y=y)
+        notes = lc.rstdoc(id='histogram-plot-notes'); vis.add(notes)
+        notes.text = [
+            '* x axis unit: %s' % xaxis.unit(),
+            ]
     elif dim == 2:
-        p = director.retrieveVisual(
+        vis = director.retrieveVisual(
             'histogram/imageplot',
             histogram=histogram,
             director=director,
@@ -32,7 +38,7 @@ def visual(director=None, histogram=None):
     else:
         raise NotImplementedError
 
-    return p
+    return vis
 
     
 # version
