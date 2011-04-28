@@ -46,14 +46,15 @@ class Factory(object):
         code.append('var mol = new ChemDoodle.structures.Molecule();')
         # add atoms to mol
         sg = matter.sg
+        lattice = matter.lattice
         atoms = getAtomsInOneUnitCell(matter)
-        scalefactor = 10
+        scalefactor = 1.
         for count,atom in enumerate(atoms):
             symbol = atom.symbol
             # this is to avoid a bug in chemdoodle
             if symbol in buggyelements:
                 symbol = 'Cu'
-            x,y,z = atom.xyz
+            x,y,z = lattice.cartesian(atom.xyz)
             code.append('var atom%s = new ChemDoodle.structures.Atom("%s", %s, %s, %s);' % (count, symbol, x*scalefactor,y*scalefactor,z*scalefactor))
             code.append('mol.atoms[%s]=atom%s;' % (count,count))
             continue
@@ -118,7 +119,8 @@ js_create_3dscene_template = """
   if (webgl) {
     canvas \
       = new ChemDoodle.TransformCanvas3D('canvas', %(width)s, %(height)s);
-    canvas.specs.set3DRepresentation('Ball and Stick');
+    // canvas.specs.set3DRepresentation('Ball and Stick');
+    canvas.specs.set3DRepresentation('Stick');
     // canvas.specs.backgroundColor = 'black';
     }
   else {
@@ -139,7 +141,7 @@ js_create_3dscene_template = """
 # elements for which chemdoodle is buggy
 buggyelements = [
     'Fe', 'Al', 'Th', 'Rb', 'V', 'Mo', 'Cr', 'Ta', 'Ce',
-    'W', 'Co', 'Nb',
+    'W', 'Co', 'Nb', 'B', 
     ]
 
 
