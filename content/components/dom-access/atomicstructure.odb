@@ -58,8 +58,25 @@ class Accessor(base):
 
 
     def getAtomicStructure(self, id):
+        ret = self.loadStructureFromDataFile(id)
+        if ret:
+            return ret
         orm = self.orm
         return orm.load(Structure, id)
+
+
+    def loadStructureFromDataFile(self, id):
+        director = self.director
+        dds = director.dds
+        record = self.getAtomicStructureRecord(id)
+        pdbdatafile = dds.abspath(record, 'data.pdb')
+        import os
+        if not os.path.exists(pdbdatafile):
+            return
+        from matter.Parsers import P_pdb
+        parser = P_pdb.P_pdb(epsilon=0.1)
+        ret = parser.parseFile(pdbdatafile)
+        return ret
 
 
     def getAtomicStructureRecord(self, id):
