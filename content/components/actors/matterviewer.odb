@@ -28,11 +28,24 @@ class Actor(base):
 
 
     def default(self, director):
-        id = self.inventory.id
-        doma = director.retrieveDOMAccessor('atomicstructure')
-        matter = doma.getAtomicStructure(id)
+        # visual factory
         from vnf.content.visuals.matter_viewer import Factory
         visfactory = Factory()
+
+        # the record
+        id = self.inventory.id
+        
+        #
+        doma = director.retrieveDOMAccessor('atomicstructure')
+
+        # if there is pdb file, try to use that
+        pdbfile = doma.hasPDBfile(id)
+        if pdbfile:
+            pdbcontent = open(pdbfile).read()
+            return visfactory.createRibbonViewer(pdbcontent)
+
+        # otherwise, do normal stuff
+        matter = doma.getAtomicStructure(id)
         text = visfactory.createViewer(matter)
         return text
         

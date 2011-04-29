@@ -40,6 +40,17 @@ class Factory(object):
         return text
 
 
+    def createRibbonViewer(self, pdbcontent, size=500):
+        """create html content that has a viewer showing ribbon
+        This is implemented by using chemdoodle
+        """
+        chem_doodle_base = self.chem_doodle_base
+        script = self._createChemDoodleJS_ribbon(pdbcontent, size)
+        script = '\n'.join(script)
+        text = page_template % locals()
+        return text        
+
+
     def _createChemDoodleJS(self, matter, size):
         code = []
         # create mol
@@ -64,8 +75,8 @@ class Factory(object):
         # add mol to canvas
         code.append('canvas.loadMolecule(mol);')
         code.append('if (!webgl) {canvas.specs.scale = 2.5; canvas.repaint();}')
-        code.append("var msg = 'webgl is not supported by your browser and the scence is fake 3d';")
-        code.append('if (!webgl) {$("body").append("<div>"+msg+"</div>");}')
+        code.append("var msg = 'Note: webgl is not supported by your browser. To get a better 3d view, you may want to try a webgl enabled browser such as firefox or google chrome';")
+        code.append('if (!webgl) {$("body").append("<p/>").append("<div>"+msg+"</div>");}')
 
         add_mol_to_canvas = '\n'.join(code)
         #
@@ -75,27 +86,11 @@ class Factory(object):
         return [text]
 
 
-    def _createChemDoodleJSUsingPDB(self, matter, size):
-        text = [
-            """
-	// initialize component and set visual specifications
-	// var canvas = new ChemDoodle.RotatorCanvas('rotate3D', 200, 200, true);""",
-            "var canvas = new ChemDoodle.TransformCanvas('canvas', %s, %s, true);" % (size, size),
-            """// use JMol colors for atom types
-	canvas.specs.atoms_useJMOLColors = true;
-	// render circles instead of labels
-	canvas.specs.atoms_circles_2D = true;
-	// make bonds symmetrical (they will not face into rings)
-	canvas.specs.bonds_symmetrical_2D = true;
-	// change the background color
-	// canvas.specs.backgroundColor = '#E4FFC2';
-        """]
-        pdb = matter.writeStr('pdb')
-        pdb = pdb.replace('\n', r'\n')
-        text.append('var mol = ChemDoodle.readMOL("%s");' % pdb)
-        text.append('canvas.loadMolecule(mol);')
-        # text.append('canvas.startAnimation();')
-        return text
+    def _createChemDoodleJS_ribbon(self, pdbcontent, size):
+        width = height = size
+        pdb = pdbcontent.replace('\n', r'\n')
+        text = js_create_ribbon_3dscene_template % locals()
+        return [text]
 
 
 page_template = '''
@@ -129,24 +124,45 @@ js_create_3dscene_template = """
     // canvas.specs.set3DRepresentation('Ball and Stick');
     canvas.specs.set3DRepresentation('Stick');
     canvas.specs.backgroundColor = 'black';
+    // canvas.specs.ribbons_cartoonize = true;
     scalefactor = 1;
     }
   else {
     scalefactor = 15;
     canvas \
       = new ChemDoodle.TransformCanvas('canvas', %(width)s, %(height)s, true);
-      // use JMol colors for atom types
-      canvas.specs.atoms_useJMOLColors = true;
-      // render circles instead of labels
-      canvas.specs.atoms_circles_2D = true;
-      // make bonds symmetrical (they will not face into rings)
-      canvas.specs.bonds_symmetrical_2D = true;
-      // change the background color
-      // canvas.specs.backgroundColor = '#E4FFC2';
-      canvas.specs.backgroundColor = 'black';
+    // use JMol colors for atom types
+    canvas.specs.atoms_useJMOLColors = true;
+    // render circles instead of labels
+    canvas.specs.atoms_circles_2D = true;
+    // make bonds symmetrical (they will not face into rings)
+    canvas.specs.bonds_symmetrical_2D = true;
+    // change the background color
+    // canvas.specs.backgroundColor = '#E4FFC2';
+    canvas.specs.backgroundColor = 'black';
   }
   %(add_mol_to_canvas)s;
 """
+
+
+js_create_ribbon_3dscene_template = """
+  // initialize component and set visual specifications
+  var canvas = new ChemDoodle.TransformCanvas3D('canvas', %(width)s, %(height)s);
+  if (!canvas.gl) {
+    canvas.emptyMessage = 'Your browser does not support WebGL';
+    canvas.displayMessage();
+  }
+  canvas.specs.set3DRepresentation('Wireframe');
+  canvas.specs.backgroundColor = 'black';
+  canvas.specs.atoms_display = false;
+  canvas.specs.bonds_display = false;
+  canvas.specs.ribbons_cartoonize = true;
+  
+  var mol = ChemDoodle.readPDB('%(pdb)s');
+  canvas.loadMolecule(mol);
+"""
+
+
 
 # elements for which chemdoodle is buggy
 buggyelements = [

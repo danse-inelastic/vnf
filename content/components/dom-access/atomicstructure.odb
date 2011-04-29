@@ -66,12 +66,8 @@ class Accessor(base):
 
 
     def loadStructureFromDataFile(self, id):
-        director = self.director
-        dds = director.dds
-        record = self.getAtomicStructureRecord(id)
-        pdbdatafile = dds.abspath(record, 'data.pdb')
-        import os
-        if not os.path.exists(pdbdatafile):
+        pdbdatafile = self.hasPDBfile(id)
+        if not pdbdatafile:
             return
         from matter.Parsers import P_pdb
         parser = P_pdb.P_pdb(epsilon=0.1)
@@ -79,6 +75,21 @@ class Accessor(base):
         return ret
 
 
+    def hasPDBfile(self, id):
+        '''check if the record has a pdb data file
+        if yes, return the path
+        if not, return none
+        '''
+        director = self.director
+        dds = director.dds
+        record = self.getAtomicStructureRecord(id)
+        pdbdatafile = dds.abspath(record, 'data.pdb')
+        import os
+        if os.path.exists(pdbdatafile):
+            return pdbdatafile
+        return
+
+        
     def getAtomicStructureRecord(self, id):
         db = self.db
         return db.query(StructureTable).filter_by(id=id).one()
