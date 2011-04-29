@@ -28,7 +28,7 @@ class Factory(object):
     chem_doodle_base = '%s/other/chemdoodle' % js_base
     
     
-    def createViewer(self, matter, size=500):
+    def createViewer(self, matter, size=600):
         """create html content that has a matter viewer
         This is implemented by using chemdoodle
         """
@@ -44,18 +44,21 @@ class Factory(object):
         code = []
         # create mol
         code.append('var mol = new ChemDoodle.structures.Molecule();')
+        code.append('var x,y,z;')
         # add atoms to mol
         sg = matter.sg
         lattice = matter.lattice
         atoms = getAtomsInOneUnitCell(matter)
-        scalefactor = 1.
         for count,atom in enumerate(atoms):
             symbol = atom.symbol
             # this is to avoid a bug in chemdoodle
             if symbol in buggyelements:
                 symbol = 'Cu'
             x,y,z = lattice.cartesian(atom.xyz)
-            code.append('var atom%s = new ChemDoodle.structures.Atom("%s", %s, %s, %s);' % (count, symbol, x*scalefactor,y*scalefactor,z*scalefactor))
+            code.append('x = scalefactor*%s;' % x)
+            code.append('y = scalefactor*%s;' % y)
+            code.append('z = scalefactor*%s;' % z)
+            code.append('var atom%s = new ChemDoodle.structures.Atom("%s", x,y,z);' % (count, symbol))
             code.append('mol.atoms[%s]=atom%s;' % (count,count))
             continue
         # add mol to canvas
@@ -81,7 +84,7 @@ class Factory(object):
 	// make bonds symmetrical (they will not face into rings)
 	canvas.specs.bonds_symmetrical_2D = true;
 	// change the background color
-	canvas.specs.backgroundColor = '#E4FFC2';
+	// canvas.specs.backgroundColor = '#E4FFC2';
         """]
         pdb = matter.writeStr('pdb')
         pdb = pdb.replace('\n', r'\n')
@@ -114,16 +117,18 @@ page_template = '''
 
 js_create_3dscene_template = """
   // initialize component and set visual specifications
-  var canvas;
-  var webgl = ChemDoodle.featureDetection.supports_webgl();
+  var canvas, scalefactor;
+  var webgl = ChemDoodle.featureDetection.supports_webgl(); 
   if (webgl) {
     canvas \
       = new ChemDoodle.TransformCanvas3D('canvas', %(width)s, %(height)s);
     // canvas.specs.set3DRepresentation('Ball and Stick');
     canvas.specs.set3DRepresentation('Stick');
-    // canvas.specs.backgroundColor = 'black';
+    canvas.specs.backgroundColor = 'black';
+    scalefactor = 1;
     }
   else {
+    scalefactor = 20;
     canvas \
       = new ChemDoodle.TransformCanvas('canvas', %(width)s, %(height)s, true);
       // use JMol colors for atom types
@@ -133,7 +138,8 @@ js_create_3dscene_template = """
       // make bonds symmetrical (they will not face into rings)
       canvas.specs.bonds_symmetrical_2D = true;
       // change the background color
-      canvas.specs.backgroundColor = '#E4FFC2';
+      // canvas.specs.backgroundColor = '#E4FFC2';
+      canvas.specs.backgroundColor = 'black';
   }
   %(add_mol_to_canvas)s;
 """
