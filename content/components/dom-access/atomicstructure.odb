@@ -72,6 +72,9 @@ class Accessor(base):
         from matter.Parsers import P_pdb
         parser = P_pdb.P_pdb(epsilon=0.1)
         ret = parser.parseFile(pdbdatafile)
+        if not ret.description:
+            record = self.getAtomicStructureRecord(id)
+            ret.description = record.short_description
         return ret
 
 

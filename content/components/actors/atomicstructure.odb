@@ -168,11 +168,18 @@ class Actor(base):
 
 
     def editAtomicStructureForm(self, director):
+        domaccess = self._domaccess(director)
+        id = self.inventory.id
+        if domaccess.hasPDBfile(id):
+            from vnf.content.visuals.atomicstructure.editor_pdb import Factory
+            f = Factory(id=id, director=director)
+            return f.create()
+        
         return director.retrieveVisual(
-                                        'atomicstructure/edit-structure-form',
-                                        director    = director,
-                                        id          = self.inventory.id
-                                      )
+            'atomicstructure/edit-structure-form',
+            director    = director,
+            id          = self.inventory.id
+            )
 
 
     def canceledit(self, director):
@@ -296,6 +303,9 @@ class Actor(base):
     def createDetailsview(self, director):
         id = self.inventory.id
         domaccess = self._domaccess(director)
+
+        if domaccess.hasPDBfile(id):
+            return self.createDetailsview_PDB(director)
         
         if not domaccess.isConstructued(id=id):
             # structure not ready
@@ -309,6 +319,13 @@ class Actor(base):
                 id        = self.inventory.id)
             
         return doc
+
+
+    def createDetailsview_PDB(self, director):
+        id = self.inventory.id
+        from vnf.content.visuals.atomicstructure.viewdetails_pdb import Factory
+        f = Factory(director=director, id=id)
+        return f.create()
 
 
     def changeDescriptionAndUpdateAtomicStructureView(self, director):

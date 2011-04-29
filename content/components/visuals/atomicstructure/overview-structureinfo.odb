@@ -112,8 +112,11 @@ class Factory(object):
                  id=self.id)
             )
         tip = 'click me to show details of this atomic structure'
-        detailslink = lc.link(label='details', onclick=details, tip=tip)
-        doc.add(detailslink)
+        detailslink = lc.link(
+            label='details', onclick=details, tip=tip, 
+            id='%s-details-link' % self.id)
+        details_edit_sp = doc.splitter()
+        sp.section().add(detailslink)
 
         # edit link
         domaccess = self.domaccess
@@ -123,8 +126,11 @@ class Factory(object):
                      id=self.id)
                 )
             tip = 'click me to edit this atomic structure'
-            editlink = lc.link(label='edit', onclick=edit, tip=tip)
-            doc.add(editlink)
+            editlink = lc.link(
+                label='edit', onclick=edit, tip=tip,
+                id='%s-edit-link' % self.id,
+                )
+            sp.section().add(editlink)
         return doc
 
 

@@ -11,17 +11,12 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 PROJECT = vnf
-PACKAGE = content/visuals
+PACKAGE = content/visuals/atomicstructure
 
 
 # directory structure
 
 BUILD_DIRS = \
-	atomicstructure \
-	computation \
-	material_simulations \
-	neutronexperiment \
-	table \
 
 OTHER_DIRS = \
 
@@ -40,11 +35,13 @@ all: export
 # export
 
 EXPORT_PYTHON_MODULES = \
+	SingleStructureEditorFactory.py \
+	SingleStructureViewFactory.py \
+	SingleStructureVisualFactory.py \
 	__init__.py \
-	login.py \
-	matter_viewer.py \
-	view_indicator.py \
-
+	editor_pdb.py \
+	viewdetails.py \
+	viewdetails_pdb.py \
 
 
 export:: export-package-python-modules 
