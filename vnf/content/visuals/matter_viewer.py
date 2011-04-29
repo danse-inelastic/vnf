@@ -28,7 +28,7 @@ class Factory(object):
     chem_doodle_base = '%s/other/chemdoodle' % js_base
     
     
-    def createViewer(self, matter, size=600):
+    def createViewer(self, matter, size=500):
         """create html content that has a matter viewer
         This is implemented by using chemdoodle
         """
@@ -63,6 +63,10 @@ class Factory(object):
             continue
         # add mol to canvas
         code.append('canvas.loadMolecule(mol);')
+        code.append('if (!webgl) {canvas.specs.scale = 2.5; canvas.repaint();}')
+        code.append("var msg = 'webgl is not supported by your browser and the scence is fake 3d';")
+        code.append('if (!webgl) {$("body").append("<div>"+msg+"</div>");}')
+
         add_mol_to_canvas = '\n'.join(code)
         #
         width = height = size
@@ -128,7 +132,7 @@ js_create_3dscene_template = """
     scalefactor = 1;
     }
   else {
-    scalefactor = 20;
+    scalefactor = 15;
     canvas \
       = new ChemDoodle.TransformCanvas('canvas', %(width)s, %(height)s, true);
       // use JMol colors for atom types
