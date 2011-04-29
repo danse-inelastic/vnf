@@ -1,0 +1,82 @@
+# -*- Python -*-
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                      California Institute of Technology
+#                      (C) 2006-2009  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+import numpy
+
+import luban.content as lc
+from luban.content import select, load, alert
+from luban.content.FormTextField import FormTextField
+from luban.content.FormTextArea import FormTextArea
+
+
+class Factory(object):
+
+    def __init__(self, director, id):
+        self.director = director
+        self.id = id
+        self.domaccess = director.retrieveDOMAccessor('atomicstructure')
+        self.atomicstructure = self.domaccess.getAtomicStructure(id)
+        self.record = self.domaccess.orm(self.atomicstructure)
+        self.actor = 'atomicstructure'
+
+    def show(self):
+        doc = lc.document(title='')
+        tabs = lc.tabs()
+        #jmol
+#        from vnf.components.JnlpFile import JnlpFile
+#        director = self.director
+#        args = {
+#                'cgihome':director.cgihome,
+#                'sentry.username':director.sentry.username,
+#                'sentry.ticket':director.sentry.ticket,
+#                'matterId':matter.id,
+#                'displayType':'structure',
+#                }
+#        jnlpFile = JnlpFile(
+#                resources=('jmolVnf.jar', 'Jmol.jar','pg74.216.jdbc3.jar'),
+#                mainClass='jmolVnf.JmolVnf',
+#                programArguments = args,
+#                fileName='jmolVnfLauncher',
+#                )
+#        relativeLocationOfFile = jnlpFile.writeJnlp(director)
+#        codebase = director.weaver.inventory.htmlbase
+        text = '<script type="text/javascript" src="jmol/Jmol.js"></script>'
+        text += """<script> 
+        jmolInitialize("jmol", useSignedApplet);
+        //jmolCheckBrowser("popup", "browsercheck", "onClick");
+        </script> 
+        <script> 
+        jmolApplet(400, "load caffeine.xyz");
+        </script>"""
+        hdoc = lc.htmldocument(text=text) 
+        tabs.tab('java viewer').add(hdoc)
+        # matter builder
+        from luban.content.science.MatterBuilder import MatterBuilder
+        mb = MatterBuilder()  
+        mb.lattice = self.atomicstructure.lattice.base.tolist()
+        atoms=[]
+        for sym,pos in zip(self.atomicstructure.symbols, self.atomicstructure.xyz_cartn):
+            atoms.append([sym,pos])
+        mb.atoms = atoms
+        #doc.add(mb) 
+        tabs.tab('o3d viewer').add(mb)
+        return tabs 
+
+
+def visual(director, id):
+    return Factory(director, id).show()
+    
+# version
+__id__ = "$Id$"
+
+# End of file 
