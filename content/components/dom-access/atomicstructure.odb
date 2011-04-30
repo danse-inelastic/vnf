@@ -130,6 +130,7 @@ class Accessor(base):
             shutil.copy(path, dest)
             # update record so we have the right description
             record.short_description = structure.description
+            record.chemical_formula = structure.getChemicalFormula()[:1000]
             self.db.updateRecord(record)
         # otherwise we use orm to save everything
         else:
