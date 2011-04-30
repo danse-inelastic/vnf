@@ -67,7 +67,7 @@ p.hidden {
 
 /* overload the default behavior of luban for input */
 input, select, textarea{
-    border-color: #cced8c;
+    border-color: lightGrey;
     border-width: 2;
     -moz-border-radius: 5px;
     -webkit-border-radius: 5px;

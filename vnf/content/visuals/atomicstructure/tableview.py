@@ -104,7 +104,9 @@ def visual(
         button = luban.content.button(
             label='Upload your structure',
             tip='upload your atomic structure',
-            icon='new.png')
+            icon='new.png',
+            Class='big-button',
+            )
         toolbar.add(button)
         # the upload view
         uploadview = createPublicUploadView(director)
