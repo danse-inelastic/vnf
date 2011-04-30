@@ -30,3 +30,9 @@ http://luban.danse.us/cgi-bin/aokuang/main.cgi?actor=downloader
 Please click on the "Code" tab there to see how you can
 implement a downloader.
 
+
+Uploader
+""""""""
+
+See vnf/content/visuals/uploader_example for an example.
+

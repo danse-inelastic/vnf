@@ -37,45 +37,45 @@ class Actor(base):
         '''
         # assumption: only one file uploaded
 
+        # namespace
+        import os
+
+        # 
+        domaccess = director.retrieveDOMAccessor('atomicstructure')
+
         # check the upload
         uploadid = self.inventory.uploadid
-        
+        # .. get the upload directory
         from vnf.utils.upload import abspath
         dir = abspath(uploadid)
-        
+        # .. get the entries
         entries = os.listdir(dir); found = None
+        # .. find the entry with the correct ext
         for entry in entries:
             if entry.startswith('.'): 
                 continue
-            if entry.endswith('.xyz') or entry.endswith('.pdb') or \
-                                                entry.endswith('.cif'): 
+            base, ext = os.path.splitext(entry)
+            if ext in domaccess.acceptable_datafile_exts:
                 found = entry
                 break
-        # nothing uploaded
-        if not found: return alert('Invalid file')
-
+            continue
+        else:
+            return alert('File does not have understandable extension')
+        
         # path to the file
         found = os.path.join(dir, found)
 
-        # XXXX
-        # should check if the files are sane and are not hostile
-        # ....
+        # check if the files are sane and are not hostile
+        if not domaccess.datafileIsSane(found):
+            return alert("Failed to parse the data file")
 
-        # create a new record
-        domaccess = director.retrieveDOMAccessor('atomicstructure')
-        structure = domaccess.newAtomicStructure()
-        #filepath, ext = os.path.splitext(found)
-        structure.read(found)
-        #make sure description is not too long
-        structure.description = structure.description[:250]
         #
-        orm = director.clerk.orm
-        self.inventory.structureid = orm(structure).id
-        orm.save(structure)
+        newrecordid = domaccess.saveDataFileAsStructure(found)
         
         return load(
-            actor='atomicstructure', routine='showOverview',
-            id = self.inventory.structureid,
+            actor='atomicstructure', 
+            routine='showOverview',
+            id = newrecordid,
             )
 
 

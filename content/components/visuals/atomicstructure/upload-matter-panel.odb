@@ -72,13 +72,6 @@ def visual(structureid=None, director=None):
     # spacer
     doc.paragraph()
     
-    # cancel button
-    cancel = lc.link(
-        label='cancel',
-        onclick = load(actor='atomicstructure', routine='showOverview', id=structureid)
-        )
-    doc.add(cancel)
-
     return doc
 
 

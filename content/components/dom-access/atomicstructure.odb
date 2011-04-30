@@ -58,20 +58,93 @@ class Accessor(base):
 
 
     def getAtomicStructure(self, id):
-        ret = self.loadStructureFromDataFile(id)
+        ret = self._loadStructureFromDataFile(id)
         if ret:
             return ret
         orm = self.orm
         return orm.load(Structure, id)
 
+    acceptable_datafile_exts = ['.xyz', '.pdb', '.cif']
+    def datafileIsSane(self, path):
+        """check whether the given data file is a good one
+        that can be converted into a atomic structure 
+        in the db table.
+        """
+        import os
+        base, ext = os.path.splitext(path)
+        if ext not in ['.xyz', '.cif', '.pdb']:
+            return False
+        # XXX: this is a hack
+        # the pdb parser is a bit too restrictive by default
+        # we have to loose it up a bit
+        from matter.Parsers.P_pdb import P_pdb
+        P_pdb.epsilon = 0.1
+        from matter import loadStructure
+        try:
+            loadStructure(path)
+        except:
+            return False
+        return True
 
-    def loadStructureFromDataFile(self, id):
+
+    def saveDataFileAsStructure(self, path):
+        """given datafile path, save the structure in the file
+        to a db record, and return its id
+
+        assumption: the file is sane. 
+          !!! call datafileIsSane on the path to check beforehand !!!
+        """
+        # imports
+        import os, shutil
+
+        #
+        director = self.director
+
+        # create a new structure and get the db record
+        structure = self.newAtomicStructure()
+        record = self.orm(structure)
+        # read structure from file
+        # XXX: this is a hack
+        # the pdb parser is a bit too restrictive by default
+        # we have to loose it up a bit
+        from matter.Parsers.P_pdb import P_pdb
+        P_pdb.epsilon = 0.1
+        # read the structure
+        structure.read(path)
+        # XXX truncate the description
+        structure.description = structure.description[:250]
+
+        # check if the upload is a pdb, if so,
+        # we need special treatment
+        base, ext = os.path.splitext(path)
+        ispdb = ext == '.pdb'
+        
+        # 
+        # for pdb file, we just save the pdb file
+        if ispdb:
+            # the destination file path
+            dest = director.dds.abspath(record, 'data.pdb')
+            dir = os.path.dirname(dest)
+            if not os.path.exists(dest):
+                os.makedirs(dir)
+            shutil.copy(path, dest)
+            # update record so we have the right description
+            record.short_description = structure.description
+            self.db.updateRecord(record)
+        # otherwise we use orm to save everything
+        else:
+            #
+            orm = self.orm
+            orm.save(structure)
+
+        return record.id
+
+
+    def _loadStructureFromDataFile(self, id):
         pdbdatafile = self.hasPDBfile(id)
         if not pdbdatafile:
             return
-        from matter.Parsers import P_pdb
-        parser = P_pdb.P_pdb(epsilon=0.1)
-        ret = parser.parseFile(pdbdatafile)
+        ret = loadPDBfile(pdbdatafile)
         if not ret.description:
             record = self.getAtomicStructureRecord(id)
             ret.description = record.short_description
@@ -274,6 +347,10 @@ from dsaw.db.VersatileReference import global_pointer
 import sqlalchemy
 
 
+def loadPDBfile(pdbdatafile):
+    from matter.Parsers import P_pdb
+    parser = P_pdb.P_pdb(epsilon=0.1)
+    return parser.parseFile(pdbdatafile)
 
 def accessor():
     return Accessor()

@@ -74,6 +74,7 @@ def viewindicator(id, director):
 
     return director.retrieveVisual('view-indicator', path=path)
 
+
 # version
 __id__ = "$Id$"
 
