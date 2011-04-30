@@ -12,11 +12,8 @@
 #
 
 
-def visual(director=None):
-    from vnf.content.visuals.atomicstructure.StructureUploaderFactory import Factory
-    oncomplete=('atomicstructure/uploadmatter', 'onUpload')
-    f = Factory(director, oncomplete=oncomplete)
-    return f.build()
+from vnf.content.actors.atomicstructure.UploadStructure_Public import Actor
+def actor(): return Actor('atomicstructure/uploadmatter-public')
 
 
 # version

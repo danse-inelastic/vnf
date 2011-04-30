@@ -109,7 +109,7 @@ class Actor(base):
             )
         return tableview
 
-
+    
     def _defaults(self):
         super(Actor, self)._defaults()
         self.inventory.order_by = 'date'

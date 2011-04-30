@@ -37,6 +37,7 @@ all: export
 EXPORT_PYTHON_MODULES = \
 	UploadStructure.py \
 	UploadStructure_Mixin.py \
+	UploadStructure_Public.py \
 	__init__.py \
 
 

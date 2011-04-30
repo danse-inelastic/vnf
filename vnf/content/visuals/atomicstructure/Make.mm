@@ -38,8 +38,10 @@ EXPORT_PYTHON_MODULES = \
 	SingleStructureEditorFactory.py \
 	SingleStructureViewFactory.py \
 	SingleStructureVisualFactory.py \
+	StructureUploaderFactory.py \
 	__init__.py \
 	editor_pdb.py \
+	tableview.py \
 	viewdetails.py \
 	viewdetails_pdb.py \
 

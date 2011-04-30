@@ -15,7 +15,7 @@
 import luban.content
 import os
 
-from luban.components.AuthorizedActor import AuthorizedActor as base
+from luban.components.Actor import Actor as base
 from UploadStructure_Mixin import Mixin
 
 class Actor(base, Mixin):
@@ -39,9 +39,7 @@ class Actor(base, Mixin):
             return luban.content.alert(str(e))
         
         return luban.content.load(
-            actor='atomicstructure', 
-            routine='showOverview',
-            id = newrecordid,
+            actor='atomicstructure-public', 
             )
 
 

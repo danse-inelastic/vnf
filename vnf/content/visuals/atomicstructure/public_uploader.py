@@ -13,8 +13,8 @@
 
 
 def visual(director=None):
-    from vnf.content.visuals.atomicstructure.StructureUploaderFactory import Factory
-    oncomplete=('atomicstructure/uploadmatter', 'onUpload')
+    from .StructureUploaderFactory import Factory
+    oncomplete=('atomicstructure/uploadmatter-public', 'onUpload')
     f = Factory(director, oncomplete=oncomplete)
     return f.build()
 
