@@ -11,11 +11,6 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
-
-from vnf.content.actors.atomicstructure.UploadStructure import Actor
-def actor(): return Actor('atomicstructure/uploadmatter')
-
-
 # version
 __id__ = "$Id$"
 

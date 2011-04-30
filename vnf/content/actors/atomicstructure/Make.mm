@@ -11,14 +11,12 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 PROJECT = vnf
-PACKAGE = content/actors
+PACKAGE = content/actors/atomicstructure
 
 
 # directory structure
 
 BUILD_DIRS = \
-	atomicstructure \
-	material_simulations \
 
 OTHER_DIRS = \
 
@@ -37,6 +35,8 @@ all: export
 # export
 
 EXPORT_PYTHON_MODULES = \
+	UploadStructure.py \
+	UploadStructure_Mixin.py \
 	__init__.py \
 
 
@@ -48,6 +48,6 @@ export:: export-package-python-modules
 # docs: export-doxygen-docs
 
 # version
-# $Id$
+# $Id: Make.mm 3677 2011-03-31 22:12:33Z linjiao $
 
 # End of file
