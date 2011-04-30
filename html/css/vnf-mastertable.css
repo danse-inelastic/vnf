@@ -339,6 +339,7 @@ div.master-table-tablebottomtoolbar-left-interior > table.luban-splitter{
     -webkit-border-bottom-right-radius: 10px;
 }
 .master-table.tabulated td{
+    font-family: Optima, Segoe, "Segoe UI", Candara, Arial, sans-serif;
     padding: 3px 5px;
 }
 .master-table tr.odd>td:first-child {

@@ -1,5 +1,16 @@
 /*  -*- CSS -*-  */
 
+/* table */
+#atomicstructure-table.tabulated tbody td {
+    color: #505050;
+    font-size: 0.9em;
+}
+
+#atomicstructure-table tbody td[colname='description'] {
+    font-size: 1.05em;
+}
+
+
 /* overview */
 #atomicstructure-info-section {
     margin: 0.8em 0;

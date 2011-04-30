@@ -1,15 +1,10 @@
-#phonons-table.tabulated {
-    font-size: 1.2em;
+#phonons-table.tabulated tbody td {
+    color: #505050;
+    font-size: 0.9em;
 }
 
-#phonons-table tbody td[colname='creator'] {
-    color: #505050;
-    font-size: 80%;
-}
-
-#phonons-table tbody td[colname='created'] {
-    color: #505050;
-    font-size: 80%;
+#phonons-table tbody td[colname='description'] {
+    font-size: 1.05em;
 }
 
 .phonon-dispersion-plot-container {
