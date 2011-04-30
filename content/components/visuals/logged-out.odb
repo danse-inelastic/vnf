@@ -20,9 +20,9 @@ def visual(director):
     doc = lc.document(id='logged-out', title='Logged out')
     doc.paragraph(text='You are now logged out of the VNF')
 
-    b = lc.button(id='log-back-in', label='log back in'); doc.add(b)
-    show_login_page = load(actor='login', routine='recreate')
-    b.onclick = show_login_page
+    # b = lc.button(id='log-back-in', label='log back in'); doc.add(b)
+    # show_login_page = load(actor='login', routine='recreate')
+    # b.onclick = show_login_page
     
     return doc
 
