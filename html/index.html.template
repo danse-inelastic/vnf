@@ -67,7 +67,14 @@ var showPreview = function(entry, url) {
 };
 
 var createHoverCallback = function(entry, url) {
-  var f = function () { showPreview(entry, url); return false;};
+  var f = function () {
+    showPreview(entry, url); 
+    $("#apps-row").find('td').removeClass("focused");
+    $("#apps-info").find('td').removeClass("focused");
+    $("#"+entry).addClass("focused");
+    $("#"+entry+"-info").addClass("focused");
+    return false;
+  };
   return f;
 };
 
@@ -89,9 +96,11 @@ for (var i=0; i<entries.length; i++) {
   $("#"+entry+"-info").click(openurlcallback);
 }
 
-$("#disp-viewer").hover();
+$("#vnf-main").hover();
 $("#intro").hide();
+$("#intro-link").hide();
 $("#intro-link").click(function(){$("#intro").show();});
+$("#intro-link").fadeIn(1500);
 
 })(jQuery);
 });
@@ -139,22 +148,25 @@ phonon dispersions
 
 <tr id="apps-info">
 <td id="vnf-main-info">
-This is the main VNF interface. 
+The main VNF interface. 
 It is an integrated environment that can perform
 sophisticated simulation and analysis workflows.
 </td>
 
 <td id="struct-viewer-info">
+Atomic structure viewer.
 In this application one can browse public records of atomic
 structures in the VNF, and view them in 3D.
 </td>
 
 <td id="disp-viewer-info">
+Phonon dispersions viewer.
 In this application one can browse public records of phonons
 in the VNF, and view dispersion plots.
 </td>
 
 <td id="arcs-apps-info">
+The VNF ARCS portal.
 This is the portal to VNF applications for the ARCS instrument.
 </td>
 
@@ -164,7 +176,7 @@ This is the portal to VNF applications for the ARCS instrument.
 </table>
 
 <div id="intro-container">
-<a id='intro-link'>What is VNF?</a>
+<a id='intro-link'>What is VNF >></a>
 <div id="intro">
 The Virtual Neutron Facility (VNF) is an online tool that allows users to perform end-to-end, full simulations of neutron scattering experiments. It integrates scientific software packages for material simulations with Monte-Carlo simulations of neutron scattering to gain insights into material properties.
 </div> <!-- intro -->

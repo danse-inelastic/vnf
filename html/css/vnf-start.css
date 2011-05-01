@@ -21,6 +21,7 @@ body {
     height: 21.5em;
     -moz-box-shadow: 5px 5px 5px gray;
     -webkit-box-shadow: 5px 5px 5px gray;
+    margin-bottom: 1em;
 }
 
 #apps-row {
@@ -34,7 +35,12 @@ body {
     text-shadow: none;
     vertical-align: bottom;
     width: 12em;
-    padding: 0 0.5em 0.3em 0
+    padding: 0 0.5em 0.3em 0;
+    cursor: pointer;
+}
+
+#apps-row td.focused {
+    background-color: #555;
 }
 #apps-row td div {
     margin-left: 1em;
@@ -50,13 +56,16 @@ td#vnf-main {
 
 
 #apps-info td {
+    cursor: pointer;
     font-size: 0.75em;
     font-family: arial;
     vertical-align: top;
-    color: #333;
+    color: #555;
     padding: 1em;
 }
-
+#apps-info td.focused {
+    color: #005000;
+}
 
 #intro-container {
     margin-top: 1em;
@@ -65,4 +74,10 @@ td#vnf-main {
 
 #intro-link {
     font-size: 1.5em;
+    cursor: pointer;
+    display: block;
+    margin-bottom: 1em;
+}
+#intro-link:hover{
+    color: #005000;
 }
