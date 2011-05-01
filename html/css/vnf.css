@@ -406,6 +406,23 @@ width:100%;
 .luban-link.debug {
     color: lightBlue;
 }
+/* .. rst */
+.ReST {
+    background-color: white;
+    margin: 1em;
+    border: 1px solid lightGrey;
+    -moz-border-radius: 1em;
+    padding: 0.2em 1em;
+    font-family: Times New Roman;
+    text-shadow: none;
+}
+.ReST pre {
+    background-color: black;
+    color: white;
+    padding: 0.3em 0.7em;
+    font-family: monospace;
+    margin: 0.2em 2em;
+}
 /* .. big button */
 .big-button {
     font-size: 1.4em;
