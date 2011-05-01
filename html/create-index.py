@@ -20,7 +20,7 @@ class App(base):
         controller_url = self.inventory.controller_url
         
         t = open('index.html.template').read()
-        c = t.replace('xxxBASExxx', html_base)
+        t = t.replace('xxxBASExxx', html_base)
         c = t.replace('xxxCONTROLLERxxx', controller_url)
         open('index.html', 'w').write(c)
         

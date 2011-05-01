@@ -10,7 +10,7 @@ body {
 
 
 #body-wrapper {
-    margin-top: 1em;
+    margin: 1em;
 }
 
 
@@ -55,4 +55,14 @@ td#vnf-main {
     vertical-align: top;
     color: #333;
     padding: 1em;
+}
+
+
+#intro-container {
+    margin-top: 1em;
+    padding: 1em;
+}
+
+#intro-link {
+    font-size: 1.5em;
 }

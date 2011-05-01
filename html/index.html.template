@@ -89,6 +89,10 @@ for (var i=0; i<entries.length; i++) {
   $("#"+entry+"-info").click(openurlcallback);
 }
 
+$("#disp-viewer").hover();
+$("#intro").hide();
+$("#intro-link").click(function(){$("#intro").show();});
+
 })(jQuery);
 });
   </script>
@@ -100,6 +104,7 @@ for (var i=0; i<entries.length; i++) {
 </div>
 
 <div id="body-wrapper">
+
 <table>
 <tbody>
 <tr id="preview-row">
@@ -134,7 +139,9 @@ phonon dispersions
 
 <tr id="apps-info">
 <td id="vnf-main-info">
-The Virtual Neutron Facility (VNF) is an online tool that allows users to perform end-to-end, full simulations of neutron scattering experiments. It integrates scientific software packages for material simulations with Monte-Carlo simulations of neutron scattering to gain insights into material properties.
+This is the main VNF interface. 
+It is an integrated environment that can perform
+sophisticated simulation and analysis workflows.
 </td>
 
 <td id="struct-viewer-info">
@@ -155,6 +162,13 @@ This is the portal to VNF applications for the ARCS instrument.
 
 </tbody>
 </table>
+
+<div id="intro-container">
+<a id='intro-link'>What is VNF?</a>
+<div id="intro">
+The Virtual Neutron Facility (VNF) is an online tool that allows users to perform end-to-end, full simulations of neutron scattering experiments. It integrates scientific software packages for material simulations with Monte-Carlo simulations of neutron scattering to gain insights into material properties.
+</div> <!-- intro -->
+</div> <!-- intro-container -->
 
 </div> <!-- body wrapper -->
 
