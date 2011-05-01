@@ -15,6 +15,15 @@
 # this is the factory for the page containing login form
 # and also introductory materials
 
+# implementation details:
+# currently we are using chemdoodle.
+# this quick hack we are trying to make sure in most browsers
+# users can see sth. browsers with webgl show ribbons for
+# pdb files, and show 3d view of a unit cell for other structures.
+# browsers without webgl will show a "fake" 3d view of structure,
+# while for pdb file it is the molecule, for other structures
+# the unit cell is show (with atoms at the boundaries of unitcell)
+
 
 from luban.content import load, select, alert, createCredential
 import luban.content as lc
@@ -83,14 +92,19 @@ class Factory(object):
         width = height = size
         #
         text = js_create_3dscene_template % locals()
-        return [text]
+        code = [text]
+        return code
 
 
     def _createChemDoodleJS_ribbon(self, pdbcontent, size):
         width = height = size
         pdb = pdbcontent.replace('\n', r'\n')
         text = js_create_ribbon_3dscene_template % locals()
-        return [text]
+        code = [text]
+        code.append('if (!webgl) {canvas.specs.scale = 12; canvas.repaint();}')
+        code.append("var msg = 'Note: webgl is not supported by your browser. To get a better 3d view, you may want to try a webgl enabled browser such as firefox or google chrome';")
+        code.append('if (!webgl) {$("body").append("<p/>").append("<div>"+msg+"</div>");}')
+        return code
 
 
 page_template = '''
@@ -146,18 +160,25 @@ js_create_3dscene_template = """
 
 
 js_create_ribbon_3dscene_template = """
-  // initialize component and set visual specifications
-  var canvas = new ChemDoodle.TransformCanvas3D('canvas', %(width)s, %(height)s);
-  if (!canvas.gl) {
-    canvas.emptyMessage = 'Your browser does not support WebGL';
-    canvas.displayMessage();
+  var canvas;
+  var webgl = ChemDoodle.featureDetection.supports_webgl(); 
+  if (webgl) {
+    canvas = new ChemDoodle.TransformCanvas3D('canvas', %(width)s, %(height)s);
+    canvas.specs.set3DRepresentation('Wireframe');
+    canvas.specs.backgroundColor = 'black';
+    canvas.specs.atoms_display = false;
+    canvas.specs.bonds_display = false;
+    canvas.specs.ribbons_cartoonize = true;
+    }
+  else {
+    canvas \
+      = new ChemDoodle.TransformCanvas('canvas', %(width)s, %(height)s, true);
+    canvas.specs.atoms_useJMOLColors = true;
+    canvas.specs.atoms_circles_2D = true;
+    canvas.specs.atoms_circleDiameter_2D = 3;
+    canvas.specs.bonds_symmetrical_2D = true;
+    canvas.specs.backgroundColor = 'black';
   }
-  canvas.specs.set3DRepresentation('Wireframe');
-  canvas.specs.backgroundColor = 'black';
-  canvas.specs.atoms_display = false;
-  canvas.specs.bonds_display = false;
-  canvas.specs.ribbons_cartoonize = true;
-  
   var mol = ChemDoodle.readPDB('%(pdb)s');
   canvas.loadMolecule(mol);
 """

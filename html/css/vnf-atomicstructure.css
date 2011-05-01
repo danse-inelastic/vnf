@@ -3,11 +3,11 @@
 /* table */
 #atomicstructure-table.tabulated tbody td {
     color: #505050;
-    font-size: 0.9em;
+    font-size: 1.em;
 }
 
 #atomicstructure-table tbody td[colname='description'] {
-    font-size: 1.05em;
+    font-size: 1.15em;
 }
 
 
