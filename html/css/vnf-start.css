@@ -8,18 +8,19 @@ body {
     margin: 0;
 }
 
-img.start-app-icon {
-    width: 18em;
-    padding: 1em;
-    border: none;
+
+#body-wrapper {
+    margin-top: 1em;
 }
 
 
 #preview-row {
-    height: 11em;
+    height: 22em;
 }
 #preview-row img{
-    height: 10.5em;
+    height: 21.5em;
+    -moz-box-shadow: 5px 5px 5px gray;
+    -webkit-box-shadow: 5px 5px 5px gray;
 }
 
 #apps-row {

@@ -60,7 +60,7 @@ var urls = [
  ,"xxxCONTROLLERxxx?actor=instruments/arcs/login"
  ];
 
-var showPreview = function(entry) {
+var showPreview = function(entry, url) {
   $("#preview-img").attr("src", "images/start-apps/"+entry+".png");
   $('#preview').unbind('click');
   $("#preview").click(createOpenUrlCallback(url));
