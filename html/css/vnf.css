@@ -412,6 +412,7 @@ width:100%;
     margin: 1em;
     border: 1px solid lightGrey;
     -moz-border-radius: 1em;
+    -webkit-border-radius: 1em;
     padding: 0.2em 1em;
     font-family: Times New Roman;
     text-shadow: none;

@@ -2,8 +2,56 @@
 This is CSS layout for start page
 */
 
+
+body {
+    background-color: white;
+    margin: 0;
+}
+
 img.start-app-icon {
     width: 18em;
     padding: 1em;
     border: none;
+}
+
+
+#preview-row {
+    height: 11em;
+}
+#preview-row img{
+    height: 10.5em;
+}
+
+#apps-row {
+    height: 8em;
+}
+#apps-row td {
+    background-color: #DDDDDD;
+    border: 0.5em solid white;
+    color: white;
+    text-align: right;
+    text-shadow: none;
+    vertical-align: bottom;
+    width: 12em;
+    padding: 0 0.5em 0.3em 0
+}
+#apps-row td div {
+    margin-left: 1em;
+    font-size: 1.6em;
+    font-family: fantasy;
+    font-weight: bold;
+    
+}
+/* vnf main is special */
+td#vnf-main {
+    background-color: #ccd5c0;
+}
+
+
+#apps-info td {
+    font-size: 0.75em;
+    font-family: arial;
+    vertical-align: top;
+    color: #333;
+    padding: 1em;
 }
