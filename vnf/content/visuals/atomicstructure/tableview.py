@@ -69,8 +69,9 @@ def visual(
         compilefilter, filtercols,
         filterfromlabel, smartlabels, labels,
         sorting_options = [
-            ('id', 'ID'),
+            # ('id', 'ID'),
             ('short_description', 'Description'),
+            ('chemical_formula', 'Chemical formula'),
             ('date', 'Date created'),
         ],
         polymorphic = False, dbtablename='AtomicStructure.Structure',
@@ -185,7 +186,7 @@ measure2dbcol = {
     'description': 'short_description',
     'created': 'date',
     }
-filtercols = columns[1:]
+filtercols = columns[2:]
 
 
 # version

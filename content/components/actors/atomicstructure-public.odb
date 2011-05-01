@@ -108,7 +108,7 @@ class Actor(base):
             publiconly      = True,
             )
         return tableview
-
+    
     
     def _defaults(self):
         super(Actor, self)._defaults()
