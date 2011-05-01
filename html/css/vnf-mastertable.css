@@ -59,11 +59,11 @@ div.master-table-toptoolbar h1.luban-document-title {
 
 /* big button in the top toolbar */
 .master-table-toptoolbar-container .luban-toolbar .big-button.luban-button-container {
-    border: 2px solid gray;
     font-size: 1.4em;
     margin-left: 0.5em;
     padding: 0.3em 0.5em;
-    background-color: #333333;
+    background-color: #445599;
+    border: 3px solid lightgrey;
     -moz-border-radius: 0.4em;
     -webkit-border-radius: 0.4em;
 }
@@ -76,6 +76,7 @@ div.master-table-toptoolbar h1.luban-document-title {
     margin-left: 0.5em;
 }
 
+/* advanced filter widget */
 .master-table-advanced-filter-widget {
     display: inline;
 }

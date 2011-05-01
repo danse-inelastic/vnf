@@ -34,34 +34,80 @@ class Factory(object):
         director = self.director
         
         # container
-        doc = luban.content.document(title='', Class='container', id='structure-uploader-container')
+        doc = luban.content.document(
+            title='Upload an atomic structure', 
+            Class='container', 
+            id='structure-uploader-container')
 
         # 
-        doc.paragraph(text=['Choose a file to upload.  Supported formats are:'])
+        # sp = doc.splitter()
+        grid = luban.content.grid(); doc.add(grid)
+        row = grid.row()
+        
+        # left: uploader
+        uploader = self.createUploadButton()
+        # sp.section(id='left').add(uploader)
+        row.cell(id='left').add(uploader)
 
-        doc.paragraph(text=['1) .cif'])
-
-        doc.paragraph(text=['2) .pdb'])
-        doc.paragraph(text=['3) .pdffit'])
-        doc.paragraph(text=['4) .xyz',
-         'Each line must contain an atom symbol followed by its position.',    
-         'If 9 floats are given on the comment line, these are used as the lattice vectors.',
-         'Format: a_x a_y a_z b_x b_y b_z c_x c_y c_z'])
-        doc.paragraph(text=['5) .xyz (VNF format)',
-         'All previous xyz rules apply, except an additional charge (in electron units) may be given following each position triplet.'])
-        doc.paragraph(text=['6) .xyz (raw)',
-         'Each line must contain an atom symbol followed by its position.',
-         'No total number of atoms is required.'])
+        # right: link to show hints
+        # .. first we need the hints document
+        hintsdoc = luban.content.document(
+            id='structure-uploader-hints-doc',
+            hidden = True,
+            )
+        # .. then create the link
+        showhints = luban.content.select(element=hintsdoc).show()
+        hintlink = luban.content.link(
+            id = 'structure-uploader-hint-link',
+            onclick = showhints,
+            label = 'Show me supported file formats',
+            )
+        # .. and add it to the right 
+        # sp.section(id='right').add(hintlink)
+        row.cell(id='right').add(hintlink)
+        
+        # content of hints
+        doc.add(hintsdoc)
+        rstdoc = luban.content.rstdoc(id='structure-uploader-explanation')
+        hintsdoc.add(rstdoc)
+        rstdoc.text = [
+            'Supported formats are:',
+            '',
+            '* .cif',
+            '* .pdb',
+            # '* .pdffit',
+            '* .xyz',
+            '',
+            '  Each line must contain an atom symbol followed by its position.',    
+            '  If 9 floats are given on the comment line, these are used as the lattice vectors.',
+            '  Format::',
+            '',
+            '    a_x a_y a_z b_x b_y b_z c_x c_y c_z',
+            '* .xyz (VNF format)',
+            '',
+            '  All previous xyz rules apply, except an additional charge (in electron units) may be given following each position triplet.',
+            '* .xyz (raw)',
+            '',
+            '  Each line must contain an atom symbol followed by its position.',
+            '  No total number of atoms is required.',
+            ]
+        rstdoc.hidden = True
 
         # spacer
-        doc.paragraph()
+        # doc.paragraph()
 
+        return doc
+
+
+    def createUploadButton(self):
+        director = self.director
+        
         # uploader
         uploader = luban.content.uploader(
             name = 'structureUploader',
-            label='Click here to browse for the structural file to upload',
+            label='Browse for the structural file to upload',
+            Class = 'big-button',
             )        
-        doc.add(uploader)
 
         # upload handler
         uploadid = director.getGUID() # identifier of this upload
@@ -78,10 +124,7 @@ class Factory(object):
             actor=actor, routine=routine,
             uploadid = uploadid)
 
-        # spacer
-        doc.paragraph()
-
-        return doc
+        return uploader
 
 
 # version

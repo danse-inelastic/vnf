@@ -121,8 +121,19 @@ textarea {
     color: #333333;
     border: 2px solid #CCED8C;
 }
-
-
+/* big uploader button */
+.big-button.luban-uploader {
+    background-color: transparent;
+    border: none;
+}
+.big-button .luban-uploader-button {
+    padding: 0.3em 0.5em;
+    color: white;
+    text-shadow: none;
+    font-weight: bold;
+    background-color: #445599;
+    border: 3px solid lightgrey;
+}
 
 /* overload the default behavior of luban for forms */
 fieldset{
@@ -395,6 +406,17 @@ width:100%;
 .luban-link.debug {
     color: lightBlue;
 }
+/* .. big button */
+.big-button {
+    font-size: 1.4em;
+    margin-left: 0.5em;
+    padding: 0.3em 0.5em;
+    background-color: #445599;
+    border: 3px solid lightgrey;
+    -moz-border-radius: 0.4em;
+    -webkit-border-radius: 0.4em;
+}
+
 
 /* portal applications */
 /* frame of portal application */
