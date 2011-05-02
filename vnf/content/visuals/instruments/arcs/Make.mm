@@ -11,18 +11,12 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 PROJECT = vnf
-PACKAGE = content/visuals
+PACKAGE = content/visuals/instruments/arcs
 
 
 # directory structure
 
 BUILD_DIRS = \
-	atomicstructure \
-	computation \
-	instruments \
-	material_simulations \
-	neutronexperiment \
-	table \
 
 OTHER_DIRS = \
 
@@ -41,11 +35,9 @@ all: export
 # export
 
 EXPORT_PYTHON_MODULES = \
+	BeamProfileStartPanel.py \
+	StartPanelFactoryBase.py \
 	__init__.py \
-	login.py \
-	matter_viewer.py \
-	view_indicator.py \
-
 
 
 export:: export-package-python-modules 

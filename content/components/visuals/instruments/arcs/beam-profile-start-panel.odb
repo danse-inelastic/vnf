@@ -11,87 +11,12 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
-# the panel to show at start of arcs UI
-# this should be inserted into the main-frame
-
-from luban.content import load, select, alert
-import luban.content as lc
 
 def visual(director):
-    container = lc.document()
-
-    # where am I?
-    path = [
-        ('<< ARCS portal', 
-         load(actor='instruments/arcs', routine='reloadStartPanel')
-         ),
-        ]
-    from vnf.content.visuals import view_indicator
-    whereami = view_indicator.visual(path)
-    container.add(whereami)
-
-    # the main visual
-    visual = lc.document(id='arcs-beam-profile-panel', title="Beam profile")
-    visual.Class = 'app-container'
-    container.add(visual)
-    
-    # toolbar
-    toolbar = lc.toolbar(id='arcs-beam-toolbar', Class='app-toolbar')
-    visual.add(toolbar)
-    
-    # reload button in toolbar
-    reload = load(actor='instruments/arcs', routine='loadApp', app='beam-profile')
-    button = lc.button(label='Calculate a profile', onclick=reload)
-    toolbar.add(button)
-    # button to load profiles table
-    loadprofilestable = load(
-        actor='instruments/arcs/beam-profile',
-        routine='showProfilesTable')
-    b = lc.button(label='Existing profiles', onclick=loadprofilestable)
-    toolbar.add(b)
-
-    doc = lc.document(id='arcs-beam-work-panel'); visual.add(doc)
-    grid = lc.grid(id='arcs-beam-compute-profile-panel'); doc.add(grid)
-    # grid.addClass('align-top')
-    row = grid.row()
-    # cell for user input
-    inputcell = row.cell(Class='align-top')
-    # cell for id holder
-    idholdercell = row.cell()
-    # cell for update button
-    updatecell = row.cell(Class='align-top update-button-cell')
-    # cell for plots
-    plotscell = row.cell(Class='align-top')
-    plotscell.addClass('app-output-cell')
-    
-    # input form
-    inputcell.oncreate = select(element=inputcell).append(
-        load(actor='orm/arcsbeamconfigurations', routine='edit')
-        )
-
-    #
-    idholder = lc.paragraph(id='idholder', hidden=True)
-    idholdercell.add(idholder)
-
-    # update button
-    update = load(
-        actor='instruments/arcs/beam-profile', 
-        routine='update',
-        id = select(element=idholder).getAttr('text'),
-        formids = select(element=inputcell).findDescendentIDs(type='form'),
-        )
-    b = lc.button(label='===>>', onclick=update)
-    b.tip = 'Run simulation or get simulation results'
-    b.Class = 'run-button'
-    updatecell.add(b)
-
-    # output region
-    doc = lc.document(id='output', title='Outputs')
-    plotscell.add(doc)
-    # doc.paragraph(text='Plots go here')
-    doc.document(id='main-display-area')
-    
-    return container
+    from vnf.content.visuals.instruments.arcs.BeamProfileStartPanel \
+        import Factory
+    f = Factory(director=director)
+    return f.build()
 
 
 # version
