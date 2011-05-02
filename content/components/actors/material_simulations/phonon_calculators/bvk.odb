@@ -97,6 +97,10 @@ class Actor(base):
 
 
     def selectModel(self, director):
+        if not director.accesscontrol.checkPrivilege(
+            target='simulation', name='run'):
+            return alert("You don't have access to run simulations.")
+        
         model_id = self.inventory.model_id
         domaccess = self._domaccess(director)
         model = domaccess.getModel(id=model_id)

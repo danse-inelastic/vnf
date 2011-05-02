@@ -11,12 +11,11 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
-from luban.content import load, select, alert
-import luban.content as lc
+import luban.content
 
 
 # common actions
-setpagetitle = select(id='').setAttr(title='Virtual neutron facility: material simulations')
+setpagetitle = luban.content.select(id='').setAttr(title='Virtual neutron facility: material simulations')
 from  vnf.components.visuals import set_contextual_help
 sethelppage = set_contextual_help(
     page='UserGuide-materialsimulations', label='about material simulations')
@@ -39,20 +38,20 @@ class Actor(base):
         return self.showListView(director)
 
     def debugListView(self, director):
-        page = lc.page()
-        doc = page.document(id='main-display-area')
+        frame = luban.content.frame()
+        doc = frame.document(id='main-display-area')
         view = self.createListView(director)
         doc.add(view)
-        return  page
+        return  frame
 
 
     def showListView(self, director):
         try:
             view = self.createListView(director)
         except FilterSyntaxError, msg:
-            return alert('filter syntax error: %s' % msg)
+            return luban.content.alert('filter syntax error: %s' % msg)
         return [
-            select(id = 'main-display-area').replaceContent(view),
+            luban.content.select(id = 'main-display-area').replaceContent(view),
             setpagetitle,
             ] + sethelppage
     
@@ -89,6 +88,13 @@ class Actor(base):
 
     def newSimulation(self, director):
         """Retrieves list of simulations"""
+        if not director.accesscontrol.checkPrivilege(
+            target='simulation', name='run'):
+            title = 'Alert'
+            doc = luban.content.document(title=title)
+            doc.paragraph(text="You don't have access to run simulations.")
+            return doc
+        
         return director.retrieveVisual('material_simulations/new',
                                         director    = director)
 
@@ -129,7 +135,7 @@ class Actor(base):
         if thetable is None:
             raise RuntimeError, 'failed to load visual "materialsimulation table"'
         # thetable = table(*args)
-        thetable.oncellchanged = select(element=thetable).notify(
+        thetable.oncellchanged = luban.content.select(element=thetable).notify(
             event='row-changed',
             actor='matsimtable',
             routine='processRowChange')
@@ -169,14 +175,14 @@ class Actor(base):
             id = 'matter-description-input',
             hidden = 1,
             )
-        field.onchange = load(
+        field.onchange = luban.content.load(
             actor='matter', routine='changeDescriptionAndUpdateMatterView',
             id = self.inventory.id, type = self.inventory.type,
-            description = select(element=field).formfield('getValue')
+            description = luban.content.select(element=field).formfield('getValue')
             )
         right.add(field)
 
-        left.onclick = [select(element=link).hide(), select(element=field).show()]
+        left.onclick = [luban.content.select(element=link).hide(), luban.content.select(element=field).show()]
         return doc
 
     def changeDescriptionAndUpdateMatterView(self, director):

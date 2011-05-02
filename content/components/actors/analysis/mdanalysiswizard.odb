@@ -11,7 +11,7 @@
 #
 
 from luban.content import load, select
-import luban.content as lc
+import luban.content
 from luban.content.Document import Document
 from luban.content.Link import Link
 from luban.components.Actor import Actor as base
@@ -31,6 +31,13 @@ class Actor(base):
         description = pyre.inventory.str('description', default='')
     
     def default(self, director):
+        if not director.accesscontrol.checkPrivilege(
+            target='simulation', name='run'):
+            title = 'Alert'
+            doc = luban.content.document(title=title)
+            doc.paragraph(text="You don't have access to run simulations.")
+            return select(id='main-display-area').replaceContent(doc)
+        
         wizard = Document(id='analysiswizard', title='Analysis')
         #doc = self.selectAnalysisType(director)
         doc = director.retrieveVisual('analysis/newAnalysisType', director = director)
@@ -38,11 +45,11 @@ class Actor(base):
         return select(id='main-display-area').replaceContent(wizard)
     
     def selectTrajectory(self, director):
-        doc = lc.document(id='trajectory-selector-doc')
+        doc = luban.content.document(id='trajectory-selector-doc')
         doc.paragraph(
             text=['Please select a trajectory:',]
             )
-        container = lc.document(id='trajectory-selector-container')
+        container = luban.content.document(id='trajectory-selector-container')
         doc.add(container)
         container.oncreate = [
             select(element=container).append(
@@ -50,7 +57,7 @@ class Actor(base):
               ),
             ]
         # select button
-        b = lc.button(label='select'); doc.add(b)
+        b = luban.content.button(label='select'); doc.add(b)
         #b.onclick = getInfoAndProceed()
         b.onclick = load(actor = 'analysis/mdanalysiswizard', 
                        routine = 'analysisSettings',
@@ -61,13 +68,13 @@ class Actor(base):
     def analysisSettings(self, director):
         self.debug = journal.debug('analysisSettings')
         orm = director.clerk.orm
-        doc = lc.document(id='analysis-configuration-doc')
+        doc = luban.content.document(id='analysis-configuration-doc')
         #if appropriate, put in the md planning tools
         if self.inventory.analysisType in ['csfcalc','isfcalc','dos',]:
             doc.paragraph(
                 text=['Use the following planning tools to configure the analysis calculation:',])
-            #doc = lc.document(title = "")
-            container = lc.document(title = "")
+            #doc = luban.content.document(title = "")
+            container = luban.content.document(title = "")
             #container.add(load(actor='material_simulations/mdPlan', routine='createMdPlanForm'))
             container.oncreate = [
                 select(element=container).append(
@@ -106,8 +113,8 @@ class Actor(base):
         #    ]
 #        sA.add(load(actor=actorName, routine='edit', id = self.inventory.dynamicsId))
 #        sB          = splitter.section()
-#        docSub      = lc.document(title = "")
-        b = lc.button(label='Create job'); 
+#        docSub      = luban.content.document(title = "")
+        b = luban.content.button(label='Create job'); 
         doc.add(b)
         b.onclick = load(
             #actor=self.name, routine='runDirectly', 
@@ -149,8 +156,8 @@ class Actor(base):
 #        analysisResult = analysisObj.compute()
 #        x, y = analysisResult.getXY()
 #        # plot
-#        doc = lc.document(title='analysis %s' % self.inventory.analysisId)
-#        p = lc.plot2d()
+#        doc = luban.content.document(title='analysis %s' % self.inventory.analysisId)
+#        p = luban.content.plot2d()
 #        p.curve(x=list(x), y=list(y))
 #        return select(id = 'main-display-area').replaceContent(doc)
 #        for i,y in enumerate(ys):
