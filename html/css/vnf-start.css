@@ -73,12 +73,17 @@ td#vnf-main {
     max-width: 40em;
 }
 
-#intro-link {
+#intro-container a.expandlink {
     font-size: 1.5em;
     cursor: pointer;
     display: block;
+    margin-top: 1em;
     margin-bottom: 1em;
+    color: gray;
 }
-#intro-link:hover{
+#intro-container a.expandlink:hover{
     color: #005000;
+}
+#intro-container div.content {
+    margin-left: 2em;
 }
