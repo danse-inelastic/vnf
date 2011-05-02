@@ -42,7 +42,7 @@ class Actor(base):
 
 
     def showProfilesTable(self, director):
-        workpanel = select(id='arcs-beam-work-panel')
+        workpanel = select(id='arcs-beam-profile-work-panel')
         tableview = load(
             actor='instruments/arcs/beam-profiles', routine='createListView')
         return workpanel.replaceContent(tableview)
@@ -65,7 +65,7 @@ class Actor(base):
         v = self.createView(director)
         sp.section().add(v)
         
-        return select(id='arcs-beam-work-panel').replaceContent(doc)
+        return select(id='arcs-beam-profile-work-panel').replaceContent(doc)
         
 
     def update(self, director):
