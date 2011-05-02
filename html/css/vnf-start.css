@@ -25,7 +25,7 @@ body {
 }
 
 #apps-row {
-    height: 8em;
+    height: 9em;
 }
 #apps-row td {
     background-color: #DDDDDD;
@@ -44,6 +44,7 @@ body {
 }
 #apps-row td div {
     margin-left: 1em;
+    margin-right: 0.3em;
     font-size: 1.6em;
     font-family: fantasy;
     font-weight: bold;
@@ -53,7 +54,13 @@ body {
 td#vnf-main {
     background-color: #ccd5c0;
 }
+td#vnf-main.focused{
+    background-color: #445044;
+}
 
+td#vnf-main div{
+    font-size: 2.1em;
+}
 
 #apps-info td {
     cursor: pointer;

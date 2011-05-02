@@ -132,7 +132,7 @@ $("#intro-link").fadeIn(1500);
 <tr id="apps-row">
 <td id="vnf-main">
 <div>
-vnf
+vnf main
 </div>
 </td>
 <td id="struct-viewer">
@@ -155,22 +155,29 @@ phonon dispersions
 <tr id="apps-info">
 <td id="vnf-main-info">
 The main VNF interface. 
-It is an integrated computing environment in which one
+It is an integrated computing environment
+for simulations of materials structure and dynamics,
+integrated with Monte Calo simulations of  neutron scattering
+instruments.
+<!--
+in which one
 can perform
 sophisticated simulations and analysis
 for neutron scattering science.
+-->
 </td>
 
 <td id="struct-viewer-info">
 Atomic structure viewer.
-In this application one can browse public records of atomic
-structures in the VNF, and view them in 3D.
+It allows public browsing through records of atomic
+structures in VNF, and allows viewing them in 3D.
 </td>
 
 <td id="disp-viewer-info">
 Phonon dispersions viewer.
-In this application one can browse public records of phonons
-in the VNF, and view dispersion plots.
+It allows public browsing through
+records of phonons
+in VNF, and viewing dispersions.
 </td>
 
 <td id="arcs-apps-info">
@@ -185,18 +192,22 @@ This is the portal to VNF applications for the ARCS instrument.
 
 <div id="intro-container">
 
-<a id='about-link' class="expandlink">About this main gate >></a>
+<a id='about-link' class="expandlink"> >> About this main gate</a>
 <div id="about" class="content">
-This is the main gate of the Virtual neutron facility. 
+This is the main gate of the Virtual neutron facility (VNF),
+which consists of several VNF applications.
 Above on the leftmost is your path to the 
-the full featured VNF web interface.
-Others On the right are your paths to several smaller VNF applications.
+the full featured VNF web application.
+Others on the right are your paths to some smaller VNF applications
+focused on one aspect of VNF.
 </div> <!-- intro -->
 
+<!--
 <a id='intro-link' class="expandlink">What is VNF >></a>
 <div id="intro" class="content">
 The Virtual Neutron Facility (VNF) is an online tool that allows users to perform end-to-end, full simulations of neutron scattering experiments. It integrates scientific software packages for material simulations with Monte-Carlo simulations of neutron scattering to gain insights into material properties.
-</div> <!-- intro -->
+</div>
+-->
 
 </div> <!-- intro-container -->
 
