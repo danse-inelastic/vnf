@@ -370,12 +370,11 @@ border:2px solid #99bb99;
 margin-left:1em;
 }
 .traceback-container > .luban-document-body {
-margin-left:2em;
+    margin-left:2em;
 }
 .traceback-doc {
-max-width:960;
-max-height:400;
-overflow:scroll;
+    max-height:30em;
+    overflow:scroll;
 }
 .bug-report-form fieldset {
 border:2px solid lightGrey;
