@@ -138,6 +138,13 @@ class Accessor(base):
             orm = self.orm
             orm.save(structure)
 
+        # give the structure a creator
+        username = director.sentry.username
+        if not username:
+            username = 'anonymous'
+        record.creator = username
+        self.db.updateRecord(record)
+            
         return record.id
 
 

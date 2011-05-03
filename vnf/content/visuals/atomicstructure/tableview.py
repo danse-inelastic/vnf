@@ -181,7 +181,7 @@ def createAtomicStructureTable(
 
 
 
-columns = [ 'selected', 'id', 'description', 'chemical_formula', 'created']
+columns = [ 'selected', 'id', 'description', 'chemical_formula', 'creator', 'created']
 measure2dbcol = {
     'description': 'short_description',
     'created': 'date',

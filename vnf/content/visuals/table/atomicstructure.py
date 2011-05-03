@@ -24,6 +24,7 @@ class model(Model):
     visualize = Model.descriptors.str(name='visualize')
     chemical_formula = Model.descriptors.str(name='chemical_formula')
     created = Model.descriptors.date(name='created')
+    creator = Model.descriptors.str(name='creator')
 
     row_identifiers = ['id']
     
@@ -34,6 +35,7 @@ columns = [
     View.Column(label='Description', measure='description'), # editable=True),
     View.Column(label='Chemical_formula', measure='chemical_formula'),
     View.Column(label='Visualize', measure='visualize'),
+    View.Column(label='Creator', measure='creator'),
     View.Column(label='Date created', measure='created'),
     ]
 
@@ -60,6 +62,8 @@ def getDescription(record):
     return link
 def getVisualize(record):
     return 'not implemented'
+def getCreator(record):
+    return record.creator
 def getCreated(record):
     date = record.date
     return str(date)
