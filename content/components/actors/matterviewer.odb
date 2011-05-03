@@ -25,6 +25,7 @@ class Actor(base):
         
         import pyre.inventory
         id = pyre.inventory.str('id')
+        bonds = pyre.inventory.list('bonds')
 
 
     def default(self, director):
@@ -46,8 +47,18 @@ class Actor(base):
 
         # otherwise, do normal stuff
         matter = doma.getAtomicStructure(id)
+        bonds = self.bonds
         text = visfactory.createViewer(matter)
         return text
+
+
+    def _init(self):
+        super(Actor, self)._init()
+        bonds = self.inventory.bonds
+        from luban.utils.safe_eval import safe_eval
+        bonds = map(safe_eval, bonds)
+        self.bonds = bonds
+        return
         
 
     def __init__(self, name=None):

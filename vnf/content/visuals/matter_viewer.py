@@ -37,12 +37,16 @@ class Factory(object):
     chem_doodle_base = '%s/other/chemdoodle' % js_base
     
     
-    def createViewer(self, matter, size=500):
+    def createViewer(self, matter, size=500, bonds=[]):
         """create html content that has a matter viewer
         This is implemented by using chemdoodle
+        
+        matter: matter.Structure instance
+        bonds: a list of 2-tuples, each tuple describing one bond
+          Each tuple is a 2-tuple of atom indexes
         """
         chem_doodle_base = self.chem_doodle_base
-        script = self._createChemDoodleJS(matter, size)
+        script = self._createChemDoodleJS(matter, size, bonds=bonds)
         # script = self._createChemDoodleJSUsingPDB(matter, size)
         script = '\n'.join(script)
         text = page_template % locals()
@@ -60,7 +64,7 @@ class Factory(object):
         return text        
 
 
-    def _createChemDoodleJS(self, matter, size):
+    def _createChemDoodleJS(self, matter, size, bonds=[]):
         code = []
         # create mol
         code.append('var mol = new ChemDoodle.structures.Molecule();')
@@ -81,6 +85,10 @@ class Factory(object):
             code.append('var atom%s = new ChemDoodle.structures.Atom("%s", x,y,z);' % (count, symbol))
             code.append('mol.atoms[%s]=atom%s;' % (count,count))
             continue
+        for count, bond in enumerate(bonds):
+            start, end = bond
+            line = 'mol.bonds[%s] = new ChemDoodle.structures.Bond(atom%s, atom%s, 1); ' % (count, start, end)
+            code.append(line)
         # add mol to canvas
         code.append('canvas.loadMolecule(mol);')
         code.append('if (!webgl) {canvas.specs.scale = 2.5; canvas.repaint();}')
