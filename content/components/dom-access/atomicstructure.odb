@@ -112,7 +112,11 @@ class Accessor(base):
         # read the structure
         structure.read(path)
         # XXX truncate the description
-        structure.description = structure.description[:250]
+        description = structure.description
+        if not description:
+            description = structure.getChemicalFormula()
+        description = description[:250]
+        structure.description = description
 
         # check if the upload is a pdb, if so,
         # we need special treatment
