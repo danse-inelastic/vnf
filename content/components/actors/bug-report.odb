@@ -14,7 +14,7 @@
 
 from luban.content import load, select, alert
 
-from luban.components.AuthorizedActor import AuthorizedActor as base
+from luban.components.Actor import Actor as base
 
 
 class Actor(base):
@@ -47,7 +47,10 @@ class Actor(base):
         db.insertRow(bug)
 
         # email
-        self._emailComment(id, comment, traceback, director)
+        try:
+            self._emailComment(id, comment, traceback, director)
+        except:
+            pass
         
         return select(id='bugdialog-%s' % id).destroy()
 
