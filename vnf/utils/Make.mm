@@ -54,6 +54,7 @@ EXPORT_PYTHON_MODULES = \
 	crystallattice.py \
 	constraints.py \
 	math.py \
+	misc.py \
         orderedDict.py \
 	safe_eval.py \
         serverlist.py \
