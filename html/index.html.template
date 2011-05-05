@@ -2,7 +2,7 @@
 <html >
  <head >
    <title>Virtual neutron facility -- start here</title>
-  <base href="xxxBASExxx">
+  <base href="%(html_base)s">
   </base>
   <style media="all" rel="stylesheet">
 @import url(css/jquery/ui/smoothness/ui.all.css);
@@ -54,10 +54,10 @@ $(function (){
 
 var entries = ["vnf-main", "struct-viewer", "disp-viewer", "arcs-apps"];
 var urls = [
- "xxxCONTROLLERxxx?actor=login"
- ,"xxxCONTROLLERxxx?actor=atomicstructure-public&routine=start"
- ,"xxxCONTROLLERxxx?actor=material_simulations/phonons-public&routine=start"
- ,"xxxCONTROLLERxxx?actor=instruments/arcs/login"
+ "%(controller_url)s?actor=login"
+ ,"atomicstructure.html"
+ ,"phonons.html"
+ ,"arcs.html"
  ];
 
 var showPreview = function(entry, url) {

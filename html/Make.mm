@@ -52,8 +52,11 @@ EXPORT_DATA_PATH = $(EXPORT_ROOT)/$(PROJECT)/$(PACKAGE)
 export-package-data: export-package-data-dirs export-package-symlinks init-data-files export-index-html
 
 
+
+HTML_TEMPLATES = *.html.template
+
 export-index-html:: index.html.template create-index.py
-	cp index.html.template $(EXPORT_DATA_PATH)/ ;\
+	cp $(HTML_TEMPLATES) $(EXPORT_DATA_PATH)/ ;\
 	cp create-index.py $(EXPORT_DATA_PATH)/ ;\
 	cd $(EXPORT_DATA_PATH)/ && python create-index.py
 

@@ -463,6 +463,10 @@ width:100%;
     margin-right:auto;
     margin-left:auto;
 }
+.app-main-frame .app-list-grid.luban-grid > table > tbody > tr.luban-gridrow > td.luban-gridcell{
+    vertical-align: top;
+    border: 2em solid transparent;
+}
 /* container of one application */
 /* application title */
 .app-container > .luban-document-title {

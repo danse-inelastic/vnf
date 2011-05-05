@@ -16,14 +16,21 @@ class App(base):
     
     
     def main(self):
+        self._createFromTemplate('index.html')
+        self._createFromTemplate('atomicstructure.html')
+        self._createFromTemplate('phonons.html')
+        self._createFromTemplate('arcs.html')
+        return
+
+
+    def _createFromTemplate(self, filename):
         html_base = self.inventory.html_base
         controller_url = self.inventory.controller_url
-        
-        t = open('index.html.template').read()
-        t = t.replace('xxxBASExxx', html_base)
-        c = t.replace('xxxCONTROLLERxxx', controller_url)
-        open('index.html', 'w').write(c)
-        
+
+        template = '%s.template' % filename
+        t = open(template).read()
+        c = t % locals()
+        open(filename, 'w').write(c)
         return
 
 
