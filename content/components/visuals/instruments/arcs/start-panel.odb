@@ -25,7 +25,7 @@ def visual(director):
 
     ncols = 4
     nrows = int(len(apps)*1./ncols)
-    grid = lc.grid(); visual.add(grid)
+    grid = lc.grid(Class="app-list-grid"); visual.add(grid)
     
     for i,app in enumerate(apps):
         if i%ncols == 0:
@@ -70,7 +70,11 @@ apps = [
     App(
         'IQE-resolution',
         'I(Q,E) resolution function',
-        )
+        ),
+    App(
+        'arbitrary-dispersion',
+        'an arbitrary dispersion function',
+        ),
     ]
 
 

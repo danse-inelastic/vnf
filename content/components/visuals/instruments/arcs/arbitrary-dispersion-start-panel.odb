@@ -12,7 +12,7 @@
 #
 
 def visual(director):
-    from vnf.content.visuals.instruments.arcs.IQEResolutionStartPanel \
+    from vnf.content.visuals.instruments.arcs.ArbitraryDispersionStartPanel \
         import Factory
     f = Factory(director=director)
     return f.build()
