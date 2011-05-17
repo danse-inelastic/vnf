@@ -37,26 +37,6 @@ class Actor(base):
         return 'ARCS beam profile #%s' % self.inventory.id
 
 
-    def getResults(self, director):
-        id = self.inventory.id
-        vis = load(actor='computation', routine='createResultsDoc',
-                   type='arcsbeamconfigurations', id=id)
-        return select(id='main-display-area').replaceContent(vis)
-
-
-    def _hasResults(self, director):
-        domaccess = director.retrieveDOMAccessor('computation')
-        id = self.inventory.id
-        return domaccess.isComputationResultsRetrieved(
-            'arcsbeamconfigurations', id)        
-
-
-    def _jobIsDone(self, director):
-        domaccess = director.retrieveDOMAccessor('computation')
-        id = self.inventory.id
-        return domaccess.isJobDone('arcsbeamconfigurations', id)
-
-
     def _getComputation(self, director):
         # load the computation from db
         id = self.inventory.id
@@ -74,6 +54,7 @@ class Actor(base):
     def __init__(self, name='instruments/arcs/beam-profile'):
         super(Actor, self).__init__(name=name)
         self.ormactorname = "orm/arcsbeamconfigurations"
+        self.tablename = "arcsbeamconfigurations"
         return
 
 

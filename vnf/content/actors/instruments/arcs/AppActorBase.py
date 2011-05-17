@@ -276,15 +276,24 @@ class AppActorBase(base):
         return luban.content.select(id='main-display-area').replaceContent(doc)
 
     
+    def getResults(self, director):
+        id = self.inventory.id
+        vis = load(actor='computation', routine='createResultsDoc',
+                   type=self.tablename, id=id)
+        return select(id='main-display-area').replaceContent(vis)
+
+
     def _hasResults(self, director):
-        """check if results are available for the computation
-        """
-        raise NotImplementedError
+        domaccess = director.retrieveDOMAccessor('computation')
+        id = self.inventory.id
+        return domaccess.isComputationResultsRetrieved(
+            self.tablename, id)
 
 
     def _jobIsDone(self, director):
-        """check if job is done for the given computation"""
-        raise NotImplementedError
+        domaccess = director.retrieveDOMAccessor('computation')
+        id = self.inventory.id
+        return domaccess.isJobDone(self.tablename, id)
 
 
     def _getComputation(self, director):
