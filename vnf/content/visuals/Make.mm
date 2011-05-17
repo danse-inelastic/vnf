@@ -19,6 +19,7 @@ PACKAGE = content/visuals
 BUILD_DIRS = \
 	atomicstructure \
 	computation \
+	histogram \
 	instruments \
 	material_simulations \
 	neutronexperiment \
@@ -41,6 +42,8 @@ all: export
 # export
 
 EXPORT_PYTHON_MODULES = \
+	AbstractFactory.py \
+	AbstractFactoryContainer.py \
 	__init__.py \
 	login.py \
 	matter_viewer.py \

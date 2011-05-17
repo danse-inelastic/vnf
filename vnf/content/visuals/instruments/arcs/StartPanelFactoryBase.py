@@ -12,15 +12,31 @@
 #
 
 
+"""
+base class for visuals that has the following structure
+
+<input>     <run button>      <output>
+
+
+"""
+
+
+
 import luban.content
 
-class Factory(object):
 
-    name = None # name of this factory. eg: "arcs-beam-profile"
+from ...AbstractFactory import AbstractFactory as base
+class Factory(base):
+
     title = None # title of the visual. eg: "Beam profile"
-
-    def __init__(self, director):
-        self.director = director
+    
+    def __init__(self, director=None, name=None, actor=None):
+        super(Factory, self).__init__(director=director, name=name, actor=actor)
+        
+        workpanelid_template = '%s-work-panel'
+        self.workpanelid = workpanelid_template % self.name
+        self.workgridid = '%s-work-grid'% self.name
+        self.toolbarid = '%s-toolbar' % self.name
         return
 
 
@@ -33,10 +49,16 @@ class Factory(object):
 
 
     def buildUpdateButtonOnClickAction(self, inputcell, idholder):
-        raise NotImplementedError
+        return luban.content.load(
+            actor=self.actor, 
+            routine='update',
+            id = luban.content.select(element=idholder).getAttr('text'),
+            formids = luban.content.select(element=inputcell)\
+                .findDescendentIDs(type='form'),
+            )
 
 
-    def build(self):
+    def build(self, **kwds):
         director = self.director
 
         # container
@@ -57,9 +79,9 @@ class Factory(object):
         visual.add(toolbar)
 
         # the input -> run button -> output structure
-        doc = luban.content.document(id='%s-work-panel' % self.name); 
+        doc = luban.content.document(id=self.workpanelid)
         visual.add(doc)
-        grid = luban.content.grid(id='%s-compute-profile-panel'% self.name);
+        grid = luban.content.grid(id=self.workgridid)
         doc.add(grid)
         # grid.addClass('align-top')
         row = grid.row()

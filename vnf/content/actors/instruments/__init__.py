@@ -2,7 +2,7 @@
 #
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
-#                                 Jiao Lin
+#                                   Jiao Lin
 #                      California Institute of Technology
 #                      (C) 2006-2011  All Rights Reserved
 #
@@ -11,17 +11,7 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
-
-import luban.content as lc
-
-
-def visual(director=None, histogram=None):
-    from vnf.content.visuals.histogram.Plot import Factory
-    fac = Factory(director=director)
-    return fac.build(histogram=histogram)
-
-    
 # version
-__id__ = "$Id$"
+__id__ = "$Id: __init__.py 3677 2011-03-31 22:12:33Z linjiao $"
 
 # End of file 

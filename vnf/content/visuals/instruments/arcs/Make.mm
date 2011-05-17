@@ -36,8 +36,13 @@ all: export
 
 EXPORT_PYTHON_MODULES = \
 	ArbitraryDispersionStartPanel.py \
+	BeamProfile.py \
+	BeamProfileResultsView.py \
 	BeamProfileStartPanel.py \
+	FactoryRoot.py \
+	HistogramView.py \
 	IQEResolutionStartPanel.py \
+	ResultsViewFactoryBase.py \
 	StartPanelFactoryBase.py \
 	__init__.py \
 

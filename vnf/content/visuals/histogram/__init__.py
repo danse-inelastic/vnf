@@ -2,7 +2,7 @@
 #
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
-#                                 Jiao Lin
+#                                   Jiao Lin
 #                      California Institute of Technology
 #                      (C) 2006-2010  All Rights Reserved
 #
@@ -11,16 +11,6 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
-
-def visual(director):
-    from vnf.content.visuals.instruments.arcs import beamprofile
-    facroot = beamprofile(
-        director=director, 
-        name='beam-profile', 
-        actor="instruments/arcs/beam-profile",
-        )
-    f = facroot.start_panel
-    return f.build()
 
 
 # version

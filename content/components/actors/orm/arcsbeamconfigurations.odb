@@ -68,7 +68,7 @@ class Actor(base):
 
 
 def actor():
-    return Actor('orm/arcsbeam')
+    return Actor('orm/arcsbeamconfigurations')
 
 
 # version

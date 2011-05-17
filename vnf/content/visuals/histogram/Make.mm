@@ -11,15 +11,12 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 PROJECT = vnf
-PACKAGE = content/actors
+PACKAGE = content/visuals/histogram
 
 
 # directory structure
 
 BUILD_DIRS = \
-	atomicstructure \
-	instruments \
-	material_simulations \
 
 OTHER_DIRS = \
 
@@ -38,6 +35,8 @@ all: export
 # export
 
 EXPORT_PYTHON_MODULES = \
+	Plot.py \
+	View.py \
 	__init__.py \
 
 
@@ -49,6 +48,6 @@ export:: export-package-python-modules
 # docs: export-doxygen-docs
 
 # version
-# $Id$
+# $Id: Make.mm 1213 2006-11-18 16:17:08Z linjiao $
 
 # End of file

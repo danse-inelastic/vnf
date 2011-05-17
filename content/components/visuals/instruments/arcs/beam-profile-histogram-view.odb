@@ -14,35 +14,13 @@
 from luban.content import load, alert, select
 import luban.content as lc
 
-def visual(director=None, id=None, histogram_id=None):
-    
-    domaccess = director.retrieveDOMAccessor('computation')
-    
-    def _gethist(name):
-        from histogram.hdf import load
-        from histogram.hdf.utils import getOnlyEntry
-        computation = domaccess.getComputationRecord('arcsbeamconfigurations', id)
-        dds = director.dds
-        p = dds.abspath(computation, 'out/%s.h5' % name)
-        return load(p, getOnlyEntry(p))
-
-
-    def _histview(histogram_id, histogram):
-        return  director.retrieveVisual(
-            'histogram/view',
-            histogram = histogram,
-            director = director,
-            downloadaction = load(
-                actor = 'instruments/arcs/beam-profile', 
-                routine='downloadHistogram',
-                id = id,
-                histogram = histogram_id,
-                )
-            )
-    
-    histogram = _gethist(histogram_id)
-    return _histview(histogram_id, histogram)
-
+def visual(director=None, id=None, histogram_path=None):
+    from vnf.content.visuals.instruments.arcs.HistogramView import Factory
+    vf = Factory(
+        actor="instruments/arcs/beam-profile",
+        director=director,
+        )
+    return vf.build(id=id, histogram_path=histogram_path)
 
 
 # version

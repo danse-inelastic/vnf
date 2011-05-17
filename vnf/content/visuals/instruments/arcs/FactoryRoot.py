@@ -12,19 +12,18 @@
 #
 
 
-"""
-this subpackage is for visuals of  applications of arcs instrument.
-These applications are for data reduction, analysis, and
-simulations of arcs.
-Please note this is different from ..neutron_experiments 
--- ..neutron_experiments is for generic instrument simulations of
-   experiments.
-"""
+# base class for visual factory root
+# it contains various factories for building visuals
+# those factories may still have sub-factories
 
 
-def beamprofile(**kwds):
-    from BeamProfile import BeamProfile
-    return BeamProfile(**kwds)
+from ...AbstractFactoryContainer import AbstractFactoryContainer
+class FactoryRoot(AbstractFactoryContainer):
+
+    sub_factory_constructors = {
+        'start_panel': None,
+        'results_view': None,
+        }
 
 
 # version

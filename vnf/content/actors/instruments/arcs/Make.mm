@@ -11,15 +11,12 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 PROJECT = vnf
-PACKAGE = content/actors
+PACKAGE = content/actors/instruments/arcs
 
 
 # directory structure
 
 BUILD_DIRS = \
-	atomicstructure \
-	instruments \
-	material_simulations \
 
 OTHER_DIRS = \
 
@@ -38,6 +35,7 @@ all: export
 # export
 
 EXPORT_PYTHON_MODULES = \
+	AppActorBase.py \
 	__init__.py \
 
 
@@ -49,6 +47,6 @@ export:: export-package-python-modules
 # docs: export-doxygen-docs
 
 # version
-# $Id$
+# $Id: Make.mm 3758 2011-04-30 16:22:20Z linjiao $
 
 # End of file

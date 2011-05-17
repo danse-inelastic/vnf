@@ -17,13 +17,11 @@ from StartPanelFactoryBase import Factory as base
 
 class Factory(base):
 
-    name = 'arcs-beam-profile'
     title = 'Beam profile'
     
 
     def buildToolbar(self):
-        toolbar = luban.content.toolbar(
-            id='arcs-beam-toolbar', Class='app-toolbar')
+        toolbar = luban.content.toolbar(id=self.toolbarid, Class='app-toolbar')
 
         # reload button in toolbar
         reload = luban.content.load(
@@ -33,8 +31,8 @@ class Factory(base):
         toolbar.add(button)
         # button to load profiles table
         loadprofilestable = luban.content.load(
-            actor='instruments/arcs/beam-profile',
-            routine='showProfilesTable')
+            actor=self.actor,
+            routine='showTable')
         b = luban.content.button(
             label='Existing profiles',
             onclick=loadprofilestable)
@@ -50,16 +48,6 @@ class Factory(base):
             )
         
     
-    def buildUpdateButtonOnClickAction(self, inputcell, idholder):
-        return luban.content.load(
-            actor='instruments/arcs/beam-profile', 
-            routine='update',
-            id = luban.content.select(element=idholder).getAttr('text'),
-            formids = luban.content.select(element=inputcell)\
-                .findDescendentIDs(type='form'),
-            )
-
-
 # version
 __id__ = "$Id$"
 

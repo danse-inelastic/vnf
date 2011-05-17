@@ -19,35 +19,49 @@ class Factory(base):
 
     name = 'arcs-iqe-resolution'
     title = 'I(Q,E) resolution'
-    
-
-    def build(self):
-        director = self.director
-
-        # container
-        container = luban.content.document()
-
-        # where am I?
-        whereami = self.buildViewIndicator()
-        container.add(whereami)
-
-        appcontainer = container.document(id='tmp', Class='app-container')
-        appcontainer.paragraph(text = "Coming soon...")
-        return container
-
+    actorname = 'instruments/arcs/iqe-resolution'
+    ormactorname = 'orm/arcsiqeresolutioncomputations'
 
     def buildToolbar(self):
         toolbar = luban.content.toolbar(
             id='iqe-res-toolbar', Class='app-toolbar')
+
+        # reload button in toolbar
+        reload = luban.content.load(
+            actor='instruments/arcs', routine='loadApp', app=self.name)
+        button = luban.content.button(
+            label='Calculate I(Q,E) resolution', 
+            onclick=reload,
+            )
+        toolbar.add(button)
+        # button to load resolution function table
+        loadtable = luban.content.load(
+            actor=self.actorname,
+            routine='showTable')
+        b = luban.content.button(
+            label='Existing resolution functions',
+            onclick=loadtable)
+        toolbar.add(b)
+        #
         return toolbar
 
 
     def buildInputCellOnCreateAction(self, inputcell):
-        return luban.content.alert("not implemented yet")
+        return luban.content.select(element=inputcell).append(
+            luban.content.load(
+                actor=self.ormactorname, 
+                routine='edit')
+            )
         
     
     def buildUpdateButtonOnClickAction(self, inputcell, idholder):
-        return luban.content.alert("not implemented yet")
+        return luban.content.load(
+            actor=self.actorname, 
+            routine='update',
+            id = luban.content.select(element=idholder).getAttr('text'),
+            formids = luban.content.select(element=inputcell)\
+                .findDescendentIDs(type='form'),
+            )
 
 
 # version

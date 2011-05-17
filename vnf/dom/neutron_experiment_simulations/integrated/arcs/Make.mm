@@ -32,6 +32,7 @@ all: export
 
 EXPORT_PYTHON_MODULES = \
 	ARCSbeam.py \
+	ARCSIQEResolutionComputation.py \
 	__init__.py \
 
 

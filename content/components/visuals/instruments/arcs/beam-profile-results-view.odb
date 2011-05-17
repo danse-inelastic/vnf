@@ -11,58 +11,11 @@
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
 
-from luban.content import load, alert, select
-import luban.content as lc
 
 def visual(director=None, id=None):
-    container = lc.document(id='beam-profile-results-container')
-    tabs = lc.tabs(); container.add(tabs)
-
-    # first tab
-    tab = createOverview(tabs, director=director, id=id)
-    
-    # other tabs
-    tabnames = [
-        'Beam monitors',
-        'Resolution at sample position',
-        'Spatial distribution',
-        'Divergence',
-        ]
-    for tabname in tabnames:
-        tab = tabs.tab(label=tabname)
-        tab.onselect = select(element=tab).replaceContent(
-            load(actor='loadvisual', 
-                 visual='instruments/arcs/beam-profile-result-panel',
-                 id=id, panel_id=tabname,
-                 )
-            )
-        continue
-    return container
-
-
-def createOverview(tabs, director, id):
-    domaccess = director.retrieveDOMAccessor('computation')
-    #     
-    computation = domaccess.getComputationRecord('arcsbeamconfigurations', id)
-    #
-    dds = director.dds
-    p = dds.abspath(computation, 'out/props.json')
-    #
-    d = eval(open(p).read())
-    #
-    doc = lc.rstdoc()
-    doc.text = [
-        'Computed properties',
-        '-------------------',
-        ]
-    for k, v in d.iteritems():
-        doc.text.append('* %s:%s' % (k,v))
-        continue
-
-    tab = tabs.tab('Overview')
-    tab.add(doc)
-    
-    return tab
+    from vnf.content.visuals.instruments.arcs.BeamProfileResultsView import Factory
+    vf = Factory(director=director, actor="instruments/arcs/beam-profile")
+    return vf.build(id=id)
 
 
 # version
