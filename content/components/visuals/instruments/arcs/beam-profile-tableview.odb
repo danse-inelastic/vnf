@@ -24,7 +24,7 @@ def visual(
     ):
     # name: name of table view
     # 
-    domaccess = director.retrieveDOMAccessor('arcsbeamconfiguration')
+    domaccess = director.retrieveDOMAccessor('instruments/arcs/beamconfiguration')
         
     from vnf.components.MasterTable import MasterTableFactory, filtercompiler
     def countrecords(filter, label=None, mine=False):
