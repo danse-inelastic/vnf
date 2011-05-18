@@ -12,9 +12,13 @@
 #
 
 def visual(director):
-    from vnf.content.visuals.instruments.arcs.IQEResolutionStartPanel \
-        import Factory
-    f = Factory(director=director)
+    from vnf.content.visuals.instruments.arcs import iqeresolution
+    facroot = iqeresolution(
+        director=director, 
+        name='iqe-resolution', 
+        actor="instruments/arcs/iqe-resolution",
+        )
+    f = facroot.start_panel
     return f.build()
 
 

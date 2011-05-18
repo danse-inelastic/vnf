@@ -1,0 +1,87 @@
+#!/usr/bin/env python
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+#                                 Jiao Lin
+#                      California Institute of Technology
+#                      (C) 2006-2010  All Rights Reserved
+#
+# {LicenseText}
+#
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+
+
+#
+import luban.content as lc
+from luban.content import select, load, alert
+
+#
+import luban.orm
+from vnf.dom.neutron_experiment_simulations.integrated.arcs.ARCSIQEResolutionComputation import ARCSIQEResolutionComputation as Object, ARCSIQEResolutionComputation_Table as Table
+base = luban.orm.object2actor(Object)
+class Actor(base):
+    
+    class Inventory(base.Inventory):
+        
+        import luban.inventory
+        
+
+    def store(self, director):
+        super(Actor, self).store(director)
+
+        # set "neutronsatsample"
+        obj = self._load(director)
+        record = director.clerk.orm(obj)
+        record.neutronsatsample = self.inventory.neutronsatsample
+        director.clerk.db.updateRecord(record)
+
+        # after store, need to check if the parameters
+        # are already used in simulations. if that is true,
+        # we actually remove the stored record, and load
+        # the old record
+        dup_record = director.clerk.findDuplicateRecord(obj)
+        if dup_record:
+            # if there is duplicate record in the db
+            # we just reuse that and discard
+            director.clerk.orm.destroy(obj)
+            # this is necessary since later _postStoringUserInputs will be
+            # call with the new id
+            self.inventory.id = dup_record.id
+        return
+    
+
+    def getSelectorEntriesForBeamProfile(self, director):
+        db = director.clerk.db
+        from vnf.dom.neutron_experiment_simulations.NeutronStorage import NeutronStorageTable as Table
+        q = db.query(Table)
+        q = q.filter("short_description like '%ARCS%'")
+        records = q.all()
+        entries = [ (r.id, r.short_description) for r in records]
+        return entries
+
+
+    def _postStoringUserInputs(self, director):
+        action = super(Actor, self)._postStoringUserInputs(director)
+        actions = [
+            action,
+            select(id='idholder').setAttr(text= self.inventory.id),
+            ]
+        return actions
+
+
+    def _defaults(self):
+        super(Actor, self)._defaults()
+        self.inventory.editlink = False
+        return
+        
+
+
+def actor():
+    return Actor('orm/arcsiqeresolutioncomputations')
+
+
+# version
+__id__ = "$Id$"
+
+# End of file 

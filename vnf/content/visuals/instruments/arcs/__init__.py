@@ -27,6 +27,11 @@ def beamprofile(**kwds):
     return BeamProfile(**kwds)
 
 
+def iqeresolution(**kwds):
+    from IQEResolutionComputation import IQEResolutionComputation
+    return IQEResolutionComputation(**kwds)
+
+
 # version
 __id__ = "$Id$"
 

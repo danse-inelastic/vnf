@@ -44,7 +44,7 @@ class Factory(base):
         raise NotImplementedError
 
 
-    def buildInputCellOnCreateAction(self, inputcell):
+    def buildInputCellContent(self):
         raise NotImplementedError
 
 
@@ -96,7 +96,8 @@ class Factory(base):
         outputcell.addClass('app-output-cell')
 
         # input form
-        inputcell.oncreate = self.buildInputCellOnCreateAction(inputcell)
+        # inputcell.oncreate = self.buildInputCellOnCreateAction(inputcell)
+        inputcell.add(self.buildInputCellContent())
 
         #
         idholder = luban.content.paragraph(id='idholder', hidden=True)

@@ -68,7 +68,7 @@ apps = [
         'Beam profile at sample position',
         ),
     App(
-        'IQE-resolution',
+        'iqe-resolution',
         'I(Q,E) resolution function',
         ),
     App(

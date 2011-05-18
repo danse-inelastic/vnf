@@ -40,14 +40,14 @@ class Factory(base):
         return toolbar
 
 
-    def buildInputCellOnCreateAction(self, inputcell):
-        return luban.content.select(element=inputcell).append(
-            luban.content.load(
-                actor='orm/arcsbeamconfigurations', 
-                routine='edit')
+    def buildInputCellContent(self):
+        return self.director.redirect(
+            actor='orm/arcsbeamconfigurations', 
+            routine = 'edit',
+            include_credential = False,
             )
-        
-    
+
+
 # version
 __id__ = "$Id$"
 
