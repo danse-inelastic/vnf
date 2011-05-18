@@ -14,9 +14,22 @@ def visual(records, cols, director):
     return table(records, cols, director)
 
 
+from vnf.dom.neutron_experiment_simulations.integrated.arcs.ARCSbeam import ARCSbeam, ARCSbeam_Table
 def table(records, cols, director):
-    from vnf.content.visuals.table.arcsbeamprofile import table
-    return table(records, director=director, editable=True)
+    descriptors = ARCSbeam.Inventory.getDescriptors()
+    import luban.content
+    create_single_record_link_action = lambda id: \
+        luban.content.load(
+        actor='instruments/arcs/beam-profile', 
+        routine='view',
+        id = id
+        )
+    from vnf.content.visuals.TableFactory import OrmTableFactory as Factory
+    factory = Factory(
+        create_single_record_link_action=create_single_record_link_action,
+        descriptors=descriptors, cols=cols, 
+        )
+    return factory.build(records = records, id='mytable')
 
 
 # version

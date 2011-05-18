@@ -44,6 +44,7 @@ all: export
 EXPORT_PYTHON_MODULES = \
 	AbstractFactory.py \
 	AbstractFactoryContainer.py \
+	TableFactory.py \
 	__init__.py \
 	login.py \
 	matter_viewer.py \
