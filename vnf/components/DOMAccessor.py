@@ -234,6 +234,40 @@ class DOMAccessor( base ):
         return pointer.dereference(self.db)
 
 
+    def findDuplicateRecord(self, obj):
+        """
+        EXPERIMENTAL!!!
+        
+        find a record that has the same signature as the given object
+        
+        assumption:
+        * The class of the object has a property "key_props" that is 
+          a list of names of key properties of the object 
+          
+        """
+        orm = self.orm
+        record = orm(obj)
+        Object = obj.__class__
+        Table = record.__class__
+        #
+        kwds = {}
+        for key in Object.key_props:
+            value = getattr(record, key)
+            descriptor = Object.Inventory.getDescriptor(key)
+            # for reference types, id is the signature
+            if descriptor.type.find('reference') != -1:
+                if value is not None:
+                    value = value.id
+            kwds[key] = value
+            continue
+        records = self.db.query(Table).filter_by(**kwds).all()
+        if len(records)>1:
+            for r in records:
+                if r.id != record.id:
+                    return r
+        return
+
+    #
     def _getUsername(self):
         return self.director.sentry.username
 
