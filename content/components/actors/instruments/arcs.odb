@@ -70,8 +70,15 @@ class Actor(base):
 
     def loadApp(self, director):
         app = self.inventory.app
-        visual = 'instruments/arcs/%s-start-panel' % app
-        visual = director.retrieveVisual(visual)
+        name  = app.replace('-', '')
+        if name.startswith('_'):
+            raise RuntimeError, name
+        
+        from vnf.content.visuals.instruments import arcs
+        factory = getattr(arcs, name)(director=director)
+        
+        visual = factory.start_panel.build()
+        
         return select(id='arcs-main-frame').replaceContent(visual)
 
 

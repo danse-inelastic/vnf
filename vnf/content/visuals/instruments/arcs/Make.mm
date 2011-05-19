@@ -39,6 +39,7 @@ EXPORT_PYTHON_MODULES = \
 	BeamProfile.py \
 	BeamProfileResultsView.py \
 	BeamProfileStartPanel.py \
+	BeamProfileTableView.py \
 	FactoryRoot.py \
 	HistogramView.py \
 	IQEResolutionComputation.py \
@@ -46,6 +47,7 @@ EXPORT_PYTHON_MODULES = \
 	IQEResolutionStartPanel.py \
 	ResultsViewFactoryBase.py \
 	StartPanelFactoryBase.py \
+	TableViewFactoryBase.py \
 	__init__.py \
 
 

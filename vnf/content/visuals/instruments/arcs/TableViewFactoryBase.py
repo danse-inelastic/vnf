@@ -12,19 +12,23 @@
 #
 
 
-# base class for visual factory root
-# it contains various factories for building visuals
-# those factories may still have sub-factories
+"""
+base class for visuals that shows a table of computaions
+"""
 
 
-from ...AbstractFactoryContainer import AbstractFactoryContainer
-class FactoryRoot(AbstractFactoryContainer):
 
-    sub_factory_constructors = {
-        'start_panel': None,
-        'results_view': None,
-        'table_view': None,
-        }
+import luban.content
+
+
+from ...TableFactory import TableViewFactory as base
+class Factory(base):
+    
+    
+    def __init__(self, director=None, name=None, actor=None):
+        super(Factory, self).__init__(director=director, name=name, actor=actor)
+        return
+
 
 
 # version

@@ -52,23 +52,20 @@ class Actor(base):
         label = self.inventory.label
         mine = self.inventory.mine
         
-        tableview = director.retrieveVisual(
-            'instruments/arcs/beam-profile-tableview',
-            director,
-            'arcs-beam-profiles',  # name of master table
-            actorname = self.name,
-            label           = label,
-            mine           = mine,
-            filter_expr     = filter_expr,
-            filter_key      = filter_key,
-            filter_value    = filter_value,
-            order_by        = order_by,
-            reverse_order   = reverse_order,
-            number_records_per_page = number_records_per_page,
-            page_number     = page_number
+        vf = self._visualFactory(director)
+        factory = vf.table_view
+        return factory.build(
+            filter_expr=filter_expr, filter_key=filter_key, filter_value=filter_value,
+            label=label, mine=mine,
+            order_by=order_by, reverse_order=reverse_order,
+            number_records_per_page=number_records_per_page, page_number=page_number,
             )
 
-        return tableview
+
+    def _visualFactory(self, director):
+        """create visual factory"""
+        from vnf.content.visuals.instruments.arcs import beamprofile as VF
+        return VF(name='beam-profile', director=director, actor=self.name)
 
 
     def __init__(self, name='instruments/arcs/beam-profiles'):

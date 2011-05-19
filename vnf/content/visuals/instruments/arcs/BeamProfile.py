@@ -19,6 +19,7 @@
 
 from BeamProfileStartPanel import Factory as StartPanel
 from BeamProfileResultsView import Factory as ResultsView
+from BeamProfileTableView import Factory as TableView
 
 from FactoryRoot import FactoryRoot as base
 class BeamProfile(base):
@@ -26,6 +27,7 @@ class BeamProfile(base):
     sub_factory_constructors = {
         'start_panel': StartPanel,
         'results_view': ResultsView,
+        'table_view': TableView,
         }
 
 

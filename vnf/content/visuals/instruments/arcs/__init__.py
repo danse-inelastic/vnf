@@ -22,14 +22,22 @@ Please note this is different from ..neutron_experiments
 """
 
 
-def beamprofile(**kwds):
+def beamprofile(director=None, name=None, actor=None):
+    if director is None:
+        raise RuntimeError, "director cannot be none"
+    name = name or "beam-profile"
+    actor = actor or "instruments/arcs/beam-profile"
     from BeamProfile import BeamProfile
-    return BeamProfile(**kwds)
+    return BeamProfile(director=director, name=name, actor=actor)
 
 
-def iqeresolution(**kwds):
+def iqeresolution(director=None, name=None, actor=None):
+    if director is None:
+        raise RuntimeError, "director cannot be none"
+    name = name or "iqe-resolution"
+    actor = actor or "instruments/arcs/iqe-resolution"
     from IQEResolutionComputation import IQEResolutionComputation
-    return IQEResolutionComputation(**kwds)
+    return IQEResolutionComputation(director=director, name=name, actor=actor)
 
 
 # version
