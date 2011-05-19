@@ -21,7 +21,7 @@ base class for visuals that shows a table of computaions
 import luban.content
 
 
-from ...TableFactory import TableViewFactory as base
+from ...TableFactory import TableViewFactory as base, OrmTableFactory
 class Factory(base):
     
     

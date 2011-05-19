@@ -19,6 +19,7 @@
 
 from IQEResolutionStartPanel import Factory as StartPanel
 from IQEResolutionResultsView import Factory as ResultsView
+from IQEResolutionTableView import Factory as TableView
 
 from FactoryRoot import FactoryRoot as base
 class IQEResolutionComputation(base):
@@ -26,6 +27,7 @@ class IQEResolutionComputation(base):
     sub_factory_constructors = {
         'start_panel': StartPanel,
         'results_view': ResultsView,
+        'table_view': TableView,
         }
 
 

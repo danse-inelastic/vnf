@@ -45,6 +45,7 @@ EXPORT_PYTHON_MODULES = \
 	IQEResolutionComputation.py \
 	IQEResolutionResultsView.py \
 	IQEResolutionStartPanel.py \
+	IQEResolutionTableView.py \
 	ResultsViewFactoryBase.py \
 	StartPanelFactoryBase.py \
 	TableViewFactoryBase.py \
