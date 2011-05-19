@@ -179,9 +179,9 @@ class OrmTableFactory(OrmTableFactoryBase):
         
         cols = [selected_col, id_col, description_col] + cols + [date_col]
         return cols
-
-
-    def createValueExtractor(self):
+    
+    
+    def createValueExtractorClass(self):
         create_single_record_link_action = self.create_single_record_link_action
         from luban.orm.table import createDefaultValueExtractorClass
         import luban.content
@@ -197,7 +197,12 @@ class OrmTableFactory(OrmTableFactoryBase):
                 return link
             def getDescription(self, record): return record.short_description
             def getDate(self, record): return str(record.date)
-        return ValueExtractor()
+        return ValueExtractor
+
+
+    def createValueExtractor(self):
+        klass = self.createValueExtractorClass()
+        return klass()
 
 # version
 __id__ = "$Id$"
