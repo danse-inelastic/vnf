@@ -39,6 +39,7 @@ all: export
 
 EXPORT_PYTHON_MODULES = \
 	__init__.py \
+	registrar.py \
 
 
 

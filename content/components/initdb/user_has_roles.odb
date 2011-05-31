@@ -39,6 +39,7 @@ from vnf.dom.UserHasRole import assign, User, Role
 assignments = [
     ('demo', ('vnf', 'guest')),
     ('linjiao', ('vnf', 'core-developer')),
+    ('linjiao', ('vnf', 'administrator')),
     ('jbrkeith', ('vnf', 'core-developer')),
     ('aivazis', ('vnf', 'internal-reviewer')),
     ('btf', ('vnf', 'internal-reviewer')),
