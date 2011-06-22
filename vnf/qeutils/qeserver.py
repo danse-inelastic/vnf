@@ -33,7 +33,8 @@ class QEServer:
             return link
 
         setting     = settings[0]
-        server = self._director.clerk.getServers(id = setting.serverid )
+        if setting.serverid is not None:
+            server = self._director.clerk.getServers(id = setting.serverid )
 
         if not server:
             return link
