@@ -7,6 +7,7 @@ Born-von Karman (BvK)
 ---------------------
 
 * :ref:`tutorial-bvk-to-experiment`
+* :ref:`bvk-model`
 
 Gulp
 ----
