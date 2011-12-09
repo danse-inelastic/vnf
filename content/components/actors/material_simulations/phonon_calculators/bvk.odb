@@ -135,6 +135,16 @@ class Actor(base):
         view_indicator = director.retrieveVisual('view-indicator', path=path)
         doc.add(view_indicator)
         
+        # button to launch help
+        b = lc.button(
+            label='help on bvk model editor',
+            onclick = load(
+                actor='help', routine='showHelpWindow',
+                page = "bvk-model.html",
+                )
+            )
+        doc.add(b)
+
         drawer = director.painter.paintObj.drawers.getDrawer(model.__class__)
         editview = drawer(model)
         doc.add(editview)
