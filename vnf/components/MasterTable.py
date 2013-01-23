@@ -141,7 +141,8 @@ class MasterTableFactory(object):
             if filter_expr:
                 filter_expr_tocompile = filter_expr
             elif filter_value:
-                filter_expr_tocompile = "%s=='%s'" % (filter_key, filter_value)
+                fv = '*' + filter_value + '*'
+                filter_expr_tocompile = "%s=='%s'" % (filter_key, fv)
             else:
                 filter_expr_tocompile = None
                 
