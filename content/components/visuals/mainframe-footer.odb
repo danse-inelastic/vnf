@@ -21,7 +21,7 @@ def visual(director):
     dummy = Splitter()
     sec = dummy.section(id='footer-copyright')
     sec.paragraph().text = [
-        'Copyright (C) 2008-2011 California Institute of Technology. All rights reserved.',
+        'Copyright (C) 2008-2013 California Institute of Technology. All rights reserved.',
         ]
     return dummy
 
